@@ -33,7 +33,6 @@ class SelectMallCategory extends Component {
 
 
     handleSelectChange(value) {
-        
         this.setState({
             value
         }, ()=>{

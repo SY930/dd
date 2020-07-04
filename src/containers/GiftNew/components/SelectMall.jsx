@@ -30,14 +30,18 @@ class SelectMall extends Component {
     }
 
 
-    handleSelectChange(value) {
-        
+    handleSelectChange(value) {        
         this.setState({
             value
         }, ()=>{
+            // onChange 方法被表单代理
             if(typeof this.props.onChange == 'function') {
                 this.props.onChange(value);
             }
+            if(typeof this.props.onMallChange == 'function') {
+                this.props.onMallChange(value);
+            }
+            
         });
 
         

@@ -210,6 +210,7 @@ class GiftAddModalStep extends React.PureComponent {
             this.setState({shopSchema: nextProps.shopSchema.getIn(['shopSchema']).toJS(), // 后台请求来的值
             });
         }
+
         this.setState({
             sharedGifts: this.proSharedGifts(_sharedGifts.crmGiftShareList),
         });
@@ -377,30 +378,52 @@ class GiftAddModalStep extends React.PureComponent {
                     sharedGifts: value,
                 })
                 break;
-
+            
+            // TODO: 待优化
             // 根据券应用场景，动态调整两个表单的formKeys值。逻辑未梳理清楚，不知道是否影响其他地方，先简单的手动修改，不做遍历，整体进行处理
-            case 'applyScene': 
-                if(value == '1'){
-                    secondKeys[describe][0].keys = [...MALL_COUPON_APPLY_SETTING_FORM_ITEMS[describe][0].keys];
-                    firstKeys[describe][0].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][0].keys];
+            // case 'applyScene': 
+                // if(value == '1'){
+                //     secondKeys[describe][0].keys = [...MALL_COUPON_APPLY_SETTING_FORM_ITEMS[describe][0].keys];
+                //     firstKeys[describe][0].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][0].keys];
                     
-                    firstKeys[describe][1].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][1].keys];
-                } else if(value == '0') {
-                    secondKeys[describe][0].keys = [...SECOND_KEYS[describe][0].keys];
-                    firstKeys[describe][0].keys = [...FIRST_KEYS[describe][0].keys];
+                //     firstKeys[describe][1].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][1].keys];
+                // } else if(value == '0') {
+                //     secondKeys[describe][0].keys = [...SECOND_KEYS[describe][0].keys];
+                //     firstKeys[describe][0].keys = [...FIRST_KEYS[describe][0].keys];
+                //     firstKeys[describe][1].keys = [...FIRST_KEYS[describe][1].keys];
+                // }
 
-                    firstKeys[describe][1].keys = [...FIRST_KEYS[describe][1].keys];
-                }
+                // this.setState({
+                //     firstKeys,
+                //     secondKeys,
+                // });
 
-                this.setState({
-                    firstKeys,
-                    secondKeys,
-                });
+                // break;
+        
+            // case 'mallScope':   // 商城券适用场景变更
+                // debugger;
+                // let mallFirstKeys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][0].keys];
+                // if(value == '0') {      // 适用分类 + 排除商品
+                //     mallFirstKeys = mallFirstKeys.filter((key)=>{
+                //         return key !== 'mallIncludeGoodSelector';
+                //     });
+                // } else {                // 适用商品
+                //     mallFirstKeys = mallFirstKeys.filter((key)=>{
+                //         return key !== 'mallCategorySelector' && key !== 'mallExcludeGoodSelector';
+                //     })
+                // }
+                // firstKeys[describe][0].keys = mallFirstKeys;
+                // this.setState({
+                //     firstKeys
+                // })
+            // break;
 
             case 'discountRule': 
                 // 买赠券，处理优惠规则变更，动态调整表结构
                 this.handleDiscountRuleChange(value);
                 break;
+
+            
             default:
                 break;
         }
@@ -478,9 +501,6 @@ class GiftAddModalStep extends React.PureComponent {
 
         params.reduceType = params.discountRule;
         delete params.discountRule;
-        debugger;
-
-
 
         // 优惠规则，后端之前的字段为priceSortRule, 暂不做调整。新的前端表单字段为discountSortRule
         params.priceSortRule = params.discountSortRule;
@@ -546,6 +566,12 @@ class GiftAddModalStep extends React.PureComponent {
                 formValues,
                 { giftType: value },
             );
+
+            console.log('params in handleFinish', params);
+            
+
+            return;
+                
             params = this.formatFormData(params);
             let shopNames = '',
                 shopIDs = '',
@@ -1143,11 +1169,6 @@ class GiftAddModalStep extends React.PureComponent {
     }
 
     renderShopNames(decorator) {
-
-
-        console.log("this.state.shopSchema", this.state.shopSchema);
-
-
         const { shopNames = [] } = this.state.values;
         const { gift: { data } } = this.props;
         const { selectBrands = [] } = data;
@@ -1324,32 +1345,42 @@ class GiftAddModalStep extends React.PureComponent {
         const { shopSchema: {
             shops
         } } = this.state;
-
         const mallList = shops.filter((shop, idx)=>{
             return shop.businessModel == '0'; // 0 为商城， 1 为餐饮店铺
         })
-
         return (
-            <SelectMall 
-                dataSource= { mallList }
-                onChange = { (shopID)=>{ this.handleMallChange(shopID)}}
-            />
+            decorator({
+                 key: 'selectMall',
+                 rules: [],
+                 initialValue: undefined
+            })(
+                <SelectMall 
+                    dataSource= { mallList }
+                    onMallChange = { (shopID)=>{ this.handleMallChange(shopID)}}
+                />
+            )
+            
         )
     }
 
     // 商城分类
     renderMallCategorySelector = (decorator) => {
-
         const { goodCategories } = this.props;
-
         return (
-            <SelectMallCategory
-                dataSource = { goodCategories }
-                onChange = { (val) => {
-                    console.log('SelectMallCategory ', val);
-                }}
-            />
-        )
+            decorator({
+                key: 'mallCategory',
+                rules: [],
+                initialValue: [],
+            })(
+                <SelectMallCategory
+                    dataSource = { goodCategories }
+                    onChange = { (val) => {
+                        console.log('SelectMallCategory ', val);
+                    }}
+                />
+            )
+
+        );
 
     }
 
@@ -1359,27 +1390,64 @@ class GiftAddModalStep extends React.PureComponent {
         const { goods, goodCategories } = this.props;
 
         return (
-            <MultipleGoodSelector
-                value={[]}
-                placeholder="选择排除商品"
-                allDishes={ goods }
-                allCategories={ goodCategories }
-                // allDishes={this.props.goods.toJS().filter(item => item.categoryID === selectedCategory)}
-                // allCategories={this.props.goodCategories.toJS().filter(item => item.value === selectedCategory)}
+            decorator({
+                key: 'mallExcludedGood', 
+                rules: [],
+                initialValue: [],
+            })(
+                <MultipleGoodSelector
+                    placeholder="选择排除商品"
+                    allDishes={ goods }
+                    allCategories={ goodCategories }
+                    // allDishes={this.props.goods.toJS().filter(item => item.categoryID === selectedCategory)}
+                    // allCategories={this.props.goodCategories.toJS().filter(item => item.value === selectedCategory)}
 
-                onChange = {
-                    (val) => { console.log('val in MulitiGoodSelector', val)}
-                }
-                // onChange={val => this.setState({
-                //     excludeGoods: val
-                // })}
-            />
+                    onChange = {
+                        (val) => { console.log('val in MulitiGoodSelector', val)}
+                    }
+                    // onChange={val => this.setState({
+                    //     excludeGoods: val
+                    // })}
+                />
+            )
+            
+        )
+    }
+
+    renderMallIncludeGoodsSelector = (decorator) => {
+
+        const { goods, goodCategories } = this.props;
+
+        return (
+            decorator({
+                key: 'mallIncludeGood', 
+                rules: [],
+                initialValue: [],
+            })(
+                <MultipleGoodSelector
+                    placeholder="选择商品"
+                    allDishes={ goods }
+                    allCategories={ goodCategories }
+                    // allDishes={this.props.goods.toJS().filter(item => item.categoryID === selectedCategory)}
+                    // allCategories={this.props.goodCategories.toJS().filter(item => item.value === selectedCategory)}
+
+                    onChange = {
+                        (val) => { console.log('val in MulitiGoodSelector', val)}
+                    }
+                    // onChange={val => this.setState({
+                    //     excludeGoods: val
+                    // })}
+                />
+            )
+            
         )
     }
 
     // 选择商城
     // 对应的表单内容（商城类别、商城商品要进行变更）
     handleMallChange(shopID) {
+
+        console.log('handleMallChange ==================')
         this.props.getMallGoodsAndCategories(shopID);
     }
 
@@ -1463,6 +1531,45 @@ class GiftAddModalStep extends React.PureComponent {
     }
 
     /**
+     * 根据所有的key值，根据其value的不同取值，动态调整某些key是否可见。只在显示的时候做动态处理，不保存到state中
+     * @example 代金券 商城模式 适用场景 如果为0.及分类，这时可选商品不可见。（但是配置项是所有的。这里要动态进行删除操作）
+    */
+    justifyFormKeysToDisplay = () => {
+        const { gift: { name: describe, value, data }, visible, type } = this.props,
+        { firstKeys, secondKeys, values, unit } = this.state;
+        // 数据拷贝（隔离）
+        let firstKeysToDisplay = JSON.parse(JSON.stringify(firstKeys[describe]));
+        let secondKeysToDisplay = JSON.parse(JSON.stringify(secondKeys[describe]));
+        if(describe == '代金券') {
+            if(data.applyScene == '0') {            // 店铺券
+                firstKeysToDisplay[0].keys = [...FIRST_KEYS[describe][0].keys];
+                firstKeysToDisplay[1].keys = [...FIRST_KEYS[describe][1].keys];
+                secondKeysToDisplay[0].keys = [...SECOND_KEYS[describe][0].keys];
+            } 
+            else if(data.applyScene == '1') {       // 商城券
+                secondKeysToDisplay[0].keys = [...MALL_COUPON_APPLY_SETTING_FORM_ITEMS[describe][0].keys];
+                firstKeysToDisplay[0].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][0].keys];
+                firstKeysToDisplay[1].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][1].keys];
+                firstKeysToDisplay[3].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][3].keys];
+                if(data.mallScope == '0' || data.mallScope == undefined) {
+                    
+                    firstKeysToDisplay[0].keys = firstKeysToDisplay[0].keys.filter((key)=>{
+                        return key !== 'mallIncludeGoodSelector';
+                    });
+                } else {
+                    firstKeysToDisplay[0].keys = firstKeysToDisplay[0].keys.filter((key)=>{
+                        return key !== 'mallCategorySelector' && key !== 'mallExcludeGoodSelector';
+                    });
+                }
+            }
+        }
+        return {
+            firstKeysToDisplay,
+            secondKeysToDisplay
+        };
+    }
+
+    /**
      * @description
      * @params this.props.gift 传入的参数
      * @params this.props.gift.data 如果不为undefined，在编辑和展示模式下，为后端返回的数据，前后端数据如果有key值不同，则需要进行变更处理
@@ -1474,8 +1581,7 @@ class GiftAddModalStep extends React.PureComponent {
         this.justifyServerEndKeyToFormKeys(data);
         const dates = Object.assign({}, data);
         
-        const displayFirstKeys = firstKeys[describe];
-        const displaySecondKeys = secondKeys[describe];
+        const { firstKeysToDisplay: displayFirstKeys, secondKeysToDisplay: displaySecondKeys} = this.justifyFormKeysToDisplay();
         if (dates.shopNames && dates.shopNames.length > 0 && dates.shopNames[0].id) {
             dates.shopNames = dates.shopNames.map(shop => shop.id);
         }
@@ -1569,7 +1675,7 @@ class GiftAddModalStep extends React.PureComponent {
             mallIncludeGoodSelector: {
                 label: '适用商品',
                 type: 'custom',
-                render: decorator => this.renderMallExcludeGoodsSelector(decorator)
+                render: decorator => this.renderMallIncludeGoodsSelector(decorator)
             },
 
             giftValueCurrencyType: {
@@ -2112,8 +2218,8 @@ class GiftAddModalStep extends React.PureComponent {
         formData.giftShareType = String(formData.giftShareType);
         formData.couponPeriodSettings = formData.couponPeriodSettingList
 
-        console.log('displayFirstKeys', displayFirstKeys);
-        console.log('displaySecondKeys', displaySecondKeys);
+        // console.log('displayFirstKeys', displayFirstKeys);
+        // console.log('displaySecondKeys', displaySecondKeys);
 
         return (
             <div>

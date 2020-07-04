@@ -63,7 +63,7 @@ export const FORMITEMS = {
     mallScope: {
         label: '适用范围',
         type: 'radio',
-        default: '0',
+        defaultValue: '0',
         options: [
             { label: '按分类', value: '0' },
             { label: '按商品', value: '1' },
@@ -270,7 +270,7 @@ export const MALL_COUPON_BASIC_SETTING_FORM_ITEMS = {
                 push: 3,
             },
             keys: [
-                'isNeedCustomerInfo',
+                // 'isNeedCustomerInfo',
             ]
         },
     ],
