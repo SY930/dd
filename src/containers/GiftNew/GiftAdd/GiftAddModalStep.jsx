@@ -221,6 +221,11 @@ class GiftAddModalStep extends React.PureComponent {
             });
         }
 
+        // 传入的表单值
+        if(this.props.gift !== nextProps.gift) {
+
+        }
+
         this.setState({
             sharedGifts: this.proSharedGifts(_sharedGifts.crmGiftShareList),
         });
@@ -1666,16 +1671,24 @@ class GiftAddModalStep extends React.PureComponent {
     /**
      * @description 调整后端返回数据的key, 对应到前端表单key
      * @example 满减券后端优惠规则 key 为 reduceType, 对应前端key为discountRule
+     * @notice 所有需要赋值的字段，如果已经有了该字段则不进行变更
     */
-    justifyServerEndKeyToFormKeys(data) {
+    justifyServerEndKeyToFormKeys(data, type) {
+
+        // 根据后端返回数据来进行前端数据进行变更。
         data.discountRule = `${data.reduceType}`;
         delete data.reduceType;
 
         // 商城券调整
         if(data.applyScene == '1') {   
+            debugger;
             data.mallScope = data.mallScope == undefined ? '0' : data.mallScope;   // 默认值 
-            if(data.hasOwnProperty('foodSelectType') && data.foodSelectType == '0') {
+            if(data.hasOwnProperty('foodSelectType') && data.foodSelectType == '0' && type == 'edit') { // 编辑模式
+                debugger;
                 data.mallScope = '1'
+                // 需要将后端返回的该字段进行删除，因为在编辑模式下，前端调整的话，
+                // 会重新走该流程，导致前端调整字段失效
+                delete data.foodSelectType;
             }
         }
     }
@@ -1690,7 +1703,7 @@ class GiftAddModalStep extends React.PureComponent {
         // 数据拷贝（隔离）
         let firstKeysToDisplay = JSON.parse(JSON.stringify(firstKeys[describe]));
         let secondKeysToDisplay = JSON.parse(JSON.stringify(secondKeys[describe]));
-        if(describe == '代金券' || describe == '菜品优惠券') {
+        if(describe == '代金券' || describe == '菜品优惠券' || describe == '菜品兑换券') {
             if(data.applyScene == '0') {            // 店铺券
                 firstKeysToDisplay[0].keys = [...FIRST_KEYS[describe][0].keys];
                 firstKeysToDisplay[1].keys = [...FIRST_KEYS[describe][1].keys];
@@ -1701,12 +1714,15 @@ class GiftAddModalStep extends React.PureComponent {
                 firstKeysToDisplay[0].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][0].keys];
                 firstKeysToDisplay[1].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][1].keys];
                 firstKeysToDisplay[3].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][3].keys];
+
+                debugger;
                 if(data.mallScope == '0' || data.mallScope == undefined) {
-                    
+                    debugger;
                     firstKeysToDisplay[0].keys = firstKeysToDisplay[0].keys.filter((key)=>{
                         return key !== 'mallIncludeGoodSelector';
                     });
                 } else {
+                    debugger
                     firstKeysToDisplay[0].keys = firstKeysToDisplay[0].keys.filter((key)=>{
                         return key !== 'mallCategorySelector' && key !== 'mallExcludeGoodSelector';
                     });
@@ -1728,7 +1744,7 @@ class GiftAddModalStep extends React.PureComponent {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
             { firstKeys, secondKeys, values, unit } = this.state;
 
-        this.justifyServerEndKeyToFormKeys(data);
+        this.justifyServerEndKeyToFormKeys(data, type);
         const dates = Object.assign({}, data);
         
         const { firstKeysToDisplay: displayFirstKeys, secondKeysToDisplay: displaySecondKeys} = this.justifyFormKeysToDisplay();
