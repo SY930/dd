@@ -599,6 +599,7 @@ class GiftAddModalStep extends React.PureComponent {
         delete params.selectMall;
 
         // 适用菜品方式 0：按菜品单品 1：按菜品分类 2：不限制 
+        // mallScope : 0 按分类， 1 按商品
         params.foodSelectType = params.mallScope == '0' ? '1' : '0';
         // 商城分类模式
         if(params.mallScope == '0' || params.mallScope == undefined) {
@@ -1463,7 +1464,9 @@ class GiftAddModalStep extends React.PureComponent {
         const { gift : { data }} = this.props;
         let initialValue;
         if(data.applyScene == '1') {
-            initialValue = data.selectBrands[0].targetID;
+            if(data.selectBrands instanceof Array && data.selectBrands.length > 0) {
+                initialValue = data.selectBrands[0].targetID;
+            }
         }
         return (
             decorator({
@@ -1486,13 +1489,18 @@ class GiftAddModalStep extends React.PureComponent {
         const { gift : { data }} = this.props; 
         let initialValue = [];
         if(data.applyScene == '1') {
-            // initialValue = data.selectBrands[0].targetID;
             if(goodCategories instanceof Array && goodCategories.length == 0) {
                 // data.selectBrands[0].targetID; 当前店铺 ID
-                this.handleMallChange(data.selectBrands[0].targetID);
+                // 区分回显还是新建
+                if(data.hasOwnProperty('selectBrands') && data.selectBrands instanceof Array && data.selectBrands.length > 0) {
+                    // 满足以上全部条件（回显模式下需要满足）
+                    this.handleMallChange(data.selectBrands[0].targetID);
+                }
+                
             } else {
-                if(data.couponFoodScopes instanceof Array && data.couponFoodScopes > 0) {
-                    initialValue = data.couponFoodScopes.map((item)=>{
+                // 前端传到后端采用拼接，组合成 couponFoodScope， 后端返回字段名称又改为 couponFoodScopeList
+                if(data.couponFoodScopeList instanceof Array && data.couponFoodScopeList.length > 0) {
+                    initialValue = data.couponFoodScopeList.map((item)=>{
                         return item.targetID
                     });
                 }
@@ -1515,14 +1523,26 @@ class GiftAddModalStep extends React.PureComponent {
 
     // 商城商品选择（根据具体的类）
     renderMallExcludeGoodsSelector = (decorator) => {
-
         const { goods, goodCategories } = this.props;
+        const { gift :{ data }} = this.props;
+        let initialValue = [];
+        if(data.applyScene == '1') {
 
+            // 适用菜品方式 0：按菜品单品 1：按菜品分类 2：不限制 
+            // params.foodSelectType = params.mallScope == '0' ? '1' : '0';
+            if(data.hasOwnProperty('foodSelectType') && data.foodSelectType == '1') {
+                if(data.hasOwnProperty('excludeFoodScopes') && data.excludeFoodScopes instanceof Array &&  data.excludeFoodScopes.length > 0) {
+                    initialValue = data.excludeFoodScopes.map((item)=>{
+                        return item.targetID;
+                    });
+                }
+            }
+        }
         return (
             decorator({
                 key: 'mallExcludedGood', 
                 rules: [],
-                initialValue: [],
+                initialValue,
             })(
                 <MultipleGoodSelector
                     placeholder="选择排除商品"
@@ -1535,14 +1555,28 @@ class GiftAddModalStep extends React.PureComponent {
     }
 
     renderMallIncludeGoodsSelector = (decorator) => {
-
         const { goods, goodCategories } = this.props;
+
+        const { gift :{ data }} = this.props;
+        let initialValue = [];
+        if(data.applyScene == '1') {
+
+            // 适用菜品方式 0：按菜品单品 1：按菜品分类 2：不限制 
+            // params.foodSelectType = params.mallScope == '0' ? '1' : '0';
+            if(data.hasOwnProperty('foodSelectType') && data.foodSelectType == '0') {
+                if(data.hasOwnProperty('couponFoodScopeList') && data.couponFoodScopeList instanceof Array &&  data.couponFoodScopeList.length > 0) {
+                    initialValue = data.couponFoodScopeList.map((item)=>{
+                        return item.targetID;
+                    });
+                }
+            }
+        }
 
         return (
             decorator({
                 key: 'mallIncludeGood',
                 rules: [],
-                initialValue: [],
+                initialValue,
             })(
                 <MultipleGoodSelector
                     placeholder="选择商品"
@@ -1560,7 +1594,6 @@ class GiftAddModalStep extends React.PureComponent {
         this.props.getMallGoodsAndCategories(shopID);
     }
 
-    
 
     renderBuyGiveFoodsboxs(decorator) {
         const { gift: { data } } = this.props;
@@ -1637,6 +1670,14 @@ class GiftAddModalStep extends React.PureComponent {
     justifyServerEndKeyToFormKeys(data) {
         data.discountRule = `${data.reduceType}`;
         delete data.reduceType;
+
+        // 商城券调整
+        if(data.applyScene == '1') {   
+            data.mallScope = data.mallScope == undefined ? '0' : data.mallScope;   // 默认值 
+            if(data.hasOwnProperty('foodSelectType') && data.foodSelectType == '0') {
+                data.mallScope = '1'
+            }
+        }
     }
 
     /**
