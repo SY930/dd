@@ -37,7 +37,6 @@ export default class GoodSelector extends Component {
             allDishes = [],
             placeholder,
         } = this.props;
-        debugger;
         const selectedItems = allDishes.filter(dish => value.includes(dish.value));
         return (
             <div>
