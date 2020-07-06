@@ -678,14 +678,14 @@ class GenerateBatchQRCodes extends Component {
                 {this.renderQrTypeSetting()}
                 {this.renderQrExpiringDate()}
                 <FormItem
-                    label="类型"
+                    label="导出样式"
                     className={styles.FormItemStyle}
                     labelCol={{ span: 6 }}
                     wrapperCol={{ span: 11 }}
                 >
                     <RadioGroup value={this.state.exportType} onChange={this.handleExportTypeChange}>
                         <Radio key={'0'} value={'0'}>二维码</Radio>
-                        <Radio key={'1'} value={'1'}>链接</Radio>
+                        <Radio key={'1'} value={'1'}>普通链接</Radio>
                     </RadioGroup>
                 </FormItem>
                 <FormItem
