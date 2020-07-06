@@ -934,7 +934,9 @@ class SpecialDetailInfo extends Component {
             disabledGifts,
             saveMoneySetIds,
             giftGetRule,
-            ...instantDiscountState
+            perfectReturnGiftCheckBoxStatus,
+            upGradeReturnGiftCheckBoxStatus,
+            ...instantDiscountState,
         } = this.state;
         const { type } = this.props;
 
@@ -1087,12 +1089,20 @@ class SpecialDetailInfo extends Component {
         this.setState({ data });
 
         if((type === '60'
-             && !this.state.perfectReturnGiftCheckBoxStatus.perfectReturnGiftCoupon) ||
+             && !perfectReturnGiftCheckBoxStatus.perfectReturnGiftCoupon
+             ) ||
              (type === '61'
-             && !this.state.upGradeReturnGiftCheckBoxStatus.upGradeReturnGiftCoupon)
+             && !upGradeReturnGiftCheckBoxStatus.upGradeReturnGiftCoupon
+             )
         ) {
-             //  券隐藏的时候不校验
-            validateFlag = true
+            if(perfectReturnGiftCheckBoxStatus.perfectReturnGiftPoint || upGradeReturnGiftCheckBoxStatus.upGradeReturnGiftPoint) {
+                //  券隐藏的时候不校验
+                validateFlag = true
+            } else {
+                message.warn('至少选择一项')
+                validateFlag = false
+            }
+
         }
         if (validateFlag) {
             if (validOdds > 100) {
