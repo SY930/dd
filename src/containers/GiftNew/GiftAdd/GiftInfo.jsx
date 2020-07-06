@@ -129,7 +129,7 @@ export default class GiftInfo extends Component {
                 obj = { giftType, giftTypeName, giftItemID, giftName, giftValue };
             }
         });
-        const list = [...value.quotaCardGiftConfList, { ...params, ...obj, ...date, effectType: newEffectType }];
+        const list = [...(value.quotaCardGiftConfList || []), { ...params, ...obj, ...date, effectType: newEffectType }];
         onChange({
             ...value,
             presentType: value.presentType,
