@@ -1500,9 +1500,11 @@ class GiftAddModalStep extends React.PureComponent {
         }
         return (
             decorator({
-                 key: 'selectMall',
-                 rules: [],
-                 initialValue,
+                key: 'selectMall',
+                rules: [
+                    {required: true, message: '必须选择一个商城'}
+                ],
+                initialValue,
             })(
                 <SelectMall 
                     dataSource= { mallList }
