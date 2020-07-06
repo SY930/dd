@@ -255,14 +255,32 @@ class PhonePreview extends PureComponent {
         )
     }
 
+    renderMallName = () => {
+        // shopSchema: state.sale_shopSchema_New,
+
+        const { selectMall } = this.props;
+        let shopSchema = this.props.shopSchema.toJS(); // Imutable data to primitive
+        if(shopSchema.hasOwnProperty('shops') && shopSchema.shops instanceof Array) {
+            let malls = shopSchema.shops.filter((shop, idx)=>{
+                return shop.businessModel == '0' && shop.shopID == selectMall; // 0 为商城， 1 为餐饮店铺
+            });
+            if(malls.length == 1) {
+                return malls[0].shopName;
+            }
+        }
+
+        return null;
+    }
+
     renderMallOrShopName = ()=>{
         const { applyScene, selectBrands } = this.props;
         if(applyScene != '1') {
             return this.shopNameString();
         } else {
-            if(selectBrands instanceof Array && selectBrands.length > 0) {
-                return selectBrands[0].targetName;
-            }
+            return this.renderMallName();
+            // if(selectBrands instanceof Array && selectBrands.length > 0) {
+            //     return selectBrands[0].targetName;
+            // }
         }
     }
 
@@ -558,6 +576,7 @@ class PhonePreview extends PureComponent {
 
 function mapStateToProps(state) {
     return {
+        selectMall: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'selectMall']),   // 使用商城
         applyScene: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'applyScene']),   // 商城， 1， 店铺 0
         giftName: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'giftName']),
         giftValue: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'giftValue']),
@@ -589,6 +608,12 @@ function mapStateToProps(state) {
         giftDiscountRate: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'discountRate', 'number']), // PriceInput 给出的是{number: xxx}
         discountRate: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'discountRate']), // antd input 给出的是str
         groupName: state.user.getIn(['accountInfo', 'groupName']),
+
+        // 商城商品及分类信息
+        // goodCategories: state.sale_promotionDetailInfo_NEW.get('goodCategories').toJS(),
+        // goods: state.sale_promotionDetailInfo_NEW.get('goods').toJS(),
+
+        // shopSchema: state.sale_shopSchema_New,
     }
 }
 
