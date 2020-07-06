@@ -167,7 +167,6 @@ class PhonePreview extends PureComponent {
             giftValueCurrencyType ='¥',
             applyScene,                 // 区分店铺券和商家券
         } = this.props;
-        debugger;
         return (
             <div className={styles.phonePreviewContentWrapper}>
                 <img src={bg} alt="oops"/>

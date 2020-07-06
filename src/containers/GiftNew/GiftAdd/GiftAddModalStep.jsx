@@ -199,7 +199,6 @@ class GiftAddModalStep extends React.PureComponent {
         // const { data } = thisGift;
         if(thisGift.data !== undefined) {
             let justifiedData = this.justifyServerEndKeyToFormKeys(JSON.parse(JSON.stringify(thisGift.data)));
-            console.log('justifiedData', justifiedData);
             let values = Object.assign({}, this.state.values, justifiedData);
             this.setState({
                 values
@@ -289,25 +288,28 @@ class GiftAddModalStep extends React.PureComponent {
     
     // 买赠券，处理优惠规则变更，动态调整表结构
     handleDiscountRuleChange = (val) => {
-        const { gift: { name: describe, data }, type } = this.props;
-        const { firstKeys } = this.state;
-        let keys = [...firstKeys[describe][0].keys];
-        // 1 特价， 2 折扣， 3 立减
-        // Caution: 如果修改配置文件 ——formItemConfig.jsx中买赠券的表单排序，则必须调整 splice 参数
-        if (val == '1') {
-            keys.splice(9, 1, 'specialPriceVolSetting');
-        } else if(val == '2') {
-            keys.splice(9, 1, 'discountRateSetting');
-        } else if(val == '3') {
-            keys.splice(9, 1, 'discountDecreaseVolSetting');
-        }
-        firstKeys[describe][0].keys = [...keys];
-        this.setState({ firstKeys });
+        // const { gift: { name: describe, data }, type } = this.props;
+        // const { firstKeys } = this.state;
+        // let keys = [...firstKeys[describe][0].keys];
+        // // 1 特价， 2 折扣， 3 立减
+        // // Caution: 如果修改配置文件 ——formItemConfig.jsx中买赠券的表单排序，则必须调整 splice 参数
+        // if (val == '1') {
+        //     keys.splice(9, 1, 'specialPriceVolSetting');
+        // } else if(val == '2') {
+        //     keys.splice(9, 1, 'discountRateSetting');
+        // } else if(val == '3') {
+        //     keys.splice(9, 1, 'discountDecreaseVolSetting');
+        // }
+        // firstKeys[describe][0].keys = [...keys];
+        // this.setState({ firstKeys });
     }
 
     // 处理表单数据变化
     handleFormChange(key, value, formRef) {
         const { gift: { name: describe, data }, type } = this.props;
+
+        // console.log('DiscountRule is ', value, formRef.getFieldValue('discountRule'));
+
         const { firstKeys, secondKeys, values } = this.state;
         const newKeys = [...secondKeys[describe][0].keys];
         const index = _.findIndex(newKeys, item => item == key);
@@ -432,6 +434,16 @@ class GiftAddModalStep extends React.PureComponent {
                 }
                 break;
 
+            case 'discountRule':
+                // if(formRef.getFieldValue('discountRule') != value) {
+                //     formRef.setFieldsValue({
+                //         'discountRateSetting': 0,
+                //         'specialPriceVolSetting': null,
+                //         'discountDecreaseVolSetting': null
+                //     });
+                // }
+                break;
+
             // TODO: 待优化
             // 根据券应用场景，动态调整两个表单的formKeys值。逻辑未梳理清楚，不知道是否影响其他地方，先简单的手动修改，不做遍历，整体进行处理
             // case 'applyScene': 
@@ -552,11 +564,11 @@ class GiftAddModalStep extends React.PureComponent {
             break;
         }
 
-        params.reduceType = params.discountRule;
+        params.reduceType = `${params.discountRule}`;
         delete params.discountRule;
 
-        // 优惠规则，后端之前的字段为priceSortRule, 暂不做调整。新的前端表单字段为discountSortRule
-        params.priceSortRule = params.discountSortRule;
+        // 优惠规则，后端之前的字段为BOGOdiscountWay, 暂不做调整。新的前端表单字段为discountSortRule
+        params.BOGOdiscountWay = params.discountSortRule;
         delete params.discountSortRule;
 
         // 消费金额限制类型
@@ -629,6 +641,9 @@ class GiftAddModalStep extends React.PureComponent {
                 }
             })
         }
+
+        //     "shopIDs": "76058319,76058826,76067997",
+        // "shopNames"
         delete params.selectMall;
 
         // 适用菜品方式 0：按菜品单品 1：按菜品分类 2：不限制 
@@ -1088,7 +1103,7 @@ class GiftAddModalStep extends React.PureComponent {
 
         // 数据回显
         const { gift : { data }} = this.props;
-        let val = data.reduceValue == undefined ? 0 : data.reduceValue;
+        let val = data.reduceValue == undefined ? null : data.reduceValue;
 
         return (
             <FormItem>
@@ -1096,9 +1111,9 @@ class GiftAddModalStep extends React.PureComponent {
                     key: 'discountDecreaseVolSetting',
                     rules: [{required: true, message: '不能为空'}, {
                         validator: (rule, num, cb) => {
-                            Number(num) >= 0 &&  Number(num) <= 10000 ? cb() : cb(rule.message);
+                            Number(num) > 0 &&  Number(num) <= 10000 ? cb() : cb(rule.message);
                         },
-                        message: '金额要大于等于0,小于10000',
+                        message: '金额要大于0,小于10000',
                     }],
                     initialValue: val
                 })(<Input 
@@ -1500,9 +1515,11 @@ class GiftAddModalStep extends React.PureComponent {
         }
         return (
             decorator({
-                 key: 'selectMall',
-                 rules: [],
-                 initialValue,
+                key: 'selectMall',
+                rules: [
+                    {required: true, message: '必须选择一个商城'}
+                ],
+                initialValue,
             })(
                 <SelectMall 
                     dataSource= { mallList }
@@ -1514,10 +1531,13 @@ class GiftAddModalStep extends React.PureComponent {
     }
 
     // 商城分类
-    renderMallCategorySelector = (decorator) => {
-        const { goodCategories, goods } = this.props;
+    renderMallCategorySelector = (decorator, form) => {
+        const { goodCategories, goods, gift: {
+            value: giftTypeValue
+        }} = this.props;
         const { values } = this.state; 
         let initialValue = [];
+        let showToolTips = false;
         if(values.applyScene == '1') {
             if(goodCategories instanceof Array && goodCategories.length == 0) {
                 // data.selectBrands[0].targetID; 当前店铺 ID
@@ -1536,15 +1556,51 @@ class GiftAddModalStep extends React.PureComponent {
                 }
             }
         }
+        // 调整校验规则
+        let rules = [
+            {
+                required: true,
+                message: '请选择商品分类'
+            }
+        ];
+        if (giftTypeValue == '10') {
+            rules = [];
+        }
+        // 调整 toolTips, 代金券。且内容为空时
+        if(giftTypeValue == '10') {
+            if(initialValue instanceof Array &&  initialValue.length == 0) {
+                showToolTips = true;
+            }
+            if(form.getFieldValue('mallCategory') instanceof Array && form.getFieldValue('mallCategory') == 0 ) {
+                showToolTips = true;
+            }
+        }
         return (
             decorator({
                 key: 'mallCategory',
-                rules: [],
+                rules,
                 initialValue,
             })(
-                <SelectMallCategory
-                    dataSource = { goodCategories }
-                />
+                
+                <div>
+                    <SelectMallCategory
+                        dataSource = { goodCategories }
+                    />
+
+                    {showToolTips && (
+                        <div
+                            style={{
+                                color: 'orange',
+                                paddingLeft: '16.67%',
+                                overflow: 'hidden',
+                                lineHeight: 1.15,
+                            }}
+                        >
+                            未选择时默认所有可用
+                        </div>
+                    )}
+                </div>
+                
             )
 
         );
@@ -1583,9 +1639,15 @@ class GiftAddModalStep extends React.PureComponent {
         )
     }
 
-    renderMallIncludeGoodsSelector = (decorator) => {
+    renderMallIncludeGoodsSelector = (decorator, form) => {
         const { goods, goodCategories } = this.props;
         const { values} = this.state;
+
+        let showToolTips = true;
+        let mallIncludeGoods = form.getFieldValue('mallIncludeGood');
+        if(mallIncludeGoods instanceof Array && mallIncludeGoods.length > 0) {
+            showToolTips = false;
+        }
         let initialValue = [];
         if(values.applyScene == '1') {
 
@@ -1607,6 +1669,10 @@ class GiftAddModalStep extends React.PureComponent {
                     });
                 }
             }
+
+            if(initialValue instanceof Array && initialValue.length > 0) {
+                showToolTips = false;
+            }
         }
 
         return (
@@ -1615,11 +1681,26 @@ class GiftAddModalStep extends React.PureComponent {
                 rules: [],
                 initialValue,
             })(
-                <MultipleGoodSelector
-                    placeholder="选择商品"
-                    allDishes={ goods }
-                    allCategories={ goodCategories }
-                />
+                <div>
+                    <MultipleGoodSelector
+                        placeholder="选择商品"
+                        allDishes={ goods }
+                        allCategories={ goodCategories }
+                    />
+
+                    {showToolTips && (
+                        <div
+                            style={{
+                                color: 'orange',
+                                paddingLeft: '16.67%',
+                                overflow: 'hidden',
+                                lineHeight: 1.15,
+                            }}
+                        >
+                            未选择时默认所有可用
+                        </div>
+                    )}
+                </div>
             )
             
         )
@@ -1708,7 +1789,12 @@ class GiftAddModalStep extends React.PureComponent {
     justifyServerEndKeyToFormKeys(data) {
 
         // 根据后端返回数据来进行前端数据进行变更。
-        data.discountRule = `${data.reduceType}`;
+        // data.discountRule = `${data.reduceType}`;
+
+        data.discountRule = data.reduceType == undefined ? '1' : `${data.reduceType}`;
+
+        console.log('data.discountRule', data.discountRule);
+
         delete data.reduceType;
 
         // 商城默认值为0
@@ -1721,6 +1807,9 @@ class GiftAddModalStep extends React.PureComponent {
         if(data.hasOwnProperty('selectBrands') && data.selectBrands instanceof Array && data.selectBrands.length > 0) {
             data.selectMall = data.selectBrands[0].targetID;
         }
+        
+        // 买赠券， 前端对应的高价有限设置项，对应后端BOGOdiscountWay
+        data.discountSortRule = data.BOGOdiscountWay;
 
         return data;
 
@@ -1769,6 +1858,54 @@ class GiftAddModalStep extends React.PureComponent {
                 }
             }
         }
+
+        // TODO : 后续将所有descirbe判断改为value.
+
+         // 买赠券，处理优惠规则变更，动态调整表结构
+    // handleDiscountRuleChange = (val) => {
+    //     const { gift: { name: describe, data }, type } = this.props;
+    //     const { firstKeys } = this.state;
+    //     let keys = [...firstKeys[describe][0].keys];
+    //     // 1 特价， 2 折扣， 3 立减
+    //     // Caution: 如果修改配置文件 ——formItemConfig.jsx中买赠券的表单排序，则必须调整 splice 参数
+    //     if (val == '1') {
+    //         keys.splice(9, 1, 'specialPriceVolSetting');
+    //     } else if(val == '2') {
+    //         keys.splice(9, 1, 'discountRateSetting');
+    //     } else if(val == '3') {
+    //         keys.splice(9, 1, 'discountDecreaseVolSetting');
+    //     }
+    //     firstKeys[describe][0].keys = [...keys];
+    //     this.setState({ firstKeys });
+    // }
+
+    // 'discountRateSetting',                  // 折扣设置 （注释掉，通过代码动态注释）
+    //             'specialPriceVolSetting',           // 特价设置
+    //             'discountDecreaseVolSetting',       // 立减
+        if(describe == '买赠券'){
+            if ( values.discountRule != undefined) {
+                switch(values.discountRule) {
+                    case '1':
+                        firstKeysToDisplay[0].keys = firstKeysToDisplay[0].keys.filter((key)=>{
+                            return key != 'discountRateSetting' && key != 'discountDecreaseVolSetting'
+                        });
+                        break;
+                    case '2':
+                        firstKeysToDisplay[0].keys = firstKeysToDisplay[0].keys.filter((key)=>{
+                            return key != 'specialPriceVolSetting' && key != 'discountDecreaseVolSetting'
+                        });
+                        break;
+                    case '3':
+                        firstKeysToDisplay[0].keys = firstKeysToDisplay[0].keys.filter((key)=>{
+                            return key != 'specialPriceVolSetting' && key != 'discountRateSetting'
+                        });
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
         return {
             firstKeysToDisplay,
             secondKeysToDisplay
@@ -1785,6 +1922,8 @@ class GiftAddModalStep extends React.PureComponent {
             { firstKeys, secondKeys, values, unit } = this.state;
 
         // this.justifyServerEndKeyToFormKeys(data, type);
+
+        // console.log('values discountRule', values.discountRule);
 
         let formData = values;
         // const dates = Object.assign({}, data);
@@ -1889,7 +2028,7 @@ class GiftAddModalStep extends React.PureComponent {
             mallCategorySelector: {
                 label: '适用商品分类',
                 type: 'custom',
-                render: decorator => this.renderMallCategorySelector(decorator)
+                render: (decorator, form) => this.renderMallCategorySelector(decorator, form)
             },
 
             mallExcludeGoodSelector: {
@@ -1901,7 +2040,7 @@ class GiftAddModalStep extends React.PureComponent {
             mallIncludeGoodSelector: {
                 label: '适用商品',
                 type: 'custom',
-                render: decorator => this.renderMallIncludeGoodsSelector(decorator)
+                render: (decorator, form) => this.renderMallIncludeGoodsSelector(decorator, form)
             },
 
             giftValueCurrencyType: {
@@ -2227,11 +2366,13 @@ class GiftAddModalStep extends React.PureComponent {
                 ),
                 type: 'custom',
                 defaultValue: 0,
-                render: (decorator) => {
+                render: (decorator, form) => {
+                    const applyScene = form.getFieldValue('applyScene');
+                    let descTxt = applyScene != '1' ? '菜品' : '商品';
                     return decorator({})(
                         <RadioGroup>
-                            <Radio value={0}>{`${value == 21 ? '兑换' : '赠送'}高价菜品`}</Radio>
-                            <Radio value={1}>{`${value == 21 ? '兑换' : '赠送'}低价菜品`}</Radio>
+                            <Radio value={0}>{`${value == 21 ? '兑换' : '赠送'}高价${descTxt}`}</Radio>
+                            <Radio value={1}>{`${value == 21 ? '兑换' : '赠送'}低价${descTxt}`}</Radio>
                         </RadioGroup>
                     )
                 },
