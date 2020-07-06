@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import BasePage from "./BasePage";
 import registerPage from '../../../index';
 import {NEW_SALE_BOX} from "../../constants/entryCodes";
 import { axiosData } from '../../helpers/util';
@@ -9,7 +8,7 @@ import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from './IntlDecor';
 import selfStyle from './NewCustomerPage.less';
 import newPic from './assets/new.png';
-import hot from './assets/hot.png';
+
 import {
     Modal,
     message
@@ -406,11 +405,6 @@ class NewCustomerPage extends Component {
         const { currentCategoryIndex } = this.state;
         const displayList = currentCategoryIndex === 0 ? ALL_PROMOTION_CATEGORIES.slice(1) : [ALL_PROMOTION_CATEGORIES[currentCategoryIndex - 1]];
         return (
-            // <BasePage
-            //     categoryTitle={k6316hto}
-            //     promotions={NEW_CUSTOMER_PROMOTION_TYPES}
-            //     whiteList={whiteList}
-            // />
             <div className={selfStyle.newDiv}>
                 <div className={selfStyle.titleArea}>营销活动</div>
                 <div className={selfStyle.grayBar}></div>

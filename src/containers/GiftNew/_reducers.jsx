@@ -1,4 +1,6 @@
 ﻿import Immutable, { List } from 'immutable';
+
+// 定义参考 ../action.jsx 文件
 import {
     GIFT_NEW_FETCH_LIST_BEGIN,
     GIFT_NEW_FETCH_LIST_OK,
@@ -86,8 +88,11 @@ const $initialState = Immutable.fromJS({
     mpList: [],
     mpListLoading: false,
 });
+
+
 export function editGiftInfoNew($$state = $initialEditState, action) {
     switch (action.type) {
+        // 创建建礼品
         case GIFT_NEW_START_CREATE_GIFT:
             return $$state
                 .set('isCreatingOrEditing', true)

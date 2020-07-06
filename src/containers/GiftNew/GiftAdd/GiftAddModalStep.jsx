@@ -16,7 +16,15 @@ import {
 import styles from './GiftAdd.less';
 import styles2 from './Crm.less';
 import BaseForm from '../../../components/common/BaseForm';
-import { FORMITEMS, FIRST_KEYS, SECOND_KEYS } from './_formItemConfig';
+import { 
+    FORMITEMS, 
+    FIRST_KEYS, 
+    SECOND_KEYS,
+    FORM_ITEMS_GIFTS_RULES_TO_EXCLUDE_IN_MALL_SCENE,
+    MALL_COUPON_BASIC_SETTING_FORM_ITEMS,   // 基础设置项
+    MALL_COUPON_APPLY_SETTING_FORM_ITEMS,   // 高级设置项
+ } from './_formItemConfig';
+
 import InputTreeForGift from './InputTreeForGift';
 import GiftPromotion from './GiftPromotion';
 import GiftCfg from '../../../constants/Gift';
@@ -47,11 +55,19 @@ import MoneyLimitTypeAndValue from '../components/MoneyLimitTypeAndValue';
 import GiftTimeIntervals, {getItervalsErrorStatus} from "./GiftTimeIntervals";
 import {isHuaTian, isMine} from "../../../constants/projectHuatianConf";
 import SelectCardTypes from "../components/SelectCardTypes";
+import SelectMall from '../components/SelectMall';      // 选择适用店铺组件
+import SelectMallCategory from '../components/SelectMallCategory';  // 选择商城分类，入参为商城 shopID
+
+import { MultipleGoodSelector } from '../../../components/common/GoodSelector'
+
 import {
     fetchFoodCategoryInfoAC,
     fetchFoodMenuInfoAC,
+    getMallGoodsAndCategories,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import { GiftCategoryAndFoodSelector } from '../../SaleCenterNEW/common/CategoryAndFoodSelector';
+import AddMoneyTradeDishesTableWithBrand from 'containers/SaleCenterNEW/addMoneyTrade/AddMoneyTradeDishesTableWithBrand';
+
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -127,7 +143,7 @@ class GiftAddModalStep extends React.PureComponent {
             moneyTopLimitValueDisabled: true,
             shopSchema, // 后台请求来的值
             // modalKey:1,
-            firstKeys: { ...FIRST_KEYS },
+            firstKeys: { ...JSON.parse(JSON.stringify(FIRST_KEYS)) },
             secondKeys: { ...JSON.parse(JSON.stringify(SECOND_KEYS)) },
             groupTypes: [],
             giftData: [],
@@ -179,6 +195,17 @@ class GiftAddModalStep extends React.PureComponent {
                 this.setState({secondKeys})
             }
         }
+
+        // const { data } = thisGift;
+        if(thisGift.data !== undefined) {
+            let justifiedData = this.justifyServerEndKeyToFormKeys(JSON.parse(JSON.stringify(thisGift.data)));
+            console.log('justifiedData', justifiedData);
+            let values = Object.assign({}, this.state.values, justifiedData);
+            this.setState({
+                values
+            })
+        }
+
         FetchGiftSort({});
         // 礼品名称 auto focus
         try {
@@ -192,10 +219,41 @@ class GiftAddModalStep extends React.PureComponent {
         const { sharedGifts } = nextProps;
         const _sharedGifts = sharedGifts && sharedGifts.toJS();
         if (nextProps.shopSchema.getIn(['shopSchema']) !== this.props.shopSchema.getIn(['shopSchema'])) {
-            this.setState({shopSchema: nextProps.shopSchema.getIn(['shopSchema']).toJS(), // 后台请求来的值
+            let shopSchema = nextProps.shopSchema.getIn(['shopSchema']).toJS();
+            let malls = [];
+            if(shopSchema.hasOwnProperty('shops') && shopSchema.shops instanceof Array) {
+                malls = shopSchema.shops.filter((shop, idx)=>{
+                    return shop.businessModel == '0'; // 0 为商城， 1 为餐饮店铺
+                });
+            }
+            this.setState({
+                shopSchema,// 后台请求来的值
+                malls,
             });
-            console.log('shopSchema', nextProps.shopSchema.getIn(['shopSchema']).toJS());
         }
+
+        // 传入的表单值
+        // let needUpdate = false;
+        // if(this.props.gift.data.== undefined) {
+
+        // }
+
+        if(this.props.gift.data.giftItemID !== nextProps.gift.data.giftItemID) {
+            const { data } = nextProps.gift;
+            if(data !== undefined) {
+                let justifiedData = this.justifyServerEndKeyToFormKeys(JSON.parse(JSON.stringify(data)));
+                let values = Object.assign({}, this.state.values, justifiedData);
+                console.log('nextProps gift data', nextProps.gift);
+                console.log('justifiedData ', justifiedData);
+                console.log('values', this.state.values);
+                console.log('values merged', values);
+
+                this.setState({
+                    values
+                })
+            }
+        }
+
         this.setState({
             sharedGifts: this.proSharedGifts(_sharedGifts.crmGiftShareList),
         });
@@ -228,6 +286,7 @@ class GiftAddModalStep extends React.PureComponent {
         return [];
     }
 
+    
     // 买赠券，处理优惠规则变更，动态调整表结构
     handleDiscountRuleChange = (val) => {
         const { gift: { name: describe, data }, type } = this.props;
@@ -246,7 +305,8 @@ class GiftAddModalStep extends React.PureComponent {
         this.setState({ firstKeys });
     }
 
-    handleFormChange(key, value) {
+    // 处理表单数据变化
+    handleFormChange(key, value, formRef) {
         const { gift: { name: describe, data }, type } = this.props;
         const { firstKeys, secondKeys, values } = this.state;
         const newKeys = [...secondKeys[describe][0].keys];
@@ -276,7 +336,7 @@ class GiftAddModalStep extends React.PureComponent {
         switch (key) {
             case 'moneyLimitTypeAndValue':
                 const { moneyLimitType } = value;
-                if (describe === '菜品兑换券' || describe === '代金券') {
+                if (describe === '菜品兑换券' || describe === '代金券' || describe == '菜品优惠券') {
                     const maxUseLimitIndex = _.findIndex(newKeys, item => item == 'maxUseLimit');
                     if (moneyLimitType == 1) {
                         maxUseLimitIndex == -1 && newKeys.splice(index + 1, 0, 'maxUseLimit')
@@ -360,11 +420,63 @@ class GiftAddModalStep extends React.PureComponent {
                     sharedGifts: value,
                 })
                 break;
+        
+            case 'selectMall': // 商城发生变化，改变表单中其他几项相互关联数据。 重置数据
+                const isMallChanged = formRef.getFieldValue('selectMall') != value;
+                if(isMallChanged) {
+                    formRef.setFieldsValue({
+                        mallCategory: [], 
+                        mallExcludedGood: [],
+                        mallIncludeGood: []
+                    });
+                }
+                break;
+
+            // TODO: 待优化
+            // 根据券应用场景，动态调整两个表单的formKeys值。逻辑未梳理清楚，不知道是否影响其他地方，先简单的手动修改，不做遍历，整体进行处理
+            // case 'applyScene': 
+                // if(value == '1'){
+                //     secondKeys[describe][0].keys = [...MALL_COUPON_APPLY_SETTING_FORM_ITEMS[describe][0].keys];
+                //     firstKeys[describe][0].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][0].keys];
+                    
+                //     firstKeys[describe][1].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][1].keys];
+                // } else if(value == '0') {
+                //     secondKeys[describe][0].keys = [...SECOND_KEYS[describe][0].keys];
+                //     firstKeys[describe][0].keys = [...FIRST_KEYS[describe][0].keys];
+                //     firstKeys[describe][1].keys = [...FIRST_KEYS[describe][1].keys];
+                // }
+
+                // this.setState({
+                //     firstKeys,
+                //     secondKeys,
+                // });
+
+                // break;
+        
+            // case 'mallScope':   // 商城券适用场景变更
+                // debugger;
+                // let mallFirstKeys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][0].keys];
+                // if(value == '0') {      // 适用分类 + 排除商品
+                //     mallFirstKeys = mallFirstKeys.filter((key)=>{
+                //         return key !== 'mallIncludeGoodSelector';
+                //     });
+                // } else {                // 适用商品
+                //     mallFirstKeys = mallFirstKeys.filter((key)=>{
+                //         return key !== 'mallCategorySelector' && key !== 'mallExcludeGoodSelector';
+                //     })
+                // }
+                // firstKeys[describe][0].keys = mallFirstKeys;
+                // this.setState({
+                //     firstKeys
+                // })
+            // break;
 
             case 'discountRule': 
                 // 买赠券，处理优惠规则变更，动态调整表结构
                 this.handleDiscountRuleChange(value);
                 break;
+
+            
             default:
                 break;
         }
@@ -442,9 +554,6 @@ class GiftAddModalStep extends React.PureComponent {
 
         params.reduceType = params.discountRule;
         delete params.discountRule;
-        debugger;
-
-
 
         // 优惠规则，后端之前的字段为priceSortRule, 暂不做调整。新的前端表单字段为discountSortRule
         params.priceSortRule = params.discountSortRule;
@@ -486,6 +595,107 @@ class GiftAddModalStep extends React.PureComponent {
         return params;
     }
 
+    /**
+     * @description 调整商城券参数。 后端没有新增相关商城券字段，复用原来的菜品券字段。但是前段是新增的，所以上传的时候要对参数进行调整
+     * @ref http://wiki.hualala.com/pages/viewpage.action?pageId=19224682
+    */
+    adjustParamsOfMallGift = (params)=>{
+        // 只处理商城券的情景. 其他场景删除冗余字段 （也可以通过场景去判断）
+        if(params.applyScene != '1') {
+            if(params.hasOwnProperty('mallCategory')){
+                delete params.mallCategory;
+            }
+            if(params.hasOwnProperty('mallIncludeGood')){
+                delete params.mallIncludeGood;
+            }
+            if(params.hasOwnProperty('mallExcludedGood')){
+                delete params.mallExcludedGood;
+            }
+            return;
+        }; 
+        
+        const {goodCategories = [], goods = []} = this.props;
+        const { malls } = this.state;
+        params.brandSelectType = 0,     // 商城是单选
+        params.selectBrands = [];
+        if(params.hasOwnProperty('selectMall') && params.selectMall !== undefined) {
+            params.selectBrands = malls.filter((mall, idx)=>{
+                return mall.shopID == params.selectMall
+            })
+            .map((item, idx)=>{
+                return {
+                    "targetID": item.shopID,
+                    "targetName": item.shopName
+                }
+            })
+        }
+        delete params.selectMall;
+
+        // 适用菜品方式 0：按菜品单品 1：按菜品分类 2：不限制 
+        // mallScope : 0 按分类， 1 按商品
+        params.foodSelectType = params.mallScope == '0' ? '1' : '0';
+        // 商城分类模式
+        if(params.mallScope == '0' || params.mallScope == undefined) {
+            let mallCategorySet = new Set(params.mallCategory);
+            // 分类
+            params.couponFoodScopes = goodCategories.filter((item, idx)=>{
+                return mallCategorySet.has(item.value);
+            }).map((item, idx)=>{
+                return {
+                    targetID: item.value,
+                    targetCode: '',
+                    targetName: item.categoryName,
+                    targetUnitName: '',
+                    brandID: '0',
+                }
+            });
+            // 商品信息 
+            // 是否包含排除菜品 true：包含 false：不包含
+            params.excludeFoodScopes = [];
+            if(params.mallExcludedGood instanceof Array && params.mallExcludedGood.length > 0) {
+                params.isExcludeFood = true;
+                let mallExcludeGoodSet = new Set(params.mallExcludedGood);
+                params.excludeFoodScopes = goods.filter((item)=>{
+                    return mallExcludeGoodSet.has(item.goodID);
+                }).map((item, idx)=>{
+                    return {
+                        targetID: item.goodID,
+                        targetCode: item.goodCode,
+                        targetName: item.goodName,
+                        targetUnitName: '',
+                        brandID: '0',
+                    }
+                })
+            } else {
+                params.isExcludeFood = false;
+            }
+            
+        } else if(params.mallScope == '1') {    // 商品模式
+            params.isExcludeFood = false;
+            params.couponFoodScopes = [];
+            if(params.mallIncludeGood instanceof Array && params.mallIncludeGood.length > 0) {
+                let mallIncludeGoodSet = new Set(params.mallIncludeGood);
+                params.couponFoodScopes = goods.filter((item)=>{
+                    return mallIncludeGoodSet.has(item.goodID);
+                }).map((item)=>{
+                    return {
+                        targetID: item.goodID,
+                        targetCode: item.goodCode,
+                        targetName: item.goodName,
+                        targetUnitName: '',
+                        brandID: '0',
+                    }
+                })
+            }
+        }
+
+        // 删除已经转换后的前端自定义表单字段
+        delete params.mallScope;
+        delete params.mallExcludedGood;
+        delete params.mallIncludeGood;
+        delete params.mallCategory;
+    }
+
     handleFinish = () => {
         const { values, groupTypes, delivery } = this.state;
         const { type, gift: { value, data } } = this.props;
@@ -509,7 +719,7 @@ class GiftAddModalStep extends React.PureComponent {
                 values,
                 formValues,
                 { giftType: value },
-            );
+            );                
             params = this.formatFormData(params);
             let shopNames = '',
                 shopIDs = '',
@@ -658,6 +868,10 @@ class GiftAddModalStep extends React.PureComponent {
             params.vivoChannel = Number((params.aggregationChannels|| []).includes('vivoChannel'));
             params.moneyLimitType = (params.moneyLimitTypeAndValue || {}).moneyLimitType;
             params.moenyLimitValue = (params.moneyLimitTypeAndValue || {}).moenyLimitValue;
+
+
+            // 商城券参数调整
+            this.adjustParamsOfMallGift(params);
             Array.isArray(params.supportOrderTypeLst) && (params.supportOrderTypeLst = params.supportOrderTypeLst.join(','))
             this.setState({
                 finishLoading: true,
@@ -1270,11 +1484,153 @@ class GiftAddModalStep extends React.PureComponent {
                         <GiftCategoryAndFoodSelector
                             scopeLst={scopeList}
                             showEmptyTips={true}
-                        />)
+                        />
+                    )
                 }
             </FormItem>
         )
     }
+
+    // 适用商城
+    renderMallListSelector = (decorator)=>{
+        const { malls : mallList, values } = this.state;
+        let initialValue;
+        if(values.applyScene == '1') {
+            initialValue = values.selectMall;
+        }
+        return (
+            decorator({
+                 key: 'selectMall',
+                 rules: [],
+                 initialValue,
+            })(
+                <SelectMall 
+                    dataSource= { mallList }
+                    onMallChange = { (shopID)=>{ this.handleMallChange(shopID)}}
+                />
+            )
+            
+        )
+    }
+
+    // 商城分类
+    renderMallCategorySelector = (decorator) => {
+        const { goodCategories, goods } = this.props;
+        const { values } = this.state; 
+        let initialValue = [];
+        if(values.applyScene == '1') {
+            if(goodCategories instanceof Array && goodCategories.length == 0) {
+                // data.selectBrands[0].targetID; 当前店铺 ID
+                // 区分回显还是新建
+                if(values.hasOwnProperty('selectBrands') && values.selectBrands instanceof Array && values.selectBrands.length > 0) {
+                    // 满足以上全部条件（回显模式下需要满足）
+                    this.handleMallChange(values.selectBrands[0].targetID);
+                }
+                
+            } else {
+                // 前端传到后端采用拼接，组合成 couponFoodScope， 后端返回字段名称又改为 couponFoodScopeList
+                if(values.couponFoodScopeList instanceof Array && values.couponFoodScopeList.length > 0) {
+                    initialValue = values.couponFoodScopeList.map((item)=>{
+                        return item.targetID
+                    });
+                }
+            }
+        }
+        return (
+            decorator({
+                key: 'mallCategory',
+                rules: [],
+                initialValue,
+            })(
+                <SelectMallCategory
+                    dataSource = { goodCategories }
+                />
+            )
+
+        );
+
+    }
+
+    // 商城商品选择（根据具体的类）
+    renderMallExcludeGoodsSelector = (decorator) => {
+        const { goods, goodCategories } = this.props;
+        const { values} = this.state;
+        let initialValue = [];
+        if(values.applyScene == '1') {
+            // 适用菜品方式 0：按菜品单品 1：按菜品分类 2：不限制 
+            // params.foodSelectType = params.mallScope == '0' ? '1' : '0';
+            if(values.hasOwnProperty('foodSelectType') && values.foodSelectType == '1') {
+                if(values.hasOwnProperty('excludeFoodScopes') && values.excludeFoodScopes instanceof Array &&  values.excludeFoodScopes.length > 0) {
+                    initialValue = values.excludeFoodScopes.map((item)=>{
+                        return item.targetID;
+                    });
+                }
+            }
+        }
+        return (
+            decorator({
+                key: 'mallExcludedGood', 
+                rules: [],
+                initialValue,
+            })(
+                <MultipleGoodSelector
+                    placeholder="选择排除商品"
+                    allDishes={ goods }
+                    allCategories={ goodCategories }
+                />
+            )
+            
+        )
+    }
+
+    renderMallIncludeGoodsSelector = (decorator) => {
+        const { goods, goodCategories } = this.props;
+        const { values} = this.state;
+        let initialValue = [];
+        if(values.applyScene == '1') {
+
+            // 适用菜品方式 0：按菜品单品 1：按菜品分类 2：不限制 
+            // params.foodSelectType = params.mallScope == '0' ? '1' : '0';
+            if(goodCategories instanceof Array && goodCategories.length == 0) {
+                // data.selectBrands[0].targetID; 当前店铺 ID
+                // 区分回显还是新建
+                if(values.hasOwnProperty('selectBrands') && values.selectBrands instanceof Array && values.selectBrands.length > 0) {
+                    // 满足以上全部条件（回显模式下需要满足）
+                    this.handleMallChange(values.selectBrands[0].targetID);
+                }
+            } 
+
+            if(values.hasOwnProperty('foodSelectType') && values.foodSelectType == '0') {
+                if(values.hasOwnProperty('couponFoodScopeList') && values.couponFoodScopeList instanceof Array &&  values.couponFoodScopeList.length > 0) {
+                    initialValue = values.couponFoodScopeList.map((item)=>{
+                        return item.targetID;
+                    });
+                }
+            }
+        }
+
+        return (
+            decorator({
+                key: 'mallIncludeGood',
+                rules: [],
+                initialValue,
+            })(
+                <MultipleGoodSelector
+                    placeholder="选择商品"
+                    allDishes={ goods }
+                    allCategories={ goodCategories }
+                />
+            )
+            
+        )
+    }
+
+    // 选择商城
+    // 对应的表单内容（商城类别、商城商品要进行变更）
+    handleMallChange(shopID) {
+        this.props.getMallGoodsAndCategories(shopID);
+    }
+
 
     renderBuyGiveFoodsboxs(decorator) {
         const { gift: { data } } = this.props;
@@ -1347,10 +1703,76 @@ class GiftAddModalStep extends React.PureComponent {
     /**
      * @description 调整后端返回数据的key, 对应到前端表单key
      * @example 满减券后端优惠规则 key 为 reduceType, 对应前端key为discountRule
+     * @notice 所有需要赋值的字段，如果已经有了该字段则不进行变更
     */
     justifyServerEndKeyToFormKeys(data) {
+
+        // 根据后端返回数据来进行前端数据进行变更。
         data.discountRule = `${data.reduceType}`;
         delete data.reduceType;
+
+        // 商城默认值为0
+        data.mallScope = '0';
+        if(data.hasOwnProperty('foodSelectType') && data.foodSelectType == '0') {
+            data.mallScope = '1'
+        }
+
+        // 商城
+        if(data.hasOwnProperty('selectBrands') && data.selectBrands instanceof Array && data.selectBrands.length > 0) {
+            data.selectMall = data.selectBrands[0].targetID;
+        }
+
+        return data;
+
+        // 商城券调整
+        // if(data.applyScene == '1') {   
+        //     data.mallScope = data.mallScope == undefined ? '0' : data.mallScope;   // 默认值 
+        //     if(data.hasOwnProperty('foodSelectType') && data.foodSelectType == '0' && type == 'edit') { // 编辑模式
+        //         debugger;
+        //         data.mallScope = '1'
+        //         // 需要将后端返回的该字段进行删除，因为在编辑模式下，前端调整的话，
+        //         // 会重新走该流程，导致前端调整字段失效
+        //         delete data.foodSelectType;
+        //     }
+        // }
+    }
+
+    /**
+     * 根据所有的key值，根据其value的不同取值，动态调整某些key是否可见。只在显示的时候做动态处理，不保存到state中
+     * @example 代金券 商城模式 适用场景 如果为0.及分类，这时可选商品不可见。（但是配置项是所有的。这里要动态进行删除操作）
+    */
+    justifyFormKeysToDisplay = () => {
+        const { gift: { name: describe, value, data }, visible, type } = this.props,
+        { firstKeys, secondKeys, values, unit } = this.state;
+        // 数据拷贝（隔离）
+        let firstKeysToDisplay = JSON.parse(JSON.stringify(firstKeys[describe]));
+        let secondKeysToDisplay = JSON.parse(JSON.stringify(secondKeys[describe]));
+        if(describe == '代金券' || describe == '菜品优惠券' || describe == '菜品兑换券') {
+            if(values.applyScene == '0') {            // 店铺券
+                firstKeysToDisplay[0].keys = [...FIRST_KEYS[describe][0].keys];
+                firstKeysToDisplay[1].keys = [...FIRST_KEYS[describe][1].keys];
+                secondKeysToDisplay[0].keys = [...SECOND_KEYS[describe][0].keys];
+            } 
+            else if(values.applyScene == '1') {       // 商城券
+                secondKeysToDisplay[0].keys = [...MALL_COUPON_APPLY_SETTING_FORM_ITEMS[describe][0].keys];
+                firstKeysToDisplay[0].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][0].keys];
+                firstKeysToDisplay[1].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][1].keys];
+                firstKeysToDisplay[3].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][3].keys];
+                if(values.mallScope == '0' || values.mallScope == undefined) {
+                    firstKeysToDisplay[0].keys = firstKeysToDisplay[0].keys.filter((key)=>{
+                        return key !== 'mallIncludeGoodSelector';
+                    });
+                } else {
+                    firstKeysToDisplay[0].keys = firstKeysToDisplay[0].keys.filter((key)=>{
+                        return key !== 'mallCategorySelector' && key !== 'mallExcludeGoodSelector';
+                    });
+                }
+            }
+        }
+        return {
+            firstKeysToDisplay,
+            secondKeysToDisplay
+        };
     }
 
     /**
@@ -1362,27 +1784,43 @@ class GiftAddModalStep extends React.PureComponent {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
             { firstKeys, secondKeys, values, unit } = this.state;
 
-        this.justifyServerEndKeyToFormKeys(data);
-        const dates = Object.assign({}, data);
+        // this.justifyServerEndKeyToFormKeys(data, type);
+
+        let formData = values;
+        // const dates = Object.assign({}, data);
         
-        const displayFirstKeys = firstKeys[describe];
-        const displaySecondKeys = secondKeys[describe];
-        if (dates.shopNames && dates.shopNames.length > 0 && dates.shopNames[0].id) {
-            dates.shopNames = dates.shopNames.map(shop => shop.id);
+        const { firstKeysToDisplay: displayFirstKeys, secondKeysToDisplay: displaySecondKeys} = this.justifyFormKeysToDisplay();
+
+        if (formData.shopNames && formData.shopNames.length > 0 && formData.shopNames[0].id) {
+            formData.shopNames = formData.shopNames.map(shop => shop.id);
         }
-        if (dates.moneyTopLimitValue) {
-            dates.moneyTopLimitType = '1'
+        if (formData.moneyTopLimitValue) {
+            formData.moneyTopLimitType = '1'
         } else {
-            dates.moneyTopLimitType = '0'
+            formData.moneyTopLimitType = '0'
         }
-        if (dates.numberOfTimeValue) {
-            dates.numberOfTimeType = '1'
+        if (formData.numberOfTimeValue) {
+            formData.numberOfTimeType = '1'
         } else {
-            dates.numberOfTimeType = '0'
+            formData.numberOfTimeType = '0'
         }
+
+        // if (dates.shopNames && dates.shopNames.length > 0 && dates.shopNames[0].id) {
+        //     dates.shopNames = dates.shopNames.map(shop => shop.id);
+        // }
+        // if (dates.moneyTopLimitValue) {
+        //     dates.moneyTopLimitType = '1'
+        // } else {
+        //     dates.moneyTopLimitType = '0'
+        // }
+        // if (dates.numberOfTimeValue) {
+        //     dates.numberOfTimeType = '1'
+        // } else {
+        //     dates.numberOfTimeType = '0'
+        // }
         // 折扣上限显示
-        if (value == '111' && dates.discountOffMax == 0) {
-            dates.discountOffMax = ''
+        if (value == '111' && formData.discountOffMax == 0) {
+            formData.discountOffMax = ''
         }
         let giftValueLabel = '可抵扣金额';
         if (value == '10' || value == '91') {
@@ -1393,6 +1831,11 @@ class GiftAddModalStep extends React.PureComponent {
         }
         const isUnit = ['10', '91'].includes(value);
         const giftNameValid = (type === 'add') ? { max: 25, message: '不能超过25个字符' } : {};
+
+
+        // console.log('giftname in this.formData', formData);
+        
+        // 定义所有类型的表单项，根据不同礼品类型进行配置
         const formItems = {
             ...FORMITEMS,
             giftType: {
@@ -1400,6 +1843,20 @@ class GiftAddModalStep extends React.PureComponent {
                 type: 'custom',
                 render: () => describe,
             },
+            // 新增礼品商城属性
+            // 券应用场景（店铺，商城）
+            applyScene: {
+                label: '礼品属性',
+                type: 'custom',
+                defaultValue: 0,
+                render: decorator => decorator({})(
+                    <Radio.Group>
+                        <Radio.Button value={0}>店铺券</Radio.Button>
+                        <Radio.Button value={1}>商城券</Radio.Button>
+                    </Radio.Group>
+                )
+            },
+
             pushMessageMpID: {
                 label: '消息推送公众号',
                 rules: [{ required: true, message: '请绑定消息推送微信公众号' }],
@@ -1421,6 +1878,32 @@ class GiftAddModalStep extends React.PureComponent {
                 type: 'custom',
                 render: decorator => decorator({})(<SelectCardTypes/>),
             },
+
+            // 券增加商城类别
+            selectMall: {
+                label: '适用商城',
+                type: 'custom',
+                render: decorator => this.renderMallListSelector(decorator)
+            },
+
+            mallCategorySelector: {
+                label: '适用商品分类',
+                type: 'custom',
+                render: decorator => this.renderMallCategorySelector(decorator)
+            },
+
+            mallExcludeGoodSelector: {
+                label: '排除商品',
+                type: 'custom',
+                render: decorator => this.renderMallExcludeGoodsSelector(decorator)
+            },
+
+            mallIncludeGoodSelector: {
+                label: '适用商品',
+                type: 'custom',
+                render: decorator => this.renderMallIncludeGoodsSelector(decorator)
+            },
+
             giftValueCurrencyType: {
                 label: '货币单位',
                 type: 'combo',
@@ -1860,6 +2343,7 @@ class GiftAddModalStep extends React.PureComponent {
                 required: true,
                 render: decorator => this.renderBuyGiveFoodsboxs(decorator),
             },
+            
             buyGiveSecondaryFoods: {
                 type: 'custom',
                 label: '优惠菜品',
@@ -1919,10 +2403,6 @@ class GiftAddModalStep extends React.PureComponent {
 
 
         };
-        let formData = data === undefined ? dates : values;
-        if (type === 'edit') {
-            formData = dates;
-        }
         const giftVal = this.props.gift.value;
         if (giftVal == '20') {
             formItems.moneyLimitTypeAndValue.label = '账单金额';
@@ -2012,6 +2492,10 @@ function mapStateToProps(state) {
         accountInfo: state.user.get('accountInfo'),
         menuList: state.user.get('menuList'),
         sharedGifts: state.sale_giftInfoNew.get('sharedGifts'),
+        
+        // 商城商品及分类信息
+        goodCategories: state.sale_promotionDetailInfo_NEW.get('goodCategories').toJS(),
+        goods: state.sale_promotionDetailInfo_NEW.get('goods').toJS(),
     }
 }
 
@@ -2035,8 +2519,15 @@ function mapDispatchToProps(dispatch) {
         },
         queryUnbindCouponPromotion: opts => dispatch(queryUnbindCouponPromotion(opts)),
         fetchAllPromotionList: opts => dispatch(fetchAllPromotionListAC(opts)),
+        
+        // 获取商城商品及分类信息
+        getMallGoodsAndCategories: (opts) => {
+            dispatch(getMallGoodsAndCategories(opts))
+        },
     };
 }
+
+
 
 export default connect(
     mapStateToProps,
