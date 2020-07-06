@@ -71,13 +71,13 @@ export default class ShareRules extends Component {
         this.props.getAllShops();
     }
 
-    handleDeleteGroup = ({ itemID }, index) => {
+    handleDeleteGroup = ({ itemID,shareGroupName }, index) => {
         Modal.confirm({
             title: <span style={{color: '#434343'}}>{SALE_LABEL.k5dnw1q3} ?</span>,
             content: (
                 <div>
                     <span style={{color: '#787878'}}>
-                        {COMMON_LABEL.delete}【{SALE_LABEL.k636qw6a} {index + 1}】
+                         {COMMON_LABEL.delete}【{shareGroupName || `营销活动共享组${index + 1}`}】
                     </span>
                     <br/>
                     <span style={{color: '#aeaeae'}}>
