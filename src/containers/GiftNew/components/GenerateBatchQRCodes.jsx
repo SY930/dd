@@ -363,6 +363,10 @@ class GenerateBatchQRCodes extends Component {
                 dataIndex: 'qrEffectDays',
                 key: 'key11',
                 render: (qrEffectDays, record) => {
+                    if(qrEffectDays == 0) {
+                        return '永久有效'
+                    }
+
                     if (!(qrEffectDays > 0)) {
                         return '--'
                     }
