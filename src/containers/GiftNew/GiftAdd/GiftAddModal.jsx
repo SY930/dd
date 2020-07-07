@@ -263,7 +263,7 @@ class GiftAddModal extends React.Component {
     }
     initGiftDetail = () => {
         // 后端定义神奇的接口，为券包的时候，入参数，放quotaCardGiftConfList，从couponPackageBaseInfo取，入参和出参不一致
-        const  { quotaCardGiftConfList, presentType = 1, couponPackageBaseInfo } = this.props.gift.data
+        const  { quotaCardGiftConfList, presentType = 0, couponPackageBaseInfo } = this.props.gift.data
         let params = {
             presentType,
             quotaCardGiftConfList: [],
