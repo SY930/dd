@@ -190,8 +190,8 @@ const GiftCfg = {
     ],
 
     discountSortRules: [
-        { label: '高价格菜品优先', value: '0'},
-        { label: '低价格菜品优先', value: '1'}
+        { label: '高价格菜品优先', value: '1'},
+        { label: '低价格菜品优先', value: '2'}
     ],
     shareType: [
         { label: '与所有券共用', value: '1' },
