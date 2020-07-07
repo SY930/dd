@@ -154,7 +154,7 @@ class AddUpGiveDetailInfo extends React.Component {
                 this.props.form.setFields({
                     stageAmount: {
                         value: _value,
-                        errors: [new Error(SALE_LABEL.k5kmrzrz)],
+                        errors: [new Error('必须是2~99998之间的整数')],
                     },
                 })
             }
@@ -288,7 +288,7 @@ class AddUpGiveDetailInfo extends React.Component {
                         <FormItem
                                 style={{ width: '24%', marginRight: 0 }}
                                 validateStatus={this.state.maxTimesStatus}
-                                help={this.state.maxTimesStatus == 'success' ? null : `${this.state.rule.minTimes > 1 && this.state.rule.minTimes < 100000 ? this.state.rule.minTimes : 2}~99999${SALE_LABEL.k5kms0xo}`}
+                                help={this.state.maxTimesStatus == 'success' ? null : `${this.state.rule.minTimes > 1 && this.state.rule.minTimes < 100000 ? this.state.rule.minTimes : 2}~99999之间`}
                             >
                                 <Input
                                 value={this.state.rule.maxTimes}
