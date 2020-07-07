@@ -560,8 +560,8 @@ class GiftAddModalStep extends React.PureComponent {
         delete params.discountRule;
 
         // 优惠规则，后端之前的字段为BOGOdiscountWay, 暂不做调整。新的前端表单字段为discountSortRule
-        params.BOGOdiscountWay = params.discountSortRule;
-        delete params.discountSortRule;
+        // params.priceSortRule = params.discountSortRule;
+        // delete params.discountSortRule;
 
         // 消费金额限制类型
         // params.moneyLimitType = (params.moneyLimitTypeAndValue || {}).moneyLimitType;
@@ -1079,11 +1079,23 @@ class GiftAddModalStep extends React.PureComponent {
                             Number(num) > 0 &&  Number(num) <= 100 ? cb() : cb(rule.message);
                         },
                         message: '折扣要大于等于1, 小于等于100',
+                    },{
+                        validator: (rule, v, cb) => {
+                            // if (!/^\+?\d{0,2}$/.test(Number(v))) {
+                            //     cb(rule.message);
+                            // }
+                            // cb();
+                            if (!/^[1-9]\d*$/.test(Number(v))) {
+                                cb(rule.message);
+                            }
+                            cb();
+                        },
+                        message: '只能输入整数且不超过2位',
                     }],
                     initialValue: val
                 })(<Input 
                 type="number" 
-                placeholder="例如50"
+                placeholder="例如 50"
                 size="large" 
                 addonAfter="%" />)}
             </FormItem>
@@ -1192,7 +1204,7 @@ class GiftAddModalStep extends React.PureComponent {
     renderGiveLimits(decorator) {
         // 一笔订单最多赠送菜品 maxGiveCountPerBill
         // 一笔订单同一菜品最多赠送菜品 maxGiveCountPerFoodPerBill
-        //    一笔订单同时满足多个单品，优惠金额按照 BOGOdiscountWay 1 高价单品优先 2 低价单品优先
+        //    一笔订单同时满足多个单品，优惠金额按照 BOGOdiscountWay 0 高价单品优先 1 低价单品优先
         const { ismaxGiveCountPerBill = 0, maxGiveCountPerBill = '', ismaxGiveCountPerFoodPerBill = 0, maxGiveCountPerFoodPerBill = '', BOGOdiscountWay = 1 } = this.state.values;
         return (
             <div>
@@ -1791,14 +1803,13 @@ class GiftAddModalStep extends React.PureComponent {
         if(data.hasOwnProperty('foodSelectType') && data.foodSelectType == '0') {
             data.mallScope = '1'
         }
-
         // 商城
         if(data.hasOwnProperty('selectBrands') && data.selectBrands instanceof Array && data.selectBrands.length > 0) {
             data.selectMall = data.selectBrands[0].targetID;
         }
         
         // 买赠券， 前端对应的高价有限设置项，对应后端BOGOdiscountWay
-        data.discountSortRule = `${data.bOGOdiscountWay}`;
+        // data.discountSortRule = `${data.priceSortRule}`;
         return data;
 
         // 商城券调整
