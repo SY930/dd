@@ -242,11 +242,6 @@ class GiftAddModalStep extends React.PureComponent {
             if(data !== undefined) {
                 let justifiedData = this.justifyServerEndKeyToFormKeys(JSON.parse(JSON.stringify(data)));
                 let values = Object.assign({}, this.state.values, justifiedData);
-                console.log('nextProps gift data', nextProps.gift);
-                console.log('justifiedData ', justifiedData);
-                console.log('values', this.state.values);
-                console.log('values merged', values);
-
                 this.setState({
                     values
                 })
@@ -307,9 +302,6 @@ class GiftAddModalStep extends React.PureComponent {
     // 处理表单数据变化
     handleFormChange(key, value, formRef) {
         const { gift: { name: describe, data }, type } = this.props;
-
-        // console.log('DiscountRule is ', value, formRef.getFieldValue('discountRule'));
-
         const { firstKeys, secondKeys, values } = this.state;
         const newKeys = [...secondKeys[describe][0].keys];
         const index = _.findIndex(newKeys, item => item == key);
@@ -1084,16 +1076,16 @@ class GiftAddModalStep extends React.PureComponent {
                     key: 'discountRateSetting',
                     rules: [{required: true, message: '不能为空'}, {
                         validator: (rule, num, cb) => {
-                            Number(num) > 0 &&  Number(num) <= 10 ? cb() : cb(rule.message);
+                            Number(num) > 0 &&  Number(num) <= 100 ? cb() : cb(rule.message);
                         },
-                        message: '折扣要大于0, 小于等于10',
+                        message: '折扣要大于等于1, 小于等于100',
                     }],
                     initialValue: val
                 })(<Input 
                 type="number" 
-                placeholder="例如8.8折, 9.5折"
+                placeholder="例如50"
                 size="large" 
-                addonAfter="折" />)}
+                addonAfter="%" />)}
             </FormItem>
         )
     }
@@ -1792,9 +1784,6 @@ class GiftAddModalStep extends React.PureComponent {
         // data.discountRule = `${data.reduceType}`;
 
         data.discountRule = data.reduceType == undefined ? '1' : `${data.reduceType}`;
-
-        console.log('data.discountRule', data.discountRule);
-
         delete data.reduceType;
 
         // 商城默认值为0
@@ -1809,8 +1798,7 @@ class GiftAddModalStep extends React.PureComponent {
         }
         
         // 买赠券， 前端对应的高价有限设置项，对应后端BOGOdiscountWay
-        data.discountSortRule = data.BOGOdiscountWay;
-
+        data.discountSortRule = `${data.bOGOdiscountWay}`;
         return data;
 
         // 商城券调整
@@ -1920,11 +1908,6 @@ class GiftAddModalStep extends React.PureComponent {
     render() {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
             { firstKeys, secondKeys, values, unit } = this.state;
-
-        // this.justifyServerEndKeyToFormKeys(data, type);
-
-        // console.log('values discountRule', values.discountRule);
-
         let formData = values;
         // const dates = Object.assign({}, data);
         
@@ -1970,9 +1953,6 @@ class GiftAddModalStep extends React.PureComponent {
         }
         const isUnit = ['10', '91'].includes(value);
         const giftNameValid = (type === 'add') ? { max: 25, message: '不能超过25个字符' } : {};
-
-
-        // console.log('giftname in this.formData', formData);
         
         // 定义所有类型的表单项，根据不同礼品类型进行配置
         const formItems = {
@@ -2580,6 +2560,8 @@ class GiftAddModalStep extends React.PureComponent {
         formData.shareIDs = this.state.sharedGifts;
         formData.giftShareType = String(formData.giftShareType);
         formData.couponPeriodSettings = formData.couponPeriodSettingList;
+
+
         return (
             <div>
                 <div

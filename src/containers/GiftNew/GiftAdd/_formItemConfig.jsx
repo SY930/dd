@@ -90,7 +90,7 @@ export const FORMITEMS = {
     discountSortRule: {
         label: '优惠顺序',
         type: 'radio',
-        defaultValue: '0',
+        defaultValue: '1',
         options: GiftCfg.discountSortRules,
     },
 
