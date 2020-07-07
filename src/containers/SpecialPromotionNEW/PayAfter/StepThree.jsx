@@ -202,7 +202,7 @@ class StepThree extends React.Component{
                                 )}
                             </Col>
                             <Col span={12} className={styles.grayFontPic} >
-                                <p style={{ position: 'relative', top: 40, left: -62,}}>格式仅限jpg、jpeg、png、gif</p>
+                                <p style={{ position: 'relative', top: 20, left: -62,}}>建议尺寸690*300<br/>格式仅限jpg、jpeg、png、gif</p>
                             </Col>
                         </Row>
                     ),
