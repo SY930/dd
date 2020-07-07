@@ -17,7 +17,7 @@ import CustomProgressBar from './CustomProgressBar';
 import SpecialDetailInfo from './SpecialPromotionDetailInfoInSendGifts';
 import Three from './Three';
 import StepTwo from './stepTwo';
-import StepOneWithDateRange from './StepOneWithDateRange';
+import StepOneWithDateRange from '../common/StepOneWithDateRange';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
 
@@ -36,15 +36,15 @@ class NewSendGifts extends NewPromotion {
 
         const steps = [
 
-            // {
-            //     title: `${this.props.intl.formatMessage(STRING_SPE.d2c8987eai0135)}`,
-            //     content: (<StepOneWithDateRange
-            //         type={this.props.promotionType}
-            //         getSubmitFn={(handles) => {
-            //             this.handles[0] = handles;
-            //         }}
-            //     />),
-            // },
+            {
+                title: `${this.props.intl.formatMessage(STRING_SPE.d2c8987eai0135)}`,
+                content: (<StepOneWithDateRange
+                    type={this.props.promotionType}
+                    getSubmitFn={(handles) => {
+                        this.handles[0] = handles;
+                    }}
+                />),
+            },
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.du37x82g61177)}`,
                 content: (

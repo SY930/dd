@@ -87,7 +87,6 @@ class CustomProgressBar extends React.Component {
     }
 
     render() {
-        console.log('CustomProgreeBar........................')
         const { steps } = this.props;
         const current = this.state.current;
         if (!(steps instanceof Array && steps.length > 0)) {
