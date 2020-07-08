@@ -383,6 +383,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         const k5kqf33f = intl.formatMessage(SALE_STRING.k5kqf33f);
         const k5ez4qy4 = intl.formatMessage(SALE_STRING.k5ez4qy4);
         const k5ezdbiy = intl.formatMessage(SALE_STRING.k5ezdbiy);
+
         return (
             <div id="_addMoneyTradeDetail">
                 <Form className={[styles.FormStyle, styles.bugGive].join(' ')}>
@@ -463,7 +464,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                     {this.renderDishsSelectionBox()}
                     {this.canLimitBeSet() && this.renderTotalFoodMax()}
                     {this.renderAdvancedSettingButton()}
-                    {this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
+                    {this.state.display ? <AdvancedPromotionDetailSetting payLimit={this.state.stageType == 2}   /> : null}
                 </Form>
             </div>
         )
