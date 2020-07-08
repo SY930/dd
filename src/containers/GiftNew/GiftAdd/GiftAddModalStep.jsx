@@ -425,6 +425,10 @@ class GiftAddModalStep extends React.PureComponent {
                     });
                 }
                 break;
+            
+            case 'mallScope':
+                
+                break;
 
             case 'discountRule':
                 // if(formRef.getFieldValue('discountRule') != value) {
@@ -628,9 +632,15 @@ class GiftAddModalStep extends React.PureComponent {
 
         params.shopIDs = '';
         params.shopNames = '';
-
+        
         if(params.hasOwnProperty('selectMall') && params.selectMall !== undefined) {
-            params.shopIDs = params.selectMall;
+            // TODO: 着急上线，没定位原因，代码做兼容处理
+            if(params.selectMall instanceof Array && params.selectMall.length == 1) {
+                params.shopIDs = params.selectMall[0];
+            } else {
+                params.shopIDs = params.selectMall;
+            }
+            
 
             let selectMall = malls.filter((mall, idx)=>{
                 return mall.shopID == params.selectMall
@@ -1096,7 +1106,7 @@ class GiftAddModalStep extends React.PureComponent {
                     key: 'discountRateSetting',
                     rules: [{required: true, message: '不能为空'}, {
                         validator: (rule, num, cb) => {
-                            Number(num) > 0 &&  Number(num) <= 100 ? cb() : cb(rule.message);
+                            Number(num) > 0 &&  Number(num) < 100 ? cb() : cb(rule.message);
                         },
                         message: '折扣要大于等于1, 小于等于100',
                     },{
@@ -1566,7 +1576,7 @@ class GiftAddModalStep extends React.PureComponent {
             if(goodCategories instanceof Array && goodCategories.length == 0) {
                 // data.selectBrands[0].targetID; 当前店铺 ID
                 // 区分回显还是新建
-                if(values.hasOwnProperty('shopIDs') && values.shopIDs instanceof Array && values.selectBrands.length > 0) {
+                if(values.hasOwnProperty('shopIDs') && values.shopIDs instanceof Array && values.shopIDs.length > 0) {
                     // 满足以上全部条件（回显模式下需要满足）
                     this.handleMallChange(values.shopIDs[0]);
                 }
@@ -1848,6 +1858,16 @@ class GiftAddModalStep extends React.PureComponent {
         
         // 买赠券， 前端对应的高价有限设置项，对应后端BOGOdiscountWay
         data.discountSortRule = `${data.priceSortRule}`;
+
+        // MallCategory (分类模式)
+        // 渲染的时候没有处理，直接用后端的字段  couponFoodScopeList 进行处理
+        if(data.mallScope == '0') {
+            if(data.hasOwnProperty('couponFoodScopeList') && data.couponFoodScopeList instanceof Array) {
+                data.mallCategory = data.couponFoodScopeList.map((item)=>{
+                    return item.targetID;
+                })
+            }
+        }
         
 
         
@@ -1953,6 +1973,20 @@ class GiftAddModalStep extends React.PureComponent {
         };
     }
 
+    renderApplyScene = (decorator, form)=>{
+        const {type} = this.props;
+        let disabled = false
+        if(type == 'edit') {
+            disabled = true;
+        }
+        return  decorator({})(
+            <Radio.Group disabled={disabled}>
+                <Radio.Button value={0}>店铺券</Radio.Button>
+                <Radio.Button value={1}>商城券</Radio.Button>
+            </Radio.Group>
+        )
+    }
+
     /**
      * @description
      * @params this.props.gift 传入的参数
@@ -2020,12 +2054,7 @@ class GiftAddModalStep extends React.PureComponent {
                 label: '礼品属性',
                 type: 'custom',
                 defaultValue: 0,
-                render: decorator => decorator({})(
-                    <Radio.Group>
-                        <Radio.Button value={0}>店铺券</Radio.Button>
-                        <Radio.Button value={1}>商城券</Radio.Button>
-                    </Radio.Group>
-                )
+                render: (decorator, form) => this.renderApplyScene(decorator, form)
             },
 
             pushMessageMpID: {
