@@ -1723,8 +1723,6 @@ class GiftAddModalStep extends React.PureComponent {
         } else {
             tips = '未选择时默认所有';
         }
-        
-
         return (
             
                 <div>
