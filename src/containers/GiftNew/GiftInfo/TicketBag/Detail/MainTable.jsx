@@ -87,6 +87,18 @@ class MainTable extends Component {
             { width: 100, title: '姓名', dataIndex: 'customerName' },
             { width: 60, title: '性别', dataIndex: 'sex', className: tc },
             { width: 100, title: '手机号', dataIndex: 'customerMobile' },
+            {width: 80,title: '操作',dataIndex: 'operator', className:  tc,
+            render:(text,record) => {
+                if([1,2,3].includes(record.status)) {
+                    return <Popconfirm placement="left" title={'确认作废'} onConfirm={this.props.handleCancellation(record)} okText="确定" cancelText="取消">
+                                <a>作废</a>
+                            </Popconfirm>
+                } else {
+                    return null
+                }
+
+            }
+        }
         ];
     }
     /* 生成表格数据 */
