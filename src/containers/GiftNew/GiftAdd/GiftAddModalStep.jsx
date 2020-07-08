@@ -1866,7 +1866,8 @@ class GiftAddModalStep extends React.PureComponent {
         }
         
         // 买赠券， 前端对应的高价有限设置项，对应后端BOGOdiscountWay
-        data.discountSortRule = `${data.priceSortRule}`;
+
+        data.discountSortRule = data.priceSortRule == undefined ? '0' : `${data.priceSortRule}`;
 
         // MallCategory (分类模式)
         // 渲染的时候没有处理，直接用后端的字段  couponFoodScopeList 进行处理
