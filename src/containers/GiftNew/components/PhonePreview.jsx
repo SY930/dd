@@ -165,6 +165,7 @@ class PhonePreview extends PureComponent {
             showGiftRule,
             giftDiscountRate,
             giftValueCurrencyType ='¥',
+            applyScene,                 // 区分店铺券和商家券
         } = this.props;
         return (
             <div className={styles.phonePreviewContentWrapper}>
@@ -226,12 +227,12 @@ class PhonePreview extends PureComponent {
                             {giftType !== '30' && (
                                 <div className={styles.ruleSection}>
                                     <p>本券可在 {this.usingTimeTypeString()} 时段使用</p>
-                                    {giftType !== '22' &&
+                                    {giftType !== '22' && applyScene == '0' &&
                                         <p>{`本券适用于${this.supportOrderTypeString()}的订单${isOfflineCanUsing === '0' ? '，仅支持线上使用' : isOfflineCanUsing === '2' ? '，仅支持线下使用' : ''}`}</p>
                                      }
                                      <p>{this.shareTypeString()}</p>
-                                    {(giftType == '20' || giftType == '21') && <p>{this.foodScopesString()}</p>}
-                                    {(giftType == '10' || giftType == '111') && <p>{this.foodsboxString()}</p>}
+                                    {(giftType == '20' || giftType == '21') &&  applyScene != '1'&& <p>{this.foodScopesString()}</p>}
+                                    {(giftType == '10' || giftType == '111') && applyScene != '1'&& <p>{this.foodsboxString()}</p>}
                                 </div>
                             )}
                         </div>
@@ -244,13 +245,42 @@ class PhonePreview extends PureComponent {
                     {giftRemark}
                 </div>
                 <div className={styles.sectionHeader}>
-                    适用店铺
+                    {applyScene != '1' ? '适用店铺' : '适用商城'}
                 </div>
                 <div className={styles.descriptionSection}>
-                    {this.shopNameString()}
+                    {this.renderMallOrShopName()}
                 </div>
             </div>
         )
+    }
+
+    renderMallName = () => {
+        // shopSchema: state.sale_shopSchema_New,
+
+        const { selectMall } = this.props;
+        let shopSchema = this.props.shopSchema.toJS(); // Imutable data to primitive
+        if(shopSchema.hasOwnProperty('shops') && shopSchema.shops instanceof Array) {
+            let malls = shopSchema.shops.filter((shop, idx)=>{
+                return shop.businessModel == '0' && shop.shopID == selectMall; // 0 为商城， 1 为餐饮店铺
+            });
+            if(malls.length == 1) {
+                return malls[0].shopName;
+            }
+        }
+
+        return null;
+    }
+
+    renderMallOrShopName = ()=>{
+        const { applyScene, selectBrands } = this.props;
+        if(applyScene != '1') {
+            return this.shopNameString();
+        } else {
+            return this.renderMallName();
+            // if(selectBrands instanceof Array && selectBrands.length > 0) {
+            //     return selectBrands[0].targetName;
+            // }
+        }
     }
 
     renderCRMGiftsPreviewContent() {
@@ -545,6 +575,8 @@ class PhonePreview extends PureComponent {
 
 function mapStateToProps(state) {
     return {
+        selectMall: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'selectMall']),   // 使用商城
+        applyScene: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'applyScene']),   // 商城， 1， 店铺 0
         giftName: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'giftName']),
         giftValue: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'giftValue']),
         giftValueCurrencyType: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'giftValueCurrencyType']),
@@ -575,6 +607,12 @@ function mapStateToProps(state) {
         giftDiscountRate: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'discountRate', 'number']), // PriceInput 给出的是{number: xxx}
         discountRate: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'discountRate']), // antd input 给出的是str
         groupName: state.user.getIn(['accountInfo', 'groupName']),
+
+        // 商城商品及分类信息
+        // goodCategories: state.sale_promotionDetailInfo_NEW.get('goodCategories').toJS(),
+        // goods: state.sale_promotionDetailInfo_NEW.get('goods').toJS(),
+
+        // shopSchema: state.sale_shopSchema_New,
     }
 }
 
