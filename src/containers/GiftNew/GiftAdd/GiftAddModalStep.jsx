@@ -1676,6 +1676,7 @@ class GiftAddModalStep extends React.PureComponent {
     }
 
     renderMallIncludeGoodsSelector = (decorator, form) => {
+        const { gift: { name: describe, data }, type } = this.props;
         const { goods, goodCategories } = this.props;
         const { values} = this.state;
 
@@ -1711,8 +1712,18 @@ class GiftAddModalStep extends React.PureComponent {
             }
         }
 
-        let rules = [];
-        let tips = '不能为空';
+        let rules = [], tips;
+        if(describe != '代金券') {
+            rules = [{
+                required: true,
+                message: '必须选择适用商品'
+            }]; 
+
+            tips = '不能为空';
+        } else {
+            tips = '未选择时默认所有';
+        }
+        
 
         return (
             
@@ -1720,10 +1731,7 @@ class GiftAddModalStep extends React.PureComponent {
                     {
                         decorator({
                             key: 'mallIncludeGood',
-                            rules: [{
-                                required: true,
-                                message: '必须选择适用商品'
-                            }],
+                            rules: rules,
                             initialValue,
                         })(
                         <MultipleGoodSelector
@@ -1741,7 +1749,7 @@ class GiftAddModalStep extends React.PureComponent {
                                 lineHeight: 1.15,
                             }}
                         >
-                            不能为空
+                            {tips}
                         </div>
                     )}
                 </div>
