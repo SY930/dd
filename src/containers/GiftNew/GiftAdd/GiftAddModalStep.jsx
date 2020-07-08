@@ -560,8 +560,8 @@ class GiftAddModalStep extends React.PureComponent {
         delete params.discountRule;
 
         // 优惠规则，后端之前的字段为BOGOdiscountWay, 暂不做调整。新的前端表单字段为discountSortRule
-        // params.priceSortRule = params.discountSortRule;
-        // delete params.discountSortRule;
+        params.priceSortRule = params.discountSortRule;
+        delete params.discountSortRule;
 
         // 消费金额限制类型
         // params.moneyLimitType = (params.moneyLimitTypeAndValue || {}).moneyLimitType;
@@ -1595,7 +1595,6 @@ class GiftAddModalStep extends React.PureComponent {
                         <div
                             style={{
                                 color: 'orange',
-                                paddingLeft: '16.67%',
                                 overflow: 'hidden',
                                 lineHeight: 1.15,
                             }}
@@ -1679,10 +1678,16 @@ class GiftAddModalStep extends React.PureComponent {
             }
         }
 
+        let rules = [];
+        let tips = '不能为空';
+
         return (
             decorator({
                 key: 'mallIncludeGood',
-                rules: [],
+                rules: [{
+                    required: true,
+                    message: '必须选择适用商品'
+                }],
                 initialValue,
             })(
                 <div>
@@ -1696,12 +1701,12 @@ class GiftAddModalStep extends React.PureComponent {
                         <div
                             style={{
                                 color: 'orange',
-                                paddingLeft: '16.67%',
+                                marginTop: '6px',
                                 overflow: 'hidden',
                                 lineHeight: 1.15,
                             }}
                         >
-                            未选择时默认所有可用
+                            不能为空
                         </div>
                     )}
                 </div>
@@ -1809,7 +1814,11 @@ class GiftAddModalStep extends React.PureComponent {
         }
         
         // 买赠券， 前端对应的高价有限设置项，对应后端BOGOdiscountWay
-        // data.discountSortRule = `${data.priceSortRule}`;
+        data.discountSortRule = `${data.priceSortRule}`;
+
+        console.log('priceSortRule', data.priceSortRule);
+        console.log('data.discountSortRule', data.discountSortRule);
+
         return data;
 
         // 商城券调整
@@ -1920,7 +1929,8 @@ class GiftAddModalStep extends React.PureComponent {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
             { firstKeys, secondKeys, values, unit } = this.state;
         let formData = values;
-        // const dates = Object.assign({}, data);
+
+        // console.log('formData', formData);
         
         const { firstKeysToDisplay: displayFirstKeys, secondKeysToDisplay: displaySecondKeys} = this.justifyFormKeysToDisplay();
 
@@ -2572,6 +2582,8 @@ class GiftAddModalStep extends React.PureComponent {
         formData.giftShareType = String(formData.giftShareType);
         formData.couponPeriodSettings = formData.couponPeriodSettingList;
 
+
+        console.log('formData before render', formData);
 
         return (
             <div>

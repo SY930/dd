@@ -189,11 +189,21 @@ class GenerateBatchQRCodes extends Component {
             batchNo: selectedBatchEntity.batchNO,
             mpID,
             remark,
-            qrEffectDays: qrCodeValidateType == '1' ? 0 : qrEffectDays, // 0 代表永久有效
+            qrEffectDays: this.handleQrEffectDays(), // 0 代表永久有效
             exportType,
-            qrCodeType,
+            qrCodeType,                                                 // 普通二维码，关注二维码
         };
     }
+
+    handleQrEffectDays = ()=>{
+        const { qrCodeValidateType, qrCodeType } = this.state;
+        if(qrCodeType == '1') {
+            return '0'
+        } else if (qrCodeType == '0' && qrCodeValidateType == '1'){
+            return '0' 
+        }
+    }
+
 
     handleModalOk = () => {
         let flag = true;

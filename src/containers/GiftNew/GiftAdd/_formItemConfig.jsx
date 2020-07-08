@@ -87,7 +87,7 @@ export const FORMITEMS = {
     },
 
     // 优惠顺序（买赠券）
-    priceSortRule: {
+    discountSortRule: {
         label: '优惠顺序',
         type: 'radio',
         defaultValue: '0',
@@ -657,7 +657,7 @@ export const FIRST_KEYS = {
                 'discountRateSetting',                  // 折扣设置 （注释掉，通过代码动态注释）
                 'specialPriceVolSetting',           // 特价设置
                 'discountDecreaseVolSetting',       // 立减
-                'priceSortRule',                 // 买赠券优惠规则
+                'discountSortRule',                 // 买赠券优惠规则
                 // 'priceSortRule',
                 'price',
                 'giftRemark',
