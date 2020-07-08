@@ -609,6 +609,9 @@ class GiftAddModalStep extends React.PureComponent {
     */
     adjustParamsOfMallGift = (params)=>{
         // 只处理商城券的情景. 其他场景删除冗余字段 （也可以通过场景去判断）
+
+        const { type } = this.props;
+
         if(params.applyScene != '1') {
             if(params.hasOwnProperty('mallCategory')){
                 delete params.mallCategory;
@@ -1099,7 +1102,7 @@ class GiftAddModalStep extends React.PureComponent {
     renderDiscountRateSetting(decorator) {
         // 数据回显
         const { gift : { data }} = this.props;
-        let val = data.reduceValue == undefined ? 0 : data.reduceValue;
+        let val = data.reduceValue;
         return (
             <FormItem>
                 {decorator({
@@ -1861,13 +1864,23 @@ class GiftAddModalStep extends React.PureComponent {
 
         // MallCategory (分类模式)
         // 渲染的时候没有处理，直接用后端的字段  couponFoodScopeList 进行处理
+        // TODO: 这块代码优化下，重复。发版时间紧急
         if(data.mallScope == '0') {
             if(data.hasOwnProperty('couponFoodScopeList') && data.couponFoodScopeList instanceof Array) {
                 data.mallCategory = data.couponFoodScopeList.map((item)=>{
                     return item.targetID;
                 })
             }
+        } else if(data.mallScope == '1'){
+            if(data.hasOwnProperty('couponFoodScopeList') && data.couponFoodScopeList instanceof Array) {
+                data.mallIncludeGood = data.couponFoodScopeList.map((item)=>{
+                    return item.targetID;
+                })
+            }
         }
+
+        
+
         
 
         
