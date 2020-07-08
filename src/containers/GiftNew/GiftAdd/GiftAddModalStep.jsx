@@ -620,19 +620,39 @@ class GiftAddModalStep extends React.PureComponent {
         
         const {goodCategories = [], goods = []} = this.props;
         const { malls } = this.state;
-        params.brandSelectType = 0,     // 商城是单选
-        params.selectBrands = [];
-        if(params.hasOwnProperty('selectMall') && params.selectMall !== undefined) {
-            params.selectBrands = malls.filter((mall, idx)=>{
-                return mall.shopID == params.selectMall
-            })
-            .map((item, idx)=>{
-                return {
-                    "targetID": item.shopID,
-                    "targetName": item.shopName
-                }
-            })
+       
+        // 当商城券是，brandSelectType 需要传1。 默认适用所有品牌（虽然商城没有品牌概念）
+        if(params.applyScene == '1') {
+            params.brandSelectType = 1;
         }
+
+        params.shopIDs = '';
+        params.shopNames = '';
+
+        if(params.hasOwnProperty('selectMall') && params.selectMall !== undefined) {
+            params.shopIDs = params.selectMall;
+
+            let selectMall = malls.filter((mall, idx)=>{
+                return mall.shopID == params.selectMall
+            });
+
+            if(selectMall instanceof Array && selectMall.length == 1) {
+                params.shopNames = selectMall[0].shopName;
+            }
+        }
+
+        // params.selectBrands = [];
+        // if(params.hasOwnProperty('selectMall') && params.selectMall !== undefined) {
+        //     params.selectBrands = malls.filter((mall, idx)=>{
+        //         return mall.shopID == params.selectMall
+        //     })
+        //     .map((item, idx)=>{
+        //         return {
+        //             "targetID": item.shopID,
+        //             "targetName": item.shopName
+        //         }
+        //     })
+        // }
 
         //     "shopIDs": "76058319,76058826,76067997",
         // "shopNames"
@@ -1546,9 +1566,9 @@ class GiftAddModalStep extends React.PureComponent {
             if(goodCategories instanceof Array && goodCategories.length == 0) {
                 // data.selectBrands[0].targetID; 当前店铺 ID
                 // 区分回显还是新建
-                if(values.hasOwnProperty('selectBrands') && values.selectBrands instanceof Array && values.selectBrands.length > 0) {
+                if(values.hasOwnProperty('shopIDs') && values.shopIDs instanceof Array && values.selectBrands.length > 0) {
                     // 满足以上全部条件（回显模式下需要满足）
-                    this.handleMallChange(values.selectBrands[0].targetID);
+                    this.handleMallChange(values.shopIDs[0]);
                 }
                 
             } else {
@@ -1580,32 +1600,32 @@ class GiftAddModalStep extends React.PureComponent {
             }
         }
         return (
-            decorator({
-                key: 'mallCategory',
-                rules,
-                initialValue,
-            })(
+            <div>
+                {
+                    decorator({
+                        key: 'mallCategory',
+                        rules,
+                        initialValue,
+                    })(
+                        <SelectMallCategory
+                            dataSource = { goodCategories }
+                        /> 
+                    )
+                }
                 
-                <div>
-                    <SelectMallCategory
-                        dataSource = { goodCategories }
-                    />
 
-                    {showToolTips && (
-                        <div
-                            style={{
-                                color: 'orange',
-                                overflow: 'hidden',
-                                lineHeight: 1.15,
-                            }}
-                        >
-                            未选择时默认所有可用
-                        </div>
-                    )}
-                </div>
-                
-            )
-
+                {showToolTips && (
+                    <div
+                        style={{
+                            color: 'orange',
+                            overflow: 'hidden',
+                            lineHeight: 1.15,
+                        }}
+                    >
+                        未选择时默认所有可用
+                    </div>
+                )}
+            </div>
         );
 
     }
@@ -1659,9 +1679,9 @@ class GiftAddModalStep extends React.PureComponent {
             if(goodCategories instanceof Array && goodCategories.length == 0) {
                 // data.selectBrands[0].targetID; 当前店铺 ID
                 // 区分回显还是新建
-                if(values.hasOwnProperty('selectBrands') && values.selectBrands instanceof Array && values.selectBrands.length > 0) {
+                if(values.hasOwnProperty('shopIDs')) {
                     // 满足以上全部条件（回显模式下需要满足）
-                    this.handleMallChange(values.selectBrands[0].targetID);
+                    this.handleMallChange(values.shopIDs[0]);
                 }
             } 
 
@@ -1682,21 +1702,23 @@ class GiftAddModalStep extends React.PureComponent {
         let tips = '不能为空';
 
         return (
-            decorator({
-                key: 'mallIncludeGood',
-                rules: [{
-                    required: true,
-                    message: '必须选择适用商品'
-                }],
-                initialValue,
-            })(
+            
                 <div>
-                    <MultipleGoodSelector
-                        placeholder="选择商品"
-                        allDishes={ goods }
-                        allCategories={ goodCategories }
-                    />
-
+                    {
+                        decorator({
+                            key: 'mallIncludeGood',
+                            rules: [{
+                                required: true,
+                                message: '必须选择适用商品'
+                            }],
+                            initialValue,
+                        })(
+                        <MultipleGoodSelector
+                            placeholder="选择商品"
+                            allDishes={ goods }
+                            allCategories={ goodCategories }
+                        />)
+                    }
                     {showToolTips && (
                         <div
                             style={{
@@ -1710,8 +1732,6 @@ class GiftAddModalStep extends React.PureComponent {
                         </div>
                     )}
                 </div>
-            )
-            
         )
     }
 
@@ -1809,17 +1829,30 @@ class GiftAddModalStep extends React.PureComponent {
             data.mallScope = '1'
         }
         // 商城
-        if(data.hasOwnProperty('selectBrands') && data.selectBrands instanceof Array && data.selectBrands.length > 0) {
-            data.selectMall = data.selectBrands[0].targetID;
+        // if(data.hasOwnProperty('selectBrands') && data.selectBrands instanceof Array && data.selectBrands.length > 0) {
+        //     data.selectMall = data.selectBrands[0].targetID;
+        // }
+
+        if(data.hasOwnProperty('shopIDs')) {
+            // let shopIDS = data.shopIDs;
+            if(data.hasOwnProperty('applyScene') && data.applyScene == '1') {
+                data.selectMall = data.shopIDs
+            }
+            
+            // console.log("data.shopIDs", data.shopIDs);
+            // if(shopIDS instanceof Array && shopIDS.length == 1) {
+            //     data.selectMall = shopIDS[0];
+            // }
+            // console.log("data.selectMall", data.selectMall);
         }
         
         // 买赠券， 前端对应的高价有限设置项，对应后端BOGOdiscountWay
         data.discountSortRule = `${data.priceSortRule}`;
+        
 
-        console.log('priceSortRule', data.priceSortRule);
-        console.log('data.discountSortRule', data.discountSortRule);
-
+        
         return data;
+
 
         // 商城券调整
         // if(data.applyScene == '1') {   
@@ -1929,8 +1962,6 @@ class GiftAddModalStep extends React.PureComponent {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
             { firstKeys, secondKeys, values, unit } = this.state;
         let formData = values;
-
-        // console.log('formData', formData);
         
         const { firstKeysToDisplay: displayFirstKeys, secondKeysToDisplay: displaySecondKeys} = this.justifyFormKeysToDisplay();
 
@@ -2581,9 +2612,6 @@ class GiftAddModalStep extends React.PureComponent {
         formData.shareIDs = this.state.sharedGifts;
         formData.giftShareType = String(formData.giftShareType);
         formData.couponPeriodSettings = formData.couponPeriodSettingList;
-
-
-        console.log('formData before render', formData);
 
         return (
             <div>
