@@ -30,7 +30,7 @@ import SelectCardTypes from "../components/SelectCardTypes";
 import PushMessageMpID from "../components/PushMessageMpID";
 import SellerCode from "../components/SellerCode";
 import FakeBorderedLabel from "../components/FakeBorderedLabel";
-import GiftInfo from './GiftInfo';
+import GiftInfoHaveCoupon from './GiftInfoHaveCoupon';
 
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -621,7 +621,7 @@ class GiftAddModal extends React.Component {
                 type: 'custom',
                 label: '礼品详情',
                 defaultValue: [],
-                render: d => d()(<GiftInfo groupID={this.props.accountInfo.toJS().groupID} />),
+                render: d => d()(<GiftInfoHaveCoupon groupID={this.props.accountInfo.toJS().groupID} />),
             },
         };
         const { valueType, monetaryUnit } = this.state;
