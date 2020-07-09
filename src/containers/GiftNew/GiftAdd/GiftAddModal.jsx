@@ -148,23 +148,27 @@ class GiftAddModal extends React.Component {
             let params = _.assign(values, { giftType: value });
             let callServer = '';
             let shopNames = '', shopIDs = '';
-            const presentType = params.quotaCardGiftConfList.presentType
-            if(presentType == 1) {
-                params = {
-                    ...params,
-                    ...params.quotaCardGiftConfList
-                }
-            } else if(presentType == 4) {
-                params = {
-                    ...params,
-                    presentType,
-                    quotaCardGiftConfList: params.quotaCardGiftConfList.chooseCoupon
-                }
-            }  else if(presentType == 0) {
-                params = {
-                    ...params,
-                    presentType,
-                    quotaCardGiftConfList: []
+
+            // 兼容处理
+            if(params.hasOwnProperty('quotaCardGiftConfList') && params.quotaCardGiftConfList !== undefined) {
+                const presentType = params.quotaCardGiftConfList.presentType
+                if(presentType == 1) {
+                    params = {
+                        ...params,
+                        ...params.quotaCardGiftConfList
+                    }
+                } else if(presentType == 4) {
+                    params = {
+                        ...params,
+                        presentType,
+                        quotaCardGiftConfList: params.quotaCardGiftConfList.chooseCoupon
+                    }
+                }  else if(presentType == 0) {
+                    params = {
+                        ...params,
+                        presentType,
+                        quotaCardGiftConfList: []
+                    }
                 }
             }
 
