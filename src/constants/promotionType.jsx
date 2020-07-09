@@ -254,6 +254,7 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
         bottom: 4,
         isNew: true,
     },
+    // 摇奖活动
     {
         title: SALE_LABEL.k636p31p,
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
@@ -447,11 +448,13 @@ export const LOYALTY_PROMOTION_TYPES = [
 /**
  * 促进销量
  * @type {Array}
+ * @field isSpecial  // 表示活动是否是特色营销活动(false 则为基础营销活动)
+ *
  */
 export const SALE_PROMOTION_TYPES = [
     {
         title: SALE_LABEL.k5ezcu1b,
-        isSpecial: false, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        isSpecial: false, 
         text: SALE_LABEL.k67cp14a,
         example: SALE_LABEL.k67cppov,
         tags: ['pos', SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9],
@@ -462,17 +465,17 @@ export const SALE_PROMOTION_TYPES = [
     },
     {
         title: SALE_LABEL.k67b2sac,
-        isSpecial: false, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        isSpecial: false,
         text: SALE_LABEL.k67cp1cm,
         example: SALE_LABEL.k67cppx7,
-        tags: ['pos', SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9],
+        tags: ['pos', SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9,'小程序'],
         key: '1010',
         right: 10,
         bottom: 0,
     },
     {
         title: SALE_LABEL.k67b2sio,
-        isSpecial: false, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        isSpecial: false,
         text: SALE_LABEL.k67cp1ky,
         example: '',
         key: '4010',
@@ -482,7 +485,7 @@ export const SALE_PROMOTION_TYPES = [
     },
     {
         title: SALE_LABEL.k67b2sr0,
-        isSpecial: false, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        isSpecial: false,
         text: SALE_LABEL.k67cp1ta,
         example: SALE_LABEL.k67cpq5j,
         tags: ['pos', SALE_LABEL.k639vgjy, '小程序'],
@@ -492,7 +495,7 @@ export const SALE_PROMOTION_TYPES = [
     },
     {
         title: SALE_LABEL.k67b3uk0,
-        isSpecial: false, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        isSpecial: false,
         text: SALE_LABEL.k67cp21m,
         example: SALE_LABEL.k67cpqdv,
         tags: ['pos', SALE_LABEL.k639vgjy],
@@ -502,7 +505,7 @@ export const SALE_PROMOTION_TYPES = [
     },
     {
         title: SALE_LABEL.k5m5auib,
-        isSpecial: false, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        isSpecial: false,
         text: SALE_LABEL.k67cp29y,
         example: SALE_LABEL.k67cpqm7,
         tags: [SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9],
@@ -512,7 +515,7 @@ export const SALE_PROMOTION_TYPES = [
     },
     {
         title: SALE_LABEL.k67b3usc,
-        isSpecial: false, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        isSpecial: false,
         text: SALE_LABEL.k67cp2ia,
         example: SALE_LABEL.k67cpquj,
         tags: ['pos'],
@@ -521,7 +524,7 @@ export const SALE_PROMOTION_TYPES = [
         bottom: 1,
     },
     {
-        isSpecial: false, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        isSpecial: false,
         title: SALE_LABEL.k67b3v0o,
         text: SALE_LABEL.k67cp2qm,
         example: SALE_LABEL.k67cpr2v,
@@ -531,7 +534,7 @@ export const SALE_PROMOTION_TYPES = [
         bottom: 5,
     },
     {
-        isSpecial: false, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        isSpecial: false,
         title: SALE_LABEL.k67b3v90,
         text: SALE_LABEL.k67cp2yy,
         example: SALE_LABEL.k67cprb7,
@@ -541,7 +544,7 @@ export const SALE_PROMOTION_TYPES = [
         bottom: 11,
     },
     {
-        isSpecial: false, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        isSpecial: false,
         title: SALE_LABEL.k67b3vhc,
         text: SALE_LABEL.k67cp37a,
         example: SALE_LABEL.k67cprjj,
@@ -551,7 +554,7 @@ export const SALE_PROMOTION_TYPES = [
         bottom: 7,
     },
     {
-        isSpecial: false, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        isSpecial: false,
         title: SALE_LABEL.k67b3vpo,
         text: SALE_LABEL.k67cp3fm,
         example: SALE_LABEL.k67g7rpg,
@@ -561,7 +564,7 @@ export const SALE_PROMOTION_TYPES = [
         bottom: 1,
     },
     {
-        isSpecial: false, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        isSpecial: false,
         title: SALE_LABEL.k67b3vy0,
         text: SALE_LABEL.k67cp3ny,
         example: SALE_LABEL.k67g7rxs,
@@ -571,7 +574,7 @@ export const SALE_PROMOTION_TYPES = [
         bottom: 9,
     },
     {
-        isSpecial: false, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        isSpecial: false,
         title: SALE_LABEL.k67b3w6c,
         text: SALE_LABEL.k67cp3wa,
         example: SALE_LABEL.k67g7s64,
@@ -581,7 +584,7 @@ export const SALE_PROMOTION_TYPES = [
         bottom: -3,
     },
     {
-        isSpecial: false, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        isSpecial: false,
         title: SALE_LABEL.k67b3weo,
         text: SALE_LABEL.k67cp44m,
         example: SALE_LABEL.k67g7seg,
@@ -591,7 +594,7 @@ export const SALE_PROMOTION_TYPES = [
         bottom: 0,
     },
     {
-        isSpecial: false, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        isSpecial: false,
         title: SALE_LABEL.k67b3wn0,
         text: SALE_LABEL.k67cp4cy,
         example: '',

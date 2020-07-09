@@ -230,7 +230,6 @@ class SpecialDetailInfo extends Component {
     }
 
     handleSubmitOld = (isPrev) => {
-        debugger;
         if (isPrev) return true;
         let flag = true;
         this.props.form.validateFieldsAndScroll(

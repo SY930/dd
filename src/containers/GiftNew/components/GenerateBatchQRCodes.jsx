@@ -14,6 +14,7 @@ import {
     Form,
     Select,
     message,
+    Tooltip,
 } from 'antd';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import PriceInput from "../../SaleCenterNEW/common/PriceInput";
@@ -41,17 +42,19 @@ class GenerateBatchQRCodes extends Component {
             pageSizes: 10,
             pageNo: 1,
             total: 0,
-            queryDateRange: [], // 列表查询时的日期选择
+            queryDateRange: [],                 // 列表查询时的日期选择
             confirmLoading: false,
             modalVisible: false,
             batchItemID: undefined,
             mpID: undefined,
             startNo: undefined,
             endNo: undefined,
-            qrEffectDays: '30', // 二维码默认有效期30天
+            qrEffectDays: '30',                 // 二维码默认有效期30天, 0代表永久有效
             selectedBatchEntity: null,
             description: '',
-            exportType: '0'
+            exportType: '0',
+            qrCodeType: '0',                    // 0 公众号关注二维码， 1 普通二维码
+            qrCodeValidateType: '0',            // 0 临时二维码， 1 永久二维码
         };
     }
 
@@ -163,6 +166,8 @@ class GenerateBatchQRCodes extends Component {
         })
     }
 
+    // 接口文档 
+    // @ref http://wiki.hualala.com/pages/viewpage.action?pageId=33301063
     mapStateToRequestParams = () => {
         const {
             selectedBatchEntity,
@@ -172,7 +177,9 @@ class GenerateBatchQRCodes extends Component {
             batchItemID,
             description: remark,
             qrEffectDays,
-            exportType
+            exportType,
+            qrCodeType,
+            qrCodeValidateType,
         } = this.state;
         return {
             giftItemID: this.props.giftItemID,
@@ -182,10 +189,23 @@ class GenerateBatchQRCodes extends Component {
             batchNo: selectedBatchEntity.batchNO,
             mpID,
             remark,
-            qrEffectDays,
-            exportType
+            qrEffectDays: this.handleQrEffectDays(), // 0 代表永久有效
+            exportType,
+            qrCodeType,                                                 // 普通二维码，关注二维码
         };
     }
+
+    handleQrEffectDays = ()=>{
+        const { qrCodeValidateType, qrCodeType, qrEffectDays } = this.state;
+        if(qrCodeType == '1') {
+            return '0'
+        } else if (qrCodeType == '0' && qrCodeValidateType == '1'){
+            return '0' 
+        } else {
+            return qrEffectDays;
+        }
+    }
+
 
     handleModalOk = () => {
         let flag = true;
@@ -233,8 +253,6 @@ class GenerateBatchQRCodes extends Component {
                     confirmLoading: false,
                 });
             })
-        
-
     }
 
     showModal = () => {
@@ -257,6 +275,25 @@ class GenerateBatchQRCodes extends Component {
             this.props.form.resetFields();
         });
     }
+
+    /**
+     * 二维码类型处理
+    */
+    handleQrType = ({target: {value}}) => {
+        this.setState({
+            qrCodeType: value,
+        })
+    }
+
+    /**
+     * 集中处理 state 数据变更
+    */
+    handleStateValChange = (key, val)=>{
+        this.setState({
+            [key]: val
+        })
+    }
+    
 
     renderHeader() {
         return (
@@ -338,6 +375,10 @@ class GenerateBatchQRCodes extends Component {
                 dataIndex: 'qrEffectDays',
                 key: 'key11',
                 render: (qrEffectDays, record) => {
+                    if(qrEffectDays == 0) {
+                        return '永久有效'
+                    }
+
                     if (!(qrEffectDays > 0)) {
                         return '--'
                     }
@@ -484,16 +525,122 @@ class GenerateBatchQRCodes extends Component {
         )
     }
 
+    // 渲染二维码有效期类型（是否永久）
+    renderQrTypeSetting = ()=>{
+        const { qrCodeType, qrCodeValidateType } = this.state;
+        // 普通二维码
+        if(qrCodeType == '1') {
+            return null;
+        }
+        return (
+            <FormItem
+                label="二维码有效期"
+                className={styles.FormItemStyle}
+                labelCol={{ span: 6 }}
+                wrapperCol={{ span: 11 }}
+                required
+            >
+                <RadioGroup value={qrCodeValidateType} onChange={({target: {value}})=>this.handleStateValChange('qrCodeValidateType', value)}>
+                    <Radio key={'0'} value={'0'}>
+                        <Tooltip
+                            placement="topRight"
+                            title={'受微信限制，有效期最长可设置30天'}
+                        >临时码</Tooltip>
+                    </Radio>
+                    <Radio key={'1'} value={'1'}>
+                        <Tooltip
+                                placement="topRight"
+                                title={'永久有效，但会占用10000条/公众号 永久码的额度'}
+                            >
+                        永久码
+                        </Tooltip>
+                    </Radio>
+                </RadioGroup>
+            </FormItem>
+        )
+    }
+
+    // 渲染二维码有效期
+    // 永久码不渲染日期设置， 二维码类型为普通码不设置日期（长期有效）
+    renderQrExpiringDate = ()=>{
+        const { qrCodeValidateType, qrCodeType } = this.state;
+        if(qrCodeValidateType == '1' || qrCodeType == '1') {
+            return null
+        }
+        return (
+            <FormItem
+                    label="有效期"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 6 }}
+                    wrapperCol={{ span: 11 }}
+                >
+                    <Select
+                        value={this.state.qrEffectDays}
+                        onChange={this.handleQrEffectDaysChange}
+                    >
+                        {
+                            QR_CODE_EFFECT_DAYS.map(({value, label}) => (
+                                <Select.Option key={value} value={value}>{label}</Select.Option>
+                            ))
+                        }
+                    </Select>
+                </FormItem>
+        )
+    }
+
+    // 选择公众号
+    renderOfficeAccountSetting = ()=>{
+
+        const { qrCodeType } = this.state;
+        // 普通二维码
+        if(qrCodeType == '1') {
+            return null;
+        }
+        const {
+            form: {
+                getFieldDecorator,
+            },
+            allWeChatAccountList,
+        } = this.props;
+        const mpInfoList = Immutable.List.isList(allWeChatAccountList) ? allWeChatAccountList.toJS() : [];
+        
+        return (
+            <FormItem
+                    label="公众号"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 6 }}
+                    wrapperCol={{ span: 11 }}
+                    required
+                >{
+                    getFieldDecorator('mpID', {
+                        onChange: this.handleMpIDChange,
+                        rules: [
+                            { required: true, message: '公众号不能为空' },
+                        ],
+                    })(
+                        <Select
+                            placeholder="请选择公众号"
+                        >
+                            {
+                                mpInfoList.map(({mpID, mpName}) => (
+                                    <Select.Option key={mpID} value={mpID}>{mpName}</Select.Option>
+                                ))
+                            }
+                        </Select>
+                    )
+                }
+                </FormItem>
+        )
+    }
+
     renderModalContent() {
         const {
             form: {
                 getFieldDecorator,
             },
             $$batchNoInfo,
-            allWeChatAccountList,
         } = this.props;
         const batchNoList = Immutable.List.isList($$batchNoInfo) ? $$batchNoInfo.toJS() : [];
-        const mpInfoList = Immutable.List.isList(allWeChatAccountList) ? allWeChatAccountList.toJS() : [];
         return (
             <Form>
                 <FormItem
@@ -532,56 +679,29 @@ class GenerateBatchQRCodes extends Component {
                     this.renderStartAndEndNumber()
                 }
                 <FormItem
-                    label="公众号"
+                    label="二维码类型"
                     className={styles.FormItemStyle}
                     labelCol={{ span: 6 }}
                     wrapperCol={{ span: 11 }}
                     required
-                >{
-                    getFieldDecorator('mpID', {
-                        onChange: this.handleMpIDChange,
-                        rules: [
-                            { required: true, message: '公众号不能为空' },
-                        ],
-                    })(
-                        <Select
-                            placeholder="请选择公众号"
-                        >
-                            {
-                                mpInfoList.map(({mpID, mpName}) => (
-                                    <Select.Option key={mpID} value={mpID}>{mpName}</Select.Option>
-                                ))
-                            }
-                        </Select>
-                    )
-                }
-                </FormItem>
-                <FormItem
-                    label="有效期"
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 6 }}
-                    wrapperCol={{ span: 11 }}
                 >
-                    <Select
-                        value={this.state.qrEffectDays}
-                        onChange={this.handleQrEffectDaysChange}
-                    >
-                        {
-                            QR_CODE_EFFECT_DAYS.map(({value, label}) => (
-                                <Select.Option key={value} value={value}>{label}</Select.Option>
-                            ))
-                        }
-                    </Select>
+                    <RadioGroup value={this.state.qrCodeType} onChange={this.handleQrType}>
+                        <Radio key={'0'} value={'0'}>公众号关注二维码</Radio>
+                        <Radio key={'1'} value={'1'}>普通二维码</Radio>
+                    </RadioGroup>
                 </FormItem>
+                {this.renderOfficeAccountSetting()}
+                {this.renderQrTypeSetting()}
+                {this.renderQrExpiringDate()}
                 <FormItem
-                    label="类型"
+                    label="导出样式"
                     className={styles.FormItemStyle}
                     labelCol={{ span: 6 }}
                     wrapperCol={{ span: 11 }}
                 >
                     <RadioGroup value={this.state.exportType} onChange={this.handleExportTypeChange}>
                         <Radio key={'0'} value={'0'}>二维码</Radio>
-                        <Radio key={'1'} value={'1'}>链接</Radio>
+                        <Radio key={'1'} value={'1'}>普通链接</Radio>
                     </RadioGroup>
                 </FormItem>
                 <FormItem

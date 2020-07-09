@@ -1,11 +1,31 @@
+<<<<<<< HEAD
+=======
+<!--
+ * @Author: your name
+ * @Date: 2020-06-19 10:57:34
+ * @LastEditTime: 2020-06-29 10:30:04
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: /platform-sale/src/containers/NewCreatePromotions/directoryList.md
+--> 
+
+## 项目目录结构说明
+```
+>>>>>>> master
 |-- containers
     |-- BasePage.jsx
     |-- FansInteractivityPage.jsx
     |-- IntlDecor.jsx
     |-- LoyaltyPromotionPage.jsx
+<<<<<<< HEAD
     |-- NewCustomerPage.jsx
     |-- NewCustomerPage.less
     |-- NewPromotionCard.jsx                                // 
+=======
+    |-- NewCustomerPage.jsx                                 // 创建营销活动入口文件。
+    |-- NewCustomerPage.less
+    |-- NewPromotionCard.jsx
+>>>>>>> master
     |-- OnlinePromotionPage.jsx
     |-- PromotionCreateModal.jsx
     |-- RepeatPromotionPage.jsx                             // 促进复购主页页面
@@ -13,6 +33,7 @@
     |-- cardStyle.less
     |-- readme.md
     |-- style.less
+<<<<<<< HEAD
     |-- assets
         |-- bg0.png
         |-- bg1.png
@@ -115,3 +136,7 @@
         |-- wx.png
         |-- xcx.png
         |-- xin.png
+=======
+    |-- assets                                              // 资源文件
+```
+>>>>>>> master

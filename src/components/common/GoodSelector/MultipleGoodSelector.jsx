@@ -31,12 +31,16 @@ export default class GoodSelector extends Component {
 
     render() {
         const { showModal } = this.state;
-        const {
+        let {
             value,
             allCategories = [],
             allDishes = [],
             placeholder,
         } = this.props;
+
+        if(value == undefined) {
+            value = [];
+        }
         const selectedItems = allDishes.filter(dish => value.includes(dish.value));
         return (
             <div>

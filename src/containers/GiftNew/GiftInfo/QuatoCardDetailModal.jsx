@@ -167,7 +167,14 @@ class InfoDisplay extends Component {
         ];
     }
     /* 生成表格数据 */
-    generateDataSource(list) {
+    generateDataSource() {
+        console.log('this.props',this.props.infoData)
+        const {  infoData = {} } = this.props;
+        const { quotaCardGiftConfList = [], presentType, couponPackageBaseInfo } = infoData;
+        let list = quotaCardGiftConfList
+        if(presentType === 4) {
+            list = couponPackageBaseInfo.couponPackageGiftConfigs
+        }
         return list.map((x, i) => ({
             key: x.giftItemID,
             idx: i + 1,
@@ -177,9 +184,9 @@ class InfoDisplay extends Component {
     }
     render() {
         const { infoItem, infoData = {} } = this.props;
-        const { quotaCardGiftConfList = [] } = infoData;
+
         const columns = this.generateColumns();
-        const dataSource = this.generateDataSource(quotaCardGiftConfList);
+        const dataSource = this.generateDataSource();
         return (
             <Row>
                 {
@@ -205,7 +212,7 @@ class InfoDisplay extends Component {
                     })
                 }
                 <di>
-                    <p>礼品详情</p>
+                    <p>{infoData.presentType === 4 ? `礼品详情：${infoData.couponPackageBaseInfo && infoData.couponPackageBaseInfo.couponPackageName}券包` : '礼品详情'}</p>
                     <Table
                         bordered={true}
                         columns={columns}

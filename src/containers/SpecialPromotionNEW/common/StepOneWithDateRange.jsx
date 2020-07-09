@@ -730,7 +730,7 @@ class StepOneWithDateRange extends React.Component {
     
     /**
      * @description 渲染周期选择器
-     * @example 群发礼品，按月，周，日等周期去发送营销券
+     * @example 群发礼品，按月，周，日等周期去发送营销券 (无为不按日期发放)
     */
     renderDateOfSendingPromotionSelector = ()=>{
         const { type, form:{
@@ -740,6 +740,8 @@ class StepOneWithDateRange extends React.Component {
         }} = this.props;
 
         let dateInPeriodType = getFieldValue('dateInPeriodType');
+
+        console.log('getFieldsValue', getFieldsValue())
         if(dateInPeriodType == undefined) {
             dateInPeriodType = 'm';
         }
@@ -763,7 +765,7 @@ class StepOneWithDateRange extends React.Component {
                             <Select>
                                 <Option value="m">每月</Option>
                                 <Option value="w">每周</Option>
-                                <Option value="d">每日</Option>
+                                <Option value="d">无</Option>   
                             </Select>
                         )}
                     </FormItem>
@@ -782,6 +784,9 @@ class StepOneWithDateRange extends React.Component {
     renderDatePickerInWeekOrMonth = (dateInPeriodType) => {
 
         const { form: {getFieldDecorator: decorator}} = this.props;
+
+        // disbled minutes
+
 
         let initialValue = [];
         if( decorator('dateDescInPeroid') instanceof Array && decorator('dateDescInPeroid').length > 0) {
@@ -814,12 +819,33 @@ class StepOneWithDateRange extends React.Component {
     /**
      * @description 渲染仅发送时间组件
     */
-    renderSendTimeSelector = (disabledHours, disabledMinutes, noDisabled) => {
-        const { form: { getFieldDecorator: decorator }, type} = this.props;
+    renderSendTimeSelector = () => {
+        const { form: { 
+            getFieldDecorator: decorator,
+            getFieldValue 
+        }, type} = this.props;
         
         if(!(PROMOTIONS_CONTAIN_PERIOD_TYPE_SELECTOR_SETS.has(type))) {
-            return null
+            return null;
         }
+
+        // 不可用时间组件
+        let disabledHours = () => {
+            return [];
+        };
+        let disabledMinutes = () => {
+            const dateInPeriodType = getFieldValue('dateInPeriodType');
+            if(dateInPeriodType == 'm' || dateInPeriodType == 'w'){
+                let result = [];
+                for(let i=0; i < 60; i++){
+                    if(i != 0 && i != 30) {
+                        result.push(i);
+                    }
+                }
+                return result;
+            }   
+        }
+
         let { startTime, timeString } = this.state,
             timeStringInitialValue = '';
 
@@ -844,11 +870,12 @@ class StepOneWithDateRange extends React.Component {
                     initialValue: timeStringInitialValue,
                 })(
                     <TimePicker
-                        disabledHours={moment().format('YYYYMMDD') == this.state.startTime ? disabledHours : noDisabled}
-                        disabledMinutes={moment().format('YYYYMMDD') == this.state.startTime ? disabledMinutes : noDisabled}
+                        disabledHours={disabledHours}
+                        disabledMinutes={disabledMinutes}
                         format="HH:mm"
                         style={{ width: '100%' }}
                         onChange={this.onTimePickerChange}
+                        hideDisabledOptions = {true}
                         placeholder={this.props.intl.formatMessage(STRING_SPE.d21645473363b18164)}
                     />
                 )}
