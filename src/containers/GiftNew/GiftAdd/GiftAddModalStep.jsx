@@ -187,14 +187,15 @@ class GiftAddModalStep extends React.PureComponent {
             values.discountType = data.discountType
             values.discountRate = data.discountRate
         }
-        if ((type === 'add' && value == '10') || (type !== 'add' && value == '10' && data.amountType == 1)) {
-            const {secondKeys} = this.state
-            const index = secondKeys[name][0].keys.findIndex(item => item === 'amountType')
-            if (index >= 0) {
-                secondKeys[name][0].keys.splice(index, 1);
-                this.setState({secondKeys})
-            }
-        }
+        // 
+        // if ((type === 'add' && value == '10') || (type !== 'add' && value == '10' && data.amountType == 1)) {
+        //     const {secondKeys} = this.state
+        //     const index = secondKeys[name][0].keys.findIndex(item => item === 'amountType')
+        //     if (index >= 0) {
+        //         secondKeys[name][0].keys.splice(index, 1);
+        //         this.setState({secondKeys})
+        //     }
+        // }
 
         // const { data } = thisGift;
         if(thisGift.data !== undefined) {
@@ -1908,6 +1909,7 @@ class GiftAddModalStep extends React.PureComponent {
     }
 
     /**
+     * @description 动态调整表单结构思路。 1. 初始表单值 根据配置文件从配置中取。 动态的，根据values值去动态添加或者删除
      * 根据所有的key值，根据其value的不同取值，动态调整某些key是否可见。只在显示的时候做动态处理，不保存到state中
      * @example 代金券 商城模式 适用场景 如果为0.及分类，这时可选商品不可见。（但是配置项是所有的。这里要动态进行删除操作）
     */
@@ -1938,6 +1940,29 @@ class GiftAddModalStep extends React.PureComponent {
                     });
                 }
             }
+
+            // 根据券与券公用来调整是否显示选券表单 （动态增加）
+            if(values.hasOwnProperty('giftShareType') && values.giftShareType == '2') {
+                debugger;
+                const giftShareTypeIdx = _.findIndex(secondKeysToDisplay[0].keys, item => item == 'giftShareType');
+                if(giftShareTypeIdx != -1) {
+                    // secondKeysToDisplay[0].keys = 
+                    secondKeysToDisplay[0].keys.splice(giftShareTypeIdx + 1, 0, 'shareIDs');
+                }
+            } 
+
+            // const giftShareTypeIdx = _.findIndex(newKeys, item => item == 'shareIDs');
+            //     debugger;
+            //     if (value === '2') {
+            //         giftShareTypeIdx === -1 && newKeys.splice(index + 1, 0, 'shareIDs');
+            //     } else {
+            //         giftShareTypeIdx !== -1 && newKeys.splice(giftShareTypeIdx, 1);
+            //     }
+            //     secondKeys[describe][0].keys = [...newKeys];
+            //     this.setState({ secondKeys });
+
+            // 处理 券与券公用
+            // if(values.giftShareType)
         }
 
         // TODO : 后续将所有descirbe判断改为value.
