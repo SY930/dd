@@ -893,11 +893,12 @@ class GiftAddModalStep extends React.PureComponent {
                 data.supportOrderType !== undefined && (params.supportOrderType = data.supportOrderType);
             }
             if (value == 10) {
-                if (type === 'add') {
-                    params.amountType = 1;
-                } else if (!Number(params.amountType || 0)) {
-                    params.amountType = 0;
-                }
+                // if (type === 'add') {
+                //     params.amountType = 1;
+                // } else if (!Number(params.amountType || 0)) {
+                //     params.amountType = 0;
+                // }
+                params.amountType = 1;  //@notice: 后端新宇，前端不做该字段展示，但是默认值必须传个1（只限代金券）
             }
             if (formValues.transferLimitType == -1) {
                 params.transferLimitType = formValues.transferLimitTypeValue
