@@ -343,14 +343,16 @@ class GiftAddModalStep extends React.PureComponent {
                 this.setState({ secondKeys });
                 break;
             case 'discountType':
-                let keys = [...firstKeys[describe][1].keys];
-                if (value != 0) {
-                    keys.push('foodsboxs')
-                } else {
-                    keys = []
+                if(firstKeys[describe][1] != undefined && firstKeys[describe][1].hasOwnProperty('keys')) {
+                    let keys = [...firstKeys[describe][1].keys];
+                    if (value != 0) {
+                        keys.push('foodsboxs')
+                    } else {
+                        keys = []
+                    }
+                    firstKeys[describe][1].keys = [...keys];
+                    this.setState({ firstKeys });
                 }
-                firstKeys[describe][1].keys = [...keys];
-                this.setState({ firstKeys });
                 break;
             case 'isDiscountRate':
                 const discountRateIndex = _.findIndex(newKeys, item => item == 'discountRate');
