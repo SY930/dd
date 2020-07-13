@@ -309,6 +309,7 @@ class GiftAddModalStep extends React.PureComponent {
         if (key === 'shareIDs') {
             this.props.changeGiftFormKeyValue({key, value});
         } else if (JSON.stringify(values[key]) !== JSON.stringify(value)) {
+
             switch (key) { // 这几个个字段是靠手动输入的, 不加debounce的话在一般机器上有卡顿
                 case 'giftName':    this.handleNameChangeDebounced({key, value});
                                     break;
@@ -1861,12 +1862,6 @@ class GiftAddModalStep extends React.PureComponent {
             if(data.hasOwnProperty('applyScene') && data.applyScene == '1') {
                 data.selectMall = data.shopIDs
             }
-            
-            // console.log("data.shopIDs", data.shopIDs);
-            // if(shopIDS instanceof Array && shopIDS.length == 1) {
-            //     data.selectMall = shopIDS[0];
-            // }
-            // console.log("data.selectMall", data.selectMall);
         }
         
         // 买赠券， 前端对应的高价有限设置项，对应后端BOGOdiscountWay
@@ -1889,11 +1884,6 @@ class GiftAddModalStep extends React.PureComponent {
                 })
             }
         }
-
-        
-
-        
-
         
         return data;
 
@@ -2075,7 +2065,9 @@ class GiftAddModalStep extends React.PureComponent {
     render() {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
             { firstKeys, secondKeys, values, unit } = this.state;
-        let formData = values;
+        // 判断是否是空对象
+        // 影响 PhonePreview 回显。
+        let formData =JSON.stringify(values) == '{}' ? data : values ;
         
         const { firstKeysToDisplay: displayFirstKeys, secondKeysToDisplay: displaySecondKeys} = this.justifyFormKeysToDisplay();
 
@@ -2721,6 +2713,7 @@ class GiftAddModalStep extends React.PureComponent {
         formData.shareIDs = this.state.sharedGifts;
         formData.giftShareType = String(formData.giftShareType);
         formData.couponPeriodSettings = formData.couponPeriodSettingList;
+
 
         return (
             <div>
