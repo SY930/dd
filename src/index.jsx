@@ -4,6 +4,9 @@ import rootEpic from './redux/modules';
 
 import * as entryCodes from './constants/entryCodes'
 
+// 初始化Dva
+import './utils/dva/index'
+
 const { registeEntryCode, registeLocale } = registerPackage('sale', process.env.JS_VERSION);
 const DEFAULT_LANGUAGE = 'zh-cn';
 const LOCEL_LANGUAGE_MAP = new Map([

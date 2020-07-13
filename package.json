@@ -27,7 +27,10 @@
         "solarlunar": "2.0.7",
         "rc-color-picker": "1.2.6",
         "react-intl": "2.7.2",
-        "react-cropper": "1.0.1"
+        "react-cropper": "1.0.1",
+        "redux-saga": "^0.16.0",
+        "wangeditor": "^3.1.1",
+        "warning": "^3.0.0"
     },
     "devDependencies": {
         "@hualala/platform-scripts": "2.6.1",
