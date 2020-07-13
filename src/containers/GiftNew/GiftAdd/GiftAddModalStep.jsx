@@ -207,6 +207,20 @@ class GiftAddModalStep extends React.PureComponent {
         }
 
         FetchGiftSort({});
+
+        // 表单和redux数据同步，解决左侧 phonePreview 券显示不对bug
+        const { sharedGifts } = this.props;
+        const _sharedGifts = sharedGifts && sharedGifts.toJS();
+        this.setState({
+            sharedGifts: this.proSharedGifts(_sharedGifts.crmGiftShareList),
+        }, ()=>{
+            this.props.changeGiftFormKeyValue({
+                key:'shareIDs', 
+                value: this.state.sharedGifts
+            });
+        });
+
+
         // 礼品名称 auto focus
         try {
             this.firstFormRefMap.giftName.focus()
@@ -219,7 +233,10 @@ class GiftAddModalStep extends React.PureComponent {
         
         // 从redux里获取 shareGifts （共享券列表）。从列表页点击编辑的时候触发的网络请求，根据券id去获取共享券列表
         const { sharedGifts } = nextProps;
+
+
         const _sharedGifts = sharedGifts && sharedGifts.toJS();
+
         if (nextProps.shopSchema.getIn(['shopSchema']) !== this.props.shopSchema.getIn(['shopSchema'])) {
             let shopSchema = nextProps.shopSchema.getIn(['shopSchema']).toJS();
             let malls = [];
@@ -259,16 +276,30 @@ class GiftAddModalStep extends React.PureComponent {
          */
         // if(JSON.stringify(this.state.sharedGifts) != JSON.stringify(this.this.proSharedGifts(_sharedGifts.crmGiftShareList))) {
         if(!_.isEqual(this.props.sharedGifts, nextProps.sharedGifts)){    
+            // console.log('handleFormChange shareIDs 01', this.proSharedGifts(_sharedGifts.crmGiftShareList));
             this.setState({
                 sharedGifts: this.proSharedGifts(_sharedGifts.crmGiftShareList),
             }, ()=>{
-                console.log('this.state.sharedGifts', this.state.sharedGifts);
+                // console.log('this.state.sharedGifts', this.state.sharedGifts);
                 this.props.changeGiftFormKeyValue({
                     key:'shareIDs', 
                     value: this.state.sharedGifts
                 });
             });
-        }
+        } 
+        // else {
+        //     if(!_.isEqual(this.state.sharedGifts, this.proSharedGifts(_sharedGifts.crmGiftShareList))) {
+        //         console.log('handleFormChange shareIDs 02', this.proSharedGifts(_sharedGifts.crmGiftShareList));
+        //         this.setState({
+        //             sharedGifts: this.proSharedGifts(_sharedGifts.crmGiftShareList),
+        //         }, ()=>{
+        //             this.props.changeGiftFormKeyValue({
+        //                 key:'shareIDs', 
+        //                 value: this.state.sharedGifts
+        //             });
+        //         })
+        //     }
+        // }
         
     }
 
