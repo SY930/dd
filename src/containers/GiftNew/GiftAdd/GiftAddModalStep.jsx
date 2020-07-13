@@ -216,6 +216,8 @@ class GiftAddModalStep extends React.PureComponent {
     }
 
     componentWillReceiveProps(nextProps) {
+        
+        // 从redux里获取 shareGifts （共享券列表）。从列表页点击编辑的时候触发的网络请求，根据券id去获取共享券列表
         const { sharedGifts } = nextProps;
         const _sharedGifts = sharedGifts && sharedGifts.toJS();
         if (nextProps.shopSchema.getIn(['shopSchema']) !== this.props.shopSchema.getIn(['shopSchema'])) {
@@ -249,9 +251,25 @@ class GiftAddModalStep extends React.PureComponent {
             }
         }
 
-        this.setState({
-            sharedGifts: this.proSharedGifts(_sharedGifts.crmGiftShareList),
-        });
+        /**
+         * @Notice 因为获取共享券列表后，无法触发BaseForm表单onChange事件，
+         * 从而handleFormChange里的 this.props.changeGiftFormKeyValue({key, value}); 存到redux里的方法无法执行。
+         * 所以在setState的回调里进行一个赋值
+         * @TODO 优化这块逻辑
+         */
+        // if(JSON.stringify(this.state.sharedGifts) != JSON.stringify(this.this.proSharedGifts(_sharedGifts.crmGiftShareList))) {
+        if(!_.isEqual(this.props.sharedGifts, nextProps.sharedGifts)){    
+            this.setState({
+                sharedGifts: this.proSharedGifts(_sharedGifts.crmGiftShareList),
+            }, ()=>{
+                console.log('this.state.sharedGifts', this.state.sharedGifts);
+                this.props.changeGiftFormKeyValue({
+                    key:'shareIDs', 
+                    value: this.state.sharedGifts
+                });
+            });
+        }
+        
     }
 
     isHuaTianSpecificCoupon = () => {

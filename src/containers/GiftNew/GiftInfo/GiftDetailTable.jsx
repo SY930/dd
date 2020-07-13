@@ -318,6 +318,7 @@ class GiftDetailTable extends Component {
         gift.data.action = `${gift.data.action || 0}`;
         gift.data.valueType = `${gift.data.valueType}`;
         gift.data.monetaryUnit = `${gift.data.monetaryUnit}`;
+        
         const { FetchSharedGifts } = this.props;
         FetchSharedGifts({ giftItemID: record.giftItemID });
         if (gift.value == 100) { //
