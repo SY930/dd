@@ -288,14 +288,15 @@ class GiftDetailTable extends Component {
         });
     }
 
-    handleEdit(rec, operationType) {
-        let gift = _.find(GiftCfg.giftType, { name: rec.giftTypeName });
+    // 用户点击编辑，处理编辑
+    handleEdit(record, operationType) {
+        let gift = _.find(GiftCfg.giftType, { name: record.giftTypeName });
         const selectShops = [];
         if(!gift){
             return;
         }
         gift = _.cloneDeep(gift);
-        gift.data = { ...rec }; // 此处将原引用GiftCfg改变了，导致在新建活动的时候，有data等属性，表单里会有此处留下的值
+        gift.data = { ...record }; // 此处将原引用GiftCfg改变了，导致在新建活动的时候，有data等属性，表单里会有此处留下的值
         gift.data.shopNames = gift.data.shopNames === '不限' ? [] : gift.data.shopNames.split(',');
         gift.data.shopIDs = gift.data.shopIDs === undefined ? [] : gift.data.shopIDs.split(',');
         gift.data.shopNames.map((shop, idx) => {
@@ -318,7 +319,7 @@ class GiftDetailTable extends Component {
         gift.data.valueType = `${gift.data.valueType}`;
         gift.data.monetaryUnit = `${gift.data.monetaryUnit}`;
         const { FetchSharedGifts } = this.props;
-        FetchSharedGifts({ giftItemID: rec.giftItemID });
+        FetchSharedGifts({ giftItemID: record.giftItemID });
         if (gift.value == 100) { //
             return message.success('该券即将下线, 请使用折扣券');
         }

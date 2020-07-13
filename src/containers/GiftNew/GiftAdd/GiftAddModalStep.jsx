@@ -309,6 +309,7 @@ class GiftAddModalStep extends React.PureComponent {
         if (key === 'shareIDs') {
             this.props.changeGiftFormKeyValue({key, value});
         } else if (JSON.stringify(values[key]) !== JSON.stringify(value)) {
+
             switch (key) { // 这几个个字段是靠手动输入的, 不加debounce的话在一般机器上有卡顿
                 case 'giftName':    this.handleNameChangeDebounced({key, value});
                                     break;
@@ -329,19 +330,19 @@ class GiftAddModalStep extends React.PureComponent {
         }
         values[key] = value;
         switch (key) {
-            case 'moneyLimitTypeAndValue':
-                const { moneyLimitType } = value;
-                if (describe === '菜品兑换券' || describe === '代金券' || describe == '菜品优惠券') {
-                    const maxUseLimitIndex = _.findIndex(newKeys, item => item == 'maxUseLimit');
-                    if (moneyLimitType == 1) {
-                        maxUseLimitIndex == -1 && newKeys.splice(index + 1, 0, 'maxUseLimit')
-                    } else {
-                        maxUseLimitIndex !== -1 && newKeys.splice(maxUseLimitIndex, 1)
-                    }
-                }
-                secondKeys[describe][0].keys = [...newKeys];
-                this.setState({ secondKeys });
-                break;
+            // case 'moneyLimitTypeAndValue':
+            //     const { moneyLimitType } = value;
+            //     if (describe === '菜品兑换券' || describe === '代金券' || describe == '菜品优惠券') {
+            //         const maxUseLimitIndex = _.findIndex(newKeys, item => item == 'maxUseLimit');
+            //         if (moneyLimitType == 1) {
+            //             maxUseLimitIndex == -1 && newKeys.splice(index + 1, 0, 'maxUseLimit')
+            //         } else {
+            //             maxUseLimitIndex !== -1 && newKeys.splice(maxUseLimitIndex, 1)
+            //         }
+            //     }
+            //     secondKeys[describe][0].keys = [...newKeys];
+            //     this.setState({ secondKeys });
+            //     break;
             case 'discountType':
                 if(firstKeys[describe][1] != undefined && firstKeys[describe][1].hasOwnProperty('keys')) {
                     let keys = [...firstKeys[describe][1].keys];
@@ -1861,12 +1862,6 @@ class GiftAddModalStep extends React.PureComponent {
             if(data.hasOwnProperty('applyScene') && data.applyScene == '1') {
                 data.selectMall = data.shopIDs
             }
-            
-            // console.log("data.shopIDs", data.shopIDs);
-            // if(shopIDS instanceof Array && shopIDS.length == 1) {
-            //     data.selectMall = shopIDS[0];
-            // }
-            // console.log("data.selectMall", data.selectMall);
         }
         
         // 买赠券， 前端对应的高价有限设置项，对应后端BOGOdiscountWay
@@ -1889,11 +1884,6 @@ class GiftAddModalStep extends React.PureComponent {
                 })
             }
         }
-
-        
-
-        
-
         
         return data;
 
@@ -1946,13 +1936,45 @@ class GiftAddModalStep extends React.PureComponent {
 
             // 根据券与券公用来调整是否显示选券表单 （动态增加）
             if(values.hasOwnProperty('giftShareType') && values.giftShareType == '2') {
-                debugger;
                 const giftShareTypeIdx = _.findIndex(secondKeysToDisplay[0].keys, item => item == 'giftShareType');
                 if(giftShareTypeIdx != -1) {
-                    // secondKeysToDisplay[0].keys = 
                     secondKeysToDisplay[0].keys.splice(giftShareTypeIdx + 1, 0, 'shareIDs');
                 }
             } 
+
+
+            // 根据账单金额限制控制一笔订单最多使用多少张（动态增加）
+            // @Notice 仅限 菜品兑换券，代金券，菜品优惠券三种场景
+            if(values.hasOwnProperty('moneyLimitTypeAndValue')) {
+                if(values.moneyLimitTypeAndValue.hasOwnProperty('moneyLimitType')) {
+                    const { moneyLimitType } = values.moneyLimitTypeAndValue;
+                    // moneyLimitType = 1 为每满
+                    if( moneyLimitType == '1') {
+                        const moneyLimitTypeAndValueIndex = _.findIndex(secondKeysToDisplay[0].keys, item => item == 'moneyLimitTypeAndValue');
+                        if(moneyLimitTypeAndValueIndex != -1) {
+                            secondKeysToDisplay[0].keys.splice(moneyLimitTypeAndValueIndex + 1, 0, 'maxUseLimit');
+                        }
+                    }
+                      
+                }
+            }
+
+
+            /*
+            case 'moneyLimitTypeAndValue':
+                const { moneyLimitType } = value;
+                if (describe === '菜品兑换券' || describe === '代金券' || describe == '菜品优惠券') {
+                    const maxUseLimitIndex = _.findIndex(newKeys, item => item == 'maxUseLimit');
+                    if (moneyLimitType == 1) {
+                        maxUseLimitIndex == -1 && newKeys.splice(index + 1, 0, 'maxUseLimit')
+                    } else {
+                        maxUseLimitIndex !== -1 && newKeys.splice(maxUseLimitIndex, 1)
+                    }
+                }
+                secondKeys[describe][0].keys = [...newKeys];
+                this.setState({ secondKeys });
+
+            */
 
             // const giftShareTypeIdx = _.findIndex(newKeys, item => item == 'shareIDs');
             //     debugger;
@@ -2043,7 +2065,9 @@ class GiftAddModalStep extends React.PureComponent {
     render() {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
             { firstKeys, secondKeys, values, unit } = this.state;
-        let formData = values;
+        // 判断是否是空对象
+        // 影响 PhonePreview 回显。
+        let formData =JSON.stringify(values) == '{}' ? data : values ;
         
         const { firstKeysToDisplay: displayFirstKeys, secondKeysToDisplay: displaySecondKeys} = this.justifyFormKeysToDisplay();
 
@@ -2689,6 +2713,7 @@ class GiftAddModalStep extends React.PureComponent {
         formData.shareIDs = this.state.sharedGifts;
         formData.giftShareType = String(formData.giftShareType);
         formData.couponPeriodSettings = formData.couponPeriodSettingList;
+
 
         return (
             <div>
