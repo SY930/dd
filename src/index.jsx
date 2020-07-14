@@ -59,6 +59,12 @@ registerLocalPage([
         label: '活动装修',
         parent: [entryCodes.SPECIAL_PAGE],
     },
+    {
+        key: entryCodes.SALE_CENTER_PAYHAVEGIFT,
+        value: entryCodes.SALE_CENTER_PAYHAVEGIFT,
+        label: '微信支付有礼',
+        parent: [entryCodes.NEW_SALE_BOX],
+    },
 ]);
 // 注册语言包
 const registeLangPack = async () => {
