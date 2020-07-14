@@ -283,7 +283,7 @@ class NewCustomerPage extends Component {
             return;
         }
         if(key === '79') {
-           return jumpPage({ menuID: SALE_CENTER_PAYHAVEGIFT})
+           return jumpPage({ menuID: SALE_CENTER_PAYHAVEGIFT, typeKey: '79'})
         }
         this.setSpecialModalVisible(true);
     }

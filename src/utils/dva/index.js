@@ -4,10 +4,10 @@
 
 import { create } from "./dva";
 import createLoading from "./dva-loading";
-
+import createActiveCom from "../../containers/SaleActives/models/common";
 const app = create();
 
-const models = [];
+const models = [createActiveCom];
 
 models.forEach((v) => {
     app.model(v);
@@ -15,8 +15,5 @@ models.forEach((v) => {
 app.use(createLoading());
 app.start();
 
-export const dvaApp = app;
-
-// export const getProvider = (props) => {
-//     return
-// }
+// export const dvaApp = app
+export default app;

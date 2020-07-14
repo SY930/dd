@@ -43,4 +43,4 @@ export const ONLINE_PROMOTION_MANAGEMENT_SHOP = '1000086003'; // 线上营销管
 export const TRD_PROMOTION_INTERFACE = '100009992';
 export const NEW_SALE_BOX = '10000730001';
 
-export const SALE_CENTER_PAYHAVEGIFT = 'sale.active.payHaveGift' // 营销活动，微信支付有礼
+export const SALE_CENTER_PAYHAVEGIFT = 'promotion_active_payHaveGift' // 营销活动，微信支付有礼

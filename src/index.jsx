@@ -62,7 +62,7 @@ registerLocalPage([
     {
         key: entryCodes.SALE_CENTER_PAYHAVEGIFT,
         value: entryCodes.SALE_CENTER_PAYHAVEGIFT,
-        label: '微信支付有礼',
+        label: '创建活动',
         parent: [entryCodes.NEW_SALE_BOX],
     },
 ]);
