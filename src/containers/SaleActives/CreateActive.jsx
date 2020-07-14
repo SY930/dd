@@ -16,6 +16,9 @@ import  dvaApp from '../../utils/dva/index'
 import { SALE_CENTER_PAYHAVEGIFT } from '../../constants/entryCodes';
 import styles from './CreateActive.less'
 import { actInfoList } from './constant'
+import {
+    isProfessionalTheme,
+} from '../../helpers/util'
 const store = dvaApp._store
 
 
@@ -55,12 +58,12 @@ class CreateActive extends Component {
             descModalIsShow
          } = this.props.createActiveCom
          const currentInfo = actInfoList.find(v => v.key ===  this.typeKey) || {}
-         console.lo
+
         return (
             <div className={styles.createActive}>
                <div className={styles.header}>
                     <h1>{currentInfo.title}</h1>
-                    <div onClick={this.showDescModal} className={styles.desc}>
+                    <div onClick={this.showDescModal} style={isProfessionalTheme ? {color: '#379ff1'} : {}} className={styles.desc}>
                         <Icon type="question-circle-o" />
                         <span style={{marginLeft: '2px'}}>活动说明</span>
                     </div>

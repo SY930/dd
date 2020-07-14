@@ -5,19 +5,26 @@
         //步骤条距离上下的距离
         .ant-steps {
             margin-bottom: 15px;
-            border: 1px solid @line-color;
-            padding: 10px;
-            border-radius: @border-radius-sm;
-            background: @block-el-background;
+        }
+        .ant-steps .ant-steps-main {
+            margin-top: 5.5px;
+        }
+        .ant-steps .ant-steps-tail {
+            top: 17px;
+        }
+        .ant-steps .ant-steps-head-inner {
+            width: 32px;
+            height: 32px;
+            border-radius: 100% !important;
+            line-height: 32px;
         }
         //图标的背景颜色
         .ant-steps-head {
-            background: @block-el-background;
         }
         //所有文字不加粗
         .ant-steps-title {
             font-weight: inherit;
-            background: @block-el-background;
+            font-size: 16px;
         }
         //横线的颜色
         .ant-steps
