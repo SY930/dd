@@ -77,7 +77,9 @@ class Chou2Le extends Component {
         return { brandList, orderTypeList , shopIDList };
     }
     setData4Step3(data, gifts, list) {
-        const { consumeType: stype, userCount, consumeTotalAmount } = data;
+        const { consumeType: stype, userCount, consumeTotalAmount, launchSceneList = [{}] } = data;
+        // 
+        let [{sceneType = '2', eventID}] = launchSceneList
         const lottery = [];
         gifts.forEach((x, i) => {
             const { presentType, giftOdds, sortIndex } = x;
@@ -116,7 +118,7 @@ class Chou2Le extends Component {
             lottery[index] = { id: `${sortIndex}`, giftOdds, userCount, ...newItem };
         });
         console.log('lottery', lottery);
-        return { consumeType: `${stype}`, consumeTotalAmount, lottery };
+        return { consumeType: `${stype}`, sceneType: `${sceneType}`, eventID, consumeTotalAmount, lottery };
     }
     /** 得到form, 根据step不同，获得对应的form对象 */
     onSetForm = (form) => {
@@ -204,10 +206,11 @@ class Chou2Le extends Component {
         const newEventRange = this.formatEventRange(eventRange);
         const step2Data = this.setStep2Data();
         const { gifts, sceneType, ...others3 } = formData3;
-        const launchSceneList = [{groupID, eventID: '', sceneType}]
+        // 投放场景数据
+        let {formData3: {eventID = ''}} = this.state
+        let launchSceneList = [{groupID, eventID, sceneType}]
+
         const event = { ...others1, ...others3, ...newEventRange, ...step2Data, eventWay: '78', launchSceneList };
-        console.log('all', event);
-        // return;
         if(id) {
             const itemID = id;
             const allData = { timeList: newTimeList, event: {...event, itemID}, gifts };
