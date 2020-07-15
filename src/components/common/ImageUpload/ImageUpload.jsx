@@ -61,6 +61,7 @@ class ImageUpload extends React.Component {
             message.error('上传文件大小超过限制');
             return false;
         }
+        this.fileName = file.name
         return true;
     }
 
@@ -76,6 +77,11 @@ class ImageUpload extends React.Component {
             this.props.onChange({
                 url,
                 [this.props.hwpName]: imgHWP,
+            });
+        } else if(this.props.getFileName) {
+            this.props.onChange({
+                url,
+                fileName: this.fileName,
             });
         } else {
             this.props.onChange(url);

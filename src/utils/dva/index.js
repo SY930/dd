@@ -5,6 +5,7 @@
 import { create } from "./dva";
 import createLoading from "./dva-loading";
 import createActiveCom from "../../containers/SaleActives/models/common";
+
 const app = create();
 
 const models = [createActiveCom];

@@ -63,7 +63,7 @@ class CreateActive extends Component {
             <div className={styles.createActive}>
                <div className={styles.header}>
                     <h1>{currentInfo.title}</h1>
-                    <div onClick={this.showDescModal} style={isProfessionalTheme ? {color: '#379ff1'} : {}} className={styles.desc}>
+                    <div onClick={this.showDescModal} style={isProfessionalTheme() ? {color: '#379ff1'} : {}} className={styles.desc}>
                         <Icon type="question-circle-o" />
                         <span style={{marginLeft: '2px'}}>活动说明</span>
                     </div>

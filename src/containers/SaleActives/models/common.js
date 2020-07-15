@@ -9,6 +9,8 @@ const initState = {
     groupID: "",
     type: "",
     descModalIsShow: false,
+    isStepContinue: false,
+    formData: {}, // 表单内的值
 };
 export default {
     namespace: "createActiveCom",

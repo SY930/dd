@@ -302,7 +302,7 @@ export const REPEAT_PROMOTION_TYPES = [
         text: '微信支付成功页投放微信支付商家券，引导用户领券',
         tags: ['新微信'],
         example: '',
-        key: '79',
+        key: '80',
         right: 16,
         bottom: 6,
         isHot: true,

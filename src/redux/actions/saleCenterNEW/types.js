@@ -838,7 +838,7 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             title: "微信支付有礼",
             text: "",
             example: "",
-            key: "79",
+            key: "80",
         },
     ];
     return basic;

@@ -1,11 +1,11 @@
 import React from 'react';
-import { Steps, Button, message } from 'antd';
+import { Steps, Button } from 'antd';
 import styles from './ActSteps.less'
 import {
     isProfessionalTheme,
 } from '../../../../helpers/util'
+import {connect} from 'react-redux';
 const Step = Steps.Step;
-
 
 
 class ActSteps extends React.Component {
@@ -20,6 +20,7 @@ class ActSteps extends React.Component {
     next(current) {
         const onNext = this.props.onNext;
         if (typeof onNext === 'function') {
+            // use the lambda
             onNext(() => {
                 this.setState({
                     current: (this.state.current + 1),
@@ -94,13 +95,21 @@ class ActSteps extends React.Component {
                 })}
 
                 <div className="progressButton">
-                    <Button
-                        className="cancelBtnJs"
-                        type="ghost"
-                        onClick={() => this.cancel(current)}
-                    >
-                        取消
-                    </Button>
+                    {
+                        this.state.current === steps.length - 1 &&
+                        <Button
+                            style={{ display: this.props.isUpdate ? 'inline-block' : 'none' }}
+                            type="primary"
+                            loading={this.props.loading}
+                            disabled={this.props.loading}
+                            onClick={() => {
+                                this.finish(current);
+                            }}
+                        >
+                            确定
+                        </Button>
+                    }
+
                     {
                         this.state.current > 0 && (
                             <Button
@@ -120,20 +129,13 @@ class ActSteps extends React.Component {
                         > 下一步
                         </Button>
                     }
-                    {
-                        this.state.current === steps.length - 1 &&
-                        <Button
-                            style={{ display: this.props.isUpdate ? 'inline-block' : 'none' }}
-                            type="primary"
-                            loading={this.props.loading}
-                            disabled={this.props.loading}
-                            onClick={() => {
-                                this.finish(current);
-                            }}
-                        >
-                            确定
-                        </Button>
-                    }
+                    <Button
+                        className="cancelBtnJs"
+                        type="ghost"
+                        onClick={() => this.cancel(current)}
+                    >
+                        取消
+                    </Button>
                 </div>
             </div>
         );
