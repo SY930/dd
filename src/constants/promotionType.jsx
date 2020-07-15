@@ -214,6 +214,18 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
  */
 export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
     {
+        title: '盲盒',
+        tags: [SALE_LABEL.k639vgjy, '小程序'],
+        isSpecial: true,
+        text: '拆未知礼盒，增加猎奇趣味',
+        example: '',
+        key: '79',
+        right: 12,
+        bottom: 4,
+        isHot: true,
+        isNew: true,
+    },
+    {
         title: '签到',
         tags: [SALE_LABEL.k639vgjy, '小程序'],
         isSpecial: true,
