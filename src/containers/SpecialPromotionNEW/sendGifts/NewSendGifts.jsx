@@ -15,11 +15,11 @@ import { addSpecialPromotion, updateSpecialPromotion } from '../../../redux/acti
 
 import CustomProgressBar from './CustomProgressBar';
 // import SpecialDetailInfo from './SpecialPromotionDetailInfoInSendGifts';
-import SpecialDetailInfo from '../common/SpecialPromotionDetailInfo'
+import SpecialDetailInfo from '../common/SpecialPromotionDetailInfo';
 import Three from './Three';
 import StepTwo from './stepTwo';
 // import StepOneWithDateRange from '../common/StepOneWithDateRange';
-import StepOneWithDateRange from './StepOneWithDateRange';
+import StepOne from './StepOne';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
 
@@ -40,7 +40,7 @@ class NewSendGifts extends NewPromotion {
 
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.d2c8987eai0135)}`,
-                content: (<StepOneWithDateRange
+                content: (<StepOne
                     type={this.props.promotionType}
                     getSubmitFn={(handles) => {
                         this.handles[0] = handles;

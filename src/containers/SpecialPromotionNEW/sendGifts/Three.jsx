@@ -1,7 +1,7 @@
 /*
  * @Author: wangxiaofeng@hualala.com
  * @Date: 2020-06-15 14:49:36
- * @LastEditTime: 2020-06-24 18:01:23
+ * @LastEditTime: 2020-07-15 11:34:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /platform-sale/src/containers/SpecialPromotionNEW/sendGifts/Three.jsx
@@ -116,7 +116,7 @@ class Three extends React.Component {
             groupID
         }} = this.props.user;
         // 独立优惠券
-        if(couponType == '1') {
+        // if(couponType == '1') {
             return (
                 <div style={{padding: '5px 0'}}>
                     <AddGifts
@@ -131,15 +131,15 @@ class Three extends React.Component {
                     />
                 </div>
             )
-        } 
+        // } 
         // 券包
-        else if( couponType == '4') {
-            return (
-                <div>
-                    <TicketBag groupID={groupID} bag={bag} onChange={this.onBagChange}/>
-                </div> 
-            )
-        }
+        // else if( couponType == '4') {
+        //     return (
+        //         <div>
+        //             <TicketBag groupID={groupID} bag={bag} onChange={this.onBagChange}/>
+        //         </div> 
+        //     )
+        // }
 
         return null;
     }
@@ -152,7 +152,7 @@ class Three extends React.Component {
         return (
             <div>
                 <div style={{padding: '5px 0'}}>
-                    { this.discountCouponPanel() }
+                    {/* { this.discountCouponPanel() } */}
                 </div>
                 {
                     this.renderCouponOrCouponPack()

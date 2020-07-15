@@ -32,7 +32,7 @@ const Option = Select.Option;
 const { RangePicker } = DatePicker;
 
 @injectIntl
-class StepOneWithDateRange extends React.Component {
+class StepOne extends React.Component {
     constructor(props) {
         super(props);
         let excludeDateArray;
@@ -348,32 +348,25 @@ class StepOneWithDateRange extends React.Component {
         })
     }
     onTimePickerChange(time) {
+
+        // console.log('time is', time.format('HHmmss'));
+
         let timeString;
         try {
             timeString = time.format('HHmmss')
         } catch (error) {
             timeString = ''
         }
-        if (this.state.startTime == moment().format('YYYYMMDD') && timeString.substring(0, 2) == moment().hours()) {
-            if (timeString.substring(2, 4) <= moment().minutes() + 10) {
-                timeString = `${timeString.substring(0, 2) + (moment().minutes() + 10)}00`
-            }
-            this.setState({
-                timeString,
-            }, () => {
-                this.props.form.setFieldsValue({
-                    sendTime: this.state.timeString ? moment(this.state.timeString, 'HHmm') : '',
-                });
-            })
-        } else {
-            this.setState({
-                timeString,
-            }, () => {
-                this.props.form.setFieldsValue({
-                    sendTime: this.state.timeString ? moment(this.state.timeString, 'HHmm') : '',
-                });
-            })
+        if (timeString.substring(2, 4) != '00' && timeString.substring(2, 4) != '30' ) {
+            timeString = `${timeString.substring(0, 2)}0000`
         }
+        this.setState({
+            timeString,
+        }, () => {
+            this.props.form.setFieldsValue({
+                sendTime: this.state.timeString ? moment(this.state.timeString, 'HHmm') : '',
+            });
+        })
     }
 
     /**
@@ -383,10 +376,9 @@ class StepOneWithDateRange extends React.Component {
     renderDateOfSendingPromotionSelector = () => {
         const { type, form: {
             getFieldDecorator: decorator,
+            getFieldValue,
+            setFieldsValue
         } } = this.props;
-
-        // initialValue 应该从redux里面去获取
-        console.log('this.props.specialPromotion.toJS();', this.props.specialPromotion.toJS());
         const {
             $eventInfo : {
                 validCycle
@@ -416,7 +408,14 @@ class StepOneWithDateRange extends React.Component {
                             message: '请选择券发放周期',
                         }],
                         initialValue: dateInPeriodType,
-                        // onChange: (val) => { console.log(val) }
+                        onChange: (val) => {
+                            // 清除数据
+                            if(getFieldValue('dateInPeriodType') != val) {
+                                setFieldsValue({
+                                    dateDescInPeroid: []
+                                })
+                            }
+                        }
                     })(
                         <Select>
                             <Option value="m">每月</Option>
@@ -445,9 +444,6 @@ class StepOneWithDateRange extends React.Component {
         const dateInPeriodType = getFieldValue('dateInPeriodType')
 
         let initialValue = [];
-        // if (decorator('dateDescInPeroid') instanceof Array && decorator('dateDescInPeroid').length > 0) {
-        //     initialValue = decorator('dateDescInPeroid');
-        // }
         const {
             $eventInfo : {
                 validCycle
@@ -498,16 +494,13 @@ class StepOneWithDateRange extends React.Component {
             return [];
         };
         let disabledMinutes = () => {
-            const dateInPeriodType = getFieldValue('dateInPeriodType');
-            if(dateInPeriodType == 'm' || dateInPeriodType == 'w'){
-                let result = [];
-                for(let i=0; i < 60; i++){
-                    if(i != 0 && i != 30) {
-                        result.push(i);
-                    }
+            let result = [];
+            for(let i=0; i < 60; i++){
+                if(i != 0 && i != 30) {
+                    result.push(i);
                 }
-                return result;
-            }   
+            }
+            return result;
         }
 
         let timeStringInitialValue = '';
@@ -784,4 +777,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(StepOneWithDateRange));
+export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(StepOne));
