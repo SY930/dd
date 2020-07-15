@@ -886,6 +886,60 @@ class StepOneWithDateRange extends React.Component {
         )
     }
 
+    /**
+     * 日期选择器回调函数
+    */
+   handleDateRangeChange =  (val) => {
+    //    console.log('val in handleDateRangeChange', handleDateRangeChange);
+   }
+
+    /**
+     * @description 日期选择
+    */
+    renderPeriodSelector = () => {
+
+        // 日期选择器
+        // const { startTime, endTime } = this.state.rangePickerVal;
+
+        // return (
+        //     <FormItem
+        //         label="活动起止日期"
+        //         className={[styles.FormItemStyle, styles.cardLevelTree].join(' ')}
+        //         labelCol={{ span: 4 }}
+        //         wrapperCol={{ span: 17 }}
+        //     >
+        //         <Row>
+        //             <Col span={21}>
+        //                 {getFieldDecorator('rangePicker', {
+        //                 rules: [{
+        //                     required: true,
+        //                     message: '请选择活动起止时间',
+        //                 }],
+        //                 onChange: this.handleDateRangeChange,
+        //                 initialValue: startTime && endTime ? [moment(startTime, DATE_FORMAT), moment(endTime, DATE_FORMAT)] : [],
+        //             })(
+        //                 <RangePicker
+        //                     className={styles.ActivityDateDayleft}
+        //                     // disabledDate={disabledDate}
+        //                     style={{ width: '100%' }}
+        //                     format="YYYY-MM-DD"
+        //                     placeholder={['开始日期', '结束日期']}
+        //                 />
+        //             )}
+        //             </Col>
+        //             <Col offset={1} span={2}>
+        //                 <div className={styles.ActivityDateDay}>
+        //                     <span>
+        //                         {this.getDateCount()}
+        //                     </span>
+        //                     <span>天</span>
+        //                 </div>
+        //             </Col>
+        //         </Row>
+        //     </FormItem>
+        // )
+    }
+
 
     render() {
         const categorys = this.props.saleCenter.get('characteristicCategories').toJS();
@@ -1036,7 +1090,11 @@ class StepOneWithDateRange extends React.Component {
                             />
                         )}
                     </FormItem>
-                
+                    
+                    {
+                        // 活动起始结束日期选择组件
+                        // this.renderPeriodSelector()
+                    }
                     {
                         // 渲染周期选择期
                         this.renderDateOfSendingPromotionSelector()

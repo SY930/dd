@@ -14,10 +14,12 @@ import { connect } from 'react-redux';
 import { addSpecialPromotion, updateSpecialPromotion } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 
 import CustomProgressBar from './CustomProgressBar';
-import SpecialDetailInfo from './SpecialPromotionDetailInfoInSendGifts';
+// import SpecialDetailInfo from './SpecialPromotionDetailInfoInSendGifts';
+import SpecialDetailInfo from '../common/SpecialPromotionDetailInfo'
 import Three from './Three';
 import StepTwo from './stepTwo';
-import StepOneWithDateRange from '../common/StepOneWithDateRange';
+// import StepOneWithDateRange from '../common/StepOneWithDateRange';
+import StepOneWithDateRange from './StepOneWithDateRange';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
 
@@ -58,17 +60,17 @@ class NewSendGifts extends NewPromotion {
             },
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.du37x82g62158)}`,
-                // content: (
-                //     <SpecialDetailInfo
-                //         type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
-                //         getSubmitFn={(handles) => {
-                //             this.handles[2] = handles;
-                //         }}
-                //     />
-                // ),
                 content: (
-                    <Three />
-                )
+                    <SpecialDetailInfo
+                        type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
+                        getSubmitFn={(handles) => {
+                            this.handles[2] = handles;
+                        }}
+                    />
+                ),
+                // content: (
+                //     <Three />
+                // )
             },
         ];
         return (
@@ -89,8 +91,8 @@ class NewSendGifts extends NewPromotion {
 
 const mapStateToProps = (state) => {
     return {
-        // specialPromotion: state.sale_specialPromotion_NEW.toJS(),
-        // user: state.user.toJS(),
+        specialPromotion: state.sale_specialPromotion_NEW.toJS(),
+        user: state.user.toJS(),
     };
 };
 

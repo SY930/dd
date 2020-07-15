@@ -316,6 +316,7 @@ export const REPEAT_PROMOTION_TYPES = [
         isHot: true,
         isNew: true,
     },
+    // 群发礼品
     {
         title: SALE_LABEL.k67b2pz0,
         isSpecial: true,
@@ -325,6 +326,7 @@ export const REPEAT_PROMOTION_TYPES = [
         right: 3,
         bottom: 0,
     },
+    // 群发短信
     {
         title: SALE_LABEL.k67b2q7c,
         isSpecial: true,
@@ -334,6 +336,7 @@ export const REPEAT_PROMOTION_TYPES = [
         right: 13,
         bottom: 6,
     },
+    // 消费返礼品
     {
         title: SALE_LABEL.k5m4q0ae,
         tags: ['pos', SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9, SALE_LABEL.k639vgbm],
@@ -344,6 +347,7 @@ export const REPEAT_PROMOTION_TYPES = [
         right: 17,
         bottom: 7,
     },
+    // 消费返积分
     {
         title: SALE_LABEL.k5m4q0iq,
         tags: ['pos', SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9, SALE_LABEL.k639vgbm],
@@ -354,6 +358,7 @@ export const REPEAT_PROMOTION_TYPES = [
         right: 13,
         bottom: 3,
     },
+    // 积分兑换
     {
         title: SALE_LABEL.k67b2qfo,
         tags: [SALE_LABEL.k5krn6z9],
