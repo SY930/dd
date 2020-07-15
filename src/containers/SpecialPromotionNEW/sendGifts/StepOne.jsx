@@ -357,16 +357,26 @@ class StepOne extends React.Component {
         } catch (error) {
             timeString = ''
         }
-        if (timeString.substring(2, 4) != '00' && timeString.substring(2, 4) != '30' ) {
-            timeString = `${timeString.substring(0, 2)}0000`
+        if(typeof(timeString) == 'string' && timeString.length > 0) {
+            if (timeString.substring(2, 4) != '00' && timeString.substring(2, 4) != '30' ) {
+                timeString = `${timeString.substring(0, 2)}0000`
+            }
+            this.setState({
+                timeString,
+            }, () => {
+                this.props.form.setFieldsValue({
+                    sendTime: this.state.timeString ? moment(this.state.timeString, 'HHmm') : '',
+                });
+            })
+        } else {
+            this.setState({
+                timeString,
+            }, () => {
+                this.props.form.setFieldsValue({
+                    sendTime: '',
+                });
+            })
         }
-        this.setState({
-            timeString,
-        }, () => {
-            this.props.form.setFieldsValue({
-                sendTime: this.state.timeString ? moment(this.state.timeString, 'HHmm') : '',
-            });
-        })
     }
 
     /**
