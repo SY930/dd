@@ -1165,7 +1165,7 @@ class GiftAddModalStep extends React.PureComponent {
                         validator: (rule, num, cb) => {
                             Number(num) > 0 &&  Number(num) < 100 ? cb() : cb(rule.message);
                         },
-                        message: '折扣要大于等于1, 小于等于100',
+                        message: '请输入1-99之间的整数',
                     },{
                         validator: (rule, v, cb) => {
                             // if (!/^\+?\d{0,2}$/.test(Number(v))) {
@@ -1204,7 +1204,7 @@ class GiftAddModalStep extends React.PureComponent {
                         validator: (rule, num, cb) => {
                             Number(num) > 0 &&  Number(num) <= 10000 ? cb() : cb(rule.message);
                         },
-                        message: '金额要大于0,小于10000',
+                        message: '请输入大于0，整数五位数以内且小数2位数以内的数值',
                     }],
                     initialValue: val
                 })(<Input 
