@@ -560,7 +560,7 @@ class SpecialDetailInfo extends Component {
             this.recommendOtherGifts = otherGifts
 
         }
-        if(type == 60 || type == 61) {
+        if(type == 60 || type == 61 || type == 53) {
             giftInfo = giftInfo.filter(v => v.presentType === 1)
         }
         giftInfo.forEach((gift, index) => {
