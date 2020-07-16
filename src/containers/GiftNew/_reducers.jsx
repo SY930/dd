@@ -100,6 +100,7 @@ export function editGiftInfoNew($$state = $initialEditState, action) {
                 .set('currentGiftType', action.payload.value)
                 .set('createOrEditFormData', Immutable.fromJS(action.payload.data))
                 ;
+        // 编辑礼品
         case GIFT_NEW_START_EDIT_GIFT:
             return $$state
                 .set('isCreatingOrEditing', true)

@@ -196,11 +196,13 @@ class GenerateBatchQRCodes extends Component {
     }
 
     handleQrEffectDays = ()=>{
-        const { qrCodeValidateType, qrCodeType } = this.state;
+        const { qrCodeValidateType, qrCodeType, qrEffectDays } = this.state;
         if(qrCodeType == '1') {
             return '0'
         } else if (qrCodeType == '0' && qrCodeValidateType == '1'){
             return '0' 
+        } else {
+            return qrEffectDays;
         }
     }
 

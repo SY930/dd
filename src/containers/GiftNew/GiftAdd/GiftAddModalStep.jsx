@@ -187,14 +187,15 @@ class GiftAddModalStep extends React.PureComponent {
             values.discountType = data.discountType
             values.discountRate = data.discountRate
         }
-        if ((type === 'add' && value == '10') || (type !== 'add' && value == '10' && data.amountType == 1)) {
-            const {secondKeys} = this.state
-            const index = secondKeys[name][0].keys.findIndex(item => item === 'amountType')
-            if (index >= 0) {
-                secondKeys[name][0].keys.splice(index, 1);
-                this.setState({secondKeys})
-            }
-        }
+        // 
+        // if ((type === 'add' && value == '10') || (type !== 'add' && value == '10' && data.amountType == 1)) {
+        //     const {secondKeys} = this.state
+        //     const index = secondKeys[name][0].keys.findIndex(item => item === 'amountType')
+        //     if (index >= 0) {
+        //         secondKeys[name][0].keys.splice(index, 1);
+        //         this.setState({secondKeys})
+        //     }
+        // }
 
         // const { data } = thisGift;
         if(thisGift.data !== undefined) {
@@ -206,6 +207,20 @@ class GiftAddModalStep extends React.PureComponent {
         }
 
         FetchGiftSort({});
+
+        // 表单和redux数据同步，解决左侧 phonePreview 券显示不对bug
+        const { sharedGifts } = this.props;
+        const _sharedGifts = sharedGifts && sharedGifts.toJS();
+        this.setState({
+            sharedGifts: this.proSharedGifts(_sharedGifts.crmGiftShareList),
+        }, ()=>{
+            this.props.changeGiftFormKeyValue({
+                key:'shareIDs', 
+                value: this.state.sharedGifts
+            });
+        });
+
+
         // 礼品名称 auto focus
         try {
             this.firstFormRefMap.giftName.focus()
@@ -215,8 +230,13 @@ class GiftAddModalStep extends React.PureComponent {
     }
 
     componentWillReceiveProps(nextProps) {
+        
+        // 从redux里获取 shareGifts （共享券列表）。从列表页点击编辑的时候触发的网络请求，根据券id去获取共享券列表
         const { sharedGifts } = nextProps;
+
+
         const _sharedGifts = sharedGifts && sharedGifts.toJS();
+
         if (nextProps.shopSchema.getIn(['shopSchema']) !== this.props.shopSchema.getIn(['shopSchema'])) {
             let shopSchema = nextProps.shopSchema.getIn(['shopSchema']).toJS();
             let malls = [];
@@ -248,9 +268,39 @@ class GiftAddModalStep extends React.PureComponent {
             }
         }
 
-        this.setState({
-            sharedGifts: this.proSharedGifts(_sharedGifts.crmGiftShareList),
-        });
+        /**
+         * @Notice 因为获取共享券列表后，无法触发BaseForm表单onChange事件，
+         * 从而handleFormChange里的 this.props.changeGiftFormKeyValue({key, value}); 存到redux里的方法无法执行。
+         * 所以在setState的回调里进行一个赋值
+         * @TODO 优化这块逻辑
+         */
+        // if(JSON.stringify(this.state.sharedGifts) != JSON.stringify(this.this.proSharedGifts(_sharedGifts.crmGiftShareList))) {
+        if(!_.isEqual(this.props.sharedGifts, nextProps.sharedGifts)){    
+            // console.log('handleFormChange shareIDs 01', this.proSharedGifts(_sharedGifts.crmGiftShareList));
+            this.setState({
+                sharedGifts: this.proSharedGifts(_sharedGifts.crmGiftShareList),
+            }, ()=>{
+                // console.log('this.state.sharedGifts', this.state.sharedGifts);
+                this.props.changeGiftFormKeyValue({
+                    key:'shareIDs', 
+                    value: this.state.sharedGifts
+                });
+            });
+        } 
+        // else {
+        //     if(!_.isEqual(this.state.sharedGifts, this.proSharedGifts(_sharedGifts.crmGiftShareList))) {
+        //         console.log('handleFormChange shareIDs 02', this.proSharedGifts(_sharedGifts.crmGiftShareList));
+        //         this.setState({
+        //             sharedGifts: this.proSharedGifts(_sharedGifts.crmGiftShareList),
+        //         }, ()=>{
+        //             this.props.changeGiftFormKeyValue({
+        //                 key:'shareIDs', 
+        //                 value: this.state.sharedGifts
+        //             });
+        //         })
+        //     }
+        // }
+        
     }
 
     isHuaTianSpecificCoupon = () => {
@@ -308,6 +358,7 @@ class GiftAddModalStep extends React.PureComponent {
         if (key === 'shareIDs') {
             this.props.changeGiftFormKeyValue({key, value});
         } else if (JSON.stringify(values[key]) !== JSON.stringify(value)) {
+
             switch (key) { // 这几个个字段是靠手动输入的, 不加debounce的话在一般机器上有卡顿
                 case 'giftName':    this.handleNameChangeDebounced({key, value});
                                     break;
@@ -328,28 +379,30 @@ class GiftAddModalStep extends React.PureComponent {
         }
         values[key] = value;
         switch (key) {
-            case 'moneyLimitTypeAndValue':
-                const { moneyLimitType } = value;
-                if (describe === '菜品兑换券' || describe === '代金券' || describe == '菜品优惠券') {
-                    const maxUseLimitIndex = _.findIndex(newKeys, item => item == 'maxUseLimit');
-                    if (moneyLimitType == 1) {
-                        maxUseLimitIndex == -1 && newKeys.splice(index + 1, 0, 'maxUseLimit')
-                    } else {
-                        maxUseLimitIndex !== -1 && newKeys.splice(maxUseLimitIndex, 1)
-                    }
-                }
-                secondKeys[describe][0].keys = [...newKeys];
-                this.setState({ secondKeys });
-                break;
+            // case 'moneyLimitTypeAndValue':
+            //     const { moneyLimitType } = value;
+            //     if (describe === '菜品兑换券' || describe === '代金券' || describe == '菜品优惠券') {
+            //         const maxUseLimitIndex = _.findIndex(newKeys, item => item == 'maxUseLimit');
+            //         if (moneyLimitType == 1) {
+            //             maxUseLimitIndex == -1 && newKeys.splice(index + 1, 0, 'maxUseLimit')
+            //         } else {
+            //             maxUseLimitIndex !== -1 && newKeys.splice(maxUseLimitIndex, 1)
+            //         }
+            //     }
+            //     secondKeys[describe][0].keys = [...newKeys];
+            //     this.setState({ secondKeys });
+            //     break;
             case 'discountType':
-                let keys = [...firstKeys[describe][1].keys];
-                if (value != 0) {
-                    keys.push('foodsboxs')
-                } else {
-                    keys = []
+                if(firstKeys[describe][1] != undefined && firstKeys[describe][1].hasOwnProperty('keys')) {
+                    let keys = [...firstKeys[describe][1].keys];
+                    if (value != 0) {
+                        keys.push('foodsboxs')
+                    } else {
+                        keys = []
+                    }
+                    firstKeys[describe][1].keys = [...keys];
+                    this.setState({ firstKeys });
                 }
-                firstKeys[describe][1].keys = [...keys];
-                this.setState({ firstKeys });
                 break;
             case 'isDiscountRate':
                 const discountRateIndex = _.findIndex(newKeys, item => item == 'discountRate');
@@ -892,11 +945,12 @@ class GiftAddModalStep extends React.PureComponent {
                 data.supportOrderType !== undefined && (params.supportOrderType = data.supportOrderType);
             }
             if (value == 10) {
-                if (type === 'add') {
-                    params.amountType = 1;
-                } else if (!Number(params.amountType || 0)) {
-                    params.amountType = 0;
-                }
+                // if (type === 'add') {
+                //     params.amountType = 1;
+                // } else if (!Number(params.amountType || 0)) {
+                //     params.amountType = 0;
+                // }
+                params.amountType = 1;  //@notice: 后端新宇，前端不做该字段展示，但是默认值必须传个1（只限代金券）
             }
             if (formValues.transferLimitType == -1) {
                 params.transferLimitType = formValues.transferLimitTypeValue
@@ -1857,12 +1911,6 @@ class GiftAddModalStep extends React.PureComponent {
             if(data.hasOwnProperty('applyScene') && data.applyScene == '1') {
                 data.selectMall = data.shopIDs
             }
-            
-            // console.log("data.shopIDs", data.shopIDs);
-            // if(shopIDS instanceof Array && shopIDS.length == 1) {
-            //     data.selectMall = shopIDS[0];
-            // }
-            // console.log("data.selectMall", data.selectMall);
         }
         
         // 买赠券， 前端对应的高价有限设置项，对应后端BOGOdiscountWay
@@ -1885,11 +1933,6 @@ class GiftAddModalStep extends React.PureComponent {
                 })
             }
         }
-
-        
-
-        
-
         
         return data;
 
@@ -1908,6 +1951,7 @@ class GiftAddModalStep extends React.PureComponent {
     }
 
     /**
+     * @description 动态调整表单结构思路。 1. 初始表单值 根据配置文件从配置中取。 动态的，根据values值去动态添加或者删除
      * 根据所有的key值，根据其value的不同取值，动态调整某些key是否可见。只在显示的时候做动态处理，不保存到state中
      * @example 代金券 商城模式 适用场景 如果为0.及分类，这时可选商品不可见。（但是配置项是所有的。这里要动态进行删除操作）
     */
@@ -1938,6 +1982,61 @@ class GiftAddModalStep extends React.PureComponent {
                     });
                 }
             }
+
+            // 根据券与券公用来调整是否显示选券表单 （动态增加）
+            if(values.hasOwnProperty('giftShareType') && values.giftShareType == '2') {
+                const giftShareTypeIdx = _.findIndex(secondKeysToDisplay[0].keys, item => item == 'giftShareType');
+                if(giftShareTypeIdx != -1) {
+                    secondKeysToDisplay[0].keys.splice(giftShareTypeIdx + 1, 0, 'shareIDs');
+                }
+            } 
+
+
+            // 根据账单金额限制控制一笔订单最多使用多少张（动态增加）
+            // @Notice 仅限 菜品兑换券，代金券，菜品优惠券三种场景
+            if(values.hasOwnProperty('moneyLimitTypeAndValue')) {
+                if(values.moneyLimitTypeAndValue.hasOwnProperty('moneyLimitType')) {
+                    const { moneyLimitType } = values.moneyLimitTypeAndValue;
+                    // moneyLimitType = 1 为每满
+                    if( moneyLimitType == '1') {
+                        const moneyLimitTypeAndValueIndex = _.findIndex(secondKeysToDisplay[0].keys, item => item == 'moneyLimitTypeAndValue');
+                        if(moneyLimitTypeAndValueIndex != -1) {
+                            secondKeysToDisplay[0].keys.splice(moneyLimitTypeAndValueIndex + 1, 0, 'maxUseLimit');
+                        }
+                    }
+                      
+                }
+            }
+
+
+            /*
+            case 'moneyLimitTypeAndValue':
+                const { moneyLimitType } = value;
+                if (describe === '菜品兑换券' || describe === '代金券' || describe == '菜品优惠券') {
+                    const maxUseLimitIndex = _.findIndex(newKeys, item => item == 'maxUseLimit');
+                    if (moneyLimitType == 1) {
+                        maxUseLimitIndex == -1 && newKeys.splice(index + 1, 0, 'maxUseLimit')
+                    } else {
+                        maxUseLimitIndex !== -1 && newKeys.splice(maxUseLimitIndex, 1)
+                    }
+                }
+                secondKeys[describe][0].keys = [...newKeys];
+                this.setState({ secondKeys });
+
+            */
+
+            // const giftShareTypeIdx = _.findIndex(newKeys, item => item == 'shareIDs');
+            //     debugger;
+            //     if (value === '2') {
+            //         giftShareTypeIdx === -1 && newKeys.splice(index + 1, 0, 'shareIDs');
+            //     } else {
+            //         giftShareTypeIdx !== -1 && newKeys.splice(giftShareTypeIdx, 1);
+            //     }
+            //     secondKeys[describe][0].keys = [...newKeys];
+            //     this.setState({ secondKeys });
+
+            // 处理 券与券公用
+            // if(values.giftShareType)
         }
 
         // TODO : 后续将所有descirbe判断改为value.
@@ -2015,7 +2114,9 @@ class GiftAddModalStep extends React.PureComponent {
     render() {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
             { firstKeys, secondKeys, values, unit } = this.state;
-        let formData = values;
+        // 判断是否是空对象
+        // 影响 PhonePreview 回显。
+        let formData =JSON.stringify(values) == '{}' ? data : values ;
         
         const { firstKeysToDisplay: displayFirstKeys, secondKeysToDisplay: displaySecondKeys} = this.justifyFormKeysToDisplay();
 
@@ -2661,6 +2762,7 @@ class GiftAddModalStep extends React.PureComponent {
         formData.shareIDs = this.state.sharedGifts;
         formData.giftShareType = String(formData.giftShareType);
         formData.couponPeriodSettings = formData.couponPeriodSettingList;
+
 
         return (
             <div>

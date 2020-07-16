@@ -269,6 +269,7 @@ class SpecialPromotionDetail extends React.Component {
             records = []
         }
         const way = this.state.eventInfo.data.eventWay;
+
         if (way == 68) { // 推荐有礼
             let couponList = []
             const couponCurrent = this.props.mySpecialActivities.data.eventInfo.eventRuleInfos.filter( v => v.rule === 1)
@@ -376,11 +377,49 @@ class SpecialPromotionDetail extends React.Component {
                 </div>
             )
         }
+        if(way == 60) {
+            const list = records.filter(v => v.presentType === 1)
+            return (
+                <div>
+                    <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
+                    <Col span={24}>
+                        {this.renderGiftInfoTable(list, way)}
+                    </Col>
+                    <Col style={{ marginTop: 10 }} span={18}>
+                            {this.renderPointsTable()}
+                        </Col>
+                    {this.renderSearch()}
+                    <Col span={24}>
+                        {this.renderActivityInfoTable()}
+                    </Col>
+                </div>
+            )
+        }
+        if(way == 61) {
+
+            const list = records.filter(v => v.presentType === 1)
+            return (
+                <div>
+                    <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
+                    <Col span={24}>
+                        {this.renderGiftInfoTable(list, way)}
+                    </Col>
+                    <Col style={{ marginTop: 10 }} span={18}>
+                            {this.renderPointsTable()}
+                        </Col>
+                    {this.renderSearch()}
+                    <Col span={24}>
+                        {this.renderActivityInfoTable()}
+                    </Col>
+                </div>
+            )
+        }
         return (
             <div>
                 <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
                 <Col span={24}>
                     {this.renderGiftInfoTable(records, way)}
+
                 </Col>
                 {this.renderSearch()}
                 <Col span={24}>
@@ -482,6 +521,7 @@ class SpecialPromotionDetail extends React.Component {
     renderGiftInfoTable(records,type) {
         const way = this.state.eventInfo.data.eventWay;
         const { intl } = this.props
+
         const columns = [
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.d31f11d5hd613295)}`,
@@ -506,6 +546,12 @@ class SpecialPromotionDetail extends React.Component {
                 dataIndex: 'EGiftSingleCount',
                 key: 'EGiftSingleCount',
                 className: 'TableTxtRight',
+                render(text) {
+                    if(way == '30') {
+                        return text == 0 ? '' : text
+                    }
+                    return text
+                }
             },
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.da9060bn7g14187)}`,
@@ -662,6 +708,7 @@ class SpecialPromotionDetail extends React.Component {
             },
         ];
         let dataSource;
+
         try {
             dataSource = [{
                 title: `${this.props.intl.formatMessage(STRING_SPE.dk46b2bc3b1333)}`,

@@ -172,6 +172,19 @@ class Detail extends Component {
             </div>
         );
     }
+    handleCancellation = (record) => () => {
+        console.log('record',record)
+        axiosData('/couponPackage/invalidCustomerCouponPackage.ajax', {
+            customerCouponPackID: record.customerCouponPackID
+        }, null, {
+            path: '',
+        },'HTTP_SERVICE_URL_PROMOTION_NEW').then((res) => {
+
+            if(res.code === '000') {
+                this.onQueryList({pageSize: 10});
+            }
+        });
+    }
     render() {
         const { list, loading, pageObj, visible, selectedRowKeys } = this.state;
         const { list2, loading2, pageObj2 } = this.state;
@@ -245,6 +258,7 @@ class Detail extends Component {
                                     loading={loading}
                                     pageObj={pageObj}
                                     onQuery={this.onQueryList}
+                                    handleCancellation={this.handleCancellation}
                                 />
                             </TabPane>
                             <TabPane tab="使用数" key="2">

@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import memoizeOne from 'memoize-one';
+import { getStore } from '@hualala/platform-base';
 
 /**
  * 判断是不是正式线上环境: HUALALA.ENVIRONMENT === 'production-release'
@@ -238,4 +239,13 @@ export const setThemeClass = (className) => {
     const body = document.querySelector('body')
     const oldClass = body.getAttribute('class')
     body.setAttribute('class',oldClass || '' + ' ' + className)
+}
+
+
+/**
+ * 从 Redux Store 中获取versionUI 判断是否是企业版还是标准版，从而操作样式
+ */
+export function getVersionUI() {
+    const state = getStore().getState();
+    return state.user.get('versionUI').toJS();
 }
