@@ -36,6 +36,7 @@ function proGiftTreeData(giftTypes) {
     });
     let treeData = [];
     const gifts = [];
+    const couponKeys = [10,20,21]
     _giftTypes.map((gt, idx) => {
         const giftTypeItem = _.find(GiftCfg.giftTypeName, { value: String(gt.giftType) }) || {};
         treeData.push({
@@ -43,13 +44,15 @@ function proGiftTreeData(giftTypes) {
             key: gt.giftType,
             children: [],
         });
+
         gt.crmGifts.map((gift) => {
             treeData[idx].children.push({
-                label: gift.giftName,
+                label: gift.applyScene == '1' && couponKeys.includes(gt.giftType) ? `[商城券]${gift.giftName}` : gift.giftName,
                 value: String(gift.giftItemID),
                 key: gift.giftItemID,
                 giftValue: gift.giftValue,
                 giftType: gt.giftType,
+                applyScene: gift.applyScene
             });
             gifts.push({
                 label: gift.giftName,
