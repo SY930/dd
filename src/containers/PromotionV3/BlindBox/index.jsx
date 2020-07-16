@@ -3,10 +3,10 @@ import { Modal, Steps, Button, message } from 'antd';
 import { jumpPage, closePage } from '@hualala/platform-base';
 import moment from 'moment';
 import { getBrandList, putEvent, getEvent, postEvent } from './AxiosFactory';
-// import Step1 from './Step1';
-// import Step2 from './Step2';
-// import Step3 from './Step3';
-// import style from 'components/basic/ProgressBar/ProgressBar.less';
+import Step1 from './Step1';
+import Step2 from './Step2';
+import Step3 from './Step3';
+import style from 'components/basic/ProgressBar/ProgressBar.less';
 import css from './style.less';
 // import { TF, DF, imgURI } from './Common';
 // import { getTicketList } from '../Camp/TicketBag/AxiosFactory';
@@ -15,7 +15,7 @@ const Step = Steps.Step;
 class BlindBox extends Component {
     /* 页面需要的各类状态属性 */
     state = {
-        current: 1,
+        current: 3,
         formData1: {},      // 第1步的表单原始数据，也是用来回显baseform的数据
         formData2: {},      // 第2步的表单原始数据
         formData3: {},      // 第3步的表单原始数据
@@ -26,6 +26,32 @@ class BlindBox extends Component {
     componentDidMount() {
         
     }
+
+    /* 1-2表单 */
+    onGoStep2 = () => {
+        const { form } = this.state;
+        form.validateFields((e, v) => {
+
+            if (!e) {
+                const formData1 = { ...v };
+                console.log('f1', v)
+                this.setState({ formData1 });
+            }
+            this.onGoNext();
+        });
+    }
+
+    /* 2-3表单 */
+    onGoStep3 = () => {
+        const { form } = this.state;
+        form.validateFields((e, v) => {
+            if (!e) {
+                console.log('f2', v)
+                this.setState({ formData2: v });
+            }
+            this.onGoNext();
+        });
+    }
     
     /** 得到form, 根据step不同，获得对应的form对象 */
     onSetForm = (form) => {
@@ -34,6 +60,28 @@ class BlindBox extends Component {
     
     onToggle = () => {
         this.props.onToggle();
+    }
+
+    onGoPrev = () => {
+        const { current, form } = this.state;
+        // 没保存就点上一步
+        if(current === 2) {
+            this.setState({
+                formData2: form.getFieldsValue(),
+            })
+        }
+        if(current === 3) {
+            this.setState({
+                formData3: form.getFieldsValue(),
+            })
+        }
+        this.setState(ps => ({ current: ps.current - 1 }));
+        this.onSetForm(null);
+    }
+
+    onGoNext = () => {
+        this.setState(ps => ({ current: ps.current + 1 }));
+        this.onSetForm(null);
     }
 
     renderFooter(current) {
@@ -70,7 +118,7 @@ class BlindBox extends Component {
                         <h3 className={css.logo}>盲盒</h3>
                         <p className={css.gray}>拆未知礼盒，增加猎奇趣味</p>
                     </li>
-                    {/* <li className={css.right}>
+                    <li className={css.right}>
                         <div className={css.stepBox}>
                             <Steps current={current-1} className={style.ProgressBar}>
                                 <Step title="基本信息" />
@@ -90,7 +138,7 @@ class BlindBox extends Component {
                                 form={form}
                                 getForm={this.onSetForm}
                                 formData={formData2}
-                                brandList={brandList}
+                                // brandList={brandList}
                             />
                         }
                         {current === 3 &&
@@ -100,7 +148,7 @@ class BlindBox extends Component {
                                 formData={formData3}
                             />
                         }
-                    </li> */}
+                    </li>
                 </ul>
             </Modal>
         )
