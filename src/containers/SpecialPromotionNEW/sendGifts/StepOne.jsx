@@ -18,6 +18,7 @@ import {
     saleCenterSetSpecialBasicInfoAC,
     saleCenterQueryFsmGroupSettleUnit,
     saleCenterGetExcludeCardLevelIds,
+    queryFsmGroupEquityAccount,
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action';
 import { SEND_MSG, NOTIFICATION_FLAG, ACTIVITY_CYCLE_TYPE } from '../../../redux/actions/saleCenterNEW/types';
 import { fetchSpecialCardLevel } from "../../../redux/actions/saleCenterNEW/mySpecialActivities.action";
@@ -142,6 +143,15 @@ class StepOne extends React.Component {
                 description: specialPromotion.eventRemark || this.state.description,
             })
         }
+
+        // 群发短信以及其它可发短信的活动，要查权益账户和短信签名
+        // if (this.props.type == '50' || fullOptionSmsGate.includes(`${this.props.type}`)) {
+            specialPromotion.settleUnitID > 0 && !(specialPromotion.accountNo > 0) ?
+                this.props.saleCenterQueryFsmGroupSettleUnit({ groupID: this.props.user.accountInfo.groupID })
+                :
+                this.props.queryFsmGroupEquityAccount();
+            this.props.querySMSSignitureList();
+        // }
         // 活动名称auto focus
         try {
             this.promotionNameInputRef.focus()
@@ -779,6 +789,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         fetchSpecialCardLevel: (opts) => {
             dispatch(fetchSpecialCardLevel(opts));
+        },
+        queryFsmGroupEquityAccount: (opts) => {
+            dispatch(queryFsmGroupEquityAccount(opts))
         },
         // queryWechatMpInfo: (opts) => {
         //     dispatch(queryWechatMpInfo(opts))
