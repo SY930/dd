@@ -19,6 +19,7 @@ import {
     saleCenterQueryFsmGroupSettleUnit,
     saleCenterGetExcludeCardLevelIds,
     queryFsmGroupEquityAccount,
+    querySMSSignitureList
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action';
 import { SEND_MSG, NOTIFICATION_FLAG, ACTIVITY_CYCLE_TYPE } from '../../../redux/actions/saleCenterNEW/types';
 import { fetchSpecialCardLevel } from "../../../redux/actions/saleCenterNEW/mySpecialActivities.action";
@@ -272,6 +273,7 @@ class StepOne extends React.Component {
                 eventStartDate: this.state.dateRange[0] ? this.state.dateRange[0].format('YYYYMMDD') : '0',
                 eventEndDate: this.state.dateRange[1] ? this.state.dateRange[1].format('YYYYMMDD') : '0',
                 signID: this.state.signID,
+                
             })
             
         }
@@ -717,7 +719,7 @@ class StepOne extends React.Component {
 
                     </FormItem>
                     {
-                        (this.props.type == '50' || this.state.smsGate == 1 || this.state.smsGate == 3 || this.state.smsGate == 4) && (
+                        (this.state.smsGate == 1 || this.state.smsGate == 3 || this.state.smsGate == 4) && (
                             <FormItem
                                 label={this.props.intl.formatMessage(STRING_SPE.d4546grade9251)}
                                 className={styles.FormItemStyle}
@@ -790,8 +792,12 @@ const mapDispatchToProps = (dispatch) => {
         fetchSpecialCardLevel: (opts) => {
             dispatch(fetchSpecialCardLevel(opts));
         },
+        // 短信权益账户
         queryFsmGroupEquityAccount: (opts) => {
             dispatch(queryFsmGroupEquityAccount(opts))
+        },
+        querySMSSignitureList: () => {
+            dispatch(querySMSSignitureList())
         },
         // queryWechatMpInfo: (opts) => {
         //     dispatch(queryWechatMpInfo(opts))
