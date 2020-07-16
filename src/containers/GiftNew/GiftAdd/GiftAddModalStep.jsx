@@ -2314,7 +2314,7 @@ class GiftAddModalStep extends React.PureComponent {
                 )
             },
             moneyLimitTypeAndValue: {
-                label: '金额限制',
+                label: '账单金额限制',
                 type: 'custom',
                 render: (decorator, form) => this.renderMoneyLimitTypeAndValue(decorator, form),
             },
