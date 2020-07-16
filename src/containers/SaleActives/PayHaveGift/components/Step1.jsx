@@ -46,6 +46,7 @@ class Step1 extends React.Component {
         return (
             <div className={styles.step1Wrap}>
                 <BaseForm
+
                     getForm={this.getForm}
                     formItems={formItems1}
                     formData={{}}

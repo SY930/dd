@@ -10,7 +10,8 @@ const initState = {
     type: "",
     descModalIsShow: false,
     isStepContinue: false,
-    formData: {}, // 表单内的值
+    formData: {}, // 表单内的值,
+    currentStep: 0,
 };
 export default {
     namespace: "createActiveCom",

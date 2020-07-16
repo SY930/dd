@@ -1,6 +1,6 @@
 import React from 'react';
 import { Steps, Button } from 'antd';
-import styles from './ActSteps.less'
+import styles from './index.less'
 import {
     isProfessionalTheme,
 } from '../../../../helpers/util'
@@ -56,7 +56,7 @@ class ActSteps extends React.Component {
                     current: 0,
                 }, () => {
                     if (this.props.callback && typeof this.props.callback === 'function') {
-                        this.props.callback(3);
+                        this.props.callback(0);
                     }
                 });
             }, current);
@@ -68,7 +68,7 @@ class ActSteps extends React.Component {
         if (typeof onFinish === 'function') {
             onFinish(() => {
                 if (this.props.callback && typeof this.props.callback === 'function') {
-                    this.props.callback(3);
+                    this.props.callback(0);
                 }
             }, current);
         }
@@ -87,12 +87,13 @@ class ActSteps extends React.Component {
                     {steps.map((item, i) => <Step key={i} title={item.title} />)}
                 </Steps>
                 {steps.map((step, index) => {
-                    if (index === current) {
-                        return (<div key={index} className="stepsContent">{steps[index].content}</div>);
-                    }
+                        if (index === current) {
+                            return (<div key={index} className="stepsContent">{steps[index].content}</div>);
+                        }
 
-                    return (<div key={index} className="stepsContent" style={{ display: 'none' }}>{steps[index].content}</div>);
-                })}
+                        return (<div key={index} className="stepsContent" style={{ display: 'none' }}>{steps[index].content}</div>);
+                    })}
+
 
                 <div className="progressButton">
                     {
@@ -113,7 +114,6 @@ class ActSteps extends React.Component {
                     {
                         this.state.current > 0 && (
                             <Button
-                                type="primary"
                                 onClick={() => this.prev(current)}
                             >
                                  上一步

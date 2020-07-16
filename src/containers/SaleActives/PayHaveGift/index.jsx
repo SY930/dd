@@ -42,9 +42,20 @@ class PayHaveGift extends React.Component {
     getSubmitFn = (current) => (submitFn) => {
         this[`submitFn${current}`] = submitFn
     }
+
+    handleStepChange = (current) => {
+        this.props.dispatch({
+            type: 'createActiveCom/updateState',
+            payload: {
+                currentStep: current
+            }
+        })
+    }
+
     render () {
         const {
             formData,
+            currentStep
         } = this.props.createActiveCom
         const {merchantLogoUrl,eventName} = formData
         const steps = [{
@@ -82,6 +93,7 @@ class PayHaveGift extends React.Component {
                         onFinish={this.handleFinish}
                         onPrev={this.handlePrev}
                         onCancel={this.handleCancel}
+                        callback={this.handleStepChange}
                     />
                 </div>
             </div>
