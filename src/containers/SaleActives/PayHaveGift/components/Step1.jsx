@@ -30,7 +30,7 @@ class Step1 extends React.Component {
     handleSubmit = () => {
         let flag = true
 
-        this.form.validateFields((e,v) => {
+        this.form.validateFieldsAndScroll((e,v) => {
             if(e) {
                 flag = false
             }
@@ -46,7 +46,6 @@ class Step1 extends React.Component {
         return (
             <div className={styles.step1Wrap}>
                 <BaseForm
-
                     getForm={this.getForm}
                     formItems={formItems1}
                     formData={{}}

@@ -29,14 +29,19 @@ class Step2 extends React.Component {
     }
     handleSubmit = () => {
         let flag = true
-
-        this.form.validateFields((e,v) => {
+        const { giftForm } = this.props.createActiveCom
+        this.form.validateFieldsAndScroll((e,v) => {
             if(e) {
                 flag = false
             }
             console.log('v---',v)
         })
-
+        giftForm.validateFieldsAndScroll((e,v) => {
+            if(e) {
+                flag = false
+            }
+            console.log('v---',v)
+        })
 
         return flag
     }
@@ -51,6 +56,8 @@ class Step2 extends React.Component {
     }
     render () {
         formItems2.eventDate.render = formItems2.eventDate.render.bind(this)
+        formItems2.mySendGift.render = formItems2.mySendGift.render.bind(this)
+
         return (
             <div style={{marginRight: '20px'}}>
                  <BaseForm

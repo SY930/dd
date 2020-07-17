@@ -103,10 +103,17 @@ export const formItems2 = {
     mySendGift: {
         type: "custom",
         label: "投放礼品",
-        render() {
+        render(d) {
             return (
                 <div>
-                    <AddGift />
+                    {d({
+                        rules: [
+                            {
+                                required: true,
+                                message: "请选择投放礼品",
+                            },
+                        ],
+                    })(<AddGift dispatch={this.props.dispatch} />)}
                 </div>
             );
         },

@@ -29,7 +29,7 @@ export default class Gift extends Component {
                 this.setState({ formKeys: formKeys2 });
             }
         }
-        onChange(idx, { [key]: value });
+        onChange({ [key]: value },this.form);
     }
     /** 得到form */
     getForm = (node) => {
