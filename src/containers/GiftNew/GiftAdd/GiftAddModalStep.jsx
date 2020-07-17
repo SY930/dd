@@ -1229,7 +1229,7 @@ class GiftAddModalStep extends React.PureComponent {
                         validator: (rule, num, cb) => {
                             Number(num) >= 0 &&  Number(num) <= 10000 ? cb() : cb(rule.message);
                         },
-                        message: '价格要大于等于0,小于10000',
+                        message: '请输入大于0，整数五位数以内且小数2位数以内的数值',
                     }],
                     initialValue: val
                 })(<Input 
@@ -2226,42 +2226,6 @@ class GiftAddModalStep extends React.PureComponent {
                 render: (decorator, form) => this.renderMallIncludeGoodsSelector(decorator, form)
             },
 
-             // // 优惠顺序（买赠券）
-            // discountRule: {
-            //     label: '优惠规则',
-            //     type: 'radio',
-            //     defaultValue: '1',
-            //     options: GiftCfg.discountRules,
-            // },
-
-            /**
-             * discountRules: [
-                { label: '特价', value: '1'},
-                { label: '折扣', value: '2'},
-                { label: '立减', value: '3'},
-            ],
-            */
-        /**
-            *  <div style={{ display: 'inline-block'}}>
-                            <span>记录实收金额</span>
-                            <Tooltip title={
-                                <p>
-                                    记录实收金额：仅用于报表作为实收金额核算
-                                </p>
-                            }>
-                                <Icon style={{ marginLeft: 5, marginRight: -5}} type="question-circle" />
-                            </Tooltip>
-                        </div>,
-        */
-            // discountRule : {
-            //     label: '优惠规则',
-            //     type: 'custom',
-            //     defaultValue: '1',
-            //     render: (decorator, form)=>{
-            //         this.renderDiscountRuleSelector(decorator, form);
-            //     }
-            // },
-
             giftValueCurrencyType: {
                 label: '货币单位',
                 type: 'combo',
@@ -2452,7 +2416,7 @@ class GiftAddModalStep extends React.PureComponent {
                 )
             },
             moneyLimitTypeAndValue: {
-                label: '账单金额限制',
+                label: '金额限制',
                 type: 'custom',
                 render: (decorator, form) => this.renderMoneyLimitTypeAndValue(decorator, form),
             },
@@ -2766,7 +2730,7 @@ class GiftAddModalStep extends React.PureComponent {
         const giftVal = this.props.gift.value;
         if (giftVal == '20') {
             formItems.moneyLimitTypeAndValue.label = '账单金额';
-        } else if(giftVal == '21' || giftVal == '111'|| giftVal == '22'){
+        } else if(giftVal == '21' || giftVal == '111'|| giftVal == '22' || giftVal == '110'){
             formItems.moneyLimitTypeAndValue.label = '账单金额限制';
         } else {
             formItems.moneyLimitTypeAndValue.label = '金额限制';
