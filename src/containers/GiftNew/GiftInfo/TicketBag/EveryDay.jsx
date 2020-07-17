@@ -16,6 +16,12 @@ class EveryDay extends Component {
         const isWeek = (type === 'w');
         const list = isWeek ? weekList : monthList;
         const css = disabled ? { pointerEvents: 'none' } : {};
+
+        // 如果传的是d, 不渲染任何东西
+        // if(type === 'd') {
+        //     return null;
+        // }
+
         return (
                 <div className={styles.dayBox} style={css}>
                 {list.map(x => {

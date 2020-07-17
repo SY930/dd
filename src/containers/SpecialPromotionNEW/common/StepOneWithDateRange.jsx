@@ -36,6 +36,7 @@ import {
     MONTH_OPTIONS,
     WEEK_OPTIONS,
 } from '../../../redux/actions/saleCenterNEW/fullCutActivity.action';
+import EveryDay from '../../GiftNew/GiftInfo/TicketBag/EveryDay';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
 
@@ -70,6 +71,11 @@ const simpleOptionSmsGate = [ // 选项有2种
     '75',
     '76',
 ];
+// 包含周期选择日期表单选择项的营销活动集合
+const PROMOTIONS_CONTAIN_PERIOD_TYPE_SELECTOR_SETS = new Set([
+    '53',  // 群发礼品
+])
+
 
 const ATSEnabledTypes = [ // advanced time settings enabled promotion types
     '20',
@@ -721,6 +727,220 @@ class StepOneWithDateRange extends React.Component {
         }
     }
 
+    
+    /**
+     * @description 渲染周期选择器
+     * @example 群发礼品，按月，周，日等周期去发送营销券 (无为不按日期发放)
+    */
+    renderDateOfSendingPromotionSelector = ()=>{
+        const { type, form:{
+            getFieldDecorator: decorator,
+            getFieldValue,
+            getFieldsValue
+        }} = this.props;
+
+        let dateInPeriodType = getFieldValue('dateInPeriodType');
+
+        console.log('getFieldsValue', getFieldsValue())
+        if(dateInPeriodType == undefined) {
+            dateInPeriodType = 'm';
+        }
+        if(PROMOTIONS_CONTAIN_PERIOD_TYPE_SELECTOR_SETS.has(type)) {
+            return (
+                <div>
+                    <FormItem
+                        label='选择周期'
+                        className={[styles.FormItemStyle, styles.FormItemLabelPadding].join(' ')}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 3 }}
+                    >
+                        {decorator('dateInPeriodType', {
+                            rules: [{
+                                required: true,
+                                message: '请选择券发放周期',
+                            }],
+                            initialValue: dateInPeriodType,
+                            onChange:  (val)=>{ console.log(val)}
+                        })(
+                            <Select>
+                                <Option value="m">每月</Option>
+                                <Option value="w">每周</Option>
+                                <Option value="d">无</Option>   
+                            </Select>
+                        )}
+                    </FormItem>
+                    {
+                        this.renderDatePickerInWeekOrMonth(dateInPeriodType)
+                    }
+                </div>
+            )
+        } 
+        return null;
+    }
+
+    /**
+     * @description 渲染周或者月具体的日期选择
+    */
+    renderDatePickerInWeekOrMonth = (dateInPeriodType) => {
+
+        const { form: {getFieldDecorator: decorator}} = this.props;
+
+        // disbled minutes
+
+
+        let initialValue = [];
+        if( decorator('dateDescInPeroid') instanceof Array && decorator('dateDescInPeroid').length > 0) {
+            initialValue = decorator('dateDescInPeroid');
+        }
+    
+        if(dateInPeriodType == 'd') {
+            return null;
+        }
+        return (
+            <FormItem
+                label=' '
+                className={[styles.FormItemStyle, styles.FormItemLabelPadding].join(' ')}
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 17 }}
+            >
+                {decorator('dateDescInPeroid', {
+                    rules: [{
+                        required: true,
+                        message: '请选择日期',
+                    }],
+                    initialValue,
+                })(
+                    <EveryDay type={dateInPeriodType} disabled={false} />
+                )}
+            </FormItem>
+        )       
+    }
+
+    /**
+     * @description 渲染仅发送时间组件
+    */
+    renderSendTimeSelector = () => {
+        const { form: { 
+            getFieldDecorator: decorator,
+            getFieldValue 
+        }, type} = this.props;
+        
+        if(!(PROMOTIONS_CONTAIN_PERIOD_TYPE_SELECTOR_SETS.has(type))) {
+            return null;
+        }
+
+        // 不可用时间组件
+        let disabledHours = () => {
+            return [];
+        };
+        let disabledMinutes = () => {
+            const dateInPeriodType = getFieldValue('dateInPeriodType');
+            if(dateInPeriodType == 'm' || dateInPeriodType == 'w'){
+                let result = [];
+                for(let i=0; i < 60; i++){
+                    if(i != 0 && i != 30) {
+                        result.push(i);
+                    }
+                }
+                return result;
+            }   
+        }
+
+        let { startTime, timeString } = this.state,
+            timeStringInitialValue = '';
+
+        if (timeString != '' && timeString !== 0) {
+            timeStringInitialValue = moment(timeString, 'HHmm');
+        } else {
+            timeStringInitialValue = timeString;
+        }
+
+        return (
+            <FormItem 
+                label='发送时间'
+                className={styles.FormItemStyle} 
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 8 }}
+            >
+                {decorator('sendTime', {
+                    rules: [{
+                        required: true,
+                        message: `${this.props.intl.formatMessage(STRING_SPE.d21645473363b18164)}`,
+                    }],
+                    initialValue: timeStringInitialValue,
+                })(
+                    <TimePicker
+                        disabledHours={disabledHours}
+                        disabledMinutes={disabledMinutes}
+                        format="HH:mm"
+                        style={{ width: '100%' }}
+                        onChange={this.onTimePickerChange}
+                        hideDisabledOptions = {true}
+                        placeholder={this.props.intl.formatMessage(STRING_SPE.d21645473363b18164)}
+                    />
+                )}
+                {
+                    type == '50' && <p className={styles.msgTip}>{this.props.intl.formatMessage(STRING_SPE.d1qe5jtfnh19144)}</p>
+                }
+            </FormItem>
+        )
+    }
+
+    /**
+     * 日期选择器回调函数
+    */
+   handleDateRangeChange =  (val) => {
+    //    console.log('val in handleDateRangeChange', handleDateRangeChange);
+   }
+
+    /**
+     * @description 日期选择
+    */
+    renderPeriodSelector = () => {
+
+        // 日期选择器
+        // const { startTime, endTime } = this.state.rangePickerVal;
+
+        // return (
+        //     <FormItem
+        //         label="活动起止日期"
+        //         className={[styles.FormItemStyle, styles.cardLevelTree].join(' ')}
+        //         labelCol={{ span: 4 }}
+        //         wrapperCol={{ span: 17 }}
+        //     >
+        //         <Row>
+        //             <Col span={21}>
+        //                 {getFieldDecorator('rangePicker', {
+        //                 rules: [{
+        //                     required: true,
+        //                     message: '请选择活动起止时间',
+        //                 }],
+        //                 onChange: this.handleDateRangeChange,
+        //                 initialValue: startTime && endTime ? [moment(startTime, DATE_FORMAT), moment(endTime, DATE_FORMAT)] : [],
+        //             })(
+        //                 <RangePicker
+        //                     className={styles.ActivityDateDayleft}
+        //                     // disabledDate={disabledDate}
+        //                     style={{ width: '100%' }}
+        //                     format="YYYY-MM-DD"
+        //                     placeholder={['开始日期', '结束日期']}
+        //                 />
+        //             )}
+        //             </Col>
+        //             <Col offset={1} span={2}>
+        //                 <div className={styles.ActivityDateDay}>
+        //                     <span>
+        //                         {this.getDateCount()}
+        //                     </span>
+        //                     <span>天</span>
+        //                 </div>
+        //             </Col>
+        //         </Row>
+        //     </FormItem>
+        // )
+    }
+
+
     render() {
         const categorys = this.props.saleCenter.get('characteristicCategories').toJS();
         const type = this.props.type;
@@ -870,8 +1090,22 @@ class StepOneWithDateRange extends React.Component {
                             />
                         )}
                     </FormItem>
+                    
                     {
-                        this.props.type == '53' || this.props.type == '50' ?
+                        // 活动起始结束日期选择组件
+                        // this.renderPeriodSelector()
+                    }
+                    {
+                        // 渲染周期选择期
+                        this.renderDateOfSendingPromotionSelector()
+                    }
+                    
+                    {
+                        this.renderSendTimeSelector(disabledHours, disabledMinutes, noDisabled)
+                    }
+
+                    {
+                        this.props.type == '50' ?
                             <Row>
                                 <Col span={15}>
                                     <FormItem
@@ -896,6 +1130,7 @@ class StepOneWithDateRange extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
+                                
                                 <Col span={6}>
                                     <FormItem className={styles.FormItemStyle} >
                                         {getFieldDecorator('sendTime', {

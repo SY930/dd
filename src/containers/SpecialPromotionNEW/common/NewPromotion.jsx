@@ -134,7 +134,6 @@ export default class NewPromotion extends React.Component {
             });
         } else {
             // 创建特色营销活动
-            console.log('this.props.intl', this.props.intl);
             this.props.addSpecialPromotion && this.props.addSpecialPromotion({
                 data: opts,
                 success: () => {
@@ -186,9 +185,11 @@ export default class NewPromotion extends React.Component {
     }
 
     handleFinish(cb, index) {
-        // console.log('going to 1 finish');
+        console.log('handleFinish in NewPromotion');
         let flag = true;
+        console.log('index', index, this.handles);
         if (undefined !== this.handles[index].finish && typeof this.handles[index].finish === 'function') {
+            console.log('this.handles[index]', this.handles[index]);
             flag = this.handles[index].finish();
         }
         if (flag) {

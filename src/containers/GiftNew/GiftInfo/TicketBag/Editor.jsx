@@ -1,3 +1,7 @@
+/**
+ * @description  新增券包的券包编辑页面
+ * 
+*/
 import React, { PureComponent as Component } from 'react';
 import { Button, message, Alert } from 'antd';
 import moment from 'moment';

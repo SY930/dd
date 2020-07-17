@@ -34,7 +34,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 @injectIntl
-class StepTwo extends React.Component {
+class Two extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -98,6 +98,7 @@ class StepTwo extends React.Component {
     }
 
     componentDidMount() {
+        // return;
         const user = this.props.user;
         const opts = {
             _groupID: user.accountInfo.groupID, // 集团id
@@ -341,4 +342,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(StepTwo));
+export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(Two));

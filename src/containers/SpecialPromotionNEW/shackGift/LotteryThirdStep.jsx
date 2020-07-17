@@ -28,7 +28,7 @@ import {
 import { axiosData } from '../../../helpers/util';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
-import { getTicketBagInfo } from './TicketBag/AxiosFactory';
+import { getTicketBagInfo } from '../../BasicModules/TicketBag/AxiosFactory';
 
 const moment = require('moment');
 const { TabPane } = Tabs;

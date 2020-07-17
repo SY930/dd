@@ -317,7 +317,7 @@ const formItemLayout = {
     labelCol: { span: 7 },
     wrapperCol: { span: 17 },
 };
-const weekMap = ['', '一', '二', '三', '四', '五', '六', '日'];
+const weekMap = ['', '周一', '周二', '周三', '周四', '周五', '周六', '周日'];
 const weekList = (() => {
     const week = [];
     for(let i = 1; i < 8; i++) {

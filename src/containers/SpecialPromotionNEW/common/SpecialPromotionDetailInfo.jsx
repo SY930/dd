@@ -43,7 +43,7 @@ import { axiosData } from "../../../helpers/util";
 import PhotoFrame from "./PhotoFrame";
 import { activeRulesList } from "../recommendGifts/constant";
 import recommentGiftStyle from "../recommendGifts/recommentGift.less";
-// import  StepThree  from '../recommendGifts/stepThree'
+// import  Three  from '../recommendGifts/stepThree'
 import {
     checkChoose,
     queryRedPackets,
@@ -57,7 +57,7 @@ import {
     initShowCheckBox,
     clearCheckBoxData
 } from './SpecialPromotionDetailInfoHelp'
-import TicketBag from '../shackGift/TicketBag';
+import TicketBag from '../../BasicModules/TicketBag';
 import { axios } from '@hualala/platform-base';
 import { getStore } from '@hualala/platform-base/lib';
 import { renderThree,addPointData,initPerfectCheckBox } from '../perfectReturnGift/StepThreeHelp'
@@ -413,6 +413,11 @@ class SpecialDetailInfo extends Component {
         if(type == 60) {
             initPerfectCheckBox.call(this)
         }
+
+        if(type == 53) {
+            initPerfectCheckBox.call(this)
+        }
+
         if(type == 61) {
             upGradeInitPerfectCheckBox.call(this)
         }
@@ -555,7 +560,7 @@ class SpecialDetailInfo extends Component {
             this.recommendOtherGifts = otherGifts
 
         }
-        if(type == 60 || type == 61) {
+        if(type == 60 || type == 61 || type == 53) {
             giftInfo = giftInfo.filter(v => v.presentType === 1)
         }
         giftInfo.forEach((gift, index) => {
@@ -1093,6 +1098,9 @@ class SpecialDetailInfo extends Component {
              ) ||
              (type === '61'
              && !upGradeReturnGiftCheckBoxStatus.upGradeReturnGiftCoupon
+             ) ||
+             (type === '53'
+             && !perfectReturnGiftCheckBoxStatus.perfectReturnGiftCoupon
              )
         ) {
             if(perfectReturnGiftCheckBoxStatus.perfectReturnGiftPoint || upGradeReturnGiftCheckBoxStatus.upGradeReturnGiftPoint) {
@@ -1116,6 +1124,12 @@ class SpecialDetailInfo extends Component {
             if(type === '60') {
                 giftInfo =  addPointData.call(this,giftInfo)
             }
+
+            // 群发礼品
+            if(type == '53') {
+                giftInfo =  addPointData.call(this,giftInfo)
+            }
+
             // 升级有礼添加积分数据
             if(type === '61') {
                 giftInfo =  upGradeAddPointData.call(this,giftInfo)
@@ -3753,7 +3767,7 @@ class SpecialDetailInfo extends Component {
         const { type } = this.props;
         if (type == "68") {
             // 推荐有礼的render与其它活动相差较大
-            // return <StepThree _this={this}/>;
+            // return <Three _this={this}/>;
             return this.renderRecommendGiftsDetail()
         }
         if (type == "63") {
@@ -3833,9 +3847,12 @@ class SpecialDetailInfo extends Component {
                     type === '60' && renderThree.call(this)
                 }
                 {
+                    type === '53' && renderThree.call(this)
+                }
+                {
                     type === '61' && renderUpGradeThree.call(this)
                 }
-                { !['52', '30', '60','61'].includes(type) &&
+                { !['52', '30', '60','61', '53'].includes(type) &&
                 <Row>
                     <Col span={17} offset={4}>
                         <AddGifts

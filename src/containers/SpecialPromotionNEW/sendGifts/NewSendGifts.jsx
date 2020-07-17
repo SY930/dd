@@ -13,10 +13,13 @@ import NewPromotion from '../common/NewPromotion';
 import { connect } from 'react-redux';
 import { addSpecialPromotion, updateSpecialPromotion } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 
-import CustomProgressBar from '../../SaleCenterNEW/common/CustomProgressBar';
+import CustomProgressBar from './CustomProgressBar';
+// import SpecialDetailInfo from './SpecialPromotionDetailInfoInSendGifts';
 import SpecialDetailInfo from '../common/SpecialPromotionDetailInfo';
+import Three from './Three';
 import StepTwo from './stepTwo';
-import StepOneWithDateRange from '../common/StepOneWithDateRange';
+// import StepOneWithDateRange from '../common/StepOneWithDateRange';
+import StepOne from './StepOne';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
 
@@ -25,8 +28,10 @@ import { STRING_SPE } from 'i18n/common/special';
 class NewSendGifts extends NewPromotion {
     constructor(props) {
         super(props);
+        console.log('props in constructor', props);
     }
     render() {
+
         if (this.props.component === undefined) {
             throw new Error('component is required');
         }
@@ -35,8 +40,8 @@ class NewSendGifts extends NewPromotion {
 
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.d2c8987eai0135)}`,
-                content: (<StepOneWithDateRange
-                    type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
+                content: (<StepOne
+                    type={this.props.promotionType}
                     getSubmitFn={(handles) => {
                         this.handles[0] = handles;
                     }}
@@ -46,7 +51,7 @@ class NewSendGifts extends NewPromotion {
                 title: `${this.props.intl.formatMessage(STRING_SPE.du37x82g61177)}`,
                 content: (
                     <StepTwo
-                        type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
+                        type={this.props.promotionType}
                         getSubmitFn={(handles) => {
                             this.handles[1] = handles;
                         }}
@@ -63,6 +68,9 @@ class NewSendGifts extends NewPromotion {
                         }}
                     />
                 ),
+                // content: (
+                //     <Three />
+                // )
             },
         ];
         return (
