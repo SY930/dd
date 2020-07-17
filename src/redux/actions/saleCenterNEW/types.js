@@ -1272,3 +1272,8 @@ export const NOTIFICATION_FLAG = Object.freeze([
         value: "2",
     },
 ]);
+
+export const MONEY_OPTIONS = Object.freeze([
+    { key: "0", value: "0", name: "账单金额" },
+    { key: "1", value: "1", name: "实收金额" },
+]);
