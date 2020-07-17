@@ -1913,8 +1913,7 @@ class GiftAddModalStep extends React.PureComponent {
             }
         }
         
-        // 买赠券， 前端对应的高价有限设置项，对应后端BOGOdiscountWay
-
+        // 买赠券
         data.discountSortRule = data.priceSortRule == undefined ? '0' : `${data.priceSortRule}`;
 
         // MallCategory (分类模式)
@@ -2106,6 +2105,8 @@ class GiftAddModalStep extends React.PureComponent {
         )
     }
 
+    
+
     /**
      * @description
      * @params this.props.gift 传入的参数
@@ -2224,6 +2225,42 @@ class GiftAddModalStep extends React.PureComponent {
                 type: 'custom',
                 render: (decorator, form) => this.renderMallIncludeGoodsSelector(decorator, form)
             },
+
+             // // 优惠顺序（买赠券）
+            // discountRule: {
+            //     label: '优惠规则',
+            //     type: 'radio',
+            //     defaultValue: '1',
+            //     options: GiftCfg.discountRules,
+            // },
+
+            /**
+             * discountRules: [
+                { label: '特价', value: '1'},
+                { label: '折扣', value: '2'},
+                { label: '立减', value: '3'},
+            ],
+            */
+        /**
+            *  <div style={{ display: 'inline-block'}}>
+                            <span>记录实收金额</span>
+                            <Tooltip title={
+                                <p>
+                                    记录实收金额：仅用于报表作为实收金额核算
+                                </p>
+                            }>
+                                <Icon style={{ marginLeft: 5, marginRight: -5}} type="question-circle" />
+                            </Tooltip>
+                        </div>,
+        */
+            // discountRule : {
+            //     label: '优惠规则',
+            //     type: 'custom',
+            //     defaultValue: '1',
+            //     render: (decorator, form)=>{
+            //         this.renderDiscountRuleSelector(decorator, form);
+            //     }
+            // },
 
             giftValueCurrencyType: {
                 label: '货币单位',

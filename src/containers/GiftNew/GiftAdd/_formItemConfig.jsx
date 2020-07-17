@@ -2,6 +2,7 @@
 import {
     Tooltip,
     Icon,
+    Radio,
 } from 'antd';
 import GiftCfg from '../../../constants/Gift';
 
@@ -78,13 +79,43 @@ export const FORMITEMS = {
         
     },
 
-    // // 优惠顺序（买赠券）
-    discountRule: {
+
+    /**
+     * 买赠券
+    */
+    discountRule : {
         label: '优惠规则',
-        type: 'radio',
+        type: 'custom',
         defaultValue: '1',
-        options: GiftCfg.discountRules,
+        render: (decorator, form) => {
+            return decorator({})(
+                <Radio.Group >
+                    <Radio value={'1'}><div style={{ display: 'inline-block'}}>
+                        <span>特价</span>
+                        <Tooltip title={
+                            <p>
+                                如果所点菜品在优惠菜品范围内，且所点菜品价格小于等于设置的特价金额，则该菜品不占用优惠菜品份数
+                            </p>
+                        }>
+                            <Icon style={{ marginLeft: 5, marginRight: -5}} type="question-circle" />
+                        </Tooltip>
+                    </div></Radio>
+                    <Radio value={'2'}>折扣</Radio>
+                    <Radio value={'3'}>
+                        <span>立减</span>
+                        <Tooltip title={
+                            <p>
+                                如果所点菜品在优惠菜品范围内，且所点菜品价格小于等于设置的立减金额，则该菜品不占用优惠菜品份数
+                            </p>
+                        }>
+                            <Icon style={{ marginLeft: 5, marginRight: -5}} type="question-circle" />
+                        </Tooltip>
+                    </Radio>
+                </Radio.Group>
+            );
+        }
     },
+
 
     // 优惠顺序（买赠券）
     discountSortRule: {
