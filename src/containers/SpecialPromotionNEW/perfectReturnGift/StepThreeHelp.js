@@ -141,7 +141,6 @@ const renderGivePointFn = function () {
                     />
                 )}
             </FormItem>
-            <div >
             <FormItem
                 wrapperCol={{ span: 12 }}
                 labelCol={{ span: 6 }}
@@ -176,14 +175,6 @@ const renderGivePointFn = function () {
                     
                 
             </FormItem>
-            <Tooltip title={
-                        <p>
-                            如果所点菜品在优惠菜品范围内，且所点菜品价格小于等于设置的特价金额，则该菜品不占用优惠菜品份数
-                        </p>
-                    }>
-                <Icon style={{ marginLeft: 5, marginRight: -5,float:'left'}} type="question-circle" />
-            </Tooltip>
-            </div>
         </div>
     );
 };
