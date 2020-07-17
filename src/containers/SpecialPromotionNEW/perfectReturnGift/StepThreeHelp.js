@@ -3,7 +3,7 @@
  */
 
 import React from "react";
-import { Row, Col, Form, Checkbox, Select } from "antd";
+import { Row, Col, Form, Checkbox, Select, Tooltip, Icon } from "antd";
 import AddGifts from "../common/AddGifts";
 import PriceInput from "../../SaleCenterNEW/common/PriceInput";
 import styles from "../../SaleCenterNEW/ActivityPage.less";
@@ -102,10 +102,10 @@ const renderGivePointFn = function () {
     return (
         <div>
             <FormItem
-                wrapperCol={{ span: 16 }}
-                labelCol={{ span: 8 }}
+                wrapperCol={{ span: 12 }}
+                labelCol={{ span: 6 }}
                 className={styles.FormItemSecondStyle}
-                style={{ width: "330px" }}
+                // style={{ width: "330px" }}
                 label="赠送积分"
                 required
             >
@@ -141,31 +141,49 @@ const renderGivePointFn = function () {
                     />
                 )}
             </FormItem>
+            <div >
             <FormItem
-                wrapperCol={{ span: 16 }}
-                labelCol={{ span: 8 }}
+                wrapperCol={{ span: 12 }}
+                labelCol={{ span: 6 }}
                 className={styles.FormItemSecondStyle}
-                style={{ width: "330px" }}
-                label="充值到会员卡"
+                label={(
+                    <span>
+                      充值到会员卡&nbsp;
+                      <Tooltip title="如果用户没有该卡类型的卡，则不送积分">
+                        <Icon style={{ marginLeft: 5, marginRight: -5}} type="question-circle" />
+                      </Tooltip>
+                    </span>
+                  )}
             >
-                <Select
-                    showSearch={true}
-                    value={perfectReturnGiftCardTypeValue}
-                    onChange={handleCardChange.bind(this)}
-                    disabled={giftSendCount > 0}
-                >
-                    {cardTypeArr.map((item) => {
-                        return (
-                            <Option
-                                key={item.cardTypeID}
-                                value={item.cardTypeID}
-                            >
-                                {item.cardTypeName}
-                            </Option>
-                        );
-                    })}
-                </Select>
+                
+                    <Select
+                        showSearch={true}
+                        value={perfectReturnGiftCardTypeValue}
+                        onChange={handleCardChange.bind(this)}
+                        disabled={giftSendCount > 0}
+                    >
+                        {cardTypeArr.map((item) => {
+                            return (
+                                <Option
+                                    key={item.cardTypeID}
+                                    value={item.cardTypeID}
+                                >
+                                    {item.cardTypeName}
+                                </Option>
+                            );
+                        })}
+                    </Select>
+                    
+                
             </FormItem>
+            <Tooltip title={
+                        <p>
+                            如果所点菜品在优惠菜品范围内，且所点菜品价格小于等于设置的特价金额，则该菜品不占用优惠菜品份数
+                        </p>
+                    }>
+                <Icon style={{ marginLeft: 5, marginRight: -5,float:'left'}} type="question-circle" />
+            </Tooltip>
+            </div>
         </div>
     );
 };

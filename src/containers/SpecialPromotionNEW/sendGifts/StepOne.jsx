@@ -68,6 +68,8 @@ class StepOne extends React.Component {
             selectMonthValue = ['1'];
         }
         this.state = {
+
+
             description: null,
             dateRange: Array(2),
             name: '',

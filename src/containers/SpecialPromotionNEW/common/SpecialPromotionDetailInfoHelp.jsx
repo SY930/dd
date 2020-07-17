@@ -182,22 +182,22 @@ const renderCashFn = function (ruleType,roleType) {
             >
                 <div style={{display: "flex", alignItems: 'center'}}>
                     <Select
-                    showSearch={true}
-                    notFoundContent={"没有搜索到结果"}
-                    optionFilterProp="children"
-                    placeholder="请选择一个已创建的红包礼品"
-                    value={cashGiftVal}
-                    onChange={
-                        handleCashChange(cashGiftKey).bind(this)
-                    }
-                >
-                    {redPackets.map(v => {
-                        return (
-                            <Select.Option key={v.giftItemID} value={v.giftItemID}>
-                                {v.giftName}
-                            </Select.Option>
-                        )
-                    })}
+                        showSearch={true}
+                        notFoundContent={"没有搜索到结果"}
+                        optionFilterProp="children"
+                        placeholder="请选择一个已创建的红包礼品"
+                        value={cashGiftVal}
+                        onChange={
+                            handleCashChange(cashGiftKey).bind(this)
+                        }
+                    >
+                        {redPackets.map(v => {
+                            return (
+                                <Select.Option key={v.giftItemID} value={v.giftItemID}>
+                                    {v.giftName}
+                                </Select.Option>
+                            )
+                        })}
                     </Select>
                     <div style={{marginLeft: '5px'}}>
                         <Tooltip  title="一个活动使用现金红包只能设置一个红包账户">
