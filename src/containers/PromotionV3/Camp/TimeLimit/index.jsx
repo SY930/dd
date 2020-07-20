@@ -8,10 +8,27 @@ const FormItem = Form.Item;
 class TimeLimit extends Component {
     state= {
         joinCount: '0',
+        partInTimesNoValidStatus: 'success',
+        countCycleDaysStatus: 'success',
+        partInTimesStatus: 'success',
     }
 
-    handleJoinCountChange = () => {
+    onAllChange = (data) => {
+        const { value, onChange } = this.props;
+        let list = {...value, ...data};
+        // 校验
+        if(data.joinCount == '1'){
 
+        }
+        onChange(list);
+    }
+
+    handleJoinCountChange = (e) => {
+        this.onAllChange({ joinCount: e.target.value });
+    }
+
+    onPartInTimesNoValidChange = (value) => {
+        this.onAllChange({ partInTimesNoValid: value.number });
     }
 
     render() {
@@ -21,6 +38,8 @@ class TimeLimit extends Component {
             lineHeight: '32px',
         };
         const { value, decorator } = this.props;
+        let {joinCount, partInTimesNoValid = 0, partInTimes = 0, countCycleDays = 0} = value
+        
         return (
             <div className={styles.mainBox}>
                 <FormItem 
@@ -28,17 +47,17 @@ class TimeLimit extends Component {
                     // labelCol={{ span: 4 }}
                     // wrapperCol={{ span: 17 }}
                 >
-                    <RadioGroup value={this.state.joinCount} onChange={this.handleJoinCountChange}>
+                    <RadioGroup value={joinCount} onChange={this.handleJoinCountChange}>
                         <Radio style={radioStyle} value={'0'}>不限次数</Radio>
                         <Radio style={radioStyle} value={'1'}>限制次数</Radio>
                         <div className={styles.priceWrapper}>
-                            <FormItem validateStatus={this.state.partInTimesNoValidStatus}>
+                            <FormItem validateStatus={(partInTimesNoValid > 0 || joinCount.indexOf('1') === -1) ? 'success' : 'error'}>
                                 <PriceInput
                                     addonBefore={`可参与`}
                                     addonAfter={`次`}
-                                    disabled={this.state.joinCount.indexOf('1') === -1}
-                                    value={{ number: this.state.partInTimesNoValid }}
-                                    defaultValue={{ number: this.state.partInTimesNoValid }}
+                                    disabled={joinCount.indexOf('1') === -1}
+                                    value={{ number: partInTimesNoValid }}
+                                    defaultValue={{ number: partInTimesNoValid }}
                                     onChange={this.onPartInTimesNoValidChange}
                                     modal={'int'}
                                 />
@@ -47,28 +66,32 @@ class TimeLimit extends Component {
                         <Radio style={radioStyle} value={'2'}>限制周期内次数</Radio>
                         <div className={styles.addTwo}>
                             <div style={{ width: '70%', display: 'inline-block' }}>
-                                <FormItem validateStatus={this.state.countCycleDaysStatus}>
+                                <FormItem validateStatus={(countCycleDays > 0 || joinCount.indexOf('2') === -1) ? 'success' : 'error'}>
                                     <PriceInput
                                         addonBefore={`同一用户`}
                                         addonAfter={`天，可参与`}
-                                        disabled={this.state.joinCount.indexOf('2') === -1}
-                                        value={{ number: this.state.countCycleDays }}
-                                        defaultValue={{ number: this.state.countCycleDays }}
-                                        onChange={this.onCountCycleDaysChange}
+                                        disabled={joinCount.indexOf('2') === -1}
+                                        value={{ number: countCycleDays }}
+                                        defaultValue={{ number: countCycleDays }}
+                                        onChange={(value) => {
+                                            this.onAllChange({ countCycleDays: value.number });
+                                        }}
                                         modal={'int'}
                                     />
                                 </FormItem>
                             </div>
 
                             <div style={{ width: '30%', display: 'inline-block', position: 'relative', left: '-1px' }}>
-                                <FormItem validateStatus={this.state.partInTimesStatus}>
+                                <FormItem validateStatus={(partInTimes > 0 || joinCount.indexOf('2') === -1) ? 'success' : 'error'}>
                                     <PriceInput
                                         addonBefore={''}
                                         addonAfter={`次`}
-                                        disabled={this.state.joinCount.indexOf('2') === -1}
-                                        value={{ number: this.state.partInTimes }}
-                                        defaultValue={{ number: this.state.partInTimes }}
-                                        onChange={this.onPartInTimesChange}
+                                        disabled={joinCount.indexOf('2') === -1}
+                                        value={{ number: partInTimes }}
+                                        defaultValue={{ number: partInTimes }}
+                                        onChange={(value) => {
+                                            this.onAllChange({ partInTimes: value.number });
+                                        }}
                                         modal={'int'}
                                     />
                                 </FormItem>

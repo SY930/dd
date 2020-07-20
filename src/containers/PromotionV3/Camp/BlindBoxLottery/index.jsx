@@ -36,7 +36,7 @@ class Lottery extends Component {
         const len = value.length;
         const id = `${len + 1}`; // 根据索引生成id，方便回显时遍历
         list.push({ id, giftOdds: '', presentValue: '', cardTypeID: '',
-            isPoint: false, isTicket: true, presentType: '1', giftList: [{ id: '001', effectType: '1' }],  bagList: [] });
+            isPoint: false, isTicket: true, presentType: '1', giftList: [{ id: '001', effectType: '1' }] });
         this.setState({ tabKey: id });
         onChange(list);
     }
@@ -73,6 +73,7 @@ class Lottery extends Component {
     }
     onPointChange = ({ target }) => {
         const { checked } = target;
+        // 
         this.onAllChange({ isPoint: checked });
     }
     onTicketChange = ({ target }) => {
@@ -93,50 +94,14 @@ class Lottery extends Component {
     onGiftChange = (giftList) => {
         this.onAllChange({ giftList });
     }
-    onBagChange = (bagList) => {
-        this.onAllChange({ bagList });
-    }
     render() {
         const { tabKey, cardList } = this.state;
-        const { value, decorator } = this.props;
-        if(!value[0]){ return null}
+        const { value = [], decorator } = this.props;
+        // if(!value[0]){ return null}
         const { length } = value;
-        const disable = value[0].userCount > 0;    // 如果被用了，不能编辑
+        const disable = value[0] && value[0].userCount > 0;    // 如果被用了，不能编辑
         return (
                 <div className={css.mainBox}>
-                    <div>
-                        <p className={css.titleTip}>盲盒礼品</p>
-                    </div>
-                    <div className={css.uploadBox}>
-                        <FormItem
-                            label="盲盒图片"
-                            labelCol={{ span: 5 }}
-                            wrapperCol={{ span: 17 }}
-                        >
-                            <Row>
-                                <Col span={6} >
-                                    {decorator({
-                                        key: 'blindBoxImg',
-                                        rules: [
-                                            { required: false, message: '必须有图片' },
-                                        ],
-                                    })(
-                                        <CropperUploader 
-                                            className={css.uploadCom}
-                                            width={120}
-                                            height={110}
-                                            cropperRatio={750/500}
-                                            limit={2000}
-                                            uploadTest='上传图片'
-                                        />
-                                    )}
-                                </Col>
-                                <Col span={18} className={css.grayFontPic} >
-                                    <p style={{ position: 'relative', top: 20, left: 70,}}>图片建议尺寸750*500像素<br/>支持格式jpg、png，大小不超过2M</p>
-                                </Col>
-                            </Row>
-                        </FormItem>    
-                    </div>
                     <div className={css.addBox}>
                         <Button type="primary" disabled={disable} onClick={this.add}>
                             <Icon type="plus" />添加盲盒
@@ -207,7 +172,7 @@ class Lottery extends Component {
                                                             )
                                                         }
                                                     </FormItem>
-                                                    <FormItem label="充值到会员卡">
+                                                    {/* <FormItem label="充值到会员卡">
                                                         {
                                                             decorator({
                                                                 key: 'cardTypeID' + i,
@@ -232,7 +197,7 @@ class Lottery extends Component {
                                                                 }
                                                                 </Select>
                                                         )}
-                                                    </FormItem>
+                                                    </FormItem> */}
                                                 </div>
                                             }
                                         </li>

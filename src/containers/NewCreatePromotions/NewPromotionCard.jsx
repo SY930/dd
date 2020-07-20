@@ -32,7 +32,7 @@ class NewPromotionCard extends Component {
         console.log('ttt', this.props);
         const { key, title } = promotionEntity;
         const isUse = this.filterItem(key);
-        if(pulgins.includes(key) && false) {
+        if(pulgins.includes(key) && !isUse) {
             Modal.confirm({
                 title: <p>「{title}」限时开放中，您可免费试用6个月</p>,
                 content: (

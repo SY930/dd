@@ -60,31 +60,33 @@ const formKeys1 = ['eventType', 'eventName', 'smsGate', 'eventRange', 'eventRema
  * formItem2
  */
 const countOpts = [
-    { label: '免费参与', value: '12' },
-    { label: '参加活动扣积分', value: '13' },
-    { label: '付费购买', value: '14' },
+    { label: '免费参与', value: '0' },
+    { label: '参加活动扣积分', value: '1' },
+    { label: '付费购买', value: '2' },
 ];
 
 const regOpts = [
-    { label: '无需用户填写注册信息', value: '12' },
-    { label: '用户需填写注册信息', value: '13' },
+    { label: '无需用户填写注册信息', value: '1' },
+    { label: '用户需填写注册信息', value: '0' },
 ];
 
+const joinCountValue = { joinCount: '0', partInTimesNoValid: 0, partInTimes: 0, countCycleDays: 0 };
+
 const formItems2 = {
-    brandList: {
+    mpIDList: {
         type: 'combo',
         label: '适用公众号',
-        surfix: '元，可参与活动',
+        multiple: true,
         options: [],
         defaultValue: [],
     },
-    consumeType: {
+    participateRule: {
         type: 'radio',
         label: '参与条件',
         options: countOpts,
-        defaultValue: '12',
+        defaultValue: '0',
     },
-    consumeTotalAmount: {
+    presentValue1: {
         type: 'text',
         label: '扣除积分',
         surfix: '积分',
@@ -95,7 +97,7 @@ const formItems2 = {
         }],
         wrapperCol: { span: 6 },
     },
-    consumeTotalAmount1: {
+    presentValue2: {
         type: 'text',
         label: '付费金额',
         surfix: '元',
@@ -106,76 +108,65 @@ const formItems2 = {
         }],
         wrapperCol: { span: 6 },
     },
-    cardTypeList1: {
+    settleUnitID: {
         type: 'combo',
         label: '结算主体',
         rules: ['required'],
         options: [],
         defaultValue: [],
     },
-    timeLimit: {
+    joinCount: {
         type: 'custom',
         label: '参与次数限制',
         render: () => (<p/>),
-        defaultValue: [],
+        defaultValue: joinCountValue,
     },
-    cardTypeList: {
+    defaultCardType: {
         type: 'combo',
         label: '新用户注册卡类',
         rules: ['required'],
         options: [],
         defaultValue: [],
     },
-    registType: {
+    autoRegister: {
         type: 'radio',
         label: '注册方式',
         options: regOpts,
-        defaultValue: '12',
+        defaultValue: '1',
     },
 };
 
-// const formKeys2 = ['brandList', 'orderTypeList', 'shopIDList'];
-const formKeys2 = Object.keys(formItems2)
+const keys1 = ['presentValue1'];
+const keys2 = ['presentValue2', 'settleUnitID'];
+const formKeys21 = ['mpIDList', 'participateRule']
+const formKeys22 = ['joinCount', 'defaultCardType', 'autoRegister'];
 /**
  * formItem3
  */
-const lottDefVal = { id: '1', giftOdds: '', presentValue: '', cardTypeID: '',
-isPoint: false, isTicket: true, presentType: '1', giftList: [{ id: '001', effectType: '1' }],  bagList: [] };
-const openlottDefVal = { id: '1', giftOdds: '', presentValue: '', cardTypeID: '',
-isPoint: false, isTicket: true, presentType: '1', giftList: [{ id: '001', effectType: '1' }],  bagList: [] };
+const lottDefVal = { id: '1', needShow: 0, giftOdds: '', presentValue: '', 
+isPoint: false, isTicket: true, presentType: '1', giftList: [{ id: '001', effectType: '1' }] };
+const openlottDefVal = { id: '1', needShow: 1, presentValue: '', 
+isPoint: false, isTicket: true, presentType: '1', giftList: [{ id: '001', effectType: '1' }] };
+const shareDefVal = { type: '79', shareTitle: '', shareSubtitle: '', restaurantShareImagePath: '', shareImagePath: '' };
 
 const formItems3 = {
     needShow: {
         type: 'custom',
-        // label: '11',
-        // render: decorator => (
-        //     <div>
-        //         {decorator({
-        //             rules: [{required: true, message: '请选择'}]
-        //         })(
-        //             <div>
-        //                 <div>
-        //                     <p>明盒</p>
-        //                 </div>
-        //                 <p>盲盒活动中，部分可以直接展示给消费者礼品可以设置明盒礼品，全盲盒活动则不需要设置</p>
-        //             </div>
-        //         )}
-        //     </div>
-        // ),
+        render: () => (<p/>),
         wrapperCol: { span: 18 },
     },
-    consumeTotalAmount: {
+    openLottery: {
         type: 'custom',
         // label: '11',
         render: () => (<p/>),
-        defaultValue: [openlottDefVal],
+        defaultValue: openlottDefVal,
         wrapperCol: { span: 18 },
     },
-    consumeType: {
-        type: 'radio',
-        label: '金额计算方式',
-        options: countOpts,
-        defaultValue: '12',
+    eventImagePath: {
+        type: 'custom',
+        render: () => (<p/>),
+        defaultValue: '',
+        wrapperCol: { span: 18 },
     },
     lottery: {
         type: 'custom',
@@ -183,18 +174,19 @@ const formItems3 = {
         defaultValue: [lottDefVal],
         wrapperCol: { span: 18 },
     },
-    share: {
+    shareInfo: {
         type: 'custom',
         render: () => (<p/>),
-        defaultValue: [lottDefVal],
+        defaultValue: shareDefVal,
         wrapperCol: { span: 18 },
     },
 };
-const formKeys3 = ['needShow', 'consumeTotalAmount', 'lottery', 'share'];
+const formKeys31 = ['needShow', 'openLottery', 'eventImagePath', 'lottery', 'shareInfo'];
+const formKeys32 = ['needShow', 'eventImagePath', 'lottery', 'shareInfo'];
 
 
 export {
     formItems1, imgURI, formKeys1, href, formItemLayout,
     TF, DF,
-    formKeys2, formItems2, formKeys3, formItems3,
+    formKeys21, formKeys22, formItems2, formKeys31, formKeys32, formItems3, keys1, keys2,
 }

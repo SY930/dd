@@ -7,6 +7,7 @@
  */
 import { message } from 'antd';
 import { axios, getStore } from '@hualala/platform-base';
+import { fetchData, axiosData } from '../../../helpers/util';
 /** restful 风格函数命名， get获取，post增加，put更新，delete删除 */
 /**
  * axios 默认请求参数
@@ -18,27 +19,67 @@ function getAccountInfo() {
     const { user } = getStore().getState();
     return user.get('accountInfo').toJS();
 }
+
 /**
- * 获取品牌列表
+ *  新用户注册卡类 
  */
-async function getBrandList() {
-    const [service, api] = ['HTTP_SERVICE_URL_SHOPAPI', 'shopapi/'];
-    const { groupID } = getAccountInfo();
-    const data = { groupID, isActive: 1 };
-    const method = `${api}shopBrandInfoAuthQuery.svc`;
-    const params = { service, type, data, method };
-    const response = await axios.post(url + method, params);
-    const { code, message: msg, data: { records = [] } } = response;
+async function getGroupCardTypeList() {
+    const { groupID, roleType, loginName, groupLoginName } = getAccountInfo();
+    const response = await fetchData('getSetUsedLevels_dkl', { 
+        groupID,
+        _groupID: groupID,
+        _role: roleType,
+        _loginName: loginName,
+        _groupLoginName: groupLoginName
+    }, null, {path: '',});
+    const { code, message: msg, data } = response;
     if (code === '000') {
-        return records;
+        let {groupCardTypeList} = data
+        return groupCardTypeList;
+    }
+    message.error(msg);
+    return false;
+}
+
+/**
+ *  公众号 
+ */
+async function getWechatMpList() {
+    const { groupID } = getAccountInfo();
+    const response = await fetchData('queryWechatMpInfo', {
+        groupID,
+        _groupID: groupID,
+    }, null, { path: 'mpList', throttle: false });
+    const { code, message: msg, mpList = [] } = response;
+    
+    if (response) {
+        return response;
+    }
+    message.error(msg);
+    return false;
+}
+
+/**
+ *  结算主体
+ */
+async function getSettleList(data) {
+    const { groupID } = getAccountInfo();
+    const method = '/crm/CrmSettleService_querySettleBaseInfoList.ajax';
+    const params = { service: 'HTTP_SERVICE_URL_CRM', type, data: { 
+        groupID 
+    }, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: obj } = response;
+    if (code === '000') {
+        const { settleUnitInfoList = [] } = obj;
+        return settleUnitInfoList;
     }
     message.error(msg);
     return [];
 }
 
-
 /**
- *  增加抽抽乐
+ *  增加
  */
 async function putEvent(data) {
     const { groupID, accountID, userName } = getAccountInfo();
@@ -95,5 +136,5 @@ async function postEvent(data) {
 
 
 export {
-    getBrandList, putEvent, getEvent, postEvent,
+    putEvent, getEvent, postEvent, getGroupCardTypeList, getWechatMpList, getSettleList
 }

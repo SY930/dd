@@ -1,49 +1,40 @@
 import React, { PureComponent as Component } from 'react';
 import { Tabs, Button, Icon, Input, Checkbox, Radio, Select, Form, Row, Col } from 'antd';
 import css from './style.less';
-import { formItemLayout, formKeys, formItems, } from './Common';
-import { getCardTypeList } from './AxiosFactory';
 import PhotoFrame from "../../../SpecialPromotionNEW/common/PhotoFrame";
-// import TicketBag from '../TicketBag';
 
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
-const Option = Select.Option;
-const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
 class Share extends Component {
     state = {
-        tabKey: '1',
-        cardList: [],
+        
     }
+
     componentDidMount() {
-        // this.add();
-        // this.getCardType();
+        
     }
-    onChange = (tabKey) => {
-        this.setState({ tabKey });
+
+    handleShareTitleChange = ({target}) => {
+        const { value } = target;
+        this.onAllChange({ shareTitle: value });
     }
     
+    handleShareSubTitleChange = ({target}) => {
+        const { value } = target;
+        this.onAllChange({ shareSubtitle: value });
+    }
+
+    onRestImg = ({ key, value }) => {
+        this.onAllChange({ [key]: value });
+    };
+    
     onAllChange(data){
-        const { tabKey } = this.state;
         const { value, onChange } = this.props;
-        const list = [...value];
-        const item = list[tabKey - 1];
-        list[tabKey - 1] = { ...item, ...data };
-        let count = 0;
-        list.forEach(x=>{
-            count += +x.giftOdds;
-        });
-        this.count = count;
+        const list = { ...value, ...data };
         onChange(list);
     }
     render() {
-        const { tabKey, cardList } = this.state;
-        const { shareTitle = '', shareSubtitle = '', restaurantShareImagePath, shareImagePath, shareTitlePL = '', shareSubtitlePL = '', type } = this.state;
         const { value, decorator } = this.props;
-        if(!value[0]){ return null}
-        const { length } = value;
-        const disable = value[0].userCount > 0;    // 如果被用了，不能编辑
+        let {type = '79', shareTitle = '', shareSubtitle = '', restaurantShareImagePath, shareImagePath} = value
         return (
                 <div className={css.mainBox}>
                     <div>
@@ -56,11 +47,7 @@ class Share extends Component {
                             labelCol={{ span: 4 }}
                             wrapperCol={{ span: 17 }}
                         >
-                            {decorator("shareTitle", {
-                                rules: [{ max: 35, message: "最多35个字符" }],
-                                initialValue: shareTitle,
-                                onChange: this.handleShareTitleChange,
-                            })(<Input placeholder={shareTitlePL} />)}
+                            <Input onChange={this.handleShareTitleChange} value={shareTitle} placeholder={'请输入标题'} />
                         </FormItem>
                         <FormItem
                             label="副标题"
@@ -68,11 +55,7 @@ class Share extends Component {
                             labelCol={{ span: 4 }}
                             wrapperCol={{ span: 17 }}
                         >
-                            {decorator("shareSubtitle", {
-                                rules: [{ max: 35, message: "最多35个字符" }],
-                                initialValue: shareSubtitle,
-                                onChange: this.handleShareSubTitleChange,
-                            })(<Input placeholder={shareSubtitlePL} />)}
+                            <Input  onChange={this.handleShareSubTitleChange} value={shareSubtitle} placeholder={'请输入副标题'} />
                         </FormItem>
                         <FormItem
                             label="分享图片"

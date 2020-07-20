@@ -3,9 +3,9 @@ import { Tabs, Button, Icon, Input, Checkbox, Radio, Select, Form, Row, Col } fr
 import css from './style.less';
 import { formItemLayout, formKeys, formItems, } from './Common';
 import { getCardTypeList } from './AxiosFactory';
-import CropperUploader from 'components/common/CropperUploader'
+// import CropperUploader from 'components/common/CropperUploader'
 import MutliGift from './MutliGift';
-import TicketBag from '../TicketBag';
+// import TicketBag from '../TicketBag';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -22,32 +22,6 @@ class OpenLottery extends Component {
         // this.add();
         this.getCardType();
     }
-    onChange = (tabKey) => {
-        this.setState({ tabKey });
-    }
-    onEdit = (targetKey, action) => {
-        this[action](targetKey);
-    }
-    // presentType 礼品1， 积分为2，券包4
-    add = () => {
-        const { value, onChange } = this.props;
-        if(value[9]) { return; }
-        const list = [...value];
-        const len = value.length;
-        const id = `${len + 1}`; // 根据索引生成id，方便回显时遍历
-        list.push({ id, giftOdds: '', presentValue: '', cardTypeID: '',
-            isPoint: false, isTicket: true, presentType: '1', giftList: [{ id: '001', effectType: '1' }],  bagList: [] });
-        this.setState({ tabKey: id });
-        onChange(list);
-    }
-
-    remove = (tabKey) => {
-        const { value, onChange } = this.props;
-        const list = [...value];
-        const idx = tabKey - 1;
-        list.splice(idx, 1);
-        onChange(list);
-    }
 
     getCardType() {
         getCardTypeList().then(cardList => {
@@ -57,14 +31,8 @@ class OpenLottery extends Component {
     onAllChange(data){
         const { tabKey } = this.state;
         const { value, onChange } = this.props;
-        const list = [...value];
-        const item = list[tabKey - 1];
-        list[tabKey - 1] = { ...item, ...data };
-        let count = 0;
-        list.forEach(x=>{
-            count += +value.giftOdds;
-        });
-        this.count = count;
+        const list = { ...value, ...data };
+        
         onChange(list);
     }
     onGiftOddsChange = ({ target }) => {
@@ -93,12 +61,10 @@ class OpenLottery extends Component {
     onGiftChange = (giftList) => {
         this.onAllChange({ giftList });
     }
-    onBagChange = (bagList) => {
-        this.onAllChange({ bagList });
-    }
     render() {
         const { tabKey, cardList, disable } = this.state;
         const { value, decorator } = this.props;
+        let {giftList = []} = value
         return (
                 <div className={css.mainBox}>
                     <div>
@@ -123,32 +89,6 @@ class OpenLottery extends Component {
                                                 )
                                             }
                                         </FormItem>
-                                        <FormItem label="充值到会员卡">
-                                            {
-                                                decorator({
-                                                    key: 'cardTypeID',
-                                                    value: value.cardTypeID || '',
-                                                    defaultValue: value.cardTypeID || '',
-                                                    rules: [{
-                                                        required: true,
-                                                        message: '不能为空',
-                                                    }],
-                                                    onChange:this.onCardTypeIDChange,
-                                                })(
-                                                    <Select style={{ width: 160 }} value={value.cardTypeID || ''} onChange={this.onCardTypeIDChange}>
-                                                    {
-                                                        cardList.map(c => {
-                                                            return (<Option
-                                                                    key={c.cardTypeID}
-                                                                    value={c.cardTypeID}
-                                                                    >
-                                                                    {c.cardTypeName}
-                                                                </Option>)
-                                                        })
-                                                    }
-                                                    </Select>
-                                            )}
-                                        </FormItem>
                                     </div>
                                 }
                             </li>
@@ -158,15 +98,14 @@ class OpenLottery extends Component {
                             {value.isTicket &&
                                 <li>
                                     <p className={css.ticketBox}>
-                                    <RadioGroup disabled={disable} value={value.presentType} onChange={this.onTypeChange}>
+                                    {/* <RadioGroup disabled={disable} value={value.presentType} onChange={this.onTypeChange}>
                                         <RadioButton value="1">独立优惠券</RadioButton>
                                         <RadioButton value="4">券包</RadioButton>
-                                    </RadioGroup>
+                                    </RadioGroup> */}
                                     </p>
                                     <div style={{ position: "relative" }}>
                                     {value.presentType === '1' ?
-                                        <MutliGift value={gifts} onChange={this.onGiftChange} /> :
-                                        <TicketBag value={value.bagList} onChange={this.onBagChange} />
+                                        <MutliGift value={giftList} onChange={this.onGiftChange} /> : null
                                     }
                                     </div>
                                 </li>
