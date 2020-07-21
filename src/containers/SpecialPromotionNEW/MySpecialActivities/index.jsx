@@ -226,6 +226,7 @@ class MySpecialActivities extends React.Component {
                 { value: '77', label: '支付后广告' },
                 { value: '76', label: '签到' },
                 { value: '78', label: '下单抽抽乐' },
+                { value: '79', label: '盲盒' },
             ],
         }
         this.renderFilterBar = this.renderFilterBar.bind(this);

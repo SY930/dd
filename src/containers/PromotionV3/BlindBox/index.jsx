@@ -102,7 +102,7 @@ class BlindBox extends Component {
     setData4Step3(data, gifts) {
         const { eventImagePath, shareTitle, shareSubtitle, shareImagePath, restaurantShareImagePath, userCount} = data;
 
-        let needShow = gifts.some(item => item.needShow == 0) ? 1 : 0
+        let needShow = gifts.some(item => item.needShow > 0) ? 1 : 0
         this.setState({needShow})
 
         const lottery = [];
@@ -231,16 +231,19 @@ class BlindBox extends Component {
                 }
                 
                 if(needShow){
-                    let isGiftOpen = openLottery.giftList.every(g=>{
-                        if(g.effectType === '1'){
-                            return g.giftID && g.giftCount && g.giftValidUntilDayCount;
-                        } else {
-                            return g.giftID && g.giftCount && g.rangeDate;
+                    let {giftList = [], isTicket, isPoint} = openLottery
+                    if(isTicket){
+                        let isGiftOpen = giftList.every(g=>{
+                            if(g.effectType === '1'){
+                                return g.giftID && g.giftCount && g.giftValidUntilDayCount;
+                            } else {
+                                return g.giftID && g.giftCount && g.rangeDate;
+                            }
+                        })
+                        if(!isGiftOpen && giftList.length > 0) {
+                            message.error('明盒礼品项必填');
+                            return;
                         }
-                    })
-                    if(!isGiftOpen) {
-                        message.error('明盒礼品项必填');
-                        return;
                     }
                 }
                 const formData3 = this.setStep3Data(v);
@@ -283,7 +286,8 @@ class BlindBox extends Component {
     // 提交前数据
     setStep2Data() {
         const { formData2 } = this.state;
-        const { mpIDList, participateRule, presentValue1, presentValue2, settleUnitID, joinCount, defaultCardType, autoRegister } = formData2;
+        const { mpIDList = {}, participateRule, presentValue1, presentValue2, settleUnitID, joinCount, defaultCardType, autoRegister } = formData2;
+        let {mpIDList: mpList} = mpIDList
         // 参与条件
         let parm = {}
         if(participateRule == '0'){
@@ -312,7 +316,7 @@ class BlindBox extends Component {
             countCycleDays = joinCount.countCycleDays;
         }
         
-        return { mpIDList, participateRule, ...parm, partInTimes, countCycleDays, defaultCardType, autoRegister };
+        return { mpIDList: mpList || [], participateRule, ...parm, partInTimes, countCycleDays, defaultCardType, autoRegister };
     }
 
     setStep3Data(formData) {

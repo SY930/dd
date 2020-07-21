@@ -74,11 +74,10 @@ const joinCountValue = { joinCount: '0', partInTimesNoValid: 0, partInTimes: 0, 
 
 const formItems2 = {
     mpIDList: {
-        type: 'combo',
+        type: 'custom',
         label: '适用公众号',
-        multiple: true,
-        options: [],
-        defaultValue: [],
+        render: () => (<p/>),
+        wrapperCol: { span: 18 },
     },
     participateRule: {
         type: 'radio',

@@ -15,6 +15,7 @@ class Step1 extends Component {
         const { form, formData } = this.props;
         
     }
+    
 
     /** formItems 重新设置 */
     resetFormItems() {

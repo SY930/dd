@@ -1,9 +1,9 @@
 import React, { PureComponent as Component } from 'react';
-import { Modal, Alert, message } from 'antd';
+import { Modal, Alert, message, Form, Select, Icon, Tooltip } from 'antd';
 import BaseForm from 'components/common/BaseForm';
-import { getGroupCardTypeList } from './AxiosFactory';
 import { formKeys21, formKeys22, formItems2, keys1, keys2, formItemLayout } from './Common';
 import TimeLimit from '../Camp/TimeLimit';
+import MpList from '../Camp/MpList';
 import css from './style.less';
 
 class Step2 extends Component {
@@ -52,12 +52,14 @@ class Step2 extends Component {
     resetFormItems() {
         const { defaultCardType, mpIDList, joinCount, settleUnitID, ...other } = formItems2;
         const render = d => d()(<TimeLimit decorator={d} />);
-        const options = this.getGroupCardTypeOpts();
         const mpOptions = this.getMpOpts();
+        const mpRender = d => d()(<MpList options={mpOptions} decorator={d} />);
+        const options = this.getGroupCardTypeOpts();
         const settleOptions = this.getSettleUnitInfoOpts();
         return {
             ...other,
-            mpIDList: {...mpIDList, options: mpOptions},
+            // mpIDList: {...mpIDList, options: mpOptions},
+            mpIDList: {...mpIDList, render: mpRender},
             joinCount: {...joinCount, render},
             defaultCardType: {...defaultCardType, options},
             settleUnitID: {...settleUnitID, options: settleOptions},
