@@ -10,7 +10,10 @@ class Step1 extends React.Component {
     getForm = (form) => {
         this.form = form;
         if(typeof this.props.getSubmitFn === 'function') {
-            this.props.getSubmitFn(this.handleSubmit)
+            this.props.getSubmitFn({
+                submitFn: this.handleSubmit,
+                form
+            })
         }
     }
 

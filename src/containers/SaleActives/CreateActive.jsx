@@ -40,36 +40,6 @@ class CreateActive extends Component {
             this.typeKey = typeKey
         }
 
-        if(itemID) {
-            this.dispatch({
-                type: 'createActiveCom/queryEventDetail_NEW',
-                payload: {
-                    itemID,
-                    groupID: this.props.groupID
-                }
-            })
-            this.dispatch({
-                type: 'createActiveCom/updateState',
-                payload: {
-                    isView: true
-                }
-            })
-        }
-
-        window.__history__.listen((t) => {
-            const  { typeKey = '80', itemID } = decodeUrl()
-            console.log('t----',t)
-            if(itemID) {
-                this.dispatch({
-                    type: 'createActiveCom/queryEventDetail_NEW',
-                    payload: {
-                        itemID,
-                        groupID: this.props.groupID
-                    }
-                })
-            }
-        })
-
     }
 
 

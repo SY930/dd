@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import { jumpPage,closePage } from '@hualala/platform-base'
+import { jumpPage,closePage,decodeUrl } from '@hualala/platform-base'
 import {
     Form,
     Button,
@@ -19,16 +19,51 @@ import moment from 'moment'
 import NewFullGiveActivity from 'containers/SaleCenterNEW/fullGive/NewFullGiveActivity';
 
 
+
 @connect(({  loading, createActiveCom }) => ({  loading, createActiveCom }))
 class PayHaveGift extends React.Component {
     componentDidMount() {
-        // this.props.dispatch({
-        //     type: 'createActiveCom/queryEventDetail_NEW',
-        //     payload: {
-        //         itemID: ''
-        //     }
-        // })
+        // 查询详情
+        this.queryDetail()
+
     }
+
+    queryDetail = () => {
+        const  { itemID } = decodeUrl()
+        if(itemID) {
+            this.getDetail(itemID)
+            this.props.dispatch({
+                type: 'createActiveCom/updateState',
+                payload: {
+                    isView: true
+                }
+            })
+        }
+
+        window.__history__.listen((t) => {
+            const  {   itemID } = decodeUrl()
+
+            if(itemID && t.pathname === '/meta/2/promotion_active_payHaveGift') {
+                this.getDetail(itemID)
+            }
+        })
+
+    }
+
+    getDetail = (itemID) => {
+
+        this.props.dispatch({
+            type: 'createActiveCom/queryEventDetail_NEW',
+            payload: {
+                itemID,
+            }
+        }).then(res => {
+            if(res) {
+                this.form1.setFieldsValue({mySendGift: res})
+            }
+        })
+    }
+
     handleNext =  (cb,current) => {
          if(typeof this[`submitFn${current}`]  === 'function' && this[`submitFn${current}`]()) {
             cb()
@@ -59,8 +94,9 @@ class PayHaveGift extends React.Component {
             type: 'createActiveCom/clearData'
         })
     }
-    getSubmitFn = (current) => (submitFn) => {
+    getSubmitFn = (current) => ({submitFn,form}) => {
         this[`submitFn${current}`] = submitFn
+        this[`form${current}`] = form
     }
 
     handleStepChange = (current) => {

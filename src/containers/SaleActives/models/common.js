@@ -109,12 +109,14 @@ export default {
                 let mySendGift = {};
                 if (type === "DATE_TYPE_FIX_TERM") {
                     mySendGift = {
+                        ...formData.mySendGift,
                         effectType: "1",
                         giftEffectTimeHours: String(fixedBeginTerm),
                         giftValidUntilDayCount: fixedTerm,
                     };
                 } else if (type === "DATE_TYPE_FIX_TIME_RANGE") {
                     mySendGift = {
+                        ...formData.mySendGift,
                         effectType: "2",
                         effectTime: beginTimestamp,
                         validUntilDate: endTimestamp,
@@ -234,19 +236,24 @@ export default {
             }
         },
         *queryEventDetail_NEW({ payload }, { call, put, select }) {
-            const ret = yield call(queryEventDetail_NEW, payload);
+            const { groupID } = yield select((state) => state.createActiveCom);
+            const ret = yield call(queryEventDetail_NEW, {
+                ...payload,
+                groupID,
+            });
 
             if (ret.code === "000") {
                 const { data, gifts } = ret;
+                const mySendGift = {
+                    ...gifts[0],
+                    rangeDate: [
+                        moment(gifts[0].effectTime),
+                        moment(gifts[0].validUntilDate),
+                    ],
+                };
                 const formData = {
                     ...data,
-                    mySendGift: {
-                        ...gifts[0],
-                        rangeDate: [
-                            moment(gifts[0].effectTime),
-                            moment(gifts[0].validUntilDate),
-                        ],
-                    },
+                    mySendGift,
                     originalImageUrl:
                         gifts[0].originalImageUrl &&
                         gifts[0].originalImageUrl.split(imgUrl)[1],
@@ -282,6 +289,7 @@ export default {
                         formData,
                     },
                 });
+                return mySendGift;
             } else {
                 message.warn(ret.message);
             }
