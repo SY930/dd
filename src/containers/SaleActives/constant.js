@@ -29,3 +29,5 @@ export const giftTypeName = [
     { label: "现金红包", value: "113" },
     { label: "配送券", value: "22" },
 ];
+
+export const imgUrl = "http://res.hualala.com/";

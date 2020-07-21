@@ -83,16 +83,18 @@ export const formItems2 = {
     consumeTotalAmount: {
         type: "custom",
         label: "参与限制",
-        render() {
+        render(d) {
             return (
                 <div style={{ display: "flex", alignItems: "center" }}>
                     <div style={{ width: "174px", marginRight: "8px" }}>
-                        <PriceInput
-                            addonAfter={"元"}
-                            modal="float"
-                            maxNum={7}
-                            placeholder="请输入金额"
-                        />
+                        {d()(
+                            <PriceInput
+                                addonAfter={"元"}
+                                modal="float"
+                                maxNum={7}
+                                placeholder="请输入金额"
+                            />
+                        )}
                     </div>
 
                     <div>可参与活动</div>
@@ -153,6 +155,7 @@ export const formItems2 = {
         type: "custom",
         label: "跳转路径",
         render(d) {
+            const { formData } = this.props.createActiveCom;
             return (
                 <div style={{ display: "flex" }}>
                     {d({})(
@@ -166,7 +169,13 @@ export const formItems2 = {
                         </Select>
                     )}
                     <div style={{ marginLeft: "4px" }}>
-                        <Tooltip title="投放日期必须在券有效期范围内，且投放周期不能超过90天">
+                        <Tooltip
+                            title={
+                                formData.afterPayJumpType === "3"
+                                    ? "投放日期必须在券有效期范围内，且投放周期不能超过90天"
+                                    : "用户点击立即使用可直接跳转至小程序支付"
+                            }
+                        >
                             <Icon
                                 style={{ fontSize: "16px" }}
                                 type="question-circle"
@@ -234,6 +243,6 @@ export const formKeys2 = [
     "originalImageUrl",
     "backgroundColor",
     "afterPayJumpType",
-    "miniProgramInfo",
+    // "miniProgramInfo",
     "eventDate",
 ];

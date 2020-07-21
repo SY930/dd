@@ -42,13 +42,13 @@ class Step1 extends React.Component {
     }
     render () {
         formItems1.eventRemark.render = formItems1.eventRemark.render.bind(this)
-
+        const { formData } = this.props.createActiveCom
         return (
             <div className={styles.step1Wrap}>
                 <BaseForm
                     getForm={this.getForm}
                     formItems={formItems1}
-                    formData={{}}
+                    formData={formData}
                     formKeys={formKeys1}
                     onChange={this.handleFromChange}
                     formItemLayout={{

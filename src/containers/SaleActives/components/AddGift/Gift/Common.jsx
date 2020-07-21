@@ -61,7 +61,7 @@ const formItems = {
     countType: {
         type: 'radio',
         label: '相对有效期',
-        defaultValue: '0',
+        defaultValue: '1',
         options: [
             { label: '按小时', value: '0' },
             { label: '按天', value: '1' },
@@ -72,7 +72,7 @@ const formItems = {
         type: 'combo',
         label: '生效时间',
         options: timeOpts,
-        defaultValue: '0',
+        defaultValue: '',
         disabled: true
     },
     giftValidUntilDayCount: {

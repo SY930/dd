@@ -11,6 +11,7 @@ class MutliGift extends Component {
 
     state = {
         treeData: [],
+
     }
     componentDidMount() {
         this.props.dispatch({
@@ -24,15 +25,20 @@ class MutliGift extends Component {
 
     }
 
+
     onChange = (params, form) => {
-        console.log('idx',params,form)
+
         if(params.giftID) {
             this.props.dispatch({
                 type: 'createActiveCom/couponService_getBoards',
                 payload: {
                     giftItemID: params.giftID
                 }
-            })
+            }).then((res => {
+                if(res) {
+                    this.props.onChange(Object.assign(res,{giftID: params.giftID}))
+                }
+            }))
         }
         // 保存form,验证的时候使用
         this.props.dispatch({
@@ -41,32 +47,16 @@ class MutliGift extends Component {
                 giftForm: form
             }
         })
-        this.props.onChange(params)
+
+        this.props.onChange(Object.assign(this.props.value,params))
+
     }
     render() {
         const { treeData } = this.state;
-        const { value,form } = this.props;
+        const { value } = this.props;
+
         return (
             <div className={css.multiGiftBox}>
-                {/* {
-                    Array.isArray(value) && value.map((x, i)=>{
-                        return (
-                            <div key={x.id} className={css.giftBox}>
-                                <em>礼品{i+1}</em>
-                                { i>0 &&
-                                   <a data-idx={i} href={href} onClick={this.onDel}>
-                                        <Icon type="close-circle" />
-                                    </a>
-                                }
-                                <Gift
-                                    idx={i}
-                                    treeData={treeData}
-                                    formData={x}
-                                    onChange={this.onChange}
-                                />
-                            </div>)
-                    })
-                } */}
 
                 {
                     <div   className={css.giftBox}>
@@ -78,9 +68,7 @@ class MutliGift extends Component {
                         />
                     </div>
                 }
-                {/* <Button onClick={this.onAdd}>
-                    <Icon type="plus" />点击添加礼品
-                </Button> */}
+
             </div>
         )
     }

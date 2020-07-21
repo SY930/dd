@@ -11,19 +11,20 @@ export default class Gift extends Component {
         options: [],    //生效时间下拉框
         formKeys: formKeys1,
     };
+
     /** 表单内容变化时的监听 */
     onFormChange = (key, value) => {
         const { idx, onChange } = this.props;
         if(key === 'countType') {
             const options = (value === '0') ? timeOpts : dayOpts;
             this.setState({ options });
-            this.form.setFieldsValue({ 'giftEffectTimeHours': value });
+            // this.form.setFieldsValue({ 'giftEffectTimeHours': value });
         }
         if(key==='effectType'){
             if(value === '1') {
                 this.setState({ formKeys: formKeys1 },()=>{
-                    const countType = this.form.getFieldValue('countType');
-                    this.form.setFieldsValue({ 'giftEffectTimeHours': countType });
+                    // const countType = this.form.getFieldValue('countType');
+                    // this.form.setFieldsValue({ 'giftEffectTimeHours': countType });
                 });
             } else {
                 this.setState({ formKeys: formKeys2 });
@@ -46,7 +47,7 @@ export default class Gift extends Component {
                 placeholder="请选择礼品名称"
                 showSearch={true}
                 treeNodeFilterProp="label"
-                allowClear={true}
+                allowClear={false}
             />);
         return {
             ...formItems,
