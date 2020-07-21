@@ -27,17 +27,56 @@ class CreateActive extends Component {
 
     componentDidMount(){
         this.dispatch = this.props.dispatch
-        const  { typeKey } = decodeUrl()
-        this.dispatch({
-            type: 'createActiveCom/updateState',
-            payload: {
-                type: typeKey,
-                groupID: this.props.groupID
+        // TODO: 点击tab切换后，参数会丢失，暂时默认为微信支付有礼，后期解决
+        const  { typeKey = '80', itemID } = decodeUrl()
+        if(typeKey) {
+            this.dispatch({
+                type: 'createActiveCom/updateState',
+                payload: {
+                    type: typeKey,
+                    groupID: this.props.groupID
+                }
+            })
+            this.typeKey = typeKey
+        }
+
+        if(itemID) {
+            this.dispatch({
+                type: 'createActiveCom/queryEventDetail_NEW',
+                payload: {
+                    itemID,
+                    groupID: this.props.groupID
+                }
+            })
+            this.dispatch({
+                type: 'createActiveCom/updateState',
+                payload: {
+                    isView: true
+                }
+            })
+        }
+
+        window.__history__.listen((t) => {
+            const  { typeKey = '80', itemID } = decodeUrl()
+            console.log('t----',t)
+            if(itemID) {
+                this.dispatch({
+                    type: 'createActiveCom/queryEventDetail_NEW',
+                    payload: {
+                        itemID,
+                        groupID: this.props.groupID
+                    }
+                })
             }
         })
-        this.typeKey = typeKey
+
+    }
 
 
+    componentWillUnmount() {
+        this.dispatch({
+            type: 'createActiveCom/clearData'
+        })
     }
     onCancel = () => {
         this.dispatch({

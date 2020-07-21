@@ -102,7 +102,7 @@ class ActSteps extends React.Component {
                             style={{ display: this.props.isUpdate ? 'inline-block' : 'none' }}
                             type="primary"
                             loading={this.props.loading}
-                            disabled={this.props.loading}
+                            disabled={this.props.disabled}
                             onClick={() => {
                                 this.finish(current);
                             }}

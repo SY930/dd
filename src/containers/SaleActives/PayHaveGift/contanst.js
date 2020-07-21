@@ -77,7 +77,7 @@ export const formKeys1 = [
     "eventRemark",
 ];
 
-export const imgUrl = "http://res.hualala.com/";
+export const imgUrl = "http://res.hualala.com";
 
 export const formItems2 = {
     consumeTotalAmount: {

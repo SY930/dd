@@ -42,6 +42,7 @@ class PayHaveGift extends React.Component {
             }).then(res => {
                 if(res) {
                     cb()
+                    closePage()
                     jumpPage({pageID: '1000076003'})
                 }
             })
@@ -77,7 +78,8 @@ class PayHaveGift extends React.Component {
             formData,
             currentStep,
             crmGiftTypes,
-            giftValue
+            giftValue,
+            isView
         } = this.props.createActiveCom
         const { merchantLogoUrl, eventName, backgroundColor, mySendGift, originalImageUrl } = formData
         const { rangeDate, effectType, giftEffectTimeHours, giftValidUntilDayCount,giftID } = mySendGift
@@ -86,7 +88,7 @@ class PayHaveGift extends React.Component {
             return [...pre,...children]
         },[])
         const giftItem = giftList.find(v => v.value === giftID)
-
+        const saveLoading = loading.effects['createActiveCom/addEvent_NEW']
         const steps = [{
             title: '基本信息',
             content:  <Step1
@@ -98,7 +100,7 @@ class PayHaveGift extends React.Component {
             getSubmitFn={this.getSubmitFn(1)}
             />,
           }];
-
+        const headerUrl = merchantLogoUrl.url ? `${imgUrl}/${merchantLogoUrl.url}`   : `${imgUrl}/${merchantLogoUrl}`
         return (
             <div className={styles.actWrap}>
                 <div className={styles.setResult}>
@@ -106,7 +108,7 @@ class PayHaveGift extends React.Component {
                             currentStep == 0 &&  <div className={styles.resultImgWrap}>
                             <img className={styles.contentBg} src={`${imgUrl}/basicdoc/db96d381-7930-4a40-8689-1cb2f12420c2.png`}/>
                             <div className={styles.showData}>
-                                <img style={merchantLogoUrl ? {} : {opacity: 0}}   src={merchantLogoUrl ? imgUrl +  (merchantLogoUrl.url || merchantLogoUrl) : null}/>
+                                <img style={merchantLogoUrl ? {} : {opacity: 0}}   src={ headerUrl }/>
                                 <div className={styles.text}>
                                      <div className={styles.title}>{eventName}</div>
                                      <div className={styles.content}>{giftItem && giftItem.label}</div>
@@ -150,10 +152,10 @@ class PayHaveGift extends React.Component {
                                     <div  className={styles.topTitle}>“欢迎再次光临”</div>
                                 </div>
                                 <div className={styles.step2HeaderImg}>
-                                    <img src={merchantLogoUrl ? imgUrl +  (merchantLogoUrl.url || merchantLogoUrl) : null} />
+                                    <img src={ headerUrl} />
                                 </div>
                                 <div className={styles.step2ContentBanner}>
-                                    <img src={(originalImageUrl && originalImageUrl.url) ? `${imgUrl}${originalImageUrl.url }` : `${imgUrl}${originalImageUrl}`}/>
+                                    <img src={(originalImageUrl && originalImageUrl.url) ? `${imgUrl}/${originalImageUrl.url }` : `${imgUrl}/${originalImageUrl}`}/>
                                 </div>
                                 <div className={styles.couponInfoWrap}>
                                     <div className={styles.couponTitle}>
@@ -179,7 +181,8 @@ class PayHaveGift extends React.Component {
                 <div className={styles.settingWrap}>
                     <ActSteps
                         isUpdate={true}
-                        loading={loading.effects['createActiveCom/addEvent_NEW']}
+                        loading={saveLoading}
+                        disabled={isView || saveLoading}
                         steps={steps}
                         onNext={this.handleNext}
                         onFinish={this.handleFinish}

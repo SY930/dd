@@ -39,7 +39,7 @@ import {
 import ActivityMain from '../activityMain';
 
 import registerPage from '../../../index';
-import { SPECIAL_PAGE, PROMOTION_DECORATION } from '../../../constants/entryCodes';
+import { SPECIAL_PAGE, PROMOTION_DECORATION, SALE_CENTER_PAYHAVEGIFT } from '../../../constants/entryCodes';
 import { promotionBasicInfo_NEW as sale_promotionBasicInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionBasicInfo.reducer';
 import { promotionDetailInfo_NEW as sale_promotionDetailInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionDetailInfo.reducer';
 import {
@@ -224,6 +224,7 @@ class MySpecialActivities extends React.Component {
                 { value: '77', label: '支付后广告' },
                 { value: '76', label: '签到' },
                 { value: '78', label: '下单抽抽乐' },
+                { value: '80', label: '微信支付有礼' },
             ],
         }
         this.renderFilterBar = this.renderFilterBar.bind(this);
@@ -389,6 +390,10 @@ class MySpecialActivities extends React.Component {
         if(itemID){
             this.setState({ itemID, view });
         }
+    }
+    handleShowDetail = (record) => {
+        // 跳转到新版的营销活动
+        jumpPage({ menuID: SALE_CENTER_PAYHAVEGIFT,  itemID: record.itemID,typeKey : record.eventWay})
     }
     render() {
         const { v3visible, itemID, view } = this.state;
@@ -681,12 +686,12 @@ class MySpecialActivities extends React.Component {
                             <a
                                 href="#"
                                 className={
-                                    record.isActive != '0' || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record))
+                                    record.isActive != '0' || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) || record.eventWay === 80
                                         ? styles.textDisabled
                                         : null
                                 }
                                 onClick={(e) => {
-                                    if (record.isActive != '0' || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record))) {
+                                    if (record.isActive != '0' || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) || record.eventWay === 80) {
                                         e.preventDefault()
                                     } else {
                                         if (Number(record.eventWay) === 70) {
@@ -714,6 +719,11 @@ class MySpecialActivities extends React.Component {
                                 }
                                 if (record.eventWay === 78) {
                                     this.onV3Click(record.itemID, true);
+                                    return;
+                                }
+                                if (record.eventWay === 80) {
+
+                                    this.handleShowDetail(record)
                                     return;
                                 }
                                 this.props.toggleIsUpdate(false)

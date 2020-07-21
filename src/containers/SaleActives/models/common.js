@@ -12,6 +12,7 @@ const {
     couponService_getBoards,
     addEvent_NEW,
     getApps,
+    queryEventDetail_NEW,
 } = api;
 const initState = {
     groupID: "",
@@ -27,8 +28,8 @@ const initState = {
             validUntilDate: null, // 固定有效期失效时间
             rangeDate: [],
         },
-        merchantLogoUrl: "/basicdoc/21723174-846a-42c9-9381-92106967d82a.png",
-        originalImageUrl: "/basicdoc/ea1e4255-32fb-4bed-baa2-37b655e52eb8.png",
+        merchantLogoUrl: "basicdoc/21723174-846a-42c9-9381-92106967d82a.png",
+        originalImageUrl: "basicdoc/ea1e4255-32fb-4bed-baa2-37b655e52eb8.png",
         afterPayJumpType: "3",
     }, // 表单内的值,
     currentStep: 0,
@@ -36,6 +37,7 @@ const initState = {
     wxNickNameList: [], // 微信小程序列表
     crmGiftTypes: [], // 礼品数据
     giftValue: "", // 礼品价值
+    isView: false, // 页面状态
 };
 export default {
     namespace: "createActiveCom",
@@ -136,7 +138,7 @@ export default {
             }
         },
         *addEvent_NEW({ payload }, { call, put, select }) {
-            const { groupID, formData } = yield select(
+            const { groupID, formData, wxNickNameList } = yield select(
                 (state) => state.createActiveCom
             );
             const {
@@ -146,10 +148,10 @@ export default {
                 consumeTotalAmount,
                 backgroundColor,
                 afterPayJumpType,
-                // 小程序名称
                 eventDate,
                 mySendGift,
                 originalImageUrl,
+                miniProgramInfo,
             } = formData;
             const {
                 giftID,
@@ -161,12 +163,12 @@ export default {
             } = mySendGift;
             const event = {
                 eventName,
-                merchantLogoName: merchantLogoUrl
+                merchantLogoName: merchantLogoUrl.url
                     ? merchantLogoUrl.fileName
                     : "hualala.png",
-                merchantLogoUrl: merchantLogoUrl
-                    ? imgUrl + merchantLogoUrl.url
-                    : "http://res.hualala.com/basicdoc/21723174-846a-42c9-9381-92106967d82a.png",
+                merchantLogoUrl: merchantLogoUrl.url
+                    ? imgUrl + "/" + merchantLogoUrl.url
+                    : imgUrl + "/" + merchantLogoUrl,
                 eventRemark,
                 consumeTotalAmount:
                     consumeTotalAmount && consumeTotalAmount.number,
@@ -181,7 +183,17 @@ export default {
                     eventDate[1] &&
                     moment(eventDate[1]).format(format),
                 groupID,
+                eventWay: 80,
+                consumeType: 8,
             };
+            if (miniProgramInfo && afterPayJumpType === "4") {
+                event.miniProgramInfo = JSON.stringify({
+                    appID: miniProgramInfo,
+                    appName: wxNickNameList.find(
+                        (v) => v.value === miniProgramInfo
+                    ).label,
+                });
+            }
 
             const gifts = [
                 {
@@ -199,10 +211,12 @@ export default {
                         rangeDate &&
                         rangeDate[1] &&
                         moment(rangeDate[1]).format(format),
-                    originalImageName:
-                        originalImageUrl && originalImageUrl.fileName,
-                    originalImageUrl:
-                        originalImageUrl && imgUrl + originalImageUrl.url,
+                    originalImageName: originalImageUrl.url
+                        ? originalImageUrl.fileName
+                        : "wxPayBanner.png",
+                    originalImageUrl: originalImageUrl.url
+                        ? imgUrl + "/" + originalImageUrl.url
+                        : imgUrl + "/" + originalImageUrl,
                     presentType: 1,
                 },
             ];
@@ -220,59 +234,52 @@ export default {
             }
         },
         *queryEventDetail_NEW({ payload }, { call, put, select }) {
-            // {"itemID":"6850382801812851605","groupID":"11157"} 入参
-            // const ret = yield call(couponService_getBoards, {
-            //     itemID: payload.itemID,
-            //     groupID,
-            // });
-            const ret = {
-                code: "000",
-                data: {
-                    eventName: "测试支付有礼",
-                    merchantLogoName: "22222.png",
-                    merchantLogoUrl:
-                        "http://res.hualala.com/basicdoc/42241a82-6029-4535-ba25-c81480ff97dc.png",
-                    eventRemark: "支付有礼活动说明",
-                    consumeTotalAmount: "11",
-                    backgroundColor: "#2B9F66",
-                    afterPayJumpType: "3",
-                    eventStartDate: "20200719",
-                    eventEndDate: "20200724",
-                },
-                gifts: [
-                    {
-                        giftID: "6850738927616134037",
-                        giftCount: "23",
-                        countType: "1",
-                        effectTime: "20200718",
-                        validUntilDate: "20200725",
-                        originalImageName: "333333333.png",
-                        originalImageUrl:
-                            "http://res.hualala.com/basicdoc/a7fd835b-d643-41c3-a182-2480e7956495.png",
-                        presentType: 1,
-                    },
-                ],
-            };
+            const ret = yield call(queryEventDetail_NEW, payload);
+
             if (ret.code === "000") {
                 const { data, gifts } = ret;
+                const formData = {
+                    ...data,
+                    mySendGift: {
+                        ...gifts[0],
+                        rangeDate: [
+                            moment(gifts[0].effectTime),
+                            moment(gifts[0].validUntilDate),
+                        ],
+                    },
+                    originalImageUrl:
+                        gifts[0].originalImageUrl &&
+                        gifts[0].originalImageUrl.split(imgUrl)[1],
+                    eventDate: [
+                        moment(data.eventStartDate),
+                        moment(data.eventEndDate),
+                    ],
+                    merchantLogoUrl:
+                        data.merchantLogoUrl &&
+                        data.merchantLogoUrl.split(imgUrl)[1],
+                    consumeTotalAmount: {
+                        number: String(data.consumeTotalAmount),
+                        modal: "float",
+                        maxNum: 7,
+                    },
+                    afterPayJumpType: data.afterPayJumpType
+                        ? String(data.afterPayJumpType)
+                        : "3",
+                };
+
+                if (data.miniProgramInfo) {
+                    let miniProgramInfo = "";
+                    try {
+                        miniProgramInfo = JSON.parse(data.miniProgramInfo);
+                    } catch (error) {}
+                    if (miniProgramInfo) {
+                        formData.miniProgramInfo = miniProgramInfo.appID;
+                    }
+                }
                 yield put({
                     type: "updateState",
                     payload: {
-                        formData: {
-                            ...data,
-                            mySendGift: {
-                                ...gifts[0],
-                                rangeDate: [
-                                    moment(gifts[0].effectTime),
-                                    moment(gifts[0].validUntilDate),
-                                ],
-                            },
-                            originalImageUrl: gifts[0].originalImageUrl,
-                            eventDate: [
-                                moment(data.eventStartDate),
-                                moment(data.eventEndDate),
-                            ],
-                        },
+                        formData,
                     },
                 });
             } else {
