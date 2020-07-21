@@ -3,14 +3,10 @@ import {
     Row,
     Col,
     Input,
-    Tag,
     DatePicker,
     TimePicker,
     Form,
     Select,
-    Icon,
-    Button,
-    Checkbox,
 } from 'antd';
 import { connect } from 'react-redux'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
@@ -166,22 +162,6 @@ class StepOne extends React.Component {
         // document.removeEventListener('click', this.onFakeDatePickerBlur)
     }
 
-    // onFakeDatePickerBlur = (e) => {
-    //     if (this.fakeDatePicker) {
-    //         let element = e.target;
-    //         while (element.parentNode) {
-    //             if (element === this.fakeDatePicker
-    //                 || (element.className || '').includes('ant-calendar-picker-container')) {
-    //                 break;
-    //             }
-    //             element = element.parentNode
-    //         }
-    //         if (!element.parentNode) {
-    //             this.setState({ open: false })
-    //         }
-    //     }
-    // }
-
     setErrors(target, text) {
         this.props.form.setFields({
             [target]: {
@@ -192,19 +172,6 @@ class StepOne extends React.Component {
     componentWillReceiveProps(nextProps, nextState) {
         // 是否更新
         if (this.props.specialPromotion.get('$eventInfo') !== nextProps.specialPromotion.get('$eventInfo')) {
-            // const specialPromotion = nextProps.specialPromotion.get('$eventInfo').toJS();
-            // selectedIDs = specialPromotion.mpIDList;
-            // if (specialPromotion.getExcludeEventList && specialPromotion.getExcludeEventList.length > 0) {
-            //     this.setState({
-            //         getExcludeEventList: specialPromotion.getExcludeEventList || [],
-            //     }, () => {
-            //         this.setErrors('rangePicker', `${this.props.intl.formatMessage(STRING_SPE.de8g05amdm019)}`)
-            //     })
-            // } else {
-            //     this.setState({
-            //         getExcludeEventList: [],
-            //     })
-            // }
             if (nextProps.specialPromotion.get('$eventInfo').toJS().allCardLevelCheck && this.props.type != '23') { // 线上餐厅送礼活动过于复杂不限制下一步
                 this.setState({ iconDisplay: true }, () => {
                     this.setErrors('rangePicker', `${this.props.intl.formatMessage(STRING_SPE.d31f01f38ji1267)}`)
@@ -225,37 +192,7 @@ class StepOne extends React.Component {
                 nextFlag = false;
             }
         });
-        // if (this.state.getExcludeEventList.length > 0) {
-        //     nextFlag = false;
-        //     this.setErrors('rangePicker', `${this.props.intl.formatMessage(STRING_SPE.de8g05amdm019)}`)
-        // }
-        // if (this.state.allShopCheck) {
-        //     nextFlag = false;
-            // this.setErrors('rangePicker', `${this.props.intl.formatMessage(STRING_SPE.d5g391i90j344)}`)
-        // }
 
-        /**
-         const {
-                    validCycleType,
-                    selectMonthValue,
-                    selectWeekValue
-                } = this.state;
-                let validCycle;
-                switch (validCycleType) {
-                    case ACTIVITY_CYCLE_TYPE.MONTHLY:
-                        validCycle = selectMonthValue.map(item => `m${item}`);
-                        break;
-                    case ACTIVITY_CYCLE_TYPE.WEEKLY:
-                        validCycle = selectWeekValue.map(item => `w${item}`);
-                        break;
-                    default: validCycle = null;
-                }
-                this.props.setSpecialBasicInfo({
-                    excludedDate: (this.state.excludeDateArray || []).map(moments => moments.format('YYYYMMDD')),
-                    validCycle,
-                })
-         * 
-        */
         const validCycleType = getFieldValue('dateInPeriodType');
         let validCycle = null;
         if(getFieldValue('dateDescInPeroid') instanceof Array) {
@@ -265,6 +202,15 @@ class StepOne extends React.Component {
                 validCycle = getFieldValue('dateDescInPeroid').filter(item => item.startsWith('w'));
             }
         }
+
+        // 是否同一天
+        let rangePickerVal = getFieldValue('rangePicker');
+        if(rangePickerVal instanceof Array && rangePickerVal.length == 2) {
+            if(rangePickerVal[0].isSame(rangePickerVal[1])) {
+                validCycle = [];    // 同一天，周期选择传空
+            }
+        }
+
         if (nextFlag) {
             this.props.setSpecialBasicInfo({
                 startTime: this.state.startTime + this.state.timeString || '',              // 发送时间
@@ -275,9 +221,7 @@ class StepOne extends React.Component {
                 eventStartDate: this.state.dateRange[0] ? this.state.dateRange[0].format('YYYYMMDD') : '0',
                 eventEndDate: this.state.dateRange[1] ? this.state.dateRange[1].format('YYYYMMDD') : '0',
                 signID: this.state.signID,
-                
             })
-            
         }
         return nextFlag;
     }
@@ -394,8 +338,9 @@ class StepOne extends React.Component {
     }
 
     /**
-     * @description 渲染周期选择器
+     * @description 渲染周期选择器, 如果是同一天则不渲染时间周期
      * @example 群发礼品，按月，周，日等周期去发送营销券 (无为不按日期发放)
+     * @ref http://jira.hualala.com/browse/WTCRM-2538
     */
     renderDateOfSendingPromotionSelector = () => {
         const { type, form: {
@@ -403,6 +348,17 @@ class StepOne extends React.Component {
             getFieldValue,
             setFieldsValue
         } } = this.props;
+
+        // 根据选择的时间来判断是否显示周期选择器
+        let rangePickerVal = getFieldValue('rangePicker');
+        if(rangePickerVal instanceof Array && rangePickerVal.length == 2) {
+            // 判断是否是同一天
+            let isSame = rangePickerVal[0].isSame(rangePickerVal[1]);
+            if(isSame) {
+                return null;
+            }
+        }
+
         const {
             $eventInfo : {
                 validCycle
@@ -699,6 +655,7 @@ class StepOne extends React.Component {
                     }
 
                     {
+                        // 渲染时间选择器
                         this.renderSendTimeSelector(disabledHours, disabledMinutes, noDisabled)
                     }
                     <FormItem
@@ -801,10 +758,6 @@ const mapDispatchToProps = (dispatch) => {
         querySMSSignitureList: () => {
             dispatch(querySMSSignitureList())
         },
-        // queryWechatMpInfo: (opts) => {
-        //     dispatch(queryWechatMpInfo(opts))
-        // },
-
     }
 };
 
