@@ -86,19 +86,10 @@ class StepTwo extends React.Component {
     componentDidMount() {
         // 
         const cardLevelRangeType = this.props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']);
-        if(cardLevelRangeType == '5'){
-            this.setState({
-                localType: '5',
-            })
-        }else if(cardLevelRangeType == '2'){
-            this.setState({
-                localType: '2',
-            })
-        }else{
-            this.setState({
-                localType: '2',
-            })
-        }
+        this.setState({
+            localType: cardLevelRangeType || '5',
+        })
+        
         // 
         this.props.FetchCrmCardTypeLst({});
         this.props.getSubmitFn({
@@ -445,14 +436,6 @@ class StepTwo extends React.Component {
         })
         this.props.setSpecialBasicInfo({ cardLevelIDList: [], cardGroupID: '' });
     }
-    handleRadioChange = (e) => {
-        let type = e.target.value;
-        this.setState({
-            cardLevelIDList: [],
-            cardLevelRangeType: type,
-            cardType: type
-        })
-    }
     render() {
         let {localType} = this.state
 
@@ -508,8 +491,9 @@ class StepTwo extends React.Component {
                                 wrapperCol={{ span: 17 }}
                             >
                                 <RadioGroup onChange={this.handleGroupOrCatRadioChange} value={`${localType}`}>
-                                    <Radio key={'5'} value={'5'}>会员人</Radio>
-                                    <Radio key={'2'} value={'2'}>会员卡</Radio>
+                                    <Radio key={'5'} value={'5'}>会员群体</Radio>
+                                    <Radio key={'2'} value={'2'}>会员卡类</Radio>
+                                    <Radio key={'6'} value={'6'}>会员卡等级</Radio>
                                 </RadioGroup>
                             </FormItem>
                             {this.state.localType == '5' ?
@@ -545,6 +529,7 @@ class StepTwo extends React.Component {
                                     catOrCard={'cat'}
                                     type={this.props.type}
                                     form={this.props.form}
+                                    cardLevelRangeType={localType}
                                 />
                             }
                             <FormItem

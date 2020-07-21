@@ -80,6 +80,9 @@ class CardLevelForWX extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        if (this.state.cardLevelRangeType != nextProps.cardLevelRangeType){
+            this.setState({cardLevelRangeType: nextProps.cardLevelRangeType, cardLevelIDList: []})
+        }
         if (this.props.shopSchemaInfo.getIn(['shopSchema']) !== nextProps.shopSchemaInfo.getIn(['shopSchema'])) {
             this.setState({
                 shopSchema: nextProps.shopSchemaInfo.getIn(['shopSchema']).toJS(), // 后台请求来的值
@@ -383,7 +386,7 @@ class CardLevelForWX extends React.Component {
         });
         return (
             <Form className={styles.cardLevelTree}>
-                <FormItem
+                {/* <FormItem
                     label={this.props.intl.formatMessage(STRING_SPE.d216426238818026)}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
@@ -393,7 +396,7 @@ class CardLevelForWX extends React.Component {
                         <Radio key={'2'} value={'2'}>{`卡类别`}</Radio>
                         <Radio key={'6'} value={'6'}>{`卡等级`}</Radio>
                     </RadioGroup>
-                </FormItem>
+                </FormItem> */}
                 <FormItem
                     label={`${this.props.intl.formatMessage(STRING_SPE.d1qe2lejcb4138)}${cardLevelRangeType == 2 ? `${this.props.intl.formatMessage(STRING_SPE.d1qe2lejcb5102)}` : `${this.props.intl.formatMessage(STRING_SPE.du380iqhn0125)}`}`}
                     className={[styles.FormItemStyle, styles.cardLevelTree].join(' ')}
