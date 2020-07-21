@@ -184,8 +184,8 @@ class BlindBox extends Component {
             if (!e) {
                 const formData1 = { ...v };
                 this.setState({ formData1 });
+                this.onGoNext();
             }
-            this.onGoNext();
         });
     }
 
@@ -195,8 +195,8 @@ class BlindBox extends Component {
         form.validateFields((e, v) => {
             if (!e) {
                 this.setState({ formData2: v });
+                this.onGoNext();
             }
-            this.onGoNext();
         });
     }
 
