@@ -1229,7 +1229,7 @@ class GiftAddModalStep extends React.PureComponent {
                         validator: (rule, num, cb) => {
                             Number(num) >= 0 &&  Number(num) <= 10000 ? cb() : cb(rule.message);
                         },
-                        message: '请输入大于0，整数五位数以内且小数2位数以内的数值',
+                        message: '请输入大于等于0，整数5位以内且小数2位以内的数值',
                     }],
                     initialValue: val
                 })(<Input 
