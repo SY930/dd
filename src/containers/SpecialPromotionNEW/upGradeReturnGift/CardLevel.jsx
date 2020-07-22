@@ -358,7 +358,7 @@ class CardLevel extends React.Component {
                                 innerBottomTitle={`${this.props.intl.formatMessage(STRING_SPE.dd5a318e4162103)}`} //   内部底部box的title
                                 innerBottomItemName="cardLevelName" //   内部底部已选条目选项的label
                                 itemNameJoinCatName={'cardTypeName'} // item条目展示名称拼接类别名称
-                                treeData={cardInfo} // 树形全部数据源【{}，{}，{}】
+                                treeData={filteredCardInfo} // 树形全部数据源【{}，{}，{}】
                                 data={boxData} // 已选条目数组【{}，{}，{}】】,编辑时向组件内传递值
                                 onChange={(value) => {
                                     // 组件内部已选条目数组【{}，{}，{}】,向外传递值
