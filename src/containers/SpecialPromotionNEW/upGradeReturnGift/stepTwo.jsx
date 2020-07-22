@@ -14,6 +14,8 @@ import {
     Form,
     Select,
     message,
+    Radio, 
+    Icon
 } from 'antd';
 import {isEqual, uniq, isEmpty} from 'lodash';
 import {
@@ -24,19 +26,23 @@ import {
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import SendMsgInfo from '../common/SendMsgInfo';
 import CardLevel from '../common/CardLevel';
+import CardLevels from './CardLevel';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 import { queryGroupMembersList } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
+import { FetchCrmCardTypeLst } from '../../../redux/actions/saleCenterNEW/crmCardType.action';
 import {
     fetchPromotionScopeInfo,
     getPromotionShopSchema
 } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import ShopSelector from '../../../components/ShopSelector';
+import BaseHualalaModal from "../../SaleCenterNEW/common/BaseHualalaModal";
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
 import { axios } from '@hualala/platform-base';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+const RadioGroup = Radio.Group;
 const moment = require('moment');
 @injectIntl
 class StepTwo extends React.Component {
@@ -45,11 +51,13 @@ class StepTwo extends React.Component {
         const shopSchema = this.props.shopSchemaInfo.getIn(['shopSchema']).toJS();
         const cardLevelRangeType = this.props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']);
         this.state = {
+            cardInfo: [],
             message: '',
             cardLevelIDList: [],
             groupMembersList: [],
             groupMembersID: this.props.specialPromotion.getIn(['$eventInfo', 'cardGroupID']),
             cardLevelRangeType: cardLevelRangeType === undefined ? '5' : cardLevelRangeType,
+            localType: '5',
             giveStatus: 'success',
             consumeType: '2',
             numberValue: {
@@ -76,6 +84,14 @@ class StepTwo extends React.Component {
     }
 
     componentDidMount() {
+        // 
+        const cardLevelRangeType = this.props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']);
+        this.setState({
+            localType: cardLevelRangeType || '5',
+        })
+        
+        // 
+        this.props.FetchCrmCardTypeLst({});
         this.props.getSubmitFn({
             prev: undefined,
             next: this.handleSubmit,
@@ -134,7 +150,7 @@ class StepTwo extends React.Component {
             }
             const opts = {
                 message: specialPromotion.smsTemplate,
-                // cardLevelIDList: specialPromotion.cardLevelIDList,
+                cardLevelIDList: specialPromotion.cardLevelIDList,
                 ...addUpOpts,
             }
             if (this.props.type == '70' || this.props.type == '64') {
@@ -184,6 +200,14 @@ class StepTwo extends React.Component {
         const nextShopSchema = nextProps.shopSchemaInfo.getIn(['shopSchema']).toJS();
         if (!isEqual(previousSchema, nextShopSchema)) {
             this.setState({shopSchema: nextShopSchema, // 后台请求来的值
+            });
+        }
+        if (this.props.crmCardTypeNew.get('cardTypeLst') !== nextProps.crmCardTypeNew.get('cardTypeLst')) {
+            const cardInfo = nextProps.crmCardTypeNew.get('cardTypeLst').toJS();
+            this.setState({
+                cardInfo: cardInfo.filter((cardType) => {
+                    return cardType.regFromLimit
+                }),
             });
         }
         // 获取会员等级信息
@@ -279,6 +303,7 @@ class StepTwo extends React.Component {
                 cardLevelRangeType: this.props.type == '62' ? this.state.cardLevelRangeType : '2',
                 smsTemplate: this.state.message,
             };
+
         if (this.props.type == '62' && this.state.cardLevelRangeType == '5') {
             if (!this.state.groupMembersID) {
                 this.props.form.setFields({
@@ -401,7 +426,19 @@ class StepTwo extends React.Component {
     handleSelectChange(value) {
         this.setState({groupMembersID: value});
     }
+    handleGroupOrCatRadioChange = (e) => {
+        let type = e.target.value;
+        this.setState({
+            cardLevelRangeType: type,
+            localType: type,
+            cardLevelIDList: [],
+            groupMembersID: undefined,
+        })
+        this.props.setSpecialBasicInfo({ cardLevelIDList: [], cardGroupID: '' });
+    }
     render() {
+        let {localType, cardLevelIDList} = this.state
+
         const sendFlag = true;
         const totalCustomerCount = this.props.specialPromotion.get('customerCount');
         const tip = this.state.consumeType % 2 === 0 ? `${this.props.intl.formatMessage(STRING_SPE.d1e09r9slq0172)}` : `${this.props.intl.formatMessage(STRING_SPE.d16hh4899ii1154)}`
@@ -426,30 +463,21 @@ class StepTwo extends React.Component {
                 }
                 {
                     this.props.type == '62' ?
-                        <div>
+                        // 累计消费送礼box
+                        <div>       
                             <FormItem
-                                label={`${this.props.intl.formatMessage(STRING_SPE.dk470bkjg96160)}`}
+                                label="累计维度"
                                 className={styles.FormItemStyle}
                                 labelCol={{ span: 4 }}
                                 wrapperCol={{ span: 17 }}
-                                validateStatus={this.state.giveStatus}
-                                help={this.state.giveStatus == 'success' ? null : `${this.props.intl.formatMessage(STRING_SPE.d17013b4f2ba72)}${tip}`}
                             >
-                                {this.props.form.getFieldDecorator('give', {
-                                    rules: [{
-                                        required: true,
-                                        message: `${this.props.intl.formatMessage(STRING_SPE.d5g3303e750262)}`,
-                                    }],
-                                    initialValue: this.state.numberValue,
-                                })(<PriceInput
-                                    onChange={this.handleNumberChange}
-                                    addonBefore={giveSelect}
-                                    addonAfter={this.state.consumeType % 2 === 0 ? `${this.props.intl.formatMessage(STRING_SPE.da8omhe07g2195)}` : `${this.props.intl.formatMessage(STRING_SPE.d2164523635bb18198)}`}
-                                />)
-                                }
+                                <RadioGroup onChange={this.handleGroupOrCatRadioChange} value={`${localType}`}>
+                                    <Radio key={'5'} value={'5'}>会员群体</Radio>
+                                    <Radio key={'2'} value={'2'}>会员卡类</Radio>
+                                    <Radio key={'6'} value={'6'}>会员卡等级</Radio>
+                                </RadioGroup>
                             </FormItem>
-
-                            {this.state.cardLevelRangeType == '5' ?
+                            {this.state.localType == '5' ?
                                 <FormItem
                                     label={this.props.intl.formatMessage(STRING_SPE.dd5a33b5g874114)}
                                     className={styles.FormItemStyle}
@@ -475,15 +503,39 @@ class StepTwo extends React.Component {
                                             <Option key={'0'}>{totalCustomerCount ? `${this.props.intl.formatMessage(STRING_SPE.d2b1b731e10c6117)}${totalCustomerCount}${this.props.intl.formatMessage(STRING_SPE.de8fb5g9597216)}` : `${this.props.intl.formatMessage(STRING_SPE.d1kgd7kahd0869)}`}</Option>
                                             {this.renderOptions()}
                                         </Select>
-                                    )
-                                    }
-                                </FormItem>:
-                                <CardLevel
-                                onChange={this.onCardLevelChange}
-                                catOrCard={'cat'}
-                                type={this.props.type}
-                                form={this.props.form}
-                            />}
+                                    )}
+                                </FormItem> :  
+                                <CardLevels
+                                    catOrCard="cat"
+                                    onChange={this.onCardLevelChange}
+                                    catOrCard={'cat'}
+                                    type={this.props.type}
+                                    form={this.props.form}
+                                    cardLevelRangeType={localType}
+                                    cardLevelIDList={cardLevelIDList}
+                                />
+                            }
+                            <FormItem
+                                label={`累计条件`}
+                                className={styles.FormItemStyle}
+                                labelCol={{ span: 4 }}
+                                wrapperCol={{ span: 17 }}
+                                validateStatus={this.state.giveStatus}
+                                help={this.state.giveStatus == 'success' ? null : `${this.props.intl.formatMessage(STRING_SPE.d17013b4f2ba72)}${tip}`}
+                            >
+                                {this.props.form.getFieldDecorator('give', {
+                                    rules: [{
+                                        required: true,
+                                        message: `${this.props.intl.formatMessage(STRING_SPE.d5g3303e750262)}`,
+                                    }],
+                                    initialValue: this.state.numberValue,
+                                })(<PriceInput
+                                    onChange={this.handleNumberChange}
+                                    addonBefore={giveSelect}
+                                    addonAfter={this.state.consumeType % 2 === 0 ? `${this.props.intl.formatMessage(STRING_SPE.da8omhe07g2195)}` : `${this.props.intl.formatMessage(STRING_SPE.d2164523635bb18198)}`}
+                                />)
+                                }
+                            </FormItem>
                         </div> : (this.props.type == '70' || this.props.type == '64' ? null :
                             <CardLevel
                                 onChange={this.onCardLevelChange}
@@ -524,7 +576,9 @@ const mapStateToProps = (state) => {
     return {
         specialPromotion: state.sale_specialPromotion_NEW,
         user: state.user.toJS(),
+        crmCardTypeNew: state.sale_crmCardTypeNew,
         shopSchemaInfo: state.sale_shopSchema_New,
+        cardInfo: state.sale_mySpecialActivities_NEW.getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
         mySpecialActivities: state.sale_mySpecialActivities_NEW.toJS(),
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
@@ -543,6 +597,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         fetchPromotionScopeInfo: (opts) => {
             dispatch(fetchPromotionScopeInfo(opts));
+        },
+        FetchCrmCardTypeLst: (opts) => {
+            dispatch(FetchCrmCardTypeLst(opts));
         },
         getShopSchemaInfo: opts => dispatch(getPromotionShopSchema(opts)),
         getGroupCRMCustomAmount: opts => dispatch(getGroupCRMCustomAmount(opts)),
