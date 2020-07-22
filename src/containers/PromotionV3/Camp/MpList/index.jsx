@@ -12,12 +12,12 @@ class MpList extends Component {
 
     onAllChange = (data) => {
         const { value, onChange } = this.props;
-        let list = {...value, ...data};
+        let list = data;
         onChange(list);
     }
 
     onChange = (value) => {
-        this.onAllChange({ mpIDList: value });
+        this.onAllChange(value);
     }
 
     render() {

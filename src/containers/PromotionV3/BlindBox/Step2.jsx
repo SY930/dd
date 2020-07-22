@@ -14,7 +14,6 @@ class Step2 extends Component {
     };
 
     onChange = (key, value) => {
-        let {newFormKeys} = this.state
         if(key === 'participateRule') {
             if(value == '0'){
                 this.setState({newFormKeys: [...formKeys21, ...formKeys22]})

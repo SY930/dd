@@ -62,59 +62,54 @@ class OpenLottery extends Component {
         this.onAllChange({ giftList });
     }
     render() {
-        const { tabKey, cardList, disable } = this.state;
+        const { disable } = this.state;
         const { value, decorator } = this.props;
         let {giftList = []} = value
         return (
-                <div className={css.mainBox}>
-                    <div>
-                        <ul style={{ position: 'relative' }}>
-                            <li className={css.pointBox}>
-                                <Checkbox checked={value.isPoint} onChange={this.onPointChange}>赠送积分</Checkbox>
-                                {value.isPoint &&
-                                    <div style={{ display: 'flex', width: 400 }}>
-                                        <FormItem label="">
-                                            {
-                                                decorator({
-                                                    key: 'presentValue',
-                                                    value: value.presentValue,
-                                                    defaultValue: value.presentValue,
-                                                    rules: [{
-                                                        required: true,
-                                                        pattern: /^(([1-9]\d{0,5})(\.\d{0,2})?|0.\d?[1-9]{1})$/,
-                                                        message: '请输入0.01~100000数字，支持两位小数',
-                                                    }],
-                                                })(
-                                                    <p style={{ width: 120 }}><Input value={value.presentValue} addonAfter="积分" onChange={this.onPresentValueChange}/></p>
-                                                )
-                                            }
-                                        </FormItem>
-                                    </div>
-                                }
-                            </li>
-                            <li>
-                                <Checkbox disabled={disable} checked={value.isTicket} onChange={this.onTicketChange}>赠送优惠券</Checkbox>
-                            </li>
-                            {value.isTicket &&
-                                <li>
-                                    <p className={css.ticketBox}>
-                                    {/* <RadioGroup disabled={disable} value={value.presentType} onChange={this.onTypeChange}>
-                                        <RadioButton value="1">独立优惠券</RadioButton>
-                                        <RadioButton value="4">券包</RadioButton>
-                                    </RadioGroup> */}
-                                    </p>
-                                    <div style={{ position: "relative" }}>
-                                    {value.presentType === '1' ?
-                                        <MutliGift value={giftList} onChange={this.onGiftChange} /> : null
-                                    }
-                                    </div>
-                                </li>
+            <div className={css.mainBox}>
+                <div>
+                    <ul style={{ position: 'relative' }}>
+                        <li className={css.pointBox}>
+                            <Checkbox checked={value.isPoint} onChange={this.onPointChange}>赠送积分</Checkbox>
+                            {value.isPoint &&
+                                <div style={{ display: 'flex', width: 400 }}>
+                                    <FormItem label="">
+                                        {
+                                            decorator({
+                                                key: 'presentValue',
+                                                value: value.presentValue,
+                                                defaultValue: value.presentValue,
+                                                rules: [{
+                                                    required: true,
+                                                    pattern: /^(([1-9]\d{0,5})(\.\d{0,2})?|0.\d?[1-9]{1})$/,
+                                                    message: '请输入0.01~100000数字，支持两位小数',
+                                                }],
+                                            })(
+                                                <p style={{ width: 120 }}><Input value={value.presentValue} addonAfter="积分" onChange={this.onPresentValueChange}/></p>
+                                            )
+                                        }
+                                    </FormItem>
+                                </div>
                             }
-                            <p className={disable ? css.disBox: ''}></p>
-                        </ul>
-                    </div>
+                        </li>
+                        <li>
+                            <Checkbox disabled={disable} checked={value.isTicket} onChange={this.onTicketChange}>赠送优惠券</Checkbox>
+                        </li>
+                        {value.isTicket &&
+                            <li>
+                                <p className={css.ticketBox}>
+                                </p>
+                                <div style={{ position: "relative" }}>
+                                {value.presentType === '1' ?
+                                    <MutliGift value={giftList} onChange={this.onGiftChange} /> : null
+                                }
+                                </div>
+                            </li>
+                        }
+                        <p className={disable ? css.disBox: ''}></p>
+                    </ul>
                 </div>
-
+            </div>
         )
     }
 }

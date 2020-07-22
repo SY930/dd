@@ -77,6 +77,7 @@ const formItems2 = {
         type: 'custom',
         label: '适用公众号',
         render: () => (<p/>),
+        defaultValue: [],
         wrapperCol: { span: 18 },
     },
     participateRule: {
@@ -92,9 +93,9 @@ const formItems2 = {
         rules: [{
             required: true,
             pattern: /^(([1-9]\d{0,5})|0)(\.\d{0,2})?$/,
-            message: '请输入0~100000数字，支持两位小数',
+            message: '请输入0.01~100000之间的数据，支持两位小数',
         }],
-        wrapperCol: { span: 6 },
+        wrapperCol: { span: 10 },
     },
     presentValue2: {
         type: 'text',
@@ -103,9 +104,9 @@ const formItems2 = {
         rules: [{
             required: true,
             pattern: /^(([1-9]\d{0,5})|0)(\.\d{0,2})?$/,
-            message: '请输入0~100000数字，支持两位小数',
+            message: '请输入0.01~100000之间的数字，最多支持两位小数',
         }],
-        wrapperCol: { span: 6 },
+        wrapperCol: { span: 10 },
     },
     settleUnitID: {
         type: 'combo',
@@ -144,8 +145,7 @@ const formKeys22 = ['joinCount', 'defaultCardType', 'autoRegister'];
  */
 const lottDefVal = { id: '1', needShow: 0, giftOdds: '', presentValue: '', 
 isPoint: false, isTicket: true, presentType: '1', giftList: [{ id: '001', effectType: '1' }] };
-const openlottDefVal = { id: '1', needShow: 1, presentValue: '', 
-isPoint: false, isTicket: true, presentType: '1', giftList: [{ id: '001', effectType: '1' }] };
+const openlottDefVal = { id: '1', needShow: 1, presentValue: '', isPoint: false, isTicket: true, presentType: '1', giftList: [{ id: '001', effectType: '1' }] };
 const shareDefVal = { type: '79', shareTitle: '', shareSubtitle: '', restaurantShareImagePath: '', shareImagePath: '' };
 
 const formItems3 = {

@@ -94,7 +94,8 @@ class BlindBox extends Component {
         }else{
             joinCount = {
                 joinCount: '2',
-                partInTimes
+                partInTimes,
+                countCycleDays
             }
         }
         return { mpIDList, participateRule: `${participateRule}`, presentValue1, presentValue2, settleUnitID: (settleUnitID | 0), joinCount, defaultCardType, autoRegister: `${autoRegister}` };
@@ -143,7 +144,7 @@ class BlindBox extends Component {
         gifts.filter(item => item.needShow > 0).forEach((x, i) => {
             const { presentType, sortIndex } = x;
             const type = `${presentType}`;  // 组件要string类型的
-            let newItem = { isPoint: false, isTicket: false, presentType: '1', giftList: [], };
+            let newItem = { isPoint: false, isTicket: false, presentType: '1', giftList: [], ...openLottery};
             if(presentType == 2) {   // 积分
                 const { presentValue } = x;
                 newItem = { ...newItem, presentValue, isPoint: true };
@@ -169,7 +170,10 @@ class BlindBox extends Component {
             }
             openLottery = { id: `${sortIndex}`, userCount, ...newItem };
         });
-        
+
+        const defVal = { id: '1', needShow: 1, presentValue: '', isPoint: false, isTicket: true, presentType: '1', giftList: [{ id: '001', effectType: '1' }] };
+        openLottery = JSON.stringify(openLottery) == '{}' ? defVal : openLottery
+
         let shareInfo = { type: '79', shareTitle, shareSubtitle, restaurantShareImagePath, shareImagePath }
         return { eventImagePath, openLottery, lottery, shareInfo };
     }
@@ -286,8 +290,7 @@ class BlindBox extends Component {
     // 提交前数据
     setStep2Data() {
         const { formData2 } = this.state;
-        const { mpIDList = {}, participateRule, presentValue1, presentValue2, settleUnitID, joinCount, defaultCardType, autoRegister } = formData2;
-        let {mpIDList: mpList} = mpIDList
+        const { mpIDList, participateRule, presentValue1, presentValue2, settleUnitID, joinCount, defaultCardType, autoRegister } = formData2;
         // 参与条件
         let parm = {}
         if(participateRule == '0'){
@@ -312,11 +315,11 @@ class BlindBox extends Component {
             partInTimes = joinCount.partInTimesNoValid;
             countCycleDays = 0;
         }else{
-            partInTimes = 0;
+            partInTimes = joinCount.partInTimes;
             countCycleDays = joinCount.countCycleDays;
         }
         
-        return { mpIDList: mpList || [], participateRule, ...parm, partInTimes, countCycleDays, defaultCardType, autoRegister };
+        return { mpIDList, participateRule, ...parm, partInTimes, countCycleDays, defaultCardType, autoRegister };
     }
 
     setStep3Data(formData) {

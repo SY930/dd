@@ -16,10 +16,6 @@ class TimeLimit extends Component {
     onAllChange = (data) => {
         const { value, onChange } = this.props;
         let list = {...value, ...data};
-        // 校验
-        if(data.joinCount == '1'){
-
-        }
         onChange(list);
     }
 
