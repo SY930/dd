@@ -1,11 +1,14 @@
 import React from 'react'
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
+import { Row, Col, DatePicker, Tooltip, Icon, message } from 'antd'
 import _ from 'lodash'
 import { formItems2, formKeys2 } from '../contanst'
 import  BaseForm  from '../../../../components/common/BaseForm';
 import moment from 'moment'
 import { getDefaultGiftData } from '../../helper/index'
 const DATE_FORMAT = 'YYYYMMDD000000';
+const { RangePicker } = DatePicker;
+import styles from "../payHaveGift.less";
 
 @connect(({  loading, createActiveCom }) => ({  loading, createActiveCom }))
 class Step2 extends React.Component {
@@ -54,12 +57,6 @@ class Step2 extends React.Component {
     handleSubmit = () => {
         let flag = true
         const { giftForm } = this.props.createActiveCom
-        this.form.validateFieldsAndScroll((e,v) => {
-            if(e) {
-                flag = false
-            }
-
-        })
         giftForm.validateFieldsAndScroll((e,v) => {
             if(e) {
                 flag = false
@@ -77,6 +74,39 @@ class Step2 extends React.Component {
             }
 
         })
+        if(!flag) {
+            return flag
+        }
+        this.form.validateFieldsAndScroll((e,v) => {
+            if(e) {
+                flag = false
+            } else {
+                console.log('v----3',v)
+                const warnText = '投放日期必须在券有效期范围内，且投放周期不能超过90天'
+                const eventDate = v.eventDate
+                const diffDate = eventDate[1].diff(eventDate[0],'days') + 1
+                if(diffDate > 90) {
+                    message.warn(warnText)
+                    flag = false
+                }
+                const { effectType, giftValidUntilDayCount, effectTime, validUntilDate } = v.mySendGift || {};
+
+                console.log('diffDate',diffDate)
+                // 校验投放日期
+                if(effectType === '1' &&  diffDate > giftValidUntilDayCount) {
+                    message.warn(warnText)
+                    flag = false
+                }
+                if(effectType === '2' &&
+                (!eventDate[0].isSameOrAfter(moment.unix(effectTime)) ||  !eventDate[1].isSameOrBefore(moment.unix(validUntilDate) )) ) {
+                    message.warn(warnText)
+                    flag = false
+                }
+
+            }
+
+        })
+
 
         return flag
     }
@@ -91,11 +121,53 @@ class Step2 extends React.Component {
         return moment(endTime, DATE_FORMAT)
             .diff(moment(startTime, DATE_FORMAT), 'days') + 1;
     }
+    eventDateRender = (d) => {
+        const { formData } = this.props.createActiveCom;
+
+
+        return (
+            <Row style={{ display: "flex", alignItems: "center" }}>
+                <Col>
+                    {d({
+                        rules: [
+                            {
+                                required: true,
+                                message: "请选择活动起止时间",
+                            },
+                        ],
+                    })(
+                        <RangePicker
+                            className={styles.ActivityDateDayleft}
+                            style={{ width: "272px" }}
+                            format="YYYY-MM-DD"
+                            placeholder={["开始日期", "结束日期"]}
+                            allowClear={false}
+
+                        />
+                    )}
+                </Col>
+                <Col>
+                    <div className={styles.ActivityDateDay}>
+                        <span>{this.getDateCount()}</span>
+                        <span>天</span>
+                    </div>
+                </Col>
+                <Col>
+                    <Tooltip title="投放日期必须在券有效期范围内，且投放周期不能超过90天">
+                        <Icon
+                            style={{ fontSize: "16px" }}
+                            type="question-circle"
+                        />
+                    </Tooltip>
+                </Col>
+            </Row>
+        );
+    }
     render () {
         const { formKeys2 } = this.state
         const { wxNickNameList } = this.props.createActiveCom
 
-        formItems2.eventDate.render = formItems2.eventDate.render.bind(this)
+        formItems2.eventDate.render = this.eventDateRender
         formItems2.mySendGift.render = formItems2.mySendGift.render.bind(this)
         formItems2.afterPayJumpType.render = formItems2.afterPayJumpType.render.bind(this)
 

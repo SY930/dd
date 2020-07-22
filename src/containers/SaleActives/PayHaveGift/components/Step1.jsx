@@ -1,5 +1,6 @@
 import React from 'react'
 import  BaseForm  from '../../../../components/common/BaseForm';
+import { Input } from 'antd'
 import {formItems1,formKeys1,imgUrl} from '../contanst'
 import styles from '../payHaveGift.less'
 import {connect} from 'react-redux';
@@ -43,8 +44,28 @@ class Step1 extends React.Component {
 
         return flag
     }
+
+    renderEventRemark = (d) => {
+        const { formData } = this.props.createActiveCom;
+        return (
+            <div className={styles.textAreaWrap}>
+                {d({})(
+                    <Input
+                        placeholder="请输入活动说明，至多1000字"
+                        type="textarea"
+                        maxLength={1000}
+                        style={{ height: "117px" }}
+                    />
+                )}
+                <div className={styles.textNumCount}>
+                    {formData.eventRemark ? formData.eventRemark.length : 0}
+                    /1000
+                </div>
+            </div>
+        );
+    }
     render () {
-        formItems1.eventRemark.render = formItems1.eventRemark.render.bind(this)
+        formItems1.eventRemark.render = this.renderEventRemark
         const { formData } = this.props.createActiveCom
         return (
             <div className={styles.step1Wrap}>

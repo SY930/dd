@@ -27,7 +27,10 @@ class PayHaveGift extends React.Component {
         this.queryDetail()
 
     }
-
+    componentWillUnmount() {
+        this.form1.resetFields()
+        this.form0.resetFields()
+    }
     queryDetail = () => {
         const  { itemID } = decodeUrl()
         if(itemID) {

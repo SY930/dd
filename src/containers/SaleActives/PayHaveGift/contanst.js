@@ -1,9 +1,9 @@
 import React from "react";
-import { Input, Row, Col, DatePicker, Tooltip, Icon, Select } from "antd";
+import { Tooltip, Icon, Select } from "antd";
 import styles from "./payHaveGift.less";
 import { PriceInput, ImageUpload } from "../../../components/common/index";
 import { AddGift, ColorSetting } from "../components/index";
-const { RangePicker } = DatePicker;
+
 const Option = Select.Option;
 
 export const formItems1 = {
@@ -48,25 +48,6 @@ export const formItems1 = {
         type: "custom",
         label: "活动说明",
         placeholder: "请输入活动说明，至多1000字",
-        render(d) {
-            const { formData } = this.props.createActiveCom;
-            return (
-                <div className={styles.textAreaWrap}>
-                    {d({})(
-                        <Input
-                            placeholder="请输入活动说明，至多1000字"
-                            type="textarea"
-                            maxLength={1000}
-                            style={{ height: "117px" }}
-                        />
-                    )}
-                    <div className={styles.textNumCount}>
-                        {formData.eventRemark ? formData.eventRemark.length : 0}
-                        /1000
-                    </div>
-                </div>
-            );
-        },
     },
 };
 
@@ -194,46 +175,6 @@ export const formItems2 = {
     eventDate: {
         type: "custom",
         label: "投放日期",
-        render(d) {
-            const { formData } = this.props.createActiveCom;
-            const { startTime, endTime } = formData || {};
-
-            return (
-                <Row style={{ display: "flex", alignItems: "center" }}>
-                    <Col>
-                        {d({
-                            rules: [
-                                {
-                                    required: true,
-                                    message: "请选择活动起止时间",
-                                },
-                            ],
-                        })(
-                            <RangePicker
-                                className={styles.ActivityDateDayleft}
-                                style={{ width: "272px" }}
-                                format="YYYY-MM-DD"
-                                placeholder={["开始日期", "结束日期"]}
-                            />
-                        )}
-                    </Col>
-                    <Col>
-                        <div className={styles.ActivityDateDay}>
-                            <span>{this.getDateCount()}</span>
-                            <span>天</span>
-                        </div>
-                    </Col>
-                    <Col>
-                        <Tooltip title="投放日期必须在券有效期范围内，且投放周期不能超过90天">
-                            <Icon
-                                style={{ fontSize: "16px" }}
-                                type="question-circle"
-                            />
-                        </Tooltip>
-                    </Col>
-                </Row>
-            );
-        },
     },
 };
 
