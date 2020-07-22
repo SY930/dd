@@ -242,7 +242,11 @@ class GiftAddModalStep extends React.PureComponent {
             let malls = [];
             if(shopSchema.hasOwnProperty('shops') && shopSchema.shops instanceof Array) {
                 malls = shopSchema.shops.filter((shop, idx)=>{
-                    return shop.businessModel == '0'; // 0 为商城， 1 为餐饮店铺
+                    return shop.operationMode == '3';   // operationMode  = 3 为积分商城
+                    // 后端字段调整为 operationMode 3
+                    // if(values.operationMode == '3') {
+                    //     initialValue = values.selectMall;
+                    // }
                 });
             }
             this.setState({
@@ -1601,6 +1605,7 @@ class GiftAddModalStep extends React.PureComponent {
     renderMallListSelector = (decorator)=>{
         const { malls : mallList, values } = this.state;
         let initialValue;
+        
         if(values.applyScene == '1') {
             initialValue = values.selectMall;
         }
