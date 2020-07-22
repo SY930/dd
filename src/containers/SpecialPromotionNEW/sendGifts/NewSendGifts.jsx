@@ -13,7 +13,8 @@ import NewPromotion from '../common/NewPromotion';
 import { connect } from 'react-redux';
 import { addSpecialPromotion, updateSpecialPromotion } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 
-import CustomProgressBar from './CustomProgressBar';
+// import CustomProgressBar from './CustomProgressBar';
+import CustomProgressBar from '../../SaleCenterNEW/common/CustomProgressBar';
 // import SpecialDetailInfo from './SpecialPromotionDetailInfoInSendGifts';
 import SpecialDetailInfo from '../common/SpecialPromotionDetailInfo';
 import Three from './Three';
