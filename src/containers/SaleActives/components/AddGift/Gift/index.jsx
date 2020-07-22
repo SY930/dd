@@ -59,7 +59,7 @@ export default class Gift extends Component {
         const { formKeys } = this.state;
         const { formData } = this.props;
         const newFormItems = this.resetFormItems();
-        console.log('gift---formData',formData)
+
         return (
             <div className={css.mainBox}>
                 <BaseForm

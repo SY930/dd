@@ -18,7 +18,7 @@ class Step1 extends React.Component {
     }
 
     handleFromChange = (key,value) => {
-        console.log('key',key,value)
+
         const { formData } = this.props.createActiveCom
 
         formData[key] =value
@@ -37,7 +37,7 @@ class Step1 extends React.Component {
             if(e) {
                 flag = false
             }
-            console.log('v---',v)
+
         })
 
 

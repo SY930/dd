@@ -23,7 +23,7 @@ class Step2 extends React.Component {
     }
 
     handleFromChange = (key,value) => {
-        console.log('step2----key',key,value)
+
         const { formData } = this.props.createActiveCom
         const { formKeys2 } = this.state
 
@@ -58,7 +58,7 @@ class Step2 extends React.Component {
             if(e) {
                 flag = false
             }
-            console.log('v---',v)
+
         })
         giftForm.validateFieldsAndScroll((e,v) => {
             if(e) {
@@ -103,7 +103,7 @@ class Step2 extends React.Component {
             formItems2.miniProgramInfo.options = wxNickNameList
         }
         const { formData } = this.props.createActiveCom
-        console.log('stp22-formData---',formData)
+
         return (
             <div style={{marginRight: '20px'}}>
                  <BaseForm

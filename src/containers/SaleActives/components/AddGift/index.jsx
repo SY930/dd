@@ -27,7 +27,7 @@ class MutliGift extends Component {
 
 
     onChange = (params, form) => {
-        console.log('params----giftIndex',params)
+
         if(params.giftID) {
             this.props.dispatch({
                 type: 'createActiveCom/couponService_getBoards',
