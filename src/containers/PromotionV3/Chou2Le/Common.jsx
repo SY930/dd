@@ -30,6 +30,10 @@ const countOpts = [
     { label: '按账单金额', value: '12' },
     { label: '按实付金额', value: '13' },
 ];
+const sceneOpts = [
+    { label: '支付成功后投放', value: '2' },
+    { label: '评价成功后投放', value: '3' },
+];
 const formItems1 = {
     eventType: {
         type: 'custom',
@@ -152,6 +156,12 @@ const formItems3 = {
         options: countOpts,
         defaultValue: '12',
     },
+    sceneType: {
+        type: 'radio',
+        label: '投放场景',
+        options: sceneOpts,
+        defaultValue: '2',
+    },
     lottery: {
         type: 'custom',
         render: () => (<p/>),
@@ -159,7 +169,7 @@ const formItems3 = {
         wrapperCol: { span: 18 },
     },
 };
-const formKeys3 = ['consumeTotalAmount', 'consumeType', 'lottery'];
+const formKeys3 = ['consumeTotalAmount', 'consumeType', 'sceneType', 'lottery'];
 export {
     formItems1, imgURI, formKeys1, href, formItemLayout,
     KEY1, KEY2, KEY3, KEY4, KEY5, TF, DF,

@@ -95,5 +95,5 @@ async function postEvent(data) {
 
 
 export {
-    getBrandList, putEvent, getEvent, postEvent,
+    getAccountInfo, getBrandList, putEvent, getEvent, postEvent,
 }
