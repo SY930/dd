@@ -833,6 +833,13 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             example: "",
             key: "78",
         },
+        {
+            idx: 23,
+            title: "盲盒",
+            text: "",
+            example: "",
+            key: "79",
+        },
     ];
     return basic;
 })();

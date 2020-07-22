@@ -48,6 +48,7 @@ import { axiosData } from '../../helpers/util';
 import { axios } from '@hualala/platform-base';
 import { getStore } from '@hualala/platform-base'
 import Chou2Le from "../PromotionV3/Chou2Le";   // 抽抽乐
+import BlindBox from "../PromotionV3/BlindBox";   // 抽抽乐
 
 const UNRELEASED_PROMOTION_TYPES = [
 ]
@@ -266,11 +267,12 @@ class PromotionCreateModal extends Component {
         );
     }
     //** 第三版 重构 抽抽乐活动 点击事件 */
-    onV3Click = () => {
+    onV3Click = (key) => {
+        if(key) this.setState({curKey: key})
         this.setState(ps => ({ v3visible: !ps.v3visible }));
     }
     renderModalContent() {
-        const {whiteList, v3visible} = this.state;
+        const {whiteList, v3visible, curKey} = this.state;
         const { intl } = this.props;
         const k6316hto = intl.formatMessage(SALE_STRING.k6316hto);
         const k6316hd0 = intl.formatMessage(SALE_STRING.k6316hd0);
@@ -342,7 +344,7 @@ class PromotionCreateModal extends Component {
                                                 index={index}
                                                 whiteList={whiteList}
                                                 onClickOpen={this.onClickOpen}
-                                                onV3Click={this.onV3Click}
+                                                onV3Click={()=>{this.onV3Click(item.key)}}
                                             />
                                         ))
                                     }
@@ -353,7 +355,8 @@ class PromotionCreateModal extends Component {
                 </div>
                 {this.renderBasicPromotionModal()}
                 {this.renderSpecialPromotionModal()}
-                {v3visible && (<Chou2Le />)}
+                {(v3visible && curKey == '78') && (<Chou2Le />)}
+                {(v3visible && curKey == '79') && (<BlindBox />)}
             </div>
         )
     }

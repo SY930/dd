@@ -33,7 +33,8 @@ export default class PhotoFrame extends Component {
         return (
             <div className={styles.photoFrame}>
                 <p>图片建议按如图所示用户端上传，支持格式jpg、png，大小不超过2M</p>
-                <a href="javascript:;" onClick={this.toggleModal}>查看示例</a>
+                {type != '79' && <a href="javascript:;" onClick={this.toggleModal}>查看示例</a>}
+                
                 <ul>
                     <li>
                         <ImageUpload

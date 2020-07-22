@@ -13,12 +13,13 @@ import { Modal, Tooltip } from 'antd';
 import moment from 'moment';
 
 //可作为插件开通的活动有以下：分享裂变、推荐有礼、桌边砍、拼团、秒杀、膨胀大礼包、签到、集点卡、支付后广告  9个活动。
-const pulgins = ['65', '68', '67', '71', '72', '66', '76', '75', '77', '78'];
+const pulgins = ['65', '68', '67', '71', '72', '66', '76', '75', '77', '78', '79'];
 const imgURI = 'http://res.hualala.com/';
-const V3KEYS = ['78'];     // 最新版抽抽乐78
+const V3KEYS = ['78', '79'];     // 最新版抽抽乐78
 // 最新版 logo图片
 const V3LOGO = {
     78: imgURI + 'basicdoc/e464e187-f0eb-4b03-b438-9329cd26c3ff.png',
+    79: require(`./assets/logo_${79}_new.png`),
 };
 class NewPromotionCard extends Component {
     onClick= () => {
