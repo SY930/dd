@@ -26,7 +26,7 @@ import {
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import SendMsgInfo from '../common/SendMsgInfo';
 import CardLevel from '../common/CardLevel';
-import CardLevelForWX from './CardLevelForWX';
+import CardLevels from './CardLevel';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 import { queryGroupMembersList } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 import { FetchCrmCardTypeLst } from '../../../redux/actions/saleCenterNEW/crmCardType.action';
@@ -437,26 +437,7 @@ class StepTwo extends React.Component {
         this.props.setSpecialBasicInfo({ cardLevelIDList: [], cardGroupID: '' });
     }
     render() {
-        let {localType} = this.state
-
-        const eventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
-        const excludeEvent = eventInfo.excludeEventCardLevelIdModelList || [];
-        let { getExcludeCardLevelIds = [], cardLevelRangeType } = this.state;
-        let cardInfo = this.props.cardInfo ? this.props.cardInfo.toJS()
-            .filter(item => this.state.cardInfo.findIndex(cardType => cardType.cardTypeID === item.cardTypeID) > -1) : [];
-        if (getExcludeCardLevelIds.length) {
-            cardInfo = cardInfo.filter(cardType => !getExcludeCardLevelIds.includes(cardType.cardTypeID))
-        }
-        const boxData = [];
-        this.state.cardLevelIDList.forEach((id) => {
-            cardInfo.forEach((cat) => {
-                cat.cardTypeLevelList.forEach((level) => {
-                    if (level.cardLevelID === id) {
-                        boxData.push(level)
-                    }
-                })
-            })
-        });
+        let {localType, cardLevelIDList} = this.state
 
         const sendFlag = true;
         const totalCustomerCount = this.props.specialPromotion.get('customerCount');
@@ -524,12 +505,14 @@ class StepTwo extends React.Component {
                                         </Select>
                                     )}
                                 </FormItem> :  
-                                <CardLevelForWX
+                                <CardLevels
+                                    catOrCard="cat"
                                     onChange={this.onCardLevelChange}
                                     catOrCard={'cat'}
                                     type={this.props.type}
                                     form={this.props.form}
                                     cardLevelRangeType={localType}
+                                    cardLevelIDList={cardLevelIDList}
                                 />
                             }
                             <FormItem
