@@ -99,13 +99,7 @@ class CreateActive extends Component {
                     <div className={styles.modalInfo}>
                         {currentInfo.dsc}
                     </div>
-                    <div className={styles.couponName}>
-                        大师咖啡立减券
-                    </div>
-                    <div className={styles.couponPrice}>
-                        12<span>元</span>
-                    </div>
-                    <div>有效期2020.0624-2020.07.01</div>
+
                 </div>
                 </Modal>
             </div>
