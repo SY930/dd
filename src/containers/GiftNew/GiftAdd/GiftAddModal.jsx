@@ -601,7 +601,7 @@ class GiftAddModal extends React.Component {
                 rules: [{
                     required: true,
                     validator: (rule, value, callback) => {
-                        if (!value) {
+                        if (!value && value != 0) {
                             return callback('现金卡值不能为空');
                         }
                         const { getFieldValue,validateFields } = this.baseForm;
