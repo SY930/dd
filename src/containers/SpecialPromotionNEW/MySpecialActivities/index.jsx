@@ -735,9 +735,9 @@ class MySpecialActivities extends React.Component {
                         <Authority rightCode={SPECIAL_PROMOTION_DELETE}>
                             <a
                                 href="#"
-                                className={record.isActive != '0' || record.userCount != 0 || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) ? styles.textDisabled : null}
+                                className={record.isActive != '0' || record.userCount != 0 || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80 ? styles.textDisabled : null}
                                 onClick={() => {
-                                    if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
+                                    if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80) {
                                         return;
                                     }
                                     if (Number(record.eventWay) === 70) {
