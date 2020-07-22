@@ -10,6 +10,7 @@ import {
 import {throttle, isEqual} from 'lodash';
 import { jumpPage } from '@hualala/platform-base'
 import moment from 'moment';
+import copy from 'copy-to-clipboard'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import ExportModal from "../../GiftNew/GiftInfo/ExportModal";
 import Cfg from '../../../constants/SpecialPromotionCfg';
@@ -70,7 +71,8 @@ import { STRING_GIFT } from 'i18n/common/gift';
 import { STRING_SPE } from 'i18n/common/special';
 import { SALE_STRING } from 'i18n/common/salecenter'
 import Chou2Le from "../../PromotionV3/Chou2Le";   // 抽抽乐
-
+import { isFormalRelease } from  "../../../utils/index"
+import indexStyles from './mySpecialActivities.less'
 const confirm = Modal.confirm;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
@@ -93,6 +95,17 @@ const DECORATABLE_PROMOTIONS = [
 ]
 const isDecorationAvailable = ({eventWay}) => {
     return DECORATABLE_PROMOTIONS.includes(`${eventWay}`)
+}
+const copyUrlList = [
+    '21',
+    '20',
+    '30',
+    '22',
+    '65',
+    '68'
+]
+const isCanCopyUrl = ({eventWay}) => {
+    return copyUrlList.includes(`${eventWay}`)
 }
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -196,6 +209,8 @@ class MySpecialActivities extends React.Component {
             v3visible: false,       // 第三版活动组件是否显示
             itemID: '',
             view: false,
+            isShowCopyUrl: false,
+            urlContent: ''
         };
         this.cfg = {
             eventWay: [
@@ -390,8 +405,13 @@ class MySpecialActivities extends React.Component {
             this.setState({ itemID, view });
         }
     }
+    hideCopyUrlModal = () => {
+        this.setState({
+            isShowCopyUrl: false
+        })
+    }
     render() {
-        const { v3visible, itemID, view } = this.state;
+        const { v3visible, itemID, view, isShowCopyUrl, urlContent } = this.state;
         return (
             <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 {this.renderHeader()}
@@ -413,6 +433,19 @@ class MySpecialActivities extends React.Component {
                         />
                 }
                 { v3visible && <Chou2Le onToggle={this.onV3Click} id={itemID} view={view} />}
+                <Modal
+                    title="提取活动链接"
+                    visible={isShowCopyUrl}
+                    onCancel={this.hideCopyUrlModal}
+                    footer={null}
+                    width={700}
+                >
+                    <div className={indexStyles.copyUrlWrap}>
+                        <div className={indexStyles.label}>提取链接</div>
+                        <div className={indexStyles.urlText}>{urlContent}</div>
+                    </div>
+                    <div onClick={this.handleToCopyUrl} className={indexStyles.copyBtn}  >复制链接</div>
+                </Modal>
             </div>
         );
     }
@@ -634,6 +667,7 @@ class MySpecialActivities extends React.Component {
             { value: '2', label: `${this.props.intl.formatMessage(STRING_SPE.d4h1ac506h828194)}` },
             { value: '3', label: `${this.props.intl.formatMessage(STRING_SPE.da905h2m122949)}` },
         ];
+
         const columns = [
             {
                 title: COMMON_LABEL.serialNumber,
@@ -650,7 +684,7 @@ class MySpecialActivities extends React.Component {
             {
                 title: COMMON_LABEL.actions,
                 key: 'operation',
-                width: 280,
+                width: 380,
                 // fixed:'left',
                 render: (text, record, index) => {
                     const statusState = (
@@ -770,6 +804,7 @@ class MySpecialActivities extends React.Component {
                                 </a>
                             )
                         }
+
                         <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY}>
                             <a
                                 href="#"
@@ -787,6 +822,18 @@ class MySpecialActivities extends React.Component {
                             >
                             {this.props.intl.formatMessage(STRING_SPE.d5g3d7ahfq35134)}</a>
                         </Authority>
+                        {
+                            isCanCopyUrl(record) && (
+                                <a
+                                    href="#"
+                                    onClick={() => {
+                                        this.handleCopyUrl(record)
+                                    }}
+                                >
+                                 提取链接
+                                </a>
+                            )
+                        }
                     </span>
                     );
                 },
@@ -1032,6 +1079,52 @@ class MySpecialActivities extends React.Component {
             title: eventName,
         });
         jumpPage({menuID: PROMOTION_DECORATION})
+    }
+
+    handleCopyUrl = (record) => {
+
+        const testUrl = 'https://dohko.m.hualala.com'
+        const preUrl = 'https://m.hualala.com'
+        const actList = ['20','30','22'] // 摇奖活动，积分兑换，报名活动
+        const { eventWay, groupID, itemID } = record
+        let url = testUrl
+        if(isFormalRelease()) {
+            url = preUrl
+        }
+
+        if(actList.includes(String(eventWay))) {
+            url = url +    `/newm/eventCont?groupID=${groupID}&eventID=${itemID}`
+        }
+
+        if(eventWay == '21') {
+            url = url +    `/newm/eventFree?groupID=${groupID}&eventID=${itemID}`
+
+        }
+
+        if(eventWay == '65') {
+            url = url +    `/newm/shareFission?groupID=${groupID}&eventID=${itemID}`
+
+        }
+
+        if(eventWay == '68') {
+            url = url +    `/newm/recommendInvite?groupID=${groupID}&eventItemID=${itemID}`
+
+        }
+
+        this.setState({
+            urlContent: url,
+            isShowCopyUrl: true
+        })
+
+    }
+
+    handleToCopyUrl = () => {
+        const { urlContent } = this.state
+        if(copy(urlContent)){
+            message.warn('复制成功')
+        } else {
+            message.warn('复制失败')
+        }
     }
 
     // 编辑
