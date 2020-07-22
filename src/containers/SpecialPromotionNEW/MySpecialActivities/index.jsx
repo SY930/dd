@@ -8,7 +8,7 @@ import {
     Spin, Icon,
 } from 'antd';
 import {throttle, isEqual} from 'lodash';
-import { jumpPage } from '@hualala/platform-base'
+import { jumpPage, closePage } from '@hualala/platform-base'
 import moment from 'moment';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import ExportModal from "../../GiftNew/GiftInfo/ExportModal";
@@ -392,8 +392,11 @@ class MySpecialActivities extends React.Component {
         }
     }
     handleShowDetail = (record) => {
+        closePage(SALE_CENTER_PAYHAVEGIFT)
         // 跳转到新版的营销活动
-        jumpPage({ menuID: SALE_CENTER_PAYHAVEGIFT,  itemID: record.itemID,typeKey : record.eventWay})
+        setTimeout(() => {
+            jumpPage({ menuID: SALE_CENTER_PAYHAVEGIFT,  itemID: record.itemID,typeKey : record.eventWay})
+        }, 100);
     }
     render() {
         const { v3visible, itemID, view } = this.state;

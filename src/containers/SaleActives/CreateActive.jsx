@@ -29,16 +29,14 @@ class CreateActive extends Component {
         this.dispatch = this.props.dispatch
         // TODO: 点击tab切换后，参数会丢失，暂时默认为微信支付有礼，后期解决
         const  { typeKey = '80', itemID } = decodeUrl()
-        if(typeKey) {
-            this.dispatch({
-                type: 'createActiveCom/updateState',
-                payload: {
-                    type: typeKey,
-                    groupID: this.props.groupID
-                }
-            })
-            this.typeKey = typeKey
-        }
+        this.dispatch({
+            type: 'createActiveCom/updateState',
+            payload: {
+                type: typeKey,
+                groupID: this.props.groupID
+            }
+        })
+        this.typeKey = typeKey
 
     }
 

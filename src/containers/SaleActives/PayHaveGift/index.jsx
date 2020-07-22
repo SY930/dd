@@ -40,14 +40,6 @@ class PayHaveGift extends React.Component {
             })
         }
 
-        window.__history__.listen((t) => {
-            const  {   itemID } = decodeUrl()
-
-            if(itemID && t.pathname === '/meta/2/promotion_active_payHaveGift') {
-                this.getDetail(itemID)
-            }
-        })
-
     }
 
     getDetail = (itemID) => {
