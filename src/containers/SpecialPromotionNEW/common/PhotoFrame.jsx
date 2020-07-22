@@ -1,4 +1,5 @@
 import React, { PureComponent as Component } from 'react';
+import {Popover} from "antd";
 import ImageUpload from 'components/common/ImageUpload';
 import styles from './addGifts.less';
 import QrModal from './QrModal';
@@ -30,11 +31,24 @@ export default class PhotoFrame extends Component {
         const restPath = restaurantShareImagePath.substr(23);
         const shrPath = shareImagePath.substr(23);
         const { visible } = this.state;
+        const srcMap = {
+            21: 'http://res.hualala.com/basicdoc/39d60e84-ea60-413c-a986-e680a76c0000.png',
+            68: 'http://res.hualala.com/basicdoc/6417e092-1fcd-46eb-becb-8dc8ba55efef.png',
+            66: 'http://res.hualala.com/basicdoc/8ff25052-78a4-4be3-a043-347302ca9238.png',
+            65: 'http://res.hualala.com/basicdoc/87bfc2c7-c7b4-45b0-b78e-f2b29615d1db.png',
+        }
+        const content = (
+            <img width="400px" src={srcMap[type]} />
+        )
         return (
             <div className={styles.photoFrame}>
                 <p>图片建议按如图所示用户端上传，支持格式jpg、png，大小不超过2M</p>
-                {type != '79' && <a href="javascript:;" onClick={this.toggleModal}>查看示例</a>}
-                
+                {
+                    type != '79' && 
+                        <Popover content={content} placement="left">
+                            <a href="javascript:;">查看示例</a>
+                        </Popover>
+                }
                 <ul>
                     <li>
                         <ImageUpload
@@ -57,11 +71,11 @@ export default class PhotoFrame extends Component {
                         />
                         <div>
                             <h5>小程序展示图</h5>
-                            <p>图片建议尺寸：900*500像素</p>
+                            <p>图片建议尺寸：1044*842像素</p>
                         </div>
                     </li>
                 </ul>
-                {visible && <QrModal type={type} onClose={this.toggleModal} />}
+                {/* {visible && <QrModal type={type} onClose={this.toggleModal} />} */}
             </div>
         );
     }
