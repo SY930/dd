@@ -326,16 +326,18 @@ export default {
             const { groupID } = yield select((state) => state.createActiveCom);
             const ret = yield call(getExcludeEventList, {
                 groupID,
-                page: {
-                    current: 1,
-                    pageSize: 10000000,
-                },
+                ...payload,
             });
 
             if (ret.code === "000") {
-                return ret.excludeEventModelList;
+                if (ret.excludeEventModelList && !ret.excludeEventModelList) {
+                    return true;
+                }
+                message.warn("一个集团在同一时间段内只能创建一个活动");
+                return false;
             } else {
-                message.warn(ret.result.message);
+                message.warn(ret.message);
+                return false;
             }
         },
     },

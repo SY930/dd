@@ -16,6 +16,7 @@ import Step1 from './components/Step1'
 import Step2 from './components/Step2'
 import {imgUrl} from './contanst'
 import moment from 'moment'
+const format = "YYYYMMDD";
 
 
 
@@ -67,13 +68,26 @@ class PayHaveGift extends React.Component {
     handleFinish = (cb,current) => {
 
         if(typeof this[`submitFn${current}`]  === 'function' && this[`submitFn${current}`]()) {
+            const { formData, type } = this.props.createActiveCom
+            const { eventDate } = formData
             this.props.dispatch({
-                type: 'createActiveCom/addEvent_NEW'
+                type: 'createActiveCom/getExcludeEventList',
+                payload: {
+                    eventStartDate: moment(eventDate[0]).format(format),
+                    eventEndDate: moment(eventDate[1]).format(format),
+                    eventWay: type
+                }
             }).then(res => {
                 if(res) {
-                    cb()
-                    closePage()
-                    jumpPage({pageID: '1000076003'})
+                    this.props.dispatch({
+                        type: 'createActiveCom/addEvent_NEW'
+                    }).then(res => {
+                        if(res) {
+                            cb()
+                            closePage()
+                            jumpPage({pageID: '1000076003'})
+                        }
+                    })
                 }
             })
 
@@ -205,7 +219,7 @@ class PayHaveGift extends React.Component {
                                     {effectType === '2' && rangeDate ? <div className={styles.couponDate}>有效期{moment(rangeDate[0]).format('YYYY.MM.DD')}-{moment(rangeDate[1]).format('YYYY.MM.DD')}</div>
                                      : null }
 
-                                    <div style={{background: backgroundColor}} className={styles.getBtn}>立即领取</div>
+                                    <div style={{background: backgroundColor}} className={styles.getBtn}>立即使用</div>
                                 </div>
                             </div>
                         }

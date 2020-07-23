@@ -71,7 +71,7 @@ export const formItems2 = {
                         {d({
                             rules: [
                                 {
-                                    validator: (rule, v, cb) => {
+                                    validator: (rule, v = {}, cb) => {
                                         if (
                                             v.number === "" ||
                                             v.number === undefined
