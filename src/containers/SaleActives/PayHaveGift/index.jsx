@@ -16,7 +16,7 @@ import Step1 from './components/Step1'
 import Step2 from './components/Step2'
 import {imgUrl} from './contanst'
 import moment from 'moment'
-import NewFullGiveActivity from 'containers/SaleCenterNEW/fullGive/NewFullGiveActivity';
+
 
 
 
@@ -192,13 +192,15 @@ class PayHaveGift extends React.Component {
                                     <div className={styles.couponTitle}>
                                          {giftItem && giftItem.label}
                                     </div>
-                                    {giftValue &&  <div className={styles.couponPrice}>
+
+                                    {giftValue ?  <div className={styles.couponPrice}>
                                         {giftValue}<span>元</span>
-                                    </div>}
+                                    </div> : null}
+
                                     {effectType === '1' && giftEffectTimeHours ? <div className={styles.couponDate}>
                                         {giftEffectTimeHours  == '0' ? '立即生效，' : `${giftEffectTimeHours}天后生效`}
                                         {`有效期${giftValidUntilDayCount}天`}
-                                    </div> : NewFullGiveActivity }
+                                    </div> :  null }
 
                                     {effectType === '2' && rangeDate ? <div className={styles.couponDate}>有效期{moment(rangeDate[0]).format('YYYY.MM.DD')}-{moment(rangeDate[1]).format('YYYY.MM.DD')}</div>
                                      : null }

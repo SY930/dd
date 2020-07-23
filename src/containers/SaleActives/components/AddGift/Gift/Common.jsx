@@ -47,6 +47,8 @@ const formItems = {
                 return callback();
             },
         }],
+        disabled: true,
+        defaultValue: '1',
     },
     effectType: {
         type: 'radio',
