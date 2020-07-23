@@ -19,7 +19,7 @@ export const formItems1 = {
         label: "活动名称",
         // placeholder: "请输入活动名称",
         rules: [
-            { required: true, message: "活动姓名不能为空" },
+            { required: true, message: "活动名称不能为空" },
             { max: 9, message: "最多输入9位" },
         ],
     },
@@ -178,7 +178,7 @@ export const formItems2 = {
                         <Tooltip
                             title={
                                 formData.afterPayJumpType === "3"
-                                    ? "用户点击立即使用可拉起扫一扫付款码直接支付"
+                                    ? "用户点击立即使用可拉起扫一扫/付款码直接支付"
                                     : "用户点击立即使用可直接跳转至小程序支付"
                             }
                         >
