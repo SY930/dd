@@ -68,11 +68,32 @@ export const formItems2 = {
             return (
                 <div style={{ display: "flex", alignItems: "center" }}>
                     <div style={{ width: "174px", marginRight: "8px" }}>
-                        {d()(
+                        {d({
+                            rules: [
+                                {
+                                    validator: (rule, v, cb) => {
+                                        if (
+                                            v.number === "" ||
+                                            v.number === undefined
+                                        ) {
+                                            return cb();
+                                        }
+                                        if (v.number < 0.01) {
+                                            return cb(
+                                                "请输入大于0，整数5位以内且小数2位以内的数值"
+                                            );
+                                        } else if (v.number >= 100000) {
+                                            return cb(
+                                                "请输入大于0，整数5位以内且小数2位以内的数值"
+                                            );
+                                        }
+                                        cb();
+                                    },
+                                },
+                            ],
+                        })(
                             <PriceInput
                                 addonAfter={"元"}
-                                modal="float"
-                                maxNum={7}
                                 placeholder="请输入金额"
                             />
                         )}
