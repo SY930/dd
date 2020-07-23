@@ -13,6 +13,7 @@ const {
     addEvent_NEW,
     getApps,
     queryEventDetail_NEW,
+    getExcludeEventList,
 } = api;
 const initState = {
     groupID: "",
@@ -317,6 +318,22 @@ export default {
                         },
                     });
                 }
+            } else {
+                message.warn(ret.result.message);
+            }
+        },
+        *getExcludeEventList({ payload }, { call, put, select }) {
+            const { groupID } = yield select((state) => state.createActiveCom);
+            const ret = yield call(getExcludeEventList, {
+                groupID,
+                page: {
+                    current: 1,
+                    pageSize: 10000000,
+                },
+            });
+
+            if (ret.code === "000") {
+                return ret.excludeEventModelList;
             } else {
                 message.warn(ret.result.message);
             }

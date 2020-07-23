@@ -28,6 +28,10 @@ const apis = {
         path: "/miniProgramCodeManage/getApps",
         service: service[3],
     }, // 获取小程序列表
+    getExcludeEventList: {
+        path: "/specialPromotion/getExcludeEventList.ajax",
+        service: service[1], // 判断时间段内是否有活动
+    },
 };
 
 function gen(api) {
