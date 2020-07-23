@@ -1,11 +1,18 @@
-import React from "react";
-import { message } from "antd";
-import _ from "lodash";
-import api from "../api";
-import { FMColorList, RList, RFMColorList } from "../constant";
-import { giftTypeName, imgUrl } from "../constant";
-import moment from "moment";
-const format = "YYYYMMDD";
+import React from 'react';
+import { message } from 'antd';
+import _ from 'lodash';
+import api from '../api';
+import {
+    FMColorList,
+    RList,
+    RFMColorList,
+    giftTypeName,
+    imgUrl,
+} from '../constant';
+
+import moment from 'moment';
+
+const format = 'YYYYMMDD';
 // http://res.hualala.com/basicdoc/21723174-846a-42c9-9381-92106967d82a.png
 const {
     couponService_getSortedCouponBoardList,
@@ -16,32 +23,32 @@ const {
     getExcludeEventList,
 } = api;
 const initState = {
-    groupID: "",
-    type: "",
+    groupID: '',
+    type: '',
     descModalIsShow: false,
     isStepContinue: false,
     formData: {
         mySendGift: {
-            effectType: "1", // 生效方式
-            giftEffectTimeHours: "-1", // 生效时间
-            giftValidUntilDayCount: "", // 有效天数
+            effectType: '1', // 生效方式
+            giftEffectTimeHours: '-1', // 生效时间
+            giftValidUntilDayCount: '', // 有效天数
             effectTime: null, // 固定有效期，生效时间
             validUntilDate: null, // 固定有效期失效时间
             rangeDate: [],
         },
-        merchantLogoUrl: "basicdoc/21723174-846a-42c9-9381-92106967d82a.png",
-        originalImageUrl: "basicdoc/ea1e4255-32fb-4bed-baa2-37b655e52eb8.png",
-        afterPayJumpType: "3",
+        merchantLogoUrl: 'basicdoc/21723174-846a-42c9-9381-92106967d82a.png',
+        originalImageUrl: 'basicdoc/ea1e4255-32fb-4bed-baa2-37b655e52eb8.png',
+        afterPayJumpType: '3',
     }, // 表单内的值,
     currentStep: 0,
     giftForm: null, // 礼品的form对象
     wxNickNameList: [], // 微信小程序列表
     crmGiftTypes: [], // 礼品数据
-    giftValue: "", // 礼品价值
+    giftValue: '', // 礼品价值
     isView: false, // 页面状态
 };
 export default {
-    namespace: "createActiveCom",
+    namespace: 'createActiveCom',
     state: _.cloneDeep(initState),
     reducers: {
         updateState(state, { payload }) {
@@ -52,15 +59,15 @@ export default {
         },
     },
     effects: {
-        *clearData({ payload }, { call, put }) {
+        * clearData({ payload }, { call, put }) {
             yield put({
-                type: "updateState",
+                type: 'updateState',
                 payload: {
                     ..._.cloneDeep(initState),
                 },
             });
         },
-        *couponService_getSortedCouponBoardList(
+        * couponService_getSortedCouponBoardList(
             { payload },
             { call, put, select }
         ) {
@@ -68,29 +75,28 @@ export default {
                 trdChannelID: 50,
             });
 
-            if (ret.code === "000") {
+            if (ret.code === '000') {
                 const { crmGiftTypes = [] } = ret.data;
                 yield put({
-                    type: "updateState",
+                    type: 'updateState',
                     payload: {
                         crmGiftTypes: proGiftTreeData(crmGiftTypes),
                     },
                 });
                 return proGiftTreeData(crmGiftTypes);
-            } else {
-                message.warn(ret.message);
             }
+            message.warn(ret.message);
         },
-        *couponService_getBoards({ payload }, { call, put, select }) {
+        * couponService_getBoards({ payload }, { call, put, select }) {
             const { groupID, formData } = yield select(
-                (state) => state.createActiveCom
+                state => state.createActiveCom
             );
             const ret = yield call(couponService_getBoards, {
                 giftItemID: payload.giftItemID,
                 groupID,
             });
 
-            if (ret.code === "000") {
+            if (ret.code === '000') {
                 const { crmGiftList } = ret.data;
                 const data =
                     crmGiftList && crmGiftList[0] ? crmGiftList[0] : {};
@@ -108,17 +114,17 @@ export default {
                     endTimestamp,
                 } = trdData;
                 let mySendGift = {};
-                if (type === "DATE_TYPE_FIX_TERM") {
+                if (type === 'DATE_TYPE_FIX_TERM') {
                     mySendGift = {
                         ...formData.mySendGift,
-                        effectType: "1",
+                        effectType: '1',
                         giftEffectTimeHours: String(fixedBeginTerm),
                         giftValidUntilDayCount: fixedTerm,
                     };
-                } else if (type === "DATE_TYPE_FIX_TIME_RANGE") {
+                } else if (type === 'DATE_TYPE_FIX_TIME_RANGE') {
                     mySendGift = {
                         ...formData.mySendGift,
-                        effectType: "2",
+                        effectType: '2',
                         effectTime: beginTimestamp,
                         validUntilDate: endTimestamp,
                         rangeDate: [
@@ -129,20 +135,19 @@ export default {
                 }
                 formData.mySendGift = mySendGift;
                 yield put({
-                    type: "updateState",
+                    type: 'updateState',
                     payload: {
                         formData: { ...formData },
                         giftValue,
                     },
                 });
                 return mySendGift;
-            } else {
-                message.warn(ret.message);
             }
+            message.warn(ret.message);
         },
-        *addEvent_NEW({ payload }, { call, put, select }) {
+        * addEvent_NEW({ payload }, { call, put, select }) {
             const { groupID, formData, wxNickNameList } = yield select(
-                (state) => state.createActiveCom
+                state => state.createActiveCom
             );
             const {
                 eventName,
@@ -168,10 +173,10 @@ export default {
                 eventName,
                 merchantLogoName: merchantLogoUrl.url
                     ? merchantLogoUrl.fileName
-                    : "hualala.png",
+                    : 'hualala.png',
                 merchantLogoUrl: merchantLogoUrl.url
-                    ? imgUrl + "/" + merchantLogoUrl.url
-                    : imgUrl + "/" + merchantLogoUrl,
+                    ? `${imgUrl}/${merchantLogoUrl.url}`
+                    : `${imgUrl}/${merchantLogoUrl}`,
                 eventRemark,
                 consumeTotalAmount:
                     consumeTotalAmount && consumeTotalAmount.number,
@@ -189,11 +194,11 @@ export default {
                 eventWay: 80,
                 consumeType: 8,
             };
-            if (miniProgramInfo && afterPayJumpType === "4") {
+            if (miniProgramInfo && afterPayJumpType === '4') {
                 event.miniProgramInfo = JSON.stringify({
                     appID: miniProgramInfo,
                     appName: wxNickNameList.find(
-                        (v) => v.value === miniProgramInfo
+                        v => v.value === miniProgramInfo
                     ).label,
                 });
             }
@@ -203,7 +208,7 @@ export default {
                     giftID,
                     giftCount,
                     eventType,
-                    countType: "1",
+                    countType: '1',
                     giftEffectTimeHours,
                     giftValidUntilDayCount,
                     effectTime:
@@ -216,10 +221,10 @@ export default {
                         moment(rangeDate[1]).format(format),
                     originalImageName: originalImageUrl.url
                         ? originalImageUrl.fileName
-                        : "wxPayBanner.png",
+                        : 'wxPayBanner.png',
                     originalImageUrl: originalImageUrl.url
-                        ? imgUrl + "/" + originalImageUrl.url
-                        : imgUrl + "/" + originalImageUrl,
+                        ? `${imgUrl}/${originalImageUrl.url}`
+                        : `${imgUrl}/${originalImageUrl}`,
                     presentType: 1,
                 },
             ];
@@ -229,21 +234,20 @@ export default {
                 gifts,
             });
 
-            if (ret.code === "000") {
+            if (ret.code === '000') {
                 return true;
-            } else {
-                message.warn(ret.message);
-                return false;
             }
+            message.warn(ret.message);
+            return false;
         },
-        *queryEventDetail_NEW({ payload }, { call, put, select }) {
-            const { groupID } = yield select((state) => state.createActiveCom);
+        * queryEventDetail_NEW({ payload }, { call, put, select }) {
+            const { groupID } = yield select(state => state.createActiveCom);
             const ret = yield call(queryEventDetail_NEW, {
                 ...payload,
                 groupID,
             });
 
-            if (ret.code === "000") {
+            if (ret.code === '000') {
                 const { data, gifts } = ret;
                 const mySendGift = {
                     ...gifts[0],
@@ -267,16 +271,16 @@ export default {
                         data.merchantLogoUrl.split(imgUrl)[1],
                     consumeTotalAmount: {
                         number: String(data.consumeTotalAmount),
-                        modal: "float",
+                        modal: 'float',
                         maxNum: 7,
                     },
                     afterPayJumpType: data.afterPayJumpType
                         ? String(data.afterPayJumpType)
-                        : "3",
+                        : '3',
                 };
 
                 if (data.miniProgramInfo) {
-                    let miniProgramInfo = "";
+                    let miniProgramInfo = '';
                     try {
                         miniProgramInfo = JSON.parse(data.miniProgramInfo);
                     } catch (error) {}
@@ -285,18 +289,17 @@ export default {
                     }
                 }
                 yield put({
-                    type: "updateState",
+                    type: 'updateState',
                     payload: {
                         formData,
                     },
                 });
                 return mySendGift;
-            } else {
-                message.warn(ret.message);
             }
+            message.warn(ret.message);
         },
-        *getApps({ payload }, { call, put, select }) {
-            const { groupID } = yield select((state) => state.createActiveCom);
+        * getApps({ payload }, { call, put, select }) {
+            const { groupID } = yield select(state => state.createActiveCom);
 
             const ret = yield call(getApps, {
                 groupID,
@@ -306,13 +309,13 @@ export default {
                 },
             });
 
-            if (ret.result && ret.result.code === "000") {
+            if (ret.result && ret.result.code === '000') {
                 if (Array.isArray(ret.apps)) {
                     ret.apps.forEach((v) => {
                         (v.label = v.nickName), (v.value = v.appID);
                     });
                     yield put({
-                        type: "updateState",
+                        type: 'updateState',
                         payload: {
                             wxNickNameList: ret.apps,
                         },
@@ -322,23 +325,26 @@ export default {
                 message.warn(ret.result.message);
             }
         },
-        *getExcludeEventList({ payload }, { call, put, select }) {
-            const { groupID } = yield select((state) => state.createActiveCom);
+        * getExcludeEventList({ payload }, { call, put, select }) {
+            const { groupID } = yield select(state => state.createActiveCom);
             const ret = yield call(getExcludeEventList, {
                 groupID,
                 ...payload,
             });
 
-            if (ret.code === "000") {
-                if (ret.excludeEventModelList && !ret.excludeEventModelList) {
+            if (ret.code === '000') {
+                if (
+                    !ret.excludeEventModelList ||
+                    (Array.isArray(ret.excludeEventModelList) &&
+                        !ret.excludeEventModelList.length)
+                ) {
                     return true;
                 }
-                message.warn("一个集团在同一时间段内只能创建一个活动");
-                return false;
-            } else {
-                message.warn(ret.message);
+                message.warn('一个集团在同一时间段内只能创建一个活动');
                 return false;
             }
+            message.warn(ret.message);
+            return false;
         },
     },
 };
@@ -356,8 +362,9 @@ function proGiftTreeData(giftTypes) {
             giftItem.giftType == 110 ||
             giftItem.giftType == 111 ||
             giftItem.giftType == 22
-        )
+        ) {
             return true;
+        }
         return false;
     });
     let treeData = [];
@@ -366,7 +373,7 @@ function proGiftTreeData(giftTypes) {
         const giftTypeItem =
             _.find(giftTypeName, { value: String(gt.giftType) }) || {};
         treeData.push({
-            label: giftTypeItem.label || "--",
+            label: giftTypeItem.label || '--',
             key: gt.giftType,
             children: [],
         });
@@ -384,7 +391,7 @@ function proGiftTreeData(giftTypes) {
             });
         });
     });
-    return (treeData = _.sortBy(treeData, "key"));
+    return (treeData = _.sortBy(treeData, 'key'));
 }
 
 // {

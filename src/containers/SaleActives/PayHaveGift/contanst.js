@@ -18,7 +18,10 @@ export const formItems1 = {
         type: "text",
         label: "活动名称",
         // placeholder: "请输入活动名称",
-        rules: [{ required: true, message: "活动姓名不能为空" }],
+        rules: [
+            { required: true, message: "活动姓名不能为空" },
+            { max: 9, message: "最多输入9位" },
+        ],
     },
     merchantLogoUrl: {
         type: "custom",
@@ -76,7 +79,7 @@ export const formItems2 = {
                                             v.number === "" ||
                                             v.number === undefined
                                         ) {
-                                            return cb();
+                                            return cb(undefined);
                                         }
                                         if (v.number < 0.01) {
                                             return cb(
@@ -90,6 +93,7 @@ export const formItems2 = {
                                         cb();
                                     },
                                 },
+                                { required: true, message: "参与限制不能为空" },
                             ],
                         })(
                             <PriceInput
@@ -174,7 +178,7 @@ export const formItems2 = {
                         <Tooltip
                             title={
                                 formData.afterPayJumpType === "3"
-                                    ? "投放日期必须在券有效期范围内，且投放周期不能超过90天"
+                                    ? "用户点击立即使用可拉起扫一扫付款码直接支付"
                                     : "用户点击立即使用可直接跳转至小程序支付"
                             }
                         >
@@ -192,6 +196,9 @@ export const formItems2 = {
         type: "combo",
         label: "小程序名称",
         options: [],
+        rules: [{ required: true, message: "小程序名称不能为空" }],
+        labelCol: { span: 4 },
+        wrapperCol: { span: 20 },
     },
     eventDate: {
         type: "custom",

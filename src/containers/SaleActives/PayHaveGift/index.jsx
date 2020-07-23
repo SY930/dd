@@ -212,7 +212,7 @@ class PayHaveGift extends React.Component {
                                     </div> : null}
 
                                     {effectType === '1' && giftEffectTimeHours ? <div className={styles.couponDate}>
-                                        {giftEffectTimeHours  == '0' ? '立即生效，' : `${giftEffectTimeHours}天后生效`}
+                                        {giftEffectTimeHours  == '0' ? '立即生效，' : `${giftEffectTimeHours}天后生效，`}
                                         {`有效期${giftValidUntilDayCount}天`}
                                     </div> :  null }
 

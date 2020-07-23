@@ -621,6 +621,53 @@ class MySpecialActivities extends React.Component {
         })
     }
 
+    renderPayHaveGift (text,index,record) {
+
+        return (
+            <div>
+                  <a
+                            href="#"
+                            onClick={() => {
+                                if (Number(record.eventWay) === 70) {
+                                    message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
+                                    return;
+                                }
+                                if (record.eventWay === 78) {
+                                    this.onV3Click(record.itemID, true);
+                                    return;
+                                }
+                                if (record.eventWay === 80) {
+
+                                    this.handleShowDetail(record)
+                                    return;
+                                }
+                                this.props.toggleIsUpdate(false)
+                                this.handleUpdateOpe(text, record, index);
+                            }}
+                        >
+                            { COMMON_LABEL.view }
+                        </a>
+                        <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY}>
+                            <a
+                                href="#"
+                                className={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record) ? styles.textDisabled : null}
+                                onClick={() => {
+                                    if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) {
+                                        return;
+                                    }
+                                    if (Number(record.eventWay) === 70) {
+                                        message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
+                                        return;
+                                    }
+                                    this.checkDetailInfo(text, record, index);
+                                }}
+                            >
+                            {this.props.intl.formatMessage(STRING_SPE.d5g3d7ahfq35134)}</a>
+                        </Authority>
+            </div>
+        )
+    }
+
     renderTables() {
         const SmsSendStatus = [
             { value: '0', label: `${this.props.intl.formatMessage(STRING_SPE.de8g7jed1j17152)}` },
@@ -667,12 +714,15 @@ class MySpecialActivities extends React.Component {
                         (record.status != '0' && record.status != '1' && record.status != '5' && record.status != '21')
                     );
                     const buttonText = (record.isActive == '1' ? COMMON_LABEL.disable : COMMON_LABEL.enable);
+                    if(record.eventWay === 80) {
+                        return this.renderPayHaveGift(text,index,record)
+                    }
                     return (<span>
                         <a
                             href="#"
-                            className={(record.isActive == '-1' || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) ? styles.textDisabled : null}
+                            className={(record.isActive == '-1' || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) || record.eventWay === 80 ? styles.textDisabled : null}
                             onClick={(e) => {
-                                if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
+                                if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80) {
                                     e.preventDefault();
                                     return;
                                 }
@@ -756,9 +806,9 @@ class MySpecialActivities extends React.Component {
                         </Authority>
                         <a
                             href="#"
-                            className={record.isActive == '-1' || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) ? styles.textDisabled : null}
+                            className={record.isActive == '-1' || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80 ? styles.textDisabled : null}
                             onClick={() => {
-                                if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
+                                if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80) {
                                     return;
                                 }
                                 if (Number(record.eventWay) === 70) {
