@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import { Row, Col, DatePicker, Tooltip, Icon, message } from 'antd'
+import { Row, Col, DatePicker, Tooltip, Icon, message, Select } from 'antd'
 import _ from 'lodash'
 import { formItems2, formKeys2 } from '../contanst'
 import  BaseForm  from '../../../../components/common/BaseForm';
@@ -9,7 +9,7 @@ import { getDefaultGiftData } from '../../helper/index'
 const DATE_FORMAT = 'YYYYMMDD000000';
 const { RangePicker } = DatePicker;
 import styles from "../payHaveGift.less";
-
+const Option = Select.Option;
 @connect(({  loading, createActiveCom }) => ({  loading, createActiveCom }))
 class Step2 extends React.Component {
     state = {
@@ -163,13 +163,44 @@ class Step2 extends React.Component {
             </Row>
         );
     }
+    afterPayJumpTypeRender = (d) => {
+        const { formData } = this.props.createActiveCom;
+        return (
+            <div style={{ display: "flex" }}>
+                {d({})(
+                    <Select style={{ width: "272px" }}>
+                        <Option value="3" key="3">
+                            微信支付
+                        </Option>
+                        <Option value="4" key="4">
+                            微信小程序
+                        </Option>
+                    </Select>
+                )}
+                <div style={{ marginLeft: "4px" }}>
+                    <Tooltip
+                        title={
+                            formData.afterPayJumpType === "3"
+                                ? "用户点击立即使用可拉起扫一扫/付款码直接支付"
+                                : "用户点击立即使用可直接跳转至小程序支付"
+                        }
+                    >
+                        <Icon
+                            style={{ fontSize: "16px" }}
+                            type="question-circle"
+                        />
+                    </Tooltip>
+                </div>
+            </div>
+        );
+    }
     render () {
         const { formKeys2 } = this.state
         const { wxNickNameList } = this.props.createActiveCom
 
         formItems2.eventDate.render = this.eventDateRender
         formItems2.mySendGift.render = formItems2.mySendGift.render.bind(this)
-        formItems2.afterPayJumpType.render = formItems2.afterPayJumpType.render.bind(this)
+        formItems2.afterPayJumpType.render =  this.afterPayJumpTypeRender
 
         if(formKeys2.includes('miniProgramInfo')) {
             formItems2.miniProgramInfo.options = wxNickNameList

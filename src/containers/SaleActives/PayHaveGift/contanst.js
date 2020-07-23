@@ -160,37 +160,6 @@ export const formItems2 = {
     afterPayJumpType: {
         type: "custom",
         label: "跳转路径",
-        render(d) {
-            const { formData } = this.props.createActiveCom;
-            return (
-                <div style={{ display: "flex" }}>
-                    {d({})(
-                        <Select style={{ width: "272px" }}>
-                            <Option value="3" key="3">
-                                微信支付
-                            </Option>
-                            <Option value="4" key="4">
-                                微信小程序
-                            </Option>
-                        </Select>
-                    )}
-                    <div style={{ marginLeft: "4px" }}>
-                        <Tooltip
-                            title={
-                                formData.afterPayJumpType === "3"
-                                    ? "用户点击立即使用可拉起扫一扫/付款码直接支付"
-                                    : "用户点击立即使用可直接跳转至小程序支付"
-                            }
-                        >
-                            <Icon
-                                style={{ fontSize: "16px" }}
-                                type="question-circle"
-                            />
-                        </Tooltip>
-                    </div>
-                </div>
-            );
-        },
     },
     miniProgramInfo: {
         type: "combo",
