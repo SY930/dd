@@ -415,7 +415,7 @@ class MySpecialActivities extends React.Component {
         })
     }
     render() {
-        const { v3visible, itemID, view, isShowCopyUrl, urlContent } = this.state;
+        const { v3visible, itemID, view, isShowCopyUrl, urlContent, curKey } = this.state;
         return (
             <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 {this.renderHeader()}
