@@ -658,7 +658,7 @@ class MySpecialActivities extends React.Component {
                                     message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
                                     return;
                                 }
-                                record.isActive == '-1' || statusState ? null :
+                                record.isActive == '-1'  ? null :
                                     this.handelStopEvent(text, record, index, '-1', `${this.props.intl.formatMessage(STRING_SPE.d17012f5c16c32211)}`);
                             }}
                         >
