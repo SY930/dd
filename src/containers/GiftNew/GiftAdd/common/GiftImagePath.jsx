@@ -57,23 +57,28 @@ class GiftImagePath extends Component {
         return (
             <Row>
                 <Col>
-                    <FormItem style={{ height: this.props.wrapperHeight }}>
-                        <Upload {...props}>
-                            {
-                                this.props.value ?
-                                    <img
-                                        src={this.props.value}
-                                        alt=""
-                                        className={[styles.avatar, styles[modifierClassName]].join(' ')}
-                                    /> :
-                                    <Icon
-                                        type="plus"
-                                        className={[styles.avatarUploaderTrigger, styles[modifierClassName]].join(' ')}
-                                    />
-                            }
-                        </Upload>
-                        <p className="ant-upload-hint">点击上传图片，图片格式为jpg、png</p>
-                        <p className="ant-upload-hint">{this.props.hint}</p>
+                    <FormItem style={{ height: this.props.wrapperHeight - 60 }}>
+                        <div style={{float: 'left', marginRight: '10px'}}>
+                            <Upload {...props}>
+                                {
+                                    this.props.value ?
+                                        <img
+                                            src={this.props.value}
+                                            alt=""
+                                            className={[styles.avatar, styles[modifierClassName]].join(' ')}
+                                        /> :
+                                        <Icon
+                                            type="plus"
+                                            className={[styles.avatarUploaderTrigger, styles[modifierClassName]].join(' ')}
+                                        />
+                                }
+                            </Upload>
+                        </div>
+                        <div>
+                            <p className="ant-upload-hint">尺寸建议200*200</p>
+                            <p className="ant-upload-hint">点击上传图片，图片格式为jpg、png</p>
+                            <p className="ant-upload-hint">{this.props.hint}</p>
+                        </div>
                     </FormItem>
                 </Col>
             </Row>
