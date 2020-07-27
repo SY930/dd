@@ -237,7 +237,7 @@ export default {
             if (ret.code === '000') {
                 return true;
             }
-            message.warn(ret.message);
+
             return false;
         },
         * queryEventDetail_NEW({ payload }, { call, put, select }) {

@@ -39,7 +39,7 @@ function gen(api) {
     // eslint-disable-next-line func-names
     return function (data) {
         if (api.service === 'origin') {
-            return fetchData(api.path, data, null, { path: null })
+            return fetchData(api.path, data, null, { path: null }, { needErrorData: true })
         }
         return axios.post(`/api/v1/universal?${api.path}`, {
             service: api.service,
