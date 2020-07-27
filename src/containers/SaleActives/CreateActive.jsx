@@ -1,14 +1,9 @@
 import React, {Component} from 'react';
 import {connect,Provider} from 'react-redux';
-import { jumpPage,decodeUrl } from '@hualala/platform-base'
+import {  decodeUrl } from '@hualala/platform-base'
 import {
-    Form,
     Button,
     Icon,
-    Select,
-    Input,
-    message,
-    Spin,
     Modal
 } from 'antd';
 import registerPage from '../../index';

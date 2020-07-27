@@ -1,15 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import { jumpPage,closePage,decodeUrl } from '@hualala/platform-base'
-import {
-    Form,
-    Button,
-    Icon,
-    Select,
-    Input,
-    message,
-    Spin,
-} from 'antd';
 import ActSteps from '../components/ActSteps/ActSteps'
 import styles from './payHaveGift.less'
 import Step1 from './components/Step1'

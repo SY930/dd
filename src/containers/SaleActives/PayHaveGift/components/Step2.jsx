@@ -5,7 +5,7 @@ import _ from 'lodash'
 import { formItems2, formKeys2 } from '../contanst'
 import  BaseForm  from '../../../../components/common/BaseForm';
 import moment from 'moment'
-import { getDefaultGiftData } from '../../helper/index'
+
 const DATE_FORMAT = 'YYYYMMDD000000';
 const { RangePicker } = DatePicker;
 import styles from "../payHaveGift.less";
@@ -81,7 +81,7 @@ class Step2 extends React.Component {
             if(e) {
                 flag = false
             } else {
-                console.log('v----3',v)
+
                 const warnText = '投放日期必须在券有效期范围内，且投放周期不能超过90天'
                 const eventDate = v.eventDate
                 const diffDate = eventDate[1].diff(eventDate[0],'days') + 1
@@ -91,7 +91,7 @@ class Step2 extends React.Component {
                 }
                 const { effectType, giftValidUntilDayCount, effectTime, validUntilDate } = v.mySendGift || {};
 
-                console.log('diffDate',diffDate)
+
                 // 校验投放日期
                 if(effectType === '1' &&  diffDate > giftValidUntilDayCount) {
                     message.warn(warnText)

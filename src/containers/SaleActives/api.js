@@ -52,24 +52,3 @@ for (const key in apis) {
 }
 
 export default APIFunction;
-
-//  微信支付商家券，返回的礼品数据
-
-// {
-//     "appID": "wx8cd84104f7d47ce5",
-//     "trdChannelID": "50",
-//     "mpID": "9cYF3yQ18U65594e",
-//     "type": "DATE_TYPE_FIX_TERM", // 固定有效期   DATE_TYPE_FIX_TERM 为相对有效期 DATE_TYPE_FIX_TIME_RANGE 为固定有效期
-//     "validateWay": "OFF_LINE",
-//     "maxCanRecvCount": 100,
-//     "merchantInfo": {
-//       "merchantID": "1356079902",
-//       "settleId": 100146,
-//       "masterMerchantID": "1354215702"
-//     },
-//     "maxAmount": "10000",
-//     "fixedBeginTerm": "0", // 相对有效期 何时生效
-//     "fixedTerm": 30 // 相对有效期 有效天数
-//  beginTimestamp 固定有效期 开始时间
-//  endTimestamp 固定有效期 结束时间
-//   }

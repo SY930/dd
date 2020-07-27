@@ -1,7 +1,7 @@
 import React from 'react'
 import  BaseForm  from '../../../../components/common/BaseForm';
 import { Input } from 'antd'
-import {formItems1,formKeys1,imgUrl} from '../contanst'
+import {formItems1,formKeys1} from '../contanst'
 import styles from '../payHaveGift.less'
 import {connect} from 'react-redux';
 
