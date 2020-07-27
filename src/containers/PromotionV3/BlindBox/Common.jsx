@@ -92,7 +92,7 @@ const formItems2 = {
         surfix: '积分',
         rules: [{
             required: true,
-            pattern: /^(([1-9]\d{0,5})|0)(\.\d{0,2})?$/,
+            pattern: /^(([1-9]\d{0,5})(\.\d{0,2})?|0.\d?[1-9]{1})$/,
             message: '请输入0.01~100000之间的数据，支持两位小数',
         }],
         wrapperCol: { span: 10 },
@@ -103,7 +103,7 @@ const formItems2 = {
         surfix: '元',
         rules: [{
             required: true,
-            pattern: /^(([1-9]\d{0,5})|0)(\.\d{0,2})?$/,
+            pattern: /^(([1-9]\d{0,5})(\.\d{0,2})?|0.\d?[1-9]{1})$/,
             message: '请输入0.01~100000之间的数字，最多支持两位小数',
         }],
         wrapperCol: { span: 10 },
