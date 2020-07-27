@@ -66,35 +66,42 @@ class ImageUpload extends Component {
         const point = loading ? { pointerEvents: 'none' } : {};
         const text = value ? '更换' : '上传';
         return (
-            <div className={`${css.wrap} imgageUpload`} style={point}>
-                <Upload
-                    name="myFile"
-                    action="/api/common/imageUpload"
-                    className={css.uploadBox}
-                    showUploadList={false}
-                    beforeUpload={this.onUpload}
-                    onChange={this.onChange}
-                >
-                    {imgUrl ?
-                        <img src={imgURI + imgUrl} alt="" className={css.img} /> :
-                        <Icon type="plus" className={css.trigger} />
-                    }
-                    <p className={css.tip}>{text}图片</p>
-                    {loading &&
-                        <div className="ant-upload-list-item-progress">
-                            <div className="ant-progress ant-progress-line ant-progress-status-normal">
-                                <div className="ant-progress-outer">
-                                    <div className="ant-progress-inner">
-                                        <div className="ant-progress-bg" style={{ width: `${percent}%`, height: 2 }}></div>
+            <div>
+                <div className={`${css.wrap} imgageUpload`} style={point}>
+                    <Upload
+                        name="myFile"
+                        action="/api/common/imageUpload"
+                        className={css.uploadBox}
+                        showUploadList={false}
+                        beforeUpload={this.onUpload}
+                        onChange={this.onChange}
+                    >
+                        {imgUrl ?
+                            <img src={imgURI + imgUrl} alt="" className={css.img} /> :
+                            <Icon type="plus" className={css.trigger} />
+                        }
+                        <p className={css.tip}>{text}图片</p>
+                        {loading &&
+                            <div className="ant-upload-list-item-progress">
+                                <div className="ant-progress ant-progress-line ant-progress-status-normal">
+                                    <div className="ant-progress-outer">
+                                        <div className="ant-progress-inner">
+                                            <div className="ant-progress-bg" style={{ width: `${percent}%`, height: 2 }}></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        }
+                    </Upload>
+                    {isNotDef &&
+                        <a href="javascript:;" className={css.reset} onClick={this.onReset}>重置</a>
                     }
-                </Upload>
-                {isNotDef &&
-                    <a href="javascript:;" className={css.reset} onClick={this.onReset}>重置</a>
-                }
+                </div>
+                <div>
+                    <p className="ant-upload-hint">尺寸建议750*318</p>
+                    <p className="ant-upload-hint">不大于1000KB</p>
+                    <p className="ant-upload-hint">支持PNG、JPG、GIF格式</p>
+                </div>
             </div>
         )
     }

@@ -632,6 +632,7 @@ class GiftAddModal extends React.Component {
         const giftValue = {
             label: '礼品价值',
             type: 'custom',
+            rules: ['required'],
             render: d => (<div>
                 <div style={{ display: 'flex'}}>
                 <p style={{ width: 100 }}>
