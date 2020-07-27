@@ -447,7 +447,6 @@ class MySpecialActivities extends React.Component {
                 }
                 { (v3visible && curKey == '78') && <Chou2Le onToggle={this.onV3Click} id={itemID} view={view} />}
                 { (v3visible && curKey == '79') && <BlindBox onToggle={this.onV3Click} id={itemID} view={view} />}
-                { v3visible && <Chou2Le onToggle={this.onV3Click} id={itemID} view={view} />}
                 <Modal
                     title="提取活动链接"
                     visible={isShowCopyUrl}
