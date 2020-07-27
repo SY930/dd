@@ -56,7 +56,7 @@ export default class buttonSettingBlockMultiple extends Component {
                     }
                 </div>
                 <div className={style.subTitle}>
-                    {SALE_LABEL.k6346bes}
+                     自定义颜色
                 </div>
 
                 <div style={{display: 'flex',border: '1px solid #e5e5e5',borderRadius: '5px',padding: '8px 20px',width: '300px' }}>
@@ -79,7 +79,7 @@ export default class buttonSettingBlockMultiple extends Component {
                             </div>
                         </div>
                         <div style={{ marginLeft: 20 }} className={style.inlineRow}>
-                            <span>{SALE_LABEL.k6346bvg}</span>
+                            <span>按钮文字</span>
                             <br/>
                             <div style={{display: 'inline-block',marginTop: '4px'}} className={style.borderWrapper}>
                                 <WrappedColorPicker

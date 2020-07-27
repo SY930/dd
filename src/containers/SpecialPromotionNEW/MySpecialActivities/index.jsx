@@ -93,7 +93,8 @@ const DECORATABLE_PROMOTIONS = [
     '64',
     '65',
     '66',
-    '76'
+    '76',
+    '68'
 ]
 const isDecorationAvailable = ({eventWay}) => {
     return DECORATABLE_PROMOTIONS.includes(`${eventWay}`)
