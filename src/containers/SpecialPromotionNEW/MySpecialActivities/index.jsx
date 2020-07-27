@@ -8,7 +8,7 @@ import {
     Spin, Icon,
 } from 'antd';
 import {throttle, isEqual} from 'lodash';
-import { jumpPage } from '@hualala/platform-base'
+import { jumpPage, closePage } from '@hualala/platform-base'
 import moment from 'moment';
 import copy from 'copy-to-clipboard'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
@@ -40,7 +40,7 @@ import {
 import ActivityMain from '../activityMain';
 
 import registerPage from '../../../index';
-import { SPECIAL_PAGE, PROMOTION_DECORATION } from '../../../constants/entryCodes';
+import { SPECIAL_PAGE, PROMOTION_DECORATION, SALE_CENTER_PAYHAVEGIFT } from '../../../constants/entryCodes';
 import { promotionBasicInfo_NEW as sale_promotionBasicInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionBasicInfo.reducer';
 import { promotionDetailInfo_NEW as sale_promotionDetailInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionDetailInfo.reducer';
 import {
@@ -243,6 +243,7 @@ class MySpecialActivities extends React.Component {
                 { value: '76', label: '签到' },
                 { value: '78', label: '下单抽抽乐' },
                 { value: '79', label: '盲盒' },
+                { value: '80', label: '微信支付有礼' },
             ],
         }
         this.renderFilterBar = this.renderFilterBar.bind(this);
@@ -414,6 +415,14 @@ class MySpecialActivities extends React.Component {
             isShowCopyUrl: false
         })
     }
+    handleShowDetail = (record) => {
+        closePage(SALE_CENTER_PAYHAVEGIFT)
+        // 跳转到新版的营销活动
+        setTimeout(() => {
+            jumpPage({ menuID: SALE_CENTER_PAYHAVEGIFT,  itemID: record.itemID,typeKey : record.eventWay})
+        }, 100);
+    }
+
     render() {
         const { v3visible, itemID, view, isShowCopyUrl, urlContent, curKey } = this.state;
         return (
@@ -652,6 +661,70 @@ class MySpecialActivities extends React.Component {
         })
     }
 
+    renderPayHaveGift (text,index,record) {
+
+        return (
+            <div>
+                  <a
+                            href="#"
+                            onClick={() => {
+                                if (Number(record.eventWay) === 70) {
+                                    message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
+                                    return;
+                                }
+                                if (record.eventWay === 78) {
+                                    this.onV3Click(record.itemID, true);
+                                    return;
+                                }
+                                if (record.eventWay === 80) {
+
+                                    this.handleShowDetail(record)
+                                    return;
+                                }
+                                this.props.toggleIsUpdate(false)
+                                this.handleUpdateOpe(text, record, index);
+                            }}
+                        >
+                            { COMMON_LABEL.view }
+                        </a>
+                        <a
+                            href="#"
+                            className={record.isActive == '-1'  || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)   ? styles.textDisabled : null}
+                            onClick={() => {
+                                if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
+                                    return;
+                                }
+                                if (Number(record.eventWay) === 70) {
+                                    message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
+                                    return;
+                                }
+                                record.isActive == '-1'  ? null :
+                                    this.handelStopEvent(text, record, index, '-1', `${this.props.intl.formatMessage(STRING_SPE.d17012f5c16c32211)}`);
+                            }}
+                        >
+                        {this.props.intl.formatMessage(STRING_SPE.du3bnfobe3346)}
+                        </a>
+                        <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY}>
+                            <a
+                                href="#"
+                                className={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record) ? styles.textDisabled : null}
+                                onClick={() => {
+                                    if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) {
+                                        return;
+                                    }
+                                    if (Number(record.eventWay) === 70) {
+                                        message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
+                                        return;
+                                    }
+                                    this.checkDetailInfo(text, record, index);
+                                }}
+                            >
+                            {this.props.intl.formatMessage(STRING_SPE.d5g3d7ahfq35134)}</a>
+                        </Authority>
+            </div>
+        )
+    }
+
     renderTables() {
         const SmsSendStatus = [
             { value: '0', label: `${this.props.intl.formatMessage(STRING_SPE.de8g7jed1j17152)}` },
@@ -699,12 +772,15 @@ class MySpecialActivities extends React.Component {
                         (record.status != '0' && record.status != '1' && record.status != '5' && record.status != '21')
                     );
                     const buttonText = (record.isActive == '1' ? COMMON_LABEL.disable : COMMON_LABEL.enable);
+                    if(record.eventWay === 80) {
+                        return this.renderPayHaveGift(text,index,record)
+                    }
                     return (<span>
                         <a
                             href="#"
-                            className={(record.isActive == '-1' || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) ? styles.textDisabled : null}
+                            className={(record.isActive == '-1' || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) || record.eventWay === 80 ? styles.textDisabled : null}
                             onClick={(e) => {
-                                if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
+                                if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80) {
                                     e.preventDefault();
                                     return;
                                 }
@@ -721,12 +797,12 @@ class MySpecialActivities extends React.Component {
                             <a
                                 href="#"
                                 className={
-                                    record.isActive != '0' || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record))
+                                    record.isActive != '0' || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) || record.eventWay === 80
                                         ? styles.textDisabled
                                         : null
                                 }
                                 onClick={(e) => {
-                                    if (record.isActive != '0' || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record))) {
+                                    if (record.isActive != '0' || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) || record.eventWay === 80) {
                                         e.preventDefault()
                                     } else {
                                         if (Number(record.eventWay) === 70) {
@@ -756,6 +832,11 @@ class MySpecialActivities extends React.Component {
                                     this.onV3Click(record.itemID, true, record.eventWay);
                                     return;
                                 }
+                                if (record.eventWay === 80) {
+
+                                    this.handleShowDetail(record)
+                                    return;
+                                }
                                 this.props.toggleIsUpdate(false)
                                 this.handleUpdateOpe(text, record, index);
                             }}
@@ -765,9 +846,9 @@ class MySpecialActivities extends React.Component {
                         <Authority rightCode={SPECIAL_PROMOTION_DELETE}>
                             <a
                                 href="#"
-                                className={record.isActive != '0' || record.userCount != 0 || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) ? styles.textDisabled : null}
+                                className={record.isActive != '0' || record.userCount != 0 || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80 ? styles.textDisabled : null}
                                 onClick={() => {
-                                    if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
+                                    if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80) {
                                         return;
                                     }
                                     if (Number(record.eventWay) === 70) {
@@ -783,9 +864,9 @@ class MySpecialActivities extends React.Component {
                         </Authority>
                         <a
                             href="#"
-                            className={record.isActive == '-1' || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) ? styles.textDisabled : null}
+                            className={record.isActive == '-1' || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80 ? styles.textDisabled : null}
                             onClick={() => {
-                                if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
+                                if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80) {
                                     return;
                                 }
                                 if (Number(record.eventWay) === 70) {

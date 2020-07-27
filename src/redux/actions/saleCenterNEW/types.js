@@ -840,6 +840,13 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             example: "",
             key: "79",
         },
+        {
+            idx: 24,
+            title: "微信支付有礼",
+            text: "",
+            example: "",
+            key: "80",
+        },
     ];
     return basic;
 })();

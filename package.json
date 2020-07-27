@@ -28,7 +28,11 @@
         "react-cropper": "1.0.1",
         "react-intl": "2.7.2",
         "solarlunar": "2.0.7",
-        "valid-url": "^1.0.9"
+        "valid-url": "^1.0.9",
+        "react-cropper": "1.0.1",
+        "redux-saga": "^0.16.0",
+        "wangeditor": "^3.1.1",
+        "warning": "^3.0.0"
     },
     "devDependencies": {
         "@hualala/platform-scripts": "2.6.1",

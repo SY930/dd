@@ -4,6 +4,9 @@ import rootEpic from './redux/modules';
 
 import * as entryCodes from './constants/entryCodes'
 
+// 初始化Dva
+import './utils/dva/index'
+
 const { registeEntryCode, registeLocale } = registerPackage('sale', process.env.JS_VERSION);
 const DEFAULT_LANGUAGE = 'zh-cn';
 const LOCEL_LANGUAGE_MAP = new Map([
@@ -55,6 +58,12 @@ registerLocalPage([
         value: entryCodes.PROMOTION_DECORATION,
         label: '活动装修',
         parent: [entryCodes.SPECIAL_PAGE],
+    },
+    {
+        key: entryCodes.SALE_CENTER_PAYHAVEGIFT,
+        value: entryCodes.SALE_CENTER_PAYHAVEGIFT,
+        label: '创建活动',
+        parent: [entryCodes.NEW_SALE_BOX],
     },
 ]);
 // 注册语言包

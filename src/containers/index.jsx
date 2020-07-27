@@ -24,3 +24,4 @@ export { default as WeChatCouponCreate } from './WeChatCouponManagement/WeChatCo
 export { default as TrdPromotionInterface } from './TrdPromotionInterface';
 export { default as PromotionCalendarNew } from './PromotionCalendarNew';
 export { default as PromotionDecoration } from './PromotionDecoration';
+export { default as CreateActive } from './SaleActives/CreateActive'
