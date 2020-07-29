@@ -4,17 +4,12 @@ import ColorSettingBlock from './ColorSettingBlock'
 import DecorationUploader from './DecorationUploader';
 import {
     iphone,
-    lotteryBtn,
-    lotteryExample,
-    lotteryMain,
-    lotteryWheel,
     phoneTop,
 } from './assets';
-import WrappedColorPicker from '../../components/common/WrappedColorPicker';
-import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
-
 import ButtonSettingBlockMultiple from './ButtonSettingBlockMultiple'
+
+const baseUrl = 'http://res.hualala.com/basicdoc'
 
 
 export default class RecommendHaveGift extends Component {
@@ -25,7 +20,7 @@ export default class RecommendHaveGift extends Component {
         const {
             decorationInfo: {
                 bgColor = '#FBB335',
-                bgImg = 'http://res.hualala.com/basicdoc/d855f874-1a0c-47b7-95af-87a8a763e95f.png',
+                bgImg = `${baseUrl}/364c0698-6252-42c1-b54e-fbabfc162c08.png`,
                 btnBgColor = 'linear-gradient(#FF4803,#FF7735)',
                 btnColor = '#EBEBEB',
             },
@@ -38,14 +33,11 @@ export default class RecommendHaveGift extends Component {
                 <img src={iphone} alt="" />
                 <img className={style.fakeHeader} src={phoneTop} alt="" />
                 <div style={{ background: bgColor }} className={style.scrollArea}>
-                    <img style={{ width: '100%' }} src={bgImg} />
-                    <div style={styles.actRule}>
-                        活动规则
-                    </div>
-                    {/* <div style={styles.point}><div style={styles.pointText}>已获得积分 </div> <div style={styles.pointNum}>999</div></div> */}
-                    <img style={styles.award} src="http://res.hualala.com/basicdoc/5327725a-f5e6-46d9-87d7-0e5942cc52d0.png" />
-                    <div style={{ ...styles.btn, background: btnBgColor, color: btnColor }}>立即签到</div>
-                    <img style={styles.calendar} src="http://res.hualala.com/basicdoc/4c2b7def-a7d6-4121-b5b5-0aa44217087e.png" />
+                    <img style={{ width: '100%' }} src={bgImg} alt="" />
+                    <div style={styles.tip}>每邀请一位新用户储值后可返还</div>
+                    <img style={styles.award} src={`${baseUrl}/641e20de-c148-4f43-b51c-457273118466.png`} alt="" />
+                    <div style={{ ...styles.btn, background: btnBgColor, color: btnColor }}>立即邀请</div>
+                    <div style={{ ...styles.btn, ...styles.faceBtn }}>面对面邀请</div>
                 </div>
             </div>
         )
@@ -60,7 +52,7 @@ export default class RecommendHaveGift extends Component {
             },
             onChange,
         } = this.props;
-        const [, color1, color2] = /\((.+),(.+)\)/.exec(btnBgColor);
+
         return (
             <div style={{ paddingTop: 35 }}>
                 <div className={style.sectionWrapper}>
@@ -80,7 +72,7 @@ export default class RecommendHaveGift extends Component {
                 </div>
                 <div className={style.sectionWrapper}>
                     <div className={style.label}>主题颜色</div>
-                    <ColorSettingBlock value={bgColor} onChange={value => onChange({ key: ['bgColor'], value })} />
+                    <ColorSettingBlock title="请选取一个你喜欢的颜色" value={bgColor} onChange={value => onChange({ key: ['bgColor'], value })} />
                 </div>
 
                 <div className={style.sectionWrapper}>
@@ -147,12 +139,26 @@ const styles = {
         width: '90%',
         display: 'inherit',
         margin: '0 auto',
-        marginTop: '-36px',
+        marginTop: '14px',
+    },
+    tip: {
+        width: '190px',
+        height: '20px',
+        margin: '0 auto',
+        borderRadius: '10px',
+        marginTop: '-6px',
+        background: '#fff',
+        color: '#E57734',
+        position: 'relative',
+        zIndex: '9',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     btn: {
-        width: '150px',
+        width: '230px',
         height: '30px',
-        borderRadius: '9px',
+        borderRadius: '15',
         // boxShadow:'0px 2px 5px 0px rgba(231,156,31,0.5)',
         fontSize: '12px',
         display: 'flex',
@@ -162,12 +168,12 @@ const styles = {
         position: 'relative',
         transform: 'translateX(-50%)',
         marginLeft: '50%',
-        top: '-40px',
+        top: '16px',
     },
-    calendar: {
-        width: '90%',
-        margin: '0 auto',
-        display: 'inherit',
+    faceBtn: {
+        border: '1px solid #F7720B',
+        color: '#F7720B',
+        top: '32px',
     },
 
 }
