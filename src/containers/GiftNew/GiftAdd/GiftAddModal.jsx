@@ -439,11 +439,11 @@ class GiftAddModal extends React.Component {
                 { pattern: /(^\+?\d{0,9}$)|(^\+?\d{0,9}\.\d{0,2}$)/, message: '请输入大于0的值，整数不超过9位，小数不超过2位' }],
             },
             giftRemark: {
-                label: '活动详情',
+                label: '礼品详情',
                 type: 'textarea',
-                placeholder: '请输入活动详情',
+                placeholder: '请输入礼品详情',
                 rules: [
-                    { required: true, message: '活动详情不能为空' },
+                    { required: true, message: '礼品详情不能为空' },
                     { max: 400, message: '最多400个字符' },
                 ],
             },
