@@ -86,7 +86,7 @@ class SpecialDishesTableWithBrand extends Component {
             const dish = dishes.find(d => d.value === `${item.brandID || 0}__${item.foodName}${item.foodUnitName}`);
             if(dish){
                 dish.newPrice = item.price
-                dish.salePercent = Number(dish.newPrice) <= 0 ? '0' : Number(dish.newPrice) !== Number(dish.price) ? `${Number((Number(dish.newPrice) / dish.price * 10).toFixed(1))}` : '10'
+                dish.salePercent = Number(dish.newPrice) <= 0 ? '0' : Number(dish.newPrice) !== Number(dish.price) ? `${Number((Number(dish.newPrice) / dish.price * 10).toFixed(2))}` : '10'
                 acc.push(dish)
             }
             return acc;
@@ -104,7 +104,7 @@ class SpecialDishesTableWithBrand extends Component {
             num = '0';
         }
         record.newPrice = num;
-        record.salePercent = (num / record.price * 10).toFixed(1)
+        record.salePercent = (num / record.price * 10).toFixed(2)
         this.setState({data});
         this.props.onChange(data.map(item => ({...item})));
     }
@@ -118,7 +118,7 @@ class SpecialDishesTableWithBrand extends Component {
             num = '0';
         }
         record.salePercent = num;
-        record.newPrice = (record.price * num / 10).toFixed(1)
+        record.newPrice = (record.price * num / 10).toFixed(2)
         this.setState({data});
         this.props.onChange(data.map(item => ({...item})));
     }
@@ -221,7 +221,7 @@ class SpecialDishesTableWithBrand extends Component {
             }
         });
     }
-    renderFoodModifyModal() {
+    renderPriceModifyModal() {
         let {formKeys} = this.state
         let formItems = {
             setType: {
@@ -235,6 +235,7 @@ class SpecialDishesTableWithBrand extends Component {
             discount: {
                 label: '折扣',
                 type: 'text',
+                placeholder: '保留两位小数',
                 labelCol: { span: 6 },
                 wrapperCol: { span: 14 },
                 rules: [{
@@ -247,6 +248,7 @@ class SpecialDishesTableWithBrand extends Component {
                 label: '活动价',
                 type: 'text',
                 surfix: '元',
+                placeholder: '请输入数值',
                 labelCol: { span: 6 },
                 wrapperCol: { span: 14 },
                 rules: [{
@@ -441,7 +443,7 @@ class SpecialDishesTableWithBrand extends Component {
                             // className={styles.gTitleLink}
                             onClick={this.handleSelectDishes}
                         >
-                            {SALE_LABEL.k5gfsv5b}{k5gfsuon}
+                            {'批量添加商品'}
                         </Button>
                     </Col>
                 </Row>
@@ -456,7 +458,7 @@ class SpecialDishesTableWithBrand extends Component {
                     </Col>
                 </Row>
                 {selectorModalVisible && this.renderFoodSelectorModal()}
-                {modifyModalVisible && this.renderFoodModifyModal()}
+                {modifyModalVisible && this.renderPriceModifyModal()}
             </FormItem>
         )
     }
