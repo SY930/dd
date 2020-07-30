@@ -62,6 +62,7 @@ import { axios } from '@hualala/platform-base';
 import { getStore } from '@hualala/platform-base/lib';
 import { renderThree,addPointData,initPerfectCheckBox } from '../perfectReturnGift/StepThreeHelp'
 import { renderUpGradeThree,upGradeAddPointData,upGradeInitPerfectCheckBox } from '../upGradeReturnGift/StepThreeHelp'
+import { freeGetStep3Render } from '../freeGet/step3'
 const moment = require("moment");
 const FormItem = Form.Item;
 
@@ -3765,6 +3766,7 @@ class SpecialDetailInfo extends Component {
     render() {
         const { giveCoupon } = this.state;
         const { type } = this.props;
+        console.log('type--',type)
         if (type == "68") {
             // 推荐有礼的render与其它活动相差较大
             // return <Three _this={this}/>;
@@ -3778,6 +3780,12 @@ class SpecialDetailInfo extends Component {
             // 集点卡 礼品逻辑
             return this.renderAccumulateGiftsDetail();
         }
+
+        if(type == '21') {
+            // 提出免费领取第三步
+            return freeGetStep3Render.call(this)
+        }
+
         const userCount = this.props.specialPromotion.getIn([
             "$eventInfo",
             "userCount",
