@@ -329,6 +329,7 @@ class SpecialDetailInfo extends Component {
                 upGradeReturnGiftCoupon: true,
             },
             cardTypeArr: [], // 充值到会员卡列表
+            freeGetLimit: '0'
         };
     }
     componentDidMount() {
@@ -605,7 +606,6 @@ class SpecialDetailInfo extends Component {
             data[index].giftValidDays.value = gift.giftValidUntilDayCount;
             if (
                 this.props.type != "20" &&
-                this.props.type != "21" &&
                 this.props.type != "30" &&
                 this.props.type != "70"
             ) {
@@ -861,7 +861,6 @@ class SpecialDetailInfo extends Component {
             }
             if (
                 this.props.type != "20" &&
-                this.props.type != "21" &&
                 this.props.type != "30" &&
                 this.props.type != "70"
             ) {
@@ -914,6 +913,8 @@ class SpecialDetailInfo extends Component {
 
     handleSubmitOld = (isPrev) => {
         if (isPrev) return true;
+        const { type } = this.props;
+        let giftTotalCount = ''
         let flag = true;
         const priceReg = /^(([1-9]\d{0,5})(\.\d{0,2})?|0.\d?[1-9]{1})$/;
         this.props.form.validateFieldsAndScroll(
@@ -921,6 +922,10 @@ class SpecialDetailInfo extends Component {
             (error, basicValues) => {
                 if (error) {
                     flag = false;
+                } else {
+                    if(type == '21') {
+                        giftTotalCount = basicValues.giftTotalCount &&  basicValues.giftTotalCount.number
+                    }
                 }
 
             }
@@ -928,6 +933,7 @@ class SpecialDetailInfo extends Component {
         if (!flag) {
             return false;
         }
+
         let {
             data,
             shareImagePath,
@@ -944,7 +950,7 @@ class SpecialDetailInfo extends Component {
             upGradeReturnGiftCheckBoxStatus,
             ...instantDiscountState,
         } = this.state;
-        const { type } = this.props;
+
 
         // 桌边砍可以不启用礼品 直接短路返回
         if (flag && type == 67 && disabledGifts) {
@@ -1023,10 +1029,10 @@ class SpecialDetailInfo extends Component {
                     : "giftEffectiveTime";
             if (
                 this.props.type != "20" &&
-                this.props.type != "21" &&
                 this.props.type != "30" &&
                 this.props.type != "70"
             ) {
+
                 // check gift count
                 return Object.assign(ruleInfo, {
                     giftCount: this.checkgiftCount(
@@ -1053,6 +1059,7 @@ class SpecialDetailInfo extends Component {
                               ),
                 });
             }
+
             // check total count
             return Object.assign(ruleInfo, {
                 giftTotalCount: this.checkgiftTotalCount(
@@ -1093,7 +1100,6 @@ class SpecialDetailInfo extends Component {
         }, 0);
         data = validatedRuleData;
         this.setState({ data });
-
         if((type === '60'
              && !perfectReturnGiftCheckBoxStatus.perfectReturnGiftCoupon
              ) ||
@@ -1191,6 +1197,12 @@ class SpecialDetailInfo extends Component {
                           cleanCount,
                       }
             );
+
+            if(type == '21' && giftTotalCount) {
+                giftInfo.forEach(v => {
+                    v.giftTotalCount = giftTotalCount
+                })
+            }
             this.props.setSpecialGiftInfo(giftInfo);
 
             return true;
@@ -3900,7 +3912,7 @@ class SpecialDetailInfo extends Component {
                         </Col>
                     </Row>
                 )}
-                {["21", "66", "65"].includes(type) && this.renderShareInfo2()}
+                {[ "66", "65"].includes(type) && this.renderShareInfo2()}
             </div>
         );
     }

@@ -178,7 +178,7 @@ class AddGifts extends React.Component {
             <div className={[selfStyle.listWrapper, isAttached ? selfStyle.isAttached : ''].join(' ')}>
                 {this.renderItems()}
                 { // 膨胀大礼包固定3档礼品，不可添加, 免费领取固定1个礼品，不可添加
-                    (this.state.infos.length < 10 && type != '66' && type != '21' && type != '30') && (
+                    (this.state.infos.length < 10 && type != '66'   && type != '30') && (
                         <div className={selfStyle.addLink} onClick={this.add}>
                             + {this.props.intl.formatMessage(STRING_SPE.d1qe2ar9n936298)}
                         </div>
@@ -217,7 +217,7 @@ class AddGifts extends React.Component {
                 help,
                 valueNuber,
                 onChangeFunc;
-            if (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70') {
+            if (this.props.type != '20'  && this.props.type != '30' && this.props.type != '70') {
                 validateStatus = info.giftCount.validateStatus;
                 addonBefore = `${this.props.intl.formatMessage(STRING_SPE.dojv8nhwu12190)}`;
                 help = info.giftCount.msg;
@@ -667,7 +667,7 @@ class AddGifts extends React.Component {
         _infos[index].giftCount.value = value.number;
         const _value = parseFloat(value.number);
         if (_value > 0) {
-            if (_value > 50 && (this.props.type != '20' && this.props.type != '21' && this.props.type != '30' && this.props.type != '70')) {
+            if (_value > 50 && (this.props.type != '20'   && this.props.type != '30' && this.props.type != '70')) {
                 _infos[index].giftCount.validateStatus = 'error';
                 _infos[index].giftCount.msg = `${this.props.intl.formatMessage(STRING_SPE.d4h176ei7g133276)}`;
             } else {
