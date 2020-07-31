@@ -487,55 +487,6 @@ class GiftAddModalStep extends React.PureComponent {
                 
                 break;
 
-            case 'discountRule':
-                // if(formRef.getFieldValue('discountRule') != value) {
-                //     formRef.setFieldsValue({
-                //         'discountRateSetting': 0,
-                //         'specialPriceVolSetting': null,
-                //         'discountDecreaseVolSetting': null
-                //     });
-                // }
-                break;
-
-            // TODO: 待优化
-            // 根据券应用场景，动态调整两个表单的formKeys值。逻辑未梳理清楚，不知道是否影响其他地方，先简单的手动修改，不做遍历，整体进行处理
-            // case 'applyScene': 
-                // if(value == '1'){
-                //     secondKeys[describe][0].keys = [...MALL_COUPON_APPLY_SETTING_FORM_ITEMS[describe][0].keys];
-                //     firstKeys[describe][0].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][0].keys];
-                    
-                //     firstKeys[describe][1].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][1].keys];
-                // } else if(value == '0') {
-                //     secondKeys[describe][0].keys = [...SECOND_KEYS[describe][0].keys];
-                //     firstKeys[describe][0].keys = [...FIRST_KEYS[describe][0].keys];
-                //     firstKeys[describe][1].keys = [...FIRST_KEYS[describe][1].keys];
-                // }
-
-                // this.setState({
-                //     firstKeys,
-                //     secondKeys,
-                // });
-
-                // break;
-        
-            // case 'mallScope':   // 商城券适用场景变更
-                // debugger;
-                // let mallFirstKeys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][0].keys];
-                // if(value == '0') {      // 适用分类 + 排除商品
-                //     mallFirstKeys = mallFirstKeys.filter((key)=>{
-                //         return key !== 'mallIncludeGoodSelector';
-                //     });
-                // } else {                // 适用商品
-                //     mallFirstKeys = mallFirstKeys.filter((key)=>{
-                //         return key !== 'mallCategorySelector' && key !== 'mallExcludeGoodSelector';
-                //     })
-                // }
-                // firstKeys[describe][0].keys = mallFirstKeys;
-                // this.setState({
-                //     firstKeys
-                // })
-            // break;
-
             case 'discountRule': 
                 // 买赠券，处理优惠规则变更，动态调整表结构
                 this.handleDiscountRuleChange(value);
@@ -1067,33 +1018,83 @@ class GiftAddModalStep extends React.PureComponent {
         )
     }
 
-    renderGiveFoodCount(decorator) {
+    renderGiveFoodCount(decorator, form) {
         const { giveFoodCount } = this.props.gift.data;
-        return decorator({
-            key: 'giveFoodCount',
-            rules: [
-                {
-                    required: true,
-                    message: '不得为空',
-                },
-                {
-                    validator: (rule, v, cb) => {
-                        Number(v && v.number ? v.number : 0) > 0  ? cb() : cb(rule.message);
-                    },
-                    message: '菜品份数要大于0',
-                },
-            ],
-            initialValue: giveFoodCount && giveFoodCount.hasOwnProperty('number')  ? giveFoodCount : {number: giveFoodCount},
-        })(
-            <PriceInput
-                /*addonBefore="菜品赠送数量"*/
-                addonAfter="份"
-                placeholder="表示赠送菜品的总数"
-                modal="int"
-                maxNum={4}
-            />
+        
+        return (
+            <Row>
+                <Col span={10}>
+                    <FormItem style={{marginBottom: 0}}>
+                        {
+                            decorator({
+                                key: 'giveFoodCount',
+                                rules: [
+                                    {
+                                        required: true,
+                                        message: '不得为空',
+                                    },
+                                    {
+                                        validator: (rule, v, cb) => {
+                                            Number(v && v.number ? v.number : 0) > 0  ? cb() : cb(rule.message);
+                                        },
+                                        message: '菜品份数要大于0',
+                                    },
+                                ],
+                                initialValue: giveFoodCount && giveFoodCount.hasOwnProperty('number')  ? giveFoodCount : {number: giveFoodCount},
+                            })(
+                                <PriceInput
+                                    /*addonBefore="菜品赠送数量"*/
+                                    addonAfter="份"
+                                    placeholder="表示赠送菜品的总数"
+                                    modal="int"
+                                    maxNum={4}
+                                />
+                            )
+                        }
+                    </FormItem>
+                </Col>
+                <Col span={14}>
+                    { this.renderDiscountSettingWrapper(decorator, form)}
+                </Col>
+            </Row>
+        )
+
+    }
+
+    renderSpecifiedDiscountSetting = (decorator, type)=>{
+        switch(type) {
+            case '2':
+               return this.renderDiscountRateSetting(decorator);
+            case '3':
+                return this.renderDiscountDecreaseVolSetting(decorator);
+            case '1':
+                return this.renderSpecialPriceVolSetting(decorator);
+        }
+    }
+
+    renderDiscountSettingWrapper = (decorator, form)=>{
+        const { getFieldValue } = form;
+        let discountRule = getFieldValue('discountRule');
+        let lableArray = ['特价','折扣','立减']
+        return (
+            <Row type="flex" justify="space-around" align="middle">
+                <Col span={6}>
+                    <div style={{textAlign: 'right'}}>
+                        <span style={{marginRight: 10}}>
+                            {lableArray[Number(discountRule)-1]}
+                        </span>
+                    </div>
+                </Col>
+                <Col span={18}>
+                    {
+                        this.renderSpecifiedDiscountSetting(decorator, discountRule)
+                        //this.renderDiscountRateSetting(decorator)
+                    }
+                </Col>
+            </Row>
         )
     }
+
     renderDisCountRate(decorator) {
         const { discountOffMax, isDiscountOffMax, discountRate_111 } = this.state.values
         return (
@@ -1162,7 +1163,7 @@ class GiftAddModalStep extends React.PureComponent {
         const { gift : { data }} = this.props;
         let val = data.reduceValue;
         return (
-            <FormItem>
+            <FormItem style={{marginBottom: 0}}>
                 {decorator({
                     key: 'discountRateSetting',
                     rules: [{required: true, message: '不能为空'}, {
@@ -1201,7 +1202,7 @@ class GiftAddModalStep extends React.PureComponent {
         let val = data.reduceValue == undefined ? null : data.reduceValue;
 
         return (
-            <FormItem>
+            <FormItem style={{marginBottom: 0}}>
                 {decorator({
                     key: 'discountDecreaseVolSetting',
                     rules: [{required: true, message: '不能为空'}, {
@@ -1226,7 +1227,7 @@ class GiftAddModalStep extends React.PureComponent {
         const { gift : { data }} = this.props;
         let val = data.reduceValue == undefined ? 0 : data.reduceValue;
         return (
-            <FormItem>
+            <FormItem style={{marginBottom: 0}}>
                 {decorator({
                     key: 'specialPriceVolSetting',
                     rules: [{required: true, message: '不能为空'}, {
@@ -1734,6 +1735,19 @@ class GiftAddModalStep extends React.PureComponent {
         )
     }
 
+    // /**
+    //  * @description 买赠券复合组件
+    // */
+    // renderCompositeFoodDiscountSetting = (decorator) => {
+    //     return (
+    //         decorator({
+    //             key: 'compositeDiscount',       // 优惠菜品数量及优惠值（折扣率，立减等）
+    //         })(
+    //             <DiscountDetailSetting />
+    //         )
+    //     )
+    // }
+
     renderMallIncludeGoodsSelector = (decorator, form) => {
         const { gift: { name: describe, data }, type } = this.props;
         const { goods, goodCategories } = this.props;
@@ -1897,8 +1911,13 @@ class GiftAddModalStep extends React.PureComponent {
 
         // 根据后端返回数据来进行前端数据进行变更。
         // data.discountRule = `${data.reduceType}`;
-
         data.discountRule = data.reduceType == undefined ? '1' : `${data.reduceType}`;
+
+        // 组合买赠券复合组件属性，优惠菜品数量及优惠值
+        data.compositeDiscount = {
+            reduceValue: data.reduceValue,
+            reduceType: data.reduceType
+        };
         delete data.reduceType;
 
         // 商城默认值为0
@@ -1906,13 +1925,7 @@ class GiftAddModalStep extends React.PureComponent {
         if(data.hasOwnProperty('foodSelectType') && data.foodSelectType == '0') {
             data.mallScope = '1'
         }
-        // 商城
-        // if(data.hasOwnProperty('selectBrands') && data.selectBrands instanceof Array && data.selectBrands.length > 0) {
-        //     data.selectMall = data.selectBrands[0].targetID;
-        // }
-
         if(data.hasOwnProperty('shopIDs')) {
-            // let shopIDS = data.shopIDs;
             if(data.hasOwnProperty('applyScene') && data.applyScene == '1') {
                 data.selectMall = data.shopIDs
             }
@@ -1937,21 +1950,7 @@ class GiftAddModalStep extends React.PureComponent {
                 })
             }
         }
-        
         return data;
-
-
-        // 商城券调整
-        // if(data.applyScene == '1') {   
-        //     data.mallScope = data.mallScope == undefined ? '0' : data.mallScope;   // 默认值 
-        //     if(data.hasOwnProperty('foodSelectType') && data.foodSelectType == '0' && type == 'edit') { // 编辑模式
-        //         debugger;
-        //         data.mallScope = '1'
-        //         // 需要将后端返回的该字段进行删除，因为在编辑模式下，前端调整的话，
-        //         // 会重新走该流程，导致前端调整字段失效
-        //         delete data.foodSelectType;
-        //     }
-        // }
     }
 
     /**
@@ -2043,53 +2042,34 @@ class GiftAddModalStep extends React.PureComponent {
             // if(values.giftShareType)
         }
 
-        // TODO : 后续将所有descirbe判断改为value.
+        // 'discountRateSetting',                   // 折扣设置 （注释掉，通过代码动态注释）
+        // 'specialPriceVolSetting',                // 特价设置
+        // 'discountDecreaseVolSetting',            // 立减
+        // if(describe == '买赠券'){
+        //     if ( values.discountRule != undefined) {
+        //         switch(values.discountRule) {
+        //             case '1':
+        //                 firstKeysToDisplay[0].keys = firstKeysToDisplay[0].keys.filter((key)=>{
+        //                     return key != 'discountRateSetting' && key != 'discountDecreaseVolSetting'
+        //                 });
+        //                 break;
+        //             case '2':
+        //                 firstKeysToDisplay[0].keys = firstKeysToDisplay[0].keys.filter((key)=>{
+        //                     return key != 'specialPriceVolSetting' && key != 'discountDecreaseVolSetting'
+        //                 });
+        //                 break;
+        //             case '3':
+        //                 firstKeysToDisplay[0].keys = firstKeysToDisplay[0].keys.filter((key)=>{
+        //                     return key != 'specialPriceVolSetting' && key != 'discountRateSetting'
+        //                 });
+        //                 break;
+        //             default:
+        //                 break;
+        //         }
+        //     }
 
-         // 买赠券，处理优惠规则变更，动态调整表结构
-    // handleDiscountRuleChange = (val) => {
-    //     const { gift: { name: describe, data }, type } = this.props;
-    //     const { firstKeys } = this.state;
-    //     let keys = [...firstKeys[describe][0].keys];
-    //     // 1 特价， 2 折扣， 3 立减
-    //     // Caution: 如果修改配置文件 ——formItemConfig.jsx中买赠券的表单排序，则必须调整 splice 参数
-    //     if (val == '1') {
-    //         keys.splice(9, 1, 'specialPriceVolSetting');
-    //     } else if(val == '2') {
-    //         keys.splice(9, 1, 'discountRateSetting');
-    //     } else if(val == '3') {
-    //         keys.splice(9, 1, 'discountDecreaseVolSetting');
-    //     }
-    //     firstKeys[describe][0].keys = [...keys];
-    //     this.setState({ firstKeys });
-    // }
-
-    // 'discountRateSetting',                  // 折扣设置 （注释掉，通过代码动态注释）
-    //             'specialPriceVolSetting',           // 特价设置
-    //             'discountDecreaseVolSetting',       // 立减
-        if(describe == '买赠券'){
-            if ( values.discountRule != undefined) {
-                switch(values.discountRule) {
-                    case '1':
-                        firstKeysToDisplay[0].keys = firstKeysToDisplay[0].keys.filter((key)=>{
-                            return key != 'discountRateSetting' && key != 'discountDecreaseVolSetting'
-                        });
-                        break;
-                    case '2':
-                        firstKeysToDisplay[0].keys = firstKeysToDisplay[0].keys.filter((key)=>{
-                            return key != 'specialPriceVolSetting' && key != 'discountDecreaseVolSetting'
-                        });
-                        break;
-                    case '3':
-                        firstKeysToDisplay[0].keys = firstKeysToDisplay[0].keys.filter((key)=>{
-                            return key != 'specialPriceVolSetting' && key != 'discountRateSetting'
-                        });
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-
+            
+        // }
         return {
             firstKeysToDisplay,
             secondKeysToDisplay
@@ -2225,6 +2205,13 @@ class GiftAddModalStep extends React.PureComponent {
                 render: decorator => this.renderMallExcludeGoodsSelector(decorator)
             },
 
+            // 买赠券
+            compositeFoodDiscount: {
+                label: '组合设置',
+                type: 'custom',
+                render: decorator => this.renderCompositeFoodDiscountSetting(decorator)
+            },
+
             mallIncludeGoodSelector: {
                 label: '适用商品',
                 type: 'custom',
@@ -2246,6 +2233,9 @@ class GiftAddModalStep extends React.PureComponent {
                     { label: 'MOP$', value: 'MOP$' },
                 ],
             },
+
+            
+
             giftValue: {
                 label: giftValueLabel,
                 type: 'text',
@@ -2649,7 +2639,7 @@ class GiftAddModalStep extends React.PureComponent {
             giveFoodCount: {
                 label: '享受优惠菜品',
                 type: 'custom',
-                render: decorator => this.renderGiveFoodCount(decorator),
+                render: (decorator, form) => this.renderGiveFoodCount(decorator, form),
             },
             disCountRate_Max: {
                 label: ' ',
@@ -2710,25 +2700,25 @@ class GiftAddModalStep extends React.PureComponent {
             },
 
             // 买赠券折扣
-            discountRateSetting: {
-                label: '折扣',
-                type: 'custom',
-                render: decorator => this.renderDiscountRateSetting(decorator),
-            },
+            // discountRateSetting: {
+            //     label: '折扣',
+            //     type: 'custom',
+            //     render: decorator => this.renderDiscountRateSetting(decorator),
+            // },
             
-            // 买赠券立减
-            discountDecreaseVolSetting: {
-                label: '立减',
-                type: 'custom',
-                render: decorator => this.renderDiscountDecreaseVolSetting(decorator),
-            },
+            // // 买赠券立减
+            // discountDecreaseVolSetting: {
+            //     label: '立减',
+            //     type: 'custom',
+            //     render: decorator => this.renderDiscountDecreaseVolSetting(decorator),
+            // },
 
-            // 买赠券特价
-            specialPriceVolSetting: {
-                label: '特价',
-                type: 'custom',
-                render: decorator => this.renderSpecialPriceVolSetting(decorator),
-            }
+            // // 买赠券特价
+            // specialPriceVolSetting: {
+            //     label: '特价',
+            //     type: 'custom',
+            //     render: decorator => this.renderSpecialPriceVolSetting(decorator),
+            // }
 
 
         };

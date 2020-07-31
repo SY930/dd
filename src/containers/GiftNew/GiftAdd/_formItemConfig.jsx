@@ -685,9 +685,10 @@ export const FIRST_KEYS = {
                 'discountRule',                     // 优惠规则
                 'stageAmount',
                 'giveFoodCount',
-                'discountRateSetting',                  // 折扣设置 （注释掉，通过代码动态注释）
-                'specialPriceVolSetting',           // 特价设置
-                'discountDecreaseVolSetting',       // 立减
+                // 'compositeFoodDiscount',            // 数量及优惠组件，整合到一个新组件
+                // 'discountRateSetting',              // 折扣设置 （注释掉，通过代码动态注释）
+                // 'specialPriceVolSetting',           // 特价设置
+                // 'discountDecreaseVolSetting',       // 立减
                 'discountSortRule',                 // 买赠券优惠规则
                 // 'priceSortRule',
                 'price',

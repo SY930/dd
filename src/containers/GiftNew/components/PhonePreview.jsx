@@ -254,19 +254,30 @@ class PhonePreview extends PureComponent {
         )
     }
 
+    /**
+     * TODO: 这里老代码逻辑处理有问题，后端返回有shopNames字段，直接拿该字段进行渲染是没有问题的。
+     * 暂时这么处理
+    */
     renderMallName = () => {
         // shopSchema: state.sale_shopSchema_New,
+        const { createOrEditFormData: {
+            shopIDs
+        } } = this.props;
 
-        const { selectMall } = this.props;
-        let shopSchema = this.props.shopSchema.toJS(); // Imutable data to primitive
-        if(shopSchema.hasOwnProperty('shops') && shopSchema.shops instanceof Array) {
-            let malls = shopSchema.shops.filter((shop, idx)=>{
-                return shop.businessModel == '0' && shop.shopID == selectMall; // 0 为商城， 1 为餐饮店铺
-            });
-            if(malls.length == 1) {
-                return malls[0].shopName;
+        if(shopIDs instanceof Array && shopIDs.length == 1) {
+            
+            let shopSchema = this.props.shopSchema.toJS(); // Imutable data to primitive
+            if(shopSchema.hasOwnProperty('shops') && shopSchema.shops instanceof Array) {
+                let malls = shopSchema.shops.filter((shop, idx)=>{
+                    return shop.shopID == shopIDs[0]; // 0 为商城， 1 为餐饮店铺
+                });
+                if(malls.length == 1) {
+                    return malls[0].shopName;
+                }
             }
         }
+
+        
 
         return null;
     }
@@ -575,6 +586,7 @@ class PhonePreview extends PureComponent {
 
 function mapStateToProps(state) {
     return {
+        createOrEditFormData: state.sale_editGiftInfoNew.getIn(['createOrEditFormData']).toJS(),
         selectMall: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'selectMall']),   // 使用商城
         applyScene: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'applyScene']),   // 商城， 1， 店铺 0
         giftName: state.sale_editGiftInfoNew.getIn(['createOrEditFormData', 'giftName']),
