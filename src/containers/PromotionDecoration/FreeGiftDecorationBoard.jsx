@@ -103,12 +103,8 @@ export default class FreeGiftDecorationBoard extends Component {
         } = this.props;
         return (
             <div style={{ paddingTop: 35 }}>
-                <div className={style.sectionWrapper}>
-        <div className={style.label}>{SALE_LABEL.k636p1no}</div>
-                    <ColorSettingBlock value={activeBg} onChange={(value) => onChange({key: ['activeBg'], value})} />
-                </div>
-                <div className={style.sectionWrapper}>
-        <div style={{ top: 30 }} className={style.label}>{SALE_LABEL.k6346c3s}</div>
+                 <div className={style.sectionWrapper}>
+                 <div style={{ top: 30 }} className={style.label}>{SALE_LABEL.k6346c3s}</div>
                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
                         <DecorationUploader
                             limit={0}
@@ -116,16 +112,21 @@ export default class FreeGiftDecorationBoard extends Component {
                             onChange={value => onChange({key: ['activeImg'], value})}
                         />
                         <div className={style.uploaderTip}>
-        <p>* {SALE_LABEL.k6346ckg}1000KB</p>
-                            <p>* {SALE_LABEL.k6346css}750x666</p>
-                            <p>* {SALE_LABEL.k6346d14}</p>
+                            <p>* 图片建议尺寸750x960</p>
+                            <p>* 不大于1000KB</p>
+                            <p>* 支持png、jpg、jpeg、gif</p>
                         </div>
                     </div>
                 </div>
                 <div className={style.sectionWrapper}>
-        <div style={{ top: 5 }} className={style.label}>{SALE_LABEL.k636p2l0}</div>
+                <div className={style.label}>{SALE_LABEL.k636p1no}</div>
+                    <ColorSettingBlock title={"请选取一个你喜欢的颜色"} value={activeBg} onChange={(value) => onChange({key: ['activeBg'], value})} />
+                </div>
+
+                <div className={style.sectionWrapper}>
+                    <div style={{ top: 5 }} className={style.label}>{SALE_LABEL.k636p2l0}</div>
                     <div className={style.inlineRow}>
-        <span>{SALE_LABEL.k6346bn4}</span>
+                        <span>{SALE_LABEL.k6346bn4}</span>
                         <div className={style.borderedColorWrapper}>
                             <WrappedColorPicker
                                 alpha={100}
@@ -134,7 +135,7 @@ export default class FreeGiftDecorationBoard extends Component {
                                 placement="topLeft"
                             />
                         </div>
-        <span>{SALE_LABEL.k6346bvg}</span>
+                        <span>{SALE_LABEL.k6346bvg}</span>
                         <div className={style.borderedColorWrapper}>
                             <WrappedColorPicker
                                 alpha={100}
@@ -146,9 +147,9 @@ export default class FreeGiftDecorationBoard extends Component {
                     </div>
                 </div>
                 <div className={style.sectionWrapper}>
-        <div style={{ top: 5 }} className={style.label}>{SALE_LABEL.k636p2co}</div>
+                    <div style={{ top: 5 }} className={style.label}>可领礼品</div>
                     <div className={style.inlineRow}>
-        <span>{SALE_LABEL.k636p1w0}</span>
+                        <span>标题文字</span>
                         <div className={style.borderedColorWrapper}>
                             <WrappedColorPicker
                                 alpha={100}
@@ -160,24 +161,25 @@ export default class FreeGiftDecorationBoard extends Component {
                                 placement="topLeft"
                             />
                         </div>
-                            <span>{SALE_LABEL.k636p24c}</span>
+
+                    </div>
+                </div>
+                <div className={style.sectionWrapper}>
+                    <div style={{ top: 5 }} className={style.label}>可领列表</div>
+                    <div className={style.inlineRow}>
+                        <span>标题文字</span>
                         <div className={style.borderedColorWrapper}>
                             <WrappedColorPicker
                                 alpha={100}
-                                color={listBorderColor}
-                                onChange={({ color }) => onChange({key: ['listBorderColor'], value: color})}
+                                color={tagBg}
+                                onChange={({ color }) => {
+                                    onChange({key: ['tagBg'], value: color});
+                                    onChange({key: ['listBorderColor'], value: color})
+                                }}
                                 placement="topLeft"
                             />
                         </div>
-                            <span>{SALE_LABEL.k6346bvg}</span>
-                        <div className={style.borderedColorWrapper}>
-                            <WrappedColorPicker
-                                alpha={100}
-                                color={tagTextColor}
-                                onChange={({ color }) => onChange({key: ['tagTextColor'], value: color})}
-                                placement="topLeft"
-                            />
-                        </div>
+
                     </div>
                 </div>
             </div>
