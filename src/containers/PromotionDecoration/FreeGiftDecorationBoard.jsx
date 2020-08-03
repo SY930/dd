@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Switch } from 'antd';
 import style from './style.less';
 import ColorSettingBlock from './ColorSettingBlock'
 import DecorationUploader from './DecorationUploader';
@@ -28,6 +29,8 @@ export default class FreeGiftDecorationBoard extends Component {
                 tagTextColor = '#FDFDFF',
                 listBorderColor = '#FC988A',
                 activeImg,
+                giftTitleColor = '#AA7246',
+                giftListTitleColor = '#AA7246',
             },
         } = this.props;
         return (
@@ -95,14 +98,14 @@ export default class FreeGiftDecorationBoard extends Component {
                 btnBg = '#FCEAAA',
                 btnTextColor = '#BD5914',
                 tagBg = '#FF7E60',
-                tagTextColor = '#FDFDFF',
-                listBorderColor = '#FC988A',
+                giftTitleColor = '#AA7246',
+                giftListTitleColor = '#AA7246',
                 activeImg,
             },
             onChange,
         } = this.props;
         return (
-            <div style={{ paddingTop: 35 }}>
+            <div className={style.freeGiftDecorationWrap} style={{ paddingTop: 35 }}>
                  <div className={style.sectionWrapper}>
                  <div style={{ top: 30 }} className={style.label}>{SALE_LABEL.k6346c3s}</div>
                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
@@ -148,38 +151,42 @@ export default class FreeGiftDecorationBoard extends Component {
                 </div>
                 <div className={style.sectionWrapper}>
                     <div style={{ top: 5 }} className={style.label}>可领礼品</div>
-                    <div className={style.inlineRow}>
-                        <span>标题文字</span>
-                        <div className={style.borderedColorWrapper}>
-                            <WrappedColorPicker
-                                alpha={100}
-                                color={tagBg}
-                                onChange={({ color }) => {
-                                    onChange({key: ['tagBg'], value: color});
-                                    onChange({key: ['listBorderColor'], value: color})
-                                }}
-                                placement="topLeft"
-                            />
-                        </div>
+                    <div style={{display: 'flex', alignItems: 'center'}}>
+                        <Switch style={{width: '48px', height: '24px', borderRadius: '12px', marginRight: '16px'}} checkedChildren="开" unCheckedChildren="关" />
+                        <div className={style.inlineRow}>
+                            <span>标题文字</span>
+                            <div className={style.borderedColorWrapper}>
+                                <WrappedColorPicker
+                                    alpha={100}
+                                    color={giftTitleColor}
+                                    onChange={({ color }) => {
+                                        onChange({key: ['giftTitleColor'], value: color});
+                                    }}
+                                    placement="topLeft"
+                                />
+                            </div>
 
+                        </div>
                     </div>
                 </div>
                 <div className={style.sectionWrapper}>
                     <div style={{ top: 5 }} className={style.label}>可领列表</div>
-                    <div className={style.inlineRow}>
-                        <span>标题文字</span>
-                        <div className={style.borderedColorWrapper}>
-                            <WrappedColorPicker
-                                alpha={100}
-                                color={tagBg}
-                                onChange={({ color }) => {
-                                    onChange({key: ['tagBg'], value: color});
-                                    onChange({key: ['listBorderColor'], value: color})
-                                }}
-                                placement="topLeft"
-                            />
-                        </div>
+                    <div style={{display: 'flex', alignItems: 'center'}}>
+                        <Switch style={{width: '48px', height: '24px', borderRadius: '12px', marginRight: '16px'}} checkedChildren="开" unCheckedChildren="关" />
+                        <div className={style.inlineRow}>
+                            <span>标题文字</span>
+                            <div className={style.borderedColorWrapper}>
+                                <WrappedColorPicker
+                                    alpha={100}
+                                    color={giftListTitleColor}
+                                    onChange={({ color }) => {
+                                        onChange({key: ['giftListTitleColor'], value: color});
+                                    }}
+                                    placement="topLeft"
+                                />
+                            </div>
 
+                        </div>
                     </div>
                 </div>
             </div>
