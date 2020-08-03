@@ -5,7 +5,6 @@ import ColorSettingBlock from './ColorSettingBlock'
 import DecorationUploader from './DecorationUploader';
 import {
     iphone,
-    freeGift,
     freeGift1,
     freeGift2,
     giftExample,
@@ -16,20 +15,19 @@ import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from './IntlDecor';
 
+const freeGift = 'http://res.hualala.com/basicdoc/a1eaa4f9-0b62-4030-b0c4-f660224f7615.png'
+const couponImg = 'http://res.hualala.com/basicdoc/c0ec5b4f-295c-4981-9e76-5a21269647b4.png'
 @injectIntl()
 export default class FreeGiftDecorationBoard extends Component {
 
     renderPhonePreview() {
         const {
             decorationInfo: {
-                activeBg = '#FFE7DC',
-                btnBg = '#FCEAAA',
-                btnTextColor = '#BD5914',
-                tagBg = '#FF7E60',
-                tagTextColor = '#FDFDFF',
-                listBorderColor = '#FC988A',
+                activeBg = '#feae1b',
+                btnBg = '#FFEDC2',
+                btnTextColor = '#AA7246',
                 activeImg,
-                giftTitleColor = '#AA7246',
+                canGetGiftTitleColor = '#AA7246',
                 giftListTitleColor = '#AA7246',
             },
         } = this.props;
@@ -45,46 +43,18 @@ export default class FreeGiftDecorationBoard extends Component {
                 <img className={style.fakeHeader} src={phoneTop} alt=""/>
                 <div style={{ background: activeBg, paddingTop: 80 }} className={style.scrollArea}>
                     <img style={{ width: '100%', position: 'absolute', top: 0 }} src={activeImg || freeGift} alt=""/>
-                    <div style={{ position: 'relative', zIndex: 1, margin: '8px 0', textAlign: 'center', color: '#ED6648' }}>
-        {SALE_LABEL.k636p170}：2019.09.10~2019.11.12
-                    </div>
-                    <img style={{ position: 'relative', zIndex: 1, display: 'block', margin: '10px auto', width: 254 }} src={freeGift1} alt=""/>
-                    <img style={{ position: 'absolute', zIndex: 1, display: 'block', top: 196, left: 49, width: 185 }} src={giftExample} alt=""/>
-                    <div style={{ borderRadius: 20, background: btnBg, color: btnTextColor}} className={style.freeButton}>
-                        {SALE_LABEL.k636p0yo}
-                    </div>
-                    <div style={{ position: 'relative', borderColor: listBorderColor }} className={style.friendZone}>
-                        <div
-                            style={{
-                                transform: 'scale(0.25)',
-                                transformOrigin: 'top left',
-                                position: 'absolute',
-                                top: -5,
-                                left: 54,
-                            }}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="594" height="95" viewBox="0 0 594 95">
-                                <path fill={tagBg} d="M3203,1613v43a30,30,0,0,1-30,30H2659a30,30,0,0,1-30-30v-43h-10l10-22h574l10,22h-10Z" transform="translate(-2619 -1591)"/>
-                            </svg>
+                    <div style={{position: 'absolute',left: '50%',transform: 'translateX(-50%)', top: '370px',width: '100%'}}>
+                        <div className={style.freeGiftTimeText}  >活动时间：2019/09/08 - 2019/09/09</div>
+                        <div style={{color: giftListTitleColor}} className={style.freeGiftGetGift}>
+                            <div>用户 ****领取了优惠券</div>
+                            <div>2019/09/08 09:03:00</div>
                         </div>
-                        <div
-                            style={{
-                                color: tagTextColor,
-                                position: 'absolute',
-                                top: -1,
-                                left: 97,
-                            }}
-                        >
-                            {SALE_LABEL.k636p1fc}
+                        <div className={style.freeGiftcanGetGiftList}>
+                            <div style={{marginTop: '10px', color: canGetGiftTitleColor}}>可领礼品</div>
                         </div>
-                        <img
-                            src={freeGift2}
-                            alt=""
-                            style={{
-                                display: 'block',
-                                width: 210,
-                                margin: '35px auto 0',
-                            }}
-                        />
+                        <div className={style.freeGiftBtnWrap}>
+                            <div style={{background: btnBg, color: btnTextColor }}>立即领取</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -94,13 +64,14 @@ export default class FreeGiftDecorationBoard extends Component {
     renderSettingPanel() {
         const {
             decorationInfo: {
-                activeBg = '#FFE7DC',
-                btnBg = '#FCEAAA',
-                btnTextColor = '#BD5914',
-                tagBg = '#FF7E60',
-                giftTitleColor = '#AA7246',
+                activeBg = '#feae1b',
+                btnBg = '#FFEDC2',
+                btnTextColor = '#AA7246',
+                canGetGiftTitleColor = '#AA7246',
                 giftListTitleColor = '#AA7246',
                 activeImg,
+                isShowGiftListContent = true,
+                isShowCanGetGift = false
             },
             onChange,
         } = this.props;
@@ -152,15 +123,17 @@ export default class FreeGiftDecorationBoard extends Component {
                 <div className={style.sectionWrapper}>
                     <div style={{ top: 5 }} className={style.label}>可领礼品</div>
                     <div style={{display: 'flex', alignItems: 'center'}}>
-                        <Switch style={{width: '48px', height: '24px', borderRadius: '12px', marginRight: '16px'}} checkedChildren="开" unCheckedChildren="关" />
+                        <Switch value={isShowCanGetGift} onChange={(e) => {
+                             onChange({key: ['isShowCanGetGift'], value: e});
+                        }} style={{width: '48px', height: '24px', borderRadius: '12px', marginRight: '16px'}} checkedChildren="开" unCheckedChildren="关" />
                         <div className={style.inlineRow}>
                             <span>标题文字</span>
                             <div className={style.borderedColorWrapper}>
                                 <WrappedColorPicker
                                     alpha={100}
-                                    color={giftTitleColor}
+                                    color={canGetGiftTitleColor}
                                     onChange={({ color }) => {
-                                        onChange({key: ['giftTitleColor'], value: color});
+                                        onChange({key: ['canGetGiftTitleColor'], value: color});
                                     }}
                                     placement="topLeft"
                                 />
@@ -172,7 +145,9 @@ export default class FreeGiftDecorationBoard extends Component {
                 <div className={style.sectionWrapper}>
                     <div style={{ top: 5 }} className={style.label}>可领列表</div>
                     <div style={{display: 'flex', alignItems: 'center'}}>
-                        <Switch style={{width: '48px', height: '24px', borderRadius: '12px', marginRight: '16px'}} checkedChildren="开" unCheckedChildren="关" />
+                        <Switch value={isShowGiftListContent} onChange={(e) => {
+                             onChange({key: ['isShowGiftListContent'], value: e});
+                        }} style={{width: '48px', height: '24px', borderRadius: '12px', marginRight: '16px'}} checkedChildren="开" unCheckedChildren="关" />
                         <div className={style.inlineRow}>
                             <span>标题文字</span>
                             <div className={style.borderedColorWrapper}>
