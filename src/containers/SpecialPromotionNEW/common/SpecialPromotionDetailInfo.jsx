@@ -564,7 +564,7 @@ class SpecialDetailInfo extends Component {
             giftInfo = giftInfo.filter(v => v.presentType === 1)
         }
         giftInfo.forEach((gift, index) => {
-            if (this.props.type == "52" || this.props.type == "64" && gift.presentType === 2) {
+            if ((this.props.type == "52" || this.props.type == "64") && gift.presentType === 2) {
                 pointObj = {
                     ...pointObj,
                     presentValue: gift.presentValue,
@@ -572,7 +572,7 @@ class SpecialDetailInfo extends Component {
                 };
                 return;
             }
-            if (this.props.type == "52" || this.props.type == "64" && gift.presentType === 1) {
+            if ((this.props.type == "52" || this.props.type == "64") && gift.presentType === 1) {
                 pointObj = { ...pointObj, giveCoupon: true };
             }
             if (data[index] !== undefined) {
@@ -3829,8 +3829,8 @@ class SpecialDetailInfo extends Component {
                         </RadioGroup>
                     </FormItem>
                 )}
-                {type === "52" || type === "64" && this.renderNewCardGive()}
-                {type === "52" || type === "64" && giveCoupon && (
+                {(type === "52" || type === "64") && this.renderNewCardGive()}
+                {(type === "52" || type === "64") && giveCoupon && (
                     <Row>
                         <Col span={17} offset={4}>
                             <AddGifts
