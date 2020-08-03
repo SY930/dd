@@ -109,6 +109,7 @@ class SpecialDishesTableWithBrand extends Component {
         this.props.onChange(data.map(item => ({...item})));
     }
     onPercentCellChange = (val, {index}) => {
+        let reg = /^([0-9]*)(\.[0-9]{0,1})?$/
         const data = [...this.state.data];
         let num = val.number;
         const record = data[index];
@@ -116,6 +117,10 @@ class SpecialDishesTableWithBrand extends Component {
             num = 10;
         }else if (val.number < 0) {// 折扣不小于0
             num = '0';
+        }
+        // 保留一位小数
+        if(!reg.test(val.number)){
+            num = val.number.slice(0, -1)
         }
         record.salePercent = num;
         record.newPrice = (record.price * num / 10).toFixed(2)
@@ -235,13 +240,13 @@ class SpecialDishesTableWithBrand extends Component {
             discount: {
                 label: '折扣',
                 type: 'text',
-                placeholder: '保留两位小数',
+                placeholder: '保留一位小数',
                 labelCol: { span: 6 },
                 wrapperCol: { span: 14 },
                 rules: [{
                     required: true,
-                    pattern: /^(([1-9]\d{0,1})(\.\d{0,2})?|0.\d?[1-9]{1})$/,
-                    message: '请输入0.01~10之间的数据，支持两位小数',
+                    pattern: /^(([1-9]\d{0,1})(\.\d{0,1})?|0.\d?[1-9]{0})$/,
+                    message: '请输入0.1~10之间的数据，支持一位小数',
                 }],
             },
             price: {
@@ -365,7 +370,7 @@ class SpecialDishesTableWithBrand extends Component {
                                 type="text"
                                 modal="float"
                                 placeholder={k6hfzdh8}
-                                value={{ number: record.newPrice }}
+                                value={{ number: record.newPrice ? record.newPrice : '0' }}
                                 index={index}
                                 onChange={(val) => { this.onPriceCellChange(val, record) }}
                             />
