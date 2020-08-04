@@ -249,10 +249,14 @@ export function fetchData(api, params, cache, {
                 if (!redirect && opts.needThrow) {
                     return Promise.reject();
                 }
+
                 !disablePrompt && Modal.error({
                     title: '啊哦！好像有问题呦~~',
                     content: `${msg}`,
                 });
+                if (!redirect && opts.needErrorData) {
+                    return resolve({ code, msg, response: json });
+                }
                 redirect && window.setTimeout(() => doRedirect(), 1500);
                 reject({ code, msg, response: json });
             }
@@ -684,7 +688,7 @@ export function mapValueToLabel(cfg, val) {
 //     .then(data => console.log(data)).catch(err => console.log(err))
 
 export function axiosData(api, params, opts, {
-    path = 'data.records',  // path for response
+    path = 'data.records', // path for response
 } = {}, domain = 'HTTP_SERVICE_URL_CRM') {
     const { groupID } = getAccountInfo();
     const reqParams = {
@@ -692,12 +696,12 @@ export function axiosData(api, params, opts, {
         ...params,
     };
     return axios.post('/api/v1/universal', {
-        service: domain, //? domain :'HTTP_SERVICE_URL_CRM', //'HTTP_SERVICE_URL_PROMOTION_NEW'
+        service: domain, // ? domain :'HTTP_SERVICE_URL_CRM', //'HTTP_SERVICE_URL_PROMOTION_NEW'
         method: api,
         type: 'post',
-        data: reqParams
+        data: reqParams,
     })
-        .then(json => {
+        .then((json) => {
             let { code, message, result } = json;
             if (!code) {
                 code = (result || {}).code;
@@ -706,10 +710,10 @@ export function axiosData(api, params, opts, {
                 message = (result || {}).message;
             }
             if (code !== '000') {
-                const {redirect, msg} = parseResponseJson(json, '000');
+                const { redirect, msg } = parseResponseJson(json, '000');
                 if (!redirect && opts && opts.needThrow) {
                     if (opts && opts.needCode) {
-                        return Promise.reject({...json, code, msg} || '出了点问题, 请稍后或刷新重试');
+                        return Promise.reject({ ...json, code, msg } || '出了点问题, 请稍后或刷新重试');
                     }
                     return Promise.reject(msg || '出了点问题, 请稍后或刷新重试');
                 }
@@ -723,16 +727,14 @@ export function axiosData(api, params, opts, {
             if (!path) {
                 return Promise.resolve(json);
             }
-            else {
-                const paths = path.split('.');
-                const data = paths.reduce((ret, path) => {
-                    if (!ret) return ret;
-                    return ret[path];
-                }, json);
-                return Promise.resolve(data);
-            }
+            const paths = path.split('.');
+            const data = paths.reduce((ret, path) => {
+                if (!ret) return ret;
+                return ret[path];
+            }, json);
+            return Promise.resolve(data);
         })
-        .catch(error => {
+        .catch((error) => {
             return Promise.reject(error);
         });
 }

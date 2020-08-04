@@ -23,6 +23,7 @@ import {
     CLIENT_CATEGORY_RETURN_POINT,
     CLIENT_CATEGORY_RETURN_GIFT,
     CLIENT_CATEGORY_ADD_UP,
+    MONEY_OPTIONS
 } from '../../../redux/actions/saleCenterNEW/types.js';
 import { fetchShopCardLevel, queryTagDetailList, queryAllTagGroupList } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 import EditBoxForPromotion from './EditBoxForPromotion';
@@ -241,9 +242,10 @@ class AdvancedPromotionDetailSetting extends React.Component {
     }
 
     renderPaymentSetting() {
+
         return (
             <FormItem
-                label={SALE_LABEL.k5m3onh8}
+                label={'金额核算'}
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
@@ -260,7 +262,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                     }
                     }
                 >
-                    {PAYMENTS_OPTIONS
+                    {MONEY_OPTIONS
                         .map((type) => {
                             return <Radio key={type.value} value={type.value}>{type.name}</Radio >
                         })}
@@ -636,6 +638,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         const _stash = promotionType == '3010' || promotionType == '3020';
         const $promotionScope = this.props.promotionScopeInfo.get('$scopeInfo');
+
         return (
             <div>
                 {this.renderUserSetting($promotionDetail)}

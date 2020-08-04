@@ -817,6 +817,10 @@ class TrdTemplate extends React.Component {
             payChannelList
         } = this.state;
         const edit = this.props.type === 'edit';
+        // 何时生效禁用
+        const fixedBeginTermAbleList = ['代金券', '折扣券', '菜品兑换券']
+        const fixedBeginTermAble = fixedBeginTermAbleList.includes(this.props.describe)
+
         const styleColor = AVAILABLE_WECHAT_COLORS.find(item => item.value === color).styleValue;
         const isNoticeLengthAllowed = (notice || '').length > 0 && (notice || '').length <= 16
 
@@ -950,7 +954,7 @@ class TrdTemplate extends React.Component {
                         >
                             <Select value={fixedBeginTerm}
                                     onChange={this.handleFixedBeginTermSelect}
-                                    disabled={edit}
+                                    disabled={edit || fixedBeginTermAble}
                                     getPopupContainer={(node) => node.parentNode}
                             >
                                 {

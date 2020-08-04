@@ -64,6 +64,7 @@ const exportablePromotionTypes = [
     '75',
     '77',
     '76',
+    '80'
 ];
 const levelArray = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
 import {

@@ -14,6 +14,22 @@ const SENDCARD_COLUMNS = [
         fixed: 'left',
         width: 80,
     }, {
+        title: '批次起始号',
+        dataIndex: 'startNO',
+        key: 'startNO',
+        // className: 'x-tr',
+        fixed: 'left',
+        width: 80,
+    },
+    {
+        title: '批次终止号',
+        dataIndex: 'endNO',
+        key: 'endNO',
+        // className: 'x-tr',
+        fixed: 'left',
+        width: 80,
+    },
+    {
         title: '张数',
         dataIndex: 'totalSum',
         key: 'totalSum',
@@ -49,6 +65,12 @@ const SENDCARD_COLUMNS = [
         className: 'x-tr',
         width: 60,
     }, {
+        title: '已过期',
+        dataIndex: 'expiredNum',
+        key: 'expiredNum',
+        className: 'x-tr',
+    },
+    {
         title: '开户选择等级',
         dataIndex: 'cardLevelName',
         key: 'cardLevelName',
@@ -71,6 +93,13 @@ const SENDCARD_COLUMNS = [
         key: 'remark',
         render: (value) => { return value ? <Tooltip placement="topLeft" title={value}><span>{value}</span></Tooltip> : '' },
     },
+    {
+        title: '有效期',
+        dataIndex: 'termStr',
+        key: 'termStr',
+        className: 'TableTxtCenter',
+        width: 180
+    }
 ];
 const SENDCARD_QUERY_FORMITEMS = {
     timeRangeSend_sendCard: {

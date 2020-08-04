@@ -136,6 +136,74 @@ class PhonePreview extends PureComponent {
         }
     }
 
+    /**
+     * 商城券适用场景描述
+    */
+    couponSpecificationOfMall(){
+        
+        const { createOrEditFormData: {
+            foodSelectType,
+            couponFoodScopeList,
+            mallExcludedGood,   
+            mallCategory,                   // 分类
+            mallIncludeGood,                // 包含商品
+            mallScope = '0',                // 0, 按分类， 1， 按商品
+        }, 
+            goodCategories,                 // 商城分类
+            goods,                          // 商城商品数据
+            giftType
+        } = this.props;
+        
+        // 代金券和菜品优惠券、兑换券不同，前者不选是适用所有，后者必选。所以文案有甄别
+        let desc = giftType == '10' ? '商城所有' : ' ';
+        // foodSelectType 1为分类
+        // 编辑或新建
+        if(this.props.createOrEditFormData.hasOwnProperty('mallScope')) {
+            if( mallScope == '0' && mallCategory instanceof Array && mallCategory.length > 0) {
+                let categorySet = new Set(mallCategory);
+                desc = goodCategories.filter((item, index)=>{
+                    return categorySet.has(item.value);
+                })
+                .map((item)=>{
+                    return item.categoryName;
+                })
+                .join('、');
+            } else if(mallScope == '1' && mallIncludeGood instanceof Array && mallIncludeGood.length > 0) {
+                let goodsSet = new Set(mallIncludeGood);
+                desc = goods.filter((item, index)=>{
+                    return goodsSet.has(item.goodID);
+                })
+                .map(item=>{
+                    return item.goodName;
+                })
+                .join('、 ');
+            }
+        } 
+        // 回显
+        else if(this.props.createOrEditFormData.hasOwnProperty('foodSelectType')){
+            if(foodSelectType == '1' || foodSelectType == '0') {
+                if(couponFoodScopeList instanceof Array && couponFoodScopeList.length > 0) {
+                    desc = couponFoodScopeList.map((item)=>{
+                        return item.targetName;
+                    })
+                    .join("、 ");
+                }
+            }
+        } else {        // mallScope 及 foodSelectType 属性都不存在（属于新建状态）
+            if(mallCategory instanceof Array && mallCategory.length > 0) {
+                let categorySet = new Set(mallCategory);
+                desc = goodCategories.filter((item, index)=>{
+                    return categorySet.has(item.value);
+                })
+                .map((item)=>{
+                    return item.categoryName;
+                })
+                .join('、');
+            }
+        }
+        return `本券适用于${desc}商品`;
+    }
+
     shopNameString() {
         let {
             shopNames : shopIDs,
@@ -231,8 +299,9 @@ class PhonePreview extends PureComponent {
                                         <p>{`本券适用于${this.supportOrderTypeString()}的订单${isOfflineCanUsing === '0' ? '，仅支持线上使用' : isOfflineCanUsing === '2' ? '，仅支持线下使用' : ''}`}</p>
                                      }
                                      <p>{this.shareTypeString()}</p>
-                                    {(giftType == '20' || giftType == '21') &&  applyScene != '1'&& <p>{this.foodScopesString()}</p>}
-                                    {(giftType == '10' || giftType == '111') && applyScene != '1'&& <p>{this.foodsboxString()}</p>}
+                                    {(giftType == '20' || giftType == '21') &&  applyScene != '1' && <p>{this.foodScopesString()}</p>}
+                                    {(giftType == '10' || giftType == '111')  && applyScene != '1' && <p>{this.foodsboxString()}</p>}
+                                    { applyScene == '1' && <p>{this.couponSpecificationOfMall()}</p>}
                                 </div>
                             )}
                         </div>
@@ -257,28 +326,32 @@ class PhonePreview extends PureComponent {
     /**
      * TODO: 这里老代码逻辑处理有问题，后端返回有shopNames字段，直接拿该字段进行渲染是没有问题的。
      * 暂时这么处理
+     * @description selectMall 前端的选中商城字段。 shopIDs后端返回的。
+     * 回显时，去shopIDs字段，编辑后去selectMall字段。
     */
     renderMallName = () => {
-        // shopSchema: state.sale_shopSchema_New,
         const { createOrEditFormData: {
-            shopIDs
+            shopIDs,
+            selectMall
         } } = this.props;
+        let shopSchema = this.props.shopSchema.toJS(); // Imutable data to primitive
+        let shopID;
+        if(typeof(selectMall) == 'string' && selectMall.length > 0) {
+            shopID = selectMall;
+        } else if(shopIDs instanceof Array && shopIDs.length == 1) {
+            shopID = shopIDs[0];
+        }
 
-        if(shopIDs instanceof Array && shopIDs.length == 1) {
-            
-            let shopSchema = this.props.shopSchema.toJS(); // Imutable data to primitive
+        if(shopID != undefined) {
             if(shopSchema.hasOwnProperty('shops') && shopSchema.shops instanceof Array) {
                 let malls = shopSchema.shops.filter((shop, idx)=>{
-                    return shop.shopID == shopIDs[0]; // 0 为商城， 1 为餐饮店铺
+                    return shop.shopID == shopID; // 0 为商城， 1 为餐饮店铺
                 });
                 if(malls.length == 1) {
                     return malls[0].shopName;
                 }
             }
         }
-
-        
-
         return null;
     }
 
@@ -288,9 +361,6 @@ class PhonePreview extends PureComponent {
             return this.shopNameString();
         } else {
             return this.renderMallName();
-            // if(selectBrands instanceof Array && selectBrands.length > 0) {
-            //     return selectBrands[0].targetName;
-            // }
         }
     }
 
@@ -621,10 +691,8 @@ function mapStateToProps(state) {
         groupName: state.user.getIn(['accountInfo', 'groupName']),
 
         // 商城商品及分类信息
-        // goodCategories: state.sale_promotionDetailInfo_NEW.get('goodCategories').toJS(),
-        // goods: state.sale_promotionDetailInfo_NEW.get('goods').toJS(),
-
-        // shopSchema: state.sale_shopSchema_New,
+        goodCategories: state.sale_promotionDetailInfo_NEW.get('goodCategories').toJS(),
+        goods: state.sale_promotionDetailInfo_NEW.get('goods').toJS(),
     }
 }
 

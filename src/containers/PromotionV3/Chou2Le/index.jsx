@@ -2,7 +2,7 @@ import React, { PureComponent as Component } from 'react';
 import { Modal, Steps, Button, message } from 'antd';
 import { jumpPage, closePage } from '@hualala/platform-base';
 import moment from 'moment';
-import { getBrandList, putEvent, getEvent, postEvent } from './AxiosFactory';
+import { getAccountInfo, getBrandList, putEvent, getEvent, postEvent } from './AxiosFactory';
 import Step1 from './Step1';
 import Step2 from './Step2';
 import Step3 from './Step3';
@@ -77,7 +77,9 @@ class Chou2Le extends Component {
         return { brandList, orderTypeList , shopIDList };
     }
     setData4Step3(data, gifts, list) {
-        const { consumeType: stype, userCount, consumeTotalAmount } = data;
+        const { consumeType: stype, userCount, consumeTotalAmount, launchSceneList = [{}] } = data;
+        // 
+        let [{sceneType = '2', eventID}] = launchSceneList
         const lottery = [];
         gifts.forEach((x, i) => {
             const { presentType, giftOdds, sortIndex } = x;
@@ -116,7 +118,7 @@ class Chou2Le extends Component {
             lottery[index] = { id: `${sortIndex}`, giftOdds, userCount, ...newItem };
         });
         console.log('lottery', lottery);
-        return { consumeType: `${stype}`, consumeTotalAmount, lottery };
+        return { consumeType: `${stype}`, sceneType: `${sceneType}`, eventID, consumeTotalAmount, lottery };
     }
     /** 得到form, 根据step不同，获得对应的form对象 */
     onSetForm = (form) => {
@@ -196,14 +198,19 @@ class Chou2Le extends Component {
         });
     }
     onSubmit = (formData3) => {
+        const { groupID } = getAccountInfo();
         const { formData1 } = this.state;
         const { id } = this.props;
         const { timeList, eventRange, ...others1 } = formData1;
         const newTimeList = this.formatTimeList(timeList);
         const newEventRange = this.formatEventRange(eventRange);
         const step2Data = this.setStep2Data();
-        const { gifts, ...others3 } = formData3;
-        const event = { ...others1, ...others3, ...newEventRange, ...step2Data, eventWay: '78' };
+        const { gifts, sceneType, ...others3 } = formData3;
+        // 投放场景数据
+        let {formData3: {eventID = ''}} = this.state
+        let launchSceneList = [{groupID, eventID, sceneType}]
+
+        const event = { ...others1, ...others3, ...newEventRange, ...step2Data, eventWay: '78', launchSceneList };
         if(id) {
             const itemID = id;
             const allData = { timeList: newTimeList, event: {...event, itemID}, gifts };
@@ -236,7 +243,7 @@ class Chou2Le extends Component {
         return { brandList: bList, orderTypeList: oList, shopIDList, shopRange };
     }
     setStep3Data(formData) {
-        const { lottery, consumeTotalAmount, consumeType } = formData;
+        const { lottery, consumeTotalAmount, consumeType, sceneType } = formData;
         const gifts = [];   // 后端要的专属key名
         lottery.forEach((x, i) => {
             const { giftOdds, isPoint, isTicket, presentType } = x;
@@ -270,7 +277,7 @@ class Chou2Le extends Component {
                 }
             }
         });
-        return { consumeTotalAmount, consumeType, gifts };
+        return { consumeTotalAmount, consumeType, sceneType, gifts };
     }
     formatTimeList(list) {
         if(!list){ return []}

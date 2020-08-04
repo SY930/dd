@@ -105,7 +105,7 @@ class MessageTemplateEditPanel extends React.Component {
                     groupName: this.props.user.accountInfo.groupName
                 })
                     .then(() => {
-                        messageService.success(SALE_STRING.k5do0ps6);
+                        messageService.success('执行成功');
                         this.props.getMessageTemplateList();
                         this.props.cancel && this.props.cancel();
                         this.setState({
@@ -121,7 +121,7 @@ class MessageTemplateEditPanel extends React.Component {
                     groupName: this.props.user.accountInfo.groupName
                 })
                     .then(() => {
-                        messageService.success(k5do0ps6);
+                        messageService.success('执行成功');
                         this.props.getMessageTemplateList();
                         this.props.cancel && this.props.cancel();
                         this.setState({

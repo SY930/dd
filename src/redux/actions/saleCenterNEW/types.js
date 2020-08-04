@@ -833,6 +833,20 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             example: "",
             key: "78",
         },
+        {
+            idx: 23,
+            title: "盲盒",
+            text: "",
+            example: "",
+            key: "79",
+        },
+        {
+            idx: 24,
+            title: "微信支付有礼",
+            text: "",
+            example: "",
+            key: "80",
+        },
     ];
     return basic;
 })();
@@ -1271,4 +1285,9 @@ export const NOTIFICATION_FLAG = Object.freeze([
         label: COMMON_GIFT.d1qeq24lqo035,
         value: "2",
     },
+]);
+
+export const MONEY_OPTIONS = Object.freeze([
+    { key: "0", value: "0", name: "账单金额" },
+    { key: "1", value: "1", name: "实收金额" },
 ]);

@@ -145,7 +145,7 @@ class GiftDetailModal extends Component {
             sendCount: this.props.sendTotalSize || 0,
             usedCount: this.props.usedTotalSize || 0,
         }];
-        console.log('giftType', giftType);
+        // console.log('giftType', giftType);
         return (
             <Modal
                 key="礼品使用详情"

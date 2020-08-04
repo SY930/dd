@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import styles from '../SaleCenterNEW/ActivityPage.less';
-import { Modal, Button, message } from 'antd';
+import styles from './BasicSettings.less';
+import { Modal, Button, message, Icon } from 'antd';
 import {
     deleteMessageTemplate,
     getMessageTemplateList,
@@ -52,11 +52,12 @@ class MessageDisplayBox extends React.Component {
     }
 
     render() {
+        const {rejectReason,template} = this.props
         return (
             <Authority rightCode={SMS_TEMPLATE_UPDATE}>
-                <div className={styles.messageDisplayBox} onClick={this.props.handleClick}>
+                <div  className={styles.messageDisplayBox} >
                     <div className={styles.rightTopAction}>
-                            <div    className={styles.deleteButton}
+                            {/* <div    className={styles.deleteButton}
                                     onClick={(e) => {
                                         e.preventDefault();
                                         e.stopPropagation();
@@ -72,12 +73,29 @@ class MessageDisplayBox extends React.Component {
                                     >{ COMMON_LABEL.delete }</span>
                                     </Authority>
                                 ) }
+                            </div> */}
+                            <div className={styles.actBtnWrap}>
+                                <div onClick={this.props.handleClick} className={styles.btnItem}>
+                                    <Icon style={{fontSize: '20px', marginBottom: '4px'}} type="edit" />
+                                    <div>编辑</div>
+                                </div>
+                                <div  onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        this.showConfirm();
+                                    }} style={{marginLeft: '50px'}} className={styles.btnItem}>
+                                    <Icon style={{fontSize: '20px', marginBottom: '4px'}} type="delete" />
+                                    <div>删除</div>
+                                </div>
                             </div>
+                    </div>
+                    <div style={!rejectReason ? {height: 'calc(100% - 18px)',paddingBottom: '18px'} : {}} className={styles.messageContentWrapper}>
+                        {template}
+                    </div>
+                    {rejectReason &&  <div className={styles.messageRejectReason}>
+                        驳回原因：{rejectReason}
+                    </div>}
 
-                    </div>
-                    <div className={styles.messageContentWrapper}>
-                        {this.props.template}
-                    </div>
                 </div>
             </Authority>
         )

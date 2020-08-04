@@ -1,12 +1,12 @@
 /**
- * 
+ *
  * @description 营销活动（新） 入口文件
 */
 
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import registerPage from '../../../index';
-import {NEW_SALE_BOX} from "../../constants/entryCodes";
+import {NEW_SALE_BOX,SALE_CENTER_PAYHAVEGIFT} from "../../constants/entryCodes";
 import { axiosData } from '../../helpers/util';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
@@ -66,6 +66,8 @@ import BasicActivityMain from '../SaleCenterNEW/activityMain';
 import { axios } from '@hualala/platform-base';
 import { getStore } from '@hualala/platform-base'
 import Chou2Le from "../PromotionV3/Chou2Le";   // 抽抽乐
+import BlindBox from "../PromotionV3/BlindBox";   // 盲盒
+import { jumpPage, closePage } from '@hualala/platform-base';
 
 import {setThemeClass} from '../../utils/index'
 @registerPage([NEW_SALE_BOX], {
@@ -82,6 +84,7 @@ class NewCustomerPage extends Component {
         specialIndex: 0,
         currentCategoryIndex: 0,
         v3visible: false,       // 第三版活动组件是否显示
+        curKey: '',             //当前活动入口值
     }
 
     componentDidMount() {
@@ -292,6 +295,12 @@ class NewCustomerPage extends Component {
             });
             return;
         }
+        if(key === '80') {
+           setTimeout(() => {
+            jumpPage({ menuID: SALE_CENTER_PAYHAVEGIFT, typeKey: '80'})
+           }, 100);
+           return closePage(SALE_CENTER_PAYHAVEGIFT)
+        }
         this.setSpecialModalVisible(true);
     }
     setSpecialModalVisible(specialModalVisible) {
@@ -332,10 +341,11 @@ class NewCustomerPage extends Component {
         );
     }
     renderSpecialPromotionModal() {
-        const promotionType = this.props.saleCenter.get('characteristicCategories').toJS()[this.state.specialIndex].title;
+        const { title:promotionType } = this.props.saleCenter.get('characteristicCategories').toJS()[this.state.specialIndex];
         const { intl } = this.props;
         const create = intl.formatMessage(COMMON_STRING.create);
         const title = <p>{create} {promotionType}</p>;
+
         return (
             <Modal
                 wrapClassName={'progressBarModal'}
@@ -364,11 +374,12 @@ class NewCustomerPage extends Component {
     }
 
     //** 第三版 重构 抽抽乐活动 点击事件 */
-    onV3Click = () => {
+    onV3Click = (key) => {
+        if(key) this.setState({curKey: key})
         this.setState(ps => ({ v3visible: !ps.v3visible }));
     }
     render() {
-        const {whiteList, v3visible} = this.state;
+        const {whiteList, v3visible, curKey} = this.state;
         const { intl } = this.props;
         const k6316hto = intl.formatMessage(SALE_STRING.k6316hto);
         const k6316hd0 = intl.formatMessage(SALE_STRING.k6316hd0);
@@ -415,6 +426,7 @@ class NewCustomerPage extends Component {
         ];
         const { currentCategoryIndex } = this.state;
         const displayList = currentCategoryIndex === 0 ? ALL_PROMOTION_CATEGORIES.slice(1) : [ALL_PROMOTION_CATEGORIES[currentCategoryIndex - 1]];
+
         return (
             <div className={selfStyle.newDiv}>
                 <div className={selfStyle.titleArea}>营销活动</div>
@@ -448,7 +460,7 @@ class NewCustomerPage extends Component {
                                                 whiteList={whiteList}
                                                 text={item.text}
                                                 onClickOpen={this.onClickOpen}
-                                                onV3Click={this.onV3Click}
+                                                onV3Click={()=>{this.onV3Click(item.key)}}
                                             />
                                         ))
                                     }
@@ -459,7 +471,8 @@ class NewCustomerPage extends Component {
                 </div>
                 {this.renderBasicPromotionModal()}
                 {this.renderSpecialPromotionModal()}
-                { v3visible && <Chou2Le onToggle={this.onV3Click} />}
+                { (v3visible && curKey == '78') && <Chou2Le onToggle={this.onV3Click} />}
+                { (v3visible && curKey == '79') && <BlindBox onToggle={this.onV3Click} />}
             </div>
         )
     }

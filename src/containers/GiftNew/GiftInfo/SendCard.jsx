@@ -153,22 +153,23 @@ class SendCard extends React.Component {
     }
     getTableConfigByKey = () => {
         const { _key } = this.props;
+
         switch (_key) {
             case 'send':
                 const _SENDCARD_COLUMNS = _.cloneDeep(SENDCARD_COLUMNS)
-                _SENDCARD_COLUMNS.splice(7,0,{
-                    title: '已过期',
-                    dataIndex: 'expiredNum',
-                    key: 'expiredNum',
-                    className: 'x-tr',
-                })
-                _SENDCARD_COLUMNS.push({
-                    title: '有效期',
-                    dataIndex: 'termStr',
-                    key: 'termStr',
-                    className: 'TableTxtCenter',
-                    width: 180
-                })
+                // _SENDCARD_COLUMNS.splice(9,0,{
+                //     title: '已过期',
+                //     dataIndex: 'expiredNum',
+                //     key: 'expiredNum',
+                //     className: 'x-tr',
+                // })
+                // _SENDCARD_COLUMNS.push({
+                //     title: '有效期',
+                //     dataIndex: 'termStr',
+                //     key: 'termStr',
+                //     className: 'TableTxtCenter',
+                //     width: 180
+                // })
                 this.setState({
                     columns: [
                         ...[{
@@ -613,7 +614,7 @@ class SendCard extends React.Component {
                             render: c.render.bind(this),
                         }) : c))}
                         dataSource={dataSource}
-                        scroll={_key === 'made' ? {} : (_key === 'sum' ? { x: 1700 } : _key === 'send'  ? { x: 1200 } : { x: 930 })}
+                        scroll={_key === 'made' ? {} : (_key === 'sum' ? { x: 1700 } : _key === 'send'  ? { x: 1330 } : { x: 930 })}
                         rowSelection={this.props._key === 'made' ? {
                             onChange: (selectedRowKeys, selectedRows) => this.handleSelected(selectedRowKeys, selectedRows),
                             selectedRowKeys: this.state.selectedRowKeys,

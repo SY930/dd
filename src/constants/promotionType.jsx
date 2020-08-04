@@ -221,6 +221,18 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
  */
 export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
     {
+        title: '盲盒',
+        tags: [SALE_LABEL.k639vgjy, '小程序'],
+        isSpecial: true,
+        text: '拆未知礼盒，增加猎奇趣味',
+        example: '',
+        key: '79',
+        right: 12,
+        bottom: 4,
+        isHot: true,
+        isNew: true,
+    },
+    {
         title: '签到',
         tags: [SALE_LABEL.k639vgjy, '小程序'],
         isSpecial: true,
@@ -304,6 +316,18 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
  * @field isSpecial // 表示活动是否是特色营销活动(false 则为基础营销活动)
  */
 export const REPEAT_PROMOTION_TYPES = [
+    {
+        title: '微信支付有礼',
+        isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        text: '微信支付成功页投放微信支付商家券，引导用户领券',
+        tags: ['新微信'],
+        example: '',
+        key: '80',
+        right: 16,
+        bottom: 6,
+        isHot: true,
+        isNew: true,
+    },
     {
         title: '集点卡',
         isSpecial: true, 
@@ -459,7 +483,7 @@ export const LOYALTY_PROMOTION_TYPES = [
 export const SALE_PROMOTION_TYPES = [
     {
         title: SALE_LABEL.k5ezcu1b,
-        isSpecial: false, 
+        isSpecial: false,
         text: SALE_LABEL.k67cp14a,
         example: SALE_LABEL.k67cppov,
         tags: ['pos', SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9],
