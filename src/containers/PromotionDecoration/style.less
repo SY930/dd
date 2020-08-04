@@ -143,7 +143,7 @@
     }
     :global {
         .ant-tabs-ink-bar, .ant-tabs-ink-bar-animated {
-            background-color: #4DA0F4;
+            background-color: #1ab495;
         }
         .ant-tabs-nav-container {
             background-color: #fff;
@@ -162,11 +162,31 @@
             .ant-tabs-tab-active, .ant-tabs-tab:hover {
                 font-size: 14px;
                 font-weight:bold;
-                color:#4DA0F4;
+                color: #1ab495;
             }
         }
     }
 }
+:global {
+    .professional {
+        .ant-tabs-ink-bar, .ant-tabs-ink-bar-animated {
+            background-color: #379ff1 !important;
+        }
+        .ant-tabs-nav {
+            color: #666666;
+            line-height:18px;
+            .ant-tabs-tab-active, .ant-tabs-tab:hover {
+                font-size: 14px;
+                font-weight:bold;
+                color: #379ff1 !important;
+            }
+        }
+    }
+}
+
+
+
+
 .previewArea {
     width: 400px;
     padding: 45px 0 0 75px;
@@ -548,6 +568,20 @@
         }
     }
 
+    .sectionWrapper {
+        position: relative;
+        margin: 0 0 30px 70px;
+        .label {
+            width: 60px;
+            position: absolute;
+            text-align: left;
+            font-size:14px;
+            font-weight:bold;
+            color:rgba(51,51,51,1);
+            top: 0;
+            left:  -70px;
+        }
+    }
 }
 .freeGiftTimeText {
     width: 76% ;
@@ -574,6 +608,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    white-space: nowrap;
+    div {
+        transform: scale(0.9);
+    }
 }
 .freeGiftcanGetGiftList {
     width: 90%;
@@ -612,3 +650,40 @@
         border-radius: 20px;
     }
 }
+.freeGiftSuccessModal {
+    position: absolute;
+    left: 92px;
+    top: 120px;
+    width: 287px;
+    height: 550px;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+    border-radius: 0 0 28px 28px;
+}
+.freeGiftSuccessModalImg1 {
+    width: 80%;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 100px;
+}
+.freeGiftSuccessModalCon {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 283px;
+    width: 80%;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 0 0 10px 10px;
+}
+.freeGiftSuccessTip {
+    font-size: 12px;
+    font-weight: 400;
+    color:rgba(153,153,153,1);
+    margin-bottom: 20px;
+    max-width: 90%;
+}
+

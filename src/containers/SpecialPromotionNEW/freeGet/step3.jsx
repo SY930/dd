@@ -18,6 +18,7 @@ const SelectEl = function SelectEl() {
     const { form: { resetFields } } = this.props;
     const { freeGetLimit } = this.state;
 
+
     return (
         <Select
             value={freeGetLimit}
@@ -61,18 +62,22 @@ export const freeGetStep3Render = function freeGetStep3Render() {
                     <Tooltip overlayStyle={{ width: '200px' }} title="该参数为原来的礼品总数，指活动期间可以被领取的礼品份数上限（也指所有用户成功参与活动的总次数），用户成功参与一次活动，消耗一份礼品；">
                         <Icon style={{ fontSize: '16px', marginRight: '10px' }} type="question-circle" />
                     </Tooltip>
-                    {getFieldDecorator('giftTotalCount', {
+
+                    { (freeGetLimit === '0' || (freeGetLimit === '0' && (giftInfo[0] && giftInfo[0].giftTotalCount == 2147483647))) ? <PriceInput
+                        addonAfter={'份'}
+                        modal="int"
+                        maxNum={freeGetLimit === '1' ? 8 : 10}
+                        disabled={true}
+                        prefix={SelectEl.call(this)}
+                        style={{ paddingLeft: '70px' }}
+                        value={{ number: '' }}
+                    /> : getFieldDecorator('giftTotalCount', {
                         initialValue: {
-                            number: giftInfo[0] && giftInfo[0].giftTotalCount,
+                            number: (giftInfo[0] && giftInfo[0].giftTotalCount == 2147483647) ? '' : giftInfo[0].giftTotalCount,
                         },
                         rules: [
                             {
                                 validator: (rule, v, cb) => {
-                                    if (freeGetLimit === '0') {
-                                        return cb(
-                                            undefined
-                                        )
-                                    }
                                     if (v.number === '' || v.number === undefined) {
                                         return cb(
                                             '请输入大于0的8位以内的整数'
@@ -92,12 +97,12 @@ export const freeGetStep3Render = function freeGetStep3Render() {
                         <PriceInput
                             addonAfter={'份'}
                             modal="int"
-                            maxNum={freeGetLimit === '1' ? 8 : 100}
+                            maxNum={freeGetLimit === '1' ? 8 : 10}
                             placeholder="请输入数值"
                             prefix={SelectEl.call(this)}
                             style={{ paddingLeft: '70px' }}
                         />
-                    )}
+                    ) }
                 </div>
             </FormItem>
             <Row>

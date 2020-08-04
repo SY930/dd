@@ -517,7 +517,8 @@ class SpecialDetailInfo extends Component {
     componentWillReceiveProps(np){
         if(!this.props.isNew){
             const b = np.specialPromotion.get('$giftInfo').toJS();
-            const { presentType = '', giftID } = b[0] || [{}];
+            const { presentType = '', giftID, giftTotalCount } = b[0] || [{}];
+            const { freeGetLimit } = this.state
             if(this.props.type == '30' && presentType===4){
                 const {couponPackageInfos } = this.state;
                 const bag = couponPackageInfos.filter(x=>x.couponPackageID === giftID);
@@ -525,6 +526,15 @@ class SpecialDetailInfo extends Component {
                     sendTypeValue: '1',
                     bag,
                 })
+            }
+            
+            if(this.props.type == '21' && giftTotalCount && freeGetLimit == '0') {
+                if(giftTotalCount !== 2147483647) {
+                    this.setState({
+                        freeGetLimit: '1'
+                    })
+                }
+                
             }
         }
     }
@@ -924,7 +934,7 @@ class SpecialDetailInfo extends Component {
                     flag = false;
                 } else {
                     if(type == '21') {
-                        giftTotalCount = basicValues.giftTotalCount &&  basicValues.giftTotalCount.number
+                        giftTotalCount = basicValues.giftTotalCount ?  basicValues.giftTotalCount.number : 2147483647
                     }
                 }
 
