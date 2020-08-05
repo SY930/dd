@@ -222,7 +222,7 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
 export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
     {
         title: '盲盒',
-        tags: [SALE_LABEL.k639vgjy, '小程序'],
+        tags: ['小程序'],
         isSpecial: true,
         text: '拆未知礼盒，增加猎奇趣味',
         example: '',
@@ -258,7 +258,7 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
     {
         title: '下单抽抽乐',
         isSpecial: false,
-        tags: ['微信'],
+        tags: ['微信', '小程序'],
         text: '下单后抽取礼品，促进下次消费',
         example: SALE_LABEL.k67cpoj7,
         key: '78',
@@ -290,7 +290,7 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
     {
         title: SALE_LABEL.k67b2pic,
         isSpecial: true,
-        tags: [SALE_LABEL.k5krn6z9, '小程序'],
+        tags: [SALE_LABEL.k5krn6z9],
         text: SALE_LABEL.k67b4sp2,
         example: '',
         key: '22',
@@ -385,7 +385,7 @@ export const REPEAT_PROMOTION_TYPES = [
     // 积分兑换
     {
         title: SALE_LABEL.k67b2qfo,
-        tags: [SALE_LABEL.k5krn6z9],
+        tags: [SALE_LABEL.k5krn6z9, '小程序'],
         isSpecial: true,
         text: SALE_LABEL.k67b4u32,
         example: '',
