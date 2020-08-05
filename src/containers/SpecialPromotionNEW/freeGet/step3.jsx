@@ -85,7 +85,7 @@ export const freeGetStep3Render = function freeGetStep3Render() {
                                     }
                                     if (!v || v.number < 1) {
                                         return cb('请输入大于0的8位以内的整数');
-                                    } else if (v.number > 100000000) {
+                                    } else if (v.number >= 100000000) {
                                         return cb('请输入大于0的8位以内的整数');
                                     }
                                     cb();
@@ -97,7 +97,7 @@ export const freeGetStep3Render = function freeGetStep3Render() {
                         <PriceInput
                             addonAfter={'份'}
                             modal="int"
-                            maxNum={freeGetLimit === '1' ? 8 : 10}
+                            maxNum={8}
                             placeholder="请输入数值"
                             prefix={SelectEl.call(this)}
                             style={{ paddingLeft: '70px' }}
