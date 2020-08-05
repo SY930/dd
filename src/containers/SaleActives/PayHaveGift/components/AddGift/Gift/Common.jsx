@@ -9,14 +9,14 @@ const formItemLayout = {
 
 const timeOpts = (() => {
     const list = [{ label: '立即生效', value: '0' }];
-    for(let i = 1; i < 25; i++) {
+    for (let i = 1; i < 25; i++) {
         list.push({ label: `${i}小时生效`, value: `${i}` });
     }
     return list;
 })();
 const dayOpts = (() => {
-    let list = [];
-    for(let i = 1; i < 31; i++) {
+    const list = [{ label: '立即生效', value: '0' }];
+    for (let i = 1; i < 31; i++) {
         list.push({ label: `${i}天后生效`, value: `${i}` });
     }
     return list;
@@ -41,7 +41,7 @@ const formItems = {
                 if (!/^\d+$/.test(value)) {
                     return callback('请输入数字');
                 }
-                if (+value<1 || +value>50) {
+                if (+value < 1 || +value > 50) {
                     return callback('大于0，限制50个');
                 }
                 return callback();
@@ -58,7 +58,7 @@ const formItems = {
             { label: '相对有效期', value: '1' },
             { label: '固定有效期', value: '2' },
         ],
-        disabled: true
+        disabled: true,
     },
     countType: {
         type: 'radio',
@@ -68,32 +68,32 @@ const formItems = {
             { label: '按小时', value: '0' },
             { label: '按天', value: '1' },
         ],
-        disabled: true
+        disabled: true,
     },
     giftEffectTimeHours: {
         type: 'combo',
         label: '生效时间',
         options: timeOpts,
-        defaultValue: '',
-        disabled: true
+        defaultValue: '0',
+        disabled: true,
     },
     giftValidUntilDayCount: {
         type: 'text',
         label: '有效天数',
         surfix: '天',
         // rules: ['required', 'numbers'],
-        disabled: true
+        disabled: true,
     },
     rangeDate: {
         type: 'datepickerRange',
         label: '固定有效期',
         rules: ['required'],
-        disabled: true
+        disabled: true,
     },
 };
 
 export {
     imgURI, href, formItemLayout,
     formKeys1, formItems, formKeys2,
-    timeOpts, dayOpts
+    timeOpts, dayOpts,
 }
