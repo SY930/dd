@@ -21,8 +21,8 @@ export default class RecommendHaveGift extends Component {
             decorationInfo: {
                 bgColor = '#FBB335',
                 bgImg = `${baseUrl}/364c0698-6252-42c1-b54e-fbabfc162c08.png`,
-                btnBgColor = 'linear-gradient(#FF4803,#FF7735)',
-                btnColor = '#EBEBEB',
+                btnBgColor = 'linear-gradient(#F27267,#D24C41)',
+                btnColor = '#FFFFFF',
             },
         } = this.props;
         return (
@@ -47,8 +47,8 @@ export default class RecommendHaveGift extends Component {
             decorationInfo: {
                 bgColor = '#FBB335',
                 bgImg,
-                btnBgColor = 'linear-gradient(#FF4803,#FF7735)',
-                btnColor = '#EBEBEB',
+                btnBgColor = 'linear-gradient(#F27267,#D24C41)',
+                btnColor = '#FFFFFF',
             },
             onChange,
         } = this.props;
