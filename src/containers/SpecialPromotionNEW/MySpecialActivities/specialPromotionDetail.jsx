@@ -406,6 +406,25 @@ class SpecialPromotionDetail extends React.Component {
                         {this.renderGiftInfoTable(list, way)}
                     </Col>
                     <Col style={{ marginTop: 10 }} span={18}>
+                        {this.renderPointsTable()}
+                    </Col>
+                    {this.renderSearch()}
+                    <Col span={24}>
+                        {this.renderActivityInfoTable()}
+                    </Col>
+                </div>
+            )
+        }
+        if(way == 64) {//评价送礼
+
+            const list = records.filter(v => v.presentType === 1)
+            return (
+                <div>
+                    <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
+                    <Col span={24}>
+                        {this.renderGiftInfoTable(list, way)}
+                    </Col>
+                    <Col style={{ marginTop: 10 }} span={18}>
                             {this.renderPointsTable()}
                         </Col>
                     {this.renderSearch()}
