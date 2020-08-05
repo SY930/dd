@@ -552,6 +552,11 @@ class GiftDetailTable extends Component {
                 type: 'text',
                 placeholder: '请输入礼品名称',
             },
+            giftItemID: {
+                label: '礼品ID',
+                type: 'text',
+                placeholder: '请输入礼品ID',
+            },
             giftType: {
                 label: '礼品类型',
                 type: 'combo',
@@ -583,7 +588,7 @@ class GiftDetailTable extends Component {
                 ],
             },
         };
-        const formKeys = ['giftName', 'giftType', 'brandID', 'action'];
+        const formKeys = ['giftName', 'giftItemID', 'giftType', 'brandID', 'action'];
         const headerClasses = `layoutsToolLeft ${styles2.headerWithBgColor} ${styles2.basicPromotionHeader}`;
         const { tabkey } = this.props;
         const { groupID } = this.props.user.accountInfo;
