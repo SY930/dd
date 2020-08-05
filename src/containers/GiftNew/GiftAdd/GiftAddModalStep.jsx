@@ -2017,7 +2017,12 @@ class GiftAddModalStep extends React.PureComponent {
                     if( moneyLimitType == '1') {
                         const moneyLimitTypeAndValueIndex = _.findIndex(secondKeysToDisplay[0].keys, item => item == 'moneyLimitTypeAndValue');
                         if(moneyLimitTypeAndValueIndex != -1) {
-                            secondKeysToDisplay[0].keys.splice(moneyLimitTypeAndValueIndex + 1, 0, 'maxUseLimit');
+                            // 菜品优惠券不支持一笔订单使用张数的限制设置
+                            // http://jira.hualala.com/browse/WTCRM-2756
+                            if(describe != '菜品优惠券') {
+                                secondKeysToDisplay[0].keys.splice(moneyLimitTypeAndValueIndex + 1, 0, 'maxUseLimit');
+                            }
+                            
                         }
                     }
                       
