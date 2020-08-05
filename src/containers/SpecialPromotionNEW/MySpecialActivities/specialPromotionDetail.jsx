@@ -551,6 +551,9 @@ class SpecialPromotionDetail extends React.Component {
                     if(way == '30') {
                         return text == 0 ? '' : text
                     }
+                    if(way == '21' && text == 2147483647) {
+                        text = '不限制'
+                    }
                     return text
                 }
             },
