@@ -73,7 +73,7 @@ export const freeGetStep3Render = function freeGetStep3Render() {
                         value={{ number: '' }}
                     /> : getFieldDecorator('giftTotalCount', {
                         initialValue: {
-                            number: (giftInfo[0] && giftInfo[0].giftTotalCount == 2147483647) ? '' : giftInfo[0].giftTotalCount,
+                            number: (giftInfo[0] && giftInfo[0].giftTotalCount == 2147483647) ? '' : (giftInfo[0] && giftInfo[0].giftTotalCount),
                         },
                         rules: [
                             {
