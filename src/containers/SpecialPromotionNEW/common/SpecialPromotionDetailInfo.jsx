@@ -564,7 +564,7 @@ class SpecialDetailInfo extends Component {
             giftInfo = giftInfo.filter(v => v.presentType === 1)
         }
         giftInfo.forEach((gift, index) => {
-            if (this.props.type == "52" && gift.presentType === 2) {
+            if ((this.props.type == "52" || this.props.type == "64") && gift.presentType === 2) {
                 pointObj = {
                     ...pointObj,
                     presentValue: gift.presentValue,
@@ -572,7 +572,7 @@ class SpecialDetailInfo extends Component {
                 };
                 return;
             }
-            if (this.props.type == "52" && gift.presentType === 1) {
+            if ((this.props.type == "52" || this.props.type == "64") && gift.presentType === 1) {
                 pointObj = { ...pointObj, giveCoupon: true };
             }
             if (data[index] !== undefined) {
@@ -965,7 +965,7 @@ class SpecialDetailInfo extends Component {
             this.props.setSpecialGiftInfo([]);
             return true;
         }
-        if (type === "52") {
+        if (type === "52" || this.props.type == "64") {
             const { presentValue, givePoints, giveCoupon } = this.state;
             if (!givePoints && !giveCoupon) {
                 message.warning("赠送积分和优惠券必选一项");
@@ -973,13 +973,13 @@ class SpecialDetailInfo extends Component {
             }
             if (givePoints) {
                 if (!priceReg.test(presentValue)) {
-                    message.warning("请输入1~1000000数字，支持两位小数");
+                    message.warning("请输入正确的积分值");
                     return;
                 }
             }
             if (givePoints && !giveCoupon) {
                 if (!priceReg.test(presentValue)) {
-                    message.warning("请输入1~1000000数字，支持两位小数");
+                    message.warning("请输入正确的积分值");
                     return;
                 }
                 const giftName = presentValue + "积分";
@@ -1134,7 +1134,7 @@ class SpecialDetailInfo extends Component {
             if(type === '61') {
                 giftInfo =  upGradeAddPointData.call(this,giftInfo)
             }
-            if (type === "52") {
+            if (type === "52" || this.props.type == "64") {
                 const { presentValue, givePoints } = this.state;
                 if (givePoints) {
                     const giftName = presentValue + "积分";
@@ -3646,12 +3646,17 @@ class SpecialDetailInfo extends Component {
         const { value } = target;
         this.setState({ presentValue: value });
     };
+    // 包含 开卡送礼52、评价送礼64
     renderNewCardGive() {
-        const priceReg = /^(([1-9]\d{0,5})(\.\d{0,2})?|0.\d?[1-9]{1})$/;
+        const { type, specialPromotion } = this.props;
         const { givePoints, presentValue, giveCoupon } = this.state;
+
+        const evaErrText = '请输入大于0，整数5位以内且小数2位以内的数值'
+        const evaReg = /^(([1-9]\d{0,4})(\.\d{0,2})?|0.\d?[1-9]{1})$/;
+        const priceReg = type == '52' ? /^(([1-9]\d{0,5})(\.\d{0,2})?|0.\d?[1-9]{1})$/ : evaReg;
         const preErr = !priceReg.test(presentValue) ? "error" : "success";
         const preErrText = !priceReg.test(presentValue)
-            ? "请输入1~1000000数字，支持两位小数"
+            ? (type == '52' ? "请输入1~1000000数字，支持两位小数" : evaErrText)
             : "";
         const userCount = this.props.specialPromotion.getIn([
             "$eventInfo",
@@ -3675,13 +3680,16 @@ class SpecialDetailInfo extends Component {
                         <p
                             className={userCount > 0 ? styles.opacitySet : ""}
                         ></p>
-                        <div className={selfStyle.title}>
+                        {/* <div className={selfStyle.title}>
                             <span>赠送积分</span>
-                        </div>
+                        </div> */}
                         <FormItem
-                            wrapperCol={{ span: 24 }}
+                            label={'赠送积分'}
+                            labelCol={{span: 12}}
+                            wrapperCol={{ span: 12 }}
                             className={""}
                             validateStatus={preErr}
+                            required={type == '64'}
                             help={preErrText}
                         >
                             <Input
@@ -3821,8 +3829,8 @@ class SpecialDetailInfo extends Component {
                         </RadioGroup>
                     </FormItem>
                 )}
-                {type === "52" && this.renderNewCardGive()}
-                {type === "52" && giveCoupon && (
+                {(type === "52" || type === "64") && this.renderNewCardGive()}
+                {(type === "52" || type === "64") && giveCoupon && (
                     <Row>
                         <Col span={17} offset={4}>
                             <AddGifts
@@ -3852,7 +3860,7 @@ class SpecialDetailInfo extends Component {
                 {
                     type === '61' && renderUpGradeThree.call(this)
                 }
-                { !['52', '30', '60','61', '53'].includes(type) &&
+                { !['52', '30', '60','61', '64', '53'].includes(type) &&
                 <Row>
                     <Col span={17} offset={4}>
                         <AddGifts
