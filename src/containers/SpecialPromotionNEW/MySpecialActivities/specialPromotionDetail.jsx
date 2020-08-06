@@ -274,7 +274,7 @@ class SpecialPromotionDetail extends React.Component {
         if (way == 68) { // 推荐有礼
             let couponList = []
             const couponCurrent = this.props.mySpecialActivities.data.eventInfo.eventRuleInfos.filter( v => v.rule === 1)
-            if(couponCurrent.length) {
+            if(couponCurrent.length && couponCurrent[0].gifts) {
                 couponList = couponCurrent[0].gifts
             }
             return (
