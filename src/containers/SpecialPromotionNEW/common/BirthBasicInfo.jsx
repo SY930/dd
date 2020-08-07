@@ -9,7 +9,7 @@
  */
 
 import React from 'react'
-import { Input, Form, Select, Icon, Button, Radio } from 'antd';
+import { Input, Form, Select, Icon, Button, Radio, DatePicker } from 'antd';
 import { connect } from 'react-redux'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
@@ -24,10 +24,15 @@ import { SEND_MSG } from '../../../redux/actions/saleCenterNEW/types'
 import {queryWechatMpInfo} from "../../GiftNew/_action";
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
+import moment from 'moment'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
+const {  RangePicker } = DatePicker;
+const format = 'YYYYMMDD'
+
+const showActDataType = ['52']
 
 @injectIntl
 class PromotionBasicInfo extends React.Component {
@@ -42,6 +47,8 @@ class PromotionBasicInfo extends React.Component {
             tipDisplay: 'none',
             signID: props.specialPromotion.getIn(['$eventInfo', 'signID']) || '',
             involvementGiftAdvanceDays: 0,
+            actStartDate: [],
+            actStartDateTemp: []
         };
         this.promotionNameInputRef = null;
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -62,19 +69,19 @@ class PromotionBasicInfo extends React.Component {
         });
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
         this.props.queryWechatMpInfo({subGroupID: specialPromotion.subGroupID});
+
+        const { giftAdvanceDays, eventRemark, eventName, involvementGiftAdvanceDays, eventStartDate, eventEndDate  } = specialPromotion
+
         this.setState({
-            advanceDays: specialPromotion.giftAdvanceDays,
-            description: specialPromotion.eventRemark,
+            advanceDays:  giftAdvanceDays,
+            description: eventRemark,
             sendMsg: `${specialPromotion.smsGate || this.state.smsGate || '0'}`,
-            name: specialPromotion.eventName,
-            involvementGiftAdvanceDays: specialPromotion.involvementGiftAdvanceDays || 0,
+            name: eventName,
+            involvementGiftAdvanceDays: involvementGiftAdvanceDays || 0,
+            actStartDate: (eventStartDate && eventEndDate) ? [moment(eventStartDate),moment(eventEndDate)] : [],
+            actStartDateTemp: (eventStartDate && eventEndDate) ? [moment(eventStartDate),moment(eventEndDate)] : []
         });
-        const opts = {
-            groupID: this.props.user.accountInfo.groupID,
-            eventWay: this.props.type,
-            itemID: this.props.specialPromotion.getIn(['$eventInfo', 'itemID']),
-        };
-        this.props.saleCenterGetExcludeCardLevelIds(opts);
+
 
         specialPromotion.settleUnitID > 0 && !(specialPromotion.accountNo > 0) ?
             this.props.saleCenterQueryFsmGroupSettleUnit({ groupID: this.props.user.accountInfo.groupID })
@@ -117,13 +124,28 @@ class PromotionBasicInfo extends React.Component {
                 if (err1) {
                     nextFlag = false;
                 }
+                const { actStartDate } = this.state
+
+                const  eventStartDate = actStartDate[0] && moment(actStartDate[0]).format(format)
+                const eventEndDate = actStartDate[1] && moment(actStartDate[1]).format(format)
+
                 if (nextFlag) {
                     this.props.setSpecialBasicInfo({
                         eventRemark: this.state.description,
                         smsGate: this.state.sendMsg,
                         eventName: this.state.name,
                         signID: this.state.signID,
+                        eventStartDate: actStartDate[0] && moment(actStartDate[0]).format(format),
+                        eventEndDate: actStartDate[1] && moment(actStartDate[1]).format(format)
                     })
+                    const opts = {
+                        groupID: this.props.user.accountInfo.groupID,
+                        eventWay: this.props.type,
+                        itemID: this.props.specialPromotion.getIn(['$eventInfo', 'itemID']),
+                        eventStartDate,
+                        eventEndDate
+                    };
+                    this.props.saleCenterGetExcludeCardLevelIds(opts);
                 }
             }
         });
@@ -258,9 +280,15 @@ class PromotionBasicInfo extends React.Component {
                 return null;
         }
     }
+    handleActDateChange = (e) => {
+        this.setState({
+            actStartDate: e
+        })
+    }
     render() {
         // TODO:编码不能重复
         const { getFieldDecorator } = this.props.form;
+        const { actStartDate, actStartDateTemp} = this.state
 
         return (
             <Form>
@@ -312,6 +340,21 @@ class PromotionBasicInfo extends React.Component {
                         }
                     </Select>
                 </FormItem>
+                {showActDataType.includes(this.props.type) ? <FormItem
+                    label={'活动起止日期'}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                     <RangePicker value={actStartDate} onChange={this.handleActDateChange} disabledDate= {(currentDate) => {
+                         if(this.props.isNew) {
+                             return false
+                         }
+                         return !currentDate.isBetween(actStartDateTemp[0], actStartDateTemp[1])
+                     }} />
+                </FormItem>  : null}
+
+
                 {
                     (this.state.sendMsg == 1 || this.state.sendMsg == 3 || this.state.sendMsg == 4) && (
                         <FormItem
