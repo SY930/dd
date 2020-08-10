@@ -4,6 +4,8 @@ import rootEpic from './redux/modules';
 
 import * as entryCodes from './constants/entryCodes'
 
+import 'config/AssociateConfig.js'
+
 // 初始化Dva
 import './utils/dva/index'
 
