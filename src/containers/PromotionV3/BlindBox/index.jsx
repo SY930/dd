@@ -114,8 +114,8 @@ class BlindBox extends Component {
             const type = `${presentType}`;  // 组件要string类型的
             let newItem = { isPoint: false, isTicket: false, presentType: '1', giftList: [],  bagList: [], ...lottery[index] };
             if(presentType === 2) {   // 积分
-                const { presentValue, cardTypeID = '' } = x;
-                newItem = { ...newItem, presentValue, cardTypeID, isPoint: true };
+                const { presentValue, cardTypeID = '', ...others } = x;
+                newItem = { ...others, ...newItem, presentValue, cardTypeID, isPoint: true };
             }
             // 礼品
             if(presentType === 1) {
@@ -133,7 +133,7 @@ class BlindBox extends Component {
                     countType = '1';
                     etype = '1';
                 }
-                const giftList = [...newGiftList, {id: giftID, giftID, effectType: `${etype}`, giftEffectTimeHours: `${hours}`, countType, rangeDate, ...others }];
+                const giftList = [...newGiftList, { ...others, id: giftID, giftID, effectType: `${etype}`, giftEffectTimeHours: `${hours}`, countType, rangeDate }];
                 newItem = { ...newItem, giftList, isTicket: true, presentType: type };
             }
             lottery[index] = { id: `${sortIndex}`, giftOdds, userCount, ...newItem };
@@ -146,8 +146,8 @@ class BlindBox extends Component {
             const type = `${presentType}`;  // 组件要string类型的
             let newItem = { isPoint: false, isTicket: false, presentType: '1', giftList: [], ...openLottery};
             if(presentType == 2) {   // 积分
-                const { presentValue } = x;
-                newItem = { ...newItem, presentValue, isPoint: true };
+                const { presentValue, ...others } = x;
+                newItem = { ...others, ...newItem, presentValue, isPoint: true };
             }
             // 礼品
             if(presentType === 1) {
@@ -165,7 +165,7 @@ class BlindBox extends Component {
                     countType = '1';
                     etype = '1';
                 }
-                const giftList = [...newGiftList, {id: giftID, giftID, effectType: `${etype}`, giftEffectTimeHours: `${hours}`, countType, rangeDate, ...others }];
+                const giftList = [...newGiftList, {...others, id: giftID, giftID, effectType: `${etype}`, giftEffectTimeHours: `${hours}`, countType, rangeDate }];
                 newItem = { ...newItem, giftList, isTicket: true, presentType: type };
             }
             openLottery = { id: `${sortIndex}`, userCount, ...newItem };
@@ -331,12 +331,12 @@ class BlindBox extends Component {
         const gifts = [];   // 后端要的专属key名
         // 盲盒礼品
         lottery.forEach((x, i) => {
-            const { giftOdds, isPoint, isTicket, presentType } = x;
+            const { giftOdds, isPoint, isTicket, presentType, giftList, ...others } = x;
             const sortIndex = i + 1;       // 后端要的排序
             const rawObj =  { sortIndex, giftOdds, presentType, needShow: 0 };    // 基础数据
             if(isPoint){
                 const { presentValue } = x;
-                const obj = { ...rawObj, presentType: '2', presentValue, cardTypeID: defaultCardType };
+                const obj = { ...rawObj, ...others, presentType: '2', presentValue, cardTypeID: defaultCardType };
                 gifts.push(obj);
             }
             if(isTicket){
@@ -358,11 +358,11 @@ class BlindBox extends Component {
         });
         // 明盒礼品
         if(needShow){
-            const { isPoint, isTicket, presentType } = openLottery;
+            const { isPoint, isTicket, presentType, giftList, ...others } = openLottery;
             const rawObj =  { presentType, needShow: 1 };    // 基础数据
             if(isPoint){
                 const { presentValue } = openLottery;
-                const obj = { ...rawObj, presentType: '2', presentValue, cardTypeID: defaultCardType };
+                const obj = { ...rawObj, ...others, presentType: '2', presentValue, cardTypeID: defaultCardType };
                 gifts.push(obj);
             }
             if(isTicket){
