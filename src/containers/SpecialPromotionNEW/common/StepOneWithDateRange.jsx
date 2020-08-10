@@ -741,7 +741,7 @@ class StepOneWithDateRange extends React.Component {
 
         let dateInPeriodType = getFieldValue('dateInPeriodType');
 
-        console.log('getFieldsValue', getFieldsValue())
+        // console.log('getFieldsValue', getFieldsValue())
         if(dateInPeriodType == undefined) {
             dateInPeriodType = 'm';
         }
