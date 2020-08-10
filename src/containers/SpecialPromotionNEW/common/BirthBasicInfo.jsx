@@ -9,7 +9,7 @@
  */
 
 import React from 'react'
-import { Input, Form, Select, Icon, Button, Radio, DatePicker } from 'antd';
+import { Input, Form, Select, Icon, Button, Radio, DatePicker, Row, Col } from 'antd';
 import { connect } from 'react-redux'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
@@ -32,6 +32,8 @@ const RadioGroup = Radio.Group;
 const {  RangePicker } = DatePicker;
 const format = 'YYYYMMDD'
 
+
+// 起止日期
 const showActDataType = ['52']
 
 @injectIntl
@@ -280,15 +282,68 @@ class PromotionBasicInfo extends React.Component {
                 return null;
         }
     }
+
     handleActDateChange = (e) => {
         this.setState({
             actStartDate: e
         })
     }
+
+    renderPeriodSelector = () => {
+
+        // 日期选择器
+        const { actStartDate, actStartDateTemp} = this.state
+
+        return (
+
+                <FormItem
+                    label={'活动起止日期'}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                    >
+                    <Row>
+                        <Col span={21}>
+
+                            <RangePicker value={actStartDate} onChange={this.handleActDateChange} disabledDate= {(currentDate) => {
+                                if(this.props.isNew) {
+                                    return false
+                                }
+                                return !currentDate.isBetween(actStartDateTemp[0], actStartDateTemp[1])
+                            }} />
+
+                        </Col>
+                        <Col offset={1} span={2}>
+                            <div className={styles.ActivityDateDay}>
+                                <span>
+                                    {this.getDateCount()}
+                                </span>
+                                <span>天</span>
+                            </div>
+                        </Col>
+                    </Row>
+                </FormItem>
+
+        )
+    }
+
+    getDateCount() {
+        const {  actStartDate } = this.state;
+        if (undefined ===  actStartDate[0] || undefined ===  actStartDate[1]) {
+            return 0
+        }
+
+        if ( actStartDate[0] === null ||   actStartDate[1] === null) {
+            return 0
+        }
+
+        return   actStartDate[1]
+            .diff( actStartDate[0], 'days') + 1;
+    }
     render() {
         // TODO:编码不能重复
         const { getFieldDecorator } = this.props.form;
-        const { actStartDate, actStartDateTemp} = this.state
+
 
         return (
             <Form>
@@ -340,19 +395,7 @@ class PromotionBasicInfo extends React.Component {
                         }
                     </Select>
                 </FormItem>
-                {showActDataType.includes(this.props.type) ? <FormItem
-                    label={'活动起止日期'}
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 17 }}
-                >
-                     <RangePicker value={actStartDate} onChange={this.handleActDateChange} disabledDate= {(currentDate) => {
-                         if(this.props.isNew) {
-                             return false
-                         }
-                         return !currentDate.isBetween(actStartDateTemp[0], actStartDateTemp[1])
-                     }} />
-                </FormItem>  : null}
+                {showActDataType.includes(this.props.type) ?  this.renderPeriodSelector()  : null}
 
 
                 {

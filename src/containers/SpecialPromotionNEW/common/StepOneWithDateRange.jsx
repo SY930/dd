@@ -94,6 +94,8 @@ const dateLimitedTypes = [ // 活动日期不能选到今天以前的活动类�
     '70',
     '75',
 ]
+// 起止日期
+const showActDataType = ['60']
 
 
 @injectIntl
@@ -156,6 +158,7 @@ class StepOneWithDateRange extends React.Component {
             selectedIDs: props.specialPromotion.getIn(['$eventInfo', 'mpIDList']).toJS(),
             allWeChatIDList: props.allWeChatIDList,
             allWeChatIDListLoading: props.allWeChatIDListLoading,
+            actStartDate: []
         };
         this.promotionNameInputRef = null;
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -188,6 +191,7 @@ class StepOneWithDateRange extends React.Component {
             data: opts,
         });
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
+        const { eventStartDate, eventEndDate } = specialPromotion
         this.props.queryWechatMpInfo({subGroupID: specialPromotion.subGroupID});
         if ((this.props.type === '31' || this.props.type === '68') && this.props.specialPromotion.getIn(['$eventInfo', 'itemID'])) {
             const itemID = specialPromotion.itemID;
@@ -230,6 +234,14 @@ class StepOneWithDateRange extends React.Component {
         } catch (e) {
             // oops
         }
+
+        // actStartDate
+        console.log('specialPromotion',specialPromotion)
+        if(this.props.type == '60' && eventStartDate && eventEndDate) {
+            this.setState({
+                actStartDate: [moment(eventStartDate),moment(eventEndDate)]
+            })
+        }
     }
     componentWillUnmount() {
         document.removeEventListener('click', this.onFakeDatePickerBlur)
@@ -269,11 +281,23 @@ class StepOneWithDateRange extends React.Component {
                 this.setState({
                     getExcludeEventList: specialPromotion.getExcludeEventList || [],
                 }, () => {
-                    this.setErrors('rangePicker', `${this.props.intl.formatMessage(STRING_SPE.de8g05amdm019)}`)
+                    if(this.props.type == '60') {
+                        this.setErrors('rangePicker', '该时间段内已经有启用状态的完善资料送礼活动，不能重复创建')
+
+                    } else {
+                        this.setErrors('rangePicker', `${this.props.intl.formatMessage(STRING_SPE.de8g05amdm019)}`)
+                    }
+
                 })
             } else {
                 this.setState({
                     getExcludeEventList: [],
+                })
+                this.props.form.setFields({
+                    rangePicker: {
+                        // value: [],
+                        errors: undefined,
+                    },
                 })
             }
             if (nextProps.specialPromotion.get('$eventInfo').toJS().allCardLevelCheck && this.props.type != '23') { // 线上餐厅送礼活动过于复杂不限制下一步
@@ -333,6 +357,7 @@ class StepOneWithDateRange extends React.Component {
 
     handleSubmit() {
         let nextFlag = true;
+        const { actStartDate } = this.state
         this.props.form.validateFieldsAndScroll((err1, basicValues) => {
             if (err1) {
                 nextFlag = false;
@@ -351,7 +376,12 @@ class StepOneWithDateRange extends React.Component {
 
         if (this.state.getExcludeEventList.length > 0) {
             nextFlag = false;
-            this.setErrors('rangePicker', `${this.props.intl.formatMessage(STRING_SPE.de8g05amdm019)}`)
+
+            if(this.props.type == '60') {
+                this.setErrors('rangePicker', `${this.props.intl.formatMessage("该时间段内已经有启用状态的完善资料送礼活动，不能重复创建")}`)
+            } else {
+                this.setErrors('rangePicker', `${this.props.intl.formatMessage(STRING_SPE.de8g05amdm019)}`)
+            }
         }
         if (this.state.allShopCheck) {
             nextFlag = false;
@@ -375,7 +405,20 @@ class StepOneWithDateRange extends React.Component {
                     eventEndDate: this.state.dateRange[1] ? this.state.dateRange[1].format('YYYYMMDD') : '0',
                     signID: this.state.signID,
                 });
-            } else {
+            } else if( this.props.type == '60') {
+                const eventStartDate =  actStartDate[0] ? actStartDate[0].format('YYYYMMDD') : '';
+                const eventEndDate = actStartDate[1] ? actStartDate[1].format('YYYYMMDD') : ''
+
+                this.props.setSpecialBasicInfo({
+                    eventName: this.state.name,
+                    eventRemark: this.state.description,
+                    eventStartDate ,
+                    eventEndDate ,
+                    smsGate: this.state.smsGate,
+                    signID: this.state.signID,
+                })
+
+            } else  {
                 this.props.setSpecialBasicInfo({
                     eventName: this.state.name,
                     eventRemark: this.state.description,
@@ -727,7 +770,7 @@ class StepOneWithDateRange extends React.Component {
         }
     }
 
-    
+
     /**
      * @description 渲染周期选择器
      * @example 群发礼品，按月，周，日等周期去发送营销券 (无为不按日期发放)
@@ -765,7 +808,7 @@ class StepOneWithDateRange extends React.Component {
                             <Select>
                                 <Option value="m">每月</Option>
                                 <Option value="w">每周</Option>
-                                <Option value="d">无</Option>   
+                                <Option value="d">无</Option>
                             </Select>
                         )}
                     </FormItem>
@@ -774,7 +817,7 @@ class StepOneWithDateRange extends React.Component {
                     }
                 </div>
             )
-        } 
+        }
         return null;
     }
 
@@ -792,7 +835,7 @@ class StepOneWithDateRange extends React.Component {
         if( decorator('dateDescInPeroid') instanceof Array && decorator('dateDescInPeroid').length > 0) {
             initialValue = decorator('dateDescInPeroid');
         }
-    
+
         if(dateInPeriodType == 'd') {
             return null;
         }
@@ -813,18 +856,18 @@ class StepOneWithDateRange extends React.Component {
                     <EveryDay type={dateInPeriodType} disabled={false} />
                 )}
             </FormItem>
-        )       
+        )
     }
 
     /**
      * @description 渲染仅发送时间组件
     */
     renderSendTimeSelector = () => {
-        const { form: { 
+        const { form: {
             getFieldDecorator: decorator,
-            getFieldValue 
+            getFieldValue
         }, type} = this.props;
-        
+
         if(!(PROMOTIONS_CONTAIN_PERIOD_TYPE_SELECTOR_SETS.has(type))) {
             return null;
         }
@@ -843,7 +886,7 @@ class StepOneWithDateRange extends React.Component {
                     }
                 }
                 return result;
-            }   
+            }
         }
 
         let { startTime, timeString } = this.state,
@@ -856,9 +899,9 @@ class StepOneWithDateRange extends React.Component {
         }
 
         return (
-            <FormItem 
+            <FormItem
                 label='发送时间'
-                className={styles.FormItemStyle} 
+                className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 8 }}
             >
@@ -893,51 +936,72 @@ class StepOneWithDateRange extends React.Component {
     //    console.log('val in handleDateRangeChange', handleDateRangeChange);
    }
 
+   handleActDateChange = (e) => {
+    const eventStartDate =  e[0] ? e[0].format('YYYYMMDD') : '';
+    const eventEndDate = e[1] ? e[1].format('YYYYMMDD') : ''
+    const opts = {
+        groupID: this.props.user.accountInfo.groupID,
+        eventWay: this.props.type,
+        eventStartDate ,
+        eventEndDate ,
+    };
+    this.props.saleCenterGetExcludeEventList(opts);
+        this.setState({
+            actStartDate: e
+        })
+    }
+
     /**
      * @description 日期选择
     */
     renderPeriodSelector = () => {
 
-        // 日期选择器
-        // const { startTime, endTime } = this.state.rangePickerVal;
+        // 日期选择器 rangePicker
+        const {  actStartDate } = this.state;
+        const { getFieldDecorator } = this.props.form;
+        return (
 
-        // return (
-        //     <FormItem
-        //         label="活动起止日期"
-        //         className={[styles.FormItemStyle, styles.cardLevelTree].join(' ')}
-        //         labelCol={{ span: 4 }}
-        //         wrapperCol={{ span: 17 }}
-        //     >
-        //         <Row>
-        //             <Col span={21}>
-        //                 {getFieldDecorator('rangePicker', {
-        //                 rules: [{
-        //                     required: true,
-        //                     message: '请选择活动起止时间',
-        //                 }],
-        //                 onChange: this.handleDateRangeChange,
-        //                 initialValue: startTime && endTime ? [moment(startTime, DATE_FORMAT), moment(endTime, DATE_FORMAT)] : [],
-        //             })(
-        //                 <RangePicker
-        //                     className={styles.ActivityDateDayleft}
-        //                     // disabledDate={disabledDate}
-        //                     style={{ width: '100%' }}
-        //                     format="YYYY-MM-DD"
-        //                     placeholder={['开始日期', '结束日期']}
-        //                 />
-        //             )}
-        //             </Col>
-        //             <Col offset={1} span={2}>
-        //                 <div className={styles.ActivityDateDay}>
-        //                     <span>
-        //                         {this.getDateCount()}
-        //                     </span>
-        //                     <span>天</span>
-        //                 </div>
-        //             </Col>
-        //         </Row>
-        //     </FormItem>
-        // )
+                <FormItem
+                    label={'活动起止日期'}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                    >
+                    <Row>
+                        <Col span={18}>
+                        {getFieldDecorator('rangePicker', {
+                                onChange: this.handleActDateChange,
+                                initialValue: actStartDate
+                            })(
+                                <RangePicker />
+                            )}
+
+                        </Col>
+                        <Col offset={1} span={5}>
+                            <div className={styles.ActivityDateDay}>
+                                <span>
+                                    {this.getRangeDateCount(actStartDate)}
+                                </span>
+                                <span>天</span>
+                            </div>
+                        </Col>
+                    </Row>
+                </FormItem>
+
+        )
+    }
+
+    getRangeDateCount(actStartDate) {
+        if (undefined === actStartDate[0] || undefined === actStartDate[1]) {
+            return 0
+        }
+
+        if (actStartDate[0] === null || actStartDate[1] === null) {
+            return 0
+        }
+
+        return actStartDate[1]
+            .diff(actStartDate[0], 'days') + 1;
     }
 
 
@@ -1090,19 +1154,18 @@ class StepOneWithDateRange extends React.Component {
                             />
                         )}
                     </FormItem>
-                    
-                    {
-                        // 活动起始结束日期选择组件
-                        // this.renderPeriodSelector()
-                    }
+
+
                     {
                         // 渲染周期选择期
                         this.renderDateOfSendingPromotionSelector()
                     }
-                    
+
                     {
                         this.renderSendTimeSelector(disabledHours, disabledMinutes, noDisabled)
                     }
+
+
 
                     {
                         this.props.type == '50' ?
@@ -1130,7 +1193,7 @@ class StepOneWithDateRange extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
-                                
+
                                 <Col span={6}>
                                     <FormItem className={styles.FormItemStyle} >
                                         {getFieldDecorator('sendTime', {
@@ -1292,6 +1355,11 @@ class StepOneWithDateRange extends React.Component {
                     }
                     {
                         ATSEnabledTypes.includes(`${this.props.type}`) && this.renderAdvancedDateSettings()
+                    }
+                    {
+                        // 活动起始结束日期选择组件
+                        showActDataType.includes(this.props.type) ? this.renderPeriodSelector() : null
+
                     }
                     {
                         this.props.type != '77' ?

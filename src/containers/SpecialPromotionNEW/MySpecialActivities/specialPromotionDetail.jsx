@@ -76,6 +76,7 @@ import {
     renderOverViewData
 } from './specialPromotionDetailHelp'
 import _ from 'lodash'
+const showNoLimitType = ['60','52']
 
 @injectIntl
 class SpecialPromotionDetail extends React.Component {
@@ -221,6 +222,7 @@ class SpecialPromotionDetail extends React.Component {
                 return event.key == eventWay;
             }).title
         }
+
         return (
             <div>
                 <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d2c8987eai0135)}</h5>
@@ -251,6 +253,20 @@ class SpecialPromotionDetail extends React.Component {
                                 </Col>
                             </Row>
                         ) : null
+                }
+                {
+                    showNoLimitType.includes(String(record.eventWay)) &&  record.eventStartDate == '20000101' && record.eventEndDate == '29991231' ?
+                    (
+                        <Row>
+                            <Col span={4} style={{ textAlign: 'right' }}>{this.props.intl.formatMessage(STRING_SPE.db60c8ac0a379138)}</Col>
+                            <Col span={1} style={{ textAlign: 'center' }}>:</Col>
+                            <Col span={18} style={{ textAlign: 'left' }}>
+                            不限制
+
+                            </Col>
+                        </Row>
+                    )
+                    : null
                 }
                 <Row>
                     <Col span={4} style={{ textAlign: 'right' }}>{this.props.intl.formatMessage(STRING_SPE.d7ekp859lc11113)}</Col>
