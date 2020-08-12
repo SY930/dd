@@ -9,7 +9,7 @@
  */
 
 import React from 'react'
-import { Input, Form, Select, Icon, Button, Radio } from 'antd';
+import { Input, Form, Select, Icon, Button, Radio, DatePicker, Row, Col } from 'antd';
 import { connect } from 'react-redux'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
@@ -19,15 +19,20 @@ import {
     saleCenterQueryFsmGroupSettleUnit,
     queryFsmGroupEquityAccount,
     querySMSSignitureList,
+    saleCenterGetShopOfEventByDate,
+    getEventExcludeCardTypes,
+    saleCenterGetExcludeEventList,
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import { SEND_MSG } from '../../../redux/actions/saleCenterNEW/types'
 import {queryWechatMpInfo} from "../../GiftNew/_action";
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
+import moment from 'moment'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
+const { RangePicker } = DatePicker;
 
 @injectIntl
 class PromotionBasicInfo extends React.Component {
@@ -39,6 +44,7 @@ class PromotionBasicInfo extends React.Component {
             description: null,
             sendMsg: '1',
             name: '',
+            dateRange: Array(2),
             tipDisplay: 'none',
             signID: props.specialPromotion.getIn(['$eventInfo', 'signID']) || '',
             involvementGiftAdvanceDays: 0,
@@ -62,18 +68,38 @@ class PromotionBasicInfo extends React.Component {
         });
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
         this.props.queryWechatMpInfo({subGroupID: specialPromotion.subGroupID});
+        let dateRange;
+        let opts;
+        if(specialPromotion.eventStartDate !== '20000101' && specialPromotion.eventEndDate !== '29991231' &&
+        specialPromotion.eventStartDate !== '0' && specialPromotion.eventEndDate !== '0' &&
+        specialPromotion.eventStartDate !== '' && specialPromotion.eventEndDate !== ''){
+            dateRange = [moment(specialPromotion.eventStartDate, 'YYYYMMDD'), moment(specialPromotion.eventEndDate, 'YYYYMMDD')];
+
+            opts = {
+                groupID: this.props.user.accountInfo.groupID,
+                eventWay: this.props.type,
+                eventStartDate: this.state.dateRange[0] ? this.state.dateRange[0].format('YYYYMMDD') : '',
+                eventEndDate: this.state.dateRange[1] ? this.state.dateRange[1].format('YYYYMMDD') : '',
+                itemID: this.props.specialPromotion.getIn(['$eventInfo', 'itemID']),
+            };
+            this.props.getEventExcludeCardTypes(opts);
+        }else{
+            dateRange = Array(2)
+
+            opts = {
+                groupID: this.props.user.accountInfo.groupID,
+                eventWay: this.props.type,
+                itemID: this.props.specialPromotion.getIn(['$eventInfo', 'itemID']),
+            };
+        }
         this.setState({
             advanceDays: specialPromotion.giftAdvanceDays,
             description: specialPromotion.eventRemark,
             sendMsg: `${specialPromotion.smsGate || this.state.smsGate || '0'}`,
             name: specialPromotion.eventName,
+            dateRange,
             involvementGiftAdvanceDays: specialPromotion.involvementGiftAdvanceDays || 0,
         });
-        const opts = {
-            groupID: this.props.user.accountInfo.groupID,
-            eventWay: this.props.type,
-            itemID: this.props.specialPromotion.getIn(['$eventInfo', 'itemID']),
-        };
         this.props.saleCenterGetExcludeCardLevelIds(opts);
 
         specialPromotion.settleUnitID > 0 && !(specialPromotion.accountNo > 0) ?
@@ -110,6 +136,8 @@ class PromotionBasicInfo extends React.Component {
                         smsGate: this.state.sendMsg,
                         eventName: this.state.name,
                         signID: this.state.signID,
+                        eventStartDate: this.state.dateRange[0] ? this.state.dateRange[0].format('YYYYMMDD') : '0',
+                        eventEndDate: this.state.dateRange[1] ? this.state.dateRange[1].format('YYYYMMDD') : '0',
                         involvementGiftAdvanceDays: this.state.involvementGiftAdvanceDays,
                     })
                 }
@@ -123,6 +151,8 @@ class PromotionBasicInfo extends React.Component {
                         smsGate: this.state.sendMsg,
                         eventName: this.state.name,
                         signID: this.state.signID,
+                        eventStartDate: this.state.dateRange[0] ? this.state.dateRange[0].format('YYYYMMDD') : '0',
+                        eventEndDate: this.state.dateRange[1] ? this.state.dateRange[1].format('YYYYMMDD') : '0',
                     })
                 }
             }
@@ -258,6 +288,95 @@ class PromotionBasicInfo extends React.Component {
                 return null;
         }
     }
+
+    getDateCount = () => {
+        if (undefined === this.state.dateRange[0] || undefined === this.state.dateRange[1]) {
+            return 0
+        }
+
+        if (this.state.dateRange[0] === null || this.state.dateRange[1] === null) {
+            return 0
+        }
+
+        return this.state.dateRange[1]
+            .diff(this.state.dateRange[0], 'days') + 1;
+    }
+
+    handleDateChange = (date, dateString) => {
+        const opts = {
+            groupID: this.props.user.accountInfo.groupID,
+            eventWay: this.props.type,
+            eventStartDate: date[0] ? date[0].format('YYYYMMDD') : '',
+            eventEndDate: date[1] ? date[1].format('YYYYMMDD') : '',
+        };
+        // 编辑时，解放自己的选项不被排除; 新建时没有id, 也不会传到后端
+        opts.itemID = this.props.specialPromotion.getIn(['$eventInfo', 'itemID']);
+        if (opts.eventStartDate) {
+            
+            this.props.saleCenterGetExcludeCardLevelIds(opts);
+            this.props.getEventExcludeCardTypes(opts);
+        }
+        this.setState({
+            dateRange: date,
+            // dateString,
+        })
+    }
+
+    renderPeriodSelector = () => {
+        const { getFieldDecorator } = this.props.form;
+        // 日期选择器
+        let dateRangeProps;
+        if (this.state.dateRange[0] !== undefined && this.state.dateRange[1] !== undefined &&
+            this.state.dateRange[0] !== '0' && this.state.dateRange[1] !== '0'
+        ) {
+            dateRangeProps = {
+                onChange: this.handleDateChange,
+                initialValue: this.state.dateRange,
+            }
+        } else {
+            dateRangeProps = {
+                onChange: this.handleDateChange,
+            }
+        }
+
+        return (
+            <FormItem
+                label="活动起止日期"
+                className={[styles.FormItemStyle, styles.cardLevelTree].join(' ')}
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 17 }}
+            >
+                <Row>
+                    <Col span={21}>
+                        {getFieldDecorator('rangePicker', {
+                        rules: [{
+                            required: false,
+                            message: '请选择活动起止时间',
+                        }],
+                        ...dateRangeProps,
+                    })(
+                        <RangePicker
+                            className={styles.ActivityDateDayleft}
+                            // disabledDate={disabledDate}
+                            style={{ width: '100%' }}
+                            format="YYYY-MM-DD"
+                            placeholder={['开始日期', '结束日期']}
+                        />
+                    )}
+                    </Col>
+                    <Col offset={1} span={2}>
+                        <div className={styles.ActivityDateDay}>
+                            <span>
+                                {this.getDateCount()}
+                            </span>
+                            <span>天</span>
+                        </div>
+                    </Col>
+                </Row>
+            </FormItem>
+        )
+    }
+
     render() {
         // TODO:编码不能重复
         const { getFieldDecorator } = this.props.form;
@@ -292,6 +411,9 @@ class PromotionBasicInfo extends React.Component {
                         />
                         )}
                 </FormItem>
+
+                {this.renderPeriodSelector()}
+
                 {this.renderMoreInfo()}
 
                 <FormItem
@@ -386,7 +508,16 @@ const mapDispatchToProps = (dispatch) => {
         },
         queryFsmGroupEquityAccount: (opts) => {
             dispatch(queryFsmGroupEquityAccount(opts))
-        }
+        },
+        saleCenterGetShopOfEventByDate: (opts) => {
+            return dispatch(saleCenterGetShopOfEventByDate(opts));
+        },
+        getEventExcludeCardTypes: (opts) => {
+            dispatch(getEventExcludeCardTypes(opts))
+        },
+        saleCenterGetExcludeEventList: (opts) => {
+            dispatch(saleCenterGetExcludeEventList(opts))
+        },
     }
 };
 
