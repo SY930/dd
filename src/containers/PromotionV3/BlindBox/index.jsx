@@ -174,7 +174,8 @@ class BlindBox extends Component {
         const defVal = { id: '1', needShow: 1, presentValue: '', isPoint: false, isTicket: true, presentType: '1', giftList: [{ id: '001', effectType: '1' }] };
         openLottery = JSON.stringify(openLottery) == '{}' ? defVal : openLottery
 
-        let shareInfo = { type: '79', shareTitle, shareSubtitle, restaurantShareImagePath, shareImagePath }
+        const defaultShareTitle = 'duang!被一个盲盒砸中，看你手气了~';
+        let shareInfo = { type: '79', shareTitle: shareTitle || defaultShareTitle, shareSubtitle, restaurantShareImagePath, shareImagePath }
         return { eventImagePath, openLottery, lottery, shareInfo };
     }
 
