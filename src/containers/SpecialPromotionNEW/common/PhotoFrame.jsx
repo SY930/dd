@@ -27,7 +27,10 @@ export default class PhotoFrame extends Component {
         this.setState(ps => ({ visible: !ps.visible }));
     }
     render() {
-        const { restaurantShareImagePath = '', shareImagePath = '', type } = this.props;
+        /**
+         * isMoveRestaurant || false  是否移除线上餐厅上传  
+         */
+        const { restaurantShareImagePath = '', shareImagePath = '', type, isMoveRestaurant = false } = this.props;
         const restPath = restaurantShareImagePath.substr(23);
         const shrPath = shareImagePath.substr(23);
         const { visible } = this.state;
@@ -36,6 +39,7 @@ export default class PhotoFrame extends Component {
             68: 'http://res.hualala.com/basicdoc/6417e092-1fcd-46eb-becb-8dc8ba55efef.png',
             66: 'http://res.hualala.com/basicdoc/8ff25052-78a4-4be3-a043-347302ca9238.png',
             65: 'http://res.hualala.com/basicdoc/87bfc2c7-c7b4-45b0-b78e-f2b29615d1db.png',
+            79: 'http://res.hualala.com/basicdoc/2c9ef968-fc0a-4fed-bc39-61577857b7b2.png',
         }
         const content = (
             <img width="400px" src={srcMap[type]} />
@@ -43,25 +47,25 @@ export default class PhotoFrame extends Component {
         return (
             <div className={styles.photoFrame}>
                 <p>图片建议按如图所示用户端上传，支持格式jpg、png，大小不超过2M</p>
-                {
-                    type != '79' && 
-                        <Popover content={content} placement="left">
-                            <a href="javascript:;">查看示例</a>
-                        </Popover>
-                }
+                <Popover content={content} placement="left">
+                    <a href="javascript:;">查看示例</a>
+                </Popover>
                 <ul>
-                    <li>
-                        <ImageUpload
-                            value={restPath}
-                            limitType={limitType}
-                            limitSize={fileSize}
-                            onChange={this.onUpload}
-                        />
-                        <div>
-                            <h5>线上餐厅展示图</h5>
-                            <p>图片建议尺寸：500*500像素</p>
-                        </div>
-                    </li>
+                    {
+                        !isMoveRestaurant && 
+                            <li>
+                                <ImageUpload
+                                    value={restPath}
+                                    limitType={limitType}
+                                    limitSize={fileSize}
+                                    onChange={this.onUpload}
+                                />
+                                <div>
+                                    <h5>线上餐厅展示图</h5>
+                                    <p>图片建议尺寸：500*500像素</p>
+                                </div>
+                            </li>
+                    }
                     <li>
                         <ImageUpload
                             value={shrPath}

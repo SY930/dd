@@ -146,7 +146,7 @@ const formKeys22 = ['joinCount', 'defaultCardType', 'autoRegister'];
 const lottDefVal = { id: '1', needShow: 0, giftOdds: '', presentValue: '', 
 isPoint: false, isTicket: true, presentType: '1', giftList: [{ id: '001', effectType: '1' }] };
 const openlottDefVal = { id: '1', needShow: 1, presentValue: '', isPoint: false, isTicket: true, presentType: '1', giftList: [{ id: '001', effectType: '1' }] };
-const shareDefVal = { type: '79', shareTitle: '', shareSubtitle: '', restaurantShareImagePath: '', shareImagePath: '' };
+const shareDefVal = { type: '79', shareTitle: 'duang!被一个盲盒砸中，看你手气了~', shareSubtitle: '', restaurantShareImagePath: '', shareImagePath: '' };
 
 const formItems3 = {
     needShow: {
