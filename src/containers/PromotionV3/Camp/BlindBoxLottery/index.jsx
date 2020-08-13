@@ -5,6 +5,7 @@ import { formItemLayout, formKeys, formItems, } from './Common';
 import { getCardTypeList } from './AxiosFactory';
 import CropperUploader from 'components/common/CropperUploader'
 import MutliGift from './MutliGift';
+import PriceInput from "../../../SaleCenterNEW/common/PriceInput";
 // import TicketBag from '../TicketBag';
 
 const RadioButton = Radio.Button;
@@ -66,9 +67,8 @@ class Lottery extends Component {
         this.count = count;
         onChange(list);
     }
-    onGiftOddsChange = ({ target }) => {
-        const { value } = target;
-        this.onAllChange({ giftOdds: value });
+    onGiftOddsChange = ({ number }) => {
+        this.onAllChange({ giftOdds: Number(number) });
     }
     onPointChange = ({ target }) => {
         const { checked } = target;
@@ -130,23 +130,36 @@ class Lottery extends Component {
                                             {
                                                 decorator({
                                                     key: 'giftOdds' + i,
-                                                    value: x.giftOdds,
-                                                    defaultValue: x.giftOdds,
+                                                    initialValue: {
+                                                        number:  x.giftOdds,
+                                                    },
+                                                    onChange: this.onGiftOddsChange,
                                                     rules: [{
                                                         required: true,
                                                         validator: (rule, v, cb) => {
-                                                            const reg = /^\d+$/;
-                                                            if(!reg.test(v)) {
+                                                            if (
+                                                                v.number === "" ||
+                                                                v.number === undefined
+                                                            ) {
                                                                 return cb('请输入数字');
                                                             }
-                                                            if (this.count > 100) {
+                                                            if (!v || (v.number < 0.01)) {
+                                                                return cb('奖品中奖概率之和应为0.01~100%');
+                                                            } else if (v.number > 100) {
                                                                 return cb('奖品中奖概率之和应为0.01~100%');
                                                             }
                                                             cb();
                                                         },
                                                     }],
                                                 })(
-                                                    <p><Input disabled={disable} value={x.giftOdds} addonAfter="%" onChange={this.onGiftOddsChange}/></p>
+                                                    <PriceInput
+                                                        disabled={disable}
+                                                        // onChange={this.onGiftOddsChange}
+                                                        addonAfter={"%"}
+                                                        modal="float"
+                                                        maxNum={7}
+                                                        placeholder="请输入数值"
+                                                    />
                                                 )
                                             }
                                         </FormItem>

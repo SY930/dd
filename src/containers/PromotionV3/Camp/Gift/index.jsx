@@ -17,13 +17,13 @@ export default class Gift extends Component {
         if(key === 'countType') {
             const options = (value === '0') ? timeOpts : dayOpts;
             this.setState({ options });
-            this.form.setFieldsValue({ 'giftEffectTimeHours': value });
+            // this.form.setFieldsValue({ 'giftEffectTimeHours': value });
         }
         if(key==='effectType'){
             if(value === '1') {
                 this.setState({ formKeys: formKeys1 },()=>{
                     const countType = this.form.getFieldValue('countType');
-                    this.form.setFieldsValue({ 'giftEffectTimeHours': countType });
+                    // this.form.setFieldsValue({ 'giftEffectTimeHours': countType });
                 });
             } else {
                 this.setState({ formKeys: formKeys2 });
