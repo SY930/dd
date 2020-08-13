@@ -13,7 +13,7 @@ export default class Gift extends Component {
     };
     /** 表单内容变化时的监听 */
     onFormChange = (key, value) => {
-        const { idx, onChange } = this.props;
+        const { idx, onChange, treeData } = this.props;
         if(key === 'countType') {
             const options = (value === '0') ? timeOpts : dayOpts;
             this.setState({ options });
@@ -30,6 +30,13 @@ export default class Gift extends Component {
             }
         }
         onChange(idx, { [key]: value });
+        
+        if(key==='giftID' && treeData.length > 0){
+            let flatTree = treeData.map(item => item.children).flat(Infinity)
+            let id = flatTree.findIndex(item => item.value == value)
+            let {label = ''} =flatTree[id]
+            onChange(idx, { giftName: label });
+        }
     }
     /** 得到form */
     getForm = (node) => {
