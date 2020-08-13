@@ -151,17 +151,18 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         bottom: 2,
         isNew: true,
     },
-    // {
-    //     title: SALE_LABEL.k639vh8y,
-    //     isSpecial: true,
-    //     text: SALE_LABEL.k67b3y9d,
-    //     tags: ['微信'],
-    //     example: '',
-    //     key: '67',
-    //     right: 13,
-    //     bottom: 1,
-    //     isNew: true,
-    // },
+    {
+        title: SALE_LABEL.k639vh8y,
+        isSpecial: true,
+        text: SALE_LABEL.k67b3y9d,
+        tags: ['微信'],
+        example: '',
+        key: '67',
+        right: 13,
+        bottom: 1,
+        isNew: true,
+        isOffline: true,     //是否下线状态
+    },
     {
         title: SALE_LABEL.k639vhha,
         isSpecial: true,
@@ -393,26 +394,28 @@ export const REPEAT_PROMOTION_TYPES = [
         right: 18,
         bottom: 8,
     },
-    // {
-    //     title: SALE_LABEL.k67b2qo0,
-    //     tags: ['pos'],
-    //     isSpecial: false,
-    //     text: SALE_LABEL.k67b4ube,
-    //     example: SALE_LABEL.k67cpp87,
-    //     key: '1080',
-    //     right: 6,
-    //     bottom: 13,
-    // },
-    // {
-    //     title: SALE_LABEL.k67b2qwc,
-    //     tags: ['pos'],
-    //     isSpecial: false,
-    //     text: SALE_LABEL.k67b4ujq,
-    //     example: SALE_LABEL.k67cppgj,
-    //     key: '2070',
-    //     right: 22,
-    //     bottom: 13,
-    // },
+    {
+        title: SALE_LABEL.k67b2qo0,
+        tags: ['pos'],
+        isSpecial: false,
+        text: SALE_LABEL.k67b4ube,
+        example: SALE_LABEL.k67cpp87,
+        key: '1080',
+        right: 6,
+        bottom: 13,
+        isOffline: true
+    },
+    {
+        title: SALE_LABEL.k67b2qwc,
+        tags: ['pos'],
+        isSpecial: false,
+        text: SALE_LABEL.k67b4ujq,
+        example: SALE_LABEL.k67cppgj,
+        key: '2070',
+        right: 22,
+        bottom: 13,
+        isOffline: true
+    },
 ];
 
 /**

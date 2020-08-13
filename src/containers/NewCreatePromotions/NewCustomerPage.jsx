@@ -450,7 +450,7 @@ class NewCustomerPage extends Component {
                                 <div className={selfStyle.contentTitle}>{title}</div>
                                 <div className={selfStyle.cardWrapper}>
                                     {
-                                        list.map((item, index) => (
+                                        list.filter(item => !item.isOffline).map((item, index) => (
                                             <NewPromotionCard
                                                 size="special"
                                                 key={item.key}
