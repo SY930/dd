@@ -13,23 +13,30 @@ export default class Gift extends Component {
     };
     /** 表单内容变化时的监听 */
     onFormChange = (key, value) => {
-        const { idx, onChange } = this.props;
+        const { idx, onChange, treeData } = this.props;
         if(key === 'countType') {
             const options = (value === '0') ? timeOpts : dayOpts;
             this.setState({ options });
-            this.form.setFieldsValue({ 'giftEffectTimeHours': value });
+            // this.form.setFieldsValue({ 'giftEffectTimeHours': value });
         }
         if(key==='effectType'){
             if(value === '1') {
                 this.setState({ formKeys: formKeys1 },()=>{
                     const countType = this.form.getFieldValue('countType');
-                    this.form.setFieldsValue({ 'giftEffectTimeHours': countType });
+                    // this.form.setFieldsValue({ 'giftEffectTimeHours': countType });
                 });
             } else {
                 this.setState({ formKeys: formKeys2 });
             }
         }
         onChange(idx, { [key]: value });
+        
+        if(key==='giftID' && treeData.length > 0){
+            let flatTree = treeData.map(item => item.children).flat(Infinity)
+            let id = flatTree.findIndex(item => item.value == value)
+            let {label = ''} =flatTree[id]
+            onChange(idx, { giftName: label });
+        }
     }
     /** 得到form */
     getForm = (node) => {

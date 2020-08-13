@@ -56,10 +56,11 @@ class BlindBox extends Component {
      * 回显数据
      */
     setData4Step1(data) {
-        const { eventStartDate: sd, eventEndDate: ed, validCycle, smsGate: sms } = data;
+        let { eventStartDate: sd, eventEndDate: ed, smsGate } = data;
         const eventRange = [moment(sd), moment(ed)];
+        smsGate = `${smsGate}`
         
-        return { ...data, eventRange };
+        return { ...data, eventRange, smsGate };
     }
 
     setData4Step2(data) {
@@ -176,7 +177,7 @@ class BlindBox extends Component {
 
         const defaultShareTitle = 'duang!被一个盲盒砸中，看你手气了~';
         let shareInfo = { type: '79', shareTitle: shareTitle || defaultShareTitle, shareSubtitle, restaurantShareImagePath, shareImagePath }
-        return { eventImagePath, openLottery, lottery, shareInfo };
+        return { eventImagePath, openLottery, lottery, shareInfo, userCount };
     }
 
     /***
@@ -337,7 +338,7 @@ class BlindBox extends Component {
             const rawObj =  { sortIndex, giftOdds, presentType, needShow: 0 };    // 基础数据
             if(isPoint){
                 const { presentValue } = x;
-                const obj = { ...rawObj, ...others, presentType: '2', presentValue, cardTypeID: defaultCardType };
+                const obj = { ...others, ...rawObj,  presentType: '2', presentValue, cardTypeID: defaultCardType };
                 gifts.push(obj);
             }
             if(isTicket){
@@ -351,7 +352,7 @@ class BlindBox extends Component {
                         if(etype === '1' && countType === '1') {
                             effectType = '3';
                         }
-                        const obj = { ...rawObj, ...rangeObj, ...others, effectType };
+                        const obj = { ...others, ...rawObj, ...rangeObj,  effectType };
                         gifts.push(obj);
                     });
                 }
@@ -456,7 +457,7 @@ class BlindBox extends Component {
         return { 1: step1, 2: step2, 3: step3 }[current];
     }
     render() {
-        const { current, formData1, formData2, formData3, form, needShow } = this.state;
+        const { current, formData1, formData2, formData3, form, needShow, userCount } = this.state;
         const { groupCardTypeList, mpList, settleUnitInfoList } = this.state;
         const footer = this.renderFooter(current);
         return (
@@ -505,6 +506,7 @@ class BlindBox extends Component {
                                 getForm={this.onSetForm}
                                 formData={formData3}
                                 needShow={needShow}
+                                // userCount={userCount}
                                 getNeedShow={this.getNeedShow}
                             />
                         }

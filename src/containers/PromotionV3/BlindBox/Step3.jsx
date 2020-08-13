@@ -43,12 +43,14 @@ class Step3 extends Component {
     }
 
     openBoxRender = (d) => {
-        let {needShow} = this.props
+        let {needShow, formData} = this.props
+        let {userCount} = formData
+        const disable = (userCount > 0);
         return (
             <div>
                 <div className={css.titBox}>
                     <p className={css.titleTip}>明盒</p>
-                    <Switch defaultChecked={needShow} onChange={this.needShowChange} checkedChildren="开" unCheckedChildren="关" />
+                    <Switch defaultChecked={needShow} disabled={disable} onChange={this.needShowChange} checkedChildren="开" unCheckedChildren="关" />
                 </div>
                 <p>盲盒活动中，部分可以直接展示给消费者礼品可以设置明盒礼品，全盲盒活动则不需要设置</p>
             </div>

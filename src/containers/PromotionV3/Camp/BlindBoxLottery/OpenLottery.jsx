@@ -62,8 +62,8 @@ class OpenLottery extends Component {
         this.onAllChange({ giftList });
     }
     render() {
-        const { disable } = this.state;
         const { value, decorator } = this.props;
+        const disable = value && value.userCount > 0;    // 如果被用了，不能编辑
         let {giftList = []} = value
         return (
             <div className={css.mainBox}>
