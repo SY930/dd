@@ -26,8 +26,11 @@ class MutliGift extends Component {
             let flatTree = treeData.map(x => x.children).flat(Infinity)
             list.forEach(item => {
                 let ids = flatTree.findIndex(x => x.value == item.giftID)
-                let {label = ''} = flatTree[ids]
-                item.giftName = label
+                console.log('id', ids)
+                if(ids >= 0){
+                    let {label = ''} = flatTree[ids]
+                    item.giftName = label 
+                } 
             })
         }
         onChange(list);
