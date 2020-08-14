@@ -307,7 +307,7 @@ class AddGifts extends React.Component {
                                 />
                                 <Icon
                                     type="down"
-                                    style={{ position: 'absolute', top: 10, left: 225 }}
+                                    style={{ position: 'absolute', top: 10, right: 10 }}
                                     className="input_click"
                                     onClick={() => { toggleFun(index); }}
                                 />
