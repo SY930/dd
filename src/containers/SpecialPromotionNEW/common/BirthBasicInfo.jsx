@@ -34,7 +34,7 @@ const format = 'YYYYMMDD'
 
 
 // 起止日期
-const showActDataType = ['52']
+const showActDataType = ['51', '52']
 
 @injectIntl
 class PromotionBasicInfo extends React.Component {
@@ -49,8 +49,8 @@ class PromotionBasicInfo extends React.Component {
             tipDisplay: 'none',
             signID: props.specialPromotion.getIn(['$eventInfo', 'signID']) || '',
             involvementGiftAdvanceDays: 0,
-            actStartDate: [],
-            actStartDateTemp: []
+            actDate: [],
+            actDateTemp: []
         };
         this.promotionNameInputRef = null;
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -80,8 +80,8 @@ class PromotionBasicInfo extends React.Component {
             sendMsg: `${specialPromotion.smsGate || this.state.smsGate || '0'}`,
             name: eventName,
             involvementGiftAdvanceDays: involvementGiftAdvanceDays || 0,
-            actStartDate: (eventStartDate && eventEndDate) ? [moment(eventStartDate),moment(eventEndDate)] : [],
-            actStartDateTemp: (eventStartDate && eventEndDate) ? [moment(eventStartDate),moment(eventEndDate)] : []
+            actDate: (eventStartDate && eventEndDate) ? [moment(eventStartDate),moment(eventEndDate)] : [],
+            actDateTemp: (eventStartDate && eventEndDate) ? [moment(eventStartDate),moment(eventEndDate)] : []
         });
 
 
@@ -109,6 +109,7 @@ class PromotionBasicInfo extends React.Component {
                     nextFlag = false;
                     this.setState({ advanceDaysFlag: false });
                 }
+                const { actDate } = this.state
 
                 // save state to redux
 
@@ -119,17 +120,31 @@ class PromotionBasicInfo extends React.Component {
                         smsGate: this.state.sendMsg,
                         eventName: this.state.name,
                         signID: this.state.signID,
+                        eventStartDate: actDate[0] && moment(actDate[0]).format(format),
+                        eventEndDate: actDate[1] && moment(actDate[1]).format(format),
                         involvementGiftAdvanceDays: this.state.involvementGiftAdvanceDays,
                     })
+                    const opts = {
+                        groupID: this.props.user.accountInfo.groupID,
+                        eventWay: this.props.type,
+                        eventStartDate: actDate[0] && moment(actDate[0]).format(format),
+                        eventEndDate: actDate[1] && moment(actDate[1]).format(format)
+                    };
+                    // 编辑时，解放自己的选项不被排除; 新建时没有id, 也不会传到后端
+                    opts.itemID = this.props.specialPromotion.getIn(['$eventInfo', 'itemID']);
+                    this.props.saleCenterGetExcludeCardLevelIds(opts);
+                    if (opts.eventStartDate) {
+                        this.props.getEventExcludeCardTypes(opts);
+                    }
                 }
             } else {
                 if (err1) {
                     nextFlag = false;
                 }
-                const { actStartDate } = this.state
+                const { actDate } = this.state
 
-                const  eventStartDate = actStartDate[0] && moment(actStartDate[0]).format(format)
-                const eventEndDate = actStartDate[1] && moment(actStartDate[1]).format(format)
+                const  eventStartDate = actDate[0] && moment(actDate[0]).format(format)
+                const eventEndDate = actDate[1] && moment(actDate[1]).format(format)
 
                 if (nextFlag) {
                     this.props.setSpecialBasicInfo({
@@ -137,8 +152,8 @@ class PromotionBasicInfo extends React.Component {
                         smsGate: this.state.sendMsg,
                         eventName: this.state.name,
                         signID: this.state.signID,
-                        eventStartDate: actStartDate[0] && moment(actStartDate[0]).format(format),
-                        eventEndDate: actStartDate[1] && moment(actStartDate[1]).format(format)
+                        eventStartDate: actDate[0] && moment(actDate[0]).format(format),
+                        eventEndDate: actDate[1] && moment(actDate[1]).format(format)
                     })
                     const opts = {
                         groupID: this.props.user.accountInfo.groupID,
@@ -285,14 +300,15 @@ class PromotionBasicInfo extends React.Component {
 
     handleActDateChange = (e) => {
         this.setState({
-            actStartDate: e
+            actDate: e
         })
     }
 
     renderPeriodSelector = () => {
 
         // 日期选择器
-        const { actStartDate, actStartDateTemp} = this.state
+        const { actDate, actDateTemp} = this.state
+        let {type} = this.props
 
         return (
 
@@ -303,17 +319,19 @@ class PromotionBasicInfo extends React.Component {
                     wrapperCol={{ span: 17 }}
                     >
                     <Row>
-                        <Col span={21}>
+                        <Col span={19}>
 
-                            <RangePicker value={actStartDate} onChange={this.handleActDateChange} disabledDate= {(currentDate) => {
+                            <RangePicker value={actDate} onChange={this.handleActDateChange} disabledDate= {(currentDate) => {
                                 if(this.props.isNew) {
                                     return false
                                 }
-                                return !currentDate.isBetween(actStartDateTemp[0], actStartDateTemp[1])
+                                // 完善资料送礼 52 日期限制
+                                let disabledDates = type == '52' ? !currentDate.isBetween(actDateTemp[0], actDateTemp[1]) : false
+                                return disabledDates
                             }} />
 
                         </Col>
-                        <Col offset={1} span={2}>
+                        <Col offset={1} span={4}>
                             <div className={styles.ActivityDateDay}>
                                 <span>
                                     {this.getDateCount()}
@@ -328,17 +346,17 @@ class PromotionBasicInfo extends React.Component {
     }
 
     getDateCount() {
-        const {  actStartDate } = this.state;
-        if (undefined ===  actStartDate[0] || undefined ===  actStartDate[1]) {
+        const {  actDate } = this.state;
+        if (undefined ===  actDate[0] || undefined ===  actDate[1]) {
             return 0
         }
 
-        if ( actStartDate[0] === null ||   actStartDate[1] === null) {
+        if ( actDate[0] === null ||   actDate[1] === null) {
             return 0
         }
 
-        return   actStartDate[1]
-            .diff( actStartDate[0], 'days') + 1;
+        return   actDate[1]
+            .diff( actDate[0], 'days') + 1;
     }
     render() {
         // TODO:编码不能重复
@@ -375,6 +393,9 @@ class PromotionBasicInfo extends React.Component {
                         />
                         )}
                 </FormItem>
+                
+                {showActDataType.includes(this.props.type) ?  this.renderPeriodSelector()  : null}
+
                 {this.renderMoreInfo()}
 
                 <FormItem
@@ -395,8 +416,6 @@ class PromotionBasicInfo extends React.Component {
                         }
                     </Select>
                 </FormItem>
-                {showActDataType.includes(this.props.type) ?  this.renderPeriodSelector()  : null}
-
 
                 {
                     (this.state.sendMsg == 1 || this.state.sendMsg == 3 || this.state.sendMsg == 4) && (
