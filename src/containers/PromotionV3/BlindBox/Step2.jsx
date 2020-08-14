@@ -49,7 +49,10 @@ class Step2 extends Component {
     }
     /** formItems 重新设置 */
     resetFormItems() {
-        const { defaultCardType, mpIDList, joinCount, settleUnitID, ...other } = formItems2;
+        let {formData} = this.props
+        let {userCount} = formData
+        const disable = (userCount > 0);
+        const { defaultCardType, mpIDList, joinCount, settleUnitID, participateRule, ...other } = formItems2;
         const render = d => d()(<TimeLimit decorator={d} />);
         const mpOptions = this.getMpOpts();
         const mpRender = d => d()(<MpList options={mpOptions} decorator={d} />);
@@ -57,8 +60,8 @@ class Step2 extends Component {
         const settleOptions = this.getSettleUnitInfoOpts();
         return {
             ...other,
-            // mpIDList: {...mpIDList, options: mpOptions},
             mpIDList: {...mpIDList, render: mpRender},
+            participateRule: {...participateRule, disabled: disable},
             joinCount: {...joinCount, render},
             defaultCardType: {...defaultCardType, options},
             settleUnitID: {...settleUnitID, options: settleOptions},

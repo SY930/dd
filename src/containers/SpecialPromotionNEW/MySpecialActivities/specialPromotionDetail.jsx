@@ -242,14 +242,18 @@ class SpecialPromotionDetail extends React.Component {
                         ) : null
                 }
                 {
-                    record.eventStartDate !== '20000101' && record.eventEndDate !== '29991231' &&
-                        record.eventStartDate !== '0' && record.eventEndDate !== '0' ?
+                    (record.eventStartDate !== '20000101' && record.eventEndDate !== '29991231' &&
+                        record.eventStartDate !== '0' && record.eventEndDate !== '0') || record.eventWay == '51' ?
                         (
                             <Row>
                                 <Col span={4} style={{ textAlign: 'right' }}>{this.props.intl.formatMessage(STRING_SPE.db60c8ac0a379138)}</Col>
                                 <Col span={1} style={{ textAlign: 'center' }}>:</Col>
                                 <Col span={18} style={{ textAlign: 'left' }}>
-                                    {`${moment(record.eventStartDate, 'YYYY/MM/DD').format('YYYY/MM/DD')} - ${moment(record.eventEndDate, 'YYYY/MM/DD').format('YYYY/MM/DD')}`}
+                                    {
+                                        (record.eventStartDate !== '20000101' && record.eventEndDate !== '29991231' &&
+                                        record.eventStartDate !== '0' && record.eventEndDate !== '0') ? 
+                                            `${moment(record.eventStartDate, 'YYYY/MM/DD').format('YYYY/MM/DD')} - ${moment(record.eventEndDate, 'YYYY/MM/DD').format('YYYY/MM/DD')}` : '不限制'
+                                    }
                                 </Col>
                             </Row>
                         ) : null
@@ -432,6 +436,25 @@ class SpecialPromotionDetail extends React.Component {
             )
         }
         if(way == 64) {//评价送礼
+
+            const list = records.filter(v => v.presentType === 1)
+            return (
+                <div>
+                    <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
+                    <Col span={24}>
+                        {this.renderGiftInfoTable(list, way)}
+                    </Col>
+                    <Col style={{ marginTop: 10 }} span={18}>
+                            {this.renderPointsTable()}
+                        </Col>
+                    {this.renderSearch()}
+                    <Col span={24}>
+                        {this.renderActivityInfoTable()}
+                    </Col>
+                </div>
+            )
+        }
+        if(way == 79) {//盲盒
 
             const list = records.filter(v => v.presentType === 1)
             return (

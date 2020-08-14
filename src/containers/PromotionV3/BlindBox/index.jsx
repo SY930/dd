@@ -56,14 +56,15 @@ class BlindBox extends Component {
      * 回显数据
      */
     setData4Step1(data) {
-        const { eventStartDate: sd, eventEndDate: ed, validCycle, smsGate: sms } = data;
+        let { eventStartDate: sd, eventEndDate: ed, smsGate } = data;
         const eventRange = [moment(sd), moment(ed)];
+        smsGate = `${smsGate}`
         
-        return { ...data, eventRange };
+        return { ...data, eventRange, smsGate };
     }
 
     setData4Step2(data) {
-        let { mpIDList, participateRule, presentValue, settleUnitID, countCycleDays, partInTimes, defaultCardType, autoRegister } = data;
+        let { mpIDList, participateRule, presentValue, settleUnitID, countCycleDays, partInTimes, defaultCardType, autoRegister, userCount } = data;
         // 参与条件
         let presentValue1 = 0;
         let presentValue2 = 0;
@@ -98,7 +99,7 @@ class BlindBox extends Component {
                 countCycleDays
             }
         }
-        return { mpIDList, participateRule: `${participateRule}`, presentValue1, presentValue2, settleUnitID: (settleUnitID | 0), joinCount, defaultCardType, autoRegister: `${autoRegister}` };
+        return { mpIDList, participateRule: `${participateRule}`, presentValue1, presentValue2, settleUnitID: (settleUnitID | 0), joinCount, defaultCardType, autoRegister: `${autoRegister}`, userCount };
     }
     setData4Step3(data, gifts) {
         const { eventImagePath, shareTitle, shareSubtitle, shareImagePath, restaurantShareImagePath, userCount} = data;
@@ -114,8 +115,8 @@ class BlindBox extends Component {
             const type = `${presentType}`;  // 组件要string类型的
             let newItem = { isPoint: false, isTicket: false, presentType: '1', giftList: [],  bagList: [], ...lottery[index] };
             if(presentType === 2) {   // 积分
-                const { presentValue, cardTypeID = '' } = x;
-                newItem = { ...newItem, presentValue, cardTypeID, isPoint: true };
+                const { presentValue, cardTypeID = '', ...others } = x;
+                newItem = { ...others, ...newItem, presentValue, cardTypeID, isPoint: true };
             }
             // 礼品
             if(presentType === 1) {
@@ -133,7 +134,7 @@ class BlindBox extends Component {
                     countType = '1';
                     etype = '1';
                 }
-                const giftList = [...newGiftList, {id: giftID, giftID, effectType: `${etype}`, giftEffectTimeHours: `${hours}`, countType, rangeDate, ...others }];
+                const giftList = [...newGiftList, { ...others, id: giftID, giftID, effectType: `${etype}`, giftEffectTimeHours: `${hours}`, countType, rangeDate }];
                 newItem = { ...newItem, giftList, isTicket: true, presentType: type };
             }
             lottery[index] = { id: `${sortIndex}`, giftOdds, userCount, ...newItem };
@@ -146,8 +147,8 @@ class BlindBox extends Component {
             const type = `${presentType}`;  // 组件要string类型的
             let newItem = { isPoint: false, isTicket: false, presentType: '1', giftList: [], ...openLottery};
             if(presentType == 2) {   // 积分
-                const { presentValue } = x;
-                newItem = { ...newItem, presentValue, isPoint: true };
+                const { presentValue, ...others } = x;
+                newItem = { ...others, ...newItem, presentValue, isPoint: true };
             }
             // 礼品
             if(presentType === 1) {
@@ -165,7 +166,7 @@ class BlindBox extends Component {
                     countType = '1';
                     etype = '1';
                 }
-                const giftList = [...newGiftList, {id: giftID, giftID, effectType: `${etype}`, giftEffectTimeHours: `${hours}`, countType, rangeDate, ...others }];
+                const giftList = [...newGiftList, {...others, id: giftID, giftID, effectType: `${etype}`, giftEffectTimeHours: `${hours}`, countType, rangeDate }];
                 newItem = { ...newItem, giftList, isTicket: true, presentType: type };
             }
             openLottery = { id: `${sortIndex}`, userCount, ...newItem };
@@ -174,8 +175,9 @@ class BlindBox extends Component {
         const defVal = { id: '1', needShow: 1, presentValue: '', isPoint: false, isTicket: true, presentType: '1', giftList: [{ id: '001', effectType: '1' }] };
         openLottery = JSON.stringify(openLottery) == '{}' ? defVal : openLottery
 
-        let shareInfo = { type: '79', shareTitle, shareSubtitle, restaurantShareImagePath, shareImagePath }
-        return { eventImagePath, openLottery, lottery, shareInfo };
+        const defaultShareTitle = 'duang!被一个盲盒砸中，看你手气了~';
+        let shareInfo = { type: '79', shareTitle: shareTitle || defaultShareTitle, shareSubtitle, restaurantShareImagePath, shareImagePath }
+        return { eventImagePath, openLottery, lottery, shareInfo, userCount };
     }
 
     /***
@@ -331,12 +333,12 @@ class BlindBox extends Component {
         const gifts = [];   // 后端要的专属key名
         // 盲盒礼品
         lottery.forEach((x, i) => {
-            const { giftOdds, isPoint, isTicket, presentType } = x;
+            const { giftOdds, isPoint, isTicket, presentType, giftList, ...others } = x;
             const sortIndex = i + 1;       // 后端要的排序
             const rawObj =  { sortIndex, giftOdds, presentType, needShow: 0 };    // 基础数据
             if(isPoint){
                 const { presentValue } = x;
-                const obj = { ...rawObj, presentType: '2', presentValue, cardTypeID: defaultCardType };
+                const obj = { ...others, ...rawObj,  presentType: '2', presentValue, cardTypeID: defaultCardType };
                 gifts.push(obj);
             }
             if(isTicket){
@@ -350,7 +352,7 @@ class BlindBox extends Component {
                         if(etype === '1' && countType === '1') {
                             effectType = '3';
                         }
-                        const obj = { ...rawObj, ...rangeObj, ...others, effectType };
+                        const obj = { ...others, ...rawObj, ...rangeObj,  effectType };
                         gifts.push(obj);
                     });
                 }
@@ -358,11 +360,11 @@ class BlindBox extends Component {
         });
         // 明盒礼品
         if(needShow){
-            const { isPoint, isTicket, presentType } = openLottery;
+            const { isPoint, isTicket, presentType, giftList, ...others } = openLottery;
             const rawObj =  { presentType, needShow: 1 };    // 基础数据
             if(isPoint){
                 const { presentValue } = openLottery;
-                const obj = { ...rawObj, presentType: '2', presentValue, cardTypeID: defaultCardType };
+                const obj = { ...rawObj, ...others, presentType: '2', presentValue, cardTypeID: defaultCardType };
                 gifts.push(obj);
             }
             if(isTicket){
@@ -455,7 +457,7 @@ class BlindBox extends Component {
         return { 1: step1, 2: step2, 3: step3 }[current];
     }
     render() {
-        const { current, formData1, formData2, formData3, form, needShow } = this.state;
+        const { current, formData1, formData2, formData3, form, needShow, userCount } = this.state;
         const { groupCardTypeList, mpList, settleUnitInfoList } = this.state;
         const footer = this.renderFooter(current);
         return (
@@ -504,6 +506,7 @@ class BlindBox extends Component {
                                 getForm={this.onSetForm}
                                 formData={formData3}
                                 needShow={needShow}
+                                // userCount={userCount}
                                 getNeedShow={this.getNeedShow}
                             />
                         }

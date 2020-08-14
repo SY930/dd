@@ -362,8 +362,8 @@ export default class ShareRules extends Component {
                                 )
                             }
                             {
-                                filteredShareGroups.map((shareGroup, index) => {
-                                    const a1 = <span>{SALE_LABEL.k639vfea} {SALE_LABEL.k639vexm}</span>;                                    return (
+                                filteredShareGroups.map((shareGroup, index) => {                                   
+                                    return (
                                         <div
                                             key={`${index}`}
                                             className={style.shareGroupWrapper}
@@ -396,7 +396,7 @@ export default class ShareRules extends Component {
                                                             {COMMON_LABEL.edit}
                                                         </Button>
                                                     ) : (
-                                                        <Tooltip title={SALE_LABEL.k639vegy + this.props.user.shopID > 0 ? SALE_LABEL.k639vf5y : a1}>
+                                                        <Tooltip title={`${'只能编辑由'}${this.props.user.shopID > 0 ? '本店铺' : '集团'}${'创建的共享组'}`}>
                                                             <Button disabled type="ghost" style={{marginRight: 10}}>
                                                                 <Icon type="edit"/>
                                                                 {COMMON_LABEL.edit}
@@ -411,7 +411,7 @@ export default class ShareRules extends Component {
                                                             {COMMON_LABEL.delete}
                                                         </Button>
                                                     ) : (
-                                                        <Tooltip title={SALE_LABEL.k639vepa + this.props.user.shopID > 0 ? SALE_LABEL.k639vf5y : a1}>
+                                                        <Tooltip title={`${'只能删除由'}${this.props.user.shopID > 0 ? '本店铺' : '集团'}${'创建的共享组'}`}>
                                                             <Button disabled type="ghost">
                                                                 <Icon type="delete"/>
                                                                 {COMMON_LABEL.delete}

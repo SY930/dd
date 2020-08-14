@@ -519,7 +519,14 @@ class GiftAddModalStep extends React.PureComponent {
                 this.handleDiscountRuleChange(value);
                 break;
 
-            
+            case 'compositeDiscount': 
+                // 买赠券，数据初始化
+                let {reduceType, reduceValue} = value
+                values.specialPriceVolSetting = reduceValue
+                values.discountRateSetting = reduceValue
+                values.discountDecreaseVolSetting = reduceValue
+                break;
+
             default:
                 break;
         }

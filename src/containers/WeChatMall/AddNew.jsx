@@ -179,7 +179,7 @@ class NewActivity extends React.Component {
     renderActivityButtons = () => {
         const {whiteList} = this.state;
         return (
-            WECHAT_MALL_ACTIVITIES.map((activity, index) => {
+            WECHAT_MALL_ACTIVITIES.filter(item => !item.isOffline).map((activity, index) => {
                 return (
                     <Authority key={activity.key} rightCode={BASIC_PROMOTION_CREATE}>
                         <NewPromotionCard

@@ -572,7 +572,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                     ):
                     (
                         <FormItem
-                            label={SALE_LABEL.k5m6e3y3 + cardScopeType == 0 ? k5m3oq98 : k5m4pxa1 }
+                            label={'适用' + (cardScopeType == 0 ? k5m3oq98 : k5m4pxa1) }
                             className={styles.FormItemStyle}
                             labelCol={{ span: 4 }}
                             wrapperCol={{ span: 17 }}

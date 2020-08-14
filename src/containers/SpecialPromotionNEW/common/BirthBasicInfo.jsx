@@ -19,6 +19,9 @@ import {
     saleCenterQueryFsmGroupSettleUnit,
     queryFsmGroupEquityAccount,
     querySMSSignitureList,
+    saleCenterGetShopOfEventByDate,
+    getEventExcludeCardTypes,
+    saleCenterGetExcludeEventList,
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import { SEND_MSG } from '../../../redux/actions/saleCenterNEW/types'
 import {queryWechatMpInfo} from "../../GiftNew/_action";
@@ -46,6 +49,7 @@ class PromotionBasicInfo extends React.Component {
             description: null,
             sendMsg: '1',
             name: '',
+            dateRange: Array(2),
             tipDisplay: 'none',
             signID: props.specialPromotion.getIn(['$eventInfo', 'signID']) || '',
             involvementGiftAdvanceDays: 0,
@@ -74,6 +78,30 @@ class PromotionBasicInfo extends React.Component {
 
         const { giftAdvanceDays, eventRemark, eventName, involvementGiftAdvanceDays, eventStartDate, eventEndDate  } = specialPromotion
 
+        let dateRange;
+        let opts;
+        if(specialPromotion.eventStartDate !== '20000101' && specialPromotion.eventEndDate !== '29991231' &&
+        specialPromotion.eventStartDate !== '0' && specialPromotion.eventEndDate !== '0' &&
+        specialPromotion.eventStartDate !== '' && specialPromotion.eventEndDate !== ''){
+            dateRange = [moment(specialPromotion.eventStartDate, 'YYYYMMDD'), moment(specialPromotion.eventEndDate, 'YYYYMMDD')];
+
+            opts = {
+                groupID: this.props.user.accountInfo.groupID,
+                eventWay: this.props.type,
+                eventStartDate: this.state.dateRange[0] ? this.state.dateRange[0].format('YYYYMMDD') : '',
+                eventEndDate: this.state.dateRange[1] ? this.state.dateRange[1].format('YYYYMMDD') : '',
+                itemID: this.props.specialPromotion.getIn(['$eventInfo', 'itemID']),
+            };
+            this.props.getEventExcludeCardTypes(opts);
+        }else{
+            dateRange = Array(2)
+
+            opts = {
+                groupID: this.props.user.accountInfo.groupID,
+                eventWay: this.props.type,
+                itemID: this.props.specialPromotion.getIn(['$eventInfo', 'itemID']),
+            };
+        }
         this.setState({
             advanceDays:  giftAdvanceDays,
             description: eventRemark,
@@ -81,9 +109,11 @@ class PromotionBasicInfo extends React.Component {
             name: eventName,
             involvementGiftAdvanceDays: involvementGiftAdvanceDays || 0,
             actStartDate: (eventStartDate && eventEndDate) ? [moment(eventStartDate),moment(eventEndDate)] : [],
-            actStartDateTemp: (eventStartDate && eventEndDate) ? [moment(eventStartDate),moment(eventEndDate)] : []
+            actStartDateTemp: (eventStartDate && eventEndDate) ? [moment(eventStartDate),moment(eventEndDate)] : [],
+            dateRange,
         });
 
+        this.props.saleCenterGetExcludeCardLevelIds(opts);
 
         specialPromotion.settleUnitID > 0 && !(specialPromotion.accountNo > 0) ?
             this.props.saleCenterQueryFsmGroupSettleUnit({ groupID: this.props.user.accountInfo.groupID })
@@ -119,6 +149,8 @@ class PromotionBasicInfo extends React.Component {
                         smsGate: this.state.sendMsg,
                         eventName: this.state.name,
                         signID: this.state.signID,
+                        eventStartDate: this.state.dateRange[0] ? this.state.dateRange[0].format('YYYYMMDD') : '0',
+                        eventEndDate: this.state.dateRange[1] ? this.state.dateRange[1].format('YYYYMMDD') : '0',
                         involvementGiftAdvanceDays: this.state.involvementGiftAdvanceDays,
                     })
                 }
@@ -375,6 +407,9 @@ class PromotionBasicInfo extends React.Component {
                         />
                         )}
                 </FormItem>
+
+                {this.renderPeriodSelector()}
+
                 {this.renderMoreInfo()}
 
                 <FormItem
@@ -472,7 +507,16 @@ const mapDispatchToProps = (dispatch) => {
         },
         queryFsmGroupEquityAccount: (opts) => {
             dispatch(queryFsmGroupEquityAccount(opts))
-        }
+        },
+        saleCenterGetShopOfEventByDate: (opts) => {
+            return dispatch(saleCenterGetShopOfEventByDate(opts));
+        },
+        getEventExcludeCardTypes: (opts) => {
+            dispatch(getEventExcludeCardTypes(opts))
+        },
+        saleCenterGetExcludeEventList: (opts) => {
+            dispatch(saleCenterGetExcludeEventList(opts))
+        },
     }
 };
 
