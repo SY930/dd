@@ -13,7 +13,6 @@ import {
     Popconfirm,
     Tooltip,
     Checkbox,
-    Tabs,
 } from "antd";
 import { connect } from "react-redux";
 import Immutable from "immutable";
@@ -55,7 +54,8 @@ import {
     validatedRuleDataFn,
     validateFlagFn,
     initShowCheckBox,
-    clearCheckBoxData
+    clearCheckBoxData,
+    renderRecommendGiftsDetail
 } from './SpecialPromotionDetailInfoHelp'
 import TicketBag from '../../BasicModules/TicketBag';
 import { axios } from '@hualala/platform-base';
@@ -69,7 +69,7 @@ const FormItem = Form.Item;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
-const { TabPane } = Tabs;
+ 
 
 const getDefaultRecommendSetting = (recommendType = 1) => ({
     recommendType,
@@ -3134,248 +3134,7 @@ class SpecialDetailInfo extends Component {
             </div>
         );
     };
-
-    renderRecommendGiftsDetail = () => {
-        const recommendRange = this.props.specialPromotion.getIn([
-            "$eventInfo",
-            "recommendRange",
-        ]);
-        let recommendRule = this.props.specialPromotion.getIn([
-            "$eventInfo",
-            "recommendRule",
-        ]);
-        let {
-            helpMessageArray,
-            directActiveRuleTabValue,
-            indirectActiveRuleTabValue,
-            checkBoxStatus
-        } = this.state;
-        let activeRulesListArr = null;
-        if (recommendRule) {
-            if(typeof recommendRule === 'number') {
-                recommendRule = String(recommendRule).split('')
-            } else {
-                recommendRule = recommendRule.toJS()
-            }
-
-            activeRulesListArr = activeRulesList.filter((v) =>
-                recommendRule.includes(v.value)
-            );
-        }
-
-        this.currentRecommendRule = recommendRule
-
-        directActiveRuleTabValue =
-        directActiveRuleTabValue ||
-            (activeRulesListArr && activeRulesListArr[0].value);
-
-        indirectActiveRuleTabValue =
-        indirectActiveRuleTabValue ||
-            (activeRulesListArr && activeRulesListArr[0].value);
-
-        let renderRecommentReward;
-
-
-        return (
-            <div className={recommentGiftStyle.recommentGiftStep3Wrap}>
-                <p className={styles.coloredBorderedLabel}>
-                    {this.props.intl.formatMessage(STRING_SPE.d1kge806b957782)}
-                    <span style={{ color: "#f04134" }}>
-                        {helpMessageArray[0]}
-                    </span>
-                </p>
-                <Tabs
-                    hideAdd={true}
-                    onChange={this.handleActiveRuleTabChange('direct')}
-                    activeKey={directActiveRuleTabValue}
-                    type="editable-card"
-                    className={recommentGiftStyle.tabs}
-                >
-                    {activeRulesListArr &&
-                        activeRulesListArr.map((v) => {
-                            switch (+directActiveRuleTabValue) {
-                                case 1:
-                                    renderRecommentReward = this
-                                        .renderRecommendGifts;
-                                    break;
-                                case 2:
-                                    renderRecommentReward = this
-                                        .renderRechargeReward;
-                                    break;
-                                case 3:
-                                    renderRecommentReward = this
-                                        .renderConsumptionReward;
-                                    break;
-                                default:
-                                    renderRecommentReward = this
-                                        .renderRecommendGifts;
-                            }
-                            return (
-                                <TabPane
-                                    closable={false}
-                                    tab={v.label}
-                                    key={v.value}
-                                >
-                                    {directActiveRuleTabValue == 2 &&
-                                        this.renderSaveMoneySetSelector()}
-                                    {directActiveRuleTabValue == 1 ? (
-                                        <div>
-                                            {this.renderCheckbox({
-                                                children: this.renderGivePoint('1',directActiveRuleTabValue),
-                                                key: "giveIntegral", // 赠送积分
-                                                label: "赠送积分",
-                                                ruleType: directActiveRuleTabValue,
-                                                roleType: '1'
-                                            })}
-                                            {this.renderCheckbox({
-                                                key: "giveCoupon",
-                                                label: "赠送优惠券",
-                                                ruleType: directActiveRuleTabValue,
-                                                roleType: '1',
-                                            })}
-                                        </div>
-                                    ) : null}
-                                    {checkBoxStatus[`ruleType${directActiveRuleTabValue}`][`giveCoupon1`]
-                                    && this.renderRecommendGifts(1, directActiveRuleTabValue)}
-                                    {directActiveRuleTabValue > 1 && renderRecommentReward(directActiveRuleTabValue, '1',{
-                                        marginLeft: "22px",
-                                    })}
-                                    {this.renderCheckbox({
-                                        key: "giveCash",
-                                        label: "现金红包",
-                                        children:
-                                        directActiveRuleTabValue == 1
-                                                ? this.renderCash(directActiveRuleTabValue, '1')
-                                                : this.renderCashSaveMoney(
-                                                    directActiveRuleTabValue, '1'
-                                                  ),
-                                        ruleType: directActiveRuleTabValue,
-                                        roleType: '1',
-                                    })}
-                                </TabPane>
-                            );
-                        })}
-                </Tabs>
-
-                {recommendRange > 0 && (
-                    <div>
-                        <p className={styles.coloredBorderedLabel}>
-                            {this.props.intl.formatMessage(
-                                STRING_SPE.d2c8d07mpk78251
-                            )}
-                            <span style={{ color: "#f04134" }}>
-                                {helpMessageArray[1]}
-                            </span>
-                        </p>
-                        <Tabs
-                            hideAdd={true}
-                            onChange={this.handleActiveRuleTabChange('indirect')}
-                            activeKey={indirectActiveRuleTabValue}
-                            type="editable-card"
-                            onEdit={this.handleActiveRuleTabEdit}
-                            className={recommentGiftStyle.tabs}
-                        >
-                            {activeRulesListArr &&
-                                activeRulesListArr.map((v) => {
-                                    switch (+indirectActiveRuleTabValue) {
-                                        case 1:
-                                            renderRecommentReward = this
-                                                .renderRecommendGifts;
-                                            break;
-                                        case 2:
-                                            renderRecommentReward = this
-                                                .renderRechargeReward;
-                                            break;
-                                        case 3:
-                                            renderRecommentReward = this
-                                                .renderConsumptionReward;
-                                            break;
-                                        default:
-                                            renderRecommentReward = this
-                                                .renderRecommendGifts;
-                                    }
-                                    return (
-                                        <TabPane
-                                            closable={false}
-                                            tab={v.label}
-                                            key={v.value}
-                                        >
-                                            {indirectActiveRuleTabValue == 2 &&
-                                                this.renderSaveMoneySetSelector()}
-                                            {indirectActiveRuleTabValue == 1 ? (
-                                                <div>
-                                                    {this.renderCheckbox({
-                                                        children: this.renderGivePoint('2',indirectActiveRuleTabValue),
-                                                        key: "giveIntegral", // 赠送积分
-                                                        label: "赠送积分",
-                                                        ruleType: indirectActiveRuleTabValue,
-                                                        roleType: '2'
-                                                    })}
-                                                    {this.renderCheckbox({
-                                                        key: "giveCoupon",
-                                                        label: "赠送优惠券",
-                                                        ruleType: indirectActiveRuleTabValue,
-                                                        roleType: '2',
-                                                    })}
-                                                </div>
-                                            ) : null}
-                                            {checkBoxStatus[`ruleType${indirectActiveRuleTabValue}`][`giveCoupon2`] && this.renderRecommendGifts(2, indirectActiveRuleTabValue)}
-                                             { indirectActiveRuleTabValue > 1 && renderRecommentReward(indirectActiveRuleTabValue,'2', {
-                                                marginLeft: "22px",
-                                            })}
-                                            {this.renderCheckbox({
-                                                key: "giveCash",
-                                                label: "现金红包",
-                                                children:  indirectActiveRuleTabValue == 1
-                                                ? this.renderCash(indirectActiveRuleTabValue,'2')
-                                                : this.renderCashSaveMoney(
-                                                    indirectActiveRuleTabValue,
-                                                    '2'
-                                                  ),
-                                                  ruleType: indirectActiveRuleTabValue,
-                                                  roleType: '2',
-                                            })}
-                                        </TabPane>
-                                    );
-                                })}
-                        </Tabs>
-                    </div>
-                )}
-
-                <p className={styles.coloredBorderedLabel}>
-                    {this.props.intl.formatMessage(STRING_SPE.d1kge806b957926)}
-                    <Tooltip
-                        title={this.props.intl.formatMessage(
-                            STRING_SPE.d56721718236081
-                        )}
-                    >
-                        <Icon
-                            style={{ fontWeight: "normal" }}
-                            type="question-circle"
-                        />
-                    </Tooltip>
-                </p>
-                <div style={{ marginLeft: "44px" }}>
-                    {this.renderCheckbox({
-                        children: this.renderGivePoint('0','999'),
-                        key: "giveIntegral", // 赠送积分
-                        label: "赠送积分",
-                        roleType: '0',
-                        ruleType:  '999',
-                    })}
-                    {this.renderCheckbox({
-                        key: "giveCoupon",
-                        label: "赠送优惠券",
-                        ruleType: '999',
-                        roleType: '0',
-                    })}
-                    { checkBoxStatus[`ruleType999`] && checkBoxStatus[`ruleType999`][`giveCoupon0`]
-                    && this.renderRecommendGifts(0,'999')}
-                </div>
-                {this.renderShareInfo2()}
-            </div>
-        );
-    };
+ 
     renderAccumulateGiftsDetail() {
         const {
             giftGetRule,
@@ -3796,11 +3555,11 @@ class SpecialDetailInfo extends Component {
     render() {
         const { giveCoupon } = this.state;
         const { type } = this.props;
-        console.log('type--',type)
+        
         if (type == "68") {
             // 推荐有礼的render与其它活动相差较大
             // return <Three _this={this}/>;
-            return this.renderRecommendGiftsDetail()
+            return renderRecommendGiftsDetail.call(this)
         }
         if (type == "63") {
             // 唤醒送礼，多个天数档位设置需要去重
