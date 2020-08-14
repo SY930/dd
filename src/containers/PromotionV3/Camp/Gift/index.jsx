@@ -31,12 +31,6 @@ export default class Gift extends Component {
         }
         onChange(idx, { [key]: value });
         
-        if(key==='giftID' && treeData.length > 0){
-            let flatTree = treeData.map(item => item.children).flat(Infinity)
-            let id = flatTree.findIndex(item => item.value == value)
-            let {label = ''} =flatTree[id]
-            onChange(idx, { giftName: label });
-        }
     }
     /** 得到form */
     getForm = (node) => {
