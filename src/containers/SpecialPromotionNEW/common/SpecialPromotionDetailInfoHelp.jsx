@@ -12,16 +12,16 @@ import {
     Icon,
     Select,
     Tooltip,
-    Tabs
+    Tabs,
 } from 'antd';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import { axiosData } from '../../../helpers/util';
 import AddGifts from '../common/AddGifts';
 import _ from 'lodash'
-import recommentGiftStyle from "../recommendGifts/recommentGift.less";
-import { STRING_SPE, COMMON_SPE } from "i18n/common/special";
-import { activeRulesList } from "../recommendGifts/constant";
+import recommentGiftStyle from '../recommendGifts/recommentGift.less';
+import { STRING_SPE, COMMON_SPE } from 'i18n/common/special';
+import { activeRulesList } from '../recommendGifts/constant';
 
 const { TabPane } = Tabs;
 const FormItem = Form.Item;
@@ -29,28 +29,28 @@ const FormItem = Form.Item;
 
 const renderRecommendGiftsDetail = function () {
     const recommendRange = this.props.specialPromotion.getIn([
-        "$eventInfo",
-        "recommendRange",
+        '$eventInfo',
+        'recommendRange',
     ]);
     let recommendRule = this.props.specialPromotion.getIn([
-        "$eventInfo",
-        "recommendRule",
+        '$eventInfo',
+        'recommendRule',
     ]);
     let {
         helpMessageArray,
         directActiveRuleTabValue,
         indirectActiveRuleTabValue,
-        checkBoxStatus
+        checkBoxStatus,
     } = this.state;
     let activeRulesListArr = null;
     if (recommendRule) {
-        if(typeof recommendRule === 'number') {
+        if (typeof recommendRule === 'number') {
             recommendRule = String(recommendRule).split('')
         } else {
             recommendRule = recommendRule.toJS()
         }
 
-        activeRulesListArr = activeRulesList.filter((v) =>
+        activeRulesListArr = activeRulesList.filter(v =>
             recommendRule.includes(v.value)
         );
     }
@@ -72,7 +72,7 @@ const renderRecommendGiftsDetail = function () {
         <div className={recommentGiftStyle.recommentGiftStep3Wrap}>
             <p className={styles.coloredBorderedLabel}>
                 {this.props.intl.formatMessage(STRING_SPE.d1kge806b957782)}
-                <span style={{ color: "#f04134" }}>
+                <span style={{ color: '#f04134' }}>
                     {helpMessageArray[0]}
                 </span>
             </p>
@@ -113,37 +113,37 @@ const renderRecommendGiftsDetail = function () {
                                 {directActiveRuleTabValue == 1 ? (
                                     <div>
                                         {this.renderCheckbox({
-                                            children: this.renderGivePoint('1',directActiveRuleTabValue),
-                                            key: "giveIntegral", // 赠送积分
-                                            label: "赠送积分",
-                                            ruleType: directActiveRuleTabValue,
-                                            roleType: '1'
-                                        })}
-                                        {this.renderCheckbox({
-                                            key: "giveCoupon",
-                                            label: "赠送优惠券",
+                                            children: this.renderGivePoint('1', directActiveRuleTabValue),
+                                            key: 'giveIntegral', // 赠送积分
+                                            label: '赠送积分',
                                             ruleType: directActiveRuleTabValue,
                                             roleType: '1',
                                         })}
                                     </div>
                                 ) : null}
-                                {checkBoxStatus[`ruleType${directActiveRuleTabValue}`][`giveCoupon1`]
+
+                                {directActiveRuleTabValue > 1 && renderRecommentReward(directActiveRuleTabValue, '1', {
+                                    marginLeft: '22px',
+                                })}
+                                { indirectActiveRuleTabValue == 1 ? this.renderCheckbox({
+                                    key: 'giveCash',
+                                    label: '现金红包',
+                                    children: this.renderCash(indirectActiveRuleTabValue, '2'),
+                                    ruleType: indirectActiveRuleTabValue,
+                                    roleType: '2',
+                                }) : null }
+                                {directActiveRuleTabValue == 1 ? (
+                                    <div>
+                                        {this.renderCheckbox({
+                                            key: 'giveCoupon',
+                                            label: '赠送优惠券',
+                                            ruleType: directActiveRuleTabValue,
+                                            roleType: '1',
+                                        })}
+                                    </div>
+                                ) : null}
+                                {checkBoxStatus[`ruleType${directActiveRuleTabValue}`].giveCoupon1
                                 && this.renderRecommendGifts(1, directActiveRuleTabValue)}
-                                {directActiveRuleTabValue > 1 && renderRecommentReward(directActiveRuleTabValue, '1',{
-                                    marginLeft: "22px",
-                                })}
-                                {this.renderCheckbox({
-                                    key: "giveCash",
-                                    label: "现金红包",
-                                    children:
-                                    directActiveRuleTabValue == 1
-                                            ? this.renderCash(directActiveRuleTabValue, '1')
-                                            : this.renderCashSaveMoney(
-                                                directActiveRuleTabValue, '1'
-                                              ),
-                                    ruleType: directActiveRuleTabValue,
-                                    roleType: '1',
-                                })}
                             </TabPane>
                         );
                     })}
@@ -155,7 +155,7 @@ const renderRecommendGiftsDetail = function () {
                         {this.props.intl.formatMessage(
                             STRING_SPE.d2c8d07mpk78251
                         )}
-                        <span style={{ color: "#f04134" }}>
+                        <span style={{ color: '#f04134' }}>
                             {helpMessageArray[1]}
                         </span>
                     </p>
@@ -197,36 +197,37 @@ const renderRecommendGiftsDetail = function () {
                                         {indirectActiveRuleTabValue == 1 ? (
                                             <div>
                                                 {this.renderCheckbox({
-                                                    children: this.renderGivePoint('2',indirectActiveRuleTabValue),
-                                                    key: "giveIntegral", // 赠送积分
-                                                    label: "赠送积分",
+                                                    children: this.renderGivePoint('2', indirectActiveRuleTabValue),
+                                                    key: 'giveIntegral', // 赠送积分
+                                                    label: '赠送积分',
                                                     ruleType: indirectActiveRuleTabValue,
-                                                    roleType: '2'
+                                                    roleType: '2',
                                                 })}
+
+                                            </div>
+                                        ) : null}
+
+                                        { indirectActiveRuleTabValue > 1 && renderRecommentReward(indirectActiveRuleTabValue, '2', {
+                                            marginLeft: '22px',
+                                        })}
+                                        { indirectActiveRuleTabValue == 1 ? this.renderCheckbox({
+                                            key: 'giveCash',
+                                            label: '现金红包',
+                                            children: this.renderCash(indirectActiveRuleTabValue, '2'),
+                                            ruleType: indirectActiveRuleTabValue,
+                                            roleType: '2',
+                                        }) : null }
+                                        {indirectActiveRuleTabValue == 1 ? (
+                                            <div>
                                                 {this.renderCheckbox({
-                                                    key: "giveCoupon",
-                                                    label: "赠送优惠券",
+                                                    key: 'giveCoupon',
+                                                    label: '赠送优惠券',
                                                     ruleType: indirectActiveRuleTabValue,
                                                     roleType: '2',
                                                 })}
                                             </div>
                                         ) : null}
-                                        {checkBoxStatus[`ruleType${indirectActiveRuleTabValue}`][`giveCoupon2`] && this.renderRecommendGifts(2, indirectActiveRuleTabValue)}
-                                         { indirectActiveRuleTabValue > 1 && renderRecommentReward(indirectActiveRuleTabValue,'2', {
-                                            marginLeft: "22px",
-                                        })}
-                                        {this.renderCheckbox({
-                                            key: "giveCash",
-                                            label: "现金红包",
-                                            children:  indirectActiveRuleTabValue == 1
-                                            ? this.renderCash(indirectActiveRuleTabValue,'2')
-                                            : this.renderCashSaveMoney(
-                                                indirectActiveRuleTabValue,
-                                                '2'
-                                              ),
-                                              ruleType: indirectActiveRuleTabValue,
-                                              roleType: '2',
-                                        })}
+                                        {checkBoxStatus[`ruleType${indirectActiveRuleTabValue}`].giveCoupon2 && this.renderRecommendGifts(2, indirectActiveRuleTabValue)}
                                     </TabPane>
                                 );
                             })}
@@ -242,27 +243,27 @@ const renderRecommendGiftsDetail = function () {
                     )}
                 >
                     <Icon
-                        style={{ fontWeight: "normal" }}
+                        style={{ fontWeight: 'normal' }}
                         type="question-circle"
                     />
                 </Tooltip>
             </p>
-            <div style={{ marginLeft: "44px" }}>
+            <div style={{ marginLeft: '44px' }}>
                 {this.renderCheckbox({
-                    children: this.renderGivePoint('0','999'),
-                    key: "giveIntegral", // 赠送积分
-                    label: "赠送积分",
+                    children: this.renderGivePoint('0', '999'),
+                    key: 'giveIntegral', // 赠送积分
+                    label: '赠送积分',
                     roleType: '0',
-                    ruleType:  '999',
+                    ruleType: '999',
                 })}
                 {this.renderCheckbox({
-                    key: "giveCoupon",
-                    label: "赠送优惠券",
+                    key: 'giveCoupon',
+                    label: '赠送优惠券',
                     ruleType: '999',
                     roleType: '0',
                 })}
-                { checkBoxStatus[`ruleType999`] && checkBoxStatus[`ruleType999`][`giveCoupon0`]
-                && this.renderRecommendGifts(0,'999')}
+                { checkBoxStatus.ruleType999 && checkBoxStatus.ruleType999.giveCoupon0
+                && this.renderRecommendGifts(0, '999')}
             </div>
             {this.renderShareInfo2()}
         </div>
@@ -1008,7 +1009,7 @@ export {
     validateFlagFn,
     initShowCheckBox,
     clearCheckBoxData,
-    renderRecommendGiftsDetail
+    renderRecommendGiftsDetail,
 }
 
 export default {
@@ -1023,5 +1024,5 @@ export default {
     validateFlagFn,
     initShowCheckBox,
     clearCheckBoxData,
-    renderRecommendGiftsDetail
+    renderRecommendGiftsDetail,
 }

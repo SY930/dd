@@ -69,7 +69,7 @@ const FormItem = Form.Item;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
- 
+
 
 const getDefaultRecommendSetting = (recommendType = 1) => ({
     recommendType,
@@ -527,14 +527,14 @@ class SpecialDetailInfo extends Component {
                     bag,
                 })
             }
-            
+
             if(this.props.type == '21' && giftTotalCount && freeGetLimit == '0') {
                 if(giftTotalCount !== 2147483647) {
                     this.setState({
                         freeGetLimit: '1'
                     })
                 }
-                
+
             }
         }
     }
@@ -2769,6 +2769,24 @@ class SpecialDetailInfo extends Component {
                         </Row>
                     ),
                 })}
+                {
+                    this.renderCheckbox({
+                        key: 'giveCash',
+                        label: '现金红包',
+                        children: this.renderCashSaveMoney(
+                            ruleType,
+                            '2'
+                        ),
+                        ruleType ,
+                        roleType: '2',
+                    })
+                }
+                 {this.renderCheckbox({
+                    key: 'giveCoupon',
+                    label: '赠送优惠券',
+                    ruleType ,
+                    roleType ,
+                })}
             </div>
         );
     };
@@ -2979,7 +2997,10 @@ class SpecialDetailInfo extends Component {
                             {label}
                         </span>
                     </div>
-                    {checked && children}
+                    <div>
+                        {checked && children}
+                    </div>
+                   
                 </div>
             );
     };
@@ -3134,7 +3155,7 @@ class SpecialDetailInfo extends Component {
             </div>
         );
     };
- 
+
     renderAccumulateGiftsDetail() {
         const {
             giftGetRule,
@@ -3555,7 +3576,7 @@ class SpecialDetailInfo extends Component {
     render() {
         const { giveCoupon } = this.state;
         const { type } = this.props;
-        
+
         if (type == "68") {
             // 推荐有礼的render与其它活动相差较大
             // return <Three _this={this}/>;
