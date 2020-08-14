@@ -17,9 +17,19 @@ class MutliGift extends Component {
     }
     onChange = (idx, params) => {
         const { value, onChange } = this.props;
-        const list = [...value];
+        let {treeData} = this.state
+        let list = [...value];
         const giftObj = value[idx];
         list[idx] = {...giftObj, ...params};
+        // 
+        if(treeData.length > 0){
+            let flatTree = treeData.map(x => x.children).flat(Infinity)
+            list.forEach(item => {
+                let ids = flatTree.findIndex(x => x.value == item.giftID)
+                let {label = ''} = flatTree[ids]
+                item.giftName = label
+            })
+        }
         onChange(list);
     }
     onAdd = () => {

@@ -64,7 +64,7 @@ class BlindBox extends Component {
     }
 
     setData4Step2(data) {
-        let { mpIDList, participateRule, presentValue, settleUnitID, countCycleDays, partInTimes, defaultCardType, autoRegister } = data;
+        let { mpIDList, participateRule, presentValue, settleUnitID, countCycleDays, partInTimes, defaultCardType, autoRegister, userCount } = data;
         // 参与条件
         let presentValue1 = 0;
         let presentValue2 = 0;
@@ -99,7 +99,7 @@ class BlindBox extends Component {
                 countCycleDays
             }
         }
-        return { mpIDList, participateRule: `${participateRule}`, presentValue1, presentValue2, settleUnitID: (settleUnitID | 0), joinCount, defaultCardType, autoRegister: `${autoRegister}` };
+        return { mpIDList, participateRule: `${participateRule}`, presentValue1, presentValue2, settleUnitID: (settleUnitID | 0), joinCount, defaultCardType, autoRegister: `${autoRegister}`, userCount };
     }
     setData4Step3(data, gifts) {
         const { eventImagePath, shareTitle, shareSubtitle, shareImagePath, restaurantShareImagePath, userCount} = data;
