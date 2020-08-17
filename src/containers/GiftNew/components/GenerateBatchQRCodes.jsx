@@ -534,7 +534,23 @@ class GenerateBatchQRCodes extends Component {
         }
         return (
             <FormItem
-                label="二维码有效期"
+                label={(
+                    <div style={{ display: 'inline-block'}}>
+                        <span>二维码有效期</span>
+                        <Tooltip title={
+                            <div>
+                                <p>
+                                    临时码：受微信限制，有效期最长可设置30天；
+                                </p>
+                                <p>
+                                    永久码：永久有效，但会占用10000条/公众号 永久码额度；
+                                </p>
+                            </div>
+                        }>
+                            <Icon style={{ marginLeft: 5, marginRight: -5}} type="question-circle" />
+                        </Tooltip>
+                    </div>
+                )}
                 className={styles.FormItemStyle}
                 labelCol={{ span: 6 }}
                 wrapperCol={{ span: 11 }}
@@ -679,7 +695,53 @@ class GenerateBatchQRCodes extends Component {
                     this.renderStartAndEndNumber()
                 }
                 <FormItem
-                    label="二维码类型"
+                    label= {
+                        (
+                            <div style={{ display: 'inline-block'}}>
+                                <span>二维码类型</span>
+                                <Tooltip title={
+                                    <div style={{maxWidth: 600}}>
+                                       <h4>公众号关注二维码 </h4>
+                                       <div style={{paddingBottom: 10}}>
+                                            <p>优势：只能使用微信扫码进行充值。用户使用微信扫描二维码后需要先关注公众号再充值礼品卡。优势是可以增加公众号粉丝并且用户完成充值后可以通过公众号配置的菜单快捷找到会员卡看到充值金额。</p>
+                                            <p>劣势：</p>
+                                            <ul style={{
+                                                listStyle: 'disc',
+                                                paddingLeft: 40
+                                            }}>
+                                                <li>
+                                                    仅能使用微信进行扫码充值
+                                                </li>
+                                                <li>
+                                                    永久码占用微信公众号10000关注码上限额度；临时码最长仅支持30天有效期。
+                                                </li>
+                                            </ul>
+                                       </div>
+
+                                       <h4>普通二维码 </h4>
+                                       <div>
+                                            
+                                            <p>优势：</p>
+                                            <ul style={{
+                                                listStyle: 'disc',
+                                                paddingLeft: 40
+                                            }}>
+                                                <li>
+                                                    用户无需关注公众号，支持使用微信、支付宝扫码进行充值
+                                                </li>
+                                                <li>
+                                                    二维码永久有效
+                                                </li>
+                                            </ul>
+                                            <p>劣势：用户充值后不方便查找充值金额</p>
+                                       </div>
+                                    </div>
+                                }>
+                                    <Icon style={{ marginLeft: 5, marginRight: -5}} type="question-circle" />
+                                </Tooltip>
+                            </div>
+                        )
+                    }
                     className={styles.FormItemStyle}
                     labelCol={{ span: 6 }}
                     wrapperCol={{ span: 11 }}
