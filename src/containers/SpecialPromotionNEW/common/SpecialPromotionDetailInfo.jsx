@@ -553,6 +553,9 @@ class SpecialDetailInfo extends Component {
     }
     initState = () => {
         let giftInfo = this.props.specialPromotion.get("$giftInfo").toJS();
+        let eventRecommendSettings = this.props.specialPromotion
+        .get("$eventRuleInfos")
+        .toJS();
         const data = this.initiateDefaultGifts();
         const type = this.props.type
         let pointObj = {
@@ -571,7 +574,19 @@ class SpecialDetailInfo extends Component {
             })
             this.recommendOtherGifts = otherGifts
 
+            // 提取礼品券的数据
+            eventRecommendSettings.forEach((setting) => {
+
+                // 添加礼品到data中
+                if(Array.isArray(setting.gifts)) {
+                    const settingGifts = setting.gifts.filter(item => item.recommendRule != 1)
+                    giftInfo = [...giftInfo, ...settingGifts]
+                }
+
+            });
+
         }
+
         if(type == 60 || type == 61 || type == 53) {
             giftInfo = giftInfo.filter(v => v.presentType === 1)
         }
@@ -627,30 +642,27 @@ class SpecialDetailInfo extends Component {
             data[index].lastConsumeIntervalDays = gift.lastConsumeIntervalDays
                 ? `${gift.lastConsumeIntervalDays}`
                 : undefined;
+            if(this.props.type === '68') {
+                if(data[index].recommendType === 0) {
+                    data[index].recommendType = `${gift.recommendType}#999`
+                } else {
+                    data[index].recommendType = `${gift.recommendType}#${gift.recommendRule}`
+                }
+
+            }
         });
+
         if (this.props.type == "68") {
+            const typeList = ['1#1','2#1','0#999','1#2','2#2','1#3','2#3']
             // 小数组，为了代码方便重复遍历的
-            if (data.every((gift) => gift.recommendType != 1)) {
-                data.push(getDefaultGiftData('1#1', "recommendType"));
-            }
-            if (data.every((gift) => gift.recommendType != 2)) {
-                data.push(getDefaultGiftData('2#1', "recommendType"));
-            }
-            if (data.every((gift) => gift.recommendType != 0)) {
-                data.push(getDefaultGiftData('0#999', "recommendType"));
-            }
-            data.forEach(v => {
-                if(typeof v.recommendType === 'number') {
-                    if(v.recommendType === 0) {
-                        v.recommendType = '0#999'
-                    } else if(v.recommendType === 1) {
-                        v.recommendType =  '1#1'
-                    } else if(v.recommendType === 2) {
-                        v.recommendType =  '2#1'
-                    }
+            typeList.forEach(v => {
+                if(!data.find(item => item.recommendType == v)) {
+                    data.push(getDefaultGiftData(v, "recommendType"));
                 }
             })
-            // console.log('data---',data)
+
+
+            // console.log('data---2222',data)
         }
         let wakeupSendGiftsDataArray = [];
         const multiConfig = this.getMultipleLevelConfig();
@@ -738,6 +750,7 @@ class SpecialDetailInfo extends Component {
             } else {
                 setting.eventRecommendSettings = []
             }
+
 
 
         });
@@ -2775,10 +2788,10 @@ class SpecialDetailInfo extends Component {
                         label: '现金红包',
                         children: this.renderCashSaveMoney(
                             ruleType,
-                            '2'
+                            roleType
                         ),
                         ruleType ,
-                        roleType: '2',
+                        roleType,
                     })
                 }
                  {this.renderCheckbox({
@@ -3000,7 +3013,7 @@ class SpecialDetailInfo extends Component {
                     <div>
                         {checked && children}
                     </div>
-                   
+
                 </div>
             );
     };

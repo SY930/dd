@@ -28,6 +28,7 @@ const FormItem = Form.Item;
 
 
 const renderRecommendGiftsDetail = function () {
+    // 直接推荐人和间接推荐人都有
     const recommendRange = this.props.specialPromotion.getIn([
         '$eventInfo',
         'recommendRange',
@@ -76,6 +77,7 @@ const renderRecommendGiftsDetail = function () {
                     {helpMessageArray[0]}
                 </span>
             </p>
+            {/* 直接推荐人 */}
             <Tabs
                 hideAdd={true}
                 onChange={this.handleActiveRuleTabChange('direct')}
@@ -122,15 +124,12 @@ const renderRecommendGiftsDetail = function () {
                                     </div>
                                 ) : null}
 
-                                {directActiveRuleTabValue > 1 && renderRecommentReward(directActiveRuleTabValue, '1', {
-                                    marginLeft: '22px',
-                                })}
                                 { indirectActiveRuleTabValue == 1 ? this.renderCheckbox({
                                     key: 'giveCash',
                                     label: '现金红包',
-                                    children: this.renderCash(indirectActiveRuleTabValue, '2'),
+                                    children: this.renderCash(indirectActiveRuleTabValue, '1'),
                                     ruleType: indirectActiveRuleTabValue,
-                                    roleType: '2',
+                                    roleType: '1',
                                 }) : null }
                                 {directActiveRuleTabValue == 1 ? (
                                     <div>
@@ -142,13 +141,18 @@ const renderRecommendGiftsDetail = function () {
                                         })}
                                     </div>
                                 ) : null}
+
+                                {/* 储值后获得和消费后获得 */}
+                                {directActiveRuleTabValue > 1 && renderRecommentReward(directActiveRuleTabValue, '1', {
+                                    marginLeft: '22px',
+                                })}
                                 {checkBoxStatus[`ruleType${directActiveRuleTabValue}`].giveCoupon1
                                 && this.renderRecommendGifts(1, directActiveRuleTabValue)}
                             </TabPane>
                         );
                     })}
             </Tabs>
-
+            {/* 间接推荐人 */}
             {recommendRange > 0 && (
                 <div>
                     <p className={styles.coloredBorderedLabel}>
@@ -207,9 +211,6 @@ const renderRecommendGiftsDetail = function () {
                                             </div>
                                         ) : null}
 
-                                        { indirectActiveRuleTabValue > 1 && renderRecommentReward(indirectActiveRuleTabValue, '2', {
-                                            marginLeft: '22px',
-                                        })}
                                         { indirectActiveRuleTabValue == 1 ? this.renderCheckbox({
                                             key: 'giveCash',
                                             label: '现金红包',
@@ -227,6 +228,10 @@ const renderRecommendGiftsDetail = function () {
                                                 })}
                                             </div>
                                         ) : null}
+                                        {/* 储值后获得和消费后获得 */}
+                                        { indirectActiveRuleTabValue > 1 && renderRecommentReward(indirectActiveRuleTabValue, '2', {
+                                            marginLeft: '22px',
+                                        })}
                                         {checkBoxStatus[`ruleType${indirectActiveRuleTabValue}`].giveCoupon2 && this.renderRecommendGifts(2, indirectActiveRuleTabValue)}
                                     </TabPane>
                                 );
@@ -279,6 +284,7 @@ const renderRecommendGiftsDetail = function () {
  * @returns
  */
 const checkChoose = function (key, ruleType, roleType) {
+    // console.log('checkChoose', key, ruleType, roleType)
     // 每个角色至少选择一个礼物
     const ruleTypeNum = Number(ruleType);
     const roleTypeNum = Number(roleType)
@@ -286,7 +292,7 @@ const checkChoose = function (key, ruleType, roleType) {
     // console.log('this',this.state.checkBoxStatus,key,ruleType,roleType)
     const giftList1Key = ['giveCash', 'giveCoupon', 'giveIntegral']
     const giftList2Key = ['giveCoupon', 'giveIntegral']
-    const giftList3Key = ['giveCard', 'giveIntegral', 'giveCash']
+    const giftList3Key = ['giveCard', 'giveIntegral', 'giveCash', 'giveCoupon']
     let giftList = giftList1Key
     if (
         (ruleTypeNum === 1 && roleTypeNum === 1) ||
@@ -295,6 +301,7 @@ const checkChoose = function (key, ruleType, roleType) {
         const chooseList = giftList.filter((v) => {
             return checkBoxStatus[`ruleType${ruleType}`][`${v}${roleType}`]
         })
+
         return chooseList.length
     } else if (
         (ruleTypeNum === 999)
@@ -310,9 +317,6 @@ const checkChoose = function (key, ruleType, roleType) {
         return checkBoxStatus[`ruleType${ruleType}`][`${v}${roleType}`]
     })
     return chooseList.length
-
-
-    return true
 }
 
 /**
@@ -589,9 +593,10 @@ const clearCheckBoxData = function (key, ruleType, roleType) {
     let keyWord = ''
     if (key === 'giveIntegral' && ruleType == 1 && roleType == 1) {
         keyWord = 'pointLimitValue'
-    } else if (key === 'giveCoupon' && ruleType == 1 && roleType == 1) {
+    } else if (key === 'giveCoupon') {
         // 清除优惠券的数据
         const cancelData = data.filter(v => v.recommendType !== `${roleType}#${ruleType}`)
+        // console.log('cancelData--', cancelData, `${roleType}#${ruleType}`)
         if (!cancelData.find(v => v.recommendType === `${roleType}#${ruleType}`)) {
             cancelData.push(this.getDefaultGiftData(`${roleType}#${ruleType}`, 'recommendType'))
         }
@@ -666,6 +671,7 @@ const initShowCheckBox = function () {
     const dataList = data.filter((v) => {
         return v.giftInfo.giftName
     })
+
     dataList.forEach((v) => {
         const [recommendType, recommendRule] = v.recommendType.split('#')
         checkBoxStatusData[`ruleType${recommendRule}`][`giveCoupon${recommendType}`] = true
@@ -837,13 +843,13 @@ const handleSubmitRecommendGifts = function (isPrev) {
 
 
     let validateFlag = true
+   
 
-
-    console.log('recommendRule', recommendRule)
+    // console.log('recommendRule', recommendRule)
     // 校验券必填项
     const validatedRuleData = validatedRuleDataFn.call(this, data)
 
-    console.log('validatedRuleData', validatedRuleData)
+    // console.log('validatedRuleData', validatedRuleData)
     validateFlag = validateFlagFn.call(this, validatedRuleData)
 
     // 把中奖率累加,判断总和是否满足小于等于100
@@ -899,7 +905,7 @@ const handleSubmitRecommendGifts = function (isPrev) {
         }
 
         // console.log('beRecommendCou',beRecommendCou)
-        // console.log('giftInfo--',giftInfo,shareInfo)
+        // console.log('giftInfo--', giftInfo, shareInfo)
 
         const {
             shareTitle,
@@ -940,47 +946,44 @@ const handleSubmitRecommendGifts = function (isPrev) {
             return recommendRule.includes(String(v.rule))
         }).map((v) => {
             v.rule = Number(v.rule)
-            if (v.rule == 1) {
-                v.gifts = []
-                v.eventRecommendSettings.forEach((presentValue, i) => {
-                    const { redPackageLimitValue } = presentValue
+            v.gifts = []
 
-                    if (redPackageLimitValue) {
-                        presentValue.giftItemID = cashGiftVal
-                    } else {
-                        delete presentValue.giftItemID
-                    }
-                })
-                const rule1Gifts = giftInfo.filter(v => v.recommendType).map((v) => {
-                    const [recommendType, recommendRule] = v.recommendType.split('#')
-                    v.recommendType = recommendType
-                    v.recommendRule = recommendRule
-                    return v
-                })
+            v.eventRecommendSettings.forEach((val, i) => {
+                const { redPackageLimitValue } = val
+
+                if (redPackageLimitValue) {
+                    val.giftItemID = cashGiftVal
+                } else {
+                    delete val.giftItemID
+                }
+                if (val.redPackageLimitValue) {
+                    val.giftItemID = cashGiftVal
+                }
+                if (val.pointRate) {
+                    val.pointRate /= 100
+                }
+                if (val.rechargeRate) {
+                    val.rechargeRate /= 100
+                }
+                if (val.consumeRate) {
+                    val.consumeRate /= 100
+                }
+                if (val.redPackageRate) {
+                    val.redPackageRate /= 100
+                }
+                val.recommendRule = v.rule
+            })
+          
+            const rule1Gifts = _.cloneDeep(giftInfo).filter(gift => gift.recommendType).map((giftItem) => {
+                const [recommendType, recommendRule] = giftItem.recommendType.split('#')
+                giftItem.recommendType = recommendType
+                giftItem.recommendRule = recommendRule
+                return giftItem
+            })
+
+            v.gifts = v.gifts.concat(rule1Gifts.filter(item => item.recommendType == v.rule))
 
 
-                v.gifts = v.gifts.concat(rule1Gifts)
-                // v.eventRecommendSettings = eventRecommendSettings1Data
-            } else {
-                v.eventRecommendSettings.forEach((val) => {
-                    if (val.redPackageLimitValue) {
-                        val.giftItemID = cashGiftVal
-                    }
-                    if (val.pointRate) {
-                        val.pointRate /= 100
-                    }
-                    if (val.rechargeRate) {
-                        val.rechargeRate /= 100
-                    }
-                    if (val.consumeRate) {
-                        val.consumeRate /= 100
-                    }
-                    if (val.redPackageRate) {
-                        val.redPackageRate /= 100
-                    }
-                    val.recommendRule = v.rule
-                })
-            }
             return v
         })
 
