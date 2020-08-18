@@ -551,6 +551,7 @@ const renderRecommendGiftsFn = function (roleType, ruleType) {
         <Row>
             <Col span={17} offset={1}>
                 <AddGifts
+                    key={recommendType}
                     maxCount={10}
                     typeValue={recommendType}
                     typePropertyName={'recommendType'}
