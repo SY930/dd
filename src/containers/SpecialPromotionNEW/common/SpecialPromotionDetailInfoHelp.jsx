@@ -940,7 +940,7 @@ const handleSubmitRecommendGifts = function (isPrev) {
         /** 整理直接推荐人和间接推荐人数据 */
         let { eventRecommendSettings } = this.state;
         eventRecommendSettings = _.cloneDeep(eventRecommendSettings)
-      
+
 
         eventRecommendSettings = eventRecommendSettings.filter((v) => {
             return recommendRule.includes(String(v.rule))
@@ -948,40 +948,49 @@ const handleSubmitRecommendGifts = function (isPrev) {
             v.rule = Number(v.rule)
             v.gifts = []
 
-            v.eventRecommendSettings.forEach((val, i) => {
-                const { redPackageLimitValue } = val
 
-                if (redPackageLimitValue) {
-                    val.giftItemID = cashGiftVal
-                } else {
-                    delete val.giftItemID
-                }
-                if (val.redPackageLimitValue) {
-                    val.giftItemID = cashGiftVal
-                }
-                if (val.pointRate) {
-                    val.pointRate /= 100
-                }
-                if (val.rechargeRate) {
-                    val.rechargeRate /= 100
-                }
-                if (val.consumeRate) {
-                    val.consumeRate /= 100
-                }
-                if (val.redPackageRate) {
-                    val.redPackageRate /= 100
-                }
-                val.recommendRule = v.rule
-            })
-         
+            if (v.rule == 1) {
+                v.eventRecommendSettings.forEach((presentValue, i) => {
+                    const { redPackageLimitValue } = presentValue
+
+                    if (redPackageLimitValue) {
+                        presentValue.giftItemID = cashGiftVal
+                    } else {
+                        delete presentValue.giftItemID
+                    }
+                })
+            } else {
+                v.eventRecommendSettings.forEach((val) => {
+                    if (val.redPackageLimitValue) {
+                        val.giftItemID = cashGiftVal
+                    }
+                    if (val.pointRate) {
+                        val.pointRate /= 100
+                    }
+                    if (val.rechargeRate) {
+                        val.rechargeRate /= 100
+                    }
+                    if (val.consumeRate) {
+                        val.consumeRate /= 100
+                    }
+                    if (val.redPackageRate) {
+                        val.redPackageRate /= 100
+                    }
+                    val.recommendRule = v.rule
+                })
+            }
+
             const rule1Gifts = _.cloneDeep(giftInfo).filter(gift => gift.recommendType).map((giftItem) => {
                 const [recommendType, recommendRule] = giftItem.recommendType.split('#')
                 giftItem.recommendType = recommendType
                 giftItem.recommendRule = recommendRule
                 return giftItem
             })
-         
-            v.gifts = v.gifts.concat(rule1Gifts.filter(item => item.recommendRule == v.rule))
+            const rule1GiftsList = rule1Gifts.filter(item => item.recommendRule == v.rule)
+            if (rule1GiftsList.length) {
+                v.gifts = rule1GiftsList
+            }
+
 
             return v
         })
