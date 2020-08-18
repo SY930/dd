@@ -17,7 +17,7 @@ import {injectIntl} from './IntlDecor';
 
 const TabPane = Tabs.TabPane;
 
-const freeGift = 'http://res.hualala.com/basicdoc/a1eaa4f9-0b62-4030-b0c4-f660224f7615.png'
+const freeGift = 'http://res.hualala.com/basicdoc/437d4ffb-aa5c-47c9-8285-c259b434375f.png'
 const couponImg = 'http://res.hualala.com/basicdoc/c0ec5b4f-295c-4981-9e76-5a21269647b4.png'
 const trumpetImg = 'http://res.hualala.com/basicdoc/d0a331dd-09aa-4081-b1b8-c88e7c867139.png'
 const modalImg1 = 'http://res.hualala.com/basicdoc/cacbd1d3-6694-47e8-b17c-b71c3131b542.png'
