@@ -400,12 +400,12 @@ const renderGivePointFn = function (roleType, ruleType) {
 
                     ],
                 })(
-                <PriceInput
-                        addonAfter={'分'}
-                        modal="float"
-                        maxNum={7}
-                        placeholder="请输入数值"
-                    />
+                    <PriceInput
+                    addonAfter={'分'}
+                    modal="float"
+                    maxNum={7}
+                    placeholder="请输入数值"
+                />
             )
             }
         </FormItem>
@@ -843,7 +843,7 @@ const handleSubmitRecommendGifts = function (isPrev) {
 
 
     let validateFlag = true
-   
+
 
     // console.log('recommendRule', recommendRule)
     // 校验券必填项
@@ -940,7 +940,7 @@ const handleSubmitRecommendGifts = function (isPrev) {
         /** 整理直接推荐人和间接推荐人数据 */
         let { eventRecommendSettings } = this.state;
         eventRecommendSettings = _.cloneDeep(eventRecommendSettings)
-
+      
 
         eventRecommendSettings = eventRecommendSettings.filter((v) => {
             return recommendRule.includes(String(v.rule))
@@ -973,16 +973,15 @@ const handleSubmitRecommendGifts = function (isPrev) {
                 }
                 val.recommendRule = v.rule
             })
-          
+         
             const rule1Gifts = _.cloneDeep(giftInfo).filter(gift => gift.recommendType).map((giftItem) => {
                 const [recommendType, recommendRule] = giftItem.recommendType.split('#')
                 giftItem.recommendType = recommendType
                 giftItem.recommendRule = recommendRule
                 return giftItem
             })
-
-            v.gifts = v.gifts.concat(rule1Gifts.filter(item => item.recommendType == v.rule))
-
+         
+            v.gifts = v.gifts.concat(rule1Gifts.filter(item => item.recommendRule == v.rule))
 
             return v
         })
