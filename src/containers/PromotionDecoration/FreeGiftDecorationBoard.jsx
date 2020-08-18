@@ -55,9 +55,9 @@ export default class FreeGiftDecorationBoard extends Component {
                 <img src={iphone} alt=""/>
                 <img className={style.fakeHeader} src={phoneTop} alt=""/>
 
-                <div style={{ background: activeBg, paddingTop: 80 }} className={style.scrollArea}>
-                    <img style={{ width: '100%', position: 'absolute', top: 0 }} src={activeImg || freeGift} alt=""/>
-                    <div style={{position: 'absolute',left: '50%',transform: 'translateX(-50%)', top: '370px',width: '100%'}}>
+                <div style={{ background: activeBg }} className={style.scrollArea}>
+                    <img style={{ width: '100%'  }} src={activeImg || freeGift} alt=""/>
+                    <div style={{ width: '100%'}}>
                         <div className={style.freeGiftTimeText}  >活动时间：2019/09/08 - 2019/09/09</div>
                         {isShowGiftListContent ? <div style={{color: giftListTitleColor}} className={style.freeGiftGetGift}>
                             <div><img style={{width: '14px',height: '14px'}} src={trumpetImg}/> 用户 ****领取了优惠券</div>
