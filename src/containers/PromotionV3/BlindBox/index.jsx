@@ -327,7 +327,6 @@ class BlindBox extends Component {
     setStep3Data(formData) {
         let {needShow, formData2} = this.state
         // 注册卡类项  加入到积分礼品项中
-        const { defaultCardType } = formData2;
         let { lottery, eventImagePath, openLottery, shareInfo } = formData;
         const gifts = [];   // 后端要的专属key名
         // 盲盒礼品
@@ -337,7 +336,7 @@ class BlindBox extends Component {
             const rawObj =  { sortIndex, giftOdds, presentType, needShow: 0 };    // 基础数据
             if(isPoint){
                 const { presentValue } = x;
-                const obj = { ...others, ...rawObj,  presentType: '2', presentValue, cardTypeID: defaultCardType };
+                const obj = { ...others, ...rawObj,  presentType: '2', presentValue };
                 gifts.push(obj);
             }
             if(isTicket){
@@ -363,7 +362,7 @@ class BlindBox extends Component {
             const rawObj =  { presentType, needShow: 1 };    // 基础数据
             if(isPoint){
                 const { presentValue } = openLottery;
-                const obj = { ...rawObj, ...others, presentType: '2', presentValue, cardTypeID: defaultCardType };
+                const obj = { ...rawObj, ...others, presentType: '2', presentValue };
                 gifts.push(obj);
             }
             if(isTicket){
