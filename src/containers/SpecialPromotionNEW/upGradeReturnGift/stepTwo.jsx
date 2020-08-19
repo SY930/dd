@@ -416,7 +416,7 @@ class StepTwo extends React.Component {
                         onChange={
                             this.editBoxForShopsChange
                         }
-                        // schemaData={this.filterAvailableShops()}
+                        schemaData={this.filterAvailableShops()}
                     />
                 </Form.Item>
                 <div className={userCount > 0 && this.props.type == 64 ? styles.opacitySet : null} style={{ left: 33, width: '88%' }}></div>

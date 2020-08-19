@@ -3589,7 +3589,7 @@ class SpecialDetailInfo extends Component {
     render() {
         const { giveCoupon } = this.state;
         const { type } = this.props;
-
+        // console.log('type--',type)
         if (type == "68") {
             // 推荐有礼的render与其它活动相差较大
             // return <Three _this={this}/>;

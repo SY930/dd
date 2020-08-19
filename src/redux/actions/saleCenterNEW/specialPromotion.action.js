@@ -1,84 +1,84 @@
-import { generateXWWWFormUrlencodedParams } from "../../../helpers/apiConfig";
+import { generateXWWWFormUrlencodedParams } from '../../../helpers/apiConfig';
 
-import { message } from "antd";
+import { message } from 'antd';
 
-import "rxjs";
-import axios from "axios";
-import { fetchFilterShopsSuccess } from "./promotionBasicInfo.action";
-import { axiosData, getAccountInfo } from "../../../helpers/util";
-import { getStore } from "@hualala/platform-base/lib";
+import 'rxjs';
+import axios from 'axios';
+import { fetchFilterShopsSuccess } from './promotionBasicInfo.action';
+import { axiosData, getAccountInfo } from '../../../helpers/util';
+import { getStore } from '@hualala/platform-base/lib';
 
 export const SALE_CENTER_SET_SPECIAL_PROMOTION_EVENT_INFO =
-    "sale center: set special promotion event info new";
+    'sale center: set special promotion event info new';
 export const SALE_CENTER_SET_SPECIAL_PROMOTION_GIFT_INFO =
-    "sale center: set special promotion gift info new";
+    'sale center: set special promotion gift info new';
 export const SALE_CENTER_SET_SPECIAL_PROMOTION_RECOMMEND_SETTINGS_INFO =
-    "sale center: set special promotion recommend settings info new";
+    'sale center: set special promotion recommend settings info new';
 
 export const SALE_CENTER_CHECK_BIRTHDAY_EXIST =
-    "sale center: check birthday exist new";
+    'sale center: check birthday exist new';
 export const SALE_CENTER_CHECK_BIRTHDAY_SUCCESS =
-    "sale center: check birthday exist success new";
+    'sale center: check birthday exist success new';
 export const SALE_CENTER_CHECK_BIRTHDAY_EXIST_FAILED =
-    "sale center: check birthday exist fail new";
+    'sale center: check birthday exist fail new';
 export const SALE_CENTER_GET_EXCLUDE_CARDLEVELIDS =
-    "sale center: get exclude cardLevelIds new";
+    'sale center: get exclude cardLevelIds new';
 export const SALE_CENTER_GET_EXCLUDE_CARD_TYPE_AND_SHOP =
-    "sale center: sale_center_get_exclude_card_type_and_shop";
+    'sale center: sale_center_get_exclude_card_type_and_shop';
 export const SALE_CENTER_SAVE_CURRENT_CAN_USE_SHOP =
-    "sale center: sale_center_save_current_can_use_shop";
+    'sale center: sale_center_save_current_can_use_shop';
 
 export const SALE_CENTER_ADD_SPECIAL_PROMOTION_START =
-    "sale center: add special promotion start new";
+    'sale center: add special promotion start new';
 export const SALE_CENTER_ADD_SPECIAL_PROMOTION_OK =
-    "sale center: add special promotion ok new";
+    'sale center: add special promotion ok new';
 export const SALE_CENTER_ADD_SPECIAL_PROMOTION_FAIL =
-    "sale center: add special promotion fail new";
+    'sale center: add special promotion fail new';
 export const SALE_CENTER_ADD_SPECIAL_PROMOTION_TIMEOUT =
-    "sale center: add special promotion time out new";
+    'sale center: add special promotion time out new';
 export const SALE_CENTER_ADD_SPECIAL_PROMOTION_CANCEL =
-    "sale center: add special promotion cancel new";
+    'sale center: add special promotion cancel new';
 
 export const SALE_CENTER_UPDATE_SPECIAL_PROMOTION_START =
-    "sale center: update special promotion start new";
+    'sale center: update special promotion start new';
 export const SALE_CENTER_UPDATE_SPECIAL_PROMOTION_OK =
-    "sale center: update special promotion ok new";
+    'sale center: update special promotion ok new';
 export const SALE_CENTER_UPDATE_SPECIAL_PROMOTION_FAIL =
-    "sale center: update special promotion fail new";
+    'sale center: update special promotion fail new';
 export const SALE_CENTER_UPDATE_SPECIAL_PROMOTION_TIMEOUT =
-    "sale center: update special promotion time out new";
+    'sale center: update special promotion time out new';
 export const SALE_CENTER_UPDATE_SPECIAL_PROMOTION_CANCEL =
-    "sale center: update special promotion cancel new";
+    'sale center: update special promotion cancel new';
 export const SALE_CENTER_RESET_SPECIAL_PROMOTION =
-    "sale center: update special promotion reset new";
+    'sale center: update special promotion reset new';
 
 export const SALE_CENTER_FETCH_GROUP_MEMBER_START =
-    "sale center: fetch group member start new";
+    'sale center: fetch group member start new';
 export const SALE_CENTER_FETCH_GROUP_MEMBER_OK =
-    "sale center: fetch group member ok new";
+    'sale center: fetch group member ok new';
 export const SALE_CENTER_FETCH_GROUP_MEMBER_FAIL =
-    "sale center: fetch group member fail new";
+    'sale center: fetch group member fail new';
 export const SALE_CENTER_FETCH_GROUP_MEMBER_TIMEOUT =
-    "sale center: fetch group member time out new";
+    'sale center: fetch group member time out new';
 export const SALE_CENTER_FETCH_GROUP_MEMBER_CANCEL =
-    "sale center: fetch group member cancel new";
+    'sale center: fetch group member cancel new';
 export const SALE_CENTER_FSM_SETTLE_UNIT =
-    "sale center: query fsm group settle unit new";
+    'sale center: query fsm group settle unit new';
 export const SALE_CENTER_FSM_EQUITY_UNIT =
-    "sale center: query fsm group equity unit new";
+    'sale center: query fsm group equity unit new';
 export const SALE_CENTER_QUERY_SMS_SIGN_SUCCESS =
-    "sale center: SALE_CENTER_QUERY_SMS_SIGN_SUCCESS";
+    'sale center: SALE_CENTER_QUERY_SMS_SIGN_SUCCESS';
 export const SALE_CENTER_GET_EXCLUDE_EVENT_LIST =
-    "sale center: get exclude event list new";
+    'sale center: get exclude event list new';
 export const SALE_CENTER_QUERY_ONLINE_RESTAURANT_SHOPS_STATUS =
-    "sale center: sale_center_query_online_restaurant_shops_status";
+    'sale center: sale_center_query_online_restaurant_shops_status';
 export const SALE_CENTER_QUERY_GROUP_CRM_CUSTOMER_AMOUNT =
-    "sale center: SALE_CENTER_QUERY_GROUP_CRM_CUSTOMER_AMOUNT";
+    'sale center: SALE_CENTER_QUERY_GROUP_CRM_CUSTOMER_AMOUNT';
 export const SALE_CENTER_QUERY_GROUP_CRM_RFM =
-    "sale center: create RFM member group query";
+    'sale center: create RFM member group query';
 
 export const SALE_CENTER_CARDGROUPID =
-    "sale center: set special promotion event info new222";
+    'sale center: set special promotion event info new222';
 
 export const saleCenterSetSpecialBasicInfoAC = (opts) => {
     return {
@@ -125,37 +125,37 @@ export const saleCenterSaveCreateMemberGroupParams = (opts) => {
 
 // 检查生日赠送
 export const saleCenterCheckExist = (opts) => {
-    const constMessage = message.loading("正在检查", 0);
+    const constMessage = message.loading('正在检查', 0);
     return (dispatch) => {
         dispatch({
             type: SALE_CENTER_CHECK_BIRTHDAY_EXIST,
         });
-        let event = "";
-        if (opts.eventWay == "51") {
-            event = "/api/specialPromotion/checkBirthdayEvent_NEW";
+        let event = '';
+        if (opts.eventWay == '51') {
+            event = '/api/specialPromotion/checkBirthdayEvent_NEW';
         }
-        if (opts.eventWay == "52") {
-            event = "/api/specialPromotion/checkSendGift_NEW";
+        if (opts.eventWay == '52') {
+            event = '/api/specialPromotion/checkSendGift_NEW';
         }
-        if (opts.eventWay == "60") {
-            event = "/api/specialPromotion/checkEventWayExist_NEW";
+        if (opts.eventWay == '60') {
+            event = '/api/specialPromotion/checkEventWayExist_NEW';
         }
 
         fetch(event, {
-            method: "POST",
+            method: 'POST',
             body: JSON.stringify(opts.data),
-            credentials: "include",
+            credentials: 'include',
             headers: {
-                Accept: "*/*",
-                "Content-Type": "application/json; charset=UTF-8",
+                'Accept': '*/*',
+                'Content-Type': 'application/json; charset=UTF-8',
             },
         })
             .then((response) => {
                 if (response.status >= 200 && response.status < 300) {
                     if (
                         response.headers
-                            .get("content-type")
-                            .includes("application/json")
+                            .get('content-type')
+                            .includes('application/json')
                     ) {
                         return response.json();
                     }
@@ -165,7 +165,7 @@ export const saleCenterCheckExist = (opts) => {
             })
             .then((responseJSON) => {
                 // TODO: 讲新添加的数据推送到我的列表当中, 如果有初始化的情况下。
-                if (responseJSON.code === "000") {
+                if (responseJSON.code === '000') {
                     constMessage();
                     opts.success && opts.success(responseJSON);
                     dispatch({
@@ -192,21 +192,21 @@ export const saleCenterGetExcludeCardLevelIds = (opts) => {
         return (dispatch) => {};
     }
     return (dispatch) => {
-        fetch("/api/specialPromotion/getExcludeCardLevelIds_NEW", {
-            method: "POST",
+        fetch('/api/specialPromotion/getExcludeCardLevelIds_NEW', {
+            method: 'POST',
             body: JSON.stringify(opts),
-            credentials: "include",
+            credentials: 'include',
             headers: {
-                Accept: "*/*",
-                "Content-Type": "application/json; charset=UTF-8",
+                'Accept': '*/*',
+                'Content-Type': 'application/json; charset=UTF-8',
             },
         })
             .then((response) => {
                 if (response.status >= 200 && response.status < 300) {
                     if (
                         response.headers
-                            .get("content-type")
-                            .includes("application/json")
+                            .get('content-type')
+                            .includes('application/json')
                     ) {
                         return response.json();
                     }
@@ -215,7 +215,7 @@ export const saleCenterGetExcludeCardLevelIds = (opts) => {
                 return Promise.reject(new Error(response.statusText));
             })
             .then((responseJSON) => {
-                if (responseJSON.code === "000") {
+                if (responseJSON.code === '000') {
                     dispatch({
                         type: SALE_CENTER_GET_EXCLUDE_CARDLEVELIDS,
                         payload: responseJSON,
@@ -232,11 +232,11 @@ export const getEventExcludeCardTypes = (opts) => {
     }
     return (dispatch) => {
         axiosData(
-            "/specialPromotion/getEventExcludeCardTypes.ajax",
+            '/specialPromotion/getEventExcludeCardTypes.ajax',
             opts,
             {},
-            { path: "" },
-            "HTTP_SERVICE_URL_PROMOTION_NEW"
+            { path: '' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
         ).then(({ excludeCardTypeIDs = [], excludeCardTypeShops = [] }) => {
             dispatch({
                 type: SALE_CENTER_GET_EXCLUDE_CARD_TYPE_AND_SHOP,
@@ -258,11 +258,11 @@ export const getEventExcludeCardTypes = (opts) => {
 export const getGroupCRMCustomAmount = () => {
     return (dispatch) => {
         axiosData(
-            "/specialPromotion/queryCrmCustomerCount.ajax",
+            '/specialPromotion/queryCrmCustomerCount.ajax',
             {},
             { needThrow: true },
-            { path: "" },
-            "HTTP_SERVICE_URL_PROMOTION_NEW"
+            { path: '' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
         ).then((res) => {
             dispatch({
                 type: SALE_CENTER_QUERY_GROUP_CRM_CUSTOMER_AMOUNT,
@@ -286,11 +286,11 @@ export const saveCurrentCanUseShops = (arr) => {
 export const queryFsmGroupEquityAccount = () => {
     return (dispatch) => {
         axiosData(
-            "/specialPromotion/queryFsmGroupEquityAccount.ajax",
+            '/specialPromotion/queryFsmGroupEquityAccount.ajax',
             { accountID: getAccountInfo().accountID },
             {},
-            { path: "accountInfoList" },
-            "HTTP_SERVICE_URL_PROMOTION_NEW"
+            { path: 'accountInfoList' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
         ).then((res) => {
             dispatch({
                 type: SALE_CENTER_FSM_EQUITY_UNIT,
@@ -307,11 +307,11 @@ export const querySMSSignitureList = () => {
         return axiosData(
             `/promotion/message/query.ajax?groupID=${getStore()
                 .getState()
-                .user.getIn(["accountInfo", "groupID"])}`,
+                .user.getIn(['accountInfo', 'groupID'])}`,
             {},
             null,
-            { path: "records" },
-            "HTTP_SERVICE_URL_PROMOTION_NEW"
+            { path: 'records' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
         )
             .then((records = []) => {
                 dispatch({
@@ -327,21 +327,21 @@ export const querySMSSignitureList = () => {
 // 获取短信结算主体
 export const saleCenterQueryFsmGroupSettleUnit = (opts) => {
     return (dispatch) => {
-        fetch("/api/specialPromotion/queryFsmGroupSettleUnit_NEW", {
-            method: "POST",
+        fetch('/api/specialPromotion/queryFsmGroupSettleUnit_NEW', {
+            method: 'POST',
             body: JSON.stringify(opts),
-            credentials: "include",
+            credentials: 'include',
             headers: {
-                Accept: "*/*",
-                "Content-Type": "application/json; charset=UTF-8",
+                'Accept': '*/*',
+                'Content-Type': 'application/json; charset=UTF-8',
             },
         })
             .then((response) => {
                 if (response.status >= 200 && response.status < 300) {
                     if (
                         response.headers
-                            .get("content-type")
-                            .includes("application/json")
+                            .get('content-type')
+                            .includes('application/json')
                     ) {
                         return response.json();
                     }
@@ -350,12 +350,12 @@ export const saleCenterQueryFsmGroupSettleUnit = (opts) => {
                 return Promise.reject(new Error(response.statusText));
             })
             .then((responseJSON) => {
-                if (responseJSON.code === "000") {
+                if (responseJSON.code === '000') {
                     if (Array.isArray(responseJSON.accountInfoList)) {
                         // 应后端要求 余额balance置为0
                         responseJSON.accountInfoList &&
                             responseJSON.accountInfoList.forEach(
-                                (item) => (item.balance = 0)
+                                item => (item.balance = 0)
                             );
                         dispatch({
                             type: SALE_CENTER_FSM_SETTLE_UNIT,
@@ -368,23 +368,24 @@ export const saleCenterQueryFsmGroupSettleUnit = (opts) => {
     };
 };
 // 获取同时段的唤醒活动
+// 后端说与/api/specialPromotion/getExcludeEventList是同一个接口
 export const saleCenterGetExcludeEventList = (opts) => {
     return (dispatch) => {
-        fetch("/api/specialPromotion/getExcludeEventList_NEW", {
-            method: "POST",
+        fetch('/api/specialPromotion/getExcludeEventList_NEW', {
+            method: 'POST',
             body: JSON.stringify(opts),
-            credentials: "include",
+            credentials: 'include',
             headers: {
-                Accept: "*/*",
-                "Content-Type": "application/json; charset=UTF-8",
+                'Accept': '*/*',
+                'Content-Type': 'application/json; charset=UTF-8',
             },
         })
             .then((response) => {
                 if (response.status >= 200 && response.status < 300) {
                     if (
                         response.headers
-                            .get("content-type")
-                            .includes("application/json")
+                            .get('content-type')
+                            .includes('application/json')
                     ) {
                         return response.json();
                     }
@@ -393,7 +394,7 @@ export const saleCenterGetExcludeEventList = (opts) => {
                 return Promise.reject(new Error(response.statusText));
             })
             .then((responseJSON) => {
-                if (responseJSON.code === "000") {
+                if (responseJSON.code === '000') {
                     dispatch({
                         type: SALE_CENTER_GET_EXCLUDE_EVENT_LIST,
                         payload: responseJSON,
@@ -404,11 +405,11 @@ export const saleCenterGetExcludeEventList = (opts) => {
     };
 };
 // export const addSpecialPromotion = opts => ({ type: SALE_CENTER_ADD_SPECIAL_PROMOTION_START, payload: opts });
-const addSpecialPromotionSuccess = (payload) => ({
+const addSpecialPromotionSuccess = payload => ({
     type: SALE_CENTER_ADD_SPECIAL_PROMOTION_OK,
     payload,
 });
-const addSpecialPromotionFail = (payload) => ({
+const addSpecialPromotionFail = payload => ({
     type: SALE_CENTER_ADD_SPECIAL_PROMOTION_FAIL,
     payload,
 });
@@ -425,21 +426,21 @@ export const addSpecialPromotion = (opts) => {
             type: SALE_CENTER_ADD_SPECIAL_PROMOTION_START,
             payload: opts,
         });
-        fetch("/api/specialPromotion/addEvent_NEW", {
-            method: "POST",
+        fetch('/api/specialPromotion/addEvent_NEW', {
+            method: 'POST',
             body: JSON.stringify(opts.data),
-            credentials: "include",
+            credentials: 'include',
             headers: {
-                Accept: "*/*",
-                "Content-Type": "application/json; charset=UTF-8",
+                'Accept': '*/*',
+                'Content-Type': 'application/json; charset=UTF-8',
             },
         })
             .then((response) => {
                 if (response.status >= 200 && response.status < 300) {
                     if (
                         response.headers
-                            .get("content-type")
-                            .indexOf("application/json") >= 0
+                            .get('content-type')
+                            .indexOf('application/json') >= 0
                     ) {
                         return response.json();
                     }
@@ -454,7 +455,7 @@ export const addSpecialPromotion = (opts) => {
             })
             .then(
                 (response) => {
-                    if (response.code === "000") {
+                    if (response.code === '000') {
                         setTimeout(() => {
                             opts.success && opts.success();
                         }, 0);
@@ -468,8 +469,8 @@ export const addSpecialPromotion = (opts) => {
                     return dispatch(addSpecialPromotionFail(response.code));
                 },
                 (err) => {
-                    if (err.name === "TimeoutError") {
-                        opts.fail && opts.fail("网络超时，请稍后再试");
+                    if (err.name === 'TimeoutError') {
+                        opts.fail && opts.fail('网络超时，请稍后再试');
                         return dispatch(addSpecialPromotionTimeout());
                     }
                     return dispatch(addSpecialPromotionFail(err));
@@ -479,11 +480,11 @@ export const addSpecialPromotion = (opts) => {
     };
 };
 
-const updateSpecialPromotionSuccess = (payload) => ({
+const updateSpecialPromotionSuccess = payload => ({
     type: SALE_CENTER_UPDATE_SPECIAL_PROMOTION_OK,
     payload,
 });
-const updateSpecialPromotionFail = (payload) => ({
+const updateSpecialPromotionFail = payload => ({
     type: SALE_CENTER_UPDATE_SPECIAL_PROMOTION_FAIL,
     payload,
 });
@@ -495,26 +496,26 @@ export const updateSpecialPromotion = (opts) => {
     return (dispatch) => {
         // 微信推送mpID，在编辑时清空
         const { event, ...rest } = opts.data;
-        event.pushMessageMpID = "";
+        event.pushMessageMpID = '';
         dispatch({
             type: SALE_CENTER_UPDATE_SPECIAL_PROMOTION_START,
             payload: opts,
         });
-        fetch("/api/specialPromotion/updateEvent_NEW", {
-            method: "POST",
+        fetch('/api/specialPromotion/updateEvent_NEW', {
+            method: 'POST',
             body: JSON.stringify({ event, ...rest }),
-            credentials: "include",
+            credentials: 'include',
             headers: {
-                Accept: "application/json; charset=UTF-8",
-                "Content-Type": "application/json; charset=UTF-8",
+                'Accept': 'application/json; charset=UTF-8',
+                'Content-Type': 'application/json; charset=UTF-8',
             },
         })
             .then((response) => {
                 if (response.status >= 200 && response.status < 300) {
                     if (
                         response.headers
-                            .get("content-type")
-                            .indexOf("application/json") >= 0
+                            .get('content-type')
+                            .indexOf('application/json') >= 0
                     ) {
                         return response.json();
                     }
@@ -529,7 +530,7 @@ export const updateSpecialPromotion = (opts) => {
             })
 
             .then((response) => {
-                if (response.code === "000") {
+                if (response.code === '000') {
                     setTimeout(() => {
                         opts.success && opts.success();
                     }, 0);
@@ -542,9 +543,9 @@ export const updateSpecialPromotion = (opts) => {
             })
             .catch((err) => {
                 setTimeout(() => {
-                    opts.fail && opts.fail("网络超时，请稍后再试");
+                    opts.fail && opts.fail('网络超时，请稍后再试');
                 }, 0);
-                if (err.name === "TimeoutError") {
+                if (err.name === 'TimeoutError') {
                     return dispatch(updateSpecialPromotionTimeout());
                 }
             });
@@ -552,11 +553,11 @@ export const updateSpecialPromotion = (opts) => {
 };
 // 查询会员群体
 // export const fetchSpecialGroupMember = opts => ({ type: SALE_CENTER_FETCH_GROUP_MEMBER_START, payload: opts });
-const fetchSpecialGroupMemberfilled = (payload) => ({
+const fetchSpecialGroupMemberfilled = payload => ({
     type: SALE_CENTER_FETCH_GROUP_MEMBER_OK,
     payload,
 });
-const fetchSpecialGroupMemberFail = (payload) => ({
+const fetchSpecialGroupMemberFail = payload => ({
     type: SALE_CENTER_FETCH_GROUP_MEMBER_FAIL,
     payload,
 });
@@ -571,22 +572,22 @@ export const fetchSpecialGroupMember = (opts) => {
     return (dispatch) => {
         dispatch({ type: SALE_CENTER_FETCH_GROUP_MEMBER_START, payload: opts });
         const params = generateXWWWFormUrlencodedParams(opts.data);
-        fetch("/crm/getGroupCardTypeLevels.ajax", {
-            method: "POST",
+        fetch('/crm/getGroupCardTypeLevels.ajax', {
+            method: 'POST',
             body: { _groupID: params._groupID },
-            credentials: "include",
+            credentials: 'include',
             headers: {
-                Accept: "application/json; charset=UTF-8",
-                "Content-Type":
-                    "application/x-www-form-urlencoded; charset=UTF-8",
+                'Accept': 'application/json; charset=UTF-8',
+                'Content-Type':
+                    'application/x-www-form-urlencoded; charset=UTF-8',
             },
         })
             .then((response) => {
                 if (response.status >= 200 && response.status < 300) {
                     if (
                         response.headers
-                            .get("content-type")
-                            .indexOf("application/json") >= 0
+                            .get('content-type')
+                            .indexOf('application/json') >= 0
                     ) {
                         return response.json();
                     }
@@ -601,7 +602,7 @@ export const fetchSpecialGroupMember = (opts) => {
             })
             .then(
                 (response) => {
-                    if (response.code === "000") {
+                    if (response.code === '000') {
                         opts.success && opts.success();
                         return dispatch(
                             fetchSpecialGroupMemberfilled(response)
@@ -611,7 +612,7 @@ export const fetchSpecialGroupMember = (opts) => {
                     return dispatch(fetchSpecialGroupMemberFail(response.code));
                 },
                 (err) => {
-                    if (err.name === "TimeoutError") {
+                    if (err.name === 'TimeoutError') {
                         return dispatch(fetchSpecialGroupMemberTimeout());
                     }
                     return dispatch(fetchSpecialGroupMemberFail(err));
@@ -625,29 +626,28 @@ export const fetchSpecialGroupMember = (opts) => {
 export const saleCenterGetShopOfEventByDate = (opts) => {
     return (dispatch) => {
         return axios
-            .post("/api/v1/universal", {
-                service: "HTTP_SERVICE_URL_PROMOTION_NEW",
-                method: "/specialPromotion/getShopOfEventByDate.ajax",
-                type: "post",
+            .post('/api/v1/universal', {
+                service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+                method: '/specialPromotion/getShopOfEventByDate.ajax',
+                type: 'post',
                 data: opts,
             })
             .then((responseJSON) => {
-                if (responseJSON.code === "000") {
+                if (responseJSON.code === '000') {
                     // 特色和基础营销共用shop组件和排除逻辑，需要转化数据对象来符合已写的逻辑
                     dispatch(
                         fetchFilterShopsSuccess({
                             allShopSet: responseJSON.allShopCheck,
                             shopList: responseJSON.shopIDList
-                                ? responseJSON.shopIDList.map((shopId) =>
-                                      String(shopId)
-                                  )
+                                ? responseJSON.shopIDList.map(shopId =>
+                                    String(shopId)
+                                )
                                 : [],
                         })
                     );
                     return Promise.resolve(responseJSON.allShopCheck);
-                } else {
-                    return Promise.reject(responseJSON.message);
                 }
+                return Promise.reject(responseJSON.message);
             })
             .catch((error) => {
                 console.log(error);

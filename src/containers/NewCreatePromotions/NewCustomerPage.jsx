@@ -269,32 +269,32 @@ class NewCustomerPage extends Component {
             eventWay: key,
         });
         // 完善资料送礼只能创建一次
-        if (key === '60') {
-            if (isHuaTian()) {
-                return message.warning(SPECIAL_PROMOTION_CREATE_DISABLED_TIP);
-            }
-            this.props.saleCenterCheckSpecialExist({
-                eventWay: key,
-                data: {
-                    groupID: user.accountInfo.groupID,
-                    eventWay: key,
-                },
-                success: (val) => {
-                    if (key === '60' && val.serviceCode === 1) {
-                        message.warning(SALE_LABEL.k6316h4o);
-                    } else {
-                        this.setSpecialModalVisible(true);
-                        this.props.setSpecialPromotionType({
-                            eventName: activity.title,
-                        });
-                    }
-                },
-                fail: () => {
-                    message.error(SALE_LABEL.k5dmw1z4);
-                },
-            });
-            return;
-        }
+        // if (key === '60') {
+        //     if (isHuaTian()) {
+        //         return message.warning(SPECIAL_PROMOTION_CREATE_DISABLED_TIP);
+        //     }
+        //     this.props.saleCenterCheckSpecialExist({
+        //         eventWay: key,
+        //         data: {
+        //             groupID: user.accountInfo.groupID,
+        //             eventWay: key,
+        //         },
+        //         success: (val) => {
+        //             if (key === '60' && val.serviceCode === 1) {
+        //                 message.warning(SALE_LABEL.k6316h4o);
+        //             } else {
+        //                 this.setSpecialModalVisible(true);
+        //                 this.props.setSpecialPromotionType({
+        //                     eventName: activity.title,
+        //                 });
+        //             }
+        //         },
+        //         fail: () => {
+        //             message.error(SALE_LABEL.k5dmw1z4);
+        //         },
+        //     });
+        //     return;
+        // }
         if(key === '80') {
            setTimeout(() => {
             jumpPage({ menuID: SALE_CENTER_PAYHAVEGIFT, typeKey: '80'})
@@ -450,7 +450,7 @@ class NewCustomerPage extends Component {
                                 <div className={selfStyle.contentTitle}>{title}</div>
                                 <div className={selfStyle.cardWrapper}>
                                     {
-                                        list.map((item, index) => (
+                                        list.filter(item => !item.isOffline).map((item, index) => (
                                             <NewPromotionCard
                                                 size="special"
                                                 key={item.key}

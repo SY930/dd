@@ -85,15 +85,15 @@ class GiftAddModal extends React.Component {
         }
     }
     handleFormChange(key, value) {
-        // switch (key) { // 这三个字段是靠手动输入的, 不加debounce的话在一般机器上有卡顿
-        //     case 'giftName':    this.handleNameChangeDebounced({key, value});
-        //         break;
-        //     case 'giftRemark':    this.handleRemarkChangeDebounced({key, value});
-        //         break;
-        //     case 'giftValue':    this.handleValueChangeDebounced({key, value});
-        //         break;
-        //     default: this.props.changeGiftFormKeyValue({key, value});
-        // }
+        switch (key) { // 这三个字段是靠手动输入的, 不加debounce的话在一般机器上有卡顿
+            case 'giftName':    this.handleNameChangeDebounced({key, value});
+                break;
+            case 'giftRemark':    this.handleRemarkChangeDebounced({key, value});
+                break;
+            case 'giftValue':    this.handleValueChangeDebounced({key, value});
+                break;
+            default: this.props.changeGiftFormKeyValue({key, value});
+        }
         // 赠送卡值freePrice =  礼品卡面值 （giftDenomination） - 工本费 （giftCost） - 现金卡值 cardPrice
         if(key === 'giftDenomination'){
             const disCashKeys = (+value === 0);
