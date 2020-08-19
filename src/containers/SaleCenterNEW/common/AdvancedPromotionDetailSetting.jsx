@@ -150,7 +150,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
     componentWillReceiveProps(nextProps) {
         let { userSetting, subjectType, crmCardTypeIDs } = this.state;
         const promotionType = nextProps.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
-        console.log('promotionType',promotionType)
+
         if (nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'userSetting']) !==
             this.props.promotionDetailInfo.getIn(['$promotionDetail', 'userSetting'])) {
             userSetting = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'userSetting']);
