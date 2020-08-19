@@ -1,4 +1,4 @@
-﻿/**
+﻿﻿/**
  * @Author: Xiao Feng Wang  <xf>
  * @Date:   2017-02-09T11:12:25+08:00
  * @Email:  wangxiaofeng@hualala.com
@@ -19,6 +19,9 @@ import {
     saleCenterQueryFsmGroupSettleUnit,
     queryFsmGroupEquityAccount,
     querySMSSignitureList,
+    saleCenterGetShopOfEventByDate,
+    getEventExcludeCardTypes,
+    saleCenterGetExcludeEventList,
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import { SEND_MSG } from '../../../redux/actions/saleCenterNEW/types'
 import {queryWechatMpInfo} from "../../GiftNew/_action";
@@ -491,7 +494,16 @@ const mapDispatchToProps = (dispatch) => {
         },
         queryFsmGroupEquityAccount: (opts) => {
             dispatch(queryFsmGroupEquityAccount(opts))
-        }
+        },
+        saleCenterGetShopOfEventByDate: (opts) => {
+            dispatch(saleCenterGetShopOfEventByDate(opts))
+        },
+        getEventExcludeCardTypes: (opts) => {
+            dispatch(getEventExcludeCardTypes(opts))
+        },
+        saleCenterGetExcludeEventList: (opts) => {
+            dispatch(saleCenterGetExcludeEventList(opts))
+        },
     }
 };
 
