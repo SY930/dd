@@ -161,6 +161,7 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         right: 13,
         bottom: 1,
         isNew: true,
+        isOffline: true,     //是否下线状态
     },
     {
         title: SALE_LABEL.k639vhha,
@@ -402,6 +403,7 @@ export const REPEAT_PROMOTION_TYPES = [
         key: '1080',
         right: 6,
         bottom: 13,
+        isOffline: true
     },
     {
         title: SALE_LABEL.k67b2qwc,
@@ -412,6 +414,7 @@ export const REPEAT_PROMOTION_TYPES = [
         key: '2070',
         right: 22,
         bottom: 13,
+        isOffline: true
     },
 ];
 
