@@ -71,10 +71,12 @@ class AdvancedPromotionDetailSetting extends React.Component {
     }
     componentDidMount() {
         const data = { groupID: this.props.user.accountInfo.groupID }
+        let initShopsIDs = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS();
         const { crmCardTypeIDs } = this.props.user.accountInfo;
         let shopsIDs = this.props.user.accountInfo.dataPermissions.shopList;
         shopsIDs = shopsIDs[0] instanceof Object ? shopsIDs.map(shop => shop.shopID) : shopsIDs
-        data.shopIDs = shopsIDs.join(',');
+        data.shopIDs = initShopsIDs.length ? initShopsIDs : shopsIDs
+
         if(crmCardTypeIDs){
             data.shopIDs = '';
             this.setState({crmCardTypeIDs});
@@ -148,6 +150,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
     componentWillReceiveProps(nextProps) {
         let { userSetting, subjectType, crmCardTypeIDs } = this.state;
         const promotionType = nextProps.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
+
         if (nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'userSetting']) !==
             this.props.promotionDetailInfo.getIn(['$promotionDetail', 'userSetting'])) {
             userSetting = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'userSetting']);
@@ -163,13 +166,31 @@ class AdvancedPromotionDetailSetting extends React.Component {
         const { groupCardTypeList: _groupCardTypeList = fromJS([]) } = nextProps
         if (!is(groupCardTypeList, _groupCardTypeList)) {
             let ciflist = _groupCardTypeList.toJS();
+            const cardScopeIDs = this.state.cardScopeIDs
             if(crmCardTypeIDs){
                 ciflist = _groupCardTypeList.toJS().filter(x=>{
                     return crmCardTypeIDs.split(',').includes(x.cardTypeID);
                 })
             }
+
+            const currentCardScopeIDs = cardScopeIDs.filter(v => ciflist.find(item => item.cardTypeID == v))
+            const { cardScopeType } = this.state
+
             this.setState({
                 cardInfo: ciflist,
+                cardScopeIDs:  currentCardScopeIDs
+            }, () => {
+                this.props.setPromotionDetail({
+                    userSetting: this.state.userSetting,
+                    cardScopeList: currentCardScopeIDs.length === 0
+                    ? undefined
+                    : currentCardScopeIDs.map((cardScopeID) => {
+                        return {
+                            cardScopeType,
+                            cardScopeID,
+                        }
+                    })
+                })
             })
         }
         if (promotionType === '3010' && this.props.stashSome !== nextProps.stashSome) {
@@ -185,6 +206,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                 })
             });
         }
+
         // 第二步店铺更改重新获取卡类卡等级，并且重置已选
         if (!is(this.props.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']), nextProps.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']))) {
             // 新建
@@ -192,13 +214,11 @@ class AdvancedPromotionDetailSetting extends React.Component {
             let _shopsIDs = nextProps.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS();
             shopsIDs = shopsIDs[0] instanceof Object ? shopsIDs.map(shop => shop.shopID) : shopsIDs
             _shopsIDs = _shopsIDs[0] instanceof Object ? _shopsIDs.map(shop => shop.shopID) : _shopsIDs
+
             if (!is(fromJS(_shopsIDs), fromJS(shopsIDs))) {
                 const data = { groupID: this.props.user.accountInfo.groupID }
                 data.shopIDs = _shopsIDs.join(',')
                 this.props.fetchShopCardLevel({ data })
-                this.handleCardScopeList({
-                    cardScopeIDs: [],
-                });
             }
         }
     }

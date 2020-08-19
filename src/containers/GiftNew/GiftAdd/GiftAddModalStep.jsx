@@ -2037,6 +2037,15 @@ class GiftAddModalStep extends React.PureComponent {
             }
         }
 
+        if(describe === '线上礼品卡') {
+           
+            const keys = firstKeysToDisplay[0].keys
+            const firstKeysToDisplayKeys = keys.filter(v => v !== 'selectBrands')
+            firstKeysToDisplay[0].keys = firstKeysToDisplayKeys
+           
+
+        }
+
         // 'discountRateSetting',                   // 折扣设置 （注释掉，通过代码动态注释）
         // 'specialPriceVolSetting',                // 特价设置
         // 'discountDecreaseVolSetting',            // 立减
