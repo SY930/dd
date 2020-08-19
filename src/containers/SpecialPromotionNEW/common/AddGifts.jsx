@@ -1,7 +1,10 @@
+/**
+ *  添加了绿色主题，传入属性theme = 'green'
+ */
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { DatePicker, Radio, Form, Select, Input, Icon, Popconfirm } from 'antd';
+import { DatePicker, Radio, Form, Select, Input, Icon, Popconfirm, Button } from 'antd';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import selfStyle from './addGifts.less';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
@@ -169,7 +172,7 @@ class AddGifts extends React.Component {
     }
 
     render() {
-        const { type, isAttached } = this.props;
+        const { type, isAttached, theme } = this.props;
         // 当有人领取礼物后，礼物不可编辑，加蒙层
         const userCount = this.props.specialPromotion.getIn(['$eventInfo', 'userCount']);// 当有人领取礼物后，礼物不可编辑，加蒙层
         // 桌边砍, 集点卡编辑时可以主动加蒙层
@@ -178,10 +181,17 @@ class AddGifts extends React.Component {
             <div className={[selfStyle.listWrapper, isAttached ? selfStyle.isAttached : ''].join(' ')}>
                 {this.renderItems()}
                 { // 膨胀大礼包固定3档礼品，不可添加, 免费领取固定1个礼品，不可添加
-                    (this.state.infos.length < 10 && type != '66'   && type != '30') && (
+                    (this.state.infos.length < 10 && type != '66'   && type != '30' && theme !== 'green') && (
                         <div className={selfStyle.addLink} onClick={this.add}>
                             + {this.props.intl.formatMessage(STRING_SPE.d1qe2ar9n936298)}
                         </div>
+                    )
+                }
+                {
+                    (this.state.infos.length < 10 && type != '66'   && type != '30' && theme === 'green') && (
+                        <Button style={{display: 'flex', alignItems: 'center', color: 'rgba(0, 0, 0, 0.65)'}} className={selfStyle.addLink} onClick={this.add}>
+                              <Icon type="plus" />点击添加礼品
+                        </Button>
                     )
                 }
                 <div className={userCount > 0 || disabledGifts ? styles.opacitySet : null}></div>
@@ -210,7 +220,7 @@ class AddGifts extends React.Component {
             disArr[index] = toggle;
             this.setState({ disArr })
         }
-        const { intl } = this.props;
+        const { intl, theme } = this.props;
         return this.state.infos.map((info, index, arr) => {
             let validateStatus,
                 addonBefore,
@@ -231,8 +241,8 @@ class AddGifts extends React.Component {
                 onChangeFunc = this.handlegiftTotalCountChange;
             }
             return (
-                <div key={`${index}`} className={selfStyle.giftWrapper}>
-                    <div className={selfStyle.giftNoLabel}>
+                <div key={`${index}`} style={  theme === 'green' ? {background: '#f7f7f7' } : null} className={selfStyle.giftWrapper}>
+                    <div style={  theme === 'green' ? {background: '#1ab495',color: 'fff'} : null} className={selfStyle.giftNoLabel}>
             {COMMON_SPE.du389nqve1491}{`${index + 1}`}
                     </div>
                     {
@@ -266,11 +276,14 @@ class AddGifts extends React.Component {
                         {/* 礼品名称 */}
                         <FormItem
                             label={intl.formatMessage(STRING_GIFT.giftName)}
-                            className={[styles.FormItemStyle, styles.labeleBeforeSlect, styles.labeleBeforeSlectMargin].join(' ')}
+                            className={[styles.FormItemStyle, styles.labeleBeforeSlect, styles.labeleBeforeSlectMargin,
+                                this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}
                             labelCol={{ span: 8 }}
                             wrapperCol={{ span: 16 }}
                             validateStatus={info.giftInfo.validateStatus}
                             help={info.giftInfo.msg}
+                            style={{marginTop: '8px'}}
+                            required={true}
                         >
                             <ExpandTree
                                 idx={index}
@@ -290,10 +303,11 @@ class AddGifts extends React.Component {
                                     value={(this.getGiftValue(index) || '').split(',')[1]}
                                     className="input_click"
                                     onClick={() => { toggleFun(index); }}
+                                    placeholder="请选择礼品名称"
                                 />
                                 <Icon
                                     type="down"
-                                    style={{ position: 'absolute', top: 10, left: 250 }}
+                                    style={{ position: 'absolute', top: 10, right: 10 }}
                                     className="input_click"
                                     onClick={() => { toggleFun(index); }}
                                 />
@@ -301,28 +315,31 @@ class AddGifts extends React.Component {
                         </FormItem>
                         {/* 礼品个数 */}
                         <FormItem
-                            className={[styles.FormItemStyle, styles.FormItemHelpLabel].join(' ')}
-                            labelCol={{ span: 0 }}
-                            wrapperCol={{ span: 24 }}
+                            label={addonBefore}
+                            required={true}
+                            className={[styles.FormItemStyle, styles.labeleBeforeSlect, styles.labeleBeforeSlectMargin,  this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}
+                            labelCol={{ span: 8 }}
+                            wrapperCol={{ span: 16 }}
                             validateStatus={validateStatus}
                             help={help}
+                            colon={false}
                         >
                             <PriceInput
-                                addonBefore={addonBefore}
                                 maxNum={9}
                                 value={{ number: valueNuber }}
                                 onChange={val => onChangeFunc(val, index)}
                                 addonAfter={this.props.intl.formatMessage(STRING_SPE.d142vrmqvc1730)}
                                 modal="int"
                                 disabled={info.giftCount.disabled}
+                                placeholder="请输入礼品数量"
                             />
 
                         </FormItem>
                         {/* ....... */}
                         <FormItem
-                            className={styles.FormItemStyle}
+                            className={[styles.FormItemStyle].join(' ')}
                         >
-                            <span className={styles.formLabel}>{this.props.intl.formatMessage(STRING_SPE.du389nqve18246)}:</span>
+                            <span style={{paddingLeft: '8px'}} className={[styles.formLabel, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}>{this.props.intl.formatMessage(STRING_SPE.du389nqve18246)}</span>
                             <RadioGroup
                                 className={styles.radioMargin}
                                 value={info.effectType == '2' ? '2' : '1'}
@@ -459,7 +476,7 @@ class AddGifts extends React.Component {
             this.props.onChange && this.props.onChange(this.state.infos);
         });
     }
-
+    // form的label样式，三种实现，哎，
     // 相对有效期 OR 固定有效期
     renderValidOptions(info, index) {
         if (info.effectType != '2') {
@@ -468,7 +485,7 @@ class AddGifts extends React.Component {
                     <FormItem
                         className={[styles.FormItemStyle].join(' ')}
                     >
-                        <span className={styles.formLabel}>{this.props.intl.formatMessage(STRING_SPE.d142vrmqvc0114)}:</span>
+                        <span style={{paddingLeft: '8px'}} className={[styles.formLabel, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}>{this.props.intl.formatMessage(STRING_SPE.d142vrmqvc0114)}</span>
                         <RadioGroup
                             className={styles.radioMargin}
                             value={info.effectType == '3' ? '1' : '0'}
@@ -492,7 +509,7 @@ class AddGifts extends React.Component {
                     </FormItem>
                     <FormItem
                         label={this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kd27139)}
-                        className={[styles.FormItemStyle, styles.labeleBeforeSlect].join(' ')}
+                        className={[styles.FormItemStyle, styles.labeleBeforeSlect ,   this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}
                         labelCol={{ span: 8 }}
                         wrapperCol={{ span: 16 }}
                     >
@@ -517,7 +534,7 @@ class AddGifts extends React.Component {
 
 
                     <FormItem
-                        className={[styles.FormItemStyle, styles.labeleBeforeSlect, styles.priceInputSingle].join(' ')}
+                        className={[styles.FormItemStyle, styles.labeleBeforeSlect, styles.priceInputSingle,   this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}
                         labelCol={{ span: 8 }}
                         wrapperCol={{ span: 16 }}
                         label={`${this.props.intl.formatMessage(STRING_SPE.d17009bd421d28267)}`}
@@ -534,6 +551,7 @@ class AddGifts extends React.Component {
                             modal="int"
                             value={{ number: info.giftValidDays.value }}
                             onChange={(val) => { this.handleGiftValidDaysChange(val, index); }}
+                            placeholder="请输入有效天数"
                         />
                     </FormItem>
                 </div>
@@ -557,7 +575,7 @@ class AddGifts extends React.Component {
         return (
             <FormItem
                 label={this.props.intl.formatMessage(STRING_SPE.d7h7ge7d1001237)}
-                className={[styles.FormItemStyle, styles.labeleBeforeSlect].join(' ')}
+                className={[styles.FormItemStyle, styles.labeleBeforeSlect,   this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 16 }}
                 required={true}
