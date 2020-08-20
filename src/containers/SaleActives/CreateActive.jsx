@@ -86,14 +86,19 @@ class CreateActive extends Component {
                         </div>
                     }
                 >
+
                 <div className={styles.modalContent}>
-                    <div className={styles.modalTitle}>
-                        <div className={styles.leftLine}></div>
-                        <span>活动简介</span>
+                    {currentInfo.dscList && currentInfo.dscList.map(v => {
+                        return  <div>
+                        <div className={styles.modalTitle}>
+                            <div className={styles.leftLine}></div>
+                            <span>{v.title}</span>
+                        </div>
+                        <div className={styles.modalInfo}>
+                            {v.dsc}
+                        </div>
                     </div>
-                    <div className={styles.modalInfo}>
-                        {currentInfo.dsc}
-                    </div>
+                    })}
 
                 </div>
                 </Modal>

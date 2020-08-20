@@ -1,0 +1,199 @@
+.actWrap {
+    margin: 28px 0 0 48px;
+    display: flex;
+}
+.resultImgWrap {
+    width: 280px;
+    height: 578px;
+    background: url("http://res.hualala.com/basicdoc/bf85dc9e-64c4-455d-8292-409523148784.png")
+        no-repeat;
+    background-size: 100% 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    .contentBg {
+        width: 256px;
+        height: 553px;
+        border-radius: 20px;
+    }
+    .showData {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        top: 256px;
+        left: 20px;
+        width: 100%;
+        img {
+            width: 27px;
+            height: 27px;
+            margin-top: 6px;
+        }
+        .text {
+            margin-left: 10px;
+        }
+        .title {
+            color: #666;
+            font-size: 14px;
+            position: absolute;
+            top: 0;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            width: 130px;
+        }
+        .content {
+            color: #333;
+            font-size: 12px;
+            position: absolute;
+            width: 100%;
+            bottom: 0;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            width: 130px;
+        }
+    }
+    .topBg {
+        position: absolute;
+        top: 12px;
+        left: 13px;
+        .topBgImg {
+            position: absolute;
+            left: 14px;
+            top: 4px;
+            width: 227px;
+            height: 73px;
+        }
+        .topTitle {
+            font-size: 15px;
+            font-weight: 500;
+            line-height: 21px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 42px;
+            color: #fff;
+        }
+    }
+    .couponInfoWrap {
+        position: absolute;
+        width: 100%;
+        height: 150px;
+        top: 272px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow: hidden;
+        .couponTitle {
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(102, 102, 102, 1);
+            line-height: 18px;
+        }
+        .couponPrice {
+            font-size: 36px;
+            font-weight: 800;
+            color: rgba(255, 67, 73, 1);
+            line-height: 36px;
+            margin-top: 8px;
+            position: absolute;
+            top: 22px;
+            span {
+                font-size: 12px;
+                font-weight: 600;
+                line-height: 14px;
+            }
+        }
+        .couponDate {
+            font-size: 9px;
+            font-weight: 500;
+            color: rgba(153, 153, 153, 1);
+            line-height: 13px;
+            position: absolute;
+            top: 95px;
+        }
+        .getBtn {
+            width: 112px;
+            height: 28px;
+            background: rgba(239, 144, 60, 1);
+            border-radius: 2px;
+            font-size: 10px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 1);
+            line-height: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 120px;
+            z-index: 99;
+        }
+    }
+    .step2HeaderImg {
+        width: 42px;
+        height: 42px;
+        border-radius: 100%;
+        position: absolute;
+        top: 106px;
+        left: 50%;
+        transform: translateX(-50%);
+        img {
+            width: 100%;
+            height: 100%;
+            border-radius: 100%;
+        }
+    }
+    .step2ContentBanner {
+        width: 234px;
+        height: 84px;
+        position: absolute;
+        top: 159px;
+        left: 50%;
+        transform: translateX(-50%);
+        img {
+            width: 100%;
+            height: 100%;
+        }
+    }
+}
+.settingWrap {
+    width: 560px;
+    margin-left: 28px;
+    margin-bottom: 50px;
+}
+
+.imgUploadWrap {
+    display: flex;
+    align-items: center;
+    .textWrap {
+        color: #c3c3c3;
+        line-height: 24px;
+        font-weight: 500;
+        margin-left: 10px;
+    }
+}
+
+.textAreaWrap {
+    position: relative;
+    .textNumCount {
+        position: absolute;
+        right: 10px;
+        bottom: 0;
+    }
+}
+
+.ActivityDateDayleft {
+    width: 100% !important;
+}
+.ActivityDateDay {
+    border: 1px solid #cccccc;
+    border-radius: 3px;
+    line-height: 26px;
+    text-align: center;
+    width: 36px;
+    position: relative;
+    margin: 0 4px;
+}
