@@ -36,17 +36,17 @@ export const SCENARIOS = Object.freeze([{
 {
     value: '1',
     key: 'POS',
-    name: SALE_LABEL.k5krn6qx,
+    name: '仅线下使用',  //云店
 },
 {
     value: '2',
     key: 'WECHAT',
-    name: SALE_LABEL.k5krn6z9,
+    name: '仅线上使用',  //微信
 },
     {
     value: '3',
     key: 'YST',
-    name: SALE_LABEL.k5krn77l,
+    name: SALE_LABEL.k5krn77l,  //饮食通
 },
 ]);
 
