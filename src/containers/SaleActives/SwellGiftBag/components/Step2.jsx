@@ -8,7 +8,7 @@ import moment from 'moment'
 
 const DATE_FORMAT = 'YYYYMMDD000000';
 const { RangePicker } = DatePicker;
-import styles from "../payHaveGift.less";
+import styles from "../swellGiftBag.less";
 const Option = Select.Option;
 @connect(({  loading, createActiveCom }) => ({  loading, createActiveCom }))
 class Step2 extends React.Component {

@@ -5,6 +5,7 @@ import ActSteps from '../components/ActSteps/ActSteps'
 import styles from './swellGiftBag.less'
 import Step1 from './components/Step1'
 import Step2 from './components/Step2'
+import Step3 from './components/Step3'
 import {imgUrl} from './constant'
 import moment from 'moment'
 const format = "YYYYMMDD";
@@ -131,9 +132,19 @@ class SwellGiftBag extends React.Component {
             getSubmitFn={this.getSubmitFn(0)}
             />,
           },  {
-            title: '活动内容',
+            title: '活动规则',
             content:  <Step2
             getSubmitFn={this.getSubmitFn(1)}
+            />,
+          },  {
+            title: '活动内容',
+            content:  <Step3
+            getSubmitFn={this.getSubmitFn(2)}
+            />,
+          }, {
+            title: '分享推送',
+            content:  <Step2
+            getSubmitFn={this.getSubmitFn(3)}
             />,
           }];
         const headerUrl = merchantLogoUrl.url ? `${imgUrl}/${merchantLogoUrl.url}`   : `${imgUrl}/${merchantLogoUrl}`
@@ -142,15 +153,9 @@ class SwellGiftBag extends React.Component {
                 <div className={styles.setResult}>
                         {
                             currentStep == 0 &&  <div className={styles.resultImgWrap}>
-                            <img className={styles.contentBg} src={`${imgUrl}/basicdoc/db96d381-7930-4a40-8689-1cb2f12420c2.png`}/>
-                            <div className={styles.showData}>
-                                <img style={merchantLogoUrl ? {} : {opacity: 0}}   src={ headerUrl }/>
-                                <div className={styles.text}>
-                                     <div className={styles.title}>{eventName}</div>
-                                     <div className={styles.content}>{giftItem && giftItem.label}</div>
+                                <div className={styles.contentBg}>
+                                    <img className={styles.topImg} src={`${imgUrl}/basicdoc/b877b38f-da49-4530-9bff-58382f1bf227.png`}/>
                                 </div>
-                            </div>
-
                              </div>
                         }
 

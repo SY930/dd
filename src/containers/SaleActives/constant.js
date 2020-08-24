@@ -1,35 +1,10 @@
-import React from 'react'
-// 活动标题和说明
-import PayHaveGift from './PayHaveGift/index';
 
-export const actInfoList = [
-    {
-        title: '微信支付有礼',
-        key: '80',
-        dscList: [
-            {
-                title: '活动简介',
-                dsc: <div>微信支付成功页投放微信支付商家券，引导用户领券，提升复购。（一个集团在同一时间段内只能创建一个活动）</div>,
-            },
-        ],
-        render(props = {}) {
-            return <PayHaveGift {...props} />;
-        },
-    },
-    {
-        title: '膨胀大礼包',
-        key: '80',
-        dscList: [
-            {
-                title: '活动简介',
-                dsc: '微信支付成功页投放微信支付商家券，引导用户领券，提升复购。（一个集团在同一时间段内只能创建一个活动）',
-            },
-        ],
-        render(props = {}) {
-            return <PayHaveGift {...props} />;
-        },
-    },
-];
+import { actInfoList } from './constants/giftTypeConfig'
+import { formItem } from './constants/formItem'
+
+console.log('formItem1', formItem)
+export { actInfoList, formItem }
+
 
 export const giftTypeName = [
     { label: '全部', value: '' },
@@ -49,3 +24,4 @@ export const giftTypeName = [
 ];
 
 export const imgUrl = 'http://res.hualala.com/';
+

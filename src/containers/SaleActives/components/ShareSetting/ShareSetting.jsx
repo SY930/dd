@@ -2,12 +2,11 @@ import React from 'react'
 import  BaseForm  from '../../../../components/common/BaseForm';
 import { Input } from 'antd'
 import {formItems1,formKeys1} from '../constant'
-import styles from '../payHaveGift.less'
+import styles from '../ShareSetting.less'
 import {connect} from 'react-redux';
-import { renderEventRemark } from '../../helper/common'
-
+import {renderEventRemark} from '../../helper/common'
 @connect(({  loading, createActiveCom }) => ({  loading, createActiveCom }))
-class Step1 extends React.Component {
+class ShareSetting extends React.Component {
 
     getForm = (form) => {
         this.form = form;
@@ -45,6 +44,7 @@ class Step1 extends React.Component {
 
         return flag
     }
+
     render () {
         formItems1.eventRemark.render = renderEventRemark.bind(this)
         const { formData } = this.props.createActiveCom
@@ -67,4 +67,4 @@ class Step1 extends React.Component {
     }
 }
 
-export default Step1
+export default ShareSetting
