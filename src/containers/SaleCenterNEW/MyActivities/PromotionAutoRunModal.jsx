@@ -121,10 +121,18 @@ class PromotionAutoRunModal extends Component {
         const { checkedValues } = this.state;
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
+                if(selectedRowKeys.length >= 30 + 1){
+                    message.warning('自动执行活动不能超过30个');
+                    return;
+                }
                 this.setState({
                     selectedRowKeys
                 })
             },
+            getCheckboxProps: (record) => ({
+                disabled: this.state.selectedRowKeys.length >= 3 && !this.state.selectedRowKeys.includes(record.promotionID),
+                name: record.name,
+            }),
             selectedRowKeys: this.state.selectedRowKeys,
         };
         const columns = [
