@@ -5,7 +5,7 @@ import ActSteps from '../components/ActSteps/ActSteps'
 import styles from './payHaveGift.less'
 import Step1 from './components/Step1'
 import Step2 from './components/Step2'
-import {imgUrl} from './contanst'
+import {imgUrl} from './constant'
 import moment from 'moment'
 const format = "YYYYMMDD";
 

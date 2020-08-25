@@ -962,7 +962,7 @@ const handleSubmitRecommendGifts = function (isPrev) {
                 })
             } else {
                 v.eventRecommendSettings.forEach((val) => {
-                    if (val.redPackageLimitValue) {
+                    if (val.redPackageRate) {
                         val.giftItemID = cashGiftVal
                     }
                     if (val.pointRate) {

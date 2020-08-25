@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux';
 import { Row, Col, DatePicker, Tooltip, Icon, message, Select } from 'antd'
 import _ from 'lodash'
-import { formItems2, formKeys2 } from '../contanst'
+import { formItems2, formKeys2 } from '../constant'
 import  BaseForm  from '../../../../components/common/BaseForm';
 import moment from 'moment'
 
