@@ -34,7 +34,6 @@ class Share extends Component {
     }
     render() {
         const { value, decorator } = this.props;
-        console.log('va', value)
         let {type = '79', shareTitle = '', shareSubtitle = '', restaurantShareImagePath, shareImagePath} = value
         return (
             <div className={css.mainBox}>
