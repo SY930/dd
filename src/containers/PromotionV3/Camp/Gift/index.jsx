@@ -22,24 +22,25 @@ export default class Gift extends Component {
             this.setState({ options });
             if(this.state.countTypeEditFlag){
                 this.form.setFieldsValue({ 'giftEffectTimeHours': value });
+                onChange(idx, {[key]: value, 'giftEffectTimeHours': value});
             } 
             this.setState({countTypeEditFlag: true})
-        }
-        if(key==='effectType'){
+        }else if(key==='effectType'){
             if(value === '1') {
                 this.setState({ formKeys: formKeys1 }, ()=>{
                     const countType = this.form.getFieldValue('countType');
                     if(this.state.effectTypeEditFlag){
                         this.form.setFieldsValue({ 'giftEffectTimeHours': countType });
+                        onChange(idx, {[key]: value, 'giftEffectTimeHours': countType});
                     } 
                     this.setState({effectTypeEditFlag: true})
                 });
             } else {
                 this.setState({ formKeys: formKeys2 });
             }
+        }else{
+            onChange(idx, { [key]: value });
         }
-        onChange(idx, { [key]: value });
-        
     }
     /** 得到form */
     getForm = (node) => {
