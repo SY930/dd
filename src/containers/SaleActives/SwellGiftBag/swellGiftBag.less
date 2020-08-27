@@ -1,7 +1,23 @@
+
+.dis-cen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 .actWrap {
     margin: 28px 0 0 48px;
     display: flex;
 }
+.centeredFlex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.scale8 {
+    transform: scale(0.8);
+}
+
 .resultImgWrap {
     width: 280px;
     height: 578px;
@@ -11,18 +27,154 @@
     display: flex;
     justify-content: center;
     position: relative;
-    overflow: auto;
     padding-bottom: 16px;
     padding-top: 14px;
     .contentBg {
+        width: 256px;
         background:linear-gradient(0deg,rgba(121,49,233,1) 0%,rgba(255,53,59,1) 100%);
         border-radius: 20px;
+    }
+    .container {
+        overflow: auto;
+        height: 510px;
+        padding-bottom: 30px;
+        &::-webkit-scrollbar {
+            width: 3px;
+        }
+        &::-webkit-scrollbar-track {
+            background: #ddd;
+        }
+        &::-webkit-scrollbar-thumb {
+            background: #666;
+        }
+    }
+    .statusBar {
+        width: 256px;
+        border-top-right-radius: 20px;
+        border-top-left-radius: 20px;
     }
     .topImg {
         width: 256px;
         height: 227px;
-        border-top-right-radius: 20px;
-        border-top-left-radius: 20px;
+    }
+    .actTime {
+        width:191px;
+        height:24px;
+        background:rgba(255,255,255,0.2);
+        border-radius:12px;
+        font-size:10px;
+        font-weight:500;
+        margin: 0 auto;
+        text-align: center;
+        margin-top: 10px;
+        div {
+            color:rgba(255,255,255,1);
+            line-height:14px;
+            transform: scale(0.85);
+            line-height: 24px;
+        }
+    }
+    .couponWrap {
+        width:231px;
+        height:127px;
+        background:rgba(255,255,255,0.2);
+        border-radius:11px;
+        margin: 0 auto;
+        margin-top: 10px;
+        overflow: hidden;
+        .bigCoupon {
+            width: 198px;
+            height: 72px;
+            margin: 13px auto  5px;
+            background: url('http://res.hualala.com/basicdoc/05ee3c72-5725-44a1-8c1e-47bbc5ab3953.png') no-repeat;
+            background-size: 100% 100%;
+            display: flex;
+            box-sizing: border-box;
+            padding-top: 15px;
+            .left {
+                color: #F35A5A;
+                text-align: center;
+                min-width: 46px;
+                margin-left: 20px ;
+
+            }
+            .right {
+                color: #454545;
+                margin-left: 4px;
+            }
+        }
+        .submitBtn {
+            width:188px;
+            height:23px;
+            background:linear-gradient(0deg,rgba(255,167,81,1) 0%,rgba(255,226,89,1) 100%);
+            border-radius:11px;
+            margin: 0 auto;
+            font-size:10px;
+            font-weight:500;
+            color:rgba(173,7,1,1);
+            line-height:14px;
+            .dis-cen()
+        }
+
+    }
+    .giftsWrap {
+        width:231px;
+        height:186px;
+        background:rgba(255,255,255,0.2);
+        border-radius:11px;
+        margin: 0 auto;
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        .title {
+            background: url('http://res.hualala.com/basicdoc/e08f4127-7fc3-40b9-854f-7f9b575e78b7.png') no-repeat;
+            background-size: 100% 100%;
+            width: 138px;
+            height: 22px;
+            font-size:12px;
+            color:rgba(255,255,255,1);
+            line-height:25px;
+            .dis-cen();
+        }
+        .peopleNum {
+            margin-top: 17px;
+            .line {
+                width:188px;
+                height:10px;
+                background:rgba(255,255,255,1);
+                border-radius:5px;
+            }
+            .numWrap {
+                display: flex;
+                justify-content: space-between;
+                padding: 0 4px;
+                .num {
+                    color: #fff;
+                }
+            }
+        }
+        .couponList {
+            width: 188px;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            .couponItem {
+                width: 58px;
+                height: 69px;
+                background: url('http://res.hualala.com/basicdoc/b883f77f-2217-48b7-a90a-12f68b4c2aa7.png') no-repeat;
+                background-size: 100% 100%;
+                .dis-cen();
+                flex-direction: column;
+                color: #F03232;
+                .fontWeight {
+                    font-weight: bold;
+                }
+                div:first-child {
+                    display: flex;
+                }
+            }
+        }
     }
 
 }
@@ -63,4 +215,103 @@
     width: 36px;
     position: relative;
     margin: 0 4px;
+}
+
+.step3Wrap {
+
+    :global {
+        .ant-tabs.ant-tabs-card > .ant-tabs-bar .ant-tabs-tab {
+            font-size: 14px;
+            height: 40px;
+            width: 130px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #666666;
+            border-bottom: 1px solid #d9d9d9;
+        }
+        .ant-tabs.ant-tabs-card > .ant-tabs-bar .ant-tabs-tab-active {
+            color: #1ab495;
+            font-size: 14px;
+            height: 40px;
+            width: 130px;
+        }
+
+        .ant-tabs.ant-tabs-card > .ant-tabs-bar .ant-tabs-nav-container {
+            height: 40px;
+        }
+        .ant-tabs-nav .ant-tabs-tab:active {
+            color: #1ab495;
+        }
+
+        .ant-tabs-nav .ant-tabs-tab:hover {
+            color: #1ab495;
+            width: 140px !important;
+            padding-left: 25px !important;
+        }
+        .ant-tabs.ant-tabs-card
+            > .ant-tabs-bar
+            .ant-tabs-tab-active
+            .anticon-close {
+            width: 16px;
+            transform: translateZ(0);
+            margin-left: -2px;
+            margin-top: 2px;
+        }
+        .ant-tabs.ant-tabs-card
+            > .ant-tabs-bar
+            .ant-tabs-tab:hover
+            .anticon-close {
+            margin-left: 3px;
+        }
+
+        .ant-tabs-nav {
+            display: flex;
+        }
+    }
+
+    .tabs {
+        margin-top: 24px;
+    }
+
+    .initiatorWrap {
+        margin-top: 20px;
+        color: #333333;
+        .giftMethods {
+            margin-top: 24px;
+        }
+
+    }
+    .title {
+        font-size:14px;
+        color:rgba(51,51,51,1);
+        line-height:19px;
+        display: flex;
+        align-items: center;
+        .line {
+            width:2px;
+            height:13px;
+            background:rgba(30,179,149,1);
+            margin-right: 8px;
+        }
+    }
+
+
+}
+
+
+:global(.professional) {
+    .step3Wrap {
+        :global {
+            .ant-tabs.ant-tabs-card > .ant-tabs-bar .ant-tabs-tab-active {
+                color: #379ff1;
+            }
+            .ant-tabs-nav .ant-tabs-tab:active {
+                color: #379ff1;
+            }
+            .ant-tabs-nav .ant-tabs-tab:hover {
+                color: #379ff1;
+            }
+        }
+    }
 }

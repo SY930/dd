@@ -153,4 +153,8 @@ export const formItem = {
         type: 'custom',
         label: '投放日期',
     },
+    partInTimes: {
+        type: 'custom',
+        label: '', // 助力用户助力次数限制
+    },
 }

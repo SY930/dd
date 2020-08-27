@@ -2,7 +2,7 @@
 import { actInfoList } from './constants/giftTypeConfig'
 import { formItem } from './constants/formItem'
 
-console.log('formItem1', formItem)
+
 export { actInfoList, formItem }
 
 
@@ -24,4 +24,6 @@ export const giftTypeName = [
 ];
 
 export const imgUrl = 'http://res.hualala.com/';
+export const phoneImg = `${imgUrl}basicdoc/bf85dc9e-64c4-455d-8292-409523148784.png`
+export const phoneTop = `${imgUrl}basicdoc/f1a7e677-60ac-44d2-9877-2e21f3955ca3.png`
 

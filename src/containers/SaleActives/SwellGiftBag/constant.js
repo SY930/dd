@@ -1,11 +1,9 @@
 import React from 'react';
-import AddGift from './components/AddGift'
 import { formItem } from '../constants/formItem'
 
 const {
     actType, eventName, eventRemark, eventLimitDate,
-    consumeTotalAmount, originalImageUrl, backgroundColor,
-    afterPayJumpType, miniProgramInfo, eventDate,
+    partInTimes,
 } = formItem
 export const formItems1 = {
     actType: {
@@ -29,38 +27,10 @@ export const formKeys1 = [
 export const imgUrl = 'http://res.hualala.com';
 
 export const formItems2 = {
-    consumeTotalAmount,
-    mySendGift: {
-        type: 'custom',
-        label: '投放礼品',
-        render(d) {
-            return (
-                <div>
-                    {d({
-                        rules: [
-                            {
-                                required: true,
-                                message: '请选择投放礼品',
-                            },
-                        ],
-                    })(<AddGift dispatch={this.props.dispatch} />)}
-                </div>
-            );
-        },
-    },
-    originalImageUrl,
-    backgroundColor,
-    afterPayJumpType,
-    miniProgramInfo,
-    eventDate,
+    partInTimes,
+
 };
 
 export const formKeys2 = [
-    'consumeTotalAmount',
-    'mySendGift',
-    'originalImageUrl',
-    'backgroundColor',
-    'afterPayJumpType',
-    // "miniProgramInfo",
-    'eventDate',
+    'partInTimes',
 ];

@@ -37,7 +37,7 @@ class Step1 extends React.Component {
 
         this.form.validateFieldsAndScroll((e,v) => {
             if(e) {
-                flag = false
+                // flag = false
             }
 
         })

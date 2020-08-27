@@ -1,11 +1,13 @@
 import React from 'react'
-import { Input, Row, Col, DatePicker, Tooltip, Icon, Select } from 'antd'
+import { Input, Row, Col, DatePicker, Tooltip, Icon, Select, Radio, message } from 'antd'
 import styles from '../CreateActive.less'
 import moment from 'moment'
+import PriceInput from '../../../components/common/PriceInput/PriceInput'
 
 const { RangePicker } = DatePicker;
 const Option = Select.Option;
 const DATE_FORMAT = 'YYYYMMDD000000';
+const RadioGroup = Radio.Group;
 
 // 活动说明的render函数
 export function renderEventRemark(d) {
@@ -149,4 +151,61 @@ export function afterPayJumpTypeRender(d) {
             </div>
         </div>
     );
+}
+
+
+// eslint-disable-next-line func-names
+const _onChange = function (key) {
+    return (e) => {
+        const value = e.number
+        if (value < 1 || value > 10000) {
+            this.setState({
+                [key]: '',
+            })
+            return message.warn('请输入1-10000之间的整数')
+        }
+        this.setState({
+            [key]: value,
+        })
+    }
+}
+
+// 助力用户助力次数限制render函数
+export function partInTimesRender(d) {
+    const { countCycleDays, partInTimesB, partInTimesC } = this.state
+
+    return (<div className={styles.partInTimesRender}>
+        <div className={styles.title}>
+            <div className={styles.line}></div>
+            <div className={styles.text}>助力用户助力次数限制</div>
+        </div>
+        {
+            d({
+                initialValue: 'A',
+            })(<RadioGroup style={{ marginTop: '15px', marginLeft: '10px' }}>
+                <Radio className={styles.radioStyle} value={'A'}>不限次数</Radio>
+                <Radio className={styles.radioStyle} value={'B'}>
+                    <div style={{ display: 'flex' }}>
+                        助力次数
+                        <div style={{ marginLeft: '34px', width: '308px' }}>
+                            <PriceInput modal="int" onChange={_onChange.call(this, 'partInTimesB')} value={{ number: partInTimesB }} addonBefore="可助力" addonAfter="次" />
+                        </div>
+
+                    </div>
+                </Radio>
+                <Radio className={styles.radioStyle} value={'C'}>
+
+                    <div style={{ display: 'flex' }}>
+                        助力周期次数
+                        <div style={{ marginLeft: '10px', width: '150px' }}>
+                            <PriceInput modal="int" onChange={_onChange.call(this, 'countCycleDays')} value={{ number: countCycleDays }} addonBefore="同一用户" addonAfter="天" />
+                        </div>
+                        <div style={{ marginLeft: '10px', width: '150px' }}>
+                            <PriceInput modal="int" onChange={_onChange.call(this, 'partInTimesC')} value={{ number: partInTimesC }} addonBefore="可助力" addonAfter="次" />
+                        </div>
+                    </div>
+                </Radio>
+            </RadioGroup>)
+        }
+    </div>)
 }

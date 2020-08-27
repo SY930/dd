@@ -1,36 +1,36 @@
 import React, { PureComponent as Component } from 'react';
 import { TreeSelect } from 'antd';
 import BaseForm from 'components/common/BaseForm';
-import { timeOpts, dayOpts, formKeys1, formItems, formKeys2, formItemLayout } from './Common';
-
+import { timeOpts, dayOpts } from './Common';
+import { formKeys1, formItems, formKeys2, formItemLayout } from './Common';
 import css from './style.less';
 
 export default class Gift extends Component {
     /* 页面需要的各类状态属性 */
     state = {
-        options: [], // 生效时间下拉框
+        options: [],    //生效时间下拉框
         formKeys: formKeys1,
     };
-
     /** 表单内容变化时的监听 */
     onFormChange = (key, value) => {
-        const { idx, onChange } = this.props;
-        if (key === 'countType') {
+        const { idx, onChange, treeData } = this.props;
+        if(key === 'countType') {
             const options = (value === '0') ? timeOpts : dayOpts;
             this.setState({ options });
             // this.form.setFieldsValue({ 'giftEffectTimeHours': value });
         }
-        if (key === 'effectType') {
-            if (value === '1') {
-                this.setState({ formKeys: formKeys1 }, () => {
-                    // const countType = this.form.getFieldValue('countType');
+        if(key==='effectType'){
+            if(value === '1') {
+                this.setState({ formKeys: formKeys1 },()=>{
+                    const countType = this.form.getFieldValue('countType');
                     // this.form.setFieldsValue({ 'giftEffectTimeHours': countType });
                 });
             } else {
                 this.setState({ formKeys: formKeys2 });
             }
         }
-        onChange({ [key]: value }, this.form);
+        onChange(idx, { [key]: value });
+        
     }
     /** 得到form */
     getForm = (node) => {
@@ -47,7 +47,7 @@ export default class Gift extends Component {
                 placeholder="请选择礼品名称"
                 showSearch={true}
                 treeNodeFilterProp="label"
-                allowClear={false}
+                allowClear={true}
             />);
         return {
             ...formItems,
@@ -59,7 +59,6 @@ export default class Gift extends Component {
         const { formKeys } = this.state;
         const { formData } = this.props;
         const newFormItems = this.resetFormItems();
-
         return (
             <div className={css.mainBox}>
                 <BaseForm
