@@ -328,8 +328,8 @@ class PromotionBasicInfo extends React.Component {
                                 if(this.props.isNew) {
                                     return false
                                 }
-                                // 完善资料送礼 52 日期限制
-                                let disabledDates = type == '52' ? !currentDate.isBetween(actDateTemp[0], actDateTemp[1]) : false
+                                // 完善资料送礼52 生日赠送 51 日期限制
+                                let disabledDates = !currentDate.isBetween(actDateTemp[0], actDateTemp[1])
                                 return disabledDates
                             }} />
 
