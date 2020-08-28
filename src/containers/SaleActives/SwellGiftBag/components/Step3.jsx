@@ -14,16 +14,18 @@ const RadioGroup = Radio.Group;
 class Step3 extends React.Component {
 
     state = {
-        chooseRadio: 1,
+        giftGetRule: 1,
         chooseTab: '1'
     }
 
-    getForm = (form) => {
-        this.form = form;
+    componentDidMount () {
+        this.getSubmitFn()
+    }
+
+    getSubmitFn = () => {
         if(typeof this.props.getSubmitFn === 'function') {
             this.props.getSubmitFn({
                 submitFn: this.handleSubmit,
-                form
             })
         }
     }
@@ -58,7 +60,7 @@ class Step3 extends React.Component {
     onRadioChange = (e) => {
         this.setState(
            {
-            chooseRadio: e.target.value
+            giftGetRule: e.target.value
            }
         )
     }
@@ -69,10 +71,19 @@ class Step3 extends React.Component {
         })
     }
 
+    getForm = (key) => (form) => {
+        this.formData[key] = from
+    }
+
+    handleGiftChange = (key) => (giftData) => {
+        console.log('handleGiftChange',key,giftData)
+    }
+
     render () {
         formItems1.eventRemark.render = renderEventRemark.bind(this)
         const { formData } = this.props.createActiveCom
-        const { chooseRadio, chooseTab } = this.state
+        const { giftGetRule, chooseTab } = this.state
+
 
         return (
             <div className={styles.step3Wrap}>
@@ -83,9 +94,9 @@ class Step3 extends React.Component {
                     </div>
                     <div className={styles.giftMethods}>
                         礼品领取方式
-                        <RadioGroup style={{marginLeft: '20px'}} onChange={this.onRadioChange} value={chooseRadio}>
-                            <Radio value={1}>领取符合条件的最高档位礼品</Radio>
-                            <Radio value={2}>领取符合条件的所有档位礼品</Radio>
+                        <RadioGroup style={{marginLeft: '20px'}} onChange={this.onRadioChange} value={giftGetRule}>
+                            <Radio value={0}>领取符合条件的最高档位礼品</Radio>
+                            <Radio value={1}>领取符合条件的所有档位礼品</Radio>
                         </RadioGroup>
                     </div>
                 </div>
@@ -97,27 +108,34 @@ class Step3 extends React.Component {
                     className={styles.tabs}
                 >
                     <TabPane tab="档位一" key="1">
-                        <TabItem/>
+                        <TabItem
+                            key="1"
+                            getForm={this.getForm('1')}
+                            handleGiftChange={this.handleGiftChange('1')}
+                         />
                         </TabPane>
                     <TabPane tab="档位二" key="2">
-                        <TabItem/>
+                        <TabItem
+                        key="2"
+                        getForm={this.getForm('2')}
+                        handleGiftChange={this.handleGiftChange('2')}
+                        />
                     </TabPane>
                     <TabPane tab="档位三" key="3">
-                        <TabItem/>
+                        <TabItem
+                        key="3"
+                        getForm={this.getForm('2')}
+                        handleGiftChange={this.handleGiftChange('3')}
+                        />
                     </TabPane>
                 </Tabs>
-                <BaseForm
-                    getForm={this.getForm}
-                    formItems={formItems1}
-                    formData={formData}
-                    formKeys={[]}
-                    onChange={this.handleFromChange}
-                    formItemLayout={{
-                    labelCol: { span: 3 },
-                    wrapperCol: { span: 21 },
-                    }}
-                />
-
+                <div className={styles.helpPeople}>
+                    <div className={styles.title}>
+                        <div className={styles.line}></div>
+                        发起人奖励
+                    </div>
+                    <TabItem handleGiftChange={this.handleGiftChange('4')} isHelp/>
+                </div>
             </div>
         )
     }

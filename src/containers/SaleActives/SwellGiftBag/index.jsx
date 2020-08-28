@@ -7,6 +7,7 @@ import styles from './swellGiftBag.less'
 import Step1 from './components/Step1'
 import Step2 from './components/Step2'
 import Step3 from './components/Step3'
+import Step4 from './components/Step4'
 import { imgUrl, phoneImg,phoneTop} from '../constant'
 
 import moment from 'moment'
@@ -128,7 +129,7 @@ class SwellGiftBag extends React.Component {
         const saveLoading = loading.effects['createActiveCom/addEvent_NEW']
         const steps = [{
             title: '基本信息',
-            content:  <Step3
+            content:  <Step1
             getSubmitFn={this.getSubmitFn(0)}
             />,
           },  {
@@ -143,7 +144,7 @@ class SwellGiftBag extends React.Component {
             />,
           }, {
             title: '分享推送',
-            content:  <Step2
+            content:  <Step4
             getSubmitFn={this.getSubmitFn(3)}
             />,
           }];

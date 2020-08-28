@@ -13,8 +13,6 @@ class Step2 extends React.Component {
         formKeys2: _.cloneDeep(formKeys2)
     }
 
-
-
     getForm = (form) => {
         this.form = form;
         if(typeof this.props.getSubmitFn === 'function') {
@@ -56,6 +54,12 @@ class Step2 extends React.Component {
                     partInTimes: partInTimesC,
                     countCycleDays
                 }
+            }
+            if(!formData.partInTimes && v.partInTimes === 'B') {
+              return  message.warn('助力次数不能为空')
+            }
+            if(v.partInTimes === 'C' && (!formData.countCycleDays || !formData.partInTimes)) {
+              return  message.warn('助力周期次数不能为空')
             }
             this.props.dispatch({
                 type: 'createActiveCom/updateState',
