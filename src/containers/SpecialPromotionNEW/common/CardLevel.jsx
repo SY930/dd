@@ -259,7 +259,6 @@ class CardLevel extends React.Component {
         }else {
           getExcludeCardLevelIds = this.state.getExcludeCardLevelIds
         }
-        console.log('type', getExcludeCardLevelIds)
         const treeData = [];
         const eventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
         const excludeEvent = eventInfo.excludeEventCardLevelIdModelList || [];

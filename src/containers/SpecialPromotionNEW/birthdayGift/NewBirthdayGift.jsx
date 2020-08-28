@@ -33,6 +33,7 @@ class NewBirthdayGift extends NewPromotion {
                     getSubmitFn={(handles) => {
                         this.handles[0] = handles;
                     }}
+                    isNew={this.props.isNew}
                 />),
             },
             {
