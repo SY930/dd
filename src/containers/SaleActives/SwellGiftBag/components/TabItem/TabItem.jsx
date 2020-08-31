@@ -12,17 +12,22 @@ const formItemStyle = {
 class TabItem extends React.Component {
     state = {
         giftList: [],
+
     }
 
     handleGiftChange = (v) => {
-        this.setState({
-            giftList: v,
-        })
+        this.props.handleGiftChange(v)
     }
 
     render() {
-        const { form: { getFieldDecorator }, isHelp, key, handleGiftChange, getForm } = this.props
-        const { giftList } = this.state
+        const { form, isHelp, itemKey, getForm, giftList, cacheTreeData, treeData, onIptChange, getGiftForm } = this.props
+        const { getFieldDecorator } = form
+        console.log('itemKey', itemKey)
+        console.log('giftList', giftList)
+        if (typeof getForm === 'function') {
+            getForm(form)
+        }
+
         return (
             <Form >
                 {
@@ -31,10 +36,10 @@ class TabItem extends React.Component {
                         :
                         <FormItem {...formItemStyle} wrapperCol={{ span: 14 }} label="膨胀所需人数" required={true}>
                             {
-                                getFieldDecorator(`needCount${key}`, {
+                                getFieldDecorator(`needCount${itemKey}`, {
                                     rules: [
                                         {
-                                            validator: (rule, v, cb) => {
+                                            validator: (rule, v = {}, cb) => {
                                                 if (
                                                     v.number === '' ||
                                 v.number === undefined
@@ -52,10 +57,14 @@ class TabItem extends React.Component {
                                                         '请输入0-1000之间的整数'
                                                     );
                                                 }
+                                                // if (needCount[1] < needCount[0]) {
+                                                //     return cb('数值必须大于上一档位的人数')
+                                                // }
                                                 cb();
                                             },
                                         },
                                     ],
+                                    onChange: onIptChange,
                                 })(<PriceInput mode="int" addonAfter="人" />)
                             }
 
@@ -63,7 +72,14 @@ class TabItem extends React.Component {
                 }
 
                 <FormItem {...formItemStyle} wrapperCol={{ span: 14 }} label="添加礼品" required={true}>
-                    <MutliGift value={giftList} onChange={this.handleGiftChange} getForm={this.getForm} />
+                    <MutliGift
+                        key={itemKey}
+                        value={giftList[itemKey] ? [giftList[itemKey]] : []}
+                        onChange={this.handleGiftChange}
+                        cacheTreeData={cacheTreeData}
+                        treeData={treeData}
+                        getGiftForm={getGiftForm}
+                    />
                 </FormItem>
             </Form>
         )

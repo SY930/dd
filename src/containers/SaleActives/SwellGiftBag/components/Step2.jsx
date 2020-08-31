@@ -24,7 +24,7 @@ class Step2 extends React.Component {
     }
 
     handleSubmit = () => {
-        const { formData } = this.props.createActiveCom
+        const { formData: modalFormData } = this.props.createActiveCom
         let flag = false
         this.form.validateFieldsAndScroll((e,v) => {
             if(e) {
@@ -36,21 +36,21 @@ class Step2 extends React.Component {
 
             if(v.partInTimes === 'A') {
                 formData = {
-                    ...formData,
+                    ...modalFormData,
                     partInTimes: 0,
                     countCycleDays: 0
                 }
             }
             if(v.partInTimes === 'B') {
                 formData = {
-                    ...formData,
+                    ...modalFormData,
                     partInTimes: partInTimesB,
                     countCycleDays: 0
                 }
             }
             if(v.partInTimes === 'C') {
                 formData = {
-                    ...formData,
+                    ...modalFormData,
                     partInTimes: partInTimesC,
                     countCycleDays
                 }

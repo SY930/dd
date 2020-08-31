@@ -33,13 +33,10 @@ export default class Gift extends Component {
         onChange(idx, { [key]: value });
     }
     /** 得到form */
-    getForm = (node) => {
-        this.form = node;
+    getForm = (form) => {
+        this.form = form;
         const { idx, getForm } = this.props
-        getForm({
-            idx,
-            getForm,
-        })
+        getForm(form)
     }
     resetFormItems() {
         const { options } = this.state;

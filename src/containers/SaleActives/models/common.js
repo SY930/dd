@@ -28,6 +28,7 @@ const initState = {
     descModalIsShow: false,
     isStepContinue: false,
     formData: {
+        // 推荐有礼gift默认数据
         mySendGift: {
             effectType: '1', // 生效方式
             giftEffectTimeHours: '-1', // 生效时间

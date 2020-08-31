@@ -27,16 +27,22 @@ const href = 'javascript:;';
 // TODO：支持多个礼品
 class MutliGift extends Component {
     state = {
-        treeData: [],
+        treeData: this.props.treeData || [],
         formList: [],
     }
     componentDidMount() {
+        const { cacheTreeData, treeData } = this.props
         // 初始化一个礼品
         this.initGift()
         // 请求礼品列表
-        this.getCardList({}).then((x) => {
-            this.setState({ treeData: x });
-        })
+        if (!(Array.isArray(treeData) && treeData.length)) {
+            this.getCardList({}).then((x) => {
+                this.setState({ treeData: x });
+                if (typeof cacheTreeData === 'function') {
+                    cacheTreeData(x)
+                }
+            })
+        }
     }
 
 
@@ -121,24 +127,29 @@ class MutliGift extends Component {
 
     initGift = () => {
         const { value } = this.props
-        if (Array.isArray(value) && !value.length) {
+        if (!value || (Array.isArray(value) && !value.length)) {
             this.onAdd()
         }
     }
 
     getForm = (form) => {
         const { formList } = this.state
+        const { getGiftForm } = this.props
         formList.push(form)
-        this.props.getForm(formList)
+
+        if (typeof getGiftForm === 'function') {
+            getGiftForm(form)
+        }
     }
 
     render() {
         const { treeData } = this.state;
         const { value, isMulti } = this.props;
+
         return (
             <div className={css.multiGiftBox}>
                 {
-                    value && value.map((x, i) => {
+                    Array.isArray(value) && value.length && value.map((x, i) => {
                         return (
                             <div key={x.id} className={css.giftBox}>
                                 <em>礼品{i + 1}</em>
