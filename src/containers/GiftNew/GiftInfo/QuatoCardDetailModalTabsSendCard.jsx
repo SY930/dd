@@ -304,7 +304,7 @@ class CardOperate extends React.Component {
     handleEffectTypeChange = (e) => {
         let { formKeys } = this.state
         const value = e.target.value
-        const relativeDateKeys = [ 'giftEffectTimeHours', 'giftValidUntilDayCount']
+        const relativeDateKeys = [ 'giftEffectTimeHours', 'giftValidUntilDayCount', 'effectTime99validUntilDate']
 
         if(value === '0') {
             formKeys[0].keys = formKeys[0].keys.filter(v => {
