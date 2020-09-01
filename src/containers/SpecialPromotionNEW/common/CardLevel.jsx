@@ -150,7 +150,7 @@ class CardLevel extends React.Component {
                 if(this.props.type == '51'){
                     excludeEvent = excludeEvent.filter(item => {
                         // 判断时间区间是否重合
-                        return item.eventStartDate > nextEventInfo.eventEndDate || item.eventEndDate > nextEventInfo.eventStartDate
+                        return !(item.eventStartDate > nextEventInfo.eventEndDate || item.eventEndDate < nextEventInfo.eventStartDate) || item.eventStartDate == '20000101' || item.eventEndDate == '29991231'
                     })
                 }
                 excludeEvent.map((event) => {

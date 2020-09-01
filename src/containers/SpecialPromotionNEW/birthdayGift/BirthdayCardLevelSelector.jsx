@@ -58,7 +58,7 @@ class BirthdayCardLevelSelector extends Component {
         const nextEventInfo = specialPromotion.get('$eventInfo').toJS();
         excludeEventList = excludeEventList.filter(item => {
             // 判断时间区间是否重合
-            return item.eventStartDate > nextEventInfo.eventEndDate || item.eventEndDate > nextEventInfo.eventStartDate
+            return !(item.eventStartDate > nextEventInfo.eventEndDate || item.eventEndDate < nextEventInfo.eventStartDate) || item.eventStartDate == '20000101' || item.eventEndDate == '29991231'
         })
         const boxData = [];
         value.forEach((id) => {
