@@ -10,41 +10,47 @@ import ShareSetting from '../../components/ShareSetting/ShareSetting'
 @connect(({  loading, createActiveCom }) => ({  loading, createActiveCom }))
 class Step4 extends React.Component {
 
+    state = {
+        shareImagePath: ''
+    }
 
-    getForm = (form) => {
-        this.form = form;
+    componentDidMount () {
+
+        this.getSubmitFn()
+    }
+    getSubmitFn = (form) => {
         if(typeof this.props.getSubmitFn === 'function') {
             this.props.getSubmitFn({
                 submitFn: this.handleSubmit,
-                form
             })
         }
     }
 
-    handleFromChange = (key,value) => {
 
-        const { formData } = this.props.createActiveCom
-
-        formData[key] =value
+    handleSubmit = () => {
+        let flag = true
+        const { formData: modalFormData } = this.props.createActiveCom
+        const { shareImagePath } = this.state
+        let formData = {}
+        this.shareForm.validateFieldsAndScroll((e,v) => {
+            if(e) {
+                flag = false
+            }
+            formData = {
+                ...v
+            }
+        })
 
         this.props.dispatch({
             type: 'createActiveCom/updateState',
             payload: {
-                formData
+                formData: {
+                    ...modalFormData,
+                    ...formData,
+                    shareImagePath
+                }
             }
         })
-    }
-    handleSubmit = () => {
-        let flag = true
-
-        this.form.validateFieldsAndScroll((e,v) => {
-            if(e) {
-                // flag = false
-            }
-
-        })
-
-
         return flag
     }
 
@@ -53,7 +59,9 @@ class Step4 extends React.Component {
     }
 
     onRestImg = (v) => {
-        console.log('v---',v)
+        this.setState({
+            shareImagePath: v.value
+        })
     }
 
     render () {

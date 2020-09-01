@@ -40,7 +40,7 @@ class PayHaveGift extends React.Component {
     getDetail = (itemID) => {
 
         this.props.dispatch({
-            type: 'createActiveCom/queryEventDetail_NEW',
+            type: 'createActiveCom/queryEventDetail_NEW_payHaveGift',
             payload: {
                 itemID,
             }
@@ -71,7 +71,7 @@ class PayHaveGift extends React.Component {
             }).then(res => {
                 if(res) {
                     this.props.dispatch({
-                        type: 'createActiveCom/addEvent_NEW'
+                        type: 'createActiveCom/addEvent_NEW_payHaveGift'
                     }).then(res => {
                         if(res) {
                             cb()

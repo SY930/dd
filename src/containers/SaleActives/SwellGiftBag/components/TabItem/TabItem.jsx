@@ -45,7 +45,12 @@ class TabItem extends React.Component {
                                 v.number === undefined
                                                 ) {
                                                     return cb(
-                                                        '请输入0-1000之间的整数'
+                                                        itemKey > 0 ? '请输入1-1000之间的整数' : '请输入0-1000之间的整数'
+                                                    );
+                                                }
+                                                if (itemKey > 0 && v.number < 1) {
+                                                    return cb(
+                                                        '请输入1-1000之间的整数'
                                                     );
                                                 }
                                                 if (!v || (v.number < 0)) {
@@ -57,14 +62,13 @@ class TabItem extends React.Component {
                                                         '请输入0-1000之间的整数'
                                                     );
                                                 }
-                                                // if (needCount[1] < needCount[0]) {
-                                                //     return cb('数值必须大于上一档位的人数')
-                                                // }
+
                                                 cb();
                                             },
                                         },
                                     ],
                                     onChange: onIptChange,
+                                    initialValue: itemKey == 0 ? { number: 0 } : '',
                                 })(<PriceInput mode="int" addonAfter="人" />)
                             }
 

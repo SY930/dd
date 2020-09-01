@@ -75,7 +75,7 @@ class ShareSetting extends React.Component {
     }
 
     render() {
-        const { value = {} } = this.props
+        const { value = {}, getForm } = this.props
 
         return (
             <div className={styles.shareSetting}>
@@ -87,7 +87,7 @@ class ShareSetting extends React.Component {
                 <ShareForm
                     onRestImg={this.onRestImg}
                     optionData={value}
-                    getForm={this.props.getForm}
+                    getForm={getForm}
                 />
             </div>
         )

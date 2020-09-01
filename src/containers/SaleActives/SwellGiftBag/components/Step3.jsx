@@ -18,9 +18,7 @@ class Step3 extends React.Component {
     state = {
         giftGetRule: 0,
         chooseTab: '0',
-        giftList: [],
         treeData: [],
-        needCount: {},
         formList: []
     }
 
@@ -52,13 +50,15 @@ class Step3 extends React.Component {
     }
     handleSubmit = () => {
         let flag = true
+
         const { formData: modalFormData } = this.props.createActiveCom
-        const { giftGetRule, needCount } = this.state
+        const { giftGetRule } = this.state
+        const { needCount } = modalFormData
         let formData = {
             ...modalFormData,
             giftGetRule
         }
-
+        const gifts = []
 
         giftForm.forEach(form => {
             if(form) {
@@ -66,7 +66,8 @@ class Step3 extends React.Component {
                     if(e) {
                         flag = false
                     }
-                    console.log('gift----',v)
+
+                    gifts.push(v)
                 })
             }
         })
@@ -75,7 +76,7 @@ class Step3 extends React.Component {
                 if(e) {
                     flag = false
                 }
-                console.log('v----',v)
+
             })
         })
 
@@ -97,15 +98,23 @@ class Step3 extends React.Component {
             return false
         }
 
+        // 添加膨胀所需要的人数
+        gifts.forEach((v,i) => {
+            v.needCount = needCount[i]
+        })
+
 
         this.props.dispatch({
             type: 'createActiveCom/updateState',
             payload: {
-                formData
+                formData: {
+                    ...formData,
+                    gifts
+                }
             }
         })
 
-        return flag
+        return  flag
     }
 
     onRadioChange = (e) => {
@@ -154,11 +163,32 @@ class Step3 extends React.Component {
     }
 
     handleGiftChange = (key) => (giftData) => {
-        console.log('handleGiftChange',key,giftData)
-        const { giftList } = this.state
+        const { formData } = this.props.createActiveCom
+        const { giftList } =  formData
+        const { treeData } = this.state
+        let chooseCoupon = {}
+        const chooseCouponItem = treeData.filter(v => {
+            const list = v.children || []
+           const chooseItem =  list.find(item => item.key === giftData[0].giftID)
+            if(chooseItem) {
+                chooseCoupon = chooseItem
+            }
+            return chooseItem
+        })
+
+        giftData[0].label = chooseCouponItem[0] && chooseCouponItem[0].label
+        giftData[0].giftValue = chooseCoupon.giftValue
+
         giftList[key] = giftData[0]
-        this.setState({
-            giftList
+
+        this.props.dispatch({
+            type: 'createActiveCom/updateState',
+            payload: {
+                formData: {
+                    ...formData,
+                    giftList
+                }
+            }
         })
     }
 
@@ -170,12 +200,18 @@ class Step3 extends React.Component {
 
     onIptChange = (key) => (e)  => {
 
-        console.log('this.formList',giftForm)
-        const { needCount } = this.state
+        const { formData } = this.props.createActiveCom
+        const { needCount } =  formData
         needCount[key] = Number(e.number)
 
-        this.setState({
-            needCount
+        this.props.dispatch({
+            type: 'createActiveCom/updateState',
+            payload: {
+                formData: {
+                    ...formData,
+                    needCount
+                }
+            }
         })
     }
 
@@ -187,7 +223,8 @@ class Step3 extends React.Component {
     render () {
         formItems1.eventRemark.render = renderEventRemark.bind(this)
         const { formData } = this.props.createActiveCom
-        const { giftGetRule, chooseTab,giftList,treeData, needCount } = this.state
+        const {giftList} = formData
+        const { giftGetRule, chooseTab ,treeData } = this.state
 
         console.log('treeData',treeData)
         return (
@@ -219,7 +256,6 @@ class Step3 extends React.Component {
                             handleGiftChange={this.handleGiftChange('0')}
                             giftList={giftList}
                             onIptChange={this.onIptChange('0')}
-                            needCount={needCount}
                             getGiftForm={this.getGiftForm('0')}
                          />
                         </TabPane>
@@ -231,7 +267,6 @@ class Step3 extends React.Component {
                         giftList={giftList}
                         treeData={treeData}
                         onIptChange={this.onIptChange('1')}
-                        needCount={needCount}
                         getGiftForm={this.getGiftForm('1')}
                         />
                     </TabPane>
@@ -243,7 +278,6 @@ class Step3 extends React.Component {
                         giftList={giftList}
                         treeData={treeData}
                         onIptChange={this.onIptChange('2')}
-                        needCount={needCount}
                         getGiftForm={this.getGiftForm('2')}
                         />
                     </TabPane>

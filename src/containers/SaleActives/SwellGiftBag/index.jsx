@@ -2,16 +2,16 @@ import React from 'react';
 import { Icon } from 'antd';
 import {connect} from 'react-redux';
 import { jumpPage,closePage,decodeUrl } from '@hualala/platform-base'
+import moment from 'moment'
 import ActSteps from '../components/ActSteps/ActSteps'
 import styles from './swellGiftBag.less'
 import Step1 from './components/Step1'
 import Step2 from './components/Step2'
 import Step3 from './components/Step3'
 import Step4 from './components/Step4'
-import { imgUrl, phoneImg,phoneTop} from '../constant'
+import { imgUrl } from '../constant'
 
-import moment from 'moment'
-const format = "YYYYMMDD";
+const formatType = 'YYYY.MM.DD'
 
 
 @connect(({  loading, createActiveCom }) => ({  loading, createActiveCom }))
@@ -40,7 +40,6 @@ class SwellGiftBag extends React.Component {
     }
 
     getDetail = (itemID) => {
-
         this.props.dispatch({
             type: 'createActiveCom/queryEventDetail_NEW',
             payload: {
@@ -59,31 +58,47 @@ class SwellGiftBag extends React.Component {
          }
     }
     handleFinish = (cb,current) => {
-
         if(typeof this[`submitFn${current}`]  === 'function' && this[`submitFn${current}`]()) {
             const { formData, type } = this.props.createActiveCom
-            const { eventDate } = formData
+            console.log('formData---',formData,type)
+            const {
+                eventName,
+                eventRemark,
+                eventEndDate,
+                eventStartDate,
+                giftGetRule,
+                shareSubtitle,
+                shareTitle,
+                shareImagePath,
+                countCycleDays,
+                partInTimes,
+                gifts
+            } = formData
             this.props.dispatch({
-                type: 'createActiveCom/getExcludeEventList',
+                type: 'createActiveCom/addEvent_NEW',
                 payload: {
-                    eventStartDate: moment(eventDate[0]).format(format),
-                    eventEndDate: moment(eventDate[1]).format(format),
-                    eventWay: type
+                    event: {
+                        eventWay: type,
+                        eventName,
+                        eventRemark,
+                        eventEndDate,
+                        eventStartDate,
+                        giftGetRule,
+                        shareSubtitle,
+                        shareTitle,
+                        shareImagePath,
+                        countCycleDays,
+                        partInTimes,
+                    },
+                    gifts
                 }
             }).then(res => {
                 if(res) {
-                    this.props.dispatch({
-                        type: 'createActiveCom/addEvent_NEW'
-                    }).then(res => {
-                        if(res) {
-                            cb()
-                            closePage()
-                            jumpPage({pageID: '1000076003'})
-                        }
-                    })
+                    cb()
+                    closePage()
+                    jumpPage({pageID: '1000076003'})
                 }
             })
-
          }
     }
     handlePrev = (cb) => {
@@ -119,13 +134,12 @@ class SwellGiftBag extends React.Component {
             giftValue,
             isView
         } = this.props.createActiveCom
-        const { merchantLogoUrl, eventName, backgroundColor, mySendGift, originalImageUrl } = formData
-        // const { rangeDate, effectType, giftEffectTimeHours, giftValidUntilDayCount,giftID } = mySendGift
-        const giftList = crmGiftTypes.reduce((pre,currentValue,) => {
-            const children = currentValue.children || []
-            return [...pre,...children]
-        },[])
-        const giftItem = giftList.find(v => v.value === giftID)
+        const { eventLimitDate, needCount, giftList } = formData
+
+        console.log('formData---',formData)
+        const giftListMap = giftList.filter((v,i) => {
+            return v && i < 3
+        })
         const saveLoading = loading.effects['createActiveCom/addEvent_NEW']
         const steps = [{
             title: '基本信息',
@@ -160,19 +174,31 @@ class SwellGiftBag extends React.Component {
                                     <div className={styles.container}>
                                         <img className={styles.topImg} src={`${imgUrl}/basicdoc/b877b38f-da49-4530-9bff-58382f1bf227.png`}/>
                                         <div className={styles.actTime}>
-                                            <div>
-                                                活动时间：2019.07.16-2019.08.31
-                                            </div>
+                                            {eventLimitDate &&  eventLimitDate[0] ?
+                                                <div>
+                                                    活动时间：{moment(eventLimitDate[0]).format(formatType)}-{moment(eventLimitDate[1]).format(formatType)}
+                                                </div>
+                                            : null}
+
                                         </div>
                                         <div className={styles.couponWrap}>
                                             <div className={styles.bigCoupon}  >
                                                 <div className={styles.left}>
-                                                    <div>¥ <span style={{fontWeight: 'bold',fontSize: '14px'}}>20</span></div>
-                                                    <div className={styles.scale8}>代金券</div>
+                                                    {giftListMap[0] && giftListMap[0].giftValue ?
+                                                    <div>¥ <span style={{fontWeight: 'bold',fontSize: '14px'}}>{ giftListMap[0].giftValue}</span></div>
+                                                    : null}
+
+                                                    <div className={styles.scale8}>{giftListMap[0] && giftListMap[0].label}</div>
                                                 </div>
                                                 <div className={styles.right}>
-                                                    <div style={{fontWeight: 'bold'}} className={styles.scale8}>望湘园20元代金券</div>
-                                                    <div style={{color: '#BCBCBC'}} className={styles.scale8}>优惠券详情</div>
+
+                                                    <div style={{fontWeight: 'bold'}} className={styles.giftName}>{giftListMap[0] && giftListMap[0].giftName}</div>
+                                                    {
+                                                        giftListMap[0] && giftListMap[0].giftName ?
+                                                        <div style={{color: '#BCBCBC'}} className={styles.scale8}>优惠券详情</div>
+                                                        : null
+                                                    }
+
                                                 </div>
                                             </div>
                                             <div className={styles.submitBtn}>立即参与</div>
@@ -185,41 +211,32 @@ class SwellGiftBag extends React.Component {
                                                 <div className={styles.numWrap}>
                                                     <div className={styles.num}>
                                                         <Icon type="caret-down" />
-                                                        <div>3人</div>
+                                                        <div>{needCount[0] || 0}人</div>
                                                     </div>
                                                     <div className={styles.num}>
                                                         <Icon type="caret-down" />
-                                                        <div>5人</div>
+                                                        {needCount[1] ?  <div>{needCount[1]}人</div> : null}
                                                     </div>
                                                     <div className={styles.num}>
                                                         <Icon type="caret-down" />
-                                                        <div>8人</div>
+                                                        {needCount[2] ?  <div>{needCount[2]}人</div> : null}
                                                     </div>
                                                 </div>
                                              </div>
 
                                              <div className={styles.couponList}>
-                                                <div className={styles.couponItem}>
-                                                    <div>
-                                                       <div className={styles.scale8}>¥</div>
-                                                        <span className={styles.fontWeight}>20</span>
+                                                {giftListMap.map(v => {
+                                                    return (
+                                                        <div className={styles.couponItem}>
+                                                        <div>
+                                                            {v.giftValue ?  <div className={styles.scale8}>¥</div> : null}
+                                                        <div className={styles.fontWeight}>{v.giftValue}</div>
+                                                        </div>
+                                                    <div className={styles.label}>{v.label}</div>
                                                     </div>
-                                                    <div className={styles.scale8}>代金券</div>
-                                                </div>
-                                                <div className={styles.couponItem}>
-                                                    <div>
-                                                       <div className={styles.scale8}>¥</div>
-                                                        <span className={styles.fontWeight}>20</span>
-                                                    </div>
-                                                    <div className={styles.scale8}>代金券</div>
-                                                </div>
-                                                <div className={styles.couponItem}>
-                                                    <div>
-                                                       <div className={styles.scale8}>¥</div>
-                                                        <span className={styles.fontWeight}>20</span>
-                                                    </div>
-                                                    <div className={styles.scale8}>代金券</div>
-                                                </div>
+                                                    )
+                                                })}
+
 
                                              </div>
                                         </div>

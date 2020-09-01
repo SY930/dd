@@ -25,7 +25,7 @@ class Step2 extends React.Component {
 
     handleSubmit = () => {
         const { formData: modalFormData } = this.props.createActiveCom
-        let flag = false
+        let flag = true
         this.form.validateFieldsAndScroll((e,v) => {
             if(e) {
                 flag = false
@@ -56,9 +56,11 @@ class Step2 extends React.Component {
                 }
             }
             if(!formData.partInTimes && v.partInTimes === 'B') {
-              return  message.warn('助力次数不能为空')
+                flag = false
+               return  message.warn('助力次数不能为空')
             }
             if(v.partInTimes === 'C' && (!formData.countCycleDays || !formData.partInTimes)) {
+                flag = false
               return  message.warn('助力周期次数不能为空')
             }
             this.props.dispatch({
@@ -67,7 +69,7 @@ class Step2 extends React.Component {
                     formData
                 }
             })
-            flag = true
+
         })
         return flag
     }

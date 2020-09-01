@@ -3,9 +3,6 @@ import { message } from 'antd';
 import _ from 'lodash';
 import api from '../api';
 import {
-    FMColorList,
-    RList,
-    RFMColorList,
     giftTypeName,
     imgUrl,
 } from '../constant';
@@ -13,7 +10,7 @@ import {
 import moment from 'moment';
 
 const format = 'YYYYMMDD';
-// http://res.hualala.com/basicdoc/21723174-846a-42c9-9381-92106967d82a.png
+
 const {
     couponService_getSortedCouponBoardList,
     couponService_getBoards,
@@ -40,6 +37,8 @@ const initState = {
         merchantLogoUrl: 'basicdoc/21723174-846a-42c9-9381-92106967d82a.png',
         originalImageUrl: 'basicdoc/ea1e4255-32fb-4bed-baa2-37b655e52eb8.png',
         afterPayJumpType: '3',
+        needCount: [], // 膨胀所需人数
+        giftList: [], // 礼品信息
     }, // 表单内的值,
     currentStep: 0,
     giftForm: null, // 礼品的form对象
@@ -147,6 +146,27 @@ export default {
             message.warn(ret.message);
         },
         * addEvent_NEW({ payload }, { call, put, select }) {
+            // 保存活动，参数在各自组件处理，通过payload传入
+            const { groupID } = yield select(
+                state => state.createActiveCom
+            );
+            const ret = yield call(addEvent_NEW, {
+                ...payload,
+                event: {
+                    ...payload.event,
+                    groupID,
+                },
+
+            });
+
+            if (ret.code === '000') {
+                return true;
+            }
+
+            return false;
+        },
+        * addEvent_NEW_payHaveGift({ payload }, { call, put, select }) {
+            // 微信支付有礼专用保存，
             const { groupID, formData, wxNickNameList } = yield select(
                 state => state.createActiveCom
             );
@@ -241,7 +261,7 @@ export default {
 
             return false;
         },
-        * queryEventDetail_NEW({ payload }, { call, put, select }) {
+        * queryEventDetail_NEW_payHaveGift({ payload }, { call, put, select }) {
             const { groupID } = yield select(state => state.createActiveCom);
             const ret = yield call(queryEventDetail_NEW, {
                 ...payload,
@@ -395,30 +415,3 @@ function proGiftTreeData(giftTypes) {
     return (treeData = _.sortBy(treeData, 'key'));
 }
 
-// {
-//     "data": {
-//         "event": {
-//             "eventName": "测试支付有礼",
-//             "merchantLogoName": "22222.png",
-//             "merchantLogoUrl": "http://res.hualala.com/basicdoc/42241a82-6029-4535-ba25-c81480ff97dc.png",
-//             "eventRemark": "支付有礼活动说明",
-//             "consumeTotalAmount": "11",
-//             "backgroundColor": "#2B9F66",
-//             "afterPayJumpType": "3",
-//             "eventStartDate": "20200719",
-//             "eventEndDate": "20200724"
-//         },
-//         "gifts": [
-//             {
-//                 "giftID": "6850738927616134037",
-//                 "giftCount": "23",
-//                 "countType": "1",
-//                 "effectTime": "20200718",
-//                 "validUntilDate": "20200725",
-//                 "originalImageName": "333333333.png",
-//                 "originalImageUrl": "http://res.hualala.com/basicdoc/a7fd835b-d643-41c3-a182-2480e7956495.png",
-//                 "presentType": 1
-//             }
-//         ]
-//     }
-// }
