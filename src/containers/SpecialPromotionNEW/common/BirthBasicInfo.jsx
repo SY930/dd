@@ -324,12 +324,12 @@ class PromotionBasicInfo extends React.Component {
                     <Row>
                         <Col span={19}>
 
-                            <RangePicker value={actDate} onChange={this.handleActDateChange} disabledDate= {(currentDate) => {
+                            <RangePicker allowClear={false} value={actDate} onChange={this.handleActDateChange} disabledDate= {(currentDate) => {
                                 if(this.props.isNew) {
                                     return false
                                 }
                                 // 完善资料送礼52 生日赠送 51 日期限制
-                                let disabledDates = !currentDate.isBetween(actDateTemp[0], actDateTemp[1])
+                                let disabledDates = !currentDate.isBetween(actDateTemp[0], actDateTemp[1], null, '[]')
                                 return disabledDates
                             }} />
 
