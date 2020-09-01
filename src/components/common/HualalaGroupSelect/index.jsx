@@ -32,16 +32,19 @@ class HualalaGroupSelect extends React.Component {
     }
 
     onCheckAllChange() {
+        let {limitNum = 0, selectedNum = 0} = this.props
         let selected = [];
         if (!this.state.checkAll) {
             selected = this.state.options.map((option) => {
                 return option.value;
             });
         }
-        this.setState({
-            checkAll: !this.state.checkAll,
-            selected,
-        });
+        if((!limitNum || !selectedNum) || selected.length + selectedNum <= limitNum){
+            this.setState({
+                checkAll: !this.state.checkAll,
+                selected,
+            });
+        }
 
         if (this.props.onChange) {
             this.props.onChange(selected)
