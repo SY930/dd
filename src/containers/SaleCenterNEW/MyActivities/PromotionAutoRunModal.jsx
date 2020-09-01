@@ -35,6 +35,7 @@ class PromotionAutoRunModal extends Component {
             promotionList,
             selectedRowKeys: promotionList.map(item => item.promotionID),
             checkedValues: [],
+            limitNum: 30,
         }
     }
 
@@ -118,11 +119,11 @@ class PromotionAutoRunModal extends Component {
         this.setState({ checkedValues });
     }
     renderInnerTable() {
-        const { checkedValues } = this.state;
+        const { checkedValues, limitNum } = this.state;
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
-                if(selectedRowKeys.length >= 30 + 1){
-                    message.warning('自动执行活动不能超过30个');
+                if(selectedRowKeys.length >= limitNum + 1){
+                    message.warning(`自动执行活动不能超过${limitNum}个`);
                     return;
                 }
                 this.setState({
@@ -130,7 +131,7 @@ class PromotionAutoRunModal extends Component {
                 })
             },
             getCheckboxProps: (record) => ({
-                disabled: this.state.selectedRowKeys.length >= 3 && !this.state.selectedRowKeys.includes(record.promotionID),
+                disabled: this.state.selectedRowKeys.length >= limitNum && !this.state.selectedRowKeys.includes(record.promotionID),
                 name: record.name,
             }),
             selectedRowKeys: this.state.selectedRowKeys,
