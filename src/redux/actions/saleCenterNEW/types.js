@@ -393,6 +393,18 @@ export const SALE_CENTER_GIFT_EFFICT_DAY = Object.freeze([
         label: <span>30{COMMON_GIFT.d7h90e1230904678}</span>,
         value: "30",
     },
+    {
+        label: <span>40{COMMON_GIFT.d7h90e1230904678}</span>,
+        value: "40",
+    },
+    {
+        label: <span>50{COMMON_GIFT.d7h90e1230904678}</span>,
+        value: "50",
+    },
+    {
+        label: <span>60{COMMON_GIFT.d7h90e1230904678}</span>,
+        value: "60",
+    },
 ]);
 
 export const ACTIVITY_CATEGORIES = (function () {
