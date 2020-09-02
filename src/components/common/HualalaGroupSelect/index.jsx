@@ -8,7 +8,7 @@
  * @Copyright: Copyright(c) 2017-present Hualala Co.,Ltd.
  */
 
-import { Checkbox, Col } from 'antd';
+import { Checkbox, Col, message } from 'antd';
 import React from 'react';
 import styles from './treeSelect.less';
 
@@ -39,7 +39,18 @@ class HualalaGroupSelect extends React.Component {
                 return option.value;
             });
         }
-        if((!limitNum || !selectedNum) || selected.length + selectedNum <= limitNum){
+        // 兼容无限制参数组件
+        if(limitNum || selectedNum){
+            if(selected.length + selectedNum <= limitNum){
+                this.setState({
+                    checkAll: !this.state.checkAll,
+                    selected,
+                });
+            }else{
+                message.warning(`共享组选项不能超过${limitNum}个`)
+                return;
+            }
+        }else{
             this.setState({
                 checkAll: !this.state.checkAll,
                 selected,
