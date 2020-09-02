@@ -35,6 +35,7 @@ class PromotionAutoRunModal extends Component {
             promotionList,
             selectedRowKeys: promotionList.map(item => item.promotionID),
             checkedValues: [],
+            allDisabled: false,
             limitNum: 30,
         }
     }
@@ -116,22 +117,32 @@ class PromotionAutoRunModal extends Component {
         );
     }
     onEventChange = (checkedValues) => {
-        this.setState({ checkedValues });
+        const { selectedRowKeys, limitNum } = this.state;
+        if(selectedRowKeys.length > limitNum - checkedValues.length){
+            message.warning(`自动执行活动不能超过${limitNum}个`);
+            this.setState({allDisabled: true})
+            return;
+        }else{
+            this.setState({allDisabled: false})
+            this.setState({ checkedValues });
+        }
     }
     renderInnerTable() {
-        const { checkedValues, limitNum } = this.state;
+        const { checkedValues, limitNum, allDisabled } = this.state;
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
-                if(selectedRowKeys.length >= limitNum + 1){
+                if(selectedRowKeys.length > limitNum - checkedValues.length){
                     message.warning(`自动执行活动不能超过${limitNum}个`);
                     return;
+                }else{
+                    this.setState({allDisabled: false})
                 }
                 this.setState({
                     selectedRowKeys
                 })
             },
             getCheckboxProps: (record) => ({
-                disabled: this.state.selectedRowKeys.length >= limitNum && !this.state.selectedRowKeys.includes(record.promotionID),
+                disabled: this.state.selectedRowKeys.length >= (limitNum - checkedValues.length) && !this.state.selectedRowKeys.includes(record.promotionID),
                 name: record.name,
             }),
             selectedRowKeys: this.state.selectedRowKeys,
@@ -165,7 +176,7 @@ class PromotionAutoRunModal extends Component {
             <div>
                 <div>
                     <h3 className={styles.autoTitle}>会员权益</h3>
-                    <CheckboxGroup className={styles.ckGroup} options={options} value={checkedValues} onChange={this.onEventChange} />
+                    <CheckboxGroup className={styles.ckGroup} options={options} value={checkedValues} disabled={allDisabled} onChange={this.onEventChange} />
                 </div>
                 <h3 className={styles.autoTitle}>账单活动</h3>
                 <Table
@@ -331,7 +342,8 @@ class PromotionAutoRunModal extends Component {
             hasError,
         } = this.props;
         const {
-            promotionList
+            promotionList,
+            limitNum
         } = this.state;
         return (
             <Modal
@@ -412,6 +424,7 @@ class PromotionAutoRunModal extends Component {
                                     {
                                         !!promotionList.length && (
                                             <Button
+                                                disabled={promotionList.length >= limitNum}
                                                 type="ghost"
                                                 icon="plus"
                                                 onClick={this.openInnerModal}
