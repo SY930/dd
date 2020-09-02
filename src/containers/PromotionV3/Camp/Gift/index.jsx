@@ -10,6 +10,9 @@ export default class Gift extends Component {
     state = {
         options: [],    //生效时间下拉框
         formKeys: formKeys1,
+        // 组件是否为编辑状态  默认false  首次进入onFormChange  不重置giftEffectTimeHours
+        countTypeEditFlag: false,
+        effectTypeEditFlag: false
     };
     /** 表单内容变化时的监听 */
     onFormChange = (key, value) => {
@@ -17,20 +20,27 @@ export default class Gift extends Component {
         if(key === 'countType') {
             const options = (value === '0') ? timeOpts : dayOpts;
             this.setState({ options });
-            // this.form.setFieldsValue({ 'giftEffectTimeHours': value });
-        }
-        if(key==='effectType'){
+            if(this.state.countTypeEditFlag){
+                this.form.setFieldsValue({ 'giftEffectTimeHours': value });
+                onChange(idx, {[key]: value, 'giftEffectTimeHours': value});
+            } 
+            this.setState({countTypeEditFlag: true})
+        }else if(key==='effectType'){
             if(value === '1') {
-                this.setState({ formKeys: formKeys1 },()=>{
+                this.setState({ formKeys: formKeys1 }, ()=>{
                     const countType = this.form.getFieldValue('countType');
-                    // this.form.setFieldsValue({ 'giftEffectTimeHours': countType });
+                    if(this.state.effectTypeEditFlag){
+                        this.form.setFieldsValue({ 'giftEffectTimeHours': countType });
+                        onChange(idx, {[key]: value, 'giftEffectTimeHours': countType});
+                    } 
+                    this.setState({effectTypeEditFlag: true})
                 });
             } else {
                 this.setState({ formKeys: formKeys2 });
             }
+        }else{
+            onChange(idx, { [key]: value });
         }
-        onChange(idx, { [key]: value });
-        
     }
     /** 得到form */
     getForm = (node) => {
