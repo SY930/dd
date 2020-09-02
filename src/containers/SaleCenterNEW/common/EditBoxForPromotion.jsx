@@ -1,6 +1,6 @@
 import { HualalaEditorBox, HualalaTreeSelect, HualalaGroupSelect, HualalaSelected, HualalaSearchInput, CC2PY } from '../../../components/common';
 import React from 'react';
-import { connect } from 'react-redux'; import { Tree } from 'antd';
+import { connect } from 'react-redux'; import { Tree, message } from 'antd';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from '../IntlDecor';
@@ -39,6 +39,8 @@ class EditBoxForPromotion extends React.Component {
 
             labelKeyType: 'finalShowName',
             valueKeyType: 'promotionIDStr',
+
+            limitNum: 30,        //营销活动共享限制数量
 
         };
 
@@ -314,13 +316,14 @@ class EditBoxForPromotion extends React.Component {
                                 <TreeNode key={'userDiscount'} title={SALE_LABEL.k5m4q0ze} />
                             </TreeNode>
                         </Tree>
-                        {/* //右侧复选框 */}
+                        {/* //右侧复选框  isLimit 数量限制 */}
                         <HualalaGroupSelect
                             options={this.state.promotionOptions}
                             labelKey={'finalShowName'}
                             valueKey={'promotionIDStr'}
                             value={this.state.promotionCurrentSelections}
                             onChange={this.handleGroupSelect}
+                            isLimit={Array.from(promotionSelections).length >= this.state.limitNum || false}
                         />
                         {/* //下方已选的tag */}
                         <HualalaSelected
@@ -440,6 +443,13 @@ class EditBoxForPromotion extends React.Component {
             // get the selections
             const selectionsSet = new Set(this.state.promotionSelections);
             const promotionCurrentSelections = this.state.promotionCurrentSelections;
+            
+            // 最大选择数量限制  30
+            if(value.length >= this.state.limitNum + 1) {
+                message.warning(`共享组选项不能超过${this.state.limitNum}个`)
+                this.handleSelectedChange('')
+                return
+            }
             // promotionCurrentSelections.map((CurrentSelection) =>{
             //     Array.from(this.state.promotionSelections).map((promotion) => {
             //         if(promotion.promotionIDStr == CurrentSelection){
