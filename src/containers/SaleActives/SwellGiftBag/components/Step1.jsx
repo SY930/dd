@@ -36,6 +36,17 @@ class Step1 extends React.Component {
             })
         }
 
+        if(key === 'eventRemark') {
+            formData[key] =value
+
+            this.props.dispatch({
+                type: 'createActiveCom/updateState',
+                payload: {
+                    formData
+                }
+            })
+        }
+
 
     }
     handleSubmit = () => {

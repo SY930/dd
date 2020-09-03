@@ -155,9 +155,13 @@ class SwellGiftBag extends React.Component {
                     typePath = 'createActiveCom/updateEvent_NEW'
                 }
 
-                giftList.forEach(v => {
+                giftList.forEach((v,i) => {
                     if(v.countType == 1) {
                         v.effectType = '3'
+                    }
+                    v.sendType = 0
+                    if(i === 3) {
+                        v.sendType = 1
                     }
                 })
 
