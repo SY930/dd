@@ -70,6 +70,10 @@ import BlindBox from "../PromotionV3/BlindBox";   // 盲盒
 import { jumpPage, closePage } from '@hualala/platform-base';
 
 import {setThemeClass} from '../../utils/index'
+// 跳转到带装修的活动设置页面
+const activityList = [
+    '80', '66'
+]
 @registerPage([NEW_SALE_BOX], {
 })
 @connect(mapStateToProps, mapDispatchToProps)
@@ -295,9 +299,10 @@ class NewCustomerPage extends Component {
         //     });
         //     return;
         // }
-        if(key === '80') {
+
+        if(activityList.includes(key)) {
            setTimeout(() => {
-            jumpPage({ menuID: SALE_CENTER_PAYHAVEGIFT, typeKey: '80'})
+            jumpPage({ menuID: SALE_CENTER_PAYHAVEGIFT, typeKey: key})
            }, 100);
            return closePage(SALE_CENTER_PAYHAVEGIFT)
         }

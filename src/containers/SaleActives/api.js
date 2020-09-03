@@ -33,12 +33,16 @@ const apis = {
         path: '/specialPromotion/getExcludeEventList.ajax',
         service: service[1], // 判断时间段内是否有活动
     },
+    updateEvent_NEW: {
+        path: '/api/specialPromotion/updateEvent_NEW',
+        service: 'origin',
+    },
 };
 
 function gen(api) {
     // eslint-disable-next-line func-names
     return function (data) {
-        if (api.service === 'origin') {
+        if (api.service === 'origin') { // 新增此类型api，需要配置helpers下的callserver
             return fetchData(api.path, data, null, { path: null }, { needErrorData: true })
         }
         return axios.post(`/api/v1/universal?${api.path}`, {
