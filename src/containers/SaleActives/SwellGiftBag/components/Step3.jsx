@@ -1,12 +1,10 @@
 import React from 'react'
-import  BaseForm  from '../../../../components/common/BaseForm';
-import { Input, Tabs, Radio, message } from 'antd'
-import {formItems1,formKeys1} from '../constant'
+import {   Tabs, Radio, message } from 'antd'
 import styles from '../swellGiftBag.less'
 import {connect} from 'react-redux';
-import {renderEventRemark} from '../../helper/common'
 import TabItem from './TabItem/TabItem'
-
+import moment from 'moment'
+import { dateFormat } from '../../constant'
 
 const TabPane = Tabs.TabPane;
 const RadioGroup = Radio.Group;
@@ -52,11 +50,10 @@ class Step3 extends React.Component {
         let flag = true
 
         const { formData: modalFormData } = this.props.createActiveCom
-        const { giftGetRule } = this.state
+
         const { needCount } = modalFormData
         let formData = {
             ...modalFormData,
-            giftGetRule
         }
         const gifts = []
 
@@ -66,7 +63,10 @@ class Step3 extends React.Component {
                     if(e) {
                         flag = false
                     }
-
+                    if(v.rangeDate) {
+                        v.effectTime = moment(v.rangeDate[0]).format(dateFormat)
+                        v.validUntilDate = moment(v.rangeDate[1]).format(dateFormat)
+                    }
                     gifts.push(v)
                 })
             }
@@ -82,7 +82,7 @@ class Step3 extends React.Component {
 
 
 
-        if( !(formList.length === 3) && flag) {
+        if( !(formList.length < 4) && flag) {
             message.warn('你有未设置的档位')
             return false
         }
@@ -101,6 +101,7 @@ class Step3 extends React.Component {
         // 添加膨胀所需要的人数
         gifts.forEach((v,i) => {
             v.needCount = needCount[i]
+
         })
 
 
@@ -109,7 +110,7 @@ class Step3 extends React.Component {
             payload: {
                 formData: {
                     ...formData,
-                    gifts
+                    giftList: gifts
                 }
             }
         })
@@ -118,11 +119,17 @@ class Step3 extends React.Component {
     }
 
     onRadioChange = (e) => {
-        this.setState(
-           {
-            giftGetRule: e.target.value
-           }
-        )
+        const { formData } = this.props.createActiveCom
+        this.props.dispatch({
+            type: 'createActiveCom/updateState',
+            payload: {
+                formData: {
+                    ...formData,
+                    giftGetRule: e.target.value
+                }
+            }
+        })
+
     }
 
     handleTabChange = (e) => {
@@ -181,6 +188,7 @@ class Step3 extends React.Component {
 
         giftList[key] = giftData[0]
 
+
         this.props.dispatch({
             type: 'createActiveCom/updateState',
             payload: {
@@ -221,12 +229,11 @@ class Step3 extends React.Component {
 
 
     render () {
-        formItems1.eventRemark.render = renderEventRemark.bind(this)
-        const { formData } = this.props.createActiveCom
-        const {giftList} = formData
-        const { giftGetRule, chooseTab ,treeData } = this.state
 
-        console.log('treeData',treeData)
+        const { formData } = this.props.createActiveCom
+        const { giftList, needCount, giftGetRule } = formData
+        const {  chooseTab ,treeData } = this.state
+        console.log('step3---giftList',giftList)
         return (
             <div className={styles.step3Wrap}>
                 <div className={styles.initiatorWrap}>
@@ -257,6 +264,7 @@ class Step3 extends React.Component {
                             giftList={giftList}
                             onIptChange={this.onIptChange('0')}
                             getGiftForm={this.getGiftForm('0')}
+                            needCount={needCount}
                          />
                         </TabPane>
                     <TabPane tab="档位二" key="1">
@@ -268,6 +276,7 @@ class Step3 extends React.Component {
                         treeData={treeData}
                         onIptChange={this.onIptChange('1')}
                         getGiftForm={this.getGiftForm('1')}
+                        needCount={needCount}
                         />
                     </TabPane>
                     <TabPane tab="档位三" key="2">
@@ -279,18 +288,19 @@ class Step3 extends React.Component {
                         treeData={treeData}
                         onIptChange={this.onIptChange('2')}
                         getGiftForm={this.getGiftForm('2')}
+                        needCount={needCount}
                         />
                     </TabPane>
                 </Tabs>
                 <div className={styles.helpPeople}>
                     <div className={styles.title}>
                         <div className={styles.line}></div>
-                        发起人奖励
+                         助力人奖励
                     </div>
                     <TabItem
                      itemKey={"3"}
                      handleGiftChange={this.handleGiftChange('3')}
-                     giftList={giftList} i
+                     giftList={giftList}
                      isHelp
                      treeData={treeData}
                      cacheTreeData={this.cacheTreeData}

@@ -20,10 +20,10 @@ class TabItem extends React.Component {
     }
 
     render() {
-        const { form, isHelp, itemKey, getForm, giftList, cacheTreeData, treeData, onIptChange, getGiftForm } = this.props
+        const { form, isHelp, itemKey, getForm, giftList = [], cacheTreeData, treeData, onIptChange, getGiftForm, needCount } = this.props
         const { getFieldDecorator } = form
         console.log('itemKey', itemKey)
-        console.log('giftList', giftList)
+        console.log('giftList---MutliGift', giftList)
         if (typeof getForm === 'function') {
             getForm(form)
         }
@@ -68,7 +68,7 @@ class TabItem extends React.Component {
                                         },
                                     ],
                                     onChange: onIptChange,
-                                    initialValue: itemKey == 0 ? { number: 0 } : '',
+                                    initialValue: itemKey == 0 && !needCount[0] ? { number: 0 } : { number: needCount[itemKey] },
                                 })(<PriceInput mode="int" addonAfter="人" />)
                             }
 

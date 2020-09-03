@@ -10,9 +10,7 @@ import ShareSetting from '../../components/ShareSetting/ShareSetting'
 @connect(({  loading, createActiveCom }) => ({  loading, createActiveCom }))
 class Step4 extends React.Component {
 
-    state = {
-        shareImagePath: ''
-    }
+
 
     componentDidMount () {
 
@@ -22,6 +20,7 @@ class Step4 extends React.Component {
         if(typeof this.props.getSubmitFn === 'function') {
             this.props.getSubmitFn({
                 submitFn: this.handleSubmit,
+                form: this.shareForm
             })
         }
     }
@@ -30,7 +29,7 @@ class Step4 extends React.Component {
     handleSubmit = () => {
         let flag = true
         const { formData: modalFormData } = this.props.createActiveCom
-        const { shareImagePath } = this.state
+
         let formData = {}
         this.shareForm.validateFieldsAndScroll((e,v) => {
             if(e) {
@@ -47,7 +46,7 @@ class Step4 extends React.Component {
                 formData: {
                     ...modalFormData,
                     ...formData,
-                    shareImagePath
+
                 }
             }
         })
@@ -59,13 +58,21 @@ class Step4 extends React.Component {
     }
 
     onRestImg = (v) => {
-        this.setState({
-            shareImagePath: v.value
+        const { formData } = this.props.createActiveCom
+        this.props.dispatch({
+            type: 'createActiveCom/updateState',
+            payload: {
+                formData: {
+                    ...formData,
+                    shareImagePath: v.value
+                }
+            }
         })
+
     }
 
     render () {
-
+        const { shareImagePath } = this.props.createActiveCom.formData
         return (
             <div className={styles.step4Wrap}>
                 <ShareSetting
@@ -74,6 +81,7 @@ class Step4 extends React.Component {
                     value={{
                         type: '66',
                         isHideDining: true,
+                        shareImagePath
                     }}
                 />
             </div>

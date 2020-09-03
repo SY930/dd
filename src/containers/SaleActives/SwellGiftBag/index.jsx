@@ -29,17 +29,17 @@ class SwellGiftBag extends React.Component {
         const  { itemID } = decodeUrl()
         if(itemID) {
             this.getDetail(itemID)
-            this.props.dispatch({
-                type: 'createActiveCom/updateState',
-                payload: {
-                    isView: true
-                }
-            })
         }
 
     }
 
-    getDetail = (itemID) => {
+    getDetail = async (itemID) => {
+
+        const boardList = await  this.props.dispatch({
+            type: 'createActiveCom/couponService_getSortedCouponBoardList',
+            payload: {}
+        })
+
         this.props.dispatch({
             type: 'createActiveCom/queryEventDetail_NEW',
             payload: {
@@ -47,7 +47,63 @@ class SwellGiftBag extends React.Component {
             }
         }).then(res => {
             if(res) {
-                this.form1.setFieldsValue({mySendGift: res})
+
+                 const { data, gifts } = res
+                 const { eventRemark, eventStartDate,  eventEndDate , eventName, shareTitle, shareSubtitle} = data
+                 const needCount = []
+
+
+                 gifts.forEach((v,i) => {
+                     if(v.effectTime && v.validUntilDate && v.effectTime !== '0') {
+                        v.rangeDate = [moment(v.effectTime,'YYYY-MM-DD'),moment(v.validUntilDate,'YYYY-MM-DD')]
+                     } else {
+                        v.rangeDate = []
+                     }
+                     v.effectType = String(v.effectType)
+                     if(v.effectType == 3) {
+                         // 之前的接口定义太不合理，需要转换
+                         v.countType = '1'
+                         v.effectType = '1'
+                     }
+                     v.giftEffectTimeHours = String(v.giftEffectTimeHours)
+                     if(i < 3) {
+                        needCount[i] = v.needCount
+                     }
+                     // 获取券名字和面值
+                     let chooseCoupon = {}
+                     const chooseCouponItem = boardList.filter(val => {
+                         const list = val.children || []
+                        const chooseItem =  list.find(item => item.key === v.giftID)
+                         if(chooseItem) {
+                             chooseCoupon = chooseItem
+                         }
+                         return chooseItem
+                     })
+
+                      v.label = chooseCouponItem[0] && chooseCouponItem[0].label
+                      v.giftValue = chooseCoupon.giftValue
+
+                 })
+                 this.form0.setFieldsValue({
+                    eventRemark,
+                    eventLimitDate: [moment(eventStartDate),moment(eventEndDate)],
+                    eventName
+                 })
+                 this.form3.setFieldsValue({
+                    shareTitle,
+                    shareSubtitle ,
+                 })
+                 this.props.dispatch({
+                     type: 'createActiveCom/updateState',
+                     payload: {
+                        formData: {
+                            ...data,
+                            giftList: gifts,
+                            eventLimitDate: [moment(eventStartDate),moment(eventEndDate)],
+                            needCount
+                        }
+                     }
+                 })
             }
         })
     }
@@ -59,46 +115,67 @@ class SwellGiftBag extends React.Component {
     }
     handleFinish = (cb,current) => {
         if(typeof this[`submitFn${current}`]  === 'function' && this[`submitFn${current}`]()) {
-            const { formData, type } = this.props.createActiveCom
-            console.log('formData---',formData,type)
-            const {
-                eventName,
-                eventRemark,
-                eventEndDate,
-                eventStartDate,
-                giftGetRule,
-                shareSubtitle,
-                shareTitle,
-                shareImagePath,
-                countCycleDays,
-                partInTimes,
-                gifts
-            } = formData
-            this.props.dispatch({
-                type: 'createActiveCom/addEvent_NEW',
-                payload: {
-                    event: {
-                        eventWay: type,
-                        eventName,
-                        eventRemark,
-                        eventEndDate,
-                        eventStartDate,
-                        giftGetRule,
-                        shareSubtitle,
-                        shareTitle,
-                        shareImagePath,
-                        countCycleDays,
-                        partInTimes,
-                    },
-                    gifts
+
+            this.form3.validateFieldsAndScroll((e,v) => {
+                if(e) {
+                    return
                 }
-            }).then(res => {
-                if(res) {
-                    cb()
-                    closePage()
-                    jumpPage({pageID: '1000076003'})
+                const { formData, type, isEdit } = this.props.createActiveCom
+                const {
+                    eventName,
+                    eventRemark,
+                    eventEndDate,
+                    eventStartDate,
+                    giftGetRule,
+                    shareImagePath,
+                    countCycleDays,
+                    partInTimes,
+                    giftList,
+
+                } = formData
+                const { shareSubtitle,
+                    shareTitle,} = v
+                let typePath =  'createActiveCom/addEvent_NEW'
+
+                if(isEdit) {
+                    typePath = 'createActiveCom/updateEvent_NEW'
                 }
+
+                giftList.forEach(v => {
+                    if(v.countType == 1) {
+                        v.effectType = '3'
+                    }
+                })
+
+                this.props.dispatch({
+                    type: typePath ,
+                    payload: {
+                        event: {
+                            eventWay: type,
+                            eventName,
+                            eventRemark,
+                            eventEndDate,
+                            eventStartDate,
+                            giftGetRule,
+                            shareSubtitle,
+                            shareTitle,
+                            shareImagePath,
+                            countCycleDays,
+                            partInTimes,
+                        },
+                        gifts: giftList
+                    }
+                }).then(res => {
+                    if(res) {
+                        cb()
+                        closePage()
+                        jumpPage({pageID: '1000076003'})
+                    }
+                })
+
             })
+
+
          }
     }
     handlePrev = (cb) => {
@@ -129,14 +206,11 @@ class SwellGiftBag extends React.Component {
         const { loading } = this.props
         const {
             formData,
-            currentStep,
-            crmGiftTypes,
-            giftValue,
             isView
         } = this.props.createActiveCom
-        const { eventLimitDate, needCount, giftList } = formData
+        const { eventLimitDate, needCount, giftList = [] } = formData
 
-        console.log('formData---',formData)
+
         const giftListMap = giftList.filter((v,i) => {
             return v && i < 3
         })
@@ -225,9 +299,9 @@ class SwellGiftBag extends React.Component {
                                              </div>
 
                                              <div className={styles.couponList}>
-                                                {giftListMap.map(v => {
+                                                {giftListMap.map((v,i) => {
                                                     return (
-                                                        <div className={styles.couponItem}>
+                                                        <div style={ i == 0 ? {marginLeft: 0} : {}} className={styles.couponItem}>
                                                         <div>
                                                             {v.giftValue ?  <div className={styles.scale8}>¥</div> : null}
                                                         <div className={styles.fontWeight}>{v.giftValue}</div>

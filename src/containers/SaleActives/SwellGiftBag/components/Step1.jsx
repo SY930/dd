@@ -25,7 +25,7 @@ class Step1 extends React.Component {
 
     handleFromChange = (key,value) => {
         const { formData } = this.props.createActiveCom
-        if(key === 'eventLimitDate') {
+        if(key === 'eventLimitDate' && value) {
             formData[key] =value
 
             this.props.dispatch({

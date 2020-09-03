@@ -18,7 +18,9 @@ const {
     getApps,
     queryEventDetail_NEW,
     getExcludeEventList,
+    updateEvent_NEW,
 } = api;
+
 const initState = {
     groupID: '',
     type: '',
@@ -39,6 +41,7 @@ const initState = {
         afterPayJumpType: '3',
         needCount: [], // 膨胀所需人数
         giftList: [], // 礼品信息
+        giftGetRule: 0,
     }, // 表单内的值,
     currentStep: 0,
     giftForm: null, // 礼品的form对象
@@ -71,9 +74,7 @@ export default {
             { payload },
             { call, put, select }
         ) {
-            const ret = yield call(couponService_getSortedCouponBoardList, {
-                trdChannelID: 50,
-            });
+            const ret = yield call(couponService_getSortedCouponBoardList, payload);
 
             if (ret.code === '000') {
                 const { crmGiftTypes = [] } = ret.data;
@@ -144,6 +145,27 @@ export default {
                 return mySendGift;
             }
             message.warn(ret.message);
+        },
+        * updateEvent_NEW({ payload }, { call, put, select }) {
+            // 保存活动，参数在各自组件处理，通过payload传入
+            const { groupID, itemID } = yield select(
+                state => state.createActiveCom
+            );
+            const ret = yield call(updateEvent_NEW, {
+                ...payload,
+                event: {
+                    ...payload.event,
+                    groupID,
+                    itemID,
+                },
+
+            });
+
+            if (ret.code === '000') {
+                return true;
+            }
+
+            return false;
         },
         * addEvent_NEW({ payload }, { call, put, select }) {
             // 保存活动，参数在各自组件处理，通过payload传入
@@ -261,7 +283,19 @@ export default {
 
             return false;
         },
+        * queryEventDetail_NEW({ payload }, { call, put, select }) {
+            const { groupID } = yield select(state => state.createActiveCom);
+            const ret = yield call(queryEventDetail_NEW, {
+                ...payload,
+                groupID,
+            });
+            if (ret.code === '000') {
+                return ret
+            }
+            message.warn(ret.message);
+        },
         * queryEventDetail_NEW_payHaveGift({ payload }, { call, put, select }) {
+            // 微信支付有礼专用
             const { groupID } = yield select(state => state.createActiveCom);
             const ret = yield call(queryEventDetail_NEW, {
                 ...payload,

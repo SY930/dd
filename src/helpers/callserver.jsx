@@ -1062,6 +1062,7 @@ const apiCfg = [
     ['/tag/tagManagementService_queryTagDetailList.ajax', '/tag/tagManagementService_queryTagDetailList.ajax', { type: 'json' }],
     ['/api/specialPromotion/addEvent_NEW', '/api/specialPromotion/addEvent_NEW', { type: 'json' }], // 保存营销活动
     ['/api/specialPromotion/queryEventDetail_NEW', '/api/specialPromotion/queryEventDetail_NEW', { type: 'json' }], // 获取营销活动详情
+    ['/api/specialPromotion/updateEvent_NEW', '/api/specialPromotion/updateEvent_NEW', { type: 'json' }], // 更新营销活动
 ]
 /* eslint-enable max-len */
 

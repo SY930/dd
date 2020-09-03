@@ -16,10 +16,19 @@ export default class Gift extends Component {
         const { idx, onChange, treeData } = this.props;
         if (key === 'countType') {
             const options = (value === '0') ? timeOpts : dayOpts;
-            this.setState({ options });
 
-            this.form.setFieldsValue({ 'giftEffectTimeHours': value });
+            this.setState({
+                options,
+            })
+
+            if (value == '1') {
+                this.form.setFieldsValue({ giftEffectTimeHours: '1' })
+            } else {
+                this.form.setFieldsValue({ giftEffectTimeHours: '0' })
+            }
         }
+
+
         if (key === 'effectType') {
             if (value === '1') {
                 this.setState({ formKeys: formKeys1 }, () => {
@@ -30,6 +39,7 @@ export default class Gift extends Component {
                 this.setState({ formKeys: formKeys2 });
             }
         }
+        console.log('key---value---', key, value)
         onChange(idx, { [key]: value });
     }
     /** 得到form */

@@ -23,6 +23,35 @@ class Step2 extends React.Component {
         }
     }
 
+    componentWillReceiveProps(nextProps) {
+        const { formData } = nextProps.createActiveCom
+
+        const { partInTimes, countCycleDays } = formData
+        if(partInTimes == 0 && partInTimes == 0) {
+            this.form.setFieldsValue({
+                partInTimes: 'A'
+            })
+        }
+        if(partInTimes && countCycleDays == 0) {
+            this.form.setFieldsValue({
+                partInTimes: 'B'
+            })
+            this.setState({
+                partInTimesB: partInTimes
+            })
+        }
+        if(partInTimes && countCycleDays) {
+            this.form.setFieldsValue({
+                partInTimes: 'C'
+            })
+            this.setState({
+                partInTimesC: partInTimes,
+                countCycleDays
+            })
+        }
+
+    }
+
     handleSubmit = () => {
         const { formData: modalFormData } = this.props.createActiveCom
         let flag = true
