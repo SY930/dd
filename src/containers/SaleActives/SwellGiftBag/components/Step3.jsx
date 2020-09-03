@@ -56,22 +56,7 @@ class Step3 extends React.Component {
         let formData = {
             ...modalFormData,
         }
-        const gifts = []
 
-        // giftForm.forEach(form => {
-        //     if(form) {
-        //         form.validateFieldsAndScroll((e,v) => {
-        //             if(e) {
-        //                 flag = false
-        //             }
-        //             if(v.rangeDate) {
-        //                 v.effectTime = moment(v.rangeDate[0]).format(dateFormat)
-        //                 v.validUntilDate = moment(v.rangeDate[1]).format(dateFormat)
-        //             }
-        //             gifts.push(v)
-        //         })
-        //     }
-        // })
         giftList.forEach(v => {
             if(v.rangeDate) {
                 v.effectTime = moment(v.rangeDate[0]).format(dateFormat)
@@ -89,8 +74,7 @@ class Step3 extends React.Component {
         })
 
 
-
-        if( !(formList.length < 4) && flag) {
+        if( giftList.filter(v => v).length !== 4 && flag) {
             message.warn('你有未设置的档位')
             return false
         }
@@ -182,23 +166,25 @@ class Step3 extends React.Component {
         const { formData } = this.props.createActiveCom
         const { giftList } =  formData
         const { treeData } = this.state
-        if(treeData.length) {
-            let chooseCoupon = {}
-            const chooseCouponItem = treeData.filter(v => {
-                const list = v.children || []
-               const chooseItem =  list.find(item => item.key === giftData[0].giftID)
-                if(chooseItem) {
-                    chooseCoupon = chooseItem
-                }
-                return chooseItem
-            })
 
-            giftData[0].label = chooseCouponItem[0] && chooseCouponItem[0].label
+        let chooseCoupon = {}
+        const chooseCouponItem = treeData.filter(v => {
+            const list = v.children || []
+           const chooseItem =  list.find(item => item.key === giftData[0].giftID)
+            if(chooseItem) {
+                chooseCoupon = chooseItem
+            }
+            return chooseItem
+        })
+        const label = chooseCouponItem[0] && chooseCouponItem[0].label
+
+        if(label) {
+            giftData[0].label =  label
             giftData[0].giftValue = chooseCoupon.giftValue
-
-            giftList[key] = giftData[0]
         }
 
+
+        giftList[key] = giftData[0]
 
 
         this.props.dispatch({
