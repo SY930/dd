@@ -14,7 +14,7 @@ export default class Gift extends Component {
     };
     /** 表单内容变化时的监听 */
     onFormChange = (key, value) => {
-        const { idx, onChange, treeData } = this.props;
+        const { idx, onChange } = this.props;
         if (key === 'countType') {
             const options = (value === '0') ? timeOpts : dayOpts;
 
@@ -25,11 +25,14 @@ export default class Gift extends Component {
                 // 控制初始化，暂时处理方式
                 if (value == '1') {
                     this.form.setFieldsValue({ giftEffectTimeHours: '1' })
+                    onChange(idx, { giftEffectTimeHours: '1', [key]: value });
                 } else {
                     this.form.setFieldsValue({ giftEffectTimeHours: '0' })
+                    onChange(idx, { giftEffectTimeHours: '0', [key]: value });
                 }
             }
             this.isInit = true
+            return
         }
 
 
