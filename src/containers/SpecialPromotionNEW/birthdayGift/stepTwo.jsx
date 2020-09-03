@@ -416,7 +416,7 @@ class StepTwo extends React.Component {
     }
     // 查询已选卡类型的可用店铺
     querycanUseShopIDs = (tids = []) => {
-        console.log('tids', tids);
+        // console.log('tids', tids);
         axiosData('/crm/cardTypeShopService_getListCardTypeShop.ajax', {
             groupID: this.props.user.accountInfo.groupID,
             queryCardType: 1, // questArr.length === 0 ? 0 : 1,

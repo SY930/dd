@@ -1,4 +1,4 @@
-﻿/**
+﻿﻿/**
  * @Author: Xiao Feng Wang  <xf>
  * @Date:   2017-02-09T11:12:25+08:00
  * @Email:  wangxiaofeng@hualala.com
@@ -19,6 +19,9 @@ import {
     saleCenterQueryFsmGroupSettleUnit,
     queryFsmGroupEquityAccount,
     querySMSSignitureList,
+    saleCenterGetShopOfEventByDate,
+    getEventExcludeCardTypes,
+    saleCenterGetExcludeEventList,
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import { SEND_MSG } from '../../../redux/actions/saleCenterNEW/types'
 import {queryWechatMpInfo} from "../../GiftNew/_action";
@@ -321,12 +324,12 @@ class PromotionBasicInfo extends React.Component {
                     <Row>
                         <Col span={19}>
 
-                            <RangePicker value={actDate} onChange={this.handleActDateChange} disabledDate= {(currentDate) => {
+                            <RangePicker allowClear={false} value={actDate} onChange={this.handleActDateChange} disabledDate= {(currentDate) => {
                                 if(this.props.isNew) {
                                     return false
                                 }
-                                // 完善资料送礼 52 日期限制
-                                let disabledDates = type == '52' ? !currentDate.isBetween(actDateTemp[0], actDateTemp[1]) : false
+                                // 完善资料送礼52 生日赠送 51 日期限制
+                                let disabledDates = !currentDate.isBetween(actDateTemp[0], actDateTemp[1], null, '[]')
                                 return disabledDates
                             }} />
 
@@ -491,7 +494,16 @@ const mapDispatchToProps = (dispatch) => {
         },
         queryFsmGroupEquityAccount: (opts) => {
             dispatch(queryFsmGroupEquityAccount(opts))
-        }
+        },
+        saleCenterGetShopOfEventByDate: (opts) => {
+            dispatch(saleCenterGetShopOfEventByDate(opts))
+        },
+        getEventExcludeCardTypes: (opts) => {
+            dispatch(getEventExcludeCardTypes(opts))
+        },
+        saleCenterGetExcludeEventList: (opts) => {
+            dispatch(saleCenterGetExcludeEventList(opts))
+        },
     }
 };
 

@@ -19,6 +19,7 @@ import {
     Tree,
     Input,
     Radio,
+    Tooltip,
     Icon
 } from 'antd';
 
@@ -385,6 +386,18 @@ class PromotionScopeInfo extends React.Component {
                             );
                         })}
                     </Select>
+                    <Tooltip title={
+                        <p>
+                            <p>仅线下使用：指云店pos、点菜宝、云店pad、大屏等由门店下单场景</p>
+                            <p>仅线上使用：指线上餐厅、小程序等由用户自助下单场景</p>
+                        </p>
+                    }>
+                        <Icon
+                            type={'question-circle'}
+                            style={{ color: '#787878' }}
+                            className={styles.cardLevelTreeIcon}
+                        />
+                    </Tooltip>
                 </Col>
                 <Col span={0} className={styles.autoStyle}>
     <div>{SALE_LABEL.k5dbiuws}</div>
