@@ -10,6 +10,7 @@ export default class Gift extends Component {
     state = {
         options: [], // 生效时间下拉框
         formKeys: formKeys1,
+
     };
     /** 表单内容变化时的监听 */
     onFormChange = (key, value) => {
@@ -20,12 +21,15 @@ export default class Gift extends Component {
             this.setState({
                 options,
             })
-
-            if (value == '1') {
-                this.form.setFieldsValue({ giftEffectTimeHours: '1' })
-            } else {
-                this.form.setFieldsValue({ giftEffectTimeHours: '0' })
+            if (this.isInit) {
+                // 控制初始化，暂时处理方式
+                if (value == '1') {
+                    this.form.setFieldsValue({ giftEffectTimeHours: '1' })
+                } else {
+                    this.form.setFieldsValue({ giftEffectTimeHours: '0' })
+                }
             }
+            this.isInit = true
         }
 
 
@@ -39,7 +43,7 @@ export default class Gift extends Component {
                 this.setState({ formKeys: formKeys2 });
             }
         }
-        console.log('key---value---', key, value)
+
         onChange(idx, { [key]: value });
     }
     /** 得到form */

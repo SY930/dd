@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon } from 'antd';
+import { Icon, Spin } from 'antd';
 import {connect} from 'react-redux';
 import { jumpPage,closePage,decodeUrl } from '@hualala/platform-base'
 import moment from 'moment'
@@ -35,10 +35,7 @@ class SwellGiftBag extends React.Component {
 
     getDetail = async (itemID) => {
 
-        const boardList = await  this.props.dispatch({
-            type: 'createActiveCom/couponService_getSortedCouponBoardList',
-            payload: {}
-        })
+
 
         this.props.dispatch({
             type: 'createActiveCom/queryEventDetail_NEW',
@@ -52,38 +49,56 @@ class SwellGiftBag extends React.Component {
                  const { eventRemark, eventStartDate,  eventEndDate , eventName, shareTitle, shareSubtitle} = data
                  const needCount = []
 
+                 this.props.dispatch({
+                    type: 'createActiveCom/couponService_getSortedCouponBoardList',
+                    payload: {}
+                }).then(boardList => {
+                    gifts.forEach((v,i) => {
+                        if(v.effectTime && v.validUntilDate && v.effectTime !== '0') {
+                           v.rangeDate = [moment(v.effectTime,'YYYY-MM-DD'),moment(v.validUntilDate,'YYYY-MM-DD')]
+                        } else {
+                           v.rangeDate = []
+                        }
+                        v.effectType = String(v.effectType)
+                        if(v.effectType == 3) {
+                            // 之前的接口定义太不合理，需要转换
+                            v.countType = '1'
+                            v.effectType = '1'
+                        }
+                        v.giftEffectTimeHours = String(v.giftEffectTimeHours)
+                        if(i < 3) {
+                           needCount[i] = v.needCount
+                        }
+                        // 获取券名字和面值
+                        let chooseCoupon = {}
+                        const chooseCouponItem = boardList.filter(val => {
+                            const list = val.children || []
+                           const chooseItem =  list.find(item => item.key === v.giftID)
+                            if(chooseItem) {
+                                chooseCoupon = chooseItem
+                            }
+                            return chooseItem
+                        })
 
-                 gifts.forEach((v,i) => {
-                     if(v.effectTime && v.validUntilDate && v.effectTime !== '0') {
-                        v.rangeDate = [moment(v.effectTime,'YYYY-MM-DD'),moment(v.validUntilDate,'YYYY-MM-DD')]
-                     } else {
-                        v.rangeDate = []
-                     }
-                     v.effectType = String(v.effectType)
-                     if(v.effectType == 3) {
-                         // 之前的接口定义太不合理，需要转换
-                         v.countType = '1'
-                         v.effectType = '1'
-                     }
-                     v.giftEffectTimeHours = String(v.giftEffectTimeHours)
-                     if(i < 3) {
-                        needCount[i] = v.needCount
-                     }
-                     // 获取券名字和面值
-                     let chooseCoupon = {}
-                     const chooseCouponItem = boardList.filter(val => {
-                         const list = val.children || []
-                        const chooseItem =  list.find(item => item.key === v.giftID)
-                         if(chooseItem) {
-                             chooseCoupon = chooseItem
-                         }
-                         return chooseItem
-                     })
+                         v.label = chooseCouponItem[0] && chooseCouponItem[0].label
+                         v.giftValue = chooseCoupon.giftValue
 
-                      v.label = chooseCouponItem[0] && chooseCouponItem[0].label
-                      v.giftValue = chooseCoupon.giftValue
+                    })
 
-                 })
+                    this.props.dispatch({
+                        type: 'createActiveCom/updateState',
+                        payload: {
+                           formData: {
+                               ...data,
+                               giftList: gifts,
+                               eventLimitDate: [moment(eventStartDate),moment(eventEndDate)],
+                               needCount
+                           },
+                           crmGiftTypes: boardList
+                        }
+                    })
+                })
+
                  this.form0.setFieldsValue({
                     eventRemark,
                     eventLimitDate: [moment(eventStartDate),moment(eventEndDate)],
@@ -98,7 +113,6 @@ class SwellGiftBag extends React.Component {
                      payload: {
                         formData: {
                             ...data,
-                            giftList: gifts,
                             eventLimitDate: [moment(eventStartDate),moment(eventEndDate)],
                             needCount
                         }
@@ -215,6 +229,8 @@ class SwellGiftBag extends React.Component {
             return v && i < 3
         })
         const saveLoading = loading.effects['createActiveCom/addEvent_NEW']
+        const loadLoading = loading.effects['createActiveCom/couponService_getSortedCouponBoardList']
+
         const steps = [{
             title: '基本信息',
             content:  <Step1
@@ -323,6 +339,7 @@ class SwellGiftBag extends React.Component {
                         </div>
 
                 </div>
+
                 <div className={styles.settingWrap}>
                     <ActSteps
                         isUpdate={true}
@@ -335,6 +352,14 @@ class SwellGiftBag extends React.Component {
                         onCancel={this.handleCancel}
                         callback={this.handleStepChange}
                     />
+                    {loadLoading ?
+                     <div className={styles.loading}>
+                        <Spin></Spin>
+                        </div>
+                    : null}
+
+
+
                 </div>
 
             </div>

@@ -22,8 +22,7 @@ class TabItem extends React.Component {
     render() {
         const { form, isHelp, itemKey, getForm, giftList = [], cacheTreeData, treeData, onIptChange, getGiftForm, needCount } = this.props
         const { getFieldDecorator } = form
-        console.log('itemKey', itemKey)
-        console.log('giftList---MutliGift', giftList)
+
         if (typeof getForm === 'function') {
             getForm(form)
         }

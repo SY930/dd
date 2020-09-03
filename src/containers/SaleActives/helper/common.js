@@ -105,7 +105,9 @@ export function eventLimitDateRender(d) {
                         format="YYYY-MM-DD"
                         placeholder={['开始日期', '结束日期']}
                         allowClear={false}
-
+                        disabledDate={
+                            current => current && current.format('YYYYMMDD') < moment().format('YYYYMMDD')
+                        }
                     />
                 )}
             </Col>
