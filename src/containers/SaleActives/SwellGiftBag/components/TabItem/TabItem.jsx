@@ -79,7 +79,7 @@ class TabItem extends React.Component {
 
                 <FormItem {...formItemStyle} wrapperCol={{ span: 14 }} >
                     {isHelp ?
-                        <Checkbox checked={checkedHelp} onChange={handleHelpCheckbox} style={{ marginTop: '10px' }}>赠送优惠券</Checkbox>
+                        <Checkbox disabled={isHide} checked={checkedHelp} onChange={handleHelpCheckbox} style={{ marginTop: '10px' }}>赠送优惠券</Checkbox>
                         : null}
 
                     <MutliGift
