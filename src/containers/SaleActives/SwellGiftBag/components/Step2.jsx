@@ -10,7 +10,8 @@ import { partInTimesRender } from '../../helper/common'
 @connect(({  loading, createActiveCom }) => ({  loading, createActiveCom }))
 class Step2 extends React.Component {
     state = {
-        formKeys2: _.cloneDeep(formKeys2)
+        formKeys2: _.cloneDeep(formKeys2),
+        partInTimes: 'A'
     }
 
     getForm = (form) => {
@@ -31,13 +32,17 @@ class Step2 extends React.Component {
             this.form.setFieldsValue({
                 partInTimes: 'A'
             })
+            this.setState({
+                partInTimes: 'A'
+            })
         }
         if(partInTimes && countCycleDays == 0) {
             this.form.setFieldsValue({
                 partInTimes: 'B'
             })
             this.setState({
-                partInTimesB: partInTimes
+                partInTimesB: partInTimes,
+                partInTimes: 'B'
             })
         }
         if(partInTimes && countCycleDays) {
@@ -46,7 +51,8 @@ class Step2 extends React.Component {
             })
             this.setState({
                 partInTimesC: partInTimes,
-                countCycleDays
+                countCycleDays,
+                partInTimes: 'C'
             })
         }
 
@@ -101,6 +107,13 @@ class Step2 extends React.Component {
 
         })
         return flag
+    }
+
+    handleFromChange = (key,value) => {
+
+        this.setState({
+            [key]: value
+        })
     }
 
 

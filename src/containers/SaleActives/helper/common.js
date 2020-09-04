@@ -174,8 +174,9 @@ const _onChange = function (key) {
 
 // 助力用户助力次数限制render函数
 export function partInTimesRender(d) {
-    const { countCycleDays, partInTimesB, partInTimesC } = this.state
+    const { countCycleDays, partInTimesB, partInTimesC, partInTimes = 'A' } = this.state
 
+    const isDisabled = partInTimes === 'A'
     return (<div className={styles.partInTimesRender}>
         <div className={styles.title}>
             <div className={styles.line}></div>
@@ -183,14 +184,14 @@ export function partInTimesRender(d) {
         </div>
         {
             d({
-                initialValue: 'A',
+                initialValue: partInTimes,
             })(<RadioGroup style={{ marginTop: '15px', marginLeft: '10px' }}>
                 <Radio className={styles.radioStyle} value={'A'}>不限次数</Radio>
                 <Radio className={styles.radioStyle} value={'B'}>
                     <div style={{ display: 'flex' }}>
                         助力次数
                         <div style={{ marginLeft: '34px', width: '308px' }}>
-                            <PriceInput modal="int" onChange={_onChange.call(this, 'partInTimesB')} value={{ number: partInTimesB }} addonBefore="可助力" addonAfter="次" />
+                            <PriceInput disabled={isDisabled} modal="int" onChange={_onChange.call(this, 'partInTimesB')} value={{ number: partInTimesB || '' }} addonBefore="可助力" addonAfter="次" />
                         </div>
 
                     </div>
@@ -200,10 +201,10 @@ export function partInTimesRender(d) {
                     <div style={{ display: 'flex' }}>
                         助力周期次数
                         <div style={{ marginLeft: '10px', width: '150px' }}>
-                            <PriceInput modal="int" onChange={_onChange.call(this, 'countCycleDays')} value={{ number: countCycleDays }} addonBefore="同一用户" addonAfter="天" />
+                            <PriceInput disabled={isDisabled} modal="int" onChange={_onChange.call(this, 'countCycleDays')} value={{ number: countCycleDays || '' }} addonBefore="同一用户" addonAfter="天" />
                         </div>
                         <div style={{ marginLeft: '10px', width: '150px' }}>
-                            <PriceInput modal="int" onChange={_onChange.call(this, 'partInTimesC')} value={{ number: partInTimesC }} addonBefore="可助力" addonAfter="次" />
+                            <PriceInput disabled={isDisabled} modal="int" onChange={_onChange.call(this, 'partInTimesC')} value={{ number: partInTimesC || '' }} addonBefore="可助力" addonAfter="次" />
                         </div>
                     </div>
                 </Radio>
