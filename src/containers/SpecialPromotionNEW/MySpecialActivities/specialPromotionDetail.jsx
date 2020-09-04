@@ -251,7 +251,7 @@ class SpecialPromotionDetail extends React.Component {
                                 <Col span={18} style={{ textAlign: 'left' }}>
                                     {
                                         (record.eventStartDate !== '20000101' && record.eventEndDate !== '29991231' &&
-                                        record.eventStartDate !== '0' && record.eventEndDate !== '0') ? 
+                                        record.eventStartDate !== '0' && record.eventEndDate !== '0') ?
                                             `${moment(record.eventStartDate, 'YYYY/MM/DD').format('YYYY/MM/DD')} - ${moment(record.eventEndDate, 'YYYY/MM/DD').format('YYYY/MM/DD')}` : '不限制'
                                     }
                                 </Col>
@@ -290,7 +290,26 @@ class SpecialPromotionDetail extends React.Component {
             records = []
         }
         const way = this.state.eventInfo.data.eventWay;
+        if(way == 66) {
 
+             const list1 = records.filter(v => v.sendType == 0)
+             const list2 = records.filter(v => v.sendType == 1)
+            return (<div>
+                  <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
+                  <div style={{marginTop: '10px',marginBottom: '5px'}}>发起人奖励统计</div>
+                <Col style={{marginBottom: '10px'}}  span={24}>
+                    {this.renderGiftInfoTable(list1, way)}
+                </Col>
+                <div style={{ marginBottom: '5px'}}>助力人奖励统计</div>
+                <Col span={24}>
+                    {this.renderGiftInfoTable(list2, way)}
+                </Col>
+                {this.renderSearch()}
+                <Col span={24}>
+                    {this.renderActivityInfoTable()}
+                </Col>
+            </div>)
+        }
         if (way == 68) { // 推荐有礼
             let couponList = []
             const couponCurrent = this.props.mySpecialActivities.data.eventInfo.eventRuleInfos.filter( v => v.rule === 1)
