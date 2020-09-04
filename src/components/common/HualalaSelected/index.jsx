@@ -48,12 +48,12 @@ export default class HualalaSelected extends React.Component {
     }
 
     render() {
-        const { itemName, itemID } = this.state;
+        const { itemName, itemID, data = [] } = this.state;
         return (
             <div className={styles.treeSelectFooter}>
                 <div className={styles.SelectedLi}>
                     <div className={styles.SelectedLiT}>
-                        <span>{this.props.selectdTitle}</span>（单击移除）</div>
+                    <span>{this.props.selectdTitle}</span>（已选 {data.length} 项）（单击移除）</div>
                     <ul className={styles.SelectedLiB} style={{ height: 200 }}>
                         {this.state.data.map((shopEntity, index) => {
                             return (
