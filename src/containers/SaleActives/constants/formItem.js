@@ -20,6 +20,15 @@ export const formItem = {
             { max: 9, message: '最多输入9位' },
         ],
     },
+    eventName50: {
+        type: 'text',
+        label: '活动名称',
+        // placeholder: "请输入活动名称",
+        rules: [
+            { required: true, message: '活动名称不能为空' },
+            { max: 50, message: '最多输入50位' },
+        ],
+    },
     eventLimitDate: {
         type: 'custom',
         label: '起止日期',

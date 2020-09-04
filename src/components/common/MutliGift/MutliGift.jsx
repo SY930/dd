@@ -149,7 +149,7 @@ class MutliGift extends Component {
         return (
             <div className={css.multiGiftBox}>
                 {
-                    Array.isArray(value) && value.length && value.map((x, i) => {
+                    (Array.isArray(value) && value.length) ? value.map((x, i) => {
                         return (
                             <div key={x.id} className={css.giftBox}>
                                 <em>礼品{i + 1}</em>
@@ -166,7 +166,7 @@ class MutliGift extends Component {
                                     getForm={this.getForm}
                                 />
                             </div>)
-                    })
+                    }) : null
                 }
                 {
                     isMulti ? <Button onClick={this.onAdd}>
