@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form } from 'antd'
+import { Form, Checkbox } from 'antd'
 import PriceInput from 'components/common/PriceInput/PriceInput'
 import MutliGift from 'components/common/MutliGift/MutliGift'
 
@@ -20,7 +20,10 @@ class TabItem extends React.Component {
     }
 
     render() {
-        const { form, isHelp, itemKey, getForm, giftList = [], cacheTreeData, treeData, onIptChange, getGiftForm, needCount } = this.props
+        const { form, isHelp, itemKey, getForm, giftList = [],
+            cacheTreeData, treeData, onIptChange, getGiftForm, needCount, checkedHelp,
+            handleHelpCheckbox,
+        } = this.props
         const { getFieldDecorator } = form
 
         if (typeof getForm === 'function') {
@@ -74,7 +77,11 @@ class TabItem extends React.Component {
                         </FormItem>
                 }
 
-                <FormItem {...formItemStyle} wrapperCol={{ span: 14 }} label="添加礼品" required={true}>
+                <FormItem {...formItemStyle} wrapperCol={{ span: 14 }} >
+                    {isHelp ?
+                        <Checkbox checked={checkedHelp} onChange={handleHelpCheckbox} style={{ marginTop: '10px' }}>赠送优惠券</Checkbox>
+                        : null}
+
                     <MutliGift
                         key={itemKey}
                         value={giftList[itemKey] ? [giftList[itemKey]] : []}

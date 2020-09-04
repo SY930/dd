@@ -72,9 +72,21 @@ class Step3 extends React.Component {
 
             })
         })
+        if(giftForm[3]) {
+            giftForm[3].validateFieldsAndScroll((e,v) => {
+                if(e) {
+                    flag = false
+                }
 
+            })
+            if(flag == false) {
+                return false
+            }
+        }
 
-        if( giftList.filter(v => v).length !== 4 && flag) {
+        const initiator = [...giftList]
+        initiator.length = 3
+        if(initiator.filter(v => v).length !== 3 && flag) {
             message.warn('你有未设置的档位')
             return false
         }
@@ -126,7 +138,9 @@ class Step3 extends React.Component {
 
     handleTabChange = (e) => {
         let flag = true
-        giftForm.forEach(form => {
+        const giftFormInitiator = [...giftForm]
+        giftFormInitiator.length = 3
+        giftFormInitiator.forEach(form => {
             if(form) {
                 form.validateFieldsAndScroll((e,v) => {
                     if(e) {
@@ -163,10 +177,13 @@ class Step3 extends React.Component {
 
     handleGiftChange = (key) => (giftData) => {
 
-        const { formData } = this.props.createActiveCom
+        const { formData,isView,isEdit } = this.props.createActiveCom
         const { giftList } =  formData
         const { treeData } = this.state
 
+        if((isView || isEdit) && !giftList[3] && key == 3 ) {
+            return
+        }
         let chooseCoupon = {}
         const chooseCouponItem = treeData.filter(v => {
             const list = v.children || []
@@ -226,15 +243,40 @@ class Step3 extends React.Component {
         giftForm[key] = form
     }
 
+    handleHelpCheckbox = (e) => {
+
+        const { formData  } = this.props.createActiveCom
+        const { giftList } = formData
+        if(e.target.checked && (giftList.length < 4)) {
+            giftList[3] = ({
+                 id: 'wdjiejmgnglooe',
+                 effectType: '1'
+            })
+        } else {
+            giftList.length = 3
+        }
+        this.props.dispatch({
+            type: 'createActiveCom/updateState',
+            payload: {
+                formData: {
+                    ...formData,
+                    giftList
+                }
+            }
+        })
+    }
+
 
     render () {
 
-        const { formData, currentStep , isEdit } = this.props.createActiveCom
+        const { formData, currentStep , isEdit, isView } = this.props.createActiveCom
         const { giftList, needCount, giftGetRule } = formData
         const {  chooseTab ,treeData } = this.state
         if(isEdit && currentStep !== 2) {
             return null
         }
+        const checkedHelp = giftList[3]
+        const isNew = !(isEdit || isView)
         return (
             <div className={styles.step3Wrap}>
                 <div className={styles.initiatorWrap}>
@@ -298,6 +340,7 @@ class Step3 extends React.Component {
                         <div className={styles.line}></div>
                          助力人奖励
                     </div>
+
                     <TabItem
                      itemKey={"3"}
                      handleGiftChange={this.handleGiftChange('3')}
@@ -306,6 +349,9 @@ class Step3 extends React.Component {
                      treeData={treeData}
                      cacheTreeData={this.cacheTreeData}
                      getGiftForm={this.getGiftForm('3')}
+                     handleHelpCheckbox={this.handleHelpCheckbox}
+                     checkedHelp={checkedHelp}
+                     isNew
                      />
                 </div>
             </div>
