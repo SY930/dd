@@ -29,7 +29,7 @@ class TabItem extends React.Component {
         if (typeof getForm === 'function') {
             getForm(form)
         }
-
+        const isHide = giftList.find(v => v.giftSendCount > 0)
         return (
             <Form >
                 {
@@ -71,7 +71,7 @@ class TabItem extends React.Component {
                                     ],
                                     onChange: onIptChange,
                                     initialValue: itemKey == 0 && !needCount[0] ? { number: 0 } : { number: needCount[itemKey] },
-                                })(<PriceInput mode="int" addonAfter="人" />)
+                                })(<PriceInput disabled={isHide} mode="int" addonAfter="人" />)
                             }
 
                         </FormItem>
@@ -89,6 +89,7 @@ class TabItem extends React.Component {
                         cacheTreeData={cacheTreeData}
                         treeData={treeData}
                         getGiftForm={getGiftForm}
+                        isHide={isHide}
                     />
                 </FormItem>
             </Form>

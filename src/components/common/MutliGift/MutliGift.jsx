@@ -144,7 +144,7 @@ class MutliGift extends Component {
 
     render() {
         const { treeData } = this.state;
-        const { value, isMulti } = this.props;
+        const { value, isMulti, isHide } = this.props;
 
         return (
             <div className={css.multiGiftBox}>
@@ -173,6 +173,14 @@ class MutliGift extends Component {
                         <Icon type="plus" />点击添加礼品
                     </Button> : null
                 }
+                {
+                    isHide ?
+                        <div className={css.giftCover}>
+
+                        </div>
+                        : null
+                }
+
 
             </div>
         )
