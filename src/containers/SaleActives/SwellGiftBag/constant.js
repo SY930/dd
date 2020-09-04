@@ -2,7 +2,7 @@ import React from 'react';
 import { formItem } from '../constants/formItem'
 
 const {
-    actType, eventName, eventRemark, eventLimitDate,
+    actType, eventName50, eventRemark, eventLimitDate,
     partInTimes,
 } = formItem
 export const formItems1 = {
@@ -12,7 +12,7 @@ export const formItems1 = {
             return <div>膨胀大礼包</div>;
         },
     },
-    eventName,
+    eventName: eventName50,
     eventLimitDate,
     eventRemark,
 };
