@@ -23,12 +23,16 @@ class CreateActive extends Component {
     componentDidMount(){
         this.dispatch = this.props.dispatch
         // TODO: 点击tab切换后，参数会丢失，暂时默认为微信支付有礼，后期解决
-        const  { typeKey = '80', itemID } = decodeUrl()
+        const  { typeKey = '80', itemID, isView, isEdit } = decodeUrl()
+
         this.dispatch({
             type: 'createActiveCom/updateState',
             payload: {
                 type: typeKey,
-                groupID: this.props.groupID
+                groupID: this.props.groupID,
+                isView: isView == 'true' ? true : false,
+                isEdit: isEdit == 'true' ? true : false,
+                itemID
             }
         })
         this.typeKey = typeKey
@@ -86,14 +90,19 @@ class CreateActive extends Component {
                         </div>
                     }
                 >
+
                 <div className={styles.modalContent}>
-                    <div className={styles.modalTitle}>
-                        <div className={styles.leftLine}></div>
-                        <span>活动简介</span>
+                    {currentInfo.dscList && currentInfo.dscList.map(v => {
+                        return  <div>
+                        <div className={styles.modalTitle}>
+                            <div className={styles.leftLine}></div>
+                            <span>{v.title}</span>
+                        </div>
+                        <div className={styles.modalInfo}>
+                            {v.dsc}
+                        </div>
                     </div>
-                    <div className={styles.modalInfo}>
-                        {currentInfo.dsc}
-                    </div>
+                    })}
 
                 </div>
                 </Modal>
