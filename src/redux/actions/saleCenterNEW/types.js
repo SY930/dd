@@ -614,6 +614,7 @@ export const ACTIVITY_CATEGORIES = (function () {
             text: SALE_LABEL.k67b4ujq,
             example: SALE_LABEL.k67cppgj,
             key: "2070",
+            isOffline: true,
         },
         {
             idx: 16,
@@ -622,6 +623,7 @@ export const ACTIVITY_CATEGORIES = (function () {
             text: SALE_LABEL.k67b4ube,
             example: SALE_LABEL.k67cpp87,
             key: "1080",
+            isOffline: true
         },
         {
             idx: 17,
