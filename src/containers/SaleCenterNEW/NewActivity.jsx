@@ -200,7 +200,7 @@ class NewActivity extends React.Component {
                     marginBottom: 20
                 }}
             >
-                {ACTIVITY_CATEGORIES.map((activity, index) => {
+                {ACTIVITY_CATEGORIES.filter(item => !item.isOffline).map((activity, index) => {
                 return (
                     <div
                         key={`NewActivity${index}`}

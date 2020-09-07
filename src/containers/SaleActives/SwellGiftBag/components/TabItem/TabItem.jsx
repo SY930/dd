@@ -29,7 +29,7 @@ class TabItem extends React.Component {
         if (typeof getForm === 'function') {
             getForm(form)
         }
-        const isHide = giftList.find(v => v.giftSendCount > 0)
+        const isHide = giftList.find(v => v && v.giftSendCount > 0)
         return (
             <Form >
                 {
