@@ -30,7 +30,7 @@ class PromotionSelectModal extends Component {
         currentCategory: null,
         selected: this.props.selectedPromotions || [],
         shareGroupName: this.props.shareGroupName,
-        limitNum: 30,        //共享限制数量
+        limitNum: 100,        //共享限制数量
     }
 
 
