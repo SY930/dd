@@ -251,7 +251,7 @@ class SpecialPromotionDetail extends React.Component {
                                 <Col span={18} style={{ textAlign: 'left' }}>
                                     {
                                         (record.eventStartDate !== '20000101' && record.eventEndDate !== '29991231' &&
-                                        record.eventStartDate !== '0' && record.eventEndDate !== '0') ? 
+                                        record.eventStartDate !== '0' && record.eventEndDate !== '0') ?
                                             `${moment(record.eventStartDate, 'YYYY/MM/DD').format('YYYY/MM/DD')} - ${moment(record.eventEndDate, 'YYYY/MM/DD').format('YYYY/MM/DD')}` : '不限制'
                                     }
                                 </Col>
@@ -293,10 +293,16 @@ class SpecialPromotionDetail extends React.Component {
 
         if (way == 68) { // 推荐有礼
             let couponList = []
-            const couponCurrent = this.props.mySpecialActivities.data.eventInfo.eventRuleInfos.filter( v => v.rule === 1)
-            if(couponCurrent.length && couponCurrent[0].gifts) {
-                couponList = couponCurrent[0].gifts
+            const couponCurrent = this.props.mySpecialActivities.data.eventInfo.eventRuleInfos
+
+            if(couponCurrent.length) {
+                couponCurrent.forEach(v => {
+                    if(Array.isArray(v.gifts)) {
+                        couponList = couponList.concat(v.gifts)
+                    }
+                })
             }
+            console.log('couponList',couponList,records)
             return (
                 <div>
                     <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
