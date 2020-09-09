@@ -181,13 +181,14 @@ class ActivityMain extends React.Component {
                 wrapper: NewBuyAFreeActivity,
                 child: BuyAFreeDetailInfo,
             },
+            // {
+            //     wrapper: NewAddUpFreeActivity,
+            //     child: AddUpGiveDetailInfo,
+            // }, {
+            //     wrapper: NewAddUpGiveActivity,
+            //     child: AddUpGiveDetailInfo,
+            // }, 
             {
-                wrapper: NewAddUpFreeActivity,
-                child: AddUpGiveDetailInfo,
-            }, {
-                wrapper: NewAddUpGiveActivity,
-                child: AddUpGiveDetailInfo,
-            }, {
                 wrapper: NewRecommendFood,
                 child: RecommendFoodDetailInfo,
             },
@@ -233,7 +234,8 @@ class ActivityMain extends React.Component {
     }
     render() {
         const activityCategories = this.props.saleCenter.get('activityCategories').toJS();
-        const index = this.props.index;
+        const index = activityCategories.findIndex(item => item.key == this.props.promotionType);
+
         return (
             <div className={[styles.activityMain, styles.activityModal].join(' ')} style={{ padding: 0 }}>
                 <Row>

@@ -5,6 +5,7 @@ import {
     saleCenterResetDetailInfoAC as saleCenterResetSpecialDetailInfoAC,
     saleCenterSetSpecialBasicInfoAC
 } from "../../redux/actions/saleCenterNEW/specialPromotion.action";
+import {NEW_SALE_BOX,SALE_CENTER_PAYHAVEGIFT} from "../../constants/entryCodes";
 import {
     Modal,
     message
@@ -49,6 +50,12 @@ import { axios } from '@hualala/platform-base';
 import { getStore } from '@hualala/platform-base'
 import Chou2Le from "../PromotionV3/Chou2Le";   // 抽抽乐
 import BlindBox from "../PromotionV3/BlindBox";   // 抽抽乐
+import { jumpPage, closePage } from '@hualala/platform-base';
+
+// 跳转到带装修的活动设置页面
+const activityList = [
+    '80', '66'
+]
 
 const UNRELEASED_PROMOTION_TYPES = [
 ]
@@ -174,6 +181,13 @@ class PromotionCreateModal extends Component {
         //     });
         //     return;
         // }
+        if(activityList.includes(key)) {
+            setTimeout(() => {
+                jumpPage({ menuID: SALE_CENTER_PAYHAVEGIFT, typeKey: key})
+                this.props.onCancel()
+            }, 100);
+            return closePage(SALE_CENTER_PAYHAVEGIFT)
+         }
         this.setSpecialModalVisible(true);
     }
 
@@ -335,7 +349,7 @@ class PromotionCreateModal extends Component {
                                 <div className={selfStyle.contentTitle}>{title}</div>
                                 <div className={selfStyle.cardWrapper}>
                                     {
-                                        list.map((item, index) => (
+                                        list.filter(item => !item.isOffline).map((item, index) => (
                                             <NewPromotionCard
                                                 size="small"
                                                 key={item.key}
@@ -355,8 +369,8 @@ class PromotionCreateModal extends Component {
                 </div>
                 {this.renderBasicPromotionModal()}
                 {this.renderSpecialPromotionModal()}
-                {(v3visible && curKey == '78') && (<Chou2Le />)}
-                {(v3visible && curKey == '79') && (<BlindBox />)}
+                {(v3visible && curKey == '78') && (<Chou2Le onToggle={this.onV3Click} />)}
+                {(v3visible && curKey == '79') && (<BlindBox onToggle={this.onV3Click} />)}
             </div>
         )
     }
