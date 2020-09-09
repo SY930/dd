@@ -181,13 +181,13 @@ class ActivityMain extends React.Component {
                 wrapper: NewBuyAFreeActivity,
                 child: BuyAFreeDetailInfo,
             },
-            // {
-            //     wrapper: NewAddUpFreeActivity,
-            //     child: AddUpGiveDetailInfo,
-            // }, {
-            //     wrapper: NewAddUpGiveActivity,
-            //     child: AddUpGiveDetailInfo,
-            // }, 
+            {
+                wrapper: NewAddUpFreeActivity,
+                child: AddUpGiveDetailInfo,
+            }, {
+                wrapper: NewAddUpGiveActivity,
+                child: AddUpGiveDetailInfo,
+            }, 
             {
                 wrapper: NewRecommendFood,
                 child: RecommendFoodDetailInfo,
