@@ -244,7 +244,7 @@ class NewActivity extends React.Component {
                 onCancel={() => this.setModal1Visible(false)}
             >
                 { this.state.modal1Visible && <ActivityMain
-                    index={this.state.index}
+                    index={index}
                     steps={this.props.steps}
                     isNew={true}
                     callbackthree={(arg) => {
