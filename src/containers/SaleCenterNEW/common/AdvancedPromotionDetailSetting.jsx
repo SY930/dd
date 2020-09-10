@@ -173,7 +173,8 @@ class AdvancedPromotionDetailSetting extends React.Component {
                 })
             }
 
-            const currentCardScopeIDs = cardScopeIDs.filter(v => ciflist.find(item => item.cardTypeID == v))
+            const currentCardScopeIDs = cardScopeIDs.filter(v => ciflist.find(item =>
+                item.cardTypeLevelList && item.cardTypeLevelList.find(cardLevelItem => cardLevelItem.cardLevelID == v)))
             const { cardScopeType } = this.state
 
             this.setState({
