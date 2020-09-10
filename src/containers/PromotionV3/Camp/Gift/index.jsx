@@ -36,6 +36,7 @@ export default class Gift extends Component {
                     this.setState({effectTypeEditFlag: true})
                 });
             } else {
+                onChange(idx, { [key]: value });
                 this.setState({ formKeys: formKeys2 });
             }
         }else{
