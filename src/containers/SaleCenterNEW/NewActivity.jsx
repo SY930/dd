@@ -110,6 +110,7 @@ class NewActivity extends React.Component {
         this.state = {
             modal1Visible: false,
             index: 0,
+            promotionType: 0,
             contentHeight: document.documentElement.clientHeight || document.body.clientHeight,
         };
 
@@ -200,7 +201,7 @@ class NewActivity extends React.Component {
                     marginBottom: 20
                 }}
             >
-                {ACTIVITY_CATEGORIES.map((activity, index) => {
+                {ACTIVITY_CATEGORIES.filter(item => !item.isOffline).map((activity, index) => {
                 return (
                     <div
                         key={`NewActivity${index}`}
@@ -225,7 +226,8 @@ class NewActivity extends React.Component {
     _renderModal() {
         const { intl } = this.props;
         const create = intl.formatMessage(COMMON_STRING.create);
-        const promotionType = ACTIVITY_CATEGORIES[this.state.index].title;
+        let index = ACTIVITY_CATEGORIES.findIndex(item => item.key == this.state.promotionType);
+        const promotionType = ACTIVITY_CATEGORIES[index >= 0 ? index : 0].title || '';
         const title = <p>{create} {promotionType}</p>;
         return (
             <Modal
@@ -242,7 +244,7 @@ class NewActivity extends React.Component {
                 onCancel={() => this.setModal1Visible(false)}
             >
                 { this.state.modal1Visible && <ActivityMain
-                    index={this.state.index}
+                    index={index}
                     steps={this.props.steps}
                     isNew={true}
                     callbackthree={(arg) => {
@@ -279,6 +281,7 @@ class NewActivity extends React.Component {
         this.setModal1Visible(true);
         this.setState({
             index,
+            promotionType: activity.key
         });
     }
 }
