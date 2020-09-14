@@ -492,6 +492,7 @@ class StepTwo extends React.Component {
     renderShopsOptions() {
         const { shopIDList, isRequire, shopStatus, canUseShopIDs } = this.state
         const selectedShopIdStrings = shopIDList.map(shopIdNum => String(shopIdNum));
+
         return (
             <Form.Item
                 label={this.props.intl.formatMessage(STRING_SPE.db60a0b75aca181)}
@@ -504,7 +505,7 @@ class StepTwo extends React.Component {
                     onChange={
                         this.editBoxForShopsChange
                     }
-                    canUseShops={canUseShopIDs}
+                    canUseShops={[...canUseShopIDs,'-1']}
                     extendShopList={[{
                         value: '-1',
                         label: '网上自助',
