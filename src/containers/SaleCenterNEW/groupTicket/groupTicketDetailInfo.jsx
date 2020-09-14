@@ -238,7 +238,7 @@ class GroupTicketDetailInfo extends React.Component {
                     className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
-                    required={true}
+                    required={false}
                     validateStatus={this.state.giftPriceFlag ? 'success' : 'error'}
                     help={this.state.giftPriceFlag ? null : SALE_LABEL.k5f49c4}
                 >
