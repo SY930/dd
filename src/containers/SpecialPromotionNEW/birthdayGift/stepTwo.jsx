@@ -505,6 +505,12 @@ class StepTwo extends React.Component {
                         this.editBoxForShopsChange
                     }
                     canUseShops={canUseShopIDs}
+                    extendShopList={[{
+                        value: '-1',
+                        label: '网上自助',
+                        shopId: '-1',
+                        shopName: '网上自助'
+                    }]}
                 />
             </Form.Item>
         );
