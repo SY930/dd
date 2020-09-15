@@ -166,6 +166,9 @@ class PromotionBasicInfo extends React.Component {
                         eventEndDate
                     };
                     this.props.saleCenterGetExcludeCardLevelIds(opts);
+                    if (opts.eventStartDate && this.props.type == '52') {
+                        this.props.getEventExcludeCardTypes(opts);
+                    }
                 }
             }
         });
@@ -396,7 +399,7 @@ class PromotionBasicInfo extends React.Component {
                         />
                         )}
                 </FormItem>
-                
+
                 {showActDataType.includes(this.props.type) ?  this.renderPeriodSelector()  : null}
 
                 {this.renderMoreInfo()}

@@ -94,6 +94,7 @@ class StepTwo extends React.Component {
         });
         if (this.props.type == '52') {
             this.props.getShopSchemaInfo({ groupID: this.props.user.accountInfo.groupID });
+            // 过滤适用卡类列表
             this.props.getEventExcludeCardTypes({
                 groupID: this.props.user.accountInfo.groupID,
                 eventStartDate: '20000625',
@@ -167,7 +168,21 @@ class StepTwo extends React.Component {
         }
     }
     onCardLevelChange(obj) {
-        this.setState(obj)
+        const { excludeCardTypeShops } = this.state
+        const { cardLevelIDList } = obj
+        let isShowShopTip = false
+        if(cardLevelIDList) {
+            if(Array.isArray(excludeCardTypeShops)) {
+                const chooseItem = excludeCardTypeShops.filter(v => cardLevelIDList.includes(v.cardTypeID))
+                isShowShopTip =  chooseItem.find(v => v.shopIDList && v.shopIDList.length)
+            }
+            this.setState({
+                isShowShopTip
+            })
+        }
+        this.setState({
+            ...obj,
+        })
         // const { cardLevelIDList } = obj;
         // this.querycanUseShopIDs(cardLevelIDList)
     }
@@ -234,18 +249,38 @@ class StepTwo extends React.Component {
             opts.settleUnitID = '0';
             opts.accountNo = '0';
         }
-        console.log('cardLevelRangeType',cardLevelRangeType)
+
         // 开卡增礼品加适用店铺
-        const { shopIDList, canUseShopIDs , cardLevelRangeType } = this.state
+        const { shopIDList, canUseShopIDs , cardLevelRangeType, excludeCardTypeShops, cardLevelIDList } = this.state
         if (this.props.type == '52' && cardLevelRangeType == '2') {
             opts.shopIDList = shopIDList
             opts.shopRange = opts.shopIDList.length > 0 ? 1 : 2
             opts.canUseShopIDs =  canUseShopIDs
+            // 如果卡类选择了店铺，新建的时候还选择了这个卡，必须要选择店铺
+
+            let isShowShopTip = false
+            if(cardLevelIDList) {
+                if(Array.isArray(excludeCardTypeShops)) {
+                    const chooseItem = excludeCardTypeShops.filter(v => cardLevelIDList.includes(v.cardTypeID))
+                    isShowShopTip =  chooseItem.find(v => v.shopIDList && v.shopIDList.length)
+                }
+            }
+
+            if(isShowShopTip && !shopIDList.length) {
+                flag = false
+            }
+
+            this.setState({
+                isShowShopTip
+            })
+
+
         } else if(this.props.type == '52' && cardLevelRangeType != '2') {
             opts.shopIDList = []
             opts.shopRange = opts.shopIDList.length > 0 ? 1 : 2
             opts.canUseShopIDs =  canUseShopIDs
         }
+
         this.props.setSpecialBasicInfo(opts);
         return flag;
     }
@@ -490,8 +525,20 @@ class StepTwo extends React.Component {
         return dynamicShopSchema;
     }
     renderShopsOptions() {
-        const { shopIDList, isRequire, shopStatus, canUseShopIDs } = this.state
+        let { shopIDList, isRequire, shopStatus, canUseShopIDs ,excludeCardTypeShops, isShowShopTip } = this.state
         const selectedShopIdStrings = shopIDList.map(shopIdNum => String(shopIdNum));
+
+        let excludeShopIDList = []
+        if(Array.isArray(excludeCardTypeShops)) {
+            excludeCardTypeShops.forEach(v => {
+                if(Array.isArray(v.shopIDList)) {
+                    excludeShopIDList = excludeShopIDList.concat(v.shopIDList)
+                }
+            })
+        }
+        canUseShopIDs = canUseShopIDs.filter(v => !excludeShopIDList.includes(Number(v)))
+
+
         return (
             <Form.Item
                 label={this.props.intl.formatMessage(STRING_SPE.db60a0b75aca181)}
@@ -504,15 +551,27 @@ class StepTwo extends React.Component {
                     onChange={
                         this.editBoxForShopsChange
                     }
-                    canUseShops={canUseShopIDs}
+                    canUseShops={[...canUseShopIDs,'-1']}
+                    extendShopList={[{
+                        value: '-1',
+                        label: '网上自助',
+                        shopId: '-1',
+                        shopName: '网上自助'
+                    }]}
                 />
+                { isShowShopTip && !selectedShopIdStrings.length  ?
+                <div style={{color: 'red'}}>店铺不能为空</div>
+                : null}
+
             </Form.Item>
         );
     }
     render() {
-        const { cardLevelRangeType, getExcludeCardLevelIds = [] } = this.state;
+        const { cardLevelRangeType, getExcludeCardLevelIds = [], excludeCardTypeShops } = this.state;
         const info = this.props.specialPromotion.get('$eventInfo').toJS();
         const sendFlag = info.smsGate == '1' || info.smsGate == '3' || info.smsGate == '4';
+
+
         return (
             <div>
                 {
