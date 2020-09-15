@@ -134,7 +134,7 @@ class GiftAddModal extends React.Component {
             const quotaCardGiftConfList = +this.baseForm.getFieldValue('quotaCardGiftConfList') || {};
             if(!Object.keys(quotaCardGiftConfList).includes('presentType') ) {
                 // 初始化礼品详情的值
-                this.initGiftDetail()
+                this.initGiftDetail(value)
             }
         }
 
@@ -265,9 +265,11 @@ class GiftAddModal extends React.Component {
     handleCurrencyChange = (currency) => {
         this.setState({ currency });
     }
-    initGiftDetail = () => {
+    initGiftDetail = (data) => {
         // 后端定义神奇的接口，为券包的时候，入参数，放quotaCardGiftConfList，从couponPackageBaseInfo取，入参和出参不一致
-        const  { quotaCardGiftConfList, presentType = 0, couponPackageBaseInfo } = this.props.gift.data
+        // 原数据-this.props.gift.data/改动后数据-data
+        let datas = data.presentType == undefined ? this.props.gift.data : data
+        const  { quotaCardGiftConfList, presentType = 0, couponPackageBaseInfo = {}, chooseCoupon = [] } = datas
         let params = {
             presentType,
             quotaCardGiftConfList: [],
@@ -277,7 +279,7 @@ class GiftAddModal extends React.Component {
         if(presentType === 4 && couponPackageBaseInfo) {
             params = {
                 presentType,
-                chooseCoupon: [couponPackageBaseInfo],
+                chooseCoupon: data.presentType == undefined ? [couponPackageBaseInfo] : chooseCoupon,
                 quotaCardGiftConfList: []
             }
         }
