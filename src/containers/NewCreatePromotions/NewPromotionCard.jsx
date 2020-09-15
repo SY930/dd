@@ -110,8 +110,8 @@ class NewPromotionCard extends Component {
                         bottom: bottom * 0.62,
                     }}>
                         {V3KEYS.includes(key) ?
-                            <img src={V3LOGO[key]} alt="oops"/>:
-                            <img src={require(`./assets/logo_${key}.png`)} alt="oops"/>
+                            <img style={{maxWidth: '90px', maxHeight: '90px'}} src={V3LOGO[key]} alt="oops"/>:
+                            <img style={{maxWidth: '90px', maxHeight: '90px'}} src={require(`./assets/logo_${key}.png`)} alt="oops"/>
                         }
                     </div>
                 </div>
@@ -204,9 +204,9 @@ class NewPromotionCard extends Component {
                     bottom,
                 }}>
                     {V3KEYS.includes(key) ?
-                            <img src={V3LOGO[key]} alt="oops"/>:
-                            <img style={{  width: key == 75 ? 70 : key == 77 || key == 76 ? 58 : 'auto' }} src={require(`./assets/logo_${key}.png`)} alt="oops"/>
-                        }
+                        <img style={{maxWidth: '90px', maxHeight: '90px'}} src={V3LOGO[key]} alt="oops"/>:
+                        <img style={{  width: key == 75 ? 70 : key == 77 || key == 76 ? 58 : 'auto' }} src={require(`./assets/logo_${key}.png`)} alt="oops"/>
+                    }
                 </div>
             </div>
         )

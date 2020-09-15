@@ -416,11 +416,11 @@ class MySpecialActivities extends React.Component {
             isShowCopyUrl: false
         })
     }
-    handleShowDetail = (record) => {
+    handleShowDetail = ({record,isView = false,isEdit = false}) => {
         closePage(SALE_CENTER_PAYHAVEGIFT)
         // 跳转到新版的营销活动
         setTimeout(() => {
-            jumpPage({ menuID: SALE_CENTER_PAYHAVEGIFT,  itemID: record.itemID,typeKey : record.eventWay})
+            jumpPage({ menuID: SALE_CENTER_PAYHAVEGIFT,  itemID: record.itemID,typeKey : record.eventWay, isView,isEdit})
         }, 100);
     }
 
@@ -678,7 +678,10 @@ class MySpecialActivities extends React.Component {
                                 }
                                 if (record.eventWay === 80) {
 
-                                    this.handleShowDetail(record)
+                                    this.handleShowDetail({
+                                        record,
+                                        isView: true
+                                    })
                                     return;
                                 }
                                 this.props.toggleIsUpdate(false)
@@ -813,6 +816,14 @@ class MySpecialActivities extends React.Component {
                                             this.onV3Click(record.itemID, false, record.eventWay);
                                             return;
                                         }
+                                        if (record.eventWay === 66) {
+                                            this.handleShowDetail({
+                                                record,
+                                                isView: false,
+                                                isEdit: true
+                                            })
+                                            return;
+                                        }
                                         this.props.toggleIsUpdate(true)
                                         this.handleUpdateOpe(text, record, index);
                                     }
@@ -832,9 +843,13 @@ class MySpecialActivities extends React.Component {
                                     this.onV3Click(record.itemID, true, record.eventWay);
                                     return;
                                 }
-                                if (record.eventWay === 80) {
+                                if (record.eventWay === 80 || record.eventWay === 66) {
 
-                                    this.handleShowDetail(record)
+                                    this.handleShowDetail({
+                                        record,
+                                        isView: true,
+                                        isEdit: false
+                                    })
                                     return;
                                 }
                                 this.props.toggleIsUpdate(false)

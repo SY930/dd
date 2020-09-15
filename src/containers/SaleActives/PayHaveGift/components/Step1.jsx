@@ -4,6 +4,7 @@ import { Input } from 'antd'
 import {formItems1,formKeys1} from '../constant'
 import styles from '../payHaveGift.less'
 import {connect} from 'react-redux';
+import { renderEventRemark } from '../../helper/common'
 
 @connect(({  loading, createActiveCom }) => ({  loading, createActiveCom }))
 class Step1 extends React.Component {
@@ -44,28 +45,8 @@ class Step1 extends React.Component {
 
         return flag
     }
-
-    renderEventRemark = (d) => {
-        const { formData } = this.props.createActiveCom;
-        return (
-            <div className={styles.textAreaWrap}>
-                {d({})(
-                    <Input
-                        placeholder="请输入活动说明，至多1000字"
-                        type="textarea"
-                        maxLength={1000}
-                        style={{ height: "117px" }}
-                    />
-                )}
-                <div className={styles.textNumCount}>
-                    {formData.eventRemark ? formData.eventRemark.length : 0}
-                    /1000
-                </div>
-            </div>
-        );
-    }
     render () {
-        formItems1.eventRemark.render = this.renderEventRemark
+        formItems1.eventRemark.render = renderEventRemark.bind(this)
         const { formData } = this.props.createActiveCom
         return (
             <div className={styles.step1Wrap}>

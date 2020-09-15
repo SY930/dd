@@ -8,35 +8,34 @@ import Gift from './Gift';
 // import { getCardList } from './AxiosFactory';
 const href = 'javascript:;';
 class MutliGift extends Component {
-
     state = {
         treeData: [],
 
     }
     componentDidMount() {
         this.props.dispatch({
-            type: 'createActiveCom/couponService_getSortedCouponBoardList'
-        }).then(res => {
-            if(res) {
-                this.setState({treeData: res})
+            type: 'createActiveCom/couponService_getSortedCouponBoardList',
+            payload: {
+                trdChannelID: 50,
+            },
+        }).then((res) => {
+            if (res) {
+                this.setState({ treeData: res })
             }
         })
-
-
     }
 
 
     onChange = (params, form) => {
-
-        if(params.giftID) {
+        if (params.giftID) {
             this.props.dispatch({
                 type: 'createActiveCom/couponService_getBoards',
                 payload: {
-                    giftItemID: params.giftID
-                }
-            }).then((res => {
-                if(res) {
-                    this.props.onChange(Object.assign(res,{giftID: params.giftID}))
+                    giftItemID: params.giftID,
+                },
+            }).then(((res) => {
+                if (res) {
+                    this.props.onChange(Object.assign(res, { giftID: params.giftID }))
                 }
             }))
         }
@@ -44,12 +43,11 @@ class MutliGift extends Component {
         this.props.dispatch({
             type: 'createActiveCom/updateState',
             payload: {
-                giftForm: form
-            }
+                giftForm: form,
+            },
         })
 
-        this.props.onChange(Object.assign(this.props.value,params))
-
+        this.props.onChange(Object.assign(this.props.value, params))
     }
     render() {
         const { treeData } = this.state;
@@ -59,8 +57,8 @@ class MutliGift extends Component {
             <div className={css.multiGiftBox}>
 
                 {
-                    <div   className={css.giftBox}>
-                    <em>礼品</em>
+                    <div className={css.giftBox}>
+                        <em>礼品</em>
                         <Gift
                             treeData={treeData}
                             formData={value}

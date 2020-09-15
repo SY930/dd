@@ -29,7 +29,8 @@ class PromotionSelectModal extends Component {
         searchInput: '',
         currentCategory: null,
         selected: this.props.selectedPromotions || [],
-        shareGroupName: this.props.shareGroupName
+        shareGroupName: this.props.shareGroupName,
+        limitNum: 100,        //共享限制数量
     }
 
 
@@ -103,6 +104,12 @@ class PromotionSelectModal extends Component {
         const filteredValue = searchInput ? allOptions.filter(item => item.label.includes(searchInput)).map(item => item.value)
             : allOptions.filter(item => item.type === currentCategory).map(item => item.value);
         const unfilteredValue = selected.filter(v => !filteredValue.includes(v));
+        // 最大选择数量限制  30
+        if(selectedOptions.length >= this.state.limitNum + 1) {
+            message.warning(`共享组选项不能超过${this.state.limitNum}个`)
+            this.handleSingleRemove({})
+            return
+        }
         this.setState({
             selected: [...unfilteredValue, ...selectedOptions.map(item => item.value ? item.value : item)]
         })
@@ -214,13 +221,16 @@ class PromotionSelectModal extends Component {
                                 <TreeNode key={'-20'} title={k5m4q0ze} />
                             </TreeNode>
                         </Tree>
-                        {/* //右侧复选框 */}
+                        {/* //右侧复选框  isLimit 数量限制 */}
                         <HualalaGroupSelect
                             options={filteredOptions}
                             labelKey={'label'}
                             valueKey={'value'}
                             value={filteredOptions.filter(item => selected.includes(item.value)).map(item => item.value)}
                             onChange={this.handleGroupSelect}
+                            isLimit={Array.from(selectedOptions).length >= this.state.limitNum || false}
+                            limitNum={this.state.limitNum}
+                            selectedNum={Array.from(selectedOptions).length}
                         />
                         {/* //下方已选的tag */}
                         <HualalaSelected

@@ -8,7 +8,7 @@
  * @Copyright: Copyright(c) 2017-present Hualala Co.,Ltd.
  */
 
-import { Checkbox, Col } from 'antd';
+import { Checkbox, Col, message } from 'antd';
 import React from 'react';
 import styles from './treeSelect.less';
 
@@ -19,6 +19,7 @@ class HualalaGroupSelect extends React.Component {
         super(props);
 
         this.state = {
+            allDisabled: false,     //选项是否可用
             options: [],
             title: '全选',
 
@@ -31,16 +32,30 @@ class HualalaGroupSelect extends React.Component {
     }
 
     onCheckAllChange() {
+        let {limitNum = 0, selectedNum = 0} = this.props
         let selected = [];
         if (!this.state.checkAll) {
             selected = this.state.options.map((option) => {
                 return option.value;
             });
         }
-        this.setState({
-            checkAll: !this.state.checkAll,
-            selected,
-        });
+        // 兼容无限制参数组件
+        if(limitNum || selectedNum){
+            if(selected.length + selectedNum <= limitNum){
+                this.setState({
+                    checkAll: !this.state.checkAll,
+                    selected,
+                });
+            }else{
+                message.warning(`共享组选项不能超过${limitNum}个`)
+                return;
+            }
+        }else{
+            this.setState({
+                checkAll: !this.state.checkAll,
+                selected,
+            });
+        }
 
         if (this.props.onChange) {
             this.props.onChange(selected)
@@ -101,6 +116,7 @@ class HualalaGroupSelect extends React.Component {
     /*
     selected: nextProps.value || [],
     checkAll: false
+    isLimit  是否数量限制
      */
     componentWillReceiveProps(nextProps) {
         if (this.props !== nextProps) {
@@ -115,12 +131,13 @@ class HualalaGroupSelect extends React.Component {
                 }),
                 selected: nextProps.value || [],
                 checkAll: nextProps.value.length !== 0 && nextProps.options.length === nextProps.value.length,
+                allDisabled: nextProps.isLimit
             })
         }
     }
 
     render() {
-        let selected = this.state.selected;
+        let {selected, allDisabled} = this.state
         if (this.state.checkAll) {
             selected = [];
 
@@ -139,14 +156,14 @@ class HualalaGroupSelect extends React.Component {
                 <div className={styles.SelectLevel2}>
                     <div className={styles.SelectLevelTop}>
                         <div className={styles.Sche}>
-                            <Checkbox onChange={this.onCheckAllChange} defaultChecked={this.state.checkAll} checked={this.state.checkAll}></Checkbox>
+                            <Checkbox onChange={this.onCheckAllChange} disabled={allDisabled} defaultChecked={this.state.checkAll} checked={this.state.checkAll}></Checkbox>
                         </div>
                         <div className={styles.Stit}>
                             {this.state.title}
                         </div>
                     </div>
                     <div className={styles.SelectLevelB} style={{ height:300 }}>
-                        <CheckboxGroup options={this.state.options} value={selected} onChange={this.onChange} />
+                        <CheckboxGroup options={this.state.options} disabled={allDisabled} value={selected} onChange={this.onChange} />
                     </div>
                 </div>
             </Col>

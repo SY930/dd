@@ -23,6 +23,7 @@ import {
     GIFT_NEW_EMPTY_GET_SHARED_GIFTS,
     GIFT_NEW_QUOTA_CARD_SHOP_BY_BATCHNO,
     GIFT_NEW_QUOTA_CARD_BATCHNO,
+    GIFT_NEW_QUOTA_CARD_CANSELL_LIST,
     GIFT_NEW_QUERY_WECHAT_MPINFO_START,
     GIFT_NEW_QUERY_WECHAT_MPINFO_SUCCESS,
     GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL,
@@ -85,6 +86,7 @@ const $initialState = Immutable.fromJS({
     sharedGifts: [],
     shopsByBatchNo: [],
     batchNoInfo: [],
+    quotaCardCanSellInfo: [],
     mpList: [],
     mpListLoading: false,
 });
@@ -195,6 +197,8 @@ export function giftInfoNew($$state = $initialState, action) {
             return $$state.set('shopsByBatchNo', Immutable.fromJS(action.payload.dataSource));
         case GIFT_NEW_QUOTA_CARD_BATCHNO:
             return $$state.set('batchNoInfo', Immutable.fromJS(action.payload.dataSource));
+        case GIFT_NEW_QUOTA_CARD_CANSELL_LIST:
+            return $$state.set('quotaCardCanSellInfo', Immutable.fromJS(action.payload.dataSource));
         case GIFT_NEW_FETCH_SEND_TOTAL_OK:
             return $$state.set('totalSendCount', action.payload.total || 0);
         case GIFT_NEW_FETCH_USED_TOTAL_OK:

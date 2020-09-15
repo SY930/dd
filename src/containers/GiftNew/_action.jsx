@@ -29,6 +29,7 @@ export const GIFT_NEW_GET_SHARED_GIFTS = 'gift new:: get shared gifts';
 export const GIFT_NEW_EMPTY_GET_SHARED_GIFTS = 'gift new:: empty get shared gifts';
 export const GIFT_NEW_QUOTA_CARD_SHOP_BY_BATCHNO = 'gift new :: get quota card shop by batchNo';
 export const GIFT_NEW_QUOTA_CARD_BATCHNO = 'gift new :: get quota card batchNo';
+export const GIFT_NEW_QUOTA_CARD_CANSELL_LIST = 'gift new :: get quota card cansell list';
 export const GIFT_NEW_QUERY_WECHAT_MPINFO_START = 'gift new :: query wechat mpinfo start';
 export const GIFT_NEW_QUERY_WECHAT_MPINFO_SUCCESS = 'gift new :: query wechat mpinfo success';
 export const GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL = 'gift new :: query wechat mpinfo fail';
@@ -451,6 +452,35 @@ export const FetchQuotaCardShopByBatchNo = (opts) => {
                 }));
                 return Promise.resolve([]);
             })
+    }
+};
+
+export const getQuotaCardCanSellList = (opts) => {
+    return (dispatch) => {
+        return axiosData('/coupon/getQuotaCardCanSellList.ajax', { ...opts }, null, {path: ''}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+            .then((records = {}) => {
+                let {data = {}} = records
+                dispatch(getQuotaCardCanSellListAC({
+                    payload: {
+                        dataSource: data || {},
+                    },
+                }));
+                return Promise.resolve(data);
+            })
+            .catch(err => {
+                dispatch(getQuotaCardCanSellListAC({
+                    payload: {
+                        dataSource: {},
+                    },
+                }));
+                return Promise.resolve({});
+            })
+    }
+};
+export const getQuotaCardCanSellListAC = (opt) => {
+    return {
+        type: GIFT_NEW_QUOTA_CARD_CANSELL_LIST,
+        ...opt,
     }
 };
 export const getQuotaCardBatchNoAC = (opt) => {

@@ -265,7 +265,7 @@ class Chou2Le extends Component {
                         if(etype === '1' && countType === '1') {
                             effectType = '3';
                         }
-                        const obj = { ...rawObj, ...rangeObj, ...others, effectType };
+                        const obj = { ...others, ...rawObj, ...rangeObj, effectType };
                         gifts.push(obj);
                     });
                 } else {
