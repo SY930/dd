@@ -99,9 +99,9 @@ class GroupTicketDetailInfo extends React.Component {
         const evidence = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'evidence']);
         const invoice = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'invoice']);
 
-        if (_state.giftPrice == null || _state.giftPrice == '') {
-            _state.giftPriceFlag = false;
-        }
+        // if (_state.giftPrice == null || _state.giftPrice == '') {
+        //     _state.giftPriceFlag = false;
+        // }
         if (_state.giftValue == null || _state.giftValue == '') {
             _state.giftValueFlag = false;
         }
@@ -183,10 +183,10 @@ class GroupTicketDetailInfo extends React.Component {
     onGiftPriceChange(value) {
         let { giftPrice, giftPriceFlag } = this.state;
         if (value.number == null || value.number == '') {
-            giftPriceFlag = false;
+            // giftPriceFlag = false;
             giftPrice = value.number;
         } else {
-            giftPriceFlag = true;
+            // giftPriceFlag = true;
             giftPrice = value.number;
         }
         this.setState({ giftPrice, giftPriceFlag });
@@ -239,8 +239,8 @@ class GroupTicketDetailInfo extends React.Component {
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                     required={false}
-                    validateStatus={this.state.giftPriceFlag ? 'success' : 'error'}
-                    help={this.state.giftPriceFlag ? null : SALE_LABEL.k5f49c4}
+                    // validateStatus={this.state.giftPriceFlag ? 'success' : 'error'}
+                    // help={this.state.giftPriceFlag ? null : SALE_LABEL.k5f49c4}
                 >
                     <PriceInput
                         addonBefore={''}
