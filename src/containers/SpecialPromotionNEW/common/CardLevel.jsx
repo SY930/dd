@@ -181,6 +181,10 @@ class CardLevel extends React.Component {
             } else {
                 this.setState({ allCheckDisabel: false })
             }
+            // 有启用的开卡赠送活动的时候，会员范围只能选择会员卡类
+            if(this.props.type == '52' && nextProps.excludeCardTypeShops && nextProps.excludeCardTypeShops.length) {
+                fun()
+            }
         }
     }
     handleSelectChange(value) {

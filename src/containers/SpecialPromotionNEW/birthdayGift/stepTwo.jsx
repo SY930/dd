@@ -601,6 +601,7 @@ class StepTwo extends React.Component {
                         type={this.props.type}
                         form={this.props.form}
                         getExcludeCardLevelIds={getExcludeCardLevelIds}
+                        excludeCardTypeShops={excludeCardTypeShops}
                     />
                 )}
                 {
