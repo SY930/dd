@@ -525,19 +525,22 @@ class StepTwo extends React.Component {
         return dynamicShopSchema;
     }
     renderShopsOptions() {
-        let { shopIDList, isRequire, shopStatus, canUseShopIDs ,excludeCardTypeShops, isShowShopTip } = this.state
+        let { shopIDList, isRequire, shopStatus, canUseShopIDs ,excludeCardTypeShops, isShowShopTip, cardLevelIDList } = this.state
         const selectedShopIdStrings = shopIDList.map(shopIdNum => String(shopIdNum));
 
         let excludeShopIDList = []
+        canUseShopIDs = [...canUseShopIDs,'-1']
+
         if(Array.isArray(excludeCardTypeShops)) {
-            excludeCardTypeShops.forEach(v => {
+            const chooseItemList = excludeCardTypeShops.filter(v => cardLevelIDList.includes(v.cardTypeID))
+            chooseItemList.forEach(v => {
                 if(Array.isArray(v.shopIDList)) {
                     excludeShopIDList = excludeShopIDList.concat(v.shopIDList)
                 }
             })
         }
-        canUseShopIDs = canUseShopIDs.filter(v => !excludeShopIDList.includes(Number(v)))
 
+        canUseShopIDs = canUseShopIDs.filter(v => !excludeShopIDList.includes(Number(v)))
 
         return (
             <Form.Item
@@ -551,12 +554,13 @@ class StepTwo extends React.Component {
                     onChange={
                         this.editBoxForShopsChange
                     }
-                    canUseShops={[...canUseShopIDs,'-1']}
+                    canUseShops={canUseShopIDs}
                     extendShopList={[{
                         value: '-1',
                         label: '网上自助',
                         shopId: '-1',
-                        shopName: '网上自助'
+                        shopName: '网上自助',
+                        disabled: excludeShopIDList.includes(-1)
                     }]}
                 />
                 { isShowShopTip && !selectedShopIdStrings.length  ?
