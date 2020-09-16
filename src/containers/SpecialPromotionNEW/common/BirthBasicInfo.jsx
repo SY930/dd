@@ -165,9 +165,20 @@ class PromotionBasicInfo extends React.Component {
                         eventStartDate,
                         eventEndDate
                     };
-                    this.props.saleCenterGetExcludeCardLevelIds(opts);
-                    if (opts.eventStartDate && this.props.type == '52') {
-                        this.props.getEventExcludeCardTypes(opts);
+
+                    if (this.props.type == '52') {
+                        this.props.getEventExcludeCardTypes({
+                            ...opts,
+                            eventStartDate: eventStartDate ? eventStartDate : '20000625',
+                            eventEndDate: eventEndDate ? eventEndDate : '21000531'
+                        });
+                        this.props.saleCenterGetExcludeCardLevelIds({
+                            ...opts,
+                            eventStartDate: eventStartDate ? eventStartDate : '20000625',
+                            eventEndDate: eventEndDate ? eventEndDate : '21000531'
+                        });
+                    } else {
+                        this.props.saleCenterGetExcludeCardLevelIds(opts);
                     }
                 }
             }
