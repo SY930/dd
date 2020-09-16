@@ -19,7 +19,8 @@ const dayOpts = (() => {
     for (let i = 1; i < 31; i++) {
         list.push({ label: `${i}天后生效`, value: `${i}` });
     }
-    return list;
+    let extraList = [{label: '40天后生效', value: '40'}, {label: '50天后生效', value: '50'}, {label: '60天后生效', value: '60'}]
+    return [...list, ...extraList];
 })();
 
 const formKeys1 = ['giftID', 'giftCount', 'effectType', 'countType', 'giftEffectTimeHours', 'giftValidUntilDayCount'];
