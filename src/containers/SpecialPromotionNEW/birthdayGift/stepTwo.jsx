@@ -571,7 +571,7 @@ class StepTwo extends React.Component {
         );
     }
     render() {
-        const { cardLevelRangeType, getExcludeCardLevelIds = [], excludeCardTypeShops } = this.state;
+        const { cardLevelRangeType, getExcludeCardLevelIds = [], excludeCardTypeShops, isNew } = this.state;
         const info = this.props.specialPromotion.get('$eventInfo').toJS();
         const sendFlag = info.smsGate == '1' || info.smsGate == '3' || info.smsGate == '4';
 
@@ -601,7 +601,7 @@ class StepTwo extends React.Component {
                         type={this.props.type}
                         form={this.props.form}
                         getExcludeCardLevelIds={getExcludeCardLevelIds}
-                        excludeCardTypeShops={excludeCardTypeShops}
+                        excludeCardTypeShops={isNew && excludeCardTypeShops}
                     />
                 )}
                 {
