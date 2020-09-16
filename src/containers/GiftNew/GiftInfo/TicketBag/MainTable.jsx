@@ -14,8 +14,8 @@ const TYPEMAP = { 1: '付费购买', 2: '活动投放' };
 class MainTable extends Component {
     /* 页面需要的各类状态属性 */
     state = {
-        visible: false,            // 是否显示弹层
-        visible1: false,            // 是否显示弹层
+        visible: false, // 是否显示弹层
+        visible1: false, // 是否显示弹层
         detail: {},
         couponPackageID: '',
         stock: '',
@@ -55,8 +55,8 @@ class MainTable extends Component {
         const { id: couponPackageID } = target.closest('p');
         const { groupID } = this.props;
         const params = { couponPackageID, groupID, isNeedDetailInfo: true };
-        getTicketBagInfo(params).then(x => {
-            if(x) {
+        getTicketBagInfo(params).then((x) => {
+            if (x) {
                 this.setState({ detail: x, couponPackageID });
                 this.onToggleModal();
             }
@@ -68,8 +68,8 @@ class MainTable extends Component {
         const { id: couponPackageID } = target.closest('p');
         const { groupID, onGoEdit } = this.props;
         const params = { couponPackageID, groupID, isNeedDetailInfo: true };
-        getTicketBagInfo(params).then(x => {
-            if(x) {
+        getTicketBagInfo(params).then((x) => {
+            if (x) {
                 const data = this.resetFormData(x);
                 const obj = { ...data, couponPackageID };
                 onGoEdit('ticket', obj, name);
@@ -87,21 +87,28 @@ class MainTable extends Component {
         const { couponPackageGiftConfigs, couponPackageInfo: info, shopInfos: shops } = detail;
         const { couponSendWay: way, couponPackageType: type, validCycle: cycle,
             couponPackagePrice: price, remainStock: stock } = info;
-        const shopInfos = shops.map(x=>`${x.shopID}`);
+        const shopInfos = shops.map(x => `${x.shopID}`);
         const { sellBeginTime, sellEndTime, sendTime: time } = info;
         let sellTime = [];
-        if(+sellBeginTime && +sellEndTime){
+        if (+sellBeginTime && +sellEndTime) {
             sellTime = [moment(sellBeginTime, DF), moment(sellEndTime, DF)];
         }
-        const sendTime = +time ? moment(time, TF) : '';
+        const sendTime = time ? moment(time, TF) : '';
         const cycleType = cycle ? cycle[0][0] : ''; // ["w2", "w3"] 获取第一个字符
-        let remainStock = stock || '0';    // 库存为-1和0 都显示空
-        if(stock===-1){
+        let remainStock = stock || '0'; // 库存为-1和0 都显示空
+        if (stock === -1) {
             remainStock = '';
         }
-        return { ...info, sellTime, sendTime, shopInfos, couponSendWay: `${way}`,
-            couponPackageType: `${type}`, cycleType, couponPackageGiftConfigs,
-            couponPackagePrice2: price, remainStock };
+        return { ...info,
+            sellTime,
+            sendTime,
+            shopInfos,
+            couponSendWay: `${way}`,
+            couponPackageType: `${type}`,
+            cycleType,
+            couponPackageGiftConfigs,
+            couponPackagePrice2: price,
+            remainStock };
     }
     /* 分页改变执行 */
     onPageChange = (pageNo, pageSize) => {
@@ -116,7 +123,7 @@ class MainTable extends Component {
     }
     onToggleModal1 = (reload) => {
         this.setState(ps => ({ visible1: !ps.visible1 }));
-        if(reload){
+        if (reload) {
             this.props.onQuery();
         }
     }
@@ -131,7 +138,7 @@ class MainTable extends Component {
                 <p id={id}>
                     {isNor && <a href={href} onClick={this.onEdit}>编辑</a>}
                     <a href={href} name="check" onClick={this.onEdit}>查看</a>
-                    {isNor && <a href={href} onClick={()=>{this.onDelete(id,name)}}>删除</a>}
+                    {isNor && <a href={href} onClick={() => { this.onDelete(id, name) }}>删除</a>}
                     <a href={href} onClick={this.onPreview}>详情</a>
                 </p>);
         };
@@ -150,7 +157,7 @@ class MainTable extends Component {
             const { couponPackageID: id, remainStock = 0 } = o;
             const stock = (remainStock === -1) ? '不限制' : remainStock;
             return (
-                <p id={id +','+ remainStock} className={tr}>
+                <p id={`${id},${remainStock}`} className={tr}>
                     <span>{stock}</span>
                     <a className={stockBtn} href={href} onClick={this.onEditStock}><Icon type="edit" /></a>
                 </p>);
@@ -174,8 +181,8 @@ class MainTable extends Component {
             key: x.id,
             idx: i + 1,
             type: TYPEMAP[x.couponPackageType],
-            postBy: (x.createBy || '') + ' / ' + (x.modifyBy || ''),
-            postTime: (x.createTime || '') + ' / ' + (x.modifyTime || ''),
+            postBy: `${x.createBy || ''} / ${x.modifyBy || ''}`,
+            postTime: `${x.createTime || ''} / ${x.modifyTime || ''}`,
             ...x,
         }));
     }
@@ -186,31 +193,31 @@ class MainTable extends Component {
         const dataSource = this.generateDataSource();
         const pagination = { ...page, onChange: this.onPageChange, onShowSizeChange: this.onPageChange };
         return (
-                <div className={styles.tableBox}>
-                    <Table
-                        bordered={true}
-                        loading={loading}
-                        columns={columns}
-                        dataSource={dataSource}
-                        style={{ maxWidth: 1300 }}
-                        scroll={{ y: 'calc(100vh - 440px)' }}
-                        pagination={pagination}
-                    />
-                    {visible &&
-                        <DetailModal
-                            ids={{groupID, couponPackageID}}
-                            detail={detail}
-                            onClose={this.onToggleModal}
-                        />
-                    }
-                    {visible1 &&
-                        <StockModal
-                            stock={stock}
-                            ids={{groupID, couponPackageID}}
-                            onClose={this.onToggleModal1}
-                        />
-                    }
-                </div>
+            <div className={styles.tableBox}>
+                <Table
+                    bordered={true}
+                    loading={loading}
+                    columns={columns}
+                    dataSource={dataSource}
+                    style={{ maxWidth: 1300 }}
+                    scroll={{ y: 'calc(100vh - 440px)' }}
+                    pagination={pagination}
+                />
+                {visible &&
+                <DetailModal
+                    ids={{ groupID, couponPackageID }}
+                    detail={detail}
+                    onClose={this.onToggleModal}
+                />
+                }
+                {visible1 &&
+                <StockModal
+                    stock={stock}
+                    ids={{ groupID, couponPackageID }}
+                    onClose={this.onToggleModal1}
+                />
+                }
+            </div>
         )
     }
 }
