@@ -63,26 +63,26 @@ class ShopSelector extends Component {
                 return shops;
             });
     }
-    loadShops2(brandList =[]) {
+    loadShops2(brandList = []) {
         const { alloptions, allfilters } = this.state;
-        if(!allfilters[0]){return}
+        if (!allfilters[0]) { return }
         const newFilter = JSON.parse(JSON.stringify(allfilters));
-        if(brandList[0]){
+        if (brandList[0]) {
             const brands = allfilters[0];
-            const leftBrands = brands.options.filter(x=>brandList.includes(x.brandID));
+            const leftBrands = brands.options.filter(x => brandList.includes(x.brandID));
             newFilter[0].options = leftBrands;
-            const leftShops = alloptions.filter(x=>brandList.includes(x.brandID));
+            const leftShops = alloptions.filter(x => brandList.includes(x.brandID));
             this.setState({ options: leftShops, filters: newFilter });
             return;
         }
         this.setState({ options: alloptions, filters: allfilters });
     }
-    loadShops3(canUseShops =[]) {
+    loadShops3(canUseShops = []) {
         const { alloptions } = this.state;
-        if(canUseShops[0]){
-            const leftShops = alloptions.map(x=>{
-                if(!canUseShops.includes(x.shopID)){
-                    return {...x, disabled: true }
+        if (canUseShops[0]) {
+            const leftShops = alloptions.map((x) => {
+                if (!canUseShops.includes(x.shopID)) {
+                    return { ...x, disabled: true }
                 }
                 return x;
             });
@@ -111,10 +111,13 @@ class ShopSelector extends Component {
     }
 
     render() {
-        const { value = [], onChange, size, placeholder, ...otherProps } = this.props;
+        const { value = [], onChange, size, placeholder, extendShopList, ...otherProps } = this.props;
         const { showModal } = this.state;
 
-        const options = this.props.options || this.state.options || [];
+        let options = this.props.options || this.state.options || [];
+        if (Array.isArray(extendShopList)) {
+            options = [...extendShopList, ...options]
+        }
         const filters = this.props.filters || this.state.filters;
         const items = value.reduce((ret, shopID) => {
             const shopInfo = options.find(shop => shop.value === shopID);

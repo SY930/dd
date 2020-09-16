@@ -51,6 +51,7 @@ class NewCardGive extends NewPromotion {
                         getSubmitFn={(handles) => {
                             this.handles[1] = handles;
                         }}
+                        isNew={this.props.isNew}
                     />
                 ),
             },
