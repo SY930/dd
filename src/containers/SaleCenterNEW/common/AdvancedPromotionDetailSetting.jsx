@@ -362,7 +362,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
         const k5m3oo68 = intl.formatMessage(SALE_STRING.k5m3oo68);
         const k5m3opbw = intl.formatMessage(SALE_STRING.k5m3opbw);
         const tip = (
-            <div style={{ display: this.state.display, height: 330, width: 460 }} className={styles.tip}>
+            <div style={{ display: this.state.display, height: 260, width: 460 }} className={styles.tip}>
     <div><p style={{ marginBottom: 10 }}>{SALE_LABEL.k5m3onxw}</p></div>
                 <Row style={{ height: '72px' }}>
                     <Col span={3} style={{ marginTop: -7 }}>{k5m3oo68}:</Col>
@@ -372,10 +372,10 @@ class AdvancedPromotionDetailSetting extends React.Component {
                     <Col span={3} style={{ marginTop: -7 }}>{k5m3opbw}:</Col>
         <Col span={20}>{SALE_LABEL.k5m3ooek}<span style={{ color: '#222222' }}>{SALE_LABEL.k5m6e46f}</span>，{SALE_LABEL.k5m6e4n3}<span style={{ color: '#222222' }}>{SALE_LABEL.k5m6e4er}</span></Col>
                 </Row>
-                <Row style={{ height: '72px' }}>
+                {/* <Row style={{ height: '72px' }}>
         <Col span={3} style={{ marginTop: -7 }}><span style={{ color: '#ed5664' }}>{SALE_LABEL.k5m6e3pr}</span>:</Col>
         <Col span={20}>{SALE_LABEL.k5m3oomw}</Col>
-                </Row>
+                </Row> */}
                 <div style={{ marginRight: 14 }}>
                     <div className={styles.tipBtn}>
                         <Button
