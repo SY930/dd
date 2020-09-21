@@ -322,7 +322,7 @@ class BlindBox extends Component {
             countCycleDays = joinCount.countCycleDays;
         }
         
-        return { mpIDList, participateRule, ...parm, partInTimes, countCycleDays, defaultCardType, autoRegister };
+        return { participateRule, ...parm, partInTimes, countCycleDays, defaultCardType };
     }
 
     setStep3Data(formData) {
