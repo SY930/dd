@@ -7,6 +7,8 @@ import {
     TimePicker,
     Form,
     Select,
+    Icon,
+    Tooltip
 } from 'antd';
 import { connect } from 'react-redux'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
@@ -382,27 +384,45 @@ class StepOne extends React.Component {
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 3 }}
                 >
-                    {decorator('dateInPeriodType', {
-                        rules: [{
-                            required: true,
-                            message: '请选择券发放周期',
-                        }],
-                        initialValue: dateInPeriodType,
-                        onChange: (val) => {
-                            // 清除数据
-                            if(getFieldValue('dateInPeriodType') != val) {
-                                setFieldsValue({
-                                    dateDescInPeroid: []
-                                })
-                            }
-                        }
-                    })(
-                        <Select>
-                            <Option value="m">每月</Option>
-                            <Option value="w">每周</Option>
-                            <Option value="d">每日</Option>
-                        </Select>
-                    )}
+                    <Row>
+                        <Col span={19}>
+                            {decorator('dateInPeriodType', {
+                                rules: [{
+                                    required: true,
+                                    message: '请选择券发放周期',
+                                }],
+                                initialValue: dateInPeriodType,
+                                onChange: (val) => {
+                                    // 清除数据
+                                    if(getFieldValue('dateInPeriodType') != val) {
+                                        setFieldsValue({
+                                            dateDescInPeroid: []
+                                        })
+                                    }
+                                }
+                            })(
+                                <Select>
+                                    <Option value="m">每月</Option>
+                                    <Option value="w">每周</Option>
+                                    <Option value="d">每日</Option>
+                                </Select>
+                            )}
+                        </Col>
+                        <Col span={2}>
+                            <Tooltip title={
+                                <p>
+                                    <p>每日：表示在活动起止日期内，每日都给会员发券</p>
+                                    <p>每周：表示在活动起止日期内，每周周几给会员发券券</p>
+                                    <p>每月：表示在活动起止日期内，每月几日给会员发券</p>
+                                </p>
+                            }>
+                                <Icon
+                                    style={{marginLeft: '5px', marginTop: '8px'}}
+                                    type={'question-circle'}
+                                />
+                            </Tooltip>
+                        </Col>
+                    </Row>
                 </FormItem>
                 {
                     this.renderDatePickerInWeekOrMonth()
@@ -595,6 +615,22 @@ class StepOne extends React.Component {
         } else {
             timeStringInitialValue = timeString;
         }
+        let rangePickerLabel = (
+            <span>
+                活动起止日期 
+                <Tooltip title={
+                    <p>
+                        <p>当选择的活动起止日期为同一天时（如2020-07-16~2020-07-16），表示只在这一天给会员发券一次</p>
+                        <p>当活动起止日期为时间范围时，可以选择在该时间范围内每日 / 每周特定日期 / 每月特定日期给会员发券</p>
+                    </p>
+                }>
+                    <Icon
+                        style={{marginLeft: '5px'}}
+                        type={'question-circle'}
+                    />
+                </Tooltip>
+             </span>
+        )
         return (
             <Form>
                 <div>
@@ -614,7 +650,7 @@ class StepOne extends React.Component {
                         )}
                     </FormItem>
                     <FormItem
-                        label={this.props.intl.formatMessage(STRING_SPE.d21645473363b20173)}
+                        label={rangePickerLabel}
                         className={[styles.FormItemStyle, styles.cardLevelTree].join(' ')}
                         labelCol={{ span: 4 }}
                         wrapperCol={{ span: 17 }}
