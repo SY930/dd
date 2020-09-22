@@ -27,12 +27,12 @@ export async function loadShopSchema(params = {}, cache) {
         "crm/",
         "/api/v1/universal?",
     ];
-    const method = `${api}groupShopService_findSchemaShopcenterNew.ajax`;
+    const method = `${api}groupShopService_findSchemaNew.ajax`;
     let data = cache;
     const { groupID, dataPermissions } = getAccountInfo();
     if (!data) {
-        const params = { service, type, data: { groupID }, method };
-        const res = await axios.post(url + method, params);
+        const parm = { service, type, data: { groupID, ...params}, method };
+        const res = await axios.post(url + method, parm);
         if (res.code !== "000") throw new Error(res.message);
         data = res.data;
     }

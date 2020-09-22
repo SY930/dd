@@ -139,6 +139,15 @@ class PromotionScopeInfo extends React.Component {
             } else {
                 states.shopsInfo = this.state.selections;
             }
+            // 授权门店过滤
+            if(this.isFilterShopType()){
+                let dynamicShopSchema = Object.assign({}, this.props.shopSchema.toJS());
+                let {shopSchema = {}} = dynamicShopSchema
+                let {shops = []} = shopSchema
+                let {shopsInfo = []} = states
+                states.shopsInfo = shopsInfo.filter((item) => shops.some(i => i.shopID == item))
+            }
+
             this.props.saleCenterSetScopeInfo(states);
         }
         return flag || isPrev;
@@ -152,6 +161,7 @@ class PromotionScopeInfo extends React.Component {
             finish: undefined,
             cancel: undefined,
         });
+        const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         this.loadShopSchema();
         const { promotionScopeInfo, fetchPromotionScopeInfo, getPromotionShopSchema, promotionBasicInfo } = this.props;
         if (promotionBasicInfo.get('$filterShops').toJS().shopList) {
@@ -160,10 +170,18 @@ class PromotionScopeInfo extends React.Component {
         this.setState({allShopsSet: !!promotionBasicInfo.get('$filterShops').toJS().allShopSet});
 
         if (!promotionScopeInfo.getIn(['refs', 'initialized'])) {
-            fetchPromotionScopeInfo({ _groupID: this.props.user.toJS().accountInfo.groupID });
+            let parm = {}
+            if(this.isFilterShopType()){
+                parm = {productCode: 'HLL_CRM_License'}
+            }
+            fetchPromotionScopeInfo({ _groupID: this.props.user.toJS().accountInfo.groupID, ...parm });
         }
         if (this.props.user.toJS().shopID <= 0) {
-            getPromotionShopSchema({groupID: this.props.user.toJS().accountInfo.groupID});
+            let parm = {}
+            if(this.isFilterShopType()){
+                parm = {productCode: 'HLL_CRM_License'}
+            }
+            getPromotionShopSchema({groupID: this.props.user.toJS().accountInfo.groupID, ...parm});
         }
 
         if (this.props.promotionScopeInfo.getIn(['refs', 'data', 'shops']).size > 0 && this.props.promotionScopeInfo.getIn(['refs', 'data', 'brands']).size > 0) {
@@ -222,6 +240,14 @@ class PromotionScopeInfo extends React.Component {
                 usageMode: _data.usageMode || 1,
             });
         }
+    }
+
+    isFilterShopType = () => {
+        const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
+        // 授权店铺过滤活动类型  
+        // 消费返利品 3010  消费返积分 3020
+        let filterType = ['3010', '3020'];
+        return filterType.includes(promotionType)
     }
 
     async loadShopSchema() {
@@ -547,6 +573,7 @@ class PromotionScopeInfo extends React.Component {
                     value={selections}
                     brandList={brands}
                     onChange={ this.editBoxForShopsChange }
+                    filterParm={this.isFilterShopType()?{productCode: 'HLL_CRM_License'}:{}}
                 />
                 {allShopSet ?
                     <p style={{ color: '#e24949' }}>{SALE_LABEL.k5m67b23}</p>

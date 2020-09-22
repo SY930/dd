@@ -19,6 +19,23 @@ function getAccountInfo() {
     return user.get('accountInfo').toJS();
 }
 /**
+ * 获取店铺
+ */
+async function getShopList(parm) {
+    const [service, api] = ['HTTP_SERVICE_URL_CRM', 'crm/'];
+    const { groupID } = getAccountInfo();
+    const data = { groupID, ...parm };
+    const method = `${api}groupShopService_findSchemaNew.ajax`;
+    const params = { service, type, data, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: { shops = [] } } = response;
+    if (code === '000') {
+        return shops;
+    }
+    message.error(msg);
+    return [];
+}
+/**
  * 获取品牌列表
  */
 async function getBrandList() {
@@ -95,5 +112,5 @@ async function postEvent(data) {
 
 
 export {
-    getAccountInfo, getBrandList, putEvent, getEvent, postEvent,
+    getAccountInfo, getBrandList, putEvent, getEvent, postEvent, getShopList
 }

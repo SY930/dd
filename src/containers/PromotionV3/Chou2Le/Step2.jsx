@@ -26,7 +26,7 @@ class Step2 extends Component {
     /** formItems 重新设置 */
     resetFormItems() {
         const { brands } = this.state;
-        const render = d => d()(<ShopSelector brandList={brands} />);
+        const render = d => d()(<ShopSelector filterParm={{productCode: 'HLL_CRM_License'}} brandList={brands} />);
         const options = this.getBrandOpts();
         const { shopIDList, brandList, ...other } = formItems2;
         return {

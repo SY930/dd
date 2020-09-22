@@ -187,6 +187,7 @@ class GiftAddModalStep extends React.PureComponent {
         } = this.props;
         const params = {
             groupID: accountInfo.get('groupID'),
+            productCode: 'HLL_CRM_License'
         };
         fetchFoodCategoryInfo(params, isHuaTian(), thisGift.data.subGroupID);
         fetchFoodMenuInfo(params, isHuaTian(), thisGift.data.subGroupID);
@@ -802,6 +803,12 @@ class GiftAddModalStep extends React.PureComponent {
             } catch (e) {
                 console.log('no shop info');
             }
+            // 授权门店过滤
+            let dynamicShopSchema = Object.assign({}, this.props.shopSchema.toJS());
+            let {shopSchema = {}} = dynamicShopSchema
+            let {shops = []} = shopSchema
+            let shopsInfo = shopIDs.split(',')
+            params.shopIDs = shopsInfo.filter((item) => shops.some(i => i.shopID == item)).join(',')
             params.shopNames = shopNames || ',';
             params.shopIDs = shopIDs || ',';
             if (params.giftShareType == '2') {
@@ -1458,14 +1465,15 @@ class GiftAddModalStep extends React.PureComponent {
             <Row style={{ marginBottom: shopNames.length === 0 ? -15 : 0 }}>
                 <Col>
                     {decorator({})(
-                            <ShopSelector
-                                onChange={
-                                    this.handleShopSelectorChange
-                                }
-                                brandList={brandList}
-                                // schemaData={this.state.shopSchema}
-                            />
-                        )}
+                        <ShopSelector
+                            onChange={
+                                this.handleShopSelectorChange
+                            }
+                            brandList={brandList}
+                            // schemaData={this.state.shopSchema}
+                            filterParm={{productCode: 'HLL_CRM_License'}}
+                        />
+                    )}
                 </Col>
                 <p style={{ color: 'orange', display: shopNames.length > 0 ? 'none' : 'block' }}>未选择门店时默认所有门店通用</p>
             </Row>

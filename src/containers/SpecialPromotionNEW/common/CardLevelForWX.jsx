@@ -302,6 +302,13 @@ class CardLevelForWX extends React.Component {
             })
         })
     }
+    isFilterShopType = () => {
+        const promotionType = this.props.type;
+        // 授权店铺过滤活动类型  
+        // 线上餐厅送礼  23
+        let filterType = ['23'];
+        return filterType.includes(promotionType)
+    }
     renderShopsOptions() {
         const { isRequire, shopStatus, canUseShops } = this.state;
         const { queryCanUseShopStatus } = this.props;
@@ -323,6 +330,7 @@ class CardLevelForWX extends React.Component {
                         }
                         canUseShops={canUseShops}
                         // schemaData={this.getDynamicShopSchema()}
+                        filterParm={this.isFilterShopType() ? {productCode: 'HLL_CRM_License'} : {}}
                     />
                     {
                         queryCanUseShopStatus === 'error' && (
