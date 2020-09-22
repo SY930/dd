@@ -105,7 +105,11 @@ class StepTwo extends React.Component {
             pageSize: 1000,
         };
         this.props.queryGroupMembersList(opts);
-        this.props.getShopSchemaInfo({groupID: this.props.user.accountInfo.groupID});
+        let parms = {}
+        if(this.isFilterShopType()){
+            parms = {productCode: 'HLL_CRM_License'}
+        }
+        this.props.getShopSchemaInfo({groupID: this.props.user.accountInfo.groupID, ...parms});
         const currentOccupiedShops = this.props.promotionBasicInfo.get('$filterShops').toJS().shopList;
         this.setState({occupiedShopIDs: currentOccupiedShops || []});
 
@@ -161,7 +165,11 @@ class StepTwo extends React.Component {
         }
         if (!this.props.promotionScopeInfo.getIn(['refs', 'initialized']) &&
             (this.props.type == '70' || this.props.type == '64')) {
-            this.props.fetchPromotionScopeInfo({ _groupID: this.props.user.accountInfo.groupID });
+                let parm = {}
+                if(this.isFilterShopType()){
+                    parm = { productCode: 'HLL_CRM_License' }
+                }
+                this.props.fetchPromotionScopeInfo({ _groupID: this.props.user.accountInfo.groupID, ...parm});
         }
         if (!this.props.specialPromotion.get('customerCount')) {
             this.props.getGroupCRMCustomAmount()

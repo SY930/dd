@@ -61,7 +61,7 @@ class GiftAddModal extends React.Component {
     componentDidMount() {
         const { getPromotionShopSchema, gift: {data}} = this.props;
         const { valueType = '0', monetaryUnit= '0' } = data;
-        getPromotionShopSchema({groupID: this.props.accountInfo.toJS().groupID});
+        getPromotionShopSchema({groupID: this.props.accountInfo.toJS().groupID, productCode: 'HLL_CRM_License'});
         this.setState({
             isUpdate: this.props.myActivities.get('isUpdate'),
             valueType,
@@ -184,6 +184,12 @@ class GiftAddModal extends React.Component {
             } catch (e) {
                 console.log('no shop info');
             }
+            // 授权门店过滤
+            let dynamicShopSchema = Object.assign({}, this.props.shopSchema.toJS());
+            let {shopSchema = {}} = dynamicShopSchema
+            let {shops = []} = shopSchema
+            let shopsInfo = shopIDs.split(',')
+            params.shopIDs = shopsInfo.filter((item) => shops.some(i => i.shopID == item)).join(',')
             params.shopNames = shopNames || ',';
             params.shopIDs = shopIDs || ',';
             // 定额卡工本费
