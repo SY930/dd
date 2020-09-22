@@ -288,7 +288,7 @@ class StepTwo extends React.Component {
             let {shops = []} = shopSchema
             let {shopIDList = []} = opts
             // 是否存在自助
-            let flag = shopIDList.includes(-1)
+            let flag = shopIDList.includes(-1) || shopIDList.includes('-1')
             let extra = flag ? [-1] : []
             opts.shopIDList = shopIDList.filter((item) => shops.some(i => i.shopID == item)).concat(extra)
         }

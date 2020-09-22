@@ -72,11 +72,11 @@ import {
 } from "../../actions/saleCenterNEW/promotionScopeInfo.action";
 
 function constructTreeDataContainsCityAndShop(data) {
-    const { cities, shops } = data;
-    if (cities === '' || shops === '') {
+    const { citys, shops } = data;
+    if (citys === '' || shops === '') {
         return
     }
-    return cities.map((city, level1) => {
+    return citys.map((city, level1) => {
         return {
             key: `0-${level1}`,
             value: `0-${level1}`,
@@ -100,11 +100,11 @@ function constructTreeDataContainsCityAndShop(data) {
 }
 
 function getDataStructureContainCityAndArea(data) {
-    const { cities, areas, shops } = data;
-    if (cities === '' || shops === '' || areas === '') {
+    const { citys, areas, shops } = data;
+    if (citys === '' || shops === '' || areas === '') {
         return
     }
-    const _compositeData = cities.map((city) => {
+    const _compositeData = citys.map((city) => {
         const _children = areas
             .filter((area) => {
                 return area.cityID == city.cityID;
