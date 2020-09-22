@@ -65,7 +65,7 @@ class QuotaCardBatchSold extends React.Component {
                     const { data, FetchQuotaCardShopByBatchNoAC, getQuotaCardCanSellList } = this.props;
                     const { batchSoldFormData } = this.state;
                     if (value) {
-                        FetchQuotaCardShopByBatchNoAC({ giftItemID: data.giftItemID, batchNO: value });
+                        FetchQuotaCardShopByBatchNoAC({ giftItemID: data.giftItemID, batchNO: value, productCode: 'HLL_CRM_License' });
                         // 售卖号段
                         getQuotaCardCanSellList({ giftItemID: data.giftItemID, batchNo: value });
 

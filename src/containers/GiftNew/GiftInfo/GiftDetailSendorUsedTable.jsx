@@ -161,7 +161,7 @@ class GiftSendOrUsedCount extends React.Component {
         }
         const _shopData = shopData.toJS();
         if (_shopData.length === 0) {
-            FetchGiftSchemaAC({})
+            FetchGiftSchemaAC({productCode: 'HLL_CRM_License'})
         }
     }
     componentWillReceiveProps(nextProps) {

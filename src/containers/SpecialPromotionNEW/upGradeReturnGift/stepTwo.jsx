@@ -344,6 +344,14 @@ class StepTwo extends React.Component {
             this.props.promotionBasicInfo.get('$filterShops').toJS().shopList.length > 0 &&
             this.state.selections.length === 0
         if (flag && !noSelected64) {
+            // 授权门店过滤
+            if(this.isFilterShopType()){
+                let dynamicShopSchema = Object.assign({}, this.props.shopSchemaInfo.toJS());
+                let {shopSchema = {}} = dynamicShopSchema
+                let {shops = []} = shopSchema
+                let {shopIDList = []} = opts
+                opts.shopIDList = shopIDList.filter((item) => shops.some(i => i.shopID == item))
+            }
             this.props.setSpecialBasicInfo(opts);
         }
         return flag && !noSelected64;
@@ -388,6 +396,13 @@ class StepTwo extends React.Component {
             this.setState({ isRequire: false });
         }
     }
+    isFilterShopType = () => {
+        const promotionType = this.props.type;
+        // 授权店铺过滤活动类型  
+        // 评价送礼  64
+        let filterType = ['64'];
+        return filterType.includes(promotionType)
+    }
     renderShopsOptions() {
         // 当有人领取礼物后，礼物不可编辑，加蒙层
         const userCount = this.props.specialPromotion.toJS().$eventInfo.userCount;
@@ -417,6 +432,7 @@ class StepTwo extends React.Component {
                             this.editBoxForShopsChange
                         }
                         schemaData={this.filterAvailableShops()}
+                        filterParm={this.isFilterShopType()?{productCode: 'HLL_CRM_License'}:{}}
                     />
                 </Form.Item>
                 <div className={userCount > 0 && this.props.type == 64 ? styles.opacitySet : null} style={{ left: 33, width: '88%' }}></div>

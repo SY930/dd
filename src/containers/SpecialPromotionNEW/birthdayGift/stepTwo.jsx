@@ -93,7 +93,7 @@ class StepTwo extends React.Component {
             pageSize: 1000,
         });
         if (this.props.type == '52') {
-            this.props.getShopSchemaInfo({ groupID: this.props.user.accountInfo.groupID });
+            this.props.getShopSchemaInfo({ groupID: this.props.user.accountInfo.groupID, productCode: 'HLL_CRM_License' });
             // 过滤适用卡类列表
             this.props.getEventExcludeCardTypes({
                 groupID: this.props.user.accountInfo.groupID,
@@ -279,6 +279,18 @@ class StepTwo extends React.Component {
             opts.shopIDList = []
             opts.shopRange = opts.shopIDList.length > 0 ? 1 : 2
             opts.canUseShopIDs =  canUseShopIDs
+        }
+        
+        // 授权门店过滤
+        if(this.isFilterShopType()){
+            let dynamicShopSchema = Object.assign({}, this.props.shopSchemaInfo.toJS());
+            let {shopSchema = {}} = dynamicShopSchema
+            let {shops = []} = shopSchema
+            let {shopIDList = []} = opts
+            // 是否存在自助
+            let flag = shopIDList.includes(-1)
+            let extra = flag ? [-1] : []
+            opts.shopIDList = shopIDList.filter((item) => shops.some(i => i.shopID == item)).concat(extra)
         }
 
         this.props.setSpecialBasicInfo(opts);
@@ -491,6 +503,13 @@ class StepTwo extends React.Component {
             canUseShopIDs: shopIDs.length === 0 && cardLevelIDList.length === 0 ? canUseShopIDsAll : shopIDs, // 没有选卡类所有店铺都可选
         })
     }
+    isFilterShopType = () => {
+        const promotionType = this.props.type;
+        // 授权店铺过滤活动类型  
+        // 开卡赠送  52
+        let filterType = ['52'];
+        return filterType.includes(promotionType)
+    }
     filterAvailableShops() {
         let dynamicShopSchema = Object.assign({}, this.state.shopSchema);
         if (dynamicShopSchema.shops.length === 0) {
@@ -562,6 +581,7 @@ class StepTwo extends React.Component {
                         shopName: '网上自助',
                         disabled: excludeShopIDList.includes(-1)
                     }]}
+                    filterParm={this.isFilterShopType()?{productCode: 'HLL_CRM_License'}:{}}
                 />
                 { isShowShopTip && !selectedShopIdStrings.length  ?
                 <div style={{color: 'red'}}>店铺不能为空</div>

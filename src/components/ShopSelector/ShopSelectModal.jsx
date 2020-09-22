@@ -30,8 +30,10 @@ class ShopSelectModal extends Component {
     }
 
     loadShops(params = {}, isForce = false) {
+        let {filterParm = {}} = this.props
         if (!isForce && (this.props.options || this.state.options)) return Promise.resolve();
         this.setState({ loading: true });
+        params = {...params, ...filterParm}
         return loadShopSchema(params).then(({ shops, ...filterOptions }) => {
             this.setState({
                 loading: false,
