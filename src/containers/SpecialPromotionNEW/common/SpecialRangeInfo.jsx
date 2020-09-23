@@ -328,6 +328,13 @@ class SpecialRangeInfo extends React.Component {
         }
         return isPrev || nextFlag;
     }
+    isFilterShopType = () => {
+        const promotionType = this.props.type;
+        // 授权店铺过滤活动类型  
+        // 线上餐厅送礼 23
+        let filterType = ['23'];
+        return filterType.includes(promotionType)
+    }
     // 免费领取的参与范围
     renderFreeGetJoinRange() {
         const options = [
