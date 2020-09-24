@@ -498,8 +498,27 @@ class SpecialPromotionDetail extends React.Component {
                 </div>
             )
         }
+        if(way == 52) {//
 
-        if(way == 52) {
+            const list = records.filter(v => v.presentType === 1)
+            return (
+                <div>
+                    <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
+                    <Col span={24}>
+                        {this.renderGiftInfoTable(list, way)}
+                    </Col>
+                    <Col style={{ marginTop: 10 }} span={18}>
+                            {this.renderPointsTable()}
+                        </Col>
+                    {this.renderSearch()}
+                    <Col span={24}>
+                        {this.renderActivityInfoTable()}
+                    </Col>
+                </div>
+            )
+        }
+        if(way == 53) {//群发礼品
+
             const list = records.filter(v => v.presentType === 1)
             return (
                 <div>
@@ -1079,7 +1098,7 @@ class SpecialPromotionDetail extends React.Component {
                 className: 'TableTxtCenter',
                 width: 100,
                 render:(text)=> {
-                    return (<Tooltip title={text}>{text}</Tooltip>)
+                    return (<Tooltip title={text || ''}>{text}</Tooltip>)
                 }
             },
             {
@@ -1089,7 +1108,7 @@ class SpecialPromotionDetail extends React.Component {
                 className: 'TableTxtRight',
                 width: 100,
                 render:(text)=> {
-                    return (<Tooltip title={text}>{text}</Tooltip>)
+                    return (<Tooltip title={text || ''}>{text}</Tooltip>)
                 }
             },
             eventWay == 20 &&({
