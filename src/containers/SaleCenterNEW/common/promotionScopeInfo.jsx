@@ -743,7 +743,7 @@ class PromotionScopeInfo extends React.Component {
                         则10号当天活动执行顺序为：12:00~1:00执行活动C；当天其他时段执行活动B；
                         当月其他日期执行活动A
                     </p>
-                    <p
+                    {/* <p
                         style={{
                             color: "rgba(102,102,102,1)",
                             lineHeight: "18px",
@@ -765,7 +765,7 @@ class PromotionScopeInfo extends React.Component {
                         }}
                     >
                         满赠/每满赠活动与买赠、第二份打折、加价换购活动之间不受互斥规则限制，在线上餐厅都按同享执行。
-                    </p>
+                    </p> */}
                     </div> : null
                 }
                 <Form className={styles.FormStyle}>
