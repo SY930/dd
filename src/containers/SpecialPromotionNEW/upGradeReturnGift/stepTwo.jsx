@@ -39,6 +39,7 @@ import BaseHualalaModal from "../../SaleCenterNEW/common/BaseHualalaModal";
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
 import { axios } from '@hualala/platform-base';
+import { isFilterShopType } from '../../../helpers/util'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -105,7 +106,11 @@ class StepTwo extends React.Component {
             pageSize: 1000,
         };
         this.props.queryGroupMembersList(opts);
-        this.props.getShopSchemaInfo({groupID: this.props.user.accountInfo.groupID});
+        let parms = {}
+        if(isFilterShopType(this.props.type)){
+            parms = {productCode: 'HLL_CRM_License'}
+        }
+        this.props.getShopSchemaInfo({groupID: this.props.user.accountInfo.groupID, ...parms});
         const currentOccupiedShops = this.props.promotionBasicInfo.get('$filterShops').toJS().shopList;
         this.setState({occupiedShopIDs: currentOccupiedShops || []});
 
@@ -161,7 +166,11 @@ class StepTwo extends React.Component {
         }
         if (!this.props.promotionScopeInfo.getIn(['refs', 'initialized']) &&
             (this.props.type == '70' || this.props.type == '64')) {
-            this.props.fetchPromotionScopeInfo({ _groupID: this.props.user.accountInfo.groupID });
+                let parm = {}
+                if(isFilterShopType(this.props.type)){
+                    parm = { productCode: 'HLL_CRM_License' }
+                }
+                this.props.fetchPromotionScopeInfo({ _groupID: this.props.user.accountInfo.groupID, ...parm});
         }
         if (!this.props.specialPromotion.get('customerCount')) {
             this.props.getGroupCRMCustomAmount()
@@ -344,6 +353,14 @@ class StepTwo extends React.Component {
             this.props.promotionBasicInfo.get('$filterShops').toJS().shopList.length > 0 &&
             this.state.selections.length === 0
         if (flag && !noSelected64) {
+            // 授权门店过滤
+            if(isFilterShopType(this.props.type)){
+                let dynamicShopSchema = Object.assign({}, this.props.shopSchemaInfo.toJS());
+                let {shopSchema = {}} = dynamicShopSchema
+                let {shops = []} = shopSchema
+                let {shopIDList = []} = opts
+                opts.shopIDList = shopIDList.filter((item) => shops.some(i => i.shopID == item))
+            }
             this.props.setSpecialBasicInfo(opts);
         }
         return flag && !noSelected64;
@@ -417,6 +434,7 @@ class StepTwo extends React.Component {
                             this.editBoxForShopsChange
                         }
                         schemaData={this.filterAvailableShops()}
+                        filterParm={isFilterShopType(this.props.type)?{productCode: 'HLL_CRM_License'}:{}}
                     />
                 </Form.Item>
                 <div className={userCount > 0 && this.props.type == 64 ? styles.opacitySet : null} style={{ left: 33, width: '88%' }}></div>

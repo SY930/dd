@@ -34,6 +34,7 @@ import ShopSelector from '../../../components/ShopSelector';
 import BaseHualalaModal from "../../SaleCenterNEW/common/BaseHualalaModal";
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
+import { isFilterShopType } from '../../../helpers/util'
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
@@ -323,6 +324,7 @@ class CardLevelForWX extends React.Component {
                         }
                         canUseShops={canUseShops}
                         // schemaData={this.getDynamicShopSchema()}
+                        filterParm={isFilterShopType(this.props.type) ? {productCode: 'HLL_CRM_License'} : {}}
                     />
                     {
                         queryCanUseShopStatus === 'error' && (

@@ -14,7 +14,7 @@ import { Form, Icon, Select, Radio, message } from 'antd';
 import { isEqual, uniq } from 'lodash';
 import Immutable from 'immutable'
 import { axios } from '@hualala/platform-base';
-import { axiosData } from '../../../helpers/util';
+import { axiosData, isFilterShopType } from '../../../helpers/util';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import {
     saleCenterSetSpecialBasicInfoAC,
@@ -93,7 +93,11 @@ class StepTwo extends React.Component {
             pageSize: 1000,
         });
         if (this.props.type == '52') {
-            this.props.getShopSchemaInfo({ groupID: this.props.user.accountInfo.groupID });
+            let parm = {}
+            if(isFilterShopType(this.props.type)){
+                parm = {productCode: 'HLL_CRM_License'}
+            }
+            this.props.getShopSchemaInfo({ groupID: this.props.user.accountInfo.groupID, ...parm });
             // 过滤适用卡类列表
             this.props.getEventExcludeCardTypes({
                 groupID: this.props.user.accountInfo.groupID,
@@ -279,6 +283,18 @@ class StepTwo extends React.Component {
             opts.shopIDList = []
             opts.shopRange = opts.shopIDList.length > 0 ? 1 : 2
             opts.canUseShopIDs =  canUseShopIDs
+        }
+        
+        // 授权门店过滤
+        if(isFilterShopType(this.props.type)){
+            let dynamicShopSchema = Object.assign({}, this.props.shopSchemaInfo.toJS());
+            let {shopSchema = {}} = dynamicShopSchema
+            let {shops = []} = shopSchema
+            let {shopIDList = []} = opts
+            // 是否存在自助
+            let flag = shopIDList.includes(-1) || shopIDList.includes('-1')
+            let extra = flag ? [-1] : []
+            opts.shopIDList = shopIDList.filter((item) => shops.some(i => i.shopID == item)).concat(extra)
         }
 
         this.props.setSpecialBasicInfo(opts);
@@ -562,6 +578,7 @@ class StepTwo extends React.Component {
                         shopName: '网上自助',
                         disabled: excludeShopIDList.includes(-1)
                     }]}
+                    filterParm={isFilterShopType(this.props.type) ? {productCode: 'HLL_CRM_License'} : {}}
                 />
                 { isShowShopTip && !selectedShopIdStrings.length  ?
                 <div style={{color: 'red'}}>店铺不能为空</div>

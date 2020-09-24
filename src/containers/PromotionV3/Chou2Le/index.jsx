@@ -2,7 +2,7 @@ import React, { PureComponent as Component } from 'react';
 import { Modal, Steps, Button, message } from 'antd';
 import { jumpPage, closePage } from '@hualala/platform-base';
 import moment from 'moment';
-import { getAccountInfo, getBrandList, putEvent, getEvent, postEvent } from './AxiosFactory';
+import { getAccountInfo, getBrandList, putEvent, getEvent, postEvent, getShopList } from './AxiosFactory';
 import Step1 from './Step1';
 import Step2 from './Step2';
 import Step3 from './Step3';
@@ -10,6 +10,7 @@ import style from 'components/basic/ProgressBar/ProgressBar.less';
 import css from './style.less';
 import { TF, DF, imgURI } from './Common';
 import { getTicketList } from '../Camp/TicketBag/AxiosFactory';
+import {isFilterShopType} from '../../../helpers/util'
 
 const Step = Steps.Step;
 class Chou2Le extends Component {
@@ -22,10 +23,14 @@ class Chou2Le extends Component {
         form: null,
         brandList: [],
         bagList: [],
+        shops: [],
     };
     componentDidMount() {
         getBrandList().then(list => {
             this.setState({ brandList: list });
+        });
+        getShopList().then(list => {
+            this.setState({ shops: list });
         });
         this.getEventDetail();
     }
@@ -117,7 +122,7 @@ class Chou2Le extends Component {
             }
             lottery[index] = { id: `${sortIndex}`, giftOdds, userCount, ...newItem };
         });
-        console.log('lottery', lottery);
+        // console.log('lottery', lottery);
         return { consumeType: `${stype}`, sceneType: `${sceneType}`, eventID, consumeTotalAmount, lottery };
     }
     /** 得到form, 根据step不同，获得对应的form对象 */
@@ -130,7 +135,7 @@ class Chou2Le extends Component {
         form.validateFields((e, v) => {
             if (!e) {
                 const {  validCycle, cycleType } = v;
-                console.log('vvv', v);
+                // console.log('vvv', v);
                 // 根据周期类型删除曾选择的缓存垃圾数据
                 let cycleObj = {};
                 if(cycleType) {
@@ -234,12 +239,16 @@ class Chou2Le extends Component {
     }
     // 提交前需要整理的数据
     setStep2Data() {
-        const { formData2 } = this.state;
-        const { brandList, orderTypeList, shopIDList } = formData2;
+        const { formData2, shops } = this.state;
+        let { brandList, orderTypeList, shopIDList } = formData2;
         const bList = brandList.join();
         const oList = orderTypeList.join();
         // "shopRange": 店铺范围 1：部分店铺 ,  2：全部店铺，后端需要的数据
         const shopRange = shopIDList[0] ? '1' : '2';
+        // 授权门店过滤
+        if(isFilterShopType('78')){
+            shopIDList = shopIDList.filter((item) => shops.some(i => i.shopID == item))
+        }
         return { brandList: bList, orderTypeList: oList, shopIDList, shopRange };
     }
     setStep3Data(formData) {

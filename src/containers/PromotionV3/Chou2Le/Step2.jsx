@@ -3,6 +3,7 @@ import { Modal, Alert, message } from 'antd';
 import BaseForm from 'components/common/BaseForm';
 import { formKeys2, formItems2, formItemLayout } from './Common';
 import ShopSelector from 'components/ShopSelector';
+import {isFilterShopType} from '../../../helpers/util'
 import css from './style.less';
 
 class Step2 extends Component {
@@ -26,7 +27,7 @@ class Step2 extends Component {
     /** formItems 重新设置 */
     resetFormItems() {
         const { brands } = this.state;
-        const render = d => d()(<ShopSelector brandList={brands} />);
+        const render = d => d()(<ShopSelector filterParm={isFilterShopType() ? {productCode: 'HLL_CRM_License'} : {}} brandList={brands} />);
         const options = this.getBrandOpts();
         const { shopIDList, brandList, ...other } = formItems2;
         return {

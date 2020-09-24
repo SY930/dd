@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { axiosData } from '../../../helpers/util';
+import { axiosData, isFilterShopType } from '../../../helpers/util';
 import {
     Row,
     Col,
@@ -61,7 +61,9 @@ class GiftAddModal extends React.Component {
     componentDidMount() {
         const { getPromotionShopSchema, gift: {data}} = this.props;
         const { valueType = '0', monetaryUnit= '0' } = data;
-        getPromotionShopSchema({groupID: this.props.accountInfo.toJS().groupID});
+        let parm = {}
+        if(isFilterShopType()) parm = {productCode: 'HLL_CRM_License'}
+        getPromotionShopSchema({groupID: this.props.accountInfo.toJS().groupID, ...parm});
         this.setState({
             isUpdate: this.props.myActivities.get('isUpdate'),
             valueType,
@@ -183,6 +185,14 @@ class GiftAddModal extends React.Component {
                 }
             } catch (e) {
                 console.log('no shop info');
+            }
+            // 授权门店过滤
+            if(isFilterShopType()){
+                let dynamicShopSchema = Object.assign({}, this.props.shopSchema.toJS());
+                let {shopSchema = {}} = dynamicShopSchema
+                let {shops = []} = shopSchema
+                let shopsInfo = shopIDs.split(',')
+                params.shopIDs = shopsInfo.filter((item) => shops.some(i => i.shopID == item)).join(',')
             }
             params.shopNames = shopNames || ',';
             params.shopIDs = shopIDs || ',';

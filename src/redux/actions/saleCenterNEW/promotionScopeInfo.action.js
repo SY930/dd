@@ -62,10 +62,10 @@ export const fetchPromotionScopeInfo = (opts) => {
         dispatch({
             type: SALE_CENTER_FETCH_PROMOTION_SCOPE_INFO,
         });
-        axiosData('/crm/groupShopService_findSchemaShopcenterNew.ajax', {}, {}, {path: 'data'})
+        axiosData('/crm/groupShopService_findSchemaNew.ajax', {...opts}, {}, {path: 'data'})
             .then((data = {}) => {
-                data.citys = data.cities;
-                data.shopCategories = data.shopCategorys;
+                // data.citys = data.cities;
+                // data.shopCategories = data.shopCategorys;
                 dispatch(getPromotionShopSchemaSuccess(data));
                 dispatch(fetchPromotionScopeInfoSuccess(data));
             },
@@ -80,7 +80,7 @@ export const getPromotionShopSchema = (params) => {
             type: SALE_CENTER_GET_SHOP_SCHEMA,
         });
 
-        axiosData('/crm/groupShopService_findSchemaNew.ajax', {}, {}, {path: 'data'})
+        axiosData('/crm/groupShopService_findSchemaNew.ajax', {...params}, {}, {path: 'data'})
             .then(data => dispatch(getPromotionShopSchemaSuccess(data)),
                 error => dispatch(getPromotionShopSchemaFailed()))
             .catch(err => console.log('err: ', err))
