@@ -9,7 +9,7 @@
 import React, {createRef} from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { axiosData } from '../../../helpers/util';
+import { axiosData, isFilterShopType } from '../../../helpers/util';
 import {
     Row,
     Col,
@@ -185,10 +185,12 @@ class GiftAddModalStep extends React.PureComponent {
             fetchFoodMenuInfo,
             accountInfo,
         } = this.props;
-        const params = {
+        let params = {
             groupID: accountInfo.get('groupID'),
-            productCode: 'HLL_CRM_License'
         };
+        if(isFilterShopType()){
+            params = {...params, productCode: 'HLL_CRM_License'}
+        }
         fetchFoodCategoryInfo(params, isHuaTian(), thisGift.data.subGroupID);
         fetchFoodMenuInfo(params, isHuaTian(), thisGift.data.subGroupID);
         getPromotionShopSchema(params);
@@ -804,11 +806,13 @@ class GiftAddModalStep extends React.PureComponent {
                 console.log('no shop info');
             }
             // 授权门店过滤
-            let dynamicShopSchema = Object.assign({}, this.props.shopSchema.toJS());
-            let {shopSchema = {}} = dynamicShopSchema
-            let {shops = []} = shopSchema
-            let shopsInfo = shopIDs.split(',')
-            params.shopIDs = shopsInfo.filter((item) => shops.some(i => i.shopID == item)).join(',')
+            if(isFilterShopType()){
+                let dynamicShopSchema = Object.assign({}, this.props.shopSchema.toJS());
+                let {shopSchema = {}} = dynamicShopSchema
+                let {shops = []} = shopSchema
+                let shopsInfo = shopIDs.split(',')
+                params.shopIDs = shopsInfo.filter((item) => shops.some(i => i.shopID == item)).join(',')
+            }
             params.shopNames = shopNames || ',';
             params.shopIDs = shopIDs || ',';
             if (params.giftShareType == '2') {
@@ -1471,7 +1475,7 @@ class GiftAddModalStep extends React.PureComponent {
                             }
                             brandList={brandList}
                             // schemaData={this.state.shopSchema}
-                            filterParm={{productCode: 'HLL_CRM_License'}}
+                            filterParm={isFilterShopType() ? {productCode: 'HLL_CRM_License'} : {}}
                         />
                     )}
                 </Col>

@@ -746,6 +746,7 @@ export function axiosData(api, params, opts, {
  * return       bool || true 启用中  false  关闭中
  */
 export function isFilterShopType(curType){
+    // return false;
     // 没有对应的type   默认true
     if(!curType){
         return true;

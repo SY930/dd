@@ -14,7 +14,7 @@ import {
     FetchGiftSchema,
 } from '../_action';
 import { FORMITEMS, SEND_FORMKEYS, WX_SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS, WX_SEND_FORMKEYS, SEND_GIFTPWD_FORMKEYS, USED_SPE_COLUMNS, USED_SPE_FORMKEYS, BASE_COLUMNS } from './_tableSendConfig';
-import { mapValueToLabel, axiosData } from 'helpers/util';
+import { mapValueToLabel, axiosData, isFilterShopType } from 'helpers/util';
 import { messageTemplateState } from 'containers/BasicSettings/reducers';
 import TransGiftModal from './TransGiftModal';
 
@@ -161,7 +161,11 @@ class GiftSendOrUsedCount extends React.Component {
         }
         const _shopData = shopData.toJS();
         if (_shopData.length === 0) {
-            FetchGiftSchemaAC({productCode: 'HLL_CRM_License'})
+            let parm = {}
+            if(isFilterShopType()){
+                parm = {productCode: 'HLL_CRM_License'}
+            }
+            FetchGiftSchemaAC(parm)
         }
     }
     componentWillReceiveProps(nextProps) {
