@@ -738,3 +738,22 @@ export function axiosData(api, params, opts, {
             return Promise.reject(error);
         });
 }
+
+
+/**
+ * 店铺授权     是否启用店铺授权
+ * curType      当前活动type值
+ * return       bool || true 启用中  false  关闭中
+ */
+export function isFilterShopType(curType){
+    // 没有对应的type   默认true
+    if(!curType){
+        return true;
+    }
+    // 授权店铺过滤活动类型  
+    // 开卡赠送  52  线上餐厅送礼  23  抽抽乐78  评价送礼  64
+    // 消费返利品 3010  消费返积分 3020
+    let filterType = ['23', '52', '78', '64', '3010', '3020'];
+    
+    return filterType.includes(curType)
+}
