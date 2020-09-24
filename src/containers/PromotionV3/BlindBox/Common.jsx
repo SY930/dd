@@ -138,8 +138,8 @@ const formItems2 = {
 
 const keys1 = ['presentValue1'];
 const keys2 = ['presentValue2', 'settleUnitID'];
-const formKeys21 = ['mpIDList', 'participateRule']
-const formKeys22 = ['joinCount', 'defaultCardType', 'autoRegister'];
+const formKeys21 = ['participateRule']
+const formKeys22 = ['joinCount', 'defaultCardType'];
 /**
  * formItem3
  */
