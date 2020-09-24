@@ -172,10 +172,16 @@ class AdvancedPromotionDetailSetting extends React.Component {
                     return crmCardTypeIDs.split(',').includes(x.cardTypeID);
                 })
             }
-
-            const currentCardScopeIDs = cardScopeIDs.filter(v => ciflist.find(item =>
-                item.cardTypeLevelList && item.cardTypeLevelList.find(cardLevelItem => cardLevelItem.cardLevelID == v)))
             const { cardScopeType } = this.state
+            let currentCardScopeIDs = []
+            // 当适用店铺减少后，在此过滤调卡类别或卡等级，后期标签也可以再次处理， 标签cardScopeType为2
+            if(cardScopeType == 0) {
+                console.log('this.tags', ciflist, cardScopeIDs)
+                currentCardScopeIDs = cardScopeIDs.filter(v =>  ciflist.find(item => item.cardTypeID == v))
+            } else if(cardScopeType == 1) {
+                currentCardScopeIDs = cardScopeIDs.filter(v => ciflist.find(item =>
+                    item.cardTypeLevelList && item.cardTypeLevelList.find(cardLevelItem => cardLevelItem.cardLevelID == v)))
+            }
 
             this.setState({
                 cardInfo: ciflist,
@@ -535,6 +541,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
             })
         })
         const { tagList } = this.props
+
         return (
             <div>
                 <FormItem
