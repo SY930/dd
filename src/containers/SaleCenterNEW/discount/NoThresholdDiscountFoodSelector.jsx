@@ -169,7 +169,7 @@ class NoThresholdDiscountFoodSelector extends Component {
     }
     componentDidMount() {
         let {allBrands, allCategories, allDishes} = this.props
-        if (allBrands.size && allCategories.size && (allDishes && allDishes.size)) {
+        if ((allBrands && allBrands.size) && (allCategories && allCategories.size) && (allDishes && allDishes.size)) {
             this.mapSelectedValueToObjectsThenEmit()
         }
     }
@@ -232,7 +232,7 @@ class NoThresholdDiscountFoodSelector extends Component {
     };
     componentDidUpdate(prevProps) {
         let {allBrands, allCategories, allDishes} = this.props
-        if (allBrands.size && allCategories.size && (allDishes && allDishes.size)) {
+        if ((allBrands && allBrands.size) && (allCategories && allCategories.size) && (allDishes && allDishes.size)) {
             if (!prevProps.allBrands.size || !prevProps.allCategories.size || !prevProps.allDishes.size) {
                 this.mapSelectedValueToObjectsThenEmit()
             }
