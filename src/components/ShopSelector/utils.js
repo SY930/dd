@@ -27,7 +27,7 @@ export async function loadShopSchema(params = {}, cache) {
         "crm/",
         "/api/v1/universal?",
     ];
-    const method = `${api}groupShopService_findSchemaNew.ajax`;
+    const method = `${api}groupShopService_findSchemaShopcenterNew.ajax`;
     let data = cache;
     const { groupID, dataPermissions } = getAccountInfo();
     if (!data) {

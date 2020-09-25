@@ -10,6 +10,7 @@ import style from 'components/basic/ProgressBar/ProgressBar.less';
 import css from './style.less';
 import { TF, DF, imgURI } from './Common';
 import { getTicketList } from '../Camp/TicketBag/AxiosFactory';
+import {isFilterShopType} from '../../../helpers/util'
 
 const Step = Steps.Step;
 class Chou2Le extends Component {
@@ -245,7 +246,9 @@ class Chou2Le extends Component {
         // "shopRange": 店铺范围 1：部分店铺 ,  2：全部店铺，后端需要的数据
         const shopRange = shopIDList[0] ? '1' : '2';
         // 授权门店过滤
-        shopIDList = shopIDList.filter((item) => shops.some(i => i.shopID == item))
+        if(isFilterShopType('78')){
+            shopIDList = shopIDList.filter((item) => shops.some(i => i.shopID == item))
+        }
         return { brandList: bList, orderTypeList: oList, shopIDList, shopRange };
     }
     setStep3Data(formData) {

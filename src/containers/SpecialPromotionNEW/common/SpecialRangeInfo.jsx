@@ -11,6 +11,7 @@ import {
 import { fetchSpecialCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action'
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
+import { isFilterShopType } from '../../../helpers/util'
 
 const CheckboxGroup = Checkbox.Group;
 const RadioGroup = Radio.Group;
@@ -316,7 +317,7 @@ class SpecialRangeInfo extends React.Component {
             }
             if (isPrev || nextFlag) {
                 // 授权门店过滤
-                if(this.isFilterShopType()){
+                if(isFilterShopType(this.props.type)){
                     let dynamicShopSchema = Object.assign({}, this.props.shopSchemaInfo.toJS());
                     let {shopSchema = {}} = dynamicShopSchema
                     let {shops = []} = shopSchema
@@ -327,13 +328,6 @@ class SpecialRangeInfo extends React.Component {
             }
         }
         return isPrev || nextFlag;
-    }
-    isFilterShopType = () => {
-        const promotionType = this.props.type;
-        // 授权店铺过滤活动类型  
-        // 线上餐厅送礼 23
-        let filterType = ['23'];
-        return filterType.includes(promotionType)
     }
     // 免费领取的参与范围
     renderFreeGetJoinRange() {

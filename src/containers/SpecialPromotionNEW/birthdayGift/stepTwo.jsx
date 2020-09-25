@@ -14,7 +14,7 @@ import { Form, Icon, Select, Radio, message } from 'antd';
 import { isEqual, uniq } from 'lodash';
 import Immutable from 'immutable'
 import { axios } from '@hualala/platform-base';
-import { axiosData } from '../../../helpers/util';
+import { axiosData, isFilterShopType } from '../../../helpers/util';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import {
     saleCenterSetSpecialBasicInfoAC,
@@ -93,7 +93,11 @@ class StepTwo extends React.Component {
             pageSize: 1000,
         });
         if (this.props.type == '52') {
-            this.props.getShopSchemaInfo({ groupID: this.props.user.accountInfo.groupID, productCode: 'HLL_CRM_License' });
+            let parm = {}
+            if(isFilterShopType(this.props.type)){
+                parm = {productCode: 'HLL_CRM_License'}
+            }
+            this.props.getShopSchemaInfo({ groupID: this.props.user.accountInfo.groupID, ...parm });
             // 过滤适用卡类列表
             this.props.getEventExcludeCardTypes({
                 groupID: this.props.user.accountInfo.groupID,
@@ -282,7 +286,7 @@ class StepTwo extends React.Component {
         }
         
         // 授权门店过滤
-        if(this.isFilterShopType()){
+        if(isFilterShopType(this.props.type)){
             let dynamicShopSchema = Object.assign({}, this.props.shopSchemaInfo.toJS());
             let {shopSchema = {}} = dynamicShopSchema
             let {shops = []} = shopSchema
@@ -503,13 +507,6 @@ class StepTwo extends React.Component {
             canUseShopIDs: shopIDs.length === 0 && cardLevelIDList.length === 0 ? canUseShopIDsAll : shopIDs, // 没有选卡类所有店铺都可选
         })
     }
-    isFilterShopType = () => {
-        const promotionType = this.props.type;
-        // 授权店铺过滤活动类型  
-        // 开卡赠送  52
-        let filterType = ['52'];
-        return filterType.includes(promotionType)
-    }
     filterAvailableShops() {
         let dynamicShopSchema = Object.assign({}, this.state.shopSchema);
         if (dynamicShopSchema.shops.length === 0) {
@@ -581,7 +578,7 @@ class StepTwo extends React.Component {
                         shopName: '网上自助',
                         disabled: excludeShopIDList.includes(-1)
                     }]}
-                    filterParm={this.isFilterShopType()?{productCode: 'HLL_CRM_License'}:{}}
+                    filterParm={isFilterShopType(this.props.type) ? {productCode: 'HLL_CRM_License'} : {}}
                 />
                 { isShowShopTip && !selectedShopIdStrings.length  ?
                 <div style={{color: 'red'}}>店铺不能为空</div>

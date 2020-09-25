@@ -5,6 +5,7 @@ import _ from 'lodash';
 import BaseForm from '../../../components/common/BaseForm';
 import styles from './CrmCardInfoAddCardDetail.less';
 import { FORMITEM_CONFIG } from './_QuatoCardFormConfig';
+import { isFilterShopType } from 'helpers/util';
 import {
     FetchQuotaCardShopByBatchNo,
     CrmBatchSellGiftCards,
@@ -65,7 +66,11 @@ class QuotaCardBatchSold extends React.Component {
                     const { data, FetchQuotaCardShopByBatchNoAC, getQuotaCardCanSellList } = this.props;
                     const { batchSoldFormData } = this.state;
                     if (value) {
-                        FetchQuotaCardShopByBatchNoAC({ giftItemID: data.giftItemID, batchNO: value, productCode: 'HLL_CRM_License' });
+                        let parm = {}
+                        if(isFilterShopType()){
+                            parm = {productCode: 'HLL_CRM_License'}
+                        }
+                        FetchQuotaCardShopByBatchNoAC({ giftItemID: data.giftItemID, batchNO: value, ...parm });
                         // 售卖号段
                         getQuotaCardCanSellList({ giftItemID: data.giftItemID, batchNo: value });
 
