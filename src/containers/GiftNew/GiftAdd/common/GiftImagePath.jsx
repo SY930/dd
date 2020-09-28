@@ -75,7 +75,10 @@ class GiftImagePath extends Component {
                             </Upload>
                         </div>
                         <div>
-                            <p className="ant-upload-hint">尺寸建议200*200</p>
+                            {
+                                !this.props.hasSize && 
+                                    <p className="ant-upload-hint">尺寸建议200*200</p>
+                            }
                             <p className="ant-upload-hint">点击上传图片，图片格式为jpg、png</p>
                             <p className="ant-upload-hint">{this.props.hint}</p>
                         </div>
