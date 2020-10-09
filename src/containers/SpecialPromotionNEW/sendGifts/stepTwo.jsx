@@ -77,7 +77,7 @@ class Two extends React.Component {
                 cardGroupName: groupMembers.groupMembersName,
                 cardCount: groupMembers.totalMembers,
                 cardGroupRemark: groupMembers.groupMembersRemark,
-                cardLevelRangeType: this.state.cardLevelRangeType || '0',
+                cardLevelRangeType:  this.state.cardLevelRangeType || (this.state.groupMembersID == '0' ? '0' : '2'),
             }
             if (smsGate == '1' || smsGate == '3' || smsGate == '4') {
                 if (this.state.settleUnitID > 0 || this.state.accountNo > 0) {
@@ -258,6 +258,8 @@ class Two extends React.Component {
         const isDisableGroupSelect = typeof groupMembersID === 'string' && groupMembersID.includes &&
           groupMembersID.includes('RFM会员群体') &&
           groupMembersID.includes('--')
+
+          console.log('>>id', this.state.groupMembersID)
         return (
             <Form>
                 <FormItem
