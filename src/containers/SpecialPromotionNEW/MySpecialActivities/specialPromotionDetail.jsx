@@ -498,7 +498,7 @@ class SpecialPromotionDetail extends React.Component {
                 </div>
             )
         }
-        if(way == 53 ) {//群发礼品 
+        if(way == 52) {//
 
             const list = records.filter(v => v.presentType === 1)
             return (
@@ -517,7 +517,7 @@ class SpecialPromotionDetail extends React.Component {
                 </div>
             )
         }
-        if(way == 52) {// 开卡赠送
+        if(way == 53) {//群发礼品
 
             const list = records.filter(v => v.presentType === 1)
             return (
