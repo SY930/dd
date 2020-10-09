@@ -1165,6 +1165,7 @@ class TrdTemplate extends React.Component {
                         wrapperHeight={240}
                         limit={1024}
                         hint="图片建议尺寸：300像素 x 300像素，大小不超过1MB"
+                        hasSize={true}
                         value={logoUrl}
                         onChange={this.handleLogoUrlChange}
                     />
