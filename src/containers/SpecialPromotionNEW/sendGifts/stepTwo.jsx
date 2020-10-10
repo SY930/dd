@@ -70,6 +70,9 @@ class Two extends React.Component {
             }
         });
         if (flag) {
+            console.log('>>idsss', this.state.groupMembersID)
+            console.log('>>type', this.state.cardLevelRangeType)
+            console.log('>>bool', this.state.cardLevelRangeType || (this.state.groupMembersID == '0' ? '0' : '2').state.cardLevelRangeType)
             const opts = {
                 smsTemplate: smsGate == '1' || smsGate == '3' || smsGate == '4' ? this.state.message : '',
                 isVipBirthdayMonth: this.state.isVipBirthdayMonth,
@@ -79,6 +82,8 @@ class Two extends React.Component {
                 cardGroupRemark: groupMembers.groupMembersRemark,
                 cardLevelRangeType:  this.state.cardLevelRangeType || (this.state.groupMembersID == '0' ? '0' : '2'),
             }
+            console.log('>>opts', opts)
+
             if (smsGate == '1' || smsGate == '3' || smsGate == '4') {
                 if (this.state.settleUnitID > 0 || this.state.accountNo > 0) {
                     opts.settleUnitID = this.state.settleUnitID;
