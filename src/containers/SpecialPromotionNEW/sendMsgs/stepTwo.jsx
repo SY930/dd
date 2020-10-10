@@ -120,7 +120,7 @@ class StepTwo extends React.Component {
                 cardGroupName: groupMembers.groupMembersName,
                 cardCount: groupMembers.totalMembers,
                 cardGroupRemark: groupMembers.groupMembersRemark,
-                cardLevelRangeType:  this.state.cardLevelRangeType || (this.state.groupMembersID == '0' ? '0' : '2'),
+                cardLevelRangeType:  (this.state.cardLevelRangeType | 0) || (this.state.groupMembersID == '0' ? '0' : '2'),
                 settleUnitID: this.state.settleUnitID || '0',
                 accountNo: this.state.accountNo,
             })

@@ -70,9 +70,6 @@ class Two extends React.Component {
             }
         });
         if (flag) {
-            console.log('>>idsss', this.state.groupMembersID)
-            console.log('>>type', this.state.cardLevelRangeType)
-            console.log('>>bool', this.state.cardLevelRangeType || (this.state.groupMembersID == '0' ? '0' : '2').state.cardLevelRangeType)
             const opts = {
                 smsTemplate: smsGate == '1' || smsGate == '3' || smsGate == '4' ? this.state.message : '',
                 isVipBirthdayMonth: this.state.isVipBirthdayMonth,
@@ -80,9 +77,8 @@ class Two extends React.Component {
                 cardGroupName: groupMembers.groupMembersName,
                 cardCount: groupMembers.totalMembers,
                 cardGroupRemark: groupMembers.groupMembersRemark,
-                cardLevelRangeType:  this.state.cardLevelRangeType || (this.state.groupMembersID == '0' ? '0' : '2'),
+                cardLevelRangeType:  (this.state.cardLevelRangeType | 0) || (this.state.groupMembersID == '0' ? '0' : '2'),
             }
-            console.log('>>opts', opts)
 
             if (smsGate == '1' || smsGate == '3' || smsGate == '4') {
                 if (this.state.settleUnitID > 0 || this.state.accountNo > 0) {
@@ -264,7 +260,6 @@ class Two extends React.Component {
           groupMembersID.includes('RFM会员群体') &&
           groupMembersID.includes('--')
 
-          console.log('>>id', this.state.groupMembersID)
         return (
             <Form>
                 <FormItem
