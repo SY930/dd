@@ -117,7 +117,7 @@ const GiftCfg = {
             value: '22',
             color: '#65D8E6',
             category: 'primary',
-            tags: ['微信'],
+            tags: ['微信', '小程序'],
         },
     ],
     giftTypeName: [

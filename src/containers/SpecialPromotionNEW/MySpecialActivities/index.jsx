@@ -894,18 +894,6 @@ class MySpecialActivities extends React.Component {
                         >
                         {this.props.intl.formatMessage(STRING_SPE.du3bnfobe3346)}
                         </a>
-                        {
-                            isDecorationAvailable(record) && (
-                                <a
-                                    href="#"
-                                    onClick={() => {
-                                        this.handleDecorationStart(record)
-                                    }}
-                                >
-                                {this.props.intl.formatMessage(STRING_SPE.dk46ld30bk34245)}
-                                </a>
-                            )
-                        }
 
                         <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY}>
                             <a
@@ -922,8 +910,24 @@ class MySpecialActivities extends React.Component {
                                     this.checkDetailInfo(text, record, index);
                                 }}
                             >
+                                {/* 活动跟踪 */}
                             {this.props.intl.formatMessage(STRING_SPE.d5g3d7ahfq35134)}</a>
                         </Authority>
+
+                        {
+                            isDecorationAvailable(record) && (
+                                <a
+                                    href="#"
+                                    onClick={() => {
+                                        this.handleDecorationStart(record)
+                                    }}
+                                >
+                                    {/* 装修 */}
+                                {this.props.intl.formatMessage(STRING_SPE.dk46ld30bk34245)}
+                                </a>
+                            )
+                        }
+
                         {
                             isCanCopyUrl(record) && (
                                 <a
@@ -978,31 +982,31 @@ class MySpecialActivities extends React.Component {
                 width: 200,
                 render: text => <span title={text}>{text}</span>,
             },
-            {
-                title: `${this.props.intl.formatMessage(STRING_SPE.d5672b44908541235)}`,
-                className: 'TableTxtCenter',
-                dataIndex: 'status',
-                key: 'msgStatus',
-                width: 150,
-                render: (text, record) => {
-                    if (record.eventWay === 50 || record.eventWay === 51 || record.eventWay === 52 || record.eventWay === 53
-                        || record.eventWay === 61 || record.eventWay === 62 || record.eventWay === 63|| record.eventWay === 70) {
-                        let _SmsSendStatus = '';
-                        SmsSendStatus.map((status) => {
-                            if (status.value == record.status) {
-                                _SmsSendStatus = status.label;
-                            }
-                        });
-                        let _SmsSettleStatus = '';
-                        SmsSettleStatus.map((status) => {
-                            if (status.value == record.settleStatus) {
-                                _SmsSettleStatus = status.label;
-                            }
-                        });
-                        return `${_SmsSendStatus}/${_SmsSettleStatus}`;
-                    }
-                },
-            },
+            // {
+            //     title: `${this.props.intl.formatMessage(STRING_SPE.d5672b44908541235)}`,
+            //     className: 'TableTxtCenter',
+            //     dataIndex: 'status',
+            //     key: 'msgStatus',
+            //     width: 150,
+            //     render: (text, record) => {
+            //         if (record.eventWay === 50 || record.eventWay === 51 || record.eventWay === 52 || record.eventWay === 53
+            //             || record.eventWay === 61 || record.eventWay === 62 || record.eventWay === 63|| record.eventWay === 70) {
+            //             let _SmsSendStatus = '';
+            //             SmsSendStatus.map((status) => {
+            //                 if (status.value == record.status) {
+            //                     _SmsSendStatus = status.label;
+            //                 }
+            //             });
+            //             let _SmsSettleStatus = '';
+            //             SmsSettleStatus.map((status) => {
+            //                 if (status.value == record.settleStatus) {
+            //                     _SmsSettleStatus = status.label;
+            //                 }
+            //             });
+            //             return `${_SmsSendStatus}/${_SmsSettleStatus}`;
+            //         }
+            //     },
+            // },
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.dd5aa016c5f42125)}`,
                 className: 'TableTxtCenter',
