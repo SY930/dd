@@ -193,8 +193,9 @@ class StepTwo extends React.Component {
                 className={styles.FormItemStyle}
             >
                 <Select {..._brandList}
-                        size="default"
-                        getPopupContainer={(node) => node.parentNode}
+                    size="default"
+                    placeholder='请选择品牌，不选默认全部品牌可用'
+                    getPopupContainer={(node) => node.parentNode}
                 >
                     {options}
                 </Select>
