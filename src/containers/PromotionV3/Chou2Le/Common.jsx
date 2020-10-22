@@ -116,6 +116,7 @@ const formItems2 = {
     brandList: {
         type: 'combo',
         label: '品牌',
+        placeholder: '请选择品牌，不选默认全部品牌可用',
         multiple: true,
         options: [],
         defaultValue: [],

@@ -352,6 +352,7 @@ class PromotionScopeInfo extends React.Component {
             >
                 <Select {..._brandList}
                         size="default"
+                        placeholder='请选择品牌，不选默认全部品牌可用'
                         getPopupContainer={(node) => node.parentNode}
                 >
                     {options}
