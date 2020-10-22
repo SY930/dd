@@ -335,7 +335,7 @@ class CardLevel extends React.Component {
                             this.state.cardLevelRangeType == '2' ?
                             <TreeSelect
                                 style={{ width: '100%' }}
-                                dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                                dropdownStyle={{ maxHeight: 200, overflow: 'auto' }}
                                 placeholder={`${this.props.intl.formatMessage(STRING_SPE.d34id95hnj7281)}${this.props.catOrCard == 'card' ? `${this.props.intl.formatMessage(STRING_SPE.d34id95hnj8241)}` : `${this.props.intl.formatMessage(STRING_SPE.d170093144c11061)}`}`}
                                 allowClear={true}
                                 multiple={true}
