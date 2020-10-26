@@ -614,6 +614,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                                         multiple={true}
                                         showSearch={true}
                                         value={cardScopeIDs}
+                                        dropdownClassName={`${styles.dropdown}`}
                                         className={`${styles.linkSelectorRight} advancedDetailClassJs`}
                                         getPopupContainer={(node) => node.parentNode}
                                         onChange={(val) => {

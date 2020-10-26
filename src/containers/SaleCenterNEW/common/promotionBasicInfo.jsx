@@ -1143,6 +1143,7 @@ class PromotionBasicInfo extends React.Component {
                         getPopupContainer={(node) => node.parentNode}
                         value={this.state.tags}
                         size="default"
+                        dropdownClassName={`${styles.dropdown}`}
                         placeholder={SALE_LABEL.k5m678qr}
                     >
                         {this.rendertags()}
