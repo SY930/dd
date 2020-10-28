@@ -410,6 +410,7 @@ class CardLevelForWX extends React.Component {
                                 size={'default'}
                                 multiple={true}
                                 showSearch={true}
+                                dropdownClassName={`${styles.dropdown}`}
                                 notFoundContent={`${this.props.intl.formatMessage(STRING_SPE.d2c8a4hdjl248)}`}
                                 value={this.state.cardLevelIDList}
                                 className={`${styles.linkSelectorRight} advancedDetailClassJs`}

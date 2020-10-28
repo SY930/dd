@@ -2147,3 +2147,13 @@
     cursor: not-allowed;
     z-index: 999;
 }
+
+.dropdown{
+    max-height: 200px;
+    overflow: auto;
+    :global{
+        .ant-select-dropdown-menu{
+            max-height: 200px;
+        }
+    }
+}
