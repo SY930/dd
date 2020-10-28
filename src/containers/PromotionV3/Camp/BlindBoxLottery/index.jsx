@@ -148,6 +148,9 @@ class Lottery extends Component {
                                                             } else if (v.number > 100) {
                                                                 return cb('奖品中奖概率之和应为0.01~100%');
                                                             }
+                                                            if (this.count > 100) {
+                                                                return cb('奖品中奖概率之和应为0.01~100%');
+                                                            }
                                                             cb();
                                                         },
                                                     }],
