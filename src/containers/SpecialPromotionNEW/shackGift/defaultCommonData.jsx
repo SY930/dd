@@ -70,6 +70,11 @@ export const getDefaultGiftData = (typeValue = 0, typePropertyName = 'sendType')
         validateStatus: 'success',
         msg: null,
     },
+    giftConfImagePath: {
+        value: '',
+        validateStatus: 'success',
+        msg: null,
+    },
     //赠送积分
     givePoints: {
         value: {},
