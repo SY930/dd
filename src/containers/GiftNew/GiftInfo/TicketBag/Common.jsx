@@ -94,9 +94,15 @@ const priceLabel = (<span>
         记录实收金额
         <Tip title="记录实收金额：仅用于报表作为实收金额核算" style={tipMargin} />
     </span>);
-const wayLabel = (<span>
+const wayLabel = (
+    <span>
         发放类型
-        <Tip title="将按周期发送添加的礼品" />
+        <Tip title={(
+            <div>
+                <p>券包首次发放是购买/储值/参加活动后即时发；</p>
+                <p>后续发放将按设定的周期和时间发送，后续的发送次数为设置的发送次数-1；</p>
+            </div>
+        )} />
     </span>);
 const revokeLabel = (<span>
     系统过期自动退
