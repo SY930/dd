@@ -87,7 +87,7 @@ class QuatoCardDetailModal extends Component {
                         <Row style={{ margin: '0 10px' }}>
                             <Col span={4}>
                                 <div className="gift-image" style={{ backgroundImage: `url("/asserts/img/${value}.jpg")` }}>
-                                    <span><em>{data.giftValue}</em>元</span>
+                                    <span><em>{data.giftDenomination}</em>元</span>
                                     <p className={styles.ellipsisBlock}>{data.giftName}</p>
                                 </div>
                             </Col>
