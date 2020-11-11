@@ -2064,16 +2064,6 @@ class GiftAddModalStep extends React.PureComponent {
                     });
                 }
             }
-            // 
-            if(values.transferType == '0' || values.transferType == undefined) {
-                secondKeysToDisplay[0].keys = secondKeysToDisplay[0].keys.filter((key)=>{
-                    return key !== 'transferTitle' &&　key !== 'transferImage';
-                });
-            } else {
-                secondKeysToDisplay[0].keys = secondKeysToDisplay[0].keys.filter((key)=>{
-                    return key !== '';
-                });
-            }
 
             // 根据券与券公用来调整是否显示选券表单 （动态增加）
             if(values.hasOwnProperty('giftShareType') && values.giftShareType == '2') {
@@ -2102,6 +2092,19 @@ class GiftAddModalStep extends React.PureComponent {
                     }
                       
                 }
+            }
+        }
+
+        if(describe == '代金券' || describe == '菜品优惠券' || describe == '菜品兑换券' || describe == '折扣券' || describe == '配送券' || describe == '买赠券') {
+            // 
+            if(values.transferType == '0' || values.transferType == undefined) {
+                secondKeysToDisplay[0].keys = secondKeysToDisplay[0].keys.filter((key)=>{
+                    return key !== 'transferTitle' &&　key !== 'transferImage';
+                });
+            } else {
+                secondKeysToDisplay[0].keys = secondKeysToDisplay[0].keys.filter((key)=>{
+                    return key !== '';
+                });
             }
         }
 
