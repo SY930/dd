@@ -47,7 +47,7 @@ class SettingInfo extends React.Component {
                 render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
             },
             {
-                title: '现金售价（元）',
+                title: '会员售价（元）',
                 dataIndex: 'sellPrice',
                 key: 'sellPrice',
                 width: 120,
