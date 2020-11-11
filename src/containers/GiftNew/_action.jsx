@@ -529,13 +529,16 @@ export const queryWechatMpInfo = (opts) => {
         dispatch({
             type: GIFT_NEW_QUERY_WECHAT_MPINFO_START,
         });
-        return fetchData('queryWechatMpInfo', {...opts}, null, { path: 'mpList', throttle: false })
-            .then((mpList) => {
+
+        return axiosData('/mpInfo/getAppsAndMps', { ...opts }, null, {
+            path: 'mpInfoResDataList',
+        }, 'HTTP_SERVICE_URL_WECHAT')
+            .then((data) => {
                 dispatch({
                     type: GIFT_NEW_QUERY_WECHAT_MPINFO_SUCCESS,
-                    payload: mpList || [],
+                    payload: data || [],
                 });
-                return Promise.resolve(mpList)
+                return Promise.resolve(data)
             }, err => {
                 dispatch({
                     type: GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL,
