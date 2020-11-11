@@ -826,7 +826,7 @@ class TrdTemplate extends React.Component {
 
         let mpTitle = (
             <span>
-                <span>绑定公众号</span>
+                <span>绑定公众号/小程序</span>
                 <Tooltip title={(
                     <p>用于微信发券并获取用户信息后，给用户发哗啦啦的券，否则用户只能在卡包看到券，无法在公众号/小程序的个人中心看到券</p>
                 )}>
@@ -869,7 +869,7 @@ class TrdTemplate extends React.Component {
                     >
                         {
                             mpList.map(mp => {
-                                return <Option key={mp.mpID} value={mp.appID}>{mp.mpName}</Option>
+                                return <Option key={mp.appID} value={mp.appID}>{mp.mpName}</Option>
                             })
                         }
                     </Select>
