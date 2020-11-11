@@ -236,6 +236,7 @@ export default class PrizeContent extends React.Component {
                                             height={110}
                                             cropperRatio={200/200}
                                             limit={2048}
+                                            allowedType={['image/png', 'image/jpeg']}
                                             value={info.giftConfImagePath.value}
                                             uploadTest='上传图片'
                                             onChange={value => handleGiftImgChange(value, index)}
