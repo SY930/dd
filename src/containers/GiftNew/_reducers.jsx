@@ -26,6 +26,7 @@ import {
     GIFT_NEW_QUOTA_CARD_CANSELL_LIST,
     GIFT_NEW_QUERY_WECHAT_MPINFO_START,
     GIFT_NEW_QUERY_WECHAT_MPINFO_SUCCESS,
+    GIFT_NEW_QUERY_WECHAT_MPAPPINFO_SUCCESS,
     GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL,
     GIFT_NEW_FETCH_SEND_TOTAL_OK,
     GIFT_NEW_FETCH_USED_TOTAL_OK,
@@ -88,6 +89,7 @@ const $initialState = Immutable.fromJS({
     batchNoInfo: [],
     quotaCardCanSellInfo: [],
     mpList: [],
+    mpAndAppList: [],
     mpListLoading: false,
 });
 
@@ -213,7 +215,13 @@ export function giftInfoNew($$state = $initialState, action) {
         case GIFT_NEW_QUERY_WECHAT_MPINFO_START:
             return $$state.set('mpListLoading', true);
         case GIFT_NEW_QUERY_WECHAT_MPINFO_SUCCESS:
-            return $$state.set('mpList', Immutable.fromJS(action.payload)).set('mpListLoading', false);
+            return $$state
+                .set('mpList', Immutable.fromJS(action.payload.mpList))
+                .set('mpListLoading', false);
+        case GIFT_NEW_QUERY_WECHAT_MPAPPINFO_SUCCESS:
+            return $$state
+                .set('mpAndAppList', Immutable.fromJS(action.payload.mpAndAppList))
+                .set('mpListLoading', false);
         case GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL:
             return $$state.set('mpListLoading', false);
         default:
