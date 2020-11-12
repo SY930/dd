@@ -32,6 +32,7 @@ export const GIFT_NEW_QUOTA_CARD_BATCHNO = 'gift new :: get quota card batchNo';
 export const GIFT_NEW_QUOTA_CARD_CANSELL_LIST = 'gift new :: get quota card cansell list';
 export const GIFT_NEW_QUERY_WECHAT_MPINFO_START = 'gift new :: query wechat mpinfo start';
 export const GIFT_NEW_QUERY_WECHAT_MPINFO_SUCCESS = 'gift new :: query wechat mpinfo success';
+export const GIFT_NEW_QUERY_WECHAT_MPAPPINFO_SUCCESS = 'gift new :: query wechat mpappinfo success';
 export const GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL = 'gift new :: query wechat mpinfo fail';
 export const GIFT_NEW_START_CREATE_GIFT = 'gift new :: 开始新建礼品模板';
 export const GIFT_NEW_START_EDIT_GIFT = 'gift new :: 开始编辑礼品模板';
@@ -530,13 +531,43 @@ export const queryWechatMpInfo = (opts) => {
             type: GIFT_NEW_QUERY_WECHAT_MPINFO_START,
         });
 
+        return fetchData('queryWechatMpInfo', {...opts}, null, { path: 'mpList', throttle: false })
+            .then((mpList) => {
+                dispatch({
+                    type: GIFT_NEW_QUERY_WECHAT_MPINFO_SUCCESS,
+                    payload: {
+                        mpList: mpList || []
+                    },
+                });
+                return Promise.resolve(mpList)
+            }, err => {
+                dispatch({
+                    type: GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL,
+                });
+                console.log(err)
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
+};
+
+// 公众号/小程序
+export const queryWechatMpAndAppInfo = (opts) => {
+    return (dispatch) => {
+        dispatch({
+            type: GIFT_NEW_QUERY_WECHAT_MPINFO_START,
+        });
+
         return axiosData('/mpInfo/getAppsAndMps', { ...opts }, null, {
             path: 'mpInfoResDataList',
         }, 'HTTP_SERVICE_URL_WECHAT')
             .then((data) => {
                 dispatch({
-                    type: GIFT_NEW_QUERY_WECHAT_MPINFO_SUCCESS,
-                    payload: data || [],
+                    type: GIFT_NEW_QUERY_WECHAT_MPAPPINFO_SUCCESS,
+                    payload: {
+                        mpAndAppList: data || [],
+                    } 
                 });
                 return Promise.resolve(data)
             }, err => {
