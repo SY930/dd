@@ -1,12 +1,14 @@
 import style from './LotteryThirdStep.less'
-import { DatePicker, Radio, Form, Select, Input, Icon, Checkbox } from 'antd';
+import { DatePicker, Radio, Form, Select, Input, Icon, Checkbox, Row, Col } from 'antd';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
+import CropperUploader from 'components/common/CropperUploader'
 import ExpandTree from '../common/ExpandTree';
 import _ from 'lodash';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
 const RangePicker = DatePicker.RangePicker;
 import {
     SALE_CENTER_GIFT_TYPE,
@@ -87,7 +89,7 @@ export default class PrizeContent extends React.Component {
             return (
                 <div>
                     <FormItem
-                        wrapperCol={{ span: 12 }}
+                        // wrapperCol={{ span: 12 }}
                         className={style.FormItemSecondStyle}
                         validateStatus={info.giveCoupon.value.giftValidDays.validateStatus}
                         help={info.giveCoupon.value.giftValidDays.msg}
@@ -104,7 +106,7 @@ export default class PrizeContent extends React.Component {
                         />
                     </FormItem>
                     <FormItem
-                        wrapperCol={{ span: 12 }}
+                        // wrapperCol={{ span: 12 }}
                         className={style.FormItemSecondStyle}
                         validateStatus={info.giveCoupon.value.giftEffectiveTime.validateStatus}
                         help={info.giveCoupon.value.giftEffectiveTime.msg}
@@ -200,6 +202,7 @@ export default class PrizeContent extends React.Component {
                 handleGiftCountChange,
                 handleValidateTypeChange,
                 handleGiftOddsChange,
+                handleGiftImgChange,
                 disArr,
                 handleGivePointsValueChange,
                 handleGiveRedPacketValueChange,
@@ -219,6 +222,31 @@ export default class PrizeContent extends React.Component {
                 <div className={style.formDiv}>
                     <Form className={style.addGrade} key={index}>
                         <div className={style.CategoryBody}>
+                            {/* 奖品图片 giftConfImagePath */}
+                            <FormItem
+                                label="奖品图片"
+                                labelCol={{ span: 3 }}
+                                wrapperCol={{ span: 17 }}
+                            >
+                                <Row>
+                                    <Col span={6} >
+                                        <CropperUploader 
+                                            className={style.uploadCom}
+                                            width={120}
+                                            height={110}
+                                            cropperRatio={200/200}
+                                            limit={2048}
+                                            allowedType={['image/png', 'image/jpeg']}
+                                            value={info.giftConfImagePath.value}
+                                            uploadTest='上传图片'
+                                            onChange={value => handleGiftImgChange(value, index)}
+                                        />
+                                    </Col>
+                                    <Col span={18} className={style.grayFontPic} >
+                                        <p style={{ position: 'relative', top: 20, left: 70,}}>图片建议尺寸200*200像素<br/>支持格式jpg、png，大小不超过2M</p>
+                                    </Col>
+                                </Row>
+                            </FormItem>
                             <div className={style.paleRed}>
                                 {/* 中奖比率 */}
                                 <FormItem
@@ -241,7 +269,6 @@ export default class PrizeContent extends React.Component {
                                     />
                                 </FormItem>
                             </div>
-
                             {/* 赠送积分 */}
                             <FormItem
                                 style={{ padding: 0 }}
@@ -316,15 +343,15 @@ export default class PrizeContent extends React.Component {
                                     null :
                                     <div>
                                         <RadioGroup onChange={this.onTypeChange} value={typeValue} >
-                                            <Radio value={'0'}>独立优惠券</Radio>
-                                            <Radio value={'1'}>券包</Radio>
+                                            <RadioButton  value={'0'}>独立优惠券</RadioButton>
+                                            <RadioButton  value={'1'}>券包</RadioButton>
                                         </RadioGroup>
                                         {typeValue === '1' ?
                                             <TicketBag groupID={groupID} bag={bag} onChange={this.onBagChange} /> :
-                                            <div className={style.paleRed}>
+                                            <div className={style.giftBox}>
                                                 {/* 优惠券名称 */}
                                                 <FormItem
-                                                    wrapperCol={{ span: 12 }}
+                                                    // wrapperCol={{ span: 12 }}
                                                     className={style.FormItemSecondStyle}
                                                     validateStatus={info.giveCoupon.value.giftInfo.validateStatus}
                                                     help={info.giveCoupon.value.giftInfo.msg}
@@ -352,7 +379,7 @@ export default class PrizeContent extends React.Component {
                                                         />
                                                         <Icon
                                                             type="down"
-                                                            style={{ position: 'absolute', top: 10, left: 252 }}
+                                                            style={{ position: 'absolute', top: 10, left: 280 }}
                                                             className="input_click"
                                                             onClick={() => { toggleFun(index); }}
                                                         />
@@ -360,7 +387,7 @@ export default class PrizeContent extends React.Component {
                                                 </FormItem>
                                                 {/* 礼品个数 */}
                                                 <FormItem
-                                                    wrapperCol={{ span: 12 }}
+                                                    // wrapperCol={{ span: 12 }}
                                                     className={style.FormItemSecondStyle}
                                                     validateStatus={info.giveCoupon.value.giftCount.validateStatus}
                                                     help={info.giveCoupon.value.giftCount.msg}
@@ -377,7 +404,7 @@ export default class PrizeContent extends React.Component {
                                                     />
                                                 </FormItem>
                                                 <FormItem
-                                                    wrapperCol={{ span: 12 }}
+                                                    // wrapperCol={{ span: 12 }}
                                                     className={style.FormItemSecondStyle}
                                                 >
                                                     <div className={style.labelSecondDiv}>
