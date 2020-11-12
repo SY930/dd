@@ -33,6 +33,7 @@ import {
     MALL_COUPON_APPLY_SETTING_FORM_ITEMS,   // 高级设置项
  } from './_formItemConfig';
 
+import PhotoFrame from "./common/PhotoFrame"
 import InputTreeForGift from './InputTreeForGift';
 import GiftPromotion from './GiftPromotion';
 import GiftCfg from '../../../constants/Gift';
@@ -790,6 +791,14 @@ class GiftAddModalStep extends React.PureComponent {
                 { giftType: value },
             );                
             params = this.formatFormData(params);
+            // 券转赠  图片信息
+            if(formValues.transferType){
+                let {transferTitle, transferImage = {}} = formValues
+                let {transferImagePath = '', transferThumbnailImagePath = ''} = transferImage
+                params = {...params, transferInfo: JSON.stringify({transferTitle, transferImagePath, transferThumbnailImagePath}) }
+                delete params.transferImage;
+            }
+
             let shopNames = '',
                 shopIDs = '',
                 callServer;
@@ -1425,6 +1434,34 @@ class GiftAddModalStep extends React.PureComponent {
             </div>
         )
     }
+    renderShareImgSettings(decorator) {
+        const { gift: { data } } = this.props;
+        let {values} = this.state
+        let {transferImage = {}} = values
+        let {transferImagePath = '', transferThumbnailImagePath = ''} = transferImage
+        return (
+            <Row>
+                <Col>
+                    {decorator({
+                        rules: [{ required: false, message: ' ' }]
+                    })(
+                        <PhotoFrame
+                            restaurantShareImagePath={transferThumbnailImagePath}
+                            shareImagePath={transferImagePath}
+                            onChange={this.onRestImg}
+                            type={''}
+                        />
+                    )}
+                </Col>
+            </Row>
+        )
+    }
+    // onRestImg = ({ key, value }) => {
+    //     const { gift: { data } } = this.props;
+    //     let {values} = this.props
+    //     let {transferImage = {}} = data
+      
+    // }
     renderCouponPeriodSettings(decorator) {
         const { gift: { data } } = this.props;
         return (
@@ -1983,6 +2020,15 @@ class GiftAddModalStep extends React.PureComponent {
                 })
             }
         }
+        // 券转赠 分享信息 数据转换
+        let {transferType, transferInfo = '{}'} = data
+        transferInfo = JSON.parse(transferInfo)
+        let {transferTitle = '', transferThumbnailImagePath = '', transferImagePath = ''} = transferInfo
+        if(transferType){
+            data.transferTitle = transferTitle
+            data.transferImage = {transferImagePath, transferThumbnailImagePath}
+        }
+
         return data;
     }
 
@@ -2046,6 +2092,19 @@ class GiftAddModalStep extends React.PureComponent {
                     }
                       
                 }
+            }
+        }
+
+        if(describe == '代金券' || describe == '菜品优惠券' || describe == '菜品兑换券' || describe == '折扣券' || describe == '配送券' || describe == '买赠券') {
+            // 
+            if(values.transferType == '0' || values.transferType == undefined) {
+                secondKeysToDisplay[0].keys = secondKeysToDisplay[0].keys.filter((key)=>{
+                    return key !== 'transferTitle' &&　key !== 'transferImage';
+                });
+            } else {
+                secondKeysToDisplay[0].keys = secondKeysToDisplay[0].keys.filter((key)=>{
+                    return key !== '';
+                });
             }
         }
 
@@ -2682,6 +2741,19 @@ class GiftAddModalStep extends React.PureComponent {
                 defaultValue: [{periodStart: '000000', periodEnd: '235900'}],
                 render: decorator => this.renderCouponPeriodSettings(decorator),
             },
+            // 转赠分享
+            transferTitle: {
+                label: '转赠文案',
+                type: 'text',
+                defaultValue: '好友送你一张优惠券，点击领取！',
+            },
+            transferImage: {
+                label: '分享图',
+                type: 'custom',
+                defaultValue: {transferImagePath: '', transferThumbnailImagePath: ''},
+                render: decorator => this.renderShareImgSettings(decorator),
+            },
+
             isNeedCustomerInfo: {
                 //label: `券核销时是否校验会员注册信息`,
                 type: 'custom',
