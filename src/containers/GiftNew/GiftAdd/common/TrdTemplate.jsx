@@ -824,6 +824,16 @@ class TrdTemplate extends React.Component {
         const styleColor = AVAILABLE_WECHAT_COLORS.find(item => item.value === color).styleValue;
         const isNoticeLengthAllowed = (notice || '').length > 0 && (notice || '').length <= 16
 
+        let mpTitle = (
+            <span>
+                <span>绑定公众号/小程序</span>
+                <Tooltip title={(
+                    <p>用于微信发券并获取用户信息后，给用户发哗啦啦的券，否则用户只能在卡包看到券，无法在公众号/小程序的个人中心看到券</p>
+                )}>
+                    <Icon style={{ marginLeft: 5, marginRight: 5}} type="question-circle" />
+                </Tooltip>
+            </span>
+        )
         return (
             <div>
                 <FormItem
@@ -846,7 +856,7 @@ class TrdTemplate extends React.Component {
                     </Select>
                 </FormItem>
                 <FormItem
-                    label='绑定公众号'
+                    label={mpTitle}
                     {...itemStyle}
                     validateStatus={mpID ? 'success' : 'error'}
                     help={mpID ? null : '请选择公众号'}
@@ -859,7 +869,7 @@ class TrdTemplate extends React.Component {
                     >
                         {
                             mpList.map(mp => {
-                                return <Option key={mp.mpID} value={mp.mpID}>{mp.mpName}</Option>
+                                return <Option key={mp.appID} value={mp.appID}>{mp.mpName}</Option>
                             })
                         }
                     </Select>
