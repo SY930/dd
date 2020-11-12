@@ -31,6 +31,7 @@ import {
 } from '../../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import {
     queryWechatMpInfo,
+    queryWechatMpAndAppInfo,
 } from '../../_action';
 import PriceInput from '../../../SaleCenterNEW/common/PriceInput'
 import styles from '../Crm.less';
@@ -154,6 +155,7 @@ class TrdTemplate extends React.Component {
         this.state = {
             defaultChecked: false,
             mpList: [], // 公众号
+            mpAndAppList: [], // 公众号/小程序
             trdTemplateInfoList: [], // 第三方券模版
             channelIDStatus: true,
             mpIDStatus: true,
@@ -232,14 +234,21 @@ class TrdTemplate extends React.Component {
         // 公众号
         const mpList = this.props.mpList.toJS()
         mpList.length === 0 ? this.props.queryWechatMpInfo() : null
-        this.setState({ mpList: mpList || [] })
 
+        this.props.queryWechatMpAndAppInfo()
+        const mpAndAppList = this.props.mpAndAppList ? this.props.mpAndAppList : []
+
+        this.setState({ mpList: mpList || [], mpAndAppList: mpAndAppList || [] })
     }
 
     componentWillReceiveProps(nextProps) {
         if (this.props.mpList !== nextProps.mpList) {
             const mpList = nextProps.mpList.toJS()
             this.setState({ mpList: mpList || [] })
+        }
+        if (this.props.mpAndAppList !== nextProps.mpAndAppList) {
+            const mpAndAppList = nextProps.mpAndAppList || []
+            this.setState({mpAndAppList: mpAndAppList || []})
         }
     }
     popIntoView = () => {
@@ -797,6 +806,7 @@ class TrdTemplate extends React.Component {
         const {giftItemId} = this.props
         const {
             mpList,
+            mpAndAppList,
             mpID,
             color,
             notice,
@@ -868,7 +878,7 @@ class TrdTemplate extends React.Component {
                             placeholder="请选择公众号"
                     >
                         {
-                            mpList.map(mp => {
+                            mpAndAppList.map(mp => {
                                 return <Option key={mp.appID} value={mp.appID}>{mp.mpName}</Option>
                             })
                         }
@@ -1450,6 +1460,7 @@ function mapStateToProps(state) {
     return {
         accountInfo: state.user.get('accountInfo'),
         mpList: state.sale_giftInfoNew.get('mpList'),
+        mpAndAppList: state.sale_giftInfoNew.get('mpAndAppList').toJS(),
     }
 }
 
@@ -1458,6 +1469,7 @@ function mapDispatchToProps(dispatch) {
         queryUnbindCouponPromotion: opts => dispatch(queryUnbindCouponPromotion(opts)),
         fetchAllPromotionList: opts => dispatch(fetchAllPromotionListAC(opts)),
         queryWechatMpInfo: () => dispatch(queryWechatMpInfo()),
+        queryWechatMpAndAppInfo: () => dispatch(queryWechatMpAndAppInfo()),
     };
 }
 
