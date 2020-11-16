@@ -20,6 +20,7 @@ import FreeGiftDecorationBoard from './FreeGiftDecorationBoard';
 import LotteryDecorationBoard from './LotteryDecorationBoard';
 import SignInDecorationBoard from './SignInDecorationBoard'
 import RecommendHaveGift from './RecommendHaveGift'
+import BlindBoxDecorationBoard from './BlindBoxDecorationBoard'
 import {
     getDecorationInfo,
     saveDecorationInfo,
@@ -158,6 +159,8 @@ export default class PromotionDecoration extends Component {
                 return  <SignInDecorationBoard onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
             case '68':
                 return  <RecommendHaveGift onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
+            case '79':
+                return  <BlindBoxDecorationBoard onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
             default:
                 return <div></div>
         }
