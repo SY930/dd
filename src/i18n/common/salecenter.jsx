@@ -322,7 +322,7 @@ const COMMON_LABEL = defineMessages({
     k5m3onh8: { id: 'Sale.k5m3onh8', defaultMessage: '支付限制' },
     k5m3onpk: { id: 'Sale.k5m3onpk', defaultMessage: '展示名称未匹配' },
     k5m3onxw: { id: 'Sale.k5m3onxw', defaultMessage: '共享名单方式' },
-    k5m3ooek: { id: 'Sale.k5m3ooek', defaultMessage: '本活动与下方选择的活动不共享' },
+    k5m3ooek: { id: 'Sale.k5m3ooek', defaultMessage: '本活动与下方选择的活动' },
     k5m3oomw: { id: 'Sale.k5m3oomw', defaultMessage: '微信餐厅对满赠、买赠、第二份打折、搭赠、加价换购、加价升级换新这六个菜品类营销活动不受互斥规则限制，在微信餐厅上都按同享执行' },
     k5m3oov8: { id: 'Sale.k5m3oov8', defaultMessage: '我知道了' },
     k5m3op3k: { id: 'Sale.k5m3op3k', defaultMessage: '活动共享黑名单' },
