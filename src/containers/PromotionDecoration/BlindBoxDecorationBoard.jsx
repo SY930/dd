@@ -59,7 +59,7 @@ export default class BlindBoxDecorationBoard extends Component {
                                     <img style={{ width: '100%', height: '100%' }} src={blindBoxCoupon} alt=""/>
                                 </div>
                             </div>
-                            <div className={style.blindBoxBtn} style={{background: btnBgColor, color: btnColor}}>领券并拆盲盒</div>
+                            <div className={style.blindBoxBtn} style={{background: btnBgColor, color: btnColor}}>拆盲盒</div>
                         </div>
                         <div className={style.blindMainCon}>
                             <div className={style.blindImg}>
