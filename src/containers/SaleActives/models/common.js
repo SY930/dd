@@ -19,6 +19,7 @@ const {
     queryEventDetail_NEW,
     getExcludeEventList,
     updateEvent_NEW,
+    getAuthLicenseData
 } = api;
 
 const initState = {
@@ -49,6 +50,7 @@ const initState = {
     crmGiftTypes: [], // 礼品数据
     giftValue: '', // 礼品价值
     isView: false, // 页面状态
+    authLicenseData: {}
 };
 export default {
     namespace: 'createActiveCom',
@@ -69,6 +71,22 @@ export default {
                     ..._.cloneDeep(initState),
                 },
             });
+        },
+        * getAuthLicenseData(
+            { payload },
+            { call, put, select }
+        ) {
+            const ret = yield call(getAuthLicenseData, payload);
+
+            if (ret.code === '000') {
+                yield put({
+                    type: 'updateState',
+                    payload: {
+                        authLicenseData: ret.data || {},
+                    },
+                });
+            }
+            message.warn(ret.message);
         },
         * couponService_getSortedCouponBoardList(
             { payload },

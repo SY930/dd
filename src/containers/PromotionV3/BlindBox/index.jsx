@@ -23,6 +23,7 @@ class BlindBox extends Component {
         mpList: [],
         settleUnitInfoList: [],
         needShow: 0,
+        authLicenseData: {}
     };
     componentDidMount() {
         getGroupCardTypeList().then(list => {
@@ -487,6 +488,7 @@ class BlindBox extends Component {
                                 form={form}
                                 getForm={this.onSetForm}
                                 formData={formData1}
+                                authLicenseData={this.state.authLicenseData}
                             />
                         }
                         {current === 2 &&

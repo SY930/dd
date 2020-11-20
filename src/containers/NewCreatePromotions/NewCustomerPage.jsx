@@ -7,12 +7,13 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import registerPage from '../../../index';
 import {NEW_SALE_BOX,SALE_CENTER_PAYHAVEGIFT} from "../../constants/entryCodes";
-import { axiosData } from '../../helpers/util';
+import { axiosData, checkAuthLicense } from '../../helpers/util';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from './IntlDecor';
 import selfStyle from './NewCustomerPage.less';
 import newPic from './assets/new.png';
+import moment from 'moment'
 
 import {
     Modal,
@@ -39,7 +40,8 @@ import {
     saleCenterResetDetailInfoAC as saleCenterResetSpecialDetailInfoAC,
     saleCenterSetSpecialBasicInfoAC,
     saleCenterSetSpecialBasicInfoCardGroupID,
-    saleCenterSaveCreateMemberGroupParams
+    saleCenterSaveCreateMemberGroupParams, 
+    getAuthLicenseData
 } from "../../redux/actions/saleCenterNEW/specialPromotion.action";
 import {
     fetchFoodCategoryInfoAC,
@@ -89,15 +91,33 @@ class NewCustomerPage extends Component {
         currentCategoryIndex: 0,
         v3visible: false,       // 第三版活动组件是否显示
         curKey: '',             //当前活动入口值
+        authLicenseData: {}
     }
 
     componentDidMount() {
         this.getWhite();
         this.fromCrmJump();
+        this.getAuthLicenseData({productCode: 'HLL_CRM_Marketingbox'});
     }
     componentWillReceiveProps(){
         // todo:上线放开
         this.fromCrmJump();
+    }
+    // 产品授权
+    getAuthLicenseData = (opts) => {
+        axiosData(
+            '/crm/crmAuthLicenseService.queryCrmPluginLicenses.ajax?auth',
+            {
+                ...opts,
+                groupID: getStore().getState().user.getIn(['accountInfo', 'groupID'])
+            },
+            {},
+            { path: '' },
+            'HTTP_SERVICE_URL_CRM'
+        ).then((res) => {
+            let {data = {}} = res
+            this.setState({authLicenseData: data})
+        });
     }
     getQueryVariable() {
         const search = window.decodeURIComponent(window.location.search)
@@ -383,6 +403,33 @@ class NewCustomerPage extends Component {
         if(key) this.setState({curKey: key})
         this.setState(ps => ({ v3visible: !ps.v3visible }));
     }
+
+    //产品授权-集团授权信息
+    checkAuth = (allMenu, category) => {
+        const { currentCategoryIndex } = this.state;
+        let {authStatus} = checkAuthLicense(this.state.authLicenseData)
+        
+        // console.log('all', allMenu, authStatus)
+        if(!authStatus){
+            category = category.filter(item => (item.list == FANS_INTERACTIVITY_PROMOTION_TYPES || item.list == SALE_PROMOTION_TYPES || item.title == '最新活动'))
+        }
+        let displayList = currentCategoryIndex === 0 ? category.slice(1) : [category[currentCategoryIndex - (!authStatus ? 0 : 1)]];
+        // 未授权   只留  粉丝互动-随机立减 和 促进销量
+        if(!authStatus){
+            displayList = displayList.filter(item => (item.title == '粉丝互动' || item.title == '促进销量'))
+            displayList.map(item => {
+                if(item.title == '粉丝互动'){
+                    let info = item.list.filter(item => item.key == '2030')
+                    item.list = info
+                }
+            })
+            // 
+            allMenu = allMenu.filter(item => (item == '粉丝互动' || item == '促进销量' || item == '全部活动'))
+            // console.log('>>', displayList)
+        }
+        return {displayList, allMenu}
+    } 
+
     render() {
         const {whiteList, v3visible, curKey} = this.state;
         const { intl } = this.props;
@@ -393,7 +440,7 @@ class NewCustomerPage extends Component {
         const k6316iio = intl.formatMessage(SALE_STRING.k6316iio);
         const k6316i20 = intl.formatMessage(SALE_STRING.k6316i20);
         const k5eng042 = intl.formatMessage(SALE_STRING.k5eng042);
-        const ALL_PROMOTION_CATEGORIES = [
+        let ALL_PROMOTION_CATEGORIES = [
             {
                 title: '最新活动',
                 list: NEW_CUSTOMER_PROMOTION_TYPES.concat(FANS_INTERACTIVITY_PROMOTION_TYPES, REPEAT_PROMOTION_TYPES, LOYALTY_PROMOTION_TYPES, SALE_PROMOTION_TYPES, ONLINE_PROMOTION_TYPES).filter(item => item.isNew && item.key != 67 && item.key != 68),
@@ -423,14 +470,21 @@ class NewCustomerPage extends Component {
                 list: SALE_PROMOTION_TYPES,
             },
         ]
-        const allMenu = [
+        let allMenus = [
             '全部活动',
             <span style={{position: 'relative'}}><img style={{position: 'absolute', left: -19, top: 4, width: 16}} src={newPic}/>最新活动</span>,
             // <span style={{position: 'relative'}}><img style={{position: 'absolute', left: -17, top: 4}} src={hot}/>热门活动</span>,
             ...(ALL_PROMOTION_CATEGORIES.slice(1)).map(item => item.title),
         ];
         const { currentCategoryIndex } = this.state;
-        const displayList = currentCategoryIndex === 0 ? ALL_PROMOTION_CATEGORIES.slice(1) : [ALL_PROMOTION_CATEGORIES[currentCategoryIndex - 1]];
+        // const displayList = currentCategoryIndex === 0 ? ALL_PROMOTION_CATEGORIES.slice(1) : [ALL_PROMOTION_CATEGORIES[currentCategoryIndex - 1]];
+
+        // auth
+        let {displayList, allMenu} = this.checkAuth(allMenus, ALL_PROMOTION_CATEGORIES)
+        // 插件授权状态--营销盒子大礼包
+        let {authPluginStatus} = checkAuthLicense(this.state.authLicenseData, 'HLL_CRM_Marketingbox')
+        
+        // console.log('RRR', displayList, allMenu)
 
         return (
             <div className={selfStyle.newDiv}>
@@ -466,6 +520,7 @@ class NewCustomerPage extends Component {
                                                 text={item.text}
                                                 onClickOpen={this.onClickOpen}
                                                 onV3Click={()=>{this.onV3Click(item.key)}}
+                                                authPluginStatus={authPluginStatus}
                                             />
                                         ))
                                     }
@@ -533,6 +588,9 @@ function mapDispatchToProps(dispatch) {
         },
         saveRFMParams: (opts) => {
             dispatch(saleCenterSaveCreateMemberGroupParams(opts))
+        },
+        getAuthLicenseData: (opts) => {
+            dispatch(getAuthLicenseData(opts))
         }
     }
 }

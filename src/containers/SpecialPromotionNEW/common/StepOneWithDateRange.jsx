@@ -24,7 +24,9 @@ import {
     queryFsmGroupEquityAccount,
     getEventExcludeCardTypes,
     querySMSSignitureList,
+    getAuthLicenseData
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action';
+import { checkAuthLicense } from '../../../helpers/util';
 import {SEND_MSG, NOTIFICATION_FLAG, ACTIVITY_CYCLE_TYPE} from '../../../redux/actions/saleCenterNEW/types';
 import ExcludeCardTable from './ExcludeCardTable';
 import ExcludeGroupTable from './ExcludeGroupTable';
@@ -94,6 +96,8 @@ const dateLimitedTypes = [ // 活动日期不能选到今天以前的活动类�
     '70',
     '75',
 ]
+//可作为营销盒子大礼包插件授权活动有以下：分享裂变、推荐有礼、膨胀大礼包、签到、集点卡、支付后广告、下单抽抽乐、盲盒  8个活动。
+const authPulgins = ['65', '68', '66', '76', '75', '77', '78', '79'];
 // 起止日期
 const showActDataType = ['60']
 
@@ -962,7 +966,7 @@ class StepOneWithDateRange extends React.Component {
         return (
 
                 <FormItem
-                    label={'活动起止日期'}
+                    label={'活动起止日期1'}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
@@ -1028,8 +1032,26 @@ class StepOneWithDateRange extends React.Component {
         // 判断日期格式是否合法,不合法不设置defaultValue
         let dateRangeProps;
         const disabledDate = (current) => {
-            // Can not select days before today
-            return current && current.format('YYYYMMDD') < moment().format('YYYYMMDD');
+            let {pluginInfo, authPluginStatus} = checkAuthLicense(this.props.specialPromotion.toJS().AuthLicenseData, 'HLL_CRM_Marketingbox')
+            let {authStartDate, authEndDate} = pluginInfo
+            authStartDate = moment(authStartDate, 'YYYYMMDD').format('YYYY-MM-DD')
+            authEndDate = moment(authEndDate, 'YYYYMMDD').format('YYYY-MM-DD')
+            let disabledDates = !current.isBetween(authStartDate, authEndDate, null, '()')
+            
+            if(dateLimitedTypes.includes(`${this.props.type}`)){
+                if(authPulgins.includes(`${this.props.type}`) && authPluginStatus){
+                    return disabledDates || current && current.format('YYYYMMDD') < moment().format('YYYYMMDD');
+                }else{
+                    // Can not select days before today
+                    return current && current.format('YYYYMMDD') < moment().format('YYYYMMDD');
+                }
+            }else{
+                if(authPulgins.includes(`${this.props.type}`) && !authPluginStatus){
+                    return disabledDates
+                }else{
+                    return null
+                }
+            }
         }
         const noDisabled = () => {
             const range = [];
@@ -1317,7 +1339,7 @@ class StepOneWithDateRange extends React.Component {
                                                         this.getDateCount()
                                                     }
                                                 </span>
-                                                <span>{this.props.intl.formatMessage(STRING_SPE.d1kgda4ea3a2945)}</span>
+                                                <span>1{this.props.intl.formatMessage(STRING_SPE.d1kgda4ea3a2945)}</span>
                                             </div>
 
                                         </Col>
@@ -1436,6 +1458,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         getEventExcludeCardTypes: (opts) => {
             dispatch(getEventExcludeCardTypes(opts))
+        },
+        getAuthLicenseData: (opts) => {
+            dispatch(getAuthLicenseData(opts))
         },
     }
 };

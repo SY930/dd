@@ -32,6 +32,7 @@ import BaseHualalaModal from './BaseHualalaModal';
 import PriceInput from "../common/PriceInput";
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import { checkAuthLicense } from '../../../helpers/util';
 import {injectIntl} from '../IntlDecor';
 
 const FormItem = Form.Item;
@@ -232,6 +233,8 @@ class AdvancedPromotionDetailSetting extends React.Component {
 
 
     renderUserSetting() {
+        // 产品授权
+        let {authStatus} = checkAuthLicense(this.props.specialPromotion.AuthLicenseData)
         return (
             <FormItem
                 label={SALE_LABEL.k5m3on8w}
@@ -243,6 +246,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                 <Select
                     size={'default'}
                     value={this.state.userSetting}
+                    disabled={!authStatus}
                     className={`${styles.linkSelectorRight} advancedDetailClassJs`}
                     getPopupContainer={(node) => node.parentNode}
                     onChange={(val) => {
@@ -700,6 +704,7 @@ const mapStateToProps = (state) => {
         groupCardTypeList: state.sale_mySpecialActivities_NEW.getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
         tagList: state.sale_mySpecialActivities_NEW.toJS().tagList,
         tagGroupList: state.sale_mySpecialActivities_NEW.toJS().tagGroupList,
+        specialPromotion: state.sale_specialPromotion_NEW.toJS(),
         user: state.user.toJS(),
     }
 };
