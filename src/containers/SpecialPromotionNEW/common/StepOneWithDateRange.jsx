@@ -162,7 +162,8 @@ class StepOneWithDateRange extends React.Component {
             selectedIDs: props.specialPromotion.getIn(['$eventInfo', 'mpIDList']).toJS(),
             allWeChatIDList: props.allWeChatIDList,
             allWeChatIDListLoading: props.allWeChatIDListLoading,
-            actStartDate: []
+            actStartDate: [],
+            authLicenseData: {}
         };
         this.promotionNameInputRef = null;
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -246,6 +247,10 @@ class StepOneWithDateRange extends React.Component {
                 actStartDate: [moment(eventStartDate),moment(eventEndDate)]
             })
         }
+
+        this.props.getAuthLicenseData({productCode: 'HLL_CRM_Marketingbox'}).then((res) => {
+            this.setState({authLicenseData: res})
+        });
     }
     componentWillUnmount() {
         document.removeEventListener('click', this.onFakeDatePickerBlur)
@@ -1032,7 +1037,7 @@ class StepOneWithDateRange extends React.Component {
         // 判断日期格式是否合法,不合法不设置defaultValue
         let dateRangeProps;
         const disabledDate = (current) => {
-            let {pluginInfo, authPluginStatus} = checkAuthLicense(this.props.specialPromotion.toJS().AuthLicenseData, 'HLL_CRM_Marketingbox')
+            let {pluginInfo, authPluginStatus} = checkAuthLicense(this.state.authLicenseData, 'HLL_CRM_Marketingbox')
             let {authStartDate, authEndDate} = pluginInfo
             authStartDate = moment(authStartDate, 'YYYYMMDD').format('YYYY-MM-DD')
             authEndDate = moment(authEndDate, 'YYYYMMDD').format('YYYY-MM-DD')
