@@ -1342,7 +1342,7 @@ class StepOneWithDateRange extends React.Component {
                                                         this.getDateCount()
                                                     }
                                                 </span>
-                                                <span>2{this.props.intl.formatMessage(STRING_SPE.d1kgda4ea3a2945)}</span>
+                                                <span>{this.props.intl.formatMessage(STRING_SPE.d1kgda4ea3a2945)}</span>
                                             </div>
 
                                         </Col>
@@ -1463,7 +1463,7 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(getEventExcludeCardTypes(opts))
         },
         getAuthLicenseData: (opts) => {
-            dispatch(getAuthLicenseData(opts))
+            return dispatch(getAuthLicenseData(opts))
         },
     }
 };

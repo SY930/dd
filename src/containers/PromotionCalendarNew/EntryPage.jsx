@@ -149,7 +149,7 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(resetSpecialDetailAC(opts))
         },
         getAuthLicenseData: (opts) => {
-            dispatch(getAuthLicenseData(opts))
+            return dispatch(getAuthLicenseData(opts))
         },
     };
 };
@@ -287,32 +287,17 @@ export default class EntryPage extends Component {
         const { getPromotionShopSchema, getAuthLicenseData, groupID} = this.props;
         getPromotionShopSchema({groupID});
         // 产品授权
-        this.getAuthLicenseData()
+        getAuthLicenseData().then((res = {}) => {
+            this.setState({authLicenseData: res})
+            let {authStatus} = checkAuthLicense(res)
+            this.setState({authStatus})
+        });
     }
     componentWillReceiveProps(nextProps) {
         if (nextProps.shopSchema.getIn(['shopSchema']) !== this.props.shopSchema.getIn(['shopSchema'])) {
             this.setState({shopSchema: nextProps.shopSchema.getIn(['shopSchema']).toJS(), // 后台请求来的值
             });
         }
-    }
-
-    // 产品授权
-    getAuthLicenseData = (opts) => {
-        axiosData(
-            '/crm/crmAuthLicenseService.queryCrmPluginLicenses.ajax?auth',
-            {
-                ...opts,
-                groupID: getStore().getState().user.getIn(['accountInfo', 'groupID'])
-            },
-            {},
-            { path: '' },
-            'HTTP_SERVICE_URL_CRM'
-        ).then((res) => {
-            let {data = {}} = res
-            this.setState({authLicenseData: data})
-            let {authStatus} = checkAuthLicense(this.state.authLicenseData)
-            this.setState({authStatus})
-        });
     }
 
     openCreateModal = () => {
