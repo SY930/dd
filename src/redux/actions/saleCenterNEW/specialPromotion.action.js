@@ -258,7 +258,7 @@ export const getEventExcludeCardTypes = (opts) => {
 export const getAuthLicenseData = (opts) => {
     return (dispatch) => {
         axiosData(
-            '/crm/crmAuthLicenseService.queryCrmPluginLicenses.ajax?auth',
+            '/crm/crmAuthLicenseService.queryCrmPluginLicenses.ajax',
             {
                 ...opts,
                 groupID: getStore().getState().user.getIn(['accountInfo', 'groupID'])
