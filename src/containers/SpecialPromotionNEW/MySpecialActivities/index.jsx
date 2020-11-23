@@ -157,7 +157,7 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(toggleIsUpdateAC(opts))
         },
         getAuthLicenseData: (opts) => {
-            dispatch(getAuthLicenseData(opts))
+            return dispatch(getAuthLicenseData(opts))
         },
     };
 };
@@ -349,7 +349,11 @@ class MySpecialActivities extends React.Component {
             groupID: this.props.user.accountInfo.groupID,
         })
         // 产品授权
-        this.getAuthLicenseData()
+        this.props.getAuthLicenseData().then((res) => {
+            this.setState({authLicenseData: res})
+            let {authStatus} = checkAuthLicense(res)
+            this.setState({authStatus})
+        });
     }
 
     // 产品授权

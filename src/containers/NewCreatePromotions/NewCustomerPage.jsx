@@ -97,27 +97,13 @@ class NewCustomerPage extends Component {
     componentDidMount() {
         this.getWhite();
         this.fromCrmJump();
-        this.getAuthLicenseData({productCode: 'HLL_CRM_Marketingbox'});
+        this.props.getAuthLicenseData({productCode: 'HLL_CRM_Marketingbox'}).then((res) => {
+            this.setState({authLicenseData: res})
+        });
     }
     componentWillReceiveProps(){
         // todo:上线放开
         this.fromCrmJump();
-    }
-    // 产品授权
-    getAuthLicenseData = (opts) => {
-        axiosData(
-            '/crm/crmAuthLicenseService.queryCrmPluginLicenses.ajax?auth',
-            {
-                ...opts,
-                groupID: getStore().getState().user.getIn(['accountInfo', 'groupID'])
-            },
-            {},
-            { path: '' },
-            'HTTP_SERVICE_URL_CRM'
-        ).then((res) => {
-            let {data = {}} = res
-            this.setState({authLicenseData: data})
-        });
     }
     getQueryVariable() {
         const search = window.decodeURIComponent(window.location.search)
@@ -409,7 +395,6 @@ class NewCustomerPage extends Component {
         const { currentCategoryIndex } = this.state;
         let {authStatus} = checkAuthLicense(this.state.authLicenseData)
         
-        // console.log('all', allMenu, authStatus)
         if(!authStatus){
             category = category.filter(item => (item.list == FANS_INTERACTIVITY_PROMOTION_TYPES || item.list == SALE_PROMOTION_TYPES || item.title == '最新活动'))
         }
@@ -425,7 +410,6 @@ class NewCustomerPage extends Component {
             })
             // 
             allMenu = allMenu.filter(item => (item == '粉丝互动' || item == '促进销量' || item == '全部活动'))
-            // console.log('>>', displayList)
         }
         return {displayList, allMenu}
     } 
@@ -483,8 +467,6 @@ class NewCustomerPage extends Component {
         let {displayList, allMenu} = this.checkAuth(allMenus, ALL_PROMOTION_CATEGORIES)
         // 插件授权状态--营销盒子大礼包
         let {authPluginStatus} = checkAuthLicense(this.state.authLicenseData, 'HLL_CRM_Marketingbox')
-        
-        // console.log('RRR', displayList, allMenu)
 
         return (
             <div className={selfStyle.newDiv}>
@@ -590,7 +572,7 @@ function mapDispatchToProps(dispatch) {
             dispatch(saleCenterSaveCreateMemberGroupParams(opts))
         },
         getAuthLicenseData: (opts) => {
-            dispatch(getAuthLicenseData(opts))
+            return dispatch(getAuthLicenseData(opts))
         }
     }
 }
