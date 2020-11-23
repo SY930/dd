@@ -240,7 +240,7 @@ class StepOneWithDateRange extends React.Component {
         }
 
         // actStartDate
-        console.log('specialPromotion',specialPromotion)
+        // console.log('specialPromotion',specialPromotion)
         if(this.props.type == '60' && eventStartDate && eventEndDate) {
             this.setState({
                 actStartDate: [moment(eventStartDate),moment(eventEndDate)]
@@ -966,7 +966,7 @@ class StepOneWithDateRange extends React.Component {
         return (
 
                 <FormItem
-                    label={'活动起止日期1'}
+                    label={'活动起止日期'}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
@@ -1046,7 +1046,7 @@ class StepOneWithDateRange extends React.Component {
                     return current && current.format('YYYYMMDD') < moment().format('YYYYMMDD');
                 }
             }else{
-                if(authPulgins.includes(`${this.props.type}`) && !authPluginStatus){
+                if(authPulgins.includes(`${this.props.type}`) && authPluginStatus){
                     return disabledDates
                 }else{
                     return null
@@ -1208,7 +1208,10 @@ class StepOneWithDateRange extends React.Component {
                                         })(
                                             <DatePicker
                                                 format="YYYY-MM-DD"
-                                                disabledDate={disabledDate}
+                                                disabledDate={(current) => {
+                                                    // Can not select days before today
+                                                    return current && current.format('YYYYMMDD') < moment().format('YYYYMMDD');
+                                                }}
                                                 style={{ width: '100%' }}
                                                 placeholder={this.props.intl.formatMessage(STRING_SPE.db60b942193317294)}
                                             />
@@ -1328,7 +1331,7 @@ class StepOneWithDateRange extends React.Component {
                                                 <RangePicker
                                                     className={styles.ActivityDateDayleft}
                                                     style={{ width: '100%' }}
-                                                    disabledDate={dateLimitedTypes.includes(`${this.props.type}`) ? disabledDate : null}
+                                                    disabledDate={disabledDate}
                                                 />
                                             )}
                                         </Col>
@@ -1339,7 +1342,7 @@ class StepOneWithDateRange extends React.Component {
                                                         this.getDateCount()
                                                     }
                                                 </span>
-                                                <span>1{this.props.intl.formatMessage(STRING_SPE.d1kgda4ea3a2945)}</span>
+                                                <span>2{this.props.intl.formatMessage(STRING_SPE.d1kgda4ea3a2945)}</span>
                                             </div>
 
                                         </Col>
