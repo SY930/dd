@@ -12,8 +12,10 @@ import { jumpPage } from '@hualala/platform-base';
 import { Modal, Tooltip } from 'antd';
 import moment from 'moment';
 
-//可作为插件开通的活动有以下：分享裂变、推荐有礼、桌边砍、拼团、秒杀、膨胀大礼包、签到、集点卡、支付后广告  9个活动。
+//可作为插件开通的活动有以下：分享裂变、推荐有礼、桌边砍、拼团、秒杀、膨胀大礼包、签到、集点卡、支付后广告、下单抽抽乐、盲盒  9个活动。
 const pulgins = ['65', '68', '67', '71', '72', '66', '76', '75', '77', '78', '79'];
+//可作为营销盒子大礼包插件授权活动有以下：分享裂变、推荐有礼、膨胀大礼包、签到、集点卡、支付后广告、下单抽抽乐、盲盒  8个活动。
+const authPulgins = ['65', '68', '66', '76', '75', '77', '78', '79'];
 const imgURI = 'http://res.hualala.com/';
 const V3KEYS = ['78', '79'];     // 最新版抽抽乐78
 // 最新版 logo图片
@@ -28,9 +30,24 @@ class NewPromotionCard extends Component {
             onCardClick,
             onClickOpen,
             onV3Click,
+            authPluginStatus
         } = this.props;
         const { key, title } = promotionEntity;
         const isUse = this.filterItem(key);
+        // 插件授权
+        if(authPulgins.includes(key) && !authPluginStatus) {
+            Modal.warning({
+                title: <p></p>,
+                content: (
+                    <div>
+                        <p>营销盒子大礼包活动：包括分享裂变；膨胀大礼包；推荐有礼；签到；支付后广告；下单抽抽乐；盲盒；集点卡等，请联系商务开通</p>
+                    </div>
+                ),
+                okText:"知道了",
+                onOk() {},
+            });
+            return;
+        }
         if(pulgins.includes(key) && !isUse) {
             Modal.confirm({
                 title: <p>「{title}」限时开放中，您可免费试用6个月</p>,
@@ -61,13 +78,13 @@ class NewPromotionCard extends Component {
         return isUse;
     }
     renderPulgin(key,ath) {
-        const {whiteList = []} = this.props;
+        const {whiteList = [], authPluginStatus} = this.props;
         const isUse = this.filterItem(key);
         if(pulgins.includes(key)) {
             const item = whiteList.find(x=> x.eventWay == key);
             const {expireDate} = item || {};
             const date = moment(expireDate, 'YYYYMMDD').format('YYYY/MM/DD')
-            const text = isUse ? '试用中': '申请试用';
+            let text = authPulgins.includes(key) && !authPluginStatus? '联系商务开通' : (isUse ? '试用中': '申请试用');
             return <em className={ath ? styles.validDateAth :styles.validDate}>{text}</em>
         }
     }
@@ -87,6 +104,7 @@ class NewPromotionCard extends Component {
             index,
             onCardClick,
             size,
+            authPluginStatus
         } = this.props;
         let backgroundImageString;
         switch (index % 4) {

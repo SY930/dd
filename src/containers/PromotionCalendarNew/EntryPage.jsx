@@ -15,9 +15,10 @@ import moment from 'moment';
 import Immutable from 'immutable';
 import { jumpPage, closePage } from '@hualala/platform-base';
 import { connect } from 'react-redux';
-import { axiosData } from '../../helpers/util'
+import { axiosData, checkAuthLicense } from '../../helpers/util'
 import registerPage from '../../../index';
 import ShopSelector from "../../components/common/ShopSelector";
+import EmptyPage from "../../components/common/EmptyPage";
 import {
     PROMOTION_CALENDAR_NEW,
     SALE_CENTER_PAGE,
@@ -67,6 +68,7 @@ import SpecialActivityMain from '../SpecialPromotionNEW/activityMain';
 import {
     saleCenterSetSpecialBasicInfoAC,
     saleCenterResetDetailInfoAC as resetSpecialDetail,
+    getAuthLicenseData
 } from '../../redux/actions/saleCenterNEW/specialPromotion.action'
 import {
     saleCenterResetBasicInfoAC,
@@ -145,6 +147,9 @@ const mapDispatchToProps = (dispatch) => {
         saleCenterResetSpecialDetailInfo: (opts) => {
             dispatch(resetSpecialDetailAC(opts))
         },
+        getAuthLicenseData: (opts) => {
+            dispatch(getAuthLicenseData(opts))
+        },
     };
 };
 const mapStateToProps = (state) => {
@@ -156,6 +161,7 @@ const mapStateToProps = (state) => {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         shopSchema: state.sale_shopSchema_New,
         user: state.user,
+        specialPromotion: state.sale_specialPromotion_NEW.toJS(),
         groupID: state.user.getIn(['accountInfo','groupID']),
     };
 };
@@ -178,6 +184,7 @@ export default class EntryPage extends Component {
             startDate: moment(),
             intervalStartMonth: moment().format('YYYYMM'),
             promotionInfoList: [],
+            authStatus: false,
         }
     }
 
@@ -275,8 +282,12 @@ export default class EntryPage extends Component {
             _groupID: this.props.user.getIn(['accountInfo','groupID'])
         });
         this.handleQuery();
-        const { getPromotionShopSchema, groupID} = this.props;
+        const { getPromotionShopSchema, getAuthLicenseData, groupID} = this.props;
         getPromotionShopSchema({groupID});
+        // 产品授权
+        getAuthLicenseData();
+        let {authStatus} = checkAuthLicense(this.props.specialPromotion.AuthLicenseData)
+        this.setState({authStatus})
     }
     componentWillReceiveProps(nextProps) {
         if (nextProps.shopSchema.getIn(['shopSchema']) !== this.props.shopSchema.getIn(['shopSchema'])) {
@@ -589,22 +600,27 @@ export default class EntryPage extends Component {
                     {SALE_LABEL.k634693f}
                 </span>
                 <div className={style.spacer} />
-                <Button
-                    type="primary"
-                    icon="plus"
-                    onClick={this.openCreateModal}
-                    style={{ marginRight: 12 }}
-                >
-                    {SALE_LABEL.k6316ir0}
-                </Button>
-                <Button
-                    type="ghost"
-                    onClick={() => {
-                        jumpPage({ pageID: SALE_CENTER_PAGE })
-                    }}
-                >
-                    {SALE_LABEL.k63469br}
-                </Button>
+                {
+                    this.state.authStatus && 
+                        <span>
+                            <Button
+                                type="primary"
+                                icon="plus"
+                                onClick={this.openCreateModal}
+                                style={{ marginRight: 12 }}
+                            >
+                                {SALE_LABEL.k6316ir0}
+                            </Button>
+                            <Button
+                                type="ghost"
+                                onClick={() => {
+                                    jumpPage({ pageID: SALE_CENTER_PAGE })
+                                }}
+                            >
+                                {SALE_LABEL.k63469br}
+                            </Button>
+                        </span>
+                }
             </div>
         )
     }
@@ -715,9 +731,15 @@ export default class EntryPage extends Component {
             <div style={{ height: '100%' }}>
                 {this.renderHeader()}
                 <div className={style.blockLine} />
-                {this.renderBody()}
-                {this.renderBasicPromotionEditOrPreviewModal()}
-                {this.renderSpecialPromotionEditOrPreviewModal()}
+                {
+                    !this.state.authStatus ?
+                        <EmptyPage /> : 
+                        <div>
+                            {this.renderBody()}
+                            {this.renderBasicPromotionEditOrPreviewModal()}
+                            {this.renderSpecialPromotionEditOrPreviewModal()}
+                        </div>
+                }
             </div>
         )
     }

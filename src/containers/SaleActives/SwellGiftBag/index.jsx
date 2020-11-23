@@ -20,6 +20,11 @@ class SwellGiftBag extends React.Component {
         // 查询详情
         this.queryDetail()
 
+        this.props.dispatch({
+            type: 'createActiveCom/getAuthLicenseData',
+            payload: {productCode: 'HLL_CRM_Marketingbox',}
+        })
+
     }
     componentWillUnmount() {
         this.form1.resetFields()
