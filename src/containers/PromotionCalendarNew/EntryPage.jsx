@@ -83,6 +83,7 @@ import {
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from './IntlDecor';
+import { getStore } from '@hualala/platform-base'
 
 const Option = Select.Option;
 const { MonthPicker } = DatePicker;
@@ -185,6 +186,7 @@ export default class EntryPage extends Component {
             intervalStartMonth: moment().format('YYYYMM'),
             promotionInfoList: [],
             authStatus: false,
+            authLicenseData: {}
         }
     }
 
@@ -285,15 +287,32 @@ export default class EntryPage extends Component {
         const { getPromotionShopSchema, getAuthLicenseData, groupID} = this.props;
         getPromotionShopSchema({groupID});
         // 产品授权
-        getAuthLicenseData();
-        let {authStatus} = checkAuthLicense(this.props.specialPromotion.AuthLicenseData)
-        this.setState({authStatus})
+        this.getAuthLicenseData()
     }
     componentWillReceiveProps(nextProps) {
         if (nextProps.shopSchema.getIn(['shopSchema']) !== this.props.shopSchema.getIn(['shopSchema'])) {
             this.setState({shopSchema: nextProps.shopSchema.getIn(['shopSchema']).toJS(), // 后台请求来的值
             });
         }
+    }
+
+    // 产品授权
+    getAuthLicenseData = (opts) => {
+        axiosData(
+            '/crm/crmAuthLicenseService.queryCrmPluginLicenses.ajax?auth',
+            {
+                ...opts,
+                groupID: getStore().getState().user.getIn(['accountInfo', 'groupID'])
+            },
+            {},
+            { path: '' },
+            'HTTP_SERVICE_URL_CRM'
+        ).then((res) => {
+            let {data = {}} = res
+            this.setState({authLicenseData: data})
+            let {authStatus} = checkAuthLicense(this.state.authLicenseData)
+            this.setState({authStatus})
+        });
     }
 
     openCreateModal = () => {

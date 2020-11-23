@@ -69,6 +69,7 @@ import PromotionCalendarBanner from "../../../components/common/PromotionCalenda
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_GIFT } from 'i18n/common/gift';
 import { STRING_SPE } from 'i18n/common/special';
+import { getStore } from '@hualala/platform-base'
 import { SALE_STRING } from 'i18n/common/salecenter'
 import EmptyPage from "../../../components/common/EmptyPage";
 import Chou2Le from "../../PromotionV3/Chou2Le";   // 抽抽乐
@@ -221,6 +222,7 @@ class MySpecialActivities extends React.Component {
             isShowCopyUrl: false,
             urlContent: '',
             authStatus: false, //
+            authLicenseData: {}
         };
         this.cfg = {
             eventWay: [
@@ -346,9 +348,26 @@ class MySpecialActivities extends React.Component {
             groupID: this.props.user.accountInfo.groupID,
         })
         // 产品授权
-        this.props.getAuthLicenseData()
-        let {authStatus} = checkAuthLicense(this.props.specialPromotion.AuthLicenseData)
-        this.setState({authStatus})
+        this.getAuthLicenseData()
+    }
+
+    // 产品授权
+    getAuthLicenseData = (opts) => {
+        axiosData(
+            '/crm/crmAuthLicenseService.queryCrmPluginLicenses.ajax?auth',
+            {
+                ...opts,
+                groupID: getStore().getState().user.getIn(['accountInfo', 'groupID'])
+            },
+            {},
+            { path: '' },
+            'HTTP_SERVICE_URL_CRM'
+        ).then((res) => {
+            let {data = {}} = res
+            this.setState({authLicenseData: data})
+            let {authStatus} = checkAuthLicense(this.state.authLicenseData)
+            this.setState({authStatus})
+        });
     }
 
     // TODO: the following code may be not the best implementation of filter
