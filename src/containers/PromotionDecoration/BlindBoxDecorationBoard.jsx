@@ -22,7 +22,7 @@ export default class BlindBoxDecorationBoard extends Component {
     renderPhonePreview() {
         const {
             decorationInfo: {
-                bgColor = '#FCDD9B',
+                bgColor = '#FF3838',
                 bgImg,
                 btnBgColor = '#FF3C54',
                 btnColor = '#fff',
@@ -84,7 +84,7 @@ export default class BlindBoxDecorationBoard extends Component {
     renderSettingPanel() {
         const {
             decorationInfo: {
-                bgColor = '#FCDD9B',
+                bgColor = '#FF3838',
                 bgImg,
                 btnBgColor = '#FF3C54',
                 btnColor = '#fff',
