@@ -377,7 +377,7 @@ class TrdTemplate extends React.Component {
                         jsonData.endTimestamp = endTimestamp
                     }
                     if(checkList.filter(v => !v).length) {
-                        TrdTemplateStatus = false
+                        // TrdTemplateStatus = false
                     }
                     // console.log('checkList',checkList,TrdTemplateStatus)
 
@@ -545,6 +545,17 @@ class TrdTemplate extends React.Component {
         this.setState({
             mpID: value,
             appID: mpInfo.appID,
+            brandName: mpInfo.mpName,
+        }, () => {
+            this.propsChange() // 向父传递
+        })
+    }
+    // 正向绑定微信ID选择
+    handleMpAndAppIDChange = (value) => {
+        const mpInfo = this.state.mpAndAppList.find(item => item.appID === value) || {};
+        this.setState({
+            mpID: mpInfo.mpID || '',
+            appID: value,
             brandName: mpInfo.mpName,
         }, () => {
             this.propsChange() // 向父传递
@@ -808,6 +819,7 @@ class TrdTemplate extends React.Component {
             mpList,
             mpAndAppList,
             mpID,
+            appID,
             color,
             notice,
             logoUrl,
@@ -853,13 +865,13 @@ class TrdTemplate extends React.Component {
                     help={settleId ? null : '请选择商家券发放账务主体'}
                 >
                     <Select value={settleId}
-                            onChange={this.handleSelectChange('settleId')}
-                            disabled={edit}
-                            getPopupContainer={(node) => node.parentNode}
-                            placeholder="请选择商家券发放账务主体"
+                        onChange={this.handleSelectChange('settleId')}
+                        disabled={edit}
+                        getPopupContainer={(node) => node.parentNode}
+                        placeholder="请选择商家券发放账务主体"
                     >
                         {
-                             payChannelList.map((mp,i) => {
+                            payChannelList.map((mp,i) => {
                                 return <Option key={mp.settleID} value={mp.settleID}>{mp.settleName}</Option>
                             })
                         }
@@ -868,14 +880,14 @@ class TrdTemplate extends React.Component {
                 <FormItem
                     label={mpTitle}
                     {...itemStyle}
-                    validateStatus={mpID ? 'success' : 'error'}
-                    help={mpID ? null : '请选择公众号'}
+                    validateStatus={appID ? 'success' : 'error'}
+                    help={appID ? null : '请选择公众号'}
                 >
-                    <Select value={mpID}
-                            onChange={this.handleMpIDChange}
-                            disabled={edit}
-                            getPopupContainer={(node) => node.parentNode}
-                            placeholder="请选择公众号"
+                    <Select value={appID}
+                        onChange={this.handleMpAndAppIDChange}
+                        disabled={edit}
+                        getPopupContainer={(node) => node.parentNode}
+                        placeholder="请选择公众号"
                     >
                         {
                             mpAndAppList.map(mp => {
@@ -886,17 +898,17 @@ class TrdTemplate extends React.Component {
                 </FormItem>
                 {giftItemId === '10' &&
                     <FormItem
-                    label="总预算金额"
-                    {...itemStyle}
-                    validateStatus={ this.checkMaxAmount().status ? 'success' : 'error'}
-                    help={this.checkMaxAmount().msg}
+                        label="总预算金额"
+                        {...itemStyle}
+                        validateStatus={ this.checkMaxAmount().status ? 'success' : 'error'}
+                        help={this.checkMaxAmount().msg}
                     >
-                    <PriceInput
-                        modal="float"
-                        disabled={edit}
-                        value={{number: maxAmount}}
-                        onChange={this.handlePriceInputChange('maxAmount')}
-                    />
+                        <PriceInput
+                            modal="float"
+                            disabled={edit}
+                            value={{number: maxAmount}}
+                            onChange={this.handlePriceInputChange('maxAmount')}
+                        />
                     </FormItem>
                 }
                 { (giftItemId === '21' || giftItemId === '111') &&
@@ -905,7 +917,7 @@ class TrdTemplate extends React.Component {
                         {...itemStyle}
                         validateStatus={this.checkQuantity().status ? 'success' : 'error'}
                         help={this.checkQuantity().msg}
-                        >
+                    >
                         <PriceInput
                             modal="int"
                             disabled={edit}
