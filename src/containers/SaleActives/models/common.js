@@ -295,6 +295,7 @@ export default {
             message.warn(ret.message);
         },
         * queryEventDetail_NEW_payHaveGift({ payload }, { call, put, select }) {
+            // debugger
             // 微信支付有礼专用
             const { groupID } = yield select(state => state.createActiveCom);
             const ret = yield call(queryEventDetail_NEW, {

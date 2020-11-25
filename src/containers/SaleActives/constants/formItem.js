@@ -158,6 +158,13 @@ export const formItem = {
         labelCol: { span: 4 },
         wrapperCol: { span: 20 },
     },
+    consumeGiftID: {
+        type: 'combo',
+        label: '选择消费券',
+        options: [],
+        labelCol: { span: 4 },
+        wrapperCol: { span: 20 },
+    },
     eventDate: {
         type: 'custom',
         label: '投放日期',

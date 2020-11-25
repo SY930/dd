@@ -47,4 +47,5 @@
 ## 活动索引
 
 PayHaveGift => 微信支付有礼
+CouponsGiveCoupons => 消费券返券
 SwellGiftBag => 膨胀大礼包
