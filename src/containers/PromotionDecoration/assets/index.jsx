@@ -31,3 +31,7 @@ export const lotteryBtn = getAbsoluteURL('basicdoc/58e2f818-f1cc-4af4-990f-dc92a
 export const lotteryExample = getAbsoluteURL('basicdoc/90f6d370-22d9-44c9-90e4-a188a6c22f34.png');
 export const lotteryMain = getAbsoluteURL('basicdoc/ba81c81a-8e47-41e1-bc18-1be0169f4074.png');
 export const lotteryWheel = getAbsoluteURL('basicdoc/a3febb84-884e-493b-8d71-e8bc6bb72129.png');
+export const blindBoxBanner = getAbsoluteURL('basicdoc/61b4eb26-95fa-483e-8d50-14b5d2b296ad.png');
+export const blindBoxImg = getAbsoluteURL('basicdoc/dabd757b-fa73-4580-a9be-631ecdddcb4a.png');
+export const blindBoxCoupon = getAbsoluteURL('basicdoc/9c6e9263-6719-4399-930d-4eb21f40bba8.png');
+export const blindBoxDes = getAbsoluteURL('basicdoc/66931e35-8709-41f2-8fa0-873a443dd711.png');
