@@ -86,7 +86,6 @@ export default {
                     },
                 });
             }
-            message.warn(ret.message);
         },
         * couponService_getSortedCouponBoardList(
             { payload },
