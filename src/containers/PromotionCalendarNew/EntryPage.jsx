@@ -186,6 +186,7 @@ export default class EntryPage extends Component {
             intervalStartMonth: moment().format('YYYYMM'),
             promotionInfoList: [],
             authStatus: false,
+            authPluginStatus: false,
             authLicenseData: {}
         }
     }
@@ -287,10 +288,11 @@ export default class EntryPage extends Component {
         const { getPromotionShopSchema, getAuthLicenseData, groupID} = this.props;
         getPromotionShopSchema({groupID});
         // 产品授权
-        getAuthLicenseData().then((res = {}) => {
+        getAuthLicenseData({productCode: 'HLL_CRM_Marketingbox'}).then((res = {}) => {
             this.setState({authLicenseData: res})
             let {authStatus} = checkAuthLicense(res)
-            this.setState({authStatus})
+            let {authPluginStatus} = checkAuthLicense(res, 'HLL_CRM_Marketingbox')
+            this.setState({authStatus, authPluginStatus})
         });
     }
     componentWillReceiveProps(nextProps) {
@@ -591,7 +593,7 @@ export default class EntryPage extends Component {
                     onEditOrPreviewBtnClick={this.handlePromotionEditOrPreviewBtnClick}
                 />
                 {createModalVisible && (
-                    <PromotionCreateModal onCancel={() => this.setState({createModalVisible: false})}/>
+                    <PromotionCreateModal authPluginStatus={this.state.authPluginStatus} onCancel={() => this.setState({createModalVisible: false})}/>
                 )}
             </div>
         )
