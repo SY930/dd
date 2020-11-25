@@ -1037,8 +1037,9 @@ class StepOneWithDateRange extends React.Component {
         // 判断日期格式是否合法,不合法不设置defaultValue
         let dateRangeProps;
         const disabledDate = (current) => {
-            let {pluginInfo, authPluginStatus} = checkAuthLicense(this.state.authLicenseData, 'HLL_CRM_Marketingbox')
-            let {authStartDate, authEndDate} = pluginInfo
+            let {pluginInfo = {}, authPluginStatus} = checkAuthLicense(this.state.authLicenseData, 'HLL_CRM_Marketingbox')
+            
+            let {authStartDate = '', authEndDate = ''} = pluginInfo
             authStartDate = moment(authStartDate, 'YYYYMMDD').format('YYYY-MM-DD')
             authEndDate = moment(authEndDate, 'YYYYMMDD').format('YYYY-MM-DD')
             let disabledDates = !current.isBetween(authStartDate, authEndDate, null, '()')

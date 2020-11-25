@@ -769,14 +769,12 @@ export function isFilterShopType(curType){
  * return       {authStatus, authPluginStatus} 产品授权状态
  */
 export function checkAuthLicense(licenseData, productCode = 'HLL_CRM_NEW', status = true) {
-    // console.log('cccc', licenseData, productCode)
     // 暂时关闭授权状态校验
     // if(!status) return {authStatus: true}
 
     let {basicLicenseStatus, plugins = []} = licenseData
     // 集团授权信息
     if(productCode === 'HLL_CRM_NEW'){
-        // return {authStatus: true}
         if(basicLicenseStatus == 1){
             return {authStatus: true};
         }else{
@@ -784,15 +782,6 @@ export function checkAuthLicense(licenseData, productCode = 'HLL_CRM_NEW', statu
         }
     }
     // 插件授权信息
-    // let mock = {
-    //     "productCode": "HLL_CRM_RFM",
-    //     "authStartDate": 20201118,
-    //     "licenseStatus": 1,
-    //     "authEndDate": 20201218,
-    //     "authType": "AUTH_TYPE_TIME",
-    //     "productName": "@null@"
-    // }
-    // return {pluginInfo: mock, authPluginStatus: true}
     if(!plugins || plugins.length <= 0){
         return {authPluginStatus: false}
     }else{

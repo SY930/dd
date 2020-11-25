@@ -109,8 +109,8 @@ export function eventLimitDateRender(d) {
                         allowClear={false}
                         disabledDate={(current) => {
                             const { authLicenseData } = this.props.createActiveCom;
-                            let {pluginInfo, authPluginStatus} = checkAuthLicense(authLicenseData, 'HLL_CRM_Marketingbox')
-                            let {authStartDate, authEndDate} = pluginInfo
+                            let {pluginInfo = {}, authPluginStatus} = checkAuthLicense(authLicenseData, 'HLL_CRM_Marketingbox')
+                            let {authStartDate = '', authEndDate = ''} = pluginInfo
                             authStartDate = moment(authStartDate, 'YYYYMMDD').format('YYYY-MM-DD')
                             authEndDate = moment(authEndDate, 'YYYYMMDD').format('YYYY-MM-DD')
                             let disabledDates = !current.isBetween(authStartDate, authEndDate, null, '()')
