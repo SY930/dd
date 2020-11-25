@@ -37,6 +37,10 @@ const apis = {
         path: '/api/specialPromotion/updateEvent_NEW',
         service: 'origin',
     },
+    getAuthLicenseData: {
+        path: '/crm/crmAuthLicenseService.queryCrmPluginLicenses.ajax',
+        service: service[0],
+    },
 };
 
 function gen(api) {

@@ -3,6 +3,7 @@ import { Input, Row, Col, DatePicker, Tooltip, Icon, Select, Radio, message } fr
 import styles from '../CreateActive.less'
 import moment from 'moment'
 import PriceInput from '../../../components/common/PriceInput/PriceInput'
+import { checkAuthLicense } from '../../../helpers/util';
 
 const { RangePicker } = DatePicker;
 const Option = Select.Option;
@@ -11,7 +12,7 @@ const RadioGroup = Radio.Group;
 
 // 活动说明的render函数
 export function renderEventRemark(d) {
-    const { formData } = this.props.createActiveCom;
+    const { formData, authLicenseData } = this.props.createActiveCom;
     return (
         <div className={styles.textAreaWrap}>
             {d({})(
@@ -50,7 +51,6 @@ export function eventDateRender(d) {
                         format="YYYY-MM-DD"
                         placeholder={['开始日期', '结束日期']}
                         allowClear={false}
-
                     />
                 )}
             </Col>
@@ -87,6 +87,8 @@ export function getDateCount() {
 
 // 起止日期的render函数
 export function eventLimitDateRender(d) {
+    //可作为营销盒子大礼包插件授权活动有以下：分享裂变、推荐有礼、膨胀大礼包、签到、集点卡、支付后广告、下单抽抽乐、盲盒  8个活动。
+    const authPulgins = ['65', '68', '66', '76', '75', '77', '78', '79'];
     this.getDateCount = getDateCount.bind(this)
     return (
         <Row style={{ display: 'flex', alignItems: 'center' }}>
@@ -105,9 +107,20 @@ export function eventLimitDateRender(d) {
                         format="YYYY-MM-DD"
                         placeholder={['开始日期', '结束日期']}
                         allowClear={false}
-                        disabledDate={
-                            current => current && current.format('YYYYMMDD') < moment().format('YYYYMMDD')
-                        }
+                        disabledDate={(current) => {
+                            const { authLicenseData } = this.props.createActiveCom;
+                            let {pluginInfo = {}, authPluginStatus} = checkAuthLicense(authLicenseData, 'HLL_CRM_Marketingbox')
+                            let {authStartDate = '', authEndDate = ''} = pluginInfo
+                            authStartDate = moment(authStartDate, 'YYYYMMDD').format('YYYY-MM-DD')
+                            authEndDate = moment(authEndDate, 'YYYYMMDD').format('YYYY-MM-DD')
+                            let disabledDates = !current.isBetween(authStartDate, authEndDate, null, '()')
+                            if(authPluginStatus){
+                                return disabledDates || current && current.format('YYYYMMDD') < moment().format('YYYYMMDD');
+                            }else{
+                                // Can not select days before today
+                                return current && current.format('YYYYMMDD') < moment().format('YYYYMMDD');
+                            }
+                        }}
                     />
                 )}
             </Col>

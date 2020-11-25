@@ -15,7 +15,7 @@ import styles from '../../SaleCenterNEW/ActivityPage.less';
 import ExportModal from "../../GiftNew/GiftInfo/ExportModal";
 import Cfg from '../../../constants/SpecialPromotionCfg';
 import Authority from '../../../components/common/Authority';
-import { saleCenterSetSpecialBasicInfoAC, saleCenterResetDetailInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
+import { saleCenterSetSpecialBasicInfoAC, saleCenterResetDetailInfoAC, getAuthLicenseData } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 
 import {
     toggleSelectedActivityStateAC,
@@ -57,7 +57,7 @@ import { crmCardTypeNew as sale_crmCardTypeNew } from '../../../redux/reducer/sa
 import { promotion_decoration as sale_promotion_decoration } from '../../../redux/reducer/decoration';
 import { selectPromotionForDecoration  } from '../../../redux/actions/decoration';
 import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
-import {axiosData} from "../../../helpers/util";
+import {axiosData, checkAuthLicense} from "../../../helpers/util";
 import {queryWeixinAccounts} from "../../../redux/reducer/saleCenterNEW/queryWeixinAccounts.reducer";
 import {
     SPECIAL_LOOK_PROMOTION_QUERY,
@@ -69,7 +69,9 @@ import PromotionCalendarBanner from "../../../components/common/PromotionCalenda
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_GIFT } from 'i18n/common/gift';
 import { STRING_SPE } from 'i18n/common/special';
+import { getStore } from '@hualala/platform-base'
 import { SALE_STRING } from 'i18n/common/salecenter'
+import EmptyPage from "../../../components/common/EmptyPage";
 import Chou2Le from "../../PromotionV3/Chou2Le";   // 抽抽乐
 import BlindBox from "../../PromotionV3/BlindBox";   // 盲盒
 
@@ -83,6 +85,7 @@ const mapStateToProps = (state) => {
         mySpecialActivities: state.sale_mySpecialActivities_NEW,
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
+        specialPromotion: state.sale_specialPromotion_NEW.toJS(),
         user: state.user.toJS(),
     };
 };
@@ -153,6 +156,9 @@ const mapDispatchToProps = (dispatch) => {
         toggleIsUpdate: (opts) => {
             dispatch(toggleIsUpdateAC(opts))
         },
+        getAuthLicenseData: (opts) => {
+            return dispatch(getAuthLicenseData(opts))
+        },
     };
 };
 
@@ -215,7 +221,9 @@ class MySpecialActivities extends React.Component {
             itemID: '',
             view: false,
             isShowCopyUrl: false,
-            urlContent: ''
+            urlContent: '',
+            authStatus: false, //
+            authLicenseData: {}
         };
         this.cfg = {
             eventWay: [
@@ -340,6 +348,31 @@ class MySpecialActivities extends React.Component {
         this.props.updateExpiredActiveState({
             groupID: this.props.user.accountInfo.groupID,
         })
+        // 产品授权
+        this.props.getAuthLicenseData().then((res) => {
+            this.setState({authLicenseData: res})
+            let {authStatus} = checkAuthLicense(res)
+            this.setState({authStatus})
+        });
+    }
+
+    // 产品授权
+    getAuthLicenseData = (opts) => {
+        axiosData(
+            '/crm/crmAuthLicenseService.queryCrmPluginLicenses.ajax?auth',
+            {
+                ...opts,
+                groupID: getStore().getState().user.getIn(['accountInfo', 'groupID'])
+            },
+            {},
+            { path: '' },
+            'HTTP_SERVICE_URL_CRM'
+        ).then((res) => {
+            let {data = {}} = res
+            this.setState({authLicenseData: data})
+            let {authStatus} = checkAuthLicense(this.state.authLicenseData)
+            this.setState({authStatus})
+        });
     }
 
     // TODO: the following code may be not the best implementation of filter
@@ -428,16 +461,23 @@ class MySpecialActivities extends React.Component {
     render() {
         const { v3visible, itemID, view, isShowCopyUrl, urlContent, curKey } = this.state;
         return (
-            <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
+            <div style={{backgroundColor: this.state.authStatus ? '#F3F3F3' : '#fff'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 {this.renderHeader()}
-                <PromotionCalendarBanner />
-                <div className={styles.pageContentWrapper} style={{ minHeight: 'calc(100vh - 160px)' }}>
-                    <div style={{ padding: '0'}} className="layoutsHeader">
-                        {this.renderFilterBar()}
-                        <div style={{ margin: '0'}} className="layoutsLine"></div>
-                    </div>
-                    {this.renderTables()}
-                </div>
+                {
+                    !this.state.authStatus ? 
+                        <EmptyPage /> : 
+                        <div>
+                            <PromotionCalendarBanner />
+                            <div className={styles.pageContentWrapper} style={{ minHeight: 'calc(100vh - 160px)' }}>
+                                <div style={{ padding: '0'}} className="layoutsHeader">
+                                    {this.renderFilterBar()}
+                                    <div style={{ margin: '0'}} className="layoutsLine"></div>
+                                </div>
+                                {this.renderTables()}
+                            </div>
+                        </div>
+
+                }
                 {this.renderModals()}
                 {this.renderUpdateModals()}
                 {
