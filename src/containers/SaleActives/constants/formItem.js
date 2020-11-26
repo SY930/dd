@@ -164,15 +164,6 @@ export const formItem = {
         labelCol: { span: 4 },
         wrapperCol: { span: 20 },
         rules: [{ required: true, message: '请选择消费券' }],
-        render(d) {
-            return d({})(<TreeSelect
-                dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                placeholder="请选择礼品名称"
-                showSearch={true}
-                treeNodeFilterProp="label"
-                allowClear={false}
-            />);
-        },
     },
     eventDate: {
         type: 'custom',

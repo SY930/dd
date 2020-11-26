@@ -1,7 +1,7 @@
 import React from 'react';
 import AddGift from './components/AddGift'
 import { formItem } from '../constants/formItem'
-
+import { TreeSelect } from 'antd';
 
 const {
     actType, eventName, eventRemark, eventLimitDate,

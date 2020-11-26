@@ -201,7 +201,23 @@ class Step2 extends React.Component {
         formItems2.afterPayJumpType.render =  afterPayJumpTypeRender.bind(this)
         if(formKeys2.includes('consumeGiftID')) {
             console.log(treeData)
-            formItems2.consumeGiftID.treeData = treeData
+            formItems2.consumeGiftID.options = treeData
+        }
+        let formItems = {
+            ...formItems2,
+            consumeGiftID: {
+                ...formItems2.consumeGiftID,
+                render(d) {
+                    return d({})(<TreeSelect
+                        treeData={treeData}
+                        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                        placeholder="请选择礼品名称"
+                        showSearch={true}
+                        treeNodeFilterProp="label"
+                        allowClear={false}
+                    />);
+                },
+            },
         }
         const { formData } = this.props.createActiveCom
         const { giftList = [] } = formData
@@ -230,7 +246,7 @@ class Step2 extends React.Component {
                                 <TabPane tab={`规则${index+1}`} key={index+1}>
                                     <BaseForm
                                         getForm={this.getForm(index)}
-                                        formItems={formItems2}
+                                        formItems={formItems}
                                         formData={formData}
                                         formKeys={formKeys2}
                                         key={`speForm${index}`}
