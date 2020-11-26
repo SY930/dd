@@ -8,7 +8,10 @@ import {
     Tooltip,
     Popconfirm,
     Select,
+    Modal,
+    Button,
 } from 'antd';
+import BaseForm from 'components/common/BaseForm';
 import {
     memoizedExpandCategoriesAndDishes,
 } from '../../../utils';
@@ -43,9 +46,11 @@ class SpecialDishesTableWithBrand extends Component {
         }
         this.state = {
             selectorModalVisible: false,
+            modifyModalVisible: false,
             priceFilterType: 'price',
             priceLst,
             data: [],
+            formKeys: ['setType', 'discount'],
         }
     }
     componentDidMount() {
@@ -79,13 +84,17 @@ class SpecialDishesTableWithBrand extends Component {
         if (!priceLst.length) return;
         const data = priceLst.reduce((acc, item) => {
             const dish = dishes.find(d => d.value === `${item.brandID || 0}__${item.foodName}${item.foodUnitName}`);
-            dish && (dish.newPrice = item.price, acc.push(dish));
+            if(dish){
+                dish.newPrice = item.price
+                dish.salePercent = Number(dish.newPrice) <= 0 ? '0' : Number(dish.newPrice) !== Number(dish.price) ? `${Number((Number(dish.newPrice) / dish.price * 10).toFixed(2))}` : '10'
+                acc.push(dish)
+            }
             return acc;
         }, [])
         this.setState({ data })
         this.props.onChange(data)
     }
-    onCellChange = (val, {index}) => {
+    onPriceCellChange = (val, {index}) => {
         const data = [...this.state.data];
         let num = val.number;
         const record = data[index];
@@ -95,6 +104,26 @@ class SpecialDishesTableWithBrand extends Component {
             num = '0';
         }
         record.newPrice = num;
+        record.salePercent = (num / record.price * 10).toFixed(2)
+        this.setState({data});
+        this.props.onChange(data.map(item => ({...item})));
+    }
+    onPercentCellChange = (val, {index}) => {
+        let reg = /^([0-9]*)(\.[0-9]{0,1})?$/
+        const data = [...this.state.data];
+        let num = val.number;
+        const record = data[index];
+        if (val.number > 10) {// 折扣不大于10
+            num = 10;
+        }else if (val.number < 0) {// 折扣不小于0
+            num = '0';
+        }
+        // 保留一位小数
+        if(!reg.test(val.number)){
+            num = val.number.slice(0, -1)
+        }
+        record.salePercent = num;
+        record.newPrice = (record.price * num / 10).toFixed(2)
         this.setState({data});
         this.props.onChange(data.map(item => ({...item})));
     }
@@ -115,7 +144,7 @@ class SpecialDishesTableWithBrand extends Component {
             const dishObj = dishes.find(item => item.value === curr);
             if (dishObj) {
                 const reservedDish = this.state.data.find(item => item.value === dishObj.value);
-                acc.push(reservedDish ? {...dishObj, newPrice: reservedDish.newPrice} : dishObj)
+                acc.push(reservedDish ? {...dishObj, newPrice: reservedDish.newPrice, salePercent: reservedDish.salePercent} : {...dishObj, salePercent: '10'})
             }
             return acc;
         }, [])
@@ -133,6 +162,11 @@ class SpecialDishesTableWithBrand extends Component {
     handleSelectDishes = () => {
         this.setState({
             selectorModalVisible: true,
+        })
+    }
+    handleModifyDishes = () => {
+        this.setState({
+            modifyModalVisible: true,
         })
     }
     renderFoodSelectorModal() {
@@ -161,9 +195,96 @@ class SpecialDishesTableWithBrand extends Component {
             />
         )
     }
+    /**
+     * form modal
+     */
+    handleFormChange = (key, value) => {
+        if(key == 'setType'){
+            let formKeys = []
+            if(value == '1') formKeys = ['setType', 'discount']
+            if(value == '2') formKeys = ['setType', 'price']
+            this.setState({formKeys})
+        }
+    }
+    handleOk = () => {
+        this.baseForm.validateFields((err, values) => {
+            let {setType, discount, price} = values
+            if (!err) {
+                const data = [...this.state.data];
+                if(setType == '1'){
+                    let val = {number: discount}
+                    data.forEach((item, index) => {
+                        this.onPercentCellChange(val, {index})
+                    })
+                }else{
+                    let val = {number: price}
+                    data.forEach((item, index) => {
+                        this.onPriceCellChange(val, {index})
+                    })
+                }
+                this.setState({modifyModalVisible: false})
+            }
+        });
+    }
+    renderPriceModifyModal() {
+        let {formKeys} = this.state
+        let formItems = {
+            setType: {
+                label: '设置方式',
+                type: 'radio',
+                labelCol: { span: 6 },
+                wrapperCol: { span: 14 },
+                options: [{label: '按折扣', value: '1'}, {label: '按活动价', value: '2'}],
+                defaultValue: '1',
+            },
+            discount: {
+                label: '折扣',
+                type: 'text',
+                placeholder: '保留一位小数',
+                labelCol: { span: 6 },
+                wrapperCol: { span: 14 },
+                rules: [{
+                    required: true,
+                    pattern: /^(([1-9]\d{0,1})(\.\d{0,1})?|0.\d?[1-9]{0})$/,
+                    message: '请输入0.1~10之间的数据，支持一位小数',
+                }],
+            },
+            price: {
+                label: '活动价',
+                type: 'text',
+                surfix: '元',
+                placeholder: '请输入数值',
+                labelCol: { span: 6 },
+                wrapperCol: { span: 14 },
+                rules: [{
+                    required: true,
+                    pattern: /^(([1-9]\d{0,5})(\.\d{0,2})?|0.\d?[1-9]{1})$/,
+                    message: '请输入0.01~100000之间的数据，支持两位小数',
+                }],
+            },
+        };
+        return (
+            <Modal
+                title="批量修改商品"
+                visible={true}
+                width="400px"
+                onOk={this.handleOk}
+                onCancel={() => this.setState({modifyModalVisible: false}) }
+            >
+                <BaseForm
+                    getForm={form => this.baseForm = form}
+                    formItems={formItems}
+                    formKeys={formKeys}
+                    onChange={this.handleFormChange}
+                />
+            </Modal>
+        )
+    }
+    
     render() {
         const {
             selectorModalVisible,
+            modifyModalVisible,
             data,
         } = this.state;
         const { intl } = this.props;
@@ -249,9 +370,9 @@ class SpecialDishesTableWithBrand extends Component {
                                 type="text"
                                 modal="float"
                                 placeholder={k6hfzdh8}
-                                value={{ number: record.newPrice }}
+                                value={{ number: record.newPrice ? record.newPrice : '0' }}
                                 index={index}
-                                onChange={(val) => { this.onCellChange(val, record) }}
+                                onChange={(val) => { this.onPriceCellChange(val, record) }}
                             />
                         </span>
                     )
@@ -292,7 +413,18 @@ class SpecialDishesTableWithBrand extends Component {
                 key: 'salePercent',
                 className: 'TableTxtCenter',
                 render: (text, record, index) => {
-                    return Number(record.newPrice) <= 0 ? '0'+k5ezdc19 : Number(record.newPrice) !== Number(record.price) ? `${Number((Number(record.newPrice) / record.price * 10).toFixed(1))}${k5ezdc19}` : k6hfzdpl
+                    return (
+                        <span className={styles.rightAlign}>
+                            <PriceInputIcon
+                                type="text"
+                                modal="float"
+                                placeholder={'10表示不打折'}
+                                value={{ number: record.salePercent == '10' ? '不打折' : record.salePercent }}
+                                index={index}
+                                onChange={(val) => { this.onPercentCellChange(val, record) }}
+                            />
+                        </span>
+                    )
                 },
             },
         ];
@@ -301,15 +433,23 @@ class SpecialDishesTableWithBrand extends Component {
             <FormItem className={styles.FormItemStyle}>
                 <Row>
                     <Col span={2}>
-        <span className={styles.gTitle}>{SALE_LABEL.k6hdpwcl}</span>
+                        <span className={styles.gTitle}>{SALE_LABEL.k6hdpwcl}</span>
                     </Col>
-                    <Col span={4} offset={18}>
-                        <a
-                            className={styles.gTitleLink}
+                    <Col span={4} offset={14}>
+                        <Button
+                            // className={styles.gTitleLink}
+                            onClick={this.handleModifyDishes}
+                        >
+                            {'批量修改商品'}
+                        </Button>
+                    </Col>
+                    <Col span={4} offset={0}>
+                        <Button
+                            // className={styles.gTitleLink}
                             onClick={this.handleSelectDishes}
                         >
-                            {SALE_LABEL.k5gfsv5b}{k5gfsuon}
-                        </a>
+                            {'批量添加商品'}
+                        </Button>
                     </Col>
                 </Row>
                 <Row>
@@ -323,6 +463,7 @@ class SpecialDishesTableWithBrand extends Component {
                     </Col>
                 </Row>
                 {selectorModalVisible && this.renderFoodSelectorModal()}
+                {modifyModalVisible && this.renderPriceModifyModal()}
             </FormItem>
         )
     }

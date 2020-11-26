@@ -139,13 +139,20 @@ class CardLevel extends React.Component {
             }
 
             const arr = [];
-            const excludeEvent = nextEventInfo.excludeEventCardLevelIdModelList || [];
+            let excludeEvent = nextEventInfo.excludeEventCardLevelIdModelList || [];
             // 遍历所有排除卡
             if (this.props.specialPromotion.get('$eventInfo').toJS().allCardLevelCheck) {
                 // true全部占用
                 this.setState({ getExcludeCardLevelIds: this.state.cardInfo })
             } else {
                 // false 无/局部 占用
+                // 生日赠送  时间区间内  占用卡情况
+                if(this.props.type == '51'){
+                    excludeEvent = excludeEvent.filter(item => {
+                        // 判断时间区间是否重合
+                        return !(item.eventStartDate > nextEventInfo.eventEndDate || item.eventEndDate < nextEventInfo.eventStartDate) || item.eventStartDate == '20000101' || item.eventEndDate == '29991231'
+                    })
+                }
                 excludeEvent.map((event) => {
                     event.cardLevelIDList && event.cardLevelIDList.map((card) => {
                         arr.push(card)
@@ -173,6 +180,10 @@ class CardLevel extends React.Component {
                 fun();
             } else {
                 this.setState({ allCheckDisabel: false })
+            }
+            // 有启用的开卡赠送活动的时候，会员范围只能选择会员卡类
+            if(this.props.type == '52' && nextProps.excludeCardTypeShops && nextProps.excludeCardTypeShops.length) {
+                fun()
             }
         }
     }
@@ -328,7 +339,7 @@ class CardLevel extends React.Component {
                                 })(
                                     <TreeSelect
                                         style={{ width: '100%' }}
-                                        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                                        dropdownStyle={{ maxHeight: 200, overflow: 'auto' }}
                                         placeholder={`${this.props.intl.formatMessage(STRING_SPE.d34id95hnj7281)}${this.props.catOrCard == 'card' ? `${this.props.intl.formatMessage(STRING_SPE.d34id95hnj8241)}` : `${this.props.intl.formatMessage(STRING_SPE.d170093144c11061)}`}`}
                                         allowClear={true}
                                         multiple={true}

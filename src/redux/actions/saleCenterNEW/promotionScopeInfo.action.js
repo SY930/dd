@@ -36,17 +36,17 @@ export const SCENARIOS = Object.freeze([{
 {
     value: '1',
     key: 'POS',
-    name: SALE_LABEL.k5krn6qx,
+    name: '仅线下使用',  //云店
 },
 {
     value: '2',
     key: 'WECHAT',
-    name: SALE_LABEL.k5krn6z9,
+    name: '仅线上使用',  //微信
 },
     {
     value: '3',
     key: 'YST',
-    name: SALE_LABEL.k5krn77l,
+    name: SALE_LABEL.k5krn77l,  //饮食通
 },
 ]);
 
@@ -62,10 +62,10 @@ export const fetchPromotionScopeInfo = (opts) => {
         dispatch({
             type: SALE_CENTER_FETCH_PROMOTION_SCOPE_INFO,
         });
-        axiosData('/crm/groupShopService_findSchemaShopcenterNew.ajax', {}, {}, {path: 'data'})
+        axiosData('/crm/groupShopService_findSchemaNew.ajax', {...opts}, {}, {path: 'data'})
             .then((data = {}) => {
-                data.citys = data.cities;
-                data.shopCategories = data.shopCategorys;
+                // data.citys = data.cities;
+                // data.shopCategories = data.shopCategorys;
                 dispatch(getPromotionShopSchemaSuccess(data));
                 dispatch(fetchPromotionScopeInfoSuccess(data));
             },
@@ -80,13 +80,12 @@ export const getPromotionShopSchema = (params) => {
             type: SALE_CENTER_GET_SHOP_SCHEMA,
         });
 
-        axiosData('/crm/groupShopService_findSchemaNew.ajax', {}, {}, {path: 'data'})
+        axiosData('/crm/groupShopService_findSchemaNew.ajax', {...params}, {}, {path: 'data'})
             .then(data => dispatch(getPromotionShopSchemaSuccess(data)),
                 error => dispatch(getPromotionShopSchemaFailed()))
             .catch(err => console.log('err: ', err))
     };
 };
-
 export const saleCenterResetShopSchemaAC = (opts) => {
     return {
         type: SALE_CENTER_RESET_SHOP_SCHEMA,

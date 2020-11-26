@@ -1,4 +1,6 @@
 ﻿import Immutable, { List } from 'immutable';
+
+// 定义参考 ../action.jsx 文件
 import {
     GIFT_NEW_FETCH_LIST_BEGIN,
     GIFT_NEW_FETCH_LIST_OK,
@@ -21,8 +23,10 @@ import {
     GIFT_NEW_EMPTY_GET_SHARED_GIFTS,
     GIFT_NEW_QUOTA_CARD_SHOP_BY_BATCHNO,
     GIFT_NEW_QUOTA_CARD_BATCHNO,
+    GIFT_NEW_QUOTA_CARD_CANSELL_LIST,
     GIFT_NEW_QUERY_WECHAT_MPINFO_START,
     GIFT_NEW_QUERY_WECHAT_MPINFO_SUCCESS,
+    GIFT_NEW_QUERY_WECHAT_MPAPPINFO_SUCCESS,
     GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL,
     GIFT_NEW_FETCH_SEND_TOTAL_OK,
     GIFT_NEW_FETCH_USED_TOTAL_OK,
@@ -83,11 +87,16 @@ const $initialState = Immutable.fromJS({
     sharedGifts: [],
     shopsByBatchNo: [],
     batchNoInfo: [],
+    quotaCardCanSellInfo: [],
     mpList: [],
+    mpAndAppList: [],
     mpListLoading: false,
 });
+
+
 export function editGiftInfoNew($$state = $initialEditState, action) {
     switch (action.type) {
+        // 创建建礼品
         case GIFT_NEW_START_CREATE_GIFT:
             return $$state
                 .set('isCreatingOrEditing', true)
@@ -95,6 +104,7 @@ export function editGiftInfoNew($$state = $initialEditState, action) {
                 .set('currentGiftType', action.payload.value)
                 .set('createOrEditFormData', Immutable.fromJS(action.payload.data))
                 ;
+        // 编辑礼品
         case GIFT_NEW_START_EDIT_GIFT:
             return $$state
                 .set('isCreatingOrEditing', true)
@@ -189,6 +199,8 @@ export function giftInfoNew($$state = $initialState, action) {
             return $$state.set('shopsByBatchNo', Immutable.fromJS(action.payload.dataSource));
         case GIFT_NEW_QUOTA_CARD_BATCHNO:
             return $$state.set('batchNoInfo', Immutable.fromJS(action.payload.dataSource));
+        case GIFT_NEW_QUOTA_CARD_CANSELL_LIST:
+            return $$state.set('quotaCardCanSellInfo', Immutable.fromJS(action.payload.dataSource));
         case GIFT_NEW_FETCH_SEND_TOTAL_OK:
             return $$state.set('totalSendCount', action.payload.total || 0);
         case GIFT_NEW_FETCH_USED_TOTAL_OK:
@@ -203,7 +215,13 @@ export function giftInfoNew($$state = $initialState, action) {
         case GIFT_NEW_QUERY_WECHAT_MPINFO_START:
             return $$state.set('mpListLoading', true);
         case GIFT_NEW_QUERY_WECHAT_MPINFO_SUCCESS:
-            return $$state.set('mpList', Immutable.fromJS(action.payload)).set('mpListLoading', false);
+            return $$state
+                .set('mpList', Immutable.fromJS(action.payload.mpList))
+                .set('mpListLoading', false);
+        case GIFT_NEW_QUERY_WECHAT_MPAPPINFO_SUCCESS:
+            return $$state
+                .set('mpAndAppList', Immutable.fromJS(action.payload.mpAndAppList))
+                .set('mpListLoading', false);
         case GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL:
             return $$state.set('mpListLoading', false);
         default:

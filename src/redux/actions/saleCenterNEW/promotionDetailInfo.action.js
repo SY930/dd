@@ -249,7 +249,7 @@ const fetchFoodMenuSuccess = (opts) => { // opts: { pageHeader: Object, records:
  * 原始菜品单品信息请求成功action
  * @param {opts}: { pageHeader: Object, records: Food[] } 原始菜品单品信息
  */
-const getRawFoodMenuSuccess = ({ records }) => {
+const getRawFoodMenuSuccess = ({ records = [] }) => {
     return {
         type: SALE_CENTER_FETCH_RAW_FOOD_MENU_SUCCESS,
         payload: {records},
@@ -313,7 +313,7 @@ export const fetchFoodMenuInfoAC = (params = {}, isHuaTian, subGroupID) => {
         } else {
             return axiosData('/shopapi/queryGroupFood.svc', { ...params, bookID: 0, pageNo: -1}, {}, {path: 'data'}, 'HTTP_SERVICE_URL_SHOPAPI')
                     .then(
-                        records => {
+                        (records = []) => {
                             dispatch(fetchFoodMenuSuccess(records));
                             dispatch(getRawFoodMenuSuccess(records));
                         },

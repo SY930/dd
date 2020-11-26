@@ -1,5 +1,6 @@
 import React, { PureComponent as Component } from 'react';
-import { Modal, Button, Tabs, Icon, message } from 'antd';
+import { Modal, Button, Tabs, Icon, message, Popover } from 'antd';
+import moment from 'moment';
 import styles from './index.less';
 import InfoTable from './InfoTable';
 import TotalTable from './TotalTable';
@@ -10,6 +11,7 @@ import PresentForm from './PresentForm';
 import { imgURI } from '../Common';
 import ExportModal from '../../ExportModal';
 import RefundModal from './RefundModal';
+import { axiosData } from 'helpers/util';
 
 const TabPane = Tabs.TabPane;
 class Detail extends Component {
@@ -29,6 +31,7 @@ class Detail extends Component {
         pageObj4: {},
         visible: '',             // 弹层是否显示
         selectedRowKeys: [],     // 退款ids
+        popVisible: false,
     };
     componentDidMount() {
         const params = {pageSize: 10};
@@ -94,7 +97,7 @@ class Detail extends Component {
     }
     /* 关闭窗口 */
     onCloseModal = () => {
-        this.setState({ visible: '' });
+        this.setState({ visible: '', sameItemID: '' });
     }
     /* 关闭窗口 */
     onCloseRefund = () => {
@@ -105,16 +108,95 @@ class Detail extends Component {
     onSelectChange = (selectedRowKeys) => {
         this.setState({ selectedRowKeys });
     }
+    onPopChange = (popVisible) => {
+        this.setState({ popVisible });
+    };
+    onExport(visible) {
+        const { detail: { couponPackageInfo = []} } = this.props;
+        const { couponPackageID } = couponPackageInfo;
+        const { queryParams, queryParams2 } = this.state;
+        const sendorUsedParams = (visible === 'send') ? queryParams : queryParams2;
+        const { sendTimeBegin, sendTimeEnd, getWay, couponPackageStatus: giftStatus,
+            customerMobile, usingTimeBegin, usingTimeEnd } = sendorUsedParams;
+        let params = { getWay, giftStatus, couponPackageID, mobileNum: customerMobile };
+        const DF2 = 'YYYY-MM-DD HH:mm:ss';
+        const DF = 'YYYYMMDDHHmmss';
+        if (visible === 'send') {
+            const [sd, ed] = [sendTimeBegin, sendTimeEnd];
+            const startDate = sd ? moment(sd, DF).format(DF2) : '';
+            const endDate = ed ? moment(ed, DF).format(DF2) : '';
+            const dateObj = { startDate, endDate };
+            params = { ...params, ...dateObj };
+        }else{
+            const [sd, ed] = [usingTimeBegin, usingTimeEnd];
+            const useStartTime = sd ? moment(sd, DF).format(DF2) : '';
+            const useEndTime = ed ? moment(ed, DF).format(DF2) : '';
+            const dateObj = { useStartTime, useEndTime };
+            params = { ...params, ...dateObj, giftStatus: '3' };
+        }
+        axiosData('/crm/couponPackage/export.ajax', params, null, {
+            path: 'data',
+        }).then((records) => {
+            if(records.sameRequest){
+                this.setState({
+                    popContent: '已有导出任务 请勿重复操作，',
+                    popA: '查看导出结果',
+                    sameItemID: records.sameItemID,
+                })
+            }else{
+                this.setState({
+                    popContent: '数据导出中 请',
+                    popA: '查看导出进度',
+                })
+            }
+            this.setState({
+                popVisible: true,
+                visibleType: visible,
+            });
+        });
+    }
+    openOther = () => {
+        const { visibleType } = this.state;
+        this.setState({
+            popVisible: false,
+            visible: visibleType,
+            isExist: true,
+        });
+    };
+    renderPopOver = () => {
+        const { popContent = '', popA ='' } = this.state;
+        return(
+            <div style={{width: 'auto'}}>
+                <span>{popContent}</span>
+                <a style={{ color: '#1AB495' }} onClick={this.openOther}>{popA}</a>
+            </div>
+        );
+    }
+    handleCancellation = (record) => () => {
+        console.log('record',record)
+        axiosData('/couponPackage/invalidCustomerCouponPackage.ajax', {
+            customerCouponPackID: record.customerCouponPackID
+        }, null, {
+            path: '',
+        },'HTTP_SERVICE_URL_PROMOTION_NEW').then((res) => {
+
+            if(res.code === '000') {
+                this.onQueryList({pageSize: 10});
+            }
+        });
+    }
     render() {
         const { list, loading, pageObj, visible, selectedRowKeys } = this.state;
         const { list2, loading2, pageObj2 } = this.state;
         const { list3, loading3, pageObj3 } = this.state;
-        const { detail: { couponPackageInfo = [], shopInfos = [], couponPackageGiftConfigs = [] } } = this.props;
+        const { queryParams, queryParams2, isExist, popVisible, sameItemID } = this.state;
+        const { detail: { couponPackageInfo = [], couponPackageGiftConfigs = [] } } = this.props;
         const { couponPackageImage, couponPackageName, createTime, couponPackageID,
             couponPackageDesciption, remainStock = 0, sendCount = 0 } = couponPackageInfo;
         const { onClose, ids } = this.props;
         const imgSrc = couponPackageImage || 'basicdoc/706f75da-ba21-43ff-a727-dab81e270668.png';
         const resetStock = remainStock === -1 ? '不限制' : remainStock;
+        const sendorUsedParams = (visible === 'send') ? queryParams : queryParams2;
         return (
             <Modal
                 title="券包使用详情"
@@ -154,29 +236,40 @@ class Detail extends Component {
                         <h3>数据统计</h3>
                         <Tabs defaultActiveKey="1" className="tabsStyles">
                             <TabPane tab="发出数" key="1">
-                                {/* <Button
-                                    type="ghost"
-                                    name="export"
-                                    disabled={!list[0]}
-                                    className={styles.expBtn}
-                                    onClick={this.onOpenModal}
-                                ><Icon type="export" />导出</Button> */}
+                                <Popover
+                                    content={this.renderPopOver()}
+                                    placement="topRight"
+                                    title={false}
+                                    trigger="click"
+                                    visible={popVisible}
+                                    onVisibleChange={this.onPopChange}
+                                >
+                                    <Button
+                                        type="ghost"
+                                        name="send"
+                                        disabled={!list[0]}
+                                        className={styles.expBtn}
+                                        onClick={()=>this.onExport('send')}
+                                    ><Icon type="export" />导出</Button>
+                                </Popover>
                                 <QueryForm onQuery={this.onQueryList} />
                                 <MainTable
                                     list={list}
                                     loading={loading}
                                     pageObj={pageObj}
                                     onQuery={this.onQueryList}
+                                    handleCancellation={this.handleCancellation}
                                 />
                             </TabPane>
                             <TabPane tab="使用数" key="2">
                                 <QueryForm type={2} onQuery={this.onQueryList2} />
-                                {/* <Button
+                                <Button
                                     type="ghost"
+                                    name="used"
                                     disabled={!list2[0]}
                                     className={styles.expBtn}
-                                    onClick={this.onToggleModal}
-                                ><Icon type="export" />导出</Button> */}
+                                    onClick={()=>this.onExport('used')}
+                                ><Icon type="export" />导出</Button>
                                 <MainTable
                                     type={2}
                                     list={list2}
@@ -203,13 +296,16 @@ class Detail extends Component {
                         </Tabs>
                     </li>
                 </ul>
-                {visible === 'export' &&
+                {['send', 'used'].includes(visible) &&
                     <ExportModal
                         giftItemID={couponPackageID}
                         giftName={couponPackageName}
-                        activeKey="send"
-                        newExport // 除了礼品定额卡之外的导出, 复用组件
+                        activeKey={visible}
+                        isTicketBag={true}
+                        sendorUsedParams={sendorUsedParams}
                         handleClose={this.onCloseModal}
+                        isExist={isExist}
+                        sameItemID={sameItemID}
                     />
                 }
                 {visible === 'refund' &&

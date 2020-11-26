@@ -288,14 +288,15 @@ class GiftDetailTable extends Component {
         });
     }
 
-    handleEdit(rec, operationType) {
-        let gift = _.find(GiftCfg.giftType, { name: rec.giftTypeName });
+    // 用户点击编辑，处理编辑
+    handleEdit(record, operationType) {
+        let gift = _.find(GiftCfg.giftType, { name: record.giftTypeName });
         const selectShops = [];
         if(!gift){
             return;
         }
         gift = _.cloneDeep(gift);
-        gift.data = { ...rec }; // 此处将原引用GiftCfg改变了，导致在新建活动的时候，有data等属性，表单里会有此处留下的值
+        gift.data = { ...record }; // 此处将原引用GiftCfg改变了，导致在新建活动的时候，有data等属性，表单里会有此处留下的值
         gift.data.shopNames = gift.data.shopNames === '不限' ? [] : gift.data.shopNames.split(',');
         gift.data.shopIDs = gift.data.shopIDs === undefined ? [] : gift.data.shopIDs.split(',');
         gift.data.shopNames.map((shop, idx) => {
@@ -315,8 +316,11 @@ class GiftDetailTable extends Component {
         gift.data.maxUseLimit = gift.data.maxUseLimit || undefined;
         gift.data.customerUseCountLimit = gift.data.customerUseCountLimit || undefined;
         gift.data.action = `${gift.data.action || 0}`;
+        gift.data.valueType = `${gift.data.valueType}`;
+        gift.data.monetaryUnit = `${gift.data.monetaryUnit}`;
+        
         const { FetchSharedGifts } = this.props;
-        FetchSharedGifts({ giftItemID: rec.giftItemID });
+        FetchSharedGifts({ giftItemID: record.giftItemID });
         if (gift.value == 100) { //
             return message.success('该券即将下线, 请使用折扣券');
         }
@@ -548,6 +552,16 @@ class GiftDetailTable extends Component {
                 type: 'text',
                 placeholder: '请输入礼品名称',
             },
+            giftItemID: {
+                label: '礼品ID',
+                type: 'text',
+                placeholder: '请输入礼品ID',
+            },
+            giftPWD: {
+                label: '券编码',
+                type: 'text',
+                placeholder: '请输入券编码',
+            },
             giftType: {
                 label: '礼品类型',
                 type: 'combo',
@@ -579,7 +593,7 @@ class GiftDetailTable extends Component {
                 ],
             },
         };
-        const formKeys = ['giftName', 'giftType', 'brandID', 'action'];
+        const formKeys = ['giftName', 'giftItemID', 'giftPWD', 'giftType', 'brandID', 'action'];
         const headerClasses = `layoutsToolLeft ${styles2.headerWithBgColor} ${styles2.basicPromotionHeader}`;
         const { tabkey } = this.props;
         const { groupID } = this.props.user.accountInfo;

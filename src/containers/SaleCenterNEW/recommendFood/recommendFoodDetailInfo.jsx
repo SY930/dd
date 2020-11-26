@@ -216,6 +216,14 @@ class RecommendFoodDetailInfo extends React.Component {
             }
         }
     }
+    handleFilterRecommendDishes = (index) => {
+        let {foodRuleList} = this.state
+        let {priceList} = foodRuleList[index]
+        let filteredPriceList = priceList.filter(item => item.stageNo == -1)
+        let curFoodRuleList = {...foodRuleList[index], priceList: filteredPriceList}
+
+        return [curFoodRuleList]
+    }
     render() {
         const {
             foodRuleList,
@@ -335,7 +343,7 @@ class RecommendFoodDetailInfo extends React.Component {
                                             this.props.form.getFieldDecorator(`priceList${index}`, {
                                                 initialValue: item.priceList.filter(item => item.stageNo == -1),
                                                 onChange: (val) =>  this.autoDishesChange(val, index)
-                                            })(<ConnectedPriceListSelector foodRuleList={this.state.foodRuleList} index={0} isShopMode={this.props.isShopFoodSelectorMode} />)
+                                            })(<ConnectedPriceListSelector foodRuleList={this.handleFilterRecommendDishes(index)} index={0} isShopMode={this.props.isShopFoodSelectorMode} />)
                                         }
                                     </FormItem>
                                 </div>

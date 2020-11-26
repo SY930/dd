@@ -50,7 +50,7 @@ class GiftType extends React.Component {
     }
     render() {
         const value = this.state.gift.value;
-        const giftTypes = GiftCfg.giftType
+        const giftTypes = GiftCfg.giftType;
         const GiftAdd = (v) => {
             switch (v) {
                 case '10':

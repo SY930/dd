@@ -1,15 +1,19 @@
+/**
+ *
+ * @description 营销活动（新） 入口文件
+*/
+
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import BasePage from "./BasePage";
 import registerPage from '../../../index';
-import {NEW_SALE_BOX} from "../../constants/entryCodes";
+import {NEW_SALE_BOX,SALE_CENTER_PAYHAVEGIFT} from "../../constants/entryCodes";
 import { axiosData } from '../../helpers/util';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from './IntlDecor';
 import selfStyle from './NewCustomerPage.less';
 import newPic from './assets/new.png';
-import hot from './assets/hot.png';
+
 import {
     Modal,
     message
@@ -21,7 +25,8 @@ import {
     LOYALTY_PROMOTION_TYPES,
     SALE_PROMOTION_TYPES,
     ONLINE_PROMOTION_TYPES,
-} from '../../constants/promotionType';
+    CRM_PROMOTION_TYPES,
+} from 'constants/promotionType';
 import NewPromotionCard from "./NewPromotionCard";
 const limitedTypes = [
     '67',
@@ -32,7 +37,9 @@ const UNRELEASED_PROMOTION_TYPES = [
 import {
     saleCenterCheckExist,
     saleCenterResetDetailInfoAC as saleCenterResetSpecialDetailInfoAC,
-    saleCenterSetSpecialBasicInfoAC
+    saleCenterSetSpecialBasicInfoAC,
+    saleCenterSetSpecialBasicInfoCardGroupID,
+    saleCenterSaveCreateMemberGroupParams
 } from "../../redux/actions/saleCenterNEW/specialPromotion.action";
 import {
     fetchFoodCategoryInfoAC,
@@ -58,7 +65,15 @@ import {
 import BasicActivityMain from '../SaleCenterNEW/activityMain';
 import { axios } from '@hualala/platform-base';
 import { getStore } from '@hualala/platform-base'
+import Chou2Le from "../PromotionV3/Chou2Le";   // 抽抽乐
+import BlindBox from "../PromotionV3/BlindBox";   // 盲盒
+import { jumpPage, closePage } from '@hualala/platform-base';
 
+import {setThemeClass} from '../../utils/index'
+// 跳转到带装修的活动设置页面
+const activityList = [
+    '80', '66'
+]
 @registerPage([NEW_SALE_BOX], {
 })
 @connect(mapStateToProps, mapDispatchToProps)
@@ -72,10 +87,92 @@ class NewCustomerPage extends Component {
         specialModalVisible: false,
         specialIndex: 0,
         currentCategoryIndex: 0,
+        v3visible: false,       // 第三版活动组件是否显示
+        curKey: '',             //当前活动入口值
     }
 
     componentDidMount() {
         this.getWhite();
+        this.fromCrmJump();
+    }
+    componentWillReceiveProps(){
+        // todo:上线放开
+        this.fromCrmJump();
+    }
+    getQueryVariable() {
+        const search = window.decodeURIComponent(window.location.search)
+        var query = search.substr(1)
+        query = query.split('&')
+        var params = {}
+        for (let i = 0; i < query.length; i++) {
+            let q = query[i].split('=')
+            if (q.length === 2) {
+                params[q[0]] = q[1]
+            }
+        }
+        return params
+    }
+    fromCrmJump(){
+        const  {
+            from,
+            type,
+            gmID,
+            totalMembers,
+            groupMembersName,
+            groupID,
+            levelKey,
+            levelType,
+            monetaryType,
+            reportMonth,
+            createBy,
+        } = this.getQueryVariable()
+        // 测试使用
+        // const  {
+        //     from = 'rfm',
+        //     type,
+        //     gmID,
+        //     totalMembers,
+        //     groupMembersName,
+        //     groupID = '1155' ,
+        //     levelKey = 'LH',
+        //     levelType = '0',
+        //     monetaryType = '0',
+        //     reportMonth = '2020-05',
+        //     createBy = 'wenjie'
+        // } = this.getQueryVariable()
+
+
+
+        if(from === 'rfm') {
+            const item = CRM_PROMOTION_TYPES[53];
+            this.handleNewPromotionCardClick(item);
+            this.props.setSpecialPromotionCardGroupID(`${groupMembersName} -- 【共${totalMembers}人】`);
+            this.props.saveRFMParams({
+                groupID ,
+                levelKey ,
+                levelType ,
+                monetaryType ,
+                reportMonth ,
+                creator: createBy
+            })
+            this.clearUrl();
+
+        } else {
+            const saleID =  type;
+            if(!saleID){
+                return;
+            }
+            const item = CRM_PROMOTION_TYPES[saleID];
+            this.handleNewPromotionCardClick(item);
+            this.props.setSpecialPromotionCardGroupID(gmID);
+            this.clearUrl();
+        }
+
+    }
+    clearUrl(){
+        var { href } = window.location;
+        var [valiable] = href.split('?'); 
+        window.history.pushState(null, null, valiable);
     }
     getWhite(){
         axiosData(
@@ -104,6 +201,8 @@ class NewCustomerPage extends Component {
         }
         message.error(msg);
     }
+
+    // 点击营销卡片处理函数
     handleNewPromotionCardClick(promotionEntity) {
         const { key, isSpecial} = promotionEntity;
         if (HUALALA.ENVIRONMENT === 'production-release' && UNRELEASED_PROMOTION_TYPES.includes(`${key}`)) {
@@ -117,6 +216,8 @@ class NewCustomerPage extends Component {
             this.handleBasicPromotionCreate(basicIndex, promotionEntity)
         }
     }
+
+    // 创建基础营销
     handleBasicPromotionCreate(index, promotionEntity) {
         if (isHuaTian(this.props.user.accountInfo.groupID)) {
             message.warning(BASIC_PROMOTION_CREATE_DISABLED_TIP);
@@ -150,6 +251,8 @@ class NewCustomerPage extends Component {
             this.props.saleCenterResetBasicDetailInfo();
         }
     }
+
+    // 创建特色营销
     handleSpecialPromotionCreate(index, activity) {
         // 唤醒送礼 品牌不可创建
         if ('63' === activity.key && isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
@@ -170,31 +273,38 @@ class NewCustomerPage extends Component {
             eventWay: key,
         });
         // 完善资料送礼只能创建一次
-        if (key === '60') {
-            if (isHuaTian()) {
-                return message.warning(SPECIAL_PROMOTION_CREATE_DISABLED_TIP);
-            }
-            this.props.saleCenterCheckSpecialExist({
-                eventWay: key,
-                data: {
-                    groupID: user.accountInfo.groupID,
-                    eventWay: key,
-                },
-                success: (val) => {
-                    if (key === '60' && val.serviceCode === 1) {
-                        message.warning(SALE_LABEL.k6316h4o);
-                    } else {
-                        this.setSpecialModalVisible(true);
-                        this.props.setSpecialPromotionType({
-                            eventName: activity.title,
-                        });
-                    }
-                },
-                fail: () => {
-                    message.error(SALE_LABEL.k5dmw1z4);
-                },
-            });
-            return;
+        // if (key === '60') {
+        //     if (isHuaTian()) {
+        //         return message.warning(SPECIAL_PROMOTION_CREATE_DISABLED_TIP);
+        //     }
+        //     this.props.saleCenterCheckSpecialExist({
+        //         eventWay: key,
+        //         data: {
+        //             groupID: user.accountInfo.groupID,
+        //             eventWay: key,
+        //         },
+        //         success: (val) => {
+        //             if (key === '60' && val.serviceCode === 1) {
+        //                 message.warning(SALE_LABEL.k6316h4o);
+        //             } else {
+        //                 this.setSpecialModalVisible(true);
+        //                 this.props.setSpecialPromotionType({
+        //                     eventName: activity.title,
+        //                 });
+        //             }
+        //         },
+        //         fail: () => {
+        //             message.error(SALE_LABEL.k5dmw1z4);
+        //         },
+        //     });
+        //     return;
+        // }
+
+        if(activityList.includes(key)) {
+           setTimeout(() => {
+            jumpPage({ menuID: SALE_CENTER_PAYHAVEGIFT, typeKey: key})
+           }, 100);
+           return closePage(SALE_CENTER_PAYHAVEGIFT)
         }
         this.setSpecialModalVisible(true);
     }
@@ -236,10 +346,11 @@ class NewCustomerPage extends Component {
         );
     }
     renderSpecialPromotionModal() {
-        const promotionType = this.props.saleCenter.get('characteristicCategories').toJS()[this.state.specialIndex].title;
+        const { title:promotionType } = this.props.saleCenter.get('characteristicCategories').toJS()[this.state.specialIndex];
         const { intl } = this.props;
         const create = intl.formatMessage(COMMON_STRING.create);
         const title = <p>{create} {promotionType}</p>;
+
         return (
             <Modal
                 wrapClassName={'progressBarModal'}
@@ -267,9 +378,13 @@ class NewCustomerPage extends Component {
         );
     }
 
-
+    //** 第三版 重构 抽抽乐活动 点击事件 */
+    onV3Click = (key) => {
+        if(key) this.setState({curKey: key})
+        this.setState(ps => ({ v3visible: !ps.v3visible }));
+    }
     render() {
-        const {whiteList} = this.state;
+        const {whiteList, v3visible, curKey} = this.state;
         const { intl } = this.props;
         const k6316hto = intl.formatMessage(SALE_STRING.k6316hto);
         const k6316hd0 = intl.formatMessage(SALE_STRING.k6316hd0);
@@ -316,12 +431,8 @@ class NewCustomerPage extends Component {
         ];
         const { currentCategoryIndex } = this.state;
         const displayList = currentCategoryIndex === 0 ? ALL_PROMOTION_CATEGORIES.slice(1) : [ALL_PROMOTION_CATEGORIES[currentCategoryIndex - 1]];
+
         return (
-            // <BasePage
-            //     categoryTitle={k6316hto}
-            //     promotions={NEW_CUSTOMER_PROMOTION_TYPES}
-            //     whiteList={whiteList}
-            // />
             <div className={selfStyle.newDiv}>
                 <div className={selfStyle.titleArea}>营销活动</div>
                 <div className={selfStyle.grayBar}></div>
@@ -344,7 +455,7 @@ class NewCustomerPage extends Component {
                                 <div className={selfStyle.contentTitle}>{title}</div>
                                 <div className={selfStyle.cardWrapper}>
                                     {
-                                        list.map((item, index) => (
+                                        list.filter(item => !item.isOffline).map((item, index) => (
                                             <NewPromotionCard
                                                 size="special"
                                                 key={item.key}
@@ -354,6 +465,7 @@ class NewCustomerPage extends Component {
                                                 whiteList={whiteList}
                                                 text={item.text}
                                                 onClickOpen={this.onClickOpen}
+                                                onV3Click={()=>{this.onV3Click(item.key)}}
                                             />
                                         ))
                                     }
@@ -364,6 +476,8 @@ class NewCustomerPage extends Component {
                 </div>
                 {this.renderBasicPromotionModal()}
                 {this.renderSpecialPromotionModal()}
+                { (v3visible && curKey == '78') && <Chou2Le onToggle={this.onV3Click} />}
+                { (v3visible && curKey == '79') && <BlindBox onToggle={this.onV3Click} />}
             </div>
         )
     }
@@ -414,6 +528,12 @@ function mapDispatchToProps(dispatch) {
         fetchFoodMenuInfo: (opts) => {
             dispatch(fetchFoodMenuInfoAC(opts))
         },
+        setSpecialPromotionCardGroupID: (opts) => {
+            dispatch(saleCenterSetSpecialBasicInfoCardGroupID(opts));
+        },
+        saveRFMParams: (opts) => {
+            dispatch(saleCenterSaveCreateMemberGroupParams(opts))
+        }
     }
 }
 

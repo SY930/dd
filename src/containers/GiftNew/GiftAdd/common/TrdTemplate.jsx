@@ -31,11 +31,15 @@ import {
 } from '../../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import {
     queryWechatMpInfo,
+    queryWechatMpAndAppInfo,
 } from '../../_action';
 import PriceInput from '../../../SaleCenterNEW/common/PriceInput'
 import styles from '../Crm.less';
 import selfStyle from './selfStyle.less';
 import GiftImagePath from './GiftImagePath';
+import { axios } from '@hualala/platform-base';
+import {  axiosData } from '../../../../helpers/util';
+
 const RangePicker = DatePicker.RangePicker;
 
 const FormItem = Form.Item
@@ -107,12 +111,51 @@ const AVAILABLE_TIME_OPTIONS = (() => {
     options.unshift({value: '0', label: '立即生效'});
     return options;
 })()
+
+const otherChannelList = [
+    {
+        value: '10',
+        label: '微信优惠券'
+    },
+    {
+        value: '50',
+        label: '微信支付商家券'
+    }
+]
+const validateWayList = [
+    {
+        value: 'OFF_LINE',
+        label: '出示二维码核销'
+    },
+    {
+        value: 'MINI_PROGRAMS',
+        label: '跳转小程序使用'
+    },
+    // {
+    //     value: 'PAYMENT_CODE',
+    //     label: '跳转微信付款码核销'
+    // },
+]
+
+const joinWayList = [
+    {
+        value: '1',
+        label: '公众号'
+    },
+    {
+        value: '2',
+        label: '小程序'
+    },
+]
+// 代金券，兑换券和折扣券
+const itemList = ['10','21','111']
 class TrdTemplate extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             defaultChecked: false,
             mpList: [], // 公众号
+            mpAndAppList: [], // 公众号/小程序
             trdTemplateInfoList: [], // 第三方券模版
             channelIDStatus: true,
             mpIDStatus: true,
@@ -130,6 +173,13 @@ class TrdTemplate extends React.Component {
             endTimestamp: undefined,
             appID: undefined,
             brandName: undefined,
+            trdChannelID: '10',
+            validateWay: 'OFF_LINE',
+            settleId: '',
+            masterMerchantID: '',
+            appsList: [],
+            linksList: [],
+            payChannelList: []
         };
         this.wrapperDOM = null;
     }
@@ -139,10 +189,29 @@ class TrdTemplate extends React.Component {
         if (this.props.data) {
             this.propsChange(this.props.data)
             if (this.props.data.trdTemplateInfo) {
+                const trdTemplateInfo = JSON.parse(this.props.data.trdTemplateInfo)
+                const {merchantInfo,validMiniProgramsInfo,miniProgramsInfo} = trdTemplateInfo
+                if(merchantInfo) {
+                    trdTemplateInfo.settleId = merchantInfo.settleId
+                }
+                if(validMiniProgramsInfo) {
+                    trdTemplateInfo.miniProgramsAppId1 = validMiniProgramsInfo.miniProgramsAppId
+                    trdTemplateInfo.miniProgramsPath1 = validMiniProgramsInfo.miniProgramsPath
+                }
+                if(miniProgramsInfo) {
+                    trdTemplateInfo.miniProgramsAppId2 = miniProgramsInfo.miniProgramsAppId
+                    trdTemplateInfo.miniProgramsPath2 = miniProgramsInfo.miniProgramsPath
+                    trdTemplateInfo.entranceWords = miniProgramsInfo.entranceWords
+                }
+                if(trdTemplateInfo.trdChannelID === '50') {
+                    this.getMiniProgramsAppIdList()
+                    this.getlinks()
+                    this.getPayChannel()
+                }
                 this.setState({
                     defaultChecked: true,
                     bindType: 1,
-                    ...JSON.parse(this.props.data.trdTemplateInfo)
+                    ...trdTemplateInfo
                 })
             } else {
                 const { extraInfo, trdChannelID, trdTemplateID } = this.props.data
@@ -165,13 +234,21 @@ class TrdTemplate extends React.Component {
         // 公众号
         const mpList = this.props.mpList.toJS()
         mpList.length === 0 ? this.props.queryWechatMpInfo() : null
-        this.setState({ mpList: mpList || [] })
+
+        this.props.queryWechatMpAndAppInfo()
+        const mpAndAppList = this.props.mpAndAppList ? this.props.mpAndAppList : []
+
+        this.setState({ mpList: mpList || [], mpAndAppList: mpAndAppList || [] })
     }
 
     componentWillReceiveProps(nextProps) {
         if (this.props.mpList !== nextProps.mpList) {
             const mpList = nextProps.mpList.toJS()
             this.setState({ mpList: mpList || [] })
+        }
+        if (this.props.mpAndAppList !== nextProps.mpAndAppList) {
+            const mpAndAppList = nextProps.mpAndAppList || []
+            this.setState({mpAndAppList: mpAndAppList || []})
         }
     }
     popIntoView = () => {
@@ -189,6 +266,7 @@ class TrdTemplate extends React.Component {
             this.props.onChange(data);
             return
         }
+
         // 新建时
         if (this.state.bindType === 0) {
             this.validatorTemp().then((TrdTemplateStatus) => {
@@ -208,6 +286,7 @@ class TrdTemplate extends React.Component {
             })
         } else {
             let TrdTemplateStatus = true;
+            const {giftItemId} = this.props
             const {
                 defaultChecked,
                 mpID,
@@ -221,6 +300,20 @@ class TrdTemplate extends React.Component {
                 endTimestamp,
                 appID,
                 brandName,
+                trdChannelID,
+                maxAmount,
+                quantity,
+                maxCanRecvCount,
+                validateWay,
+                joinWay,
+                settleId,
+                masterMerchantID,
+                miniProgramsAppId1,
+                miniProgramsPath1,
+                miniProgramsAppId2,
+                miniProgramsPath2,
+                entranceWords,
+                payChannelList
             } = this.state;
             if (!mpID) TrdTemplateStatus = false;
             if (!notice || notice.length > 16 ) TrdTemplateStatus = false;
@@ -230,6 +323,73 @@ class TrdTemplate extends React.Component {
             } else {
                 if (!beginTimestamp || !endTimestamp) TrdTemplateStatus = false
             }
+            if(itemList.includes(giftItemId)) {
+                // 通过隐藏的校验
+                if(trdChannelID === '50') {
+                    TrdTemplateStatus = true;
+                    let checkList = [mpID,maxCanRecvCount,settleId]
+                    const currentMerchant = payChannelList.find(v => v.settleID === settleId)
+                    const jsonData = {
+                        appID,
+                        trdChannelID,
+                        mpID,
+                        type,
+                        validateWay,
+                        joinWay,
+                        maxCanRecvCount,
+                        merchantInfo: {
+                            merchantID: currentMerchant ? currentMerchant.merchantID : '',
+                            settleId,
+                            masterMerchantID
+                        }
+                    }
+                    if(giftItemId === '10') {
+                        checkList.push(maxAmount)
+                        jsonData.maxAmount = maxAmount
+                    } else {
+                        checkList.push(quantity)
+                        jsonData.quantity = quantity
+                    }
+
+                    if(validateWay === 'MINI_PROGRAMS') {
+                        checkList = checkList.concat(miniProgramsAppId1,miniProgramsPath1)
+                        jsonData.validMiniProgramsInfo = {
+                            miniProgramsAppId: miniProgramsAppId1,
+                            miniProgramsPath: miniProgramsPath1
+                        }
+                    }
+                    if(joinWay == '2') {
+                        checkList = checkList.concat(miniProgramsAppId2,miniProgramsPath2,entranceWords)
+                        jsonData.miniProgramsInfo = {
+                            miniProgramsAppId: miniProgramsAppId2,
+                            miniProgramsPath: miniProgramsPath2,
+                            entranceWords
+                        }
+                    }
+                    if(type === FIX_TERM) {
+                        checkList = checkList.concat(fixedBeginTerm,fixedTerm)
+                        jsonData.fixedBeginTerm = fixedBeginTerm
+                        jsonData.fixedTerm = fixedTerm
+                    }
+                    if(type === FIX_TIME_RANGE) {
+                        checkList = checkList.concat(beginTimestamp,endTimestamp)
+                        jsonData.beginTimestamp = beginTimestamp
+                        jsonData.endTimestamp = endTimestamp
+                    }
+                    if(checkList.filter(v => !v).length) {
+                        // TrdTemplateStatus = false
+                    }
+                    // console.log('checkList',checkList,TrdTemplateStatus)
+
+                    this.props.onChange(defaultChecked ? {
+                        TrdTemplateStatus,
+                        trdTemplateInfo: JSON.stringify(jsonData)
+                    } : undefined)
+                    // console.log('jsonData',jsonData)
+                    return
+                }
+            }
+
             this.props.onChange(defaultChecked ? {
                 TrdTemplateStatus,
                 trdTemplateInfo: JSON.stringify({
@@ -244,6 +404,7 @@ class TrdTemplate extends React.Component {
                     fixedTerm: type === FIX_TERM ? fixedTerm : undefined,
                     beginTimestamp: type === FIX_TIME_RANGE ? beginTimestamp : undefined,
                     endTimestamp: type === FIX_TIME_RANGE ? endTimestamp : undefined,
+                    trdChannelID: itemList.includes(giftItemId) ? trdChannelID : undefined
                 })
             } : undefined)
         }
@@ -251,6 +412,7 @@ class TrdTemplate extends React.Component {
     // 校验表单
     validatorTemp = () => {
         const { defaultChecked, channelID, mpID, trdGiftItemID } = this.state
+
         if (!defaultChecked) return Promise.resolve(true)
         let TrdTemplateStatus = true;
         let channelIDStatus = true;
@@ -260,6 +422,7 @@ class TrdTemplate extends React.Component {
         if (channelID == 10 && !mpID) { mpIDStatus = false; TrdTemplateStatus = false; }
         if (!trdGiftItemID) { trdGiftItemIDStatus = false; TrdTemplateStatus = false; }
         if (SIMPLE_TRD_CHANNEL_IDS.includes(Number(channelID))) { trdGiftItemIDStatus = true; TrdTemplateStatus = true; }
+
         this.setState({ channelIDStatus, mpIDStatus, trdGiftItemIDStatus })
         return Promise.resolve(TrdTemplateStatus)
     }
@@ -387,6 +550,17 @@ class TrdTemplate extends React.Component {
             this.propsChange() // 向父传递
         })
     }
+    // 正向绑定微信ID选择
+    handleMpAndAppIDChange = (value) => {
+        const mpInfo = this.state.mpAndAppList.find(item => item.appID === value) || {};
+        this.setState({
+            mpID: mpInfo.mpID || '',
+            appID: value,
+            brandName: mpInfo.mpName,
+        }, () => {
+            this.propsChange() // 向父传递
+        })
+    }
     // 三方模板选择
     handleTrdTemplate = (value) => {
         this.setState({ trdGiftItemID: value }, () => {
@@ -434,7 +608,477 @@ class TrdTemplate extends React.Component {
             this.propsChange()
         })
     }
+    handleTrdChannelIDChange = (value) => {
+        if(value === '50') {
+            this.getMiniProgramsAppIdList()
+            this.getlinks()
+            this.getPayChannel()
+        }
+        this.setState({ trdChannelID: value }, () => {
+            this.propsChange()
+        })
+    }
+    handlePriceInputChange = (key) => (value) => {
+        this.setState({  [key]: value.number }, () => {
+            this.propsChange()
+        })
+    }
+    handleSelectChange = (key) => (value) => {
+        if(key === 'validateWay' && value !== 'MINI_PROGRAMS') {
+            this.setState({
+                miniProgramsAppId1: '',
+                miniProgramsPath1: ''
+            })
+        }
+        if(key === 'joinWay' && value !== '2') {
+            this.setState({
+                miniProgramsAppId2: '',
+                miniProgramsPath2: '',
+                entranceWords: ''
+            })
+        }
+        if(key === 'settleId') {
+            let {payChannelList} = this.state
+            let [{masterMerchantID = ''}] = payChannelList.filter((item) => value == item.settleID)
+            this.setState({masterMerchantID})
+        }
+        this.setState({  [key]: value }, () => {
+            this.propsChange()
+        })
+    }
+    getMiniProgramsAppIdList = () => {
+        axiosData('/miniProgramCodeManage/getApps', {
+            groupID: this.props.accountInfo.toJS().groupID,
+            page: {
+                "current": 1,
+                "pageSize": 10000000,
+                }
+         }, null, {
+            path: '',
+        }, 'HTTP_SERVICE_URL_WECHAT')
+            .then((res) => {
+                 const {result,apps} = res
+                 const code = (result || {}).code
+                 if(code === '000') {
+                     this.setState({
+                        appsList: apps || []
+                     })
+                 }
+            })
+    }
+    getlinks = () => {
+        axiosData('/link/getlinks', {
+            type: 'mini_menu_type',
+         }, null, {
+            path: '',
+        }, 'HTTP_SERVICE_URL_WECHAT')
+            .then((res) => {
+                 const {result,linkList} = res
+                 const code = (result || {}).code
+                 if(code === '000') {
+                     this.setState({
+                        linksList: linkList || []
+                     })
+                 }
+            })
+    }
+    getPayChannel = () => {
+
+        axiosData(`/wxpay/getPayChannel?groupID=${this.props.accountInfo.toJS().groupID}`, {
+
+         }, null, {
+            path: '',
+        }, 'HTTP_SERVICE_URL_ISV_API')
+            .then((res) => {
+
+                 const {result,payChannelList} = res
+                 const code = (result || {}).code
+                 if(code === '000') {
+                     this.setState({
+                        payChannelList: payChannelList || []
+                     })
+                 }
+            })
+    }
+    checkMaxAmount = () => {
+        const {maxAmount} = this.state
+
+        if( maxAmount < 0.01 || maxAmount > 100000000  ) {
+            return {
+                status: false,
+                msg: '请输入0.01～100000000之间的数字，支持两位小数'
+            }
+        }
+        if(!maxAmount) {
+            return {
+                status: false,
+                msg: '请输入总预算金额'
+            }
+        }
+        return {
+            status: true,
+            msg: ''
+        }
+    }
+    checkQuantity = () => {
+        const { quantity } = this.state
+
+        if( quantity < 1 || quantity > 1000000000  ) {
+            return {
+                status: false,
+                msg: '请输入1～1000000000之间的整数'
+            }
+        }
+        if(!quantity) {
+            return {
+                status: false,
+                msg: '请输入发放总数量'
+            }
+        }
+        return {
+            status: true,
+            msg: ''
+        }
+    }
+    checkMaxCanRecvCount = () => {
+        const { maxCanRecvCount } = this.state
+        if( maxCanRecvCount < 1 || maxCanRecvCount >  100  ) {
+            return {
+                status: false,
+                msg: '请输入1～100之间的整数'
+            }
+        }
+        if(!maxCanRecvCount){
+            return {
+                status: false,
+                msg: '请输入用户最大可领个数'
+            }
+        }
+        return {
+            status: true,
+            msg: ''
+        }
+    }
+    handleEntranceWordsChange = (e) => {
+        this.setState({ entranceWords: e.target.value }, () => {
+            this.propsChange()
+        })
+    }
+    renderMiniPrograms = (type) => {
+        const {  appsList, linksList } = this.state
+        const edit = this.props.type === 'edit';
+        const miniProgramsAppId = this.state[`miniProgramsAppId${type}`]
+        const miniProgramsPath = this.state[`miniProgramsPath${type}`]
+        return (
+            <div>
+            <FormItem
+                label='小程序名称'
+                validateStatus={ miniProgramsAppId ? 'success' : 'error'}
+                help={ miniProgramsAppId ? null : '请选择小程序名称'}
+                {...itemStyle}
+            >
+                <Select value={miniProgramsAppId}
+                        onChange={this.handleSelectChange(`miniProgramsAppId${type}`)}
+                        disabled={edit}
+                        getPopupContainer={(node) => node.parentNode}
+                        placeholder="请选择小程序名称"
+                >
+                    {
+                        appsList.map(mp => {
+                            return <Option key={mp.appID} value={mp.appID}>{mp.nickName}</Option>
+                        })
+                    }
+                </Select>
+            </FormItem>
+            <FormItem
+                label='页面路径'
+                {...itemStyle}
+                validateStatus={ miniProgramsPath ? 'success' : 'error'}
+                help={ miniProgramsPath ? null : '请选择页面路径'}
+            >
+                <Select value={miniProgramsPath}
+                        onChange={this.handleSelectChange(`miniProgramsPath${type}`)}
+                        disabled={edit}
+                        getPopupContainer={(node) => node.parentNode}
+                        placeholder="请选择页面路径"
+                >
+                    {
+                        linksList.map(mp => {
+                            const data = mp.value || {}
+                            return <Option key={data.urlTpl} value={data.urlTpl}>{data.title}</Option>
+                        })
+                    }
+                </Select>
+            </FormItem>
+        </div>
+        )
+    }
+    wxPayShopCoupon = () => {
+        const {giftItemId} = this.props
+        const {
+            mpList,
+            mpAndAppList,
+            mpID,
+            appID,
+            color,
+            notice,
+            logoUrl,
+            fixedBeginTerm,
+            fixedTerm,
+            beginTimestamp,
+            endTimestamp,
+            type, // 微信
+            trdChannelID,
+            maxAmount ,// 总预算金额
+            quantity, //发放总数量
+            maxCanRecvCount, // 用户最大可用数
+            validateWay , // 核销方式
+            joinWay,
+            settleId, // 账务主体
+            entranceWords,
+            payChannelList
+        } = this.state;
+        const edit = this.props.type === 'edit';
+        // 何时生效禁用
+        const fixedBeginTermAbleList = ['代金券', '折扣券', '菜品兑换券']
+        const fixedBeginTermAble = fixedBeginTermAbleList.includes(this.props.describe)
+
+        const styleColor = AVAILABLE_WECHAT_COLORS.find(item => item.value === color).styleValue;
+        const isNoticeLengthAllowed = (notice || '').length > 0 && (notice || '').length <= 16
+
+        let mpTitle = (
+            <span>
+                <span>绑定公众号/小程序</span>
+                <Tooltip title={(
+                    <p>用于微信发券并获取用户信息后，给用户发哗啦啦的券，否则用户只能在卡包看到券，无法在公众号/小程序的个人中心看到券</p>
+                )}>
+                    <Icon style={{ marginLeft: 5, marginRight: 5}} type="question-circle" />
+                </Tooltip>
+            </span>
+        )
+        return (
+            <div>
+                <FormItem
+                    label='账务主体'
+                    {...itemStyle}
+                    validateStatus={settleId ? 'success' : 'error'}
+                    help={settleId ? null : '请选择商家券发放账务主体'}
+                >
+                    <Select value={settleId}
+                        onChange={this.handleSelectChange('settleId')}
+                        disabled={edit}
+                        getPopupContainer={(node) => node.parentNode}
+                        placeholder="请选择商家券发放账务主体"
+                    >
+                        {
+                            payChannelList.map((mp,i) => {
+                                return <Option key={mp.settleID} value={mp.settleID}>{mp.settleName}</Option>
+                            })
+                        }
+                    </Select>
+                </FormItem>
+                <FormItem
+                    label={mpTitle}
+                    {...itemStyle}
+                    validateStatus={appID ? 'success' : 'error'}
+                    help={appID ? null : '请选择公众号'}
+                >
+                    <Select value={appID}
+                        onChange={this.handleMpAndAppIDChange}
+                        disabled={edit}
+                        getPopupContainer={(node) => node.parentNode}
+                        placeholder="请选择公众号"
+                    >
+                        {
+                            mpAndAppList.map(mp => {
+                                return <Option key={mp.appID} value={mp.appID}>{mp.mpName}</Option>
+                            })
+                        }
+                    </Select>
+                </FormItem>
+                {giftItemId === '10' &&
+                    <FormItem
+                        label="总预算金额"
+                        {...itemStyle}
+                        validateStatus={ this.checkMaxAmount().status ? 'success' : 'error'}
+                        help={this.checkMaxAmount().msg}
+                    >
+                        <PriceInput
+                            modal="float"
+                            disabled={edit}
+                            value={{number: maxAmount}}
+                            onChange={this.handlePriceInputChange('maxAmount')}
+                        />
+                    </FormItem>
+                }
+                { (giftItemId === '21' || giftItemId === '111') &&
+                    <FormItem
+                        label="发放总数量"
+                        {...itemStyle}
+                        validateStatus={this.checkQuantity().status ? 'success' : 'error'}
+                        help={this.checkQuantity().msg}
+                    >
+                        <PriceInput
+                            modal="int"
+                            disabled={edit}
+                            value={{number: quantity}}
+                            onChange={this.handlePriceInputChange('quantity')}
+                        />
+                    </FormItem>
+                }
+
+                <FormItem
+                    label="用户最大可领个数"
+                    {...itemStyle}
+                    validateStatus={ this.checkMaxCanRecvCount().status ? 'success' : 'error'}
+                    help={ this.checkMaxCanRecvCount().msg}
+                >
+                    <PriceInput
+                        modal="int"
+                        disabled={edit}
+                        value={{number: maxCanRecvCount}}
+                        onChange={this.handlePriceInputChange('maxCanRecvCount')}
+                    />
+                </FormItem>
+
+                <FormItem
+                    label="生效方式"
+                    {...itemStyle}
+                    required={false}
+                >
+                    <RadioGroup
+                        onChange={this.handleTimeTypeChange}
+                        value={type}
+                        disabled={edit}
+                    >
+                        <Radio value={FIX_TERM}>相对有效期</Radio>
+                        <Radio value={FIX_TIME_RANGE}>固定有效期</Radio>
+                    </RadioGroup>
+                </FormItem>
+                {
+                    type === FIX_TIME_RANGE && (
+                        <FormItem
+                            label="固定有效期"
+                            {...itemStyle}
+                            validateStatus={beginTimestamp ? 'success' : 'error'}
+                            help={beginTimestamp ? null : '请选择固定有效期'}
+                        >
+                            <RangePicker
+                                disabled={edit}
+                                format="YYYY-MM-DD"
+                                value={beginTimestamp && endTimestamp ?
+                                    [moment.unix(beginTimestamp), moment.unix(endTimestamp)] : []
+                                }
+                                onChange={this.handleTimeRangeChange}
+                                disabledDate={
+                                    (current) => current && current.format('YYYYMMDD') < moment().format('YYYYMMDD')
+                                }
+                            />
+                        </FormItem>
+                    )
+                }
+                {
+                    type === FIX_TERM && (
+                        <FormItem
+                            label="何时生效"
+                            {...itemStyle}
+                            required={false}
+                        >
+                            <Select value={fixedBeginTerm}
+                                    onChange={this.handleFixedBeginTermSelect}
+                                    disabled={edit || fixedBeginTermAble}
+                                    getPopupContainer={(node) => node.parentNode}
+                            >
+                                {
+                                    AVAILABLE_TIME_OPTIONS.map(({ value, label }) => (
+                                        <Option key={value} value={value}>{label}</Option>
+                                    ))
+                                }
+                            </Select>
+                        </FormItem>
+                    )
+                }
+                {
+                    type === FIX_TERM && (
+                        <FormItem
+                            label="有效天数"
+                            {...itemStyle}
+                            validateStatus={fixedTerm > 0 ? 'success' : 'error'}
+                            help={fixedTerm > 0 ? null : '请设置有效天数'}
+                        >
+                            <PriceInput
+                                modal="int"
+                                disabled={edit}
+                                value={{number: fixedTerm}}
+                                onChange={this.handleFixedTermChange}
+                                placeholder="请设置有效天数"
+                                addonAfter="天"
+                                maxNum={5}
+                            />
+                        </FormItem>
+                    )
+                }
+                <FormItem
+                    label='核销方式'
+                    {...itemStyle}
+                >
+                    <Select value={validateWay}
+                            onChange={this.handleSelectChange('validateWay')}
+                            disabled={edit}
+                            getPopupContainer={(node) => node.parentNode}
+                    >
+                        {
+                            validateWayList.map(mp => {
+                                return <Option key={mp.value} value={mp.value}>{mp.label}</Option>
+                            })
+                        }
+                    </Select>
+                </FormItem>
+                {validateWay === 'MINI_PROGRAMS' && (
+                   this.renderMiniPrograms(1)
+                )}
+
+                <FormItem
+                    label='自定义入口'
+                    {...itemStyle}
+                    required={false}
+                >
+                    <Select value={joinWay}
+                            onChange={this.handleSelectChange('joinWay')}
+                            disabled={edit}
+                            getPopupContainer={(node) => node.parentNode}
+                            placeholder="请选择配置自定义入口"
+                    >
+                        {
+                            joinWayList.map(mp => {
+                                return <Option key={mp.value} value={mp.value}>{mp.label}</Option>
+                            })
+                        }
+                    </Select>
+                </FormItem>
+                {
+                    joinWay == '2' && (
+                        <div>
+                            <FormItem
+                                label='标题'
+                                validateStatus={ entranceWords ? 'success' : 'error'}
+                                help={ entranceWords ? null : '请输入标题'}
+                                {...itemStyle}
+                            >
+                                <Input value={entranceWords} onChange={this.handleEntranceWordsChange} />
+                            </FormItem>
+                            {this.renderMiniPrograms(2)}
+                        </div>
+                    )
+                }
+
+            </div>
+        )
+    }
     renderWxCouponCreateForm() {
+        // 代金券id 为10 ，菜品兑换券为21，折扣券为111
+        const {giftItemId} = this.props
+
         const {
             mpList,
             mpID,
@@ -446,11 +1090,33 @@ class TrdTemplate extends React.Component {
             beginTimestamp,
             endTimestamp,
             type, // 微信
+            trdChannelID
         } = this.state;
         const edit = this.props.type === 'edit';
         const styleColor = AVAILABLE_WECHAT_COLORS.find(item => item.value === color).styleValue;
         const isNoticeLengthAllowed = (notice || '').length > 0 && (notice || '').length <= 16
-        return (
+        const trdChannel = (
+            <div>
+                <FormItem
+                    label='第三方渠道'
+                    {...itemStyle}
+                >
+                    <Select value={trdChannelID}
+                            onChange={this.handleTrdChannelIDChange}
+                            disabled={edit}
+                            getPopupContainer={(node) => node.parentNode}
+                    >
+                        {
+                            otherChannelList.map(mp => {
+                                return <Option key={mp.value} value={mp.value}>{mp.label}</Option>
+                            })
+                        }
+                    </Select>
+                </FormItem>
+            </div>
+        )
+
+        const wxForm =   (
             <div>
                 <FormItem
                     label='微信公众号选择'
@@ -531,6 +1197,7 @@ class TrdTemplate extends React.Component {
                         wrapperHeight={240}
                         limit={1024}
                         hint="图片建议尺寸：300像素 x 300像素，大小不超过1MB"
+                        hasSize={true}
                         value={logoUrl}
                         onChange={this.handleLogoUrlChange}
                     />
@@ -611,6 +1278,20 @@ class TrdTemplate extends React.Component {
                     )
                 }
             </div>
+        )
+
+        const wxPayShopCoupon = this.wxPayShopCoupon(trdChannelID)
+
+        const elementList = [wxForm]
+        if(itemList.includes(String(giftItemId)) ) {
+            elementList.splice(0,0,trdChannel)
+            if(trdChannelID === '50') {
+                elementList.splice(1,1,wxPayShopCoupon)
+            }
+        }
+
+        return (
+            elementList.map(v => v)
         )
     }
     renderDefaultTrdForm() {
@@ -715,7 +1396,11 @@ class TrdTemplate extends React.Component {
             loading,
             bindType,
         } = this.state;
-        const edit = this.props.type === 'edit';
+        const { type} = this.props
+
+        const edit =  type === 'edit';
+        const {giftItemId} = this.props
+
         return (
             <div ref={e => this.wrapperDOM = e}>
                 <Spin spinning={loading}>
@@ -755,7 +1440,7 @@ class TrdTemplate extends React.Component {
                                         disabled={edit}
                                     >
                                         <Radio value={0}>关联第三方渠道</Radio>
-                                        <Radio value={1}>创建微信优惠券</Radio>
+                                        <Radio value={1}>{itemList.includes(String(giftItemId)) ? '同步创建三方券' : '创建微信优惠券'}</Radio>
                                     </RadioGroup>
                                     {
                                         bindType === 0 ? (
@@ -765,7 +1450,7 @@ class TrdTemplate extends React.Component {
                                                 title="同步后，需要等待微信审核，预计一个工作日，审核通过后才能领取"
                                             >
                                                 <Icon style={{ color: '#379ff1' }} type="question-circle-o" />
-                                            </Tooltip> 
+                                            </Tooltip>
                                         )
                                     }
                                 </FormItem>
@@ -787,6 +1472,7 @@ function mapStateToProps(state) {
     return {
         accountInfo: state.user.get('accountInfo'),
         mpList: state.sale_giftInfoNew.get('mpList'),
+        mpAndAppList: state.sale_giftInfoNew.get('mpAndAppList').toJS(),
     }
 }
 
@@ -795,6 +1481,7 @@ function mapDispatchToProps(dispatch) {
         queryUnbindCouponPromotion: opts => dispatch(queryUnbindCouponPromotion(opts)),
         fetchAllPromotionList: opts => dispatch(fetchAllPromotionListAC(opts)),
         queryWechatMpInfo: () => dispatch(queryWechatMpInfo()),
+        queryWechatMpAndAppInfo: () => dispatch(queryWechatMpAndAppInfo()),
     };
 }
 

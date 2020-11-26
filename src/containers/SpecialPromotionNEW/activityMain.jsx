@@ -43,6 +43,32 @@ import {
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
 
+const _pages = [
+    NewBirthdayGift, // 生日赠送
+    NewCardGive, // 开卡赠送
+    NewFreeGet, // 免费领取
+    NewShackGift, // 摇奖
+    NewScoreConvert, // 积分兑换
+    NewSignUp, // 限时报名
+    NewSendGifts, // 群发礼品
+    NewSendMsgs, // 群发短信
+    NewPerfectReturnGift, // 完善资料送礼
+    NewUpGradeReturnGift, // 升级送礼
+    NewAddUpReturnGift, // 累计消费送礼
+    NewOnLineReturnGift, // 线上送礼
+    // NewColorsEggCat, 彩蛋猫活动下线 key 70
+    NewWakeUpReturnGift, // 唤醒送礼
+    NewColorsEggCat, // 评价送礼，复用彩蛋猫
+    GiveGiftsToNewFollowers, // 关注送礼 key 31
+    ShareGifts,
+    ExpansionGifts,
+    InstantDiscount,
+    RecommendGifts,
+    AccumulateGift,
+    PayAfter,
+    NewCheckGift,
+];
+
 // 模态框内容组件， 左边为SideBar, 内容区域为 CustomProgressBar
 @injectIntl
 class ActivityMain extends React.Component {
@@ -50,7 +76,7 @@ class ActivityMain extends React.Component {
         super(props);
         this.state = {
             current: 0, // 模态框当前步骤
-            pages: [],
+            // pages: [],
             promotionType: this.props.saleCenter.get('characteristicCategories').toJS(),
         };
 
@@ -82,56 +108,24 @@ class ActivityMain extends React.Component {
         }
     }
 
-    /**
-     * 加载所有的营销活动页，并转换对应的React组件存放到 state属性 pages中存储。
-     * 用户点击对应的index加载对应的页面内容（营销活动）
-     */
+
     componentDidMount() {
-        const activityCategories = this.state.promotionType;
-        const _pages = [
-            NewBirthdayGift, // 生日赠送
-            NewCardGive, // 开卡赠送
-            NewFreeGet, // 免费领取
-            NewShackGift, // 摇奖
-            NewScoreConvert, // 积分兑换
-            NewSignUp, // 限时报名
-            NewSendGifts, // 群发礼品
-            NewSendMsgs, // 群发短信
-            NewPerfectReturnGift, // 完善资料送礼
-            NewUpGradeReturnGift, // 升级送礼
-            NewAddUpReturnGift, // 累计消费送礼
-            NewOnLineReturnGift, // 线上送礼
-            // NewColorsEggCat, 彩蛋猫活动下线 key 70
-            NewWakeUpReturnGift, // 唤醒送礼
-            NewColorsEggCat, // 评价送礼，复用彩蛋猫
-            GiveGiftsToNewFollowers, // 关注送礼 key 31
-            ShareGifts,
-            ExpansionGifts,
-            InstantDiscount,
-            RecommendGifts,
-            AccumulateGift,
-            PayAfter,
-            NewCheckGift,
-        ];
-        const pages = _pages.map((promotion, index) => {
-            return React.createElement(promotion, {
-                callbacktwo: (arg) => {
-                    this.props.callbackthree(arg);
-                },
-                key: index,
-                isNew: this.props.isNew,
-                promotionType: activityCategories[index].key,
-                component: promotion,
-            });
-        });
-        this.setState({
-            pages,
-        });
+
     }
 
     // 渲染对应的营销活动页面
     renderActivityTags() {
-        return this.state.pages[this.props.index];
+        const activityCategories = this.state.promotionType;
+        const { index } = this.props;
+        return React.createElement(_pages[index], {
+            callbacktwo: (arg) => {
+                this.props.callbackthree(arg);
+            },
+            key: index,
+            isNew: this.props.isNew,
+            promotionType: activityCategories[index].key,
+            component: _pages[index],
+        });
     }
     render() {
         const index = this.props.index;

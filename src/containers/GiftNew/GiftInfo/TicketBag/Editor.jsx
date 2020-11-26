@@ -1,3 +1,7 @@
+/**
+ * @description  新增券包的券包编辑页面
+ * 
+*/
 import React, { PureComponent as Component } from 'react';
 import { Button, message, Alert } from 'antd';
 import moment from 'moment';
@@ -14,7 +18,6 @@ import { putTicketBag, postTicketBag } from './AxiosFactory';
 export default class Editor extends Component {
     state = {
         newFormKeys: formKeys,
-        isOver: false,
     }
     keys = formKeys;
     /**
@@ -34,13 +37,6 @@ export default class Editor extends Component {
             }
             this.keys = [newA, newB];
             this.setState({ newFormKeys: [newA, newB] });
-            const { getFieldsValue } = this.form;
-            const { couponPackageGiftConfigs } = getFieldsValue();
-            if(value === '1') {
-                this.validIsOver(couponPackageGiftConfigs);
-                return;
-            }
-            this.setState({ isOver: false });
         }
         if (key==='couponSendWay') {
             if(value === '1'){
@@ -63,36 +59,6 @@ export default class Editor extends Component {
             this.keys = [newA, newB];
             this.setState({ newFormKeys: [newA, newB] });
         }
-        if(key==='couponPackageGiftConfigs') {
-            const { getFieldsValue } = this.form;
-            const { isAutoRefund } = getFieldsValue();
-            if(isAutoRefund === '1') {
-                this.validIsOver(value);
-                return;
-            }
-            this.setState({ isOver: false });
-        }
-        if(key==='isAutoRefund') {
-            const { getFieldsValue } = this.form;
-            const { couponPackageGiftConfigs } = getFieldsValue();
-            if(value === '1') {
-                this.validIsOver(couponPackageGiftConfigs);
-                return;
-            }
-            this.setState({ isOver: false });
-        }
-    }
-    validIsOver(couponPackageGiftConfigs) {
-        const isOver = couponPackageGiftConfigs.some(x=>{
-            if(x.effectType==='1'){
-                return +x.giftValidUntilDayCount > 90;
-            }
-            if(x.effectType==='2'){
-                const diff = moment(x.validUntilDate).diff(moment(x.effectTime), 'days');
-                return diff > 90;
-            }
-        });
-        this.setState({ isOver });
     }
     /** 得到form */
     getForm = (form) => {
@@ -165,7 +131,6 @@ export default class Editor extends Component {
     onSave = () => {
         this.form.validateFields((e, v) => {
             if (!e) {
-                const { isOver } = this.state;
                 const { groupID, detail } = this.props;
                 const { sellTime, couponPackageGiftConfigs, shopInfos: shops, sendTime,
                         cycleType, validCycle, couponPackagePrice2, couponPackagePrice,
@@ -179,10 +144,6 @@ export default class Editor extends Component {
                         message.warning('必须选择一个日期');
                         return;
                     }
-                }
-                if(isOver){
-                    message.warning('请删除有效期超过90天的礼品');
-                    return;
                 }
                 let dateObj = {};
                 if(sellTime && sellTime[0]) {
@@ -217,7 +178,7 @@ export default class Editor extends Component {
 
     }
     render() {
-        const { newFormKeys, isOver } = this.state;
+        const { newFormKeys } = this.state;
         const { detail, check } = this.props;
         const newFormItems = this.resetFormItems();
         let clazz = styles.formWrap2;
@@ -243,13 +204,6 @@ export default class Editor extends Component {
                         formItemLayout={formItemLayout}
                     />
                 </div>
-                {isOver &&
-                    <Alert
-                        message="系统自动退款最高支持90天，请删除有效期超过90天的礼品或修改为不支持自动退款"
-                        type="error"
-                        showIcon={true}
-                    />
-                }
             </section>
         );
     }

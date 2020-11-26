@@ -126,7 +126,7 @@ class RedPacketDetailModal extends Component {
                 },
             ];
         const giftRule = data.giftRule ? data.giftRule : [];
-        
+
         const totalData = [this.getRedPacketTotalInfo()]
         return (
             <Modal

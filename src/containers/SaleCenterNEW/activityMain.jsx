@@ -76,6 +76,7 @@ import { ONLINE_PROMOTION_TYPES } from '../../constants/promotionType';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from './IntlDecor';
+import returnGift from './returnGift/returnGift';
 
 // 这里是内部内容的框架组件，分为 左边 和右边。
 @injectIntl()
@@ -108,19 +109,19 @@ class ActivityMain extends React.Component {
             );
         }
         switch (this.state.current) {
-            case 1:
-                return (
-                    <div style={{ margin: '110px 4px 10px 10px' }}>
-                        <ActivitySidebar listsTitle={'1 | '+k5g5bcqo} key="1" />
-                    </div>
-                );
-            case 2:
-                return (
-                    <div style={{ margin: '110px 4px 10px 10px' }}>
-                        <ActivitySidebar listsTitle={'1 | '+k5g5bcqo} key="1" />
-                        <ActivitySidebar listsTitle={'2 | '+k5gfsuwz} key="2" />
-                    </div>
-                );
+            // case 1:
+            //     return (
+            //         <div style={{ margin: '110px 4px 10px 10px' }}>
+            //             <ActivitySidebar listsTitle={'1 | '+k5g5bcqo} key="1" />
+            //         </div>
+            //     );
+            // case 2:
+            //     return (
+            //         <div style={{ margin: '110px 4px 10px 10px' }}>
+            //             <ActivitySidebar listsTitle={'1 | '+k5g5bcqo} key="1" />
+            //             <ActivitySidebar listsTitle={'2 | '+k5gfsuwz} key="2" />
+            //         </div>
+            //     );
             default:
                 return (
                     <div className={styles.promotionTip}>
@@ -186,7 +187,8 @@ class ActivityMain extends React.Component {
             }, {
                 wrapper: NewAddUpGiveActivity,
                 child: AddUpGiveDetailInfo,
-            }, {
+            }, 
+            {
                 wrapper: NewRecommendFood,
                 child: RecommendFoodDetailInfo,
             },
@@ -232,7 +234,8 @@ class ActivityMain extends React.Component {
     }
     render() {
         const activityCategories = this.props.saleCenter.get('activityCategories').toJS();
-        const index = this.props.index;
+        const index = activityCategories.findIndex(item => item.key == this.props.promotionType);
+
         return (
             <div className={[styles.activityMain, styles.activityModal].join(' ')} style={{ padding: 0 }}>
                 <Row>

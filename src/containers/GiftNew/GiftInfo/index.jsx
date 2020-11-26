@@ -50,7 +50,9 @@ export default class GiftInfo extends React.Component {
     render() {
         const { page, detail, check, tabkey, settlesOpts } = this.state;
         const {isCreatingOrEditing, groupID} = this.props;
+
         if(page==='ticket'){
+            // 券包
             return <Editor groupID={groupID} check={check} settlesOpts={settlesOpts} detail={detail} toggleTabs={this.toggleTabs} togglePage={this.togglePage} />
         }
         if (!isCreatingOrEditing) {

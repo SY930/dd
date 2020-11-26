@@ -4,6 +4,11 @@ export const defaultData = {
         validateStatus: 'success',
         msg: null,
     },
+    giftConfImagePath: {
+        value: '',
+        validateStatus: 'success',
+        msg: null,
+    },
 
     //赠送积分
     givePoints: {
@@ -66,6 +71,11 @@ export const defaultData = {
 
 export const getDefaultGiftData = (typeValue = 0, typePropertyName = 'sendType') => ({
     giftOdds: {
+        value: '',
+        validateStatus: 'success',
+        msg: null,
+    },
+    giftConfImagePath: {
         value: '',
         validateStatus: 'success',
         msg: null,

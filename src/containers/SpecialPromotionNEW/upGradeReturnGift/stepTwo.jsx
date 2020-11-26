@@ -14,6 +14,8 @@ import {
     Form,
     Select,
     message,
+    Radio, 
+    Icon
 } from 'antd';
 import {isEqual, uniq, isEmpty} from 'lodash';
 import {
@@ -24,19 +26,24 @@ import {
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import SendMsgInfo from '../common/SendMsgInfo';
 import CardLevel from '../common/CardLevel';
+import CardLevels from './CardLevel';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 import { queryGroupMembersList } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
+import { FetchCrmCardTypeLst } from '../../../redux/actions/saleCenterNEW/crmCardType.action';
 import {
     fetchPromotionScopeInfo,
     getPromotionShopSchema
 } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
-import ShopSelector from "../../../components/common/ShopSelector";
+import ShopSelector from '../../../components/ShopSelector';
+import BaseHualalaModal from "../../SaleCenterNEW/common/BaseHualalaModal";
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
-
+import { axios } from '@hualala/platform-base';
+import { isFilterShopType } from '../../../helpers/util'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+const RadioGroup = Radio.Group;
 const moment = require('moment');
 @injectIntl
 class StepTwo extends React.Component {
@@ -45,11 +52,13 @@ class StepTwo extends React.Component {
         const shopSchema = this.props.shopSchemaInfo.getIn(['shopSchema']).toJS();
         const cardLevelRangeType = this.props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']);
         this.state = {
+            cardInfo: [],
             message: '',
             cardLevelIDList: [],
             groupMembersList: [],
             groupMembersID: this.props.specialPromotion.getIn(['$eventInfo', 'cardGroupID']),
             cardLevelRangeType: cardLevelRangeType === undefined ? '5' : cardLevelRangeType,
+            localType: '5',
             giveStatus: 'success',
             consumeType: '2',
             numberValue: {
@@ -63,6 +72,7 @@ class StepTwo extends React.Component {
             accountNo: '',
             selections: [],
             selections_shopsInfo: { shopsInfo: [] },
+            isRequire: true,
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -75,6 +85,14 @@ class StepTwo extends React.Component {
     }
 
     componentDidMount() {
+        // 
+        const cardLevelRangeType = this.props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']);
+        this.setState({
+            localType: cardLevelRangeType || '5',
+        })
+        
+        // 
+        this.props.FetchCrmCardTypeLst({});
         this.props.getSubmitFn({
             prev: undefined,
             next: this.handleSubmit,
@@ -88,7 +106,11 @@ class StepTwo extends React.Component {
             pageSize: 1000,
         };
         this.props.queryGroupMembersList(opts);
-        this.props.getShopSchemaInfo({groupID: this.props.user.accountInfo.groupID});
+        let parms = {}
+        if(isFilterShopType(this.props.type)){
+            parms = {productCode: 'HLL_CRM_License'}
+        }
+        this.props.getShopSchemaInfo({groupID: this.props.user.accountInfo.groupID, ...parms});
         const currentOccupiedShops = this.props.promotionBasicInfo.get('$filterShops').toJS().shopList;
         this.setState({occupiedShopIDs: currentOccupiedShops || []});
 
@@ -105,6 +127,11 @@ class StepTwo extends React.Component {
         }
 
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
+        if(specialPromotion.groupMemberID){
+            this.setState({
+                groupMembersID: specialPromotion.groupMemberID
+            })
+        }
         if (Object.keys(specialPromotion).length > 30) {
             let addUpOpts = {};
             if (this.props.type == '62') {
@@ -128,7 +155,7 @@ class StepTwo extends React.Component {
             }
             const opts = {
                 message: specialPromotion.smsTemplate,
-                // cardLevelIDList: specialPromotion.cardLevelIDList,
+                cardLevelIDList: specialPromotion.cardLevelIDList,
                 ...addUpOpts,
             }
             if (this.props.type == '70' || this.props.type == '64') {
@@ -139,11 +166,16 @@ class StepTwo extends React.Component {
         }
         if (!this.props.promotionScopeInfo.getIn(['refs', 'initialized']) &&
             (this.props.type == '70' || this.props.type == '64')) {
-            this.props.fetchPromotionScopeInfo({ _groupID: this.props.user.accountInfo.groupID });
+                let parm = {}
+                if(isFilterShopType(this.props.type)){
+                    parm = { productCode: 'HLL_CRM_License' }
+                }
+                this.props.fetchPromotionScopeInfo({ _groupID: this.props.user.accountInfo.groupID, ...parm});
         }
         if (!this.props.specialPromotion.get('customerCount')) {
             this.props.getGroupCRMCustomAmount()
         }
+        this.loadShopSchema();
     }
 
     filterAvailableShops() {
@@ -177,6 +209,14 @@ class StepTwo extends React.Component {
         const nextShopSchema = nextProps.shopSchemaInfo.getIn(['shopSchema']).toJS();
         if (!isEqual(previousSchema, nextShopSchema)) {
             this.setState({shopSchema: nextShopSchema, // 后台请求来的值
+            });
+        }
+        if (this.props.crmCardTypeNew.get('cardTypeLst') !== nextProps.crmCardTypeNew.get('cardTypeLst')) {
+            const cardInfo = nextProps.crmCardTypeNew.get('cardTypeLst').toJS();
+            this.setState({
+                cardInfo: cardInfo.filter((cardType) => {
+                    return cardType.regFromLimit
+                }),
             });
         }
         // 获取会员等级信息
@@ -272,6 +312,7 @@ class StepTwo extends React.Component {
                 cardLevelRangeType: this.props.type == '62' ? this.state.cardLevelRangeType : '2',
                 smsTemplate: this.state.message,
             };
+
         if (this.props.type == '62' && this.state.cardLevelRangeType == '5') {
             if (!this.state.groupMembersID) {
                 this.props.form.setFields({
@@ -312,6 +353,14 @@ class StepTwo extends React.Component {
             this.props.promotionBasicInfo.get('$filterShops').toJS().shopList.length > 0 &&
             this.state.selections.length === 0
         if (flag && !noSelected64) {
+            // 授权门店过滤
+            if(isFilterShopType(this.props.type)){
+                let dynamicShopSchema = Object.assign({}, this.props.shopSchemaInfo.toJS());
+                let {shopSchema = {}} = dynamicShopSchema
+                let {shops = []} = shopSchema
+                let {shopIDList = []} = opts
+                opts.shopIDList = shopIDList.filter((item) => shops.some(i => i.shopID == item))
+            }
             this.props.setSpecialBasicInfo(opts);
         }
         return flag && !noSelected64;
@@ -322,7 +371,39 @@ class StepTwo extends React.Component {
     editBoxForShopsChange(val) {
         this.setState({
             selections: val,
+            shopStatus: val.length > 0,
         })
+    }
+    async loadShopSchema() {
+        const { data } = await axios.post('/api/shopapi/schema',{});
+        const { shops } = data;
+        this.countIsRequire(shops);
+    }
+    countIsRequire(shopList){
+        const { shopSchemaInfo, specialPromotion } = this.props;
+        const { size } = shopSchemaInfo.getIn(['shopSchema', 'shops']);       // 总店铺数
+        const eventInfo = specialPromotion.getIn(['$eventInfo']).toJS();
+        const oldShops = eventInfo.shopIDList || []; // 存储的店铺数
+        const isOld = eventInfo.itemID; // 有这个id 表明是 编辑数据
+        const { length } = shopList;
+        // a 新建营销活动，先获取此集团的所有店铺数据，如果此用户为全部店铺权限，表单内店铺组件非必选
+        // 如果用户权限为某几个店铺的权限，组件为必选项。
+        // b 编辑活动，全部店铺权限用户非必选
+        // 店铺受限用户，首先判断历史数据是否是全部店铺的数据，如果是，店铺组件为非必选。
+        // 反之，店铺为必选，用户必选一个用户权限之内的店铺选项。
+        if(!isOld){
+            if(length<size){
+                this.setState({ isRequire: true });
+                return;
+            }
+            this.setState({ isRequire: false });
+        } else {
+            if(oldShops[0] && length<size){
+                this.setState({ isRequire: true });
+                return;
+            }
+            this.setState({ isRequire: false });
+        }
     }
     renderShopsOptions() {
         // 当有人领取礼物后，礼物不可编辑，加蒙层
@@ -333,6 +414,7 @@ class StepTwo extends React.Component {
             this.props.promotionBasicInfo.get('$filterShops').toJS().shopList.length > 0 &&
             this.state.selections.length === 0;
         const selectedShopIdStrings = this.state.selections.map(shopIdNum => String(shopIdNum));
+        const { isRequire, shopStatus  } = this.state;
         return (
             <div className={styles.giftWrap}>
                 <Form.Item
@@ -340,8 +422,11 @@ class StepTwo extends React.Component {
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
-                    validateStatus={noSelected64 ? 'error' : 'success'}
-                    help={noSelected64 ? `${this.props.intl.formatMessage(STRING_SPE.d1qe85eqm5087)}` : null}
+                    required={isRequire}
+                    validateStatus={shopStatus ? 'success' : 'error'}
+                    help={shopStatus ? null : '店铺不能为空'}
+                    // validateStatus={noSelected64 ? 'error' : 'success'}
+                    // help={noSelected64 ? `${this.props.intl.formatMessage(STRING_SPE.d1qe85eqm5087)}` : null}
                 >
                     <ShopSelector
                         value={selectedShopIdStrings}
@@ -349,6 +434,7 @@ class StepTwo extends React.Component {
                             this.editBoxForShopsChange
                         }
                         schemaData={this.filterAvailableShops()}
+                        filterParm={isFilterShopType(this.props.type)?{productCode: 'HLL_CRM_License'}:{}}
                     />
                 </Form.Item>
                 <div className={userCount > 0 && this.props.type == 64 ? styles.opacitySet : null} style={{ left: 33, width: '88%' }}></div>
@@ -358,7 +444,19 @@ class StepTwo extends React.Component {
     handleSelectChange(value) {
         this.setState({groupMembersID: value});
     }
+    handleGroupOrCatRadioChange = (e) => {
+        let type = e.target.value;
+        this.setState({
+            cardLevelRangeType: type,
+            localType: type,
+            cardLevelIDList: [],
+            groupMembersID: undefined,
+        })
+        this.props.setSpecialBasicInfo({ cardLevelIDList: [], cardGroupID: '' });
+    }
     render() {
+        let {localType, cardLevelIDList} = this.state
+
         const sendFlag = true;
         const totalCustomerCount = this.props.specialPromotion.get('customerCount');
         const tip = this.state.consumeType % 2 === 0 ? `${this.props.intl.formatMessage(STRING_SPE.d1e09r9slq0172)}` : `${this.props.intl.formatMessage(STRING_SPE.d16hh4899ii1154)}`
@@ -383,30 +481,21 @@ class StepTwo extends React.Component {
                 }
                 {
                     this.props.type == '62' ?
-                        <div>
+                        // 累计消费送礼box
+                        <div>       
                             <FormItem
-                                label={`${this.props.intl.formatMessage(STRING_SPE.dk470bkjg96160)}`}
+                                label="累计维度"
                                 className={styles.FormItemStyle}
                                 labelCol={{ span: 4 }}
                                 wrapperCol={{ span: 17 }}
-                                validateStatus={this.state.giveStatus}
-                                help={this.state.giveStatus == 'success' ? null : `${this.props.intl.formatMessage(STRING_SPE.d17013b4f2ba72)}${tip}`}
                             >
-                                {this.props.form.getFieldDecorator('give', {
-                                    rules: [{
-                                        required: true,
-                                        message: `${this.props.intl.formatMessage(STRING_SPE.d5g3303e750262)}`,
-                                    }],
-                                    initialValue: this.state.numberValue,
-                                })(<PriceInput
-                                    onChange={this.handleNumberChange}
-                                    addonBefore={giveSelect}
-                                    addonAfter={this.state.consumeType % 2 === 0 ? `${this.props.intl.formatMessage(STRING_SPE.da8omhe07g2195)}` : `${this.props.intl.formatMessage(STRING_SPE.d2164523635bb18198)}`}
-                                />)
-                                }
+                                <RadioGroup onChange={this.handleGroupOrCatRadioChange} value={`${localType}`}>
+                                    <Radio key={'5'} value={'5'}>会员群体</Radio>
+                                    <Radio key={'2'} value={'2'}>会员卡类</Radio>
+                                    <Radio key={'6'} value={'6'}>会员卡等级</Radio>
+                                </RadioGroup>
                             </FormItem>
-
-                            {this.state.cardLevelRangeType == '5' ?
+                            {this.state.localType == '5' ?
                                 <FormItem
                                     label={this.props.intl.formatMessage(STRING_SPE.dd5a33b5g874114)}
                                     className={styles.FormItemStyle}
@@ -432,15 +521,39 @@ class StepTwo extends React.Component {
                                             <Option key={'0'}>{totalCustomerCount ? `${this.props.intl.formatMessage(STRING_SPE.d2b1b731e10c6117)}${totalCustomerCount}${this.props.intl.formatMessage(STRING_SPE.de8fb5g9597216)}` : `${this.props.intl.formatMessage(STRING_SPE.d1kgd7kahd0869)}`}</Option>
                                             {this.renderOptions()}
                                         </Select>
-                                    )
-                                    }
-                                </FormItem>:
-                                <CardLevel
-                                onChange={this.onCardLevelChange}
-                                catOrCard={'cat'}
-                                type={this.props.type}
-                                form={this.props.form}
-                            />}
+                                    )}
+                                </FormItem> :  
+                                <CardLevels
+                                    catOrCard="cat"
+                                    onChange={this.onCardLevelChange}
+                                    catOrCard={'cat'}
+                                    type={this.props.type}
+                                    form={this.props.form}
+                                    cardLevelRangeType={localType}
+                                    cardLevelIDList={cardLevelIDList}
+                                />
+                            }
+                            <FormItem
+                                label={`累计条件`}
+                                className={styles.FormItemStyle}
+                                labelCol={{ span: 4 }}
+                                wrapperCol={{ span: 17 }}
+                                validateStatus={this.state.giveStatus}
+                                help={this.state.giveStatus == 'success' ? null : `${this.props.intl.formatMessage(STRING_SPE.d17013b4f2ba72)}${tip}`}
+                            >
+                                {this.props.form.getFieldDecorator('give', {
+                                    rules: [{
+                                        required: true,
+                                        message: `${this.props.intl.formatMessage(STRING_SPE.d5g3303e750262)}`,
+                                    }],
+                                    initialValue: this.state.numberValue,
+                                })(<PriceInput
+                                    onChange={this.handleNumberChange}
+                                    addonBefore={giveSelect}
+                                    addonAfter={this.state.consumeType % 2 === 0 ? `${this.props.intl.formatMessage(STRING_SPE.da8omhe07g2195)}` : `${this.props.intl.formatMessage(STRING_SPE.d2164523635bb18198)}`}
+                                />)
+                                }
+                            </FormItem>
                         </div> : (this.props.type == '70' || this.props.type == '64' ? null :
                             <CardLevel
                                 onChange={this.onCardLevelChange}
@@ -481,7 +594,9 @@ const mapStateToProps = (state) => {
     return {
         specialPromotion: state.sale_specialPromotion_NEW,
         user: state.user.toJS(),
+        crmCardTypeNew: state.sale_crmCardTypeNew,
         shopSchemaInfo: state.sale_shopSchema_New,
+        cardInfo: state.sale_mySpecialActivities_NEW.getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
         mySpecialActivities: state.sale_mySpecialActivities_NEW.toJS(),
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
@@ -500,6 +615,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         fetchPromotionScopeInfo: (opts) => {
             dispatch(fetchPromotionScopeInfo(opts));
+        },
+        FetchCrmCardTypeLst: (opts) => {
+            dispatch(FetchCrmCardTypeLst(opts));
         },
         getShopSchemaInfo: opts => dispatch(getPromotionShopSchema(opts)),
         getGroupCRMCustomAmount: opts => dispatch(getGroupCRMCustomAmount(opts)),

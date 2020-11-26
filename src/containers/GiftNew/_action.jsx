@@ -29,8 +29,10 @@ export const GIFT_NEW_GET_SHARED_GIFTS = 'gift new:: get shared gifts';
 export const GIFT_NEW_EMPTY_GET_SHARED_GIFTS = 'gift new:: empty get shared gifts';
 export const GIFT_NEW_QUOTA_CARD_SHOP_BY_BATCHNO = 'gift new :: get quota card shop by batchNo';
 export const GIFT_NEW_QUOTA_CARD_BATCHNO = 'gift new :: get quota card batchNo';
+export const GIFT_NEW_QUOTA_CARD_CANSELL_LIST = 'gift new :: get quota card cansell list';
 export const GIFT_NEW_QUERY_WECHAT_MPINFO_START = 'gift new :: query wechat mpinfo start';
 export const GIFT_NEW_QUERY_WECHAT_MPINFO_SUCCESS = 'gift new :: query wechat mpinfo success';
+export const GIFT_NEW_QUERY_WECHAT_MPAPPINFO_SUCCESS = 'gift new :: query wechat mpappinfo success';
 export const GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL = 'gift new :: query wechat mpinfo fail';
 export const GIFT_NEW_START_CREATE_GIFT = 'gift new :: 开始新建礼品模板';
 export const GIFT_NEW_START_EDIT_GIFT = 'gift new :: 开始编辑礼品模板';
@@ -187,7 +189,7 @@ export const getGiftSchemaSuccessAC = (opt) => {
 };
 export const FetchGiftSchema = (opts) => {
     return (dispatch) => {
-        return axiosData('/crm/groupShopService_findSchemaShopcenterNew.ajax', {}, {}, {path: 'data.shops'})
+        return axiosData('/crm/groupShopService_findSchemaNew.ajax', {...opts}, {}, {path: 'data.shops'})
             .then((records) => {
                 dispatch(getGiftSchemaSuccessAC({
                     payload: {
@@ -453,6 +455,35 @@ export const FetchQuotaCardShopByBatchNo = (opts) => {
             })
     }
 };
+
+export const getQuotaCardCanSellList = (opts) => {
+    return (dispatch) => {
+        return axiosData('/coupon/getQuotaCardCanSellList.ajax', { ...opts }, null, {path: ''}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+            .then((records = {}) => {
+                let {data = {}} = records
+                dispatch(getQuotaCardCanSellListAC({
+                    payload: {
+                        dataSource: data || {},
+                    },
+                }));
+                return Promise.resolve(data);
+            })
+            .catch(err => {
+                dispatch(getQuotaCardCanSellListAC({
+                    payload: {
+                        dataSource: {},
+                    },
+                }));
+                return Promise.resolve({});
+            })
+    }
+};
+export const getQuotaCardCanSellListAC = (opt) => {
+    return {
+        type: GIFT_NEW_QUOTA_CARD_CANSELL_LIST,
+        ...opt,
+    }
+};
 export const getQuotaCardBatchNoAC = (opt) => {
     return {
         type: GIFT_NEW_QUOTA_CARD_BATCHNO,
@@ -499,13 +530,46 @@ export const queryWechatMpInfo = (opts) => {
         dispatch({
             type: GIFT_NEW_QUERY_WECHAT_MPINFO_START,
         });
+
         return fetchData('queryWechatMpInfo', {...opts}, null, { path: 'mpList', throttle: false })
             .then((mpList) => {
                 dispatch({
                     type: GIFT_NEW_QUERY_WECHAT_MPINFO_SUCCESS,
-                    payload: mpList || [],
+                    payload: {
+                        mpList: mpList || []
+                    },
                 });
                 return Promise.resolve(mpList)
+            }, err => {
+                dispatch({
+                    type: GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL,
+                });
+                console.log(err)
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
+};
+
+// 公众号/小程序
+export const queryWechatMpAndAppInfo = (opts) => {
+    return (dispatch) => {
+        dispatch({
+            type: GIFT_NEW_QUERY_WECHAT_MPINFO_START,
+        });
+
+        return axiosData('/mpInfo/getAppsAndMps', { ...opts }, null, {
+            path: 'mpInfoResDataList',
+        }, 'HTTP_SERVICE_URL_WECHAT')
+            .then((data) => {
+                dispatch({
+                    type: GIFT_NEW_QUERY_WECHAT_MPAPPINFO_SUCCESS,
+                    payload: {
+                        mpAndAppList: data || [],
+                    } 
+                });
+                return Promise.resolve(data)
             }, err => {
                 dispatch({
                     type: GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL,

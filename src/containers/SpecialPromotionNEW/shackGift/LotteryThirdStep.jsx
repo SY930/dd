@@ -28,7 +28,7 @@ import {
 import { axiosData } from '../../../helpers/util';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
-import { getTicketBagInfo } from './TicketBag/AxiosFactory';
+import { getTicketBagInfo } from '../../BasicModules/TicketBag/AxiosFactory';
 
 const moment = require('moment');
 const { TabPane } = Tabs;
@@ -180,6 +180,7 @@ class LotteryThirdStep extends React.Component {
                     infos[index].giveRedPacket.isOn = false;
                 }
                 infos[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(2);
+                infos[index].giftConfImagePath.value = gift.giftConfImagePath || 'basicdoc/f75ed282-4d1c-4f5d-ab29-a92529cbadcf.png' ;
             })
         }
         return {
@@ -470,6 +471,22 @@ class LotteryThirdStep extends React.Component {
         } else {
             _infos[index].giftOdds.validateStatus = 'error';
             _infos[index].giftOdds.msg = `${this.props.intl.formatMessage(STRING_SPE.d4h176ei7g120154)}`;
+        }
+        this.setState({
+            infos: _infos,
+        });
+    }
+
+    handleGiftImgChange = (val, index) => {
+        const _infos = this.state.infos;
+        _infos[index].giftConfImagePath.value = val;
+        const _value = val
+        if (_value >= 0 && _value <= 100) {
+            _infos[index].giftConfImagePath.validateStatus = 'success';
+            _infos[index].giftConfImagePath.msg = null;
+        } else {
+            _infos[index].giftConfImagePath.validateStatus = 'error';
+            _infos[index].giftConfImagePath.msg = '请上传奖品图片';
         }
         this.setState({
             infos: _infos,
@@ -820,6 +837,7 @@ class LotteryThirdStep extends React.Component {
             }
         }
         tempObj.giftOdds = data.giftOdds.value;
+        tempObj.giftConfImagePath = data.giftConfImagePath.value;
         return tempObj;
     }
 
@@ -911,6 +929,7 @@ class LotteryThirdStep extends React.Component {
                                     handleGiftCountChange={this.handleGiftCountChange}
                                     handleValidateTypeChange={this.handleValidateTypeChange}
                                     handleGiftOddsChange={this.handleGiftOddsChange}
+                                    handleGiftImgChange={this.handleGiftImgChange}
                                     handleGivePointsChange={this.handleGivePointsChange}
                                     handleGivePointsValueChange={this.handleGivePointsValueChange}
                                     handleCardChange={this.handleCardChange}

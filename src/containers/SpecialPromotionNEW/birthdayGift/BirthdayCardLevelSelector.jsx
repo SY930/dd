@@ -30,6 +30,7 @@ class BirthdayCardLevelSelector extends Component {
         });
     }
     componentWillReceiveProps(nextProps) {
+        const nextEventInfo = nextProps.specialPromotion.get('$eventInfo').toJS();
         if (this.props.cardInfo !== nextProps.cardInfo) {
             this.setState({
                 cardInfo: Immutable.List.isList(nextProps.cardInfo) ? nextProps.cardInfo.toJS() : [],
@@ -47,11 +48,18 @@ class BirthdayCardLevelSelector extends Component {
             value = [],
             onChange,
             allCardLevelCheck, // 所有卡等级都不能选
+            specialPromotion
         } = this.props;
-        const {
+        let {
             cardInfo, // 全量卡类，卡等级信息
             excludeEventList, // 与当前活动冲突的活动列表 [{cardLevelIDList: Array}]
         } = this.state;
+        // 根据时间过滤
+        const nextEventInfo = specialPromotion.get('$eventInfo').toJS();
+        excludeEventList = excludeEventList.filter(item => {
+            // 判断时间区间是否重合
+            return !(item.eventStartDate > nextEventInfo.eventEndDate || item.eventEndDate < nextEventInfo.eventStartDate) || item.eventStartDate == '20000101' || item.eventEndDate == '29991231'
+        })
         const boxData = [];
         value.forEach((id) => {
             cardInfo.forEach((cat) => {
@@ -101,6 +109,7 @@ class BirthdayCardLevelSelector extends Component {
 const mapStateToProps = (state) => {
     return {
         user: state.user,
+        specialPromotion: state.sale_specialPromotion_NEW,
         // 历史遗留问题：这个字段不是immutable
         excludeEventList: state.sale_specialPromotion_NEW.getIn(['$eventInfo', 'excludeEventCardLevelIdModelList']),
         allCardLevelCheck: state.sale_specialPromotion_NEW.getIn(['$eventInfo', 'allCardLevelCheck']),

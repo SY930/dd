@@ -1,16 +1,58 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Modal, Row, Col, Input, Form } from 'antd';
+import { Modal, Row, Col, Input, Form, Select,Radio,DatePicker, Icon, Tooltip } from 'antd';
 import BaseForm from '../../../components/common/BaseForm';
 import styles from './GiftInfo.less';
 import { fetchData, axiosData } from '../../../helpers/util';
 import _ from 'lodash';
+import moment from 'moment'
 import {
     FetchGiftLevel,
 } from '../_action';
 import { FORMITEM_CONFIG } from './_QuatoCardFormConfig';
-
+import PriceInput from "../../SaleCenterNEW/common/PriceInput";
+const giftEffectTimeHours = [
+    {
+        value: '0',
+        label: '立即生效'
+    },
+    {
+        value: '1',
+        label: '1天后生效'
+    },
+    {
+        value: '2',
+        label: '2天后生效',
+    },
+    {
+        value: '3',
+        label: '3天后生效',
+    },
+    {
+        value: '4',
+        label: '4天后生效',
+    },
+    {
+        value: '5',
+        label: '5天后生效',
+    },
+    {
+        value: '10',
+        label: '10天后生效',
+    },
+    {
+        value: '20',
+        label: '20天后生效',
+    },
+    {
+        value: '30',
+        label: '30天后生效',
+    },
+]
+const {  Group: RadioGroup } = Radio;
+const {  RangePicker } = DatePicker;
 const FormItem = Form.Item;
+const format = 'YYYYMMDD'
 class CardOperate extends React.Component {
     constructor(props) {
         super(props);
@@ -21,6 +63,8 @@ class CardOperate extends React.Component {
             cardTypeList: [],
             levelList: [],
             selectedRow: [],
+            validUntilDay: '0',
+            effectType: '0'
         }
         this.form = null;
         this.proGiftLevel = this.proGiftLevel.bind(this);
@@ -36,12 +80,13 @@ class CardOperate extends React.Component {
     componentWillReceiveProps(nextProps) {
         const { visible, type } = nextProps;
         this.form && this.form.resetFields();
+        console.log('type',type)
         if (visible) {
             let formKeys = [],
                 operateRemarkLabel = '';
             switch (type) {
                 case 'sendCard':
-                    formKeys = [{ keys: ['batchNO', 'startEnd', 'useCardTypeID', 'useCardLevelID', 'remark'] }];
+                    formKeys = [{ keys: ['batchNO', 'startEnd', 'distanceNum', 'effectType', 'useCardTypeID', 'useCardLevelID', 'remark'] }];
                     operateRemarkLabel = '备注';
                     break;
                 case 'batchCancel':
@@ -116,12 +161,25 @@ class CardOperate extends React.Component {
             const _params = _.omit(params, ['startEnd_min', 'startEnd_max', 'distanceNum']);
             _params.cardTypeID = _params.useCardTypeID;
             delete _params.useCardTypeID;
+
+            const giftEffectTimeHours = params.giftEffectTimeHours
+            const giftValidUntilDayCount = typeof params.giftValidUntilDayCount === 'object' ? params.giftValidUntilDayCount.number : params.giftValidUntilDayCount
+            const effectTime99validUntilDate = params.effectTime99validUntilDate && params.effectTime99validUntilDate.length ?
+             [moment(params.effectTime99validUntilDate[0]).format(format),moment(params.effectTime99validUntilDate[1]).format(format)] : []
+             delete _params.effectTime99validUntilDate
             let reqParams = {
                 ..._params,
                 batchNO: (_params.batchNO || '').trim(),
                 endNO: (_params.endNO || '').trim(),
                 startNO: (_params.startNO || '').trim(),
+                effectType: Number(params.effectType) == 0 ? 3 : (Number(params.effectType) || ''),
+                giftEffectTimeHours: Number(giftEffectTimeHours) || '',
+                giftValidUntilDayCount: Number(giftValidUntilDayCount) || '0',
+                effectTime: effectTime99validUntilDate[0],
+                validUntilDate: effectTime99validUntilDate[1]
             }
+            // console.log('reqParams', reqParams)
+
             axiosData(callserver, reqParams, null, { path: 'data' }).then((data) => {
                 this.props.onCancel(true);
             });
@@ -173,7 +231,7 @@ class CardOperate extends React.Component {
             distanceNum = min && max && max >= min ? max - min + 1 : 0;
         return (
             <Row style={{ paddingBottom: 10 }}>
-                <Col span={7}>
+                <Col span={11}>
                     <FormItem>
                         {
                             decorator({
@@ -183,21 +241,21 @@ class CardOperate extends React.Component {
                                     {
                                         validator: (rule, v, cb) => {
                                             if (v === '') cb();
-                                            v > 0 && v <= 999999 ? cb() : cb(rule.message);
+                                            v > 0 && v <= 899999 ? cb() : cb(rule.message);
                                         },
-                                        message: '起始号必须是1-999999之间的数字'
+                                        message: '请输入1-899999之间的整数'
                                     },
                                     { validator: (rule, v, cb) => {
                                         String(v || '').trim().length <= 6 ? cb() : cb(rule.message);
                                     },
-                                        message: '不能超过6位'},
+                                    message: '不能超过6位'},
                                 ],
                             })(<Input placeholder="起始号" />)
                         }
                     </FormItem>
                 </Col>
                 <Col span={1} style={{ marginRight: 5, marginLeft: 5 }}>至</Col>
-                <Col span={7}>
+                <Col span={11}>
                     <FormItem>
                         {
                             decorator({
@@ -209,18 +267,18 @@ class CardOperate extends React.Component {
                                             if (v === '') cb();
                                             v >= min && v <= 999999 ? cb() : cb(rule.message);
                                         },
-                                        message: '终止号必须是起始号到999999之间的数字'
+                                        message: '请输入大于起始号，且小于999999之间的整数'
                                     },
                                     { validator: (rule, v, cb) => {
                                         String(v || '').trim().length <= 6 ? cb() : cb(rule.message);
                                     },
-                                        message: '不能超过6位'},
+                                    message: '不能超过6位'},
                                 ],
                             })(<Input placeholder="终止号" />)
                         }
                     </FormItem>
                 </Col>
-                <Col span={7} offset={1}>
+                {/* <Col span={7} offset={1}>
                     <FormItem style={{ paddingTop: 2 }}>
                         {
                             decorator({
@@ -229,13 +287,75 @@ class CardOperate extends React.Component {
                             })(<Input disabled={true} addonAfter="张" />)
                         }
                     </FormItem>
-                </Col>
+                </Col> */}
             </Row>
         )
     }
+    handleDayChange = (e) => {
+
+        if(e === '0') {
+
+            this.form.resetFields(['giftValidUntilDayCount'])
+        }
+        this.setState({
+            validUntilDay: e
+        })
+    }
+    handleEffectTypeChange = (e) => {
+        let { formKeys } = this.state
+        const value = e.target.value
+        const relativeDateKeys = [ 'giftEffectTimeHours', 'giftValidUntilDayCount', 'effectTime99validUntilDate']
+
+        if(value === '0') {
+            formKeys[0].keys = formKeys[0].keys.filter(v => {
+                return  !relativeDateKeys.includes(v)
+            })
+            this.form.resetFields(relativeDateKeys)
+            this.setState({
+                validUntilDay: '0'
+            })
+        }else if(value === '2') {
+            formKeys[0].keys = formKeys[0].keys.filter(v => {
+                return !relativeDateKeys.includes(v)
+            })
+            formKeys[0].keys.splice(4,0, 'effectTime99validUntilDate')
+            this.form.resetFields(relativeDateKeys)
+            this.setState({
+                validUntilDay: '0'
+            })
+        } else {
+            formKeys[0].keys = formKeys[0].keys.filter(v => {
+                return   v !== 'effectTime99validUntilDate'
+            })
+            formKeys[0].keys.splice(4,0, 'giftValidUntilDayCount')
+            this.form.resetFields(['effectTime99validUntilDate'])
+        }
+
+        this.setState({
+            formKeys,
+            effectType:  value
+        })
+    }
     render() {
         const { title = '', visible, type } = this.props;
-        const { formKeys, operateRemarkLabel, cardList, levelList } = this.state;
+        const { formKeys, operateRemarkLabel, cardList, levelList,validUntilDay,effectType } = this.state;
+        
+        let effectTypeLabel = (
+            <span>
+                有效期 
+                <Tooltip title={
+                    <p>
+                        <p>指礼品卡售出后的有效期，用户需要在该有效期内进行礼品卡激活，激活指完成礼品卡充值</p>
+                        <p>或礼品卡第一次使用，否则礼品卡将不可用</p>
+                    </p>
+                }>
+                    <Icon
+                        style={{marginLeft: '5px'}}
+                        type={'question-circle'}
+                    />
+                </Tooltip>
+            </span>
+        )
         const formItems = {
             batchNO: {
                 label: '批次号',
@@ -260,6 +380,129 @@ class CardOperate extends React.Component {
                 label: '起止号',
                 type: 'custom',
                 render: (decorator, form) => this.renderStartEnd(decorator, form),
+            },
+            distanceNum: {
+                label: '制卡数',
+                type: 'custom',
+                render: (decorator, form) => {
+                    let min = Number(form.getFieldValue('startEnd_min')) || '',
+                        max = Number(form.getFieldValue('startEnd_max')) || '',
+                        distanceNum = min && max && max >= min ? max - min + 1 : 0;
+                    return (
+                        decorator({
+                            key: 'distanceNum',
+                            initialValue: distanceNum,
+                        })(<Input disabled={true} addonAfter="张" />)
+                    )
+                }
+            },
+            effectType: {
+                label: effectTypeLabel,
+                type: 'custom',
+                defaultValue: '0',
+                render: decorator => (
+                    decorator(
+                        {
+                            onChange: this.handleEffectTypeChange
+                        }
+                    )(<RadioGroup>
+                        {[
+                    {
+                        value: '0',
+                        label: '永久有效'
+                    },
+                    {
+                        value: '3',
+                        label: '相对有效期'
+                    },
+                    {
+                        value: '2',
+                        label: '固定有效期'
+                    },
+                    ].map(({ value, label }) => (
+                            <Radio key={value} value={value}  >
+                                {label}
+                            </Radio>
+                        ))}
+                     </RadioGroup>)
+
+                )
+
+            },
+            giftEffectTimeHours: {
+                label: '何时生效',
+                type: 'combo',
+                defaultValue: '0',
+                options: giftEffectTimeHours,
+            },
+            giftValidUntilDayCount: {
+                label: '有效天数',
+                type: 'custom',
+                defaultValue: '0',
+                render: decorator => (
+                    <Row>
+                        <Col span={12}  >
+                            <span>售出后立即生效，有效天数</span>
+                        </Col>
+                        <Col span={12}  >
+                            {
+                                decorator({
+                                    rules: [
+                                        {
+                                            validator: (rule, v, cb) => {
+                                                const reg = /^\+?[1-9][0-9]*$/
+                                                if (
+                                                    v.number === "" ||
+                                                    v.number === undefined
+                                                ) {
+                                                    return cb();
+                                                }
+                                                if (!v || (v.number < 1)) {
+                                                    return cb(
+                                                        '有效天数应不小于1'
+                                                    );
+                                                } else if (v.number > 10000) {
+                                                    return cb(
+                                                        '有效天数应不大于10000'
+                                                    );
+                                                } else if(!reg.test(v.number)) {
+                                                    return cb(
+                                                        '有效天数应为整数'
+                                                    );
+                                                }
+                                                cb();
+                                            },
+                                        },
+                                        { required: true, message: '批次号不能为空' },
+                                    ]
+                                })(
+                                    <PriceInput
+                                        addonAfter={"天"}
+                                        style={{ marginLeft: "11px" }}
+                                        key="2"
+                                    />
+                                )
+                            }
+                        </Col>
+                    </Row>
+                )
+            },
+            effectTime99validUntilDate: {
+                label: '固定有效期',
+                type: 'custom',
+                // defaultValue: [moment(),moment()],
+                render: decorator => (
+                    decorator(
+                         {
+                            rules: [
+                                { required: true, message: '固定有效期不能为空' },
+                            ],
+                         }
+                    )(<RangePicker
+                        placeholder={['开始日期','结束日期']}
+                      />)
+
+                )
             },
             useCardTypeID: {
                 label: '会员卡类型',
@@ -293,6 +536,10 @@ class CardOperate extends React.Component {
                 { max: 250, message: '字符不能超过250个' }],
             },
         };
+        const formItemLayout = {
+            labelCol: {span: 5},
+            wrapperCol: {span: 17}
+        }
         return (
             <Modal
                 title={title}
@@ -325,16 +572,17 @@ class CardOperate extends React.Component {
                         </div>
                     </Row>
                     <Row>
-                        <Col span={24} pull={3}>
-                            
+                        <Col span={24} pull={0}>
+
                             <BaseForm
                                 getForm={form => this.form = form}
                                 formItems={formItems}
                                 formKeys={formKeys}
                                 onChange={(key, value) => this.handleFormChange(key, value, this.queryForm)}
+                                formItemLayout={formItemLayout}
                             />
                         </Col>
-                    </Row>                
+                    </Row>
                 </Row>
             </Modal>
         )

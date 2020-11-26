@@ -48,8 +48,8 @@ class BuyGiveDetailInfo extends React.Component {
             giveFoodCountFlag: true,
             dishsSelectStatus: 'success',
             ifMultiGrade: true,
-            foodRuleList: this.props.promotionDetailInfo.getIn(['$promotionDetail', 'foodRuleList']).toJS().length ? 
-                            this.initData(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'foodRuleList']).toJS()) : 
+            foodRuleList: this.props.promotionDetailInfo.getIn(['$promotionDetail', 'foodRuleList']).toJS().length ?
+                            this.initData(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'foodRuleList']).toJS()) :
                             this.isNewOrOldData(),
             index: 'not-important',
         };
@@ -81,7 +81,7 @@ class BuyGiveDetailInfo extends React.Component {
             } else {
                 this.renderSingleGrade();
             }
-        });     
+        });
     }
     componentWillReceiveProps(nextProps) {
         if (this.props.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish']) !=
@@ -92,7 +92,18 @@ class BuyGiveDetailInfo extends React.Component {
     isNewOrOldData = () => {
         let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
         if (_rule === null || _rule === undefined) {
-            return [];
+            return [
+                {
+                    rule: {
+                        stageAmount: '',
+                        giveFoodCount: '',
+                        stageType: '2',
+                        stageNum: 0,
+                    },
+                    priceList: [],
+                    scopeList: [],
+                }
+            ];
         }
         _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
         _rule = Object.assign({}, _rule);
@@ -161,23 +172,24 @@ class BuyGiveDetailInfo extends React.Component {
             if(stageType == 1 || stageType == 2){
                 //满的逻辑
                 const { foodRuleList } = this.state;
-                foodRuleList.map((item) => {
+                const list = foodRuleList.map((item, i) => {
                     item.rule = JSON.stringify(item.rule);
                     item.priceList.map((every) => {
                         every.targetUnitName = every.unit;
                         every.foodUnitName = every.unit;
+                        every.stageNo= i;
                         return every;
                     })
                     return item;
                 });
                 this.props.setPromotionDetail({
-                    rule, priceLst: [], foodRuleList,
+                    rule, priceLst: [], foodRuleList: list,
                 });
             }else {
                 let tempArr1 = [];
-                let priceLst = dishes.map((price) => {
-                    if(tempArr1.indexOf(dish.itemID) == -1){
-                        tempArr1.push(dish.itemID);
+                let priceLst = dishes.map((price, i) => {
+                    if(tempArr1.indexOf(price.itemID) == -1){
+                        tempArr1.push(price.itemID);
                         return {
                             foodUnitID: price.itemID,
                             foodUnitCode: price.foodKey,
@@ -186,12 +198,18 @@ class BuyGiveDetailInfo extends React.Component {
                             brandID: price.brandID || '0',
                             price: price.price,
                             imagePath: price.imgePath,
+                            stageNo: 0,
                         }
                     }
                 });
-                priceLst = priceLst.filter((item) =>{if(item){ return item}})
+                priceLst = priceLst.filter((item) =>{if(item){ return item}});
+                const rule1 = JSON.stringify({stageAmount,giveFoodCount,stageType,stageNum:0,StageAmountFlag:true});
+                const foodRuleList = [{
+                    priceList: priceLst,
+                    rule: rule1,
+                }]
                 this.props.setPromotionDetail({
-                    rule, priceLst,
+                    rule, priceLst, foodRuleList,
                 });
             }
             return true
@@ -269,7 +287,7 @@ class BuyGiveDetailInfo extends React.Component {
             }
             this.setState({ stageAmount, stageAmountFlag });
         }
-        
+
     }
     handleStageTypeChange = (value, index) => {
         //这边不传index 的意思是无论如何 index都为0，因为变动了类型的时候，以为着多档 单档切换了，所以无论什么时候index都是0
@@ -299,7 +317,7 @@ class BuyGiveDetailInfo extends React.Component {
             }
             this.setState({ giveFoodCount, giveFoodCountFlag });
         }
-        
+
     }
     renderMultiGrade = (ifNotMount, type) => {
         //更改所有相关数据为数组
@@ -359,7 +377,7 @@ class BuyGiveDetailInfo extends React.Component {
         //指定菜品
         const { intl } = this.props;
         const { ifMultiGrade, foodRuleList } = this.state;
-        let singleAdd, bothIcon, singleDelete;  
+        let singleAdd, bothIcon, singleDelete;
         singleAdd = index == 0 && foodRuleList.length == 1;
         bothIcon = index != 0 && index == foodRuleList.length - 1;
         singleDelete = index < 4 && index != foodRuleList.length - 1 || index == 4 && index == foodRuleList.length - 1;
@@ -385,8 +403,10 @@ class BuyGiveDetailInfo extends React.Component {
                 label: k5hlxzv2,
             },
         ]
-        if(typeof item.rule == 'string') {
-            item.rule = JSON.parse(item.rule);
+        if(item){
+            if(typeof item.rule == 'string') {
+                item.rule = JSON.parse(item.rule);
+            }
         }
         return (
             <FormItem
@@ -418,18 +438,18 @@ class BuyGiveDetailInfo extends React.Component {
                         this.onStageAmountChange(value, index);
                     }}
                     modal="int"
-                /> 
+                />
                 <span className={[styles.gTip, styles.gTipInLine].join(' ')}>&nbsp;</span>
                 {
-                    ifMultiGrade ? 
-                        singleAdd ? 
+                    ifMultiGrade ?
+                        singleAdd ?
                             <span className={styles.operateIcon}><Icon className={styles.addIconGrade} onClick={this.addGrade}  type="plus-circle-o" /></span> :
                                 singleDelete ? <span className={styles.operateIcon}><Icon className={styles.minIconGrade} onClick={(value) => {this.deleteGrade(value, index)}} type="minus-circle-o" /></span> :
                                 <span className={styles.operateIcon}><Icon className={styles.addIconGrade} onClick={this.addGrade} type="plus-circle-o" /> <Icon className={styles.minIconGrade} type="minus-circle-o" onClick={(value) => {this.deleteGrade(value, index)}} /></span> : null
                 }
                 {
-                    ifMultiGrade ? 
-                        <span className={styles.GradeStyle}>{`档位${index ? index+1 : 1}`}</span> 
+                    ifMultiGrade ?
+                        <span className={styles.GradeStyle}>{`档位${index ? index+1 : 1}`}</span>
                         : null
                 }
             </FormItem>
@@ -468,7 +488,7 @@ class BuyGiveDetailInfo extends React.Component {
         )
     }
 
-    renderDishsSelectionBox(wapper, item, index) {
+    renderDishsSelectionBox(wapper, item, index = 0) {
         //赠送菜品
         const { ifMultiGrade } = this.state;
         return (
@@ -532,17 +552,17 @@ class BuyGiveDetailInfo extends React.Component {
                 <Form className={[styles.FormStyle, styles.bugGive].join(' ')}>
                     <ConnectedScopeListSelector isShopMode={this.props.isShopFoodSelectorMode} />
                     {
-                        ifMultiGrade ? null : 
+                        ifMultiGrade ? null :
                             this.renderBuyDishNumInput()
                     }
-                    {ifMultiGrade ? 
+                    {ifMultiGrade ?
                         foodRuleList.map((item, index) => {
                             return this.renderMultiGradeSelect(item, index)
                         })
                     :
                         this.renderDishsSelectionBox()
                     }
-                    {ifMultiGrade ? 
+                    {ifMultiGrade ?
                         null
                     :
                         this.renderGiveDishNumInput()
@@ -554,6 +574,7 @@ class BuyGiveDetailInfo extends React.Component {
         )
     }
 }
+
 
 function mapStateToProps(state) {
     return {

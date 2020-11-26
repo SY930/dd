@@ -11,6 +11,7 @@ import {
 import { fetchSpecialCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action'
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
+import { isFilterShopType } from '../../../helpers/util'
 
 const CheckboxGroup = Checkbox.Group;
 const RadioGroup = Radio.Group;
@@ -315,6 +316,14 @@ class SpecialRangeInfo extends React.Component {
                 opts.partInTimes = '1';
             }
             if (isPrev || nextFlag) {
+                // 授权门店过滤
+                if(isFilterShopType(this.props.type)){
+                    let dynamicShopSchema = Object.assign({}, this.props.shopSchemaInfo.toJS());
+                    let {shopSchema = {}} = dynamicShopSchema
+                    let {shops = []} = shopSchema
+                    let {shopIDList = []} = opts
+                    opts.shopIDList = shopIDList.filter((item) => shops.some(i => i.shopID == item))
+                }
                 this.props.setSpecialBasicInfo(opts);
             }
         }
@@ -647,6 +656,7 @@ const mapStateToProps = (state) => {
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         saleCenter: state.sale_saleCenter_NEW,
         user: state.user.toJS(),
+        shopSchemaInfo: state.sale_shopSchema_New,
         specialPromotion: state.sale_specialPromotion_NEW,
         canUseShopIDs: state.sale_specialPromotion_NEW.getIn(['$eventInfo', 'canUseShopIDs']),
         excludeCardTypeAndShopIDs: state.sale_specialPromotion_NEW.getIn(['$eventInfo', 'excludeCardTypeShops']),

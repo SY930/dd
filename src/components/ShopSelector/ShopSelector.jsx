@@ -16,6 +16,8 @@ class ShopSelector extends Component {
         showModal: false,
         options: null,
         filters: null,
+        alloptions: [],
+        allfilters: [],
     }
 
     componentDidMount() {
@@ -24,6 +26,8 @@ class ShopSelector extends Component {
             this.props.defaultCheckAll && this.props.onChange(
                 _shops.map(shop => shop.value)
             );
+            this.loadShops2(this.props.brandList);
+            this.loadShops3(this.props.canUseShops);
         });
     }
 
@@ -31,17 +35,29 @@ class ShopSelector extends Component {
         if (!isEqual(this.props.schemaData, nextProps.schemaData)) {
             this.loadShops({}, nextProps.schemaData, true);
         }
+        if (!isEqual(this.props.brandList, nextProps.brandList)) {
+            this.loadShops2(nextProps.brandList);
+        }
+        if (!isEqual(this.props.canUseShops, nextProps.canUseShops)) {
+            this.loadShops3(nextProps.canUseShops);
+        }
     }
 
     loadShops(params = {}, cache = this.props.schemaData, isForce = false) {
+        let {filterParm = {}} = this.props
         if (!isForce && (this.props.options || this.state.options)) return Promise.resolve();
-        const { brandList } = this.props;
-        return loadShopSchema(params, cache, brandList)
+        params = {...params, ...filterParm}
+        return loadShopSchema(params, cache)
             .then(({ shops, ...filterOptions }) => {
                 this.setState({
                     loading: false,
                     options: shops,
+                    alloptions: shops,
                     filters: FILTERS.map(filter => ({
+                        ...filter,
+                        options: filterOptions[filter.name],
+                    })),
+                    allfilters: FILTERS.map(filter => ({
                         ...filter,
                         options: filterOptions[filter.name],
                     })),
@@ -49,7 +65,34 @@ class ShopSelector extends Component {
                 return shops;
             });
     }
-
+    loadShops2(brandList = []) {
+        const { alloptions, allfilters } = this.state;
+        if (!allfilters[0]) { return }
+        const newFilter = JSON.parse(JSON.stringify(allfilters));
+        if (brandList[0]) {
+            const brands = allfilters[0];
+            const leftBrands = brands.options.filter(x => brandList.includes(x.brandID));
+            newFilter[0].options = leftBrands;
+            const leftShops = alloptions.filter(x => brandList.includes(x.brandID));
+            this.setState({ options: leftShops, filters: newFilter });
+            return;
+        }
+        this.setState({ options: alloptions, filters: allfilters });
+    }
+    loadShops3(canUseShops = []) {
+        const { alloptions } = this.state;
+        if (canUseShops[0]) {
+            const leftShops = alloptions.map((x) => {
+                if (!canUseShops.includes(x.shopID)) {
+                    return { ...x, disabled: true }
+                }
+                return x;
+            });
+            this.setState({ options: leftShops });
+            return;
+        }
+        this.setState({ options: alloptions });
+    }
     handleAdd = () => {
         this.setState({ showModal: true });
     }
@@ -70,10 +113,13 @@ class ShopSelector extends Component {
     }
 
     render() {
-        const { value = [], onChange, size, placeholder, ...otherProps } = this.props;
+        const { value = [], onChange, size, placeholder, extendShopList, ...otherProps } = this.props;
         const { showModal } = this.state;
 
-        const options = this.props.options || this.state.options || [];
+        let options = this.props.options || this.state.options || [];
+        if (Array.isArray(extendShopList)) {
+            options = [...extendShopList, ...options]
+        }
         const filters = this.props.filters || this.state.filters;
         const items = value.reduce((ret, shopID) => {
             const shopInfo = options.find(shop => shop.value === shopID);

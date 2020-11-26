@@ -5,6 +5,7 @@ import {
     saleCenterResetDetailInfoAC as saleCenterResetSpecialDetailInfoAC,
     saleCenterSetSpecialBasicInfoAC
 } from "../../redux/actions/saleCenterNEW/specialPromotion.action";
+import {NEW_SALE_BOX,SALE_CENTER_PAYHAVEGIFT} from "../../constants/entryCodes";
 import {
     Modal,
     message
@@ -47,6 +48,14 @@ import {injectIntl} from './IntlDecor';
 import { axiosData } from '../../helpers/util';
 import { axios } from '@hualala/platform-base';
 import { getStore } from '@hualala/platform-base'
+import Chou2Le from "../PromotionV3/Chou2Le";   // 抽抽乐
+import BlindBox from "../PromotionV3/BlindBox";   // 抽抽乐
+import { jumpPage, closePage } from '@hualala/platform-base';
+
+// 跳转到带装修的活动设置页面
+const activityList = [
+    '80', '66'
+]
 
 const UNRELEASED_PROMOTION_TYPES = [
 ]
@@ -62,6 +71,7 @@ class PromotionCreateModal extends Component {
             specialIndex: 0,
             currentCategoryIndex: 0,
             whiteList: [],
+            v3visible: false,       // 第三版活动组件是否显示
         };
         this.handleNewPromotionCardClick = this.handleNewPromotionCardClick.bind(this);
     }
@@ -145,32 +155,39 @@ class PromotionCreateModal extends Component {
             eventWay: key,
         });
         // 完善资料送礼只能创建一次
-        if (key === '60') {
-            if (isHuaTian()) {
-                return message.warning(SPECIAL_PROMOTION_CREATE_DISABLED_TIP);
-            }
-            this.props.saleCenterCheckSpecialExist({
-                eventWay: key,
-                data: {
-                    groupID: user.accountInfo.groupID,
-                    eventWay: key,
-                },
-                success: (val) => {
-                    if (key === '60' && val.serviceCode === 1) {
-                        message.warning(SALE_LABEL.k6316h4o);
-                    } else {
-                        this.setSpecialModalVisible(true);
-                        this.props.setSpecialPromotionType({
-                            eventName: activity.title,
-                        });
-                    }
-                },
-                fail: () => {
-                    message.error(SALE_LABEL.k5dmw1z4);
-                },
-            });
-            return;
-        }
+        // if (key === '60') {
+        //     if (isHuaTian()) {
+        //         return message.warning(SPECIAL_PROMOTION_CREATE_DISABLED_TIP);
+        //     }
+        //     this.props.saleCenterCheckSpecialExist({
+        //         eventWay: key,
+        //         data: {
+        //             groupID: user.accountInfo.groupID,
+        //             eventWay: key,
+        //         },
+        //         success: (val) => {
+        //             if (key === '60' && val.serviceCode === 1) {
+        //                 message.warning(SALE_LABEL.k6316h4o);
+        //             } else {
+        //                 this.setSpecialModalVisible(true);
+        //                 this.props.setSpecialPromotionType({
+        //                     eventName: activity.title,
+        //                 });
+        //             }
+        //         },
+        //         fail: () => {
+        //             message.error(SALE_LABEL.k5dmw1z4);
+        //         },
+        //     });
+        //     return;
+        // }
+        if(activityList.includes(key)) {
+            setTimeout(() => {
+                jumpPage({ menuID: SALE_CENTER_PAYHAVEGIFT, typeKey: key})
+                this.props.onCancel()
+            }, 100);
+            return closePage(SALE_CENTER_PAYHAVEGIFT)
+         }
         this.setSpecialModalVisible(true);
     }
 
@@ -263,9 +280,13 @@ class PromotionCreateModal extends Component {
             </Modal>
         );
     }
-
+    //** 第三版 重构 抽抽乐活动 点击事件 */
+    onV3Click = (key) => {
+        if(key) this.setState({curKey: key})
+        this.setState(ps => ({ v3visible: !ps.v3visible }));
+    }
     renderModalContent() {
-        const {whiteList} = this.state;
+        const {whiteList, v3visible, curKey} = this.state;
         const { intl } = this.props;
         const k6316hto = intl.formatMessage(SALE_STRING.k6316hto);
         const k6316hd0 = intl.formatMessage(SALE_STRING.k6316hd0);
@@ -328,7 +349,7 @@ class PromotionCreateModal extends Component {
                                 <div className={selfStyle.contentTitle}>{title}</div>
                                 <div className={selfStyle.cardWrapper}>
                                     {
-                                        list.map((item, index) => (
+                                        list.filter(item => !item.isOffline).map((item, index) => (
                                             <NewPromotionCard
                                                 size="small"
                                                 key={item.key}
@@ -337,6 +358,7 @@ class PromotionCreateModal extends Component {
                                                 index={index}
                                                 whiteList={whiteList}
                                                 onClickOpen={this.onClickOpen}
+                                                onV3Click={()=>{this.onV3Click(item.key)}}
                                             />
                                         ))
                                     }
@@ -347,6 +369,8 @@ class PromotionCreateModal extends Component {
                 </div>
                 {this.renderBasicPromotionModal()}
                 {this.renderSpecialPromotionModal()}
+                {(v3visible && curKey == '78') && (<Chou2Le onToggle={this.onV3Click} />)}
+                {(v3visible && curKey == '79') && (<BlindBox onToggle={this.onV3Click} />)}
             </div>
         )
     }

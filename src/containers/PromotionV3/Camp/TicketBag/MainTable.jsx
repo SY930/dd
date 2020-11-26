@@ -1,5 +1,5 @@
 import React, { PureComponent as Component } from 'react';
-import { Table, message, Modal, Tooltip } from 'antd';
+import { Table, Tooltip } from 'antd';
 import styles from './bag.less';
 import { href, typeMap } from './Common';
 import PagingFactory from 'components/PagingFactory';
@@ -52,7 +52,7 @@ class MainTable extends Component {
             return (<span>{text}</span>);
         };
         const render3 = (v, o) => {
-            const val = (v === -1) ? '不限制' : v;
+            const val = (v === -1) ? '不限制' : (v || 0);
             return (<span>{val}</span>);
         };
         // 表格头部的固定数据

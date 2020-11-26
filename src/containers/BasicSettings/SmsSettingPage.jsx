@@ -91,6 +91,7 @@ class MessageTemplatesPage extends React.Component {
         const pendingTemplates = messageTemplateList.filter(item => item.auditStatus == 1);
         const verifiedTemplates = messageTemplateList.filter(item => item.auditStatus == 2);
         const illegalTemplates = messageTemplateList.filter(item => item.auditStatus == 3);
+        console.log('illegalTemplates',illegalTemplates)
         return (
         <div className="layoutsContainer">
             {this.renderEditModal()}
@@ -168,6 +169,7 @@ class MessageGroup extends React.Component {
                     {!!messages.length && messages.map((item, index) => {
                         return <MessageDisplayBox
                             template={item.template}
+                            rejectReason={item.rejectReason}
                             id={item.itemID}
                             handleClick={() => this.props.edit(item)}
                             key={item.itemID}

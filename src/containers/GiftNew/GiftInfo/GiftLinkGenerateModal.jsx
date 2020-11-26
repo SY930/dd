@@ -12,7 +12,7 @@ import { jumpPage } from '@hualala/platform-base';
 import QRCode from 'qrcode.react';
 import emptyPage from '../../../assets/empty_page.png';
 import { axiosData, fetchData } from '../../../helpers/util'
-import { NEW_CUSTOMER } from '../../../constants/entryCodes'
+import { NEW_SALE_BOX } from '../../../constants/entryCodes'
 import style from './GiftInfo.less';
 
 
@@ -75,7 +75,7 @@ export default class GiftLinkGenerateModal extends Component {
     }
 
     handleJumpAway = () => {
-        jumpPage({pageID: NEW_CUSTOMER});
+        jumpPage({pageID: NEW_SALE_BOX});
         this.props.onCancel();
     }
 
@@ -106,7 +106,7 @@ export default class GiftLinkGenerateModal extends Component {
             message.warning('您的浏览器不支持自动复制，请手动复制')
         }
     }
-    
+
     handleQrCodeDownload = () => {
         const canvas = document.getElementById('__promotion_qr_canvas');
         const dom = document.createElement('a');

@@ -23,6 +23,7 @@ import {
     CLIENT_CATEGORY_RETURN_POINT,
     CLIENT_CATEGORY_RETURN_GIFT,
     CLIENT_CATEGORY_ADD_UP,
+    MONEY_OPTIONS
 } from '../../../redux/actions/saleCenterNEW/types.js';
 import { fetchShopCardLevel, queryTagDetailList, queryAllTagGroupList } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 import EditBoxForPromotion from './EditBoxForPromotion';
@@ -56,6 +57,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
             cardScopeIDs: [],
             userSettingOPtios: [],
             isTotalLimited: '0',
+            crmCardTypeIDs: '',
         };
 
         this.renderUserSetting = this.renderUserSetting.bind(this);
@@ -69,9 +71,27 @@ class AdvancedPromotionDetailSetting extends React.Component {
     }
     componentDidMount() {
         const data = { groupID: this.props.user.accountInfo.groupID }
-        let shopsIDs = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS();
+        let initShopsIDs = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS();
+        const { crmCardTypeIDs } = this.props.user.accountInfo;
+        let shopsIDs = this.props.user.accountInfo.dataPermissions.shopList;
         shopsIDs = shopsIDs[0] instanceof Object ? shopsIDs.map(shop => shop.shopID) : shopsIDs
-        data.shopIDs = shopsIDs.join(',')
+        // 格式转换  统一字符串  拼接
+        if(initShopsIDs.length){
+            let [shops] = initShopsIDs
+            if(typeof shops == 'string'){
+                data.shopIDs = shops
+            }else{
+                let [{shopID = ''}] = initShopsIDs
+                data.shopIDs = shopID
+            }
+        }else{
+            data.shopIDs = shopsIDs.join()
+        }
+
+        if(crmCardTypeIDs){
+            data.shopIDs = '';
+            this.setState({crmCardTypeIDs});
+        }
         this.props.fetchShopCardLevel({ data })
         this.props.fetchTagList({
             groupID: this.props.user.accountInfo.groupID,
@@ -79,9 +99,15 @@ class AdvancedPromotionDetailSetting extends React.Component {
             pageSize: 10000,
         })
         // 获取会员等级信息
-        const { groupCardTypeList = fromJS([]) } = this.props
+        const { groupCardTypeList = fromJS([]) } = this.props;
+        let ciflist = groupCardTypeList.toJS();
+        if(crmCardTypeIDs){
+            ciflist = groupCardTypeList.toJS().filter(x=>{
+                return crmCardTypeIDs.split(',').includes(x.cardTypeID);
+            })
+        }
         this.setState({
-            cardInfo: groupCardTypeList.toJS(),
+            cardInfo: ciflist,
         })
         const $promotionDetail = this.props.promotionDetailInfo.get('$promotionDetail');
         let userSetting = $promotionDetail.get('userSetting');
@@ -133,8 +159,9 @@ class AdvancedPromotionDetailSetting extends React.Component {
         });
     }
     componentWillReceiveProps(nextProps) {
-        let { userSetting, subjectType } = this.state;
+        let { userSetting, subjectType, crmCardTypeIDs } = this.state;
         const promotionType = nextProps.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
+
         if (nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'userSetting']) !==
             this.props.promotionDetailInfo.getIn(['$promotionDetail', 'userSetting'])) {
             userSetting = nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'userSetting']);
@@ -149,8 +176,38 @@ class AdvancedPromotionDetailSetting extends React.Component {
         const { groupCardTypeList = fromJS([]) } = this.props
         const { groupCardTypeList: _groupCardTypeList = fromJS([]) } = nextProps
         if (!is(groupCardTypeList, _groupCardTypeList)) {
+            let ciflist = _groupCardTypeList.toJS();
+            const cardScopeIDs = this.state.cardScopeIDs
+            if(crmCardTypeIDs){
+                ciflist = _groupCardTypeList.toJS().filter(x=>{
+                    return crmCardTypeIDs.split(',').includes(x.cardTypeID);
+                })
+            }
+            const { cardScopeType } = this.state
+            let currentCardScopeIDs = []
+            // 当适用店铺减少后，在此过滤调卡类别或卡等级，后期标签也可以再次处理， 标签cardScopeType为2
+            if(cardScopeType == 0) {
+                currentCardScopeIDs = cardScopeIDs.filter(v =>  ciflist.find(item => item.cardTypeID == v))
+            } else if(cardScopeType == 1) {
+                currentCardScopeIDs = cardScopeIDs.filter(v => ciflist.find(item =>
+                    item.cardTypeLevelList && item.cardTypeLevelList.find(cardLevelItem => cardLevelItem.cardLevelID == v)))
+            }
+
             this.setState({
-                cardInfo: _groupCardTypeList.toJS(),
+                cardInfo: ciflist,
+                cardScopeIDs:  currentCardScopeIDs
+            }, () => {
+                this.props.setPromotionDetail({
+                    userSetting: this.state.userSetting,
+                    cardScopeList: currentCardScopeIDs.length === 0
+                    ? undefined
+                    : currentCardScopeIDs.map((cardScopeID) => {
+                        return {
+                            cardScopeType,
+                            cardScopeID,
+                        }
+                    })
+                })
             })
         }
         if (promotionType === '3010' && this.props.stashSome !== nextProps.stashSome) {
@@ -166,6 +223,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                 })
             });
         }
+
         // 第二步店铺更改重新获取卡类卡等级，并且重置已选
         if (!is(this.props.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']), nextProps.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']))) {
             // 新建
@@ -173,13 +231,11 @@ class AdvancedPromotionDetailSetting extends React.Component {
             let _shopsIDs = nextProps.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS();
             shopsIDs = shopsIDs[0] instanceof Object ? shopsIDs.map(shop => shop.shopID) : shopsIDs
             _shopsIDs = _shopsIDs[0] instanceof Object ? _shopsIDs.map(shop => shop.shopID) : _shopsIDs
+
             if (!is(fromJS(_shopsIDs), fromJS(shopsIDs))) {
                 const data = { groupID: this.props.user.accountInfo.groupID }
                 data.shopIDs = _shopsIDs.join(',')
                 this.props.fetchShopCardLevel({ data })
-                this.handleCardScopeList({
-                    cardScopeIDs: [],
-                });
             }
         }
     }
@@ -223,9 +279,10 @@ class AdvancedPromotionDetailSetting extends React.Component {
     }
 
     renderPaymentSetting() {
+
         return (
             <FormItem
-                label={SALE_LABEL.k5m3onh8}
+                label={'金额核算'}
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
@@ -242,7 +299,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                     }
                     }
                 >
-                    {PAYMENTS_OPTIONS
+                    {MONEY_OPTIONS
                         .map((type) => {
                             return <Radio key={type.value} value={type.value}>{type.name}</Radio >
                         })}
@@ -315,7 +372,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
         const k5m3oo68 = intl.formatMessage(SALE_STRING.k5m3oo68);
         const k5m3opbw = intl.formatMessage(SALE_STRING.k5m3opbw);
         const tip = (
-            <div style={{ display: this.state.display, height: 330, width: 460 }} className={styles.tip}>
+            <div style={{ display: this.state.display, height: 260, width: 460 }} className={styles.tip}>
     <div><p style={{ marginBottom: 10 }}>{SALE_LABEL.k5m3onxw}</p></div>
                 <Row style={{ height: '72px' }}>
                     <Col span={3} style={{ marginTop: -7 }}>{k5m3oo68}:</Col>
@@ -325,10 +382,10 @@ class AdvancedPromotionDetailSetting extends React.Component {
                     <Col span={3} style={{ marginTop: -7 }}>{k5m3opbw}:</Col>
         <Col span={20}>{SALE_LABEL.k5m3ooek}<span style={{ color: '#222222' }}>{SALE_LABEL.k5m6e46f}</span>，{SALE_LABEL.k5m6e4n3}<span style={{ color: '#222222' }}>{SALE_LABEL.k5m6e4er}</span></Col>
                 </Row>
-                <Row style={{ height: '72px' }}>
+                {/* <Row style={{ height: '72px' }}>
         <Col span={3} style={{ marginTop: -7 }}><span style={{ color: '#ed5664' }}>{SALE_LABEL.k5m6e3pr}</span>:</Col>
         <Col span={20}>{SALE_LABEL.k5m3oomw}</Col>
-                </Row>
+                </Row> */}
                 <div style={{ marginRight: 14 }}>
                     <div className={styles.tipBtn}>
                         <Button
@@ -494,6 +551,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
             })
         })
         const { tagList } = this.props
+
         return (
             <div>
                 <FormItem
@@ -552,7 +610,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                     ):
                     (
                         <FormItem
-                            label={SALE_LABEL.k5m6e3y3 + cardScopeType == 0 ? k5m3oq98 : k5m4pxa1 }
+                            label={'适用' + (cardScopeType == 0 ? k5m3oq98 : k5m4pxa1) }
                             className={styles.FormItemStyle}
                             labelCol={{ span: 4 }}
                             wrapperCol={{ span: 17 }}
@@ -566,6 +624,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                                         multiple={true}
                                         showSearch={true}
                                         value={cardScopeIDs}
+                                        dropdownClassName={`${styles.dropdown}`}
                                         className={`${styles.linkSelectorRight} advancedDetailClassJs`}
                                         getPopupContainer={(node) => node.parentNode}
                                         onChange={(val) => {
@@ -618,6 +677,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         const _stash = promotionType == '3010' || promotionType == '3020';
         const $promotionScope = this.props.promotionScopeInfo.get('$scopeInfo');
+
         return (
             <div>
                 {this.renderUserSetting($promotionDetail)}

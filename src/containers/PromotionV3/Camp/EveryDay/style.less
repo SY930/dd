@@ -1,0 +1,23 @@
+@brd: #E7E7E7;
+@green: #1AB495;
+@green2: #18a786;
+.dayBox{
+    width: 420px;
+    :global{
+        .ant-tag{
+            line-height: 30px;
+            height: 30px;
+            width: 50px;
+            border: 1px solid @brd;
+            text-align: center;
+            padding: 0;
+            margin-bottom: 7px;
+        }
+        .ant-tag-checkable-checked {
+            background-color: @green2;
+        }
+        .ant-tag-checkable:hover {
+            background-color: @green;
+        }
+    }
+}

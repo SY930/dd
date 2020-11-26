@@ -382,7 +382,6 @@ const apiCfg = [
     ['queryUnbindCouponPromotion', '/api/promotion/queryUnbindCouponPromotion', { type: 'JSON' }],
 
 
-
     /* SupplyChain ben 加工单 ProcessingSheet */
     ['updateIreportTemplate', '/api/basic/printTemplate/updateTemplate', { type: 'FORM' }],
     ['queryProceseList', '/api/supplychain/process/queryProceseList', { type: 'JSON' }], // 查询加工单列表
@@ -1060,7 +1059,10 @@ const apiCfg = [
     // 第三方外卖评价相关
     ['getComment', '/api/shopcenter/takeevalution/getComment', { method: 'GET', type: 'json' }], // 获取评论
     ['postReply', '/api/shopcenter/takeevalution/postReply', { type: 'json' }], // 提交店铺回复
-    ['/tag/tagManagementService_queryTagDetailList.ajax', '/tag/tagManagementService_queryTagDetailList.ajax', { type: 'json' }]
+    ['/tag/tagManagementService_queryTagDetailList.ajax', '/tag/tagManagementService_queryTagDetailList.ajax', { type: 'json' }],
+    ['/api/specialPromotion/addEvent_NEW', '/api/specialPromotion/addEvent_NEW', { type: 'json' }], // 保存营销活动
+    ['/api/specialPromotion/queryEventDetail_NEW', '/api/specialPromotion/queryEventDetail_NEW', { type: 'json' }], // 获取营销活动详情
+    ['/api/specialPromotion/updateEvent_NEW', '/api/specialPromotion/updateEvent_NEW', { type: 'json' }], // 更新营销活动
 ]
 /* eslint-enable max-len */
 

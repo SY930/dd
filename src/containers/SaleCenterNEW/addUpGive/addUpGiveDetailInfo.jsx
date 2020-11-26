@@ -154,7 +154,7 @@ class AddUpGiveDetailInfo extends React.Component {
                 this.props.form.setFields({
                     stageAmount: {
                         value: _value,
-                        errors: [new Error(SALE_LABEL.k5kmrzrz)],
+                        errors: [new Error('必须是2~99998之间的整数')],
                     },
                 })
             }
@@ -288,7 +288,7 @@ class AddUpGiveDetailInfo extends React.Component {
                         <FormItem
                                 style={{ width: '24%', marginRight: 0 }}
                                 validateStatus={this.state.maxTimesStatus}
-                                help={this.state.maxTimesStatus == 'success' ? null : `${this.state.rule.minTimes > 1 && this.state.rule.minTimes < 100000 ? this.state.rule.minTimes : 2}~99999${SALE_LABEL.k5kms0xo}`}
+                                help={this.state.maxTimesStatus == 'success' ? null : `${this.state.rule.minTimes > 1 && this.state.rule.minTimes < 100000 ? this.state.rule.minTimes : 2}~99999之间`}
                             >
                                 <Input
                                 value={this.state.rule.maxTimes}
@@ -302,7 +302,7 @@ class AddUpGiveDetailInfo extends React.Component {
                                 getFieldDecorator('giveFoodCount', {
                                     rules: [{
                                         required: true,
-                                        message: `0~100000 ${SALE_LABEL.k5kms0xo} ${promotionType == '1080' ? SALE_LABEL.k5kms160 : ','+ SALE_LABEL.k5kms1ec}`,
+                                        message: `0~100000 ${'之间'} ${promotionType == '1080' ? '整数' : ','+ '可两位小数'}`,
                                         pattern: promotionType == '1080' ? /^[1-9][0-9]{0,4}$/ : /(^[1-9][0-9]{0,4}(\.[0-9]{0,2})?$)|(^0\.([1-9][0-9]?|0[1-9])$)/,
                                     }],
                                     initialValue: this.state.rule.giveFoodCount,

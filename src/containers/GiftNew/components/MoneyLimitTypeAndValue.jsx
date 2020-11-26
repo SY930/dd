@@ -77,7 +77,8 @@ export default class MoneyLimitTypeAndValue extends Component {
                 onChange={({ number: v }) => this.handleTypeAndValueChange({moenyLimitValue: v})}
                 addonAfter="元，使用一张"
                 value={{ number: moenyLimitValue }}
-                maxNum={6}
+                maxNum={5}
+                modal={'int'}
             />
         )
     }

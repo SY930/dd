@@ -6,20 +6,23 @@ import AddModal from './AddModal';
 
 export default class TicketBag extends Component {
     state = {
-        value: '0',
         visible: false,
         list: [],
     };
+    componentDidMount() {
+        const { value } = this.props;
+        this.setState({ list: value });
+    }
     componentWillReceiveProps(np) {
-        const { bag } = np;
-        if(bag) {
-            this.setState({ list: bag });
+        const { value } = np;
+        if(value) {
+            this.setState({ list: value });
         }
     }
     /*  */
     onDelete = () => {
         this.setState({ list: [] });
-        this.triggerChange(null);
+        this.props.onChange([]);
     }
     /*  */
     onToggleModal = () => {
@@ -27,11 +30,8 @@ export default class TicketBag extends Component {
     }
     onSelectBag = (item) => {
         this.setState({ list: [item] });
-        this.triggerChange(item);
+        this.props.onChange([item]);
         this.onToggleModal();
-    }
-    triggerChange(item) {
-        this.props.onChange(item);
     }
     /* 生成表格头数据 */
     generateColumns() {
@@ -53,7 +53,7 @@ export default class TicketBag extends Component {
             return (<span>{text}</span>);
         };
         const render3 = (v, o) => {
-            const val = (v === -1) ? '不限制' : v;
+            const val = (v === -1) ? '不限制' : (v || 0);
             return (<span>{val}</span>);
         };
         // 表格头部的固定数据
@@ -75,8 +75,7 @@ export default class TicketBag extends Component {
         }));
     }
     render() {
-        const { groupID } = this.props;
-        const { value, visible } = this.state;
+        const { visible } = this.state;
         const columns = this.generateColumns();
         const dataSource = this.generateDataSource();
         return (
@@ -91,7 +90,6 @@ export default class TicketBag extends Component {
                 />
                 {visible &&
                     <AddModal
-                        groupID={groupID}
                         onAdd={this.onSelectBag}
                         onClose={this.onToggleModal}
                     />

@@ -14,7 +14,7 @@ import {
     FetchGiftSchema,
 } from '../_action';
 import { FORMITEMS, SEND_FORMKEYS, WX_SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS, WX_SEND_FORMKEYS, SEND_GIFTPWD_FORMKEYS, USED_SPE_COLUMNS, USED_SPE_FORMKEYS, BASE_COLUMNS } from './_tableSendConfig';
-import { mapValueToLabel, axiosData } from 'helpers/util';
+import { mapValueToLabel, axiosData, isFilterShopType } from 'helpers/util';
 import { messageTemplateState } from 'containers/BasicSettings/reducers';
 import TransGiftModal from './TransGiftModal';
 
@@ -61,7 +61,7 @@ class GiftSendOrUsedCount extends React.Component {
                         }
                     }else {
                         return <span>{mapValueToLabel(GiftCfg.giftSendStatus, String(value))}</span>
-                    } 
+                    }
                 },
             },
             {
@@ -101,7 +101,7 @@ class GiftSendOrUsedCount extends React.Component {
             total: 2,
             pageNo: 1,
             pageSize: 10,
-            speGift: ['10', '20', '21', '30', '40', '42', '110', '111'],
+            speGift: ['10', '20', '21', '30', '40', '42', '110', '111', '22'],
             queryParams: {
 
             },
@@ -161,7 +161,11 @@ class GiftSendOrUsedCount extends React.Component {
         }
         const _shopData = shopData.toJS();
         if (_shopData.length === 0) {
-            FetchGiftSchemaAC({})
+            let parm = {}
+            if(isFilterShopType()){
+                parm = {productCode: 'HLL_CRM_License'}
+            }
+            FetchGiftSchemaAC(parm)
         }
     }
     componentWillReceiveProps(nextProps) {
@@ -251,7 +255,7 @@ class GiftSendOrUsedCount extends React.Component {
                     transGift: records,
                     visible: true,
                 })
-            }, (err) => { 
+            }, (err) => {
                 message.error(err)
             }).catch((err) => {
                 console.log(err);

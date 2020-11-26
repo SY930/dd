@@ -18,7 +18,9 @@ import {
     Select,
     Tree,
     Input,
-    Radio
+    Radio,
+    Tooltip,
+    Icon
 } from 'antd';
 
 const FormItem = Form.Item;
@@ -26,14 +28,15 @@ const CheckboxGroup = Checkbox.Group;
 const Option = Select.Option;
 const TreeNode = Tree.TreeNode;
 const RadioGroup = Radio.Group;
-
+import { axios, getStore } from '@hualala/platform-base';
 import styles from '../ActivityPage.less';
 import {isEqual, uniq } from 'lodash';
-import ShopSelector from '../../../components/common/ShopSelector';
+import ShopSelector from '../../../components/ShopSelector';
 import { getPromotionShopSchema, fetchPromotionScopeInfo, saleCenterSetScopeInfoAC, saleCenterGetShopByParamAC, SCENARIOS } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from '../IntlDecor';
+import { isFilterShopType } from '../../../helpers/util'
 
 const Immutable = require('immutable');
 
@@ -74,7 +77,9 @@ class PromotionScopeInfo extends React.Component {
             shopStatus: 'success',
             usageMode: 1,
             filterShops: [],
-            allShopsSet: false
+            allShopsSet: false,
+            brandList: [],
+            isRequire: true,
         };
 
         // bind this.
@@ -102,12 +107,20 @@ class PromotionScopeInfo extends React.Component {
                 flag = false;
             }
         });
-        if (promotionType == '5010' && this.state.selections.length == 0 && !this.props.user.toJS().shopID > 0) {
+        const {selections} = this.state;
+        if (promotionType == '5010' && selections.length == 0 && !this.props.user.toJS().shopID > 0) {
             flag = false;
             this.setState({ shopStatus: false })
         } else {
             this.setState({ shopStatus: true })
         }
+        if(!this.props.user.toJS().shopID) {
+            const {isRequire} = this.state;
+            if (isRequire && !selections[0]) {
+                flag = false;
+            }
+        }
+
         if (flag) {
             const states = {
                 channel: this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) == '5010' ? 'WECHAT' : this.state.channel,
@@ -126,7 +139,16 @@ class PromotionScopeInfo extends React.Component {
                 states.shopsInfo =  [{ shopID: this.props.user.toJS().shopID }];
             } else {
                 states.shopsInfo = this.state.selections;
+                // 授权门店过滤
+                if(isFilterShopType(promotionType)){
+                    let dynamicShopSchema = Object.assign({}, this.props.shopSchema.toJS());
+                    let {shopSchema = {}} = dynamicShopSchema
+                    let {shops = []} = shopSchema
+                    let {shopsInfo = []} = states
+                    states.shopsInfo = shopsInfo.filter((item) => shops.some(i => i.shopID == item))
+                }
             }
+
             this.props.saleCenterSetScopeInfo(states);
         }
         return flag || isPrev;
@@ -140,7 +162,8 @@ class PromotionScopeInfo extends React.Component {
             finish: undefined,
             cancel: undefined,
         });
-
+        const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
+        this.loadShopSchema();
         const { promotionScopeInfo, fetchPromotionScopeInfo, getPromotionShopSchema, promotionBasicInfo } = this.props;
         if (promotionBasicInfo.get('$filterShops').toJS().shopList) {
             this.setState({filterShops: promotionBasicInfo.get('$filterShops').toJS().shopList})
@@ -148,10 +171,18 @@ class PromotionScopeInfo extends React.Component {
         this.setState({allShopsSet: !!promotionBasicInfo.get('$filterShops').toJS().allShopSet});
 
         if (!promotionScopeInfo.getIn(['refs', 'initialized'])) {
-            fetchPromotionScopeInfo({ _groupID: this.props.user.toJS().accountInfo.groupID });
+            let parm = {}
+            if(isFilterShopType(promotionType)){
+                parm = {productCode: 'HLL_CRM_License'}
+            }
+            fetchPromotionScopeInfo({ _groupID: this.props.user.toJS().accountInfo.groupID, ...parm });
         }
         if (this.props.user.toJS().shopID <= 0) {
-            getPromotionShopSchema({groupID: this.props.user.toJS().accountInfo.groupID});
+            let parm = {}
+            if(isFilterShopType(promotionType)){
+                parm = {productCode: 'HLL_CRM_License'}
+            }
+            getPromotionShopSchema({groupID: this.props.user.toJS().accountInfo.groupID, ...parm});
         }
 
         if (this.props.promotionScopeInfo.getIn(['refs', 'data', 'shops']).size > 0 && this.props.promotionScopeInfo.getIn(['refs', 'data', 'brands']).size > 0) {
@@ -175,9 +206,6 @@ class PromotionScopeInfo extends React.Component {
                 auto: _stateFromRedux.auto,
                 orderType: _stateFromRedux.orderType,
                 initialized: true,
-                $brands: Immutable.List.isList(this.props.promotionScopeInfo.getIn(['refs', 'data', 'brands'])) ?
-                    this.props.promotionScopeInfo.getIn(['refs', 'data', 'brands']).toJS() :
-                    this.props.promotionScopeInfo.getIn(['refs', 'data', 'brands']),
                 usageMode: _stateFromRedux.usageMode || 1,
             });
         }
@@ -209,13 +237,20 @@ class PromotionScopeInfo extends React.Component {
                 auto: _data.auto,
                 orderType: _data.orderType,
                 // TODO: shopsIdInfo converted to shopsInfo
-                $brands: Immutable.List.isList(nextProps.promotionScopeInfo.getIn(['refs', 'data', 'brands'])) ?
-                    nextProps.promotionScopeInfo.getIn(['refs', 'data', 'brands']).toJS() :
-                    nextProps.promotionScopeInfo.getIn(['refs', 'data', 'brands']),
                 initialized: true,
                 usageMode: _data.usageMode || 1,
             });
         }
+    }
+
+
+    async loadShopSchema() {
+        const { data } = await axios.post('/api/shopapi/schema',{});
+        const {brands, shops } = data;
+        this.setState({
+            brandList: brands,
+        });
+        this.countIsRequire(shops);
     }
 
     // save brand data to store
@@ -277,7 +312,7 @@ class PromotionScopeInfo extends React.Component {
         const k5dod8s9 = intl.formatMessage(SALE_STRING.k5dod8s9);
         const k5m5ay7o = intl.formatMessage(SALE_STRING.k5m5ay7o);
 
-        const _brands = this.state.$brands;
+        const _brands = this.state.brandList;
         let options;
         if (this.state.initialized) {
             if (typeof _brands === 'object' && _brands.length > 0) {
@@ -317,6 +352,7 @@ class PromotionScopeInfo extends React.Component {
             >
                 <Select {..._brandList}
                         size="default"
+                        placeholder='请选择品牌，不选默认全部品牌可用'
                         getPopupContainer={(node) => node.parentNode}
                 >
                     {options}
@@ -371,6 +407,18 @@ class PromotionScopeInfo extends React.Component {
                             );
                         })}
                     </Select>
+                    <Tooltip title={
+                        <p>
+                            <p>仅线下使用：指云店pos、点菜宝、云店pad、大屏等由门店下单场景</p>
+                            <p>仅线上使用：指线上餐厅、小程序等由用户自助下单场景</p>
+                        </p>
+                    }>
+                        <Icon
+                            type={'question-circle'}
+                            style={{ color: '#787878' }}
+                            className={styles.cardLevelTreeIcon}
+                        />
+                    </Tooltip>
                 </Col>
                 <Col span={0} className={styles.autoStyle}>
     <div>{SALE_LABEL.k5dbiuws}</div>
@@ -453,31 +501,78 @@ class PromotionScopeInfo extends React.Component {
             </Form.Item>
         );
     }
-
+    countIsRequire(shopList){
+        const { promotionScopeInfo, isNew } = this.props;
+        const { size } = promotionScopeInfo.getIn(['refs', 'data', 'shops']);
+        const oldShops = promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS();
+        const { length } = shopList;
+        // a 新建营销活动，先获取此集团的所有店铺数据，如果此用户为全部店铺权限，表单内店铺组件非必选
+        // 如果用户权限为某几个店铺的权限，组件为必选项。
+        // b 编辑活动，全部店铺权限用户非必选
+        // 店铺受限用户，首先判断历史数据是否是全部店铺的数据，如果是，店铺组件为非必选。
+        // 反之，店铺为必选，用户必选一个用户权限之内的店铺选项。
+        if(isNew){
+            if(length<size){
+                this.setState({ isRequire: true });
+                return;
+            }
+            this.setState({ isRequire: false });
+        } else {
+            if(oldShops[0] && length<size){
+                this.setState({ isRequire: true });
+                return;
+            }
+            this.setState({ isRequire: false });
+        }
+    }
     renderShopsOptions() {
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
+        const { brands, shopStatus, allShopSet, selections, isRequire } = this.state;
+        if(promotionType == '5010'){
+            return (
+                <Form.Item
+                    label={SALE_LABEL.k5dlggak}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                    required={promotionType == '5010'}
+                    validateStatus={shopStatus ? 'success' : 'error'}
+                    help={shopStatus ? null : SALE_LABEL.k5hkj1ef}
+                >
+                    <ShopSelector
+                        value={selections}
+                        brandList={brands}
+                        // schemaData={this.getFilteredShopSchema()}
+                        onChange={
+                            this.editBoxForShopsChange
+                        }
+                    />
+                    {allShopSet ?
+                        <p style={{ color: '#e24949' }}>{SALE_LABEL.k5m67b23}</p>
+                        : null}
+                </Form.Item>
+            );
+        }
+        const valid = (isRequire && !selections[0]);
         return (
             <Form.Item
                 label={SALE_LABEL.k5dlggak}
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
-                required={promotionType == '5010'}
-                validateStatus={promotionType != '5010' ? 'success' : this.state.shopStatus ? 'success' : 'error'}
-                help={promotionType != '5010' ? null : this.state.shopStatus ? null : SALE_LABEL.k5hkj1ef}
+                required={isRequire}
+                validateStatus={valid ? 'error' : 'success'}
+                help={valid ? SALE_LABEL.k5hkj1ef: null}
             >
                 <ShopSelector
-                    value={this.state.selections}
-                    schemaData={this.getFilteredShopSchema()}
-                    onChange={
-                        this.editBoxForShopsChange
-                    }
+                    value={selections}
+                    brandList={brands}
+                    onChange={ this.editBoxForShopsChange }
+                    filterParm={isFilterShopType(promotionType)?{productCode: 'HLL_CRM_License'}:{}}
                 />
-                {
-                    this.state.allShopSet ?
-                <p style={{ color: '#e24949' }}>{SALE_LABEL.k5m67b23}</p>
-                        : null
-                }
+                {allShopSet ?
+                    <p style={{ color: '#e24949' }}>{SALE_LABEL.k5m67b23}</p>
+                    : null}
             </Form.Item>
         );
     }
@@ -609,17 +704,90 @@ class PromotionScopeInfo extends React.Component {
     }
 
     render() {
-        const promotionType = this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType'])        
+        const promotionType = this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType'])
         return (
             <div style={{position: "absolute", width: '100%'}}>
                 {
                     promotionType == '1030' ?
                     <div style={{position: "absolute", left: -241, background: 'white', top: 80, width: 221,}}>
-                        <p style={{color: 'rgba(102,102,102,1)', lineHeight: '18px', fontSize: 14, fontWeight: 500, margin: '10px 0'}}>活动说明：</p>
-                        <p style={{color: 'rgba(102,102,102,1)', lineHeight: '18px', fontSize: 12, fontWeight: 500, margin: '10px 0'}}>1. 同一活动时间，有多个满赠活动，活动会执行哪个？</p>
-                        <p style={{color: 'rgba(153,153,153,1)', lineHeight: '18px', fontSize: 12, fontWeight: 500, }}>优先执行顺序：执行场景为配置【适用业务】的活动>配置【活动时段】的活动>配置【活动周期】的活动>配置【活动日期】的活动。</p>
-                        <p style={{color: 'rgba(102,102,102,1)', lineHeight: '18px', fontSize: 12, fontWeight: 500, padding: '10px 0', borderTop: '1px solid #E9E9E9', marginTop: '7px'}}>2. 满赠活动使用注意事项</p>
-                        <p style={{color: 'rgba(153,153,153,1)', lineHeight: '18px', fontSize: 12, fontWeight: 500, }}>满赠/每满赠活动与买赠、第二份打折、加价换购活动之间不受互斥规则限制，在线上餐厅都按共享执行</p>
+                        <p
+                        style={{
+                            color: "rgba(102,102,102,1)",
+                            lineHeight: "18px",
+                            fontSize: 14,
+                            fontWeight: 500,
+                            margin: "10px 0",
+                        }}
+                    >
+                        <Icon
+                            style={{ color: "#FAAD14" ,marginRight: '6px'}}
+                            type="info-circle-o"
+
+                        />
+                        活动须知
+                    </p>
+                    <p
+                        style={{
+                            color: "#666666",
+                            lineHeight: "18px",
+                            fontSize: 12,
+                            fontWeight: 500,
+                            margin: "10px 0",
+                        }}
+                    >
+                        1. 同门店同时间多个满赠活动执行顺序
+                    </p>
+                    <p
+                        style={{
+                            color: "rgba(102,102,102,1)",
+                            lineHeight: "18px",
+                            fontSize: 12,
+                            fontWeight: 500,
+                            margin: "10px 0",
+                            whiteSpace: "nowrap",
+                        }}
+                    >
+                        【活动时段】>【活动周期】>【活动日期】
+                    </p>
+                    <p
+                        style={{
+                            color: "rgba(153,153,153,1)",
+                            lineHeight: "18px",
+                            fontSize: 12,
+                            fontWeight: 500,
+                        }}
+                    >
+                        举例：
+                        <br />
+                        同一个业务下，5.1～6.1
+                        设置了活动A，每个月10号设置活动B，10号中午12:00~1:00设置活动C
+                        <br />
+                        则10号当天活动执行顺序为：12:00~1:00执行活动C；当天其他时段执行活动B；
+                        当月其他日期执行活动A
+                    </p>
+                    {/* <p
+                        style={{
+                            color: "rgba(102,102,102,1)",
+                            lineHeight: "18px",
+                            fontSize: 12,
+                            fontWeight: 500,
+                            padding: "10px 0",
+                            borderTop: "1px solid #E9E9E9",
+                            marginTop: "7px",
+                        }}
+                    >
+                        2.活动互斥原则
+                    </p>
+                    <p
+                        style={{
+                            color: "rgba(153,153,153,1)",
+                            lineHeight: "18px",
+                            fontSize: 12,
+                            fontWeight: 500,
+                        }}
+                    >
+                        满赠/每满赠活动与买赠、第二份打折、加价换购活动之间不受互斥规则限制，在线上餐厅都按同享执行。
+                    </p> */}
                     </div> : null
                 }
                 <Form className={styles.FormStyle}>

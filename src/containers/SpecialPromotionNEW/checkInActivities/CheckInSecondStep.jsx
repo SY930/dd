@@ -445,9 +445,14 @@ class CheckInSecondStep extends React.Component {
                     {
                         required: true,
                         message: '赠送积分为必填项',
-                    },{
-                        message: `${this.props.intl.formatMessage(STRING_SPE.d2b1c7560ae71124)}`,
-                        pattern: /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/,
+                    },
+                    // {
+                    //     message: `${this.props.intl.formatMessage(STRING_SPE.d2b1c7560ae71124)}`,
+                    //     pattern: /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/,
+                    // }, 
+                    {
+                        pattern: /^(([1-9]\d{0,5})(\.\d{0,2})?|0.\d?[1-9]{1})$/,
+                        message: "请输入1~1000000数字，支持两位小数"
                     }],
                 labelCol: { span: 5 },
                 wrapperCol: { span: 10 },

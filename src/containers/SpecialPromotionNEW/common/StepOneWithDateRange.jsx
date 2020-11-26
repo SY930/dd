@@ -36,6 +36,7 @@ import {
     MONTH_OPTIONS,
     WEEK_OPTIONS,
 } from '../../../redux/actions/saleCenterNEW/fullCutActivity.action';
+import EveryDay from '../../GiftNew/GiftInfo/TicketBag/EveryDay';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
 
@@ -70,6 +71,11 @@ const simpleOptionSmsGate = [ // 选项有2种
     '75',
     '76',
 ];
+// 包含周期选择日期表单选择项的营销活动集合
+const PROMOTIONS_CONTAIN_PERIOD_TYPE_SELECTOR_SETS = new Set([
+    '53',  // 群发礼品
+])
+
 
 const ATSEnabledTypes = [ // advanced time settings enabled promotion types
     '20',
@@ -88,6 +94,8 @@ const dateLimitedTypes = [ // 活动日期不能选到今天以前的活动类�
     '70',
     '75',
 ]
+// 起止日期
+const showActDataType = ['60']
 
 
 @injectIntl
@@ -150,6 +158,7 @@ class StepOneWithDateRange extends React.Component {
             selectedIDs: props.specialPromotion.getIn(['$eventInfo', 'mpIDList']).toJS(),
             allWeChatIDList: props.allWeChatIDList,
             allWeChatIDListLoading: props.allWeChatIDListLoading,
+            actStartDate: []
         };
         this.promotionNameInputRef = null;
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -182,6 +191,7 @@ class StepOneWithDateRange extends React.Component {
             data: opts,
         });
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
+        const { eventStartDate, eventEndDate } = specialPromotion
         this.props.queryWechatMpInfo({subGroupID: specialPromotion.subGroupID});
         if ((this.props.type === '31' || this.props.type === '68') && this.props.specialPromotion.getIn(['$eventInfo', 'itemID'])) {
             const itemID = specialPromotion.itemID;
@@ -224,6 +234,14 @@ class StepOneWithDateRange extends React.Component {
         } catch (e) {
             // oops
         }
+
+        // actStartDate
+        console.log('specialPromotion',specialPromotion)
+        if(this.props.type == '60' && eventStartDate && eventEndDate) {
+            this.setState({
+                actStartDate: [moment(eventStartDate),moment(eventEndDate)]
+            })
+        }
     }
     componentWillUnmount() {
         document.removeEventListener('click', this.onFakeDatePickerBlur)
@@ -263,11 +281,23 @@ class StepOneWithDateRange extends React.Component {
                 this.setState({
                     getExcludeEventList: specialPromotion.getExcludeEventList || [],
                 }, () => {
-                    this.setErrors('rangePicker', `${this.props.intl.formatMessage(STRING_SPE.de8g05amdm019)}`)
+                    if(this.props.type == '60') {
+                        this.setErrors('rangePicker', '该时间段内已经有启用状态的完善资料送礼活动，不能重复创建')
+
+                    } else {
+                        this.setErrors('rangePicker', `${this.props.intl.formatMessage(STRING_SPE.de8g05amdm019)}`)
+                    }
+
                 })
             } else {
                 this.setState({
                     getExcludeEventList: [],
+                })
+                this.props.form.setFields({
+                    rangePicker: {
+                        // value: [],
+                        errors: undefined,
+                    },
                 })
             }
             if (nextProps.specialPromotion.get('$eventInfo').toJS().allCardLevelCheck && this.props.type != '23') { // 线上餐厅送礼活动过于复杂不限制下一步
@@ -327,6 +357,7 @@ class StepOneWithDateRange extends React.Component {
 
     handleSubmit() {
         let nextFlag = true;
+        const { actStartDate } = this.state
         this.props.form.validateFieldsAndScroll((err1, basicValues) => {
             if (err1) {
                 nextFlag = false;
@@ -345,7 +376,12 @@ class StepOneWithDateRange extends React.Component {
 
         if (this.state.getExcludeEventList.length > 0) {
             nextFlag = false;
-            this.setErrors('rangePicker', `${this.props.intl.formatMessage(STRING_SPE.de8g05amdm019)}`)
+
+            if(this.props.type == '60') {
+                this.setErrors('rangePicker', `${this.props.intl.formatMessage("该时间段内已经有启用状态的完善资料送礼活动，不能重复创建")}`)
+            } else {
+                this.setErrors('rangePicker', `${this.props.intl.formatMessage(STRING_SPE.de8g05amdm019)}`)
+            }
         }
         if (this.state.allShopCheck) {
             nextFlag = false;
@@ -369,7 +405,20 @@ class StepOneWithDateRange extends React.Component {
                     eventEndDate: this.state.dateRange[1] ? this.state.dateRange[1].format('YYYYMMDD') : '0',
                     signID: this.state.signID,
                 });
-            } else {
+            } else if( this.props.type == '60') {
+                const eventStartDate =  actStartDate[0] ? actStartDate[0].format('YYYYMMDD') : '';
+                const eventEndDate = actStartDate[1] ? actStartDate[1].format('YYYYMMDD') : ''
+
+                this.props.setSpecialBasicInfo({
+                    eventName: this.state.name,
+                    eventRemark: this.state.description,
+                    eventStartDate ,
+                    eventEndDate ,
+                    smsGate: this.state.smsGate,
+                    signID: this.state.signID,
+                })
+
+            } else  {
                 this.props.setSpecialBasicInfo({
                     eventName: this.state.name,
                     eventRemark: this.state.description,
@@ -449,9 +498,9 @@ class StepOneWithDateRange extends React.Component {
                 // 线上餐厅送礼还需要再查一个接口: http://wiki.hualala.com/pages/viewpage.action?pageId=30511315
                 this.props.type === '23' && this.props.getEventExcludeCardTypes(opts)
             }
-            if (this.props.type === '63') {
-                this.props.saleCenterGetExcludeEventList(opts);
-            }
+            // if (this.props.type === '63') {
+            //     this.props.saleCenterGetExcludeEventList(opts);
+            // }
             if (this.props.type === '64') {
                 // EditBoxForShops组件-编辑时-componentDidMount再发一次;
                 this.props.saleCenterGetShopOfEventByDate({ ...opts, eventID: opts.itemID, eventWay: undefined, itemID: undefined }).then(allShopCheck => {
@@ -721,6 +770,241 @@ class StepOneWithDateRange extends React.Component {
         }
     }
 
+
+    /**
+     * @description 渲染周期选择器
+     * @example 群发礼品，按月，周，日等周期去发送营销券 (无为不按日期发放)
+    */
+    renderDateOfSendingPromotionSelector = ()=>{
+        const { type, form:{
+            getFieldDecorator: decorator,
+            getFieldValue,
+            getFieldsValue
+        }} = this.props;
+
+        let dateInPeriodType = getFieldValue('dateInPeriodType');
+
+        // console.log('getFieldsValue', getFieldsValue())
+        if(dateInPeriodType == undefined) {
+            dateInPeriodType = 'm';
+        }
+        if(PROMOTIONS_CONTAIN_PERIOD_TYPE_SELECTOR_SETS.has(type)) {
+            return (
+                <div>
+                    <FormItem
+                        label='选择周期'
+                        className={[styles.FormItemStyle, styles.FormItemLabelPadding].join(' ')}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 3 }}
+                    >
+                        {decorator('dateInPeriodType', {
+                            rules: [{
+                                required: true,
+                                message: '请选择券发放周期',
+                            }],
+                            initialValue: dateInPeriodType,
+                            onChange:  (val)=>{ console.log(val)}
+                        })(
+                            <Select>
+                                <Option value="m">每月</Option>
+                                <Option value="w">每周</Option>
+                                <Option value="d">无</Option>
+                            </Select>
+                        )}
+                    </FormItem>
+                    {
+                        this.renderDatePickerInWeekOrMonth(dateInPeriodType)
+                    }
+                </div>
+            )
+        }
+        return null;
+    }
+
+    /**
+     * @description 渲染周或者月具体的日期选择
+    */
+    renderDatePickerInWeekOrMonth = (dateInPeriodType) => {
+
+        const { form: {getFieldDecorator: decorator}} = this.props;
+
+        // disbled minutes
+
+
+        let initialValue = [];
+        if( decorator('dateDescInPeroid') instanceof Array && decorator('dateDescInPeroid').length > 0) {
+            initialValue = decorator('dateDescInPeroid');
+        }
+
+        if(dateInPeriodType == 'd') {
+            return null;
+        }
+        return (
+            <FormItem
+                label=' '
+                className={[styles.FormItemStyle, styles.FormItemLabelPadding].join(' ')}
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 17 }}
+            >
+                {decorator('dateDescInPeroid', {
+                    rules: [{
+                        required: true,
+                        message: '请选择日期',
+                    }],
+                    initialValue,
+                })(
+                    <EveryDay type={dateInPeriodType} disabled={false} />
+                )}
+            </FormItem>
+        )
+    }
+
+    /**
+     * @description 渲染仅发送时间组件
+    */
+    renderSendTimeSelector = () => {
+        const { form: {
+            getFieldDecorator: decorator,
+            getFieldValue
+        }, type} = this.props;
+
+        if(!(PROMOTIONS_CONTAIN_PERIOD_TYPE_SELECTOR_SETS.has(type))) {
+            return null;
+        }
+
+        // 不可用时间组件
+        let disabledHours = () => {
+            return [];
+        };
+        let disabledMinutes = () => {
+            const dateInPeriodType = getFieldValue('dateInPeriodType');
+            if(dateInPeriodType == 'm' || dateInPeriodType == 'w'){
+                let result = [];
+                for(let i=0; i < 60; i++){
+                    if(i != 0 && i != 30) {
+                        result.push(i);
+                    }
+                }
+                return result;
+            }
+        }
+
+        let { startTime, timeString } = this.state,
+            timeStringInitialValue = '';
+
+        if (timeString != '' && timeString !== 0) {
+            timeStringInitialValue = moment(timeString, 'HHmm');
+        } else {
+            timeStringInitialValue = timeString;
+        }
+
+        return (
+            <FormItem
+                label='发送时间'
+                className={styles.FormItemStyle}
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 8 }}
+            >
+                {decorator('sendTime', {
+                    rules: [{
+                        required: true,
+                        message: `${this.props.intl.formatMessage(STRING_SPE.d21645473363b18164)}`,
+                    }],
+                    initialValue: timeStringInitialValue,
+                })(
+                    <TimePicker
+                        disabledHours={disabledHours}
+                        disabledMinutes={disabledMinutes}
+                        format="HH:mm"
+                        style={{ width: '100%' }}
+                        onChange={this.onTimePickerChange}
+                        hideDisabledOptions = {true}
+                        placeholder={this.props.intl.formatMessage(STRING_SPE.d21645473363b18164)}
+                    />
+                )}
+                {
+                    type == '50' && <p className={styles.msgTip}>{this.props.intl.formatMessage(STRING_SPE.d1qe5jtfnh19144)}</p>
+                }
+            </FormItem>
+        )
+    }
+
+    /**
+     * 日期选择器回调函数
+    */
+   handleDateRangeChange =  (val) => {
+    //    console.log('val in handleDateRangeChange', handleDateRangeChange);
+   }
+
+   handleActDateChange = (e) => {
+    const eventStartDate =  e[0] ? e[0].format('YYYYMMDD') : '';
+    const eventEndDate = e[1] ? e[1].format('YYYYMMDD') : ''
+    const opts = {
+        groupID: this.props.user.accountInfo.groupID,
+        eventWay: this.props.type,
+        eventStartDate ,
+        eventEndDate ,
+    };
+    this.props.saleCenterGetExcludeEventList(opts);
+        this.setState({
+            actStartDate: e
+        })
+    }
+
+    /**
+     * @description 日期选择
+    */
+    renderPeriodSelector = () => {
+
+        // 日期选择器 rangePicker
+        const {  actStartDate } = this.state;
+        const { getFieldDecorator } = this.props.form;
+        return (
+
+                <FormItem
+                    label={'活动起止日期'}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                    >
+                    <Row>
+                        <Col span={18}>
+                        {getFieldDecorator('rangePicker', {
+                                onChange: this.handleActDateChange,
+                                initialValue: actStartDate
+                            })(
+                                <RangePicker />
+                            )}
+
+                        </Col>
+                        <Col offset={1} span={5}>
+                            <div className={styles.ActivityDateDay}>
+                                <span>
+                                    {this.getRangeDateCount(actStartDate)}
+                                </span>
+                                <span>天</span>
+                            </div>
+                        </Col>
+                    </Row>
+                </FormItem>
+
+        )
+    }
+
+    getRangeDateCount(actStartDate) {
+        if (undefined === actStartDate[0] || undefined === actStartDate[1]) {
+            return 0
+        }
+
+        if (actStartDate[0] === null || actStartDate[1] === null) {
+            return 0
+        }
+
+        return actStartDate[1]
+            .diff(actStartDate[0], 'days') + 1;
+    }
+
+
     render() {
         const categorys = this.props.saleCenter.get('characteristicCategories').toJS();
         const type = this.props.type;
@@ -870,8 +1154,21 @@ class StepOneWithDateRange extends React.Component {
                             />
                         )}
                     </FormItem>
+
+
                     {
-                        this.props.type == '53' || this.props.type == '50' ?
+                        // 渲染周期选择期
+                        this.renderDateOfSendingPromotionSelector()
+                    }
+
+                    {
+                        this.renderSendTimeSelector(disabledHours, disabledMinutes, noDisabled)
+                    }
+
+
+
+                    {
+                        this.props.type == '50' ?
                             <Row>
                                 <Col span={15}>
                                     <FormItem
@@ -896,6 +1193,7 @@ class StepOneWithDateRange extends React.Component {
                                         )}
                                     </FormItem>
                                 </Col>
+
                                 <Col span={6}>
                                     <FormItem className={styles.FormItemStyle} >
                                         {getFieldDecorator('sendTime', {
@@ -1059,6 +1357,11 @@ class StepOneWithDateRange extends React.Component {
                         ATSEnabledTypes.includes(`${this.props.type}`) && this.renderAdvancedDateSettings()
                     }
                     {
+                        // 活动起始结束日期选择组件
+                        showActDataType.includes(this.props.type) ? this.renderPeriodSelector() : null
+
+                    }
+                    {
                         this.props.type != '77' ?
                         <FormItem
                             label={this.props.intl.formatMessage(STRING_SPE.d7ekp859lc11113)}
@@ -1077,7 +1380,7 @@ class StepOneWithDateRange extends React.Component {
                             )}
                         </FormItem> : null
                     }
-                    
+
                 </div>
 
 

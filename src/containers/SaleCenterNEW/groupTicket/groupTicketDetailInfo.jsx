@@ -73,7 +73,7 @@ class GroupTicketDetailInfo extends React.Component {
         this.setState({
             display,
             targetScope: _categoryOrDish || '0',
-            giftPrice: _rule.giftPrice,
+            giftPrice: _rule.giftPrice == '0' ? '' : _rule.giftPrice,
             transFee: _rule.transFee,
             giftValue: _rule.giftValue,
             stageType: _rule.stageType || '2',
@@ -98,6 +98,9 @@ class GroupTicketDetailInfo extends React.Component {
         const evidence = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'evidence']);
         const invoice = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'invoice']);
 
+        // if (_state.giftPrice == null || _state.giftPrice == '') {
+        //     _state.giftPriceFlag = false;
+        // }
         if (_state.giftValue == null || _state.giftValue == '') {
             _state.giftValueFlag = false;
         }
@@ -110,7 +113,7 @@ class GroupTicketDetailInfo extends React.Component {
             let rule;
             if (_state.stageType == '2') {
                 rule = {
-                    giftPrice: _state.giftPrice,
+                    giftPrice: _state.giftPrice || 0,
                     transFee: _state.transFee,
                     giftValue: _state.giftValue,
                     stageType: _state.stageType,
@@ -130,7 +133,7 @@ class GroupTicketDetailInfo extends React.Component {
                 };
             } else if (_state.stageType == '1') {
                 rule = {
-                    giftPrice: _state.giftPrice,
+                    giftPrice: _state.giftPrice || 0,
                     transFee: _state.transFee,
                     giftValue: _state.giftValue,
                     stageType: _state.stageType,
@@ -146,7 +149,7 @@ class GroupTicketDetailInfo extends React.Component {
                 };
             } else {
                 rule = {
-                    giftPrice: _state.giftPrice,
+                    giftPrice: _state.giftPrice || 0,
                     transFee: _state.transFee,
                     giftValue: _state.giftValue,
                     stageType: _state.stageType,
@@ -179,8 +182,10 @@ class GroupTicketDetailInfo extends React.Component {
     onGiftPriceChange(value) {
         let { giftPrice } = this.state;
         if (value.number == null || value.number == '') {
+            // giftPriceFlag = false;
             giftPrice = value.number;
         } else {
+            // giftPriceFlag = true;
             giftPrice = value.number;
         }
         this.setState({ giftPrice });
@@ -232,6 +237,9 @@ class GroupTicketDetailInfo extends React.Component {
                     className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
+                    required={false}
+                    // validateStatus={this.state.giftPriceFlag ? 'success' : 'error'}
+                    // help={this.state.giftPriceFlag ? null : SALE_LABEL.k5f49c4}
                 >
                     <PriceInput
                         addonBefore={''}

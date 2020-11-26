@@ -41,4 +41,7 @@ export const ONLINE_PROMOTION_MANAGEMENT_GROUP = '1000086001'; // 线上营销�
 export const ONLINE_PROMOTION_MANAGEMENT_SHOP = '1000086003'; // 线上营销管理 店铺视角
 
 export const TRD_PROMOTION_INTERFACE = '100009992';
-export const NEW_SALE_BOX = '10000730001';
+export const NEW_SALE_BOX = '10000730001';                  // 营销盒子（新）
+
+
+export const SALE_CENTER_PAYHAVEGIFT = 'promotion_active_payHaveGift' // 营销活动，微信支付有礼

@@ -65,7 +65,7 @@ class QuatoCardDetailModal extends Component {
     render() {
         const { visible, data } = this.props;
         const infoItem = [
-            { col: { span: 8 }, keys: { giftName: '礼品名称', giftTypeName: '礼品类型', giftValue: '卡面值', price: '记录实收金额' } },
+            { col: { span: 8 }, keys: { giftName: '礼品名称', giftTypeName: '礼品类型', giftDenomination: '卡面值', price: '记录实收金额' } },
             { col: { span: 16 }, labelCol: { span: 4 }, itemCol: { span: 20 }, keys: { giftCost: '工本费用', giftRule: '礼品规则', giftRemark: '使用说明' } },
         ];
         const value = data.giftType;
@@ -87,7 +87,7 @@ class QuatoCardDetailModal extends Component {
                         <Row style={{ margin: '0 10px' }}>
                             <Col span={4}>
                                 <div className="gift-image" style={{ backgroundImage: `url("/asserts/img/${value}.jpg")` }}>
-                                    <span><em>{data.giftValue}</em>元</span>
+                                    <span><em>{data.giftDenomination}</em>元</span>
                                     <p className={styles.ellipsisBlock}>{data.giftName}</p>
                                 </div>
                             </Col>
@@ -167,7 +167,14 @@ class InfoDisplay extends Component {
         ];
     }
     /* 生成表格数据 */
-    generateDataSource(list) {
+    generateDataSource() {
+        // console.log('this.props',this.props.infoData)
+        const {  infoData = {} } = this.props;
+        const { quotaCardGiftConfList = [], presentType, couponPackageBaseInfo } = infoData;
+        let list = quotaCardGiftConfList
+        if(presentType === 4) {
+            list = couponPackageBaseInfo.couponPackageGiftConfigs
+        }
         return list.map((x, i) => ({
             key: x.giftItemID,
             idx: i + 1,
@@ -177,9 +184,9 @@ class InfoDisplay extends Component {
     }
     render() {
         const { infoItem, infoData = {} } = this.props;
-        const { quotaCardGiftConfList = [] } = infoData;
+
         const columns = this.generateColumns();
-        const dataSource = this.generateDataSource(quotaCardGiftConfList);
+        const dataSource = this.generateDataSource();
         return (
             <Row>
                 {
@@ -205,7 +212,7 @@ class InfoDisplay extends Component {
                     })
                 }
                 <di>
-                    <p>礼品详情</p>
+                    <p>{infoData.presentType === 4 ? `礼品详情：${infoData.couponPackageBaseInfo && infoData.couponPackageBaseInfo.couponPackageName}券包` : '礼品详情'}</p>
                     <Table
                         bordered={true}
                         columns={columns}

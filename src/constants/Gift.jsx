@@ -117,7 +117,7 @@ const GiftCfg = {
             value: '22',
             color: '#65D8E6',
             category: 'primary',
-            tags: ['线上餐厅'],
+            tags: ['微信', '小程序'],
         },
     ],
     giftTypeName: [
@@ -181,6 +181,17 @@ const GiftCfg = {
         { label: '不限制', value: '1' },
         { label: '仅线上使用', value: '0' },
         { label: '仅线下使用', value: '2' },
+    ],
+
+    discountRules: [
+        { label: '特价', value: '1'},
+        { label: '折扣', value: '2'},
+        { label: '立减', value: '3'},
+    ],
+
+    discountSortRules: [
+        { label: '高价格菜品优先', value: '0'},
+        { label: '低价格菜品优先', value: '1'}
     ],
     shareType: [
         { label: '与所有券共用', value: '1' },
@@ -250,6 +261,10 @@ const GiftCfg = {
         { value: '122', label: '签到' },
         { value: '123', label: '礼品定额卡发放', include: true },
         { value: '124', label: '券包', include: true },
+        { value: '125', label: 'E折发放'},
+        { value: '127', label: '微信支付有礼'},
+        { value: '128', label: '盲盒'},
+        { value: '3032', label: '自定义投放'},
     ],
     giftSendStatus: [
         { value: '', label: '全部' },
@@ -275,6 +290,7 @@ const GiftCfg = {
         { value: '14', label: '出售中' },
         { value: '99', label: '已充值' },
         { value: '103', label: '已删除' },
+        { value: '3', label: '已过期' },
     ],
     WXgiftCardStatus: [ // 线上礼品卡
         { value: '', label: '全部' },

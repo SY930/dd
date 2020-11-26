@@ -30,8 +30,10 @@ class ShopSelectModal extends Component {
     }
 
     loadShops(params = {}, isForce = false) {
+        let {filterParm = {}} = this.props
         if (!isForce && (this.props.options || this.state.options)) return Promise.resolve();
         this.setState({ loading: true });
+        params = {...params, ...filterParm}
         return loadShopSchema(params).then(({ shops, ...filterOptions }) => {
             this.setState({
                 loading: false,
@@ -222,7 +224,7 @@ class ShopSelectModal extends Component {
     }
 
     render() {
-        const { defaultValue } = this.props;
+        const { defaultValue, extendShopList } = this.props;
         const { loading, filters } = this.state;
 
         const options = this.props.options || this.state.options || [];
@@ -236,7 +238,7 @@ class ShopSelectModal extends Component {
                     <FilterSelector
                         title="店铺"
                         doGroup={true}
-                        options={options}
+                        options={Array.isArray(extendShopList) ? [...extendShopList, ...options] : options}
                         filters={filters}
                         defaultValue={defaultValue}
                         onChange={this.handleChange}

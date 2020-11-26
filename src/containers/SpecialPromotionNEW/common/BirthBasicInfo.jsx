@@ -1,4 +1,4 @@
-﻿/**
+﻿﻿/**
  * @Author: Xiao Feng Wang  <xf>
  * @Date:   2017-02-09T11:12:25+08:00
  * @Email:  wangxiaofeng@hualala.com
@@ -9,7 +9,7 @@
  */
 
 import React from 'react'
-import { Input, Form, Select, Icon, Button, Radio } from 'antd';
+import { Input, Form, Select, Icon, Button, Radio, DatePicker, Row, Col } from 'antd';
 import { connect } from 'react-redux'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
@@ -19,15 +19,25 @@ import {
     saleCenterQueryFsmGroupSettleUnit,
     queryFsmGroupEquityAccount,
     querySMSSignitureList,
+    saleCenterGetShopOfEventByDate,
+    getEventExcludeCardTypes,
+    saleCenterGetExcludeEventList,
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import { SEND_MSG } from '../../../redux/actions/saleCenterNEW/types'
 import {queryWechatMpInfo} from "../../GiftNew/_action";
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
+import moment from 'moment'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
+const {  RangePicker } = DatePicker;
+const format = 'YYYYMMDD'
+
+
+// 起止日期
+const showActDataType = ['51', '52']
 
 @injectIntl
 class PromotionBasicInfo extends React.Component {
@@ -42,6 +52,8 @@ class PromotionBasicInfo extends React.Component {
             tipDisplay: 'none',
             signID: props.specialPromotion.getIn(['$eventInfo', 'signID']) || '',
             involvementGiftAdvanceDays: 0,
+            actDate: [],
+            actDateTemp: []
         };
         this.promotionNameInputRef = null;
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -62,19 +74,19 @@ class PromotionBasicInfo extends React.Component {
         });
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
         this.props.queryWechatMpInfo({subGroupID: specialPromotion.subGroupID});
+
+        const { giftAdvanceDays, eventRemark, eventName, involvementGiftAdvanceDays, eventStartDate, eventEndDate  } = specialPromotion
+
         this.setState({
-            advanceDays: specialPromotion.giftAdvanceDays,
-            description: specialPromotion.eventRemark,
+            advanceDays:  giftAdvanceDays,
+            description: eventRemark,
             sendMsg: `${specialPromotion.smsGate || this.state.smsGate || '0'}`,
-            name: specialPromotion.eventName,
-            involvementGiftAdvanceDays: specialPromotion.involvementGiftAdvanceDays || 0,
+            name: eventName,
+            involvementGiftAdvanceDays: involvementGiftAdvanceDays || 0,
+            actDate: (eventStartDate && eventEndDate) ? [moment(eventStartDate),moment(eventEndDate)] : [],
+            actDateTemp: (eventStartDate && eventEndDate) ? [moment(eventStartDate),moment(eventEndDate)] : []
         });
-        const opts = {
-            groupID: this.props.user.accountInfo.groupID,
-            eventWay: this.props.type,
-            itemID: this.props.specialPromotion.getIn(['$eventInfo', 'itemID']),
-        };
-        this.props.saleCenterGetExcludeCardLevelIds(opts);
+
 
         specialPromotion.settleUnitID > 0 && !(specialPromotion.accountNo > 0) ?
             this.props.saleCenterQueryFsmGroupSettleUnit({ groupID: this.props.user.accountInfo.groupID })
@@ -100,6 +112,7 @@ class PromotionBasicInfo extends React.Component {
                     nextFlag = false;
                     this.setState({ advanceDaysFlag: false });
                 }
+                const { actDate } = this.state
 
                 // save state to redux
 
@@ -110,20 +123,63 @@ class PromotionBasicInfo extends React.Component {
                         smsGate: this.state.sendMsg,
                         eventName: this.state.name,
                         signID: this.state.signID,
+                        eventStartDate: actDate[0] && moment(actDate[0]).format(format),
+                        eventEndDate: actDate[1] && moment(actDate[1]).format(format),
                         involvementGiftAdvanceDays: this.state.involvementGiftAdvanceDays,
                     })
+                    const opts = {
+                        groupID: this.props.user.accountInfo.groupID,
+                        eventWay: this.props.type,
+                        eventStartDate: actDate[0] && moment(actDate[0]).format(format),
+                        eventEndDate: actDate[1] && moment(actDate[1]).format(format)
+                    };
+                    // 编辑时，解放自己的选项不被排除; 新建时没有id, 也不会传到后端
+                    opts.itemID = this.props.specialPromotion.getIn(['$eventInfo', 'itemID']);
+                    this.props.saleCenterGetExcludeCardLevelIds(opts);
+                    if (opts.eventStartDate) {
+                        this.props.getEventExcludeCardTypes(opts);
+                    }
                 }
             } else {
                 if (err1) {
                     nextFlag = false;
                 }
+                const { actDate } = this.state
+
+                const  eventStartDate = actDate[0] && moment(actDate[0]).format(format)
+                const eventEndDate = actDate[1] && moment(actDate[1]).format(format)
+
                 if (nextFlag) {
                     this.props.setSpecialBasicInfo({
                         eventRemark: this.state.description,
                         smsGate: this.state.sendMsg,
                         eventName: this.state.name,
                         signID: this.state.signID,
+                        eventStartDate: actDate[0] && moment(actDate[0]).format(format),
+                        eventEndDate: actDate[1] && moment(actDate[1]).format(format)
                     })
+                    const opts = {
+                        groupID: this.props.user.accountInfo.groupID,
+                        eventWay: this.props.type,
+                        itemID: this.props.specialPromotion.getIn(['$eventInfo', 'itemID']),
+                        eventStartDate,
+                        eventEndDate
+                    };
+
+                    if (this.props.type == '52') {
+                        this.props.getEventExcludeCardTypes({
+                            ...opts,
+                            eventStartDate: eventStartDate ? eventStartDate : '20000625',
+                            eventEndDate: eventEndDate ? eventEndDate : '21000531'
+                        });
+                        this.props.saleCenterGetExcludeCardLevelIds({
+                            ...opts,
+                            eventStartDate: eventStartDate ? eventStartDate : '20000625',
+                            eventEndDate: eventEndDate ? eventEndDate : '21000531'
+                        });
+                    } else {
+                        this.props.saleCenterGetExcludeCardLevelIds(opts);
+                    }
                 }
             }
         });
@@ -258,9 +314,71 @@ class PromotionBasicInfo extends React.Component {
                 return null;
         }
     }
+
+    handleActDateChange = (e) => {
+        this.setState({
+            actDate: e
+        })
+    }
+
+    renderPeriodSelector = () => {
+
+        // 日期选择器
+        const { actDate, actDateTemp} = this.state
+        let {type} = this.props
+
+        return (
+
+                <FormItem
+                    label={'活动起止日期'}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                    >
+                    <Row>
+                        <Col span={19}>
+
+                            <RangePicker allowClear={false} value={actDate} onChange={this.handleActDateChange} disabledDate= {(currentDate) => {
+                                if(this.props.isNew) {
+                                    return false
+                                }
+                                // 完善资料送礼52 生日赠送 51 日期限制
+                                let disabledDates = !currentDate.isBetween(actDateTemp[0], actDateTemp[1], null, '[]')
+                                return disabledDates
+                            }} />
+
+                        </Col>
+                        <Col offset={1} span={4}>
+                            <div className={styles.ActivityDateDay}>
+                                <span>
+                                    {this.getDateCount()}
+                                </span>
+                                <span>天</span>
+                            </div>
+                        </Col>
+                    </Row>
+                </FormItem>
+
+        )
+    }
+
+    getDateCount() {
+        const {  actDate } = this.state;
+        if (undefined ===  actDate[0] || undefined ===  actDate[1]) {
+            return 0
+        }
+
+        if ( actDate[0] === null ||   actDate[1] === null) {
+            return 0
+        }
+
+        return   actDate[1]
+            .diff( actDate[0], 'days') + 1;
+    }
     render() {
         // TODO:编码不能重复
         const { getFieldDecorator } = this.props.form;
+
 
         return (
             <Form>
@@ -292,6 +410,9 @@ class PromotionBasicInfo extends React.Component {
                         />
                         )}
                 </FormItem>
+
+                {showActDataType.includes(this.props.type) ?  this.renderPeriodSelector()  : null}
+
                 {this.renderMoreInfo()}
 
                 <FormItem
@@ -312,6 +433,7 @@ class PromotionBasicInfo extends React.Component {
                         }
                     </Select>
                 </FormItem>
+
                 {
                     (this.state.sendMsg == 1 || this.state.sendMsg == 3 || this.state.sendMsg == 4) && (
                         <FormItem
@@ -386,7 +508,16 @@ const mapDispatchToProps = (dispatch) => {
         },
         queryFsmGroupEquityAccount: (opts) => {
             dispatch(queryFsmGroupEquityAccount(opts))
-        }
+        },
+        saleCenterGetShopOfEventByDate: (opts) => {
+            dispatch(saleCenterGetShopOfEventByDate(opts))
+        },
+        getEventExcludeCardTypes: (opts) => {
+            dispatch(getEventExcludeCardTypes(opts))
+        },
+        saleCenterGetExcludeEventList: (opts) => {
+            dispatch(saleCenterGetExcludeEventList(opts))
+        },
     }
 };
 

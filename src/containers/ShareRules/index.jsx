@@ -71,13 +71,13 @@ export default class ShareRules extends Component {
         this.props.getAllShops();
     }
 
-    handleDeleteGroup = ({ itemID }, index) => {
+    handleDeleteGroup = ({ itemID,shareGroupName }, index) => {
         Modal.confirm({
             title: <span style={{color: '#434343'}}>{SALE_LABEL.k5dnw1q3} ?</span>,
             content: (
                 <div>
                     <span style={{color: '#787878'}}>
-                        {COMMON_LABEL.delete}【{SALE_LABEL.k636qw6a} {index + 1}】
+                         {COMMON_LABEL.delete}【{shareGroupName || `营销活动共享组${index + 1}`}】
                     </span>
                     <br/>
                     <span style={{color: '#aeaeae'}}>
@@ -243,18 +243,20 @@ export default class ShareRules extends Component {
         })
     }
 
-    handleEditShareGroup = (shareGroup) => {
+    handleEditShareGroup = (shareGroup,index) => {
         this.setState({
             isEdit: true,
             isCreate: false,
             selected: (shareGroup.shareGroupDetailList || []).filter(item => item.action !== 2).map(item => String(item.activityID)),
             selectedGroupID: shareGroup.itemID,
+            shareGroupName: shareGroup.shareGroupName || `营销活动共享组${index + 1}`
         })
     }
 
-    handleOk = ({shareGroupDetailList}) => {
+    handleOk = ({shareGroupDetailList,shareGroupName}) => {
         const { selectedGroupID } = this.state;
         return this.props.createOrUpdateCertainShareGroup({
+            shareGroupName,
             shopID: this.props.user.shopID > 0 ? this.props.user.shopID : 0,
             shareType: 0,
             itemID: selectedGroupID,
@@ -318,11 +320,18 @@ export default class ShareRules extends Component {
         const {
             isCreate,
             isEdit,
-            selected
+            selected,
+            shareGroupName
         } = this.state;
         const vanillaShareGroups = shareGroups.toJS();
         const filteredShareGroups = searchPromotionType || searchPromotionName ? this.getFilteredGroup(vanillaShareGroups) : vanillaShareGroups
         const displayHeaderActions = !!vanillaShareGroups.length;
+
+        let shareGroupNameCurrent =  filteredShareGroups && filteredShareGroups.length ? `营销活动共享组${filteredShareGroups.length + 1}` :
+        '营销活动共享组1'
+        if(isEdit) {
+            shareGroupNameCurrent = shareGroupName
+        }
         return (
             <div style={{ height: '100%' }}>
                 {
@@ -333,6 +342,9 @@ export default class ShareRules extends Component {
                             handleOk={this.handleOk}
                             loading={isSaving}
                             selectedPromotions={selected}
+                            shareGroupName={
+                                shareGroupNameCurrent
+                            }
                         />
                     )
                 }
@@ -350,8 +362,8 @@ export default class ShareRules extends Component {
                                 )
                             }
                             {
-                                filteredShareGroups.map((shareGroup, index) => {
-                                    const a1 = <span>{SALE_LABEL.k639vfea} {SALE_LABEL.k639vexm}</span>;                                    return (
+                                filteredShareGroups.map((shareGroup, index) => {                                   
+                                    return (
                                         <div
                                             key={`${index}`}
                                             className={style.shareGroupWrapper}
@@ -361,7 +373,7 @@ export default class ShareRules extends Component {
                                         >
                                             <div className={style.shareGroupHeader}>
                                                 <div className={style.shareGroupTitle}>
-                                                {SALE_LABEL.k636qw6a}{`${index + 1}`}
+                                                {shareGroup.shareGroupName ||   '营销活动共享组' + `${index + 1}`}
                                                 </div>
                                                 {
                                                     shareGroup.shopID > 0 && (
@@ -378,13 +390,13 @@ export default class ShareRules extends Component {
                                                             style={{
                                                                 marginRight: 10
                                                             }}
-                                                            onClick={() => this.handleEditShareGroup(shareGroup)}
+                                                            onClick={() => this.handleEditShareGroup(shareGroup,index)}
                                                         >
                                                             <Icon type="edit"/>
                                                             {COMMON_LABEL.edit}
                                                         </Button>
                                                     ) : (
-                                                        <Tooltip title={SALE_LABEL.k639vegy + this.props.user.shopID > 0 ? SALE_LABEL.k639vf5y : a1}>
+                                                        <Tooltip title={`${'只能编辑由'}${this.props.user.shopID > 0 ? '本店铺' : '集团'}${'创建的共享组'}`}>
                                                             <Button disabled type="ghost" style={{marginRight: 10}}>
                                                                 <Icon type="edit"/>
                                                                 {COMMON_LABEL.edit}
@@ -399,7 +411,7 @@ export default class ShareRules extends Component {
                                                             {COMMON_LABEL.delete}
                                                         </Button>
                                                     ) : (
-                                                        <Tooltip title={SALE_LABEL.k639vepa + this.props.user.shopID > 0 ? SALE_LABEL.k639vf5y : a1}>
+                                                        <Tooltip title={`${'只能删除由'}${this.props.user.shopID > 0 ? '本店铺' : '集团'}${'创建的共享组'}`}>
                                                             <Button disabled type="ghost">
                                                                 <Icon type="delete"/>
                                                                 {COMMON_LABEL.delete}
@@ -491,6 +503,7 @@ function mapStateToProps(state) {
         giftInfoNew: state.sale_giftInfoNew, // 所有哗啦啦券列表--共享用
         mySpecialActivities: state.sale_mySpecialActivities_NEW, // 所有会员等级列表--共享用
         shops: state.sale_promotionScopeInfo_NEW.getIn(['refs', 'data', 'shops']),
+        shareGroupName: state.share_rules.get('shareGroupName'),
     }
 }
 

@@ -34,7 +34,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 @injectIntl
-class StepTwo extends React.Component {
+class Two extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -77,8 +77,9 @@ class StepTwo extends React.Component {
                 cardGroupName: groupMembers.groupMembersName,
                 cardCount: groupMembers.totalMembers,
                 cardGroupRemark: groupMembers.groupMembersRemark,
-                cardLevelRangeType: this.state.cardLevelRangeType || '0',
+                cardLevelRangeType:  (this.state.cardLevelRangeType | 0) || (this.state.groupMembersID == '0' ? '0' : '2'),
             }
+
             if (smsGate == '1' || smsGate == '3' || smsGate == '4') {
                 if (this.state.settleUnitID > 0 || this.state.accountNo > 0) {
                     opts.settleUnitID = this.state.settleUnitID;
@@ -98,6 +99,7 @@ class StepTwo extends React.Component {
     }
 
     componentDidMount() {
+        // return;
         const user = this.props.user;
         const opts = {
             _groupID: user.accountInfo.groupID, // 集团id
@@ -112,6 +114,11 @@ class StepTwo extends React.Component {
             cancel: undefined,
         });
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
+        if(specialPromotion.groupMemberID){
+            this.setState({
+                groupMembersID: specialPromotion.groupMemberID
+            })
+        }
         if (Object.keys(specialPromotion).length > 30) {
             this.setState({
                 message: specialPromotion.smsTemplate,
@@ -248,6 +255,11 @@ class StepTwo extends React.Component {
         const smsGate = this.props.specialPromotion.get('$eventInfo').toJS().smsGate;
         const getFieldDecorator = this.props.form.getFieldDecorator;
         const totalCustomerCount = this.props.specialPromotion.get('customerCount');
+        const groupMembersID = this.state.groupMembersID
+        const isDisableGroupSelect = typeof groupMembersID === 'string' && groupMembersID.includes &&
+          groupMembersID.includes('RFM会员群体') &&
+          groupMembersID.includes('--')
+
         return (
             <Form>
                 <FormItem
@@ -264,6 +276,7 @@ class StepTwo extends React.Component {
                         initialValue: this.state.groupMembersID,
                     })(
                         <Select
+                            disabled={isDisableGroupSelect}
                             showSearch
                             notFoundContent={`${this.props.intl.formatMessage(STRING_SPE.d2c8a4hdjl248)}`}
                             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
@@ -331,4 +344,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(StepTwo));
+export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(Two));

@@ -1,0 +1,67 @@
+.colorPickersContainer {
+    width: 500px;
+}
+.colorPickersTip {
+    flex-grow: 0;
+    flex-shrink: 1;
+    font-size: 12px;
+    font-weight: 400;
+    color: #c3c3c3;
+}
+.colorPickersWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    width: 480px;
+    .colorPickerWrapper {
+        margin: 15px 25px 0 0;
+        flex: none;
+        .colorBlockWrapper {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            &.isSelected {
+                border: 2px solid #1ab495;
+            }
+            :global {
+                .rc-color-picker-trigger {
+                    width: 50px;
+                    height: 50px;
+                    border-radius: 50%;
+                    box-shadow: none;
+                }
+                .rc-color-picker-wrap {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+            }
+        }
+        .fakePadding {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .colorBlock {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+        .labelBlock {
+            height: 6px;
+            line-height: 6px;
+            font-size: 12px;
+            text-align: center;
+            font-weight: 400;
+            color: rgba(102, 102, 102, 1);
+        }
+    }
+}

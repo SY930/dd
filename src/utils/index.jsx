@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import memoizeOne from 'memoize-one';
+import { getStore } from '@hualala/platform-base';
 
 /**
  * 判断是不是正式线上环境: HUALALA.ENVIRONMENT === 'production-release'
@@ -106,7 +107,7 @@ const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) => {
                 })
             } else {
                 acc[dupIndex].typeSet.add(`${curr.type || 0}`)
-            }  
+            }
         } else if (`${curr.brandID}` === '0') { // 把这种通用的分类扩展给每个品牌
             acc.push(...brands.map(brand => ({
                 ...curr,
@@ -228,3 +229,23 @@ const expandCategoriesAndDishesForShop = ($rawCategories, $rawDishes) => {
 
 export const memoizedExpandCategoriesAndDishes = memoizeOne(expandCategoriesAndDishes)
 export const memoizedShopCategoriesAndDishes = memoizeOne(expandCategoriesAndDishesForShop)
+
+/**
+ * 根据主题参数，给body添加class，适配不同的主题
+ *
+ * @param {*} className
+ */
+export const setThemeClass = (className) => {
+    const body = document.querySelector('body')
+    const oldClass = body.getAttribute('class')
+    body.setAttribute('class',oldClass || '' + ' ' + className)
+}
+
+
+/**
+ * 从 Redux Store 中获取versionUI 判断是否是企业版还是标准版，从而操作样式
+ */
+export function getVersionUI() {
+    const state = getStore().getState();
+    return state.user.get('versionUI').toJS();
+}

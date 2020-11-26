@@ -14,6 +14,7 @@ import {
     Form,
     Select,
     message,
+    Tooltip,
 } from 'antd';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import PriceInput from "../../SaleCenterNEW/common/PriceInput";
@@ -41,17 +42,19 @@ class GenerateBatchQRCodes extends Component {
             pageSizes: 10,
             pageNo: 1,
             total: 0,
-            queryDateRange: [], // 列表查询时的日期选择
+            queryDateRange: [],                 // 列表查询时的日期选择
             confirmLoading: false,
             modalVisible: false,
             batchItemID: undefined,
             mpID: undefined,
             startNo: undefined,
             endNo: undefined,
-            qrEffectDays: '30', // 二维码默认有效期30天
+            qrEffectDays: '30',                 // 二维码默认有效期30天, 0代表永久有效
             selectedBatchEntity: null,
             description: '',
-            exportType: '0'
+            exportType: '0',
+            qrCodeType: '0',                    // 0 公众号关注二维码， 1 普通二维码
+            qrCodeValidateType: '0',            // 0 临时二维码， 1 永久二维码
         };
     }
 
@@ -163,6 +166,8 @@ class GenerateBatchQRCodes extends Component {
         })
     }
 
+    // 接口文档 
+    // @ref http://wiki.hualala.com/pages/viewpage.action?pageId=33301063
     mapStateToRequestParams = () => {
         const {
             selectedBatchEntity,
@@ -172,7 +177,9 @@ class GenerateBatchQRCodes extends Component {
             batchItemID,
             description: remark,
             qrEffectDays,
-            exportType
+            exportType,
+            qrCodeType,
+            qrCodeValidateType,
         } = this.state;
         return {
             giftItemID: this.props.giftItemID,
@@ -182,10 +189,23 @@ class GenerateBatchQRCodes extends Component {
             batchNo: selectedBatchEntity.batchNO,
             mpID,
             remark,
-            qrEffectDays,
-            exportType
+            qrEffectDays: this.handleQrEffectDays(), // 0 代表永久有效
+            exportType,
+            qrCodeType,                                                 // 普通二维码，关注二维码
         };
     }
+
+    handleQrEffectDays = ()=>{
+        const { qrCodeValidateType, qrCodeType, qrEffectDays } = this.state;
+        if(qrCodeType == '1') {
+            return '0'
+        } else if (qrCodeType == '0' && qrCodeValidateType == '1'){
+            return '0' 
+        } else {
+            return qrEffectDays;
+        }
+    }
+
 
     handleModalOk = () => {
         let flag = true;
@@ -233,8 +253,6 @@ class GenerateBatchQRCodes extends Component {
                     confirmLoading: false,
                 });
             })
-        
-
     }
 
     showModal = () => {
@@ -257,6 +275,25 @@ class GenerateBatchQRCodes extends Component {
             this.props.form.resetFields();
         });
     }
+
+    /**
+     * 二维码类型处理
+    */
+    handleQrType = ({target: {value}}) => {
+        this.setState({
+            qrCodeType: value,
+        })
+    }
+
+    /**
+     * 集中处理 state 数据变更
+    */
+    handleStateValChange = (key, val)=>{
+        this.setState({
+            [key]: val
+        })
+    }
+    
 
     renderHeader() {
         return (
@@ -315,6 +352,27 @@ class GenerateBatchQRCodes extends Component {
                 },
             },
             {
+                title: '批次号',
+                className: 'TableTxtCenter',
+                width: 80,
+                dataIndex: 'batchNo',
+                key: 'batchNo',
+            },
+            {
+                title: '起始号',
+                className: 'TableTxtCenter',
+                width: 80,
+                dataIndex: 'startNo',
+                key: 'startNo',
+            },
+            {
+                title: '终止号',
+                className: 'TableTxtCenter',
+                width: 80,
+                dataIndex: 'endNo',
+                key: 'endNo',
+            },
+            {
                 title: COMMON_LABEL.remark,
                 className: 'TableTxtCenter',
                 dataIndex: 'remark',
@@ -327,7 +385,7 @@ class GenerateBatchQRCodes extends Component {
             {
                 title: '操作员',
                 className: 'TableTxtCenter',
-                width: 100,
+                width: 120,
                 dataIndex: 'createBy',
                 key: 'key4',
             },
@@ -338,6 +396,10 @@ class GenerateBatchQRCodes extends Component {
                 dataIndex: 'qrEffectDays',
                 key: 'key11',
                 render: (qrEffectDays, record) => {
+                    if(qrEffectDays == 0) {
+                        return '永久有效'
+                    }
+
                     if (!(qrEffectDays > 0)) {
                         return '--'
                     }
@@ -387,6 +449,7 @@ class GenerateBatchQRCodes extends Component {
             <Table
                 bordered={true}
                 columns={columns}
+                scroll={{x: '1025'}}
                 dataSource={this.state.historyList}
                 loading={this.state.loading}
                 pagination={{
@@ -412,7 +475,7 @@ class GenerateBatchQRCodes extends Component {
         return (
             <div>
                 <FormItem
-                    label="券码起止号"
+                    label="批次起止号"
                     className={styles.FormItemStyle}
                     labelCol={{ span: 6 }}
                     wrapperCol={{ span: 11 }}
@@ -433,6 +496,9 @@ class GenerateBatchQRCodes extends Component {
                                                 if (!v || !v.number) {
                                                     return cb('起始号为必填项');
                                                 }
+                                                if(v.number > 999999){
+                                                    return cb('请输入6位以内的整数');
+                                                }
                                                 cb()
                                             },
                                         },
@@ -440,7 +506,7 @@ class GenerateBatchQRCodes extends Component {
                                 })(
                                     <PriceInput
                                         modal="int"
-                                        placeholder="券码起始号"
+                                        placeholder="批次起始号"
                                         maxNum={15}
                                     />
                                 )
@@ -462,7 +528,10 @@ class GenerateBatchQRCodes extends Component {
                                                     return cb('终止号为必填项');
                                                 }
                                                 if (Number(v.number || 0) < Number(this.props.form.getFieldValue('startNo').number || 0)) {
-                                                    return cb('终止号必须大于等于起始号')
+                                                    return cb('不能小于起始号')
+                                                }
+                                                if(v.number > 999999){
+                                                    return cb('请输入6位以内的整数');
                                                 }
                                                 cb()
                                             },
@@ -472,7 +541,7 @@ class GenerateBatchQRCodes extends Component {
                                     <PriceInput
                                         modal="int"
                                         maxNum={15}
-                                        placeholder="券码终止号"
+                                        placeholder="批次终止号"
                                     />
                                 )
                             }
@@ -484,54 +553,103 @@ class GenerateBatchQRCodes extends Component {
         )
     }
 
-    renderModalContent() {
+    // 渲染二维码有效期类型（是否永久）
+    renderQrTypeSetting = ()=>{
+        const { qrCodeType, qrCodeValidateType } = this.state;
+        // 普通二维码
+        if(qrCodeType == '1') {
+            return null;
+        }
+        return (
+            <FormItem
+                label={(
+                    <div style={{ display: 'inline-block'}}>
+                        <span>二维码有效期</span>
+                        <Tooltip title={
+                            <div>
+                                <p>
+                                    临时码：受微信限制，有效期最长可设置30天；
+                                </p>
+                                <p>
+                                    永久码：永久有效，但会占用10000条/公众号 永久码额度；
+                                </p>
+                            </div>
+                        }>
+                            <Icon style={{ marginLeft: 5, marginRight: -5}} type="question-circle" />
+                        </Tooltip>
+                    </div>
+                )}
+                className={styles.FormItemStyle}
+                labelCol={{ span: 6 }}
+                wrapperCol={{ span: 11 }}
+                required
+            >
+                <RadioGroup value={qrCodeValidateType} onChange={({target: {value}})=>this.handleStateValChange('qrCodeValidateType', value)}>
+                    <Radio key={'0'} value={'0'}>
+                        <Tooltip
+                            placement="topRight"
+                            title={'受微信限制，有效期最长可设置30天'}
+                        >临时码</Tooltip>
+                    </Radio>
+                    <Radio key={'1'} value={'1'}>
+                        <Tooltip
+                                placement="topRight"
+                                title={'永久有效，但会占用10000条/公众号 永久码的额度'}
+                            >
+                        永久码
+                        </Tooltip>
+                    </Radio>
+                </RadioGroup>
+            </FormItem>
+        )
+    }
+
+    // 渲染二维码有效期
+    // 永久码不渲染日期设置， 二维码类型为普通码不设置日期（长期有效）
+    renderQrExpiringDate = ()=>{
+        const { qrCodeValidateType, qrCodeType } = this.state;
+        if(qrCodeValidateType == '1' || qrCodeType == '1') {
+            return null
+        }
+        return (
+            <FormItem
+                    label="有效期"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 6 }}
+                    wrapperCol={{ span: 11 }}
+                >
+                    <Select
+                        value={this.state.qrEffectDays}
+                        onChange={this.handleQrEffectDaysChange}
+                    >
+                        {
+                            QR_CODE_EFFECT_DAYS.map(({value, label}) => (
+                                <Select.Option key={value} value={value}>{label}</Select.Option>
+                            ))
+                        }
+                    </Select>
+                </FormItem>
+        )
+    }
+
+    // 选择公众号
+    renderOfficeAccountSetting = ()=>{
+
+        const { qrCodeType } = this.state;
+        // 普通二维码
+        if(qrCodeType == '1') {
+            return null;
+        }
         const {
             form: {
                 getFieldDecorator,
             },
-            $$batchNoInfo,
             allWeChatAccountList,
         } = this.props;
-        const batchNoList = Immutable.List.isList($$batchNoInfo) ? $$batchNoInfo.toJS() : [];
         const mpInfoList = Immutable.List.isList(allWeChatAccountList) ? allWeChatAccountList.toJS() : [];
+        
         return (
-            <Form>
-                <FormItem
-                    label="批次号"
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 6 }}
-                    wrapperCol={{ span: 11 }}
-                    required
-                >{
-                    getFieldDecorator('batchItemID', {
-                        onChange: this.handleBatchNoChange,
-                        rules: [
-                            { required: true, message: '批次号不能为空' },
-                        ],
-                    })(
-                        <Select 
-                            size="default"
-                            placeholder="请选择定额卡批次"
-                            getPopupContainer={(node) => node.parentNode}
-                        >
-                            {
-                                batchNoList.map(item => (
-                                    <Select.Option
-                                        key={item.itemID}
-                                        value={`${item.itemID}`}
-                                    >
-                                        {`${item.batchNO}（该批次起始号：${item.startNO}，终止号：${item.endNO}）`}
-                                    </Select.Option>
-                                ))
-                            }
-                        </Select>
-                    )
-                }
-                </FormItem>
-                {
-                    this.renderStartAndEndNumber()
-                }
-                <FormItem
+            <FormItem
                     label="公众号"
                     className={styles.FormItemStyle}
                     labelCol={{ span: 6 }}
@@ -556,60 +674,157 @@ class GenerateBatchQRCodes extends Component {
                     )
                 }
                 </FormItem>
-                <FormItem
-                    label="有效期"
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 6 }}
-                    wrapperCol={{ span: 11 }}
-                >
-                    <Select
-                        value={this.state.qrEffectDays}
-                        onChange={this.handleQrEffectDaysChange}
-                    >
-                        {
-                            QR_CODE_EFFECT_DAYS.map(({value, label}) => (
-                                <Select.Option key={value} value={value}>{label}</Select.Option>
-                            ))
+        )
+    }
+
+    renderModalContent() {
+        const {
+            form: {
+                getFieldDecorator,
+            },
+            $$batchNoInfo,
+        } = this.props;
+        const batchNoList = Immutable.List.isList($$batchNoInfo) ? $$batchNoInfo.toJS() : [];
+        return (
+            <div>
+                <div className={styles.qrModalTitCon}>
+                    <p>二维码/实体卡在给到用户前，请先操作批量售卖，或在POS上操作礼品卡售卖，否则用户无法充值或使用</p>
+                </div>
+                <Form>
+                    <FormItem
+                        label="批次号"
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 6 }}
+                        wrapperCol={{ span: 11 }}
+                        required
+                    >{
+                        getFieldDecorator('batchItemID', {
+                            onChange: this.handleBatchNoChange,
+                            rules: [
+                                { required: true, message: '批次号不能为空' },
+                            ],
+                        })(
+                            <Select 
+                                size="default"
+                                placeholder="请选择定额卡批次"
+                                getPopupContainer={(node) => node.parentNode}
+                            >
+                                {
+                                    batchNoList.map(item => (
+                                        <Select.Option
+                                            key={item.itemID}
+                                            value={`${item.itemID}`}
+                                        >
+                                            {`${item.batchNO}（该批次起始号：${item.startNO}，终止号：${item.endNO}）`}
+                                        </Select.Option>
+                                    ))
+                                }
+                            </Select>
+                        )
+                    }
+                    </FormItem>
+                    {
+                        this.renderStartAndEndNumber()
+                    }
+                    <FormItem
+                        label= {
+                            (
+                                <div style={{ display: 'inline-block'}}>
+                                    <span>二维码类型</span>
+                                    <Tooltip title={
+                                        <div style={{maxWidth: 600}}>
+                                        <h4>公众号关注二维码 </h4>
+                                        <div style={{paddingBottom: 10}}>
+                                                <p>优势：只能使用微信扫码进行充值。用户使用微信扫描二维码后需要先关注公众号再充值礼品卡。优势是可以增加公众号粉丝并且用户完成充值后可以通过公众号配置的菜单快捷找到会员卡看到充值金额。</p>
+                                                <p>劣势：</p>
+                                                <ul style={{
+                                                    listStyle: 'disc',
+                                                    paddingLeft: 40
+                                                }}>
+                                                    <li>
+                                                        仅能使用微信进行扫码充值
+                                                    </li>
+                                                    <li>
+                                                        永久码占用微信公众号10000关注码上限额度；临时码最长仅支持30天有效期。
+                                                    </li>
+                                                </ul>
+                                        </div>
+
+                                        <h4>普通二维码 </h4>
+                                        <div>
+                                                
+                                                <p>优势：</p>
+                                                <ul style={{
+                                                    listStyle: 'disc',
+                                                    paddingLeft: 40
+                                                }}>
+                                                    <li>
+                                                        用户无需关注公众号，支持使用微信、支付宝扫码进行充值
+                                                    </li>
+                                                    <li>
+                                                        二维码永久有效
+                                                    </li>
+                                                </ul>
+                                                <p>劣势：用户充值后不方便查找充值金额</p>
+                                        </div>
+                                        </div>
+                                    }>
+                                        <Icon style={{ marginLeft: 5, marginRight: -5}} type="question-circle" />
+                                    </Tooltip>
+                                </div>
+                            )
                         }
-                    </Select>
-                </FormItem>
-                <FormItem
-                    label="类型"
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 6 }}
-                    wrapperCol={{ span: 11 }}
-                >
-                    <RadioGroup value={this.state.exportType} onChange={this.handleExportTypeChange}>
-                        <Radio key={'0'} value={'0'}>二维码</Radio>
-                        <Radio key={'1'} value={'1'}>链接</Radio>
-                    </RadioGroup>
-                </FormItem>
-                <FormItem
-                    label={ COMMON_LABEL.remark }
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 6 }}
-                    wrapperCol={{ span: 11 }}
-                    required
-                >{
-                    getFieldDecorator('description', {
-                        initialValue: this.state.description,
-                        onChange: this.handleDescriptionChange,
-                        rules: [
-                            { required: true, message: '不能为空' },
-                            {
-                                message: '汉字、字母、数字组成，不多于20个字符',
-                                pattern: /^[\u4E00-\u9FA5A-Za-z0-9.（）()\-]{1,20}$/,
-                            },
-                        ],
-                    })(
-                        <Input
-                            type="textarea"
-                            placeholder="请输入备注信息"
-                        />
-                    )
-                }
-                </FormItem>
-            </Form>
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 6 }}
+                        wrapperCol={{ span: 11 }}
+                        required
+                    >
+                        <RadioGroup value={this.state.qrCodeType} onChange={this.handleQrType}>
+                            <Radio key={'0'} value={'0'}>公众号关注二维码</Radio>
+                            <Radio key={'1'} value={'1'}>普通二维码</Radio>
+                        </RadioGroup>
+                    </FormItem>
+                    {this.renderOfficeAccountSetting()}
+                    {this.renderQrTypeSetting()}
+                    {this.renderQrExpiringDate()}
+                    <FormItem
+                        label="导出样式"
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 6 }}
+                        wrapperCol={{ span: 11 }}
+                    >
+                        <RadioGroup value={this.state.exportType} onChange={this.handleExportTypeChange}>
+                            <Radio key={'0'} value={'0'}>二维码</Radio>
+                            <Radio key={'1'} value={'1'}>普通链接</Radio>
+                        </RadioGroup>
+                    </FormItem>
+                    <FormItem
+                        label={ COMMON_LABEL.remark }
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 6 }}
+                        wrapperCol={{ span: 11 }}
+                        required
+                    >{
+                        getFieldDecorator('description', {
+                            initialValue: this.state.description,
+                            onChange: this.handleDescriptionChange,
+                            rules: [
+                                { required: true, message: '不能为空' },
+                                {
+                                    message: '汉字、字母、数字组成，不多于20个字符',
+                                    pattern: /^[\u4E00-\u9FA5A-Za-z0-9.（）()\-]{1,20}$/,
+                                },
+                            ],
+                        })(
+                            <Input
+                                type="textarea"
+                                placeholder="请输入备注信息"
+                            />
+                        )
+                    }
+                    </FormItem>
+                </Form>
+            </div>
         )
     }
 

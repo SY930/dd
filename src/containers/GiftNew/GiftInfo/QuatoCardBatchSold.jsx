@@ -1,14 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Row, Col, Button, TreeSelect, Form, message, Input } from 'antd';
+import { Row, Col, Button, TreeSelect, Form, message, Input, Table } from 'antd';
 import _ from 'lodash';
 import BaseForm from '../../../components/common/BaseForm';
 import styles from './CrmCardInfoAddCardDetail.less';
 import { FORMITEM_CONFIG } from './_QuatoCardFormConfig';
+import { isFilterShopType } from 'helpers/util';
 import {
     FetchQuotaCardShopByBatchNo,
     CrmBatchSellGiftCards,
     FetchQuotaCardBatchNo,
+    getQuotaCardCanSellList,
 } from '../_action';
 
 const FormItem = Form.Item;
@@ -61,11 +63,22 @@ class QuotaCardBatchSold extends React.Component {
         switch (key) {
             case 'batchNO':
                 {
-                    const { data, FetchQuotaCardShopByBatchNoAC } = this.props;
+                    const { data, FetchQuotaCardShopByBatchNoAC, getQuotaCardCanSellList } = this.props;
                     const { batchSoldFormData } = this.state;
                     if (value) {
-                        FetchQuotaCardShopByBatchNoAC({ giftItemID: data.giftItemID, batchNO: value });
+                        let parm = {}
+                        if(isFilterShopType()){
+                            parm = {productCode: 'HLL_CRM_License'}
+                        }
+                        FetchQuotaCardShopByBatchNoAC({ giftItemID: data.giftItemID, batchNO: value, ...parm });
+                        // 售卖号段
+                        getQuotaCardCanSellList({ giftItemID: data.giftItemID, batchNo: value });
+
                         this.setState({
+                            formKeys: [{
+                                col: { span: 17 },
+                                keys: ['batchNO', 'canSellList', 'startEnd', 'price', 'shopID', 'transRemark'],
+                            }],
                             batchSoldFormData: { ...batchSoldFormData, [key]: value },
                         });
                         break;
@@ -118,20 +131,44 @@ class QuotaCardBatchSold extends React.Component {
     }
 
     checkStart = (rule, value, callback) => {
+        const reg =  /^[1-9]\d{0,5}$/
         const form = this.batchSoldForm;
-        if (value && parseFloat(value) > parseFloat(form.getFieldValue('endNO'))) {
+        const endNo = form.getFieldValue('endNO')
+        if (value && parseFloat(value) > parseFloat(endNo)) {
             callback('不能大于终止号');
+        } else if(!reg.test(value)) {
+            callback('请输入六位以内的整数');
         } else {
             callback();
+        }
+
+        if(value && parseFloat(value) < parseFloat(endNo)) {
+            form.setFields({
+                endNO: {
+                    value: endNo,
+                }
+            })
         }
     }
 
     checkEnd = (rule, value, callback) => {
         const form = this.batchSoldForm;
-        if (value && parseFloat(value) < parseFloat(form.getFieldValue('startNO'))) {
+        const reg =  /^[1-9]\d{0,5}$/
+        const startNO = form.getFieldValue('startNO')
+        if (value && parseFloat(value) < parseFloat(startNO)) {
             callback('不能小于起始号');
-        } else {
+        } else if(!reg.test(value)) {
+            callback('请输入六位以内的整数');
+        }   else {
             callback();
+        }
+
+        if(value && parseFloat(value) > parseFloat(startNO)) {
+            form.setFields({
+                startNO: {
+                    value: startNO,
+                }
+            })
         }
     }
 
@@ -156,16 +193,14 @@ class QuotaCardBatchSold extends React.Component {
                         {
                             decorator({
                                 key: 'startNO',
-                                rules: [{
-                                    required: true, message: '请输入起始卡号',
-                                },
+                                rules: [
                                 {
                                     validator: (rule, v, cb) => {
                                         this.checkStart(rule, v, cb)
                                     },
                                 },
                                 ],
-                            })(<Input placeholder="起始卡号" />)
+                            })(<Input placeholder="起始号" />)
                         }
                     </FormItem>
                 </Col>
@@ -175,18 +210,65 @@ class QuotaCardBatchSold extends React.Component {
                         {
                             decorator({
                                 key: 'endNO',
-                                rules: [{
-                                    required: true, message: '请输入终止卡号',
-                                },
+                                rules: [
                                 {
                                     validator: (rule, v, cb) => {
                                         this.checkEnd(rule, v, cb)
                                     },
                                 },
                                 ],
-                            })(<Input placeholder="终止卡号" />)
+                            })(<Input placeholder="终止号" />)
                         }
                     </FormItem>
+                </Col>
+            </Row>
+        )
+    }
+
+    renderCanSellList(decorator, form) {
+        let {$$quotaCardCanSellInfo} = this.props
+        let {sellNumsList = [], startNo, endNo} = $$quotaCardCanSellInfo
+        const columns = [
+            {
+                title: '序号',
+                className: 'TableTxtCenter',
+                width: 100,
+                key: 'index',
+                render: (text, record, index) => {
+                    return index + 1;
+                },
+            },
+            {
+                title: '起始号',
+                className: 'TableTxtCenter',
+                width: 100,
+                key: 'startNo',
+                dataIndex: 'startNo',
+            },
+            {
+                title: '终止号',
+                className: 'TableTxtCenter',
+                width: 100,
+                key: 'endNo',
+                dataIndex: 'endNo',
+            },
+        ]
+        return (
+            <Row style={{ paddingBottom: 10 }}>
+                <Col span={24}>
+                    <div className={styles.canSellWrap}>
+                        <div className={styles.canSellTit}>
+                            <p>可出售号段</p>
+                            <p>批次号段：{startNo} ~ {endNo}</p>
+                        </div>
+                        <Table
+                            bordered={true}
+                            columns={columns}
+                            scroll={{y: '140'}}
+                            dataSource={sellNumsList}
+                            pagination={false}
+                        />
+                    </div>
                 </Col>
             </Row>
         )
@@ -250,7 +332,7 @@ class QuotaCardBatchSold extends React.Component {
         const formItems = {
             ...FORMITEM_CONFIG,
             startEnd: {
-                label: '礼品卡号',
+                label: '批次起止号',
                 type: 'custom',
                 render: (decorator, form) => this.renderStartEnd(decorator, form),
             },
@@ -290,6 +372,11 @@ class QuotaCardBatchSold extends React.Component {
                     showSearch: true,
                 },
                 options: this.getBatchNoOptions(batchNoData),
+            },
+            canSellList: {
+                label: ' ',
+                type: 'custom',
+                render: (decorator, form) => this.renderCanSellList(decorator, form),
             },
             price: {
                 label: '售价',
@@ -333,6 +420,7 @@ function mapStateToProps(state) {
     return {
         $$shopData: state.sale_giftInfoNew.get('shopsByBatchNo'),
         $$batchNoInfo: state.sale_giftInfoNew.get('batchNoInfo'),
+        $$quotaCardCanSellInfo: state.sale_giftInfoNew.get('quotaCardCanSellInfo').toJS(),
         $$accountInfo: state.user.get('accountInfo'),
     }
 }
@@ -341,6 +429,7 @@ function mapDispatchToProps(dispatch) {
         FetchQuotaCardShopByBatchNoAC: opts => dispatch(FetchQuotaCardShopByBatchNo(opts)),
         CrmBatchSellGiftCardsAC: opts => dispatch(CrmBatchSellGiftCards(opts)),
         FetchQuotaCardBatchNoAC: opts => dispatch(FetchQuotaCardBatchNo(opts)),
+        getQuotaCardCanSellList: opts => dispatch(getQuotaCardCanSellList(opts)),
     };
 }
 export default connect(

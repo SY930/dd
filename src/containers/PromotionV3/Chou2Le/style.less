@@ -1,0 +1,85 @@
+@gray: #999;
+@red: #ED5664;
+@yel: #FF9805;
+@brd: #E7E7E7;
+@green: #1AB495;
+@black: #434343;
+@white: #fff;
+@blue: #1ca1dc;
+@graybg: #F9F9F9;
+@separ: #F3F3F3;
+@green2: #18a786;
+
+.tc {
+    text-align: center;
+}
+
+.r {
+    float: right;
+}
+
+.dn {
+    display: none;
+}
+
+.tr {
+    text-align: right;
+}
+
+.ell {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    white-space: nowrap;
+}
+
+.mainBox{
+    display: flex;
+    .left{
+        width: 230px;
+    }
+    .logo{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 230px;
+        height: 140px;
+        margin-bottom: 10px;
+        background-color: #9BBD64;
+        border-radius: 5px;
+        font-family: '微软雅黑';
+        color: #fff;
+        font-size: 30px;
+        text-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+        font-weight: 700;
+    }
+    .right{
+        margin: 0 15px;
+        flex: 1;
+        width: 500px;
+        height: 495px;
+    }
+    .desc{
+        margin-top: 15px;
+        dt{
+            font-size: 14px;
+        }
+        dd {
+            line-height: 1.5;
+            margin: 10px;
+        }
+    }
+    .gray{
+        color: @gray;
+    }
+}
+.stepBox{
+    margin-bottom: 10px;
+}
+.step1{
+    :global{
+        .ant-form-item {
+        }
+    }
+}
+

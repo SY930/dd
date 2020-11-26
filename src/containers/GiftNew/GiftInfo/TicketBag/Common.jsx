@@ -94,15 +94,20 @@ const priceLabel = (<span>
         记录实收金额
         <Tip title="记录实收金额：仅用于报表作为实收金额核算" style={tipMargin} />
     </span>);
-const wayLabel = (<span>
+const wayLabel = (
+    <span>
         发放类型
-        <Tip title="将按周期发送添加的礼品" />
+        <Tip title={(
+            <div>
+                <p>券包首次发放是购买/储值/参加活动后即时发；</p>
+                <p>后续发放将按设定的周期和时间发送，后续的发送次数为设置的发送次数-1；</p>
+            </div>
+        )} />
     </span>);
 const revokeLabel = (<span>
     系统过期自动退
     <Tip
-        title={<p>付费购买的券包中所有券均未使用时，支持按包含券有效期最长的一张券的过期时间自动退款。<br />
-            退款时效为购买之日起90天。</p>}
+        title={<p>付费购买的券包中所有券均未使用时，支持按包含券有效期最长的一张券的过期时间自动退款。</p>}
         style={tipMargin}
     />
 </span>);
@@ -318,7 +323,7 @@ const formItemLayout = {
     labelCol: { span: 7 },
     wrapperCol: { span: 17 },
 };
-const weekMap = ['', '一', '二', '三', '四', '五', '六', '日'];
+const weekMap = ['', '周一', '周二', '周三', '周四', '周五', '周六', '周日'];
 const weekList = (() => {
     const week = [];
     for(let i = 1; i < 8; i++) {
@@ -425,7 +430,11 @@ const pFormItems = {
     cellNo: {
         type: 'text',
         label: '手机号',
-        rules: ['required', 'phone'],
+        rules: [{
+            required: true,
+            message: '请输入正确的手机号码',
+            pattern: /^[1]([3-9])[0-9]{9}$/,
+        }],
         defaultValue: '',
     },
     sendCount: {

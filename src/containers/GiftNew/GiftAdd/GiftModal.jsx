@@ -22,8 +22,8 @@ const formItems = {
                 if (!/^\d+$/.test(value)) {
                     return callback('请输入数字');
                 }
-                if (+value<1 || +value>50) {
-                    return callback('大于0，限制50个');
+                if (+value < 1 || +value > 500) {
+                    return callback('大于0，限制500个');
                 }
                 return callback();
             },
@@ -72,7 +72,7 @@ const formItemLayout = {
 export default class GiftModal extends Component {
     /* 页面需要的各类状态属性 */
     state = {
-        options: [],    //生效时间下拉框
+        options: [], // 生效时间下拉框
         formKeys: formKeys1,
     };
     /* 表单提交 */
@@ -87,13 +87,13 @@ export default class GiftModal extends Component {
     }
     /** 表单内容变化时的监听 */
     onFormChange = (key, value) => {
-        if(key === 'countType') {
+        if (key === 'countType') {
             const options = (value === '0') ? SALE_CENTER_GIFT_EFFICT_TIME : SALE_CENTER_GIFT_EFFICT_DAY;
             this.setState({ options });
             this.form.setFieldsValue({ 'giftEffectTimeHours': value });
         }
-        if(key==='effectType'){
-            if(value === '1') {
+        if (key === 'effectType') {
+            if (value === '1') {
                 this.setState({ formKeys: formKeys1 });
             } else {
                 this.setState({ formKeys: formKeys2 });
