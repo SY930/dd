@@ -3,7 +3,7 @@ import React from 'react'
 import { PriceInput, ImageUpload } from '../../../components/common/index';
 import { ColorSetting } from '../components/index';
 import styles from '../CreateActive.less'
-
+import { TreeSelect } from 'antd';
 
 // 所有表单设置项都从这里取，一样的直接复用，不一致的，在各自活动修改
 export const formItem = {
@@ -159,12 +159,20 @@ export const formItem = {
         wrapperCol: { span: 20 },
     },
     consumeGiftID: {
-        type: 'combo',
+        type: 'custom',
         label: '选择消费券',
-        options: [],
         labelCol: { span: 4 },
         wrapperCol: { span: 20 },
         rules: [{ required: true, message: '请选择消费券' }],
+        render(d) {
+            return d({})(<TreeSelect
+                dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                placeholder="请选择礼品名称"
+                showSearch={true}
+                treeNodeFilterProp="label"
+                allowClear={false}
+            />);
+        },
     },
     eventDate: {
         type: 'custom',

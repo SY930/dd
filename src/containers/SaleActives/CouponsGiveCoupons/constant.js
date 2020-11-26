@@ -2,6 +2,7 @@ import React from 'react';
 import AddGift from './components/AddGift'
 import { formItem } from '../constants/formItem'
 
+
 const {
     actType, eventName, eventRemark, eventLimitDate,
     consumeTotalAmount, originalImageUrl, backgroundColor,

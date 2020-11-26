@@ -18,6 +18,7 @@ class Step2 extends React.Component {
         formKeys2: _.cloneDeep(formKeys2),
         count: ['1'],
         activeKey: '1',
+        treeData: []
     }
     componentDidMount() {
         if(typeof this.props.getSubmitFn === 'function') {
@@ -25,6 +26,16 @@ class Step2 extends React.Component {
                 submitFn: this.handleSubmit,
             })
         }
+        this.props.dispatch({
+            type: 'createActiveCom/couponService_getSortedCouponBoardList',
+            payload: {
+                trdChannelID: 50,
+            },
+        }).then((res) => {
+            if (res) {
+                this.setState({ treeData: res })
+            }
+        })
     }
     getForm = (key) => (form) => {
         if(!formList[key] ) {
@@ -182,15 +193,15 @@ class Step2 extends React.Component {
 
 
     render () {
-        const { formKeys2, count, activeKey } = this.state
+        const { formKeys2, count, activeKey, treeData } = this.state
         const { wxNickNameList } = this.props.createActiveCom
 
         formItems2.eventDate.render = eventDateRender.bind(this)
         formItems2.mySendGift.render = formItems2.mySendGift.render.bind(this)
         formItems2.afterPayJumpType.render =  afterPayJumpTypeRender.bind(this)
-
-        if(formKeys2.includes('miniProgramInfo')) {
-            formItems2.miniProgramInfo.options = wxNickNameList
+        if(formKeys2.includes('consumeGiftID')) {
+            console.log(treeData)
+            formItems2.consumeGiftID.treeData = treeData
         }
         const { formData } = this.props.createActiveCom
         const { giftList = [] } = formData
