@@ -45,7 +45,7 @@ class CouponsGiveCoupons extends React.Component {
             }
         }).then(res => {
             if(res) {
-                this.form1.setFieldsValue({giftList: res})
+                this.form1.setFieldsValue({mySendGift: res})
             }
         })
     }
@@ -123,7 +123,7 @@ class CouponsGiveCoupons extends React.Component {
         //     const children = currentValue.children || []
         //     return [...pre,...children]
         // },[])
-        const giftItem = giftList.find(v => v.value === giftID)
+        // const giftItem = giftList.find(v => v.value === giftID)
         const saveLoading = loading.effects['createActiveCom/addEvent_NEW']
         const steps = [{
             title: '基本信息',

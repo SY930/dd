@@ -10,7 +10,7 @@ import { eventDateRender, afterPayJumpTypeRender } from '../../helper/common'
 
 const DATE_FORMAT = 'YYYYMMDD000000';
 const { TabPane } = Tabs;
-const formList = []
+const formList = [null, null, null, null, null, null]
 
 @connect(({  loading, createActiveCom }) => ({  loading, createActiveCom }))
 class Step2 extends React.Component {
@@ -19,34 +19,44 @@ class Step2 extends React.Component {
         count: ['1'],
         activeKey: '1',
     }
-    getForm = (key) => (form) => {
-        if(!formList[key] ) {
-            formList[key] = form
-        }
+    componentDidMount() {
         if(typeof this.props.getSubmitFn === 'function') {
             this.props.getSubmitFn({
                 submitFn: this.handleSubmit,
             })
         }
     }
+    getForm = (key) => (form) => {
+        if(!formList[key] ) {
+            formList[key] = form
+        }
+        
+    }
 
     handleFromChange = (index) => (key, value, data) => {
+        const { count } = this.state
+        //因为最后一个添加的tab会影响整体数据，所以在提交时单独整合
+        //debugger
+        if(index === count.length-1) {
+            return
+        }
         const { formData } = this.props.createActiveCom
         if (key === 'mySendGift') {
             this.handleGiftChange(index, value)
+        } else {
+            formData[key] =value
         }
-        formData[key] =value
         
-        this.props.dispatch({
-            type: 'createActiveCom/updateState',
-            payload: {
-                formData
-            }
-        })
+        // this.props.dispatch({
+        //     type: 'createActiveCom/updateState',
+        //     payload: {
+        //         formData
+        //     }
+        // })
     }
 
      handleGiftChange = (index, value) => {
-        debugger
+        // debugger
          if(JSON.stringify(value) === '{}') {
              console.log(`index ${index} has been send back`)
              return

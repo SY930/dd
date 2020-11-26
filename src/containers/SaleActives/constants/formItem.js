@@ -164,6 +164,7 @@ export const formItem = {
         options: [],
         labelCol: { span: 4 },
         wrapperCol: { span: 20 },
+        rules: [{ required: true, message: '请选择消费券' }],
     },
     eventDate: {
         type: 'custom',
