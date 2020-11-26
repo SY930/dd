@@ -61,6 +61,7 @@ class GiftAddModal extends React.Component {
     componentDidMount() {
         const { getPromotionShopSchema, gift: {data}} = this.props;
         const { valueType = '0', monetaryUnit= '0' } = data;
+        this.baseForm.resetFields(valueType)
         let parm = {}
         if(isFilterShopType()) parm = {productCode: 'HLL_CRM_License'}
         getPromotionShopSchema({groupID: this.props.accountInfo.toJS().groupID, ...parm});
@@ -650,14 +651,15 @@ class GiftAddModal extends React.Component {
                 <p style={{ width: 100 }}>
                     {d({
                         key: 'valueType',
-                        initialValue: valueType,
+                        // initialValue: valueType,
+                        defaultValue: valueType,
                     })(<Select>
                             <Option value="0">固定金额</Option>
                             <Option value="1">随机金额</Option>
                         </Select>
                     )}
                 </p>
-                {valueType==='0' ?
+                {valueType=='0' ?
                     <FormItem
                         wrapperCol={{span: 24}}
                         labelCol={{span: 0}}
@@ -728,7 +730,7 @@ class GiftAddModal extends React.Component {
                     </p>
                 }
                 </div>
-                {valueType==='1' &&
+                {valueType=='1' &&
                     <div>
                         <span style={{ padding: '0 8px 0 0'}}>最小单位</span>
                         {d({
