@@ -758,3 +758,38 @@ export function isFilterShopType(curType){
     
     return filterType.includes(curType)
 }
+
+/**
+ * http://wiki.hualala.com/pages/viewpage.action?pageId=51516035
+ * 集团及插件授权
+ * LicenseData  授权信息数据
+ * productCode  查询产品授权类型  group 集团授权   插件授权
+ * status       是否开启授权状态检查  默认true
+ * 
+ * return       {authStatus, authPluginStatus} 产品授权状态
+ */
+export function checkAuthLicense(licenseData, productCode = 'HLL_CRM_NEW', status = true) {
+    // 暂时关闭授权状态校验
+    // if(!status) return {authStatus: true}
+
+    let {basicLicenseStatus, plugins = []} = licenseData
+    // 集团授权信息
+    if(productCode === 'HLL_CRM_NEW'){
+        if(basicLicenseStatus == 1){
+            return {authStatus: true};
+        }else{
+            return {authStatus: false}
+        }
+    }
+    // 插件授权信息
+    if(!plugins || plugins.length <= 0){
+        return {authPluginStatus: false}
+    }else{
+        let pluginInfo = plugins.find(item => item.productCode == productCode) || {}
+        if(pluginInfo.licenseStatus == 1){
+            return {pluginInfo, authPluginStatus: true}
+        }else{
+            return {authPluginStatus: false};
+        }
+    }
+}

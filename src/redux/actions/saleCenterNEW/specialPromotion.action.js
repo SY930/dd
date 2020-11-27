@@ -79,6 +79,8 @@ export const SALE_CENTER_QUERY_GROUP_CRM_RFM =
 
 export const SALE_CENTER_CARDGROUPID =
     'sale center: set special promotion event info new222';
+export const SALE_CENTER_GET_AUTH_DATA =
+    'sale center: SALE_CENTER_GET_AUTH_DATA';
 
 export const saleCenterSetSpecialBasicInfoAC = (opts) => {
     return {
@@ -250,6 +252,34 @@ export const getEventExcludeCardTypes = (opts) => {
                 },
             });
         });
+    };
+};
+// 获取产品授权信息
+export const getAuthLicenseData = (opts) => {
+    return (dispatch) => {
+        return axios
+            .post('/api/v1/universal', {
+                service: 'HTTP_SERVICE_URL_CRM',
+                method: '/crm/crmAuthLicenseService.queryCrmPluginLicenses.ajax',
+                type: 'post',
+                data: {...opts, groupID: getStore().getState().user.getIn(['accountInfo', 'groupID'])},
+            })
+            .then((res) => {
+                let {data = {}, code} = res
+                if(code === '000'){
+                    dispatch({
+                        type: SALE_CENTER_GET_AUTH_DATA,
+                        payload: {
+                            AuthLicenseData: data
+                        },
+                    });
+                    return Promise.resolve(data);
+                }
+                return Promise.reject(res.message);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     };
 };
 /**
