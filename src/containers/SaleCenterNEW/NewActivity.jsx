@@ -13,7 +13,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { throttle } from 'lodash';
 import { Modal, Row, Col, message, Button } from 'antd';
-import { checkPermission } from '../../helpers/util';
+import { checkPermission, checkAuthLicense } from '../../helpers/util';
 import {
     NEW_CUSTOMER_PROMOTION_TYPES,
     FANS_INTERACTIVITY_PROMOTION_TYPES,
@@ -21,6 +21,9 @@ import {
     LOYALTY_PROMOTION_TYPES,
     SALE_PROMOTION_TYPES,
 } from '../../constants/promotionType'
+import {
+    getAuthLicenseData
+} from "../../redux/actions/saleCenterNEW/specialPromotion.action";
 import styles from './ActivityPage.less'
 import ActivityMain from './activityMain';
 import Authority from './../../components/common/Authority';
@@ -100,6 +103,9 @@ function mapDispatchToProps(dispatch) {
         fetchFoodMenuInfo: (opts) => {
             dispatch(fetchFoodMenuInfoAC(opts))
         },
+        getAuthLicenseData: (opts) => {
+            return dispatch(getAuthLicenseData(opts))
+        }
     };
 }
 @connect(mapStateToProps, mapDispatchToProps)
@@ -124,6 +130,9 @@ class NewActivity extends React.Component {
     componentDidMount() {
         this.onWindowResize();
         window.addEventListener('resize', this.onWindowResize);
+        this.props.getAuthLicenseData({productCode: 'HLL_CRM_Marketingbox'}).then((res) => {
+            this.setState({authLicenseData: res})
+        });
     }
     componentWillUnmount() {
         window.removeEventListener('resize', this.onWindowResize);
