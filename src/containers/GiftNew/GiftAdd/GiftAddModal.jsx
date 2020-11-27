@@ -61,7 +61,6 @@ class GiftAddModal extends React.Component {
     componentDidMount() {
         const { getPromotionShopSchema, gift: {data}} = this.props;
         const { valueType = '0', monetaryUnit= '0' } = data;
-        this.baseForm.resetFields(valueType)
         let parm = {}
         if(isFilterShopType()) parm = {productCode: 'HLL_CRM_License'}
         getPromotionShopSchema({groupID: this.props.accountInfo.toJS().groupID, ...parm});
