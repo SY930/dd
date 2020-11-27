@@ -33,6 +33,9 @@ import {
     toggleIsUpdateAC,
 } from '../../../redux/actions/saleCenterNEW/myActivities.action';
 import {
+    getAuthLicenseData
+} from "../../../redux/actions/saleCenterNEW/specialPromotion.action";
+import {
     fetchPromotionCategoriesAC,
     fetchPromotionTagsAC,
     saleCenterResetBasicInfoAC,
@@ -163,6 +166,9 @@ const mapDispatchToProps = (dispatch) => {
         fetchFoodMenuInfo: (opts, flag, id) => {
             dispatch(fetchFoodMenuInfoAC(opts, flag, id))
         },
+        getAuthLicenseData: (opts) => {
+            return dispatch(getAuthLicenseData(opts))
+        }
     };
 };
 @registerPage([SALE_CENTER_PAGE_SHOP, ONLINE_PROMOTION_MANAGEMENT_SHOP], {
@@ -262,6 +268,10 @@ class MyActivitiesShop extends React.Component {
         fetchPromotionScopeInfo({
             _groupID: this.props.user.accountInfo.groupID,
             shopID: this.props.user.shopID,
+        });
+        // 授权
+        this.props.getAuthLicenseData({productCode: 'HLL_CRM_Marketingbox'}).then((res) => {
+            this.setState({authLicenseData: res})
         });
         this.onWindowResize();
         window.addEventListener('resize', this.onWindowResize);

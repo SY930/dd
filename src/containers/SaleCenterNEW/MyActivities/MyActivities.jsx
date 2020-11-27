@@ -35,6 +35,9 @@ import {
     toggleIsUpdateAC,
 } from '../../../redux/actions/saleCenterNEW/myActivities.action';
 import {
+    getAuthLicenseData
+} from "../../../redux/actions/saleCenterNEW/specialPromotion.action";
+import {
     fetchPromotionCategoriesAC,
     fetchPromotionTagsAC,
     saleCenterResetBasicInfoAC,
@@ -181,6 +184,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         openPromotionAutoRunListModal: (opts) => {
             dispatch(openPromotionAutoRunListModal(opts))
+        },
+        getAuthLicenseData: (opts) => {
+            return dispatch(getAuthLicenseData(opts))
         }
     };
 };
@@ -273,6 +279,10 @@ class MyActivities extends React.Component {
 
         fetchPromotionScopeInfo({
             _groupID: this.props.user.accountInfo.groupID,
+        });
+        // 授权
+        this.props.getAuthLicenseData({productCode: 'HLL_CRM_Marketingbox'}).then((res) => {
+            this.setState({authLicenseData: res})
         });
         this.onWindowResize();
         window.addEventListener('resize', this.onWindowResize);
