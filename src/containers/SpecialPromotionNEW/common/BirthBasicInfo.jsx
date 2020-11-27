@@ -326,9 +326,7 @@ class PromotionBasicInfo extends React.Component {
         // 日期选择器
         const { actDate, actDateTemp} = this.state
         let {type} = this.props
-
         return (
-
                 <FormItem
                     label={'活动起止日期'}
                     className={styles.FormItemStyle}
