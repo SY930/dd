@@ -145,6 +145,7 @@ class GiftAddModal extends React.Component {
     handleSubmit() {
         const { groupTypes } = this.state;
         const { type, gift: { value, data } } = this.props;
+
         this.baseForm.validateFieldsAndScroll((err, values) => {
             if (err) return;
             let params = _.assign(values, { giftType: value });
