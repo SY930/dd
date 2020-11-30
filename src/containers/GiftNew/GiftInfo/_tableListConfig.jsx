@@ -95,6 +95,15 @@ export const COLUMNS = [
                             )
                         }
                     </Authority>
+                    <Authority rightCode={GIFT_DETAIL_QUERY}>
+                         {
+                             (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
+                                 <a disabled={true}>复制</a>
+                             ) : (
+                                 <a href="javaScript:;" onClick={() => this.handleEdit(record, 'copy')}>{ COMMON_LABEL.copy }</a>
+                             )
+                         }
+                     </Authority>
                 </span>
             )
         },
