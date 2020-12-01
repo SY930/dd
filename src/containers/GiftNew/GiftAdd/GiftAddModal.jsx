@@ -494,7 +494,7 @@ class GiftAddModal extends React.Component {
                 label: ` `,
                 type: 'custom',
                 defaultValue: false,
-                render: decorator => decorator({})(<IsSync/>),
+                render: type === 'copy' ? decorator => decorator({})(<div></div>) : decorator => decorator({})(<IsSync/>),
             },
             giftImagePath: {
                 label: '礼品图样',
@@ -633,7 +633,7 @@ class GiftAddModal extends React.Component {
             freePrice: {
                 type: 'text',
                 label: '赠送卡值',
-                disabled: true,
+                disabled: type !== 'copy',
                 props: {placeholder: ''},
                 surfix: '元',
             },
