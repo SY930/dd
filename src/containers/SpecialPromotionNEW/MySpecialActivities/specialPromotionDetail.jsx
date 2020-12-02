@@ -64,7 +64,8 @@ const exportablePromotionTypes = [
     '75',
     '77',
     '76',
-    '80'
+    '80',
+    '81'
 ];
 const levelArray = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
 import {
@@ -222,7 +223,7 @@ class SpecialPromotionDetail extends React.Component {
                 return event.key == eventWay;
             }).title
         }
-
+        // debugger
         return (
             <div>
                 <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d2c8987eai0135)}</h5>

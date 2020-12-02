@@ -4,7 +4,9 @@ import { Input } from 'antd'
 import {formItems1,formKeys1} from '../constant'
 import styles from '../CouponsGiveCoupons.less'
 import {connect} from 'react-redux';
-import { renderEventRemark } from '../../helper/common'
+import { renderEventRemark, eventLimitDateRender, } from '../../helper/common'
+import moment from 'moment'
+import { dateFormat } from '../../constant'
 
 @connect(({  loading, createActiveCom }) => ({  loading, createActiveCom }))
 class Step1 extends React.Component {
@@ -22,7 +24,6 @@ class Step1 extends React.Component {
     handleFromChange = (key,value) => {
 
         const { formData } = this.props.createActiveCom
-
         formData[key] =value
 
         this.props.dispatch({
@@ -39,7 +40,18 @@ class Step1 extends React.Component {
             if(e) {
                 flag = false
             }
-
+            const { formData } = this.props.createActiveCom
+            this.props.dispatch({
+                type: 'createActiveCom/updateState',
+                payload: {
+                    formData: {
+                        ...formData,
+                        ...v,
+                        eventStartDate: v.eventLimitDate[0] && moment(v.eventLimitDate[0]).format(dateFormat),
+                        eventEndDate: v.eventLimitDate[1] && moment(v.eventLimitDate[1]).format(dateFormat),
+                    }
+                }
+            })
         })
 
 
@@ -47,6 +59,7 @@ class Step1 extends React.Component {
     }
     render () {
         formItems1.eventRemark.render = renderEventRemark.bind(this)
+        formItems1.eventLimitDate.render = eventLimitDateRender.bind(this)
         const { formData } = this.props.createActiveCom
         return (
             <div className={styles.step1Wrap}>

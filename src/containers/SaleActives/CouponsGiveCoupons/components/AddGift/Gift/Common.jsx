@@ -79,7 +79,7 @@ const formItems = {
         type: 'text',
         label: '有效天数',
         surfix: '天',
-        // rules: ['required', 'numbers'],
+        rules: ['required', 'numbers'],
     },
     rangeDate: {
         type: 'datepickerRange',

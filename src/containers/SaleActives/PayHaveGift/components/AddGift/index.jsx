@@ -52,7 +52,6 @@ class MutliGift extends Component {
     render() {
         const { treeData } = this.state;
         const { value } = this.props;
-
         return (
             <div className={css.multiGiftBox}>
 

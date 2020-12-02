@@ -8,86 +8,87 @@ import Step2 from './components/Step2'
 import {imgUrl} from './constant'
 import moment from 'moment'
 const format = "YYYYMMDD";
-
-
-
-
 @connect(({  loading, createActiveCom }) => ({  loading, createActiveCom }))
 class CouponsGiveCoupons extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state={
+            stepTwo: false
+        }
+    }
     componentDidMount() {
         // 查询详情
         this.queryDetail()
     }
     componentWillUnmount() {
-        this.form1.resetFields()
+        // this.form1.resetFields()
         this.form0.resetFields()
     }
     queryDetail = () => {
         const  { itemID } = decodeUrl()
         if(itemID) {
             this.getDetail(itemID)
-            this.props.dispatch({
-                type: 'createActiveCom/updateState',
-                payload: {
-                    isView: true
-                }
-            })
+            if(!this.props.createActiveCom.isEdit) {
+                this.props.dispatch({
+                    type: 'createActiveCom/updateState',
+                    payload: {
+                        isView: true
+                    }
+                })
+            }
         }
 
     }
 
     getDetail = (itemID) => {
-
         this.props.dispatch({
-            type: 'createActiveCom/queryEventDetail_NEW_payHaveGift',
+            type: 'createActiveCom/queryEventDetail_NEW_couponsGiveCoupons',
             payload: {
                 itemID,
-            }
-        }).then(res => {
-            if(res) {
-                this.form1.setFieldsValue({mySendGift: res})
             }
         })
     }
 
     handleNext =  (cb,current) => {
+        this.setState({
+            stepTwo: true
+        })
          if(typeof this[`submitFn${current}`]  === 'function' && this[`submitFn${current}`]()) {
             cb()
          }
     }
     handleFinish = (cb,current) => {
-
         if(typeof this[`submitFn${current}`]  === 'function' && this[`submitFn${current}`]()) {
             const { formData, type } = this.props.createActiveCom
-            const { eventDate } = formData
+            const { eventLimitDate, gifts, eventName, eventRemark } = formData
+            const  { itemID } = decodeUrl()
             this.props.dispatch({
-                type: 'createActiveCom/getExcludeEventList',
+                type: itemID ? 'createActiveCom/updateEvent_NEW__couponsGiveCoupons' : 'createActiveCom/addEvent_NEW_couponsGiveCoupons',
                 payload: {
-                    eventStartDate: moment(eventDate[0]).format(format),
-                    eventEndDate: moment(eventDate[1]).format(format),
-                    eventWay: type
-                }
+                    event: {
+                        eventWay: type,
+                        eventName,
+                        eventRemark,
+                        eventEndDate: moment(eventLimitDate[1]).format(format),
+                        eventStartDate: moment(eventLimitDate[0]).format(format),
+                    },
+                    gifts: gifts
+                },
             }).then(res => {
                 if(res) {
-                    this.props.dispatch({
-                        type: 'createActiveCom/addEvent_NEW_payHaveGift'
-                    }).then(res => {
-                        if(res) {
-                            cb()
-                            closePage()
-                            jumpPage({pageID: '1000076003'})
-                        }
-                    })
+                    closePage()
+                    jumpPage({pageID: '1000076003'})
                 }
             })
-
          }
     }
     handlePrev = (cb) => {
+        this.setState({
+            stepTwo: false
+        })
         cb()
     }
     handleCancel = (cb) => {
-        cb()
         closePage()
         this.props.dispatch({
             type: 'createActiveCom/clearData'
@@ -117,14 +118,15 @@ class CouponsGiveCoupons extends React.Component {
             isView
         } = this.props.createActiveCom
         const { merchantLogoUrl, eventName, backgroundColor, giftList, originalImageUrl } = formData
-        const { rangeDate, effectType, giftEffectTimeHours, giftValidUntilDayCount,giftID } = giftList
+        // const { rangeDate, effectType, giftEffectTimeHours, giftValidUntilDayCount,giftID } = giftList
         // debugger
         // const giftList = crmGiftTypes.reduce((pre,currentValue,) => {
         //     const children = currentValue.children || []
         //     return [...pre,...children]
         // },[])
         // const giftItem = giftList.find(v => v.value === giftID)
-        const saveLoading = loading.effects['createActiveCom/addEvent_NEW']
+        const saveLoading = loading.effects['createActiveCom/addEvent_NEW_CouponsGiveCoupons']
+        const { stepTwo } = this.state
         const steps = [{
             title: '基本信息',
             content:  <Step1
@@ -133,10 +135,10 @@ class CouponsGiveCoupons extends React.Component {
           },  {
             title: '活动内容',
             content:  <Step2
+            stepTwo={this.state.stepTwo}
             getSubmitFn={this.getSubmitFn(1)}
             />,
           }];
-        const headerUrl = merchantLogoUrl.url ? `${imgUrl}/${merchantLogoUrl.url}`   : `${imgUrl}/${merchantLogoUrl}`
         return (
             <div className={styles.actWrap}>
                 <div className={styles.settingWrap}>

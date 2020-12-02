@@ -161,8 +161,8 @@ export const formItem = {
     consumeGiftID: {
         type: 'custom',
         label: '选择消费券',
-        labelCol: { span: 4 },
-        wrapperCol: { span: 20 },
+        labelCol: { span: 5 },
+        wrapperCol: { span: 19 },
         rules: [{ required: true, message: '请选择消费券' }],
     },
     eventDate: {

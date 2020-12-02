@@ -817,7 +817,7 @@ class MySpecialActivities extends React.Component {
                                             this.onV3Click(record.itemID, false, record.eventWay);
                                             return;
                                         }
-                                        if (record.eventWay === 66) {
+                                        if (record.eventWay === 66 || record.eventWay === 81) {
                                             //debugger
                                             this.handleShowDetail({
                                                 record,
@@ -845,7 +845,7 @@ class MySpecialActivities extends React.Component {
                                     this.onV3Click(record.itemID, true, record.eventWay);
                                     return;
                                 }
-                                //debugger
+                                // debugger
                                 if (record.eventWay === 80 || record.eventWay === 66 || record.eventWay === 81) {
 
                                     this.handleShowDetail({

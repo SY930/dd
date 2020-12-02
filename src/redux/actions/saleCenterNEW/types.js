@@ -866,7 +866,7 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             title: "消费券返券",
             text: "",
             example: "",
-            key: "80",
+            key: "81",
         },
     ];
     return basic;
