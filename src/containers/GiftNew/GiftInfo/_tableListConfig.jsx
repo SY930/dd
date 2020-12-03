@@ -3,12 +3,12 @@ import _ from 'lodash';
 import { COMMON_LABEL } from 'i18n/common';
 import GiftCfg from '../../../constants/Gift';
 import Authority from '../../../components/common/Authority';
-import {Tooltip} from 'antd';
-import {GIFT_DETAIL_QUERY, GIFT_LIST_DELETE, GIFT_LIST_UPDATE} from "../../../constants/authorityCodes";
+import { Tooltip } from 'antd';
+import { GIFT_DETAIL_QUERY, GIFT_LIST_DELETE, GIFT_LIST_UPDATE } from '../../../constants/authorityCodes';
 import {
     getHuaTianDisabledGifts, isBrandOfHuaTianGroupList, isHuaTian,
-    isMine
-} from "../../../constants/projectHuatianConf";
+    isMine,
+} from '../../../constants/projectHuatianConf';
 
 // { label: '代金券', value: '10' },
 // { label: '菜品优惠券', value: '20' },
@@ -25,7 +25,7 @@ import {
 // { label: '现金红包', value: '113' },
 
 const ONLINE_STORE_VISIBLE_GIFT_TYPE = [
-    '10', '20', '21', '30', '40', '42', '80', '110', '111'
+    '10', '20', '21', '30', '40', '42', '80', '110', '111',
 ]
 
 export const COLUMNS = [
@@ -44,6 +44,9 @@ export const COLUMNS = [
         // fixed: 'left',
         width: 200,
         render(value, record) {
+            const { giftType } = record
+            // 90 礼品定额卡 91 线上礼品卡 113 现金红包
+            const hideCopyBtn = ['90', '91', '113']
             return (
                 <span>
                     <Authority rightCode={GIFT_LIST_UPDATE}>
@@ -95,15 +98,19 @@ export const COLUMNS = [
                             )
                         }
                     </Authority>
-                    <Authority rightCode={GIFT_DETAIL_QUERY}>
-                         {
-                             (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
-                                 <a disabled={true}>复制</a>
-                             ) : (
-                                 <a href="javaScript:;" onClick={() => this.handleEdit(record, 'copy')}>{ COMMON_LABEL.copy }</a>
-                             )
-                         }
-                     </Authority>
+                    {
+                        // 部分 gift 不显示 copy
+                        hideCopyBtn.includes(giftType) ? '' :
+                            <Authority rightCode={GIFT_DETAIL_QUERY}>
+                                {
+                                    (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
+                                        <a disabled={true}>复制</a>
+                                    ) : (
+                                        <a href="javaScript:;" onClick={() => this.handleEdit(record, 'copy')}>{ COMMON_LABEL.copy }</a>
+                                    )
+                                }
+                            </Authority>
+                    }
                 </span>
             )
         },
@@ -125,7 +132,7 @@ export const COLUMNS = [
         },
         // fixed: 'left',
         width: 150,
-    },  {
+    }, {
         title: '礼品名称',
         dataIndex: 'giftName',
         key: 'giftName',
