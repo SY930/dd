@@ -22,7 +22,9 @@ class Step2 extends React.Component {
         activeKey: '1',
         treeData: [],
         filterTreeData: [],
-
+        uniqueLoop: true,
+        afterGiftList: [],
+        ifJustDelete: false,
     }
     componentDidMount() {
         if(typeof this.props.getSubmitFn === 'function') {
@@ -59,6 +61,8 @@ class Step2 extends React.Component {
             formList[key] = form
         }
     }
+
+    
 
     changeFilterTreeDataPositive = (index, value) => {
         let { filterTreeData } = this.state
@@ -181,7 +185,6 @@ class Step2 extends React.Component {
                     }
                 })
             }
-
         })
         if(!flag) {
             return flag
@@ -274,19 +277,85 @@ class Step2 extends React.Component {
     }
 
     deleteTab = (key) => {
-        let { count } = this.state
+        let { count, filterTreeData } = this.state
         let { formData } = this.props.createActiveCom
+        let {giftList = []} = formData
+        const  { itemID } = decodeUrl()
+        console.log('formData', formData)
         if (count.length === 1) {
             message.warn('至少有1条规则')
             return
         }
-        count.splice(key-1, 1)
-        formList.splice(key-1, 1)
-        debugger
+        let a = []
+        filterTreeData.forEach((item, index) => {
+            if(item.index > key-1) {
+                a.push({
+                    index: item.index-1,
+                    value: item.value
+                }) 
+            } else if(item.index < key-1) {
+                a.push(item)
+            }
+        })
+        count.pop()
+        let temp = []
+        for (let i = 0; i<formList.length; i++) {
+            formList[i].validateFieldsAndScroll((e,v) => {
+                if(e) {
+                    return
+                } else {
+                    if(i != key-1) {
+                        temp.push(v)
+                    }
+                }
+            })
+        }
+        formList = []
+        this.changeDomData()
+        console.log('filterTreeData', temp)
         //form的数据替换不掉 具体再看
         this.setState({
             count: count,
-            activeKey: `${count.length}`
+            activeKey: `${count.length}`,
+            filterTreeData: a,
+            ifJustDelete: true,
+            afterGiftList: temp, 
+            uniqueLoop: false,
+        }, () => {
+            this.setState({
+                uniqueLoop: true,
+            })
+        })
+        
+    }
+    changeDomData = () => {
+        let temp = []
+        for (let i = 0; i<formList.length; i++) {
+            formList[i].validateFieldsAndScroll((e,v) => {
+                if(e) {
+                    return
+                } else {
+                    temp.push(v)
+                }
+            })
+            this.setState({
+                uniqueLoop: false
+            }, () => {
+                this.setState({
+                    uniqueLoop: true
+                }
+                // , () => {
+                //     formList.forEach((item, index) => {
+                //         item.setFieldsValue({mySendGift: temp[index].mySendGift || {}})
+                //         item.setFieldsValue({consumeGiftID: temp[index].consumeGiftID || {}})
+                //     })
+                // }
+                )
+            })
+        }
+        formList=[]
+        this.setState({
+            afterGiftList: temp
         })
     }
 
@@ -337,7 +406,7 @@ class Step2 extends React.Component {
         return result
     }
     render () {
-        const { formKeys2, count, activeKey, treeData, filterTreeData } = this.state
+        const { formKeys2, count, activeKey, treeData, filterTreeData, uniqueLoop, afterGiftList } = this.state
         const { wxNickNameList } = this.props.createActiveCom
 
         formItems2.eventDate.render = eventDateRender.bind(this)
@@ -369,22 +438,34 @@ class Step2 extends React.Component {
                         {
                             count.map((tab, index) => {
                                 // formData.mySendGift = formData.giftList[index] || {}
-                                formData.mySendGift = {}
-                                formData.consumeGiftID = formData.giftList[index] ? formData.giftList[index].consumeGiftID : ''
+                                // if(afterGiftList.length) {
+                                //     formData.mySendGift = afterGiftList[index] ? afterGiftList[index].mySendGift : {}
+                                //     formData.consumeGiftID = afterGiftList[index] ? afterGiftList[index].consumeGiftID : '' 
+                                // } else {
+                                    formData.mySendGift = {}
+                                    formData.consumeGiftID = formData.giftList[index] ? formData.giftList[index].consumeGiftID : ''
+                                // }
+                                // console.log('formData.mySendGift', formData.mySendGift, `index  ${index}`)
+                                // console.log('formData.consumeGiftID', formData.consumeGiftID, `index  ${index}`)
+                                console.log('afterGiftList', afterGiftList)
+                                console.log('formdata', afterGiftList.length ? afterGiftList[index] : formData, index)
                                 return (
                                 <TabPane tab={`规则${index+1}`} key={index+1}>
-                                    <BaseForm
-                                        getForm={this.getForm(index)}
-                                        formItems={this.filterFormItems(index)}
-                                        formData={formData}
-                                        formKeys={formKeys2}
-                                        key={`speForm${index}`}
-                                        onChange={this.handleFromChange(index)}
-                                        formItemLayout={{
-                                        labelCol: { span: 3 },
-                                        wrapperCol: { span: 21 },
-                                        }}
-                                    />
+                                    {
+                                        uniqueLoop && 
+                                        <BaseForm
+                                            getForm={this.getForm(index)}
+                                            formItems={this.filterFormItems(index)}
+                                            formData={afterGiftList.length ? afterGiftList[index] : formData}
+                                            formKeys={formKeys2}
+                                            key={`speForm${index}`}
+                                            onChange={this.handleFromChange(index)}
+                                            formItemLayout={{
+                                            labelCol: { span: 3 },
+                                            wrapperCol: { span: 21 },
+                                            }}
+                                        />
+                                    }
                                 </TabPane>)
                             })
                         }

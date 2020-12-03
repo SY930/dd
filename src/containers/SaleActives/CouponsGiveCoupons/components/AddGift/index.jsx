@@ -46,8 +46,8 @@ class MutliGift extends Component {
                 giftForm: form,
             },
         })
-
-        this.props.onChange(Object.assign(this.props.value, params))
+        const { value = {} } = this.props
+        this.props.onChange(Object.assign(value, params))
     }
     render() {
         const { treeData } = this.state;

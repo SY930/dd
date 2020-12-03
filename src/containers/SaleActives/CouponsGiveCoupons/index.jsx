@@ -119,7 +119,6 @@ class CouponsGiveCoupons extends React.Component {
         } = this.props.createActiveCom
         const { merchantLogoUrl, eventName, backgroundColor, giftList, originalImageUrl } = formData
         // const { rangeDate, effectType, giftEffectTimeHours, giftValidUntilDayCount,giftID } = giftList
-        // debugger
         // const giftList = crmGiftTypes.reduce((pre,currentValue,) => {
         //     const children = currentValue.children || []
         //     return [...pre,...children]

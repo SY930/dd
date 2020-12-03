@@ -678,7 +678,6 @@ class MySpecialActivities extends React.Component {
                                     return;
                                 }
                                 if (record.eventWay === 80) {
-                                    //debugger
                                     this.handleShowDetail({
                                         record,
                                         isView: true
@@ -818,7 +817,6 @@ class MySpecialActivities extends React.Component {
                                             return;
                                         }
                                         if (record.eventWay === 66 || record.eventWay === 81) {
-                                            //debugger
                                             this.handleShowDetail({
                                                 record,
                                                 isView: false,
@@ -845,7 +843,6 @@ class MySpecialActivities extends React.Component {
                                     this.onV3Click(record.itemID, true, record.eventWay);
                                     return;
                                 }
-                                // debugger
                                 if (record.eventWay === 80 || record.eventWay === 66 || record.eventWay === 81) {
 
                                     this.handleShowDetail({
