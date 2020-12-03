@@ -586,7 +586,7 @@ class GenerateBatchQRCodes extends Component {
             >
                 <RadioGroup style={{ width: '100%' }} value={qrCodeValidateType} onChange={({target: {value}})=>this.handleStateValChange('qrCodeValidateType', value)}>
                     <div>
-                        <Radio key={'0'} value={'0'}>
+                        <Radio key={'0'} value={'0'} style={{marginRight: 0}}>
                             <Tooltip
                                 placement="topRight"
                                 title={'受微信限制，有效期最长可设置30天'}
@@ -617,7 +617,7 @@ class GenerateBatchQRCodes extends Component {
         }
         return (
             <FormItem
-                    label="有效期"
+                    label="，有效期"
                     className={styles.validity}
                     labelCol={{ span: 6 }}
                     wrapperCol={{ span: 10 }}
@@ -654,7 +654,7 @@ class GenerateBatchQRCodes extends Component {
 
         return (
             <FormItem
-                    label="公众号"
+                    label="关注公众号"
                     className={styles.FormItemStyle}
                     labelCol={{ span: 6 }}
                     wrapperCol={{ span: 11 }}
@@ -667,7 +667,7 @@ class GenerateBatchQRCodes extends Component {
                         ],
                     })(
                         <Select
-                            placeholder="请选择公众号"
+                            placeholder="请选择需要关注的公众号"
                         >
                             {
                                 mpInfoList.map(({mpID, mpName}) => (
@@ -792,7 +792,23 @@ class GenerateBatchQRCodes extends Component {
                     {this.renderQrTypeSetting()}
                     {/*this.renderQrExpiringDate()*/}
                     <FormItem
-                        label="导出样式"
+                        label={(
+                            <div style={{ display: 'inline-block'}}>
+                                <span>导出样式</span>
+                                <Tooltip title={
+                                    <div>
+                                        <p>
+                                            当二维码类型为“公众号关注二维码”，且导出样式为“普通链接”时，普通链接无法点击打开，需要转成二维码后使用微信扫码打开；
+                                        </p>
+                                        <p>
+                                            应用场景：部分卡厂在制卡时，需要导入链接再转为二维码体现在实体卡上，此时导出样式可以选择“普通链接”
+                                        </p>
+                                    </div>
+                                }>
+                                    <Icon style={{ marginLeft: 5, marginRight: -5}} type="question-circle-o" />
+                                </Tooltip>
+                            </div>
+                        )}
                         className={styles.FormItemStyle}
                         labelCol={{ span: 6 }}
                         wrapperCol={{ span: 11 }}
