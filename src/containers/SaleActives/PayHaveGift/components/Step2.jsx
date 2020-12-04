@@ -135,10 +135,11 @@ class Step2 extends React.Component {
         if(formKeys2.includes('miniProgramInfo')) {
             formItems2.miniProgramInfo.options = wxNickNameList
         }
-        const { formData } = this.props.createActiveCom
+        const { formData,isView,isEdit } = this.props.createActiveCom
 
         return (
-            <div style={{marginRight: '20px'}}>
+            <div style={{marginRight: '20px', position: 'relative'}}>
+                {isView&&!isEdit&&<div className={styles.disabledDiv}></div>}
                  <BaseForm
                     getForm={this.getForm}
                     formItems={formItems2}

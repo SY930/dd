@@ -5,6 +5,7 @@ import _ from 'lodash'
 import { formItems2, formKeys2 } from '../constant'
 import  BaseForm  from '../../../../components/common/BaseForm';
 import { partInTimesRender } from '../../helper/common'
+import styles from '../swellGiftBag.less'
 
 
 @connect(({  loading, createActiveCom }) => ({  loading, createActiveCom }))
@@ -120,10 +121,11 @@ class Step2 extends React.Component {
     render () {
         const { formKeys2 } = this.state
         formItems2.partInTimes.render =  partInTimesRender.bind(this)
-        const { formData } = this.props.createActiveCom
+        const { formData,isView,isEdit } = this.props.createActiveCom
 
         return (
-            <div style={{marginRight: '20px'}}>
+            <div style={{marginRight: '20px', position: 'relative'}}>
+                {isView&&!isEdit&&<div className={styles.disabledDiv}></div>}
                  <BaseForm
                     getForm={this.getForm}
                     formItems={formItems2}

@@ -275,7 +275,10 @@ class Step2 extends React.Component {
 
     deleteTab = (key) => {
         let { count, filterTreeData } = this.state
-        let { formData } = this.props.createActiveCom
+        const { formData, isEdit, isView } = this.props.createActiveCom
+        if(isView&&!isEdit) {
+            return
+        }
         let {giftList = []} = formData
         const  { itemID } = decodeUrl()
         console.log('formData', formData)
@@ -412,12 +415,17 @@ class Step2 extends React.Component {
         if(formKeys2.includes('consumeGiftID')) {
             formItems2.consumeGiftID.options = treeData
         }
-        const { formData } = this.props.createActiveCom
+        const { formData, isEdit, isView } = this.props.createActiveCom
         const { giftList = [] } = formData
         const length = count.length
         return (
             <div className={styles.stepTwo} style={{marginRight: '20px'}}>
-                 <Button type='primary' onClick={this.addTab} className={styles.addRulesBtn}>
+                 <Button
+                    type='primary'
+                    onClick={this.addTab}
+                    className={styles.addRulesBtn}
+                    disabled={isView&&!isEdit}
+                >
                     <Icon type="plus" />
                     添加规则
                  </Button>
@@ -448,6 +456,7 @@ class Step2 extends React.Component {
                                 console.log('formdata', afterGiftList.length ? afterGiftList[index] : formData, index)
                                 return (
                                 <TabPane tab={`规则${index+1}`} key={index+1}>
+                                    {isView&&!isEdit&&<div className={styles.disabledDiv}></div>}
                                     {
                                         uniqueLoop && 
                                         <BaseForm

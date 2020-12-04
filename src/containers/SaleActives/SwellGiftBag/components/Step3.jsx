@@ -271,6 +271,7 @@ class Step3 extends React.Component {
                         <div className={styles.line}></div>
                         发起人奖励
                     </div>
+                    {isView&&!isEdit&&<div className={styles.disabledDiv}></div>}
                     <div className={styles.giftMethods}>
                         礼品领取方式
                         <RadioGroup style={{marginLeft: '20px'}} onChange={this.onRadioChange} value={giftGetRule}>
@@ -287,6 +288,7 @@ class Step3 extends React.Component {
                     className={styles.tabs}
                 >
                     <TabPane tab="档位一" key="0">
+                        {isView&&!isEdit&&<div className={styles.disabledDiv}></div>}
                         <TabItem
                             itemKey={"0"}
                             getForm={this.getForm('0')}
@@ -298,6 +300,7 @@ class Step3 extends React.Component {
                          />
                         </TabPane>
                     <TabPane tab="档位二" key="1">
+                        {isView&&!isEdit&&<div className={styles.disabledDiv}></div>}
                         <TabItem
                         itemKey={"1"}
                         getForm={this.getForm('1')}
@@ -310,6 +313,7 @@ class Step3 extends React.Component {
                         />
                     </TabPane>
                     <TabPane tab="档位三" key="2">
+                        {isView&&!isEdit&&<div className={styles.disabledDiv}></div>}
                         <TabItem
                         itemKey={"2"}
                         getForm={this.getForm('2')}
@@ -327,7 +331,7 @@ class Step3 extends React.Component {
                         <div className={styles.line}></div>
                          助力人奖励
                     </div>
-
+                    {isView&&!isEdit&&<div className={styles.disabledDiv}></div>}
                     <TabItem
                      itemKey={"3"}
                      handleGiftChange={this.handleGiftChange('3')}
