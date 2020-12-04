@@ -66,12 +66,12 @@ class CreateActive extends Component {
             type,
             descModalIsShow
          } = this.props.createActiveCom
+         const  { itemID, isView, isEdit } = decodeUrl()
          const currentInfo = actInfoList.find(v => v.key ===  this.typeKey) || {}
-
         return (
             <div className={styles.createActive}>
                <div className={styles.header}>
-                    <h1>{currentInfo.title}</h1>
+                    <h1>{itemID ? isEdit === 'true' ? '编辑' : '查看': '创建'}{`${currentInfo.title}`}</h1>
                     <div onClick={this.showDescModal} style={isProfessionalTheme() ? {color: '#379ff1'} : {}} className={styles.desc}>
                         <Icon type="question-circle-o" />
                         <span style={{marginLeft: '2px'}}>活动说明</span>
