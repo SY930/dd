@@ -61,8 +61,6 @@ class Step2 extends React.Component {
         }
     }
 
-    
-
     changeFilterTreeDataPositive = (index, value) => {
         let { filterTreeData } = this.state
         if (!!value) {

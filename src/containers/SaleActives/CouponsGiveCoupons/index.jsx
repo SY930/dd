@@ -89,7 +89,14 @@ class CouponsGiveCoupons extends React.Component {
         cb()
     }
     handleCancel = (cb) => {
+        const  { itemID } = decodeUrl()
         closePage()
+        if(itemID) {
+            jumpPage({pageID: '1000076003'})
+        } else {
+            //营销盒子
+            jumpPage({pageID: '10000730001'})
+        }
         this.props.dispatch({
             type: 'createActiveCom/clearData'
         })
