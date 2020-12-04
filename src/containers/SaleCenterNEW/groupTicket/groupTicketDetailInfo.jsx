@@ -40,7 +40,6 @@ class GroupTicketDetailInfo extends React.Component {
             giftMaxUseNum: 1,
             stageType: '2',
             targetScope: '0',
-            giftPriceFlag: true,
             giftValueFlag: true,
             transFeeFlag: true,
             costIncome: '1',
@@ -110,7 +109,7 @@ class GroupTicketDetailInfo extends React.Component {
 
         let nextFlag = true;
 
-        if (_state.giftPriceFlag && _state.giftValueFlag && _state.giftMaxUseNum > 0 && _state.giftMaxUseNum <= 999 && _state.transFeeFlag) {
+        if (_state.giftValueFlag && _state.giftMaxUseNum > 0 && _state.giftMaxUseNum <= 999 && _state.transFeeFlag) {
             let rule;
             if (_state.stageType == '2') {
                 rule = {
@@ -181,7 +180,7 @@ class GroupTicketDetailInfo extends React.Component {
     };
 
     onGiftPriceChange(value) {
-        let { giftPrice, giftPriceFlag } = this.state;
+        let { giftPrice } = this.state;
         if (value.number == null || value.number == '') {
             // giftPriceFlag = false;
             giftPrice = value.number;
@@ -189,7 +188,7 @@ class GroupTicketDetailInfo extends React.Component {
             // giftPriceFlag = true;
             giftPrice = value.number;
         }
-        this.setState({ giftPrice, giftPriceFlag });
+        this.setState({ giftPrice });
     }
     onGiftValueChange(value) {
         let { giftValue, giftValueFlag } = this.state;

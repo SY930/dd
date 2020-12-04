@@ -6,6 +6,7 @@
     "Common.Label.query": "Query",
     "Common.Label.create": "Create",
     "Common.Label.edit": "Edit",
+    "Common.Label.copy": "Copy",
     "Common.Label.enable": "Enable",
     "Common.Label.disable": "Disable",
     "Common.Label.delete": "Delete",

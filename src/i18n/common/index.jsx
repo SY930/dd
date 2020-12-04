@@ -33,6 +33,10 @@ const COMMON_STRING = {
         id: 'Common.Label.edit',
         defaultMessage: '编辑',
     },
+    copy: {
+        id: 'Common.Label.copy',
+        defaultMessage: '复制',
+    },
     enable: {
         id: 'Common.Label.enable',
         defaultMessage: '启用',
@@ -127,6 +131,10 @@ let COMMON_LABEL = defineMessages({
     edit: {
         id: 'Common.Label.edit',
         defaultMessage: '编辑',
+    },
+    copy: {
+        id: 'Common.Label.copy',
+        defaultMessage: '复制',
     },
     enable: {
         id: 'Common.Label.enable',

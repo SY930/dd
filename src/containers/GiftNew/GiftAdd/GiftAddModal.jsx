@@ -145,6 +145,7 @@ class GiftAddModal extends React.Component {
     handleSubmit() {
         const { groupTypes } = this.state;
         const { type, gift: { value, data } } = this.props;
+
         this.baseForm.validateFieldsAndScroll((err, values) => {
             if (err) return;
             let params = _.assign(values, { giftType: value });
@@ -217,6 +218,9 @@ class GiftAddModal extends React.Component {
             } else if (type === 'edit') {
                 callServer = '/coupon/couponService_updateBoard.ajax';
                 params.giftItemID = data.giftItemID;
+            } else if (type === 'copy') {
+                callServer = '/coupon/couponService_addBoard.ajax';
+                params.sourceType = 80;
             }
             params.brandSelectType = (params.selectBrands || []).length ? 0 : 1;
             if (params.sellerCode) {
@@ -359,7 +363,7 @@ class GiftAddModal extends React.Component {
             giftValueCurrencyType: {
                 label: '货币单位',
                 type: 'combo',
-                disabled: type !== 'add',
+                disabled: type !== 'add' && type !== 'copy',
                 defaultValue: '¥',
                 options: [
                     { label: '¥', value: '¥' },
@@ -375,7 +379,7 @@ class GiftAddModal extends React.Component {
                 label: valueLabel,
                 type: 'text',
                 placeholder: `请输入${valueLabel}`,
-                disabled: type !== 'add',
+                disabled: type !== 'add' && type !== 'copy',
                 prefix: value == '42' ? null : unit,
                 surfix: value == '42' ? '分' : '',
                 rules: value == '30'
@@ -403,12 +407,12 @@ class GiftAddModal extends React.Component {
                     { required: true, message: '礼品名称不能为空' },
                     { max: this.props.type == 'add' ? 35 : 50, message: `不能超过${this.props.type == 'add' ? `35`: `50`}个字符` },
                 ],
-                disabled: type !== 'add',
+                disabled: type !== 'add' && type !== 'copy',
             },
             giftCost: {
                 type: 'text',
                 label: '卡片工本费',
-                disabled: type !== 'add',
+                disabled: type !== 'add' && type !== 'copy',
                 placeholder: '请输入卡片工本费金额',
                 surfix: '元',
                 rules: [
@@ -444,7 +448,7 @@ class GiftAddModal extends React.Component {
                         <Icon style={{ marginLeft: 5, marginRight: -5}} type="question-circle" />
                     </Tooltip>
                 </div>,
-                disabled: type !== 'add',
+                disabled: type !== 'add' && type !== 'copy',
                 placeholder: '请输入记录实收金额金额',
                 prefix: unit,
                 rules: [{ required: true, message: '记录实收金额不能为空' },
@@ -490,7 +494,7 @@ class GiftAddModal extends React.Component {
                 label: ` `,
                 type: 'custom',
                 defaultValue: false,
-                render: decorator => decorator({})(<IsSync/>),
+                render: type === 'copy' ? decorator => decorator({})(<div></div>) : decorator => decorator({})(<IsSync/>),
             },
             giftImagePath: {
                 label: '礼品图样',
@@ -589,7 +593,7 @@ class GiftAddModal extends React.Component {
                 type: 'text',
                 label: '礼品卡面值',
                 surfix: '元',
-                disabled: type !== 'add',
+                disabled: type !== 'add' && type !== 'copy',
                 rules: [{
                     required: true,
                     validator: (rule, value, callback) => {
@@ -609,7 +613,7 @@ class GiftAddModal extends React.Component {
                 type: 'text',
                 label: '现金卡值',
                 surfix: '元',
-                disabled: type !== 'add',
+                disabled: type !== 'add' && type !== 'copy',
                 rules: [{
                     required: true,
                     validator: (rule, value, callback) => {
@@ -629,7 +633,7 @@ class GiftAddModal extends React.Component {
             freePrice: {
                 type: 'text',
                 label: '赠送卡值',
-                disabled: true,
+                disabled: type !== 'copy',
                 props: {placeholder: ''},
                 surfix: '元',
             },
@@ -650,14 +654,15 @@ class GiftAddModal extends React.Component {
                 <p style={{ width: 100 }}>
                     {d({
                         key: 'valueType',
-                        initialValue: valueType,
+                        // initialValue: valueType,
+                        defaultValue: valueType,
                     })(<Select>
                             <Option value="0">固定金额</Option>
                             <Option value="1">随机金额</Option>
                         </Select>
                     )}
                 </p>
-                {valueType==='0' ?
+                {valueType=='0' ?
                     <FormItem
                         wrapperCol={{span: 24}}
                         labelCol={{span: 0}}
@@ -728,7 +733,7 @@ class GiftAddModal extends React.Component {
                     </p>
                 }
                 </div>
-                {valueType==='1' &&
+                {valueType=='1' &&
                     <div>
                         <span style={{ padding: '0 8px 0 0'}}>最小单位</span>
                         {d({
@@ -846,7 +851,7 @@ class GiftAddModal extends React.Component {
             ],
         };
         let formData = {};
-        if (type == 'edit') {
+        if (type == 'edit' || type === 'copy') {
             formData = data === undefined ? {} : data;
             if(value==='90'){
                 const { giftValue } = data || {};

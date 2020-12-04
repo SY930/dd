@@ -502,7 +502,6 @@ function mapStateToProps(state) {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
-
     }
 }
 

@@ -166,7 +166,7 @@ class GenerateBatchQRCodes extends Component {
         })
     }
 
-    // 接口文档 
+    // 接口文档
     // @ref http://wiki.hualala.com/pages/viewpage.action?pageId=33301063
     mapStateToRequestParams = () => {
         const {
@@ -200,7 +200,7 @@ class GenerateBatchQRCodes extends Component {
         if(qrCodeType == '1') {
             return '0'
         } else if (qrCodeType == '0' && qrCodeValidateType == '1'){
-            return '0' 
+            return '0'
         } else {
             return qrEffectDays;
         }
@@ -293,7 +293,7 @@ class GenerateBatchQRCodes extends Component {
             [key]: val
         })
     }
-    
+
 
     renderHeader() {
         return (
@@ -575,7 +575,7 @@ class GenerateBatchQRCodes extends Component {
                                 </p>
                             </div>
                         }>
-                            <Icon style={{ marginLeft: 5, marginRight: -5}} type="question-circle" />
+                            <Icon style={{ marginLeft: 5, marginRight: -5}} type="question-circle-o" />
                         </Tooltip>
                     </div>
                 )}
@@ -584,21 +584,25 @@ class GenerateBatchQRCodes extends Component {
                 wrapperCol={{ span: 11 }}
                 required
             >
-                <RadioGroup value={qrCodeValidateType} onChange={({target: {value}})=>this.handleStateValChange('qrCodeValidateType', value)}>
-                    <Radio key={'0'} value={'0'}>
-                        <Tooltip
-                            placement="topRight"
-                            title={'受微信限制，有效期最长可设置30天'}
-                        >临时码</Tooltip>
-                    </Radio>
-                    <Radio key={'1'} value={'1'}>
-                        <Tooltip
+                <RadioGroup style={{ width: '100%' }} value={qrCodeValidateType} onChange={({target: {value}})=>this.handleStateValChange('qrCodeValidateType', value)}>
+                    <div>
+                        <Radio key={'0'} value={'0'} style={{marginRight: 0}}>
+                            <Tooltip
+                                placement="topRight"
+                                title={'受微信限制，有效期最长可设置30天'}
+                            >临时码</Tooltip>
+                        </Radio>{this.renderQrExpiringDate()}
+                    </div>
+                    <div>
+                        <Radio key={'1'} value={'1'}>
+                            <Tooltip
                                 placement="topRight"
                                 title={'永久有效，但会占用10000条/公众号 永久码的额度'}
                             >
-                        永久码
-                        </Tooltip>
-                    </Radio>
+                                永久码
+                            </Tooltip>
+                        </Radio>
+                    </div>
                 </RadioGroup>
             </FormItem>
         )
@@ -613,10 +617,10 @@ class GenerateBatchQRCodes extends Component {
         }
         return (
             <FormItem
-                    label="有效期"
-                    className={styles.FormItemStyle}
+                    label="，有效期"
+                    className={styles.validity}
                     labelCol={{ span: 6 }}
-                    wrapperCol={{ span: 11 }}
+                    wrapperCol={{ span: 10 }}
                 >
                     <Select
                         value={this.state.qrEffectDays}
@@ -647,10 +651,10 @@ class GenerateBatchQRCodes extends Component {
             allWeChatAccountList,
         } = this.props;
         const mpInfoList = Immutable.List.isList(allWeChatAccountList) ? allWeChatAccountList.toJS() : [];
-        
+
         return (
             <FormItem
-                    label="公众号"
+                    label="关注公众号"
                     className={styles.FormItemStyle}
                     labelCol={{ span: 6 }}
                     wrapperCol={{ span: 11 }}
@@ -663,7 +667,7 @@ class GenerateBatchQRCodes extends Component {
                         ],
                     })(
                         <Select
-                            placeholder="请选择公众号"
+                            placeholder="请选择需要关注的公众号"
                         >
                             {
                                 mpInfoList.map(({mpID, mpName}) => (
@@ -704,7 +708,7 @@ class GenerateBatchQRCodes extends Component {
                                 { required: true, message: '批次号不能为空' },
                             ],
                         })(
-                            <Select 
+                            <Select
                                 size="default"
                                 placeholder="请选择定额卡批次"
                                 getPopupContainer={(node) => node.parentNode}
@@ -752,7 +756,7 @@ class GenerateBatchQRCodes extends Component {
 
                                         <h4>普通二维码 </h4>
                                         <div>
-                                                
+
                                                 <p>优势：</p>
                                                 <ul style={{
                                                     listStyle: 'disc',
@@ -769,7 +773,7 @@ class GenerateBatchQRCodes extends Component {
                                         </div>
                                         </div>
                                     }>
-                                        <Icon style={{ marginLeft: 5, marginRight: -5}} type="question-circle" />
+                                        <Icon style={{ marginLeft: 5, marginRight: -5}} type="question-circle-o" />
                                     </Tooltip>
                                 </div>
                             )
@@ -786,9 +790,25 @@ class GenerateBatchQRCodes extends Component {
                     </FormItem>
                     {this.renderOfficeAccountSetting()}
                     {this.renderQrTypeSetting()}
-                    {this.renderQrExpiringDate()}
+                    {/*this.renderQrExpiringDate()*/}
                     <FormItem
-                        label="导出样式"
+                        label={(
+                            <div style={{ display: 'inline-block'}}>
+                                <span>导出样式</span>
+                                <Tooltip title={
+                                    <div>
+                                        <p>
+                                            当二维码类型为“公众号关注二维码”，且导出样式为“普通链接”时，普通链接无法点击打开，需要转成二维码后使用微信扫码打开；
+                                        </p>
+                                        <p>
+                                            应用场景：部分卡厂在制卡时，需要导入链接再转为二维码体现在实体卡上，此时导出样式可以选择“普通链接”
+                                        </p>
+                                    </div>
+                                }>
+                                    <Icon style={{ marginLeft: 5, marginRight: -5}} type="question-circle-o" />
+                                </Tooltip>
+                            </div>
+                        )}
                         className={styles.FormItemStyle}
                         labelCol={{ span: 6 }}
                         wrapperCol={{ span: 11 }}
