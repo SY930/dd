@@ -72,9 +72,11 @@ class Step4 extends React.Component {
     }
 
     render () {
+        const {isView,isEdit } = this.props.createActiveCom
         const { shareImagePath } = this.props.createActiveCom.formData
         return (
             <div className={styles.step4Wrap}>
+                {isView&&!isEdit&&<div className={styles.disabledDiv}></div>}
                 <ShareSetting
                     getForm = {this.getForm}
                     onRestImg= {this.onRestImg}
