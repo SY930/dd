@@ -407,6 +407,24 @@ export const SALE_CENTER_GIFT_EFFICT_DAY = Object.freeze([
     },
 ]);
 
+export const SALE_CENTER_ACTIVITY_SUITSENCE_LIST = [{
+    value: 'All',
+    label: '全部',
+},
+{
+    value: 'POS',
+    label: '仅线下使用',  //云店
+},
+{
+    value: 'WECHAT',
+    label: '仅线上使用',  //微信
+},
+{
+    value: 'YST',
+    label: '饮食通',  //饮食通
+},
+]
+
 export const ACTIVITY_CATEGORIES = (function () {
     const basic = [
         {
