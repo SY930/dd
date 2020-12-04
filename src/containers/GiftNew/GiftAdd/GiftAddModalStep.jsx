@@ -939,6 +939,13 @@ class GiftAddModalStep extends React.PureComponent {
             } else if (type === 'copy') {
                 callServer = '/coupon/couponService_addBoard.ajax';
                 params.sourceType = 80;
+                // 复制 关闭关联第三方券 不传这几个字段
+                if (!params.TrdTemplate) {
+                    if (params.trdChannelID) delete params.trdChannelID
+                    if (params.trdTemplateID) delete params.trdTemplateID
+                    if (params.extraInfo) delete params.extraInfo
+                    if (params.trdTemplateInfo) delete params.trdTemplateInfo
+                }
             }
             if (value == 10) {
                 // if (type === 'add') {
@@ -2446,7 +2453,7 @@ class GiftAddModalStep extends React.PureComponent {
                     </Row>
                 ),
             },
-            TrdTemplate: {
+            TrdTemplate: {// 是否关联第三方券
                 label: ' ',
                 labelCol: { span: 3 },
                 wrapperCol: { span: 21 },
@@ -2835,7 +2842,6 @@ class GiftAddModalStep extends React.PureComponent {
         formData.shareIDs = this.state.sharedGifts;
         formData.giftShareType = String(formData.giftShareType);
         formData.couponPeriodSettings = formData.couponPeriodSettingList;
-
 
         return (
             <div>
