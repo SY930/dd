@@ -9,7 +9,7 @@ import styles from "../CouponsGiveCoupons.less";
 import { eventDateRender, afterPayJumpTypeRender } from '../../helper/common'
 import { TreeSelect } from 'antd';
 import { decodeUrl } from '@hualala/platform-base'
-
+import { axiosData } from "../../../../helpers/util";
 const DATE_FORMAT = 'YYYYMMDD000000';
 const { TabPane } = Tabs;
 let formList = []
@@ -35,7 +35,6 @@ class Step2 extends React.Component {
         this.props.dispatch({
             type: 'createActiveCom/couponService_getSortedCouponBoardList',
             payload: {
-                trdChannelID: 50,
             },
         }).then((res) => {
             if (res) {

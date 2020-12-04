@@ -895,7 +895,12 @@ class SpecialPromotionDetail extends React.Component {
         const records = this.state.userInfo || [];
         return (
             <div className={styles.searchBar}>
-                <h5><span></span>参与记录</h5>
+                <Col span={24} style={{
+                    padding: '0px',
+                }}
+                >
+                    <h5><span></span>参与记录</h5>
+                </Col>
                 <Col span={24}>
                     <Col span={3}>{this.props.intl.formatMessage(STRING_SPE.d5672ba595d82123)}</Col>
                     <Col span={6}><Input onBlur={this.handleInputChange} /></Col>

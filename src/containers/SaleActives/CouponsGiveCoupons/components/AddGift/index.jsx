@@ -16,7 +16,6 @@ class MutliGift extends Component {
         this.props.dispatch({
             type: 'createActiveCom/couponService_getSortedCouponBoardList',
             payload: {
-                trdChannelID: 50,
             },
         }).then((res) => {
             if (res) {
