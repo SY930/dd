@@ -43,6 +43,7 @@ const initState = {
         needCount: [], // 膨胀所需人数
         giftList: [], // 礼品信息
         giftGetRule: 0,
+        gifts: [],
     }, // 表单内的值,
     currentStep: 0,
     giftForm: null, // 礼品的form对象
@@ -204,6 +205,47 @@ export default {
 
             return false;
         },
+        * addEvent_NEW_couponsGiveCoupons({ payload }, { call, put, select }) {
+            const { groupID, formData } = yield select(
+                state => state.createActiveCom
+            );
+            const gifts = formData.gifts
+            const ret = yield call(addEvent_NEW, {
+                ...payload,
+                event: {
+                    ...payload.event,
+                    groupID,
+                },
+                gifts,
+            });
+
+            if (ret.code === '000') {
+                return true;
+            }
+
+            return false;
+        },
+        * updateEvent_NEW__couponsGiveCoupons({ payload }, { call, put, select }) {
+            // 保存活动，参数在各自组件处理，通过payload传入
+            const { groupID, itemID, formData } = yield select(
+                state => state.createActiveCom
+            );
+            const gifts = formData.gifts
+            const ret = yield call(updateEvent_NEW, {
+                ...payload,
+                event: {
+                    ...payload.event,
+                    groupID,
+                    itemID,
+                },
+                gifts,
+            });
+            if (ret.code === '000') {
+                return true;
+            }
+
+            return false;
+        },
         * addEvent_NEW_payHaveGift({ payload }, { call, put, select }) {
             // 微信支付有礼专用保存，
             const { groupID, formData, wxNickNameList } = yield select(
@@ -308,6 +350,32 @@ export default {
             });
             if (ret.code === '000') {
                 return ret
+            }
+            message.warn(ret.message);
+        },
+        * queryEventDetail_NEW_couponsGiveCoupons({ payload }, { call, put, select }) {
+            const { groupID } = yield select(state => state.createActiveCom);
+            const ret = yield call(queryEventDetail_NEW, {
+                ...payload,
+                groupID,
+            });
+            if (ret.code === '000') {
+                const { data, gifts } = ret;
+                const formData = {
+                    ...data,
+                    giftList: gifts,
+                    eventLimitDate: [
+                        moment(data.eventStartDate),
+                        moment(data.eventEndDate),
+                    ],
+                };
+                yield put({
+                    type: 'updateState',
+                    payload: {
+                        formData,
+                    },
+                });
+                return
             }
             message.warn(ret.message);
         },

@@ -54,7 +54,7 @@ import { jumpPage, closePage } from '@hualala/platform-base';
 
 // 跳转到带装修的活动设置页面
 const activityList = [
-    '80', '66'
+    '80', '66', '81'
 ]
 
 const UNRELEASED_PROMOTION_TYPES = [

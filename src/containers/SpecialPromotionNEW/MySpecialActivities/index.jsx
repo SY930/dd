@@ -261,6 +261,7 @@ class MySpecialActivities extends React.Component {
                 { value: '78', label: '下单抽抽乐' },
                 { value: '79', label: '盲盒' },
                 { value: '80', label: '微信支付有礼' },
+                { value: '81', label: '消费券返券' },
             ],
         }
         this.renderFilterBar = this.renderFilterBar.bind(this);
@@ -886,7 +887,6 @@ class MySpecialActivities extends React.Component {
                                     return;
                                 }
                                 if (record.eventWay === 80) {
-
                                     this.handleShowDetail({
                                         record,
                                         isView: true
@@ -1025,7 +1025,7 @@ class MySpecialActivities extends React.Component {
                                             this.onV3Click(record.itemID, false, record.eventWay);
                                             return;
                                         }
-                                        if (record.eventWay === 66) {
+                                        if (record.eventWay === 66 || record.eventWay === 81) {
                                             this.handleShowDetail({
                                                 record,
                                                 isView: false,
@@ -1052,7 +1052,7 @@ class MySpecialActivities extends React.Component {
                                     this.onV3Click(record.itemID, true, record.eventWay);
                                     return;
                                 }
-                                if (record.eventWay === 80 || record.eventWay === 66) {
+                                if (record.eventWay === 80 || record.eventWay === 66 || record.eventWay === 81) {
 
                                     this.handleShowDetail({
                                         record,

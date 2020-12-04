@@ -2,6 +2,7 @@ import React from 'react'
 // 活动标题和说明
 import PayHaveGift from '../PayHaveGift/index'; // 微信支付有礼
 import SwellGiftBag from '../SwellGiftBag/index'; // 膨胀大礼包
+import CouponsGiveCoupons from '../CouponsGiveCoupons'// 消费券返券
 
 export const actInfoList = [
     {
@@ -15,6 +16,25 @@ export const actInfoList = [
         ],
         render(props = {}) {
             return <PayHaveGift {...props} />;
+        },
+    },
+    {
+        title: '消费券返券',
+        key: '81',
+        dscList: [
+            {
+                title: '活动简介',
+                dsc: <div>消费券返券活动，指用户消费了A券后可以返给用户B券，消费了B券再返给用户C券，以此实现循环返券，拉动用户复够。循环返券可以是返相同的券，也可以是不同的券。</div>,
+            },
+            {
+                title: '活动规则',
+                dsc: <div>
+                    <div>同一时间段内，只能有一个启用中的消费券返券活动存在</div>
+                </div>,
+            },
+        ],
+        render(props = {}) {
+            return <CouponsGiveCoupons {...props} />;
         },
     },
     {

@@ -34,19 +34,6 @@ class Step3 extends React.Component {
         }
     }
 
-    handleFromChange = (key,value) => {
-
-        const { formData } = this.props.createActiveCom
-
-        formData[key] =value
-
-        this.props.dispatch({
-            type: 'createActiveCom/updateState',
-            payload: {
-                formData
-            }
-        })
-    }
     handleSubmit = () => {
         let flag = true
 

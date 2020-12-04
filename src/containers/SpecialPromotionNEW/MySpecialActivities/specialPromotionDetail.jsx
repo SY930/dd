@@ -64,7 +64,8 @@ const exportablePromotionTypes = [
     '75',
     '77',
     '76',
-    '80'
+    '80',
+    '81'
 ];
 const levelArray = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
 import {
@@ -222,7 +223,6 @@ class SpecialPromotionDetail extends React.Component {
                 return event.key == eventWay;
             }).title
         }
-
         return (
             <div>
                 <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d2c8987eai0135)}</h5>
@@ -895,6 +895,7 @@ class SpecialPromotionDetail extends React.Component {
         const records = this.state.userInfo || [];
         return (
             <div className={styles.searchBar}>
+                <h5><span></span>参与记录</h5>
                 <Col span={24}>
                     <Col span={3}>{this.props.intl.formatMessage(STRING_SPE.d5672ba595d82123)}</Col>
                     <Col span={6}><Input onBlur={this.handleInputChange} /></Col>

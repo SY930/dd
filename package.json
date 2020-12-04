@@ -20,6 +20,7 @@
         "@hualala/frontend-shell": "1.5.15",
         "@hualala/platform-base": "5.0.9",
         "@hualala/react-lazyload": "^2.3.0",
+        "common-bin": "^2.9.0",
         "copy-to-clipboard": "^3.3.1",
         "memoize-one": "^5.0.0",
         "qrcode.react": "0.9.3",
@@ -27,9 +28,9 @@
         "rc-color-picker": "1.2.6",
         "react-cropper": "1.0.1",
         "react-intl": "2.7.2",
+        "redux-saga": "^0.16.0",
         "solarlunar": "2.0.7",
         "valid-url": "^1.0.9",
-        "redux-saga": "^0.16.0",
         "wangeditor": "^3.1.1",
         "warning": "^3.0.0"
     },
