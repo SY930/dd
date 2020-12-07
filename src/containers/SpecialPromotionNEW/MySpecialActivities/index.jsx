@@ -231,6 +231,7 @@ class MySpecialActivities extends React.Component {
             currAppID: '', // 选中的小程序
             qrCodeImage: '', // 小程序二维码图片链接
             xcxLoad:false, // 请求小程序时的load
+            qrItemID:'', // 点击提取链接/二维码 当前活动的itemID
         };
         this.cfg = {
             eventWay: [
@@ -475,14 +476,12 @@ class MySpecialActivities extends React.Component {
             'HTTP_SERVICE_URL_WECHAT'
         );
         if (code === '000') {
-            this.setState({ apps }, ()=>{
-                console.log(this.state.apps)
-            });
+            this.setState({ apps });
         }
     }
     // 请求小程序二微码
      creatReleaseQrCode = () => {
-        const {eventWay, currAppID} = this.state
+        const {eventWay, currAppID, qrItemID} = this.state
         /*
         1.积分兑换： pages/subOr/voucherCenter/redeemDetail/main?eventID=6886285210829196181
         2.摇奖活动： pages/web/common/main?url=mpweb/promotion/lottery?eventID=6883767509506329493 (摇奖活动是跳转mp-web项目（h5）)
@@ -492,21 +491,21 @@ class MySpecialActivities extends React.Component {
         6.分享裂变： pages/promotion/share/main?e=6888122567681379221
         7.膨胀大礼包：pages/promotion/expand/main?e=6883743693912673173
         */
-        const pageMap = {
-            '30':{page: 'pages/subOr/voucherCenter/redeemDetail/main', scene : 'eventID=6886285210829196181'},
-            '20':{page: 'pages/web/common/main', scene : 'eventID=6883767509506329493'},
-            '21':{page: 'pages/subOr/voucherCenter/voucherDetail/main', scene : 'eventID=6886700950686272405'},
-            '79':{page: 'pages/promotion/blindBox/index', scene : 'eventID=6885962366719101845'},
-            '68':{page: 'pages/promotion/recommend/main', scene : 'e=6885521217743227797'},
-            '65':{page: 'pages/promotion/share/main', scene : 'e=6888122567681379221'},
-            '66':{page: 'pages/promotion/expand/main', scene : 'e=6883743693912673173'},
-        }
-        const params = {
-            appID: currAppID,
-            scene: pageMap[eventWay].scene,
-            page: pageMap[eventWay].page,
-            width:280
-        }
+         const pageMap = {
+             '30':{page: 'pages/subOr/voucherCenter/redeemDetail/main', scene : `eventID=${qrItemID}`},
+             '20':{page: 'pages/web/common/main', scene : `u=l?eventID=${qrItemID}`},
+             '21':{page: 'pages/subOr/voucherCenter/voucherDetail/main', scene : `eventID=${qrItemID}`},
+             '79':{page: 'pages/promotion/blindBox/index', scene : `eventID=${qrItemID}`},
+             '68':{page: 'pages/promotion/recommend/main', scene : `e=${qrItemID}`},
+             '65':{page: 'pages/promotion/share/main', scene : `e=${qrItemID}`},
+             '66':{page: 'pages/promotion/expand/main', scene : `e=${qrItemID}`},
+         }
+         const params = {
+             appID: currAppID,
+             scene: pageMap[eventWay].scene,
+             page: pageMap[eventWay].page,
+             width:280
+         }
         this.setState({xcxLoad: true})
         const callServer = axiosData(
             '/maQrCode/getReleaseQrCode',
@@ -608,7 +607,7 @@ class MySpecialActivities extends React.Component {
                 hideWXBox.includes(eventWay)
                     ? '' : <div className={indexStyles.copyBox}>
                         <h4 className={indexStyles.copyTitle}>小程序活动码提取</h4>
-                        <Alert message="提取链接或二维码后，可以线上或线下投放" type="warning" />
+                        <Alert message="请先在小程序装修配置好该活动，再提取小程序活动码" type="warning" />
                         <div className={indexStyles.copyUrlWrap}>
                             <div className={indexStyles.copyWrapHeader}>
                                 <div className={indexStyles.label}>请选择小程序</div>
@@ -1428,6 +1427,8 @@ class MySpecialActivities extends React.Component {
         this.setState({
             urlContent: urlMap[eventWay],
             eventWay,
+            qrCodeImage: '', // 打开一次清空上一次的img
+            qrItemID: itemID, // 当前活动itemID
             isShowCopyUrl: true
         })
         // 获取小程序列表
