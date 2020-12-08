@@ -10,6 +10,7 @@ export default class Gift extends Component {
     state = {
         options: [], // 生效时间下拉框
         formKeys: formKeys1,
+        countType: '0',
     };
 
     /** 表单内容变化时的监听 */
@@ -17,7 +18,10 @@ export default class Gift extends Component {
         const { idx, onChange } = this.props;
         if (key === 'countType') {
             const options = (value === '0') ? timeOpts : dayOpts;
-            this.setState({ options });
+            this.setState({
+                options,
+                countType: value
+            });
             // this.form.setFieldsValue({ 'giftEffectTimeHours': value });
         }
         if (key === 'effectType') {
@@ -37,7 +41,7 @@ export default class Gift extends Component {
         this.form = node;
     }
     resetFormItems() {
-        const { options } = this.state;
+        const { options, countType } = this.state;
         const { treeData } = this.props;
         const { giftID, giftEffectTimeHours } = formItems;
         const render = d => d()(
@@ -52,7 +56,10 @@ export default class Gift extends Component {
         return {
             ...formItems,
             giftID: { ...giftID, render },
-            giftEffectTimeHours: { ...giftEffectTimeHours, options },
+            giftEffectTimeHours: {
+                ...giftEffectTimeHours, options,
+                defaultValue: countType == 0 ? '0' : '1',
+            },
         }
     }
     render() {
