@@ -90,7 +90,6 @@ class ActSteps extends React.Component {
                         if (index === current) {
                             return (<div key={index} className="stepsContent">{steps[index].content}</div>);
                         }
-
                         return (<div key={index} className="stepsContent" style={{ display: 'none' }}>{steps[index].content}</div>);
                     })}
 

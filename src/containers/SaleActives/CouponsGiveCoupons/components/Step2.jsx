@@ -47,7 +47,10 @@ class Step2 extends React.Component {
     componentWillReceiveProps(nextProps) {
         if(this.props.stepTwo !== nextProps.stepTwo) {
             this.initGiftData()
-        }else {
+        } else if(this.props.ifGoback !== nextProps.ifGoback && nextProps.ifGoback) {
+            console.log('now its saving data')
+            this.saveGiftData()
+        } else {
             return
         }
         
@@ -60,7 +63,14 @@ class Step2 extends React.Component {
     getForm = (key) => (form) => {
         if(!formList[key] ) {
             formList[key] = form
+            this.props.dispatch({
+                type: 'createActiveCom/updateState',
+                payload: {
+                    currentForm: form,
+                },
+            })
         }
+        
     }
 
     
@@ -127,6 +137,7 @@ class Step2 extends React.Component {
                 }
                 formList[0].setFieldsValue({mySendGift: this.transGiftData(giftList[0]) || {}})
                 formList[0].setFieldsValue({consumeGiftID: giftList[0].consumeGiftID || {}})
+                this.changeFilterTreeDataPositive(0, giftList[0].consumeGiftID)
             }
             this.setState({
                 count,
@@ -143,7 +154,7 @@ class Step2 extends React.Component {
         const { giftList=[] } = formData
         setTimeout(() => {
             // 回显逻辑，在切换tab时进行多tab实例化这样在用户没有渲染其他baseform的时候，先获得form实例
-            if(itemID) {
+            if(giftList.length) {
                 count.forEach((item, index) => {
                     this.onChange(index+1, true)
                 })
@@ -152,7 +163,7 @@ class Step2 extends React.Component {
         }, 500)
         setTimeout(() => {
             // 回显逻辑，在切换tab时进行多tab实例化这样在用户没有渲染其他baseform的时候，先获得form实例
-            if(itemID) {
+            if(giftList.length) {
                 formList.forEach((item, index) => {
                     if(index) {
                         // if(index !== formList.length-1) {
@@ -199,7 +210,7 @@ class Step2 extends React.Component {
                 let effectType = v.mySendGift.effectType || 1
                 let effectTime = null
                 let validUntilDate = null
-                let giftEffectTimeHours = null
+                let giftEffectTimeHours = v.mySendGift.giftEffectTimeHours
                 if(effectType == 1) {
                     if(v.mySendGift.countType == '1') {
                         effectType = 3
@@ -234,6 +245,72 @@ class Step2 extends React.Component {
         })
         return flag
     }
+
+    saveGiftData = () => {
+          //验证表单
+          let flag = true
+          let gifts = []
+          const { giftForm, formData } = this.props.createActiveCom
+          giftForm.validateFieldsAndScroll((e,v) => {
+              if(e) {
+                  flag = false
+              } else {
+                  const { formData } = this.props.createActiveCom
+                  this.props.dispatch({
+                      type: 'createActiveCom/updateState',
+                      payload: {
+                          formData: {
+                              ...formData,
+                              mySendGift: v
+                          }
+                      }
+                  })
+              }
+          })
+          formList.forEach(form => {
+              form.validateFieldsAndScroll((e,v) => {
+                  if(e) {
+                      flag = false
+                  }
+                  let effectType = v.mySendGift.effectType || 1
+                  let effectTime = null
+                  let validUntilDate = null
+                  let giftEffectTimeHours = null
+                  if(effectType == 1) {
+                      if(v.mySendGift.countType == '1') {
+                          effectType = 3
+                          if(!v.mySendGift.giftEffectTimeHours) {
+                              giftEffectTimeHours = '1'
+                          } else {
+                              giftEffectTimeHours = v.mySendGift.giftEffectTimeHours
+                          }
+                      }
+                  } else {
+                      effectTime = v.mySendGift.rangeDate[0].format('YYYYMMDDHHmmss')
+                      validUntilDate =v.mySendGift.rangeDate[1].format('YYYYMMDDHHmmss')
+                  }
+                  gifts.push({
+                          ...v.mySendGift,
+                          consumeGiftID: v.consumeGiftID,
+                          effectType: effectType,
+                          effectTime,
+                          validUntilDate,
+                          giftEffectTimeHours,
+                  })
+              })
+          })
+          this.props.dispatch({
+              type: 'createActiveCom/updateState',
+              payload: {
+                  formData: {
+                      ...formData,
+                      giftList: gifts,
+                  }
+              }
+          })
+          this.props.changeGoBack()       
+    }
+
     getDateCount = () => {
         const { formData } = this.props.createActiveCom;
         const {  eventDate, afterPayJumpType } = formData || {};
@@ -296,6 +373,12 @@ class Step2 extends React.Component {
         }
         this.setState({
             activeKey: `${key}`
+        })
+        this.props.dispatch({
+            type: 'createActiveCom/updateState',
+            payload: {
+                currentForm: formList[key-1],
+            },
         })
     }
 
@@ -455,7 +538,6 @@ class Step2 extends React.Component {
         }
         const { formData } = this.props.createActiveCom
         const { giftList = [] } = formData
-        const length = count.length
         return (
             <div className={styles.stepTwo} style={{marginRight: '20px'}}>
                  <Button type='primary' onClick={this.addTab} className={styles.addRulesBtn}>
@@ -483,10 +565,8 @@ class Step2 extends React.Component {
                                     formData.mySendGift = formData.giftList[index] ? this.transGiftData(formData.giftList[index]) : ''
                                     formData.consumeGiftID = formData.giftList[index] ? formData.giftList[index].consumeGiftID : ''
                                 // }
-                                // console.log('formData.mySendGift', formData.mySendGift, `index  ${index}`)
                                 // console.log('formData.consumeGiftID', formData.consumeGiftID, `index  ${index}`)
                                 // console.log('afterGiftList', afterGiftList)
-                                console.log('formData.mySendGift', formData.mySendGift, index)
                                 return (
                                 <TabPane tab={`规则${index+1}`} key={index+1}>
                                     {

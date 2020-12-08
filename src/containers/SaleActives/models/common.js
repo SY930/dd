@@ -50,6 +50,7 @@ const initState = {
     crmGiftTypes: [], // 礼品数据
     giftValue: '', // 礼品价值
     isView: false, // 页面状态
+    currentForm: null, // 为了检验当前form
 };
 export default {
     namespace: 'createActiveCom',
