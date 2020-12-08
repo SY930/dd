@@ -265,6 +265,7 @@ const GiftCfg = {
         { value: '127', label: '微信支付有礼'},
         { value: '81', label: '消费券返券'},
         { value: '128', label: '盲盒'},
+        { value: '129', label: '消费券返券发放'},
         { value: '3032', label: '自定义投放'},
     ],
     giftSendStatus: [
