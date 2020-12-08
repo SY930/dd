@@ -54,10 +54,10 @@ const formItems = {
     effectType: {
         type: 'radio',
         label: '生效方式',
-        defaultValue: '1',
+        defaultValue: 1,
         options: [
-            { label: '相对有效期', value: '1' },
-            { label: '固定有效期', value: '2' },
+            { label: '相对有效期', value: 1 },
+            { label: '固定有效期', value: 2 },
         ],
     },
     countType: {

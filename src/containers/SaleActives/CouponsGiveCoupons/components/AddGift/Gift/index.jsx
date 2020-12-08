@@ -21,7 +21,7 @@ export default class Gift extends Component {
             // this.form.setFieldsValue({ 'giftEffectTimeHours': value });
         }
         if (key === 'effectType') {
-            if (value === '1') {
+            if (value === 1) {
                 this.setState({ formKeys: formKeys1 }, () => {
                     // const countType = this.form.getFieldValue('countType');
                     // this.form.setFieldsValue({ 'giftEffectTimeHours': countType });
@@ -58,6 +58,7 @@ export default class Gift extends Component {
     render() {
         const { formKeys } = this.state;
         const { formData } = this.props;
+        // console.log('gift formData', formData)
         const newFormItems = this.resetFormItems();
 
         return (

@@ -9,6 +9,7 @@ import styles from "../CouponsGiveCoupons.less";
 import { eventDateRender, afterPayJumpTypeRender } from '../../helper/common'
 import { TreeSelect } from 'antd';
 import { decodeUrl } from '@hualala/platform-base'
+
 import { axiosData } from "../../../../helpers/util";
 const DATE_FORMAT = 'YYYYMMDD000000';
 const { TabPane } = Tabs;
@@ -35,6 +36,7 @@ class Step2 extends React.Component {
         this.props.dispatch({
             type: 'createActiveCom/couponService_getSortedCouponBoardList',
             payload: {
+                giftTypes: [10, 20, 21, 111, 110, 22, 30]
             },
         }).then((res) => {
             if (res) {
@@ -123,7 +125,7 @@ class Step2 extends React.Component {
                 for (let i = 0; i< giftList.length; i++) {
                     count.push('1')
                 }
-                formList[0].setFieldsValue({mySendGift: giftList[0] || {}})
+                formList[0].setFieldsValue({mySendGift: this.transGiftData(giftList[0]) || {}})
                 formList[0].setFieldsValue({consumeGiftID: giftList[0].consumeGiftID || {}})
             }
             this.setState({
@@ -154,7 +156,7 @@ class Step2 extends React.Component {
                 formList.forEach((item, index) => {
                     if(index) {
                         // if(index !== formList.length-1) {
-                            item.setFieldsValue({mySendGift: giftList[index] || {}})
+                            item.setFieldsValue({mySendGift: this.transGiftData(giftList[index]) || {}})
                             item.setFieldsValue({consumeGiftID: giftList[index].consumeGiftID || {}})
                             this.changeFilterTreeDataPositive(index, giftList[index].consumeGiftID)
                         // }
@@ -193,10 +195,25 @@ class Step2 extends React.Component {
                 if(e) {
                     flag = false
                 }
-               gifts.push({
-                    ...v.mySendGift,
-                    consumeGiftID: v.consumeGiftID,
-               })
+                // 不符合人性的设计
+                let effectType = v.mySendGift.effectType || 1
+                let effectTime = null
+                let validUntilDate = null
+                if(effectType == 1) {
+                    if(v.mySendGift.countType != '0') {
+                        effectType = 3  
+                    }
+                } else {
+                    effectTime = v.mySendGift.rangeDate[0].format('YYYYMMDDHHmmss')
+                    validUntilDate =v.mySendGift.rangeDate[1].format('YYYYMMDDHHmmss')
+                }
+                gifts.push({
+                        ...v.mySendGift,
+                        consumeGiftID: v.consumeGiftID,
+                        effectType: effectType,
+                        effectTime,
+                        validUntilDate,
+                })
             })
         })
         this.props.dispatch({
@@ -280,7 +297,6 @@ class Step2 extends React.Component {
         let { formData } = this.props.createActiveCom
         let {giftList = []} = formData
         const  { itemID } = decodeUrl()
-        console.log('formData', formData)
         if (count.length === 1) {
             message.warn('至少有1条规则')
             return
@@ -311,7 +327,6 @@ class Step2 extends React.Component {
         }
         formList = []
         this.changeDomData()
-        console.log('filterTreeData', temp)
         //form的数据替换不掉 具体再看
         this.setState({
             count: count,
@@ -404,6 +419,23 @@ class Step2 extends React.Component {
         }
         return result
     }
+
+    transGiftData = (gift) => {
+        let effectType = gift.effectType == 2 ? 2 : 1
+        let countType = gift.effectType == 2 ? null : gift.effectType == 3 ? '1' : '0';
+        let rangeDate
+        if(effectType == 2) {
+            rangeDate = [moment(gift.effectTime,'YYYYMMDDHHmmss'),moment(gift.validUntilDate,'YYYYMMDDHHmmss')]
+        }
+        let temp = {
+            ...gift,
+            countType,
+            effectType,
+            giftEffectTimeHours: `${gift.giftEffectTimeHours}`,
+            rangeDate,
+        }
+        return temp
+    }
     render () {
         const { formKeys2, count, activeKey, treeData, filterTreeData, uniqueLoop, afterGiftList } = this.state
         const { wxNickNameList } = this.props.createActiveCom
@@ -441,13 +473,13 @@ class Step2 extends React.Component {
                                 //     formData.mySendGift = afterGiftList[index] ? afterGiftList[index].mySendGift : {}
                                 //     formData.consumeGiftID = afterGiftList[index] ? afterGiftList[index].consumeGiftID : '' 
                                 // } else {
-                                    formData.mySendGift = {}
+                                    formData.mySendGift = formData.giftList[index] ? this.transGiftData(formData.giftList[index]) : ''
                                     formData.consumeGiftID = formData.giftList[index] ? formData.giftList[index].consumeGiftID : ''
                                 // }
                                 // console.log('formData.mySendGift', formData.mySendGift, `index  ${index}`)
                                 // console.log('formData.consumeGiftID', formData.consumeGiftID, `index  ${index}`)
-                                console.log('afterGiftList', afterGiftList)
-                                console.log('formdata', afterGiftList.length ? afterGiftList[index] : formData, index)
+                                // console.log('afterGiftList', afterGiftList)
+                                console.log('formData.mySendGift', formData.mySendGift, index)
                                 return (
                                 <TabPane tab={`规则${index+1}`} key={index+1}>
                                     {
