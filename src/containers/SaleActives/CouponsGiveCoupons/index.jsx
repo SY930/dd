@@ -13,7 +13,8 @@ class CouponsGiveCoupons extends React.Component {
     constructor(props) {
         super(props)
         this.state={
-            stepTwo: false
+            stepTwo: false,
+            ifGoback: false,
         }
     }
     componentDidMount() {
@@ -23,6 +24,11 @@ class CouponsGiveCoupons extends React.Component {
     componentWillUnmount() {
         // this.form1.resetFields()
         this.form0.resetFields()
+    }
+    changeGoBack = () => {
+        this.setState({
+            ifGoback: false
+        })
     }
     queryDetail = () => {
         const  { itemID } = decodeUrl()
@@ -83,10 +89,32 @@ class CouponsGiveCoupons extends React.Component {
          }
     }
     handlePrev = (cb) => {
-        this.setState({
-            stepTwo: false
+        if(this.testGiftForm()) {
+            this.setState({
+                ifGoback: true,
+            }, () => {
+                this.setState({
+                    stepTwo: false
+                })
+            })
+            cb()
+        }
+        
+    }
+    testGiftForm = () => {
+        let flag = true
+        const { giftForm, currentForm } = this.props.createActiveCom
+        giftForm.validateFieldsAndScroll((e,v) => {
+            if(e) {
+                flag = false
+            } 
         })
-        cb()
+        currentForm.validateFieldsAndScroll((e,v) => {
+            if(e) {
+                flag = false
+            } 
+        })
+        return flag
     }
     handleCancel = (cb) => {
         const  { itemID } = decodeUrl()
@@ -114,6 +142,7 @@ class CouponsGiveCoupons extends React.Component {
             }
         })
     }
+    
 
     render () {
         const { loading } = this.props
@@ -132,7 +161,7 @@ class CouponsGiveCoupons extends React.Component {
         // },[])
         // const giftItem = giftList.find(v => v.value === giftID)
         const saveLoading = loading.effects['createActiveCom/addEvent_NEW_CouponsGiveCoupons']
-        const { stepTwo } = this.state
+        const { stepTwo, ifGoback } = this.state
         const steps = [{
             title: '基本信息',
             content:  <Step1
@@ -141,7 +170,9 @@ class CouponsGiveCoupons extends React.Component {
           },  {
             title: '活动内容',
             content:  <Step2
-            stepTwo={this.state.stepTwo}
+            stepTwo={stepTwo}
+            ifGoback={ifGoback}
+            changeGoBack={this.changeGoBack}
             getSubmitFn={this.getSubmitFn(1)}
             />,
           }];

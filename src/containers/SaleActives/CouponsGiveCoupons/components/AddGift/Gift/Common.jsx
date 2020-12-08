@@ -15,7 +15,7 @@ const timeOpts = (() => {
     return list;
 })();
 const dayOpts = (() => {
-    const list = [{ label: '立即生效', value: '0' }];
+    const list = [];
     for (let i = 1; i < 31; i++) {
         list.push({ label: `${i}天后生效`, value: `${i}` });
     }
