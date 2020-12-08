@@ -197,9 +197,15 @@ class Step2 extends React.Component {
                 let effectType = v.mySendGift.effectType || 1
                 let effectTime = null
                 let validUntilDate = null
+                let giftEffectTimeHours = null
                 if(effectType == 1) {
-                    if(v.mySendGift.countType != '0') {
-                        effectType = 3  
+                    if(v.mySendGift.countType == '1') {
+                        effectType = 3
+                        if(!v.mySendGift.giftEffectTimeHours) {
+                            giftEffectTimeHours = '1'
+                        } else {
+                            giftEffectTimeHours = v.mySendGift.giftEffectTimeHours
+                        }
                     }
                 } else {
                     effectTime = v.mySendGift.rangeDate[0].format('YYYYMMDDHHmmss')
@@ -211,6 +217,7 @@ class Step2 extends React.Component {
                         effectType: effectType,
                         effectTime,
                         validUntilDate,
+                        giftEffectTimeHours,
                 })
             })
         })
