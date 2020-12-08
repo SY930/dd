@@ -27,16 +27,16 @@ class MutliGift extends Component {
 
     onChange = (params, form) => {
         if (params.giftID) {
-            this.props.dispatch({
-                type: 'createActiveCom/couponService_getBoards',
-                payload: {
-                    giftItemID: params.giftID,
-                },
-            }).then(((res) => {
-                if (res) {
-                    this.props.onChange(Object.assign(res, { giftID: params.giftID }))
-                }
-            }))
+            // this.props.dispatch({
+            //     type: 'createActiveCom/couponService_getBoards',
+            //     payload: {
+            //         giftItemID: params.giftID,
+            //     },
+            // }).then(((res) => {
+            //     if (res) {
+            //         this.props.onChange(Object.assign(res, { giftID: params.giftID }))
+            //     }
+            // }))
         }
         // 保存form,验证的时候使用
         this.props.dispatch({
@@ -51,6 +51,7 @@ class MutliGift extends Component {
     render() {
         const { treeData } = this.state;
         const { value } = this.props;
+        // console.log('addfift formData', value)
         return (
             <div className={css.multiGiftBox}>
                 {

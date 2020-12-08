@@ -5,7 +5,6 @@ import { TreeSelect } from 'antd';
 
 const {
     actType, eventName, eventRemark, eventLimitDate,
-    consumeTotalAmount, originalImageUrl, backgroundColor,
     consumeGiftID,afterPayJumpType, miniProgramInfo, eventDate,
 } = formItem
 export const formItems1 = {
@@ -15,7 +14,13 @@ export const formItems1 = {
             return <div>消费券返券</div>;
         },
     },
-    eventName,
+    eventName: {
+        ...eventName,
+        rules: [
+            { required: true, message: '活动名称不能为空' },
+            { max: 50, message: '最多输入50位' },
+        ],
+    },
     eventLimitDate,
     eventRemark,
 };
