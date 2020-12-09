@@ -80,7 +80,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
         if(initShopsIDs.length){
             let [shops] = initShopsIDs
             if(typeof shops == 'string'){
-                data.shopIDs = shops
+                data.shopIDs = initShopsIDs.join()
             }else{
                 let [{shopID = ''}] = initShopsIDs
                 data.shopIDs = shopID
