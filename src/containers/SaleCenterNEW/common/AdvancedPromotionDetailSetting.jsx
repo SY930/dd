@@ -232,10 +232,17 @@ class AdvancedPromotionDetailSetting extends React.Component {
             let _shopsIDs = nextProps.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS();
             shopsIDs = shopsIDs[0] instanceof Object ? shopsIDs.map(shop => shop.shopID) : shopsIDs
             _shopsIDs = _shopsIDs[0] instanceof Object ? _shopsIDs.map(shop => shop.shopID) : _shopsIDs
+            // 
+            let shopsIDs1 = this.props.user.accountInfo.dataPermissions.shopList;
+            shopsIDs1 = shopsIDs1[0] instanceof Object ? shopsIDs1.map(shop => shop.shopID) : shopsIDs1
 
             if (!is(fromJS(_shopsIDs), fromJS(shopsIDs))) {
                 const data = { groupID: this.props.user.accountInfo.groupID }
-                data.shopIDs = _shopsIDs.join(',')
+                if(_shopsIDs.length){
+                    data.shopIDs = _shopsIDs.join(',')
+                }else{
+                    data.shopIDs = shopsIDs1.join()
+                }
                 this.props.fetchShopCardLevel({ data })
             }
         }
