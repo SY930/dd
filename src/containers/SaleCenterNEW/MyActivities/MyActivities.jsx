@@ -35,6 +35,9 @@ import {
     toggleIsUpdateAC,
 } from '../../../redux/actions/saleCenterNEW/myActivities.action';
 import {
+    getAuthLicenseData
+} from "../../../redux/actions/saleCenterNEW/specialPromotion.action";
+import {
     fetchPromotionCategoriesAC,
     fetchPromotionTagsAC,
     saleCenterResetBasicInfoAC,
@@ -56,7 +59,7 @@ import {
 import {
     ACTIVITY_CATEGORIES,
     SALE_CENTER_ACTIVITY_ORDER_TYPE_LIST,
-
+    SALE_CENTER_ACTIVITY_SUITSENCE_LIST,
     getPromotionIdx,
     promotionBasicDataAdapter,
     promotionScopeInfoAdapter,
@@ -181,6 +184,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         openPromotionAutoRunListModal: (opts) => {
             dispatch(openPromotionAutoRunListModal(opts))
+        },
+        getAuthLicenseData: (opts) => {
+            return dispatch(getAuthLicenseData(opts))
         }
     };
 };
@@ -230,6 +236,7 @@ class MyActivities extends React.Component {
             promotionTags: '',
             promotionBrands: '',
             promotionOrder: '',
+            channelLst: '',
             promotionShop: '',
             pageSizes: 30, // 默认显示的条数
             pageNo: 1,
@@ -274,6 +281,10 @@ class MyActivities extends React.Component {
         fetchPromotionScopeInfo({
             _groupID: this.props.user.accountInfo.groupID,
         });
+        // 授权
+        this.props.getAuthLicenseData({productCode: 'HLL_CRM_Marketingbox'}).then((res) => {
+            this.setState({authLicenseData: res})
+        });
         this.onWindowResize();
         window.addEventListener('resize', this.onWindowResize);
     }
@@ -301,6 +312,7 @@ class MyActivities extends React.Component {
                 promotionBrands: undefined,
                 promotionOrder: undefined,
                 promotionShop: undefined,
+                channelLst: undefined,
             }
         }
         this.setState(opt)
@@ -456,6 +468,7 @@ class MyActivities extends React.Component {
             promotionTags,
             promotionBrands,
             promotionOrder,
+            channelLst,
             promotionShop,
             promotionName,
         } = this.state;
@@ -475,6 +488,9 @@ class MyActivities extends React.Component {
         }
         if (promotionOrder !== '' && promotionOrder !== undefined) {
             opt.orderType = promotionOrder;
+        }
+        if (channelLst !== '' && channelLst !== undefined) {
+            opt.channelLst = channelLst;
         }
         if (promotionShop !== '' && promotionShop !== undefined) {
             opt.shopID = promotionShop;
@@ -1070,6 +1086,29 @@ class MyActivities extends React.Component {
                             >
                                 {
                                     SALE_CENTER_ACTIVITY_ORDER_TYPE_LIST.map((order) => {
+                                        return (
+                                            <Option key={`${order.value}`} value={`${order.value}`}>{order.label}</Option>
+                                        );
+                                    })
+                                }
+                            </Select>
+                        </li>
+                        <li>
+                            <h5>适用场景</h5>
+                        </li>
+                        <li>
+                            <Select
+                                style={{ width: 120 }}
+                                onChange={(value) => {
+                                    this.setState({
+                                        channelLst: value,
+                                    });
+                                }}
+                                allowClear={true}
+                                placeholder=""
+                            >
+                                {
+                                    SALE_CENTER_ACTIVITY_SUITSENCE_LIST.map((order) => {
                                         return (
                                             <Option key={`${order.value}`} value={`${order.value}`}>{order.label}</Option>
                                         );

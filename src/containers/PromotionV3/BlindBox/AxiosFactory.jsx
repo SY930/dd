@@ -79,6 +79,25 @@ async function getSettleList(data) {
 }
 
 /**
+ *  授权信息
+ */
+async function getAuthLicenseData(data) {
+    const { groupID } = getAccountInfo();
+    const method = '/crm/crmAuthLicenseService.queryCrmPluginLicenses.ajax';
+    const params = { service: 'HTTP_SERVICE_URL_CRM', type, data: { 
+        groupID,
+        ...data
+    }, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: obj } = response;
+    if (code === '000') {
+        return obj;
+    }
+    message.error(msg);
+    return [];
+}
+
+/**
  *  增加
  */
 async function putEvent(data) {
@@ -136,5 +155,5 @@ async function postEvent(data) {
 
 
 export {
-    putEvent, getEvent, postEvent, getGroupCardTypeList, getWechatMpList, getSettleList
+    putEvent, getEvent, postEvent, getGroupCardTypeList, getWechatMpList, getSettleList, getAuthLicenseData
 }

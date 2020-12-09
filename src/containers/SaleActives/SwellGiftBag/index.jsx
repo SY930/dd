@@ -20,6 +20,11 @@ class SwellGiftBag extends React.Component {
         // 查询详情
         this.queryDetail()
 
+        this.props.dispatch({
+            type: 'createActiveCom/getAuthLicenseData',
+            payload: {productCode: 'HLL_CRM_Marketingbox',}
+        })
+
     }
     componentWillUnmount() {
         this.form1.resetFields()
@@ -200,8 +205,15 @@ class SwellGiftBag extends React.Component {
         cb()
     }
     handleCancel = (cb) => {
+        const  { itemID } = decodeUrl()
         cb()
         closePage()
+        if(itemID) {
+            jumpPage({pageID: '1000076003'})
+        } else {
+            //营销盒子
+            jumpPage({pageID: '10000730001'})
+        }
         this.props.dispatch({
             type: 'createActiveCom/clearData'
         })

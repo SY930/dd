@@ -28,6 +28,7 @@ import {
     SALE_CENTER_QUERY_GROUP_CRM_CUSTOMER_AMOUNT,
     SALE_CENTER_CARDGROUPID,
     SALE_CENTER_QUERY_GROUP_CRM_RFM,
+    SALE_CENTER_GET_AUTH_DATA,
 } from "../../actions/saleCenterNEW/specialPromotion.action";
 
 const $initialState = Immutable.fromJS({
@@ -68,6 +69,7 @@ const $initialState = Immutable.fromJS({
     },
     SMSSignList: [], // 短信签名列表
     RFMParams: null, // 创建RFM需要的
+    AuthLicenseData: {}, //产品授权信息
 });
 
 export const specialPromotion_NEW = ($$state = $initialState, action) => {
@@ -232,6 +234,8 @@ export const specialPromotion_NEW = ($$state = $initialState, action) => {
             );
         case SALE_CENTER_QUERY_GROUP_CRM_RFM:
             return $$state.setIn(["RFMParams"], action.payload);
+        case SALE_CENTER_GET_AUTH_DATA:
+            return $$state.setIn(["AuthLicenseData"], action.payload.AuthLicenseData);
         default:
             return $$state;
     }

@@ -32,6 +32,7 @@ import BaseHualalaModal from './BaseHualalaModal';
 import PriceInput from "../common/PriceInput";
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import { checkAuthLicense } from '../../../helpers/util';
 import {injectIntl} from '../IntlDecor';
 
 const FormItem = Form.Item;
@@ -75,7 +76,18 @@ class AdvancedPromotionDetailSetting extends React.Component {
         const { crmCardTypeIDs } = this.props.user.accountInfo;
         let shopsIDs = this.props.user.accountInfo.dataPermissions.shopList;
         shopsIDs = shopsIDs[0] instanceof Object ? shopsIDs.map(shop => shop.shopID) : shopsIDs
-        data.shopIDs = initShopsIDs.length ? initShopsIDs : shopsIDs
+        // 格式转换  统一字符串  拼接
+        if(initShopsIDs.length){
+            let [shops] = initShopsIDs
+            if(typeof shops == 'string'){
+                data.shopIDs = shops
+            }else{
+                let [{shopID = ''}] = initShopsIDs
+                data.shopIDs = shopID
+            }
+        }else{
+            data.shopIDs = shopsIDs.join()
+        }
 
         if(crmCardTypeIDs){
             data.shopIDs = '';
@@ -176,7 +188,6 @@ class AdvancedPromotionDetailSetting extends React.Component {
             let currentCardScopeIDs = []
             // 当适用店铺减少后，在此过滤调卡类别或卡等级，后期标签也可以再次处理， 标签cardScopeType为2
             if(cardScopeType == 0) {
-                console.log('this.tags', ciflist, cardScopeIDs)
                 currentCardScopeIDs = cardScopeIDs.filter(v =>  ciflist.find(item => item.cardTypeID == v))
             } else if(cardScopeType == 1) {
                 currentCardScopeIDs = cardScopeIDs.filter(v => ciflist.find(item =>
@@ -232,6 +243,8 @@ class AdvancedPromotionDetailSetting extends React.Component {
 
 
     renderUserSetting() {
+        // 产品授权
+        let {authStatus} = checkAuthLicense(this.props.specialPromotion.AuthLicenseData)
         return (
             <FormItem
                 label={SALE_LABEL.k5m3on8w}
@@ -243,6 +256,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                 <Select
                     size={'default'}
                     value={this.state.userSetting}
+                    disabled={!authStatus}
                     className={`${styles.linkSelectorRight} advancedDetailClassJs`}
                     getPopupContainer={(node) => node.parentNode}
                     onChange={(val) => {
@@ -700,6 +714,7 @@ const mapStateToProps = (state) => {
         groupCardTypeList: state.sale_mySpecialActivities_NEW.getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
         tagList: state.sale_mySpecialActivities_NEW.toJS().tagList,
         tagGroupList: state.sale_mySpecialActivities_NEW.toJS().tagGroupList,
+        specialPromotion: state.sale_specialPromotion_NEW.toJS(),
         user: state.user.toJS(),
     }
 };

@@ -1,13 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import QRCode from 'qrcode.react';
 import { connect } from 'react-redux';
 import { COMMON_LABEL } from 'i18n/common';
 import {
     Table, Input, Select, DatePicker,
-    Button, Modal, Row, Col, message,
-    Spin, Icon,
+    Button, Modal, message,
+    Spin, Icon, Alert
 } from 'antd';
-import {throttle, isEqual} from 'lodash';
+import {throttle} from 'lodash';
 import { jumpPage, closePage } from '@hualala/platform-base'
 import moment from 'moment';
 import copy from 'copy-to-clipboard'
@@ -15,7 +16,7 @@ import styles from '../../SaleCenterNEW/ActivityPage.less';
 import ExportModal from "../../GiftNew/GiftInfo/ExportModal";
 import Cfg from '../../../constants/SpecialPromotionCfg';
 import Authority from '../../../components/common/Authority';
-import { saleCenterSetSpecialBasicInfoAC, saleCenterResetDetailInfoAC } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
+import { saleCenterSetSpecialBasicInfoAC, saleCenterResetDetailInfoAC, getAuthLicenseData } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 
 import {
     toggleSelectedActivityStateAC,
@@ -57,7 +58,7 @@ import { crmCardTypeNew as sale_crmCardTypeNew } from '../../../redux/reducer/sa
 import { promotion_decoration as sale_promotion_decoration } from '../../../redux/reducer/decoration';
 import { selectPromotionForDecoration  } from '../../../redux/actions/decoration';
 import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
-import {axiosData} from "../../../helpers/util";
+import {axiosData, checkAuthLicense} from "../../../helpers/util";
 import {queryWeixinAccounts} from "../../../redux/reducer/saleCenterNEW/queryWeixinAccounts.reducer";
 import {
     SPECIAL_LOOK_PROMOTION_QUERY,
@@ -69,7 +70,9 @@ import PromotionCalendarBanner from "../../../components/common/PromotionCalenda
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_GIFT } from 'i18n/common/gift';
 import { STRING_SPE } from 'i18n/common/special';
+import { getStore } from '@hualala/platform-base'
 import { SALE_STRING } from 'i18n/common/salecenter'
+import EmptyPage from "../../../components/common/EmptyPage";
 import Chou2Le from "../../PromotionV3/Chou2Le";   // 抽抽乐
 import BlindBox from "../../PromotionV3/BlindBox";   // 盲盒
 
@@ -83,6 +86,7 @@ const mapStateToProps = (state) => {
         mySpecialActivities: state.sale_mySpecialActivities_NEW,
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
+        specialPromotion: state.sale_specialPromotion_NEW.toJS(),
         user: state.user.toJS(),
     };
 };
@@ -94,18 +98,21 @@ const DECORATABLE_PROMOTIONS = [
     '65',
     '66',
     '76',
-    '68'
+    '68',
+    '79',
 ]
 const isDecorationAvailable = ({eventWay}) => {
     return DECORATABLE_PROMOTIONS.includes(`${eventWay}`)
 }
 const copyUrlList = [
-    '21',
-    '20',
-    '30',
-    '22',
-    '65',
-    '68'
+    '21', // 免费领取
+    '20', // 摇奖活动
+    '30', // 积分兑换
+    '22', // 报名活动
+    '65', // 分享裂变
+    '68', // 推荐有礼
+    '79', // 盲盒
+    '66', // 膨胀大礼包
 ]
 const isCanCopyUrl = ({eventWay}) => {
     return copyUrlList.includes(`${eventWay}`)
@@ -151,6 +158,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         toggleIsUpdate: (opts) => {
             dispatch(toggleIsUpdateAC(opts))
+        },
+        getAuthLicenseData: (opts) => {
+            return dispatch(getAuthLicenseData(opts))
         },
     };
 };
@@ -214,7 +224,13 @@ class MySpecialActivities extends React.Component {
             itemID: '',
             view: false,
             isShowCopyUrl: false,
-            urlContent: ''
+            urlContent: '',
+            authStatus: false, //
+            authLicenseData: {},
+            apps:[], // 小程序列表
+            currAppID: '', // 选中的小程序
+            qrCodeImage: '', // 小程序二维码图片链接
+            xcxLoad:false, // 请求小程序时的load
         };
         this.cfg = {
             eventWay: [
@@ -340,6 +356,31 @@ class MySpecialActivities extends React.Component {
         this.props.updateExpiredActiveState({
             groupID: this.props.user.accountInfo.groupID,
         })
+        // 产品授权
+        this.props.getAuthLicenseData().then((res) => {
+            this.setState({authLicenseData: res})
+            let {authStatus} = checkAuthLicense(res)
+            this.setState({authStatus})
+        });
+    }
+
+    // 产品授权
+    getAuthLicenseData = (opts) => {
+        axiosData(
+            '/crm/crmAuthLicenseService.queryCrmPluginLicenses.ajax?auth',
+            {
+                ...opts,
+                groupID: getStore().getState().user.getIn(['accountInfo', 'groupID'])
+            },
+            null,
+            { path: 'data' },
+            'HTTP_SERVICE_URL_CRM'
+        ).then((res) => {
+            let {data = {}} = res
+            this.setState({authLicenseData: data})
+            let {authStatus} = checkAuthLicense(this.state.authLicenseData)
+            this.setState({authStatus})
+        });
     }
 
     // TODO: the following code may be not the best implementation of filter
@@ -424,20 +465,192 @@ class MySpecialActivities extends React.Component {
             jumpPage({ menuID: SALE_CENTER_PAYHAVEGIFT,  itemID: record.itemID,typeKey : record.eventWay, isView,isEdit})
         }, 100);
     }
+    // 请求小程序列表
+    async getAppList() {
+        const newData = { groupID: getStore().getState().user.getIn(['accountInfo', 'groupID']), page: {current: 1, pageSize: 1000} };
+        const { result: { code, message: msg }, apps } = await axiosData(
+            '/miniProgramCodeManage/getApps',
+            newData,
+            {},
+            { path: '' },
+            'HTTP_SERVICE_URL_WECHAT'
+        );
+        if (code === '000') {
+            this.setState({ apps }, ()=>{
+                console.log(this.state.apps)
+            });
+        }
+    }
+    // 请求小程序二微码
+     creatReleaseQrCode = () => {
+        const {eventWay, currAppID} = this.state
+        /*
+        1.积分兑换： pages/subOr/voucherCenter/redeemDetail/main?eventID=6886285210829196181
+        2.摇奖活动： pages/web/common/main?url=mpweb/promotion/lottery?eventID=6883767509506329493 (摇奖活动是跳转mp-web项目（h5）)
+        3.免费领取： pages/subOr/voucherCenter/voucherDetail/main?eventID=6886700950686272405
+        4.盲盒活动： pages/promotion/blindBox/index?eventID=6885962366719101845
+        5.推荐有礼： pages/promotion/recommend/main?e=6885521217743227797
+        6.分享裂变： pages/promotion/share/main?e=6888122567681379221
+        7.膨胀大礼包：pages/promotion/expand/main?e=6883743693912673173
+        */
+        const pageMap = {
+            '30':{page: 'pages/subOr/voucherCenter/redeemDetail/main', scene : 'eventID=6886285210829196181'},
+            '20':{page: 'pages/web/common/main', scene : 'eventID=6883767509506329493'},
+            '21':{page: 'pages/subOr/voucherCenter/voucherDetail/main', scene : 'eventID=6886700950686272405'},
+            '79':{page: 'pages/promotion/blindBox/index', scene : 'eventID=6885962366719101845'},
+            '68':{page: 'pages/promotion/recommend/main', scene : 'e=6885521217743227797'},
+            '65':{page: 'pages/promotion/share/main', scene : 'e=6888122567681379221'},
+            '66':{page: 'pages/promotion/expand/main', scene : 'e=6883743693912673173'},
+        }
+        const params = {
+            appID: currAppID,
+            scene: pageMap[eventWay].scene,
+            page: pageMap[eventWay].page,
+            width:280
+        }
+        this.setState({xcxLoad: true})
+        const callServer = axiosData(
+            '/maQrCode/getReleaseQrCode',
+            params,
+            {},
+            { path: '' },
+            'HTTP_SERVICE_URL_WECHAT'
+        );
+         callServer.then(data=>{
+             let {result : {code, message: msg}, qrCodeImage=''} = data
+             this.setState({xcxLoad: false})
+             if (code === '000') {
+                 this.setState({ qrCodeImage });
+             }
+         }).catch(({ message:msg })=>{
+             this.setState({xcxLoad: false})
+             message.error(msg)
+         })
+    }
+    // 选择小程序
+    handleAppChange = (currAppID) => {
+        this.setState({currAppID})
+    }
+    // 渲染小程序列表
+    renderApp(){
+        const { apps } = this.state;
+        return(
+            <Select style={{ width: '40%', margin: '0 10px'}} onChange={this.handleAppChange}>
+                {apps.map(x=>{
+                    return <Option value={x.appID} >{x.nickName || '缺失nickName子段'}</Option>
+                })}
+            </Select>
+        )
+    }
+    // 下载餐厅二维码
+    handleQrCodeDownload = (action) => {
+        const tagetEle = document.getElementById(action);
+        const domA = document.createElement('a');
+        domA.href = tagetEle.toDataURL('image/png');
+        domA.download = '线上餐厅二维码.png';
+        domA.click();
+    }
+    // 下载小程序二维码
+    downloadImage = (action, name) => {
+        let image = new Image()
+        // 解决跨域 Canvas 污染问题
+        image.setAttribute('crossOrigin', 'anonymous')
+        image.onload = function () {
+            let canvas = document.createElement('canvas')
+            canvas.width = image.width
+            canvas.height = image.height
+            let context = canvas.getContext('2d')
+            context.drawImage(image, 0, 0, image.width, image.height)
+            let url = canvas.toDataURL('image/png')
+            // 生成一个a元素
+            let a = document.createElement('a')
+            // 将a的download属性设置为我们想要下载的图片名称，若name不存在则使用‘下载图片名称’作为默认名称
+            a.download = name || '小程序二维码'
+            // 将生成的URL设置为a.href属性
+            a.href = url
+            // 触发a的单击事件
+            a.click()
+        }
+        image.src = document.getElementById(action).src
+    }
+
+
+    // 渲染复制链接modal内容
+    renderCopyUrlModal () {
+        const  {urlContent, eventWay, qrCodeImage, xcxLoad} = this.state
+        const hideCTBox = [66,79]; // 不显示餐厅
+        const hideWXBox = [22]; // 不显示微信
+        return(<div className={indexStyles.copyCont}>
+            {
+                hideCTBox.includes(eventWay)
+                    ? '' : <div className={indexStyles.copyBox} style={{marginRight: 20}}>
+                        <h4 className={indexStyles.copyTitle}>线上餐厅链接提取</h4>
+                        <Alert message="提取链接或二维码后，可以线上或线下投放" type="warning" />
+                        <div className={indexStyles.copyUrlWrap}>
+                            <div className={indexStyles.copyWrapHeader}>
+                                <div className={indexStyles.urlText}>{urlContent}</div>
+                                <Button className={indexStyles.copyBtn} onClick={this.handleToCopyUrl}>复制链接</Button>
+                            </div>
+                            <div className={indexStyles.qrCodeBox}>
+                                <div >
+                                    <QRCode
+                                        size={160}
+                                        value={urlContent}
+                                        id="__promotion_xsct_qr_canvas"
+                                    />
+                                </div>
+                                <Button className={indexStyles.xzqrCodeBtn} type="primary" onClick={()=>{this.handleQrCodeDownload('__promotion_xsct_qr_canvas')}}>下载二维码</Button>
+                            </div>
+
+                        </div>
+                    </div>
+            }
+            {
+                hideWXBox.includes(eventWay)
+                    ? '' : <div className={indexStyles.copyBox}>
+                        <h4 className={indexStyles.copyTitle}>小程序活动码提取</h4>
+                        <Alert message="提取链接或二维码后，可以线上或线下投放" type="warning" />
+                        <div className={indexStyles.copyUrlWrap}>
+                            <div className={indexStyles.copyWrapHeader}>
+                                <div className={indexStyles.label}>请选择小程序</div>
+                                {this.renderApp()}
+                                <Button className={indexStyles.wxBtn} type="primary" onClick={this.creatReleaseQrCode} loading={xcxLoad}>生成小程序码</Button>
+                            </div>
+                            <div className={indexStyles.qrCodeBox}>
+                                {
+                                    qrCodeImage ? <img className={indexStyles.imgBox} src={qrCodeImage} id='__promotion_xcx_qr_img' alt="小程序二维码" /> : ''
+                                }
+                                <Button className={indexStyles.xzqrCodeBtn} type="primary" disabled={!qrCodeImage} onClick={()=>{this.downloadImage('__promotion_xcx_qr_img')}}>下载小程序码</Button>
+                            </div>
+                        </div>
+                    </div>
+            }
+        </div>)
+    }
+
+
+
 
     render() {
         const { v3visible, itemID, view, isShowCopyUrl, urlContent, curKey } = this.state;
         return (
-            <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
+            <div style={{backgroundColor: this.state.authStatus ? '#F3F3F3' : '#fff'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 {this.renderHeader()}
-                <PromotionCalendarBanner />
-                <div className={styles.pageContentWrapper} style={{ minHeight: 'calc(100vh - 160px)' }}>
-                    <div style={{ padding: '0'}} className="layoutsHeader">
-                        {this.renderFilterBar()}
-                        <div style={{ margin: '0'}} className="layoutsLine"></div>
-                    </div>
-                    {this.renderTables()}
-                </div>
+                {
+                    !this.state.authStatus ?
+                        <EmptyPage /> :
+                        <div>
+                            <PromotionCalendarBanner />
+                            <div className={styles.pageContentWrapper} style={{ minHeight: 'calc(100vh - 160px)' }}>
+                                <div style={{ padding: '0'}} className="layoutsHeader">
+                                    {this.renderFilterBar()}
+                                    <div style={{ margin: '0'}} className="layoutsLine"></div>
+                                </div>
+                                {this.renderTables()}
+                            </div>
+                        </div>
+
+                }
                 {this.renderModals()}
                 {this.renderUpdateModals()}
                 {
@@ -454,13 +667,9 @@ class MySpecialActivities extends React.Component {
                     visible={isShowCopyUrl}
                     onCancel={this.hideCopyUrlModal}
                     footer={null}
-                    width={700}
+                    width={980}
                 >
-                    <div className={indexStyles.copyUrlWrap}>
-                        <div className={indexStyles.label}>提取链接</div>
-                        <div className={indexStyles.urlText}>{urlContent}</div>
-                    </div>
-                    <div onClick={this.handleToCopyUrl} className={indexStyles.copyBtn}  >复制链接</div>
+                    {this.renderCopyUrlModal()}
                 </Modal>
             </div>
         );
@@ -936,7 +1145,7 @@ class MySpecialActivities extends React.Component {
                                         this.handleCopyUrl(record)
                                     }}
                                 >
-                                 提取链接
+                                    下载链接/二维码
                                 </a>
                             )
                         }
@@ -1188,7 +1397,6 @@ class MySpecialActivities extends React.Component {
     }
 
     handleCopyUrl = (record) => {
-
         const testUrl = 'https://dohko.m.hualala.com'
         const preUrl = 'https://m.hualala.com'
         const actList = ['20','30','22'] // 摇奖活动，积分兑换，报名活动
@@ -1197,31 +1405,33 @@ class MySpecialActivities extends React.Component {
         if(isFormalRelease()) {
             url = preUrl
         }
-
-        if(actList.includes(String(eventWay))) {
+        const urlMap = {
+            20: url + `/newm/eventCont?groupID=${groupID}&eventID=${itemID}`,
+            22: url + `/newm/eventCont?groupID=${groupID}&eventID=${itemID}`,
+            30: url + `/newm/eventCont?groupID=${groupID}&eventID=${itemID}`,
+            21: url + `/newm/eventFree?groupID=${groupID}&eventID=${itemID}`,
+            65: url + `/newm/shareFission?groupID=${groupID}&eventID=${itemID}`,
+            68: url + `/newm/recommendInvite?groupID=${groupID}&eventItemID=${itemID}`,
+        }
+        /*if(actList.includes(String(eventWay))) {
             url = url +    `/newm/eventCont?groupID=${groupID}&eventID=${itemID}`
         }
-
         if(eventWay == '21') {
             url = url +    `/newm/eventFree?groupID=${groupID}&eventID=${itemID}`
-
         }
-
         if(eventWay == '65') {
             url = url +    `/newm/shareFission?groupID=${groupID}&eventID=${itemID}`
-
         }
-
         if(eventWay == '68') {
             url = url +    `/newm/recommendInvite?groupID=${groupID}&eventItemID=${itemID}`
-
-        }
-
+        }*/
         this.setState({
-            urlContent: url,
+            urlContent: urlMap[eventWay],
+            eventWay,
             isShowCopyUrl: true
         })
-
+        // 获取小程序列表
+        this.getAppList().then(r =>{})
     }
 
     handleToCopyUrl = () => {

@@ -417,7 +417,7 @@ class GiftDetailTable extends Component {
                                             </div>
                                         )
                                     }
-                                    {
+                                     {
                                         !!couponPackageReference.length && (
                                             <div>
                                                 <div style={{ marginTop: 8 }}>

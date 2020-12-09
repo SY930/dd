@@ -60,21 +60,21 @@ class Step1 extends React.Component {
     render () {
         formItems1.eventRemark.render = renderEventRemark.bind(this)
         formItems1.eventLimitDate.render = eventLimitDateRender.bind(this)
-        const { formData } = this.props.createActiveCom
+        const { formData,isView,isEdit  } = this.props.createActiveCom
         return (
             <div className={styles.step1Wrap}>
-                <BaseForm
-                    getForm={this.getForm}
-                    formItems={formItems1}
-                    formData={formData}
-                    formKeys={formKeys1}
-                    onChange={this.handleFromChange}
-                    formItemLayout={{
-                    labelCol: { span: 3 },
-                    wrapperCol: { span: 21 },
-                    }}
-                />
-
+                {isView&&!isEdit&&<div className={styles.disabledDiv}></div>}
+                    <BaseForm
+                        getForm={this.getForm}
+                        formItems={formItems1}
+                        formData={formData}
+                        formKeys={formKeys1}
+                        onChange={this.handleFromChange}
+                        formItemLayout={{
+                        labelCol: { span: 3 },
+                        wrapperCol: { span: 21 },
+                        }}
+                    />
             </div>
         )
     }

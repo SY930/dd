@@ -24,9 +24,9 @@ import {
 import styles from './GiftAdd.less';
 import styles2 from './Crm.less';
 import BaseForm from '../../../components/common/BaseForm';
-import { 
-    FORMITEMS, 
-    FIRST_KEYS, 
+import {
+    FORMITEMS,
+    FIRST_KEYS,
     SECOND_KEYS,
     FORM_ITEMS_GIFTS_RULES_TO_EXCLUDE_IN_MALL_SCENE,
     MALL_COUPON_BASIC_SETTING_FORM_ITEMS,   // 基础设置项
@@ -173,7 +173,7 @@ class GiftAddModalStep extends React.PureComponent {
         this.handleStageAmountChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
         this.handleGiveFoodCountChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
         // this.handleMallCategoryDebounced = debounce(this.props.handleMallCategory.bind(this), 400);
-        
+
     }
 
     componentDidMount() {
@@ -201,7 +201,7 @@ class GiftAddModalStep extends React.PureComponent {
             values.discountType = data.discountType
             values.discountRate = data.discountRate
         }
-        // 
+        //
         // if ((type === 'add' && value == '10') || (type !== 'add' && value == '10' && data.amountType == 1)) {
         //     const {secondKeys} = this.state
         //     const index = secondKeys[name][0].keys.findIndex(item => item === 'amountType')
@@ -229,7 +229,7 @@ class GiftAddModalStep extends React.PureComponent {
             sharedGifts: this.proSharedGifts(_sharedGifts.crmGiftShareList),
         }, ()=>{
             this.props.changeGiftFormKeyValue({
-                key:'shareIDs', 
+                key:'shareIDs',
                 value: this.state.sharedGifts
             });
         });
@@ -244,7 +244,7 @@ class GiftAddModalStep extends React.PureComponent {
     }
 
     componentWillReceiveProps(nextProps) {
-        
+
         // 从redux里获取 shareGifts （共享券列表）。从列表页点击编辑的时候触发的网络请求，根据券id去获取共享券列表
         const { sharedGifts } = nextProps;
 
@@ -293,17 +293,17 @@ class GiftAddModalStep extends React.PureComponent {
          * @TODO 优化这块逻辑
          */
         // if(JSON.stringify(this.state.sharedGifts) != JSON.stringify(this.this.proSharedGifts(_sharedGifts.crmGiftShareList))) {
-        if(!_.isEqual(this.props.sharedGifts, nextProps.sharedGifts)){    
+        if(!_.isEqual(this.props.sharedGifts, nextProps.sharedGifts)){
             this.setState({
                 sharedGifts: this.proSharedGifts(_sharedGifts.crmGiftShareList),
             }, ()=>{
                 this.props.changeGiftFormKeyValue({
-                    key:'shareIDs', 
+                    key:'shareIDs',
                     value: this.state.sharedGifts
                 });
             });
-        } 
-        
+        }
+
     }
 
     isHuaTianSpecificCoupon = () => {
@@ -333,7 +333,7 @@ class GiftAddModalStep extends React.PureComponent {
         return [];
     }
 
-    
+
     // 买赠券，处理优惠规则变更，动态调整表结构
     handleDiscountRuleChange = (val) => {
         // const { gift: { name: describe, data }, type } = this.props;
@@ -354,15 +354,15 @@ class GiftAddModalStep extends React.PureComponent {
 
     resetMallDataInRedux = ()=>{
         this.props.changeGiftFormKeyValue({
-            key: 'mallCategory', 
+            key: 'mallCategory',
             value:  []}
         );
         this.props.changeGiftFormKeyValue({
-            key: 'mallExcludedGood', 
+            key: 'mallExcludedGood',
             value:  []}
         );
         this.props.changeGiftFormKeyValue({
-            key: 'mallIncludeGood', 
+            key: 'mallIncludeGood',
             value:  []}
         );
     }
@@ -388,13 +388,13 @@ class GiftAddModalStep extends React.PureComponent {
                                     break;
                 case 'discountRate':    this.handleDiscountRateChangeDebounced({key, value});
                                     break;
-                case 'stageAmount':    
+                case 'stageAmount':
                     this.handleStageAmountChangeDebounced({key, value});
                     break;
-                case 'giveFoodCount':    
+                case 'giveFoodCount':
                     this.handleGiveFoodCountChangeDebounced({key, value});
                     break;
-                // case 'mallCategory': 
+                // case 'mallCategory':
                 //     this.handleMallCategoryDebounced({key, value});
                 //     break;
                 default: this.props.changeGiftFormKeyValue({key, value});
@@ -490,19 +490,19 @@ class GiftAddModalStep extends React.PureComponent {
                     sharedGifts: value,
                 })
                 break;
-        
+
             case 'selectMall': // 商城发生变化，改变表单中其他几项相互关联数据。 重置数据
                 const isMallChanged = formRef.getFieldValue('selectMall') != value;
                 if(isMallChanged) {
                     formRef.setFieldsValue({
-                        mallCategory: [], 
+                        mallCategory: [],
                         mallExcludedGood: [],
                         mallIncludeGood: []
                     });
                     this.resetMallDataInRedux();
                 }
                 break;
-            
+
             // 分类进行切换时，对redux里数据进行清空处理
             case 'mallScope':
                 if(value == '0') {
@@ -510,20 +510,20 @@ class GiftAddModalStep extends React.PureComponent {
                         mallIncludeGood: []
                     });
                 } else if(value == '1') {
-                    
+
                     formRef.setFieldsValue({
-                        mallCategory: [], 
+                        mallCategory: [],
                         mallExcludedGood: [],
                     });
                 }
                 break;
 
-            case 'discountRule': 
+            case 'discountRule':
                 // 买赠券，处理优惠规则变更，动态调整表结构
                 this.handleDiscountRuleChange(value);
                 break;
 
-            case 'compositeDiscount': 
+            case 'compositeDiscount':
                 // 买赠券，数据初始化
                 let {reduceType, reduceValue} = value
                 values.specialPriceVolSetting = reduceValue
@@ -669,11 +669,11 @@ class GiftAddModalStep extends React.PureComponent {
                 delete params.mallExcludedGood;
             }
             return;
-        }; 
-        
+        };
+
         const {goodCategories = [], goods = []} = this.props;
         const { malls } = this.state;
-       
+
         // 当商城券是，brandSelectType 需要传1。 默认适用所有品牌（虽然商城没有品牌概念）
         if(params.applyScene == '1') {
             params.brandSelectType = 1;
@@ -681,7 +681,7 @@ class GiftAddModalStep extends React.PureComponent {
 
         params.shopIDs = '';
         params.shopNames = '';
-        
+
         if(params.hasOwnProperty('selectMall') && params.selectMall !== undefined) {
             // TODO: 着急上线，没定位原因，代码做兼容处理
             if(params.selectMall instanceof Array && params.selectMall.length == 1) {
@@ -689,7 +689,7 @@ class GiftAddModalStep extends React.PureComponent {
             } else {
                 params.shopIDs = params.selectMall;
             }
-            
+
 
             let selectMall = malls.filter((mall, idx)=>{
                 return mall.shopID == params.selectMall
@@ -701,7 +701,7 @@ class GiftAddModalStep extends React.PureComponent {
         }
         delete params.selectMall;
 
-        // 适用菜品方式 0：按菜品单品 1：按菜品分类 2：不限制 
+        // 适用菜品方式 0：按菜品单品 1：按菜品分类 2：不限制
         // mallScope : 0 按分类， 1 按商品
         params.foodSelectType = params.mallScope == '0' ? '1' : '0';
         // 商城分类模式
@@ -719,7 +719,7 @@ class GiftAddModalStep extends React.PureComponent {
                     brandID: '0',
                 }
             });
-            // 商品信息 
+            // 商品信息
             // 是否包含排除菜品 true：包含 false：不包含
             params.excludeFoodScopes = [];
             if(params.mallExcludedGood instanceof Array && params.mallExcludedGood.length > 0) {
@@ -739,7 +739,7 @@ class GiftAddModalStep extends React.PureComponent {
             } else {
                 params.isExcludeFood = false;
             }
-            
+
         } else if(params.mallScope == '1') {    // 商品模式
             params.isExcludeFood = false;
             params.couponFoodScopes = [];
@@ -789,7 +789,7 @@ class GiftAddModalStep extends React.PureComponent {
                 values,
                 formValues,
                 { giftType: value },
-            );                
+            );
             params = this.formatFormData(params);
             // 券转赠  图片信息
             if(formValues.transferType){
@@ -936,6 +936,16 @@ class GiftAddModalStep extends React.PureComponent {
                 params.giftItemID = data.giftItemID;
                 data.supportOrderTypes !== undefined && (params.supportOrderTypes = data.supportOrderTypes);
                 data.supportOrderType !== undefined && (params.supportOrderType = data.supportOrderType);
+            } else if (type === 'copy') {
+                callServer = '/coupon/couponService_addBoard.ajax';
+                params.sourceType = 80;
+                // 复制 关闭关联第三方券 不传这几个字段
+                if (!params.TrdTemplate) {
+                    if (params.trdChannelID) delete params.trdChannelID
+                    if (params.trdTemplateID) delete params.trdTemplateID
+                    if (params.extraInfo) delete params.extraInfo
+                    if (params.trdTemplateInfo) delete params.trdTemplateInfo
+                }
             }
             if (value == 10) {
                 // if (type === 'add') {
@@ -1058,7 +1068,7 @@ class GiftAddModalStep extends React.PureComponent {
 
     renderGiveFoodCount(decorator, form) {
         const { giveFoodCount } = this.props.gift.data;
-        
+
         return (
             <Row>
                 <Col span={10}>
@@ -1223,10 +1233,10 @@ class GiftAddModalStep extends React.PureComponent {
                         message: '只能输入整数且不超过2位',
                     }],
                     initialValue: val
-                })(<Input 
-                type="number" 
+                })(<Input
+                type="number"
                 placeholder="例如 50"
-                size="large" 
+                size="large"
                 addonAfter="%" />)}
             </FormItem>
         )
@@ -1250,10 +1260,10 @@ class GiftAddModalStep extends React.PureComponent {
                         message: '请输入大于0，整数五位数以内且小数2位数以内的数值',
                     }],
                     initialValue: val
-                })(<Input 
-                type="number" 
+                })(<Input
+                type="number"
                 placeholder="输入立减金额"
-                size="large" 
+                size="large"
                 addonAfter="元" />)}
             </FormItem>
         )
@@ -1275,10 +1285,10 @@ class GiftAddModalStep extends React.PureComponent {
                         message: '请输入大于等于0，整数5位以内且小数2位以内的数值',
                     }],
                     initialValue: val
-                })(<Input 
-                type="number" 
+                })(<Input
+                type="number"
                 placeholder="输入特价价格"
-                size="large" 
+                size="large"
                 addonAfter="元" />)}
             </FormItem>
         )
@@ -1460,7 +1470,7 @@ class GiftAddModalStep extends React.PureComponent {
     //     const { gift: { data } } = this.props;
     //     let {values} = this.props
     //     let {transferImage = {}} = data
-      
+
     // }
     renderCouponPeriodSettings(decorator) {
         const { gift: { data } } = this.props;
@@ -1673,7 +1683,7 @@ class GiftAddModalStep extends React.PureComponent {
     renderMallListSelector = (decorator)=>{
         const { malls : mallList, values } = this.state;
         let initialValue;
-        
+
         if(values.applyScene == '1') {
             initialValue = values.selectMall;
         }
@@ -1685,12 +1695,12 @@ class GiftAddModalStep extends React.PureComponent {
                 ],
                 initialValue,
             })(
-                <SelectMall 
+                <SelectMall
                     dataSource= { mallList }
                     onMallChange = { (shopID)=>{ this.handleMallChange(shopID)}}
                 />
             )
-            
+
         )
     }
 
@@ -1699,7 +1709,7 @@ class GiftAddModalStep extends React.PureComponent {
         const { goodCategories, goods, gift: {
             value: giftTypeValue
         }} = this.props;
-        const { values } = this.state; 
+        const { values } = this.state;
         let initialValue = [];
         let showToolTips = false;
         if(values.applyScene == '1') {
@@ -1710,7 +1720,7 @@ class GiftAddModalStep extends React.PureComponent {
                     // 满足以上全部条件（回显模式下需要满足）
                     this.handleMallChange(values.shopIDs[0]);
                 }
-                
+
             } else {
                 // 前端传到后端采用拼接，组合成 couponFoodScope， 后端返回字段名称又改为 couponFoodScopeList
                 if(values.couponFoodScopeList instanceof Array && values.couponFoodScopeList.length > 0) {
@@ -1749,10 +1759,10 @@ class GiftAddModalStep extends React.PureComponent {
                     })(
                         <SelectMallCategory
                             dataSource = { goodCategories }
-                        /> 
+                        />
                     )
                 }
-                
+
 
                 {showToolTips && (
                     <div
@@ -1776,7 +1786,7 @@ class GiftAddModalStep extends React.PureComponent {
         const { values} = this.state;
         let initialValue = [];
         if(values.applyScene == '1') {
-            // 适用菜品方式 0：按菜品单品 1：按菜品分类 2：不限制 
+            // 适用菜品方式 0：按菜品单品 1：按菜品分类 2：不限制
             // params.foodSelectType = params.mallScope == '0' ? '1' : '0';
             if(values.hasOwnProperty('foodSelectType') && values.foodSelectType == '1') {
                 if(values.hasOwnProperty('excludeFoodScopes') && values.excludeFoodScopes instanceof Array &&  values.excludeFoodScopes.length > 0) {
@@ -1788,7 +1798,7 @@ class GiftAddModalStep extends React.PureComponent {
         }
         return (
             decorator({
-                key: 'mallExcludedGood', 
+                key: 'mallExcludedGood',
                 rules: [],
                 initialValue,
             })(
@@ -1798,7 +1808,7 @@ class GiftAddModalStep extends React.PureComponent {
                     allCategories={ goodCategories }
                 />
             )
-            
+
         )
     }
 
@@ -1828,7 +1838,7 @@ class GiftAddModalStep extends React.PureComponent {
         let initialValue = [];
         if(values.applyScene == '1') {
 
-            // 适用菜品方式 0：按菜品单品 1：按菜品分类 2：不限制 
+            // 适用菜品方式 0：按菜品单品 1：按菜品分类 2：不限制
             // params.foodSelectType = params.mallScope == '0' ? '1' : '0';
             if(goodCategories instanceof Array && goodCategories.length == 0) {
                 // data.selectBrands[0].targetID; 当前店铺 ID
@@ -1837,7 +1847,7 @@ class GiftAddModalStep extends React.PureComponent {
                     // 满足以上全部条件（回显模式下需要满足）
                     this.handleMallChange(values.shopIDs[0]);
                 }
-            } 
+            }
 
             if(values.hasOwnProperty('foodSelectType') && values.foodSelectType == '0') {
                 // if(values.hasOwnProperty('couponFoodScopeList') && values.couponFoodScopeList instanceof Array &&  values.couponFoodScopeList.length > 0) {
@@ -1861,7 +1871,7 @@ class GiftAddModalStep extends React.PureComponent {
             rules = [{
                 required: true,
                 message: '必须选择适用商品'
-            }]; 
+            }];
 
             tips = '不能为空';
         } else {
@@ -2000,7 +2010,7 @@ class GiftAddModalStep extends React.PureComponent {
                 data.selectMall = data.shopIDs
             }
         }
-        
+
         // 买赠券
         data.discountSortRule = data.priceSortRule == undefined ? '0' : `${data.priceSortRule}`;
 
@@ -2048,7 +2058,7 @@ class GiftAddModalStep extends React.PureComponent {
                 firstKeysToDisplay[0].keys = [...FIRST_KEYS[describe][0].keys];
                 firstKeysToDisplay[1].keys = [...FIRST_KEYS[describe][1].keys];
                 secondKeysToDisplay[0].keys = [...SECOND_KEYS[describe][0].keys];
-            } 
+            }
             else if(values.applyScene == '1') {       // 商城券
                 secondKeysToDisplay[0].keys = [...MALL_COUPON_APPLY_SETTING_FORM_ITEMS[describe][0].keys];
                 firstKeysToDisplay[0].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][0].keys];
@@ -2071,7 +2081,7 @@ class GiftAddModalStep extends React.PureComponent {
                 if(giftShareTypeIdx != -1) {
                     secondKeysToDisplay[0].keys.splice(giftShareTypeIdx + 1, 0, 'shareIDs');
                 }
-            } 
+            }
 
             // 根据账单金额限制控制一笔订单最多使用多少张（动态增加）
             // @Notice 仅限 菜品兑换券，代金券，菜品优惠券三种场景
@@ -2087,16 +2097,16 @@ class GiftAddModalStep extends React.PureComponent {
                             if(describe != '菜品优惠券') {
                                 secondKeysToDisplay[0].keys.splice(moneyLimitTypeAndValueIndex + 1, 0, 'maxUseLimit');
                             }
-                            
+
                         }
                     }
-                      
+
                 }
             }
         }
 
         if(describe == '代金券' || describe == '菜品优惠券' || describe == '菜品兑换券' || describe == '折扣券' || describe == '配送券' || describe == '买赠券') {
-            // 
+            //
             if(values.transferType == '0' || values.transferType == undefined) {
                 secondKeysToDisplay[0].keys = secondKeysToDisplay[0].keys.filter((key)=>{
                     return key !== 'transferTitle' &&　key !== 'transferImage';
@@ -2109,11 +2119,11 @@ class GiftAddModalStep extends React.PureComponent {
         }
 
         if(describe === '线上礼品卡') {
-           
+
             const keys = firstKeysToDisplay[0].keys
             const firstKeysToDisplayKeys = keys.filter(v => v !== 'selectBrands')
             firstKeysToDisplay[0].keys = firstKeysToDisplayKeys
-           
+
 
         }
 
@@ -2143,7 +2153,7 @@ class GiftAddModalStep extends React.PureComponent {
         //         }
         //     }
 
-            
+
         // }
         return {
             firstKeysToDisplay,
@@ -2165,7 +2175,7 @@ class GiftAddModalStep extends React.PureComponent {
         )
     }
 
-    
+
 
     /**
      * @description
@@ -2178,7 +2188,7 @@ class GiftAddModalStep extends React.PureComponent {
         // 判断是否是空对象
         // 影响 PhonePreview 回显。
         let formData =JSON.stringify(values) == '{}' ? data : values ;
-        
+
         const { firstKeysToDisplay: displayFirstKeys, secondKeysToDisplay: displaySecondKeys} = this.justifyFormKeysToDisplay();
 
         if (formData.shopNames && formData.shopNames.length > 0 && formData.shopNames[0].id) {
@@ -2207,7 +2217,7 @@ class GiftAddModalStep extends React.PureComponent {
         }
         const isUnit = ['10', '91'].includes(value);
         const giftNameValid = (type === 'add') ? { max: 25, message: '不能超过25个字符' } : {};
-        
+
         // 定义所有类型的表单项，根据不同礼品类型进行配置
         const formItems = {
             ...FORMITEMS,
@@ -2282,7 +2292,7 @@ class GiftAddModalStep extends React.PureComponent {
             giftValueCurrencyType: {
                 label: '货币单位',
                 type: 'combo',
-                disabled: type !== 'add',
+                disabled: type !== 'add' && type !== 'copy',
                 defaultValue: '¥',
                 options: [
                     { label: '¥', value: '¥' },
@@ -2295,13 +2305,13 @@ class GiftAddModalStep extends React.PureComponent {
                 ],
             },
 
-            
+
 
             giftValue: {
                 label: giftValueLabel,
                 type: 'text',
                 placeholder: '请输入金额',
-                disabled: type !== 'add',
+                disabled: type !== 'add' && type !== 'copy',
                 prefix: unit,
                 rules: [
                     { required: true, message: `${isUnit ? '礼品价值' : '可抵扣金额'}不能为空` },
@@ -2357,7 +2367,7 @@ class GiftAddModalStep extends React.PureComponent {
                         pattern: /^[\u4E00-\u9FA5A-Za-z0-9\.]{1,50}$/,
                     },*/
                 ],
-                disabled: type !== 'add',
+                disabled: type !== 'add' && type !== 'copy',
             },
             shopNames: {
                 type: 'custom',
@@ -2443,7 +2453,7 @@ class GiftAddModalStep extends React.PureComponent {
                     </Row>
                 ),
             },
-            TrdTemplate: {
+            TrdTemplate: {// 是否关联第三方券
                 label: ' ',
                 labelCol: { span: 3 },
                 wrapperCol: { span: 21 },
@@ -2502,7 +2512,7 @@ class GiftAddModalStep extends React.PureComponent {
                 </Tooltip></span>,
                 type: 'text',
                 placeholder: '请输入金额',
-                disabled: type !== 'add',
+                disabled: type !== 'add' && type !== 'copy',
                 prefix: value === '91' ? null : unit,
                 rules: value == '91' ?
                     [
@@ -2617,7 +2627,7 @@ class GiftAddModalStep extends React.PureComponent {
                 },
             },
 
-            
+
 
             transferLimitType: {
                 label: '转赠设置',
@@ -2723,7 +2733,7 @@ class GiftAddModalStep extends React.PureComponent {
                 required: true,
                 render: decorator => this.renderBuyGiveFoodsboxs(decorator),
             },
-            
+
             buyGiveSecondaryFoods: {
                 type: 'custom',
                 label: '优惠菜品',
@@ -2765,7 +2775,7 @@ class GiftAddModalStep extends React.PureComponent {
                 label: ` `,
                 type: 'custom',
                 defaultValue: false,
-                render: decorator => decorator({})(<IsSync/>),
+                render: type === 'copy' ? decorator => decorator({})(<div></div>) : decorator => decorator({})(<IsSync/>),
             },
             amountType: {
                 label: `规则设置`,
@@ -2779,7 +2789,7 @@ class GiftAddModalStep extends React.PureComponent {
             //     type: 'custom',
             //     render: decorator => this.renderDiscountRateSetting(decorator),
             // },
-            
+
             // // 买赠券立减
             // discountDecreaseVolSetting: {
             //     label: '立减',
@@ -2832,7 +2842,6 @@ class GiftAddModalStep extends React.PureComponent {
         formData.shareIDs = this.state.sharedGifts;
         formData.giftShareType = String(formData.giftShareType);
         formData.couponPeriodSettings = formData.couponPeriodSettingList;
-
 
         return (
             <div>
@@ -2887,7 +2896,7 @@ function mapStateToProps(state) {
         accountInfo: state.user.get('accountInfo'),
         menuList: state.user.get('menuList'),
         sharedGifts: state.sale_giftInfoNew.get('sharedGifts'),
-        
+
         // 商城商品及分类信息
         goodCategories: state.sale_promotionDetailInfo_NEW.get('goodCategories').toJS(),
         goods: state.sale_promotionDetailInfo_NEW.get('goods').toJS(),
@@ -2914,7 +2923,7 @@ function mapDispatchToProps(dispatch) {
         },
         queryUnbindCouponPromotion: opts => dispatch(queryUnbindCouponPromotion(opts)),
         fetchAllPromotionList: opts => dispatch(fetchAllPromotionListAC(opts)),
-        
+
         // 获取商城商品及分类信息
         getMallGoodsAndCategories: (opts) => {
             dispatch(getMallGoodsAndCategories(opts))

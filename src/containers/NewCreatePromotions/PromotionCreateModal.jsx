@@ -359,6 +359,7 @@ class PromotionCreateModal extends Component {
                                                 whiteList={whiteList}
                                                 onClickOpen={this.onClickOpen}
                                                 onV3Click={()=>{this.onV3Click(item.key)}}
+                                                authPluginStatus={this.props.authPluginStatus}
                                             />
                                         ))
                                     }

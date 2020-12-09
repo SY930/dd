@@ -57,7 +57,11 @@ class BaseHualalaModal extends React.Component {
         if (!is(fromJS(this.props.treeData), fromJS(nextProps.treeData)) || !is(fromJS(this.props.data), fromJS(nextProps.data))) {
             const hadSelected = Array.isArray(nextProps.data) ? [...nextProps.data] : [];
             const CurrentSelections = [];
-            const { rightOptionsData } = this.state;
+            let { rightOptionsData } = this.state;
+
+            // 左侧树数据变化   右侧选项置空   需重新选左侧
+            rightOptionsData = []
+
             rightOptionsData.forEach((entity) => {
                 if (hadSelected.findIndex(item => item[nextProps.innerRightValue] === entity[nextProps.innerRightValue]) > -1) {
                     CurrentSelections.push(entity[nextProps.innerRightValue])
@@ -67,6 +71,7 @@ class BaseHualalaModal extends React.Component {
                 leftTreeData: nextProps.treeData,
                 hadSelected,
                 CurrentSelections,
+                rightOptionsData
             })
         }
     }
