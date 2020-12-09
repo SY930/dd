@@ -26,6 +26,7 @@ class Step2 extends React.Component {
         uniqueLoop: true,
         afterGiftList: [],
         ifJustDelete: false,
+        ifDisable: false
     }
     componentDidMount() {
         if(typeof this.props.getSubmitFn === 'function') {
@@ -120,9 +121,22 @@ class Step2 extends React.Component {
         }
         return
     }
+
+    ifSendGiftThenDisabled = () => {
+        const { formData} = this.props.createActiveCom
+        let { giftList = []} = formData
+        if(giftList.some((item) => {
+            return item.giftSendCount > 0
+        })) {
+            this.setState({
+                ifDisable: true
+            })
+        }
+    }
     
     initGiftData = () => {
         //addgift 组件有组价初始值问题，加上step中每一步都是在页面加载统一渲染产生的问题
+        this.ifSendGiftThenDisabled()
         setTimeout(() => {
             const { formData } = this.props.createActiveCom
             const { giftList=[] } = formData
@@ -528,7 +542,7 @@ class Step2 extends React.Component {
         return temp
     }
     render () {
-        const { formKeys2, count, activeKey, treeData, filterTreeData, uniqueLoop, afterGiftList } = this.state
+        const { formKeys2, count, activeKey, treeData, filterTreeData, uniqueLoop, afterGiftList, ifDisable } = this.state
         const { wxNickNameList } = this.props.createActiveCom
 
         formItems2.eventDate.render = eventDateRender.bind(this)
@@ -575,7 +589,7 @@ class Step2 extends React.Component {
                                 // console.log('afterGiftList', afterGiftList)
                                 return (
                                 <TabPane tab={`规则${index+1}`} key={index+1}>
-                                    {isView&&!isEdit&&<div className={styles.disabledDiv}></div>}
+                                    {(isView&&!isEdit || ifDisable)&&<div className={styles.disabledDiv}></div>}
                                     {
                                         uniqueLoop && 
                                         <BaseForm
