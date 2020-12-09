@@ -238,7 +238,6 @@ class AdvancedPromotionDetailSetting extends React.Component {
 
             if (!is(fromJS(_shopsIDs), fromJS(shopsIDs))) {
                 const data = { groupID: this.props.user.accountInfo.groupID }
-                console.log('>>>ddd', _shopsIDs)
                 if(_shopsIDs.length){
                     data.shopIDs = _shopsIDs.join(',')
                 }else{
