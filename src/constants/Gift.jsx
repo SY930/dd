@@ -263,7 +263,6 @@ const GiftCfg = {
         { value: '124', label: '券包', include: true },
         { value: '125', label: 'E折发放'},
         { value: '127', label: '微信支付有礼'},
-        { value: '81', label: '消费券返券'},
         { value: '128', label: '盲盒'},
         { value: '129', label: '消费券返券'},
         { value: '3032', label: '自定义投放'},
