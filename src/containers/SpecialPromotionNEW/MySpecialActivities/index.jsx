@@ -206,7 +206,8 @@ class MySpecialActivities extends React.Component {
             selectedShop: null,
 
             loading: true,
-            eventWay: '',
+            eventWay: '',   //下载链接eventWay
+            queryEventWay: '',   //搜索eventWay
             promotionDateRange: '',
             isActive: '',
             eventName: '',
@@ -687,15 +688,15 @@ class MySpecialActivities extends React.Component {
         });
 
         const {
-            eventWay,
+            queryEventWay,
             promotionDateRange,
             isActive,
             eventName,
         } = this.state;
 
         const opt = {};
-        if (eventWay !== '' && eventWay !== undefined) {
-            opt.eventWay = eventWay;
+        if (queryEventWay !== '' && queryEventWay !== undefined) {
+            opt.eventWay = queryEventWay;
         }
 
         if (promotionDateRange !== '' && promotionDateRange.length !== 0) {
@@ -782,7 +783,7 @@ class MySpecialActivities extends React.Component {
                                 defaultValue={intl.formatMessage(STRING_GIFT.all)}
                                 onChange={(value) => {
                                     this.setState({
-                                        eventWay: value === 'ALL' ? null : value,
+                                        queryEventWay: value === 'ALL' ? null : value,
                                     });
                                 }}
                             >
