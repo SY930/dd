@@ -1,6 +1,6 @@
 import React, { PureComponent as Component } from 'react';
 import { Radio, Form, Row, Col } from 'antd';
-import CropperUploader from 'components/common/CropperUploader'
+import ImageUpload from 'components/common/ImageUpload';
 import css from './style.less';
 
 const RadioGroup = Radio.Group;
@@ -38,18 +38,16 @@ class Uploader extends Component {
                                         { required: false, message: '必须有图片' },
                                     ],
                                 })(
-                                    <CropperUploader 
+                                    <ImageUpload
                                         className={css.uploadCom}
-                                        width={120}
-                                        height={110}
-                                        cropperRatio={750/500}
-                                        limit={2000}
-                                        uploadTest='上传图片'
+                                        limitType={'.jpeg,.jpg,.png,.gif,.JPEG,.JPG,.PNG,.GIF'}
+                                        limitSize={3 * 1024 * 1024}
+                                        getFileName={true}
                                     />
                                 )}
                             </Col>
                             <Col span={18} className={css.grayFontPic} >
-                                <p style={{ position: 'relative', top: 20, left: 70,}}>图片建议尺寸750*500像素<br/>支持格式jpg、png，大小不超过2M</p>
+                                <p style={{ position: 'relative', top: 20, left: 70,}}>图片建议尺寸750*500像素<br/>支持格式jpg、png、gif，大小不超过2M</p>
                             </Col>
                         </Row>
                     </FormItem>    

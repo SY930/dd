@@ -264,11 +264,12 @@ class BlindBox extends Component {
     onSubmit = (formData3) => {
         const { formData1 } = this.state;
         const { id } = this.props;
-        const { eventRange, ...others1 } = formData1;
+        const { eventRange, ...others1, } = formData1;
         const newEventRange = this.formatEventRange(eventRange);
         const step2Data = this.setStep2Data();
-        const { gifts, ...others3 } = formData3;
-        let event = { ...others1, ...others3, ...newEventRange, ...step2Data, eventWay: '79' };
+        const { gifts,  eventImagePath, ...others3,} = formData3;
+        const newEventImagePath = eventImagePath ? eventImagePath.url : ''
+        let event = { ...others1, ...others3, ...newEventRange, ...step2Data, eventWay: '79', eventImagePath: newEventImagePath };
         if(id) {
             const itemID = id;
             const allData = { event: {...event, itemID}, gifts };
