@@ -69,7 +69,7 @@ class NewPromotionCard extends Component {
             }
             onCardClick(promotionEntity);
         }
-        console.log('promotionEntity', promotionEntity);
+        // console.log('promotionEntity', promotionEntity);
         // jumpPage({ menuID: 'plugins.info' });
     }
     filterItem(key){
@@ -84,8 +84,10 @@ class NewPromotionCard extends Component {
             const item = whiteList.find(x=> x.eventWay == key);
             const {expireDate} = item || {};
             const date = moment(expireDate, 'YYYYMMDD').format('YYYY/MM/DD')
-            let text = authPulgins.includes(key) && !authPluginStatus? '联系商务开通' : (isUse ? '试用中': '申请试用');
-            return <em className={ath ? styles.validDateAth :styles.validDate}>{text}</em>
+            let text = authPulgins.includes(key) && !authPluginStatus? '联系商务开通' : (isUse ? `授权期至:${date}`: '申请试用');
+            // 秒杀71  拼团72  默认永久开通  无text
+            let content = ['71', '72'].includes(key) ? '' : <em className={ath ? styles.validDateAth :styles.validDate}>{text}</em>
+            return content
         }
     }
 
