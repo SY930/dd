@@ -475,32 +475,60 @@ class StepOne extends React.Component {
         )
     }
 
+    range = (start, end) => {
+        const result = [];
+        for (let i = start; i < end; i++) {
+            result.push(i);
+        }
+        return result;
+    }
     /**
      * @description 渲染仅发送时间组件
     */
-   renderSendTimeSelector = () => {
+    renderSendTimeSelector = () => {
         const { form: { 
             getFieldDecorator: decorator,
             getFieldValue 
         }, type} = this.props;
 
-        const {
+        let {
             $eventInfo : {
-                startTime
+                startTime,
+                // eventStartDate,
+                // eventEndDate,
             } 
         } = this.props.specialPromotion.toJS();
+        let {dateRange: date} = this.state
+
+        let eventStartDate = date[0] ? date[0].format('YYYYMMDD') : '';
+        let eventEndDate = date[1] ? date[1].format('YYYYMMDD') : '';
+        
         // 不可用时间组件
+        // （当活动起止日期为同一天时），活动执行当天可以修改的发送时间为系统时间的后2小时的整点或半点
+        let curHour = moment().get('hour');
+        let curMinute = moment().get('minute');
         let disabledHours = () => {
+            if(eventStartDate == eventEndDate && moment().format('YYYYMMDD') == eventEndDate){
+                let hours = this.range(0, 24);
+                let addHour = curMinute > 30 ? 3 : 2
+                return hours.filter(item => item < curHour + addHour)
+            }
             return [];
         };
-        let disabledMinutes = () => {
-            let result = [];
-            for(let i=0; i < 60; i++){
-                if(i != 0 && i != 30) {
-                    result.push(i);
+        let disabledMinutes = (selectedHour) => {
+            let result = this.range(0, 60);
+            if(eventStartDate == eventEndDate && moment().format('YYYYMMDD') == eventEndDate){
+                let addHour = curMinute > 30 ? 3 : 2
+                if (curHour + addHour == selectedHour) {
+                    if(curMinute > 30 || curMinute == 0){
+                        return result.filter(item => item != 0)
+                    }else{
+                        return result.filter(item => item != 30)
+                    }
+                }else if (selectedHour == null || selectedHour > curHour + addHour) {
+                    return result.filter(item => item != 0 && item != 30);
                 }
             }
-            return result;
         }
 
         let timeStringInitialValue = '';
