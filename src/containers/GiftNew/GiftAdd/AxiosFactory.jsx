@@ -19,7 +19,7 @@ const [service, type, api, url] = ['HTTP_SERVICE_URL_CRM', 'post', 'alipay/', '/
 
 async function getCardList(data) {
     const method = '/coupon/couponService_getSortedCouponBoardList.ajax';
-    const params = { service, type, data, method };
+    const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW', type, data, method };
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;
     if (code === '000') {
