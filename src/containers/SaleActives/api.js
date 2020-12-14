@@ -41,6 +41,14 @@ const apis = {
         path: '/crm/crmAuthLicenseService.queryCrmPluginLicenses.ajax',
         service: service[0],
     },
+    /**
+     * 哗管家-流失唤醒
+     */
+    // 查询详情
+    getEventRuleDetail: {
+        path: '/eventRule/getDetail.ajax',
+        service: service[0],
+    },
 };
 
 function gen(api) {

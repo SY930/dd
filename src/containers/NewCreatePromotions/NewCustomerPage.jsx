@@ -27,6 +27,7 @@ import {
     SALE_PROMOTION_TYPES,
     ONLINE_PROMOTION_TYPES,
     CRM_PROMOTION_TYPES,
+    HOUSEKEEPER_TYPES,
 } from 'constants/promotionType';
 import NewPromotionCard from "./NewPromotionCard";
 const limitedTypes = [
@@ -74,7 +75,7 @@ import { jumpPage, closePage } from '@hualala/platform-base';
 import {setThemeClass} from '../../utils/index'
 // 跳转到带装修的活动设置页面
 const activityList = [
-    '80', '66', '81'
+    '80', '66', '81', 'housekeeper'
 ]
 @registerPage([NEW_SALE_BOX], {
 })
@@ -452,6 +453,10 @@ class NewCustomerPage extends Component {
             {
                 title: k6316iio,
                 list: SALE_PROMOTION_TYPES,
+            },
+            {
+                title: '管家活动',
+                list: HOUSEKEEPER_TYPES,
             },
         ]
         let allMenus = [

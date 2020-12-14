@@ -19,7 +19,9 @@ const {
     queryEventDetail_NEW,
     getExcludeEventList,
     updateEvent_NEW,
-    getAuthLicenseData
+    getAuthLicenseData,
+    // 
+    getEventRuleDetail
 } = api;
 
 const initState = {
@@ -487,6 +489,21 @@ export default {
             message.warn(ret.message);
             return false;
         },
+        // 
+        * getEventRuleDetail({ payload }, { call, put, select }) {
+            const { groupID } = yield select(state => state.createActiveCom);
+            const ret = yield call(getEventRuleDetail, {
+                groupID,
+                ...payload,
+            });
+
+            if (ret.code === '000') {
+                
+            }
+            message.warn(ret.message);
+            return false;
+        },
+
     },
 };
 

@@ -650,6 +650,23 @@ export const SALE_PROMOTION_TYPES = [
     },
 ];
 
+/**
+ * 管家活动  哗管家
+ */
+export const HOUSEKEEPER_TYPES = [
+    {
+        title: '流失唤醒',
+        isSpecial: true,
+        text: '',
+        example: '',
+        tags: [],
+        key: 'housekeeper',
+        right: 2,
+        bottom: -14,
+        isHot: false,
+    },
+]
+
 export const WECHAT_MALL_ACTIVITIES = [
     {
         title: SALE_LABEL.k67b3wvc,
