@@ -220,7 +220,6 @@ class GiftAddModal extends React.Component {
                 params.giftItemID = data.giftItemID;
             } else if (type === 'copy') {
                 callServer = '/coupon/couponService_addBoard.ajax';
-                params.sourceType = 80;
             }
             params.brandSelectType = (params.selectBrands || []).length ? 0 : 1;
             if (params.sellerCode) {
