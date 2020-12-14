@@ -938,7 +938,6 @@ class GiftAddModalStep extends React.PureComponent {
                 data.supportOrderType !== undefined && (params.supportOrderType = data.supportOrderType);
             } else if (type === 'copy') {
                 callServer = '/coupon/couponService_addBoard.ajax';
-                params.sourceType = 80;
                 // 复制 关闭关联第三方券 不传这几个字段
                 if (!params.TrdTemplate) {
                     if (params.trdChannelID) delete params.trdChannelID
