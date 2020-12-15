@@ -87,8 +87,11 @@ class GiftAddModal extends React.Component {
         }
     }
     handleFormChange(key, value) {
+        console.log('now change the ', key, 'the value is ', value)
         switch (key) { // 这三个字段是靠手动输入的, 不加debounce的话在一般机器上有卡顿
-            case 'giftName':    this.handleNameChangeDebounced({key, value});
+            case 'giftName':
+            case 'pushMessage':
+                this.handleNameChangeDebounced({key, value});
                 break;
             case 'giftRemark':    this.handleRemarkChangeDebounced({key, value});
                 break;
@@ -311,23 +314,74 @@ class GiftAddModal extends React.Component {
     }
     render() {
         const { gift: { name: describe, value, data }, visible, type, treeData } = this.props;
+        console.log('data is ', data)
         let valueLabel = value == '42' ? '积分数额' : value == '30' ? '礼品价值' : '礼品卡面值';
         if(value==40){
             valueLabel = '礼品价值';
         }
         const { unit } = this.state;
         const giftNameValid = (type === 'add') ? { max: 25, message: '不能超过25个字符' } : {};
+        let formData = {};
+        formData = data === undefined ? {} : data;
+        if (type == 'edit' || type === 'copy') {
+            if(value==='90'){
+                const { giftValue } = data || {};
+                formData.cardPrice = giftValue;
+            }
+        }
+        if (data.shopNames && data.shopNames.length > 0 && data.shopNames[0].id) {
+            formData.shopNames = data.shopNames.map(shop => shop.id);
+        }
+        // debugger
+        if (!formData.pushMessage) {
+            formData.pushMessage = {
+                pushMessageMpID: formData.pushMessageMpID,
+                sendType: formData.sendType || ['wechat'],
+                days: formData.days || 3,
+            }
+        }
         let formItems = {
             giftType: {
                 label: '礼品类型',
                 type: 'custom',
                 render: () => describe,
             },
-            pushMessageMpID: {
-                label: '消息推送公众号',
-                rules: [{ required: true, message: '请绑定消息推送微信公众号' }],
+            pushMessage: {
+                label: <span>
+                    <span>消息推送</span>
+                    <Tooltip title={
+                        <div>
+                            <p>
+                                微信推送：在所选公众号推送券到账/券到期/券核销提醒
+                            </p>
+                            <p>
+                                短信推送：仅在券到期前N天推送到期提醒
+                            </p>
+                        </div>
+                    }
+                    >
+                        <Icon style={{ marginLeft: 5, marginRight: 5}} type="question-circle" />
+                    </Tooltip>
+                </span>,
+                rules: [{
+                    validator: (rule, v, cb) => {
+                        if (v.sendType.indexOf('wechat') === -1) {
+                            cb(rule.message);
+                        }
+                        cb();
+                    },
+                    message: '微信推送为必选项',
+                }, {
+                    validator: (rule, v, cb) => {
+                        if (!v.pushMessageMpID) {
+                            cb(rule.message);
+                        }
+                        cb();
+                    },
+                    message: '请选择微信推送的公众号',
+                }],
                 type: 'custom',
-                render: decorator => decorator({})(<PushMessageMpID/>),
+                render: decorator => decorator({})(<PushMessageMpID formData={formData} />),
             },
             sellerCode: {
                 label: (
@@ -762,7 +816,7 @@ class GiftAddModal extends React.Component {
                         'giftType',
                         'giftName',
                         'selectBrands',
-                        'pushMessageMpID',
+                        'pushMessage',
                         'giftValueCurrencyType',
                         'giftValue',
                         'giftRemark',
@@ -781,7 +835,7 @@ class GiftAddModal extends React.Component {
                         'giftType',
                         'giftName',
                         'selectBrands',
-                        'pushMessageMpID',
+                        'pushMessage',
                         'giftValueCurrencyType',
                         'giftValue',
                         'cardTypeList',
@@ -799,7 +853,7 @@ class GiftAddModal extends React.Component {
                         'giftType',
                         'giftName',
                         'selectBrands',
-                        'pushMessageMpID',
+                        'pushMessage',
                         'giftValueCurrencyType',
                         'giftValue',
                         'cardTypeList',
@@ -850,17 +904,6 @@ class GiftAddModal extends React.Component {
                 }
             ],
         };
-        let formData = {};
-        if (type == 'edit' || type === 'copy') {
-            formData = data === undefined ? {} : data;
-            if(value==='90'){
-                const { giftValue } = data || {};
-                formData.cardPrice = giftValue;
-            }
-        }
-        if (data.shopNames && data.shopNames.length > 0 && data.shopNames[0].id) {
-            formData.shopNames = data.shopNames.map(shop => shop.id);
-        }
         let newFormKeys = [...formKeys[describe]];
         if (this.state.disCashKeys) {
             const keys = [
