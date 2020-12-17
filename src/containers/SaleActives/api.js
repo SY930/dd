@@ -47,7 +47,22 @@ const apis = {
     // 查询详情
     getEventRuleDetail: {
         path: '/eventRule/getDetail.ajax',
-        service: service[0],
+        service: service[1],
+    },
+    // 新增
+    addEventRule: {
+        path: '/eventRule/add.ajax',
+        service: service[1],
+    },
+    // 编辑
+    updateEventRule: {
+        path: '/eventRule/update.ajax',
+        service: service[1],
+    },
+    // 启用禁用
+    switchEventRuleActive: {
+        path: '/eventRule/switchActive.ajax',
+        service: service[1],
     },
 };
 

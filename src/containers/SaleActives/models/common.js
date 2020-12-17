@@ -21,7 +21,10 @@ const {
     updateEvent_NEW,
     getAuthLicenseData,
     // 
-    getEventRuleDetail
+    getEventRuleDetail,
+    addEventRule,
+    updateEventRule,
+    switchEventRuleActive,
 } = api;
 
 const initState = {
@@ -55,6 +58,8 @@ const initState = {
     isView: false, // 页面状态
     currentForm: null, // 为了检验当前form
     authLicenseData: {},
+    // 
+    eventRule: {}
 };
 export default {
     namespace: 'createActiveCom',
@@ -498,7 +503,56 @@ export default {
             });
 
             if (ret.code === '000') {
-                
+                let {eventRule = {}} = ret.data
+                yield put({
+                    type: 'updateState',
+                    payload: {
+                        eventRule,
+                    },
+                });
+                return eventRule;
+            }
+            message.warn(ret.message);
+            return false;
+        },
+        * addEventRule({ payload }, { call, put, select }) {
+            const { groupID } = yield select(state => state.createActiveCom);
+            const ret = yield call(addEventRule, {
+                groupID,
+                ...payload,
+            });
+
+            if (ret.code === '000') {
+                message.success('保存成功！')
+                return true
+            }
+            message.warn(ret.message);
+            return false;
+        },
+        * updateEventRule({ payload }, { call, put, select }) {
+            const { groupID } = yield select(state => state.createActiveCom);
+            const ret = yield call(updateEventRule, {
+                groupID,
+                ...payload,
+            });
+
+            if (ret.code === '000') {
+                message.success('保存成功！')
+                return true
+            }
+            message.warn(ret.message);
+            return false;
+        },
+        * switchEventRuleActive({ payload }, { call, put, select }) {
+            const { groupID } = yield select(state => state.createActiveCom);
+            const ret = yield call(switchEventRuleActive, {
+                groupID,
+                ...payload,
+            });
+
+            if (ret.code === '000') {
+                message.success('操作成功！')
+                return true;
             }
             message.warn(ret.message);
             return false;
