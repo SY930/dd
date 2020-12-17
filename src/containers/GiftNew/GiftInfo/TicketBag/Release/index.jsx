@@ -7,6 +7,9 @@ import { couponImage } from '../Common';
 import style from 'components/basic/ProgressBar/ProgressBar.less';
 import Step1 from './Step1';
 import Step2 from './Step2';
+import {
+    axiosData,
+} from '../../../../../helpers/util';
 
 const Step = Steps.Step;
 
@@ -33,6 +36,9 @@ class Release extends Component {
         url: '',
         btnLoading: false,
         tempList: [],       // 临时券包列表，结合所有查询过的数据，用来筛选firstImg
+        downLoadFlag: true,
+        shopsInfo: [],
+        downloadLoading: false,
     };
     componentDidMount() {
         this.onQueryStep2Data();
@@ -48,6 +54,12 @@ class Release extends Component {
         getImgTextList(params2).then(imgList => {
             this.setState({ imgList });
         });
+    }
+    // eslint-disable-next-line react/sort-comp
+    downLoadLoadingChange = (flag) => {
+        this.setState({
+            downloadLoading: flag,
+        })
     }
     /**
      * 加载列表
@@ -66,6 +78,17 @@ class Release extends Component {
             this.setState({ pageObj, list, loading: false, tempList });
         });
     }
+    organizeShopId = (arr) => {
+        let temp = []
+        arr.forEach((item) => {
+            if(item.shopInfos) {
+                item.shopInfos.forEach((every) => {
+                    temp.push(every.shopID)
+                })
+            }
+        })
+        return temp
+    }
     onGoStep2 = () => {
         const { selectedRowKeys } = this.state;
         if(!selectedRowKeys[0]){
@@ -74,8 +97,33 @@ class Release extends Component {
         }
         const { groupID } = this.props;
         const couponPackageIDs = selectedRowKeys.join();
-        const params = { groupID, couponPackageIDs };
+        const params1 = { groupID, couponPackageIDs: selectedRowKeys };
         this.setState({ btnLoading: true });
+        axiosData(
+            "/couponPackage/querySaleShopInfo.ajax",
+            { ...params1 },
+            null,
+            { path: "couponPackageInfos" },
+            "HTTP_SERVICE_URL_PROMOTION_NEW"
+        )
+            .then(
+                (records) => {
+                    let shops = this.organizeShopId(records)
+                    //  如果shops为空证明是所有店铺
+                    this.setState({
+                        shopsInfo: shops
+                    })
+                },
+                (err) => {
+                    // network error catch
+                    message.error(err)
+                }
+            )
+            .catch((err) => {
+                // js error catch
+                console.log(err);
+            });
+        const params = { groupID, couponPackageIDs };
         getBagBatch(params).then(x => {
             const domain = urlMap[env];
             const url = `https://${domain}${urlPath}?groupID=${groupID}&couponPackagesBatchID=${x}`;
@@ -96,21 +144,44 @@ class Release extends Component {
         }
         this.setState({ selectedRowKeys, firstImg });
     }
+    constructBusinessArray = (data) => {
+        data.shops.forEach((item) => {
+            item.businessType = BUSINESS_MODEL[item.businessModel];
+        });
+        data.businessModels = [
+            {businessModel: '1', businessType: '直营 '},
+            {businessModel: '2', businessType: '加盟 '},
+            {businessModel: '3', businessType: '托管'},
+            {businessModel: '4', businessType: '合作'},
+        ]
+        return data
+    }
+    cancelDownLoad = () => {
+        this.setState({
+            downLoadFlag: true
+        })
+    }
+    goDownLoad = () => {
+        this.setState({
+            downLoadFlag: false
+        })
+    }
     render() {
-        const { current, mpInfoList, imgList, firstImg, url, btnLoading } = this.state;
+        const { current, mpInfoList, imgList, firstImg, url, btnLoading, downLoadFlag, downloadLoading } = this.state;
         const { list, loading, pageObj, selectedRowKeys } = this.state;
         const { onClose, groupID } = this.props;
         const step1 = ([<Button key="0" loading={btnLoading} onClick={this.onGoStep2}>下一步</Button>]);
         const step2 = ([
+            <Button key="2" onClick={onClose}>取消</Button>,
             <Button key="1" onClick={this.onGoStep1}>上一步</Button>,
-            <Button key="2" onClick={onClose}>确定</Button>
+            <Button key="3" onClick={this.goDownLoad} loading={downloadLoading}>下载二维码</Button>,
         ]);
         const footer = { 0: step1, 1: step2 }[current];
         return (
             <Modal
                 title=""
                 visible={true}
-                width="800"
+                width="825"
                 maskClosable={false}
                 onCancel={onClose}
                 footer={footer}
@@ -137,6 +208,10 @@ class Release extends Component {
                             firstImg={firstImg}
                             url={url}
                             groupID={groupID}
+                            downLoadFlag={downLoadFlag}
+                            cancelDownLoad={this.cancelDownLoad}
+                            shopsInfo={this.state.shopsInfo}
+                            downLoadLoadingChange={this.downLoadLoadingChange}
                         />
                     }
                 </section>
