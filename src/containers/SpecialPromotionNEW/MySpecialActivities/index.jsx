@@ -8,7 +8,7 @@ import {
     Button, Modal, message,
     Spin, Icon, Alert
 } from 'antd';
-import {throttle} from 'lodash';
+import {throttle, isEmpty} from 'lodash';
 import { jumpPage, closePage } from '@hualala/platform-base'
 import moment from 'moment';
 import copy from 'copy-to-clipboard'
@@ -477,7 +477,7 @@ class MySpecialActivities extends React.Component {
             { path: '' },
             'HTTP_SERVICE_URL_WECHAT'
         );
-        if (code === '000') {
+        if (code === '000' && !isEmpty(apps)) {
             this.setState({ apps });
         }
     }
@@ -533,7 +533,7 @@ class MySpecialActivities extends React.Component {
     }
     // 渲染小程序列表
     renderApp(){
-        const { apps } = this.state;
+        const { apps = [] } = this.state;
         return(
             <Select style={{ width: '40%', margin: '0 10px'}} onChange={this.handleAppChange}>
                 {apps.map(x=>{
