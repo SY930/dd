@@ -88,7 +88,7 @@ class PushMessageMpID extends Component {
     }
     handleDaysChange = (v) => {
         this.onTotalChange({
-            days: v,
+            reminderTime: v,
         })
     }
     handleTypeChange = (v) => {
@@ -103,8 +103,7 @@ class PushMessageMpID extends Component {
     }
     render() {
         const { formData = {} } = this.props
-        const { sendType, pushMessageMpID, days } = formData.pushMessage
-        // debugger 改这里
+        const { sendType, pushMessageMpID, reminderTime } = formData.pushMessage
         return (
             <div>
                 <div className={styles.leftPart}>
@@ -142,7 +141,7 @@ class PushMessageMpID extends Component {
                         到期前
                         <Select
                             notFoundContent={'未搜索到结果'}
-                            value={days}
+                            value={reminderTime}
                             onChange={this.handleDaysChange}
                             style={{
                                 width: 55,

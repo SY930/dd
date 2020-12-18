@@ -232,6 +232,10 @@ class GiftAddModal extends React.Component {
                 params.merchantNo = merchantNo;
                 params.settleName = settleName;
             }
+            params.openPushMessageMpID = 1;
+            params.openPushSms = params.pushMessage && params.pushMessage.sendType.indexOf('msg') !== -1 ? 1 : 0
+            params.reminderTime = params.pushMessage && params.pushMessage.reminderTime
+            params.pushMessageMpID = params.pushMessage && params.pushMessage.pushMessageMpID
             const { accountInfo, startSaving, endSaving } = this.props;
             const { groupName } = accountInfo.toJS();
             startSaving();
@@ -332,12 +336,15 @@ class GiftAddModal extends React.Component {
         if (data.shopNames && data.shopNames.length > 0 && data.shopNames[0].id) {
             formData.shopNames = data.shopNames.map(shop => shop.id);
         }
-        // debugger
         if (!formData.pushMessage) {
+            const sendType = ['wechat']
+            if (formData.openPushSms) {
+                sendType.push('msg')
+            }
             formData.pushMessage = {
                 pushMessageMpID: formData.pushMessageMpID,
-                sendType: formData.sendType || ['wechat'],
-                days: formData.days || 3,
+                sendType,
+                reminderTime: formData.reminderTime || 3,
             }
         }
         let formItems = {

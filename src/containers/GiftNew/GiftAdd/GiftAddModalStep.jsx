@@ -966,8 +966,10 @@ class GiftAddModalStep extends React.PureComponent {
             params.vivoChannel = Number((params.aggregationChannels|| []).includes('vivoChannel'));
             params.moneyLimitType = (params.moneyLimitTypeAndValue || {}).moneyLimitType;
             params.moenyLimitValue = (params.moneyLimitTypeAndValue || {}).moenyLimitValue;
-
-
+            params.openPushMessageMpID = 1;
+            params.openPushSms = params.pushMessage && params.pushMessage.sendType.indexOf('msg') !== -1 ? 1 : 0
+            params.reminderTime = params.pushMessage && params.pushMessage.reminderTime
+            params.pushMessageMpID = params.pushMessage && params.pushMessage.pushMessageMpID
             // 商城券参数调整
             this.adjustParamsOfMallGift(params);
             Array.isArray(params.supportOrderTypeLst) && (params.supportOrderTypeLst = params.supportOrderTypeLst.join(','))
@@ -2874,12 +2876,15 @@ class GiftAddModalStep extends React.PureComponent {
         formData.giftShareType = String(formData.giftShareType);
         formData.couponPeriodSettings = formData.couponPeriodSettingList;
         console.log('formData.pushMessageMpID', formData.pushMessageMpID)
-        //debugger
         if(!formData.pushMessage) {
+            const sendType = ['wechat']
+            if (formData.openPushSms) {
+                sendType.push('msg')
+            }
             formData.pushMessage = {
                 pushMessageMpID: formData.pushMessageMpID,
-                sendType: formData.sendType || ['wechat'],
-                days: formData.days || 3,
+                sendType,
+                reminderTime: formData.reminderTime || 3,
             }
         }
         return (
