@@ -252,7 +252,7 @@ class Detail extends Component {
                                         onClick={()=>this.onExport('send')}
                                     ><Icon type="export" />导出</Button>
                                 </Popover>
-                                <QueryForm onQuery={this.onQueryList} />
+                                <QueryForm treeData={this.props.treeData} onQuery={this.onQueryList} />
                                 <MainTable
                                     list={list}
                                     loading={loading}

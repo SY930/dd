@@ -145,20 +145,20 @@ class Step2 extends Component {
     onQrCodeDownload = (index) => {
         const { zip, shops } = this.state
         const { cancelDownLoad } = this.props
-        if (!shops.length) {
-            const canvas = document.getElementById('bag_qr_canvas');
-            const dom = document.createElement('a');
-            dom.href = canvas.toDataURL('image/png');
-            dom.download = '二维码.png';
+        // if (!shops.length) {
+        //     const canvas = document.getElementById('bag_qr_canvas');
+        //     const dom = document.createElement('a');
+        //     dom.href = canvas.toDataURL('image/png');
+        //     dom.download = '二维码.png';
+        //     dom.click();
+        // } else {
+        const dom = document.createElement('a');
+        if (zip) {
+            dom.href = zip;
+            // dom.download = '二维码.png';
             dom.click();
-        } else {
-            const dom = document.createElement('a');
-            if (zip) {
-                dom.href = zip;
-                // dom.download = '二维码.png';
-                dom.click();
-            }
         }
+        // }
         cancelDownLoad()
     }
     onTypeChange = (e) => {
@@ -228,19 +228,22 @@ class Step2 extends Component {
     filterShopData = () => {
         const shopData = this.props.shopSchema.toJS().shopSchema || {}
         const shopsInfo = this.props.shopsInfo
-        if (!shopsInfo.length) {
+        if (shopsInfo) {
+            if (!shopsInfo.length) {
+                return shopData
+            }
+            const temp = []
+            shopData.shops && shopData.shops.forEach((item) => {
+                if (shopsInfo.some((every) => {
+                    return every == item.shopID
+                })) {
+                    temp.push(item)
+                }
+            })
+            shopData.shops = temp
             return shopData
         }
-        const temp = []
-        shopData.shops && shopData.shops.forEach((item) => {
-            if (shopsInfo.some((every) => {
-                return every == item.shopID
-            })) {
-                temp.push(item)
-            }
-        })
-        shopData.shops = temp
-        return shopData
+        return []     
     }
     render() {
         const { mpID, imgID, item, url2, type, shops, mpError, imgError, zip } = this.state;

@@ -55,6 +55,7 @@ export default class TicketBag extends Component {
                     onQuery={this.onQueryList}
                     onGoEdit={onGoEdit}
                     status={couponPackageStatus}
+                    treeData={this.props.treeData}
                 />
                 {visible &&
                     <ReleaseModal
