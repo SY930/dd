@@ -80,13 +80,30 @@ class Release extends Component {
     }
     organizeShopId = (arr) => {
         let temp = []
-        arr.forEach((item) => {
-            if(item.shopInfos) {
-                item.shopInfos.forEach((every) => {
-                    temp.push(every.shopID)
-                })
-            }
-        })
+        try {
+            arr.forEach((item) => {
+                if (item.shopInfos) {
+                    const cross = []
+                    item.shopInfos.forEach((every) => {
+                        cross.push(every.shopID)
+                    })
+                    if (cross.length && temp.length) {
+                        temp = temp.filter((i) => {
+                            return cross.indexOf(i) !== -1
+                        })
+                        if (!temp.length) {
+                            throw new Error('it has no range')
+                        }   
+                    }
+                    if (!temp.length) {
+                        temp = cross
+                    }
+                }
+            })
+        } catch(e) {
+            return false
+        }
+       
         return temp
     }
     onGoStep2 = () => {

@@ -228,19 +228,22 @@ class Step2 extends Component {
     filterShopData = () => {
         const shopData = this.props.shopSchema.toJS().shopSchema || {}
         const shopsInfo = this.props.shopsInfo
-        if (!shopsInfo.length) {
+        if (shopsInfo) {
+            if (!shopsInfo.length) {
+                return shopData
+            }
+            const temp = []
+            shopData.shops && shopData.shops.forEach((item) => {
+                if (shopsInfo.some((every) => {
+                    return every == item.shopID
+                })) {
+                    temp.push(item)
+                }
+            })
+            shopData.shops = temp
             return shopData
         }
-        const temp = []
-        shopData.shops && shopData.shops.forEach((item) => {
-            if (shopsInfo.some((every) => {
-                return every == item.shopID
-            })) {
-                temp.push(item)
-            }
-        })
-        shopData.shops = temp
-        return shopData
+        return []     
     }
     render() {
         const { mpID, imgID, item, url2, type, shops, mpError, imgError, zip } = this.state;
