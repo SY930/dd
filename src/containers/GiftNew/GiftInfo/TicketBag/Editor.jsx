@@ -11,7 +11,7 @@ import styles from './index.less';
 import { formItems, formKeys, formItemLayout } from './Common';
 import { keys1, keys2, keys3, keys4, keys5, DF, TF } from './Common';
 import GiftInfo from '../../GiftAdd/GiftInfo';
-import ImageUpload from './ImageUpload';
+import ImageUploader from './ImageUploader';
 import EveryDay from './EveryDay';
 import { putTicketBag, postTicketBag } from './AxiosFactory';
 
@@ -82,7 +82,7 @@ export default class Editor extends Component {
         const disGift = check || (+sendCount > 0);
         const render = d => d()(<GiftInfo disabled={disGift} />);
         const render1 = d => d()(<ShopSelector disabled={check} />);
-        const render2 = d => d()(<ImageUpload />);
+        const render2 = d => d()(<ImageUploader />);
         const render3 = d => d()(<EveryDay type={cycleType} disabled={disGift} />);
         let disDate = {};
         const isEdit = !!detail;    // 编辑状态下

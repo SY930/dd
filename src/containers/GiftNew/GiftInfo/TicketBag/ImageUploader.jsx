@@ -1,55 +1,58 @@
 import React, { PureComponent as Component } from 'react';
 import { Upload, Icon, message } from 'antd'
 import css from './upload.less';
+import ImageUpload from 'components/common/ImageUpload';
 
 const imgURI = 'http://res.hualala.com/';
 const imgType = '.jpeg,.jpg,.png,.gif,.JPEG,.JPG,.PNG,.GIF';
 const imgSize = 3 * 1024 * 1024;
 
-class ImageUpload extends Component {
+class ImageUploader extends Component {
     state = {
         percent: 100,
     }
-    onUpload = (file) => {
-        if (!file) return true // in case of browser compatibility
-        const {
-            limitType = imgType,
-            limitSize = imgSize,
-        } = this.props
-        const types = limitType ? limitType.split(',') : []
-        const sizes = Array.isArray(limitSize) ? limitSize : [limitSize]
-        const matchedType = types.find((type) => {
-            const regexp = new RegExp(`^.*${type.replace('.', '\\\.')}$`)
-            return file.name.match(regexp)
-        })
-        const matchIndex = types.indexOf(matchedType)
-        const matchedSize = sizes[matchIndex] || sizes[0]
-        if (types.length && !matchedType) {
-            message.error('上传文件格式错误')
-            return false
-        }
-        if (matchedSize !== undefined && matchedSize !== 0 && file.size > matchedSize) {
-            message.error('上传文件大小超过限制')
-            return false
-        }
-        return true
-    }
+    // onUpload = (file) => {
+    //     if (!file) return true // in case of browser compatibility
+    //     const {
+    //         limitType = imgType,
+    //         limitSize = imgSize,
+    //     } = this.props
+    //     const types = limitType ? limitType.split(',') : []
+    //     const sizes = Array.isArray(limitSize) ? limitSize : [limitSize]
+    //     const matchedType = types.find((type) => {
+    //         const regexp = new RegExp(`^.*${type.replace('.', '\\\.')}$`)
+    //         return file.name.match(regexp)
+    //     })
+    //     const matchIndex = types.indexOf(matchedType)
+    //     const matchedSize = sizes[matchIndex] || sizes[0]
+    //     if (types.length && !matchedType) {
+    //         message.error('上传文件格式错误')
+    //         return false
+    //     }
+    //     if (matchedSize !== undefined && matchedSize !== 0 && file.size > matchedSize) {
+    //         message.error('上传文件大小超过限制')
+    //         return false
+    //     }
+    //     return true
+    // }
 
-    onChange = ({ file }) => {
-        const { status, response } = file;
-        if (status === 'uploading') {
-            const { percent } = file;
-            this.setState({ percent });
-        }
-        if (status === 'error') {
-            message.error('图片上传失败，请稍后重试');
-            this.setState({ percent: 100 });
-            return;
-        }
-        if (status === 'done') {
-            const { url } = response;
-            this.props.onChange(url);
-        }
+    onChange = ( file='' ) => {
+        // const { status, response } = file;
+        // if (status === 'uploading') {
+        //     const { percent } = file;
+        //     this.setState({ percent });
+        // }
+        // if (status === 'error') {
+        //     message.error('图片上传失败，请稍后重试');
+        //     this.setState({ percent: 100 });
+        //     return;
+        // }
+        // if (status === 'done') {
+        // const { url } = response;
+        const { defValue } = this.props;
+        debugger
+        this.props.onChange(file || defValue);
+        // }
     }
 
     onReset = () => {
@@ -61,6 +64,7 @@ class ImageUpload extends Component {
         const { percent } = this.state;
         const { defValue = '', value } = this.props;
         const imgUrl = value || defValue;
+        // const imgUrl = value || '';
         const isNotDef = defValue && value && (value !== defValue);
         const loading = (percent !== 100);
         const point = loading ? { pointerEvents: 'none' } : {};
@@ -68,9 +72,14 @@ class ImageUpload extends Component {
         return (
             <div>
                 <div className={`${css.wrap} imgageUpload`} style={point}>
-                    <Upload
-                        name="myFile"
-                        action="/api/common/imageUpload"
+                    <ImageUpload
+                        className={css.uploadBox}
+                        onChange={this.onChange}
+                        limitSize={imgSize}
+                        limitType={imgType}
+                        value={imgUrl}
+                    />
+                    {/* <Upload
                         className={css.uploadBox}
                         showUploadList={false}
                         beforeUpload={this.onUpload}
@@ -92,10 +101,10 @@ class ImageUpload extends Component {
                                 </div>
                             </div>
                         }
-                    </Upload>
-                    {isNotDef &&
+                    </Upload> */}
+                    {/* {isNotDef &&
                         <a href="javascript:;" className={css.reset} onClick={this.onReset}>重置</a>
-                    }
+                    } */}
                 </div>
                 <div>
                     <p className="ant-upload-hint">尺寸建议750*318</p>
@@ -107,4 +116,5 @@ class ImageUpload extends Component {
     }
 }
 
-export default ImageUpload
+export default ImageUploader
+
