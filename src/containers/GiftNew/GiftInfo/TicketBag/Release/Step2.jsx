@@ -256,7 +256,7 @@ class Step2 extends Component {
                             <Input ref={this.onGetInput} value={url} />
                             <Button onClick={this.onCopy}>复制</Button>
                         </div>
-                        <p>投放链接可配置至公众号菜单或进行线上餐厅、小程序等场景功能配置</p>
+                        <p>投放链接可配置至公众号菜单或进行线上餐厅等场景功能配置</p>
                     </div>
                 </li>
                 <li>

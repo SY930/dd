@@ -174,7 +174,7 @@ class Release extends Component {
         const step2 = ([
             <Button key="2" onClick={onClose}>取消</Button>,
             <Button key="1" onClick={this.onGoStep1}>上一步</Button>,
-            <Button key="3" onClick={this.goDownLoad} loading={downloadLoading}>下载二维码</Button>,
+            <Button key="3" type={'primary'} onClick={this.goDownLoad} loading={downloadLoading}>下载二维码</Button>,
         ]);
         const footer = { 0: step1, 1: step2 }[current];
         return (
