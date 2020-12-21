@@ -206,6 +206,7 @@ class MainTable extends Component {
                 {visible &&
                 <DetailModal
                     ids={{ groupID, couponPackageID }}
+                    treeData={this.props.treeData}
                     detail={detail}
                     onClose={this.onToggleModal}
                 />

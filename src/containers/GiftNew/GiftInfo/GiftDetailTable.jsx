@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import { COMMON_LABEL } from 'i18n/common';
 import _ from 'lodash';
 import {throttle} from 'lodash';
-import { axiosData, fetchData } from '../../../helpers/util';
+import { axiosData, fetchData, isFilterShopType } from '../../../helpers/util';
 import GiftCfg from '../../../constants/Gift';
 import SelectBrands from '../components/SelectBrands'
 import BaseForm from '../../../components/common/BaseForm';
@@ -27,6 +27,7 @@ import {
     emptyGetSharedGifts,
     queryCouponShopList,
     queryWechatMpInfo, startEditGift,
+    FetchGiftSchema,
 } from '../_action';
 import {
     toggleIsUpdateAC,
@@ -69,6 +70,7 @@ class GiftDetailTable extends Component {
             total: 2,
             tableHeight: '100%',
             usedTotalSize: 0,
+            treeData: [],
         };
         this.tableRef = null;
         this.setTableRef = el => this.tableRef = el;
@@ -99,7 +101,7 @@ class GiftDetailTable extends Component {
     }
 
     componentDidMount() {
-        const { FetchGiftList } = this.props;
+        const { FetchGiftList, shopData, FetchGiftSchemaAC } = this.props;
         FetchGiftList({
             pageNo: 1,
             pageSize: 20,
@@ -115,15 +117,25 @@ class GiftDetailTable extends Component {
             });
             this.setState({ brands });
         });
+        const _shopData = shopData.toJS();
+        if (_shopData.length === 0) {
+            let parm = {}
+            if (isFilterShopType()) {
+                parm = { productCode: 'HLL_CRM_License' }
+            }
+            FetchGiftSchemaAC(parm)
+        }
         this.props.queryWechatMpInfo();
     }
 
     componentWillReceiveProps(nextProps) {
-        const { dataSource } = nextProps;
+        const { dataSource, shopData } = nextProps;
         const data = dataSource.toJS();
         if (this.state.dataSource !== data) {
             this.proGiftData(data);
         }
+        const _shopData = shopData.toJS();
+        this.proShopData(_shopData);
     }
 
     getTableColumns = () => {
@@ -488,6 +500,32 @@ class GiftDetailTable extends Component {
         });
     }
 
+    proShopData = (shops = []) => {
+        const treeData = [];
+        shops.map((item, idx) => {
+            const index = _.findIndex(treeData, { label: item.cityName })
+            if (index !== -1) {
+                treeData[index].children.push({
+                    label: item.shopName,
+                    value: item.shopID,
+                    key: item.shopID,
+                });
+            } else {
+                treeData.push({
+                    label: item.cityName,
+                    key: item.cityID,
+                    children: [{
+                        label: item.shopName,
+                        value: item.shopID,
+                        key: item.shopID,
+                    }],
+                });
+            }
+        });
+        // console.log('treeData', treeData)
+        this.setState({ treeData });
+    }
+
     render() {
         const { visibleDetail, visibleEdit, editGift, data, queryParams } = this.state;
         const { pageNo, pageSize } = queryParams;
@@ -523,6 +561,7 @@ class GiftDetailTable extends Component {
                     return null;
             }
         };
+
         const GiftDetail = (v) => {
             switch (v) {
                 case '10':
@@ -696,7 +735,7 @@ class GiftDetailTable extends Component {
                     </div>
                 </TabPane>
                     <TabPane tab="券包查询" key="2">
-                        <TicketBag groupID={groupID} onGoEdit={this.props.togglePage} />
+                        <TicketBag groupID={groupID} onGoEdit={this.props.togglePage} treeData={this.state.treeData} />
                     </TabPane>
                 </Tabs>
                 <div>
@@ -744,6 +783,7 @@ function mapStateToProps(state) {
         dataSource: state.sale_giftInfoNew.get('dataSource'),
         loading: state.sale_giftInfoNew.get('loading'),
         user: state.user.toJS(),
+        shopData: state.sale_giftInfoNew.get('shopData'),
     }
 }
 
@@ -761,6 +801,7 @@ function mapDispatchToProps(dispatch) {
         fetchAllPromotionList: (opts) => dispatch(fetchAllPromotionListAC(opts)),
         queryCouponShopList: (opts) => dispatch(queryCouponShopList(opts)),
         queryWechatMpInfo: () => dispatch(queryWechatMpInfo()),
+        FetchGiftSchemaAC: opts => dispatch(FetchGiftSchema(opts)),
     };
 }
 

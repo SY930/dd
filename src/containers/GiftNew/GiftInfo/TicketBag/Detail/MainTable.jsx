@@ -83,6 +83,7 @@ class MainTable extends Component {
             { width: 100, title: '发出方式', dataIndex: 'way' },
             { width: 80, title: '状态', dataIndex: 'stat' },
             { width: 160, title: '发出时间', dataIndex: 'createStamp' },
+            { width: 160, title: '发出店铺', dataIndex: 'sendShopName' },
             { width: 160, title: '客户编号', dataIndex: 'customerID' },
             { width: 100, title: '姓名', dataIndex: 'customerName' },
             { width: 60, title: '性别', dataIndex: 'sex', className: tc },
