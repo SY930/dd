@@ -50,7 +50,7 @@ class Step1 extends Component {
         };
         const tableProps = { rowSelection: { selectedRowKeys, onChange } };
         const tips = <p>提示：<br />1、仅付费购买类型的券包可以选择投放；<br />
-            2、公众号菜单、线上餐厅、小程序可以配置链接进行投放，二维码可以投放在微信公众号文章等场景做为物料推广。
+            2、公众号菜单、线上餐厅可以配置链接进行投放，二维码可以投放在微信公众号文章等场景做为物料推广。
             其中，选择公众号后可在二维码推广场景扫码先关注公众号再购买券包。</p>
         return (
                 <div className={styles.tableBox}>
