@@ -221,9 +221,10 @@ class CustomerRange extends Component {
                                             )
                                         }
                                     </FormItem>
-                                    <FormItem  label=" " >
+                                    <FormItem label=" " >
                                         <span className={styles.iconWrap}>
                                             {
+                                                (index == value.length - 1 && value.length < 10) &&
                                                 <Icon onClick={this.addEventRule} type="plus-circle-o" />
                                             }
                                             {

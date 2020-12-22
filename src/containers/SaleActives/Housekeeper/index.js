@@ -264,7 +264,7 @@ class Housekeeper extends React.Component {
             }, 
             customerRangeSettings: {
                 type: 'custom',
-                label: '推送设置',
+                label: ' ',
                 labelCol: { span: 2 },
                 wrapperCol: { span: 20 },
                 rules: ['required'],
