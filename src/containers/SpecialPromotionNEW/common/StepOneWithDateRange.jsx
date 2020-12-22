@@ -725,20 +725,21 @@ class StepOneWithDateRange extends React.Component {
         if (startTime != '' && startTime == moment().format('YYYYMMDD') && this.state.timeString != '' && this.state.timeString < moment().format('HHmmss') + 10) {
             this.props.form.setFieldsValue({
                 sendTime: '',
+                timeString: ''
             });
         }
-        if (startTime != '' && this.state.timeString == '' && moment().hours() < 23) {
-            const minutes = moment().minutes() < 50 ? moment().minutes() + 10 : `0${moment().minutes() - 50}`;
-            let hours = moment().minutes() < 50 ? moment().hours() : moment().hours() + 1;
-            hours = hours >= 10 ? hours : `0${hours}`;
-            this.setState({
-                timeString: `${hours}${minutes}00`,
-            }, () => {
-                this.props.form.setFieldsValue({
-                    sendTime: this.state.timeString ? moment(this.state.timeString, 'HHmm') : '',
-                });
-            })
-        }
+        // if (startTime != '' && this.state.timeString == '' && moment().hours() < 23) {
+        //     const minutes = moment().minutes() < 50 ? moment().minutes() + 10 : `0${moment().minutes() - 50}`;
+        //     let hours = moment().minutes() < 50 ? moment().hours() : moment().hours() + 1;
+        //     hours = hours >= 10 ? hours : `0${hours}`;
+        //     this.setState({
+        //         timeString: `${hours}${minutes}00`,
+        //     }, () => {
+        //         this.props.form.setFieldsValue({
+        //             sendTime: this.state.timeString ? moment(this.state.timeString, 'HHmm') : '',
+        //         });
+        //     })
+        // }
     }
     handlesmsGateChange(val) {
         this.setState({
