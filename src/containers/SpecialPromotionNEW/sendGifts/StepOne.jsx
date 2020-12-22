@@ -521,7 +521,7 @@ class StepOne extends React.Component {
                 let addHour = curMinute > 30 ? 3 : 2
                 if (curHour + addHour == selectedHour) {
                     if(curMinute > 30 || curMinute == 0){
-                        return result.filter(item => item != 0)
+                        return result.filter(item => item != 0 && item != 30)
                     }else{
                         return result.filter(item => item != 30)
                     }
@@ -529,6 +529,7 @@ class StepOne extends React.Component {
                     return result.filter(item => item != 0 && item != 30);
                 }
             }
+            return result.filter(item => item != 0 && item != 30);
         }
 
         let timeStringInitialValue = '';
