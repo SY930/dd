@@ -125,8 +125,8 @@ class BlindBox extends Component {
                 const { effectType, effectTime, validUntilDate, giftEffectTimeHours: hours, giftID, ...others } = x;
                 let rangeDate = [];
                 if(effectTime) {
-                    const st = moment(effectTime, DF);
-                    const et = moment(validUntilDate, DF);
+                    const st = effectTime != '0' ? moment(effectTime, DF) : moment(new Date());
+                    const et = validUntilDate != '0' ? moment(validUntilDate, DF) : moment(new Date());
                     rangeDate = [ st, et ];
                 }
                 let countType = '0';
@@ -157,8 +157,8 @@ class BlindBox extends Component {
                 const { effectType, effectTime, validUntilDate, giftEffectTimeHours: hours, giftID, ...others } = x;
                 let rangeDate = [];
                 if(effectTime) {
-                    const st = moment(effectTime, DF);
-                    const et = moment(validUntilDate, DF);
+                    const st = effectTime != '0' ? moment(effectTime, DF) : moment(new Date());
+                    const et = validUntilDate != '0' ? moment(validUntilDate, DF) : moment(new Date());
                     rangeDate = [ st, et ];
                 }
                 let countType = '0';
@@ -346,13 +346,18 @@ class BlindBox extends Component {
                 // 1 独立优惠券
                 if(presentType === '1') {
                     giftList.forEach(x => {
-                        const { rangeDate, countType, effectType: etype, giftTotalCount, ...others } = x;
+                        let { rangeDate, countType, effectType: etype, effectTime = '0', validUntilDate = '0', giftTotalCount, ...others } = x;
+                        console.log('???', etype)
                         const rangeObj = this.formatRangeDate(rangeDate);
                         let effectType = etype;
                         if(etype === '1' && countType === '1') {
                             effectType = '3';
                         }
-                        const obj = { ...others, ...rawObj, ...rangeObj,  effectType };
+                        if(etype != '2'){
+                            effectTime = '0'; 
+                            validUntilDate = '0';
+                        }
+                        const obj = { ...others, ...rawObj, ...rangeObj, effectType, effectTime, validUntilDate, countType };
                         gifts.push(obj);
                     });
                 }
