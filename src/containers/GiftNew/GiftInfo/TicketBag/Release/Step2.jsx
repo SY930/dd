@@ -72,13 +72,15 @@ class Step2 extends Component {
     }
     onGetQrImg({ mpID, imgID, item, shops }) {
         const { groupID, url, firstImg, downLoadLoadingChange } = this.props;
-        let { count } = this.state
+        let { count, type } = this.state
+        if (type === 2 && !mpID) {
+            return
+        }
         this.setState({
             count: count + 1,
         }, () => {
             // console.log('count', this.state.count)
             downLoadLoadingChange(true)
-            const { type } = this.state
             if (type === 1) {
                 // 当为普通二维码
                 // if (!shops.length) {
@@ -281,7 +283,7 @@ class Step2 extends Component {
                             {
                                 type === 2 && <div style={{ marginBottom: 20 }}>
                                     <div className={styles.accountBox}>
-                                        <span>引导关注公众号</span>
+                                        <span><span className={styles.redFont}>*</span>引导关注公众号</span>
                                         <div>
                                             <Select allowClear={true} value={mpID} onChange={this.onAccountChange}>
                                                 {mpInfoList.map(x => <Option value={x.mpID}>{x.mpName}</Option>)}
@@ -292,7 +294,7 @@ class Step2 extends Component {
                                     </div>
                                     {mpID &&
                                         <div className={styles.imgListBox}>
-                                            <span>图文消息</span>
+                                            <span><span className={styles.redFont}>*</span>图文消息</span>
                                             <div>
                                                 <Select allowClear={true} value={imgID} onChange={this.onImgTxtChange}>
                                                     {imgList.map(x => <Option value={`${x.itemID}`}>{x.resTitle}</Option>)}
