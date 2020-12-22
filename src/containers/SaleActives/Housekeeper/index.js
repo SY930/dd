@@ -45,17 +45,17 @@ class Housekeeper extends React.Component {
 
     judege = (index, arr) => {
         for (var k in arr) {
-            if(arr[k].amountStart >= arr[k].amountEnd){
-                message.warning('单均消费结束必须大于开始！')
+            if(Number(arr[k].amountStart) >= Number(arr[k].amountEnd)){
+                message.warning(`第${Number(k)+1}条单均消费结束必须大于开始！`)
                 return false;
             }
             if (index !== k) {
                 //判断交叉时间是从第一个对象对比除了本身之外的开始时间和结束时间，如果开始时间在对比对象的开始时间和结束时间之间，或者结束时间在对比对象的开始时间和结束时间之间则是交叉。
-                if (arr[k].amountStart <= arr[index].amountStart && arr[k].amountEnd >= arr[index].amountStart) {
+                if (Number(arr[k].amountStart) <= Number(arr[index].amountStart) && Number(arr[k].amountEnd) >= Number(arr[index].amountStart)) {
                     message.warning('每组规则的金额不能有交叉');
                     return false
                 }
-                if (arr[k].amountStart <= arr[index].amountEnd && arr[k].amountEnd >= arr[index].amountEnd) {
+                if (Number(arr[k].amountStart) <= Number(arr[index].amountEnd) && Number(arr[k].amountEnd) >= Number(arr[index].amountEnd)) {
                     message.warning('每组规则的金额不能有交叉');
                     return false
                 }
