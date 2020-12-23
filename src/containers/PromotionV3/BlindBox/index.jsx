@@ -125,8 +125,8 @@ class BlindBox extends Component {
                 const { effectType, effectTime, validUntilDate, giftEffectTimeHours: hours, giftID, ...others } = x;
                 let rangeDate = [];
                 if(effectTime) {
-                    const st = moment(effectTime, DF);
-                    const et = moment(validUntilDate, DF);
+                    const st = effectTime != '0' ? moment(effectTime, DF) : moment(new Date());
+                    const et = validUntilDate != '0' ? moment(validUntilDate, DF) : moment(new Date());
                     rangeDate = [ st, et ];
                 }
                 let countType = '0';
@@ -157,8 +157,8 @@ class BlindBox extends Component {
                 const { effectType, effectTime, validUntilDate, giftEffectTimeHours: hours, giftID, ...others } = x;
                 let rangeDate = [];
                 if(effectTime) {
-                    const st = moment(effectTime, DF);
-                    const et = moment(validUntilDate, DF);
+                    const st = effectTime != '0' ? moment(effectTime, DF) : moment(new Date());
+                    const et = validUntilDate != '0' ? moment(validUntilDate, DF) : moment(new Date());
                     rangeDate = [ st, et ];
                 }
                 let countType = '0';
@@ -349,11 +349,16 @@ class BlindBox extends Component {
                     giftList.forEach(x => {
                         const { rangeDate, countType, effectType: etype, giftTotalCount, ...others } = x;
                         const rangeObj = this.formatRangeDate(rangeDate);
+                        let {effectTime, validUntilDate} = rangeObj
                         let effectType = etype;
                         if(etype === '1' && countType === '1') {
                             effectType = '3';
                         }
-                        const obj = { ...others, ...rawObj, ...rangeObj,  effectType };
+                        if(etype != '2'){
+                            effectTime = '0'; 
+                            validUntilDate = '0';
+                        }
+                        const obj = { ...others, ...rawObj, ...rangeObj, effectType, effectTime, validUntilDate, countType };
                         gifts.push(obj);
                     });
                 }
@@ -375,11 +380,16 @@ class BlindBox extends Component {
                     giftList.forEach(x => {
                         const { rangeDate, countType, effectType: etype, giftTotalCount, ...others } = x;
                         const rangeObj = this.formatRangeDate(rangeDate);
+                        let {effectTime, validUntilDate} = rangeObj
                         let effectType = etype;
                         if(etype === '1' && countType === '1') {
                             effectType = '3';
                         }
-                        const obj = { ...rawObj, ...rangeObj, ...others, effectType };
+                        if(etype != '2'){
+                            effectTime = '0'; 
+                            validUntilDate = '0';
+                        }
+                        const obj = { ...rawObj, ...rangeObj, ...others, effectType, effectTime, validUntilDate };
                         gifts.push(obj);
                     });
                 }
@@ -395,8 +405,8 @@ class BlindBox extends Component {
             return {}
         }
         const [start, end] = rangeDate;
-        const effectTime = start.format(DF);
-        const validUntilDate = end.format(DF);
+        const effectTime = start.format(DF) || '0';
+        const validUntilDate = end.format(DF) || '0';
         return { effectTime, validUntilDate };
     }
 

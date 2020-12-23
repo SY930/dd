@@ -21,24 +21,26 @@ export default class Gift extends Component {
             const options = (value === '0') ? timeOpts : dayOpts;
             this.setState({ options });
             if(this.state.countTypeEditFlag){
+                console.log('>>ccc',)
                 this.form.setFieldsValue({ 'giftEffectTimeHours': value });
                 onChange(idx, {[key]: value, 'giftEffectTimeHours': value});
             } 
             this.setState({countTypeEditFlag: true})
         }else if(key==='effectType'){
-            if(value === '1') {
+            if(value == '1') {
                 this.setState({ formKeys: formKeys1 }, ()=>{
-                    const countType = this.form.getFieldValue('countType');
-                    if(this.state.effectTypeEditFlag){
-                        this.form.setFieldsValue({ 'giftEffectTimeHours': countType });
-                        onChange(idx, {[key]: value, 'giftEffectTimeHours': countType});
-                    } 
-                    this.setState({effectTypeEditFlag: true})
                 });
+                const countType = this.form.getFieldValue('countType');
+                if(this.state.effectTypeEditFlag){
+                    console.log('>>eee',)
+                    this.form.setFieldsValue({ 'giftEffectTimeHours': countType });
+                    onChange(idx, {[key]: value, 'giftEffectTimeHours': countType});
+                } 
             } else {
                 onChange(idx, { [key]: value });
                 this.setState({ formKeys: formKeys2 });
             }
+            this.setState({effectTypeEditFlag: true})
         }else{
             onChange(idx, { [key]: value });
         }
@@ -68,7 +70,10 @@ export default class Gift extends Component {
     }
     render() {
         const { formKeys } = this.state;
-        const { formData } = this.props;
+        let { formData } = this.props;
+        let {giftEffectTimeHours} = formData
+        console.log('>>hours', giftEffectTimeHours)
+        formData = {...formData, giftEffectTimeHours: String(giftEffectTimeHours)}
         const newFormItems = this.resetFormItems();
         return (
             <div className={css.mainBox}>
