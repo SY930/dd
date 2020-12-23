@@ -28,7 +28,7 @@ export const BASIC_PROMOTION_MAP = {
     '1010': '特价菜',
     '4010': '团购活动',
     '1050': '第二份打折',
-    '1070': '加价换购',
+    // '1070': '加价换购',
     '5010': '菜品推荐',
     '1090': '加价升级换新',
     '2010': '满减/每满减',
@@ -649,6 +649,23 @@ export const SALE_PROMOTION_TYPES = [
         bottom: 6,
     },
 ];
+
+/**
+ * 管家活动  哗管家
+ */
+export const HOUSEKEEPER_TYPES = [
+    {
+        title: '流失唤醒',
+        isSpecial: true,
+        text: '',
+        example: '',
+        tags: [],
+        key: 'housekeeper',
+        right: 2,
+        bottom: -14,
+        isHot: false,
+    },
+]
 
 export const WECHAT_MALL_ACTIVITIES = [
     {

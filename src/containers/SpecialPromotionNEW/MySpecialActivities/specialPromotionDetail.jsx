@@ -36,6 +36,7 @@ import {
 } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 import { CHARACTERISTIC_CATEGORIES } from '../../../redux/actions/saleCenterNEW/types';
 import InviteeModal from './InviteeModal';
+import GiftDetailModal from './GiftDetailModal';
 import { axiosData } from '../../../helpers/util';
 import { injectIntl } from 'i18n/common/injectDecorator';
 import { STRING_SPE } from 'i18n/common/special';
@@ -95,6 +96,7 @@ class SpecialPromotionDetail extends React.Component {
             pageNo: record.userInfo.pageNo || 1,
             total: record.userInfo.totalSize || 0,
             inviteeModalVisble: false,
+            giftDetailModalVisble: false,
             selectedInviter: null,
             recommendStatitics: [],
             popoverVisible: false,
@@ -203,6 +205,18 @@ class SpecialPromotionDetail extends React.Component {
                             inviterName={this.state.selectedInviter.name}
                             onClose={() => this.setState({
                                 inviteeModalVisble: false,
+                                selectedInviter: null,
+                            })}
+                        />
+                    )
+                }
+                {
+                    this.state.giftDetailModalVisble && (
+                        <GiftDetailModal
+                            eventID={this.state.eventInfo.data.itemID}
+                            customerID={this.state.selectedInviter.customerID}
+                            onClose={() => this.setState({
+                                giftDetailModalVisble: false,
                                 selectedInviter: null,
                             })}
                         />
@@ -1073,6 +1087,13 @@ class SpecialPromotionDetail extends React.Component {
         })
     }
 
+    handleGiftDetailModalOpen = (record) => {
+        this.setState({
+            giftDetailModalVisble: true,
+            selectedInviter: record,
+        })
+    }
+
     // 活动参与表格
     renderActivityInfoTable() {
         const eventWay = this.state.eventInfo.data.eventWay;
@@ -1148,6 +1169,17 @@ class SpecialPromotionDetail extends React.Component {
                 className: 'TableTxtCenter',
                 width: 160,
             },
+            // 群发礼品
+            eventWay == 53 && ({
+                title: '礼品详情',
+                dataIndex: 'look',
+                key: 'look',
+                className: 'TableTxtCenter',
+                width: 100,
+                render:(text, record)=> {
+                    return (<a onClick={()=>this.handleGiftDetailModalOpen(record)}>查看</a>)
+                }
+            }),
             eventWay == 75 && ({
                 title: '兑换点数',
                 dataIndex: 'joinCount',
@@ -1255,7 +1287,7 @@ class SpecialPromotionDetail extends React.Component {
                 joinCount: user.joinCount || 0,
             }
         });
-        console.log('dataSource', dataSource);
+        // console.log('dataSource', dataSource);
         return (
             <Table
                 dataSource={dataSource}

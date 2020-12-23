@@ -722,23 +722,25 @@ class StepOneWithDateRange extends React.Component {
         this.setState({
             startTime,
         })
-        if (startTime != '' && startTime == moment().format('YYYYMMDD') && this.state.timeString != '' && this.state.timeString < moment().format('HHmmss') + 10) {
+        // if (startTime != '' && startTime == moment().format('YYYYMMDD') && this.state.timeString != '' && this.state.timeString < moment().format('HHmmss') + 10) {
             this.props.form.setFieldsValue({
                 sendTime: '',
             });
-        }
-        if (startTime != '' && this.state.timeString == '' && moment().hours() < 23) {
-            const minutes = moment().minutes() < 50 ? moment().minutes() + 10 : `0${moment().minutes() - 50}`;
-            let hours = moment().minutes() < 50 ? moment().hours() : moment().hours() + 1;
-            hours = hours >= 10 ? hours : `0${hours}`;
-            this.setState({
-                timeString: `${hours}${minutes}00`,
-            }, () => {
-                this.props.form.setFieldsValue({
-                    sendTime: this.state.timeString ? moment(this.state.timeString, 'HHmm') : '',
-                });
-            })
-        }
+            this.setState({timeString: ''})
+            
+        // }
+        // if (startTime != '' && this.state.timeString == '' && moment().hours() < 23) {
+        //     const minutes = moment().minutes() < 50 ? moment().minutes() + 10 : `0${moment().minutes() - 50}`;
+        //     let hours = moment().minutes() < 50 ? moment().hours() : moment().hours() + 1;
+        //     hours = hours >= 10 ? hours : `0${hours}`;
+        //     this.setState({
+        //         timeString: `${hours}${minutes}00`,
+        //     }, () => {
+        //         this.props.form.setFieldsValue({
+        //             sendTime: this.state.timeString ? moment(this.state.timeString, 'HHmm') : '',
+        //         });
+        //     })
+        // }
     }
     handlesmsGateChange(val) {
         this.setState({
@@ -1013,6 +1015,14 @@ class StepOneWithDateRange extends React.Component {
             .diff(actStartDate[0], 'days') + 1;
     }
 
+    range = (start, end) => {
+        const result = [];
+        for (let i = start; i < end; i++) {
+            result.push(i);
+        }
+        return result;
+    }
+
 
     render() {
         const categorys = this.props.saleCenter.get('characteristicCategories').toJS();
@@ -1069,32 +1079,33 @@ class StepOneWithDateRange extends React.Component {
             }
             return [];
         }
-        const disabledHours = () => {
-            const nowHour = moment().hour();
-            const range = [];
-            for (let i = 0; i < 24; i++) {
-                range.push(i);
-            }
-            if (moment().minutes() + 10 > 59) {
-                return range.splice(0, nowHour + 1)
-            }
-            return range.splice(0, nowHour);
-        }
-        const disabledMinutes = (selectedHour) => {
-            const range = [];
-            for (let i = 0; i < 60; i++) {
-                range.push(i);
-            }
-            if (moment().hour() == selectedHour) {
-                return range.splice(0, moment().minutes() + 10);
-            }
-            if (moment().minutes() > 50) {
-                return range.splice(0, moment().minutes() - 50);
-            }
-            if (selectedHour == null || selectedHour < moment().hour()) {
-                return range;
+        // 不可用时间组件
+        // 活动执行当天可以修改的发送时间为系统时间的后2小时的整点或半点
+        let curHour = moment().get('hour');
+        let curMinute = moment().get('minute');
+        let disabledHours = () => {
+            if(moment().format('YYYYMMDD') == this.state.startTime){
+                let hours = this.range(0, 24);
+                let addHour = curMinute > 30 ? 3 : 2
+                return hours.filter(item => item < curHour + addHour)
             }
             return [];
+        };
+        let disabledMinutes = (selectedHour) => {
+            let result = this.range(0, 60);
+            if(moment().format('YYYYMMDD') == this.state.startTime){
+                let addHour = curMinute > 30 ? 3 : 2
+                if (curHour + addHour == selectedHour) {
+                    if(curMinute > 30 || curMinute == 0){
+                        return result.filter(item => item != 0 && item != 30)
+                    }else{
+                        return result.filter(item => item != 30)
+                    }
+                }else if (selectedHour == null || selectedHour > curHour + addHour) {
+                    return result.filter(item => item != 0 && item != 30);
+                }
+            }
+            return result.filter(item => item != 0 && item != 30);
         }
         if (this.state.dateRange[0] !== undefined && this.state.dateRange[1] !== undefined &&
             this.state.dateRange[0] !== '0' && this.state.dateRange[1] !== '0'
@@ -1236,10 +1247,11 @@ class StepOneWithDateRange extends React.Component {
                                         })(
                                             <TimePicker
                                                 disabledHours={moment().format('YYYYMMDD') == this.state.startTime ? disabledHours : noDisabled}
-                                                disabledMinutes={moment().format('YYYYMMDD') == this.state.startTime ? disabledMinutes : noDisabled}
+                                                disabledMinutes={disabledMinutes}
                                                 format="HH:mm"
                                                 style={{ width: '100%' }}
                                                 onChange={this.onTimePickerChange}
+                                                hideDisabledOptions = {true}
                                                 placeholder={this.props.intl.formatMessage(STRING_SPE.d21645473363b18164)}
                                             />
                                         )}

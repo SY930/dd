@@ -886,6 +886,13 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             example: "",
             key: "81",
         },
+        {
+            idx: 26,
+            title: "唤醒活动",
+            text: "",
+            example: "",
+            key: "housekeeper",
+        },
     ];
     return basic;
 })();

@@ -27,6 +27,7 @@ import {
     SALE_PROMOTION_TYPES,
     ONLINE_PROMOTION_TYPES,
     CRM_PROMOTION_TYPES,
+    HOUSEKEEPER_TYPES,
 } from 'constants/promotionType';
 import NewPromotionCard from "./NewPromotionCard";
 const limitedTypes = [
@@ -74,7 +75,7 @@ import { jumpPage, closePage } from '@hualala/platform-base';
 import {setThemeClass} from '../../utils/index'
 // 跳转到带装修的活动设置页面
 const activityList = [
-    '80', '66', '81'
+    '80', '66', '81', 'housekeeper'
 ]
 @registerPage([NEW_SALE_BOX], {
 })
@@ -414,6 +415,25 @@ class NewCustomerPage extends Component {
         return {displayList, allMenu}
     } 
 
+    // 检查该集团是否使用管家活动
+    checkAvaGroup = () => {
+        const state = getStore().getState();
+        const { groupID } = state.user.get('accountInfo').toJS();
+        /**
+         * 使用的集团
+         * 北京日昌景曦餐饮管理有限公司（集团ID: 7356）
+         * 北京致品卓越餐饮管理有限公司（集团ID: 251840）
+         * 广州市木木餐饮管理有限公司（集团ID: 42342）
+         * 签王之王餐饮管理有限公司（集团ID: 16532 ）
+         * 重庆香佰里餐饮管理有限公司（集团ID：289058)
+         * 线上  189702
+         * 童虎  11157
+         */
+        let availableGroups = ['11157', '189702', '7356', '251840', '42342', '16532', '289058'];
+        let flag = availableGroups.includes(groupID)
+        return flag
+    }
+
     render() {
         const {whiteList, v3visible, curKey} = this.state;
         const { intl } = this.props;
@@ -453,6 +473,10 @@ class NewCustomerPage extends Component {
                 title: k6316iio,
                 list: SALE_PROMOTION_TYPES,
             },
+            {
+                title: '管家活动',
+                list: HOUSEKEEPER_TYPES,
+            },
         ]
         let allMenus = [
             '全部活动',
@@ -467,6 +491,11 @@ class NewCustomerPage extends Component {
         let {displayList, allMenu} = this.checkAuth(allMenus, ALL_PROMOTION_CATEGORIES)
         // 插件授权状态--营销盒子大礼包
         let {authPluginStatus} = checkAuthLicense(this.state.authLicenseData, 'HLL_CRM_Marketingbox')
+
+        if(!this.checkAvaGroup()){
+            allMenu = allMenu.filter(item => item != '管家活动')
+            displayList = displayList.filter(item => item.title != '管家活动')
+        } 
 
         return (
             <div className={selfStyle.newDiv}>
