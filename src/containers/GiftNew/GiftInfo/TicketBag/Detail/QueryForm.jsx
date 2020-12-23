@@ -1,13 +1,19 @@
 import React, { PureComponent as Component } from 'react';
 import moment from 'moment';
 import BaseForm from 'components/common/BaseForm';
-import { Button } from 'antd';
+import { Button, TreeSelect, Row, Col } from 'antd';
 import { dFormKeys, dFormItems, dFormKeys2, dFormKeys3 } from '../Common';
 import styles from './index.less';
 
 const DF = 'YYYYMMDDHHmmss';
 export default class QueryForm extends Component {
-    state = {};
+    state = {
+    };
+
+    componentDidMount() {
+
+    }
+
     /* 点击查询把参数传给父组件 */
     onQuery = () => {
         const { sendTime, useTime, ...others } = this.form.getFieldsValue();
@@ -43,9 +49,31 @@ export default class QueryForm extends Component {
             {onRefund &&
                 <Button className={styles.refundBtn} name="refund" onClick={onRefund}>商家退款</Button>
             }
-            </div>);
+        </div>);
         return {
             ...other,
+            sendShopID: {
+                label: '发出店铺',
+                labelCol: { span: 4 },
+                wrapperCol: { span: 20 },
+                type: 'custom',
+                render: decorator => (
+                    <Row>
+                        <Col>
+                            {decorator({})(
+                                <TreeSelect
+                                    dropdownStyle={{ maxHeight: 200, overflow: 'auto' }}
+                                    treeData={this.props.treeData || []}
+                                    placeholder="请选择店铺"
+                                    showSearch={true}
+                                    treeNodeFilterProp="label"
+                                    allowClear={true}
+                                />
+                            )}
+                        </Col>
+                    </Row>
+                ),
+            },
             q: { ...q, render },
         };
     }
