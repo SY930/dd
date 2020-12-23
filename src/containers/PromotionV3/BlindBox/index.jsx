@@ -346,8 +346,9 @@ class BlindBox extends Component {
                 // 1 独立优惠券
                 if(presentType === '1') {
                     giftList.forEach(x => {
-                        let { rangeDate, countType, effectType: etype, effectTime = '0', validUntilDate = '0', giftTotalCount, ...others } = x;
+                        const { rangeDate, countType, effectType: etype, giftTotalCount, ...others } = x;
                         const rangeObj = this.formatRangeDate(rangeDate);
+                        let {effectTime, validUntilDate} = rangeObj
                         let effectType = etype;
                         if(etype === '1' && countType === '1') {
                             effectType = '3';
@@ -378,11 +379,16 @@ class BlindBox extends Component {
                     giftList.forEach(x => {
                         const { rangeDate, countType, effectType: etype, giftTotalCount, ...others } = x;
                         const rangeObj = this.formatRangeDate(rangeDate);
+                        let {effectTime, validUntilDate} = rangeObj
                         let effectType = etype;
                         if(etype === '1' && countType === '1') {
                             effectType = '3';
                         }
-                        const obj = { ...rawObj, ...rangeObj, ...others, effectType };
+                        if(etype != '2'){
+                            effectTime = '0'; 
+                            validUntilDate = '0';
+                        }
+                        const obj = { ...rawObj, ...rangeObj, ...others, effectType, effectTime, validUntilDate };
                         gifts.push(obj);
                     });
                 }
@@ -398,8 +404,8 @@ class BlindBox extends Component {
             return {}
         }
         const [start, end] = rangeDate;
-        const effectTime = start.format(DF);
-        const validUntilDate = end.format(DF);
+        const effectTime = start.format(DF) || '0';
+        const validUntilDate = end.format(DF) || '0';
         return { effectTime, validUntilDate };
     }
 
