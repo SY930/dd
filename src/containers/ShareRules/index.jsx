@@ -60,6 +60,8 @@ export default class ShareRules extends Component {
         this.props.fetchAllPromotionList({
             groupID: this.props.user.accountInfo.groupID,
             shopID: this.props.user.shopID > 0 ? this.props.user.shopID : undefined,
+            isActive: 1,
+            status: 2,
         })
         // 请求获取所有哗啦啦券列表--共享用
         this.props.FetchGiftList({
