@@ -347,7 +347,6 @@ class BlindBox extends Component {
                 if(presentType === '1') {
                     giftList.forEach(x => {
                         let { rangeDate, countType, effectType: etype, effectTime = '0', validUntilDate = '0', giftTotalCount, ...others } = x;
-                        console.log('???', etype)
                         const rangeObj = this.formatRangeDate(rangeDate);
                         let effectType = etype;
                         if(etype === '1' && countType === '1') {
