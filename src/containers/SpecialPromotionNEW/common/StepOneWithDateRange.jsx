@@ -1096,7 +1096,7 @@ class StepOneWithDateRange extends React.Component {
                 let addHour = curMinute > 30 ? 3 : 2
                 if (curHour + addHour == selectedHour) {
                     if(curMinute > 30 || curMinute == 0){
-                        return result.filter(item => item != 0)
+                        return result.filter(item => item != 0 && item != 30)
                     }else{
                         return result.filter(item => item != 30)
                     }
@@ -1104,6 +1104,7 @@ class StepOneWithDateRange extends React.Component {
                     return result.filter(item => item != 0 && item != 30);
                 }
             }
+            return result.filter(item => item != 0 && item != 30);
         }
         if (this.state.dateRange[0] !== undefined && this.state.dateRange[1] !== undefined &&
             this.state.dateRange[0] !== '0' && this.state.dateRange[1] !== '0'
@@ -1245,7 +1246,7 @@ class StepOneWithDateRange extends React.Component {
                                         })(
                                             <TimePicker
                                                 disabledHours={moment().format('YYYYMMDD') == this.state.startTime ? disabledHours : noDisabled}
-                                                disabledMinutes={moment().format('YYYYMMDD') == this.state.startTime ? disabledMinutes : noDisabled}
+                                                disabledMinutes={disabledMinutes}
                                                 format="HH:mm"
                                                 style={{ width: '100%' }}
                                                 onChange={this.onTimePickerChange}
