@@ -260,6 +260,9 @@ class StepOne extends React.Component {
             dateRange: date,
             dateString,
         })
+        this.props.form.setFieldsValue({
+            sendTime: '',
+        });
     }
 
     handleNameChange(e) {
