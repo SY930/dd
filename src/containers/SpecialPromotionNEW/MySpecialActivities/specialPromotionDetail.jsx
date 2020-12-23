@@ -198,6 +198,7 @@ class SpecialPromotionDetail extends React.Component {
                 {
                     this.state.inviteeModalVisble && (
                         <InviteeModal
+                            eventWay={this.state.eventInfo.data.eventWay}
                             eventID={this.state.eventInfo.data.itemID}
                             inviterID={this.state.selectedInviter.customerID}
                             inviterName={this.state.selectedInviter.name}
@@ -1076,7 +1077,6 @@ class SpecialPromotionDetail extends React.Component {
     // 活动参与表格
     renderActivityInfoTable() {
         const eventWay = this.state.eventInfo.data.eventWay;
-        debugger
         const columns = [
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.d31f11d5hd613295)}`,
@@ -1172,6 +1172,20 @@ class SpecialPromotionDetail extends React.Component {
                 }
             })
         }
+        if (eventWay == 66) { // 膨胀大礼包
+            columns.push({
+                title: `助力人数`,
+                dataIndex: 'joinCount',
+                key: 'joinCount',
+                className: 'TableTxtCenter',
+                render:(text, record)=> {
+                    if (text > 0) {
+                        return (<a onClick={() => this.handleInviteeModalOpen(record)} title={text}>{text}</a>)
+                    }
+                    return text
+                }
+            })
+        }
         if (eventWay == 68) { // 推荐有礼活动表格不一样
             columns.pop();
             columns.push(...[
@@ -1242,18 +1256,6 @@ class SpecialPromotionDetail extends React.Component {
                     key: 'validGiftCount',
                     className: 'TableTxtRight',
                     width: 200,
-                },
-                {
-                    title: `助力人数`,
-                    dataIndex: 'joinCount',
-                    key: 'joinCount',
-                    className: 'TableTxtCenter',
-                    render:(text, record)=> {
-                        if (text > 0) {
-                            return (<a onClick={() => this.handleInviteeModalOpen(record)} title={text}>{text}</a>)
-                        }
-                        return text
-                    }
                 },
             ]);
         }
