@@ -722,12 +722,13 @@ class StepOneWithDateRange extends React.Component {
         this.setState({
             startTime,
         })
-        if (startTime != '' && startTime == moment().format('YYYYMMDD') && this.state.timeString != '' && this.state.timeString < moment().format('HHmmss') + 10) {
+        // if (startTime != '' && startTime == moment().format('YYYYMMDD') && this.state.timeString != '' && this.state.timeString < moment().format('HHmmss') + 10) {
             this.props.form.setFieldsValue({
                 sendTime: '',
-                timeString: ''
             });
-        }
+            this.setState({timeString: ''})
+            
+        // }
         // if (startTime != '' && this.state.timeString == '' && moment().hours() < 23) {
         //     const minutes = moment().minutes() < 50 ? moment().minutes() + 10 : `0${moment().minutes() - 50}`;
         //     let hours = moment().minutes() < 50 ? moment().hours() : moment().hours() + 1;
