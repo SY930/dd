@@ -157,6 +157,7 @@ class Step2 extends Component {
         const dom = document.createElement('a');
         if (zip) {
             dom.href = zip;
+            dom.target = '_blank'
             // dom.download = '二维码.png';
             dom.click();
         }
