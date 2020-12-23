@@ -3,6 +3,7 @@ import React from 'react'
 import PayHaveGift from '../PayHaveGift/index'; // 微信支付有礼
 import SwellGiftBag from '../SwellGiftBag/index'; // 膨胀大礼包
 import CouponsGiveCoupons from '../CouponsGiveCoupons'// 消费券返券
+import Housekeeper from '../Housekeeper'// 管家活动-流失唤醒
 
 export const actInfoList = [
     {
@@ -58,6 +59,14 @@ export const actInfoList = [
         ],
         render(props = {}) {
             return <SwellGiftBag {...props} />;
+        },
+    },
+    {
+        title: '流失唤醒',
+        key: 'housekeeper',
+        dscList: [],
+        render(props = {}) {
+            return <Housekeeper {...props} />;
         },
     },
 ];
