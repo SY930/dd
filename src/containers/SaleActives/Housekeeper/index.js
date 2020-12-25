@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import { Button, Table, Tooltip, Row, Col, Select, Input, Switch, Modal, message } from 'antd';
-import { jumpPage,closePage,decodeUrl } from '@hualala/platform-base'
+import { jumpPage,closePage, decodeUrl, getStore } from '@hualala/platform-base'
 import BaseForm  from '../../../components/common/BaseForm';
 import CustomerRange from './components/CustomerRange'
 import styles from './housekeeper.less'
@@ -84,6 +84,7 @@ class Housekeeper extends React.Component {
                         }
                         // 新增、编辑
                         let editType = eventRule.itemID ? 'createActiveCom/updateEventRule' : 'createActiveCom/addEventRule'
+                        // console.log('parm', parm)
                         this.props.dispatch({
                             type: editType,
                             payload: {eventRule: parm}
@@ -179,9 +180,15 @@ class Housekeeper extends React.Component {
 
     render(){
         let {cycleTypeOpt, cycleDateOpt, customerRangeSettings = []} = this.state
-        const { eventRule } = this.props.createActiveCom
+        const { groupID } = getStore().getState().user.get('accountInfo').toJS();
+        const { eventRule = {} } = this.props.createActiveCom
+        
         let formData = eventRule;
-        let {active, cycleType, cycleDate} = eventRule
+        let {active, cycleType = '1', cycleDate = '1'} = formData
+        // init data
+        if(customerRangeSettings.length <= 0){
+            customerRangeSettings = [{ rangeIndex: 0, groupID, amountStart: 0, amountEnd: 0, giftID: undefined, giftName: ''}]
+        }
         let formItems = {
             active: {
                 type: 'custom',
