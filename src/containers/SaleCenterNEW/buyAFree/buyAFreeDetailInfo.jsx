@@ -60,11 +60,17 @@ class BuyAFreeDetailInfo extends React.Component {
         _rule = Object.assign({}, _rule);
         let { display, data } = this.state;
         display = !this.props.isNew;
-        const _ruleType = _rule.stage ? (
+        let _ruleType = _rule.stage ? (
             _scopeLst.length > 0 ? '2' : '0'
         ) : (
             _scopeLst.length > 0 ? '3' : '1'
         )
+        if(_rule.stageType == '11'){
+            _ruleType = '5'
+        }
+        if(_rule.stageType == '12'){
+            _ruleType = '4'
+        }
 
         if (_rule.stage) {
             data = _rule.stage.map((rule) => {
@@ -110,9 +116,9 @@ class BuyAFreeDetailInfo extends React.Component {
 
         if (nextFlag) {
             let rule;
-            if (ruleType == '0' || ruleType == '2') {
+            if (ruleType == '0' || ruleType == '2' || ruleType == '4') {
                 rule = {
-                    stageType: 2,
+                    stageType: ruleType == '4' ? 12 : 2,
                     stage: data.map((rule) => {
                         return {
                             stageAmount: rule.stageAmount,
@@ -122,11 +128,12 @@ class BuyAFreeDetailInfo extends React.Component {
                 }
             } else {
                 rule = {
-                    stageType: 1,
+                    stageType: ruleType == '5' ? 11 : 1,
                     stageAmount: data[0].stageAmount,
                     freeAmount: data[0].freeAmount,
                 }
             }
+
             if (ruleType == '0' || ruleType == '1') {
                 this.props.setPromotionDetail({
                     rule,
@@ -235,7 +242,7 @@ class BuyAFreeDetailInfo extends React.Component {
 
     renderOperationIcon(index) {
         const _len = this.state.data.length;
-        if (this.state.ruleType == '0' || this.state.ruleType == '2') {
+        if (this.state.ruleType == '0' || this.state.ruleType == '2' || this.state.ruleType == '4') {
             if (_len == 1) {
                 return (
                     <span className={styles.iconsStyle}>
@@ -295,6 +302,8 @@ class BuyAFreeDetailInfo extends React.Component {
             { key: '1', value: k5ez4pdf },
             { key: '2', value: k5ez4pvb },
             { key: '3', value: k5ez4qew },
+            { key: '4', value: '同一菜品消费满' },
+            { key: '5', value: '同一菜品消费每满' },
         ];
         return this.state.data.map((rule, idx) => {
             return (
