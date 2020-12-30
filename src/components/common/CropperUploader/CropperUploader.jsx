@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
     Upload,
     Modal,
@@ -13,10 +13,10 @@ import style from './cropper.less';
 function dataURLtoBlob(dataurl, mimeType) {
     let arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
         bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-    while(n--){
+    while (n--) {
         u8arr[n] = bstr.charCodeAt(n);
     }
-    return new Blob([u8arr], {type: mimeType || mime});
+    return new Blob([u8arr], { type: mimeType || mime });
 }
 
 const MIME_EXT_MAP = {
@@ -92,7 +92,7 @@ class CropperUploader extends Component {
         setTimeout(() => {
             const formData = new FormData();
             const blob = dataURLtoBlob(finalUri);
-            formData.append('myFile', (new File([blob], `myFile.${MIME_EXT_MAP[blob.type] || 'png'}`, {type: blob.type})));
+            formData.append('myFile', (new File([blob], `myFile.${MIME_EXT_MAP[blob.type] || 'png'}`, { type: blob.type })));
             axios({
                 url: '/api/common/imageUpload',
                 method: 'POST',
@@ -156,12 +156,22 @@ class CropperUploader extends Component {
         };
         const displayTrigger = typeof uploadTrigger === 'function' ? uploadTrigger() : (
             <div style={{ width, height }} className={style.cropperUploaderTrigger} >
-                <Icon style={{ color: '#999', fontSize: 24, fontWeight: 'bold', marginBottom: 10 }} type="plus" />
-                <br/>
+                {
+                    this.props.selfIcon ?
+                        this.props.selfIcon :
+                        <Icon style={{ color: '#999', fontSize: 24, fontWeight: 'bold', marginBottom: 10 }} type="plus" />
+                }
+                <br />
                 <span>
-                    { this.props.uploadTest ? this.props.uploadTest : '上传'}
+                    {
+                        this.props.uploadTest ?
+                            this.props.uploadTest :
+                            this.props.selfIcon ?
+                                '' :
+                                '上传'
+                    }
                 </span>
-            </div> 
+            </div>
         )
         return (
             <div>
@@ -180,11 +190,11 @@ class CropperUploader extends Component {
                                 >
                                     重置
                                 </div>
-                                <img style={{ width: width - 2, height: height - 2 }} src={this.getRealUrl(value)} alt=""/>
+                                <img style={{ width: width - 2, height: height - 2 }} src={this.getRealUrl(value)} alt="" />
                             </div>
                         ) : (// 无value时显示自定义trigger或默认trigger
-                            displayTrigger
-                        )
+                                displayTrigger
+                            )
                     }
                 </Upload>
                 {
@@ -202,7 +212,7 @@ class CropperUploader extends Component {
                                 <Cropper
                                     ref={cropper => this.cropper = cropper}
                                     src={dataUri}
-                                    style={{height: 450, width: '100%'}}
+                                    style={{ height: 450, width: '100%' }}
                                     aspectRatio={cropperRatio || 9 / 16}
                                     guides={true}
                                 />
@@ -238,7 +248,7 @@ CropperUploader.propTypes = {
 CropperUploader.defaultProps = {
     isAbsoluteUrl: false,
     value: undefined,
-    onChange() {},
+    onChange() { },
     cropperRatio: 9 / 16,
     isMaskClosable: false,
     width: 96,

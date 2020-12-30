@@ -97,6 +97,7 @@ const DECORATABLE_PROMOTIONS = [
     '64',
     '65',
     '66',
+    '75',
     '76',
     '68',
     '79',
@@ -1387,11 +1388,12 @@ class MySpecialActivities extends React.Component {
     };
 
     handleDecorationStart = (record) => {
-        const { eventWay, itemID, eventName } = record;
+        const { eventWay, itemID, eventName, needCount = '' } = record;
         this.props.selectPromotionForDecoration({
             type: `${eventWay}`,
             id: itemID,
             title: eventName,
+            needCount,
         });
         jumpPage({menuID: PROMOTION_DECORATION})
     }
