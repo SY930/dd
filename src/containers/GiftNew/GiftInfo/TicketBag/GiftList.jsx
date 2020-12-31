@@ -1,18 +1,22 @@
 import React, { PureComponent as Component } from 'react';
-import { Row, Col, Button } from 'antd';
+import { Row, Col, Button, Table } from 'antd';
 import styles from './index.less';
 import MainTable from './MainTable';
 import QueryForm from './QueryForm';
 import { getTicketList } from './AxiosFactory';
 import ReleaseModal from './Release';
 
-export default class TicketBag extends Component {
-    state = {
-        list: [],
-        loading: false,
-        queryParams: {},        // 临时查询缓存，具体对象查看QueryForm对象
-        visible: false,
-    };
+export default class GiftList extends Component {
+    constructor(props){
+        super(props)
+        this.state = {
+            list: [],
+            loading: false,
+            queryParams: {},        // 临时查询缓存，具体对象查看QueryForm对象
+            visible: false,
+        };
+        this.setTableRef = el => this.tableRef = el;
+    }
     componentDidMount() {
         this.onQueryList();
     }
@@ -49,16 +53,26 @@ export default class TicketBag extends Component {
                     pageType={this.props.pageType}
                 />
                 <div className="layoutsLine"></div>
-                <MainTable
-                    groupID={groupID}
-                    list={list}
-                    loading={loading}
-                    pageObj={pageObj}
-                    onQuery={this.onQueryList}
-                    onGoEdit={onGoEdit}
-                    status={couponPackageStatus}
-                    treeData={this.props.treeData}
-                    pageType={this.props.pageType}
+                <Table
+                    ref={this.setTableRef}
+                    bordered={true}
+                    columns={this.getTableColumns().map(c => (c.render ? ({
+                        ...c,
+                        render: c.render.bind(this),
+                    }) : c))}
+                    dataSource={this.state.dataSource}
+                    pagination={{
+                        showSizeChanger: true,
+                        pageSize,
+                        current: pageNo,
+                        total: this.state.total,
+                        showQuickJumper: true,
+                        onChange: this.handlePageChange,
+                        onShowSizeChange: this.handlePageChange,
+                        showTotal: (total, range) => `本页${range[0]}-${range[1]}/ 共 ${total}条`,
+                    }}
+                    loading={this.props.loading}
+                    scroll={{ x: 1600,  y: 'calc(100vh - 440px)' }}
                 />
                 {visible &&
                     <ReleaseModal
