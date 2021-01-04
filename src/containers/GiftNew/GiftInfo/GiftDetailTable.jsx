@@ -45,6 +45,7 @@ import PromotionCalendarBanner from "../../../components/common/PromotionCalenda
 import GiftLinkGenerateModal from './GiftLinkGenerateModal';
 import { isBrandOfHuaTianGroupList, isMine, } from "../../../constants/projectHuatianConf";
 import TicketBag from './TicketBag';
+import GiftList from './TicketBag/GiftList';
 
 const TabPane = Tabs.TabPane;
 const validUrl = require('valid-url');
@@ -59,6 +60,7 @@ class GiftDetailTable extends Component {
             createModalVisible: false,
             data: {},
             dataSource: [],
+            blockDataSource: [],
             brands: [],
             editGift: { describe: '', value: '' },
             loading: true,
@@ -68,6 +70,7 @@ class GiftDetailTable extends Component {
                 action: '0',
             },
             total: 2,
+            blockTotal: 2,
             tableHeight: '100%',
             usedTotalSize: 0,
             treeData: [],
@@ -105,18 +108,19 @@ class GiftDetailTable extends Component {
         FetchGiftList({
             pageNo: 1,
             pageSize: 20,
+            action: 0,
         }).then((data = []) => {
             this.proGiftData(data);
         });
         fetchData('getShopBrand', { isActive: 1 }, null, { path: 'data.records' })
-        .then((data) => {
-            if (!data) return;
-            const brands = [];
-            data.map((d) => {
-                brands.push({ value: d.brandID, label: d.brandName })
+            .then((data) => {
+                if (!data) return;
+                const brands = [];
+                data.map((d) => {
+                    brands.push({ value: d.brandID, label: d.brandName })
+                });
+                this.setState({ brands });
             });
-            this.setState({ brands });
-        });
         const _shopData = shopData.toJS();
         if (_shopData.length === 0) {
             let parm = {}
@@ -144,7 +148,8 @@ class GiftDetailTable extends Component {
                 action,
             },
         } = this.state;
-        if (action == 2) {
+        let {tabkey} = this.props
+        if (tabkey == 3) {
             const columns = this.columns.slice();
             columns.splice(1, 1, {
                 title: '操作',
@@ -188,13 +193,16 @@ class GiftDetailTable extends Component {
     }
 
     proGiftData = (data) => {
+        let {tabkey} = this.props
         // 在此处预处理用来显示 编辑的字段
         const _total = data.totalSize;
         const _pageSize = data.pageSize;
         const _pageNo = data.pageNo;
         const gifts = data.crmGiftList;
         if (gifts === undefined) {
-            this.setState({ dataSource: [], total: _total });
+            if(tabkey == 1) this.setState({ dataSource: [], total: _total });
+            else this.setState({ blockDataSource: [], blockTotal: _total });
+            
             return;
         }
         const newDataSource = (gifts || []).map((g, i) => {
@@ -238,7 +246,9 @@ class GiftDetailTable extends Component {
             }
             return g;
         });
-        this.setState({ dataSource: [...newDataSource], total: _total });
+        if(tabkey == 1) this.setState({ dataSource: [...newDataSource], total: _total });
+        else this.setState({ blockDataSource: [...newDataSource], blockTotal: _total });
+        
     }
 
     handleFormChange(key, value) {
@@ -246,7 +256,6 @@ class GiftDetailTable extends Component {
     }
 
     changeSortOrder(record, direction) {
-        // console.log('record: ', record);
         const params = {giftItemID: record.giftItemID, direction};
         axiosData('/coupon/couponService_updateRanking.ajax', params, {needThrow: true}, {path: undefined}, 'HTTP_SERVICE_URL_PROMOTION_NEW').then(() => {
             if (this.tableRef &&  this.tableRef.props && this.tableRef.props.pagination && this.tableRef.props.pagination.onChange) {
@@ -257,18 +266,19 @@ class GiftDetailTable extends Component {
         })
     }
 
-    handleQuery(thisPageNo) {
-        const pageNo = isNaN(thisPageNo) ? 1 : thisPageNo;
+    handleQuery(pageType) {
+        let action = pageType == 1 ? 0 : 2
         const { queryParams } = this.state;
         const { FetchGiftList } = this.props;
         this.queryFrom.validateFieldsAndScroll((err, values) => {
             if (err) return;
             const params = { ...values };
             this.setState({
-                queryParams: { pageNo, pageSize: queryParams.pageSize || 1, ...params },
+                queryParams: { pageNo: 1, pageSize: queryParams.pageSize || 1, action, ...params },
             })
             FetchGiftList({
-                pageNo,
+                action,
+                pageNo: 1,
                 pageSize: queryParams.pageSize || 1,
                 ...params,
             }).then((data = []) => {
@@ -346,13 +356,13 @@ class GiftDetailTable extends Component {
     handleDelete(rec) {
         const { giftItemID, giftName } = rec;
         Modal.confirm({
-            title: '您确定要删除吗？',
+            title: '您确定要停用吗？',
             content: (
                 <div>
-                    {`您将删除礼品
+                    {`您将停用礼品
                         【${giftName}】`}
                     <br />
-                    <span>删除是不可恢复操作，被删除的礼品可以在已删除的礼品中查看~</span>
+                    <span>停用是不可恢复操作，被停用的礼品可以在已停用的礼品中查看~</span>
                 </div>
             ),
             onOk: () => {
@@ -364,7 +374,7 @@ class GiftDetailTable extends Component {
                     'HTTP_SERVICE_URL_PROMOTION_NEW',
                 ).then((data) => {
                     if (data.code === '000') {
-                        message.success('此礼品删除成功');
+                        message.success('此礼品停用成功');
                         const { queryParams } = this.state;
                         const { FetchGiftList } = this.props;
                         FetchGiftList(queryParams).then((data = []) => {
@@ -374,7 +384,7 @@ class GiftDetailTable extends Component {
                 }, ({code, msg, eventReference = [], wechatCardReference = [], quotaCardsReference = [], couponPackageReference = []}) => {
                     if (code === '1211105076') {// 券被占用
                         Modal.warning({
-                            title: '礼品被占用，不可删除',
+                            title: '礼品被占用，不可停用',
                             content: (
                                 <div
                                     style={{
@@ -385,7 +395,7 @@ class GiftDetailTable extends Component {
                                         !!eventReference.length && (
                                             <div>
                                                 <div>
-                                                    该礼品被以下活动使用，如需删除，请取消引用
+                                                    该礼品被以下活动使用，如需停用，请取消引用
                                                 </div>
                                                 <div
                                                     style={{
@@ -401,7 +411,7 @@ class GiftDetailTable extends Component {
                                         !!wechatCardReference.length && (
                                             <div>
                                                 <div style={{ marginTop: 8 }}>
-                                                    该礼品被以下微信卡券使用，如需删除，请取消引用
+                                                    该礼品被以下微信卡券使用，如需停用，请取消引用
                                                 </div>
                                                 <div
                                                     style={{
@@ -417,7 +427,7 @@ class GiftDetailTable extends Component {
                                         !!quotaCardsReference.length && (
                                             <div>
                                                 <div style={{ marginTop: 8 }}>
-                                                    该礼品被以下礼品定额卡券使用，如需删除，请取消引用
+                                                    该礼品被以下礼品定额卡券使用，如需停用，请取消引用
                                                 </div>
                                                 <div
                                                     style={{
@@ -433,7 +443,7 @@ class GiftDetailTable extends Component {
                                         !!couponPackageReference.length && (
                                             <div>
                                                 <div style={{ marginTop: 8 }}>
-                                                    该礼品被以下券包使用，如需删除，请取消引用
+                                                    该礼品被以下券包使用，如需停用，请取消引用
                                                 </div>
                                                 <div
                                                     style={{
@@ -628,48 +638,48 @@ class GiftDetailTable extends Component {
                 defaultValue: '0',
                 options: [
                     { label: '正常', value: '0' },
-                    { label: '已删除', value: '2' },
+                    { label: '已停用', value: '2' },
                 ],
             },
         };
-        const formKeys = ['giftName', 'giftItemID', 'giftPWD', 'giftType', 'brandID', 'action'];
+        const formKeys = ['giftName', 'giftItemID', 'giftPWD', 'giftType', 'brandID',];
         const headerClasses = `layoutsToolLeft ${styles2.headerWithBgColor} ${styles2.basicPromotionHeader}`;
         const { tabkey } = this.props;
         const { groupID } = this.props.user.accountInfo;
         return (
             <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
-                    <div className="layoutsTool" style={{height: '64px'}}>
-                        <div className={headerClasses}>
-                            <span className={styles2.customHeader}>
-                                礼品信息
-                            </span>
-                            <p style={{ marginLeft: 'auto'}}>
+                <div className="layoutsTool" style={{height: '64px'}}>
+                    <div className={headerClasses}>
+                        <span className={styles2.customHeader}>
+                            礼品信息
+                        </span>
+                        <p style={{ marginLeft: 'auto'}}>
                             <Authority rightCode={GIFT_LIST_CREATE}>
-                                    <Button
-                                        type="ghost"
-                                        icon="plus"
-                                        className={styles2.jumpToCreate}
-                                        style={{ margin: 5 }}
-                                        onClick={
-                                            () => {
-                                                this.setState({
-                                                    createModalVisible: true
-                                                })
-                                            }
-                                        }
-                                    >新增礼品</Button>
-                                </Authority>
                                 <Button
                                     type="ghost"
                                     icon="plus"
-                                    className={styles.jumpToCreate}
-                                    style={{ margin: 5,  width: 90 }}
+                                    className={styles2.jumpToCreate}
+                                    style={{ margin: 5 }}
                                     onClick={
                                         () => {
-                                            this.props.togglePage('ticket')
+                                            this.setState({
+                                                createModalVisible: true
+                                            })
                                         }
                                     }
-                                >新增券包</Button>
+                                >新增礼品</Button>
+                            </Authority>
+                            <Button
+                                type="ghost"
+                                icon="plus"
+                                className={styles.jumpToCreate}
+                                style={{ margin: 5,  width: 90 }}
+                                onClick={
+                                    () => {
+                                        this.props.togglePage('ticket')
+                                    }
+                                }
+                            >新增券包</Button>
                             <Authority rightCode={GIFT_LIST_QUERY}>
                                 <Button
                                     type="ghost"
@@ -677,65 +687,85 @@ class GiftDetailTable extends Component {
                                     onClick={() => this.setState({ exportVisible: true })}
                                 ><Icon type="export" />导出历史</Button>
                             </Authority>
-                            </p>
-                        </div>
+                        </p>
                     </div>
+                </div>
                 <PromotionCalendarBanner />
                 <Tabs activeKey={tabkey} onChange={this.props.toggleTabs} className={styles.tabBox}>
                     <TabPane tab="礼品查询" key="1">
-                    <div className={styles2.pageContentWrapper}>
-                        <div style={{ padding: '0'}} className="layoutsHeader">
-                            <div className="layoutsSearch">
-                                <ul>
-                                    <li className={styles.formWidth}>
-                                        <BaseForm
-                                            getForm={form => this.queryFrom = form}
-                                            formItems={formItems}
-                                            formKeys={formKeys}
-                                            formData={queryParams}
-                                            layout="inline"
-                                            onChange={(key, value) => this.handleFormChange(key, value)}
-                                        />
-                                    </li>
-                                    <li>
-                                        <Authority rightCode={GIFT_LIST_UPDATE}>
-                                            <Button type="primary" onClick={() => this.handleQuery()}>
-                                                <Icon type="search" />
-                                                { COMMON_LABEL.query }
-                                            </Button>
-                                        </Authority>
-                                    </li>
-                                </ul>
+                        <div className={styles2.pageContentWrapper}>
+                            <div style={{ padding: '0'}} className="layoutsHeader">
+                                <div className="layoutsSearch">
+                                    <ul>
+                                        <li className={styles.formWidth}>
+                                            <BaseForm
+                                                getForm={form => this.queryFrom = form}
+                                                formItems={formItems}
+                                                formKeys={formKeys}
+                                                formData={queryParams}
+                                                layout="inline"
+                                                onChange={(key, value) => this.handleFormChange(key, value)}
+                                            />
+                                        </li>
+                                        <li>
+                                            <Authority rightCode={GIFT_LIST_UPDATE}>
+                                                <Button type="primary" onClick={() => this.handleQuery(1)}>
+                                                    <Icon type="search" />
+                                                    { COMMON_LABEL.query }
+                                                </Button>
+                                            </Authority>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div style={{ margin: '0'}} className="layoutsLine"></div>
                             </div>
-                            <div style={{ margin: '0'}} className="layoutsLine"></div>
+                            <div className={[styles.giftTable, styles2.tableClass, 'layoutsContent'].join(' ')}>
+                                <Table
+                                    ref={this.setTableRef}
+                                    bordered={true}
+                                    columns={this.getTableColumns().map(c => (c.render ? ({
+                                        ...c,
+                                        render: c.render.bind(this),
+                                    }) : c))}
+                                    dataSource={this.state.dataSource}
+                                    pagination={{
+                                        showSizeChanger: true,
+                                        pageSize,
+                                        current: pageNo,
+                                        total: this.state.total,
+                                        showQuickJumper: true,
+                                        onChange: this.handlePageChange,
+                                        onShowSizeChange: this.handlePageChange,
+                                        showTotal: (total, range) => `本页${range[0]}-${range[1]}/ 共 ${total}条`,
+                                    }}
+                                    loading={this.props.loading}
+                                    scroll={{ x: 1600,  y: 'calc(100vh - 440px)' }}
+                                />
+                            </div>
                         </div>
-                        <div className={[styles.giftTable, styles2.tableClass, 'layoutsContent'].join(' ')}>
-                            <Table
-                                ref={this.setTableRef}
-                                bordered={true}
-                                columns={this.getTableColumns().map(c => (c.render ? ({
-                                    ...c,
-                                    render: c.render.bind(this),
-                                }) : c))}
-                                dataSource={this.state.dataSource}
-                                pagination={{
-                                    showSizeChanger: true,
-                                    pageSize,
-                                    current: pageNo,
-                                    total: this.state.total,
-                                    showQuickJumper: true,
-                                    onChange: this.handlePageChange,
-                                    onShowSizeChange: this.handlePageChange,
-                                    showTotal: (total, range) => `本页${range[0]}-${range[1]}/ 共 ${total}条`,
-                                }}
-                                loading={this.props.loading}
-                                scroll={{ x: 1600,  y: 'calc(100vh - 440px)' }}
-                            />
-                        </div>
-                    </div>
-                </TabPane>
+                    </TabPane>
                     <TabPane tab="券包查询" key="2">
-                        <TicketBag groupID={groupID} onGoEdit={this.props.togglePage} treeData={this.state.treeData} />
+                        <TicketBag pageType={2} groupID={groupID} onGoEdit={this.props.togglePage} treeData={this.state.treeData} />
+                    </TabPane>
+                    <TabPane tab="已停用礼品" key="3">
+                        <GiftList 
+                            pageType={3} 
+                            groupID={groupID} 
+                            onGoEdit={this.props.togglePage} 
+                            treeData={this.state.treeData} 
+                            formItems={formItems}
+                            formKeys={formKeys}
+                            columns={this.getTableColumns().map(c => (c.render ? ({
+                                ...c,
+                                render: c.render.bind(this),
+                            }) : c))}
+                            dataSource={this.state.blockDataSource}
+                            total={this.state.blockTotal}
+                            proGiftData={this.proGiftData}
+                        /> 
+                    </TabPane>
+                    <TabPane tab="已停用券包" key="4">
+                        <TicketBag pageType={4} groupID={groupID} onGoEdit={this.props.togglePage} treeData={this.state.treeData} />
                     </TabPane>
                 </Tabs>
                 <div>

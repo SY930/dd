@@ -373,7 +373,7 @@ class GiftAddModalStep extends React.PureComponent {
         const { firstKeys, secondKeys, values } = this.state;
         const newKeys = [...secondKeys[describe][0].keys];
         const index = _.findIndex(newKeys, item => item == key);
-        console.log('now Change the', key, value)
+        // console.log('now Change the', key, value)
         if (key === 'shareIDs') {
             this.props.changeGiftFormKeyValue({key, value});
         } else if (JSON.stringify(values[key]) !== JSON.stringify(value)) {
@@ -2874,7 +2874,7 @@ class GiftAddModalStep extends React.PureComponent {
         formData.shareIDs = this.state.sharedGifts;
         formData.giftShareType = String(formData.giftShareType);
         formData.couponPeriodSettings = formData.couponPeriodSettingList;
-        console.log('formData.pushMessageMpID', formData.pushMessageMpID)
+        // console.log('formData.pushMessageMpID', formData.pushMessageMpID)
         if(!formData.pushMessage) {
             const sendType = ['wechat']
             if (formData.openPushSms) {
