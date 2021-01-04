@@ -68,7 +68,7 @@ class BuyAFreeDetailInfo extends React.Component {
         if(_rule.stageType == '11'){
             _ruleType = '5'
         }
-        if(_rule.stageType == '12'){
+        if(_rule.stageType == '21'){
             _ruleType = '4'
         }
 
@@ -118,7 +118,7 @@ class BuyAFreeDetailInfo extends React.Component {
             let rule;
             if (ruleType == '0' || ruleType == '2' || ruleType == '4') {
                 rule = {
-                    stageType: ruleType == '4' ? 12 : 2,
+                    stageType: ruleType == '4' ? 21 : 2,
                     stage: data.map((rule) => {
                         return {
                             stageAmount: rule.stageAmount,
