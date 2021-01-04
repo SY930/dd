@@ -16,183 +16,271 @@ class PromotionCalendar extends Component {
                     }}
                 >
                     <h1>
-                        叮咚！你想要的2020年餐饮营销日历来啦！
+                        叮咚！你想要的2021年餐饮营销日历来啦！
                     </h1>
                     <p>
                         这届餐饮人的共同难题：今天营销该怎么做？想做一个：<span className={style.fairRed}>有创意、走心、符合节日氛围</span>的活动，真的太太太难了。
                     </p>
                     <br/>
                     <p>
-                        餐饮人的福利来啦！！！让你餐饮营销不再愁。小哗给大家整理了一份《2020年餐饮营销日历》供大家参考～
+                        餐饮人的福利来啦！！！让你餐饮营销不再愁。小哗给大家整理了一份《2021年餐饮营销日历》供大家参考～
                     </p>
-                    <img src="http://res.hualala.com/basicdoc/18329428-a273-4816-b233-9251d53f53fd.png" alt=""></img>
+                    <img src="http://res.hualala.com/basicdoc/e6980561-5650-45ca-9658-9df1eb7d9fdc.png" alt=""></img>
+                    <h2>礼品卡小程序</h2>
+                    <div>
+                        <p>礼品卡小程序使用场景：</p>
+                        <p>春节、情人节、母亲节、父亲节、教师节、中秋节这样人情来往的节日，可制作专属节日礼品卡配合特定卡面购买、赠送，实现顾客线上送礼表达心意。</p>
+                    </div>
+                    <img src="http://res.hualala.com/basicdoc/60aa0e26-7ab5-438a-8703-4fd1adc85e4a.png" alt=""></img>
+                    
+                    
                     <h2>一月营销日历</h2>
-                    <img src="http://res.hualala.com/basicdoc/194a5abe-e01d-4ee7-9034-6c5c079602d0.png" alt=""></img>
+                    <img src="http://res.hualala.com/basicdoc/32d0d3ee-9381-4d02-ac57-8fffaa13ebf2.png" alt=""></img>
                     <h3>元旦节</h3>
                     <div>
                         <p><span className={style.fairRed}>活动主题：</span>元旦·开年领好礼</p>
-                        <p><span className={style.fairRed}>活动时间：</span>1月1日—1月10日（时间不宜过长）</p>
-                        <p><span className={style.fairRed}>方案1：</span>买三免一，例如消费4份免单最低的一份</p>
-                        <p><span className={style.fairRed}>方案2：</span>累计消费送礼，激励顾客消费达标赠送相应礼品</p>
-                        <p><span className={style.fairRed}>方案3：</span>摇奖活动，大转盘抽奖可配置代金券、菜品、酒水等</p>
+                        <p><span className={style.fairRed}>活动时间：</span>1月1日—1月3日（时间不宜过长）</p>
+                        <p>
+                            <span className={style.fairRed}>营销方案：</span>
+                            <p><img src="http://res.hualala.com/basicdoc/0eca1cee-1b68-4216-895e-627c22884a1c.png" alt=""></img></p>
+                        </p>
                     </div>
                     <h3>腊八节</h3>
                     <div>
                         <p><span className={style.fairRed}>活动主题：</span>来碗腊八粥</p>
-                        <p><span className={style.fairRed}>活动时间：</span>1月2日（限节日当天）</p>
-                        <p><span className={style.fairRed}>方案1：</span>关注送礼，当天到店消费，关注公众号免费领取腊八粥</p>
-                        <p><span className={style.fairRed}>方案2：</span>群发短信，将节日问候及节日活动及时传递给每一位顾客</p>
+                        <p><span className={style.fairRed}>活动时间：</span>1月20日（限节日当天）</p>
+                        <p>
+                            <span className={style.fairRed}>营销方案：</span>
+                            <p><img src="http://res.hualala.com/basicdoc/07a46543-5562-42f2-97ad-7cff267f4669.png" alt=""></img></p>
+                        </p>
                     </div>
+
+                    <h2>二月营销日历</h2>
+                    <img src="http://res.hualala.com/basicdoc/1b32d55c-8d93-40de-a041-b3ca40441ada.png" alt=""></img>
                     <h3>除夕&春节</h3>
                     <div>
-                        <p><span className={style.fairRed}>活动主题：</span>年夜饭过团圆夜</p>
-                        <p><span className={style.fairRed}>活动时间：</span>1月10日-1月31日（节日前15天）</p>
-                        <p><span className={style.fairRed}>方案1：</span>随机立减，满X额随机减一定金额，顾客获得幸福感</p>
-                        <p><span className={style.fairRed}>方案2：</span>限时免费领取礼品（对联、灯笼、吉祥物），达到短期拉新的效果</p>
-                        <p><span className={style.fairRed}>方案3：</span>满赠，顾客到店消费一定金额，送热饮/菜品</p>
-                    </div>
-                    <h2>二月营销日历</h2>
-                    <img src="http://res.hualala.com/basicdoc/ffc25b38-8b44-4f98-9665-932290a73f04.png" alt=""></img>
-                    <h3>元宵节</h3>
-                    <div>
-                        <p><span className={style.fairRed}>活动主题：</span>喜闹元宵兑大奖</p>
-                        <p><span className={style.fairRed}>活动时间：</span>2月1日-2月8日</p>
-                        <p><span className={style.fairRed}>活动方案1：</span>积分兑换，会员消费满X元送积分，积分可兑换元宵</p>
-                        <p><span className={style.fairRed}>活动方案2：</span>组合减免，可制定多款家庭团圆套餐，购买套餐组合即可享受相应折扣价（活动力度大于团购）</p>
-                        <p><span className={style.fairRed}>活动方案3：</span>限时免费领取礼品，节日当天赠送元宵甜品券</p>
+                        <p><span className={style.fairRed}>活动主题：</span>吃年夜饭过团圆夜</p>
+                        <p><span className={style.fairRed}>活动时间：</span>2月1日-2月12日（节日前15天）</p>
+                        <p>
+                            <span className={style.fairRed}>营销方案：</span>
+                            <p><img src="http://res.hualala.com/basicdoc/5e77109d-a39d-4c3e-a04d-c7f0fd8acd7a.png" alt=""></img></p>
+                        </p>
                     </div>
                     <h3>情人节</h3>
                     <div>
-                        <p>活动主题：情人双双寻大礼</p>
-                        <p>活动时间：2月10日-14日</p>
-                        <p><span className={style.fairRed}>方案1：</span>分享裂变，将活动分享给好友，好友参与即可获礼品，有利于拉新</p>
-                        <p><span className={style.fairRed}>方案2：</span>积分兑好礼，会员消费满X积分可兑换礼品（如一对杯子、围巾、玫瑰花等）</p>
-                        <p><span className={style.fairRed}>方案3：</span>第二份半价，适合情侣消费，属于更实在的折扣优惠，与节日氛围吻合</p>
-                        <p><span className={style.fairRed}>方案4：</span>有奖活动，增加游戏环节（如亲吻、拥抱时间）晒图赢对应优惠</p>
-                        <p><span className={style.fairRed}>方案5：</span>关注送礼，用户关注公众号后可赠2杯饮品，刺激会员关注</p>
+                        <p><span className={style.fairRed}>活动主题：</span>爱要大声说出来</p>
+                        <p><span className={style.fairRed}>活动时间：</span>2月14日（由于与春节时间相近，建议活动限1天）</p>
+                        <p>
+                            <span className={style.fairRed}>营销方案：</span>
+                            <p><img src="http://res.hualala.com/basicdoc/845fab5a-df17-45c4-8385-723c02ba907a.png" alt=""></img></p>
+                        </p>
                     </div>
+                    <h3>元宵节</h3>
+                    <div>
+                        <p><span className={style.fairRed}>活动主题：</span>喜闹元宵兑大奖</p>
+                        <p><span className={style.fairRed}>活动时间：</span>2月20日-26日（提前7天开始，活动当天截止）</p>
+                        <p>
+                            <span className={style.fairRed}>营销方案：</span>
+                            <p><img src="http://res.hualala.com/basicdoc/204bf1b1-eee9-489e-8fc8-c1716c7d8faf.png" alt=""></img></p>
+                        </p>
+                    </div>
+
                     <h2>三月营销日历</h2>
-                    <img src="http://res.hualala.com/basicdoc/6bf70d6b-3dc1-418e-97a6-c2f2e3b7e5df.png" alt=""></img>
+                    <img src="http://res.hualala.com/basicdoc/05df3def-3729-4604-b3fd-41e4df7d1047.png" alt=""></img>
                     <h3>女生节&妇女节</h3>
                     <div>
-                        <p><span className={style.fairRed}>活动主题：</span>翻牌吧，女王！</p>
-                        <p><span className={style.fairRed}>活动时间：</span>3月7日-8日</p>
-                        <p><span className={style.fairRed}>方案1：</span>免费领取，当天到店所有女士限时可领取礼品一份</p>
-                        <p><span className={style.fairRed}>方案2：</span>随机立减，消费满X元随机立减一定金额，顾客可获得幸福感</p>
+                        <p><span className={style.fairRed}>活动主题：</span>我是女王我最大</p>
+                        <p><span className={style.fairRed}>活动时间：</span>3月7日-8日（限节日当天）</p>
+                        <p>
+                            <span className={style.fairRed}>营销方案：</span>
+                            <p><img src="http://res.hualala.com/basicdoc/6856ca99-8272-454e-be77-b798ba2c9b35.png" alt=""></img></p>
+                        </p>
                     </div>
+                    <h3>龙抬头</h3>
+                    <div>
+                        <p><span className={style.fairRed}>活动主题：</span>龙抬头，开好头</p>
+                        <p><span className={style.fairRed}>活动时间：</span>3月14日（限节日当天）</p>
+                        <p>
+                            <span className={style.fairRed}>营销方案：</span>
+                            <p><img src="http://res.hualala.com/basicdoc/daabef31-ae21-4b58-aa3a-a0387a774f2a.png" alt=""></img></p>
+                        </p>
+                    </div>
+
                     <h2>四月营销日历</h2>
-                    <img src="http://res.hualala.com/basicdoc/eb8e27b2-553b-44f4-93f4-563eb583f6ef.png" alt=""></img>
+                    <img src="http://res.hualala.com/basicdoc/ad6a5f2e-acfa-431a-b541-fb5ef16d2d6b.png" alt=""></img>
                     <h3>愚人节</h3>
                     <div>
                         <p><span className={style.fairRed}>活动主题：</span>愚你同乐</p>
                         <p><span className={style.fairRed}>活动时间：</span>4月1日（仅限当天）</p>
-                        <p><span className={style.fairRed}>方案1：</span>分享裂变，活动分享好友参与后，好友获得礼品，有利于获得新用户</p>
-                        <p><span className={style.fairRed}>方案2：</span>买三免一，消费满X份菜品即可在X中免单Y份最低价菜品</p>
+                        <p>
+                            <span className={style.fairRed}>营销方案：</span>
+                            <p><img src="http://res.hualala.com/basicdoc/30ee9d05-c532-4af6-b90f-a858f5d4a818.png" alt=""></img></p>
+                        </p>
                     </div>
+
                     <h2>五月营销日历</h2>
-                    <img src="http://res.hualala.com/basicdoc/906790a6-fb8e-407a-bf00-bd147db1c809.png" alt=""></img>
+                    <img src="http://res.hualala.com/basicdoc/d1702ac6-3951-43f4-bf20-476a43588004.png" alt=""></img>
                     <h3>劳动节</h3>
                     <div>
-                        <p><span className={style.fairRed}>活动主题：</span>五一疯狂逛吃</p>
-                        <p><span className={style.fairRed}>活动时间：</span>5月1日-7日</p>
-                        <p><span className={style.fairRed}>方案1：</span>加价升级换新，例如：消费满88元，点中杯拿铁，加2元可升级成大杯拿铁</p>
-                        <p><span className={style.fairRed}>方案2：</span>膨胀大礼包，参与活动领礼品，邀请好友助力礼品更丰厚</p>
+                        <p><span className={style.fairRed}>活动主题：</span>五一大放“价”</p>
+                        <p><span className={style.fairRed}>活动时间：</span>5月1日-3日</p>
+                        <p>
+                            <span className={style.fairRed}>营销方案：</span>
+                            <p><img src="http://res.hualala.com/basicdoc/bd77d761-0d68-4aee-84e8-cdfd06d1d202.png" alt=""></img></p>
+                        </p>
                     </div>
                     <h3>母亲节</h3>
                     <div>
-                        <p><span className={style.fairRed}>活动主题：</span>感谢最漂亮的妈妈</p>
-                        <p><span className={style.fairRed}>活动时间：</span>5月5日-5月10日（提前5天举行）</p>
-                        <p><span className={style.fairRed}>方案1：</span>报名活动，公众号发文章留言互动，说出母亲最感动的一件事，上榜者送菜品</p>
-                        <p><span className={style.fairRed}>方案2：</span>晒图集赞，推出“我与妈妈的合照”并发送指定文字，集赞到店即可送菜品</p>
-                        <p><span className={style.fairRed}>方案3：</span>免费领取，当天母亲到店消费即免费送康乃馨一朵</p>
+                        <p><span className={style.fairRed}>活动主题：</span>我和妈妈的约会</p>
+                        <p><span className={style.fairRed}>活动时间：</span>5月9日（5月第2个星期日）</p>
+                        <p>
+                            <span className={style.fairRed}>营销方案：</span>
+                            <p><img src="http://res.hualala.com/basicdoc/755a2c95-6312-4680-92f0-f9fc99a926e1.png" alt=""></img></p>
+                        </p>
                     </div>
+
                     <h2>六月营销日历</h2>
-                    <img src="http://res.hualala.com/basicdoc/f9a8d36c-8ed6-4f2a-b71a-c2d0785134c6.png" alt=""></img>
+                    <img src="http://res.hualala.com/basicdoc/f45f2a93-b37a-409f-908b-af8604278820.png" alt=""></img>
                     <h3>儿童节</h3>
                     <div>
-                        <p><span className={style.fairRed}>活动主题：</span>谁还不是个宝宝</p>
+                        <p><span className={style.fairRed}>活动主题：</span>童心飞扬 快乐成长</p>
                         <p><span className={style.fairRed}>活动时间：</span>6月1日（仅限当天）</p>
-                        <p><span className={style.fairRed}>方案1：</span>当天到店儿童赠送甜品一份（或特色小吃）</p>
-                        <p><span className={style.fairRed}>方案2：</span>朋友圈晒出“童年照”，并发送指定文字，到店即可兑换限量菜品一份</p>
-                        <p><span className={style.fairRed}>方案3：</span>消费满额送礼，例如送儿童玩具等，结合门店顾客群体制定</p>
-                    </div>
-                    <h3>父亲节</h3>
-                    <div>
-                        <p><span className={style.fairRed}>活动主题：</span>“爸”气好礼等你来</p>
-                        <p><span className={style.fairRed}>活动时间：</span>6月16日-21日</p>
-                        <p><span className={style.fairRed}>方案1：</span>累计消费送礼，例如：按摩椅、足浴盆等适合父母的礼物</p>
-                        <p><span className={style.fairRed}>方案2：</span>组合减免，感恩父爱（包桌套餐）购买X组菜品组合即可享受相应折扣或减价</p>
-                        <p><span className={style.fairRed}>方案3：</span>节日当天，父亲到店免费领取相应礼品</p>
+                        <p>
+                            <span className={style.fairRed}>营销方案：</span>
+                            <p><img src="http://res.hualala.com/basicdoc/c3ad247b-157a-4b50-9fea-88da6ad8a8b1.png" alt=""></img></p>
+                        </p>
                     </div>
                     <h3>端午节</h3>
                     <div>
                         <p><span className={style.fairRed}>活动主题：</span>好礼接“粽”而来</p>
-                        <p><span className={style.fairRed}>活动时间：</span>6月19日-30日（前后7-10天，需提前准备）</p>
-                        <p><span className={style.fairRed}>方案1：</span>摇奖活动，例如：大转盘抽奖送代金券、凉菜、酒水、饮料、粽子礼盒等</p>
-                        <p><span className={style.fairRed}>方案2：</span>组合减免/折扣，购买X组菜品组合即可享受相应折扣或减价</p>
+                        <p><span className={style.fairRed}>活动时间：</span>6月7日-14日（需提前准备，建议7天左右）</p>
+                        <p>
+                            <span className={style.fairRed}>营销方案：</span>
+                            <p><img src="http://res.hualala.com/basicdoc/2ca288bf-8774-42d3-a2ff-75a66dcadac7.png" alt=""></img></p>
+                        </p>
                     </div>
+                    <h3>父亲节</h3>
+                    <div>
+                        <p><span className={style.fairRed}>活动主题：</span>“爸”气十足</p>
+                        <p><span className={style.fairRed}>活动时间：</span>6月20日（前后7-10天，需提前准备）</p>
+                        <p>
+                            <span className={style.fairRed}>营销方案：</span>
+                            <p><img src="http://res.hualala.com/basicdoc/90c5bcad-23cc-47c9-bf1d-72335493a500.png" alt=""></img></p>
+                        </p>
+                    </div>
+
                     <h2>七月营销日历</h2>
-                    <img src="http://res.hualala.com/basicdoc/74f12fce-016b-4689-9b4e-4d6d0a64da4c.png" alt=""></img>
+                    <img src="http://res.hualala.com/basicdoc/1526e49c-b84a-423f-82e7-db290208af5f.png" alt=""></img>
                     <p>天气逐渐炎热，暑期来临，可以准备一些降暑茶饮。</p>
+
                     <h2>八月营销日历</h2>
-                    <img src="http://res.hualala.com/basicdoc/df2760fc-95e3-4ae7-8a60-7148a5e7e2c5.png" alt=""></img>
+                    <img src="http://res.hualala.com/basicdoc/4ce9713c-a360-48ae-917a-eb6b3223a891.png" alt=""></img>
                     <h3>建军节</h3>
                     <div>
                         <p><span className={style.fairRed}>活动主题：</span>热血铸军魂</p>
                         <p><span className={style.fairRed}>活动时间：</span>8月1日（仅限当天）</p>
-                        <p><span className={style.fairRed}>方案1：</span>折扣活动，军人、老兵本人当日到店消费享5折</p>
-                        <p><span className={style.fairRed}>方案2：</span>免费领取，持相关证件者可赠送一份菜品</p>
+                        <p>
+                            <span className={style.fairRed}>营销方案：</span>
+                            <p><img src="http://res.hualala.com/basicdoc/384622a3-d9e4-4315-8ccd-4cec082557be.png" alt=""></img></p>
+                        </p>
                     </div>
-                    <h3>七夕节</h3>
+                    <h3>立秋</h3>
                     <div>
-                        <p><span className={style.fairRed}>活动主题：</span>七夕“价”给你</p>
-                        <p><span className={style.fairRed}>活动时间：</span>8月25日（仅限当天）</p>
-                        <p><span className={style.fairRed}>方案1：</span>消费满额送礼，情侣到店消费送礼品（成对的产品）</p>
-                        <p><span className={style.fairRed}>方案2：</span>菜品推荐，可享会员专享双人套餐</p>
+                        <p><span className={style.fairRed}>活动主题：</span>暑去凉来</p>
+                        <p><span className={style.fairRed}>活动时间：</span>8月7日（仅限当天）</p>
+                        <p>
+                            <span className={style.fairRed}>营销方案：</span>
+                            <p><img src="http://res.hualala.com/basicdoc/463b2d04-ae29-4790-9a49-50fefc9f3ba5.png" alt=""></img></p>
+                        </p>
                     </div>
+                    <h3>七夕情人节</h3>
+                    <div>
+                        <p><span className={style.fairRed}>活动主题：</span>浪漫七夕  一“惠”到底</p>
+                        <p><span className={style.fairRed}>活动时间：</span>8月14日（仅限当天）</p>
+                        <p>
+                            <span className={style.fairRed}>营销方案：</span>
+                            <p><img src="http://res.hualala.com/basicdoc/c47a9d2b-b6a6-4cd1-a781-7dc52dbf99c8.png" alt=""></img></p>
+                        </p>
+                    </div>
+
                     <h2>九月营销日历</h2>
-                    <img src="http://res.hualala.com/basicdoc/6381aca8-3188-482a-8945-89b36e369b67.png" alt=""></img>
+                    <img src="http://res.hualala.com/basicdoc/0827bc7f-106b-43fd-836b-313228666ad9.png" alt=""></img>
                     <h3>教师节</h3>
                     <div>
-                        <p><span className={style.fairRed}>活动主题：</span>老师您辛苦啦！</p>
+                        <p><span className={style.fairRed}>活动主题：</span>感念师恩  金秋特惠</p>
                         <p><span className={style.fairRed}>活动时间：</span>9月10日（仅限当天）</p>
-                        <p><span className={style.fairRed}>方案1：</span>消费返礼品，消费后获得奖励，促使顾客再次复购</p>
-                        <p><span className={style.fairRed}>方案2：</span>折扣，包桌套餐（谢师宴）</p>
-                        <p><span className={style.fairRed}>方案3：</span>节日当天，凭教师资格证到店免费领取相应礼品</p>
+                        <p>
+                            <span className={style.fairRed}>营销方案：</span>
+                            <p><img src="http://res.hualala.com/basicdoc/ffed75f3-2afb-4923-845c-e4d885086829.png" alt=""></img></p>
+                        </p>
                     </div>
+                    <h3>中秋节</h3>
+                    <div>
+                        <p><span className={style.fairRed}>活动主题：</span>情浓中秋  花好月圆</p>
+                        <p><span className={style.fairRed}>活动时间：</span>9月21日（前后7天）</p>
+                        <p>
+                            <span className={style.fairRed}>营销方案：</span>
+                            <p><img src="http://res.hualala.com/basicdoc/0a7cfdef-c2a1-4a78-b505-274e5930c496.png" alt=""></img></p>
+                        </p>
+                    </div>
+
                     <h2>十月营销日历</h2>
-                    <img src="http://res.hualala.com/basicdoc/e6edd62e-7b10-423f-bdb5-f5c7efca8c17.png" alt=""></img>
-                    <h3>国庆节&中秋节</h3>
+                    <img src="http://res.hualala.com/basicdoc/8b9267b8-df2e-4ae2-806a-97b82c65a335.png" alt=""></img>
+                    <h3>国庆节</h3>
                     <div>
-                        <p><span className={style.fairRed}>活动主题：</span>双节同庆 好礼嗨翻天</p>
-                        <p><span className={style.fairRed}>活动时间：</span>9月25日-10月7日（重点节日营销）</p>
-                        <p><span className={style.fairRed}>方案1：</span>群发礼品，提前赠送优惠券或免费菜品券，吸引顾客到店消费</p>
-                        <p><span className={style.fairRed}>方案2：</span>加价换购，指定消费满X元再加Y元可换购指定菜品或月饼礼盒</p>
-                        <p><span className={style.fairRed}>方案3：</span>随机立减，顾客到店消费满X元随机立减一定金额，突出顾客惊喜</p>
+                        <p><span className={style.fairRed}>活动主题：</span>迎国庆 大放“价”</p>
+                        <p><span className={style.fairRed}>活动时间：</span>10月1日（前后7天）</p>
+                        <p>
+                            <span className={style.fairRed}>营销方案：</span>
+                            <p><img src="http://res.hualala.com/basicdoc/aabeb654-55e9-4748-b223-583b74b958b9.png" alt=""></img></p>
+                        </p>
                     </div>
+
                     <h2>十一月营销日历</h2>
-                    <img src="http://res.hualala.com/basicdoc/365e0a64-976c-4c17-8100-31a0fa6071b5.png" alt=""></img>
-                    <h3>双十一</h3>
+                    <img src="http://res.hualala.com/basicdoc/c12fa5e0-883e-43ec-b989-c450fdae6ab9.png" alt=""></img>
+                    <h3>万圣节</h3>
                     <div>
-                        <p><span className={style.fairRed}>活动主题：</span>双十一 我拼啦！</p>
-                        <p><span className={style.fairRed}>活动时间：</span>11月11日（仅限当天）</p>
-                        <p><span className={style.fairRed}>方案1：</span>储值1111元，送111元代金券两张</p>
-                        <p><span className={style.fairRed}>方案2：</span>人均消费111元以上，打9折或送代金券</p>
-                        <p><span className={style.fairRed}>方案3：</span>积分兑换，使用111积分兑换礼品（菜品、酒水等）</p>
+                        <p><span className={style.fairRed}>活动主题：</span>万圣节  不给优惠就捣蛋！</p>
+                        <p><span className={style.fairRed}>活动时间：</span>11月1日（仅限当天）</p>
+                        <p>
+                            <span className={style.fairRed}>营销方案：</span>
+                            <p><img src="http://res.hualala.com/basicdoc/762ef15e-a1de-45ba-875a-4cd3883a3cfd.png" alt=""></img></p>
+                        </p>
                     </div>
+                    <h3>双11购物节</h3>
+                    <div>
+                        <p><span className={style.fairRed}>活动主题：</span>双11狂欢 一起high！</p>
+                        <p><span className={style.fairRed}>活动时间：</span>11月11日（仅限当天）</p>
+                        <p>
+                            <span className={style.fairRed}>营销方案：</span>
+                            <p><img src="http://res.hualala.com/basicdoc/7f608eb4-3e90-45a4-9abc-2c3081a87e60.png" alt=""></img></p>
+                        </p>
+                    </div>
+
                     <h2>十二月营销日历</h2>
-                    <img src="http://res.hualala.com/basicdoc/60dc80cc-3a82-4743-8fc4-4b864e08d607.png" alt=""></img>
+                    <img src="http://res.hualala.com/basicdoc/23b544ed-dd29-41c9-ba3a-1aa3f60a8736.png" alt=""></img>
+                    <h3>冬至</h3>
+                    <div>
+                        <p><span className={style.fairRed}>活动主题：</span>温暖冬至 问候而至！</p>
+                        <p><span className={style.fairRed}>活动时间：</span>12月21日（仅限当天）</p>
+                        <p>
+                            <span className={style.fairRed}>营销方案：</span>
+                            <p><img src="http://res.hualala.com/basicdoc/3cc25c7b-5d7d-4133-a1f0-9ea2180c1744.png" alt=""></img></p>
+                        </p>
+                    </div>
                     <h3>平安夜&圣诞节</h3>
                     <div>
-                        <p><span className={style.fairRed}>活动主题：</span>圣诞狂欢 等你来</p>
-                        <p><span className={style.fairRed}>活动时间：</span>12月24日-25日</p>
-                        <p><span className={style.fairRed}>方案1：</span>会员到店消费即可送平安果一个</p>
-                        <p><span className={style.fairRed}>方案2：</span>到店消费满一定的金额赠送奖品（热饮、围巾等）</p>
-                        <p><span className={style.fairRed}>方案3：</span>摇奖活动，大转盘摇奖（代金券、凉菜、酒水、饮料等）</p>
+                        <p><span className={style.fairRed}>活动主题：</span>缤纷圣诞 好礼不断！</p>
+                        <p><span className={style.fairRed}>活动时间：</span>12月24日-25日（共两天）</p>
+                        <p>
+                            <span className={style.fairRed}>营销方案：</span>
+                            <p><img src="http://res.hualala.com/basicdoc/41a96c02-85ec-4acc-8e78-beb7a13bec1a.png" alt=""></img></p>
+                        </p>
                     </div>
+
                     <p>当然，以上各式活动，哗啦啦营销中心均可以实现，丰富的活动形式满足餐饮商户多样营销需求~</p>
                     <br/>
-                    <p>如果想要《2020年餐饮营销日历》PDF完整版，欢迎关注“<span className={style.fairRed}>哗啦啦产品社区</span>”公众号，回复“<span className={style.fairRed}>2020</span>”即可获取小哗祝大家2020年餐饮营销不再愁！</p>
+                    <p>如果想要《2021年餐饮营销日历》PDF完整版，欢迎关注“<span className={style.fairRed}>哗啦啦产品社区</span>”公众号，回复“<span className={style.fairRed}>2021</span>”即可获取小哗祝大家2021年餐饮营销不再愁！</p>
                     <img style={{ display: 'block', width: 200, margin: '0 auto 30px' }} src="http://res.hualala.com/basicdoc/b59d7f40-180b-469d-870e-f2855bc0f85f.png" alt=""/>
                 </div>
             </div>
