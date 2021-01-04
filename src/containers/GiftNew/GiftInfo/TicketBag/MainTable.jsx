@@ -31,19 +31,19 @@ class MainTable extends Component {
         const { groupID, onQuery } = this.props;
         const params = { couponPackageID, groupID };
         Modal.confirm({
-            title: '您确定要删除吗？',
+            title: '您确定要停用吗？',
             content: (
                 <div>
-                    {`您将删除券包
+                    {`您将停用券包
                         【${name}】`}
                     <br />
-                    <span>删除是不可恢复操作，被删除的券包可以在已删除的券包中查看~</span>
+                    <span>停用是不可恢复操作，被停用的券包可以在已停用的券包中查看~</span>
                 </div>
             ),
             onOk: () => {
                 deleteTicketBag(params).then((flag) => {
                     if (flag) {
-                        message.success('删除成功');
+                        message.success('停用成功');
                         onQuery();
                     }
                 });

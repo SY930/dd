@@ -45,7 +45,11 @@ export default class GiftInfo extends React.Component {
         this.setState({ page, detail, check });
     }
     toggleTabs = (tabkey) => {
-        this.setState({ tabkey });
+        if(tabkey){
+            this.setState({ tabkey });
+        }else{
+            this.setState({ tabkey: this.state.tabkey });
+        }
     }
     render() {
         const { page, detail, check, tabkey, settlesOpts } = this.state;

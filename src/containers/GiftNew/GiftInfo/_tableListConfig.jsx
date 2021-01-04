@@ -80,7 +80,7 @@ export const COLUMNS = [
                             (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
                                 <a disabled={true}><span>{ COMMON_LABEL.delete }</span></a>
                             ) : (
-                                <a onClick={() => this.handleDelete(record)}><span>{ COMMON_LABEL.delete }</span></a>
+                                <a onClick={() => this.handleDelete(record)}><span>停用</span></a>
                             )
                         }
                     </Authority>

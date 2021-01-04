@@ -60,6 +60,7 @@ class GiftDetailTable extends Component {
             createModalVisible: false,
             data: {},
             dataSource: [],
+            blockDataSource: [],
             brands: [],
             editGift: { describe: '', value: '' },
             loading: true,
@@ -69,6 +70,7 @@ class GiftDetailTable extends Component {
                 action: '0',
             },
             total: 2,
+            blockTotal: 2,
             tableHeight: '100%',
             usedTotalSize: 0,
             treeData: [],
@@ -146,7 +148,8 @@ class GiftDetailTable extends Component {
                 action,
             },
         } = this.state;
-        if (action == 2) {
+        let {tabkey} = this.props
+        if (tabkey == 3) {
             const columns = this.columns.slice();
             columns.splice(1, 1, {
                 title: '操作',
@@ -190,13 +193,16 @@ class GiftDetailTable extends Component {
     }
 
     proGiftData = (data) => {
+        let {tabkey} = this.props
         // 在此处预处理用来显示 编辑的字段
         const _total = data.totalSize;
         const _pageSize = data.pageSize;
         const _pageNo = data.pageNo;
         const gifts = data.crmGiftList;
         if (gifts === undefined) {
-            this.setState({ dataSource: [], total: _total });
+            if(tabkey == 1) this.setState({ dataSource: [], total: _total });
+            else this.setState({ blockDataSource: [], blockTotal: _total });
+            
             return;
         }
         const newDataSource = (gifts || []).map((g, i) => {
@@ -240,7 +246,9 @@ class GiftDetailTable extends Component {
             }
             return g;
         });
-        this.setState({ dataSource: [...newDataSource], total: _total });
+        if(tabkey == 1) this.setState({ dataSource: [...newDataSource], total: _total });
+        else this.setState({ blockDataSource: [...newDataSource], blockTotal: _total });
+        
     }
 
     handleFormChange(key, value) {
@@ -248,7 +256,6 @@ class GiftDetailTable extends Component {
     }
 
     changeSortOrder(record, direction) {
-        // console.log('record: ', record);
         const params = {giftItemID: record.giftItemID, direction};
         axiosData('/coupon/couponService_updateRanking.ajax', params, {needThrow: true}, {path: undefined}, 'HTTP_SERVICE_URL_PROMOTION_NEW').then(() => {
             if (this.tableRef &&  this.tableRef.props && this.tableRef.props.pagination && this.tableRef.props.pagination.onChange) {
@@ -260,7 +267,7 @@ class GiftDetailTable extends Component {
     }
 
     handleQuery(pageType) {
-        let action = pageType == 1 ? 0 : 1
+        let action = pageType == 1 ? 0 : 2
         const { queryParams } = this.state;
         const { FetchGiftList } = this.props;
         this.queryFrom.validateFieldsAndScroll((err, values) => {
@@ -349,13 +356,13 @@ class GiftDetailTable extends Component {
     handleDelete(rec) {
         const { giftItemID, giftName } = rec;
         Modal.confirm({
-            title: '您确定要删除吗？',
+            title: '您确定要停用吗？',
             content: (
                 <div>
-                    {`您将删除礼品
+                    {`您将停用礼品
                         【${giftName}】`}
                     <br />
-                    <span>删除是不可恢复操作，被删除的礼品可以在已删除的礼品中查看~</span>
+                    <span>停用是不可恢复操作，被停用的礼品可以在已停用的礼品中查看~</span>
                 </div>
             ),
             onOk: () => {
@@ -367,7 +374,7 @@ class GiftDetailTable extends Component {
                     'HTTP_SERVICE_URL_PROMOTION_NEW',
                 ).then((data) => {
                     if (data.code === '000') {
-                        message.success('此礼品删除成功');
+                        message.success('此礼品停用成功');
                         const { queryParams } = this.state;
                         const { FetchGiftList } = this.props;
                         FetchGiftList(queryParams).then((data = []) => {
@@ -377,7 +384,7 @@ class GiftDetailTable extends Component {
                 }, ({code, msg, eventReference = [], wechatCardReference = [], quotaCardsReference = [], couponPackageReference = []}) => {
                     if (code === '1211105076') {// 券被占用
                         Modal.warning({
-                            title: '礼品被占用，不可删除',
+                            title: '礼品被占用，不可停用',
                             content: (
                                 <div
                                     style={{
@@ -388,7 +395,7 @@ class GiftDetailTable extends Component {
                                         !!eventReference.length && (
                                             <div>
                                                 <div>
-                                                    该礼品被以下活动使用，如需删除，请取消引用
+                                                    该礼品被以下活动使用，如需停用，请取消引用
                                                 </div>
                                                 <div
                                                     style={{
@@ -404,7 +411,7 @@ class GiftDetailTable extends Component {
                                         !!wechatCardReference.length && (
                                             <div>
                                                 <div style={{ marginTop: 8 }}>
-                                                    该礼品被以下微信卡券使用，如需删除，请取消引用
+                                                    该礼品被以下微信卡券使用，如需停用，请取消引用
                                                 </div>
                                                 <div
                                                     style={{
@@ -420,7 +427,7 @@ class GiftDetailTable extends Component {
                                         !!quotaCardsReference.length && (
                                             <div>
                                                 <div style={{ marginTop: 8 }}>
-                                                    该礼品被以下礼品定额卡券使用，如需删除，请取消引用
+                                                    该礼品被以下礼品定额卡券使用，如需停用，请取消引用
                                                 </div>
                                                 <div
                                                     style={{
@@ -436,7 +443,7 @@ class GiftDetailTable extends Component {
                                         !!couponPackageReference.length && (
                                             <div>
                                                 <div style={{ marginTop: 8 }}>
-                                                    该礼品被以下券包使用，如需删除，请取消引用
+                                                    该礼品被以下券包使用，如需停用，请取消引用
                                                 </div>
                                                 <div
                                                     style={{
@@ -631,14 +638,13 @@ class GiftDetailTable extends Component {
                 defaultValue: '0',
                 options: [
                     { label: '正常', value: '0' },
-                    { label: '已删除', value: '2' },
+                    { label: '已停用', value: '2' },
                 ],
             },
         };
         const formKeys = ['giftName', 'giftItemID', 'giftPWD', 'giftType', 'brandID',];
         const headerClasses = `layoutsToolLeft ${styles2.headerWithBgColor} ${styles2.basicPromotionHeader}`;
         const { tabkey } = this.props;
-        console.log('>>>', tabkey)
         const { groupID } = this.props.user.accountInfo;
         return (
             <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
@@ -742,13 +748,21 @@ class GiftDetailTable extends Component {
                         <TicketBag pageType={2} groupID={groupID} onGoEdit={this.props.togglePage} treeData={this.state.treeData} />
                     </TabPane>
                     <TabPane tab="已停用礼品" key="3">
-                        
-                        {/* <GiftList 
+                        <GiftList 
                             pageType={3} 
                             groupID={groupID} 
                             onGoEdit={this.props.togglePage} 
                             treeData={this.state.treeData} 
-                        />  */}
+                            formItems={formItems}
+                            formKeys={formKeys}
+                            columns={this.getTableColumns().map(c => (c.render ? ({
+                                ...c,
+                                render: c.render.bind(this),
+                            }) : c))}
+                            dataSource={this.state.blockDataSource}
+                            total={this.state.blockTotal}
+                            proGiftData={this.proGiftData}
+                        /> 
                     </TabPane>
                     <TabPane tab="已停用券包" key="4">
                         <TicketBag pageType={4} groupID={groupID} onGoEdit={this.props.togglePage} treeData={this.state.treeData} />
