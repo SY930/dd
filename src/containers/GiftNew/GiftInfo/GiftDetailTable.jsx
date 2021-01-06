@@ -191,7 +191,6 @@ class GiftDetailTable extends Component {
     }
 
     proGiftData = (data) => {
-        let {tabkey} = this.props
         // 在此处预处理用来显示 编辑的字段
         const _total = data.totalSize;
         const _pageSize = data.pageSize;
