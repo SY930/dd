@@ -60,7 +60,6 @@ class GiftDetailTable extends Component {
             createModalVisible: false,
             data: {},
             dataSource: [],
-            blockDataSource: [],
             brands: [],
             editGift: { describe: '', value: '' },
             loading: true,
@@ -69,8 +68,7 @@ class GiftDetailTable extends Component {
                 pageSize: 20,
                 action: '0',
             },
-            total: 2,
-            blockTotal: 2,
+            total: 0,
             tableHeight: '100%',
             usedTotalSize: 0,
             treeData: [],
@@ -105,13 +103,13 @@ class GiftDetailTable extends Component {
 
     componentDidMount() {
         const { FetchGiftList, shopData, FetchGiftSchemaAC } = this.props;
-        FetchGiftList({
-            pageNo: 1,
-            pageSize: 20,
-            action: 0,
-        }).then((data = []) => {
-            this.proGiftData(data);
-        });
+        // FetchGiftList({
+        //     pageNo: 1,
+        //     pageSize: 20,
+        //     action: 0,
+        // }).then((data = []) => {
+        //     this.proGiftData(data);
+        // });
         fetchData('getShopBrand', { isActive: 1 }, null, { path: 'data.records' })
             .then((data) => {
                 if (!data) return;
@@ -134,10 +132,10 @@ class GiftDetailTable extends Component {
 
     componentWillReceiveProps(nextProps) {
         const { dataSource, shopData } = nextProps;
-        const data = dataSource.toJS();
-        if (this.state.dataSource !== data) {
-            this.proGiftData(data);
-        }
+        // const data = dataSource.toJS();
+        // if (this.state.dataSource !== data) {
+        //     this.proGiftData(data);
+        // }
         const _shopData = shopData.toJS();
         this.proShopData(_shopData);
     }
@@ -200,9 +198,7 @@ class GiftDetailTable extends Component {
         const _pageNo = data.pageNo;
         const gifts = data.crmGiftList;
         if (gifts === undefined) {
-            if(tabkey == 1) this.setState({ dataSource: [], total: _total });
-            else this.setState({ blockDataSource: [], blockTotal: _total });
-            
+            this.setState({ dataSource: [], total: _total });
             return;
         }
         const newDataSource = (gifts || []).map((g, i) => {
@@ -246,8 +242,7 @@ class GiftDetailTable extends Component {
             }
             return g;
         });
-        if(tabkey == 1) this.setState({ dataSource: [...newDataSource], total: _total });
-        else this.setState({ blockDataSource: [...newDataSource], blockTotal: _total });
+        this.setState({ dataSource: [...newDataSource], total: _total });
         
     }
 
@@ -266,26 +261,26 @@ class GiftDetailTable extends Component {
         })
     }
 
-    handleQuery(pageType) {
-        let action = pageType == 1 ? 0 : 2
-        const { queryParams } = this.state;
-        const { FetchGiftList } = this.props;
-        this.queryFrom.validateFieldsAndScroll((err, values) => {
-            if (err) return;
-            const params = { ...values };
-            this.setState({
-                queryParams: { pageNo: 1, pageSize: queryParams.pageSize || 1, action, ...params },
-            })
-            FetchGiftList({
-                action,
-                pageNo: 1,
-                pageSize: queryParams.pageSize || 1,
-                ...params,
-            }).then((data = []) => {
-                this.proGiftData(data);
-            });
-        });
-    }
+    // handleQuery(pageType) {
+    //     let action = pageType == 1 ? 0 : 2
+    //     const { queryParams } = this.state;
+    //     const { FetchGiftList } = this.props;
+    //     this.queryFrom.validateFieldsAndScroll((err, values) => {
+    //         if (err) return;
+    //         const params = { ...values };
+    //         this.setState({
+    //             queryParams: { pageNo: 1, pageSize: queryParams.pageSize || 1, action, ...params },
+    //         })
+    //         FetchGiftList({
+    //             action,
+    //             pageNo: 1,
+    //             pageSize: queryParams.pageSize || 1,
+    //             ...params,
+    //         }).then((data = []) => {
+    //             this.proGiftData(data);
+    //         });
+    //     });
+    // }
 
     handleCancel() {
         this.reLoading().then(() => {
@@ -495,20 +490,20 @@ class GiftDetailTable extends Component {
         })
     }
 
-    handlePageChange = (pageNo, pageSize) => {
-        const { queryParams } = this.state;
-        const { FetchGiftList } = this.props;
-        FetchGiftList({
-            ...queryParams,
-            pageNo,
-            pageSize,
-        }).then((data = []) => {
-            this.proGiftData(data);
-        });
-        this.setState({
-            queryParams: { ...queryParams, pageNo, pageSize },
-        });
-    }
+    // handlePageChange = (pageNo, pageSize) => {
+    //     const { queryParams } = this.state;
+    //     const { FetchGiftList } = this.props;
+    //     FetchGiftList({
+    //         ...queryParams,
+    //         pageNo,
+    //         pageSize,
+    //     }).then((data = []) => {
+    //         this.proGiftData(data);
+    //     });
+    //     this.setState({
+    //         queryParams: { ...queryParams, pageNo, pageSize },
+    //     });
+    // }
 
     proShopData = (shops = []) => {
         const treeData = [];
@@ -693,7 +688,7 @@ class GiftDetailTable extends Component {
                 <PromotionCalendarBanner />
                 <Tabs activeKey={tabkey} onChange={this.props.toggleTabs} className={styles.tabBox}>
                     <TabPane tab="礼品查询" key="1">
-                        <div className={styles2.pageContentWrapper}>
+                        {/* <div className={styles2.pageContentWrapper}>
                             <div style={{ padding: '0'}} className="layoutsHeader">
                                 <div className="layoutsSearch">
                                     <ul>
@@ -742,7 +737,21 @@ class GiftDetailTable extends Component {
                                     scroll={{ x: 1600,  y: 'calc(100vh - 440px)' }}
                                 />
                             </div>
-                        </div>
+                        </div> */}
+                        <GiftList 
+                            pageType={1} 
+                            groupID={groupID} 
+                            onGoEdit={this.props.togglePage} 
+                            treeData={this.state.treeData} 
+                            formItems={formItems}
+                            formKeys={formKeys}
+                            columns={this.getTableColumns().map(c => (c.render ? ({
+                                ...c,
+                                render: c.render.bind(this),
+                            }) : c))}
+                            dataSource={this.state.dataSource}
+                            total={this.state.total}
+                        /> 
                     </TabPane>
                     <TabPane tab="券包查询" key="2">
                         <TicketBag pageType={2} groupID={groupID} onGoEdit={this.props.togglePage} treeData={this.state.treeData} />
@@ -759,9 +768,6 @@ class GiftDetailTable extends Component {
                                 ...c,
                                 render: c.render.bind(this),
                             }) : c))}
-                            dataSource={this.state.blockDataSource}
-                            total={this.state.blockTotal}
-                            proGiftData={this.proGiftData}
                         /> 
                     </TabPane>
                     <TabPane tab="已停用券包" key="4">
