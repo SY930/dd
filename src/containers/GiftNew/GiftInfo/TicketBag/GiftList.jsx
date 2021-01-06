@@ -5,9 +5,7 @@ import styles from '../GiftInfo.less';
 import styles2 from '../../../SaleCenterNEW/ActivityPage.less';
 import BaseForm from '../../../../components/common/BaseForm';
 import Authority from '../../../../components/common/Authority';
-import MainTable from './MainTable';
-import QueryForm from './QueryForm';
-import { getTicketList } from './AxiosFactory';
+import GiftCfg from '../../../../constants/Gift';
 import {
     GIFT_LIST_UPDATE,
 } from "../../../../constants/authorityCodes";
@@ -21,7 +19,6 @@ import {
     queryWechatMpInfo, startEditGift,
     FetchGiftSchema,
 } from '../../_action';
-import ReleaseModal from './Release';
 
 class GiftList extends Component {
     constructor(props){
@@ -40,20 +37,22 @@ class GiftList extends Component {
         this.setTableRef = el => this.tableRef = el;
     }
     componentDidMount() {
-        let {dataSource, total} = this.props
-        this.setState({dataSource, total})
         this.onQueryList();
     }
     componentWillReceiveProps(nextProps){
         const { dataSource, total } = nextProps;
-        if(dataSource != this.state.dataSource){
-            this.setState({dataSource, total})
+        if(total != this.props.total){
+            if(this.props.pageType == 1){
+                this.setState({dataSource, total})
+            }
         }
     }
+
     /**
      * 加载列表
      */
-    onQueryList = (pageType) => {
+    onQueryList = () => {
+        let {pageType} = this.props
         let action = pageType == 1 ? 0 : 2
         const { queryParams } = this.state;
         const { FetchGiftList } = this.props;
@@ -69,7 +68,7 @@ class GiftList extends Component {
                 pageSize: queryParams.pageSize || 1,
                 ...params,
             }).then((data = []) => {
-                this.props.proGiftData(data);
+                this.proGiftData(data);
             });
         });
     }
@@ -82,12 +81,69 @@ class GiftList extends Component {
             pageNo,
             pageSize,
         }).then((data = []) => {
-            this.props.proGiftData(data);
+            this.proGiftData(data);
         });
         this.setState({
             queryParams: { ...queryParams, pageNo, pageSize },
         });
     }
+
+    proGiftData = (data) => {
+        let {tabkey} = this.props
+        // 在此处预处理用来显示 编辑的字段
+        const _total = data.totalSize;
+        const _pageSize = data.pageSize;
+        const _pageNo = data.pageNo;
+        const gifts = data.crmGiftList;
+        if (gifts === undefined) {
+            this.setState({ dataSource: [], total: _total });
+            return;
+        }
+        const newDataSource = (gifts || []).map((g, i) => {
+            g.key = i + 1;
+            g.giftType = String(g.giftType);
+            g.giftTypeName = _.find(GiftCfg.giftTypeName, { value: String(g.giftType) }) ? _.find(GiftCfg.giftTypeName, { value: String(g.giftType) }).label : '未定义';
+            g.createTime = g.createStamp == 0 ? '--' : g.createStamp.split('.')[0];
+            g.actionTime = g.actionStamp == 0 ? '--' : g.actionStamp.split('.')[0];
+            g.operateTime = <div>{g.createTime}<br />{g.actionTime}</div>;
+            g.createBy = g.createBy == undefined ? '--' : g.createBy;
+            g.modifyBy = g.modifyBy == undefined ? '--' : g.modifyBy;
+            g.operator = `${g.createBy} / ${g.modifyBy}`;
+            g.giftRule = g.giftRule.split('</br>');
+            g.num = i + 1 + (_pageSize * (_pageNo - 1));
+            g.usingTimeType = (g.usingTimeType || '').split(',');
+            g.usingDateType = (g.usingDateType || '').split(',');
+            g.usingWeekType = (g.usingWeekType || '').split(',');
+            g.supportOrderTypeLst = g.supportOrderTypeLst ? (g.supportOrderTypeLst).split(',') : undefined;
+            g.shopNames = g.shopNames === undefined ? '不限' : g.shopNames;
+            g.isDiscountRate = g.discountRate < 1;
+            g.isPointRate = g.pointRate > 0;
+            // 现金红包相关字段合并
+            g.sellerCode = g.settleId ? `${g.settleId}:${g.merchantNo}:${g.settleName}` : undefined;
+            // 金豆商城字段和vivo快应用字段合并
+            g.aggregationChannels = [];
+            g.goldGift && g.aggregationChannels.push('goldGift');
+            g.vivoChannel && g.aggregationChannels.push('vivoChannel');
+
+            g.transferType = g.transferType > 0 ? 1 : 0; // 该字段以前是0 1 2, 三种值 现在1, 2合并为1
+            if (g.transferLimitType !== undefined && g.transferLimitType != -1) {
+                g.transferLimitType = String(g.transferLimitType);
+                g.transferLimitType === '0' && (g.transferLimitTypeValue = '');
+                g.transferLimitType > 0 && (g.transferLimitTypeValue = g.transferLimitType, g.transferLimitType = '-1');
+            }
+            if (g.giftType == 30 && g.giftImagePath && !validUrl.isWebUri(g.giftImagePath)) {
+                if (g.giftImagePath.startsWith('/')) {
+                    g.giftImagePath = 'http://res.hualala.com' + g.giftImagePath
+                } else {
+                    g.giftImagePath = 'http://res.hualala.com/' + g.giftImagePath
+                }
+            }
+            return g;
+        });
+        this.setState({ dataSource: [...newDataSource], total: _total });
+        
+    }
+    
 
     render() {
         const { loading, queryParams, dataSource = [], total} = this.state;
@@ -110,7 +166,7 @@ class GiftList extends Component {
                             </li>
                             <li>
                                 <Authority rightCode={GIFT_LIST_UPDATE}>
-                                    <Button type="primary" onClick={() => this.onQueryList(3)}>
+                                    <Button type="primary" onClick={() => this.onQueryList()}>
                                         <Icon type="search" />
                                         查询
                                     </Button>
