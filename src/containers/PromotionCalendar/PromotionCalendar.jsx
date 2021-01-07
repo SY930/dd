@@ -258,7 +258,7 @@ class PromotionCalendar extends Component {
                     </div>
 
                     <h2>十二月营销日历</h2>
-                    <img src="http://res.hualala.com/basicdoc/23b544ed-dd29-41c9-ba3a-1aa3f60a8736.png" alt=""></img>
+                    <img src="http://res.hualala.com/basicdoc/76264b72-8c7d-4078-a678-9f5381cfe1df.png" alt=""></img>
                     <h3>冬至</h3>
                     <div>
                         <p><span className={style.fairRed}>活动主题：</span>温暖冬至 问候而至！</p>
