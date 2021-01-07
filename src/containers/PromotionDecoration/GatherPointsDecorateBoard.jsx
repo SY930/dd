@@ -167,7 +167,8 @@ export default class GatherPointsDecorateBoard extends Component {
         const {
             decorationInfo: {
                 popImg = url + 'basicdoc/a9a0ed49-ebe3-4a7c-8b2d-cf6772141fd9.png',
-                bgImg = url + 'basicdoc/bcb2ae0a-0b56-43d8-934e-cbda3e5e0af8.png',
+                bgImg = url + 'basicdoc/c9b4ce1e-c4ef-4bd8-b352-8a596a7a3ac0.png',
+                popContent = url + 'basicdoc/53f1f865-93a0-40ef-83f2-28881e045f28.png',
                 endColor = '#FF6125',
             },
         } = this.props;
@@ -203,9 +204,10 @@ export default class GatherPointsDecorateBoard extends Component {
                             </div>
                             <div className={style.grayForder}>
                                     <div style={{ borderRadius: 10, width: '100%', height: '100%', overflow: 'hidden' }}>
-                                        <img src={popImg} style={{ width: '100%' }} alt="" />
+                                        <img src={popImg} className={style.popTopImg} style={{ width: '101%' }} alt="" />
+                                        <img src={popContent} className={style.popContentImg} style={{ width: '100%' }} alt="" />
                                     </div>
-                                    <Icon className={style.closeBtn} type="close-circle-o" />
+                                    <Icon className={style.closeBtnIcon} type="close"/>
                                 </div>
                             {/* debugger */}
                         </div>
@@ -247,13 +249,13 @@ export default class GatherPointsDecorateBoard extends Component {
                             static={true}
                             isAbsoluteUrl={true}
                             limit={1000}
-                            value={bgImg || url + 'basicdoc/bcb2ae0a-0b56-43d8-934e-cbda3e5e0af8.png'}
-                            cropperRatio={1080 / 1920}
+                            value={bgImg || url + 'basicdoc/c9b4ce1e-c4ef-4bd8-b352-8a596a7a3ac0.png'}
+                            cropperRatio={1080 / 2400}
                             width={96}
                             onChange={value => onChange({ key: ['bgImg'], value })}
                         />
                         <div className={style.uploaderTip}>
-                            <p>* {SALE_LABEL.k6346css}1080*1920</p>
+                            <p>* {SALE_LABEL.k6346css}1080*2400</p>
                             <p>* {SALE_LABEL.k6346d14}</p>
                             <p>* {SALE_LABEL.k6346ckg}1000KB</p>
                         </div>
