@@ -166,15 +166,16 @@ export const getGiftLevelSuccessAC = (opt) => {
 export const FetchGiftLevel = (opts) => {
     return (dispatch) => {
         return fetchData('getSetUsedLevels_dkl', { ...opts }, null, {
-            path: 'data.groupCardTypeList',
+            path: 'data',
         })
-            .then((records) => {
+            .then((data) => {
+                let {groupCardTypeList = []} = data
                 dispatch(getGiftLevelSuccessAC({
                     payload: {
-                        dataSource: records || [],
+                        dataSource: groupCardTypeList || [],
                     },
                 }));
-                return Promise.resolve(records);
+                return Promise.resolve(groupCardTypeList);
             }).catch(err => {
                 // empty catch
             });
