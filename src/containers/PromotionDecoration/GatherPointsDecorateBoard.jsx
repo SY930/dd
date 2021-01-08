@@ -119,6 +119,7 @@ export default class GatherPointsDecorateBoard extends Component {
         for (let i = begin; i < end; i++) {
             children.push(<Option key={i}>{i}</Option>);
         }
+        console.log('children', children)
         return children
     }
 
@@ -189,6 +190,13 @@ export default class GatherPointsDecorateBoard extends Component {
                                 </div>
                             </div>
                             {/* debugger */}
+                            <div className={style.grayGiftDiv}>
+                                <span>
+                                    <Icon type="gift" style={{ marginRight: 3}}/>
+                                    满足兑换条件 立即领取 {'>'}
+                                </span>
+                            </div>
+                            
                         </div>
                     ) : (
                         <div className={style.displayBgBlock}>
@@ -197,10 +205,10 @@ export default class GatherPointsDecorateBoard extends Component {
                                 <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
                                     <img src={bgImg} style={{ width: '100%' }} alt="" />
                                 </div>
-                                <div className={style.tagWrapper}>
+                                {/* <div className={style.tagWrapper}>
                                     <img src={tagImg} alt="" />
                                     <span>活动背景图</span>
-                                </div>
+                                </div> */}
                             </div>
                             <div className={style.grayForder}>
                                     <div style={{ borderRadius: 10, width: '100%', height: '100%', overflow: 'hidden' }}>
@@ -265,7 +273,7 @@ export default class GatherPointsDecorateBoard extends Component {
                     <div className={style.label}>集点单行点数</div>
                     <div style={{ width: 100 }} className={style.uploaderWrapper}>
                         <Select
-                            value={pointsNum}
+                            value={pointsNum || '3'}
                             onChange={this.handleNumChange}
                         >
                             {this.renderOpts()}
