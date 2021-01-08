@@ -628,6 +628,7 @@ class SpecialDetailInfo extends Component {
             }
             data[index].needCount.value = gift.needCount || 0;
             data[index].giftInfo.giftItemID = gift.giftID;
+            data[index].giftInfo.itemID = gift.itemID;
             data[index].giftValidDays.value = gift.giftValidUntilDayCount;
             if (
                 this.props.type != "20" &&
@@ -660,9 +661,6 @@ class SpecialDetailInfo extends Component {
                     data.push(getDefaultGiftData(v, "recommendType"));
                 }
             })
-
-
-            // console.log('data---2222',data)
         }
         let wakeupSendGiftsDataArray = [];
         const multiConfig = this.getMultipleLevelConfig();
@@ -836,7 +834,6 @@ class SpecialDetailInfo extends Component {
             }
 
         })
-        // console.log('initEventRecommendSettings',initEventRecommendSettings)
 
 
         return initEventRecommendSettings
@@ -854,6 +851,7 @@ class SpecialDetailInfo extends Component {
                     giftEffectTimeHours: giftInfo.giftEffectiveTime.value,
                     giftValidUntilDayCount: giftInfo.giftValidDays.value,
                     giftID: giftInfo.giftInfo.giftItemID,
+                    itemID: giftInfo.giftInfo.itemID,
                     giftName: giftInfo.giftInfo.giftName,
                 };
             } else {
@@ -880,6 +878,7 @@ class SpecialDetailInfo extends Component {
                             : "",
                     giftID: giftInfo.giftInfo.giftItemID,
                     giftName: giftInfo.giftInfo.giftName,
+                    itemID: giftInfo.giftInfo.itemID,
                 };
             }
             if (
@@ -973,7 +972,6 @@ class SpecialDetailInfo extends Component {
             upGradeReturnGiftCheckBoxStatus,
             ...instantDiscountState,
         } = this.state;
-
 
         // 桌边砍可以不启用礼品 直接短路返回
         if (flag && type == 67 && disabledGifts) {
@@ -1503,8 +1501,6 @@ class SpecialDetailInfo extends Component {
         // index  值为角色值，对应roleType,ruleType 对应rule，存数据先查找对应的rule，然后往对应的角色对象赋值
         const {eventRecommendSettings} = this.state
         const eventRecommendSettingsCurrent =  eventRecommendSettings.find(item => item.rule == ruleType);
-        // console.log('this.state.eventRecommendSettings',this.state.eventRecommendSettings)
-        // console.log('handleRecommendSettingsChange',index ,propertyName, ruleType, eventRecommendSettingsCurrent)
         if(eventRecommendSettingsCurrent) {
             const { helpMessageArray } = this.state;
             let value;
@@ -2538,7 +2534,6 @@ class SpecialDetailInfo extends Component {
         const currentData = eventRecommendSettings.filter(v => v.rule == ruleType)
         if(currentData && currentData[0] && currentData[0].eventRecommendSettings) {
             const itemData = currentData[0].eventRecommendSettings.find(v => v.recommendType == roleType)
-            // console.log('-----',itemData,key,ruleType,roleType)
             if(itemData) {
                 return    itemData[key]
             } else {
@@ -2940,7 +2935,6 @@ class SpecialDetailInfo extends Component {
         this.props.form.validateFieldsAndScroll(
             { force: true },
             (error, basicValues) => {
-                // console.log('err',error)
                 if (!error) {
                     const {data} = this.state
                     const validatedRuleData = validatedRuleDataFn.call(this,data)
@@ -2967,8 +2961,6 @@ class SpecialDetailInfo extends Component {
 
     };
     handleChangeBox = ({key,ruleType,roleType}) => (e) => {
-
-
         const {checkBoxStatus} = this.state
         checkBoxStatus[`ruleType${ruleType}`][`${key}${roleType}`] = e.target.checked
         if(!checkChoose.call(this,key,ruleType,roleType)) {
@@ -2976,7 +2968,6 @@ class SpecialDetailInfo extends Component {
             message.warn('至少选择一个礼品')
             return
         }
-        // console.log('checked',e.target.checked,key )
         if(e.target.checked === false) {
             clearCheckBoxData.call(this,key,ruleType,roleType)
 
@@ -3176,7 +3167,6 @@ class SpecialDetailInfo extends Component {
             wakeupSendGiftsDataArray,
         } = this.state;
         const { isNew } = this.props;
-        // console.log('wakeupSendGiftsDataArray---',wakeupSendGiftsDataArray)
         return (
             <div>
                 <FormItem
@@ -3589,7 +3579,6 @@ class SpecialDetailInfo extends Component {
     render() {
         const { giveCoupon } = this.state;
         const { type } = this.props;
-        // console.log('type--',type)
         if (type == "68") {
             // 推荐有礼的render与其它活动相差较大
             // return <Three _this={this}/>;
