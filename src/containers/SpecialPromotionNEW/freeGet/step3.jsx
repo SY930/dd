@@ -46,9 +46,7 @@ export const freeGetStep3Render = function freeGetStep3Render() {
 
 
     const giftInfo = this.props.specialPromotion.get('$giftInfo').toJS()
-    console.log(giftInfo,'giftinfo====ppppppppppp')
     const {giftSendCount} = giftInfo[0];
-    console.log(giftSendCount,'giftSendCountwonened')
     return (
         <div>
             <FormItem
@@ -79,8 +77,6 @@ export const freeGetStep3Render = function freeGetStep3Render() {
                         rules: [
                             {
                                 validator: (rule, v, cb) => {
-                                    console.log(rule,'rule=================')
-                                    console.log(giftSendCount,v, 'v----------------gggggggggg')
                                     if (v.number === '' || v.number === undefined) {
                                         return cb(
                                             '请输入大于0的8位以内的整数'
