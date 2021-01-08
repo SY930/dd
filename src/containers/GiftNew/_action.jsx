@@ -293,7 +293,9 @@ export const FetchSendorUsedList = (opts) => {
             pageNo: 0,
             giftItemID: opts.params.giftItemID,
         };
-        if (!opts.isSend) {
+        if (opts.isSend) {
+            sendOrUsageCountParam.excludeTransferred = true;
+        } else {    
             sendOrUsageCountParam.giftStatus = 2;
         }
         axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', sendOrUsageCountParam, {needThrow: true}, {path: 'data.totalSize'}, 'HTTP_SERVICE_URL_PROMOTION_NEW')

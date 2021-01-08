@@ -41,13 +41,14 @@ export const freeGetStep3Render = function freeGetStep3Render() {
     const { data, freeGetLimit } = this.state;
     data.forEach((v) => {
         v.giftCount.disabled = true,
-        v.giftCount.value = 1
+            v.giftCount.value = 1
     })
 
 
     const giftInfo = this.props.specialPromotion.get('$giftInfo').toJS()
-
-
+    console.log(giftInfo,'giftinfo====ppppppppppp')
+    const {giftSendCount} = giftInfo[0];
+    console.log(giftSendCount,'giftSendCountwonened')
     return (
         <div>
             <FormItem
@@ -63,7 +64,7 @@ export const freeGetStep3Render = function freeGetStep3Render() {
                         <Icon style={{ fontSize: '16px', marginRight: '10px' }} type="question-circle" />
                     </Tooltip>
 
-                    { (freeGetLimit === '0' || (freeGetLimit === '0' && (giftInfo[0] && giftInfo[0].giftTotalCount == 2147483647))) ? <PriceInput
+                    {(freeGetLimit === '0' || (freeGetLimit === '0' && (giftInfo[0] && giftInfo[0].giftTotalCount == 2147483647))) ? <PriceInput
                         addonAfter={'份'}
                         modal="int"
                         maxNum={freeGetLimit === '1' ? 8 : 10}
@@ -78,6 +79,8 @@ export const freeGetStep3Render = function freeGetStep3Render() {
                         rules: [
                             {
                                 validator: (rule, v, cb) => {
+                                    console.log(rule,'rule=================')
+                                    console.log(giftSendCount,v, 'v----------------gggggggggg')
                                     if (v.number === '' || v.number === undefined) {
                                         return cb(
                                             '请输入大于0的8位以内的整数'
@@ -87,6 +90,9 @@ export const freeGetStep3Render = function freeGetStep3Render() {
                                         return cb('请输入大于0的8位以内的整数');
                                     } else if (v.number >= 100000000) {
                                         return cb('请输入大于0的8位以内的整数');
+                                    }
+                                    if (v.number <= giftSendCount) {
+                                        return cb('礼品份数不能小于已发出的礼品数');
                                     }
                                     cb();
                                 },
@@ -102,7 +108,7 @@ export const freeGetStep3Render = function freeGetStep3Render() {
                             prefix={SelectEl.call(this)}
                             style={{ paddingLeft: '70px' }}
                         />
-                    ) }
+                    )}
                 </div>
             </FormItem>
             <Row>
