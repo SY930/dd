@@ -335,7 +335,7 @@ class SpecialPromotionDetail extends React.Component {
                     }
                 })
             }
-            console.log('couponList',couponList,records)
+
             return (
                 <div>
                     <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
