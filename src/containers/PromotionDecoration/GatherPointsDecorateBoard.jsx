@@ -77,10 +77,17 @@ export default class GatherPointsDecorateBoard extends Component {
     }
 
     onChangeImageOnType = (type) => {
-        console.log('type', type)
         const {
             onChange,
+            decorationInfo: {
+                pointImg,
+                pointLightUpImg,
+                giftImg,
+                giftLightUpImg,
+                giftTakenImg,
+            }
         } = this.props
+        // debugger
         switch(type) {
             case 1 :
                 onChange({ key: ['pointImg'], value: url + 'basicdoc/679fbbac-eaa8-4a7e-aa88-3a51331b6731.png' })
@@ -148,7 +155,6 @@ export default class GatherPointsDecorateBoard extends Component {
         for (let i = begin; i < end; i++) {
             children.push(<Option key={i}>{i}</Option>);
         }
-        console.log('children', children)
         return children
     }
 
@@ -210,7 +216,6 @@ export default class GatherPointsDecorateBoard extends Component {
             },
             giftArr,
         } = this.props;
-        console.log('pointsNum', pointsNum)
         return (
             <div className={style.dotsBgArea}>
                 <div
@@ -343,7 +348,7 @@ export default class GatherPointsDecorateBoard extends Component {
             needCount,
             onChange,
         } = this.props;
-        console.log('pointsNum', pointsNum)
+        console.log('ImageType', ImageType == 6 ? true : false)
         const {
             numErr,
         } = this.state
@@ -514,11 +519,13 @@ export default class GatherPointsDecorateBoard extends Component {
                                 <div className={style.dotArea}>
                                     <div className={style.dotTitle}>集点图样</div>
                                     <div className={style.dotDefine}>
-                                        <div className={style.uploadBox}>
+                                        <div className={style.uploadBox} style={{
+                                            pointerEvents: `${ImageType == 6 ? 'all' : 'none'}`,
+                                        }}>
                                             <CropperUploaderDefault
                                                 isAbsoluteUrl={true}
                                                 limit={1000}
-                                                canEdit={ImageType === 6 ? true : false}
+                                                canEdit={ImageType == 6 ? true : false}
                                                 value={ImageType === 1 ? `${url}basicdoc/679fbbac-eaa8-4a7e-aa88-3a51331b6731.png` : pointImg}
                                                 cropperRatio={1 / 1}
                                                 width={45}
@@ -542,11 +549,13 @@ export default class GatherPointsDecorateBoard extends Component {
                                                 默认
                                             </div>
                                         </div>
-                                        <div className={style.uploadBox}>
+                                        <div className={style.uploadBox} style={{
+                                            pointerEvents: `${ImageType == 6 ? 'all' : 'none'}`,
+                                        }}>
                                             <CropperUploaderDefault
                                                 isAbsoluteUrl={true}
                                                 limit={1000}
-                                                canEdit={ImageType === 6 ? true : false}
+                                                canEdit={ImageType == 6 ? true : false}
                                                 value={ImageType === 1 ? `${url}basicdoc/68ea22bf-7941-4b7f-a57a-1d855d8db8b7.png` : pointLightUpImg}
                                                 cropperRatio={1 / 1}
                                                 width={45}
@@ -576,11 +585,13 @@ export default class GatherPointsDecorateBoard extends Component {
                                 <div className={style.dotArea}>
                                     <div className={style.dotTitle}>领取图样</div>
                                     <div className={style.dotDefine}>
-                                        <div className={style.uploadBox}>
+                                        <div className={style.uploadBox} style={{
+                                            pointerEvents: `${ImageType == 6 ? 'all' : 'none'}`,
+                                        }}>
                                             <CropperUploaderDefault
                                                 isAbsoluteUrl={true}
                                                 limit={1000}
-                                                canEdit={ImageType === 6 ? true : false}
+                                                canEdit={ImageType == 6 ? true : false}
                                                 value={ImageType === 1 ? `${url}basicdoc/e1199010-1160-433f-9e45-d0af75e2463d.png` : giftImg}
                                                 cropperRatio={1 / 1}
                                                 width={45}
@@ -604,11 +615,13 @@ export default class GatherPointsDecorateBoard extends Component {
                                                 默认
                                             </div>
                                         </div>
-                                        <div className={style.uploadBox}>
+                                        <div className={style.uploadBox} style={{
+                                            pointerEvents: `${ImageType == 6 ? 'all' : 'none'}`,
+                                        }}>
                                             <CropperUploaderDefault
                                                 isAbsoluteUrl={true}
                                                 limit={1000}
-                                                canEdit={ImageType === 6 ? true : false}
+                                                canEdit={ImageType == 6 ? true : false}
                                                 value={ImageType === 1 ? `${url}basicdoc/cad54b4b-ff45-4d66-af6c-3f638dd5e627.png` : giftLightUpImg}
                                                 cropperRatio={1 / 1}
                                                 width={45}
@@ -632,11 +645,13 @@ export default class GatherPointsDecorateBoard extends Component {
                                                 点亮
                                             </div>
                                         </div>
-                                        <div className={style.uploadBox}>
+                                        <div className={style.uploadBox} style={{
+                                            pointerEvents: `${ImageType == 6 ? 'all' : 'none'}`,
+                                        }}>
                                             <CropperUploaderDefault
                                                 isAbsoluteUrl={true}
                                                 limit={1000}
-                                                canEdit={ImageType === 6 ? true : false}
+                                                canEdit={ImageType == 6 ? true : false}
                                                 value={ImageType === 1 ? `${url}basicdoc/ecb4b2aa-c6cf-4e99-ba0d-667ee1a46ef2.png` : giftTakenImg}
                                                 cropperRatio={1 / 1}
                                                 width={45}
@@ -666,6 +681,7 @@ export default class GatherPointsDecorateBoard extends Component {
                         </div>
                     </div>
                 </div>
+                <Button style={{ margin: '50px 150px' }} type="primary" onClick={() => this.setState({ tabKey: '2' })}>{SALE_LABEL.k635s371}</Button>
             </div>
 
         )
@@ -683,7 +699,6 @@ export default class GatherPointsDecorateBoard extends Component {
                     <div className={style.label}>活动背景色</div>
                     <ColorSettingBlock value={endColor} onChange={(value) => onChange({ key: ['endColor'], value })} />
                 </div>
-                <Button style={{ marginLeft: 150 }} type="primary" onClick={() => this.setState({ tabKey: '1' })}>{SALE_LABEL.k635s2yp}</Button>
             </div>
 
         )
@@ -728,7 +743,7 @@ export default class GatherPointsDecorateBoard extends Component {
                                         </div>
                                     </div>
                                 </div>
-                                <Button style={{ marginLeft: 150 }} type="primary" onClick={() => this.setState({ tabKey: '2' })}>{SALE_LABEL.k635s371}</Button>
+                                <Button style={{ margin: '50px 150px' }} type="primary" onClick={() => this.setState({ tabKey: '1' })}>上一页</Button>
                             </div>
                         </TabPane>
                     </Tabs>
