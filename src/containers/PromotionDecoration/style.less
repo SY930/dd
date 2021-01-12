@@ -885,6 +885,7 @@
 .bgImageWrapper {
     position: absolute;
     top:63px;
+    width: 100%;
 }
 .grayForder {
     position: absolute;
@@ -922,4 +923,40 @@
     align-items: center;
     justify-content: center;
     font-size: 12px;
+}
+.imgBoxScroll {
+    &::-webkit-scrollbar {
+        width: 3px;
+    }
+    &::-webkit-scrollbar-track {
+        background: #ddd;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: #666;
+    }
+}
+.dotsAreaBox {
+    display: flex;
+    flex-wrap: wrap;
+    position: relative;
+}
+.dotsBgArea {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    overflow: hidden;
+}
+.imgBoxFull {
+    position: relative;
+}
+.dotImg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }

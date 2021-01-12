@@ -29,6 +29,7 @@ export default class GatherPointsDecorateBoard extends Component {
         tabKey: '1',
         numErr: false,
         inputValue: 1,
+        initFlag: false,
     }
 
     componentDidMount() {
@@ -46,6 +47,35 @@ export default class GatherPointsDecorateBoard extends Component {
         }, 0)
     }
 
+    componentWillReceiveProps(nextProps) {
+        const { initFlag } = this.state
+        if (!initFlag) {
+            this.initDecorationInfo()
+        }
+    }
+
+    initDecorationInfo = () => {
+        const {
+            decorationInfo: {
+                pointsNum,
+            },
+            needCount,
+            onChange,
+        } = this.props;
+        if(!pointsNum) {
+            onChange({ key: ['bgImg'], value: url + 'basicdoc/c9b4ce1e-c4ef-4bd8-b352-8a596a7a3ac0.png', })
+            onChange({ key: ['pointsNum'], value: needCount > 15 ? '4' : '3', })
+            onChange({ key: ['pointSize'], value: 70, })
+            onChange({ key: ['zoneWidth'], value: 60, })
+            onChange({ key: ['verticalPosition'], value: -7, })
+            onChange({ key: ['horizonPosition'], value: 0, })
+            onChange({ key: ['popImg'], value: url + 'basicdoc/a9a0ed49-ebe3-4a7c-8b2d-cf6772141fd9.png', })
+        }
+        this.setState({
+            initFlag: true,
+        })
+    }
+
     onChangeImageOnType = (type) => {
         console.log('type', type)
         const {
@@ -57,42 +87,42 @@ export default class GatherPointsDecorateBoard extends Component {
                 onChange({ key: ['pointLightUpImg'], value: url + 'basicdoc/68ea22bf-7941-4b7f-a57a-1d855d8db8b7.png' })
                 onChange({ key: ['giftImg'], value: url + 'basicdoc/e1199010-1160-433f-9e45-d0af75e2463d.png' })
                 onChange({ key: ['giftLightUpImg'], value: url + 'basicdoc/cad54b4b-ff45-4d66-af6c-3f638dd5e627.png' })
-                onChange({ key: ['pointTakenImg'], value: url + 'basicdoc/ecb4b2aa-c6cf-4e99-ba0d-667ee1a46ef2.png' })
+                onChange({ key: ['giftTakenImg'], value: url + 'basicdoc/ecb4b2aa-c6cf-4e99-ba0d-667ee1a46ef2.png' })
                 break
             case 2 :
                 onChange({ key: ['pointImg'], value: url + 'basicdoc/08b382e6-187a-4985-bd1a-77568f02dfc7.png' })
                 onChange({ key: ['pointLightUpImg'], value: url + 'basicdoc/a5338ba7-5bd5-4525-a503-b0a027ade3b3.png' })
                 onChange({ key: ['giftImg'], value: url + 'basicdoc/685c2d27-23b3-411e-bf8f-b4a51babd9ce.png' })
                 onChange({ key: ['giftLightUpImg'], value: url + 'basicdoc/65dd197c-4a13-4101-8ad9-4990d1fcbfa1.png' })
-                onChange({ key: ['pointTakenImg'], value: url + 'basicdoc/713175fb-92ee-450d-b738-35ae3937c6b4.png' })
+                onChange({ key: ['giftTakenImg'], value: url + 'basicdoc/713175fb-92ee-450d-b738-35ae3937c6b4.png' })
                 break
             case 3 :
                 onChange({ key: ['pointImg'], value: url + 'basicdoc/960b37f2-3edd-40bd-97e5-f37aa5fee8da.png' })
                 onChange({ key: ['pointLightUpImg'], value: url + 'basicdoc/392273db-7020-40e1-a48e-8e6f15b34d6c.png' })
                 onChange({ key: ['giftImg'], value: url + 'basicdoc/3f0e52bf-c09c-43ad-8d97-4fc94c4dfc2c.png' })
                 onChange({ key: ['giftLightUpImg'], value: url + 'basicdoc/e48d82d8-ee0b-4bec-8243-7ccd9c70be81.png' })
-                onChange({ key: ['pointTakenImg'], value: url + 'basicdoc/b8ed1063-08df-497d-9aaa-a98cd9545baa.png' })
+                onChange({ key: ['giftTakenImg'], value: url + 'basicdoc/b8ed1063-08df-497d-9aaa-a98cd9545baa.png' })
                 break
             case 4 :
                 onChange({ key: ['pointImg'], value: url + 'basicdoc/67251a92-5ae8-4c57-90dd-236bec7678d6.png' })
                 onChange({ key: ['pointLightUpImg'], value: url + 'basicdoc/ff524a28-e08b-4bf7-9646-974d16547e87.png' })
                 onChange({ key: ['giftImg'], value: url + 'basicdoc/3f0e52bf-c09c-43ad-8d97-4fc94c4dfc2c.png' })
                 onChange({ key: ['giftLightUpImg'], value: url + 'basicdoc/e48d82d8-ee0b-4bec-8243-7ccd9c70be81.png' })
-                onChange({ key: ['pointTakenImg'], value: url + 'basicdoc/b8ed1063-08df-497d-9aaa-a98cd9545baa.png' })
+                onChange({ key: ['giftTakenImg'], value: url + 'basicdoc/b8ed1063-08df-497d-9aaa-a98cd9545baa.png' })
                 break
             case 5 :
                 onChange({ key: ['pointImg'], value: url + 'basicdoc/d2537f79-9653-4d17-8333-2d56c6456f01.png' })
                 onChange({ key: ['pointLightUpImg'], value: url + 'basicdoc/47a71c8f-079d-4b51-a5e6-72d2cad0a4fa.png' })
                 onChange({ key: ['giftImg'], value: url + 'basicdoc/3f0e52bf-c09c-43ad-8d97-4fc94c4dfc2c.png' })
                 onChange({ key: ['giftLightUpImg'], value: url + 'basicdoc/e48d82d8-ee0b-4bec-8243-7ccd9c70be81.png' })
-                onChange({ key: ['pointTakenImg'], value: url + 'basicdoc/b8ed1063-08df-497d-9aaa-a98cd9545baa.png' })
+                onChange({ key: ['giftTakenImg'], value: url + 'basicdoc/b8ed1063-08df-497d-9aaa-a98cd9545baa.png' })
                 break
             case 6 :
                 onChange({ key: ['pointImg'], value: '' })
                 onChange({ key: ['pointLightUpImg'], value: '' })
                 onChange({ key: ['giftImg'], value: '' })
                 onChange({ key: ['giftLightUpImg'], value: '' })
-                onChange({ key: ['pointTakenImg'], value: '' })
+                onChange({ key: ['giftTakenImg'], value: '' })
                 break
         }
     }
@@ -101,7 +131,6 @@ export default class GatherPointsDecorateBoard extends Component {
         const {
             onChange,
         } = this.props
-        console.log('e.target.value', e)
         onChange({ key: ['pointsNum'], value: e })
     }
 
@@ -162,6 +191,73 @@ export default class GatherPointsDecorateBoard extends Component {
         onChange({ key: ['ImageType'], value: value.target.value, })
         this.onChangeImageOnType(value.target.value)
     };
+    renderDotsArea() {
+        let { needCount } = this.props
+        const {
+            decorationInfo: {
+                bgImg,
+                pointsNum = pointsNum || (needCount > 15 ? '4' : '3'),
+                pointSize = 70,
+                zoneWidth = 60,
+                verticalPosition = -7,
+                horizonPosition,
+                pointImg = '',
+                pointLightUpImg = '',
+                giftImg = '',
+                giftLightUpImg = '',
+                giftTakenImg = '',
+                ImageType,
+            },
+            giftArr,
+        } = this.props;
+        console.log('pointsNum', pointsNum)
+        return (
+            <div className={style.dotsBgArea}>
+                <div
+                    className={style.dotsAreaBox}
+                    style={{
+                        width: `${zoneWidth}%`,
+                        top:`${verticalPosition}%`,
+                        left: `${horizonPosition}%`,
+                    }}
+                    >
+                        {
+                            giftArr.map((item, index) => {
+                                return (
+                                    <div
+                                        className={style.dotAreaBox}
+                                        style={{
+                                            width: `${100/pointsNum}%`,
+                                            paddingTop: `${100/pointsNum}%`,
+                                            height: 0,
+                                            position: 'relative',
+                                        }}
+                                    >
+                                       {    
+                                            item ?
+                                                <img
+                                                    className={style.dotImg}
+                                                    src={ index === needCount-1 ? giftTakenImg : giftImg}
+                                                    style={{
+                                                        height: `${pointSize}%`,
+                                                    }}
+                                                ></img> :
+                                                <img
+                                                    className={style.dotImg}
+                                                    src={pointImg}
+                                                    style={{
+                                                        height: `${pointSize}%`,
+                                                    }}
+                                                ></img>
+                                       }
+                                    </div>
+                                )
+                            })
+                        }
+                </div>
+            </div>
+        )
+    }
 
     renderPhonePreview() {
         const { tabKey } = this.state;
@@ -181,15 +277,19 @@ export default class GatherPointsDecorateBoard extends Component {
                         <div className={style.displayBgBlock}>
                             <img className={style.topFakeHeader} src={phoneTop} alt=""/>
                             <div className={style.bgImageWrapper}>
-                                <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
-                                    <img src={bgImg} style={{ width: '100%' }} alt="" />
+                                <div style={{ width: '100%', height: 548, overflowY: 'auto' }} className={style.imgBoxScroll}>
+                                    <div className={style.imgBoxFull}>
+                                        <img src={bgImg} style={{ width: '100%' }} alt="" />
+                                        {
+                                            this.renderDotsArea()
+                                        }
+                                    </div>
                                 </div>
                                 <div className={style.tagWrapper}>
                                     <img src={tagImg} alt="" />
                                     <span>活动背景图</span>
                                 </div>
                             </div>
-                            {/* debugger */}
                             <div className={style.grayGiftDiv}>
                                 <span>
                                     <Icon type="gift" style={{ marginRight: 3}}/>
@@ -217,7 +317,6 @@ export default class GatherPointsDecorateBoard extends Component {
                                     </div>
                                     <Icon className={style.closeBtnIcon} type="close"/>
                                 </div>
-                            {/* debugger */}
                         </div>
                         )
                 }
@@ -227,24 +326,24 @@ export default class GatherPointsDecorateBoard extends Component {
     renderPointsPositionPanel() {
         const {
             decorationInfo: {
-                pointsNum = '3',
+                pointsNum,
                 endColor = '#FF6125',
                 pointImg = '',
                 pointLightUpImg = '',
                 giftImg = '',
                 giftLightUpImg = '',
-                pointTakenImg = '',
+                giftTakenImg = '',
                 bgImg,
-                pointSize = 30,
+                pointSize = 70,
                 zoneWidth = 60,
                 horizonPosition,
-                verticalPosition,
+                verticalPosition = -7,
                 ImageType,
             },
+            needCount,
             onChange,
         } = this.props;
-        console.log('pointImg', pointImg)
-        console.log('ImageType', ImageType)
+        console.log('pointsNum', pointsNum)
         const {
             numErr,
         } = this.state
@@ -260,6 +359,7 @@ export default class GatherPointsDecorateBoard extends Component {
                             value={bgImg || url + 'basicdoc/c9b4ce1e-c4ef-4bd8-b352-8a596a7a3ac0.png'}
                             cropperRatio={1080 / 2400}
                             width={96}
+                            canEdit={true}
                             onChange={value => onChange({ key: ['bgImg'], value })}
                         />
                         <div className={style.uploaderTip}>
@@ -273,7 +373,7 @@ export default class GatherPointsDecorateBoard extends Component {
                     <div className={style.label}>集点单行点数</div>
                     <div style={{ width: 100 }} className={style.uploaderWrapper}>
                         <Select
-                            value={pointsNum || '3'}
+                            value={pointsNum || (needCount > 15 ? '4' : '3')}
                             onChange={this.handleNumChange}
                         >
                             {this.renderOpts()}
@@ -290,7 +390,7 @@ export default class GatherPointsDecorateBoard extends Component {
                                 min={30}
                                 max={100}
                                 onChange={this.onPointSizeChange}
-                                value={typeof pointSize === 'number' ? pointSize : 30}
+                                value={typeof pointSize === 'number' ? pointSize : 70}
                             />
                             </Col>
                             <Col span={7}>
@@ -300,6 +400,8 @@ export default class GatherPointsDecorateBoard extends Component {
                                 style={{ margin: '0 16px' }}
                                 value={pointSize}
                                 onChange={this.onPointSizeChange}
+                                formatter={value => `${value == 0 ? '0' : value}%`}
+                                parser={value => value.replace('%', '')}
                             />
                             </Col>
                         </Row>
@@ -308,7 +410,6 @@ export default class GatherPointsDecorateBoard extends Component {
                 <div className={style.sectionWrapper}>
                     <div className={style.label}>区域相对宽度</div>
                     <div style={{ width: 220 }} className={style.uploaderWrapper}>
-                        {/* debugger */}
                         <Row style={{width: '100%'}}>
                             <Col span={17}>
                             <Slider
@@ -342,18 +443,18 @@ export default class GatherPointsDecorateBoard extends Component {
                                 className={style.sliderDiv}
                                 min={-50}
                                 max={50}
-                                onChange={this.onHorizonPositionChange}
-                                value={ horizonPosition ? horizonPosition : 0}
+                                onChange={this.onVerticalPositionChange}
+                                value={ verticalPosition ? verticalPosition : 0}
                             />
                             <InputNumber
                                 className={style.inputDiv}
                                 min={-50}
                                 max={50}
                                 style={{ margin: '0 16px' }}
-                                value={horizonPosition}
+                                value={verticalPosition}
                                 formatter={value => `${value == 0 ? '0' : value}%`}
                                 parser={value => value.replace('%', '')}
-                                onChange={this.onHorizonPositionChange}
+                                onChange={this.onVerticalPositionChange}
                             />
                             <div className={style.explainTwoDiv}>
                                 <span>上移</span>
@@ -369,18 +470,18 @@ export default class GatherPointsDecorateBoard extends Component {
                                 className={style.sliderDiv}
                                 min={-50}
                                 max={50}
-                                onChange={this.onVerticalPositionChange}
-                                value={verticalPosition ? verticalPosition : 0}
+                                onChange={this.onHorizonPositionChange}
+                                value={horizonPosition ? horizonPosition : 0}
                             />
                             <InputNumber
                                 className={style.inputDiv}
                                 min={-50}
                                 max={50}
                                 style={{ margin: '0 16px' }}
-                                value={verticalPosition}
+                                value={horizonPosition}
                                 formatter={value => `${value == 0 ? '0' : value}%`}
                                 parser={value => value.replace('%', '')}
-                                onChange={this.onVerticalPositionChange}
+                                onChange={this.onHorizonPositionChange}
                             />
                             <div className={style.explainTwoDiv}>
                                 <span>左移</span>
@@ -417,6 +518,7 @@ export default class GatherPointsDecorateBoard extends Component {
                                             <CropperUploaderDefault
                                                 isAbsoluteUrl={true}
                                                 limit={1000}
+                                                canEdit={ImageType === 6 ? true : false}
                                                 value={ImageType === 1 ? `${url}basicdoc/679fbbac-eaa8-4a7e-aa88-3a51331b6731.png` : pointImg}
                                                 cropperRatio={1 / 1}
                                                 width={45}
@@ -444,6 +546,7 @@ export default class GatherPointsDecorateBoard extends Component {
                                             <CropperUploaderDefault
                                                 isAbsoluteUrl={true}
                                                 limit={1000}
+                                                canEdit={ImageType === 6 ? true : false}
                                                 value={ImageType === 1 ? `${url}basicdoc/68ea22bf-7941-4b7f-a57a-1d855d8db8b7.png` : pointLightUpImg}
                                                 cropperRatio={1 / 1}
                                                 width={45}
@@ -477,6 +580,7 @@ export default class GatherPointsDecorateBoard extends Component {
                                             <CropperUploaderDefault
                                                 isAbsoluteUrl={true}
                                                 limit={1000}
+                                                canEdit={ImageType === 6 ? true : false}
                                                 value={ImageType === 1 ? `${url}basicdoc/e1199010-1160-433f-9e45-d0af75e2463d.png` : giftImg}
                                                 cropperRatio={1 / 1}
                                                 width={45}
@@ -504,6 +608,7 @@ export default class GatherPointsDecorateBoard extends Component {
                                             <CropperUploaderDefault
                                                 isAbsoluteUrl={true}
                                                 limit={1000}
+                                                canEdit={ImageType === 6 ? true : false}
                                                 value={ImageType === 1 ? `${url}basicdoc/cad54b4b-ff45-4d66-af6c-3f638dd5e627.png` : giftLightUpImg}
                                                 cropperRatio={1 / 1}
                                                 width={45}
@@ -531,7 +636,8 @@ export default class GatherPointsDecorateBoard extends Component {
                                             <CropperUploaderDefault
                                                 isAbsoluteUrl={true}
                                                 limit={1000}
-                                                value={ImageType === 1 ? `${url}basicdoc/ecb4b2aa-c6cf-4e99-ba0d-667ee1a46ef2.png` : pointTakenImg}
+                                                canEdit={ImageType === 6 ? true : false}
+                                                value={ImageType === 1 ? `${url}basicdoc/ecb4b2aa-c6cf-4e99-ba0d-667ee1a46ef2.png` : giftTakenImg}
                                                 cropperRatio={1 / 1}
                                                 width={45}
                                                 height={45}
@@ -548,7 +654,7 @@ export default class GatherPointsDecorateBoard extends Component {
                                                         }} type="plus" />
                                                     </div>
                                                 }
-                                                onChange={value => onChange({ key: ['pointTakenImg'], value })}
+                                                onChange={value => onChange({ key: ['giftTakenImg'], value })}
                                             />
                                             <div className={style.explainDiv}>
                                                 已兑换
@@ -613,6 +719,7 @@ export default class GatherPointsDecorateBoard extends Component {
                                             limit={1000}
                                             value={popImg || url + 'basicdoc/a9a0ed49-ebe3-4a7c-8b2d-cf6772141fd9.png'}
                                             onChange={value => onChange({ key: ['popImg'], value })}
+                                            canEdit={true}
                                         />
                                         <div className={style.uploaderTip}>
                                             <p>* {SALE_LABEL.k6346css}1080*248像素</p>

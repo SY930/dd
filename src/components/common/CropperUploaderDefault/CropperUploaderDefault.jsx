@@ -141,6 +141,7 @@ class CropperUploaderDefault extends Component {
             onChange,
             width,
             height,
+            canEdit,
         } = this.props;
         const { dataUri, cropperVisible, confirmLoading } = this.state;
         const uploadProps = {
@@ -177,9 +178,17 @@ class CropperUploaderDefault extends Component {
             <div>
                 <Upload
                     {...uploadProps}
+                    style={{
+                        pointerEvents: `${canEdit ? 'all' : 'none'}`,
+                    }}
                 >
-                    <div style={{ width, height }} className={style.resetableTrigger}>
-                        {displayTrigger}
+                    <div
+                        style={{
+                            width,
+                            height,
+                        }}
+                        className={style.resetableTrigger}>
+                        {canEdit && displayTrigger}
                         {value && <img style={{ width: width - 2, height: height - 2, position: 'absolute', top: 0 }} src={this.getRealUrl(value)} alt="" />}
                     </div>
                 </Upload>

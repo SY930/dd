@@ -39,6 +39,7 @@ const mapStateToProps = (state) => {
         title: state.sale_promotion_decoration.getIn(['currentPromotion', 'title']),
         type: state.sale_promotion_decoration.getIn(['currentPromotion', 'type']),
         needCount: state.sale_promotion_decoration.getIn(['currentPromotion', 'needCount']),
+        giftArr: state.sale_promotion_decoration.getIn(['currentPromotion', 'giftArr']).toJS(),
         loading: state.sale_promotion_decoration.getIn(['loading']),
         decorationInfo: state.sale_promotion_decoration.get('decorationInfo'),
     };
@@ -92,10 +93,34 @@ export default class PromotionDecoration extends Component {
         closePage();
         jumpPage({ pageID: SPECIAL_PAGE });
     }
+
+    checkGatherPointsImgAll = () => {
+        const {
+            type,
+            decorationInfo,
+        } = this.props;
+        const {
+            pointImg,
+            pointLightUpImg,
+            giftImg,
+            giftLightUpImg,
+            giftTakenImg,
+        } = decorationInfo.toJS()
+        if (type != '75') {
+            return true
+        } else {
+            if (!pointImg || !pointLightUpImg || !giftImg || !giftLightUpImg || !giftTakenImg) {
+                return false
+            }
+            return true
+        }
+    }
+
     handleSave = () => {
         const { ifVaild } = this.state
         const { type, id, decorationInfo } = this.props;
-        if(!ifVaild) {
+        if (!this.checkGatherPointsImgAll()) {
+            message.error('集点图自定义没有填写完整')
             return
         }
         this.props.saveDecorationInfo({
@@ -155,9 +180,20 @@ export default class PromotionDecoration extends Component {
         )
     }
 
-    renderContent() {
-        const { type, decorationInfo, updateDecorationItem, needCount='' } = this.props;
+    handleGiftArr = () => {
+        let { giftArr = [], needCount } = this.props
+        giftArr.pop()
+        giftArr.push(needCount)
+        let result = []
+        for (let i = 1; i <= needCount; i++) {
+            result.push(giftArr.indexOf(i) === -1 ? false : true)
+        }
+        return result
+    }
 
+    renderContent() {
+        const { type, decorationInfo, updateDecorationItem, needCount = '', } = this.props;
+        const giftArr = this.handleGiftArr()
         switch (type) {
             case '20':
                 return <LotteryDecorationBoard onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
@@ -172,8 +208,7 @@ export default class PromotionDecoration extends Component {
             case '66':
                 return <ExpasionGiftDecorationBoard onReset={this.handleReset} onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
             case '75':
-                // debugger
-                return <GatherPointsDecorateBoard onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} handleVaild={this.handleVaild} needCount={needCount} />
+                return <GatherPointsDecorateBoard onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} handleVaild={this.handleVaild} needCount={needCount} giftArr={giftArr} />
             case '76':
                 return <SignInDecorationBoard onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
             case '68':
