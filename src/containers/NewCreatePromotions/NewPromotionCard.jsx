@@ -115,6 +115,7 @@ class NewPromotionCard extends Component {
             case 3: backgroundImageString = bg3; break;
             default: backgroundImageString = bg0;
         }
+
         if (size === 'small') {
             return (
                 <div className={styles.smallContainer} onClick={this.onClick}>
@@ -137,59 +138,65 @@ class NewPromotionCard extends Component {
                 </div>
             )
         }
-        if(size === 'special') {
-            let wechatFlag = 1;
-            return (
-                <div className={styles.speContainer} onClick={this.onClick} style={{border: '1px solid #C4C4C480',}}>
-                    <p className={styles.expandableP}>
-                        {isNew ? <span><img className={styles.xinImg} src={xin} /></span> : null}
-                        {this.renderPulgin(key)}
-                    </p>
-                    <div className={styles.title}>
-                        {title}
-                        <div className={styles.speTag}>
-                        {tags.map((tag, i) => {
-                            if(!wechatFlag && tag.props && tag.props.defaultMessage.includes('微信') || !wechatFlag && !tag.props && tag.includes('微信')) {
-                                return null;
-                            }
-                            if(tag.props && tag.props.defaultMessage.includes('微信') || !tag.props && tag.includes('微信')) {
-                                wechatFlag --;
-                            }
-                            return (<div className={styles.speTagSpan} key={i}>{
-                                tag.props ?
-                                    tag.props.defaultMessage.includes('小程序') ?
-                                    <img className={styles.speTagImg} src={xcx} /> :
-                                    tag.props.defaultMessage.includes('微信') ?
-                                    <img className={styles.speTagImg} src={wx} /> :
-                                    tag.props.defaultMessage.includes('pos') ? <img className={styles.speTagImg} src={pos} /> :
-                                    <span><img className={styles.speTagImg} src={xcx} /><img className={styles.speTagImg} src={pos} /><img className={styles.speTagImg} src={wx} /></span>
-                                : tag.includes('pos') ?
-                                    <img className={styles.speTagImg} src={pos} /> :
-                                    tag.includes('微信') ?
-                                        <img className={styles.speTagImg} src={wx} /> :
-                                        tag.includes('小程序') ? <img className={styles.speTagImg} src={xcx} /> : null
-                        }</div>)})}
-                    </div>
-                    </div>
-                    <Tooltip title={text}>
-                        <div className={styles.desDiv}>
-                            {text}
-                        </div>
-                    </Tooltip>
 
-                    <div className={styles.speCardLogo} style={{
-                        right: right * 0.62,
-                        bottom: bottom * 0.62,
-                    }}>
-                        {V3KEYS.includes(key) ?
-                            <img className={styles.speCardImg} src={V3LOGO[key]} alt="oops"/>:
-                            <img className={styles.speCardImg} src={require(`./assets/logo_${key}_new.png`)} alt="oops"/>
-                        }
-                    </div>
-                </div>
-            )
-        }
+        // if(size === 'special') {
+        let wechatFlag = 1;
         return (
+            <div className={styles.speContainer} onClick={this.onClick} style={{border: '1px solid #C4C4C480',}}>
+                <p className={styles.expandableP}>
+                    {isNew ? <span><img className={styles.xinImg} src={xin} /></span> : null}
+                    {this.renderPulgin(key)}
+                </p>
+                <div className={styles.title}>
+                    {title}
+                    <div className={styles.speTag}>
+                    {tags.map((tag, i) => {
+                        if(!wechatFlag && tag.props && tag.props.defaultMessage.includes('微信') || !wechatFlag && !tag.props && tag.includes('微信')) {
+                            return null;
+                        }
+                        if(tag.props && tag.props.defaultMessage.includes('微信') || !tag.props && tag.includes('微信')) {
+                            wechatFlag --;
+                        }
+                        return (<div className={styles.speTagSpan} key={i}>{
+                            tag.props ?
+                                tag.props.defaultMessage.includes('小程序') ?
+                                <img className={styles.speTagImg} src={xcx} /> :
+                                tag.props.defaultMessage.includes('微信') ?
+                                <img className={styles.speTagImg} src={wx} /> :
+                                tag.props.defaultMessage.includes('pos') ? <img className={styles.speTagImg} src={pos} /> :
+                                <span><img className={styles.speTagImg} src={xcx} /><img className={styles.speTagImg} src={pos} /><img className={styles.speTagImg} src={wx} /></span>
+                            : tag.includes('pos') ?
+                                <img className={styles.speTagImg} src={pos} /> :
+                                tag.includes('微信') ?
+                                    <img className={styles.speTagImg} src={wx} /> :
+                                    tag.includes('小程序') ? <img className={styles.speTagImg} src={xcx} /> : null
+                    }</div>)})}
+                </div>
+                </div>
+                <Tooltip title={text}>
+                    <div className={styles.desDiv}>
+                        {text}
+                    </div>
+                    {/*<div className={styles.desDiv}>
+                        {example}
+                    </div>*/}
+                </Tooltip>
+
+                <div className={styles.speCardLogo} style={{
+                    right: right * 0.62,
+                    bottom: bottom * 0.62,
+                }}>
+                    {V3KEYS.includes(key) ?
+                        <img className={styles.speCardImg} src={V3LOGO[key]} alt="oops"/>:
+                        <img className={styles.speCardImg} src={require(`./assets/logo_${key}_new.png`)} alt="oops"/>
+                    }
+                </div>
+            </div>
+        )
+        // }
+
+        /* 新建营销活动老样式 */
+        /*return (
             <div className={styles.container} onClick={this.onClick}>
                 {this.renderPulgin(key)}
                 <div className={styles.cardTitle}>
@@ -229,7 +236,7 @@ class NewPromotionCard extends Component {
                     }
                 </div>
             </div>
-        )
+        )*/
     }
 }
 
