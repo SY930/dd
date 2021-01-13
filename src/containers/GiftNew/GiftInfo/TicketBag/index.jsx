@@ -21,10 +21,11 @@ export default class TicketBag extends Component {
      */
     onQueryList = (params) => {
         const { queryParams } = this.state;
-        const { groupID } = this.props;
+        const { groupID, pageType } = this.props;
         // 查询请求需要的参数
         // 第一次查询params会是null，其他查询条件默认是可为空的。
-        const newParams = { ...queryParams, ...params,  groupID };
+        let couponPackageStatus = pageType == 2 ? 1 : 2
+        const newParams = { ...queryParams, ...params, couponPackageStatus, groupID };
         // 把查询需要的参数缓存
         this.setState({ queryParams: newParams, loading: true });
         getTicketList({ groupID, ...newParams }).then((obj) => {
@@ -45,6 +46,7 @@ export default class TicketBag extends Component {
                 <QueryForm
                     onQuery={this.onQueryList}
                     onThrow={this.onToggleModal}
+                    pageType={this.props.pageType}
                 />
                 <div className="layoutsLine"></div>
                 <MainTable
@@ -56,6 +58,7 @@ export default class TicketBag extends Component {
                     onGoEdit={onGoEdit}
                     status={couponPackageStatus}
                     treeData={this.props.treeData}
+                    pageType={this.props.pageType}
                 />
                 {visible &&
                     <ReleaseModal

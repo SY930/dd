@@ -23,6 +23,7 @@ class GiftEditPage extends Component {
         this.state = {
             contentHeight: 782,
             scrollPercent: 0,
+            tabKey: 1,
         };
         this.formRef = null;
         this.container = null;
@@ -34,6 +35,7 @@ class GiftEditPage extends Component {
     componentDidMount() {
         this.onWindowResize();
         window.addEventListener('resize', this.onWindowResize);
+        this.setState({tabKey: this.props.tabkey})
     }
     onWindowResize() {
         let contentHeight;
@@ -60,6 +62,7 @@ class GiftEditPage extends Component {
 
     render() {
         const { giftType, operationType, loading } = this.props;
+        let {tabkey} = this.state
         const { name: giftName, describe: giftDescribe, example } = GiftCfg.giftType.find(item => item.value === giftType) || {};
         return (
             <div style={{
@@ -91,7 +94,7 @@ class GiftEditPage extends Component {
                         }}
                         onClick={()=>{
                             this.props.cancelCreateOrEdit();
-                            this.props.toggleTabs('1');
+                            this.props.toggleTabs();
                         }}
                     >
                         {COMMON_LABEL.cancel}
