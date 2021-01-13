@@ -41,12 +41,15 @@ export const freeGetStep3Render = function freeGetStep3Render() {
     const { data, freeGetLimit } = this.state;
     data.forEach((v) => {
         v.giftCount.disabled = true,
-        v.giftCount.value = 1
+            v.giftCount.value = 1
     })
 
 
     const giftInfo = this.props.specialPromotion.get('$giftInfo').toJS()
-
+    let giftSendCountVal = 0;
+    if(giftInfo && giftInfo.length > 0){
+        giftSendCountVal = giftInfo[0].giftSendCount;
+    }
 
     return (
         <div>
@@ -63,7 +66,7 @@ export const freeGetStep3Render = function freeGetStep3Render() {
                         <Icon style={{ fontSize: '16px', marginRight: '10px' }} type="question-circle" />
                     </Tooltip>
 
-                    { (freeGetLimit === '0' || (freeGetLimit === '0' && (giftInfo[0] && giftInfo[0].giftTotalCount == 2147483647))) ? <PriceInput
+                    {(freeGetLimit === '0' || (freeGetLimit === '0' && (giftInfo[0] && giftInfo[0].giftTotalCount == 2147483647))) ? <PriceInput
                         addonAfter={'份'}
                         modal="int"
                         maxNum={freeGetLimit === '1' ? 8 : 10}
@@ -88,6 +91,9 @@ export const freeGetStep3Render = function freeGetStep3Render() {
                                     } else if (v.number >= 100000000) {
                                         return cb('请输入大于0的8位以内的整数');
                                     }
+                                    if (v.number <= giftSendCountVal) {
+                                        return cb('礼品份数不能小于已发出的礼品数');
+                                    }
                                     cb();
                                 },
                             },
@@ -102,7 +108,7 @@ export const freeGetStep3Render = function freeGetStep3Render() {
                             prefix={SelectEl.call(this)}
                             style={{ paddingLeft: '70px' }}
                         />
-                    ) }
+                    )}
                 </div>
             </FormItem>
             <Row>
