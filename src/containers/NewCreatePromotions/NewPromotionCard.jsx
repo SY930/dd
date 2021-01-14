@@ -117,6 +117,7 @@ class NewPromotionCard extends Component {
         }
 
         if (size === 'small') {
+            console.log('>>>1111')
             return (
                 <div className={styles.smallContainer} onClick={this.onClick}>
                     {this.renderPulgin(key,'ath')}
@@ -138,7 +139,8 @@ class NewPromotionCard extends Component {
                 </div>
             )
         }
-
+        
+        console.log('>>>22222')
         // if(size === 'special') {
         let wechatFlag = 1;
         return (
@@ -187,8 +189,11 @@ class NewPromotionCard extends Component {
                     bottom: bottom * 0.62,
                 }}>
                     {V3KEYS.includes(key) ?
-                        <img className={styles.speCardImg} src={V3LOGO[key]} alt="oops"/>:
-                        <img className={styles.speCardImg} src={require(`./assets/logo_${key}_new.png`)} alt="oops"/>
+                        <img className={styles.speCardImg} src={V3LOGO[key]} alt="oops"/> :
+                            //商城活动 
+                            ['71', '72', '73'].includes(key) ? 
+                            <img className={styles.speCardImg} src={require(`./assets/logo_${key}.png`)} alt="oops"/> : 
+                            <img className={styles.speCardImg} src={require(`./assets/logo_${key}_new.png`)} alt="oops"/>
                     }
                 </div>
             </div>
