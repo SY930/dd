@@ -98,10 +98,16 @@ class Step2 extends Component {
                 this.getQrCode(temp)
                 return
             }
-            let newItem = item
+            const newItem = item
             if (!imgID) {
-                newItem = { ...defaultImgTxt, imgPath: firstImg };
-                this.setState({ item: newItem });
+                let { count } = this.state
+                this.setState({
+                    count: count - 1,
+                })
+                downLoadLoadingChange(false)
+                return
+                // newItem = { ...defaultImgTxt, imgPath: firstImg };
+                // this.setState({ item: newItem });
             }
             const { imgPath, digest: description, resTitle: title } = newItem;
             const expireTime = 60 * 24 * 30;
@@ -118,6 +124,7 @@ class Step2 extends Component {
                 qrcodeType: 2,
                 width: 500,
                 height: 500,
+                resourceID: imgID,
             }
             this.getQrCode(temp)  
         })
@@ -177,7 +184,7 @@ class Step2 extends Component {
             const { downLoadLoadingChange } = this.props
             let { count } = this.state
             this.setState({
-                count: count -1,
+                count: count - 1,
             })
             // console.log('now decrease the count to', this.state.count)
             if (x && this.state.count === 0) {
