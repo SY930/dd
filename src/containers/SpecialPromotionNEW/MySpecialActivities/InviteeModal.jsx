@@ -13,7 +13,6 @@ import { STRING_SPE } from 'i18n/common/special';
 
 @injectIntl
 export default class InviteeModal extends Component {
-
     state = {
         inviteeList: [],
         pageSize: 10,
@@ -32,7 +31,7 @@ export default class InviteeModal extends Component {
                 }
             },
             {
-                title: `${this.props.intl.formatMessage(STRING_SPE.dd5aa1522390285)}`,
+                title: this.props.eventWay == '66' ? '发起人姓名' : `${this.props.intl.formatMessage(STRING_SPE.dd5aa1522390285)}`,
                 dataIndex: 'name1',
                 key: 'name1',
                 className: 'TableTxtCenter',
@@ -42,7 +41,7 @@ export default class InviteeModal extends Component {
                 }
             },
             {
-                title: `${this.props.intl.formatMessage(STRING_SPE.d7h8373fa521206)}`,
+                title: this.props.eventWay == '66' ? '助力人客户编号' :`${this.props.intl.formatMessage(STRING_SPE.d7h8373fa521206)}`,
                 dataIndex: 'customerID',
                 key: 'customerID',
                 width: 180,
@@ -52,7 +51,7 @@ export default class InviteeModal extends Component {
                 }
             },
             {
-                title: `${this.props.intl.formatMessage(STRING_SPE.d2c8g8isr22297)}`,
+                title: this.props.eventWay == '66' ? '助力人姓名' : `${this.props.intl.formatMessage(STRING_SPE.d2c8g8isr22297)}`,
                 dataIndex: 'customerName',
                 key: 'customerName',
                 className: 'TableTxtCenter',
@@ -62,10 +61,10 @@ export default class InviteeModal extends Component {
                 }
             },
             {
-                title: `${this.props.intl.formatMessage(STRING_SPE.d1e09h0b4c3220)}`,
+                title: this.props.eventWay == '66' ? '助力人手机号' : `${this.props.intl.formatMessage(STRING_SPE.d1e09h0b4c3220)}`,
                 dataIndex: 'customerMobile',
                 key: 'customerMobile',
-                className: 'TableTxtRight',
+                className: 'TableTxtCenter',
                 width: 140,
                 render:(text)=> {
                     return (<Tooltip title={text}>{text}</Tooltip>)
@@ -126,7 +125,7 @@ export default class InviteeModal extends Component {
         const handleModalClose = this.props.onClose;
         return (
             <Modal
-                title={this.props.intl.formatMessage(STRING_SPE.dk46lj779a5228)}
+                title={this.props.eventWay == '66' ? '助力人详情' : this.props.intl.formatMessage(STRING_SPE.dk46lj779a5228)}
                 visible={true}
                 onCancel={handleModalClose}
                 maskClosable={false}
