@@ -269,6 +269,29 @@ export default class PrizeContent extends React.Component {
                                     />
                                 </FormItem>
                             </div>
+                            <div className={style.paleRed}>
+                                {/* 奖品总数 */}
+                                <FormItem
+                                    wrapperCol={{ span: 6 }}
+                                    className={style.FormItemStyle}
+                                    validateStatus={info.giftCount.validateStatus}
+                                    help={info.giftCount.msg}
+                                >
+                                    <div className={style.labelDiv}>
+                                        <span className={style.requiredIcon}>*</span>
+                                        <span>奖品总数</span>
+                                    </div>
+                                    {/* debugger */}
+                                    <PriceInput
+                                        className={style.giftOdds}
+                                        addonAfter="份"
+                                        // modal="float"
+                                        maxNum={9}
+                                        value={{ number: info.giftCount.value }}
+                                        onChange={(val) => {handleGiftCountChange(val, index);}}
+                                    />
+                                </FormItem>
+                            </div>
                             {/* 赠送积分 */}
                             <FormItem
                                 style={{ padding: 0 }}
@@ -395,9 +418,11 @@ export default class PrizeContent extends React.Component {
                                                     <div className={style.labelSecondDiv}>
                                                         <span>{this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kc13243)}</span>
                                                     </div>
+                                                    {/* debugger */}
                                                     <PriceInput
                                                         maxNum={9}
-                                                        value={{ number: info.giveCoupon.value.giftCount.value }}
+                                                        disabled={true}
+                                                        value={{ number: info.giveCoupon.value.giftCount.value || '1' }}
                                                         onChange={val => handleGiftCountChange(val, index)}
                                                         addonAfter={this.props.intl.formatMessage(SALE_STRING.k5f3y5ml)}
                                                         modal="int"

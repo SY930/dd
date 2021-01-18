@@ -675,14 +675,14 @@ class LotteryThirdStep extends React.Component {
      */
     handleGiftCountChange = (value, index) => {
         const _infos = this.state.infos;
-        _infos[index].giveCoupon.value.giftCount.value = value.number;
+        _infos[index].giftCount.value = value.number;
         const _value = parseFloat(value.number);
         if (_value > 0) {
-            _infos[index].giveCoupon.value.giftCount.validateStatus = 'success';
-            _infos[index].giveCoupon.value.giftCount.msg = null;
+            _infos[index].giftCount.validateStatus = 'success';
+            _infos[index].giftCount.msg = null;
         } else {
-            _infos[index].giveCoupon.value.giftCount.validateStatus = 'error';
-            _infos[index].giveCoupon.value.giftCount.msg = `${this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kd3282)}`;
+            _infos[index].giftCount.validateStatus = 'error';
+            _infos[index].giftCount.msg = `${this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kd3282)}`;
         }
         this.setState({
             infos: _infos,

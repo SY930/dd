@@ -43,7 +43,7 @@ export const defaultData = {
             },
             // 礼品数量
             giftCount: {
-                value: '',
+                value: '1',
                 validateStatus: 'success',
                 msg: null,
             },
@@ -80,6 +80,12 @@ export const getDefaultGiftData = (typeValue = 0, typePropertyName = 'sendType')
         validateStatus: 'success',
         msg: null,
     },
+    //奖品总数
+    giftCount: {
+        value: '',
+        validateStatus: 'success',
+        msg: null,
+    },
     //赠送积分
     givePoints: {
         value: {},
@@ -112,7 +118,7 @@ export const getDefaultGiftData = (typeValue = 0, typePropertyName = 'sendType')
             },
             // 礼品数量
             giftCount: {
-                value: '',
+                value: '1',
                 validateStatus: 'success',
                 msg: null,
             },
@@ -177,7 +183,7 @@ export const defaultGiveCoupon = {
     },
     // 礼品数量
     giftCount: {
-        value: '',
+        value: '1',
         validateStatus: 'success',
         msg: null,
     },
