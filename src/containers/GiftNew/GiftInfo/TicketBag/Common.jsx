@@ -9,7 +9,7 @@ const DF = 'YYYYMMDD';
 const TF = 'HHmm';
 const bagOpts = [
     { label: '付费购买', value: '1' },
-    { label: '活动投放', value: '2' },
+    { label: '活动/商城投放', value: '2' },
 ];
 const revokeOpts = [
     { label: '自动退款', value: '1' },
@@ -131,7 +131,7 @@ const couponImage = 'basicdoc/ba69a0bf-c383-4c06-8ee5-4f50f657dfac.png';
 // 第一次必须加载所有keys，不然会导致回显的时候出问题
 // 付费购买  活动投放
 const keys1 = ['a', 'couponPackageType', 'c', 'sellTime', 'd', 'couponPackageName', 'couponPackageValue',
-'couponPackagePrice', 'settleUnitID', 'remainStock', 'e', 'shopInfos', 'f', 'isAutoRefund', 'isRefundSelf', 'couponPackageDesciption', 'couponPackageImage'];
+'couponPackagePrice', 'settleUnitID', 'defaultCardTypeID','remainStock', 'e','maxBuyCount', 'shopInfos', 'f', 'isAutoRefund', 'isRefundSelf', 'couponPackageDesciption', 'couponPackageImage'];
 const keys2 = ['a', 'couponPackageType', 'c', 'couponPackageName', 'couponPackageValue',
 'couponPackagePrice2', 'remainStock', 'e', 'couponPackageDesciption', 'couponPackageImage'];
 
@@ -179,9 +179,18 @@ const formItems = {
     settleUnitID: {
         type: 'combo',
         label: '券包结算主体',
-        options: [],
+        options: [
+            
+        ],
         defaultValue: '',
         rules: ['required'],
+    },
+    defaultCardTypeID: {
+        type: 'combo',
+        label: '新用户注册卡类',
+        rules: ['required'],
+        options: [],
+        defaultValue: '',
     },
     couponPackagePrice2: {
         type: 'text',
@@ -212,6 +221,24 @@ const formItems = {
                 const pattern = /^([1-9]\d*)$/;
                 if(value && !pattern.test(value)){
                     return callback('请输入数字，并大于0');
+                }
+                return callback();
+            },
+        }],
+    },
+
+    maxBuyCount: {
+        type: 'text',
+        label: '可购买次数',
+        props: {
+            placeholder: '请输入没人可购买次数，不填表示不限制',
+        },
+        rules: [{
+            required: false,
+            validator: (rule, value, callback) => {
+                const pattern = /^(([1-9]\d{0,7})|0)$/;
+                if(!pattern.test(value)){
+                    return callback('请输入大于0的8位以内整数');
                 }
                 return callback();
             },

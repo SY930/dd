@@ -117,7 +117,6 @@ class NewPromotionCard extends Component {
         }
 
         if (size === 'small') {
-            console.log('>>>1111')
             return (
                 <div className={styles.smallContainer} onClick={this.onClick}>
                     {this.renderPulgin(key,'ath')}
@@ -140,7 +139,6 @@ class NewPromotionCard extends Component {
             )
         }
         
-        console.log('>>>22222')
         // if(size === 'special') {
         let wechatFlag = 1;
         return (

@@ -60,6 +60,15 @@ export default class Editor extends Component {
             this.setState({ newFormKeys: [newA, newB] });
         }
     }
+    /** 获取会员卡类型 */
+    getGroupCardTypeOpts (){
+        const { groupCardTypeList } = this.props;
+        console.log(groupCardTypeList,'groupCardTypeList---------------')
+        return groupCardTypeList.map(x => {
+            const { cardTypeID, cardTypeName } = x;
+            return { label: cardTypeName, value: cardTypeID };
+        });
+    }
     /** 得到form */
     getForm = (form) => {
         this.form = form;
@@ -78,7 +87,7 @@ export default class Editor extends Component {
             cycleType = this.form.getFieldValue('cycleType');
         }
         const { couponPackageGiftConfigs, shopInfos, couponPackageImage, couponPackageType: cpt,
-            validCycle, sellTime, settleUnitID, isAutoRefund, remainStock, ...other } = formItems;
+            validCycle, sellTime, settleUnitID, defaultCardTypeID,isAutoRefund, remainStock, ...other } = formItems;
         const disGift = check || (+sendCount > 0);
         const render = d => d()(<GiftInfo disabled={disGift} />);
         const render1 = d => d()(<ShopSelector disabled={check} />);
@@ -91,6 +100,7 @@ export default class Editor extends Component {
             disDate = { disabledDate: this.disabledDate };
             stockRule = {rules: ['numbers']};
         }
+        const defaultCardOpts = this.getGroupCardTypeOpts();
         const newFormItems = {
             ...other,
             couponPackageType: { ...cpt, disabled: isEdit },
@@ -100,6 +110,7 @@ export default class Editor extends Component {
             couponPackageImage: { ...couponPackageImage, render: render2 },
             validCycle: { ...validCycle, render: render3 },
             settleUnitID: { ...settleUnitID , options: settlesOpts},
+            defaultCardTypeID: {...defaultCardTypeID,options: defaultCardOpts},
             isAutoRefund: { ...isAutoRefund, disabled: isEdit },
             remainStock: { ...remainStock, ...stockRule },
         };
@@ -190,7 +201,7 @@ export default class Editor extends Component {
                 <div className={styles.header}>
                     券包
                     <p className={styles.opBox}>
-                        <Button onClick={this.onCancel}>取消</Button>
+                        <Button onClick={this.onCancel}>取消111</Button>
                         <Button type="primary" disabled={check} onClick={this.onSave}>保存</Button>
                     </p>
                 </div>
