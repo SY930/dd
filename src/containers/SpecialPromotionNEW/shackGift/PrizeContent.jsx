@@ -200,6 +200,7 @@ export default class PrizeContent extends React.Component {
                 toggleFun,
                 changeDisArr,
                 handleGiftCountChange,
+                handleGiftTotalCountChange,
                 handleValidateTypeChange,
                 handleGiftOddsChange,
                 handleGiftImgChange,
@@ -266,6 +267,28 @@ export default class PrizeContent extends React.Component {
                                         maxNum={3}
                                         value={{ number: info.giftOdds.value }}
                                         onChange={(val) => {handleGiftOddsChange(val, index);}}
+                                    />
+                                </FormItem>
+                            </div>
+                            <div className={style.paleRed}>
+                                {/* 奖品总数 */}
+                                <FormItem
+                                    wrapperCol={{ span: 6 }}
+                                    className={style.FormItemStyle}
+                                    validateStatus={info.giftTotalCount.validateStatus}
+                                    help={info.giftTotalCount.msg}
+                                >
+                                    <div className={style.labelDiv}>
+                                        <span className={style.requiredIcon}>*</span>
+                                        <span>奖品总数</span>
+                                    </div>
+                                    <PriceInput
+                                        className={style.giftOdds}
+                                        addonAfter="份"
+                                        // modal="float"
+                                        maxNum={9}
+                                        value={{ number: info.giftTotalCount.value }}
+                                        onChange={(val) => {handleGiftTotalCountChange(val, index);}}
                                     />
                                 </FormItem>
                             </div>
@@ -397,7 +420,8 @@ export default class PrizeContent extends React.Component {
                                                     </div>
                                                     <PriceInput
                                                         maxNum={9}
-                                                        value={{ number: info.giveCoupon.value.giftCount.value }}
+                                                        disabled={true}
+                                                        value={{ number: info.giveCoupon.value.giftCount.value || '1' }}
                                                         onChange={val => handleGiftCountChange(val, index)}
                                                         addonAfter={this.props.intl.formatMessage(SALE_STRING.k5f3y5ml)}
                                                         modal="int"
