@@ -9,7 +9,12 @@ export const defaultData = {
         validateStatus: 'success',
         msg: null,
     },
-
+    //奖品总数
+    giftTotalCount: {
+        value: '',
+        validateStatus: 'success',
+        msg: null,
+    },
     //赠送积分
     givePoints: {
         value: {},
@@ -81,7 +86,7 @@ export const getDefaultGiftData = (typeValue = 0, typePropertyName = 'sendType')
         msg: null,
     },
     //奖品总数
-    giftCount: {
+    giftTotalCount: {
         value: '',
         validateStatus: 'success',
         msg: null,

@@ -152,7 +152,8 @@ class LotteryThirdStep extends React.Component {
                     infos[index].giveCoupon.value.giftEffectiveTime.value= gift.effectType != '2' ? gift.giftEffectTimeHours
                         : [moment(gift.effectTime, 'YYYYMMDD'), moment(gift.validUntilDate, 'YYYYMMDD')];
                     //礼品总数
-                    infos[index].giveCoupon.value.giftCount.value = gift.giftTotalCount;
+                    // infos[index].giveCoupon.value.giftCount.value = gift.giftTotalCount;
+                    infos[index].giveCoupon.value.giftCount.value = '1';
                     //优惠券信息 优惠券名称、id等
                     infos[index].giveCoupon.value.giftInfo.giftName = gift.giftName;
                     infos[index].giveCoupon.value.giftInfo.giftItemID = gift.giftID;
@@ -179,6 +180,7 @@ class LotteryThirdStep extends React.Component {
                 } else {
                     infos[index].giveRedPacket.isOn = false;
                 }
+                infos[index].giftTotalCount.value = gift.giftTotalCount
                 infos[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(2);
                 infos[index].giftConfImagePath.value = gift.giftConfImagePath || 'basicdoc/f75ed282-4d1c-4f5d-ab29-a92529cbadcf.png' ;
             })
@@ -673,22 +675,21 @@ class LotteryThirdStep extends React.Component {
      * @param {number} index
      * @returns {void}
      */
-    handleGiftCountChange = (value, index) => {
+    handleGiftTotalCountChange = (value, index) => {
         const _infos = this.state.infos;
-        _infos[index].giftCount.value = value.number;
+        _infos[index].giftTotalCount.value = value.number;
         const _value = parseFloat(value.number);
         if (_value > 0) {
-            _infos[index].giftCount.validateStatus = 'success';
-            _infos[index].giftCount.msg = null;
+            _infos[index].giftTotalCount.validateStatus = 'success';
+            _infos[index].giftTotalCount.msg = null;
         } else {
-            _infos[index].giftCount.validateStatus = 'error';
-            _infos[index].giftCount.msg = `${this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kd3282)}`;
+            _infos[index].giftTotalCount.validateStatus = 'error';
+            _infos[index].giftTotalCount.msg = `${this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kd3282)}`;
         }
         this.setState({
             infos: _infos,
         });
     }
-
 
     /**
      * 检验是否所有的显示出来的表单项是否都验证成功。每一次只检测info数组的当前index的数据因为，在切换和新建、提交的时候都要进行验证
@@ -708,6 +709,7 @@ class LotteryThirdStep extends React.Component {
                     message.error(`${this.props.intl.formatMessage(STRING_SPE.d16hh3e324g4131)}%`);
                 }
             }else{
+                //中奖概率检查
                 if(!infos[idx].giftOdds.value){
                     tempResult = false;
                     this.handleGiftOddsChange({number: infos[idx].giftOdds.value}, idx);
@@ -720,6 +722,15 @@ class LotteryThirdStep extends React.Component {
                 if(sumOdds > 100){
                     tempResult = false;
                     message.error(`${this.props.intl.formatMessage(STRING_SPE.d16hh3e324g4131)}%`);
+                }
+                //奖品总数检查
+                if(!infos[idx].giftTotalCount.value){
+                    tempResult = false;
+                    this.handleGiftTotalCountChange(infos[idx].giftTotalCount.value, idx);
+                    this.setState({
+                        activeKey: `${idx}`
+                    })
+                    return false;
                 }
             }
         }
@@ -824,18 +835,20 @@ class LotteryThirdStep extends React.Component {
             } else {
                 tempObj.effectType = couponObj.effectType;
                 tempObj.giftValidUntilDayCount = couponObj.giftValidDays.value;
+                tempObj.giftCount = '1';
                 if(couponObj.effectType == '1' || couponObj.effectType == '3'){
                     tempObj.giftEffectTimeHours = typeof couponObj.giftEffectiveTime.value === 'object' ? '0' : couponObj.giftEffectiveTime.value;
                 }else{
                     tempObj.effectTime = couponObj.giftEffectiveTime.value[0].format('YYYYMMDD');
                     tempObj.validUntilDate = couponObj.giftEffectiveTime.value[1].format('YYYYMMDD');
                 }
-                tempObj.giftTotalCount = couponObj.giftCount.value;
+                // tempObj.giftTotalCount = couponObj.giftCount.value;
                 tempObj.giftName = couponObj.giftInfo.giftName;
                 tempObj.giftID = couponObj.giftInfo.giftItemID;
                 tempObj.presentType = 1;
             }
         }
+        tempObj.giftTotalCount = data.giftTotalCount.value;
         tempObj.giftOdds = data.giftOdds.value;
         tempObj.giftConfImagePath = data.giftConfImagePath.value;
         return tempObj;
@@ -866,7 +879,6 @@ class LotteryThirdStep extends React.Component {
             setSpecialGiftInfo(tempArr);
             return true;
         }
-
     }
 
     toggleFun = (index) => {
@@ -926,7 +938,7 @@ class LotteryThirdStep extends React.Component {
                                     disArr={disArr}
                                     redPacketArr={this.state.redPackets}
                                     changeDisArr={this.changeDisArr}
-                                    handleGiftCountChange={this.handleGiftCountChange}
+                                    handleGiftTotalCountChange={this.handleGiftTotalCountChange}
                                     handleValidateTypeChange={this.handleValidateTypeChange}
                                     handleGiftOddsChange={this.handleGiftOddsChange}
                                     handleGiftImgChange={this.handleGiftImgChange}

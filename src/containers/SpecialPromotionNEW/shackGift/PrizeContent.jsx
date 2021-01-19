@@ -200,6 +200,7 @@ export default class PrizeContent extends React.Component {
                 toggleFun,
                 changeDisArr,
                 handleGiftCountChange,
+                handleGiftTotalCountChange,
                 handleValidateTypeChange,
                 handleGiftOddsChange,
                 handleGiftImgChange,
@@ -274,21 +275,20 @@ export default class PrizeContent extends React.Component {
                                 <FormItem
                                     wrapperCol={{ span: 6 }}
                                     className={style.FormItemStyle}
-                                    validateStatus={info.giftCount.validateStatus}
-                                    help={info.giftCount.msg}
+                                    validateStatus={info.giftTotalCount.validateStatus}
+                                    help={info.giftTotalCount.msg}
                                 >
                                     <div className={style.labelDiv}>
                                         <span className={style.requiredIcon}>*</span>
                                         <span>奖品总数</span>
                                     </div>
-                                    {/* debugger */}
                                     <PriceInput
                                         className={style.giftOdds}
                                         addonAfter="份"
                                         // modal="float"
                                         maxNum={9}
-                                        value={{ number: info.giftCount.value }}
-                                        onChange={(val) => {handleGiftCountChange(val, index);}}
+                                        value={{ number: info.giftTotalCount.value }}
+                                        onChange={(val) => {handleGiftTotalCountChange(val, index);}}
                                     />
                                 </FormItem>
                             </div>
@@ -418,7 +418,6 @@ export default class PrizeContent extends React.Component {
                                                     <div className={style.labelSecondDiv}>
                                                         <span>{this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kc13243)}</span>
                                                     </div>
-                                                    {/* debugger */}
                                                     <PriceInput
                                                         maxNum={9}
                                                         disabled={true}
