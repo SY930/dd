@@ -160,6 +160,7 @@ class GiftAddModalStep extends React.PureComponent {
             isFoodCatNameList: '1',
             scopeLst: [],
             unit: '¥',
+            isActivityFoods:false,//是否选择了菜品分类
         };
         this.firstForm = null;
         this.secondForm = null;
@@ -947,14 +948,7 @@ class GiftAddModalStep extends React.PureComponent {
                     if (params.trdTemplateInfo) delete params.trdTemplateInfo
                 }
             }
-            if (value == 10) {
-                // if (type === 'add') {
-                //     params.amountType = 1;
-                // } else if (!Number(params.amountType || 0)) {
-                //     params.amountType = 0;
-                // }
-                params.amountType = 1;  //@notice: 后端新宇，前端不做该字段展示，但是默认值必须传个1（只限代金券）
-            }
+            
             if (formValues.transferLimitType == -1) {
                 params.transferLimitType = formValues.transferLimitTypeValue
             }
@@ -963,7 +957,17 @@ class GiftAddModalStep extends React.PureComponent {
             params.customerUseCountLimit = params.customerUseCountLimit || '0';
             params.goldGift = Number((params.aggregationChannels || []).includes('goldGift'));
             params.vivoChannel = Number((params.aggregationChannels|| []).includes('vivoChannel'));
-            params.moneyLimitType = (params.moneyLimitTypeAndValue || {}).moneyLimitType;
+            params.moneyLimitType = '';
+            params.amountType = '';
+            if(params.moneyLimitTypeAndValue && params.moneyLimitTypeAndValue.moneyLimitType){
+                const moneyLimitTypeData = JSON.parse(params.moneyLimitTypeAndValue.moneyLimitType);
+                if(moneyLimitTypeData && moneyLimitTypeData.moneyLimitType){
+                    params.moneyLimitType = moneyLimitTypeData.moneyLimitType;
+                }
+                if(moneyLimitTypeData && moneyLimitTypeData.amountType){
+                    params.amountType = moneyLimitTypeData.amountType;
+                }
+            }
             params.moenyLimitValue = (params.moneyLimitTypeAndValue || {}).moenyLimitValue;
             params.openPushMessageMpID = 1;
             params.openPushSms = params.pushMessage && params.pushMessage.sendType.indexOf('msg') !== -1 ? 1 : 0
@@ -1626,6 +1630,7 @@ class GiftAddModalStep extends React.PureComponent {
     }
     renderMoneyLimitTypeAndValue(decorator) {
         const { gift: { data, value } } = this.props;
+        const { isActivityFoods } = this.state;
         const {
             moneyLimitType = '0',
             moenyLimitValue = '100',
@@ -1643,7 +1648,7 @@ class GiftAddModalStep extends React.PureComponent {
                     }
                 ],
                 initialValue: { moneyLimitType, moenyLimitValue },
-            })(<MoneyLimitTypeAndValue type={value}></MoneyLimitTypeAndValue>)
+            })(<MoneyLimitTypeAndValue type={value} isActivityFoods={isActivityFoods}></MoneyLimitTypeAndValue>)
         )
     }
     renderFoodsboxs(decorator) {
@@ -2844,20 +2849,24 @@ class GiftAddModalStep extends React.PureComponent {
         } else if(giftVal == '21' || giftVal == '111'|| giftVal == '22' || giftVal == '110'){
             formItems.moneyLimitTypeAndValue.label = '账单金额限制';
         } else {
-            formItems.moneyLimitTypeAndValue.label = '金额限制';
+            formItems.moneyLimitTypeAndValue.label = '金额限制12';
         }
-        if (giftVal == '10' && (type === 'add' || values.amountType == 1)) {
+        if (giftVal == '10' && (type === 'add' || type === 'edit' || values.amountType == 1)) {
             const {
                 dishes = [],
                 excludeDishes = [],
                 foodCategory = [],
             } = values.foodsboxs || {};
             if (dishes.length || excludeDishes.length || foodCategory.length) {
+                this.state.isActivityFoods = true
                 formItems.moneyLimitTypeAndValue.label = '活动菜品金额限制'
             } else {
+                this.state.isActivityFoods = false
                 formItems.moneyLimitTypeAndValue.label = '账单金额限制'
             }
         }
+
+        formItems.moneyLimitTypeAndValue.label = '核销限制'//都改成了核销限制
         if (this.props.gift.value == '10') {
             formItems.aggregationChannels.options = [
                 { label: '金豆商城', value: 'goldGift' },
