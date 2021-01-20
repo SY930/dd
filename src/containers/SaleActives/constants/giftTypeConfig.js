@@ -4,6 +4,7 @@ import PayHaveGift from '../PayHaveGift/index'; // 微信支付有礼
 import SwellGiftBag from '../SwellGiftBag/index'; // 膨胀大礼包
 import CouponsGiveCoupons from '../CouponsGiveCoupons'// 消费券返券
 import Housekeeper from '../Housekeeper'// 管家活动-流失唤醒
+import IntelligentGiftRule from '../IntelligentGiftRule'// 管家活动-智能发券
 
 export const actInfoList = [
     {
@@ -67,6 +68,14 @@ export const actInfoList = [
         dscList: [],
         render(props = {}) {
             return <Housekeeper {...props} />;
+        },
+    },
+    {
+        title: '智能发券',
+        key: 'intelligentGiftRule',
+        dscList: [],
+        render(props = {}) {
+            return <IntelligentGiftRule {...props} />;
         },
     },
 ];

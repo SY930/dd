@@ -49,3 +49,5 @@
 PayHaveGift => 微信支付有礼
 CouponsGiveCoupons => 消费券返券
 SwellGiftBag => 膨胀大礼包
+Housekeeper => 流失唤醒
+IntelligentGiftRule => 智能发券
