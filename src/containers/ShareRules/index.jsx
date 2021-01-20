@@ -53,6 +53,7 @@ export default class ShareRules extends Component {
         searchNameInput: '',
         selected: [],
         selectedGroupID: undefined,
+        shareGroupArr: [],
     }
 
     componentDidMount() {
@@ -118,6 +119,16 @@ export default class ShareRules extends Component {
         });
     }
 
+    handleBatchEdit = () => {
+        const { shareGroupArr } = this.state
+        if (!shareGroupArr.length) {
+            message.warning('您没有选择任何共享组')
+            return
+        }
+        //开始处理数据关系以及开启批量共享组编辑的弹窗
+        // debugger
+    }
+
     renderHeader(isEmpty) {
         return (
             <div className={style.header}>
@@ -144,6 +155,15 @@ export default class ShareRules extends Component {
                         </Button>
                     )
                 }
+                <Button
+                    onClick={this.handleBatchEdit}
+                    type="ghost"
+                >
+                    <Icon
+                        type="edit"
+                    />
+                    批量编辑
+                </Button>
             </div>
         )
     }
@@ -328,7 +348,7 @@ export default class ShareRules extends Component {
         const vanillaShareGroups = shareGroups.toJS();
         const filteredShareGroups = searchPromotionType || searchPromotionName ? this.getFilteredGroup(vanillaShareGroups) : vanillaShareGroups
         const displayHeaderActions = !!vanillaShareGroups.length;
-
+        console.log('filteredShareGroups', filteredShareGroups)
         let shareGroupNameCurrent =  filteredShareGroups && filteredShareGroups.length ? `营销活动共享组${filteredShareGroups.length + 1}` :
         '营销活动共享组1'
         if(isEdit) {
@@ -364,6 +384,7 @@ export default class ShareRules extends Component {
                                 )
                             }
                             {
+                                // debugger
                                 filteredShareGroups.map((shareGroup, index) => {                                   
                                     return (
                                         <div
