@@ -74,6 +74,7 @@ export const actInfoList = [
         title: '智能发券',
         key: 'intelligentGiftRule',
         dscList: [],
+        warnInfo: '在每一个发券周期判断上次发券后用户是否消费，如有消费则降低券面额，如未消费则提升券面额，连续无响应停止向该用户发券',
         render(props = {}) {
             return <IntelligentGiftRule {...props} />;
         },

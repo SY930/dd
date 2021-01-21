@@ -16,7 +16,8 @@ class Housekeeper extends React.Component {
             cycleTypeOpt: [{label: '每周', value: '1'}, {label: '每月', value: '2'}],
             cycleDateOpt: [],
             customerRangeSettings: [],
-            eventRule: {}
+            eventRule: {},
+            curActive: false
         }
     }
 
@@ -171,6 +172,9 @@ class Housekeeper extends React.Component {
             let opts = this.getCycleDateOpts(value)
             this.setState({cycleDateOpt: opts})
         }
+        if(key == 'active'){
+            this.setState({curActive: value})
+        }
     }
 
     RangeChange = (list) => {
@@ -207,6 +211,7 @@ class Housekeeper extends React.Component {
                 label: '推送周期',
                 labelCol: { span: 2 },
                 wrapperCol: { span: 15 },
+                disabled: !!active,
                 rules: ['required'],
                 render: decorator => (
                     <Row>
@@ -248,6 +253,7 @@ class Housekeeper extends React.Component {
                 label: '会员群体',
                 labelCol: { span: 2 },
                 wrapperCol: { span: 15 },
+                disabled: !!active,
                 rules: ['required'],
                 render: decorator => (
                     <Row className={styles.textWrap}>
@@ -274,10 +280,11 @@ class Housekeeper extends React.Component {
                 label: ' ',
                 labelCol: { span: 2 },
                 wrapperCol: { span: 20 },
+                disabled: !!active,
                 rules: ['required'],
                 render: decorator => (
                     <Row className={styles.textWrap}>
-                        <CustomerRange onChange={this.RangeChange} getForm={(form) => this.customerRangeForm = form} decorator={decorator} value={customerRangeSettings} />
+                        <CustomerRange onChange={this.RangeChange} active={this.state.curActive} getForm={(form) => this.customerRangeForm = form} decorator={decorator} value={customerRangeSettings} />
                     </Row>
                 ),
             }, 
@@ -286,6 +293,7 @@ class Housekeeper extends React.Component {
                 label: '券有效期',
                 labelCol: { span: 2 },
                 wrapperCol: { span: 15 },
+                disabled: !!active,
                 rules: ['required'],
                 render: decorator => (
                     <Row className={styles.textWrap}>
@@ -323,7 +331,7 @@ class Housekeeper extends React.Component {
                     </Col>
                 </Row>
                 <div className={styles.btnWrap}>
-                    <Button onClick={this.onSubmit} type="primary">确定</Button>
+                    <Button disabled={!!active} onClick={this.onSubmit} type="primary">确定</Button>
                     <Button onClick={this.onCancel}>取消</Button>
                 </div>
             </div>

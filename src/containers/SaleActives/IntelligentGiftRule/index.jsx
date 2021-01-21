@@ -56,14 +56,14 @@ class IntelligentGiftRule extends React.Component {
                             return;
                         }
                         
-                        if(adjustMaxAmount < initialGiftValue){
+                        if(adjustMaxAmount <= initialGiftValue){
                             message.warn('调整区间最大值不能小于初始券面额');
                             return;
                         }
 
                         // 新增、编辑
                         let editType = giftRule.itemID ? 'createActiveCom/updateGiftRule' : 'createActiveCom/addGiftRule'
-                        // console.log('parm', parm)
+                        // console.log('parm', parm, editType)
                         
                         this.props.dispatch({
                             type: editType,
@@ -182,6 +182,7 @@ class IntelligentGiftRule extends React.Component {
                 label: '发券周期',
                 labelCol: { span: 2 },
                 wrapperCol: { span: 15 },
+                disabled: !!isActive,
                 rules: ['required'],
                 render: decorator => (
                     <Row>
@@ -223,6 +224,7 @@ class IntelligentGiftRule extends React.Component {
                 label: '会员群体',
                 labelCol: { span: 2 },
                 wrapperCol: { span: 15 },
+                disabled: !!isActive,
                 rules: ['required'],
                 render: decorator => (
                     <Row className={styles.textWrap}>
@@ -249,6 +251,7 @@ class IntelligentGiftRule extends React.Component {
                 label: ' ',
                 labelCol: { span: 2 },
                 wrapperCol: { span: 20 },
+                disabled: !!isActive,
                 rules: ['required'],
                 render: decorator => (
                     <Row className={styles.textWrap}>
@@ -261,6 +264,7 @@ class IntelligentGiftRule extends React.Component {
                 label: '券有效期',
                 labelCol: { span: 2 },
                 wrapperCol: { span: 15 },
+                disabled: !!isActive,
                 rules: ['required'],
                 render: decorator => (
                     <Row className={styles.textWrap}>
@@ -286,6 +290,7 @@ class IntelligentGiftRule extends React.Component {
                 label: '营销黑名单',
                 labelCol: { span: 2 },
                 wrapperCol: { span: 15 },
+                disabled: !!isActive,
                 rules: ['required'],
                 render: decorator => (
                     <Row className={styles.textWrap}>
@@ -324,7 +329,7 @@ class IntelligentGiftRule extends React.Component {
                     </Col>
                 </Row>
                 <div className={styles.btnWrap}>
-                    <Button onClick={this.onSubmit} type="primary">确定</Button>
+                    <Button disabled={!!isActive} onClick={this.onSubmit} type="primary">确定</Button>
                     <Button onClick={this.onCancel}>取消</Button>
                 </div>
             </div>

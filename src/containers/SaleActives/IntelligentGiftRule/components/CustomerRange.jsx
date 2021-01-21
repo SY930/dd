@@ -1,5 +1,5 @@
 import React, { PureComponent as Component } from 'react';
-import { Tabs, Button, Icon, Input, Form, Select, Row, Col, message, TreeSelect } from 'antd';
+import { Tabs, Button, Icon, Input, Form, Select, Row, Col, Tooltip, message, TreeSelect } from 'antd';
 import styles from '../IntelligentGiftRule.less'
 import { axios, getStore } from '@hualala/platform-base';
 import _ from 'lodash'
@@ -47,7 +47,7 @@ class CustomerRange extends Component {
         const { value, decorator, form, getForm } = this.props;
         const { getFieldDecorator } = form
 
-        let {initialGiftValue = 0, adjustStepLength = 0, adjustMinAmount = 0, adjustMaxAmount = 0,} = value
+        let {isActive, initialGiftValue = 0, adjustStepLength = 0, adjustMinAmount = 0, adjustMaxAmount = 0,} = value
         if (typeof getForm === 'function') {
             getForm(form)
         }
@@ -72,7 +72,7 @@ class CustomerRange extends Component {
                                             message: '请输入大于零的5位以内整数',
                                         }],
                                         initialValue: initialGiftValue
-                                    })(<Input onChange={(e)=>{this.giftValueChange(e)}} placeholder="请输入金额" addonAfter="元" />)
+                                    })(<Input disabled={!!isActive} onChange={(e)=>{this.giftValueChange(e)}} placeholder="请输入金额" addonAfter="元" />)
                                 }
                             </FormItem>
                             <FormItem 
@@ -92,12 +92,14 @@ class CustomerRange extends Component {
                                                 }],
                                                 initialValue: adjustStepLength
                                             })(
-                                                <Input onChange={(e)=>{this.adjustStepChange(e)}} placeholder="请输入金额" addonAfter="元" />
+                                                <Input disabled={!!isActive} onChange={(e)=>{this.adjustStepChange(e)}} placeholder="请输入金额" addonAfter="元" />
                                             )
                                         }
                                     </Col>
-                                    <Col span={2}>
-
+                                    <Col span={2} style={{textAlign: 'center'}}>
+                                        <Tooltip title={'系统会根据设置幅度在券面额范围内加减券面额'}>
+                                            <Icon type="question-circle" />
+                                        </Tooltip>
                                     </Col>
                                 </Row>
                             </FormItem>
@@ -122,7 +124,7 @@ class CustomerRange extends Component {
                                                 }],
                                                 initialValue: adjustMaxAmount
                                             })(
-                                                <Input onChange={(e)=>{this.adjustMaxChange(e)}} placeholder="最大值" addonAfter="元" />
+                                                <Input disabled={!!isActive} onChange={(e)=>{this.adjustMaxChange(e)}} placeholder="最大值" addonAfter="元" />
                                             )
                                         }
                                     </Col>
