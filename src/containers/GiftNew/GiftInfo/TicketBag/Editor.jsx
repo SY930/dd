@@ -201,7 +201,7 @@ export default class Editor extends Component {
                 <div className={styles.header}>
                     券包
                     <p className={styles.opBox}>
-                        <Button onClick={this.onCancel}>取消111</Button>
+                        <Button onClick={this.onCancel}>取消</Button>
                         <Button type="primary" disabled={check} onClick={this.onSave}>保存</Button>
                     </p>
                 </div>

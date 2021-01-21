@@ -346,6 +346,9 @@ class TrdTemplate extends React.Component {
                     if(giftItemId === '10') {
                         checkList.push(maxAmount)
                         jsonData.maxAmount = maxAmount
+                        //总预算金额修改为总发放数,以上参数保留兼容之前
+                        checkList.push(quantity)
+                        jsonData.quantity = quantity
                     } else {
                         checkList.push(quantity)
                         jsonData.quantity = quantity
@@ -712,7 +715,7 @@ class TrdTemplate extends React.Component {
         if(!maxAmount) {
             return {
                 status: false,
-                msg: '请输入总预算金额'
+                msg: '请输入总发放数'
             }
         }
         return {
@@ -726,13 +729,13 @@ class TrdTemplate extends React.Component {
         if( quantity < 1 || quantity > 1000000000  ) {
             return {
                 status: false,
-                msg: '请输入1～1000000000之间的整数'
+                msg: '请输入大于0的8位以内整数'
             }
         }
         if(!quantity) {
             return {
                 status: false,
-                msg: '请输入发放总数量'
+                msg: '请输入总发放数量'
             }
         }
         return {
@@ -896,9 +899,9 @@ class TrdTemplate extends React.Component {
                         }
                     </Select>
                 </FormItem>
-                {giftItemId === '10' &&
+                {/* {giftItemId === '10' &&
                     <FormItem
-                        label="总预算金额"
+                        label="总发放数"
                         {...itemStyle}
                         validateStatus={ this.checkMaxAmount().status ? 'success' : 'error'}
                         help={this.checkMaxAmount().msg}
@@ -910,10 +913,10 @@ class TrdTemplate extends React.Component {
                             onChange={this.handlePriceInputChange('maxAmount')}
                         />
                     </FormItem>
-                }
-                { (giftItemId === '21' || giftItemId === '111') &&
+                } */}
+                { (giftItemId === '10' || giftItemId === '21' || giftItemId === '111') &&
                     <FormItem
-                        label="发放总数量"
+                        label="总发放数"
                         {...itemStyle}
                         validateStatus={this.checkQuantity().status ? 'success' : 'error'}
                         help={this.checkQuantity().msg}
@@ -986,7 +989,7 @@ class TrdTemplate extends React.Component {
                         >
                             <Select value={fixedBeginTerm}
                                     onChange={this.handleFixedBeginTermSelect}
-                                    disabled={edit || fixedBeginTermAble}
+                                    // disabled={edit || fixedBeginTermAble}
                                     getPopupContainer={(node) => node.parentNode}
                             >
                                 {
