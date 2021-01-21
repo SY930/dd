@@ -4,20 +4,20 @@ import { Button, Table, Tooltip, Row, Col, Select, Input, Switch, Modal, message
 import { jumpPage,closePage, decodeUrl, getStore } from '@hualala/platform-base'
 import BaseForm  from '../../../components/common/BaseForm';
 import CustomerRange from './components/CustomerRange'
-import styles from './housekeeper.less'
+import styles from './IntelligentGiftRule.less'
 
 const Option = Select.Option;
 
 @connect(({  loading, createActiveCom }) => ({  loading, createActiveCom }))
-class Housekeeper extends React.Component {
+class IntelligentGiftRule extends React.Component {
     constructor(){
         super();
         this.state = {
             cycleTypeOpt: [{label: '每周', value: '1'}, {label: '每月', value: '2'}],
             cycleDateOpt: [],
-            customerRangeSettings: [],
-            eventRule: {},
-            curActive: false
+            curCycleType: '1',
+            customerRangeSettings: {},
+            giftRule: {}
         }
     }
 
@@ -34,61 +34,40 @@ class Housekeeper extends React.Component {
         jumpPage({pageID: '10000730001'})
     }
 
-    // 交叉校验
-    checkTimeRange = (arr) => {
-        for (var k in arr) {
-            if (!this.judege(k, arr)) {
-                return false
-            }
-        }
-        return true
-    }
-
-    judege = (index, arr) => {
-        for (var k in arr) {
-            if(Number(arr[k].amountStart) >= Number(arr[k].amountEnd)){
-                message.warning(`第${Number(k)+1}条单均消费结束必须大于开始！`)
-                return false;
-            }
-            if (index !== k) {
-                //判断交叉时间是从第一个对象对比除了本身之外的开始时间和结束时间，如果开始时间在对比对象的开始时间和结束时间之间，或者结束时间在对比对象的开始时间和结束时间之间则是交叉。
-                if (Number(arr[k].amountStart) <= Number(arr[index].amountStart) && Number(arr[k].amountEnd) >= Number(arr[index].amountStart)) {
-                    message.warning('每组规则的金额不能有交叉');
-                    return false
-                }
-                if (Number(arr[k].amountStart) <= Number(arr[index].amountEnd) && Number(arr[k].amountEnd) >= Number(arr[index].amountEnd)) {
-                    message.warning('每组规则的金额不能有交叉');
-                    return false
-                }
-            }
-        }
-        return true
-    }
-
     onSubmit = () => {
-        let {customerRangeSettings, eventRule} = this.state
-        this.eventRuleForm.validateFields((err, value) => {
+        let {customerRangeSettings, giftRule} = this.state
+        this.GiftRuleForm.validateFields((err, value) => {
             // console.log('>>aa', err, value)
             if(!err){
                 this.customerRangeForm.validateFieldsAndScroll((error, val) => {
                     // console.log('>>bb', error, val)
                     if(!error){
-                        // 校验
-                        let checked = this.checkTimeRange(customerRangeSettings)
-                        if(!checked){
-                            return;
-                        } 
                         let parm = {
-                            ...eventRule,
+                            ...giftRule,
                             ...value,
-                            customerRangeSettings
+                            ...customerRangeSettings
                         }
+                        let {adjustStepLength = 0, initialGiftValue = 0, adjustMaxAmount = 0, cycleType = 1} = parm
+
+                        // 校验
+                        let remainder = initialGiftValue % adjustStepLength
+                        if(remainder != 0){
+                            message.warn('每次调整幅度数值需要被初始券面额数值整除');
+                            return;
+                        }
+                        
+                        if(adjustMaxAmount <= initialGiftValue){
+                            message.warn('调整区间最大值不能小于初始券面额');
+                            return;
+                        }
+
                         // 新增、编辑
-                        let editType = eventRule.itemID ? 'createActiveCom/updateEventRule' : 'createActiveCom/addEventRule'
-                        // console.log('parm', parm)
+                        let editType = giftRule.itemID ? 'createActiveCom/updateGiftRule' : 'createActiveCom/addGiftRule'
+                        // console.log('parm', parm, editType)
+                        
                         this.props.dispatch({
                             type: editType,
-                            payload: {eventRule: parm}
+                            payload: {...parm}
                         }).then(res => {
                             if(res){
                                 this.onCancel()
@@ -103,11 +82,10 @@ class Housekeeper extends React.Component {
 
     getDetail = () => {
         this.props.dispatch({
-            type: 'createActiveCom/getEventRuleDetail',
+            type: 'createActiveCom/getGiftRuleDetail',
             payload: {}
         }).then(res => {
-            let {customerRangeSettings = []} = res
-            this.setState({customerRangeSettings, eventRule: res})
+            this.setState({customerRangeSettings: res, giftRule: res})
         })
     }
 
@@ -127,7 +105,7 @@ class Housekeeper extends React.Component {
 
     switchChange = (value) => {
         let checkeFlag = false;
-        this.eventRuleForm.validateFields((err, value) => {
+        this.GiftRuleForm.validateFields((err, value) => {
             if(!err){
                 this.customerRangeForm.validateFieldsAndScroll((error, val) => {
                     if(!error){
@@ -136,10 +114,10 @@ class Housekeeper extends React.Component {
                 })
             }
         })
-        if(checkeFlag || eventRule.itemID){
-            let content = value ? '启用规则后，会在下个周期执行方案推送' : '禁用规则后，将不再执行方案推送'
+        if(checkeFlag || this.state.giftRule.itemID){
+            let content = value ? '启用规则后，会在下个周期执行发券' : '禁用规则后，将不再给会员发券'
             Modal.confirm({
-                title: `确定要${value ? '启用': '禁用'}设置吗？`,
+                title: `确定${value ? '启用': '禁用'}`,
                 content: (
                     <div>
                         <span>{content}</span>
@@ -147,8 +125,8 @@ class Housekeeper extends React.Component {
                 ),
                 onOk: () => {
                     this.props.dispatch({
-                        type: 'createActiveCom/switchEventRuleActive',
-                        payload: {active: value ? 1 : 0}
+                        type: 'createActiveCom/switchGiftRuleActive',
+                        payload: {isActive: value ? 1 : 0, itemID: this.state.giftRule.itemID}
                     })
                     .then(res => {
                         if(res){
@@ -170,48 +148,41 @@ class Housekeeper extends React.Component {
     handleFromChange = (key, value) => {
         if(key == 'cycleType'){
             let opts = this.getCycleDateOpts(value)
-            this.setState({cycleDateOpt: opts})
-        }
-        if(key == 'active'){
-            this.setState({curActive: value})
+            this.setState({cycleDateOpt: opts, curCycleType: value})
         }
     }
 
-    RangeChange = (list) => {
-        this.setState({customerRangeSettings: list})
+    RangeChange = (data) => {
+        this.setState({customerRangeSettings: data})
     }
-
 
     render(){
-        let {cycleTypeOpt, cycleDateOpt, customerRangeSettings = []} = this.state
+        let {cycleTypeOpt, cycleDateOpt, customerRangeSettings = {}, curCycleType = '1'} = this.state
         const { groupID } = getStore().getState().user.get('accountInfo').toJS();
-        const { eventRule = {} } = this.props.createActiveCom
+        const { giftRule = {} } = this.props.createActiveCom
         
-        let formData = eventRule;
-        let {active, cycleType = '1', cycleDate = '1'} = formData
-        // init data
-        if(customerRangeSettings.length <= 0){
-            customerRangeSettings = [{ rangeIndex: 0, groupID, amountStart: 0, amountEnd: 0, giftID: undefined, giftName: ''}]
-        }
+        let formData = giftRule;
+        let {isActive, cycleType = '1', cycleDate = '1', itemID = ''} = formData
         let formItems = {
-            active: {
+            isActive: {
                 type: 'custom',
                 label: '启用状态',
                 labelCol: { span: 2 },
                 wrapperCol: { span: 15 },
+                disabled: !itemID,
                 // rules: ['required'],
                 render: decorator => (
                     <Row>
-                        <Switch checked={!!active} checkedChildren="开" unCheckedChildren="关" onChange={this.switchChange} />
+                        <Switch checked={!!isActive} checkedChildren="开" unCheckedChildren="关" onChange={this.switchChange} />
                     </Row>
                 ),
             }, 
             cycle: {
                 type: 'custom',
-                label: '推送周期',
+                label: '发券周期',
                 labelCol: { span: 2 },
                 wrapperCol: { span: 15 },
-                disabled: !!active,
+                disabled: !!isActive,
                 rules: ['required'],
                 render: decorator => (
                     <Row>
@@ -248,19 +219,19 @@ class Housekeeper extends React.Component {
                     </Row>
                 ),
             }, 
-            consumeDays: {
+            consumptionCount: {
                 type: 'custom',
                 label: '会员群体',
                 labelCol: { span: 2 },
                 wrapperCol: { span: 15 },
-                disabled: !!active,
+                disabled: !!isActive,
                 rules: ['required'],
                 render: decorator => (
                     <Row className={styles.textWrap}>
-                        <Col span={2}>距今超</Col>
+                        <Col span={3}>历史消费次数超</Col>
                         <Col span={4}>
                             {decorator({
-                                key: 'consumeDays',
+                                key: 'consumptionCount',
                                 rules: [{
                                     required: true, message: '数值不能为空',
                                 }, {
@@ -268,10 +239,10 @@ class Housekeeper extends React.Component {
                                     message: '请输入大于零的5位以内整数',
                                 }],
                             })(
-                                <Input placeholder="请输入天数" addonAfter="天" />
+                                <Input placeholder="请输入次数" addonAfter="次" />
                             )}
                         </Col>
-                        <Col span={2}>未消费</Col>
+                        <Col span={3}>的会员参与活动</Col>
                     </Row>
                 ),
             }, 
@@ -280,11 +251,11 @@ class Housekeeper extends React.Component {
                 label: ' ',
                 labelCol: { span: 2 },
                 wrapperCol: { span: 20 },
-                disabled: !!active,
+                disabled: !!isActive,
                 rules: ['required'],
                 render: decorator => (
                     <Row className={styles.textWrap}>
-                        <CustomerRange onChange={this.RangeChange} active={this.state.curActive} getForm={(form) => this.customerRangeForm = form} decorator={decorator} value={customerRangeSettings} />
+                        <CustomerRange onChange={this.RangeChange} getForm={(form) => this.customerRangeForm = form} decorator={decorator} value={customerRangeSettings} />
                     </Row>
                 ),
             }, 
@@ -293,7 +264,7 @@ class Housekeeper extends React.Component {
                 label: '券有效期',
                 labelCol: { span: 2 },
                 wrapperCol: { span: 15 },
-                disabled: !!active,
+                disabled: !!isActive,
                 rules: ['required'],
                 render: decorator => (
                     <Row className={styles.textWrap}>
@@ -304,8 +275,8 @@ class Housekeeper extends React.Component {
                                 rules: [{
                                     required: true, message: '数值不能为空',
                                 }, {
-                                    pattern: /^(([1-9]\d{0,4}))?$/,
-                                    message: '请输入大于零的5位以内整数',
+                                    pattern: curCycleType == 1 ? /^(?:[1-7])$/ : /^(?:1[0-9]|2[0-9]|[1-9]|30)$/,
+                                    message: `请输入1~${curCycleType == 1 ? '7' : '30'}之间的整数`,
                                 }],
                             })(
                                 <Input placeholder="请输入天数" addonAfter="天" />
@@ -314,15 +285,42 @@ class Housekeeper extends React.Component {
                     </Row>
                 ),
             }, 
+            blacklistThreshold: {
+                type: 'custom',
+                label: '营销黑名单',
+                labelCol: { span: 2 },
+                wrapperCol: { span: 15 },
+                disabled: !!isActive,
+                rules: ['required'],
+                render: decorator => (
+                    <Row className={styles.textWrap}>
+                        <Col span={2}>连续发放</Col>
+                        <Col span={4}>
+                            {decorator({
+                                key: 'blacklistThreshold',
+                                rules: [{
+                                    required: true, message: '数值不能为空',
+                                }, {
+                                    pattern: /^(?:1[0-2]|[1-9])$/,
+                                    message: '请输入1~12之间的整数',
+                                }],
+                            })(
+                                <Input placeholder="请输入次数" addonAfter="次" />
+                                )}
+                        </Col>
+                        <Col span={6}>顾客未消费，则停止向该用户发券</Col>
+                    </Row>
+                ),
+            }, 
         };
-        let formKeys = ['active', 'cycle', 'consumeDays', 'customerRangeSettings', 'giftValidUntilDay'];
+        let formKeys = ['isActive', 'consumptionCount', 'cycle', 'customerRangeSettings', 'giftValidUntilDay', 'blacklistThreshold'];
 
         return (
             <div className={styles.actWrap}>
                 <Row style={{width: '100%'}}>
                     <Col span={24}>
                         <BaseForm
-                            getForm={(form) => this.eventRuleForm = form}
+                            getForm={(form) => this.GiftRuleForm = form}
                             formItems={formItems}
                             formData={formData}
                             formKeys={formKeys}
@@ -331,7 +329,7 @@ class Housekeeper extends React.Component {
                     </Col>
                 </Row>
                 <div className={styles.btnWrap}>
-                    <Button disabled={!!active} onClick={this.onSubmit} type="primary">确定</Button>
+                    <Button disabled={!!isActive} onClick={this.onSubmit} type="primary">确定</Button>
                     <Button onClick={this.onCancel}>取消</Button>
                 </div>
             </div>
@@ -339,4 +337,4 @@ class Housekeeper extends React.Component {
     }
 }
 
-export default Housekeeper
+export default IntelligentGiftRule

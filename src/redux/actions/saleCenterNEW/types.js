@@ -893,6 +893,13 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             example: "",
             key: "housekeeper",
         },
+        {
+            idx: 27,
+            title: "智能发券",
+            text: "",
+            example: "",
+            key: "intelligentGiftRule",
+        },
     ];
     return basic;
 })();

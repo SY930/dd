@@ -665,6 +665,17 @@ export const HOUSEKEEPER_TYPES = [
         bottom: -14,
         isHot: false,
     },
+    {
+        title: '智能发券',
+        isSpecial: true,
+        text: '',
+        example: '',
+        tags: [],
+        key: 'intelligentGiftRule',
+        right: 2,
+        bottom: -14,
+        isHot: false,
+    },
 ]
 
 export const WECHAT_MALL_ACTIVITIES = [
