@@ -36,7 +36,7 @@ class PromotionAutoRunModal extends Component {
             selectedRowKeys: promotionList.map(item => item.promotionID),
             checkedValues: [],
             allDisabled: false,
-            limitNum: 30,
+            limitNum: 100,
         }
     }
 
