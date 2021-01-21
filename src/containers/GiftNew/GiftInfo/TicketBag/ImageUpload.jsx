@@ -37,7 +37,7 @@ class ImageUpload extends Component {
                 <div>
                     <p className="ant-upload-hint">尺寸建议750*318</p>
                     <p className="ant-upload-hint">不大于1000KB</p>
-                    <p className="ant-upload-hint">支持PNG、JPG、GIF格式</p>
+                    <p className="ant-upload-hint">支持PNG、JPG格式</p>
                 </div>
             </div>
         )
