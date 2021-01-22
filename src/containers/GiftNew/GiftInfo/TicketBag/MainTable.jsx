@@ -86,7 +86,7 @@ class MainTable extends Component {
     resetFormData = (detail) => {
         const { couponPackageGiftConfigs, couponPackageInfo: info, shopInfos: shops } = detail;
         const { couponSendWay: way, couponPackageType: type, validCycle: cycle,
-            couponPackagePrice: price, remainStock: stock } = info;
+            couponPackagePrice: price, remainStock: stock ,maxBuyCount:buyCount} = info;
         const shopInfos = shops.map(x => `${x.shopID}`);
         const { sellBeginTime, sellEndTime, sendTime: time } = info;
         let sellTime = [];
@@ -96,8 +96,12 @@ class MainTable extends Component {
         const sendTime = time ? moment(time, TF) : '';
         const cycleType = cycle ? cycle[0][0] : ''; // ["w2", "w3"] 获取第一个字符
         let remainStock = stock || '0'; // 库存为-1和0 都显示空
+        let maxBuyCount = buyCount || '0'
         if (stock === -1) {
             remainStock = '';
+        }
+        if (buyCount === -1){
+            maxBuyCount = '';
         }
         return { ...info,
             sellTime,
@@ -108,7 +112,9 @@ class MainTable extends Component {
             cycleType,
             couponPackageGiftConfigs,
             couponPackagePrice2: price,
-            remainStock };
+            remainStock,
+            maxBuyCount
+         };
     }
     /* 分页改变执行 */
     onPageChange = (pageNo, pageSize) => {

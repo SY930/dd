@@ -230,6 +230,7 @@ const formItems = {
     maxBuyCount: {
         type: 'text',
         label: '可购买次数',
+        defaultValue:'',
         props: {
             placeholder: '请输入每人可购买次数，不填表示不限制',
         },
