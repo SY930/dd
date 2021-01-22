@@ -3,7 +3,7 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 const COMMON_STRING = {
     save: {
         id: 'Common.Label.save',
-        defaultMessage: '保存',
+        defaultMessage: '保存12',
     },
     confirm: {
         id: 'Common.Label.confirm',
