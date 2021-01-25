@@ -36,6 +36,7 @@ class IntelligentGiftRule extends React.Component {
 
     onSubmit = () => {
         let {customerRangeSettings, giftRule} = this.state
+        let {initialGiftValue = 0, adjustStepLength = 0, adjustMinAmount = 0, adjustMaxAmount = 0,} = customerRangeSettings
         this.GiftRuleForm.validateFields((err, value) => {
             // console.log('>>aa', err, value)
             if(!err){
@@ -45,9 +46,11 @@ class IntelligentGiftRule extends React.Component {
                         let parm = {
                             ...giftRule,
                             ...value,
-                            ...customerRangeSettings
+                            initialGiftValue, 
+                            adjustStepLength, 
+                            adjustMinAmount, 
+                            adjustMaxAmount,
                         }
-                        let {adjustStepLength = 0, initialGiftValue = 0, adjustMaxAmount = 0, cycleType = 1} = parm
 
                         // 校验
                         let remainder = initialGiftValue % adjustStepLength
