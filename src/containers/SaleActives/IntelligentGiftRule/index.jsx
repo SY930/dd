@@ -223,12 +223,12 @@ class IntelligentGiftRule extends React.Component {
                 type: 'custom',
                 label: '会员群体',
                 labelCol: { span: 2 },
-                wrapperCol: { span: 15 },
+                wrapperCol: { span: 12 },
                 disabled: !!isActive,
                 rules: ['required'],
                 render: decorator => (
                     <Row className={styles.textWrap}>
-                        <Col span={3}>历史消费次数超</Col>
+                        <Col span={3} className={styles.labelLeft}>历史消费次数超</Col>
                         <Col span={4}>
                             {decorator({
                                 key: 'consumptionCount',
@@ -242,7 +242,7 @@ class IntelligentGiftRule extends React.Component {
                                 <Input placeholder="请输入次数" addonAfter="次" />
                             )}
                         </Col>
-                        <Col span={3}>的会员参与活动</Col>
+                        <Col span={3} >的会员参与活动</Col>
                     </Row>
                 ),
             }, 
@@ -263,12 +263,12 @@ class IntelligentGiftRule extends React.Component {
                 type: 'custom',
                 label: '券有效期',
                 labelCol: { span: 2 },
-                wrapperCol: { span: 15 },
+                wrapperCol: { span: 12 },
                 disabled: !!isActive,
                 rules: ['required'],
                 render: decorator => (
                     <Row className={styles.textWrap}>
-                        <Col span={5}>发放后立即生效，有效期</Col>
+                        <Col span={4} className={styles.labelLeft}>发放后立即生效，有效期</Col>
                         <Col span={4}>
                             {decorator({
                                 key: 'giftValidUntilDay',
@@ -289,12 +289,12 @@ class IntelligentGiftRule extends React.Component {
                 type: 'custom',
                 label: '营销黑名单',
                 labelCol: { span: 2 },
-                wrapperCol: { span: 15 },
+                wrapperCol: { span: 11 },
                 disabled: !!isActive,
                 rules: ['required'],
                 render: decorator => (
                     <Row className={styles.textWrap}>
-                        <Col span={2}>连续发放</Col>
+                        <Col span={2} className={styles.labelLeft}>连续发放</Col>
                         <Col span={4}>
                             {decorator({
                                 key: 'blacklistThreshold',
@@ -329,7 +329,7 @@ class IntelligentGiftRule extends React.Component {
                     </Col>
                 </Row>
                 <div className={styles.btnWrap}>
-                    <Button disabled={!!isActive} onClick={this.onSubmit} type="primary">确定</Button>
+                    <Button disabled={!!isActive} onClick={this.onSubmit} type="primary">保存</Button>
                     <Button onClick={this.onCancel}>取消</Button>
                 </div>
             </div>

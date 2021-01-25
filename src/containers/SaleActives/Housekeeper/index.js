@@ -331,7 +331,7 @@ class Housekeeper extends React.Component {
                     </Col>
                 </Row>
                 <div className={styles.btnWrap}>
-                    <Button disabled={!!active} onClick={this.onSubmit} type="primary">确定</Button>
+                    <Button disabled={!!active} onClick={this.onSubmit} type="primary">保存</Button>
                     <Button onClick={this.onCancel}>取消</Button>
                 </div>
             </div>
