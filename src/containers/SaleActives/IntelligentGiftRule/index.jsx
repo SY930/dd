@@ -36,6 +36,7 @@ class IntelligentGiftRule extends React.Component {
 
     onSubmit = () => {
         let {customerRangeSettings, giftRule} = this.state
+        let {initialGiftValue = 0, adjustStepLength = 0, adjustMinAmount = 0, adjustMaxAmount = 0,} = customerRangeSettings
         this.GiftRuleForm.validateFields((err, value) => {
             // console.log('>>aa', err, value)
             if(!err){
@@ -45,9 +46,11 @@ class IntelligentGiftRule extends React.Component {
                         let parm = {
                             ...giftRule,
                             ...value,
-                            ...customerRangeSettings
+                            initialGiftValue, 
+                            adjustStepLength, 
+                            adjustMinAmount, 
+                            adjustMaxAmount,
                         }
-                        let {adjustStepLength = 0, initialGiftValue = 0, adjustMaxAmount = 0, cycleType = 1} = parm
 
                         // 校验
                         let remainder = initialGiftValue % adjustStepLength
@@ -151,6 +154,13 @@ class IntelligentGiftRule extends React.Component {
             this.setState({cycleDateOpt: opts, curCycleType: value})
         }
     }
+    
+    // 绕开formchange
+    cycleTypeChange = (value) => {
+        let opts = this.getCycleDateOpts(value)
+        this.setState({cycleDateOpt: opts, curCycleType: value})
+        this.GiftRuleForm.setFieldsValue({giftValidUntilDay: ''})
+    }
 
     RangeChange = (data) => {
         this.setState({customerRangeSettings: data})
@@ -192,7 +202,8 @@ class IntelligentGiftRule extends React.Component {
                                 rules: [{
                                     required: true, message: '请选择',
                                 }],
-                                initialValue: `${cycleType}` || '1'
+                                initialValue: `${cycleType}` || '1',
+                                onChange: this.cycleTypeChange
                             })(
                                 <Select style={{ width: '80px', margin: '0 10px 0 6px' }}>
                                     {cycleTypeOpt.map((v) => {
@@ -228,7 +239,7 @@ class IntelligentGiftRule extends React.Component {
                 rules: ['required'],
                 render: decorator => (
                     <Row className={styles.textWrap}>
-                        <Col span={3} className={styles.labelLeft}>历史消费次数超</Col>
+                        <Col span={3} className={styles.labelLeft} style={{width: '100px'}}>历史消费次数超</Col>
                         <Col span={4}>
                             {decorator({
                                 key: 'consumptionCount',
@@ -242,7 +253,7 @@ class IntelligentGiftRule extends React.Component {
                                 <Input placeholder="请输入次数" addonAfter="次" />
                             )}
                         </Col>
-                        <Col span={3} >的会员参与活动</Col>
+                        <Col span={3} style={{width: '100px'}}>的会员参与活动</Col>
                     </Row>
                 ),
             }, 
@@ -268,7 +279,7 @@ class IntelligentGiftRule extends React.Component {
                 rules: ['required'],
                 render: decorator => (
                     <Row className={styles.textWrap}>
-                        <Col span={4} className={styles.labelLeft}>发放后立即生效，有效期</Col>
+                        <Col span={4} className={styles.labelLeft} style={{width: '140px'}}>发放后立即生效，有效期</Col>
                         <Col span={4}>
                             {decorator({
                                 key: 'giftValidUntilDay',
@@ -294,7 +305,7 @@ class IntelligentGiftRule extends React.Component {
                 rules: ['required'],
                 render: decorator => (
                     <Row className={styles.textWrap}>
-                        <Col span={2} className={styles.labelLeft}>连续发放</Col>
+                        <Col span={2} className={styles.labelLeft} style={{width: '60px'}}>连续发放</Col>
                         <Col span={4}>
                             {decorator({
                                 key: 'blacklistThreshold',
@@ -308,7 +319,7 @@ class IntelligentGiftRule extends React.Component {
                                 <Input placeholder="请输入次数" addonAfter="次" />
                                 )}
                         </Col>
-                        <Col span={6}>顾客未消费，则停止向该用户发券</Col>
+                        <Col span={6} style={{width: '200px'}}>顾客未消费，则停止向该用户发券</Col>
                     </Row>
                 ),
             }, 
