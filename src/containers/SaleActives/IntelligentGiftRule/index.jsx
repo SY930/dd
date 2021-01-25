@@ -151,6 +151,13 @@ class IntelligentGiftRule extends React.Component {
             this.setState({cycleDateOpt: opts, curCycleType: value})
         }
     }
+    
+    // 绕开formchange
+    cycleTypeChange = (value) => {
+        let opts = this.getCycleDateOpts(value)
+        this.setState({cycleDateOpt: opts, curCycleType: value})
+        this.GiftRuleForm.setFieldsValue({giftValidUntilDay: ''})
+    }
 
     RangeChange = (data) => {
         this.setState({customerRangeSettings: data})
@@ -192,7 +199,8 @@ class IntelligentGiftRule extends React.Component {
                                 rules: [{
                                     required: true, message: '请选择',
                                 }],
-                                initialValue: `${cycleType}` || '1'
+                                initialValue: `${cycleType}` || '1',
+                                onChange: this.cycleTypeChange
                             })(
                                 <Select style={{ width: '80px', margin: '0 10px 0 6px' }}>
                                     {cycleTypeOpt.map((v) => {
