@@ -28,12 +28,12 @@ class CustomerRange extends Component {
 
     giftValueChange = ({ target }) => {
         const { value } = target;
-        this.onAllChange({ initialGiftValue: value, adjustMinAmount: value });
+        this.onAllChange({ initialGiftValue: value });
     }
 
     adjustStepChange = ({ target }) => {
         const { value } = target;
-        this.onAllChange({ adjustStepLength: value });
+        this.onAllChange({ adjustStepLength: value, adjustMinAmount: value });
     }
 
     adjustMaxChange = ({ target }) => {
@@ -110,7 +110,7 @@ class CustomerRange extends Component {
                             >
                                 <Row>
                                     <Col span={10}>
-                                        <Input disabled value={initialGiftValue} placeholder="最小值" addonAfter="元" />
+                                        <Input disabled value={adjustStepLength} placeholder="最小值" addonAfter="元" />
                                     </Col>
                                     <Col span={2} style={{textAlign: 'center'}}>~</Col>
                                     <Col span={10}>
