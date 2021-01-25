@@ -228,7 +228,7 @@ class IntelligentGiftRule extends React.Component {
                 rules: ['required'],
                 render: decorator => (
                     <Row className={styles.textWrap}>
-                        <Col span={3} className={styles.labelLeft}>历史消费次数超</Col>
+                        <Col span={3} className={styles.labelLeft} style={{width: '100px'}}>历史消费次数超</Col>
                         <Col span={4}>
                             {decorator({
                                 key: 'consumptionCount',
@@ -242,7 +242,7 @@ class IntelligentGiftRule extends React.Component {
                                 <Input placeholder="请输入次数" addonAfter="次" />
                             )}
                         </Col>
-                        <Col span={3} >的会员参与活动</Col>
+                        <Col span={3} style={{width: '100px'}}>的会员参与活动</Col>
                     </Row>
                 ),
             }, 
@@ -268,7 +268,7 @@ class IntelligentGiftRule extends React.Component {
                 rules: ['required'],
                 render: decorator => (
                     <Row className={styles.textWrap}>
-                        <Col span={4} className={styles.labelLeft}>发放后立即生效，有效期</Col>
+                        <Col span={4} className={styles.labelLeft} style={{width: '140px'}}>发放后立即生效，有效期</Col>
                         <Col span={4}>
                             {decorator({
                                 key: 'giftValidUntilDay',
@@ -294,7 +294,7 @@ class IntelligentGiftRule extends React.Component {
                 rules: ['required'],
                 render: decorator => (
                     <Row className={styles.textWrap}>
-                        <Col span={2} className={styles.labelLeft}>连续发放</Col>
+                        <Col span={2} className={styles.labelLeft} style={{width: '60px'}}>连续发放</Col>
                         <Col span={4}>
                             {decorator({
                                 key: 'blacklistThreshold',
@@ -308,7 +308,7 @@ class IntelligentGiftRule extends React.Component {
                                 <Input placeholder="请输入次数" addonAfter="次" />
                                 )}
                         </Col>
-                        <Col span={6}>顾客未消费，则停止向该用户发券</Col>
+                        <Col span={6} style={{width: '200px'}}>顾客未消费，则停止向该用户发券</Col>
                     </Row>
                 ),
             }, 
