@@ -20,6 +20,7 @@ import {
     Radio,
     Tooltip,
     Icon,
+    Modal
 } from 'antd';
 import styles from './GiftAdd.less';
 import styles2 from './Crm.less';
@@ -374,7 +375,6 @@ class GiftAddModalStep extends React.PureComponent {
         const { firstKeys, secondKeys, values } = this.state;
         const newKeys = [...secondKeys[describe][0].keys];
         const index = _.findIndex(newKeys, item => item == key);
-        // console.log('now Change the', key, value)
         if (key === 'shareIDs') {
             this.props.changeGiftFormKeyValue({key, value});
         } else if (JSON.stringify(values[key]) !== JSON.stringify(value)) {
@@ -769,7 +769,7 @@ class GiftAddModalStep extends React.PureComponent {
     }
 
     handleFinish = () => {
-        const { values, groupTypes, delivery } = this.state;
+        const { values, groupTypes, delivery} = this.state;
         const { type, gift: { value, data } } = this.props;
         this.secondForm.validateFieldsAndScroll((err, formValues) => {
             if (err) return;
@@ -957,18 +957,22 @@ class GiftAddModalStep extends React.PureComponent {
             params.customerUseCountLimit = params.customerUseCountLimit || '0';
             params.goldGift = Number((params.aggregationChannels || []).includes('goldGift'));
             params.vivoChannel = Number((params.aggregationChannels|| []).includes('vivoChannel'));
-            params.moneyLimitType = '';
+            params.moneyLimitType = '0';
+            params.moenyLimitValue = '100';
             params.amountType = '';
+            //核销限制参数处理
             if(params.moneyLimitTypeAndValue && params.moneyLimitTypeAndValue.moneyLimitType){
                 const moneyLimitTypeData = JSON.parse(params.moneyLimitTypeAndValue.moneyLimitType);
                 if(moneyLimitTypeData && moneyLimitTypeData.moneyLimitType){
                     params.moneyLimitType = moneyLimitTypeData.moneyLimitType;
+                    if(params.moneyLimitTypeAndValue.moenyLimitValue){
+                        params.moenyLimitValue = params.moneyLimitTypeAndValue.moenyLimitValue;
+                    }
                 }
                 if(moneyLimitTypeData && moneyLimitTypeData.amountType){
                     params.amountType = moneyLimitTypeData.amountType;
                 }
             }
-            params.moenyLimitValue = (params.moneyLimitTypeAndValue || {}).moenyLimitValue;
             params.openPushMessageMpID = 1;
             params.openPushSms = params.pushMessage && params.pushMessage.sendType.indexOf('msg') !== -1 ? 1 : 0
             params.reminderTime = params.pushMessage && params.pushMessage.reminderTime
@@ -985,16 +989,66 @@ class GiftAddModalStep extends React.PureComponent {
             delete params.operateTime;
             delete params.aggregationChannels;
             delete params.couponFoodScopeList; // 后台返回的已选菜品数据
-            axiosData(callServer, { ...params, groupName }, null, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then((data) => {
-                endSaving();
-                message.success('成功', 3);
-                this.props.cancelCreateOrEditGift()
-            }).catch(err => {
-                endSaving();
-            });
+
+            this.checkShopWechatData(params,callServer,groupName,this.submitData);
+           
         });
     }
-
+    // 最后提交数据
+    submitData(callServer,params,groupName,that){
+        const { endSaving,cancelCreateOrEditGift } = that.props;
+        axiosData(callServer, { ...params, groupName }, null, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then((data) => {
+            endSaving();
+            message.success('成功', 3);
+            cancelCreateOrEditGift()
+        }).catch(err => {
+            endSaving();
+        });
+    }
+    // 判断选择的小程序或者公众号与微信支付商家券下账务主体是否绑定关系
+    checkShopWechatData(params,callServer,groupName,cb) {
+        const _that = this;
+        const { endSaving } = this.props;
+        const groupID = params.groupID;
+        const trdTemplateInfoData = JSON.parse(params.trdTemplateInfo); 
+        const appId = trdTemplateInfoData.appID;
+        let merchantInfo = {};
+        let settleId = '';
+        let mpType = trdTemplateInfoData.mpType;
+        if(trdTemplateInfoData.merchantInfo){
+            merchantInfo = trdTemplateInfoData.merchantInfo;
+            settleId = merchantInfo.settleId;
+        }
+        axiosData('/wxpay/appMatchPayChannel', {
+            'groupID':groupID,
+            'appID':appId,
+            'settleID':settleId
+        }, null, {
+            path: '',
+        }, 'HTTP_SERVICE_URL_ISV_API')
+            .then((res) => {
+                const {matchSettle} = res;
+                if( matchSettle ){
+                    cb(callServer,params,groupName,_that)
+                    return true
+                }else{
+                    if(mpType === "SERVICE_AUTH"){
+                        Modal.error({
+                            title: '选择的公众号与账务主体未绑定',
+                            content: '请联系商务绑定后再操作',
+                        });
+                    }
+                    if(mpType === "MINI_PROGRAM_AUTH"){
+                        Modal.error({
+                            title: '选择的小程序与账务主体未绑定',
+                            content: '请前往 顾客管理端>微信及支付宝小程序>微信商家独立小程序>更多>绑定账务主体 进行绑定操作',
+                        });
+                    } 
+                    endSaving();
+                    return false
+                }
+            })
+    }
     renderDiscountTypeAndValue(decorator) {
         const { discountType, discountRate } = this.props.gift.data;
         return decorator({
@@ -2883,7 +2937,7 @@ class GiftAddModalStep extends React.PureComponent {
         formData.shareIDs = this.state.sharedGifts;
         formData.giftShareType = String(formData.giftShareType);
         formData.couponPeriodSettings = formData.couponPeriodSettingList;
-        // console.log('formData.pushMessageMpID', formData.pushMessageMpID)
+
         if(!formData.pushMessage) {
             const sendType = ['wechat']
             if (formData.openPushSms) {
