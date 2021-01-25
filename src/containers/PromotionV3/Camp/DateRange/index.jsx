@@ -36,8 +36,12 @@ class DateRange extends Component {
                         let {pluginInfo = {}, authPluginStatus} = checkAuthLicense(this.state.authLicenseData, 'HLL_CRM_Marketingbox')
                         let {authStartDate = '', authEndDate = ''} = pluginInfo
                         authStartDate = moment(authStartDate, 'YYYYMMDD').format('YYYY-MM-DD')
-                        authEndDate = moment(authEndDate, 'YYYYMMDD').format('YYYY-MM-DD')
-                        let disabledDates = !current.isBetween(authStartDate, authEndDate, null, '()')
+                        let authEndDates = moment(authEndDate, 'YYYYMMDD').format('YYYY-MM-DD')
+                        let disabledDates = !current.isBetween(authStartDate, authEndDates, null, '()')
+                        // 永久授权
+                        if(authEndDate == '99999999'){
+                            return current && current.format('YYYYMMDD') < moment().format('YYYYMMDD');
+                        }
                         if(authPluginStatus){
                             return disabledDates || current && current.format('YYYYMMDD') < moment().format('YYYYMMDD');
                         }else{

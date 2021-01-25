@@ -1045,23 +1045,31 @@ class StepOneWithDateRange extends React.Component {
         const { getFieldDecorator } = this.props.form;
 
         // 判断日期格式是否合法,不合法不设置defaultValue
+        // 99999999  永久授权-兼容判断
         let dateRangeProps;
         const disabledDate = (current) => {
             let {pluginInfo = {}, authPluginStatus} = checkAuthLicense(this.state.authLicenseData, 'HLL_CRM_Marketingbox')
             
             let {authStartDate = '', authEndDate = ''} = pluginInfo
             authStartDate = moment(authStartDate, 'YYYYMMDD').format('YYYY-MM-DD')
-            authEndDate = moment(authEndDate, 'YYYYMMDD').format('YYYY-MM-DD')
-            let disabledDates = !current.isBetween(authStartDate, authEndDate, null, '()')
-            
-            if(dateLimitedTypes.includes(`${this.props.type}`)){
-                if(authPulgins.includes(`${this.props.type}`) && authPluginStatus){
+            let authEndDates = moment(authEndDate, 'YYYYMMDD').format('YYYY-MM-DD') 
+
+            let disabledDates = !current.isBetween(authStartDate, authEndDates, null, '()')
+
+            if(!dateLimitedTypes.includes(`${this.props.type}`)){
+                if(authEndDate == '99999999'){
+                    return current && current.format('YYYYMMDD') < moment().format('YYYYMMDD');
+                }
+                if(authPulgins.includes(`${this.props.type}`) && authPluginStatus ){
                     return disabledDates || current && current.format('YYYYMMDD') < moment().format('YYYYMMDD');
                 }else{
                     // Can not select days before today
                     return current && current.format('YYYYMMDD') < moment().format('YYYYMMDD');
                 }
             }else{
+                if(authEndDate == '99999999'){
+                    return current && current.format('YYYYMMDD') < moment().format('YYYYMMDD');
+                }
                 if(authPulgins.includes(`${this.props.type}`) && authPluginStatus){
                     return disabledDates
                 }else{
