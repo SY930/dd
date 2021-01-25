@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
     Select,
 } from 'antd';
+import _ from 'lodash';
 import PriceInput from 'containers/SaleCenterNEW/common/PriceInput';
 
 const { Option } = Select;
@@ -12,11 +13,11 @@ const { Option } = Select;
  * 通过以上两个字段组合来确定当前是哪个核销限制条件
  */
 const SELECT_OPTIONS = [
-    { label: '不限', value: '0' },
-    { label: '账单金额满', value:JSON.stringify({'moneyLimitType':2,'amountType':0})},
-    { label: '账单金额每满', value: JSON.stringify({'moneyLimitType':1,'amountType':0}) },
-    { label: '应付金额满', value: JSON.stringify({'moneyLimitType':2,'amountType':2}) },
-    { label: '应付金额每满', value: JSON.stringify({'moneyLimitType':1,'amountType':2}) },
+    { label: '不限', value: JSON.stringify({moneyLimitType:'0',amountType:''})},
+    { label: '账单金额满', value: JSON.stringify({moneyLimitType:'2',amountType:'0'})},
+    { label: '账单金额每满', value: JSON.stringify({moneyLimitType:'1',amountType:'0'})},
+    { label: '应付金额满', value: JSON.stringify({moneyLimitType:'2',amountType:'2'})},
+    { label: '应付金额每满', value: JSON.stringify({moneyLimitType:'1',amountType:'2'})},
 ];
 
 export default class MoneyLimitTypeAndValue extends Component {
@@ -31,27 +32,27 @@ export default class MoneyLimitTypeAndValue extends Component {
 
         if (this.props.type == 111 || this.props.type == 22) {//111为折扣券
             return [
-                { label: '不限', value: '0' },
-                { label: '账单金额满', value:JSON.stringify({'moneyLimitType':2,'amountType':0})},
-                { label: '应付金额满', value: JSON.stringify({'moneyLimitType':2,'amountType':2}) },
+                { label: '不限', value: JSON.stringify({moneyLimitType:'0',amountType:''})},
+                { label: '账单金额满', value:JSON.stringify({moneyLimitType:'2',amountType:'0'})},
+                { label: '应付金额满', value: {'moneyLimitType':2,'amountType':2}},
             ]
         }
         if (this.props.type == 10){//代金券下 amountType 设为固定值1
             if(isActivityFoods){
                 return [
-                    { label: '不限', value: '0' },
-                    { label: '活动菜品金额满', value:JSON.stringify({'moneyLimitType':2,'amountType':1})},
-                    { label: '活动菜品金额每满', value: JSON.stringify({'moneyLimitType':1,'amountType':1}) },
-                    { label: '活动菜品应付金额满', value: JSON.stringify({'moneyLimitType':2,'amountType':2}) },
-                    { label: '活动菜品应付金额每满', value: JSON.stringify({'moneyLimitType':1,'amountType':2}) },
+                    { label: '不限', value: JSON.stringify({moneyLimitType:'0',amountType:''})},
+                    { label: '活动菜品金额满', value:JSON.stringify({moneyLimitType:'2',amountType:'1'})},
+                    { label: '活动菜品金额每满', value: JSON.stringify({moneyLimitType:'1',amountType:'1'})},
+                    { label: '活动菜品应付金额满', value: JSON.stringify({moneyLimitType:'2',amountType:'2'})},
+                    { label: '活动菜品应付金额每满', value: JSON.stringify({moneyLimitType:'1',amountType:'2'})},
                 ]
             }
             return [
-                { label: '不限', value: '0' },
-                { label: '账单金额满', value:JSON.stringify({'moneyLimitType':2,'amountType':1})},
-                { label: '账单金额每满', value: JSON.stringify({'moneyLimitType':1,'amountType':1}) },
-                { label: '应付金额满', value: JSON.stringify({'moneyLimitType':2,'amountType':2}) },
-                { label: '应付金额每满', value: JSON.stringify({'moneyLimitType':1,'amountType':2}) },
+                { label: '不限', value: JSON.stringify({moneyLimitType:'0',amountType:''})},
+                { label: '账单金额满', value:JSON.stringify({moneyLimitType:'2',amountType:'1'})},
+                { label: '账单金额每满', value: JSON.stringify({moneyLimitType:'1',amountType:'1'})},
+                { label: '应付金额满', value: JSON.stringify({moneyLimitType:'2',amountType:'2'})},
+                { label: '应付金额每满', value: JSON.stringify({moneyLimitType:'1',amountType:'2'})},
             ]
         }
         return SELECT_OPTIONS
@@ -64,13 +65,24 @@ export default class MoneyLimitTypeAndValue extends Component {
                 moenyLimitValue,
             },
         } = this.props;
-        if (moneyLimitType === '0') {
+        
+        
+        const moneyLimitTypeVal = JSON.parse(moneyLimitType);
+        const defaultLabelArr = _.filter(SELECT_OPTIONS,function(o){
+            
+            const selectVal = JSON.parse(o.value);
+            return selectVal.moneyLimitType == moneyLimitTypeVal.moneyLimitType  &&  selectVal.amountType == moneyLimitTypeVal.amountType;
+        });
+        
+        const defaultLabel  = defaultLabelArr.length >  0 ? defaultLabelArr[0].label : '不限';
+        
+        if (moneyLimitTypeVal.moneyLimitType === '0') {
             return (
                 <PriceInput
                     addonBefore={
                         <Select
                             style={{ width: 150 }}
-                            value={moneyLimitType}
+                            value={defaultLabel}
                             onChange={(v) => this.handleTypeAndValueChange({ moneyLimitType: v })}
                         >
                             {
@@ -82,7 +94,7 @@ export default class MoneyLimitTypeAndValue extends Component {
                             }
                         </Select>
                     }
-                    addonAfter="元"
+                    addonAfter='元'
                     disabled
                     value={{ number: '' }}
                 />
@@ -94,7 +106,7 @@ export default class MoneyLimitTypeAndValue extends Component {
                 addonBefore={
                     <Select
                         style={{ width: 150 }}
-                        value={moneyLimitType}
+                        value={defaultLabel}
                         onChange={(v) => this.handleTypeAndValueChange({ moneyLimitType: v })}
                     >
                         {
@@ -107,7 +119,7 @@ export default class MoneyLimitTypeAndValue extends Component {
                     </Select>
                 }
                 onChange={({ number: v }) => this.handleTypeAndValueChange({ moenyLimitValue: v })}
-                addonAfter="元，使用一张"
+                addonAfter='元，使用一张'
                 value={{ number: moenyLimitValue }}
                 maxNum={5}
                 modal={'int'}

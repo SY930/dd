@@ -961,12 +961,15 @@ class GiftAddModalStep extends React.PureComponent {
             params.moenyLimitValue = '100';
             params.amountType = '';
             //核销限制参数处理
+            
             if(params.moneyLimitTypeAndValue && params.moneyLimitTypeAndValue.moneyLimitType){
+                
                 const moneyLimitTypeData = JSON.parse(params.moneyLimitTypeAndValue.moneyLimitType);
                 if(moneyLimitTypeData && moneyLimitTypeData.moneyLimitType){
                     params.moneyLimitType = moneyLimitTypeData.moneyLimitType;
+                    
                     if(params.moneyLimitTypeAndValue.moenyLimitValue){
-                        params.moenyLimitValue = params.moneyLimitTypeAndValue.moenyLimitValue;
+                        params.moenyLimitValue = params.moneyLimitType == '0' ? '100' : params.moneyLimitTypeAndValue.moenyLimitValue;
                     }
                 }
                 if(moneyLimitTypeData && moneyLimitTypeData.amountType){
@@ -989,7 +992,7 @@ class GiftAddModalStep extends React.PureComponent {
             delete params.operateTime;
             delete params.aggregationChannels;
             delete params.couponFoodScopeList; // 后台返回的已选菜品数据
-            console.log(params,'params========================*******')
+            
             this.checkShopWechatData(params,callServer,groupName,this.submitData);
            
         });
@@ -1007,7 +1010,7 @@ class GiftAddModalStep extends React.PureComponent {
     }
     // 判断选择的小程序或者公众号与微信支付商家券下账务主体是否绑定关系
     checkShopWechatData(params,callServer,groupName,cb) {
-        console.log(params,'=======================params')
+        
         const _that = this;
         const { endSaving } = this.props;
         const groupID = params.groupID;
@@ -1691,11 +1694,12 @@ class GiftAddModalStep extends React.PureComponent {
     }
     renderMoneyLimitTypeAndValue(decorator) {
         const { gift: { data, value } } = this.props;
-        console.log(this.props,'thisprops----00000000000000giftAddModalstep')
+        
         const { isActivityFoods } = this.state;
         const {
             moneyLimitType = '0',
             moenyLimitValue = '100',
+            amountType = ''
         } = data;
         return (
             decorator({
@@ -1709,7 +1713,7 @@ class GiftAddModalStep extends React.PureComponent {
                         }
                     }
                 ],
-                initialValue: { moneyLimitType, moenyLimitValue },
+                initialValue: { moneyLimitType:JSON.stringify({moneyLimitType,amountType}), moenyLimitValue },
             })(<MoneyLimitTypeAndValue type={value} isActivityFoods={isActivityFoods} giftInfo={data}></MoneyLimitTypeAndValue>)
         )
     }
@@ -1920,7 +1924,7 @@ class GiftAddModalStep extends React.PureComponent {
 
             if(values.hasOwnProperty('foodSelectType') && values.foodSelectType == '0') {
                 // if(values.hasOwnProperty('couponFoodScopeList') && values.couponFoodScopeList instanceof Array &&  values.couponFoodScopeList.length > 0) {
-                //     console.log('values.couponFoodScopeList in renderMallIncludeGoodsSelector', values);
+                //     
                 //     initialValue = values.couponFoodScopeList.map((item)=>{
                 //         return item.targetID;
                 //     });
