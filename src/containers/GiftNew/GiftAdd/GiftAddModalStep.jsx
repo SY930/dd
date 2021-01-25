@@ -989,7 +989,7 @@ class GiftAddModalStep extends React.PureComponent {
             delete params.operateTime;
             delete params.aggregationChannels;
             delete params.couponFoodScopeList; // 后台返回的已选菜品数据
-
+            console.log(params,'params========================*******')
             this.checkShopWechatData(params,callServer,groupName,this.submitData);
            
         });
@@ -1007,47 +1007,54 @@ class GiftAddModalStep extends React.PureComponent {
     }
     // 判断选择的小程序或者公众号与微信支付商家券下账务主体是否绑定关系
     checkShopWechatData(params,callServer,groupName,cb) {
+        console.log(params,'=======================params')
         const _that = this;
         const { endSaving } = this.props;
         const groupID = params.groupID;
-        const trdTemplateInfoData = JSON.parse(params.trdTemplateInfo); 
-        const appId = trdTemplateInfoData.appID;
-        let merchantInfo = {};
-        let settleId = '';
-        let mpType = trdTemplateInfoData.mpType;
-        if(trdTemplateInfoData.merchantInfo){
-            merchantInfo = trdTemplateInfoData.merchantInfo;
-            settleId = merchantInfo.settleId;
-        }
-        axiosData('/wxpay/appMatchPayChannel', {
-            'groupID':groupID,
-            'appID':appId,
-            'settleID':settleId
-        }, null, {
-            path: '',
-        }, 'HTTP_SERVICE_URL_ISV_API')
-            .then((res) => {
-                const {matchSettle} = res;
-                if( matchSettle ){
-                    cb(callServer,params,groupName,_that)
-                    return true
-                }else{
-                    if(mpType === "SERVICE_AUTH"){
-                        Modal.error({
-                            title: '选择的公众号与账务主体未绑定',
-                            content: '请联系商务绑定后再操作',
-                        });
+
+        if(params.trdTemplateInfo && JSON.stringify(params.trdTemplateInfo) != '{}'){//关联第三方券
+            const trdTemplateInfoData = JSON.parse(params.trdTemplateInfo); 
+            let appId = trdTemplateInfoData.appID ? trdTemplateInfoData.appID : '';
+        
+            let merchantInfo = {};
+            let settleId = '';
+            let mpType = trdTemplateInfoData.mpType;
+            if(trdTemplateInfoData.merchantInfo){
+                merchantInfo = trdTemplateInfoData.merchantInfo;
+                settleId = merchantInfo.settleId ? merchantInfo.settleId : '';
+            }
+            axiosData('/wxpay/appMatchPayChannel', {
+                'groupID':groupID,
+                'appID':appId,
+                'settleID':settleId
+            }, null, {
+                path: '',
+            }, 'HTTP_SERVICE_URL_ISV_API')
+                .then((res) => {
+                    const {matchSettle} = res;
+                    if( matchSettle ){
+                        cb(callServer,params,groupName,_that)
+                        return true
+                    }else{
+                        if(mpType === "SERVICE_AUTH"){
+                            Modal.error({
+                                title: '选择的公众号与账务主体未绑定',
+                                content: '请联系商务绑定后再操作',
+                            });
+                        }
+                        if(mpType === "MINI_PROGRAM_AUTH"){
+                            Modal.error({
+                                title: '选择的小程序与账务主体未绑定',
+                                content: '请前往 顾客管理端>微信及支付宝小程序>微信商家独立小程序>更多>绑定账务主体 进行绑定操作',
+                            });
+                        } 
+                        endSaving();
+                        return false
                     }
-                    if(mpType === "MINI_PROGRAM_AUTH"){
-                        Modal.error({
-                            title: '选择的小程序与账务主体未绑定',
-                            content: '请前往 顾客管理端>微信及支付宝小程序>微信商家独立小程序>更多>绑定账务主体 进行绑定操作',
-                        });
-                    } 
-                    endSaving();
-                    return false
-                }
-            })
+                })
+        }else{
+            cb(callServer,params,groupName,_that)
+        }
     }
     renderDiscountTypeAndValue(decorator) {
         const { discountType, discountRate } = this.props.gift.data;
@@ -1684,6 +1691,7 @@ class GiftAddModalStep extends React.PureComponent {
     }
     renderMoneyLimitTypeAndValue(decorator) {
         const { gift: { data, value } } = this.props;
+        console.log(this.props,'thisprops----00000000000000giftAddModalstep')
         const { isActivityFoods } = this.state;
         const {
             moneyLimitType = '0',
@@ -1702,7 +1710,7 @@ class GiftAddModalStep extends React.PureComponent {
                     }
                 ],
                 initialValue: { moneyLimitType, moenyLimitValue },
-            })(<MoneyLimitTypeAndValue type={value} isActivityFoods={isActivityFoods}></MoneyLimitTypeAndValue>)
+            })(<MoneyLimitTypeAndValue type={value} isActivityFoods={isActivityFoods} giftInfo={data}></MoneyLimitTypeAndValue>)
         )
     }
     renderFoodsboxs(decorator) {
@@ -2903,7 +2911,7 @@ class GiftAddModalStep extends React.PureComponent {
         } else if(giftVal == '21' || giftVal == '111'|| giftVal == '22' || giftVal == '110'){
             formItems.moneyLimitTypeAndValue.label = '账单金额限制';
         } else {
-            formItems.moneyLimitTypeAndValue.label = '金额限制12';
+            formItems.moneyLimitTypeAndValue.label = '金额限制';
         }
         if (giftVal == '10' && (type === 'add' || type === 'edit' || values.amountType == 1)) {
             const {
