@@ -152,7 +152,7 @@ class CustomerRange extends Component {
 
     render() {
         const { treeData, cardList } = this.state;
-        const { value, decorator, form, getForm } = this.props;
+        const { value, decorator, active, form, getForm } = this.props;
         const { getFieldDecorator } = form
 
         if (typeof getForm === 'function') {
@@ -180,7 +180,7 @@ class CustomerRange extends Component {
                                                     message: '请输入大于零的8位以内整数',
                                                 }],
                                                 initialValue: amountStart,
-                                            })(<Input onChange={(e)=>{this.amountStartChange(e, index)}} placeholder="请输入金额" addonAfter="元" />)
+                                            })(<Input disabled={!!active} onChange={(e)=>{this.amountStartChange(e, index)}} placeholder="请输入金额" addonAfter="元" />)
                                         }
                                     </FormItem>
                                     <FormItem 
@@ -195,7 +195,7 @@ class CustomerRange extends Component {
                                                     message: '请输入大于零的8位以内整数',
                                                 }],
                                                 initialValue: amountEnd,
-                                            })(<Input  onChange={(e)=>{this.amountEndChange(e, index)}} placeholder="请输入金额" addonAfter="元" />)
+                                            })(<Input  disabled={!!active} onChange={(e)=>{this.amountEndChange(e, index)}} placeholder="请输入金额" addonAfter="元" />)
                                         }
                                     </FormItem>
                                     <FormItem 
@@ -216,13 +216,14 @@ class CustomerRange extends Component {
                                                     showSearch={true}
                                                     treeNodeFilterProp="label"
                                                     allowClear={true}
+                                                    disabled={!!active}
                                                     onChange={(value, label, extra)=>{this.giftChange(value, label, extra, index)}}
                                                 />
                                             )
                                         }
                                     </FormItem>
                                     <FormItem label=" " >
-                                        <span className={styles.iconWrap}>
+                                        <span className={styles.iconWrap} style={!!active ? {pointerEvents: 'none'} : {}}>
                                             {
                                                 (index == value.length - 1 && value.length < 10) &&
                                                 <Icon onClick={this.addEventRule} type="plus-circle-o" />

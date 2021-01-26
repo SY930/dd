@@ -4,6 +4,7 @@ import PayHaveGift from '../PayHaveGift/index'; // 微信支付有礼
 import SwellGiftBag from '../SwellGiftBag/index'; // 膨胀大礼包
 import CouponsGiveCoupons from '../CouponsGiveCoupons'// 消费券返券
 import Housekeeper from '../Housekeeper'// 管家活动-流失唤醒
+import IntelligentGiftRule from '../IntelligentGiftRule'// 管家活动-智能发券
 
 export const actInfoList = [
     {
@@ -67,6 +68,15 @@ export const actInfoList = [
         dscList: [],
         render(props = {}) {
             return <Housekeeper {...props} />;
+        },
+    },
+    {
+        title: '智能发券',
+        key: 'intelligentGiftRule',
+        dscList: [],
+        warnInfo: '在每一个发券周期判断上次发券后用户是否消费，如有消费则降低券面额，如未消费则提升券面额，连续无响应停止向该用户发券',
+        render(props = {}) {
+            return <IntelligentGiftRule {...props} />;
         },
     },
 ];
