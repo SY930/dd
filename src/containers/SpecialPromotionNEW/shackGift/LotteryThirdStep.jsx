@@ -141,7 +141,7 @@ class LotteryThirdStep extends React.Component {
                     });
                 }
                 //与优惠券相关的，在与优惠券相关的数据都有值的时候才进行赋值，否则初始化为空
-                if(gift.giftTotalCount && gift.giftName && gift.giftID){
+                if(gift.giftTotalCount && gift.giftName && gift.giftID != '0'){
                     //有效期限 如果为小时是 1 如果为天是 3 如果是固定有效期是 2
                     infos[index].giveCoupon.value.effectType = `${gift.effectType}`;
                     //在相对有效期被选中的情况下，的维持有效时间 。在固定有效期的时候这个值为0
