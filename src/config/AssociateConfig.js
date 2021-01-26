@@ -60,6 +60,10 @@ const AssociateConfigFactory = ()=>{
                     title: '礼品定额卡的创建和使用',
                     url: 'http://service.hualala.com/categoryList/detail?categoryKey=cfc08aa9626f461e8dc8d86757425195&docKey=d039731778cc423a8cab066adbc825b5'
                 },
+                {
+                    title: '券包的创建和使用',
+                    url: 'http://service.hualala.com/categoryList/detail?categoryKey=cfc08aa9626f461e8dc8d86757425195&docKey=e43652a6ac394841b0580c6612e7ef5f'
+                },
             ],
         },
     };

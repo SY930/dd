@@ -31,19 +31,19 @@ class MainTable extends Component {
         const { groupID, onQuery } = this.props;
         const params = { couponPackageID, groupID };
         Modal.confirm({
-            title: '您确定要删除吗？',
+            title: '您确定要停用吗？',
             content: (
                 <div>
-                    {`您将删除券包
+                    {`您将停用券包
                         【${name}】`}
                     <br />
-                    <span>删除是不可恢复操作，被删除的券包可以在已删除的券包中查看~</span>
+                    <span>停用是不可恢复操作，被停用的券包可以在已停用的券包中查看~</span>
                 </div>
             ),
             onOk: () => {
                 deleteTicketBag(params).then((flag) => {
                     if (flag) {
-                        message.success('删除成功');
+                        message.success('停用成功');
                         onQuery();
                     }
                 });
@@ -129,16 +129,17 @@ class MainTable extends Component {
     }
     /* 生成表格头数据 */
     generateColumns() {
-        const { pageObj, status } = this.props;
+        const { pageObj, status, pageType } = this.props;
         const isNor = status !== '2';
+        const isVis = pageType == '2';
         const { tc, tr, stockBtn } = styles;
         const render = (v, o) => {
             const { couponPackageID: id, couponPackageName: name } = o;
             return (
                 <p id={id}>
-                    {isNor && <a href={href} onClick={this.onEdit}>编辑</a>}
+                    {isNor && isVis && <a href={href} onClick={this.onEdit}>编辑</a>}
                     <a href={href} name="check" onClick={this.onEdit}>查看</a>
-                    {isNor && <a href={href} onClick={() => { this.onDelete(id, name) }}>删除</a>}
+                    {isNor && isVis && <a href={href} onClick={() => { this.onDelete(id, name) }}>停用</a>}
                     <a href={href} onClick={this.onPreview}>详情</a>
                 </p>);
         };
@@ -206,6 +207,7 @@ class MainTable extends Component {
                 {visible &&
                 <DetailModal
                     ids={{ groupID, couponPackageID }}
+                    treeData={this.props.treeData}
                     detail={detail}
                     onClose={this.onToggleModal}
                 />

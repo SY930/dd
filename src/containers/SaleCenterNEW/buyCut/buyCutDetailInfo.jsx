@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Radio } from 'antd';
+import { Form, Radio, Select } from 'antd';
 import { connect } from 'react-redux'
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
@@ -17,6 +17,7 @@ const Immutable = require('immutable');
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
+const Option = Select.Option;
 
 @injectIntl()
 class BuyCutDetailInfo extends React.Component {
@@ -31,7 +32,8 @@ class BuyCutDetailInfo extends React.Component {
             stageAmountFlag: true,
             freeAmountFlag: true,
             discountRateFlag: true,
-            cutWay: '0',
+            cutWay: '1',
+            ruleType: '1',
         };
 
         this.renderBuyDishNumInput = this.renderBuyDishNumInput.bind(this);
@@ -63,11 +65,15 @@ class BuyCutDetailInfo extends React.Component {
         _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
         _rule = Object.assign({}, _rule);
 
+        // 
+        let [cutWay, ruleType = '1'] = [...String(_rule.disType)]
+
         this.setState({
             stageAmount: _rule.stageAmount,
             freeAmount: _rule.freeAmount || '',
             discountRate: _rule.discountRate ? Number((_rule.discountRate * 1).toFixed(3)).toString() : '',
-            cutWay: _rule.freeAmount ? '0' : '1',
+            cutWay,
+            ruleType,
         });
     }
 
@@ -79,7 +85,7 @@ class BuyCutDetailInfo extends React.Component {
     }
 
     handleSubmit = () => {
-        let { cutWay, stageAmount, freeAmount, discountRate, targetScope, stageAmountFlag, freeAmountFlag, discountRateFlag } = this.state;
+        let { ruleType, cutWay, stageAmount, freeAmount, discountRate, targetScope, stageAmountFlag, freeAmountFlag, discountRateFlag } = this.state;
         if (stageAmount == null || stageAmount == '') {
             stageAmountFlag = false;
         }
@@ -91,34 +97,72 @@ class BuyCutDetailInfo extends React.Component {
         }
         this.setState({ freeAmountFlag, discountRateFlag, stageAmountFlag });
 
-        if (cutWay == '0') {
-            if (stageAmountFlag && freeAmountFlag) {
-                this.props.setPromotionDetail({
-                    rule: {
-                        disType: 1,
-                        stageType: 0,
-                        targetScope,
-                        stageAmount,
-                        freeAmount: parseFloat(freeAmount),
-                    },
-                });
-                return true;
+        // distype  
+        if(ruleType == 1){
+            if(cutWay == 1 || cutWay == 3){
+                if (stageAmountFlag && freeAmountFlag) {
+                    this.props.setPromotionDetail({
+                        rule: {
+                            disType: cutWay == 1 ? 1 : 31,
+                            stageType: 0,
+                            targetScope,
+                            stageAmount,
+                            freeAmount: parseFloat(freeAmount),
+                        },
+                    });
+                    return true;
+                }
+                return false
+            }else{
+                if (stageAmountFlag && discountRateFlag) {
+                    this.props.setPromotionDetail({
+                        rule: {
+                            disType: 2,
+                            stageType: 0,
+                            targetScope,
+                            stageAmount,
+                            discountRate: parseFloat(discountRate),
+                        },
+                    });
+                    return true;
+                }
+                return false
             }
             return false;
         }
-        if (stageAmountFlag && discountRateFlag) {
-            this.props.setPromotionDetail({
-                rule: {
-                    disType: 2,
-                    stageType: 0,
-                    targetScope,
-                    stageAmount,
-                    discountRate: parseFloat(discountRate),
-                },
-            });
-            return true;
+        if(ruleType == 2){
+            if(cutWay == 1 || cutWay == 3){
+                if (stageAmountFlag && freeAmountFlag) {
+                    this.props.setPromotionDetail({
+                        rule: {
+                            disType: cutWay == 1 ? 12 : 32,
+                            stageType: 0,
+                            targetScope,
+                            stageAmount,
+                            freeAmount: parseFloat(freeAmount),
+                        },
+                    });
+                    return true;
+                }
+                return false
+            }else{
+                if (stageAmountFlag && discountRateFlag) {
+                    this.props.setPromotionDetail({
+                        rule: {
+                            disType: 22,
+                            stageType: 0,
+                            targetScope,
+                            stageAmount,
+                            discountRate: parseFloat(discountRate),
+                        },
+                    });
+                    return true;
+                }
+                return false
+            }
+            return false;
         }
-        return false;
+        return false
     };
     // 优惠方式change
     onCutWayChange(e) {
@@ -169,10 +213,18 @@ class BuyCutDetailInfo extends React.Component {
         this.setState({ discountRate, discountRateFlag });
     }
 
+    ruleTypeChange = (val) => {
+        this.setState({ruleType: val})
+    }
+
     renderBuyDishNumInput = () => {
         const { intl } = this.props;
         const k5ez4qy4 = intl.formatMessage(SALE_STRING.k5ez4qy4);
         const k5ez4pvb = intl.formatMessage(SALE_STRING.k5ez4pvb);
+        const RULE_TYPE = [
+            { label: '指定菜品消费满', value: '1' },
+            { label: '同一菜品消费满', value: '2' },
+        ];
         return (
             <FormItem
                 className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
@@ -180,16 +232,27 @@ class BuyCutDetailInfo extends React.Component {
                 required={true}
                 validateStatus={this.state.stageAmountFlag ? 'success' : 'error'}
             >
-
                 <PriceInput
-                    addonBefore={k5ez4pvb}
+                    addonBefore={
+                        <Select size="default"
+                            onChange={this.ruleTypeChange}
+                            value={this.state.ruleType}
+                            getPopupContainer={(node) => node.parentNode}
+                        >
+                            {
+                                RULE_TYPE.map((item) => {
+                                    return (<Option key={item.value} value={item.value}>{item.label}</Option>)
+                                })
+                            }
+                        </Select>
+                    }
                     addonAfter={k5ez4qy4}
                     value={{ number: this.state.stageAmount }}
                     defaultValue={{ number: this.state.stageAmount }}
                     onChange={this.onStageAmountChange}
                     modal="int"
                 />
-                <span className={[styles.gTip, styles.gTipInLine].join(' ')}>{SALE_LABEL.k5hly0k2}</span>
+                {/* <span className={[styles.gTip, styles.gTipInLine].join(' ')}>{SALE_LABEL.k5hly0k2}</span> */}
             </FormItem>
         )
     }
@@ -200,7 +263,7 @@ class BuyCutDetailInfo extends React.Component {
         const k5ezcuto = intl.formatMessage(SALE_STRING.k5ezcuto);
         const k5ezdc19 = intl.formatMessage(SALE_STRING.k5ezdc19);
         const k5ezdckg = intl.formatMessage(SALE_STRING.k5ezdckg);
-        if (this.state.cutWay === '0') {
+        if (this.state.cutWay === '1') {
             return (<FormItem
                 className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
                 wrapperCol={{ span: 17, offset: 4 }}
@@ -210,6 +273,24 @@ class BuyCutDetailInfo extends React.Component {
 
                 <PriceInput
                     addonBefore={k5ezcuto}
+                    addonAfter={k5ezdbiy}
+                    value={{ number: this.state.freeAmount }}
+                    defaultValue={{ number: this.state.freeAmount }}
+                    onChange={this.onFreeAmountChange}
+                    modal="float"
+                />
+            </FormItem>
+            )
+        }
+        if (this.state.cutWay === '3') {
+            return (<FormItem
+                className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
+                wrapperCol={{ span: 17, offset: 4 }}
+                required={true}
+                validateStatus={this.state.freeAmountFlag ? 'success' : 'error'}
+            >
+                <PriceInput
+                    addonBefore={'每份减免'}
                     addonAfter={k5ezdbiy}
                     value={{ number: this.state.freeAmount }}
                     defaultValue={{ number: this.state.freeAmount }}
@@ -250,8 +331,9 @@ class BuyCutDetailInfo extends React.Component {
                 wrapperCol={{ span: 17 }}
             >
                 <RadioGroup value={this.state.cutWay} onChange={this.onCutWayChange}>
-                <Radio value={'0'} key="0">{SALE_LABEL.k5kec13k}</Radio>
-                <Radio value={'1'} key="1">{SALE_LABEL.k5kec1bw}</Radio>
+                    <Radio value={'1'} key="1">{SALE_LABEL.k5kec13k}</Radio>
+                    <Radio value={'2'} key="2">{SALE_LABEL.k5kec1bw}</Radio>
+                    <Radio value={'3'} key="3">{'每份减免'}</Radio>
                 </RadioGroup>
             </FormItem>
         )

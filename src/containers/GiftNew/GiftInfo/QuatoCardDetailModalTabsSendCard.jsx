@@ -70,7 +70,8 @@ class CardOperate extends React.Component {
         this.proGiftLevel = this.proGiftLevel.bind(this);
     }
     componentDidMount() {
-        const { levelList, FetchGiftLevel } = this.props;
+        const { levelList, FetchGiftLevel, visible, type, selectedRow } = this.props;
+        this.initForm(visible, type, selectedRow)
         const _levelList = levelList.toJS();
         FetchGiftLevel({}).then((data = []) => {
             this.proGiftLevel(data);
@@ -78,9 +79,12 @@ class CardOperate extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const { visible, type } = nextProps;
-        this.form && this.form.resetFields();
+        const { visible, type, selectedRow } = nextProps;
+        this.initForm(visible, type, selectedRow)
+    }
+    initForm = (visible, type, selectedRow) => {
         console.log('type',type)
+        this.form && this.form.resetFields();
         if (visible) {
             let formKeys = [],
                 operateRemarkLabel = '';
@@ -111,18 +115,21 @@ class CardOperate extends React.Component {
             this.setState({
                 formKeys,
                 operateRemarkLabel,
-                selectedRow: nextProps.selectedRow,
+                selectedRow,
             });
         }
     }
     proGiftLevel = (data = []) => {
         const cardList = [];
-        data.forEach((cardItem, index) => {
-            cardList.push({
-                value: cardItem.cardTypeID,
-                label: cardItem.cardTypeName,
+        if(data.length > 0){
+            data.forEach((cardItem = {}, index) => {
+                let {cardTypeID = '', cardTypeName = ''} = cardItem
+                cardList.push({
+                    value: cardTypeID,
+                    label: cardTypeName,
+                });
             });
-        });
+        }
         this.setState({
             cardList,
             cardTypeList: data,

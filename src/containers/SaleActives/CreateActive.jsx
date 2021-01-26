@@ -62,24 +62,28 @@ class CreateActive extends Component {
         })
     }
     render() {
-         const {
+        const {
             type,
             descModalIsShow
-         } = this.props.createActiveCom
-         const  { itemID, isView, isEdit } = decodeUrl()
-         const currentInfo = actInfoList.find(v => v.key ===  this.typeKey) || {}
+        } = this.props.createActiveCom
+        const  { itemID, isView, isEdit } = decodeUrl()
+        const currentInfo = actInfoList.find(v => v.key ===  this.typeKey) || {}
+        let {dscList = []} = currentInfo
         return (
             <div className={styles.createActive}>
-               <div className={styles.header}>
+                <div className={styles.header}>
                     <h1>{itemID ? isEdit === 'true' ? '编辑' : '查看': '创建'}{`${currentInfo.title}`}</h1>
-                    <div onClick={this.showDescModal} style={isProfessionalTheme() ? {color: '#379ff1'} : {}} className={styles.desc}>
-                        <Icon type="question-circle-o" />
-                        <span style={{marginLeft: '2px'}}>活动说明</span>
-                    </div>
-               </div>
-               <div className={styles.line}></div>
-               {currentInfo.render && currentInfo.render({})}
-               <Modal
+                    {
+                        dscList.length > 0 &&
+                            <div onClick={this.showDescModal} style={isProfessionalTheme() ? {color: '#379ff1'} : {}} className={styles.desc}>
+                                <Icon type="question-circle-o" />
+                                <span style={{marginLeft: '2px'}}>活动说明</span>
+                            </div>
+                    }
+                </div>
+                <div className={styles.line}></div>
+                {currentInfo.render && currentInfo.render({})}
+                <Modal
                     title="活动说明"
                     visible={descModalIsShow}
                     width="635px"

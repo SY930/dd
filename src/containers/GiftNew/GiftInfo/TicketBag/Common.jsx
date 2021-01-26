@@ -339,7 +339,7 @@ const monthList = (() => {
     return month;
 })();
 
-const qFormKeys = ['name', 'couponPackageType', 'couponPackageStatus', 'q'];
+const qFormKeys = ['name', 'couponPackageType', 'q'];
 
 const qFormItems = {
     name: {
@@ -376,7 +376,7 @@ const qFormItems = {
     },
 }
 
-const dFormKeys = ['getWay', 'couponPackageStatus', 'customerMobile', 'sendTime', 'q'];
+const dFormKeys = ['getWay', 'couponPackageStatus', 'customerMobile', 'sendTime', 'sendShopID', 'q'];
 const dFormKeys2 = ['getWay', 'customerMobile', 'useTime', 'q'];
 const dFormKeys3 = ['customerCouponPackageID', 'couponPackageStatus', 'linkOrderNo', 'customerMobile', 'sendTime', 'q'];
 const dFormItems = {

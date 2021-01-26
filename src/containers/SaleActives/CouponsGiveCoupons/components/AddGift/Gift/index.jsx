@@ -57,7 +57,8 @@ export default class Gift extends Component {
             ...formItems,
             giftID: { ...giftID, render },
             giftEffectTimeHours: {
-                ...giftEffectTimeHours, options,
+                ...giftEffectTimeHours,
+                options,
                 defaultValue: countType == 0 ? '0' : '1',
             },
         }

@@ -222,14 +222,14 @@ async function getBagBatch(data) {
  * 生成二维码
  */
 async function getQrCodeImg(data) {
-    const method = `/qrCodeManager/createWechatAttentinTempQrcode`;
-    const params = { service: 'HTTP_SERVICE_URL_WECHAT', type, data, method };
+    const method = `/qrCodeManager/getQrcode`;
+    const params = { service: 'HTTP_SERVICE_URL_ISV_API', type, data, method };
     const response = await axios.post(url + method, params);
-    const { code, message: msg, url: path } = response;
-    if (code === '000') {
+    const { result, message: msg, qrCodePath: path } = response;
+    if (result && result.code === '000') {
         return path;
     }
-    message.error(msg);
+    message.error(msg)
     return '';
 }
 

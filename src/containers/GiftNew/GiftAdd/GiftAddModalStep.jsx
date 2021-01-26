@@ -373,6 +373,7 @@ class GiftAddModalStep extends React.PureComponent {
         const { firstKeys, secondKeys, values } = this.state;
         const newKeys = [...secondKeys[describe][0].keys];
         const index = _.findIndex(newKeys, item => item == key);
+        // console.log('now Change the', key, value)
         if (key === 'shareIDs') {
             this.props.changeGiftFormKeyValue({key, value});
         } else if (JSON.stringify(values[key]) !== JSON.stringify(value)) {
@@ -964,8 +965,10 @@ class GiftAddModalStep extends React.PureComponent {
             params.vivoChannel = Number((params.aggregationChannels|| []).includes('vivoChannel'));
             params.moneyLimitType = (params.moneyLimitTypeAndValue || {}).moneyLimitType;
             params.moenyLimitValue = (params.moneyLimitTypeAndValue || {}).moenyLimitValue;
-
-
+            params.openPushMessageMpID = 1;
+            params.openPushSms = params.pushMessage && params.pushMessage.sendType.indexOf('msg') !== -1 ? 1 : 0
+            params.reminderTime = params.pushMessage && params.pushMessage.reminderTime
+            params.pushMessageMpID = params.pushMessage && params.pushMessage.pushMessageMpID
             // 商城券参数调整
             this.adjustParamsOfMallGift(params);
             Array.isArray(params.supportOrderTypeLst) && (params.supportOrderTypeLst = params.supportOrderTypeLst.join(','))
@@ -2234,11 +2237,41 @@ class GiftAddModalStep extends React.PureComponent {
                 render: (decorator, form) => this.renderApplyScene(decorator, form)
             },
 
-            pushMessageMpID: {
-                label: '消息推送公众号',
-                rules: [{ required: true, message: '请绑定消息推送微信公众号' }],
+            pushMessage: {
+                label: <span>
+                <span>消息推送</span>
+                <Tooltip title={
+                    <div>
+                        <p>
+                            微信推送：在所选公众号推送券到账/券到期/券核销提醒
+                        </p>
+                        <p>
+                            短信推送：仅在券到期前N天推送到期提醒
+                        </p>
+                    </div>
+                    
+                }>
+                    <Icon style={{ marginLeft: 5, marginRight: 5}} type="question-circle" />
+                </Tooltip></span>,
+                rules: [{
+                    validator: (rule, v, cb) => {
+                        if (v.sendType.indexOf('wechat') === -1) {
+                            cb(rule.message);
+                        }
+                        cb();
+                    },
+                    message: '微信推送为必选项',
+                },{
+                    validator: (rule, v, cb) => {
+                        if (!v.pushMessageMpID) {
+                            cb(rule.message);
+                        }
+                        cb();
+                    },
+                    message: '请选择微信推送的公众号',
+                },],
                 type: 'custom',
-                render: decorator => decorator({})(<PushMessageMpID/>),
+                render: decorator => decorator({})(<PushMessageMpID formData = {formData}/>),
             },
             giftImagePath: {
                 label: '礼品图样',
@@ -2841,7 +2874,18 @@ class GiftAddModalStep extends React.PureComponent {
         formData.shareIDs = this.state.sharedGifts;
         formData.giftShareType = String(formData.giftShareType);
         formData.couponPeriodSettings = formData.couponPeriodSettingList;
-
+        // console.log('formData.pushMessageMpID', formData.pushMessageMpID)
+        if(!formData.pushMessage) {
+            const sendType = ['wechat']
+            if (formData.openPushSms) {
+                sendType.push('msg')
+            }
+            formData.pushMessage = {
+                pushMessageMpID: formData.pushMessageMpID,
+                sendType,
+                reminderTime: formData.reminderTime || 3,
+            }
+        }
         return (
             <div>
                 <div

@@ -166,15 +166,16 @@ export const getGiftLevelSuccessAC = (opt) => {
 export const FetchGiftLevel = (opts) => {
     return (dispatch) => {
         return fetchData('getSetUsedLevels_dkl', { ...opts }, null, {
-            path: 'data.groupCardTypeList',
+            path: 'data',
         })
-            .then((records) => {
+            .then((data) => {
+                let {groupCardTypeList = []} = data
                 dispatch(getGiftLevelSuccessAC({
                     payload: {
-                        dataSource: records || [],
+                        dataSource: groupCardTypeList || [],
                     },
                 }));
-                return Promise.resolve(records);
+                return Promise.resolve(groupCardTypeList);
             }).catch(err => {
                 // empty catch
             });
@@ -292,7 +293,9 @@ export const FetchSendorUsedList = (opts) => {
             pageNo: 0,
             giftItemID: opts.params.giftItemID,
         };
-        if (!opts.isSend) {
+        if (opts.isSend) {
+            sendOrUsageCountParam.excludeTransferred = true;
+        } else {    
             sendOrUsageCountParam.giftStatus = 2;
         }
         axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', sendOrUsageCountParam, {needThrow: true}, {path: 'data.totalSize'}, 'HTTP_SERVICE_URL_PROMOTION_NEW')

@@ -79,14 +79,15 @@ class MainTable extends Component {
         }
         return [
             { width: 50, title: '序号', dataIndex: 'idx', className: tc, render: render2 },
-            { width: 160, title: '券包编码', dataIndex: 'customerCouponPackID' },
-            { width: 100, title: '发出方式', dataIndex: 'way' },
-            { width: 80, title: '状态', dataIndex: 'stat' },
-            { width: 160, title: '发出时间', dataIndex: 'createStamp' },
-            { width: 160, title: '客户编号', dataIndex: 'customerID' },
-            { width: 100, title: '姓名', dataIndex: 'customerName' },
+            { width: 200, title: '券包编码', dataIndex: 'customerCouponPackID', className: 'TableTxtCenter', },
+            { width: 100, title: '发出方式', dataIndex: 'way', className: 'TableTxtCenter', },
+            { width: 80, title: '状态', dataIndex: 'stat', className: 'TableTxtCenter', },
+            { width: 200, title: '发出时间', dataIndex: 'createStamp', className: 'TableTxtCenter', },
+            { width: 200, title: '发出店铺', dataIndex: 'sendShopName', className: 'TableTxtCenter', },
+            { width: 200, title: '客户编号', dataIndex: 'customerID', className: 'TableTxtCenter', },
+            { width: 100, title: '姓名', dataIndex: 'customerName', className: 'TableTxtCenter', },
             { width: 60, title: '性别', dataIndex: 'sex', className: tc },
-            { width: 100, title: '手机号', dataIndex: 'customerMobile' },
+            { width: 200, title: '手机号', dataIndex: 'customerMobile', className: 'TableTxtCenter', },
             {width: 80,title: '操作',dataIndex: 'operator', className:  tc,
             render:(text,record) => {
                 if([1,2,3].includes(record.status)) {
@@ -117,7 +118,7 @@ class MainTable extends Component {
     render() {
         const { onChange, selectedRowKeys } = this.props;
         const { loading, page, type } = this.props;
-        const scroll = { x: (type === 3) ? 1300 : 1000 };
+        const scroll = { x: (type === 3) ? 1300 : 1300 };
         const columns = this.generateColumns();
         const dataSource = this.generateDataSource();
         const pagination = {
@@ -136,7 +137,7 @@ class MainTable extends Component {
                         loading={loading}
                         columns={columns}
                         dataSource={dataSource}
-                        style={{ maxWidth: 700 }}
+                        style={{ maxWidth: 2000 }}
                         scroll={scroll}
                         pagination={pagination}
                         {...tableProps}

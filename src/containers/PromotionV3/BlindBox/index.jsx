@@ -125,8 +125,8 @@ class BlindBox extends Component {
                 const { effectType, effectTime, validUntilDate, giftEffectTimeHours: hours, giftID, ...others } = x;
                 let rangeDate = [];
                 if(effectTime) {
-                    const st = moment(effectTime, DF);
-                    const et = moment(validUntilDate, DF);
+                    const st = effectTime != '0' ? moment(effectTime, DF) : moment(new Date());
+                    const et = validUntilDate != '0' ? moment(validUntilDate, DF) : moment(new Date());
                     rangeDate = [ st, et ];
                 }
                 let countType = '0';
@@ -157,8 +157,8 @@ class BlindBox extends Component {
                 const { effectType, effectTime, validUntilDate, giftEffectTimeHours: hours, giftID, ...others } = x;
                 let rangeDate = [];
                 if(effectTime) {
-                    const st = moment(effectTime, DF);
-                    const et = moment(validUntilDate, DF);
+                    const st = effectTime != '0' ? moment(effectTime, DF) : moment(new Date());
+                    const et = validUntilDate != '0' ? moment(validUntilDate, DF) : moment(new Date());
                     rangeDate = [ st, et ];
                 }
                 let countType = '0';
@@ -264,11 +264,12 @@ class BlindBox extends Component {
     onSubmit = (formData3) => {
         const { formData1 } = this.state;
         const { id } = this.props;
-        const { eventRange, ...others1 } = formData1;
+        const { eventRange, ...others1, } = formData1;
         const newEventRange = this.formatEventRange(eventRange);
         const step2Data = this.setStep2Data();
-        const { gifts, ...others3 } = formData3;
-        let event = { ...others1, ...others3, ...newEventRange, ...step2Data, eventWay: '79' };
+        const { gifts,  eventImagePath, ...others3,} = formData3;
+        const newEventImagePath = eventImagePath ? eventImagePath.url : ''
+        let event = { ...others1, ...others3, ...newEventRange, ...step2Data, eventWay: '79', eventImagePath: newEventImagePath };
         if(id) {
             const itemID = id;
             const allData = { event: {...event, itemID}, gifts };
@@ -348,11 +349,16 @@ class BlindBox extends Component {
                     giftList.forEach(x => {
                         const { rangeDate, countType, effectType: etype, giftTotalCount, ...others } = x;
                         const rangeObj = this.formatRangeDate(rangeDate);
+                        let {effectTime, validUntilDate} = rangeObj
                         let effectType = etype;
                         if(etype === '1' && countType === '1') {
                             effectType = '3';
                         }
-                        const obj = { ...others, ...rawObj, ...rangeObj,  effectType };
+                        if(etype != '2'){
+                            effectTime = '0'; 
+                            validUntilDate = '0';
+                        }
+                        const obj = { ...others, ...rawObj, ...rangeObj, effectType, effectTime, validUntilDate, countType };
                         gifts.push(obj);
                     });
                 }
@@ -374,11 +380,16 @@ class BlindBox extends Component {
                     giftList.forEach(x => {
                         const { rangeDate, countType, effectType: etype, giftTotalCount, ...others } = x;
                         const rangeObj = this.formatRangeDate(rangeDate);
+                        let {effectTime, validUntilDate} = rangeObj
                         let effectType = etype;
                         if(etype === '1' && countType === '1') {
                             effectType = '3';
                         }
-                        const obj = { ...rawObj, ...rangeObj, ...others, effectType };
+                        if(etype != '2'){
+                            effectTime = '0'; 
+                            validUntilDate = '0';
+                        }
+                        const obj = { ...rawObj, ...rangeObj, ...others, effectType, effectTime, validUntilDate };
                         gifts.push(obj);
                     });
                 }
@@ -394,8 +405,8 @@ class BlindBox extends Component {
             return {}
         }
         const [start, end] = rangeDate;
-        const effectTime = start.format(DF);
-        const validUntilDate = end.format(DF);
+        const effectTime = start.format(DF) || '0';
+        const validUntilDate = end.format(DF) || '0';
         return { effectTime, validUntilDate };
     }
 

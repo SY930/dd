@@ -141,7 +141,7 @@ class StepThree extends React.Component{
                             placeholder="请选择引导关注公众号"
                         >
                             {
-                                this.state.wechatList.map(({mpID, mpName}) => (
+                                this.state.wechatList && this.state.wechatList.map(({mpID = '', mpName = ''}) => (
                                     <Select.Option key={mpID} value={mpID}>{mpName}</Select.Option>
                                 ))
                                 
@@ -170,7 +170,7 @@ class StepThree extends React.Component{
                             placeholder="请选择活动"
                         >
                             {
-                                this.state.activityList.map(({eventID, eventName}) => (
+                                this.state.activityList && this.state.activityList.map(({eventID = '', eventName = ''}) => (
                                     <Select.Option key={eventID} value={eventID}>{eventName}</Select.Option>
                                 ))
                             }
@@ -361,7 +361,7 @@ class StepThree extends React.Component{
             'HTTP_SERVICE_URL_PROMOTION_NEW'
         ).then(res => {
                 this.setState({
-                    activityList: res,
+                    activityList: res || [],
                 });
             })
         //带微信图片的接口
@@ -373,7 +373,7 @@ class StepThree extends React.Component{
             'HTTP_SERVICE_URL_WECHAT'
         ).then(res => {
             this.setState({
-                wechatList: res,
+                wechatList: res || [],
             })
         }).catch(e => {
         })

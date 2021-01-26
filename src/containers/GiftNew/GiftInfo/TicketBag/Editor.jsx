@@ -126,7 +126,7 @@ export default class Editor extends Component {
     }
     onCancel = () => {
         this.props.togglePage();
-        this.props.toggleTabs('2');
+        this.props.toggleTabs();
     }
     onSave = () => {
         this.form.validateFields((e, v) => {
