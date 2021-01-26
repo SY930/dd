@@ -248,10 +248,13 @@ class ReturnPointDetailInfo extends React.Component {
                             />
                         </FormItem>
                     </Col>
-                    <Col>
-                        {this.renderOperationIcon(index)}
-                    </Col>
-
+                    {this.state.ruleType != 1 ? 
+                        <Col>
+                            {this.renderOperationIcon(index)}
+                        </Col> 
+                        : 
+                        ''
+                    }
                 </Row>
 
             )
