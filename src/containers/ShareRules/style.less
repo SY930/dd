@@ -1,3 +1,4 @@
+@green: #1AB495;
 .header {
     display: flex;
     justify-content: space-between;
@@ -156,4 +157,55 @@
 
 .flexSpacer {
     flex: 1;
+}
+
+.toBeChoosedBlock {
+    width: 628px;
+    height: 96px;
+    background: #FFFFFF;
+    border-radius: 4px;
+    border: 1px solid #D9D9D9;
+    overflow-y: auto;
+}
+
+.chooseItemSpan {
+    height: 22px;
+    background: #F5F5F5;
+    border-radius: 4px;
+    display: inline-block;
+    margin:4px;
+    padding: 1px 8px;
+}
+
+.shareTitle {
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.closeIcon {
+    cursor: pointer;
+    margin-left: 3px;
+}
+.activityBlock {
+    display: inline-block;
+    margin-top: 16px;
+    :global{
+        .ant-radio-button-wrapper-checked:first-child {
+            border-color: @green;
+        }
+        .ant-radio-button-wrapper-checked{
+            border-color: @green;
+            color: @green;
+            box-shadow: -1px 0 0 0 @green;
+        }
+        .ant-radio-button-wrapper:hover, .ant-radio-button-wrapper-focused {
+            color: @green;
+        }
+    }
+}
+.addActSpan {
+    color: @green;
+    margin-top: 12px;
+    display: inline-block;
+    cursor: pointer; 
 }

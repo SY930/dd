@@ -10,7 +10,8 @@ import {
     Tooltip,
     Popconfirm,
     message,
-    Modal
+    Modal,
+    Checkbox,
 } from 'antd';
 import registerPage from '../../../index';
 import {SHARE_RULES_GROUP, SHARE_RULES_SHOP} from "../../constants/entryCodes";
@@ -28,6 +29,7 @@ import {
 } from "../../redux/actions/shareRules/index";
 import {BASIC_PROMOTION_MAP, GIFT_MAP} from "../../constants/promotionType";
 import PromotionSelectModal from "./PromotionSelectModal";
+import BatchGroupEditModal from './BatchGroupEditModal';
 import {FetchGiftList} from "../GiftNew/_action";
 import {fetchAllPromotionListAC} from "../../redux/actions/saleCenterNEW/promotionDetailInfo.action";
 import emptyPage from '../../assets/empty_page.png'
@@ -35,6 +37,7 @@ import {fetchPromotionScopeInfo} from "../../redux/actions/saleCenterNEW/promoti
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from './IntlDecor';
+
 
 const { Option, OptGroup } = Select;
 const AVAILABLE_PROMOTIONS = Object.keys(BASIC_PROMOTION_MAP);
@@ -53,7 +56,9 @@ export default class ShareRules extends Component {
         searchNameInput: '',
         selected: [],
         selectedGroupID: undefined,
-        shareGroupArr: [],
+        batchModalVisible: false,
+        unionBatchActivity: [], //维护的所选批量共享组的活动合集
+        batchList: [], //批量共享组多选数组
     }
 
     componentDidMount() {
@@ -120,13 +125,74 @@ export default class ShareRules extends Component {
     }
 
     handleBatchEdit = () => {
-        const { shareGroupArr } = this.state
-        if (!shareGroupArr.length) {
+        const { batchList } = this.state
+        if (!batchList.length) {
             message.warning('您没有选择任何共享组')
             return
         }
         //开始处理数据关系以及开启批量共享组编辑的弹窗
         // debugger
+        this.AddUpUnionBatchActivity()
+        this.setState({
+            batchModalVisible: true
+        })
+
+    }
+
+    handleCancelBatch = () => {
+        this.setState({
+            batchModalVisible: false
+        })
+    }
+
+    checkedIfBatch = (shareGroup) => {
+        const { batchList } = this.state
+        if(batchList.indexOf(shareGroup.itemID) !== -1) {
+            return true
+        }
+        return false
+    }
+
+    changeBatchArr = (shareGroup, e) => {
+        let target = shareGroup.itemID
+        let { batchList } = this.state
+        if (e.target.checked) {
+            batchList.push(target)
+        } else {
+            batchList.splice(batchList.indexOf(target), 1)
+        }
+        this.setState({
+            batchList,
+        })
+    }
+
+    handleDeleteShareItem = (id) => {
+        let { batchList } = this.state
+        batchList.splice(batchList.indexOf(id), 1)
+        this.setState({
+            batchList,
+        })
+    }
+    
+    AddUpUnionBatchActivity = () => {
+        //只在需要时做整合运算。不做多余的算法
+        const {
+            shareGroups,
+            searchPromotionType,
+            searchPromotionName,
+        } = this.props;
+        const { batchList } = this.state
+        const vanillaShareGroups = shareGroups.toJS();
+        const filteredShareGroups = searchPromotionType || searchPromotionName ? this.getFilteredGroup(vanillaShareGroups) : vanillaShareGroups
+        let arr = []
+        filteredShareGroups.forEach((item) => {
+            if(batchList.indexOf(item.itemID) !== -1) {
+                arr = arr.concat(item.shareGroupDetailList)
+            }
+        })
+        this.setState({
+            unionBatchActivity: arr
+        })
     }
 
     renderHeader(isEmpty) {
@@ -315,6 +381,17 @@ export default class ShareRules extends Component {
         }
         return  <p>{SALE_LABEL.k639vfmm + SALE_LABEL.k639vfuy + shopID + COMMON_LABEL.create}</p>;
     }
+
+    organizeData = (arr) => {
+        let result = arr.map((item, index) => {
+            let temp = item
+            temp.shareGroupName = temp.shareGroupName || '营销活动共享组' + `${index + 1}`
+            return temp
+        })
+        return result
+    }
+    
+    
     getItemTag = (item) => {
         const { intl } = this.props;
         const k5m4q0r2 = intl.formatMessage(SALE_STRING.k5m4q0r2);
@@ -343,12 +420,15 @@ export default class ShareRules extends Component {
             isCreate,
             isEdit,
             selected,
-            shareGroupName
+            shareGroupName,
+            batchModalVisible,
+            unionBatchActivity,
+            batchList
         } = this.state;
         const vanillaShareGroups = shareGroups.toJS();
-        const filteredShareGroups = searchPromotionType || searchPromotionName ? this.getFilteredGroup(vanillaShareGroups) : vanillaShareGroups
+        let filteredShareGroups = searchPromotionType || searchPromotionName ? this.getFilteredGroup(vanillaShareGroups) : vanillaShareGroups
+        filteredShareGroups = this.organizeData(filteredShareGroups)
         const displayHeaderActions = !!vanillaShareGroups.length;
-        console.log('filteredShareGroups', filteredShareGroups)
         let shareGroupNameCurrent =  filteredShareGroups && filteredShareGroups.length ? `营销活动共享组${filteredShareGroups.length + 1}` :
         '营销活动共享组1'
         if(isEdit) {
@@ -370,6 +450,16 @@ export default class ShareRules extends Component {
                         />
                     )
                 }
+                {
+                    batchModalVisible && 
+                    <BatchGroupEditModal
+                        handleCancelBatch={this.handleCancelBatch}
+                        unionBatchActivity={unionBatchActivity}
+                        batchList={batchList}
+                        filteredShareGroups={filteredShareGroups}
+                        handleDeleteShareItem={this.handleDeleteShareItem}
+                    />
+                }
                 {this.renderHeader(!vanillaShareGroups.length)}
                 {displayHeaderActions && this.renderHeaderActions()}
                 <div style={{height: 15, background: '#F3F3F3'}}/>
@@ -384,7 +474,6 @@ export default class ShareRules extends Component {
                                 )
                             }
                             {
-                                // debugger
                                 filteredShareGroups.map((shareGroup, index) => {                                   
                                     return (
                                         <div
@@ -396,6 +485,14 @@ export default class ShareRules extends Component {
                                         >
                                             <div className={style.shareGroupHeader}>
                                                 <div className={style.shareGroupTitle}>
+                                                {/* debugger */}
+                                                <Checkbox
+                                                    checked={this.checkedIfBatch(shareGroup)}
+                                                    disabled={!this.isMyShareGroup(shareGroup)}
+                                                    onChange={this.changeBatchArr.bind(this, shareGroup)}
+                                                    style={{marginRight: 10}}
+                                                >
+                                                </Checkbox>
                                                 {shareGroup.shareGroupName ||   '营销活动共享组' + `${index + 1}`}
                                                 </div>
                                                 {
