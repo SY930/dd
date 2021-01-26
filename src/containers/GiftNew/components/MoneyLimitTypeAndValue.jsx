@@ -78,7 +78,7 @@ export default class MoneyLimitTypeAndValue extends Component {
             return (
                 <PriceInput
                     addonBefore={
-                        <Select
+                        <Select\
                             style={{ width: 150 }}
                             value={defaultLabel}
                             onChange={(v) => this.handleTypeAndValueChange({ moneyLimitType: v })}
