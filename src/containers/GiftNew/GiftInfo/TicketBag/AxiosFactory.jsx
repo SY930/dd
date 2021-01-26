@@ -40,6 +40,22 @@ async function getGroupCardTypeList() {
     message.error(msg);
     return false;
 }
+/**
+ *  获取会员卡 
+ */
+async function getCardTypeList() {
+    const { groupID } = getAccountInfo();
+    const data = { groupID };
+    const method = 'crm/cardTypeLevelService_queryCardTypeBaseInfoList.ajax';
+    const params = { service:'HTTP_SERVICE_URL_CRM', type, groupID,data, method ,regFromLimit : true};
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: { cardTypeBaseInfoList = [] } } = response;
+    if (code === '000') {
+        return cardTypeBaseInfoList;
+    }
+    message.error(msg);
+    return [];
+}
 
 /**
  * 获取列表
@@ -275,7 +291,7 @@ async function postStock(data) {
     return false;
 }
 export {
-    putTicketBag, getTicketList,getGroupCardTypeList, deleteTicketBag, getTicketBagInfo, getTotalList,
+    putTicketBag, getTicketList,getGroupCardTypeList, getCardTypeList,deleteTicketBag, getTicketBagInfo, getTotalList,
     postTicketBag, getPhoneValid, putSendTicket, postRefund, getSettleList, getWechatMpInfo,
     getImgTextList, getBagBatch, getQrCodeImg, postStock,
 }

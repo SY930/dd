@@ -10,7 +10,7 @@ import { editGiftInfoNew as sale_editGiftInfoNew } from '../_reducers';
 import { promotionDetailInfo_NEW as sale_promotionDetailInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionDetailInfo.reducer';
 import GiftEditPage from "../components/GiftEditPage";
 import Editor from './TicketBag/Editor';
-import { getSettleList ,getGroupCardTypeList } from './TicketBag/AxiosFactory';
+import { getSettleList,getCardTypeList } from './TicketBag/AxiosFactory';
 
 function mapStateToProps(state) {
     return {
@@ -40,7 +40,7 @@ export default class GiftInfo extends React.Component {
             const settlesOpts = list.map(x => ({ value: `${x.settleUnitID}`, label: x.settleUnitName }));
             this.setState({ settlesOpts });
         })
-        getGroupCardTypeList().then(list => {
+        getCardTypeList().then(list => {
             this.setState({ groupCardTypeList: list });
         })
     }
@@ -57,7 +57,6 @@ export default class GiftInfo extends React.Component {
     }
     render() {
         const { page, detail, check, tabkey, settlesOpts ,groupCardTypeList} = this.state;
-        console.log(detail,'detailpppppppppp1233333333')
         const {isCreatingOrEditing, groupID} = this.props;
 
         if(page==='ticket'){
