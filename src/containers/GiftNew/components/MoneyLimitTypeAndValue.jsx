@@ -33,7 +33,7 @@ export default class MoneyLimitTypeAndValue extends Component {
             return [
                 { label: '不限', value: JSON.stringify({moneyLimitType:'0',amountType:'0'})},
                 { label: '账单金额满', value:JSON.stringify({moneyLimitType:'2',amountType:'0'})},
-                { label: '应付金额满', value: stringify({moneyLimitType:'2',amountType:'2'})},
+                { label: '应付金额满', value: JSON.stringify({moneyLimitType:'2',amountType:'2'})},
             ]
         }
         if (type == 10){//代金券下 amountType 设为固定值1,2
