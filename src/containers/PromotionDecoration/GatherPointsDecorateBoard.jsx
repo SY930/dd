@@ -49,7 +49,18 @@ export default class GatherPointsDecorateBoard extends Component {
 
     componentWillReceiveProps(nextProps) {
         const { initFlag } = this.state
-        if (!initFlag) {
+        const { gatherPointFlag } = nextProps
+        if (!initFlag || gatherPointFlag) {
+            const {
+                decorationInfo: {
+                    ImageType,
+                },
+                onChange,
+            } = nextProps;
+            if (!ImageType) {
+                onChange({ key: ['ImageType'], value: 1, })
+                this.onChangeImageOnType(1)
+            }
             this.initDecorationInfo()
         }
     }
@@ -74,6 +85,7 @@ export default class GatherPointsDecorateBoard extends Component {
         this.setState({
             initFlag: true,
         })
+        this.props.disableGatherPointFlag()
     }
 
     onChangeImageOnType = (type) => {
@@ -87,7 +99,6 @@ export default class GatherPointsDecorateBoard extends Component {
                 giftTakenImg,
             }
         } = this.props
-        // debugger
         switch(type) {
             case 1 :
                 onChange({ key: ['pointImg'], value: url + 'basicdoc/679fbbac-eaa8-4a7e-aa88-3a51331b6731.png' })
@@ -369,7 +380,7 @@ export default class GatherPointsDecorateBoard extends Component {
                         />
                         <div className={style.uploaderTip}>
                             <p>* {SALE_LABEL.k6346css}1080*2400</p>
-                            <p>* {SALE_LABEL.k6346d14}</p>
+                            <p>* 支持JPG、PNG图片文件</p>
                             <p>* {SALE_LABEL.k6346ckg}1000KB</p>
                         </div>
                     </div>
@@ -738,7 +749,7 @@ export default class GatherPointsDecorateBoard extends Component {
                                         />
                                         <div className={style.uploaderTip}>
                                             <p>* {SALE_LABEL.k6346css}1080*248像素</p>
-                                            <p>* {SALE_LABEL.k6346d14}</p>
+                                            <p>* 支持JPG、PNG图片文件</p>
                                             <p>* {SALE_LABEL.k6346ckg}1000KB</p>
                                         </div>
                                     </div>
