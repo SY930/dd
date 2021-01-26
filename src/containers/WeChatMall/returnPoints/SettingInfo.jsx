@@ -230,7 +230,7 @@ class SettingInfo extends React.Component {
                                         ],
                                     })(
                                         <PriceInput
-                                            addonBefore={ruleType == 1 ? '消费每满' : '消费满'}
+                                            addonBefore={ruleType == 1 ? '消费每满12' : '消费满'}
                                             addonAfter="元"
                                             modal="float"
                                             maxNum={5}
