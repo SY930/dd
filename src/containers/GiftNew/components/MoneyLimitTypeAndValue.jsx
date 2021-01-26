@@ -28,16 +28,16 @@ export default class MoneyLimitTypeAndValue extends Component {
         })
     }
     getSelectOptions = () => {
-        const {isActivityFoods} = this.props;
+        const {type,isActivityFoods} = this.props;
 
-        if (this.props.type == 111 || this.props.type == 22) {//111为折扣券
+        if (type == 111 || type == 22) {//111为折扣券
             return [
                 { label: '不限', value: JSON.stringify({moneyLimitType:'0',amountType:''})},
                 { label: '账单金额满', value:JSON.stringify({moneyLimitType:'2',amountType:'0'})},
                 { label: '应付金额满', value: {'moneyLimitType':2,'amountType':2}},
             ]
         }
-        if (this.props.type == 10){//代金券下 amountType 设为固定值1
+        if (type == 10){//代金券下 amountType 设为固定值1
             if(isActivityFoods){
                 return [
                     { label: '不限', value: JSON.stringify({moneyLimitType:'0',amountType:''})},
@@ -68,12 +68,10 @@ export default class MoneyLimitTypeAndValue extends Component {
         
         
         const moneyLimitTypeVal = JSON.parse(moneyLimitType);
-        const defaultLabelArr = _.filter(SELECT_OPTIONS,function(o){
-            
+        const defaultLabelArr = _.filter(this.getSelectOptions(),function(o){
             const selectVal = JSON.parse(o.value);
             return selectVal.moneyLimitType == moneyLimitTypeVal.moneyLimitType  &&  selectVal.amountType == moneyLimitTypeVal.amountType;
         });
-        
         const defaultLabel  = defaultLabelArr.length >  0 ? defaultLabelArr[0].label : '不限';
         
         if (moneyLimitTypeVal.moneyLimitType === '0') {

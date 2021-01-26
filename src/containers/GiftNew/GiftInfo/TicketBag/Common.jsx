@@ -70,7 +70,7 @@ const separItems = {
     c: {
         type: 'custom',
         label: <span></span>,
-        render: () => (<p className="formTips">设置「付费购买」后，用户需付费购买才能获得券包；如通过活动或储值套餐发放请选择「活动投放」</p>),
+        render: () => (<p className="formTips">设置「付费购买」后，用户需付费购买才能获得券包；如通过活动或储值套餐发放请选择「活动/商城投放」</p>),
     },
     d: {
         type: 'custom',
