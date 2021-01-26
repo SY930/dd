@@ -51,13 +51,11 @@ class GiftImagePath extends Component {
                 }
             },
         };
-        // debugger
         return (
             <Row>
                 <Col>
                     <FormItem style={{ height: this.props.wrapperHeight - 60 }}>
                         <div style={{float: 'left', marginRight: '10px'}}>
-                            {/* debugger */}
                             <ImageUpload
                                 {...props}
                                 value={this.props.value ? this.props.value.split('http://res.hualala.com')[1] : ''}
