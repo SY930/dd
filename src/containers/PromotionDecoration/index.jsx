@@ -68,6 +68,7 @@ export default class PromotionDecoration extends Component {
 
     state = {
         ifVaild: true,
+        gatherPointFlag: false,
     }
 
     componentDidMount() {
@@ -137,6 +138,9 @@ export default class PromotionDecoration extends Component {
     }
     handleReset = () => {
         this.props.resetDecorationInfo();
+        this.setState({
+            gatherPointFlag: true,
+        })
     }
 
     renderHeader() {
@@ -180,6 +184,12 @@ export default class PromotionDecoration extends Component {
         )
     }
 
+    disableGatherPointFlag = () => {
+        this.setState({
+            gatherPointFlag: false
+        })
+    }
+
     handleGiftArr = () => {
         let { giftArr = [], needCount } = this.props
         giftArr.pop()
@@ -193,6 +203,7 @@ export default class PromotionDecoration extends Component {
 
     renderContent() {
         const { type, decorationInfo, updateDecorationItem, needCount = '', } = this.props;
+        const { gatherPointFlag } = this.state
         const giftArr = this.handleGiftArr()
         switch (type) {
             case '20':
@@ -208,7 +219,7 @@ export default class PromotionDecoration extends Component {
             case '66':
                 return <ExpasionGiftDecorationBoard onReset={this.handleReset} onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
             case '75':
-                return <GatherPointsDecorateBoard onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} handleVaild={this.handleVaild} needCount={needCount} giftArr={giftArr} />
+                return <GatherPointsDecorateBoard onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} handleVaild={this.handleVaild} needCount={needCount} giftArr={giftArr} gatherPointFlag={gatherPointFlag} disableGatherPointFlag={this.disableGatherPointFlag} />
             case '76':
                 return <SignInDecorationBoard onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
             case '68':
