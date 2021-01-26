@@ -85,7 +85,6 @@ class BatchGroupEditModal extends Component {
             this.setState({
                 allHaveActivity: shareGroupDetailList
             })
-            // debugger
         })
         .catch(err => {
             message.error(err)
