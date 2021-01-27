@@ -67,9 +67,11 @@ class Release extends Component {
     onQueryList = (params) => {
         const { queryParams, tempList: temp } = this.state;
         const { groupID } = this.props;
+        const sellBeginTime = new Date().toJSON().substr(0,10).replace(/-/g,'');
+        const sellEndTime = sellBeginTime;
         // 查询请求需要的参数
         // 第一次查询params会是null，其他查询条件默认是可为空的。
-        const data = { ...queryParams, ...params, couponPackageType: '1', };
+        const data = { ...queryParams, ...params, couponPackageType: '1', sellBeginTime,sellEndTime};
         // 把查询需要的参数缓存
         this.setState({ queryParams: data, loading: true });
         getTicketList({ groupID, ...data }).then((obj) => {

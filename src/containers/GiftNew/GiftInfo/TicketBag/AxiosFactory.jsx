@@ -6,14 +6,55 @@
  * 此axios为封装后的，所以无法使用try，或catch捕获。
  */
 import { message } from 'antd';
-import { axios } from '@hualala/platform-base';
-
+import { axios ,getStore} from '@hualala/platform-base';
+import { fetchData } from '../../../../helpers/util';
 /** restful 风格函数命名， get获取，post增加，put更新，delete删除 */
 /**
  * axios 默认请求参数
  * url 加 ？ 的目的就是为了在浏览器 network 里面方便看到请求的接口路径
  */
 const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', 'couponPackage/', '/api/v1/universal?'];
+
+function getAccountInfo() {
+    const { user } = getStore().getState();
+    return user.get('accountInfo').toJS();
+}
+/**
+ *  新用户注册卡类 
+ */
+async function getGroupCardTypeList() {
+    const { groupID, roleType, loginName, groupLoginName } = getAccountInfo();
+    const response = await fetchData('getSetUsedLevels_dkl', { 
+        groupID,
+        _groupID: groupID,
+        _role: roleType,
+        _loginName: loginName,
+        _groupLoginName: groupLoginName
+    }, null, {path: '',});
+    const { code, message: msg, data } = response;
+    if (code === '000') {
+        let {groupCardTypeList} = data
+        return groupCardTypeList;
+    }
+    message.error(msg);
+    return false;
+}
+/**
+ *  获取会员卡 
+ */
+async function getCardTypeList() {
+    const { groupID } = getAccountInfo();
+    const data = { groupID };
+    const method = 'crm/cardTypeLevelService_queryCardTypeBaseInfoList.ajax';
+    const params = { service:'HTTP_SERVICE_URL_CRM', type, groupID,data, method ,regFromLimit : true};
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: { cardTypeBaseInfoList = [] } } = response;
+    if (code === '000') {
+        return cardTypeBaseInfoList;
+    }
+    message.error(msg);
+    return [];
+}
 
 /**
  * 获取列表
@@ -32,6 +73,7 @@ async function getTicketList(data) {
     message.error(msg);
     return { list: [] };
 }
+
 /**
  * 获取券包明细统计列表
  */
@@ -248,7 +290,7 @@ async function postStock(data) {
     return false;
 }
 export {
-    putTicketBag, getTicketList, deleteTicketBag, getTicketBagInfo, getTotalList,
+    putTicketBag, getTicketList,getGroupCardTypeList, getCardTypeList,deleteTicketBag, getTicketBagInfo, getTotalList,
     postTicketBag, getPhoneValid, putSendTicket, postRefund, getSettleList, getWechatMpInfo,
     getImgTextList, getBagBatch, getQrCodeImg, postStock,
 }

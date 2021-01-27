@@ -65,7 +65,6 @@ class Three extends React.Component {
 
     // Actions
     modifyStateWithKeyVal = (key, val) => {
-        console.log('key, val', key, val);
         this.setState({
             [key]: val,
         }, () => {
