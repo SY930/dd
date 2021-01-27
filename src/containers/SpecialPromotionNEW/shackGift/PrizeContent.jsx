@@ -161,7 +161,7 @@ export default class PrizeContent extends React.Component {
         }
         return (
             <FormItem
-                wrapperCol={{ span: 12 }}
+                wrapperCol={{ span: 24 }}
                 className={style.FormItemSecondStyle}
                 required={true}
                 validateStatus={info.giveCoupon.value.giftEffectiveTime.validateStatus}
