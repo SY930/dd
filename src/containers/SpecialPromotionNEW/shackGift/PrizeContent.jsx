@@ -416,7 +416,7 @@ export default class PrizeContent extends React.Component {
                                                     help={info.giveCoupon.value.giftCount.msg}
                                                 >
                                                     <div className={style.labelSecondDiv}>
-                                                        <span>{this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kc13243)}</span>
+                                                        <span>礼品个数</span>
                                                     </div>
                                                     <PriceInput
                                                         maxNum={9}
