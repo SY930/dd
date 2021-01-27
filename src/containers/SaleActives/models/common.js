@@ -25,6 +25,11 @@ const {
     addEventRule,
     updateEventRule,
     switchEventRuleActive,
+    // 
+    getGiftRuleDetail,
+    addGiftRule,
+    updateGiftRule,
+    switchGiftRuleActive,
 } = api;
 
 const initState = {
@@ -59,7 +64,8 @@ const initState = {
     currentForm: null, // 为了检验当前form
     authLicenseData: {},
     // 
-    eventRule: {}
+    eventRule: {},
+    giftRule: {},
 };
 export default {
     namespace: 'createActiveCom',
@@ -546,6 +552,68 @@ export default {
         * switchEventRuleActive({ payload }, { call, put, select }) {
             const { groupID } = yield select(state => state.createActiveCom);
             const ret = yield call(switchEventRuleActive, {
+                groupID,
+                ...payload,
+            });
+
+            if (ret.code === '000') {
+                message.success('操作成功！')
+                return true;
+            }
+            message.warn(ret.message);
+            return false;
+        },
+        // 
+        * getGiftRuleDetail({ payload }, { call, put, select }) {
+            const { groupID } = yield select(state => state.createActiveCom);
+            const ret = yield call(getGiftRuleDetail, {
+                groupID,
+                ...payload,
+            });
+
+            if (ret.code === '000') {
+                yield put({
+                    type: 'updateState',
+                    payload: {
+                        giftRule: ret.data || {},
+                    },
+                });
+                return ret.data || {};
+            }
+            message.warn(ret.message);
+            return false;
+        },
+        * addGiftRule({ payload }, { call, put, select }) {
+            const { groupID } = yield select(state => state.createActiveCom);
+            const ret = yield call(addGiftRule, {
+                groupID,
+                ...payload,
+            });
+
+            if (ret.code === '000') {
+                message.success('保存成功！')
+                return true
+            }
+            message.warn(ret.message);
+            return false;
+        },
+        * updateGiftRule({ payload }, { call, put, select }) {
+            const { groupID } = yield select(state => state.createActiveCom);
+            const ret = yield call(updateGiftRule, {
+                groupID,
+                ...payload,
+            });
+
+            if (ret.code === '000') {
+                message.success('保存成功！')
+                return true
+            }
+            message.warn(ret.message);
+            return false;
+        },
+        * switchGiftRuleActive({ payload }, { call, put, select }) {
+            const { groupID } = yield select(state => state.createActiveCom);
+            const ret = yield call(switchGiftRuleActive, {
                 groupID,
                 ...payload,
             });

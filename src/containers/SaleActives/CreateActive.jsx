@@ -68,7 +68,7 @@ class CreateActive extends Component {
         } = this.props.createActiveCom
         const  { itemID, isView, isEdit } = decodeUrl()
         const currentInfo = actInfoList.find(v => v.key ===  this.typeKey) || {}
-        let {dscList = []} = currentInfo
+        let {dscList = [], warnInfo = ''} = currentInfo
         return (
             <div className={styles.createActive}>
                 <div className={styles.header}>
@@ -79,6 +79,12 @@ class CreateActive extends Component {
                                 <Icon type="question-circle-o" />
                                 <span style={{marginLeft: '2px'}}>活动说明</span>
                             </div>
+                    }
+                    {   !!warnInfo &&
+                        <div className={styles.warnInfo}>
+                            <Icon type="exclamation-circle" />
+                            {warnInfo}
+                        </div>
                     }
                 </div>
                 <div className={styles.line}></div>

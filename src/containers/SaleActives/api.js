@@ -64,6 +64,27 @@ const apis = {
         path: '/eventRule/switchActive.ajax',
         service: service[1],
     },
+    // 智能发券
+    // 查询详情
+    getGiftRuleDetail: {
+        path: '/giftRule/queryIntelligentGiftRule.ajax',
+        service: service[1],
+    },
+    // 新增
+    addGiftRule: {
+        path: '/giftRule/addIntelligentGiftRule.ajax',
+        service: service[1],
+    },
+    // 编辑
+    updateGiftRule: {
+        path: '/giftRule/updateIntelligentGiftRule.ajax',
+        service: service[1],
+    },
+    // 启用禁用
+    switchGiftRuleActive: {
+        path: '/giftRule/updateIntelligentGiftRuleStatus.ajax',
+        service: service[1],
+    },
 };
 
 function gen(api) {
