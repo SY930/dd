@@ -97,6 +97,7 @@ const DECORATABLE_PROMOTIONS = [
     '64',
     '65',
     '66',
+    '75',
     '76',
     '68',
     '79',
@@ -233,6 +234,7 @@ class MySpecialActivities extends React.Component {
             qrCodeImage: '', // 小程序二维码图片链接
             xcxLoad:false, // 请求小程序时的load
             qrItemID:'', // 点击提取链接/二维码 当前活动的itemID
+            giftArr: [],
         };
         this.cfg = {
             eventWay: [
@@ -1363,6 +1365,22 @@ class MySpecialActivities extends React.Component {
             onCancel: () => { },
         });
     }
+    handleGiftsData = (response) => {
+        const { eventWay, itemID, eventName, needCount = '' } = response.data;
+        const user = this.props.user;
+        let result = []
+        response.gifts.forEach((item) => {
+            result.push(item.needCount)
+        })
+        this.props.selectPromotionForDecoration({
+            type: `${eventWay}`,
+            id: itemID,
+            title: eventName,
+            needCount,
+            giftArr: result
+        });
+        jumpPage({menuID: PROMOTION_DECORATION})
+    }
     successFn = (response) => {
         const _serverToRedux = false;
         const _promotionIdx = getSpecialPromotionIdx(`${this.state.editEventWay}`);
@@ -1387,13 +1405,15 @@ class MySpecialActivities extends React.Component {
     };
 
     handleDecorationStart = (record) => {
-        const { eventWay, itemID, eventName } = record;
-        this.props.selectPromotionForDecoration({
-            type: `${eventWay}`,
-            id: itemID,
-            title: eventName,
-        });
-        jumpPage({menuID: PROMOTION_DECORATION})
+        const user = this.props.user;
+        this.props.fetchSpecialDetail({
+            data: {
+                itemID: record ? record.itemID : this.state.currentItemID, // 点击重试时record为undefiend
+                groupID: user.accountInfo.groupID,
+            },
+            success: this.handleGiftsData,
+            fail: this.failFn,
+        })
     }
 
     handleCopyUrl = (record) => {

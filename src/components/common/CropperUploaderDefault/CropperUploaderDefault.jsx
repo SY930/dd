@@ -24,7 +24,7 @@ const MIME_EXT_MAP = {
     'image/png': 'png',
 }
 
-class CropperUploader extends Component {
+class CropperUploaderDefault extends Component {
 
     constructor(props) {
         super(props)
@@ -141,6 +141,7 @@ class CropperUploader extends Component {
             onChange,
             width,
             height,
+            canEdit,
         } = this.props;
         const { dataUri, cropperVisible, confirmLoading } = this.state;
         const uploadProps = {
@@ -177,25 +178,19 @@ class CropperUploader extends Component {
             <div>
                 <Upload
                     {...uploadProps}
+                    style={{
+                        pointerEvents: `${canEdit ? 'all' : 'none'}`,
+                    }}
                 >
-                    {
-                        value ? ( // 有value时默认回显，可重置
-                            <div style={{ width, height }} className={style.resetableTrigger}>
-                                <div
-                                    className={style.actionBar}
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        onChange(undefined);
-                                    }}
-                                >
-                                    重置
-                                </div>
-                                <img style={{ width: width - 2, height: height - 2 }} src={this.getRealUrl(value)} alt="" />
-                            </div>
-                        ) : (// 无value时显示自定义trigger或默认trigger
-                                displayTrigger
-                            )
-                    }
+                    <div
+                        style={{
+                            width,
+                            height,
+                        }}
+                        className={style.resetableTrigger}>
+                        {canEdit && displayTrigger}
+                        {value && <img style={{ width: width - 2, height: height - 2, position: 'absolute', top: 0 }} src={this.getRealUrl(value)} alt="" />}
+                    </div>
                 </Upload>
                 {
                     cropperVisible && (
@@ -225,7 +220,7 @@ class CropperUploader extends Component {
     }
 }
 
-CropperUploader.propTypes = {
+CropperUploaderDefault.propTypes = {
     /** 涉及到的图片路径是否是绝对路径 */
     isAbsoluteUrl: PropTypes.bool,
     /** 默认trigger的宽 */
@@ -245,7 +240,7 @@ CropperUploader.propTypes = {
     /** 原始图片大小限制，单位为KB, 0 或不设置表示不限制  */
     limit: PropTypes.number,
 };
-CropperUploader.defaultProps = {
+CropperUploaderDefault.defaultProps = {
     isAbsoluteUrl: false,
     value: undefined,
     onChange() { },
@@ -255,4 +250,4 @@ CropperUploader.defaultProps = {
     height: 96,
 };
 
-export default CropperUploader
+export default CropperUploaderDefault

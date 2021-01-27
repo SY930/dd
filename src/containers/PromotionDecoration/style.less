@@ -741,3 +741,222 @@
     }
 }
 
+.errorMsg {
+    color: red;
+    position: absolute;
+    left: 123px;
+    top: 7px;
+}
+.tabActiveDiv {
+    width: 82px;
+    height: 27px;
+    border: 1px solid #379FF1;
+    border-radius: 3px;
+    line-height: 27px;
+    text-align: center;
+    color: #379FF1;
+}
+.tabActiveDiv:after, .tabActiveDiv:before {
+    border: solid transparent;
+    content: ' ';
+    height: 0;
+    top: 55px;
+    position: absolute;
+    width: 0;
+}
+
+.tabActiveDiv:after {
+    border-width: 6px;
+    border-top-color: #fff;
+    left: 33px;
+}
+
+.tabActiveDiv:before {
+    border-width: 7px;
+    border-top-color: #379FF1;
+    left: 32px;
+}
+.tabPanelDiv {
+
+}
+.uploadBox{
+    display: inline-block;
+}
+.explainDiv {  
+    width: 45px;
+    height: 22px;
+    background: #FFFFFF;
+    border: 1px solid #E5E5E5;
+    border-radius: 0px 0px 3px 3px;
+    font-size: 12px;
+    font-family: Microsoft YaHei;
+    font-weight: 400;
+    color: #b2b2b2;
+    position: relative;
+    top: -9px;
+    text-align: center;
+}
+.explainP {
+    position: relative;
+    top:14px;
+    color: #999999;
+}
+.redFont {
+    color: red;
+}
+.dotsArea {
+    position: relative;
+    top: 26px;
+    background: #FCFCFC;
+    border: 1px solid #EEEEEE;
+    border-radius: 8px;
+    padding: 10px 0px 10px 10px;
+    width: 318px;
+}
+.uploadBox {
+    margin-right: 10px;
+    display: inline-block;
+}
+.dotTitle {
+    display: inline-block;
+    margin-bottom: 9px;
+    color: #999999;
+}
+.dotArea {
+    display: inline-block;
+}
+.grayLine {
+    position: relative;
+    display: inline-block;
+    width: 10px;
+    height: 30px;
+    border-right: 1px solid #EEEEEE;
+    top: -26px;
+    margin-right: 20px;
+}
+.blackbg {
+    position: absolute;
+    width: 100%;
+    height: 41px;
+    background: #3333334f;
+    top: 0;
+    z-index: 2;
+    opacity: 0;
+    &:hover {
+        opacity: 1;
+    }
+}
+.barDiv {
+    width: 100%;
+}
+.sliderDiv {
+    display: inline-block;
+    width: 148px;
+    position: relative;
+    top: 12px;
+    left: 18px;
+}
+.inputDiv {
+    display: inline-block;
+    width: 62px;
+    position: relative;
+    top: 1px;
+    left: 18px;
+}
+.explainTwoDiv {
+    position: relative;
+    left: 69px;
+}
+.displayBgBlock {
+    position: absolute;
+    width: 290px;
+    height: 611px;
+    top: 58px;
+    border-radius: 32px;
+    left: 90px;
+    display: block;
+    overflow: hidden;
+}
+.topFakeHeader {
+    position: absolute;
+    top: 1px;
+    left: 2px;
+}
+.bgImageWrapper {
+    position: absolute;
+    top:63px;
+    width: 100%;
+}
+.grayForder {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: #0000008c;
+}
+.popTopImg {
+    position: absolute;
+    top: 242px;
+    z-index: 2;
+}
+.popContentImg {
+    position: absolute;
+    top: 261px;
+    border-radius: 10px;
+}
+.closeBtnIcon {
+    position: absolute;
+    right: 7px;
+    top: 267px;
+    color: white;
+    z-index: 3;
+}
+.grayGiftDiv {
+    background: #00000063;
+    width: 101%;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    height: 50px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+}
+.imgBoxScroll {
+    &::-webkit-scrollbar {
+        width: 3px;
+    }
+    &::-webkit-scrollbar-track {
+        background: #ddd;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: #666;
+    }
+}
+.dotsAreaBox {
+    display: flex;
+    flex-wrap: wrap;
+    position: relative;
+}
+.dotsBgArea {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    overflow: hidden;
+}
+.imgBoxFull {
+    position: relative;
+}
+.dotImg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
