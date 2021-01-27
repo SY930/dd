@@ -19,6 +19,7 @@ import { injectIntl } from './IntlDecor';
 import { isEqual } from 'lodash';
 import style from './style.less'
 import { axiosData } from '../../helpers/util';
+import PromotionSelectModal from "./PromotionSelectModal";
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -35,6 +36,7 @@ class BatchGroupEditModal extends Component {
             allHaveActivity: [], //共有的
             addAct: [], //统一添加的活动id
             deleteAct: [], //统一删除的活动id
+            ifOperat: false,
         }
     }
 
@@ -80,16 +82,16 @@ class BatchGroupEditModal extends Component {
             shareGroupIDList: batchList
         }
         axiosData('/promotion/promotionShareGroupService_queryShareGroupEventList.ajax', opts, {}, { path: 'data' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
-        .then((list) => {
-            let { shareGroupDetailList } = list
-            this.setState({
-                allHaveActivity: shareGroupDetailList
+            .then((list) => {
+                let { shareGroupDetailList } = list
+                this.setState({
+                    allHaveActivity: shareGroupDetailList
+                })
+                // debugger
             })
-            // debugger
-        })
-        .catch(err => {
-            message.error(err)
-        });
+            .catch(err => {
+                message.error(err)
+            });
     }
 
     handleSave = () => {
@@ -117,11 +119,28 @@ class BatchGroupEditModal extends Component {
         })
     }
 
+    handleOpenModal = () => {
+        this.setState({
+            ifOperat: true
+        })
+    }
+
+    handleCancel = () => {
+        this.setState({
+            ifOperat: false
+        })
+    }
+
+    handleOk = () => {
+
+    }
+
     render() {
         const {
             shareGroupArr,
             actType,
             allHaveActivity,
+            ifOperat,
         } = this.state
         console.log('allHaveActivity', allHaveActivity)
         return (
@@ -140,6 +159,17 @@ class BatchGroupEditModal extends Component {
                 onCancel={this.props.handleCancelBatch}
                 width="700px"
             >
+                {
+                    ifOperat && <PromotionSelectModal
+                        isCreate={isCreate}
+                        handleCancel={this.handleCancel}
+                        handleOk={this.handleOk}
+                        selectedPromotions={allHaveActivity}
+                        // shareGroupName={
+                        //     shareGroupNameCurrent
+                        // }
+                    />
+                }
                 <div>
                     <div className={style.shareTitle}>已选共享组</div>
                     <div className={style.toBeChoosedBlock}>
@@ -169,7 +199,7 @@ class BatchGroupEditModal extends Component {
                         </RadioGroup>
                         <div className={style.toBeChoosedBlock}>
                             {
-                                shareGroupArr.map((item, index) => {
+                                allHaveActivity.map((item, index) => {
                                     return (
                                         <span className={style.chooseItemSpan} key={`activityItem${index}`}>
                                             {item.activityName}
@@ -180,7 +210,7 @@ class BatchGroupEditModal extends Component {
                             }
                         </div>
                         {
-                            actType === 'batchAdd' && <span className={style.addActSpan}>+添加(至多添加100个)</span>
+                            actType === 'batchAdd' && <span className={style.addActSpan} onClick={this.handleOpenModal}>+添加(至多添加100个)</span>
                         }
                     </div>
                 </div>
