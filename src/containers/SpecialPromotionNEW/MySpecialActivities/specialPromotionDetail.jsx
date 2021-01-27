@@ -200,6 +200,7 @@ class SpecialPromotionDetail extends React.Component {
                 {
                     this.state.inviteeModalVisble && (
                         <InviteeModal
+                            eventWay={this.state.eventInfo.data.eventWay}
                             eventID={this.state.eventInfo.data.itemID}
                             inviterID={this.state.selectedInviter.customerID}
                             inviterName={this.state.selectedInviter.name}
@@ -1192,6 +1193,20 @@ class SpecialPromotionDetail extends React.Component {
         if (eventWay == 65) { // 分享裂变活动表格不太一样
             columns.push({
                 title: `${this.props.intl.formatMessage(STRING_SPE.d7el6blifo14268)}`,
+                dataIndex: 'joinCount',
+                key: 'joinCount',
+                className: 'TableTxtCenter',
+                render:(text, record)=> {
+                    if (text > 0) {
+                        return (<a onClick={() => this.handleInviteeModalOpen(record)} title={text}>{text}</a>)
+                    }
+                    return text
+                }
+            })
+        }
+        if (eventWay == 66) { // 膨胀大礼包
+            columns.push({
+                title: `助力人数`,
                 dataIndex: 'joinCount',
                 key: 'joinCount',
                 className: 'TableTxtCenter',
