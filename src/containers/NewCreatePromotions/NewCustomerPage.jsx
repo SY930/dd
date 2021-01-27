@@ -14,6 +14,7 @@ import {injectIntl} from './IntlDecor';
 import selfStyle from './NewCustomerPage.less';
 import newPic from './assets/new.png';
 import moment from 'moment'
+import {avaHouseKeeperGroups, avaIntelligentGiftRuleGroups} from './_avaGroupConfig'
 
 import {
     Modal,
@@ -75,7 +76,7 @@ import { jumpPage, closePage } from '@hualala/platform-base';
 import {setThemeClass} from '../../utils/index'
 // 跳转到带装修的活动设置页面
 const activityList = [
-    '80', '66', '81', 'housekeeper'
+    '80', '66', '81', 'housekeeper', 'intelligentGiftRule'
 ]
 @registerPage([NEW_SALE_BOX], {
 })
@@ -415,30 +416,41 @@ class NewCustomerPage extends Component {
         return {displayList, allMenu}
     } 
 
-    // 检查该集团是否使用管家活动
-    checkAvaGroup = () => {
+    // 管家活动-依据集团权限-返回活动入口
+    filterMenuByGroup = (displayList = [], allMenu = []) => {
         const state = getStore().getState();
         const { groupID } = state.user.get('accountInfo').toJS();
-        /**
-         * 使用的集团
-         * 北京日昌景曦餐饮管理有限公司（集团ID: 7356）
-         * 北京致品卓越餐饮管理有限公司（集团ID: 251840）
-         * 广州市木木餐饮管理有限公司（集团ID: 42342）
-         * 签王之王餐饮管理有限公司（集团ID: 16532 ）
-         * 重庆香佰里餐饮管理有限公司（集团ID：289058)
-         * 深圳亚米餐饮管理有限公司（集团ID: 260622）
-         * 北京乐堡士餐饮管理有限公司（集团ID: 75697
-         * 邢台鸿方正茂科技开发有限公司（集团ID: 103422
-         * 河南鸡装箱餐饮企业管理有限公司        2029
-         * 唐山谷得集团        505
-         * 珍味小筑        3584
-         * 上海兜约网络科技有限公司        137122
-         * 线上  189702
-         * 童虎  11157
-         */
-        let availableGroups = ['11157', '189702', '7356', '251840', '42342', '16532', '289058', '260622', '75697', '103422', '2029', '505', '3584', '137122'];
-        let flag = availableGroups.includes(groupID)
-        return flag
+
+        let keeperFlag = avaHouseKeeperGroups.includes(groupID)
+        let intelligentFlag = avaIntelligentGiftRuleGroups.includes(groupID)
+
+        // 管家活动列表是否为空
+        let isKeeperEmpty = false
+
+        displayList = displayList.map((item) => {
+            if(item.title == '管家活动'){
+                let {list = []} = item
+                let data = list
+                
+                if(!keeperFlag){
+                    data = data.filter(item => item.key != 'housekeeper')
+                }
+                if(!intelligentFlag){
+                    data = data.filter(item => item.key != 'intelligentGiftRule')
+                }
+                item.list = data
+                // 
+                isKeeperEmpty = data.length <= 0
+            }
+            return item
+        })
+        // 
+        if(isKeeperEmpty){
+            allMenu = allMenu.filter(item => item != '管家活动')
+            displayList = displayList.filter(item => item.title != '管家活动')
+        }
+
+        return {displayList, allMenu}
     }
 
     render() {
@@ -494,15 +506,17 @@ class NewCustomerPage extends Component {
         const { currentCategoryIndex } = this.state;
         // const displayList = currentCategoryIndex === 0 ? ALL_PROMOTION_CATEGORIES.slice(1) : [ALL_PROMOTION_CATEGORIES[currentCategoryIndex - 1]];
 
-        // auth
-        let {displayList, allMenu} = this.checkAuth(allMenus, ALL_PROMOTION_CATEGORIES)
         // 插件授权状态--营销盒子大礼包
         let {authPluginStatus} = checkAuthLicense(this.state.authLicenseData, 'HLL_CRM_Marketingbox')
-
-        if(!this.checkAvaGroup()){
-            allMenu = allMenu.filter(item => item != '管家活动')
-            displayList = displayList.filter(item => item.title != '管家活动')
-        } 
+        
+        /**
+         * 页面活动列表显示过滤
+         */
+        // auth-插件授权-列表显示过滤
+        var {displayList, allMenu} = this.checkAuth(allMenus, ALL_PROMOTION_CATEGORIES)
+        
+        // 管家活动-列表显示过滤
+        var {displayList, allMenu} = this.filterMenuByGroup(displayList, allMenu)
 
         return (
             <div className={selfStyle.newDiv}>
