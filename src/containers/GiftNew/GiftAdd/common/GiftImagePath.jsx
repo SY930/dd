@@ -9,6 +9,8 @@ import {
 } from 'antd';
 import ENV from '../../../../helpers/env';
 import styles from '../GiftAdd.less';
+import ImageUpload from 'components/common/ImageUpload';
+
 const FormItem = Form.Item;
 
 class GiftImagePath extends Component {
@@ -26,7 +28,7 @@ class GiftImagePath extends Component {
             name: 'myFile',
             disabled: this.props.disabled,
             showUploadList: false,
-            action: '/api/common/imageUpload',
+            action: '/api/common/ImageUpload',
             accept: 'image/png,image/jpeg',
             className: [styles.avatarUploader, styles[modifierClassName]].join(' '),
             beforeUpload: (file) => {
@@ -41,16 +43,11 @@ class GiftImagePath extends Component {
                 return isRightSize;
             },
             onChange: (info) => {
-                const status = info.file.status;
-                if (status === 'done') {
-                    if (info.file.response.url) {
-                        message.success(`${info.file.name} 上传成功`);
-                        this.props.onChange(`${ENV.FILE_RESOURCE_DOMAIN}/${info.file.response.url}`)
-                    } else {
-                        message.error(`${info.file.name} 上传失败`);
-                    }
-                } else if (status === 'error') {
-                    message.error(`${info.file.name} 上传失败`);
+                if (info) {
+                    this.props.onChange(`${ENV.FILE_RESOURCE_DOMAIN}/${info}`)
+                    // this.props.onChange(`/${info}`)
+                } else {
+                    this.props.onChange('')
                 }
             },
         };
@@ -59,7 +56,15 @@ class GiftImagePath extends Component {
                 <Col>
                     <FormItem style={{ height: this.props.wrapperHeight - 60 }}>
                         <div style={{float: 'left', marginRight: '10px'}}>
-                            <Upload {...props}>
+                            <ImageUpload
+                                {...props}
+                                value={this.props.value ? this.props.value.split('http://res.hualala.com')[1] : ''}
+                                // value={shrPath}
+                                // limitType={limitType}
+                                // limitSize={fileSize}
+                                // onChange={this.onUpload2}
+                            />
+                            {/* <Upload {...props}>
                                 {
                                     this.props.value ?
                                         <img
@@ -72,7 +77,7 @@ class GiftImagePath extends Component {
                                             className={[styles.avatarUploaderTrigger, styles[modifierClassName]].join(' ')}
                                         />
                                 }
-                            </Upload>
+                            </Upload> */}
                         </div>
                         <div>
                             {
