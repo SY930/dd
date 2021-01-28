@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import {
     Icon,
     Button,
@@ -14,7 +14,7 @@ import {
     Checkbox,
 } from 'antd';
 import registerPage from '../../../index';
-import {SHARE_RULES_GROUP, SHARE_RULES_SHOP} from "../../constants/entryCodes";
+import { SHARE_RULES_GROUP, SHARE_RULES_SHOP } from "../../constants/entryCodes";
 import style from './style.less'
 import { share_rules } from '../../redux/reducer/shareRules'
 import {
@@ -27,16 +27,17 @@ import {
     startCreateShareGroup,
     startEditCertainShareGroup,
 } from "../../redux/actions/shareRules/index";
-import {BASIC_PROMOTION_MAP, GIFT_MAP} from "../../constants/promotionType";
+import { BASIC_PROMOTION_MAP, GIFT_MAP } from "../../constants/promotionType";
 import PromotionSelectModal from "./PromotionSelectModal";
 import BatchGroupEditModal from './BatchGroupEditModal';
-import {FetchGiftList} from "../GiftNew/_action";
-import {fetchAllPromotionListAC} from "../../redux/actions/saleCenterNEW/promotionDetailInfo.action";
+import { FetchGiftList } from "../GiftNew/_action";
+import { fetchAllPromotionListAC } from "../../redux/actions/saleCenterNEW/promotionDetailInfo.action";
 import emptyPage from '../../assets/empty_page.png'
-import {fetchPromotionScopeInfo} from "../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
+import { fetchPromotionScopeInfo } from "../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
-import {injectIntl} from './IntlDecor';
+import { injectIntl } from './IntlDecor';
+import PriceInput from '../SaleCenterNEW/common/PriceInput';
 
 
 const { Option, OptGroup } = Select;
@@ -59,6 +60,7 @@ export default class ShareRules extends Component {
         batchModalVisible: false,
         unionBatchActivity: [], //维护的所选批量共享组的活动合集
         batchList: [], //批量共享组多选数组
+        ifCanEditName: false,
     }
 
     componentDidMount() {
@@ -79,16 +81,16 @@ export default class ShareRules extends Component {
         this.props.getAllShops();
     }
 
-    handleDeleteGroup = ({ itemID,shareGroupName }, index) => {
+    handleDeleteGroup = ({ itemID, shareGroupName }, index) => {
         Modal.confirm({
-            title: <span style={{color: '#434343'}}>{SALE_LABEL.k5dnw1q3} ?</span>,
+            title: <span style={{ color: '#434343' }}>{SALE_LABEL.k5dnw1q3} ?</span>,
             content: (
                 <div>
-                    <span style={{color: '#787878'}}>
-                         {COMMON_LABEL.delete}【{shareGroupName || `营销活动共享组${index + 1}`}】
+                    <span style={{ color: '#787878' }}>
+                        {COMMON_LABEL.delete}【{shareGroupName || `营销活动共享组${index + 1}`}】
                     </span>
-                    <br/>
-                    <span style={{color: '#aeaeae'}}>
+                    <br />
+                    <span style={{ color: '#aeaeae' }}>
                         {SALE_LABEL.k5do4z54}
                     </span>
                 </div>
@@ -131,7 +133,6 @@ export default class ShareRules extends Component {
             return
         }
         //开始处理数据关系以及开启批量共享组编辑的弹窗
-        // debugger
         this.AddUpUnionBatchActivity()
         this.setState({
             batchModalVisible: true
@@ -147,7 +148,7 @@ export default class ShareRules extends Component {
 
     checkedIfBatch = (shareGroup) => {
         const { batchList } = this.state
-        if(batchList.indexOf(shareGroup.itemID) !== -1) {
+        if (batchList.indexOf(shareGroup.itemID) !== -1) {
             return true
         }
         return false
@@ -173,7 +174,7 @@ export default class ShareRules extends Component {
             batchList,
         })
     }
-    
+
     AddUpUnionBatchActivity = () => {
         //只在需要时做整合运算。不做多余的算法
         const {
@@ -186,7 +187,7 @@ export default class ShareRules extends Component {
         const filteredShareGroups = searchPromotionType || searchPromotionName ? this.getFilteredGroup(vanillaShareGroups) : vanillaShareGroups
         let arr = []
         filteredShareGroups.forEach((item) => {
-            if(batchList.indexOf(item.itemID) !== -1) {
+            if (batchList.indexOf(item.itemID) !== -1) {
                 arr = arr.concat(item.shareGroupDetailList)
             }
         })
@@ -204,7 +205,7 @@ export default class ShareRules extends Component {
                     </span>
                     {
                         !isEmpty && (
-                            <Alert style={{color: '#E4843B'}} message={SALE_LABEL.k636qvxy} type="warning" showIcon />
+                            <Alert style={{ color: '#E4843B' }} message={SALE_LABEL.k636qvxy} type="warning" showIcon />
                         )
                     }
                 </div>
@@ -213,6 +214,7 @@ export default class ShareRules extends Component {
                         <Button
                             onClick={() => this.setState({ isCreate: true, isEdit: false })}
                             type="ghost"
+                            className={style.addRuleBtn}
                         >
                             <Icon
                                 type="plus"
@@ -228,7 +230,7 @@ export default class ShareRules extends Component {
                     <Icon
                         type="edit"
                     />
-                    批量编辑
+                    批量添加
                 </Button>
             </div>
         )
@@ -279,15 +281,15 @@ export default class ShareRules extends Component {
                         }
                     </OptGroup>
                     <OptGroup label={k5m5av7b}>
-                    <Option value="10">{k5m5avfn}</Option>
-                    <Option value="20">{k5m5avnz}</Option>
-                    <Option value="21">{k5m5avwb}</Option>
-                    <Option value="111">{k636qvha}</Option>
-                    <Option value="110">{k636qvpm}</Option>
+                        <Option value="10">{k5m5avfn}</Option>
+                        <Option value="20">{k5m5avnz}</Option>
+                        <Option value="21">{k5m5avwb}</Option>
+                        <Option value="111">{k636qvha}</Option>
+                        <Option value="110">{k636qvpm}</Option>
                     </OptGroup>
                     <OptGroup label={k5m5aw4n}>
-                    <Option value="-10">{k5m4q0r2}</Option>
-                    <Option value="-20">{k5m4q0ze}</Option>
+                        <Option value="-10">{k5m4q0r2}</Option>
+                        <Option value="-20">{k5m4q0ze}</Option>
                     </OptGroup>
                 </Select>
                 <span className={style.headerLabel}>
@@ -314,8 +316,8 @@ export default class ShareRules extends Component {
                         this.queryAll()
                     }}
                 >
-                    <Icon type="search"/>
-                    { COMMON_LABEL.query }
+                    <Icon type="search" />
+                    {COMMON_LABEL.query}
                 </Button>
 
             </div>
@@ -331,7 +333,7 @@ export default class ShareRules extends Component {
         })
     }
 
-    handleEditShareGroup = (shareGroup,index) => {
+    handleEditShareGroup = (shareGroup, index) => {
         this.setState({
             isEdit: true,
             isCreate: false,
@@ -341,7 +343,7 @@ export default class ShareRules extends Component {
         })
     }
 
-    handleOk = ({shareGroupDetailList,shareGroupName}) => {
+    handleOk = ({ shareGroupDetailList, shareGroupName }) => {
         const { selectedGroupID } = this.state;
         return this.props.createOrUpdateCertainShareGroup({
             shareGroupName,
@@ -376,10 +378,10 @@ export default class ShareRules extends Component {
     getCreateBy = ({ shopID }) => {
         const { shops } = this.props;
         const res = shops.find(item => item.get('shopID') == shopID);
-        if(res){
+        if (res) {
             return res.get('shopName');
         }
-        return  <p>{SALE_LABEL.k639vfmm + SALE_LABEL.k639vfuy + shopID + COMMON_LABEL.create}</p>;
+        return <p>{SALE_LABEL.k639vfmm + SALE_LABEL.k639vfuy + shopID + COMMON_LABEL.create}</p>;
     }
 
     organizeData = (arr) => {
@@ -390,8 +392,8 @@ export default class ShareRules extends Component {
         })
         return result
     }
-    
-    
+
+
     getItemTag = (item) => {
         const { intl } = this.props;
         const k5m4q0r2 = intl.formatMessage(SALE_STRING.k5m4q0r2);
@@ -408,6 +410,20 @@ export default class ShareRules extends Component {
         activityType == 20 && activitySourceType == -20 && (tag = k5m4q0ze);
         return tag || k639vg3a
     }
+
+    onNameChange = (item, value) => {
+        this.setState({
+            ifCanEditName: false,
+        })
+    }
+
+    handleEditName = (data) => {
+        // debugger
+        this.setState({
+            ifCanEditName: true,
+        })
+    }
+
     render() {
         const {
             shareGroups,
@@ -423,15 +439,16 @@ export default class ShareRules extends Component {
             shareGroupName,
             batchModalVisible,
             unionBatchActivity,
-            batchList
+            batchList,
+            ifCanEditName
         } = this.state;
         const vanillaShareGroups = shareGroups.toJS();
         let filteredShareGroups = searchPromotionType || searchPromotionName ? this.getFilteredGroup(vanillaShareGroups) : vanillaShareGroups
         filteredShareGroups = this.organizeData(filteredShareGroups)
         const displayHeaderActions = !!vanillaShareGroups.length;
-        let shareGroupNameCurrent =  filteredShareGroups && filteredShareGroups.length ? `营销活动共享组${filteredShareGroups.length + 1}` :
-        '营销活动共享组1'
-        if(isEdit) {
+        let shareGroupNameCurrent = filteredShareGroups && filteredShareGroups.length ? `营销活动共享组${filteredShareGroups.length + 1}` :
+            '营销活动共享组1'
+        if (isEdit) {
             shareGroupNameCurrent = shareGroupName
         }
         return (
@@ -451,7 +468,7 @@ export default class ShareRules extends Component {
                     )
                 }
                 {
-                    batchModalVisible && 
+                    batchModalVisible &&
                     <BatchGroupEditModal
                         handleCancelBatch={this.handleCancelBatch}
                         unionBatchActivity={unionBatchActivity}
@@ -462,19 +479,19 @@ export default class ShareRules extends Component {
                 }
                 {this.renderHeader(!vanillaShareGroups.length)}
                 {displayHeaderActions && this.renderHeaderActions()}
-                <div style={{height: 15, background: '#F3F3F3'}}/>
+                <div style={{ height: 15, background: '#F3F3F3' }} />
                 {
                     !!filteredShareGroups.length && (
-                        <div className={style.bodyContainer} style={{ height: `calc(100% - ${ displayHeaderActions ? 123 : 75 }px)`  }}>
+                        <div className={style.bodyContainer} style={{ height: `calc(100% - ${displayHeaderActions ? 123 : 75}px)` }}>
                             {
                                 isQuerying && (
-                                    <div  className={style.spinner}>
-                                        <Spin/>
+                                    <div className={style.spinner}>
+                                        <Spin />
                                     </div>
                                 )
                             }
                             {
-                                filteredShareGroups.map((shareGroup, index) => {                                   
+                                filteredShareGroups.map((shareGroup, index) => {
                                     return (
                                         <div
                                             key={`${index}`}
@@ -485,15 +502,35 @@ export default class ShareRules extends Component {
                                         >
                                             <div className={style.shareGroupHeader}>
                                                 <div className={style.shareGroupTitle}>
-                                                {/* debugger */}
-                                                <Checkbox
-                                                    checked={this.checkedIfBatch(shareGroup)}
-                                                    disabled={!this.isMyShareGroup(shareGroup)}
-                                                    onChange={this.changeBatchArr.bind(this, shareGroup)}
-                                                    style={{marginRight: 10}}
-                                                >
-                                                </Checkbox>
-                                                {shareGroup.shareGroupName ||   '营销活动共享组' + `${index + 1}`}
+                                                    <Checkbox
+                                                        checked={this.checkedIfBatch(shareGroup)}
+                                                        disabled={!this.isMyShareGroup(shareGroup)}
+                                                        onChange={this.changeBatchArr.bind(this, shareGroup)}
+                                                        style={{ marginRight: 10 }}
+                                                    >
+                                                    </Checkbox>
+                                                    {
+                                                        !ifCanEditName ?
+                                                            <div className={style.titleDix}>
+                                                                {shareGroup.shareGroupName || '营销活动共享组' + `${index + 1}`}
+                                                                {/* debugger */}
+                                                                {
+                                                                    this.isMyShareGroup(shareGroup)
+                                                                    && <Icon
+                                                                        className={style.editNameIcon}
+                                                                        onClick={this.handleEditName}
+                                                                        type="edit"
+                                                                    ></Icon>
+                                                                }
+                                                            </div>
+                                                            : <Input
+                                                                style={{
+                                                                    width: '85%',
+                                                                }}
+                                                                onPressEnter={this.onNameChange.bind(this, shareGroup)}
+                                                                value={shareGroup.shareGroupName || '营销活动共享组' + `${index + 1}`}
+                                                            ></Input>
+                                                    }
                                                 </div>
                                                 {
                                                     shareGroup.shopID > 0 && (
@@ -510,46 +547,46 @@ export default class ShareRules extends Component {
                                                             style={{
                                                                 marginRight: 10
                                                             }}
-                                                            onClick={() => this.handleEditShareGroup(shareGroup,index)}
+                                                            onClick={() => this.handleEditShareGroup(shareGroup, index)}
                                                         >
-                                                            <Icon type="edit"/>
-                                                            {COMMON_LABEL.edit}
+                                                            <Icon type="plus" />
+                                                            添加
                                                         </Button>
                                                     ) : (
-                                                        <Tooltip title={`${'只能编辑由'}${this.props.user.shopID > 0 ? '本店铺' : '集团'}${'创建的共享组'}`}>
-                                                            <Button disabled type="ghost" style={{marginRight: 10}}>
-                                                                <Icon type="edit"/>
-                                                                {COMMON_LABEL.edit}
+                                                            <Tooltip title={`${'只能编辑由'}${this.props.user.shopID > 0 ? '本店铺' : '集团'}${'创建的共享组'}`}>
+                                                                <Button disabled type="ghost" style={{ marginRight: 10 }}>
+                                                                    <Icon type="plus" />
+                                                                添加
                                                             </Button>
-                                                        </Tooltip>
-                                                    )
+                                                            </Tooltip>
+                                                        )
                                                 }
                                                 {
                                                     this.isMyShareGroup(shareGroup) ? (
                                                         <Button type="ghost" onClick={() => this.handleDeleteGroup(shareGroup, index)}>
-                                                            <Icon type="delete"/>
+                                                            <Icon type="delete" />
                                                             {COMMON_LABEL.delete}
                                                         </Button>
                                                     ) : (
-                                                        <Tooltip title={`${'只能删除由'}${this.props.user.shopID > 0 ? '本店铺' : '集团'}${'创建的共享组'}`}>
-                                                            <Button disabled type="ghost">
-                                                                <Icon type="delete"/>
-                                                                {COMMON_LABEL.delete}
-                                                            </Button>
-                                                        </Tooltip>
-                                                    )
+                                                            <Tooltip title={`${'只能删除由'}${this.props.user.shopID > 0 ? '本店铺' : '集团'}${'创建的共享组'}`}>
+                                                                <Button disabled type="ghost">
+                                                                    <Icon type="delete" />
+                                                                    {COMMON_LABEL.delete}
+                                                                </Button>
+                                                            </Tooltip>
+                                                        )
                                                 }
                                             </div>
                                             <div className={style.shareGroupBody}>
                                                 {
                                                     (shareGroup.shareGroupDetailList || []).map(item => {
                                                         const aa = <span>{item.activityName} {SALE_LABEL.k639ve8m}</span>
-                                                       return (
+                                                        return (
                                                             <div className={style.shareGroupItem} key={item.itemID}>
                                                                 <div className={style.typeTag}>
-                                                            <span>
-                                                                {this.getItemTag(item)}
-                                                            </span>
+                                                                    <span>
+                                                                        {this.getItemTag(item)}
+                                                                    </span>
                                                                 </div>
                                                                 <div className={style.itemTitle}>
                                                                     {item.action !== 2 ? item.activityName : aa}
@@ -558,7 +595,7 @@ export default class ShareRules extends Component {
                                                                     {
                                                                         (((shareGroup.shareGroupDetailList || []).length) > 2 && item.action !== 2) && (
                                                                             <Popconfirm title={SALE_LABEL.k5dnw1q3} onConfirm={() => this.handleRemoveItemFromGroup(shareGroup, item)}>
-                                                    <a disabled={!this.isMyShareGroup(shareGroup)}>{COMMON_LABEL.delete}</a>
+                                                                                <a disabled={!this.isMyShareGroup(shareGroup)}>{COMMON_LABEL.delete}</a>
                                                                             </Popconfirm>
                                                                         )
                                                                     }
@@ -577,24 +614,24 @@ export default class ShareRules extends Component {
                 }
                 {
                     !filteredShareGroups.length && !vanillaShareGroups.length && (
-                        <div className={style.emptyBodyContainer} style={{ height: `calc(100% - ${ displayHeaderActions ? 123 : 75 }px)`  }}>
-                            <img src={emptyPage} alt=""/>
+                        <div className={style.emptyBodyContainer} style={{ height: `calc(100% - ${displayHeaderActions ? 123 : 75}px)` }}>
+                            <img src={emptyPage} alt="" />
                             <span className={style.primaryTip}>{SALE_LABEL.k639vdry}</span>
-                    <span className={style.tip}>{SALE_LABEL.k636qvxy}</span>
+                            <span className={style.tip}>{SALE_LABEL.k636qvxy}</span>
                             <Button
                                 type="primary"
                                 onClick={() => this.setState({ isCreate: true, isEdit: false })}
-                                style={{ marginTop: 20}}
+                                style={{ marginTop: 20 }}
                             >
-                            {COMMON_LABEL.create}
+                                {COMMON_LABEL.create}
                             </Button>
                         </div>
                     )
                 }
                 {
                     !filteredShareGroups.length && !!vanillaShareGroups.length && (
-                        <div className={style.emptyBodyContainer} style={{ height: `calc(100% - ${ displayHeaderActions ? 123 : 75 }px)`  }}>
-                            <img src={emptyPage} alt=""/>
+                        <div className={style.emptyBodyContainer} style={{ height: `calc(100% - ${displayHeaderActions ? 123 : 75}px)` }}>
+                            <img src={emptyPage} alt="" />
                             <span className={style.tip}>{SALE_LABEL.k639ve0a}</span>
                         </div>
                     )

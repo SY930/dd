@@ -170,7 +170,7 @@ class PromotionSelectModal extends Component {
         return (
             <Modal
                 maskClosable={false}
-                title={this.props.isCreate ? COMMON_LABEL.create : bianji}
+                title={this.props.isBatch ? '添加活动' : this.props.isCreate ? COMMON_LABEL.create : bianji}
                 visible={true}
                 footer={[
                     <Button key="0" type="ghost" size="large" onClick={this.props.handleCancel}>

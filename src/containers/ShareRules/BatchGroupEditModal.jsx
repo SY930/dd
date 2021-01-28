@@ -146,7 +146,7 @@ class BatchGroupEditModal extends Component {
         return (
             <Modal
                 maskClosable={false}
-                title={'批量编辑共享组内活动'}
+                title={'批量添加共享组内活动'}
                 visible={true}
                 footer={[
                     <Button key="0" type="ghost" size="large" onClick={this.props.handleCancelBatch}>
@@ -161,10 +161,11 @@ class BatchGroupEditModal extends Component {
             >
                 {
                     ifOperat && <PromotionSelectModal
-                        isCreate={isCreate}
+                        isCreate={false}
+                        isBatch={true}
                         handleCancel={this.handleCancel}
                         handleOk={this.handleOk}
-                        selectedPromotions={allHaveActivity}
+                        doesntExpectItem={allHaveActivity}
                         // shareGroupName={
                         //     shareGroupNameCurrent
                         // }
@@ -185,7 +186,7 @@ class BatchGroupEditModal extends Component {
                         }
                     </div>
                     <div className={style.activityBlock}>
-                        <RadioGroup
+                        {/* <RadioGroup
                             style={{
                                 marginBottom: 16,
                             }}
@@ -196,10 +197,11 @@ class BatchGroupEditModal extends Component {
                         >
                             <RadioButton value="batchAdd">批量添加活动</RadioButton>
                             <RadioButton value="batchDelete">批量删除活动</RadioButton>
-                        </RadioGroup>
+                        </RadioGroup> */}
+                        <div className={style.shareTitle}>批量添加活动</div>
                         <div className={style.toBeChoosedBlock}>
                             {
-                                allHaveActivity.map((item, index) => {
+                                addAct.map((item, index) => {
                                     return (
                                         <span className={style.chooseItemSpan} key={`activityItem${index}`}>
                                             {item.activityName}
