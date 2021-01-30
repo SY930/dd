@@ -31,5 +31,6 @@ export const avaHouseKeeperGroups = ['11157', '189702', '7356', '251840', '42342
  * 线上  189702
  * 童虎  11157
  */
-export const avaIntelligentGiftRuleGroups = [];
+export const avaIntelligentGiftRuleGroups = ['11157', '189702', '7356', '251840', '42342', '16532', '289058', '260622', '75697', '103422'];
+
 

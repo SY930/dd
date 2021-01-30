@@ -59,7 +59,7 @@ class IntelligentGiftRule extends React.Component {
                             return;
                         }
                         
-                        if(adjustMaxAmount <= initialGiftValue){
+                        if(adjustMaxAmount < initialGiftValue){
                             message.warn('调整区间最大值不能小于初始券面额');
                             return;
                         }
