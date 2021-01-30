@@ -17,7 +17,6 @@ const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', 'co
 
 function getAccountInfo() {
     const { user } = getStore().getState();
-    console.log(user.get('accountInfo').toJS(),'user=======================1233333')
     return user.get('accountInfo').toJS();
 }
 /**

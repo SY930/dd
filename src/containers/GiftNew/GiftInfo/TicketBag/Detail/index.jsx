@@ -173,7 +173,6 @@ class Detail extends Component {
         );
     }
     handleCancellation = (record) => () => {
-        console.log('record',record)
         axiosData('/couponPackage/invalidCustomerCouponPackage.ajax', {
             customerCouponPackID: record.customerCouponPackID
         }, null, {

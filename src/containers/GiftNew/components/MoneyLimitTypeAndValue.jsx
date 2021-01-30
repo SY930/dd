@@ -39,7 +39,7 @@ export default class MoneyLimitTypeAndValue extends Component {
         if (type == 10){//代金券下 amountType 设为固定值1,2
             if(isActivityFoods){
                 return [
-                    { label: '不限', value: JSON.stringify({moneyLimitType:'0',amountType:'0'})},
+                    { label: '不限', value: JSON.stringify({moneyLimitType:'0',amountType:'1'})},
                     { label: '活动菜品金额满', value:JSON.stringify({moneyLimitType:'2',amountType:'1'})},
                     { label: '活动菜品金额每满', value: JSON.stringify({moneyLimitType:'1',amountType:'1'})},
                     { label: '活动菜品应付金额满', value: JSON.stringify({moneyLimitType:'2',amountType:'2'})},
@@ -47,7 +47,7 @@ export default class MoneyLimitTypeAndValue extends Component {
                 ]
             }
             return [
-                { label: '不限', value: JSON.stringify({moneyLimitType:'0',amountType:'0'})},
+                { label: '不限', value: JSON.stringify({moneyLimitType:'0',amountType:'1'})},
                 { label: '账单金额满', value:JSON.stringify({moneyLimitType:'2',amountType:'1'})},
                 { label: '账单金额每满', value: JSON.stringify({moneyLimitType:'1',amountType:'1'})},
                 { label: '应付金额满', value: JSON.stringify({moneyLimitType:'2',amountType:'2'})},

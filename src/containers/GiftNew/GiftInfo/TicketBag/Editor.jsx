@@ -63,7 +63,6 @@ export default class Editor extends Component {
     /** 获取会员卡类型 */
     getGroupCardTypeOpts (){
         const { groupCardTypeList } = this.props;
-        console.log(groupCardTypeList,'groupCardTypeList---------------')
         return groupCardTypeList.map(x => {
             const { cardTypeID, cardTypeName } = x;
             return { label: cardTypeName, value: cardTypeID };

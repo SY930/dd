@@ -222,6 +222,7 @@ class AddGifts extends React.Component {
         }
         const { intl, theme } = this.props;
         return this.state.infos.map((info, index, arr) => {
+            
             let validateStatus,
                 addonBefore,
                 help,
@@ -325,12 +326,11 @@ class AddGifts extends React.Component {
                             colon={false}
                         >
                             <PriceInput
-                                maxNum={9}
+                                maxNum={50}
                                 value={{ number: valueNuber }}
                                 onChange={val => onChangeFunc(val, index)}
                                 addonAfter={this.props.intl.formatMessage(STRING_SPE.d142vrmqvc1730)}
                                 modal="int"
-                                disabled={info.giftCount.disabled}
                                 placeholder="请输入礼品数量"
                             />
 
@@ -636,6 +636,7 @@ class AddGifts extends React.Component {
     }
 
     handleGiftChange(value, index) {
+        
         if (value) {
             const newValue = value.split(',');
             const _infos = this.state.infos;
@@ -683,6 +684,7 @@ class AddGifts extends React.Component {
     handlegiftCountChange = (value, index) => {
         const _infos = this.state.infos;
         _infos[index].giftCount.value = value.number;
+        
         const _value = parseFloat(value.number);
         if (_value > 0) {
             if (_value > 50 && (this.props.type != '20'   && this.props.type != '30' && this.props.type != '70')) {
@@ -696,6 +698,7 @@ class AddGifts extends React.Component {
             _infos[index].giftCount.validateStatus = 'error';
             _infos[index].giftCount.msg = `${this.props.intl.formatMessage(STRING_SPE.da8oel25o134160)}`;
         }
+        
         this.setState({
             infos: _infos,
         }, () => {

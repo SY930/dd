@@ -88,6 +88,7 @@ const mapStateToProps = (state) => {
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         specialPromotion: state.sale_specialPromotion_NEW.toJS(),
         user: state.user.toJS(),
+        shopList: state.user.getIn(['accountInfo', 'dataPermissions', 'shopList'])
     };
 };
 const DECORATABLE_PROMOTIONS = [
@@ -235,6 +236,9 @@ class MySpecialActivities extends React.Component {
             xcxLoad:false, // 请求小程序时的load
             qrItemID:'', // 点击提取链接/二维码 当前活动的itemID
             giftArr: [],
+            allWeChatAccountList: [],
+            pushMessageMpID:'',
+            groupID:''
         };
         this.cfg = {
             eventWay: [
@@ -345,6 +349,7 @@ class MySpecialActivities extends React.Component {
         const {
             fetchSpecialPromotionList,
         } = this.props;
+        this.queryWechatMpInfo();
         fetchSpecialPromotionList({
             data: {
                 groupID: this.props.user.accountInfo.groupID,
@@ -533,6 +538,13 @@ class MySpecialActivities extends React.Component {
     handleAppChange = (currAppID) => {
         this.setState({currAppID})
     }
+    // 选择公众号
+    handleWechatAccountChange = (v) => {
+        this.setState({
+            pushMessageMpID:JSON.parse(v).mpID
+        })
+        this.handleCopyUrl()
+    }
     // 渲染小程序列表
     renderApp(){
         const { apps = [] } = this.state;
@@ -544,6 +556,7 @@ class MySpecialActivities extends React.Component {
             </Select>
         )
     }
+    
     // 下载餐厅二维码
     handleQrCodeDownload = (action) => {
         const tagetEle = document.getElementById(action);
@@ -576,6 +589,49 @@ class MySpecialActivities extends React.Component {
         image.src = document.getElementById(action).src
     }
 
+    queryWechatMpInfo = () => {
+        const { shopList} = this.props;
+        const shopIDs = shopList.toJS().map(x=>x.shopID);
+        const params = { shopIDs, pageNo:1, pageSize: 100, mpType: 'SERVICE_AUTH' };
+        axiosData('/wechat/mpInfoRpcService_queryMpInfoByBindShop.ajax', {...params},
+            null, { path: 'data'}, 'HTTP_SERVICE_URL_CRM')
+            .then((data) => {
+                const { mpInfoResDataList = [] } = data;
+                this.setState({ allWeChatAccountList: mpInfoResDataList,pushMessageMpID: mpInfoResDataList[0].mpID,mpName:mpInfoResDataList[0].mpName});
+            })
+    }
+    getAllAvailableMpInfo = () => {
+        const { allWeChatAccountList } = this.state;
+        return [
+            ...allWeChatAccountList.map(item => (
+                {
+                    value: JSON.stringify({mpID: item.mpID, appID: item.appID}),
+                    label: item.mpName,
+                }
+            ))
+        ];
+    }
+    // 渲染公众号列表
+    renderMp(){
+        const {pushMessageMpID,mpName} = this.state;
+        this.handleWechatChange = this.handleWechatAccountChange.bind(this);
+        return(
+            <Select
+                notFoundContent={'未搜索到结果'}
+                placeholder="请选择微信推送的公众号"
+                showSearch={true}
+                defaultValue={mpName || undefined}
+                onChange={this.handleWechatChange}
+                style={{
+                    width: '60%', margin: '0 10px'
+                }}
+            >
+                {
+                    this.getAllAvailableMpInfo().map(({ value, label }) => <Option key={value} value={value} label={label}>{label}</Option>)
+                }
+            </Select>
+        )
+    }
 
     // 渲染复制链接modal内容
     renderCopyUrlModal () {
@@ -589,6 +645,13 @@ class MySpecialActivities extends React.Component {
                         <h4 className={indexStyles.copyTitle}>线上餐厅链接提取</h4>
                         <Alert message="提取链接或二维码后，可以线上或线下投放" type="warning" />
                         <div className={indexStyles.copyUrlWrap}>
+
+                            <div className={indexStyles.leftMpConent} >
+                                <div className={indexStyles.label}>请选择公众号</div>
+                                {this.renderMp()}
+                            </div>
+                            
+
                             <div className={indexStyles.copyWrapHeader}>
                                 <div className={indexStyles.urlText}>{urlContent}</div>
                                 <Button className={indexStyles.copyBtn} onClick={this.handleToCopyUrl}>复制链接</Button>
@@ -665,7 +728,7 @@ class MySpecialActivities extends React.Component {
                 { (v3visible && curKey == '78') && <Chou2Le onToggle={this.onV3Click} id={itemID} view={view} />}
                 { (v3visible && curKey == '79') && <BlindBox onToggle={this.onV3Click} id={itemID} view={view} />}
                 <Modal
-                    title="提取活动链接"
+                    title="提取活动链接1"
                     visible={isShowCopyUrl}
                     onCancel={this.hideCopyUrlModal}
                     footer={null}
@@ -1417,21 +1480,32 @@ class MySpecialActivities extends React.Component {
     }
 
     handleCopyUrl = (record) => {
-        const testUrl = 'https://dohko.m.hualala.com'
+        let eventWayData,groupIdData,itemIdData;
+        const testUrl = 'https://dohko.m.hualala.com';
         const preUrl = 'https://m.hualala.com'
         const actList = ['20','30','22'] // 摇奖活动，积分兑换，报名活动
-        const { eventWay, groupID, itemID } = record
+        if(record){
+            eventWayData = record.eventWay;
+            groupIdData = record.groupID;
+            itemIdData = record.itemID
+        }else{
+            eventWayData = this.state.eventWay;
+            groupIdData = this.state.groupID;
+            itemIdData = this.state.qrItemID
+        }
+        
+        const { pushMessageMpID } = this.state
         let url = testUrl
         if(isFormalRelease()) {
             url = preUrl
         }
         const urlMap = {
-            20: url + `/newm/eventCont?groupID=${groupID}&eventID=${itemID}`,
-            22: url + `/newm/eventCont?groupID=${groupID}&eventID=${itemID}`,
-            30: url + `/newm/eventCont?groupID=${groupID}&eventID=${itemID}`,
-            21: url + `/newm/eventFree?groupID=${groupID}&eventID=${itemID}`,
-            65: url + `/newm/shareFission?groupID=${groupID}&eventID=${itemID}`,
-            68: url + `/newm/recommendInvite?groupID=${groupID}&eventItemID=${itemID}`,
+            20: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${pushMessageMpID}`,
+            22: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${pushMessageMpID}`,
+            30: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${pushMessageMpID}`,
+            21: url + `/newm/eventFree?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${pushMessageMpID}`,
+            65: url + `/newm/shareFission?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${pushMessageMpID}`,
+            68: url + `/newm/recommendInvite?groupID=${groupIdData}&eventItemID=${itemIdData}&mpID=${pushMessageMpID}`,
         }
         /*if(actList.includes(String(eventWay))) {
             url = url +    `/newm/eventCont?groupID=${groupID}&eventID=${itemID}`
@@ -1446,11 +1520,12 @@ class MySpecialActivities extends React.Component {
             url = url +    `/newm/recommendInvite?groupID=${groupID}&eventItemID=${itemID}`
         }*/
         this.setState({
-            urlContent: urlMap[eventWay],
-            eventWay,
+            urlContent: urlMap[eventWayData],
+            eventWay:eventWayData,
             qrCodeImage: '', // 打开一次清空上一次的img
-            qrItemID: itemID, // 当前活动itemID
-            isShowCopyUrl: true
+            qrItemID: itemIdData, // 当前活动itemID
+            isShowCopyUrl: true,
+            groupID:groupIdData
         })
         // 获取小程序列表
         this.getAppList().then(r =>{})

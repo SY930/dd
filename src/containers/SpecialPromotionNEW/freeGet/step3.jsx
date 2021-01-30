@@ -39,10 +39,11 @@ const SelectEl = function SelectEl() {
 export const freeGetStep3Render = function freeGetStep3Render() {
     const { type, isNew, form: { getFieldDecorator } } = this.props;
     const { data, freeGetLimit } = this.state;
-    data.forEach((v) => {
-        v.giftCount.disabled = true,
-            v.giftCount.value = 1
-    })
+    //礼品个数控制，这次放开限制，允许编辑
+    // data.forEach((v) => {
+    //     v.giftCount.disabled = true,
+    //     v.giftCount.value = 1
+    // })
 
 
     const giftInfo = this.props.specialPromotion.get('$giftInfo').toJS()
