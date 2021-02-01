@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { HualalaEditorBox, HualalaTreeSelect, HualalaGroupSelect, HualalaSelected, HualalaSearchInput, CC2PY } from '../../components/common';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import {
     Modal,
     Tree,
@@ -9,11 +9,11 @@ import {
     Input,
     message
 } from 'antd';
-import {debounce} from 'lodash';
-import {BASIC_PROMOTION_MAP, GIFT_MAP} from "../../constants/promotionType";
+import { debounce } from 'lodash';
+import { BASIC_PROMOTION_MAP, GIFT_MAP } from "../../constants/promotionType";
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
-import {injectIntl} from './IntlDecor';
+import { injectIntl } from './IntlDecor';
 
 const TreeNode = Tree.TreeNode;
 
@@ -28,8 +28,8 @@ class PromotionSelectModal extends Component {
     state = {
         searchInput: '',
         currentCategory: null,
-        selected: this.props.selectedPromotions || [],
-        shareGroupName: this.props.shareGroupName,
+        selected: this.props.isBatch ? this.props.selected : this.props.selectedPromotions || [],
+        shareGroupName: this.props.isCreate ? '' : this.props.shareGroupName,
         limitNum: 100,        //共享限制数量
     }
 
@@ -54,48 +54,84 @@ class PromotionSelectModal extends Component {
     }
 
     getAllOptions = () => {
-        const { intl } = this.props;
+        const {
+            intl,
+            isBatch
+        } = this.props;
         const k5m4q0r2 = intl.formatMessage(SALE_STRING.k5m4q0r2);
         const k5m4q0ze = intl.formatMessage(SALE_STRING.k5m4q0ze);
         const {
             allPromotionList,
             allGiftList,
+            gList,
+            pList,
         } = this.props;
-        const allGiftsArray = allGiftList ? allGiftList.toJS() : [];
-        const allPromotionArray = allPromotionList.toJS().map(item => item.promotionName.map(promotion => ({
-            value: promotion.promotionIDStr,
-            label:  `${BASIC_PROMOTION_MAP[promotion.promotionType]} - ${promotion.promotionName}`,
-            type: `${promotion.promotionType}`,
-            activityType: '10',
-            activitySource: '1'
-        }))).reduce((acc, curr) => {
-            acc.push(...curr);
-            return acc;
-        }, []).filter(item => AVAILABLE_PROMOTIONS.includes(item.type));
-        return [
-            ...allPromotionArray,
-            ...allGiftsArray.filter(item => AVAILABLE_GIFTS.includes(String(item.giftType))).map(item => ({
-                value: item.giftItemID,
-                label: `${GIFT_MAP[item.giftType]} - ${item.giftName}`,
-                type: `${item.giftType}`,
-                activityType: '30',
-                activitySource: '2'
-            })),
-            {
-                value: '-10',
-                label: '会员价',
-                activityType: '20',
-                type: '-10',
-                activitySource: '3'
-            },
-            {
-                value: '-20',
-                label: '会员折扣',
-                activityType: '20',
-                type: '-20',
-                activitySource: '3'
-            },
-        ];
+        let allGiftsArray = []
+        let allPromotionArray = []
+        if (!isBatch) {
+            allGiftsArray = allGiftList ? allGiftList.toJS() : [];
+            allPromotionArray = allPromotionList.toJS().map(item => item.promotionName.map(promotion => ({
+                value: promotion.promotionIDStr,
+                label: `${BASIC_PROMOTION_MAP[promotion.promotionType]} - ${promotion.promotionName}`,
+                type: `${promotion.promotionType}`,
+                activityType: '10',
+                activitySource: '1'
+            }))).reduce((acc, curr) => {
+                acc.push(...curr);
+                return acc;
+            }, []).filter(item => AVAILABLE_PROMOTIONS.includes(item.type));
+            return [
+                ...allPromotionArray,
+                ...allGiftsArray.filter(item => AVAILABLE_GIFTS.includes(String(item.giftType))).map(item => ({
+                    value: item.giftItemID,
+                    label: `${GIFT_MAP[item.giftType]} - ${item.giftName}`,
+                    type: `${item.giftType}`,
+                    activityType: '30',
+                    activitySource: '2'
+                })),
+                {
+                    value: '-10',
+                    label: '会员价',
+                    activityType: '20',
+                    type: '-10',
+                    activitySource: '3'
+                },
+                {
+                    value: '-20',
+                    label: '会员折扣',
+                    activityType: '20',
+                    type: '-20',
+                    activitySource: '3'
+                },
+            ];
+        } else {
+            allGiftsArray = gList.map((item) => {
+                return {
+                    ...item,
+                    giftItemID: `${item.giftItemID}`
+                }
+            })
+            allPromotionArray = pList.map((promotion, index) => {
+                return {
+                    value: `${promotion.promotionID}`,
+                    label: `${BASIC_PROMOTION_MAP[promotion.promotionType]} - ${promotion.promotionName}`,
+                    type: `${promotion.promotionType}`,
+                    activityType: '10',
+                    activitySource: '1'
+                }
+            }).filter(item => AVAILABLE_PROMOTIONS.includes(item.type));
+            return [
+                ...allPromotionArray,
+                ...allGiftsArray.filter(item => AVAILABLE_GIFTS.includes(String(item.giftType))).map(item => ({
+                    value: item.giftItemID,
+                    label: `${GIFT_MAP[item.giftType]} - ${item.giftName}`,
+                    type: `${item.giftType}`,
+                    activityType: '30',
+                    activitySource: '2'
+                })),
+            ];
+        }
+
     }
 
     handleGroupSelect = (selectedOptions) => {
@@ -105,7 +141,7 @@ class PromotionSelectModal extends Component {
             : allOptions.filter(item => item.type === currentCategory).map(item => item.value);
         const unfilteredValue = selected.filter(v => !filteredValue.includes(v));
         // 最大选择数量限制  30
-        if(selectedOptions.length >= this.state.limitNum + 1) {
+        if (selectedOptions.length >= this.state.limitNum + 1) {
             message.warning(`共享组选项不能超过${this.state.limitNum}个`)
             this.handleSingleRemove({})
             return
@@ -125,19 +161,51 @@ class PromotionSelectModal extends Component {
                 selected: newSelectedValue
             })
         }
+
     }
 
     handleOk = () => {
-        const { selected,shareGroupName } = this.state;
-        if(!shareGroupName) {
-            message.warn('共享组名称不能为空')
-            return false
+        const { selected, shareGroupName } = this.state;
+        const {
+            isBatch,
+            pList,
+            gList
+        } = this.props
+        if (!isBatch) {
+            if (!shareGroupName) {
+                message.warn('共享组名称不能为空')
+                return false
+            }
+            const allOptions = this.getAllOptions();
+            return this.props.handleOk({
+                shareGroupDetailList: allOptions.filter(item => selected.includes(item.value)),
+                shareGroupName
+            })
+        } else {
+            let addItems = pList.map((promotion, index) => {
+                return {
+                    type: `${promotion.promotionType}`,
+                    activityType: '10',
+                    activitySource: '1',
+                    activityID: `${promotion.promotionID}`,
+                    label: `${BASIC_PROMOTION_MAP[promotion.promotionType]} - ${promotion.promotionName}`,
+                    activitySourceType: `${promotion.promotionType}`,
+                }
+            }).filter(item => selected.includes(item.activityID));
+            let result = addItems.concat(
+                gList.map((promotion, index) => {
+                    return {
+                        activityID: `${promotion.giftItemID}`,
+                        label: `${promotion.giftName}`,
+                        activityType: '30',
+                        activitySource: '2',
+                        activitySourceType: `${promotion.giftType}`,
+                    }
+                }).filter(item => selected.includes(item.activityID))
+            )
+            this.props.handleAddAct(result)
+            this.props.handleCancel()
         }
-        const allOptions = this.getAllOptions();
-        return this.props.handleOk({
-            shareGroupDetailList: allOptions.filter(item => selected.includes(item.value)),
-            shareGroupName
-        })
     }
 
     debouncedHandleOk = debounce(this.handleOk, 400)
@@ -150,14 +218,22 @@ class PromotionSelectModal extends Component {
 
     render() {
         const allOptions = this.getAllOptions()
-        const { searchInput, currentCategory, selected, shareGroupName } = this.state;
+        const {
+            searchInput,
+            currentCategory,
+            selected,
+            shareGroupName,
+        } = this.state;
         const filteredOptions = searchInput ? allOptions.filter(item => item.label.includes(searchInput)) : allOptions.filter(item => item.type === currentCategory);
-        const selectedOptions = allOptions.filter(item => selected.includes(item.value));
-        console.log('shareGroupName',shareGroupName)
-        const { intl } = this.props;
+        const {
+            intl,
+            isCreate,
+            isBatch
+        } = this.props;
+        let selectedOptions = []
+        selectedOptions = allOptions.filter(item => selected.includes(item.value));
         const k5m4q17q = intl.formatMessage(SALE_STRING.k5m4q17q);
         const k5m5av7b = intl.formatMessage(SALE_STRING.k5m5av7b);
-
         const k5m5avfn = intl.formatMessage(SALE_STRING.k5m5avfn);
         const k5m5avnz = intl.formatMessage(SALE_STRING.k5m5avnz);
         const k5m5avwb = intl.formatMessage(SALE_STRING.k5m5avwb);
@@ -170,14 +246,14 @@ class PromotionSelectModal extends Component {
         return (
             <Modal
                 maskClosable={false}
-                title={this.props.isCreate ? COMMON_LABEL.create : bianji}
+                title={isBatch ? '添加活动' : isCreate ? COMMON_LABEL.create : bianji}
                 visible={true}
                 footer={[
                     <Button key="0" type="ghost" size="large" onClick={this.props.handleCancel}>
-                        { COMMON_LABEL.cancel }
+                        {COMMON_LABEL.cancel}
                     </Button>,
-                    <Button disabled={selected.length < 2} key="1" type="primary" size="large" onClick={this.debouncedHandleOk} loading={this.props.loading}>
-                        { COMMON_LABEL.save }
+                    <Button disabled={isBatch ? false : selected.length < 2} key="1" type="primary" size="large" onClick={this.debouncedHandleOk} loading={this.props.loading}>
+                        {COMMON_LABEL.save}
                     </Button>,
                 ]}
                 onCancel={this.props.handleCancel}
@@ -188,45 +264,75 @@ class PromotionSelectModal extends Component {
                     height: '100%',
                 }}
                 >
-                    <div style={{marginBottom: '20px'}}>
-                        <span>共享组名称</span>
-                         <Input value={shareGroupName} onChange={this.handleShareGroupName} style={{width: '300px',marginLeft: '16px'}} maxLength={20} />
-                    </div>
+                    {
+                        isCreate &&
+                        <div style={{ marginBottom: '20px' }}>
+                            <span>共享组名称</span>
+                            <Input value={shareGroupName} onChange={this.handleShareGroupName} style={{ width: '300px', marginLeft: '16px' }} maxLength={20} />
+                        </div>
+                    }
                     <HualalaTreeSelect level1Title={SALE_LABEL.k5m5auyz}>
                         {/* //搜索框 */}
                         <HualalaSearchInput onChange={this.debouncedHandleSearchInputChange} />
                         {/* //左侧树 */}
-                        <Tree
-                            onSelect={this.handleTreeNodeChange}
-                            title={'content'}
-                            selectedKeys={[currentCategory]}
-                        >
-                            <TreeNode key={'salePromotion'} title={k5m4q17q}>
-                                {
-                                    AVAILABLE_PROMOTIONS.map(item => (
-                                        <TreeNode key={item} value={item} title={BASIC_PROMOTION_MAP[item]} />
-                                    ))
-                                }
-                            </TreeNode>
-                            <TreeNode key={'hualala'} title={k5m5av7b}>
-                                <TreeNode key={'10'} title={k5m5avfn} />
-                                <TreeNode key={'20'} title={k5m5avnz} />
-                                <TreeNode key={'21'} title={k5m5avwb} />
-                                <TreeNode key={'111'} title={k636qvha} />
-                                <TreeNode key={'110'} title={k636qvpm} />
-                                <TreeNode key={'22'} title={'配送券'} />
-                            </TreeNode>
-                            <TreeNode key={'userRight'} title={k5m5aw4n}>
-                                <TreeNode key={'-10'} title={k5m4q0r2} />
-                                <TreeNode key={'-20'} title={k5m4q0ze} />
-                            </TreeNode>
-                        </Tree>
+                        {
+                            isBatch ? <Tree
+                                onSelect={this.handleTreeNodeChange}
+                                title={'content'}
+                                selectedKeys={[currentCategory]}
+                            >
+                                <TreeNode key={'salePromotion'} title={k5m4q17q}>
+                                    {
+                                        AVAILABLE_PROMOTIONS.map(item => (
+                                            <TreeNode key={item} value={item} title={BASIC_PROMOTION_MAP[item]} />
+                                        ))
+                                    }
+                                </TreeNode>
+                                <TreeNode key={'hualala'} title={k5m5av7b}>
+                                    <TreeNode key={'10'} title={k5m5avfn} />
+                                    <TreeNode key={'20'} title={k5m5avnz} />
+                                    <TreeNode key={'21'} title={k5m5avwb} />
+                                    <TreeNode key={'111'} title={k636qvha} />
+                                    <TreeNode key={'110'} title={k636qvpm} />
+                                    <TreeNode key={'22'} title={'配送券'} />
+                                </TreeNode>
+
+                            </Tree> :
+                                <Tree
+                                    onSelect={this.handleTreeNodeChange}
+                                    title={'content'}
+                                    selectedKeys={[currentCategory]}
+                                >
+                                    <TreeNode key={'salePromotion'} title={k5m4q17q}>
+                                        {
+                                            AVAILABLE_PROMOTIONS.map(item => (
+                                                <TreeNode key={item} value={item} title={BASIC_PROMOTION_MAP[item]} />
+                                            ))
+                                        }
+                                    </TreeNode>
+                                    <TreeNode key={'hualala'} title={k5m5av7b}>
+                                        <TreeNode key={'10'} title={k5m5avfn} />
+                                        <TreeNode key={'20'} title={k5m5avnz} />
+                                        <TreeNode key={'21'} title={k5m5avwb} />
+                                        <TreeNode key={'111'} title={k636qvha} />
+                                        <TreeNode key={'110'} title={k636qvpm} />
+                                        <TreeNode key={'22'} title={'配送券'} />
+                                    </TreeNode>
+                                    <TreeNode key={'userRight'} title={k5m5aw4n}>
+                                        <TreeNode key={'-10'} title={k5m4q0r2} />
+                                        <TreeNode key={'-20'} title={k5m4q0ze} />
+                                    </TreeNode>
+                                </Tree>
+                        }
+
                         {/* //右侧复选框  isLimit 数量限制 */}
                         <HualalaGroupSelect
-                            options={filteredOptions}
+                            options={filteredOptions || []}
                             labelKey={'label'}
                             valueKey={'value'}
-                            value={filteredOptions.filter(item => selected.includes(item.value)).map(item => item.value)}
+                            value={
+                                filteredOptions.filter(item => selected.includes(item.value)).map(item => item.value)
+                            }
                             onChange={this.handleGroupSelect}
                             isLimit={Array.from(selectedOptions).length >= this.state.limitNum || false}
                             limitNum={this.state.limitNum}
@@ -237,9 +343,9 @@ class PromotionSelectModal extends Component {
                             itemName={'label'}
                             itemID={'value'}
                             selectdTitle={SALE_LABEL.k5m5awd0}
-                            value={selectedOptions}
+                            value={selectedOptions || []}
                             onChange={this.handleSingleRemove}
-                            onClear={() => this.setState({selected: []})}
+                            onClear={() => this.setState({ selected: [] })}
                         />
                     </HualalaTreeSelect>
                 </div>
