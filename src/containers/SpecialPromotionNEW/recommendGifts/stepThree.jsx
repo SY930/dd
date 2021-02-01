@@ -196,8 +196,6 @@ export default class StepThree extends React.Component {
         );
     };
     render () {
-        console.log('this',this.props._this)
-
         const recommendRange = _this.props.specialPromotion.getIn([
             "$eventInfo",
             "recommendRange",
@@ -209,7 +207,7 @@ export default class StepThree extends React.Component {
         let { helpMessageArray } = _this.state;
         let { activeRuleTabValue } = this.state
         let activeRulesListArr = null;
-        console.log("recommendRule", recommendRule);
+
         if (recommendRule) {
             recommendRule = recommendRule.toJS();
             activeRulesListArr = activeRulesList.filter((v) =>
@@ -220,9 +218,7 @@ export default class StepThree extends React.Component {
             activeRuleTabValue ||
             (activeRulesListArr && activeRulesListArr[0].value);
         let renderRecommentReward;
-        console.log("activeRuleTabValue---", activeRuleTabValue);
 
-        console.log("activeRulesListArr", activeRulesListArr);
         return (
             <div className={recommentGiftStyle.recommentGiftStep3Wrap}>
                 <p className={styles.coloredBorderedLabel}>

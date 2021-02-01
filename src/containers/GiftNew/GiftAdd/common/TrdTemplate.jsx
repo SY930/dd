@@ -320,7 +320,7 @@ class TrdTemplate extends React.Component {
                 payChannelList,
                 mpType
             } = this.state;
-            console.log(this.state,'thisstate===============0000000000000')
+
             if (!mpID) TrdTemplateStatus = false;
             if (!notice || notice.length > 16) TrdTemplateStatus = false;
             if (!logoUrl) TrdTemplateStatus = false;
@@ -390,13 +390,13 @@ class TrdTemplate extends React.Component {
                     if (checkList.filter(v => !v).length) {
                         // TrdTemplateStatus = false
                     }
-                    // console.log('checkList',checkList,TrdTemplateStatus)
+
 
                     this.props.onChange(defaultChecked ? {
                         TrdTemplateStatus,
                         trdTemplateInfo: JSON.stringify(jsonData)
                     } : undefined)
-                    // console.log('jsonData',jsonData)
+
                     return
                 }
             }
@@ -563,7 +563,6 @@ class TrdTemplate extends React.Component {
     }
     //选择支付通道
     handlePayTypeChange = ({ target: { value } }) => {
-        console.log(value,'===========paytype')
         this.getPayChannel(value);
         this.setState({ payType: value }, () => {
             this.propsChange()
@@ -572,7 +571,6 @@ class TrdTemplate extends React.Component {
     // 正向绑定微信ID选择
     handleMpAndAppIDChange = (value) => {
         const mpInfo = this.state.mpAndAppList.find(item => item.appID === value) || {};
-        console.log(mpInfo,'绑定公众号/小程=================')
         this.setState({
             mpID: mpInfo.mpID || '',
             appID: value,
@@ -710,8 +708,6 @@ class TrdTemplate extends React.Component {
     getPayChannel = (type) => {
         const {payType} = this.state;
         const pType = type ? type : payType;
-        console.log(pType,'type88888888888')
-        
         let channelCode = '';
         if(pType == '1'){
             channelCode = 'hualalaAinong';
@@ -719,7 +715,6 @@ class TrdTemplate extends React.Component {
         if(pType == '2'){
             channelCode = 'wechat';
         }
-        console.log(channelCode,'channelCode---------------')
         this.setState({
             channelCode: channelCode
         })
@@ -731,7 +726,6 @@ class TrdTemplate extends React.Component {
         }, 'HTTP_SERVICE_URL_ISV_API')
             .then((res) => {
                 const { result, payChannelList } = res
-                console.log(payChannelList,'payChannelList-----------------')
                 const code = (result || {}).code
                 if (code === '000') {
                     this.setState({

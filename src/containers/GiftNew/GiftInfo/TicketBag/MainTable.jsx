@@ -100,7 +100,7 @@ class MainTable extends Component {
         if (stock === -1) {
             remainStock = '';
         }
-        if (buyCount === -1){
+        if (buyCount <= 0 ){
             maxBuyCount = '';
         }
         return { ...info,

@@ -63,7 +63,6 @@ export default class Editor extends Component {
     /** 获取会员卡类型 */
     getGroupCardTypeOpts (){
         const { groupCardTypeList } = this.props;
-        console.log(groupCardTypeList,'groupCardTypeList---------------')
         return groupCardTypeList.map(x => {
             const { cardTypeID, cardTypeName } = x;
             return { label: cardTypeName, value: cardTypeID };
@@ -174,7 +173,6 @@ export default class Editor extends Component {
                 const couponPackageInfo = { ...timeObj, ...dateObj, ...others, ...cycleObj,
                     remainStock,maxBuyCount, couponPackagePrice: price };
                 const params = { groupID, couponPackageInfo, couponPackageGiftConfigs, shopInfos };
-                console.log(params,'params============9999999')
                 if(detail){
                     const { couponPackageID } = detail; // 更新需要的id
                     const newParams = { ...params, couponPackageInfo: { ...couponPackageInfo, couponPackageID } };
