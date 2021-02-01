@@ -53,13 +53,13 @@ class IntelligentGiftRule extends React.Component {
                         }
 
                         // 校验
-                        let remainder = initialGiftValue % adjustStepLength
+                        let remainder = Number(initialGiftValue) % Number(adjustStepLength)
+
                         if(remainder != 0){
                             message.warn('每次调整幅度数值需要被初始券面额数值整除');
                             return;
                         }
-                        
-                        if(adjustMaxAmount < initialGiftValue){
+                        if(Number(adjustMaxAmount) < Number(initialGiftValue)){
                             message.warn('调整区间最大值不能小于初始券面额');
                             return;
                         }
