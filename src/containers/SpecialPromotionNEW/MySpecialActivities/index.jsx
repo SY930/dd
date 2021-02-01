@@ -1364,14 +1364,13 @@ class MySpecialActivities extends React.Component {
                                 pageNo: page,
                             };
                             const {
-                                eventWay,
+                                queryEventWay,
                                 promotionDateRange,
                                 isActive,
                                 eventName,
                             } = this.state;
-
-                            if (eventWay !== '' && eventWay !== undefined) {
-                                opt.eventWay = eventWay;
+                            if (queryEventWay !== '' && queryEventWay !== undefined) {
+                                opt.eventWay = queryEventWay;
                             }
 
                             if (promotionDateRange !== '' && promotionDateRange.length !== 0) {
