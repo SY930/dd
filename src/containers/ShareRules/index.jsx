@@ -61,6 +61,7 @@ export default class ShareRules extends Component {
         unionBatchActivity: [], //维护的所选批量共享组的活动合集
         batchList: [], //批量共享组多选数组
         ifCanEditName: false,
+        editNameValue: ''
     }
 
     componentDidMount() {
@@ -363,6 +364,25 @@ export default class ShareRules extends Component {
         })
     }
 
+    handleOkEditName = ({ shareGroupDetailList, shareGroupName, selectedGroupID }) => {
+        return this.props.createOrUpdateCertainShareGroup({
+            shareGroupName,
+            shopID: this.props.user.shopID > 0 ? this.props.user.shopID : 0,
+            shareType: 0,
+            itemID: selectedGroupID,
+            shareGroupDetailList: shareGroupDetailList.map(item => ({
+                activityID: item.activityID,
+                activitySourceType: item.activitySourceType,
+                activitySource: item.activitySource,
+                activityType: item.activityType,
+            }))
+        }).then(() => {
+            message.success(SALE_LABEL.k5do0ps6);
+            this.queryAll()
+            this.handleCancel()
+        })
+    }
+
     getFilteredGroup = (shareGroups) => {
         const {
             searchPromotionType: type,
@@ -411,16 +431,32 @@ export default class ShareRules extends Component {
         return tag || k639vg3a
     }
 
-    onNameChange = (item, value) => {
+    onNameChange = (item, e) => {
+        const value = e.target.value
+        if(!value) {
+            message.warn('共享组名称不能为空')
+            return false
+        }
+        this.handleOkEditName({
+            shareGroupDetailList: item.shareGroupDetailList,
+            shareGroupName: value,
+            selectedGroupID: item.itemID
+        })
         this.setState({
             ifCanEditName: false,
         })
     }
 
-    handleEditName = (data) => {
-        // debugger
+    onEditNameChange = (e) => {
         this.setState({
-            ifCanEditName: true,
+            editNameValue: e.target.value
+        })
+    }
+
+    handleEditName = (data, index) => {
+        this.setState({
+            ifCanEditName: data.itemID,
+            editNameValue: data.shareGroupName || '营销活动共享组' + `${index + 1}`
         })
     }
 
@@ -440,7 +476,8 @@ export default class ShareRules extends Component {
             batchModalVisible,
             unionBatchActivity,
             batchList,
-            ifCanEditName
+            ifCanEditName,
+            editNameValue
         } = this.state;
         const vanillaShareGroups = shareGroups.toJS();
         let filteredShareGroups = searchPromotionType || searchPromotionName ? this.getFilteredGroup(vanillaShareGroups) : vanillaShareGroups
@@ -475,6 +512,7 @@ export default class ShareRules extends Component {
                         batchList={batchList}
                         filteredShareGroups={filteredShareGroups}
                         handleDeleteShareItem={this.handleDeleteShareItem}
+                        refresh={this.queryAll}
                     />
                 }
                 {this.renderHeader(!vanillaShareGroups.length)}
@@ -510,15 +548,14 @@ export default class ShareRules extends Component {
                                                     >
                                                     </Checkbox>
                                                     {
-                                                        !ifCanEditName ?
+                                                        !(ifCanEditName == shareGroup.itemID) ?
                                                             <div className={style.titleDix}>
                                                                 {shareGroup.shareGroupName || '营销活动共享组' + `${index + 1}`}
-                                                                {/* debugger */}
                                                                 {
                                                                     this.isMyShareGroup(shareGroup)
                                                                     && <Icon
                                                                         className={style.editNameIcon}
-                                                                        onClick={this.handleEditName}
+                                                                        onClick={this.handleEditName.bind(this, shareGroup, index)}
                                                                         type="edit"
                                                                     ></Icon>
                                                                 }
@@ -527,8 +564,10 @@ export default class ShareRules extends Component {
                                                                 style={{
                                                                     width: '85%',
                                                                 }}
-                                                                onPressEnter={this.onNameChange.bind(this, shareGroup)}
-                                                                value={shareGroup.shareGroupName || '营销活动共享组' + `${index + 1}`}
+                                                                onChange={this.onEditNameChange}
+                                                                onBlur={this.onNameChange.bind(this, shareGroup)}
+                                                                value={editNameValue}
+                                                                maxLength={20}
                                                             ></Input>
                                                     }
                                                 </div>

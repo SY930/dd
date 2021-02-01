@@ -33,10 +33,11 @@ class BatchGroupEditModal extends Component {
             shareGroupArr: [],
             limitNum: 100,        //共享限制数量
             actType: 'batchAdd',
-            allHaveActivity: [], //共有的
             addAct: [], //统一添加的活动id
             deleteAct: [], //统一删除的活动id
             ifOperat: false,
+            pList: [],
+            gList: [],
         }
     }
 
@@ -48,7 +49,6 @@ class BatchGroupEditModal extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('now reached componentWillReceiveProps', nextProps.batchList, this.props.batchList)
         let shareGroupArr = this.batchListInfo(nextProps.filteredShareGroups, nextProps.batchList)
         this.setState({
             shareGroupArr,
@@ -65,11 +65,9 @@ class BatchGroupEditModal extends Component {
             }))
         })
         this.searchAllShareActivity()
-        console.log("tempArr", tempArr)
         return tempArr
     }
 
-    //在这边整合allHaveActivity（所选共享活动共有的活动）因为可以多次操作。
     //在确保只在batchList改变的时候调用这个请求
     //可以在点确定之后在筛选出添加的活动和删除的活动
     searchAllShareActivity = () => {
@@ -83,11 +81,11 @@ class BatchGroupEditModal extends Component {
         }
         axiosData('/promotion/promotionShareGroupService_queryShareGroupEventList.ajax', opts, {}, { path: 'data' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
             .then((list) => {
-                let { shareGroupDetailList } = list
+                let { giftDetails, promotionLst } = list
                 this.setState({
-                    allHaveActivity: shareGroupDetailList
+                    pList: promotionLst,
+                    gList: giftDetails
                 })
-                // debugger
             })
             .catch(err => {
                 message.error(err)
@@ -95,7 +93,35 @@ class BatchGroupEditModal extends Component {
     }
 
     handleSave = () => {
-
+        const {
+            addAct
+        } = this.state
+        if(!addAct.length) {
+            message.warning('请选择添加的活动')
+            return
+        }
+        const {
+            batchList
+        } = this.props
+        let opts = {
+            groupID: this.props.user.accountInfo.groupID,
+            shopID: this.props.user.shopID,
+            shareGroupIds: batchList,
+            modifyDetailList: addAct,
+        }
+        axiosData('/promotion/promotionShareGroupService_batchUpdateShareGroups.ajax', opts, {}, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+            .then((res) => {
+                if(res.code === '000'){
+                    message.success('批量添加成功')
+                    this.props.handleCancelBatch()
+                    this.props.refresh()
+                }else {
+                    message.err(res.message)
+                }
+            })
+            .catch(err => {
+                message.error(err)
+            });
     }
 
     handleChangeActType = (e) => {
@@ -106,16 +132,16 @@ class BatchGroupEditModal extends Component {
 
     handleDeleteActivity = (id) => {
         let {
-            allHaveActivity,
+            addAct,
         } = this.state
-        allHaveActivity = allHaveActivity.filter((item, index) => {
+        addAct = addAct.filter((item, index) => {
             if (item.activityID != id) {
                 return true
             }
             return false
         })
         this.setState({
-            allHaveActivity
+            addAct
         })
     }
 
@@ -131,18 +157,28 @@ class BatchGroupEditModal extends Component {
         })
     }
 
-    handleOk = () => {
+    handleAddAct = (arr) => {
+        this.setState({
+            addAct: arr
+        })
+    }
 
+    handleDeleteShareGroup = (item) => {
+        this.setState({
+            addAct: []
+        })
+        this.props.handleDeleteShareItem(item.itemID)
     }
 
     render() {
         const {
             shareGroupArr,
             actType,
-            allHaveActivity,
+            pList,
+            gList,
             ifOperat,
+            addAct,
         } = this.state
-        console.log('allHaveActivity', allHaveActivity)
         return (
             <Modal
                 maskClosable={false}
@@ -164,11 +200,13 @@ class BatchGroupEditModal extends Component {
                         isCreate={false}
                         isBatch={true}
                         handleCancel={this.handleCancel}
-                        handleOk={this.handleOk}
-                        doesntExpectItem={allHaveActivity}
-                        // shareGroupName={
-                        //     shareGroupNameCurrent
-                        // }
+                        handleAddAct={this.handleAddAct}
+                        selected={addAct.map((item) => {
+                            return item.activityID
+                        })}
+                        shareGroupName={''}
+                        pList={pList}
+                        gList={gList}
                     />
                 }
                 <div>
@@ -179,7 +217,7 @@ class BatchGroupEditModal extends Component {
                                 return (
                                     <span className={style.chooseItemSpan} key={`shareItem${index}`}>
                                         {item.shareGroupName}
-                                        <Icon className={style.closeIcon} type="close" onClick={this.props.handleDeleteShareItem.bind(this, item.itemID)} />
+                                        <Icon className={style.closeIcon} type="close" onClick={this.handleDeleteShareGroup.bind(this, item)} />
                                     </span>
                                 )
                             })
@@ -204,8 +242,8 @@ class BatchGroupEditModal extends Component {
                                 addAct.map((item, index) => {
                                     return (
                                         <span className={style.chooseItemSpan} key={`activityItem${index}`}>
-                                            {item.activityName}
-                                            {actType === 'batchDelete' && <Icon className={style.closeIcon} type="close" onClick={this.handleDeleteActivity.bind(this, item.activityID)} />}
+                                            {item.label}
+                                            <Icon className={style.closeIcon} type="close" onClick={this.handleDeleteActivity.bind(this, item.activityID)} />
                                         </span>
                                     )
                                 })
