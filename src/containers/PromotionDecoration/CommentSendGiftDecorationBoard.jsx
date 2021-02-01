@@ -30,8 +30,8 @@ export default class CommentSendGiftDecorationBoard extends Component {
             decorationInfo: {
                 enterImg = defaultEnterImg,
                 endImg = defaultEndImg,
-                endColor = '#e25049',
-                enterColor = '#e25049'
+                endColor = '#FF5752',
+                enterColor = '#EA0327'
             },
         } = this.props;
         return (
@@ -81,7 +81,7 @@ export default class CommentSendGiftDecorationBoard extends Component {
         const {
             decorationInfo: {
                 endImg,
-                endColor = '#e25049',
+                endColor = '#FF5752',
             },
             onChange,
         } = this.props;
@@ -118,7 +118,7 @@ export default class CommentSendGiftDecorationBoard extends Component {
         const {
             decorationInfo: {
                 enterImg,
-                enterColor = '#e25049',
+                enterColor = '#EA0327',
             },
             onChange,
         } = this.props;
