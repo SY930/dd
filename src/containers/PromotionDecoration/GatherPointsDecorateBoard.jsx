@@ -61,11 +61,11 @@ export default class GatherPointsDecorateBoard extends Component {
                 onChange({ key: ['ImageType'], value: 1, })
                 this.onChangeImageOnType(1)
             }
-            this.initDecorationInfo()
+            this.initDecorationInfo(gatherPointFlag)
         }
     }
 
-    initDecorationInfo = () => {
+    initDecorationInfo = (gatherPointFlag) => {
         const {
             decorationInfo: {
                 pointsNum,
@@ -73,12 +73,12 @@ export default class GatherPointsDecorateBoard extends Component {
             needCount,
             onChange,
         } = this.props;
-        if(!pointsNum) {
+        if(!pointsNum || gatherPointFlag) {
             onChange({ key: ['bgImg'], value: url + 'basicdoc/c9b4ce1e-c4ef-4bd8-b352-8a596a7a3ac0.png', })
             onChange({ key: ['pointsNum'], value: needCount > 15 ? '4' : '3', })
             onChange({ key: ['pointSize'], value: 70, })
             onChange({ key: ['zoneWidth'], value: 60, })
-            onChange({ key: ['verticalPosition'], value: -7, })
+            onChange({ key: ['verticalPosition'], value: 0, })
             onChange({ key: ['horizonPosition'], value: 0, })
             onChange({ key: ['popImg'], value: url + 'basicdoc/a9a0ed49-ebe3-4a7c-8b2d-cf6772141fd9.png', })
         }
@@ -216,7 +216,7 @@ export default class GatherPointsDecorateBoard extends Component {
                 pointsNum = pointsNum || (needCount > 15 ? '4' : '3'),
                 pointSize = 70,
                 zoneWidth = 60,
-                verticalPosition = -7,
+                verticalPosition = 0,
                 horizonPosition,
                 pointImg = '',
                 pointLightUpImg = '',
@@ -353,7 +353,7 @@ export default class GatherPointsDecorateBoard extends Component {
                 pointSize = 70,
                 zoneWidth = 60,
                 horizonPosition,
-                verticalPosition = -7,
+                verticalPosition = 0,
                 ImageType,
             },
             needCount,
