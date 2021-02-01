@@ -73,8 +73,8 @@ export default class GatherPointsDecorateBoard extends Component {
             needCount,
             onChange,
         } = this.props;
-        if(!pointsNum || gatherPointFlag) {
-            onChange({ key: ['bgImg'], value: url + 'basicdoc/c9b4ce1e-c4ef-4bd8-b352-8a596a7a3ac0.png', })
+        if (!pointsNum || gatherPointFlag) {
+            onChange({ key: ['bgImg'], value: url + 'basicdoc/190dfd04-38b9-4ace-8cb0-8512f3930d99.png', })
             onChange({ key: ['pointsNum'], value: needCount > 15 ? '4' : '3', })
             onChange({ key: ['pointSize'], value: 70, })
             onChange({ key: ['zoneWidth'], value: 60, })
@@ -99,43 +99,43 @@ export default class GatherPointsDecorateBoard extends Component {
                 giftTakenImg,
             }
         } = this.props
-        switch(type) {
-            case 1 :
+        switch (type) {
+            case 1:
                 onChange({ key: ['pointImg'], value: url + 'basicdoc/679fbbac-eaa8-4a7e-aa88-3a51331b6731.png' })
                 onChange({ key: ['pointLightUpImg'], value: url + 'basicdoc/68ea22bf-7941-4b7f-a57a-1d855d8db8b7.png' })
                 onChange({ key: ['giftImg'], value: url + 'basicdoc/e1199010-1160-433f-9e45-d0af75e2463d.png' })
                 onChange({ key: ['giftLightUpImg'], value: url + 'basicdoc/cad54b4b-ff45-4d66-af6c-3f638dd5e627.png' })
                 onChange({ key: ['giftTakenImg'], value: url + 'basicdoc/ecb4b2aa-c6cf-4e99-ba0d-667ee1a46ef2.png' })
                 break
-            case 2 :
+            case 2:
                 onChange({ key: ['pointImg'], value: url + 'basicdoc/08b382e6-187a-4985-bd1a-77568f02dfc7.png' })
                 onChange({ key: ['pointLightUpImg'], value: url + 'basicdoc/a5338ba7-5bd5-4525-a503-b0a027ade3b3.png' })
                 onChange({ key: ['giftImg'], value: url + 'basicdoc/685c2d27-23b3-411e-bf8f-b4a51babd9ce.png' })
                 onChange({ key: ['giftLightUpImg'], value: url + 'basicdoc/65dd197c-4a13-4101-8ad9-4990d1fcbfa1.png' })
                 onChange({ key: ['giftTakenImg'], value: url + 'basicdoc/713175fb-92ee-450d-b738-35ae3937c6b4.png' })
                 break
-            case 3 :
+            case 3:
                 onChange({ key: ['pointImg'], value: url + 'basicdoc/960b37f2-3edd-40bd-97e5-f37aa5fee8da.png' })
                 onChange({ key: ['pointLightUpImg'], value: url + 'basicdoc/392273db-7020-40e1-a48e-8e6f15b34d6c.png' })
                 onChange({ key: ['giftImg'], value: url + 'basicdoc/3f0e52bf-c09c-43ad-8d97-4fc94c4dfc2c.png' })
                 onChange({ key: ['giftLightUpImg'], value: url + 'basicdoc/e48d82d8-ee0b-4bec-8243-7ccd9c70be81.png' })
                 onChange({ key: ['giftTakenImg'], value: url + 'basicdoc/b8ed1063-08df-497d-9aaa-a98cd9545baa.png' })
                 break
-            case 4 :
+            case 4:
                 onChange({ key: ['pointImg'], value: url + 'basicdoc/67251a92-5ae8-4c57-90dd-236bec7678d6.png' })
                 onChange({ key: ['pointLightUpImg'], value: url + 'basicdoc/ff524a28-e08b-4bf7-9646-974d16547e87.png' })
                 onChange({ key: ['giftImg'], value: url + 'basicdoc/3f0e52bf-c09c-43ad-8d97-4fc94c4dfc2c.png' })
                 onChange({ key: ['giftLightUpImg'], value: url + 'basicdoc/e48d82d8-ee0b-4bec-8243-7ccd9c70be81.png' })
                 onChange({ key: ['giftTakenImg'], value: url + 'basicdoc/b8ed1063-08df-497d-9aaa-a98cd9545baa.png' })
                 break
-            case 5 :
+            case 5:
                 onChange({ key: ['pointImg'], value: url + 'basicdoc/d2537f79-9653-4d17-8333-2d56c6456f01.png' })
                 onChange({ key: ['pointLightUpImg'], value: url + 'basicdoc/47a71c8f-079d-4b51-a5e6-72d2cad0a4fa.png' })
                 onChange({ key: ['giftImg'], value: url + 'basicdoc/3f0e52bf-c09c-43ad-8d97-4fc94c4dfc2c.png' })
                 onChange({ key: ['giftLightUpImg'], value: url + 'basicdoc/e48d82d8-ee0b-4bec-8243-7ccd9c70be81.png' })
                 onChange({ key: ['giftTakenImg'], value: url + 'basicdoc/b8ed1063-08df-497d-9aaa-a98cd9545baa.png' })
                 break
-            case 6 :
+            case 6:
                 onChange({ key: ['pointImg'], value: '' })
                 onChange({ key: ['pointLightUpImg'], value: '' })
                 onChange({ key: ['giftImg'], value: '' })
@@ -233,43 +233,43 @@ export default class GatherPointsDecorateBoard extends Component {
                     className={style.dotsAreaBox}
                     style={{
                         width: `${zoneWidth}%`,
-                        top:`${verticalPosition}%`,
+                        top: `${verticalPosition}%`,
                         left: `${horizonPosition}%`,
                     }}
-                    >
-                        {
-                            giftArr.map((item, index) => {
-                                return (
-                                    <div
-                                        className={style.dotAreaBox}
-                                        style={{
-                                            width: `${100/pointsNum}%`,
-                                            paddingTop: `${100/pointsNum}%`,
-                                            height: 0,
-                                            position: 'relative',
-                                        }}
-                                    >
-                                       {    
-                                            item ?
-                                                <img
-                                                    className={style.dotImg}
-                                                    src={ index === needCount-1 ? giftTakenImg : giftImg}
-                                                    style={{
-                                                        height: `${pointSize}%`,
-                                                    }}
-                                                ></img> :
-                                                <img
-                                                    className={style.dotImg}
-                                                    src={pointImg}
-                                                    style={{
-                                                        height: `${pointSize}%`,
-                                                    }}
-                                                ></img>
-                                       }
-                                    </div>
-                                )
-                            })
-                        }
+                >
+                    {
+                        giftArr.map((item, index) => {
+                            return (
+                                <div
+                                    className={style.dotAreaBox}
+                                    style={{
+                                        width: `${100 / pointsNum}%`,
+                                        paddingTop: `${100 / pointsNum}%`,
+                                        height: 0,
+                                        position: 'relative',
+                                    }}
+                                >
+                                    {
+                                        item ?
+                                            <img
+                                                className={style.dotImg}
+                                                src={index === needCount - 1 ? giftTakenImg : giftImg}
+                                                style={{
+                                                    height: `${pointSize}%`,
+                                                }}
+                                            ></img> :
+                                            <img
+                                                className={style.dotImg}
+                                                src={pointImg}
+                                                style={{
+                                                    height: `${pointSize}%`,
+                                                }}
+                                            ></img>
+                                    }
+                                </div>
+                            )
+                        })
+                    }
                 </div>
             </div>
         )
@@ -280,7 +280,7 @@ export default class GatherPointsDecorateBoard extends Component {
         const {
             decorationInfo: {
                 popImg = url + 'basicdoc/a9a0ed49-ebe3-4a7c-8b2d-cf6772141fd9.png',
-                bgImg = url + 'basicdoc/c9b4ce1e-c4ef-4bd8-b352-8a596a7a3ac0.png',
+                bgImg = url + 'basicdoc/190dfd04-38b9-4ace-8cb0-8512f3930d99.png',
                 popContent = url + 'basicdoc/53f1f865-93a0-40ef-83f2-28881e045f28.png',
                 endColor = '#FF6125',
             },
@@ -291,11 +291,14 @@ export default class GatherPointsDecorateBoard extends Component {
                 {
                     tabKey === '1' ? (
                         <div className={style.displayBgBlock}>
-                            <img className={style.topFakeHeader} src={phoneTop} alt=""/>
+                            <img className={style.topFakeHeader} src={phoneTop} alt="" />
                             <div className={style.bgImageWrapper}>
                                 <div style={{ width: '100%', height: 548, overflowY: 'auto' }} className={style.imgBoxScroll}>
                                     <div className={style.imgBoxFull}>
                                         <img src={bgImg} style={{ width: '100%' }} alt="" />
+                                        <div className={style.ActRule}>
+                                            活动规则
+                                        </div>
                                         {
                                             this.renderDotsArea()
                                         }
@@ -308,32 +311,32 @@ export default class GatherPointsDecorateBoard extends Component {
                             </div>
                             <div className={style.grayGiftDiv}>
                                 <span>
-                                    <Icon type="gift" style={{ marginRight: 3}}/>
+                                    <Icon type="gift" style={{ marginRight: 3 }} />
                                     满足兑换条件 立即领取 {'>'}
                                 </span>
                             </div>
-                            
+
                         </div>
                     ) : (
-                        <div className={style.displayBgBlock}>
-                            <img className={style.topFakeHeader} src={phoneTop} alt=""/>
-                            <div className={style.bgImageWrapper}>
-                                <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
-                                    <img src={bgImg} style={{ width: '100%' }} alt="" />
-                                </div>
-                                {/* <div className={style.tagWrapper}>
+                            <div className={style.displayBgBlock}>
+                                <img className={style.topFakeHeader} src={phoneTop} alt="" />
+                                <div className={style.bgImageWrapper}>
+                                    <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
+                                        <img src={bgImg} style={{ width: '100%' }} alt="" />
+                                    </div>
+                                    {/* <div className={style.tagWrapper}>
                                     <img src={tagImg} alt="" />
                                     <span>活动背景图</span>
                                 </div> */}
-                            </div>
-                            <div className={style.grayForder}>
+                                </div>
+                                <div className={style.grayForder}>
                                     <div style={{ borderRadius: 10, width: '100%', height: '100%', overflow: 'hidden' }}>
                                         <img src={popImg} className={style.popTopImg} style={{ width: '101%' }} alt="" />
                                         <img src={popContent} className={style.popContentImg} style={{ width: '100%' }} alt="" />
                                     </div>
-                                    <Icon className={style.closeBtnIcon} type="close"/>
+                                    <Icon className={style.closeBtnIcon} type="close" />
                                 </div>
-                        </div>
+                            </div>
                         )
                 }
             </div>
@@ -372,14 +375,14 @@ export default class GatherPointsDecorateBoard extends Component {
                             static={true}
                             isAbsoluteUrl={true}
                             limit={1000}
-                            value={bgImg || url + 'basicdoc/c9b4ce1e-c4ef-4bd8-b352-8a596a7a3ac0.png'}
-                            cropperRatio={1080 / 2400}
+                            value={bgImg || url + 'basicdoc/190dfd04-38b9-4ace-8cb0-8512f3930d99.png'}
+                            cropperRatio={750 / 1448}
                             width={96}
                             canEdit={true}
                             onChange={value => onChange({ key: ['bgImg'], value })}
                         />
                         <div className={style.uploaderTip}>
-                            <p>* {SALE_LABEL.k6346css}1080*2400</p>
+                            <p>* {SALE_LABEL.k6346css}750*1448</p>
                             <p>* 支持JPG、PNG图片文件</p>
                             <p>* {SALE_LABEL.k6346ckg}1000KB</p>
                         </div>
@@ -400,25 +403,25 @@ export default class GatherPointsDecorateBoard extends Component {
                 <div className={style.sectionWrapper}>
                     <div className={style.label}>图标大小</div>
                     <div style={{ width: 220 }} className={style.uploaderWrapper}>
-                        <Row style={{width: '100%'}}>
+                        <Row style={{ width: '100%' }}>
                             <Col span={17}>
-                            <Slider
-                                min={30}
-                                max={100}
-                                onChange={this.onPointSizeChange}
-                                value={typeof pointSize === 'number' ? pointSize : 70}
-                            />
+                                <Slider
+                                    min={30}
+                                    max={100}
+                                    onChange={this.onPointSizeChange}
+                                    value={typeof pointSize === 'number' ? pointSize : 70}
+                                />
                             </Col>
                             <Col span={7}>
-                            <InputNumber
-                                min={30}
-                                max={100}
-                                style={{ margin: '0 16px' }}
-                                value={pointSize}
-                                onChange={this.onPointSizeChange}
-                                formatter={value => `${value == 0 ? '0' : value}%`}
-                                parser={value => value.replace('%', '')}
-                            />
+                                <InputNumber
+                                    min={30}
+                                    max={100}
+                                    style={{ margin: '0 16px' }}
+                                    value={pointSize}
+                                    onChange={this.onPointSizeChange}
+                                    formatter={value => `${value == 0 ? '0' : value}%`}
+                                    parser={value => value.replace('%', '')}
+                                />
                             </Col>
                         </Row>
                     </div>
@@ -426,31 +429,31 @@ export default class GatherPointsDecorateBoard extends Component {
                 <div className={style.sectionWrapper}>
                     <div className={style.label}>区域相对宽度</div>
                     <div style={{ width: 220 }} className={style.uploaderWrapper}>
-                        <Row style={{width: '100%'}}>
+                        <Row style={{ width: '100%' }}>
                             <Col span={17}>
-                            <Slider
-                                min={30}
-                                max={100}
-                                onChange={this.onZoneWidthChange}
-                                value={typeof zoneWidth === 'number' ? zoneWidth : 30}
-                            />
+                                <Slider
+                                    min={30}
+                                    max={100}
+                                    onChange={this.onZoneWidthChange}
+                                    value={typeof zoneWidth === 'number' ? zoneWidth : 30}
+                                />
                             </Col>
                             <Col span={7}>
-                            <InputNumber
-                                min={30}
-                                max={100}
-                                style={{ margin: '0 16px' }}
-                                value={zoneWidth}
-                                formatter={value => `${value}%`}
-                                parser={value => value.replace('%', '')}
-                                onChange={this.onZoneWidthChange}
-                            />
+                                <InputNumber
+                                    min={30}
+                                    max={100}
+                                    style={{ margin: '0 16px' }}
+                                    value={zoneWidth}
+                                    formatter={value => `${value}%`}
+                                    parser={value => value.replace('%', '')}
+                                    onChange={this.onZoneWidthChange}
+                                />
                             </Col>
                         </Row>
                     </div>
                 </div>
                 <div className={style.sectionWrapper}>
-                    <div className={style.label} style={{top: 17}}>集点整体位置</div>
+                    <div className={style.label} style={{ top: 17 }}>集点整体位置</div>
                     <div style={{ width: 500, display: 'block' }} className={style.uploaderWrapper}>
                         <div className={style.barDiv}>
                             <span className={style.desSpan}>上下间距</span>
@@ -460,7 +463,7 @@ export default class GatherPointsDecorateBoard extends Component {
                                 min={-50}
                                 max={50}
                                 onChange={this.onVerticalPositionChange}
-                                value={ verticalPosition ? verticalPosition : 0}
+                                value={verticalPosition ? verticalPosition : 0}
                             />
                             <InputNumber
                                 className={style.inputDiv}
@@ -479,7 +482,7 @@ export default class GatherPointsDecorateBoard extends Component {
                                 }}>下移</span>
                             </div>
                         </div>
-                        <div className={style.barDiv} style={{position: 'relative', top: 20}}>
+                        <div className={style.barDiv} style={{ position: 'relative', top: 20 }}>
                             <span className={style.desSpan}>左右间距</span>
                             {/* <Slider className={style.sliderDiv} tipFormatter={this.formatter} /> */}
                             <Slider
