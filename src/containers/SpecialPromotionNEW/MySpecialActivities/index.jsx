@@ -540,10 +540,11 @@ class MySpecialActivities extends React.Component {
     }
     // 选择公众号
     handleWechatAccountChange = (v) => {
+        const mpId = JSON.parse(v).mpID;
         this.setState({
-            pushMessageMpID:JSON.parse(v).mpID
+            pushMessageMpID:mpId
         })
-        this.handleCopyUrl()
+        this.handleCopyUrl(null,mpId);
     }
     // 渲染小程序列表
     renderApp(){
@@ -728,7 +729,7 @@ class MySpecialActivities extends React.Component {
                 { (v3visible && curKey == '78') && <Chou2Le onToggle={this.onV3Click} id={itemID} view={view} />}
                 { (v3visible && curKey == '79') && <BlindBox onToggle={this.onV3Click} id={itemID} view={view} />}
                 <Modal
-                    title="提取活动链接1"
+                    title="提取活动链接"
                     visible={isShowCopyUrl}
                     onCancel={this.hideCopyUrlModal}
                     footer={null}
@@ -1478,7 +1479,7 @@ class MySpecialActivities extends React.Component {
         })
     }
 
-    handleCopyUrl = (record) => {
+    handleCopyUrl = (record,mpId) => {
         let eventWayData,groupIdData,itemIdData;
         const testUrl = 'https://dohko.m.hualala.com';
         const preUrl = 'https://m.hualala.com'
@@ -1492,19 +1493,18 @@ class MySpecialActivities extends React.Component {
             groupIdData = this.state.groupID;
             itemIdData = this.state.qrItemID
         }
-        
-        const { pushMessageMpID } = this.state
+
         let url = testUrl
         if(isFormalRelease()) {
             url = preUrl
         }
         const urlMap = {
-            20: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${pushMessageMpID}`,
-            22: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${pushMessageMpID}`,
-            30: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${pushMessageMpID}`,
-            21: url + `/newm/eventFree?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${pushMessageMpID}`,
-            65: url + `/newm/shareFission?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${pushMessageMpID}`,
-            68: url + `/newm/recommendInvite?groupID=${groupIdData}&eventItemID=${itemIdData}&mpID=${pushMessageMpID}`,
+            20: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpId}`,
+            22: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpId}`,
+            30: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpId}`,
+            21: url + `/newm/eventFree?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpId}`,
+            65: url + `/newm/shareFission?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpId}`,
+            68: url + `/newm/recommendInvite?groupID=${groupIdData}&eventItemID=${itemIdData}&mpID=${mpId}`,
         }
         /*if(actList.includes(String(eventWay))) {
             url = url +    `/newm/eventCont?groupID=${groupID}&eventID=${itemID}`
