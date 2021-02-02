@@ -1014,11 +1014,10 @@ class GiftAddModalStep extends React.PureComponent {
         const _that = this;
         const { endSaving } = this.props;
         const groupID = params.groupID;
-
+        const trdChannelID =  params.trdChannelID;
         if(params.trdTemplateInfo && JSON.stringify(params.trdTemplateInfo) != '{}'){//关联第三方券
             const trdTemplateInfoData = JSON.parse(params.trdTemplateInfo); 
             let appId = trdTemplateInfoData.appID ? trdTemplateInfoData.appID : '';
-        
             let merchantInfo = {};
             let settleId = '';
             let mpType = trdTemplateInfoData.mpType;
@@ -1026,35 +1025,40 @@ class GiftAddModalStep extends React.PureComponent {
                 merchantInfo = trdTemplateInfoData.merchantInfo;
                 settleId = merchantInfo.settleId ? merchantInfo.settleId : '';
             }
-            axiosData('/wxpay/appMatchPayChannel', {
-                'groupID':groupID,
-                'appID':appId,
-                'settleID':settleId
-            }, null, {
-                path: '',
-            }, 'HTTP_SERVICE_URL_ISV_API')
-                .then((res) => {
-                    const {matchSettle} = res;
-                    if( matchSettle ){
-                        cb(callServer,params,groupName,_that)
-                        return true
-                    }else{
-                        if(mpType === "SERVICE_AUTH"){
-                            Modal.error({
-                                title: '选择的公众号与账务主体未绑定',
-                                content: '请联系商务绑定后再操作',
-                            });
+            if(trdChannelID == '50'){
+                axiosData('/wxpay/appMatchPayChannel', {
+                    'groupID':groupID,
+                    'appID':appId,
+                    'settleID':settleId
+                }, null, {
+                    path: '',
+                }, 'HTTP_SERVICE_URL_ISV_API')
+                    .then((res) => {
+                        const {matchSettle} = res;
+                        if( matchSettle ){
+                            cb(callServer,params,groupName,_that)
+                            return true
+                        }else{
+                            if(mpType === "SERVICE_AUTH"){
+                                Modal.error({
+                                    title: '选择的公众号与账务主体未绑定',
+                                    content: '请联系商务绑定后再操作',
+                                });
+                            }
+                            if(mpType === "MINI_PROGRAM_AUTH"){
+                                Modal.error({
+                                    title: '选择的小程序与账务主体未绑定',
+                                    content: '请前往 顾客管理端>微信及支付宝小程序>微信商家独立小程序>更多>绑定账务主体 进行绑定操作',
+                                });
+                            } 
+                            endSaving();
+                            return false
                         }
-                        if(mpType === "MINI_PROGRAM_AUTH"){
-                            Modal.error({
-                                title: '选择的小程序与账务主体未绑定',
-                                content: '请前往 顾客管理端>微信及支付宝小程序>微信商家独立小程序>更多>绑定账务主体 进行绑定操作',
-                            });
-                        } 
-                        endSaving();
-                        return false
-                    }
-                })
+                    })
+            }else{
+                cb(callServer,params,groupName,_that)
+            }
+            
         }else{
             cb(callServer,params,groupName,_that)
         }
