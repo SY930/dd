@@ -29,7 +29,7 @@ class PromotionSelectModal extends Component {
         searchInput: '',
         currentCategory: null,
         selected: this.props.isBatch ? this.props.selected : this.props.selectedPromotions || [],
-        shareGroupName: this.props.isCreate ? '' : this.props.shareGroupName,
+        shareGroupName: this.props.shareGroupName,
         limitNum: 100,        //共享限制数量
     }
 
@@ -265,7 +265,7 @@ class PromotionSelectModal extends Component {
                 }}
                 >
                     {
-                        isCreate &&
+                        !isBatch &&
                         <div style={{ marginBottom: '20px' }}>
                             <span>共享组名称</span>
                             <Input value={shareGroupName} onChange={this.handleShareGroupName} style={{ width: '300px', marginLeft: '16px' }} maxLength={20} />
