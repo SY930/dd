@@ -101,7 +101,7 @@ export default class CommentSendGiftDecorationBoard extends Component {
                         <div className={style.uploaderTip}>
                             <p>* {SALE_LABEL.k6346ckg}1000KB</p>
                             <p>* {SALE_LABEL.k6346css}920x360</p>
-                            <p>* {SALE_LABEL.k6346d14}</p>
+                            <p>* 支持JPG、PNG图片文件</p>
                         </div>
                     </div>
                 </div>
@@ -144,8 +144,8 @@ export default class CommentSendGiftDecorationBoard extends Component {
                                         />
                                         <div className={style.uploaderTip}>
                                             <p>* {SALE_LABEL.k6346ckg}1000KB</p>
-                                            <p>* {SALE_LABEL.k6346css}920x550像素</p>
-                                            <p>* {SALE_LABEL.k6346d14}</p>
+                                            <p>* {SALE_LABEL.k6346css}920x1346像素</p>
+                                            <p>* 支持JPG、PNG图片文件</p>
                                         </div>
                                     </div>
                                 </div>
