@@ -265,7 +265,7 @@ class PromotionSelectModal extends Component {
                 }}
                 >
                     {
-                        isCreate &&
+                        !isBatch &&
                         <div style={{ marginBottom: '20px' }}>
                             <span>共享组名称</span>
                             <Input value={shareGroupName} onChange={this.handleShareGroupName} style={{ width: '300px', marginLeft: '16px' }} maxLength={20} />

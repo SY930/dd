@@ -433,7 +433,7 @@ export default class ShareRules extends Component {
 
     onNameChange = (item, e) => {
         const value = e.target.value
-        if(!value) {
+        if (!value) {
             message.warn('共享组名称不能为空')
             return false
         }
@@ -547,20 +547,20 @@ export default class ShareRules extends Component {
                                                         style={{ marginRight: 10 }}
                                                     >
                                                     </Checkbox>
-                                                    {
-                                                        !(ifCanEditName == shareGroup.itemID) ?
-                                                            <div className={style.titleDix}>
-                                                                {shareGroup.shareGroupName || '营销活动共享组' + `${index + 1}`}
-                                                                {
+                                                    {/* {
+                                                        !(ifCanEditName == shareGroup.itemID) ? */}
+                                                    <div className={style.titleDix}>
+                                                        {shareGroup.shareGroupName || '营销活动共享组' + `${index + 1}`}
+                                                        {/* {
                                                                     this.isMyShareGroup(shareGroup)
                                                                     && <Icon
                                                                         className={style.editNameIcon}
                                                                         onClick={this.handleEditName.bind(this, shareGroup, index)}
                                                                         type="edit"
                                                                     ></Icon>
-                                                                }
-                                                            </div>
-                                                            : <Input
+                                                                } */}
+                                                    </div>
+                                                    {/* : <Input
                                                                 style={{
                                                                     width: '85%',
                                                                 }}
@@ -569,7 +569,7 @@ export default class ShareRules extends Component {
                                                                 value={editNameValue}
                                                                 maxLength={20}
                                                             ></Input>
-                                                    }
+                                                    } */}
                                                 </div>
                                                 {
                                                     shareGroup.shopID > 0 && (
@@ -588,14 +588,14 @@ export default class ShareRules extends Component {
                                                             }}
                                                             onClick={() => this.handleEditShareGroup(shareGroup, index)}
                                                         >
-                                                            <Icon type="plus" />
-                                                            添加
+                                                            <Icon type="edit" />
+                                                            编辑
                                                         </Button>
                                                     ) : (
                                                             <Tooltip title={`${'只能编辑由'}${this.props.user.shopID > 0 ? '本店铺' : '集团'}${'创建的共享组'}`}>
                                                                 <Button disabled type="ghost" style={{ marginRight: 10 }}>
-                                                                    <Icon type="plus" />
-                                                                添加
+                                                                    <Icon type="edit" />
+                                                                    编辑
                                                             </Button>
                                                             </Tooltip>
                                                         )
