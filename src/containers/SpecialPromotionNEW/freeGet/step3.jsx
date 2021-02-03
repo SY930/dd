@@ -24,7 +24,7 @@ const SelectEl = function SelectEl() {
             value={freeGetLimit}
             style={{ width: '80px', marginLeft: '-10px' }}
             onChange={(e) => {
-                resetFields(['giftTotalCount'])
+                resetFields(['giftTotalCopies'])
                 this.setState({
                     freeGetLimit: e,
                 })
@@ -36,9 +36,11 @@ const SelectEl = function SelectEl() {
     )
 }
 
+//免费领取模块在这
 export const freeGetStep3Render = function freeGetStep3Render() {
     const { type, isNew, form: { getFieldDecorator } } = this.props;
     const { data, freeGetLimit } = this.state;
+
     //礼品个数控制，这次放开限制，允许编辑
     // data.forEach((v) => {
     //     v.giftCount.disabled = true,
@@ -46,11 +48,10 @@ export const freeGetStep3Render = function freeGetStep3Render() {
     // })
 
 
-    const giftInfo = this.props.specialPromotion.get('$giftInfo').toJS()
-    let giftSendCountVal = 0;
-    if(giftInfo && giftInfo.length > 0){
-        giftSendCountVal = giftInfo[0].giftSendCount;
-    }
+    const giftInfo = this.props.specialPromotion.get('$giftInfo').toJS();
+    const dataInfo = this.props.specialPromotion.get('$eventInfo').toJS();
+    const { userCount = 0 }  = dataInfo;
+    
 
     return (
         <div>
@@ -67,7 +68,7 @@ export const freeGetStep3Render = function freeGetStep3Render() {
                         <Icon style={{ fontSize: '16px', marginRight: '10px' }} type="question-circle" />
                     </Tooltip>
 
-                    {(freeGetLimit === '0' || (freeGetLimit === '0' && (giftInfo[0] && giftInfo[0].giftTotalCount == 2147483647))) ? <PriceInput
+                    {(freeGetLimit === '0' || (freeGetLimit === '0' && (giftInfo[0] && giftInfo[0].giftTotalCopies == 2147483647))) ? <PriceInput
                         addonAfter={'份'}
                         modal="int"
                         maxNum={freeGetLimit === '1' ? 8 : 10}
@@ -75,9 +76,9 @@ export const freeGetStep3Render = function freeGetStep3Render() {
                         prefix={SelectEl.call(this)}
                         style={{ paddingLeft: '70px' }}
                         value={{ number: '' }}
-                    /> : getFieldDecorator('giftTotalCount', {
+                    /> : getFieldDecorator('giftTotalCopies', {
                         initialValue: {
-                            number: (giftInfo[0] && giftInfo[0].giftTotalCount == 2147483647) ? '' : (giftInfo[0] && giftInfo[0].giftTotalCount),
+                            number: (giftInfo[0] && giftInfo[0].giftTotalCopies == 2147483647) ? '' : (giftInfo[0] && giftInfo[0].giftTotalCopies),
                         },
                         rules: [
                             {
@@ -92,8 +93,8 @@ export const freeGetStep3Render = function freeGetStep3Render() {
                                     } else if (v.number >= 100000000) {
                                         return cb('请输入大于0的8位以内的整数');
                                     }
-                                    if (v.number <= giftSendCountVal) {
-                                        return cb('礼品份数不能小于已发出的礼品数');
+                                    if (v.number <= userCount) {
+                                        return cb('礼品份数不能小于用户已参与次数');
                                     }
                                     cb();
                                 },
