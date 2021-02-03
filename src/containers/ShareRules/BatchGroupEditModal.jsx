@@ -20,6 +20,7 @@ import { isEqual } from 'lodash';
 import style from './style.less'
 import { axiosData } from '../../helpers/util';
 import PromotionSelectModal from "./PromotionSelectModal";
+import axios from 'axios';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -96,7 +97,7 @@ class BatchGroupEditModal extends Component {
         const {
             addAct
         } = this.state
-        if(!addAct.length) {
+        if (!addAct.length) {
             message.warning('请选择添加的活动')
             return
         }
@@ -109,21 +110,38 @@ class BatchGroupEditModal extends Component {
             shareGroupIds: batchList,
             modifyDetailList: addAct,
         }
-        axiosData('/promotion/promotionShareGroupService_batchUpdateShareGroups.ajax', opts, {}, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
-            .then((res) => {
-                if(res.code === '000'){
+        axios.post('/api/v1/universal', {
+            service: 'HTTP_SERVICE_URL_PROMOTION_NEW', // ? domain :'HTTP_SERVICE_URL_CRM', //'HTTP_SERVICE_URL_PROMOTION_NEW'
+            method: '/promotion/promotionShareGroupService_batchUpdateShareGroups.ajax',
+            type: 'post',
+            data: opts,
+        }).then((res) => {
+                if (res.code === '000') {
                     message.success('批量添加成功')
                     this.props.handleCancelBatch()
                     this.props.refresh()
-                }else {
-                    message.err(res.message)
+                    return
                 }
+                if (res.code === '1211200011') {
+                    let arr = res.ultraLimitNames.map((item) => {
+                        return `【${item}】`
+                    })
+                    Modal.warning({
+                        title: '共享组设置项超限',
+                        content: <div className={style.infoDiv}>
+                            {res.message}
+                            <div className={style.infoDivNames}>{arr.join('、')}</div>
+                        </div>
+                    })
+                    return
+                }
+                message.error(res.message)
             })
             .catch(err => {
-                message.error(err)
+                    message.error(err)
             });
     }
-
+ 
     handleChangeActType = (e) => {
         this.setState({
             actType: e.target.value
