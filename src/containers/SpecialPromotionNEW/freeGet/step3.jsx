@@ -24,7 +24,6 @@ const SelectEl = function SelectEl() {
             value={freeGetLimit}
             style={{ width: '80px', marginLeft: '-10px' }}
             onChange={(e) => {
-                console.log(e,'e---------------')
                 resetFields(['giftTotalCopies'])
                 this.setState({
                     freeGetLimit: e,
@@ -41,7 +40,6 @@ const SelectEl = function SelectEl() {
 export const freeGetStep3Render = function freeGetStep3Render() {
     const { type, isNew, form: { getFieldDecorator } } = this.props;
     const { data, freeGetLimit } = this.state;
-    console.log(type,data,'data freeGetStep3Render------------------')
 
     //礼品个数控制，这次放开限制，允许编辑
     // data.forEach((v) => {
@@ -51,7 +49,6 @@ export const freeGetStep3Render = function freeGetStep3Render() {
 
 
     const giftInfo = this.props.specialPromotion.get('$giftInfo').toJS()
-    console.log(giftInfo,'giftInfo===-----------------------52')
     let giftSendCountVal = 0;
     if(giftInfo && giftInfo.length > 0){
         giftSendCountVal = giftInfo[0].giftSendCount;

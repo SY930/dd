@@ -558,7 +558,6 @@ class SpecialDetailInfo extends Component {
         }
     }
     initState = () => {
-        console.log('----------------initstate2-----------2')
         let giftInfo = this.props.specialPromotion.get("$giftInfo").toJS();
         let eventRecommendSettings = this.props.specialPromotion
         .get("$eventRuleInfos")
@@ -982,7 +981,7 @@ class SpecialDetailInfo extends Component {
             upGradeReturnGiftCheckBoxStatus,
             ...instantDiscountState,
         } = this.state;
-        console.log(data,'data-------------------------')
+
         // 桌边砍可以不启用礼品 直接短路返回
         if (flag && type == 67 && disabledGifts) {
             this.props.setSpecialBasicInfo({
@@ -1228,7 +1227,7 @@ class SpecialDetailInfo extends Component {
                           cleanCount,
                       }
             );
-            console.log(giftInfo,'giftInfo in specialPROmeotiondetailinfo')
+
             if(type == '21' && giftTotalCount) {
                 giftInfo.forEach(v => {
                     v.giftTotalCount = giftTotalCount
@@ -1372,7 +1371,6 @@ class SpecialDetailInfo extends Component {
         };
     };
     gradeChange = (gifts, typeValue) => {
-        console.log(gifts,typeValue,'gifts------------------------')
         // 赠送优惠券
         const typePropertyName =
             this.props.type == "68" ? "recommendType" : "sendType";

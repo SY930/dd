@@ -227,7 +227,7 @@ class AddGifts extends React.Component {
             this.setState({ disArr })
         }
         const { intl, theme } = this.props;
-        console.log(this.state.infos,'infos------------------')
+
         return this.state.infos.map((info, index, arr) => {
             
             let validateStatus,
@@ -236,14 +236,14 @@ class AddGifts extends React.Component {
                 valueNuber,
                 onChangeFunc;
             if (this.props.type != '20'  && this.props.type != '30' && this.props.type != '70') {
-                console.log('=====================1')
+
                 validateStatus = info.giftCount.validateStatus;
                 addonBefore = `${this.props.intl.formatMessage(STRING_SPE.dojv8nhwu12190)}`;
                 help = info.giftCount.msg;
                 valueNuber = info.giftCount.value;
                 onChangeFunc = this.handlegiftCountChange;
             } else {
-                console.log('=====================2')
+
                 validateStatus = info.giftTotalCount.validateStatus;
                 help = info.giftTotalCount.msg;
                 valueNuber = info.giftTotalCount.value;
@@ -650,7 +650,6 @@ class AddGifts extends React.Component {
     }
 
     handleGiftChange(value, index) {
-        console.log(value,'valuekkkkkk=================')
         if (value) {
             const newValue = value.split(',');
             const _infos = this.state.infos;
@@ -679,7 +678,6 @@ class AddGifts extends React.Component {
     }
 
     handlegiftTotalCountChange(value, index) {
-        console.log(value,'vaule----------------------------1')
         const _infos = this.state.infos;
         const {type} = this.props;
 
