@@ -247,11 +247,6 @@ class AddGifts extends React.Component {
                 validateStatus = info.giftTotalCount.validateStatus;
                 help = info.giftTotalCount.msg;
                 valueNuber = info.giftTotalCount.value;
-                // if(this.props.type == '21'){
-                //     validateStatus = info.giftTotalCopies.validateStatus;
-                //     help = info.giftTotalCopies.msg;
-                //     valueNuber = info.giftTotalCopies.value;
-                // }
                 addonBefore = `${this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kc13243)}`;
                 onChangeFunc = this.handlegiftTotalCountChange;
             }

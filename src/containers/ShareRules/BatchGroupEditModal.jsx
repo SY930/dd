@@ -80,9 +80,9 @@ class BatchGroupEditModal extends Component {
             shopID: this.props.user.shopID,
             shareGroupIDList: batchList
         }
-        axiosData('/promotion/promotionShareGroupService_queryShareGroupEventList.ajax', opts, {}, { path: 'data' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
-            .then((list) => {
-                let { giftDetails, promotionLst } = list
+        axiosData('/promotion/promotionShareGroupService_queryShareGroupEventList.ajax', opts, {}, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+            .then((res) => {
+                let { giftDetails, promotionLst } = res
                 this.setState({
                     pList: promotionLst,
                     gList: giftDetails

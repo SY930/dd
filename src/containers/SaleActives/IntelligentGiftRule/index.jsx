@@ -38,7 +38,6 @@ class IntelligentGiftRule extends React.Component {
         let {customerRangeSettings, giftRule} = this.state
         let {initialGiftValue = 0, adjustStepLength = 0, adjustMinAmount = 0, adjustMaxAmount = 0,} = customerRangeSettings
         this.GiftRuleForm.validateFields((err, value) => {
-            // console.log('>>aa', err, value)
             if(!err){
                 this.customerRangeForm.validateFieldsAndScroll((error, val) => {
                     // console.log('>>bb', error, val)
@@ -54,7 +53,6 @@ class IntelligentGiftRule extends React.Component {
 
                         // 校验
                         let remainder = Number(initialGiftValue) % Number(adjustStepLength)
-
                         if(remainder != 0){
                             message.warn('每次调整幅度数值需要被初始券面额数值整除');
                             return;
@@ -66,7 +64,6 @@ class IntelligentGiftRule extends React.Component {
 
                         // 新增、编辑
                         let editType = giftRule.itemID ? 'createActiveCom/updateGiftRule' : 'createActiveCom/addGiftRule'
-                        // console.log('parm', parm, editType)
                         
                         this.props.dispatch({
                             type: editType,

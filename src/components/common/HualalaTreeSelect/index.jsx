@@ -40,7 +40,6 @@ class HualalaTreeSelect extends React.Component {
     }
 
     render() {
-        console.log('this.props.children -> this', this)
         const childComponents = React.Children.toArray(this.props.children);
         
         const searchComponent = childComponents[0];
