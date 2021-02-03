@@ -116,6 +116,7 @@ export default class NewPromotion extends React.Component {
 
           }
         if (this.props.isNew === false) {
+            console.log(opts,'opts--------------------------')
             this.props.updateSpecialPromotion && this.props.updateSpecialPromotion({
                 data: opts,
                 success: () => {

@@ -117,6 +117,7 @@ class SpecialDetailInfo extends Component {
     }
 
     initState = () => {
+        console.log('----------------initstate-----------1')
         let giftInfo = this.props.specialPromotion.get("$giftInfo").toJS();
         const data = this.initiateDefaultGifts();
         giftInfo.forEach((gift, index) => {

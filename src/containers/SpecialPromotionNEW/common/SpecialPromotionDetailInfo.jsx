@@ -109,6 +109,12 @@ const getDefaultGiftData = (typeValue = 0, typePropertyName = "sendType") => ({
         validateStatus: "success",
         msg: null,
     },
+    // 免费活动礼品分数
+    giftTotalCopies: {
+        value: "",
+        validateStatus: "success",
+        msg: null,
+    },
     // 礼品ID和name
     giftInfo: {
         giftName: null,
@@ -552,6 +558,7 @@ class SpecialDetailInfo extends Component {
         }
     }
     initState = () => {
+        console.log('----------------initstate2-----------2')
         let giftInfo = this.props.specialPromotion.get("$giftInfo").toJS();
         let eventRecommendSettings = this.props.specialPromotion
         .get("$eventRuleInfos")
@@ -936,17 +943,20 @@ class SpecialDetailInfo extends Component {
     handleSubmitOld = (isPrev) => {
         if (isPrev) return true;
         const { type } = this.props;
-        let giftTotalCount = ''
+        let giftTotalCount = '';
+        let giftTotalCopies = '';
         let flag = true;
         const priceReg = /^(([1-9]\d{0,5})(\.\d{0,2})?|0.\d?[1-9]{1})$/;
         this.props.form.validateFieldsAndScroll(
+            // tmd 终于找到你了，免费领取参数在这里，grd
             { force: true },
             (error, basicValues) => {
                 if (error) {
                     flag = false;
                 } else {
                     if(type == '21') {
-                        giftTotalCount = basicValues.giftTotalCount ?  basicValues.giftTotalCount.number : 2147483647
+                        giftTotalCount = basicValues.giftTotalCount ?  basicValues.giftTotalCount.number : 2147483647;
+                        giftTotalCopies = basicValues.giftTotalCopies ?  basicValues.giftTotalCopies.number : 2147483647;
                     }
                 }
 
@@ -972,7 +982,7 @@ class SpecialDetailInfo extends Component {
             upGradeReturnGiftCheckBoxStatus,
             ...instantDiscountState,
         } = this.state;
-
+        console.log(data,'data-------------------------')
         // 桌边砍可以不启用礼品 直接短路返回
         if (flag && type == 67 && disabledGifts) {
             this.props.setSpecialBasicInfo({
@@ -1218,13 +1228,14 @@ class SpecialDetailInfo extends Component {
                           cleanCount,
                       }
             );
-
+            console.log(giftInfo,'giftInfo in specialPROmeotiondetailinfo')
             if(type == '21' && giftTotalCount) {
                 giftInfo.forEach(v => {
                     v.giftTotalCount = giftTotalCount
+                    v.giftTotalCopies = giftTotalCopies
                 })
             }
-            this.props.setSpecialGiftInfo(giftInfo);
+            this.props.setSpecialGiftInfo(giftInfo);//发起action
 
             return true;
         }
@@ -1361,6 +1372,7 @@ class SpecialDetailInfo extends Component {
         };
     };
     gradeChange = (gifts, typeValue) => {
+        console.log(gifts,typeValue,'gifts------------------------')
         // 赠送优惠券
         const typePropertyName =
             this.props.type == "68" ? "recommendType" : "sendType";

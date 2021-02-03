@@ -37,8 +37,14 @@ const defaultData = {
         validateStatus: 'success',
         msg: null,
     },
-    // 礼品数量
+    // 礼品总数量
     giftTotalCount: {
+        value: '',
+        validateStatus: 'success',
+        msg: null,
+    },
+    // 礼品分数
+    giftTotalCopies: {
         value: '',
         validateStatus: 'success',
         msg: null,
@@ -221,6 +227,7 @@ class AddGifts extends React.Component {
             this.setState({ disArr })
         }
         const { intl, theme } = this.props;
+        console.log(this.state.infos,'infos------------------')
         return this.state.infos.map((info, index, arr) => {
             
             let validateStatus,
@@ -229,16 +236,23 @@ class AddGifts extends React.Component {
                 valueNuber,
                 onChangeFunc;
             if (this.props.type != '20'  && this.props.type != '30' && this.props.type != '70') {
+                console.log('=====================1')
                 validateStatus = info.giftCount.validateStatus;
                 addonBefore = `${this.props.intl.formatMessage(STRING_SPE.dojv8nhwu12190)}`;
                 help = info.giftCount.msg;
                 valueNuber = info.giftCount.value;
                 onChangeFunc = this.handlegiftCountChange;
             } else {
+                console.log('=====================2')
                 validateStatus = info.giftTotalCount.validateStatus;
-                addonBefore = `${this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kc13243)}`;
                 help = info.giftTotalCount.msg;
                 valueNuber = info.giftTotalCount.value;
+                // if(this.props.type == '21'){
+                //     validateStatus = info.giftTotalCopies.validateStatus;
+                //     help = info.giftTotalCopies.msg;
+                //     valueNuber = info.giftTotalCopies.value;
+                // }
+                addonBefore = `${this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kc13243)}`;
                 onChangeFunc = this.handlegiftTotalCountChange;
             }
             return (
@@ -636,7 +650,7 @@ class AddGifts extends React.Component {
     }
 
     handleGiftChange(value, index) {
-        
+        console.log(value,'valuekkkkkk=================')
         if (value) {
             const newValue = value.split(',');
             const _infos = this.state.infos;
@@ -665,15 +679,30 @@ class AddGifts extends React.Component {
     }
 
     handlegiftTotalCountChange(value, index) {
+        console.log(value,'vaule----------------------------1')
         const _infos = this.state.infos;
+        const {type} = this.props;
+
         _infos[index].giftTotalCount.value = value.number;
+        if(type == '21'){
+            _infos[index].giftTotalCopies.value = value.number;
+        }
+
         const _value = parseFloat(value.number);
         if (_value > 0 && _value <= 1000000000) {
             _infos[index].giftTotalCount.validateStatus = 'success';
             _infos[index].giftTotalCount.msg = null;
+            if(type  == '21'){
+                _infos[index].giftTotalCopies.validateStatus = 'success';
+                _infos[index].giftTotalCopies.msg = null;
+            }
         } else {
             _infos[index].giftTotalCount.validateStatus = 'error';
             _infos[index].giftTotalCount.msg = `${this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kd3282)}`;
+            if(type  == '21'){
+                _infos[index].giftTotalCopies.validateStatus = 'error';
+                _infos[index].giftTotalCopies.msg = `${this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kd3282)}`;;
+            }
         }
         this.setState({
             infos: _infos,
