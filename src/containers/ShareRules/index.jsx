@@ -176,6 +176,12 @@ export default class ShareRules extends Component {
         })
     }
 
+    handleClearChooseShareItems = () => {
+        this.setState({
+            batchList: [],
+        })
+    }
+
     AddUpUnionBatchActivity = () => {
         //只在需要时做整合运算。不做多余的算法
         const {
@@ -512,6 +518,7 @@ export default class ShareRules extends Component {
                         batchList={batchList}
                         filteredShareGroups={filteredShareGroups}
                         handleDeleteShareItem={this.handleDeleteShareItem}
+                        handleClearChooseShareItems={this.handleClearChooseShareItems}
                         refresh={this.queryAll}
                     />
                 }
