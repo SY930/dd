@@ -24,7 +24,7 @@ const SelectEl = function SelectEl() {
             value={freeGetLimit}
             style={{ width: '80px', marginLeft: '-10px' }}
             onChange={(e) => {
-                resetFields(['giftTotalCount'])
+                resetFields(['giftTotalCopies'])
                 this.setState({
                     freeGetLimit: e,
                 })
@@ -36,9 +36,12 @@ const SelectEl = function SelectEl() {
     )
 }
 
+//免费领取模块在这
 export const freeGetStep3Render = function freeGetStep3Render() {
     const { type, isNew, form: { getFieldDecorator } } = this.props;
     const { data, freeGetLimit } = this.state;
+    console.log(type,data,'data freeGetStep3Render------------------')
+
     //礼品个数控制，这次放开限制，允许编辑
     // data.forEach((v) => {
     //     v.giftCount.disabled = true,
@@ -47,6 +50,7 @@ export const freeGetStep3Render = function freeGetStep3Render() {
 
 
     const giftInfo = this.props.specialPromotion.get('$giftInfo').toJS()
+    console.log(giftInfo,'giftInfo===-----------------------52')
     let giftSendCountVal = 0;
     if(giftInfo && giftInfo.length > 0){
         giftSendCountVal = giftInfo[0].giftSendCount;
@@ -67,7 +71,7 @@ export const freeGetStep3Render = function freeGetStep3Render() {
                         <Icon style={{ fontSize: '16px', marginRight: '10px' }} type="question-circle" />
                     </Tooltip>
 
-                    {(freeGetLimit === '0' || (freeGetLimit === '0' && (giftInfo[0] && giftInfo[0].giftTotalCount == 2147483647))) ? <PriceInput
+                    {(freeGetLimit === '0' || (freeGetLimit === '0' && (giftInfo[0] && giftInfo[0].giftTotalCopies == 2147483647))) ? <PriceInput
                         addonAfter={'份'}
                         modal="int"
                         maxNum={freeGetLimit === '1' ? 8 : 10}
@@ -75,9 +79,9 @@ export const freeGetStep3Render = function freeGetStep3Render() {
                         prefix={SelectEl.call(this)}
                         style={{ paddingLeft: '70px' }}
                         value={{ number: '' }}
-                    /> : getFieldDecorator('giftTotalCount', {
+                    /> : getFieldDecorator('giftTotalCopies', {
                         initialValue: {
-                            number: (giftInfo[0] && giftInfo[0].giftTotalCount == 2147483647) ? '' : (giftInfo[0] && giftInfo[0].giftTotalCount),
+                            number: (giftInfo[0] && giftInfo[0].giftTotalCopies == 2147483647) ? '' : (giftInfo[0] && giftInfo[0].giftTotalCopies),
                         },
                         rules: [
                             {
