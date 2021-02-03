@@ -48,11 +48,10 @@ export const freeGetStep3Render = function freeGetStep3Render() {
     // })
 
 
-    const giftInfo = this.props.specialPromotion.get('$giftInfo').toJS()
-    let giftSendCountVal = 0;
-    if(giftInfo && giftInfo.length > 0){
-        giftSendCountVal = giftInfo[0].giftSendCount;
-    }
+    const giftInfo = this.props.specialPromotion.get('$giftInfo').toJS();
+    const dataInfo = this.props.specialPromotion.get('$eventInfo').toJS();
+    const { userCount = 0 }  = dataInfo;
+    
 
     return (
         <div>
@@ -94,8 +93,8 @@ export const freeGetStep3Render = function freeGetStep3Render() {
                                     } else if (v.number >= 100000000) {
                                         return cb('请输入大于0的8位以内的整数');
                                     }
-                                    if (v.number <= giftSendCountVal) {
-                                        return cb('礼品份数不能小于已发出的礼品数');
+                                    if (v.number <= userCount) {
+                                        return cb('礼品份数不能小于用户已参与次数');
                                     }
                                     cb();
                                 },
