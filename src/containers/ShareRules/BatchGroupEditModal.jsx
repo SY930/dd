@@ -120,6 +120,7 @@ class BatchGroupEditModal extends Component {
                     message.success('批量添加成功')
                     this.props.handleCancelBatch()
                     this.props.refresh()
+                    this.props.handleClearChooseShareItems()
                     return
                 }
                 if (res.code === '1211200011') {
