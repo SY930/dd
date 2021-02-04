@@ -624,7 +624,7 @@ class MySpecialActivities extends React.Component {
                 defaultValue={mpName || undefined}
                 onChange={this.handleWechatChange}
                 style={{
-                    width: '60%', margin: '0 10px'
+                    width: '54%', margin: '0 10px'
                 }}
             >
                 {
@@ -684,7 +684,7 @@ class MySpecialActivities extends React.Component {
                             </div>
                             <div className={indexStyles.qrCodeBox}>
                                 {
-                                    qrCodeImage ? <img className={indexStyles.imgBox} src={qrCodeImage} id='__promotion_xcx_qr_img' alt="小程序二维码" /> : ''
+                                    qrCodeImage ? <img className={indexStyles.miniProgramBox} src={qrCodeImage} id='__promotion_xcx_qr_img' alt="小程序二维码" /> : ''
                                 }
                                 <Button className={indexStyles.xzqrCodeBtn} type="primary" disabled={!qrCodeImage} onClick={()=>{this.downloadImage('__promotion_xcx_qr_img')}}>下载小程序码</Button>
                             </div>
