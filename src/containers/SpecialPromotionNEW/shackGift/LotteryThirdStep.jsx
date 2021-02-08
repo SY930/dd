@@ -182,7 +182,8 @@ class LotteryThirdStep extends React.Component {
                 }
                 infos[index].giftTotalCount.value = gift.giftTotalCount
                 infos[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(2);
-                infos[index].giftConfImagePath.value = gift.giftConfImagePath || 'basicdoc/f75ed282-4d1c-4f5d-ab29-a92529cbadcf.png' ;
+                // infos[index].giftConfImagePath.value = gift.giftConfImagePath || 'basicdoc/f75ed282-4d1c-4f5d-ab29-a92529cbadcf.png' ;
+                infos[index].giftConfImagePath.value = gift.giftConfImagePath;
             })
         }
         return {
