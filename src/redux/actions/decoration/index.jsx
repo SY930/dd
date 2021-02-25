@@ -44,6 +44,11 @@ export const getDecorationInfo = (opts) => {
     }
 }
 export const saveDecorationInfo = (opts) => {
+    const { type,decorationInfo } = opts;
+    if(type == '21'){
+        decorationInfo.isShowCanGetGift = typeof(decorationInfo.isShowCanGetGift) === 'undefined' ? true : decorationInfo.isShowCanGetGift;
+        decorationInfo.isShowGiftListContent = typeof(decorationInfo.isShowGiftListContent) === 'undefined' ? true : decorationInfo.isShowGiftListContent;
+    }
     return (dispatch) => {
         dispatch({
             type: SET_DECORATION_LOADING,
