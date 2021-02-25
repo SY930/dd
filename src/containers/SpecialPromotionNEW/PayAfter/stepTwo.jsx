@@ -246,7 +246,7 @@ class StepTwo extends React.Component {
             <div>
                 {this.props.user.shopID > 0 ? null : null}
                 <Form.Item
-                    label="适用店铺"
+                    label="适用店铺1"
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}

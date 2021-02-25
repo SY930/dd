@@ -61,7 +61,7 @@ const formItems1 = {
     },
     smsGate: {
         type: 'combo',
-        label: '是否发送消息',
+        label: '是否发送消息4',
         options: sendOpts,
         defaultValue: '0',
     },
@@ -129,7 +129,7 @@ const formItems2 = {
     },
     shopIDList: {
         type: 'custom',
-        label: '适用店铺',
+        label: '适用店铺4',
         render: () => (<p/>),
         defaultValue: [],
     },

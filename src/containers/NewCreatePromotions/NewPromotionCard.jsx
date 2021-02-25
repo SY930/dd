@@ -13,7 +13,7 @@ import { Modal, Tooltip } from 'antd';
 import moment from 'moment';
 
 //可作为插件开通的活动有以下：分享裂变、推荐有礼、桌边砍、拼团、秒杀、膨胀大礼包、签到、集点卡、支付后广告、下单抽抽乐、盲盒  9个活动。
-const pulgins = ['65', '68', '67', '71', '72', '66', '76', '75', '77', '78', '79'];
+const pulgins = ['65', '68', '67','71', '72', '66', '76', '75', '77', '78', '79'];
 //可作为营销盒子大礼包插件授权活动有以下：分享裂变、推荐有礼、膨胀大礼包、签到、集点卡、支付后广告、下单抽抽乐、盲盒  8个活动。
 const authPulgins = ['65', '68', '66', '76', '75', '77', '78', '79'];
 const imgURI = 'http://res.hualala.com/';
@@ -33,6 +33,7 @@ class NewPromotionCard extends Component {
             authPluginStatus
         } = this.props;
         const { key, title } = promotionEntity;
+        console.log(promotionEntity,'PROMOTIONeNTRYE=================')
         const isUse = this.filterItem(key);
         // 插件授权
         if(authPulgins.includes(key) && !authPluginStatus) {
@@ -63,10 +64,13 @@ class NewPromotionCard extends Component {
                 },
               });
         }else{
+            console.log('gohere---------------')
             if(V3KEYS.includes(key)){
+                console.log(V3KEYS,key,'V3KEYS===============')
                 onV3Click();
                 return;
             }
+            console.log(promotionEntity,'promotionEntry-----------------')
             onCardClick(promotionEntity);
         }
         // console.log('promotionEntity', promotionEntity);

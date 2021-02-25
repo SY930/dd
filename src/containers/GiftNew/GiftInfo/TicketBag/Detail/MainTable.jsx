@@ -8,6 +8,8 @@ const sendMap = {
     10: '购买',
     11: '商家赠送',
     12: '摇奖活动赠送',
+    13: '储值套餐赠送',
+    14: '定额卡充值赠送',
     124: '券包',
 };
 const sexMap = {
@@ -80,7 +82,7 @@ class MainTable extends Component {
         return [
             { width: 50, title: '序号', dataIndex: 'idx', className: tc, render: render2 },
             { width: 200, title: '券包编码', dataIndex: 'customerCouponPackID', className: 'TableTxtCenter', },
-            { width: 100, title: '发出方式', dataIndex: 'way', className: 'TableTxtCenter', },
+            { width: 100, title: '发出方式4', dataIndex: 'way', className: 'TableTxtCenter', },
             { width: 80, title: '状态', dataIndex: 'stat', className: 'TableTxtCenter', },
             { width: 200, title: '发出时间', dataIndex: 'createStamp', className: 'TableTxtCenter', },
             { width: 200, title: '发出店铺', dataIndex: 'sendShopName', className: 'TableTxtCenter', },
@@ -105,6 +107,7 @@ class MainTable extends Component {
     /* 生成表格数据 */
     generateDataSource() {
         const { list } = this.props;
+        console.log(list,'list===================')
         return list.map((x, i) => ({
             key: x.customerCouponPackID,
             idx: i + 1,

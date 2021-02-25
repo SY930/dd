@@ -2,6 +2,7 @@ import React from 'react'
 // 活动标题和说明
 import PayHaveGift from '../PayHaveGift/index'; // 微信支付有礼
 import SwellGiftBag from '../SwellGiftBag/index'; // 膨胀大礼包
+import GrabRedPacket from '../GrabRedPacket/index'; // 膨胀大礼包
 import CouponsGiveCoupons from '../CouponsGiveCoupons'// 消费券返券
 import Housekeeper from '../Housekeeper'// 管家活动-流失唤醒
 import IntelligentGiftRule from '../IntelligentGiftRule'// 管家活动-智能发券
@@ -77,6 +78,29 @@ export const actInfoList = [
         warnInfo: '在每一个发券周期判断上次发券后用户是否消费，如有消费则降低券面额，如未消费则提升券面额，连续无响应停止向该用户发券',
         render(props = {}) {
             return <IntelligentGiftRule {...props} />;
+        },
+    },
+    {
+        title: '拼手气抢红包',
+        key: '74',
+        dscList: [
+            {
+                title: '活动简介',
+                dsc: <div><div>参与活动领礼品，邀请好友助力礼品更丰厚</div><div>膨胀大礼包为免费裂变拉新活动，请合理设计礼品及对应助力人数</div></div>,
+            },
+            {
+                title: '活动规则',
+                dsc: <div>
+                    <div>1.同一位用户在一个活动中，只能发起一次膨胀大礼包活动，兑换奖品后活动立即终止</div>
+                    <div>2.助力规则：</div>
+                    <div>· 同一位助力用户只能为同一位发起者膨胀一次，不可多次膨胀 <br />
+                        · 同一位助力用户可为不同发起者各膨胀一次<br />
+                        · 助力用户的助力次数可以限制</div>
+                </div>,
+            },
+        ],
+        render(props = {}) {
+            return <GrabRedPacket {...props} />;
         },
     },
 ];

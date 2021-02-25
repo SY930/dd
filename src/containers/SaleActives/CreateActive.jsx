@@ -67,7 +67,9 @@ class CreateActive extends Component {
             descModalIsShow
         } = this.props.createActiveCom
         const  { itemID, isView, isEdit } = decodeUrl()
+        console.log(actInfoList,this.typeKey,'actInfoList-----------------')
         const currentInfo = actInfoList.find(v => v.key ===  this.typeKey) || {}
+        console.log(currentInfo,'currentInfo--------------------------')
         let {dscList = [], warnInfo = ''} = currentInfo
         return (
             <div className={styles.createActive}>

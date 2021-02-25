@@ -54,6 +54,14 @@ const initState = {
         giftList: [], // 礼品信息
         giftGetRule: 0,
         gifts: [],
+        brandList:[], //拼手气抢红包品牌
+        orderTypeList:[] , //拼手气抢红包适用业务
+        shopIDList:[],//拼手气抢红包品牌适用店铺
+        consumeTotalAmount:'',
+        maxPartInPerson:'',
+        countCycleDays:1,
+        partInTimes:0
+
     }, // 表单内的值,
     currentStep: 0,
     giftForm: null, // 礼品的form对象

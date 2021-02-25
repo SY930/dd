@@ -76,7 +76,7 @@ import { jumpPage, closePage } from '@hualala/platform-base';
 import {setThemeClass} from '../../utils/index'
 // 跳转到带装修的活动设置页面
 const activityList = [
-    '80', '66', '81', 'housekeeper', 'intelligentGiftRule'
+    '80', '66', '81', 'housekeeper', 'intelligentGiftRule','74'
 ]
 @registerPage([NEW_SALE_BOX], {
 })
@@ -190,6 +190,7 @@ class NewCustomerPage extends Component {
             { path: '' },
             'HTTP_SERVICE_URL_PROMOTION_NEW',
         ).then(data => {
+            console.log(data,'data---------0000000--------')
             const { eventTypeInfoList = [] } = data;
             this.setState({ whiteList: eventTypeInfoList });
         })
@@ -214,10 +215,11 @@ class NewCustomerPage extends Component {
     handleNewPromotionCardClick(promotionEntity) {
         const { key, isSpecial} = promotionEntity;
         if (HUALALA.ENVIRONMENT === 'production-release' && UNRELEASED_PROMOTION_TYPES.includes(`${key}`)) {
-            return message.success(SALE_LABEL.k6316gwc);
+            return message.success(SALE_LABEL.k6316gwc);//活动尚未开放
         }
         if (isSpecial) {
             const specialIndex = this.props.saleCenter.get('characteristicCategories').toJS().findIndex(promotion => promotion.key === key);
+            console.log(this.props.saleCenter.get('characteristicCategories').toJS(),'this.props.saleCenter.get(characteristicCategories).toJS()===========')
             this.handleSpecialPromotionCreate(specialIndex, promotionEntity)
         } else {
             const basicIndex = this.props.saleCenter.get('activityCategories').toJS().findIndex(promotion => promotion.key === key);
@@ -396,7 +398,8 @@ class NewCustomerPage extends Component {
     checkAuth = (allMenu, category) => {
         const { currentCategoryIndex } = this.state;
         let {authStatus} = checkAuthLicense(this.state.authLicenseData)
-        
+        console.log(authStatus,'authsTATUS---------------------')
+        authStatus = true;
         if(!authStatus){
             category = category.filter(item => (item.list == FANS_INTERACTIVITY_PROMOTION_TYPES || item.list == SALE_PROMOTION_TYPES || item.title == '最新活动'))
         }

@@ -81,7 +81,7 @@ const STRING_SPE = {
     da8of2e6el5231: { id: 'Sale.da8of2e6el5231', defaultMessage: '活动名称不能为空' },
     de8fcgn43i698: { id: 'Sale.de8fcgn43i698', defaultMessage: '不能超过50个字符' },
     d7ekp859lc7222: { id: 'Sale.d7ekp859lc7222', defaultMessage: '请输入活动名称' },
-    d2c89sj1s6888: { id: 'Sale.d2c89sj1s6888', defaultMessage: '是否发送消息' },
+    d2c89sj1s6888: { id: 'Sale.d2c89sj1s6888', defaultMessage: '是否发送消息7' },
     d4546grade9251: { id: 'Sale.d4546grade9251', defaultMessage: '短信签名' },
     d2c89sj1s61092: { id: 'Sale.d2c89sj1s61092', defaultMessage: '默认签名' },
     d7ekp859lc11113: { id: 'Sale.d7ekp859lc11113', defaultMessage: '活动说明' },

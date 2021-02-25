@@ -309,7 +309,17 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
         right: 12,
         bottom: 4,
     },
-
+    {
+        title: '拼手气抢红包',
+        isSpecial: true,
+        tags: ['小程序'],
+        text: '下单后抽取礼品，促进下次消费',
+        example: '',
+        key: '74',
+        right: 16,
+        bottom: 2,
+        isNew: true,
+    },
 ];
 
 /**
@@ -655,7 +665,7 @@ export const SALE_PROMOTION_TYPES = [
  */
 export const HOUSEKEEPER_TYPES = [
     {
-        title: '流失唤醒',
+        title: '流失唤醒1',
         isSpecial: true,
         text: '',
         example: '',
