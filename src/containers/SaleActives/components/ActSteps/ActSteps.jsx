@@ -9,7 +9,6 @@ const Step = Steps.Step;
 
 
 class ActSteps extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -18,14 +17,19 @@ class ActSteps extends React.Component {
     }
 
     next(current) {
+        console.log(current,'current================up')
         const onNext = this.props.onNext;
         if (typeof onNext === 'function') {
+        console.log(onNext,typeof onNext,'ONNEXT--------------')
+
             // use the lambda
             onNext(() => {
                 this.setState({
                     current: (this.state.current + 1),
                 }, () => {
                     if (this.props.callback && typeof this.props.callback === 'function') {
+                        console.log(this.state.current,'current-----------------down')
+
                         this.props.callback(this.state.current);
                     }
                 });
@@ -41,6 +45,7 @@ class ActSteps extends React.Component {
                     current: this.state.current - 1,
                 }, () => {
                     if (this.props.callback && typeof this.props.callback === 'function') {
+                        console.log(this.state.current,'current-----------------0')
                         this.props.callback(this.state.current);
                     }
                 });

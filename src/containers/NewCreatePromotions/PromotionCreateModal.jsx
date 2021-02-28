@@ -76,6 +76,7 @@ class PromotionCreateModal extends Component {
         this.handleNewPromotionCardClick = this.handleNewPromotionCardClick.bind(this);
     }
     componentDidMount() {
+        console.log('promotioncreateModal page')
         this.getWhite();
     }
     getWhite(){

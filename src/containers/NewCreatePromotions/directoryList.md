@@ -15,3 +15,6 @@
     |-- style.less
     |-- assets                                              // 资源文件
 ```
+新建营销活动步骤
+giftTypeConfig.js（添加活动内容）
+promotionType.jsx (添加活动卡片)

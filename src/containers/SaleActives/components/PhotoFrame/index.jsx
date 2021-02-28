@@ -40,11 +40,13 @@ export default class PhotoFrame extends Component {
             // 66: 'http://res.hualala.com/basicdoc/8ff25052-78a4-4be3-a043-347302ca9238.png',
             66: 'http://res.hualala.com/basicdoc/5c8317bc-3205-46af-b3a9-869bd0d9a553.png',
             65: 'http://res.hualala.com/basicdoc/87bfc2c7-c7b4-45b0-b78e-f2b29615d1db.png',
+            74: 'http://res.hualala.com/basicdoc/2c9ef968-fc0a-4fed-bc39-61577857b7b2.png',
             79: 'http://res.hualala.com/basicdoc/2c9ef968-fc0a-4fed-bc39-61577857b7b2.png',
         }
         const content = (
             <img width="400px" src={srcMap[type]} />
         )
+        console.log(type,'content-------------------')
         return (
             <div className={styles.photoFrame}>
                 <p>图片建议按如图所示用户端上传，支持格式jpg、png，大小不超过2M <Popover content={content} placement="right">

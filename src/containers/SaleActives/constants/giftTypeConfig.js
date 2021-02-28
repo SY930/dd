@@ -2,6 +2,7 @@ import React from 'react'
 // 活动标题和说明
 import PayHaveGift from '../PayHaveGift/index'; // 微信支付有礼
 import SwellGiftBag from '../SwellGiftBag/index'; // 膨胀大礼包
+import GrabRedPacket from '../GrabRedPacket/index'; // 膨胀大礼包
 import CouponsGiveCoupons from '../CouponsGiveCoupons'// 消费券返券
 import Housekeeper from '../Housekeeper'// 管家活动-流失唤醒
 import IntelligentGiftRule from '../IntelligentGiftRule'// 管家活动-智能发券
@@ -77,6 +78,19 @@ export const actInfoList = [
         warnInfo: '在每一个发券周期判断上次发券后用户是否消费，如有消费则降低券面额，如未消费则提升券面额，连续无响应停止向该用户发券',
         render(props = {}) {
             return <IntelligentGiftRule {...props} />;
+        },
+    },
+    {
+        title: '拼手气抢红包',
+        key: '82',
+        dscList: [
+            {
+                title: '活动简介',
+                dsc: <div>对于满足消费条件的用户，在下单后可以发起分享后领券活动，引导用户分享，提升会员活跃度</div>,
+            },
+        ],
+        render(props = {}) {
+            return <GrabRedPacket {...props} />;
         },
     },
 ];

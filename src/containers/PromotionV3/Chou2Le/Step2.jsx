@@ -19,6 +19,7 @@ class Step2 extends Component {
     }
     getBrandOpts() {
         const { brandList } = this.props;
+        console.log(brandList,'brandList-------------------')
         return brandList.map(x => {
             const { brandID, brandName } = x;
             return { label: brandName, value: brandID };

@@ -1,10 +1,11 @@
 import React from 'react';
-import { Icon, Spin } from 'antd';
+import { Icon, Spin ,message} from 'antd';
 import {connect} from 'react-redux';
 import { jumpPage,closePage,decodeUrl } from '@hualala/platform-base'
+import { getBrandList, getShopList, querySMSSignitureList, queryFsmGroupSettleUnit,getMessageTemplateList} from './AxiosFactory';
 import moment from 'moment'
 import ActSteps from '../components/ActSteps/ActSteps'
-import styles from './swellGiftBag.less'
+import styles from './grabRedPacket.less'
 import Step1 from './components/Step1'
 import Step2 from './components/Step2'
 import Step3 from './components/Step3'
@@ -15,12 +16,32 @@ const formatType = 'YYYY.MM.DD'
 
 
 @connect(({  loading, createActiveCom }) => ({  loading, createActiveCom }))
-class SwellGiftBag extends React.Component {
-    
+class GrabRedPacket extends React.Component {
+    state = {
+        brandList: [],
+        shops: [],
+        messageSignList:[],
+        queryFsmGroupList:[],
+        msgTplList:[]
+    }
     componentDidMount() {
+        getBrandList().then(list => {
+            this.setState({ brandList: list });
+        });
+        getShopList().then(list => {
+            this.setState({ shops: list });
+        });
+        querySMSSignitureList().then(list => {
+            this.setState({ messageSignList: list });
+        });
+        queryFsmGroupSettleUnit().then(list => {
+            this.setState({ queryFsmGroupList: list });
+        });
+        getMessageTemplateList().then(list => {
+            this.setState({ msgTplList: list });
+        });
         // 查询详情
         this.queryDetail()
-
         this.props.dispatch({
             type: 'createActiveCom/getAuthLicenseData',
             payload: {productCode: 'HLL_CRM_Marketingbox',}
@@ -40,9 +61,6 @@ class SwellGiftBag extends React.Component {
     }
 
     getDetail = async (itemID) => {
-
-
-
         this.props.dispatch({
             type: 'createActiveCom/queryEventDetail_NEW',
             payload: {
@@ -50,7 +68,6 @@ class SwellGiftBag extends React.Component {
             }
         }).then(res => {
             if(res) {
-
                  const { data, gifts } = res
                  const { eventRemark, eventStartDate,  eventEndDate , eventName, shareTitle, shareSubtitle} = data
                  const needCount = []
@@ -77,7 +94,7 @@ class SwellGiftBag extends React.Component {
                         }
                         // 获取券名字和面值
                         let chooseCoupon = {}
-                        const chooseCouponItem = boardList.filter(val => {
+                        const chooseCouponItem = (boardList||[]).filter(val => {
                             const list = val.children || []
                            const chooseItem =  list.find(item => item.key === v.giftID)
                             if(chooseItem) {
@@ -96,9 +113,16 @@ class SwellGiftBag extends React.Component {
                         payload: {
                            formData: {
                                ...data,
-                               giftList: gifts,
+                               giftList: (gifts||[]).filter((v,i) => {
+                                    return v && v.needShow==0
+                               }),
+                               giftList2: (gifts||[]).filter((v,i) => {
+                                    return v && v.needShow==1
+                               }),
+                               brandList:data.brandList ? data.brandList.split(','):[],
+                               orderTypeList:data.orderTypeList ? data.orderTypeList.split(','):[],
                                eventLimitDate: [moment(eventStartDate),moment(eventEndDate)],
-                               needCount
+                            //    needCount
                            },
                            crmGiftTypes: boardList
                         }
@@ -112,7 +136,7 @@ class SwellGiftBag extends React.Component {
                  })
                  this.form3.setFieldsValue({
                     shareTitle,
-                    shareSubtitle ,
+
                  })
                  this.props.dispatch({
                      type: 'createActiveCom/updateState',
@@ -120,7 +144,7 @@ class SwellGiftBag extends React.Component {
                         formData: {
                             ...data,
                             eventLimitDate: [moment(eventStartDate),moment(eventEndDate)],
-                            needCount
+                            // needCount
                         }
                      }
                  })
@@ -129,17 +153,19 @@ class SwellGiftBag extends React.Component {
     }
 
     handleNext =  (cb,current) => {
+        console.log(this.submitFn1,current,'ddddddddddddddyihetuan')
          if(typeof this[`submitFn${current}`]  === 'function' && this[`submitFn${current}`]()) {
             cb()
          }
     }
     handleFinish = (cb,current) => {
-        if(typeof this[`submitFn${current}`]  === 'function' && this[`submitFn${current}`]()) {
-
+        if(typeof this[`submitFn${current}`]  === 'function' && this[`submitFn${current}`]()) { 
             this.form3.validateFieldsAndScroll((e,v) => {
+                console.log(e,v,'v------=============')
                 if(e) {
                     return
                 }
+                let brand,orderList;
                 const { formData, type, isEdit } = this.props.createActiveCom
                 const {
                     eventName,
@@ -151,26 +177,52 @@ class SwellGiftBag extends React.Component {
                     countCycleDays,
                     partInTimes,
                     giftList,
-
-                } = formData
-                const { shareSubtitle,
-                    shareTitle,} = v
+                    giftList2,
+                    accountNo,
+                    smsGate,
+                    signID,
+                    brandList,
+                    orderTypeList,
+                    shopIDList,
+                    consumeTotalAmount,
+                    maxPartInPerson,
+                    smsTemplate,
+                } = formData;
+                if(smsGate!=0 && smsGate!=2){
+                    if(!accountNo){
+                        message.warning('请选择权益账户')
+                        return
+                    }
+                    if(!smsTemplate){
+                        message.warning('请选择短信模板')
+                        return
+                    }
+                    console.log('smesgegaagt')
+                }
+                console.log(formData,'submitformdata=================')
+                const { shareSubtitle,shareTitle,} = v
                 let typePath =  'createActiveCom/addEvent_NEW'
 
                 if(isEdit) {
                     typePath = 'createActiveCom/updateEvent_NEW'
                 }
-
                 giftList.forEach((v,i) => {
-                    if(v.countType == 1) {
-                        v.effectType = '3'
-                    }
-                    v.sendType = 0
-                    if(i === 3) {
-                        v.sendType = 1
-                    }
+                    v.needShow=0;
+                    v.giftCount=v.giftCount||'1';
+                    v.presentType=1
                 })
-
+                giftList2.forEach((v,i) => {
+                    v.needShow=1;
+                    v.giftCount=v.giftCount||'1';
+                    v.presentType=1
+                })
+                if(brandList.length > 0){
+                    brand = brandList.join(',')
+                }
+                if(orderTypeList.length > 0){
+                    orderList = orderTypeList.join(',')
+                }
+                // return
                 this.props.dispatch({
                     type: typePath ,
                     payload: {
@@ -186,15 +238,24 @@ class SwellGiftBag extends React.Component {
                             shareImagePath,
                             countCycleDays,
                             partInTimes,
+                            accountNo,
+                            smsGate,
+                            signID,
+                            brandList:brand,
+                            orderTypeList:orderList,
+                            shopIDList,
+                            consumeTotalAmount,
+                            maxPartInPerson,
+                            eventName,
+                            smsTemplate
                         },
-                        gifts: giftList
+                        gifts: giftList.concat(giftList2)
                     }
                 }).then(res => {
-                    if(res) {
-                        cb()
-                        closePage()
-                        jumpPage({pageID: '1000076003'})
-                    }
+                    cb()
+                    closePage()
+                    jumpPage({pageID: '1000076003'})
+                    
                 })
 
             })
@@ -225,6 +286,7 @@ class SwellGiftBag extends React.Component {
     }
 
     handleStepChange = (current) => {
+        console.log(current,'handleeeStepChangecurrent')
         this.props.dispatch({
             type: 'createActiveCom/updateState',
             payload: {
@@ -235,6 +297,7 @@ class SwellGiftBag extends React.Component {
 
     render () {
         const { loading } = this.props
+        const { brandList ,messageSignList,queryFsmGroupList,msgTplList}  = this.state
         const {
             formData,
             isView
@@ -242,9 +305,9 @@ class SwellGiftBag extends React.Component {
         const { eventLimitDate, needCount, giftList = [] } = formData
 
 
-        const giftListMap = giftList.filter((v,i) => {
-            return v && i < 3
-        })
+        // const giftListMap = giftList.filter((v,i) => {
+        //     return v && i < 3
+        // })
         const saveLoading = loading.effects['createActiveCom/addEvent_NEW']
         const loadLoading = loading.effects['createActiveCom/couponService_getSortedCouponBoardList']
 
@@ -254,9 +317,10 @@ class SwellGiftBag extends React.Component {
             getSubmitFn={this.getSubmitFn(0)}
             />,
           },  {
-            title: '活动规则',
+            title: '活动范围',
             content:  <Step2
             getSubmitFn={this.getSubmitFn(1)}
+            brandList={brandList}
             />,
           },  {
             title: '活动内容',
@@ -267,96 +331,14 @@ class SwellGiftBag extends React.Component {
             title: '分享推送',
             content:  <Step4
             getSubmitFn={this.getSubmitFn(3)}
+            messageSignList={messageSignList}
+            queryFsmGroupList={queryFsmGroupList}
+            msgTplList={msgTplList}
             />,
           }];
 
         return (
             <div className={styles.actWrap}>
-                <div className={styles.setResult}>
-
-                        <div className={styles.resultImgWrap}>
-
-                                <div className={styles.contentBg}>
-                                    <img className={styles.statusBar} src={`${imgUrl}/basicdoc/4cd4c139-ae05-4a5c-9fcb-2fb7fbdb2416.png`}/>
-                                    <div className={styles.container}>
-                                        <img className={styles.topImg} src={`${imgUrl}/basicdoc/b877b38f-da49-4530-9bff-58382f1bf227.png`}/>
-                                        <div className={styles.actTime}>
-                                            {eventLimitDate &&  eventLimitDate[0] ?
-                                                <div>
-                                                    活动时间：{moment(eventLimitDate[0]).format(formatType)}-{moment(eventLimitDate[1]).format(formatType)}
-                                                </div>
-                                            : null}
-
-                                        </div>
-                                        <div className={styles.couponWrap}>
-                                            <div className={styles.bigCoupon}  >
-                                                <div className={styles.left}>
-                                                    {giftListMap[0] && giftListMap[0].giftValue ?
-                                                    <div>¥ <span style={{fontWeight: 'bold',fontSize: '14px'}}>{ giftListMap[0].giftValue}</span></div>
-                                                    : null}
-
-                                                    <div className={styles.scale8}>{giftListMap[0] && giftListMap[0].label}</div>
-                                                </div>
-                                                <div className={styles.right}>
-
-                                                    <div style={{fontWeight: 'bold'}} className={styles.giftName}>{giftListMap[0] && giftListMap[0].giftName}</div>
-                                                    {
-                                                        giftListMap[0] && giftListMap[0].giftName ?
-                                                        <div style={{color: '#BCBCBC'}} className={styles.scale8}>优惠券详情</div>
-                                                        : null
-                                                    }
-
-                                                </div>
-                                            </div>
-                                            <div className={styles.submitBtn}>立即参与</div>
-                                        </div>
-
-                                        <div className={styles.giftsWrap}>
-                                            <div className={styles.title}>活动好礼</div>
-                                            <div className={styles.peopleNum}>
-                                                <div className={styles.line}></div>
-                                                <div className={styles.numWrap}>
-                                                    <div className={styles.num}>
-                                                        <Icon type="caret-down" />
-                                                        <div>{needCount[0] || 0}人</div>
-                                                    </div>
-                                                    <div className={styles.num}>
-                                                        <Icon type="caret-down" />
-                                                        {needCount[1] ?  <div>{needCount[1]}人</div> : null}
-                                                    </div>
-                                                    <div className={styles.num}>
-                                                        <Icon type="caret-down" />
-                                                        {needCount[2] ?  <div>{needCount[2]}人</div> : null}
-                                                    </div>
-                                                </div>
-                                             </div>
-
-                                             <div className={styles.couponList}>
-                                                {giftListMap.map((v,i) => {
-                                                    return (
-                                                        <div style={ i == 0 ? {marginLeft: 0} : {}} className={styles.couponItem}>
-                                                        <div>
-                                                            {v.giftValue ?  <div className={styles.scale8}>¥</div> : null}
-                                                        <div className={styles.fontWeight}>{v.giftValue}</div>
-                                                        </div>
-                                                    <div className={styles.label}>{v.label}</div>
-                                                    </div>
-                                                    )
-                                                })}
-
-
-                                             </div>
-                                        </div>
-
-
-                                    </div>
-
-                                </div>
-
-                        </div>
-
-                </div>
-
                 <div className={styles.settingWrap}>
                     <ActSteps
                         isUpdate={true}
@@ -374,14 +356,10 @@ class SwellGiftBag extends React.Component {
                         <Spin></Spin>
                         </div>
                     : null}
-
-
-
                 </div>
-
             </div>
         )
     }
 }
 
-export default SwellGiftBag
+export default GrabRedPacket
