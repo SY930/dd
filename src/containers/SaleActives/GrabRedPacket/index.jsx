@@ -1,8 +1,8 @@
 import React from 'react';
-import { Icon, Spin } from 'antd';
+import { Icon, Spin ,message} from 'antd';
 import {connect} from 'react-redux';
 import { jumpPage,closePage,decodeUrl } from '@hualala/platform-base'
-import { getBrandList, getShopList, querySMSSignitureList, queryFsmGroupSettleUnit} from './AxiosFactory';
+import { getBrandList, getShopList, querySMSSignitureList, queryFsmGroupSettleUnit,getMessageTemplateList} from './AxiosFactory';
 import moment from 'moment'
 import ActSteps from '../components/ActSteps/ActSteps'
 import styles from './grabRedPacket.less'
@@ -21,7 +21,8 @@ class GrabRedPacket extends React.Component {
         brandList: [],
         shops: [],
         messageSignList:[],
-        queryFsmGroupList:[]
+        queryFsmGroupList:[],
+        msgTplList:[]
     }
     componentDidMount() {
         getBrandList().then(list => {
@@ -35,6 +36,9 @@ class GrabRedPacket extends React.Component {
         });
         queryFsmGroupSettleUnit().then(list => {
             this.setState({ queryFsmGroupList: list });
+        });
+        getMessageTemplateList().then(list => {
+            this.setState({ msgTplList: list });
         });
         // 查询详情
         this.queryDetail()
@@ -90,7 +94,7 @@ class GrabRedPacket extends React.Component {
                         }
                         // 获取券名字和面值
                         let chooseCoupon = {}
-                        const chooseCouponItem = boardList.filter(val => {
+                        const chooseCouponItem = (boardList||[]).filter(val => {
                             const list = val.children || []
                            const chooseItem =  list.find(item => item.key === v.giftID)
                             if(chooseItem) {
@@ -109,9 +113,16 @@ class GrabRedPacket extends React.Component {
                         payload: {
                            formData: {
                                ...data,
-                               giftList: gifts,
+                               giftList: (gifts||[]).filter((v,i) => {
+                                    return v && v.needShow==0
+                               }),
+                               giftList2: (gifts||[]).filter((v,i) => {
+                                    return v && v.needShow==1
+                               }),
+                               brandList:data.brandList ? data.brandList.split(','):[],
+                               orderTypeList:data.orderTypeList ? data.orderTypeList.split(','):[],
                                eventLimitDate: [moment(eventStartDate),moment(eventEndDate)],
-                               needCount
+                            //    needCount
                            },
                            crmGiftTypes: boardList
                         }
@@ -125,7 +136,7 @@ class GrabRedPacket extends React.Component {
                  })
                  this.form3.setFieldsValue({
                     shareTitle,
-                    shareSubtitle ,
+
                  })
                  this.props.dispatch({
                      type: 'createActiveCom/updateState',
@@ -133,7 +144,7 @@ class GrabRedPacket extends React.Component {
                         formData: {
                             ...data,
                             eventLimitDate: [moment(eventStartDate),moment(eventEndDate)],
-                            needCount
+                            // needCount
                         }
                      }
                  })
@@ -143,19 +154,18 @@ class GrabRedPacket extends React.Component {
 
     handleNext =  (cb,current) => {
         console.log(this.submitFn1,current,'ddddddddddddddyihetuan')
-        console.log(typeof this[`submitFn${current}`],this[`submitFn${current}`](),'12345678------------------')
          if(typeof this[`submitFn${current}`]  === 'function' && this[`submitFn${current}`]()) {
-             console.log('gohere===============')
             cb()
          }
     }
     handleFinish = (cb,current) => {
-        if(typeof this[`submitFn${current}`]  === 'function' && this[`submitFn${current}`]()) {
-
+        if(typeof this[`submitFn${current}`]  === 'function' && this[`submitFn${current}`]()) { 
             this.form3.validateFieldsAndScroll((e,v) => {
+                console.log(e,v,'v------=============')
                 if(e) {
                     return
                 }
+                let brand,orderList;
                 const { formData, type, isEdit } = this.props.createActiveCom
                 const {
                     eventName,
@@ -167,26 +177,52 @@ class GrabRedPacket extends React.Component {
                     countCycleDays,
                     partInTimes,
                     giftList,
-
-                } = formData
-                const { shareSubtitle,
-                    shareTitle,} = v
+                    giftList2,
+                    accountNo,
+                    smsGate,
+                    signID,
+                    brandList,
+                    orderTypeList,
+                    shopIDList,
+                    consumeTotalAmount,
+                    maxPartInPerson,
+                    smsTemplate,
+                } = formData;
+                if(smsGate!=0 && smsGate!=2){
+                    if(!accountNo){
+                        message.warning('请选择权益账户')
+                        return
+                    }
+                    if(!smsTemplate){
+                        message.warning('请选择短信模板')
+                        return
+                    }
+                    console.log('smesgegaagt')
+                }
+                console.log(formData,'submitformdata=================')
+                const { shareSubtitle,shareTitle,} = v
                 let typePath =  'createActiveCom/addEvent_NEW'
 
                 if(isEdit) {
                     typePath = 'createActiveCom/updateEvent_NEW'
                 }
-
                 giftList.forEach((v,i) => {
-                    if(v.countType == 1) {
-                        v.effectType = '3'
-                    }
-                    v.sendType = 0
-                    if(i === 3) {
-                        v.sendType = 1
-                    }
+                    v.needShow=0;
+                    v.giftCount=v.giftCount||'1';
+                    v.presentType=1
                 })
-
+                giftList2.forEach((v,i) => {
+                    v.needShow=1;
+                    v.giftCount=v.giftCount||'1';
+                    v.presentType=1
+                })
+                if(brandList.length > 0){
+                    brand = brandList.join(',')
+                }
+                if(orderTypeList.length > 0){
+                    orderList = orderTypeList.join(',')
+                }
+                // return
                 this.props.dispatch({
                     type: typePath ,
                     payload: {
@@ -202,15 +238,24 @@ class GrabRedPacket extends React.Component {
                             shareImagePath,
                             countCycleDays,
                             partInTimes,
+                            accountNo,
+                            smsGate,
+                            signID,
+                            brandList:brand,
+                            orderTypeList:orderList,
+                            shopIDList,
+                            consumeTotalAmount,
+                            maxPartInPerson,
+                            eventName,
+                            smsTemplate
                         },
-                        gifts: giftList
+                        gifts: giftList.concat(giftList2)
                     }
                 }).then(res => {
-                    if(res) {
-                        cb()
-                        closePage()
-                        jumpPage({pageID: '1000076003'})
-                    }
+                    cb()
+                    closePage()
+                    jumpPage({pageID: '1000076003'})
+                    
                 })
 
             })
@@ -236,7 +281,6 @@ class GrabRedPacket extends React.Component {
         })
     }
     getSubmitFn = (current) => ({submitFn,form}) => {
-        console.log(current,submitFn,form,'getSubmitFn===============')
         this[`submitFn${current}`] = submitFn
         this[`form${current}`] = form
     }
@@ -253,7 +297,7 @@ class GrabRedPacket extends React.Component {
 
     render () {
         const { loading } = this.props
-        const { brandList ,messageSignList}  = this.state
+        const { brandList ,messageSignList,queryFsmGroupList,msgTplList}  = this.state
         const {
             formData,
             isView
@@ -261,9 +305,9 @@ class GrabRedPacket extends React.Component {
         const { eventLimitDate, needCount, giftList = [] } = formData
 
 
-        const giftListMap = giftList.filter((v,i) => {
-            return v && i < 3
-        })
+        // const giftListMap = giftList.filter((v,i) => {
+        //     return v && i < 3
+        // })
         const saveLoading = loading.effects['createActiveCom/addEvent_NEW']
         const loadLoading = loading.effects['createActiveCom/couponService_getSortedCouponBoardList']
 
@@ -288,6 +332,8 @@ class GrabRedPacket extends React.Component {
             content:  <Step4
             getSubmitFn={this.getSubmitFn(3)}
             messageSignList={messageSignList}
+            queryFsmGroupList={queryFsmGroupList}
+            msgTplList={msgTplList}
             />,
           }];
 

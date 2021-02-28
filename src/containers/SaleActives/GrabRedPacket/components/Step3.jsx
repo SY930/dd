@@ -6,7 +6,7 @@ import TabItem from './TabItem/TabItem'
 import moment from 'moment'
 import { dateFormat } from '../../constant'
 import BaseForm from 'components/common/BaseForm';
-import { formItemLayout } from '../Common';
+// import { formItemLayout } from '../Common';
 
 const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
@@ -14,6 +14,10 @@ const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const formList = []
 const giftForm = []
+const formItemLayout = {
+    labelCol: { span: 3 },
+    wrapperCol: { span: 30 },
+}
 @connect(({ loading, createActiveCom }) => ({ loading, createActiveCom }))
 class Step3 extends React.Component {
     state = {
@@ -21,18 +25,23 @@ class Step3 extends React.Component {
         chooseTab: '0',
         treeData: this.props.createActiveCom.crmGiftTypes,
         formList: [],
-        partInTimes:'',
-        needCount1:1,
-        isCountVisible:false,
-        needShow:0
+        partInTimes: '',
+        needCount1: 1,
+        isCountVisible: false,
     }
-
     componentDidMount() {
-
         this.getSubmitFn()
-
     }
-
+    componentWillReceiveProps() {
+        const { formData } = this.props.createActiveCom;
+        const { partInTimes } = formData;
+        if (partInTimes) {
+            this.setState({
+                isCountVisible: true
+            })
+        }
+        console.log(partInTimes, 'componentWillReceiveProps=========')
+    }
     getSubmitFn = () => {
         if (typeof this.props.getSubmitFn === 'function') {
             this.props.getSubmitFn({
@@ -44,28 +53,35 @@ class Step3 extends React.Component {
     handleSubmit = () => {
         let flag = true
 
-        // const { formData: modalFormData } = this.props.createActiveCom
+        const { formData: modalFormData } = this.props.createActiveCom
 
-        // const { needCount, giftList } = modalFormData
-        // let formData = {
-        //     ...modalFormData,
-        // }
+        const { giftList, giftList2 } = modalFormData
+        let formData = {
+            ...modalFormData,
+        }
 
-        // giftList.forEach(v => {
-        //     if (v.rangeDate) {
-        //         v.effectTime = moment(v.rangeDate[0]).format(dateFormat)
-        //         v.validUntilDate = moment(v.rangeDate[1]).format(dateFormat)
-        //     }
-        // })
+        giftList.forEach(v => {
+            if (v.rangeDate) {
+                v.effectTime = moment(v.rangeDate[0]).format(dateFormat)
+                v.validUntilDate = moment(v.rangeDate[1]).format(dateFormat)
+            }
+        })
+        giftList2.forEach(v => {
+            if (v.rangeDate) {
+                v.effectTime = moment(v.rangeDate[0]).format(dateFormat)
+                v.validUntilDate = moment(v.rangeDate[1]).format(dateFormat)
+            }
+        })
 
-        // formList.forEach(form => {
-        //     form.validateFieldsAndScroll((e, v) => {
-        //         if (e) {
-        //             flag = false
-        //         }
+        console.log(formList, 'formlist--------------------')
 
-        //     })
-        // })
+        formList.forEach(form => {
+            form.validateFieldsAndScroll((e, v) => {
+                if (e) {
+                    flag = false
+                }
+            })
+        })
         // if (giftForm[3]) {
         //     giftForm[3].validateFieldsAndScroll((e, v) => {
         //         if (e) {
@@ -80,28 +96,14 @@ class Step3 extends React.Component {
 
         // const initiator = [...giftList]
         // initiator.length = 3
-        // if (initiator.filter(v => v).length !== 3 && flag) {
-        //     message.warn('你有未设置的档位')
-        //     return false
-        // }
-
-        // // 校验膨胀人数
-        // if (needCount[1] < needCount[0]) {
-        //     message.warn('第二档数值必须大于上一档位的人数')
-        //     return false
-        // }
-
-        // if (needCount[2] < needCount[1]) {
-        //     message.warn('第三档数值必须大于上一档位的人数')
-        //     return false
-        // }
-
-        // // 添加膨胀所需要的人数
-        // giftList.forEach((v, i) => {
-        //     v.needCount = needCount[i]
-
-        // })
-
+        if (giftList.length == 1 && !giftList[0].giftName) {
+            message.warn('请添加随机礼品')
+            return false
+        }
+        if (giftList2.length == 0) {
+            message.warn('请添加最优礼品')
+            return false
+        }
 
         // this.props.dispatch({
         //     type: 'createActiveCom/updateState',
@@ -131,13 +133,8 @@ class Step3 extends React.Component {
     }
 
     handleTabChange = (e) => {
-        console.log(e,formList,'e-----------12345')
-        const { needShow } = this.state;
+        console.log(giftForm, formList, 'e-----------12345')
 
-        this.setState({
-            needShow:e
-        })
-         
         let flag = true
         const giftFormInitiator = [...giftForm]
         giftFormInitiator.length = 2
@@ -170,13 +167,14 @@ class Step3 extends React.Component {
     }
 
     getForm = (key) => (form) => {
+        console.log(key, 'key----------------------')
         if (!formList[key]) {
             formList[key] = form
         }
 
     }
 
-    handleGiftChange = (key) => (giftData,type) => {
+    handleGiftChange = (key) => (giftData, type) => {
 
 
         // console.log(key,giftData,'giftData--------------')
@@ -184,45 +182,59 @@ class Step3 extends React.Component {
         // console.log(formData,'formDatahandleGiftCHANGE----------------')
         // let {giftList} = formData
         // const { treeData ,needShow} = this.state
-        
-        const { formData,isView,isEdit } = this.props.createActiveCom
-        const { giftList } =  formData
+
+        const { formData, isView, isEdit } = this.props.createActiveCom
+        const { giftList } = formData
         const { treeData } = this.state
 
-        if((isView || isEdit) && !giftList[3] && key == 3 ) {
-            return
-        }
-        let chooseCoupon = {}
-        const chooseCouponItem = treeData.filter(v => {
-            const list = v.children || []
-           const chooseItem =  list.find(item => item.key === giftData[0].giftID)
-            if(chooseItem) {
-                chooseCoupon = chooseItem
-            }
-            return chooseItem
-        })
-        const label = chooseCouponItem[0] && chooseCouponItem[0].label
+        // if((isView || isEdit) && !giftList[3] && key == 3 ) {
+        //     return
+        // }
+        // let chooseCoupon = {}
+        // const chooseCouponItem = treeData.filter(v => {
+        //     const list = v.children || []
+        //    const chooseItem =  list.find(item => item.key === giftData[0].giftID)
+        //     if(chooseItem) {
+        //         chooseCoupon = chooseItem
+        //     }
+        //     return chooseItem
+        // })
+        // const label = chooseCouponItem[0] && chooseCouponItem[0].label
 
-        if(label) {
-            giftData[0].label =  label
-            giftData[0].giftValue = chooseCoupon.giftValue
-        }
+        // if(label) {
+        //     giftData[0].label =  label
+        //     giftData[0].giftValue = chooseCoupon.giftValue
+        // }
 
 
-        giftList[key] = giftData[0]
-        console.log(key,giftData,'giftData------=======--=-=-=-=-=-=-=-=')
-        console.log(giftList,'giftlist==================')
+        // giftList[key] = giftData[0]
+        // console.log(key,giftData,'giftData------=======--=-=-=-=-=-=-=-=')
+        // console.log(giftList,'giftlist==================')
         this.props.dispatch({
             type: 'createActiveCom/updateState',
             payload: {
                 formData: {
                     ...formData,
-                    giftList
+                    giftList: giftData
                 }
             }
         })
     }
+    handleGiftChange2 = (key) => (giftData, type) => {
+        const { formData, isView, isEdit } = this.props.createActiveCom
+        const { giftList } = formData
+        const { treeData } = this.state
 
+        this.props.dispatch({
+            type: 'createActiveCom/updateState',
+            payload: {
+                formData: {
+                    ...formData,
+                    giftList2: giftData
+                }
+            }
+        })
+    }
     cacheTreeData = (treeData) => {
         this.setState({
             treeData
@@ -283,11 +295,11 @@ class Step3 extends React.Component {
         // }
     }
     handleFromChange = (key, value) => {
-        
-        if(!value) return;
+
+        if (!value) return;
         console.log(key, value, 'vaalueeeeeeeeeeeeeeee')
-        const {formData} = this.props.createActiveCom;
-        formData[key] =value
+        const { formData } = this.props.createActiveCom;
+        formData[key] = value
         this.props.dispatch({
             type: 'createActiveCom/updateState',
             payload: {
@@ -296,13 +308,13 @@ class Step3 extends React.Component {
         })
 
     }
-    changeJoinedCount = (key,value) => {
-        console.log(key,value,'changeJOINIDEcoUNT----------------')
-        const {formData} = this.props.createActiveCom;
-        if(key == '1'){
+    changeJoinedCount = (key, value) => {
+        console.log(key, value, 'changeJOINIDEcoUNT----------------')
+        const { formData } = this.props.createActiveCom;
+        if (key == '1') {
             this.setState({
-                needCount1:key,
-                isCountVisible:false
+                needCount1: key,
+                isCountVisible: false
             })
             formData['partInTimes'] = 0;
             this.props.dispatch({
@@ -312,70 +324,72 @@ class Step3 extends React.Component {
                 }
             })
         }
-        if(key == '2'){
+        if (key == '2') {
             this.setState({
-                needCount1:key,
-                isCountVisible:true
+                needCount1: key,
+                isCountVisible: true
             })
         }
     }
     renderStartEnd(decorator, form) {
-        const {partInTimes,needCount1,isCountVisible} = this.state;
+        const { formData } = this.props.createActiveCom;
+        const { partInTimes } = formData;
+        const { isCountVisible } = this.state;
+        console.log(isCountVisible, partInTimes, 'isCountVisible===---------')
         return (
             <Row>
-                <Col span={8}>每人每天参与活动次数</Col>
-                <Col span={6}>
+                <Col span={6}>每人每天参与活动次数</Col>
+                <Col span={6} className={styles.step3JoinNumSelect}>
                     <FormItem>
-                        <Select onChange={this.changeJoinedCount} placeholder="不限制">
+                        <Select onChange={this.changeJoinedCount} placeholder="不限制" value={isCountVisible ? '限制' : '不限制'}>
                             <Option key="2" value="2">限制</Option>
                             <Option key="1" value="1">不限制</Option>
                         </Select>
                     </FormItem>
                 </Col>
 
-                <Col span={6}>
+                <Col span={6} className={styles.step3JoinNumS}>
                     <FormItem>
-                            {isCountVisible ?
-                                decorator({
-                                    key: 'partInTimes',
-                                    rules: [
-                                        
-                                        {
-                                            validator: (rule, v, cb) => {
-                                                if (v === '') cb();
-                                                const reg = /^(([1-9]\d{0,5})|0)$/;
-                                                if(reg.test(v)){
-                                                    cb()
-                                                }else{
-                                                    cb(rule.message)
-                                                }
-                                                // v >= 0 && v <= 99999 ? cb() : cb(rule.message);
-                                            },
-                                            message: '请输入大于0的5位以内整数'
+                        {isCountVisible ?
+                            decorator({
+                                key: 'partInTimes',
+                                rules: [
+
+                                    {
+                                        validator: (rule, v, cb) => {
+                                            if (v === '') cb();
+                                            const reg = /^(([1-9]\d{0,5})|0)$/;
+                                            if (reg.test(v)) {
+                                                cb()
+                                            } else {
+                                                cb(rule.message)
+                                            }
+                                            // v >= 0 && v <= 99999 ? cb() : cb(rule.message);
                                         },
-                                        // {
-                                        //     validator: (rule, v, cb) => {
-                                        //         String(v || '').trim().length <= 5 ? cb() : cb(rule.message);
-                                        //     },
-                                        //     message: '活动参与次数超出限制'
-                                        // },
-                                    ],
-                                })(<Input
-                                    type="text"
-                                    value={partInTimes}
-                                    addonAfter='次'
-                                />) : null
-                            } 
+                                        message: '请输入大于0的5位以内整数'
+                                    },
+                                    // {
+                                    //     validator: (rule, v, cb) => {
+                                    //         String(v || '').trim().length <= 5 ? cb() : cb(rule.message);
+                                    //     },
+                                    //     message: '活动参与次数超出限制'
+                                    // },
+                                ],
+                            })(<Input
+                                type="text"
+                                value={partInTimes}
+                                addonAfter='次'
+                            />) : null
+                        }
                     </FormItem>
                 </Col>
             </Row>
         )
     }
     render() {
-
         const { formData, currentStep, isEdit, isView } = this.props.createActiveCom
-        console.log(formData,'formData=======-step333333')
-        const { giftList, needCount, giftGetRule } = formData
+        console.log(formData, 'step3333333------formdata')
+        const { giftList, giftList2, needCount, giftGetRule } = formData
         const { chooseTab, treeData } = this.state
         if (isEdit && currentStep !== 2) {
             return null
@@ -394,7 +408,7 @@ class Step3 extends React.Component {
                     pattern: /^(([1-9]\d{0,5})|0)(\.\d{0,2})?$/,
                     message: '请输入0~100000数字，支持两位小数',
                 }],
-                wrapperCol: { span: 10 },
+                wrapperCol: { span: 15 },
             },
             maxPartInPerson: {
                 type: 'text',
@@ -407,7 +421,7 @@ class Step3 extends React.Component {
                     pattern: /^(([1-9]\d{0,5})|0)$/,
                     message: '请输入大于0的5位以内整数',
                 }],
-                wrapperCol: { span: 10 },
+                wrapperCol: { span: 15 },
             },
             partInTimes: {
                 label: '参与次数',
@@ -415,10 +429,11 @@ class Step3 extends React.Component {
                 render: (decorator, form) => this.renderStartEnd(decorator, form),
             }
         };
-        const formKeys3 = ['consumeTotalAmount', 'maxPartInPerson','partInTimes'];
+        const formKeys3 = ['consumeTotalAmount', 'maxPartInPerson', 'partInTimes'];
         return (
             <div className={styles.step3Wrap}>
-                <div>
+                {isView && !isEdit && <div className={styles.disabledDiv}></div>}
+                <div style={{position:'relatve'}}>
                     <BaseForm
                         getForm={this.getForm('2')}
                         formItems={formItems3}
@@ -427,70 +442,56 @@ class Step3 extends React.Component {
                         formData={formData || {}}
                         formItemLayout={formItemLayout}
                     />
-
-                    {/* <PriceInput
-                            addonBefore={<Select value={this.state.stageType} onChange={this.handleStageTypeChange}>
-                                <Option value="2">限制</Option>
-                                <Option value="1">不限制</Option>
-                            </Select>}
-                            addonAfter='次'
-                            modal="float"
-                            placeholder='请输入次数'
-                            onChange={(value) => {
-                                console.log(value,'value------------')
-                                // const { data } = this.state;
-                                // if (value.number == null || value.number == '' || value.number > 10) {
-                                //     data[k].validateFlag = false;
-                                // } else {
-                                //     data[k].validateFlag = true;
-                                // }
-
-                                // data[k].value = value.number;
-                                // this.setState({ data });
-                                // this.props.onChange && this.props.onChange(data);
-                            }}
-                            // value={{ number: '1' }}
-                        /> */}
-
-
                 </div>
-
-                <Tabs
-                    hideAdd={true}
-                    onChange={this.handleTabChange}
-                    activeKey={chooseTab}
-                    type="card"
-                    className={styles.tabs}
-                >
-                    <TabPane tab="随机礼品" key="0">
-                        {/* {isView && !isEdit && <div className={styles.disabledDiv}></div>} */}
-                        <TabItem
-                            itemKey={"0"}
-                            getForm={this.getForm('0')}
-                            handleGiftChange={this.handleGiftChange('0')}
-                            giftList={giftList}
-                            onIptChange={this.onIptChange('0')}
-                            getGiftForm={this.getGiftForm('0')}
-                            needCount={needCount}
-                        />
-                    </TabPane>
-                    <TabPane tab="最优礼品" key="1">
-                        {/* {isView && !isEdit && <div className={styles.disabledDiv}></div>} */}
-
-                        <TabItem
-                            itemKey={"1"}
-                            getForm={this.getForm('1')}
-                            handleGiftChange={this.handleGiftChange('1')}
-                            giftList={giftList}
-                            treeData={treeData}
-                            onIptChange={this.onIptChange('1')}
-                            getGiftForm={this.getGiftForm('1')}
-                            needCount={needCount}
-                        />
-                    </TabPane>
-
-                </Tabs>
-
+                <div>
+                    <FormItem
+                        label='添加礼品'
+                        required
+                        formItemLayout={{
+                            labelCol: { span: 3 },
+                            wrapperCol: { span: 40 }
+                        }}
+                        className={styles.giftWrapper}
+                    >
+                        <Tabs
+                            hideAdd={true}
+                            onChange={this.handleTabChange}
+                            activeKey={chooseTab}
+                            type="card"
+                            className={styles.tabs}
+                            required
+                            style={{position:'relatve'}}
+                        >
+                            <TabPane tab="随机礼品" key="0">
+                                <TabItem
+                                    itemKey={"0"}
+                                    getForm={this.getForm('0')}
+                                    handleGiftChange={this.handleGiftChange('0')}
+                                    giftList={giftList}
+                                    onIptChange={this.onIptChange('0')}
+                                    getGiftForm={this.getGiftForm('0')}
+                                    needCount={needCount}
+                                    isMulti={true}
+                                    required
+                                />
+                            </TabPane>
+                            <TabPane tab="最优礼品" key="1">
+                                <TabItem
+                                    itemKey={"1"}
+                                    getForm={this.getForm('1')}
+                                    handleGiftChange={this.handleGiftChange2('1')}
+                                    giftList={giftList2}
+                                    treeData={treeData}
+                                    onIptChange={this.onIptChange('1')}
+                                    getGiftForm={this.getGiftForm('1')}
+                                    needCount={needCount}
+                                    isMulti={false}
+                                    required
+                                />
+                            </TabPane>
+                        </Tabs>
+                    </FormItem>
+                </div>
             </div>
         )
     }

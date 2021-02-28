@@ -9,7 +9,6 @@ const Step = Steps.Step;
 
 
 class ActSteps extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {

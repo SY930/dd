@@ -247,9 +247,11 @@
     position: relative;
     margin: 0 4px;
 }
-
+.stepsContent{
+    max-height: 800px;
+}
 .step3Wrap {
-
+    position: relative;
     :global {
         .ant-tabs.ant-tabs-card > .ant-tabs-bar .ant-tabs-tab {
             font-size: 14px;
@@ -307,9 +309,9 @@
         }
     }
 
-    .tabs {
-        margin-top: 24px;
-    }
+    // .tabs {
+    //     margin-top: 24px;
+    // }
 
     .initiatorWrap {
         margin-top: 20px;
@@ -320,9 +322,35 @@
         }
 
     }
-
-
-
+    .step3JoinNumSelect {
+        margin-top: -5px;
+        margin-left: 5px;
+        :global{
+            .ant-select-selection--single{
+                height: 28px!important;
+                line-height: 28px!important;
+            }
+        }
+    }
+    .step3JoinNumS{
+        margin-top: -5px;
+        margin-left: 5px;
+        
+    }
+    .giftWrapper{
+        // width: 800px;
+        margin-top: 20px;
+        :global{
+            .ant-form-item-label{
+                float: left;
+            }
+            // .ant-form-item-control-wrapper{
+            //     position: relative;
+            //     // top: -30px;
+            // }
+        }
+        
+    }
 }
 
 .title {
@@ -341,11 +369,14 @@
 
 .giftWrap {
     position: relative;
+    
+    
 }
 
 
 :global(.professional) {
     .step3Wrap {
+        position: relative;
         :global {
             .ant-tabs.ant-tabs-card > .ant-tabs-bar .ant-tabs-tab-active {
                 color: #379ff1;
@@ -371,6 +402,7 @@
 }
 .step4Wrap {
     position: relative;
+    min-height: 500px;
 }
 .helpPeople {
     position: relative; 

@@ -905,7 +905,7 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             title: '拼手气抢红包',
             text: '',
             example: "",
-            key: "74",
+            key: "82",
         },
     ];
     return basic;

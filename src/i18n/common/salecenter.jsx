@@ -384,7 +384,7 @@ const COMMON_LABEL = defineMessages({
     k5m6e5sr: { id: 'Sale.k5m6e5sr', defaultMessage: '菜品名称' },
     k5m6e613: { id: 'Sale.k5m6e613', defaultMessage: '添加菜品' },
     k5m6e6yf: { id: 'Sale.k5m6e6yf', defaultMessage: '上一步' },
-    k5m6e76r: { id: 'Sale.k5m6e76r', defaultMessage: '下一步' },
+    k5m6e76r: { id: 'Sale.k5m6e76r', defaultMessage: '下一步1' },
     k5nh20wl: { id: 'Sale.k5nh20wl', defaultMessage: '完成' },
     k5nh214x: { id: 'Sale.k5nh214x', defaultMessage: '消费满' },
     k5nh21d9: { id: 'Sale.k5nh21d9', defaultMessage: '减' },

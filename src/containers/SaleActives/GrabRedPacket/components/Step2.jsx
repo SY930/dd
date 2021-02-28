@@ -154,7 +154,7 @@ import { formKeys2, formItems2, formItemLayout } from '../Common';
 import ShopSelector from 'components/ShopSelector';
 import { isFilterShopType } from '../../../../helpers/util'
 import {connect} from 'react-redux';
-import css from './style.less';
+import styles from '../grabRedPacket.less';
 @connect(({ loading, createActiveCom }) => ({ loading, createActiveCom }))
 
 class Step2 extends Component {
@@ -180,10 +180,8 @@ class Step2 extends Component {
     handleSubmit = () => {
         let flag = true
         const { formData } = this.props.createActiveCom
-        console.log(formData,'handleFromChange------=====-------=====----')
 
         this.form.validateFieldsAndScroll((e, v) => {
-            console.log(e,v,'eeeeeeeee----------------v')
             
             // let formData = {}
             // const { partInTimesB, partInTimesC, countCycleDays } = this.state
@@ -199,12 +197,13 @@ class Step2 extends Component {
         return flag
     }
     handleFromChange = (key, value) => {
+        console.log(key,value,'value-----------brandlist')
+        let results = value
         const { formData } = this.props.createActiveCom;
         if (key === 'brandList') {
             this.setState({ brands: value });
         }
-        formData[key] =value
-        console.log(formData,'formData-------------------')
+        formData[key] = results;
         this.props.dispatch({
             type: 'createActiveCom/updateState',
             payload: {
@@ -239,10 +238,11 @@ class Step2 extends Component {
         // const { formData, getForm, form } = this.props;
         const newFormItems = this.resetFormItems();
         const { formData, isView, isEdit } = this.props.createActiveCom
-        console.log(this.props.createActiveCom,'this.props.createActiveCom=================1234')
+        console.log(formData,'step22222222222---formdata')
+        
         return (
-            <div>
-                {isView && !isEdit && <div ></div>}
+            <div style={{position: 'relative'}}>
+                {isView&&!isEdit&&<div className={styles.disabledDiv}></div>}
                 <BaseForm
                     getForm={this.getForm}
                     formItems={newFormItems}

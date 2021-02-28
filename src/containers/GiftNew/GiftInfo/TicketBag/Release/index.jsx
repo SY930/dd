@@ -189,7 +189,7 @@ class Release extends Component {
         const { current, mpInfoList, imgList, firstImg, url, btnLoading, downLoadFlag, downloadLoading } = this.state;
         const { list, loading, pageObj, selectedRowKeys } = this.state;
         const { onClose, groupID } = this.props;
-        const step1 = ([<Button key="0" loading={btnLoading} onClick={this.onGoStep2}>下一步</Button>]);
+        const step1 = ([<Button key="0" loading={btnLoading} onClick={this.onGoStep2}>下一步2</Button>]);
         const step2 = ([
             <Button key="2" onClick={onClose}>取消</Button>,
             <Button key="1" onClick={this.onGoStep1}>上一步</Button>,

@@ -9,9 +9,6 @@ import ShareSetting from '../../components/ShareSetting/ShareSetting'
 
 @connect(({  loading, createActiveCom }) => ({  loading, createActiveCom }))
 class Step4 extends React.Component {
-
-
-
     componentDidMount () {
 
         this.getSubmitFn()
@@ -85,6 +82,7 @@ class Step4 extends React.Component {
                         isHideDining: true,
                         shareImagePath
                     }}
+                    className={styles.step4WrapContent}
                 />
             </div>
         )

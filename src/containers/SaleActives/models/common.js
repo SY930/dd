@@ -52,15 +52,24 @@ const initState = {
         afterPayJumpType: '3',
         needCount: [], // 膨胀所需人数
         giftList: [], // 礼品信息
+        giftList2: [],
         giftGetRule: 0,
         gifts: [],
-        brandList:[], //拼手气抢红包品牌
-        orderTypeList:[] , //拼手气抢红包适用业务
-        shopIDList:[],//拼手气抢红包品牌适用店铺
+        
         consumeTotalAmount:'',
         maxPartInPerson:'',
         countCycleDays:1,
-        partInTimes:0
+        partInTimes:0,
+        eventName:'',
+        shareTitle:'',
+        shareImagePath:'',
+        accountNo:'',
+        signID:'',
+        smsGate:'',
+        brandList:[], //拼手气抢红包品牌
+        orderTypeList:[] , //拼手气抢红包适用业务
+        shopIDList:[],//拼手气抢红包品牌适用店铺
+        smsTemplate:''//短信模板
 
     }, // 表单内的值,
     currentStep: 0,
@@ -71,7 +80,6 @@ const initState = {
     isView: false, // 页面状态
     currentForm: null, // 为了检验当前form
     authLicenseData: {},
-    // 
     eventRule: {},
     giftRule: {},
 };
@@ -218,7 +226,6 @@ export default {
                     ...payload.event,
                     groupID,
                 },
-
             });
 
             if (ret.code === '000') {

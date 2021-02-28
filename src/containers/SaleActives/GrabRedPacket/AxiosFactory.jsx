@@ -6,7 +6,6 @@ const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', 'sp
 
 function getAccountInfo() {
     const { user } = getStore().getState();
-    console.log(getStore().getState(),'getStore().getState()====================')
     return user.get('accountInfo').toJS();
 }
 
@@ -55,8 +54,7 @@ async function querySMSSignitureList() {
         const method = `/promotion/message/query.ajax?groupID=${groupID}`;
         const params = { service, type, data, method };
         const response = await axios.post(url,params);
-        console.log(response,'response-------------------')
-        const {code,message:msg,data:{records = []}} = response;
+        const {code,message:msg,records = []} = response;
         if (code === '000') {
             return records;
         }
@@ -71,15 +69,29 @@ async function queryFsmGroupSettleUnit(){
     const method = `/specialPromotion/queryFsmGroupEquityAccount.ajax`;
     const params = { service, type, data, method };
     const response = await axios.post(url,params);
-    console.log(response,'response-------------------1')
-    const {code,message:msg,data:{accountInfoList = []}} = response;
+    const {code,message:msg,accountInfoList = []} = response;
     if (code === '000') {
         return accountInfoList;
     }
     message.error(msg);
     return [];
 };
-
+//获取短信模板
+async function getMessageTemplateList(){
+    const [service] = ['HTTP_SERVICE_URL_PROMOTION_NEW'];
+    const { groupID } = getAccountInfo();
+    const data = { groupID };
+    const method = `/sms/smsTemplateService_getSmsTemplateList.ajax`;
+    const params = { service, type, data, method };
+    const response = await axios.post(url,params);
+    const {code,message:msg,data :{ templateList = []}} = response;
+    if (code === '000') {
+        return templateList;
+    }
+    message.error(msg);
+    return [];
+};
 export {
-    getAccountInfo, getBrandList, getShopList,querySMSSignitureList,queryFsmGroupSettleUnit
+    getAccountInfo, getBrandList, getShopList,querySMSSignitureList,queryFsmGroupSettleUnit,getMessageTemplateList
 }
+

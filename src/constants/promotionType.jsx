@@ -315,7 +315,7 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
         tags: ['小程序'],
         text: '下单后抽取礼品，促进下次消费',
         example: '',
-        key: '74',
+        key: '82',
         right: 16,
         bottom: 2,
         isNew: true,

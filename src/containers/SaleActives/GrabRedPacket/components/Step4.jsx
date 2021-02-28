@@ -5,15 +5,11 @@ import {formItems1,formKeys1} from '../constant'
 import styles from '../grabRedPacket.less'
 import {connect} from 'react-redux';
 import {renderEventRemark, eventLimitDateRender, getDateCount} from '../../helper/common'
-import ShareSetting from '../../components/GrabRedPacketSetting/ShareSetting'
+import ShareSetting from './ShareSetting/ShareSetting'
 
 @connect(({  loading, createActiveCom }) => ({  loading, createActiveCom }))
 class Step4 extends React.Component {
-
-
-
     componentDidMount () {
-
         this.getSubmitFn()
     }
     getSubmitFn = (form) => {
@@ -24,8 +20,6 @@ class Step4 extends React.Component {
             })
         }
     }
-
-
     handleSubmit = () => {
         let flag = true
         const { formData: modalFormData } = this.props.createActiveCom
@@ -70,18 +64,37 @@ class Step4 extends React.Component {
         })
 
     }
-
+    
+    formDataChange = (v) => {
+        const { formData } = this.props.createActiveCom
+        this.props.dispatch({
+            type: 'createActiveCom/updateState',
+            payload: {
+                formData: {
+                    ...formData,
+                    ...v
+                }
+            }
+        })
+    }
     render () {
-        const {isView,isEdit } = this.props.createActiveCom
-        const { shareImagePath } = this.props.createActiveCom.formData
+        const {isView,isEdit,formData } = this.props.createActiveCom
+        const { shareImagePath } = formData
+        console.log(this.props,'step4--------formdata')
+        const { messageSignList,queryFsmGroupList,msgTplList} = this.props;
         return (
             <div className={styles.step4Wrap}>
                 {isView&&!isEdit&&<div className={styles.disabledDiv}></div>}
                 <ShareSetting
                     getForm = {this.getForm}
+                    formData={formData}
                     onRestImg= {this.onRestImg}
+                    onChange={this.formDataChange}
+                    messageSignList={messageSignList}
+                    queryFsmGroupList={queryFsmGroupList}
+                    msgTplList={msgTplList}
                     value={{
-                        type: '74',
+                        type: '82',
                         isHideDining: true,
                         shareImagePath
                     }}

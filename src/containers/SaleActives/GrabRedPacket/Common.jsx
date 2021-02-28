@@ -7,7 +7,7 @@ const bizOpts = [
     { label: '自提', value: '21' },
 ];
 const formItemLayout = {
-    labelCol: { span: 5 },
+    labelCol: { span: 3 },
     wrapperCol: { span: 17 },
 };
 const formItems2 = {
