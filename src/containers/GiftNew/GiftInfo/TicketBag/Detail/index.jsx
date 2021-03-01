@@ -232,7 +232,7 @@ class Detail extends Component {
                         </div>
                     </li>
                     <li className={styles.dataBox}>
-                        <h3>数据统计1</h3>
+                        <h3>数据统计</h3>
                         <Tabs defaultActiveKey="1" className="tabsStyles" style={{overflow:'auto'}}>
                             <TabPane tab="发出数" key="1">
                                 <Popover
