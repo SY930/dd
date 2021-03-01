@@ -76,7 +76,7 @@ import { jumpPage, closePage } from '@hualala/platform-base';
 import {setThemeClass} from '../../utils/index'
 // 跳转到带装修的活动设置页面
 const activityList = [
-    '80', '66', '81', 'housekeeper', 'intelligentGiftRule','82'
+    '80', '66', '81', 'housekeeper', 'intelligentGiftRule'
 ]
 @registerPage([NEW_SALE_BOX], {
 })
@@ -398,7 +398,7 @@ class NewCustomerPage extends Component {
         const { currentCategoryIndex } = this.state;
         let {authStatus} = checkAuthLicense(this.state.authLicenseData)
         console.log(authStatus,'authsTATUS---------------------')
-        authStatus = true;
+        // authStatus = true;
         if(!authStatus){
             category = category.filter(item => (item.list == FANS_INTERACTIVITY_PROMOTION_TYPES || item.list == SALE_PROMOTION_TYPES || item.title == '最新活动'))
         }
