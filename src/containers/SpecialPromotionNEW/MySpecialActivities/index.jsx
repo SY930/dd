@@ -116,7 +116,7 @@ const copyUrlList = [
     '68', // 推荐有礼
     '79', // 盲盒
     '66', // 膨胀大礼包
-    '82'
+    '82', // 拼手气抢红包
 ]
 const isCanCopyUrl = ({eventWay}) => {
     return copyUrlList.includes(`${eventWay}`)
