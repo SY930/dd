@@ -309,6 +309,7 @@ class NewCustomerPage extends Component {
         //     return;
         // }
 
+
         if(activityList.includes(key)) {
            setTimeout(() => {
             jumpPage({ menuID: SALE_CENTER_PAYHAVEGIFT, typeKey: key})
