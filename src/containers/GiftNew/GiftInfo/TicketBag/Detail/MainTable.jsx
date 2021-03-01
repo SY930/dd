@@ -82,7 +82,7 @@ class MainTable extends Component {
         return [
             { width: 50, title: '序号', dataIndex: 'idx', className: tc, render: render2 },
             { width: 200, title: '券包编码', dataIndex: 'customerCouponPackID', className: 'TableTxtCenter', },
-            { width: 100, title: '发出方式4', dataIndex: 'way', className: 'TableTxtCenter', },
+            { width: 100, title: '发出方式', dataIndex: 'way', className: 'TableTxtCenter', },
             { width: 80, title: '状态', dataIndex: 'stat', className: 'TableTxtCenter', },
             { width: 200, title: '发出时间', dataIndex: 'createStamp', className: 'TableTxtCenter', },
             { width: 200, title: '发出店铺', dataIndex: 'sendShopName', className: 'TableTxtCenter', },

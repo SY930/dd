@@ -53,6 +53,8 @@ const wayOpts = [
     { value: '10', label: '购买' },
     { value: '11', label: '商家赠送' },
     { value: '12', label: '摇奖活动赠送' },
+    { value: '13', label: '储值套餐赠送' },
+    { value: '14', label: '定额卡充值赠送' },
 ];
 const stockOpts = [
     { value: '1', label: '不限制' },
