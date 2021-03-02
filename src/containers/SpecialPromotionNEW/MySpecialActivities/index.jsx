@@ -102,7 +102,6 @@ const DECORATABLE_PROMOTIONS = [
     '76',
     '68',
     '79',
-    '82'
 ]
 const isDecorationAvailable = ({eventWay}) => {
     return DECORATABLE_PROMOTIONS.includes(`${eventWay}`)
@@ -116,7 +115,6 @@ const copyUrlList = [
     '68', // 推荐有礼
     '79', // 盲盒
     '66', // 膨胀大礼包
-    '82', // 拼手气抢红包
 ]
 const isCanCopyUrl = ({eventWay}) => {
     return copyUrlList.includes(`${eventWay}`)

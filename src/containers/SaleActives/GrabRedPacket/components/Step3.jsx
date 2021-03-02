@@ -82,17 +82,9 @@ class Step3 extends React.Component {
                 }
             })
         })
-        // if (giftForm[3]) {
-        //     giftForm[3].validateFieldsAndScroll((e, v) => {
-        //         if (e) {
-        //             flag = false
-        //         }
-
-        //     })
-        //     if (flag == false) {
-        //         return false
-        //     }
-        // }
+        if (flag == false) {
+            return false
+        }
 
         // const initiator = [...giftList]
         // initiator.length = 3
@@ -316,7 +308,7 @@ class Step3 extends React.Component {
                 needCount1: key,
                 isCountVisible: false
             })
-            formData['partInTimes'] = 0;
+            formData['partInTimes'] = '';
             this.props.dispatch({
                 type: 'createActiveCom/updateState',
                 payload: {
@@ -358,22 +350,15 @@ class Step3 extends React.Component {
                                     {
                                         validator: (rule, v, cb) => {
                                             if (v === '') cb();
-                                            const reg = /^(([1-9]\d{0,5})|0)$/;
+                                            const reg = /^(([1-9]\d{0,4}))$/;
                                             if (reg.test(v)) {
                                                 cb()
                                             } else {
                                                 cb(rule.message)
                                             }
-                                            // v >= 0 && v <= 99999 ? cb() : cb(rule.message);
                                         },
                                         message: '请输入大于0的5位以内整数'
                                     },
-                                    // {
-                                    //     validator: (rule, v, cb) => {
-                                    //         String(v || '').trim().length <= 5 ? cb() : cb(rule.message);
-                                    //     },
-                                    //     message: '活动参与次数超出限制'
-                                    // },
                                 ],
                             })(<Input
                                 type="text"
@@ -405,8 +390,8 @@ class Step3 extends React.Component {
                 placeholder: '请输入金额',
                 rules: [{
                     required: true,
-                    pattern: /^(([1-9]\d{0,5})|0)(\.\d{0,2})?$/,
-                    message: '请输入0~100000数字，支持两位小数',
+                    pattern: /^((([1-9]\d{0,4}))(\.\d{0,2})?$)|(0\.\d{0,2}?$)/,
+                    message: '请输入大于0，整数5位以内且小数2位以内的数值',
                 }],
                 wrapperCol: { span: 15 },
             },
@@ -418,7 +403,7 @@ class Step3 extends React.Component {
                 placeholder: '请输入人数',
                 rules: [{
                     required: true,
-                    pattern: /^(([1-9]\d{0,5})|0)$/,
+                    pattern: /^(([1-9]\d{0,4}))$/,
                     message: '请输入大于0的5位以内整数',
                 }],
                 wrapperCol: { span: 15 },

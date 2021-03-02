@@ -59,7 +59,7 @@ const initState = {
         consumeTotalAmount:'',
         maxPartInPerson:'',
         countCycleDays:1,
-        partInTimes:0,
+        partInTimes:'',
         eventName:'',
         shareTitle:'',
         shareImagePath:'',

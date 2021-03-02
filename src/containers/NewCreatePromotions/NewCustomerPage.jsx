@@ -74,7 +74,6 @@ import BlindBox from "../PromotionV3/BlindBox";   // 盲盒
 import { jumpPage, closePage } from '@hualala/platform-base';
 
 import {setThemeClass} from '../../utils/index'
-// 跳转到带装修的活动设置页面
 const activityList = [
     '80', '66', '81', 'housekeeper', 'intelligentGiftRule','82'
 ]

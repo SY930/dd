@@ -128,7 +128,7 @@ function range(start, end) {
     });
 }
 // 宣传图默认图
-const couponImage = 'basicdoc/ba69a0bf-c383-4c06-8ee5-4f50f657dfac.png';
+const couponImage = 'basicdoc/ca249689-3339-4895-b481-43322147862f.png';
 // http://wiki.hualala.com/pages/viewpage.action?pageId=46546447 java API
 // 第一次必须加载所有keys，不然会导致回显的时候出问题
 // 付费购买  活动投放

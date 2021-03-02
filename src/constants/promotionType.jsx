@@ -313,7 +313,7 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
         title: '拼手气抢红包',
         isSpecial: true,
         tags: ['小程序'],
-        text: '下单后抽取礼品，促进下次消费',
+        text: '下单后引导用户拼手气抢红包，提升活跃度',
         example: '',
         key: '82',
         right: 16,
