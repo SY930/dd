@@ -11,7 +11,7 @@ const formItemStyle = {
 }
 // 是否发信息
 const SEND_MSG = [
-    { label: '不发送信息', value: "0" },
+    { label: '不发送', value: "0" },
     { label: '仅推送短信', value: "1" },
     { label: '仅推送微信', value: "2" },
     { label: '同时发送短信和微信', value: "4" },
