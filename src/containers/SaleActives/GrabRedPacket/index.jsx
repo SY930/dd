@@ -239,13 +239,19 @@ class GrabRedPacket extends React.Component {
                 if(isEdit) {
                     typePath = 'createActiveCom/updateEvent_NEW'
                 }
+                console.log(shopIDList,giftList,giftList2,'giftlist----------0')
+
                 giftList.forEach((v,i) => {
                     v.needShow=0;
                     v.giftCount=v.giftCount||'1';
                     v.presentType=1;
                     if(v.effectType != '2'){
-                        if(v.countType != '0'){
-                            v.effectType='3';
+                        if(v.countType){
+                            if(v.countType != '0'){
+                                v.effectType='3';
+                            }else{
+                                v.effectType='1';
+                            }
                         }else{
                             v.effectType='1';
                         }
@@ -256,8 +262,12 @@ class GrabRedPacket extends React.Component {
                     v.giftCount=v.giftCount||'1';
                     v.presentType=1;
                     if(v.effectType != '2'){
-                        if(v.countType != '0'){
-                            v.effectType='3';
+                        if(v.countType){
+                            if(v.countType != '0'){
+                                v.effectType='3';
+                            }else{
+                                v.effectType='1';
+                            }
                         }else{
                             v.effectType='1';
                         }
