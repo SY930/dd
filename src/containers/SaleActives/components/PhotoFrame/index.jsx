@@ -41,6 +41,7 @@ export default class PhotoFrame extends Component {
             66: 'http://res.hualala.com/basicdoc/5c8317bc-3205-46af-b3a9-869bd0d9a553.png',
             65: 'http://res.hualala.com/basicdoc/87bfc2c7-c7b4-45b0-b78e-f2b29615d1db.png',
             79: 'http://res.hualala.com/basicdoc/2c9ef968-fc0a-4fed-bc39-61577857b7b2.png',
+            82: 'http://res.hualala.com/basicdoc/fe6da1e3-d3da-4ce9-b420-3f135242a97b.png',
         }
         const content = (
             <img width="400px" src={srcMap[type]} />
@@ -64,7 +65,9 @@ export default class PhotoFrame extends Component {
                                 />
                                 <div>
                                     <h5>线上餐厅展示图</h5>
-                                    <p>图片建议尺寸：500*500像素</p>
+                                    <p>
+                                        {type=='82'?`图片建议尺寸：1040*832像素`:`图片建议尺寸：500*500像素`}
+                                    </p>
                                 </div>
                             </li>
                     }
@@ -79,7 +82,9 @@ export default class PhotoFrame extends Component {
                                 />
                                 <div>
                                     <h5>小程序展示图</h5>
-                                    <p>图片建议尺寸：1044*842像素</p>
+                                    <p>
+                                        {type=='82'?`图片建议尺寸：1040*832像素`:`图片建议尺寸：500*500像素`}
+                                    </p>
                                 </div>
                             </li>
                     }

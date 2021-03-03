@@ -74,9 +74,8 @@ import BlindBox from "../PromotionV3/BlindBox";   // 盲盒
 import { jumpPage, closePage } from '@hualala/platform-base';
 
 import {setThemeClass} from '../../utils/index'
-// 跳转到带装修的活动设置页面
 const activityList = [
-    '80', '66', '81', 'housekeeper', 'intelligentGiftRule'
+    '80', '66', '81', 'housekeeper', 'intelligentGiftRule','82'
 ]
 @registerPage([NEW_SALE_BOX], {
 })
@@ -214,7 +213,7 @@ class NewCustomerPage extends Component {
     handleNewPromotionCardClick(promotionEntity) {
         const { key, isSpecial} = promotionEntity;
         if (HUALALA.ENVIRONMENT === 'production-release' && UNRELEASED_PROMOTION_TYPES.includes(`${key}`)) {
-            return message.success(SALE_LABEL.k6316gwc);
+            return message.success(SALE_LABEL.k6316gwc);//活动尚未开放
         }
         if (isSpecial) {
             const specialIndex = this.props.saleCenter.get('characteristicCategories').toJS().findIndex(promotion => promotion.key === key);
@@ -308,6 +307,7 @@ class NewCustomerPage extends Component {
         //     return;
         // }
 
+
         if(activityList.includes(key)) {
            setTimeout(() => {
             jumpPage({ menuID: SALE_CENTER_PAYHAVEGIFT, typeKey: key})
@@ -396,7 +396,7 @@ class NewCustomerPage extends Component {
     checkAuth = (allMenu, category) => {
         const { currentCategoryIndex } = this.state;
         let {authStatus} = checkAuthLicense(this.state.authLicenseData)
-        
+        // authStatus = true;
         if(!authStatus){
             category = category.filter(item => (item.list == FANS_INTERACTIVITY_PROMOTION_TYPES || item.list == SALE_PROMOTION_TYPES || item.title == '最新活动'))
         }

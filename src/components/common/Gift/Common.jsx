@@ -48,6 +48,7 @@ const formItems = {
                 return callback();
             },
         }],
+        defaultValue: '1',
     },
     effectType: {
         type: 'radio',
@@ -77,7 +78,19 @@ const formItems = {
         type: 'text',
         label: '有效天数',
         surfix: '天',
-        rules: ['required', 'numbers'],
+        // rules: ['required', 'numbers'],
+        rules: [{
+            required: true,
+            validator: (rule, value, callback) => {
+                if (!/^\d+$/.test(value)) {
+                    return callback('请输入数字');
+                }
+                if (+value < 1) {
+                    return callback('请输入大于0的数字');
+                }
+                return callback();
+            },
+        }],
     },
     rangeDate: {
         type: 'datepickerRange',

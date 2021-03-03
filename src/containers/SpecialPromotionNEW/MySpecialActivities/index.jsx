@@ -270,6 +270,7 @@ class MySpecialActivities extends React.Component {
                 { value: '79', label: '盲盒' },
                 { value: '80', label: '微信支付有礼' },
                 { value: '81', label: '消费券返券' },
+                { value: '82', label: '拼手气抢红包' },
             ],
         }
         this.renderFilterBar = this.renderFilterBar.bind(this);
@@ -508,6 +509,7 @@ class MySpecialActivities extends React.Component {
              '68':{page: 'pages/promotion/recommend/main', scene : `e=${qrItemID}`},
              '65':{page: 'pages/promotion/share/main', scene : `e=${qrItemID}`},
              '66':{page: 'pages/promotion/expand/main', scene : `e=${qrItemID}`},
+             '82':{page: 'pages/promotion/grab/main', scene : `e=${qrItemID}`},
          }
          const params = {
              appID: currAppID,
@@ -637,7 +639,7 @@ class MySpecialActivities extends React.Component {
     // 渲染复制链接modal内容
     renderCopyUrlModal () {
         const  {urlContent, eventWay, qrCodeImage, xcxLoad} = this.state
-        const hideCTBox = [66,79]; // 不显示餐厅
+        const hideCTBox = [66,79,82]; // 不显示餐厅
         const hideWXBox = [22]; // 不显示微信
         return(<div className={indexStyles.copyCont}>
             {
@@ -1091,7 +1093,7 @@ class MySpecialActivities extends React.Component {
                                             this.onV3Click(record.itemID, false, record.eventWay);
                                             return;
                                         }
-                                        if (record.eventWay === 66 || record.eventWay === 81) {
+                                        if (record.eventWay === 66 || record.eventWay === 81  || record.eventWay === 82) {
                                             this.handleShowDetail({
                                                 record,
                                                 isView: false,
@@ -1118,7 +1120,7 @@ class MySpecialActivities extends React.Component {
                                     this.onV3Click(record.itemID, true, record.eventWay);
                                     return;
                                 }
-                                if (record.eventWay === 80 || record.eventWay === 66 || record.eventWay === 81) {
+                                if (record.eventWay === 80 || record.eventWay === 66 || record.eventWay === 81 || record.eventWay === 82) {
 
                                     this.handleShowDetail({
                                         record,

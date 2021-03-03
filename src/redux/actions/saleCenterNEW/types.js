@@ -900,6 +900,13 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             example: "",
             key: "intelligentGiftRule",
         },
+        {
+            idx: 28,
+            title: '拼手气抢红包',
+            text: '',
+            example: "",
+            key: "82",
+        },
     ];
     return basic;
 })();

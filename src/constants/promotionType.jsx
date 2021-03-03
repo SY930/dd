@@ -309,7 +309,17 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
         right: 12,
         bottom: 4,
     },
-
+    {
+        title: '拼手气抢红包',
+        isSpecial: true,
+        tags: ['小程序'],
+        text: '下单后引导用户拼手气抢红包，提升活跃度',
+        example: '',
+        key: '82',
+        right: 16,
+        bottom: 2,
+        isNew: true,
+    },
 ];
 
 /**

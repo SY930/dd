@@ -29,6 +29,7 @@ class MutliGift extends Component {
     state = {
         treeData: this.props.treeData || [],
         formList: [],
+        isShowAdd: true
     }
     componentDidMount() {
         const { cacheTreeData, treeData } = this.props
@@ -67,7 +68,14 @@ class MutliGift extends Component {
     }
     onAdd = () => {
         const { value = [], onChange } = this.props;
-        if (value[9]) { return; }
+        if(value[8]){
+            this.setState({
+                isShowAdd:false
+            })
+        }
+        if (value[9]) {
+            return; 
+        }
         const list = [...value];
         const id = Date.now().toString(36); // 随机不重复ID号
         list.push({ id, effectType: '1' });
@@ -78,6 +86,9 @@ class MutliGift extends Component {
         const { value, onChange } = this.props;
         const list = [...value];
         list.splice(+idx, 1);
+        this.setState({
+            isShowAdd:true
+        })
         onChange(list);
     }
 
@@ -143,8 +154,8 @@ class MutliGift extends Component {
     }
 
     render() {
-        const { treeData } = this.state;
-        const { value, isMulti, isHide } = this.props;
+        const { treeData,isShowAdd } = this.state;
+        const { value, isMulti, isHide ,key} = this.props;
 
         return (
             <div className={css.multiGiftBox}>
@@ -169,19 +180,10 @@ class MutliGift extends Component {
                     }) : null
                 }
                 {
-                    isMulti ? <Button onClick={this.onAdd}>
+                    isMulti && isShowAdd ? <Button onClick={this.onAdd}>
                         <Icon type="plus" />点击添加礼品
                     </Button> : null
                 }
-                {
-                    isHide ?
-                        <div className={css.giftCover}>
-
-                        </div>
-                        : null
-                }
-
-
             </div>
         )
     }
