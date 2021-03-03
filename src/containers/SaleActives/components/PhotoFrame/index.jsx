@@ -46,7 +46,6 @@ export default class PhotoFrame extends Component {
         const content = (
             <img width="400px" src={srcMap[type]} />
         )
-        console.log(type,'content-------------------')
         return (
             <div className={styles.photoFrame}>
                 <p>图片建议按如图所示用户端上传，支持格式jpg、png，大小不超过2M <Popover content={content} placement="right">
@@ -66,7 +65,9 @@ export default class PhotoFrame extends Component {
                                 />
                                 <div>
                                     <h5>线上餐厅展示图</h5>
-                                    <p>图片建议尺寸：500*500像素</p>
+                                    <p>
+                                        {type=='82'?`图片建议尺寸：1040*832像素`:`图片建议尺寸：500*500像素`}
+                                    </p>
                                 </div>
                             </li>
                     }
