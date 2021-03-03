@@ -28,13 +28,19 @@ class Step3 extends React.Component {
         partInTimes: '',
         needCount1: 1,
         isCountVisible: false,
+        sendCountNum:0
     }
     componentDidMount() {
         this.getSubmitFn()
     }
     componentWillReceiveProps() {
         const { formData } = this.props.createActiveCom;
+        const { sendCount } = this.props;
+        console.log(sendCount,'sendCountNum----------------------')
         const { partInTimes } = formData;
+        this.setState({
+            sendCountNum:sendCount
+        })
         if (partInTimes) {
             this.setState({
                 isCountVisible: true
@@ -373,9 +379,9 @@ class Step3 extends React.Component {
     }
     render() {
         const { formData, currentStep, isEdit, isView } = this.props.createActiveCom
-        const { sendCount } = this.props
+        const { sendCountNum } = this.state
         console.log(formData, 'step3333333------formdata')
-        const { giftList, giftList2, needCount, giftGetRule } = formData
+        const { giftList, giftList2, needCount, giftGetRule,sendCount } = formData
         const { chooseTab, treeData } = this.state
         if (isEdit && currentStep !== 2) {
             return null
