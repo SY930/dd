@@ -114,6 +114,7 @@ class GrabRedPacket extends React.Component {
                            v.rangeDate = []
                         }
                         v.effectType = String(v.effectType)
+                        console.log(v,'effectType--------------------v')
                         if(v.effectType == 3) {
                             // 之前的接口定义太不合理，需要转换
                             v.countType = '1'
@@ -231,7 +232,7 @@ class GrabRedPacket extends React.Component {
                     }
                     console.log('smesgegaagt')
                 }
-                console.log(formData,'submitformdata=================')
+
                 const { shareSubtitle,shareTitle,} = v
                 let typePath =  'createActiveCom/addEvent_NEW'
 
@@ -241,12 +242,26 @@ class GrabRedPacket extends React.Component {
                 giftList.forEach((v,i) => {
                     v.needShow=0;
                     v.giftCount=v.giftCount||'1';
-                    v.presentType=1
+                    v.presentType=1;
+                    if(v.effectType != '2'){
+                        if(v.countType != '0'){
+                            v.effectType='3';
+                        }else{
+                            v.effectType='1';
+                        }
+                    }
                 })
                 giftList2.forEach((v,i) => {
                     v.needShow=1;
                     v.giftCount=v.giftCount||'1';
-                    v.presentType=1
+                    v.presentType=1;
+                    if(v.effectType != '2'){
+                        if(v.countType != '0'){
+                            v.effectType='3';
+                        }else{
+                            v.effectType='1';
+                        }
+                    }
                 })
                 if(brandList.length > 0){
                     brand = brandList.join(',')
@@ -256,6 +271,8 @@ class GrabRedPacket extends React.Component {
                 }else{
                     orderList = "31"
                 }
+                const shopRange = shopIDList[0] ? '1' : '2';
+                console.log(shopIDList,giftList,giftList2,'giftlist----------')
                 // return
                 this.props.dispatch({
                     type: typePath ,
@@ -281,15 +298,18 @@ class GrabRedPacket extends React.Component {
                             consumeTotalAmount,
                             maxPartInPerson,
                             eventName,
-                            smsTemplate
+                            smsTemplate,
+                            shopRange
                         },
                         gifts: giftList.concat(giftList2)
                     }
                 }).then(res => {
-                    cb()
-                    closePage()
-                    jumpPage({pageID: '1000076003'})
-                    
+                    console.log(res,'res----------------')
+                    if(res){
+                        cb()
+                        closePage()
+                        jumpPage({pageID: '1000076003'})
+                    }
                 })
 
             })
