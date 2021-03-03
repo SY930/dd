@@ -93,7 +93,7 @@ async function getMessageTemplateList(){
 };
 //获取活动跟踪记录
 async function queryEventDetail(itemID){
-    if(!itemID) return 
+    if(!itemID) return
     const [service] = ['HTTP_SERVICE_URL_PROMOTION_NEW'];
     const { groupID } = getAccountInfo();
     const data = { groupID ,itemID};
