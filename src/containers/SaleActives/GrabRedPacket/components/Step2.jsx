@@ -197,7 +197,6 @@ class Step2 extends Component {
         return flag
     }
     handleFromChange = (key, value) => {
-        console.log(key,value,'value-----------brandlist')
         let results = value
         const { formData } = this.props.createActiveCom;
         if (key === 'brandList') {
@@ -224,7 +223,6 @@ class Step2 extends Component {
     /** formItems 重新设置 */
     resetFormItems() {
         const { brands } = this.state;
-        console.log(brands,'brands------------------')
         // let brandss = ['76070129']
         const render = d => d()(<ShopSelector filterParm={isFilterShopType() ? { productCode: 'HLL_CRM_License' } : {}} brandList={brands} />);
         const options = this.getBrandOpts();
@@ -240,17 +238,16 @@ class Step2 extends Component {
         // const { formData, getForm, form } = this.props;
         const newFormItems = this.resetFormItems();
         const { formData, isView, isEdit } = this.props.createActiveCom
-        console.log(formData.shopIDList,'step22222222222---formdata')
         let shopIdList = [];
+        let orderList = formData.orderTypeList.length > 0 ? formData.orderTypeList : ["31"];
         if(formData.shopIDList && formData.shopIDList.length > 0){
             shopIdList = formData.shopIDList.map((item,index)=>{
                 return item.toString();
             })
         }
-        console.log(shopIdList,'shoplistsfdfsdf')
         const formData1 = {
             brandList: formData.brandList,
-            orderTypeList: formData.orderTypeList,
+            orderTypeList: orderList,
             shopIDList: shopIdList,
         }
         return (

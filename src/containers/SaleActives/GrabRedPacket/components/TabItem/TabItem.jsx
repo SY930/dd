@@ -21,19 +21,22 @@ class TabItem extends React.Component {
     render() {
         const { form, isHelp, itemKey, getForm, giftList = [],
             cacheTreeData, treeData, onIptChange, getGiftForm, needCount, checkedHelp,isMulti,
-            handleHelpCheckbox,giftType
+            handleHelpCheckbox,giftType,sendCount
         } = this.props
         const { getFieldDecorator } = form
         const { isEdit, isView } = this.props.createActiveCom
         if (typeof getForm === 'function') {
             getForm(form)
         }
-
+        let isDisabled = false
+        if((isView && !isEdit) || sendCount > 0){
+            isDisabled = true
+        }
         const isHide = giftList.find(v => v && v.giftSendCount > 0)
         return (
             <Form >
                 <FormItem {...formItemStyle} wrapperCol={{ span: 22 }} >
-                    {isView && !isEdit && <div className={styles.disabledDiv}></div>}
+                    {isDisabled ? <div className={styles.disabledDiv}></div> : null}
                     <p style={{marginTop:-15}}>{itemKey == '0' ? `参与活动用户可在如下的礼品列表中，随机领取到一张券` : `每一次触发活动后，有且仅有一名参与者可以领取到如下最优的礼品`}</p>
                     <MutliGift
                         key={itemKey}
