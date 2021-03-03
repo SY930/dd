@@ -21,10 +21,11 @@ class TabItem extends React.Component {
     render() {
         const { form, isHelp, itemKey, getForm, giftList = [],
             cacheTreeData, treeData, onIptChange, getGiftForm, needCount, checkedHelp,isMulti,
-            handleHelpCheckbox,giftType,sendCount
+            handleHelpCheckbox,giftType
         } = this.props
         const { getFieldDecorator } = form
-        const { isEdit, isView } = this.props.createActiveCom
+        const { isEdit, isView, formData } = this.props.createActiveCom
+        const { sendCount } = formData;
         if (typeof getForm === 'function') {
             getForm(form)
         }

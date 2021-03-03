@@ -381,7 +381,7 @@ class Step3 extends React.Component {
         const { formData, currentStep, isEdit, isView } = this.props.createActiveCom
         const { sendCountNum } = this.state
         console.log(formData, 'step3333333------formdata')
-        const { giftList, giftList2, needCount, giftGetRule } = formData
+        const { giftList, giftList2, needCount, giftGetRule,sendCount } = formData
         const { chooseTab, treeData } = this.state
         if (isEdit && currentStep !== 2) {
             return null

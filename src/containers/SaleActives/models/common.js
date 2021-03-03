@@ -69,7 +69,8 @@ const initState = {
         brandList:[], //拼手气抢红包品牌
         orderTypeList:[] , //拼手气抢红包适用业务
         shopIDList:[],//拼手气抢红包品牌适用店铺
-        smsTemplate:''//短信模板
+        smsTemplate:'',//短信模板,
+        sendCount:0
 
     }, // 表单内的值,
     currentStep: 0,

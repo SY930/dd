@@ -23,8 +23,8 @@ class GrabRedPacket extends React.Component {
         messageSignList:[],
         queryFsmGroupList:[],
         msgTplList:[],
-        usedGiftsList:[],
-        sendCount:0
+        // usedGiftsList:[],
+        // sendCount:0
     }
     componentDidMount() {
         const  { itemID } = decodeUrl();
@@ -43,26 +43,39 @@ class GrabRedPacket extends React.Component {
         getMessageTemplateList().then(list => {
             this.setState({ msgTplList: list });
         });
-        queryEventDetail(itemID).then(list => {
-            if(!itemID) return 
-            this.setState({ usedGiftsList: list });
-            let sendCountNum = 0;
-            if(list.length > 0){
-                list.forEach((item,index) => {
-                    sendCountNum+=item.giftSendCount;
-                })
-            }
-            console.log(sendCountNum,'sendCountNum----------------')
-            this.setState({
-                sendCount:sendCountNum
-            })
-        });
+        // queryEventDetail(itemID).then(list => {
+        //     if(!itemID) return 
+        //     this.setState({ usedGiftsList: list });
+        //     let sendCountNum = 0;
+        //     if(list.length > 0){
+        //         list.forEach((item,index) => {
+        //             sendCountNum+=item.giftSendCount;
+        //         })
+        //     }
+        //     console.log(sendCountNum,'sendCountNum----------------')
+        //     const { formData } = this.props.createActiveCom;
+        //     formData['sendCount'] = sendCountNum
+        //     console.log(formData,'formdata-------------1')
+
+        //     this.props.dispatch({
+        //         type: 'createActiveCom/updateState',
+        //         payload: {
+        //             ...formData
+        //         }
+        //     })
+        //     this.setState({
+        //         sendCount:sendCountNum
+        //     })
+        // });
         // 查询详情
         this.queryDetail()
         this.props.dispatch({
             type: 'createActiveCom/getAuthLicenseData',
             payload: {productCode: 'HLL_CRM_Marketingbox',}
         })
+
+    }
+    componentWillReceiveProps(){
 
     }
     componentWillUnmount() {
@@ -88,12 +101,13 @@ class GrabRedPacket extends React.Component {
                  const { data, gifts } = res
                  const { eventRemark, eventStartDate,  eventEndDate , eventName, shareTitle, shareSubtitle} = data
                  const needCount = []
-
+                 let  sendCount = 0
                  this.props.dispatch({
                     type: 'createActiveCom/couponService_getSortedCouponBoardList',
                     payload: {}
                 }).then(boardList => {
                     gifts.forEach((v,i) => {
+                        sendCount += v.giftSendCount;
                         if(v.effectTime && v.validUntilDate && v.effectTime !== '0') {
                            v.rangeDate = [moment(v.effectTime,'YYYY-MM-DD'),moment(v.validUntilDate,'YYYY-MM-DD')]
                         } else {
@@ -130,6 +144,7 @@ class GrabRedPacket extends React.Component {
                         payload: {
                            formData: {
                                ...data,
+                               sendCount,
                                giftList: (gifts||[]).filter((v,i) => {
                                     return v && v.needShow==0
                                }),
@@ -345,7 +360,7 @@ class GrabRedPacket extends React.Component {
             title: '活动内容',
             content:  <Step3
             getSubmitFn={this.getSubmitFn(2)}
-            sendCount={sendCount}
+            // sendCount={sendCount}
             />,
           }, {
             title: '分享推送',
