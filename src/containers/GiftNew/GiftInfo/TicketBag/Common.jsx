@@ -114,7 +114,7 @@ const revokeLabel = (<span>
 const userLabel = (<span>
     用户自助退款
     <Tip
-        title={<p>付费购买的券包中所有券均未使用并状态都为“可使用”时，<br />
+        title={<p>付费购买的券包中所有券均未使用并状态都为“可使用”或“已过期”时，<br />
             支持用户自助退款。</p>}
         style={tipMargin}
     />
