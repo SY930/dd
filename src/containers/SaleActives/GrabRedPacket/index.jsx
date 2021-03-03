@@ -2,7 +2,7 @@ import React from 'react';
 import { Icon, Spin ,message} from 'antd';
 import {connect} from 'react-redux';
 import { jumpPage,closePage,decodeUrl } from '@hualala/platform-base'
-import { getBrandList, getShopList, querySMSSignitureList, queryFsmGroupSettleUnit,getMessageTemplateList} from './AxiosFactory';
+import { getBrandList, getShopList, querySMSSignitureList, queryFsmGroupSettleUnit,getMessageTemplateList,queryEventDetail} from './AxiosFactory';
 import moment from 'moment'
 import ActSteps from '../components/ActSteps/ActSteps'
 import styles from './grabRedPacket.less'
@@ -22,9 +22,12 @@ class GrabRedPacket extends React.Component {
         shops: [],
         messageSignList:[],
         queryFsmGroupList:[],
-        msgTplList:[]
+        msgTplList:[],
+        usedGiftsList:[],
+        sendCount:0
     }
     componentDidMount() {
+        const  { itemID } = decodeUrl();
         getBrandList().then(list => {
             this.setState({ brandList: list });
         });
@@ -39,6 +42,19 @@ class GrabRedPacket extends React.Component {
         });
         getMessageTemplateList().then(list => {
             this.setState({ msgTplList: list });
+        });
+        queryEventDetail(itemID).then(list => {
+            this.setState({ usedGiftsList: list });
+            let sendCountNum = 0;
+            if(list.length > 0){
+                list.forEach((item,index) => {
+                    sendCountNum+=item.giftSendCount;
+                })
+            }
+            console.log(sendCountNum,'sendCountNum----------------')
+            this.setState({
+                sendCount:sendCountNum
+            })
         });
         // 查询详情
         this.queryDetail()
@@ -165,7 +181,7 @@ class GrabRedPacket extends React.Component {
                 if(e) {
                     return
                 }
-                let brand,orderList;
+                let brand='',orderList='';
                 const { formData, type, isEdit } = this.props.createActiveCom
                 const {
                     eventName,
@@ -221,6 +237,8 @@ class GrabRedPacket extends React.Component {
                 }
                 if(orderTypeList.length > 0){
                     orderList = orderTypeList.join(',')
+                }else{
+                    orderList = "31"
                 }
                 // return
                 this.props.dispatch({
@@ -297,7 +315,7 @@ class GrabRedPacket extends React.Component {
 
     render () {
         const { loading } = this.props
-        const { brandList ,messageSignList,queryFsmGroupList,msgTplList}  = this.state
+        const { brandList ,messageSignList,queryFsmGroupList,msgTplList,sendCount}  = this.state
         const {
             formData,
             isView
@@ -326,6 +344,7 @@ class GrabRedPacket extends React.Component {
             title: '活动内容',
             content:  <Step3
             getSubmitFn={this.getSubmitFn(2)}
+            sendCount={sendCount}
             />,
           }, {
             title: '分享推送',

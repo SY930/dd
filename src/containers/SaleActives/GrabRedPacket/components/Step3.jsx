@@ -373,6 +373,7 @@ class Step3 extends React.Component {
     }
     render() {
         const { formData, currentStep, isEdit, isView } = this.props.createActiveCom
+        const { sendCount } = this.props
         console.log(formData, 'step3333333------formdata')
         const { giftList, giftList2, needCount, giftGetRule } = formData
         const { chooseTab, treeData } = this.state
@@ -456,6 +457,7 @@ class Step3 extends React.Component {
                                     onIptChange={this.onIptChange('0')}
                                     getGiftForm={this.getGiftForm('0')}
                                     needCount={needCount}
+                                    sendCount={sendCount}
                                     isMulti={true}
                                     required
                                 />
@@ -470,6 +472,7 @@ class Step3 extends React.Component {
                                     onIptChange={this.onIptChange('1')}
                                     getGiftForm={this.getGiftForm('1')}
                                     needCount={needCount}
+                                    sendCount={sendCount}
                                     isMulti={false}
                                     required
                                 />
