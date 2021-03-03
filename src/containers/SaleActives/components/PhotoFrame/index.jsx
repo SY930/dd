@@ -66,7 +66,9 @@ export default class PhotoFrame extends Component {
                                 />
                                 <div>
                                     <h5>线上餐厅展示图</h5>
-                                    <p>图片建议尺寸：500*500像素</p>
+                                    <p>
+                                        {type=='82'?`图片建议尺寸：1040*832像素`:`图片建议尺寸：500*500像素`}
+                                    </p>
                                 </div>
                             </li>
                     }
@@ -81,7 +83,9 @@ export default class PhotoFrame extends Component {
                                 />
                                 <div>
                                     <h5>小程序展示图</h5>
-                                    <p>图片建议尺寸：1044*842像素</p>
+                                    <p>
+                                        {type=='82'?`图片建议尺寸：1040*832像素`:`图片建议尺寸：500*500像素`}
+                                    </p>
                                 </div>
                             </li>
                     }
