@@ -224,6 +224,8 @@ class Step2 extends Component {
     /** formItems 重新设置 */
     resetFormItems() {
         const { brands } = this.state;
+        console.log(brands,'brands------------------')
+        // let brandss = ['76070129']
         const render = d => d()(<ShopSelector filterParm={isFilterShopType() ? { productCode: 'HLL_CRM_License' } : {}} brandList={brands} />);
         const options = this.getBrandOpts();
         const { shopIDList, brandList, ...other } = formItems2;
@@ -238,8 +240,17 @@ class Step2 extends Component {
         // const { formData, getForm, form } = this.props;
         const newFormItems = this.resetFormItems();
         const { formData, isView, isEdit } = this.props.createActiveCom
-        console.log(formData,'step22222222222---formdata')
-        
+        console.log(formData.shopIDList,'step22222222222---formdata')
+        let shopIdList = [];
+        shopIdList = formData.shopIDList.length > 0 && formData.shopIDList.map((item,index)=>{
+            return item.toString();
+        })
+        console.log(shopIdList,'shoplistsfdfsdf')
+        const formData1 = {
+            brandList: formData.brandList,
+            orderTypeList: formData.orderTypeList,
+            shopIDList: shopIdList,
+        }
         return (
             <div style={{position: 'relative'}}>
                 {isView&&!isEdit&&<div className={styles.disabledDiv}></div>}
@@ -248,7 +259,7 @@ class Step2 extends Component {
                     formItems={newFormItems}
                     formKeys={formKeys2}
                     onChange={this.handleFromChange}
-                    formData={formData || {}}
+                    formData={formData1 || {}}
                     formItemLayout={formItemLayout}
                 />
             </div>
