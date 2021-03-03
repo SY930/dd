@@ -107,7 +107,6 @@ class MainTable extends Component {
     /* 生成表格数据 */
     generateDataSource() {
         const { list } = this.props;
-        console.log(list,'list===================')
         return list.map((x, i) => ({
             key: x.customerCouponPackID,
             idx: i + 1,

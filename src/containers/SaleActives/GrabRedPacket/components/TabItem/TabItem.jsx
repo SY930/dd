@@ -33,8 +33,6 @@ class TabItem extends React.Component {
         if((isView && !isEdit) || sendCount > 0){
             isDisabled = true
         }
-        console.log(sendCount,isDisabled,'拼手气-ldd-01============')
-
         const isHide = giftList.find(v => v && v.giftSendCount > 0)
         return (
             <Form >

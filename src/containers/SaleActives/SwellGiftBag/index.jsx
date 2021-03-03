@@ -16,7 +16,6 @@ const formatType = 'YYYY.MM.DD'
 
 @connect(({  loading, createActiveCom }) => ({  loading, createActiveCom }))
 class SwellGiftBag extends React.Component {
-    
     componentDidMount() {
         // 查询详情
         this.queryDetail()

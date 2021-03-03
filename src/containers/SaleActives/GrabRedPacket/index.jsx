@@ -23,8 +23,6 @@ class GrabRedPacket extends React.Component {
         messageSignList:[],
         queryFsmGroupList:[],
         msgTplList:[],
-        // usedGiftsList:[],
-        // sendCount:0
     }
     componentDidMount() {
         const  { itemID } = decodeUrl();
@@ -43,31 +41,7 @@ class GrabRedPacket extends React.Component {
         getMessageTemplateList().then(list => {
             this.setState({ msgTplList: list });
         });
-        // queryEventDetail(itemID).then(list => {
-        //     if(!itemID) return 
-        //     this.setState({ usedGiftsList: list });
-        //     let sendCountNum = 0;
-        //     if(list.length > 0){
-        //         list.forEach((item,index) => {
-        //             sendCountNum+=item.giftSendCount;
-        //         })
-        //     }
-        //     console.log(sendCountNum,'sendCountNum----------------')
-        //     const { formData } = this.props.createActiveCom;
-        //     formData['sendCount'] = sendCountNum
-        //     console.log(formData,'formdata-------------1')
-
-        //     this.props.dispatch({
-        //         type: 'createActiveCom/updateState',
-        //         payload: {
-        //             ...formData
-        //         }
-        //     })
-        //     this.setState({
-        //         sendCount:sendCountNum
-        //     })
-        // });
-        // 查询详情
+        
         this.queryDetail()
         this.props.dispatch({
             type: 'createActiveCom/getAuthLicenseData',
@@ -114,7 +88,6 @@ class GrabRedPacket extends React.Component {
                            v.rangeDate = []
                         }
                         v.effectType = String(v.effectType)
-                        console.log(v,'effectType--------------------v')
                         if(v.effectType == 3) {
                             // 之前的接口定义太不合理，需要转换
                             v.countType = '1'
@@ -186,7 +159,6 @@ class GrabRedPacket extends React.Component {
     }
 
     handleNext =  (cb,current) => {
-        console.log(this.submitFn1,current,'ddddddddddddddyihetuan')
          if(typeof this[`submitFn${current}`]  === 'function' && this[`submitFn${current}`]()) {
             cb()
          }
@@ -194,7 +166,6 @@ class GrabRedPacket extends React.Component {
     handleFinish = (cb,current) => {
         if(typeof this[`submitFn${current}`]  === 'function' && this[`submitFn${current}`]()) { 
             this.form3.validateFieldsAndScroll((e,v) => {
-                console.log(e,v,'v------=============')
                 if(e) {
                     return
                 }
@@ -230,7 +201,6 @@ class GrabRedPacket extends React.Component {
                         message.warning('请选择短信模板')
                         return
                     }
-                    console.log('smesgegaagt')
                 }
 
                 const { shareSubtitle,shareTitle,} = v
@@ -239,7 +209,6 @@ class GrabRedPacket extends React.Component {
                 if(isEdit) {
                     typePath = 'createActiveCom/updateEvent_NEW'
                 }
-                console.log(shopIDList,giftList,giftList2,'giftlist----------0')
 
                 giftList.forEach((v,i) => {
                     v.needShow=0;
@@ -282,7 +251,6 @@ class GrabRedPacket extends React.Component {
                     orderList = "31"
                 }
                 const shopRange = shopIDList[0] ? '1' : '2';
-                console.log(shopIDList,giftList,giftList2,'giftlist----------')
                 // return
                 this.props.dispatch({
                     type: typePath ,
@@ -314,7 +282,6 @@ class GrabRedPacket extends React.Component {
                         gifts: giftList.concat(giftList2)
                     }
                 }).then(res => {
-                    console.log(res,'res----------------')
                     if(res){
                         cb()
                         closePage()
@@ -350,7 +317,6 @@ class GrabRedPacket extends React.Component {
     }
 
     handleStepChange = (current) => {
-        console.log(current,'handleeeStepChangecurrent')
         this.props.dispatch({
             type: 'createActiveCom/updateState',
             payload: {

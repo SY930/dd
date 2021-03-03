@@ -396,7 +396,6 @@ class SpecialDetailInfo extends Component {
             },600)
 
         }
-        console.log(type,'type----------------------')
         if (type == 66) {
             const shareTitle = "亲爱的朋友，帮我助力赢大礼。";
             const shareSubtitle = "海吃海喝就靠你啦！";

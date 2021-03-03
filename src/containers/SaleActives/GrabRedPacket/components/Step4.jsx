@@ -1,7 +1,4 @@
 import React from 'react'
-import  BaseForm  from '../../../../components/common/BaseForm';
-import { Input, Form  } from 'antd'
-import {formItems1,formKeys1} from '../constant'
 import styles from '../grabRedPacket.less'
 import {connect} from 'react-redux';
 import {renderEventRemark, eventLimitDateRender, getDateCount} from '../../helper/common'
@@ -80,7 +77,6 @@ class Step4 extends React.Component {
     render () {
         const {isView,isEdit,formData } = this.props.createActiveCom
         const { shareImagePath } = formData
-        console.log(this.props,'step4--------formdata')
         const { messageSignList,queryFsmGroupList,msgTplList} = this.props;
         return (
             <div className={styles.step4Wrap}>

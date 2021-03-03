@@ -28,25 +28,17 @@ class Step3 extends React.Component {
         partInTimes: '',
         needCount1: 1,
         isCountVisible: false,
-        sendCountNum:0
     }
     componentDidMount() {
         this.getSubmitFn()
     }
     componentWillReceiveProps() {
-        const { formData } = this.props.createActiveCom;
-        const { sendCount } = this.props;
-        console.log(sendCount,'sendCountNum----------------------')
         const { partInTimes } = formData;
-        this.setState({
-            sendCountNum:sendCount
-        })
         if (partInTimes) {
             this.setState({
                 isCountVisible: true
             })
         }
-        console.log(partInTimes, 'componentWillReceiveProps=========')
     }
     getSubmitFn = () => {
         if (typeof this.props.getSubmitFn === 'function') {
@@ -58,14 +50,11 @@ class Step3 extends React.Component {
 
     handleSubmit = () => {
         let flag = true
-
         const { formData: modalFormData } = this.props.createActiveCom
-
         const { giftList, giftList2 } = modalFormData
         let formData = {
             ...modalFormData,
         }
-
         giftList.forEach(v => {
             if (v.rangeDate) {
                 v.effectTime = moment(v.rangeDate[0]).format(dateFormat)
@@ -78,9 +67,6 @@ class Step3 extends React.Component {
                 v.validUntilDate = moment(v.rangeDate[1]).format(dateFormat)
             }
         })
-
-        console.log(formList, 'formlist--------------------')
-
         formList.forEach(form => {
             form.validateFieldsAndScroll((e, v) => {
                 if (e) {
@@ -92,8 +78,6 @@ class Step3 extends React.Component {
             return false
         }
 
-        // const initiator = [...giftList]
-        // initiator.length = 3
         if (giftList.length == 1 && !giftList[0].giftName) {
             message.warn('请添加随机礼品')
             return false
@@ -103,15 +87,6 @@ class Step3 extends React.Component {
             return false
         }
 
-        // this.props.dispatch({
-        //     type: 'createActiveCom/updateState',
-        //     payload: {
-        //         formData: {
-        //             ...formData,
-        //             giftList
-        //         }
-        //     }
-        // })
 
         return flag
     }
@@ -131,8 +106,6 @@ class Step3 extends React.Component {
     }
 
     handleTabChange = (e) => {
-        console.log(giftForm, formList, 'e-----------12345')
-
         let flag = true
         const giftFormInitiator = [...giftForm]
         giftFormInitiator.length = 2
@@ -165,7 +138,6 @@ class Step3 extends React.Component {
     }
 
     getForm = (key) => (form) => {
-        console.log(key, 'key----------------------')
         if (!formList[key]) {
             formList[key] = form
         }
@@ -173,41 +145,7 @@ class Step3 extends React.Component {
     }
 
     handleGiftChange = (key) => (giftData, type) => {
-
-
-        // console.log(key,giftData,'giftData--------------')
-        // const { formData, isView, isEdit } = this.props.createActiveCom
-        // console.log(formData,'formDatahandleGiftCHANGE----------------')
-        // let {giftList} = formData
-        // const { treeData ,needShow} = this.state
-
         const { formData, isView, isEdit } = this.props.createActiveCom
-        const { giftList } = formData
-        const { treeData } = this.state
-
-        // if((isView || isEdit) && !giftList[3] && key == 3 ) {
-        //     return
-        // }
-        // let chooseCoupon = {}
-        // const chooseCouponItem = treeData.filter(v => {
-        //     const list = v.children || []
-        //    const chooseItem =  list.find(item => item.key === giftData[0].giftID)
-        //     if(chooseItem) {
-        //         chooseCoupon = chooseItem
-        //     }
-        //     return chooseItem
-        // })
-        // const label = chooseCouponItem[0] && chooseCouponItem[0].label
-
-        // if(label) {
-        //     giftData[0].label =  label
-        //     giftData[0].giftValue = chooseCoupon.giftValue
-        // }
-
-
-        // giftList[key] = giftData[0]
-        // console.log(key,giftData,'giftData------=======--=-=-=-=-=-=-=-=')
-        // console.log(giftList,'giftlist==================')
         this.props.dispatch({
             type: 'createActiveCom/updateState',
             payload: {
@@ -220,9 +158,6 @@ class Step3 extends React.Component {
     }
     handleGiftChange2 = (key) => (giftData, type) => {
         const { formData, isView, isEdit } = this.props.createActiveCom
-        const { giftList } = formData
-        const { treeData } = this.state
-
         this.props.dispatch({
             type: 'createActiveCom/updateState',
             payload: {
@@ -240,7 +175,6 @@ class Step3 extends React.Component {
     }
 
     onIptChange = (key) => (e) => {
-
         const { formData } = this.props.createActiveCom
         const { needCount } = formData
         needCount[key] = Number(e.number)
@@ -283,19 +217,8 @@ class Step3 extends React.Component {
             }
         })
     }
-    handleStageTypeChange(value) {
-        // const data = Object.assign({}, {0: this.state.data['0']});
-        // if (value === '1') {
-        //     this.props.onChange && this.props.onChange({data, stageType: '1'});
-        //     this.uuid = 0;
-        // } else {
-        //     this.props.onChange && this.props.onChange({data, stageType: '2'})
-        // }
-    }
     handleFromChange = (key, value) => {
-
         if (!value) return;
-        console.log(key, value, 'vaalueeeeeeeeeeeeeeee')
         const { formData } = this.props.createActiveCom;
         formData[key] = value
         this.props.dispatch({
@@ -307,7 +230,6 @@ class Step3 extends React.Component {
 
     }
     changeJoinedCount = (key, value) => {
-        console.log(key, value, 'changeJOINIDEcoUNT----------------')
         const { formData } = this.props.createActiveCom;
         if (key == '1') {
             this.setState({
@@ -333,7 +255,6 @@ class Step3 extends React.Component {
         const { formData } = this.props.createActiveCom;
         const { partInTimes } = formData;
         const { isCountVisible } = this.state;
-        console.log(isCountVisible, partInTimes, 'isCountVisible===---------')
         return (
             <Row>
                 <Col span={6}>每人每天参与活动次数</Col>
@@ -379,15 +300,12 @@ class Step3 extends React.Component {
     }
     render() {
         const { formData, currentStep, isEdit, isView } = this.props.createActiveCom
-        const { sendCountNum } = this.state
-        console.log(formData, 'step3333333------formdata')
-        const { giftList, giftList2, needCount, giftGetRule,sendCount } = formData
+        const { giftList, giftList2, needCount, giftGetRule } = formData
         const { chooseTab, treeData } = this.state
         if (isEdit && currentStep !== 2) {
             return null
         }
-        // const checkedHelp = giftList[3]
-        // const isNew = !(isEdit || isView)
+    
         const formItems3 = {
             consumeTotalAmount: {
                 type: 'text',
@@ -463,7 +381,6 @@ class Step3 extends React.Component {
                                     onIptChange={this.onIptChange('0')}
                                     getGiftForm={this.getGiftForm('0')}
                                     needCount={needCount}
-                                    sendCount={sendCountNum}
                                     isMulti={true}
                                     required
                                 />
@@ -478,7 +395,6 @@ class Step3 extends React.Component {
                                     onIptChange={this.onIptChange('1')}
                                     getGiftForm={this.getGiftForm('1')}
                                     needCount={needCount}
-                                    sendCount={sendCountNum}
                                     isMulti={false}
                                     required
                                 />

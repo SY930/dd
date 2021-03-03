@@ -11,7 +11,6 @@ class Step3 extends Component {
     };
 
     onChange = (key, value) => {
-        console.log('0000000000onchange')
     }
     /** formItems 重新设置 */
     resetFormItems() {

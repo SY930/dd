@@ -68,7 +68,6 @@ const ShareForm = Form.create()(({
 
 class ShareSetting extends React.Component {
     constructor(props) {
-        console.log(props, 'props----------------------')
         super(props);
         this.state = {
             smsGate: '0',
@@ -91,13 +90,10 @@ class ShareSetting extends React.Component {
     }
     componentWillReceiveProps() {
         const { formData,msgTplList=[] } = this.props;
-        console.log(this.props,'thisprops-------sdfsd-f-sdf-dsf-ds')
         const {smsTemplate} = formData
-        console.log(smsTemplate,'smsTemplatesfdfdsfdsf')
         const selectedMsg = msgTplList.filter((item,index)=>{
             return item.template == smsTemplate
         })
-        console.log(selectedMsg,'selectedMsg----------====------')
         this.setState({
             smsGate: formData.smsGate,
             signID: formData.signID,
@@ -114,7 +110,6 @@ class ShareSetting extends React.Component {
         });
     }
     handleSignIDChange = (val) => {
-        console.log(val, 'vaalu--------------')
         this.setState({
             signID: val,
         }, () => {
@@ -122,7 +117,6 @@ class ShareSetting extends React.Component {
         })
     }
     handleAccountNoChange(value) {
-        console.log(value, 'value111111111111111')
         this.setState({
             accountNo: value,
         }

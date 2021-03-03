@@ -33,36 +33,10 @@ class Step1 extends React.Component {
                 }
             })
         }
-        // const { formData } = this.props.createActiveCom
-        // if(key === 'eventLimitDate' && value) {
-        //     formData[key] =value
-
-        //     this.props.dispatch({
-        //         type: 'createActiveCom/updateState',
-        //         payload: {
-        //             formData
-        //         }
-        //     })
-        // }
-
-        // if(key === 'eventRemark') {
-        //     formData[key] =value
-
-        //     this.props.dispatch({
-        //         type: 'createActiveCom/updateState',
-        //         payload: {
-        //             formData
-        //         }
-        //     })
-        // }
-
-
     }
     handleSubmit = () => {
         let flag = true
-
         this.form.validateFieldsAndScroll((e,v) => {
-            console.log(e,'e-------------------')
             if(e) {
                 flag = false
                 return false
@@ -91,7 +65,6 @@ class Step1 extends React.Component {
         formItems1.eventRemark.render = renderEventRemark.bind(this)
         formItems1.eventLimitDate.render = eventLimitDateRender.bind(this)
         const { formData,isView,isEdit } = this.props.createActiveCom
-        console.log(formData,'step1111111111---formdata')
         return (
             <div className={styles.step1Wrap}>
                 {isView&&!isEdit&&<div className={styles.disabledDiv}></div>}

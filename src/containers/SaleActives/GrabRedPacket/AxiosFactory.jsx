@@ -91,23 +91,8 @@ async function getMessageTemplateList(){
     message.error(msg);
     return [];
 };
-//获取活动跟踪记录
-async function queryEventDetail(itemID){
-    if(!itemID) return
-    const [service] = ['HTTP_SERVICE_URL_PROMOTION_NEW'];
-    const { groupID } = getAccountInfo();
-    const data = { groupID ,itemID};
-    const method = `/specialPromotion/queryEventDetail.ajax`;
-    const params = { service, type, data, method };
-    const response = await axios.post(url,params);
-    const {code,message:msg,gifts=[]} = response;
-    if (code === '000') {
-        return gifts;
-    }
-    message.error(msg);
-    return [];
-};
+
 export {
-    getAccountInfo, getBrandList, getShopList,querySMSSignitureList,queryFsmGroupSettleUnit,getMessageTemplateList,queryEventDetail
+    getAccountInfo, getBrandList, getShopList,querySMSSignitureList,queryFsmGroupSettleUnit,getMessageTemplateList,
 }
 

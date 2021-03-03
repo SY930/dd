@@ -217,7 +217,6 @@ class NewCustomerPage extends Component {
         }
         if (isSpecial) {
             const specialIndex = this.props.saleCenter.get('characteristicCategories').toJS().findIndex(promotion => promotion.key === key);
-            console.log(this.props.saleCenter.get('characteristicCategories').toJS(),'this.props.saleCenter.get(characteristicCategories).toJS()===========')
             this.handleSpecialPromotionCreate(specialIndex, promotionEntity)
         } else {
             const basicIndex = this.props.saleCenter.get('activityCategories').toJS().findIndex(promotion => promotion.key === key);
@@ -397,7 +396,6 @@ class NewCustomerPage extends Component {
     checkAuth = (allMenu, category) => {
         const { currentCategoryIndex } = this.state;
         let {authStatus} = checkAuthLicense(this.state.authLicenseData)
-        console.log(authStatus,'authsTATUS---------------------')
         // authStatus = true;
         if(!authStatus){
             category = category.filter(item => (item.list == FANS_INTERACTIVITY_PROMOTION_TYPES || item.list == SALE_PROMOTION_TYPES || item.title == '最新活动'))
