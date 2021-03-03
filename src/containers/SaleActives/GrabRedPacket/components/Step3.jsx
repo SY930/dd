@@ -417,8 +417,8 @@ class Step3 extends React.Component {
         const formKeys3 = ['consumeTotalAmount', 'maxPartInPerson', 'partInTimes'];
         return (
             <div className={styles.step3Wrap}>
-                {isView && !isEdit && <div className={styles.disabledDiv}></div>}
-                <div style={{position:'relatve'}}>
+                <div style={{position:'relative'}}>
+                    {isView && !isEdit && <div className={styles.disabledDiv}></div>}
                     <BaseForm
                         getForm={this.getForm('2')}
                         formItems={formItems3}
