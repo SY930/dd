@@ -136,7 +136,7 @@ class ShareSetting extends React.Component {
     }
     getSendMsgLabel = () => {
         const { smsGate } = this.props.formData;
-        let label = '不发送消息';
+        let label = '不发送';
         SEND_MSG.map((v, i) => {
             if (v.value == smsGate) {
                 label = v.label
