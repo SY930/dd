@@ -242,9 +242,11 @@ class Step2 extends Component {
         const { formData, isView, isEdit } = this.props.createActiveCom
         console.log(formData.shopIDList,'step22222222222---formdata')
         let shopIdList = [];
-        shopIdList = formData.shopIDList.length > 0 && formData.shopIDList.map((item,index)=>{
-            return item.toString();
-        })
+        if(formData.shopIDList.length > 0){
+            shopIdList = formData.shopIDList.map((item,index)=>{
+                return item.toString();
+            })
+        }
         console.log(shopIdList,'shoplistsfdfsdf')
         const formData1 = {
             brandList: formData.brandList,

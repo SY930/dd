@@ -200,7 +200,7 @@ class ShareSetting extends React.Component {
                         value={this.getSendMsgLabel()}
                         onChange={this.handleSendMsgChange}
                         getPopupContainer={(node) => node.parentNode}
-                        defaultValue='不发送消息'
+                        defaultValue='不发送'
                     >
                         {
                             SEND_MSG.map((item) => {
