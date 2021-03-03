@@ -44,6 +44,7 @@ class GrabRedPacket extends React.Component {
             this.setState({ msgTplList: list });
         });
         queryEventDetail(itemID).then(list => {
+            if(!itemID) return 
             this.setState({ usedGiftsList: list });
             let sendCountNum = 0;
             if(list.length > 0){
