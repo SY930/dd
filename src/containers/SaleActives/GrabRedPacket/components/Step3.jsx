@@ -33,6 +33,7 @@ class Step3 extends React.Component {
         this.getSubmitFn()
     }
     componentWillReceiveProps() {
+        const {formData} = this.props.createActiveCom
         const { partInTimes } = formData;
         if (partInTimes) {
             this.setState({
