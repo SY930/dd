@@ -24,7 +24,6 @@ class Step3 extends React.Component {
         giftGetRule: 0,
         chooseTab: '0',
         treeData: this.props.createActiveCom.crmGiftTypes,
-        formList: [],
         partInTimes: '',
         needCount1: 1,
         isCountVisible: false,
@@ -51,8 +50,9 @@ class Step3 extends React.Component {
 
     handleSubmit = () => {
         let flag = true
+        const {isCountVisible} = this.state
         const { formData: modalFormData } = this.props.createActiveCom
-        const { giftList, giftList2 } = modalFormData
+        const { giftList, giftList2 ,consumeTotalAmount,maxPartInPerson,partInTimes} = modalFormData
         let formData = {
             ...modalFormData,
         }
@@ -72,13 +72,25 @@ class Step3 extends React.Component {
             form.validateFieldsAndScroll((e, v) => {
                 if (e) {
                     flag = false
+                    return false
                 }
             })
         })
-        if (flag == false) {
+        if (!flag) {
             return false
         }
-
+        if (!consumeTotalAmount){
+            message.warn('请添加触发条件')
+            return false;
+        }
+        if (!maxPartInPerson){
+            message.warn('请添加领取限制')
+            return false;
+        }
+        if (isCountVisible && !partInTimes){
+            message.warn('请填入每人每天参与活动次数')
+            return false;
+        }
         if (giftList.length == 1 && !giftList[0].giftName) {
             message.warn('请添加随机礼品')
             return false
@@ -88,6 +100,16 @@ class Step3 extends React.Component {
             return false
         }
 
+        this.props.dispatch({
+            type: 'createActiveCom/updateState',
+            payload: {
+                formData: {
+                    ...formData,
+                    giftList,
+                    giftList2
+                }
+            }
+        })
 
         return flag
     }
@@ -197,7 +219,6 @@ class Step3 extends React.Component {
     }
 
     handleHelpCheckbox = (e) => {
-
         const { formData } = this.props.createActiveCom
         const { giftList } = formData
         if (e.target.checked && (giftList.length < 4)) {
@@ -219,7 +240,7 @@ class Step3 extends React.Component {
         })
     }
     handleFromChange = (key, value) => {
-        if (!value) return;
+        // if (!value) return;
         const { formData } = this.props.createActiveCom;
         formData[key] = value
         this.props.dispatch({
@@ -254,7 +275,7 @@ class Step3 extends React.Component {
     }
     renderStartEnd(decorator, form) {
         const { formData } = this.props.createActiveCom;
-        const { partInTimes } = formData;
+        let { partInTimes } = formData;
         const { isCountVisible } = this.state;
         return (
             <Row>
@@ -274,10 +295,10 @@ class Step3 extends React.Component {
                             decorator({
                                 key: 'partInTimes',
                                 rules: [
-
                                     {
+                                        required:true,
                                         validator: (rule, v, cb) => {
-                                            if (v === '') cb();
+                                            if (v === '') cb(rule.message);
                                             const reg = /^(([1-9]\d{0,4}))$/;
                                             if (reg.test(v)) {
                                                 cb()
