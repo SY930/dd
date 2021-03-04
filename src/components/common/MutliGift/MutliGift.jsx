@@ -171,6 +171,7 @@ class MutliGift extends Component {
                                 }
                                 <Gift
                                     idx={i}
+                                    key={i}
                                     treeData={treeData}
                                     formData={x}
                                     onChange={this.onChange}

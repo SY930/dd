@@ -27,7 +27,7 @@ const formItems2 = {
     },
     shopIDList: {
         type: 'custom',
-        label: '适用店铺4',
+        label: '适用店铺',
         render: () => (<p/>),
         defaultValue: [],
     },
