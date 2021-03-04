@@ -3,15 +3,24 @@ import BaseForm from 'components/common/BaseForm';
 import { formKeys2, formItems2, formItemLayout } from '../Common';
 import ShopSelector from 'components/ShopSelector';
 import { isFilterShopType } from '../../../../helpers/util'
+import { checkEventShopUsed } from '../AxiosFactory';
 import {connect} from 'react-redux';
 import styles from '../grabRedPacket.less';
+import moment from 'moment'
+import { dateFormat } from '../../constant'
+import _ from 'lodash';
 @connect(({ loading, createActiveCom }) => ({ loading, createActiveCom }))
 
 class Step2 extends Component {
-    state = {
-        brands: [],     // 选中的品牌，用来过滤店铺
-    };
-
+    constructor(props){
+        super(props);
+        this.state = {
+            brands: [],     // 选中的品牌，用来过滤店铺
+            isShopSelectorShow : '2',
+            shopLists:[]
+        };
+    }
+    
     getForm = (form) => {
         this.form = form;
         if (typeof this.props.getSubmitFn === 'function') {
@@ -24,7 +33,6 @@ class Step2 extends Component {
     handleSubmit = () => {
         let flag = true
         const { formData } = this.props.createActiveCom
-
         this.form.validateFieldsAndScroll((e, v) => {
             this.props.dispatch({
                 type: 'createActiveCom/updateState',
@@ -36,13 +44,27 @@ class Step2 extends Component {
         })
         return flag
     }
+    checkEventShopUsed = (opts) => {
+        checkEventShopUsed(opts).then(data => {
+            if(data){
+                this.setState({
+                    isShopSelectorShow:'1'
+                })
+                
+            }else{
+                this.setState({
+                    isShopSelectorShow:'2'
+                })
+            }
+            this.render();
+        });
+    }
     handleFromChange = (key, value) => {
-        let results = value
-        const { formData } = this.props.createActiveCom;
+        const {formData}  = this.props.createActiveCom;
+        formData[key] = value;
         if (key === 'brandList') {
             this.setState({ brands: value });
         }
-        formData[key] = results;
         this.props.dispatch({
             type: 'createActiveCom/updateState',
             payload: {
@@ -51,7 +73,32 @@ class Step2 extends Component {
         })
     }
     componentWillReceiveProps(nextProps) {
-        const { formData } = nextProps.createActiveCom
+        const { formData } = this.props.createActiveCom;
+        const { shopsList } = this.props;
+        const { shopIDList } = formData;
+        if (shopIDList.length > 0 && shopsList.length > 0){
+            let shopItem = []
+            let shopValue = _.cloneDeep(shopIDList);
+            shopsList.map((item,index) => {
+                shopValue.map((item1,index1) => {
+                    if(item.shopID == item1){
+                        shopItem.push({"shopID":item.shopID,"shopName":item.shopName})
+                    }
+                })
+            })
+
+            const eventStartDate =  formData.eventLimitDate && formData.eventLimitDate[0] && moment(formData.eventLimitDate[0]).format(dateFormat)
+            const eventEndDate = formData.eventLimitDate && formData.eventLimitDate[1] && moment(formData.eventLimitDate[1]).format(dateFormat)
+            const shopInfos = shopItem;
+            let checkOptions = {
+                eventWay: '82',
+                eventEndDate,
+                eventStartDate,
+                shopInfos
+            }
+            this.checkEventShopUsed(checkOptions)
+        }
+
     }
     getBrandOpts() {
         const { brandList } = this.props;
@@ -62,9 +109,9 @@ class Step2 extends Component {
     }
     /** formItems 重新设置 */
     resetFormItems() {
-        const { brands } = this.state;
-        // let brandss = ['76070129']
-        const render = d => d()(<ShopSelector filterParm={isFilterShopType() ? { productCode: 'HLL_CRM_License' } : {}} brandList={brands} />);
+        // const _this  = this;
+        const { brands ,isShopSelectorShow} = this.state;
+        const render = d => d()(<ShopSelector  eventWay='82'isShopSelectorShow = {isShopSelectorShow} filterParm={isFilterShopType() ? { productCode: 'HLL_CRM_License' } : {}} brandList={brands} />);
         const options = this.getBrandOpts();
         const { shopIDList, brandList, ...other } = formItems2;
         return {
@@ -74,7 +121,6 @@ class Step2 extends Component {
         };
     }
     render() {
-        const { } = this.state;
         // const { formData, getForm, form } = this.props;
         const newFormItems = this.resetFormItems();
         const { formData, isView, isEdit } = this.props.createActiveCom
@@ -82,7 +128,7 @@ class Step2 extends Component {
         let orderList = formData.orderTypeList.length > 0 ? formData.orderTypeList : ["31"];
         if(formData.shopIDList && formData.shopIDList.length > 0){
             shopIdList = formData.shopIDList.map((item,index)=>{
-                return item.toString();
+                return _.isString(item) ? item : item.toString();
             })
         }
         const formData1 = {

@@ -2,7 +2,7 @@ import React from 'react';
 import { Icon, Spin, message } from 'antd';
 import { connect } from 'react-redux';
 import { jumpPage, closePage, decodeUrl } from '@hualala/platform-base'
-import { getBrandList, getShopList, querySMSSignitureList, queryFsmGroupSettleUnit, getMessageTemplateList } from './AxiosFactory';
+import { getBrandList, getShopList, querySMSSignitureList, queryFsmGroupSettleUnit, getMessageTemplateList,getAllShopList } from './AxiosFactory';
 import moment from 'moment'
 import ActSteps from '../components/ActSteps/ActSteps'
 import styles from './grabRedPacket.less'
@@ -23,6 +23,7 @@ class GrabRedPacket extends React.Component {
         messageSignList: [],
         queryFsmGroupList: [],
         msgTplList: [],
+        shopsList:[]
     }
     componentDidMount() {
         const { itemID } = decodeUrl();
@@ -41,7 +42,9 @@ class GrabRedPacket extends React.Component {
         getMessageTemplateList().then(list => {
             this.setState({ msgTplList: list });
         });
-
+        getAllShopList().then(list => {
+            this.setState({ shopsList: list });
+        });
         this.queryDetail()
         this.props.dispatch({
             type: 'createActiveCom/getAuthLicenseData',
@@ -335,7 +338,7 @@ class GrabRedPacket extends React.Component {
 
     render() {
         const { loading } = this.props
-        const { brandList, messageSignList, queryFsmGroupList, msgTplList, sendCount } = this.state
+        const { brandList, messageSignList, queryFsmGroupList, msgTplList, sendCount ,shopsList} = this.state
         const {
             formData,
             isView
@@ -359,6 +362,7 @@ class GrabRedPacket extends React.Component {
             content: <Step2
                 getSubmitFn={this.getSubmitFn(1)}
                 brandList={brandList}
+                shopsList={shopsList}
             />,
         }, {
             title: '活动内容',

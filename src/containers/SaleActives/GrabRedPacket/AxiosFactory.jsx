@@ -91,8 +91,38 @@ async function getMessageTemplateList(){
     message.error(msg);
     return [];
 };
-
+//获取所有店铺
+async function getAllShopList(){
+    const [service] = ['HTTP_SERVICE_URL_CRM'];
+    const { groupID } = getAccountInfo();
+    const data = { groupID ,productCode:'HLL_CRM_License'};
+    const method = `/crm/groupShopService_findSchemaShopcenterNew.ajax`;
+    const params = { service, type, data, method };
+    const response = await axios.post(url,params);
+    const {code,message:msg,data:valueData } = response;
+    if (code === '000') {
+        return valueData.shops;
+    }
+    message.error(msg);
+    return [];
+};
+//校验店铺
+async function checkEventShopUsed(opts){
+    const [service] = ['HTTP_SERVICE_URL_PROMOTION_NEW'];
+    const { groupID } = getAccountInfo();
+    const data = { groupID ,...opts};
+    const method = `/specialPromotion/checkEventShopUsed.ajax`;
+    const params = { service, type, data, method };
+    const response = await axios.post(url,params);
+    const {code,message:msg } = response;
+    if (code === '000') {
+        return true;
+    }else{
+        message.error(msg);
+        return false;
+    }
+};
 export {
-    getAccountInfo, getBrandList, getShopList,querySMSSignitureList,queryFsmGroupSettleUnit,getMessageTemplateList,
+    getAccountInfo, getBrandList, getShopList,querySMSSignitureList,queryFsmGroupSettleUnit,getMessageTemplateList,checkEventShopUsed,getAllShopList
 }
 

@@ -8,6 +8,7 @@ import EditableTags from '../common/EditableTags';
 import ShopSelectModal from './ShopSelectModal';
 import { FILTERS } from './config';
 import { loadShopSchema } from './utils';
+import _ from 'lodash';
 
 import './assets/ShopSelector.less';
 
@@ -104,8 +105,17 @@ class ShopSelector extends Component {
     }
 
     handleModalOk = (values) => {
-        this.setState({ showModal: false });
+        const { isShopSelectorShow} = this.props;//是否有父组件需要验证该组件的值，例如在拼手气抢红包中   SaleActives/GrabRedPacket/components/Step2.jsx
         this.props.onChange(values);
+        if (isShopSelectorShow){
+            if(isShopSelectorShow == '1'){
+                this.setState({ showModal: false });
+            }else if(isShopSelectorShow == '2'){
+                this.setState({ showModal: true });
+            }
+        }else{
+            this.setState({ showModal: false });
+        }
     }
 
     handleModalCancel = () => {
@@ -113,14 +123,14 @@ class ShopSelector extends Component {
     }
 
     render() {
-        const { value = [], onChange, size, placeholder, extendShopList, ...otherProps } = this.props;
+        const { value = [], onChange, size, placeholder, extendShopList , ...otherProps } = this.props;
         const { showModal } = this.state;
-
         let options = this.props.options || this.state.options || [];
         if (Array.isArray(extendShopList)) {
             options = [...extendShopList, ...options]
         }
         const filters = this.props.filters || this.state.filters;
+
         const items = value.reduce((ret, shopID) => {
             const shopInfo = options.find(shop => shop.value === shopID);
             if (!shopInfo) return ret;
@@ -163,6 +173,9 @@ class ShopSelector extends Component {
                         onCancel={this.handleModalCancel}
                     />
                 }
+                <div style={{color:'#ffbf00',fontSize:'12'}}>
+                    不选默认全部店铺可用
+                </div>
             </div>
         );
     }
