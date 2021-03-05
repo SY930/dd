@@ -8,7 +8,7 @@ import EditableTags from '../common/EditableTags';
 import ShopSelectModal from './ShopSelectModal';
 import { FILTERS } from './config';
 import { loadShopSchema } from './utils';
-import _ from 'lodash';
+
 
 import './assets/ShopSelector.less';
 
@@ -113,18 +113,9 @@ class ShopSelector extends Component {
     handleModalOk = (values) => {
         const {eventWay} = this.props;
         this.props.onChange(values);
-        if (eventWay && eventWay == '82'){
-            setTimeout(() => {
-                const { isShopSelectorShow} = this.state;//是否有父组件需要验证该组件的值，例如在拼手气抢红包中,如果有已占用的店铺则校验不通过，不能关闭组件   SaleActives/GrabRedPacket/components/Step2.jsx
-                if(isShopSelectorShow == '1'){
-                    this.setState({ showModal: false });
-                }else if(isShopSelectorShow == '2'){
-                    this.setState({ showModal: true });
-                }
-            }, 1000); 
-        }else{
-            this.setState({ showModal: false });
-        }
+
+        this.setState({ showModal: false });
+
     }
 
     handleModalCancel = () => {

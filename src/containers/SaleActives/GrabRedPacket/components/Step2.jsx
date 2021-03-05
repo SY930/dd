@@ -3,12 +3,9 @@ import BaseForm from 'components/common/BaseForm';
 import { formKeys2, formItems2, formItemLayout } from '../Common';
 import ShopSelector from 'components/ShopSelector';
 import { isFilterShopType } from '../../../../helpers/util'
-import { checkEventShopUsed } from '../AxiosFactory';
 import {connect} from 'react-redux';
 import styles from '../grabRedPacket.less';
-import moment from 'moment'
-import { dateFormat } from '../../constant'
-import _ from 'lodash';
+import _ from 'lodash'
 @connect(({ loading, createActiveCom }) => ({ loading, createActiveCom }))
 
 class Step2 extends Component {
@@ -16,9 +13,7 @@ class Step2 extends Component {
         super(props);
         this.state = {
             brands: [],     // 选中的品牌，用来过滤店铺
-            isShopSelectorShow : '2',
-            shopLists:[],
-            step2ShopsList:[]
+            
         };
     }
     
@@ -45,48 +40,8 @@ class Step2 extends Component {
         })
         return flag
     }
-    checkEventShopUsedMtd = (opts) => {
-        checkEventShopUsed(opts).then(data => {
-            if(data){
-                this.setState({
-                    isShopSelectorShow:'1'
-                })
-            }else{
-                this.setState({
-                    isShopSelectorShow:'2'
-                })
-            }
-        });
-    }
+    
     handleFromChange = (key, value) => {
-        setTimeout(() => {
-            const {step2ShopsList} = this.state;
-            if(key  == 'shopIDList'){
-                if (value.length > 0 && step2ShopsList.length > 0){
-                    let shopItem = [];
-                    let shopValue = _.cloneDeep(value);
-                    step2ShopsList.map((item,index) => {
-                        shopValue.map((item1,index1) => {
-                            if(item.shopID == item1){
-                                shopItem.push({"shopID":item.shopID,"shopName":item.shopName})
-                            }
-                        })
-                    })
-
-                    const eventStartDate =  formData.eventLimitDate && formData.eventLimitDate[0] && moment(formData.eventLimitDate[0]).format(dateFormat)
-                    const eventEndDate = formData.eventLimitDate && formData.eventLimitDate[1] && moment(formData.eventLimitDate[1]).format(dateFormat)
-                    const shopInfos = shopItem;
-                    let checkOptions = {
-                        eventWay: '82',
-                        eventEndDate,
-                        eventStartDate,
-                        shopInfos
-                    }
-                    this.checkEventShopUsedMtd(checkOptions)
-                }
-            }
-            
-        }, 0);
         const {formData}  = this.props.createActiveCom;
         formData[key] = value;
         if (key === 'brandList') {
@@ -100,13 +55,7 @@ class Step2 extends Component {
         })
     }
     componentWillReceiveProps(nextProps) {
-        if(nextProps.shopsList.length > 0){
-            this.setState({
-                step2ShopsList:nextProps.shopsList
-            })
-        }
         
-
     }
     getBrandOpts() {
         const { brandList } = this.props;
@@ -118,8 +67,8 @@ class Step2 extends Component {
     /** formItems 重新设置 */
     resetFormItems() {
         // const _this  = this;
-        const { brands ,isShopSelectorShow} = this.state;
-        const render = d => d()(<ShopSelector  eventWay='82'isShopSelectorShow = {isShopSelectorShow} filterParm={isFilterShopType() ? { productCode: 'HLL_CRM_License' } : {}} brandList={brands} />);
+        const { brands } = this.state;
+        const render = d => d()(<ShopSelector  eventWay='82' filterParm={isFilterShopType() ? { productCode: 'HLL_CRM_License' } : {}} brandList={brands} />);
         const options = this.getBrandOpts();
         const { shopIDList, brandList, ...other } = formItems2;
         return {
