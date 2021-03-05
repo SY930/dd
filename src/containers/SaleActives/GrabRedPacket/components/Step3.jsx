@@ -92,11 +92,11 @@ class Step3 extends React.Component {
             message.warn('请填入每人每天参与活动次数')
             return false;
         }
-        if (giftList.length == 1 && (!giftList[0].giftName || !giftList[0].giftCount || !giftList[0].giftValidUntilDayCount)) {
+        if (giftList.length == 1 && (!giftList[0].giftName  || !giftList[0].giftValidUntilDayCount)) {
             message.warn('请添加随机礼品')
             return false
         }
-        if (giftList2.length ==  0 || giftList2.length == 1 && (!giftList2[0].giftName || !giftList2[0].giftCount || !giftList2[0].giftValidUntilDayCount)) {
+        if (giftList2.length ==  0 || giftList2.length == 1 && (!giftList2[0].giftName  || !giftList2[0].giftValidUntilDayCount)) {
             message.warn('请添加最优礼品')
             return false
         }
