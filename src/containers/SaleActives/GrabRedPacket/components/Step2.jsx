@@ -5,18 +5,13 @@ import ShopSelector from 'components/ShopSelector';
 import { isFilterShopType } from '../../../../helpers/util'
 import {connect} from 'react-redux';
 import styles from '../grabRedPacket.less';
-import _ from 'lodash'
 @connect(({ loading, createActiveCom }) => ({ loading, createActiveCom }))
 
 class Step2 extends Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            brands: [],     // 选中的品牌，用来过滤店铺
-            
-        };
-    }
-    
+    state = {
+        brands: [],     // 选中的品牌，用来过滤店铺
+    };
+
     getForm = (form) => {
         this.form = form;
         if (typeof this.props.getSubmitFn === 'function') {
@@ -29,6 +24,7 @@ class Step2 extends Component {
     handleSubmit = () => {
         let flag = true
         const { formData } = this.props.createActiveCom
+
         this.form.validateFieldsAndScroll((e, v) => {
             this.props.dispatch({
                 type: 'createActiveCom/updateState',
@@ -40,13 +36,13 @@ class Step2 extends Component {
         })
         return flag
     }
-    
     handleFromChange = (key, value) => {
-        const {formData}  = this.props.createActiveCom;
-        formData[key] = value;
+        let results = value
+        const { formData } = this.props.createActiveCom;
         if (key === 'brandList') {
             this.setState({ brands: value });
         }
+        formData[key] = results;
         this.props.dispatch({
             type: 'createActiveCom/updateState',
             payload: {
@@ -55,7 +51,7 @@ class Step2 extends Component {
         })
     }
     componentWillReceiveProps(nextProps) {
-        
+        const { formData } = nextProps.createActiveCom
     }
     getBrandOpts() {
         const { brandList } = this.props;
@@ -66,9 +62,9 @@ class Step2 extends Component {
     }
     /** formItems 重新设置 */
     resetFormItems() {
-        // const _this  = this;
         const { brands } = this.state;
-        const render = d => d()(<ShopSelector  eventWay='82' filterParm={isFilterShopType() ? { productCode: 'HLL_CRM_License' } : {}} brandList={brands} />);
+        // let brandss = ['76070129']
+        const render = d => d()(<ShopSelector eventWay='82' filterParm={isFilterShopType() ? { productCode: 'HLL_CRM_License' } : {}} brandList={brands} />);
         const options = this.getBrandOpts();
         const { shopIDList, brandList, ...other } = formItems2;
         return {
@@ -85,7 +81,7 @@ class Step2 extends Component {
         let orderList = formData.orderTypeList.length > 0 ? formData.orderTypeList : ["31"];
         if(formData.shopIDList && formData.shopIDList.length > 0){
             shopIdList = formData.shopIDList.map((item,index)=>{
-                return _.isString(item) ? item : item.toString();
+                return item.toString();
             })
         }
         const formData1 = {
