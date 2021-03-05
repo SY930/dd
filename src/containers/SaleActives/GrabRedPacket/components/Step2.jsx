@@ -17,7 +17,8 @@ class Step2 extends Component {
         this.state = {
             brands: [],     // 选中的品牌，用来过滤店铺
             isShopSelectorShow : '2',
-            shopLists:[]
+            shopLists:[],
+            step2ShopsList:[]
         };
     }
     
@@ -44,22 +45,48 @@ class Step2 extends Component {
         })
         return flag
     }
-    checkEventShopUsed = (opts) => {
+    checkEventShopUsedMtd = (opts) => {
         checkEventShopUsed(opts).then(data => {
             if(data){
                 this.setState({
                     isShopSelectorShow:'1'
                 })
-                
             }else{
                 this.setState({
                     isShopSelectorShow:'2'
                 })
             }
-            this.render();
         });
     }
     handleFromChange = (key, value) => {
+        setTimeout(() => {
+            const {step2ShopsList} = this.state;
+            if(key  == 'shopIDList'){
+                if (value.length > 0 && step2ShopsList.length > 0){
+                    let shopItem = [];
+                    let shopValue = _.cloneDeep(value);
+                    step2ShopsList.map((item,index) => {
+                        shopValue.map((item1,index1) => {
+                            if(item.shopID == item1){
+                                shopItem.push({"shopID":item.shopID,"shopName":item.shopName})
+                            }
+                        })
+                    })
+
+                    const eventStartDate =  formData.eventLimitDate && formData.eventLimitDate[0] && moment(formData.eventLimitDate[0]).format(dateFormat)
+                    const eventEndDate = formData.eventLimitDate && formData.eventLimitDate[1] && moment(formData.eventLimitDate[1]).format(dateFormat)
+                    const shopInfos = shopItem;
+                    let checkOptions = {
+                        eventWay: '82',
+                        eventEndDate,
+                        eventStartDate,
+                        shopInfos
+                    }
+                    this.checkEventShopUsedMtd(checkOptions)
+                }
+            }
+            
+        }, 0);
         const {formData}  = this.props.createActiveCom;
         formData[key] = value;
         if (key === 'brandList') {
@@ -73,31 +100,12 @@ class Step2 extends Component {
         })
     }
     componentWillReceiveProps(nextProps) {
-        const { formData } = this.props.createActiveCom;
-        const { shopsList } = this.props;
-        const { shopIDList } = formData;
-        if (shopIDList.length > 0 && shopsList.length > 0){
-            let shopItem = []
-            let shopValue = _.cloneDeep(shopIDList);
-            shopsList.map((item,index) => {
-                shopValue.map((item1,index1) => {
-                    if(item.shopID == item1){
-                        shopItem.push({"shopID":item.shopID,"shopName":item.shopName})
-                    }
-                })
+        if(nextProps.shopsList.length > 0){
+            this.setState({
+                step2ShopsList:nextProps.shopsList
             })
-
-            const eventStartDate =  formData.eventLimitDate && formData.eventLimitDate[0] && moment(formData.eventLimitDate[0]).format(dateFormat)
-            const eventEndDate = formData.eventLimitDate && formData.eventLimitDate[1] && moment(formData.eventLimitDate[1]).format(dateFormat)
-            const shopInfos = shopItem;
-            let checkOptions = {
-                eventWay: '82',
-                eventEndDate,
-                eventStartDate,
-                shopInfos
-            }
-            this.checkEventShopUsed(checkOptions)
         }
+        
 
     }
     getBrandOpts() {
