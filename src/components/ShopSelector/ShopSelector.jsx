@@ -113,7 +113,7 @@ class ShopSelector extends Component {
     }
 
     render() {
-        const { value = [], onChange, size, placeholder, extendShopList, ...otherProps } = this.props;
+        const { value = [], onChange, size, placeholder, extendShopList, ...otherProps,eventWay } = this.props;
         const { showModal } = this.state;
 
         let options = this.props.options || this.state.options || [];
@@ -163,8 +163,9 @@ class ShopSelector extends Component {
                         onCancel={this.handleModalCancel}
                     />
                 }
-                <div style={{color:'#ffbf00',fontSize:'12'}}>
-                    不选默认全部店铺可用
+                
+                <div style={{color:'orange',fontSize:'12'}}>
+                    {eventWay&&eventWay=='82'?`不选默认全部店铺可用` : null}
                 </div>
             </div>
         );
