@@ -1181,6 +1181,15 @@ class SpecialPromotionDetail extends React.Component {
                     return (<a onClick={()=>this.handleGiftDetailModalOpen(record)}>查看</a>)
                 }
             }),
+            //debugger
+            eventWay == 75 && ({
+                title: '已集点数',
+                dataIndex: 'pointCount',
+                key: 'pointCount',
+                className: 'TableTxtCenter',
+                width: 100,
+                render: pointCount => pointCount || 0,
+            }),
             eventWay == 75 && ({
                 title: '兑换点数',
                 dataIndex: 'joinCount',
