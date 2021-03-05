@@ -163,6 +163,9 @@ class ShopSelector extends Component {
                         onCancel={this.handleModalCancel}
                     />
                 }
+                <div style={{color:'#ffbf00',fontSize:'12'}}>
+                    不选默认全部店铺可用
+                </div>
             </div>
         );
     }
