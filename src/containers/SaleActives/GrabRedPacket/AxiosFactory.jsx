@@ -93,6 +93,6 @@ async function getMessageTemplateList(){
 };
 
 export {
-    getAccountInfo, getBrandList, getShopList,querySMSSignitureList,queryFsmGroupSettleUnit,getMessageTemplateList,checkEventShopUsed,getAllShopList
+    getAccountInfo, getBrandList, getShopList,querySMSSignitureList,queryFsmGroupSettleUnit,getMessageTemplateList,
 }
 

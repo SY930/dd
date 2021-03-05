@@ -123,7 +123,7 @@ class ShopSelector extends Component {
     }
 
     render() {
-        const { value = [], onChange, size, placeholder, extendShopList, ...otherProps,eventWay } = this.props;
+        const { value = [], onChange, size, placeholder, extendShopList, eventWay, ...otherProps } = this.props;
         const { showModal } = this.state;
         let options = this.props.options || this.state.options || [];
         if (Array.isArray(extendShopList)) {
