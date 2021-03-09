@@ -12,7 +12,6 @@ export const formItems1 = {
             return <div>称重买赠</div>;
         },
     },
-    // debugger
     eventName: eventName50,
     eventLimitDate,
     eventRemark,

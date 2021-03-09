@@ -1222,7 +1222,6 @@ class PromotionBasicInfo extends React.Component {
 
 
 const mapStateToProps = (state) => {
-    debugger
     return {
         fullCut: state.sale_fullCut_NEW,
         propmotionType: state.sale_promotionBasicInfo_NEW.getIn(['$basicInfo', 'promotionType']),

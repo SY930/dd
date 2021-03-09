@@ -13,7 +13,8 @@ import {
 } from '../../../utils';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
-import {injectIntl} from '../IntlDecor';
+import { injectIntl } from '../IntlDecor';
+import BtnFoodSelector from './BtnFoodSelector'
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
@@ -57,7 +58,7 @@ const getDishesInfoFromPriceOrScopeList = (priceLst) => {
     }
     return {
         dishes: priceLst.map((item) => item.foodName ? `${item.brandID || 0}__${item.foodName}${item.foodUnitName || item.unit}`
-        : `${item.brandID || 0}__${item.targetName}${item.targetUnitName}`
+            : `${item.brandID || 0}__${item.targetName}${item.targetUnitName}`
         )
     }
 }
@@ -168,7 +169,7 @@ class CategoryAndFoodSelector extends Component {
         }
     }
 
-    handleCategoryOrDishChange = ({target : {value}}) => {
+    handleCategoryOrDishChange = ({ target: { value } }) => {
         this.setState({
             categoryOrDish: value,
             dishes: [],
@@ -202,7 +203,7 @@ class CategoryAndFoodSelector extends Component {
             } = this.props;
             const { dishes } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes)
             excludeDishes = dishes
-                .filter(({value: dishValue, localFoodCategoryID, onlineFoodCategoryID}) =>
+                .filter(({ value: dishValue, localFoodCategoryID, onlineFoodCategoryID }) =>
                     excludeDishes.includes(dishValue) &&
                     (categories.includes(localFoodCategoryID) || categories.includes(onlineFoodCategoryID)))
                 .map(item => item.value);
@@ -274,19 +275,33 @@ class CategoryAndFoodSelector extends Component {
             dishLabel,
             showRequiredMark,
             showEmptyTips,
+            singleDish
         } = this.props;
         let { dishes, categories, brands } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes)
         const selectedBrands = this.props.selectedBrands.toJS();
         if (selectedBrands.length) {
             brands = brands.filter(({ value }) => value == 0 || selectedBrands.includes(value))
-            categories = categories.filter(({brandID: value}) => value == 0 || selectedBrands.includes(value))
-            dishes = dishes.filter(({brandID: value}) => value == 0 || selectedBrands.includes(value))
+            categories = categories.filter(({ brandID: value }) => value == 0 || selectedBrands.includes(value))
+            dishes = dishes.filter(({ brandID: value }) => value == 0 || selectedBrands.includes(value))
         }
         if (dishFilter) {
             dishes = dishFilter(dishes)
         }
         const dishLabel2 = dishLabel || k5gfsvlz;
         if (this.props.dishOnly) {
+            if (singleDish) {
+                return (
+                    <BtnFoodSelector
+                        mode="dish"
+                        placeholder={`${dishLabel2}`}
+                        allDishes={dishes}
+                        allCategories={categories}
+                        allBrands={brands}
+                        value={this.state.dishes}
+                        onChange={this.handleDishChange}
+                    />
+                )
+            }
             return (
                 <FoodSelector
                     mode="dish"
@@ -349,18 +364,18 @@ class CategoryAndFoodSelector extends Component {
         const selectedBrands = this.props.selectedBrands.toJS();
         if (selectedBrands.length) {
             brands = brands.filter(({ value }) => value == 0 || selectedBrands.includes(value))
-            categories = categories.filter(({brandID: value}) => value == 0 || selectedBrands.includes(value))
-            dishes = dishes.filter(({brandID: value}) => value == 0 || selectedBrands.includes(value))
+            categories = categories.filter(({ brandID: value }) => value == 0 || selectedBrands.includes(value))
+            dishes = dishes.filter(({ brandID: value }) => value == 0 || selectedBrands.includes(value))
         }
         let filteredCategories = categories;
         let filteredDishes = dishes;
         let filteredBrands = brands;
         if (this.state.categories.length) { // 如果已选分类，排除菜品只能从当中选择
-            filteredCategories = filteredCategories.filter(({value}) => this.state.categories.includes(value))
-            filteredDishes = filteredDishes.filter(({localFoodCategoryID: value, onlineFoodCategoryID}) =>
-            this.state.categories.includes(value) ||
-            this.state.categories.includes(onlineFoodCategoryID)
-        )
+            filteredCategories = filteredCategories.filter(({ value }) => this.state.categories.includes(value))
+            filteredDishes = filteredDishes.filter(({ localFoodCategoryID: value, onlineFoodCategoryID }) =>
+                this.state.categories.includes(value) ||
+                this.state.categories.includes(onlineFoodCategoryID)
+            )
             filteredBrands = filteredBrands.filter(brand => filteredCategories.some(cat => cat.brandID === brand.brandID))
         }
         if (dishFilter) {
@@ -375,6 +390,7 @@ class CategoryAndFoodSelector extends Component {
                     wrapperCol={{ span: 17 }}
                     required={showRequiredMark}
                 >
+
                     <FoodSelector
                         background={this.props.background}
                         mode="category"

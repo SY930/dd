@@ -62,6 +62,9 @@ import NewAddUpFreeActivity from './addUpFree/NewAddUpFreeActivity'; // 累计�
 import NewAddUpGiveActivity from './addUpGive/NewAddUpGiveActivity'; // 累计赠送
 import AddUpGiveDetailInfo from './addUpGive/addUpGiveDetailInfo';
 
+import NewWeighBuyGiveActivity from './weighAndBuyGive/NewWeighBuyGiveActivity'; // 称重买赠
+import WeighBuyGiveDetailInfo from './weighAndBuyGive/WeighBuyGiveDetailInfo';
+
 import NewRecommendFood from './recommendFood/NewRecommendFood'; // 推荐菜
 import RecommendFoodDetailInfo from './recommendFood/recommendFoodDetailInfo';
 
@@ -148,7 +151,7 @@ class ActivityMain extends React.Component {
                 child: SpecialDetailInfo,
             },
             //debugger
-             {
+            {
                 wrapper: NewBuyGiveActivity,
                 child: BuyGiveDetailInfo,
             }, {
@@ -200,6 +203,11 @@ class ActivityMain extends React.Component {
             }, {
                 wrapper: LowPriceSaleActivity,
                 child: LowPriceDetailInfo,
+            },
+            //debugger
+            {
+                wrapper: NewWeighBuyGiveActivity,
+                child: WeighBuyGiveDetailInfo,
             },
             {
                 wrapper: NewFullCutActivity,

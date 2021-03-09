@@ -75,7 +75,7 @@ import { jumpPage, closePage } from '@hualala/platform-base';
 
 import { setThemeClass } from '../../utils/index'
 const activityList = [
-    '80', '66', '81', 'housekeeper', 'intelligentGiftRule', '82', '1995'
+    '80', '66', '81', 'housekeeper', 'intelligentGiftRule', '82'
 ]
 @registerPage([NEW_SALE_BOX], {
 })
@@ -245,21 +245,21 @@ class NewCustomerPage extends Component {
         this.props.setBasicPromotionType({
             promotionType: key,
         });
-        this.setBasicModalVisible(true, activityList.includes(key));
+        this.setBasicModalVisible(true);
         this.setState({
             basicIndex: index,
         });
         //debugger
-        if (activityList.includes(key)) {
-            setTimeout(() => {
-                jumpPage({ menuID: SALE_CENTER_PAYHAVEGIFT, typeKey: key })
-            }, 100);
-            return closePage(SALE_CENTER_PAYHAVEGIFT)
-        }
+        // if (activityList.includes(key)) {
+        //     setTimeout(() => {
+        //         jumpPage({ menuID: SALE_CENTER_PAYHAVEGIFT, typeKey: key })
+        //     }, 100);
+        //     return closePage(SALE_CENTER_PAYHAVEGIFT)
+        // }
     }
-    setBasicModalVisible(basicModalVisible, newPage) {
-        this.setState({ basicModalVisible: newPage ? false : basicModalVisible });
-        if (!basicModalVisible || newPage) {
+    setBasicModalVisible(basicModalVisible) {
+        this.setState({ basicModalVisible, });
+        if (!basicModalVisible) {
             this.props.saleCenterResetBasicBasicInfo();
             this.props.saleCenterResetBasicScopeInfo();
             this.props.saleCenterResetBasicDetailInfo();
