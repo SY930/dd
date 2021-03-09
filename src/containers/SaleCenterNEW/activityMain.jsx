@@ -146,7 +146,9 @@ class ActivityMain extends React.Component {
             }, {
                 wrapper: NewSpecialActivity,
                 child: SpecialDetailInfo,
-            }, {
+            },
+            //debugger
+             {
                 wrapper: NewBuyGiveActivity,
                 child: BuyGiveDetailInfo,
             }, {
@@ -250,7 +252,8 @@ class ActivityMain extends React.Component {
                         }
                         <br />
                     </Col>
-                    <Col span={18} className={styles.activityMainRight}> {this.renderActivityTags()}
+                    <Col span={18} className={styles.activityMainRight}>
+                        {this.renderActivityTags()}
                     </Col>
                 </Row>
             </div>
