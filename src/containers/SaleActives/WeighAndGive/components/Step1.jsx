@@ -104,7 +104,6 @@ class Step1 extends React.Component {
                 <PromotionBasicInfo
                     isNew={!isView && !isEdit }
                     getSubmitFn={(handles) => {
-                        debugger
                         this.handles[0] = handles;
                     }}
                 />

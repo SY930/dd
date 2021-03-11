@@ -507,14 +507,13 @@ export const LOYALTY_PROMOTION_TYPES = [
  *
  */
 export const SALE_PROMOTION_TYPES = [
-    // debugger
     {
         title: '称重买赠',
         isSpecial: false,
         text: '下单后抽取礼品，促进下次消费',
         example: '',
         tags: ['pos'],
-        key: '1995',
+        key: '1021',
         right: 2,
         bottom: -14,
         isHot: true,

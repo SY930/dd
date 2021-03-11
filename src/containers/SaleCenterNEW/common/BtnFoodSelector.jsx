@@ -10,7 +10,7 @@ export default class BtnFoodSelector extends Component {
 
     state = {
         showModal: false,
-        dishes: [],
+        dishes: this.props.value,
         data: [{
             // foods存放购买菜品的foodInfo
             foods: [
@@ -31,6 +31,18 @@ export default class BtnFoodSelector extends Component {
         }],
         currentEditingIndex: 0,
         currentEditingType: 'foods',
+    }
+    componentWillReceiveProps(nextProps) {
+        const {
+            value,
+        } = nextProps
+
+        if (!nextProps.value !== this.props.value) {
+            this.setState({
+                dishes: value,
+            })
+            // this.props.onChange(value)
+        }
     }
 
     openTheDishModal = () => {
@@ -58,41 +70,37 @@ export default class BtnFoodSelector extends Component {
         this.setState({
             dishes: values,
         })
-        const {
-            allBrands,
-            allCategories,
-            allDishes,
-        } = this.props;
-        const { dishes } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes);
-        const dishObjects = values.reduce((acc, curr) => {
-            const dishObj = dishes.find(item => item.value === curr);
-            dishObj && acc.push(dishObj);
-            return acc;
-        }, []);
-        data[currentEditingIndex][currentEditingType] = dishObjects.length ? [...dishObjects] : [{
-            foodName: '',
-            unit: '份',
-        }];
+        // const {
+        //     allBrands,
+        //     allCategories,
+        //     allDishes,
+        // } = this.props;
+        // const { dishes } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes);
+        // const dishObjects = values.reduce((acc, curr) => {
+        //     const dishObj = dishes.find(item => item.value === curr);
+        //     dishObj && acc.push(dishObj);
+        //     return acc;
+        // }, []);
+        // data[currentEditingIndex][currentEditingType] = dishObjects.length ? [...dishObjects] : [{
+        //     foodName: '',
+        //     unit: '份',
+        // }];
         this.setState({
-            data,
+            // data,
             currentFoodValues: [],
             currentEditingIndex: 0,
             currentEditingType: 'foods',
             showModal: false,
         })
-        // debugger
-        this.props.onChange({
-            dishes: data,
-        });
+        this.props.onChange(values)
     }
 
     render() {
         const {
             showModal,
             data = [],
-            dishes,
+            dishes = [],
         } = this.state;
-        console.log('data', data[0] && data[0].foods && data[0].foods[0] && data[0].foods[0].label)
         const {
             value,
             mode,
@@ -100,11 +108,18 @@ export default class BtnFoodSelector extends Component {
             allCategories = [],
             allDishes = [],
         } = this.props;
+
+        let list = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes)
+        const priceLst = dishes.reduce((acc, curr) => {
+            const dish = list.dishes.find(item => item.value === curr);
+            dish && acc.push(dish)
+            return acc;
+        }, [])
         return (
             <div>
                 <Button
                     type="ghost"
-                    style={{ color: '#787878' }}
+                    style={{ color: '#787878', width: '100%' }}
                     onClick={this.openTheDishModal}
                 >
                     {
@@ -114,7 +129,7 @@ export default class BtnFoodSelector extends Component {
                         />
                     }
                     {
-                        dishes.length ? data[0] && data[0].foods && data[0].foods[0] && data[0].foods[0].label : '点击添加商品'
+                        dishes.length ? priceLst[0] && priceLst[0].label : '点击添加商品'
                     }
                 </Button>
                 {
@@ -125,7 +140,7 @@ export default class BtnFoodSelector extends Component {
                             multiple={false}
                             allDishes={allDishes}
                             mode={mode}
-                            initialValue={value}
+                            initialValue={value || []}
                             onOk={this.handleModalOk}
                             onCancel={this.handleModalCancel}
                         />

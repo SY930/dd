@@ -679,14 +679,13 @@ export const ACTIVITY_CATEGORIES = (function () {
             example: SALE_LABEL.k67g7uy4,
             key: "2080",
         },
-        //debugger
         {
             idx: 20,
             color: "#84aac6",
             title: '称重买赠',
             text: '下单后抽取礼品，促进下次消费',
             example: '',
-            key: "1995",
+            key: "1021",
         },
     ];
     return basic;

@@ -56,6 +56,9 @@ const getDishesInfoFromPriceOrScopeList = (priceLst) => {
             dishes: [],
         }
     }
+    console.log('setPriceList', priceLst.map((item) => item.foodName ? `${item.brandID || 0}__${item.foodName}${item.foodUnitName || item.unit}`
+        : `${item.brandID || 0}__${item.targetName}${item.targetUnitName}`
+    ))
     return {
         dishes: priceLst.map((item) => item.foodName ? `${item.brandID || 0}__${item.foodName}${item.foodUnitName || item.unit}`
             : `${item.brandID || 0}__${item.targetName}${item.targetUnitName}`
@@ -68,14 +71,18 @@ class CategoryAndFoodSelector extends Component {
     constructor(props) {
         super(props);
         if (props.dishOnly) {
-            const {
-                dishes,
-            } = getDishesInfoFromPriceOrScopeList(props.priceLst) // 只取初始值
+            let dishesObj
+            if (props.singleDish) {
+                dishesObj = []
+            } else {
+                dishesObj = getDishesInfoFromPriceOrScopeList(props.priceLst)
+            }
             this.state = {
                 categoryOrDish: 1,
-                dishes,
+                dishes: dishesObj.dishes,
                 categories: [],
                 excludeDishes: [],
+                singlePrice: []
             }
         } else {
             const {
@@ -92,17 +99,15 @@ class CategoryAndFoodSelector extends Component {
             }
         }
     }
-    // componentWillReceiveProps(nextProps)  {
-    //     const { priceLst = [] } = nextProps; 
-    //     if(!priceLst.length){
-    //         const {
-    //             dishes,
-    //         } = getDishesInfoFromPriceOrScopeList(priceLst);
-    //         this.setState({
-    //             dishes,
-    //         })
-    //     }
-    // }
+    componentWillReceiveProps(nextProps) {
+        const { priceLst = [], singleDish } = nextProps;
+        const { priceLst: thispriceLst = [] } = this.props
+        if (singleDish) {
+            if (priceLst.length !== thispriceLst.length) {
+                getDishesInfoFromPriceOrScopeList(priceLst)
+            }
+        }
+    }
     componentDidMount() {
         if (this.props.allBrands.size && this.props.allCategories.size && this.props.allDishes.size) {
             this.mapSelectedValueToObjectsThenEmit()
@@ -112,13 +117,15 @@ class CategoryAndFoodSelector extends Component {
         const {
             allBrands,
             allCategories,
-            allDishes
+            allDishes,
+            singleDish,
+            priceLst,
         } = this.props;
         const { dishes, categories } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes)
         const {
             categories: selectedCategoryValues,
             categoryOrDish,
-            dishes: selectedDishValues,
+            dishes: selectedDishValues = [],
             excludeDishes: excludeDishValues,
         } = this.state;
         if (categoryOrDish === 1) {
@@ -133,6 +140,24 @@ class CategoryAndFoodSelector extends Component {
                 excludeDishes: [],
                 foodCategory: [],
             })
+            if (singleDish) {
+                let v = getDishesInfoFromPriceOrScopeList(priceLst)
+                let list = v.dishes.reduce((acc, curr) => {
+                    const dish = dishes.find(item => item.value === curr);
+                    dish && acc.push(dish)
+                    return acc;
+                }, [])
+                this.setState({
+                    dishes: v.dishes,
+                    singlePrice: list
+                })
+                this.props.onChange({
+                    categoryOrDish,
+                    dishes: list,
+                    excludeDishes: [],
+                    foodCategory: [],
+                })
+            }
         } else {
             const excludeDishObjects = excludeDishValues.reduce((acc, curr) => {
                 const dish = dishes.find(item => item.value === curr);
@@ -183,13 +208,35 @@ class CategoryAndFoodSelector extends Component {
             foodCategory: []
         })
     }
-    handleDishChange = (value) => {
+    handleDishChange = (value = []) => {
+        const {
+            singleDish,
+        } = this.props
+
         this.setState({
             dishes: value,
             excludeDishes: [],
             categories: []
         }, () => {
-            this.mapSelectedValueToObjectsThenEmit();
+            if (!singleDish) {
+                this.mapSelectedValueToObjectsThenEmit();
+            } else {
+                const {
+                    allBrands,
+                    allCategories,
+                    allDishes,
+                } = this.props;
+                const { dishes } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes)
+                this.props.onChange({
+                    dishes: value.reduce((acc, curr) => {
+                        const dish = dishes.find(item => item.value === curr);
+                        dish && acc.push(dish)
+                        return acc;
+                    }, []),
+                    excludeDishes: [],
+                    foodCategory: []
+                })
+            }
         })
     }
     handleCategoryChange = (categories) => {
@@ -298,6 +345,7 @@ class CategoryAndFoodSelector extends Component {
                         allCategories={categories}
                         allBrands={brands}
                         value={this.state.dishes}
+                        priceLst={this.state.singlePrice}
                         onChange={this.handleDishChange}
                     />
                 )

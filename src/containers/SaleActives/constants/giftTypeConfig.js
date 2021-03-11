@@ -94,10 +94,9 @@ export const actInfoList = [
             return <GrabRedPacket {...props} />;
         },
     },
-    // debugger
     // {
     //     title: '称重买赠',
-    //     key: '1995',
+    //     key: '1021',
     //     dscList: [
     //         {
     //             title: '活动简介',

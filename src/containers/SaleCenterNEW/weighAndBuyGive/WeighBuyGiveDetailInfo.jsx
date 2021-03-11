@@ -9,13 +9,12 @@
  */
 
 import React, { Component } from 'react'
-import { Row, Col, Form, Select, Radio, Input, InputNumber, Tooltip, Icon, Button } from 'antd';
+import { Row, Col, Form, Select, Radio, Input, InputNumber, Tooltip, Icon, Button, message } from 'antd';
 import { connect } from 'react-redux'
 
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 import PriceInput from '../common/PriceInput';
-import FoodSelectModal from '../../../components/common/FoodSelector/ShopFoodSelectModal'
 import AdvancedPromotionDetailSetting from '../common/AdvancedPromotionDetailSetting';
 import {
     saleCenterSetPromotionDetailAC,
@@ -50,11 +49,24 @@ class WeighBuyGiveDetailInfo extends React.Component {
                 this.initData(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'foodRuleList']).toJS()) :
                 this.isNewOrOldData(),
             index: 'not-important',
+            data: [
+                {
+                    stageAmount: '',
+                    freeAmount: '',
+                    stageAmountFlag: true,
+                    freeAmountFlag: true,
+                },
+            ],
+            priceList: [],
+            priceListFlag: true,
+            scopeLst: [],
+            scopeLstFlag: true,
+            floatDown: '',
+            floatUp: '',
+            floatDownFlag: true,
+            floatUpFlag: true,
         };
-
-        this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
     }
-
     componentDidMount() {
         this.props.getSubmitFn({
             finish: this.handleSubmit,
@@ -67,18 +79,26 @@ class WeighBuyGiveDetailInfo extends React.Component {
         _rule = Object.assign({}, _rule);
         let { display } = this.state;
         display = !this.props.isNew;
+        // 这边对数据进行解析设置priceList,scopeList
+        const ifHasFoodRuleList = this.props.promotionDetailInfo.getIn(['$promotionDetail']).toJS()
+        if (ifHasFoodRuleList.foodRuleList && ifHasFoodRuleList.foodRuleList.length) {
+            this.setState({
+                priceList: this.props.promotionDetailInfo.getIn(['$promotionDetail', 'foodRuleList']).toJS()[0].priceList
+            })
+        }
+        if (ifHasFoodRuleList.scopeLst && ifHasFoodRuleList.scopeLst.length) {
+            this.setState({
+                scopeLst: this.props.promotionDetailInfo.getIn(['$promotionDetail']).toJS().scopeLst
+            })
+        }
         // 根据ruleJson填充页面
         this.setState({
             display,
             stageType: _rule.stageType ? _rule.stageType : 2,
             stageAmount: _rule.stage ? _rule.stage[0].stageAmount : '',
             giveFoodCount: _rule.stage ? _rule.stage[0].giveFoodCount : '',
-        }, () => {
-            if (this.state.stageType == 2 || this.state.stageType == 1) {
-                this.renderMultiGrade(false);
-            } else {
-                this.renderSingleGrade();
-            }
+            floatUp: _rule.stage ? _rule.stage[0].floatUp : '',
+            floatDown: _rule.stage ? _rule.stage[0].floatDown : '',
         });
     }
     componentWillReceiveProps(nextProps) {
@@ -129,34 +149,54 @@ class WeighBuyGiveDetailInfo extends React.Component {
     }
 
     handleSubmit = () => {
-        let { stageAmount, stageType, giveFoodCount, dishes, targetScope, stageAmountFlag, giveFoodCountFlag, dishsSelectStatus, foodRuleList } = this.state;
-        let flag = 'success';
-        if (stageType == 1 || stageType == 2) {
-            foodRuleList.forEach((item) => {
-                if (!item.priceList.length) {
-                    flag = 'error';
-                }
-                if (!item.rule.StageAmountFlag) {
-                    flag = 'error';
-                }
-                if (!item.rule.giveFoodCount) {
-                    flag = 'error';
-                }
-            })
-        } else {
-            if (stageAmount == null || stageAmount == '') {
-                stageAmountFlag = false;
-            }
-            if (giveFoodCount == null || giveFoodCount == '') {
-                giveFoodCountFlag = false;
-            }
-            if (dishes.length == 0) {
-                dishsSelectStatus = 'error'
-            }
-            this.setState({ giveFoodCountFlag, stageAmountFlag, dishsSelectStatus });
-            flag = stageAmountFlag && giveFoodCountFlag && dishsSelectStatus
+        let {
+            stageAmount,
+            stageType,
+            giveFoodCount,
+            targetScope,
+            stageAmountFlag,
+            giveFoodCountFlag,
+            floatDown,
+            floatUp,
+            floatDownFlag,
+            floatUpFlag,
+            scopeLstFlag,
+            priceListFlag,
+            scopeLst,
+            priceList,
+        } = this.state;
+        let flag = true;
+        if (stageAmount == null || stageAmount == '') {
+            stageAmountFlag = false;
         }
-        if (flag == 'success') {
+        if (giveFoodCount == null || giveFoodCount == '') {
+            giveFoodCountFlag = false;
+        }
+        if(Number(this.state.giveFoodCount) > Number(this.state.stageAmount)) {
+            flag = false
+        }
+        if (!priceList.length) {
+            priceListFlag = false;
+        }
+        if (!scopeLst.length) {
+            scopeLstFlag = false;
+        }
+        if (!floatUp) {
+            floatUpFlag = false
+        }
+        if(Number(this.state.floatUp) <= Number(this.state.giveFoodCount)) {
+            flag = false
+        }
+        if (!floatDown) {
+            floatDownFlag = false
+        }
+        if(Number(this.state.floatDown) > Number(this.state.giveFoodCount)) {
+            flag = false
+        }
+
+        this.setState({ giveFoodCountFlag, stageAmountFlag, priceListFlag, scopeLstFlag, floatUpFlag, floatDownFlag });
+        flag = flag && stageAmountFlag && giveFoodCountFlag && priceListFlag && scopeLstFlag && floatUpFlag && floatDownFlag   
+        if (flag) {
             const rule = {
                 stageType,
                 targetScope,
@@ -164,396 +204,108 @@ class WeighBuyGiveDetailInfo extends React.Component {
                     {
                         stageAmount,
                         giveFoodCount,
+                        stageNum: 0,
+                        stageType,
+                        stageAmountFlag,
+                        giveFoodCount,
+                        floatUp,
+                        floatDown,
                     },
                 ],
             }
-            if (stageType == 1 || stageType == 2) {
-                //满的逻辑
-                const { foodRuleList } = this.state;
-                const list = foodRuleList.map((item, i) => {
-                    item.rule = JSON.stringify(item.rule);
-                    item.priceList.map((every) => {
-                        every.targetUnitName = every.unit;
-                        every.foodUnitName = every.unit;
-                        every.stageNo = i;
-                        return every;
-                    })
-                    return item;
-                });
-                this.props.setPromotionDetail({
-                    rule, priceLst: [], foodRuleList: list,
-                });
-            } else {
-                let tempArr1 = [];
-                let priceLst = dishes.map((price, i) => {
-                    if (tempArr1.indexOf(price.itemID) == -1) {
-                        tempArr1.push(price.itemID);
-                        return {
-                            foodUnitID: price.itemID,
-                            foodUnitCode: price.foodKey,
-                            foodName: price.foodName,
-                            foodUnitName: price.unit,
-                            brandID: price.brandID || '0',
-                            price: price.price,
-                            imagePath: price.imgePath,
-                            stageNo: 0,
-                        }
+            let tempArr1 = [];
+            let priceLst = priceList.map((price, i) => {
+                if (tempArr1.indexOf(price.itemID) == -1) {
+                    tempArr1.push(price.itemID);
+                    return {
+                        foodUnitID: price.itemID || price.foodUnitID ,
+                        foodUnitCode: price.foodKey || price.foodUnitCode,
+                        foodName: price.foodName,
+                        foodUnitName: price.unit || price.foodUnitName,
+                        brandID: price.brandID || '0',
+                        price: price.price,
+                        imagePath: price.imgePath || price.imagePath,
+                        stageNo: 0,
                     }
-                });
-                priceLst = priceLst.filter((item) => { if (item) { return item } });
-                const rule1 = JSON.stringify({ stageAmount, giveFoodCount, stageType, stageNum: 0, StageAmountFlag: true });
-                const foodRuleList = [{
-                    priceList: priceLst,
-                    rule: rule1,
-                }]
-                this.props.setPromotionDetail({
-                    rule, priceLst, foodRuleList,
-                });
-            }
+                }
+            });
+            let scopeList = scopeLst.map((price, i) => {
+                if (tempArr1.indexOf(price.itemID) == -1) {
+                    tempArr1.push(price.itemID);
+                    return {
+                        scopeType: '2',
+                        targetID: price.itemID || price.targetID,
+                        brandID: price.brandID || '0',
+                        targetCode: price.foodKey || price.targetCode,
+                        targetName: price.foodName || price.targetName,
+                        targetUnitName: price.unit || price.targetUnitName,
+                    }
+                }
+            });
+            priceLst = priceLst.filter((item) => { if (item) { return item } });
+            scopeList = scopeList.filter((item) => { if (item) { return item } });
+            const rule1 = JSON.stringify({ stageAmount, giveFoodCount, stageType, stageNum: 0, StageAmountFlag: true, floatDown, floatUp });
+            const foodRuleList = [{
+                priceList: priceLst,
+                rule: rule1,
+            }]
+            this.props.setPromotionDetail({
+                rule, priceLst: [], foodRuleList, scopeLst: scopeList
+            });
             return true
         }
         return false
     };
-    onChangeClick = () => {
-        this.setState(
-            { display: !this.state.display }
-        )
-    };
-    onStageAmountChange = (value, index) => {
-        let { stageAmount, stageAmountFlag, foodRuleList } = this.state;
-        if (index === 0 || index) {
-            //当是满的逻辑
-            // 在这会加上每个档位对于这个stageAmount的flag的判断加上新的判断flag整理数据的时候加上
-            foodRuleList[index].stageAmountFlag = true;
-            foodRuleList[index].rule.stageAmount = value.number;
-            if (index == foodRuleList.length - 1) {
-                if (index == 0) {
-                    if (!+value.number || +value.number <= 0) {
-                        foodRuleList[index].rule.StageAmountFlag = false;
-                    } else {
-                        foodRuleList[index].rule.StageAmountFlag = true;
-                    }
-                } else if (index > 1) {
-                    //在这种情况下index为2
-                    for (let i = index; i > 0; i--) {
-                        if (+foodRuleList[i - 1].rule.stageAmount >= +foodRuleList[i].rule.stageAmount) {
-                            foodRuleList[i].rule.StageAmountFlag = false;
-                            foodRuleList[i - 1].rule.StageAmountFlag = false;
-                        } else {
-                            foodRuleList[i].rule.StageAmountFlag = true;
-                            foodRuleList[i - 1].rule.StageAmountFlag = true;
-                        }
-                    }
-                } else {
-                    //在这种情况下index为1
-                    if (+foodRuleList[index - 1].rule.stageAmount >= +value.number) {
-                        foodRuleList[index].rule.StageAmountFlag = false;
-                        foodRuleList[index - 1].rule.StageAmountFlag = false;
-                    } else {
-                        foodRuleList[index - 1].rule.StageAmountFlag = true;
-                        foodRuleList[index].rule.StageAmountFlag = true;
-                    }
-                }
-                if (!+value.number || +value.number <= 0) {
-                    foodRuleList[index].rule.StageAmountFlag = false;
-                }
-            } else {
-                for (let i = foodRuleList.length - 1; i > 0; i--) {
-                    if (+foodRuleList[i - 1].rule.stageAmount >= +foodRuleList[i].rule.stageAmount) {
-                        foodRuleList[i].rule.StageAmountFlag = false;
-                        foodRuleList[i - 1].rule.StageAmountFlag = false;
-                    } else {
-                        foodRuleList[i].rule.StageAmountFlag = true;
-                        foodRuleList[i - 1].rule.StageAmountFlag = true;
-                    }
-                }
-                if (!+value.number || +value.number <= 0) {
-                    foodRuleList[index].rule.StageAmountFlag = false;
-                }
-            }
-            this.setState({
-                foodRuleList,
-            })
+
+    onFreeAmountChange(value, idx) {
+        const { data } = this.state;
+        let freeAmountFlag,
+            freeAmount;
+        if (value.number == null || value.number === '' || value.number > data[idx].stageAmount) {
+            freeAmountFlag = false;
+            freeAmount = value.number;
         } else {
-            //当不是满的逻辑
-            if (value.number == null || value.number == '') {
-                stageAmountFlag = false;
-                stageAmount = value.number;
-            } else {
-                stageAmountFlag = true;
-                stageAmount = value.number;
-            }
-            this.setState({ stageAmount, stageAmountFlag });
+            freeAmountFlag = true;
+            freeAmount = value.number;
         }
-
-    }
-    handleStageTypeChange = (value, index) => {
-        //这边不传index 的意思是无论如何 index都为0，因为变动了类型的时候，以为着多档 单档切换了，所以无论什么时候index都是0
-        if (Number(value) == 2 || Number(value) == 1) {
-            this.renderMultiGrade(true, value);
-        } else {
-            this.renderSingleGrade();
-        }
-        this.setState({ stageType: Number(value) });
+        data[idx].freeAmount = freeAmount;
+        data[idx].freeAmountFlag = freeAmountFlag
+        this.setState({ data });
     }
 
-    onGiveFoodCountChange(value, index) {
-        let { giveFoodCount, giveFoodCountFlag, foodRuleList } = this.state;
-        if (index === 0 || index) {
-            //当是满的逻辑
-            foodRuleList[index].rule.giveFoodCount = value.number;
-            this.setState({
-                foodRuleList,
-            })
-        } else {
-            if (value.number == null || value.number == '') {
-                giveFoodCountFlag = false;
-                giveFoodCount = value.number;
-            } else {
-                giveFoodCountFlag = true;
-                giveFoodCount = value.number;
-            }
-            this.setState({ giveFoodCount, giveFoodCountFlag });
-        }
-
-    }
-    renderMultiGrade = (ifNotMount, type) => {
-        //更改所有相关数据为数组
-        this.setState({
-            ifMultiGrade: true,
-        })
-        if (ifNotMount) {
-            this.setState({
-                foodRuleList: [
-                    {
-                        rule: {
-                            stageAmount: '',
-                            giveFoodCount: '',
-                            stageType: type,
-                            stageNum: 0,
-                        },
-                        priceList: [],
-                        scopeList: [],
-                    }
-                ]
-            })
-        }
-    }
-    renderSingleGrade = () => {
-        this.setState({
-            ifMultiGrade: false,
-        })
-    }
-
-    addGrade = () => {
-        let { foodRuleList } = this.state;
-        let index = foodRuleList.length;
-        foodRuleList.push({
-            rule: {
-                stageAmount: '',
-                giveFoodCount: '',
-                stageType: foodRuleList[0].rule.stageType,
-                stageNum: index,
-            },
-            priceList: [],
-            scopeList: [],
-        })
-        this.setState({
-            foodRuleList,
-        })
-    }
-
-    deleteGrade = (e, index) => {
-        let { foodRuleList } = this.state;
-        foodRuleList.splice(index, 1);
-        this.setState({
-            foodRuleList,
-        })
-    }
-
-    renderBuyDishNumInput = (item, index) => {
-        //指定菜品
-        const { intl } = this.props;
-        const { ifMultiGrade, foodRuleList } = this.state;
-        let singleAdd, bothIcon, singleDelete;
-        singleAdd = index == 0 && foodRuleList.length == 1;
-        bothIcon = index != 0 && index == foodRuleList.length - 1;
-        singleDelete = index < 4 && index != foodRuleList.length - 1 || index == 4 && index == foodRuleList.length - 1;
-        const k5ez4pvb = intl.formatMessage(SALE_STRING.k5ez4pvb);
-        const k5ez4qew = intl.formatMessage(SALE_STRING.k5ez4qew);
-        const k5hlxzmq = intl.formatMessage(SALE_STRING.k5hlxzmq);
-        const k5hlxzv2 = intl.formatMessage(SALE_STRING.k5hlxzv2);
-        const RULE_TYPE = [
-            {
-                value: '2',
-                label: k5ez4pvb,
-            },
-            {
-                value: '4',
-                label: k5ez4qew,
-            },
-            {
-                value: '1',
-                label: k5hlxzmq,
-            },
-            {
-                value: '3',
-                label: k5hlxzv2,
-            },
-        ]
-        if (item) {
-            if (typeof item.rule == 'string') {
-                item.rule = JSON.parse(item.rule);
-            }
-        }
-        return (
-            <FormItem
-                className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
-                wrapperCol={{ span: 17, offset: 4 }}
-                required={true}
-                validateStatus={ifMultiGrade ? item.rule.stageAmount == null || item.rule.stageAmount == '' || !foodRuleList[index].rule.stageAmountFlag ? 'success' : 'error' : this.state.stageAmountFlag ? 'success' : 'error'}
-                help={ifMultiGrade ? foodRuleList[index] ? foodRuleList[index].rule.StageAmountFlag ? null : `需大于0并且后面的档位需大于之前档位` : null : this.state.stageAmount ? null : `需大于0`}
-            >
-                <PriceInput key={2}
-                    addonBefore={<Select size="default"
-                        onChange={
-                            (value) => {
-                                this.handleStageTypeChange(value);
-                            }}
-                        value={ifMultiGrade ? `${item.rule.stageType}` : `${this.state.stageType}`}
-                        getPopupContainer={(node) => node.parentNode}
-                    >
-                        {
-                            RULE_TYPE.map((item) => {
-                                return (<Option key={item.value} value={item.value}>{item.label}</Option>)
-                            })
-                        }
-                    </Select>}
-                    addonAfter={'份'}
-                    value={{ number: ifMultiGrade ? item.rule.stageAmount : this.state.stageAmount }}
-                    defaultValue={{ number: ifMultiGrade ? item.rule.stageAmount : this.state.stageAmount }}
-                    onChange={(value) => {
-                        this.onStageAmountChange(value, index);
-                    }}
-                    modal="int"
-                />
-                <span className={[styles.gTip, styles.gTipInLine].join(' ')}>&nbsp;</span>
-                {
-                    ifMultiGrade ?
-                        singleAdd ?
-                            <span className={styles.operateIcon}><Icon className={styles.addIconGrade} onClick={this.addGrade} type="plus-circle-o" /></span> :
-                            singleDelete ? <span className={styles.operateIcon}><Icon className={styles.minIconGrade} onClick={(value) => { this.deleteGrade(value, index) }} type="minus-circle-o" /></span> :
-                                <span className={styles.operateIcon}><Icon className={styles.addIconGrade} onClick={this.addGrade} type="plus-circle-o" /> <Icon className={styles.minIconGrade} type="minus-circle-o" onClick={(value) => { this.deleteGrade(value, index) }} /></span> : null
-                }
-                {
-                    ifMultiGrade ?
-                        <span className={styles.GradeStyle}>{`档位${index ? index + 1 : 1}`}</span>
-                        : null
-                }
-            </FormItem>
-        )
-    }
-
-    renderGiveDishNumInput = (wapper, item, index) => {
-        //菜品赠送数量
-        const { intl } = this.props;
-        const k5ez4qy4 = intl.formatMessage(SALE_STRING.k5ez4qy4);
-        const { ifMultiGrade } = this.state;
-        return (
-            <FormItem
-                className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
-                wrapperCol={{ span: wapper ? wapper : 17, offset: wapper ? 5 : 4 }}
-                required={true}
-                validateStatus={ifMultiGrade ? item.rule.giveFoodCount == null || item.rule.giveFoodCount == '' ? 'error' : 'success' : this.state.giveFoodCountFlag ? 'success' : 'error'}
-            >
-                <Tooltip title={wapper ? SALE_LABEL.k5hly0k2 : ''}>
-                    <PriceInput
-                        addonBefore={SALE_LABEL.k5hly03e}
-                        addonAfter={k5ez4qy4}
-                        value={{ number: ifMultiGrade ? `${item.rule.giveFoodCount ? item.rule.giveFoodCount : ''}` : this.state.giveFoodCount }}
-                        defaultValue={{ number: ifMultiGrade ? `${item.rule.giveFoodCount}` : this.state.giveFoodCount }}
-                        onChange={(value) => {
-                            this.onGiveFoodCountChange(value, index);
-                        }}
-                        modal="int"
-                    />
-                </Tooltip>
-                {
-                    wapper ? null :
-                        <span className={[styles.gTip, styles.gTipInLine].join(' ')}>{SALE_LABEL.k5hly0k2}</span>
-                }
-            </FormItem>
-        )
-    }
-
-    renderDishsSelectionBox(wapper, item, index = 0) {
-        //赠送菜品
-        const { ifMultiGrade } = this.state;
-        return (
-            <FormItem
-                label={SALE_LABEL.k5hly0bq}
-                className={styles.FormItemStyle}
-                labelCol={{ span: wapper ? 3 : 4, offset: wapper ? 1 : 0 }}
-                wrapperCol={{ span: wapper ? wapper : 17, offset: wapper ? 1 : 0 }}
-                required={true}
-                validateStatus={ifMultiGrade ? item.priceList.length ? 'success' : 'error' : this.state.dishsSelectStatus ? 'success' : 'error'}
-                help={ifMultiGrade ? item.priceList.length ? null : SALE_LABEL.k5hkj1ef : this.state.dishsSelectStatus == 'success' ? null : SALE_LABEL.k5hkj1ef}
-            >
-                <ConnectedPriceListSelector foodRuleList={this.state.foodRuleList} isShopMode={this.props.isShopFoodSelectorMode} onChange={(value) => { this.onDishesChange(value, index) }} index={index} />
-            </FormItem>
-        )
-    }
-    onDishesChange = (value, index) => {
-        let { ifMultiGrade, foodRuleList } = this.state;
-        if (ifMultiGrade) {
-            //当时满时走的逻辑
-            foodRuleList[index].priceList = [...value];
-            this.setState({
-                foodRuleList,
-            })
-        } else {
-            this.setState({
-                dishes: [...value],
-                dishsSelectStatus: value.length > 0 ? 'success' : 'error',
-            });
-        }
+    stageTypeChange = (e) => {
+        this.setState({ stageType: e.target.value, })
     }
 
 
-    renderMultiGradeSelect = (item, index) => {
-        return (
-            <div className={styles.dangStyle}>
-                {this.renderBuyDishNumInput(item, index)}
-                <div className={styles.MultiGradeBorder}>
-                    {this.renderDishsSelectionBox(17, item, index)}
-                    {this.renderGiveDishNumInput(17, item, index)}
-                </div>
-            </div>
-        )
-    }
 
-    //debugger 从这往下是新的
     renderActType = () => {
         return (
             <FormItem
                 label={'活动方式'}
                 className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
                 labelCol={{ span: 3, offset: 1 }}
-                wrapperCol={{ span: 17, offset: 1 }}
-                // validateStatus={item.rule.giveFoodCount == null || item.rule.giveFoodCount == '' ? 'error' : 'success'}
+                wrapperCol={{ span: 17, offset: 0 }}
                 validateStatus={'success'}
             >
                 <Radio.Group
-                    onChange={this.handleActTypeChange}
+                    onChange={this.stageTypeChange}
+                    value={this.state.stageType}
                 >
-                    <Radio.Button value={0}>满赠</Radio.Button>
+                    <Radio.Button value={2}>满赠</Radio.Button>
                     <Radio.Button value={1}>每满赠</Radio.Button>
                 </Radio.Group>
             </FormItem>
         )
     }
 
-    renderAdvancedSettingButton() {
+    onChangeClick = () => {
+        this.setState(
+            { display: !this.state.display }
+        )
+    };
+
+    renderAdvancedSettingButton = () => {
         return (
             <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 17, offset: 4 }} >
                 <span className={styles.gTip}>{SALE_LABEL.k5ezdwpv}</span>
@@ -565,13 +317,27 @@ class WeighBuyGiveDetailInfo extends React.Component {
         )
     }
 
+    onPriceListChange = (value) => {
+        this.setState({
+            priceList: value,
+            priceListFlag: value.length ? true : false,
+        })
+    }
+
+    onScopeLstChange = (value) => {
+        this.setState({
+            scopeLst: value,
+            scopeLstFlag: value.length ? true : false,
+        });
+    }
+
     renderActRule = () => {
         return (
             <FormItem
                 label={'活动规则'}
                 className={[styles.FormItemStyle, styles.actRuleForm].join(' ')}
                 labelCol={{ span: 3, offset: 1 }}
-                wrapperCol={{ span: 17, offset: 1 }}
+                wrapperCol={{ span: 17, offset: 0 }}
                 required={true}
                 // validateStatus={item.rule.giveFoodCount == null || item.rule.giveFoodCount == '' ? 'error' : 'success'}
                 validateStatus={'success'}
@@ -583,44 +349,113 @@ class WeighBuyGiveDetailInfo extends React.Component {
                                 label={'活动商品'}
                                 required={true}
                                 className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
-                                labelCol={{ span: 6, offset: 0 }}
-                                wrapperCol={{ span: 17, offset: 0 }}
-                                // validateStatus={item.rule.giveFoodCount == null || item.rule.giveFoodCount == '' ? 'error' : 'success'}
-                                validateStatus={'success'}
+                                labelCol={{ span: 8, offset: 0 }}
+                                wrapperCol={{ span: 16, offset: 0 }}
+                                validateStatus={!this.state.priceListFlag ? 'error' : 'success'}
+                                help={this.state.priceListFlag ? null : '请选择商品'}
                             >
-                                {/* <Button
-                                    type="ghost"
-                                    style={{ color: '#787878' }}
-                                    onClick={this.openTheDishModal}
-                                >
-                                    <Icon
-                                        type="plus"
-                                        className={styles.avatarUploaderTrigger}
-                                    />
-                                    点击添加商品
-                                </Button> */}
                                 <ConnectedPriceListSelector
+                                    key={1}
+                                    priceList={this.state.priceList}
                                     singleDish={true}
                                     foodRuleList={this.state.foodRuleList}
                                     isShopMode={this.props.isShopFoodSelectorMode}
-                                    onChange={(value) => { this.onDishesChange(value) }}
+                                    onChange={(value) => { this.onPriceListChange(value) }}
                                 />
                             </FormItem>
                         </div>
                         <div className={styles.rightBox}>
-                            2
+                            <FormItem
+                                label={'参与条件消费满'}
+                                className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
+                                labelCol={{ span: 10, offset: 0 }}
+                                wrapperCol={{ span: 14, offset: 0 }}
+                                validateStatus={this.state.stageAmountFlag == '' ? 'error' : 'success'}
+                                help={this.state.stageAmountFlag ? null : '请输入大于0，整数5位以内且小数2位内的数'}
+                            >
+                                <Input key={2}
+                                    addonAfter={'斤'}
+                                    value={this.state.stageAmount}
+                                    onChange={(value) => {
+                                        this.onStageAmountChange(value);
+                                    }}
+                                />
+                            </FormItem>
                         </div>
                         <div className={styles.leftBox}>
-                            1
+                            <FormItem
+                                label={'赠送商品'}
+                                required={true}
+                                className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
+                                labelCol={{ span: 8, offset: 0 }}
+                                wrapperCol={{ span: 16, offset: 0 }}
+                                validateStatus={!this.state.scopeLstFlag ? 'error' : 'success'}
+                                help={this.state.scopeLstFlag ? null : '请选择商品'}
+                            >
+                                <ConnectedPriceListSelector
+                                    key={2}
+                                    priceList={this.state.scopeLst}
+                                    singleDish={true}
+                                    foodRuleList={this.state.foodRuleList}
+                                    isShopMode={this.props.isShopFoodSelectorMode}
+                                    onChange={(value) => { this.onScopeLstChange(value) }}
+                                />
+                            </FormItem>
                         </div>
                         <div className={styles.rightBox}>
-                            2
+                            <FormItem
+                                label={'赠送数量'}
+                                className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
+                                labelCol={{ span: 5, offset: 1 }}
+                                wrapperCol={{ span: 14, offset: 0 }}
+                                validateStatus={this.state.giveFoodCountFlag == '' ? 'error' : 'success'}
+                                help={this.state.giveFoodCountFlag ? Number(this.state.giveFoodCount) > Number(this.state.stageAmount) ? '赠送数量不能大于购买数量' : null : '请输入大于0，整数5位以内且小数2位内的数'}
+                            >
+                                <Input key={2}
+                                    addonAfter={'斤'}
+                                    value={this.state.giveFoodCount}
+                                    onChange={(value) => {
+                                        this.onGiveFoodCountChange(value);
+                                    }}
+                                />
+                            </FormItem>
                         </div>
                         <div className={styles.leftBox}>
-                            1
+                            <FormItem
+                                label={'允许误差范围'}
+                                required={true}
+                                className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
+                                labelCol={{ span: 9, offset: 1 }}
+                                wrapperCol={{ span: 14, offset: 0 }}
+                                validateStatus={this.state.floatDownFlag == '' ? 'error' : 'success'}
+                                help={this.state.floatDownFlag ? this.state.floatDown && (Number(this.state.floatDown) >= Number(this.state.giveFoodCount)) ? '赠送最小值需小于赠送数量' : null  : '请输入大于0，整数5位以内且小数2位内的数'}
+                            >
+                                <Input key={2}
+                                    addonAfter={'斤'}
+                                    value={this.state.floatDown}
+                                    onChange={(value) => {
+                                        this.onFloatDownChange(value);
+                                    }}
+                                />
+                            </FormItem>
                         </div>
                         <div className={styles.rightBox}>
-                            2
+                            <FormItem
+                                label={'至'}
+                                className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
+                                labelCol={{ span: 3, offset: 1 }}
+                                wrapperCol={{ span: 14, offset: 0 }}
+                                validateStatus={this.state.floatUpFlag == '' ? 'error' : 'success'}
+                                help={this.state.floatUpFlag ? this.state.floatUp && (Number(this.state.floatUp) <= Number(this.state.giveFoodCount)) ? '赠送最大值需大于赠送数量' : null : '请输入大于0，整数5位以内且小数2位内的数'}
+                            >
+                                <Input key={2}
+                                    addonAfter={'斤'}
+                                    value={this.state.floatUp}
+                                    onChange={(value) => {
+                                        this.onFloatUpChange(value);
+                                    }}
+                                />
+                            </FormItem>
                         </div>
                     </div>
                 </div>
@@ -628,11 +463,61 @@ class WeighBuyGiveDetailInfo extends React.Component {
         )
     }
 
-    openTheDishModal = () => {
+    onStageAmountChange = (e) => {
+        let value = e.target.value
+        let { stageAmount, stageAmountFlag, foodRuleList } = this.state;
+        if (value == null || value == '' || value == '0' || !/^(([1-9]\d{0,4})|0)(\.\d{0,2})?$/.test(value)) {
+            stageAmountFlag = false;
+            stageAmount = value;
+        } else {
+            stageAmountFlag = true;
+            stageAmount = value;
+        }
+        this.setState({ stageAmount, stageAmountFlag });
 
     }
 
-    handleActTypeChange = (v) => {
+    onGiveFoodCountChange = (e) => {
+        let value = e.target.value
+        let { giveFoodCount, giveFoodCountFlag } = this.state;
+        if (value == null || value == '' || value == '0' || !/^(([1-9]\d{0,4})|0)(\.\d{0,2})?$/.test(value)) {
+            giveFoodCountFlag = false;
+            giveFoodCount = value;
+        } else {
+            giveFoodCountFlag = true;
+            giveFoodCount = value;
+        }
+        this.setState({ giveFoodCount, giveFoodCountFlag });
+    }
+
+    onFloatUpChange = (e, type) => {
+        let value = e.target.value
+        let { floatUp, floatUpFlag } = this.state;
+        if (value == null || value == '' || value == '0' || !/^(([1-9]\d{0,4})|0)(\.\d{0,2})?$/.test(value)) {
+            floatUpFlag = false;
+            floatUp = value;
+        } else {
+            floatUpFlag = true;
+            floatUp = value;
+        }
+        this.setState({ floatUp, floatUpFlag });
+    }
+
+    onFloatDownChange = (e, type) => {
+        let value = e.target.value
+        let { floatDown, floatDownFlag } = this.state;
+        if (value == null || value == '' || value == '0' || !/^(([1-9]\d{0,4})|0)(\.\d{0,2})?$/.test(value)) {
+            floatDownFlag = false;
+            floatDown = value;
+        } else {
+            floatDownFlag = true;
+            floatDown = value;
+        }
+        this.setState({ floatDown, floatDownFlag });
+    }
+
+
+    openTheDishModal = () => {
 
     }
 

@@ -10,7 +10,6 @@ const formItemLayout = {
     labelCol: { span: 3 },
     wrapperCol: { span: 17 },
 };
-// debugger step2参考
 const formItems2 = {
     brandList: {
         type: 'combo',

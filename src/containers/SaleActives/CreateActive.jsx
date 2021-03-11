@@ -69,7 +69,6 @@ class CreateActive extends Component {
         const  { itemID, isView, isEdit } = decodeUrl()
         const currentInfo = actInfoList.find(v => v.key ===  this.typeKey) || {}
         let {dscList = [], warnInfo = ''} = currentInfo
-        // debugger
         return (
             <div className={styles.createActive}>
                 <div className={styles.header}>

@@ -237,7 +237,6 @@ class CollocationTableWithBrandID extends Component {
             currentEditingType,
             data,
         } = this.state;
-        debugger
         const {
             allBrands,
             allCategories,

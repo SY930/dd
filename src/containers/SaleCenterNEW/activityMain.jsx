@@ -150,7 +150,6 @@ class ActivityMain extends React.Component {
                 wrapper: NewSpecialActivity,
                 child: SpecialDetailInfo,
             },
-            //debugger
             {
                 wrapper: NewBuyGiveActivity,
                 child: BuyGiveDetailInfo,
@@ -204,7 +203,6 @@ class ActivityMain extends React.Component {
                 wrapper: LowPriceSaleActivity,
                 child: LowPriceDetailInfo,
             },
-            //debugger
             {
                 wrapper: NewWeighBuyGiveActivity,
                 child: WeighBuyGiveDetailInfo,

@@ -249,7 +249,6 @@ class NewCustomerPage extends Component {
         this.setState({
             basicIndex: index,
         });
-        //debugger
         // if (activityList.includes(key)) {
         //     setTimeout(() => {
         //         jumpPage({ menuID: SALE_CENTER_PAYHAVEGIFT, typeKey: key })
