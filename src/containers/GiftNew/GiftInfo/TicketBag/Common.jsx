@@ -473,7 +473,7 @@ const pFormItems = {
     },
     smsGate: {
         type: 'combo',
-        label: '是否发送消息',
+        label: '是否发送消息2',
         options: isSendOpts,
         defaultValue: '0',
     },

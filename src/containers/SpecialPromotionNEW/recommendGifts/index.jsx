@@ -21,6 +21,7 @@ import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
 
 
+
 @injectIntl
 class RecommendGiftsWrapper extends NewPromotion {
     constructor(props) {
@@ -81,6 +82,7 @@ class RecommendGiftsWrapper extends NewPromotion {
                 onFinish={this.handleFinish}
                 onPrev={this.handlePrev}
                 onCancel={this.handleCancel}
+                eventWay={`${this.props.specialPromotion.$eventInfo.eventWay}`}
             />
         );
     }
@@ -90,6 +92,7 @@ const mapStateToProps = (state) => {
     return {
         specialPromotion: state.sale_specialPromotion_NEW.toJS(),
         user: state.user.toJS(),
+        isUpdate: state.sale_myActivities_NEW.get('isUpdate'),
     };
 };
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Radio, Select } from 'antd';
+import { Form, Radio, Select ,Col} from 'antd';
 import { connect } from 'react-redux'
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
@@ -231,7 +231,8 @@ class BuyCutDetailInfo extends React.Component {
                 wrapperCol={{ span: 17, offset: 4 }}
                 required={true}
                 validateStatus={this.state.stageAmountFlag ? 'success' : 'error'}
-            >
+            >   
+                <Col className={styles.activityCondition}>活动条件</Col>
                 <PriceInput
                     addonBefore={
                         <Select size="default"
@@ -323,7 +324,6 @@ class BuyCutDetailInfo extends React.Component {
 
     renderCutWay() {
         return (
-
             <FormItem
                 label={SALE_LABEL.k5kec0v8}
                 className={styles.FormItemStyle}

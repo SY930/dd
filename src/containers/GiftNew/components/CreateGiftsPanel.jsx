@@ -5,6 +5,11 @@ import GiftCfg from '../../../constants/Gift';
 import xcx from '../assets/xcx.png';
 import wx from '../assets/wx.png';
 import pos from '../assets/pos.png';
+import lpk from '../assets/lpk.png';
+import xcx_tips from '../assets/xcx-tips.png';
+import wx_tips from '../assets/wx-tips.png';
+import pos_tips from '../assets/pos-tips.png';
+import lpk_tips from '../assets/lpk-tips.png';
 import {
     message,
 } from 'antd';
@@ -42,15 +47,48 @@ class CreateGiftsPanel extends Component {
             }
         });
     }
-
+    getIconTags(){
+        console.log('00000000000')
+        const iconTags = [
+            {
+                label:'POS',
+                icon:pos_tips
+            },
+            {
+                label:'微信餐厅',
+                icon:wx_tips
+            },
+            {
+                label:'小程序',
+                icon:xcx_tips
+            },
+            {
+                label:'礼品卡小程序',
+                icon:lpk_tips
+            }
+        ]
+        return (
+            <div className={styles.iconTagsCol}>
+                {
+                    iconTags.map((item,index) => (
+                        <div className={styles.iconTags} key={index}>
+                            <img src={item.icon} alt={item.label}/>
+                            <div className={styles.iconTitle}>{item.label}</div>
+                        </div>
+                    ))
+                }
+            </div>
+        )
+    }
     render() {
         const primaryGifts = GiftCfg.giftType.filter(gift => gift.category === 'primary');
         const secondaryGifts = GiftCfg.giftType.filter(gift => gift.category === 'secondary');
         return (
             <div>
+                {this.getIconTags()}
                 <div>
                     <div className={styles.logoGroupHeader}>
-                        常用券类
+                        常用券类1
                     </div>
                     <div className={styles.groupContainer}>
                         {
@@ -113,6 +151,7 @@ class CreateGiftsPanel extends Component {
 }
 
 function ClickableGiftLogo(props) {
+    console.log(props,'props.tag.tags===============')
     let wechatFlag = 1;
     return (
         <div onClick={props.onClick} className={props.isPrimary ? styles[`logoContainer_${props.index}`] : styles.logoContainer}>
@@ -134,13 +173,18 @@ function ClickableGiftLogo(props) {
                                 <img className={styles.speTagImg} src={xcx} /> : 
                                 tag.props.defaultMessage.includes('微信') ?
                                 <img className={styles.speTagImg} src={wx} /> : 
-                                tag.props.defaultMessage.includes('pos') ? <img className={styles.speTagImg} src={pos} /> : 
+                                tag.props.defaultMessage.includes('礼品卡小程序') ?
+                                <img className={styles.speTagImg} src={lpk} /> : 
+                                tag.props.defaultMessage.includes('pos') ? 
+                                <img className={styles.speTagImg} src={pos} /> : 
                                 <span><img className={styles.speTagImg} src={xcx} /><img className={styles.speTagImg} src={pos} /><img className={styles.speTagImg} src={wx} /></span>
                             : tag.includes('pos') ?
                                 <img className={styles.speTagImg} src={pos} /> : 
                                 tag.includes('微信') ? 
                                     <img className={styles.speTagImg} src={wx} /> :
-                                    tag.includes('小程序') ? <img className={styles.speTagImg} src={xcx} /> : null
+                                    tag.includes('礼品卡小程序') ?
+                                        <img className={styles.speTagImg} src={lpk} /> :
+                                            tag.includes('小程序') ? <img className={styles.speTagImg} src={xcx} /> : null
                     }</div>)})
                     // (props.data.tags || []).map(tag => (
                     //     <div key={tag}>{tag}</div>
@@ -175,12 +219,16 @@ function ClickableGiftCard(props) {
                                 <img className={styles.speTagImg} src={xcx} /> : 
                                 tag.props.defaultMessage.includes('微信') ?
                                 <img className={styles.speTagImg} src={wx} /> : 
+                                tag.props.defaultMessage.includes('礼品卡小程序') ?
+                                <img className={styles.speTagImg} src={lpk} /> : 
                                 tag.props.defaultMessage.includes('pos') ? <img className={styles.speTagImg} src={pos} /> : 
                                 <span><img className={styles.speTagImg} src={xcx} /><img className={styles.speTagImg} src={pos} /><img className={styles.speTagImg} src={wx} /></span>
                             : tag.includes('pos') ?
                                 <img className={styles.speTagImg} src={pos} /> : 
                                 tag.includes('微信') ? 
                                     <img className={styles.speTagImg} src={wx} /> :
+                                        tag.includes('礼品卡小程序') ? 
+                                            <img className={styles.speTagImg} src={lpk} /> :
                                     tag.includes('小程序') ? <img className={styles.speTagImg} src={xcx} /> : null
                     }</div>)})
                 }
@@ -210,12 +258,16 @@ function ClickableRedPacket(props) {
                                 <img className={styles.speTagImg} src={xcx} /> : 
                                 tag.props.defaultMessage.includes('微信') ?
                                 <img className={styles.speTagImg} src={wx} /> : 
+                                tag.props.defaultMessage.includes('礼品卡小程序') ?
+                                <img className={styles.speTagImg} src={lpk} /> : 
                                 tag.props.defaultMessage.includes('pos') ? <img className={styles.speTagImg} src={pos} /> : 
                                 <span><img className={styles.speTagImg} src={xcx} /><img className={styles.speTagImg} src={pos} /><img className={styles.speTagImg} src={wx} /></span>
                             : tag.includes('pos') ?
                                 <img className={styles.speTagImg} src={pos} /> : 
                                 tag.includes('微信') ? 
                                     <img className={styles.speTagImg} src={wx} /> :
+                                    tag.includes('礼品卡小程序') ? 
+                                    <img className={styles.speTagImg} src={lpk} /> :
                                     tag.includes('小程序') ? <img className={styles.speTagImg} src={xcx} /> : null
                     }</div>)})
                 }

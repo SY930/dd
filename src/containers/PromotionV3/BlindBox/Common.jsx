@@ -43,7 +43,7 @@ const formItems1 = {
     },
     smsGate: {
         type: 'combo',
-        label: '是否发送消息',
+        label: '是否发送消息3',
         options: sendOpts,
         defaultValue: '0',
     },
