@@ -1,3 +1,4 @@
+// 特色营销列表页
 import React from 'react';
 import ReactDOM from 'react-dom';
 import QRCode from 'qrcode.react';
@@ -1077,33 +1078,48 @@ class MySpecialActivities extends React.Component {
                             <a
                                 href="#"
                                 className={
+                                    record.eventWay == '64' ? null : 
                                     record.isActive != '0' || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) || record.eventWay === 80
                                         ? styles.textDisabled
                                         : null
                                 }
                                 onClick={(e) => {
-                                    if (record.isActive != '0' || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) || record.eventWay === 80) {
-                                        e.preventDefault()
-                                    } else {
-                                        if (Number(record.eventWay) === 70) {
-                                            message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
-                                            return;
+                                    if(record.eventWay == '64'){
+                                        //对评价送礼活动做专门处理，该活动在活动启用时候也能操作选择店铺
+                                        if(record.isActive != '0'){
+                                            this.props.toggleIsUpdate(false)
+                                            this.handleUpdateOpe(text, record, index);
+                                        }else{
+                                            this.props.toggleIsUpdate(true)
+                                            this.handleUpdateOpe(text, record, index);
                                         }
-                                        if (record.eventWay === 78 || record.eventWay === 79) {
-                                            this.onV3Click(record.itemID, false, record.eventWay);
-                                            return;
+                                    }else{
+                                        if (record.isActive != '0' || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) || record.eventWay === 80) {
+                                            console.log('record.isActive:',record.isActive,'statusState:',statusState,isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID),'!isMine(record)',!isMine(record))
+                                            console.log('9999999999999999')
+                                            e.preventDefault()
+                                        } else {
+                                            if (Number(record.eventWay) === 70) {
+                                                message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
+                                                return;
+                                            }
+                                            if (record.eventWay === 78 || record.eventWay === 79) {
+                                                this.onV3Click(record.itemID, false, record.eventWay);
+                                                return;
+                                            }
+                                            if (record.eventWay === 66 || record.eventWay === 81  || record.eventWay === 82) {
+                                                this.handleShowDetail({
+                                                    record,
+                                                    isView: false,
+                                                    isEdit: true
+                                                })
+                                                return;
+                                            }
+                                            this.props.toggleIsUpdate(true)
+                                            this.handleUpdateOpe(text, record, index);
                                         }
-                                        if (record.eventWay === 66 || record.eventWay === 81  || record.eventWay === 82) {
-                                            this.handleShowDetail({
-                                                record,
-                                                isView: false,
-                                                isEdit: true
-                                            })
-                                            return;
-                                        }
-                                        this.props.toggleIsUpdate(true)
-                                        this.handleUpdateOpe(text, record, index);
                                     }
+                                    
                                 }}
                             >
                                 {COMMON_LABEL.edit}

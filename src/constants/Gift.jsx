@@ -12,7 +12,7 @@ const GiftCfg = {
             value: '10',
             color: '#84aac6',
             category: 'primary',
-            tags: ['pos', '新微信', '小程序']
+            tags: ['pos', '新微信', '小程序','礼品卡小程序']
         },
         {
             name: '菜品优惠券',
@@ -29,7 +29,7 @@ const GiftCfg = {
             value: '21',
             color: '#c49b79',
             category: 'primary',
-            tags: ['pos', '新微信', '小程序']
+            tags: ['pos', '新微信', '小程序','礼品卡小程序']
         },
         {
             name: '会员充值券',
@@ -83,7 +83,7 @@ const GiftCfg = {
             color: '#84aac6',
             category: 'secondary',
             view: 'card', // 卡片视图
-            tags: ['小程序']
+            tags: ['小程序','礼品卡小程序']
         },
         {
             name: '折扣券',

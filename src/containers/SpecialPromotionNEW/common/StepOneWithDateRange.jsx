@@ -1157,8 +1157,13 @@ class StepOneWithDateRange extends React.Component {
                 </div>
             </div>
         );
+        console.log(this.props.isUpdate,this.props.type,'thispropstype-----------')
         return (
-            <Form>
+            <Form style={{position:'relative'}}>
+                {
+                    !this.props.isUpdate && this.props.type == '64' ?  
+                        <div className={styles.stepOneDisabled}></div> : null
+                }
                 <FormItem
                     label={this.props.intl.formatMessage(STRING_SPE.d4h177f79da1218)}
                     className={styles.FormItemStyle}
@@ -1450,6 +1455,7 @@ const mapStateToProps = (state) => {
         allWeChatAccountList: state.sale_giftInfoNew.get('mpList').toJS().filter(item => String(item.mpTypeStr) === '21'),
         user: state.user.toJS(),
         specialPromotion: state.sale_specialPromotion_NEW,
+        isUpdate:state.sale_myActivities_NEW.get('isUpdate'),
     }
 };
 
