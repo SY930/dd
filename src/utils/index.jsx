@@ -25,14 +25,18 @@ export const isFormalRelease = () => {
  * @param {Immutable.List} $rawDishes Immutable.List 直接从基本档请求来的所有菜品信息
  */
 const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) => {
-    if (!$brands.size || !$rawCategories.size || !$rawDishes.size) {
+    const brandIsArray = Array.isArray($brands) ? $brands : $brands.toJS()
+    const cateIsArray = Array.isArray($rawCategories) ? $rawCategories : $rawCategories.toJS()
+    const dishIsArray = Array.isArray($rawDishes) ? $rawDishes : $rawDishes.toJS()
+
+    if (!brandIsArray.length || !cateIsArray.length || !dishIsArray.length) {
         return {
             categories: [],
             dishes: [],
             brands: [],
         }
     }
-    const brands = $brands.toJS().map(item => (
+    const brands = brandIsArray.map(item => (
         {
             ...item,
             value: `${item.brandID}`,
@@ -43,14 +47,14 @@ const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) => {
         value: '0',
         label: '不限品牌',
     })
-    const rawCategories = $rawCategories.toJS();
-    const rawDishes = $rawDishes.toJS();
+    const rawCategories = cateIsArray;
+    const rawDishes = dishIsArray;
     const uniqCatMap = new Map();
     rawCategories.forEach(item => {
         if (!uniqCatMap.has(item.foodCategoryName)) {
             const categoryTypeSet = new Set();
             categoryTypeSet.add(`${item.type || 0}`)
-            uniqCatMap.set(item.foodCategoryName, {...item, typeSet: categoryTypeSet})
+            uniqCatMap.set(item.foodCategoryName, { ...item, typeSet: categoryTypeSet })
         } else {
             const categoryTypeSet = uniqCatMap.get(item.foodCategoryName).typeSet;
             categoryTypeSet.add(`${item.type || 0}`)
@@ -92,7 +96,7 @@ const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) => {
             value: `0__${dish.foodName}${dish.unit}`
         }));
     const categories = rawCategories.reduce((acc, curr) => {
-        const brandName = (brands.find(item => item.brandID === `${curr.brandID}`) || {brandName: '未知'}).brandName;
+        const brandName = (brands.find(item => item.brandID === `${curr.brandID}`) || { brandName: '未知' }).brandName;
         const dupIndex = acc.findIndex(item => item.brandID === `${curr.brandID}` && item.foodCategoryName === curr.foodCategoryName)
         if (curr.brandID > 0) {
             if (dupIndex === -1) {
@@ -123,7 +127,7 @@ const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) => {
     }, [...commonCategories]);
     const dishes = rawDishes.reduce((acc, curr) => {
         if (curr.brandID > 0) {
-            const brandName = (brands.find(item => item.brandID === `${curr.brandID}`) || {brandName: '未知'}).brandName;
+            const brandName = (brands.find(item => item.brandID === `${curr.brandID}`) || { brandName: '未知' }).brandName;
             acc.push({
                 ...curr,
                 price: curr.prePrice == -1 ? curr.price : curr.prePrice,
@@ -155,9 +159,9 @@ const expandCategoriesAndDishes = ($brands, $rawCategories, $rawDishes) => {
         return acc;
     }, [...commonDishes])
     return {
-        dishes: _.sortBy(_.uniqBy(dishes, 'value'), [ 'brandID', 'foodCategoryName']),
-        categories: _.sortBy(_.uniqBy(categories, 'value'), [ 'brandID', 'foodCategoryName']),
-        brands: brands.sort((a, b) => a.brandID - b .brandID),
+        dishes: _.sortBy(_.uniqBy(dishes, 'value'), ['brandID', 'foodCategoryName']),
+        categories: _.sortBy(_.uniqBy(categories, 'value'), ['brandID', 'foodCategoryName']),
+        brands: brands.sort((a, b) => a.brandID - b.brandID),
     }
 }
 /**
@@ -180,7 +184,7 @@ const expandCategoriesAndDishesForShop = ($rawCategories, $rawDishes) => {
         if (!uniqCatMap.has(item.foodCategoryName)) {
             const categoryTypeSet = new Set();
             categoryTypeSet.add(`${item.type || 0}`)
-            uniqCatMap.set(item.foodCategoryName, {...item, typeSet: categoryTypeSet})
+            uniqCatMap.set(item.foodCategoryName, { ...item, typeSet: categoryTypeSet })
         } else {
             const categoryTypeSet = uniqCatMap.get(item.foodCategoryName).typeSet;
             categoryTypeSet.add(`${item.type || 0}`)
@@ -209,20 +213,20 @@ const expandCategoriesAndDishesForShop = ($rawCategories, $rawDishes) => {
         return acc;
     }, []);
     const dishes = Array.from(uniqDishMap.values()).reduce((acc, curr) => {
-            acc.push({
-                ...curr,
-                price: curr.prePrice == -1 ? curr.price : curr.prePrice,
-                newPrice: curr.prePrice == -1 ? curr.price : curr.prePrice,
-                label: `${curr.foodName}(${curr.unit})`,
-                py: curr.foodMnemonicCode,
-                localFoodCategoryID: `${curr.foodCategoryName}`,
-                onlineFoodCategoryID: `${curr.foodOnlineCategoryName}`,
-                value: `${curr.foodName}${curr.unit}`
-            })
+        acc.push({
+            ...curr,
+            price: curr.prePrice == -1 ? curr.price : curr.prePrice,
+            newPrice: curr.prePrice == -1 ? curr.price : curr.prePrice,
+            label: `${curr.foodName}(${curr.unit})`,
+            py: curr.foodMnemonicCode,
+            localFoodCategoryID: `${curr.foodCategoryName}`,
+            onlineFoodCategoryID: `${curr.foodOnlineCategoryName}`,
+            value: `${curr.foodName}${curr.unit}`
+        })
         return acc;
     }, [])
     return {
-        dishes: _.sortBy(dishes, [ 'foodCategoryName']),
+        dishes: _.sortBy(dishes, ['foodCategoryName']),
         categories: _.sortBy(categories, ['foodCategoryName']),
     }
 }
@@ -238,7 +242,7 @@ export const memoizedShopCategoriesAndDishes = memoizeOne(expandCategoriesAndDis
 export const setThemeClass = (className) => {
     const body = document.querySelector('body')
     const oldClass = body.getAttribute('class')
-    body.setAttribute('class',oldClass || '' + ' ' + className)
+    body.setAttribute('class', oldClass || '' + ' ' + className)
 }
 
 

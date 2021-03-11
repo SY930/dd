@@ -679,6 +679,14 @@ export const ACTIVITY_CATEGORIES = (function () {
             example: SALE_LABEL.k67g7uy4,
             key: "2080",
         },
+        {
+            idx: 20,
+            color: "#84aac6",
+            title: '称重买赠',
+            text: '下单后抽取礼品，促进下次消费',
+            example: '',
+            key: "1021",
+        },
     ];
     return basic;
 })();
@@ -963,21 +971,21 @@ export const promotionBasicDataAdapter = function (source, dir) {
         });
         const _timeRangeInfo = _source.timeLst
             ? _source.timeLst.map((time) => {
-                  return {
-                      validationStatus: "success",
-                      helpMsg: null,
-                      start: Moment(time.startTime, "HHmm"),
-                      end: Moment(time.endTime, "HHmm"),
-                  };
-              })
+                return {
+                    validationStatus: "success",
+                    helpMsg: null,
+                    start: Moment(time.startTime, "HHmm"),
+                    end: Moment(time.endTime, "HHmm"),
+                };
+            })
             : [
-                  {
-                      validationStatus: "success",
-                      helpMsg: null,
-                      start: undefined,
-                      end: undefined,
-                  },
-              ];
+                {
+                    validationStatus: "success",
+                    helpMsg: null,
+                    start: undefined,
+                    end: undefined,
+                },
+            ];
         let _validCycleType = "0";
         const _selectMonthValue = [];
         const _selectWeekValue = [];
@@ -1122,12 +1130,12 @@ export const promotionScopeInfoAdapter = function (source, dir) {
             _source.channel == 1
                 ? "POS"
                 : _source.channel == 0
-                ? ""
-                : _source.channel == 2
-                ? "WECHAT"
-                : _source.channel == 3
-                ? "YST"
-                : "",
+                    ? ""
+                    : _source.channel == 2
+                        ? "WECHAT"
+                        : _source.channel == 3
+                            ? "YST"
+                            : "",
         defaultRun: _source.auto == "1" ? "YES" : "NO",
         orderTypeLst: _source.orderType.join(","),
         shopIDLst: _source.shopsInfo

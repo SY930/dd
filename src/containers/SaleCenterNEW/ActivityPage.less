@@ -1358,6 +1358,64 @@
             }
         }
     }
+    :global{
+        .ant-radio-button-wrapper-checked {
+            background: #fff;
+            border-color: #1db395;
+            color: #1DB395;
+            box-shadow: -1px 0 0 0 #1db395;
+        }  
+        .ant-radio-button-wrapper-checked:hover {
+            border-color: #1db395;
+            box-shadow: -1px 0 0 0 #1db395;
+            color: #1db395;
+        }
+        .ant-radio-button-wrapper:hover, .ant-radio-button-wrapper-focused {
+            color: #1db395;
+            position: relative;
+        }
+    }
+}
+.actRuleForm {
+   .grayLineDiv {
+        display: inline-block;
+        width: 505px;
+        height: 162px;
+        background: #FFFFFF;
+        border-radius: 4px;
+        border: 1px solid #E7E7E7; 
+   }
+   .darkGrayDiv {
+        display: inline-block;
+        width: 505px;
+        height: 54px;
+        background: #F8F8F8;
+        border-radius: 4px 4px 0px 0px;
+        border-bottom: 1px solid #E7E7E7;
+        border-right: 1px solid #E7E7E7; 
+   }
+   .leftBox {
+        display: inline-block;
+        width: 49%;
+        height: 54px;
+        padding: 6px 0px;
+        :global {
+            .ant-form-explain {
+                white-space: nowrap;
+            }
+        }
+   } 
+   .rightBox {
+        display: inline-block;
+        width: 49%;
+        height: 54px;
+        padding: 6px 0px;
+        :global {
+            .ant-form-explain {
+                white-space: nowrap;
+            }
+        }
+   }
 }
 .expandFlexItem {
     flex: none;

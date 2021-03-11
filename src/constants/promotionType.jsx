@@ -354,7 +354,7 @@ export const REPEAT_PROMOTION_TYPES = [
     },
     {
         title: '集点卡',
-        isSpecial: true, 
+        isSpecial: true,
         text: '消费后获得集点，促进会员多次消费',
         tags: ['新微信', '小程序'],
         example: '',
@@ -508,6 +508,17 @@ export const LOYALTY_PROMOTION_TYPES = [
  */
 export const SALE_PROMOTION_TYPES = [
     {
+        title: '称重买赠',
+        isSpecial: false,
+        text: '下单后抽取礼品，促进下次消费',
+        example: '',
+        tags: ['pos'],
+        key: '1021',
+        right: 2,
+        bottom: -14,
+        isHot: true,
+    },
+    {
         title: SALE_LABEL.k5ezcu1b,
         isSpecial: false,
         text: SALE_LABEL.k67cp14a,
@@ -523,7 +534,7 @@ export const SALE_PROMOTION_TYPES = [
         isSpecial: false,
         text: SALE_LABEL.k67cp1cm,
         example: SALE_LABEL.k67cppx7,
-        tags: ['pos', SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9,'小程序'],
+        tags: ['pos', SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9, '小程序'],
         key: '1010',
         right: 10,
         bottom: 0,

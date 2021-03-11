@@ -41,6 +41,9 @@ class ConnectedPriceListSelector extends Component {
         const {data = [], foodRuleList = [], index, foodRuleListProps } = this.props;
         let ifHasPriceList = foodRuleListProps.toJS().length == 0;
         priceLst = foodRuleList.length ? foodRuleList[index] ? foodRuleList[index].priceList : [] : ifHasPriceList ? priceLst : [];
+        if (this.props.singleDish) {
+            priceLst = this.props.priceList
+        }
         const { isShopMode } = this.props;
         const Comp = isShopMode ? CategoryAndFoodSelectorForShop : CategoryAndFoodSelector;
         return (
@@ -50,6 +53,7 @@ class ConnectedPriceListSelector extends Component {
                 dishFilter={this.dishFilter}
                 onChange={this.handlePriceLstChange}
                 background={this.props.background}
+                singleDish={this.props.singleDish}
             />
         )
     }
