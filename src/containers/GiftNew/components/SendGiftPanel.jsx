@@ -433,7 +433,7 @@ class SendGiftPanel extends Component {
     renderSmsGate() {
         return (
             <FormItem
-                label="是否发送消息1"
+                label="是否发送消息"
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
