@@ -96,7 +96,6 @@ class NewPromotionCard extends Component {
             // 秒杀71  拼团72  默认永久开通  无text redValidDate
             if (obj.ifShow) {
                 let text = authPulgins.includes(key) && !authPluginStatus ? '联系商务开通' : (isUse ? `还有${obj.howMany}天到期` : '申请试用');
-                console.log(text, ath, key)
                 let content = ['71', '72'].includes(key) ? '' : <em className={ath ? styles.validDateAth : (authPulgins.includes(key) && !authPluginStatus) ? styles.validDate : (isUse ? styles.redValidDate : styles.validDate)}> { text }</em >
                 return content
         }
