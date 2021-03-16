@@ -538,7 +538,7 @@ const COMMON_LABEL = defineMessages({
     k67b3xsp: { id: 'Sale.k67b3xsp', defaultMessage: '活动可以分享给好友，好友参与后可获得礼品，属于分享裂变,有利于获得新用户' },
     k67b3y11: { id: 'Sale.k67b3y11', defaultMessage: '参与活动领礼品，邀请好友助力礼品更丰厚' },
     k67b3y9d: { id: 'Sale.k67b3y9d', defaultMessage: '针对买单环节发起邀请同行好友砍价，沉淀高价值的到店用户' },
-    k67b3yhp: { id: 'Sale.k67b3yhp', defaultMessage: '老客户推荐新用户，双方都能拿到礼品返还，适合长期会员拉新使用' },
+    k67b3yhp: { id: 'Sale.k67b3yhp', defaultMessage: '老客户推荐新用户，双方都能拿到礼品返还，适合长期会员拉新使用。活动设置后，在个人中心—活动中心可见' },
     k67b4rb2: { id: 'Sale.k67b4rb2', defaultMessage: '限时免费领取礼品，达到短期拉新的效果' },
     k67b4rje: { id: 'Sale.k67b4rje', defaultMessage: '用户关注公众号后，商户可设置赠送代金券等礼品，有利于增加会员关注数' },
     k67b4rrq: { id: 'Sale.k67b4rrq', defaultMessage: '点菜界面自动弹出领取，这也是增加会员注册量的一种手段。' },
