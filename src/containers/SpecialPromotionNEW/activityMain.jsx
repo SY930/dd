@@ -141,7 +141,13 @@ class ActivityMain extends React.Component {
                         <br />
                     </Col>
                     <Col span={18} className={styles.activityMainRight}>
-                        {this.renderActivityTags()}
+                        <div style={{position:'relative'}}>
+                            {
+                                !this.props.isUpdate && index != '13' ?  //放过‘评价有礼’
+                                    <div className={styles.stepOneDisabled}></div> : null
+                            }
+                            {this.renderActivityTags()}
+                        </div>
                     </Col>
                 </Row>
             </div>
@@ -153,6 +159,7 @@ function mapStateToProps(state) {
     return {
         saleCenter: state.sale_saleCenter_NEW,
         eventWay: state.sale_specialPromotion_NEW.getIn(['$eventInfo', 'eventWay']),
+        isUpdate:state.sale_myActivities_NEW.get('isUpdate'),
     };
 }
 
