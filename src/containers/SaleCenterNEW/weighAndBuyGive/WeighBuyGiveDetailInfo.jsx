@@ -422,7 +422,7 @@ class WeighBuyGiveDetailInfo extends React.Component {
                         </div>
                         <div className={styles.leftBox}>
                             <FormItem
-                                label={'允许误差范围'}
+                                label={'允许赠送范围'}
                                 required={true}
                                 className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
                                 labelCol={{ span: 9, offset: 1 }}
