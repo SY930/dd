@@ -225,7 +225,7 @@ class PromotionScopeInfo extends React.Component {
             this.setState({filterShops: []})
         }
         this.setState({allShopsSet: !!nextProps.promotionBasicInfo.get('$filterShops').toJS().allShopSet});
-
+        const promotionType = nextProps.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         if (JSON.stringify(nextProps.promotionScopeInfo.getIn(['refs', 'data'])) !=
             JSON.stringify(this.props.promotionScopeInfo.getIn(['refs', 'data']))) {
             const _data = Immutable.Map.isMap(nextProps.promotionScopeInfo.getIn(['$scopeInfo'])) ?
@@ -233,7 +233,7 @@ class PromotionScopeInfo extends React.Component {
                 nextProps.promotionScopeInfo.getIn(['$scopeInfo']);
             this.setState({
                 brands: _data.brands,
-                channel: _data.channel,
+                channel: promotionType === '1021' ? '1' : _data.channel,
                 auto: _data.auto,
                 orderType: _data.orderType,
                 // TODO: shopsIdInfo converted to shopsInfo
