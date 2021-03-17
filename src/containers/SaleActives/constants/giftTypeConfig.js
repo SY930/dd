@@ -6,6 +6,7 @@ import GrabRedPacket from '../GrabRedPacket/index'; // 膨胀大礼包
 import CouponsGiveCoupons from '../CouponsGiveCoupons'// 消费券返券
 import Housekeeper from '../Housekeeper'// 管家活动-流失唤醒
 import IntelligentGiftRule from '../IntelligentGiftRule'// 管家活动-智能发券
+import WeighAndGive from '../WeighAndGive'// 称重买赠
 
 export const actInfoList = [
     {
@@ -93,4 +94,17 @@ export const actInfoList = [
             return <GrabRedPacket {...props} />;
         },
     },
+    // {
+    //     title: '称重买赠',
+    //     key: '1021',
+    //     dscList: [
+    //         {
+    //             title: '活动简介',
+    //             dsc: <div>下单后抽取礼品，促进下次消费</div>,
+    //         },
+    //     ],
+    //     render(props = {}) {
+    //         return <WeighAndGive {...props} />;
+    //     },
+    // },
 ];

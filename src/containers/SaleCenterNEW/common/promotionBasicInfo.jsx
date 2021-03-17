@@ -280,7 +280,7 @@ class PromotionBasicInfo extends React.Component {
         nextFlag = this.state.shopsAllSet ? false : nextFlag;
         const basicInfo = this.props.promotionBasicInfo.get('$basicInfo').toJS();
         const promotionType = basicInfo.promotionType;
-        if (promotionType == '1080' || promotionType == '2070' || promotionType == '5010') {
+        if (promotionType == '1080' || promotionType == '2070' || promotionType == '5010' || promotionType == '1021') {
             if (this.state.dateRange[0] && this.state.dateRange[1]) {
                 this.setState({ rangePickerstatus: 'success' })
             } else {
@@ -868,7 +868,7 @@ class PromotionBasicInfo extends React.Component {
             dateRange: date,
         }, () => {
             const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
-            if (promotionType == '1080' || promotionType == '2070' || promotionType == '5010') {
+            if (promotionType == '1080' || promotionType == '2070' || promotionType == '5010' || promotionType == '1021') {
                 if (this.state.dateRange[0] && this.state.dateRange[1]) {
                     this.setState({ rangePickerstatus: 'success' })
                 } else {
@@ -1165,7 +1165,7 @@ class PromotionBasicInfo extends React.Component {
                 </FormItem>
                 <div style={{ position: 'relative' }}>
                     {
-                        promotionType == '1080' || promotionType == '2070' || promotionType == '5010' ?
+                        promotionType == '1080' || promotionType == '2070' || promotionType == '5010' || promotionType == '1021' ?
                             <p style={{ float: 'left', marginTop: '13px', left: '12px', fontSize: '18px', color: 'red' }}>*</p>
                             : null
                     }
@@ -1179,7 +1179,7 @@ class PromotionBasicInfo extends React.Component {
                     >
                         <Row>
                             <Col span={21}>
-                                <RangePicker {...dateRangeProps} disabledDate={promotionType == '1080' || promotionType == '2070' || promotionType == '5010' ? disabledDate : null} />
+                                <RangePicker {...dateRangeProps} disabledDate={promotionType == '1080' || promotionType == '2070' || promotionType == '5010' || promotionType == '1021' ? disabledDate : null} />
                             </Col>
                             <Col offset={1} span={2}>
                                 <div className={styles.ActivityDateDay}>
