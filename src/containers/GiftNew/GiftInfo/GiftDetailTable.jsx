@@ -787,8 +787,8 @@ class GiftDetailTable extends Component {
                         />
                 }
                 <Modal
-                    key="新建券2"
-                    title="新建券2"
+                    key="新建券"
+                    title="新建券"
                     visible={this.state.createModalVisible}
                     onCancel={this.handleCreateModalCancel}
                     footer={false}
