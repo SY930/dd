@@ -1157,7 +1157,6 @@ class StepOneWithDateRange extends React.Component {
                 </div>
             </div>
         );
-        console.log(this.props.isUpdate,this.props.type,'thispropstype-----------')
         return (
             <Form style={{position:'relative'}}>
                 {

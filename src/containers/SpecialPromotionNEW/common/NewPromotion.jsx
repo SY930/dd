@@ -185,11 +185,8 @@ export default class NewPromotion extends React.Component {
     }
 
     handleFinish(cb, index) {
-        console.log('handleFinish in NewPromotion');
         let flag = true;
-        console.log('index', index, this.handles);
         if (undefined !== this.handles[index].finish && typeof this.handles[index].finish === 'function') {
-            console.log('this.handles[index]', this.handles[index]);
             flag = this.handles[index].finish();
         }
         if (flag) {

@@ -15,7 +15,6 @@ class QrModal extends Component {
     }
     render() {
         const { onClose, type } = this.props;
-        console.log('type', type);
         return (
             <Modal
                 title="示例"

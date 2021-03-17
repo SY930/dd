@@ -1095,8 +1095,6 @@ class MySpecialActivities extends React.Component {
                                         }
                                     }else{
                                         if (record.isActive != '0' || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) || record.eventWay === 80) {
-                                            console.log('record.isActive:',record.isActive,'statusState:',statusState,isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID),'!isMine(record)',!isMine(record))
-                                            console.log('9999999999999999')
                                             e.preventDefault()
                                         } else {
                                             if (Number(record.eventWay) === 70) {

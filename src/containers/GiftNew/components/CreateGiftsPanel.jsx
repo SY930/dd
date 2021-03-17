@@ -48,7 +48,6 @@ class CreateGiftsPanel extends Component {
         });
     }
     getIconTags(){
-        console.log('00000000000')
         const iconTags = [
             {
                 label:'POS',
@@ -88,7 +87,7 @@ class CreateGiftsPanel extends Component {
                 {this.getIconTags()}
                 <div>
                     <div className={styles.logoGroupHeader}>
-                        常用券类1
+                        常用券类
                     </div>
                     <div className={styles.groupContainer}>
                         {
@@ -151,7 +150,6 @@ class CreateGiftsPanel extends Component {
 }
 
 function ClickableGiftLogo(props) {
-    console.log(props,'props.tag.tags===============')
     let wechatFlag = 1;
     return (
         <div onClick={props.onClick} className={props.isPrimary ? styles[`logoContainer_${props.index}`] : styles.logoContainer}>

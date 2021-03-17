@@ -28,7 +28,6 @@ class NewColorsEggCat extends NewPromotion {
     }
 
     render() {
-        console.log('0000000010')
         if (this.props.component === undefined) {
             throw new Error('component is required');
         }
