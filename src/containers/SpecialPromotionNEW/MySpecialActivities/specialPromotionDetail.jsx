@@ -1182,6 +1182,16 @@ class SpecialPromotionDetail extends React.Component {
                 }
             }),
             eventWay == 75 && ({
+                title: '已集点数',
+                dataIndex: 'pointCount',
+                key: 'pointCount',
+                className: 'TableTxtCenter',
+                width: 100,
+                render:(text, record)=> {
+                    return (record.joinCount + record.remainIngNum)
+                }
+            }),
+            eventWay == 75 && ({
                 title: '兑换点数',
                 dataIndex: 'joinCount',
                 key: 'joinCount',
