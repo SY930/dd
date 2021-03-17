@@ -366,7 +366,7 @@ class WeighBuyGiveDetailInfo extends React.Component {
                         </div>
                         <div className={styles.rightBox}>
                             <FormItem
-                                label={'参与条件消费满'}
+                                label={this.state.stageType === 2 ? '参与条件消费满' : '消费每满'}
                                 className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
                                 labelCol={{ span: 10, offset: 0 }}
                                 wrapperCol={{ span: 14, offset: 0 }}

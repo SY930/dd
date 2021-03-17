@@ -683,7 +683,7 @@ export const ACTIVITY_CATEGORIES = (function () {
             idx: 20,
             color: "#84aac6",
             title: '称重买赠',
-            text: '仅适用于POS2.5，应用于称重类商品，买1仅A赠送0.5斤A，或是买1仅A赠送0.5斤B。支持买赠和每买赠。',
+            text: '仅适用于POS2.5，应用于称重类商品，买1斤A赠送0.5斤A，或是买1斤A赠送0.5斤B。支持买赠和每买赠。',
             example: '',
             key: "1021",
         },
