@@ -87,7 +87,7 @@ class CustomProgressBar extends React.Component {
     }
 
     render() {
-        const { steps } = this.props;
+        const { steps,eventWay,isUpdate } = this.props;
         const current = this.state.current;
         if (!(steps instanceof Array && steps.length > 0)) {
             throw new Error('Steps should be an array with elments');
@@ -136,7 +136,7 @@ class CustomProgressBar extends React.Component {
                     {
                         this.state.current === steps.length - 1 &&
                         <Button
-                            style={{ display: this.props.isUpdate ? 'inline-block' : 'none' }}
+                            style={{ display: this.props.isUpdate || !this.props.isUpdate && eventWay == '64' ? 'inline-block' : 'none' }}
                             type="primary"
                             loading={this.props.loading}
                             disabled={this.props.loading}

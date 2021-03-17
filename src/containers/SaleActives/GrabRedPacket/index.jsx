@@ -41,7 +41,7 @@ class GrabRedPacket extends React.Component {
         getMessageTemplateList().then(list => {
             this.setState({ msgTplList: list });
         });
-
+        
         this.queryDetail()
         this.props.dispatch({
             type: 'createActiveCom/getAuthLicenseData',

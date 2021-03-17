@@ -83,7 +83,6 @@ class CardOperate extends React.Component {
         this.initForm(visible, type, selectedRow)
     }
     initForm = (visible, type, selectedRow) => {
-        console.log('type',type)
         this.form && this.form.resetFields();
         if (visible) {
             let formKeys = [],

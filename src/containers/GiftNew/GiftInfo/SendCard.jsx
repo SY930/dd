@@ -505,7 +505,6 @@ class SendCard extends React.Component {
         const spanLeft = _key === 'sum' ? 21 : (_key === 'made' ? 16 : 17);
         const spanRight = _key === 'sum' ? 3 : (_key === 'made' ? 8 : 7);
         const isDeleted = data.action == 2;
-        console.log('_key',_key)
         return (
             <div className={styles.cardSummarize}>
                 <Row>

@@ -575,7 +575,9 @@ class AddGifts extends React.Component {
             disabled: info.giftEffectiveTime.disabled
         };
         if (typeof info.giftEffectiveTime.value === 'object') {
-            pickerProps.value = info.giftEffectiveTime.value;
+            if(info.giftEffectiveTime.value.length > 0){
+                pickerProps.value = info.giftEffectiveTime.value;
+            }
         }
         const disabledDate = (current) => {
             // Can not select days before today
@@ -603,7 +605,6 @@ class AddGifts extends React.Component {
     handleRangePickerChange(date, dateString, index) {
         const _infos = this.state.infos;
         _infos[index].giftEffectiveTime.value = date;
-
         if (date === null || date === undefined || !date[0] || !date[1]) {
             _infos[index].giftEffectiveTime.validateStatus = 'error';
             _infos[index].giftEffectiveTime.msg = `${this.props.intl.formatMessage(STRING_SPE.db60a2a3892030168)}`;

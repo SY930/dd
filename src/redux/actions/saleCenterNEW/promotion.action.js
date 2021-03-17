@@ -98,7 +98,7 @@ export const saleCenterUpdateNewActivityAC = (opts) => { // opts.data
             cardScopeList: opts.data.promotionInfo.cardScopeList,
             modifiedBy: getAccountInfo().userName,
         };
-        console.log('params', params)
+
         axiosData(
             '/promotion/docPromotionService_update.ajax',
             params,

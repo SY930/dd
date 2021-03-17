@@ -7,7 +7,7 @@
  * @Last modified time: 2017-03-28T19:24:47+08:00
  * @Copyright: Copyright(c) 2017-present Hualala Co.,Ltd.
  */
-
+//评价送礼详情页
 import React from 'react';
 import { connect } from 'react-redux';
 import StepTwo from '../upGradeReturnGift/stepTwo'; // 活动范围
@@ -82,6 +82,7 @@ class NewColorsEggCat extends NewPromotion {
                 onFinish={this.handleFinish}
                 onPrev={this.handlePrev}
                 onCancel={this.handleCancel}
+                eventWay={`${this.props.specialPromotion.$eventInfo.eventWay}`}
             />
         );
     }
