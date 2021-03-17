@@ -109,9 +109,8 @@ export default class BtnFoodSelector extends Component {
             allDishes = [],
         } = this.props;
 
-        let list = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes)
         const priceLst = dishes.reduce((acc, curr) => {
-            const dish = list.dishes.find(item => item.value === curr);
+            const dish = allDishes.find(item => item.value === curr);
             dish && acc.push(dish)
             return acc;
         }, [])
