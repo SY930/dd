@@ -23,7 +23,7 @@ import TicketBag from '../../BasicModules/TicketBag';
 
 @injectIntl
 export default class PrizeContent extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.VALIDATE_TYPE = Object.freeze([{
             key: 0, value: '1', name: `${this.props.intl.formatMessage(STRING_SPE.d142vrmqvc0114)}`,
@@ -36,11 +36,11 @@ export default class PrizeContent extends React.Component {
         }
     }
     componentWillReceiveProps(np) {
-        if(np.info.giveCoupon.value.item) {
+        if (np.info.giveCoupon.value.item) {
             const { typeValue: tv } = this.state;
             const { typeValue, item = {} } = np.info.giveCoupon.value;
             this.setState({ typeValue, bag: [item] });
-            if(!typeValue){
+            if (!typeValue) {
                 this.setState({ typeValue: tv });
             }
         }
@@ -50,32 +50,32 @@ export default class PrizeContent extends React.Component {
         const tempArr = _.sortBy(filteredGiftInfo, 'index');
         if (info.giveCoupon.value.giftInfo.giftItemID == null ||
             info.giveCoupon.value.giftInfo.giftName == null) {
-                if(tempArr.length){
-                    handleGiftChange([tempArr[0].crmGifts[0].giftItemID, tempArr[0].crmGifts[0].giftName].join(','),index);
-                    return[tempArr[0].crmGifts[0].giftItemID, tempArr[0].crmGifts[0].giftName].join(',');
-                }
-                return null;
+            if (tempArr.length) {
+                handleGiftChange([tempArr[0].crmGifts[0].giftItemID, tempArr[0].crmGifts[0].giftName].join(','), index);
+                return [tempArr[0].crmGifts[0].giftItemID, tempArr[0].crmGifts[0].giftName].join(',');
+            }
+            return null;
         }
         return [info.giveCoupon.value.giftInfo.giftItemID, info.giveCoupon.value.giftInfo.giftName].join(',');
     }
     ChangeCheckBoxOne = (e) => {
-        const { handleGivePointsChange, index} =this.props;
+        const { handleGivePointsChange, index } = this.props;
         handleGivePointsChange(e, index);
     }
     ChangeCheckBoxTwo = (e) => {
-        const { handleGiveCouponChange, index} =this.props;
+        const { handleGiveCouponChange, index } = this.props;
         handleGiveCouponChange(e, index);
     }
     ChangeCheckBoxThree = (e) => {
-        const { handleGiveRedPacketChange, index} =this.props;
+        const { handleGiveRedPacketChange, index } = this.props;
         handleGiveRedPacketChange(e, index);
     }
     getCardTypeValue = (index) => {
         const { cardTypeArr, info, handleCardChange, } = this.props;
-        if(info.givePoints.value.card.value){
+        if (info.givePoints.value.card.value) {
             return info.givePoints.value.card.value;
         }
-        if(cardTypeArr.length){
+        if (cardTypeArr.length) {
             handleCardChange(cardTypeArr[0].cardTypeID, index);
             return cardTypeArr[0].cardTypeID
         }
@@ -83,7 +83,7 @@ export default class PrizeContent extends React.Component {
     }
     // 相对有效期 OR 固定有效期
     renderValidOptions = (info, index) => {
-        const { handleGiftValidDaysChange, handleDependTypeChange, handleGiftEffectiveTimeChange, handleRangePickerChange  } =this.props;
+        const { handleGiftValidDaysChange, handleDependTypeChange, handleGiftEffectiveTimeChange, handleRangePickerChange } = this.props;
         const a = info.giveCoupon.value.giftValidDays.value
         if (info.giveCoupon.value.effectType != '2') {
             return (
@@ -102,7 +102,7 @@ export default class PrizeContent extends React.Component {
                             maxNum={5}
                             modal="int"
                             value={{ number: info.giveCoupon.value.giftValidDays.value }}
-                            onChange={(val) => {handleGiftValidDaysChange(val, index); }}
+                            onChange={(val) => { handleGiftValidDaysChange(val, index); }}
                         />
                     </FormItem>
                     <FormItem
@@ -118,7 +118,7 @@ export default class PrizeContent extends React.Component {
                             className={style.LittleSelect}
                             size="default"
                             value={info.giveCoupon.value.dependType == '1' ? '1' : '3'}
-                            onChange={(val) => {handleDependTypeChange(val, index); }}
+                            onChange={(val) => { handleDependTypeChange(val, index); }}
                         >
                             <Option value='1' key={1}>{this.props.intl.formatMessage(STRING_SPE.d1qe2ar9n925113)}</Option>
                             <Option value='3' key={3}>{this.props.intl.formatMessage(STRING_SPE.d1e04rqggt261)}</Option>
@@ -179,42 +179,45 @@ export default class PrizeContent extends React.Component {
     }
     onTypeChange = ({ target }) => {
         this.setState({ typeValue: target.value });
-        const { onBagChange, index} =this.props;
+        const { onBagChange, index } = this.props;
         onBagChange(null, index);
     }
     onBagChange = (item) => {
-        const { onBagChange, index} =this.props;
+        const { onBagChange, index } = this.props;
         onBagChange(item, index);
-        if(item) {
-            this.setState({ bag: [item]});
+        if (item) {
+            this.setState({ bag: [item] });
             return;
         }
-        this.setState({ bag: null});
+        this.setState({ bag: null });
     }
     render() {
         const {
-                info,
-                filteredGiftInfo,
-                handleGiftChange,
-                index,
-                toggleFun,
-                changeDisArr,
-                handleGiftCountChange,
-                handleGiftTotalCountChange,
-                handleValidateTypeChange,
-                handleGiftOddsChange,
-                handleGiftImgChange,
-                disArr,
-                handleGivePointsValueChange,
-                handleGiveRedPacketValueChange,
-                handleGiveRedPacketIDChange,
-                cardTypeArr,
-                redPacketArr,
-                handleCardChange,
-                disabled,
-                groupID,
+            info,
+            filteredGiftInfo,
+            handleGiftChange,
+            index,
+            toggleFun,
+            changeDisArr,
+            handleGiftCountChange,
+            handleGiftTotalCountChange,
+            handleValidateTypeChange,
+            handleGiftOddsChange,
+            handleGiftImgChange,
+            disArr,
+            handleGivePointsValueChange,
+            handleGiveRedPacketValueChange,
+            handleGiveRedPacketIDChange,
+            handleShareImgChangne,
+            handleShareTitleChange,
+            cardTypeArr,
+            redPacketArr,
+            handleCardChange,
+            disabled,
+            groupID,
         } = this.props;
         const { typeValue, bag } = this.state;
+        console.log('info:》》》》》》》》》》》》》》 ', info);
         return (
             <div style={{ position: 'relative' }}>
                 {
@@ -231,11 +234,11 @@ export default class PrizeContent extends React.Component {
                             >
                                 <Row>
                                     <Col span={6} >
-                                        <CropperUploader 
+                                        <CropperUploader
                                             className={style.uploadCom}
                                             width={120}
                                             height={110}
-                                            cropperRatio={200/200}
+                                            cropperRatio={200 / 200}
                                             limit={2048}
                                             allowedType={['image/png', 'image/jpeg']}
                                             value={info.giftConfImagePath.value}
@@ -244,7 +247,7 @@ export default class PrizeContent extends React.Component {
                                         />
                                     </Col>
                                     <Col span={18} className={style.grayFontPic} >
-                                        <p style={{ position: 'relative', top: 20, left: 70,}}>图片建议尺寸200*200像素<br/>支持格式jpg、png，大小不超过2M</p>
+                                        <p style={{ position: 'relative', top: 20, left: 70, }}>图片建议尺寸200*200像素<br />支持格式jpg、png，大小不超过2M</p>
                                     </Col>
                                 </Row>
                             </FormItem>
@@ -266,7 +269,7 @@ export default class PrizeContent extends React.Component {
                                         modal="float"
                                         maxNum={3}
                                         value={{ number: info.giftOdds.value }}
-                                        onChange={(val) => {handleGiftOddsChange(val, index);}}
+                                        onChange={(val) => { handleGiftOddsChange(val, index); }}
                                     />
                                 </FormItem>
                             </div>
@@ -288,7 +291,7 @@ export default class PrizeContent extends React.Component {
                                         // modal="float"
                                         maxNum={9}
                                         value={{ number: info.giftTotalCount.value }}
-                                        onChange={(val) => {handleGiftTotalCountChange(val, index);}}
+                                        onChange={(val) => { handleGiftTotalCountChange(val, index); }}
                                     />
                                 </FormItem>
                             </div>
@@ -322,7 +325,7 @@ export default class PrizeContent extends React.Component {
                                                 modal="float"
                                                 maxNum={6}
                                                 value={{ number: info.givePoints.value.givePointsValue.value }}
-                                                onChange={(val) => {handleGivePointsValueChange(val, index);}}
+                                                onChange={(val) => { handleGivePointsValueChange(val, index); }}
                                             />
                                         </FormItem>
                                         <FormItem
@@ -337,7 +340,7 @@ export default class PrizeContent extends React.Component {
                                             <Select
                                                 showSearch={true}
                                                 value={this.getCardTypeValue(index)}
-                                                onChange={(val) => {handleCardChange(val, index)}}
+                                                onChange={(val) => { handleCardChange(val, index) }}
                                             >
                                                 {
                                                     cardTypeArr.map((value) => {
@@ -366,8 +369,8 @@ export default class PrizeContent extends React.Component {
                                     null :
                                     <div>
                                         <RadioGroup onChange={this.onTypeChange} value={typeValue} >
-                                            <RadioButton  value={'0'}>独立优惠券</RadioButton>
-                                            <RadioButton  value={'1'}>券包</RadioButton>
+                                            <RadioButton value={'0'}>独立优惠券</RadioButton>
+                                            <RadioButton value={'1'}>券包</RadioButton>
                                         </RadioGroup>
                                         {typeValue === '1' ?
                                             <TicketBag groupID={groupID} bag={bag} onChange={this.onBagChange} /> :
@@ -390,8 +393,8 @@ export default class PrizeContent extends React.Component {
                                                         onChange={(value) => {
                                                             handleGiftChange(value, index);
                                                         }}
-                                                        onClick={(value,index) => {
-                                                            changeDisArr(value,index);
+                                                        onClick={(value, index) => {
+                                                            changeDisArr(value, index);
                                                         }}
                                                         disArr={disArr || []}
                                                     >
@@ -476,7 +479,7 @@ export default class PrizeContent extends React.Component {
                                             </div>
                                             <Select
                                                 value={info.giveRedPacket.redPacketID.value}
-                                                onChange={(val) => {handleGiveRedPacketIDChange(val, index)}}
+                                                onChange={(val) => { handleGiveRedPacketIDChange(val, index) }}
                                             >
                                                 {
                                                     redPacketArr.map((item) => {
@@ -501,11 +504,48 @@ export default class PrizeContent extends React.Component {
                                                 modal="float"
                                                 maxNum={3}
                                                 value={{ number: info.giveRedPacket.redPacketValue.value }}
-                                                onChange={(val) => {handleGiveRedPacketValueChange(val, index);}}
+                                                onChange={(val) => { handleGiveRedPacketValueChange(val, index); }}
                                             />
                                         </FormItem>
                                     </div> : null
                                 }
+                            </FormItem>
+                            <div className={style.separate}><h3 style={{ display: 'inline-block', marginLeft: 0 }}>分享设置</h3> <span>（仅支持自定义小程序分享文案和图片，H5为默认设置 ）</span></div>
+                            {/* shareTitle */}
+                            <FormItem
+                                label="分享标题"
+                                labelCol={{ span: 4 }}
+                                wrapperCol={{ span: 17 }}
+                            >
+                                <Input
+                                    value={info.shareTitle.value}
+                                    onChange={(e) => { handleShareTitleChange(e, index); }}
+                                />
+                            </FormItem>
+                            {/* 分享图片 shareImagePath */}
+                            <FormItem
+                                label="分享图片"
+                                labelCol={{ span: 4 }}
+                                wrapperCol={{ span: 17 }}
+                            >
+                                <Row>
+                                    <Col span={6} >
+                                        <CropperUploader
+                                            className={style.uploadCom}
+                                            width={120}
+                                            height={110}
+                                            cropperRatio={200 / 200}
+                                            limit={2048}
+                                            allowedType={['image/png', 'image/jpeg']}
+                                            value={info.shareImagePath.value}
+                                            uploadTest='上传图片'
+                                            onChange={value => handleShareImgChangne(value, index)}
+                                        />
+                                    </Col>
+                                    <Col span={18} className={style.grayFontPic} >
+                                        <p style={{ position: 'relative', top: 20, left: 70, }}>小程序分享图<br />图片建议尺寸：1044*842<br />支持PNG、JPG格式，大小不超过2M</p>
+                                    </Col>
+                                </Row>
                             </FormItem>
                             {/* ....... */}
                             {/* ....... */}

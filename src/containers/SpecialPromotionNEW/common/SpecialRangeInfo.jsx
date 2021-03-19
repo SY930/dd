@@ -575,6 +575,7 @@ class SpecialRangeInfo extends React.Component {
         });
     }
     render() {
+        console.log('props===========: ', this.props);
         return (
             <Form>
                 {this.props.type === '21' ? this.renderFreeGetJoinRange() : null}

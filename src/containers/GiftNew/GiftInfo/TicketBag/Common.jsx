@@ -74,6 +74,11 @@ const separItems = {
         label: <span></span>,
         render: () => (<p className="formTips">设置「付费购买」后，用户需付费购买才能获得券包；如通过活动或储值套餐或商城发放请选择「活动/商城投放」</p>),
     },
+    c1: {
+        type: 'custom',
+        wrapperCol: { span: 24 },
+        render: () => (<div className="separate"><h3 style={{ display: 'inline-block' }}>分享设置</h3> <span>（仅支持自定义小程序分享文案和图片，H5为默认设置 ）</span></div>),
+    },
     d: {
         type: 'custom',
         label: <span></span>,
@@ -330,6 +335,15 @@ const formItems = {
         render: null,
         defaultValue: ['w1', 'm1'],
     },
+    shareTitle: {
+        type: 'text',
+        label: '分享标题',
+    },
+    shareImage: {
+        type: 'custom',
+        label: '分享图片',
+        render: null,
+    },
     ...separItems,
 };
 
@@ -337,6 +351,8 @@ const formItems = {
 const keys3 = ['b', 'couponSendWay', 'couponPackageGiftConfigs'];
 const keys4 = ['b', 'couponSendWay', 'cycleType', 'sendTime', 'maxSendLimit', 'couponPackageGiftConfigs'];
 const keys5 = ['b', 'couponSendWay', 'cycleType', 'validCycle', 'sendTime', 'maxSendLimit', 'couponPackageGiftConfigs'];
+
+const keys6 = ['c1', 'shareTitle', 'shareImage'];
 
 const formKeys = [
     {
@@ -347,7 +363,12 @@ const formKeys = [
         col: { className: 'baseform-b' },
         keys: keys5,
     },
+    {
+         col: { className: 'baseform-c1' },
+         keys: keys6,
+    },
 ];
+
 const formItemLayout = {
     labelCol: { span: 7 },
     wrapperCol: { span: 17 },

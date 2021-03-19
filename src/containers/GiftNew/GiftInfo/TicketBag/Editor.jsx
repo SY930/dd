@@ -27,37 +27,37 @@ export default class Editor extends Component {
      */
     onChange = (key, value) => {
         const { keys } = this;
-        const [a, b] = [...keys];
-        let [newA, newB] = [a, b];
+        const [a, b, c] = [...keys];
+        let [newA, newB, newC] = [a, b, c];
         if (key==='couponPackageType'){
             if(value === '1'){
                 newA = {...a, keys: keys1 };
             } else {
                 newA = {...a, keys: keys2};
             }
-            this.keys = [newA, newB];
-            this.setState({ newFormKeys: [newA, newB] });
+            this.keys = [newA, newB, newC];
+            this.setState({ newFormKeys: [newA, newB, newC] });
         }
-        if (key==='couponSendWay') {
+        if (key==='couponSendWay') { // 发放类型
             if(value === '1'){
                 newB = {...b, keys: keys3};
             } else {
                 newB = {...b, keys: keys4};
             }
-            this.keys = [newA, newB];
-            this.setState({ newFormKeys: [newA, newB] });
+            this.keys = [newA, newB, newC];
+            this.setState({ newFormKeys: [newA, newB, newC] });
         }
-        if (key==='cycleType') {
+        if (key==='cycleType') { // 选择周期
             const { getFieldsValue } = this.form;
             const { couponSendWay } = getFieldsValue();
             if (couponSendWay==='1') { return; }
-            if(value){
+            if(value){ 
                 newB = {...b, keys: keys5};
             }else{
                 newB = {...b, keys: keys4};
             }
-            this.keys = [newA, newB];
-            this.setState({ newFormKeys: [newA, newB] });
+            this.keys = [newA, newB, newC];
+            this.setState({ newFormKeys: [newA, newB, newC] });
         }
     }
     /** 获取会员卡类型 */
@@ -76,6 +76,25 @@ export default class Editor extends Component {
         const yesterday = moment().subtract('days', 2);
         return current && current.valueOf() < yesterday;
     }
+    imageUploadDom = () => {
+        const width = 100, height = 95, limit = 1024 * 2; 
+        const children = (
+            <div>
+                <p className="ant-upload-hint">小程序分享图</p>
+                <p className="ant-upload-hint">图片建议尺寸：1044*842</p>
+                <p className="ant-upload-hint">支持PNG、JPG格式，大小不超过2M</p>
+            </div>
+        );
+        return (
+            <ImageUpload
+                width={width}
+                height={height}
+                limit={limit}
+                // cropperRatio={cropperRatio}
+                children={children}
+            />
+        )
+    }
     /** formItems 重新设置 */
     resetFormItems() {
         const { check, detail, settlesOpts } = this.props;
@@ -85,13 +104,16 @@ export default class Editor extends Component {
             couponPackageType = this.form.getFieldValue('couponPackageType');
             cycleType = this.form.getFieldValue('cycleType');
         }
+        // 
         const { couponPackageGiftConfigs, shopInfos, couponPackageImage, couponPackageType: cpt,
-            validCycle, sellTime, settleUnitID, defaultCardTypeID,isAutoRefund, remainStock, ...other } = formItems;
+            validCycle, sellTime, settleUnitID, defaultCardTypeID,isAutoRefund, remainStock, shareImage, ...other } = formItems;
+            
         const disGift = check || (+sendCount > 0);
         const render = d => d()(<GiftInfo disabled={disGift} />);
         const render1 = d => d()(<ShopSelector disabled={check} />);
         const render2 = d => d()(<ImageUpload />);
         const render3 = d => d()(<EveryDay type={cycleType} disabled={disGift} />);
+        const render4 = d => d()(this.imageUploadDom())
         let disDate = {};
         const isEdit = !!detail;    // 编辑状态下
         let stockRule = {};
@@ -112,6 +134,7 @@ export default class Editor extends Component {
             defaultCardTypeID: {...defaultCardTypeID,options: defaultCardOpts},
             isAutoRefund: { ...isAutoRefund, disabled: isEdit },
             remainStock: { ...remainStock, ...stockRule },
+            shareImage: { ...shareImage, render: render4 }
         };
         if(check) {
             let obj = {}

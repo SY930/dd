@@ -9,6 +9,18 @@ export const defaultData = {
         validateStatus: 'success',
         msg: null,
     },
+    // 分享图片
+    shareImagePath: {
+        value: '',
+        validateStatus: 'success',
+        msg: null,
+    },
+    // 分享标题
+    shareTitle: {
+        value: '',
+        validateStatus: 'success',
+        msg: null,
+    },
     //奖品总数
     giftTotalCount: {
         value: '',
@@ -81,6 +93,18 @@ export const getDefaultGiftData = (typeValue = 0, typePropertyName = 'sendType')
         msg: null,
     },
     giftConfImagePath: {
+        value: '',
+        validateStatus: 'success',
+        msg: null,
+    },
+    // 分享图片
+    shareImagePath: {
+        value: '',
+        validateStatus: 'success',
+        msg: null,
+    },
+    // 分享标题
+    shareTitle: {
         value: '',
         validateStatus: 'success',
         msg: null,

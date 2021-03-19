@@ -119,6 +119,7 @@ class LotteryThirdStep extends React.Component {
     initState = () => {
         const { isNew } = this.props;
         const giftInfo = this.getOrganize(this.props.levelPrize ? this.props.levelPrize.toJS() : []);
+        console.log('isNew: ', isNew, 'giftInfo: ', giftInfo);
         let infos = [getDefaultGiftData()];
         if(!isNew){
             giftInfo.forEach((gift, index) => {
@@ -182,8 +183,10 @@ class LotteryThirdStep extends React.Component {
                 }
                 infos[index].giftTotalCount.value = gift.giftTotalCount
                 infos[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(2);
+                infos[index].shareTitle.value = gift.shareTitle;
                 // infos[index].giftConfImagePath.value = gift.giftConfImagePath || 'basicdoc/f75ed282-4d1c-4f5d-ab29-a92529cbadcf.png' ;
                 infos[index].giftConfImagePath.value = gift.giftConfImagePath;
+                infos[index].shareImagePath.value = gift.shareImagePath;
             })
         }
         return {
@@ -480,6 +483,23 @@ class LotteryThirdStep extends React.Component {
         });
     }
 
+    handleShareTitleChange = (e, index) => {
+        console.log('val: 分享标题', e, e.target);
+        const _infos = this.state.infos;
+        const _value = e.target.value;
+        _infos[index].shareTitle.value = _value;
+        if (_value) {
+            _infos[index].shareTitle.validateStatus = 'success';
+            _infos[index].shareTitle.msg = null;
+        } else {
+            _infos[index].shareTitle.validateStatus = 'error';
+            _infos[index].shareTitle.msg = '请输入分享标题';
+        }
+        this.setState({
+            infos: _infos,
+        });
+    }
+
     handleGiftImgChange = (val, index) => {
         const _infos = this.state.infos;
         _infos[index].giftConfImagePath.value = val;
@@ -490,6 +510,22 @@ class LotteryThirdStep extends React.Component {
         } else {
             _infos[index].giftConfImagePath.validateStatus = 'error';
             _infos[index].giftConfImagePath.msg = '请上传奖品图片';
+        }
+        this.setState({
+            infos: _infos,
+        });
+    }
+
+    handleShareImgChangne = (val, index) => {
+        const _infos = this.state.infos;
+        _infos[index].shareImagePath.value = val;
+        const _value = val
+        if (_value >= 0 && _value <= 100) {
+            _infos[index].shareImagePath.validateStatus = 'success';
+            _infos[index].shareImagePath.msg = null;
+        } else {
+            _infos[index].shareImagePath.validateStatus = 'error';
+            _infos[index].shareImagePath.msg = '请上传奖品图片';
         }
         this.setState({
             infos: _infos,
@@ -852,6 +888,7 @@ class LotteryThirdStep extends React.Component {
         tempObj.giftTotalCount = data.giftTotalCount.value;
         tempObj.giftOdds = data.giftOdds.value;
         tempObj.giftConfImagePath = data.giftConfImagePath.value;
+        tempObj.shareImagePath = data.shareImagePath.value;
         return tempObj;
     }
 
@@ -943,6 +980,8 @@ class LotteryThirdStep extends React.Component {
                                     handleValidateTypeChange={this.handleValidateTypeChange}
                                     handleGiftOddsChange={this.handleGiftOddsChange}
                                     handleGiftImgChange={this.handleGiftImgChange}
+                                    hanleShareImgChange={this.handleShareImgChangne}
+                                    handleShareTitleChange={this.handleShareTitleChange}
                                     handleGivePointsChange={this.handleGivePointsChange}
                                     handleGivePointsValueChange={this.handleGivePointsValueChange}
                                     handleCardChange={this.handleCardChange}

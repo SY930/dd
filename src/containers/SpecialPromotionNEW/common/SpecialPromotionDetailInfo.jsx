@@ -43,6 +43,7 @@ import PhotoFrame from "./PhotoFrame";
 import { activeRulesList } from "../recommendGifts/constant";
 import recommentGiftStyle from "../recommendGifts/recommentGift.less";
 // import  Three  from '../recommendGifts/stepThree'
+import CropperUploader from 'components/common/CropperUploader'
 import {
     checkChoose,
     queryRedPackets,
@@ -416,7 +417,10 @@ class SpecialDetailInfo extends Component {
             this.setState({ shareTitlePL, shareSubtitlePL });
         }
         if (type == 30) {
+            const shareTitle = "积分浪费太可惜，开来兑好礼~";
+            const shareTitlePL = shareTitle;
             this.getBag();
+            this.setState({ shareTitlePL });
         }
         if(type == 60) {
             initPerfectCheckBox.call(this)
@@ -559,6 +563,7 @@ class SpecialDetailInfo extends Component {
     }
     initState = () => {
         let giftInfo = this.props.specialPromotion.get("$giftInfo").toJS();
+        console.log('giftInfo========================: ', giftInfo);
         let eventRecommendSettings = this.props.specialPromotion
         .get("$eventRuleInfos")
         .toJS();
@@ -1149,6 +1154,7 @@ class SpecialDetailInfo extends Component {
             }
 
         }
+
         if (validateFlag) {
             if (validOdds > 100) {
                 message.warning(
@@ -1184,7 +1190,7 @@ class SpecialDetailInfo extends Component {
                     giftInfo = [...giftInfo, params];
                 }
             }
-            if (["21" , "66", "65"].includes(type)) {
+            if (["21" , "66", "65",].includes(type)) {
                 const {
                     shareTitle,
                     shareSubtitle,
@@ -1197,6 +1203,11 @@ class SpecialDetailInfo extends Component {
                     restaurantShareImagePath,
                     shareImagePath,
                 };
+                this.props.setSpecialBasicInfo(shareInfo);
+            }
+            if (['30'].includes(type)) {
+                const { shareTitle, shareImagePath } = this.state;
+                const shareInfo = { shareTitle, shareImagePath }
                 this.props.setSpecialBasicInfo(shareInfo);
             }
             this.props.setSpecialBasicInfo(giftInfo);
@@ -1782,6 +1793,60 @@ class SpecialDetailInfo extends Component {
     onRestImg = ({ key, value }) => {
         this.setState({ [key]: value });
     };
+
+    renderShareInfo3 = () => {
+        // const { type } = this.props;
+        const { shareTitle, shareImagePath } = this.state;
+        return(
+            <div>
+                <h3 className={selfStyle.shareTip}>分享设置</h3><span>（仅支持自定义小程序分享文案和图片，H5为默认设置）</span>
+                <FormItem
+                    label="分享标题"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    {this.props.form.getFieldDecorator("shareTitle", {
+                        rules: [{ max: 35, message: "最多35个字符" }],
+                        initialValue: shareTitle,
+                        onChange: this.handleShareTitleChange,
+                    })(<Input placeholder={shareTitlePL} />)}
+                </FormItem>
+                <FormItem
+                    label="分享图片"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                    style={{ position: "relative" }}
+                >
+                    <Row>
+                        <Col span={6} >
+                            <CropperUploader
+                                className={style.uploadCom}
+                                width={120}
+                                height={110}
+                                cropperRatio={200 / 200}
+                                limit={2048}
+                                allowedType={['image/png', 'image/jpeg']}
+                                value={shareImagePath}
+                                uploadTest='上传图片'
+                                onChange={value => this.onRestImg({ key: 'shareImagePath', value })}
+                            />
+                        </Col>
+                        <Col span={18} className={style.grayFontPic} >
+                            <p style={{ position: 'relative', top: 20, left: 70, }}>小程序分享图<br />图片建议尺寸：1044*842<br />支持PNG、JPG格式，大小不超过2M</p>
+                        </Col>
+                    </Row>
+                    {/* <PhotoFrame
+                        restaurantShareImagePath={restaurantShareImagePath}
+                        shareImagePath={shareImagePath}
+                        onChange={this.onRestImg}
+                        type={type}
+                    /> */}
+                </FormItem>
+            </div>
+        )
+    }
     renderShareInfo2 = () => {
         const { type } = this.props;
         const {
@@ -3723,6 +3788,7 @@ class SpecialDetailInfo extends Component {
                     </Row>
                 )}
                 {[ "66", "65"].includes(type) && this.renderShareInfo2()}
+                {['30'].includes(type) && this.renderShareInfo3()}
             </div>
         );
     }
