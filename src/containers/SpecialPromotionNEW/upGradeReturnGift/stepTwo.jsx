@@ -276,7 +276,19 @@ class StepTwo extends React.Component {
                     },
                 });
             }
-        } else { // 消费累计次数满 每满
+        } else if (consumeType === '3') { // 消费累计次数满 
+            if (value.number < 1) {
+                this.setState({ giveStatus: 'error' })
+            } else {
+                this.setState({
+                    giveStatus: 'success',
+                    numberValue: {
+                        number: value.number,
+                        modal: 'int',
+                    },
+                });
+            }
+        } else { // 消费累计次数每满
             if (value.number < 3) {
                 this.setState({ giveStatus: 'error' })
             } else {
@@ -454,12 +466,15 @@ class StepTwo extends React.Component {
         })
         this.props.setSpecialBasicInfo({ cardLevelIDList: [], cardGroupID: '' });
     }
+
     render() {
-        let {localType, cardLevelIDList} = this.state
+        let {localType, cardLevelIDList, consumeType } = this.state;
 
         const sendFlag = true;
         const totalCustomerCount = this.props.specialPromotion.get('customerCount');
-        const tip = this.state.consumeType % 2 === 0 ? `${this.props.intl.formatMessage(STRING_SPE.d1e09r9slq0172)}` : `${this.props.intl.formatMessage(STRING_SPE.d16hh4899ii1154)}`
+        const tip = this.state.consumeType % 2 === 0 ? `${this.props.intl.formatMessage(STRING_SPE.d1e09r9slq0172)}` :
+            consumeType === '3' ? `${this.props.intl.formatMessage(STRING_SPE.d16hhw4899ii1154w)}` :
+                `${this.props.intl.formatMessage(STRING_SPE.d16hh4899ii1154)}`;
         const smsGate = this.props.specialPromotion.getIn(['$eventInfo', 'smsGate']);
         const userCount = this.props.specialPromotion.getIn(['$eventInfo', 'userCount']);// 当有人领取礼物后，giveSelect不可编辑
         const giveSelect = (
