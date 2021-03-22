@@ -1,3 +1,4 @@
+@green: #1AB495;
 .giftWrapper {
     background: #fef4ed;
     padding: 20px 28px;
@@ -94,7 +95,7 @@
     }
 }
 .plusIcon {
-    color:#1ab495;
+    color:@green;
     font-size: 22px;
     &:hover{
         color:#18a786;
@@ -156,9 +157,20 @@
     }
 }
 .shareTip{
-    border-left: 3px solid #1ab495;
+    border-left: 3px solid @green;
     padding: 0 3px;
     margin: 10px 45px;
+}
+.separate {
+    margin: 20px 0;
+    h3 {
+        display: inline-block;
+        font-size: 14px;
+        font-weight: bold;
+        margin: 15px 20px 15px 0;
+        border-left: 3px solid @green;
+        text-indent: 10px;
+    }
 }
 .trclz{
     background-color: #cbd6cc!important;

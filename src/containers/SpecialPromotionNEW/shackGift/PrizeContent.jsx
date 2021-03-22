@@ -516,6 +516,8 @@ export default class PrizeContent extends React.Component {
                                 label="分享标题"
                                 labelCol={{ span: 4 }}
                                 wrapperCol={{ span: 17 }}
+                                // validateStatus={info.shareTitle.validateStatus}
+                                // help={infoshareTitle.msg}
                             >
                                 <Input
                                     value={info.shareTitle.value}
@@ -527,6 +529,8 @@ export default class PrizeContent extends React.Component {
                                 label="分享图片"
                                 labelCol={{ span: 4 }}
                                 wrapperCol={{ span: 17 }}
+                                // validateStatus={info.shareImagePath.validateStatus}
+                                // help={info.shareImagePath.msg}
                             >
                                 <Row>
                                     <Col span={6} >

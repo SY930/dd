@@ -187,6 +187,7 @@ class LotteryThirdStep extends React.Component {
                 // infos[index].giftConfImagePath.value = gift.giftConfImagePath || 'basicdoc/f75ed282-4d1c-4f5d-ab29-a92529cbadcf.png' ;
                 infos[index].giftConfImagePath.value = gift.giftConfImagePath;
                 infos[index].shareImagePath.value = gift.shareImagePath;
+                infos[index].shareImageTitle.value = gift.shareImageTitle;
             })
         }
         return {

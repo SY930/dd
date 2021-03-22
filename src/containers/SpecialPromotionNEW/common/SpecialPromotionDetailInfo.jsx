@@ -210,6 +210,7 @@ class SpecialDetailInfo extends Component {
                 ? $saveMoneySetIds.toJS()
                 : [];
         const { givePoints, presentValue, giveCoupon } = pointObj;
+        const specialPromotion = props.specialPromotion.get('$eventInfo').toJS();
         this.state = {
             data,
             wakeupSendGiftsDataArray,
@@ -230,6 +231,8 @@ class SpecialDetailInfo extends Component {
                 "$eventInfo",
                 "shareTitle",
             ]),
+            shareTitle3: specialPromotion.shareSubtitle || '', // 接口联调后改为后端取的数据
+            shareImagePath3: specialPromotion.shareSubtitle || '', // 同上
             shareSubtitle: props.specialPromotion.getIn([
                 "$eventInfo",
                 "shareSubtitle",
@@ -563,7 +566,6 @@ class SpecialDetailInfo extends Component {
     }
     initState = () => {
         let giftInfo = this.props.specialPromotion.get("$giftInfo").toJS();
-        console.log('giftInfo========================: ', giftInfo);
         let eventRecommendSettings = this.props.specialPromotion
         .get("$eventRuleInfos")
         .toJS();
@@ -1206,7 +1208,7 @@ class SpecialDetailInfo extends Component {
                 this.props.setSpecialBasicInfo(shareInfo);
             }
             if (['30'].includes(type)) {
-                const { shareTitle, shareImagePath } = this.state;
+                const { shareTitle3: shareTitle, shareImagePath3: shareImagePath } = this.state;
                 const shareInfo = { shareTitle, shareImagePath }
                 this.props.setSpecialBasicInfo(shareInfo);
             }
@@ -1796,10 +1798,14 @@ class SpecialDetailInfo extends Component {
 
     renderShareInfo3 = () => {
         // const { type } = this.props;
-        const { shareTitle, shareImagePath } = this.state;
+        const {
+            shareTitle3: shareTitle,
+            shareImagePath3: shareImagePath,
+            shareTitlePL,
+        } = this.state;
         return(
-            <div>
-                <h3 className={selfStyle.shareTip}>分享设置</h3><span>（仅支持自定义小程序分享文案和图片，H5为默认设置）</span>
+            <div className={selfStyle.separate}>
+                <h3>分享设置</h3><span>（仅支持自定义小程序分享文案和图片，H5为默认设置）</span>
                 <FormItem
                     label="分享标题"
                     className={styles.FormItemStyle}
@@ -1822,7 +1828,7 @@ class SpecialDetailInfo extends Component {
                     <Row>
                         <Col span={6} >
                             <CropperUploader
-                                className={style.uploadCom}
+                                className={styles.uploadCom}
                                 width={120}
                                 height={110}
                                 cropperRatio={200 / 200}
@@ -1830,10 +1836,10 @@ class SpecialDetailInfo extends Component {
                                 allowedType={['image/png', 'image/jpeg']}
                                 value={shareImagePath}
                                 uploadTest='上传图片'
-                                onChange={value => this.onRestImg({ key: 'shareImagePath', value })}
+                                onChange={value => this.onRestImg({ key: 'shareImagePath3', value })}
                             />
                         </Col>
-                        <Col span={18} className={style.grayFontPic} >
+                        <Col span={18} className={styles.grayFontPic} >
                             <p style={{ position: 'relative', top: 20, left: 70, }}>小程序分享图<br />图片建议尺寸：1044*842<br />支持PNG、JPG格式，大小不超过2M</p>
                         </Col>
                     </Row>
