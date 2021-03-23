@@ -983,7 +983,7 @@ class MySpecialActivities extends React.Component {
                                     this.handelStopEvent(text, record, index, '-1', `${this.props.intl.formatMessage(STRING_SPE.d17012f5c16c32211)}`);
                             }}
                         >
-                        {this.props.intl.formatMessage(STRING_SPE.du3bnfobe3346)}
+                        {/* {this.props.intl.formatMessage(STRING_SPE.du3bnfobe3346)} */}
                         </a>
                         <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY}>
                             <a
@@ -1183,7 +1183,7 @@ class MySpecialActivities extends React.Component {
                                     this.handelStopEvent(text, record, index, '-1', `${this.props.intl.formatMessage(STRING_SPE.d17012f5c16c32211)}`);
                             }}
                         >
-                        {this.props.intl.formatMessage(STRING_SPE.du3bnfobe3346)}
+                        {/* {this.props.intl.formatMessage(STRING_SPE.du3bnfobe3346)} */}
                         </a>
 
                         <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY}>
