@@ -102,8 +102,8 @@ class CreateActive extends Component {
                 >
 
                 <div className={styles.modalContent}>
-                    {currentInfo.dscList && currentInfo.dscList.map(v => {
-                        return  <div>
+                    {currentInfo.dscList && currentInfo.dscList.map((v, index) => {
+                        return  <div key={index}>
                         <div className={styles.modalTitle}>
                             <div className={styles.leftLine}></div>
                             <span>{v.title}</span>
