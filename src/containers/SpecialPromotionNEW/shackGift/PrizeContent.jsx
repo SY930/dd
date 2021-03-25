@@ -217,7 +217,6 @@ export default class PrizeContent extends React.Component {
             groupID,
         } = this.props;
         const { typeValue, bag } = this.state;
-        console.log('info:》》》》》》》》》》》》》》 ', info);
         return (
             <div style={{ position: 'relative' }}>
                 {

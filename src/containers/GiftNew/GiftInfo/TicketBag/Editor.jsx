@@ -106,7 +106,7 @@ export default class Editor extends Component {
         }
         // 
         const { couponPackageGiftConfigs, shopInfos, couponPackageImage, couponPackageType: cpt,
-            validCycle, sellTime, settleUnitID, defaultCardTypeID,isAutoRefund, remainStock, shareImage, ...other } = formItems;
+            validCycle, sellTime, settleUnitID, defaultCardTypeID,isAutoRefund, remainStock, miniProgramShareImagePath, ...other } = formItems;
             
         const disGift = check || (+sendCount > 0);
         const render = d => d()(<GiftInfo disabled={disGift} />);
@@ -134,7 +134,7 @@ export default class Editor extends Component {
             defaultCardTypeID: {...defaultCardTypeID,options: defaultCardOpts},
             isAutoRefund: { ...isAutoRefund, disabled: isEdit },
             remainStock: { ...remainStock, ...stockRule },
-            shareImage: { ...shareImage, render: render4 }
+            miniProgramShareImagePath: { ...miniProgramShareImagePath, render: render4 }
         };
         if(check) {
             let obj = {}

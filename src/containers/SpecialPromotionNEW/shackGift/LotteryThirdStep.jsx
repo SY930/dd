@@ -485,7 +485,6 @@ class LotteryThirdStep extends React.Component {
     }
 
     handleShareTitleChange = (e, index) => {
-        console.log('val: 分享标题', e, e.target);
         const _infos = this.state.infos;
         const _value = e.target.value;
         _infos[index].shareTitle.value = _value;
@@ -890,6 +889,7 @@ class LotteryThirdStep extends React.Component {
         tempObj.giftOdds = data.giftOdds.value;
         tempObj.giftConfImagePath = data.giftConfImagePath.value;
         tempObj.shareImagePath = data.shareImagePath.value;
+        tempObj.shareTitle = data.shareTitle.value;
         return tempObj;
     }
 

@@ -210,7 +210,7 @@ class SpecialDetailInfo extends Component {
                 ? $saveMoneySetIds.toJS()
                 : [];
         const { givePoints, presentValue, giveCoupon } = pointObj;
-        const specialPromotion = props.specialPromotion.get('$eventInfo').toJS();
+        // const specialPromotion = props.specialPromotion.get('$eventInfo').toJS();
         this.state = {
             data,
             wakeupSendGiftsDataArray,
@@ -226,13 +226,11 @@ class SpecialDetailInfo extends Component {
             shareImagePath: props.specialPromotion.getIn([
                 "$eventInfo",
                 "shareImagePath",
-            ]),
+            ]) || '',
             shareTitle: props.specialPromotion.getIn([
                 "$eventInfo",
                 "shareTitle",
-            ]),
-            shareTitle3: specialPromotion.shareSubtitle || '', // 接口联调后改为后端取的数据
-            shareImagePath3: specialPromotion.shareSubtitle || '', // 同上
+            ]) || '',
             shareSubtitle: props.specialPromotion.getIn([
                 "$eventInfo",
                 "shareSubtitle",
@@ -1208,7 +1206,7 @@ class SpecialDetailInfo extends Component {
                 this.props.setSpecialBasicInfo(shareInfo);
             }
             if (['30'].includes(type)) {
-                const { shareTitle3: shareTitle, shareImagePath3: shareImagePath } = this.state;
+                const { shareTitle, shareImagePath } = this.state;
                 const shareInfo = { shareTitle, shareImagePath }
                 this.props.setSpecialBasicInfo(shareInfo);
             }
@@ -1651,6 +1649,9 @@ class SpecialDetailInfo extends Component {
             wakeupSendGiftsDataArray,
         });
     };
+    onRestImg = ({ key, value }) => {
+        this.setState({ [key]: value });
+    };
     renderImgUrl = () => {
         const props = {
             name: "myFile",
@@ -1792,15 +1793,12 @@ class SpecialDetailInfo extends Component {
             </div>
         );
     };
-    onRestImg = ({ key, value }) => {
-        this.setState({ [key]: value });
-    };
 
     renderShareInfo3 = () => {
         // const { type } = this.props;
         const {
-            shareTitle3: shareTitle,
-            shareImagePath3: shareImagePath,
+            shareTitle,
+            shareImagePath,
             shareTitlePL,
         } = this.state;
         return(
@@ -1836,7 +1834,7 @@ class SpecialDetailInfo extends Component {
                                 allowedType={['image/png', 'image/jpeg']}
                                 value={shareImagePath}
                                 uploadTest='上传图片'
-                                onChange={value => this.onRestImg({ key: 'shareImagePath3', value })}
+                                onChange={value => this.onRestImg({ key: 'shareImagePath', value })}
                             />
                         </Col>
                         <Col span={18} className={styles.grayFontPic} >
@@ -3654,6 +3652,7 @@ class SpecialDetailInfo extends Component {
                     </Col>
                 </Row>}
                 <div className={css}></div>
+                {this.renderShareInfo3()}
             </div>
         )
     }
@@ -3794,7 +3793,6 @@ class SpecialDetailInfo extends Component {
                     </Row>
                 )}
                 {[ "66", "65"].includes(type) && this.renderShareInfo2()}
-                {['30'].includes(type) && this.renderShareInfo3()}
             </div>
         );
     }

@@ -339,7 +339,7 @@ const formItems = {
         type: 'text',
         label: '分享标题',
     },
-    shareImage: {
+    miniProgramShareImagePath: {
         type: 'custom',
         label: '分享图片',
         render: null,
@@ -352,7 +352,7 @@ const keys3 = ['b', 'couponSendWay', 'couponPackageGiftConfigs'];
 const keys4 = ['b', 'couponSendWay', 'cycleType', 'sendTime', 'maxSendLimit', 'couponPackageGiftConfigs'];
 const keys5 = ['b', 'couponSendWay', 'cycleType', 'validCycle', 'sendTime', 'maxSendLimit', 'couponPackageGiftConfigs'];
 
-const keys6 = ['c1', 'shareTitle', 'shareImage'];
+const keys6 = ['c1', 'shareTitle', 'miniProgramShareImagePath'];
 
 const formKeys = [
     {
