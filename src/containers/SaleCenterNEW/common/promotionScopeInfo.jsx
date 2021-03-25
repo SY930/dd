@@ -50,6 +50,7 @@ class PromotionScopeInfo extends React.Component {
         super(props);
 
         const shopSchema = props.shopSchema.getIn(['shopSchema']).toJS();
+        const ifOffLine = props.promotionBasicInfo.get('$basicInfo').toJS().promotionType === '1021'
         this.state = {
             cities: [],
             areas: [],
@@ -61,7 +62,7 @@ class PromotionScopeInfo extends React.Component {
             shopSchema, // 后台请求来的值
             dynamicShopSchema: shopSchema, // 随品牌的添加删除而变化
             // redux
-            channel: '0',
+            channel: ifOffLine ? '1' : '0',
             auto: '0',
             orderType: ['31'],
             // be caution, state key is diff with redux key.
@@ -194,7 +195,6 @@ class PromotionScopeInfo extends React.Component {
                 evidence,
                 invoice = '0',
             } = _stateFromRedux;
-
             this.setState({
                 voucherVerify,
                 voucherVerifyChannel,
@@ -202,7 +202,7 @@ class PromotionScopeInfo extends React.Component {
                 evidence,
                 invoice,
                 brands: _stateFromRedux.brands,
-                channel: _stateFromRedux.channel,
+                channel: promotionType === '1021' ? '1' : _stateFromRedux.channel,
                 auto: _stateFromRedux.auto,
                 orderType: _stateFromRedux.orderType,
                 initialized: true,
@@ -225,7 +225,7 @@ class PromotionScopeInfo extends React.Component {
             this.setState({filterShops: []})
         }
         this.setState({allShopsSet: !!nextProps.promotionBasicInfo.get('$filterShops').toJS().allShopSet});
-
+        const promotionType = nextProps.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         if (JSON.stringify(nextProps.promotionScopeInfo.getIn(['refs', 'data'])) !=
             JSON.stringify(this.props.promotionScopeInfo.getIn(['refs', 'data']))) {
             const _data = Immutable.Map.isMap(nextProps.promotionScopeInfo.getIn(['$scopeInfo'])) ?
@@ -233,7 +233,7 @@ class PromotionScopeInfo extends React.Component {
                 nextProps.promotionScopeInfo.getIn(['$scopeInfo']);
             this.setState({
                 brands: _data.brands,
-                channel: _data.channel,
+                channel: promotionType === '1021' ? '1' : _data.channel,
                 auto: _data.auto,
                 orderType: _data.orderType,
                 // TODO: shopsIdInfo converted to shopsInfo
@@ -380,6 +380,7 @@ class PromotionScopeInfo extends React.Component {
         const { intl } = this.props;
         const k5f3y6b4 = intl.formatMessage(SALE_STRING.k5f3y6b4);
         const k5f3y6yg = intl.formatMessage(SALE_STRING.k5f3y6yg);
+        const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
 
         if (this.props.isOnline) return null
         return (
@@ -396,6 +397,7 @@ class PromotionScopeInfo extends React.Component {
                 <Col span={24}>
                     <Select
                         size="default"
+                        disabled={promotionType === '1021'}
                         onChange={this.handleScenarioChange}
                         value={this.state.channel}
                         getPopupContainer={(node) => node.parentNode}
@@ -455,7 +457,7 @@ class PromotionScopeInfo extends React.Component {
         const k5m67alf = intl.formatMessage(SALE_STRING.k5m67alf);
         const k5krn7fx = intl.formatMessage(SALE_STRING.k5krn7fx);
         const k5m67atr = intl.formatMessage(SALE_STRING.k5m67atr);
-
+        const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         if (this.props.isOnline) return null;
         const plainOptions = [
             {
@@ -497,6 +499,7 @@ class PromotionScopeInfo extends React.Component {
                     options={plainOptions}
                     value={this.state.orderType}
                     defaultValue={this.state.orderType}
+                    disabled={promotionType === '1021'}
                 />
             </Form.Item>
         );

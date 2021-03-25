@@ -51,3 +51,4 @@ CouponsGiveCoupons => 消费券返券
 SwellGiftBag => 膨胀大礼包
 Housekeeper => 流失唤醒
 IntelligentGiftRule => 智能发券
+WeighAndGive => 称重买赠

@@ -688,7 +688,17 @@ class AdvancedPromotionDetailSetting extends React.Component {
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         const _stash = promotionType == '3010' || promotionType == '3020';
         const $promotionScope = this.props.promotionScopeInfo.get('$scopeInfo');
+        const {
+            justUserSetting
+        } = this.props
 
+        if(justUserSetting) {
+            return (
+                <div>
+                    {this.renderUserSetting($promotionDetail)}
+                </div>
+            ) 
+        }
         return (
             <div>
                 {this.renderUserSetting($promotionDetail)}
