@@ -358,6 +358,7 @@ class WeighBuyGiveDetailInfo extends React.Component {
                                     key={1}
                                     priceList={this.state.priceList}
                                     singleDish={true}
+                                    shopGroupSame={true}
                                     foodRuleList={this.state.foodRuleList}
                                     isShopMode={this.props.isShopFoodSelectorMode}
                                     onChange={(value) => { this.onPriceListChange(value) }}
@@ -396,6 +397,7 @@ class WeighBuyGiveDetailInfo extends React.Component {
                                     key={2}
                                     priceList={this.state.scopeLst}
                                     singleDish={true}
+                                    shopGroupSame={true}
                                     foodRuleList={this.state.foodRuleList}
                                     isShopMode={this.props.isShopFoodSelectorMode}
                                     onChange={(value) => { this.onScopeLstChange(value) }}

@@ -44,8 +44,8 @@ class ConnectedPriceListSelector extends Component {
         if (this.props.singleDish) {
             priceLst = this.props.priceList
         }
-        const { isShopMode } = this.props;
-        const Comp = isShopMode ? CategoryAndFoodSelectorForShop : CategoryAndFoodSelector;
+        const { isShopMode, shopGroupSame } = this.props;
+        const Comp = isShopMode ? shopGroupSame ? CategoryAndFoodSelector : CategoryAndFoodSelectorForShop : CategoryAndFoodSelector;
         return (
             <Comp
                 dishOnly={true}
