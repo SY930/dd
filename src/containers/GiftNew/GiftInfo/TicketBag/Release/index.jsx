@@ -65,7 +65,6 @@ class Release extends Component {
      * 加载列表
      */
     onQueryList = (params) => {
-        console.log('lllllllllll')
         const { queryParams, tempList: temp } = this.state;
         const { groupID } = this.props;
         const sellBeginTime = new Date().toJSON().substr(0,10).replace(/-/g,'');
