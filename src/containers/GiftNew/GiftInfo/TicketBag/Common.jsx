@@ -338,6 +338,7 @@ const formItems = {
     shareTitle: {
         type: 'text',
         label: '分享标题',
+        defaultValue: '超值券包，快来购买吧~'
     },
     miniProgramShareImagePath: {
         type: 'custom',

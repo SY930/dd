@@ -105,7 +105,7 @@ export const getDefaultGiftData = (typeValue = 0, typePropertyName = 'sendType')
     },
     // 分享标题
     shareTitle: {
-        value: '',
+        value: '我已经抽到奖品了，你也来试试手气吧~',
         validateStatus: 'success',
         msg: null,
     },

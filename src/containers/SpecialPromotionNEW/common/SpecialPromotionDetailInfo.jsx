@@ -421,6 +421,9 @@ class SpecialDetailInfo extends Component {
             const shareTitle = "积分浪费太可惜，开来兑好礼~";
             const shareTitlePL = shareTitle;
             this.getBag();
+            if (this.props.isNew) {         
+                this.setState({ shareTitle });
+            }
             this.setState({ shareTitlePL });
         }
         if(type == 60) {
