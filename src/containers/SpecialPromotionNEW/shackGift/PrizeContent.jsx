@@ -208,8 +208,8 @@ export default class PrizeContent extends React.Component {
             handleGivePointsValueChange,
             handleGiveRedPacketValueChange,
             handleGiveRedPacketIDChange,
-            handleShareTitleChange,
-            handleShareImageChangne,
+            // handleShareTitleChange,
+            // handleShareImageChangne,
             cardTypeArr,
             redPacketArr,
             handleCardChange,
@@ -508,47 +508,6 @@ export default class PrizeContent extends React.Component {
                                         </FormItem>
                                     </div> : null
                                 }
-                            </FormItem>
-                            <div className={style.separate}><h3 style={{ display: 'inline-block', marginLeft: 0 }}>分享设置</h3> <span>（仅支持自定义小程序分享文案和图片，H5为默认设置 ）</span></div>
-                            {/* shareTitle */}
-                            <FormItem
-                                label="分享标题"
-                                labelCol={{ span: 4 }}
-                                wrapperCol={{ span: 17 }}
-                                // validateStatus={info.shareTitle.validateStatus}
-                                // help={infoshareTitle.msg}
-                            >
-                                <Input
-                                    value={info.shareTitle.value}
-                                    onChange={(e) => { handleShareTitleChange(e, index); }}
-                                />
-                            </FormItem>
-                            {/* 分享图片 shareImagePath */}
-                            <FormItem
-                                label="分享图片"
-                                labelCol={{ span: 4 }}
-                                wrapperCol={{ span: 17 }}
-                                // validateStatus={info.shareImagePath.validateStatus}
-                                // help={info.shareImagePath.msg}
-                            >
-                                <Row>
-                                    <Col span={6} >
-                                        <CropperUploader
-                                            className={style.uploadCom}
-                                            width={120}
-                                            height={110}
-                                            cropperRatio={200 / 200}
-                                            limit={2048}
-                                            allowedType={['image/png', 'image/jpeg']}
-                                            value={info.shareImagePath.value}
-                                            uploadTest='上传图片'
-                                            onChange={value => handleShareImageChangne(value, index)}
-                                        />
-                                    </Col>
-                                    <Col span={18} className={style.grayFontPic} >
-                                        <p style={{ position: 'relative', top: 20, left: 70, }}>小程序分享图<br />图片建议尺寸：1044*842<br />支持PNG、JPG格式，大小不超过2M</p>
-                                    </Col>
-                                </Row>
                             </FormItem>
                             {/* ....... */}
                             {/* ....... */}
