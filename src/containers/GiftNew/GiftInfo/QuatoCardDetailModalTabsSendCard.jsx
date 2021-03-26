@@ -73,7 +73,7 @@ class CardOperate extends React.Component {
         const { levelList, FetchGiftLevel, visible, type, selectedRow } = this.props;
         this.initForm(visible, type, selectedRow)
         const _levelList = levelList.toJS();
-        FetchGiftLevel({}).then((data = []) => {
+        FetchGiftLevel({queryCardType: 1}).then((data = []) => {
             this.proGiftLevel(data);
         });
     }
@@ -362,7 +362,23 @@ class CardOperate extends React.Component {
                     />
                 </Tooltip>
             </span>
-        )
+        );
+        let useCardTypeLabel = (
+            <span>
+                会员卡类型 
+                <Tooltip title={
+                    <p>
+                       未关联店铺的卡，不在选择范围内
+                    </p>
+                }>
+                    <Icon
+                        style={{marginLeft: '5px'}}
+                        type={'question-circle'}
+                    />
+                </Tooltip>
+            </span>
+        );
+
         const formItems = {
             batchNO: {
                 label: '批次号',
@@ -512,7 +528,9 @@ class CardOperate extends React.Component {
                 )
             },
             useCardTypeID: {
-                label: '会员卡类型',
+                label: useCardTypeLabel,
+                labelCol: {span: 6},
+                wrapperCol: {span: 16},
                 type: 'combo',
                 defaultValue: '',
                 options: cardList,
