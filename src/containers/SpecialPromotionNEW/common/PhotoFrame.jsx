@@ -88,7 +88,7 @@ export default class PhotoFrame extends Component {
                             allowedType={['image/png', 'image/jpeg']}
                             value={shrPath}
                             uploadTest='上传图片'
-                            onChange={this.onUpload}
+                            onChange={this.onUpload2}
                         />
                         {/* <ImageUpload
                             value={shrPath}
