@@ -464,7 +464,7 @@ export class WeChatMallPromotionList extends React.Component {
                             onClick={isExpired || record.status == 3 ? null : () => {
                                 this.handleDisableClickEvent(record, 3);
                             }}
-                        >终止1</a>
+                        >终止</a>
                     </span>
 
                     );
