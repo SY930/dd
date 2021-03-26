@@ -208,8 +208,8 @@ export default class PrizeContent extends React.Component {
             handleGivePointsValueChange,
             handleGiveRedPacketValueChange,
             handleGiveRedPacketIDChange,
-            handleShareImgChangne,
             handleShareTitleChange,
+            handleShareImageChangne,
             cardTypeArr,
             redPacketArr,
             handleCardChange,
@@ -542,7 +542,7 @@ export default class PrizeContent extends React.Component {
                                             allowedType={['image/png', 'image/jpeg']}
                                             value={info.shareImagePath.value}
                                             uploadTest='上传图片'
-                                            onChange={value => handleShareImgChangne(value, index)}
+                                            onChange={value => handleShareImageChangne(value, index)}
                                         />
                                     </Col>
                                     <Col span={18} className={style.grayFontPic} >

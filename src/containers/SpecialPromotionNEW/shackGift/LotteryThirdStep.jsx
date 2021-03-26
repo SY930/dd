@@ -187,7 +187,7 @@ class LotteryThirdStep extends React.Component {
                 // infos[index].giftConfImagePath.value = gift.giftConfImagePath || 'basicdoc/f75ed282-4d1c-4f5d-ab29-a92529cbadcf.png' ;
                 infos[index].giftConfImagePath.value = gift.giftConfImagePath;
                 infos[index].shareImagePath.value = gift.shareImagePath;
-                infos[index].shareImageTitle.value = gift.shareImageTitle;
+                // infos[index].shareImageTitle.value = gift.shareImageTitle;
             })
         }
         return {
@@ -516,7 +516,7 @@ class LotteryThirdStep extends React.Component {
         });
     }
 
-    handleShareImgChangne = (val, index) => {
+    handleShareImageChangne = (val, index) => {
         const _infos = this.state.infos;
         _infos[index].shareImagePath.value = val;
         const _value = val
@@ -981,7 +981,7 @@ class LotteryThirdStep extends React.Component {
                                     handleValidateTypeChange={this.handleValidateTypeChange}
                                     handleGiftOddsChange={this.handleGiftOddsChange}
                                     handleGiftImgChange={this.handleGiftImgChange}
-                                    hanleShareImgChange={this.handleShareImgChangne}
+                                    handleShareImageChangne={this.handleShareImageChangne}
                                     handleShareTitleChange={this.handleShareTitleChange}
                                     handleGivePointsChange={this.handleGivePointsChange}
                                     handleGivePointsValueChange={this.handleGivePointsValueChange}
