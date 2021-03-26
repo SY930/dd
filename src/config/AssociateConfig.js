@@ -62,7 +62,7 @@ const AssociateConfigFactory = ()=>{
                 },
                 {
                     title: '券包的创建和使用',
-                    url: 'http://service.hualala.com/categoryList/detail?categoryKey=cfc08aa9626f461e8dc8d86757425195&docKey=e43652a6ac394841b0580c6612e7ef5f'
+                    url: 'http://service.hualala.com/categoryList/detail?categoryKey=40fcd4d143a5487aab1209c750922c2a&docKey=1b0fb68a34c24582b6e6a7633a613620'
                 },
             ],
         },
