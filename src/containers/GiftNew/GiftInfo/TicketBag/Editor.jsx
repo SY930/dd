@@ -3,7 +3,7 @@
  * 
 */
 import React, { PureComponent as Component } from 'react';
-import { Button, message, Alert } from 'antd';
+import { Button, message, Alert ,Select} from 'antd';
 import moment from 'moment';
 import BaseForm from 'components/common/BaseForm';
 import ShopSelector from 'components/ShopSelector';
@@ -14,7 +14,7 @@ import GiftInfo from '../../GiftAdd/GiftInfo';
 import ImageUpload from './ImageUpload';
 import EveryDay from './EveryDay';
 import { putTicketBag, postTicketBag } from './AxiosFactory';
-
+const Option = Select.Option;
 export default class Editor extends Component {
     state = {
         newFormKeys: formKeys,
@@ -63,9 +63,11 @@ export default class Editor extends Component {
     /** 获取会员卡类型 */
     getGroupCardTypeOpts (){
         const { groupCardTypeList } = this.props;
-        return groupCardTypeList.map(x => {
-            const { cardTypeID, cardTypeName } = x;
+        const cardTypeList = groupCardTypeList.filter((i)=>i.isActive);
+        return cardTypeList.map(x => {
+            const { cardTypeID, cardTypeName, isActive } = x;
             return { label: cardTypeName, value: cardTypeID };
+
         });
     }
     /** 得到form */
@@ -88,10 +90,25 @@ export default class Editor extends Component {
         const { couponPackageGiftConfigs, shopInfos, couponPackageImage, couponPackageType: cpt,
             validCycle, sellTime, settleUnitID, defaultCardTypeID,isAutoRefund, remainStock, ...other } = formItems;
         const disGift = check || (+sendCount > 0);
+        const defaultCardOpts = this.getGroupCardTypeOpts();
         const render = d => d()(<GiftInfo disabled={disGift} />);
         const render1 = d => d()(<ShopSelector disabled={check} />);
         const render2 = d => d()(<ImageUpload />);
         const render3 = d => d()(<EveryDay type={cycleType} disabled={disGift} />);
+        const render4 = d => d()(<Select
+            style={{
+                width: 354
+            }}
+            showSearch={true}
+            allowClear={true}
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
+            {
+                defaultCardOpts.map((type, index) =>
+                    <Option key={index} value={String(type.value)} >{type.label}</Option>
+                )
+            }
+        </Select>);
         let disDate = {};
         const isEdit = !!detail;    // 编辑状态下
         let stockRule = {};
@@ -99,7 +116,6 @@ export default class Editor extends Component {
             disDate = { disabledDate: this.disabledDate };
             stockRule = {rules: ['numbers']};
         }
-        const defaultCardOpts = this.getGroupCardTypeOpts();
         const newFormItems = {
             ...other,
             couponPackageType: { ...cpt, disabled: isEdit },
@@ -109,7 +125,7 @@ export default class Editor extends Component {
             couponPackageImage: { ...couponPackageImage, render: render2 },
             validCycle: { ...validCycle, render: render3 },
             settleUnitID: { ...settleUnitID , options: settlesOpts},
-            defaultCardTypeID: {...defaultCardTypeID,options: defaultCardOpts},
+            defaultCardTypeID: {...defaultCardTypeID,render:render4},
             isAutoRefund: { ...isAutoRefund, disabled: isEdit },
             remainStock: { ...remainStock, ...stockRule },
         };
