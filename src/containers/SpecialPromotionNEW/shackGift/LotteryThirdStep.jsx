@@ -982,7 +982,7 @@ class LotteryThirdStep extends React.Component {
                                 allowedType={['image/png', 'image/jpeg']}
                                 value={shareImagePath}
                                 uploadTest='上传图片'
-                                onChange={value => handleShareImageChangne({key: 'shareImagePath', value})}
+                                onChange={value => this.handleShareImageChangne({key: 'shareImagePath', value})}
                             />
                         </Col>
                         <Col span={18} className={style.grayFontPic} >
