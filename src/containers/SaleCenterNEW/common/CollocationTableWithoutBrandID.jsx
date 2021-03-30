@@ -259,7 +259,7 @@ class CollocationTableWithoutBrandID extends Component {
             <FoodSelectModal
                 allCategories={categories}
                 allDishes={dishes}
-                multiple={type!='5010' || this.state.currentEditingType === 'free'}
+                multiple={type!='5010' || this.state.currentEditingType === 'free' ||  this.state.currentEditingType === 'foods'}
                 mode="dish"
                 initialValue={initialValue}
                 onOk={this.handleModalOk}
