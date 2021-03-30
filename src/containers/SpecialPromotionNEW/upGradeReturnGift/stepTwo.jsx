@@ -329,7 +329,7 @@ class StepTwo extends React.Component {
             const { consumeType, numberValue } = this.state;
             opts.consumeType = consumeType;
             consumeType % 2 === 0 ? opts.consumeTotalAmount = numberValue.number || 0 : opts.consumeTotalTimes = numberValue.number;
-            if ((consumeType % 2 === 0 && (numberValue.number < 0 || numberValue.number === '')) || (consumeType == '1' && numberValue.number < 3)) {
+            if ((consumeType % 2 === 0 && (numberValue.number < 0 || numberValue.number === '')) || (consumeType == '1' && numberValue.number < 1)) {
                 flag = false;
                 this.setState({ giveStatus: 'error' })
             }
