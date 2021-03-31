@@ -3626,7 +3626,7 @@ class SpecialDetailInfo extends Component {
         const { bag, sendTypeValue } = this.state;
         const { user, type, disabled } = this.props;
         const {groupID} = user.accountInfo;
-        const css = disabled?styles.disabledModal:'';
+        const css = disabled  ? styles.disabledModal : '';
         return(
             <div style={{position: 'relative'}}>
                 <Row>
@@ -3661,7 +3661,6 @@ class SpecialDetailInfo extends Component {
                     </Col>
                 </Row>}
                 <div className={css}></div>
-                {this.renderShareInfo3()}
             </div>
         )
     }
@@ -3802,6 +3801,7 @@ class SpecialDetailInfo extends Component {
                     </Row>
                 )}
                 {[ "66", "65"].includes(type) && this.renderShareInfo2()}
+                {["30"].includes(type) && this.renderShareInfo3()}
             </div>
         );
     }
