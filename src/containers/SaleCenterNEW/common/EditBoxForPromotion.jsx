@@ -165,6 +165,7 @@ class EditBoxForPromotion extends React.Component {
         const ProDetail = nextProps.myActivities.toJS().$promotionDetailInfo.data;
         const filterFlag = nextProps.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.maintenanceLevel == '1');
         if (this.props.giftInfoNew.get('dataSource') != nextProps.giftInfoNew.get('dataSource')) {
+            debugger
             const crmGiftList = nextProps.giftInfoNew.toJS().dataSource.crmGiftList ? nextProps.giftInfoNew.toJS().dataSource.crmGiftList : [];
             // let { vouchersData, couponsData} = this.state;
             let vouchersData = [],
@@ -281,6 +282,8 @@ class EditBoxForPromotion extends React.Component {
 
         // 拼左侧树状结构
         const loop = (data) => {
+            console.log('data: ', data);
+
             if (undefined === data) {
                 return null
             }
@@ -312,7 +315,8 @@ class EditBoxForPromotion extends React.Component {
                                 <TreeNode key={'exchangeCoupons'} title={SALE_LABEL.k5m5avwb} />
                             </TreeNode>
                             <TreeNode key={'userRight'} title={SALE_LABEL.k5m5aw4n}>
-                                <TreeNode key={'userCard'} title={SALE_LABEL.k5m4q0r2} />
+                                {/* 会员价 */}
+                                <TreeNode key={'userCard'} title={SALE_LABEL.k5m4q0r2} /> 
                                 <TreeNode key={'userDiscount'} title={SALE_LABEL.k5m4q0ze} />
                             </TreeNode>
                         </Tree>

@@ -184,6 +184,7 @@ class SpecialDetailInfo extends React.Component {
             <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 17, offset: 4 }} >
                 <span className={styles.gTip}>{SALE_LABEL.k5ezdwpv}</span>
                 <span className={styles.gDate} onClick={this.onChangeClick}>
+                {/* 高级设置 */}
                     {SALE_LABEL.k5ezdx9f} {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
                     {this.state.display && <Iconlist className="down-blue" iconName={'up'} width="13px" height="13px" />}
                 </span>
@@ -264,7 +265,8 @@ class SpecialDetailInfo extends React.Component {
         return (
             <div>
                 <div style={{ color: 'rgba(0,0,0,0.85)'}} className={styles.coloredBorderedLabel}>
-                    {SALE_LABEL.k6hdpuhx}
+                    {/* 点单限制 */}
+                    {SALE_LABEL.k6hdpuhx} 
                 </div>
                 <div style={{height: '40px', paddingLeft: 35, marginTop: '8px'}} className={styles.flexContainer}>
                     <div style={{lineHeight: '28px', marginRight: '14px'}}>
