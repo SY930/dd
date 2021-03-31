@@ -20,6 +20,7 @@ class DateRange extends Component {
         if (val[0]) {
             const [sd, ed] = val;
             days = ed.diff(sd, 'days');
+            return days + 1;
         }
         return days;
     }
