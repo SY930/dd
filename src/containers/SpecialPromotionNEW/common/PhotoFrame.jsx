@@ -3,6 +3,7 @@ import {Popover} from "antd";
 import ImageUpload from 'components/common/ImageUpload';
 import styles from './addGifts.less';
 import QrModal from './QrModal';
+import CropperUploader from 'components/common/CropperUploader'
 
 const limitType = '.jpeg,.jpg,.png,.gif,.JPEG,.JPG,.PNG,.GIF';
 const fileSize = 3 * 1024 * 1024;
@@ -54,12 +55,23 @@ export default class PhotoFrame extends Component {
                     {
                         !isMoveRestaurant && 
                             <li>
-                                <ImageUpload
+                                <CropperUploader
+                                    className={styles.uploadCom}
+                                    width={120}
+                                    height={110}
+                                    cropperRatio={200 / 200}
+                                    limit={2048}
+                                    allowedType={['image/png', 'image/jpeg']}
+                                    value={restPath}
+                                    uploadTest='上传图片'
+                                    onChange={this.onUpload}
+                                />
+                                {/* <ImageUpload
                                     value={restPath}
                                     limitType={limitType}
                                     limitSize={fileSize}
                                     onChange={this.onUpload}
-                                />
+                                /> */}
                                 <div>
                                     <h5>线上餐厅展示图</h5>
                                     <p>图片建议尺寸：500*500像素</p>
@@ -67,12 +79,23 @@ export default class PhotoFrame extends Component {
                             </li>
                     }
                     <li>
-                        <ImageUpload
+                        <CropperUploader
+                            className={styles.uploadCom}
+                            width={120}
+                            height={110}
+                            cropperRatio={200 / 200}
+                            limit={2048}
+                            allowedType={['image/png', 'image/jpeg']}
+                            value={shrPath}
+                            uploadTest='上传图片'
+                            onChange={this.onUpload2}
+                        />
+                        {/* <ImageUpload
                             value={shrPath}
                             limitType={limitType}
                             limitSize={fileSize}
                             onChange={this.onUpload2}
-                        />
+                        /> */}
                         <div>
                             <h5>小程序展示图</h5>
                             <p>图片建议尺寸：1044*842像素</p>
