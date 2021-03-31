@@ -961,7 +961,7 @@ class LotteryThirdStep extends React.Component {
                    {
                        this.props.form.getFieldDecorator('shareTitle',{
                            rules: [{ max: 35, message: '最多35个字符'}],
-                           initialValue: shareTitle || '积分浪费太可惜，开来兑好礼~', 
+                           initialValue: shareTitle, 
                            onChange: this.handleShareTitleChange,
                        })( <Input placeholder={shareTitlePL} />)
                    }

@@ -418,8 +418,9 @@ class SpecialDetailInfo extends Component {
             this.setState({ shareTitlePL, shareSubtitlePL });
         }
         if (type == 30) {
-            const shareTitle = "积分浪费太可惜，开来兑好礼~";
-            const shareTitlePL = shareTitle;
+            // const shareTitle = ;
+            const { shareTitle } = this.state;
+            const shareTitlePL = '积分浪费太可惜，开来兑好礼~';
             this.getBag();
             if (this.props.isNew) {         
                 this.setState({ shareTitle });
@@ -1046,7 +1047,7 @@ class SpecialDetailInfo extends Component {
                 const params = {sortIndex: 1, giftID: couponPackageID, presentType: 4, giftOdds: "3"};
                 this.props.setSpecialGiftInfo([params]);
                 const { shareTitle, shareImagePath } = this.state;
-                // console.log('shareTitle:----------- ', shareTitle);
+                   // console.log('shareTitle:----------- ', shareTitle);
                 const shareInfo = { shareTitle, shareImagePath }
                 this.props.setSpecialBasicInfo(shareInfo);
                 return true;
