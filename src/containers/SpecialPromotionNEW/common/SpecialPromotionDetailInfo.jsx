@@ -535,7 +535,8 @@ class SpecialDetailInfo extends Component {
             const { freeGetLimit } = this.state
             if(this.props.type == '30' && presentType===4){
                 const {couponPackageInfos } = this.state;
-                const bag = couponPackageInfos.filter(x=>x.couponPackageID === giftID);
+                // console.log('couponPackageInfoqs: ', couponPackageInfos);
+                const bag = couponPackageInfos || [].filter(x=>x.couponPackageID === giftID);
                 this.setState({
                     sendTypeValue: '1',
                     bag,
@@ -1045,6 +1046,10 @@ class SpecialDetailInfo extends Component {
                 const { couponPackageID } = bag[0];
                 const params = {sortIndex: 1, giftID: couponPackageID, presentType: 4, giftOdds: "3"};
                 this.props.setSpecialGiftInfo([params]);
+                const { shareTitle, shareImagePath } = this.state;
+                // console.log('shareTitle:----------- ', shareTitle);
+                const shareInfo = { shareTitle, shareImagePath }
+                this.props.setSpecialBasicInfo(shareInfo);
                 return true;
             }
             message.error('请选择一项券包');
@@ -1208,8 +1213,10 @@ class SpecialDetailInfo extends Component {
                 };
                 this.props.setSpecialBasicInfo(shareInfo);
             }
+            decodeURI
             if (['30'].includes(type)) {
                 const { shareTitle, shareImagePath } = this.state;
+                // console.log('shareTitle:----------- ', shareTitle);
                 const shareInfo = { shareTitle, shareImagePath }
                 this.props.setSpecialBasicInfo(shareInfo);
             }
