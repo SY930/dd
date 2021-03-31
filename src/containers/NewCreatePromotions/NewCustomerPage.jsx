@@ -267,6 +267,7 @@ class NewCustomerPage extends Component {
 
     // 创建特色营销
     handleSpecialPromotionCreate(index, activity) {
+        console.log('index, activity: ', index, activity);
         // 唤醒送礼 品牌不可创建
         if ('63' === activity.key && isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
             message.warning(SPECIAL_PROMOTION_CREATE_DISABLED_TIP);

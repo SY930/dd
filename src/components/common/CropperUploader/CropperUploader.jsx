@@ -190,7 +190,7 @@ class CropperUploader extends Component {
                                 >
                                     重置
                                 </div>
-                                <img style={{ width: width - 2, height: height - 2 }} src={this.getRealUrl(value)} alt="" />
+                                <img style={{ width: width - 2, height: height - 2, objectFit: 'contain' }} src={this.getRealUrl(value)} alt="" />
                             </div>
                         ) : (// 无value时显示自定义trigger或默认trigger
                                 displayTrigger

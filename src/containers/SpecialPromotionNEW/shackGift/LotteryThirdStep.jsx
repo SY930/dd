@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Icon, Tabs, message } from 'antd';
+import { Button, Icon, Tabs, message, Form, Row, Col, Input } from 'antd';
 import PrizeContent from './PrizeContent';
 import style from './LotteryThirdStep.less'
 import { deflate } from 'zlib';
@@ -29,8 +29,10 @@ import { axiosData } from '../../../helpers/util';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
 import { getTicketBagInfo } from '../../BasicModules/TicketBag/AxiosFactory';
+import CropperUploader from 'components/common/CropperUploader'
 
 const moment = require('moment');
+const FormItem = Form.Item;
 const { TabPane } = Tabs;
 const TabNum = [ '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
 @injectIntl
@@ -40,6 +42,7 @@ class LotteryThirdStep extends React.Component {
         const {
             infos,
         } = this.initState();
+        const {shareTitle, shareImagePath} = props.specialPromotion.$eventInfo || {}
         this.state = {
             activeKey: '0',
             infos,
@@ -48,6 +51,9 @@ class LotteryThirdStep extends React.Component {
             disArr: defalutDisArr,
             cardTypeArr: [],
             redPackets: [],
+            shareTitle: shareTitle || '',
+            shareImagePath: shareImagePath || '',
+            shareTitlePL: '积分浪费太可惜，快来兑好礼~'
         }
     }
 
@@ -119,6 +125,7 @@ class LotteryThirdStep extends React.Component {
     initState = () => {
         const { isNew } = this.props;
         const giftInfo = this.getOrganize(this.props.levelPrize ? this.props.levelPrize.toJS() : []);
+        console.log('isNew: ', isNew, 'giftInfo: ', giftInfo);
         let infos = [getDefaultGiftData()];
         if(!isNew){
             giftInfo.forEach((gift, index) => {
@@ -182,8 +189,12 @@ class LotteryThirdStep extends React.Component {
                 }
                 infos[index].giftTotalCount.value = gift.giftTotalCount
                 infos[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(2);
+                // infos[index].shareTitle.value = gift.shareTitle;
                 // infos[index].giftConfImagePath.value = gift.giftConfImagePath || 'basicdoc/f75ed282-4d1c-4f5d-ab29-a92529cbadcf.png' ;
                 infos[index].giftConfImagePath.value = gift.giftConfImagePath;
+                // infos[index].shareImagePath.value = gift.shareImagePath;
+                // infos[index].shareImageTitle.value = gift.shareImageTitle;
+
             })
         }
         return {
@@ -480,6 +491,22 @@ class LotteryThirdStep extends React.Component {
         });
     }
 
+    // handleShareTitleChange = (e, index) => {
+    //     const _infos = this.state.infos;
+    //     const _value = e.target.value;
+    //     _infos[index].shareTitle.value = _value;
+    //     if (_value) {
+    //         _infos[index].shareTitle.validateStatus = 'success';
+    //         _infos[index].shareTitle.msg = null;
+    //     } else {
+    //         _infos[index].shareTitle.validateStatus = 'error';
+    //         _infos[index].shareTitle.msg = '请输入分享标题';
+    //     }
+    //     this.setState({
+    //         infos: _infos,
+    //     });
+    // }
+
     handleGiftImgChange = (val, index) => {
         const _infos = this.state.infos;
         _infos[index].giftConfImagePath.value = val;
@@ -495,6 +522,22 @@ class LotteryThirdStep extends React.Component {
             infos: _infos,
         });
     }
+
+    // handleShareImageChangne = (val, index) => {
+    //     const _infos = this.state.infos;
+    //     _infos[index].shareImagePath.value = val;
+    //     const _value = val
+    //     if (_value >= 0 && _value <= 100) {
+    //         _infos[index].shareImagePath.validateStatus = 'success';
+    //         _infos[index].shareImagePath.msg = null;
+    //     } else {
+    //         _infos[index].shareImagePath.validateStatus = 'error';
+    //         _infos[index].shareImagePath.msg = '请上传奖品图片';
+    //     }
+    //     this.setState({
+    //         infos: _infos,
+    //     });
+    // }
 
     handleGiftEffectiveTimeChange = (val, index) => {
         const _infos = this.state.infos;
@@ -852,11 +895,22 @@ class LotteryThirdStep extends React.Component {
         tempObj.giftTotalCount = data.giftTotalCount.value;
         tempObj.giftOdds = data.giftOdds.value;
         tempObj.giftConfImagePath = data.giftConfImagePath.value;
+        // tempObj.shareImagePath = data.shareImagePath.value;
+        // tempObj.shareTitle = data.shareTitle.value;
         return tempObj;
     }
 
+    handleShareTitleChange = ({ target: {value} }) => {
+        this.setState({ shareTitle: value })
+    }
+
+    handleShareImageChangne = ({ key, value }) => {
+        this.setState({ [key]: value });
+    }
+
     handleSubmit = () =>{
-        const { specialPromotion, setSpecialGiftInfo, user,} = this.props;
+        const { specialPromotion, setSpecialGiftInfo, user, setSpecialBasicInfo} = this.props;
+        const { shareImagePath, shareTitle } = this.state;
         if(this.checkEveryDataVaild()){
             const { infos } = this.state;
             infos.map((item, index) => {
@@ -878,6 +932,7 @@ class LotteryThirdStep extends React.Component {
                 }
             })
             setSpecialGiftInfo(tempArr);
+            setSpecialBasicInfo({ shareImagePath, shareTitle })
             return true;
         }
     }
@@ -888,6 +943,55 @@ class LotteryThirdStep extends React.Component {
         disArr.map((v, i) => disArr[i] = false)
         disArr[index] = toggle;
         this.setState({ disArr });
+    }
+
+
+
+    renderShareInfo = () => {
+        const { shareTitle, shareImagePath, shareTitlePL } = this.state;
+        return (
+            <div className={style.separate}>
+                <h3 style={{ display: 'inline-block', marginLeft: 0 }}>分享设置</h3> <span>（仅支持自定义小程序分享文案和图片，H5为默认设置 ）</span>
+                <FormItem
+                    label="分享标题"
+                    // className={style.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                   {
+                       this.props.form.getFieldDecorator('shareTitle',{
+                           rules: [{ max: 35, message: '最多35个字符'}],
+                           initialValue: shareTitle || '积分浪费太可惜，开来兑好礼~', 
+                           onChange: this.handleShareTitleChange,
+                       })( <Input placeholder={shareTitlePL} />)
+                   }
+                </FormItem>
+                <FormItem
+                    label="分享图片"
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <Row>
+                        <Col span={6} >
+                            <CropperUploader
+                                className={style.uploadCom}
+                                width={120}
+                                height={110}
+                                cropperRatio={200 / 200}
+                                limit={2048}
+                                allowedType={['image/png', 'image/jpeg']}
+                                value={shareImagePath}
+                                uploadTest='上传图片'
+                                onChange={value => this.handleShareImageChangne({key: 'shareImagePath', value})}
+                            />
+                        </Col>
+                        <Col span={18} className={style.grayFontPic} >
+                            <p style={{ position: 'relative', top: 20, left: 70, }}>小程序分享图<br />图片建议尺寸：1044*842<br />支持PNG、JPG格式，大小不超过2M</p>
+                        </Col>
+                    </Row>
+                </FormItem>
+            </div>
+        );
     }
 
     render() {
@@ -943,6 +1047,8 @@ class LotteryThirdStep extends React.Component {
                                     handleValidateTypeChange={this.handleValidateTypeChange}
                                     handleGiftOddsChange={this.handleGiftOddsChange}
                                     handleGiftImgChange={this.handleGiftImgChange}
+                                    // handleShareImageChangne={this.handleShareImageChangne}
+                                    // handleShareTitleChange={this.handleShareTitleChange}
                                     handleGivePointsChange={this.handleGivePointsChange}
                                     handleGivePointsValueChange={this.handleGivePointsValueChange}
                                     handleCardChange={this.handleCardChange}
@@ -962,6 +1068,7 @@ class LotteryThirdStep extends React.Component {
                         )
                     }) }
                 </Tabs>
+                {this.renderShareInfo()}
             </div>
         )
     }
@@ -1001,4 +1108,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(LotteryThirdStep);
+export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(LotteryThirdStep));
