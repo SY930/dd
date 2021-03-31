@@ -284,7 +284,7 @@ class CollocationTableWithBrandID extends Component {
                 allBrands={brands}
                 allCategories={categories}
                 allDishes={dishes}
-                multiple={type!='5010' || this.state.currentEditingType === 'free'}
+                multiple={type!='5010' || this.state.currentEditingType === 'free' || this.state.currentEditingType === 'foods'}
                 mode="dish"
                 initialValue={initialValue}
                 onOk={this.handleModalOk}
@@ -472,11 +472,12 @@ class CollocationTableWithBrandID extends Component {
                 render: (text, record, index) => {
                     // indexInfo [组合, 购买菜品数, 赠送菜品数, index]
                     const indexInfo = record.key.split('_');
+                    //  添加菜品
                     const obj = {
                         children: (
                             <div className="editable-row-operations">
                                 <span>
-                        <a title="" alt="" onClick={() => this.selectDishes(indexInfo)}>{SALE_LABEL.k5m6e613}</a>
+                                    <a title="" alt="" onClick={() => this.selectDishes(indexInfo)}>{SALE_LABEL.k5m6e613}</a>
                                 </span>
                             </div>
                         ),
