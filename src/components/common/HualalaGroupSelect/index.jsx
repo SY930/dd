@@ -47,7 +47,7 @@ class HualalaGroupSelect extends React.Component {
                     selected,
                 });
             }else{
-                message.warning(`共享组选项不能超过${limitNum}个`)
+                message.warning(`共享组选项111不能超过${limitNum}个`)
                 return;
             }
         }else{
