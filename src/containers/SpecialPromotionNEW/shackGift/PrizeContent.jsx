@@ -50,10 +50,11 @@ export default class PrizeContent extends React.Component {
         const tempArr = _.sortBy(filteredGiftInfo, 'index');
         if (info.giveCoupon.value.giftInfo.giftItemID == null ||
             info.giveCoupon.value.giftInfo.giftName == null) {
-                if(tempArr.length){
-                    handleGiftChange([tempArr[0].crmGifts[0].giftItemID, tempArr[0].crmGifts[0].giftName].join(','),index);
-                    return[tempArr[0].crmGifts[0].giftItemID, tempArr[0].crmGifts[0].giftName].join(',');
-                }
+                // if(tempArr.length){
+                //     handleGiftChange([tempArr[0].crmGifts[0].giftItemID, tempArr[0].crmGifts[0].giftName].join(','),index);
+                //     return[tempArr[0].crmGifts[0].giftItemID, tempArr[0].crmGifts[0].giftName].join(',');
+                // }
+                // http://jira.hualala.com/browse/WTCRM-3886 摇奖活动选择券组件去掉默认的券
                 return null;
         }
         return [info.giveCoupon.value.giftInfo.giftItemID, info.giveCoupon.value.giftInfo.giftName].join(',');
