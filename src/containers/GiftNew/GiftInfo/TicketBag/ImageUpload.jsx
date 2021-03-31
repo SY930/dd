@@ -8,8 +8,11 @@ const imgSize = 3 * 1024 * 1024;
 
 class ImageUpload extends Component {
     handleGiftImgChange = (val) => {
+        const defalutImage = 'basicdoc/ca249689-3339-4895-b481-43322147862f.png'
         if(val){
             this.props.onChange(val);
+        }else{
+            this.props.onChange(defalutImage);
         }
     }
     render() {

@@ -69,7 +69,6 @@ class NewPromotionCard extends Component {
             }
             onCardClick(promotionEntity);
         }
-        // console.log('promotionEntity', promotionEntity);
         // jumpPage({ menuID: 'plugins.info' });
     }
     filterItem(key) {

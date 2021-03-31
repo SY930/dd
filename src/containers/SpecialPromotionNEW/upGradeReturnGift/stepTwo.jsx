@@ -437,7 +437,7 @@ class StepTwo extends React.Component {
                         filterParm={isFilterShopType(this.props.type)?{productCode: 'HLL_CRM_License'}:{}}
                     />
                 </Form.Item>
-                <div className={userCount > 0 && this.props.type == 64 ? styles.opacitySet : null} style={{ left: 33, width: '88%' }}></div>
+                {/* <div className={userCount > 0 && this.props.type == 64 ? styles.opacitySet : null} style={{ left: 33, width: '88%' }}>11111</div> */}
             </div>
         );
     }

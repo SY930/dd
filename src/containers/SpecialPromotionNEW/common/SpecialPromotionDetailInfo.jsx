@@ -1,3 +1,4 @@
+// 特色营销详情页
 import React, { Component } from "react";
 import {
     Row,
@@ -50,6 +51,7 @@ import {
     handleCashChange,
     handleSubmitRecommendGifts,
     renderCashFn,
+
     renderRecommendGiftsFn,
     renderGivePointFn,
     validatedRuleDataFn,
@@ -3691,9 +3693,12 @@ class SpecialDetailInfo extends Component {
             "$eventInfo",
             "userCount",
         ]);
-
         return (
-            <div>
+            <div style={{position:'relative'}}>
+                {
+                    !this.props.isUpdate && type == '64' ?  
+                        <div className={styles.stepOneDisabled}></div> : null
+                }
                 {type == "67" && this.renderInstantDiscountForm()}
                 {type == "65" && (
                     <p className={styles.coloredBorderedLabel}>
@@ -3819,6 +3824,7 @@ function mapStateToProps(state) {
             .getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
         saveMoneySetList: state.sale_mySpecialActivities_NEW.get('$saveMoneySetList'),
         disabled: state.sale_specialPromotion_NEW.getIn(['$eventInfo', 'userCount']) > 0,
+        isUpdate: state.sale_myActivities_NEW.get('isUpdate'),
     }
 }
 

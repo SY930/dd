@@ -193,11 +193,10 @@ const formItems = {
         rules: ['required'],
     },
     defaultCardTypeID: {
-        type: 'combo',
         label: '新用户注册卡类',
-        rules: ['required'],
-        options: [],
+        type: 'custom',
         defaultValue: '',
+        rules: ['required'],
     },
     couponPackagePrice2: {
         type: 'text',

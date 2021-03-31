@@ -636,6 +636,7 @@ class GiftDetailTable extends Component {
                 ],
             },
         };
+        
         const formKeys = ['giftName', 'giftItemID', 'giftPWD', 'giftType', 'brandID',];
         const headerClasses = `layoutsToolLeft ${styles2.headerWithBgColor} ${styles2.basicPromotionHeader}`;
         const { tabkey } = this.props;
@@ -797,6 +798,7 @@ class GiftDetailTable extends Component {
                     maskClosable={true}
                     width={960}
                 >
+                    
                     <CreateGiftsPanel onClose={this.handleCreateModalCancel}/>
                 </Modal>
                 {

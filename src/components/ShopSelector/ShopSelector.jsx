@@ -9,6 +9,7 @@ import ShopSelectModal from './ShopSelectModal';
 import { FILTERS } from './config';
 import { loadShopSchema } from './utils';
 
+
 import './assets/ShopSelector.less';
 
 class ShopSelector extends Component {
@@ -18,6 +19,7 @@ class ShopSelector extends Component {
         filters: null,
         alloptions: [],
         allfilters: [],
+        isShopSelectorShow:'2'
     }
 
     componentDidMount() {
@@ -32,6 +34,11 @@ class ShopSelector extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        if(nextProps.isShopSelectorShow){
+            this.setState({
+                isShopSelectorShow:nextProps.isShopSelectorShow
+            })
+        }
         if (!isEqual(this.props.schemaData, nextProps.schemaData)) {
             this.loadShops({}, nextProps.schemaData, true);
         }
@@ -104,8 +111,11 @@ class ShopSelector extends Component {
     }
 
     handleModalOk = (values) => {
-        this.setState({ showModal: false });
+        const {eventWay} = this.props;
         this.props.onChange(values);
+
+        this.setState({ showModal: false });
+
     }
 
     handleModalCancel = () => {
@@ -115,12 +125,12 @@ class ShopSelector extends Component {
     render() {
         const { value = [], onChange, size, placeholder, extendShopList, eventWay, ...otherProps } = this.props;
         const { showModal } = this.state;
-
         let options = this.props.options || this.state.options || [];
         if (Array.isArray(extendShopList)) {
             options = [...extendShopList, ...options]
         }
         const filters = this.props.filters || this.state.filters;
+
         const items = value.reduce((ret, shopID) => {
             const shopInfo = options.find(shop => shop.value === shopID);
             if (!shopInfo) return ret;

@@ -259,6 +259,10 @@ class ActivityMain extends React.Component {
                         <br />
                     </Col>
                     <Col span={18} className={styles.activityMainRight}>
+                        {
+                            !this.props.isUpdate ?  //放过‘评价有礼’
+                                <div className={styles.stepOneDisabled}></div> : null
+                        }
                         {this.renderActivityTags()}
                     </Col>
                 </Row>
@@ -271,6 +275,7 @@ function mapStateToProps(state) {
     return {
         saleCenter: state.sale_saleCenter_NEW,
         promotionType: state.sale_promotionBasicInfo_NEW.getIn(['$basicInfo', 'promotionType']),
+        isUpdate:state.sale_myActivities_NEW.get('isUpdate'),
     };
 }
 

@@ -362,7 +362,6 @@ export default class GatherPointsDecorateBoard extends Component {
             needCount,
             onChange,
         } = this.props;
-        console.log('ImageType', ImageType == 6 ? true : false)
         const {
             numErr,
         } = this.state

@@ -26,7 +26,7 @@ import NewUpGradeReturnGift from './upGradeReturnGift/NewUpGradeReturnGift'; // 
 import NewAddUpReturnGift from './addUpReturnGift/NewAddUpReturnGift'; // 累计消费送礼
 import NewWakeUpReturnGift from './wakeUpReturnGift/NewWakeUpReturnGift'; // 唤醒送礼
 import NewOnLineReturnGift from './onLineReturnGift/NewOnLineReturnGift'; // 线上送礼
-import NewColorsEggCat from './colorsEggCat/NewColorsEggCat'; // 彩蛋猫
+import NewColorsEggCat from './colorsEggCat/NewColorsEggCat'; // 彩蛋猫,评价送礼详情页
 import ActivitySidebar from '../SaleCenterNEW/ActivitySidebar/ActivitySidebar'; // 左侧展示信息
 import GiveGiftsToNewFollowers from './giveGiftsToNewFollowers/wrapper';
 import ShareGifts from './shareGifts';
@@ -142,7 +142,13 @@ class ActivityMain extends React.Component {
                         <br />
                     </Col>
                     <Col span={18} className={styles.activityMainRight}>
-                        {this.renderActivityTags()}
+                        <div style={{position:'relative'}}>
+                            {
+                                !this.props.isUpdate && index != '13' ?  //放过‘评价有礼’
+                                    <div className={styles.stepOneDisabled}></div> : null
+                            }
+                            {this.renderActivityTags()}
+                        </div>
                     </Col>
                 </Row>
             </div>
@@ -154,6 +160,7 @@ function mapStateToProps(state) {
     return {
         saleCenter: state.sale_saleCenter_NEW,
         eventWay: state.sale_specialPromotion_NEW.getIn(['$eventInfo', 'eventWay']),
+        isUpdate:state.sale_myActivities_NEW.get('isUpdate'),
     };
 }
 

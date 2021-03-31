@@ -29,7 +29,6 @@ import { STRING_SPE } from 'i18n/common/special';
 class NewSendGifts extends NewPromotion {
     constructor(props) {
         super(props);
-        console.log('props in constructor', props);
     }
     render() {
 

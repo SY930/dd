@@ -74,7 +74,6 @@ class Step2 extends Component {
         };
     }
     render() {
-        const { } = this.state;
         // const { formData, getForm, form } = this.props;
         const newFormItems = this.resetFormItems();
         const { formData, isView, isEdit } = this.props.createActiveCom
