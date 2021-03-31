@@ -276,8 +276,8 @@ class StepTwo extends React.Component {
                     },
                 });
             }
-        } else { // 消费累计次数满 每满
-            if (value.number < 3) {
+        }  else { // 消费累计次数满  每满
+            if (value.number < 1) {
                 this.setState({ giveStatus: 'error' })
             } else {
                 this.setState({
@@ -329,7 +329,7 @@ class StepTwo extends React.Component {
             const { consumeType, numberValue } = this.state;
             opts.consumeType = consumeType;
             consumeType % 2 === 0 ? opts.consumeTotalAmount = numberValue.number || 0 : opts.consumeTotalTimes = numberValue.number;
-            if ((consumeType % 2 === 0 && (numberValue.number < 0 || numberValue.number === '')) || (consumeType == '1' && numberValue.number < 3)) {
+            if ((consumeType % 2 === 0 && (numberValue.number < 0 || numberValue.number === '')) || (consumeType == '1' && numberValue.number < 1)) {
                 flag = false;
                 this.setState({ giveStatus: 'error' })
             }
@@ -454,12 +454,13 @@ class StepTwo extends React.Component {
         })
         this.props.setSpecialBasicInfo({ cardLevelIDList: [], cardGroupID: '' });
     }
+
     render() {
-        let {localType, cardLevelIDList} = this.state
+        let {localType, cardLevelIDList } = this.state;
 
         const sendFlag = true;
         const totalCustomerCount = this.props.specialPromotion.get('customerCount');
-        const tip = this.state.consumeType % 2 === 0 ? `${this.props.intl.formatMessage(STRING_SPE.d1e09r9slq0172)}` : `${this.props.intl.formatMessage(STRING_SPE.d16hh4899ii1154)}`
+        const tip = this.state.consumeType % 2 === 0 ? `${this.props.intl.formatMessage(STRING_SPE.d1e09r9slq0172)}` : `${this.props.intl.formatMessage(STRING_SPE.d16hh4899ii1154)}`;
         const smsGate = this.props.specialPromotion.getIn(['$eventInfo', 'smsGate']);
         const userCount = this.props.specialPromotion.getIn(['$eventInfo', 'userCount']);// 当有人领取礼物后，giveSelect不可编辑
         const giveSelect = (
