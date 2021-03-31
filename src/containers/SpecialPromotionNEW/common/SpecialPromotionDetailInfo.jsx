@@ -535,8 +535,7 @@ class SpecialDetailInfo extends Component {
             const { freeGetLimit } = this.state
             if(this.props.type == '30' && presentType===4){
                 const {couponPackageInfos } = this.state;
-                // console.log('couponPackageInfoqs: ', couponPackageInfos);
-                const bag = couponPackageInfos || [].filter(x=>x.couponPackageID === giftID);
+                const bag = (couponPackageInfos || []).filter(x => x.couponPackageID === giftID);
                 this.setState({
                     sendTypeValue: '1',
                     bag,
