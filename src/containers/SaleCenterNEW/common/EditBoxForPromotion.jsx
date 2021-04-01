@@ -118,6 +118,7 @@ class EditBoxForPromotion extends React.Component {
         const _mutexPromotions = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'mutexPromotions']) ? this.props.promotionDetailInfo.getIn(['$promotionDetail', 'mutexPromotions']).toJS() : [];
 
         const crmGiftList = this.props.giftInfoNew.toJS().dataSource.crmGiftList || [];
+        console.log('crmGiftList: ============', crmGiftList, 'this.props.giftInfoNew.toJS()', this.props.giftInfoNew.toJS());
         let vouchersData = [],
             couponsData = [],
             exchangeCouponsData = [];
@@ -157,15 +158,15 @@ class EditBoxForPromotion extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         const { intl } = this.props;
-        const k5m4q0ae = intl.formatMessage(SALE_STRING.k5m4q0ae);
-        const k5m4q0iq = intl.formatMessage(SALE_STRING.k5m4q0iq);
+        const k5m4q0ae = intl.formatMessage(SALE_STRING.k5m4q0ae); // 消费返礼品
+        const k5m4q0iq = intl.formatMessage(SALE_STRING.k5m4q0iq); // 消费返积分
         const DISABLED_PROMOTION_TYPE = [
             k5m4q0ae, k5m4q0iq
         ];
         const ProDetail = nextProps.myActivities.toJS().$promotionDetailInfo.data;
         const filterFlag = nextProps.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.maintenanceLevel == '1');
         if (this.props.giftInfoNew.get('dataSource') != nextProps.giftInfoNew.get('dataSource')) {
-            debugger
+            // debugger
             const crmGiftList = nextProps.giftInfoNew.toJS().dataSource.crmGiftList ? nextProps.giftInfoNew.toJS().dataSource.crmGiftList : [];
             // let { vouchersData, couponsData} = this.state;
             let vouchersData = [],
@@ -244,6 +245,7 @@ class EditBoxForPromotion extends React.Component {
             promotionSelections: new Set(),
         }, () => {
             this.initialState(this.state.mutexPromotions, this.state.promotionCollection);
+            console.log('this.state.promotionCollection: ', this.state.promotionCollection);
         })
 
 
@@ -266,6 +268,7 @@ class EditBoxForPromotion extends React.Component {
         const k5m4q0iq = intl.formatMessage(SALE_STRING.k5m4q0iq);
         const k5m5auib = intl.formatMessage(SALE_STRING.k5m5auib);
         const k5m5auqn = intl.formatMessage(SALE_STRING.k5m5auqn);
+        const k636qvpm = intl.formatMessage(SALE_STRING.k636qvpm);
         const DISABLED_PROMOTION_TYPE = [
             k5m4q0ae, k5m4q0iq
         ];
@@ -313,6 +316,7 @@ class EditBoxForPromotion extends React.Component {
                                 <TreeNode key={'vouchers'} title={SALE_LABEL.k5m5avfn} />
                                 <TreeNode key={'coupons'} title={SALE_LABEL.k5m5avnz} />
                                 <TreeNode key={'exchangeCoupons'} title={SALE_LABEL.k5m5avwb} />
+                                <TreeNode key={'110'} title={k636qvpm} />
                             </TreeNode>
                             <TreeNode key={'userRight'} title={SALE_LABEL.k5m5aw4n}>
                                 {/* 会员价 */}
