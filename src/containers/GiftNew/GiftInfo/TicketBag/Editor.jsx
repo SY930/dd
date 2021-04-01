@@ -116,7 +116,7 @@ export default class Editor extends Component {
         const render1 = d => d()(<ShopSelector disabled={check} />);
         const render2 = d => d()(<ImageUpload />);
         const render3 = d => d()(<EveryDay type={cycleType} disabled={disGift} />);
-        const render4 = d => d()(<Select
+        const render5 = d => d()(<Select
             style={{
                 width: 354
             }}
@@ -130,6 +130,7 @@ export default class Editor extends Component {
                 )
             }
         </Select>);
+        const render4 = d => d()(this.imageUploadDom());
         let disDate = {};
         const isEdit = !!detail;    // 编辑状态下
         let stockRule = {};
@@ -146,7 +147,7 @@ export default class Editor extends Component {
             couponPackageImage: { ...couponPackageImage, render: render2 },
             validCycle: { ...validCycle, render: render3 },
             settleUnitID: { ...settleUnitID , options: settlesOpts},
-            defaultCardTypeID: {...defaultCardTypeID,render:render4},
+            defaultCardTypeID: {...defaultCardTypeID,render:render5},
             isAutoRefund: { ...isAutoRefund, disabled: isEdit },
             remainStock: { ...remainStock, ...stockRule },
             miniProgramShareImagePath: { ...miniProgramShareImagePath, render: render4 }
