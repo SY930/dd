@@ -113,7 +113,7 @@ export default class Editor extends Component {
         const render1 = d => d()(<ShopSelector disabled={check} />);
         const render2 = d => d()(<ImageUpload />);
         const render3 = d => d()(<EveryDay type={cycleType} disabled={disGift} />);
-        const render4 = d => d()(this.imageUploadDom())
+        const render4 = d => d()(this.imageUploadDom());
         let disDate = {};
         const isEdit = !!detail;    // 编辑状态下
         let stockRule = {};
