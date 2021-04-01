@@ -32,6 +32,7 @@ class EditBoxForPromotion extends React.Component {
 
             vouchersData: [], // 电子代金券数据
             couponsData: [], // 菜品优惠券数据
+            buyGiveData: [], // 买赠优惠券数据
             exchangeCouponsData: [], // 菜品兑换券数据
             vouchersDataSelections: [], // 已选电子代金券数据
             couponsDataSelections: [], // 已选菜品优惠券数据
@@ -58,11 +59,12 @@ class EditBoxForPromotion extends React.Component {
         if (mutexPromotions === undefined || promotionCollection === undefined) {
             return
         }
+        const {vouchersData, couponsData, exchangeCouponsData, buyGiveData} = this.state;
         // 遍历活动匹配展示名称
         mutexPromotions.map((promotion) => {
             if (promotion.sharedType == '30') {
                 // 优惠券类
-                const crmGift = this.state.vouchersData.concat(this.state.couponsData).concat(this.state.exchangeCouponsData);
+                const crmGift = vouchersData.concat(couponsData).concat(exchangeCouponsData).concat(buyGiveData);
                 crmGift.map((item) => {
                     // 找到匹配活动，加展示名称
                     // promotion.finalShowName = "券活动";
@@ -93,6 +95,7 @@ class EditBoxForPromotion extends React.Component {
                 })
             }
         })
+
         this.setState({
             promotionSelections: mutexPromotions,
         });
@@ -118,10 +121,10 @@ class EditBoxForPromotion extends React.Component {
         const _mutexPromotions = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'mutexPromotions']) ? this.props.promotionDetailInfo.getIn(['$promotionDetail', 'mutexPromotions']).toJS() : [];
 
         const crmGiftList = this.props.giftInfoNew.toJS().dataSource.crmGiftList || [];
-        console.log('crmGiftList: ============', crmGiftList, 'this.props.giftInfoNew.toJS()', this.props.giftInfoNew.toJS());
         let vouchersData = [],
             couponsData = [],
-            exchangeCouponsData = [];
+            exchangeCouponsData = [],
+            buyGiveData = [];
         crmGiftList.map((crmGift, index) => {
             if (crmGift.giftType == '10') {
                 // 电子代金券
@@ -144,6 +147,12 @@ class EditBoxForPromotion extends React.Component {
                 crmGift.finalShowName = crmGift.giftName;
                 exchangeCouponsData.push(crmGift)
             }
+            if (crmGift.giftType == '110') {
+                crmGift.sharedType = '30';
+                crmGift.promotionIDStr = crmGift.giftItemID;
+                crmGift.finalShowName = crmGift.giftName;
+                buyGiveData.push(crmGift);
+            }
         });
         // this.setState({  })
         this.setState({
@@ -151,7 +160,8 @@ class EditBoxForPromotion extends React.Component {
             mutexPromotions: _mutexPromotions,
             vouchersData,
             couponsData,
-            exchangeCouponsData
+            exchangeCouponsData,
+            buyGiveData,
         }, () => {
             this.initialState(this.state.mutexPromotions, this.state.promotionCollection);
         });
@@ -171,7 +181,8 @@ class EditBoxForPromotion extends React.Component {
             // let { vouchersData, couponsData} = this.state;
             let vouchersData = [],
                 couponsData = [], // 优惠券
-                exchangeCouponsData = []; // 兑换券
+                exchangeCouponsData = [], // 兑换券
+                buyGiveData = []; // 买赠券
             crmGiftList.map((crmGift, index) => {
                 if (crmGift.giftType == '10') {
                     // 电子代金券
@@ -194,11 +205,18 @@ class EditBoxForPromotion extends React.Component {
                     crmGift.finalShowName = crmGift.giftName;
                     exchangeCouponsData.push(crmGift)
                 }
+                if (crmGift.giftType == '110') {
+                    crmGift.sharedType = '30';
+                    crmGift.promotionIDStr = crmGift.giftItemID;
+                    crmGift.finalShowName = crmGift.giftName;
+                    buyGiveData.push(crmGift);
+                }
             });
             this.setState({
                 vouchersData,
                 couponsData,
-                exchangeCouponsData
+                exchangeCouponsData,
+                buyGiveData,
             }, () => {
                 this.initialState(this.state.mutexPromotions, this.state.promotionCollection);
             })
@@ -245,7 +263,6 @@ class EditBoxForPromotion extends React.Component {
             promotionSelections: new Set(),
         }, () => {
             this.initialState(this.state.mutexPromotions, this.state.promotionCollection);
-            console.log('this.state.promotionCollection: ', this.state.promotionCollection);
         })
 
 
@@ -285,8 +302,6 @@ class EditBoxForPromotion extends React.Component {
 
         // 拼左侧树状结构
         const loop = (data) => {
-            console.log('data: ', data);
-
             if (undefined === data) {
                 return null
             }
@@ -316,7 +331,7 @@ class EditBoxForPromotion extends React.Component {
                                 <TreeNode key={'vouchers'} title={SALE_LABEL.k5m5avfn} />
                                 <TreeNode key={'coupons'} title={SALE_LABEL.k5m5avnz} />
                                 <TreeNode key={'exchangeCoupons'} title={SALE_LABEL.k5m5avwb} />
-                                <TreeNode key={'110'} title={k636qvpm} />
+                                <TreeNode key={'buyGive'} title={k636qvpm} />
                             </TreeNode>
                             <TreeNode key={'userRight'} title={SALE_LABEL.k5m5aw4n}>
                                 {/* 会员价 */}
@@ -365,7 +380,7 @@ class EditBoxForPromotion extends React.Component {
         const k5m4q0ze = intl.formatMessage(SALE_STRING.k5m4q0ze);
 
         const promotionList = this.state.promotionCollection;
-        const { vouchersData, couponsData, exchangeCouponsData } = this.state;
+        const { vouchersData, couponsData, exchangeCouponsData, buyGiveData } = this.state;
         if (undefined === promotionList) {
             return null;
         }
@@ -382,7 +397,7 @@ class EditBoxForPromotion extends React.Component {
                 }
             });
         });
-        const otherPromotion = vouchersData.concat(couponsData).concat(exchangeCouponsData).concat([{ 'finalShowName': k5m4q0r2, 'promotionIDStr': '-10' }, { 'finalShowName': k5m4q0ze, 'promotionIDStr': '-20' }])
+        const otherPromotion = vouchersData.concat(couponsData).concat(exchangeCouponsData).concat(buyGiveData).concat([{ 'finalShowName': k5m4q0r2, 'promotionIDStr': '-10' }, { 'finalShowName': k5m4q0ze, 'promotionIDStr': '-20' }])
         otherPromotion.forEach((promotion) => {
             if (CC2PY(promotion.finalShowName).indexOf(CC2PY(value)) !== -1 || promotion.finalShowName.indexOf(CC2PY(value)) !== -1) {
                 allMatchItem.push(promotion);
@@ -509,7 +524,7 @@ class EditBoxForPromotion extends React.Component {
         const k5m4q0r2 = intl.formatMessage(SALE_STRING.k5m4q0r2);
         const k5m4q0ze = intl.formatMessage(SALE_STRING.k5m4q0ze);
 
-        let { promotionOptions, promotionSelections, promotionCurrentSelections, vouchersData, couponsData, exchangeCouponsData, valueKeyType } = this.state;
+        let { promotionOptions, promotionSelections, promotionCurrentSelections, vouchersData, couponsData, exchangeCouponsData, buyGiveData, valueKeyType } = this.state;
 
         if (value === undefined || value[0] === undefined) {
             return null;
@@ -521,6 +536,8 @@ class EditBoxForPromotion extends React.Component {
             promotionOptions = couponsData;
         }else if (value[0] == 'exchangeCoupons') {
             promotionOptions = exchangeCouponsData;
+        } else if (value[0] == 'buyGive'){
+            promotionOptions = buyGiveData;
         } else if (value[0] == 'userCard') {
             promotionOptions = [{ 'finalShowName': k5m4q0r2, 'promotionIDStr': '-10', 'sharedType': '20' }];
         } else if (value[0] == 'userDiscount') {
