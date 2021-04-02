@@ -70,6 +70,10 @@ export default class PrizeContent extends React.Component {
         const { handleGiveRedPacketChange, index } = this.props;
         handleGiveRedPacketChange(e, index);
     }
+    ChangeCheckGiveCard = (e) => {
+        const { handleGiveCardChange, index } = this.props;
+        handleGiveCardChange(e, index);
+    }
     getCardTypeValue = (index) => {
         const { cardTypeArr, info, handleCardChange, } = this.props;
         if (info.givePoints.value.card.value) {
@@ -77,6 +81,18 @@ export default class PrizeContent extends React.Component {
         }
         if (cardTypeArr.length) {
             handleCardChange(cardTypeArr[0].cardTypeID, index);
+            return cardTypeArr[0].cardTypeID
+        }
+        return '';
+    }
+
+    getGiveCardValue = (index) => {
+        const { cardTypeArr, info, handleGiveCardTypeChange, } = this.props;
+        if (info.giveCardValue.value.card.value) {
+            return info.giveCardValue.value.card.value;
+        }
+        if (cardTypeArr.length) {
+            handleGiveCardTypeChange(cardTypeArr[0].cardTypeID, index);
             return cardTypeArr[0].cardTypeID
         }
         return '';
@@ -206,13 +222,16 @@ export default class PrizeContent extends React.Component {
             handleGiftImgChange,
             disArr,
             handleGivePointsValueChange,
+            handleGiveCardInpChange,
             handleGiveRedPacketValueChange,
             handleGiveRedPacketIDChange,
+            handleGiveCardTypeChange,
             // handleShareTitleChange,
             // handleShareImageChangne,
             cardTypeArr,
             redPacketArr,
             handleCardChange,
+            handleGiveCardChange,
             disabled,
             groupID,
         } = this.props;
@@ -302,56 +321,118 @@ export default class PrizeContent extends React.Component {
                                 validateStatus={info.givePoints.validateStatus}
                                 help={info.givePoints.msg}
                             >
-                                <Checkbox
-                                    checked={JSON.stringify(info.givePoints.value) == "{}" ? false : true}
-                                    onChange={this.ChangeCheckBoxOne}
-                                />
-                                <span>{this.props.intl.formatMessage(STRING_SPE.dk46b2bc3b1333)}</span>
-                                {JSON.stringify(info.givePoints.value) == "{}" ?
-                                    null :
-                                    <div className={style.paleRed}>
-                                        <FormItem
-                                            wrapperCol={{ span: 12 }}
-                                            className={style.FormItemSecondStyle}
-                                            validateStatus={info.givePoints.value.givePointsValue.validateStatus}
-                                            help={info.givePoints.value.givePointsValue.msg}
-                                        >
-                                            <div className={style.labelSecondDiv}>
-                                                <span>{this.props.intl.formatMessage(STRING_SPE.dk46b2bc3b1333)}</span>
-                                            </div>
-                                            <PriceInput
-                                                addonAfter={this.props.intl.formatMessage(STRING_SPE.d16hh3h4b8b2184)}
-                                                modal="float"
-                                                maxNum={6}
-                                                value={{ number: info.givePoints.value.givePointsValue.value }}
-                                                onChange={(val) => { handleGivePointsValueChange(val, index); }}
-                                            />
-                                        </FormItem>
-                                        <FormItem
-                                            wrapperCol={{ span: 12 }}
-                                            className={style.FormItemSecondStyle}
-                                            validateStatus={info.givePoints.value.card.validateStatus}
-                                            help={info.givePoints.value.card.msg}
-                                        >
-                                            <div className={style.labelSecondDiv}>
-                                                <span>{this.props.intl.formatMessage(STRING_SPE.d2b1c76536683246)}</span>
-                                            </div>
-                                            <Select
-                                                showSearch={true}
-                                                value={this.getCardTypeValue(index)}
-                                                onChange={(val) => { handleCardChange(val, index) }}
-                                            >
-                                                {
-                                                    cardTypeArr.map((value) => {
-                                                        return (
-                                                            <Option key={value.cardTypeID} value={value.cardTypeID}>{value.cardTypeName}</Option>
-                                                        )
-                                                    })
-                                                }
-                                            </Select>
-                                        </FormItem>
+                                <div style={{ display: 'flex' }}>
+                                    <div style={{ lineHeight: '44px' }}>
+                                        <Checkbox
+                                            checked={JSON.stringify(info.givePoints.value) == "{}" ? false : true}
+                                            onChange={this.ChangeCheckBoxOne}
+                                        />
+                                        <span>{this.props.intl.formatMessage(STRING_SPE.dk46b2bc3b1333)}</span>
                                     </div>
-                                }
+                                    {JSON.stringify(info.givePoints.value) == "{}" ?
+                                        null :
+                                        <div className={style.paleRed} style={{ display: 'flex', width: 400 }}>
+
+                                            <FormItem
+                                                // wrapperCol={{ span: 12 }}
+                                                validateStatus={info.givePoints.value.givePointsValue.validateStatus}
+                                                help={info.givePoints.value.givePointsValue.msg}
+                                            >
+                                                {/* <div className={style.labelSecondDiv}>
+                                                <span>{this.props.intl.formatMessage(STRING_SPE.dk46b2bc3b1333)}</span>
+                                            </div> */}
+                                                <PriceInput
+                                                    addonAfter={this.props.intl.formatMessage(STRING_SPE.d16hh3h4b8b2184)}
+                                                    modal="float"
+                                                    maxNum={6}
+                                                    value={{ number: info.givePoints.value.givePointsValue.value }}
+                                                    onChange={(val) => { handleGivePointsValueChange(val, index); }}
+                                                />
+                                            </FormItem>
+                                            <FormItem
+                                                // wrapperCol={{ span: 12 }}
+                                                className={style.FormItemSecondStyle}
+                                                validateStatus={info.givePoints.value.card.validateStatus}
+                                                help={info.givePoints.value.card.msg}
+                                            >
+                                                <div className={style.labelSecondDiv}>
+                                                    <span>{this.props.intl.formatMessage(STRING_SPE.d2b1c76536683246)}</span>
+                                                </div>
+                                                <Select
+                                                    showSearch={true}
+                                                    value={this.getCardTypeValue(index)}
+                                                    onChange={(val) => { handleCardChange(val, index) }}
+                                                >
+                                                    {
+                                                        cardTypeArr.map((value) => {
+                                                            return (
+                                                                <Option key={value.cardTypeID} value={value.cardTypeID}>{value.cardTypeName}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
+                                            </FormItem>
+                                        </div>
+                                    }
+                                </div>
+                            </FormItem>
+                            {/* 赠送卡值 */}
+                            <FormItem
+                                style={{ padding: 0 }}
+                                wrapperCol={{ span: 24 }}
+                                className={style.noLabelFormItemStyle}
+                                validateStatus={info.giveCardValue.validateStatus}
+                                help={info.giveCardValue.msg}
+                            >
+                                <div style={{ display: 'flex' }}>
+                                    <div style={{ lineHeight: '44px' }}>
+                                        <Checkbox
+                                            checked={JSON.stringify(info.giveCardValue.value) == "{}" ? false : true}
+                                            onChange={this.ChangeCheckGiveCard}
+                                        />
+                                        <span>赠送卡值</span>
+                                    </div>
+                                {JSON.stringify(info.giveCardValue.value) == "{}" ?
+                                        null :
+                                        <div className={style.paleRed} style={{ display: 'flex', width: 400 }}>
+
+                                            <FormItem
+                                                validateStatus={info.giveCardValue.value.giveCardValueInp.validateStatus}
+                                                help={info.giveCardValue.value.giveCardValueInp.msg}
+                                            >
+                                                <PriceInput
+                                                    addonAfter="卡值"
+                                                    modal="float"
+                                                    maxNum={6}
+                                                    value={{ number: info.giveCardValue.value.giveCardValueInp.value }}
+                                                    onChange={(val) => { handleGiveCardInpChange(val, index); }}
+                                                />
+                                            </FormItem>
+                                            <FormItem
+                                                className={style.FormItemSecondStyle}
+                                                validateStatus={info.giveCardValue.value.card.validateStatus}
+                                                help={info.giveCardValue.value.card.msg}
+                                            >
+                                                <div className={style.labelSecondDiv}>
+                                                    <span>{this.props.intl.formatMessage(STRING_SPE.d2b1c76536683246)}</span>
+                                                </div>
+                                                <Select
+                                                    showSearch={true}
+                                                    value={this.getGiveCardValue(index)}
+                                                    onChange={(val) => { handleGiveCardTypeChange(val, index) }}
+                                                >
+                                                    {
+                                                        cardTypeArr.map((value) => {
+                                                            return (
+                                                                <Option key={value.cardTypeID} value={value.cardTypeID}>{value.cardTypeName}</Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
+                                            </FormItem>
+                                        </div>
+                                    }
+                                    </div>
                             </FormItem>
                             {/* 赠送优惠券 */}
                             <FormItem

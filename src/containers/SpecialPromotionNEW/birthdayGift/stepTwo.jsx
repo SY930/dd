@@ -310,7 +310,7 @@ class StepTwo extends React.Component {
         this.setState({ groupMembersID: value });
     }
 
-    renderMemberGroup() {
+    renderMemberGroup() { // 会员群体 下拉
         const totalCustomerCount = this.props.specialPromotion.get('customerCount');
         return (
             <FormItem
@@ -376,12 +376,13 @@ class StepTwo extends React.Component {
                 <FormItem label={`${this.props.intl.formatMessage(STRING_SPE.d216426238818026)}`} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
                     <RadioGroup onChange={this.handleGroupOrCatRadioChange} value={`${localType}`}>
                         <Radio key={'5'} value={'5'}>{this.props.intl.formatMessage(STRING_SPE.dd5a33b5g874114)}</Radio>
+                        {/* 会员卡类 */}
                         <Radio key={'0'} value={'0'}>{this.props.intl.formatMessage(STRING_SPE.d170093144c11061)}</Radio>
                         <Radio key={'6'} value={'6'}>{this.props.intl.formatMessage(STRING_SPE.dk45j2cah011173)}</Radio>
                     </RadioGroup>
                 </FormItem>
                 {localType === '5' && this.renderMemberGroup()}
-                {localType === '0' && (
+                {localType === '0' && ( // 会员卡类
                     <CardLevel
                         cardLevelRangeType={cardLevelRangeType}
                         onChange={this.onCardLevelChange}
