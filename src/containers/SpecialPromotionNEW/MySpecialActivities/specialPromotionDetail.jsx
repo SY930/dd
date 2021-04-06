@@ -828,7 +828,7 @@ class SpecialPromotionDetail extends React.Component {
         const way = this.state.eventInfo.data.eventWay;
         const columns = [
             {
-                title: `${this.props.intl.formatMessage(STRING_SPE.dk46m1ib4k18146)}----`,
+                title: `${this.props.intl.formatMessage(STRING_SPE.dk46m1ib4k18146)}`,
                 dataIndex: 'title',
                 key: 'title',
                 className: 'TableTxtCenter',
@@ -855,12 +855,12 @@ class SpecialPromotionDetail extends React.Component {
                 title: `${this.props.intl.formatMessage(STRING_SPE.dk46b2bc3b1333)}`,
                 ...this.props.mySpecialActivities.data.eventInfo.eventPointData,
             }];
-            if (way == 78) {
-                dataSource = [...dataSource, { title: '赠送卡值',  }] // 拼接上接口给的值
+            if (way == 78 || way == 20) {
+                dataSource = [...dataSource, { title: '赠送卡值',  ...this.props.mySpecialActivities.data.eventInfo.giveBalanceData}] // 拼接上接口给的值
             }
-            if (way == 20) {
-                dataSource = [...dataSource, { title: '赠送卡值',  }]
-            }
+            // if (way == 20) {
+            //     dataSource = [...dataSource, { title: '赠送卡值',  ...this.props.mySpecialActivities.data.eventInfo.giveBalanceData }]
+            // }
             // dataSource = [{
             //     title: `${this.props.intl.formatMessage(STRING_SPE.dk46b2bc3b1333)}`,
             //     ...this.props.mySpecialActivities.data.eventInfo.eventPointData,

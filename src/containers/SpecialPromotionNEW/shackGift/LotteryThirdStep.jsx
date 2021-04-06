@@ -169,26 +169,24 @@ class LotteryThirdStep extends React.Component {
                     infos[index].giveCoupon.value = _.cloneDeep(defaultGiveCoupon);
                     infos[index].giveCoupon.value.isOn = false;
                 }
+                // debugger
                 //与赠送积分相关的，在与赠送积分相关的数据都有值的时候才进行赋值，否则初始化为空
-                if(gift.cardTypeID && gift.presentValue){
+                if(gift.cardTypeID && gift.presentValue && gift.presentValue === 2){
                     infos[index].givePoints.value = _.cloneDeep(defaultGivePoints);
                     //充值到会员卡的卡类型id
                     infos[index].givePoints.value.card.value = gift.cardTypeID;
                     //赠送积分
                     infos[index].givePoints.value.givePointsValue.value = gift.presentValue;
-                } else {
-                    infos[index].givePoints.value = {};
-                }
-                // tempObj.giveCardValue = giveCardObj.giveCardValueInp.value; // 传给后台的值
-                // tempObj.givecardTypeID = giveCardObj.card.value;
-                if(gift.givecardTypeID && gift.giveCardValue){
+                } else if (gift.cardTypeID && gift.presentValue && gift.presentValue === 5) { 
+                    // 赠送卡值
                     infos[index].giveCardValue.value = _.cloneDeep(defaultGiveCard);
                     infos[index].giveCardValue.value.card.value = gift.cardTypeID;
-                    //赠送卡值
                     infos[index].giveCardValue.value.giveCardValueInp.value = gift.presentValue;
                 } else {
                     infos[index].giveCardValue.value = {};
                 }
+                // tempObj.giveCardValue = giveCardObj.giveCardValueInp.value; // 传给后台的值
+                // tempObj.givecardTypeID = giveCardObj.card.value;
                 // 红包相关
                 if (gift.redPacketID && gift.redPacketValue) {
                     infos[index].giveRedPacket = _.cloneDeep(defaultGiveRedPacket);
@@ -208,6 +206,8 @@ class LotteryThirdStep extends React.Component {
 
             })
         }
+        console.log('infos: 》》》》》', infos);
+        
         return {
             infos: infos.filter(gift => gift.sendType === 0)
             .sort((a, b) => a.needCount - b.needCount),
@@ -956,8 +956,8 @@ class LotteryThirdStep extends React.Component {
             tempObj.presentType = 3;
         }
         if (type == 'giveCard') {
-            tempObj.giveCardValue = giveCardObj.giveCardValueInp.value; // 传给后台的值
-            tempObj.givecardTypeID = giveCardObj.card.value;
+            tempObj.presentValue = giveCardObj.giveCardValueInp.value; // 传给后台的值
+            tempObj.cardTypeID = giveCardObj.card.value;
             tempObj.presentType = 5;
         }
         if(type == 'benefit'){
@@ -1002,6 +1002,7 @@ class LotteryThirdStep extends React.Component {
         const { specialPromotion, setSpecialGiftInfo, user, setSpecialBasicInfo} = this.props;
         const { shareImagePath, shareTitle } = this.state;
         if(this.checkEveryDataVaild()){
+            // debugger
             const { infos } = this.state;
             infos.map((item, index) => {
                 return item.sortIndex = index+1;

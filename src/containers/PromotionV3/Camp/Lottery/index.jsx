@@ -51,8 +51,8 @@ class Lottery extends Component {
 
     getCardType() {
         getCardTypeList().then(cardList => {
-        //    console.log('cardValList: ', cardValueList);
-            this.setState({ cardList, cardValueList: cardList });
+        const cardValueList = (cardList || []).map((item) => ({ ...item, cardValueTypeID: item.cardTypeID}))
+            this.setState({ cardList, cardValueList });
         });
     }
     onAllChange(data){
@@ -239,22 +239,22 @@ class Lottery extends Component {
                                                         {
                                                             decorator({
                                                                 key: 'cardValueTypeID' + i,
-                                                                value: x.cardTypeID || '',
-                                                                defaultValue: x.cardTypeID || '',
+                                                                value: x.cardValueTypeID || '',
+                                                                defaultValue: x.cardValueTypeID || '',
                                                                 rules: [{
                                                                     required: true,
                                                                     message: '不能为空',
                                                                 }],
                                                                 onChange: this.onCardValueTypeIDChange,
                                                             })(
-                                                                <Select style={{ width: 160 }} value={x.cardTypeID || ''} onChange={this.onCardValueTypeIDChange}>
+                                                                <Select style={{ width: 160 }} value={x.cardValueTypeID || ''} onChange={this.onCardValueTypeIDChange}>
                                                                 {
                                                                     (cardValueList || []).map((c, idx) => {
                                                                         return (<Option
-                                                                                key={`${c.cardTypeID}`}
-                                                                                value={`${c.cardTypeID}`}
+                                                                                key={`${c.cardValueTypeID}`}
+                                                                                value={`${c.cardValueTypeID}`}
                                                                                 >
-                                                                                {c.cardValueTypeName}
+                                                                                {c.cardTypeName}
                                                                             </Option>)
                                                                     })
                                                                 }

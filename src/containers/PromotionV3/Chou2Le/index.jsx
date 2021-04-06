@@ -102,8 +102,8 @@ class Chou2Le extends Component {
                 newItem = { ...newItem, bagList: [bag], isTicket: true, presentType: type };
             }
             if (presentType === 5) { // 卡值
-                const { cardValue, cardValueTypeID = '' } = x;
-                newItem = { ...newItem, cardValue, cardValueTypeID, isCardVal: true }; // 回显数据联调时改为后端回来的数据
+                const { presentValue, cardTypeID = '' } = x;
+                newItem = { ...newItem, cardValue: presentValue, cardValueTypeID: cardTypeID, isCardVal: true }; // 回显数据联调时改为后端回来的数据
             }
             // 礼品
             if(presentType === 1) {
@@ -291,7 +291,7 @@ class Chou2Le extends Component {
             }
             if (isCardVal) {
                 const { cardValue, cardValueTypeID } = x;
-                const obj = { ...rawObj, presentType: '5', cardValue, cardValueTypeID }; // 联调时要改成后端要的数据
+                const obj = { ...rawObj, presentType: '5', presentValue: cardValue, cardTypeID: cardValueTypeID }; // 联调时要改成后端要的数据
                 gifts.push(obj);
             }
         });
