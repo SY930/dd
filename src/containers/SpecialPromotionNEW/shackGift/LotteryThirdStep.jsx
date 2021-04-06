@@ -454,8 +454,14 @@ class LotteryThirdStep extends React.Component {
         const _value = parseFloat(value.number);
         if (_value > 0) {
             // 正则校验
-            _infos[index].giveCardValue.value.giveCardValueInp.validateStatus = 'success';
-            _infos[index].giveCardValue.value.giveCardValueInp.msg = null;
+            const reg = /^([1-9]\d{0,4})(\.\d{1,2}){0,1}$/;
+            if (!reg.test(_value)) {
+                _infos[index].giveCardValue.value.giveCardValueInp.validateStatus = 'error';
+                _infos[index].giveCardValue.value.giveCardValueInp.msg = `请输入1~10000的数字，支持两位小数`;
+            } else {
+                _infos[index].giveCardValue.value.giveCardValueInp.validateStatus = 'success';
+                _infos[index].giveCardValue.value.giveCardValueInp.msg = null;
+            }
         } else {
             _infos[index].giveCardValue.value.giveCardValueInp.validateStatus = 'error';
             _infos[index].giveCardValue.value.giveCardValueInp.msg = `赠送卡值应该大于0`;
@@ -996,7 +1002,6 @@ class LotteryThirdStep extends React.Component {
         const { specialPromotion, setSpecialGiftInfo, user, setSpecialBasicInfo} = this.props;
         const { shareImagePath, shareTitle } = this.state;
         if(this.checkEveryDataVaild()){
-            debugger
             const { infos } = this.state;
             infos.map((item, index) => {
                 return item.sortIndex = index+1;

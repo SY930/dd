@@ -322,7 +322,7 @@ export default class PrizeContent extends React.Component {
                                 help={info.givePoints.msg}
                             >
                                 <div style={{ display: 'flex' }}>
-                                    <div style={{ lineHeight: '44px' }}>
+                                    <div style={{ lineHeight: '40px' }}>
                                         <Checkbox
                                             checked={JSON.stringify(info.givePoints.value) == "{}" ? false : true}
                                             onChange={this.ChangeCheckBoxOne}
@@ -331,7 +331,7 @@ export default class PrizeContent extends React.Component {
                                     </div>
                                     {JSON.stringify(info.givePoints.value) == "{}" ?
                                         null :
-                                        <div className={style.paleRed} style={{ display: 'flex', width: 400 }}>
+                                        <div className={style.paleRed} style={{ display: 'flex', width: 450 }}>
 
                                             <FormItem
                                                 // wrapperCol={{ span: 12 }}
@@ -385,7 +385,7 @@ export default class PrizeContent extends React.Component {
                                 help={info.giveCardValue.msg}
                             >
                                 <div style={{ display: 'flex' }}>
-                                    <div style={{ lineHeight: '44px' }}>
+                                    <div style={{ lineHeight: '40px' }}>
                                         <Checkbox
                                             checked={JSON.stringify(info.giveCardValue.value) == "{}" ? false : true}
                                             onChange={this.ChangeCheckGiveCard}
@@ -394,7 +394,7 @@ export default class PrizeContent extends React.Component {
                                     </div>
                                 {JSON.stringify(info.giveCardValue.value) == "{}" ?
                                         null :
-                                        <div className={style.paleRed} style={{ display: 'flex', width: 400 }}>
+                                        <div className={style.paleRed} style={{ display: 'flex', width: 450 }}>
 
                                             <FormItem
                                                 validateStatus={info.giveCardValue.value.giveCardValueInp.validateStatus}
@@ -403,7 +403,7 @@ export default class PrizeContent extends React.Component {
                                                 <PriceInput
                                                     addonAfter="卡值"
                                                     modal="float"
-                                                    maxNum={6}
+                                                    // maxNum={5}
                                                     value={{ number: info.giveCardValue.value.giveCardValueInp.value }}
                                                     onChange={(val) => { handleGiveCardInpChange(val, index); }}
                                                 />

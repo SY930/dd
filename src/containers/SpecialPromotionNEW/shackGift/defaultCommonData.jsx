@@ -33,6 +33,12 @@ export const defaultData = {
         validateStatus: 'success',
         msg: null,
     },
+    // 赠送卡值
+    giveCardValue: {
+        value: {},
+        validateStatus: 'success',
+        msg: null,
+    },
     //赠送红包
     giveRedPacket: {
         isOn: false,

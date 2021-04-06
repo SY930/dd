@@ -169,10 +169,10 @@ class Chou2Le extends Component {
             if (!e) {
                 const { lottery } = v;
                 const isChecked = lottery.every(x=>{
-                    return x.isPoint || x.isTicket;
+                    return x.isPoint || x.isTicket || x.isCardVal;
                 });
                 if(!isChecked) {
-                    message.error('赠送积分或优惠券，必选一项');
+                    message.error('赠送积分或优惠券或者赠送卡值，必选一项');
                     return;
                 }
                 const isGift = lottery.every(x=>{
