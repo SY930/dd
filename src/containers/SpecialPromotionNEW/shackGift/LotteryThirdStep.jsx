@@ -169,19 +169,21 @@ class LotteryThirdStep extends React.Component {
                     infos[index].giveCoupon.value = _.cloneDeep(defaultGiveCoupon);
                     infos[index].giveCoupon.value.isOn = false;
                 }
-                // debugger
                 //与赠送积分相关的，在与赠送积分相关的数据都有值的时候才进行赋值，否则初始化为空
-                if(gift.cardTypeID && gift.presentValue && gift.presentValue === 2){
+                if(gift.cardTypeID && gift.presentValue){
                     infos[index].givePoints.value = _.cloneDeep(defaultGivePoints);
                     //充值到会员卡的卡类型id
                     infos[index].givePoints.value.card.value = gift.cardTypeID;
                     //赠送积分
                     infos[index].givePoints.value.givePointsValue.value = gift.presentValue;
-                } else if (gift.cardTypeID && gift.presentValue && gift.presentValue === 5) { 
-                    // 赠送卡值
+                } else {
+                    infos[index].givePoints.value = {};
+                }
+                if (gift.cardValueTypeID && gift.giveCardValue) {
                     infos[index].giveCardValue.value = _.cloneDeep(defaultGiveCard);
-                    infos[index].giveCardValue.value.card.value = gift.cardTypeID;
-                    infos[index].giveCardValue.value.giveCardValueInp.value = gift.presentValue;
+                    infos[index].giveCardValue.value.card.value = gift.cardValueTypeID;
+                    //赠送卡值
+                    infos[index].giveCardValue.value.giveCardValueInp.value = gift.giveCardValue;
                 } else {
                     infos[index].giveCardValue.value = {};
                 }
@@ -262,6 +264,9 @@ class LotteryThirdStep extends React.Component {
                                 temparr[num].redPacketValue = item.presentValue;
                             } else if (item.presentType == 4){
                                 temparr[num].couponPackageID = item.giftID;
+                            } else if (item.presentType == 5){
+                                temparr[num].cardValueTypeID = item.cardTypeID;
+                                temparr[num].giveCardValue = item.presentValue;
                             }
                         }
                     });
@@ -1002,7 +1007,6 @@ class LotteryThirdStep extends React.Component {
         const { specialPromotion, setSpecialGiftInfo, user, setSpecialBasicInfo} = this.props;
         const { shareImagePath, shareTitle } = this.state;
         if(this.checkEveryDataVaild()){
-            // debugger
             const { infos } = this.state;
             infos.map((item, index) => {
                 return item.sortIndex = index+1;
