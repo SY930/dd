@@ -114,3 +114,17 @@
         left: 25.67%;
     }
 }
+
+.speDiv {
+    :global{
+        .ant-upload-list-picture-card .ant-upload-list-item-thumbnail, .ant-upload-list-picture-card .ant-upload-list-item-thumbnail img {
+            display: inline-block;
+            width: 100%;
+            height: auto;
+            position: static;
+        }
+        .ant-upload-list-picture-card .ant-upload-list-item-info {
+            overflow: hidden;
+        }
+    }
+}
