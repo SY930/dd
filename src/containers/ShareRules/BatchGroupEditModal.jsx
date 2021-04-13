@@ -24,6 +24,7 @@ import axios from 'axios';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
+const EXPANDTO500 = ['11157', '292428', '253686']
 @injectIntl()
 class BatchGroupEditModal extends Component {
     constructor(props) {
@@ -32,7 +33,7 @@ class BatchGroupEditModal extends Component {
             searchInput: '',
             currentCategory: null,
             shareGroupArr: [],
-            limitNum: 100,        //共享限制数量
+            limitNum: EXPANDTO500.includes(this.props.user.accountInfo.groupID) ? 500 : 100,   
             actType: 'batchAdd',
             addAct: [], //统一添加的活动id
             deleteAct: [], //统一删除的活动id
@@ -197,6 +198,7 @@ class BatchGroupEditModal extends Component {
             gList,
             ifOperat,
             addAct,
+            limitNum
         } = this.state
         return (
             <Modal
@@ -269,7 +271,7 @@ class BatchGroupEditModal extends Component {
                             }
                         </div>
                         {
-                            actType === 'batchAdd' && <span className={style.addActSpan} onClick={this.handleOpenModal}>+添加(至多添加100个)</span>
+                            actType === 'batchAdd' && <span className={style.addActSpan} onClick={this.handleOpenModal}>{`+添加(至多添加${limitNum}个)`}</span>
                         }
                     </div>
                 </div>
