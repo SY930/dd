@@ -274,7 +274,7 @@ const formItems = {
     couponPackageDesciption: {
         type: 'textarea',
         label: '券包说明',
-        rules: ['description'],
+        rules: ['description2'],
     },
     couponPackageImage: {
         type: 'custom',

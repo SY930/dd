@@ -25,6 +25,10 @@ const RULES_CONFIG = {
         max: 200,
         message: '[label]必须在200个字符以内',
     },
+    description2: {
+        max: 1000,
+        message: '[label]必须在1000个字符以内',
+    }, //
     // 价格：价格相关8位整数2位小数，数字输入
     price: {
         pattern: /^(([1-9]\d{0,7})|0)(\.\d{0,2})?$/,
