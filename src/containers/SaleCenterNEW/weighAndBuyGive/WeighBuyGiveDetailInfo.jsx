@@ -370,7 +370,7 @@ class WeighBuyGiveDetailInfo extends React.Component {
                                 label={this.state.stageType === 2 ? '消费满' : '消费每满'}
                                 className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
                                 labelCol={{ span: 10, offset: 0 }}
-                                wrapperCol={{ span: 14, offset: 0 }}
+                                wrapperCol={{ span: 12, offset: 0 }}
                                 validateStatus={this.state.stageAmountFlag == '' ? 'error' : 'success'}
                                 help={this.state.stageAmountFlag ? null : '请输入大于0，整数5位以内且小数2位内的数'}
                             >
@@ -408,8 +408,8 @@ class WeighBuyGiveDetailInfo extends React.Component {
                             <FormItem
                                 label={'赠送数量'}
                                 className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
-                                labelCol={{ span: 5, offset: 1 }}
-                                wrapperCol={{ span: 14, offset: 0 }}
+                                labelCol={{ span: 9, offset: 1 }}
+                                wrapperCol={{ span: 12, offset: 0 }}
                                 validateStatus={this.state.giveFoodCountFlag == '' ? 'error' : 'success'}
                                 help={this.state.giveFoodCountFlag ? Number(this.state.giveFoodCount) > Number(this.state.stageAmount) ? '赠送数量不能大于购买数量' : null : '请输入大于0，整数5位以内且小数2位内的数'}
                             >
@@ -445,8 +445,8 @@ class WeighBuyGiveDetailInfo extends React.Component {
                             <FormItem
                                 label={'至'}
                                 className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
-                                labelCol={{ span: 3, offset: 1 }}
-                                wrapperCol={{ span: 14, offset: 0 }}
+                                labelCol={{ span: 9, offset: 1 }}
+                                wrapperCol={{ span: 12, offset: 0 }}
                                 validateStatus={this.state.floatUpFlag == '' ? 'error' : 'success'}
                                 help={this.state.floatUpFlag ? this.state.floatUp && (Number(this.state.floatUp) <= Number(this.state.giveFoodCount)) ? '赠送最大值需大于赠送数量' : null : '请输入大于0，整数5位以内且小数2位内的数'}
                             >

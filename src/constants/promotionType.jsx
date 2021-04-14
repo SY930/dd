@@ -508,17 +508,6 @@ export const LOYALTY_PROMOTION_TYPES = [
  */
 export const SALE_PROMOTION_TYPES = [
     {
-        title: '称重买赠',
-        isSpecial: false,
-        text: '仅适用于POS2.5，应用于称重类商品，买1斤A赠送0.5斤A，或是买1斤A赠送0.5斤B。支持买赠和每买赠。',
-        example: '',
-        tags: ['pos'],
-        key: '1021',
-        right: 2,
-        bottom: -14,
-        isHot: true,
-    },
-    {
         title: SALE_LABEL.k5ezcu1b,
         isSpecial: false,
         text: SALE_LABEL.k67cp14a,
@@ -668,6 +657,17 @@ export const SALE_PROMOTION_TYPES = [
         key: '2080',
         right: 25,
         bottom: 6,
+    },
+    {
+        title: '称重买赠',
+        isSpecial: false,
+        text: '仅适用于POS2.5，应用于称重类商品，买1斤A赠送0.5斤A，或是买1斤A赠送0.5斤B。支持买赠和每买赠。',
+        example: '',
+        tags: ['pos'],
+        key: '1021',
+        right: 2,
+        bottom: -14,
+        isHot: true,
     },
 ];
 

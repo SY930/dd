@@ -120,6 +120,7 @@ export default class BtnFoodSelector extends Component {
                     type="ghost"
                     style={{ color: '#787878', width: '100%' }}
                     onClick={this.openTheDishModal}
+                    className={styles.btnChooser}
                 >
                     {
                         !dishes.length && <Icon
@@ -128,7 +129,9 @@ export default class BtnFoodSelector extends Component {
                         />
                     }
                     {
-                        dishes.length ? priceLst[0] && priceLst[0].label : '点击添加商品'
+                        <Tooltip title={dishes.length ? priceLst[0] && priceLst[0].label : '点击添加商品'}>
+                            {dishes.length ? priceLst[0] && priceLst[0].label : '点击添加商品'}
+                        </Tooltip>
                     }
                 </Button>
                 {

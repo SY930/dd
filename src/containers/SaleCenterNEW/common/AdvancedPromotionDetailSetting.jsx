@@ -696,6 +696,9 @@ class AdvancedPromotionDetailSetting extends React.Component {
             return (
                 <div>
                     {this.renderUserSetting($promotionDetail)}
+                    {
+                        (this.state.userSetting == '1' || this.state.userSetting == '3' || this.state.userSetting == '4') ? this.renderCardLeval() : null
+                    }
                 </div>
             ) 
         }
