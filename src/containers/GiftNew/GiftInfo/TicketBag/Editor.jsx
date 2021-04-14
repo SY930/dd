@@ -79,11 +79,11 @@ export default class Editor extends Component {
         return current && current.valueOf() < yesterday;
     }
     imageUploadDom = () => {
-        const width = 100, height = 95, limit = 1024 * 2; 
+        const width = 100, height = 95, limit = 1024 * 2, cropperRatio = 200 / 200; 
         const children = (
             <div>
                 <p className="ant-upload-hint">小程序分享图</p>
-                <p className="ant-upload-hint">图片建议尺寸：1044*842</p>
+                <p className="ant-upload-hint">图片建议尺寸：520*416</p>
                 <p className="ant-upload-hint">支持PNG、JPG格式，大小不超过2M</p>
             </div>
         );
@@ -92,7 +92,7 @@ export default class Editor extends Component {
                 width={width}
                 height={height}
                 limit={limit}
-                // cropperRatio={cropperRatio}
+                cropperRatio={cropperRatio}
                 children={children}
             />
         )
