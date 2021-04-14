@@ -22,15 +22,15 @@ const AVAILABLE_PROMOTIONS = Object.keys(BASIC_PROMOTION_MAP);
 const AVAILABLE_GIFTS = [
     '10', '20', '21', '110', '111', '22',
 ];
+const EXPANDTO500 = ['292428', '253686']
 @injectIntl()
 class PromotionSelectModal extends Component {
-
     state = {
         searchInput: '',
         currentCategory: null,
         selected: this.props.isBatch ? this.props.selected : this.props.selectedPromotions || [],
         shareGroupName: this.props.shareGroupName,
-        limitNum: 100,        //共享限制数量
+        limitNum: EXPANDTO500.includes(this.props.user.getIn(['accountInfo', 'groupID'])) ? 500 : 100,        //共享限制数量
     }
 
 
@@ -54,6 +54,7 @@ class PromotionSelectModal extends Component {
     }
 
     getAllOptions = () => {
+        console.log('groupid', this.props.user.getIn(['accountInfo', 'groupID']))
         const {
             intl,
             isBatch
@@ -358,6 +359,7 @@ function mapStateToProps(state) {
     return {
         allPromotionList: state.sale_promotionDetailInfo_NEW.getIn(['$allPromotionListInfo', 'data', 'promotionTree']),
         allGiftList: state.sale_giftInfoNew.get('allGiftList'), // 所有哗啦啦券列表--共享用
+        user: state.user,
     }
 }
 
