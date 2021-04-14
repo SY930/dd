@@ -33,6 +33,12 @@ export const defaultData = {
         validateStatus: 'success',
         msg: null,
     },
+    // 赠送卡值
+    giveCardValue: {
+        value: {},
+        validateStatus: 'success',
+        msg: null,
+    },
     //赠送红包
     giveRedPacket: {
         isOn: false,
@@ -121,6 +127,12 @@ export const getDefaultGiftData = (typeValue = 0, typePropertyName = 'sendType')
         validateStatus: 'success',
         msg: null,
     },
+    // 赠送卡值
+    giveCardValue: {
+        value: {},
+        validateStatus: 'success',
+        msg: null,
+    },
     //赠送红包
     giveRedPacket: {
         isOn: false,
@@ -174,8 +186,22 @@ export const getDefaultGiftData = (typeValue = 0, typePropertyName = 'sendType')
     [typePropertyName]: typeValue,
 })
 
+
 export const defaultGivePoints = {
     givePointsValue: {
+        value: '',
+        validateStatus: 'success',
+        msg: null,
+    },
+    card: {
+        value: '',
+        validateStatus: 'success',
+        msg: null,
+    }
+}
+
+export const defaultGiveCard = {
+    giveCardValueInp: {
         value: '',
         validateStatus: 'success',
         msg: null,

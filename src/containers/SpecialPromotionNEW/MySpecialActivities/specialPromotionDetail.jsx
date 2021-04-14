@@ -376,6 +376,9 @@ class SpecialPromotionDetail extends React.Component {
                     <Col style={{ marginTop: 10 }} span={18}>
                         {this.renderPointsTable()}
                     </Col>
+                    <Col style={{ marginTop: 10 }} span={18}>
+                        {this.renderCardValueTable()}
+                    </Col>
                     <Col style={{ marginTop: 10 }} span={24}>
                         {this.renderRedPacketsTable()}
                     </Col>
@@ -430,6 +433,9 @@ class SpecialPromotionDetail extends React.Component {
                     </Col>
                     <Col style={{ marginTop: 10 }} span={18}>
                         {this.renderPointsTable()}
+                    </Col>
+                    <Col style={{ marginTop: 10 }} span={18}>
+                    {this.renderCardValueTable()}
                     </Col>
                     {this.renderSearch()}
                     <Col span={24}>
@@ -819,6 +825,43 @@ class SpecialPromotionDetail extends React.Component {
                     })} columns={columnsNew} bordered={true} pagination={false} />
                 </div>
             );
+        }
+        return (
+            <Table dataSource={dataSource} columns={columns} bordered={true} pagination={false} />
+        );
+    }
+    renderCardValueTable () {
+        const columns = [
+            {
+                title: `${this.props.intl.formatMessage(STRING_SPE.dk46m1ib4k18146)}`,
+                dataIndex: 'title',
+                key: 'title',
+                className: 'TableTxtCenter',
+            },
+            {
+                title: '累计赠送卡值',
+                dataIndex: 'sendAmount',
+                key: 'sendAmount',
+                className: 'TableTxtRight',
+                render: data => data || 0,
+            },
+            {
+                title: `${this.props.intl.formatMessage(STRING_SPE.d2b1c6d3681120204)}`,
+                dataIndex: 'sendCount',
+                key: 'sendCount',
+                className: 'TableTxtRight',
+                render: data => data || 0,
+            },
+        ];
+        let dataSource;
+
+        try {
+            dataSource = [{
+                title: '赠送卡值',
+                ...this.props.mySpecialActivities.data.eventInfo.giveBalanceData,
+            }];
+        } catch (e) {
+            dataSource = [];
         }
         return (
             <Table dataSource={dataSource} columns={columns} bordered={true} pagination={false} />

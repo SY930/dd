@@ -15,6 +15,7 @@ class Lottery extends Component {
     state = {
         tabKey: '1',
         cardList: [],
+        cardValueList: [],
     }
     count = 0;
     componentDidMount() {
@@ -34,8 +35,8 @@ class Lottery extends Component {
         const list = [...value];
         const len = value.length;
         const id = `${len + 1}`; // 根据索引生成id，方便回显时遍历
-        list.push({ id, giftOdds: '', presentValue: '', cardTypeID: '',
-            isPoint: false, isTicket: true, presentType: '1', giftList: [{ id: '001', effectType: '1' }],  bagList: [] });
+        list.push({ id, giftOdds: '', presentValue: '', cardTypeID: '', cardValue: '', cardValueTypeID: '',
+            isPoint: false, isTicket: true, isCardVal: false, presentType: '1', giftList: [{ id: '001', effectType: '1' }],  bagList: [] });
         this.setState({ tabKey: id });
         onChange(list);
     }
@@ -50,7 +51,8 @@ class Lottery extends Component {
 
     getCardType() {
         getCardTypeList().then(cardList => {
-            this.setState({ cardList });
+        const cardValueList = (cardList || []).map((item) => ({ ...item, cardValueTypeID: item.cardTypeID}))
+            this.setState({ cardList, cardValueList });
         });
     }
     onAllChange(data){
@@ -74,6 +76,10 @@ class Lottery extends Component {
         const { checked } = target;
         this.onAllChange({ isPoint: checked });
     }
+    onCardChange = ({ target }) => {
+        const { checked } = target;
+        this.onAllChange({ isCardVal: checked });
+    }
     onTicketChange = ({ target }) => {
         const { checked } = target;
         this.onAllChange({ isTicket: checked });
@@ -86,8 +92,15 @@ class Lottery extends Component {
         const { value } = target;
         this.onAllChange({ presentValue: value });
     }
+    onCardValueChange = ({ target }) => {
+        const { value } = target;
+        this.onAllChange({ cardValue: value });
+    }
     onCardTypeIDChange = (cardTypeID) => {
         this.onAllChange({ cardTypeID });
+    }
+    onCardValueTypeIDChange = (cardValueTypeID) => {
+        this.onAllChange({ cardValueTypeID }); 
     }
     onGiftChange = (giftList) => {
         this.onAllChange({ giftList });
@@ -96,7 +109,7 @@ class Lottery extends Component {
         this.onAllChange({ bagList });
     }
     render() {
-        const { tabKey, cardList } = this.state;
+        const { tabKey, cardList, cardValueList } = this.state;
         const { value, decorator } = this.props;
         if(!value[0]){ return null}
         const { length } = value;
@@ -191,6 +204,55 @@ class Lottery extends Component {
                                                                         return (<Option
                                                                                 key={c.cardTypeID}
                                                                                 value={c.cardTypeID}
+                                                                                >
+                                                                                {c.cardTypeName}
+                                                                            </Option>)
+                                                                    })
+                                                                }
+                                                                </Select>
+                                                        )}
+                                                    </FormItem>
+                                                </div>
+                                            }
+                                        </li>
+                                        <li className={css.pointBox}>
+                                            <Checkbox checked={x.isCardVal} onChange={this.onCardChange}>赠送卡值</Checkbox>
+                                            {x.isCardVal &&
+                                                <div style={{ display: 'flex', width: 400 }}>
+                                                    <FormItem label="">
+                                                        {
+                                                            decorator({
+                                                                key: 'cardValue' + i,
+                                                                value: x.cardValue,
+                                                                defaultValue: x.cardValue,
+                                                                rules: [{
+                                                                    required: true,
+                                                                    pattern: /^([1-9]\d{0,4})(\.\d{1,2}){0,1}$/,
+                                                                    message: '请输入1~10000的数字，支持两位小数',
+                                                                }],
+                                                            })(
+                                                                <p style={{ width: 120 }}><Input value={x.cardValue} addonAfter="卡值" onChange={this.onCardValueChange}/></p>
+                                                            )
+                                                        }
+                                                    </FormItem>
+                                                    <FormItem label="充值到会员卡">
+                                                        {
+                                                            decorator({
+                                                                key: 'cardValueTypeID' + i,
+                                                                value: x.cardValueTypeID || '',
+                                                                defaultValue: x.cardValueTypeID || '',
+                                                                rules: [{
+                                                                    required: true,
+                                                                    message: '不能为空',
+                                                                }],
+                                                                onChange: this.onCardValueTypeIDChange,
+                                                            })(
+                                                                <Select style={{ width: 160 }} value={x.cardValueTypeID || ''} onChange={this.onCardValueTypeIDChange}>
+                                                                {
+                                                                    (cardValueList || []).map((c, idx) => {
+                                                                        return (<Option
+                                                                                key={`${c.cardValueTypeID}`}
+                                                                                value={`${c.cardValueTypeID}`}
                                                                                 >
                                                                                 {c.cardTypeName}
                                                                             </Option>)
