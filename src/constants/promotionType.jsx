@@ -42,6 +42,7 @@ export const BASIC_PROMOTION_MAP = {
     '2080': '低价促销',
     '1080': '累计次数赠送',
     '2070': '累计次数减免',
+    '1021': '称重买赠',
 }
 
 // export const GIFT_MAP = {
