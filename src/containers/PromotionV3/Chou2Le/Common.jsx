@@ -109,8 +109,8 @@ const formItemLayout = {
     labelCol: { span: 5 },
     wrapperCol: { span: 17 },
 };
-const lottDefVal = { id: '1', giftOdds: '', presentValue: '', cardTypeID: '',
-isPoint: false, isTicket: true, presentType: '1', giftList: [{ id: '001', effectType: '1' }],  bagList: [] };
+const lottDefVal = { id: '1', giftOdds: '', presentValue: '', cardTypeID: '', cardValue: '', cardValueTypeID: '',
+isPoint: false, isTicket: true, isCardVal: false, presentType: '1', giftList: [{ id: '001', effectType: '1' }],  bagList: [] };
 
 const formItems2 = {
     brandList: {

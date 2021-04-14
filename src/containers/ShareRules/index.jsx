@@ -416,6 +416,7 @@ export default class ShareRules extends Component {
             temp.shareGroupName = temp.shareGroupName || '营销活动共享组' + `${index + 1}`
             return temp
         })
+        console.log('result: ', result);
         return result
     }
 

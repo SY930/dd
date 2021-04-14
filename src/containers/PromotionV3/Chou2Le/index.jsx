@@ -90,7 +90,7 @@ class Chou2Le extends Component {
             const { presentType, giftOdds, sortIndex } = x;
             const index = sortIndex - 1;
             const type = `${presentType}`;  // 组件要string类型的
-            let newItem = { isPoint: false, isTicket: false, presentType: '1', giftList: [],  bagList: [], ...lottery[index] };
+            let newItem = { isPoint: false, isTicket: false, isCardVal: false, presentType: '1', giftList: [],  bagList: [], ...lottery[index] };
             if(presentType === 2) {   // 积分
                 const { presentValue, cardTypeID = '' } = x;
                 newItem = { ...newItem, presentValue, cardTypeID, isPoint: true };
@@ -100,6 +100,10 @@ class Chou2Le extends Component {
                 const { giftID } = x;
                 const bag = list.find(b=>b.couponPackageID === giftID);
                 newItem = { ...newItem, bagList: [bag], isTicket: true, presentType: type };
+            }
+            if (presentType === 5) { // 卡值
+                const { presentValue, cardTypeID = '' } = x;
+                newItem = { ...newItem, cardValue: presentValue, cardValueTypeID: cardTypeID, isCardVal: true }; // 回显数据联调时改为后端回来的数据
             }
             // 礼品
             if(presentType === 1) {
@@ -165,10 +169,10 @@ class Chou2Le extends Component {
             if (!e) {
                 const { lottery } = v;
                 const isChecked = lottery.every(x=>{
-                    return x.isPoint || x.isTicket;
+                    return x.isPoint || x.isTicket || x.isCardVal;
                 });
                 if(!isChecked) {
-                    message.error('赠送积分或优惠券，必选一项');
+                    message.error('赠送积分或优惠券或者赠送卡值，必选一项');
                     return;
                 }
                 const isGift = lottery.every(x=>{
@@ -255,7 +259,7 @@ class Chou2Le extends Component {
         const { lottery, consumeTotalAmount, consumeType, sceneType } = formData;
         const gifts = [];   // 后端要的专属key名
         lottery.forEach((x, i) => {
-            const { giftOdds, isPoint, isTicket, presentType } = x;
+            const { giftOdds, isPoint, isTicket, presentType, isCardVal } = x;
             const sortIndex = i + 1;       // 后端要的排序
             const rawObj =  { sortIndex, giftOdds, presentType };    // 基础数据
             if(isPoint){
@@ -284,6 +288,11 @@ class Chou2Le extends Component {
                         gifts.push(obj);
                     });
                 }
+            }
+            if (isCardVal) {
+                const { cardValue, cardValueTypeID } = x;
+                const obj = { ...rawObj, presentType: '5', presentValue: cardValue, cardTypeID: cardValueTypeID }; // 联调时要改成后端要的数据
+                gifts.push(obj);
             }
         });
         return { consumeTotalAmount, consumeType, sceneType, gifts };
