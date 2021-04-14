@@ -199,7 +199,7 @@ function constructTreeDataContainsFoodCategoryAndFood($foodCategoryListInfo, $fo
 }
 
 
-function constructTreeDataContainsPromotion(data) {
+function constructTreeDataContainsPromotion(data) { // -这里处理基础营销的数据
     const treeDataForPromotionSelectionBoxs = {};
     data.reduce((accumulator, promotion, currentIndex, array) => {
         const key = promotion.get('promotionType');

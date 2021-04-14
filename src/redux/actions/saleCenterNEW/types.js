@@ -541,7 +541,7 @@ export const ACTIVITY_CATEGORIES = (function () {
         },
         {
             idx: 4,
-            title: SALE_LABEL.k67b3vhc,
+            title: SALE_LABEL.k67b3vhc, // 买赠
             color: "#c49b79",
             text: "活动说明：",
             example: (
