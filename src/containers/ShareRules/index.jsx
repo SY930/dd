@@ -129,7 +129,6 @@ export default class ShareRules extends Component {
 
     handleBatchEdit = () => {
         const { batchList } = this.state
-        // debugger
         if (!batchList.length) {
             message.warning('您没有选择任何共享组')
             return
