@@ -22,7 +22,7 @@ const AVAILABLE_PROMOTIONS = Object.keys(BASIC_PROMOTION_MAP);
 const AVAILABLE_GIFTS = [
     '10', '20', '21', '110', '111', '22',
 ];
-const EXPANDTO500 = ['11157','292428', '253686']
+const EXPANDTO500 = ['292428', '253686']
 @injectIntl()
 class PromotionSelectModal extends Component {
     state = {

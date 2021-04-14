@@ -24,7 +24,7 @@ import axios from 'axios';
 
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
-const EXPANDTO500 = ['11157', '292428', '253686']
+const EXPANDTO500 = ['292428', '253686']
 @injectIntl()
 class BatchGroupEditModal extends Component {
     constructor(props) {
