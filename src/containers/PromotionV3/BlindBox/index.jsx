@@ -268,7 +268,7 @@ class BlindBox extends Component {
         const newEventRange = this.formatEventRange(eventRange);
         const step2Data = this.setStep2Data();
         const { gifts,  eventImagePath, ...others3,} = formData3;
-        const newEventImagePath = eventImagePath ? eventImagePath.url : ''
+        const newEventImagePath = eventImagePath ? eventImagePath.url ? eventImagePath.url : eventImagePath : ''
         let event = { ...others1, ...others3, ...newEventRange, ...step2Data, eventWay: '79', eventImagePath: newEventImagePath };
         if(id) {
             const itemID = id;
