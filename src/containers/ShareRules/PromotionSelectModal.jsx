@@ -68,11 +68,12 @@ class PromotionSelectModal extends Component {
         } = this.props;
         let allGiftsArray = []
         let allPromotionArray = []
+        console.log('allPromotionList: ', allPromotionList.toJS());
         if (!isBatch) {
             allGiftsArray = allGiftList ? allGiftList.toJS() : [];
             allPromotionArray = allPromotionList.toJS().map(item => item.promotionName.map(promotion => ({
                 value: promotion.promotionIDStr,
-                label: `${BASIC_PROMOTION_MAP[promotion.promotionType]} - ${promotion.promotionName}`,
+                label: `${BASIC_PROMOTION_MAP[promotion.promotionType]} - ${promotion.promotionCode} - ${promotion.promotionName}`,
                 type: `${promotion.promotionType}`,
                 activityType: '10',
                 activitySource: '1'
@@ -114,7 +115,7 @@ class PromotionSelectModal extends Component {
             allPromotionArray = pList.map((promotion, index) => {
                 return {
                     value: `${promotion.promotionID}`,
-                    label: `${BASIC_PROMOTION_MAP[promotion.promotionType]} - ${promotion.promotionName}`,
+                    label: `${BASIC_PROMOTION_MAP[promotion.promotionType]} - ${promotion.promotionCode} - ${promotion.promotionName}`,
                     type: `${promotion.promotionType}`,
                     activityType: '10',
                     activitySource: '1'
@@ -188,7 +189,7 @@ class PromotionSelectModal extends Component {
                     activityType: '10',
                     activitySource: '1',
                     activityID: `${promotion.promotionID}`,
-                    label: `${BASIC_PROMOTION_MAP[promotion.promotionType]} - ${promotion.promotionName}`,
+                    label: `${BASIC_PROMOTION_MAP[promotion.promotionType]} - ${promotion.promotionCode} - ${promotion.promotionName}`,
                     activitySourceType: `${promotion.promotionType}`,
                 }
             }).filter(item => selected.includes(item.activityID));
