@@ -2236,3 +2236,19 @@
     z-index: 100;
     cursor: not-allowed;
 }
+
+.switcher {
+    height: 14px;
+    width: 28px;
+    // line-height: 12px;
+}
+
+:global {
+    .ant-switch-small.ant-switch-checked .ant-switch-inner {
+        margin-left: 1px !important;
+    }
+    
+    .ant-switch .ant-switch-inner {
+        line-height: 14px !important;
+    }
+}

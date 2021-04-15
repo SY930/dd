@@ -7,7 +7,7 @@ import { COMMON_LABEL } from 'i18n/common';
 import {
     Table, Input, Select, DatePicker,
     Button, Modal, message,
-    Spin, Icon, Alert
+    Spin, Icon, Alert, Switch,
 } from 'antd';
 import {throttle, isEmpty} from 'lodash';
 import { jumpPage, closePage } from '@hualala/platform-base'
@@ -1052,15 +1052,18 @@ class MySpecialActivities extends React.Component {
                         &&
                         (record.status != '0' && record.status != '1' && record.status != '5' && record.status != '21')
                     );
-                    const buttonText = (record.isActive == '1' ? COMMON_LABEL.disable : COMMON_LABEL.enable);
+                    const defaultChecked = (record.isActive == '1' ? false : true); // 禁用 / 开启
                     if(record.eventWay === 80) {
                         return this.renderPayHaveGift(text,index,record)
                     }
                     return (<span>
-                        <a
-                            href="#"
-                            className={(record.isActive == '-1' || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) || record.eventWay === 80 ? styles.textDisabled : null}
-                            onClick={(e) => {
+                        <Switch
+                            size="small"
+                            className={styles.switcher}
+                            checkedChildren={<Icon type="check" />}
+                            unCheckedChildren={<Icon type="close" />}
+                            checked={defaultChecked}
+                            onChange={(e) => {
                                 if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80) {
                                     e.preventDefault();
                                     return;
@@ -1072,8 +1075,8 @@ class MySpecialActivities extends React.Component {
                                 record.isActive == '-1' || statusState ? null :
                                     this.handleDisableClickEvent(text, record, index, null, `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3831197)}`);
                             }}
-                        >
-                            {buttonText}</a>
+                            disabled={(record.isActive == '-1' || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) || record.eventWay === 80 ? true : false}
+                        />
                         <Authority rightCode={SPECIAL_PROMOTION_UPDATE}>
                             <a
                                 href="#"
