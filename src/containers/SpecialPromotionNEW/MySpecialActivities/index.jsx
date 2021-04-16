@@ -239,7 +239,8 @@ class MySpecialActivities extends React.Component {
             giftArr: [],
             allWeChatAccountList: [],
             pushMessageMpID:'',
-            groupID:''
+            groupID:'',
+            channelContent: '',
         };
         this.cfg = {
             eventWay: [
@@ -549,6 +550,19 @@ class MySpecialActivities extends React.Component {
         })
         this.handleCopyUrl(null,mpId);
     }
+
+    handleCheckText = (e) => {
+        let v = e.target.value;
+        if (!!v && v.length > 10) {
+            v = v.slice(0, 10);
+        }
+        this.setState({
+            channelContent: v
+        }, () => {
+            this.handleCopyUrl()
+        })
+    }
+
     // 渲染小程序列表
     renderApp(){
         const { apps = [] } = this.state;
@@ -637,9 +651,10 @@ class MySpecialActivities extends React.Component {
         )
     }
 
+
     // 渲染复制链接modal内容
     renderCopyUrlModal () {
-        const  {urlContent, eventWay, qrCodeImage, xcxLoad} = this.state
+        const  {urlContent, eventWay, qrCodeImage, xcxLoad, channelContent} = this.state
         const hideCTBox = [66,79,82]; // 不显示餐厅
         const hideWXBox = [22]; // 不显示微信
         return(<div className={indexStyles.copyCont}>
@@ -654,7 +669,16 @@ class MySpecialActivities extends React.Component {
                                 <div className={indexStyles.label}>请选择公众号</div>
                                 {this.renderMp()}
                             </div>
-                            
+                            <div className={indexStyles.leftMpConent} >
+                                <div className={indexStyles.label}>请填写投放渠道</div>
+                                <Input
+                                    style={{
+                                        width: '51%', margin: '0 10px'
+                                    }}
+                                    onChange={this.handleCheckText}
+                                    value={channelContent}
+                                />
+                            </div>
 
                             <div className={indexStyles.copyWrapHeader}>
                                 <div className={indexStyles.urlText}>{urlContent}</div>
@@ -1496,7 +1520,7 @@ class MySpecialActivities extends React.Component {
     }
 
     handleCopyUrl = (record,mpId) => {
-        const { pushMessageMpID } = this.state;
+        const { pushMessageMpID, channelContent } = this.state;
         let mpID = mpId ? mpId : pushMessageMpID;
         let eventWayData,groupIdData,itemIdData;
         const testUrl = 'https://dohko.m.hualala.com';
@@ -1517,12 +1541,12 @@ class MySpecialActivities extends React.Component {
             url = preUrl
         }
         const urlMap = {
-            20: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}`,
-            22: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}`,
-            30: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}`,
-            21: url + `/newm/eventFree?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}`,
-            65: url + `/newm/shareFission?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}`,
-            68: url + `/newm/recommendInvite?groupID=${groupIdData}&eventItemID=${itemIdData}&mpID=${mpID}`,
+            20: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&channelContent=${channelContent}`,
+            22: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&channelContent=${channelContent}`,
+            30: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&channelContent=${channelContent}`,
+            21: url + `/newm/eventFree?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&channelContent=${channelContent}`,
+            65: url + `/newm/shareFission?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&channelContent=${channelContent}`,
+            68: url + `/newm/recommendInvite?groupID=${groupIdData}&eventItemID=${itemIdData}&mpID=${mpID}&channelContent=${channelContent}`,
         }
         /*if(actList.includes(String(eventWay))) {
             url = url +    `/newm/eventCont?groupID=${groupID}&eventID=${itemID}`
