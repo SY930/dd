@@ -176,7 +176,6 @@ class EditBoxForPromotion extends React.Component {
         const ProDetail = nextProps.myActivities.toJS().$promotionDetailInfo.data;
         const filterFlag = nextProps.user.shopID > 0 && (!ProDetail || ProDetail.promotionInfo.master.maintenanceLevel == '1');
         if (this.props.giftInfoNew.get('dataSource') != nextProps.giftInfoNew.get('dataSource')) {
-            // debugger
             const crmGiftList = nextProps.giftInfoNew.toJS().dataSource.crmGiftList ? nextProps.giftInfoNew.toJS().dataSource.crmGiftList : [];
             // let { vouchersData, couponsData} = this.state;
             let vouchersData = [],

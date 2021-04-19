@@ -28,8 +28,8 @@ class Step2 extends Component {
     };
     componentDidMount() {
         const { getPromotionShopSchema, groupID } = this.props;
-        getPromotionShopSchema({groupID })
-        this.onGetQrImg({ mpID: '', imgID: '', item: defaultImgTxt, shops: [] })    
+        getPromotionShopSchema({ groupID })
+        this.onGetQrImg({ mpID: '', imgID: '', item: defaultImgTxt, shops: [] })
     }
     componentWillReceiveProps(nextProps) {
         // console.log('before', this.props.downLoadFlag, 'next', nextProps.downLoadFlag)
@@ -54,7 +54,7 @@ class Step2 extends Component {
             } else {
                 message.warning(err);
             }
-        } catch(e) {
+        } catch (e) {
             message.warning(err);
         }
     }
@@ -64,6 +64,10 @@ class Step2 extends Component {
     }
     onAccountChange = (mpID) => {
         const { imgID, item, shopInfo } = this.state;
+        const {
+            onSetMpID,
+        } = this.props
+        onSetMpID(mpID)
         this.onGetQrImg({ mpID, imgID, item, shops: shopInfo })
         this.setState({
             mpID,
@@ -71,63 +75,65 @@ class Step2 extends Component {
         });
     }
     onGetQrImg({ mpID, imgID, item, shops }) {
-        const { groupID, url, firstImg, downLoadLoadingChange } = this.props;
-        let { count, type } = this.state
-        if (type === 2 && !mpID) {
-            return
-        }
-        this.setState({
-            count: count + 1,
-        }, () => {
-            // console.log('count', this.state.count)
-            downLoadLoadingChange(true)
-            if (type === 1) {
-                // 当为普通二维码
-                // if (!shops.length) {
-                //     this.setState({ url2: [] });
-                //     return;
-                // }
+        setTimeout(() => {
+            const { groupID, url, firstImg, downLoadLoadingChange } = this.props;
+            let { count, type } = this.state
+            if (type === 2 && !mpID) {
+                return
+            }
+            this.setState({
+                count: count + 1,
+            }, () => {
+                // console.log('count', this.state.count)
+                downLoadLoadingChange(true)
+                if (type === 1) {
+                    // 当为普通二维码
+                    // if (!shops.length) {
+                    //     this.setState({ url2: [] });
+                    //     return;
+                    // }
+                    const temp = {
+                        shops,
+                        groupID,
+                        qrcodeType: 1,
+                        messageUrl: url,
+                        width: 500,
+                        height: 500,
+                    }
+                    this.getQrCode(temp)
+                    return
+                }
+                const newItem = item
+                if (!imgID) {
+                    let { count } = this.state
+                    this.setState({
+                        count: count - 1,
+                    })
+                    downLoadLoadingChange(false)
+                    return
+                    // newItem = { ...defaultImgTxt, imgPath: firstImg };
+                    // this.setState({ item: newItem });
+                }
+                const { imgPath, digest: description, resTitle: title } = newItem;
+                const expireTime = 60 * 24 * 30;
+                const imageUrl = imgURI + imgPath;
                 const temp = {
-                    shops,
                     groupID,
-                    qrcodeType: 1,
+                    mpID,
+                    expireTime,
                     messageUrl: url,
+                    imageUrl,
+                    description,
+                    title,
+                    shops,
+                    qrcodeType: 2,
                     width: 500,
                     height: 500,
+                    resourceID: imgID,
                 }
                 this.getQrCode(temp)
-                return
-            }
-            const newItem = item
-            if (!imgID) {
-                let { count } = this.state
-                this.setState({
-                    count: count - 1,
-                })
-                downLoadLoadingChange(false)
-                return
-                // newItem = { ...defaultImgTxt, imgPath: firstImg };
-                // this.setState({ item: newItem });
-            }
-            const { imgPath, digest: description, resTitle: title } = newItem;
-            const expireTime = 60 * 24 * 30;
-            const imageUrl = imgURI + imgPath;
-            const temp = {
-                groupID,
-                mpID,
-                expireTime,
-                messageUrl: url,
-                imageUrl,
-                description,
-                title,
-                shops,
-                qrcodeType: 2,
-                width: 500,
-                height: 500,
-                resourceID: imgID,
-            }
-            this.getQrCode(temp)  
-        })
+            })
+        }, 500)
     }
     onImgTxtChange = (imgID) => {
         const { mpID, item, shopInfo } = this.state;
@@ -176,6 +182,14 @@ class Step2 extends Component {
             type: e.target.value,
         })
         const { mpID, item, shopInfo, imgID } = this.state;
+        const {
+            onSetMpID,
+        } = this.props
+        if (e.target.value == 1) {
+            onSetMpID('')
+        } else {
+            onSetMpID(mpID)
+        }
         this.onGetQrImg({ mpID, imgID, item, shops: shopInfo })
     }
 
@@ -200,7 +214,7 @@ class Step2 extends Component {
         const { type, mpID, imgID } = this.state
         if (type == 1) {
             return true
-        } 
+        }
         if (mpID && imgID) {
             return true
         }
@@ -212,7 +226,7 @@ class Step2 extends Component {
         if (!imgID) {
             this.setState({
                 imgError: true,
-            }) 
+            })
         }
     }
 
@@ -220,7 +234,7 @@ class Step2 extends Component {
         const shopData = this.props.shopSchema.toJS().shopSchema || {}
         const temp = []
         values.forEach((item) => {
-            let shopName = shopData.shops&& shopData.shops.filter((every) => {
+            let shopName = shopData.shops && shopData.shops.filter((every) => {
                 return every.shopID == item
             })[0].shopName
             temp.push({
@@ -253,7 +267,7 @@ class Step2 extends Component {
             shopData.shops = temp
             return shopData
         }
-        return []     
+        return []
     }
     render() {
         const { mpID, imgID, item, url2, type, shops, mpError, imgError, zip } = this.state;

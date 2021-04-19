@@ -1,8 +1,10 @@
 import React, { PureComponent as Component } from 'react';
 import { Modal, Button, Steps, message } from 'antd';
 import styles from './index.less';
-import { getTicketList, getWechatMpInfo, getImgTextList,
-    getBagBatch } from '../AxiosFactory';
+import {
+    getTicketList, getWechatMpInfo, getImgTextList,
+    getBagBatch
+} from '../AxiosFactory';
 import { couponImage } from '../Common';
 import style from 'components/basic/ProgressBar/ProgressBar.less';
 import Step1 from './Step1';
@@ -55,6 +57,27 @@ class Release extends Component {
             this.setState({ imgList });
         });
     }
+    onSetMpID = (value) => {
+        let {
+            url,
+        } = this.state
+        if (value) {
+            if (url.includes('mpID')) {
+                url = url.split('&mpID=')[0]
+            }
+            url = url + '&mpID=' + value
+            this.setState({
+                url,
+            })
+            return
+        }
+        if (url.includes('mpID')) {
+            url = url.split('&mpID=')[0]
+            this.setState({
+                url,
+            })
+        }
+    }
     // eslint-disable-next-line react/sort-comp
     downLoadLoadingChange = (flag) => {
         this.setState({
@@ -67,11 +90,11 @@ class Release extends Component {
     onQueryList = (params) => {
         const { queryParams, tempList: temp } = this.state;
         const { groupID } = this.props;
-        const sellBeginTime = new Date().toJSON().substr(0,10).replace(/-/g,'');
+        const sellBeginTime = new Date().toJSON().substr(0, 10).replace(/-/g, '');
         const sellEndTime = sellBeginTime;
         // 查询请求需要的参数
         // 第一次查询params会是null，其他查询条件默认是可为空的。
-        const data = { ...queryParams, ...params, couponPackageType: '1',sellEndTime};
+        const data = { ...queryParams, ...params, couponPackageType: '1', sellEndTime };
         // 把查询需要的参数缓存
         this.setState({ queryParams: data, loading: true });
         getTicketList({ groupID, ...data }).then((obj) => {
@@ -95,22 +118,22 @@ class Release extends Component {
                         })
                         if (!temp.length) {
                             throw new Error('it has no range')
-                        }   
+                        }
                     }
                     if (!temp.length) {
                         temp = cross
                     }
                 }
             })
-        } catch(e) {
+        } catch (e) {
             return false
         }
-       
+
         return temp
     }
     onGoStep2 = () => {
         const { selectedRowKeys } = this.state;
-        if(!selectedRowKeys[0]){
+        if (!selectedRowKeys[0]) {
             message.warning('必选一项券包');
             return;
         }
@@ -157,8 +180,8 @@ class Release extends Component {
     onSelectChange = (selectedRowKeys) => {
         const { tempList } = this.state;
         let firstImg = couponImage;
-        if(selectedRowKeys[0]){
-            const obj = tempList.find(x=>x.couponPackageID === selectedRowKeys[0]);
+        if (selectedRowKeys[0]) {
+            const obj = tempList.find(x => x.couponPackageID === selectedRowKeys[0]);
             firstImg = obj.couponPackageImage || couponImage;
         }
         this.setState({ selectedRowKeys, firstImg });
@@ -168,10 +191,10 @@ class Release extends Component {
             item.businessType = BUSINESS_MODEL[item.businessModel];
         });
         data.businessModels = [
-            {businessModel: '1', businessType: '直营 '},
-            {businessModel: '2', businessType: '加盟 '},
-            {businessModel: '3', businessType: '托管'},
-            {businessModel: '4', businessType: '合作'},
+            { businessModel: '1', businessType: '直营 ' },
+            { businessModel: '2', businessType: '加盟 ' },
+            { businessModel: '3', businessType: '托管' },
+            { businessModel: '4', businessType: '合作' },
         ]
         return data
     }
@@ -230,6 +253,7 @@ class Release extends Component {
                             downLoadFlag={downLoadFlag}
                             cancelDownLoad={this.cancelDownLoad}
                             shopsInfo={this.state.shopsInfo}
+                            onSetMpID={this.onSetMpID}
                             downLoadLoadingChange={this.downLoadLoadingChange}
                         />
                     }
