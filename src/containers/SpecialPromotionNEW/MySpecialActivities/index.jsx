@@ -241,6 +241,7 @@ class MySpecialActivities extends React.Component {
             pushMessageMpID:'',
             groupID:'',
             channelContent: '',
+            channelOptions: _.range(0, 10).map(item => ({ label: `渠道${item + 1}`, value: `${item}` })),
         };
         this.cfg = {
             eventWay: [
@@ -551,13 +552,10 @@ class MySpecialActivities extends React.Component {
         this.handleCopyUrl(null,mpId);
     }
 
-    handleCheckText = (e) => {
-        let v = e.target.value;
-        if (!!v && v.length > 10) {
-            v = v.slice(0, 10);
-        }
+    handleCheckText = (value) => {
+        let v = Number(value);
         this.setState({
-            channelContent: v
+            channelContent: v + 1,
         }, () => {
             this.handleCopyUrl()
         })
@@ -568,8 +566,8 @@ class MySpecialActivities extends React.Component {
         const { apps = [] } = this.state;
         return(
             <Select style={{ width: '40%', margin: '0 10px'}} onChange={this.handleAppChange}>
-                {apps.map(x=>{
-                    return <Option value={x.appID} >{x.nickName || '缺失nickName子段'}</Option>
+                {apps.map((x, index)=>{
+                    return <Option key={index} value={x.appID} >{x.nickName || '缺失nickName子段'}</Option>
                 })}
             </Select>
         )
@@ -651,6 +649,24 @@ class MySpecialActivities extends React.Component {
         )
     }
 
+    renderChannels() {
+        const { channelOptions } = this.state;
+        return (
+            <Select
+                placeholder="请填写投放渠道"
+                style={{
+                    width: '51%', margin: '0 10px'
+                }}
+                onChange={this.handleCheckText}
+            >
+                {
+                    channelOptions.map(({ value, label }) => <Option key={value} value={value} label={label}>{label}</Option>)
+                }
+
+            </Select>
+        )
+
+    }
 
     // 渲染复制链接modal内容
     renderCopyUrlModal () {
@@ -671,13 +687,14 @@ class MySpecialActivities extends React.Component {
                             </div>
                             <div className={indexStyles.leftMpConent} >
                                 <div className={indexStyles.label}>请填写投放渠道</div>
-                                <Input
+                                {this.renderChannels()}
+                                {/* <Input
                                     style={{
                                         width: '51%', margin: '0 10px'
                                     }}
                                     onChange={this.handleCheckText}
                                     value={channelContent}
-                                />
+                                /> */}
                             </div>
 
                             <div className={indexStyles.copyWrapHeader}>
