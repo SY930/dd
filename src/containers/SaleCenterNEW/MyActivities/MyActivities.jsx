@@ -21,7 +21,7 @@ import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { throttle } from 'lodash'
 import { jumpPage } from '@hualala/platform-base'
 import registerPage from '../../../index';
-import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
+import { Iconlist } from "../../../components/basic/IconsFont/IconsFont";
 import {
     SALE_CENTER_PAGE,
     ONLINE_PROMOTION_MANAGEMENT_GROUP,
@@ -80,7 +80,7 @@ import { saleCenter_NEW as sale_saleCenter_NEW } from '../../../redux/reducer/sa
 import { promotionAutoRunState as sale_promotionAutoRunState } from '../../../redux/reducer/saleCenterNEW/promotionAutoRun.reducer';
 import { giftInfoNew as sale_giftInfoNew } from '../../GiftNew/_reducers';
 import { mySpecialActivities_NEW as sale_mySpecialActivities_NEW } from '../../../redux/reducer/saleCenterNEW/mySpecialActivities.reducer';
-import {axiosData, getAccountInfo} from "../../../helpers/util";
+import { axiosData, getAccountInfo } from "../../../helpers/util";
 import PromotionAutoRunModal from "./PromotionAutoRunModal";
 import ExportModal from "../../GiftNew/GiftInfo/ExportModal";
 import {
@@ -97,9 +97,9 @@ import {
 } from "../../../constants/projectHuatianConf";
 import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
 import { ONLINE_PROMOTION_TYPES } from '../../../constants/promotionType';
-import { selectPromotionForDecoration  } from '../../../redux/actions/decoration';
+import { selectPromotionForDecoration } from '../../../redux/actions/decoration';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
-import {injectIntl} from '../IntlDecor';
+import { injectIntl } from '../IntlDecor';
 
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
@@ -210,7 +210,7 @@ class MyActivities extends React.Component {
         this.nameSearchRef = null;
         this.setTableRef = el => this.tableRef = el;
         this.setNameSearchRef = el => this.nameSearchRef = el;
-        this.lockedChangeSortOrder = throttle(this.changeSortOrder, 500, {trailing: false});
+        this.lockedChangeSortOrder = throttle(this.changeSortOrder, 500, { trailing: false });
         this.state = {
             dataSource: [],
             advancedQuery: true,
@@ -224,6 +224,7 @@ class MyActivities extends React.Component {
             valid: '0',
             modalTitle: '更新活动信息',
             isNew: false,
+            isCopy: false,
             selectedShop: null,
             loading: true,
             // 以下是用于查询的条件
@@ -282,8 +283,8 @@ class MyActivities extends React.Component {
             _groupID: this.props.user.accountInfo.groupID,
         });
         // 授权
-        this.props.getAuthLicenseData({productCode: 'HLL_CRM_Marketingbox'}).then((res) => {
-            this.setState({authLicenseData: res})
+        this.props.getAuthLicenseData({ productCode: 'HLL_CRM_Marketingbox' }).then((res) => {
+            this.setState({ authLicenseData: res })
         });
         this.onWindowResize();
         window.addEventListener('resize', this.onWindowResize);
@@ -332,20 +333,20 @@ class MyActivities extends React.Component {
             id: promotionIDStr,
             title: promotionName,
         });
-        jumpPage({menuID: PROMOTION_DECORATION})
+        jumpPage({ menuID: PROMOTION_DECORATION })
     }
 
     confirmDelete = (record) => {
         confirm({
-        title: <span style={{color: '#434343'}}>{SALE_LABEL.k5dnw1q3}</span>,
+            title: <span style={{ color: '#434343' }}>{SALE_LABEL.k5dnw1q3}</span>,
             content: (
                 <div>
-                    <span style={{color: '#787878'}}>
+                    <span style={{ color: '#787878' }}>
                         {SALE_LABEL.k5do6vse}{`【${record.promotionName ? record.promotionName.length > 20 ? record.promotionName.substring(0, 20) + '...' : record.promotionName : ''}】`}
                     </span>
-                    <br/>
-                    <span style={{color: '#aeaeae'}}>
-                       {SALE_LABEL.k5do4z54}
+                    <br />
+                    <span style={{ color: '#aeaeae' }}>
+                        {SALE_LABEL.k5do4z54}
                     </span>
                 </div>
             ),
@@ -361,15 +362,15 @@ class MyActivities extends React.Component {
                     '/promotion/docPromotionService_setActive.ajax',
                     params,
                     {},
-                    {path: 'data'},
+                    { path: 'data' },
                     'HTTP_SERVICE_URL_PROMOTION_NEW'
                 ).then(() => {
                     message.success(SALE_LABEL.k5do0ps6);
                     this.tryToRefresh();
                     this.tryToUpdateNameList();
-                }).catch((error) => {});
+                }).catch((error) => { });
             },
-            onCancel() {},
+            onCancel() { },
         });
     }
 
@@ -390,6 +391,7 @@ class MyActivities extends React.Component {
     handleDismissUpdateModal() {
         this.setState({
             updateModalVisible: false,
+            isCopy: false,
         }, () => {
             this.props.saleCenterResetBasicInfo();
             this.props.saleCenterResetScopeInfo();
@@ -584,8 +586,8 @@ class MyActivities extends React.Component {
     }
 
     changeSortOrder(record, direction) {
-        const params = {promotionID: record.promotionIDStr, rankingType: direction};
-        axiosData('/promotion/docPromotionService_updateRanking.ajax', params, {needThrow: true}, {path: undefined}, 'HTTP_SERVICE_URL_PROMOTION_NEW').then(() => {
+        const params = { promotionID: record.promotionIDStr, rankingType: direction };
+        axiosData('/promotion/docPromotionService_updateRanking.ajax', params, { needThrow: true }, { path: undefined }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then(() => {
             this.tryToRefresh()
         }).catch(err => {
             message.warning(err || SALE_LABEL.k5doax7i);
@@ -655,12 +657,12 @@ class MyActivities extends React.Component {
         this.props.saleCenterResetBasicInfo(promotionBasicDataAdapter(responseJSON.promotionInfo, _serverToRedux));
         this.props.saleCenterResetScopeInfo(promotionScopeInfoAdapter(responseJSON.promotionInfo.master, _serverToRedux));
         this.props.saleCenterResetDetailInfo(promotionDetailInfoAdapter(responseJSON.promotionInfo, _serverToRedux));
-
         this.setState({
             promotionInfo: responseJSON.promotionInfo,
             selectedRecord: responseJSON.promotionInfo, // arguments[1],
             modalTitle: SALE_LABEL.k5dohc0d,
             isNew: false,
+            // isCopy: false,
             index: _promotionIdx,
         });
     };
@@ -671,14 +673,16 @@ class MyActivities extends React.Component {
 
     handleUpdateOpe() {
         const _record = arguments[1];
-        if ( _record && _record.maintenanceLevel !== '1') { // 集团
+        if (_record && _record.maintenanceLevel !== '1') { // 集团
             this.props.fetchFoodCategoryInfo({
-                _groupID: this.props.user.accountInfo.groupID },
+                _groupID: this.props.user.accountInfo.groupID
+            },
                 isHuaTian(),
                 _record.subGroupID
             );
             this.props.fetchFoodMenuInfo({
-                _groupID: this.props.user.accountInfo.groupID },
+                _groupID: this.props.user.accountInfo.groupID
+            },
                 isHuaTian(),
                 _record.subGroupID
             );
@@ -691,7 +695,7 @@ class MyActivities extends React.Component {
             success: this.successFn,
             fail: this.failFn,
         });
-        if (_record ) {
+        if (_record) {
             this.setState({
                 updateModalVisible: true,
                 editPromotionType: _record.promotionType,
@@ -725,6 +729,7 @@ class MyActivities extends React.Component {
     renderContentOfThisModal() {
         const promotionDetailInfo = this.props.myActivities.get('$promotionDetailInfo').toJS();
         const _state = this.state;
+        console.log('this is the layer one', _state.isCopy)
         if (promotionDetailInfo.status === 'start' || promotionDetailInfo.status === 'pending') {
             return (
                 <div className={styles.spinFather}>
@@ -735,7 +740,7 @@ class MyActivities extends React.Component {
         if (promotionDetailInfo.status === 'timeout' || promotionDetailInfo.status === 'fail') {
             return (
                 <div className={styles.spinFather}>
-                {SALE_LABEL.k5doax7i} <a onClick={this.handleUpdateOpe}>{COMMON_LABEL.retry}</a>
+                    {SALE_LABEL.k5doax7i} <a onClick={this.handleUpdateOpe}>{COMMON_LABEL.retry}</a>
                 </div>
             );
         }
@@ -743,11 +748,13 @@ class MyActivities extends React.Component {
         if (promotionDetailInfo.status === 'success') {
             return (<ActivityMain
                 isNew={_state.isNew}
+                isCopy={_state.isCopy}
                 index={_state.index}
                 steps={_state.steps}
                 callbackthree={(arg) => {
                     if (arg == 3) {
                         this.setState({
+                            isCopy: false,
                             updateModalVisible: false,
                         });
                         this.tryToRefresh();
@@ -783,7 +790,7 @@ class MyActivities extends React.Component {
             intl,
         } = this.props;
         return (
-            <div className="layoutsTool" style={{height: '64px'}}>
+            <div className="layoutsTool" style={{ height: '64px' }}>
                 <div className={headerClasses}>
                     <span className={styles.customHeader}>
                         {this.isOnlinePromotionPage() ? SALE_LABEL.k5dbdped : SALE_LABEL.k5dbefat}
@@ -917,7 +924,7 @@ class MyActivities extends React.Component {
 
                         <li>
                             <Authority rightCode={BASIC_PROMOTION_QUERY}>
-                                <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}><Icon type="search" />{ COMMON_LABEL.query }</Button>
+                                <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}><Icon type="search" />{COMMON_LABEL.query}</Button>
                             </Authority>
                         </li>
                         <li>
@@ -930,7 +937,7 @@ class MyActivities extends React.Component {
                                         <Button
                                             type="ghost"
                                             onClick={() => this.setState({ exportVisible: true })}
-                                        ><Icon type="export" />{ COMMON_LABEL.export }</Button>
+                                        ><Icon type="export" />{COMMON_LABEL.export}</Button>
                                     </Authority>
                                 </li>
                             )
@@ -992,9 +999,9 @@ class MyActivities extends React.Component {
                                 }}
                             >
                                 <Option key="0" value={'0'}>{k5eng042}</Option>
-                            <Option key="1" value={'1'}>{k5dlp2gl}</Option>
-                            <Option key="2" value={'2'}>{k5dlp7zc}</Option>
-                            <Option key="3" value={'3'}>{k5dlpczr}</Option>
+                                <Option key="1" value={'1'}>{k5dlp2gl}</Option>
+                                <Option key="2" value={'2'}>{k5dlp7zc}</Option>
+                                <Option key="3" value={'3'}>{k5dlpczr}</Option>
                             </Select>
                         </li>
 
@@ -1186,7 +1193,7 @@ class MyActivities extends React.Component {
                                         this.handleUpdateOpe(text, record, index);
                                     }}
                                 >
-                                    { COMMON_LABEL.view }
+                                    {COMMON_LABEL.view}
                                 </a>
                             </Authority>
                             {
@@ -1199,7 +1206,7 @@ class MyActivities extends React.Component {
                                                 this.props.toggleIsUpdate(true)
                                                 this.handleUpdateOpe(text, record, index);
                                             }}
-                                        >{ COMMON_LABEL.edit }</a>
+                                        >{COMMON_LABEL.edit}</a>
                                     </Authority>
                                 )
                             }
@@ -1211,9 +1218,23 @@ class MyActivities extends React.Component {
                                     onClick={() => {
                                         this.confirmDelete(record)
                                     }}
-                                >{ COMMON_LABEL.delete }</a>
+                                >{COMMON_LABEL.delete}</a>
                             </Authority>
-                    </span>
+                            <Authority rightCode={BASIC_PROMOTION_UPDATE}>
+                                <a
+                                    href="#"
+                                    disabled={!isGroupPro || record.status != 3}
+                                    onClick={() => {
+                                        this.props.toggleIsUpdate(true)
+                                        this.setState({
+                                            isCopy:true,
+                                            modalTitle:'复制活动信息'
+                                        })
+                                        this.handleUpdateOpe(text, record, index);
+                                    }}
+                                >复制</a>
+                            </Authority>
+                        </span>
 
                     );
                 },
@@ -1228,10 +1249,10 @@ class MyActivities extends React.Component {
                     const canNotSortDown = (this.state.pageNo - 1) * this.state.pageSizes + index + 1 == this.state.total;
                     return (
                         <span>
-                            <span><Iconlist title={k5eng7pt} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'TOP')}/></span>
-                            <span><Iconlist title={k5engk5b} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'UP')}/></span>
-                            <span className={styles.upsideDown}><Iconlist title={k5engpht} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'DOWN')}/></span>
-                            <span className={styles.upsideDown}><Iconlist title={k5engebq} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'BOTTOM')}/></span>
+                            <span><Iconlist title={k5eng7pt} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'TOP')} /></span>
+                            <span><Iconlist title={k5engk5b} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'UP')} /></span>
+                            <span className={styles.upsideDown}><Iconlist title={k5engpht} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'DOWN')} /></span>
+                            <span className={styles.upsideDown}><Iconlist title={k5engebq} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'BOTTOM')} /></span>
                         </span>
                     )
                 },
@@ -1283,7 +1304,6 @@ class MyActivities extends React.Component {
                     return `${validDate.start} - ${validDate.end}`;
                 },
             },
-
             {
                 title: SALE_LABEL.k5dli0fu,
                 dataIndex: 'status',
@@ -1332,7 +1352,7 @@ class MyActivities extends React.Component {
             },
         ];
         return (
-            <div className={`layoutsContent ${styles.tableClass}`} style={{ height: this.state.contentHeight}}>
+            <div className={`layoutsContent ${styles.tableClass}`} style={{ height: this.state.contentHeight }}>
                 <Table
                     ref={this.setTableRef}
                     scroll={{ x: 1630, y: this.state.contentHeight - 93 }}
@@ -1370,30 +1390,30 @@ class MyActivities extends React.Component {
 
     render() {
         return (
-        <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
-            <div>
-                {this.renderHeader()}
-            </div>
-            <PromotionCalendarBanner />
-            <div>
-                <div className={styles.pageContentWrapper}>
-                    <div style={{ padding: '0'}} className="layoutsHeader">
-                        {this.renderFilterBar()}
-                        <div style={{ margin: '0'}} className="layoutsLine"></div>
-                    </div>
-                    {this.renderTables()}
+            <div style={{ backgroundColor: '#F3F3F3' }} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
+                <div>
+                    {this.renderHeader()}
                 </div>
+                <PromotionCalendarBanner />
+                <div>
+                    <div className={styles.pageContentWrapper}>
+                        <div style={{ padding: '0' }} className="layoutsHeader">
+                            {this.renderFilterBar()}
+                            <div style={{ margin: '0' }} className="layoutsLine"></div>
+                        </div>
+                        {this.renderTables()}
+                    </div>
+                </div>
+                {this.renderModifyRecordInfoModal()}
+                <PromotionAutoRunModal />
+                {
+                    !this.state.exportVisible ? null :
+                        <ExportModal
+                            basicPromotion
+                            handleClose={() => this.setState({ exportVisible: false })}
+                        />
+                }
             </div>
-            {this.renderModifyRecordInfoModal()}
-            <PromotionAutoRunModal/>
-            {
-                !this.state.exportVisible ? null :
-                    <ExportModal
-                        basicPromotion
-                        handleClose={() => this.setState({ exportVisible: false })}
-                    />
-            }
-        </div>
         );
     }
 }

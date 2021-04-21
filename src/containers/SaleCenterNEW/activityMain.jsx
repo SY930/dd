@@ -216,6 +216,7 @@ class ActivityMain extends React.Component {
                 child: SpecialDetailInfo,
             },
         ]
+        console.log('this is the layer 2', this.props.isCopy)
         const pages = pagesArr.map((promotion, index) => {
             return React.createElement(promotion.wrapper, {
                 callbacktwo: (arg) => {
@@ -226,6 +227,7 @@ class ActivityMain extends React.Component {
                 },
                 key: index,
                 isNew: this.props.isNew,
+                isCopy: this.props.isCopy,
                 component: promotion.child,
                 isOnline: this.isOnline(),
             });

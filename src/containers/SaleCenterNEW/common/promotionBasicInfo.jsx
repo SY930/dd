@@ -407,7 +407,7 @@ class PromotionBasicInfo extends React.Component {
             finish: undefined,
             cancel: undefined,
         });
-        const { promotionBasicInfo, fetchPromotionCategories, fetchPromotionTags } = this.props;
+        const { promotionBasicInfo, fetchPromotionCategories, fetchPromotionTags, isCopy } = this.props;
         document.addEventListener('click', this.onFakeDatePickerBlur)
         fetchPromotionCategories({
             groupID: this.props.user.accountInfo.groupID,
@@ -453,10 +453,10 @@ class PromotionBasicInfo extends React.Component {
             name: promotionBasicInfo.getIn(['$basicInfo', 'name']),
             category: promotionBasicInfo.getIn(['$basicInfo', 'category']),
             showName: promotionBasicInfo.getIn(['$basicInfo', 'showName']),
-            code: promotionBasicInfo.getIn(['$basicInfo', 'code']),
+            code: isCopy ? undefined : promotionBasicInfo.getIn(['$basicInfo', 'code']),
             tags: Immutable.List.isList(promotionBasicInfo.getIn(['$basicInfo', 'tags'])) ? promotionBasicInfo.getIn(['$basicInfo', 'tags']).toJS() : [],
             description: promotionBasicInfo.getIn(['$basicInfo', 'description']),
-            dateRange: [promotionBasicInfo.getIn(['$basicInfo', 'startDate']), promotionBasicInfo.getIn(['$basicInfo', 'endDate'])],
+            dateRange: isCopy ? Array(2) : [promotionBasicInfo.getIn(['$basicInfo', 'startDate']), promotionBasicInfo.getIn(['$basicInfo', 'endDate'])],
             validCycleType: promotionBasicInfo.getIn(['$basicInfo', 'validCycleType']),
             timeRangeInfo: Immutable.List.isList(promotionBasicInfo.getIn(['$basicInfo', 'timeRangeInfo'])) ? promotionBasicInfo.getIn(['$basicInfo', 'timeRangeInfo']).toJS() : [{
                 validationStatus: 'success',
@@ -483,6 +483,9 @@ class PromotionBasicInfo extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         // 是否更新
+        const {
+            isCopy
+        } = nextProps
         if (this.props.promotionBasicInfo.getIn(['$basicInfo']) !== nextProps.promotionBasicInfo.getIn(['$basicInfo'])) {
             const _promotionBasicInfo = nextProps.promotionBasicInfo;
             const basicInfo = _promotionBasicInfo.getIn(['$basicInfo']).toJS();
@@ -491,10 +494,10 @@ class PromotionBasicInfo extends React.Component {
                 name: _promotionBasicInfo.getIn(['$basicInfo', 'name']),
                 category: _promotionBasicInfo.getIn(['$basicInfo', 'category']),
                 showName: _promotionBasicInfo.getIn(['$basicInfo', 'showName']),
-                code: _promotionBasicInfo.getIn(['$basicInfo', 'code']),
+                code: isCopy ? undefined : _promotionBasicInfo.getIn(['$basicInfo', 'code']),
                 tags: Immutable.List.isList(_promotionBasicInfo.getIn(['$basicInfo', 'tags'])) ? _promotionBasicInfo.getIn(['$basicInfo', 'tags']).toJS() : [],
                 description: _promotionBasicInfo.getIn(['$basicInfo', 'description']),
-                dateRange: [_promotionBasicInfo.getIn(['$basicInfo', 'startDate']), _promotionBasicInfo.getIn(['$basicInfo', 'endDate'])],
+                dateRange: isCopy ? Array(2) : [_promotionBasicInfo.getIn(['$basicInfo', 'startDate']), _promotionBasicInfo.getIn(['$basicInfo', 'endDate'])],
                 validCycleType: _promotionBasicInfo.getIn(['$basicInfo', 'validCycleType']),
                 timeRangeInfo: Immutable.List.isList(_promotionBasicInfo.getIn(['$basicInfo', 'timeRangeInfo'])) ? _promotionBasicInfo.getIn(['$basicInfo', 'timeRangeInfo']).toJS() : [{
                     validationStatus: 'success',
@@ -1014,8 +1017,8 @@ class PromotionBasicInfo extends React.Component {
             labelCol: { span: 4 },
             wrapperCol: { span: 17 },
         };
-        const { promotionBasicInfo } = this.props;
-
+        const { promotionBasicInfo, isCopy } = this.props;
+        console.log('isCopy', isCopy)
         const tagList = {
             placeholder: '',
             tags: true,
@@ -1120,7 +1123,6 @@ class PromotionBasicInfo extends React.Component {
                         <Input placeholder="" onChange={this.handleShowNameChange} />
                         )}
                 </FormItem>
-
                 <FormItem label={SALE_LABEL.k5dmmiar} className={styles.FormItemStyle} {...formItemLayout}>
                     {getFieldDecorator('promotionCode', {
                         rules: [{
@@ -1130,9 +1132,8 @@ class PromotionBasicInfo extends React.Component {
                             pattern: /^[A-Za-z0-9]{1,20}$/,
                         }],
                         initialValue: this.state.code,
-
                     })(
-                        <Input placeholder="" disabled={!this.props.isNew} onChange={this.handleCodeChange} />
+                        <Input placeholder="" disabled={!this.props.isNew && !isCopy} onChange={this.handleCodeChange} />
                         )}
                 </FormItem>
 
