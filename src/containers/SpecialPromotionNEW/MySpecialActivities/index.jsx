@@ -504,7 +504,7 @@ class MySpecialActivities extends React.Component {
         */
          const pageMap = {
              '30':{page: 'pages/subOr/voucherCenter/redeemDetail/main', scene : `eventID=${qrItemID}`},
-             '20':{page: 'pages/web/common/main', scene : `eventID=${qrItemID}`},
+             '20':{page: 'pages/web/common/main', scene : `url=mpweb/promotion/lottery?eventID=${qrItemID}`},
              '21':{page: 'pages/subOr/voucherCenter/voucherDetail/main', scene : `eventID=${qrItemID}`},
              '79':{page: 'pages/promotion/blindBox/index', scene : `eventID=${qrItemID}`},
              '68':{page: 'pages/promotion/recommend/main', scene : `e=${qrItemID}`},
