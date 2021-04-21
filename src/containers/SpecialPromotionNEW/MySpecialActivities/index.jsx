@@ -1044,7 +1044,7 @@ class MySpecialActivities extends React.Component {
             {
                 title: COMMON_LABEL.actions,
                 key: 'operation',
-                width: 380,
+                width: 300,
                 // fixed:'left',
                 render: (text, record, index) => {
                     const statusState = (
@@ -1052,31 +1052,10 @@ class MySpecialActivities extends React.Component {
                         &&
                         (record.status != '0' && record.status != '1' && record.status != '5' && record.status != '21')
                     );
-                    const defaultChecked = (record.isActive == '1' ? false : true); // 禁用 / 开启
                     if(record.eventWay === 80) {
                         return this.renderPayHaveGift(text,index,record)
                     }
-                    return (<span className={styles.switcherG}>
-                        <Switch
-                            size="small"
-                            className={styles.switcher}
-                            checkedChildren={<Icon type="check" />}
-                            unCheckedChildren={<Icon type="close" />}
-                            checked={defaultChecked}
-                            onChange={(e) => {
-                                if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80) {
-                                    e.preventDefault();
-                                    return;
-                                }
-                                if (Number(record.eventWay) === 70) {
-                                    message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
-                                    return;
-                                }
-                                record.isActive == '-1' || statusState ? null :
-                                    this.handleDisableClickEvent(text, record, index, null, `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3831197)}`);
-                            }}
-                            disabled={(record.isActive == '-1' || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) || record.eventWay === 80 ? true : false}
-                        />
+                    return (<span>
                         <Authority rightCode={SPECIAL_PROMOTION_UPDATE}>
                             <a
                                 href="#"
@@ -1239,11 +1218,50 @@ class MySpecialActivities extends React.Component {
                 },
             },
             {
+                title: '状态',
+                key: 'status',
+                dataIndex: 'status',
+                width: 80,
+                className:'TableTxtCenter',
+                render: (text, record, index) => {
+                    console.log('record: ', record, record.eventWay);
+                    const defaultChecked = (record.isActive == '1' ? false : true); // 禁用 / 开启
+                    const statusState = (
+                        (record.eventWay == '50' || record.eventWay == '53')
+                        &&
+                        (record.status != '0' && record.status != '1' && record.status != '5' && record.status != '21')
+                    );
+                    return(
+                        <Switch
+                        // size="small"
+                        className={styles.switcher}
+                        checkedChildren={<Icon type="check" className={styles.actionIconPostion} />}
+                        unCheckedChildren={<Icon type="close" className={styles.actionIconPostion} />}
+                        checked={defaultChecked}
+                        onChange={(e) => {
+                            if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80) {
+                                e.preventDefault();
+                                return;
+                            }
+                            if (Number(record.eventWay) === 70) {
+                                message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
+                                return;
+                            }
+                            record.isActive == '-1' || statusState ? null :
+                                this.handleDisableClickEvent(record.operation, record, index, null, `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3831197)}`);
+                        }}
+                        disabled={(record.isActive == '-1' || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) || record.eventWay === 80 ? true : false}
+                    />
+                    )
+                }
+            },
+            {
                 title: COMMON_LABEL.sort,
+                className:'TableTxtCenter',
                 dataIndex: 'sortOrder',
                 key: 'sortOrder',
                 width: 120,
-                // fixed:'left',
+                // fixed:'center',
                 render: (text, record, index) => {
                     const canNotSortUp = this.state.pageNo == 1 && index == 0;
                     const canNotSortDown = (this.state.pageNo - 1) * this.state.pageSizes + index + 1 == this.state.total;
@@ -1306,13 +1324,13 @@ class MySpecialActivities extends React.Component {
                 className: 'TableTxtCenter',
                 dataIndex: 'validDate',
                 key: '',
-                width: 200,
+                width: 180,
                 render: (validDate) => {
                     if (validDate.start === '0' || validDate.end === '0' ||
                         validDate.start === '20000101' || validDate.end === '29991231') {
                         return `${this.props.intl.formatMessage(STRING_SPE.d31ei98dbgi21253)}`;
                     }
-                    return `${moment(validDate.start, 'YYYY/MM/DD').format('YYYY/MM/DD')} - ${moment(validDate.end, 'YYYY/MM/DD').format('YYYY/MM/DD')}`;
+                    return `${moment(validDate.start, 'YYYY-MM-DD').format('YYYY-MM-DD')} / ${moment(validDate.end, 'YYYY-MM-DD').format('YYYY-MM-DD')}`;
                 },
             },
             {
@@ -1362,6 +1380,7 @@ class MySpecialActivities extends React.Component {
             <div className={`layoutsContent ${styles.tableClass}`}>
                 <Table
                     ref={this.setTableRef}
+                    className={styles.sepcialActivesTable}
                     bordered={true}
                     columns={columns}
                     dataSource={this.state.dataSource}
