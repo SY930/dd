@@ -1056,7 +1056,7 @@ class MySpecialActivities extends React.Component {
                     if(record.eventWay === 80) {
                         return this.renderPayHaveGift(text,index,record)
                     }
-                    return (<span>
+                    return (<span className={styles.switcherG}>
                         <Switch
                             size="small"
                             className={styles.switcher}
