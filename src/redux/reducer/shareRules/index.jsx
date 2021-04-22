@@ -5,6 +5,7 @@ import {
     SALE_CENTER_QUERY_SHARE_GROUP_FAIL,
     SALE_CENTER_CHANGE_QUERY_PROMOTION_TYPE,
     SALE_CENTER_CHANGE_QUERY_PROMOTION_NAME,
+    SALE_CENTER_CHANGE_ORIGIN,
 
     SALE_CENTER_START_CREATE_SHARE_GROUP,
     SALE_CENTER_START_EDIT_CERTAIN_SHARE_GROUP,
@@ -30,6 +31,7 @@ const $initialState = Immutable.fromJS({
     availablePromotionList: [],
     searchPromotionType: '',
     searchPromotionName: '',
+    searchOrigin: '',
     isCreate: false,
     isEdit: false,
     isSaving: false,
@@ -56,7 +58,9 @@ export const share_rules = ($$state = $initialState, action) => {
         case SALE_CENTER_CHANGE_QUERY_PROMOTION_NAME:
             return $$state
                 .set('searchPromotionName', action.payload)
-
+        case SALE_CENTER_CHANGE_ORIGIN:
+        return $$state
+            .set('searchOrigin', action.payload)
         case SALE_CENTER_SAVE_SHARE_GROUP_START:
             return $$state
                 .set('isSaving', true)

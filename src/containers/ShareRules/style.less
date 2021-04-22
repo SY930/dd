@@ -46,6 +46,13 @@
         background-color: rgba(255,255,255,0.5);
         text-align: center;
         position: absolute;
+        z-index: 99;
+    }
+}
+
+.spinnerParent {
+    .spinnerLoading {
+        .bodyContainer .spinner
     }
 }
 
@@ -128,6 +135,9 @@
             }
             &:nth-child(even) {
                 background-color: #FAFAFA;
+            }
+            &:last-child {
+                margin-bottom: 5px;
             }
             .typeTag {
                 flex: none;
@@ -225,6 +235,10 @@
     text-overflow: ellipsis;
     overflow: hidden;
     vertical-align: middle;
+}
+.disabledTitleDix {
+    .titleDix;
+    color: #999999;
 }
 .infoDivNames {
     background: #f6e1d9;
