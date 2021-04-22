@@ -14,7 +14,7 @@ import { connect } from 'react-redux';
 import {
     Table, Icon, Select, DatePicker,
     Button, Modal, Row, Col, message,
-    TreeSelect,
+    TreeSelect, Switch,
     Spin,
 } from 'antd';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
@@ -1150,24 +1150,12 @@ class MyActivities extends React.Component {
                 title: COMMON_LABEL.actions,
                 key: 'operation',
                 className: 'TableTxtCenter',
-                width: 180,
+                width: 130,
                 render: (text, record, index) => {
-                    const buttonText = (record.isActive == '1' ? COMMON_LABEL.disable : COMMON_LABEL.enable);
                     const isGroupPro = record.maintenanceLevel == '0';
-                    const isToggleActiveDisabled = (() => {
-                        if (!isGroupOfHuaTianGroupList()) {
-                            return !isGroupPro
-                        }
-                        if (isHuaTian()) {
-                            return record.userType == 2 || record.userType == 0;
-                        }
-                        if (isBrandOfHuaTianGroupList()) {
-                            return record.userType == 1 || record.userType == 3 || !isGroupPro;
-                        }
-                    })()
                     return (
                         <span>
-                            <Authority rightCode={BASIC_PROMOTION_UPDATE}>
+                            {/* <Authority rightCode={BASIC_PROMOTION_UPDATE}>
                                 <a
                                     href="#"
                                     disabled={isToggleActiveDisabled}
@@ -1177,7 +1165,7 @@ class MyActivities extends React.Component {
                                 >
                                     {buttonText}
                                 </a>
-                            </Authority>
+                            </Authority> */}
                             <Authority rightCode={BASIC_LOOK_PROMOTION_QUERY}>
                                 <a
                                     href="#"
@@ -1219,7 +1207,45 @@ class MyActivities extends React.Component {
                 },
             },
             {
+                title: '状态',
+                key: 'status',
+                dataIndex: 'status',
+                width: 80,
+                className:'TableTxtCenter',
+                render: (text, record, index) => {
+                    const defaultChecked = (record.isActive == '1' ? false : true); // 禁用 / 开启
+                    const isGroupPro = record.maintenanceLevel == '0';
+                    const isToggleActiveDisabled = (() => {
+                        if (!isGroupOfHuaTianGroupList()) {
+                            return !isGroupPro
+                        }
+                        if (isHuaTian()) {
+                            return record.userType == 2 || record.userType == 0;
+                        }
+                        if (isBrandOfHuaTianGroupList()) {
+                            return record.userType == 1 || record.userType == 3 || !isGroupPro;
+                        }
+                    })()
+                    return(
+                        <Authority rightCode={BASIC_PROMOTION_UPDATE}>
+                            <Switch
+                                // size="small"
+                                className={styles.switcher}
+                                checkedChildren={<Icon type="check" className={styles.actionIconPostion} />}
+                                unCheckedChildren={<Icon type="close" className={styles.actionIconPostion} />}
+                                checked={defaultChecked}
+                                onChange={() => {
+                                    this.handleDisableClickEvent(record.operation, record, index);
+                                }}
+                                disabled={isToggleActiveDisabled}
+                            />
+                        </Authority>
+                    )
+                }
+            },
+            {
                 title: COMMON_LABEL.sort,
+                className: 'TableTxtCenter',
                 dataIndex: 'sortOrder',
                 key: 'sortOrder',
                 width: 120,
@@ -1335,7 +1361,8 @@ class MyActivities extends React.Component {
             <div className={`layoutsContent ${styles.tableClass}`} style={{ height: this.state.contentHeight}}>
                 <Table
                     ref={this.setTableRef}
-                    scroll={{ x: 1630, y: this.state.contentHeight - 93 }}
+                    scroll={{ x: 1660, y: this.state.contentHeight - 93 }}
+                    className={styles.sepcialActivesTable}
                     bordered={true}
                     columns={columns}
                     dataSource={this.state.dataSource}
