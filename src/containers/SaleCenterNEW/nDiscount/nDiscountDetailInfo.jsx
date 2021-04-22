@@ -33,6 +33,7 @@ class NDiscountDetailInfo extends React.Component {
             stageType: '2',
             priceLst: [],
             shortRule: '0',
+            isCopy: false,
         };
 
         this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
@@ -47,8 +48,9 @@ class NDiscountDetailInfo extends React.Component {
         });
         this.initRule();
         const display = !this.props.isNew;
+        const isCopy = this.props.isCopy
         const priceLst = Immutable.List.isList(this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst'])) ? this.props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS() : [];
-        this.setState({priceLst, display});
+        this.setState({priceLst, display, isCopy});
     }
 
     initRule(props = this.props) {
