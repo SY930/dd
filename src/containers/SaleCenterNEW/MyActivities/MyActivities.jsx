@@ -336,18 +336,15 @@ class MyActivities extends React.Component {
     }
 
     confirmDelete = (record) => {
+        const delTitle = `【${record.promotionName ? record.promotionName.length > 20 ? record.promotionName.substring(0, 20) + '...' : record.promotionName : ''}】`;
         confirm({
-        title: <span style={{color: '#434343'}}>{SALE_LABEL.k5dnw1q3}</span>,
+            width: 433,
+            iconType: 'exclamation-circle',
+            title: <span style={{ color: '#434343' }}>您确定要删除{delTitle}吗 ？</span>,
             content: (
-                <div>
-                    <span style={{color: '#787878'}}>
-                        {SALE_LABEL.k5do6vse}{`【${record.promotionName ? record.promotionName.length > 20 ? record.promotionName.substring(0, 20) + '...' : record.promotionName : ''}】`}
-                    </span>
-                    <br/>
-                    <span style={{color: '#aeaeae'}}>
-                       {SALE_LABEL.k5do4z54}
-                    </span>
-                </div>
+                <span style={{ color: '#aeaeae' }}>
+                    {SALE_LABEL.k5do4z54}
+                </span>
             ),
             onOk: () => {
                 const params = {
@@ -361,15 +358,15 @@ class MyActivities extends React.Component {
                     '/promotion/docPromotionService_setActive.ajax',
                     params,
                     {},
-                    {path: 'data'},
+                    { path: 'data' },
                     'HTTP_SERVICE_URL_PROMOTION_NEW'
                 ).then(() => {
                     message.success(SALE_LABEL.k5do0ps6);
                     this.tryToRefresh();
                     this.tryToUpdateNameList();
-                }).catch((error) => {});
+                }).catch((error) => { });
             },
-            onCancel() {},
+            onCancel() { },
         });
     }
 
@@ -1295,7 +1292,7 @@ class MyActivities extends React.Component {
                     if (validDate.start === 20000101 || validDate.end === 29991231) {
                         return SALE_LABEL.k5dn26n4;
                     }
-                    const text = `${moment(String(validDate.start)).format('YYYY-MM-DD')} / ${moment(String(validDate.end)).format('YYYY-MM-DD')}`;
+                    const text = `${moment(String(validDate.start)).format('YYYY.MM.DD')} / ${moment(String(validDate.end)).format('YYYY.MM.DD')}`;
                     return text;
                 },
             },

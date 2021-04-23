@@ -1059,10 +1059,10 @@ class MySpecialActivities extends React.Component {
                         <Authority rightCode={SPECIAL_PROMOTION_UPDATE}>
                             <a
                                 href="#"
-                                className={
+                                disabled={
                                     record.eventWay == '64' ? null : 
                                     record.isActive != '0' || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) || record.eventWay === 80
-                                        ? styles.textDisabled
+                                        ? true
                                         : null
                                 }
                                 onClick={(e) => {
@@ -1134,7 +1134,7 @@ class MySpecialActivities extends React.Component {
                         <Authority rightCode={SPECIAL_PROMOTION_DELETE}>
                             <a
                                 href="#"
-                                className={record.isActive != '0' || record.userCount != 0 || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80 ? styles.textDisabled : null}
+                                disabled={record.isActive != '0' || record.userCount != 0 || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80 ? true : null}
                                 onClick={() => {
                                     if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80) {
                                         return;
@@ -1441,15 +1441,13 @@ class MySpecialActivities extends React.Component {
     }
     // 删除
     checkDeleteInfo(text, record) {
+        const delTitle = (<span>【{record.eventName}】</span>)
         confirm({
-            title: `${this.props.intl.formatMessage(STRING_SPE.d34ikef74448196)}`,
+            width: 433,
+            title: <span style={{ color: '#434343' }}>您确定要删除{delTitle}吗 ？</span>,
             content: (
-                <div>
-                {this.props.intl.formatMessage(STRING_SPE.d454fcf3i54910)}
-                    【<span>{record.eventName}</span>】
-                    <br />
-                    <span>{this.props.intl.formatMessage(STRING_SPE.db60c90bb48b034)}~</span>
-                </div>
+
+                <span>{this.props.intl.formatMessage(STRING_SPE.db60c90bb48b034)}~</span>
             ),
             footer: `${this.props.intl.formatMessage(STRING_SPE.db60c90bb48b034)}`,
             onOk: () => {
