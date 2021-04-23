@@ -229,9 +229,10 @@ class WeighBuyGiveDetailInfo extends React.Component {
                     }
                 }
             });
+            let tempArr2 = [];
             let scopeList = scopeLst.map((price, i) => {
-                if (tempArr1.indexOf(price.itemID) == -1) {
-                    tempArr1.push(price.itemID);
+                if (tempArr2.indexOf(price.itemID) == -1) {
+                    tempArr2.push(price.itemID);
                     return {
                         scopeType: '2',
                         targetID: price.itemID || price.targetID,
