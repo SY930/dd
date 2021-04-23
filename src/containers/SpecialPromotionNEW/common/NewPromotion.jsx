@@ -115,7 +115,7 @@ export default class NewPromotion extends React.Component {
             })
 
           }
-        if (this.props.isNew === false) {
+        if (this.props.isNew === false && !this.props.isCopy) {
             this.props.updateSpecialPromotion && this.props.updateSpecialPromotion({
                 data: opts,
                 success: () => {

@@ -957,7 +957,6 @@ class SpecialDetailInfo extends Component {
         let giftTotalCopies = '';
         let flag = true;
         const priceReg = /^(([1-9]\d{0,5})(\.\d{0,2})?|0.\d?[1-9]{1})$/;
-        debugger
         this.props.form.validateFieldsAndScroll(
             // tmd 终于找到你了，免费领取参数在这里，grd
             { force: true },

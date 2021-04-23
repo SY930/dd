@@ -115,7 +115,6 @@ class ActivityMain extends React.Component {
 
     // 渲染对应的营销活动页面
     renderActivityTags() {
-        // debugger
         const activityCategories = this.state.promotionType;
         const { index } = this.props;
         console.log('index: ', index);

@@ -1211,7 +1211,6 @@ class MySpecialActivities extends React.Component {
                                                     })
                                                     return;
                                                 }
-                                                //debugger 群发礼品走了大多数默认的
                                                 this.props.toggleIsUpdate(true)
                                                 this.setState({
                                                     isCopy:true,
