@@ -1155,17 +1155,6 @@ class MyActivities extends React.Component {
                     const isGroupPro = record.maintenanceLevel == '0';
                     return (
                         <span>
-                            {/* <Authority rightCode={BASIC_PROMOTION_UPDATE}>
-                                <a
-                                    href="#"
-                                    disabled={isToggleActiveDisabled}
-                                    onClick={() => {
-                                        this.handleDisableClickEvent(text, record, index);
-                                    }}
-                                >
-                                    {buttonText}
-                                </a>
-                            </Authority> */}
                             <Authority rightCode={BASIC_LOOK_PROMOTION_QUERY}>
                                 <a
                                     href="#"
