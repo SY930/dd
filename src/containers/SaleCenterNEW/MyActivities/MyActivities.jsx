@@ -1150,7 +1150,7 @@ class MyActivities extends React.Component {
                 title: COMMON_LABEL.actions,
                 key: 'operation',
                 className: 'TableTxtCenter',
-                width: 130,
+                width: 180,
                 render: (text, record, index) => {
                     const isGroupPro = record.maintenanceLevel == '0';
                     return (
@@ -1350,7 +1350,7 @@ class MyActivities extends React.Component {
             <div className={`layoutsContent ${styles.tableClass}`} style={{ height: this.state.contentHeight}}>
                 <Table
                     ref={this.setTableRef}
-                    scroll={{ x: 1660, y: this.state.contentHeight - 93 }}
+                    scroll={{ x: 1700, y: this.state.contentHeight - 93 }}
                     className={styles.sepcialActivesTable}
                     bordered={true}
                     columns={columns}
