@@ -375,7 +375,7 @@ class MyActivities extends React.Component {
 
     toggleStateCallBack = () => {
         message.success(SALE_LABEL.k5do0ps6);
-        this.tryToRefresh()
+        // this.tryToRefresh()
     }
 
     handleClose() {
@@ -1295,7 +1295,8 @@ class MyActivities extends React.Component {
                     if (validDate.start === 20000101 || validDate.end === 29991231) {
                         return SALE_LABEL.k5dn26n4;
                     }
-                    return `${validDate.start} - ${validDate.end}`;
+                    const text = `${moment(String(validDate.start)).format('YYYY-MM-DD')} / ${moment(String(validDate.end)).format('YYYY-MM-DD')}`;
+                    return text;
                 },
             },
 
