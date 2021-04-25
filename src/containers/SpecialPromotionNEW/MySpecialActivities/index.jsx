@@ -1210,15 +1210,15 @@ class MySpecialActivities extends React.Component {
                         {/* 第一版只做群发礼品的复制功能*/}
                         {
                             record.eventWay === 53
-                            && <Authority rightCode={'3424t6356'}>
+                            && <Authority rightCode={SPECIAL_PROMOTION_UPDATE}>
                                 <a
                                     href="#"
-                                    className={
+                                    disabled={
                                         record.eventWay == '64' ? null :
                                             record.isActive != '0' || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record))
                                                 || record.eventWay === 80 || (moment(record.eventEndDate, 'YYYYMMDD').format('YYYYMMDD') < moment().format('YYYYMMDD'))
-                                                ? styles.textDisabled
-                                                : null
+                                                ? true
+                                                : false
                                     }
                                     onClick={(e) => {
                                         if (record.eventWay == '64') {
