@@ -1170,16 +1170,53 @@ class MySpecialActivities extends React.Component {
                                 {COMMON_LABEL.delete}
                             </a>
                         </Authority>
+                        <a
+                            href="#"
+                            className={record.isActive == '-1' || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80 ? styles.textDisabled : null}
+                            onClick={() => {
+                                if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80) {
+                                    return;
+                                }
+                                if (Number(record.eventWay) === 70) {
+                                    message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
+                                    return;
+                                }
+                                record.isActive == '-1' || statusState ? null :
+                                    this.handelStopEvent(text, record, index, '-1', `${this.props.intl.formatMessage(STRING_SPE.d17012f5c16c32211)}`);
+                            }}
+                        >
+                            {/* {this.props.intl.formatMessage(STRING_SPE.du3bnfobe3346)} */}
+                        </a>
+
+
+                        <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY}>
+                            <a
+                                href="#"
+                                className={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record) ? styles.textDisabled : null}
+                                onClick={() => {
+                                    if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) {
+                                        return;
+                                    }
+                                    if (Number(record.eventWay) === 70) {
+                                        message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
+                                        return;
+                                    }
+                                    this.checkDetailInfo(text, record, index);
+                                }}
+                            >
+                                {/* 活动跟踪 */}
+                                {this.props.intl.formatMessage(STRING_SPE.d5g3d7ahfq35134)}</a>
+                        </Authority>
                         {/* 第一版只做群发礼品的复制功能*/}
                         {
                             record.eventWay === 53
-                            && <Authority rightCode={SPECIAL_PROMOTION_UPDATE}>
+                            && <Authority rightCode={'3424t6356'}>
                                 <a
                                     href="#"
                                     className={
                                         record.eventWay == '64' ? null :
                                             record.isActive != '0' || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record))
-                                            || record.eventWay === 80 || (moment(record.eventEndDate, 'YYYYMMDD').format('YYYYMMDD') < moment().format('YYYYMMDD'))
+                                                || record.eventWay === 80 || (moment(record.eventEndDate, 'YYYYMMDD').format('YYYYMMDD') < moment().format('YYYYMMDD'))
                                                 ? styles.textDisabled
                                                 : null
                                     }
@@ -1227,43 +1264,6 @@ class MySpecialActivities extends React.Component {
                            </a>
                             </Authority>
                         }
-                        <a
-                            href="#"
-                            className={record.isActive == '-1' || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80 ? styles.textDisabled : null}
-                            onClick={() => {
-                                if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80) {
-                                    return;
-                                }
-                                if (Number(record.eventWay) === 70) {
-                                    message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
-                                    return;
-                                }
-                                record.isActive == '-1' || statusState ? null :
-                                    this.handelStopEvent(text, record, index, '-1', `${this.props.intl.formatMessage(STRING_SPE.d17012f5c16c32211)}`);
-                            }}
-                        >
-                            {/* {this.props.intl.formatMessage(STRING_SPE.du3bnfobe3346)} */}
-                        </a>
-
-                        <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY}>
-                            <a
-                                href="#"
-                                className={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record) ? styles.textDisabled : null}
-                                onClick={() => {
-                                    if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) {
-                                        return;
-                                    }
-                                    if (Number(record.eventWay) === 70) {
-                                        message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
-                                        return;
-                                    }
-                                    this.checkDetailInfo(text, record, index);
-                                }}
-                            >
-                                {/* 活动跟踪 */}
-                                {this.props.intl.formatMessage(STRING_SPE.d5g3d7ahfq35134)}</a>
-                        </Authority>
-
                         {
                             isDecorationAvailable(record) && (
                                 <a
