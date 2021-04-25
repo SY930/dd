@@ -372,7 +372,7 @@ class MyActivities extends React.Component {
 
     toggleStateCallBack = () => {
         message.success(SALE_LABEL.k5do0ps6);
-        // this.tryToRefresh()
+        this.tryToRefresh()
     }
 
     handleClose() {
