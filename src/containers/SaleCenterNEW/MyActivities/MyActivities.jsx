@@ -1284,7 +1284,7 @@ class MyActivities extends React.Component {
 
             {
                 title: SALE_LABEL.k5dml2ik,
-                className: 'TableTxtCenter',
+                // className: 'TableTxtCenter',
                 dataIndex: 'validDate',
                 key: '',
                 width: 180,
@@ -1299,6 +1299,7 @@ class MyActivities extends React.Component {
 
             {
                 title: SALE_LABEL.k5dli0fu,
+                className: 'TableTxtCenter',
                 dataIndex: 'status',
                 key: 'valid',
                 width: 72,
