@@ -1199,7 +1199,7 @@ class MyActivities extends React.Component {
                 width: 80,
                 className:'TableTxtCenter',
                 render: (text, record, index) => {
-                    const defaultChecked = (record.isActive == '1' ? false : true); // 禁用 / 开启
+                    const defaultChecked = (record.isActive == '1' ? true : false); // 开启 / 禁用
                     const isGroupPro = record.maintenanceLevel == '0';
                     const isToggleActiveDisabled = (() => {
                         if (!isGroupOfHuaTianGroupList()) {
