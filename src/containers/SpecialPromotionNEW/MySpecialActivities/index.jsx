@@ -778,7 +778,7 @@ class MySpecialActivities extends React.Component {
                     visible={isShowCopyUrl}
                     onCancel={this.hideCopyUrlModal}
                     footer={null}
-                    width={980}
+                    width={900}
                 >
                     {this.renderCopyUrlModal()}
                 </Modal>
@@ -851,6 +851,14 @@ class MySpecialActivities extends React.Component {
             <div className="layoutsTool" style={{ height: '64px' }}>
                 <div className={headerClasses}>
                     <span className={styles.customHeader}>{this.props.intl.formatMessage(STRING_SPE.dd5aa016c5d869)}</span>
+                    <span className={styles.exportBtn}>
+                        <Authority rightCode={SPECIAL_PROMOTION_QUERY}>
+                            <Button
+                                type="ghost"
+                                onClick={() => this.setState({ exportVisible: true })}
+                            ><Icon type="export" />{COMMON_LABEL.export}</Button>
+                        </Authority>
+                    </span>
                 </div>
             </div>
         );
@@ -944,15 +952,6 @@ class MySpecialActivities extends React.Component {
                                 </Button>
                             </Authority>
                         </li>
-                        <li>
-                            <Authority rightCode={SPECIAL_PROMOTION_QUERY}>
-                                <Button
-                                    type="ghost"
-                                    onClick={() => this.setState({ exportVisible: true })}
-                                ><Icon type="export" />{COMMON_LABEL.export}</Button>
-                            </Authority>
-                        </li>
-
                     </ul>
                 </div>
             </div>
@@ -1192,7 +1191,7 @@ class MySpecialActivities extends React.Component {
                                 {COMMON_LABEL.delete}
                             </a>
                         </Authority>
-                        <a
+                        {/* <a
                             href="#"
                             className={record.isActive == '-1' || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80 ? styles.textDisabled : null}
                             onClick={() => {
@@ -1207,8 +1206,8 @@ class MySpecialActivities extends React.Component {
                                     this.handelStopEvent(text, record, index, '-1', `${this.props.intl.formatMessage(STRING_SPE.d17012f5c16c32211)}`);
                             }}
                         >
-                            {/* {this.props.intl.formatMessage(STRING_SPE.du3bnfobe3346)} */}
-                        </a>
+                        {this.props.intl.formatMessage(STRING_SPE.du3bnfobe3346)}
+                        </a> */}
 
 
                         <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY}>
@@ -1466,10 +1465,14 @@ class MySpecialActivities extends React.Component {
             },
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3711176)}`,
+                className: 'TableTxtCenter',
                 dataIndex: 'isActive',
                 key: 'isActive',
                 width: 100,
                 render: (isActive) => {
+                    // db60c8ac0a3715210  已终止
+                    // db60c8ac0a371314 已启用
+                    // d16hh1kkf9914292 已禁用
                     return isActive == '-1' ? `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3715210)}` : isActive == '1' ? `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a371314)}` : `${this.props.intl.formatMessage(STRING_SPE.d16hh1kkf9914292)}`;
                 },
             },
@@ -1807,9 +1810,10 @@ class MySpecialActivities extends React.Component {
                 title={this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3955121)}
                 maskClosable={false}
                 visible={this.state.visible}
-                footer={<Button onClick={this.handleClose}>{COMMON_LABEL.close}</Button>}
-                closable={false}
-                width="750px"
+                footer={<Button onClick={this.handleClose}>{ COMMON_LABEL.close }</Button>}
+                // closable={false}
+                width="700px"
+                onCancel={this.handleClose}
             >
                 {renderContentOfTheModal}
             </Modal>

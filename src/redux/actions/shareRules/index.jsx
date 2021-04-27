@@ -1,4 +1,6 @@
 import { axiosData } from '../../../helpers/util';
+import { getStore } from "@hualala/platform-base";
+import _ from 'lodash';
 import { message } from 'antd';
 
 export const SALE_CENTER_QUERY_SHARE_GROUP_START = 'sale center:: sale_center_query_share_group_start';
@@ -7,6 +9,7 @@ export const SALE_CENTER_QUERY_SHARE_GROUP_FAIL = 'sale center:: sale_center_que
 
 export const SALE_CENTER_CHANGE_QUERY_PROMOTION_TYPE = 'sale center:: sale_center_change_query_promotion_type';
 export const SALE_CENTER_CHANGE_QUERY_PROMOTION_NAME = 'sale center:: sale_center_change_query_promotion_name';
+export const SALE_CENTER_CHANGE_ORIGIN = 'sale center:: sale_center_change_origin';
 
 export const SALE_CENTER_START_CREATE_SHARE_GROUP = 'sale center:: sale_center_start_create_share_group';
 export const SALE_CENTER_START_EDIT_CERTAIN_SHARE_GROUP = 'sale center:: sale_center_start_edit_certain_share_group';
@@ -47,14 +50,34 @@ export const changeSearchName = opts => ({
     payload: opts,
 });
 
+// 修改来源
+export const changeSearchOrigin = opts => ({
+    type: SALE_CENTER_CHANGE_ORIGIN,
+    payload: opts,
+})
+
+const isMyShareGroup = ({ shopID }) => {
+    const user = getStore().getState();
+    const currentShopID = user.shopID > 0 ? user.shopID : 0;
+    return shopID == currentShopID ? 1 : 0;
+}
+
+const sortData = (list) => {
+    const lis = Array.isArray(list) ? list : []
+    const newList = _.orderBy(_.map(lis, item => ({...item, isMyShareGroup: isMyShareGroup(item)})), 'isMyShareGroup', 'desc');
+    return newList;
+}
+
 export const queryShareGroups = (opts) => {
     return (dispatch) => {
         dispatch({type: SALE_CENTER_QUERY_SHARE_GROUP_START});
         axiosData('/promotion/promotionShareGroupService_queryList.ajax', opts, {}, { path: 'data.promotionShareGroupList' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
             .then((list) => {
+                // console.log('list: ', list);
+                const data = sortData(list)
                 dispatch({
                     type: SALE_CENTER_QUERY_SHARE_GROUP_SUCCESS,
-                    payload: Array.isArray(list) ? list : [],
+                    payload: data,
                 })
             })
             .catch(err => dispatch({type: SALE_CENTER_QUERY_SHARE_GROUP_FAIL}));

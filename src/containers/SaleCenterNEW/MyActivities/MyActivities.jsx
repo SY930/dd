@@ -792,22 +792,36 @@ class MyActivities extends React.Component {
                     <span className={styles.customHeader}>
                         {this.isOnlinePromotionPage() ? SALE_LABEL.k5dbdped : SALE_LABEL.k5dbefat}
                     </span>
-                    {
-                        !isHuaTian() && !this.isOnlinePromotionPage() && (
-                            <Authority rightCode={AUTO_RUN_QUERY}>
-                                <Button
-                                    onClick={() => {
-                                        queryPromotionAutoRunList();
-                                        openPromotionAutoRunListModal();
-                                    }}
-                                    icon="plus"
-                                    className={styles.customPrimaryButton}
-                                >
-                                    {SALE_LABEL.k5dbiuws}
-                                </Button>
-                            </Authority>
-                        )
-                    }
+                    <div>
+                        {
+                            !isHuaTian() && !this.isOnlinePromotionPage() && (
+                                <Authority rightCode={AUTO_RUN_QUERY}>
+                                    <Button
+                                        onClick={() => {
+                                            queryPromotionAutoRunList();
+                                            openPromotionAutoRunListModal();
+                                        }}
+                                        icon="plus"
+                                        className={styles.customPrimaryButton}
+                                    >
+                                        {SALE_LABEL.k5dbiuws}
+                                    </Button>
+                                </Authority>
+                            )
+                        }
+                        {
+                            !this.isOnlinePromotionPage() && (
+                                <span>
+                                    <Authority rightCode={BASIC_PROMOTION_QUERY}>
+                                        <Button
+                                            type="ghost"
+                                            onClick={() => this.setState({ exportVisible: true })}
+                                        ><Icon type="export" />{COMMON_LABEL.export}</Button>
+                                    </Authority>
+                                </span>
+                            )
+                        }
+                    </div>
                 </div>
             </div>
         );
@@ -927,18 +941,6 @@ class MyActivities extends React.Component {
                         <li>
                             <a onClick={this.toggleExpandState}>{SALE_LABEL.k5dldshc} {this.state.expand ? <Icon type="caret-up" /> : <Icon type="caret-down" />}</a>
                         </li>
-                        {
-                            !this.isOnlinePromotionPage() && (
-                                <li>
-                                    <Authority rightCode={BASIC_PROMOTION_QUERY}>
-                                        <Button
-                                            type="ghost"
-                                            onClick={() => this.setState({ exportVisible: true })}
-                                        ><Icon type="export" />{COMMON_LABEL.export}</Button>
-                                    </Authority>
-                                </li>
-                            )
-                        }
                     </ul>
                 </div>
                 {this.renderAdvancedFilter()}
