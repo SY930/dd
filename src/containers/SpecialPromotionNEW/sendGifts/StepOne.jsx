@@ -126,6 +126,10 @@ class StepOne extends React.Component {
         });
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
         // this.props.queryWechatMpInfo({ subGroupID: specialPromotion.subGroupID });
+        const {
+            isCopy
+        } = this.props
+        console.log('stepone isCopy', isCopy)
         if (specialPromotion.eventStartDate !== '20000101' && specialPromotion.eventEndDate !== '29991231' &&
             specialPromotion.eventStartDate !== '0' && specialPromotion.eventEndDate !== '0' &&
             specialPromotion.eventStartDate !== '' && specialPromotion.eventEndDate !== '') {
@@ -133,7 +137,7 @@ class StepOne extends React.Component {
                 name: specialPromotion.eventName || this.state.name, // ||是因为选择日期自动更新，redux的‘’会覆盖掉state的值
                 description: specialPromotion.eventRemark || this.state.description,
                 smsGate: specialPromotion.smsGate || this.state.smsGate || '0',
-                dateRange: [moment(specialPromotion.eventStartDate, 'YYYYMMDD'), moment(specialPromotion.eventEndDate, 'YYYYMMDD')],
+                dateRange: isCopy ? Array(2) : [moment(specialPromotion.eventStartDate, 'YYYYMMDD'), moment(specialPromotion.eventEndDate, 'YYYYMMDD')],
             })
         } else {
             this.setState({

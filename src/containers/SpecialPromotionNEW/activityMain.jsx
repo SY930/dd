@@ -124,6 +124,7 @@ class ActivityMain extends React.Component {
             },
             key: index,
             isNew: this.props.isNew,
+            isCopy: this.props.isCopy,
             promotionType: activityCategories[index].key,
             component: _pages[index],
         });

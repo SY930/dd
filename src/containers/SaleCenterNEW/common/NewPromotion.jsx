@@ -43,7 +43,7 @@ class NewPromotion extends React.Component {
     }
 
     onFinish(cb) {
-        const { promotionBasicInfo, promotionScopeInfo, promotionDetailInfo, isOnline } = this.props;
+        const { promotionBasicInfo, promotionScopeInfo, promotionDetailInfo, isOnline, isCopy } = this.props;
         const basicInfo = promotionBasicDataAdapter(promotionBasicInfo.get('$basicInfo').toJS(), true);
         const scopeInfo = promotionScopeInfoAdapter(promotionScopeInfo.get('$scopeInfo').toJS(), true);
         const _detailInfo = promotionDetailInfoAdapter(promotionDetailInfo.get('$promotionDetail').toJS(), true);
@@ -132,7 +132,7 @@ class NewPromotion extends React.Component {
             shareLst: opts.shareLst,
             cardScopeList: detailInfo.cardScopeList,
         }
-        if (this.props.isNew === false) {
+        if (this.props.isNew === false && !isCopy) {
             promotionInfo.master.promotionID = basicInfo.promotionID;
             this.props.updateNewPromotion({
                 data: { promotionInfo },
@@ -249,13 +249,16 @@ class NewPromotion extends React.Component {
         const {
             isNew,
             isOnline,
+            isCopy,
         } = this.props;
+        console.log('this is the layer 3', isCopy)
         const steps = [
             {
                 title: SALE_LABEL.k5g5bcqo,
                 content: (
                     <PromotionBasicInfo
                         isNew={isNew}
+                        isCopy={isCopy}
                         getSubmitFn={(handles) => {
                             this.handles[0] = handles;
                         }}
@@ -271,6 +274,7 @@ class NewPromotion extends React.Component {
                         }}
                         isOnline={isOnline}
                         isNew={isNew}
+                        isCopy={isCopy}
                     />
                 ),
             },
@@ -286,6 +290,7 @@ class NewPromotion extends React.Component {
                             this.setState({ rule });
                         },
                         isNew,
+                        isCopy,
                         isOnline,
                     }
                 ),

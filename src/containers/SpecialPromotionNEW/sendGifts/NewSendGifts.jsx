@@ -31,6 +31,7 @@ class NewSendGifts extends NewPromotion {
         super(props);
     }
     render() {
+        console.log(' spe isCopy', this.props.isCopy)
 
         if (this.props.component === undefined) {
             throw new Error('component is required');
@@ -42,6 +43,7 @@ class NewSendGifts extends NewPromotion {
                 title: `${this.props.intl.formatMessage(STRING_SPE.d2c8987eai0135)}`,
                 content: (<StepOne
                     type={this.props.promotionType}
+                    isCopy={this.props.isCopy}
                     getSubmitFn={(handles) => {
                         this.handles[0] = handles;
                     }}
