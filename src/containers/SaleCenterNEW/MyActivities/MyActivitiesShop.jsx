@@ -14,7 +14,7 @@ import { connect } from 'react-redux';
 import {
     Table, Icon, Select, DatePicker,
     Button, Modal, Row, Col, message,
-    TreeSelect,
+    TreeSelect, Switch,
     Spin,
 } from 'antd';
 import { jumpPage } from '@hualala/platform-base'
@@ -739,21 +739,22 @@ class MyActivitiesShop extends React.Component {
                 <div className={headerClasses}>
                     <span className={styles.customHeader}>
                         {this.isOnlinePromotionPage() ? SALE_LABEL.k5dbdped : SALE_LABEL.k5dbefat}
-                        {
-                            !this.isOnlinePromotionPage() && (
+                    </span>
+                    {
+                        !this.isOnlinePromotionPage() && (
+                            <span className={styles.jumpToCreate}>
                                 <Button
                                     type="ghost"
                                     icon="plus"
-                                    className={styles.jumpToCreate}
                                     onClick={
                                         () => {
                                             const menuID = this.props.user.menuList.find(tab => tab.entryCode === 'shop.dianpu.creatpromotion').menuID
                                             jumpPage({ menuID })
                                         }
-                                }>{COMMON_LABEL.create}</Button>
-                            )
-                        }
-                    </span>
+                                    }>{COMMON_LABEL.create}营销活动</Button>
+                            </span>
+                        )
+                    }
                 </div>
             </div>
         );
@@ -1039,22 +1040,11 @@ class MyActivitiesShop extends React.Component {
                 width: 180,
                 // fixed: 'left',
                 render: (text, record, index) => {
-                    const buttonText = (record.isActive == '1' ? COMMON_LABEL.disable : COMMON_LABEL.enable);
+                   
                     const isGroupPro = record.maintenanceLevel == '0';
-                    const isShopToggleActiveDisabled = (() => {
-                        if (!isGroupOfHuaTianGroupList()) {
-                            return isGroupPro
-                        }
-                        if (isHuaTian()) {
-                            return record.userType == 2 || record.userType == 0
-                        }
-                        if (isBrandOfHuaTianGroupList()) {
-                            return record.userType == 1 || record.userType == 3 || isGroupPro;
-                        }
-                    })()
                     return (
                         <span>
-                            <a
+                            {/* <a
                                 href="#"
                                 disabled={isShopToggleActiveDisabled}
                                 onClick={() => {
@@ -1062,7 +1052,7 @@ class MyActivitiesShop extends React.Component {
                                 }}
                             >
                                 {buttonText}
-                            </a>
+                            </a> */}
                             <Authority rightCode={BASIC_LOOK_PROMOTION_QUERY}>
                                 <a
                                     href="#"
@@ -1099,7 +1089,43 @@ class MyActivitiesShop extends React.Component {
                 },
             },
             {
+                title: '状态',
+                key: 'status',
+                dataIndex: 'status',
+                width: 80,
+                className:'TableTxtCenter',
+                render: (text, record, index) => {
+                    const defaultChecked = (record.isActive == '1' ? true : false); // 开启 / 禁用
+                    const isGroupPro = record.maintenanceLevel == '0';
+                    const isShopToggleActiveDisabled = (() => {
+                        if (!isGroupOfHuaTianGroupList()) {
+                            return isGroupPro
+                        }
+                        if (isHuaTian()) {
+                            return record.userType == 2 || record.userType == 0
+                        }
+                        if (isBrandOfHuaTianGroupList()) {
+                            return record.userType == 1 || record.userType == 3 || isGroupPro;
+                        }
+                    })()
+                    return(
+                            <Switch
+                                // size="small"
+                                className={styles.switcher}
+                                checkedChildren={<Icon type="check" className={styles.actionIconPostion} />}
+                                unCheckedChildren={<Icon type="close" className={styles.actionIconPostion} />}
+                                checked={defaultChecked}
+                                onChange={() => {
+                                    this.handleDisableClickEvent(record.operation, record, index);
+                                }}
+                                disabled={isShopToggleActiveDisabled}
+                            />
+                    )
+                }
+            },
+            {
                 title: COMMON_LABEL.sort,
+                className: 'TableTxtCenter',
                 dataIndex: 'sortOrder',
                 key: 'sortOrder',
                 width: 120,
@@ -1155,20 +1181,21 @@ class MyActivitiesShop extends React.Component {
 
             {
                 title: SALE_LABEL.k5dml2ik,
-                className: 'TableTxtCenter',
+                // className: 'TableTxtCenter',
                 dataIndex: 'validDate',
                 key: '',
-                width: 180,
                 render: (validDate) => {
                     if (validDate.start === 20000101 || validDate.end === 29991231) {
                         return SALE_LABEL.k5dn26n4;
                     }
-                    return `${validDate.start} - ${validDate.end}`;
+                    const text = `${moment(String(validDate.start)).format('YYYY.MM.DD')} / ${moment(String(validDate.end)).format('YYYY.MM.DD')}`;
+                    return text;
                 },
             },
 
             {
                 title: SALE_LABEL.k5dli0fu,
+                className: 'TableTxtCenter',
                 dataIndex: 'status',
                 key: 'valid',
                 width: 72,
@@ -1220,7 +1247,8 @@ class MyActivitiesShop extends React.Component {
             <div className={['layoutsContent', styles.tableClass].join(' ')} style={{ height: this.state.contentHeight }}>
                 <Table
                     ref={this.setTableRef}
-                    scroll={{ x: 1600, y: this.state.contentHeight - 93 }}
+                    scroll={{ x: 1700, y: this.state.contentHeight - 93 }}
+                    className={styles.sepcialActivesTable}
                     bordered={true}
                     columns={columns}
                     dataSource={this.state.dataSource}
