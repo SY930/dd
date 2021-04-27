@@ -12,6 +12,8 @@ import {
     message,
     Modal,
     Checkbox,
+    Row,
+    Col,
 } from 'antd';
 import registerPage from '../../../index';
 import { SHARE_RULES_GROUP, SHARE_RULES_SHOP } from "../../constants/entryCodes";
@@ -528,7 +530,7 @@ export default class ShareRules extends Component {
                 <div style={{ height: 15, background: '#F3F3F3' }} />
                 {
                     !!filteredShareGroups.length && (
-                        <div className={style.bodyContainer} style={{ height: `calc(100% - ${displayHeaderActions ? 123 : 75}px)` }}>
+                        <Row className={style.bodyContainer} gutter={16} style={{ height: `calc(100% - ${displayHeaderActions ? 123 : 75}px)` }}>
                             {
                                 isQuerying && (
                                     <div className={style.spinner}>
@@ -539,27 +541,29 @@ export default class ShareRules extends Component {
                             {
                                 filteredShareGroups.map((shareGroup, index) => {
                                     return (
-                                        <div
+                                        <Col
                                             key={`${index}`}
-                                            className={style.shareGroupWrapper}
-                                            style={{
-                                                width: 'calc(50% - 5px)'
-                                            }}
+
+                                            xs={24} sm={24} md={12} lg={12} xl={8}
+                                        // style={{
+                                        //     width: 'calc(50% - 5px)'
+                                        // }}
                                         >
-                                            <div className={style.shareGroupHeader}>
-                                                <div className={style.shareGroupTitle}>
-                                                    <Checkbox
-                                                        checked={this.checkedIfBatch(shareGroup)}
-                                                        disabled={!this.isMyShareGroup(shareGroup)}
-                                                        onChange={this.changeBatchArr.bind(this, shareGroup)}
-                                                        style={{ marginRight: 10 }}
-                                                    >
-                                                    </Checkbox>
-                                                    {/* {
-                                                        !(ifCanEditName == shareGroup.itemID) ? */}
-                                                    <div className={style.titleDix}>
-                                                        {shareGroup.shareGroupName || '营销活动共享组' + `${index + 1}`}
+                                            <div className={style.shareGroupWrapper}>
+                                                <div className={style.shareGroupHeader}>
+                                                    <div className={style.shareGroupTitle}>
+                                                        <Checkbox
+                                                            checked={this.checkedIfBatch(shareGroup)}
+                                                            disabled={!this.isMyShareGroup(shareGroup)}
+                                                            onChange={this.changeBatchArr.bind(this, shareGroup)}
+                                                            style={{ marginRight: 10 }}
+                                                        >
+                                                        </Checkbox>
                                                         {/* {
+                                                        !(ifCanEditName == shareGroup.itemID) ? */}
+                                                        <div className={style.titleDix}>
+                                                            {shareGroup.shareGroupName || '营销活动共享组' + `${index + 1}`}
+                                                            {/* {
                                                                     this.isMyShareGroup(shareGroup)
                                                                     && <Icon
                                                                         className={style.editNameIcon}
@@ -567,8 +571,8 @@ export default class ShareRules extends Component {
                                                                         type="edit"
                                                                     ></Icon>
                                                                 } */}
-                                                    </div>
-                                                    {/* : <Input
+                                                        </div>
+                                                        {/* : <Input
                                                                 style={{
                                                                     width: '85%',
                                                                 }}
@@ -578,85 +582,88 @@ export default class ShareRules extends Component {
                                                                 maxLength={20}
                                                             ></Input>
                                                     } */}
-                                                </div>
-                                                {
-                                                    shareGroup.shopID > 0 && (
-                                                        <div className={style.shareGroupTitleTip}>
-                                                            {this.getCreateBy(shareGroup)}
-                                                        </div>
-                                                    )
-                                                }
-                                                <div className={style.flexSpacer} />
-                                                {
-                                                    this.isMyShareGroup(shareGroup) ? (
-                                                        <Button
-                                                            type="ghost"
-                                                            style={{
-                                                                marginRight: 10
-                                                            }}
-                                                            onClick={() => this.handleEditShareGroup(shareGroup, index)}
-                                                        >
-                                                            <Icon type="edit" />
-                                                            编辑
-                                                        </Button>
-                                                    ) : (
-                                                            <Tooltip title={`${'只能编辑由'}${this.props.user.shopID > 0 ? '本店铺' : '集团'}${'创建的共享组'}`}>
-                                                                <Button disabled type="ghost" style={{ marginRight: 10 }}>
+                                                    </div>
+                                                    {
+                                                        shareGroup.shopID > 0 && (
+                                                            <div className={style.shareGroupTitleTip}>
+                                                                {this.getCreateBy(shareGroup)}
+                                                            </div>
+                                                        )
+                                                    }
+                                                    {/* <div className={style.flexSpacer} /> */}
+                                                    <div style={{ minWidth: '165px'}}>
+                                                        {
+                                                            this.isMyShareGroup(shareGroup) ? (
+                                                                <Button
+                                                                    type="ghost"
+                                                                    style={{
+                                                                        marginRight: 10
+                                                                    }}
+                                                                    onClick={() => this.handleEditShareGroup(shareGroup, index)}
+                                                                >
                                                                     <Icon type="edit" />
                                                                     编辑
-                                                            </Button>
-                                                            </Tooltip>
-                                                        )
-                                                }
-                                                {
-                                                    this.isMyShareGroup(shareGroup) ? (
-                                                        <Button type="ghost" onClick={() => this.handleDeleteGroup(shareGroup, index)}>
-                                                            <Icon type="delete" />
-                                                            {COMMON_LABEL.delete}
-                                                        </Button>
-                                                    ) : (
-                                                            <Tooltip title={`${'只能删除由'}${this.props.user.shopID > 0 ? '本店铺' : '集团'}${'创建的共享组'}`}>
-                                                                <Button disabled type="ghost">
+                                                                </Button>
+                                                            ) : (
+                                                                <Tooltip title={`${'只能编辑由'}${this.props.user.shopID > 0 ? '本店铺' : '集团'}${'创建的共享组'}`}>
+                                                                    <Button disabled type="ghost" style={{ marginRight: 10 }}>
+                                                                        <Icon type="edit" />
+                                                                        编辑
+                                                                    </Button>
+                                                                </Tooltip>
+                                                            )
+                                                        }
+                                                        {
+                                                            this.isMyShareGroup(shareGroup) ? (
+                                                                <Button type="ghost" onClick={() => this.handleDeleteGroup(shareGroup, index)}>
                                                                     <Icon type="delete" />
                                                                     {COMMON_LABEL.delete}
                                                                 </Button>
-                                                            </Tooltip>
-                                                        )
-                                                }
+                                                            ) : (
+                                                                <Tooltip title={`${'只能删除由'}${this.props.user.shopID > 0 ? '本店铺' : '集团'}${'创建的共享组'}`}>
+                                                                    <Button disabled type="ghost">
+                                                                        <Icon type="delete" />
+                                                                        {COMMON_LABEL.delete}
+                                                                    </Button>
+                                                                </Tooltip>
+                                                            )
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div className={style.shareGroupBody}>
+                                                    {
+                                                        (shareGroup.shareGroupDetailList || []).map(item => {
+                                                            const aa = <span>{item.activityName} {SALE_LABEL.k639ve8m}</span>
+                                                            return (
+                                                                <div className={style.shareGroupItem} key={item.itemID}>
+                                                                    <div className={style.typeTag}>
+                                                                        <span>
+                                                                            {this.getItemTag(item)}
+                                                                        </span>
+                                                                    </div>
+                                                                    <div className={style.itemTitle}>
+                                                                        {item.action !== 2 ? item.activityName : aa}
+                                                                    </div>
+                                                                    <div className={style.itemAction}>
+                                                                        {
+                                                                            (((shareGroup.shareGroupDetailList || []).length) > 2 && item.action !== 2) && (
+                                                                                <Popconfirm title={SALE_LABEL.k5dnw1q3} onConfirm={() => this.handleRemoveItemFromGroup(shareGroup, item)}>
+                                                                                    <a disabled={!this.isMyShareGroup(shareGroup)}>{COMMON_LABEL.delete}</a>
+                                                                                </Popconfirm>
+                                                                            )
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                            )
+                                                        })
+                                                    }
+                                                </div>
                                             </div>
-                                            <div className={style.shareGroupBody}>
-                                                {
-                                                    (shareGroup.shareGroupDetailList || []).map(item => {
-                                                        const aa = <span>{item.activityName} {SALE_LABEL.k639ve8m}</span>
-                                                        return (
-                                                            <div className={style.shareGroupItem} key={item.itemID}>
-                                                                <div className={style.typeTag}>
-                                                                    <span>
-                                                                        {this.getItemTag(item)}
-                                                                    </span>
-                                                                </div>
-                                                                <div className={style.itemTitle}>
-                                                                    {item.action !== 2 ? item.activityName : aa}
-                                                                </div>
-                                                                <div className={style.itemAction}>
-                                                                    {
-                                                                        (((shareGroup.shareGroupDetailList || []).length) > 2 && item.action !== 2) && (
-                                                                            <Popconfirm title={SALE_LABEL.k5dnw1q3} onConfirm={() => this.handleRemoveItemFromGroup(shareGroup, item)}>
-                                                                                <a disabled={!this.isMyShareGroup(shareGroup)}>{COMMON_LABEL.delete}</a>
-                                                                            </Popconfirm>
-                                                                        )
-                                                                    }
-                                                                </div>
-                                                            </div>
-                                                        )
-                                                    })
-                                                }
-                                            </div>
-                                        </div>
+                                        </Col>
                                     )
                                 })
                             }
-                        </div>
+                        </Row>
                     )
                 }
                 {
