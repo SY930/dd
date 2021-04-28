@@ -1644,12 +1644,12 @@ class MySpecialActivities extends React.Component {
             url = preUrl
         }
         const urlMap = {
-            20: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel =${channelContent}`,
-            22: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel =${channelContent}`,
-            30: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel =${channelContent}`,
-            21: url + `/newm/eventFree?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel =${channelContent}`,
-            65: url + `/newm/shareFission?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel =${channelContent}`,
-            68: url + `/newm/recommendInvite?groupID=${groupIdData}&eventItemID=${itemIdData}&mpID=${mpID}&launchChannel =${channelContent}`,
+            20: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
+            22: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
+            30: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
+            21: url + `/newm/eventFree?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
+            65: url + `/newm/shareFission?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
+            68: url + `/newm/recommendInvite?groupID=${groupIdData}&eventItemID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
         }
         /*if(actList.includes(String(eventWay))) {
             url = url +    `/newm/eventCont?groupID=${groupID}&eventID=${itemID}`
