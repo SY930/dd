@@ -330,8 +330,7 @@ class PromotionCreateModal extends Component {
         ];
         const { currentCategoryIndex } = this.state;
         const displayList = currentCategoryIndex === 0 ? ALL_PROMOTION_CATEGORIES : [ALL_PROMOTION_CATEGORIES[currentCategoryIndex - 1]];
-        // const speController = groupID == '295896'
-        const speController = groupID == '11157'
+        const speController = groupID == '295896'
         //集团id：295896 
         // 开通桌边砍活动
         return (
