@@ -428,7 +428,6 @@ class NewCustomerPage extends Component {
 
         let keeperFlag = avaHouseKeeperGroups.includes(groupID)
         let intelligentFlag = avaIntelligentGiftRuleGroups.includes(groupID)
-
         // 管家活动列表是否为空
         let isKeeperEmpty = false
 
@@ -460,6 +459,8 @@ class NewCustomerPage extends Component {
 
     render() {
         const { whiteList, v3visible, curKey } = this.state;
+        const state = getStore().getState();
+        const { groupID } = state.user.get('accountInfo').toJS();
         const { intl } = this.props;
         const k6316hto = intl.formatMessage(SALE_STRING.k6316hto);
         const k6316hd0 = intl.formatMessage(SALE_STRING.k6316hd0);
@@ -519,10 +520,12 @@ class NewCustomerPage extends Component {
          */
         // auth-插件授权-列表显示过滤
         var { displayList, allMenu } = this.checkAuth(allMenus, ALL_PROMOTION_CATEGORIES)
-
         // 管家活动-列表显示过滤
         var { displayList, allMenu } = this.filterMenuByGroup(displayList, allMenu)
-
+        // const speController = groupID == '295896'
+        const speController = groupID == '11157'
+        //集团id：295896 
+        // 开通桌边砍活动
         return (
             <div className={selfStyle.newDiv}>
                 <div className={selfStyle.titleArea}>营销活动</div>
@@ -546,7 +549,7 @@ class NewCustomerPage extends Component {
                                 <div className={selfStyle.contentTitle}>{title}</div>
                                 <div className={selfStyle.cardWrapper}>
                                     {
-                                        list.filter(item => !item.isOffline).map((item, index) => (
+                                        list.filter(item => !item.isOffline || (speController && item.key == '67')).map((item, index) => (
                                             <NewPromotionCard
                                                 size="special"
                                                 key={item.key}

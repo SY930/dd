@@ -286,6 +286,8 @@ class PromotionCreateModal extends Component {
         this.setState(ps => ({ v3visible: !ps.v3visible }));
     }
     renderModalContent() {
+        const state = getStore().getState();
+        const { groupID } = state.user.get('accountInfo').toJS();
         const {whiteList, v3visible, curKey} = this.state;
         const { intl } = this.props;
         const k6316hto = intl.formatMessage(SALE_STRING.k6316hto);
@@ -328,6 +330,10 @@ class PromotionCreateModal extends Component {
         ];
         const { currentCategoryIndex } = this.state;
         const displayList = currentCategoryIndex === 0 ? ALL_PROMOTION_CATEGORIES : [ALL_PROMOTION_CATEGORIES[currentCategoryIndex - 1]];
+        // const speController = groupID == '295896'
+        const speController = groupID == '11157'
+        //集团id：295896 
+        // 开通桌边砍活动
         return (
             <div className={[selfStyle.flexWrapper, selfStyle.contentWrapper].join(' ')}>
                 <div className={selfStyle.menuArea}>
@@ -349,7 +355,7 @@ class PromotionCreateModal extends Component {
                                 <div className={selfStyle.contentTitle}>{title}</div>
                                 <div className={selfStyle.cardWrapper}>
                                     {
-                                        list.filter(item => !item.isOffline).map((item, index) => (
+                                        list.filter(item => !item.isOffline  || (speController && item.key == '67')).map((item, index) => (
                                             <NewPromotionCard
                                                 size="small"
                                                 key={item.key}
