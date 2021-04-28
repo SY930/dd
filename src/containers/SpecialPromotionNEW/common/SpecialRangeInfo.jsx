@@ -637,13 +637,7 @@ class SpecialRangeInfo extends React.Component {
                         <FormItem
                             label={<span>
                                 <span>系统过期自动退</span>
-                                <Tooltip title={
-                                    <div>
-                                       debugger
-                                    </div>
-                                }>
-                                    <Icon style={{ marginLeft: 5, marginRight: -5 }} type="question-circle" />
-                                </Tooltip></span>}
+                            </span>}
                             className={styles.noPadding}
                             wrapperCol={{ span: 17 }}
                             labelCol={{ span: 4 }}
