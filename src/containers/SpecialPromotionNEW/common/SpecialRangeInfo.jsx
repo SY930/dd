@@ -44,7 +44,7 @@ class SpecialRangeInfo extends React.Component {
             partInTimesNoValid: 0, // 最大参与次数(限制次数不限制周期使用)
             partInTimesNoValidStatus: 'success',
             isVipBirthdayMonth: '0', // 是否本月生日才能使用
-            autoFeedback: '1',
+            autoRefund: 0,
             cardLevelID: '0', // 会员等级
             maxPartInPerson: '', // 最大参与人数
             maxPartInPersonStatus: 'success',
@@ -139,7 +139,7 @@ class SpecialRangeInfo extends React.Component {
                 sendPoints: specialPromotion.sendPoints, // 赠送积分数
                 countCycleDays: specialPromotion.countCycleDays, // 参与周期
                 isVipBirthdayMonth: `${specialPromotion.isVipBirthdayMonth}`, // 是否本月生日才能使用
-                autoFeedback: `${specialPromotion.autoFeedback || 1}`,
+                autoRefund: specialPromotion.autoRefund === 1 ? 1 : 0,
                 maxPartInPerson: specialPromotion.maxPartInPerson,
                 cardLevelID: specialPromotion.cardLevelID || '0',
                 cardLevelIDList: specialPromotion.cardLevelIDList || [],
@@ -171,7 +171,7 @@ class SpecialRangeInfo extends React.Component {
             partInTimes, // 最大参与次数
             partInTimesNoValid, // 最大参与次数
             isVipBirthdayMonth, // 是否本月生日才能使用
-            autoFeedback,
+            autoRefund,
             maxPartInPerson, // 参与人数
             maxPartInPersonStatus,
             autoRegister,
@@ -181,7 +181,7 @@ class SpecialRangeInfo extends React.Component {
         const opts = {
             rewardOnly,
             isVipBirthdayMonth,
-            autoFeedback,
+            autoRefund,
             maxPartInPerson,
             cardLevelID: this.state.cardLevelID || '0',
             cardLevelIDList: this.state.cardLevelIDList || [],
@@ -570,9 +570,9 @@ class SpecialRangeInfo extends React.Component {
             isVipBirthdayMonth: e.target.value,
         });
     }
-    handleAutoFeedbackChange = (e) => {
+    handleautoRefundChange = (e) => {
         this.setState({
-            autoFeedback: e.target.value,
+            autoRefund: e.target.value,
         })
     }
     onCardLevelChange(obj) {
@@ -584,7 +584,6 @@ class SpecialRangeInfo extends React.Component {
         });
     }
     render() {
-        console.log('the type is', this.props.type)
         return (
             <Form>
                 {this.props.type === '21' ? this.renderFreeGetJoinRange() : null}
@@ -634,7 +633,6 @@ class SpecialRangeInfo extends React.Component {
                         </FormItem> : null
                 }
                 {
-                    // debugger
                     this.props.type == '30' ?
                         <FormItem
                             label={<span>
@@ -650,9 +648,9 @@ class SpecialRangeInfo extends React.Component {
                             wrapperCol={{ span: 17 }}
                             labelCol={{ span: 4 }}
                         >
-                            <RadioGroup onChange={this.handleAutoFeedbackChange} value={this.state.autoFeedback}>
-                                <Radio value={'0'}>自动退积分</Radio>
-                                <Radio value={'1'}>不支持自动退积分</Radio>
+                            <RadioGroup onChange={this.handleautoRefundChange} value={this.state.autoRefund}>
+                                <Radio value={1}>自动退积分</Radio>
+                                <Radio value={0}>不支持自动退积分</Radio>
                             </RadioGroup>
                         </FormItem> : null
                 }
