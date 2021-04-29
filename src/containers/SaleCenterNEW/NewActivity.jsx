@@ -163,6 +163,8 @@ class NewActivity extends React.Component {
                         <div className={headerClasses}>
                             <span  className={styles.customHeader}>
                                 {COMMON_LABEL.create} {SALE_LABEL.k5m4q17q}
+                            </span>
+                            <span className={styles.jumpToCreate}>
                                 <Button
                                     type="ghost"
                                     icon="rollback"
@@ -171,7 +173,7 @@ class NewActivity extends React.Component {
                                             const menuID = this.props.user.menuList.find(tab => tab.entryCode === (this.props.user.shopID > 0 ? SALE_CENTER_PAGE_SHOP : SALE_CENTER_PAGE)).menuID;
                                             menuID && jumpPage({ menuID })
                                         }
-                                }>{SALE_LABEL.k5nh24lx}</Button>
+                                    }>{SALE_LABEL.k5nh24lx}</Button>
                             </span>
                         </div>
                     </div>

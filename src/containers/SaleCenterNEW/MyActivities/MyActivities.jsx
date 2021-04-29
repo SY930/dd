@@ -14,7 +14,7 @@ import { connect } from 'react-redux';
 import {
     Table, Icon, Select, DatePicker,
     Button, Modal, Row, Col, message,
-    TreeSelect,
+    TreeSelect, Switch,
     Spin,
 } from 'antd';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
@@ -337,18 +337,15 @@ class MyActivities extends React.Component {
     }
 
     confirmDelete = (record) => {
+        const delTitle = `【${record.promotionName ? record.promotionName.length > 20 ? record.promotionName.substring(0, 20) + '...' : record.promotionName : ''}】`;
         confirm({
-            title: <span style={{ color: '#434343' }}>{SALE_LABEL.k5dnw1q3}</span>,
+            width: 433,
+            iconType: 'exclamation-circle',
+            title: <span style={{ color: '#434343' }}>您确定要删除{delTitle}吗 ？</span>,
             content: (
-                <div>
-                    <span style={{ color: '#787878' }}>
-                        {SALE_LABEL.k5do6vse}{`【${record.promotionName ? record.promotionName.length > 20 ? record.promotionName.substring(0, 20) + '...' : record.promotionName : ''}】`}
-                    </span>
-                    <br />
-                    <span style={{ color: '#aeaeae' }}>
-                        {SALE_LABEL.k5do4z54}
-                    </span>
-                </div>
+                <span style={{ color: '#aeaeae' }}>
+                    {SALE_LABEL.k5do4z54}
+                </span>
             ),
             onOk: () => {
                 const params = {
@@ -795,22 +792,36 @@ class MyActivities extends React.Component {
                     <span className={styles.customHeader}>
                         {this.isOnlinePromotionPage() ? SALE_LABEL.k5dbdped : SALE_LABEL.k5dbefat}
                     </span>
-                    {
-                        !isHuaTian() && !this.isOnlinePromotionPage() && (
-                            <Authority rightCode={AUTO_RUN_QUERY}>
-                                <Button
-                                    onClick={() => {
-                                        queryPromotionAutoRunList();
-                                        openPromotionAutoRunListModal();
-                                    }}
-                                    icon="plus"
-                                    className={styles.customPrimaryButton}
-                                >
-                                    {SALE_LABEL.k5dbiuws}
-                                </Button>
-                            </Authority>
-                        )
-                    }
+                    <div>
+                        {
+                            !isHuaTian() && !this.isOnlinePromotionPage() && (
+                                <Authority rightCode={AUTO_RUN_QUERY}>
+                                    <Button
+                                        onClick={() => {
+                                            queryPromotionAutoRunList();
+                                            openPromotionAutoRunListModal();
+                                        }}
+                                        icon="plus"
+                                        className={styles.customPrimaryButton}
+                                    >
+                                        {SALE_LABEL.k5dbiuws}
+                                    </Button>
+                                </Authority>
+                            )
+                        }
+                        {
+                            !this.isOnlinePromotionPage() && (
+                                <span>
+                                    <Authority rightCode={BASIC_PROMOTION_QUERY}>
+                                        <Button
+                                            type="ghost"
+                                            onClick={() => this.setState({ exportVisible: true })}
+                                        ><Icon type="export" />{COMMON_LABEL.export}</Button>
+                                    </Authority>
+                                </span>
+                            )
+                        }
+                    </div>
                 </div>
             </div>
         );
@@ -930,18 +941,6 @@ class MyActivities extends React.Component {
                         <li>
                             <a onClick={this.toggleExpandState}>{SALE_LABEL.k5dldshc} {this.state.expand ? <Icon type="caret-up" /> : <Icon type="caret-down" />}</a>
                         </li>
-                        {
-                            !this.isOnlinePromotionPage() && (
-                                <li>
-                                    <Authority rightCode={BASIC_PROMOTION_QUERY}>
-                                        <Button
-                                            type="ghost"
-                                            onClick={() => this.setState({ exportVisible: true })}
-                                        ><Icon type="export" />{COMMON_LABEL.export}</Button>
-                                    </Authority>
-                                </li>
-                            )
-                        }
                     </ul>
                 </div>
                 {this.renderAdvancedFilter()}
@@ -1159,32 +1158,9 @@ class MyActivities extends React.Component {
                 className: 'TableTxtCenter',
                 width: 180,
                 render: (text, record, index) => {
-                    const buttonText = (record.isActive == '1' ? COMMON_LABEL.disable : COMMON_LABEL.enable);
                     const isGroupPro = record.maintenanceLevel == '0';
-                    const isToggleActiveDisabled = (() => {
-                        if (!isGroupOfHuaTianGroupList()) {
-                            return !isGroupPro
-                        }
-                        if (isHuaTian()) {
-                            return record.userType == 2 || record.userType == 0;
-                        }
-                        if (isBrandOfHuaTianGroupList()) {
-                            return record.userType == 1 || record.userType == 3 || !isGroupPro;
-                        }
-                    })()
                     return (
                         <span>
-                            <Authority rightCode={BASIC_PROMOTION_UPDATE}>
-                                <a
-                                    href="#"
-                                    disabled={isToggleActiveDisabled}
-                                    onClick={() => {
-                                        this.handleDisableClickEvent(text, record, index);
-                                    }}
-                                >
-                                    {buttonText}
-                                </a>
-                            </Authority>
                             <Authority rightCode={BASIC_LOOK_PROMOTION_QUERY}>
                                 <a
                                     href="#"
@@ -1240,7 +1216,45 @@ class MyActivities extends React.Component {
                 },
             },
             {
+                title: '状态',
+                key: 'status',
+                dataIndex: 'status',
+                width: 80,
+                className:'TableTxtCenter',
+                render: (text, record, index) => {
+                    const defaultChecked = (record.isActive == '1' ? true : false); // 开启 / 禁用
+                    const isGroupPro = record.maintenanceLevel == '0';
+                    const isToggleActiveDisabled = (() => {
+                        if (!isGroupOfHuaTianGroupList()) {
+                            return !isGroupPro
+                        }
+                        if (isHuaTian()) {
+                            return record.userType == 2 || record.userType == 0;
+                        }
+                        if (isBrandOfHuaTianGroupList()) {
+                            return record.userType == 1 || record.userType == 3 || !isGroupPro;
+                        }
+                    })()
+                    return(
+                        <Authority rightCode={BASIC_PROMOTION_UPDATE}>
+                            <Switch
+                                // size="small"
+                                className={styles.switcher}
+                                checkedChildren={<Icon type="check" className={styles.actionIconPostion} />}
+                                unCheckedChildren={<Icon type="close" className={styles.actionIconPostion} />}
+                                checked={defaultChecked}
+                                onChange={() => {
+                                    this.handleDisableClickEvent(record.operation, record, index);
+                                }}
+                                disabled={isToggleActiveDisabled}
+                            />
+                        </Authority>
+                    )
+                }
+            },
+            {
                 title: COMMON_LABEL.sort,
+                className: 'TableTxtCenter',
                 dataIndex: 'sortOrder',
                 key: 'sortOrder',
                 width: 120,
@@ -1293,7 +1307,7 @@ class MyActivities extends React.Component {
 
             {
                 title: SALE_LABEL.k5dml2ik,
-                className: 'TableTxtCenter',
+                // className: 'TableTxtCenter',
                 dataIndex: 'validDate',
                 key: '',
                 width: 180,
@@ -1301,11 +1315,13 @@ class MyActivities extends React.Component {
                     if (validDate.start === 20000101 || validDate.end === 29991231) {
                         return SALE_LABEL.k5dn26n4;
                     }
-                    return `${validDate.start} - ${validDate.end}`;
+                    const text = `${moment(String(validDate.start)).format('YYYY.MM.DD')} / ${moment(String(validDate.end)).format('YYYY.MM.DD')}`;
+                    return text;
                 },
             },
             {
                 title: SALE_LABEL.k5dli0fu,
+                className: 'TableTxtCenter',
                 dataIndex: 'status',
                 key: 'valid',
                 width: 72,
@@ -1355,7 +1371,8 @@ class MyActivities extends React.Component {
             <div className={`layoutsContent ${styles.tableClass}`} style={{ height: this.state.contentHeight }}>
                 <Table
                     ref={this.setTableRef}
-                    scroll={{ x: 1630, y: this.state.contentHeight - 93 }}
+                    scroll={{ x: 1700, y: this.state.contentHeight - 93 }}
+                    className={styles.sepcialActivesTable}
                     bordered={true}
                     columns={columns}
                     dataSource={this.state.dataSource}

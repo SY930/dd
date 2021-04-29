@@ -239,7 +239,7 @@ class SpecialPromotionDetail extends React.Component {
             }).title
         }
         return (
-            <div>
+            <div style={{marginBottom: 20}}>
                 <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d2c8987eai0135)}</h5>
                 <Row>
                     <Col span={4} style={{ textAlign: 'right' }}>{this.props.intl.formatMessage(STRING_SPE.d4h177f79da1218)}</Col>
@@ -955,17 +955,18 @@ class SpecialPromotionDetail extends React.Component {
             <div className={styles.searchBar}>
                 <Col span={24} style={{
                     padding: '0px',
+                    marginTop: 20,
                 }}
                 >
                     <h5><span></span>参与记录</h5>
                 </Col>
                 <Col span={24}>
-                    <Col span={3}>{this.props.intl.formatMessage(STRING_SPE.d5672ba595d82123)}</Col>
+                    <Col span={2} style={{ marginTop: 4}}>{this.props.intl.formatMessage(STRING_SPE.d5672ba595d82123)}</Col>
                     <Col span={6}><Input onBlur={this.handleInputChange} /></Col>
-                    <Col span={4}><Button type="primary" onClick={this.resetQuery}>{this.props.intl.formatMessage(STRING_SPE.da9060bn7g2223)}</Button></Col>
+                    <Col span={3}><Button type="primary" onClick={this.resetQuery}>{this.props.intl.formatMessage(STRING_SPE.da9060bn7g2223)}</Button></Col>
                     {
                         exportablePromotionTypes.includes(`${way}`) && (
-                            <Col span={4}>
+                            <Col span={3}>
                                 <Popover
                                     content={this.renderPopOver()}
                                     placement="topRight"

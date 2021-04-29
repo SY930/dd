@@ -7,7 +7,7 @@ import { COMMON_LABEL } from 'i18n/common';
 import {
     Table, Input, Select, DatePicker,
     Button, Modal, message,
-    Spin, Icon, Alert
+    Spin, Icon, Alert, Switch,
 } from 'antd';
 import { throttle, isEmpty } from 'lodash';
 import { jumpPage, closePage } from '@hualala/platform-base'
@@ -238,9 +238,10 @@ class MySpecialActivities extends React.Component {
             qrItemID: '', // 点击提取链接/二维码 当前活动的itemID
             giftArr: [],
             allWeChatAccountList: [],
-            pushMessageMpID: '',
-            groupID: '',
-            isCopy: false,
+            pushMessageMpID:'',
+            groupID:'',
+            channelContent: '',
+            channelOptions: _.range(0, 10).map(item => ({ label: `渠道${item + 1}`, value: `${item}` })),
         };
         this.cfg = {
             eventWay: [
@@ -551,13 +552,23 @@ class MySpecialActivities extends React.Component {
         })
         this.handleCopyUrl(null, mpId);
     }
+
+    handleCheckText = (value) => {
+        let v = Number(value);
+        this.setState({
+            channelContent: v + 1,
+        }, () => {
+            this.handleCopyUrl()
+        })
+    }
+
     // 渲染小程序列表
     renderApp() {
         const { apps = [] } = this.state;
-        return (
-            <Select style={{ width: '40%', margin: '0 10px' }} onChange={this.handleAppChange}>
-                {apps.map(x => {
-                    return <Option value={x.appID} >{x.nickName || '缺失nickName子段'}</Option>
+        return(
+            <Select style={{ width: '40%', margin: '0 10px'}} onChange={this.handleAppChange}>
+                {apps.map((x, index)=>{
+                    return <Option key={index} value={x.appID} >{x.nickName || '缺失nickName子段'}</Option>
                 })}
             </Select>
         )
@@ -639,10 +650,29 @@ class MySpecialActivities extends React.Component {
         )
     }
 
+    renderChannels() {
+        const { channelOptions } = this.state;
+        return (
+            <Select
+                placeholder="请填写投放渠道"
+                style={{
+                    width: '51%', margin: '0 10px'
+                }}
+                onChange={this.handleCheckText}
+            >
+                {
+                    channelOptions.map(({ value, label }) => <Option key={value} value={value} label={label}>{label}</Option>)
+                }
+
+            </Select>
+        )
+
+    }
+
     // 渲染复制链接modal内容
-    renderCopyUrlModal() {
-        const { urlContent, eventWay, qrCodeImage, xcxLoad } = this.state
-        const hideCTBox = [66, 79, 82]; // 不显示餐厅
+    renderCopyUrlModal () {
+        const  {urlContent, eventWay, qrCodeImage, xcxLoad, channelContent} = this.state
+        const hideCTBox = [66,79,82]; // 不显示餐厅
         const hideWXBox = [22]; // 不显示微信
         return (<div className={indexStyles.copyCont}>
             {
@@ -656,7 +686,17 @@ class MySpecialActivities extends React.Component {
                                 <div className={indexStyles.label}>请选择公众号</div>
                                 {this.renderMp()}
                             </div>
-
+                            <div className={indexStyles.leftMpConent} >
+                                <div className={indexStyles.label}>请填写投放渠道</div>
+                                {this.renderChannels()}
+                                {/* <Input
+                                    style={{
+                                        width: '51%', margin: '0 10px'
+                                    }}
+                                    onChange={this.handleCheckText}
+                                    value={channelContent}
+                                /> */}
+                            </div>
 
                             <div className={indexStyles.copyWrapHeader}>
                                 <div className={indexStyles.urlText}>{urlContent}</div>
@@ -738,7 +778,7 @@ class MySpecialActivities extends React.Component {
                     visible={isShowCopyUrl}
                     onCancel={this.hideCopyUrlModal}
                     footer={null}
-                    width={980}
+                    width={900}
                 >
                     {this.renderCopyUrlModal()}
                 </Modal>
@@ -811,6 +851,14 @@ class MySpecialActivities extends React.Component {
             <div className="layoutsTool" style={{ height: '64px' }}>
                 <div className={headerClasses}>
                     <span className={styles.customHeader}>{this.props.intl.formatMessage(STRING_SPE.dd5aa016c5d869)}</span>
+                    <span className={styles.exportBtn}>
+                        <Authority rightCode={SPECIAL_PROMOTION_QUERY}>
+                            <Button
+                                type="ghost"
+                                onClick={() => this.setState({ exportVisible: true })}
+                            ><Icon type="export" />{COMMON_LABEL.export}</Button>
+                        </Authority>
+                    </span>
                 </div>
             </div>
         );
@@ -904,15 +952,6 @@ class MySpecialActivities extends React.Component {
                                 </Button>
                             </Authority>
                         </li>
-                        <li>
-                            <Authority rightCode={SPECIAL_PROMOTION_QUERY}>
-                                <Button
-                                    type="ghost"
-                                    onClick={() => this.setState({ exportVisible: true })}
-                                ><Icon type="export" />{COMMON_LABEL.export}</Button>
-                            </Authority>
-                        </li>
-
                     </ul>
                 </div>
             </div>
@@ -1046,7 +1085,7 @@ class MySpecialActivities extends React.Component {
             {
                 title: COMMON_LABEL.actions,
                 key: 'operation',
-                width: 380,
+                width: 300,
                 // fixed:'left',
                 render: (text, record, index) => {
                     const statusState = (
@@ -1054,36 +1093,18 @@ class MySpecialActivities extends React.Component {
                         &&
                         (record.status != '0' && record.status != '1' && record.status != '5' && record.status != '21')
                     );
-                    const buttonText = (record.isActive == '1' ? COMMON_LABEL.disable : COMMON_LABEL.enable);
-                    if (record.eventWay === 80) {
-                        return this.renderPayHaveGift(text, index, record)
+                    if(record.eventWay === 80) {
+                        return this.renderPayHaveGift(text,index,record)
                     }
                     return (<span>
-                        <a
-                            href="#"
-                            className={(record.isActive == '-1' || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) || record.eventWay === 80 ? styles.textDisabled : null}
-                            onClick={(e) => {
-                                if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80) {
-                                    e.preventDefault();
-                                    return;
-                                }
-                                if (Number(record.eventWay) === 70) {
-                                    message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
-                                    return;
-                                }
-                                record.isActive == '-1' || statusState ? null :
-                                    this.handleDisableClickEvent(text, record, index, null, `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3831197)}`);
-                            }}
-                        >
-                            {buttonText}</a>
                         <Authority rightCode={SPECIAL_PROMOTION_UPDATE}>
                             <a
                                 href="#"
-                                className={
-                                    record.eventWay == '64' ? null :
-                                        record.isActive != '0' || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) || record.eventWay === 80
-                                            ? styles.textDisabled
-                                            : null
+                                disabled={
+                                    record.eventWay == '64' ? null : 
+                                    record.isActive != '0' || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) || record.eventWay === 80
+                                        ? true
+                                        : null
                                 }
                                 onClick={(e) => {
                                     if (record.eventWay == '64') {
@@ -1154,7 +1175,7 @@ class MySpecialActivities extends React.Component {
                         <Authority rightCode={SPECIAL_PROMOTION_DELETE}>
                             <a
                                 href="#"
-                                className={record.isActive != '0' || record.userCount != 0 || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80 ? styles.textDisabled : null}
+                                disabled={record.isActive != '0' || record.userCount != 0 || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80 ? true : null}
                                 onClick={() => {
                                     if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80) {
                                         return;
@@ -1170,7 +1191,7 @@ class MySpecialActivities extends React.Component {
                                 {COMMON_LABEL.delete}
                             </a>
                         </Authority>
-                        <a
+                        {/* <a
                             href="#"
                             className={record.isActive == '-1' || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80 ? styles.textDisabled : null}
                             onClick={() => {
@@ -1185,8 +1206,8 @@ class MySpecialActivities extends React.Component {
                                     this.handelStopEvent(text, record, index, '-1', `${this.props.intl.formatMessage(STRING_SPE.d17012f5c16c32211)}`);
                             }}
                         >
-                            {/* {this.props.intl.formatMessage(STRING_SPE.du3bnfobe3346)} */}
-                        </a>
+                        {this.props.intl.formatMessage(STRING_SPE.du3bnfobe3346)}
+                        </a> */}
 
 
                         <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY}>
@@ -1295,11 +1316,50 @@ class MySpecialActivities extends React.Component {
                 },
             },
             {
+                title: '状态',
+                key: 'status',
+                dataIndex: 'status',
+                width: 80,
+                className:'TableTxtCenter',
+                render: (text, record, index) => {
+                    console.log('record: ', record, record.eventWay);
+                    const defaultChecked = (record.isActive == '1' ? true : false);
+                    const statusState = (
+                        (record.eventWay == '50' || record.eventWay == '53')
+                        &&
+                        (record.status != '0' && record.status != '1' && record.status != '5' && record.status != '21')
+                    );
+                    return(
+                        <Switch
+                        // size="small"
+                        className={styles.switcher}
+                        checkedChildren={<Icon type="check" className={styles.actionIconPostion} />}
+                        unCheckedChildren={<Icon type="close" className={styles.actionIconPostion} />}
+                        checked={defaultChecked}
+                        onChange={(e) => {
+                            if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80) {
+                                e.preventDefault();
+                                return;
+                            }
+                            if (Number(record.eventWay) === 70) {
+                                message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
+                                return;
+                            }
+                            record.isActive == '-1' || statusState ? null :
+                                this.handleDisableClickEvent(record.operation, record, index, null, `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3831197)}`);
+                        }}
+                        disabled={(record.isActive == '-1' || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) || record.eventWay === 80 ? true : false}
+                    />
+                    )
+                }
+            },
+            {
                 title: COMMON_LABEL.sort,
+                className:'TableTxtCenter',
                 dataIndex: 'sortOrder',
                 key: 'sortOrder',
                 width: 120,
-                // fixed:'left',
+                // fixed:'center',
                 render: (text, record, index) => {
                     const canNotSortUp = this.state.pageNo == 1 && index == 0;
                     const canNotSortDown = (this.state.pageNo - 1) * this.state.pageSizes + index + 1 == this.state.total;
@@ -1362,13 +1422,13 @@ class MySpecialActivities extends React.Component {
                 className: 'TableTxtCenter',
                 dataIndex: 'validDate',
                 key: '',
-                width: 200,
+                width: 180,
                 render: (validDate) => {
                     if (validDate.start === '0' || validDate.end === '0' ||
                         validDate.start === '20000101' || validDate.end === '29991231') {
                         return `${this.props.intl.formatMessage(STRING_SPE.d31ei98dbgi21253)}`;
                     }
-                    return `${moment(validDate.start, 'YYYY/MM/DD').format('YYYY/MM/DD')} - ${moment(validDate.end, 'YYYY/MM/DD').format('YYYY/MM/DD')}`;
+                    return `${moment(validDate.start, 'YYYY-MM-DD').format('YYYY-MM-DD')} / ${moment(validDate.end, 'YYYY-MM-DD').format('YYYY-MM-DD')}`;
                 },
             },
             {
@@ -1405,10 +1465,14 @@ class MySpecialActivities extends React.Component {
             },
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3711176)}`,
+                className: 'TableTxtCenter',
                 dataIndex: 'isActive',
                 key: 'isActive',
                 width: 100,
                 render: (isActive) => {
+                    // db60c8ac0a3715210  已终止
+                    // db60c8ac0a371314 已启用
+                    // d16hh1kkf9914292 已禁用
                     return isActive == '-1' ? `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3715210)}` : isActive == '1' ? `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a371314)}` : `${this.props.intl.formatMessage(STRING_SPE.d16hh1kkf9914292)}`;
                 },
             },
@@ -1418,6 +1482,7 @@ class MySpecialActivities extends React.Component {
             <div className={`layoutsContent ${styles.tableClass}`}>
                 <Table
                     ref={this.setTableRef}
+                    className={styles.sepcialActivesTable}
                     bordered={true}
                     columns={columns}
                     dataSource={this.state.dataSource}
@@ -1478,15 +1543,12 @@ class MySpecialActivities extends React.Component {
     }
     // 删除
     checkDeleteInfo(text, record) {
+        const delTitle = (<span>【{record.eventName}】</span>)
         confirm({
-            title: `${this.props.intl.formatMessage(STRING_SPE.d34ikef74448196)}`,
+            width: 433,
+            title: <span style={{ color: '#434343' }}>您确定要删除{delTitle}吗 ？</span>,
             content: (
-                <div>
-                    {this.props.intl.formatMessage(STRING_SPE.d454fcf3i54910)}
-                    【<span>{record.eventName}</span>】
-                    <br />
-                    <span>{this.props.intl.formatMessage(STRING_SPE.db60c90bb48b034)}~</span>
-                </div>
+                <span>{this.props.intl.formatMessage(STRING_SPE.db60c90bb48b034)}~</span>
             ),
             footer: `${this.props.intl.formatMessage(STRING_SPE.db60c90bb48b034)}`,
             onOk: () => {
@@ -1560,8 +1622,8 @@ class MySpecialActivities extends React.Component {
         })
     }
 
-    handleCopyUrl = (record, mpId) => {
-        const { pushMessageMpID } = this.state;
+    handleCopyUrl = (record,mpId) => {
+        const { pushMessageMpID, channelContent } = this.state;
         let mpID = mpId ? mpId : pushMessageMpID;
         let eventWayData, groupIdData, itemIdData;
         const testUrl = 'https://dohko.m.hualala.com';
@@ -1582,12 +1644,12 @@ class MySpecialActivities extends React.Component {
             url = preUrl
         }
         const urlMap = {
-            20: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}`,
-            22: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}`,
-            30: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}`,
-            21: url + `/newm/eventFree?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}`,
-            65: url + `/newm/shareFission?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}`,
-            68: url + `/newm/recommendInvite?groupID=${groupIdData}&eventItemID=${itemIdData}&mpID=${mpID}`,
+            20: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
+            22: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
+            30: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
+            21: url + `/newm/eventFree?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
+            65: url + `/newm/shareFission?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
+            68: url + `/newm/recommendInvite?groupID=${groupIdData}&eventItemID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
         }
         /*if(actList.includes(String(eventWay))) {
             url = url +    `/newm/eventCont?groupID=${groupID}&eventID=${itemID}`
@@ -1748,9 +1810,10 @@ class MySpecialActivities extends React.Component {
                 title={this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3955121)}
                 maskClosable={false}
                 visible={this.state.visible}
-                footer={<Button onClick={this.handleClose}>{COMMON_LABEL.close}</Button>}
-                closable={false}
-                width="750px"
+                footer={<Button onClick={this.handleClose}>{ COMMON_LABEL.close }</Button>}
+                // closable={false}
+                width="700px"
+                onCancel={this.handleClose}
             >
                 {renderContentOfTheModal}
             </Modal>

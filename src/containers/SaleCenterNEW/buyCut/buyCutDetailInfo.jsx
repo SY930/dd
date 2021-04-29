@@ -99,18 +99,44 @@ class BuyCutDetailInfo extends React.Component {
 
         // distype  
         if(ruleType == 1){
-            if(cutWay == 1 || cutWay == 3){
+            if(cutWay == 1 || cutWay == 3 || cutWay == 4){
                 if (stageAmountFlag && freeAmountFlag) {
-                    this.props.setPromotionDetail({
-                        rule: {
-                            disType: cutWay == 1 ? 1 : 31,
-                            stageType: 0,
-                            targetScope,
-                            stageAmount,
-                            freeAmount: parseFloat(freeAmount),
-                        },
-                    });
-                    return true;
+                    if(cutWay == 1){
+                        this.props.setPromotionDetail({
+                            rule: {
+                                disType: 1,
+                                stageType: 0,
+                                targetScope,
+                                stageAmount,
+                                freeAmount: parseFloat(freeAmount),
+                            },
+                        });
+                        return true;
+                    }
+                    if(cutWay == 3){
+                        this.props.setPromotionDetail({
+                            rule: {
+                                disType: 31,
+                                stageType: 0,
+                                targetScope,
+                                stageAmount,
+                                freeAmount: parseFloat(freeAmount),
+                            },
+                        });
+                        return true;
+                    }
+                    if(cutWay == 4){
+                        this.props.setPromotionDetail({
+                            rule: {
+                                disType: 41,
+                                stageType: 0,
+                                targetScope,
+                                stageAmount,
+                                freeAmount: parseFloat(freeAmount),
+                            },
+                        });
+                        return true;
+                    }
                 }
                 return false
             }else{
@@ -301,6 +327,24 @@ class BuyCutDetailInfo extends React.Component {
             </FormItem>
             )
         }
+        if (this.state.cutWay === '4') {
+            return (<FormItem
+                className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
+                wrapperCol={{ span: 17, offset: 4 }}
+                required={true}
+                validateStatus={this.state.freeAmountFlag ? 'success' : 'error'}
+            >
+                <PriceInput
+                    addonBefore={'每X份减免'}
+                    addonAfter={k5ezdbiy}
+                    value={{ number: this.state.freeAmount }}
+                    defaultValue={{ number: this.state.freeAmount }}
+                    onChange={this.onFreeAmountChange}
+                    modal="float"
+                />
+            </FormItem>
+            )
+        }
         return (<FormItem
             className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
             wrapperCol={{ span: 17, offset: 4 }}
@@ -323,6 +367,12 @@ class BuyCutDetailInfo extends React.Component {
     }
 
     renderCutWay() {
+        const {ruleType,cutWay} = this.state;
+        if(ruleType =='2' && cutWay == '4'){
+            this.setState({
+                cutWay:'1'
+            })
+        }
         return (
             <FormItem
                 label={SALE_LABEL.k5kec0v8}
@@ -334,6 +384,10 @@ class BuyCutDetailInfo extends React.Component {
                     <Radio value={'1'} key="1">{SALE_LABEL.k5kec13k}</Radio>
                     <Radio value={'2'} key="2">{SALE_LABEL.k5kec1bw}</Radio>
                     <Radio value={'3'} key="3">{'每份减免'}</Radio>
+                    {
+                        ruleType == '1' ? <Radio value={'4'} key="4">{'每X份减免'}</Radio> : null
+                    }
+                    
                 </RadioGroup>
             </FormItem>
         )
