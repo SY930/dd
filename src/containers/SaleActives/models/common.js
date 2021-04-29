@@ -60,6 +60,7 @@ const initState = {
         maxPartInPerson:'',
         countCycleDays:1,
         partInTimes:'',
+        defaultCardType: '',
         eventName:'',
         shareTitle:'',
         shareImagePath:'',

@@ -9,13 +9,16 @@ import Step1 from './components/Step1'
 import Step2 from './components/Step2'
 import Step3 from './components/Step3'
 import Step4 from './components/Step4'
-import { imgUrl } from '../constant'
-
+import { imgUrl } from '../constant';
+import { getCardTypeList } from '../../RequestCenter'
 const formatType = 'YYYY.MM.DD'
 
 
 @connect(({  loading, createActiveCom }) => ({  loading, createActiveCom }))
 class SwellGiftBag extends React.Component {
+    state = {
+        groupCardTypeList: [],
+    }
     componentDidMount() {
         // 查询详情
         this.queryDetail()
@@ -24,7 +27,9 @@ class SwellGiftBag extends React.Component {
             type: 'createActiveCom/getAuthLicenseData',
             payload: {productCode: 'HLL_CRM_Marketingbox',}
         })
-
+        getCardTypeList().then(list => {
+            this.setState({ groupCardTypeList: list });
+        })
     }
     componentWillUnmount() {
         this.form1.resetFields()
@@ -255,6 +260,7 @@ class SwellGiftBag extends React.Component {
           },  {
             title: '活动规则',
             content:  <Step2
+            groupCardTypeList={this.state.groupCardTypeList}
             getSubmitFn={this.getSubmitFn(1)}
             />,
           },  {

@@ -3,7 +3,7 @@ import { formItem } from '../constants/formItem'
 
 const {
     actType, eventName50, eventRemark, eventLimitDate,
-    partInTimes,
+    partInTimes, defaultCardType,
 } = formItem
 export const formItems1 = {
     actType: {
@@ -28,9 +28,11 @@ export const imgUrl = 'http://res.hualala.com';
 
 export const formItems2 = {
     partInTimes,
+    defaultCardType,
 
 };
 
 export const formKeys2 = [
     'partInTimes',
+    'defaultCardType',
 ];
