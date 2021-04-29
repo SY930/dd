@@ -155,6 +155,7 @@ class SwellGiftBag extends React.Component {
                     countCycleDays,
                     partInTimes,
                     giftList,
+                    defaultCardType,
 
                 } = formData
                 const { shareSubtitle,
@@ -190,6 +191,7 @@ class SwellGiftBag extends React.Component {
                             shareImagePath,
                             countCycleDays,
                             partInTimes,
+                            defaultCardType,
                         },
                         gifts: giftList
                     }

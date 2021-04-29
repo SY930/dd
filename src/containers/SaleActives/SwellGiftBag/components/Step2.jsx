@@ -72,7 +72,6 @@ class Step2 extends React.Component {
 
     handleSubmit = () => {
         const { formData: modalFormData } = this.props.createActiveCom
-        console.log('modalFormData--before: ', modalFormData);
         let flag = true
         this.form.validateFieldsAndScroll((e,v) => {
             console.log('v: ', v);
@@ -112,7 +111,11 @@ class Step2 extends React.Component {
                 flag = false
               return  message.warn('助力周期次数不能为空')
             }
-            console.log('formData: --- after ', formData);
+            if (!v.defaultCardType) {
+                flag = false
+                return  message.warn('新用户注册卡类不能为空')
+            }
+            formData = { ...formData, defaultCardType: v.defaultCardType }
             this.props.dispatch({
                 type: 'createActiveCom/updateState',
                 payload: {
@@ -131,39 +134,44 @@ class Step2 extends React.Component {
         })
     }
 
-    // handleDefaultCardTypeChange = () => {
-       
-    // }
 
-    renderDefaultCardType = () => {
+    renderFunction = () => {
+        return (d) => {
+            return this.renderDefaultCardType(d)
+        };
+    }
+
+    renderDefaultCardType = (d) => {
         const defaultCardOpts = this.getGroupCardTypeOpts();
         return (
-            d => d()(
-                <div className={styles.partInTimesRender}>
-                    <div className={styles.title}>
-                        <div className={styles.line}></div>
-                        <div className={styles.text}>助力用户条件限制</div>
-                    </div>
-                    <div>
-                        <span>新用户注册卡类</span>
-                    <Select
-                        style={{
-                            width: 354
-                        }}
-                        showSearch={true}
-                        allowClear={true}
-                        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                        // onChange={this.handleDefaultCardTypeChange}
-                    >
-                        {
-                            (defaultCardOpts || []).map((type, index) =>
-                                <Select.Option key={index} value={String(type.value)} >{type.label}</Select.Option>
-                            )
-                        }
-                    </Select>
-                    </div>
+            <div className={styles.partInTimesRender}>
+                <div className={styles.title}>
+                    <div className={styles.line}></div>
+                    <div className={styles.text}>助力用户条件限制</div>
                 </div>
-            )
+                <div style={{ marginTop: '15px' }}>
+                    <span style={{ marginRight: '5px' }}>新用户注册卡类</span>
+                    {
+                        d()(
+                            <Select
+                                style={{
+                                    width: 354
+                                }}
+                                showSearch={true}
+                                allowClear={true}
+                                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                                onChange={(v) => { this.handleDefaultCardTypeChange(v, 'defaultCardType') }}
+                            >
+                                {
+                                    (defaultCardOpts || []).map((type, index) =>
+                                        <Select.Option key={index} value={String(type.value)} >{type.label}</Select.Option>
+                                    )
+                                }
+                            </Select>
+                        )
+                    }
+                </div>
+            </div>
         )
     }
 
@@ -172,8 +180,9 @@ class Step2 extends React.Component {
     render () {
         const { formKeys2 } = this.state
         formItems2.partInTimes.render =  partInTimesRender.bind(this);
-        formItems2.defaultCardType.render = this.renderDefaultCardType();
+        formItems2.defaultCardType.render = this.renderFunction();
         const { formData,isView,isEdit } = this.props.createActiveCom
+        console.log('formData: ', formData);
 
         return (
             <div style={{marginRight: '20px', position: 'relative'}}>
