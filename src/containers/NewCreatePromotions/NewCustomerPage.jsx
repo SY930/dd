@@ -133,6 +133,7 @@ class NewCustomerPage extends Component {
             reportMonth,
             createBy,
         } = this.getQueryVariable()
+        console.log(this.getQueryVariable(),'this.getQueryVariable()=======')
         // 测试使用
         // const  {
         //     from = 'rfm',
@@ -164,7 +165,14 @@ class NewCustomerPage extends Component {
             })
             this.clearUrl();
 
-        } else {
+        } if(from === 'giftInfo'){
+            if(!type) return;
+            const item = NEW_CUSTOMER_PROMOTION_TYPES.filter((val) => {
+                return val.key == type;
+            })
+            this.handleNewPromotionCardClick(item[0]);
+            this.clearUrl();
+        }else {
             const saleID = type;
             if (!saleID) {
                 return;
@@ -211,12 +219,14 @@ class NewCustomerPage extends Component {
 
     // 点击营销卡片处理函数
     handleNewPromotionCardClick(promotionEntity) {
+        console.log(promotionEntity,'sfdsfsdfds')
         const { key, isSpecial } = promotionEntity;
         if (HUALALA.ENVIRONMENT === 'production-release' && UNRELEASED_PROMOTION_TYPES.includes(`${key}`)) {
             return message.success(SALE_LABEL.k6316gwc);//活动尚未开放
         }
         if (isSpecial) {
             const specialIndex = this.props.saleCenter.get('characteristicCategories').toJS().findIndex(promotion => promotion.key === key);
+            console.log(specialIndex,'specialINdex--------')
             this.handleSpecialPromotionCreate(specialIndex, promotionEntity)
         } else {
             const basicIndex = this.props.saleCenter.get('activityCategories').toJS().findIndex(promotion => promotion.key === key);
@@ -328,6 +338,7 @@ class NewCustomerPage extends Component {
         }
     }
     renderBasicPromotionModal() {
+        console.log('renderBasicPromotionModal')
         const promotionType = this.props.saleCenter.get('activityCategories').toJS()[this.state.basicIndex].title;
         const { intl } = this.props;
         const create = intl.formatMessage(COMMON_STRING.create);
@@ -359,11 +370,12 @@ class NewCustomerPage extends Component {
         );
     }
     renderSpecialPromotionModal() {
+        console.log('qiangzhidongmian')
         const { title: promotionType } = this.props.saleCenter.get('characteristicCategories').toJS()[this.state.specialIndex];
         const { intl } = this.props;
         const create = intl.formatMessage(COMMON_STRING.create);
         const title = <p>{create} {promotionType}</p>;
-
+        console.log(this.state.specialModalVisible,'this.state.specialModalVisible')
         return (
             <Modal
                 wrapClassName={'progressBarModal'}

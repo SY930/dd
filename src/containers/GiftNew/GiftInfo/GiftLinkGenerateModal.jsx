@@ -75,7 +75,7 @@ export default class GiftLinkGenerateModal extends Component {
     }
 
     handleJumpAway = () => {
-        jumpPage({pageID: NEW_SALE_BOX});
+        jumpPage({pageID: NEW_SALE_BOX,from:'giftInfo',type:'21'});
         this.props.onCancel();
     }
 
