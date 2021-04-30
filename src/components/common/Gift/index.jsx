@@ -15,7 +15,7 @@ export default class Gift extends Component {
     /** 表单内容变化时的监听 */
     onFormChange = (key, value) => {
         const { idx, onChange } = this.props;
-        if (key === 'countType') {
+        if (key === 'countType') { // 相对有效期
             const options = (value === '0') ? timeOpts : dayOpts;
 
             this.setState({
@@ -36,7 +36,7 @@ export default class Gift extends Component {
         }
 
 
-        if (key === 'effectType') {
+        if (key === 'effectType') { // 生效方式
             if (value === '1') {
                 this.setState({ formKeys: formKeys1 }, () => {
                     const countType = this.form.getFieldValue('countType');

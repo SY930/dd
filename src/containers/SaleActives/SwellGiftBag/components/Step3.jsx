@@ -8,16 +8,18 @@ import { dateFormat } from '../../constant'
 
 const TabPane = Tabs.TabPane;
 const RadioGroup = Radio.Group;
-const formList = []
-const giftForm = []
+const formList = [];
+const giftForm = [];
+const numMap = {2: '三', 3: '四', 4: '五'}
 @connect(({  loading, createActiveCom }) => ({  loading, createActiveCom }))
 class Step3 extends React.Component {
-
+    tabKey = 1;
     state = {
         giftGetRule: 0,
         chooseTab: '0',
         treeData: this.props.createActiveCom.crmGiftTypes,
-        formList: []
+        formList: [],
+        gearTab: [],
     }
 
     componentDidMount () {
@@ -40,6 +42,7 @@ class Step3 extends React.Component {
         const { formData: modalFormData } = this.props.createActiveCom
 
         const { needCount, giftList } = modalFormData
+        console.log('giftList:》》》》》》 ', giftList);
         let formData = {
             ...modalFormData,
         }
@@ -123,8 +126,23 @@ class Step3 extends React.Component {
 
     }
 
+    onEdit = (targetKey, action) => {
+        console.log('onEdit: ');
+        this[action](targetKey);
+    }
+
+    add = () => {
+        // this.handleTabChange();
+        const { gearTab } = this.state;
+        this.tabKey = this.tabKey + 1;
+        gearTab.push({ title: `档位${numMap[this.tabKey]}`, content: 'Content of new Tab', key: this.tabKey });
+        this.setState({ gearTab, chooseTab: this.tabKey });
+    }
+
     handleTabChange = (e) => {
+        console.log('e: ', e);
         let flag = true
+        // debugger
         const giftFormInitiator = [...giftForm]
         giftFormInitiator.length = 3
         giftFormInitiator.forEach(form => {
@@ -162,44 +180,48 @@ class Step3 extends React.Component {
 
     }
 
-    handleGiftChange = (key) => (giftData) => {
-
-        const { formData,isView,isEdit } = this.props.createActiveCom
-        const { giftList } =  formData
-        const { treeData } = this.state
-
-        if((isView || isEdit) && !giftList[3] && key == 3 ) {
-            return
-        }
-        let chooseCoupon = {}
-        const chooseCouponItem = treeData.filter(v => {
-            const list = v.children || []
-           const chooseItem =  list.find(item => item.key === giftData[0].giftID)
-            if(chooseItem) {
-                chooseCoupon = chooseItem
+    handleGiftChange = (key) => {
+        // console.log('key: ', key);
+        return (giftData) => {
+            // console.log('key:------------------- ', key);
+    
+            const { formData,isView,isEdit } = this.props.createActiveCom
+            const { giftList } =  formData
+            const { treeData } = this.state
+    
+            if((isView || isEdit) && !giftList[3] && key == 3 ) {
+                return
             }
-            return chooseItem
-        })
-        const label = chooseCouponItem[0] && chooseCouponItem[0].label
-
-        if(label) {
-            giftData[0].label =  label
-            giftData[0].giftValue = chooseCoupon.giftValue
-        }
-
-
-        giftList[key] = giftData[0]
-
-
-        this.props.dispatch({
-            type: 'createActiveCom/updateState',
-            payload: {
-                formData: {
-                    ...formData,
-                    giftList
+            let chooseCoupon = {}
+            const chooseCouponItem = treeData.filter(v => {
+                const list = v.children || []
+               const chooseItem =  list.find(item => item.key === giftData[0].giftID)
+                if(chooseItem) {
+                    chooseCoupon = chooseItem
                 }
+                return chooseItem
+            })
+            const label = chooseCouponItem[0] && chooseCouponItem[0].label
+    
+            if(label) {
+                giftData[0].label =  label
+                giftData[0].giftValue = chooseCoupon.giftValue
             }
-        })
+    
+    
+            giftList[key] = giftData[0]
+    
+    
+            this.props.dispatch({
+                type: 'createActiveCom/updateState',
+                payload: {
+                    formData: {
+                        ...formData,
+                        giftList
+                    }
+                }
+            })
+        }
     }
 
     cacheTreeData = (treeData) => {
@@ -257,8 +279,13 @@ class Step3 extends React.Component {
     render () {
 
         const { formData, currentStep , isEdit, isView } = this.props.createActiveCom
+        console.log('formData: ', formData);
         const { giftList, needCount, giftGetRule } = formData
-        const {  chooseTab ,treeData } = this.state
+        const {  chooseTab ,treeData, gearTab } = this.state
+        console.log('gearTab: ', gearTab);
+        if (gearTab.length > 0) {
+            
+        }
         if(isEdit && currentStep !== 2) {
             return null
         }
@@ -281,13 +308,15 @@ class Step3 extends React.Component {
                     </div>
                 </div>
                 <Tabs
-                    hideAdd={true}
+                    // hideAdd={true}
+                    type="editable-card"
+                    onEdit={this.onEdit}
                     onChange={this.handleTabChange}
                     activeKey={chooseTab}
-                    type="card"
+                    // type="card"
                     className={styles.tabs}
                 >
-                    <TabPane tab="档位一" key="0">
+                    <TabPane tab="档位一" key="0" closable={false}>
                         {isView&&!isEdit&&<div className={styles.disabledDiv}></div>}
                         <TabItem
                             itemKey={"0"}
@@ -297,9 +326,10 @@ class Step3 extends React.Component {
                             onIptChange={this.onIptChange('0')}
                             getGiftForm={this.getGiftForm('0')}
                             needCount={needCount}
+                            closable={false}
                          />
                         </TabPane>
-                    <TabPane tab="档位二" key="1">
+                    <TabPane tab="档位二" key="1" closable={false}>
                         {isView&&!isEdit&&<div className={styles.disabledDiv}></div>}
                         <TabItem
                         itemKey={"1"}
@@ -312,19 +342,13 @@ class Step3 extends React.Component {
                         needCount={needCount}
                         />
                     </TabPane>
-                    <TabPane tab="档位三" key="2">
-                        {isView&&!isEdit&&<div className={styles.disabledDiv}></div>}
-                        <TabItem
-                        itemKey={"2"}
-                        getForm={this.getForm('2')}
-                        handleGiftChange={this.handleGiftChange('2')}
-                        giftList={giftList}
-                        treeData={treeData}
-                        onIptChange={this.onIptChange('2')}
-                        getGiftForm={this.getGiftForm('2')}
-                        needCount={needCount}
-                        />
-                    </TabPane>
+                    {/* {
+                        gearTab.length > 0 ? gearTab.map((item) =>
+                            <TabPane key={item.key} tab={item.title}>
+                                {item.content}
+                            </TabPane>
+                        ) : null
+                    } */}
                 </Tabs>
                 <div className={styles.helpPeople}>
                     <div className={styles.title}>

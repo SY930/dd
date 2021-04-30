@@ -159,13 +159,14 @@ class SwellGiftBag extends React.Component {
                 if(isEdit) {
                     typePath = 'createActiveCom/updateEvent_NEW'
                 }
-
+                console.log('giftList: ', giftList);
                 giftList.forEach((v,i) => {
-                    if(v.countType == 1) {
+                    
+                    if(v.countType == 1) { // countType相对有效期按天的话effectType是3，没有3这个值
                         v.effectType = '3'
                     }
                     v.sendType = 0
-                    if(i === 3) {
+                    if(i === 3) { // 不是档位的sendType 是1
                         v.sendType = 1
                     }
                 })
