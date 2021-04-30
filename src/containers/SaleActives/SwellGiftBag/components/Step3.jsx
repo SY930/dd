@@ -42,7 +42,6 @@ class Step3 extends React.Component {
         const { formData: modalFormData } = this.props.createActiveCom
 
         const { needCount, giftList } = modalFormData
-        console.log('giftList:》》》》》》 ', giftList);
         let formData = {
             ...modalFormData,
         }
@@ -56,12 +55,23 @@ class Step3 extends React.Component {
 
         formList.forEach(form => {
             form.validateFieldsAndScroll((e,v) => {
-                console.log('v: ', v);
                 if(e) {
                     flag = false
                 }
 
             })
+        })
+        const giftFormInitiator = [...giftForm]
+        giftFormInitiator.length = 2
+        giftFormInitiator.forEach(form => {
+            if(form) {
+                form.validateFieldsAndScroll((e,v) => {
+                    if(e) {
+                        flag = false
+                    }
+
+                })
+            }
         })
         if(giftForm[3]) {
             giftForm[3].validateFieldsAndScroll((e,v) => {
@@ -76,8 +86,8 @@ class Step3 extends React.Component {
         }
 
         const initiator = [...giftList]
-        initiator.length = 3
-        if(initiator.filter(v => v).length !== 3 && flag) {
+        initiator.length = 2
+        if(initiator.filter(v => v).length !== 2 && flag) {
             message.warn('你有未设置的档位')
             return false
         }
@@ -135,21 +145,38 @@ class Step3 extends React.Component {
     add = () => {
         let flag = true;
         const { formData = {} } = this.props.createActiveCom;
-        const { giftList = {} } = formData;
+        const { giftList = {}, needCount } = formData;
        if (this.handleSubmit()) {
             if (this.key === 4) return message.warn('最多添加五个档位');
             const { gearTab, chooseTab} = this.state;
             this.tabKey = this.tabKey + 1;
-            const id = Date.now().toString(36); // 随机不重复ID号
-            gearTab.push({id, effectType: '1', title: `档位${numMap[this.tabKey]}`, content: 'Content of new Tab', key: this.tabKey });
-            const newTab = {...giftList, ...gearTab }
-            this.setState({ gearTab, chooseTab: this.tabKey });
+            const key = String(this.tabKey);
+            // const id = Date.now().toString(36); // 随机不重复ID号
+
+            gearTab.push({title: `档位${numMap[this.tabKey]}`, content: this.content(key, needCount, giftList), key: this.tabKey });
+            // const newTab = {...giftList, ...gearTab }
+
+            this.setState({ gearTab, chooseTab: key });
         }
         
     }
 
+    content = (key, needCount, giftList) => {
+        return (
+            <TabItem
+            itemKey={key}
+            getForm={this.getForm(key)}
+            handleGiftChange={this.handleGiftChange(key)}
+            giftList={giftList}
+            onIptChange={this.onIptChange(key)}
+            getGiftForm={this.getGiftForm(key)}
+            needCount={needCount}
+            // closable={false}
+         />
+        )
+    }
+
     handleTabChange = (e) => {
-        console.log('e: ', e);
         let flag = true
         // debugger
         const giftFormInitiator = [...giftForm]
@@ -291,14 +318,26 @@ class Step3 extends React.Component {
         console.log('formData: ', formData);
         const { giftList, needCount, giftGetRule } = formData
         const {  chooseTab ,treeData, gearTab } = this.state
-        // console.log('gearTab: ', gearTab);
-        let activeTab = (<TabPane forceRender={true} style={{ display: 'none' }}></TabPane>);
+        let activeTab = (<TabPane tab="档位二" key="1" closable={false}>
+            {isView && !isEdit && <div className={styles.disabledDiv}></div>}
+            <TabItem
+                itemKey={"1"}
+                getForm={this.getForm('1')}
+                handleGiftChange={this.handleGiftChange('1')}
+                giftList={giftList}
+                treeData={treeData}
+                onIptChange={this.onIptChange('1')}
+                getGiftForm={this.getGiftForm('1')}
+                needCount={needCount}
+            />
+        </TabPane>);
         if (gearTab.length > 0) {
-            activeTab = gearTab.map((item) =>
+            const addActiveTab = gearTab.map((item) =>
                 <TabPane key={item.key} tab={item.title}>
                     {item.content}
                 </TabPane>
             )
+            activeTab = [ activeTab, ...addActiveTab];
         }
         if(isEdit && currentStep !== 2) {
             return null
@@ -323,11 +362,11 @@ class Step3 extends React.Component {
                 </div>
                 <Tabs
                     // hideAdd={true}
-                    // type="editable-card"
-                    // onEdit={this.onEdit}
+                    type="editable-card"
+                    onEdit={this.onEdit}
                     onChange={this.handleTabChange}
                     activeKey={chooseTab}
-                    type="card"
+                    // type="card"
                     className={styles.tabs}
                 >
                     <TabPane tab="档位一" key="0" closable={false}>
@@ -343,7 +382,7 @@ class Step3 extends React.Component {
                             closable={false}
                          />
                         </TabPane>
-                    <TabPane tab="档位二" key="1" closable={false}>
+                    {/* <TabPane tab="档位二" key="1" closable={false}>
                         {isView&&!isEdit&&<div className={styles.disabledDiv}></div>}
                         <TabItem
                         itemKey={"1"}
@@ -355,8 +394,9 @@ class Step3 extends React.Component {
                         getGiftForm={this.getGiftForm('1')}
                         needCount={needCount}
                         />
-                    </TabPane>
-                    <TabPane tab="档位三" key="2">
+                    </TabPane> */}
+                   {activeTab}
+                    {/* <TabPane tab="档位三" key="2">
                         {isView&&!isEdit&&<div className={styles.disabledDiv}></div>}
                         <TabItem
                         itemKey={"2"}
@@ -368,7 +408,7 @@ class Step3 extends React.Component {
                         getGiftForm={this.getGiftForm('2')}
                         needCount={needCount}
                         />
-                    </TabPane>
+                    </TabPane> */}
 
                     {/* {
                         gearTab.length > 0 ? gearTab.map((item) =>
