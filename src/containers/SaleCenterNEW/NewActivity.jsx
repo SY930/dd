@@ -164,7 +164,7 @@ class NewActivity extends React.Component {
                             <span  className={styles.customHeader}>
                                 {COMMON_LABEL.create} {SALE_LABEL.k5m4q17q}
                             </span>
-                            <span className={styles.jumpToCreate}>
+                            <span className={styles.jumpToCreateNew}>
                                 <Button
                                     type="ghost"
                                     icon="rollback"

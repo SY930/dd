@@ -742,7 +742,7 @@ class MyActivitiesShop extends React.Component {
                     </span>
                     {
                         !this.isOnlinePromotionPage() && (
-                            <span className={styles.jumpToCreate}>
+                            <span className={styles.jumpToCreateNew}>
                                 <Button
                                     type="ghost"
                                     icon="plus"

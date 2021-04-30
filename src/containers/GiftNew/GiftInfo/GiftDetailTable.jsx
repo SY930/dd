@@ -653,7 +653,7 @@ class GiftDetailTable extends Component {
                                 <Button
                                     type="ghost"
                                     icon="plus"
-                                    className={styles2.jumpToCreate}
+                                    className={styles2.jumpToCreateInfo}
                                     style={{ margin: 5 }}
                                     onClick={
                                         () => {
@@ -667,7 +667,7 @@ class GiftDetailTable extends Component {
                             <Button
                                 type="ghost"
                                 icon="plus"
-                                className={styles.jumpToCreate}
+                                className={styles.jumpToCreateInfo}
                                 style={{ margin: 5,  width: 90 }}
                                 onClick={
                                     () => {
