@@ -56,6 +56,7 @@ class Step3 extends React.Component {
 
         formList.forEach(form => {
             form.validateFieldsAndScroll((e,v) => {
+                console.log('v: ', v);
                 if(e) {
                     flag = false
                 }
@@ -132,11 +133,19 @@ class Step3 extends React.Component {
     }
 
     add = () => {
-        // this.handleTabChange();
-        const { gearTab } = this.state;
-        this.tabKey = this.tabKey + 1;
-        gearTab.push({ title: `档位${numMap[this.tabKey]}`, content: 'Content of new Tab', key: this.tabKey });
-        this.setState({ gearTab, chooseTab: this.tabKey });
+        let flag = true;
+        const { formData = {} } = this.props.createActiveCom;
+        const { giftList = {} } = formData;
+       if (this.handleSubmit()) {
+            if (this.key === 4) return message.warn('最多添加五个档位');
+            const { gearTab, chooseTab} = this.state;
+            this.tabKey = this.tabKey + 1;
+            const id = Date.now().toString(36); // 随机不重复ID号
+            gearTab.push({id, effectType: '1', title: `档位${numMap[this.tabKey]}`, content: 'Content of new Tab', key: this.tabKey });
+            const newTab = {...giftList, ...gearTab }
+            this.setState({ gearTab, chooseTab: this.tabKey });
+        }
+        
     }
 
     handleTabChange = (e) => {
@@ -165,7 +174,7 @@ class Step3 extends React.Component {
         })
 
         if(!flag) {
-            return
+            return flag;
         }
         this.setState({
             chooseTab: e
@@ -209,7 +218,7 @@ class Step3 extends React.Component {
             }
     
     
-            giftList[key] = giftData[0]
+            giftList[key] = { ...giftList[key], ...giftData[0]}
     
     
             this.props.dispatch({
@@ -282,9 +291,14 @@ class Step3 extends React.Component {
         console.log('formData: ', formData);
         const { giftList, needCount, giftGetRule } = formData
         const {  chooseTab ,treeData, gearTab } = this.state
-        console.log('gearTab: ', gearTab);
+        // console.log('gearTab: ', gearTab);
+        let activeTab = (<TabPane forceRender={true} style={{ display: 'none' }}></TabPane>);
         if (gearTab.length > 0) {
-            
+            activeTab = gearTab.map((item) =>
+                <TabPane key={item.key} tab={item.title}>
+                    {item.content}
+                </TabPane>
+            )
         }
         if(isEdit && currentStep !== 2) {
             return null
@@ -309,11 +323,11 @@ class Step3 extends React.Component {
                 </div>
                 <Tabs
                     // hideAdd={true}
-                    type="editable-card"
-                    onEdit={this.onEdit}
+                    // type="editable-card"
+                    // onEdit={this.onEdit}
                     onChange={this.handleTabChange}
                     activeKey={chooseTab}
-                    // type="card"
+                    type="card"
                     className={styles.tabs}
                 >
                     <TabPane tab="档位一" key="0" closable={false}>
@@ -342,6 +356,20 @@ class Step3 extends React.Component {
                         needCount={needCount}
                         />
                     </TabPane>
+                    <TabPane tab="档位三" key="2">
+                        {isView&&!isEdit&&<div className={styles.disabledDiv}></div>}
+                        <TabItem
+                        itemKey={"2"}
+                        getForm={this.getForm('2')}
+                        handleGiftChange={this.handleGiftChange('2')}
+                        giftList={giftList}
+                        treeData={treeData}
+                        onIptChange={this.onIptChange('2')}
+                        getGiftForm={this.getGiftForm('2')}
+                        needCount={needCount}
+                        />
+                    </TabPane>
+
                     {/* {
                         gearTab.length > 0 ? gearTab.map((item) =>
                             <TabPane key={item.key} tab={item.title}>
