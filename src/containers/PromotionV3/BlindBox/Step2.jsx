@@ -27,7 +27,7 @@ class Step2 extends Component {
         }
     }
     getGroupCardTypeOpts() {
-        const { groupCardTypeList } = this.props;
+        const { groupCardTypeList = [] } = this.props;
         return groupCardTypeList.map(x => {
             const { cardTypeID, cardTypeName } = x;
             return { label: cardTypeName, value: cardTypeID };
