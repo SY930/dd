@@ -53,7 +53,7 @@ class Step3 extends React.Component {
             }
         })
 
-        formList.forEach(form => {
+        formList.forEach(form => { // 校验膨胀所需人数
             form.validateFieldsAndScroll((e,v) => {
                 if(e) {
                     flag = false
@@ -62,8 +62,8 @@ class Step3 extends React.Component {
             })
         })
         const giftFormInitiator = [...giftForm]
-        giftFormInitiator.length = 2
-        giftFormInitiator.forEach(form => {
+        giftFormInitiator.length = formList.length;
+        giftFormInitiator.forEach(form => { // 校验所有礼品
             if(form) {
                 form.validateFieldsAndScroll((e,v) => {
                     if(e) {
@@ -73,8 +73,8 @@ class Step3 extends React.Component {
                 })
             }
         })
-        if(giftForm[3]) {
-            giftForm[3].validateFieldsAndScroll((e,v) => {
+        if(giftForm[formList.length + 1]) {
+            giftForm[formList.length + 1].validateFieldsAndScroll((e,v) => {
                 if(e) {
                     flag = false
                 }
@@ -85,7 +85,8 @@ class Step3 extends React.Component {
             }
         }
 
-        const initiator = [...giftList]
+        const initiator = [...giftList];
+        console.log('initiator.filter(v => v)', initiator.filter(v => v));
         initiator.length = 2
         if(initiator.filter(v => v).length !== 2 && flag) {
             message.warn('你有未设置的档位')
@@ -102,6 +103,14 @@ class Step3 extends React.Component {
             message.warn('第三档数值必须大于上一档位的人数')
             return false
         }
+        if(needCount[3] < needCount[2]) {
+            message.warn('第四档数值必须大于上一档位的人数')
+            return false
+        }
+        if(needCount[4] < needCount[3]) {
+            message.warn('第五档数值必须大于上一档位的人数')
+            return false
+        }
 
         // 添加膨胀所需要的人数
         giftList.forEach((v,i) => {
@@ -115,7 +124,7 @@ class Step3 extends React.Component {
             payload: {
                 formData: {
                     ...formData,
-                    giftList
+                    giftList: giftList.filter(v => v)
                 }
             }
         })
@@ -142,11 +151,94 @@ class Step3 extends React.Component {
         this[action](targetKey);
     }
 
+    handleCheckGifts = () => {
+        let flag = true
+
+        const { formData: modalFormData } = this.props.createActiveCom
+
+        const { needCount, giftList } = modalFormData
+        let formData = {
+            ...modalFormData,
+        }
+
+        giftList.forEach(v => {
+            if(v.rangeDate) {
+                v.effectTime = moment(v.rangeDate[0]).format(dateFormat)
+                v.validUntilDate = moment(v.rangeDate[1]).format(dateFormat)
+            }
+        })
+
+        formList.forEach(form => { // 校验膨胀所需人数
+            form.validateFieldsAndScroll((e,v) => {
+                if(e) {
+                    flag = false
+                }
+
+            })
+        })
+        const giftFormInitiator = [...giftForm]
+        giftFormInitiator.length = formList.length;
+        giftFormInitiator.forEach(form => { // 校验所有礼品
+            if(form) {
+                form.validateFieldsAndScroll((e,v) => {
+                    if(e) {
+                        flag = false
+                    }
+
+                })
+            }
+        })
+        const initiator = [...giftList];
+        initiator.length = 2
+        if(initiator.filter(v => v).length !== 2 && flag) {
+            message.warn('你有未设置的档位')
+            return false
+        }
+
+        // 校验膨胀人数
+        if(needCount[1] < needCount[0]) {
+            message.warn('第二档数值必须大于上一档位的人数')
+            return false
+        }
+
+        if(needCount[2] < needCount[1]) {
+            message.warn('第三档数值必须大于上一档位的人数')
+            return false
+        }
+        if(needCount[3] < needCount[2]) {
+            message.warn('第四档数值必须大于上一档位的人数')
+            return false
+        }
+        if(needCount[4] < needCount[3]) {
+            message.warn('第五档数值必须大于上一档位的人数')
+            return false
+        }
+
+        // 添加膨胀所需要的人数
+        giftList.forEach((v,i) => {
+            v.needCount = needCount[i]
+
+        })
+
+
+        this.props.dispatch({
+            type: 'createActiveCom/updateState',
+            payload: {
+                formData: {
+                    ...formData,
+                    giftList
+                }
+            }
+        })
+
+        return  flag
+    }
+
     add = () => {
         let flag = true;
         const { formData = {} } = this.props.createActiveCom;
         const { giftList = {}, needCount } = formData;
-       if (this.handleSubmit()) {
+       if (this.handleCheckGifts()) {
             if (this.key === 4) return message.warn('最多添加五个档位');
             const { gearTab, chooseTab} = this.state;
             this.tabKey = this.tabKey + 1;
@@ -159,6 +251,47 @@ class Step3 extends React.Component {
             this.setState({ gearTab, chooseTab: key });
         }
         
+    }
+
+    remove = (targetKey) => {
+        const { formData,isView,isEdit } = this.props.createActiveCom
+        const { giftList, needCount } =  formData
+        let chooseTab = this.state.chooseTab;
+        let lastIndex;
+        let key = 1;
+        this.state.gearTab.forEach((tab, i) => {
+            if (tab.key === targetKey) {
+                lastIndex = i - 1;
+              }
+        });
+        const gearTab = this.state.gearTab.filter(tab => tab.key != targetKey);
+        const reGiftList = giftList.filter((_, i) => i != targetKey);
+        const reGearTab = (gearTab || []).map((item, i) => {
+            key = i + 2;
+            return {
+                ...item,
+                title: `档位${numMap[i + 2]}`, 
+                key: i + 2,
+                content: this.content(String(i + 2), needCount, reGiftList)
+            }
+        })
+        this.tabKey = key;
+        // if (lastIndex >= 0 && chooseTab === targetKey) {
+        //     chooseTab = reGearTab[lastIndex].key
+        // }
+        console.log('chooseTab: ', chooseTab, key);
+
+        this.props.dispatch({
+            type: 'createActiveCom/updateState',
+            payload: {
+                formData: {
+                    ...formData,
+                    giftList: reGiftList,
+                }
+            }
+        })
+        this.setState({ gearTab: reGearTab, chooseTab: '1' })
+        console.log('reGiftList: ', reGiftList, gearTab, targetKey, reGearTab);
     }
 
     content = (key, needCount, giftList) => {
@@ -177,10 +310,13 @@ class Step3 extends React.Component {
     }
 
     handleTabChange = (e) => {
-        let flag = true
-        // debugger
+        console.log('e: ', e);
+        let flag = true;
+        // const { formData } = this.props.createActiveCom
+        // const { giftList } = formData
+        // console.log('giftList: ', giftList, formList);
         const giftFormInitiator = [...giftForm]
-        giftFormInitiator.length = 3
+        giftFormInitiator.length = formList.length;  // 只校验三个档位
         giftFormInitiator.forEach(form => {
             if(form) {
                 form.validateFieldsAndScroll((e,v) => {
@@ -201,11 +337,12 @@ class Step3 extends React.Component {
         })
 
         if(!flag) {
-            return flag;
+            return
         }
         this.setState({
             chooseTab: e
         })
+
 
     }
 
@@ -219,13 +356,13 @@ class Step3 extends React.Component {
     handleGiftChange = (key) => {
         // console.log('key: ', key);
         return (giftData) => {
-            // console.log('key:------------------- ', key);
+            console.log('key:------------------- ', key);
     
             const { formData,isView,isEdit } = this.props.createActiveCom
             const { giftList } =  formData
             const { treeData } = this.state
     
-            if((isView || isEdit) && !giftList[3] && key == 3 ) {
+            if((isView || isEdit) && !giftList[formList.length + 1] && key == formList.length + 1 ) {
                 return
             }
             let chooseCoupon = {}
@@ -292,13 +429,14 @@ class Step3 extends React.Component {
 
         const { formData  } = this.props.createActiveCom
         const { giftList } = formData
-        if(e.target.checked && (giftList.length < 4)) {
-            giftList[3] = ({
+        console.log('formList', formList)
+        if(e.target.checked && (giftList.length < 6)) {
+            giftList[formList.length + 1] = ({
                  id: 'wdjiejmgnglooe',
                  effectType: '1'
             })
         } else {
-            giftList.length = 3
+            giftList.length = formList.length;
         }
         this.props.dispatch({
             type: 'createActiveCom/updateState',
@@ -342,7 +480,7 @@ class Step3 extends React.Component {
         if(isEdit && currentStep !== 2) {
             return null
         }
-        const checkedHelp = giftList[3]
+        const checkedHelp = giftList[formList.length + 1]
         const isNew = !(isEdit || isView)
         return (
             <div className={styles.step3Wrap}>
@@ -409,14 +547,6 @@ class Step3 extends React.Component {
                         needCount={needCount}
                         />
                     </TabPane> */}
-
-                    {/* {
-                        gearTab.length > 0 ? gearTab.map((item) =>
-                            <TabPane key={item.key} tab={item.title}>
-                                {item.content}
-                            </TabPane>
-                        ) : null
-                    } */}
                 </Tabs>
                 <div className={styles.helpPeople}>
                     <div className={styles.title}>
@@ -425,13 +555,13 @@ class Step3 extends React.Component {
                     </div>
                     {isView&&!isEdit&&<div className={styles.disabledDiv}></div>}
                     <TabItem
-                     itemKey={"3"}
-                     handleGiftChange={this.handleGiftChange('3')}
+                     itemKey={formList.length + 1}
+                     handleGiftChange={this.handleGiftChange(formList.length + 1)}
                      giftList={giftList}
                      isHelp
                      treeData={treeData}
                      cacheTreeData={this.cacheTreeData}
-                     getGiftForm={this.getGiftForm('3')}
+                     getGiftForm={this.getGiftForm(formList.length + 1)}
                      handleHelpCheckbox={this.handleHelpCheckbox}
                      checkedHelp={checkedHelp}
                      isNew
