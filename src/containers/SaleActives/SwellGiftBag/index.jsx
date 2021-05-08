@@ -71,9 +71,9 @@ class SwellGiftBag extends React.Component {
                             v.effectType = '1'
                         }
                         v.giftEffectTimeHours = String(v.giftEffectTimeHours)
-                        if(i < 5) {
-                           needCount[i] = v.needCount
-                        }
+                        // if(i < 5) {
+                        //    needCount[i] = v.needCount
+                        // }
                         // 获取券名字和面值
                         let chooseCoupon = {}
                         const chooseCouponItem = boardList.filter(val => {
@@ -90,18 +90,22 @@ class SwellGiftBag extends React.Component {
 
                     })
                     let g = _.cloneDeep(gifts);
-                    if (g.length < 6) {
-                        g = g.slice(0, gifts.length - 1);
-                        needCount.length = g.length;
-                        g[5] = gifts[gifts.length - 1];
-                    }
-                    g.forEach((_, i)  => { _.id = i});
+                    let newG = [];
+                    g.map((item, i) => {
+                        if (item.sendType == '0') {
+                            newG[i] = { ...item, id: i };
+                            needCount[i] = item.needCount;
+                        } else {
+                            newG[5] = { ...item, id: i }
+                        }
+                    })
+                    // newG.forEach((_, i)  => {  _.id = i });
                     this.props.dispatch({
                         type: 'createActiveCom/updateState',
                         payload: {
                            formData: {
                                ...data,
-                               giftList: g,
+                               giftList: newG,
                                eventLimitDate: [moment(eventStartDate),moment(eventEndDate)],
                                needCount
                            },

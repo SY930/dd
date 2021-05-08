@@ -493,7 +493,13 @@ class Step3 extends React.Component {
         const { gearTab } = this.state;
         // console.log('this.tabKey', this.tabKey)
         if (giftList.length > 2) {
-            const reGearTab = giftList.slice(2, giftList.length - 1).filter(v => v);
+            let newG = [];
+            giftList.map((item, i) => {
+                if (item.sendType == '0') { // 只需要档位的giftlist
+                    newG[i] = {...item};
+                }
+            })
+            const reGearTab = newG.slice(2);
             reGearTab.forEach(() => {
                 this.tabKey = this.tabKey + 1;
                 const key = String(this.tabKey);
@@ -510,6 +516,7 @@ class Step3 extends React.Component {
         const { giftList, needCount, giftGetRule } = formData;
         // console.log('giftList: ', giftList, 'formData', formData);
         const {  chooseTab ,treeData, gearTab } = this.state;
+        // console.log('gearTab: ', gearTab);
 
         let activeTab = (<TabPane tab="档位二" key="1" closable={false}>
             {isView && !isEdit && <div className={styles.disabledDiv}></div>}
