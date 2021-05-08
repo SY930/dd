@@ -152,15 +152,14 @@ class MainTable extends Component {
             this.props.onQuery();
         }
     }
-    onDecorate = ({ target }) => {
+    onDecorate = (id, name) => {
         const {
             selectPromotionForDecoration
         } =  this.props
-        // debugger;
         selectPromotionForDecoration({
             type: `ticketbag`,
-            id: '1',
-            title: '',
+            id: id,
+            title: name,
             needCount: '1',
             giftArr: [],
         })
@@ -180,7 +179,7 @@ class MainTable extends Component {
                     <a href={href} name="check" onClick={this.onEdit}>查看</a>
                     {isNor && isVis && <a href={href} onClick={() => { this.onDelete(id, name) }}>停用</a>}
                     <a href={href} onClick={this.onPreview}>详情</a>
-                    <a href={href} onClick={this.onDecorate}>装修</a>
+                    <a href={href} onClick={() => {this.onDecorate(id, name)}}>装修</a>
                 </p>);
         };
         const render1 = (v, o) => {
