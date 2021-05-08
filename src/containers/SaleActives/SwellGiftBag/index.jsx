@@ -91,14 +91,14 @@ class SwellGiftBag extends React.Component {
                     })
                     let g = _.cloneDeep(gifts);
                     let newG = [];
-                    let index = 0;
-                    g.map((item, i) => {
+                    let index = 0; // 保证顺序
+                    g.map((item) => {
                         if (item.sendType == '0') {
-                            newG[index] = { ...item, id: i };
+                            newG[index] = { ...item, id: index };
                             needCount[index] = item.needCount;
                             index = index + 1;
                         } else {
-                            newG[5] = { ...item, id: i }
+                            newG[5] = { ...item, id: 5 } // id 是为了礼品组件的v.id
                         }
                     })
                     // console.log('newG', newG,needCount)
