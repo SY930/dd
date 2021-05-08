@@ -91,14 +91,17 @@ class SwellGiftBag extends React.Component {
                     })
                     let g = _.cloneDeep(gifts);
                     let newG = [];
+                    let index = 0;
                     g.map((item, i) => {
                         if (item.sendType == '0') {
-                            newG[i] = { ...item, id: i };
-                            needCount[i] = item.needCount;
+                            newG[index] = { ...item, id: i };
+                            needCount[index] = item.needCount;
+                            index = index + 1;
                         } else {
                             newG[5] = { ...item, id: i }
                         }
                     })
+                    // console.log('newG', newG,needCount)
                     // newG.forEach((_, i)  => {  _.id = i });
                     this.props.dispatch({
                         type: 'createActiveCom/updateState',
@@ -162,6 +165,8 @@ class SwellGiftBag extends React.Component {
                     giftList,
 
                 } = formData
+
+                // console.log('giftList:---submit ', giftList);
                 const { shareSubtitle,
                     shareTitle,} = v
                 let typePath =  'createActiveCom/addEvent_NEW'
