@@ -7,8 +7,27 @@ import PagingFactory from 'components/PagingFactory';
 import { deleteTicketBag, getTicketBagInfo } from './AxiosFactory';
 import DetailModal from './Detail';
 import StockModal from './StockModal';
-
+import {
+    PROMOTION_DECORATION,
+    SPECIAL_PAGE,
+} from '../../../../constants/entryCodes';
+import { jumpPage, closePage } from '@hualala/platform-base';
+import { connect } from 'react-redux';
+import { selectPromotionForDecoration } from '../../../../redux/actions/decoration';
 const TYPEMAP = { 1: '付费购买', 2: '活动投放' };
+const mapStateToProps = (state) => {
+    return {
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        selectPromotionForDecoration: (opts) => {
+            dispatch(selectPromotionForDecoration(opts))
+        },
+    }
+};
+@connect(mapStateToProps, mapDispatchToProps)
 
 /** 列表页表格数据 */
 class MainTable extends Component {
@@ -133,6 +152,20 @@ class MainTable extends Component {
             this.props.onQuery();
         }
     }
+    onDecorate = ({ target }) => {
+        const {
+            selectPromotionForDecoration
+        } =  this.props
+        // debugger;
+        selectPromotionForDecoration({
+            type: `ticketbag`,
+            id: '1',
+            title: '',
+            needCount: '1',
+            giftArr: [],
+        })
+        jumpPage({ menuID: PROMOTION_DECORATION })
+    }
     /* 生成表格头数据 */
     generateColumns() {
         const { pageObj, status, pageType } = this.props;
@@ -147,6 +180,7 @@ class MainTable extends Component {
                     <a href={href} name="check" onClick={this.onEdit}>查看</a>
                     {isNor && isVis && <a href={href} onClick={() => { this.onDelete(id, name) }}>停用</a>}
                     <a href={href} onClick={this.onPreview}>详情</a>
+                    <a href={href} onClick={this.onDecorate}>装修</a>
                 </p>);
         };
         const render1 = (v, o) => {
@@ -172,7 +206,7 @@ class MainTable extends Component {
         // 表格头部的固定数据
         return [
             { width: 50, title: '序号', dataIndex: 'idx', className: tc, render: render2 },
-            { width: 160, title: '操作', dataIndex: 'op', className: tc, render },
+            { width: 200, title: '操作', dataIndex: 'op', className: tc, render },
             { title: '券包名称', dataIndex: 'couponPackageName', render: render1 },
             { width: 180, title: '券包ID', dataIndex: 'couponPackageID' },
             { width: 100, title: '券包类型', dataIndex: 'type' },

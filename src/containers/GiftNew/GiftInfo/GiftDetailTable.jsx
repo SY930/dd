@@ -526,7 +526,6 @@ class GiftDetailTable extends Component {
                 });
             }
         });
-        // console.log('treeData', treeData)
         this.setState({ treeData });
     }
 
