@@ -8,9 +8,10 @@ import { dateFormat } from '../../constant'
 
 const TabPane = Tabs.TabPane;
 const RadioGroup = Radio.Group;
-const formList = [];
-const giftForm = [];
+let formList = [];
+let giftForm = [];
 const numMap = {2: '三', 3: '四', 4: '五'}
+let _FLAG = false;
 @connect(({  loading, createActiveCom }) => ({  loading, createActiveCom }))
 class Step3 extends React.Component {
     tabKey = 1;
@@ -26,6 +27,22 @@ class Step3 extends React.Component {
 
         this.getSubmitFn()
 
+    }
+
+    componentDidUpdate () {
+        const { formData = {}, isView, isEdit } = this.props.createActiveCom;
+        const { giftList = [] } = formData;
+        if ( Array.isArray(giftList) ) {
+            if (giftList.length > 2 && (isView || isEdit ) && !_FLAG) {
+                this.resetGearTab(); // 动态拼接档位三-五。只执行一次
+                _FLAG = true;
+            }
+        }
+    }
+
+    componentWillUnmount () {
+        _FLAG = false;
+        // console.log('tabKey', this.tabKey)
     }
 
     getSubmitFn = () => {
@@ -73,8 +90,8 @@ class Step3 extends React.Component {
                 })
             }
         })
-        if(giftForm[formList.length + 1]) {
-            giftForm[formList.length + 1].validateFieldsAndScroll((e,v) => {
+        if(giftForm[5]) {
+            giftForm[5].validateFieldsAndScroll((e,v) => {
                 if(e) {
                     flag = false
                 }
@@ -86,7 +103,6 @@ class Step3 extends React.Component {
         }
 
         const initiator = [...giftList];
-        console.log('initiator.filter(v => v)', initiator.filter(v => v));
         initiator.length = 2
         if(initiator.filter(v => v).length !== 2 && flag) {
             message.warn('你有未设置的档位')
@@ -124,7 +140,7 @@ class Step3 extends React.Component {
             payload: {
                 formData: {
                     ...formData,
-                    giftList: giftList.filter(v => v)
+                    giftList
                 }
             }
         })
@@ -147,7 +163,6 @@ class Step3 extends React.Component {
     }
 
     onEdit = (targetKey, action) => {
-        console.log('onEdit: ');
         this[action](targetKey);
     }
 
@@ -235,18 +250,15 @@ class Step3 extends React.Component {
     }
 
     add = () => {
-        let flag = true;
         const { formData = {} } = this.props.createActiveCom;
         const { giftList = {}, needCount } = formData;
        if (this.handleCheckGifts()) {
-            if (this.key === 4) return message.warn('最多添加五个档位');
-            const { gearTab, chooseTab} = this.state;
+            if (this.tabKey === 4) return message.warn('最多添加五个档位');
+            const { gearTab } = this.state;
             this.tabKey = this.tabKey + 1;
             const key = String(this.tabKey);
-            // const id = Date.now().toString(36); // 随机不重复ID号
 
             gearTab.push({title: `档位${numMap[this.tabKey]}`, content: this.content(key, needCount, giftList), key: this.tabKey });
-            // const newTab = {...giftList, ...gearTab }
 
             this.setState({ gearTab, chooseTab: key });
         }
@@ -254,68 +266,98 @@ class Step3 extends React.Component {
     }
 
     remove = (targetKey) => {
-        const { formData,isView,isEdit } = this.props.createActiveCom
-        const { giftList, needCount } =  formData
-        let chooseTab = this.state.chooseTab;
+
+        const removeKey = targetKey.split('-')[0];
+        const { formData, isView, isEdit } = this.props.createActiveCom;
+        const { giftList, needCount } =  formData;
+        if (isView && !isEdit) { return }
+        let { gearTab, chooseTab } = this.state;
+        // console.log('formList--- before', formList, giftForm)
+        let reGiftList;
+        reGiftList = giftList.slice(0, 5).filter((_, i) => i != removeKey);
+        // 移除对应的formList和giftForm
+        const cacheGiftForm5 = giftForm[5];
+        formList.forEach((form, i) => {
+            if (i == removeKey) {
+                formList.splice(i, 1)
+            }
+        })
+        giftForm = giftForm.slice(0, 5);
+
+        giftForm.forEach((_, i) => {
+            if (i == removeKey) {
+                giftForm.splice(i, 1)
+            }
+        })
+
+        // 移除对应的needCount
+        const reNeedCount = needCount.filter((_, i) => i != removeKey);
+        // console.log('reNeedCount: ', reNeedCount);
+        // console.log('formList---- after', formList, giftForm)
+
+        if (giftList[5]) {
+            reGiftList[5] = giftList[5];
+            giftForm[5] = cacheGiftForm5;
+        }
+
         let lastIndex;
-        let key = 1;
-        this.state.gearTab.forEach((tab, i) => {
-            if (tab.key === targetKey) {
-                lastIndex = i - 1;
-              }
+        gearTab.forEach((tab, i) => {
+          if (tab.key === removeKey) {
+            lastIndex = i - 1;
+          }
         });
-        const gearTab = this.state.gearTab.filter(tab => tab.key != targetKey);
-        const reGiftList = giftList.filter((_, i) => i != targetKey);
-        const reGearTab = (gearTab || []).map((item, i) => {
+    
+        const reGearTab = gearTab.filter(tab => tab.key != removeKey);
+
+        let key = 1;
+        const removeGearTab = (reGearTab || []).map((item, i) => {
             key = i + 2;
             return {
                 ...item,
                 title: `档位${numMap[i + 2]}`, 
-                key: i + 2,
-                content: this.content(String(i + 2), needCount, reGiftList)
+                key: `${i + 2}-${Date.now().toString(36)}`,
+                content: this.content(String(i + 2), reNeedCount, reGiftList)
             }
         })
         this.tabKey = key;
-        // if (lastIndex >= 0 && chooseTab === targetKey) {
-        //     chooseTab = reGearTab[lastIndex].key
-        // }
-        console.log('chooseTab: ', chooseTab, key);
+
+        if (lastIndex >= 0 && chooseTab === removeKey) {
+            chooseTab = removeGearTab[lastIndex].key;
+        }
 
         this.props.dispatch({
             type: 'createActiveCom/updateState',
             payload: {
                 formData: {
                     ...formData,
+                    needCount: reNeedCount,
                     giftList: reGiftList,
                 }
             }
         })
-        this.setState({ gearTab: reGearTab, chooseTab: '1' })
-        console.log('reGiftList: ', reGiftList, gearTab, targetKey, reGearTab);
+        this.setState({ gearTab: removeGearTab, chooseTab })
     }
 
     content = (key, needCount, giftList) => {
         return (
             <TabItem
-            itemKey={key}
-            getForm={this.getForm(key)}
-            handleGiftChange={this.handleGiftChange(key)}
-            giftList={giftList}
-            onIptChange={this.onIptChange(key)}
-            getGiftForm={this.getGiftForm(key)}
-            needCount={needCount}
+                key={key}
+                itemKey={key}
+                getForm={this.getForm(key)}
+                handleGiftChange={this.handleGiftChange(key)}
+                giftList={giftList}
+                onIptChange={this.onIptChange(key)}
+                getGiftForm={this.getGiftForm(key)}
+                needCount={needCount}
             // closable={false}
-         />
+            />
         )
     }
 
     handleTabChange = (e) => {
-        console.log('e: ', e);
         let flag = true;
-        // const { formData } = this.props.createActiveCom
-        // const { giftList } = formData
-        // console.log('giftList: ', giftList, formList);
-        const giftFormInitiator = [...giftForm]
+        const giftFormInitiator = [...giftForm];
+
         giftFormInitiator.length = formList.length;  // 只校验三个档位
         giftFormInitiator.forEach(form => {
             if(form) {
@@ -353,48 +395,43 @@ class Step3 extends React.Component {
 
     }
 
-    handleGiftChange = (key) => {
-        // console.log('key: ', key);
-        return (giftData) => {
-            console.log('key:------------------- ', key);
-    
-            const { formData,isView,isEdit } = this.props.createActiveCom
-            const { giftList } =  formData
-            const { treeData } = this.state
-    
-            if((isView || isEdit) && !giftList[formList.length + 1] && key == formList.length + 1 ) {
-                return
-            }
-            let chooseCoupon = {}
-            const chooseCouponItem = treeData.filter(v => {
-                const list = v.children || []
-               const chooseItem =  list.find(item => item.key === giftData[0].giftID)
-                if(chooseItem) {
-                    chooseCoupon = chooseItem
-                }
-                return chooseItem
-            })
-            const label = chooseCouponItem[0] && chooseCouponItem[0].label
-    
-            if(label) {
-                giftData[0].label =  label
-                giftData[0].giftValue = chooseCoupon.giftValue
-            }
-    
-    
-            giftList[key] = { ...giftList[key], ...giftData[0]}
-    
-    
-            this.props.dispatch({
-                type: 'createActiveCom/updateState',
-                payload: {
-                    formData: {
-                        ...formData,
-                        giftList
-                    }
-                }
-            })
+    handleGiftChange = (key) => (giftData) => {
+        const { formData, isView, isEdit } = this.props.createActiveCom
+        const { giftList = [] } = formData
+        const { treeData } = this.state
+
+        if ((isView || isEdit) && !giftList[5] && key == 5) {
+            return
         }
+        let chooseCoupon = {}
+        const chooseCouponItem = treeData.filter(v => {
+            const list = v.children || []
+            const chooseItem = list.find(item => item.key === giftData[0].giftID)
+            if (chooseItem) {
+                chooseCoupon = chooseItem
+            }
+            return chooseItem
+        })
+        const label = chooseCouponItem[0] && chooseCouponItem[0].label
+
+        if (label) {
+            giftData[0].label = label
+            giftData[0].giftValue = chooseCoupon.giftValue
+        }
+
+
+        giftList[key] = { ...giftList[key], ...giftData[0] }
+
+
+        this.props.dispatch({
+            type: 'createActiveCom/updateState',
+            payload: {
+                formData: {
+                    ...formData,
+                    giftList
+                }
+            }
+        })
     }
 
     cacheTreeData = (treeData) => {
@@ -429,9 +466,8 @@ class Step3 extends React.Component {
 
         const { formData  } = this.props.createActiveCom
         const { giftList } = formData
-        console.log('formList', formList)
         if(e.target.checked && (giftList.length < 6)) {
-            giftList[formList.length + 1] = ({
+            giftList[5] = ({
                  id: 'wdjiejmgnglooe',
                  effectType: '1'
             })
@@ -448,14 +484,30 @@ class Step3 extends React.Component {
             }
         })
     }
+     resetGearTab = () => {
+        const { formData = {} } = this.props.createActiveCom;
+        const { giftList = [], needCount } = formData;
+        const { gearTab } = this.state;
+        // console.log('this.tabKey', this.tabKey)
+        if (giftList.length > 2) {
+            const reGearTab = giftList.slice(2, giftList.length - 1).filter(v => v);
+            reGearTab.forEach(() => {
+                this.tabKey = this.tabKey + 1;
+                const key = String(this.tabKey);
+                gearTab.push({ title: `档位${numMap[this.tabKey]}`, content: this.content(key, needCount, giftList), key: this.tabKey });
+            })
+            this.setState({ gearTab });
+        }
+    }
 
 
     render () {
 
         const { formData, currentStep , isEdit, isView } = this.props.createActiveCom
-        console.log('formData: ', formData);
-        const { giftList, needCount, giftGetRule } = formData
-        const {  chooseTab ,treeData, gearTab } = this.state
+        const { giftList, needCount, giftGetRule } = formData;
+        // console.log('giftList: ', giftList, 'formData', formData);
+        const {  chooseTab ,treeData, gearTab } = this.state;
+
         let activeTab = (<TabPane tab="档位二" key="1" closable={false}>
             {isView && !isEdit && <div className={styles.disabledDiv}></div>}
             <TabItem
@@ -472,6 +524,7 @@ class Step3 extends React.Component {
         if (gearTab.length > 0) {
             const addActiveTab = gearTab.map((item) =>
                 <TabPane key={item.key} tab={item.title}>
+                    {isView&&!isEdit&&<div className={styles.disabledDiv}></div>}
                     {item.content}
                 </TabPane>
             )
@@ -480,7 +533,10 @@ class Step3 extends React.Component {
         if(isEdit && currentStep !== 2) {
             return null
         }
-        const checkedHelp = giftList[formList.length + 1]
+        let checkedHelp = false;
+        if (Array.isArray(giftList)) {
+            checkedHelp = !!giftList[5];
+        }
         const isNew = !(isEdit || isView)
         return (
             <div className={styles.step3Wrap}>
@@ -499,7 +555,7 @@ class Step3 extends React.Component {
                     </div>
                 </div>
                 <Tabs
-                    // hideAdd={true}
+                    hideAdd={isView&&!isEdit}
                     type="editable-card"
                     onEdit={this.onEdit}
                     onChange={this.handleTabChange}
@@ -555,13 +611,14 @@ class Step3 extends React.Component {
                     </div>
                     {isView&&!isEdit&&<div className={styles.disabledDiv}></div>}
                     <TabItem
-                     itemKey={formList.length + 1}
-                     handleGiftChange={this.handleGiftChange(formList.length + 1)}
+                    key={'5'}
+                     itemKey={'5'}
+                     handleGiftChange={this.handleGiftChange('5')}
                      giftList={giftList}
                      isHelp
                      treeData={treeData}
                      cacheTreeData={this.cacheTreeData}
-                     getGiftForm={this.getGiftForm(formList.length + 1)}
+                     getGiftForm={this.getGiftForm('5')}
                      handleHelpCheckbox={this.handleHelpCheckbox}
                      checkedHelp={checkedHelp}
                      isNew

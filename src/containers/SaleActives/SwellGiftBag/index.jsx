@@ -52,7 +52,7 @@ class SwellGiftBag extends React.Component {
 
                  const { data, gifts } = res
                  const { eventRemark, eventStartDate,  eventEndDate , eventName, shareTitle, shareSubtitle} = data
-                 const needCount = []
+                 const needCount = [];
 
                  this.props.dispatch({
                     type: 'createActiveCom/couponService_getSortedCouponBoardList',
@@ -71,7 +71,7 @@ class SwellGiftBag extends React.Component {
                             v.effectType = '1'
                         }
                         v.giftEffectTimeHours = String(v.giftEffectTimeHours)
-                        if(i < 3) {
+                        if(i < 5) {
                            needCount[i] = v.needCount
                         }
                         // 获取券名字和面值
@@ -89,13 +89,19 @@ class SwellGiftBag extends React.Component {
                          v.giftValue = chooseCoupon.giftValue
 
                     })
-
+                    let g = _.cloneDeep(gifts);
+                    if (g.length < 6) {
+                        g = g.slice(0, gifts.length - 1);
+                        needCount.length = g.length;
+                        g[5] = gifts[gifts.length - 1];
+                    }
+                    g.forEach((_, i)  => { _.id = i});
                     this.props.dispatch({
                         type: 'createActiveCom/updateState',
                         payload: {
                            formData: {
                                ...data,
-                               giftList: gifts,
+                               giftList: g,
                                eventLimitDate: [moment(eventStartDate),moment(eventEndDate)],
                                needCount
                            },
@@ -187,7 +193,7 @@ class SwellGiftBag extends React.Component {
                             countCycleDays,
                             partInTimes,
                         },
-                        gifts: giftList
+                        gifts: giftList.filter(v => v)
                     }
                 }).then(res => {
                     if(res) {
@@ -243,7 +249,7 @@ class SwellGiftBag extends React.Component {
 
 
         const giftListMap = giftList.filter((v,i) => {
-            return v && i < 3
+            return v && i < 5
         })
         const saveLoading = loading.effects['createActiveCom/addEvent_NEW']
         const loadLoading = loading.effects['createActiveCom/couponService_getSortedCouponBoardList']
@@ -328,13 +334,21 @@ class SwellGiftBag extends React.Component {
                                                         <Icon type="caret-down" />
                                                         {needCount[2] ?  <div>{needCount[2]}人</div> : null}
                                                     </div>
+                                                    <div className={styles.num}>
+                                                        <Icon type="caret-down" />
+                                                        {needCount[3] ?  <div>{needCount[3]}人</div> : null}
+                                                    </div>
+                                                    <div className={styles.num}>
+                                                        <Icon type="caret-down" />
+                                                        {needCount[4] ?  <div>{needCount[4]}人</div> : null}
+                                                    </div>
                                                 </div>
                                              </div>
 
                                              <div className={styles.couponList}>
                                                 {giftListMap.map((v,i) => {
                                                     return (
-                                                        <div style={ i == 0 ? {marginLeft: 0} : {}} className={styles.couponItem}>
+                                                        <div style={ i == 0 ? {marginLeft: 0} : {}} className={styles.couponItem} key={i}>
                                                         <div>
                                                             {v.giftValue ?  <div className={styles.scale8}>¥</div> : null}
                                                         <div className={styles.fontWeight}>{v.giftValue}</div>
