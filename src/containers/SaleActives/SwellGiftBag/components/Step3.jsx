@@ -418,7 +418,10 @@ class Step3 extends React.Component {
             giftData[0].label = label
             giftData[0].giftValue = chooseCoupon.giftValue
         }
-
+        // console.log('giftData', giftData);
+       if (giftData[0].effectType === '2') {// 重置生效方式为固定有效期时countType的值
+            giftData[0].countType = '0'
+       }
 
         giftList[key] = { ...giftList[key], ...giftData[0] }
 
