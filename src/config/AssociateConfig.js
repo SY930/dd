@@ -1,12 +1,13 @@
 
 import _ from 'lodash'
 import { getStore } from '@hualala/platform-base'
- 
-import { NEW_SALE_BOX, PROMOTION_CALENDAR_NEW, SALE_CENTER_PAGE, SHARE_RULES_GROUP, GIFT_PAGE } from '../constants/entryCodes'
+
+import { NEW_SALE_BOX, PROMOTION_CALENDAR_NEW, SALE_CENTER_PAGE, SHARE_RULES_GROUP, GIFT_PAGE, SPECIAL_PAGE, PROMOTION_ZHIFUBAO_COUPON_LIST, SET_MSG_TEMPLATE } from '../constants/entryCodes'
 // = 'shop.jituan.wechat.mp'
- 
- 
-const AssociateConfigFactory = ()=>{
+
+
+const AssociateConfigFactory = () => {
+    // debugger
     const associateConfig = {
         // entry code
         // 营销盒子
@@ -66,12 +67,39 @@ const AssociateConfigFactory = ()=>{
                 },
             ],
         },
+        // 特色营销活动页面 
+        [SPECIAL_PAGE]: {
+            toAsk: [
+                {
+                    title: '特色营销在启用后可以修改活动礼品吗？',
+                    url: 'https://www.tiaofangzi.com/#/knowledge/doc/48c89b3e2f484aa7b58ed2f328c63ae2'
+                },
+            ],
+        },
+        // 支付宝代金券 
+        [PROMOTION_ZHIFUBAO_COUPON_LIST]: {
+            toAsk: [
+                {
+                    title: '支付宝卡包授权流程说明文档',
+                    url: 'https://www.tiaofangzi.com/#/knowledge/doc/6bb1ba9a703247559e5b5eff35055d01'
+                },
+            ],
+        },
+        // 短信模板 
+        [SET_MSG_TEMPLATE]: {
+            toAsk: [
+                {
+                    title: '短信模板',
+                    url: 'https://www.tiaofangzi.com/#/knowledge/info/84303a887ee64aae8efffbf206a60a6d'
+                },
+            ],
+        },
     };
- 
+
     Object.assign(window.__PlatformConfig__.AssociateConfig.config, associateConfig);
     // console.log('window.__PlatformConfig__.AssociateConfig.config', window.__PlatformConfig__.AssociateConfig.config)
 }
- 
+
 window.__PlatformConfig__.AssociateConfig.factories.push(AssociateConfigFactory)
 try {
     AssociateConfigFactory()
