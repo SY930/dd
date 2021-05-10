@@ -517,7 +517,7 @@ class Step3 extends React.Component {
 
         const { formData, currentStep , isEdit, isView } = this.props.createActiveCom
         const { giftList, needCount, giftGetRule } = formData;
-        console.log('giftList: ', giftList, 'formData', formData);
+        // console.log('giftList: ', giftList, 'formData', formData);
         const {  chooseTab ,treeData, gearTab } = this.state;
         // console.log('gearTab: ', gearTab);
 
