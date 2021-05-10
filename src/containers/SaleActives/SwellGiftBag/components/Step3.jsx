@@ -307,7 +307,10 @@ class Step3 extends React.Component {
           }
         });
     
-        const reGearTab = gearTab.filter(tab => tab.key != removeKey);
+        const reGearTab = gearTab.filter(tab => {
+            const tabkey = `${tab.key}`.split('-')[0];
+            return tabkey != removeKey
+        });
 
         let key = 1;
         const removeGearTab = (reGearTab || []).map((item, i) => {
@@ -514,7 +517,7 @@ class Step3 extends React.Component {
 
         const { formData, currentStep , isEdit, isView } = this.props.createActiveCom
         const { giftList, needCount, giftGetRule } = formData;
-        // console.log('giftList: ', giftList, 'formData', formData);
+        console.log('giftList: ', giftList, 'formData', formData);
         const {  chooseTab ,treeData, gearTab } = this.state;
         // console.log('gearTab: ', gearTab);
 
