@@ -668,7 +668,7 @@ class GiftDetailTable extends Component {
                                 type="ghost"
                                 icon="plus"
                                 className={styles.jumpToCreateInfo}
-                                style={{ margin: 5,  width: 90 }}
+                                style={{ margin: 5 }}
                                 onClick={
                                     () => {
                                         this.props.togglePage('ticket')
