@@ -2,12 +2,11 @@
 import _ from 'lodash'
 import { getStore } from '@hualala/platform-base'
 
-import { NEW_SALE_BOX, PROMOTION_CALENDAR_NEW, SALE_CENTER_PAGE, SHARE_RULES_GROUP, GIFT_PAGE, SPECIAL_PAGE, PROMOTION_ZHIFUBAO_COUPON_LIST, SET_MSG_TEMPLATE } from '../constants/entryCodes'
+import { NEW_SALE_BOX, PROMOTION_CALENDAR_NEW, SALE_CENTER_PAGE, SHARE_RULES_GROUP, GIFT_PAGE, SPECIAL_PAGE, PROMOTION_ZHIFUBAO_COUPON_LIST, SET_MSG_TEMPLATE, PROMOTION_WECHAT_COUPON_LIST } from '../constants/entryCodes'
 // = 'shop.jituan.wechat.mp'
 
 
 const AssociateConfigFactory = () => {
-    // debugger
     const associateConfig = {
         // entry code
         // 营销盒子
@@ -72,7 +71,7 @@ const AssociateConfigFactory = () => {
             toAsk: [
                 {
                     title: '特色营销在启用后可以修改活动礼品吗？',
-                    url: 'https://www.tiaofangzi.com/#/knowledge/doc/48c89b3e2f484aa7b58ed2f328c63ae2'
+                    url: 'http://service.hualala.com/categoryList/detail?categoryKey=3f6c9b4051e346f9a30c235ff790c02a&docKey=255998210e8c40788941a493abeeca68'
                 },
             ],
         },
@@ -81,7 +80,11 @@ const AssociateConfigFactory = () => {
             toAsk: [
                 {
                     title: '支付宝卡包授权流程说明文档',
-                    url: 'https://www.tiaofangzi.com/#/knowledge/doc/6bb1ba9a703247559e5b5eff35055d01'
+                    url: 'http://service.hualala.com/categoryList/detail?categoryKey=58fd63ad12e046d3bb88cfbcfdc23830&docKey=6bb1ba9a703247559e5b5eff35055d01'
+                },
+                {
+                    title: '【支付宝内券】为什么不能创建',
+                    url: 'http://service.hualala.com/categoryList/detail?categoryKey=cfc08aa9626f461e8dc8d86757425195&docKey=7e3c5c3f4b4c4594b326637f0bf97798'
                 },
             ],
         },
@@ -90,7 +93,16 @@ const AssociateConfigFactory = () => {
             toAsk: [
                 {
                     title: '短信模板',
-                    url: 'https://www.tiaofangzi.com/#/knowledge/info/84303a887ee64aae8efffbf206a60a6d'
+                    url: 'http://service.hualala.com/categoryList/detail?categoryKey=cfc08aa9626f461e8dc8d86757425195&docKey=84303a887ee64aae8efffbf206a60a6d'
+                },
+            ],
+        },
+        // 微信支付代金券 
+        [PROMOTION_WECHAT_COUPON_LIST]: {
+            toAsk: [
+                {
+                    title: '顾客批量购买一批优惠券，需要实现可以开发票的效果，该如何实现',
+                    url: 'http://service.hualala.com/categoryList/detail?categoryKey=cfc08aa9626f461e8dc8d86757425195&docKey=eb2a192ecb3d40db8378bfb2319597c0'
                 },
             ],
         },
