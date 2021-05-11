@@ -70,7 +70,7 @@ const AssociateConfigFactory = () => {
         [SPECIAL_PAGE]: {
             toAsk: [
                 {
-                    title: '特色营销在启用后可以修改活动礼品吗？',
+                    title: '如何新增&修改营销活动？',
                     url: 'http://service.hualala.com/categoryList/detail?categoryKey=3f6c9b4051e346f9a30c235ff790c02a&docKey=255998210e8c40788941a493abeeca68'
                 },
             ],
