@@ -42,6 +42,8 @@ class Step3 extends React.Component {
 
     componentWillUnmount () {
         _FLAG = false;
+        formList = [];
+        giftForm = [];
         // console.log('tabKey', this.tabKey)
     }
 
@@ -72,6 +74,7 @@ class Step3 extends React.Component {
 
         formList.forEach(form => { // 校验膨胀所需人数
             form.validateFieldsAndScroll((e,v) => {
+                console.log('v: submit', v);
                 if(e) {
                     flag = false
                 }
@@ -362,6 +365,7 @@ class Step3 extends React.Component {
         const giftFormInitiator = [...giftForm];
 
         giftFormInitiator.length = formList.length;  // 只校验三个档位
+        // console.log('formList: ', formList);
         giftFormInitiator.forEach(form => {
             if(form) {
                 form.validateFieldsAndScroll((e,v) => {
@@ -374,6 +378,7 @@ class Step3 extends React.Component {
         })
         formList.forEach(form => {
             form.validateFieldsAndScroll((e,v) => {
+                console.log('v: ', v);
                 if(e) {
                     flag = false
                 }
@@ -478,7 +483,7 @@ class Step3 extends React.Component {
                  effectType: '1'
             })
         } else {
-            giftList.length = formList.length;
+            giftList.length = 5;
         }
         this.props.dispatch({
             type: 'createActiveCom/updateState',
