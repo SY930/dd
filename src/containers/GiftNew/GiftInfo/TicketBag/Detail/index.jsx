@@ -32,6 +32,7 @@ class Detail extends Component {
         visible: '',             // 弹层是否显示
         selectedRowKeys: [],     // 退款ids
         popVisible: false,
+        tooltipVisble: false,
     };
     componentDidMount() {
         const params = {pageSize: 10};
@@ -149,6 +150,17 @@ class Detail extends Component {
                     popA: '查看导出进度',
                 })
             }
+            if(records.highMoment == 1){
+                this.setState({
+                    popContent: <div><p style={{whiteSpace: 'nowrap'}}>营业高峰期(11:00-14:00,17:00</p><p style={{whiteSpace: 'nowrap'}}>-20:30)暂停使用数据导出功能</p></div>,
+                    popA: '',
+                    tooltipVisble: true,
+                })
+            }else{
+                this.setState({
+                    tooltipVisble: false,
+                })
+            }
             this.setState({
                 popVisible: true,
                 visibleType: visible,
@@ -166,7 +178,7 @@ class Detail extends Component {
     renderPopOver = () => {
         const { popContent = '', popA ='' } = this.state;
         return(
-            <div style={{width: 'auto'}}>
+            <div style={{width: this.state.tooltipVisble ? 160 : 'auto'}}>
                 <span>{popContent}</span>
                 <a style={{ color: '#1AB495' }} onClick={this.openOther}>{popA}</a>
             </div>
