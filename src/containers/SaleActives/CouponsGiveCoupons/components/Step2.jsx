@@ -582,7 +582,6 @@ class Step2 extends React.Component {
                                 //     formData.mySendGift = afterGiftList[index] ? afterGiftList[index].mySendGift : {}
                                 //     formData.consumeGiftID = afterGiftList[index] ? afterGiftList[index].consumeGiftID : '' 
                                 // } else {
-                                    // debugger
                                     formData.mySendGift = giftList[index] ? this.transGiftData(giftList[index]) : ''
                                     formData.consumeGiftID = giftList[index] ? giftList[index].consumeGiftID : ''
                                 // }
