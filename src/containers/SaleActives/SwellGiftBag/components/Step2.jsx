@@ -160,7 +160,7 @@ class Step2 extends React.Component {
                                 showSearch={true}
                                 allowClear={true}
                                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                                onChange={(v) => { this.handleDefaultCardTypeChange(v, 'defaultCardType') }}
+                                // onChange={(v) => { this.handleDefaultCardTypeChange(v, 'defaultCardType') }}
                             >
                                 {
                                     (defaultCardOpts || []).map((type, index) =>
