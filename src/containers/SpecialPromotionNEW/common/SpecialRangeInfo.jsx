@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Checkbox, Radio, Select, message } from 'antd';
+import { Form, Checkbox, Radio, Select, message, Tooltip, Icon } from 'antd';
 import { connect } from 'react-redux'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
@@ -44,6 +44,7 @@ class SpecialRangeInfo extends React.Component {
             partInTimesNoValid: 0, // 最大参与次数(限制次数不限制周期使用)
             partInTimesNoValidStatus: 'success',
             isVipBirthdayMonth: '0', // 是否本月生日才能使用
+            autoRefund: 0,
             cardLevelID: '0', // 会员等级
             maxPartInPerson: '', // 最大参与人数
             maxPartInPersonStatus: 'success',
@@ -138,6 +139,7 @@ class SpecialRangeInfo extends React.Component {
                 sendPoints: specialPromotion.sendPoints, // 赠送积分数
                 countCycleDays: specialPromotion.countCycleDays, // 参与周期
                 isVipBirthdayMonth: `${specialPromotion.isVipBirthdayMonth}`, // 是否本月生日才能使用
+                autoRefund: specialPromotion.autoRefund === 1 ? 1 : 0,
                 maxPartInPerson: specialPromotion.maxPartInPerson,
                 cardLevelID: specialPromotion.cardLevelID || '0',
                 cardLevelIDList: specialPromotion.cardLevelIDList || [],
@@ -169,6 +171,7 @@ class SpecialRangeInfo extends React.Component {
             partInTimes, // 最大参与次数
             partInTimesNoValid, // 最大参与次数
             isVipBirthdayMonth, // 是否本月生日才能使用
+            autoRefund,
             maxPartInPerson, // 参与人数
             maxPartInPersonStatus,
             autoRegister,
@@ -178,6 +181,7 @@ class SpecialRangeInfo extends React.Component {
         const opts = {
             rewardOnly,
             isVipBirthdayMonth,
+            autoRefund,
             maxPartInPerson,
             cardLevelID: this.state.cardLevelID || '0',
             cardLevelIDList: this.state.cardLevelIDList || [],
@@ -191,7 +195,7 @@ class SpecialRangeInfo extends React.Component {
         if (this.props.type === '21' && this.state.freeGetJoinRange.length === '0') {
             nextFlag = false;
         }
-        if (this.props.type === '23' && (this.state.cardLevelRangeType === '0' || !opts.cardLevelIDList.length) ) {
+        if (this.props.type === '23' && (this.state.cardLevelRangeType === '0' || !opts.cardLevelIDList.length)) {
             const excludeEvents = this.props.specialPromotion.get('$eventInfo').toJS().excludeEventCardLevelIdModelList || [];
             if (excludeEvents.length && !opts.cardLevelIDList.length) {
                 return isPrev || false;
@@ -317,11 +321,11 @@ class SpecialRangeInfo extends React.Component {
             }
             if (isPrev || nextFlag) {
                 // 授权门店过滤
-                if(isFilterShopType(this.props.type)){
+                if (isFilterShopType(this.props.type)) {
                     let dynamicShopSchema = Object.assign({}, this.props.shopSchemaInfo.toJS());
-                    let {shopSchema = {}} = dynamicShopSchema
-                    let {shops = []} = shopSchema
-                    let {shopIDList = []} = opts
+                    let { shopSchema = {} } = dynamicShopSchema
+                    let { shops = [] } = shopSchema
+                    let { shopIDList = [] } = opts
                     opts.shopIDList = shopIDList.filter((item) => shops.some(i => i.shopID == item))
                 }
                 this.props.setSpecialBasicInfo(opts);
@@ -383,7 +387,7 @@ class SpecialRangeInfo extends React.Component {
         return (
             <div>
                 <FormItem
-                    
+
                     labelCol={{ span: 4 }}
                     className={styles.noPadding}
                     wrapperCol={{ span: 20 }}
@@ -566,6 +570,11 @@ class SpecialRangeInfo extends React.Component {
             isVipBirthdayMonth: e.target.value,
         });
     }
+    handleautoRefundChange = (e) => {
+        this.setState({
+            autoRefund: e.target.value,
+        })
+    }
     onCardLevelChange(obj) {
         this.setState(obj);
     }
@@ -620,6 +629,22 @@ class SpecialRangeInfo extends React.Component {
                             <RadioGroup onChange={this.handleVipBirthdayMonthChange} value={this.state.isVipBirthdayMonth}>
                                 <Radio value={'0'}>{this.props.intl.formatMessage(STRING_SPE.d31ei98dbgi21253)}</Radio>
                                 <Radio value={'1'}>{this.props.intl.formatMessage(STRING_SPE.de8fn8fabn25238)}</Radio>
+                            </RadioGroup>
+                        </FormItem> : null
+                }
+                {
+                    this.props.type == '30' ?
+                        <FormItem
+                            label={<span>
+                                <span>系统过期自动退</span>
+                            </span>}
+                            className={styles.noPadding}
+                            wrapperCol={{ span: 17 }}
+                            labelCol={{ span: 4 }}
+                        >
+                            <RadioGroup onChange={this.handleautoRefundChange} value={this.state.autoRefund}>
+                                <Radio value={1}>自动退积分</Radio>
+                                <Radio value={0}>不支持自动退积分</Radio>
                             </RadioGroup>
                         </FormItem> : null
                 }
