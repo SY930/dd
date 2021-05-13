@@ -56,9 +56,6 @@ const getDishesInfoFromPriceOrScopeList = (priceLst) => {
             dishes: [],
         }
     }
-    console.log('setPriceList', priceLst.map((item) => item.foodName ? `${item.brandID || 0}__${item.foodName}${item.foodUnitName || item.unit}`
-        : `${item.brandID || 0}__${item.targetName}${item.targetUnitName}`
-    ))
     return {
         dishes: priceLst.map((item) => item.foodName ? `${item.brandID || 0}__${item.foodName}${item.foodUnitName || item.unit}`
             : `${item.brandID || 0}__${item.targetName}${item.targetUnitName}`

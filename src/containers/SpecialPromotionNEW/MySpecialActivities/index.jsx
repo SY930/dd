@@ -1322,7 +1322,6 @@ class MySpecialActivities extends React.Component {
                 width: 80,
                 className:'TableTxtCenter',
                 render: (text, record, index) => {
-                    console.log('record: ', record, record.eventWay);
                     const defaultChecked = (record.isActive == '1' ? true : false);
                     const statusState = (
                         (record.eventWay == '50' || record.eventWay == '53')
