@@ -4,12 +4,19 @@ import { Input } from 'antd'
 import {formItems1,formKeys1} from '../constant'
 import styles from '../CouponsGiveCoupons.less'
 import {connect} from 'react-redux';
-import { renderEventRemark, eventLimitDateRender, } from '../../helper/common'
+import { renderEventRemark, eventLimitDateRender } from '../../helper/common'
 import moment from 'moment'
 import { dateFormat } from '../../constant'
+import ShopSelector from 'components/ShopSelector';
+import { isFilterShopType } from '../../../../helpers/util'
 
 @connect(({  loading, createActiveCom }) => ({  loading, createActiveCom }))
 class Step1 extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+        }
+    }
 
     getForm = (form) => {
         this.form = form;
@@ -24,8 +31,7 @@ class Step1 extends React.Component {
     handleFromChange = (key,value) => {
 
         const { formData } = this.props.createActiveCom
-        formData[key] =value
-
+        formData[key] =value     
         this.props.dispatch({
             type: 'createActiveCom/updateState',
             payload: {
@@ -60,6 +66,8 @@ class Step1 extends React.Component {
     render () {
         formItems1.eventRemark.render = renderEventRemark.bind(this)
         formItems1.eventLimitDate.render = eventLimitDateRender.bind(this)
+        const render = d => d()(<ShopSelector eventWay='81' filterParm={isFilterShopType() ? { productCode: 'HLL_CRM_License' } : {}} brandList={[]} />);
+        formItems1.shopIDList = { ...formItems1.shopIDList, render }
         const { formData,isView,isEdit  } = this.props.createActiveCom
         return (
             <div className={styles.step1Wrap}>
