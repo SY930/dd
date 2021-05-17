@@ -23,7 +23,7 @@ import coupons6 from './assets/coupons6.png'
 import WrappedColorPicker from '../../components/common/WrappedColorPicker';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
-import { Radio, Button } from 'antd';
+import { Radio, Button, Icon } from 'antd';
 import { injectIntl } from './IntlDecor';
 
 const RadioButton = Radio.Button;
@@ -54,7 +54,7 @@ export default class TicketBagDecoration extends Component {
                 </div>
                 <img src={iphone} alt="" />
                 <img className={style.fakeHeader} src={phoneTop} alt="" />
-                <div style={{ background: '#DCDCDC', paddingTop: 80 }} className={style.scrollArea}>
+                <div style={{ background: '#F4F4F4', paddingTop: 80 }} className={style.scrollArea}>
                     {
                         decorateType === 1 ?
                             <div>
@@ -63,7 +63,16 @@ export default class TicketBagDecoration extends Component {
                                 </div>
                                 <div className={style.couponsBox}>
                                     <img src={coupons4} />
-                                    <span  style={{ color: TipColor }} className={style.couponsExplainTxt1}>获得礼包后【每日X/每周X/每月XX日】连续【XX次】均可获得以下礼品！</span>
+                                    <span style={{ color: TipColor }} className={style.couponsExplainTxt1}>获得礼包后【每日X/每周X/每月XX日】连续【XX次】均可获得以下礼品！</span>
+                                    <Icon className={style.iconCheck} style={{ color: TipColor }} type="check-circle-o" />
+                                    <Icon
+                                        className={style.iconCheck}
+                                        style={{ 
+                                            color: TipColor,
+                                            marginLeft: 48,
+                                        }}
+                                        type="check-circle-o"
+                                    />
                                     <img src={coupons1} />
                                     <img src={coupons2} />
                                     <img className={style.couponsImgEmp1} src={coupons3} />
@@ -106,7 +115,7 @@ export default class TicketBagDecoration extends Component {
                                 </div>
                                 <div className={style.couponsBox} style={{ marginTop: 20 }}>
                                     <img src={coupons5} />
-                                    <span  style={{ color: TipColor }} className={style.couponsExplainTxt2}>购买后立即赠送如下礼品，之后每日赠送，连购买后立即赠送如下礼品</span>
+                                    <span style={{ color: TipColor }} className={style.couponsExplainTxt2}>购买后立即赠送如下礼品，之后每日赠送，连购买后立即赠送如下礼品</span>
                                     <img src={coupons6} />
                                     <img className={style.couponsImgEmp2} src={coupons3} style={{ marginTop: 7 }} />
                                     <div className={style.couponsBtnWhiteBox}>
