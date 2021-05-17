@@ -88,6 +88,8 @@ export const saleCenterUpdateNewActivityAC = (opts) => { // opts.data
         dispatch({
             type: SALE_CENTER_UPDATE_PROMOTION_START,
         });
+        console.log('opts', opts)
+        // debugger
         const params = {
             ...opts.data.promotionInfo.master,
             priceLst: opts.data.promotionInfo.priceLst,

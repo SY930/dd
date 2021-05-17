@@ -86,7 +86,7 @@ class NewPromotion extends React.Component {
             tagLst, description, promotionType, startDate, endDate, excludedDate,
             validCycle, cityLst, brandIDLst, orgIDLst, shopIDLst, excludedShopIDLst,
             orderTypeLst, channelLst, crmLevelLst, foodScopeType, ruleJson, defaultRun,
-            maintenanceLevel, usageMode, shopID, foodRuleList, birthdayLimit } = opts;
+            maintenanceLevel, usageMode, shopID, foodRuleList, birthdayLimit, cardVDebugger } = opts;
         const promotionInfo = {
             master: {
                 groupID,
@@ -124,6 +124,7 @@ class NewPromotion extends React.Component {
                 needSyncToAliPay: detailInfo.needSyncToAliPay,
                 giftList,
                 birthdayLimit,
+                cardVDebugger,
             },
             timeLst: opts.timeLst,
             priceLst: opts.priceLst,
@@ -134,6 +135,7 @@ class NewPromotion extends React.Component {
         }
         if (this.props.isNew === false && !isCopy) {
             promotionInfo.master.promotionID = basicInfo.promotionID;
+            debugger
             this.props.updateNewPromotion({
                 data: { promotionInfo },
                 success: () => {
@@ -251,7 +253,6 @@ class NewPromotion extends React.Component {
             isOnline,
             isCopy,
         } = this.props;
-        console.log('this is the layer 3', isCopy)
         const steps = [
             {
                 title: SALE_LABEL.k5g5bcqo,
