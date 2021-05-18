@@ -69,6 +69,13 @@ class Step1 extends React.Component {
         const render = d => d()(<ShopSelector eventWay='81' filterParm={isFilterShopType() ? { productCode: 'HLL_CRM_License' } : {}} brandList={[]} />);
         formItems1.shopIDList = { ...formItems1.shopIDList, render }
         const { formData,isView,isEdit  } = this.props.createActiveCom
+        let shopIdList = [];
+        if(formData.shopIDList && formData.shopIDList.length > 0){
+            shopIdList = formData.shopIDList.map((item,index)=>{
+                return item.toString();
+            })
+        }
+        formData.shopIDList = shopIdList
         return (
             <div className={styles.step1Wrap}>
                 {isView&&!isEdit&&<div className={styles.disabledDiv}></div>}
