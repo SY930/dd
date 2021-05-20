@@ -98,16 +98,19 @@ class CategoryAndFoodSelector extends Component {
         }
     }
     componentWillReceiveProps(nextProps) {
-        const { priceLst = [], singleDish } = nextProps;
+        const { priceLst = [], singleDish, onChangeFlag } = nextProps;
         const { priceLst: thispriceLst = [] } = this.props
         console.log('componentWillReceiveProps priceLst', priceLst)
         console.log('componentWillReceiveProps singleDish', singleDish)
         if (singleDish) {
             if (priceLst.length !== thispriceLst.length) {
                 console.log('getDishesInfoFromPriceOrScopeList return componentWillReceiveProps', getDishesInfoFromPriceOrScopeList(priceLst))
+                //debuggger
+                const value = getDishesInfoFromPriceOrScopeList(priceLst).dishes
                 this.setState({
-                    dishes: getDishesInfoFromPriceOrScopeList(priceLst).dishes
+                    dishes: value
                 })
+                onChangeFlag(!!value.length)
             }
         }
     }

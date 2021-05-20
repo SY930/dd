@@ -109,6 +109,16 @@ class WeighBuyGiveDetailInfo extends React.Component {
             this.setState({ targetScope: nextProps.promotionDetailInfo.getIn(['$promotionDetail', 'categoryOrDish']) });
         }
     }
+    changePriceListFlag = (flag = true) => {
+        this.setState({
+            priceListFlag: flag
+        })
+    }
+    changeScopeLstFlag = (flag = true) => {
+        this.setState({
+            scopeLstFlag: flag
+        })
+    }
     isNewOrOldData = () => {
         let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
         if (_rule === null || _rule === undefined) {
@@ -174,7 +184,7 @@ class WeighBuyGiveDetailInfo extends React.Component {
         if (giveFoodCount == null || giveFoodCount == '') {
             giveFoodCountFlag = false;
         }
-        if(Number(this.state.giveFoodCount) > Number(this.state.stageAmount)) {
+        if (Number(this.state.giveFoodCount) > Number(this.state.stageAmount)) {
             flag = false
         }
         if (!priceList.length) {
@@ -186,18 +196,18 @@ class WeighBuyGiveDetailInfo extends React.Component {
         if (!floatUp) {
             floatUpFlag = false
         }
-        if(Number(this.state.floatUp) <= Number(this.state.giveFoodCount)) {
+        if (Number(this.state.floatUp) <= Number(this.state.giveFoodCount)) {
             flag = false
         }
         if (!floatDown) {
             floatDownFlag = false
         }
-        if(Number(this.state.floatDown) > Number(this.state.giveFoodCount)) {
+        if (Number(this.state.floatDown) > Number(this.state.giveFoodCount)) {
             flag = false
         }
 
         this.setState({ giveFoodCountFlag, stageAmountFlag, priceListFlag, scopeLstFlag, floatUpFlag, floatDownFlag });
-        flag = flag && stageAmountFlag && giveFoodCountFlag && priceListFlag && scopeLstFlag && floatUpFlag && floatDownFlag   
+        flag = flag && stageAmountFlag && giveFoodCountFlag && priceListFlag && scopeLstFlag && floatUpFlag && floatDownFlag
         if (flag) {
             const rule = {
                 stageType,
@@ -220,7 +230,7 @@ class WeighBuyGiveDetailInfo extends React.Component {
                 if (tempArr1.indexOf(price.itemID) == -1) {
                     tempArr1.push(price.itemID);
                     return {
-                        foodUnitID: price.itemID || price.foodUnitID ,
+                        foodUnitID: price.itemID || price.foodUnitID,
                         foodUnitCode: price.foodKey || price.foodUnitCode,
                         foodName: price.foodName,
                         foodUnitName: price.unit || price.foodUnitName,
@@ -361,6 +371,7 @@ class WeighBuyGiveDetailInfo extends React.Component {
                                     key={1}
                                     priceList={this.state.priceList}
                                     singleDish={true}
+                                    onChangeFlag= {this.changePriceListFlag}
                                     shopGroupSame={true}
                                     foodRuleList={this.state.foodRuleList}
                                     isShopMode={this.props.isShopFoodSelectorMode}
@@ -400,6 +411,7 @@ class WeighBuyGiveDetailInfo extends React.Component {
                                     key={2}
                                     priceList={this.state.scopeLst}
                                     singleDish={true}
+                                    onChangeFlag= {this.changeScopeLstFlag}
                                     shopGroupSame={true}
                                     foodRuleList={this.state.foodRuleList}
                                     isShopMode={this.props.isShopFoodSelectorMode}
@@ -433,7 +445,7 @@ class WeighBuyGiveDetailInfo extends React.Component {
                                 labelCol={{ span: 9, offset: 1 }}
                                 wrapperCol={{ span: 14, offset: 0 }}
                                 validateStatus={this.state.floatDownFlag == '' ? 'error' : 'success'}
-                                help={this.state.floatDownFlag ? this.state.floatDown && (Number(this.state.floatDown) >= Number(this.state.giveFoodCount)) ? '赠送最小值需小于赠送数量' : null  : '请输入大于0，整数5位以内且小数2位内的数'}
+                                help={this.state.floatDownFlag ? this.state.floatDown && (Number(this.state.floatDown) >= Number(this.state.giveFoodCount)) ? '赠送最小值需小于赠送数量' : null : '请输入大于0，整数5位以内且小数2位内的数'}
                             >
                                 <Input key={2}
                                     addonAfter={'斤'}
@@ -529,7 +541,9 @@ class WeighBuyGiveDetailInfo extends React.Component {
 
 
     render() {
-        const { ifMultiGrade, foodRuleList } = this.state;
+        const { ifMultiGrade, foodRuleList, priceListFlag, scopeLstFlag } = this.state;
+        console.log('priceflag', priceListFlag)
+        console.log('scopeLstFlag', scopeLstFlag)
         return (
             <div>
                 <Form className={[styles.FormStyle, styles.bugGive].join(' ')}>
