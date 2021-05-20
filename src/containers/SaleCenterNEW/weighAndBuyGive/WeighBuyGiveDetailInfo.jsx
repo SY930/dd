@@ -81,7 +81,6 @@ class WeighBuyGiveDetailInfo extends React.Component {
         display = !this.props.isNew;
         // 这边对数据进行解析设置priceList,scopeList
         const ifHasFoodRuleList = this.props.promotionDetailInfo.getIn(['$promotionDetail']).toJS()
-        // debugger
         console.log('WeighBuyGiveDetailInfo ifHasFoodRuleList', ifHasFoodRuleList)
         if (ifHasFoodRuleList.foodRuleList && ifHasFoodRuleList.foodRuleList.length) {
             this.setState({

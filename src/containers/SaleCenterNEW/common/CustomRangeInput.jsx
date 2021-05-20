@@ -99,7 +99,7 @@ class CustomRangeInput extends React.Component {
                 <Col span={4}>
                     <div>{this.props.relation || SALE_LABEL.k5nh21d9}</div>
                 </Col>
-
+            
                 <Col span={7}>
                     <PriceInput
                         discountMode={this.props.discountMode}
