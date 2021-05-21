@@ -1193,6 +1193,7 @@ export const promotionDetailInfoAdapter = function (source, dir) {
             isActive: source.master.isActive,
             cardScopeList: source.cardScopeList || [],
             needSyncToAliPay: source.master.needSyncToAliPay || 0,
+            cardBalanceLimitType: source.master.cardBalanceLimitType || 0,
         };
     }
     // compose scopeList
