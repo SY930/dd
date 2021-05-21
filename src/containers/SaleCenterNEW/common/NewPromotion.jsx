@@ -88,7 +88,6 @@ class NewPromotion extends React.Component {
             orderTypeLst, channelLst, crmLevelLst, foodScopeType, ruleJson, defaultRun,
             maintenanceLevel, usageMode, shopID, foodRuleList, birthdayLimit, cardBalanceLimitType = 0 } = opts;
         
-        // debugger
         const promotionInfo = {
             master: {
                 groupID,
@@ -135,10 +134,8 @@ class NewPromotion extends React.Component {
             shareLst: opts.shareLst,
             cardScopeList: detailInfo.cardScopeList,
         }
-        // debugger
         if (this.props.isNew === false && !isCopy) {
             promotionInfo.master.promotionID = basicInfo.promotionID;
-            // debugger
             this.props.updateNewPromotion({
                 data: { promotionInfo },
                 success: () => {

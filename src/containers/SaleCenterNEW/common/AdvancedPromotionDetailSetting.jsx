@@ -690,7 +690,6 @@ class AdvancedPromotionDetailSetting extends React.Component {
                 {
                     cardScopeIDs.length === 0 ? <p style={{ color: 'orange', marginLeft: 110 }}>{SALE_LABEL.k5m4pxz2}</p> : null
                 }
-                {/* debugger */}
                 <FormItem
                     label={<span>
                         卡值不足不参与
