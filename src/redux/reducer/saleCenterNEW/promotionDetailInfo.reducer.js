@@ -122,7 +122,7 @@ const $initialState = Immutable.fromJS({
         needSyncToAliPay: 0,
         birthdayLimit: 0,
         customerUseCountLimit: 0,
-        cardVDebugger: 0,
+        cardBalanceLimitType: 0,
     },
     foodCategoryCollection: [],
     goodCategories: [],

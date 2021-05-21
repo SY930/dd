@@ -59,7 +59,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
             userSettingOPtios: [],
             isTotalLimited: '0',
             crmCardTypeIDs: '',
-            cardVDebugger: 0,
+            cardBalanceLimitType: 0,
         };
 
         this.renderUserSetting = this.renderUserSetting.bind(this);
@@ -114,6 +114,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
         const $promotionDetail = this.props.promotionDetailInfo.get('$promotionDetail');
         let userSetting = $promotionDetail.get('userSetting');
         const subjectType = $promotionDetail.get('subjectType');
+        const cardBalanceLimitType = $promotionDetail.get('cardBalanceLimitType');
         const customerUseCountLimit = $promotionDetail.get('customerUseCountLimit') ? $promotionDetail.get('customerUseCountLimit') : 0;
         const isTotalLimited = customerUseCountLimit == 0 ? '0' : '1';
         const blackList = $promotionDetail.get('blackList');
@@ -154,6 +155,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
             userSettingOPtios,
             customerUseCountLimit,
             isTotalLimited,
+            cardBalanceLimitType: cardBalanceLimitType || 0,
         }, () => {
             this.props.setPromotionDetail({
                 userSetting: this.state.userSetting,
@@ -547,11 +549,11 @@ class AdvancedPromotionDetailSetting extends React.Component {
         })
     }
 
-    handleCardVDebugger = (opts) => {
+    handleCardBalanceLimitType = (opts) => {
         this.setState(opts, () => {
-            const { cardVDebugger } = this.state
+            const { cardBalanceLimitType } = this.state
             this.props.setPromotionDetail({
-                cardVDebugger: cardVDebugger,
+                cardBalanceLimitType: cardBalanceLimitType,
             })
         })
     }
@@ -560,7 +562,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
         const k5m3oq98 = intl.formatMessage(SALE_STRING.k5m3oq98);
         const k5m4pxa1 = intl.formatMessage(SALE_STRING.k5m4pxa1);
 
-        const { cardInfo = [], cardScopeIDs = [], cardScopeType, cardVDebugger } = this.state;
+        const { cardInfo = [], cardScopeIDs = [], cardScopeType, cardBalanceLimitType } = this.state;
         const boxData = []
         cardScopeIDs.forEach((id) => {
             cardInfo.forEach((cat) => {
@@ -701,10 +703,10 @@ class AdvancedPromotionDetailSetting extends React.Component {
                     wrapperCol={{ span: 17 }}
                 >
                     <RadioGroup
-                        value={cardVDebugger}
+                        value={cardBalanceLimitType}
                         onChange={(e) => {
-                            this.handleCardVDebugger({
-                                cardVDebugger: e.target.value,
+                            this.handleCardBalanceLimitType({
+                                cardBalanceLimitType: e.target.value,
                             });
                         }
                         }
