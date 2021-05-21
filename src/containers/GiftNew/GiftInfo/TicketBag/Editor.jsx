@@ -230,6 +230,7 @@ export default class Editor extends Component {
     render() {
         const { newFormKeys } = this.state;
         const { detail, check } = this.props;
+        console.log(detail,'detail---------------')
         const newFormItems = this.resetFormItems();
         let clazz = styles.formWrap2;
         if(newFormKeys[0].keys.includes('d')){

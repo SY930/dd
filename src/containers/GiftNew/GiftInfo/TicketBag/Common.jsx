@@ -11,6 +11,10 @@ const bagOpts = [
     { label: '付费购买', value: '1' },
     { label: '活动/商城投放', value: '2' },
 ];
+const needSelectShop = [
+    { label: '开启', value: 1 },
+    { label: '关闭', value: 0 },
+];
 const revokeOpts = [
     { label: '自动退款', value: '1' },
     { label: '不支持自动退款', value: '0' },
@@ -138,7 +142,7 @@ const couponImage = 'basicdoc/ca249689-3339-4895-b481-43322147862f.png';
 // 第一次必须加载所有keys，不然会导致回显的时候出问题
 // 付费购买  活动投放
 const keys1 = ['a', 'couponPackageType', 'c', 'sellTime', 'd', 'couponPackageName', 'couponPackageValue',
-'couponPackagePrice', 'settleUnitID', 'defaultCardTypeID','remainStock', 'e','maxBuyCount', 'shopInfos', 'f', 'isAutoRefund', 'isRefundSelf', 'couponPackageDesciption', 'couponPackageImage'];
+'couponPackagePrice', 'settleUnitID', 'defaultCardTypeID','remainStock', 'e','maxBuyCount', 'shopInfos', 'f', 'buySelectShop','isAutoRefund', 'isRefundSelf', 'couponPackageDesciption', 'couponPackageImage'];
 const keys2 = ['a', 'couponPackageType', 'c', 'couponPackageName', 'couponPackageValue',
 'couponPackagePrice2', 'remainStock', 'e', 'couponPackageDesciption', 'couponPackageImage'];
 
@@ -259,11 +263,17 @@ const formItems = {
             placeholder: '默认全部店铺',
         },
     },
+    buySelectShop:{
+        type: 'radio',
+        label: '购买需选择售卖店铺',
+        options: needSelectShop,
+        defaultValue: '0',
+    },
     isAutoRefund: {
         type: 'radio',
         label: revokeLabel,
         options: revokeOpts,
-        defaultValue: '1',
+        defaultValue: 1,
     },
     isRefundSelf: {
         type: 'radio',
