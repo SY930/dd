@@ -266,7 +266,7 @@ class StepTwo extends React.Component {
                     }
                 </FormItem>
                 <FormItem
-                    label={this.props.intl.formatMessage(STRING_SPE.dd5a3f52gg51143)}
+                    label={this.props.intl.formatMessage(STRING_SPE.dd5a3f52gg51143)} // 新用户注册卡类
                     className={styles.FormItemStyle}
                     required
                     labelCol={{ span: 4 }}

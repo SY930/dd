@@ -179,4 +179,8 @@ export const formItem = {
         type: 'custom',
         label: '', // 助力用户助力次数限制
     },
+    defaultCardType: {
+        type: 'custom',
+        label: '',
+    }
 }
