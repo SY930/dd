@@ -43,6 +43,32 @@ export const getDecorationInfo = (opts) => {
             })
     }
 }
+export const getCouponsDecorationInfo = (opts) => {
+    return (dispatch) => {
+        dispatch({
+            type: SET_DECORATION_LOADING,
+            payload: true,
+        });
+        return axiosData('/decorate/getDetail.ajax', { templateID: opts.id }, null, {
+            path: 'data',
+        }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+            .then((data) => {
+                dispatch({
+                    type: SET_DECORATION_LOADING,
+                    payload: false,
+                });
+                dispatch({
+                    type: GET_DECORATION_SUCCESS,
+                    payload: data.decorateInfo.decorateInfo,
+                });
+            }, (err) => { // network error catch
+                dispatch({
+                    type: SET_DECORATION_LOADING,
+                    payload: false,
+                });
+            })
+    }
+}
 export const saveDecorationInfo = (opts) => {
     const { type,decorationInfo } = opts;
     if(type == '21'){

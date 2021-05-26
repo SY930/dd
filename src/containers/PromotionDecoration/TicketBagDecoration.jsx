@@ -23,7 +23,7 @@ import coupons6 from './assets/coupons6.png'
 import WrappedColorPicker from '../../components/common/WrappedColorPicker';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
-import { Radio, Button } from 'antd';
+import { Radio, Button, Icon } from 'antd';
 import { injectIntl } from './IntlDecor';
 
 const RadioButton = Radio.Button;
@@ -36,10 +36,10 @@ export default class TicketBagDecoration extends Component {
     renderPhonePreview() {
         const {
             decorationInfo: {
-                bgColor = '#fd6631',
-                bgImg,
-                btnBgColor = '#fd6631',
-                btnColor = '#fff',
+                TipColor = '#fd6631',
+                couponImg,
+                couponBtnBgColor = '#fd6631',
+                couponBtnColor = '#fff',
                 decorateType = 1,
             },
         } = this.props;
@@ -54,23 +54,32 @@ export default class TicketBagDecoration extends Component {
                 </div>
                 <img src={iphone} alt="" />
                 <img className={style.fakeHeader} src={phoneTop} alt="" />
-                <div style={{ background: '#DCDCDC', paddingTop: 80 }} className={style.scrollArea}>
+                <div style={{ background: '#F4F4F4', paddingTop: 80 }} className={style.scrollArea}>
                     {
                         decorateType === 1 ?
                             <div>
                                 <div className={style.blindBanner}>
-                                    <img style={{ width: '100%', height: '100%' }} src={bgImg || headPic} alt="" />
+                                    <img style={{ width: '100%', height: '100%' }} src={couponImg || headPic} alt="" />
                                 </div>
                                 <div className={style.couponsBox}>
                                     <img src={coupons4} />
-                                    <span  style={{ color: bgColor }} className={style.couponsExplainTxt1}>获得礼包后【每日X/每周X/每月XX日】连续【XX次】均可获得以下礼品！</span>
+                                    <span style={{ color: TipColor }} className={style.couponsExplainTxt1}>获得礼包后【每日X/每周X/每月XX日】连续【XX次】均可获得以下礼品！</span>
+                                    <Icon className={style.iconCheck} style={{ color: TipColor }} type="check-circle-o" />
+                                    <Icon
+                                        className={style.iconCheck}
+                                        style={{ 
+                                            color: TipColor,
+                                            marginLeft: 48,
+                                        }}
+                                        type="check-circle-o"
+                                    />
                                     <img src={coupons1} />
                                     <img src={coupons2} />
                                     <img className={style.couponsImgEmp1} src={coupons3} />
                                     <Button
                                         style={{
-                                            background: `${btnBgColor}`,
-                                            color: `${btnColor}`
+                                            background: `${couponBtnBgColor}`,
+                                            color: `${couponBtnColor}`
                                         }}
                                         className={style.couponsBtn}
                                     >
@@ -88,12 +97,12 @@ export default class TicketBagDecoration extends Component {
                                         background: '#EF6D6D',
                                     }}></div>
                                     <img style={{
-                                        height: 98,
+                                        width: 231,
                                         display: 'inline-block',
-                                        position: 'relative',
-                                        top: '-33px',
-                                        left: 15
-                                    }} src={bgImg || headPic} alt="" />
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: 28
+                                    }} src={couponImg || headPic} alt="" />
                                     <div style={{
                                         width: 13,
                                         height: 85,
@@ -101,20 +110,20 @@ export default class TicketBagDecoration extends Component {
                                         display: 'inline-block',
                                         background: '#7EBD40',
                                         position: 'relative',
-                                        left: 31,
+                                        left: 261,
                                     }}></div>
                                 </div>
                                 <div className={style.couponsBox} style={{ marginTop: 20 }}>
                                     <img src={coupons5} />
-                                    <span  style={{ color: bgColor }} className={style.couponsExplainTxt2}>购买后立即赠送如下礼品，之后每日赠送，连购买后立即赠送如下礼品</span>
+                                    <span style={{ color: TipColor }} className={style.couponsExplainTxt2}>购买后立即赠送如下礼品，之后每日赠送，连购买后立即赠送如下礼品</span>
                                     <img src={coupons6} />
                                     <img className={style.couponsImgEmp2} src={coupons3} style={{ marginTop: 7 }} />
                                     <div className={style.couponsBtnWhiteBox}>
                                         <div className={style.couponsBtnDesBox}>购买记录</div>
                                         <Button
                                             style={{
-                                                background: `${btnBgColor}`,
-                                                color: `${btnColor}`
+                                                background: `${couponBtnBgColor}`,
+                                                color: `${couponBtnColor}`
                                             }}
                                             className={style.couponsBtn2}
                                         >
@@ -129,17 +138,17 @@ export default class TicketBagDecoration extends Component {
         )
     }
     handleLinearGradientChange = (color1, color2) => {
-        this.props.onChange({ key: ['btnBgColor'], value: `linear-gradient(${color1},${color2})` })
+        this.props.onChange({ key: ['couponBtnBgColor'], value: `linear-gradient(${color1},${color2})` })
     }
 
     renderSettingPanel() {
         const {
             decorationInfo: {
-                bgColor = '#fd6631',
-                bgImg,
-                btnBgColor = '#fd6631',
-                btnColor = '#fff',
-                decorateType = 1
+                TipColor = '#fd6631',//购买提示文本
+                couponImg = 'http://res.hualala.com/basicdoc/ef060596-786a-4aa7-8d99-4846d753d7e9.png',//背景图
+                couponBtnBgColor = '#fd6631',//券包按钮背景色
+                couponBtnColor = '#fff',//券包按钮字体颜色
+                decorateType = 1//装修类型 1:公众号, 2:小程序
             },
             onChange,
         } = this.props;
@@ -157,8 +166,8 @@ export default class TicketBagDecoration extends Component {
                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
                         <DecorationUploader
                             limit={0}
-                            value={bgImg}
-                            onChange={value => onChange({ key: ['bgImg'], value })}
+                            value={couponImg}
+                            onChange={value => onChange({ key: ['couponImg'], value })}
                         />
                         <div className={style.uploaderTip}>
                             <p>* 图片建议尺寸 750X544像素</p>
@@ -169,7 +178,7 @@ export default class TicketBagDecoration extends Component {
                 </div>
                 <div className={style.sectionWrapper}>
                     <div className={style.label}>购买提示文本</div>
-                    <ColorSettingBlock value={bgColor} onChange={(value) => onChange({ key: ['bgColor'], value })} />
+                    <ColorSettingBlock value={TipColor} onChange={(value) => onChange({ key: ['TipColor'], value })} />
                 </div>
                 <div className={style.sectionWrapper}>
                     <div style={{ top: 5 }} className={style.label}>按钮样式</div>
@@ -178,8 +187,8 @@ export default class TicketBagDecoration extends Component {
                         <div className={style.borderedColorWrapper}>
                             <WrappedColorPicker
                                 alpha={100}
-                                color={btnBgColor}
-                                onChange={({ color }) => onChange({ key: ['btnBgColor'], value: color })}
+                                color={couponBtnBgColor}
+                                onChange={({ color }) => onChange({ key: ['couponBtnBgColor'], value: color })}
                                 placement="topLeft"
                             />
                         </div>
@@ -189,8 +198,8 @@ export default class TicketBagDecoration extends Component {
                         <div className={style.borderedColorWrapper}>
                             <WrappedColorPicker
                                 alpha={100}
-                                color={btnColor}
-                                onChange={({ color }) => onChange({ key: ['btnColor'], value: color })}
+                                color={couponBtnColor}
+                                onChange={({ color }) => onChange({ key: ['couponBtnColor'], value: color })}
                                 placement="topLeft"
                             />
                         </div>
