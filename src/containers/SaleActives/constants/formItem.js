@@ -36,6 +36,12 @@ export const formItem = {
             { required: true, message: '起止日期不能为空' },
         ],
     },
+    shopIDList: {
+        type: 'custom',
+        label: '适用店铺',
+        render: () => (<p/>),
+        defaultValue: [],
+    },
     merchantLogoUrl: {
         type: 'custom',
         label: '品牌LOGO',
