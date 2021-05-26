@@ -11,6 +11,7 @@ import {
     PROMOTION_DECORATION,
     SPECIAL_PAGE,
     SALE_CENTER_PAGE,
+    GIFT_PAGE,
 } from '../../constants/entryCodes';
 import SimpleDecorationBoard from './SimpleDecorationBoard';
 import CommentSendGiftDecorationBoard from './CommentSendGiftDecorationBoard';
@@ -21,16 +22,20 @@ import FreeGiftDecorationBoard from './FreeGiftDecorationBoard';
 import LotteryDecorationBoard from './LotteryDecorationBoard';
 import SignInDecorationBoard from './SignInDecorationBoard'
 import RecommendHaveGift from './RecommendHaveGift'
-import BlindBoxDecorationBoard from './BlindBoxDecorationBoard'
+import BlindBoxDecorationBoard from './BlindBoxDecorationBoard';
+import TicketBagDecoration from './TicketBagDecoration'
 import {
     getDecorationInfo,
     saveDecorationInfo,
     updateDecorationItem,
     resetDecorationInfo,
+    getCouponsDecorationInfo,
 } from '../../redux/actions/decoration';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { injectIntl } from './IntlDecor';
+import { axiosData } from '../../helpers/util';
+import { isEqual } from 'lodash';
 
 
 const mapStateToProps = (state) => {
@@ -42,6 +47,7 @@ const mapStateToProps = (state) => {
         giftArr: state.sale_promotion_decoration.getIn(['currentPromotion', 'giftArr']).toJS(),
         loading: state.sale_promotion_decoration.getIn(['loading']),
         decorationInfo: state.sale_promotion_decoration.get('decorationInfo'),
+        user: state.user,
     };
 };
 
@@ -49,6 +55,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         getDecorationInfo: (opts) => {
             dispatch(getDecorationInfo(opts))
+        },
+        getCouponsDecorationInfo: (opts) => {
+            dispatch(getCouponsDecorationInfo(opts))
         },
         saveDecorationInfo: (opts) => {
             return dispatch(saveDecorationInfo(opts))
@@ -78,8 +87,31 @@ export default class PromotionDecoration extends Component {
             closePage();
             return;
         }
+        if (type === 'ticketbag') {
+            this.props.getCouponsDecorationInfo({ type, id })
+            return
+        }
         this.props.getDecorationInfo({ type, id })
     }
+
+    componentWillReceiveProps(nextProps) {
+        if (!isEqual(this.props.id, nextProps.id)
+        ) {
+            this.props.resetDecorationInfo();
+            const { type, id } = nextProps;
+            if (!id) {
+                closePage();
+                return;
+            }
+            if (type === 'ticketbag') {
+                this.props.getCouponsDecorationInfo({ type, id })
+                return
+            }
+            this.props.getDecorationInfo({ type, id })
+        }
+
+    }
+
     componentWillUnmount() {
         this.props.resetDecorationInfo();
     }
@@ -91,8 +123,9 @@ export default class PromotionDecoration extends Component {
     }
 
     handleCancel = () => {
+        const { type } = this.props
         closePage();
-        jumpPage({ pageID: SPECIAL_PAGE });
+        jumpPage({ pageID: type === 'ticketbag' ? GIFT_PAGE : SPECIAL_PAGE });
     }
 
     checkGatherPointsImgAll = () => {
@@ -119,7 +152,51 @@ export default class PromotionDecoration extends Component {
 
     handleSave = () => {
         const { ifVaild } = this.state
-        const { type, id, decorationInfo } = this.props;
+        const { type, id, decorationInfo, user } = this.props;
+        const cinfo = {
+            TipColor: '#fd6631',//购买提示文本
+            couponImg: 'http://res.hualala.com/basicdoc/ef060596-786a-4aa7-8d99-4846d753d7e9.png',//背景图
+            couponBtnBgColor: '#fd6631',//券包按钮背景色
+            couponBtnColor: '#fff',//券包按钮字体颜色
+            decorateType: 1,//装修类型 1:公众号, 2:小程序
+            ...decorationInfo.toJS(),
+        }
+        const decorateInfo = {
+            templateID: id,
+            templateType: 1,
+            decorateType: cinfo.decorateType,
+            decorateInfo: JSON.stringify(cinfo),
+        }
+        //如果是券包装修
+        if (type === 'ticketbag') {
+            axiosData(
+                '/decorate/decorate.ajax',
+                {
+                    decorateInfo,
+                    groupID: user.getIn(['accountInfo', 'groupID'])
+                },
+                null,
+                { path: '', },
+                'HTTP_SERVICE_URL_PROMOTION_NEW'
+            )
+                .then((data) => {
+                    const {
+                        code,
+                        message: mes,
+                    } = data
+                    if (code === '000') {
+                        message.success('保存成功')
+                        closePage();
+                        jumpPage({ pageID: GIFT_PAGE })
+                    } else {
+                        message.error(mes)
+                    }
+                }, (err) => { // network error catch
+                    message.error(err)
+                })
+            return
+        }
+        //如果是营销活动装修
         if (!this.checkGatherPointsImgAll()) {
             message.error('集点图自定义没有填写完整')
             return
@@ -226,6 +303,8 @@ export default class PromotionDecoration extends Component {
                 return <RecommendHaveGift onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
             case '79':
                 return <BlindBoxDecorationBoard onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
+            case 'ticketbag':
+                return <TicketBagDecoration onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
             default:
                 return <div></div>
         }
