@@ -1018,7 +1018,6 @@ class PromotionBasicInfo extends React.Component {
             wrapperCol: { span: 17 },
         };
         const { promotionBasicInfo, isCopy } = this.props;
-        console.log('isCopy', isCopy)
         const tagList = {
             placeholder: '',
             tags: true,

@@ -8,7 +8,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { Row, Col, Form, Select, Radio, Button, Icon, Checkbox } from 'antd';
+import { Row, Col, Form, Select, Radio, Button, Icon, Checkbox, Tooltip } from 'antd';
 import { is, fromJS } from 'immutable';
 import styles from '../ActivityPage.less';
 import {
@@ -33,7 +33,7 @@ import PriceInput from "../common/PriceInput";
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { checkAuthLicense } from '../../../helpers/util';
-import {injectIntl} from '../IntlDecor';
+import { injectIntl } from '../IntlDecor';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -59,6 +59,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
             userSettingOPtios: [],
             isTotalLimited: '0',
             crmCardTypeIDs: '',
+            cardBalanceLimitType: 0,
         };
 
         this.renderUserSetting = this.renderUserSetting.bind(this);
@@ -77,21 +78,21 @@ class AdvancedPromotionDetailSetting extends React.Component {
         let shopsIDs = this.props.user.accountInfo.dataPermissions.shopList;
         shopsIDs = shopsIDs[0] instanceof Object ? shopsIDs.map(shop => shop.shopID) : shopsIDs
         // 格式转换  统一字符串  拼接
-        if(initShopsIDs.length){
+        if (initShopsIDs.length) {
             let [shops] = initShopsIDs
-            if(typeof shops == 'string'){
+            if (typeof shops == 'string') {
                 data.shopIDs = initShopsIDs.join()
-            }else{
-                let [{shopID = ''}] = initShopsIDs
+            } else {
+                let [{ shopID = '' }] = initShopsIDs
                 data.shopIDs = shopID
             }
-        }else{
+        } else {
             data.shopIDs = shopsIDs.join()
         }
 
-        if(crmCardTypeIDs){
+        if (crmCardTypeIDs) {
             data.shopIDs = '';
-            this.setState({crmCardTypeIDs});
+            this.setState({ crmCardTypeIDs });
         }
         this.props.fetchShopCardLevel({ data })
         this.props.fetchTagList({
@@ -102,8 +103,8 @@ class AdvancedPromotionDetailSetting extends React.Component {
         // 获取会员等级信息
         const { groupCardTypeList = fromJS([]) } = this.props;
         let ciflist = groupCardTypeList.toJS();
-        if(crmCardTypeIDs){
-            ciflist = groupCardTypeList.toJS().filter(x=>{
+        if (crmCardTypeIDs) {
+            ciflist = groupCardTypeList.toJS().filter(x => {
                 return crmCardTypeIDs.split(',').includes(x.cardTypeID);
             })
         }
@@ -113,6 +114,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
         const $promotionDetail = this.props.promotionDetailInfo.get('$promotionDetail');
         let userSetting = $promotionDetail.get('userSetting');
         const subjectType = $promotionDetail.get('subjectType');
+        const cardBalanceLimitType = $promotionDetail.get('cardBalanceLimitType');
         const customerUseCountLimit = $promotionDetail.get('customerUseCountLimit') ? $promotionDetail.get('customerUseCountLimit') : 0;
         const isTotalLimited = customerUseCountLimit == 0 ? '0' : '1';
         const blackList = $promotionDetail.get('blackList');
@@ -153,6 +155,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
             userSettingOPtios,
             customerUseCountLimit,
             isTotalLimited,
+            cardBalanceLimitType: cardBalanceLimitType || 0,
         }, () => {
             this.props.setPromotionDetail({
                 userSetting: this.state.userSetting,
@@ -179,35 +182,35 @@ class AdvancedPromotionDetailSetting extends React.Component {
         if (!is(groupCardTypeList, _groupCardTypeList)) {
             let ciflist = _groupCardTypeList.toJS();
             const cardScopeIDs = this.state.cardScopeIDs
-            if(crmCardTypeIDs){
-                ciflist = _groupCardTypeList.toJS().filter(x=>{
+            if (crmCardTypeIDs) {
+                ciflist = _groupCardTypeList.toJS().filter(x => {
                     return crmCardTypeIDs.split(',').includes(x.cardTypeID);
                 })
             }
             const { cardScopeType } = this.state
             let currentCardScopeIDs = []
             // 当适用店铺减少后，在此过滤调卡类别或卡等级，后期标签也可以再次处理， 标签cardScopeType为2
-            if(cardScopeType == 0) {
-                currentCardScopeIDs = cardScopeIDs.filter(v =>  ciflist.find(item => item.cardTypeID == v))
-            } else if(cardScopeType == 1) {
+            if (cardScopeType == 0) {
+                currentCardScopeIDs = cardScopeIDs.filter(v => ciflist.find(item => item.cardTypeID == v))
+            } else if (cardScopeType == 1) {
                 currentCardScopeIDs = cardScopeIDs.filter(v => ciflist.find(item =>
                     item.cardTypeLevelList && item.cardTypeLevelList.find(cardLevelItem => cardLevelItem.cardLevelID == v)))
             }
 
             this.setState({
                 cardInfo: ciflist,
-                cardScopeIDs:  currentCardScopeIDs
+                cardScopeIDs: currentCardScopeIDs
             }, () => {
                 this.props.setPromotionDetail({
                     userSetting: this.state.userSetting,
                     cardScopeList: currentCardScopeIDs.length === 0
-                    ? undefined
-                    : currentCardScopeIDs.map((cardScopeID) => {
-                        return {
-                            cardScopeType,
-                            cardScopeID,
-                        }
-                    })
+                        ? undefined
+                        : currentCardScopeIDs.map((cardScopeID) => {
+                            return {
+                                cardScopeType,
+                                cardScopeID,
+                            }
+                        })
                 })
             })
         }
@@ -238,9 +241,9 @@ class AdvancedPromotionDetailSetting extends React.Component {
 
             if (!is(fromJS(_shopsIDs), fromJS(shopsIDs))) {
                 const data = { groupID: this.props.user.accountInfo.groupID }
-                if(_shopsIDs.length){
+                if (_shopsIDs.length) {
                     data.shopIDs = _shopsIDs.join(',')
-                }else{
+                } else {
                     data.shopIDs = shopsIDs1.join()
                 }
                 this.props.fetchShopCardLevel({ data })
@@ -251,7 +254,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
 
     renderUserSetting() {
         // 产品授权
-        let {authStatus} = checkAuthLicense(this.props.specialPromotion.AuthLicenseData)
+        let { authStatus } = checkAuthLicense(this.props.specialPromotion.AuthLicenseData)
         return (
             <FormItem
                 label={SALE_LABEL.k5m3on8w}
@@ -384,14 +387,14 @@ class AdvancedPromotionDetailSetting extends React.Component {
         const k5m3opbw = intl.formatMessage(SALE_STRING.k5m3opbw);
         const tip = (
             <div style={{ display: this.state.display, height: 260, width: 460 }} className={styles.tip}>
-    <div><p style={{ marginBottom: 10 }}>{SALE_LABEL.k5m3onxw}</p></div>
+                <div><p style={{ marginBottom: 10 }}>{SALE_LABEL.k5m3onxw}</p></div>
                 <Row style={{ height: '72px' }}>
                     <Col span={3} style={{ marginTop: -7 }}>{k5m3oo68}:</Col>
-        <Col span={20}>{SALE_LABEL.k5m3ooek}<span style={{ color: '#222222' }}>{SALE_LABEL.k5m6e4er}</span>，{SALE_LABEL.k5m6e4n3}<span style={{ color: '#222222' }}>{SALE_LABEL.k5m6e46f}</span></Col>
+                    <Col span={20}>{SALE_LABEL.k5m3ooek}<span style={{ color: '#222222' }}>{SALE_LABEL.k5m6e4er}</span>，{SALE_LABEL.k5m6e4n3}<span style={{ color: '#222222' }}>{SALE_LABEL.k5m6e46f}</span></Col>
                 </Row>
                 <Row style={{ height: '72px' }}>
                     <Col span={3} style={{ marginTop: -7 }}>{k5m3opbw}:</Col>
-        <Col span={20}>{SALE_LABEL.k5m3ooek}<span style={{ color: '#222222' }}>{SALE_LABEL.k5m6e46f}</span>，{SALE_LABEL.k5m6e4n3}<span style={{ color: '#222222' }}>{SALE_LABEL.k5m6e4er}</span></Col>
+                    <Col span={20}>{SALE_LABEL.k5m3ooek}<span style={{ color: '#222222' }}>{SALE_LABEL.k5m6e46f}</span>，{SALE_LABEL.k5m6e4n3}<span style={{ color: '#222222' }}>{SALE_LABEL.k5m6e4er}</span></Col>
                 </Row>
                 {/* <Row style={{ height: '72px' }}>
         <Col span={3} style={{ marginTop: -7 }}><span style={{ color: '#ed5664' }}>{SALE_LABEL.k5m6e3pr}</span>:</Col>
@@ -419,8 +422,8 @@ class AdvancedPromotionDetailSetting extends React.Component {
                 wrapperCol={{ span: 17 }}
             >
                 <RadioGroup value={this.state.blackListRadio} onChange={this.handleBlackListRadioChange}>
-        <Radio key={'0'} value={'0'}>{k5m3oo68}</Radio>
-        <Radio key={'1'} value={'1'}>{k5m3opbw}</Radio>
+                    <Radio key={'0'} value={'0'}>{k5m3oo68}</Radio>
+                    <Radio key={'1'} value={'1'}>{k5m3opbw}</Radio>
                     <Icon
                         type="question-circle-o"
                         className={styles.question}
@@ -473,44 +476,44 @@ class AdvancedPromotionDetailSetting extends React.Component {
     }
     renderParticipateLimit() {
         return (
-            <div style={{height: '40px', paddingLeft: 45, marginTop: '8px'}} className={styles.flexContainer}>
-                    <div style={{lineHeight: '28px', marginRight: '16px'}}>
-                        {SALE_LABEL.k6hhu9c3}
-                    </div>
-                    <div style={{lineHeight: '28px', marginRight: '14px'}}>
-                        {SALE_LABEL.k6hhu9kf}
-                    </div>
-                    <div style={{width: '300px'}}>
-                        <Col  span={this.state.isTotalLimited == 0 ? 24 : 12}>
-                            <Select onChange={this.handleIsTotalLimitedChange}
-                                    value={String(this.state.isTotalLimited)}
-                                    getPopupContainer={(node) => node.parentNode}
-                            >
-                                <Option key="0" value={'0'}>{SALE_LABEL.k5dn26n4}</Option>
-                                <Option key="1" value={'1'}>{SALE_LABEL.k5kp4vhr}</Option>
-                            </Select>
-                        </Col>
-                        <Col span={this.state.isTotalLimited == 0 ? 0 : 2}></Col>
-                        {
-                            this.state.isTotalLimited == 1 ?
-                                <Col span={10}>
-                                    <FormItem
-                                        style={{ marginTop: -6 }}
-                                        validateStatus={this.state.customerUseCountLimit%1 == 0 && this.state.customerUseCountLimit > 0 && this.state.customerUseCountLimit < 1000 ? 'success' : 'error'}
-                                        help={this.state.customerUseCountLimit%1 == 0 && this.state.customerUseCountLimit > 0 && this.state.customerUseCountLimit < 1000 ? null : SALE_LABEL.k6hhu9sr}
-                                    >
-                                        <PriceInput
-                                            addonAfter={SALE_LABEL.k5kms0pc}
-                                            maxNum={999}
-                                            value={{ number: this.state.customerUseCountLimit }}
-                                            onChange={this.handleCustomerUseCountLimitChange}
-                                            modal="int"
-                                        />
-                                    </FormItem>
-                                </Col> : null
-                        }
-                    </div>
+            <div style={{ height: '40px', paddingLeft: 45, marginTop: '8px' }} className={styles.flexContainer}>
+                <div style={{ lineHeight: '28px', marginRight: '16px' }}>
+                    {SALE_LABEL.k6hhu9c3}
                 </div>
+                <div style={{ lineHeight: '28px', marginRight: '14px' }}>
+                    {SALE_LABEL.k6hhu9kf}
+                </div>
+                <div style={{ width: '300px' }}>
+                    <Col span={this.state.isTotalLimited == 0 ? 24 : 12}>
+                        <Select onChange={this.handleIsTotalLimitedChange}
+                            value={String(this.state.isTotalLimited)}
+                            getPopupContainer={(node) => node.parentNode}
+                        >
+                            <Option key="0" value={'0'}>{SALE_LABEL.k5dn26n4}</Option>
+                            <Option key="1" value={'1'}>{SALE_LABEL.k5kp4vhr}</Option>
+                        </Select>
+                    </Col>
+                    <Col span={this.state.isTotalLimited == 0 ? 0 : 2}></Col>
+                    {
+                        this.state.isTotalLimited == 1 ?
+                            <Col span={10}>
+                                <FormItem
+                                    style={{ marginTop: -6 }}
+                                    validateStatus={this.state.customerUseCountLimit % 1 == 0 && this.state.customerUseCountLimit > 0 && this.state.customerUseCountLimit < 1000 ? 'success' : 'error'}
+                                    help={this.state.customerUseCountLimit % 1 == 0 && this.state.customerUseCountLimit > 0 && this.state.customerUseCountLimit < 1000 ? null : SALE_LABEL.k6hhu9sr}
+                                >
+                                    <PriceInput
+                                        addonAfter={SALE_LABEL.k5kms0pc}
+                                        maxNum={999}
+                                        value={{ number: this.state.customerUseCountLimit }}
+                                        onChange={this.handleCustomerUseCountLimitChange}
+                                        modal="int"
+                                    />
+                                </FormItem>
+                            </Col> : null
+                    }
+                </div>
+            </div>
         )
     }
 
@@ -545,12 +548,21 @@ class AdvancedPromotionDetailSetting extends React.Component {
             })
         })
     }
+
+    handleCardBalanceLimitType = (opts) => {
+        this.setState(opts, () => {
+            const { cardBalanceLimitType } = this.state
+            this.props.setPromotionDetail({
+                cardBalanceLimitType: cardBalanceLimitType,
+            })
+        })
+    }
     renderCardLeval = () => {
         const { intl } = this.props;
         const k5m3oq98 = intl.formatMessage(SALE_STRING.k5m3oq98);
         const k5m4pxa1 = intl.formatMessage(SALE_STRING.k5m4pxa1);
 
-        const { cardInfo = [], cardScopeIDs = [], cardScopeType } = this.state;
+        const { cardInfo = [], cardScopeIDs = [], cardScopeType, cardBalanceLimitType } = this.state;
         const boxData = []
         cardScopeIDs.forEach((id) => {
             cardInfo.forEach((cat) => {
@@ -562,7 +574,6 @@ class AdvancedPromotionDetailSetting extends React.Component {
             })
         })
         const { tagList } = this.props
-
         return (
             <div>
                 <FormItem
@@ -581,104 +592,132 @@ class AdvancedPromotionDetailSetting extends React.Component {
                         }
                         }
                     >
-                    <Radio key={0} value={0}>{k5m3oq98}</Radio >
-                    <Radio key={1} value={1}>{k5m4pxa1}</Radio >
+                        <Radio key={0} value={0}>{k5m3oq98}</Radio >
+                        <Radio key={1} value={1}>{k5m4pxa1}</Radio >
                         {
                             this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) == '2020' ?
-                        <Radio key={2} value={2}>{SALE_LABEL.k5m4pxid}</Radio > : null
+                                <Radio key={2} value={2}>{SALE_LABEL.k5m4pxid}</Radio > : null
                         }
                     </RadioGroup >
                 </FormItem>
                 {
                     cardScopeType === 2 ?
-                    (
-                        <FormItem
-                            label={SALE_LABEL.k5m4pxid}
-                            className={styles.FormItemStyle}
-                            labelCol={{ span: 4 }}
-                            wrapperCol={{ span: 17 }}
-                        >
-                           <Select
-                                size={'default'}
-                                notFoundContent={SALE_LABEL.k5m4pxqp}
-                                multiple={true}
-                                showSearch={true}
-                                value={cardScopeIDs}
-                                className={`${styles.linkSelectorRight} advancedDetailClassJs`}
-                                getPopupContainer={(node) => node.parentNode}
-                                onChange={(val) => {
-                                    this.handleCardScopeList({
-                                        cardScopeIDs: val,
-                                    });
-                                }}
+                        (
+                            <FormItem
+                                label={SALE_LABEL.k5m4pxid}
+                                className={styles.FormItemStyle}
+                                labelCol={{ span: 4 }}
+                                wrapperCol={{ span: 17 }}
+                            >
+                                <Select
+                                    size={'default'}
+                                    notFoundContent={SALE_LABEL.k5m4pxqp}
+                                    multiple={true}
+                                    showSearch={true}
+                                    value={cardScopeIDs}
+                                    className={`${styles.linkSelectorRight} advancedDetailClassJs`}
+                                    getPopupContainer={(node) => node.parentNode}
+                                    onChange={(val) => {
+                                        this.handleCardScopeList({
+                                            cardScopeIDs: val,
+                                        });
+                                    }}
+                                >
+                                    {
+                                        tagList.map(type => <Option key={type.itemID} value={type.itemID}>{type.tagName}</Option>)
+
+                                    }
+                                </Select>
+                            </FormItem>
+                        ) :
+                        (
+                            <FormItem
+                                label={'适用' + (cardScopeType == 0 ? k5m3oq98 : k5m4pxa1)}
+                                className={styles.FormItemStyle}
+                                labelCol={{ span: 4 }}
+                                wrapperCol={{ span: 17 }}
                             >
                                 {
-                                    tagList.map(type => <Option key={type.itemID} value={type.itemID}>{type.tagName}</Option>)
+                                    cardScopeType == 0
+                                        ?
+                                        (<Select
+                                            size={'default'}
+                                            notFoundContent={SALE_LABEL.k5m4pxqp}
+                                            multiple={true}
+                                            showSearch={true}
+                                            value={cardScopeIDs}
+                                            dropdownClassName={`${styles.dropdown}`}
+                                            className={`${styles.linkSelectorRight} advancedDetailClassJs`}
+                                            getPopupContainer={(node) => node.parentNode}
+                                            onChange={(val) => {
+                                                this.handleCardScopeList({
+                                                    cardScopeIDs: val,
+                                                });
+                                            }}
+                                        >
+                                            {
+                                                cardInfo.map(type => <Option key={type.cardTypeID} value={type.cardTypeID}>{type.cardTypeName}</Option>)
 
+                                            }
+                                        </Select>)
+                                        :
+                                        (<BaseHualalaModal
+                                            outLabel={k5m4pxa1} //   外侧选项+号下方文案
+                                            outItemName="cardLevelName" //   外侧已选条目选项的label
+                                            outItemID="cardLevelID" //   外侧已选条目选项的value
+                                            innerleftTitle={SALE_LABEL.k5m4pyfq} //   内部左侧分类title
+                                            innerleftLabelKey={'cardTypeName'}//   内部左侧分类对象的哪个属性为分类label
+                                            leftToRightKey={'cardTypeLevelList'} // 点击左侧分类，的何种属性展开到右侧
+                                            innerRightLabel="cardLevelName" //   内部右侧checkbox选项的label
+                                            innerRightValue="cardLevelID" //   内部右侧checkbox选项的value
+                                            innerBottomTitle={SALE_LABEL.k5m4py7e} //   内部底部box的title
+                                            innerBottomItemName="cardLevelName" //   内部底部已选条目选项的label
+                                            itemNameJoinCatName={'cardTypeName'} // item条目展示名称拼接类别名称
+                                            treeData={cardInfo} // 树形全部数据源【{}，{}，{}】
+                                            data={boxData} // 已选条目数组【{}，{}，{}】】,编辑时向组件内传递值
+                                            onChange={(value) => {
+                                                // 组件内部已选条目数组【{}，{}，{}】,向外传递值
+                                                const _value = value.map(level => level.cardLevelID)
+                                                this.handleCardScopeList({
+                                                    cardScopeIDs: _value,
+                                                });
+                                            }}
+                                        />)
                                 }
-                            </Select>
-                        </FormItem>
-                    ):
-                    (
-                        <FormItem
-                            label={'适用' + (cardScopeType == 0 ? k5m3oq98 : k5m4pxa1) }
-                            className={styles.FormItemStyle}
-                            labelCol={{ span: 4 }}
-                            wrapperCol={{ span: 17 }}
-                        >
-                            {
-                                cardScopeType == 0
-                                    ?
-                                    (<Select
-                                        size={'default'}
-                                        notFoundContent={SALE_LABEL.k5m4pxqp}
-                                        multiple={true}
-                                        showSearch={true}
-                                        value={cardScopeIDs}
-                                        dropdownClassName={`${styles.dropdown}`}
-                                        className={`${styles.linkSelectorRight} advancedDetailClassJs`}
-                                        getPopupContainer={(node) => node.parentNode}
-                                        onChange={(val) => {
-                                            this.handleCardScopeList({
-                                                cardScopeIDs: val,
-                                            });
-                                        }}
-                                    >
-                                        {
-                                            cardInfo.map(type => <Option key={type.cardTypeID} value={type.cardTypeID}>{type.cardTypeName}</Option>)
-
-                                        }
-                                    </Select>)
-                                    :
-                                    (<BaseHualalaModal
-                                        outLabel={k5m4pxa1} //   外侧选项+号下方文案
-                                        outItemName="cardLevelName" //   外侧已选条目选项的label
-                                        outItemID="cardLevelID" //   外侧已选条目选项的value
-                                        innerleftTitle={SALE_LABEL.k5m4pyfq} //   内部左侧分类title
-                                        innerleftLabelKey={'cardTypeName'}//   内部左侧分类对象的哪个属性为分类label
-                                        leftToRightKey={'cardTypeLevelList'} // 点击左侧分类，的何种属性展开到右侧
-                                        innerRightLabel="cardLevelName" //   内部右侧checkbox选项的label
-                                        innerRightValue="cardLevelID" //   内部右侧checkbox选项的value
-                                        innerBottomTitle={SALE_LABEL.k5m4py7e} //   内部底部box的title
-                                        innerBottomItemName="cardLevelName" //   内部底部已选条目选项的label
-                                        itemNameJoinCatName={'cardTypeName'} // item条目展示名称拼接类别名称
-                                        treeData={cardInfo} // 树形全部数据源【{}，{}，{}】
-                                        data={boxData} // 已选条目数组【{}，{}，{}】】,编辑时向组件内传递值
-                                        onChange={(value) => {
-                                            // 组件内部已选条目数组【{}，{}，{}】,向外传递值
-                                            const _value = value.map(level => level.cardLevelID)
-                                            this.handleCardScopeList({
-                                                cardScopeIDs: _value,
-                                            });
-                                        }}
-                                    />)
-                            }
-                        </FormItem>
-                    )
+                            </FormItem>
+                        )
                 }
                 {
-    cardScopeIDs.length === 0 ? <p style={{ color: 'orange', marginLeft: 110 }}>{SALE_LABEL.k5m4pxz2}</p> : null
+                    cardScopeIDs.length === 0 ? <p style={{ color: 'orange', marginLeft: 110 }}>{SALE_LABEL.k5m4pxz2}</p> : null
                 }
+                <FormItem
+                    label={<span>
+                        卡值不足不参与
+                        <Tooltip title={'仅线上点餐支持，POS不支持'}>
+                            <Icon style={{ marginLeft: 5, marginRight: -5 }} type="question-circle" />
+                        </Tooltip>
+                    </span>}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <RadioGroup
+                        value={cardBalanceLimitType}
+                        onChange={(e) => {
+                            this.handleCardBalanceLimitType({
+                                cardBalanceLimitType: e.target.value,
+                            });
+                        }
+                        }
+                    >
+                        <Radio key={0} value={0}>不限制</Radio >
+                        <Radio key={1} value={1}>账单金额</Radio >
+                        {
+                            this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) == '2020' ?
+                                <Radio key={2} value={2}>{SALE_LABEL.k5m4pxid}</Radio > : null
+                        }
+                    </RadioGroup >
+                </FormItem>
             </div>
         )
     }
@@ -692,7 +731,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
             justUserSetting
         } = this.props
 
-        if(justUserSetting) {
+        if (justUserSetting) {
             return (
                 <div>
                     {this.renderUserSetting($promotionDetail)}
@@ -700,7 +739,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                         (this.state.userSetting == '1' || this.state.userSetting == '3' || this.state.userSetting == '4') ? this.renderCardLeval() : null
                     }
                 </div>
-            ) 
+            )
         }
         return (
             <div>

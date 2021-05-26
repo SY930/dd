@@ -129,7 +129,6 @@ class StepOne extends React.Component {
         const {
             isCopy
         } = this.props
-        console.log('stepone isCopy', isCopy)
         if (specialPromotion.eventStartDate !== '20000101' && specialPromotion.eventEndDate !== '29991231' &&
             specialPromotion.eventStartDate !== '0' && specialPromotion.eventEndDate !== '0' &&
             specialPromotion.eventStartDate !== '' && specialPromotion.eventEndDate !== '') {

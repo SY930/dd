@@ -726,7 +726,6 @@ class MyActivities extends React.Component {
     renderContentOfThisModal() {
         const promotionDetailInfo = this.props.myActivities.get('$promotionDetailInfo').toJS();
         const _state = this.state;
-        console.log('this is the layer one', _state.isCopy)
         if (promotionDetailInfo.status === 'start' || promotionDetailInfo.status === 'pending') {
             return (
                 <div className={styles.spinFather}>

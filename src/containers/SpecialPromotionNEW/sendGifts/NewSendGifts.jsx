@@ -31,7 +31,6 @@ class NewSendGifts extends NewPromotion {
         super(props);
     }
     render() {
-        console.log(' spe isCopy', this.props.isCopy)
 
         if (this.props.component === undefined) {
             throw new Error('component is required');
