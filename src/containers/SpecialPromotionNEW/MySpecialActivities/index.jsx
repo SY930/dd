@@ -241,7 +241,7 @@ class MySpecialActivities extends React.Component {
             pushMessageMpID:'',
             groupID:'',
             channelContent: '',
-            channelOptions: _.range(0, 10).map(item => ({ label: `渠道${item + 1}`, value: `${item}` })),
+            channelOptions: _.range(0, 10).map(item => ({ label: `渠道${item + 1}`, value: `渠道${item + 1}` })),
         };
         this.cfg = {
             eventWay: [
@@ -554,9 +554,9 @@ class MySpecialActivities extends React.Component {
     }
 
     handleCheckText = (value) => {
-        let v = Number(value);
+        // let v = Number(value);
         this.setState({
-            channelContent: v + 1,
+            channelContent: value,
         }, () => {
             this.handleCopyUrl()
         })
