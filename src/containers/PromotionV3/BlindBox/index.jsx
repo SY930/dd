@@ -111,7 +111,7 @@ class BlindBox extends Component {
         const lottery = [];
         // 盲盒礼品数据
         gifts.filter(item => item.needShow == 0).forEach((x, i) => {
-            const { presentType, giftOdds, sortIndex } = x;
+            const { presentType, giftOdds, sortIndex,giftTotalCount } = x;
             const index = sortIndex - 1;
             const type = `${presentType}`;  // 组件要string类型的
             let newItem = { isPoint: false, isTicket: false, presentType: '1', giftList: [],  bagList: [], ...lottery[index] };
@@ -138,7 +138,7 @@ class BlindBox extends Component {
                 const giftList = [...newGiftList, { ...others, id: giftID, giftID, effectType: `${etype}`, giftEffectTimeHours: `${hours}`, countType, rangeDate }];
                 newItem = { ...newItem, giftList, isTicket: true, presentType: type };
             }
-            lottery[index] = { id: `${sortIndex}`, giftOdds, userCount, ...newItem };
+            lottery[index] = { id: `${sortIndex}`, giftOdds, giftTotalCount,userCount, ...newItem };
         });
 
         // 明盒礼品
@@ -334,9 +334,9 @@ class BlindBox extends Component {
         const gifts = [];   // 后端要的专属key名
         // 盲盒礼品
         lottery.forEach((x, i) => {
-            const { giftOdds, isPoint, isTicket, presentType, giftList, ...others } = x;
+            const { giftOdds, giftTotalCount,isPoint, isTicket, presentType, giftList, ...others } = x;
             const sortIndex = i + 1;       // 后端要的排序
-            const rawObj =  { sortIndex, giftOdds, presentType, needShow: 0 };    // 基础数据
+            const rawObj =  { sortIndex, giftOdds, giftTotalCount,presentType, needShow: 0 };    // 基础数据
             if(isPoint){
                 const { presentValue } = x;
                 const obj = { ...others, ...rawObj,  presentType: '2', presentValue };
