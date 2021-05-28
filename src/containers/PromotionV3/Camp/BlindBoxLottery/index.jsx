@@ -190,6 +190,7 @@ class Lottery extends Component {
                                                     />
                                                 )
                                             }
+                                            <span>不填代表礼品个数不限制</span>
                                         </FormItem>
                                     </li>
                                     <li className={css.pointBox}>
