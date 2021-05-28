@@ -162,6 +162,7 @@ class GiftAddModalStep extends React.PureComponent {
             scopeLst: [],
             unit: '¥',
             isActivityFoods:false,//是否选择了菜品分类
+            groupID:''
         };
         this.firstForm = null;
         this.secondForm = null;
@@ -188,9 +189,13 @@ class GiftAddModalStep extends React.PureComponent {
             fetchFoodMenuInfo,
             accountInfo,
         } = this.props;
+        const groupID = accountInfo.get('groupID');
         let params = {
-            groupID: accountInfo.get('groupID'),
+            groupID:groupID
         };
+        this.setState({
+            groupID:groupID
+        })
         if(isFilterShopType()){
             params = {...params, productCode: 'HLL_CRM_License'}
         }
@@ -2261,7 +2266,8 @@ class GiftAddModalStep extends React.PureComponent {
     */
     render() {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
-            { firstKeys, secondKeys, values, unit } = this.state;
+            { firstKeys, secondKeys, values, unit,groupID } = this.state;
+            console.log(groupID,'groups0ddiddddd')
         // 判断是否是空对象
         // 影响 PhonePreview 回显。
         let formData =JSON.stringify(values) == '{}' ? data : values ;
@@ -2314,11 +2320,14 @@ class GiftAddModalStep extends React.PureComponent {
 
             pushMessage: {
                 label: <span>
-                <span>消息推送</span>
+                <span>消息推送1</span>
                 <Tooltip title={
                     <div>
                         <p>
                             微信推送：在所选公众号推送券到账/券到期/券核销提醒
+                        </p>
+                        <p>
+                            小程序推送：在所选小程序推送礼品到账提醒/礼品过期提醒
                         </p>
                         <p>
                             短信推送：仅在券到期前N天推送到期提醒
@@ -2346,7 +2355,7 @@ class GiftAddModalStep extends React.PureComponent {
                     message: '请选择微信推送的公众号',
                 },],
                 type: 'custom',
-                render: decorator => decorator({})(<PushMessageMpID formData = {formData}/>),
+                render: decorator => decorator({})(<PushMessageMpID formData = {formData} groupID={groupID}/>),
             },
             giftImagePath: {
                 label: '礼品图样',
