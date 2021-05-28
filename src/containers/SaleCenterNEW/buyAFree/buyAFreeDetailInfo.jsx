@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Row, Col, Form, Select, Icon } from 'antd';
+import { Row, Col, Form, Select, Icon,Radio,Tooltip } from 'antd';
 import { connect } from 'react-redux'
 import PriceInput from '../common/PriceInput';
 import styles from '../ActivityPage.less';
@@ -16,7 +16,7 @@ import {injectIntl} from '../IntlDecor';
 const Immutable = require('immutable');
 const FormItem = Form.Item;
 const Option = Select.Option;
-
+const RadioGroup = Radio.Group;
 @injectIntl()
 class BuyAFreeDetailInfo extends React.Component {
     constructor(props) {
@@ -33,10 +33,12 @@ class BuyAFreeDetailInfo extends React.Component {
                 },
             ],
             ruleType: '0',
+            subRule:0
         };
-
+        this.renderFoodNeedCalc = this.renderFoodNeedCalc.bind(this);
         this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleChangeSubRule = this.handleChangeSubRule.bind(this);
         this.onStageAmountChange = this.onStageAmountChange.bind(this);
         this.onFreeAmountChange = this.onFreeAmountChange.bind(this);
         this.ruleTypeChange = this.ruleTypeChange.bind(this);
@@ -95,11 +97,12 @@ class BuyAFreeDetailInfo extends React.Component {
             display,
             ruleType: _ruleType,
             data,
+            subRule:_rule.subRule
         });
     }
 
     handleSubmit = () => {
-        let { data, ruleType } = this.state;
+        let { data, ruleType, subRule } = this.state;
         let nextFlag = true;
         data = data.map((rule, idx) => {
             if (rule.stageAmount == null || rule.stageAmount === '' || rule.freeAmount > rule.stageAmount) {
@@ -118,6 +121,7 @@ class BuyAFreeDetailInfo extends React.Component {
             let rule;
             if (ruleType == '0' || ruleType == '2' || ruleType == '4') {
                 rule = {
+                    subRule,
                     stageType: ruleType == '4' ? 21 : 2,
                     stage: data.map((rule) => {
                         return {
@@ -128,12 +132,12 @@ class BuyAFreeDetailInfo extends React.Component {
                 }
             } else {
                 rule = {
+                    subRule,
                     stageType: ruleType == '5' ? 11 : 1,
                     stageAmount: data[0].stageAmount,
                     freeAmount: data[0].freeAmount,
                 }
             }
-
             if (ruleType == '0' || ruleType == '1') {
                 this.props.setPromotionDetail({
                     rule,
@@ -215,7 +219,6 @@ class BuyAFreeDetailInfo extends React.Component {
 
     renderAdvancedSettingButton() {
         return (
-
             <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 17, offset: 4 }} >
                 <span className={styles.gTip}>{SALE_LABEL.k5ezdwpv}</span>
                 <span className={styles.gDate} onClick={this.onChangeClick}>
@@ -224,6 +227,35 @@ class BuyAFreeDetailInfo extends React.Component {
                 </span>
             </FormItem>
         )
+    }
+    renderFoodNeedCalc = () => {
+        const {subRule} = this.state;
+        return (
+            <FormItem
+                label={'配菜是否参与计算'}
+                className={styles.FormItemStyle}
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 17 }}
+            >
+                <RadioGroup value={subRule} onChange={this.handleChangeSubRule} defaultValue={0}>
+                    <Radio key={1} value={1}>参与</Radio>
+                    <Radio key={0} value={0}>不参与</Radio>
+                    <Tooltip title={'配菜包括配菜、子菜、做法加价等'}>
+                        <Icon
+                            type="question-circle-o"
+                            className={styles.question}
+                        />
+                    </Tooltip>
+                </RadioGroup>
+            </FormItem>
+        )
+    }
+    handleChangeSubRule(e){
+        const {target} = e;
+        const {value} = target;
+        this.setState({
+            'subRule':value
+        })
     }
     ruleTypeChange(val) {
         let data = this.state.data;
@@ -395,6 +427,7 @@ class BuyAFreeDetailInfo extends React.Component {
                             null :
                             <ConnectedScopeListSelector isShopMode={this.props.isShopFoodSelectorMode} />
                     }
+                    {this.renderFoodNeedCalc()}
                     {this.renderAdvancedSettingButton()}
                     {this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
                 </Form>
