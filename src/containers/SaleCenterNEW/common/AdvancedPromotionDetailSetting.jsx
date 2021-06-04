@@ -690,34 +690,34 @@ class AdvancedPromotionDetailSetting extends React.Component {
                 {
                     cardScopeIDs.length === 0 ? <p style={{ color: 'orange', marginLeft: 110 }}>{SALE_LABEL.k5m4pxz2}</p> : null
                 }
-                <FormItem
-                    label={<span>
-                        卡值不足不参与
+                {
+                    this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) == '1010' &&
+                    <FormItem
+                        label={<span>
+                            卡值不足不参与
                         <Tooltip title={'仅线上点餐支持，POS不支持'}>
-                            <Icon style={{ marginLeft: 5, marginRight: -5 }} type="question-circle" />
-                        </Tooltip>
-                    </span>}
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 17 }}
-                >
-                    <RadioGroup
-                        value={cardBalanceLimitType}
-                        onChange={(e) => {
-                            this.handleCardBalanceLimitType({
-                                cardBalanceLimitType: e.target.value,
-                            });
-                        }
-                        }
+                                <Icon style={{ marginLeft: 5, marginRight: -5 }} type="question-circle" />
+                            </Tooltip>
+                        </span>}
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 17 }}
                     >
-                        <Radio key={0} value={0}>不限制</Radio >
-                        <Radio key={1} value={1}>账单金额</Radio >
-                        {
-                            this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) == '2020' ?
-                                <Radio key={2} value={2}>{SALE_LABEL.k5m4pxid}</Radio > : null
-                        }
-                    </RadioGroup >
-                </FormItem>
+                        <RadioGroup
+                            value={cardBalanceLimitType}
+                            onChange={(e) => {
+                                this.handleCardBalanceLimitType({
+                                    cardBalanceLimitType: e.target.value,
+                                });
+                            }
+                            }
+                        >
+                            <Radio key={0} value={0}>不限制</Radio >
+                            <Radio key={1} value={1}>账单金额</Radio >
+                        </RadioGroup >
+                    </FormItem>
+                }
+
             </div>
         )
     }
