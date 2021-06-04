@@ -233,8 +233,8 @@ class Step2 extends React.Component {
                         }
                     }
                 } else {
-                    effectTime = v.mySendGift.rangeDate[0].format('YYYYMMDDHHmmss')
-                    validUntilDate =v.mySendGift.rangeDate[1].format('YYYYMMDDHHmmss')
+                    effectTime = v.mySendGift.rangeDate[0].format('YYYYMMDDHH')
+                    validUntilDate =v.mySendGift.rangeDate[1].format('YYYYMMDDHH')
                 }
                 gifts.push({
                         ...v.mySendGift,
