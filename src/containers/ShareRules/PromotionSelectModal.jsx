@@ -245,6 +245,7 @@ class PromotionSelectModal extends Component {
         const k5m4q0r2 = intl.formatMessage(SALE_STRING.k5m4q0r2);
         const k5m4q0ze = intl.formatMessage(SALE_STRING.k5m4q0ze);
         const bianji = <p>{COMMON_LABEL.edit} {SALE_LABEL.k636f2q3}</p>;
+        debugger
         return (
             <Modal
                 maskClosable={false}

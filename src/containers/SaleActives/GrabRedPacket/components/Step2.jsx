@@ -51,7 +51,7 @@ class Step2 extends Component {
         })
     }
     componentWillReceiveProps(nextProps) {
-        const { formData } = nextProps.createActiveCom
+        
     }
     getBrandOpts() {
         const { brandList } = this.props;

@@ -1,4 +1,4 @@
-import { Col, Form, Icon, Row, Select } from 'antd';
+import { Col, Form, Icon, Row, Select, Checkbox,message } from 'antd';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
@@ -9,11 +9,12 @@ import { saleCenterSetPromotionDetailAC } from '../../../redux/actions/saleCente
 import styles from '../ActivityPage.less';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
-import {injectIntl} from '../IntlDecor';
+import { injectIntl } from '../IntlDecor';
 const Immutable = require('immutable');
 
 const Option = Select.Option;
 const FormItem = Form.Item;
+const CheckGroup = Checkbox.Group;
 
 @injectIntl()
 class ReturnPointDetailInfo extends React.Component {
@@ -22,8 +23,8 @@ class ReturnPointDetailInfo extends React.Component {
         this.defaultRun = '0';
         this.state = {
             display: false,
+            showRulesOption: 0,
             maxCount: 3,
-
             ruleInfo: [
                 {
                     validationStatus: 'success',
@@ -32,12 +33,22 @@ class ReturnPointDetailInfo extends React.Component {
                     end: null,
                 },
             ],
-
+            ruleInfo1: [
+                {
+                    validationStatus: 'success',
+                    helpMsg: null,
+                    start: null,
+                    end: null,
+                },
+            ],
             ruleType: '2',
+            checkedPoints:false,
+            checkedQuota:false
         };
         this.onCustomRangeInputChange = this.onCustomRangeInputChange.bind(this);
         this.addRule = this.addRule.bind(this);
         this.deleteRule = this.deleteRule.bind(this);
+        this.onChangeChecked = this.onChangeChecked.bind(this);
     }
 
     componentDidMount() {
@@ -47,37 +58,67 @@ class ReturnPointDetailInfo extends React.Component {
 
         // restore data from redux to state
         let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
+        let checkedPoints = false,checkedQuota = false;
         if (_rule === null || _rule === undefined) {
             return null;
         }
         _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
-        // default value
         _rule = Object.assign({}, _rule);
         if (Object.keys(_rule).length > 0) {
             let { display } = this.state;
             display = !this.props.isNew;
-            let _ruleInfo;
-            if (_rule.returnPointStage !== undefined) {
-                _ruleInfo = _rule.returnPointStage.map((stageInfo) => {
-                    return {
-                        start: stageInfo.pointStageAmount,
-                        end: stageInfo.givePointRate,
+            let {ruleInfo,ruleInfo1} = this.state;
+            if(_rule.returnPointStageType == '1'){
+                if(_rule.givePointRate && _rule.pointStageAmount){
+                    checkedPoints = true;
+                    ruleInfo = [{
+                        start: _rule.pointStageAmount,
+                        end: _rule.givePointRate,
                         validationStatus: 'success',
                         helpMsg: null,
-                    }
-                })
-            } else {
-                _ruleInfo = [{
-                    start: _rule.pointStageAmount,
-                    end: _rule.givePointRate,
-                    validationStatus: 'success',
-                    helpMsg: null,
-                }]
+                    }]
+                }
+                if(_rule.giveBalanceRate && _rule.balanceStageAmount){
+                    checkedQuota = true;
+                    ruleInfo1 = [{
+                        start: _rule.balanceStageAmount,
+                        end: _rule.giveBalanceRate,
+                        validationStatus: 'success',
+                        helpMsg: null,
+                    }]
+                }
+            }else if(_rule.returnPointStageType == '2'){
+                if( _rule.returnPointStage && _rule.returnPointStage.length > 0){
+                    checkedPoints = true;
+                    ruleInfo = _rule.returnPointStage.map((stageInfo) => {
+                        return {
+                            start: stageInfo.pointStageAmount,
+                            end: stageInfo.givePointRate,
+                            validationStatus: 'success',
+                            helpMsg: null,
+                        }
+                    })
+                }
+                if( _rule.returnBalanceStage && _rule.returnBalanceStage.length > 0){
+                    checkedQuota = true;
+                    ruleInfo1 = _rule.returnBalanceStage.map((stageInfo) => {
+                        return {
+                            start: stageInfo.balanceStageAmount,
+                            end: stageInfo.giveBalanceRate,
+                            validationStatus: 'success',
+                            helpMsg: null,
+                        }
+                    })
+                }
             }
+            
             this.setState({
                 display,
                 ruleType: _rule.returnPointStageType,
-                ruleInfo: _ruleInfo,
+                ruleInfo,
+                ruleInfo1,
+                checkedPoints:checkedPoints,
+                checkedQuota:checkedQuota,
             });
         }
     }
@@ -85,8 +126,19 @@ class ReturnPointDetailInfo extends React.Component {
     handleSubmit = (cbFn) => {
         const { intl } = this.props;
         const k6hdptkl = intl.formatMessage(SALE_STRING.k6hdptkl);
-        const { ruleInfo, ruleType } = this.state;
-        const ruleValidation = ruleInfo.reduce((p, c) => {
+        let { ruleInfo,ruleType,ruleInfo1,checkedPoints,checkedQuota} = this.state;
+        if(!checkedPoints && !checkedQuota){
+            message.warning('请选择赠送积分或赠送卡值');
+            return
+        }
+        if(!checkedPoints){
+            ruleInfo = [];
+        }
+        if(!checkedQuota){
+            ruleInfo1 = [];
+        }
+        let validateArr = ruleInfo.concat(ruleInfo1);
+        const ruleValidation = validateArr.reduce((p, c) => {
             if (c.start == null || c.end == null || c.start == '' || c.end == '' || Number.isNaN(c.start) || Number.isNaN(c.end)) {
                 c.validationStatus = 'error';
                 c.helpMsg = k6hdptkl;
@@ -100,20 +152,35 @@ class ReturnPointDetailInfo extends React.Component {
             rule = {
                 returnPointStageType: parseInt(ruleType),
                 returnPointStage: ruleInfo.map((ruleInfo) => {
-                    return {
-                        pointStageAmount: ruleInfo.start,
-                        givePointRate: ruleInfo.end,
+                    if(ruleInfo && ruleInfo.start && ruleInfo.end){
+                        return {
+                            pointStageAmount: ruleInfo.start,
+                            givePointRate: ruleInfo.end,
+                        }
+                    }else{
+                        return null
+                    }
+                }),
+                returnBalanceStage: ruleInfo1.map((ruleInfo) => {
+                    if(ruleInfo && ruleInfo.start && ruleInfo.end){
+                        return {
+                            balanceStageAmount: ruleInfo.start,
+                            giveBalanceRate: ruleInfo.end,
+                        }
+                    }else{
+                        return null
                     }
                 }),
             };
         } else {
             rule = {
                 returnPointStageType: parseInt(ruleType),
-                pointStageAmount: ruleInfo[0].start,
-                givePointRate: ruleInfo[0].end,
+                pointStageAmount: ruleInfo.length > 0 ? ruleInfo[0].start : '',
+                givePointRate: ruleInfo.length > 0 ? ruleInfo[0].end : '',
+                balanceStageAmount: ruleInfo1.length > 0 ?  ruleInfo1[0].start : '',
+                giveBalanceRate: ruleInfo1.length > 0 ? ruleInfo1[0].end : '',
             }
         }
-
         // save state to redux
         if (ruleValidation) {
             this.props.setPromotionDetail({
@@ -134,8 +201,23 @@ class ReturnPointDetailInfo extends React.Component {
             { display: !this.state.display }
         )
     };
-
-    onCustomRangeInputChange(value, index) {
+    onChangeChecked(checkedValues) {
+        const {target:{value,checked}} = checkedValues;
+        const key = "checked" + value;
+        if(value === '1'){
+            this.setState({
+                checkedPoints:checked,
+                checkedType:value
+            })
+        }
+        if(value === '2'){
+            this.setState({
+                checkedQuota:checked,
+                checkedType:value
+            })
+        }
+    }
+    onCustomRangeInputChange(value,index,type) {
         const { intl } = this.props;
         const k6hdptkl = intl.formatMessage(SALE_STRING.k6hdptkl);
 
@@ -149,24 +231,31 @@ class ReturnPointDetailInfo extends React.Component {
             _helpMsg = k6hdptkl
         }
 
-        const _tmp = this.state.ruleInfo;
+        const _tmp = type === '1' ? this.state.ruleInfo : this.state.ruleInfo1;
         _tmp[index] = {
             start: value.start,
             end: value.end,
             validationStatus: _validationStatus,
             helpMsg: _helpMsg,
         };
-        this.setState({ ruleInfo: _tmp })
+        if(type === '1'){
+            this.setState({ ruleInfo: _tmp })
+        }else if(type === '2'){
+            this.setState({ ruleInfo1: _tmp })
+        }
     }
 
     renderPromotionRule() {
         const { intl } = this.props;
+        const { checkedPoints,checkedQuota } = this.state;
         const k6hdpt3x = intl.formatMessage(SALE_STRING.k6hdpt3x);
         const k6hdptc9 = intl.formatMessage(SALE_STRING.k6hdptc9);
         const type = [
             { value: '2', name: k6hdpt3x },
             { value: '1', name: k6hdptc9 },
         ];
+        
+
         return (
             <div>
                 <FormItem
@@ -187,6 +276,7 @@ class ReturnPointDetailInfo extends React.Component {
                             if (val == '1') {
                                 maxCount = 1;
                                 this.state.ruleInfo.length = 1;
+                                this.state.ruleInfo1.length = 1;
                             } else {
                                 maxCount = 3
                             }
@@ -201,18 +291,19 @@ class ReturnPointDetailInfo extends React.Component {
                         }
                     </Select>
                 </FormItem>
-                {
-                    this.renderRulesComponent()
-                }
-
-
+                <Checkbox value={'1'} onChange={this.onChangeChecked} checked={checkedPoints} className={styles.checkLabel}>赠送积分</Checkbox>
+                {checkedPoints ? this.renderPointsComponent() : null}
+                <Checkbox value={'2'} onChange={this.onChangeChecked} checked={checkedQuota} className={styles.checkLabel}>赠送卡值</Checkbox>
+                {checkedQuota ? this.renderQuotaComponent() : null}
             </div>
         )
     }
-    renderRulesComponent() {
+    renderPointsComponent() {
+        const { ruleInfo } = this.state;
         const { intl } = this.props;
         const k6hdptsx = intl.formatMessage(SALE_STRING.k6hdptsx);
-        return (this.state.ruleInfo.map((ruleInfo, index) => {
+        
+        return (ruleInfo.map((ruleInfo, index) => {
             const _value = {
                 start: null,
                 end: null,
@@ -242,51 +333,124 @@ class ReturnPointDetailInfo extends React.Component {
                                 }
                                 onChange={(value) => {
                                     const _index = index;
-                                    this.onCustomRangeInputChange(value, _index);
+                                    this.onCustomRangeInputChange(value,_index,'1');
                                 }
                                 }
                             />
                         </FormItem>
                     </Col>
-                    {this.state.ruleType != 1 ? 
-                        <Col>
-                            {this.renderOperationIcon(index)}
-                        </Col> 
-                        : 
-                        ''
+                    {
+                        this.state.ruleType != 1 ?
+                            <Col>
+                                {this.renderOperationIcon(index,'1')}
+                            </Col>
+                            :
+                            ''
                     }
-                </Row>
-
+                </Row >
             )
         }))
     }
-
-    addRule() {
-        const _tmp = this.state.ruleInfo;
-        _tmp.push({
-            validationStatus: 'success',
-            helpMsg: null,
-            start: null,
-            end: null,
-        });
-
-        this.setState({
-            'ruleInfo': _tmp,
-        });
+    renderQuotaComponent() {
+        const { ruleInfo1 } = this.state;
+        const { intl } = this.props;
+        const k6hdptsx = '返卡值比例';
+        return (ruleInfo1.map((ruleInfo, index) => {
+            const _value = {
+                start: null,
+                end: null,
+            };
+            if (ruleInfo.start) {
+                _value.start = ruleInfo.start;
+            }
+            if (ruleInfo.end) {
+                _value.end = ruleInfo.end;
+            }
+            
+            return (
+                <Row key={`${index}`}>
+                    <Col>
+                        <FormItem
+                            className={styles.FormItemStyle}
+                            style={{ marginLeft: '109px', width: '70.5%' }}
+                            validateStatus={ruleInfo.validationStatus}
+                            help={ruleInfo.helpMsg}
+                        >
+                            <CustomRangeInput
+                                relation={k6hdptsx}
+                                addonBefore={this.state.ruleType == 1 ? SALE_LABEL.k67g8n1b : SALE_LABEL.k5nh214x}
+                                addonAfterUnit={'%'}
+                                value={
+                                    _value
+                                }
+                                onChange={(value) => {
+                                    const _index = index;
+                                    this.onCustomRangeInputChange(value,_index,'2');
+                                }
+                                }
+                            />
+                        </FormItem>
+                    </Col>
+                    {
+                        this.state.ruleType != 1 ?
+                            <Col>
+                                {this.renderOperationIcon(index,'2')}
+                            </Col>
+                            :
+                            ''
+                    }
+                </Row >
+            )
+        }))
+    }
+    addRule(type) {
+        if(type === '1'){
+            let ruleInfo = [...this.state.ruleInfo];
+            ruleInfo.push({
+                validationStatus: 'success',
+                helpMsg: null,
+                start: null,
+                end: null,
+            });
+            this.setState({
+                ruleInfo
+            });
+        }
+        if(type === '2'){
+            let ruleInfo1 = [...this.state.ruleInfo1];
+            ruleInfo1.push({
+                validationStatus: 'success',
+                helpMsg: null,
+                start: null,
+                end: null,
+            });
+            this.setState({
+                ruleInfo1
+            });
+        }
     }
 
-    deleteRule(index, e) {
-        const _tmp = this.state.ruleInfo;
+    deleteRule(index,e,type) {
+        const { ruleInfo,ruleInfo1 } = this.state;
+        const _tmp = type === '1' ? ruleInfo : ruleInfo1;
         _tmp.splice(index, 1);
-
-        this.setState({
-            'ruleInfo': _tmp,
-        })
+        if(type === '1'){
+            this.setState({
+                'ruleInfo': _tmp,
+            })
+        }
+        if(type === '2'){
+            this.setState({
+                'ruleInfo1': _tmp,
+            })
+        }
+        
     }
 
-    renderOperationIcon(index) {
-        const _len = this.state.ruleInfo.length;
-        //
+    renderOperationIcon(index,type) {
+        const {ruleInfo,ruleInfo1} = this.state;
+        const _len = type === '1' ? ruleInfo.length : ruleInfo1.length;
+        
         if (this.state.maxCount == 1) {
             return null;
         }
@@ -294,7 +458,7 @@ class ReturnPointDetailInfo extends React.Component {
         if (_len == 1 && this.state.maxCount > _len) {
             return (
                 <span className={styles.iconsStyle}>
-                    <Icon className={styles.pulsIcon} disabled={false} type="plus-circle-o" onClick={this.addRule} />
+                    <Icon className={styles.pulsIcon} disabled={false} type="plus-circle-o" onClick={() => this.addRule(type)} />
                 </span>
             )
         }
@@ -307,7 +471,7 @@ class ReturnPointDetailInfo extends React.Component {
                         type="minus-circle-o"
                         onClick={(e) => {
                             const _index = index;
-                            this.deleteRule(_index, e)
+                            this.deleteRule(_index,e,type)
                         }}
                     />
                 </span>
@@ -316,13 +480,13 @@ class ReturnPointDetailInfo extends React.Component {
         if (index == _len - 1 && _len == this.state.maxCount - 1) {
             return (
                 <span className={styles.iconsStyle}>
-                    <Icon className={styles.pulsIcon} disabled={false} type="plus-circle-o" onClick={this.addRule} />
+                    <Icon className={styles.pulsIcon} disabled={false} type="plus-circle-o" onClick={() => this.addRule(type)} />
                     <Icon
                         className={styles.deleteIcon}
                         type="minus-circle-o"
                         onClick={(e) => {
                             const _index = index;
-                            this.deleteRule(_index, e)
+                            this.deleteRule(_index,e,type)
                         }}
                     />
                 </span>
@@ -342,7 +506,6 @@ class ReturnPointDetailInfo extends React.Component {
             </FormItem>
         )
     }
-
 
     render() {
         return (
