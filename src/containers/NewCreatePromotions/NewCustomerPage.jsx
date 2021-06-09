@@ -92,15 +92,20 @@ class NewCustomerPage extends Component {
         currentCategoryIndex: 0,
         v3visible: false,       // 第三版活动组件是否显示
         curKey: '',             //当前活动入口值
-        authLicenseData: {}
+        authLicenseData: {},
+        houseKeepStatus:false,//是否有流失唤醒
+        gentGiftStatus:false,//是否有智能发券
     }
 
     componentDidMount() {
         this.getWhite();
         this.fromCrmJump();
+        this.getHouseKeepActivityAuthStatus('MEMBER_MARKET_PLAN');
+        this.getHouseKeepActivityAuthStatus('CRM_VOUCHER_AUTOMATIC_ISSUANCE');
         this.props.getAuthLicenseData({ productCode: 'HLL_CRM_Marketingbox' }).then((res) => {
             this.setState({ authLicenseData: res })
         });
+
     }
     componentWillReceiveProps() {
         // todo:上线放开
@@ -199,6 +204,31 @@ class NewCustomerPage extends Component {
             const { eventTypeInfoList = [] } = data;
             this.setState({ whiteList: eventTypeInfoList });
         })
+    }
+    //验证集团是否参加管家活动
+    getHouseKeepActivityAuthStatus = async (param) => {
+        const state = getStore().getState();
+        const { groupID } = state.user.get('accountInfo').toJS();
+        const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', '', '/api/v1/universal?'];
+        const method = '/messageSendService/queryMsgConfig.ajax';
+        const params = { service, type, data: { groupID,shopID:groupID,messageCode: param }, method };
+        const response = await axios.post(url + method, params);
+        const { code, message: msg,data } = response;
+        if (code === '000') {
+            const { authConfig:{authStatus} } = data;
+            if(param == 'CRM_VOUCHER_AUTOMATIC_ISSUANCE' && authStatus == 'AUTHORIZED'){
+                this.setState({
+                    gentGiftStatus:true
+                })
+            }
+            if(param == 'MEMBER_MARKET_PLAN' && authStatus == 'AUTHORIZED'){
+                this.setState({
+                    houseKeepStatus:true
+                })
+            }
+            return true;
+        }
+        message.error(msg);
     }
     onClickOpen = async (eventWay) => {
         const state = getStore().getState();
@@ -430,9 +460,9 @@ class NewCustomerPage extends Component {
     filterMenuByGroup = (displayList = [], allMenu = []) => {
         const state = getStore().getState();
         const { groupID } = state.user.get('accountInfo').toJS();
-
-        let keeperFlag = avaHouseKeeperGroups.includes(groupID)
-        let intelligentFlag = avaIntelligentGiftRuleGroups.includes(groupID)
+        const { houseKeepStatus,gentGiftStatus } = this.state;
+        // let keeperFlag = avaHouseKeeperGroups.includes(groupID)
+        // let intelligentFlag = avaIntelligentGiftRuleGroups.includes(groupID)
         // 管家活动列表是否为空
         let isKeeperEmpty = false
 
@@ -441,19 +471,18 @@ class NewCustomerPage extends Component {
                 let { list = [] } = item
                 let data = list
 
-                if (!keeperFlag) {
+                if (!houseKeepStatus) {
                     data = data.filter(item => item.key != 'housekeeper')
                 }
-                if (!intelligentFlag) {
+                if (!gentGiftStatus) {
                     data = data.filter(item => item.key != 'intelligentGiftRule')
                 }
                 item.list = data
-                // 
                 isKeeperEmpty = data.length <= 0
             }
             return item
         })
-        // 
+
         if (isKeeperEmpty) {
             allMenu = allMenu.filter(item => item != '管家活动')
             displayList = displayList.filter(item => item.title != '管家活动')
