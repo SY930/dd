@@ -229,25 +229,27 @@ class BuyAFreeDetailInfo extends React.Component {
         )
     }
     renderFoodNeedCalc = () => {
+        const { user:{groupID} } = this.props;
         const {subRule} = this.state;
         return (
-            <FormItem
-                label={'配菜是否参与计算'}
-                className={styles.FormItemStyle}
-                labelCol={{ span: 4 }}
-                wrapperCol={{ span: 17 }}
-            >
-                <RadioGroup value={subRule} onChange={this.handleChangeSubRule} defaultValue={0}>
-                    <Radio key={1} value={1}>参与</Radio>
-                    <Radio key={0} value={0}>不参与</Radio>
-                    <Tooltip title={'配菜包括配菜、子菜、做法加价等'}>
-                        <Icon
-                            type="question-circle-o"
-                            className={styles.question}
-                        />
-                    </Tooltip>
-                </RadioGroup>
-            </FormItem>
+            groupID == '300452' ? 
+                <FormItem
+                    label={'配菜是否参与计算'}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <RadioGroup value={subRule} onChange={this.handleChangeSubRule} defaultValue={0}>
+                        <Radio key={1} value={1}>参与</Radio>
+                        <Radio key={0} value={0}>不参与</Radio>
+                        <Tooltip title={'配菜包括配菜、子菜、做法加价等'}>
+                            <Icon
+                                type="question-circle-o"
+                                className={styles.question}
+                            />
+                        </Tooltip>
+                    </RadioGroup>
+                </FormItem> : ''
         )
     }
     handleChangeSubRule(e){
@@ -437,11 +439,12 @@ class BuyAFreeDetailInfo extends React.Component {
 }
 
 function mapStateToProps(state) {
+    console.log(state,'state=================')
     return {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
-
+        user:state.user.get('accountInfo').toJS()
     }
 }
 
