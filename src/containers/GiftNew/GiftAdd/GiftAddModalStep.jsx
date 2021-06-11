@@ -2268,7 +2268,6 @@ class GiftAddModalStep extends React.PureComponent {
     render() {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
             { firstKeys, secondKeys, values, unit,groupID } = this.state;
-            console.log(groupID,'groups0ddiddddd')
         // 判断是否是空对象
         // 影响 PhonePreview 回显。
         let formData =JSON.stringify(values) == '{}' ? data : values ;
@@ -2971,11 +2970,14 @@ class GiftAddModalStep extends React.PureComponent {
         formData.shareIDs = this.state.sharedGifts;
         formData.giftShareType = String(formData.giftShareType);
         formData.couponPeriodSettings = formData.couponPeriodSettingList;
-
         if(!formData.pushMessage) {
+            
             const sendType = ['wechat']
             if (formData.openPushSms) {
                 sendType.push('msg')
+            }
+            if(formData.pushMimiAppMsg){
+                sendType.push('mini')
             }
             formData.pushMessage = {
                 pushMessageMpID: formData.pushMessageMpID,
