@@ -985,6 +985,7 @@ class GiftAddModalStep extends React.PureComponent {
             params.openPushSms = params.pushMessage && params.pushMessage.sendType.indexOf('msg') !== -1 ? 1 : 0
             params.reminderTime = params.pushMessage && params.pushMessage.reminderTime
             params.pushMessageMpID = params.pushMessage && params.pushMessage.pushMessageMpID
+            params.pushMimiAppMsg = params.pushMessage && params.pushMessage.pushMimiAppMsg
             // 商城券参数调整
             this.adjustParamsOfMallGift(params);
             Array.isArray(params.supportOrderTypeLst) && (params.supportOrderTypeLst = params.supportOrderTypeLst.join(','))
@@ -2320,7 +2321,7 @@ class GiftAddModalStep extends React.PureComponent {
 
             pushMessage: {
                 label: <span>
-                <span>消息推送1</span>
+                <span>消息推送</span>
                 <Tooltip title={
                     <div>
                         <p>
@@ -2339,6 +2340,14 @@ class GiftAddModalStep extends React.PureComponent {
                 </Tooltip></span>,
                 rules: [{
                     validator: (rule, v, cb) => {
+                        if (!v.pushMessageMpID) {
+                            cb(rule.message);
+                        }
+                        cb();
+                    },
+                    message: '请选择微信推送的公众号',
+                },{
+                    validator: (rule, v, cb) => {
                         if (v.sendType.indexOf('wechat') === -1) {
                             cb(rule.message);
                         }
@@ -2347,13 +2356,13 @@ class GiftAddModalStep extends React.PureComponent {
                     message: '微信推送为必选项',
                 },{
                     validator: (rule, v, cb) => {
-                        if (!v.pushMessageMpID) {
+                        if (v.sendType.indexOf('mini') > -1 && !v.pushMimiAppMsg) {
                             cb(rule.message);
                         }
                         cb();
                     },
-                    message: '请选择微信推送的公众号',
-                },],
+                    message: '请选择推送的小程序',
+                }],
                 type: 'custom',
                 render: decorator => decorator({})(<PushMessageMpID formData = {formData} groupID={groupID}/>),
             },
@@ -2970,6 +2979,7 @@ class GiftAddModalStep extends React.PureComponent {
             }
             formData.pushMessage = {
                 pushMessageMpID: formData.pushMessageMpID,
+                pushMimiAppMsg: formData.pushMimiAppMsg,
                 sendType,
                 reminderTime: formData.reminderTime || 3,
             }

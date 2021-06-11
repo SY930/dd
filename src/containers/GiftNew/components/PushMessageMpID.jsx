@@ -67,7 +67,6 @@ class PushMessageMpID extends Component {
     }
     getMiniProgramsAppIdList = () => {
         const { formData:{groupID} } = this.props;
-        console.log(this.props,'groupIDgroupIDgroupIDgroupID')
         axiosData('/miniProgramCodeManage/getApps', {
             'groupID':groupID,
             'page': {
@@ -102,6 +101,21 @@ class PushMessageMpID extends Component {
             ))
         ];
     }
+    getAllAvailableMiniInfo = () => {
+        const { appsList } = this.state;
+        return [
+            {
+                value: '{}',
+                label: '全部',
+            },
+            ...appsList.map(item => (
+                {
+                    value: JSON.stringify({mpID: item.appID, appID: item.appID}),
+                    label: item.nickName,
+                }
+            ))
+        ];
+    }
     onTotalChange = (data) => {
         const { value, onChange } = this.props;
         const paramsData = {
@@ -127,13 +141,14 @@ class PushMessageMpID extends Component {
     }
     handleMiniAccountChange = (v) => {
         this.onTotalChange({
-            miniProgram: v,
+            pushMimiAppMsg: v,
         })
     }
     render() {
         const { formData = {} } = this.props
         const { appsList } = this.state;
-        const { sendType, pushMessageMpID, reminderTime,miniProgram = '' } = formData.pushMessage
+        const { sendType, pushMessageMpID, pushMimiAppMsg,reminderTime } = formData.pushMessage
+        console.log(formData.pushMessage,'formData.pushMessageformData.pushMessageformData.pushMessageformData.pushMessage')
         return (
             <div>
                 <div className={styles.leftPart}>
@@ -174,7 +189,7 @@ class PushMessageMpID extends Component {
                         notFoundContent={'未搜索到结果'}
                         placeholder="请选择推送的小程序"
                         showSearch={true}
-                        value={miniProgram || undefined}
+                        value={pushMimiAppMsg || undefined}
                         onChange={this.handleMiniAccountChange}
                         style={{
                             position: 'relative',
@@ -183,8 +198,8 @@ class PushMessageMpID extends Component {
                         className={styles.selectMiniProgram}
                     >
                         {
-                            appsList.map(mp => {
-                                return <Option key={mp.appID} value={mp.appID}>{mp.nickName}</Option>
+                            this.getAllAvailableMiniInfo().map(({ value, label }) => {
+                                return <Option key={value} value={value}>{label}</Option>
                             })
                         }
                     </Select>
