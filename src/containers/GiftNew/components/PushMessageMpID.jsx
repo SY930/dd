@@ -104,10 +104,6 @@ class PushMessageMpID extends Component {
     getAllAvailableMiniInfo = () => {
         const { appsList } = this.state;
         return [
-            {
-                value: '{}',
-                label: '全部',
-            },
             ...appsList.map(item => (
                 {
                     value: JSON.stringify({mpID: item.appID, appID: item.appID}),
