@@ -41,9 +41,10 @@ export default class TicketBagDecoration extends Component {
                 couponBtnBgColor = '#fd6631',
                 couponBtnColor = '#fff',
                 decorateType = 1,
+                priceCheckedvalue = 1,
             },
         } = this.props;
-        console.log('decorateType', decorateType)
+
         return (
             <div className={style.previewArea}>
                 {/* <div className={style.scrollTip}>
@@ -83,7 +84,7 @@ export default class TicketBagDecoration extends Component {
                                         }}
                                         className={style.couponsBtn}
                                     >
-                                        ￥100<span className={style.smallerBtnFonts}>原价：<s>￥200</s></span> 立即购买
+                                        ￥100 {priceCheckedvalue == '1' ? <span className={style.smallerBtnFonts}>原价：<s>￥200</s></span> : null } 立即购买
                                     </Button>
                                 </div>
                             </div> :
@@ -148,7 +149,8 @@ export default class TicketBagDecoration extends Component {
                 couponImg = 'http://res.hualala.com/basicdoc/ef060596-786a-4aa7-8d99-4846d753d7e9.png',//背景图
                 couponBtnBgColor = '#fd6631',//券包按钮背景色
                 couponBtnColor = '#fff',//券包按钮字体颜色
-                decorateType = 1//装修类型 1:公众号, 2:小程序
+                decorateType = 1,//装修类型 1:公众号, 2:小程序
+                priceCheckedvalue = 1,//划线价格
             },
             onChange,
         } = this.props;
@@ -202,6 +204,15 @@ export default class TicketBagDecoration extends Component {
                                 onChange={({ color }) => onChange({ key: ['couponBtnColor'], value: color })}
                                 placement="topLeft"
                             />
+                        </div>
+                    </div>
+                    <div style={{ marginTop: 10 }} className={style.inlineRow}>
+                        <span>划线价格</span>
+                        <div className={style.borderedColorWrapper} style={{border:'none'}}>
+                            <RadioGroup onChange={(e) => { onChange({ key: ['priceCheckedvalue'], value: e.target.value }) }} value={priceCheckedvalue}>
+                                <Radio value={1}>显示</Radio>
+                                <Radio value={2}>不显示</Radio>
+                            </RadioGroup>
                         </div>
                     </div>
                 </div>

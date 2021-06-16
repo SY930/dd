@@ -158,6 +158,7 @@ export default class PromotionDecoration extends Component {
             couponImg: 'http://res.hualala.com/basicdoc/ef060596-786a-4aa7-8d99-4846d753d7e9.png',//背景图
             couponBtnBgColor: '#fd6631',//券包按钮背景色
             couponBtnColor: '#fff',//券包按钮字体颜色
+            priceCheckedvalue:1,//划线价格
             decorateType: 1,//装修类型 1:公众号, 2:小程序
             ...decorationInfo.toJS(),
         }
