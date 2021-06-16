@@ -57,7 +57,7 @@ class SwellGiftBag extends React.Component {
 
                  const { data, gifts } = res
                  const { eventRemark, eventStartDate,  eventEndDate , eventName, shareTitle, shareSubtitle} = data
-                 const needCount = []
+                 const needCount = [];
 
                  this.props.dispatch({
                     type: 'createActiveCom/couponService_getSortedCouponBoardList',
@@ -76,9 +76,9 @@ class SwellGiftBag extends React.Component {
                             v.effectType = '1'
                         }
                         v.giftEffectTimeHours = String(v.giftEffectTimeHours)
-                        if(i < 3) {
-                           needCount[i] = v.needCount
-                        }
+                        // if(i < 5) {
+                        //    needCount[i] = v.needCount
+                        // }
                         // 获取券名字和面值
                         let chooseCoupon = {}
                         const chooseCouponItem = boardList.filter(val => {
@@ -94,13 +94,26 @@ class SwellGiftBag extends React.Component {
                          v.giftValue = chooseCoupon.giftValue
 
                     })
-
+                    let g = _.cloneDeep(gifts);
+                    let newG = [];
+                    let index = 0; // 保证顺序
+                    g.map((item) => {
+                        if (item.sendType == '0') {
+                            newG[index] = { ...item, id: index };
+                            needCount[index] = item.needCount;
+                            index = index + 1;
+                        } else {
+                            newG[5] = { ...item, id: 5 } // id 是为了礼品组件的v.id
+                        }
+                    })
+                    // console.log('newG', newG,needCount)
+                    // newG.forEach((_, i)  => {  _.id = i });
                     this.props.dispatch({
                         type: 'createActiveCom/updateState',
                         payload: {
                            formData: {
                                ...data,
-                               giftList: gifts,
+                               giftList: newG,
                                eventLimitDate: [moment(eventStartDate),moment(eventEndDate)],
                                needCount
                            },
@@ -158,6 +171,8 @@ class SwellGiftBag extends React.Component {
                     defaultCardType,
 
                 } = formData
+
+                // console.log('giftList:---submit ', giftList);
                 const { shareSubtitle,
                     shareTitle,} = v
                 let typePath =  'createActiveCom/addEvent_NEW'
@@ -165,13 +180,13 @@ class SwellGiftBag extends React.Component {
                 if(isEdit) {
                     typePath = 'createActiveCom/updateEvent_NEW'
                 }
-
                 giftList.forEach((v,i) => {
-                    if(v.countType == 1) {
+                    
+                    if(v.countType == 1) { // countType相对有效期按天的话effectType是3，没有3这个值
                         v.effectType = '3'
                     }
                     v.sendType = 0
-                    if(i === 3) {
+                    if(i === 5) { // 不是档位的sendType 是1
                         v.sendType = 1
                     }
                 })
@@ -193,7 +208,7 @@ class SwellGiftBag extends React.Component {
                             partInTimes,
                             defaultCardType,
                         },
-                        gifts: giftList
+                        gifts: giftList.filter(v => v)
                     }
                 }).then(res => {
                     if(res) {
@@ -249,7 +264,7 @@ class SwellGiftBag extends React.Component {
 
 
         const giftListMap = giftList.filter((v,i) => {
-            return v && i < 3
+            return v && i < 5
         })
         const saveLoading = loading.effects['createActiveCom/addEvent_NEW']
         const loadLoading = loading.effects['createActiveCom/couponService_getSortedCouponBoardList']
@@ -335,13 +350,21 @@ class SwellGiftBag extends React.Component {
                                                         <Icon type="caret-down" />
                                                         {needCount[2] ?  <div>{needCount[2]}人</div> : null}
                                                     </div>
+                                                    <div className={styles.num}>
+                                                        <Icon type="caret-down" />
+                                                        {needCount[3] ?  <div>{needCount[3]}人</div> : null}
+                                                    </div>
+                                                    <div className={styles.num}>
+                                                        <Icon type="caret-down" />
+                                                        {needCount[4] ?  <div>{needCount[4]}人</div> : null}
+                                                    </div>
                                                 </div>
                                              </div>
 
                                              <div className={styles.couponList}>
                                                 {giftListMap.map((v,i) => {
                                                     return (
-                                                        <div style={ i == 0 ? {marginLeft: 0} : {}} className={styles.couponItem}>
+                                                        <div style={ i == 0 ? {marginLeft: 0} : {}} className={styles.couponItem} key={i}>
                                                         <div>
                                                             {v.giftValue ?  <div className={styles.scale8}>¥</div> : null}
                                                         <div className={styles.fontWeight}>{v.giftValue}</div>

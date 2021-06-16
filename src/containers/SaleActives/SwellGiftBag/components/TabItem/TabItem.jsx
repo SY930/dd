@@ -21,7 +21,7 @@ class TabItem extends React.Component {
 
     render() {
         const { form, isHelp, itemKey, getForm, giftList = [],
-            cacheTreeData, treeData, onIptChange, getGiftForm, needCount, checkedHelp,
+            cacheTreeData, treeData, onIptChange, getGiftForm, needCount, checkedHelp = false,
             handleHelpCheckbox,
         } = this.props
         const { getFieldDecorator } = form

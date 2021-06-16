@@ -138,7 +138,7 @@ class MutliGift extends Component {
 
     initGift = () => {
         const { value } = this.props
-        if (!value || (Array.isArray(value) && !value.length)) {
+        if (!value || (Array.isArray(value) && !value.length)) { 
             this.onAdd()
         }
     }
