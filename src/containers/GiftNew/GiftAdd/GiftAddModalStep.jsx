@@ -162,6 +162,7 @@ class GiftAddModalStep extends React.PureComponent {
             scopeLst: [],
             unit: '¥',
             isActivityFoods:false,//是否选择了菜品分类
+            groupID:''
         };
         this.firstForm = null;
         this.secondForm = null;
@@ -188,9 +189,13 @@ class GiftAddModalStep extends React.PureComponent {
             fetchFoodMenuInfo,
             accountInfo,
         } = this.props;
+        const groupID = accountInfo.get('groupID');
         let params = {
-            groupID: accountInfo.get('groupID'),
+            groupID:groupID
         };
+        this.setState({
+            groupID:groupID
+        })
         if(isFilterShopType()){
             params = {...params, productCode: 'HLL_CRM_License'}
         }
@@ -980,6 +985,7 @@ class GiftAddModalStep extends React.PureComponent {
             params.openPushSms = params.pushMessage && params.pushMessage.sendType.indexOf('msg') !== -1 ? 1 : 0
             params.reminderTime = params.pushMessage && params.pushMessage.reminderTime
             params.pushMessageMpID = params.pushMessage && params.pushMessage.pushMessageMpID
+            params.pushMimiAppMsg = params.pushMessage && params.pushMessage.pushMimiAppMsg
             // 商城券参数调整
             this.adjustParamsOfMallGift(params);
             Array.isArray(params.supportOrderTypeLst) && (params.supportOrderTypeLst = params.supportOrderTypeLst.join(','))
@@ -2261,7 +2267,7 @@ class GiftAddModalStep extends React.PureComponent {
     */
     render() {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
-            { firstKeys, secondKeys, values, unit } = this.state;
+            { firstKeys, secondKeys, values, unit,groupID } = this.state;
         // 判断是否是空对象
         // 影响 PhonePreview 回显。
         let formData =JSON.stringify(values) == '{}' ? data : values ;
@@ -2321,6 +2327,9 @@ class GiftAddModalStep extends React.PureComponent {
                             微信推送：在所选公众号推送券到账/券到期/券核销提醒
                         </p>
                         <p>
+                            小程序推送：在所选小程序推送礼品到账提醒/礼品过期提醒
+                        </p>
+                        <p>
                             短信推送：仅在券到期前N天推送到期提醒
                         </p>
                     </div>
@@ -2330,6 +2339,14 @@ class GiftAddModalStep extends React.PureComponent {
                 </Tooltip></span>,
                 rules: [{
                     validator: (rule, v, cb) => {
+                        if (!v.pushMessageMpID) {
+                            cb(rule.message);
+                        }
+                        cb();
+                    },
+                    message: '请选择微信推送的公众号',
+                },{
+                    validator: (rule, v, cb) => {
                         if (v.sendType.indexOf('wechat') === -1) {
                             cb(rule.message);
                         }
@@ -2338,15 +2355,15 @@ class GiftAddModalStep extends React.PureComponent {
                     message: '微信推送为必选项',
                 },{
                     validator: (rule, v, cb) => {
-                        if (!v.pushMessageMpID) {
+                        if (v.sendType.indexOf('mini') > -1 && !v.pushMimiAppMsg) {
                             cb(rule.message);
                         }
                         cb();
                     },
-                    message: '请选择微信推送的公众号',
-                },],
+                    message: '请选择推送的小程序',
+                }],
                 type: 'custom',
-                render: decorator => decorator({})(<PushMessageMpID formData = {formData}/>),
+                render: decorator => decorator({})(<PushMessageMpID formData = {formData} groupID={groupID}/>),
             },
             giftImagePath: {
                 label: '礼品图样',
@@ -2953,14 +2970,18 @@ class GiftAddModalStep extends React.PureComponent {
         formData.shareIDs = this.state.sharedGifts;
         formData.giftShareType = String(formData.giftShareType);
         formData.couponPeriodSettings = formData.couponPeriodSettingList;
-
         if(!formData.pushMessage) {
+            
             const sendType = ['wechat']
             if (formData.openPushSms) {
                 sendType.push('msg')
             }
+            if(formData.pushMimiAppMsg){
+                sendType.push('mini')
+            }
             formData.pushMessage = {
                 pushMessageMpID: formData.pushMessageMpID,
+                pushMimiAppMsg: formData.pushMimiAppMsg,
                 sendType,
                 reminderTime: formData.reminderTime || 3,
             }

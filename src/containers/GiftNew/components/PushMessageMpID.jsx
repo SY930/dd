@@ -48,9 +48,11 @@ const mapStateToProps = (state) => {
 class PushMessageMpID extends Component {
     state = {
         allWeChatAccountList: [],
+        appsList:[]
     }
     componentDidMount() {
         this.queryWechatMpInfo();
+        this.getMiniProgramsAppIdList();
     }
     queryWechatMpInfo = () => {
         const { shopList} = this.props;
@@ -61,6 +63,27 @@ class PushMessageMpID extends Component {
             .then((data) => {
                 const { mpInfoResDataList = [] } = data;
                 this.setState({ allWeChatAccountList: mpInfoResDataList });
+            })
+    }
+    getMiniProgramsAppIdList = () => {
+        const { formData:{groupID} } = this.props;
+        axiosData('/miniProgramCodeManage/getApps', {
+            'groupID':groupID,
+            'page': {
+                "current": 1,
+                "pageSize": 10000000,
+            }
+        }, null, {
+            path: '',
+        }, 'HTTP_SERVICE_URL_WECHAT')
+            .then((res) => {
+                const { result, apps } = res
+                const code = (result || {}).code
+                if (code === '000') {
+                    this.setState({
+                        appsList: apps || []
+                    })
+                }
             })
     }
     getAllAvailableMpInfo = () => {
@@ -74,6 +97,17 @@ class PushMessageMpID extends Component {
                 {
                     value: JSON.stringify({mpID: item.mpID, appID: item.appID}),
                     label: item.mpName,
+                }
+            ))
+        ];
+    }
+    getAllAvailableMiniInfo = () => {
+        const { appsList } = this.state;
+        return [
+            ...appsList.map(item => (
+                {
+                    value: JSON.stringify({mpID: item.appID, appID: item.appID}),
+                    label: item.nickName,
                 }
             ))
         ];
@@ -101,9 +135,15 @@ class PushMessageMpID extends Component {
             pushMessageMpID: v,
         })
     }
+    handleMiniAccountChange = (v) => {
+        this.onTotalChange({
+            pushMimiAppMsg: v,
+        })
+    }
     render() {
         const { formData = {} } = this.props
-        const { sendType, pushMessageMpID, reminderTime } = formData.pushMessage
+        const { appsList } = this.state;
+        const { sendType, pushMessageMpID, pushMimiAppMsg,reminderTime } = formData.pushMessage
         return (
             <div>
                 <div className={styles.leftPart}>
@@ -114,6 +154,9 @@ class PushMessageMpID extends Component {
                             label: '微信推送',
                             value: 'wechat',
                         }, {
+                            label: '小程序推送',
+                            value: 'mini',
+                        },{
                             label: '短信推送',
                             value: 'msg',
                         }]}
@@ -130,11 +173,29 @@ class PushMessageMpID extends Component {
                         onChange={this.handleWechatAccountChange}
                         style={{
                             position: 'relative',
-                            top: '-4px',
+                            top: '-10px',
                         }}
                     >
                         {
                             this.getAllAvailableMpInfo().map(({ value, label }) => <Option key={value} value={value}>{label}</Option>)
+                        }
+                    </Select>
+                    <Select
+                        notFoundContent={'未搜索到结果'}
+                        placeholder="请选择推送的小程序"
+                        showSearch={true}
+                        value={pushMimiAppMsg || undefined}
+                        onChange={this.handleMiniAccountChange}
+                        style={{
+                            position: 'relative',
+                            top: '-4px',
+                        }}
+                        className={styles.selectMiniProgram}
+                    >
+                        {
+                            this.getAllAvailableMiniInfo().map(({ value, label }) => {
+                                return <Option key={value} value={value}>{label}</Option>
+                            })
                         }
                     </Select>
                     <span>
@@ -148,6 +209,7 @@ class PushMessageMpID extends Component {
                                 display: 'inline-block',
                                 margin: '0 7px',
                             }}
+                            className={styles.selectMsg}
                         >
                             {
                                 daysOptions.map(({ value, label }) => <Option key={value} value={value}>{label}</Option>)
