@@ -201,7 +201,7 @@ class Housekeeper extends React.Component {
                 wrapperCol: { span: 15 },
                 // rules: ['required'],
                 render: decorator => (
-                    <Row>
+                    <Row style={{marginLeft:-5}}>
                         <Switch checked={!!active} checkedChildren="开" unCheckedChildren="关" onChange={this.switchChange} />
                     </Row>
                 ),
@@ -257,8 +257,8 @@ class Housekeeper extends React.Component {
                 rules: ['required'],
                 render: decorator => (
                     <Row className={styles.textWrap}>
-                        <Col span={2}>距今超</Col>
-                        <Col span={4}>
+                        <Col span={2} style={{marginLeft:-10}}>距今超</Col>
+                        <Col span={4} >
                             {decorator({
                                 key: 'consumeDays',
                                 rules: [{
@@ -279,12 +279,12 @@ class Housekeeper extends React.Component {
                 type: 'custom',
                 label: ' ',
                 labelCol: { span: 2 },
-                wrapperCol: { span: 20 },
+                wrapperCol: { span: 15 },
                 disabled: !!active,
                 rules: ['required'],
                 render: decorator => (
-                    <Row className={styles.textWrap}>
-                        <CustomerRange onChange={this.RangeChange} active={this.state.curActive} getForm={(form) => this.customerRangeForm = form} decorator={decorator} value={customerRangeSettings} />
+                    <Row className={styles.textWrap} style={{marginLeft:6}}>
+                        <CustomerRange onChange={this.RangeChange} active={this.state.curActive} getForm={(form) => this.customerRangeForm = form} decorator={decorator} value={customerRangeSettings}/>
                     </Row>
                 ),
             }, 
@@ -296,7 +296,7 @@ class Housekeeper extends React.Component {
                 disabled: !!active,
                 rules: ['required'],
                 render: decorator => (
-                    <Row className={styles.textWrap}>
+                    <Row className={styles.textWrap} style={{marginLeft:-15}}>
                         <Col span={5}>发放后立即生效，有效期</Col>
                         <Col span={4}>
                             {decorator({
@@ -330,7 +330,7 @@ class Housekeeper extends React.Component {
                         />
                     </Col>
                 </Row>
-                <div className={styles.btnWrap}>
+                <div className={styles.btnWrap} style={{marginLeft:115}}>
                     <Button disabled={!!active} onClick={this.onSubmit} type="primary">保存</Button>
                     <Button onClick={this.onCancel}>取消</Button>
                 </div>

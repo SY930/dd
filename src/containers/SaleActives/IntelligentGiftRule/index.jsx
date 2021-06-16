@@ -192,7 +192,7 @@ class IntelligentGiftRule extends React.Component {
                 disabled: !!isActive,
                 rules: ['required'],
                 render: decorator => (
-                    <Row>
+                    <Row style={{marginLeft:4}}>
                         <Col span={3}>
                             {decorator({
                                 key: 'cycleType',
@@ -235,7 +235,7 @@ class IntelligentGiftRule extends React.Component {
                 disabled: !!isActive,
                 rules: ['required'],
                 render: decorator => (
-                    <Row className={styles.textWrap}>
+                    <Row className={styles.textWrap} style={{marginLeft:10}}>
                         <Col span={3} className={styles.labelLeft} style={{width: '100px'}}>历史消费次数超</Col>
                         <Col span={4}>
                             {decorator({
@@ -262,7 +262,7 @@ class IntelligentGiftRule extends React.Component {
                 disabled: !!isActive,
                 rules: ['required'],
                 render: decorator => (
-                    <Row className={styles.textWrap}>
+                    <Row className={styles.textWrap} style={{marginLeft:10}}>
                         <CustomerRange onChange={this.RangeChange} getForm={(form) => this.customerRangeForm = form} decorator={decorator} value={customerRangeSettings} />
                     </Row>
                 ),
@@ -275,7 +275,7 @@ class IntelligentGiftRule extends React.Component {
                 disabled: !!isActive,
                 rules: ['required'],
                 render: decorator => (
-                    <Row className={styles.textWrap}>
+                    <Row className={styles.textWrap} style={{marginLeft:10}}>
                         <Col span={4} className={styles.labelLeft} style={{width: '140px'}}>发放后立即生效，有效期</Col>
                         <Col span={4}>
                             {decorator({
@@ -301,7 +301,7 @@ class IntelligentGiftRule extends React.Component {
                 disabled: !!isActive,
                 rules: ['required'],
                 render: decorator => (
-                    <Row className={styles.textWrap}>
+                    <Row className={styles.textWrap} style={{marginLeft:10}}>
                         <Col span={2} className={styles.labelLeft} style={{width: '60px'}}>连续发放</Col>
                         <Col span={4}>
                             {decorator({
@@ -324,7 +324,7 @@ class IntelligentGiftRule extends React.Component {
         let formKeys = ['isActive', 'consumptionCount', 'cycle', 'customerRangeSettings', 'giftValidUntilDay', 'blacklistThreshold'];
 
         return (
-            <div className={styles.actWrap}>
+            <div className={styles.actWrap} style={{marginLeft:120}}>
                 <Row style={{width: '100%'}}>
                     <Col span={24}>
                         <BaseForm
