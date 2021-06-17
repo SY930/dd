@@ -8,7 +8,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { Row, Col, Form, Select, Radio, Button, Icon, Checkbox } from 'antd';
+import { Row, Col, Form, Select, Radio, Button, Icon, Checkbox,Tooltip } from 'antd';
 import { is, fromJS } from 'immutable';
 import styles from '../ActivityPage.less';
 import {
