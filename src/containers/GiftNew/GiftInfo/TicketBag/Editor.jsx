@@ -44,6 +44,8 @@ export default class Editor extends Component {
             } else {
                 newB = {...b, keys: keys4};
             }
+            console.log(newB,'value----00000000000')
+
             this.keys = [newA, newB, newC];
             this.setState({ newFormKeys: [newA, newB, newC] });
         }
@@ -231,6 +233,7 @@ export default class Editor extends Component {
         const { newFormKeys } = this.state;
         const { detail, check } = this.props;
         const newFormItems = this.resetFormItems();
+        console.log(newFormItems,'newFormItems======================')
         let clazz = styles.formWrap2;
         if(newFormKeys[0].keys.includes('d')){
             clazz = styles.formWrap;
