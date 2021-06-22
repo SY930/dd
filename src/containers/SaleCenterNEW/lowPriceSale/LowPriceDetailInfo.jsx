@@ -5,6 +5,9 @@ import {
     Form,
     Select,
     Button,
+    Tooltip,
+    Radio,
+    Icon
 } from 'antd';
 import { connect } from 'react-redux'
 
@@ -28,7 +31,7 @@ import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from '../IntlDecor';
 
 const Option = Select.Option;
-
+const RadioGroup = Radio.Group;
 @injectIntl()
 class LowPriceDetailInfo extends React.Component {
     constructor(props) {
@@ -45,6 +48,7 @@ class LowPriceDetailInfo extends React.Component {
             disType: '3',
             ruleType: '1',
             targetScope: '0',
+            subRule:0
         };
 
         this.renderPromotionRule = this.renderPromotionRule.bind(this);
@@ -55,6 +59,8 @@ class LowPriceDetailInfo extends React.Component {
         this.handleDiscountRateChange = this.handleDiscountRateChange.bind(this);
         this.handleFreeAmountChange = this.handleFreeAmountChange.bind(this);
         this.onDiscountChange = this.onDiscountChange.bind(this);
+        this.renderFoodNeedCalc = this.renderFoodNeedCalc.bind(this);
+        this.handleChangeSubRule = this.handleChangeSubRule.bind(this);
     }
 
     componentDidMount() {
@@ -101,6 +107,7 @@ class LowPriceDetailInfo extends React.Component {
             disType: _rule.disType ? String(_rule.disType) : '3',
             freeAmount: _rule.freeAmount ? String(_rule.freeAmount) : '',
             stageAmount: _rule.stageAmount ? String(_rule.stageAmount) : '',
+            subRule:_rule.subRule
         });
     }
 
@@ -111,6 +118,7 @@ class LowPriceDetailInfo extends React.Component {
             stageAmount,
             disType,
             ruleType,
+            subRule
         } = this.state;
         let rule;
         if (Number(stageAmount || 0) <= 0) {
@@ -136,6 +144,7 @@ class LowPriceDetailInfo extends React.Component {
         }
 
         rule = {
+            subRule,
             stageType: ruleType === '1' || ruleType === '2' ? '2' : '1',
             stage:  [{
                     freeAmount,
@@ -224,6 +233,37 @@ class LowPriceDetailInfo extends React.Component {
             discount = value;
         }
         this.setState({ discount, discountFlag });
+    }
+    //低价促销支持配菜计算
+    renderFoodNeedCalc = () => {
+        const { user:{groupID} } = this.props;
+        const {subRule} = this.state;
+        return (
+            groupID == '11157' ? 
+                <FormItem
+                    label={'配菜是否参与计算'}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                >
+                    <RadioGroup value={subRule} onChange={this.handleChangeSubRule} defaultValue={1}>
+                        <Radio key={1} value={1}>参与</Radio>
+                        <Radio key={0} value={0}>不参与</Radio>
+                        <Tooltip title={'配菜包括配菜、做法加价等'}>
+                            <Icon
+                                type="question-circle-o"
+                                className={styles.question}
+                            />
+                        </Tooltip>
+                    </RadioGroup>
+                </FormItem> : ''
+        )
+    }
+    handleChangeSubRule(e){
+        const {target} = e;
+        const {value} = target;
+        this.setState({
+            subRule:value
+        })
     }
 
     renderPromotionRule() {
@@ -373,6 +413,7 @@ class LowPriceDetailInfo extends React.Component {
             <div>
                 <Form className={styles.FormStyle}>
                     {this.renderPromotionRule()}
+                    {this.renderFoodNeedCalc()}
                     {ruleType === '2' || ruleType === '4' ? <ConnectedScopeListSelector isShopMode={this.props.isShopFoodSelectorMode} />
                     : null}
                     {this.renderAdvancedSettingButton()}
@@ -389,7 +430,7 @@ function mapStateToProps(state) {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
-
+        user:state.user.get('accountInfo').toJS()
     }
 }
 
