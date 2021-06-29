@@ -58,8 +58,29 @@ export default class GiftInfo extends React.Component {
     render() {
         const { page, detail, check, tabkey, settlesOpts ,groupCardTypeList} = this.state;
         const {isCreatingOrEditing, groupID} = this.props;
-
+        let couponPackageFirstGift=[],couponPackageFollowGift=[];
         if(page==='ticket'){
+            if(detail && detail.couponSendWay && detail.couponSendWay == '2'){
+                if(detail.couponPackageGiftConfigs && detail.couponPackageGiftConfigs.length > 0){
+                    detail.couponPackageGiftConfigs.forEach((item) => {
+                        if(item.stage == 1){
+                            couponPackageFirstGift.push(item);
+                        }else if(item.stage == 0){
+                            couponPackageFollowGift.push(item)
+                        }
+                    })
+                    detail['couponPackageFirstGift'] = couponPackageFirstGift;
+                    if(couponPackageFirstGift.length > 0 ){
+                        // detail['couponPackageGiftConfigs'] = ['1'];
+                        detail['couponPackageRadioSelect'] = '2';
+                        detail['couponPackageFollowGift'] = couponPackageFollowGift;
+                    }else{
+                        // detail['couponPackageGiftConfigs'] = ['0'];
+                        detail['couponPackageRadioSelect'] = '1';
+                        detail['couponPackageGift'] = couponPackageFollowGift;
+                    }
+                }
+            }
             // 券包
             return <Editor groupID={groupID} check={check} settlesOpts={settlesOpts} detail={detail} toggleTabs={this.toggleTabs} togglePage={this.togglePage} groupCardTypeList={groupCardTypeList}/>
         }
