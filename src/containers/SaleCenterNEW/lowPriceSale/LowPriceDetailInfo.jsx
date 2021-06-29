@@ -78,6 +78,7 @@ class LowPriceDetailInfo extends React.Component {
 
         _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
         const stageType = (_rule || {}).stageType;
+        const subRule = (_rule || {}).subRule;
         try {
             _rule = _rule.stage[0];
         } catch (e) {
@@ -103,11 +104,11 @@ class LowPriceDetailInfo extends React.Component {
         this.setState({
             display,
             ruleType,
+            subRule,
             discountRate: _rule.discountRate ? Number((_rule.discountRate * 1).toFixed(3)).toString() : '',
             disType: _rule.disType ? String(_rule.disType) : '3',
             freeAmount: _rule.freeAmount ? String(_rule.freeAmount) : '',
             stageAmount: _rule.stageAmount ? String(_rule.stageAmount) : '',
-            subRule:_rule.subRule
         });
     }
 
@@ -235,7 +236,7 @@ class LowPriceDetailInfo extends React.Component {
         this.setState({ discount, discountFlag });
     }
     //低价促销支持配菜计算
-    renderFoodNeedCalc = () => {
+    renderFoodNeedCalc(){
         const { user:{groupID} } = this.props;
         const {subRule} = this.state;
         return (
