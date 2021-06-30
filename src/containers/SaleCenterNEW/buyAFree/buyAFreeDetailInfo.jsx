@@ -232,7 +232,7 @@ class BuyAFreeDetailInfo extends React.Component {
         const { user:{groupID} } = this.props;
         const {subRule} = this.state;
         return (
-            groupID == '300452' ? 
+            groupID == '300452' || groupID == '11157' || groupID == '189702' ? 
                 <FormItem
                     label={'配菜是否参与计算'}
                     className={styles.FormItemStyle}
