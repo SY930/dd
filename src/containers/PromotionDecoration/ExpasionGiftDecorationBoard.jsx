@@ -41,6 +41,10 @@ export default class ExpasionGiftDecorationBoard extends Component {
                 giftImg2,
                 giftThumbImg3,
                 giftImg3,
+                giftThumbImg4,
+                giftImg4,
+                giftThumbImg5,
+                giftImg5,
                 bgColor = '#FF353B',
                 buttonBgColor = '#FFC455',
                 buttonColor = '#AD0701',
@@ -271,6 +275,12 @@ export default class ExpasionGiftDecorationBoard extends Component {
                 giftThumbImg3,
                 giftImg3,
                 __giftBaseImg3,
+                giftThumbImg4,
+                giftImg4,
+                __giftBaseImg4,
+                giftThumbImg5,
+                giftImg5,
+                __giftBaseImg5,
             }
         } = this.props;
         const { intl } = this.props;
@@ -326,6 +336,24 @@ export default class ExpasionGiftDecorationBoard extends Component {
                     onBaseImgUrlChange={value => onChange({key: ['__giftBaseImg3'], value})}
                     onThumbImgUrlChange={value => onChange({key: ['giftThumbImg3'], value})}
                     onImgUrlChange={value => onChange({key: ['giftImg3'], value})}
+                />
+                <ExpasionGiftImgCropUploader
+                    title={k636f4cg + '四'}
+                    baseImgUrl={__giftBaseImg4}
+                    thumbImgUrl={giftThumbImg4}
+                    imgUrl={giftImg4}
+                    onBaseImgUrlChange={value => onChange({key: ['__giftBaseImg4'], value})}
+                    onThumbImgUrlChange={value => onChange({key: ['giftThumbImg4'], value})}
+                    onImgUrlChange={value => onChange({key: ['giftImg4'], value})}
+                />
+                <ExpasionGiftImgCropUploader
+                    title={k636f4cg + '五'}
+                    baseImgUrl={__giftBaseImg5}
+                    thumbImgUrl={giftThumbImg5}
+                    imgUrl={giftImg5}
+                    onBaseImgUrlChange={value => onChange({key: ['__giftBaseImg5'], value})}
+                    onThumbImgUrlChange={value => onChange({key: ['giftThumbImg5'], value})}
+                    onImgUrlChange={value => onChange({key: ['giftImg5'], value})}
                 />
             </div>
         )
