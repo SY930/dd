@@ -1009,23 +1009,6 @@ class MySpecialActivities extends React.Component {
                 >
                     {COMMON_LABEL.view}
                 </a>
-                <a
-                    href="#"
-                    className={record.isActive == '-1' || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) ? styles.textDisabled : null}
-                    onClick={() => {
-                        if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
-                            return;
-                        }
-                        if (Number(record.eventWay) === 70) {
-                            message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
-                            return;
-                        }
-                        record.isActive == '-1' ? null :
-                            this.handelStopEvent(text, record, index, '-1', `${this.props.intl.formatMessage(STRING_SPE.d17012f5c16c32211)}`);
-                    }}
-                >
-                    {/* {this.props.intl.formatMessage(STRING_SPE.du3bnfobe3346)} */}
-                </a>
                 <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY}>
                     <a
                         href="#"
@@ -1043,6 +1026,23 @@ class MySpecialActivities extends React.Component {
                     >
                         {this.props.intl.formatMessage(STRING_SPE.d5g3d7ahfq35134)}</a>
                 </Authority>
+                {
+                    record.eventWay === 80 ? 
+                    <a
+                        href="#"
+                        className={record.isActive == '-1' || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) ? styles.textDisabled : null}
+                        onClick={() => {
+                            if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
+                                return;
+                            }
+                            record.isActive == '-1' ? null :
+                                this.handelStopEvent(text, record, index, '-1', `${this.props.intl.formatMessage(STRING_SPE.d17012f5c16c32211)}`);
+                        }}
+                    >
+                        {this.props.intl.formatMessage(STRING_SPE.du3bnfobe3346)}
+                    </a> : null
+                }
+                
             </div>
         )
     }
@@ -1311,6 +1311,7 @@ class MySpecialActivities extends React.Component {
                                 </a>
                             )
                         }
+                        
                     </span>
                     );
                 },
@@ -1682,7 +1683,7 @@ class MySpecialActivities extends React.Component {
             message.warn('复制失败')
         }
     }
-
+   
     // 编辑
     handleUpdateOpe() {
         let _record = arguments[1];

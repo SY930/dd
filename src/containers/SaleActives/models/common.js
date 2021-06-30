@@ -308,8 +308,8 @@ export default {
                     ? merchantLogoUrl.fileName
                     : 'hualala.png',
                 merchantLogoUrl: merchantLogoUrl.url
-                    ? `${imgUrl}/${merchantLogoUrl.url}`
-                    : `${imgUrl}/${merchantLogoUrl}`,
+                    ? `${imgUrl}${merchantLogoUrl.url}`
+                    : `${imgUrl}${merchantLogoUrl}`,
                 eventRemark,
                 consumeTotalAmount:
                     consumeTotalAmount && consumeTotalAmount.number,
@@ -356,8 +356,8 @@ export default {
                         ? originalImageUrl.fileName
                         : 'wxPayBanner.png',
                     originalImageUrl: originalImageUrl.url
-                        ? `${imgUrl}/${originalImageUrl.url}`
-                        : `${imgUrl}/${originalImageUrl}`,
+                        ? `${imgUrl}${originalImageUrl.url}`
+                        : `${imgUrl}${originalImageUrl}`,
                     presentType: 1,
                 },
             ];
