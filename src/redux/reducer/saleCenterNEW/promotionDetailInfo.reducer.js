@@ -305,7 +305,6 @@ export const promotionDetailInfo_NEW = ($$state = $initialState, action) => {
                 action.payload.rule.blackList = $$state.get('$promotionDetail').toJS().blackList || false;
                 action.payload.rule.customerUseCountLimit = $$state.get('$promotionDetail').toJS().customerUseCountLimit || 0;
             }
-            console.log('promotiondetail ', $$state.get('$promotionDetail').toJS())
             const $payload = Immutable.fromJS(action.payload);
             return $$state.mergeIn(['$promotionDetail'], $payload);
 

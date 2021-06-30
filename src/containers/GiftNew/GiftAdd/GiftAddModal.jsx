@@ -87,7 +87,6 @@ class GiftAddModal extends React.Component {
         }
     }
     handleFormChange(key, value) {
-        console.log('now change the ', key, 'the value is ', value)
         switch (key) { // 这三个字段是靠手动输入的, 不加debounce的话在一般机器上有卡顿
             case 'giftName':
             case 'pushMessage':
@@ -188,7 +187,7 @@ class GiftAddModal extends React.Component {
                     });
                 }
             } catch (e) {
-                console.log('no shop info');
+                console.log(e);
             }
             // 授权门店过滤
             if(isFilterShopType()){
@@ -317,7 +316,6 @@ class GiftAddModal extends React.Component {
     }
     render() {
         const { gift: { name: describe, value, data }, visible, type, treeData } = this.props;
-        console.log('data is ', data)
         let valueLabel = value == '42' ? '积分数额' : value == '30' ? '礼品价值' : '礼品卡面值';
         if(value==40){
             valueLabel = '礼品价值';

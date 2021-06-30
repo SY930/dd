@@ -74,7 +74,6 @@ class Step2 extends React.Component {
         const { formData: modalFormData } = this.props.createActiveCom
         let flag = true
         this.form.validateFieldsAndScroll((e,v) => {
-            console.log('v: ', v);
             if(e) {
                 flag = false
                 return false
@@ -182,7 +181,6 @@ class Step2 extends React.Component {
         formItems2.partInTimes.render =  partInTimesRender.bind(this);
         formItems2.defaultCardType.render = this.renderFunction();
         const { formData,isView,isEdit } = this.props.createActiveCom
-        console.log('formData: ', formData);
 
         return (
             <div style={{marginRight: '20px', position: 'relative'}}>

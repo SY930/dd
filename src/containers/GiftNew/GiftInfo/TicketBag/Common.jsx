@@ -1,7 +1,7 @@
 import React from 'react';
 import Tip from './Tip';
 import moment from 'moment';
-
+import styles from './index.less';
 const imgURI = 'http://res.hualala.com/';
 const href = 'javascript:;';
 
@@ -14,6 +14,10 @@ const bagOpts = [
 const needSelectShop = [
     { label: '开启', value: 1 },
     { label: '关闭', value: 0 },
+];
+const couponPackageRadio = [
+    { label: '首次发放与后续相同', value: '1' },
+    { label: '首次发放与后续不同', value: '2' },
 ];
 const revokeOpts = [
     { label: '自动退款', value: '1' },
@@ -313,6 +317,72 @@ const formItems = {
         }],
         render: null,
     },
+    couponPackageRadioSelect: {
+        type: 'radio',
+        label: '券包内容',
+        options: couponPackageRadio,
+        defaultValue: '1',
+    },
+    couponPackageGift:{
+        type: 'custom',
+        label: ' ',
+        defaultValue: [],
+        rules: [{
+            required: true,
+            validator: (rule, value, callback) => {
+                if (!value[0]) {
+                    return callback('礼品不能为空');
+                }
+                return callback();
+            },
+        }],
+        render: null,
+    },
+    couponPackageFirstGift: {
+        type: 'custom',
+        label: '首次发放',
+        defaultValue: [],
+        rules: [{
+            required: true,
+            validator: (rule, value, callback) => {
+                if (!value[0]) {
+                    return callback('首次发放礼品不能为空');
+                }
+                return callback();
+            },
+        }],
+        render: null,
+    },
+    couponPackageFollowGift: {
+        type: 'custom',
+        label: '后续发放',
+        defaultValue: [],
+        rules: [{
+            required: true,
+            validator: (rule, value, callback) => {
+                if (!value[0]) {
+                    return callback('后续发放礼品不能为空');
+                }
+                return callback();
+            },
+        }],
+        render: null,
+    },
+    couponPackageGiftConfigs: {
+        type: 'custom',
+        label: '券包内容',
+        defaultValue: [],
+        rules: [{
+            required: true,
+            validator: (rule, value, callback) => {
+                if (!value[0]) {
+                    return callback('券包内容不能为空');
+                }
+                return callback();
+            },
+        }],
+        render: null,
+    },
     cycleType: {
         type: 'combo',
         label: '选择周期',
@@ -363,7 +433,13 @@ const keys4 = ['b', 'couponSendWay', 'cycleType', 'sendTime', 'maxSendLimit', 'c
 const keys5 = ['b', 'couponSendWay', 'cycleType', 'validCycle', 'sendTime', 'maxSendLimit', 'couponPackageGiftConfigs'];
 
 const keys6 = ['c1', 'shareTitle', 'miniProgramShareImagePath'];
+const keys7 = ['b', 'couponSendWay', 'cycleType', 'sendTime', 'maxSendLimit', 'couponPackageRadioSelect','couponPackageGift'];
 
+const keys8 = ['b', 'couponSendWay', 'cycleType', 'sendTime', 'maxSendLimit', 'couponPackageRadioSelect','couponPackageFirstGift','couponPackageFollowGift'];
+const keys9 = ['b', 'couponSendWay', 'cycleType', 'validCycle','sendTime', 'maxSendLimit', 'couponPackageRadioSelect','couponPackageGift'];
+const keys10 = ['b', 'couponSendWay', 'cycleType', 'validCycle','sendTime', 'maxSendLimit', 'couponPackageRadioSelect','couponPackageFirstGift','couponPackageFollowGift'];
+const keys11 = ['b', 'couponSendWay', 'cycleType', 'sendTime', 'maxSendLimit', 'couponPackageRadioSelect','couponPackageFirstGift'];
+const keys12 = ['b', 'couponSendWay', 'cycleType', 'validCycle','sendTime', 'maxSendLimit', 'couponPackageRadioSelect','couponPackageFirstGift'];
 const formKeys = [
     {
         col: { className: 'baseform-a' },
@@ -565,7 +641,7 @@ const stockItems = {
 };
 export {
     formItems, imgURI, formKeys, href, formItemLayout,
-    keys1, keys2, keys3, keys4, keys5, DF, TF, monthList, weekList, weekMap,
+    keys1, keys2, keys3, keys4, keys5,keys7,keys8,keys9,keys10,keys11,keys12, DF, TF, monthList, weekList, weekMap,
     qFormKeys, qFormItems, dFormKeys, dFormItems, pFormKeys, pFormItems, pFormKeys2,
     dFormKeys2, dFormKeys3, refundItems, couponImage, stockItems,
 }

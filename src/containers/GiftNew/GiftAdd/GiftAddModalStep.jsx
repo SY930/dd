@@ -819,7 +819,7 @@ class GiftAddModalStep extends React.PureComponent {
                     });
                 }
             } catch (e) {
-                console.log('no shop info');
+                console.log(e);
             }
             // 授权门店过滤
             if(isFilterShopType()){

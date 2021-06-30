@@ -49,7 +49,6 @@ class Step2 extends React.Component {
         if(this.props.stepTwo !== nextProps.stepTwo) {
             this.initGiftData()
         } else if(this.props.ifGoback !== nextProps.ifGoback && nextProps.ifGoback) {
-            console.log('now its saving data')
             this.saveGiftData()
         } else {
             return

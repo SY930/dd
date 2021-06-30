@@ -74,7 +74,6 @@ class Step3 extends React.Component {
 
         formList.forEach(form => { // 校验膨胀所需人数
             form.validateFieldsAndScroll((e,v) => {
-                console.log('v: submit', v);
                 if(e) {
                     flag = false
                 }
@@ -378,7 +377,6 @@ class Step3 extends React.Component {
         })
         formList.forEach(form => {
             form.validateFieldsAndScroll((e,v) => {
-                console.log('v: ', v);
                 if(e) {
                     flag = false
                 }

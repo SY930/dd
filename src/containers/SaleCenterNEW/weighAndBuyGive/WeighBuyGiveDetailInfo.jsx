@@ -81,7 +81,6 @@ class WeighBuyGiveDetailInfo extends React.Component {
         display = !this.props.isNew;
         // 这边对数据进行解析设置priceList,scopeList
         const ifHasFoodRuleList = this.props.promotionDetailInfo.getIn(['$promotionDetail']).toJS()
-        console.log('WeighBuyGiveDetailInfo ifHasFoodRuleList', ifHasFoodRuleList)
         if (ifHasFoodRuleList.foodRuleList && ifHasFoodRuleList.foodRuleList.length) {
             this.setState({
                 priceList: this.props.promotionDetailInfo.getIn(['$promotionDetail', 'foodRuleList']).toJS()[0].priceList
@@ -541,8 +540,6 @@ class WeighBuyGiveDetailInfo extends React.Component {
 
     render() {
         const { ifMultiGrade, foodRuleList, priceListFlag, scopeLstFlag } = this.state;
-        console.log('priceflag', priceListFlag)
-        console.log('scopeLstFlag', scopeLstFlag)
         return (
             <div>
                 <Form className={[styles.FormStyle, styles.bugGive].join(' ')}>

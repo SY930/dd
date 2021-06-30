@@ -90,6 +90,7 @@ export default class GiftModal extends Component {
     /* 表单提交 */
     onOk = () => {
         this.form.validateFields((e, v) => {
+            // debugger
             if (!e) {
                 const { onClose, onPost } = this.props;
                 onPost(v);

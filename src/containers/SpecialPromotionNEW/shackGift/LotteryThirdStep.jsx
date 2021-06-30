@@ -126,7 +126,6 @@ class LotteryThirdStep extends React.Component {
     initState = () => {
         const { isNew } = this.props;
         const giftInfo = this.getOrganize(this.props.levelPrize ? this.props.levelPrize.toJS() : []);
-        console.log('isNew: ', isNew, 'giftInfo: ', giftInfo);
         let infos = [getDefaultGiftData()];
         if(!isNew){
             giftInfo.forEach((gift, index) => {
@@ -208,7 +207,6 @@ class LotteryThirdStep extends React.Component {
 
             })
         }
-        console.log('infos: 》》》》》', infos);
         
         return {
             infos: infos.filter(gift => gift.sendType === 0)
@@ -949,7 +947,6 @@ class LotteryThirdStep extends React.Component {
                             let tempobj = infos[activeKey].giveCardValue.value;
                             if (!(tempobj.giveCardValueInp.value > 0) || !tempobj.card.value) {
                                 tempResult = false;
-                                console.log('this: ', this, this.handleGiveCardInpChange);
                                 this.handleGiveCardInpChange({ number: tempobj.giveCardValueInp.value }, activeKey);
                             }
                         }

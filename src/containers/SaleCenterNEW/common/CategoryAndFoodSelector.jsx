@@ -51,7 +51,6 @@ const getFoodInfoFromScopeList = (scopeList) => {
     }
 }
 const getDishesInfoFromPriceOrScopeList = (priceLst) => {
-    console.log("getDishesInfoFromPriceOrScopeList priceLst", priceLst)
     if (!Array.isArray(priceLst) || !priceLst.length) {
         return {
             dishes: [],
@@ -100,11 +99,8 @@ class CategoryAndFoodSelector extends Component {
     componentWillReceiveProps(nextProps) {
         const { priceLst = [], singleDish, onChangeFlag } = nextProps;
         const { priceLst: thispriceLst = [] } = this.props
-        console.log('componentWillReceiveProps priceLst', priceLst)
-        console.log('componentWillReceiveProps singleDish', singleDish)
         if (singleDish) {
             if (priceLst.length !== thispriceLst.length) {
-                console.log('getDishesInfoFromPriceOrScopeList return componentWillReceiveProps', getDishesInfoFromPriceOrScopeList(priceLst))
                 //debuggger
                 const value = getDishesInfoFromPriceOrScopeList(priceLst).dishes
                 this.setState({
@@ -146,10 +142,8 @@ class CategoryAndFoodSelector extends Component {
                 excludeDishes: [],
                 foodCategory: [],
             })
-            console.log('mapSelectedValueToObjectsThenEmit priceLst', priceLst)
             if (singleDish) {
                 let v = getDishesInfoFromPriceOrScopeList(priceLst)
-                console.log('getDishesInfoFromPriceOrScopeList return v', v)
                 let list = v.dishes.reduce((acc, curr) => {
                     const dish = dishes.find(item => item.value === curr);
                     dish && acc.push(dish)
@@ -342,7 +336,7 @@ class CategoryAndFoodSelector extends Component {
         if (dishFilter) {
             dishes = dishFilter(dishes)
         }
-        console.log('CategoryAndFoodSelector this.state.dishes', this.state.dishes)
+
         const dishLabel2 = dishLabel || k5gfsvlz;
         if (this.props.dishOnly) {
             if (singleDish) {

@@ -117,7 +117,6 @@ class ActivityMain extends React.Component {
     renderActivityTags() {
         const activityCategories = this.state.promotionType;
         const { index } = this.props;
-        console.log('index: ', index);
         return React.createElement(_pages[index], {
             callbacktwo: (arg) => {
                 this.props.callbackthree(arg);

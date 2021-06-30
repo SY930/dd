@@ -63,7 +63,7 @@ export default class GiftInfo extends Component {
     /* 生成表格数据 */
     generateDataSource() {
         const { value } = this.props;
-        return value.map((x, i) => ({
+        return value && value.length >0 && value.map((x, i) => ({
             key: x.giftItemID + i,
             idx: i + 1,
             index: i,
@@ -113,12 +113,12 @@ export default class GiftInfo extends Component {
     }
     render() {
         const { visible, giftTreeData } = this.state;
-        const { value, disabled } = this.props;
+        const { value=[], disabled,isNeedMt } = this.props;
         const columns = this.generateColumns();
         const dataSource = this.generateDataSource();
         //礼品定额卡添加优惠券限制最多10种
         return (
-            <div className={styles.cGiftInfo}>
+            <div className={isNeedMt ? styles.cGiftInfo1 : styles.cGiftInfo}>
                 {!value[9] && <Button icon="plus" disabled={disabled} onClick={this.toggleModal}>添加礼品</Button>}
                 <Table
                     bordered={true}

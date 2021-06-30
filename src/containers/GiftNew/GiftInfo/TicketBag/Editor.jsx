@@ -3,21 +3,24 @@
  * 
 */
 import React, { PureComponent as Component } from 'react';
-import { Button, message, Alert ,Select} from 'antd';
+import { Button, message, Alert ,Select,Form,Col,Radio} from 'antd';
 import moment from 'moment';
 import BaseForm from 'components/common/BaseForm';
 import ShopSelector from 'components/ShopSelector';
 import styles from './index.less';
 import { formItems, formKeys, formItemLayout } from './Common';
-import { keys1, keys2, keys3, keys4, keys5, DF, TF } from './Common';
+import { keys1, keys2, keys3, keys4, keys5, keys7,keys8,keys9,keys10,keys11,keys12,DF, TF } from './Common';
 import GiftInfo from '../../GiftAdd/GiftInfo';
 import ImageUpload from './ImageUpload';
 import EveryDay from './EveryDay';
 import { putTicketBag, postTicketBag } from './AxiosFactory';
 const Option = Select.Option;
+const FormItem = Form.Item;
+const RadioGroup = Radio.Group;
 export default class Editor extends Component {
     state = {
         newFormKeys: formKeys,
+        radioVal:'1'
     }
     keys = formKeys;
     /**
@@ -38,26 +41,99 @@ export default class Editor extends Component {
             this.keys = [newA, newB, newC];
             this.setState({ newFormKeys: [newA, newB, newC] });
         }
+        
+        if (key==='cycleType') { // 选择周期
+            const { getFieldsValue } = this.form;
+            const { couponSendWay, couponPackageRadioSelect} = getFieldsValue();
+            if (couponSendWay==='1') { return; }
+            if(couponPackageRadioSelect){
+                if(value){ 
+                    if(couponPackageRadioSelect == '2'){
+                        newB = {...b, keys: keys10};
+                    }else{
+                        newB = {...b, keys: keys9};
+                    }
+                }else{
+                    if(couponPackageRadioSelect == '2'){
+                        newB = {...b, keys: keys8};
+                    }else{
+                        newB = {...b, keys: keys7};
+                    }
+                }
+                this.keys = [newA, newB, newC];
+                this.setState({ newFormKeys: [newA, newB, newC] });
+            }
+        }
+        if (key === 'couponPackageRadioSelect'){
+            const { getFieldsValue } = this.form;
+            const { cycleType } = getFieldsValue();
+            if(value == '2'){
+                if(cycleType){
+                    newB = {...b, keys: keys10};
+                }else{
+                    newB = {...b, keys: keys8};
+                }
+            }else{
+                if(cycleType){
+                    newB = {...b, keys: keys9};
+                }else{
+                    newB = {...b, keys: keys7};
+                }
+            }
+            this.keys = [newA, newB, newC];
+            this.setState({ newFormKeys: [newA, newB, newC]});
+        }
+        if (key === 'maxSendLimit'){
+            const { getFieldsValue,setFieldsValue } = this.form;
+            const { couponSendWay,couponPackageRadioSelect, cycleType} = getFieldsValue();
+            if (couponSendWay==='1') { return; }
+            if(couponPackageRadioSelect){
+                if(couponPackageRadioSelect == '2'){
+                    if(cycleType){
+                        if(value && Number(value) > 1 ){
+                            newB = {...b, keys: keys10};
+                        }else{
+                            newB = {...b, keys: keys12};
+                        }
+                    }else{
+                        if(value && Number(value) > 1 ){
+                            newB = {...b, keys: keys8};
+                        }else{
+                            newB = {...b, keys: keys11};
+                        }
+                    }
+                }else{
+                    if(cycleType){
+                        newB = {...b, keys: keys9};
+                    }else{
+                        newB = {...b, keys: keys7};
+                    }
+                    
+                }
+                this.keys = [newA, newB, newC];
+                this.setState({ newFormKeys: [newA, newB, newC],});
+            }
+            
+        }
         if (key==='couponSendWay') { // 发放类型
+            const { getFieldsValue,setFieldsValue } = this.form;
+            const { couponPackageGiftConfigs } = getFieldsValue();
             if(value === '1'){
                 newB = {...b, keys: keys3};
             } else {
-                newB = {...b, keys: keys4};
+                if(couponPackageGiftConfigs && couponPackageGiftConfigs.length > 0 ){
+                    let hasStage = couponPackageGiftConfigs.some((item)=>item.stage == '1')
+                    if(hasStage){
+                        newB = {...b, keys: keys8};
+                    }else{
+                        newB = {...b, keys: keys7};
+                    }
+                }else{
+                    newB = {...b, keys: keys7};
+                }
             }
             this.keys = [newA, newB, newC];
-            this.setState({ newFormKeys: [newA, newB, newC] });
-        }
-        if (key==='cycleType') { // 选择周期
-            const { getFieldsValue } = this.form;
-            const { couponSendWay } = getFieldsValue();
-            if (couponSendWay==='1') { return; }
-            if(value){ 
-                newB = {...b, keys: keys5};
-            }else{
-                newB = {...b, keys: keys4};
-            }
-            this.keys = [newA, newB, newC];
-            this.setState({ newFormKeys: [newA, newB, newC] });
+            this.setState({ newFormKeys: [newA, newB, newC]});
         }
     }
     /** 获取会员卡类型 */
@@ -67,7 +143,6 @@ export default class Editor extends Component {
         return cardTypeList.map(x => {
             const { cardTypeID, cardTypeName, isActive } = x;
             return { label: cardTypeName, value: cardTypeID };
-
         });
     }
     /** 得到form */
@@ -101,18 +176,19 @@ export default class Editor extends Component {
     resetFormItems() {
         const { check, detail, settlesOpts } = this.props;
         const { sendCount = 0 } = detail || {};
-        let [couponPackageType, cycleType] = ['1', ''];
+        let [couponPackageType,cycleType,couponSendWay,couponPackageRadioSelect] = ['1', '','1','1'];
         if(this.form) {
             couponPackageType = this.form.getFieldValue('couponPackageType');
             cycleType = this.form.getFieldValue('cycleType');
+            couponSendWay = this.form.getFieldValue('couponSendWay');
+            couponPackageRadioSelect = this.form.getFieldValue('couponPackageRadioSelect');
         }
-        // 
-        const { couponPackageGiftConfigs, shopInfos, couponPackageImage, couponPackageType: cpt,
+        
+        const { couponPackageGiftConfigs, couponPackageGift,couponPackageFirstGift,couponPackageFollowGift,shopInfos, couponPackageImage, couponPackageType: cpt,
             validCycle, sellTime, settleUnitID, defaultCardTypeID,isAutoRefund, remainStock, miniProgramShareImagePath, ...other } = formItems;
-            
         const disGift = check || (+sendCount > 0);
         const defaultCardOpts = this.getGroupCardTypeOpts();
-        const render = d => d()(<GiftInfo disabled={disGift} />);
+        const render = d => d()(<GiftInfo disabled={disGift} isNeedMt={couponSendWay == '2'  ? true : false}/>);
         const render1 = d => d()(<ShopSelector disabled={check} />);
         const render2 = d => d()(<ImageUpload />);
         const render3 = d => d()(<EveryDay type={cycleType} disabled={disGift} />);
@@ -142,7 +218,10 @@ export default class Editor extends Component {
             ...other,
             couponPackageType: { ...cpt, disabled: isEdit },
             sellTime: { ...sellTime , props: disDate},
-            couponPackageGiftConfigs: { ...couponPackageGiftConfigs, render },
+            couponPackageGift: { ...couponPackageGift, render:render },
+            couponPackageGiftConfigs: { ...couponPackageGiftConfigs, render:render },
+            couponPackageFirstGift: { ...couponPackageFirstGift, render:render },
+            couponPackageFollowGift: { ...couponPackageFollowGift, render:render },
             shopInfos: { ...shopInfos, render: render1 },
             couponPackageImage: { ...couponPackageImage, render: render2 },
             validCycle: { ...validCycle, render: render3 },
@@ -152,6 +231,7 @@ export default class Editor extends Component {
             remainStock: { ...remainStock, ...stockRule },
             miniProgramShareImagePath: { ...miniProgramShareImagePath, render: render4 }
         };
+        
         if(check) {
             let obj = {}
             for(let x in newFormItems) {
@@ -181,11 +261,37 @@ export default class Editor extends Component {
         this.form.validateFields((e, v) => {
             if (!e) {
                 const { groupID, detail } = this.props;
-                const { sellTime, couponPackageGiftConfigs, shopInfos: shops, sendTime,
+                const { sellTime, couponPackageGift,couponPackageGiftConfigs, shopInfos: shops, sendTime,couponSendWay,couponPackageFirstGift,couponPackageFollowGift,
                         cycleType, validCycle, couponPackagePrice2, couponPackagePrice,
                         remainStock: stock, maxBuyCount: buyCount, ...others,
                     } = v;
                 let cycleObj = {};
+                let couponPackageArr = [];
+                if(couponSendWay=='2'){
+                    if(couponPackageFirstGift && couponPackageFirstGift.length > 0){
+                        couponPackageFirstGift.forEach((item) => {
+                            item['stage'] = 1;
+                            couponPackageArr.push(item)
+                        })
+                    }
+                    if(couponPackageFollowGift && couponPackageFollowGift.length > 0){
+                        couponPackageFollowGift.forEach((item) => {
+                            item['stage'] = 0;
+                            couponPackageArr.push(item)
+                        })
+                    }
+                    if(couponPackageGift && couponPackageGift.length > 0){
+                        couponPackageGift.forEach((item) => {
+                            item['stage'] = 0;
+                            couponPackageArr.push(item)
+                        })
+                    }
+                }else if(couponSendWay=='1'){
+                    couponPackageGiftConfigs.forEach((item)=>{
+                        item['stage'] = 0;
+                        couponPackageArr.push(item)
+                    })
+                }
                 if(cycleType){
                     const cycle = validCycle.filter(x => (x[0] === cycleType));
                     cycleObj = { validCycle: cycle };
@@ -210,8 +316,9 @@ export default class Editor extends Component {
                 const remainStock = stock || '-1';           // 如果清空库存，给后端传-1
                 const maxBuyCount = buyCount ? buyCount : '-1';
                 const couponPackageInfo = { ...timeObj, ...dateObj, ...others, ...cycleObj,
-                    remainStock,maxBuyCount, couponPackagePrice: price };
-                const params = { groupID, couponPackageInfo, couponPackageGiftConfigs, shopInfos };
+                    remainStock,maxBuyCount, couponSendWay,couponPackagePrice: price };
+                const params = { groupID, couponPackageInfo, couponPackageGiftConfigs:couponPackageArr, shopInfos };
+
                 if(detail){
                     const { couponPackageID } = detail; // 更新需要的id
                     const newParams = { ...params, couponPackageInfo: { ...couponPackageInfo, couponPackageID } };
@@ -235,6 +342,7 @@ export default class Editor extends Component {
         if(newFormKeys[0].keys.includes('d')){
             clazz = styles.formWrap;
         }
+
         return (
             <section className={styles.formBox}>
                 <div className={styles.header}>

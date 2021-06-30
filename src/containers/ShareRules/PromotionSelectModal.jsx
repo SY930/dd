@@ -54,7 +54,6 @@ class PromotionSelectModal extends Component {
     }
 
     getAllOptions = () => {
-        console.log('groupid', this.props.user.getIn(['accountInfo', 'groupID']))
         const {
             intl,
             isBatch
@@ -69,7 +68,6 @@ class PromotionSelectModal extends Component {
         } = this.props;
         let allGiftsArray = []
         let allPromotionArray = []
-        console.log('allPromotionList: ', allPromotionList.toJS());
         if (!isBatch) {
             allGiftsArray = allGiftList ? allGiftList.toJS() : [];
             allPromotionArray = allPromotionList.toJS().map(item => item.promotionName.map(promotion => ({
