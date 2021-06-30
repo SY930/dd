@@ -1097,7 +1097,6 @@ class MySpecialActivities extends React.Component {
                     if(record.eventWay === 80) {
                         return this.renderPayHaveGift(text,index,record)
                     }
-                    console.log(record,SPECIAL_PROMOTION_UPDATE,'SPECIAL_PROMOTION_UPDATE')
                     return (<span>
                         <Authority rightCode={SPECIAL_PROMOTION_UPDATE}>
                             <a
