@@ -1629,13 +1629,15 @@ class SpecialDetailInfo extends Component {
         }
        })
        if(typeof currentIndex !== undefined) {
-            const v =  wakeupSendGiftsDataArray[index].gifts[currentIndex]
-            v.giftCount.value = ''
-            v.giftCount.disabled = false
-            v.effectType = '1'
-            v.effectTypeIsDisabled = false
-            v.giftEffectiveTime.value =  '0'
-            v.giftEffectiveTime.disabled = false
+           if(wakeupSendGiftsDataArray && wakeupSendGiftsDataArray[index] && wakeupSendGiftsDataArray[index].gifts && wakeupSendGiftsDataArray[index].gifts[currentIndex]){
+                const v =  wakeupSendGiftsDataArray[index].gifts[currentIndex];
+                v.giftCount.value = ''
+                v.giftCount.disabled = false
+                v.effectType = '1'
+                v.effectTypeIsDisabled = false
+                v.giftEffectiveTime.value =  '0'
+                v.giftEffectiveTime.disabled = false
+           }
        }
 
 
