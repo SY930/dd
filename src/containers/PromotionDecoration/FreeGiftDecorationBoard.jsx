@@ -13,7 +13,7 @@ import {
 import WrappedColorPicker from '../../components/common/WrappedColorPicker';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
-import {injectIntl} from './IntlDecor';
+import { injectIntl } from './IntlDecor';
 
 const TabPane = Tabs.TabPane;
 
@@ -37,11 +37,12 @@ export default class FreeGiftDecorationBoard extends Component {
                 btnBg = '#FFEDC2',
                 btnTextColor = '#AA7246',
                 activeImg,
+                alertBackgroundImage,
                 canGetGiftTitleColor = '#AA7246',
                 giftListTitleColor = '#AA7246',
                 successTip = '请前往商家公众号查看/使用',
                 isShowGiftListContent = true,
-                isShowCanGetGift =  true
+                isShowCanGetGift = true
             },
         } = this.props;
         return (
@@ -52,39 +53,38 @@ export default class FreeGiftDecorationBoard extends Component {
                 <div className={style.typeTitle}>
                     {SALE_LABEL.k636p0yo}
                 </div>
-                <img src={iphone} alt=""/>
-                <img className={style.fakeHeader} src={phoneTop} alt=""/>
+                <img src={iphone} alt="" />
+                <img className={style.fakeHeader} src={phoneTop} alt="" />
 
                 <div style={{ background: activeBg }} className={style.scrollArea}>
-                    <img style={{ width: '100%'  }} src={activeImg || freeGift} alt=""/>
-                    <div style={{ width: '100%'}}>
+                    <img style={{ width: '100%' }} src={activeImg || freeGift} alt="" />
+                    <div style={{ width: '100%' }}>
                         <div className={style.freeGiftTimeText}  >活动时间：2019/09/08 - 2019/09/09</div>
-                        {isShowGiftListContent ? <div style={{color: giftListTitleColor}} className={style.freeGiftGetGift}>
-                            <div><img style={{width: '14px',height: '14px'}} src={trumpetImg}/> 用户 ****领取了优惠券</div>
+                        {isShowGiftListContent ? <div style={{ color: giftListTitleColor }} className={style.freeGiftGetGift}>
+                            <div><img style={{ width: '14px', height: '14px' }} src={trumpetImg} /> 用户 ****领取了优惠券</div>
                             <div>2019/09/08 09:03:00</div>
                         </div> : null}
                         {
-                           isShowCanGetGift ?    <div className={style.freeGiftcanGetGiftList}>
-                           <div style={{marginTop: '10px', color: canGetGiftTitleColor}}>可领礼品</div>
-                       </div> : null
+                            isShowCanGetGift ? <div className={style.freeGiftcanGetGiftList}>
+                                <div style={{ marginTop: '10px', color: canGetGiftTitleColor }}>可领礼品</div>
+                            </div> : null
                         }
 
                         <div className={style.freeGiftBtnWrap}>
-                            <div style={{background: btnBg, color: btnTextColor }}>立即领取</div>
+                            <div style={{ background: btnBg, color: btnTextColor }}>立即领取</div>
                         </div>
                     </div>
 
                 </div>
-                { this.state.activeTab === '2' ?
-                <div className={style.freeGiftSuccessModal}>
-                    <img className={style.freeGiftSuccessModalImg1}   src={modalImg1}/>
-                    <div className={style.freeGiftSuccessModalCon}>
-                        <div className={style.freeGiftSuccessTip}>{successTip}</div>
-                        <img style={{width: '80%',marginBottom: '20px'}} src={modalImg2}/>
-
+                {this.state.activeTab === '2' ?
+                    <div className={style.freeGiftSuccessModal}>
+                        <img className={style.freeGiftSuccessModalImg1} src={alertBackgroundImage || modalImg1} />
+                        <div className={style.freeGiftSuccessModalCon}>
+                            <div className={style.freeGiftSuccessTip}>{successTip}</div>
+                            <img style={{ width: '80%', marginBottom: '20px' }} src={modalImg2} />
+                        </div>
                     </div>
-                </div>
-                : null}
+                    : null}
 
 
             </div>
@@ -101,19 +101,19 @@ export default class FreeGiftDecorationBoard extends Component {
                 giftListTitleColor = '#AA7246',
                 activeImg,
                 isShowGiftListContent = true,
-                isShowCanGetGift =  true
+                isShowCanGetGift = true
             },
             onChange,
         } = this.props;
         return (
             <div className={style.freeGiftDecorationWrap} style={{ paddingTop: 35 }}>
-                 <div className={style.sectionWrapper}>
-                 <div style={{ top: 30 }} className={style.label}>{SALE_LABEL.k6346c3s}</div>
+                <div className={style.sectionWrapper}>
+                    <div style={{ top: 30 }} className={style.label}>{SALE_LABEL.k6346c3s}</div>
                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
                         <DecorationUploader
                             limit={0}
                             value={activeImg}
-                            onChange={value => onChange({key: ['activeImg'], value})}
+                            onChange={value => onChange({ key: ['activeImg'], value })}
                         />
                         <div className={style.uploaderTip}>
                             <p>* 图片建议尺寸750x960像素</p>
@@ -123,8 +123,8 @@ export default class FreeGiftDecorationBoard extends Component {
                     </div>
                 </div>
                 <div className={style.sectionWrapper}>
-                <div className={style.label}>背景颜色</div>
-                    <ColorSettingBlock title={"请选取一个你喜欢的颜色"} value={activeBg}   onChange={(value) => onChange({key: ['activeBg'], value})} />
+                    <div className={style.label}>背景颜色</div>
+                    <ColorSettingBlock title={"请选取一个你喜欢的颜色"} value={activeBg} onChange={(value) => onChange({ key: ['activeBg'], value })} />
                 </div>
 
                 <div className={style.sectionWrapper}>
@@ -135,7 +135,7 @@ export default class FreeGiftDecorationBoard extends Component {
                             <WrappedColorPicker
                                 alpha={100}
                                 color={btnBg}
-                                onChange={({ color }) => onChange({key: ['btnBg'], value: color})}
+                                onChange={({ color }) => onChange({ key: ['btnBg'], value: color })}
                                 placement="topLeft"
                             />
                         </div>
@@ -144,7 +144,7 @@ export default class FreeGiftDecorationBoard extends Component {
                             <WrappedColorPicker
                                 alpha={100}
                                 color={btnTextColor}
-                                onChange={({ color }) => onChange({key: ['btnTextColor'], value: color})}
+                                onChange={({ color }) => onChange({ key: ['btnTextColor'], value: color })}
                                 placement="topLeft"
                             />
                         </div>
@@ -152,10 +152,10 @@ export default class FreeGiftDecorationBoard extends Component {
                 </div>
                 <div className={style.sectionWrapper}>
                     <div style={{ top: 5 }} className={style.label}>可领礼品</div>
-                    <div style={{display: 'flex', alignItems: 'center'}}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
                         <Switch checked={isShowCanGetGift} onChange={(e) => {
-                             onChange({key: ['isShowCanGetGift'], value: e});
-                        }} style={{width: '48px', height: '24px', borderRadius: '12px', marginRight: '16px'}} checkedChildren="开" unCheckedChildren="关" />
+                            onChange({ key: ['isShowCanGetGift'], value: e });
+                        }} style={{ width: '48px', height: '24px', borderRadius: '12px', marginRight: '16px' }} checkedChildren="开" unCheckedChildren="关" />
                         <div className={style.inlineRow}>
                             <span>标题文字</span>
                             <div className={style.borderedColorWrapper}>
@@ -163,7 +163,7 @@ export default class FreeGiftDecorationBoard extends Component {
                                     alpha={100}
                                     color={canGetGiftTitleColor}
                                     onChange={({ color }) => {
-                                        onChange({key: ['canGetGiftTitleColor'], value: color});
+                                        onChange({ key: ['canGetGiftTitleColor'], value: color });
                                     }}
                                     placement="topLeft"
                                 />
@@ -174,10 +174,10 @@ export default class FreeGiftDecorationBoard extends Component {
                 </div>
                 <div className={style.sectionWrapper}>
                     <div style={{ top: 5 }} className={style.label}>领取列表</div>
-                    <div style={{display: 'flex', alignItems: 'center'}}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
                         <Switch checked={isShowGiftListContent} onChange={(e) => {
-                             onChange({key: ['isShowGiftListContent'], value: e});
-                        }} style={{width: '48px', height: '24px', borderRadius: '12px', marginRight: '16px'}} checkedChildren="开" unCheckedChildren="关" />
+                            onChange({ key: ['isShowGiftListContent'], value: e });
+                        }} style={{ width: '48px', height: '24px', borderRadius: '12px', marginRight: '16px' }} checkedChildren="开" unCheckedChildren="关" />
                         <div className={style.inlineRow}>
                             <span>显示文字</span>
                             <div className={style.borderedColorWrapper}>
@@ -185,7 +185,7 @@ export default class FreeGiftDecorationBoard extends Component {
                                     alpha={100}
                                     color={giftListTitleColor}
                                     onChange={({ color }) => {
-                                        onChange({key: ['giftListTitleColor'], value: color});
+                                        onChange({ key: ['giftListTitleColor'], value: color });
                                     }}
                                     placement="topLeft"
                                 />
@@ -201,16 +201,37 @@ export default class FreeGiftDecorationBoard extends Component {
     renderSuccessPage = () => {
         const {
             decorationInfo: {
-                successTip = '请前往商家公众号查看/使用'
+                successTip = '请前往商家公众号查看/使用',
+                alertBackgroundImage,
+
             },
+            onChange
         } = this.props;
         return (
             <div>
-                <div style={{display: 'flex', alignItems: 'center'}}>
-                    <div style={{color: '#333333', whiteSpace: 'nowrap'}}>说明</div>
-                    <div style={{width: '512px',marginLeft: '8px'}}>
-                        <Input value={successTip} maxLength={30}  onChange={this.handleExplainChange} addonAfter={<div>{successTip.length}/30</div>} />
+                <div >
+                    <div className={style.sectionWrapper}>
+                        <div style={{ top: 30 }} className={style.label}>弹窗背景图</div>
+                        <div style={{ width: 350 }} className={style.uploaderWrapper}>
+                            <DecorationUploader
+                                limit={0}
+                                value={alertBackgroundImage}
+                                onChange={value => onChange({ key: ['alertBackgroundImage'], value })}
+                            />
+                            <div className={style.uploaderTip}>
+                                <p>* 图片建议尺寸230x180像素</p>
+                                <p>* 不大于1000KB</p>
+                                <p>* 支持png、jpg、jpeg、gif</p>
+                            </div>
+                        </div>
                     </div>
+                    <div>
+                        <span style={{ marginLeft:52,float:'left',color: '#333333', whiteSpace: 'nowrap' }}>引导文案</span>
+                        <div style={{marginLeft:49,float:'left', width: '512px', marginTop: -6 }}>
+                            <Input value={successTip} maxLength={30} onChange={this.handleExplainChange} addonAfter={<div>{successTip.length}/30</div>} />
+                        </div>
+                    </div>
+                    
 
                 </div>
             </div>
@@ -228,17 +249,17 @@ export default class FreeGiftDecorationBoard extends Component {
             onChange
         } = this.props;
 
-        onChange({key: ['successTip'], value:  e.target.value})
+        onChange({ key: ['successTip'], value: e.target.value })
     }
     render() {
         const { activeTab } = this.state
         return (
             <div className={style.boardWrapper}>
                 {this.renderPhonePreview()}
-                <div className={style.freeGiftTab} style={{margin: '46px 0 0 20px'}}>
+                <div className={style.freeGiftTab} style={{ margin: '46px 0 0 20px' }}>
                     <Tabs activeKey={activeTab} onChange={this.handelTabChange} className={style.customTabWrapper}  >
                         <TabPane tab="领奖页" key="1">{this.renderSettingPanel()}</TabPane>
-                        <TabPane tab="领取成功页" key="2">{this.renderSuccessPage()}</TabPane>
+                        <TabPane tab="领取成功页1" key="2">{this.renderSuccessPage()}</TabPane>
                     </Tabs>
                 </div>
 
