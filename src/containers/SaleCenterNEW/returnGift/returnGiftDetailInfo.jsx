@@ -9,11 +9,11 @@
 */
 
 import React, { Component } from 'react'
-import { Row, Col, Form, Select, Radio, Icon, Popconfirm,Tooltip } from 'antd';
+import { Row, Col, Form, Select, Radio, Icon, Popconfirm, Tooltip } from 'antd';
 import { connect } from 'react-redux'
 import styles from '../ActivityPage.less';
 import selfStyle from './style.less';
-import {axiosData} from "../../../helpers/util";
+import { axiosData } from "../../../helpers/util";
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 import ReturnGift from './returnGift'; // 可增删的输入框 组件
 import AdvancedPromotionDetailSetting from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSetting';
@@ -22,7 +22,7 @@ import {
     fetchGiftListInfoAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import PriceInput from '../common/PriceInput';
-import {injectIntl} from '../IntlDecor';
+import { injectIntl } from '../IntlDecor';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -119,23 +119,26 @@ class ReturnGiftDetailInfo extends React.Component {
                 giftMap.set(`${gift.stageAmount}`, [emptyGift]);
             }
         });
-        return Array.from(giftMap.entries()).map(([stageAmount, gifts]) => ({stageAmount, gifts})).sort((a, b) => a.stageAmount - b.stageAmount)
+        return Array.from(giftMap.entries()).map(([stageAmount, gifts]) => ({ stageAmount, gifts })).sort((a, b) => a.stageAmount - b.stageAmount)
     }
 
     getInitState() {
         const $rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
         const stageType = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule', 'stageType']);
+        const activeCode = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule', 'activeCode']);
         const $giftList = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'giftList'], Immutable.fromJS([]));
         let parsedRule;
         let data = JSON.parse(JSON.stringify(DEFAULT_GIFT_STAGE));
         if (stageType) {
             parsedRule = {
                 stageType,
+                activeCode,
                 gainCodeMode: $rule.get('gainCodeMode') || '1',
                 printCode: $rule.get('printCode') || 0,
             }
         } else {
             parsedRule = {
+                activeCode: '1',
                 stageType: '2',
                 gainCodeMode: '1',
                 printCode: 0,
@@ -156,8 +159,8 @@ class ReturnGiftDetailInfo extends React.Component {
             data[0].gifts[0].giftValidDays.value = $rule.get('giftValidDays') || '0';
             data[0].gifts[0].giftMaxUseNum.value = $rule.get('giftMaxUseNum') || $rule.get('giftMaxNum');
             data[0].gifts[0].giftValidType = $rule.get('giftType') == 112 ? '0' : $rule.get('giftValidType');
-            data[0].gifts[0].giftEffectiveTime.value = $rule.get('giftType') == 112 ? 0 : $rule.get('giftStartTime') ? [moment($rule.get('giftStartTime'), 'YYYYMMDDHHmmss'), moment($rule.get('giftEndTime'), 'YYYYMMDDHHmmss')] :$rule.get('giftValidType') == 0 ? $rule.get('giftEffectiveTime') / 60 : $rule.get('giftEffectiveTime');
-        } else if (stageType == 2) {// 满
+            data[0].gifts[0].giftEffectiveTime.value = $rule.get('giftType') == 112 ? 0 : $rule.get('giftStartTime') ? [moment($rule.get('giftStartTime'), 'YYYYMMDDHHmmss'), moment($rule.get('giftEndTime'), 'YYYYMMDDHHmmss')] : $rule.get('giftValidType') == 0 ? $rule.get('giftEffectiveTime') / 60 : $rule.get('giftEffectiveTime');
+        } else if (stageType == 2 || stageType == 3) {
             const giftList = $rule.getIn(['stage'], Immutable.fromJS([])).toJS();
             data = this.groupGiftsByStageAmount(giftList);
         }
@@ -265,7 +268,7 @@ class ReturnGiftDetailInfo extends React.Component {
         if (!formFlag) return;
         const { rule, needSyncToAliPay, data } = this.state;
         const giftList = data.reduce((acc, curr) => {
-            acc.push(...curr.gifts.map(item => ({...item, stageAmount: curr.stageAmount})));
+            acc.push(...curr.gifts.map(item => ({ ...item, stageAmount: curr.stageAmount })));
             return acc;
         }, [])
         // FIXME: 这个校验在不人为输入(触发相应onChange)时等于无效, 比如编辑时直接下一步下一步保存时, 如果产品要求, 可以改掉
@@ -281,6 +284,9 @@ class ReturnGiftDetailInfo extends React.Component {
                 }, true);
             return p && _validStatusOfCurrentIndex;
         }, true);
+        if(this.state.rule.activeCode == 2){
+            this.state.rule.stageType = '3'//活动形式：会员日送礼
+        }
         if (validateFlag) {
             this.props.setPromotionDetail({
                 rule: this.state.rule,
@@ -304,21 +310,21 @@ class ReturnGiftDetailInfo extends React.Component {
     handleStageChange = (val, index) => {
         const { data } = this.state;
         data[index].gifts = val;
-        this.setState({data});
+        this.setState({ data });
     }
     removeStage = (index) => {
         const { data } = this.state;
         if (data.length > 1) {
             data.splice(index, 1)
-            this.setState({data});
+            this.setState({ data });
         }
     }
     addStage = () => {
         const { data } = this.state;
         data.push(...JSON.parse(JSON.stringify(DEFAULT_GIFT_STAGE)));
-        this.setState({data})
+        this.setState({ data })
     }
-    handleStageAmountChange = (val, index) => {
+    handleStageAmountChange = (val, index,type) => {
         const { data } = this.state;
         data[index].stageAmount = val.number;
         this.setState({
@@ -327,15 +333,28 @@ class ReturnGiftDetailInfo extends React.Component {
         for (let i = 0; i < data.length; i++) {
             if (i !== index) {
                 const value = data[i].stageAmount
-                this.props.form.setFields({
-                    [`stageAmount${i}`]: {value: {number: value}}
-                })
+                if(type == '2'){
+                    this.props.form.setFields({
+                        [`stageAmounts${i}`]: { value: { number: value } }
+                    })
+                }else{
+                    this.props.form.setFields({
+                        [`stageAmount${i}`]: { value: { number: value } }
+                    })
+                }
+                
             }
         }
     }
 
-
+    activeCodeRadioChange(e){
+        const { rule } = this.state;
+        const data = JSON.parse(JSON.stringify(DEFAULT_GIFT_STAGE));
+        rule.activeCode = e.target.value;
+        this.setState({ rule,data });
+    }
     renderPromotionRule() {
+        const { activeCode } = this.state.rule;
         return (
             <div>
                 <FormItem
@@ -367,45 +386,45 @@ class ReturnGiftDetailInfo extends React.Component {
                         wrapperCol={{ span: 17 }}
                     >
                         <RadioGroup
-                            value={this.state.rule.printCode}
-                            onChange={(e) => {
-                                const { rule } = this.state;
-                                rule.printCode = e.target.value;
-                                this.setState({ rule });
-                            }}
+                            value={this.state.rule.activeCode}
+                            onChange={(e) => this.activeCodeRadioChange(e)}
                         >
-                            <Radio key={0} value={0}>消费送礼</Radio >
-                            <Radio key={1} value={1}>会员日送礼</Radio >
+                            <Radio key={4} value={1}>消费送礼</Radio >
+                            <Radio key={3} value={2}>会员日送礼</Radio >
                         </RadioGroup >
                     </FormItem>
-                    <Tooltip title={'仅线下买单支持此场景'} ><Icon type="question-circle" style={{position:'relative',top:'-39',left:'284'}}/></Tooltip>
-
+                    <Tooltip title={'仅线下买单支持此场景'} ><Icon type="question-circle" style={{ position: 'relative', top: '-39', left: '284' }} /></Tooltip>
                 </div>
-                <FormItem
-                    label={SALE_LABEL.k5ez4n7x}
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 17 }}
-                >
-                    <Select
-                        size="default"
-                        placeholder=""
-                        className={`${styles.linkSelectorRight} returnGiftDetailMountClassJs`}
-                        getPopupContainer={(node) => node.parentNode}
-                        value={this.state.rule.stageType}
-                        onChange={(val) => {
-                            const { rule, data } = this.state;
-                            rule.stageType = val;
-                            this.setState({ rule, data: [data[0]] });
-                        }
-                        }
+                {
+                    activeCode == '2' ? 
+                    null
+                    :
+                    <FormItem
+                        label={SALE_LABEL.k5ez4n7x}
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 17 }}
                     >
-                        {type
-                            .map((type) => {
-                                return <Option key={type.value} value={type.value}>{type.name}</Option>
-                            })}
-                    </Select>
-                </FormItem>
+                        <Select
+                            size="default"
+                            placeholder=""
+                            className={`${styles.linkSelectorRight} returnGiftDetailMountClassJs`}
+                            getPopupContainer={(node) => node.parentNode}
+                            value={this.state.rule.stageType == '3' ? '2' : this.state.rule.stageType}
+                            onChange={(val) => {
+                                const { rule, data } = this.state;
+                                rule.stageType = val;
+                                this.setState({ rule, data: [data[0]] });
+                            }
+                            }
+                        >
+                            {type
+                                .map((type) => {
+                                    return <Option key={type.value} value={type.value}>{type.name}</Option>
+                                })}
+                        </Select>
+                    </FormItem>
+                }
                 {this.renderRuleDetail()}
             </div>
         )
@@ -446,89 +465,139 @@ class ReturnGiftDetailInfo extends React.Component {
             },
         } = this.props;
         const isMultiple = this.state.rule.stageType == 1;
+        const { activeCode } = this.state.rule;
         return (
-            this.state.data.map(({stageAmount, gifts}, index, arr) => (
-                <Row key={`${index}`}>
-                    <Col span={4}>
-                        {
-                            !isMultiple && (
-                                <div className={selfStyle.fakeLabel}>
-                                    {SALE_LABEL.k6d8n0y8}{`${index + 1}`}
-                                </div>
-                            )
-                        }
-                    </Col>
-                    <Col span={17}>
-
-                                <div className={isMultiple ? selfStyle.emptyHeader : selfStyle.grayHeader}>
-                                    {isMultiple ? SALE_LABEL.k67g8n1b : SALE_LABEL.k5nh214x}&nbsp;
-                                    <FormItem>
-                                        {
-                                            getFieldDecorator(`stageAmount${index}`, {
-                                                initialValue: {number: stageAmount},
-                                                onChange: (val) => this.handleStageAmountChange(val, index),
-                                                rules: [
-                                                    {
-                                                        validator: (rule, v, cb) => {
-                                                            if (!(v.number > 0)) {
-                                                                return cb(k5f4b1b9)
-                                                            }
-                                                            for (let i = 0; i < index; i ++) {
-                                                                if (arr[i].stageAmount >= +v.number) {
-                                                                    return cb(k67g8n9n)
+            <div>
+                {
+                    activeCode == '2' ?
+                        this.state.data.map(({ stageAmount, gifts }, index, arr) => (
+                            <Row key={`index`}>
+                                <Col span={4}>
+                                    <div className={selfStyle.fakeLabel}>
+                                        活动条件
+                                    </div>
+                                </Col>
+                                <Col span={17}>
+                                    <div className={selfStyle.grayHeader}>
+                                        每天第&nbsp;
+                                        <FormItem>
+                                            {
+                                                getFieldDecorator(`stageAmounts${index}`, {
+                                                    initialValue: { number: stageAmount },
+                                                    onChange: (val) => this.handleStageAmountChange(val, index,'2'),
+                                                    rules: [
+                                                        {
+                                                            validator: (rule, v, cb) => {
+                                                                if (!(v.number > 0)) {
+                                                                    return cb(k5f4b1b9)
                                                                 }
+                                                                cb()
                                                             }
-                                                            cb()
-                                                        }
-                                                    },
-                                                ],
-                                            })(<PriceInput style={{ width: 100 }} modal="float" maxNum={6} />)
-                                        }
-                                    </FormItem>
+                                                        },
+                                                    ],
+                                                })(<PriceInput style={{ width: 100 }} modal="float" maxNum={6} />)
+                                            }
+                                        </FormItem>
+                                        &nbsp;单，{SALE_LABEL.k6d8n16k}
+                                    </div>
+                                    <ReturnGift
+                                        key={`index`}
+                                        weChatCouponList={this.state.weChatCouponList}
+                                        isMultiple={isMultiple}
+                                        value={gifts}
+                                        onChange={(val) => this.handleStageChange(val, index)}
+                                        filterOffLine={this.state.rule.gainCodeMode != '0'}
+                                    />
+                                </Col>
+                            </Row>
+                        ))
+                        :
+                        this.state.data.map(({ stageAmount, gifts }, index, arr) => (
+                            <Row key={`${index}`}>
+                                <Col span={4}>
+                                    {
+                                        !isMultiple && (
+                                            <div className={selfStyle.fakeLabel}>
+                                                {SALE_LABEL.k6d8n0y8}{`${index + 1}`}
+                                            </div>
+                                        )
+                                    }
+                                </Col>
+                                <Col span={17}>
+                                    <div className={isMultiple ? selfStyle.emptyHeader : selfStyle.grayHeader}>
+                                        {isMultiple ? SALE_LABEL.k67g8n1b : SALE_LABEL.k5nh214x}&nbsp;
+                                    <FormItem>
+                                            {
+                                                getFieldDecorator(`stageAmount${index}`, {
+                                                    initialValue: { number: stageAmount },
+                                                    onChange: (val) => this.handleStageAmountChange(val, index,'1'),
+                                                    rules: [
+                                                        {
+                                                            validator: (rule, v, cb) => {
+                                                                if (!(v.number > 0)) {
+                                                                    return cb(k5f4b1b9)
+                                                                }
+                                                                for (let i = 0; i < index; i++) {
+                                                                    if (arr[i].stageAmount >= +v.number) {
+                                                                        return cb(k67g8n9n)
+                                                                    }
+                                                                }
+                                                                cb()
+                                                            }
+                                                        },
+                                                    ],
+                                                })(<PriceInput style={{ width: 100 }} modal="float" maxNum={6} />)
+                                            }
+                                        </FormItem>
                                     &nbsp;{k5ezdbiy}，{SALE_LABEL.k6d8n16k}
-                                </div>
+                                    </div>
 
 
-                        <ReturnGift
-                            key={`${index}`}
-                            weChatCouponList={this.state.weChatCouponList}
-                            isMultiple={isMultiple}
-                            value={gifts}
-                            onChange={(val) => this.handleStageChange(val, index)}
-                            filterOffLine={this.state.rule.gainCodeMode != '0'}
-                        />
-                    </Col>
-                    <Col span={2}>
-                        {
-                            (!isMultiple) && (
-                                <div className={selfStyle.buttonArea}>
+                                    <ReturnGift
+                                        key={`${index}`}
+                                        weChatCouponList={this.state.weChatCouponList}
+                                        isMultiple={isMultiple}
+                                        value={gifts}
+                                        onChange={(val) => this.handleStageChange(val, index)}
+                                        filterOffLine={this.state.rule.gainCodeMode != '0'}
+                                    />
+                                </Col>
+                                <Col span={2}>
                                     {
-                                        (arr.length < 5 && index === arr.length - 1) && (
-                                            <Icon
-                                                onClick={this.addStage}
-                                                style={{ marginBottom: 10 }}
-                                                className={selfStyle.plusIcon}
-                                                type="plus-circle-o"
-                                            />
+                                        (!isMultiple) && (
+                                            <div className={selfStyle.buttonArea}>
+                                                {
+                                                    (arr.length < 5 && index === arr.length - 1) && (
+                                                        <Icon
+                                                            onClick={this.addStage}
+                                                            style={{ marginBottom: 10 }}
+                                                            className={selfStyle.plusIcon}
+                                                            type="plus-circle-o"
+                                                        />
+                                                    )
+                                                }
+                                                {
+                                                    (arr.length > 1) && (
+                                                        <Popconfirm title={SALE_LABEL.k5dnw1q3} onConfirm={() => this.removeStage(index)}>
+                                                            <Icon
+                                                                className={selfStyle.deleteIcon}
+                                                                type="minus-circle-o"
+                                                            />
+                                                        </Popconfirm>
+                                                    )
+                                                }
+                                            </div>
                                         )
                                     }
-                                    {
-                                        (arr.length > 1) && (
-                                            <Popconfirm title={SALE_LABEL.k5dnw1q3} onConfirm={() => this.removeStage(index)}>
-                                                <Icon
-                                                    className={selfStyle.deleteIcon}
-                                                    type="minus-circle-o"
-                                                />
-                                            </Popconfirm>
-                                        )
-                                    }
-                                </div>
-                            )
-                        }
-                    </Col>
-                </Row>
+                                </Col>
+                            </Row>
 
-            ))
+                        ))
+
+                }
+            </div>
+
+
 
         )
     }
@@ -538,7 +607,7 @@ class ReturnGiftDetailInfo extends React.Component {
             <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 17, offset: 4 }} >
                 <span className={styles.gTip}>{SALE_LABEL.k5ezdwpv}</span>
                 <span className={styles.gDate} onClick={this.onChangeClick}>
-                {SALE_LABEL.k5ezdx9f} {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
+                    {SALE_LABEL.k5ezdx9f} {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
                     {this.state.display && <Iconlist className="down-blue" iconName={'up'} width="13px" height="13px" />}
                 </span>
             </FormItem>
