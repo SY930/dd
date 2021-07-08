@@ -20,7 +20,7 @@ const TreeNode = Tree.TreeNode;
 const AVAILABLE_PROMOTIONS = Object.keys(BASIC_PROMOTION_MAP);
 
 const AVAILABLE_GIFTS = [
-    '10', '20', '21', '110', '111', '22',
+    '10', '20', '21', '110', '111', '22','115'
 ];
 const EXPANDTO500 = ['292428', '253686']
 @injectIntl()
@@ -295,6 +295,7 @@ class PromotionSelectModal extends Component {
                                     <TreeNode key={'111'} title={k636qvha} />
                                     <TreeNode key={'110'} title={k636qvpm} />
                                     <TreeNode key={'22'} title={'配送券'} />
+                                    <TreeNode key={'115'} title={'不定额代金券'} />
                                 </TreeNode>
 
                             </Tree> :
@@ -317,6 +318,7 @@ class PromotionSelectModal extends Component {
                                         <TreeNode key={'111'} title={k636qvha} />
                                         <TreeNode key={'110'} title={k636qvpm} />
                                         <TreeNode key={'22'} title={'配送券'} />
+                                        <TreeNode key={'115'} title={'不定额代金券'} />
                                     </TreeNode>
                                     <TreeNode key={'userRight'} title={k5m5aw4n}>
                                         <TreeNode key={'-10'} title={k5m4q0r2} />

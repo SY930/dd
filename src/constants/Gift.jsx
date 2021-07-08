@@ -119,6 +119,14 @@ const GiftCfg = {
             category: 'primary',
             tags: ['微信', '小程序'],
         },
+        {
+            name: '不定额代金券',
+            describe: '抵扣一定面值的券，可通过特色营销发放',
+            value: '115',
+            color: '#84aac6',
+            category: 'secondary',
+            tags: ['pos', '新微信', '小程序','礼品卡小程序']
+        },
     ],
     giftTypeName: [
         { label: '全部', value: '' },
@@ -135,6 +143,8 @@ const GiftCfg = {
         { label: '折扣券', value: '111' },
         { label: '现金红包', value: '113' },
         { label: '配送券', value: '22' },
+        { label: '不定额代金券', value: '115' },
+
     ],
     transferType: [
         { label: '不可转赠', value: 0 },

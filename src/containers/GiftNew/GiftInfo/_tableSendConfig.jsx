@@ -31,7 +31,7 @@ const FORMITEMS = {
         wrapperCol: { span: 20 },
     },
     getWay: {
-        label: '发出方式',
+        label: '发出方式1',
         type: 'combo',
         props: {
             showSearch: true,
@@ -63,6 +63,8 @@ const FORMITEMS = {
     }
 };
 const SEND_GIFTPWD_FORMKEYS = [{ col: { span: 12 }, keys: ['giftPWD','getWay', 'timeRangeSend', ] },
+{ col: { span: 12, offset: 0 }, keys: ['mobileNum', 'giftStatus', 'sendShopID'] }];
+const SEND_GIFTPWD_FORMKEYS1 = [{ col: { span: 12 }, keys: ['giftPWD', 'timeRangeSend', ] },
 { col: { span: 12, offset: 0 }, keys: ['mobileNum', 'giftStatus', 'sendShopID'] }];
 const SEND_FORMKEYS = [{ col: { span: 12 }, keys: ['getWay', 'timeRangeSend', 'mobileNum'] },
 { col: { span: 12, offset: 0 }, keys: ['giftStatus', 'sendShopID'] }];
@@ -369,4 +371,4 @@ const USED_COLUMNS = [
         key: 'transCardNo',
     },
 ];
-export { FORMITEMS, SEND_FORMKEYS, SEND_COLUMNS, WX_SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS, WX_SEND_FORMKEYS, SEND_GIFTPWD_FORMKEYS, USED_SPE_COLUMNS, USED_SPE_FORMKEYS, BASE_COLUMNS };
+export { FORMITEMS, SEND_FORMKEYS, SEND_COLUMNS, WX_SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS, WX_SEND_FORMKEYS, SEND_GIFTPWD_FORMKEYS, SEND_GIFTPWD_FORMKEYS1,USED_SPE_COLUMNS, USED_SPE_FORMKEYS, BASE_COLUMNS };

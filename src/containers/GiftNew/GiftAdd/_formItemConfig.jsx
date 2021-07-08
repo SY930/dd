@@ -531,6 +531,39 @@ export const FIRST_KEYS = {
             ]
         },
     ],
+    '不定额代金券': [
+        {
+            col: {
+                span: 24,
+                pull: 2,
+            },
+            keys: [
+                'giftType',
+                'applyScene',
+                'giftName',
+                'selectBrands',
+                'pushMessage',
+            ],
+        },
+        {
+            col: {
+                span: 24,
+                pull: 2,
+            },
+            keys: [
+                'giftRemark',
+            ]
+        },
+        {
+            col: {
+                span: 24,
+                push: 3,
+            },
+            keys: [
+                'isNeedCustomerInfo',
+            ]
+        },
+    ],
     '菜品优惠券': [
         {
             col: {
@@ -816,6 +849,33 @@ export const SECOND_KEYS = (() => ({
                 'giftImagePath',
                 'aggregationChannels',
                 'TrdTemplate',
+                'isSynch',
+            ],
+        },
+    ],
+    '不定额代金券': [
+        {
+            col: {
+                span: 24,
+                pull: 2,
+            },
+            keys: [
+                'transferType',
+                'transferTitle',
+                'transferImage',
+                'usingWeekType',
+                'usingDateType',
+                'couponPeriodSettings',
+                'supportOrderTypeLst',
+                'isOfflineCanUsing',
+                'isOnlineExchangeable',
+                'giftShareType',
+                'moneyLimitTypeAndValue',
+                'customerUseCountLimit',
+                'shopNames',
+                // 'amountType',
+                'showGiftRule',
+                'giftImagePath',
                 'isSynch',
             ],
         },

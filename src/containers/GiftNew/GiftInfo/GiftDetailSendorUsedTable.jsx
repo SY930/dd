@@ -13,7 +13,7 @@ import {
     UpdateSendorUsedParams,
     FetchGiftSchema,
 } from '../_action';
-import { FORMITEMS, SEND_FORMKEYS, WX_SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS, WX_SEND_FORMKEYS, SEND_GIFTPWD_FORMKEYS, USED_SPE_COLUMNS, USED_SPE_FORMKEYS, BASE_COLUMNS } from './_tableSendConfig';
+import { FORMITEMS, SEND_FORMKEYS, WX_SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS, WX_SEND_FORMKEYS, SEND_GIFTPWD_FORMKEYS, SEND_GIFTPWD_FORMKEYS1,USED_SPE_COLUMNS, USED_SPE_FORMKEYS, BASE_COLUMNS } from './_tableSendConfig';
 import { mapValueToLabel, axiosData, isFilterShopType } from 'helpers/util';
 import { messageTemplateState } from 'containers/BasicSettings/reducers';
 import TransGiftModal from './TransGiftModal';
@@ -101,7 +101,7 @@ class GiftSendOrUsedCount extends React.Component {
             total: 2,
             pageNo: 1,
             pageSize: 10,
-            speGift: ['10', '20', '21', '30', '40', '42', '110', '111', '22'],
+            speGift: ['10', '20', '21', '30', '40', '42', '110', '111', '115','22'],
             queryParams: {
 
             },
@@ -111,6 +111,7 @@ class GiftSendOrUsedCount extends React.Component {
         };
     }
     componentWillMount() {
+        let sendGiftkeys = null;
         // 后端不支持此字段getWay查询　故disable掉线上礼品卡的发送方式
         const { _key, data: { giftItemID, giftType }, FetchGiftSchemaAC, shopData, sendList, usedList } = this.props;
         const formItems = Object.assign({}, FORMITEMS);
@@ -121,13 +122,18 @@ class GiftSendOrUsedCount extends React.Component {
         }
         const sendorUsedList = _key === 'send' ? sendList : usedList;
         const { pageNo, pageSize } = this.state;
+        if(giftType == '115'){
+            sendGiftkeys = SEND_GIFTPWD_FORMKEYS1
+        }else{
+            sendGiftkeys = SEND_GIFTPWD_FORMKEYS
+        }
         this.setState({ giftItemID, key: _key, pageNo, pageSize });
         this.proRecords(sendorUsedList);
         if (_key === 'send') {
             const { speGift } = this.state;
             this.setState({
                 columns: giftType === '91' ? WX_SEND_COLUMNS : this.SEND_COLUMNS,
-                formKeys: giftType === '91' ? WX_SEND_FORMKEYS : speGift.indexOf(giftType) >= 0 ? SEND_GIFTPWD_FORMKEYS : SEND_FORMKEYS,
+                formKeys: giftType === '91' ? WX_SEND_FORMKEYS : speGift.indexOf(giftType) >= 0 ? sendGiftkeys : SEND_FORMKEYS,
                 formItems: {
                     ...formItems,
                     sendShopID: {
@@ -169,6 +175,7 @@ class GiftSendOrUsedCount extends React.Component {
         }
     }
     componentWillReceiveProps(nextProps) {
+        let sendGiftkeys = null;
         // 后端不支持此字段getWay查询　故disable掉线上礼品卡的发送方式
         const {data} = nextProps;
         const formItems = this.state.formItems;
@@ -178,6 +185,11 @@ class GiftSendOrUsedCount extends React.Component {
 
         this.queryForm && this.queryForm.resetFields();
         const { sendList, usedList, _key, data: { giftItemID, giftType }, sendorUsedPage, sendorUsedParams, shopData } = nextProps;
+        if(giftType == '115'){
+            sendGiftkeys = SEND_GIFTPWD_FORMKEYS1
+        }else{
+            sendGiftkeys = SEND_GIFTPWD_FORMKEYS
+        }
         if (sendorUsedPage) {
             // const { pageNo, pageSize } = sendorUsedPage.toJS();
             this.setState({ giftItemID, key: _key, pageNo: 1, pageSize: 10 });
@@ -193,7 +205,7 @@ class GiftSendOrUsedCount extends React.Component {
             const { speGift } = this.state;
             this.setState({
                 columns: giftType === '91' ? WX_SEND_COLUMNS : this.SEND_COLUMNS,
-                formKeys: giftType === '91' ? WX_SEND_FORMKEYS : speGift.indexOf(giftType) >= 0 ? SEND_GIFTPWD_FORMKEYS : SEND_FORMKEYS,
+                formKeys: giftType === '91' ? WX_SEND_FORMKEYS : speGift.indexOf(giftType) >= 0 ? sendGiftkeys : SEND_FORMKEYS,
                 giftType,
             });
         } else if (_key === 'used') {

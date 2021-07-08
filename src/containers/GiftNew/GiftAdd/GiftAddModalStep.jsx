@@ -889,7 +889,7 @@ class GiftAddModalStep extends React.PureComponent {
                     params.maxGiveCountPerFoodPerBill = 0 // 0标识不限制
                 }
             }
-            if (value == '110' || value == '111') {
+            if (value == '110' || value == '111' || value == '115') {
                 params.giftValue = 0 // 不传会报错，后台说传0
             }
             if (value == '22') {
@@ -2133,10 +2133,13 @@ class GiftAddModalStep extends React.PureComponent {
     justifyFormKeysToDisplay = () => {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
         { firstKeys, secondKeys, values, unit } = this.state;
+
         // 数据拷贝（隔离）
         let firstKeysToDisplay = JSON.parse(JSON.stringify(firstKeys[describe]));
         let secondKeysToDisplay = JSON.parse(JSON.stringify(secondKeys[describe]));
-        if(describe == '代金券' || describe == '菜品优惠券' || describe == '菜品兑换券') {
+        console.log(describe,firstKeysToDisplay,secondKeysToDisplay,'secondKeysToDisplaysecondKeysToDisplaysecondKeysToDisplay')
+        if(describe == '代金券' || describe == '菜品优惠券' || describe == '菜品兑换券' || describe == '不定额代金券') {
+            console.log(values,'values--------------------')
             if(values.applyScene == '0') {            // 店铺券
                 firstKeysToDisplay[0].keys = [...FIRST_KEYS[describe][0].keys];
                 firstKeysToDisplay[1].keys = [...FIRST_KEYS[describe][1].keys];
@@ -2245,7 +2248,7 @@ class GiftAddModalStep extends React.PureComponent {
     }
 
     renderApplyScene = (decorator, form)=>{
-        const {type} = this.props;
+        const {type,gift: { name: describe, value, data }} = this.props;
         let disabled = false
         if(type == 'edit') {
             disabled = true;
@@ -2253,7 +2256,9 @@ class GiftAddModalStep extends React.PureComponent {
         return  decorator({})(
             <Radio.Group disabled={disabled}>
                 <Radio.Button value={0}>店铺券</Radio.Button>
-                <Radio.Button value={1}>商城券</Radio.Button>
+                {
+                    describe == '不定额代金券' ? null : <Radio.Button value={1}>商城券</Radio.Button>
+                }
             </Radio.Group>
         )
     }
@@ -2312,7 +2317,7 @@ class GiftAddModalStep extends React.PureComponent {
             // 新增礼品商城属性
             // 券应用场景（店铺，商城）
             applyScene: {
-                label: '礼品属性',
+                label: '礼品属性1',
                 type: 'custom',
                 defaultValue: 0,
                 render: (decorator, form) => this.renderApplyScene(decorator, form)

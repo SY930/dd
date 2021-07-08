@@ -553,6 +553,7 @@ class GiftDetailTable extends Component {
                 case '91':
                 case '110':
                 case '111':
+                case '115':
                 case '22':
                     return visibleEdit ? <GiftAddModalStep {...editProps} /> : null;
                 case '30':
@@ -578,6 +579,7 @@ class GiftDetailTable extends Component {
                 case '100':
                 case '110':
                 case '111':
+                case '115':
                 case '22':
                     return (<GiftDetailModal {...detailProps} />);
                 case '113':
@@ -636,7 +638,7 @@ class GiftDetailTable extends Component {
             },
         };
         
-        const formKeys = ['giftName', 'giftItemID', 'giftPWD', 'giftType', 'brandID',];
+        const formKeys = ['giftName', 'giftItemID', 'giftPWD', 'giftType', 'brandID'];
         const headerClasses = `layoutsToolLeft ${styles2.headerWithBgColor} ${styles2.basicPromotionHeader}`;
         const { tabkey } = this.props;
         const { groupID } = this.props.user.accountInfo;

@@ -167,6 +167,10 @@ export const SALE_CENTER_GIFT_TYPE = Object.freeze([
         label: "支付宝代金券",
         value: "114",
     },
+    {
+        label: "不定额代金券",
+        value: "115",
+    },
 ]);
 
 export const SALE_CENTER_GIFT_EFFICT_TIME = Object.freeze([

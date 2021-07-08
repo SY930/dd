@@ -37,7 +37,7 @@ class Step2 extends React.Component {
         this.props.dispatch({
             type: 'createActiveCom/couponService_getSortedCouponBoardList',
             payload: {
-                giftTypes: [10, 20, 21, 111, 110, 22, 30]
+                giftTypes: [10, 20, 21, 111, 110, 22, 30,115]
             },
         }).then((res) => {
             if (res) {

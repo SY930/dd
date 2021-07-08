@@ -9,7 +9,7 @@
 */
 
 import React, { Component } from 'react'
-import { Row, Col, Form, Select, Radio, Icon, Popconfirm } from 'antd';
+import { Row, Col, Form, Select, Radio, Icon, Popconfirm,Tooltip } from 'antd';
 import { connect } from 'react-redux'
 import styles from '../ActivityPage.less';
 import selfStyle from './style.less';
@@ -359,6 +359,28 @@ class ReturnGiftDetailInfo extends React.Component {
                     </RadioGroup >
                 </FormItem>
                 {this.state.rule.gainCodeMode == 1 ? this.renderPrintCode() : null}
+                <div>
+                    <FormItem
+                        label={'活动形式'}
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 17 }}
+                    >
+                        <RadioGroup
+                            value={this.state.rule.printCode}
+                            onChange={(e) => {
+                                const { rule } = this.state;
+                                rule.printCode = e.target.value;
+                                this.setState({ rule });
+                            }}
+                        >
+                            <Radio key={0} value={0}>消费送礼</Radio >
+                            <Radio key={1} value={1}>会员日送礼</Radio >
+                        </RadioGroup >
+                    </FormItem>
+                    <Tooltip title={'仅线下买单支持此场景'} ><Icon type="question-circle" style={{position:'relative',top:'-39',left:'284'}}/></Tooltip>
+
+                </div>
                 <FormItem
                     label={SALE_LABEL.k5ez4n7x}
                     className={styles.FormItemStyle}

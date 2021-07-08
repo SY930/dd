@@ -25,7 +25,7 @@ import {
 // { label: '现金红包', value: '113' },
 
 const ONLINE_STORE_VISIBLE_GIFT_TYPE = [
-    '10', '20', '21', '30', '40', '42', '80', '110', '111',
+    '10', '20', '21', '30', '40', '42', '80', '110', '111','115'
 ]
 
 export const COLUMNS = [
@@ -147,6 +147,13 @@ export const COLUMNS = [
         key: 'giftValue',
         width: 100,
         className: 'x-tr',
+        render: (value,record) => {
+            if(record.giftType == '115'){
+                return ''
+            }else{
+                return value
+            }
+        },
     }, {
         title: '礼品描述',
         dataIndex: 'giftRemark',

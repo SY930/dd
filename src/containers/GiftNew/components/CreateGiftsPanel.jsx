@@ -109,7 +109,7 @@ class CreateGiftsPanel extends Component {
                     </div>
                     <div className={styles.groupContainer}>
                         {
-                            secondaryGifts.map(gift => {
+                            secondaryGifts.map((gift,index) => {
                                 switch (gift.view) {
                                     case 'card': return (
                                         <ClickableGiftCard
@@ -129,6 +129,7 @@ class CreateGiftsPanel extends Component {
                                             data={gift}
                                         />
                                     );
+                                    
                                     default: return (
                                         <ClickableGiftLogo
                                             key={gift.value}
