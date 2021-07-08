@@ -386,11 +386,11 @@ class ReturnGiftDetailInfo extends React.Component {
                         wrapperCol={{ span: 17 }}
                     >
                         <RadioGroup
-                            value={this.state.rule.activeCode}
+                            value={activeCode}
                             onChange={(e) => this.activeCodeRadioChange(e)}
                         >
-                            <Radio key={4} value={1}>消费送礼</Radio >
-                            <Radio key={3} value={2}>会员日送礼</Radio >
+                            <Radio key={'1'} value={'1'}>消费送礼</Radio >
+                            <Radio key={'2'} value={'2'}>会员日送礼</Radio >
                         </RadioGroup >
                     </FormItem>
                     <Tooltip title={'仅线下买单支持此场景'} ><Icon type="question-circle" style={{ position: 'relative', top: '-39', left: '284' }} /></Tooltip>
