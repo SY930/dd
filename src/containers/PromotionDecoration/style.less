@@ -767,19 +767,11 @@
 }
 
 .freeGiftSuccessModalImg1 {
-    width: 80%;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 100px;
+    width: 100%;
 }
 
 .freeGiftSuccessModalCon,.blindGiftSuccessModalCon {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 283px;
-    width: 80%;
+    width: 100%;
     background: #fff;
     display: flex;
     flex-direction: column;
@@ -858,6 +850,13 @@
     background: rgba(0, 0, 0, 0.5);
     z-index: 999;
     border-radius: 0 0 28px 28px;
+    .successAlertWrapper{
+        position: absolute;
+        width: 80%;
+        left: 50%;
+        top: 100px;
+        transform: translateX(-50%);
+    }
     .blindGiftSuccessTip{
         font-size: 12px;
         font-weight: bold;

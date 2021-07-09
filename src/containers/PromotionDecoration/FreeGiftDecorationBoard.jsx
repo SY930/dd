@@ -42,7 +42,9 @@ export default class FreeGiftDecorationBoard extends Component {
                 giftListTitleColor = '#AA7246',
                 successTip = '请前往商家公众号查看/使用',
                 isShowGiftListContent = true,
-                isShowCanGetGift = true
+                isShowCanGetGift = true,
+                successBtnColor = '#FF3C54',
+                successBtnTextColor = '#fff',
             },
         } = this.props;
         return (
@@ -77,16 +79,18 @@ export default class FreeGiftDecorationBoard extends Component {
 
                 </div>
                 {this.state.activeTab === '2' ?
-                    <div className={style.freeGiftSuccessModal}>
-                        <img className={style.freeGiftSuccessModalImg1} src={alertBackgroundImage || modalImg1} />
-                        <div className={style.freeGiftSuccessModalCon}>
-                            <div className={style.freeGiftSuccessTip}>{successTip}</div>
-                            <img style={{ width: '80%', marginBottom: '20px' }} src={modalImg2} />
+                    <div className={style.blindGiftSuccessModal}>
+                        <div className={style.successAlertWrapper}>
+                            <img className={style.freeGiftSuccessModalImg1} src={alertBackgroundImage || modalImg1} />
+                            <div className={style.blindGiftSuccessModalCon}>
+                                <div className={style.blindGiftSuccessTip} style={{ fontSize: 20 }}>领取成功!</div>
+                                <div className={style.blindGiftSuccessTip}>{successTip}</div>
+                                <p className={style.blindSuccessBtnColor} style={{ backgroundColor: successBtnColor, color: successBtnTextColor }}>确定</p>
+                            </div>
                         </div>
                     </div>
-                    : null}
-
-
+                    : null
+                }
             </div>
         )
     }
@@ -203,7 +207,8 @@ export default class FreeGiftDecorationBoard extends Component {
             decorationInfo: {
                 successTip = '请前往商家公众号查看/使用',
                 alertBackgroundImage,
-
+                successBtnColor = '#FF3C54',
+                successBtnTextColor = '#fff',
             },
             onChange
         } = this.props;
@@ -225,14 +230,38 @@ export default class FreeGiftDecorationBoard extends Component {
                             </div>
                         </div>
                     </div>
-                    <div>
-                        <span style={{ marginLeft:52,float:'left',color: '#333333', whiteSpace: 'nowrap' }}>引导文案</span>
+                    <div style={{overflow: 'hidden',height: 50, paddingTop: 10}}>
+                        <span style={{ marginLeft:44,float:'left',color: '#333333', whiteSpace: 'nowrap',fontWeight:'bold',fontSize:14 }}>引导文案</span>
                         <div style={{marginLeft:49,float:'left', width: '512px', marginTop: -6 }}>
                             <Input value={successTip} maxLength={30} onChange={this.handleExplainChange} addonAfter={<div>{successTip.length}/30</div>} />
                         </div>
                     </div>
                     
-
+                    <div className={style.sectionWrapper}>
+                        <div style={{ top: 5 }} className={style.label}>按钮样式</div>
+                        <div className={style.inlineRow}>
+                            <span>{SALE_LABEL.k6346bn4}</span>
+                            <div className={style.borderedColorWrapper}>
+                                <WrappedColorPicker
+                                    alpha={100}
+                                    color={successBtnColor}
+                                    onChange={({ color }) => onChange({ key: ['successBtnColor'], value: color })}
+                                    placement="topLeft"
+                                />
+                            </div>
+                        </div>
+                        <div style={{ marginTop: 10 }} className={style.inlineRow}>
+                            <span>{SALE_LABEL.k6346bvg}</span>
+                            <div className={style.borderedColorWrapper}>
+                                <WrappedColorPicker
+                                    alpha={100}
+                                    color={successBtnTextColor}
+                                    onChange={({ color }) => onChange({ key: ['successBtnTextColor'], value: color })}
+                                    placement="topLeft"
+                                />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         )
@@ -259,7 +288,7 @@ export default class FreeGiftDecorationBoard extends Component {
                 <div className={style.freeGiftTab} style={{ margin: '46px 0 0 20px' }}>
                     <Tabs activeKey={activeTab} onChange={this.handelTabChange} className={style.customTabWrapper}  >
                         <TabPane tab="领奖页" key="1">{this.renderSettingPanel()}</TabPane>
-                        <TabPane tab="领取成功页1" key="2">{this.renderSuccessPage()}</TabPane>
+                        <TabPane tab="领取成功页" key="2">{this.renderSuccessPage()}</TabPane>
                     </Tabs>
                 </div>
 

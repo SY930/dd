@@ -31,6 +31,7 @@ export default class BlindBoxDecorationBoard extends Component {
                 bgImg,
                 btnBgColor = '#FF3C54',
                 successBtnColor = '#FF3C54',
+                successBtnTextColor = '#fff',
                 btnColor = '#fff',
                 alertBackgroundImage,
                 successTip = '实物礼品券-ldd×1份',
@@ -84,12 +85,14 @@ export default class BlindBoxDecorationBoard extends Component {
                 </div>
                 {this.state.activeTab === '2' ?
                     <div className={style.blindGiftSuccessModal}>
-                        <img className={style.freeGiftSuccessModalImg1} style={{ top: 50 }} src={alertBackgroundImage || modalImg1} />
-                        <div className={style.blindGiftSuccessModalCon}>
-                            <div className={style.blindGiftSuccessTip} style={{ fontSize: 20 }}>Surprise!</div>
-                            <div className={style.blindGiftSuccessTip} style={{ fontSize: 14 }}>恭喜你获得以下礼品</div>
-                            <div className={style.blindGiftSuccessTip}>{successTip}</div>
-                            <p className={style.blindSuccessBtnColor} style={{ backgroundColor: successBtnColor }}>邀好友拆盲盒享惊喜吧！</p>
+                        <div className={style.successAlertWrapper}>
+                            <img className={style.freeGiftSuccessModalImg1} src={alertBackgroundImage || modalImg1} />
+                            <div className={style.blindGiftSuccessModalCon}>
+                                <div className={style.blindGiftSuccessTip} style={{ fontSize: 20 }}>Surprise!</div>
+                                <div className={style.blindGiftSuccessTip} style={{ fontSize: 14 }}>恭喜你获得以下礼品</div>
+                                <div className={style.blindGiftSuccessTip}>{successTip}</div>
+                                <p className={style.blindSuccessBtnColor} style={{ backgroundColor: successBtnColor, color: successBtnTextColor }}>邀好友拆盲盒享惊喜吧！</p>
+                            </div>
                         </div>
                     </div>
                     : null
@@ -170,6 +173,7 @@ export default class BlindBoxDecorationBoard extends Component {
             decorationInfo: {
                 alertBackgroundImage,
                 successBtnColor = '#FF3C54',
+                successBtnTextColor = '#fff',
             },
             onChange
         } = this.props;
@@ -204,6 +208,17 @@ export default class BlindBoxDecorationBoard extends Component {
                                 />
                             </div>
                         </div>
+                        <div style={{ marginTop: 10 }} className={style.inlineRow}>
+                            <span>{SALE_LABEL.k6346bvg}</span>
+                            <div className={style.borderedColorWrapper}>
+                                <WrappedColorPicker
+                                    alpha={100}
+                                    color={successBtnTextColor}
+                                    onChange={({ color }) => onChange({ key: ['successBtnTextColor'], value: color })}
+                                    placement="topLeft"
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -222,7 +237,7 @@ export default class BlindBoxDecorationBoard extends Component {
                 <div className={style.freeGiftTab} style={{ margin: '46px 0 0 20px' }}>
                     <Tabs activeKey={activeTab} onChange={this.handelTabChange} className={style.customTabWrapper}  >
                         <TabPane tab="领奖页" key="1">{this.renderSettingPanel()}</TabPane>
-                        <TabPane tab="参与成功页1" key="2">{this.renderSuccessPage()}</TabPane>
+                        <TabPane tab="参与成功页" key="2">{this.renderSuccessPage()}</TabPane>
                     </Tabs>
                 </div>
             </div>
