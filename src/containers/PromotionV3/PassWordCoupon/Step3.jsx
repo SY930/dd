@@ -3,7 +3,6 @@ import { Modal, Alert, message, Switch, Form } from 'antd';
 import BaseForm from 'components/common/BaseForm';
 import { formKeys32, formItems3, formItemLayout } from './Common';
 import Lottery from '../Camp/PasswordBoxLottery';
-import OpenLottery from '../Camp/BlindBoxLottery/OpenLottery';
 import Share from '../Camp/Share';
 import css from './style.less';
 
@@ -20,20 +19,15 @@ class Step3 extends Component {
     }
 
     onChange = (key, value) => {
-        
+        console.log(key,value,'keyvalue-----------1')
     }
 
     /** formItems 重新设置 */
     resetFormItems() {
         const render = d => d()(<Lottery form={this.props.form} decorator={d} />);
-        const OpenRender = d => d()(<OpenLottery decorator={d} />);
-        // const shareRender = d => d()(<Share decorator={d} />);
-        const { lottery, ...other } = formItems3;
+        const { lottery } = formItems3;
         return {
-            ...other,
-            // openLottery: {...openLottery, render: OpenRender},
             lottery: { ...lottery, render },
-            // shareInfo: { ...shareInfo, render: shareRender },
         };
     }
 

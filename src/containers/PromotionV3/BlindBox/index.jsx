@@ -439,6 +439,7 @@ class BlindBox extends Component {
             })
         }
         if(current === 3) {
+            console.log(form.getFieldsValue(),'form.getFieldsValue()form.getFieldsValue()form.getFieldsValue()')
             this.setState({
                 formData3: form.getFieldsValue(),
             })

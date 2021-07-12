@@ -528,9 +528,9 @@ class SpecialPromotionDetail extends React.Component {
                     <Col span={24}>
                         {this.renderGiftInfoTable(list, way)}
                     </Col>
-                    <Col style={{ marginTop: 10 }} span={18}>
+                    {/* <Col style={{ marginTop: 10 }} span={18}>
                             {this.renderPointsTable()}
-                        </Col>
+                        </Col> */}
                     {this.renderSearch()}
                     <Col span={24}>
                         {this.renderActivityInfoTable()}
@@ -1172,6 +1172,16 @@ class SpecialPromotionDetail extends React.Component {
                     return (this.state.pageNo - 1) * this.state.pageSize + Number(index + 1);
                 }
             },
+            eventWay == 83 && ({
+                title: '口令',
+                dataIndex: 'password',
+                key: 'password',
+                className: 'TableTxtCenter',
+                width: 100,
+                render:(text)=> {
+                    return (<Tooltip title={text || ''}>{text}</Tooltip>)
+                }
+            }),
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.d1kgf6ij82123282)}`,
                 dataIndex: 'customerID',

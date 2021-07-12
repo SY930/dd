@@ -143,48 +143,21 @@ const formKeys22 = ['joinCount', 'defaultCardType','autoRegister'];
 /**
  * formItem3
  */
-const lottDefVal = { id: '1', needShow: 0, giftOdds: '', giftTotalCount:'',presentValue: '', isPoint: false, isTicket: true, presentType: '1', giftList: [{ id: '001', effectType: '1' }] };
-const openlottDefVal = { id: '1', needShow: 1, presentValue: '', isPoint: false, isTicket: true, presentType: '1', giftList: [{ id: '001', effectType: '1' }] };
-const shareDefVal = { type: '83', shareTitle: 'duang!被一个盲盒砸中，看你手气了~', shareSubtitle: '', restaurantShareImagePath: '', shareImagePath: '' };
+const lottDefVal = { id: '1',password:'', giftTotalCount:'', presentValue: '', presentType: '1', giftList: [{ id: '001', effectType: '1' }] };
 
 const formItems3 = {
-    needShow: {
-        type: 'custom',
-        render: () => (<p/>),
-        wrapperCol: { span: 18 },
-    },
-    openLottery: {
-        type: 'custom',
-        // label: '11',
-        render: () => (<p/>),
-        defaultValue: openlottDefVal,
-        wrapperCol: { span: 18 },
-    },
-    eventImagePath: {
-        type: 'custom',
-        render: () => (<p/>),
-        defaultValue: '',
-        wrapperCol: { span: 18 },
-    },
     lottery: {
         type: 'custom',
         render: () => (<p/>),
         defaultValue: [lottDefVal],
         wrapperCol: { span: 18 },
     },
-    shareInfo: {
-        type: 'custom',
-        render: () => (<p/>),
-        defaultValue: shareDefVal,
-        wrapperCol: { span: 18 },
-    },
 };
-const formKeys31 = ['needShow', 'openLottery', 'eventImagePath', 'lottery', 'shareInfo'];
-const formKeys32 = ['needShow', 'eventImagePath', 'lottery', 'shareInfo'];
+const formKeys32 = ['lottery'];
 
 
 export {
     formItems1, imgURI, formKeys1, href, formItemLayout,
     TF, DF,
-    formKeys21, formKeys22, formItems2, formKeys31, formKeys32, formItems3, keys1, keys2,
+    formKeys21, formKeys22, formItems2, formKeys32, formItems3, keys1, keys2,
 }

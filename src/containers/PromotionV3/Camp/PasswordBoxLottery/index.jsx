@@ -36,7 +36,7 @@ class Lottery extends Component {
         const list = [...value];
         const len = value.length;
         const id = `${len + 1}`; // 根据索引生成id，方便回显时遍历
-        list.push({ id, password: '', giftTotalCount:'',presentValue: '', isPoint: false, isTicket: true, presentType: '1', giftList: [{ id: '001', effectType: '1' }] });
+        list.push({ id, password: '', giftTotalCount:'',presentValue: '', presentType: '1', giftList: [{ id: '001', effectType: '1' }] });
         this.setState({ tabKey: id });
         onChange(list);
     }
@@ -60,23 +60,16 @@ class Lottery extends Component {
         const list = [...value];
         const item = list[tabKey - 1];
         list[tabKey - 1] = { ...item, ...data };
+        console.log(list,'list-------onAllchange')
         onChange(list);
     }
-    onGiftOddsChange = ({ value }) => {
+    onGiftOddsChange = ({ target }) => {
+        const { value } = target;
         this.onAllChange({ password: value });
     }
     onGiftTotalCountChange = ({ target }) => {
         const { value } = target;
         this.onAllChange({ giftTotalCount: value ? Number(value) : '' });
-    }
-    onPointChange = ({ target }) => {
-        const { checked } = target;
-        // 
-        this.onAllChange({ isPoint: checked });
-    }
-    onTicketChange = ({ target }) => {
-        const { checked } = target;
-        this.onAllChange({ isTicket: checked });
     }
     onTypeChange = ({ target }) => {
         const { value } = target;
@@ -90,11 +83,13 @@ class Lottery extends Component {
         this.onAllChange({ cardTypeID });
     }
     onGiftChange = (giftList) => {
+        console.log(giftList,'giftList-------------')
         this.onAllChange({ giftList });
     }
     render() {
         const { tabKey, cardList } = this.state;
         const { value = [], decorator } = this.props;
+        console.log(value,'value-------------------passwordBoxLottey')
         // if(!value[0]){ return null}
         const { length } = value;
         const disable = value[0] && value[0].userCount > 0;    // 如果被用了，不能编辑
@@ -130,22 +125,20 @@ class Lottery extends Component {
                                                 decorator({
                                                     key: 'password' + i,
                                                     initialValue: x.password||undefined,
-                                                    onChange: this.onGiftOddsChange,
                                                     rules: [{
                                                         required: true,
                                                         validator: (rule, v, cb) => {
-                                                            
-                                                            // if (!v || (v.number < 0.01)) {
-                                                            //     return cb('奖品中奖概率之和应为0.01~100%');
-                                                            // } else if (v.number > 100) {
-                                                            //     return cb('奖品中奖概率之和应为0.01~100%');
-                                                            // }
-                                                            // if (this.count > 100) {
-                                                            //     return cb('奖品中奖概率之和应为0.01~100%');
-                                                            // }
-                                                            // cb();
+                                                            if(!v){
+                                                                return cb('请输入口令');
+                                                            }
+                                                            if (v && v.length > 10) {
+                                                                return cb('最多可输入10个字符');
+                                                            }
+                                                            cb();
                                                         },
                                                     }],
+                                                    onChange: this.onGiftOddsChange,
+
                                                 })(
                                                     <Input
                                                         placeholder="请输入口令"
@@ -177,21 +170,21 @@ class Lottery extends Component {
                                         </FormItem>
                                     </li>
                                     
-                                    {x.isTicket &&
-                                        <li>
-                                            <p className={css.ticketBox}>
-                                                {/* <RadioGroup disabled={disable} value={x.presentType} onChange={this.onTypeChange}>
-                                                    <RadioButton value="1">独立优惠券</RadioButton>
-                                                    <RadioButton value="4">券包</RadioButton>
-                                                </RadioGroup> */}
-                                            </p>
-                                            <div style={{ position: "relative" }}>
-                                                {x.presentType === '1' ?
-                                                    <MutliGift value={gifts} onChange={this.onGiftChange} /> :null
-                                                }
-                                            </div>
-                                        </li>
-                                    }
+
+                                    <li>
+                                        <p className={css.ticketBox}>
+                                            {/* <RadioGroup disabled={disable} value={x.presentType} onChange={this.onTypeChange}>
+                                                <RadioButton value="1">独立优惠券</RadioButton>
+                                                <RadioButton value="4">券包</RadioButton>
+                                            </RadioGroup> */}
+                                        </p>
+                                        <div style={{ position: "relative" }}>
+                                            {x.presentType === '1' ?
+                                                <MutliGift value={gifts} onChange={this.onGiftChange} /> :null
+                                            }
+                                        </div>
+                                    </li>
+
                                     <p className={disable ? css.disBox: ''}></p>
                                 </ul>
                             </TabPane>)

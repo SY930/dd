@@ -22,8 +22,7 @@ class PassWordCoupon extends Component {
         groupCardTypeList: [],
         mpList: [],
         settleUnitInfoList: [],
-        needShow: 0,
-        authLicenseData: {}
+        authLicenseData: {},
     };
     componentDidMount() {
         getGroupCardTypeList().then(list => {
@@ -65,7 +64,7 @@ class PassWordCoupon extends Component {
     }
 
     setData4Step2(data) {
-        let { mpIDList, presentValue, settleUnitID, countCycleDays, partInTimes, defaultCardType, autoRegister, userCount } = data;
+        let { mpIDList, presentValue, settleUnitID, countCycleDays, partInTimes, defaultCardType, autoRegister ,userCount} = data;
         // 参与条件
         let presentValue1 = 0;
         let presentValue2 = 0;
@@ -89,23 +88,23 @@ class PassWordCoupon extends Component {
                 countCycleDays
             }
         }
-        return { mpIDList, presentValue1, presentValue2, settleUnitID: (settleUnitID | 0), joinCount, defaultCardType, autoRegister: `${autoRegister}`, userCount };
+        return { mpIDList, presentValue1, presentValue2, settleUnitID: (settleUnitID | 0), joinCount, defaultCardType, autoRegister: `${autoRegister}`,userCount };
     }
     setData4Step3(data, gifts) {
         const { eventImagePath, shareTitle, shareSubtitle, shareImagePath, restaurantShareImagePath, userCount} = data;
 
-        let needShow = gifts.some(item => item.needShow > 0) ? 1 : 0
-        this.setState({needShow})
+        // let needShow = gifts.some(item => item.needShow > 0) ? 1 : 0
+        // this.setState({needShow})
 
         const lottery = [];
-        gifts.filter(item => item.needShow == 0).forEach((x, i) => {
-            const { presentType, giftOdds, sortIndex,giftTotalCount } = x;
+        gifts.forEach((x, i) => {
+            const { presentType, password, sortIndex,giftTotalCount } = x;
             const index = sortIndex - 1;
             const type = `${presentType}`;  // 组件要string类型的
-            let newItem = { isPoint: false, isTicket: false, presentType: '1', giftList: [],  bagList: [], ...lottery[index] };
+            let newItem = { presentType: '1', giftList: [],  bagList: [], ...lottery[index] };
             if(presentType === 2) {   // 积分
                 const { presentValue, cardTypeID = '', ...others } = x;
-                newItem = { ...others, ...newItem, presentValue, cardTypeID, isPoint: true };
+                newItem = { ...others, ...newItem, presentValue, cardTypeID };
             }
             // 礼品
             if(presentType === 1) {
@@ -124,49 +123,49 @@ class PassWordCoupon extends Component {
                     etype = '1';
                 }
                 const giftList = [...newGiftList, { ...others, id: giftID, giftID, effectType: `${etype}`, giftEffectTimeHours: `${hours}`, countType, rangeDate }];
-                newItem = { ...newItem, giftList, isTicket: true, presentType: type };
+                newItem = { ...newItem, giftList, presentType: type };
             }
-            lottery[index] = { id: `${sortIndex}`, giftOdds, giftTotalCount,userCount, ...newItem };
+            lottery[index] = { id: `${sortIndex}`, password, giftTotalCount,userCount, ...newItem };
         });
 
         // 明盒礼品
-        let openLottery = {};
-        gifts.filter(item => item.needShow > 0).forEach((x, i) => {
-            const { presentType, sortIndex } = x;
-            const type = `${presentType}`;  // 组件要string类型的
-            let newItem = { isPoint: false, isTicket: false, presentType: '1', giftList: [], ...openLottery};
-            if(presentType == 2) {   // 积分
-                const { presentValue, ...others } = x;
-                newItem = { ...others, ...newItem, presentValue, isPoint: true };
-            }
-            // 礼品
-            if(presentType === 1) {
-                const newGiftList = newItem.giftList;
-                const { effectType, effectTime, validUntilDate, giftEffectTimeHours: hours, giftID, ...others } = x;
-                let rangeDate = [];
-                if(effectTime) {
-                    const st = effectTime != '0' ? moment(effectTime, DF) : moment(new Date());
-                    const et = validUntilDate != '0' ? moment(validUntilDate, DF) : moment(new Date());
-                    rangeDate = [ st, et ];
-                }
-                let countType = '0';
-                let etype = effectType;
-                if(effectType === 3) {
-                    countType = '1';
-                    etype = '1';
-                }
-                const giftList = [...newGiftList, {...others, id: giftID, giftID, effectType: `${etype}`, giftEffectTimeHours: `${hours}`, countType, rangeDate }];
-                newItem = { ...newItem, giftList, isTicket: true, presentType: type };
-            }
-            openLottery = { id: `${sortIndex}`, userCount, ...newItem };
-        });
+        // let openLottery = {};
+        // gifts.filter(item => item.needShow > 0).forEach((x, i) => {
+        //     const { presentType, sortIndex } = x;
+        //     const type = `${presentType}`;  // 组件要string类型的
+        //     let newItem = { isPoint: false, isTicket: false, presentType: '1', giftList: [], ...openLottery};
+        //     if(presentType == 2) {   // 积分
+        //         const { presentValue, ...others } = x;
+        //         newItem = { ...others, ...newItem, presentValue, isPoint: true };
+        //     }
+        //     // 礼品
+        //     if(presentType === 1) {
+        //         const newGiftList = newItem.giftList;
+        //         const { effectType, effectTime, validUntilDate, giftEffectTimeHours: hours, giftID, ...others } = x;
+        //         let rangeDate = [];
+        //         if(effectTime) {
+        //             const st = effectTime != '0' ? moment(effectTime, DF) : moment(new Date());
+        //             const et = validUntilDate != '0' ? moment(validUntilDate, DF) : moment(new Date());
+        //             rangeDate = [ st, et ];
+        //         }
+        //         let countType = '0';
+        //         let etype = effectType;
+        //         if(effectType === 3) {
+        //             countType = '1';
+        //             etype = '1';
+        //         }
+        //         const giftList = [...newGiftList, {...others, id: giftID, giftID, effectType: `${etype}`, giftEffectTimeHours: `${hours}`, countType, rangeDate }];
+        //         newItem = { ...newItem, giftList, isTicket: true, presentType: type };
+        //     }
+        //     openLottery = { id: `${sortIndex}`, userCount, ...newItem };
+        // });
 
-        const defVal = { id: '1', needShow: 1, presentValue: '', isPoint: false, isTicket: true, presentType: '1', giftList: [{ id: '001', effectType: '1' }] };
-        openLottery = JSON.stringify(openLottery) == '{}' ? defVal : openLottery
+        // const defVal = { id: '1', presentValue: '',  presentType: '1', giftList: [{ id: '001', effectType: '1' }] };
+        // openLottery = JSON.stringify(openLottery) == '{}' ? defVal : openLottery
 
-        const defaultShareTitle = 'duang!被一个盲盒砸中，看你手气了~';
-        let shareInfo = { type: '83', shareTitle: shareTitle || defaultShareTitle, shareSubtitle, restaurantShareImagePath, shareImagePath }
-        return { eventImagePath, openLottery, lottery, shareInfo, userCount };
+        // const defaultShareTitle = 'duang!被一个盲盒砸中，看你手气了~';
+        // let shareInfo = { type: '83', shareTitle: shareTitle || defaultShareTitle, shareSubtitle, restaurantShareImagePath, shareImagePath }
+        return { lottery,userCount };
     }
 
     /***
@@ -176,6 +175,7 @@ class PassWordCoupon extends Component {
     onGoStep2 = () => {
         const { form } = this.state;
         form.validateFields((e, v) => {
+            console.log(v,'v1111111111111')
             if (!e) {
                 const formData1 = { ...v };
                 this.setState({ formData1 });
@@ -188,6 +188,7 @@ class PassWordCoupon extends Component {
     onGoStep3 = () => {
         const { form } = this.state;
         form.validateFields((e, v) => {
+            console.log(v,'v------------')
             if (!e) {
                 this.setState({ formData2: v });
                 this.onGoNext();
@@ -197,22 +198,16 @@ class PassWordCoupon extends Component {
 
     /* 第3步表单提交数据 */
     onGoDone = () => {
-        const { form, formData2, needShow} = this.state;
+        const { form, formData2 } = this.state;
         console.log(form,'form---------------')
         const { defaultCardType } = formData2;
+        console.log(this.state.form.validateFields,'function')
         form.validateFields((e, v) => {
             console.log(e,v,'evevevev')
             if (!e) {
-                const { eventImagePath, openLottery, lottery } = v;
-                const isChecked = lottery.every(x=>{
-                    return x.isPoint || x.isTicket;
-                });
-                if(!isChecked) {
-                    message.error('赠送积分或优惠券，必选一项');
-                    return;
-                }
+                const { lottery } = v;
                 const isGift = lottery.every(x=>{
-                    if(x.isTicket && x.presentType === '1') {
+                    if(x.presentType === '1') {
                         return x.giftList.every(g=>{
                             if(g.effectType === '1'){
                                 return g.giftID && g.giftCount && g.giftValidUntilDayCount;
@@ -226,23 +221,6 @@ class PassWordCoupon extends Component {
                 if(!isGift) {
                     message.error('礼品项必填');
                     return;
-                }
-                
-                if(needShow){
-                    let {giftList = [], isTicket, isPoint} = openLottery
-                    if(isTicket){
-                        let isGiftOpen = giftList.every(g=>{
-                            if(g.effectType === '1'){
-                                return g.giftID && g.giftCount && g.giftValidUntilDayCount;
-                            } else {
-                                return g.giftID && g.giftCount && g.rangeDate;
-                            }
-                        })
-                        if(!isGiftOpen && giftList.length > 0) {
-                            message.error('明盒礼品项必填');
-                            return;
-                        }
-                    }
                 }
                 const formData3 = this.setStep3Data(v);
                 this.onSubmit(formData3);
@@ -258,9 +236,8 @@ class PassWordCoupon extends Component {
         const { eventRange, ...others1, } = formData1;
         const newEventRange = this.formatEventRange(eventRange);
         const step2Data = this.setStep2Data();
-        const { gifts,  eventImagePath, ...others3,} = formData3;
-        const newEventImagePath = eventImagePath ? eventImagePath.url ? eventImagePath.url : eventImagePath : ''
-        let event = { ...others1, ...others3, ...newEventRange, ...step2Data, eventWay: '83', eventImagePath: newEventImagePath };
+        const { gifts, ...others3,} = formData3;
+        let event = { ...others1, ...others3, ...newEventRange, ...step2Data, eventWay: '83' };
         if(id) {
             const itemID = id;
             const allData = { event: {...event, itemID}, gifts };
@@ -307,75 +284,35 @@ class PassWordCoupon extends Component {
     }
 
     setStep3Data(formData) {
-        let {needShow, formData2} = this.state
+        let {formData2} = this.state
         // 注册卡类项  加入到积分礼品项中
-        let { lottery, eventImagePath, openLottery, shareInfo } = formData;
+        let { lottery } = formData;
         const gifts = [];   // 后端要的专属key名
-        // 盲盒礼品
         lottery.forEach((x, i) => {
-            const { giftOdds, giftTotalCount,isPoint, isTicket, presentType, giftList, ...others } = x;
-            const sortIndex = i + 1;       // 后端要的排序
-            const rawObj =  { sortIndex, giftOdds, giftTotalCount,presentType, needShow: 0 };    // 基础数据
-            if(isPoint){
-                const { presentValue } = x;
-                const obj = { ...others, ...rawObj,  presentType: '2', presentValue };
-                gifts.push(obj);
-            }
-            if(isTicket){
-                const { giftList } = x;
-                // 1 独立优惠券
-                if(presentType === '1') {
-                    giftList.forEach(x => {
-                        const { rangeDate, countType, effectType: etype, giftTotalCount, ...others } = x;
-                        const rangeObj = this.formatRangeDate(rangeDate);
-                        let {effectTime, validUntilDate} = rangeObj
-                        let effectType = etype;
-                        if(etype === '1' && countType === '1') {
-                            effectType = '3';
-                        }
-                        if(etype != '2'){
-                            effectTime = '0'; 
-                            validUntilDate = '0';
-                        }
-                        const obj = { ...others, ...rawObj, ...rangeObj, effectType, effectTime, validUntilDate, countType };
-                        gifts.push(obj);
-                    });
-                }
+            const { password, giftTotalCount, presentType, giftList, ...others } = x;
+            const sortIndex = i + 1;  
+            const rawObj =  { sortIndex, password, giftTotalCount,presentType };    // 基础数据
+
+            if(presentType === '1') {
+                giftList.forEach(x => {
+                    const { rangeDate, countType, effectType: etype, giftTotalCount, ...others } = x;
+                    const rangeObj = this.formatRangeDate(rangeDate);
+                    let {effectTime, validUntilDate} = rangeObj
+                    let effectType = etype;
+                    if(etype === '1' && countType === '1') {
+                        effectType = '3';
+                    }
+                    if(etype != '2'){
+                        effectTime = '0'; 
+                        validUntilDate = '0';
+                    }
+                    const obj = { ...others, ...rawObj, ...rangeObj, effectType, effectTime, validUntilDate, countType };
+                    gifts.push(obj);
+                });
             }
         });
-        // 明盒礼品
-        if(needShow){
-            const { isPoint, isTicket, presentType, giftList, ...others } = openLottery;
-            const rawObj =  { presentType, needShow: 1 };    // 基础数据
-            if(isPoint){
-                const { presentValue } = openLottery;
-                const obj = { ...rawObj, ...others, presentType: '2', presentValue };
-                gifts.push(obj);
-            }
-            if(isTicket){
-                const { giftList } = openLottery;
-                // 1 独立优惠券
-                if(presentType === '1') {
-                    giftList.forEach(x => {
-                        const { rangeDate, countType, effectType: etype, giftTotalCount, ...others } = x;
-                        const rangeObj = this.formatRangeDate(rangeDate);
-                        let {effectTime, validUntilDate} = rangeObj
-                        let effectType = etype;
-                        if(etype === '1' && countType === '1') {
-                            effectType = '3';
-                        }
-                        if(etype != '2'){
-                            effectTime = '0'; 
-                            validUntilDate = '0';
-                        }
-                        const obj = { ...rawObj, ...rangeObj, ...others, effectType, effectTime, validUntilDate };
-                        gifts.push(obj);
-                    });
-                }
-            }
-        }
         
-        return { eventImagePath, gifts, ...shareInfo };
+        return { gifts };
     }
 
     // 
@@ -402,6 +339,7 @@ class PassWordCoupon extends Component {
     
     /** 得到form, 根据step不同，获得对应的form对象 */
     onSetForm = (form) => {
+        console.log(form,'form------------1')
         this.setState({ form });
     }
     
@@ -418,6 +356,7 @@ class PassWordCoupon extends Component {
             })
         }
         if(current === 3) {
+            console.log(form.getFieldsValue(),'form.getFieldsValue()form.getFieldsValue()form.getFieldsValue()')
             this.setState({
                 formData3: form.getFieldsValue(),
             })
@@ -447,7 +386,7 @@ class PassWordCoupon extends Component {
         return { 1: step1, 2: step2, 3: step3 }[current];
     }
     render() {
-        const { current, formData1, formData2, formData3, form, needShow, userCount } = this.state;
+        const { current, formData1, formData2, formData3, form,userCount } = this.state;
         const { groupCardTypeList, mpList, settleUnitInfoList } = this.state;
         const footer = this.renderFooter(current);
         return (
@@ -463,7 +402,7 @@ class PassWordCoupon extends Component {
                 <ul className={css.mainBox}>
                     <li className={css.left}>
                         <h3 className={css.logo}>口令领券</h3>
-                        <p className={css.gray}>通过“口令密码”获取优惠券，提升用户活跃度</p>
+                        <p className={css.gray}>用户输入口令密码后，可获得一张优惠券</p>
                     </li>
                     <li className={css.right}>
                         <div className={css.stepBox}>
