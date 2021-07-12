@@ -65,23 +65,12 @@ class PassWordCoupon extends Component {
     }
 
     setData4Step2(data) {
-        let { mpIDList, participateRule, presentValue, settleUnitID, countCycleDays, partInTimes, defaultCardType, autoRegister, userCount } = data;
+        let { mpIDList, presentValue, settleUnitID, countCycleDays, partInTimes, defaultCardType, autoRegister, userCount } = data;
         // 参与条件
         let presentValue1 = 0;
         let presentValue2 = 0;
-        if(participateRule == '0'){
-            presentValue1 = 0;
-            presentValue2 = 0;
-            settleUnitID = ''
-        }else if(participateRule == '1'){
-            presentValue1 = presentValue
-            presentValue2 = 0
-            settleUnitID = ''
-        }else{
-            presentValue1 = 0
-            presentValue2 = presentValue
-            settleUnitID = settleUnitID
-        }
+        settleUnitID = ''
+        
         // 参与次数
         let joinCount = {}
         if(partInTimes == '0' && countCycleDays == '0'){
@@ -100,7 +89,7 @@ class PassWordCoupon extends Component {
                 countCycleDays
             }
         }
-        return { mpIDList, participateRule: `${participateRule}`, presentValue1, presentValue2, settleUnitID: (settleUnitID | 0), joinCount, defaultCardType, autoRegister: `${autoRegister}`, userCount };
+        return { mpIDList, presentValue1, presentValue2, settleUnitID: (settleUnitID | 0), joinCount, defaultCardType, autoRegister: `${autoRegister}`, userCount };
     }
     setData4Step3(data, gifts) {
         const { eventImagePath, shareTitle, shareSubtitle, shareImagePath, restaurantShareImagePath, userCount} = data;
@@ -109,7 +98,6 @@ class PassWordCoupon extends Component {
         this.setState({needShow})
 
         const lottery = [];
-        // 盲盒礼品数据
         gifts.filter(item => item.needShow == 0).forEach((x, i) => {
             const { presentType, giftOdds, sortIndex,giftTotalCount } = x;
             const index = sortIndex - 1;
@@ -210,8 +198,10 @@ class PassWordCoupon extends Component {
     /* 第3步表单提交数据 */
     onGoDone = () => {
         const { form, formData2, needShow} = this.state;
+        console.log(form,'form---------------')
         const { defaultCardType } = formData2;
         form.validateFields((e, v) => {
+            console.log(e,v,'evevevev')
             if (!e) {
                 const { eventImagePath, openLottery, lottery } = v;
                 const isChecked = lottery.every(x=>{
@@ -262,6 +252,7 @@ class PassWordCoupon extends Component {
 
     // 提交
     onSubmit = (formData3) => {
+        debugger
         const { formData1 } = this.state;
         const { id } = this.props;
         const { eventRange, ...others1, } = formData1;
@@ -295,21 +286,9 @@ class PassWordCoupon extends Component {
     // 提交前数据
     setStep2Data() {
         const { formData2 } = this.state;
-        const { mpIDList, participateRule, presentValue1, presentValue2, settleUnitID, joinCount, defaultCardType, autoRegister } = formData2;
+        const { mpIDList, presentValue1, presentValue2, settleUnitID, joinCount, defaultCardType, autoRegister } = formData2;
         // 参与条件
         let parm = {}
-        if(participateRule == '0'){
-            parm = {}
-        }else if(participateRule == '1'){
-            parm = {
-                presentValue: presentValue1
-            }
-        }else{
-            parm = {
-                presentValue: presentValue2,
-                settleUnitID
-            }
-        }
         // 参与次数
         let partInTimes = 0;
         let countCycleDays = 0;
@@ -324,7 +303,7 @@ class PassWordCoupon extends Component {
             countCycleDays = joinCount.countCycleDays;
         }
         
-        return { participateRule, ...parm, partInTimes, countCycleDays, defaultCardType };
+        return { ...parm, partInTimes, countCycleDays, defaultCardType };
     }
 
     setStep3Data(formData) {
@@ -417,9 +396,9 @@ class PassWordCoupon extends Component {
         return { eventStartDate, eventEndDate };
     }
 
-    getNeedShow = (key) => {
-        this.setState({needShow: key})
-    }
+    // getNeedShow = (key) => {
+    //     this.setState({needShow: key})
+    // }
     
     /** 得到form, 根据step不同，获得对应的form对象 */
     onSetForm = (form) => {
@@ -484,7 +463,7 @@ class PassWordCoupon extends Component {
                 <ul className={css.mainBox}>
                     <li className={css.left}>
                         <h3 className={css.logo}>口令领券</h3>
-                        <p className={css.gray}>拆未知礼盒，增加猎奇趣味</p>
+                        <p className={css.gray}>通过“口令密码”获取优惠券，提升用户活跃度</p>
                     </li>
                     <li className={css.right}>
                         <div className={css.stepBox}>
@@ -517,9 +496,8 @@ class PassWordCoupon extends Component {
                                 form={form}
                                 getForm={this.onSetForm}
                                 formData={formData3}
-                                needShow={needShow}
                                 // userCount={userCount}
-                                getNeedShow={this.getNeedShow}
+                                // getNeedShow={this.getNeedShow}
                             />
                         }
                     </li>

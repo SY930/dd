@@ -130,7 +130,7 @@ const formItems2 = {
     },
     autoRegister: {
         type: 'radio',
-        label: '注册方式',
+        label: '参加活动成为会员',
         options: regOpts,
         defaultValue: '1',
     },
@@ -139,7 +139,7 @@ const formItems2 = {
 const keys1 = ['presentValue1'];
 const keys2 = ['presentValue2', 'settleUnitID'];
 const formKeys21 = ['participateRule']
-const formKeys22 = ['joinCount', 'defaultCardType'];
+const formKeys22 = ['joinCount', 'defaultCardType','autoRegister'];
 /**
  * formItem3
  */

@@ -10,22 +10,22 @@ class Step2 extends Component {
     /* 页面需要的各类状态属性 */
     state = {
         groupCardTypeList: [],     // 选中的品牌，用来过滤店铺
-        newFormKeys: [...formKeys21, ...formKeys22],
+        newFormKeys: [...formKeys22],
     };
 
-    onChange = (key, value) => {
-        if(key === 'participateRule') {
-            if(value == '0'){
-                this.setState({newFormKeys: [...formKeys21, ...formKeys22]})
-            }
-            if(value == '1'){
-                this.setState({newFormKeys: [...formKeys21, ...keys1, ...formKeys22]})
-            }
-            if(value == '2'){
-                this.setState({newFormKeys: [...formKeys21, ...keys2, ...formKeys22]})
-            }
-        }
-    }
+    // onChange = (key, value) => {
+    //     if(key === 'participateRule') {
+    //         if(value == '0'){
+    //             this.setState({newFormKeys: [...formKeys21, ...formKeys22]})
+    //         }
+    //         if(value == '1'){
+    //             this.setState({newFormKeys: [...formKeys21, ...keys1, ...formKeys22]})
+    //         }
+    //         if(value == '2'){
+    //             this.setState({newFormKeys: [...formKeys21, ...keys2, ...formKeys22]})
+    //         }
+    //     }
+    // }
     getGroupCardTypeOpts() {
         const { groupCardTypeList = [] } = this.props;
         return groupCardTypeList.map(x => {
@@ -52,7 +52,7 @@ class Step2 extends Component {
         let {formData} = this.props
         let {userCount} = formData
         const disable = (userCount > 0);
-        const { defaultCardType, mpIDList, joinCount, settleUnitID, participateRule, ...other } = formItems2;
+        const { defaultCardType, mpIDList, joinCount, settleUnitID, ...other } = formItems2;
         const render = d => d()(<TimeLimit decorator={d} />);
         const mpOptions = this.getMpOpts();
         const mpRender = d => d()(<MpList options={mpOptions} decorator={d} />);
@@ -61,7 +61,7 @@ class Step2 extends Component {
         return {
             ...other,
             mpIDList: {...mpIDList, render: mpRender},
-            participateRule: {...participateRule, disabled: disable},
+            // participateRule: {...participateRule, disabled: disable},
             joinCount: {...joinCount, render},
             defaultCardType: {...defaultCardType, options},
             settleUnitID: {...settleUnitID, options: settleOptions},
