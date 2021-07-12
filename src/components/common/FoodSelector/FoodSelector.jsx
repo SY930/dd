@@ -32,7 +32,7 @@ export default class FoodSelector extends Component {
     render() {
         const { showModal } = this.state;
         const {
-            value,
+            value = [],
             mode,
             allBrands = [],
             allCategories = [],

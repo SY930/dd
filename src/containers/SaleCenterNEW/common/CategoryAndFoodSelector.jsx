@@ -105,7 +105,6 @@ class CategoryAndFoodSelector extends Component {
         if (singleDish) {
             if (priceLst.length !== thispriceLst.length) {
                 console.log('getDishesInfoFromPriceOrScopeList return componentWillReceiveProps', getDishesInfoFromPriceOrScopeList(priceLst))
-                //debuggger
                 const value = getDishesInfoFromPriceOrScopeList(priceLst).dishes
                 this.setState({
                     dishes: value
@@ -220,7 +219,6 @@ class CategoryAndFoodSelector extends Component {
         const {
             singleDish,
         } = this.props
-
         this.setState({
             dishes: value,
             excludeDishes: [],
@@ -347,7 +345,17 @@ class CategoryAndFoodSelector extends Component {
         if (this.props.dishOnly) {
             if (singleDish) {
                 return (
-                    <BtnFoodSelector
+                    // <BtnFoodSelector
+                    //     mode="dish"
+                    //     placeholder={`${dishLabel2}`}
+                    //     allDishes={dishes}
+                    //     allCategories={categories}
+                    //     allBrands={brands}
+                    //     value={this.state.dishes}
+                    //     priceLst={this.state.singlePrice}
+                    //     onChange={this.handleDishChange}
+                    // />
+                    <FoodSelector
                         mode="dish"
                         placeholder={`${dishLabel2}`}
                         allDishes={dishes}

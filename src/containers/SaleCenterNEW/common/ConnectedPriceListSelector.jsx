@@ -55,6 +55,7 @@ class ConnectedPriceListSelector extends Component {
                 background={this.props.background}
                 onChangeFlag={this.props.onChangeFlag}
                 singleDish={this.props.singleDish}
+                dishLabel={this.props.dishLabel || ''}
             />
         )
     }

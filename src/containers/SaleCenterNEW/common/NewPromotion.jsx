@@ -87,7 +87,6 @@ class NewPromotion extends React.Component {
             validCycle, cityLst, brandIDLst, orgIDLst, shopIDLst, excludedShopIDLst,
             orderTypeLst, channelLst, crmLevelLst, foodScopeType, ruleJson, defaultRun,
             maintenanceLevel, usageMode, shopID, foodRuleList, birthdayLimit, cardBalanceLimitType = 0 } = opts;
-        
         const promotionInfo = {
             master: {
                 groupID,
@@ -115,7 +114,7 @@ class NewPromotion extends React.Component {
                 crmLevelLst,
                 foodScopeType,
                 sharedPromotionIDLst: sharedPromotionIDLst.map(v => v.promotionIDStr || v.sharedIDStr).join(','),
-                ruleJson: JSON.stringify(ruleJson),
+                ruleJson: ruleJson ? JSON.stringify(ruleJson) : '',
                 defaultRun,
                 roleIDLst,
                 subjectType,
