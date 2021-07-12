@@ -355,6 +355,7 @@ class ReturnGiftDetailInfo extends React.Component {
     }
     renderPromotionRule() {
         const { activeCode } = this.state.rule;
+        console.log(activeCode,typeof activeCode,'activeCodeactiveCodeactiveCode')
         return (
             <div>
                 <FormItem
@@ -386,7 +387,7 @@ class ReturnGiftDetailInfo extends React.Component {
                         wrapperCol={{ span: 17 }}
                     >
                         <RadioGroup
-                            value={activeCode}
+                            value={String(activeCode)}
                             onChange={(e) => this.activeCodeRadioChange(e)}
                         >
                             <Radio key={'1'} value={'1'}>消费送礼</Radio >

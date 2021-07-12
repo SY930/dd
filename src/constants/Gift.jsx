@@ -121,7 +121,7 @@ const GiftCfg = {
         },
         {
             name: '不定额代金券',
-            describe: '抵扣一定面值的券，可通过特色营销发放',
+            describe: '',
             value: '115',
             color: '#84aac6',
             category: 'secondary',

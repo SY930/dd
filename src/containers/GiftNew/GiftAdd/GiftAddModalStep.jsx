@@ -2191,7 +2191,7 @@ class GiftAddModalStep extends React.PureComponent {
             }
         }
 
-        if(describe == '代金券' || describe == '菜品优惠券' || describe == '菜品兑换券' || describe == '折扣券' || describe == '配送券' || describe == '买赠券') {
+        if(describe == '代金券' || describe == '菜品优惠券' || describe == '菜品兑换券' || describe == '折扣券' || describe == '配送券' || describe == '买赠券' || describe == '不定额代金券') {
             //
             if(values.transferType == '0' || values.transferType == undefined) {
                 secondKeysToDisplay[0].keys = secondKeysToDisplay[0].keys.filter((key)=>{

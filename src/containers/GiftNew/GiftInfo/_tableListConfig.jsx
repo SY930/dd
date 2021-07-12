@@ -25,7 +25,7 @@ import {
 // { label: '现金红包', value: '113' },
 
 const ONLINE_STORE_VISIBLE_GIFT_TYPE = [
-    '10', '20', '21', '30', '40', '42', '80', '110', '111','115'
+    '10', '20', '21', '30', '40', '42', '80', '110', '111',
 ]
 
 export const COLUMNS = [
