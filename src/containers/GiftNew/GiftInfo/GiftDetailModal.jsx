@@ -166,7 +166,7 @@ class GiftDetailModal extends Component {
                                 <Col span={4}>
                                     <div
                                         className="gift-image"
-                                        style={{ backgroundImage: `url("/asserts/img/${!['21', '22'].includes(giftType) ? giftType : 20}.jpg")` }}
+                                        style={{ backgroundImage: `url("/asserts/img/${['10','20','30','40','42','80','90'].includes(giftType) ? giftType : 20}.jpg")` }}
                                     >
                                         {giftLogo(giftType)}
                                         <p className={styles.ellipsisBlock}>{data.giftName}</p>
