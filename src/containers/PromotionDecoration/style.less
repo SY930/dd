@@ -391,6 +391,11 @@
     height: 30px;
     border: 1px solid rgba(229, 229, 229, 1);
     border-radius: 3px;
+    :global{
+        .rc-color-picker-trigger{
+            border:1px solid #f4f4f4;
+        }
+    }
 }
 
 .colorRow {
@@ -767,19 +772,11 @@
 }
 
 .freeGiftSuccessModalImg1 {
-    width: 80%;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 100px;
+    width: 100%;
 }
 
-.freeGiftSuccessModalCon {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 283px;
-    width: 80%;
+.freeGiftSuccessModalCon,.blindGiftSuccessModalCon {
+    width: 100%;
     background: #fff;
     display: flex;
     flex-direction: column;
@@ -793,6 +790,15 @@
     color: rgba(153, 153, 153, 1);
     margin-bottom: 20px;
     max-width: 90%;
+}
+.successBgColor{
+    width: 80%;
+    margin-bottom: 20px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    border-radius: 20px;
+    color: #fff;
 }
 
 // 
@@ -840,7 +846,42 @@
         }
     }
 }
-
+.blindGiftSuccessModal {
+    position: absolute;
+    left: 92px;
+    top: 120px;
+    width: 287px;
+    height: 550px;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    border-radius: 0 0 28px 28px;
+    .successAlertWrapper{
+        position: absolute;
+        width: 80%;
+        left: 50%;
+        top: 100px;
+        transform: translateX(-50%);
+    }
+    .blindGiftSuccessTip{
+        font-size: 12px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 12px;
+        max-width: 90%;
+    }
+    .blindGiftSuccessModalCon{
+        padding-top: 15px;
+        padding-bottom: 10px;
+    }
+    .blindSuccessBtnColor{
+        width: 80%;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        border-radius: 20px;
+        color: #fff;
+    }
+}
 .blindTit {
     width: 100%;
     text-align: center;
