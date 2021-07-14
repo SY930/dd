@@ -224,7 +224,7 @@ export default class FreeGiftDecorationBoard extends Component {
                                 onChange={value => onChange({ key: ['alertBackgroundImage'], value })}
                             />
                             <div className={style.uploaderTip}>
-                                <p>* 图片建议尺寸230x180像素</p>
+                                <p>* 图片建议尺寸546x184像素</p>
                                 <p>* 不大于1000KB</p>
                                 <p>* 支持png、jpg、jpeg、gif</p>
                             </div>
