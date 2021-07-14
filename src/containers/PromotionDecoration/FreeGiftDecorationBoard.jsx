@@ -43,8 +43,8 @@ export default class FreeGiftDecorationBoard extends Component {
                 successTip = '请前往商家公众号查看/使用',
                 isShowGiftListContent = true,
                 isShowCanGetGift = true,
-                successBtnColor = '#FF3C54',
-                successBtnTextColor = '#fff',
+                successBtnColor = '#FFE494',
+                successBtnTextColor = '#A74818',
             },
         } = this.props;
         return (
@@ -207,8 +207,8 @@ export default class FreeGiftDecorationBoard extends Component {
             decorationInfo: {
                 successTip = '请前往商家公众号查看/使用',
                 alertBackgroundImage,
-                successBtnColor = '#FF3C54',
-                successBtnTextColor = '#fff',
+                successBtnColor = '#FFE494',
+                successBtnTextColor = '#A74818',
             },
             onChange
         } = this.props;

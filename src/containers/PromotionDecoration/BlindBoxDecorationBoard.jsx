@@ -30,8 +30,8 @@ export default class BlindBoxDecorationBoard extends Component {
                 windowBgColor = '#FFCA45',
                 bgImg,
                 btnBgColor = '#FF3C54',
-                successBtnColor = '#FF3C54',
-                successBtnTextColor = '#fff',
+                successBtnColor = '#FFE494',
+                successBtnTextColor = '#A74818',
                 btnColor = '#fff',
                 alertBackgroundImage,
                 successTip = '实物礼品券-ldd×1份',
@@ -110,8 +110,8 @@ export default class BlindBoxDecorationBoard extends Component {
                 bgColor = '#FF3838',
                 windowBgColor = '#FFCA45',
                 bgImg,
-                btnBgColor = '#FF3C54',
-                btnColor = '#fff',
+                btnBgColor = '#FFE494',
+                btnColor = '#A74818',
             },
             onChange,
         } = this.props;
@@ -172,8 +172,8 @@ export default class BlindBoxDecorationBoard extends Component {
         const {
             decorationInfo: {
                 alertBackgroundImage,
-                successBtnColor = '#FF3C54',
-                successBtnTextColor = '#fff',
+                successBtnColor = '#FFE494',
+                successBtnTextColor = '#A74818',
             },
             onChange
         } = this.props;
