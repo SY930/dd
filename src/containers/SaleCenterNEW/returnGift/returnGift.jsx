@@ -56,13 +56,18 @@ const VALIDATE_TYPE = Object.freeze([{
 },
 { key: 1, value: '1', name: SALE_LABEL.k6d8n2sw }]);
 
-const availableGiftTypes = [// 顺序matters
+const availableGiftTypes = [
     '112', '10', '20', '21', '111', '115','110', '30', '40', '42', '80', '22',
 ];
-const noWechatGiftTypes = [// 顺序matters
+const availableGiftTypes1 = [//针对消费返礼品中选择消费送礼，剔除不定额代金券115
+    '112', '10', '20', '21', '111','110', '30', '40', '42', '80', '22',
+];
+const noWechatGiftTypes = [
     '10', '20', '21', '111', '115','110', '30', '40', '42', '80', '22',
 ];
-
+const noWechatGiftTypes1 = [
+    '10', '20', '21', '111','110', '30', '40', '42', '80', '22',
+];
 const offlineCanUseGiftTypes = [
     '30', '40', '42', '80',
 ];
@@ -131,7 +136,7 @@ class ReturnGift extends React.Component {
 
 
     renderItems() {
-        const { intl } = this.props;
+        const { intl,activeCode } = this.props;
         const k5f3y5ml = intl.formatMessage(SALE_STRING.k5f3y5ml);
 
         const k6d8n46w = intl.formatMessage(SALE_STRING.k6d8n46w);
@@ -149,7 +154,7 @@ class ReturnGift extends React.Component {
                 crmGifts: allWeChatCouponList
             }];
         }
-        const resultGiftTypes = this.props.ifExcludeWechat ? noWechatGiftTypes : availableGiftTypes
+        let  resultGiftTypes = this.props.ifExcludeWechat ? activeCode == '2' ? noWechatGiftTypes : noWechatGiftTypes1 : activeCode == '2' ? availableGiftTypes : availableGiftTypes1;
         allCrmGifts.forEach((giftTypes) => {
             if (resultGiftTypes.includes(String(giftTypes.giftType))) {
                 _giftInfo.push({
