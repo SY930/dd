@@ -23,7 +23,6 @@ class FormWrapper extends Component {
 
     render() {
         const { name, value, describe, type, data } = this.props;
-        console.log(value,'valuerender========')
         const formData = data.toJS()
         let Comp;
         if (complexGifts.includes(value)) {

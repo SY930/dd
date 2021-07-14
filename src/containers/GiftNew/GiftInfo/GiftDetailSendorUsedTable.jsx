@@ -319,7 +319,6 @@ class GiftSendOrUsedCount extends React.Component {
                 });
             } else {
                 const { couponUsageList = [] } = _quotaList;
-                console.log(couponUsageList,'couponUsageList========')
                 couponUsageList.map((d, i) => {
                     d.key = i;
                     d.num = (_quotaList.pageNo - 1) * _quotaList.pageSize + i + 1;

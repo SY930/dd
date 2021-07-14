@@ -2139,7 +2139,6 @@ class GiftAddModalStep extends React.PureComponent {
         let secondKeysToDisplay = JSON.parse(JSON.stringify(secondKeys[describe]));
         console.log(describe,firstKeysToDisplay,secondKeysToDisplay,'secondKeysToDisplaysecondKeysToDisplaysecondKeysToDisplay')
         if(describe == '代金券' || describe == '菜品优惠券' || describe == '菜品兑换券' || describe == '不定额代金券') {
-            console.log(values,'values--------------------')
             if(values.applyScene == '0') {            // 店铺券
                 firstKeysToDisplay[0].keys = [...FIRST_KEYS[describe][0].keys];
                 firstKeysToDisplay[1].keys = [...FIRST_KEYS[describe][1].keys];
@@ -2317,7 +2316,7 @@ class GiftAddModalStep extends React.PureComponent {
             // 新增礼品商城属性
             // 券应用场景（店铺，商城）
             applyScene: {
-                label: '礼品属性1',
+                label: '礼品属性',
                 type: 'custom',
                 defaultValue: 0,
                 render: (decorator, form) => this.renderApplyScene(decorator, form)

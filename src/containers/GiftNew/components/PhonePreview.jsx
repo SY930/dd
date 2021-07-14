@@ -583,7 +583,7 @@ class PhonePreview extends PureComponent {
                             fontWeight: 'bold',
                         }}
                     >
-                        活动详情1
+                        活动详情
                     </div>
                     <div
                         className={styles.descriptionSection}

@@ -586,7 +586,6 @@ export const queryWechatMpAndAppInfo = (opts) => {
 };
 
 export const startCreateGift = (opt) => {
-    console.log(opt,'opt----------')
     return {
         type: GIFT_NEW_START_CREATE_GIFT,
         payload: opt,

@@ -287,7 +287,6 @@ class ReturnGiftDetailInfo extends React.Component {
         if(this.state.rule.activeCode == 2){
             this.state.rule.stageType = '3'//活动形式：会员日送礼
         }
-        console.log(this.getFinalGiftList(giftList),'this.getFinalGiftList(giftList)========')
         if (validateFlag) {
             this.props.setPromotionDetail({
                 rule: this.state.rule,
@@ -356,7 +355,6 @@ class ReturnGiftDetailInfo extends React.Component {
     }
     renderPromotionRule() {
         const { activeCode } = this.state.rule;
-        console.log(activeCode,typeof activeCode,'activeCodeactiveCodeactiveCode')
         return (
             <div>
                 <FormItem
@@ -468,7 +466,6 @@ class ReturnGiftDetailInfo extends React.Component {
         } = this.props;
         const isMultiple = this.state.rule.stageType == 1;
         const { activeCode } = this.state.rule;
-        console.log(this.state.data,'this.state.data-------------')
         return (
             <div>
                 {
