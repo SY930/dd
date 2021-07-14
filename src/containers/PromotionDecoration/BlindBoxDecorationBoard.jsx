@@ -29,12 +29,12 @@ export default class BlindBoxDecorationBoard extends Component {
                 bgColor = '#FF3838',
                 windowBgColor = '#FFCA45',
                 bgImg,
-                btnBgColor = '#FF3C54',
-                successBtnColor = '#FFE494',
-                successBtnTextColor = '#A74818',
-                btnColor = '#fff',
+                successBtnColor = '#FF274D',
+                successBtnTextColor = '#FFFFFF',
                 alertBackgroundImage,
                 successTip = '实物礼品券-ldd×1份',
+                btnBgColor = '#FF294D',
+                btnColor = '#FFFFFF',
             },
         } = this.props;
         return (
@@ -110,8 +110,8 @@ export default class BlindBoxDecorationBoard extends Component {
                 bgColor = '#FF3838',
                 windowBgColor = '#FFCA45',
                 bgImg,
-                btnBgColor = '#FFE494',
-                btnColor = '#A74818',
+                btnBgColor = '#FF294D',
+                btnColor = '#FFFFFF',
             },
             onChange,
         } = this.props;
@@ -172,8 +172,8 @@ export default class BlindBoxDecorationBoard extends Component {
         const {
             decorationInfo: {
                 alertBackgroundImage,
-                successBtnColor = '#FFE494',
-                successBtnTextColor = '#A74818',
+                successBtnColor = '#FF294D',
+                successBtnTextColor = '#FFFFFF',
             },
             onChange
         } = this.props;
@@ -236,7 +236,7 @@ export default class BlindBoxDecorationBoard extends Component {
                 {this.renderPhonePreview()}
                 <div className={style.freeGiftTab} style={{ margin: '46px 0 0 20px' }}>
                     <Tabs activeKey={activeTab} onChange={this.handelTabChange} className={style.customTabWrapper}  >
-                        <TabPane tab="领奖页" key="1">{this.renderSettingPanel()}</TabPane>
+                        <TabPane tab="活动页" key="1">{this.renderSettingPanel()}</TabPane>
                         <TabPane tab="参与成功页" key="2">{this.renderSuccessPage()}</TabPane>
                     </Tabs>
                 </div>
