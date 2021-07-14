@@ -665,7 +665,6 @@ export default class EntryPage extends Component {
                 </div>
             );
         }
-
         if (mySpecialActivities.status === 'success') {
             return (<SpecialActivityMain
                 isNew={_state.specialIsNew}
