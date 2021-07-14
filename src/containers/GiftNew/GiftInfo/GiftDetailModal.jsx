@@ -121,6 +121,7 @@ class GiftDetailModal extends Component {
                 case '30':
                 case '40':
                 case '22':
+                case '115':
                     return <span><em>{data.giftValue}</em>元</span>;
                 case '80':
                     return (<span><em>{(data.discountRate * 10).toFixed(1)}</em>折<em>{data.pointRate}</em>倍</span>);
