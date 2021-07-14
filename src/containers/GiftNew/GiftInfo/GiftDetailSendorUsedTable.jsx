@@ -122,10 +122,29 @@ class GiftSendOrUsedCount extends React.Component {
         }
         const sendorUsedList = _key === 'send' ? sendList : usedList;
         const { pageNo, pageSize } = this.state;
-        if(giftType == '115'){
-            sendGiftkeys = SEND_GIFTPWD_FORMKEYS1
+        if(giftType == '115'){//是不定额代金券时候
+            sendGiftkeys = SEND_GIFTPWD_FORMKEYS1;
+            this.SEND_COLUMNS.splice(2,1,
+                {
+                    title: '券面值',
+                    className:'TableTxtCenter',
+                    dataIndex: 'giftValue',
+                    key: 'giftValue',
+                    width: 100,
+                    render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
+                },
+            )
+            USED_SPE_COLUMNS.splice(2,1,
+                {
+                    title: '券面值',
+                    className:'TableTxtCenter',
+                    dataIndex: 'giftValue',
+                    key: 'giftValue',
+                    width: 100,
+                    render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
+                },)
         }else{
-            sendGiftkeys = SEND_GIFTPWD_FORMKEYS
+            sendGiftkeys = SEND_GIFTPWD_FORMKEYS;
         }
         this.setState({ giftItemID, key: _key, pageNo, pageSize });
         this.proRecords(sendorUsedList);
@@ -300,10 +319,12 @@ class GiftSendOrUsedCount extends React.Component {
                 });
             } else {
                 const { couponUsageList = [] } = _quotaList;
+                console.log(couponUsageList,'couponUsageList========')
                 couponUsageList.map((d, i) => {
                     d.key = i;
                     d.num = (_quotaList.pageNo - 1) * _quotaList.pageSize + i + 1;
                     d.customerName = d.customerName ? d.customerName : '';
+                    d.giftValue = d.giftValue || '';
                     d.customerMobile = d.customerMobile ? d.customerMobile : '';
                     d.sendShopName = d.sendShopName ? d.sendShopName : '';
                     d.validUntilDate = d.validUntilDate ? Moment(d.validUntilDate, 'YYYYMMDDHHmmss').format(format) : '';

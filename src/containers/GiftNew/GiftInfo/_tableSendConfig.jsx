@@ -31,7 +31,7 @@ const FORMITEMS = {
         wrapperCol: { span: 20 },
     },
     getWay: {
-        label: '发出方式1',
+        label: '发出方式',
         type: 'combo',
         props: {
             showSearch: true,
@@ -195,6 +195,7 @@ const SEND_COLUMNS = [...BASE_COLUMNS.slice(0, 1),
         render: value => <Tooltip title={value}><span>{value == '0' ? '' : value}</span></Tooltip>,
     },
 ]
+
 const WX_SEND_COLUMNS = [...BASE_COLUMNS.slice(0, 5), {
     title: COMMON_LABEL.status,
     dataIndex: 'giftStatus',
