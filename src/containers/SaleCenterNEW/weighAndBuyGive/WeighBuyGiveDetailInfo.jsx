@@ -63,7 +63,8 @@ class WeighBuyGiveDetailInfo extends React.Component {
             floatUp: ['', '', '', '', '', ''],
             floatDownFlag: [true, true, true, true, true],
             floatUpFlag: [true, true, true, true, true],
-            level: ['1']
+            level: ['1'],
+            stageMeasurment: [1, 1, 1, 1, 1],
         };
     }
     componentDidMount() {
@@ -109,11 +110,15 @@ class WeighBuyGiveDetailInfo extends React.Component {
             const newFloatDown = newRule.map((item, index) => {
                 return item.floatDown ? item.floatDown : ''
             })
+            const newStageMeasurment = newRule.map((item, index) => {
+                return item.stageMeasurment ? item.stageMeasurment : 1
+            })
             this.setState({
                 priceList: newPriceList,
                 scopeLst: newScopeLst,
                 level: newLevel,
                 stageAmount: newStageAmount,
+                stageMeasurment: newStageMeasurment,
                 giveFoodCount: newGiveFoodCount,
                 floatUp: newFloatUp,
                 floatDown: newFloatDown,
@@ -210,7 +215,8 @@ class WeighBuyGiveDetailInfo extends React.Component {
             priceListFlag,
             scopeLst,
             priceList,
-            level
+            level,
+            stageMeasurment,
         } = this.state;
         let flag = true;
         for (let i = 0; i < level.length; i++) {
@@ -223,10 +229,10 @@ class WeighBuyGiveDetailInfo extends React.Component {
             if (Number(this.state.giveFoodCount[i]) > Number(this.state.stageAmount[i])) {
                 flag = false
             }
-            if (!priceList[i].length) {
+            if (!priceList[i] || !priceList[i].length) {
                 priceListFlag[i] = false;
             }
-            if (!scopeLst[i].length) {
+            if (!scopeLst[i] || !scopeLst[i].length) {
                 scopeLstFlag[i] = false;
             }
             if (!floatUp[i]) {
@@ -310,7 +316,7 @@ class WeighBuyGiveDetailInfo extends React.Component {
             });
             priceLst = priceLst.filter((item) => { if (item) { return item } });
             scopeList = scopeList.filter((item) => { if (item) { return item } });
-            const rule1 = JSON.stringify({ stageAmount, giveFoodCount, stageType, stageNum: 0, StageAmountFlag: true, floatDown, floatUp });
+            // const rule1 = JSON.stringify({ stageAmount, giveFoodCount, stageType, stageNum: 0, StageAmountFlag: true, floatDown, floatUp });
             // const foodRuleList = [{
             //     priceList: priceLst,
             //     rule: rule1,
@@ -319,7 +325,7 @@ class WeighBuyGiveDetailInfo extends React.Component {
                 return {
                     priceList: priceLst[index],
                     scopeList: scopeList[index],
-                    rule: JSON.stringify({ stageAmount: stageAmount[index], giveFoodCount: giveFoodCount[index], stageType, stageNum: 0, StageAmountFlag: true, floatDown: floatDown[index], floatUp: floatUp[index] })
+                    rule: JSON.stringify({ stageAmount: stageAmount[index], giveFoodCount: giveFoodCount[index], stageType, stageNum: 0, StageAmountFlag: true, floatDown: floatDown[index], floatUp: floatUp[index], stageMeasurment: stageMeasurment[index] })
                 }
             })
             this.props.setPromotionDetail({
@@ -403,6 +409,25 @@ class WeighBuyGiveDetailInfo extends React.Component {
         });
     }
 
+    onStageMeasurmentChange = (value, index) => {
+        let { stageAmount, stageAmountFlag, foodRuleList } = this.state;
+        if (stageAmount[index] == null || stageAmount[index] == '' || stageAmount[index] == '0' || (value == 1 && !/^(([1-9]\d{0,4})|0)(\.\d{0,2})?$/.test(stageAmount[index])) ||
+        (value == 2 && !/^\+?\d{0,5}$/.test(stageAmount[index]))
+        ) {
+            stageAmountFlag[index] = false;
+        } else {
+            stageAmountFlag[index] = true;
+        }
+        const {
+            stageMeasurment = []
+        } = this.state
+        stageMeasurment[index] = value
+        this.setState({
+            stageMeasurment,
+            stageAmountFlag,
+        })
+    }
+
     onDeleteLevel = (index) => {
         let {
             scopeLst,
@@ -453,6 +478,7 @@ class WeighBuyGiveDetailInfo extends React.Component {
         const {
             level = ['1']
         } = this.state
+        console.log('stageMeasurment', this.state.stageMeasurment)
         return (
             <FormItem
                 label={'活动规则'}
@@ -497,20 +523,42 @@ class WeighBuyGiveDetailInfo extends React.Component {
                                     </FormItem>
                                     <div className={styles.leftBox}>
                                         <FormItem
+                                            style={{
+                                                position: 'relative',
+                                            }}
                                             label={this.state.stageType === 2 ? '消费满' : '消费每满'}
-                                            className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
+                                            className={[styles.FormItemStyle, styles.priceInputSingle, styles.measurmentSelect].join(' ')}
                                             labelCol={{ span: 10, offset: 0 }}
                                             wrapperCol={{ span: 12, offset: 0 }}
                                             validateStatus={this.state.stageAmountFlag[index] == '' ? 'error' : 'success'}
-                                            help={this.state.stageAmountFlag[index] ? null : '请输入大于0，整数5位以内且小数2位内的数'}
+                                            help={this.state.stageAmountFlag[index] ? null : this.state.stageMeasurment[index] == 1 ? '请输入大于0，整数5位以内且小数2位内的数' : '请输入5位以内正整数'}
                                         >
                                             <Input key={2}
-                                                addonAfter={'斤'}
+                                                // addonAfter={'斤'}
                                                 value={this.state.stageAmount[index]}
                                                 onChange={(value) => {
                                                     this.onStageAmountChange(value, index);
                                                 }}
+                                                placeholder={this.state.stageMeasurment[index] == 1 ? '请输入商品重量': '请输入购买金额'}
                                             />
+                                            <Select
+                                                style={{
+                                                    position: 'absolute',
+                                                }}
+                                                width={40}
+                                                placeholder={`请选择`}
+                                                onChange={(value) => {
+                                                    this.onStageMeasurmentChange(value, index);
+                                                }}
+                                                value={this.state.stageMeasurment[index] || 1}
+                                            >
+                                                <Option key={1} value={1} >
+                                                    斤
+                                                </Option>
+                                                <Option key={2} value={2} >
+                                                    元
+                                                </Option>
+                                            </Select>
                                         </FormItem>
                                     </div>
                                     <FormItem
@@ -600,8 +648,10 @@ class WeighBuyGiveDetailInfo extends React.Component {
 
     onStageAmountChange = (e, index) => {
         let value = e.target.value
-        let { stageAmount, stageAmountFlag, foodRuleList } = this.state;
-        if (value == null || value == '' || value == '0' || !/^(([1-9]\d{0,4})|0)(\.\d{0,2})?$/.test(value)) {
+        let { stageAmount, stageAmountFlag, foodRuleList, stageMeasurment } = this.state;
+        if (value == null || value == '' || value == '0' || (stageMeasurment[index] == 1 && !/^(([1-9]\d{0,4})|0)(\.\d{0,2})?$/.test(value)) ||
+        (stageMeasurment[index] == 2 && !/^\+?\d{0,5}$/.test(value))
+        ) {
             stageAmountFlag[index] = false;
             stageAmount[index] = value;
         } else {
