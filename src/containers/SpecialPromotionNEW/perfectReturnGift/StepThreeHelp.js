@@ -27,6 +27,11 @@ const handleCardChange = function (e) {
         perfectReturnGiftCardTypeValue: e,
     });
 };
+const handleGrowthCardChange = function (e) {
+    this.setState({
+        perfectReturnGiftCardGrowthValue: e,
+    });
+};
 /**
  * 封装checkbox
  *
@@ -66,7 +71,7 @@ const fetchCardType = function (opts) {
         null,
         { path: "data.cardTypeBaseInfoList" }
     ).then((records) => {
-        const { perfectReturnGiftCardTypeValue } = this.state;
+        const { perfectReturnGiftCardTypeValue, perfectReturnGiftCardGrowthValue} = this.state;
         if (
             Array.isArray(records) &&
             records[0] &&
@@ -74,6 +79,15 @@ const fetchCardType = function (opts) {
         ) {
             this.setState({
                 perfectReturnGiftCardTypeValue: records[0].cardTypeID,
+            });
+        }
+        if (
+            Array.isArray(records) &&
+            records[0] &&
+            !perfectReturnGiftCardGrowthValue
+        ) {
+            this.setState({
+                perfectReturnGiftCardGrowthValue: records[0].cardTypeID,
             });
         }
         this.setState({
@@ -172,13 +186,105 @@ const renderGivePointFn = function () {
                             );
                         })}
                     </Select>
-                    
-                
             </FormItem>
         </div>
     );
 };
 
+
+/**
+ * 赠送成长值
+ *
+ * @returns
+ */
+const renderGrowthValueFn = function () {
+    const {
+        perfectReturnGiftCheckBoxStatus,
+        perfectReturnGiftGrowthValue,
+        perfectReturnGiftCardGrowthValue,
+        cardTypeArr,
+    } = this.state;
+    const {
+        form: { getFieldDecorator },
+    } = this.props;
+    const giftSendCount =
+        this.perfectGrowthItem && this.perfectGrowthItem.giftSendCount;
+    return (
+        <div>
+            <FormItem
+                wrapperCol={{ span: 12 }}
+                labelCol={{ span: 6 }}
+                className={styles.FormItemSecondStyle}
+                // style={{ width: "330px" }}
+                label="赠送成长值"
+                required
+            >
+                {getFieldDecorator(`perfectReturnGiftGrowthValue`, {
+                    initialValue: {
+                        number: perfectReturnGiftGrowthValue,
+                    },
+                    rules: [
+                        {
+                            validator: (rule, v, cb) => {
+                                if (v.number === "" || v.number === undefined) {
+                                    return cb(
+                                        perfectReturnGiftCheckBoxStatus.perfectReturnGiftGrowthValue
+                                            ? "请输入数值"
+                                            : undefined
+                                    );
+                                }
+                                if (!v || v.number < 1) {
+                                    return cb("成长值应不小于1");
+                                } else if (v.number > 100000) {
+                                    return cb("成长值应不大于100000");
+                                }
+                                cb();
+                            },
+                        },
+                    ],
+                })(
+                    <PriceInput
+                        addonAfter={"成长值"}
+                        modal="float"
+                        maxNum={7}
+                        placeholder="请输入成长值"
+                    />
+                )}
+            </FormItem>
+            <FormItem
+                wrapperCol={{ span: 12 }}
+                labelCol={{ span: 6 }}
+                className={styles.FormItemSecondStyle}
+                label={(
+                    <span>
+                      充值到会员卡&nbsp;
+                      <Tooltip title="如果用户没有该卡类型的卡，则不送成长值">
+                        <Icon style={{ marginLeft: 5, marginRight: -5}} type="question-circle" />
+                      </Tooltip>
+                    </span>
+                  )}
+            >
+                    <Select
+                        showSearch={true}
+                        value={perfectReturnGiftCardGrowthValue}
+                        onChange={handleGrowthCardChange.bind(this)}
+                        disabled={giftSendCount > 0}
+                    >
+                        {cardTypeArr.map((item) => {
+                            return (
+                                <Option
+                                    key={item.cardTypeID}
+                                    value={item.cardTypeID}
+                                >
+                                    {item.cardTypeName}
+                                </Option>
+                            );
+                        })}
+                    </Select>
+            </FormItem>
+        </div>
+    );
+};
 /**
  * 第三步渲染render函数
  *
@@ -189,7 +295,9 @@ export const renderThree = function () {
     const {
         perfectReturnGiftPoint,
         perfectReturnGiftCoupon,
+        perfectReturnGiftGrowthValue,
     } = perfectReturnGiftCheckBoxStatus;
+
     return (
         <div style={{ marginLeft: "40px" }}>
             {renderCheckbox.call(this, {
@@ -197,6 +305,11 @@ export const renderThree = function () {
                 key: "perfectReturnGiftPoint",
             })}
             {perfectReturnGiftPoint && renderGivePointFn.call(this)}
+            {renderCheckbox.call(this, {
+                label: "赠送成长值",
+                key: "perfectReturnGiftGrowthValue",
+            })}
+            {perfectReturnGiftGrowthValue && renderGrowthValueFn.call(this)}
             {renderCheckbox.call(this, {
                 label: "赠送优惠券",
                 key: "perfectReturnGiftCoupon",
@@ -230,32 +343,47 @@ export const addPointData = function (giftInfo) {
     const {
         perfectReturnGiftCheckBoxStatus,
         perfectReturnGiftCardTypeValue,
+        perfectReturnGiftCardGrowthValue
     } = this.state;
     const {
         perfectReturnGiftPoint,
         perfectReturnGiftCoupon,
+        perfectReturnGiftGrowthValue,
     } = perfectReturnGiftCheckBoxStatus;
-    let presentValue = "";
+    let presentPointValue = "";
+    let presentGrowthValue = "";
     this.props.form.validateFieldsAndScroll(
         { force: true },
         (error, basicValues) => {
-            const { perfectReturnGiftPoint } = basicValues;
-            presentValue =
-                perfectReturnGiftPoint && perfectReturnGiftPoint.number;
+            const { perfectReturnGiftPoint, perfectReturnGiftGrowthValue} = basicValues;
+            presentPointValue = perfectReturnGiftPoint && perfectReturnGiftPoint.number;
+            presentGrowthValue = perfectReturnGiftGrowthValue && perfectReturnGiftGrowthValue.number;
         }
     );
+    giftInfo = giftInfo.filter((v) => v.presentType !== 2);
     if (perfectReturnGiftPoint) {
         giftInfo.push({
-            presentValue,
+            presentValue:presentPointValue,
             presentType: 2,
             giftCount: 1,
-            giftName: `${presentValue}积分`,
+            giftName: `${presentPointValue}积分`,
             cardTypeID: perfectReturnGiftCardTypeValue,
             itemID: !this.props.isNew ? this.perfectPointItem.itemID : "",
         });
-    } else {
-        giftInfo = giftInfo.filter((v) => v.presentType !== 2);
+    } 
+    if(perfectReturnGiftGrowthValue){
+        giftInfo.push({
+            presentValue:presentGrowthValue,
+            presentType: 6,
+            giftCount: 1,
+            giftName: `${presentGrowthValue}成长值`,
+            cardTypeID: perfectReturnGiftCardGrowthValue,
+            itemID: !this.props.isNew ? this.perfectPointItem.itemID : "",
+        });
     }
+    // }else{
+    //     giftInfo = giftInfo.filter((v) => v.presentType !== 2);
+    // }
 
     if (!perfectReturnGiftCoupon) {
         giftInfo = giftInfo.filter((v) => v.presentType && v.presentType !== 1);
@@ -278,16 +406,21 @@ export const initPerfectCheckBox = function () {
     const { perfectReturnGiftCheckBoxStatus } = this.state;
     const pointItem = giftInfo.find((v) => v.presentType === 2);
     const couponItem = giftInfo.find((v) => v.presentType === 1);
+    const growthValueItem = giftInfo.find((v) => v.presentType === 6);
     perfectReturnGiftCheckBoxStatus.perfectReturnGiftPoint = pointItem;
     perfectReturnGiftCheckBoxStatus.perfectReturnGiftCoupon = couponItem;
-    if (!pointItem && !couponItem) {
+    perfectReturnGiftCheckBoxStatus.perfectReturnGiftGrowthValue = growthValueItem;
+    if (!pointItem && !couponItem && !growthValueItem) {
         perfectReturnGiftCheckBoxStatus.perfectReturnGiftCoupon = true;
     }
     this.perfectPointItem = pointItem || {};
+    this.perfectGrowthItem = growthValueItem || {};
     this.setState({
         perfectReturnGiftCheckBoxStatus,
         perfectReturnGiftPoint: pointItem && pointItem.presentValue,
         perfectReturnGiftCardTypeValue: pointItem && pointItem.cardTypeID,
+        perfectReturnGiftGrowthValue: growthValueItem && growthValueItem.presentValue,
+        perfectReturnGiftCardGrowthValue: growthValueItem && growthValueItem.cardTypeID,
     });
     fetchCardType.call(this, {});
 };
