@@ -27,6 +27,9 @@ import DiscountDetailInfo from './discount/discountDetailInfo';
 import NewSpecialActivity from './special/NewSpecialActivity'; // 特价菜
 import SpecialDetailInfo from './special/specialDetailInfo';
 
+import NewMemberExclusiveFood from './memberExclusive/NewMemberExclusiveFood'; // 会员专属菜
+import MemberExclusiveDetailInfo from './memberExclusive/MemberExclusiveDetailInfo';
+
 import NewBuyGiveActivity from './buyGive/NewBuyGiveActivity'; // 买赠
 import BuyGiveDetailInfo from './buyGive/buyGiveDetailInfo';
 
@@ -153,7 +156,7 @@ class ActivityMain extends React.Component {
             {
                 wrapper: NewBuyGiveActivity,
                 child: BuyGiveDetailInfo,
-            }, {
+            },{
                 wrapper: NewNDiscountActivity,
                 child: NDiscountDetailInfo,
             }, {
@@ -208,6 +211,10 @@ class ActivityMain extends React.Component {
                 child: WeighBuyGiveDetailInfo,
             },
             {
+                wrapper: NewMemberExclusiveFood,
+                child: MemberExclusiveDetailInfo,
+            },
+            {
                 wrapper: NewFullCutActivity,
                 child: FullCutDetailInfo,
             },
@@ -231,11 +238,13 @@ class ActivityMain extends React.Component {
                 isOnline: this.isOnline(),
             });
         });
+        console.log(pages,'pages--------------')
         this.setState({
             pages: pages,
         });
     }
     renderActivityTags() {
+        console.log(this.props.index,'thispropsindex==========')
         return this.state.pages[this.props.index];
     }
     isOnline = () => {

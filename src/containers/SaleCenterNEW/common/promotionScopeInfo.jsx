@@ -381,8 +381,8 @@ class PromotionScopeInfo extends React.Component {
         const k5f3y6b4 = intl.formatMessage(SALE_STRING.k5f3y6b4);
         const k5f3y6yg = intl.formatMessage(SALE_STRING.k5f3y6yg);
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
-
-        if (this.props.isOnline) return null
+        console.log(promotionType,'promotionType---renderChannelList')
+        if (this.props.isOnline || promotionType == '5020') return null
         return (
             <FormItem
                 label={SALE_LABEL.k5krn6il}
@@ -459,24 +459,41 @@ class PromotionScopeInfo extends React.Component {
         const k5m67atr = intl.formatMessage(SALE_STRING.k5m67atr);
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         if (this.props.isOnline) return null;
-        const plainOptions = [
-            {
-                label: k5m67a4r,
-                value: '10',
-            }, {
-                label: k5m67ad3,
-                value: '11',
-            }, {
-                label: k5m67alf,
-                value: '20',
-            }, {
-                label: k5krn7fx,
-                value: '31',
-            }, {
-                label: k5m67atr,
-                value: '21',
-            },
-        ];
+        let plainOptions = null;
+        if(promotionType == '5020'){
+            plainOptions = [
+                {
+                    label: k5m67alf,
+                    value: '20',
+                }, {
+                    label: k5krn7fx,
+                    value: '31',
+                }, {
+                    label: k5m67atr,
+                    value: '21',
+                },
+            ];
+        }else{
+            plainOptions = [
+                {
+                    label: k5m67a4r,
+                    value: '10',
+                }, {
+                    label: k5m67ad3,
+                    value: '11',
+                }, {
+                    label: k5m67alf,
+                    value: '20',
+                }, {
+                    label: k5krn7fx,
+                    value: '31',
+                }, {
+                    label: k5m67atr,
+                    value: '21',
+                },
+            ];
+        }
+        
         return (
             <Form.Item
                 label={SALE_LABEL.k5dlpt47}
@@ -708,6 +725,8 @@ class PromotionScopeInfo extends React.Component {
 
     render() {
         const promotionType = this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType'])
+
+        console.log(promotionType,'goherepromotionScopeInfo-------')
         return (
             <div style={{position: "absolute", width: '100%'}}>
                 {
@@ -794,7 +813,7 @@ class PromotionScopeInfo extends React.Component {
                     </div> : null
                 }
                 <Form className={styles.FormStyle}>
-                    {this.props.user.toJS().shopID > 0 ? null : this.renderBrandFormItem()}
+                    {this.props.user.toJS().shopID > 0 || promotionType == '5020' ? null : this.renderBrandFormItem()}
                     {promotionType != '5010' ? this.renderChannelList() : null}
                     {this.renderBusinessOptions()}
                     {this.props.user.toJS().shopID > 0 ? null : this.renderShopsOptions()}
