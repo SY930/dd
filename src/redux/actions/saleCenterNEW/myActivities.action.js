@@ -37,6 +37,7 @@ export const SALE_CENTER_FETCH_PROMOTION_LIST_CANCEL = 'sale center: fetch promo
 export const SALE_CENTER_FETCH_PROMOTION_LIST_TIME_OUT = 'sale center: fetch promotion list time out new';
 
 export const SALE_CENTER_IS_UPDATE = 'sale center: is update';
+export const SALE_CENTER_IS_COPY = 'sale center: is copy'
 
 export const fetchPromotionList = opts => ({ type: SALE_CENTER_FETCH_PROMOTION_LIST, payload: opts });
 const fetchPromotionListFullfilled = payload => ({ type: SALE_CENTER_FETCH_PROMOTION_LIST_OK, payload });
@@ -209,3 +210,12 @@ export const toggleIsUpdateAC = (opts) => {
         })
     }
 };
+
+export const toggleIsCopyAC = (opts) => {
+    return (dispatch) => {
+        dispatch({
+            type: SALE_CENTER_IS_COPY,
+            payload: opts,
+        })
+    }
+}

@@ -11,9 +11,10 @@ import Authority from '../../components/common/Authority'
 import { axiosData } from '../../helpers/util'
 import registerPage from '../../../index';
 import ActivityMain from './WeChatMaLLActivityMain';
-import {WECHAT_MALL_CREATE, WECHAT_MALL_LIST} from '../../constants/entryCodes';
+import { WECHAT_MALL_CREATE, WECHAT_MALL_LIST } from '../../constants/entryCodes';
 import {
     toggleIsUpdateAC,
+    toggleIsCopyAC,
 } from '../../redux/actions/saleCenterNEW/myActivities.action';
 import {
     WECHAT_MALL_ACTIVITIES,
@@ -25,11 +26,11 @@ import styles from '../SaleCenterNEW/ActivityPage.less';
 import { debounce } from 'lodash'
 import { myActivities_NEW as sale_myActivities_NEW } from '../../redux/reducer/saleCenterNEW/myActivities.reducer';
 import { promotionBasicInfo_NEW as sale_promotionBasicInfo_NEW } from '../../redux/reducer/saleCenterNEW/promotionBasicInfo.reducer';
-import {BASIC_PROMOTION_QUERY} from "../../constants/authorityCodes";
+import { BASIC_PROMOTION_QUERY } from "../../constants/authorityCodes";
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const moment = require('moment');
-
+const DATE_FORMAT = 'YYYYMMDDHHmm00';
 const mapStateToProps = (state) => {
     return {
         myActivities: state.sale_myActivities_NEW,
@@ -42,6 +43,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         toggleIsUpdate: (opts) => {
             dispatch(toggleIsUpdateAC(opts))
+        },
+        toggleIsCopy: (opts) => {
+            dispatch(toggleIsCopyAC(opts))
         },
         getMallGoodsAndCategories: (opts) => {
             dispatch(getMallGoodsAndCategories(opts))
@@ -121,11 +125,11 @@ export class WeChatMallPromotionList extends React.Component {
     handleDisableClickEvent(record, status) { // toggle, 2 关闭 1开启 3终止
         axiosData(
             '/promotion/extra/extraEventService_toggleExtraEvent.ajax',
-            {itemID: record.itemID, shopID: this.props.user.shopID, status},
+            { itemID: record.itemID, shopID: this.props.user.shopID, status },
             null,
-            {path: 'data.extraEventList'},
+            { path: 'data.extraEventList' },
             'HTTP_SERVICE_URL_PROMOTION_NEW'
-            )
+        )
             .then(() => {
                 message.success('使用状态修改成功');
                 this.handleQuery(this.state.pageNo)
@@ -147,6 +151,7 @@ export class WeChatMallPromotionList extends React.Component {
     }
 
     handleDismissUpdateModal() {
+        this.props.toggleIsCopy(false)
         this.setState({
             updateModalVisible: false,
             selectedRecord: null
@@ -216,18 +221,18 @@ export class WeChatMallPromotionList extends React.Component {
         if (shopID == undefined || shopID === 'undefined' || !(shopID > 0)) {
             return;
         }
-        const params = {...opts, shopID };
+        const params = { ...opts, shopID };
         axiosData(
             '/promotion/extra/extraEventService_getExtraEvents.ajax',
             params,
             null,
-            {path: ''},
+            { path: '' },
             'HTTP_SERVICE_URL_PROMOTION_NEW'
-            )
+        )
             .then((res) => {
                 this.setState({
                     loading: false,
-                    dataSource: (res.extraEventList || []).map((item, index) => ({...item, index: index + 1})),
+                    dataSource: (res.extraEventList || []).map((item, index) => ({ ...item, index: index + 1 })),
                     pageNo: res.pageNo || 1,
                     pageSizes: res.pageSize || 30,
                     total: res.totalSize || 0,
@@ -304,7 +309,7 @@ export class WeChatMallPromotionList extends React.Component {
     renderHeader() {
         const headerClasses = `layoutsToolLeft ${styles.headerWithBgColor}`;
         return (
-            <div className="layoutsTool" style={{height: '79px'}}>
+            <div className="layoutsTool" style={{ height: '79px' }}>
                 <div className={headerClasses}>
                     <span className={styles.customHeader}>
                         商城活动信息
@@ -357,7 +362,7 @@ export class WeChatMallPromotionList extends React.Component {
                                 }}
                             >
                                 {
-                                    [{key: '', title: '全部'}, ...WECHAT_MALL_ACTIVITIES].map(item => (
+                                    [{ key: '', title: '全部' }, ...WECHAT_MALL_ACTIVITIES].map(item => (
                                         <Option key={item.key} value={item.key}>
                                             {item.title}
                                         </Option>
@@ -425,8 +430,8 @@ export class WeChatMallPromotionList extends React.Component {
             {
                 title: '操作',
                 key: 'operation',
-                className: 'TableTxtCenter',
-                width: 140,
+                // className: 'TableTxtCenter',
+                width: 160,
                 // fixed: 'left',
                 render: (text, record, index) => {
                     // 有点懒 sorry
@@ -465,8 +470,19 @@ export class WeChatMallPromotionList extends React.Component {
                                 this.handleDisableClickEvent(record, 3);
                             }}
                         >终止</a>
+                        {
+                            record.extraEventType == 72 ? <a
+                                href="#"
+                                // disabled={record.status == 1 || isOngoing || isExpired || record.status == 3}
+                                // onClick={record.status == 1 || isOngoing || isExpired || record.status == 3 ? null : () => {
+                                //     this.handleCopy(record, true)
+                                // }}
+                                onClick={() => {
+                                    this.handleCopy(record, true, true)
+                                }}
+                            >复制</a> : null
+                        }
                     </span>
-
                     );
                 },
             },
@@ -477,7 +493,7 @@ export class WeChatMallPromotionList extends React.Component {
                 className: 'TableTxtCenter',
                 width: 100,
                 render: (promotionType) => {
-                    const text = (WECHAT_MALL_ACTIVITIES.find(({key}) => key === `${promotionType}`) || {}).title
+                    const text = (WECHAT_MALL_ACTIVITIES.find(({ key }) => key === `${promotionType}`) || {}).title
                     return (<span title={text}>{text}</span>);
                 },
             },
@@ -613,18 +629,42 @@ export class WeChatMallPromotionList extends React.Component {
         });
     }
 
+    changeStrToDate = (str) => {
+        const pattern = /(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/;
+        const formatedDate = str.replace(pattern, '$1/$2/$3 $4:$5:$6');
+        return new Date(formatedDate).getTime();
+    }
+
+    handleCopy(record, isUpdate, isCopy) {
+        const shopID = this.props.user.shopID;
+        this.props.getMallGoodsAndCategories(shopID);
+        this.props.toggleIsUpdate(isUpdate);
+        this.props.toggleIsCopy(isCopy);
+        const timeGap = this.changeStrToDate(record.endTime) - this.changeStrToDate(record.startTime)
+        let endTime = moment(new Date().getTime() + timeGap).format(DATE_FORMAT)
+        let startTime = moment(new Date().getTime()).format(DATE_FORMAT)
+        record.endTime = endTime
+        record.startTime = startTime
+        // endTime.format(DATE_FORMAT)
+        this.setState({
+            selectedRecord: record,
+            updateModalVisible: true,
+            isUpdate
+        });
+    }
+
     render() {
         return (
-            <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
+            <div style={{ backgroundColor: '#F3F3F3' }} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 <div>
                     {this.renderHeader()}
                 </div>
 
                 <div>
                     <div className={styles.pageContentWrapper}>
-                        <div style={{padding: 0}} className="layoutsHeader">
+                        <div style={{ padding: 0 }} className="layoutsHeader">
                             {this.renderFilterBar()}
-                            <div style={{ margin: '0'}} className="layoutsLine"></div>
+                            <div style={{ margin: '0' }} className="layoutsLine"></div>
                         </div>
                         {this.renderTables()}
                     </div>
