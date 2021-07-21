@@ -36,7 +36,7 @@ class Lottery extends Component {
         const list = [...value];
         const len = value.length;
         const id = `${len + 1}`; // 根据索引生成id，方便回显时遍历
-        list.push({ id, password: '', giftTotalCount:'',presentValue: '', presentType: '1', giftList: [{ id: '001', effectType: '1' }] });
+        list.push({ id, participateMark: '', giftTotalCount:'',presentValue: '', presentType: '1', giftList: [{ id: '001', effectType: '1' }] });
         this.setState({ tabKey: id });
         onChange(list);
     }
@@ -65,7 +65,7 @@ class Lottery extends Component {
     }
     onGiftOddsChange = ({ target }) => {
         const { value } = target;
-        this.onAllChange({ password: value });
+        this.onAllChange({ participateMark: value });
     }
     onGiftTotalCountChange = ({ target }) => {
         const { value } = target;
@@ -89,14 +89,18 @@ class Lottery extends Component {
     render() {
         const { tabKey, cardList } = this.state;
         const { value = [], decorator } = this.props;
-        console.log(value,'value-------------------passwordBoxLottey')
+        console.log(value,'value-------------------participateMarkBoxLottey')
         // if(!value[0]){ return null}
         const { length } = value;
-        const disable = value[0] && value[0].userCount > 0;    // 如果被用了，不能编辑
+        const disable = value[0] && value[0].userCount > 0 ;    // 如果被用了，不能编辑
+        let noUse = false;
+        if(length == 10){
+            noUse = true
+        }
         return (
             <div className={css.mainBox}>
                 <div className={css.addBox}>
-                    <Button type="primary" disabled={disable} onClick={this.add}>
+                    <Button type="primary" disabled={disable || noUse} onClick={this.add}>
                         <Icon type="plus" />添加口令
                     </Button>
                     <p>最多可添加10个口令</p>
@@ -123,8 +127,8 @@ class Lottery extends Component {
                                         <FormItem label="口令">
                                             {
                                                 decorator({
-                                                    key: 'password' + i,
-                                                    initialValue: x.password||undefined,
+                                                    key: 'participateMark' + i,
+                                                    initialValue: x.participateMark||undefined,
                                                     rules: [{
                                                         required: true,
                                                         validator: (rule, v, cb) => {

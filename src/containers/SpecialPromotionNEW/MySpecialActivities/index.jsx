@@ -676,7 +676,7 @@ class MySpecialActivities extends React.Component {
     // 渲染复制链接modal内容
     renderCopyUrlModal () {
         const  {urlContent, eventWay, qrCodeImage, xcxLoad, channelContent} = this.state
-        const hideCTBox = [66,79,82]; // 不显示餐厅
+        const hideCTBox = [66,79,82,83]; // 不显示餐厅
         const hideWXBox = [22]; // 不显示微信
         return (<div className={indexStyles.copyCont}>
             {

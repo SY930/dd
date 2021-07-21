@@ -52,6 +52,8 @@ class MutliGift extends Component {
     render() {
         const { treeData } = this.state;
         const { value } = this.props;
+        const { length } = value;
+        console.log(length,'length--------------------')
         return (
             <div className={css.multiGiftBox}>
                 {
@@ -73,7 +75,7 @@ class MutliGift extends Component {
                             </div>)
                     })
                 }
-                <Button onClick={this.onAdd}>
+                <Button onClick={this.onAdd} disabled={length == 10 ? true : false}>
                     <Icon type="plus" />点击添加礼品
                 </Button>
             </div>

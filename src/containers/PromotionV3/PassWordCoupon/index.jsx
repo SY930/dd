@@ -98,7 +98,7 @@ class PassWordCoupon extends Component {
 
         const lottery = [];
         gifts.forEach((x, i) => {
-            const { presentType, password, sortIndex,giftTotalCount } = x;
+            const { presentType, participateMark, sortIndex,giftTotalCount } = x;
             const index = sortIndex - 1;
             const type = `${presentType}`;  // 组件要string类型的
             let newItem = { presentType: '1', giftList: [],  bagList: [], ...lottery[index] };
@@ -125,7 +125,7 @@ class PassWordCoupon extends Component {
                 const giftList = [...newGiftList, { ...others, id: giftID, giftID, effectType: `${etype}`, giftEffectTimeHours: `${hours}`, countType, rangeDate }];
                 newItem = { ...newItem, giftList, presentType: type };
             }
-            lottery[index] = { id: `${sortIndex}`, password, giftTotalCount,userCount, ...newItem };
+            lottery[index] = { id: `${sortIndex}`, participateMark, giftTotalCount,userCount, ...newItem };
         });
 
         // 明盒礼品
@@ -175,7 +175,6 @@ class PassWordCoupon extends Component {
     onGoStep2 = () => {
         const { form } = this.state;
         form.validateFields((e, v) => {
-            console.log(v,'v1111111111111')
             if (!e) {
                 const formData1 = { ...v };
                 this.setState({ formData1 });
@@ -188,7 +187,6 @@ class PassWordCoupon extends Component {
     onGoStep3 = () => {
         const { form } = this.state;
         form.validateFields((e, v) => {
-            console.log(v,'v------------')
             if (!e) {
                 this.setState({ formData2: v });
                 this.onGoNext();
@@ -199,11 +197,8 @@ class PassWordCoupon extends Component {
     /* 第3步表单提交数据 */
     onGoDone = () => {
         const { form, formData2 } = this.state;
-        console.log(form,'form---------------')
         const { defaultCardType } = formData2;
-        console.log(this.state.form.validateFields,'function')
         form.validateFields((e, v) => {
-            console.log(e,v,'evevevev')
             if (!e) {
                 const { lottery } = v;
                 const isGift = lottery.every(x=>{
@@ -230,7 +225,6 @@ class PassWordCoupon extends Component {
 
     // 提交
     onSubmit = (formData3) => {
-        debugger
         const { formData1 } = this.state;
         const { id } = this.props;
         const { eventRange, ...others1, } = formData1;
@@ -289,9 +283,9 @@ class PassWordCoupon extends Component {
         let { lottery } = formData;
         const gifts = [];   // 后端要的专属key名
         lottery.forEach((x, i) => {
-            const { password, giftTotalCount, presentType, giftList, ...others } = x;
+            const { participateMark, giftTotalCount, presentType, giftList, ...others } = x;
             const sortIndex = i + 1;  
-            const rawObj =  { sortIndex, password, giftTotalCount,presentType };    // 基础数据
+            const rawObj =  { sortIndex, participateMark, giftTotalCount,presentType };    // 基础数据
 
             if(presentType === '1') {
                 giftList.forEach(x => {
@@ -339,7 +333,6 @@ class PassWordCoupon extends Component {
     
     /** 得到form, 根据step不同，获得对应的form对象 */
     onSetForm = (form) => {
-        console.log(form,'form------------1')
         this.setState({ form });
     }
     
@@ -356,7 +349,6 @@ class PassWordCoupon extends Component {
             })
         }
         if(current === 3) {
-            console.log(form.getFieldsValue(),'form.getFieldsValue()form.getFieldsValue()form.getFieldsValue()')
             this.setState({
                 formData3: form.getFieldsValue(),
             })
@@ -402,7 +394,7 @@ class PassWordCoupon extends Component {
                 <ul className={css.mainBox}>
                     <li className={css.left}>
                         <h3 className={css.logo}>口令领券</h3>
-                        <p className={css.gray}>用户输入口令密码后，可获得一张优惠券</p>
+                        <p className={css.gray}>用户输入口令密码后，可获得一张优惠券，同一个用户每个口令每天仅可以参与一次</p>
                     </li>
                     <li className={css.right}>
                         <div className={css.stepBox}>

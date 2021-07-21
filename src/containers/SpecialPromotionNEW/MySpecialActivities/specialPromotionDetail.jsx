@@ -1174,8 +1174,8 @@ class SpecialPromotionDetail extends React.Component {
             },
             eventWay == 83 && ({
                 title: '口令',
-                dataIndex: 'password',
-                key: 'password',
+                dataIndex: 'participateMark',
+                key: 'participateMark',
                 className: 'TableTxtCenter',
                 width: 100,
                 render:(text)=> {
@@ -1186,7 +1186,7 @@ class SpecialPromotionDetail extends React.Component {
                 title: `${this.props.intl.formatMessage(STRING_SPE.d1kgf6ij82123282)}`,
                 dataIndex: 'customerID',
                 key: 'customerID',
-                width: 180,
+                width: 150,
                 className: 'TableTxtCenter',
                 render:(text)=> {
                     return (<Tooltip title={text}>{text}</Tooltip>)
@@ -1241,7 +1241,7 @@ class SpecialPromotionDetail extends React.Component {
                 dataIndex: 'joinTime',
                 key: 'joinTime',
                 className: 'TableTxtCenter',
-                width: 160,
+                width: 120,
             },
             // 群发礼品
             eventWay == 53 && ({
