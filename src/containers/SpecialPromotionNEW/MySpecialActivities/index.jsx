@@ -517,7 +517,7 @@ class MySpecialActivities extends React.Component {
              '65':{page: 'pages/promotion/share/main', scene : `e=${qrItemID}`},
              '66':{page: 'pages/promotion/expand/main', scene : `e=${qrItemID}`},
              '82':{page: 'pages/promotion/grab/main', scene : `e=${qrItemID}`},
-             '83':{page: 'pages/promotion/password/main', scene : `e=${qrItemID}`},//口令领券
+             '83':{page: 'pages/promotion/passwordCoupons/main', scene : `e=${qrItemID}`},//口令领券
          }
          const params = {
              appID: currAppID,
