@@ -405,7 +405,7 @@ const STRING_SPE = {
     d7h838fdae14165: { id: 'Sale.d7h838fdae14165', defaultMessage: '电子邮箱' },
     d17013400d7d5291: { id: 'Sale.d17013400d7d5291', defaultMessage: '证件号码' },
     da9064ecge6154: { id: 'Sale.da9064ecge6154', defaultMessage: '完善资料选择' },
-    d7elcdm04l714: { id: 'Sale.d7elcdm04l714', defaultMessage: '至少选择一项' },
+    d7elcdm04l714: { id: 'Sale.d7elcdm04l714', defaultMessage: '至少选择一项2' },
     d31f129919j0138: { id: 'Sale.d31f129919j0138', defaultMessage: '所选权益账户可用短信条数为0，无法创建活动' },
     dd5aa437e501230: { id: 'Sale.dd5aa437e501230', defaultMessage: '适用公众号' },
     db60ca08c5252131: { id: 'Sale.db60ca08c5252131', defaultMessage: '请选择活动展现公众号' },

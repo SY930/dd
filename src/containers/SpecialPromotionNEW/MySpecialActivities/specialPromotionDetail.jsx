@@ -453,8 +453,8 @@ class SpecialPromotionDetail extends React.Component {
                         {this.renderGiftInfoTable(list, way)}
                     </Col>
                     <Col style={{ marginTop: 10 }} span={18}>
-                            {this.renderPointsTable()}
-                        </Col>
+                        {this.renderPointsAndGrowthValueTable()}
+                    </Col>
                     {this.renderSearch()}
                     <Col span={24}>
                         {this.renderActivityInfoTable()}
@@ -900,6 +900,47 @@ class SpecialPromotionDetail extends React.Component {
         } catch (e) {
             dataSource = [];
         }
+        return (
+            <Table dataSource={dataSource} columns={columns} bordered={true} pagination={false} />
+        );
+    }
+    renderPointsAndGrowthValueTable() {
+        const columns = [
+            {
+                title: '赠送类型',
+                dataIndex: 'title',
+                key: 'title',
+                className: 'TableTxtCenter',
+            },
+            {
+                title: '累计赠送数',
+                dataIndex: 'sendPointAmount',
+                key: 'sendPointAmount',
+                className: 'TableTxtRight',
+                render: data => data || 0,
+            },
+            {
+                title: '累计赠送总次数',
+                dataIndex: 'sendCount',
+                key: 'sendCount',
+                className: 'TableTxtRight',
+                render: data => data || 0,
+            },
+        ];
+        let dataSource;
+
+        try {
+            dataSource = [{
+                title: `${this.props.intl.formatMessage(STRING_SPE.dk46b2bc3b1333)}`,
+                ...this.props.mySpecialActivities.data.eventInfo.eventPointData,
+            },{
+                title: '赠送成长值',
+                ...this.props.mySpecialActivities.data.eventInfo.eventPointData,
+            }];
+        } catch (e) {
+            dataSource = [];
+        }
+        console.log(dataSource,this.props.mySpecialActivities.data,'dataSourcedataSourcedataSource--------------1')
         return (
             <Table dataSource={dataSource} columns={columns} bordered={true} pagination={false} />
         );

@@ -418,6 +418,7 @@ class LotteryThirdStep extends React.Component {
             _infos[index].giveCoupon.validateStatus = 'success';
             _infos[index].giveCoupon.msg = null;
         }else{
+            debugger
             //在取消勾选的情况下先校验是不是两个都为空，如果两个都为空则让赠送优惠券的提示显示出来
             if(!(_infos[index].giveCoupon.value.isOn)
                 && JSON.stringify(_infos[index].givePoints.value) == "{}"
