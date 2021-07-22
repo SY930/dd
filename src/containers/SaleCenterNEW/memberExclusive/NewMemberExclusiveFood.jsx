@@ -15,7 +15,6 @@ class NewMemberExclusiveFood extends NewPromotion {
     }
 
     render() { // 基类还有一个render方法
-        console.log('gohere--------')
         const {
             isNew,
             isOnline,

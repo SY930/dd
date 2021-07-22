@@ -211,6 +211,7 @@ class MemberExclusiveDetailInfo extends React.Component {
     renderLimitRules() {
         const { intl } = this.props;
         const k5f4b1b9 = intl.formatMessage(SALE_STRING.k5f4b1b9);
+        const { customerUseCountLimit } = this.state;
         return (
             <div style={{ width: '360px' }}>
                 <Col span={this.state.isCustomerUseCountLimited == 0 ? 24 : 12}>
@@ -227,8 +228,8 @@ class MemberExclusiveDetailInfo extends React.Component {
                         <Col span={8} style={{ marginLeft: 5 }}>
                             <FormItem
                                 style={{ marginTop: -6 }}
-                                validateStatus={this.state.customerUseCountLimit > 0 ? 'success' : 'error'}
-                                help={this.state.customerUseCountLimit > 0 ? null : k5f4b1b9}
+                                validateStatus={customerUseCountLimit > 0 && customerUseCountLimit <= 10000 ? 'success' : 'error'}
+                                help={customerUseCountLimit > 0 && customerUseCountLimit <= 10000 ? null : '大于0且小于10000'}
                             >
                                 <PriceInput
                                     addonAfter={'份'}

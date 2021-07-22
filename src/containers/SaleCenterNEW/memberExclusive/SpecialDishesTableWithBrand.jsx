@@ -11,7 +11,8 @@ import {
     Modal,
     Button,
     Icon,
-    message
+    message,
+    Spin
 } from 'antd';
 import BaseForm from 'components/common/BaseForm';
 import {
@@ -183,7 +184,7 @@ class SpecialDishesTableWithBrand extends Component {
             allDishes,
         } = this.props;
         let { dishes, categories, brands } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes)
-        dishes = dishes.filter((item) => item.isSingleSale == '1' );
+        dishes = dishes.filter((item) => item.isSingleSale == '0' );
         const selectedBrands = this.props.selectedBrands.toJS();
         if (selectedBrands.length) {
             brands = brands.filter(({ value }) => value == 0 || selectedBrands.includes(value))
@@ -192,15 +193,18 @@ class SpecialDishesTableWithBrand extends Component {
         }
         const initialValue = this.state.data.map((item) => `${item.brandID || 0}__${item.foodName}${item.unit}`);
         return (
-            <FoodSelectModal
-                allBrands={brands}
-                allCategories={categories}
-                allDishes={dishes}
-                mode="dish"
-                initialValue={initialValue}
-                onOk={this.handleModalOk}
-                onCancel={this.handleModalCancel}
-            />
+            <Spin spinning={true}>
+                <FoodSelectModal
+                    allBrands={brands}
+                    allCategories={categories}
+                    allDishes={dishes}
+                    mode="dish"
+                    initialValue={initialValue}
+                    onOk={this.handleModalOk}
+                    onCancel={this.handleModalCancel}
+                />
+            </Spin>
+            
         )
     }
     /**

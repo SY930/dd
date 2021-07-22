@@ -383,7 +383,6 @@ class PromotionScopeInfo extends React.Component {
         const k5f3y6b4 = intl.formatMessage(SALE_STRING.k5f3y6b4);
         const k5f3y6yg = intl.formatMessage(SALE_STRING.k5f3y6yg);
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
-        console.log(promotionType,'promotionType---renderChannelList')
         if (this.props.isOnline || promotionType == '5020') return null
         return (
             <FormItem
@@ -728,8 +727,6 @@ class PromotionScopeInfo extends React.Component {
 
     render() {
         const promotionType = this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType'])
-
-        console.log(promotionType,'goherepromotionScopeInfo-------')
         return (
             <div style={{position: "absolute", width: '100%'}}>
                 {

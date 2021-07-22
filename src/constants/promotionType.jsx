@@ -682,18 +682,7 @@ export const SALE_PROMOTION_TYPES = [
         right: 2,
         bottom: -14,
         isHot: true,
-    },
-    {
-        title: '会员专享菜',
-        isSpecial: false,
-        text: '会员专享菜品，利用低价吸引用户注册会员',
-        example: '',
-        // tags: ['pos', SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9, '小程序'],
-        key: '5020',
-        right: 10,
-        bottom: 0,
-        isNew:true
-    },
+    }
 ];
 
 /**

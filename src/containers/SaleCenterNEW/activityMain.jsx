@@ -238,13 +238,11 @@ class ActivityMain extends React.Component {
                 isOnline: this.isOnline(),
             });
         });
-        console.log(pages,'pages--------------')
         this.setState({
             pages: pages,
         });
     }
     renderActivityTags() {
-        console.log(this.props.index,'thispropsindex==========')
         return this.state.pages[this.props.index];
     }
     isOnline = () => {
