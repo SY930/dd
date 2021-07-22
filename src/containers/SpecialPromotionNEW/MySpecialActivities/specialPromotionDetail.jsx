@@ -1357,12 +1357,19 @@ class SpecialPromotionDetail extends React.Component {
             }
         });
         // console.log('dataSource', dataSource);
+        let len = null;
+        if(eventWay == 68){
+            len = 2000
+        }
+        if(eventWay == 66){
+            len = 700
+        }
         return (
             <Table
                 dataSource={dataSource}
                 columns={columns.filter(Boolean)}
                 bordered={true}
-                scroll={eventWay == 68 ? {x: 2000} : {}}
+                scroll={eventWay == 68 || eventWay == 66 ? {x: len} : {}}
                 pagination={{
                     current: this.state.pageNo,
                     total: this.state.total,
