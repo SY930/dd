@@ -914,8 +914,8 @@ class SpecialPromotionDetail extends React.Component {
             },
             {
                 title: '累计赠送数',
-                dataIndex: 'sendPointAmount',
-                key: 'sendPointAmount',
+                dataIndex: 'sendAmount',
+                key: 'sendAmount',
                 className: 'TableTxtRight',
                 render: data => data || 0,
             },
@@ -932,7 +932,8 @@ class SpecialPromotionDetail extends React.Component {
         try {
             dataSource = [{
                 title: `${this.props.intl.formatMessage(STRING_SPE.dk46b2bc3b1333)}`,
-                ...this.props.mySpecialActivities.data.eventInfo.eventPointData,
+                sendAmount:this.props.mySpecialActivities.data.eventInfo.eventPointData ? this.props.mySpecialActivities.data.eventInfo.eventPointData.sendPointAmount : null,
+                sendCount:this.props.mySpecialActivities.data.eventInfo.eventPointData ? this.props.mySpecialActivities.data.eventInfo.eventPointData.sendCount : null,
             },{
                 title: '赠送成长值',
                 ...this.props.mySpecialActivities.data.eventInfo.growthValueData,
@@ -940,7 +941,6 @@ class SpecialPromotionDetail extends React.Component {
         } catch (e) {
             dataSource = [];
         }
-        console.log(dataSource,this.props.mySpecialActivities.data,'dataSourcedataSourcedataSource--------------1')
         return (
             <Table dataSource={dataSource} columns={columns} bordered={true} pagination={false} />
         );
