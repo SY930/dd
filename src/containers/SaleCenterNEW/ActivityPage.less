@@ -234,6 +234,39 @@
     .PriceInputContent{
         width: 55px;
     }
+    .settingGuide{
+        position: relative;
+        display: inline-block;
+        color: #5a9fea;
+        cursor: pointer;
+        margin-left: 5px;
+        .settingImg{
+            display: none;
+            position: absolute;
+            width: 602px;
+            height: 227px;
+            top: 20px;
+            left: -300px;
+            z-index: 9;
+        }
+        &:hover > .settingImg{
+            display: block;
+        }
+    }
+    .addFoodWrapper{
+        width: 489px;
+        height: 66px;
+        background: #F9F9F9;
+        border-radius: 4px;
+        .addFoodBtn{
+            position: absolute;
+            top: 20px;
+            left: 198px;
+        }
+    }
+    .foodTableList{
+        
+    }
 }
 
 .upsideDown i{

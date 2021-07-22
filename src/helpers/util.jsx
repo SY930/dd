@@ -754,7 +754,7 @@ export function isFilterShopType(curType){
     // 授权店铺过滤活动类型  
     // 开卡赠送  52  线上餐厅送礼  23  抽抽乐78  评价送礼  64
     // 消费返利品 3010  消费返积分 3020
-    let filterType = ['23', '52', '78', '64', '3010', '3020','82'];
+    let filterType = ['23', '52', '78', '64', '3010', '3020','82','5020'];
     
     return filterType.includes(curType)
 }

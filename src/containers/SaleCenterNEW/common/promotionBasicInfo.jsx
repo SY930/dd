@@ -280,7 +280,7 @@ class PromotionBasicInfo extends React.Component {
         nextFlag = this.state.shopsAllSet ? false : nextFlag;
         const basicInfo = this.props.promotionBasicInfo.get('$basicInfo').toJS();
         const promotionType = basicInfo.promotionType;
-        if (promotionType == '1080' || promotionType == '2070' || promotionType == '5010' || promotionType == '5020' ||promotionType == '1021') {
+        if (promotionType == '1080' || promotionType == '2070' || promotionType == '5010' || promotionType == '5020' || promotionType == '1021') {
             if (this.state.dateRange[0] && this.state.dateRange[1]) {
                 this.setState({ rangePickerstatus: 'success' })
             } else {
@@ -1192,7 +1192,7 @@ class PromotionBasicInfo extends React.Component {
                     </FormItem>
                 }
                 
-                <FormItem
+                {/* <FormItem
                     label="活动起止日期2"
                     className={[styles.FormItemStyle, styles.cardLevelTree].join(' ')}
                     labelCol={{ span: 4 }}
@@ -1212,7 +1212,7 @@ class PromotionBasicInfo extends React.Component {
                                 className={styles.ActivityDateDayleft}
                                 disabledDate={disabledDate}
                                 style={{ width: '100%' }}
-                                {...dateRangeProps}
+                                // {...dateRangeProps}
                                 format="YYYY-MM-DD"
                                 placeholder={['开始日期', '结束日期']}
                             />
@@ -1227,10 +1227,10 @@ class PromotionBasicInfo extends React.Component {
                             </div>
                         </Col>
                     </Row>
-                </FormItem>
+                </FormItem> */}
 
 
-                {/* <div style={{ position: 'relative' }}>
+                <div style={{ position: 'relative' }}>
                     {
                         promotionType == '1080' || promotionType == '2070' || promotionType == '5010' || promotionType == '5020' ||promotionType == '1021' ?
                             <p style={{ position:'absolute', top: '13px', left: '16px', fontSize: '15px', color: '#f04134' }}>*</p>
@@ -1261,7 +1261,7 @@ class PromotionBasicInfo extends React.Component {
                             </Col>
                         </Row>
                     </FormItem>
-                </div> */}
+                </div>
                 {
                     propmotionType == '5020' ? null : 
                     <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 17, offset: 4 }}>

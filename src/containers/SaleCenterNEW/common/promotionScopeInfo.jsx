@@ -20,7 +20,8 @@ import {
     Input,
     Radio,
     Tooltip,
-    Icon
+    Icon,
+    message
 } from 'antd';
 
 const FormItem = Form.Item;
@@ -109,8 +110,9 @@ class PromotionScopeInfo extends React.Component {
             }
         });
         const {selections} = this.state;
-        if (promotionType == '5010' && selections.length == 0 && !this.props.user.toJS().shopID > 0) {
+        if ((promotionType == '5010' || promotionType == '5020') && selections.length == 0 && !this.props.user.toJS().shopID > 0) {
             flag = false;
+            message.warning('请选择适用店铺')
             this.setState({ shopStatus: false })
         } else {
             this.setState({ shopStatus: true })
@@ -580,10 +582,11 @@ class PromotionScopeInfo extends React.Component {
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
-                required={isRequire}
+                required={promotionType == '5020' ? true : isRequire}
                 validateStatus={valid ? 'error' : 'success'}
                 help={valid ? SALE_LABEL.k5hkj1ef: null}
-            >
+            >   
+                {promotionType == '5020' && <p>一个店铺仅能参与一个会员专属菜活动</p>}
                 <ShopSelector
                     value={selections}
                     brandList={brands}

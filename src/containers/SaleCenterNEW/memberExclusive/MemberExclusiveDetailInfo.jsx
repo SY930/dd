@@ -9,11 +9,11 @@ import SpecialDishesTableWithoutBrand from './SpecialDishesTableWithoutBrand'; /
 import SpecialDishesTableWithBrand from './SpecialDishesTableWithBrand';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
-import {injectIntl} from '../IntlDecor';
+import { injectIntl } from '../IntlDecor';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
-
+import settingGuideImg from './assets/settingGuide.png';
 import AdvancedPromotionDetailSetting from '../common/AdvancedPromotionDetailSetting';
 
 import {
@@ -49,7 +49,6 @@ class MemberExclusiveDetailInfo extends React.Component {
             shortRule,
         };
 
-        this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
         this.onChangeClick = this.onChangeClick.bind(this);
         this.handleIsLimitedChange = this.handleIsLimitedChange.bind(this);
         this.handleAmountLimitChange = this.handleAmountLimitChange.bind(this);
@@ -99,7 +98,7 @@ class MemberExclusiveDetailInfo extends React.Component {
                 foodName: item.foodName,
                 foodUnitName: item.unit,
                 brandID: item.brandID || 0,
-                price: parseFloat(item.newPrice) < 0 ?  item.price : parseFloat(item.newPrice),
+                price: parseFloat(item.newPrice) < 0 ? item.price : parseFloat(item.newPrice),
             }
         });
         if (isLimited == 1 && !amountLimit) {
@@ -138,7 +137,7 @@ class MemberExclusiveDetailInfo extends React.Component {
         if (isCustomerUseCountLimited == 1 && customerUseCountLimit > 0 && (this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType == '3010' || this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType == '1010')) {
             rule.customerUseCountLimit = customerUseCountLimit;
         } else {
-            if(this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType == '3010' || this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType == '1010'){
+            if (this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType == '3010' || this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType == '1010') {
                 rule.customerUseCountLimit = 0;
             }
         }
@@ -167,46 +166,35 @@ class MemberExclusiveDetailInfo extends React.Component {
         })
     }
 
-    renderAdvancedSettingButton() {
-        return (
-            <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 17, offset: 4 }} >
-                <span className={styles.gTip}>{SALE_LABEL.k5ezdwpv}</span>
-                <span className={styles.gDate} onClick={this.onChangeClick}>
-                {/* 高级设置 */}
-                    {SALE_LABEL.k5ezdx9f} {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
-                    {this.state.display && <Iconlist className="down-blue" iconName={'up'} width="13px" height="13px" />}
-                </span>
-            </FormItem>
-        )
-    }
+   
 
     handleIsLimitedChange(value) {
-        this.setState({isLimited: value})
+        this.setState({ isLimited: value })
     }
 
     handleAmountLimitChange(value) {
-        this.setState({amountLimit: value.number})
+        this.setState({ amountLimit: value.number })
     }
     handleIsTotalLimitedChange(value) {
-        this.setState({isTotalLimited: value})
+        this.setState({ isTotalLimited: value })
     }
     handleTotalAmountLimitChange(value) {
-        this.setState({totalAmountLimit: value.number})
+        this.setState({ totalAmountLimit: value.number })
     }
     handleIsCustomUseCountLimitedChange = (value) => {
-        this.setState({isCustomerUseCountLimited: value})
-        if(value == 0) {
+        this.setState({ isCustomerUseCountLimited: value })
+        if (value == 0) {
             this.props.setPromotionDetail({
                 customerUseCountLimit: 0,
             })
-        }else{
+        } else {
             this.props.setPromotionDetail({
                 customerUseCountLimit: 1,
             })
         }
     }
     handleCustomerUseCountLimitChange = (value) => {
-        this.setState({customerUseCountLimit: value.number})
+        this.setState({ customerUseCountLimit: value.number })
         this.props.setPromotionDetail({
             customerUseCountLimit: value.number,
         });
@@ -231,7 +219,7 @@ class MemberExclusiveDetailInfo extends React.Component {
             if (amountLimit > 0 && totalAmountLimit > 0 && +amountLimit > totalAmountLimit) {
                 return {
                     status: 'error',
-                message: <p style={{whiteSpace: 'nowrap'}}>{SALE_LABEL.k6hdpu9l}</p>
+                    message: <p style={{ whiteSpace: 'nowrap' }}>{SALE_LABEL.k6hdpu9l}</p>
                 }
             }
         }
@@ -247,147 +235,85 @@ class MemberExclusiveDetailInfo extends React.Component {
     }
     renderLimitRules() {
         const { intl } = this.props;
-        const k6hdpuyl = intl.formatMessage(SALE_STRING.k6hdpuyl);
-        const k5kp4vhr = intl.formatMessage(SALE_STRING.k5kp4vhr);
         const k5f4b1b9 = intl.formatMessage(SALE_STRING.k5f4b1b9);
         return (
-            <div>
-                <div style={{ color: 'rgba(0,0,0,0.85)'}} className={styles.coloredBorderedLabel}>
-                    {/* 点单限制 */}
-                    {SALE_LABEL.k6hdpuhx} 
-                </div>
-                <div style={{height: '40px', paddingLeft: 35, marginTop: '8px'}} className={styles.flexContainer}>
-                    <div style={{lineHeight: '28px', marginRight: '14px'}}>
-                        {SALE_LABEL.k6hdpuq9}
-                    </div>
-                    <div style={{width: '400px'}}>
-                        <Col  span={this.state.isLimited == 0 ? 24 : 12}>
-                            <Select onChange={this.handleIsLimitedChange}
-                                    value={String(this.state.isLimited)}
-                                    getPopupContainer={(node) => node.parentNode}
-                            >
-                                <Option key="0" value={'0'}>{k6hdpuyl}</Option>
-                                <Option key="1" value={'1'}>{k5kp4vhr}</Option>
-                            </Select>
-                        </Col>
-                        {
-                            this.state.isLimited == 1 ?
-                                <Col span={12}>
-                                    <FormItem
-                                        style={{ marginTop: -6 }}
-                                        validateStatus={this.state.amountLimit > 0 ? 'success' : 'error'}
-                                        help={this.state.amountLimit > 0 ? null : k5f4b1b9}
-                                    >
-                                        <PriceInput
-                                            maxNum={5}
-                                            addonAfter={SALE_LABEL.k6hdpv6x}
-                                            value={{ number: this.state.amountLimit }}
-                                            onChange={this.handleAmountLimitChange}
-                                            modal="int"
-                                        />
-                                    </FormItem>
-                                </Col> : null
-                        }
-                    </div>
-               </div>
-                <div style={{height: '40px', paddingLeft: 35, marginTop: '8px'}} className={styles.flexContainer}>
-                    <div style={{lineHeight: '28px', marginRight: '14px'}}>
-                        {SALE_LABEL.k6hdpvf9}
-                    </div>
-                    <div style={{width: '400px'}}>
-                        <Col  span={this.state.isTotalLimited == 0 ? 24 : 12}>
-                            <Select onChange={this.handleIsTotalLimitedChange}
-                                    value={String(this.state.isTotalLimited)}
-                                    getPopupContainer={(node) => node.parentNode}
-                            >
-                                <Option key="0" value={'0'}>{k6hdpuyl}</Option>
-                                <Option key="1" value={'1'}>{k5kp4vhr}</Option>
-                            </Select>
-                        </Col>
-                        {
-                            this.state.isTotalLimited == 1 ?
-                                <Col span={12}>
-                                    <FormItem
-                                        style={{ marginTop: -6 }}
-                                        validateStatus={this.getTotalAmountValidation().status}
-                                        help={this.getTotalAmountValidation().message}
-                                    >
-                                        <PriceInput
-                                            addonAfter={SALE_LABEL.k6hdpv6x}
-                                            maxNum={5}
-                                            value={{ number: this.state.totalAmountLimit }}
-                                            onChange={this.handleTotalAmountLimitChange}
-                                            modal="int"
-                                        />
-                                    </FormItem>
-                                </Col> : null
-                        }
-                    </div>
-                </div>
+            <div style={{ width: '360px' }}>
+                <Col span={this.state.isCustomerUseCountLimited == 0 ? 24 : 12}>
+                    <Select onChange={this.handleIsCustomUseCountLimitedChange}
+                        value={String(this.state.isCustomerUseCountLimited)}
+                        getPopupContainer={(node) => node.parentNode}
+                    >
+                        <Option key="0" value={'0'}>不限制</Option>
+                        <Option key="1" value={'1'}>每人每天限购</Option>
+                    </Select>
+                </Col>
                 {
-                    this.state.isTotalLimited == 1 ?
-                    <RadioGroup className={styles.radioStyle} value={this.state.shortRule} onChange={this.handleShortRule}>
-                        <Radio key={'0'} value={0}>{SALE_LABEL.k6hdpvnl}</Radio>
-                        <Radio key={'1'} value={1}>{SALE_LABEL.k6hdpvvx}</Radio>
-                    </RadioGroup> : null
-                }
-                <div style={{height: '40px', paddingLeft: 35, marginTop: '8px'}} className={styles.flexContainer}>
-                    <div style={{lineHeight: '28px', marginRight: '14px'}}>
-                        {SALE_LABEL.k6hdpw49}
-                    </div>
-                    <div style={{width: '400px'}}>
-                        <Col  span={this.state.isCustomerUseCountLimited == 0 ? 24 : 12}>
-                            <Select onChange={this.handleIsCustomUseCountLimitedChange}
-                                    value={String(this.state.isCustomerUseCountLimited)}
-                                    getPopupContainer={(node) => node.parentNode}
+                    this.state.isCustomerUseCountLimited == 1 ?
+                        <Col span={8} style={{ marginLeft: 5 }}>
+                            <FormItem
+                                style={{ marginTop: -6 }}
+                                validateStatus={this.state.customerUseCountLimit > 0 ? 'success' : 'error'}
+                                help={this.state.customerUseCountLimit > 0 ? null : k5f4b1b9}
                             >
-                                <Option key="0" value={'0'}>{k6hdpuyl}</Option>
-                                <Option key="1" value={'1'}>{k5kp4vhr}</Option>
-                            </Select>
-                        </Col>
-                        {
-                            this.state.isCustomerUseCountLimited == 1 ?
-                                <Col span={12}>
-                                    <FormItem
-                                        style={{ marginTop: -6 }}
-                                        validateStatus={this.state.customerUseCountLimit > 0 ? 'success' : 'error'}
-                                        help={this.state.customerUseCountLimit > 0 ? null : k5f4b1b9}
-                                    >
-                                        <PriceInput
-                                            addonAfter={SALE_LABEL.k6hdpv6x}
-                                            maxNum={5}
-                                            value={{ number: this.state.customerUseCountLimit }}
-                                            onChange={this.handleCustomerUseCountLimitChange}
-                                            modal="int"
-                                        />
-                                    </FormItem>
-                                </Col> : null
-                        }
-                    </div>
-                </div>
+                                <PriceInput
+                                    addonAfter={'份'}
+                                    maxNum={5}
+                                    value={{ number: this.state.customerUseCountLimit }}
+                                    onChange={this.handleCustomerUseCountLimitChange}
+                                    modal="int"
+                                />
+                            </FormItem>
+                        </Col> : null
+                }
             </div>
+
         )
     }
 
     render() {
-        const { isOnline } = this.props;
+        console.log(this.props.isShopFoodSelectorMode,'isShopFoodSelectorModeisShopFoodSelectorModeisShopFoodSelectorMode')
         return (
             <div>
                 <Form className={styles.FormStyle}>
-                    {
-                        this.props.isShopFoodSelectorMode ? (
-                            <SpecialDishesTableWithoutBrand
-                                onChange={this.dishesChange}
-                            />
-                        ) : (
-                            <SpecialDishesTableWithBrand
-                                onChange={this.dishesChange}
-                            />
-                        )
-                    }
-                    {this.renderLimitRules()}
-                    {!isOnline && this.renderAdvancedSettingButton()}
-                    {!isOnline && this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
+
+                    <FormItem
+                        label={'活动菜品'}
+                        required
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 3 }}
+                        wrapperCol={{ span: 18 }}
+                    >
+                        <div style={{marginTop:8}}>
+                            只可添加1项菜品，仅能添加“不可单独销售”菜品 
+                            <div className={styles.settingGuide}>
+                                设置指南
+                                <img src={settingGuideImg} alt="" className={styles.settingImg}/>
+                            </div>
+                        </div>
+                        {/* {
+                            this.props.isShopFoodSelectorMode ? (
+                                <SpecialDishesTableWithoutBrand
+                                    onChange={this.dishesChange}
+                                />
+                            ) : (
+                                    <SpecialDishesTableWithBrand
+                                        onChange={this.dishesChange}
+                                    />
+                                )
+                        } */}
+                        <SpecialDishesTableWithBrand
+                            onChange={this.dishesChange}
+                        />
+                    </FormItem>
+                    <FormItem
+                        label={'参与限制'}
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 3 }}
+                        wrapperCol={{ span: 18 }}
+                        style={{marginTop:20}}
+                    >
+                        {this.renderLimitRules()}
+                    </FormItem>
                 </Form>
             </div>
         )

@@ -274,6 +274,7 @@ class FoodSelectModal extends Component {
             allDishes = [], // [{value: String}]
             multiple,
         } = this.props;
+        console.log(allDishes,'allDishes------------------1')
         const {
             currentBrandID,
             selectedCategories,
