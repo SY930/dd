@@ -56,14 +56,26 @@ class Step2 extends Component {
         const render = d => d()(<TimeLimit decorator={d} />);
         const mpOptions = this.getMpOpts();
         const mpRender = d => d()(<MpList options={mpOptions} decorator={d} />);
-        const options = this.getGroupCardTypeOpts();
+        const cardOptions = this.getGroupCardTypeOpts();
         const settleOptions = this.getSettleUnitInfoOpts();
+        const cardRender = d => d()(<Select
+            style={{width: 280}}
+            showSearch={true}
+            allowClear={true}
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
+            {
+                cardOptions.map((type, index) =>
+                    <Option key={index} value={String(type.value)} >{type.label}</Option>
+                )
+            }
+        </Select>);
         return {
             ...other,
             mpIDList: {...mpIDList, render: mpRender},
             // participateRule: {...participateRule, disabled: disable},
             joinCount: {...joinCount, render},
-            defaultCardType: {...defaultCardType, options},
+            defaultCardType: {...defaultCardType, render:cardRender},
             settleUnitID: {...settleUnitID, options: settleOptions},
         };
     }

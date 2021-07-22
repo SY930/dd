@@ -23,24 +23,39 @@ function getAccountInfo() {
 /**
  *  新用户注册卡类 
  */
+// async function getGroupCardTypeList() {
+//     const { groupID, roleType, loginName, groupLoginName } = getAccountInfo();
+//     const response = await fetchData('getSetUsedLevels_dkl', { 
+//         groupID,
+//         _groupID: groupID,
+//         _role: roleType,
+//         _loginName: loginName,
+//         _groupLoginName: groupLoginName
+//     }, null, {path: '',});
+//     const { code, message: msg, data } = response;
+//     if (code === '000') {
+//         let {groupCardTypeList} = data
+//         return groupCardTypeList;
+//     }
+//     message.error(msg);
+//     return false;
+// }
+/**
+ * 获取新用户注册卡类 
+ */
 async function getGroupCardTypeList() {
-    const { groupID, roleType, loginName, groupLoginName } = getAccountInfo();
-    const response = await fetchData('getSetUsedLevels_dkl', { 
-        groupID,
-        _groupID: groupID,
-        _role: roleType,
-        _loginName: loginName,
-        _groupLoginName: groupLoginName
-    }, null, {path: '',});
-    const { code, message: msg, data } = response;
+    const { groupID } = getAccountInfo();
+    const data = { groupID };
+    const method = 'crm/cardTypeLevelService_queryCardTypeBaseInfoList.ajax';
+    const params = { service :'HTTP_SERVICE_URL_CRM', type, data, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: { cardTypeBaseInfoList = [] } } = response;
     if (code === '000') {
-        let {groupCardTypeList} = data
-        return groupCardTypeList;
+        return cardTypeBaseInfoList;
     }
     message.error(msg);
-    return false;
+    return [];
 }
-
 /**
  *  公众号 
  */

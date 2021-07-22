@@ -17,6 +17,7 @@ class Lottery extends Component {
     state = {
         tabKey: '1',
         cardList: [],
+        passWordList:[]
     }
 
     componentDidMount() {
@@ -60,7 +61,9 @@ class Lottery extends Component {
         const list = [...value];
         const item = list[tabKey - 1];
         list[tabKey - 1] = { ...item, ...data };
-        console.log(list,'list-------onAllchange')
+        this.setState({
+            passWordList:list
+        })
         onChange(list);
     }
     onGiftOddsChange = ({ target }) => {
@@ -87,9 +90,8 @@ class Lottery extends Component {
         this.onAllChange({ giftList });
     }
     render() {
-        const { tabKey, cardList } = this.state;
+        const { tabKey, cardList,passWordList } = this.state;
         const { value = [], decorator } = this.props;
-        console.log(value,'value-------------------participateMarkBoxLottey')
         // if(!value[0]){ return null}
         const { length } = value;
         const disable = value[0] && value[0].userCount > 0 ;    // 如果被用了，不能编辑
@@ -135,8 +137,12 @@ class Lottery extends Component {
                                                             if(!v){
                                                                 return cb('请输入口令');
                                                             }
-                                                            if (v && v.length > 10) {
-                                                                return cb('最多可输入10个字符');
+                                                            let isRepeat = passWordList.some((item) => item.participateMark == v);
+                                                            if(isRepeat){
+                                                                return cb('口令不可重复');
+                                                            }
+                                                            if (v && v.length > 20) {
+                                                                return cb('最多可输入20个字符');
                                                             }
                                                             cb();
                                                         },
