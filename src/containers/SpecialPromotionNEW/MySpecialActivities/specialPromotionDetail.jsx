@@ -935,7 +935,7 @@ class SpecialPromotionDetail extends React.Component {
                 ...this.props.mySpecialActivities.data.eventInfo.eventPointData,
             },{
                 title: '赠送成长值',
-                ...this.props.mySpecialActivities.data.eventInfo.eventPointData,
+                ...this.props.mySpecialActivities.data.eventInfo.growthValueData,
             }];
         } catch (e) {
             dataSource = [];
