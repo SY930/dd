@@ -49,11 +49,6 @@ class MemberExclusiveDetailInfo extends React.Component {
             shortRule,
         };
 
-        this.onChangeClick = this.onChangeClick.bind(this);
-        this.handleIsLimitedChange = this.handleIsLimitedChange.bind(this);
-        this.handleAmountLimitChange = this.handleAmountLimitChange.bind(this);
-        this.handleIsTotalLimitedChange = this.handleIsTotalLimitedChange.bind(this);
-        this.handleTotalAmountLimitChange = this.handleTotalAmountLimitChange.bind(this);
         this.dishesChange = this.dishesChange.bind(this);
     }
 
@@ -148,11 +143,7 @@ class MemberExclusiveDetailInfo extends React.Component {
         return true;
     };
 
-    onChangeClick() {
-        this.setState(
-            { display: !this.state.display }
-        )
-    }
+   
     dishesChange(val) {
         val.forEach(item => {
             if (Number(item.newPrice) === 0) {
@@ -164,22 +155,6 @@ class MemberExclusiveDetailInfo extends React.Component {
         this.setState({
             data: val,
         })
-    }
-
-   
-
-    handleIsLimitedChange(value) {
-        this.setState({ isLimited: value })
-    }
-
-    handleAmountLimitChange(value) {
-        this.setState({ amountLimit: value.number })
-    }
-    handleIsTotalLimitedChange(value) {
-        this.setState({ isTotalLimited: value })
-    }
-    handleTotalAmountLimitChange(value) {
-        this.setState({ totalAmountLimit: value.number })
     }
     handleIsCustomUseCountLimitedChange = (value) => {
         this.setState({ isCustomerUseCountLimited: value })
@@ -271,11 +246,9 @@ class MemberExclusiveDetailInfo extends React.Component {
     }
 
     render() {
-        console.log(this.props.isShopFoodSelectorMode,'isShopFoodSelectorModeisShopFoodSelectorModeisShopFoodSelectorMode')
         return (
             <div>
                 <Form className={styles.FormStyle}>
-
                     <FormItem
                         label={'活动菜品'}
                         required
