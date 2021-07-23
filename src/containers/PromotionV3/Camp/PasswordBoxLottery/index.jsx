@@ -86,7 +86,6 @@ class Lottery extends Component {
         this.onAllChange({ cardTypeID });
     }
     onGiftChange = (giftList) => {
-        console.log(giftList,'giftList-------------')
         this.onAllChange({ giftList });
     }
     render() {
