@@ -245,6 +245,7 @@ const renderGrowthValueFn = function () {
                 })(
                     <PriceInput
                         addonAfter={"成长值"}
+                        disabled={giftSendCount > 0}
                         modal="float"
                         maxNum={7}
                         placeholder="请输入成长值"
