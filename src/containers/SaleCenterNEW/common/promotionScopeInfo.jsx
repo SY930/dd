@@ -33,7 +33,7 @@ import { axios, getStore } from '@hualala/platform-base';
 import styles from '../ActivityPage.less';
 import {isEqual, uniq } from 'lodash';
 import ShopSelector from '../../../components/ShopSelector';
-import { getPromotionShopSchema, fetchPromotionScopeInfo, saleCenterSetScopeInfoAC, saleCenterGetShopByParamAC, SCENARIOS } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
+import { getPromotionShopSchema, fetchPromotionScopeInfo, saleCenterSetScopeInfoAC, saleCenterGetShopByParamAC, SCENARIOS,fetchFilterShops } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from '../IntlDecor';
@@ -275,6 +275,7 @@ class PromotionScopeInfo extends React.Component {
 
     getFilteredShopSchema() {
         const availableBrands = this.state.brands;
+        const activityType = this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']);
         let dynamicShopSchema = Object.assign({}, this.state.shopSchema);
         if (dynamicShopSchema.shops.length === 0) {
             return dynamicShopSchema;
@@ -284,7 +285,7 @@ class PromotionScopeInfo extends React.Component {
             dynamicShopSchema.shops = dynamicShopSchema.shops.filter(shop => availableBrands.includes(shop.brandID));
         }
         const a = this.props.isUpdate;
-        if (this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) == '5010' && (this.props.isNew || this.props.isUpdate)) {
+        if ((activityType == '5010' || activityType == '5020') && (this.props.isNew || this.props.isUpdate)) {
             dynamicShopSchema.shops = dynamicShopSchema.shops.filter(shop => !this.state.filterShops.includes(shop.shopID));
         }
         const shops = dynamicShopSchema.shops;
@@ -550,6 +551,7 @@ class PromotionScopeInfo extends React.Component {
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         const { brands, shopStatus, allShopSet, selections, isRequire } = this.state;
         if(promotionType == '5010' || promotionType == '5020'){
+            console.log(this.getFilteredShopSchema(),'thisthis.getFilteredShopSchema()========')
             return (
                 <Form.Item
                     label={SALE_LABEL.k5dlggak}

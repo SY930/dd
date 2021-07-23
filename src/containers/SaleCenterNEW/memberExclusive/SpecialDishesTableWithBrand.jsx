@@ -291,7 +291,7 @@ class SpecialDishesTableWithBrand extends Component {
                 dataIndex: 'foodName',
                 key: 'foodName',
                 width: 120,
-                className: 'TableTxtLeft',
+                className: 'TableTxtCenter',
                 render: (text, record, index) => {
                     return <Tooltip title={text}>{text}</Tooltip>
                 },
@@ -311,20 +311,9 @@ class SpecialDishesTableWithBrand extends Component {
                 width: 80,
                 dataIndex: 'newPrice',
                 key: 'newPrice',
-                className: 'noPadding',
+                className: 'TableTxtCenter',
                 render: (text, record, index) => {
-                    return (
-                        <span className={styles.rightAlign}>
-                            <PriceInputIcon
-                                type="text"
-                                modal="float"
-                                placeholder={k6hfzdh8}
-                                value={{ number: record.newPrice ? record.newPrice : '0' }}
-                                index={index}
-                                onChange={(val) => { this.onPriceCellChange(val, record) }}
-                            />
-                        </span>
-                    )
+                    return <Tooltip title={text}>{text}</Tooltip>
                 },
                 // filterDropdown: (
                 //     <div className="custom-filter-dropdown">
