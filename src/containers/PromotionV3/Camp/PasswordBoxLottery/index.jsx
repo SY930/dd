@@ -17,7 +17,7 @@ class Lottery extends Component {
     state = {
         tabKey: '1',
         cardList: [],
-        passWordList:[]
+        passWordList:[],
     }
 
     componentDidMount() {
@@ -137,7 +137,7 @@ class Lottery extends Component {
                                                                 return cb('请输入口令');
                                                             }
                                                             let isRepeat = passWordList.some((item) => item.participateMark == v);
-                                                            if(isRepeat){
+                                                            if(isRepeat && v != x.participateMark){
                                                                 return cb('口令不可重复');
                                                             }
                                                             if (v && v.length > 20) {
