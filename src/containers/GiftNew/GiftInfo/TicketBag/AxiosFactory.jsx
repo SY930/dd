@@ -44,9 +44,9 @@ async function getGroupCardTypeList() {
  */
 async function getCardTypeList() {
     const { groupID } = getAccountInfo();
-    const data = { groupID };
+    const data = { groupID ,regFromLimit:true};
     const method = 'crm/cardTypeLevelService_queryCardTypeBaseInfoList.ajax';
-    const params = { service:'HTTP_SERVICE_URL_CRM', type, groupID,data, method ,regFromLimit : true};
+    const params = { service:'HTTP_SERVICE_URL_CRM', type, groupID,data, method };
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: { cardTypeBaseInfoList = [] } } = response;
     if (code === '000') {

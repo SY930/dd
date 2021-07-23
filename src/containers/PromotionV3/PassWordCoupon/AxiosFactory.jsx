@@ -45,7 +45,7 @@ function getAccountInfo() {
  */
 async function getGroupCardTypeList() {
     const { groupID } = getAccountInfo();
-    const data = { groupID };
+    const data = { groupID,regFromLimit:true };
     const method = 'crm/cardTypeLevelService_queryCardTypeBaseInfoList.ajax';
     const params = { service :'HTTP_SERVICE_URL_CRM', type, data, method };
     const response = await axios.post(url + method, params);
