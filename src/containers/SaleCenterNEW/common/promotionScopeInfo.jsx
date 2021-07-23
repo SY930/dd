@@ -549,7 +549,7 @@ class PromotionScopeInfo extends React.Component {
     renderShopsOptions() {
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         const { brands, shopStatus, allShopSet, selections, isRequire } = this.state;
-        if(promotionType == '5010'){
+        if(promotionType == '5010' || promotionType == '5020'){
             return (
                 <Form.Item
                     label={SALE_LABEL.k5dlggak}
@@ -560,6 +560,7 @@ class PromotionScopeInfo extends React.Component {
                     validateStatus={shopStatus ? 'success' : 'error'}
                     help={shopStatus ? null : SALE_LABEL.k5hkj1ef}
                 >
+                    { promotionType == '5020' && <p>一个店铺仅能参与一个会员专属菜活动</p> }
                     <ShopSelector
                         value={selections}
                         brandList={brands}
@@ -585,7 +586,7 @@ class PromotionScopeInfo extends React.Component {
                 validateStatus={valid ? 'error' : 'success'}
                 help={valid ? SALE_LABEL.k5hkj1ef: null}
             >   
-                {promotionType == '5020' && <p>一个店铺仅能参与一个会员专属菜活动</p>}
+                {/* {promotionType == '5020' && <p>一个店铺仅能参与一个会员专属菜活动</p>} */}
                 <ShopSelector
                     value={selections}
                     brandList={brands}
