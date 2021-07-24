@@ -39,6 +39,9 @@ class ShopSelector extends Component {
                 isShopSelectorShow:nextProps.isShopSelectorShow
             })
         }
+        if (!isEqual(this.props.filterShopIds, nextProps.filterShopIds)) {
+            this.loadShops({}, nextProps.schemaData, true,nextProps.filterShopIds);
+        }
         if (!isEqual(this.props.schemaData, nextProps.schemaData)) {
             this.loadShops({}, nextProps.schemaData, true);
         }
@@ -50,12 +53,13 @@ class ShopSelector extends Component {
         }
     }
 
-    loadShops(params = {}, cache = this.props.schemaData, isForce = false) {
+    loadShops(params = {}, cache = this.props.schemaData, isForce = false,filterShopIds = []) {
         let {filterParm = {}} = this.props
         if (!isForce && (this.props.options || this.state.options)) return Promise.resolve();
         params = {...params, ...filterParm}
         return loadShopSchema(params, cache)
             .then(({ shops, ...filterOptions }) => {
+                shops = shops.filter(shop => !filterShopIds.includes(shop.shopID));
                 this.setState({
                     loading: false,
                     options: shops,
@@ -136,7 +140,6 @@ class ShopSelector extends Component {
             if (!shopInfo) return ret;
             return ret.concat({ value: shopInfo.value, label: shopInfo.shopName });
         }, []);
-
         return (
             <div className="hll-shop-selector">
                 {size === 'default' &&

@@ -117,6 +117,11 @@ class PromotionScopeInfo extends React.Component {
         } else {
             this.setState({ shopStatus: true })
         }
+        if(promotionType == '5020' && selections.length > 1){
+            flag = false;
+            message.warning('只能选择一个店铺')
+            this.setState({ shopStatus: false })
+        }
         if(!this.props.user.toJS().shopID) {
             const {isRequire} = this.state;
             if (isRequire && !selections[0]) {
@@ -306,7 +311,6 @@ class PromotionScopeInfo extends React.Component {
             const allBrands = uniq(shops.map(shop => shop.brandID));
             dynamicShopSchema.brands = dynamicShopSchema.brands.filter(brandCollection => allBrands.includes(brandCollection.brandID));
         }
-        // console.log(dynamicShopSchema);
         return dynamicShopSchema;
     }
 
@@ -549,9 +553,8 @@ class PromotionScopeInfo extends React.Component {
     }
     renderShopsOptions() {
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
-        const { brands, shopStatus, allShopSet, selections, isRequire } = this.state;
-        if(promotionType == '5010' || promotionType == '5020'){
-            console.log(this.getFilteredShopSchema(),'thisthis.getFilteredShopSchema()========')
+        const { brands, shopStatus, allShopSet, selections, isRequire ,filterShops} = this.state;
+        if(promotionType == '5010'){
             return (
                 <Form.Item
                     label={SALE_LABEL.k5dlggak}
@@ -562,7 +565,6 @@ class PromotionScopeInfo extends React.Component {
                     validateStatus={shopStatus ? 'success' : 'error'}
                     help={shopStatus ? null : SALE_LABEL.k5hkj1ef}
                 >
-                    { promotionType == '5020' && <p>一个店铺仅能参与一个会员专属菜活动</p> }
                     <ShopSelector
                         value={selections}
                         brandList={brands}
@@ -570,7 +572,7 @@ class PromotionScopeInfo extends React.Component {
                         onChange={
                             this.editBoxForShopsChange
                         }
-                    />
+                    /> 
                     {allShopSet ?
                         <p style={{ color: '#e24949' }}>{SALE_LABEL.k5m67b23}</p>
                         : null}
@@ -588,13 +590,21 @@ class PromotionScopeInfo extends React.Component {
                 validateStatus={valid ? 'error' : 'success'}
                 help={valid ? SALE_LABEL.k5hkj1ef: null}
             >   
-                {/* {promotionType == '5020' && <p>一个店铺仅能参与一个会员专属菜活动</p>} */}
-                <ShopSelector
-                    value={selections}
-                    brandList={brands}
-                    onChange={ this.editBoxForShopsChange }
-                    filterParm={isFilterShopType(promotionType)?{productCode: 'HLL_CRM_License'}:{}}
-                />
+                {promotionType == '5020' && <p>一个店铺仅能参与一个会员专属菜活动</p>}
+                {promotionType == '5020' ? 
+                    <ShopSelector
+                        value={selections}
+                        brandList={brands}
+                        onChange={ this.editBoxForShopsChange }
+                        filterShopIds = {filterShops}//会员专属菜引入过滤店铺
+                    /> : 
+                    <ShopSelector
+                        value={selections}
+                        brandList={brands}
+                        onChange={ this.editBoxForShopsChange }
+                        filterParm={isFilterShopType(promotionType)?{productCode: 'HLL_CRM_License'}:{}}
+                    />
+                }
                 {allShopSet ?
                     <p style={{ color: '#e24949' }}>{SALE_LABEL.k5m67b23}</p>
                     : null}
