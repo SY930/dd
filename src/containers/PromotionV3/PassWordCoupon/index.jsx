@@ -274,7 +274,7 @@ class PassWordCoupon extends Component {
             countCycleDays = joinCount.countCycleDays;
         }
         
-        return { ...parm, partInTimes, countCycleDays, defaultCardType };
+        return { ...parm, partInTimes, autoRegister,countCycleDays, defaultCardType };
     }
 
     setStep3Data(formData) {
