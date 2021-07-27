@@ -1277,7 +1277,7 @@ class PromotionBasicInfo extends React.Component {
                 <FormItem label={SALE_LABEL.k5krn6a9} className={styles.FormItemStyle} {...formItemLayout}>
                     {getFieldDecorator('description', {
                         rules: [
-                            { max: 200, message: k5m679wf },
+                            { max: 1000, message: k5m679wf },
                         ],
                         initialValue: this.state.description,
                     })(
