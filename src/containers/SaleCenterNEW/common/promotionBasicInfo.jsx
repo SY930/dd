@@ -1277,7 +1277,7 @@ class PromotionBasicInfo extends React.Component {
                 <FormItem label={SALE_LABEL.k5krn6a9} className={styles.FormItemStyle} {...formItemLayout}>
                     {getFieldDecorator('description', {
                         rules: [
-                            { max: propmotionType == '5020' ? 200 : 1000, message: k5m679wf },
+                            { max: propmotionType == '5020' ? 1000 : 200, message: propmotionType == '5020' ? '最多1000个字符': k5m679wf },
                         ],
                         initialValue: this.state.description,
                     })(
