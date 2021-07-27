@@ -117,11 +117,11 @@ class PromotionScopeInfo extends React.Component {
         } else {
             this.setState({ shopStatus: true })
         }
-        if(promotionType == '5020' && selections.length > 1){
-            flag = false;
-            message.warning('只能选择一个店铺')
-            this.setState({ shopStatus: false })
-        }
+        // if(promotionType == '5020' && selections.length > 1){
+        //     flag = false;
+        //     message.warning('只能选择一个店铺')
+        //     this.setState({ shopStatus: false })
+        // }
         if(!this.props.user.toJS().shopID) {
             const {isRequire} = this.state;
             if (isRequire && !selections[0]) {

@@ -307,7 +307,7 @@ class SpecialDishesTableWithBrand extends Component {
                 },
             },
             {
-                title: '专属菜(元)',
+                title: '原价',
                 width: 80,
                 dataIndex: 'newPrice',
                 key: 'newPrice',
@@ -389,7 +389,7 @@ class SpecialDishesTableWithBrand extends Component {
                                 bordered={true}
                                 dataSource={displayDataSource}
                                 columns={resultTableColumns}
-                                pagination={{ size: 'small', pageSize: 10 }}
+                                pagination={false}
                             />
                         </Col>
                     </Row> : null

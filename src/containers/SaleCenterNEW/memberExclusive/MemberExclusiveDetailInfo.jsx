@@ -264,17 +264,6 @@ class MemberExclusiveDetailInfo extends React.Component {
                                 <img src={settingGuideImg} alt="" className={styles.settingImg}/>
                             </div>
                         </div>
-                        {/* {
-                            this.props.isShopFoodSelectorMode ? (
-                                <SpecialDishesTableWithoutBrand
-                                    onChange={this.dishesChange}
-                                />
-                            ) : (
-                                    <SpecialDishesTableWithBrand
-                                        onChange={this.dishesChange}
-                                    />
-                                )
-                        } */}
                         <SpecialDishesTableWithBrand
                             onChange={this.dishesChange}
                         />
