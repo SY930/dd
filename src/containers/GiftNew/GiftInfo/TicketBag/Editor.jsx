@@ -214,7 +214,7 @@ export default class Editor extends Component {
             disDate = { disabledDate: this.disabledDate };
             stockRule = {rules: ['numbers']};
         }
-        const newFormItems = {
+        let newFormItems = {
             ...other,
             couponPackageType: { ...cpt, disabled: isEdit },
             sellTime: { ...sellTime , props: disDate},
@@ -231,7 +231,11 @@ export default class Editor extends Component {
             remainStock: { ...remainStock, ...stockRule },
             miniProgramShareImagePath: { ...miniProgramShareImagePath, render: render4 }
         };
-        
+        if(!cycleType){
+            newFormItems['validCycle']  = {...validCycle, render: ()=>{return ''}}
+        }else{
+            newFormItems['validCycle']  = {...validCycle, render: render3}
+        }
         if(check) {
             let obj = {}
             for(let x in newFormItems) {
