@@ -37,7 +37,7 @@ class Lottery extends Component {
         const list = [...value];
         const len = value.length;
         const id = `${len + 1}`; // 根据索引生成id，方便回显时遍历
-        list.push({ id, participateMark: '', giftTotalCount:'',presentValue: '', presentType: '1', giftList: [{ id: '001', effectType: '1' }] });
+        list.push({ id, participateMark: '', giftTotalCopies:'',presentValue: '', presentType: '1', giftList: [{ id: '001', effectType: '1' }] });
         this.setState({ tabKey: id });
         onChange(list);
     }
@@ -72,7 +72,7 @@ class Lottery extends Component {
     }
     onGiftTotalCountChange = ({ target }) => {
         const { value } = target;
-        this.onAllChange({ giftTotalCount: value ? Number(value) : '' });
+        this.onAllChange({ giftTotalCopies: value ? Number(value) : '' });
     }
     onTypeChange = ({ target }) => {
         const { value } = target;
@@ -158,11 +158,11 @@ class Lottery extends Component {
                                         </FormItem>
                                     </li>
                                     <li className={css.oddsBox} style={{marginLeft:10}}>
-                                        <FormItem label="礼品总数">
+                                        <FormItem label="礼品份数">
                                             {
                                                 decorator({
-                                                    key: 'giftTotalCount' + i,
-                                                    initialValue:!x.giftTotalCount || x.giftTotalCount === '0' ? undefined : x.giftTotalCount,
+                                                    key: 'giftTotalCopies' + i,
+                                                    initialValue:!x.giftTotalCopies || x.giftTotalCopies === '0' ? undefined : x.giftTotalCopies,
                                                     rules: [{
                                                         pattern: /^[1-9]\d{0,7}$/,
                                                         message: '请输入正整数',
@@ -175,7 +175,7 @@ class Lottery extends Component {
                                                     />
                                                 )
                                             }
-                                            <span>不填代表礼品个数不限制</span>
+                                            <span>不填代表礼品份数不限制</span>
                                         </FormItem>
                                     </li>
                                     

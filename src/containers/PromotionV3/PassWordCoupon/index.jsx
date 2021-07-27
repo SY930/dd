@@ -98,7 +98,7 @@ class PassWordCoupon extends Component {
 
         const lottery = [];
         gifts.forEach((x, i) => {
-            const { presentType, participateMark, sortIndex,giftTotalCount } = x;
+            const { presentType, participateMark, sortIndex,giftTotalCopies } = x;
             const index = sortIndex - 1;
             const type = `${presentType}`;  // 组件要string类型的
             let newItem = { presentType: '1', giftList: [],  bagList: [], ...lottery[index] };
@@ -125,7 +125,7 @@ class PassWordCoupon extends Component {
                 const giftList = [...newGiftList, { ...others, id: giftID, giftID, effectType: `${etype}`, giftEffectTimeHours: `${hours}`, countType, rangeDate }];
                 newItem = { ...newItem, giftList, presentType: type };
             }
-            lottery[index] = { id: `${sortIndex}`, participateMark, giftTotalCount,userCount, ...newItem };
+            lottery[index] = { id: `${sortIndex}`, participateMark, giftTotalCopies,userCount, ...newItem };
         });
 
         // 明盒礼品
@@ -283,13 +283,13 @@ class PassWordCoupon extends Component {
         let { lottery } = formData;
         const gifts = [];   // 后端要的专属key名
         lottery.forEach((x, i) => {
-            const { participateMark, giftTotalCount, presentType, giftList, ...others } = x;
+            const { participateMark, giftTotalCopies, presentType, giftList, ...others } = x;
             const sortIndex = i + 1;  
-            const rawObj =  { sortIndex, participateMark, giftTotalCount,presentType };    // 基础数据
+            const rawObj =  { sortIndex, participateMark, giftTotalCopies,presentType };    // 基础数据
 
             if(presentType === '1') {
                 giftList.forEach(x => {
-                    const { rangeDate, countType, effectType: etype, giftTotalCount, ...others } = x;
+                    const { rangeDate, countType, effectType: etype, giftTotalCopies, ...others } = x;
                     const rangeObj = this.formatRangeDate(rangeDate);
                     let {effectTime, validUntilDate} = rangeObj
                     let effectType = etype;

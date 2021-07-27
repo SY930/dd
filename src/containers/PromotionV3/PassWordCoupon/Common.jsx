@@ -142,7 +142,7 @@ const formKeys22 = ['joinCount', 'defaultCardType','autoRegister'];
 /**
  * formItem3
  */
-const lottDefVal = { id: '1',participateMark:'', giftTotalCount:'', presentValue: '', presentType: '1', giftList: [{ id: '001', effectType: '1' }] };
+const lottDefVal = { id: '1',participateMark:'', giftTotalCopies:'', presentValue: '', presentType: '1', giftList: [{ id: '001', effectType: '1' }] };
 
 const formItems3 = {
     lottery: {
