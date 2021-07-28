@@ -35,7 +35,7 @@ class Lottery extends Component {
         const list = [...value];
         const len = value.length;
         const id = `${len + 1}`; // 根据索引生成id，方便回显时遍历
-        list.push({ id, giftOdds: '', presentValue: '', cardTypeID: '', cardValue: '', cardValueTypeID: '',
+        list.push({ id, giftOdds: '', presentValue: '', cardTypeID: '', cardValue: '', cardValueTypeID: '',giftTotalCount:'',
             isPoint: false, isTicket: true, isCardVal: false, presentType: '1', giftList: [{ id: '001', effectType: '1' }],  bagList: [] });
         this.setState({ tabKey: id });
         onChange(list);
@@ -108,6 +108,11 @@ class Lottery extends Component {
     onBagChange = (bagList) => {
         this.onAllChange({ bagList });
     }
+    onGiftTotalCountChange = ({ target }) => {
+        const { value } = target;
+        this.onAllChange({ giftTotalCount: value ? Number(value) : '' });
+    }
+
     render() {
         const { tabKey, cardList, cardValueList } = this.state;
         const { value, decorator } = this.props;
@@ -166,6 +171,29 @@ class Lottery extends Component {
                                             }
                                             </FormItem>
                                         </li>
+                                        <li className={css.oddsBox} style={{marginLeft:10}}>
+                                            <FormItem label="奖品总数">
+                                                {
+                                                    decorator({
+                                                        key: 'giftTotalCount' + i,
+                                                        initialValue:!x.giftTotalCount || x.giftTotalCount === '0' ? undefined : x.giftTotalCount,
+                                                        rules: [{
+                                                            pattern: /^[1-9]\d{0,7}$/,
+                                                            message: '请输入正整数',
+                                                        }],
+                                                        onChange : this.onGiftTotalCountChange
+                                                    })(
+                                                        <Input
+                                                            
+                                                            addonAfter={"个"}
+                                                            placeholder="请输入数值"
+                                                        />
+                                                    )
+                                                }
+                                                <span>不填代表礼品个数不限制</span>
+                                            </FormItem>
+                                    </li>
+                                    
                                         <li className={css.pointBox}>
                                             <Checkbox checked={x.isPoint} onChange={this.onPointChange}>赠送积分</Checkbox>
                                             {x.isPoint &&

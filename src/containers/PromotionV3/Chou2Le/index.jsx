@@ -87,7 +87,7 @@ class Chou2Le extends Component {
         let [{sceneType = '2', eventID}] = launchSceneList
         const lottery = [];
         gifts.forEach((x, i) => {
-            const { presentType, giftOdds, sortIndex } = x;
+            const { presentType, giftOdds, sortIndex, giftTotalCount} = x;
             const index = sortIndex - 1;
             const type = `${presentType}`;  // 组件要string类型的
             let newItem = { isPoint: false, isTicket: false, isCardVal: false, presentType: '1', giftList: [],  bagList: [], ...lottery[index] };
@@ -124,7 +124,7 @@ class Chou2Le extends Component {
                 const giftList = [...newGiftList, {id: giftID, giftID, effectType: `${etype}`, giftEffectTimeHours: `${hours}`, countType, rangeDate, ...others }];
                 newItem = { ...newItem, giftList, isTicket: true, presentType: type };
             }
-            lottery[index] = { id: `${sortIndex}`, giftOdds, userCount, ...newItem };
+            lottery[index] = { id: `${sortIndex}`, giftOdds,giftTotalCount, userCount, ...newItem };
         });
         // console.log('lottery', lottery);
         return { consumeType: `${stype}`, sceneType: `${sceneType}`, eventID, consumeTotalAmount, lottery };
@@ -259,9 +259,9 @@ class Chou2Le extends Component {
         const { lottery, consumeTotalAmount, consumeType, sceneType } = formData;
         const gifts = [];   // 后端要的专属key名
         lottery.forEach((x, i) => {
-            const { giftOdds, isPoint, isTicket, presentType, isCardVal } = x;
+            const { giftOdds, isPoint, isTicket, presentType, isCardVal,giftTotalCount } = x;
             const sortIndex = i + 1;       // 后端要的排序
-            const rawObj =  { sortIndex, giftOdds, presentType };    // 基础数据
+            const rawObj =  { sortIndex, giftOdds, giftTotalCount,presentType };    // 基础数据
             if(isPoint){
                 const { presentValue, cardTypeID } = x;
                 const obj = { ...rawObj, presentType: '2', presentValue, cardTypeID };
