@@ -218,7 +218,7 @@ export default class Editor extends Component {
             disDate = { disabledDate: this.disabledDate };
             stockRule = {rules: ['numbers']};
         }
-        const newFormItems = {
+        let newFormItems = {
             ...other,
             couponPackageType: { ...cpt, disabled: isEdit },
             sellTime: { ...sellTime , props: disDate},
@@ -235,7 +235,11 @@ export default class Editor extends Component {
             remainStock: { ...remainStock, ...stockRule },
             miniProgramShareImagePath: { ...miniProgramShareImagePath, render: render4 }
         };
-        
+        if(!cycleType){
+            newFormItems['validCycle']  = {...validCycle, render: ()=>{return ''}}
+        }else{
+            newFormItems['validCycle']  = {...validCycle, render: render3}
+        }
         if(check) {
             let obj = {}
             for(let x in newFormItems) {
@@ -269,7 +273,7 @@ export default class Editor extends Component {
         this.form.validateFields((e, v) => {
             if (!e) {
                 const { groupID, detail } = this.props;
-                const { sellTime, couponPackageGift,couponPackageGiftConfigs, shopInfos: shops, sendTime,couponSendWay,couponPackageFirstGift,couponPackageFollowGift,
+                let { sellTime, couponPackageGift,couponPackageGiftConfigs, shopInfos: shops, sendTime,couponSendWay,couponPackageFirstGift,couponPackageFollowGift,
                         cycleType, validCycle, couponPackagePrice2, couponPackagePrice,
                         remainStock: stock, maxBuyCount: buyCount, ...others,
                     } = v;
@@ -308,6 +312,13 @@ export default class Editor extends Component {
                         return;
                     }
                 }
+                if(cycleType == 'm'){
+                    validCycle = validCycle.filter((item,index) => item.indexOf('m') > -1)
+                }
+                if(cycleType == 'w'){
+                    validCycle = validCycle.filter((item,index) => item.indexOf('w') > -1)
+                }
+                
                 let dateObj = {};
                 if(sellTime && sellTime[0]) {
                     const [sd, ed] = sellTime;
@@ -323,7 +334,7 @@ export default class Editor extends Component {
                 const shopInfos = shops ? shops.map(x=>({shopID:x})) : [];  // 店铺可能未选
                 const remainStock = stock || '-1';           // 如果清空库存，给后端传-1
                 const maxBuyCount = buyCount ? buyCount : '-1';
-                const couponPackageInfo = { ...timeObj, ...dateObj, ...others, ...cycleObj,
+                const couponPackageInfo = { ...timeObj, ...dateObj, ...others, ...cycleObj,validCycle,cycleType,
                     remainStock,maxBuyCount, couponSendWay,couponPackagePrice: price };
                 const params = { groupID, couponPackageInfo, couponPackageGiftConfigs:couponPackageArr, shopInfos };
 
