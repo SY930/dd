@@ -30,6 +30,7 @@ export const BASIC_PROMOTION_MAP = {
     '1050': '第二份打折',
     '1070': '加价换购',
     '5010': '菜品推荐',
+    '5020': '会员专属菜',
     '1090': '加价升级换新',
     '2010': '满减/每满减',
     '2030': '随机立减',
@@ -215,6 +216,17 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         key: '52',
         right: 5,
         bottom: 7,
+    },
+    {
+        title: '会员专享菜',
+        isSpecial: false,
+        text: '会员专享菜品，利用低价吸引用户注册会员',
+        example: '',
+        // tags: ['pos', SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9, '小程序'],
+        key: '5020',
+        isNew: true,
+        right: 10,
+        bottom: 0,
     },
 ];
 
@@ -669,7 +681,7 @@ export const SALE_PROMOTION_TYPES = [
         right: 2,
         bottom: -14,
         isHot: true,
-    },
+    }
 ];
 
 /**
