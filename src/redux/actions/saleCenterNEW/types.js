@@ -928,6 +928,13 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             example: "",
             key: "82",
         },
+        {
+            idx: 29,
+            title: '口令领券',
+            text: '',
+            example: "",
+            key: "83",
+        },
     ];
     return basic;
 })();

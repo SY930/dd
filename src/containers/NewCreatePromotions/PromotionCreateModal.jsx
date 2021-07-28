@@ -50,6 +50,7 @@ import { axios } from '@hualala/platform-base';
 import { getStore } from '@hualala/platform-base'
 import Chou2Le from "../PromotionV3/Chou2Le";   // 抽抽乐
 import BlindBox from "../PromotionV3/BlindBox";   // 抽抽乐
+import PassWordCoupon from "../PromotionV3/PassWordCoupon";   // 口令领券
 import { jumpPage, closePage } from '@hualala/platform-base';
 
 // 跳转到带装修的活动设置页面
@@ -377,6 +378,7 @@ class PromotionCreateModal extends Component {
                 {this.renderSpecialPromotionModal()}
                 {(v3visible && curKey == '78') && (<Chou2Le onToggle={this.onV3Click} />)}
                 {(v3visible && curKey == '79') && (<BlindBox onToggle={this.onV3Click} />)}
+                {(v3visible && curKey == '83') && (<PassWordCoupon onToggle={this.onV3Click} />)}
             </div>
         )
     }

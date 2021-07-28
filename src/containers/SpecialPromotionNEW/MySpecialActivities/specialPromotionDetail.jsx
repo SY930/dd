@@ -519,6 +519,25 @@ class SpecialPromotionDetail extends React.Component {
                 </div>
             )
         }
+        if(way == 83) {//口令领券
+
+            const list = records.filter(v => v.presentType === 1)
+            return (
+                <div>
+                    <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
+                    <Col span={24}>
+                        {this.renderGiftInfoTable(list, way)}
+                    </Col>
+                    {/* <Col style={{ marginTop: 10 }} span={18}>
+                            {this.renderPointsTable()}
+                        </Col> */}
+                    {this.renderSearch()}
+                    <Col span={24}>
+                        {this.renderActivityInfoTable()}
+                    </Col>
+                </div>
+            )
+        }
         if(way == 52) {//
 
             const list = records.filter(v => v.presentType === 1)
@@ -1153,11 +1172,21 @@ class SpecialPromotionDetail extends React.Component {
                     return (this.state.pageNo - 1) * this.state.pageSize + Number(index + 1);
                 }
             },
+            eventWay == 83 && ({
+                title: '口令',
+                dataIndex: 'participateMark',
+                key: 'participateMark',
+                className: 'TableTxtCenter',
+                width: 100,
+                render:(text)=> {
+                    return (<Tooltip title={text || ''}>{text}</Tooltip>)
+                }
+            }),
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.d1kgf6ij82123282)}`,
                 dataIndex: 'customerID',
                 key: 'customerID',
-                width: 180,
+                width: 150,
                 className: 'TableTxtCenter',
                 render:(text)=> {
                     return (<Tooltip title={text}>{text}</Tooltip>)
@@ -1212,7 +1241,7 @@ class SpecialPromotionDetail extends React.Component {
                 dataIndex: 'joinTime',
                 key: 'joinTime',
                 className: 'TableTxtCenter',
-                width: 160,
+                width: 120,
             },
             // 群发礼品
             eventWay == 53 && ({

@@ -333,6 +333,18 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
         bottom: 2,
         isNew: true,
     },
+    {
+        title: '口令领券',
+        tags: ['小程序'],
+        isSpecial: true,
+        text: '通过“口令密码”获取优惠券，提升用户活跃度',
+        example: '',
+        key: '83',
+        right: 12,
+        bottom: 4,
+        isHot: true,
+        isNew: true,
+    },
 ];
 
 /**
