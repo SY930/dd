@@ -139,7 +139,11 @@ export default class Editor extends Component {
     /** 获取会员卡类型 */
     getGroupCardTypeOpts (){
         const { groupCardTypeList } = this.props;
-        const cardTypeList = groupCardTypeList.filter((i)=>i.isActive);
+        let cardTypeList = [];
+        if(groupCardTypeList && this.isArray(groupCardTypeList)){
+            cardTypeList = groupCardTypeList.filter((i)=>i.isActive);
+        }
+        
         return cardTypeList.map(x => {
             const { cardTypeID, cardTypeName, isActive } = x;
             return { label: cardTypeName, value: cardTypeID };
@@ -257,6 +261,10 @@ export default class Editor extends Component {
         this.props.togglePage();
         this.props.toggleTabs();
     }
+    isArray (object) {
+        return object && typeof object==='object' &&
+                Array == object.constructor;
+    }
     onSave = () => {
         this.form.validateFields((e, v) => {
             if (!e) {
@@ -292,7 +300,7 @@ export default class Editor extends Component {
                         couponPackageArr.push(item)
                     })
                 }
-                if(cycleType){
+                if(cycleType && this.isArray(cycleType)){
                     const cycle = validCycle.filter(x => (x[0] === cycleType));
                     cycleObj = { validCycle: cycle };
                     if (!cycle[0]) {
