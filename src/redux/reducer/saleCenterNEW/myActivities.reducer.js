@@ -50,7 +50,7 @@ import {
     SALE_CENTER_FETCH_PROMOTION_LIST_TIME_OUT,
     SALE_CENTER_FETCH_PROMOTION_LIST_FAIL,
     SALE_CENTER_IS_UPDATE,
-
+    SALE_CENTER_IS_COPY,
 } from '../../actions/saleCenterNEW/myActivities.action';
 import { SALE_CENTER_RESET_DETAIL_INFO } from '../../actions/saleCenterNEW/promotionDetailInfo.action';
 
@@ -90,6 +90,7 @@ const $initialState = Immutable.fromJS({
         status: 'start',
     },
     isUpdate: true,
+    isCopy: false,
 });
 
 
@@ -241,7 +242,8 @@ export const myActivities_NEW = ($$state = $initialState, action) => {
             return $$state.setIn(['addPromotion', 'status'], 'fail');
         case SALE_CENTER_IS_UPDATE:
             return $$state.set('isUpdate', action.payload);
-
+        case SALE_CENTER_IS_COPY:
+            return $$state.set('isCopy', action.payload);
         default:
             return $$state;
     }

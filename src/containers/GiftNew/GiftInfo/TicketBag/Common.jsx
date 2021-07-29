@@ -403,7 +403,19 @@ const formItems = {
     maxSendLimit: {
         type: 'text',
         label: '发送次数',
-        rules: ['required', 'numbers'],
+        rules: [{
+            required:true, 
+            validator: (rule, value, callback) => {
+                const pattern = /^([1-9]\d{0,7})$/;
+                if(!value){
+                    return callback('发送次数不能为空');
+                }
+                if(value && !pattern.test(value)){
+                    return callback('请输入大于0的8位以内整数');
+                }
+                return callback();
+            },
+        }],
         props: {
             placeholder: '请输入需要发送总次数',
         },
@@ -429,16 +441,16 @@ const formItems = {
 
 // 一次性发放全部礼品 周期发放礼品
 const keys3 = ['b', 'couponSendWay', 'couponPackageGiftConfigs'];
-const keys4 = ['b', 'couponSendWay', 'cycleType', 'sendTime', 'maxSendLimit', 'couponPackageGiftConfigs'];
+const keys4 = ['b', 'couponSendWay', 'cycleType', 'validCycle', 'sendTime', 'maxSendLimit', 'couponPackageGiftConfigs'];
 const keys5 = ['b', 'couponSendWay', 'cycleType', 'validCycle', 'sendTime', 'maxSendLimit', 'couponPackageGiftConfigs'];
 
 const keys6 = ['c1', 'shareTitle', 'miniProgramShareImagePath'];
-const keys7 = ['b', 'couponSendWay', 'cycleType', 'sendTime', 'maxSendLimit', 'couponPackageRadioSelect','couponPackageGift'];
+const keys7 = ['b', 'couponSendWay', 'cycleType', 'validCycle', 'sendTime',  'maxSendLimit', 'couponPackageRadioSelect','couponPackageGift'];
 
-const keys8 = ['b', 'couponSendWay', 'cycleType', 'sendTime', 'maxSendLimit', 'couponPackageRadioSelect','couponPackageFirstGift','couponPackageFollowGift'];
+const keys8 = ['b', 'couponSendWay', 'cycleType', 'validCycle', 'sendTime', 'maxSendLimit', 'couponPackageRadioSelect','couponPackageFirstGift','couponPackageFollowGift'];
 const keys9 = ['b', 'couponSendWay', 'cycleType', 'validCycle','sendTime', 'maxSendLimit', 'couponPackageRadioSelect','couponPackageGift'];
 const keys10 = ['b', 'couponSendWay', 'cycleType', 'validCycle','sendTime', 'maxSendLimit', 'couponPackageRadioSelect','couponPackageFirstGift','couponPackageFollowGift'];
-const keys11 = ['b', 'couponSendWay', 'cycleType', 'sendTime', 'maxSendLimit', 'couponPackageRadioSelect','couponPackageFirstGift'];
+const keys11 = ['b', 'couponSendWay', 'cycleType', 'validCycle', 'sendTime', 'maxSendLimit', 'couponPackageRadioSelect','couponPackageFirstGift'];
 const keys12 = ['b', 'couponSendWay', 'cycleType', 'validCycle','sendTime', 'maxSendLimit', 'couponPackageRadioSelect','couponPackageFirstGift'];
 const formKeys = [
     {

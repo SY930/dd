@@ -48,7 +48,7 @@ const options = WEEK_OPTIONS;
 const days = MONTH_OPTIONS;
 
 const moment = require('moment');
-
+const DATE_FORMAT = 'YYYYMMDD000000';
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
 const Option = Select.Option;
@@ -234,8 +234,8 @@ class PromotionBasicInfo extends React.Component {
             showName: undefined,
             code: undefined,
             tags: undefined,
-
-
+            startTime : undefined,
+            endTime:undefined,
             // advanced time setting
             timeRangeInfo: [
                 {
@@ -280,7 +280,7 @@ class PromotionBasicInfo extends React.Component {
         nextFlag = this.state.shopsAllSet ? false : nextFlag;
         const basicInfo = this.props.promotionBasicInfo.get('$basicInfo').toJS();
         const promotionType = basicInfo.promotionType;
-        if (promotionType == '1080' || promotionType == '2070' || promotionType == '5010' || promotionType == '1021') {
+        if (promotionType == '1080' || promotionType == '2070' || promotionType == '5010' || promotionType == '5020' || promotionType == '1021') {
             if (this.state.dateRange[0] && this.state.dateRange[1]) {
                 this.setState({ rangePickerstatus: 'success' })
             } else {
@@ -540,7 +540,7 @@ class PromotionBasicInfo extends React.Component {
             });
         }
         const promotionType = nextProps.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
-        if (promotionType == '5010' && nextProps.promotionBasicInfo.getIn(['$basicInfo', 'promotionID']) && !this.state.hasQuery) {
+        if ((promotionType == '5010'|| promotionType == '5020') && nextProps.promotionBasicInfo.getIn(['$basicInfo', 'promotionID']) && !this.state.hasQuery) {
             const opts = {
                 data: {
                     groupID: this.props.user.accountInfo.groupID,
@@ -871,14 +871,14 @@ class PromotionBasicInfo extends React.Component {
             dateRange: date,
         }, () => {
             const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
-            if (promotionType == '1080' || promotionType == '2070' || promotionType == '5010' || promotionType == '1021') {
+            if (promotionType == '1080' || promotionType == '2070' || promotionType == '5010' || promotionType == '5020' || promotionType == '1021') {
                 if (this.state.dateRange[0] && this.state.dateRange[1]) {
                     this.setState({ rangePickerstatus: 'success' })
                 } else {
                     this.setState({ rangePickerstatus: 'error' })
                 }
             }
-            if (promotionType == '5010' && this.state.dateRange[0] && this.state.dateRange[1]) {
+            if ((promotionType == '5010' || promotionType == '5020') && this.state.dateRange[0] && this.state.dateRange[1]) {
                 const opts = {
                     data: {
                         groupID: this.props.user.accountInfo.groupID,
@@ -1009,7 +1009,16 @@ class PromotionBasicInfo extends React.Component {
             this.setState({ tags: Array.from(set) })
         }
     }
-
+    handleDateRangeChange = (value, dateString) => { // value: Selected Time, dateString: Formatted Selected Time
+        if (value.length > 1) {
+            const startTime = value[0].format(DATE_FORMAT);
+            const endTime = value[1].format(DATE_FORMAT);
+            this.setState({
+                startTime,
+                endTime,
+            });
+        }
+    }
     render() {
         // TODO:编码不能重复
         const { getFieldDecorator } = this.props.form;
@@ -1017,7 +1026,7 @@ class PromotionBasicInfo extends React.Component {
             labelCol: { span: 4 },
             wrapperCol: { span: 17 },
         };
-        const { promotionBasicInfo, isCopy } = this.props;
+        const { promotionBasicInfo,isCopy,propmotionType } = this.props;
         const tagList = {
             placeholder: '',
             tags: true,
@@ -1054,41 +1063,52 @@ class PromotionBasicInfo extends React.Component {
         return (
 
             <Form className={styles.FormStyle}>
-                <FormItem
-                    label={SALE_LABEL.k5dljb1v}
-                    className={styles.FormItemStyle}
+                {propmotionType == '5020' ? <FormItem
+                    label={'会员专属菜'}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                     style={{ position: 'relative' }}
                 >
-                    <Select
-                        showSearch={true}
-                        notFoundContent={SALE_LABEL.k5dod8s9}
-                        placeholder=""
-                        getPopupContainer={(node) => node.parentNode}
-                        size="default"
-                        value={this.state.category}
-                        onChange={this.handleCategoryChange}
+                    会员专属菜
+                </FormItem>:null
+                }
+                {
+                    propmotionType == '5020' ? null :  
+                    <FormItem
+                        label={SALE_LABEL.k5dljb1v}
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 17 }}
+                        style={{ position: 'relative' }}
                     >
-                        {this.renderCategorys()}
-                    </Select>
-                    <AddCategorys
-                        catOrtag={'cat'}
-                        categoryName={this.state.categoryName}
-                        addPhrase={this.props.addPhrase}
-                        fetchPromotionCategories={this.props.fetchPromotionCategories}
-                        user={this.props.user}
-                        callback={(arg) => {
-                            this.setState({
-                                categoryName: arg,
-                            })
-                        }}
-                        list={this.state.categoryList || []}
-                        onTagClose={this.handleDeletePhrase}
-                    />
-                </FormItem>
-
-                <FormItem label={SALE_LABEL.k5dlcm1i} className={styles.FormItemStyle} {...formItemLayout}>
+                        <Select
+                            showSearch={true}
+                            notFoundContent={SALE_LABEL.k5dod8s9}
+                            placeholder=""
+                            getPopupContainer={(node) => node.parentNode}
+                            size="default"
+                            value={this.state.category}
+                            onChange={this.handleCategoryChange}
+                        >
+                            {this.renderCategorys()}
+                        </Select>
+                        <AddCategorys
+                            catOrtag={'cat'}
+                            categoryName={this.state.categoryName}
+                            addPhrase={this.props.addPhrase}
+                            fetchPromotionCategories={this.props.fetchPromotionCategories}
+                            user={this.props.user}
+                            callback={(arg) => {
+                                this.setState({
+                                    categoryName: arg,
+                                })
+                            }}
+                            list={this.state.categoryList || []}
+                            onTagClose={this.handleDeletePhrase}
+                        />
+                    </FormItem>
+                }
+               <FormItem label={SALE_LABEL.k5dlcm1i} className={styles.FormItemStyle} {...formItemLayout}>
                     {getFieldDecorator('promotionName', {
                         rules: [
                             { required: true, message: k5hkj1ef },
@@ -1109,68 +1129,115 @@ class PromotionBasicInfo extends React.Component {
                         />
                         )}
                 </FormItem>
-
-                <FormItem label={SALE_LABEL.k5krn5l9} className={styles.FormItemStyle} {...formItemLayout}>
-                    {getFieldDecorator('promotionShowName', {
-                        rules: [{
-                            max:50,
-                            whitespace: true,
-                            message: k5m5ayg0,
-                        }],
-                        initialValue: this.state.showName,
-                    })(
-                        <Input placeholder="" onChange={this.handleShowNameChange} />
+                {
+                    propmotionType == '5020' ? null :  
+                    <FormItem label={SALE_LABEL.k5krn5l9} className={styles.FormItemStyle} {...formItemLayout}>
+                        {getFieldDecorator('promotionShowName', {
+                            rules: [{
+                                max:50,
+                                whitespace: true,
+                                message: k5m5ayg0,
+                            }],
+                            initialValue: this.state.showName,
+                        })(
+                            <Input placeholder="" onChange={this.handleShowNameChange} />
+                            )}
+                    </FormItem>
+                }
+                {
+                    propmotionType == '5020' ? null :  
+                    <FormItem label={SALE_LABEL.k5dmmiar} className={styles.FormItemStyle} {...formItemLayout}>
+                        {getFieldDecorator('promotionCode', {
+                            rules: [{
+                                whitespace: true,
+                                required: true,
+                                message: k5m678if,
+                                pattern: /^[A-Za-z0-9]{1,20}$/,
+                            }],
+                            initialValue: this.state.code,
+                        })(
+                            <Input placeholder="" disabled={!this.props.isNew && !isCopy} onChange={this.handleCodeChange} />
+                            )}
+                    </FormItem>
+                }
+                
+                {
+                    propmotionType == '5020' ? null :
+                    <FormItem label={SALE_LABEL.k5dlpi06} className={styles.FormItemStyle} {...formItemLayout}>
+                        <Select
+                            {...tagList}
+                            onChange={this.handleTagsChange}
+                            getPopupContainer={(node) => node.parentNode}
+                            value={this.state.tags}
+                            size="default"
+                            dropdownClassName={`${styles.dropdown}`}
+                            placeholder={SALE_LABEL.k5m678qr}
+                        >
+                            {this.rendertags()}
+                        </Select>
+                        <AddCategorys
+                            catOrtag={'tag'}
+                            categoryName={this.state.tagName}
+                            addPhrase={this.props.addPhrase}
+                            fetchPromotionTags={this.props.fetchPromotionTags}
+                            user={this.props.user}
+                            callback={(arg) => {
+                                this.setState({
+                                    tagName: arg,
+                                })
+                            }}
+                            list={this.state.tagList || []}
+                            onTagClose={this.handleDeletePhrase}
+                        />
+                    </FormItem>
+                }
+                
+                {/* <FormItem
+                    label="活动起止日期2"
+                    className={[styles.FormItemStyle, styles.cardLevelTree].join(' ')}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <Row>
+                        <Col span={21}>
+                            {getFieldDecorator('rangePicker', {
+                            rules: [{
+                                required: true,
+                                message: '请选择活动起止时间',
+                            }],
+                            onChange: this.handleDateRangeChange,
+                            initialValue: this.state.startTime && this.state.endTime ? [moment(this.state.startTime, DATE_FORMAT), moment(this.state.endTime, DATE_FORMAT)] : [],
+                        })(
+                            <RangePicker
+                                className={styles.ActivityDateDayleft}
+                                disabledDate={disabledDate}
+                                style={{ width: '100%' }}
+                                // {...dateRangeProps}
+                                format="YYYY-MM-DD"
+                                placeholder={['开始日期', '结束日期']}
+                            />
                         )}
-                </FormItem>
-                <FormItem label={SALE_LABEL.k5dmmiar} className={styles.FormItemStyle} {...formItemLayout}>
-                    {getFieldDecorator('promotionCode', {
-                        rules: [{
-                            whitespace: true,
-                            required: true,
-                            message: k5m678if,
-                            pattern: /^[A-Za-z0-9]{1,20}$/,
-                        }],
-                        initialValue: this.state.code,
-                    })(
-                        <Input placeholder="" disabled={!this.props.isNew && !isCopy} onChange={this.handleCodeChange} />
-                        )}
-                </FormItem>
+                        </Col>
+                        <Col offset={1} span={2}>
+                            <div className={styles.ActivityDateDay}>
+                                <span>
+                                    {this.getDateCount()}
+                                </span>
+                                <span>天</span>
+                            </div>
+                        </Col>
+                    </Row>
+                </FormItem> */}
 
-                <FormItem label={SALE_LABEL.k5dlpi06} className={styles.FormItemStyle} {...formItemLayout}>
-                    <Select
-                        {...tagList}
-                        onChange={this.handleTagsChange}
-                        getPopupContainer={(node) => node.parentNode}
-                        value={this.state.tags}
-                        size="default"
-                        dropdownClassName={`${styles.dropdown}`}
-                        placeholder={SALE_LABEL.k5m678qr}
-                    >
-                        {this.rendertags()}
-                    </Select>
-                    <AddCategorys
-                        catOrtag={'tag'}
-                        categoryName={this.state.tagName}
-                        addPhrase={this.props.addPhrase}
-                        fetchPromotionTags={this.props.fetchPromotionTags}
-                        user={this.props.user}
-                        callback={(arg) => {
-                            this.setState({
-                                tagName: arg,
-                            })
-                        }}
-                        list={this.state.tagList || []}
-                        onTagClose={this.handleDeletePhrase}
-                    />
-                </FormItem>
+
                 <div style={{ position: 'relative' }}>
                     {
-                        promotionType == '1080' || promotionType == '2070' || promotionType == '5010' || promotionType == '1021' ?
-                            <p style={{ float: 'left', marginTop: '13px', left: '12px', fontSize: '18px', color: 'red' }}>*</p>
+                        promotionType == '1080' || promotionType == '2070' || promotionType == '5010' || promotionType == '5020' ||promotionType == '1021' ?
+                            <p style={{ position:'absolute', top: '13px', left: '16px', fontSize: '15px', color: '#f04134' }}>*</p>
                             : null
                     }
                     <FormItem
-                        label={SALE_LABEL.k5m6797f}
+                        label={'活动起始日期'}
                         className={styles.FormItemStyle}
                         labelCol={{ span: 4 }}
                         wrapperCol={{ span: 17 }}
@@ -1179,7 +1246,7 @@ class PromotionBasicInfo extends React.Component {
                     >
                         <Row>
                             <Col span={21}>
-                                <RangePicker {...dateRangeProps} disabledDate={promotionType == '1080' || promotionType == '2070' || promotionType == '5010' || promotionType == '1021' ? disabledDate : null} />
+                                <RangePicker {...dateRangeProps} disabledDate={promotionType == '1080' || promotionType == '2070' || promotionType == '5010' || promotionType == '1021' || promotionType == '5020' ? disabledDate : null} />
                             </Col>
                             <Col offset={1} span={2}>
                                 <div className={styles.ActivityDateDay}>
@@ -1195,11 +1262,13 @@ class PromotionBasicInfo extends React.Component {
                         </Row>
                     </FormItem>
                 </div>
-                <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 17, offset: 4 }}>
-                                    <span className={styles.gTip}>{SALE_LABEL.k5m679fr}</span>
-                                    <span className={styles.gDate} onClick={this.toggle}>{SALE_LABEL.k5m679o3}</span>
-                </FormItem>
-
+                {
+                    propmotionType == '5020' ? null : 
+                    <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 17, offset: 4 }}>
+                        <span className={styles.gTip}>{SALE_LABEL.k5m679fr}</span>
+                        <span className={styles.gDate} onClick={this.toggle}>{SALE_LABEL.k5m679o3}</span>
+                    </FormItem>
+                }
                 {this.state.expand && this.renderTimeSlot()}
                 {this.state.expand && this.renderPromotionCycleSetting()}
                 {this.state.expand && this.renderExcludedDatePicker()}
@@ -1208,7 +1277,7 @@ class PromotionBasicInfo extends React.Component {
                 <FormItem label={SALE_LABEL.k5krn6a9} className={styles.FormItemStyle} {...formItemLayout}>
                     {getFieldDecorator('description', {
                         rules: [
-                            { max: 200, message: k5m679wf },
+                            { max: propmotionType == '5020' ? 1000 : 200, message: propmotionType == '5020' ? '最多1000个字符': k5m679wf },
                         ],
                         initialValue: this.state.description,
                     })(

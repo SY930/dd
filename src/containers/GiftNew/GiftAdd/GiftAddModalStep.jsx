@@ -2137,7 +2137,6 @@ class GiftAddModalStep extends React.PureComponent {
         // 数据拷贝（隔离）
         let firstKeysToDisplay = JSON.parse(JSON.stringify(firstKeys[describe]));
         let secondKeysToDisplay = JSON.parse(JSON.stringify(secondKeys[describe]));
-        console.log(describe,firstKeysToDisplay,secondKeysToDisplay,'secondKeysToDisplaysecondKeysToDisplaysecondKeysToDisplay')
         if(describe == '代金券' || describe == '菜品优惠券' || describe == '菜品兑换券' || describe == '不定额代金券') {
             if(values.applyScene == '0') {            // 店铺券
                 firstKeysToDisplay[0].keys = [...FIRST_KEYS[describe][0].keys];

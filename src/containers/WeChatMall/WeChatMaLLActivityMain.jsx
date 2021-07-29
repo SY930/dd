@@ -11,7 +11,10 @@ import WeChatMallSale from './miaosha/Wrapper';
 import WeChatMallGroupSale from './groupSale/Wrapper';
 import WeChatMallReturnPoints from './returnPoints/Wrapper';
 import { axiosData, getAccountInfo } from '../../helpers/util';
-
+import { myActivities_NEW as sale_myActivities_NEW } from '../../redux/reducer/saleCenterNEW/myActivities.reducer';
+import {
+    toggleIsCopyAC,
+} from '../../redux/actions/saleCenterNEW/myActivities.action';
 import {
     WECHAT_MALL_ACTIVITIES,
 } from '../../constants/promotionType';
@@ -55,8 +58,9 @@ class ActivityMain extends React.Component {
                 this.setState({
                     confirmLoading: true,
                 });
-                const url = this.props.data ? '/promotion/extra/extraEventService_updateExtraEvent.ajax'
-                : '/promotion/extra/extraEventService_addExtraEvent.ajax';
+                const url = this.props.data ?
+                    this.props.isCopy ? '/promotion/extra/extraEventService_addExtraEvent.ajax' : '/promotion/extra/extraEventService_updateExtraEvent.ajax'
+                    : '/promotion/extra/extraEventService_addExtraEvent.ajax';
                 const params = {
                     ...data,
                     extraEventType: WECHAT_MALL_ACTIVITIES[index].key,
@@ -66,6 +70,9 @@ class ActivityMain extends React.Component {
                 if (this.props.data && this.props.data.itemID) {
                     params.itemID = data.itemID;
                     params.modifiedBy = userName;
+                    if(this.props.isCopy) {
+                        delete params.itemID
+                    }
                 } else {
                     params.createBy = userName;
                 }
@@ -74,6 +81,7 @@ class ActivityMain extends React.Component {
                         this.setState({
                             confirmLoading: false,
                         });
+                        this.props.toggleIsCopy(false)
                         message.success(`活动${this.props.data ? '更新' : '创建'}完成`);
                         cb && cb();
                     }, err => {
@@ -110,11 +118,16 @@ function mapStateToProps(state) {
     return {
         saleCenter: state.sale_saleCenter_NEW,
         user: state.user.toJS(),
+        isCopy: state.sale_myActivities_NEW.get('isCopy'),
     };
 }
 
 function mapDispatchToProps(dispatch) {
-    return {};
+    return {
+        toggleIsCopy: (opts) => {
+            dispatch(toggleIsCopyAC(opts))
+        },
+    };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ActivityMain);

@@ -12,7 +12,6 @@ class EditableTags extends Component {
 
     render() {
         const { title, placeholder, items, onAdd } = this.props;
-
         return items.length > 0 ? (
             <div className={style.wrapper}>
                 <div className={style.itemsWrapper}>

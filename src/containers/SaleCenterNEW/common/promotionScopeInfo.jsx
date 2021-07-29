@@ -20,7 +20,8 @@ import {
     Input,
     Radio,
     Tooltip,
-    Icon
+    Icon,
+    message
 } from 'antd';
 
 const FormItem = Form.Item;
@@ -32,7 +33,7 @@ import { axios, getStore } from '@hualala/platform-base';
 import styles from '../ActivityPage.less';
 import {isEqual, uniq } from 'lodash';
 import ShopSelector from '../../../components/ShopSelector';
-import { getPromotionShopSchema, fetchPromotionScopeInfo, saleCenterSetScopeInfoAC, saleCenterGetShopByParamAC, SCENARIOS } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
+import { getPromotionShopSchema, fetchPromotionScopeInfo, saleCenterSetScopeInfoAC, saleCenterGetShopByParamAC, SCENARIOS,fetchFilterShops } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from '../IntlDecor';
@@ -109,8 +110,9 @@ class PromotionScopeInfo extends React.Component {
             }
         });
         const {selections} = this.state;
-        if (promotionType == '5010' && selections.length == 0 && !this.props.user.toJS().shopID > 0) {
+        if ((promotionType == '5010' || promotionType == '5020') && selections.length == 0 && !this.props.user.toJS().shopID > 0) {
             flag = false;
+            message.warning('请选择适用店铺')
             this.setState({ shopStatus: false })
         } else {
             this.setState({ shopStatus: true })
@@ -273,6 +275,7 @@ class PromotionScopeInfo extends React.Component {
 
     getFilteredShopSchema() {
         const availableBrands = this.state.brands;
+        const activityType = this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']);
         let dynamicShopSchema = Object.assign({}, this.state.shopSchema);
         if (dynamicShopSchema.shops.length === 0) {
             return dynamicShopSchema;
@@ -282,7 +285,7 @@ class PromotionScopeInfo extends React.Component {
             dynamicShopSchema.shops = dynamicShopSchema.shops.filter(shop => availableBrands.includes(shop.brandID));
         }
         const a = this.props.isUpdate;
-        if (this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) == '5010' && (this.props.isNew || this.props.isUpdate)) {
+        if ((activityType == '5010' || activityType == '5020') && (this.props.isNew || this.props.isUpdate)) {
             dynamicShopSchema.shops = dynamicShopSchema.shops.filter(shop => !this.state.filterShops.includes(shop.shopID));
         }
         const shops = dynamicShopSchema.shops;
@@ -303,7 +306,6 @@ class PromotionScopeInfo extends React.Component {
             const allBrands = uniq(shops.map(shop => shop.brandID));
             dynamicShopSchema.brands = dynamicShopSchema.brands.filter(brandCollection => allBrands.includes(brandCollection.brandID));
         }
-        // console.log(dynamicShopSchema);
         return dynamicShopSchema;
     }
 
@@ -381,8 +383,7 @@ class PromotionScopeInfo extends React.Component {
         const k5f3y6b4 = intl.formatMessage(SALE_STRING.k5f3y6b4);
         const k5f3y6yg = intl.formatMessage(SALE_STRING.k5f3y6yg);
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
-
-        if (this.props.isOnline) return null
+        if (this.props.isOnline || promotionType == '5020') return null
         return (
             <FormItem
                 label={SALE_LABEL.k5krn6il}
@@ -459,24 +460,41 @@ class PromotionScopeInfo extends React.Component {
         const k5m67atr = intl.formatMessage(SALE_STRING.k5m67atr);
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         if (this.props.isOnline) return null;
-        const plainOptions = [
-            {
-                label: k5m67a4r,
-                value: '10',
-            }, {
-                label: k5m67ad3,
-                value: '11',
-            }, {
-                label: k5m67alf,
-                value: '20',
-            }, {
-                label: k5krn7fx,
-                value: '31',
-            }, {
-                label: k5m67atr,
-                value: '21',
-            },
-        ];
+        let plainOptions = null;
+        if(promotionType == '5020'){
+            plainOptions = [
+                {
+                    label: k5m67alf,
+                    value: '20',
+                }, {
+                    label: k5krn7fx,
+                    value: '31',
+                }, {
+                    label: k5m67atr,
+                    value: '21',
+                },
+            ];
+        }else{
+            plainOptions = [
+                {
+                    label: k5m67a4r,
+                    value: '10',
+                }, {
+                    label: k5m67ad3,
+                    value: '11',
+                }, {
+                    label: k5m67alf,
+                    value: '20',
+                }, {
+                    label: k5krn7fx,
+                    value: '31',
+                }, {
+                    label: k5m67atr,
+                    value: '21',
+                },
+            ];
+        }
+        
         return (
             <Form.Item
                 label={SALE_LABEL.k5dlpt47}
@@ -530,7 +548,7 @@ class PromotionScopeInfo extends React.Component {
     }
     renderShopsOptions() {
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
-        const { brands, shopStatus, allShopSet, selections, isRequire } = this.state;
+        const { brands, shopStatus, allShopSet, selections, isRequire ,filterShops} = this.state;
         if(promotionType == '5010'){
             return (
                 <Form.Item
@@ -549,7 +567,7 @@ class PromotionScopeInfo extends React.Component {
                         onChange={
                             this.editBoxForShopsChange
                         }
-                    />
+                    /> 
                     {allShopSet ?
                         <p style={{ color: '#e24949' }}>{SALE_LABEL.k5m67b23}</p>
                         : null}
@@ -563,16 +581,25 @@ class PromotionScopeInfo extends React.Component {
                 className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 17 }}
-                required={isRequire}
+                required={promotionType == '5020' ? true : isRequire}
                 validateStatus={valid ? 'error' : 'success'}
                 help={valid ? SALE_LABEL.k5hkj1ef: null}
-            >
-                <ShopSelector
-                    value={selections}
-                    brandList={brands}
-                    onChange={ this.editBoxForShopsChange }
-                    filterParm={isFilterShopType(promotionType)?{productCode: 'HLL_CRM_License'}:{}}
-                />
+            >   
+                {promotionType == '5020' && <p>一个店铺仅能参与一个会员专属菜活动</p>}
+                {promotionType == '5020' ? 
+                    <ShopSelector
+                        value={selections}
+                        brandList={brands}
+                        onChange={ this.editBoxForShopsChange }
+                        filterShopIds = {filterShops}//会员专属菜引入过滤店铺
+                    /> : 
+                    <ShopSelector
+                        value={selections}
+                        brandList={brands}
+                        onChange={ this.editBoxForShopsChange }
+                        filterParm={isFilterShopType(promotionType)?{productCode: 'HLL_CRM_License'}:{}}
+                    />
+                }
                 {allShopSet ?
                     <p style={{ color: '#e24949' }}>{SALE_LABEL.k5m67b23}</p>
                     : null}
@@ -794,7 +821,7 @@ class PromotionScopeInfo extends React.Component {
                     </div> : null
                 }
                 <Form className={styles.FormStyle}>
-                    {this.props.user.toJS().shopID > 0 ? null : this.renderBrandFormItem()}
+                    {this.props.user.toJS().shopID > 0 || promotionType == '5020' ? null : this.renderBrandFormItem()}
                     {promotionType != '5010' ? this.renderChannelList() : null}
                     {this.renderBusinessOptions()}
                     {this.props.user.toJS().shopID > 0 ? null : this.renderShopsOptions()}
