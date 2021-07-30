@@ -119,14 +119,15 @@ const GiftCfg = {
             category: 'primary',
             tags: ['微信', '小程序'],
         },
-        {
-            name: '不定额代金券',
-            describe: '',
-            value: '115',
-            color: '#84aac6',
-            category: 'secondary',
-            tags: ['pos', '新微信', '小程序','礼品卡小程序']
-        },
+        // 还为对接先去掉
+        // {
+        //     name: '不定额代金券',
+        //     describe: '',
+        //     value: '115',
+        //     color: '#84aac6',
+        //     category: 'secondary',
+        //     tags: ['pos', '新微信', '小程序','礼品卡小程序']
+        // },
     ],
     giftTypeName: [
         { label: '全部', value: '' },
