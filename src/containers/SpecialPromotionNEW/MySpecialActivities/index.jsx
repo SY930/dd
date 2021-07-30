@@ -76,7 +76,7 @@ import { SALE_STRING } from 'i18n/common/salecenter'
 import EmptyPage from "../../../components/common/EmptyPage";
 import Chou2Le from "../../PromotionV3/Chou2Le";   // 抽抽乐
 import BlindBox from "../../PromotionV3/BlindBox";   // 盲盒
-
+import PassWordCoupon from "../../PromotionV3/PassWordCoupon";   // 口令领券
 import { isFormalRelease } from "../../../utils/index"
 import indexStyles from './mySpecialActivities.less'
 const confirm = Modal.confirm;
@@ -116,6 +116,7 @@ const copyUrlList = [
     '68', // 推荐有礼
     '79', // 盲盒
     '66', // 膨胀大礼包
+    '83',//口令领券
 ]
 const isCanCopyUrl = ({ eventWay }) => {
     return copyUrlList.includes(`${eventWay}`)
@@ -274,6 +275,8 @@ class MySpecialActivities extends React.Component {
                 { value: '80', label: '微信支付有礼' },
                 { value: '81', label: '消费券返券' },
                 { value: '82', label: '拼手气抢红包' },
+                { value: '83', label: '口令领券' },
+
             ],
         }
         this.renderFilterBar = this.renderFilterBar.bind(this);
@@ -514,6 +517,7 @@ class MySpecialActivities extends React.Component {
              '65':{page: 'pages/promotion/share/main', scene : `e=${qrItemID}`},
              '66':{page: 'pages/promotion/expand/main', scene : `e=${qrItemID}`},
              '82':{page: 'pages/promotion/grab/main', scene : `e=${qrItemID}`},
+             '83':{page: 'pages/promotion/passwordCoupons/main', scene : `e=${qrItemID}`},//口令领券
          }
          const params = {
              appID: currAppID,
@@ -672,7 +676,7 @@ class MySpecialActivities extends React.Component {
     // 渲染复制链接modal内容
     renderCopyUrlModal () {
         const  {urlContent, eventWay, qrCodeImage, xcxLoad, channelContent} = this.state
-        const hideCTBox = [66,79,82]; // 不显示餐厅
+        const hideCTBox = [66,79,82,83]; // 不显示餐厅
         const hideWXBox = [22]; // 不显示微信
         return (<div className={indexStyles.copyCont}>
             {
@@ -773,6 +777,7 @@ class MySpecialActivities extends React.Component {
                 }
                 { (v3visible && curKey == '78') && <Chou2Le onToggle={this.onV3Click} id={itemID} view={view} />}
                 { (v3visible && curKey == '79') && <BlindBox onToggle={this.onV3Click} id={itemID} view={view} />}
+                { (v3visible && curKey == '83') && <PassWordCoupon onToggle={this.onV3Click} id={itemID} view={view} />}
                 <Modal
                     title="提取活动链接"
                     visible={isShowCopyUrl}
@@ -1124,7 +1129,7 @@ class MySpecialActivities extends React.Component {
                                                 message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
                                                 return;
                                             }
-                                            if (record.eventWay === 78 || record.eventWay === 79) {
+                                            if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83) {
                                                 this.onV3Click(record.itemID, false, record.eventWay);
                                                 return;
                                             }
@@ -1153,7 +1158,7 @@ class MySpecialActivities extends React.Component {
                                     message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
                                     return;
                                 }
-                                if (record.eventWay === 78 || record.eventWay === 79) {
+                                if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83) {
                                     this.onV3Click(record.itemID, true, record.eventWay);
                                     return;
                                 }
@@ -1259,7 +1264,7 @@ class MySpecialActivities extends React.Component {
                                                     message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
                                                     return;
                                                 }
-                                                if (record.eventWay === 78 || record.eventWay === 79) {
+                                                if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83) {
                                                     this.onV3Click(record.itemID, false, record.eventWay);
                                                     return;
                                                 }
@@ -1650,6 +1655,7 @@ class MySpecialActivities extends React.Component {
             21: url + `/newm/eventFree?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
             65: url + `/newm/shareFission?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
             68: url + `/newm/recommendInvite?groupID=${groupIdData}&eventItemID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
+            // 83: url + `/newm/usePassword?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
         }
         /*if(actList.includes(String(eventWay))) {
             url = url +    `/newm/eventCont?groupID=${groupID}&eventID=${itemID}`

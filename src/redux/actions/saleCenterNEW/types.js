@@ -543,6 +543,7 @@ export const ACTIVITY_CATEGORIES = (function () {
             example: SALE_LABEL.k67cppx7,
             key: "1010",
         },
+        
         {
             idx: 4,
             title: SALE_LABEL.k67b3vhc, // 买赠
@@ -690,6 +691,14 @@ export const ACTIVITY_CATEGORIES = (function () {
             text: '仅适用于POS2.5，应用于称重类商品，买1斤A赠送0.5斤A，或是买1斤A赠送0.5斤B。支持买赠和每买赠。',
             example: '',
             key: "1021",
+        },
+        {
+            idx: 21,
+            title: '会员专属菜',
+            color: "#e5be6c",
+            text: '会员专属菜品，利用低价吸引用户注册会员',
+            example: '',
+            key: "5020",
         },
     ];
     return basic;
@@ -918,6 +927,13 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             text: '',
             example: "",
             key: "82",
+        },
+        {
+            idx: 29,
+            title: '口令领券',
+            text: '',
+            example: "",
+            key: "83",
         },
     ];
     return basic;

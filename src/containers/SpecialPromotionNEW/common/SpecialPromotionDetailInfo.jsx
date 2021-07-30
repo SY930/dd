@@ -1155,7 +1155,7 @@ class SpecialDetailInfo extends Component {
              && !perfectReturnGiftCheckBoxStatus.perfectReturnGiftCoupon
              )
         ) {
-            if(perfectReturnGiftCheckBoxStatus.perfectReturnGiftPoint || upGradeReturnGiftCheckBoxStatus.upGradeReturnGiftPoint) {
+            if(perfectReturnGiftCheckBoxStatus.perfectReturnGiftPoint || upGradeReturnGiftCheckBoxStatus.upGradeReturnGiftPoint || perfectReturnGiftCheckBoxStatus.perfectReturnGiftGrowthValue) {
                 //  券隐藏的时候不校验
                 validateFlag = true
             } else {

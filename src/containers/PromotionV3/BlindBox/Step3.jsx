@@ -25,7 +25,6 @@ class Step3 extends Component {
     }
 
     onChange = (key, value) => {
-        // 
         if(key === 'needShow') {
             if(value == '0'){
                 this.setState({newFormKeys: [...formKeys32]})

@@ -147,7 +147,6 @@ class MessageTemplateEditPanel extends React.Component {
 
     addMessageInfo(e) {
         let { message } = this.state;
-        console.dir(e.target);
         message += `[${e.target.textContent}]`;
         this.props.form.setFieldsValue({
             message

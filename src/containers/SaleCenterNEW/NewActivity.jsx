@@ -240,6 +240,7 @@ class NewActivity extends React.Component {
         let index = ACTIVITY_CATEGORIES.findIndex(item => item.key == this.state.promotionType);
         const promotionType = ACTIVITY_CATEGORIES[index >= 0 ? index : 0].title || '';
         const title = <p>{create} {promotionType}</p>;
+
         return (
             <Modal
                 wrapClassName="progressBarModal"

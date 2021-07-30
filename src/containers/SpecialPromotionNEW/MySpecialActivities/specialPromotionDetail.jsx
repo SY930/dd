@@ -453,8 +453,8 @@ class SpecialPromotionDetail extends React.Component {
                         {this.renderGiftInfoTable(list, way)}
                     </Col>
                     <Col style={{ marginTop: 10 }} span={18}>
-                            {this.renderPointsTable()}
-                        </Col>
+                        {this.renderPointsAndGrowthValueTable()}
+                    </Col>
                     {this.renderSearch()}
                     <Col span={24}>
                         {this.renderActivityInfoTable()}
@@ -512,6 +512,25 @@ class SpecialPromotionDetail extends React.Component {
                     <Col style={{ marginTop: 10 }} span={18}>
                             {this.renderPointsTable()}
                         </Col>
+                    {this.renderSearch()}
+                    <Col span={24}>
+                        {this.renderActivityInfoTable()}
+                    </Col>
+                </div>
+            )
+        }
+        if(way == 83) {//口令领券
+
+            const list = records.filter(v => v.presentType === 1)
+            return (
+                <div>
+                    <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
+                    <Col span={24}>
+                        {this.renderGiftInfoTable(list, way)}
+                    </Col>
+                    {/* <Col style={{ marginTop: 10 }} span={18}>
+                            {this.renderPointsTable()}
+                        </Col> */}
                     {this.renderSearch()}
                     <Col span={24}>
                         {this.renderActivityInfoTable()}
@@ -904,6 +923,47 @@ class SpecialPromotionDetail extends React.Component {
             <Table dataSource={dataSource} columns={columns} bordered={true} pagination={false} />
         );
     }
+    renderPointsAndGrowthValueTable() {
+        const columns = [
+            {
+                title: '赠送类型',
+                dataIndex: 'title',
+                key: 'title',
+                className: 'TableTxtCenter',
+            },
+            {
+                title: '累计赠送数',
+                dataIndex: 'sendAmount',
+                key: 'sendAmount',
+                className: 'TableTxtRight',
+                render: data => data || 0,
+            },
+            {
+                title: '累计赠送总次数',
+                dataIndex: 'sendCount',
+                key: 'sendCount',
+                className: 'TableTxtRight',
+                render: data => data || 0,
+            },
+        ];
+        let dataSource;
+
+        try {
+            dataSource = [{
+                title: `${this.props.intl.formatMessage(STRING_SPE.dk46b2bc3b1333)}`,
+                sendAmount:this.props.mySpecialActivities.data.eventInfo.eventPointData ? this.props.mySpecialActivities.data.eventInfo.eventPointData.sendPointAmount : null,
+                sendCount:this.props.mySpecialActivities.data.eventInfo.eventPointData ? this.props.mySpecialActivities.data.eventInfo.eventPointData.sendCount : null,
+            },{
+                title: '赠送成长值',
+                ...this.props.mySpecialActivities.data.eventInfo.growthValueData,
+            }];
+        } catch (e) {
+            dataSource = [];
+        }
+        return (
+            <Table dataSource={dataSource} columns={columns} bordered={true} pagination={false} />
+        );
+    }
     renderRedPacketsTable() {
         const columns = [
             {
@@ -1153,11 +1213,21 @@ class SpecialPromotionDetail extends React.Component {
                     return (this.state.pageNo - 1) * this.state.pageSize + Number(index + 1);
                 }
             },
+            eventWay == 83 && ({
+                title: '口令',
+                dataIndex: 'participateMark',
+                key: 'participateMark',
+                className: 'TableTxtCenter',
+                width: 100,
+                render:(text)=> {
+                    return (<Tooltip title={text || ''}>{text}</Tooltip>)
+                }
+            }),
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.d1kgf6ij82123282)}`,
                 dataIndex: 'customerID',
                 key: 'customerID',
-                width: 180,
+                width: 150,
                 className: 'TableTxtCenter',
                 render:(text)=> {
                     return (<Tooltip title={text}>{text}</Tooltip>)
@@ -1212,7 +1282,7 @@ class SpecialPromotionDetail extends React.Component {
                 dataIndex: 'joinTime',
                 key: 'joinTime',
                 className: 'TableTxtCenter',
-                width: 160,
+                width: 120,
             },
             // 群发礼品
             eventWay == 53 && ({
