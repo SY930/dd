@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import { Icon } from 'antd';
+import { Icon,Button, Radio } from 'antd';
 import {connect} from 'react-redux';
 import styles from '../GiftAdd/Crm.less';
 import phone from '../../../assets/phoneX.png';
@@ -15,23 +15,30 @@ import vipPriceOn from '../../../assets/vipPriceOn.png';
 import GiftCfg from "../../../constants/Gift";
 import style from 'containers/PromotionDecoration/style.less'
 import { iphone } from 'containers/PromotionDecoration/assets';
+import daijinquan1 from '../../../assets/daijinquan-1.png';
+import daijinquan2 from '../../../assets/daijinquan-2.png';
+import daijinquan3 from '../../../assets/daijinquan-3.png';
+import daijinquanBg from '../../../assets/daijinquan-bg.png';
 
 const RED_PACKET_MAIN = 'http://res.hualala.com/basicdoc/58873207-f2d1-4489-82de-79ea54ac0f7a.png'
 
 // 所有的礼品类型中预览分3类 常用券类(代金券 菜品券), 充值积分券, 权益券
 const PRIMARY_GIFTS = [
-    '10', '20', '21', '30', '111', '110', '22','115'
+    '20', '21', '30', '111', '110', '22','115'
 ];
 
 const CRM_GIFTS = [
     '40', '42'
 ];
-
+const COUPON_COMBINE_TYPES =  ['10'];
 const PREVIEW_ENABLED_GIFTS = [
     ...PRIMARY_GIFTS,
     ...CRM_GIFTS,
+    ...COUPON_COMBINE_TYPES,
     '80',
 ]
+
+
 
 // 价值只显示前4位数字
 function getValueString(value) {
@@ -140,7 +147,6 @@ class PhonePreview extends PureComponent {
      * 商城券适用场景描述
     */
     couponSpecificationOfMall(){
-        
         const { createOrEditFormData: {
             foodSelectType,
             couponFoodScopeList,
@@ -608,7 +614,32 @@ class PhonePreview extends PureComponent {
         )
     }
 
-
+    renderCouponContent(){
+        const {
+            giftType,
+            applyScene,
+        } = this.props;
+        console.log(giftType,applyScene ,'phonePreview-----------------')
+        const imgUrl = {
+            '10':{
+                '0':daijinquan1,
+                '1':daijinquan2,
+                '0,1':daijinquan3,
+                '1,0':daijinquan3,
+            }
+        }
+        return (
+            <div className={styles.couponImgBgWrapper}>
+                {/* <div>
+                    <Radio.Group value={size} onChange={this.handleSizeChange}>
+                        <Radio.Button value="0">店铺券展示</Radio.Button>
+                        <Radio.Button value="1">商城券展示</Radio.Button>
+                    </Radio.Group>
+                </div> */}
+                <img src={imgUrl[giftType][applyScene]} />
+            </div>
+        )
+    }
 
     render() {
         const { // 默认值与Gift.jsx 中配置一致
@@ -634,17 +665,20 @@ class PhonePreview extends PureComponent {
                             left: -18,
                         }}>
                             <img
-                                src={phone}
+                                src={COUPON_COMBINE_TYPES.includes(giftType) ? daijinquanBg : phone}
                                 alt="oops"
                                 style={{
+                                    width:COUPON_COMBINE_TYPES.includes(giftType) ? 320 : 394,
                                     position: 'relative',
-                                    top: 0,
-                                    left: 39,
+                                    top: COUPON_COMBINE_TYPES.includes(giftType) ? 30 : 0,
+                                    left: COUPON_COMBINE_TYPES.includes(giftType) ?  80 : 39,
                                 }}
                             />
                             {PRIMARY_GIFTS.includes(giftType) && this.renderPrimaryPreviewContent() }
                             {CRM_GIFTS.includes(giftType) && this.renderCRMGiftsPreviewContent() }
                             { giftType === '80' && this.renderCRMInterestGiftPreviewContent() }
+                            { COUPON_COMBINE_TYPES.includes(giftType) && this.renderCouponContent()}
+
                         </div>
                     )
                 }

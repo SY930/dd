@@ -95,6 +95,7 @@ const $initialState = Immutable.fromJS({
 
 
 export function editGiftInfoNew($$state = $initialEditState, action) {
+    console.log(action,'aciton wo need----------------')
     switch (action.type) {
         // 创建建礼品
         case GIFT_NEW_START_CREATE_GIFT:

@@ -435,10 +435,10 @@ class CategoryAndFoodSelector extends Component {
         return (
             <div>
                 <FormItem
-                    label={SALE_LABEL.k5m6e53r}
+                    label={'菜品分类'}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 17 }}
+                    wrapperCol={{ span: 16 }}
                     required={showRequiredMark}
                 >
 
@@ -458,10 +458,15 @@ class CategoryAndFoodSelector extends Component {
                         <div
                             style={{
                                 color: 'orange',
-                                paddingLeft: '16.67%',
                                 overflow: 'hidden',
-                                lineHeight: 1.15,
-                                marginBottom: 8,
+                                marginBottom: '8px',
+                                width: '300px',
+                                height: '32px',
+                                background: '#FFFBE6',
+                                borderRadius: '4px',
+                                border: '1px solid #FFE58F',
+                                paddingLeft: '10px',
+                                marginLeft:'68px'
                             }}
                         >
                             {SALE_LABEL.k5gfsvub}
@@ -470,7 +475,7 @@ class CategoryAndFoodSelector extends Component {
                 }
                 {
                     showExludeDishes && (
-                        <FormItem label={SALE_LABEL.k5gfsvdn} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
+                        <FormItem label={SALE_LABEL.k5gfsvdn} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
                             <FoodSelector
                                 background={this.props.background}
                                 mode="dish"

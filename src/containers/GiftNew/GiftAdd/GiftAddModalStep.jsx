@@ -20,7 +20,9 @@ import {
     Radio,
     Tooltip,
     Icon,
-    Modal
+    Modal,
+    Checkbox,
+    Switch
 } from 'antd';
 import styles from './GiftAdd.less';
 import styles2 from './Crm.less';
@@ -29,6 +31,8 @@ import {
     FORMITEMS,
     FIRST_KEYS,
     SECOND_KEYS,
+    THIRD_KEYS,
+    FOURTH_KEYS,
     FORM_ITEMS_GIFTS_RULES_TO_EXCLUDE_IN_MALL_SCENE,
     MALL_COUPON_BASIC_SETTING_FORM_ITEMS,   // 基础设置项
     MALL_COUPON_APPLY_SETTING_FORM_ITEMS,   // 高级设置项
@@ -155,6 +159,8 @@ class GiftAddModalStep extends React.PureComponent {
             // modalKey:1,
             firstKeys: { ...JSON.parse(JSON.stringify(FIRST_KEYS)) },
             secondKeys: { ...JSON.parse(JSON.stringify(SECOND_KEYS)) },
+            thirdKeys: { ...JSON.parse(JSON.stringify(THIRD_KEYS)) },
+            fourthKeys: { ...JSON.parse(JSON.stringify(FOURTH_KEYS)) },
             groupTypes: [],
             giftData: [],
             sharedGifts: [],
@@ -208,17 +214,6 @@ class GiftAddModalStep extends React.PureComponent {
             values.discountType = data.discountType
             values.discountRate = data.discountRate
         }
-        //
-        // if ((type === 'add' && value == '10') || (type !== 'add' && value == '10' && data.amountType == 1)) {
-        //     const {secondKeys} = this.state
-        //     const index = secondKeys[name][0].keys.findIndex(item => item === 'amountType')
-        //     if (index >= 0) {
-        //         secondKeys[name][0].keys.splice(index, 1);
-        //         this.setState({secondKeys})
-        //     }
-        // }
-
-        // const { data } = thisGift;
         if(thisGift.data !== undefined) {
             let justifiedData = this.justifyServerEndKeyToFormKeys(JSON.parse(JSON.stringify(thisGift.data)));
             let values = Object.assign({}, this.state.values, justifiedData);
@@ -376,10 +371,14 @@ class GiftAddModalStep extends React.PureComponent {
 
     // 处理表单数据变化
     handleFormChange(key, value, formRef) {
+        console.log(key,value,formRef,'keyvalueFormRef----------------')
         const { gift: { name: describe, data }, type } = this.props;
         const { firstKeys, secondKeys, values } = this.state;
         const newKeys = [...secondKeys[describe][0].keys];
         const index = _.findIndex(newKeys, item => item == key);
+        if(key == 'applyScene'){
+            value = value ? value.toString() : '0'
+        }
         if (key === 'shareIDs') {
             this.props.changeGiftFormKeyValue({key, value});
         } else if (JSON.stringify(values[key]) !== JSON.stringify(value)) {
@@ -407,21 +406,8 @@ class GiftAddModalStep extends React.PureComponent {
                 default: this.props.changeGiftFormKeyValue({key, value});
             }
         }
-        values[key] = value;
+       
         switch (key) {
-            // case 'moneyLimitTypeAndValue':
-            //     const { moneyLimitType } = value;
-            //     if (describe === '菜品兑换券' || describe === '代金券' || describe == '菜品优惠券') {
-            //         const maxUseLimitIndex = _.findIndex(newKeys, item => item == 'maxUseLimit');
-            //         if (moneyLimitType == 1) {
-            //             maxUseLimitIndex == -1 && newKeys.splice(index + 1, 0, 'maxUseLimit')
-            //         } else {
-            //             maxUseLimitIndex !== -1 && newKeys.splice(maxUseLimitIndex, 1)
-            //         }
-            //     }
-            //     secondKeys[describe][0].keys = [...newKeys];
-            //     this.setState({ secondKeys });
-            //     break;
             case 'discountType':
                 if(firstKeys[describe][1] != undefined && firstKeys[describe][1].hasOwnProperty('keys')) {
                     let keys = [...firstKeys[describe][1].keys];
@@ -619,15 +605,6 @@ class GiftAddModalStep extends React.PureComponent {
         // 优惠规则，后端之前的字段为BOGOdiscountWay, 暂不做调整。新的前端表单字段为discountSortRule
         params.priceSortRule = params.discountSortRule;
         delete params.discountSortRule;
-
-        // 消费金额限制类型
-        // params.moneyLimitType = (params.moneyLimitTypeAndValue || {}).moneyLimitType;
-        // params.moenyLimitValue = (params.moneyLimitTypeAndValue || {}).moenyLimitValue;
-        // if(params.moneyLimitType == '0') {
-        //     params.moenyLimitValue = 0
-        // }
-        // delete params.moneyLimitTypeAndValue;
-
 
         params.stageAmount = params.stageAmount.number;
         params.foodSelectType = 0;
@@ -1016,7 +993,6 @@ class GiftAddModalStep extends React.PureComponent {
     }
     // 判断选择的小程序或者公众号与微信支付商家券下账务主体是否绑定关系
     checkShopWechatData(params,callServer,groupName,cb) {
-        
         const _that = this;
         const { endSaving } = this.props;
         const groupID = params.groupID;
@@ -1148,7 +1124,6 @@ class GiftAddModalStep extends React.PureComponent {
 
     renderGiveFoodCount(decorator, form) {
         const { giveFoodCount } = this.props.gift.data;
-
         return (
             <Row>
                 <Col span={10}>
@@ -1546,12 +1521,7 @@ class GiftAddModalStep extends React.PureComponent {
             </Row>
         )
     }
-    // onRestImg = ({ key, value }) => {
-    //     const { gift: { data } } = this.props;
-    //     let {values} = this.props
-    //     let {transferImage = {}} = data
-
-    // }
+    
     renderCouponPeriodSettings(decorator) {
         const { gift: { data } } = this.props;
         return (
@@ -1606,7 +1576,19 @@ class GiftAddModalStep extends React.PureComponent {
                         />
                     )}
                 </Col>
-                <p style={{ color: 'orange', display: shopNames.length > 0 ? 'none' : 'block' }}>未选择门店时默认所有门店通用</p>
+                <p style={{ 
+                    color: 'orange', 
+                    display: shopNames.length > 0 ? 'none' : 'block' ,
+                    width: '300px',
+                    height: '32px',
+                    lineHeight:'32px',
+                    background: '#FFFBE6',
+                    borderRadius: '4px',
+                    border: '1px solid #FFE58F',
+                    marginTop:'4px',
+                    marginBottom:'14px',
+                    paddingLeft:'10px'
+                }}>未选择门店时默认所有门店通用</p>
             </Row>
         )
     }
@@ -1636,9 +1618,8 @@ class GiftAddModalStep extends React.PureComponent {
         return (
             <div
                 style={{
-                    marginLeft: 8,
                     marginBottom: 24,
-                    width: '141.176%',
+                    width: '149.176%',
                 }}
                 className={styles.foodSelectorWrapper}
             >
@@ -1672,18 +1653,17 @@ class GiftAddModalStep extends React.PureComponent {
     }
     renderisNeedCustomerInfo = (decorator) => {
         return (
-            <FormItem style={{ marginLeft: 20 }}>
-                <Col span={11}>券核销时是否校验会员注册信息</Col>
-                <Col span={11}>
+            <FormItem style={{marginLeft:-5}}>
+                <Col span={7}>核销校验会员</Col>
+                <Col span={16}>
                     {
                         decorator({})(
-                            <RadioGroup>
-                                {
-                                    GiftCfg.isNeedCustomerInfo.map(r => {
-                                        return (<Radio key={r.value} value={r.value}>{r.label}</Radio>)
-                                    })
-                                }
-                            </RadioGroup>
+                            <Switch
+                                checkedChildren="是"
+                                unCheckedChildren="否"
+                                size="small"
+                                // checked={defaultChecked}
+                            />
                         )
                     }
                 </Col>
@@ -1744,8 +1724,7 @@ class GiftAddModalStep extends React.PureComponent {
         return (
             <FormItem
                 style={{
-                    marginLeft: 8,
-                    width: '141.176%',
+                    width: '149.176%',
                     marginTop: -12,
                     marginBottom: 5,
                     display: this.isHuaTianSpecificCoupon() ? 'none' : 'block',
@@ -1845,14 +1824,18 @@ class GiftAddModalStep extends React.PureComponent {
                         />
                     )
                 }
-
-
                 {showToolTips && (
                     <div
                         style={{
                             color: 'orange',
                             overflow: 'hidden',
-                            lineHeight: 1.15,
+                            marginBottom: '8px',
+                            width: '300px',
+                            height: '32px',
+                            background: '#FFFBE6',
+                            borderRadius: '4px',
+                            border: '1px solid #FFE58F',
+                            paddingLeft: '10px'
                         }}
                     >
                         未选择时默认所有可用
@@ -1894,19 +1877,6 @@ class GiftAddModalStep extends React.PureComponent {
 
         )
     }
-
-    // /**
-    //  * @description 买赠券复合组件
-    // */
-    // renderCompositeFoodDiscountSetting = (decorator) => {
-    //     return (
-    //         decorator({
-    //             key: 'compositeDiscount',       // 优惠菜品数量及优惠值（折扣率，立减等）
-    //         })(
-    //             <DiscountDetailSetting />
-    //         )
-    //     )
-    // }
 
     renderMallIncludeGoodsSelector = (decorator, form) => {
         const { gift: { name: describe, data }, type } = this.props;
@@ -1955,7 +1925,6 @@ class GiftAddModalStep extends React.PureComponent {
                 required: true,
                 message: '必须选择适用商品'
             }];
-
             tips = '不能为空';
         } else {
             tips = '未选择时默认所有';
@@ -1978,9 +1947,14 @@ class GiftAddModalStep extends React.PureComponent {
                     <div
                         style={{
                             color: 'orange',
-                            marginTop: '6px',
                             overflow: 'hidden',
-                            lineHeight: 1.15,
+                            marginBottom: '8px',
+                            width: '300px',
+                            height: '32px',
+                            background: '#FFFBE6',
+                            borderRadius: '4px',
+                            border: '1px solid #FFE58F',
+                            paddingLeft: '10px'
                         }}
                     >
                         {tips}
@@ -2132,32 +2106,54 @@ class GiftAddModalStep extends React.PureComponent {
     */
     justifyFormKeysToDisplay = () => {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
-        { firstKeys, secondKeys, values, unit } = this.state;
+        { firstKeys, secondKeys, thirdKeys,fourthKeys,values, unit } = this.state;
 
         // 数据拷贝（隔离）
         let firstKeysToDisplay = JSON.parse(JSON.stringify(firstKeys[describe]));
         let secondKeysToDisplay = JSON.parse(JSON.stringify(secondKeys[describe]));
+        let thirdKeysToDisplay = JSON.parse(JSON.stringify(thirdKeys[describe]));
+        let fourthKeysToDisplay = JSON.parse(JSON.stringify(fourthKeys[describe]));
         if(describe == '代金券' || describe == '菜品优惠券' || describe == '菜品兑换券' || describe == '不定额代金券') {
-            if(values.applyScene == '0') {            // 店铺券
-                firstKeysToDisplay[0].keys = [...FIRST_KEYS[describe][0].keys];
-                firstKeysToDisplay[1].keys = [...FIRST_KEYS[describe][1].keys];
-                secondKeysToDisplay[0].keys = [...SECOND_KEYS[describe][0].keys];
-            }
-            else if(values.applyScene == '1') {       // 商城券
-                secondKeysToDisplay[0].keys = [...MALL_COUPON_APPLY_SETTING_FORM_ITEMS[describe][0].keys];
-                firstKeysToDisplay[0].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][0].keys];
-                firstKeysToDisplay[1].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][1].keys];
-                firstKeysToDisplay[3].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][3].keys];
-                if(values.mallScope == '0' || values.mallScope == undefined) {
-                    firstKeysToDisplay[0].keys = firstKeysToDisplay[0].keys.filter((key)=>{
-                        return key !== 'mallIncludeGoodSelector';
-                    });
-                } else {
-                    firstKeysToDisplay[0].keys = firstKeysToDisplay[0].keys.filter((key)=>{
-                        return key !== 'mallCategorySelector' && key !== 'mallExcludeGoodSelector';
-                    });
+            console.log(values.applyScene ,typeof value.applyScene,'values.applyScene ==============')
+                if(values.applyScene == '0') {   
+                    //debugger         // 店铺券
+                    firstKeysToDisplay[0].keys = [...FIRST_KEYS[describe][0].keys];
+                    firstKeysToDisplay[1].keys = [...FIRST_KEYS[describe][1].keys];
+                    secondKeysToDisplay[0].keys = [...SECOND_KEYS[describe][0].keys];
+                    thirdKeysToDisplay[0].keys = [...THIRD_KEYS[describe][0].keys];
+                }else if(values.applyScene == '1') {       // 商城券
+                    firstKeysToDisplay[0].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][0].keys];
+                    firstKeysToDisplay[1].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][1].keys];
+                    firstKeysToDisplay[3].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][3].keys];
+                    secondKeysToDisplay[0].keys = [...MALL_COUPON_APPLY_SETTING_FORM_ITEMS[describe][0].keys];
+                    fourthKeysToDisplay[0].keys = [...FOURTH_KEYS[describe][0].keys];
+                    if(values.mallScope == '0' || values.mallScope == undefined) {//???
+                        firstKeysToDisplay[0].keys = firstKeysToDisplay[0].keys.filter((key)=>{
+                            return key !== 'mallIncludeGoodSelector';
+                        });
+                    } else {
+                        firstKeysToDisplay[0].keys = firstKeysToDisplay[0].keys.filter((key)=>{
+                            return key !== 'mallCategorySelector' && key !== 'mallExcludeGoodSelector';
+                        });
+                    }
+                }else if(values.applyScene && (values.applyScene == '0,1' || values.applyScene == '1,0')){
+                    firstKeysToDisplay[0].keys = [...FIRST_KEYS[describe][0].keys];
+                    // firstKeysToDisplay[1].keys = [...FIRST_KEYS[describe][1].keys];
+                    secondKeysToDisplay[0].keys = [...SECOND_KEYS[describe][0].keys];
+                    thirdKeysToDisplay[0].keys = [...THIRD_KEYS[describe][0].keys];
+                    fourthKeysToDisplay[0].keys = [...FOURTH_KEYS[describe][0].keys];
+                    if(values.mallScope == '0' || values.mallScope == undefined) {//???
+                        firstKeysToDisplay[0].keys = firstKeysToDisplay[0].keys.filter((key)=>{
+                            return key !== 'mallIncludeGoodSelector';
+                        });
+                    } else {
+                        firstKeysToDisplay[0].keys = firstKeysToDisplay[0].keys.filter((key)=>{
+                            return key !== 'mallCategorySelector' && key !== 'mallExcludeGoodSelector';
+                        });
+                    }
                 }
-            }
+            
+            
 
             // 根据券与券公用来调整是否显示选券表单 （动态增加）
             if(values.hasOwnProperty('giftShareType') && values.giftShareType == '2') {
@@ -2241,23 +2237,27 @@ class GiftAddModalStep extends React.PureComponent {
         // }
         return {
             firstKeysToDisplay,
-            secondKeysToDisplay
+            secondKeysToDisplay,
+            thirdKeysToDisplay,
+            fourthKeysToDisplay,
         };
     }
 
     renderApplyScene = (decorator, form)=>{
         const {type,gift: { name: describe, value, data }} = this.props;
+        let applySceneOpts = [
+            {label:'店铺券',value:'0'},
+            {label:'商城券',value:'1'},
+        ]
+        if(describe == '不定额代金券'){
+            applySceneOpts = [{label:'店铺券',value:'0'}]
+        }
         let disabled = false
-        if(type == 'edit') {
+        if(type == 'edit' || describe == '不定额代金券') {
             disabled = true;
         }
         return  decorator({})(
-            <Radio.Group disabled={disabled}>
-                <Radio.Button value={0}>店铺券</Radio.Button>
-                {
-                    describe == '不定额代金券' ? null : <Radio.Button value={1}>商城券</Radio.Button>
-                }
-            </Radio.Group>
+            <Checkbox.Group disabled={disabled} options={applySceneOpts} />
         )
     }
 
@@ -2271,11 +2271,12 @@ class GiftAddModalStep extends React.PureComponent {
     render() {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
             { firstKeys, secondKeys, values, unit,groupID } = this.state;
+        const {applyScene} = values;
         // 判断是否是空对象
         // 影响 PhonePreview 回显。
         let formData =JSON.stringify(values) == '{}' ? data : values ;
 
-        const { firstKeysToDisplay: displayFirstKeys, secondKeysToDisplay: displaySecondKeys} = this.justifyFormKeysToDisplay();
+        const { firstKeysToDisplay: displayFirstKeys, secondKeysToDisplay: displaySecondKeys,thirdKeysToDisplay:displayThirdKeys,fourthKeysToDisplay:displayFourthKeys} = this.justifyFormKeysToDisplay();
 
         if (formData.shopNames && formData.shopNames.length > 0 && formData.shopNames[0].id) {
             formData.shopNames = formData.shopNames.map(shop => shop.id);
@@ -2316,8 +2317,20 @@ class GiftAddModalStep extends React.PureComponent {
             // 券应用场景（店铺，商城）
             applyScene: {
                 label: '礼品属性',
+                rules: [
+                    { required: true },
+                    {
+                        validator: (rule, v, cb) => {
+                            console.log(v,'v in applayScene')
+                            if(v.length == 0){
+                                cb(rule.message);
+                            }
+                        },
+                        message: '至少选择一项',
+                    },
+                ],
                 type: 'custom',
-                defaultValue: 0,
+                defaultValue: '0',
                 render: (decorator, form) => this.renderApplyScene(decorator, form)
             },
 
@@ -2376,6 +2389,7 @@ class GiftAddModalStep extends React.PureComponent {
             selectBrands: {
                 label: '所属品牌',
                 type: 'custom',
+                className:styles.selectBrandsWrapper,
                 render: decorator => decorator({})(<SelectBrands/>),
             },
             cardTypeList: {
@@ -2392,7 +2406,7 @@ class GiftAddModalStep extends React.PureComponent {
             },
 
             mallCategorySelector: {
-                label: '适用商品分类',
+                label: '商品分类',
                 type: 'custom',
                 render: (decorator, form) => this.renderMallCategorySelector(decorator, form)
             },
@@ -2498,7 +2512,7 @@ class GiftAddModalStep extends React.PureComponent {
             },
             shopNames: {
                 type: 'custom',
-                label: '可使用店铺',
+                label: '适用店铺',
                 defaultValue: [],
                 render: decorator => this.renderShopNames(decorator),
             },
@@ -3011,6 +3025,60 @@ class GiftAddModalStep extends React.PureComponent {
                     }}
                     key={`${describe}-${type}1`}
                 />
+                {
+                    applyScene == '0' || applyScene == '0,1' || applyScene == '1,0' ? 
+                    <div className={styles.selectFoodsWrapper}>
+                        <div className={styles.foodWrapperHeader}>店铺券属性设置</div>
+                        <div className={styles.foodWrapperCont}>   
+                            <BaseForm
+                                getForm={(form) => {
+                                    this.firstForm = form
+                                }}
+                                getRefs={refs => this.thirdFormRefMap = refs}
+                                formItems={formItems}
+                                formData={formData}
+                                formItemLayout={{
+                                    labelCol: {span: 4},
+                                    wrapperCol: {span: 16}
+                                }}
+                                formKeys={displayThirdKeys}
+                                onChange={(key, value) => this.handleFormChange(key, value, this.thirdForm)}
+                                getSubmitFn={(handles) => {
+                                    this.handles[0] = handles;
+                                }}
+                                key={`${describe}-${type}1`}
+                            />
+                        </div>
+                    </div>:null
+                }
+                {
+                    applyScene == '1' || applyScene == '0,1' || applyScene == '1,0' ?
+                    <div className={styles.selectFoodsWrapper} style={{ marginTop:applyScene == '0,1' || applyScene == '1,0' ? 16 : 0}}>
+                        <div className={styles.foodWrapperHeader}>商城券属性设置</div>
+                        <div className={styles.foodWrapperCont}>
+                            <BaseForm
+                                getForm={(form) => {
+                                    this.firstForm = form
+                                }}
+                                formItemLayout={{
+                                    labelCol: {span: 4},
+                                    wrapperCol: {span: 16}
+                                }}
+                                getRefs={refs => this.fourthFormRefMap = refs}
+                                formItems={formItems}
+                                formData={formData}
+                                formKeys={displayFourthKeys}
+                                onChange={(key, value) => this.handleFormChange(key, value, this.fourthForm)}
+                                getSubmitFn={(handles) => {
+                                    this.handles[0] = handles;
+                                }}
+                                key={`${describe}-${type}1`}
+                            />
+                        </div> 
+                    </div> 
+                    : null
+                }
+                
                 <div
                     style={{
                         margin: '20px 0 10px 94px'
