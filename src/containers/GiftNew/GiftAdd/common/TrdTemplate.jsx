@@ -665,7 +665,7 @@ class TrdTemplate extends React.Component {
             this.propsChange()
         })
     }
-    //小程序链接
+    //小程序 
     getMiniProgramsAppIdList = () => {
         axiosData('/miniProgramCodeManage/getApps', {
             groupID: this.props.accountInfo.toJS().groupID,
@@ -719,7 +719,7 @@ class TrdTemplate extends React.Component {
         this.setState({
             channelCode: channelCode
         })
-        axiosData('/wxpay/getPayChannelByGroupID', {
+        axiosData('/wxpay/getBusinessCouponPayChannel', {
             'groupID':this.props.accountInfo.toJS().groupID,
             'channelCode':channelCode
         }, null, {
@@ -921,7 +921,7 @@ class TrdTemplate extends React.Component {
                     >
                         {
                             mpAndAppList.map(mp => {
-                                return <Option key={mp.settleID} value={mp.settleID}>{mp.settleName}</Option>
+                                return <Option key={mp.appID} value={mp.appID}>{mp.mpName}</Option>
                             })
                         }
                     </Select>

@@ -562,17 +562,17 @@ export const queryWechatMpAndAppInfo = (opts) => {
             type: GIFT_NEW_QUERY_WECHAT_MPINFO_START,
         });
 
-        return axiosData('/wxpay/getBusinessCouponPayChannel', { ...opts }, null, {
-            path: '',
-        }, 'HTTP_SERVICE_URL_ISV_API')
+        return axiosData('/mpInfo/getAppsAndMps', { ...opts }, null, {
+            path: 'mpInfoResDataList',
+        }, 'HTTP_SERVICE_URL_WECHAT')
             .then((data) => {
                 dispatch({
                     type: GIFT_NEW_QUERY_WECHAT_MPAPPINFO_SUCCESS,
                     payload: {
-                        mpAndAppList: data.payChannelList || [],
+                        mpAndAppList: data || [],
                     } 
                 });
-                return Promise.resolve(data.payChannelList)
+                return Promise.resolve(data)
             }, err => {
                 dispatch({
                     type: GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL,
