@@ -665,6 +665,7 @@ class TrdTemplate extends React.Component {
             this.propsChange()
         })
     }
+    //小程序链接
     getMiniProgramsAppIdList = () => {
         axiosData('/miniProgramCodeManage/getApps', {
             groupID: this.props.accountInfo.toJS().groupID,
@@ -920,7 +921,7 @@ class TrdTemplate extends React.Component {
                     >
                         {
                             mpAndAppList.map(mp => {
-                                return <Option key={mp.appID} value={mp.appID}>{mp.mpName}</Option>
+                                return <Option key={mp.settleID} value={mp.settleID}>{mp.settleName}</Option>
                             })
                         }
                     </Select>
