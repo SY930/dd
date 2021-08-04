@@ -114,6 +114,7 @@ class NewCustomerPage extends Component {
     }
     getQueryVariable() {
         const search = window.decodeURIComponent(window.location.search)
+        console.log('window.location.search', window.location.search)
         var query = search.substr(1)
         query = query.split('&')
         var params = {}
@@ -140,6 +141,7 @@ class NewCustomerPage extends Component {
             reportMonth,
             createBy,
         } = this.getQueryVariable()
+        console.log('now entered jump groupMembersID groupMembersName', groupMembersID, groupMembersName)
         // 测试使用
         // const  {
         //     from = 'rfm',
@@ -159,6 +161,7 @@ class NewCustomerPage extends Component {
 
         if (from === 'rfm') {
             debugger
+            console.log('now entered rfm groupMembersID groupMembersName', groupMembersID, groupMembersName)
             const item = CRM_PROMOTION_TYPES[53];
             this.handleNewPromotionCardClick(item);
             // this.props.setSpecialPromotionCardGroupID(`${groupMembersName} -- 【共${totalMembers}人】`);
