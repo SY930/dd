@@ -269,6 +269,7 @@ export const MALL_COUPON_BASIC_SETTING_FORM_ITEMS = {
                 'giftValue',
                 'price',
                 'giftRemark',
+                'mallScope',
                 'applyScene',
                 // 'mallScope',                // 适用范围选择框
                 // 'mallCategorySelector',     // 商城商品分类选择
@@ -500,6 +501,7 @@ export const FIRST_KEYS = {
                 'giftValue',
                 'price',
                 'giftRemark',
+                'mallScope',
                 'applyScene',
             ],
         },
@@ -1085,7 +1087,7 @@ export const FOURTH_KEYS = (() => ({
             },
             keys: [
                 'selectMall',
-                'mallScope',                // 适用范围选择框
+                // 'mallScope',                // 适用范围选择框
                 'mallCategorySelector',     // 商城商品分类选择
                 'mallExcludeGoodSelector',  // 排除商品选择
                 'mallIncludeGoodSelector',  // 商城礼品卡适用商品选择框

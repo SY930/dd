@@ -97,14 +97,14 @@ const processFinalCategoryAndDishData = (params, property) => {
         }
         if (params[property] && params[property] instanceof Object) {
             const {
-                categoryOrDish,
+                mallScope,
                 foodCategory = [],
                 excludeDishes = [],
                 dishes = [],
             } = params[property];
-            // categoryOrDish 0 分类， 1 菜品
+            // mallScope 0 分类， 1 菜品
             // foodSelectType 1 分类， 0 菜品， 2 全选
-            const foodSelectType = 1 - categoryOrDish;
+            const foodSelectType = 1 - mallScope;
             if (foodSelectType == 1 && foodCategory.length === 0 && excludeDishes.length === 0) { // 不选认为是全选, 全选为2
                 params.foodSelectType = 2
             } else if (foodSelectType == 0 && dishes.length === 0) { // 不选认为是全选
@@ -371,13 +371,21 @@ class GiftAddModalStep extends React.PureComponent {
 
     // 处理表单数据变化
     handleFormChange(key, value, formRef) {
-        console.log(key,value,formRef,'keyvalueFormRef----------------')
         const { gift: { name: describe, data }, type } = this.props;
         const { firstKeys, secondKeys, values } = this.state;
         const newKeys = [...secondKeys[describe][0].keys];
         const index = _.findIndex(newKeys, item => item == key);
         if(key == 'applyScene'){
-            value = value ? value.toString() : '0'
+            if(value && value.length > 0) {
+                if(value.length == 1){
+                    value = value[0]
+                }
+                if(value.length == 2){
+                    value = '2'
+                }
+            }else{
+                value = '0'
+            }
         }
         if (key === 'shareIDs') {
             this.props.changeGiftFormKeyValue({key, value});
@@ -406,7 +414,7 @@ class GiftAddModalStep extends React.PureComponent {
                 default: this.props.changeGiftFormKeyValue({key, value});
             }
         }
-       
+       values[key] = value;
         switch (key) {
             case 'discountType':
                 if(firstKeys[describe][1] != undefined && firstKeys[describe][1].hasOwnProperty('keys')) {
@@ -485,6 +493,7 @@ class GiftAddModalStep extends React.PureComponent {
                 break;
 
             case 'selectMall': // 商城发生变化，改变表单中其他几项相互关联数据。 重置数据
+                console.log(formRef,'formRef-------------')
                 const isMallChanged = formRef.getFieldValue('selectMall') != value;
                 if(isMallChanged) {
                     formRef.setFieldsValue({
@@ -503,7 +512,6 @@ class GiftAddModalStep extends React.PureComponent {
                         mallIncludeGood: []
                     });
                 } else if(value == '1') {
-
                     formRef.setFieldsValue({
                         mallCategory: [],
                         mallExcludedGood: [],
@@ -523,10 +531,24 @@ class GiftAddModalStep extends React.PureComponent {
                 values.discountRateSetting = reduceValue
                 values.discountDecreaseVolSetting = reduceValue
                 break;
-
+            // case 'applyScene':
+            //     if(!value){
+            //         values['applyScene'] = '0'
+            //     }else{
+            //         values['applyScene'] = value
+            //     }
+            //     break;
+            // case 'mallScope':
+            //     values['mallScope'] = value;
+            //     break;
+            // case 'foodsboxs':
+            //     values['foodsboxs'] = value;
+            //     break;
             default:
                 break;
         }
+        
+        console.log(values,'values-------------------data')
         this.setState({ values });
 
         if(key==='giftValueCurrencyType') {
@@ -639,10 +661,9 @@ class GiftAddModalStep extends React.PureComponent {
     */
     adjustParamsOfMallGift = (params)=>{
         // 只处理商城券的情景. 其他场景删除冗余字段 （也可以通过场景去判断）
-
         const { type } = this.props;
 
-        if(params.applyScene != '1') {
+        if(params.applyScene == '0') {
             if(params.hasOwnProperty('mallCategory')){
                 delete params.mallCategory;
             }
@@ -659,7 +680,7 @@ class GiftAddModalStep extends React.PureComponent {
         const { malls } = this.state;
 
         // 当商城券是，brandSelectType 需要传1。 默认适用所有品牌（虽然商城没有品牌概念）
-        if(params.applyScene == '1') {
+        if(params.applyScene != '0') {
             params.brandSelectType = 1;
         }
 
@@ -945,7 +966,6 @@ class GiftAddModalStep extends React.PureComponent {
             //核销限制参数处理
             
             if(params.moneyLimitTypeAndValue && params.moneyLimitTypeAndValue.moneyLimitType){
-                
                 const moneyLimitTypeData = JSON.parse(params.moneyLimitTypeAndValue.moneyLimitType);
                 if(moneyLimitTypeData && moneyLimitTypeData.moneyLimitType){
                     params.moneyLimitType = moneyLimitTypeData.moneyLimitType;
@@ -1709,6 +1729,7 @@ class GiftAddModalStep extends React.PureComponent {
     }
     renderFoodsboxs(decorator) {
         const { gift: { data } } = this.props;
+        const { values:{mallScope}} = this.state;
         let { couponFoodScopeList = [], excludeFoodScopes = [], foodSelectType = 2} = data;
         let scopeList;
         if (foodSelectType == 2) { // 全部菜品
@@ -1726,7 +1747,7 @@ class GiftAddModalStep extends React.PureComponent {
                 style={{
                     width: '149.176%',
                     marginTop: -12,
-                    marginBottom: 5,
+                    marginBottom: -15,
                     display: this.isHuaTianSpecificCoupon() ? 'none' : 'block',
                 }}>
                 {
@@ -1734,6 +1755,7 @@ class GiftAddModalStep extends React.PureComponent {
                         <GiftCategoryAndFoodSelector
                             scopeLst={scopeList}
                             showEmptyTips={true}
+                            mallScope={mallScope}
                         />
                     )
                 }
@@ -1746,7 +1768,7 @@ class GiftAddModalStep extends React.PureComponent {
         const { malls : mallList, values } = this.state;
         let initialValue;
 
-        if(values.applyScene == '1') {
+        if(values.applyScene == '1' || values.applyScene == '2') {
             initialValue = values.selectMall;
         }
         return (
@@ -1771,10 +1793,11 @@ class GiftAddModalStep extends React.PureComponent {
         const { goodCategories, goods, gift: {
             value: giftTypeValue
         }} = this.props;
+        console.log(goodCategories,'goodCategories-------------------')
         const { values } = this.state;
         let initialValue = [];
         let showToolTips = false;
-        if(values.applyScene == '1') {
+        if(values.applyScene == '1' || values.applyScene == '2') {
             if(goodCategories instanceof Array && goodCategories.length == 0) {
                 // data.selectBrands[0].targetID; 当前店铺 ID
                 // 区分回显还是新建
@@ -1851,7 +1874,7 @@ class GiftAddModalStep extends React.PureComponent {
         const { goods, goodCategories } = this.props;
         const { values} = this.state;
         let initialValue = [];
-        if(values.applyScene == '1') {
+        if(values.applyScene == '1' || values.applyScene == '2') {
             // 适用菜品方式 0：按菜品单品 1：按菜品分类 2：不限制
             // params.foodSelectType = params.mallScope == '0' ? '1' : '0';
             if(values.hasOwnProperty('foodSelectType') && values.foodSelectType == '1') {
@@ -1889,7 +1912,7 @@ class GiftAddModalStep extends React.PureComponent {
             showToolTips = false;
         }
         let initialValue = [];
-        if(values.applyScene == '1') {
+        if(values.applyScene == '1' || values.applyScene == '2') {
 
             // 适用菜品方式 0：按菜品单品 1：按菜品分类 2：不限制
             // params.foodSelectType = params.mallScope == '0' ? '1' : '0';
@@ -2114,40 +2137,39 @@ class GiftAddModalStep extends React.PureComponent {
         let thirdKeysToDisplay = JSON.parse(JSON.stringify(thirdKeys[describe]));
         let fourthKeysToDisplay = JSON.parse(JSON.stringify(fourthKeys[describe]));
         if(describe == '代金券' || describe == '菜品优惠券' || describe == '菜品兑换券' || describe == '不定额代金券') {
-            console.log(values.applyScene ,typeof value.applyScene,'values.applyScene ==============')
                 if(values.applyScene == '0') {   
-                    //debugger         // 店铺券
+                    // 店铺券
                     firstKeysToDisplay[0].keys = [...FIRST_KEYS[describe][0].keys];
-                    firstKeysToDisplay[1].keys = [...FIRST_KEYS[describe][1].keys];
+                    // firstKeysToDisplay[1].keys = [...FIRST_KEYS[describe][1].keys];
                     secondKeysToDisplay[0].keys = [...SECOND_KEYS[describe][0].keys];
                     thirdKeysToDisplay[0].keys = [...THIRD_KEYS[describe][0].keys];
                 }else if(values.applyScene == '1') {       // 商城券
                     firstKeysToDisplay[0].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][0].keys];
-                    firstKeysToDisplay[1].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][1].keys];
-                    firstKeysToDisplay[3].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][3].keys];
+                    // firstKeysToDisplay[1].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][1].keys];
+                    // firstKeysToDisplay[3].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][3].keys];
                     secondKeysToDisplay[0].keys = [...MALL_COUPON_APPLY_SETTING_FORM_ITEMS[describe][0].keys];
                     fourthKeysToDisplay[0].keys = [...FOURTH_KEYS[describe][0].keys];
-                    if(values.mallScope == '0' || values.mallScope == undefined) {//???
-                        firstKeysToDisplay[0].keys = firstKeysToDisplay[0].keys.filter((key)=>{
+                    if(values.mallScope == '0' || values.mallScope == undefined) {
+                        fourthKeysToDisplay[0].keys = fourthKeysToDisplay[0].keys.filter((key)=>{
                             return key !== 'mallIncludeGoodSelector';
                         });
                     } else {
-                        firstKeysToDisplay[0].keys = firstKeysToDisplay[0].keys.filter((key)=>{
+                        fourthKeysToDisplay[0].keys = fourthKeysToDisplay[0].keys.filter((key)=>{
                             return key !== 'mallCategorySelector' && key !== 'mallExcludeGoodSelector';
                         });
                     }
-                }else if(values.applyScene && (values.applyScene == '0,1' || values.applyScene == '1,0')){
+                }else if(values.applyScene && values.applyScene == '2'){
                     firstKeysToDisplay[0].keys = [...FIRST_KEYS[describe][0].keys];
                     // firstKeysToDisplay[1].keys = [...FIRST_KEYS[describe][1].keys];
                     secondKeysToDisplay[0].keys = [...SECOND_KEYS[describe][0].keys];
                     thirdKeysToDisplay[0].keys = [...THIRD_KEYS[describe][0].keys];
                     fourthKeysToDisplay[0].keys = [...FOURTH_KEYS[describe][0].keys];
-                    if(values.mallScope == '0' || values.mallScope == undefined) {//???
-                        firstKeysToDisplay[0].keys = firstKeysToDisplay[0].keys.filter((key)=>{
+                    if(values.mallScope == '0' || values.mallScope == undefined) {
+                        fourthKeysToDisplay[0].keys = fourthKeysToDisplay[0].keys.filter((key)=>{
                             return key !== 'mallIncludeGoodSelector';
                         });
                     } else {
-                        firstKeysToDisplay[0].keys = firstKeysToDisplay[0].keys.filter((key)=>{
+                        fourthKeysToDisplay[0].keys = fourthKeysToDisplay[0].keys.filter((key)=>{
                             return key !== 'mallCategorySelector' && key !== 'mallExcludeGoodSelector';
                         });
                     }
@@ -2318,19 +2340,18 @@ class GiftAddModalStep extends React.PureComponent {
             applyScene: {
                 label: '礼品属性',
                 rules: [
-                    { required: true },
-                    {
-                        validator: (rule, v, cb) => {
-                            console.log(v,'v in applayScene')
-                            if(v.length == 0){
-                                cb(rule.message);
-                            }
-                        },
-                        message: '至少选择一项',
-                    },
+                    { required: true,message:'至少选择一项' },
+                    // {
+                    //     validator: (rule, v, cb) => {
+                    //         if(v.length == 0){
+                    //             cb('至少选择一项');
+                    //         }
+                    //         cb()
+                    //     },
+                    // },
                 ],
                 type: 'custom',
-                defaultValue: '0',
+                defaultValue: ['0'],
                 render: (decorator, form) => this.renderApplyScene(decorator, form)
             },
 
@@ -2923,7 +2944,21 @@ class GiftAddModalStep extends React.PureComponent {
                 type: 'custom',
                 render: decorator => decorator({})(<AmountType/>),
             },
-
+            mallScope: {
+                label: '活动范围',
+                type: 'custom',
+                defaultValue: '0',
+                render: (decorator, form) => {
+                    // const applyScene = form.getFieldValue('applyScene');
+                    // let descTxt = applyScene != '1' ? '菜品' : '商品';
+                    return decorator({})(
+                        <RadioGroup>
+                            <Radio value={'0'}>按分类</Radio>
+                            <Radio value={'1'}>按菜品</Radio>
+                        </RadioGroup>
+                    )
+                },
+            },
             // 买赠券折扣
             // discountRateSetting: {
             //     label: '折扣',
@@ -3003,6 +3038,7 @@ class GiftAddModalStep extends React.PureComponent {
                 reminderTime: formData.reminderTime || 3,
             }
         }
+        // console.log(formData,'formdata-------------')
         return (
             <div>
                 <div
@@ -3026,13 +3062,13 @@ class GiftAddModalStep extends React.PureComponent {
                     key={`${describe}-${type}1`}
                 />
                 {
-                    applyScene == '0' || applyScene == '0,1' || applyScene == '1,0' ? 
+                    applyScene == '0' || applyScene == '2' ? 
                     <div className={styles.selectFoodsWrapper}>
                         <div className={styles.foodWrapperHeader}>店铺券属性设置</div>
                         <div className={styles.foodWrapperCont}>   
                             <BaseForm
                                 getForm={(form) => {
-                                    this.firstForm = form
+                                    this.thirdForm = form
                                 }}
                                 getRefs={refs => this.thirdFormRefMap = refs}
                                 formItems={formItems}
@@ -3052,13 +3088,13 @@ class GiftAddModalStep extends React.PureComponent {
                     </div>:null
                 }
                 {
-                    applyScene == '1' || applyScene == '0,1' || applyScene == '1,0' ?
-                    <div className={styles.selectFoodsWrapper} style={{ marginTop:applyScene == '0,1' || applyScene == '1,0' ? 16 : 0}}>
+                    applyScene == '1' || applyScene == '2' ?
+                    <div className={styles.selectFoodsWrapper} style={{ marginTop:applyScene == '2' ? 16 : 0}}>
                         <div className={styles.foodWrapperHeader}>商城券属性设置</div>
                         <div className={styles.foodWrapperCont}>
                             <BaseForm
                                 getForm={(form) => {
-                                    this.firstForm = form
+                                    this.fourthForm = form
                                 }}
                                 formItemLayout={{
                                     labelCol: {span: 4},

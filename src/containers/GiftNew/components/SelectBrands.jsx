@@ -60,6 +60,7 @@ class SelectBrands extends Component {
                 brandsToBeSentToParent.push({targetID: mergetBrands[index].value, targetName: mergetBrands[index].label})
             }
         });
+        console.log(brandsToBeSentToParent,'brandsToBeSentToParent-------')
         this.props.onChange(brandsToBeSentToParent);
     }
 

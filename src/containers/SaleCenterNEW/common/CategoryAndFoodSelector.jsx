@@ -22,29 +22,29 @@ const RadioGroup = Radio.Group;
 const getFoodInfoFromScopeList = (scopeList) => {
     if (!Array.isArray(scopeList) || !scopeList.length) {
         return {
-            categoryOrDish: 0,
+            mallScope: 0,
             dishes: [],
             categories: [],
             excludeDishes: [],
         }
     }
-    let categoryOrDish = null;
+    let mallScope = null;
     const dishes = [];
     const categories = [];
     const excludeDishes = [];
     scopeList.forEach(scope => {
-        if (categoryOrDish === null) {
-            categoryOrDish = scope.scopeType == 2 ? 1 : 0
+        if (mallScope === null) {
+            mallScope = scope.scopeType == 2 ? 1 : 0
         }
-        if (categoryOrDish === 1 && scope.scopeType == 2) { // 单品
+        if (mallScope === 1 && scope.scopeType == 2) { // 单品
             dishes.push(`${scope.brandID || 0}__${scope.targetName}${scope.targetUnitName}`)
-        } else if (categoryOrDish === 0 && scope.scopeType != 2) {
+        } else if (mallScope === 0 && scope.scopeType != 2) {
             scope.scopeType == 1 && categories.push(`${scope.brandID || 0}__${scope.targetName}`)
             scope.scopeType == 4 && excludeDishes.push(`${scope.brandID || 0}__${scope.targetName}${scope.targetUnitName}`)
         }
     })
     return {
-        categoryOrDish,
+        mallScope,
         dishes,
         categories,
         excludeDishes,
@@ -75,7 +75,7 @@ class CategoryAndFoodSelector extends Component {
                 dishesObj = getDishesInfoFromPriceOrScopeList(props.priceLst)
             }
             this.state = {
-                categoryOrDish: 1,
+                mallScope: 1,
                 dishes: dishesObj.dishes,
                 categories: [],
                 excludeDishes: [],
@@ -84,12 +84,12 @@ class CategoryAndFoodSelector extends Component {
         } else {
             const {
                 categories,
-                categoryOrDish,
+                mallScope,
                 dishes,
                 excludeDishes,
             } = getFoodInfoFromScopeList(props.scopeLst) // 只取初始值
             this.state = {
-                categoryOrDish,
+                mallScope,
                 dishes,
                 categories,
                 excludeDishes,
@@ -109,6 +109,16 @@ class CategoryAndFoodSelector extends Component {
                 onChangeFlag(!!value.length)
             }
         }
+        if(this.props.mallScope != nextProps.mallScope){
+            this.setState({
+                mallScope:nextProps.mallScope
+            })
+            this.props.onChange({
+                dishes: [],
+                excludeDishes: [],
+                categories: []
+        })
+        }
     }
     componentDidMount() {
         if (this.props.allBrands.size && this.props.allCategories.size && this.props.allDishes.size) {
@@ -126,18 +136,17 @@ class CategoryAndFoodSelector extends Component {
         const { dishes, categories } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes)
         const {
             categories: selectedCategoryValues,
-            categoryOrDish,
+            mallScope,
             dishes: selectedDishValues = [],
             excludeDishes: excludeDishValues,
         } = this.state;
-        if (categoryOrDish === 1) {
+        if (mallScope == 1) {
             const dishObjects = selectedDishValues.reduce((acc, curr) => {
                 const dish = dishes.find(item => item.value === curr);
                 dish && acc.push(dish)
                 return acc;
             }, [])
             this.props.onChange({
-                categoryOrDish,
                 dishes: dishObjects,
                 excludeDishes: [],
                 foodCategory: [],
@@ -154,7 +163,6 @@ class CategoryAndFoodSelector extends Component {
                     singlePrice: list
                 })
                 this.props.onChange({
-                    categoryOrDish,
                     dishes: list,
                     excludeDishes: [],
                     foodCategory: [],
@@ -172,7 +180,7 @@ class CategoryAndFoodSelector extends Component {
                 return acc;
             }, [])
             this.props.onChange({
-                categoryOrDish,
+                // mallScope,
                 dishes: [],
                 excludeDishes: excludeDishObjects,
                 foodCategory: categoryObjects,
@@ -196,20 +204,20 @@ class CategoryAndFoodSelector extends Component {
         }
     }
 
-    handleCategoryOrDishChange = ({ target: { value } }) => {
-        this.setState({
-            categoryOrDish: value,
-            dishes: [],
-            excludeDishes: [],
-            categories: []
-        })
-        this.props.onChange({
-            categoryOrDish: value,
-            dishes: [],
-            excludeDishes: [],
-            foodCategory: []
-        })
-    }
+    // handleCategoryOrDishChange = ({ target: { value } }) => {
+    //     this.setState({
+    //         mallScope: value,
+    //         dishes: [],
+    //         excludeDishes: [],
+    //         categories: []
+    //     })
+    //     this.props.onChange({
+    //         mallScope: value,
+    //         dishes: [],
+    //         excludeDishes: [],
+    //         foodCategory: []
+    //     })
+    // }
     handleDishChange = (value = []) => {
         const {
             singleDish,
@@ -301,7 +309,7 @@ class CategoryAndFoodSelector extends Component {
                 }}
             >
                 <RadioGroup
-                    value={this.state.categoryOrDish}
+                    value={this.state.mallScope}
                     onChange={this.handleCategoryOrDishChange}
                 >
                     {PROMOTION_OPTIONS.map((type) => {
@@ -466,7 +474,8 @@ class CategoryAndFoodSelector extends Component {
                                 borderRadius: '4px',
                                 border: '1px solid #FFE58F',
                                 paddingLeft: '10px',
-                                marginLeft:'68px'
+                                marginLeft:'68px',
+                                marginTop:'-10px'
                             }}
                         >
                             {SALE_LABEL.k5gfsvub}
@@ -499,9 +508,9 @@ class CategoryAndFoodSelector extends Component {
         }
         return (
             <div>
-                {this.renderPromotionRange()}
+                {/* {this.renderPromotionRange()} */}
                 {
-                    this.state.categoryOrDish == 1 ? this.renderDishsSelectionBox() : this.renderCategorySelectionBox()
+                    this.state.mallScope == 1 ? this.renderDishsSelectionBox() : this.renderCategorySelectionBox()
                 }
             </div>
         );

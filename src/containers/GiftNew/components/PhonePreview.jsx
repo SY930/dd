@@ -619,13 +619,11 @@ class PhonePreview extends PureComponent {
             giftType,
             applyScene,
         } = this.props;
-        console.log(giftType,applyScene ,'phonePreview-----------------')
         const imgUrl = {
             '10':{
                 '0':daijinquan1,
                 '1':daijinquan2,
-                '0,1':daijinquan3,
-                '1,0':daijinquan3,
+                '2':daijinquan3,
             }
         }
         return (
@@ -636,7 +634,7 @@ class PhonePreview extends PureComponent {
                         <Radio.Button value="1">商城券展示</Radio.Button>
                     </Radio.Group>
                 </div> */}
-                <img src={imgUrl[giftType][applyScene]} />
+                <img src={applyScene ? imgUrl[giftType][applyScene] : daijinquan1} />
             </div>
         )
     }
