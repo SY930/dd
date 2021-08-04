@@ -36,9 +36,9 @@ const getFoodInfoFromScopeList = (scopeList) => {
         if (mallScope === null) {
             mallScope = scope.scopeType == 2 ? 1 : 0
         }
-        if (mallScope === 1 && scope.scopeType == 2) { // 单品
+        if (mallScope == 1 && scope.scopeType == 2) { // 单品
             dishes.push(`${scope.brandID || 0}__${scope.targetName}${scope.targetUnitName}`)
-        } else if (mallScope === 0 && scope.scopeType != 2) {
+        } else if (mallScope == 0 && scope.scopeType != 2) {
             scope.scopeType == 1 && categories.push(`${scope.brandID || 0}__${scope.targetName}`)
             scope.scopeType == 4 && excludeDishes.push(`${scope.brandID || 0}__${scope.targetName}${scope.targetUnitName}`)
         }

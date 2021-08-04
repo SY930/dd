@@ -96,8 +96,8 @@ const processFinalCategoryAndDishData = (params, property) => {
             params.couponFoodScopes = [];
         }
         if (params[property] && params[property] instanceof Object) {
+            const {mallScope} = params;
             const {
-                mallScope,
                 foodCategory = [],
                 excludeDishes = [],
                 dishes = [],
@@ -120,6 +120,7 @@ const processFinalCategoryAndDishData = (params, property) => {
                     targetCode: cat.foodCategoryCode,
                     targetName: cat.foodCategoryName,
                     brandID: cat.brandID || '0',
+                    isShop:true
                 }
             }).concat(dishes.map((food) => {
                 return {
@@ -128,6 +129,7 @@ const processFinalCategoryAndDishData = (params, property) => {
                     targetName: food.foodName,
                     targetUnitName: food.unit || '',
                     brandID: food.brandID || '0',
+                    isShop:true
                 }
             }));
             params.excludeFoodScopes = excludeDishes.map((food) => {
@@ -137,6 +139,7 @@ const processFinalCategoryAndDishData = (params, property) => {
                     targetName: food.foodName,
                     targetUnitName: food.unit || '',
                     brandID: food.brandID || '0',
+                    isShop:true
                 }
             })
         }
@@ -660,9 +663,9 @@ class GiftAddModalStep extends React.PureComponent {
      * @ref http://wiki.hualala.com/pages/viewpage.action?pageId=19224682
     */
     adjustParamsOfMallGift = (params)=>{
+        debugger
         // 只处理商城券的情景. 其他场景删除冗余字段 （也可以通过场景去判断）
         const { type } = this.props;
-
         if(params.applyScene == '0') {
             if(params.hasOwnProperty('mallCategory')){
                 delete params.mallCategory;
@@ -683,7 +686,9 @@ class GiftAddModalStep extends React.PureComponent {
         if(params.applyScene != '0') {
             params.brandSelectType = 1;
         }
-
+        if(params.applyScene == '1') {
+            delete params.selectBrands
+        }
         params.shopIDs = '';
         params.shopNames = '';
 
@@ -711,6 +716,7 @@ class GiftAddModalStep extends React.PureComponent {
         params.foodSelectType = params.mallScope == '0' ? '1' : '0';
         // 商城分类模式
         if(params.mallScope == '0' || params.mallScope == undefined) {
+            let existCouponFoodScopes = params.couponFoodScopes;
             let mallCategorySet = new Set(params.mallCategory);
             // 分类
             params.couponFoodScopes = goodCategories.filter((item, idx)=>{
@@ -722,11 +728,16 @@ class GiftAddModalStep extends React.PureComponent {
                     targetName: item.categoryName,
                     targetUnitName: '',
                     brandID: '0',
+                    isShop:false
                 }
             });
+            if( params.applyScene == '2' && existCouponFoodScopes && existCouponFoodScopes.length > 0){//当商城券和店铺券都选的时候，组合参数
+                params.couponFoodScopes = existCouponFoodScopes.concat(params.couponFoodScopes)
+            }
             // 商品信息
             // 是否包含排除菜品 true：包含 false：不包含
-            params.excludeFoodScopes = [];
+            let excludeFoodScopes = params.applyScene == '2' ? params.excludeFoodScopes : [];
+            // params.excludeFoodScopes = [];
             if(params.mallExcludedGood instanceof Array && params.mallExcludedGood.length > 0) {
                 params.isExcludeFood = true;
                 let mallExcludeGoodSet = new Set(params.mallExcludedGood);
@@ -739,15 +750,18 @@ class GiftAddModalStep extends React.PureComponent {
                         targetName: item.goodName,
                         targetUnitName: '',
                         brandID: '0',
+                        isShop:false
                     }
                 })
+                params.excludeFoodScopes = excludeFoodScopes.concat(params.excludeFoodScopes);
             } else {
                 params.isExcludeFood = false;
             }
 
         } else if(params.mallScope == '1') {    // 商品模式
             params.isExcludeFood = false;
-            params.couponFoodScopes = [];
+            // params.couponFoodScopes = [];
+            let couponFoodScopes = params.applyScene == '2' ? params.couponFoodScopes : [];
             if(params.mallIncludeGood instanceof Array && params.mallIncludeGood.length > 0) {
                 let mallIncludeGoodSet = new Set(params.mallIncludeGood);
                 params.couponFoodScopes = goods.filter((item)=>{
@@ -759,8 +773,10 @@ class GiftAddModalStep extends React.PureComponent {
                         targetName: item.goodName,
                         targetUnitName: '',
                         brandID: '0',
+                        isShop:false
                     }
                 })
+                params.couponFoodScopes = couponFoodScopes.concat(params.couponFoodScopes)
             }
         }
 
@@ -985,6 +1001,12 @@ class GiftAddModalStep extends React.PureComponent {
             params.pushMimiAppMsg = params.pushMessage && params.pushMessage.pushMimiAppMsg
             // 商城券参数调整
             this.adjustParamsOfMallGift(params);
+            if(params.applyScene != '0'){
+                if(!params.shopIDs){
+                    message.warning('请选择适用商城')
+                    return
+                }
+            }
             Array.isArray(params.supportOrderTypeLst) && (params.supportOrderTypeLst = params.supportOrderTypeLst.join(','))
             this.setState({
                 finishLoading: true,
@@ -995,7 +1017,6 @@ class GiftAddModalStep extends React.PureComponent {
             delete params.operateTime;
             delete params.aggregationChannels;
             delete params.couponFoodScopeList; // 后台返回的已选菜品数据
-            
             this.checkShopWechatData(params,callServer,groupName,this.submitData);
            
         });
@@ -1672,17 +1693,21 @@ class GiftAddModalStep extends React.PureComponent {
         )
     }
     renderisNeedCustomerInfo = (decorator) => {
+        const { gift: {data }} = this.props;
+        const { values:{isNeedCustomerInfo}} = this.state;
+        const checked = isNeedCustomerInfo ? isNeedCustomerInfo : data.isNeedCustomerInfo ? data.isNeedCustomerInfo : false
         return (
             <FormItem style={{marginLeft:-5}}>
                 <Col span={7}>核销校验会员</Col>
                 <Col span={16}>
                     {
-                        decorator({})(
+                        decorator({
+                        })(
                             <Switch
                                 checkedChildren="是"
                                 unCheckedChildren="否"
                                 size="small"
-                                // checked={defaultChecked}
+                                checked={checked}
                             />
                         )
                     }
@@ -1767,7 +1792,6 @@ class GiftAddModalStep extends React.PureComponent {
     renderMallListSelector = (decorator)=>{
         const { malls : mallList, values } = this.state;
         let initialValue;
-
         if(values.applyScene == '1' || values.applyScene == '2') {
             initialValue = values.selectMall;
         }
@@ -1793,7 +1817,6 @@ class GiftAddModalStep extends React.PureComponent {
         const { goodCategories, goods, gift: {
             value: giftTypeValue
         }} = this.props;
-        console.log(goodCategories,'goodCategories-------------------')
         const { values } = this.state;
         let initialValue = [];
         let showToolTips = false;
@@ -2267,6 +2290,20 @@ class GiftAddModalStep extends React.PureComponent {
 
     renderApplyScene = (decorator, form)=>{
         const {type,gift: { name: describe, value, data }} = this.props;
+        const { values:{applyScene} } = this.state;
+        const useValue = applyScene ? applyScene : data.applyScene ? data.applyScene : '0';
+        let groupValue = null;
+        switch (useValue){
+            case '0':
+                groupValue=['0'];
+                break;
+            case '1':
+                groupValue=['1'];
+                break;
+            case '2':
+                groupValue=['0','1'];
+                break;
+        }
         let applySceneOpts = [
             {label:'店铺券',value:'0'},
             {label:'商城券',value:'1'},
@@ -2278,8 +2315,11 @@ class GiftAddModalStep extends React.PureComponent {
         if(type == 'edit' || describe == '不定额代金券') {
             disabled = true;
         }
-        return  decorator({})(
-            <Checkbox.Group disabled={disabled} options={applySceneOpts} />
+        return  decorator({
+            key:'applyScene',
+            initialValue:groupValue
+        })(
+            <Checkbox.Group  options={applySceneOpts}/>
         )
     }
 
@@ -2312,6 +2352,9 @@ class GiftAddModalStep extends React.PureComponent {
             formData.numberOfTimeType = '1'
         } else {
             formData.numberOfTimeType = '0'
+        }
+        if(formData.applyScene){
+            formData.applyScene = formData.applyScene.toString()
         }
         // 折扣上限显示
         if (value == '111' && formData.discountOffMax == 0) {
@@ -2410,7 +2453,6 @@ class GiftAddModalStep extends React.PureComponent {
             selectBrands: {
                 label: '所属品牌',
                 type: 'custom',
-                className:styles.selectBrandsWrapper,
                 render: decorator => decorator({})(<SelectBrands/>),
             },
             cardTypeList: {
@@ -2466,9 +2508,6 @@ class GiftAddModalStep extends React.PureComponent {
                     { label: 'MOP$', value: 'MOP$' },
                 ],
             },
-
-
-
             giftValue: {
                 label: giftValueLabel,
                 type: 'text',
@@ -2927,7 +2966,7 @@ class GiftAddModalStep extends React.PureComponent {
             },
 
             isNeedCustomerInfo: {
-                //label: `券核销时是否校验会员注册信息`,
+                // label: '',
                 type: 'custom',
                 defaultValue: false,
                 //options: GiftCfg.isNeedCustomerInfo,
@@ -3038,7 +3077,7 @@ class GiftAddModalStep extends React.PureComponent {
                 reminderTime: formData.reminderTime || 3,
             }
         }
-        // console.log(formData,'formdata-------------')
+        console.log(formData,'formdata-------------')
         return (
             <div>
                 <div
