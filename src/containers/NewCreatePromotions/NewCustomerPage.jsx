@@ -124,6 +124,7 @@ class NewCustomerPage extends Component {
                 params[q[0]] = q[1]
             }
         }
+        debugger
         return params
     }
     fromCrmJump() {
@@ -165,7 +166,9 @@ class NewCustomerPage extends Component {
             const item = CRM_PROMOTION_TYPES[53];
             this.handleNewPromotionCardClick(item);
             // this.props.setSpecialPromotionCardGroupID(`${groupMembersName} -- 【共${totalMembers}人】`);
-            this.props.setSpecialPromotionCardGroupID(groupMembersID);
+            if(groupMembersID) {
+                this.props.setSpecialPromotionCardGroupID(groupMembersID);
+            }
             this.props.saveRFMParams({
                 groupID,
                 levelKey,
