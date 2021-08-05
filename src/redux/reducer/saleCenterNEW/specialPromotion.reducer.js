@@ -228,10 +228,15 @@ export const specialPromotion_NEW = ($$state = $initialState, action) => {
                 action.payload.customerCount
             );
         case SALE_CENTER_CARDGROUPID:
-            return $$state.setIn(
-                ["$eventInfo", "groupMemberID"],
-                Immutable.fromJS(action.payload)
-            );
+            console.log('action.payload is ', action.payload)
+            if (action.payload) {
+                console.log('now it has been confirmed that action.payload has value', action.payload)
+                return $$state.setIn(
+                    ["$eventInfo", "groupMemberID"],
+                    Immutable.fromJS(action.payload)
+                );
+            }
+
         case SALE_CENTER_QUERY_GROUP_CRM_RFM:
             return $$state.setIn(["RFMParams"], action.payload);
         case SALE_CENTER_GET_AUTH_DATA:
