@@ -1634,64 +1634,7 @@ class GiftAddModalStep extends React.PureComponent {
         )
     }
 
-    renderFoodName(decorator, form) {
-        const { gift: { data } } = this.props;
-        let { couponFoodScopeList = [], excludeFoodScopes = [], foodSelectType = 2} = data;
-        let scopeList;
-        if (foodSelectType == 2) { // 全部菜品
-            scopeList = [];
-            foodSelectType = 1;
-        } else if (foodSelectType == 1) { // 按分类
-            scopeList = couponFoodScopeList.map(cat => ({scopeType: 1, ...cat})).concat(excludeFoodScopes.map(food => ({scopeType: 4, ...food})));
-            foodSelectType = 1;
-        } else { // 按单品
-            scopeList = couponFoodScopeList.map(food => ({scopeType: 2, ...food}));
-            foodSelectType = 0;
-        }
-        if (!scopeList.length) { // 历史数据，只有fooNameList，兼容显示
-            let { isFoodCatNameList = '1', foodNameList = [] } = this.props.gift.data;
-            scopeList = foodNameList.map(nameStr => ({
-                scopeType: isFoodCatNameList == 1 ? 1 : 2,
-                targetName: nameStr,
-                targetUnitName: '',
-            }))
-        }
-        return (
-            <div
-                style={{
-                    marginBottom: 24,
-                    width: '149.176%',
-                }}
-                className={styles.foodSelectorWrapper}
-            >
-                {
-                    decorator({
-                        rules: [
-                            {
-                                validator: (rule, v, cb) => {
-                                    const {
-                                        dishes = [],
-                                        foodCategory = [],
-                                    } = v || {};
-                                    if (!dishes.length && !foodCategory.length) {
-                                        return cb(rule.message);
-                                    }
-                                    cb();
-                                },
-                                message: '不可为空',
-                            },
-                        ],
-                    })(
-                        <GiftCategoryAndFoodSelector
-                            showExludeDishes={false}
-                            scopeLst={scopeList}
-                            showRequiredMark={true}
-                        />
-                    )
-                }
-            </div>
-        )
-    }
+    
     renderisNeedCustomerInfo = (decorator) => {
         const { gift: {data }} = this.props;
         const { values:{isNeedCustomerInfo}} = this.state;
@@ -1787,7 +1730,66 @@ class GiftAddModalStep extends React.PureComponent {
             </FormItem>
         )
     }
-
+    renderFoodName(decorator, form) {
+        const { gift: { data } } = this.props;
+        const { values:{mallScope}} = this.state;
+        let { couponFoodScopeList = [], excludeFoodScopes = [], foodSelectType = 2} = data;
+        let scopeList;
+        if (foodSelectType == 2) { // 全部菜品
+            scopeList = [];
+            foodSelectType = 1;
+        } else if (foodSelectType == 1) { // 按分类
+            scopeList = couponFoodScopeList.map(cat => ({scopeType: 1, ...cat})).concat(excludeFoodScopes.map(food => ({scopeType: 4, ...food})));
+            foodSelectType = 1;
+        } else { // 按单品
+            scopeList = couponFoodScopeList.map(food => ({scopeType: 2, ...food}));
+            foodSelectType = 0;
+        }
+        if (!scopeList.length) { // 历史数据，只有fooNameList，兼容显示
+            let { isFoodCatNameList = '1', foodNameList = [] } = this.props.gift.data;
+            scopeList = foodNameList.map(nameStr => ({
+                scopeType: isFoodCatNameList == 1 ? 1 : 2,
+                targetName: nameStr,
+                targetUnitName: '',
+            }))
+        }
+        return (
+            <div
+                style={{
+                    marginBottom: 24,
+                    width: '149.176%',
+                }}
+                className={styles.foodSelectorWrapper}
+            >
+                {
+                    decorator({
+                        rules: [
+                            {
+                                validator: (rule, v, cb) => {
+                                    const {
+                                        dishes = [],
+                                        foodCategory = [],
+                                    } = v || {};
+                                    if (!dishes.length && !foodCategory.length) {
+                                        return cb(rule.message);
+                                    }
+                                    cb();
+                                },
+                                message: '不可为空',
+                            },
+                        ],
+                    })(
+                        <GiftCategoryAndFoodSelector
+                            showExludeDishes={false}
+                            scopeLst={scopeList}
+                            showRequiredMark={true}
+                            mallScope={mallScope}
+                        />
+                    )
+                }
+            </div>
+        )
+    }
     // 适用商城
     renderMallListSelector = (decorator)=>{
         const { malls : mallList, values } = this.state;
@@ -2319,7 +2321,10 @@ class GiftAddModalStep extends React.PureComponent {
             key:'applyScene',
             initialValue:groupValue
         })(
-            <Checkbox.Group  options={applySceneOpts}/>
+            <Checkbox.Group  
+                // disabled={disabled} 
+                options={applySceneOpts}
+            />
         )
     }
 
@@ -3104,6 +3109,7 @@ class GiftAddModalStep extends React.PureComponent {
                     applyScene == '0' || applyScene == '2' ? 
                     <div className={styles.selectFoodsWrapper}>
                         <div className={styles.foodWrapperHeader}>店铺券属性设置</div>
+                        {/* <div className={type == 'edit' ? styles.foodWrapperNotAllow : ''}></div> */}
                         <div className={styles.foodWrapperCont}>   
                             <BaseForm
                                 getForm={(form) => {
@@ -3129,6 +3135,7 @@ class GiftAddModalStep extends React.PureComponent {
                 {
                     applyScene == '1' || applyScene == '2' ?
                     <div className={styles.selectFoodsWrapper} style={{ marginTop:applyScene == '2' ? 16 : 0}}>
+                        {/* <div className={type == 'edit' ? styles.foodWrapperNotAllow : ''}></div> */}
                         <div className={styles.foodWrapperHeader}>商城券属性设置</div>
                         <div className={styles.foodWrapperCont}>
                             <BaseForm

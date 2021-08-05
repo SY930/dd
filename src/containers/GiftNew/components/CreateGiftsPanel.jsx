@@ -6,10 +6,12 @@ import xcx from '../assets/xcx.png';
 import wx from '../assets/wx.png';
 import pos from '../assets/pos.png';
 import lpk from '../assets/lpk.png';
+import jfsc from '../assets/jfsc.png';
 import xcx_tips from '../assets/xcx-tips.png';
 import wx_tips from '../assets/wx-tips.png';
 import pos_tips from '../assets/pos-tips.png';
 import lpk_tips from '../assets/lpk-tips.png';
+import jfsc_tips from '../assets/jfsc-tips.png';
 import {
     message,
 } from 'antd';
@@ -64,6 +66,10 @@ class CreateGiftsPanel extends Component {
             {
                 label:'礼品卡小程序',
                 icon:lpk_tips
+            },
+            {
+                label:'积分商城',
+                icon:jfsc_tips
             }
         ]
         return (
@@ -176,6 +182,8 @@ function ClickableGiftLogo(props) {
                                 <img className={styles.speTagImg} src={lpk} /> : 
                                 tag.props.defaultMessage.includes('pos') ? 
                                 <img className={styles.speTagImg} src={pos} /> : 
+                                tag.props.defaultMessage.includes('积分商城') ? 
+                                <img className={styles.speTagImg} src={jfsc} /> : 
                                 <span><img className={styles.speTagImg} src={xcx} /><img className={styles.speTagImg} src={pos} /><img className={styles.speTagImg} src={wx} /></span>
                             : tag.includes('pos') ?
                                 <img className={styles.speTagImg} src={pos} /> : 
@@ -183,7 +191,11 @@ function ClickableGiftLogo(props) {
                                     <img className={styles.speTagImg} src={wx} /> :
                                     tag.includes('礼品卡小程序') ?
                                         <img className={styles.speTagImg} src={lpk} /> :
-                                            tag.includes('小程序') ? <img className={styles.speTagImg} src={xcx} /> : null
+                                            tag.includes('小程序') ? 
+                                              <img className={styles.speTagImg} src={xcx} /> :
+                                                tag.includes('积分商城') ? 
+                                                    <img className={styles.speTagImg} src={jfsc} /> 
+                                                : null
                     }</div>)})
                     // (props.data.tags || []).map(tag => (
                     //     <div key={tag}>{tag}</div>
