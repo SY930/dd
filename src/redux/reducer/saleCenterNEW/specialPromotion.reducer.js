@@ -228,7 +228,6 @@ export const specialPromotion_NEW = ($$state = $initialState, action) => {
                 action.payload.customerCount
             );
         case SALE_CENTER_CARDGROUPID:
-            console.log('action.payload is ', action.payload)
             if (action.payload) {
                 console.log('now it has been confirmed that action.payload has value', action.payload)
                 return $$state.setIn(

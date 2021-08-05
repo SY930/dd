@@ -89,7 +89,6 @@ export const saleCenterSetSpecialBasicInfoAC = (opts) => {
     };
 };
 export const saleCenterSetSpecialBasicInfoCardGroupID = (opts) => {
-    console.log('now inside saleCenterSetSpecialBasicInfoCardGroupID the opts is', opts)
     return {
         type: SALE_CENTER_CARDGROUPID,
         payload: opts,

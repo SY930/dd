@@ -124,7 +124,6 @@ class NewCustomerPage extends Component {
                 params[q[0]] = q[1]
             }
         }
-        debugger
         return params
     }
     fromCrmJump() {
@@ -161,8 +160,6 @@ class NewCustomerPage extends Component {
 
 
         if (from === 'rfm') {
-            debugger
-            console.log('now entered rfm groupMembersID groupMembersName', groupMembersID, groupMembersName)
             const item = CRM_PROMOTION_TYPES[53];
             this.handleNewPromotionCardClick(item);
             if(groupMembersName) {
@@ -190,7 +187,6 @@ class NewCustomerPage extends Component {
             if (!saleID) {
                 return;
             }
-            console.log('now enterd else somehow')
             const item = CRM_PROMOTION_TYPES[saleID];
             this.handleNewPromotionCardClick(item);
             this.props.setSpecialPromotionCardGroupID(gmID);
