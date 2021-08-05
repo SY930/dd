@@ -191,6 +191,7 @@ class NewCustomerPage extends Component {
             if (!saleID) {
                 return;
             }
+            console.log('now enterd else somehow')
             const item = CRM_PROMOTION_TYPES[saleID];
             this.handleNewPromotionCardClick(item);
             this.props.setSpecialPromotionCardGroupID(gmID);
