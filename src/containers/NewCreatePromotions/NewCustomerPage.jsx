@@ -165,9 +165,8 @@ class NewCustomerPage extends Component {
             console.log('now entered rfm groupMembersID groupMembersName', groupMembersID, groupMembersName)
             const item = CRM_PROMOTION_TYPES[53];
             this.handleNewPromotionCardClick(item);
-            // this.props.setSpecialPromotionCardGroupID(`${groupMembersName} -- 【共${totalMembers}人】`);
-            if(groupMembersID) {
-                this.props.setSpecialPromotionCardGroupID(groupMembersID);
+            if(groupMembersName) {
+                this.props.setSpecialPromotionCardGroupID(`${groupMembersName} -- 【共${totalMembers}人】`);
             }
             this.props.saveRFMParams({
                 groupID,
