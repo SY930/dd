@@ -54,12 +54,16 @@ class ShopSelector extends Component {
     }
 
     loadShops(params = {}, cache = this.props.schemaData, isForce = false,filterShopIds = []) {
-        let {filterParm = {}} = this.props
+        let {filterParm = {},isCreateCoupon = false} = this.props;//isCreateCoupon是否创建券的时候
         if (!isForce && (this.props.options || this.state.options)) return Promise.resolve();
         params = {...params, ...filterParm}
         return loadShopSchema(params, cache)
             .then(({ shops, ...filterOptions }) => {
                 shops = shops.filter(shop => !filterShopIds.includes(shop.shopID));
+                if(isCreateCoupon){
+                    shops = shops.filter(shop => shop.operationMode != '3');
+                }
+                console.log(shops,'shops----0000000000')
                 this.setState({
                     loading: false,
                     options: shops,

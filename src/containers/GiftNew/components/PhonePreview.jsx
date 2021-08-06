@@ -21,6 +21,9 @@ import daijinquan3 from '../../../assets/daijinquan-3.png';
 import caipinyouhuiquan1 from '../../../assets/caipinyouhuiquan-1.png';
 import caipinyouhuiquan2 from '../../../assets/caipinyouhuiquan-2.png';
 import caipinyouhuiquan3 from '../../../assets/caipinyouhuiquan-3.png';
+import caipinduihuanquan1 from '../../../assets/caipinduihuanquan-1.png';
+import caipinduihuanquan2 from '../../../assets/caipinduihuanquan-2.png';
+import caipinduihuanquan3 from '../../../assets/caipinduihuanquan-3.png';
 import daijinquanBg from '../../../assets/daijinquan-bg.png';
 
 const RED_PACKET_MAIN = 'http://res.hualala.com/basicdoc/58873207-f2d1-4489-82de-79ea54ac0f7a.png'
@@ -51,7 +54,15 @@ function getValueString(value) {
 }
 
 class PhonePreview extends PureComponent {
-
+    constructor(props){
+        super(props);
+        this.state={
+            
+        }
+    }
+    componentWillReceiveProps(nextProps){
+        
+    }
     usingTimeTypeString() {
         if (!this.props.couponPeriodSettings) {
             return ' ';
@@ -616,7 +627,12 @@ class PhonePreview extends PureComponent {
             </div>
         )
     }
-
+    // handleSizeChange(e){
+    //     const {value} = e.target;
+    //     this.setState({
+    //         imgIndex : value
+    //     })
+    // }
     renderCouponContent(){
         const {
             giftType,
@@ -632,17 +648,28 @@ class PhonePreview extends PureComponent {
                 '0':caipinyouhuiquan1,
                 '1':caipinyouhuiquan2,
                 '2':caipinyouhuiquan3,
+            },
+            '21':{
+                '0':caipinduihuanquan1,
+                '1':caipinduihuanquan2,
+                '2':caipinduihuanquan3,
             }
+        }
+        let imgSrc = '';
+        if(applyScene == '2'){
+            imgSrc = imgUrl[giftType]['2']
+        }else{
+            imgSrc = imgUrl[giftType][applyScene]
         }
         return (
             <div className={styles.couponImgBgWrapper}>
-                {/* <div>
-                    <Radio.Group value={size} onChange={this.handleSizeChange}>
-                        <Radio.Button value="0">店铺券展示</Radio.Button>
-                        <Radio.Button value="1">商城券展示</Radio.Button>
+                {/* <div className={styles.imgSelectChange}>
+                    <Radio.Group  defaultValue={'0'} onChange={(e) => this.handleSizeChange(e)}>
+                        <Radio.Button value="0" disabled={applyScene == '1' ? true : false}>店铺券展示</Radio.Button>
+                        <Radio.Button value="1" disabled={applyScene == '0' ? true : false}>商城券展示</Radio.Button>
                     </Radio.Group>
                 </div> */}
-                <img src={applyScene ? imgUrl[giftType][applyScene] : imgUrl[giftType]['0']} />
+                <img src={imgSrc}/>
             </div>
         )
     }

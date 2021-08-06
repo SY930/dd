@@ -41,7 +41,9 @@ export default class GoodSelector extends Component {
         if(value == undefined) {
             value = [];
         }
+        console.log(value,'value in multipleGood')
         const selectedItems = allDishes.filter(dish => value.includes(dish.value));
+        console.log(selectedItems,'selectedItemsselectedItemsselectedItemsselectedItemsselectedItems')
         return (
             <div>
                 <EditableTags
