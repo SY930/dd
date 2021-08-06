@@ -3,6 +3,7 @@ import { Switch, Tabs, Input } from 'antd';
 import style from './style.less';
 import ColorSettingBlock from './ColorSettingBlock'
 import DecorationUploader from './DecorationUploader';
+import CropperUploader from 'components/common/CropperUploader'
 import {
     iphone,
     freeGift1,
@@ -218,9 +219,12 @@ export default class FreeGiftDecorationBoard extends Component {
                     <div className={style.sectionWrapper}>
                         <div style={{ top: 30 }} className={style.label}>弹窗背景图</div>
                         <div style={{ width: 350 }} className={style.uploaderWrapper}>
-                            <DecorationUploader
-                                limit={0}
+                            <CropperUploader
+                                isAbsoluteUrl={true}
+                                limit={1000}
                                 value={alertBackgroundImage}
+                                cropperRatio={546 / 184}
+                                // width={245}
                                 onChange={value => onChange({ key: ['alertBackgroundImage'], value })}
                             />
                             <div className={style.uploaderTip}>
