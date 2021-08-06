@@ -144,7 +144,7 @@ const GiftCfg = {
         { label: '折扣券', value: '111' },
         { label: '现金红包', value: '113' },
         { label: '配送券', value: '22' },
-        { label: '不定额代金券', value: '115' },
+        // { label: '不定额代金券', value: '115' },
 
     ],
     transferType: [

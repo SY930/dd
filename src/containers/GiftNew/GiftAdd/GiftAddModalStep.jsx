@@ -1643,26 +1643,46 @@ class GiftAddModalStep extends React.PureComponent {
 
     
     renderisNeedCustomerInfo = (decorator) => {
-        const { gift: {data }} = this.props;
+        const combineTypes = ['10','20','21'];
+        const { gift: {data,value }} = this.props;
         const { values:{isNeedCustomerInfo}} = this.state;
         const checked = isNeedCustomerInfo ? isNeedCustomerInfo : data.isNeedCustomerInfo ? data.isNeedCustomerInfo : false
         return (
-            <FormItem style={{marginLeft:-5}}>
-                <Col span={7}>核销校验会员</Col>
-                <Col span={16}>
-                    {
-                        decorator({
-                        })(
-                            <Switch
-                                checkedChildren="是"
-                                unCheckedChildren="否"
-                                size="small"
-                                checked={checked}
-                            />
-                        )
-                    }
-                </Col>
-            </FormItem>)
+                combineTypes.includes(value) ? 
+                <FormItem style={{marginLeft:-10}}>
+                    <Col span={7}>核销校验会员</Col>
+                    <Col span={16}>
+                        {
+                            decorator({
+                            })(
+                                <Switch
+                                    checkedChildren="是"
+                                    unCheckedChildren="否"
+                                    size="small"
+                                    checked={checked}
+                                />
+                            )
+                        }
+                    </Col>
+                </FormItem> 
+                :
+                <FormItem>
+                    <Col span={5}>核销校验会员</Col>
+                    <Col span={16}>
+                        {
+                            decorator({})(
+                                <RadioGroup>
+                                    {
+                                        GiftCfg.isNeedCustomerInfo.map(r => {
+                                            return (<Radio key={r.value} value={r.value}>{r.label}</Radio>)
+                                        })
+                                    }
+                                </RadioGroup>
+                            )
+                        }
+                    </Col>
+                </FormItem>
+        )
     }
 
     renderGiftPromotion(decorator) {
@@ -2181,19 +2201,24 @@ class GiftAddModalStep extends React.PureComponent {
         // 数据拷贝（隔离）
         let firstKeysToDisplay = JSON.parse(JSON.stringify(firstKeys[describe]));
         let secondKeysToDisplay = JSON.parse(JSON.stringify(secondKeys[describe]));
-        let thirdKeysToDisplay = JSON.parse(JSON.stringify(thirdKeys[describe]));
-        let fourthKeysToDisplay = JSON.parse(JSON.stringify(fourthKeys[describe]));
+        let thirdKeysToDisplay = {};
+        let fourthKeysToDisplay = {};
+        if(thirdKeys[describe]){
+            thirdKeysToDisplay = JSON.parse(JSON.stringify(thirdKeys[describe]));
+        }
+        if(fourthKeys[describe]){
+            fourthKeysToDisplay = JSON.parse(JSON.stringify(fourthKeys[describe]));
+        }
         if(describe == '代金券' || describe == '菜品优惠券' || describe == '菜品兑换券' || describe == '不定额代金券') {
                 if(values.applyScene == '0') {   
                     // 店铺券
                     firstKeysToDisplay[0].keys = [...FIRST_KEYS[describe][0].keys];
-                    // firstKeysToDisplay[1].keys = [...FIRST_KEYS[describe][1].keys];
                     secondKeysToDisplay[0].keys = [...SECOND_KEYS[describe][0].keys];
-                    thirdKeysToDisplay[0].keys = [...THIRD_KEYS[describe][0].keys];
+                    if(describe != '不定额代金券'){
+                        thirdKeysToDisplay[0].keys = [...THIRD_KEYS[describe][0].keys];
+                    }
                 }else if(values.applyScene == '1') {       // 商城券
                     firstKeysToDisplay[0].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][0].keys];
-                    // firstKeysToDisplay[1].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][1].keys];
-                    // firstKeysToDisplay[3].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][3].keys];
                     secondKeysToDisplay[0].keys = [...MALL_COUPON_APPLY_SETTING_FORM_ITEMS[describe][0].keys];
                     fourthKeysToDisplay[0].keys = [...FOURTH_KEYS[describe][0].keys];
                     if(values.mallScope == '0' || values.mallScope == undefined) {
@@ -2344,7 +2369,7 @@ class GiftAddModalStep extends React.PureComponent {
             initialValue:groupValue
         })(
             <Checkbox.Group  
-                // disabled={disabled} 
+                disabled={disabled} 
                 options={applySceneOpts}
             />
         )
@@ -3104,7 +3129,7 @@ class GiftAddModalStep extends React.PureComponent {
                 reminderTime: formData.reminderTime || 3,
             }
         }
-
+        const combineTypes = ['10','20','21'];
         return (
             <div>
                 <div
@@ -3128,7 +3153,7 @@ class GiftAddModalStep extends React.PureComponent {
                     key={`${describe}-${type}1`}
                 />
                 {
-                    applyScene == '0' || applyScene == '2' ? 
+                    (applyScene == '0' || applyScene == '2') && combineTypes.includes(value) ? 
                     <div className={styles.selectFoodsWrapper}>
                         <div className={styles.foodWrapperHeader}>店铺券属性设置</div>
                         {/* <div className={type == 'edit' ? styles.foodWrapperNotAllow : ''}></div> */}
@@ -3155,7 +3180,7 @@ class GiftAddModalStep extends React.PureComponent {
                     </div>:null
                 }
                 {
-                    applyScene == '1' || applyScene == '2' ?
+                    (applyScene == '1' || applyScene == '2') && combineTypes.includes(value) ?
                     <div className={styles.selectFoodsWrapper} style={{ marginTop:applyScene == '2' ? 16 : 0}}>
                         {/* <div className={type == 'edit' ? styles.foodWrapperNotAllow : ''}></div> */}
                         <div className={styles.foodWrapperHeader}>商城券属性设置</div>

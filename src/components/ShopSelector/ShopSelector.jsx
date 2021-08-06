@@ -63,7 +63,6 @@ class ShopSelector extends Component {
                 if(isCreateCoupon){
                     shops = shops.filter(shop => shop.operationMode != '3');
                 }
-                console.log(shops,'shops----0000000000')
                 this.setState({
                     loading: false,
                     options: shops,

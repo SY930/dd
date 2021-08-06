@@ -494,28 +494,7 @@ export const FIRST_KEYS = {
                 'mallScope',
                 'applyScene',
             ],
-        },
-        {
-            col: {
-                span: 24,
-                push: 2,
-            },
-            keys: []
-        },
-        {
-            col: {
-                span: 24,
-                pull: 2,
-            },
-            keys: []
-        },
-        {
-            col: {
-                span: 24,
-                push: 3,
-            },
-            keys: []
-        },
+        }
     ],
     '菜品优惠券': [
         {
@@ -534,28 +513,7 @@ export const FIRST_KEYS = {
                 'mallScope',
                 'applyScene',
             ],
-        },
-        {
-            col: {
-                span: 24,
-                push: 2,
-            },
-            keys: [],
-        },
-        {
-            col: {
-                span: 24,
-                pull: 2,
-            },
-            keys: [],
-        },
-        {
-            col: {
-                span: 24,
-                push: 3,
-            },
-            keys: [],
-        },
+        }
     ],
     '菜品兑换券': [
         {
@@ -574,31 +532,6 @@ export const FIRST_KEYS = {
                 'giftRemark',
                 'mallScope',
                 'applyScene',
-            ],
-        },
-        {
-            col: {
-                span: 24,
-                push: 2,
-            },
-            keys: [
-            ],
-        },
-        {
-            col: {
-                span: 24,
-                pull: 2,
-            },
-            keys: [
-                
-            ],
-        },
-        {
-            col: {
-                span: 24,
-                push: 3,
-            },
-            keys: [
             ],
         },
     ],
@@ -781,25 +714,9 @@ export const FIRST_KEYS = {
                 'giftName',
                 'selectBrands',
                 'pushMessage',
-            ],
-        },
-        {
-            col: {
-                span: 24,
-                pull: 2,
-            },
-            keys: [
                 'giftRemark',
-            ]
-        },
-        {
-            col: {
-                span: 24,
-                push: 3,
-            },
-            keys: [
-                'isNeedCustomerInfo',
-            ]
+                'isNeedCustomerInfo'
+            ],
         },
     ],
 };
