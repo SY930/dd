@@ -397,9 +397,16 @@ class CategoryAndFoodSelector extends Component {
                         <div
                             style={{
                                 color: 'orange',
-                                paddingLeft: '16.67%',
                                 overflow: 'hidden',
-                                lineHeight: 1.15,
+                                marginBottom: '8px',
+                                width: '300px',
+                                height: '32px',
+                                background: '#FFFBE6',
+                                borderRadius: '4px',
+                                border: '1px solid #FFE58F',
+                                paddingLeft: '10px',
+                                marginLeft:'68px',
+                                marginTop:'-10px'
                             }}
                         >
                             {SALE_LABEL.k5m4pywe}
