@@ -665,7 +665,7 @@ class GiftAddModalStep extends React.PureComponent {
             return;
         };
 
-        const {goodCategories = [], goods = []} = this.props;
+        const {goodCategories = [], goods = [],gift:{ value }} = this.props;
         const { malls } = this.state;
 
         // 当商城券是，brandSelectType 需要传1。 默认适用所有品牌（虽然商城没有品牌概念）
@@ -680,25 +680,26 @@ class GiftAddModalStep extends React.PureComponent {
         let shopNames = params.shopNames;
         params.shopIDs = '';
         params.shopNames = '';
-
-        if(params.hasOwnProperty('selectMall') && params.selectMall !== undefined) {
-            // TODO: 着急上线，没定位原因，代码做兼容处理
-            if(params.selectMall instanceof Array && params.selectMall.length == 1) {
-                params.shopIDs = params.selectMall[0];
-            } else {
-                params.shopIDs = params.selectMall;
+        if(['10','20','21'].includes(value)){
+            if(params.hasOwnProperty('selectMall') && params.selectMall !== undefined) {
+                if(params.selectMall instanceof Array && params.selectMall.length == 1) {
+                    params.shopIDs = params.selectMall[0];
+                } else {
+                    params.shopIDs = params.selectMall;
+                }
+                let selectMall = malls.filter((mall, idx)=>{
+                    return mall.shopID == params.selectMall
+                });
+    
+                if(selectMall instanceof Array && selectMall.length == 1) {
+                    params.shopNames = selectMall[0].shopName;
+                }
+            }else{
+                message.warning('请选择适用商城')
+                return
             }
-            let selectMall = malls.filter((mall, idx)=>{
-                return mall.shopID == params.selectMall
-            });
-
-            if(selectMall instanceof Array && selectMall.length == 1) {
-                params.shopNames = selectMall[0].shopName;
-            }
-        }else{
-            message.warning('请选择适用商城')
-            return
         }
+        
         if(params.applyScene == '2'){
             if(shopIds){
                 if(shopIds.indexOf(params.shopIDs) < 0){
@@ -1007,7 +1008,7 @@ class GiftAddModalStep extends React.PureComponent {
             params.pushMimiAppMsg = params.pushMessage && params.pushMessage.pushMimiAppMsg
             // 商城券参数调整
             this.adjustParamsOfMallGift(params);
-            if(params.applyScene != '0'){
+            if(['10','20','21'].includes(value) && params.applyScene != '0'){
                 if(!params.shopIDs){
                     message.warning('请选择适用商城')
                     return
@@ -1858,11 +1859,12 @@ class GiftAddModalStep extends React.PureComponent {
     renderMallCategorySelector = (decorator, form) => {
         const { goodCategories, goods, gift: {
             value: giftTypeValue
-        }} = this.props;
+        },type} = this.props;
         const { values } = this.state;
         let initialValue = [];
         let showToolTips = false;
         if(values.applyScene == '1' || values.applyScene == '2') {
+            console.log(goodCategories,'goodCategories--------')
             // debugger
             if(goodCategories instanceof Array && goodCategories.length == 0) {
                 // data.selectBrands[0].targetID; 当前店铺 ID
@@ -1871,7 +1873,6 @@ class GiftAddModalStep extends React.PureComponent {
                     // 满足以上全部条件（回显模式下需要满足）
                     this.handleMallChange(values.shopIDs[0]);
                 }
-
             } else {
                 // 前端传到后端采用拼接，组合成 couponFoodScope， 后端返回字段名称又改为 couponFoodScopeList
                 // if(values.couponFoodScopeList instanceof Array && values.couponFoodScopeList.length > 0) {
@@ -1892,6 +1893,10 @@ class GiftAddModalStep extends React.PureComponent {
         if (giftTypeValue == '10') {
             rules = [];
         }
+        if(type != 'edit'){
+            initialValue = []
+        }
+        console.log(initialValue,'initialValue====-----=====')
         // 调整 toolTips, 代金券。且内容为空时
         if(giftTypeValue == '10') {
             if(initialValue instanceof Array &&  initialValue.length == 0) {

@@ -824,7 +824,7 @@ export const SECOND_KEYS = (() => ({
                 'giftShareType',
                 'moneyLimitTypeAndValue',
                 'customerUseCountLimit',
-                'shopNames',
+                // 'shopNames',
                 'showGiftRule',
                 'giftImagePath',
                 'aggregationChannels',
