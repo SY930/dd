@@ -79,7 +79,7 @@ import {
     fetchFoodMenuInfoAC,
     getMallGoodsAndCategories,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
-import { GiftCategoryAndFoodSelector } from '../../SaleCenterNEW/common/CategoryAndFoodSelector';
+import { GiftCategoryAndFoodSelector } from '../../SaleCenterNEW/common/GiftCategoryAndFoodSelector';
 import AddMoneyTradeDishesTableWithBrand from 'containers/SaleCenterNEW/addMoneyTrade/AddMoneyTradeDishesTableWithBrand';
 
 
@@ -720,7 +720,6 @@ class GiftAddModalStep extends React.PureComponent {
 
         // 适用菜品方式 0：按菜品单品 1：按菜品分类 2：不限制
         // mallScope : 0 按分类， 1 按商品
-        params.foodSelectType = params.mallScope == '0' ? '1' : '0';
         // 商城分类模式
         if(params.mallScope == '0' || params.mallScope == undefined) {
             let existCouponFoodScopes = params.couponFoodScopes;
@@ -921,6 +920,7 @@ class GiftAddModalStep extends React.PureComponent {
 
             Array.isArray(params.usingDateType) && (params.usingDateType = params.usingDateType.join(','));
             Array.isArray(params.usingWeekType) && (params.usingWeekType = params.usingWeekType.join(','));
+            
             // 对旧字段的兼容透传
             params.usingTimeType = Array.isArray(data.usingTimeType) ? data.usingTimeType.join(',') : data.usingTimeType ? data.usingTimeType : '1,2,3,4,5';
             if (value == '20' || value == '21') {
@@ -978,6 +978,7 @@ class GiftAddModalStep extends React.PureComponent {
             if (formValues.transferLimitType == -1) {
                 params.transferLimitType = formValues.transferLimitTypeValue
             }
+            params.foodSelectType = params.mallScope == '0' ? '1' : '0';
             params.brandSelectType = (params.selectBrands || []).length > 0 ? 0 : 1;
             params.maxUseLimit = params.maxUseLimit || '0';
             params.customerUseCountLimit = params.customerUseCountLimit || '0';
@@ -1726,6 +1727,7 @@ class GiftAddModalStep extends React.PureComponent {
     renderFoodsboxs(decorator) {
         const { gift: { data } } = this.props;
         const { values:{mallScope}} = this.state;
+        console.log(mallScope,'mallScope-------------renderFoodsboxs')
         let { couponFoodScopeList = [], excludeFoodScopes = [], foodSelectType = 2} = data;
         let scopeList;
         if (foodSelectType == 2) { // 全部菜品
@@ -2215,6 +2217,7 @@ class GiftAddModalStep extends React.PureComponent {
             fourthKeysToDisplay = JSON.parse(JSON.stringify(fourthKeys[describe]));
         }
         if(describe == '代金券' || describe == '菜品优惠券' || describe == '菜品兑换券' || describe == '不定额代金券') {
+                console.log(values.applyScene,'values.applyScene==========')
                 if(values.applyScene == '0') {   
                     // 店铺券
                     firstKeysToDisplay[0].keys = [...FIRST_KEYS[describe][0].keys];
@@ -3135,6 +3138,7 @@ class GiftAddModalStep extends React.PureComponent {
             }
         }
         const combineTypes = ['10','20','21'];
+        console.log(formData,'formData----------------')
         return (
             <div>
                 <div
