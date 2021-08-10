@@ -85,7 +85,8 @@ import PromotionAutoRunModal from "./PromotionAutoRunModal";
 import ExportModal from "../../GiftNew/GiftInfo/ExportModal";
 import {
     openPromotionAutoRunListModal,
-    queryPromotionAutoRunList
+    queryPromotionAutoRunList,
+    queryPromotionList,
 } from "../../../redux/actions/saleCenterNEW/promotionAutoRun.action";
 import {
     AUTO_RUN_QUERY, BASIC_LOOK_PROMOTION_QUERY, BASIC_PROMOTION_DELETE, BASIC_PROMOTION_QUERY,
@@ -113,6 +114,7 @@ const mapStateToProps = (state) => {
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
+        promotionList: state.sale_promotionAutoRunState.get('promotionList').toJS(),
         user: state.user.toJS(),
     };
 };
@@ -182,6 +184,9 @@ const mapDispatchToProps = (dispatch) => {
         queryPromotionAutoRunList: (opts) => {
             dispatch(queryPromotionAutoRunList(opts))
         },
+        queryPromotionList: (opts) => {
+            dispatch(queryPromotionList(opts))
+        },
         openPromotionAutoRunListModal: (opts) => {
             dispatch(openPromotionAutoRunListModal(opts))
         },
@@ -243,6 +248,7 @@ class MyActivities extends React.Component {
             pageNo: 1,
             queryDisabled: false,
             currentPromotionID: '',
+            runType:'0'
         };
         this.handleDismissUpdateModal = this.handleDismissUpdateModal.bind(this);
         this.checkDetailInfo = this.checkDetailInfo.bind(this);
@@ -267,6 +273,8 @@ class MyActivities extends React.Component {
             promotionScopeInfo,
             fetchPromotionScopeInfo,
             fetchPromotionList,
+            queryPromotionList,
+            queryPromotionAutoRunList,
         } = this.props;
         this.handleQuery();
         fetchPromotionCategories({
@@ -286,8 +294,10 @@ class MyActivities extends React.Component {
         this.props.getAuthLicenseData({ productCode: 'HLL_CRM_Marketingbox' }).then((res) => {
             this.setState({ authLicenseData: res })
         });
+        queryPromotionAutoRunList()
         this.onWindowResize();
         window.addEventListener('resize', this.onWindowResize);
+
     }
 
     componentWillUnmount() {
@@ -700,7 +710,7 @@ class MyActivities extends React.Component {
             });
         }
     }
-
+    
     // Row Actions: 查看
     checkDetailInfo() {
         const _record = arguments[1];
@@ -777,11 +787,23 @@ class MyActivities extends React.Component {
             </Modal>
         );
     }
-
+    setRunDataList(){
+        const { promotionList,queryPromotionList } = this.props;
+        let type = 0;
+        if(promotionList && promotionList.length > 0){
+            type = promotionList[0].executeType
+            this.setState({
+                runType:type
+            })
+        }
+        queryPromotionList({type})
+        this.props.openPromotionAutoRunListModal();
+    }
     renderHeader() {
         const headerClasses = `layoutsToolLeft ${styles.basicPromotionHeader} ${styles.headerWithBgColor}`;
         const {
             queryPromotionAutoRunList,
+            queryPromotionList,
             openPromotionAutoRunListModal,
             intl,
         } = this.props;
@@ -796,14 +818,11 @@ class MyActivities extends React.Component {
                             !isHuaTian() && !this.isOnlinePromotionPage() && (
                                 <Authority rightCode={AUTO_RUN_QUERY}>
                                     <Button
-                                        onClick={() => {
-                                            queryPromotionAutoRunList();
-                                            openPromotionAutoRunListModal();
-                                        }}
+                                        onClick={() => this.setRunDataList()}
                                         icon="plus"
                                         className={styles.customPrimaryButton}
                                     >
-                                        {SALE_LABEL.k5dbiuws}
+                                        执行顺序（原自动执行）
                                     </Button>
                                 </Authority>
                             )
@@ -1405,6 +1424,8 @@ class MyActivities extends React.Component {
     }
 
     render() {
+        const {runType} = this.state;
+        console.log(runType,'rutype--00000000')
         return (
             <div style={{ backgroundColor: '#F3F3F3' }} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 <div>
@@ -1421,7 +1442,7 @@ class MyActivities extends React.Component {
                     </div>
                 </div>
                 {this.renderModifyRecordInfoModal()}
-                <PromotionAutoRunModal />
+                <PromotionAutoRunModal runType={runType}/>
                 {
                     !this.state.exportVisible ? null :
                         <ExportModal

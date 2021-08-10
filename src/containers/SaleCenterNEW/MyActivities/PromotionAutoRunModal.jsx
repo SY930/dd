@@ -10,10 +10,12 @@ import {
     Select,
     message,
     Checkbox,
+    Radio,
+
 } from 'antd';
 import styles from '../ActivityPage.less';
 import {
-    closePromotionAutoRunListModal, queryPromotionAutoRunList,
+    closePromotionAutoRunListModal, queryPromotionAutoRunList,queryPromotionList,
     savePromotionAutoRunList
 } from "../../../redux/actions/saleCenterNEW/promotionAutoRun.action";
 import Authority from "../../../components/common/Authority/index";
@@ -23,7 +25,7 @@ import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from '../IntlDecor';
 
 const CheckboxGroup = Checkbox.Group;
-
+const RadioGroup = Radio.Group;
 @injectIntl()
 class PromotionAutoRunModal extends Component {
 
@@ -37,17 +39,19 @@ class PromotionAutoRunModal extends Component {
             checkedValues: [],
             allDisabled: false,
             limitNum: 100,
+            runModalvalue:null
         }
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.promotionList !== this.props.promotionList) {
             this.setState({
-                promotionList: nextProps.promotionList.toJS()
+                promotionList: nextProps.promotionList.toJS(),
             })
         }
     }
     handleInnerOk = () => {
+        debugger
         const {
             promotionList,
             selectedRowKeys: rowKeys,
@@ -95,11 +99,12 @@ class PromotionAutoRunModal extends Component {
         } = this.props;
         this.setState({
             selectedRowKeys: promotionList.map(item => item.promotionID),
-            innerModalVisible: false
+            innerModalVisible: false,
         })
     }
 
     renderInnerSelectorModal() {
+        const {runModalvalue} = this.state;
         return (
             <Modal
                 width={550}
@@ -110,7 +115,7 @@ class PromotionAutoRunModal extends Component {
                 maskClosable={false}
                 onCancel={this.handleInnerCancel}
                 onOk={this.handleInnerOk}
-                title={SALE_LABEL.k5f2114y}
+                title={runModalvalue == '1' ? SALE_LABEL.k5f2114y: '选择需要限制手动执行顺序的活动'}
             >
                 {this.renderInnerTable()}
             </Modal>
@@ -128,7 +133,7 @@ class PromotionAutoRunModal extends Component {
         }
     }
     renderInnerTable() {
-        const { checkedValues, limitNum, allDisabled } = this.state;
+        const { checkedValues, limitNum, allDisabled,runModalvalue } = this.state;
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
                 if(selectedRowKeys.length > limitNum - checkedValues.length){
@@ -295,13 +300,21 @@ class PromotionAutoRunModal extends Component {
         const list = this.props.promotionList.toJS();
         this.setState({
             promotionList: list,
-            selectedRowKeys: list.map(item => item.promotionID)
+            selectedRowKeys: list.map(item => item.promotionID),
+            runModalvalue:null
         })
         this.props.closePromotionAutoRunListModal();
     }
 
     handleOk = () => {
-        const { promotionList } = this.state;
+        let { runType } = this.props;
+        let { promotionList ,runModalvalue} = this.state;
+        let modalType = runModalvalue ? runModalvalue : Number(runType) + 1;
+        if(promotionList && promotionList.length > 0){
+            promotionList.forEach((item,index) => {
+                item.executeType = modalType - 1
+            })
+        }
         this.props
             .savePromotionAutoRunList({autoExecuteActivityItems: promotionList.map((item, index) => ({...item, order: index + 1}))})
             .then(() => {
@@ -315,6 +328,7 @@ class PromotionAutoRunModal extends Component {
     }
 
     handleRetry = () => {
+        this.props.queryPromotionList();
         this.props.queryPromotionAutoRunList();
     }
 
@@ -333,18 +347,36 @@ class PromotionAutoRunModal extends Component {
             checkedValues,
         })
     }
-
+    onRunModalChange = (e) =>{
+        const {value} = e.target;
+        if(value == '1'){
+            this.props.queryPromotionList({type:0});
+        }else{
+            this.props.queryPromotionList({type:1});
+        }
+        this.setState({
+            runModalvalue:value,
+            promotionList:[],
+            selectedRowKeys: [],
+            checkedValues: [],
+        })
+        console.log(e)
+    }
     render() {
         const {
             isVisible,
             isLoading,
             isSaving,
             hasError,
+            runType,
         } = this.props;
         const {
             promotionList,
-            limitNum
+            limitNum,
+            runModalvalue
         } = this.state;
+        let modalType = runModalvalue ? runModalvalue : Number(runType) + 1;
+        console.log(modalType,'runModalvalue==========')
         return (
             <Modal
                 visible={isVisible}
@@ -396,29 +428,42 @@ class PromotionAutoRunModal extends Component {
                                                 fontSize: '16px',
                                                 color: '#666666'
                                             }}
-                                        >
-                                            {SALE_LABEL.k5dbiuws}&nbsp;&nbsp;
-                                            <Tooltip title={
-                                                <p style={{
-                                                    maxWidth: '390px'
-                                                }}>
-                                                    {SALE_LABEL.k5f212mo}
-                                                </p>
-                                            }
-                                            >
-                                                <Icon
-                                                    type="question-circle-o"
-                                                    style={{
-                                                        color: '#1AB495'
-                                                    }}
-                                                />
-                                            </Tooltip>
-                                        </div>
+                                        >   
+                                            <span style={{fontSize:12,marginRight:15}}>执行方式</span>
+                                            <RadioGroup onChange={this.onRunModalChange} value={String(modalType)}>
+                                                <Radio value={'1'}>
+                                                    {SALE_LABEL.k5dbiuws}
+                                                    {/* &nbsp;&nbsp;
+                                                    <Tooltip title={
+                                                        <p style={{
+                                                            maxWidth: '390px'
+                                                        }}>
+                                                            {SALE_LABEL.k5f212mo}
+                                                        </p>
+                                                    }
+                                                    >
+                                                        <Icon
+                                                            type="question-circle-o"
+                                                            style={{
+                                                                color: '#1AB495'
+                                                            }}
+                                                        />
+                                                    </Tooltip> */}
+                                                </Radio>
+                                                <Radio value={'2'}>手动执行</Radio>
+                                            </RadioGroup>
+                                            </div>
                                         <div style={{
                                             fontSize: '12px',
-                                            color: '#999999'
+                                            color: '#999999',
+                                            marginTop:'10'
                                         }}>
-                                            {SALE_LABEL.k5f21352}
+                                            {
+                                                runModalvalue == '1' || !runModalvalue ? 
+                                                    SALE_LABEL.k5f21352
+                                                    :
+                                                    '对SaaS结账时可使用的活动,收银员手动结账时需要遵循的活动执行顺序'
+                                            }
                                         </div>
                                     </div>
                                     {
@@ -455,7 +500,7 @@ class PromotionAutoRunModal extends Component {
                         )
                     }
                 </Spin>
-                {this.renderInnerSelectorModal()}
+                 {this.renderInnerSelectorModal()}       
             </Modal>
         )
     }
@@ -477,6 +522,7 @@ function mapDispatchToProps(dispatch) {
         closePromotionAutoRunListModal: opts => dispatch(closePromotionAutoRunListModal(opts)),
         savePromotionAutoRunList: opts => dispatch(savePromotionAutoRunList(opts)),
         queryPromotionAutoRunList: opts => dispatch(queryPromotionAutoRunList(opts)),
+        queryPromotionList: opts => dispatch(queryPromotionList(opts)),
     }
 }
 

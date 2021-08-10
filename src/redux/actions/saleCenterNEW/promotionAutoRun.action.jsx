@@ -1,10 +1,11 @@
 import { axiosData } from '../../../helpers/util';
 import { getStore } from '@hualala/platform-base/lib';
 
-export const SALE_CENTER_QUERY_PROMOTION_AUTORUN_LIST_START = 'sale center: query promotion auto run list START';
+export const SALE_CENTER_QUERY_PROMOTION_LIST_START = 'sale center: query promotion list START';
 export const SALE_CENTER_QUERY_PROMOTION_AUTORUN_LIST_SUCCESS = 'sale center: query promotion auto run list SUCCESS';
+export const SALE_CENTER_QUERY_PROMOTION_LIST_SUCCESS = 'sale center: query promotion list SUCCESS';
 export const SALE_CENTER_QUERY_PROMOTION_AUTORUN_LIST_FAIL = 'sale center: query promotion auto run list FAIL';
-
+export const SALE_CENTER_QUERY_PROMOTION_LIST_FAIL = 'sale center: query promotion list FAIL';
 export const SALE_CENTER_SAVE_PROMOTION_AUTORUN_LIST_START = 'sale center: save promotion auto run list START';
 export const SALE_CENTER_SAVE_PROMOTION_AUTORUN_LIST_SUCCESS = 'sale center: save promotion auto run list SUCCESS';
 export const SALE_CENTER_SAVE_PROMOTION_AUTORUN_LIST_FAIL = 'sale center: save promotion auto run list FAIL';
@@ -38,16 +39,26 @@ const queryPromotionAutoRunListSuccess = (opts) => {
         payload: opts,
     };
 };
-
+//获取可自动执行列表
+const queryPromotionListSuccess = (opts) => {
+    return {
+        type: SALE_CENTER_QUERY_PROMOTION_LIST_SUCCESS,
+        payload: opts,
+    };
+};
+const queryPromotionListFail = () => {
+    return {
+        type: SALE_CENTER_QUERY_PROMOTION_LIST_FAIL,
+    };
+};
 const queryPromotionAutoRunListFail = () => {
     return {
         type: SALE_CENTER_QUERY_PROMOTION_AUTORUN_LIST_FAIL,
     };
 };
-
-const queryPromotionAutoRunListStart = () => {
+const queryPromotionListStart = () => {
     return {
-        type: SALE_CENTER_QUERY_PROMOTION_AUTORUN_LIST_START,
+        type: SALE_CENTER_QUERY_PROMOTION_LIST_START,
     };
 };
 // 保存操作
@@ -72,25 +83,32 @@ const savePromotionAutoRunListStart = () => {
 
 export const queryPromotionAutoRunList = (opts) => {
     return (dispatch) => {
-        dispatch(queryPromotionAutoRunListStart());
-        Promise.all(
-            [
-                axiosData(
-                    '/promotion/autoExecuteActivities_queryAutoActivities.ajax',
-                    opts,
-                    {},
-                    {path: 'data.autoExecuteActivityItems'},
-                    'HTTP_SERVICE_URL_PROMOTION_NEW'
-                ),
-                axiosData(
-                    '/promotion/autoExecuteActivities_queryEnableAutoExePromotion.ajax',
-                    {...opts, isActive: '1'},
-                    {},
-                    {path: 'data.autoExecuteActivityItems'},
-                    'HTTP_SERVICE_URL_PROMOTION_NEW'
-                ),
-            ]
+        axiosData(
+            '/promotion/autoExecuteActivities_queryAutoActivities.ajax',
+            opts,
+            {},
+            { path: 'data.autoExecuteActivityItems' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
         ).then(values => {
+            console.log(values, 'values------------------queryPromotionAutoRunList')
+            dispatch(queryPromotionAutoRunListSuccess(values));
+        }).catch((error) => {
+            console.log(error);
+            dispatch(queryPromotionAutoRunListFail(error));
+        })
+    };
+}
+export const queryPromotionList = (opts) => {
+    return (dispatch) => {
+        dispatch(queryPromotionListStart());
+        axiosData(
+            '/promotion/autoExecuteActivities_queryEnableAutoExePromotion.ajax',
+            { ...opts, isActive: '1' },
+            {},
+            { path: 'data.autoExecuteActivityItems' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
+        ).then(values => {
+            console.log(values, 'values------------------queryPromotionList')
             const groupID = getStore().getState().user.getIn(['accountInfo', 'groupID']);
             const topEvents = [
                 {
@@ -110,16 +128,15 @@ export const queryPromotionAutoRunList = (opts) => {
                     order: 0,
                 }
             ];
-            const [a1, a2] = values;
-            const newVals = [a1, [...topEvents, ...a2]];
-            dispatch(queryPromotionAutoRunListSuccess(newVals));
+            const newVals = [...topEvents, ...values];
+            console.log(newVals, 'newValues-----------')
+            dispatch(queryPromotionListSuccess(newVals));
         }).catch((error) => {
             console.log(error);
-            dispatch(queryPromotionAutoRunListFail(error));
+            dispatch(queryPromotionListFail(error));
         })
     };
 }
-
 export const savePromotionAutoRunList = (opts) => {
     return (dispatch) => {
         dispatch(savePromotionAutoRunListStart());
@@ -127,7 +144,7 @@ export const savePromotionAutoRunList = (opts) => {
             '/promotion/autoExecuteActivities_mergeAutoActivities.ajax',
             opts,
             {},
-            {path: 'data'},
+            { path: 'data' },
             'HTTP_SERVICE_URL_PROMOTION_NEW'
         ).then((res) => {
             dispatch(savePromotionAutoRunListSuccess(res));
