@@ -44,7 +44,6 @@ const getFoodInfoFromScopeList = (scopeList) => {
         }
     })
     return {
-        mallScope,
         dishes,
         categories,
         excludeDishes,
@@ -84,12 +83,11 @@ class CategoryAndFoodSelector extends Component {
         } else {
             const {
                 categories,
-                mallScope,
                 dishes,
                 excludeDishes,
             } = getFoodInfoFromScopeList(props.scopeLst) // 只取初始值
             this.state = {
-                mallScope,
+                mallScope: props.mallScope,
                 dishes,
                 categories,
                 excludeDishes,
@@ -280,46 +278,6 @@ class CategoryAndFoodSelector extends Component {
         }, () => {
             this.mapSelectedValueToObjectsThenEmit();
         })
-    }
-    renderPromotionRange = () => {
-        const { intl } = this.props;
-        const k5gfsugb = intl.formatMessage(SALE_STRING.k6hhuayf);
-        const k5gfsuon = intl.formatMessage(SALE_STRING.k6hhub6r);
-        // 基础营销里的类型与礼品模版中的分类、单品类型是0 1相反的
-        const PROMOTION_OPTIONS = [
-            {
-                key: '0',
-                value: 0,
-                name: k5gfsugb,
-            }, {
-                key: '1',
-                value: 1,
-                name: k5gfsuon,
-            },
-        ];
-        return (
-            <FormItem
-                label={SALE_LABEL.k5gfsuwz}
-                className={styles.FormItemStyle}
-                labelCol={{
-                    span: 4,
-                }}
-                wrapperCol={{
-                    span: 17,
-                }}
-            >
-                <RadioGroup
-                    value={this.state.mallScope}
-                    onChange={this.handleCategoryOrDishChange}
-                >
-                    {PROMOTION_OPTIONS.map((type) => {
-                        return (<Radio key={type.key} value={type.value}>{type.name}</Radio >);
-                    })}
-                </RadioGroup >
-                {this.props.scopeTip}
-            </FormItem>
-
-        );
     }
     renderDishsSelectionBox() {
         console.log('renderDishsSelectionBox')
@@ -518,7 +476,6 @@ class CategoryAndFoodSelector extends Component {
         }
         return (
             <div>
-                {/* {this.renderPromotionRange()} */}
                 {
                     this.state.mallScope == 1 ? this.renderDishsSelectionBox() : this.renderCategorySelectionBox()
                 }
@@ -559,4 +516,4 @@ CategoryAndFoodSelector.defaultProps = {
 };
 
 export default connect(mapStateToPropsForPromotion)(CategoryAndFoodSelector)
-export const GiftCategoryAndFoodSelector = connect(mapStateToPropsForGift)(CategoryAndFoodSelector)
+export const GiftCategoryAndFoodSelectors = connect(mapStateToPropsForGift)(CategoryAndFoodSelector)

@@ -79,7 +79,7 @@ import {
     fetchFoodMenuInfoAC,
     getMallGoodsAndCategories,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
-import { GiftCategoryAndFoodSelector } from '../../SaleCenterNEW/common/GiftCategoryAndFoodSelector';
+import { GiftCategoryAndFoodSelectors } from '../../SaleCenterNEW/common/GiftCategoryAndFoodSelectors';
 import AddMoneyTradeDishesTableWithBrand from 'containers/SaleCenterNEW/addMoneyTrade/AddMoneyTradeDishesTableWithBrand';
 
 
@@ -374,6 +374,7 @@ class GiftAddModalStep extends React.PureComponent {
 
     // 处理表单数据变化
     handleFormChange(key, value, formRef) {
+        console.log(key,value,'keyvalue')
         const { gift: { name: describe, data }, type } = this.props;
         const { firstKeys, secondKeys, values } = this.state;
         const newKeys = [...secondKeys[describe][0].keys];
@@ -538,8 +539,10 @@ class GiftAddModalStep extends React.PureComponent {
             default:
                 break;
         }
-        
-        this.setState({ values });
+        console.log(values,'values')
+        this.setState({ 
+            values:Object.assign({},values)
+        });
 
         if(key==='giftValueCurrencyType') {
             this.setState({ unit: value });
@@ -675,9 +678,13 @@ class GiftAddModalStep extends React.PureComponent {
         if(params.applyScene == '1') {
             delete params.selectBrands
         }
-
-        let shopIds = params.shopIDs;
-        let shopNames = params.shopNames;
+        let shopIds = null,shopNames = null;
+        if(params.shopIDs){
+            shopIds = params.shopIDs;
+        }
+        if(params.shopNames){
+            shopNames = params.shopNames;
+        }
         params.shopIDs = '';
         params.shopNames = '';
         if(['10','20','21'].includes(value)){
@@ -849,8 +856,8 @@ class GiftAddModalStep extends React.PureComponent {
                 let shopsInfo = shopIDs.split(',')
                 params.shopIDs = shopsInfo.filter((item) => shops.some(i => i.shopID == item)).join(',')
             }
-            params.shopNames = shopNames || ',';
-            params.shopIDs = shopIDs || ',';
+            params.shopNames = shopNames || '';
+            params.shopIDs = shopIDs || '';
             if (params.giftShareType == '2') {
                 let shareIDs = '';
                 params.shareIDs && params.shareIDs.forEach((share) => {
@@ -1750,7 +1757,7 @@ class GiftAddModalStep extends React.PureComponent {
                 }}>
                 {
                     decorator({})(
-                        <GiftCategoryAndFoodSelector
+                        <GiftCategoryAndFoodSelectors
                             scopeLst={scopeList}
                             showEmptyTips={true}
                             mallScope={mallScope}
@@ -1808,7 +1815,7 @@ class GiftAddModalStep extends React.PureComponent {
                         //     },
                         // ],
                     })(
-                        <GiftCategoryAndFoodSelector
+                        <GiftCategoryAndFoodSelectors
                             // showExludeDishes={false}
                             scopeLst={scopeList}
                             showEmptyTips={true}
@@ -1866,8 +1873,6 @@ class GiftAddModalStep extends React.PureComponent {
         let initialValue = [];
         let showToolTips = false;
         if(values.applyScene == '1' || values.applyScene == '2') {
-            console.log(goodCategories,'goodCategories--------')
-            // debugger
             if(goodCategories instanceof Array && goodCategories.length == 0) {
                 // data.selectBrands[0].targetID; 当前店铺 ID
                 // 区分回显还是新建
@@ -2088,7 +2093,7 @@ class GiftAddModalStep extends React.PureComponent {
                     },
                 ],
             })(
-                <GiftCategoryAndFoodSelector
+                <GiftCategoryAndFoodSelectors
                     dishOnly
                     priceLst={scopeList}
                 />

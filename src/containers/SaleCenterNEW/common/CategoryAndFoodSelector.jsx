@@ -22,29 +22,29 @@ const RadioGroup = Radio.Group;
 const getFoodInfoFromScopeList = (scopeList) => {
     if (!Array.isArray(scopeList) || !scopeList.length) {
         return {
-            mallScope: 0,
+            categoryOrDish: 0,
             dishes: [],
             categories: [],
             excludeDishes: [],
         }
     }
-    let mallScope = null;
+    let categoryOrDish = null;
     const dishes = [];
     const categories = [];
     const excludeDishes = [];
     scopeList.forEach(scope => {
-        if (mallScope === null) {
-            mallScope = scope.scopeType == 2 ? 1 : 0
+        if (categoryOrDish === null) {
+            categoryOrDish = scope.scopeType == 2 ? 1 : 0
         }
-        if (mallScope == 1 && scope.scopeType == 2) { // 单品
+        if (categoryOrDish === 1 && scope.scopeType == 2) { // 单品
             dishes.push(`${scope.brandID || 0}__${scope.targetName}${scope.targetUnitName}`)
-        } else if (mallScope == 0 && scope.scopeType != 2) {
+        } else if (categoryOrDish === 0 && scope.scopeType != 2) {
             scope.scopeType == 1 && categories.push(`${scope.brandID || 0}__${scope.targetName}`)
             scope.scopeType == 4 && excludeDishes.push(`${scope.brandID || 0}__${scope.targetName}${scope.targetUnitName}`)
         }
     })
     return {
-        mallScope,
+        categoryOrDish,
         dishes,
         categories,
         excludeDishes,
@@ -75,7 +75,7 @@ class CategoryAndFoodSelector extends Component {
                 dishesObj = getDishesInfoFromPriceOrScopeList(props.priceLst)
             }
             this.state = {
-                mallScope: 1,
+                categoryOrDish: 1,
                 dishes: dishesObj.dishes,
                 categories: [],
                 excludeDishes: [],
@@ -84,12 +84,12 @@ class CategoryAndFoodSelector extends Component {
         } else {
             const {
                 categories,
-                mallScope,
+                categoryOrDish,
                 dishes,
                 excludeDishes,
             } = getFoodInfoFromScopeList(props.scopeLst) // 只取初始值
             this.state = {
-                mallScope,
+                categoryOrDish,
                 dishes,
                 categories,
                 excludeDishes,
@@ -109,16 +109,6 @@ class CategoryAndFoodSelector extends Component {
                 onChangeFlag(!!value.length)
             }
         }
-        if(this.props.mallScope != nextProps.mallScope){
-            this.setState({
-                mallScope:nextProps.mallScope
-            })
-            this.props.onChange({
-                dishes: [],
-                excludeDishes: [],
-                categories: []
-        })
-        }
     }
     componentDidMount() {
         if (this.props.allBrands.size && this.props.allCategories.size && this.props.allDishes.size) {
@@ -136,17 +126,18 @@ class CategoryAndFoodSelector extends Component {
         const { dishes, categories } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes)
         const {
             categories: selectedCategoryValues,
-            mallScope,
+            categoryOrDish,
             dishes: selectedDishValues = [],
             excludeDishes: excludeDishValues,
         } = this.state;
-        if (mallScope == 1) {
+        if (categoryOrDish === 1) {
             const dishObjects = selectedDishValues.reduce((acc, curr) => {
                 const dish = dishes.find(item => item.value === curr);
                 dish && acc.push(dish)
                 return acc;
             }, [])
             this.props.onChange({
+                categoryOrDish,
                 dishes: dishObjects,
                 excludeDishes: [],
                 foodCategory: [],
@@ -163,6 +154,7 @@ class CategoryAndFoodSelector extends Component {
                     singlePrice: list
                 })
                 this.props.onChange({
+                    categoryOrDish,
                     dishes: list,
                     excludeDishes: [],
                     foodCategory: [],
@@ -180,7 +172,7 @@ class CategoryAndFoodSelector extends Component {
                 return acc;
             }, [])
             this.props.onChange({
-                // mallScope,
+                categoryOrDish,
                 dishes: [],
                 excludeDishes: excludeDishObjects,
                 foodCategory: categoryObjects,
@@ -204,20 +196,20 @@ class CategoryAndFoodSelector extends Component {
         }
     }
 
-    // handleCategoryOrDishChange = ({ target: { value } }) => {
-    //     this.setState({
-    //         mallScope: value,
-    //         dishes: [],
-    //         excludeDishes: [],
-    //         categories: []
-    //     })
-    //     this.props.onChange({
-    //         mallScope: value,
-    //         dishes: [],
-    //         excludeDishes: [],
-    //         foodCategory: []
-    //     })
-    // }
+    handleCategoryOrDishChange = ({ target: { value } }) => {
+        this.setState({
+            categoryOrDish: value,
+            dishes: [],
+            excludeDishes: [],
+            categories: []
+        })
+        this.props.onChange({
+            categoryOrDish: value,
+            dishes: [],
+            excludeDishes: [],
+            foodCategory: []
+        })
+    }
     handleDishChange = (value = []) => {
         const {
             singleDish,
@@ -309,7 +301,7 @@ class CategoryAndFoodSelector extends Component {
                 }}
             >
                 <RadioGroup
-                    value={this.state.mallScope}
+                    value={this.state.categoryOrDish}
                     onChange={this.handleCategoryOrDishChange}
                 >
                     {PROMOTION_OPTIONS.map((type) => {
@@ -322,7 +314,6 @@ class CategoryAndFoodSelector extends Component {
         );
     }
     renderDishsSelectionBox() {
-        console.log('renderDishsSelectionBox')
         const { intl } = this.props;
         const k5gfsvlz = intl.formatMessage(SALE_STRING.k5gfsvlz);
         const {
@@ -398,19 +389,12 @@ class CategoryAndFoodSelector extends Component {
                         <div
                             style={{
                                 color: 'orange',
+                                paddingLeft: '16.67%',
                                 overflow: 'hidden',
-                                marginBottom: '8px',
-                                width: '300px',
-                                height: '32px',
-                                background: '#FFFBE6',
-                                borderRadius: '4px',
-                                border: '1px solid #FFE58F',
-                                paddingLeft: '10px',
-                                marginLeft:'68px',
-                                marginTop:'-10px'
+                                lineHeight: 1.15,
                             }}
                         >
-                            不选择默认所有菜品都适用
+                            {SALE_LABEL.k5m4pywe}
                         </div>
                     )
                 }
@@ -418,7 +402,6 @@ class CategoryAndFoodSelector extends Component {
         )
     }
     renderCategorySelectionBox() {
-        console.log('renderCategorySelectionBox')
         const {
             allBrands,
             allCategories,
@@ -452,10 +435,10 @@ class CategoryAndFoodSelector extends Component {
         return (
             <div>
                 <FormItem
-                    label={'菜品分类'}
+                    label={SALE_LABEL.k5m6e53r}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 16 }}
+                    wrapperCol={{ span: 17 }}
                     required={showRequiredMark}
                 >
 
@@ -475,25 +458,19 @@ class CategoryAndFoodSelector extends Component {
                         <div
                             style={{
                                 color: 'orange',
+                                paddingLeft: '16.67%',
                                 overflow: 'hidden',
-                                marginBottom: '8px',
-                                width: '300px',
-                                height: '32px',
-                                background: '#FFFBE6',
-                                borderRadius: '4px',
-                                border: '1px solid #FFE58F',
-                                paddingLeft: '10px',
-                                marginLeft:'68px',
-                                marginTop:'-10px'
+                                lineHeight: 1.15,
+                                marginBottom: 8,
                             }}
                         >
-                            不选择默认所有分类都适用
+                            {SALE_LABEL.k5gfsvub}
                         </div>
                     )
                 }
                 {
                     showExludeDishes && (
-                        <FormItem label={SALE_LABEL.k5gfsvdn} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
+                        <FormItem label={SALE_LABEL.k5gfsvdn} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
                             <FoodSelector
                                 background={this.props.background}
                                 mode="dish"
@@ -512,15 +489,14 @@ class CategoryAndFoodSelector extends Component {
         )
     }
     render() {
-        console.log(this.props.dishOnly,this.props.mallScope,this.state.mallScope,'mallScope props-----')
         if (this.props.dishOnly) {
             return this.renderDishsSelectionBox()
         }
         return (
             <div>
-                {/* {this.renderPromotionRange()} */}
+                {this.renderPromotionRange()}
                 {
-                    this.state.mallScope == 1 ? this.renderDishsSelectionBox() : this.renderCategorySelectionBox()
+                    this.state.categoryOrDish == 1 ? this.renderDishsSelectionBox() : this.renderCategorySelectionBox()
                 }
             </div>
         );
