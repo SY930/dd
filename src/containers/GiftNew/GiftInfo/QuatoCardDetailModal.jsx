@@ -168,7 +168,6 @@ class InfoDisplay extends Component {
     }
     /* 生成表格数据 */
     generateDataSource() {
-        // console.log('this.props',this.props.infoData)
         const {  infoData = {} } = this.props;
         const { quotaCardGiftConfList = [], presentType, couponPackageBaseInfo } = infoData;
         let list = quotaCardGiftConfList

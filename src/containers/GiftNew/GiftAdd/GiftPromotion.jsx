@@ -188,7 +188,6 @@ class GiftPromotion extends React.Component {
 
     // 确定或取消
     handleEditorBoxChange(value) {
-        // console.log(value);
         const promotionSelections = value;
         const valueKeyType = 'promotionIDStr';
         // update currentSelections according the selections
@@ -262,8 +261,7 @@ class GiftPromotion extends React.Component {
                 })
             }
             this.setState({ promotionCurrentSelections: value, promotionSelections: selectionsSet }, () => {
-                // console.log(this.state.promotionCurrentSelections);
-                // console.log(Array.from(this.state.promotionSelections));
+               
             });
         }
     }

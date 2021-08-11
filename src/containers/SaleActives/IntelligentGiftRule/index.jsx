@@ -40,7 +40,6 @@ class IntelligentGiftRule extends React.Component {
         this.GiftRuleForm.validateFields((err, value) => {
             if(!err){
                 this.customerRangeForm.validateFieldsAndScroll((error, val) => {
-                    // console.log('>>bb', error, val)
                     if(!error){
                         let parm = {
                             ...giftRule,

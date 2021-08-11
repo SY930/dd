@@ -22,7 +22,6 @@ class SelectMall extends Component {
 
     componentWillReceiveProps(newProps) {
         const { dataSource, value } = newProps;
-        // console.log('new props in componentWillReceiveProps', value)
         if(this.props.dataSource == dataSource) {
             this.setState({
                 malls: dataSource,
