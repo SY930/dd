@@ -284,12 +284,10 @@ const renderRecommendGiftsDetail = function () {
  * @returns
  */
 const checkChoose = function (key, ruleType, roleType) {
-    // console.log('checkChoose', key, ruleType, roleType)
     // 每个角色至少选择一个礼物
     const ruleTypeNum = Number(ruleType);
     const roleTypeNum = Number(roleType)
     const { checkBoxStatus } = this.state
-    // console.log('this',this.state.checkBoxStatus,key,ruleType,roleType)
     const giftList1Key = ['giveCash', 'giveCoupon', 'giveIntegral']
     const giftList2Key = ['giveCoupon', 'giveIntegral']
     const giftList3Key = ['giveCard', 'giveIntegral', 'giveCash', 'giveCoupon']
@@ -359,8 +357,6 @@ const renderGivePointFn = function (roleType, ruleType) {
     } = this.props;
 
     const pointLimitValue = this._getVal({ ruleType, roleType, key: 'pointLimitValue' })
-
-    // console.log('----000',checkBoxStatus[`ruleType${ruleType}`][`giveIntegral${roleType}`])
     return (
         <FormItem
             wrapperCol={{ span: 24 }}
@@ -546,7 +542,6 @@ const renderRecommendGiftsFn = function (roleType, ruleType) {
             this.getDefaultGiftData(recommendType, 'recommendType'),
         ];
     }
-    // console.log('filteredGifts',filteredGifts)
     return (
         <Row>
             <Col span={17} offset={1}>
@@ -597,7 +592,6 @@ const clearCheckBoxData = function (key, ruleType, roleType) {
     } else if (key === 'giveCoupon') {
         // 清除优惠券的数据
         const cancelData = data.filter(v => v.recommendType !== `${roleType}#${ruleType}`)
-        // console.log('cancelData--', cancelData, `${roleType}#${ruleType}`)
         if (!cancelData.find(v => v.recommendType === `${roleType}#${ruleType}`)) {
             cancelData.push(this.getDefaultGiftData(`${roleType}#${ruleType}`, 'recommendType'))
         }
@@ -820,7 +814,6 @@ const handleSubmitRecommendGifts = function (isPrev) {
             if (error) {
                 flag = false;
             }
-            // console.log('err',error)
             // 编辑的时候有概率被推荐人会出现积分被校验
 
             const { ruleType999 } = checkBoxStatus
@@ -830,7 +823,6 @@ const handleSubmitRecommendGifts = function (isPrev) {
 
             // 推荐有礼特有校验逻辑：两个输入框至少要有1个
             presentValueList = _getPresentValue.call(this, basicValues)
-        //    console.log('basicValues---',presentValueList,basicValues)
         }
     );
 
@@ -844,13 +836,8 @@ const handleSubmitRecommendGifts = function (isPrev) {
 
 
     let validateFlag = true
-
-
-    // console.log('recommendRule', recommendRule)
     // 校验券必填项
     const validatedRuleData = validatedRuleDataFn.call(this, data)
-
-    // console.log('validatedRuleData', validatedRuleData)
     validateFlag = validateFlagFn.call(this, validatedRuleData)
 
     // 把中奖率累加,判断总和是否满足小于等于100
@@ -858,8 +845,6 @@ const handleSubmitRecommendGifts = function (isPrev) {
         return res + parseFloat(cur.giftOdds.value);
     }, 0);
 
-
-    // console.log('validateFlag',validateFlag,checkBoxStatus)
     // 判断是否选中了红包模版
     if (checkBoxStatus) {
         let isReturn = false
@@ -904,9 +889,6 @@ const handleSubmitRecommendGifts = function (isPrev) {
         if (Array.isArray(presentValueList.beRecommendList)) {
             beRecommendCou = [...beRecommendCou, ...presentValueList.beRecommendList]
         }
-
-        // console.log('beRecommendCou',beRecommendCou)
-        // console.log('giftInfo--', giftInfo, shareInfo)
 
         const {
             shareTitle,
@@ -995,8 +977,6 @@ const handleSubmitRecommendGifts = function (isPrev) {
 
             return v
         })
-
-        //   console.log('eventRecommendSettings',eventRecommendSettings)
 
         //  return
         this.props.setSpecialRecommendSettings(eventRecommendSettings);

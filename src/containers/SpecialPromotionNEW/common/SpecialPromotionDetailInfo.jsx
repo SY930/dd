@@ -1049,7 +1049,6 @@ class SpecialDetailInfo extends Component {
                 const params = {sortIndex: 1, giftID: couponPackageID, presentType: 4, giftOdds: "3"};
                 this.props.setSpecialGiftInfo([params]);
                 const { shareTitle, shareImagePath } = this.state;
-                   // console.log('shareTitle:----------- ', shareTitle);
                 const shareInfo = { shareTitle, shareImagePath }
                 this.props.setSpecialBasicInfo(shareInfo);
                 return true;
@@ -1218,7 +1217,6 @@ class SpecialDetailInfo extends Component {
             decodeURI
             if (['30'].includes(type)) {
                 const { shareTitle, shareImagePath } = this.state;
-                // console.log('shareTitle:----------- ', shareTitle);
                 const shareInfo = { shareTitle, shareImagePath }
                 this.props.setSpecialBasicInfo(shareInfo);
             }

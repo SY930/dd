@@ -3144,7 +3144,6 @@ class GiftAddModalStep extends React.PureComponent {
             }
         }
         const combineTypes = ['10','20','21'];
-        console.log(formData,'formData----------------')
         return (
             <div>
                 <div

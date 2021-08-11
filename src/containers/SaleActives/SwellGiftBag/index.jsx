@@ -106,8 +106,6 @@ class SwellGiftBag extends React.Component {
                             newG[5] = { ...item, id: 5 } // id 是为了礼品组件的v.id
                         }
                     })
-                    // console.log('newG', newG,needCount)
-                    // newG.forEach((_, i)  => {  _.id = i });
                     this.props.dispatch({
                         type: 'createActiveCom/updateState',
                         payload: {
@@ -171,8 +169,6 @@ class SwellGiftBag extends React.Component {
                     defaultCardType,
 
                 } = formData
-
-                // console.log('giftList:---submit ', giftList);
                 const { shareSubtitle,
                     shareTitle,} = v
                 let typePath =  'createActiveCom/addEvent_NEW'
