@@ -280,7 +280,6 @@ class CategoryAndFoodSelector extends Component {
         })
     }
     renderDishsSelectionBox() {
-        console.log('renderDishsSelectionBox')
         const { intl } = this.props;
         const k5gfsvlz = intl.formatMessage(SALE_STRING.k5gfsvlz);
         const {
@@ -376,7 +375,6 @@ class CategoryAndFoodSelector extends Component {
         )
     }
     renderCategorySelectionBox() {
-        console.log('renderCategorySelectionBox')
         const {
             allBrands,
             allCategories,
@@ -470,7 +468,6 @@ class CategoryAndFoodSelector extends Component {
         )
     }
     render() {
-        console.log(this.props.dishOnly,this.props.mallScope,this.state.mallScope,'mallScope props-----')
         if (this.props.dishOnly) {
             return this.renderDishsSelectionBox()
         }

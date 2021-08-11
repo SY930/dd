@@ -374,7 +374,6 @@ class GiftAddModalStep extends React.PureComponent {
 
     // 处理表单数据变化
     handleFormChange(key, value, formRef) {
-        console.log(key,value,'keyvalue')
         const { gift: { name: describe, data }, type } = this.props;
         const { firstKeys, secondKeys, values } = this.state;
         const newKeys = [...secondKeys[describe][0].keys];
@@ -539,7 +538,6 @@ class GiftAddModalStep extends React.PureComponent {
             default:
                 break;
         }
-        console.log(values,'values')
         this.setState({ 
             values:Object.assign({},values)
         });
@@ -1736,7 +1734,6 @@ class GiftAddModalStep extends React.PureComponent {
     renderFoodsboxs(decorator) {
         const { gift: { data } } = this.props;
         const { values:{mallScope}} = this.state;
-        console.log(mallScope,'mallScope-------------renderFoodsboxs')
         let { couponFoodScopeList = [], excludeFoodScopes = [], foodSelectType = 2} = data;
         let scopeList;
         if (foodSelectType == 2) { // 全部菜品
@@ -1883,7 +1880,6 @@ class GiftAddModalStep extends React.PureComponent {
                     this.handleMallChange(values.shopIDs[0]);
                 }
             } else {
-                console.log(goodCategories,values.couponFoodScopeList,'values.couponFoodScopeListvalues.couponFoodScopeListvalues.couponFoodScopeListvalues.couponFoodScopeList')
                 // 前端传到后端采用拼接，组合成 couponFoodScope， 后端返回字段名称又改为 couponFoodScopeList
                 if(goodCategories.length > 0){
                     goodCategories.forEach((item1) => {
@@ -1896,9 +1892,6 @@ class GiftAddModalStep extends React.PureComponent {
                         }
                     })
                 }
-                
-                console.log(initialValue,'initialValue000000000')
-                // initialValue = goodCategories[0].categoryID
             }
         }
         
@@ -1915,7 +1908,6 @@ class GiftAddModalStep extends React.PureComponent {
         if(type != 'edit'){
             initialValue = []
         }
-        console.log(initialValue,'initialValue====-----=====')
         // 调整 toolTips, 代金券。且内容为空时
         if(giftTypeValue == '10') {
             if(initialValue instanceof Array &&  initialValue.length == 0) {
@@ -2234,7 +2226,6 @@ class GiftAddModalStep extends React.PureComponent {
             fourthKeysToDisplay = JSON.parse(JSON.stringify(fourthKeys[describe]));
         }
         if(describe == '代金券' || describe == '菜品优惠券' || describe == '菜品兑换券' || describe == '不定额代金券') {
-                console.log(values.applyScene,'values.applyScene==========')
                 if(values.applyScene == '0') {
                     // 店铺券
                     firstKeysToDisplay[0].keys = [...FIRST_KEYS[describe][0].keys];
@@ -2304,7 +2295,6 @@ class GiftAddModalStep extends React.PureComponent {
         }
 
         if(describe == '代金券' || describe == '菜品优惠券' || describe == '菜品兑换券' || describe == '折扣券' || describe == '配送券' || describe == '买赠券' || describe == '不定额代金券') {
-            console.log(values.transferType,'transferTypetransferTypetransferType')
             if(values.transferType == '0' || values.transferType == undefined) {
                 secondKeysToDisplay[0].keys = secondKeysToDisplay[0].keys.filter((key)=>{
                     return key !== 'transferTitle' &&　key !== 'transferImage';
