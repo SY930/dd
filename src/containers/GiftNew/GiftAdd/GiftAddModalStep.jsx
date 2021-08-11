@@ -2223,16 +2223,16 @@ class GiftAddModalStep extends React.PureComponent {
         }
         if(describe == '代金券' || describe == '菜品优惠券' || describe == '菜品兑换券' || describe == '不定额代金券') {
                 console.log(values.applyScene,'values.applyScene==========')
-                if(values.applyScene == '0') {   
+                if(values.applyScene == '0') {
                     // 店铺券
                     firstKeysToDisplay[0].keys = [...FIRST_KEYS[describe][0].keys];
                     secondKeysToDisplay[0].keys = [...SECOND_KEYS[describe][0].keys];
                     if(describe != '不定额代金券'){
                         thirdKeysToDisplay[0].keys = [...THIRD_KEYS[describe][0].keys];
                     }
-                }else if(values.applyScene == '1') {       // 商城券
-                    firstKeysToDisplay[0].keys = [...MALL_COUPON_BASIC_SETTING_FORM_ITEMS[describe][0].keys];
-                    secondKeysToDisplay[0].keys = [...MALL_COUPON_APPLY_SETTING_FORM_ITEMS[describe][0].keys];
+                }else if(values.applyScene == '1') {// 商城券
+                    firstKeysToDisplay[0].keys = [...FIRST_KEYS[describe][0].keys];
+                    secondKeysToDisplay[0].keys = [...SECOND_KEYS[describe][0].keys];
                     fourthKeysToDisplay[0].keys = [...FOURTH_KEYS[describe][0].keys];
                     if(values.mallScope == '0' || values.mallScope == undefined) {
                         fourthKeysToDisplay[0].keys = fourthKeysToDisplay[0].keys.filter((key)=>{
@@ -2245,7 +2245,6 @@ class GiftAddModalStep extends React.PureComponent {
                     }
                 }else if(values.applyScene && values.applyScene == '2'){
                     firstKeysToDisplay[0].keys = [...FIRST_KEYS[describe][0].keys];
-                    // firstKeysToDisplay[1].keys = [...FIRST_KEYS[describe][1].keys];
                     secondKeysToDisplay[0].keys = [...SECOND_KEYS[describe][0].keys];
                     thirdKeysToDisplay[0].keys = [...THIRD_KEYS[describe][0].keys];
                     fourthKeysToDisplay[0].keys = [...FOURTH_KEYS[describe][0].keys];
@@ -2293,7 +2292,7 @@ class GiftAddModalStep extends React.PureComponent {
         }
 
         if(describe == '代金券' || describe == '菜品优惠券' || describe == '菜品兑换券' || describe == '折扣券' || describe == '配送券' || describe == '买赠券' || describe == '不定额代金券') {
-            //
+            console.log(values.transferType,'transferTypetransferTypetransferType')
             if(values.transferType == '0' || values.transferType == undefined) {
                 secondKeysToDisplay[0].keys = secondKeysToDisplay[0].keys.filter((key)=>{
                     return key !== 'transferTitle' &&　key !== 'transferImage';
