@@ -1064,7 +1064,7 @@ class PromotionBasicInfo extends React.Component {
 
             <Form className={styles.FormStyle}>
                 {propmotionType == '5020' ? <FormItem
-                    label={'会员专属菜'}
+                    label={'活动类型'}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                     style={{ position: 'relative' }}

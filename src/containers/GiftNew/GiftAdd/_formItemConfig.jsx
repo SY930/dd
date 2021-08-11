@@ -263,17 +263,14 @@ export const MALL_COUPON_BASIC_SETTING_FORM_ITEMS = {
             },
             keys: [
                 'giftType',
-                'applyScene',
                 'giftName',
-                'selectMall',
                 'pushMessage',
                 'giftValueCurrencyType',
                 'giftValue',
                 'price',
-                'mallScope',                // 适用范围选择框
-                'mallCategorySelector',     // 商城商品分类选择
-                'mallExcludeGoodSelector',  // 排除商品选择
-                'mallIncludeGoodSelector',  // 商城礼品卡适用商品选择框
+                'giftRemark',
+                'mallScope',
+                'applyScene',
             ],
         },
         {
@@ -292,7 +289,7 @@ export const MALL_COUPON_BASIC_SETTING_FORM_ITEMS = {
                 pull: 2,
             },
             keys: [
-                'giftRemark',
+                '',
             ]
         },
         {
@@ -314,17 +311,14 @@ export const MALL_COUPON_BASIC_SETTING_FORM_ITEMS = {
             },
             keys: [
                 'giftType',
-                'applyScene',
                 'giftName',
-                'selectMall',
                 'pushMessage',
                 'giftValueCurrencyType',
                 'giftValue',
                 'price',
-                'mallScope',                // 适用范围选择框
-                'mallCategorySelector',     // 商城商品分类选择
-                'mallExcludeGoodSelector',  // 排除商品选择
-                'mallIncludeGoodSelector',  // 商城礼品卡适用商品选择框
+                'giftRemark',
+                'mallScope',
+                'applyScene',
             ],
         },
         {
@@ -342,7 +336,7 @@ export const MALL_COUPON_BASIC_SETTING_FORM_ITEMS = {
                 pull: 2,
             },
             keys: [
-                'giftRemark',
+                '',
             ],
         },
         {
@@ -363,17 +357,16 @@ export const MALL_COUPON_BASIC_SETTING_FORM_ITEMS = {
             },
             keys: [
                 'giftType',
-                'applyScene',
                 'giftName',
-                'selectMall',
+                // 'selectMall',
                 'pushMessage',
                 'giftValueCurrencyType',
                 'giftValue',
                 'price',
-                'mallScope',                // 适用范围选择框
-                'mallCategorySelector',     // 商城商品分类选择
-                'mallExcludeGoodSelector',  // 排除商品选择
-                'mallIncludeGoodSelector',  // 商城礼品卡适用商品选择框
+                'priceSortRule',
+                'giftRemark',
+                'mallScope',
+                'applyScene',
             ],
         },
         {
@@ -391,8 +384,6 @@ export const MALL_COUPON_BASIC_SETTING_FORM_ITEMS = {
                 pull: 2,
             },
             keys: [
-                'priceSortRule',
-                'giftRemark',
             ],
         },
         {
@@ -494,75 +485,16 @@ export const FIRST_KEYS = {
             },
             keys: [
                 'giftType',
-                'applyScene',
                 'giftName',
-                'selectBrands',
                 'pushMessage',
                 'giftValueCurrencyType',
                 'giftValue',
                 'price',
-            ],
-        },
-        {
-            col: {
-                span: 24,
-                push: 2,
-            },
-            keys: [
-                'foodsboxs',
-            ]
-        },
-        {
-            col: {
-                span: 24,
-                pull: 2,
-            },
-            keys: [
                 'giftRemark',
-            ]
-        },
-        {
-            col: {
-                span: 24,
-                push: 3,
-            },
-            keys: [
-                'isNeedCustomerInfo',
-            ]
-        },
-    ],
-    '不定额代金券': [
-        {
-            col: {
-                span: 24,
-                pull: 2,
-            },
-            keys: [
-                'giftType',
+                'mallScope',
                 'applyScene',
-                'giftName',
-                'selectBrands',
-                'pushMessage',
             ],
-        },
-        {
-            col: {
-                span: 24,
-                pull: 2,
-            },
-            keys: [
-                'giftRemark',
-            ]
-        },
-        {
-            col: {
-                span: 24,
-                push: 3,
-            },
-            keys: [
-                'isNeedCustomerInfo',
-            ]
-        },
+        }
     ],
     '菜品优惠券': [
         {
@@ -572,42 +504,16 @@ export const FIRST_KEYS = {
             },
             keys: [
                 'giftType',
-                'applyScene',
                 'giftName',
-                'selectBrands',
                 'pushMessage',
                 'giftValueCurrencyType',
                 'giftValue',
                 'price',
-            ],
-        },
-        {
-            col: {
-                span: 24,
-                push: 2,
-            },
-            keys: [
-                'foodScopes',
-            ],
-        },
-        {
-            col: {
-                span: 24,
-                pull: 2,
-            },
-            keys: [
                 'giftRemark',
+                'mallScope',
+                'applyScene',
             ],
-        },
-        {
-            col: {
-                span: 24,
-                push: 3,
-            },
-            keys: [
-                'isNeedCustomerInfo',
-            ],
-        },
+        }
     ],
     '菜品兑换券': [
         {
@@ -617,41 +523,15 @@ export const FIRST_KEYS = {
             },
             keys: [
                 'giftType',
-                'applyScene',
                 'giftName',
-                'selectBrands',
                 'pushMessage',
                 'giftValueCurrencyType',
                 'giftValue',
                 'price',
-            ],
-        },
-        {
-            col: {
-                span: 24,
-                push: 2,
-            },
-            keys: [
-                'foodScopes',
-            ],
-        },
-        {
-            col: {
-                span: 24,
-                pull: 2,
-            },
-            keys: [
                 'priceSortRule',
                 'giftRemark',
-            ],
-        },
-        {
-            col: {
-                span: 24,
-                push: 3,
-            },
-            keys: [
-                'isNeedCustomerInfo',
+                'mallScope',
+                'applyScene',
             ],
         },
     ],
@@ -822,6 +702,23 @@ export const FIRST_KEYS = {
             keys: []
         },
     ],
+    '不定额代金券': [
+        {
+            col: {
+                span: 24,
+                pull: 2,
+            },
+            keys: [
+                'giftType',
+                'applyScene',
+                'giftName',
+                'selectBrands',
+                'pushMessage',
+                'giftRemark',
+                'isNeedCustomerInfo'
+            ],
+        },
+    ],
 };
 export const SECOND_KEYS = (() => ({
     '代金券': [
@@ -843,7 +740,7 @@ export const SECOND_KEYS = (() => ({
                 'giftShareType',
                 'moneyLimitTypeAndValue',
                 'customerUseCountLimit',
-                'shopNames',
+                // 'shopNames',
                 // 'amountType',
                 'showGiftRule',
                 'giftImagePath',
@@ -899,7 +796,7 @@ export const SECOND_KEYS = (() => ({
                 'giftShareType',
                 'moneyLimitTypeAndValue',
                 'customerUseCountLimit',
-                'shopNames',
+                // 'shopNames',
                 'showGiftRule',
                 'giftImagePath',
                 'aggregationChannels',
@@ -927,7 +824,7 @@ export const SECOND_KEYS = (() => ({
                 'giftShareType',
                 'moneyLimitTypeAndValue',
                 'customerUseCountLimit',
-                'shopNames',
+                // 'shopNames',
                 'showGiftRule',
                 'giftImagePath',
                 'aggregationChannels',
@@ -1059,6 +956,95 @@ export const SECOND_KEYS = (() => ({
     ],
 }))();
 
+
+export const THIRD_KEYS = (() => ({
+    '代金券': [
+        {
+            col: {
+                span: 24,
+                push: 2,
+            },
+            keys: [
+                'selectBrands',
+                'foodsboxs',
+                'shopNames',
+                'isNeedCustomerInfo'
+            ]
+        },
+    ],
+    '菜品优惠券': [
+        {
+            col: {
+                span: 24,
+                push: 2,
+            },
+            keys: [
+                'selectBrands',
+                'foodScopes',
+                'shopNames',
+                'isNeedCustomerInfo'
+            ]
+        },
+    ],
+    '菜品兑换券': [
+        {
+            col: {
+                span: 24,
+                push: 2,
+            },
+            keys: [
+                'selectBrands',
+                'foodScopes',
+                'shopNames',
+                'isNeedCustomerInfo'
+            ]
+        },
+    ],
+}))();
+export const FOURTH_KEYS = (() => ({
+    '代金券': [
+        {
+            col: {
+                span: 24,
+                push: 2,
+            },
+            keys: [
+                'selectMall',
+                'mallCategorySelector',     // 商城商品分类选择
+                'mallExcludeGoodSelector',  // 排除商品选择
+                'mallIncludeGoodSelector',  // 商城礼品卡适用商品选择框
+            ]
+        },
+    ],
+    '菜品优惠券': [
+        {
+            col: {
+                span: 24,
+                push: 2,
+            },
+            keys: [
+                'selectMall',
+                'mallCategorySelector',     // 商城商品分类选择
+                'mallExcludeGoodSelector',  // 排除商品选择
+                'mallIncludeGoodSelector',  // 商城礼品卡适用商品选择框
+            ]
+        },
+    ],
+    '菜品兑换券': [
+        {
+            col: {
+                span: 24,
+                push: 2,
+            },
+            keys: [
+                'selectMall',
+                'mallCategorySelector',     // 商城商品分类选择
+                'mallExcludeGoodSelector',  // 排除商品选择
+                'mallIncludeGoodSelector',  // 商城礼品卡适用商品选择框
+            ]
+        },
+    ],
+}))();
 // 代金券
 // const FORM_ITEMS_TO_INCLUDES
 

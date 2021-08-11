@@ -55,6 +55,7 @@ class SelectMallCategory extends Component {
                 optionFilterProp="children"
                 value={value}
                 onChange={this.handleSelectChange}
+                style={{width:300}}
             >
                 {
                     mallCategoryArr.map(category => <Option key={category.categoryID} value={category.categoryID}>{category.categoryName}</Option>)
