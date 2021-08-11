@@ -932,9 +932,11 @@ class GiftAddModalStep extends React.PureComponent {
             params.usingTimeType = Array.isArray(data.usingTimeType) ? data.usingTimeType.join(',') : data.usingTimeType ? data.usingTimeType : '1,2,3,4,5';
             if (value == '20' || value == '21') {
                 processFinalCategoryAndDishData(params, 'foodScopes');
-                params.foodNameList = params.couponFoodScopes
+                if(params.couponFoodScopes && params.couponFoodScopes.length > 0){
+                    params.foodNameList = params.couponFoodScopes
                     .map(target => `${target.targetName}${target.targetUnitName || ''}`)
                     .join(',');
+                }
                 params.isFoodCatNameList = params.foodSelectType;
             } else { // foodbxs数据,目前代金券和折扣券用
                 processFinalCategoryAndDishData(params, 'foodsboxs');
@@ -1881,15 +1883,25 @@ class GiftAddModalStep extends React.PureComponent {
                     this.handleMallChange(values.shopIDs[0]);
                 }
             } else {
+                console.log(goodCategories,values.couponFoodScopeList,'values.couponFoodScopeListvalues.couponFoodScopeListvalues.couponFoodScopeListvalues.couponFoodScopeList')
                 // 前端传到后端采用拼接，组合成 couponFoodScope， 后端返回字段名称又改为 couponFoodScopeList
-                // if(values.couponFoodScopeList instanceof Array && values.couponFoodScopeList.length > 0) {
-                //     initialValue = values.couponFoodScopeList.map((item)=>{
-                //         return item.targetID
-                //     });
-                // }
-                initialValue = goodCategories[0].categoryID
+                if(goodCategories.length > 0){
+                    goodCategories.forEach((item1) => {
+                        if(values.couponFoodScopeList instanceof Array && values.couponFoodScopeList.length > 0) {
+                            values.couponFoodScopeList.forEach((item2)=>{
+                                if(item2.targetID == item1.value){
+                                    initialValue.push(item2.targetID)
+                                }
+                            });
+                        }
+                    })
+                }
+                
+                console.log(initialValue,'initialValue000000000')
+                // initialValue = goodCategories[0].categoryID
             }
         }
+        
         // 调整校验规则
         let rules = [
             {
