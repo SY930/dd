@@ -374,7 +374,7 @@ class GiftAddModalStep extends React.PureComponent {
 
     // 处理表单数据变化
     handleFormChange(key, value, formRef) {
-        const { gift: { name: describe, data }, type } = this.props;
+        const { gift: { name: describe, data,value:giftType }, type } = this.props;
         const { firstKeys, secondKeys, values } = this.state;
         const newKeys = [...secondKeys[describe][0].keys];
         const index = _.findIndex(newKeys, item => item == key);
@@ -417,7 +417,8 @@ class GiftAddModalStep extends React.PureComponent {
                 default: this.props.changeGiftFormKeyValue({key, value});
             }
         }
-       values[key] = value;
+        
+        values[key] = value;
         switch (key) {
             case 'discountType':
                 if(firstKeys[describe][1] != undefined && firstKeys[describe][1].hasOwnProperty('keys')) {
@@ -535,19 +536,25 @@ class GiftAddModalStep extends React.PureComponent {
                 values.discountRateSetting = reduceValue
                 values.discountDecreaseVolSetting = reduceValue
                 break;
+            case 'delivery':
+                if(giftType == '22'){
+                    values.giftValue = value;
+                }
+                break;
             default:
                 break;
         }
-        this.setState({ 
-            values:Object.assign({},values)
-        });
-
         if(key==='giftValueCurrencyType') {
             this.setState({ unit: value });
         }
         if(key==='delivery') {
             this.setState({ delivery: value });
         }
+        this.setState({ 
+            values:Object.assign({},values)
+        });
+
+        
     }
 
     handleCancel = (cb) => {
