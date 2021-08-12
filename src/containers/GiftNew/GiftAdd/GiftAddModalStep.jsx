@@ -2130,7 +2130,7 @@ class GiftAddModalStep extends React.PureComponent {
                     },
                 ],
             })(
-                <GiftCategoryAndFoodSelector
+                <GiftCategoryAndFoodSelectors
                     dishOnly
                     priceLst={scopeList}
                 />
