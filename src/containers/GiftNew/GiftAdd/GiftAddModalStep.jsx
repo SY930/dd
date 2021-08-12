@@ -87,7 +87,7 @@ import AddMoneyTradeDishesTableWithBrand from 'containers/SaleCenterNEW/addMoney
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
-
+const hasMallArr = ['10','20','21'];
 const processFinalCategoryAndDishData = (params, property,value) => {
     if (params.hasOwnProperty(property)) {
         if (!params[property]) { // 用户没选择，默认全部信息
@@ -98,7 +98,7 @@ const processFinalCategoryAndDishData = (params, property,value) => {
         }
         let foodCategory=[],excludeDishes=[],dishes=[],mallScope='',categoryOrDish='',foodSelectType;
         if (params[property] && params[property] instanceof Object) {
-            if(['10','20','21'].includes(value)){
+            if(hasMallArr.includes(value)){
                 mallScope = params.mallScope;
                 foodCategory = params[property].foodCategory;
                 excludeDishes = params[property].excludeDishes;
@@ -115,7 +115,6 @@ const processFinalCategoryAndDishData = (params, property,value) => {
                     params.foodSelectType = foodSelectType
                 }
             }else{
-                debugger
                 categoryOrDish = params[property].categoryOrDish;
                 foodCategory = params[property].foodCategory;
                 excludeDishes = params[property].excludeDishes;
@@ -530,17 +529,19 @@ class GiftAddModalStep extends React.PureComponent {
 
             // 分类进行切换时，对redux里数据进行清空处理
             case 'mallScope':
-                if(value == '0') {
-                    formRef.setFieldsValue({
-                        mallIncludeGood: []
-                    });
-                } else if(value == '1') {
-                    formRef.setFieldsValue({
-                        shopIDs:[],
-                        shopNames:[],
-                        mallCategory: [],
-                        mallExcludedGood: [],
-                    });
+                if(hasMallArr.includes(giftType)){
+                    if(value == '0') {
+                        formRef.setFieldsValue({
+                            mallIncludeGood: []
+                        });
+                    } else if(value == '1') {
+                        formRef.setFieldsValue({
+                            shopIDs:[],
+                            shopNames:[],
+                            mallCategory: [],
+                            mallExcludedGood: [],
+                        });
+                    }
                 }
                 break;
 
@@ -712,7 +713,7 @@ class GiftAddModalStep extends React.PureComponent {
         }
         params.shopIDs = '';
         params.shopNames = '';
-        if(['10','20','21'].includes(value)){
+        if(hasMallArr.includes(value)){
             if(params.hasOwnProperty('selectMall') && params.selectMall !== undefined) {
                 if(params.selectMall instanceof Array && params.selectMall.length == 1) {
                     params.shopIDs = params.selectMall[0];
@@ -1012,7 +1013,7 @@ class GiftAddModalStep extends React.PureComponent {
             if (formValues.transferLimitType == -1) {
                 params.transferLimitType = formValues.transferLimitTypeValue
             }
-            if(['10','20','21'].includes(value)){
+            if(hasMallArr.includes(value)){
                 params.foodSelectType = params.mallScope == '0' ? '1' : '0';
             }else{
                 params.foodSelectType = params.foodSelectType;
@@ -1048,7 +1049,7 @@ class GiftAddModalStep extends React.PureComponent {
             params.pushMimiAppMsg = params.pushMessage && params.pushMessage.pushMimiAppMsg
             // 商城券参数调整
             this.adjustParamsOfMallGift(params);
-            if(['10','20','21'].includes(value) && params.applyScene != '0'){
+            if(hasMallArr.includes(value) && params.applyScene != '0'){
                 if(!params.shopIDs){
                     message.warning('请选择适用商城')
                     return
@@ -1684,7 +1685,7 @@ class GiftAddModalStep extends React.PureComponent {
 
     
     renderisNeedCustomerInfo = (decorator) => {
-        const combineTypes = ['10','20','21'];
+        const combineTypes = hasMallArr;
         const { gift: {data,value }} = this.props;
         const { values:{isNeedCustomerInfo}} = this.state;
         const checked = isNeedCustomerInfo ? isNeedCustomerInfo : data.isNeedCustomerInfo ? data.isNeedCustomerInfo : false
@@ -1788,7 +1789,7 @@ class GiftAddModalStep extends React.PureComponent {
                 }}>
                 {
                     decorator({})(
-                        ['10','20','21'].includes(value) ? 
+                        hasMallArr.includes(value) ? 
                             <CategoryAndFoodSelectors
                                 scopeLst={scopeList}
                                 showEmptyTips={true}
@@ -1852,7 +1853,7 @@ class GiftAddModalStep extends React.PureComponent {
                         //     },
                         // ],
                     })(
-                        ['10','20','21'].includes(value) ? 
+                        hasMallArr.includes(value) ? 
                             <CategoryAndFoodSelectors
                                 scopeLst={scopeList}
                                 showEmptyTips={true}
@@ -2476,7 +2477,6 @@ class GiftAddModalStep extends React.PureComponent {
         }
         const isUnit = ['10', '91'].includes(value);
         const giftNameValid = (type === 'add') ? { max: 25, message: '不能超过25个字符' } : {};
-
         // 定义所有类型的表单项，根据不同礼品类型进行配置
         const formItems = {
             ...FORMITEMS,
@@ -3184,7 +3184,7 @@ class GiftAddModalStep extends React.PureComponent {
                 reminderTime: formData.reminderTime || 3,
             }
         }
-        const combineTypes = ['10','20','21'];
+        const combineTypes = hasMallArr;
         return (
             <div>
                 <div
