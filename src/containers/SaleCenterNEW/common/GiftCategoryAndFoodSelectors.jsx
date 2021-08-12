@@ -513,4 +513,4 @@ CategoryAndFoodSelector.defaultProps = {
 };
 
 export default connect(mapStateToPropsForPromotion)(CategoryAndFoodSelector)
-export const GiftCategoryAndFoodSelectors = connect(mapStateToPropsForGift)(CategoryAndFoodSelector)
+export const CategoryAndFoodSelectors = connect(mapStateToPropsForGift)(CategoryAndFoodSelector)

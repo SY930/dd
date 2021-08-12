@@ -79,7 +79,8 @@ import {
     fetchFoodMenuInfoAC,
     getMallGoodsAndCategories,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
-import { GiftCategoryAndFoodSelectors } from '../../SaleCenterNEW/common/GiftCategoryAndFoodSelectors';
+import { CategoryAndFoodSelectors } from '../../SaleCenterNEW/common/GiftCategoryAndFoodSelectors';
+import { GiftCategoryAndFoodSelector } from '../../SaleCenterNEW/common/CategoryAndFoodSelector';
 import AddMoneyTradeDishesTableWithBrand from 'containers/SaleCenterNEW/addMoneyTrade/AddMoneyTradeDishesTableWithBrand';
 
 
@@ -87,7 +88,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 
-const processFinalCategoryAndDishData = (params, property) => {
+const processFinalCategoryAndDishData = (params, property,value) => {
     if (params.hasOwnProperty(property)) {
         if (!params[property]) { // 用户没选择，默认全部信息
             params.foodSelectType = 2;
@@ -95,22 +96,41 @@ const processFinalCategoryAndDishData = (params, property) => {
             params.excludeFoodScopes = [];
             params.couponFoodScopes = [];
         }
+        let foodCategory=[],excludeDishes=[],dishes=[],mallScope='',categoryOrDish='',foodSelectType;
         if (params[property] && params[property] instanceof Object) {
-            const {mallScope} = params;
-            const {
-                foodCategory = [],
-                excludeDishes = [],
-                dishes = [],
-            } = params[property];
-            // mallScope 0 分类， 1 菜品
-            // foodSelectType 1 分类， 0 菜品， 2 全选
-            const foodSelectType = 1 - mallScope;
-            if (foodSelectType == 1 && foodCategory.length === 0 && excludeDishes.length === 0) { // 不选认为是全选, 全选为2
-                params.foodSelectType = 2
-            } else if (foodSelectType == 0 && dishes.length === 0) { // 不选认为是全选
-                params.foodSelectType = 2
-            } else {
-                params.foodSelectType = foodSelectType
+            if(['10','20','21'].includes(value)){
+                mallScope = params.mallScope;
+                foodCategory = params[property].foodCategory;
+                excludeDishes = params[property].excludeDishes;
+                dishes = params[property].dishes;
+               
+                // mallScope 0 分类， 1 菜品
+                // foodSelectType 1 分类， 0 菜品， 2 全选
+                foodSelectType = 1 - mallScope;
+                if (foodSelectType == 1 && foodCategory.length === 0 && excludeDishes.length === 0) { // 不选认为是全选, 全选为2
+                    params.foodSelectType = 2
+                } else if (foodSelectType == 0 && dishes.length === 0) { // 不选认为是全选
+                    params.foodSelectType = 2
+                } else {
+                    params.foodSelectType = foodSelectType
+                }
+            }else{
+                debugger
+                categoryOrDish = params[property].categoryOrDish;
+                foodCategory = params[property].foodCategory;
+                excludeDishes = params[property].excludeDishes;
+                dishes = params[property].dishes;
+                // categoryOrDish 0 分类， 1 菜品
+                // foodSelectType 1 分类， 0 菜品， 2 全选
+                foodSelectType = 1 - categoryOrDish;
+                if (foodSelectType == 1 && foodCategory.length === 0 && excludeDishes.length === 0) { // 不选认为是全选, 全选为2
+                    params.foodSelectType = 2
+                } else if (foodSelectType == 0 && dishes.length === 0) { // 不选认为是全选
+                    params.foodSelectType = 2
+                } else {
+                    params.foodSelectType = foodSelectType
+                }
+                params.isExcludeFood = excludeDishes && excludeDishes.length > 0 ? '1' : '0';
             }
             params.isExcludeFood = excludeDishes && excludeDishes.length > 0 ? '1' : '0';
             // 菜品限制范围类型：1,包含菜品分类;2,包含菜品;3,不包含菜品分类;4不包含菜品
@@ -936,7 +956,7 @@ class GiftAddModalStep extends React.PureComponent {
             // 对旧字段的兼容透传
             params.usingTimeType = Array.isArray(data.usingTimeType) ? data.usingTimeType.join(',') : data.usingTimeType ? data.usingTimeType : '1,2,3,4,5';
             if (value == '20' || value == '21') {
-                processFinalCategoryAndDishData(params, 'foodScopes');
+                processFinalCategoryAndDishData(params, 'foodScopes',value);
                 if(params.couponFoodScopes && params.couponFoodScopes.length > 0){
                     params.foodNameList = params.couponFoodScopes
                     .map(target => `${target.targetName}${target.targetUnitName || ''}`)
@@ -944,7 +964,7 @@ class GiftAddModalStep extends React.PureComponent {
                 }
                 params.isFoodCatNameList = params.foodSelectType;
             } else { // foodbxs数据,目前代金券和折扣券用
-                processFinalCategoryAndDishData(params, 'foodsboxs');
+                processFinalCategoryAndDishData(params, 'foodsboxs',value);
             }
             if (value == '111') { // 折扣券
                 params.discountRate = params.discountRate.number;
@@ -992,7 +1012,12 @@ class GiftAddModalStep extends React.PureComponent {
             if (formValues.transferLimitType == -1) {
                 params.transferLimitType = formValues.transferLimitTypeValue
             }
-            params.foodSelectType = params.mallScope == '0' ? '1' : '0';
+            if(['10','20','21'].includes(value)){
+                params.foodSelectType = params.mallScope == '0' ? '1' : '0';
+            }else{
+                params.foodSelectType = params.foodSelectType;
+            }
+            
             params.brandSelectType = (params.selectBrands || []).length > 0 ? 0 : 1;
             params.maxUseLimit = params.maxUseLimit || '0';
             params.customerUseCountLimit = params.customerUseCountLimit || '0';
@@ -1739,7 +1764,7 @@ class GiftAddModalStep extends React.PureComponent {
         )
     }
     renderFoodsboxs(decorator) {
-        const { gift: { data } } = this.props;
+        const { gift: { data,value } } = this.props;
         const { values:{mallScope}} = this.state;
         let { couponFoodScopeList = [], excludeFoodScopes = [], foodSelectType = 2} = data;
         let scopeList;
@@ -1763,18 +1788,24 @@ class GiftAddModalStep extends React.PureComponent {
                 }}>
                 {
                     decorator({})(
-                        <GiftCategoryAndFoodSelectors
-                            scopeLst={scopeList}
-                            showEmptyTips={true}
-                            mallScope={mallScope}
-                        />
+                        ['10','20','21'].includes(value) ? 
+                            <CategoryAndFoodSelectors
+                                scopeLst={scopeList}
+                                showEmptyTips={true}
+                                mallScope={mallScope}
+                            />
+                            :
+                            <GiftCategoryAndFoodSelector
+                                scopeLst={scopeList}
+                                showEmptyTips={true}
+                            /> 
                     )
                 }
             </FormItem>
         )
     }
     renderFoodName(decorator, form) {
-        const { gift: { data } } = this.props;
+        const { gift: { data,value } } = this.props;
         const { values:{mallScope}} = this.state;
         let { couponFoodScopeList = [], excludeFoodScopes = [], foodSelectType = 2} = data;
         let scopeList;
@@ -1821,13 +1852,17 @@ class GiftAddModalStep extends React.PureComponent {
                         //     },
                         // ],
                     })(
-                        <GiftCategoryAndFoodSelectors
-                            // showExludeDishes={false}
-                            scopeLst={scopeList}
-                            showEmptyTips={true}
-                            // showRequiredMark={true}
-                            mallScope={mallScope}
-                        />
+                        ['10','20','21'].includes(value) ? 
+                            <CategoryAndFoodSelectors
+                                scopeLst={scopeList}
+                                showEmptyTips={true}
+                                mallScope={mallScope}
+                            />
+                            :
+                            <GiftCategoryAndFoodSelector
+                                scopeLst={scopeList}
+                                showEmptyTips={true}
+                            /> 
                     )
                 }
             </div>
@@ -2104,7 +2139,7 @@ class GiftAddModalStep extends React.PureComponent {
                     },
                 ],
             })(
-                <GiftCategoryAndFoodSelectors
+                <CategoryAndFoodSelectors
                     dishOnly
                     priceLst={scopeList}
                 />
@@ -2137,7 +2172,7 @@ class GiftAddModalStep extends React.PureComponent {
                     },
                 ],
             })(
-                <GiftCategoryAndFoodSelectors
+                <CategoryAndFoodSelectors
                     dishOnly
                     priceLst={scopeList}
                 />
@@ -2410,7 +2445,6 @@ class GiftAddModalStep extends React.PureComponent {
         // 判断是否是空对象
         // 影响 PhonePreview 回显。
         let formData =JSON.stringify(values) == '{}' ? data : values ;
-
         const { firstKeysToDisplay: displayFirstKeys, secondKeysToDisplay: displaySecondKeys,thirdKeysToDisplay:displayThirdKeys,fourthKeysToDisplay:displayFourthKeys} = this.justifyFormKeysToDisplay();
 
         if (formData.shopNames && formData.shopNames.length > 0 && formData.shopNames[0].id) {
