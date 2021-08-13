@@ -15,20 +15,25 @@ import {
     Col,
     message,
     Alert,
+    Tooltip,
+    Select
 } from 'antd';
 import { getAccountInfo } from 'helpers/util'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import PriceInput from "../../SaleCenterNEW/common/PriceInput";
 import CloseableTip from "../../../components/common/CloseableTip/index";
 import {axiosData} from "../../../helpers/util";
+import {
+    getWechatMpInfo, getImgTextList
+} from './AxiosFactory';
 const { RangePicker } = DatePicker;
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
-
+const Option = Select.Option;
 const BATCH_LIMIT = 100000;
-
+const defaultImgTxt = { resTitle: '叮咚！天上掉下一堆券，点我点我点我', digest: '为小主准备的超级大礼包，点我查看' };
+const imgURI = 'http://res.hualala.com/';
 class GenerateBatchGifts extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -40,7 +45,6 @@ class GenerateBatchGifts extends Component {
             queryDateRange: [], // 列表查询时的日期选择
             confirmLoading: false,
             modalVisible: false,
-
             autoGenerating: '1', // 是否系统自动生成券码 1 自动, 2 手动填写起止号, string
             validDateRange: [], // 制券时选择的有效日期
             giftCount: undefined, // 张数
@@ -48,11 +52,23 @@ class GenerateBatchGifts extends Component {
             endNo: undefined,
             description: '',
             includeRandomCode: false, // 券码是否包含随机码 true: 包含, false: 不包含
+            mpError: false,
+            imgError: false,
+            mpInfoList:[],//公众号列表
+            imgList: [],//图文消息列表
+            sendCouponType: '1',//生成形式 1 券码 2 二维码" 默认券码
+            mpID:'',//选中公众号ID
+            imgID:'',//选中的图文消息ID
+            mpTitle:'',//图文title
+            imageUrl:'',//图文imageUr
+            mpDescription:'',//图文description
+            item: defaultImgTxt,
         };
         this.handleQuery = this.handleQuery.bind(this);
         this.showModal = this.showModal.bind(this);
         this.hideModal = this.hideModal.bind(this);
         this.handleAutoGeneratingChange = this.handleAutoGeneratingChange.bind(this);
+        this.handleSelectSendCouponType = this.handleSelectSendCouponType.bind(this);
         this.handleModalOk = this.handleModalOk.bind(this);
         this.handleValidDateRangeChange = this.handleValidDateRangeChange.bind(this);
         this.handleQueryDateRangeChange = this.handleQueryDateRangeChange.bind(this);
@@ -65,13 +81,24 @@ class GenerateBatchGifts extends Component {
 
     componentDidMount(){
         this.handleQuery()
+        this.onQueryStep2Data();
     }
 
     isDisabledTime = () => {
         const time = moment().format('HHmm')
         return (time >= 1100 && time <= 1400) || (time >= 1700 && time <= 2030)
     }
-
+    onQueryStep2Data = () => {
+        const { groupID } = this.props;
+        const params = { groupID, pageNo: 1, pageSize: 1000 };
+        getWechatMpInfo(params).then(mpInfoList => {
+            this.setState({ mpInfoList });
+        });
+        const params2 = { ...params, resType: 0 };
+        getImgTextList(params2).then(imgList => {
+            this.setState({ imgList });
+        });
+    }
     handleQuery(pageNo = this.state.pageNo) {
         this.setState({
            loading: true,
@@ -104,7 +131,11 @@ class GenerateBatchGifts extends Component {
             autoGenerating: event.target.value,
         });
     }
-
+    handleSelectSendCouponType(event) {
+        this.setState({
+            sendCouponType: event.target.value,
+        });
+    }
     handleDescriptionChange(event) {
         this.setState({
             description: event.target.value,
@@ -210,10 +241,31 @@ class GenerateBatchGifts extends Component {
             startNo: startNO,
             endNo: endNO,
             giftCount: giftNum,
+            sendCouponType,
             autoGenerating: generatePwdType, // 生成方式  1：系统自动生成随机的唯一密码 2：按照指定的规则生成 默认为自动生成
             description: remark,
-            validDateRange: [EGiftEffectTime, validUntilDate] // EGiftEffectTime 属于后端typo; [0] 为券有效期起始时间, [1] 为券有效期终止时间
+            validDateRange: [EGiftEffectTime, validUntilDate], // EGiftEffectTime 属于后端typo; [0] 为券有效期起始时间, [1] 为券有效期终止时间
+            item,
+            mpID,
+            imgID
         } = this.state;
+
+        console.log(this.state,'state-----------------------')
+        if(sendCouponType == '2'){//如果是二维码
+            if(!mpID){
+                message.warning('请选择公众号')
+                return
+            }
+            if(!imgID){
+                message.warning('请选择图文消息')
+                return
+            }
+            let {imgPath, digest: description, resTitle: title} = item
+            params.mpID = mpID;
+            params.title = title;
+            params.description = description;
+            params.imageUrl = imgURI + imgPath;
+        }
         if (generatePwdType === '1') {// 系统自动生成
             params.giftNum = giftNum;
         } else {
@@ -229,6 +281,7 @@ class GenerateBatchGifts extends Component {
             EGiftEffectTime = moment().format('YYYYMMDD'); // 不填为永久, 实现上为今天 + 100 年
             validUntilDate = moment().add(100, 'year').format('YYYYMMDD');
         }
+        params.sendCouponType = sendCouponType;
         params.remark = remark;
         params.EGiftEffectTime = EGiftEffectTime;
         params.validUntilDate = validUntilDate;
@@ -248,12 +301,14 @@ class GenerateBatchGifts extends Component {
                 confirmLoading: true,
             });
             const params = this.mapStateToRequestParams();
+            console.log(params,'params----------------')
             axiosData('/gift/batchGenCouponCode.ajax', { ...params, createBy: getAccountInfo().userName }, {}, {path: 'message'}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
                 .then(res => {
                     this.setState({
                         confirmLoading: false,
                         modalVisible: false,
                         autoGenerating: '1', // 是否系统自动生成券码 1 自动, 2 手动填写起止号, string
+                        sendCouponType: '1',//生成形式 1 券码 2 二维码" 默认券码
                         validDateRange: [], // 制券时选择的有效日期
                         giftCount: undefined, // 张数
                         startNo: undefined,
@@ -273,7 +328,6 @@ class GenerateBatchGifts extends Component {
                     this.props.form.resetFields()
                 })
         }
-
     }
 
     showModal() {
@@ -287,6 +341,7 @@ class GenerateBatchGifts extends Component {
             modalVisible: false,
             confirmLoading: false,
             autoGenerating: '1', // 是否系统自动生成券码 1 自动, 2 手动填写起止号, string
+            sendCouponType: '1',//生成形式 1 券码 2 二维码" 默认券码
             validDateRange: [], // 制券时选择的有效日期
             giftCount: undefined, // 张数
             startNo: undefined,
@@ -622,7 +677,73 @@ class GenerateBatchGifts extends Component {
 
         )
     }
-
+    onAccountChange = (mpID) => {
+        // const { imgID, item, shopInfo } = this.state;
+        // const {
+        //     onSetMpID,
+        // } = this.props
+        // onSetMpID(mpID)
+        // this.onGetQrImg({ mpID, imgID, item, shops: shopInfo })
+        this.setState({
+            mpID,
+        });
+    }
+    onImgTxtChange = (imgID) => {
+        const { imgList } = this.state;
+        let temp = {};
+        if (imgID) {
+            const { resContent = {} } = imgList.find(x => `${x.itemID}` === imgID);
+            const { resources = [] } = JSON.parse(resContent);
+            temp = resources[0];
+            this.setState({ 
+                item: temp,
+                imgID,
+             });
+            return
+        }
+        // this.onGetQrImg({ mpID, imgID, item, shops: shopInfo })
+        this.setState({
+            imgID,
+        });
+    }
+    renderPictureAndTextMsg(){
+        const {mpInfoList,imgList,mpID,item,imgID} = this.state;
+        return (
+            <div style={{ marginBottom: 20 }} className={styles.typeBox}>
+                <div className={styles.accountBox}>
+                    <span><span className={styles.redFont}>*</span>请选择公众号</span>
+                    <div>
+                        <Select allowClear={true} value={mpID} onChange={this.onAccountChange}>
+                            {mpInfoList.map(x => <Option value={x.mpID} key={x.mpID}>{x.mpName}</Option>)}
+                        </Select>
+                    </div>
+                </div>
+                {mpID &&
+                    <div className={styles.imgListBox}>
+                        <span><span className={styles.redFont}>*</span>图文消息</span>
+                        <div>
+                            <Select allowClear={true} value={imgID} onChange={this.onImgTxtChange}>
+                                {imgList.map(x => <Option value={`${x.itemID}`} key={x.mpID}>{x.resTitle}</Option>)}
+                            </Select>
+                            <p className={styles.tips}>选择图文消息后，生成链接会覆盖原图文素材配置的自定义链接</p>
+                        </div>
+                    </div>
+                }
+                {mpID &&
+                    <div className={styles.previewBox}>
+                        <span>图文预览</span>
+                        <div className={styles.view}>
+                            <dl>
+                                <dt>{item.resTitle}</dt>
+                                <dd>{item.digest}</dd>
+                            </dl>
+                            <img src={imgURI + item.imgPath} alt="" />
+                        </div>
+                    </div>}
+            </div>
+        )
+        
+    }
     renderModalContent() {
         const { getFieldDecorator } = this.props.form;
         return (
@@ -673,6 +794,23 @@ class GenerateBatchGifts extends Component {
                             <Radio key={'2'} value={'2'}>按规则生成</Radio>
                         </RadioGroup>
                     </FormItem>
+                    <FormItem
+                        label="生成形式"
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 6 }}
+                        wrapperCol={{ span: 18 }}
+                    >
+                        <RadioGroup onChange={this.handleSelectSendCouponType} value={this.state.sendCouponType}>
+                            <Radio key={'1'} value={'1'}>券码</Radio>
+                            <Radio key={'2'} value={'2'}>二维码</Radio>
+                        </RadioGroup>
+                        <Tooltip title={'选择二维码时，显示”请选择公众号“，必须选择一个公众号，默认生成的二维码有效期为30天'}>
+                            <Icon type="question-circle-o" />
+                        </Tooltip>
+                    </FormItem>
+                    {
+                        this.state.sendCouponType === '2' && this.renderPictureAndTextMsg()
+                    }
                     {
                         this.state.autoGenerating ==='1' && this.renderAutoGeneratingRules()
                     }
