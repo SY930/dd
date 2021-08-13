@@ -314,9 +314,6 @@ class StepOne extends React.Component {
         })
     }
     onTimePickerChange(time) {
-
-        // console.log('time is', time.format('HHmmss'));
-
         let timeString;
         try {
             timeString = time.format('HHmmss')

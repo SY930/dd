@@ -32,7 +32,6 @@ class Step2 extends Component {
         this.onGetQrImg({ mpID: '', imgID: '', item: defaultImgTxt, shops: [] })
     }
     componentWillReceiveProps(nextProps) {
-        // console.log('before', this.props.downLoadFlag, 'next', nextProps.downLoadFlag)
         if (this.props.downLoadFlag !== nextProps.downLoadFlag && !nextProps.downLoadFlag) {
             if (this.passValidate()) {
                 this.onQrCodeDownload()
@@ -84,7 +83,6 @@ class Step2 extends Component {
             this.setState({
                 count: count + 1,
             }, () => {
-                // console.log('count', this.state.count)
                 downLoadLoadingChange(true)
                 if (type === 1) {
                     // 当为普通二维码
@@ -200,7 +198,6 @@ class Step2 extends Component {
             this.setState({
                 count: count - 1,
             })
-            // console.log('now decrease the count to', this.state.count)
             if (x && this.state.count === 0) {
                 downLoadLoadingChange(false)
             }

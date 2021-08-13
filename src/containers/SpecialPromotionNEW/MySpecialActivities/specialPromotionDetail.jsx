@@ -1426,7 +1426,6 @@ class SpecialPromotionDetail extends React.Component {
                 joinCount: user.joinCount || 0,
             }
         });
-        // console.log('dataSource', dataSource);
         let len = null;
         if(eventWay == 68){
             len = 2000

@@ -416,7 +416,6 @@ class EditBoxForPromotion extends React.Component {
 
     // 确定或取消
     handleEditorBoxChange(value) {
-        // console.log(value);
         const promotionSelections = value;
         const valueKeyType = 'promotionIDStr';
         // update currentSelections according the selections
@@ -460,7 +459,6 @@ class EditBoxForPromotion extends React.Component {
 
     // CheckBox选择
     handleGroupSelect(value) {
-        // console.log('value: ', value);
         if (value instanceof Array) {
             // get the selections
             const selectionsSet = new Set(this.state.promotionSelections);
@@ -511,8 +509,7 @@ class EditBoxForPromotion extends React.Component {
                 })
             }
             this.setState({ promotionCurrentSelections: value, promotionSelections: selectionsSet }, () => {
-                // console.log(this.state.promotionCurrentSelections);
-                // console.log(Array.from(this.state.promotionSelections));
+              
             });
         }
     }

@@ -68,10 +68,8 @@ class Housekeeper extends React.Component {
     onSubmit = () => {
         let {customerRangeSettings, eventRule} = this.state
         this.eventRuleForm.validateFields((err, value) => {
-            // console.log('>>aa', err, value)
             if(!err){
                 this.customerRangeForm.validateFieldsAndScroll((error, val) => {
-                    // console.log('>>bb', error, val)
                     if(!error){
                         // 校验
                         let checked = this.checkTimeRange(customerRangeSettings)
@@ -85,7 +83,6 @@ class Housekeeper extends React.Component {
                         }
                         // 新增、编辑
                         let editType = eventRule.itemID ? 'createActiveCom/updateEventRule' : 'createActiveCom/addEventRule'
-                        // console.log('parm', parm)
                         this.props.dispatch({
                             type: editType,
                             payload: {eventRule: parm}

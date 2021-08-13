@@ -22,7 +22,6 @@ class SelectMall extends Component {
 
     componentWillReceiveProps(newProps) {
         const { dataSource, value } = newProps;
-        // console.log('new props in componentWillReceiveProps', value)
         if(this.props.dataSource == dataSource) {
             this.setState({
                 malls: dataSource,
@@ -81,6 +80,7 @@ class SelectMall extends Component {
                 optionFilterProp="children"
                 value={value}
                 onChange={this.handleSelectChange}
+                style={{width:300}}
             >
                 {
                     malls.map(shop => <Option key={shop.shopID} value={shop.shopID}>{shop.shopName}</Option>)

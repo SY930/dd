@@ -332,7 +332,7 @@ class ShopsSelector extends React.Component {
 
 
     onCityTreeSelect = (value)=>{
-        // console.log('onCityTreeCheck',value)
+
     }
 
     filter = ()=>{

@@ -239,9 +239,6 @@ class StepOneWithDateRange extends React.Component {
         } catch (e) {
             // oops
         }
-
-        // actStartDate
-        // console.log('specialPromotion',specialPromotion)
         if(this.props.type == '60' && eventStartDate && eventEndDate) {
             this.setState({
                 actStartDate: [moment(eventStartDate),moment(eventEndDate)]
@@ -794,8 +791,6 @@ class StepOneWithDateRange extends React.Component {
         }} = this.props;
 
         let dateInPeriodType = getFieldValue('dateInPeriodType');
-
-        // console.log('getFieldsValue', getFieldsValue())
         if(dateInPeriodType == undefined) {
             dateInPeriodType = 'm';
         }

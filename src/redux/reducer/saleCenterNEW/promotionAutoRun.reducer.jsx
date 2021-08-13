@@ -1,7 +1,9 @@
 import {
-    SALE_CENTER_QUERY_PROMOTION_AUTORUN_LIST_START,
+    SALE_CENTER_QUERY_PROMOTION_LIST_START,
     SALE_CENTER_QUERY_PROMOTION_AUTORUN_LIST_SUCCESS,
+    SALE_CENTER_QUERY_PROMOTION_LIST_SUCCESS,
     SALE_CENTER_QUERY_PROMOTION_AUTORUN_LIST_FAIL,
+    SALE_CENTER_QUERY_PROMOTION_LIST_FAIL,
     SALE_CENTER_SAVE_PROMOTION_AUTORUN_LIST_START,
     SALE_CENTER_SAVE_PROMOTION_AUTORUN_LIST_SUCCESS,
     SALE_CENTER_SAVE_PROMOTION_AUTORUN_LIST_FAIL,
@@ -23,16 +25,24 @@ const $initialState = Immutable.fromJS({
 
 export const promotionAutoRunState = ($$state = $initialState, action) => {
     switch (action.type) {
-        case SALE_CENTER_QUERY_PROMOTION_AUTORUN_LIST_START:
+        case SALE_CENTER_QUERY_PROMOTION_LIST_START:
             return $$state
                 .set('isLoading', true);
+        case SALE_CENTER_QUERY_PROMOTION_LIST_SUCCESS:
+            return $$state
+                .set('isLoading', false)
+                .set('hasError', false)
+                .set('allAvailablePromotionList', Immutable.fromJS(Array.isArray(action.payload) ? action.payload.map(item => ({...item, promotionID: item.promotionIDStr})) : []));
         case SALE_CENTER_QUERY_PROMOTION_AUTORUN_LIST_SUCCESS:
             return $$state
                 .set('isLoading', false)
                 .set('hasError', false)
-                .set('promotionList', Immutable.fromJS(Array.isArray(action.payload[0]) ? action.payload[0].sort((itemA, itemB) => itemA.order - itemB.order).map(item => ({...item, promotionID: item.promotionIDStr})) : []))
-                .set('allAvailablePromotionList', Immutable.fromJS(Array.isArray(action.payload[1]) ? action.payload[1].map(item => ({...item, promotionID: item.promotionIDStr})) : []));
+                .set('promotionList', Immutable.fromJS(Array.isArray(action.payload) ? action.payload.sort((itemA, itemB) => itemA.order - itemB.order).map(item => ({...item, promotionID: item.promotionIDStr})) : []))
         case SALE_CENTER_QUERY_PROMOTION_AUTORUN_LIST_FAIL:
+            return $$state
+                .set('isLoading', false)
+                .set('hasError', true);
+        case SALE_CENTER_QUERY_PROMOTION_LIST_FAIL:
             return $$state
                 .set('isLoading', false)
                 .set('hasError', true);

@@ -75,6 +75,9 @@ class SelectBrands extends Component {
                 optionFilterProp="children"
                 value={realValue}
                 onChange={this.handleSelectChange}
+                style={{
+                    width: '300px'
+                }}
             >
                 {
                     this.getMergedBrands().map(brand => <Option key={brand.value} value={brand.value}>{brand.label}</Option>)

@@ -584,8 +584,6 @@ class Step2 extends React.Component {
                                     formData.mySendGift = giftList[index] ? this.transGiftData(giftList[index]) : ''
                                     formData.consumeGiftID = giftList[index] ? giftList[index].consumeGiftID : ''
                                 // }
-                                // console.log('formData.consumeGiftID', formData.consumeGiftID, `index  ${index}`)
-                                // console.log('afterGiftList', afterGiftList)
                                 return (
                                 <TabPane tab={`规则${index+1}`} key={index+1}>
                                     {(isView&&!isEdit || ifDisable)&&<div className={styles.disabledDiv}></div>}

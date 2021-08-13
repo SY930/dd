@@ -122,11 +122,10 @@ const formItems2 = {
         defaultValue: joinCountValue,
     },
     defaultCardType: {
-        type: 'combo',
         label: '新用户注册卡类',
+        type: 'custom',
+        defaultValue: '',
         rules: ['required'],
-        options: [],
-        defaultValue: [],
     },
     autoRegister: {
         type: 'radio',

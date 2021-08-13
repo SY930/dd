@@ -44,7 +44,6 @@ class Step3 extends React.Component {
         _FLAG = false;
         formList = [];
         giftForm = [];
-        // console.log('tabKey', this.tabKey)
     }
 
     getSubmitFn = () => {
@@ -274,7 +273,6 @@ class Step3 extends React.Component {
         const { giftList, needCount } =  formData;
         if (isView && !isEdit) { return }
         let { gearTab, chooseTab } = this.state;
-        // console.log('formList--- before', formList, giftForm)
         let reGiftList;
         reGiftList = giftList.slice(0, 5).filter((_, i) => i != removeKey);
         // 移除对应的formList和giftForm
@@ -294,8 +292,6 @@ class Step3 extends React.Component {
 
         // 移除对应的needCount
         const reNeedCount = needCount.filter((_, i) => i != removeKey);
-        // console.log('reNeedCount: ', reNeedCount);
-        // console.log('formList---- after', formList, giftForm)
 
         if (giftList[5]) {
             reGiftList[5] = giftList[5];
@@ -362,9 +358,7 @@ class Step3 extends React.Component {
     handleTabChange = (e) => {
         let flag = true;
         const giftFormInitiator = [...giftForm];
-
         giftFormInitiator.length = formList.length;  // 只校验三个档位
-        // console.log('formList: ', formList);
         giftFormInitiator.forEach(form => {
             if(form) {
                 form.validateFieldsAndScroll((e,v) => {
@@ -424,7 +418,6 @@ class Step3 extends React.Component {
             giftData[0].label = label
             giftData[0].giftValue = chooseCoupon.giftValue
         }
-        // console.log('giftData', giftData);
        if (giftData[0].effectType === '2') {// 重置生效方式为固定有效期时countType的值
             giftData[0].countType = '0'
        }
@@ -497,7 +490,6 @@ class Step3 extends React.Component {
         const { formData = {} } = this.props.createActiveCom;
         const { giftList = [], needCount } = formData;
         const { gearTab } = this.state;
-        // console.log('this.tabKey', this.tabKey)
         if (giftList.length > 2) {
             let newG = [];
             giftList.map((item, i) => {
@@ -520,9 +512,7 @@ class Step3 extends React.Component {
 
         const { formData, currentStep , isEdit, isView } = this.props.createActiveCom
         const { giftList, needCount, giftGetRule } = formData;
-        // console.log('giftList: ', giftList, 'formData', formData);
         const {  chooseTab ,treeData, gearTab } = this.state;
-        // console.log('gearTab: ', gearTab);
 
         let activeTab = (<TabPane tab="档位二" key="1" closable={false}>
             {isView && !isEdit && <div className={styles.disabledDiv}></div>}

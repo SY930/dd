@@ -184,7 +184,6 @@ class CardOperate extends React.Component {
                 effectTime: effectTime99validUntilDate[0],
                 validUntilDate: effectTime99validUntilDate[1]
             }
-            // console.log('reqParams', reqParams)
 
             axiosData(callserver, reqParams, null, { path: 'data' }).then((data) => {
                 this.props.onCancel(true);

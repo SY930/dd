@@ -554,7 +554,7 @@
 }
 .iconTagsCol{
     position: absolute;
-    width: 500px;
+    width: 600px;
     height: 22px;
     left: 100px;
     top: 28px;
@@ -573,25 +573,27 @@
             float: left;
         }
     }
-
-
-    
 }
 .logoGroupHeader {
+    width: 500px;
+    height: 28px;
+    line-height: 28px;
+    background: #F5FBFA;
     margin-left: 10px;
     margin-bottom: 10px;
     font-size: 14px;
-    color: #333333;
+    color: #666;
     position: relative;
+
     &::before {
+        content: '';
         margin-left: -7px;
         position: absolute;
         display: block;
         width: 3px;
         height: 12px;
-        content: '';
         left: -3px;
-        top: 4px;
+        top: 8px;
         background-color: #18B495;
     }
 }
@@ -758,6 +760,7 @@
                     }
                 }
             }
+            
         }
         .arrow {
             position: absolute;
@@ -779,6 +782,24 @@
                 border: 9px solid transparent;
                 border-left: none;
                 border-right-color: #FFFFFF;
+            }
+        }
+        .couponImgBgWrapper{
+            position: absolute;
+            z-index: 12;
+            top: 45px;
+            width: 290px;
+            left: 96px;
+            height: 581px;
+            // .imgSelectChange{
+            //     margin-left: 48px;
+            //     margin-top: -70px;
+            // }
+            img{
+                position: absolute;
+                top: 0;
+                left: 0;
+                width:100%
             }
         }
     }
