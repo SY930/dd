@@ -751,6 +751,9 @@ class PromotionBasicInfo extends React.Component {
     }
 
     renderTimeSlot() {
+        const self = this;
+        const basicInfo = self.props.promotionBasicInfo.get('$basicInfo').toJS();
+        const promotionType = basicInfo.promotionType;
         const formItemLayout = {
             labelCol: { span: 4 },
             wrapperCol: { span: 17 },
@@ -778,6 +781,7 @@ class PromotionBasicInfo extends React.Component {
                                 }}
                                 value={Object.assign({}, this.state.timeRangeInfo[index])}
                                 format="HH:mm"
+                                type={promotionType}
                             />
                         </FormItem>
                     </Col>

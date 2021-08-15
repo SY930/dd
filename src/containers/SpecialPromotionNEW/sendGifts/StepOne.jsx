@@ -507,13 +507,13 @@ class StepOne extends React.Component {
         let eventEndDate = date[1] ? date[1].format('YYYYMMDD') : '';
         
         // 不可用时间组件
-        // （当活动起止日期为同一天时），活动执行当天可以修改的发送时间为系统时间的后2小时的整点或半点
+        // （当活动起止日期为同一天时），活动执行当天可以修改的发送时间为系统时间的后半小时的整点或半点
         let curHour = moment().get('hour');
         let curMinute = moment().get('minute');
         let disabledHours = () => {
             if(eventStartDate == eventEndDate && moment().format('YYYYMMDD') == eventEndDate){
                 let hours = this.range(0, 24);
-                let addHour = curMinute > 30 ? 3 : 2
+                let addHour = curMinute > 30 ? 1 : 0.5
                 return hours.filter(item => item < curHour + addHour)
             }
             return [];
