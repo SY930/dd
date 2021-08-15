@@ -42,6 +42,7 @@ class StepTwo extends React.Component {
             autoRegister: autoRegister === undefined ? 1 : autoRegister,
             recommendRule: props.specialPromotionInfo.getIn(['$eventInfo', 'recommendRule']) ||  ['1'],
             recommendRange: props.specialPromotionInfo.getIn(['$eventInfo', 'recommendRange']) || 0,
+            partInTimes: props.specialPromotionInfo.getIn(['$eventInfo', 'partInTimes']) || '0',
             defaultCardType: props.specialPromotionInfo.getIn(['$eventInfo', 'defaultCardType']) || undefined,
             mpIDList: Immutable.List.isList($mpIDList) ? $mpIDList.toJS() : [],
             message: props.specialPromotionInfo.getIn(['$eventInfo', 'smsTemplate']) || '',
@@ -150,6 +151,11 @@ class StepTwo extends React.Component {
             autoRegister: +value,
         })
     }
+    handlePartInTimesChange = ({ target: { value } }) => {
+        this.setState({
+            partInTimes: value,
+        })
+    }
     handleRecommendRangeChange = ({ target: { value } }) => {
         this.setState({
             recommendRange: +value,
@@ -163,6 +169,7 @@ class StepTwo extends React.Component {
             recommendRange,
             recommendRule,
             autoRegister,
+            partInTimes,
             mpIDList,
         } = this.state;
         const {
@@ -265,6 +272,30 @@ class StepTwo extends React.Component {
                         )
                     }
                 </FormItem>
+
+
+                <FormItem
+                    label={'赠送规则'}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <RadioGroup
+                        onChange={this.handlePartInTimesChange}
+                        value={`${partInTimes}`}
+                    >
+                        <Radio value="1">仅首次参与获得礼品</Radio>
+                        <Radio value="0">每次参与获得礼品</Radio>
+                    </RadioGroup>
+                    <Tooltip title={'选中“仅首次参与获得礼品”后，只有被推荐人第一次消费或储值后，推荐人才会获得礼品'}>
+                        <Icon
+                            type={'question-circle'}
+                            style={{ color: '#787878' }}
+                        />
+                    </Tooltip>
+                </FormItem>
+
+
                 <FormItem
                     label={this.props.intl.formatMessage(STRING_SPE.dd5a3f52gg51143)} // 新用户注册卡类
                     className={styles.FormItemStyle}
