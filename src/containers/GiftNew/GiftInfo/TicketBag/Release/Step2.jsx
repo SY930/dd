@@ -335,7 +335,8 @@ class Step2 extends Component {
                                             </div>
                                         </div>}
                                 </div>
-                            }{
+                            }
+                            {
                                 <div className={styles.qrPriview}>
                                     <QRCode
                                         size={95}

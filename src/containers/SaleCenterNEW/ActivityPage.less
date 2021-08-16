@@ -5,8 +5,6 @@
  * @Last modified time: 2017-04-09T09:45:24+08:00
  */
 
-
-
 @import '~@hualala/platform-base/lib/styles/variables.less';
 :global {
     .professional {
@@ -2323,4 +2321,137 @@
         position: relative;
         top: -6px;
     }
+}
+.imgListBox{
+    display: flex;
+    margin-top: 20px;
+    position: relative;
+    &>span{
+        line-height: 28px;
+        width: 90px;
+        text-align: right;
+        display: inline-table;
+    }
+    &>div{
+        flex: 1;
+        margin: 0 10px;
+    }
+    :global{
+        .ant-select{
+            width: 340px;
+        }
+    }
+}
+.previewBox{
+    display: flex;
+    margin-top: 5px;
+    position: relative;
+    &>span{
+        line-height: 28px;
+        width: 90px;
+        text-align: right;
+        display: inline-table;
+    }
+    .view{
+        margin: 0 10px;
+        border: 1px solid #e7e7e7;
+        padding: 5px 10px;
+        width: 342px;
+        display: flex;
+        border-radius: 3px;
+        &>img{
+            width: 50px;
+            height: 50px;
+        }
+        &>dl{
+            flex: 1;
+            padding-right: 5px;
+            dt{
+                font-size: 14px;
+            }
+            dd{
+                color: #999;
+                margin-top: 3px;
+            }
+        }
+    }
+}
+.accountBox{
+    display: flex;
+    &>span{
+        line-height: 28px;
+        width: 90px;
+        text-align: right;
+        display: inline-table;
+    }
+    &>div{
+        flex: 1;
+        margin: 0 10px;
+    }
+    :global{
+        .ant-select{
+            width: 340px;
+        }
+    }
+}
+
+.typeBox {
+    position: relative;
+    padding: 0 40px;
+    padding-left: 120px;
+    .titleSpan {
+        display: inline-block;
+        line-height: 28px;
+        width: 90px;
+        text-align: right;
+        margin-right: 10px;
+    }
+    .tipBox {  
+        background: #FAFAFA;
+        border-radius: 4px;
+        position: relative;
+        width: 553px;
+        height: 52px;
+        font-weight: 400;
+        color: #999999;
+        line-height: 20px;
+        left: 100px;
+        padding: 16px;
+        margin: 10px 0 20px 0;
+        border: 1px solid #E7E7E7;
+    }
+    .contentBox {
+        position: relative;
+        width: 583px;
+        height: 52px;
+        left: 85px;
+        padding: 16px;
+        margin: 0;
+        display: inline-block;
+        top: -42px;
+    }
+    .errorSpan {
+        position: relative;
+        left: 12px;
+        color: red;
+    }
+    .tips{
+        background: #FAFAFA;
+        border-radius: 4px;
+        position: relative;
+        width: 375px;
+        height: 52px;
+        font-weight: 400;
+        color: #999999;
+        line-height: 20px;
+        padding: 16px;
+        margin: 5px 0 20px 0;
+        border: 1px solid #E7E7E7;
+    }
+}
+.redFont {
+    color: red;
+    position: relative;
+    top: 2px;
+    left: -5px;
 }
