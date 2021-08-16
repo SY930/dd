@@ -249,8 +249,6 @@ class GenerateBatchGifts extends Component {
             mpID,
             imgID
         } = this.state;
-
-        console.log(this.state,'state-----------------------')
         if(sendCouponType == '2'){//如果是二维码
             if(!mpID){
                 message.warning('请选择公众号')
@@ -301,7 +299,6 @@ class GenerateBatchGifts extends Component {
                 confirmLoading: true,
             });
             const params = this.mapStateToRequestParams();
-            console.log(params,'params----------------')
             axiosData('/gift/batchGenCouponCode.ajax', { ...params, createBy: getAccountInfo().userName }, {}, {path: 'message'}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
                 .then(res => {
                     this.setState({
@@ -477,7 +474,7 @@ class GenerateBatchGifts extends Component {
                 dataIndex: 'downLoadUrl',
                 render: (text, record, index) => {
                     if (record.status == 6 && text) {
-                        return <a download target="_blank" href={text}>下载</a>
+                        return <a download="券码" target="_blank" href={text}>下载</a>
                     } else if (record.status == 4 || record.status == 7) {
                         return (
                             <a
@@ -737,7 +734,9 @@ class GenerateBatchGifts extends Component {
                                 <dt>{item.resTitle}</dt>
                                 <dd>{item.digest}</dd>
                             </dl>
-                            <img src={imgURI + item.imgPath} alt="" />
+                            {
+                                item.imgPath ? <img src={imgURI + item.imgPath} alt="" /> : null
+                            }
                         </div>
                     </div>}
             </div>
