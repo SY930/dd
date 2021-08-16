@@ -90,7 +90,6 @@ export const queryPromotionAutoRunList = (opts) => {
             { path: 'data.autoExecuteActivityItems' },
             'HTTP_SERVICE_URL_PROMOTION_NEW'
         ).then(values => {
-            console.log(values, 'values------------------queryPromotionAutoRunList')
             dispatch(queryPromotionAutoRunListSuccess(values));
         }).catch((error) => {
             console.log(error);
@@ -108,7 +107,6 @@ export const queryPromotionList = (opts) => {
             { path: 'data.autoExecuteActivityItems' },
             'HTTP_SERVICE_URL_PROMOTION_NEW'
         ).then(values => {
-            console.log(values, 'values------------------queryPromotionList')
             const groupID = getStore().getState().user.getIn(['accountInfo', 'groupID']);
             const topEvents = [
                 {
@@ -129,7 +127,6 @@ export const queryPromotionList = (opts) => {
                 }
             ];
             const newVals = [...topEvents, ...values];
-            console.log(newVals, 'newValues-----------')
             dispatch(queryPromotionListSuccess(newVals));
         }).catch((error) => {
             console.log(error);

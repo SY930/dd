@@ -1425,7 +1425,6 @@ class MyActivities extends React.Component {
 
     render() {
         const {runType} = this.state;
-        console.log(runType,'rutype--00000000')
         return (
             <div style={{ backgroundColor: '#F3F3F3' }} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 <div>

@@ -376,7 +376,6 @@ class PromotionAutoRunModal extends Component {
             runModalvalue
         } = this.state;
         let modalType = runModalvalue ? runModalvalue : Number(runType) + 1;
-        console.log(modalType,'runModalvalue==========')
         return (
             <Modal
                 visible={isVisible}
