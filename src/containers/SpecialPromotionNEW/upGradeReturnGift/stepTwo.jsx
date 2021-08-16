@@ -15,7 +15,9 @@ import {
     Select,
     message,
     Radio, 
-    Icon
+    Icon,
+    Input,
+    Tooltip,
 } from 'antd';
 import {isEqual, uniq, isEmpty} from 'lodash';
 import {
@@ -73,6 +75,7 @@ class StepTwo extends React.Component {
             selections: [],
             selections_shopsInfo: { shopsInfo: [] },
             isRequire: true,
+            timeInterval:0//评价送礼新增评价设置 0 代表不限制
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -82,6 +85,7 @@ class StepTwo extends React.Component {
         this.onCardLevelChange = this.onCardLevelChange.bind(this);
         this.renderShopsOptions = this.renderShopsOptions.bind(this);
         this.editBoxForShopsChange = this.editBoxForShopsChange.bind(this);
+        this.handleTimeIntervalChange = this.handleTimeIntervalChange.bind(this);
     }
 
     componentDidMount() {
@@ -161,6 +165,7 @@ class StepTwo extends React.Component {
             if (this.props.type == '70' || this.props.type == '64') {
                 opts.selections = specialPromotion.shopIDList || [];
                 opts.selections_shopsInfo = { shopsInfo: specialPromotion.shopIDList || [] };
+                opts.timeInterval = specialPromotion.timeInterval || 0;
             }
             this.setState(opts)
         }
@@ -306,6 +311,7 @@ class StepTwo extends React.Component {
                 smsTemplate: this.state.message,
                 shopIDList: this.state.selections,
                 shopRange: this.state.selections.length > 0 ? 1 : 2,
+                timeInterval:this.state.timeInterval
             } :
             {
                 cardLevelIDList: this.state.cardLevelIDList || [],
@@ -374,6 +380,12 @@ class StepTwo extends React.Component {
             shopStatus: val.length > 0,
         })
     }
+    handleTimeIntervalChange(e){
+        const { value } = e.target;
+        this.setState({
+            timeInterval:value
+        })
+    }
     async loadShopSchema() {
         const { data } = await axios.post('/api/shopapi/schema',{});
         const { shops } = data;
@@ -408,6 +420,7 @@ class StepTwo extends React.Component {
     renderShopsOptions() {
         // 当有人领取礼物后，礼物不可编辑，加蒙层
         const userCount = this.props.specialPromotion.toJS().$eventInfo.userCount;
+        const { getFieldDecorator } = this.props.form;
         //评价送礼，已有别的活动选了个别店铺，就不能略过而全选
         const noSelected64 = this.props.type == 64 &&
             this.props.promotionBasicInfo.get('$filterShops').toJS().shopList &&
@@ -417,6 +430,47 @@ class StepTwo extends React.Component {
         const { isRequire, shopStatus  } = this.state;
         return (
             <div className={styles.giftWrap}>
+                {
+                    this.props.type == 64 ? 
+                    <Form.Item
+                        label={'评价设置'}
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 17 }}
+                    >
+                        <span>同一用户</span> 
+                        {
+                            getFieldDecorator('timeInterval', {
+                                initialValue: this.state.timeInterval,
+                                onChange: this.handleTimeIntervalChange,
+                                rules: [
+                                    {
+                                        validator: (rule, v, cb) => {
+                                            console.log(v,'v---------------')
+                                            if(v > 1500){
+                                                return cb('请输入0-1500的整数');
+                                            }
+                                            cb()
+                                        },
+                                    },
+                                ],
+                            })(
+                                <Input 
+                                    type='number' 
+                                    style={{width:80,marginLeft:10,marginRight:10}}
+                                />
+                            )
+                        }
+                        <span>分钟内重复评价不触发送礼</span>
+                        <Tooltip  title="只能输入0-1500的整数，0代表不限制">
+                            <Icon
+                                type={'question-circle'}
+                                style={{ color: '#787878',marginLeft:5 }}
+                                className={styles.cardLevelTreeIcon}
+                            />
+                        </Tooltip>
+                    </Form.Item>:null
+                }
                 <Form.Item
                     label={this.props.intl.formatMessage(STRING_SPE.db60a0b75aca181)}
                     className={styles.FormItemStyle}
