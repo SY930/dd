@@ -1290,7 +1290,7 @@ class SpecialPromotionDetail extends React.Component {
                 dataIndex: 'look',
                 key: 'look',
                 className: 'TableTxtCenter',
-                width: 100,
+                width: 40,
                 render:(text, record)=> {
                     return (<a onClick={()=>this.handleGiftDetailModalOpen(record)}>查看</a>)
                 }
