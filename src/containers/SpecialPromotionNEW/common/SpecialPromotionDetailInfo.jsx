@@ -3758,10 +3758,10 @@ class SpecialDetailInfo extends Component {
                     this.renderPointDuihuan()
                 }
                 {
-                    type === '60' && renderThree.call(this)
+                    type === '60' && renderThree.call(this,type)
                 }
                 {
-                    type === '53' && renderThree.call(this)
+                    type === '53' && renderThree.call(this,type)
                 }
                 {
                     type === '61' && renderUpGradeThree.call(this)

@@ -291,7 +291,7 @@ const renderGrowthValueFn = function () {
  *
  * @returns
  */
-export const renderThree = function () {
+export const renderThree = function (type) {
     const { perfectReturnGiftCheckBoxStatus, data } = this.state;
     const {
         perfectReturnGiftPoint,
@@ -306,11 +306,14 @@ export const renderThree = function () {
                 key: "perfectReturnGiftPoint",
             })}
             {perfectReturnGiftPoint && renderGivePointFn.call(this)}
-            {renderCheckbox.call(this, {
-                label: "赠送成长值",
-                key: "perfectReturnGiftGrowthValue",
-            })}
-            {perfectReturnGiftGrowthValue && renderGrowthValueFn.call(this)}
+            {
+                type == '60' ? 
+                renderCheckbox.call(this, {
+                    label: "赠送成长值",
+                    key: "perfectReturnGiftGrowthValue",
+                }) : null
+            }
+            {type== '60' ? perfectReturnGiftGrowthValue && renderGrowthValueFn.call(this) : null}
             {renderCheckbox.call(this, {
                 label: "赠送优惠券",
                 key: "perfectReturnGiftCoupon",
