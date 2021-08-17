@@ -1,20 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {
-    Icon,
-    Button,
-    Input,
-    Select,
-    Alert,
-    Spin,
-    Tooltip,
-    Popconfirm,
-    message,
-    Modal,
-    Checkbox,
-    Row,
-    Col,
-} from 'antd';
+import {Icon,Button,Input,Select,Alert,Spin,Tooltip,Popconfirm,message,Modal,Checkbox,Row,Col} from 'antd';
 import registerPage from '../../../index';
 import { SHARE_RULES_GROUP, SHARE_RULES_SHOP } from "../../constants/entryCodes";
 import styles from './style.less'
@@ -30,7 +16,7 @@ import {
     startEditCertainShareGroup,
 } from "../../redux/actions/shareRules/index";
 import { BASIC_PROMOTION_MAP, GIFT_MAP } from "../../constants/promotionType";
-import PromotionSelectModal from "./PromotionSelectModal";
+import CreateShareRulesModal from "./CreateShareRulesModal";
 import BatchGroupEditModal from './BatchGroupEditModal';
 import { FetchGiftList } from "../GiftNew/_action";
 import { fetchAllPromotionListAC } from "../../redux/actions/saleCenterNEW/promotionDetailInfo.action";
@@ -40,7 +26,8 @@ import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { injectIntl } from './IntlDecor';
 import PriceInput from '../SaleCenterNEW/common/PriceInput';
-
+import groupImg from './assets/createOriginGroup.png';
+import shopImg from './assets/createOriginShop.png';
 
 const { Option, OptGroup } = Select;
 const AVAILABLE_PROMOTIONS = Object.keys(BASIC_PROMOTION_MAP);
@@ -143,7 +130,7 @@ export default class ShareRules extends Component {
                             <Icon
                                 type="plus"
                             />
-                            {SALE_LABEL.k636qv0m}
+                            新建共享规则
                         </Button>
                     )
                 }
@@ -276,11 +263,62 @@ export default class ShareRules extends Component {
                     </p>
                     <div className={styles.activityCont}>
                         <p className={styles.contMtd}>组内活动可共享</p>
-                        <div className={styles.contList}>
-                            <span>促销活动 <b>2</b></span> 
-                            <span>会员权益备份 <b>2</b></span> 
-                            <span>哗啦啦券 <b>2</b></span> 
+                        <div className={styles.contScrollBox}>
+                            <div className={styles.contList}>
+                                <p>促销活动 <b>2</b></p> 
+                                <p>会员权益备份 <b>2</b></p> 
+                                <p>哗啦啦券 <b>2</b></p> 
+                                <p>会员权益备份 <b>2</b></p> 
+                                <p>哗啦啦券 <b>2</b></p> 
+                            </div>
                         </div>
+                    </div>
+                    <div className={styles.activityOrigin}>
+                        <img className={styles.tagImg} src={groupImg} />
+                        <span>集团创建</span>
+                    </div>
+                    <div className={styles.activityOperate}>
+                        <span className={styles.operateDetail}>查看详情</span>
+                        <span className={styles.operateEdit}>编辑</span>
+                        <span className={styles.operateDelete}>删除</span>
+                    </div>
+                    <span className={styles.quoteTag}>被引用</span>
+                </Col>
+                <Col key='1' className={styles.columnsWrapper}>
+                    <p className={styles.activityTitle}>
+                        <span className={styles.titleText}>五一促销活动共享组2021</span>
+                        <span className={`${styles.titleTag } ${styles.teamShare}`}>组内共享</span>
+                    </p>
+                    <div className={styles.activityBothCont}>
+                        <div className={styles.contBothBox}>
+                            <p className={styles.contMtd}>情人节活动</p>
+                            <div className={styles.contScrollBox}>
+                                <div className={styles.contList}>
+                                    <p><span>促销活动</span> <b>2</b></p> 
+                                    <p><span>会员权益备份备份备份备份</span> <b>2</b></p> 
+                                    <p><span>会员权益备份备份备份备份</span> <b>2</b></p> 
+                                    <p><span>会员权益备份备份备份备份</span> <b>2</b></p> 
+                                    <p><span>会员权益备份备份备份备份</span> <b>2</b></p> 
+                                </div>
+                            </div>
+                        </div>
+                        <div className={styles.contBothBox}>
+                            <span className={styles.bothQuoteTag}>引用</span>
+                            <p className={styles.contMtd}>新店开业促销</p>
+                            <div className={styles.contScrollBox}>
+                                <div className={styles.contList}>
+                                    <p><span>促销活动</span> <b>2</b></p> 
+                                    <p><span>会员权益备份备份备份备份</span> <b>2</b></p> 
+                                    <p><span>会员权益备份备份备份备份</span> <b>2</b></p> 
+                                    <p><span>会员权益备份备份备份备份</span> <b>2</b></p> 
+                                    <p><span>会员权益备份备份备份备份</span> <b>2</b></p> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className={styles.activityOrigin}>
+                        <img className={styles.tagImg} src={groupImg} />
+                        <span>集团创建</span>
                     </div>
                     <div className={styles.activityOperate}>
                         <span className={styles.operateDetail}>查看详情</span>
@@ -288,14 +326,13 @@ export default class ShareRules extends Component {
                         <span className={styles.operateDelete}>删除</span>
                     </div>
                 </Col>
-                <Col span={6} key='1' className={styles.columnsWrapper}/>
-                <Col span={6} key='2' className={styles.columnsWrapper}/>
-                <Col span={6} key='3' className={styles.columnsWrapper}/>
+                
             </Row>
         )
     }
     render() {
-        const { shareGroups } = this.props;
+        const {isCreate,isEdit,selected} = this.state;
+        const { shareGroups,isSaving } = this.props;
         const vanillaShareGroups = shareGroups.toJS();
         const displayHeaderActions = !!vanillaShareGroups.length;
         return (
@@ -304,6 +341,17 @@ export default class ShareRules extends Component {
                 {displayHeaderActions && this.renderHeaderActions()}
                 <div className={styles.divideLine}/>
                 {this.renderContent()}
+                {
+                    (isCreate || isEdit) && (
+                        <CreateShareRulesModal
+                            isCreate={isCreate}
+                            handleCancel={this.handleCancel}
+                            handleOk={this.handleOk}
+                            loading={isSaving}
+                            selectedPromotions={selected}
+                        />
+                    )
+                }
             </div>
         )
     }
