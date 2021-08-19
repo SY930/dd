@@ -253,3 +253,108 @@
         margin-top: 10px;
     }
 }
+.createModal{
+    :global{
+        .ant-modal-body{
+            overflow:hidden;
+            max-height: 1000px;
+        }
+    }
+    .previewImgWrapper{
+        margin-top: 8px;
+        font-size: 12px;
+        font-family: MicrosoftYaHei;
+        color: #AEAEAE;
+        line-height: 20px;
+        span{
+            float: left;
+        }
+        div{
+            float: left;
+            b{
+                position: relative;
+                font-style: normal;
+                color: #1AB495;
+                cursor: pointer;
+            }
+            img{
+                position: absolute;
+                display: none;
+                top: 45px;
+                left: 90px;
+                width: 470px;
+                height: 283px;
+                z-index: 9;
+            }
+            &:hover{
+                img{
+                    display: block;
+                }
+            }
+        }
+    }
+    .activityGroup{
+        width: 550px;
+        height: 275px;
+        background: #F9F9F9;
+        border-radius: 8px;
+        padding: 16px 10px;
+        b{
+            color: #666;
+            font-size: 12px;
+            font-weight: 400;
+            font-style: normal;
+        }
+        .radioLeft,.radioRight{
+            position: relative;
+            top: -12px;
+            color: #b6b6b6;
+            margin-left: 22px;
+        }
+        :global{
+            .ant-radio-wrapper{
+                margin-right: 15px;
+                margin-bottom: 0;
+            }
+        }
+        .leftLabel{
+            position: relative;
+            left: -10px;
+            color: rgba(0, 0, 0, 0.65);
+            i{
+                position: relative;
+                font-style: normal;
+                color: #b6b6b6;
+                top: -10px;
+                left: 10px;
+            }
+        }
+        .activityTagsWrapper{
+            padding: 5px;
+            width: 450px;
+            height: 98px;
+            background: #FFFFFF;
+            border-radius: 4px;
+            border: 1px solid #E7E7E7;
+            overflow: hidden;
+            .activityTagsScroll{
+                max-height: 90px;
+                overflow-y: auto;
+            }
+        }
+        .addActivityBtn{
+            margin-top: 5px;
+            color: #1db395;
+            border: none;
+            background: transparent;
+        }
+    }
+    .activityInnerGroup{
+        width: 630px;
+        background-color: #fff;
+        padding: 16px 0;
+        .activityTagsWrapper{
+            width: 545px;
+        }
+    }
+}

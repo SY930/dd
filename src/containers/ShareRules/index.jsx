@@ -31,7 +31,50 @@ import shopImg from './assets/createOriginShop.png';
 
 const { Option, OptGroup } = Select;
 const AVAILABLE_PROMOTIONS = Object.keys(BASIC_PROMOTION_MAP);
-
+const params = {
+    "shareGroupInfos": [
+        {
+            "linkFlag": "string",
+            "groupID": 0,
+            "shareRuleSummaries": [
+                {
+                    "ruleDetailID": 0,
+                    "promotionCount": "string",
+                    "groupID": 0,
+                    "couponCount": "string",
+                    "summaryID": 0,
+                    "shareRuleID": 0,
+                    "memberInterestsCount": "string"
+                }
+            ],
+            "shareRuleID": 0,
+            "shareRuleType": "string",
+            "shareRuleName": "string",
+            "shopID": "string",
+            "referenceID": 0
+        },
+        {
+            "linkFlag": "string",
+            "groupID": 0,
+            "shareRuleSummaries": [
+                {
+                    "ruleDetailID": 0,
+                    "promotionCount": "string",
+                    "groupID": 0,
+                    "couponCount": "string",
+                    "summaryID": 0,
+                    "shareRuleID": 0,
+                    "memberInterestsCount": "string"
+                }
+            ],
+            "shareRuleID": 0,
+            "shareRuleType": "string",
+            "shareRuleName": "string",
+            "shopID": "string",
+            "referenceID": 0
+        }
+    ]
+}
 @registerPage([SHARE_RULES_GROUP, SHARE_RULES_SHOP], {
     share_rules
 })
