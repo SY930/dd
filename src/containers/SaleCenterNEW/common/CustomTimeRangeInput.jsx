@@ -132,16 +132,25 @@ class CustomTimeRangeInput extends React.Component {
             return [];
         }
     }
-    getMinutesWithSpace(space){
+    getMinutesWithSpace(space,type){
         let minutesArr = [];
         let usedArr = [];
         let len = Math.floor(60/Number(space));
         for(let i = 0;i < 60;i++){
             minutesArr.push(i)
         }
-        for(let j = 0;j<len;j++){
-            usedArr.push(space * j)
+        if(type == '0'){
+            for(let j = 0;j<len;j++){
+                usedArr.push(space * j)
+            }
+        }else{
+            for(let j = 0;j<60;j++){
+                if(j % 10 == '4' || j % 10 == '9'){
+                    usedArr.push(j)
+                }
+            }
         }
+        
         let diabledArr = minutesArr.filter(item => !usedArr.includes(item))
         return diabledArr
     }
@@ -158,7 +167,7 @@ class CustomTimeRangeInput extends React.Component {
                         format={this.state.format}
                         disabledMinutes={(h) => {
                                 if(type == '1010'){
-                                    return this.getMinutesWithSpace(5)
+                                    return this.getMinutesWithSpace(5,'0')
                                 }else{
                                     return range(1, 30).concat(range(31, 60))
                                 }
@@ -185,7 +194,7 @@ class CustomTimeRangeInput extends React.Component {
                         disabledMinutes={
                             (h) => {
                                 if(type == '1010'){
-                                    return this.getMinutesWithSpace(5)
+                                    return this.getMinutesWithSpace(5,'1')
                                 }else{
                                     return range(0, 29).concat(range(30, 59))
                                 }
