@@ -228,6 +228,10 @@ class ShopSelectModal extends Component {
         const { loading, filters } = this.state;
 
         const options = this.props.options || this.state.options || [];
+        console.log(options,'options------------------1')
+        console.log(filters,'options------------------2')
+        console.log(defaultValue,'options------------------3')
+
         return (
             <Modal
                 {...this.props}

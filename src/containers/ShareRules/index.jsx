@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {Icon,Button,Input,Select,Alert,Spin,Tooltip,Popconfirm,message,Modal,Checkbox,Row,Col} from 'antd';
+import { Icon, Button, Input, Select, Alert, Spin, Tooltip, Popconfirm, message, Modal, Checkbox, Row, Col } from 'antd';
 import registerPage from '../../../index';
 import { SHARE_RULES_GROUP, SHARE_RULES_SHOP } from "../../constants/entryCodes";
 import styles from './style.less'
@@ -31,62 +31,73 @@ import shopImg from './assets/createOriginShop.png';
 
 const { Option, OptGroup } = Select;
 const AVAILABLE_PROMOTIONS = Object.keys(BASIC_PROMOTION_MAP);
-const params = {
-    "shareGroupInfos": [
-        {
-            "linkFlag": "string",
-            "groupID": 0,
-            "shareRuleSummaries": [
-                {
-                    "ruleDetailID": 0,
-                    "promotionCount": "string",
-                    "groupID": 0,
-                    "couponCount": "string",
-                    "summaryID": 0,
-                    "shareRuleID": 0,
-                    "memberInterestsCount": "string"
-                }
-            ],
-            "shareRuleID": 0,
-            "shareRuleType": "string",
-            "shareRuleName": "string",
-            "shopID": "string",
-            "referenceID": 0
-        },
-        {
-            "linkFlag": "string",
-            "groupID": 0,
-            "shareRuleSummaries": [
-                {
-                    "ruleDetailID": 0,
-                    "promotionCount": "string",
-                    "groupID": 0,
-                    "couponCount": "string",
-                    "summaryID": 0,
-                    "shareRuleID": 0,
-                    "memberInterestsCount": "string"
-                }
-            ],
-            "shareRuleID": 0,
-            "shareRuleType": "string",
-            "shareRuleName": "string",
-            "shopID": "string",
-            "referenceID": 0
-        }
-    ]
-}
+const shareGroupInfos = [
+    {
+        "linkFlag": 'true',
+        "groupID": 0,
+        "shareRuleSummaries": [
+            {
+                "ruleDetailID": 0,
+                "promotionCount": "3",
+                "groupID": 0,
+                "couponCount": "4",
+                "summaryID": 0,
+                "shareRuleID": 0,
+                "memberInterestsCount": "5",
+                "activityName":"明天会更好"
+            }
+        ],
+        "shareRuleID": 0,
+        "shareRuleType": "0",
+        "shareRuleName": "五一促销活动共享组2021",
+        "shopID": "string",
+        "referenceID": 0
+    },
+    {
+        "linkFlag": 'false',
+        "groupID": 0,
+        "shareRuleSummaries": [
+            {
+                "ruleDetailID": 0,
+                "promotionCount": "10",
+                "groupID": 0,
+                "couponCount": "20",
+                "summaryID": 0,
+                "shareRuleID": 0,
+                "memberInterestsCount": "30",
+                "activityName":"日常互动"
+            },
+            {
+                "ruleDetailID": 0,
+                "promotionCount": "11",
+                "groupID": 0,
+                "couponCount": "21",
+                "summaryID": 0,
+                "shareRuleID": 0,
+                "memberInterestsCount": "31",
+                "activityName":"2021新年活动",
+                "isLinked":true
+            }
+        ],
+        "shareRuleID": 0,
+        "shareRuleType": "1",
+        "shareRuleName": "五一促销活动共享组2022",
+        "shopID": "string",
+        "referenceID": 0
+    }
+]
+
 @registerPage([SHARE_RULES_GROUP, SHARE_RULES_SHOP], {
     share_rules
 })
 @connect(mapStateToProps, mapDispatchToProps)
 @injectIntl()
 export default class ShareRules extends Component {
-
     state = {
         isCreate: false,
         isEdit: false,
-        shareTypeInput:'',
-        createOriginInput:'',
+        shareTypeInput: '',
+        createOriginInput: '',
         searchTypeInput: '',
         searchNameInput: '',
         selected: [],
@@ -115,14 +126,12 @@ export default class ShareRules extends Component {
         this.queryAll();
         this.props.getAllShops();
     }
-
     queryAll = () => {
         this.props.queryShareGroups({
             groupID: this.props.user.accountInfo.groupID,
             shopID: this.props.user.shopID > 0 ? this.props.user.shopID : 0,
         });
     }
-
     handleCancel = () => {
         this.setState({
             isCreate: false,
@@ -131,7 +140,6 @@ export default class ShareRules extends Component {
             selectedGroupID: undefined
         })
     }
-
     handleOk = ({ shareGroupDetailList, shareGroupName }) => {
         const { selectedGroupID } = this.state;
         return this.props.createOrUpdateCertainShareGroup({
@@ -151,7 +159,6 @@ export default class ShareRules extends Component {
             this.handleCancel()
         })
     }
-
     renderHeader(isEmpty) {
         return (
             <div className={styles.header}>
@@ -177,27 +184,27 @@ export default class ShareRules extends Component {
                         </Button>
                     )
                 }
-                
+
             </div>
         )
     }
     renderHeaderActions() {
         const shareType = [
-            {value:'',label:'全部'},
-            {value:'1',label:'组内共享'},
-            {value:'2',label:'组间共享'},
+            { value: '', label: '全部' },
+            { value: '1', label: '组内共享' },
+            { value: '2', label: '组间共享' },
         ];
         const createOrigin = [
-            {value:'',label:'全部'},
-            {value:'1',label:'组内共享'},
-            {value:'2',label:'组间共享'},
+            { value: '', label: '全部' },
+            { value: '1', label: '组内共享' },
+            { value: '2', label: '组间共享' },
         ];
         const hualalaCoupon = [
-            {value:'10',label:'代金券'},
-            {value:'20',label:'菜品优惠券'},
-            {value:'21',label:'菜品兑换券'},
-            {value:'111',label:'折扣券'},
-            {value:'110',label:'买赠券'},
+            { value: '10', label: '代金券' },
+            { value: '20', label: '菜品优惠券' },
+            { value: '21', label: '菜品兑换券' },
+            { value: '111', label: '折扣券' },
+            { value: '110', label: '买赠券' },
         ]
         const {
             searchTypeInput,
@@ -296,93 +303,102 @@ export default class ShareRules extends Component {
             </div>
         )
     }
-    renderContent(){
+    renderContent() {
         return (
             <Row className={styles.bodyContainer}>
-                <Col key='0' className={styles.columnsWrapper}>
-                    <p className={styles.activityTitle}>
-                        <span className={styles.titleText}>五一促销活动共享组2021</span>
-                        <span className={styles.titleTag}>组内共享</span>
-                    </p>
-                    <div className={styles.activityCont}>
-                        <p className={styles.contMtd}>组内活动可共享</p>
-                        <div className={styles.contScrollBox}>
-                            <div className={styles.contList}>
-                                <p>促销活动 <b>2</b></p> 
-                                <p>会员权益备份 <b>2</b></p> 
-                                <p>哗啦啦券 <b>2</b></p> 
-                                <p>会员权益备份 <b>2</b></p> 
-                                <p>哗啦啦券 <b>2</b></p> 
-                            </div>
-                        </div>
-                    </div>
-                    <div className={styles.activityOrigin}>
-                        <img className={styles.tagImg} src={groupImg} />
-                        <span>集团创建</span>
-                    </div>
-                    <div className={styles.activityOperate}>
-                        <span className={styles.operateDetail}>查看详情</span>
-                        <span className={styles.operateEdit}>编辑</span>
-                        <span className={styles.operateDelete}>删除</span>
-                    </div>
-                    <span className={styles.quoteTag}>被引用</span>
-                </Col>
-                <Col key='1' className={styles.columnsWrapper}>
-                    <p className={styles.activityTitle}>
-                        <span className={styles.titleText}>五一促销活动共享组2021</span>
-                        <span className={`${styles.titleTag } ${styles.teamShare}`}>组内共享</span>
-                    </p>
-                    <div className={styles.activityBothCont}>
-                        <div className={styles.contBothBox}>
-                            <p className={styles.contMtd}>情人节活动</p>
-                            <div className={styles.contScrollBox}>
-                                <div className={styles.contList}>
-                                    <p><span>促销活动</span> <b>2</b></p> 
-                                    <p><span>会员权益备份备份备份备份</span> <b>2</b></p> 
-                                    <p><span>会员权益备份备份备份备份</span> <b>2</b></p> 
-                                    <p><span>会员权益备份备份备份备份</span> <b>2</b></p> 
-                                    <p><span>会员权益备份备份备份备份</span> <b>2</b></p> 
+                {shareGroupInfos.map((groupInfo, index) => {
+                    return (
+                        groupInfo.shareRuleSummaries.length > 1 ?
+                            <Col key={index} className={styles.columnsWrapper}>
+                                <p className={styles.activityTitle}>
+                                    <span className={styles.titleText}>{groupInfo.shareRuleName}</span>
+                                    <span className={`${styles.titleTag} ${styles.teamShare}`}>组内共享</span>
+                                </p>
+                                <div className={styles.activityBothCont}>
+                                    {
+                                        groupInfo.shareRuleSummaries.map((ruleSummary, index1) => {
+                                            return (
+                                                <div className={styles.contBothBox}>
+                                                    {
+                                                        ruleSummary.isLinked == 'true' ? 
+                                                            <span className={styles.bothQuoteTag}>引用</span> 
+                                                            : 
+                                                            null
+
+                                                    }
+                                                    <p className={styles.contMtd}>{ruleSummary.activityName}</p>
+                                                    <div className={styles.contScrollBox}>
+                                                        <div className={styles.contList}>
+                                                            <p><span>促销活动</span> <b>{ruleSummary.promotionCount}</b></p>
+                                                            <p><span>哗啦啦券</span> <b>{ruleSummary.couponCount}</b></p>
+                                                            <p><span>会员权益</span> <b>{ruleSummary.memberInterestsCount}</b></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )
+                                        })
+                                    }
+
                                 </div>
-                            </div>
-                        </div>
-                        <div className={styles.contBothBox}>
-                            <span className={styles.bothQuoteTag}>引用</span>
-                            <p className={styles.contMtd}>新店开业促销</p>
-                            <div className={styles.contScrollBox}>
-                                <div className={styles.contList}>
-                                    <p><span>促销活动</span> <b>2</b></p> 
-                                    <p><span>会员权益备份备份备份备份</span> <b>2</b></p> 
-                                    <p><span>会员权益备份备份备份备份</span> <b>2</b></p> 
-                                    <p><span>会员权益备份备份备份备份</span> <b>2</b></p> 
-                                    <p><span>会员权益备份备份备份备份</span> <b>2</b></p> 
+                                <div className={styles.activityOrigin}>
+                                    <img className={styles.tagImg} src={groupImg} />
+                                    <span>集团创建</span>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className={styles.activityOrigin}>
-                        <img className={styles.tagImg} src={groupImg} />
-                        <span>集团创建</span>
-                    </div>
-                    <div className={styles.activityOperate}>
-                        <span className={styles.operateDetail}>查看详情</span>
-                        <span className={styles.operateEdit}>编辑</span>
-                        <span className={styles.operateDelete}>删除</span>
-                    </div>
-                </Col>
-                
+                                <div className={styles.activityOperate}>
+                                    <span className={styles.operateDetail}>查看详情</span>
+                                    <span className={styles.operateEdit}>编辑</span>
+                                    <span className={styles.operateDelete}>删除</span>
+                                </div>
+                            </Col>
+                            :
+                            <Col key={index} className={styles.columnsWrapper}>
+                                {
+                                    groupInfo.linkFlag == 'true' ? 
+                                        <span className={styles.quoteTag}>被引用</span>
+                                    :null
+                                }
+                                <p className={styles.activityTitle}>
+                                    <span className={styles.titleText}>{groupInfo.shareRuleName}</span>
+                                    <span className={styles.titleTag}>组内共享</span>
+                                </p>
+                                <div className={styles.activityCont}>
+                                    <p className={styles.contMtd}>{groupInfo.shareRuleSummaries[0].activityName}</p>
+                                    <div className={styles.contScrollBox}>
+                                        <div className={styles.contList}>
+                                            <p>促销活动 <b>{groupInfo.shareRuleSummaries[0].promotionCount}</b></p>
+                                            <p>哗啦啦券 <b>{groupInfo.shareRuleSummaries[0].couponCount}</b></p>
+                                            <p>会员权益 <b>{groupInfo.shareRuleSummaries[0].memberInterestsCount}</b></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className={styles.activityOrigin}>
+                                    <img className={styles.tagImg} src={groupImg} />
+                                    <span>集团创建</span>
+                                </div>
+                                <div className={styles.activityOperate}>
+                                    <span className={styles.operateDetail}>查看详情</span>
+                                    <span className={styles.operateEdit}>编辑</span>
+                                    <span className={styles.operateDelete}>删除</span>
+                                </div>
+                            </Col>
+                    )
+                }
+                )
+                }
+
             </Row>
         )
     }
     render() {
-        const {isCreate,isEdit,selected} = this.state;
-        const { shareGroups,isSaving } = this.props;
+        const { isCreate, isEdit, selected } = this.state;
+        const { shareGroups, isSaving } = this.props;
         const vanillaShareGroups = shareGroups.toJS();
         const displayHeaderActions = !!vanillaShareGroups.length;
         return (
             <div>
                 {this.renderHeader(!vanillaShareGroups.length)}
                 {displayHeaderActions && this.renderHeaderActions()}
-                <div className={styles.divideLine}/>
+                <div className={styles.divideLine} />
                 {this.renderContent()}
                 {
                     (isCreate || isEdit) && (

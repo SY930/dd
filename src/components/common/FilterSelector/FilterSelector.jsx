@@ -74,9 +74,9 @@ class FilterSelector extends React.Component {
 
     render() {
         const {
-            title, className, options, filters: oriFilters, tableColumns,
+            title, className, options, filters: oriFilters, tableColumns,isPromotion
         } = this.props;
-        const { filterKey, filters, selected, filteredOptions } = this.state;
+        let { filterKey, filters, selected, filteredOptions } = this.state;
 
         const resultDisplay = tableColumns.length ? 'table' : 'stripped';
         const curFilter = oriFilters.find(filter => filter.key === filterKey) || {};
@@ -92,7 +92,10 @@ class FilterSelector extends React.Component {
         const selectedItems = options.filter(
             option => selected.indexOf(option.value) !== -1
         );
-
+        
+        console.log(filters,'filters---------1')
+        console.log(filterKey,'filterKey---------1')
+        console.log(curFilter,'curFilter------------')
         return (
             <div className={classnames(isProfessionalTheme() ? style.hllFilterSelectorPro : style.hllFilterSelector, className)}>
                 <div className={style.filterKeyList}>

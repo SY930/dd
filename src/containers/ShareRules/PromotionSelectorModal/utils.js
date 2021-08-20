@@ -1,6 +1,6 @@
 import { axios, getStore } from "@hualala/platform-base";
 import { FILTERS } from "./config";
-import { isHuaTian } from "../../constants/projectHuatianConf";
+import { isHuaTian } from "../../../constants/projectHuatianConf";
 
 function presetFilterOptions(records, filter) {
     const { valueKey, labelKey } = filter;

@@ -180,7 +180,7 @@ class ShopSelectModal extends Component {
         const { defaultValue} = this.props;
         const {options, filters, loading} = this.state;
 
-
+        console.log(options,filters,defaultValue,'filtersdefalutvalue====')
         // const options = this.props.options || this.state.options || [];
 
         return (
