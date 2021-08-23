@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Icon, Button, Input, Select, Alert, Spin, Tooltip, Popconfirm, message, Modal, Checkbox, Row, Col } from 'antd';
+import { Icon, Button, Input, Select, Alert, Spin, Tooltip, Popconfirm, message, Modal, Checkbox, Row, Col, Table } from 'antd';
 import registerPage from '../../../index';
 import { SHARE_RULES_GROUP, SHARE_RULES_SHOP } from "../../constants/entryCodes";
 import styles from './style.less'
@@ -10,7 +10,7 @@ import {
     changeSearchType,
     createOrUpdateCertainShareGroup,
     deleteCertainShareGroup,
-    queryShareGroups,
+    // queryShareGroups,
     removeItemFromCertainShareGroup,
     startCreateShareGroup,
     startEditCertainShareGroup,
@@ -19,6 +19,7 @@ import { BASIC_PROMOTION_MAP, GIFT_MAP } from "../../constants/promotionType";
 import CreateShareRulesModal from "./CreateShareRulesModal";
 import BatchGroupEditModal from './BatchGroupEditModal';
 import { FetchGiftList } from "../GiftNew/_action";
+import { getRuleGroupList, queryShareRuleDetail, queryShareRuleDetailList } from './AxiosFactory';
 import { fetchAllPromotionListAC } from "../../redux/actions/saleCenterNEW/promotionDetailInfo.action";
 import emptyPage from '../../assets/empty_page.png'
 import { fetchPromotionScopeInfo } from "../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
@@ -28,10 +29,12 @@ import { injectIntl } from './IntlDecor';
 import PriceInput from '../SaleCenterNEW/common/PriceInput';
 import groupImg from './assets/createOriginGroup.png';
 import shopImg from './assets/createOriginShop.png';
+import CouponTrdChannelStockNums from 'containers/GiftNew/GiftAdd/common/CouponTrdChannelStockNums';
 
 const { Option, OptGroup } = Select;
 const AVAILABLE_PROMOTIONS = Object.keys(BASIC_PROMOTION_MAP);
-const shareGroupInfos = [
+const ALLEVENTWAY = { ...BASIC_PROMOTION_MAP, ...GIFT_MAP };
+const shareGroupInfosList1 = [
     {
         "linkFlag": 'true',
         "groupID": 0,
@@ -44,7 +47,7 @@ const shareGroupInfos = [
                 "summaryID": 0,
                 "shareRuleID": 0,
                 "memberInterestsCount": "5",
-                "activityName":"明天会更好"
+                "activityName": "明天会更好"
             }
         ],
         "shareRuleID": 0,
@@ -65,7 +68,7 @@ const shareGroupInfos = [
                 "summaryID": 0,
                 "shareRuleID": 0,
                 "memberInterestsCount": "30",
-                "activityName":"日常互动"
+                "activityName": "日常互动"
             },
             {
                 "ruleDetailID": 0,
@@ -75,8 +78,8 @@ const shareGroupInfos = [
                 "summaryID": 0,
                 "shareRuleID": 0,
                 "memberInterestsCount": "31",
-                "activityName":"2021新年活动",
-                "isLinked":true
+                "activityName": "2021新年活动",
+                "isLinked": true
             }
         ],
         "shareRuleID": 0,
@@ -104,11 +107,13 @@ export default class ShareRules extends Component {
         selectedGroupID: undefined,
         batchModalVisible: false,
         unionBatchActivity: [], //维护的所选批量共享组的活动合集
-        batchList: [], //批量共享组多选数组
+        shareGroupInfosList: [], //获取的共享组列表
+        shareRuleInfo: {}, //获取的共享组详情
         ifCanEditName: false,
-        editNameValue: ''
+        editNameValue: '',
+        isShowDetail: false,
+        isShopEnv: this.props.user.shopID > 0 ? true : false,//是否店铺环境
     }
-
     componentDidMount() {
         // 请求获取所有基础营销活动--共享用
         this.props.fetchAllPromotionList({
@@ -127,9 +132,13 @@ export default class ShareRules extends Component {
         this.props.getAllShops();
     }
     queryAll = () => {
-        this.props.queryShareGroups({
+        getRuleGroupList({
             groupID: this.props.user.accountInfo.groupID,
-            shopID: this.props.user.shopID > 0 ? this.props.user.shopID : 0,
+            shopID: this.props.user.shopID > 0 ? this.props.user.shopID : '',
+        }).then((list) => {
+            this.setState({
+                shareGroupInfosList: list
+            })
         });
     }
     handleCancel = () => {
@@ -159,6 +168,22 @@ export default class ShareRules extends Component {
             this.handleCancel()
         })
     }
+    handleCloseDetailModal = () => {
+        this.setState({
+            isShowDetail: false
+        })
+    }
+    handleShowDetailModal = (e, type) => {
+        console.log(type, 'eeeeeeeeeeeeeeeeeeetype')
+        queryShareRuleDetail({ shareRuleID: type }).then(data => {
+
+            this.setState({
+                isShowDetail: true,
+                shareRuleInfo: data
+            })
+        })
+
+    }
     renderHeader(isEmpty) {
         return (
             <div className={styles.header}>
@@ -170,21 +195,16 @@ export default class ShareRules extends Component {
                         各类营销（基础营销、哗啦啦优惠券、会员权益）内活动默认互斥，需要多个活动共享时需创建共享规则实现。
                     </span>
                 </div>
-                {
-                    !isEmpty && (
-                        <Button
-                            onClick={() => this.setState({ isCreate: true, isEdit: false })}
-                            type="ghost"
-                            className={styles.addRuleBtn}
-                        >
-                            <Icon
-                                type="plus"
-                            />
-                            新建共享规则
-                        </Button>
-                    )
-                }
-
+                <Button
+                    onClick={() => this.setState({ isCreate: true, isEdit: false })}
+                    type="ghost"
+                    className={styles.addRuleBtn}
+                >
+                    <Icon
+                        type="plus"
+                    />
+                    新建共享规则
+                </Button>
             </div>
         )
     }
@@ -303,10 +323,196 @@ export default class ShareRules extends Component {
             </div>
         )
     }
+    renderRuleDetailModal() {
+        const { shareRuleInfo } = this.state;
+        let ruleDetails = shareRuleInfo.ruleDetails || [];
+        let len = ruleDetails.length;
+        const columns = [
+                {
+                    title: '活动类型',
+                    dataIndex: 'eventWay',
+                    key: 'eventWay',
+                    className: 'textCenter',
+                    width: 100,
+                    // render(value, record) {
+                    //     return (
+                    //         <span>
+                    //             <a
+                    //                 href="javaScript:;"
+                    //                 onClick={() => {
+                    //                     this.handleEdit(record, 'detail')
+                    //                 }}
+                    //             >
+                    //                 查看
+                    //             </a>
+                    //             <Authority rightCode={GIFT_DETAIL_QUERY}>
+                    //                 {
+                    //                     (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
+                    //                         <a disabled={true}>详情</a>
+                    //                     ) : (
+                    //                         <a href="javaScript:;" onClick={() => this.handleMore(record)}>详情</a>
+                    //                     )
+                    //                 }
+                    //             </Authority>
+                    //         </span>
+                    //     )
+                    // },
+                },
+                {
+                    title: '活动名称',
+                    dataIndex: 'promotionName',
+                    key: 'promotionName',
+                    width: 469,
+                },
+        ];
+
+        let dataSource = [], dataSourceA = [], dataSourceB = [],shareGroupArr = [],notShareGroupArr = [],shareGroupArrA = {},shareGroupArrB = {};
+        switch (len) {
+            case 1:
+                let shareRulePromotionInfos = ruleDetails[0] || [];
+                shareRulePromotionInfos.forEach((item, index) => {
+                    dataSource.push({
+                        key: index,
+                        ruleGroupName: '',
+                        eventWay: ALLEVENTWAY[item.eventWay],
+                        promotionName: item.promotionName
+                    })
+                })
+                break
+            case 2:
+                let shareRulePromotionInfosA = [];
+                let shareRulePromotionInfosB = [];
+                
+                shareGroupArr = ruleDetails.filter((item) => item.isLinked == true);//活动组A
+                notShareGroupArr = ruleDetails.filter((item) => !item.isLinked);//活动组B
+                if(shareGroupArr && shareGroupArr.length > 0){//如果有共享的规则
+                    shareGroupArrA = shareGroupArr[0];
+                    shareGroupArrB = notShareGroupArr[0];
+                    shareRulePromotionInfosA = shareGroupArrA.shareRulePromotionInfos || [];
+                    shareRulePromotionInfosB = shareGroupArrB.shareRulePromotionInfos || [];
+                }
+                if(notShareGroupArr && notShareGroupArr.length == 2){//如果都是互斥的规则
+                    shareGroupArrA = notShareGroupArr[0];
+                    shareGroupArrB = notShareGroupArr[1];
+                    shareRulePromotionInfosA = shareGroupArrA.shareRulePromotionInfos || [];
+                    shareRulePromotionInfosB = shareGroupArrB.shareRulePromotionInfos || [];
+                }
+
+                shareRulePromotionInfosA.forEach((item, index) => {
+                    dataSourceA.push({
+                        key: index,
+                        eventWay: ALLEVENTWAY[item.eventWay],
+                        promotionName: item.promotionName
+                    })
+                })
+                shareRulePromotionInfosB.forEach((item, index) => {
+                    dataSourceB.push({
+                        key: index,
+                        eventWay: ALLEVENTWAY[item.eventWay],
+                        promotionName: item.promotionName
+                    })
+                })
+                break;
+            default:
+                dataSource = []
+        }
+
+        console.log(
+            dataSource,dataSourceA,dataSourceB,'hanleyouhan  dangwo bucunzai '
+        )
+        return (
+            <Modal
+                maskClosable={true}
+                title={'查看共享规则详情'}
+                visible={true}
+                footer={[
+                    <Button key="0" type="ghost" size="large" onClick={this.handleCloseDetailModal}>
+                        关闭
+                    </Button>
+                ]}
+                onCancel={this.handleCloseDetailModal}
+                width="700px"
+                className={styles.createModal}
+            >
+                <div className={styles.detailsListLeft}>
+                    <b>规则名称</b>
+                    <span>{shareRuleInfo.shareRuleName}</span>
+                </div>
+                <div className={styles.detailsListLeft}>
+                    <b>共享类型</b>
+                    <span>{shareRuleInfo.shareRuleType == '1' ? '组间共享' : '组内共享'}</span>
+                </div>
+                {
+                    len == 2 ?
+                        <div>
+                            <div className={styles.detailsListLeft}>
+                                <div className={styles.tableWrapperLeft}>
+                                    活动组A
+                                <br />
+                                    <span style={{ color: '#999', fontWeight: 'normal' }}>{shareGroupArr && shareGroupArr.length > 0  ? '共享' : '互斥'}</span>
+                                </div>
+                                <div className={styles.tableWrapperRight}>
+                                    {
+                                        shareGroupArr && shareGroupArr.length > 0 ? 
+                                            <span className={styles.detailIsLinkedTag}>引用</span>
+                                            :
+                                            null
+                                    }
+                                    <div className={styles.detailActivityName}>{shareGroupArrA.ruleGroupName}</div>
+                                    <Table
+                                        columns={columns}
+                                        dataSource={dataSourceA}
+                                        pagination={false}
+                                        bordered
+                                        size="middle"
+                                        scroll={{ y: 120 }}
+                                    />
+                                </div>
+                            </div>
+                            <div className={styles.detailsListLeft}>
+                                <div className={styles.tableWrapperLeft}>
+                                    活动组B
+                                <br />
+                                    <span style={{ color: '#999', fontWeight: 'normal' }}>(互斥)</span>
+                                </div>
+                                <div className={styles.tableWrapperRight}>
+                                    <div className={styles.detailActivityName}>{shareGroupArrB.ruleGroupName}</div>
+                                    <Table
+                                        columns={columns}
+                                        dataSource={dataSourceB}
+                                        pagination={false}
+                                        bordered
+                                        size="middle"
+                                        scroll={{ y: 120 }}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        :
+                        <div className={styles.detailsListLeft}>
+                            <div className={styles.tableWrapperLeft}>
+                                共享内容
+                            </div>
+                            <div className={styles.tableWrapperRight}>
+                                <Table
+                                    columns={columns}
+                                    dataSource={dataSource}
+                                    pagination={false}
+                                    bordered
+                                    size="middle"
+                                    scroll={{ y: 120 }}
+                                />
+                            </div>
+                        </div>
+                }
+            </Modal>
+        )
+    }
     renderContent() {
+        const { shareGroupInfosList } = this.state;
         return (
             <Row className={styles.bodyContainer}>
-                {shareGroupInfos.map((groupInfo, index) => {
+                {shareGroupInfosList.map((groupInfo, index) => {
                     return (
                         groupInfo.shareRuleSummaries.length > 1 ?
                             <Col key={index} className={styles.columnsWrapper}>
@@ -320,9 +526,9 @@ export default class ShareRules extends Component {
                                             return (
                                                 <div className={styles.contBothBox}>
                                                     {
-                                                        ruleSummary.isLinked == 'true' ? 
-                                                            <span className={styles.bothQuoteTag}>引用</span> 
-                                                            : 
+                                                        ruleSummary.linked ?
+                                                            <span className={styles.bothQuoteTag}>引用</span>
+                                                            :
                                                             null
 
                                                     }
@@ -345,7 +551,7 @@ export default class ShareRules extends Component {
                                     <span>集团创建</span>
                                 </div>
                                 <div className={styles.activityOperate}>
-                                    <span className={styles.operateDetail}>查看详情</span>
+                                    <span className={styles.operateDetail} onClick={(e) => this.handleShowDetailModal(e, groupInfo.shareRuleID)}>查看详情</span>
                                     <span className={styles.operateEdit}>编辑</span>
                                     <span className={styles.operateDelete}>删除</span>
                                 </div>
@@ -353,9 +559,9 @@ export default class ShareRules extends Component {
                             :
                             <Col key={index} className={styles.columnsWrapper}>
                                 {
-                                    groupInfo.linkFlag == 'true' ? 
+                                    groupInfo.linkFlag == '1' ?
                                         <span className={styles.quoteTag}>被引用</span>
-                                    :null
+                                        : null
                                 }
                                 <p className={styles.activityTitle}>
                                     <span className={styles.titleText}>{groupInfo.shareRuleName}</span>
@@ -376,7 +582,7 @@ export default class ShareRules extends Component {
                                     <span>集团创建</span>
                                 </div>
                                 <div className={styles.activityOperate}>
-                                    <span className={styles.operateDetail}>查看详情</span>
+                                    <span className={styles.operateDetail} onClick={(e) => this.handleShowDetailModal(e, '1')} value={JSON.stringify(groupInfo)}>查看详情</span>
                                     <span className={styles.operateEdit}>编辑</span>
                                     <span className={styles.operateDelete}>删除</span>
                                 </div>
@@ -390,13 +596,13 @@ export default class ShareRules extends Component {
         )
     }
     render() {
-        const { isCreate, isEdit, selected } = this.state;
+        const { isCreate, isEdit, selected, isShowDetail } = this.state;
         const { shareGroups, isSaving } = this.props;
         const vanillaShareGroups = shareGroups.toJS();
         const displayHeaderActions = !!vanillaShareGroups.length;
         return (
             <div>
-                {this.renderHeader(!vanillaShareGroups.length)}
+                {this.renderHeader()}
                 {displayHeaderActions && this.renderHeaderActions()}
                 <div className={styles.divideLine} />
                 {this.renderContent()}
@@ -410,6 +616,9 @@ export default class ShareRules extends Component {
                             selectedPromotions={selected}
                         />
                     )
+                }
+                {
+                    isShowDetail && this.renderRuleDetailModal()
                 }
             </div>
         )
@@ -444,7 +653,7 @@ function mapDispatchToProps(dispatch) {
         changeSearchName: opts => dispatch(changeSearchName(opts)),
         startCreateShareGroup: opts => dispatch(startCreateShareGroup(opts)),
         startEditCertainShareGroup: opts => dispatch(startEditCertainShareGroup(opts)),
-        queryShareGroups: opts => dispatch(queryShareGroups(opts)),
+        // queryShareGroups: opts => dispatch(queryShareGroups(opts)),
         createOrUpdateCertainShareGroup: (opts) => dispatch(createOrUpdateCertainShareGroup(opts)),
         deleteCertainShareGroup: opts => dispatch(deleteCertainShareGroup(opts)),
         removeItemFromCertainShareGroup: opts => dispatch(removeItemFromCertainShareGroup(opts)),
