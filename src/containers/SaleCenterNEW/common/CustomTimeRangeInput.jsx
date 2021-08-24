@@ -51,7 +51,6 @@ class CustomTimeRangeInput extends React.Component {
     }
 
     onStartChange(value) {
-        console.log(value,'value-------------')
         const {type} = this.props;
         let start = value;
         if (start !== null && start !== undefined) {
@@ -64,10 +63,9 @@ class CustomTimeRangeInput extends React.Component {
                     startString = startString.slice(0, 10) + '30'
                 }
             }
-            console.log(startString,'startString-----------1')
             start = moment(startString, 'YYYYMMDDHHmm')
-            console.log(start,'start-----------1')
         }
+
         this.setState({
             start,
         });
@@ -103,6 +101,7 @@ class CustomTimeRangeInput extends React.Component {
             }
             end = moment(endString, 'YYYYMMDDHHmm')
         }
+        console.log(end,this.state.start,'onEndChange')
         this.setState({
             end,
         });
@@ -144,6 +143,7 @@ class CustomTimeRangeInput extends React.Component {
                 usedArr.push(space * j)
             }
         }else{
+            console.log(h,this.state.start.hour(),'this.state.start.hour()')
             for(let j = 0;j<60;j++){
                 if(j % 10 == '4' || j % 10 == '9'){
                     if(h == this.state.start.hour()){//当前小时下，截止分钟数应大于起始分钟数

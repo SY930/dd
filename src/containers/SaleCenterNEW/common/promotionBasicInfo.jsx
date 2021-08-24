@@ -16,7 +16,7 @@ import { connect } from 'react-redux'
 
 import styles from '../ActivityPage.less';
 import CustomTimeRangeInput from './CustomTimeRangeInput';
-
+const moment = require('moment');
 const Immutable = require('immutable');
 
 import {
@@ -47,7 +47,6 @@ import {injectIntl} from '../IntlDecor';
 const options = WEEK_OPTIONS;
 const days = MONTH_OPTIONS;
 
-const moment = require('moment');
 const DATE_FORMAT = 'YYYYMMDD000000';
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
@@ -297,6 +296,21 @@ class PromotionBasicInfo extends React.Component {
                 nextFlag = false;
             }
         });
+        if(promotionType == '1010'){
+            if(this.state.timeRangeInfo && this.state.timeRangeInfo.length > 0){
+                let start = this.state.timeRangeInfo[0].start ? this.state.timeRangeInfo[0].start.format('HHmm') : null;
+                let end = this.state.timeRangeInfo[0].end ? this.state.timeRangeInfo[0].end.format('HHmm') : null;
+                if(start && end){
+                    if(Number(start) > Number(end)){
+                        message.warning('活动时段 截止时间需大于起始时间');
+                        nextFlag = false
+                    }else{
+                        nextFlag = true
+                    }
+                }
+            }
+        }
+
         if (nextFlag) {
             // save state to redux
             this.props.saleCenterSetBasicInfo({
