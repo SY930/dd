@@ -713,25 +713,25 @@ class GiftAddModalStep extends React.PureComponent {
         }
         params.shopIDs = '';
         params.shopNames = '';
-        if(hasMallArr.includes(value)){
-            if(params.hasOwnProperty('selectMall') && params.selectMall !== undefined) {
-                if(params.selectMall instanceof Array && params.selectMall.length == 1) {
-                    params.shopIDs = params.selectMall[0];
-                } else {
-                    params.shopIDs = params.selectMall;
-                }
-                let selectMall = malls.filter((mall, idx)=>{
-                    return mall.shopID == params.selectMall
-                });
-    
-                if(selectMall instanceof Array && selectMall.length == 1) {
-                    params.shopNames = selectMall[0].shopName;
-                }
-            }else{
-                message.warning('请选择适用商城')
-                return
+
+        if(params.hasOwnProperty('selectMall') && params.selectMall !== undefined) {
+            if(params.selectMall instanceof Array && params.selectMall.length == 1) {
+                params.shopIDs = params.selectMall[0];
+            } else {
+                params.shopIDs = params.selectMall;
             }
+            let selectMall = malls.filter((mall, idx)=>{
+                return mall.shopID == params.selectMall
+            });
+
+            if(selectMall instanceof Array && selectMall.length == 1) {
+                params.shopNames = selectMall[0].shopName;
+            }
+        }else{
+            message.warning('请选择适用商城')
+            return
         }
+
         
         if(params.applyScene == '2'){
             if(shopIds){
@@ -755,6 +755,7 @@ class GiftAddModalStep extends React.PureComponent {
         // mallScope : 0 按分类， 1 按商品
         // 商城分类模式
         if(params.mallScope == '0' || params.mallScope == undefined) {
+            debugger
             let existCouponFoodScopes = params.couponFoodScopes;
             let mallCategorySet = new Set(params.mallCategory);
             // 分类
@@ -1048,7 +1049,10 @@ class GiftAddModalStep extends React.PureComponent {
             params.pushMessageMpID = params.pushMessage && params.pushMessage.pushMessageMpID
             params.pushMimiAppMsg = params.pushMessage && params.pushMessage.pushMimiAppMsg
             // 商城券参数调整
-            this.adjustParamsOfMallGift(params);
+            if(hasMallArr.includes(value)){
+                this.adjustParamsOfMallGift(params);
+            }
+            console.log(params,'params----------------')
             if(hasMallArr.includes(value) && params.applyScene != '0'){
                 if(!params.shopIDs){
                     message.warning('请选择适用商城')
