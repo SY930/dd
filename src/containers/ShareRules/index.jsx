@@ -107,7 +107,7 @@ export default class ShareRules extends Component {
         selectedGroupID: undefined,
         batchModalVisible: false,
         unionBatchActivity: [], //维护的所选批量共享组的活动合集
-        shareGroupInfosList: [], //获取的共享组列表
+        shareGroupInfosList:[],//共享组列表
         shareRuleInfo: {}, //获取的共享组详情
         ifCanEditName: false,
         editNameValue: '',
@@ -173,10 +173,18 @@ export default class ShareRules extends Component {
             isShowDetail: false
         })
     }
-    handleShowDetailModal = (e, type) => {
-        console.log(type, 'eeeeeeeeeeeeeeeeeeetype')
-        queryShareRuleDetail({ shareRuleID: type }).then(data => {
-
+    handleEdit = (id) => {
+        console.log(id,'id----------------')
+        queryShareRuleDetail({ shareRuleID: id }).then(data => {
+            this.setState({
+                isEdit: true,
+                isCreate: false,
+                shareRuleInfo: data
+            })
+        })
+    }
+    handleShowDetailModal = (e, id) => {
+        queryShareRuleDetail({ shareRuleID: id }).then(data => {
             this.setState({
                 isShowDetail: true,
                 shareRuleInfo: data
@@ -237,13 +245,7 @@ export default class ShareRules extends Component {
             changeSearchType,
             changeSearchName,
         } = this.props;
-        const { intl } = this.props;
-        const k5eng042 = intl.formatMessage(SALE_STRING.k5eng042);
-        const k636qv8y = intl.formatMessage(SALE_STRING.k636qv8y);
-        const k5m5av7b = intl.formatMessage(SALE_STRING.k5m5av7b);
-        const k5m5aw4n = intl.formatMessage(SALE_STRING.k5m5aw4n);
-        const k5m4q0r2 = intl.formatMessage(SALE_STRING.k5m4q0r2);
-        const k5m4q0ze = intl.formatMessage(SALE_STRING.k5m4q0ze);
+
         return (
             <div className={styles.headerActions}>
                 <span className={styles.headerLabel}>共享类型</span>
@@ -420,6 +422,7 @@ export default class ShareRules extends Component {
         console.log(
             dataSource,dataSourceA,dataSourceB,'hanleyouhan  dangwo bucunzai '
         )
+
         return (
             <Modal
                 maskClosable={true}
@@ -532,7 +535,7 @@ export default class ShareRules extends Component {
                                                             null
 
                                                     }
-                                                    <p className={styles.contMtd}>{ruleSummary.activityName}</p>
+                                                    <p className={styles.contMtd}>{ruleSummary.ruleGroupName}</p>
                                                     <div className={styles.contScrollBox}>
                                                         <div className={styles.contList}>
                                                             <p><span>促销活动</span> <b>{ruleSummary.promotionCount}</b></p>
@@ -552,7 +555,7 @@ export default class ShareRules extends Component {
                                 </div>
                                 <div className={styles.activityOperate}>
                                     <span className={styles.operateDetail} onClick={(e) => this.handleShowDetailModal(e, groupInfo.shareRuleID)}>查看详情</span>
-                                    <span className={styles.operateEdit}>编辑</span>
+                                    <span className={styles.operateEdit} onClick={() => this.handleEdit(groupInfo.shareRuleID)}>编辑</span>
                                     <span className={styles.operateDelete}>删除</span>
                                 </div>
                             </Col>
@@ -568,7 +571,7 @@ export default class ShareRules extends Component {
                                     <span className={styles.titleTag}>组内共享</span>
                                 </p>
                                 <div className={styles.activityCont}>
-                                    <p className={styles.contMtd}>{groupInfo.shareRuleSummaries[0].activityName}</p>
+                                    <p className={styles.contMtd}>{groupInfo.shareRuleSummaries[0].ruleGroupName}</p>
                                     <div className={styles.contScrollBox}>
                                         <div className={styles.contList}>
                                             <p>促销活动 <b>{groupInfo.shareRuleSummaries[0].promotionCount}</b></p>
@@ -582,8 +585,8 @@ export default class ShareRules extends Component {
                                     <span>集团创建</span>
                                 </div>
                                 <div className={styles.activityOperate}>
-                                    <span className={styles.operateDetail} onClick={(e) => this.handleShowDetailModal(e, '1')} value={JSON.stringify(groupInfo)}>查看详情</span>
-                                    <span className={styles.operateEdit}>编辑</span>
+                                    <span className={styles.operateDetail} onClick={(e) => this.handleShowDetailModal(e, groupInfo.shareRuleID)} value={JSON.stringify(groupInfo)}>查看详情</span>
+                                    <span className={styles.operateEdit} onClick={() => this.handleEdit(groupInfo.shareRuleID)}>编辑</span>
                                     <span className={styles.operateDelete}>删除</span>
                                 </div>
                             </Col>
@@ -596,7 +599,7 @@ export default class ShareRules extends Component {
         )
     }
     render() {
-        const { isCreate, isEdit, selected, isShowDetail } = this.state;
+        const { isCreate, isEdit, selected, isShowDetail,shareRuleInfo,shareGroupInfosList } = this.state;
         const { shareGroups, isSaving } = this.props;
         const vanillaShareGroups = shareGroups.toJS();
         const displayHeaderActions = !!vanillaShareGroups.length;
@@ -607,18 +610,20 @@ export default class ShareRules extends Component {
                 <div className={styles.divideLine} />
                 {this.renderContent()}
                 {
-                    (isCreate || isEdit) && (
+                    (isCreate || isEdit) && (//创建或者编辑共享组
                         <CreateShareRulesModal
                             isCreate={isCreate}
                             handleCancel={this.handleCancel}
                             handleOk={this.handleOk}
                             loading={isSaving}
+                            formData={shareRuleInfo}
+                            shareGroupList={shareGroupInfosList}
                             selectedPromotions={selected}
                         />
                     )
                 }
                 {
-                    isShowDetail && this.renderRuleDetailModal()
+                    isShowDetail && this.renderRuleDetailModal()//共享组查看详情
                 }
             </div>
         )
