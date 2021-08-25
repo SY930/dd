@@ -81,16 +81,17 @@ class CreateShareRulesModal extends Component {
             ruleGroupNameB: '',//活动B组名
             groupType: '0',//选择活动组index
             showPromotionModal: false,//添加活动组件显示与否
+            groupData:[],//组内活动选择
             groupAdata: [],//活动组A选择活动
             groupBdata: [],//活动组B选择活动
 
-            tagsSource: [], 
-            tagsSourceA : [], 
-            tagsSourceB : [],
-            shareGroupArrA : {},
-            shareGroupArrB : {},
+            tagsSource: [],
+            tagsSourceA: [],
+            tagsSourceB: [],
+            shareGroupArrA: {},
+            shareGroupArrB: {},
 
-            
+
         };
         this.debouncedHandleOk = _.debounce(this.handleOk, 400)
         this.debouncedChangeRuleName = _.debounce(this.debouncedChangeRuleName.bind(this), 500)
@@ -102,10 +103,10 @@ class CreateShareRulesModal extends Component {
         this.handleShareTypeChange = this.handleShareTypeChange.bind(this)
     }
     componentDidMount() {
-        console.log(this.props.formData,'componentDidMount-------')
+        console.log(this.props.formData, 'componentDidMount-------')
         const options = this.getAllOptions();
-        const { formData:shareRuleInfo } = this.props;
-        let tagsSource = [], tagsSourceA = [], tagsSourceB = [],shareGroupArr = [],notShareGroupArr = [],shareGroupArrA = {},shareGroupArrB = {},referenceType = '';
+        const { formData: shareRuleInfo } = this.props;
+        let tagsSource = [], tagsSourceA = [], tagsSourceB = [], shareGroupArr = [], notShareGroupArr = [], shareGroupArrA = {}, shareGroupArrB = {}, referenceType = '';
         let ruleDetails = shareRuleInfo.ruleDetails || [];
         let len = ruleDetails.length;
         switch (len) {
@@ -113,25 +114,26 @@ class CreateShareRulesModal extends Component {
                 let shareRulePromotionInfos = ruleDetails[0] || [];
                 shareRulePromotionInfos.forEach((item, index) => {
                     tagsSource.push({
-                        activityType:item.promotionType,
-                        basicType:item.eventWay,
-                        label:item.promotionName,
-                        value:item.promotionID
+                        activityType: item.promotionType,
+                        basicType: item.eventWay,
+                        label: item.promotionName,
+                        value: item.promotionID,
+
                     })
                 })
                 break
             case 2:
-                let shareRulePromotionInfosA = [],shareRulePromotionInfosB = [];
+                let shareRulePromotionInfosA = [], shareRulePromotionInfosB = [];
                 shareGroupArr = ruleDetails.filter((item) => item.isLinked == true);//活动组A
                 notShareGroupArr = ruleDetails.filter((item) => !item.isLinked);//活动组B
-                if(shareGroupArr && shareGroupArr.length > 0){//如果有共享的规则
+                if (shareGroupArr && shareGroupArr.length > 0) {//如果有共享的规则
                     shareGroupArrA = shareGroupArr[0];
                     shareGroupArrB = notShareGroupArr[0];
                     referenceType = '1';
                     shareRulePromotionInfosA = shareGroupArrA.shareRulePromotionInfos || [];
                     shareRulePromotionInfosB = shareGroupArrB.shareRulePromotionInfos || [];
                 }
-                if(notShareGroupArr && notShareGroupArr.length == 2){//如果都是互斥的规则
+                if (notShareGroupArr && notShareGroupArr.length == 2) {//如果都是互斥的规则
                     shareGroupArrA = notShareGroupArr[0];
                     shareGroupArrB = notShareGroupArr[1];
                     referenceType = '0';
@@ -140,18 +142,18 @@ class CreateShareRulesModal extends Component {
                 }
                 shareRulePromotionInfosA.forEach((item, index) => {
                     tagsSourceA.push({
-                        activityType:item.promotionType,
-                        basicType:item.eventWay,
-                        label:item.promotionName,
-                        value:item.promotionID
+                        activityType: item.promotionType,
+                        basicType: item.eventWay,
+                        label: item.promotionName,
+                        value: item.promotionID
                     })
                 })
                 shareRulePromotionInfosB.forEach((item, index) => {
                     tagsSourceB.push({
-                        activityType:item.promotionType,
-                        basicType:item.eventWay,
-                        label:item.promotionName,
-                        value:item.promotionID
+                        activityType: item.promotionType,
+                        basicType: item.eventWay,
+                        label: item.promotionName,
+                        value: item.promotionID
                     })
                 })
                 break;
@@ -168,8 +170,8 @@ class CreateShareRulesModal extends Component {
             referenceType,
         })
     }
-    componentWillReceiveProps(){
-        console.log(this.props.formData,'componentWillReceiveProps------')
+    componentWillReceiveProps() {
+        console.log(this.props.formData, 'componentWillReceiveProps------')
     }
     renderInnerGroupCont() {//组内共享
         const formItemLayout = {
@@ -190,18 +192,17 @@ class CreateShareRulesModal extends Component {
                             <Tag closable onClose={this.closeActivityName} key="2" value={{ key: '2', name: '买减-买三送三' }}>买减-买三送三</Tag>
                         </Col>
                     </Col>
-                    <Button icon="plus" className={styles.addActivityBtn}>添加(至多添加100个)</Button>
+                    <Button icon="plus" className={styles.addActivityBtn} onClick={() => this.setPromotionModalShow('0')}>添加(至多添加100个)</Button>
                 </FormItem>
             </Col>
         )
     }
     renderBetweenGroupCont() {//组间共享
-        let tagsA=[],tagsB=[];
-        const { referenceType, referenceID, options, shareGroupArrA,shareGroupArrB,tagsSource,tagsSourceA,tagsSourceB,groupAdata, groupBdata,shareGroupList } = this.state;
-
-        console.log(this.state,'this.state------------renderBetweenGroupCont')
-        console.log(shareGroupArrA,'shareGroupArrA')
-        console.log(shareGroupArrB,'shareGroupArrB')
+        let tagsA = [], tagsB = [];
+        const { referenceType, referenceID, options, shareGroupArrA, shareGroupArrB, tagsSource, tagsSourceA, tagsSourceB, groupAdata, groupBdata, shareGroupList } = this.state;
+        console.log(this.state, 'this.state------------renderBetweenGroupCont')
+        console.log(shareGroupArrA, 'shareGroupArrA')
+        console.log(shareGroupArrB, 'shareGroupArrB')
         // console.log(shareRulePromotionInfosA,'shareRulePromotionInfosA')
         // console.log(shareRulePromotionInfosB,'shareRulePromotionInfosB')
         options.forEach((item, index) => {
@@ -223,6 +224,8 @@ class CreateShareRulesModal extends Component {
             }
         })
         console.log(tagsA, tagsB, 'options99999999999999999')
+        let tagsArrA = tagsA.length > 0 ? tagsA : tagsSourceA ? tagsSourceA : [];
+        let tagsArrB = tagsB.length > 0 ? tagsB : tagsSourceB ? tagsSourceB : [];
         const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
             labelCol: { span: 3 },
@@ -241,7 +244,7 @@ class CreateShareRulesModal extends Component {
                             wrapperCol={{ span: 20 }}
                             style={{ marginBottom: '-24px' }}
                         >
-                            <RadioGroup value={referenceType}  onChange={this.handleActivityGroupRadioSelect}>
+                            <RadioGroup value={referenceType} onChange={this.handleActivityGroupRadioSelect}>
                                 <Radio value={'0'}>
                                     <b>自定义添加</b>
                                     <br></br>
@@ -289,9 +292,9 @@ class CreateShareRulesModal extends Component {
                                     wrapperCol={{ span: 20 }}
                                     style={{ marginBottom: '0' }}
                                 >
-                                    <Select 
-                                        value={referenceID} 
-                                        style={{ width: 256 }} 
+                                    <Select
+                                        value={referenceID}
+                                        style={{ width: 256 }}
                                         onChange={this.handleReferenceIDChange}
                                         showSearch
                                         filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
@@ -316,13 +319,13 @@ class CreateShareRulesModal extends Component {
                             <Col className={styles.activityTagsWrapper}>
                                 <Col className={styles.activityTagsScroll}>
                                     {
-                                        tagsA.map((item, index) => {
+                                        tagsArrA.map((item) => {
                                             return <Tag closable onClose={this.closeActivityName} key={item.value} value={JSON.stringify(item)}>{item.label}</Tag>
                                         })
                                     }
                                 </Col>
                             </Col>
-                            <Button icon="plus" className={styles.addActivityBtn} onClick={() => this.setPromotionModalShow('0')}>添加(至多添加100个)</Button>
+                            <Button icon="plus" className={styles.addActivityBtn} onClick={() => this.setPromotionModalShow('1')}>添加(至多添加100个)</Button>
                         </FormItem>
                     </Col>
                 </FormItem>
@@ -369,13 +372,13 @@ class CreateShareRulesModal extends Component {
                             <Col className={styles.activityTagsWrapper}>
                                 <Col className={styles.activityTagsScroll}>
                                     {
-                                        tagsB.map((item, index) => {
+                                        tagsArrB.map((item) => {
                                             return <Tag closable onClose={this.closeActivityName} key={item.value} value={JSON.stringify(item)}>{item.label}</Tag>
                                         })
                                     }
                                 </Col>
                             </Col>
-                            <Button icon="plus" className={styles.addActivityBtn} onClick={() => this.setPromotionModalShow('1')}>添加(至多添加100个)</Button>
+                            <Button icon="plus" className={styles.addActivityBtn} onClick={() => this.setPromotionModalShow('2')}>添加(至多添加100个)</Button>
                         </FormItem>
                     </Col>
                 </FormItem>
@@ -481,17 +484,27 @@ class CreateShareRulesModal extends Component {
     }
     handleSelectModalOk = (values) => {
         const { groupType } = this.state;
-        if (groupType == '0') {
-            this.setState({
-                showPromotionModal: false,
-                groupAdata: values
-            });
-        } else {
-            this.setState({
-                showPromotionModal: false,
-                groupBdata: values
-            });
+        switch (groupType) {
+            case '0':
+                this.setState({
+                    showPromotionModal: false,
+                    groupData: values
+                });
+                break;
+            case '1':
+                this.setState({
+                    showPromotionModal: false,
+                    groupAdata: values
+                });
+                break;
+            case '2':
+                this.setState({
+                    showPromotionModal: false,
+                    groupBdata: values
+                });
+                break;
         }
+        
 
         console.log(values, 'showPromotion-----------------')
     }
@@ -500,15 +513,47 @@ class CreateShareRulesModal extends Component {
         this.setState({ showPromotionModal: false });
     }
     render() {
+        let defaultValue = [];
         const options = this.getAllOptions()
         const { form: { getFieldDecorator } } = this.props;
-        const { referenceType, shareRuleType, showPromotionModal,shareRuleName } = this.state;
+        const { shareRuleType, showPromotionModal, shareRuleName,groupType,tagsSource = [], tagsSourceA = [], tagsSourceB = [],groupAdata,groupBdata,groupData } = this.state;
         const formItemLayout = {
             labelCol: { span: 3 },
             wrapperCol: { span: 20 },
         }
-        console.log(shareRuleType,'shareRuleType===========')
-        // let ruleType = shareRuleType ? shareRuleType : formData.shareRuleType ? formData.shareRuleType : '1'
+        switch (groupType){
+            case '0':
+                if(groupData.length > 0){
+                    defaultValue = groupData
+                }
+                if(groupData.length == 0 && tagsSource.length > 0){
+                    tagsSource.forEach(item => {
+                        defaultValue.push(item.value)
+                    })
+                }
+                break;
+            case '1':
+                if(groupAdata.length > 0){
+                    defaultValue = groupAdata
+                }
+                if(groupAdata.length == 0 && tagsSourceA.length > 0){
+                    tagsSourceA.forEach(item => {
+                        defaultValue.push(item.value)
+                    })
+                }
+                break;
+            case '2':
+                if(groupBdata.length > 0){
+                    defaultValue = groupBdata
+                }
+                if(groupBdata.length == 0 && tagsSourceB.length > 0){
+                    tagsSourceB.forEach(item => {
+                        defaultValue.push(item.value)
+                    })
+                }
+                break;
+        }
+        console.log(defaultValue,'defaultValue==============')
         return (
             <Modal
                 maskClosable={true}
@@ -577,7 +622,7 @@ class CreateShareRulesModal extends Component {
                                 visible={true}
                                 options={options}
                                 // filters={filters}
-                                // defaultValue={value}
+                                defaultValue={defaultValue}
                                 onOk={this.handleSelectModalOk}
                                 onCancel={this.handleSelectModalCancel}
                             />
