@@ -3764,7 +3764,7 @@ class SpecialDetailInfo extends Component {
                     type === '53' && renderThree.call(this,type)
                 }
                 {
-                    type === '61' && renderUpGradeThree.call(this)
+                    type === '61' && renderUpGradeThree.call(this,type)
                 }
                 { !['52', '30', '60','61', '64', '53'].includes(type) &&
                 <Row>

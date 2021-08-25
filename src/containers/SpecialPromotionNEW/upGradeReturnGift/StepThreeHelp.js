@@ -26,7 +26,7 @@ const handleChangeBox = function ({ key }) {
  * @param {*} { key, children, label }
  * @returns
  */
-const renderCheckbox = function ({ key, children, label }) {
+const renderCheckbox = function ({ key, children, label },type) {
     if (!key) return null;
     const { upGradeReturnGiftCheckBoxStatus } = this.state;
     const checked = upGradeReturnGiftCheckBoxStatus[key];
@@ -38,7 +38,7 @@ const renderCheckbox = function ({ key, children, label }) {
                 <Checkbox
                     checked={checked}
                     onChange={handleChangeBox.call(this, { key })}
-                    disabled={giftSendCount > 0}
+                    disabled={giftSendCount > 0 || JSON.stringify(this.upGradePointItem) == "{}"}
                 />
                 <span style={{ padding: 0 }}>{label}</span>
             </div>
@@ -110,7 +110,7 @@ const renderGivePointFn = function () {
  *
  * @returns
  */
-export const renderUpGradeThree = function () {
+export const renderUpGradeThree = function (type) {
     const { upGradeReturnGiftCheckBoxStatus, data } = this.state;
     const {
         upGradeReturnGiftPoint,
@@ -122,7 +122,7 @@ export const renderUpGradeThree = function () {
             {renderCheckbox.call(this, {
                 label: "赠送积分",
                 key: "upGradeReturnGiftPoint",
-            })}
+            },type)}
             {upGradeReturnGiftPoint && renderGivePointFn.call(this)}
             {renderCheckbox.call(this, {
                 label: "赠送优惠券",
