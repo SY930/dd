@@ -73,4 +73,58 @@ async function queryShareRuleDetailList(data) {
     message.error(msg);
     return [];
 }
-export { getRuleGroupList,queryShareRuleDetail,queryShareRuleDetailList }
+/**
+ *  添加共享规则
+ */
+async function addShareRuleGroup(data) {
+    const { groupID } = getAccountInfo();
+    const method = '/promotion/promotionShareRuleGroup_addShareRuleGroup.ajax';
+    const params = { service, type, data: { 
+        groupID,
+        ...data
+    }, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: obj } = response;
+    if (code === '000') {
+        return true;
+    }
+    message.error(msg);
+    return false;
+}
+/**
+ *  更新共享规则
+ */
+async function updateShareRuleGroup(data) {
+    const { groupID } = getAccountInfo();
+    const method = '/promotion/promotionShareRuleGroup_updateShareRuleGroup.ajax';
+    const params = { service, type, data: { 
+        groupID,
+        ...data
+    }, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: obj } = response;
+    if (code === '000') {
+        return true;
+    }
+    message.error(msg);
+    return false;
+}
+/**
+ *  删除共享规则
+ */
+async function deleteShareRuleGroup(data) {
+    const { groupID } = getAccountInfo();
+    const method = '/promotion/promotionShareRuleGroup_deleteShareRuleGroup.ajax';
+    const params = { service, type, data: { 
+        groupID,
+        ...data
+    }, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: obj } = response;
+    if (code === '000') {
+        return true;
+    }
+    message.error(msg);
+    return false;
+}
+export { getRuleGroupList,queryShareRuleDetail,queryShareRuleDetailList,addShareRuleGroup,updateShareRuleGroup,deleteShareRuleGroup }
