@@ -29,12 +29,15 @@
 }
 .noData{
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
     font-size: 14px;
     color: #666;
+    width: 200px;
+    height: 100px;
+    margin: auto;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    margin-left: -100px;
 }
 .divideLine {
     width: 100%;
@@ -53,13 +56,16 @@
         margin-right: 10px;
     }
 }
-
+.alertModalTitle{
+    font-weight: 400;
+    color: #666;
+    font-size: 14px;
+    margin-left: 35px;
+}
 .bodyContainer {
     overflow-y: auto;
     overflow-x: hidden;
-    display: flex;
     position: relative;
-    flex-wrap: wrap;
     padding: 20px;
     .columnsWrapper {
         position: relative;
@@ -361,6 +367,13 @@
             position: absolute;
             width: 530px;
             height: 200px;
+            z-index: 9;
+            cursor: not-allowed;
+        }
+        .disabledContBox{
+            position: absolute;
+            width: 480px;
+            height: 100px;
             z-index: 9;
             cursor: not-allowed;
         }

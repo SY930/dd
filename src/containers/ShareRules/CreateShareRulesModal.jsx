@@ -26,7 +26,7 @@ class CreateShareRulesModal extends Component {
         this.state = {
             options: [],
             referenceType: '0',//组方式
-            shareRuleType: props.formData.shareRuleType  || '1',//共享类型
+            shareRuleType: props.formData.shareRuleType || '0',//共享类型
             shareRuleName: props.formData.shareRuleName || '',//规则名称
             shareRuleID: props.formData.shareRuleID || '',//共享组ID
             referenceID: props.formData.referenceID || '',//引用活动ID
@@ -38,7 +38,6 @@ class CreateShareRulesModal extends Component {
             groupData: [],//组内活动选择
             groupAdata: [],//活动组A选择活动
             groupBdata: [],//活动组B选择活动
-
             tagsSource: [],//编辑时组内共享活动集合（回显数据）
             tagsSourceA: [],//编辑时组间共享活动组A内活动集合（回显数据）
             tagsSourceB: [],//编辑时组间共享活动组B内活动集合（回显数据）
@@ -62,7 +61,7 @@ class CreateShareRulesModal extends Component {
     componentDidMount() {
         const options = this.getAllOptions();
         const { formData: shareRuleInfo } = this.props;
-        let tagsSource = [], tagsSourceA = [], tagsSourceB = [], shareGroupArr = [], notShareGroupArr = [], shareGroupArrA = {}, shareGroupArrB = {}, referenceType = '0',ruleGroupNameA = '',ruleGroupNameB = '';
+        let tagsSource = [], tagsSourceA = [], tagsSourceB = [], shareGroupArr = [], notShareGroupArr = [], shareGroupArrA = {}, shareGroupArrB = {}, referenceType = '0', ruleGroupNameA = '', ruleGroupNameB = '';
         let ruleDetails = shareRuleInfo.ruleDetails || [];
         let len = ruleDetails.length;
         switch (len) {
@@ -141,14 +140,14 @@ class CreateShareRulesModal extends Component {
     handleOk = () => {
         let params = {};
         params.ruleDetails = [];
-        const { groupID, userName,isCreate } = this.props;
-        const { options, shareRuleID,shareRuleName, shareRuleType, referenceType, ruleGroupNameA, ruleGroupNameB,
+        const { groupID, userName, isCreate } = this.props;
+        const { options, shareRuleID, shareRuleName, shareRuleType, referenceType, ruleGroupNameA, ruleGroupNameB,
             tagsSource, tagsSourceA, tagsSourceB, groupData, groupAdata, groupBdata, referenceID } = this.state;
         params.groupID = groupID;
         params.userName = userName;
         params.shareRuleType = shareRuleType;
         params.shareRuleName = shareRuleName;
-        if(!isCreate){
+        if (!isCreate) {
             params.shareRuleID = shareRuleID;
         }
         if (shareRuleType == '0') {//组内共享参数
@@ -190,7 +189,56 @@ class CreateShareRulesModal extends Component {
                 params.referenceID = referenceID
             }
         }
-        this.props.handleOk(params,isCreate)
+        this.props.handleOk(params, isCreate)
+    }
+    //获取活动列表
+    getAllOptions = () => {
+        const {
+            allPromotionList,
+            allGiftList,
+        } = this.props;
+        let allGiftsArray = [];
+        let allPromotionArray = [];
+        allGiftsArray = allGiftList ? allGiftList.toJS() : [];
+        allPromotionArray = allPromotionList.toJS().map(item => item.promotionName.map(promotion => ({
+            value: promotion.promotionIDStr,
+            label: `${BASIC_PROMOTION_MAP[promotion.promotionType]} - ${promotion.promotionCode} - ${promotion.promotionName}`,
+            type: `${promotion.promotionType}`,
+            activityType: '10',
+            activitySource: '1',
+            basicType: `${promotion.promotionType}`,
+        }))).reduce((acc, curr) => {
+            acc.push(...curr);
+            return acc;
+        }, []).filter(item => AVAILABLE_PROMOTIONS.includes(item.type));
+        return [
+            ...allPromotionArray,
+            ...allGiftsArray.filter(item => AVAILABLE_GIFTS.includes(String(item.giftType))).map(item => ({
+                value: item.giftItemID,
+                label: `${GIFT_MAP[item.giftType]} - ${item.giftName}`,
+                type: `${item.giftType}`,
+                activityType: '30',
+                activitySource: '2',
+                couponType: `${item.giftType}`,
+            })),
+            {
+                value: '-10',
+                label: '会员价',
+                activityType: '20',
+                type: '-10',
+                activitySource: '3',
+                rightType: '-10'
+            },
+            {
+                value: '-20',
+                label: '会员折扣',
+                activityType: '20',
+                type: '-20',
+                activitySource: '3',
+                rightType: '-20'
+            },
+        ];
+
     }
     //获取添加活动列表 options: 是活动的全部筛选列表 group:选择的活动列表 origin:编辑时回显的活动列表
     getActivityArrParams(options, group, origin) {
@@ -209,59 +257,53 @@ class CreateShareRulesModal extends Component {
             activityArr.push({
                 promotionName: item.label,
                 promotionType: item.activityType,
-                eventWay: item.basicType,
+                eventWay: item.type,
                 promotionID: item.value,
             })
         })
         return activityArr
     }
-    removeTag = (val,group) => {
+    removeTag = (val, group) => {
         let index = group.indexOf(val);
-        if(index > -1){
-            group.splice(index,1)
+        if (index > -1) {
+            group.splice(index, 1)
         }
         return group
     }
     //删除活动标签
-    cancelTags = (val,group,source,type1,type2) => {
-        if(group.length > 0){//如果有主动选择的活动
+    cancelTags = (val, group, source, type1, type2) => {
+        if (group.length > 0) {//如果有主动选择的活动
             this.setState({
-                [type1]:this.removeTag(val,group)
+                [type1]: this.removeTag(val, group)
             })
         }
-        if( group.length == 0 && source.length > 0){//没有主动选择的活动，有回传数据
+        if (group.length == 0 && source.length > 0) {//没有主动选择的活动，有回传数据
             let useArr = source.filter((item) => {
                 return item.value != val
             })
             this.setState({
-                [type2] : useArr
+                [type2]: useArr
             })
         }
     }
     //删除活动标签
     closeActivityName = (val, type) => {
-        const { groupData, groupAdata, groupBdata,tagsSource,tagsSourceA,tagsSourceB } = this.state;
-        console.log(val, type, 'type----------------')
+        const { groupData, groupAdata, groupBdata, tagsSource, tagsSourceA, tagsSourceB } = this.state;
         switch (type) {
             case '0':
-                this.cancelTags(val,groupData,tagsSource,'groupData','tagsSource')
+                this.cancelTags(val, groupData, tagsSource, 'groupData', 'tagsSource')
                 break;
             case '1':
-                this.cancelTags(val,groupAdata,tagsSourceA,'groupAdata','tagsSourceA')
+                this.cancelTags(val, groupAdata, tagsSourceA, 'groupAdata', 'tagsSourceA')
                 break;
             case '2':
-                this.cancelTags(val,groupBdata,tagsSourceB,'groupBdata','tagsSourceB')
+                this.cancelTags(val, groupBdata, tagsSourceB, 'groupBdata', 'tagsSourceB')
                 break;
         }
-        console.log(this.state,'this.state-------------')
     }
     resetInitData() {
         this.setState({
-            options: [],
-            referenceType: '0',//组方式
-            shareRuleID: '',//共享组ID
             referenceID: '',//引用活动ID
-            shareGroupList: this.props.shareGroupList || [],//共享组下拉选择
             ruleGroupNameA: '',//活动A组名
             ruleGroupNameB: '',//活动B组名
             groupType: '0',//选择活动组index
@@ -307,7 +349,7 @@ class CreateShareRulesModal extends Component {
                             })}
                         </Col>
                     </Col>
-                    <Button icon="plus"  className={tagsArr.length == 0 ? styles.emptyAddActivityBtn : styles.addActivityBtn} onClick={() => this.setPromotionModalShow('0')}>添加(至多添加100个)</Button>
+                    <Button icon="plus" className={tagsArr.length == 0 ? styles.emptyAddActivityBtn : styles.addActivityBtn} onClick={() => this.setPromotionModalShow('0')}>添加(至多添加100个)</Button>
                 </FormItem>
             </Col>
         )
@@ -334,9 +376,25 @@ class CreateShareRulesModal extends Component {
                 })
             }
         })
+
         let tagsArrA = tagsA.length > 0 ? tagsA : tagsSourceA ? tagsSourceA : [];
-        console.log(tagsArrA,'tagsArrAtagsArrAtagsArrAtagsArrAtagsArrAtagsArrAtagsArrA')
+        console.log(tagsArrA, 'tagsArrAtagsArrAtagsArrAtagsArrAtagsArrAtagsArrAtagsArrA')
         let tagsArrB = tagsB.length > 0 ? tagsB : tagsSourceB ? tagsSourceB : [];
+        if(referenceID){
+            tagsArrA = [];
+            let groupItemA = shareGroupList.filter((item) => (item.referenceID == referenceID));
+            if(groupItemA && groupItemA.length  > 0){
+                let tagsCollect = groupItemA.shareRulePromotionInfos;
+                tagsCollect.forEach((item) => {
+                    tagsArrA.push({
+                        activityType: item.promotionType,
+                        basicType: item.eventWay,
+                        label: item.promotionName,
+                        value: item.promotionID
+                    })
+                })
+            }
+        }
         const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
             labelCol: { span: 3 },
@@ -353,7 +411,7 @@ class CreateShareRulesModal extends Component {
                             label={'组方式'}
                             labelCol={{ span: 3 }}
                             wrapperCol={{ span: 20 }}
-                            style={{ marginBottom: '-24px',position:'relative' }}
+                            style={{ marginBottom: '-24px', position: 'relative' }}
                         >
                             <RadioGroup value={referenceType} onChange={this.handleActivityGroupRadioSelect} disabled={shareRuleType == '1' && !isCreate}>
                                 <Radio value={'0'}>
@@ -368,7 +426,7 @@ class CreateShareRulesModal extends Component {
                                 </Radio>
                             </RadioGroup>
                         </FormItem>
-                        {shareRuleType == '1' && !isCreate && tagsSourceA.length > 0 && referenceType == '1' ? <div className={styles.disabledBox}></div> : null}
+                        {shareRuleType == '1' && !isCreate && referenceType == '1' ? <div className={styles.disabledBox}></div> : null}
                         {
                             referenceType == '0' ?
                                 <FormItem
@@ -383,14 +441,6 @@ class CreateShareRulesModal extends Component {
                                             initialValue: shareGroupArrA.ruleGroupName,
                                             rules: [
                                                 { require: true, message: '请输入活动组名称' },
-                                                {
-                                                    validator: (rule, v, cb) => {
-                                                        // if (!v || !v.number) {
-                                                        //     return cb('起始号为必填项');
-                                                        // }
-                                                        // cb()
-                                                    },
-                                                },
                                             ],
                                         })(
                                             <Input placeholder="请输入活动组名称" style={{ width: 260 }} />
@@ -426,18 +476,24 @@ class CreateShareRulesModal extends Component {
                             }
                             labelCol={{ span: 3 }}
                             wrapperCol={{ span: 20 }}
-                            style={{ marginBottom: '0' }}
+                            style={{ marginBottom: '0',position:'relative' }}
                         >
+                            {shareRuleType == '1' &&  referenceType == '1' ? <div className={styles.disableContdBox}></div> : null}
                             <Col className={styles.activityTagsWrapper}>
                                 <Col className={styles.activityTagsScroll}>
                                     {
                                         tagsArrA.map((item) => {
-                                            return <Tag closable onClose={() => this.closeActivityName(item.value,'1')} key={item.value} value={item.value}>{item.label}</Tag>
+                                            return <Tag closable onClose={() => this.closeActivityName(item.value, '1')} key={item.value} value={item.value}>{item.label}</Tag>
                                         })
                                     }
                                 </Col>
                             </Col>
-                            <Button icon="plus" style={{left:`${tagsArrA.length == 0 ? '125px' : '-15px'}`}} className={tagsArrA.length == 0 ? styles.emptyAddActivityBtn : styles.addActivityBtn} onClick={() => this.setPromotionModalShow('1')}>添加(至多添加100个)</Button>
+                            {
+                                shareRuleType == '1' && referenceType == '1' ?
+                                    null
+                                    :
+                                    <Button icon="plus" style={{ left: `${tagsArrA.length == 0 ? '125px' : '-15px'}` }} className={tagsArrA.length == 0 ? styles.emptyAddActivityBtn : styles.addActivityBtn} onClick={() => this.setPromotionModalShow('1')}>添加(至多添加100个)</Button>
+                            }
                         </FormItem>
                     </Col>
                 </FormItem>
@@ -490,62 +546,13 @@ class CreateShareRulesModal extends Component {
                                     }
                                 </Col>
                             </Col>
-                            <Button icon="plus" style={{left:`${tagsArrB.length == 0 ? '125px' : '-15px'}`}} className={tagsArrB.length == 0 ? styles.emptyAddActivityBtn : styles.addActivityBtn} onClick={() => this.setPromotionModalShow('2')}>添加(至多添加100个)</Button>
+                            <Button icon="plus" style={{ left: `${tagsArrB.length == 0 ? '125px' : '-15px'}` }} className={tagsArrB.length == 0 ? styles.emptyAddActivityBtn : styles.addActivityBtn} onClick={() => this.setPromotionModalShow('2')}>添加(至多添加100个)</Button>
                         </FormItem>
                     </Col>
                 </FormItem>
             </Col>
         )
     }
-    getAllOptions = () => {
-        const {
-            allPromotionList,
-            allGiftList,
-        } = this.props;
-        let allGiftsArray = [];
-        let allPromotionArray = [];
-        allGiftsArray = allGiftList ? allGiftList.toJS() : [];
-        allPromotionArray = allPromotionList.toJS().map(item => item.promotionName.map(promotion => ({
-            value: promotion.promotionIDStr,
-            label: `${BASIC_PROMOTION_MAP[promotion.promotionType]} - ${promotion.promotionCode} - ${promotion.promotionName}`,
-            type: `${promotion.promotionType}`,
-            activityType: '10',
-            activitySource: '1',
-            basicType: `${promotion.promotionType}`,
-        }))).reduce((acc, curr) => {
-            acc.push(...curr);
-            return acc;
-        }, []).filter(item => AVAILABLE_PROMOTIONS.includes(item.type));
-        return [
-            ...allPromotionArray,
-            ...allGiftsArray.filter(item => AVAILABLE_GIFTS.includes(String(item.giftType))).map(item => ({
-                value: item.giftItemID,
-                label: `${GIFT_MAP[item.giftType]} - ${item.giftName}`,
-                type: `${item.giftType}`,
-                activityType: '30',
-                activitySource: '2',
-                couponType: `${item.giftType}`,
-            })),
-            {
-                value: '-10',
-                label: '会员价',
-                activityType: '20',
-                type: '-10',
-                activitySource: '3',
-                rightType: '-10'
-            },
-            {
-                value: '-20',
-                label: '会员折扣',
-                activityType: '20',
-                type: '-20',
-                activitySource: '3',
-                rightType: '-20'
-            },
-        ];
-
-    }
-
     debouncedChangeRuleName(e) {
         this.setState({
             shareRuleName: e.target.value
@@ -553,17 +560,16 @@ class CreateShareRulesModal extends Component {
     }
     handleActivityGroupRadioSelect(e) {
         const { value } = e.target;
-        console.log(value, 'value------------')
         this.setState({
             referenceType: value
         })
+        this.resetInitData()
     }
     handleShareTypeChange(e) {
         this.setState({
             shareRuleType: e.target.value
         })
     }
-
     handleRuleGroupNameAChange(e) {
         this.setState({
             ruleGroupNameA: e.target.value
@@ -594,40 +600,39 @@ class CreateShareRulesModal extends Component {
         const { groupType } = this.state;
         switch (groupType) {
             case '0':
-                if(values.length > 0){
+                if (values.length > 0) {
                     this.setState({
                         showPromotionModal: false,
                         groupData: values,
-                        tagsSource:[]
+                        tagsSource: []
                     });
-                }else{
+                } else {
                     message.warning('请选择活动')
                 }
-                
                 break;
             case '1':
-                if(values.length > 0){
+                if (values.length > 0) {
                     this.setState({
                         showPromotionModal: false,
                         groupAdata: values,
-                        tagsSourceA:[]
+                        tagsSourceA: []
                     });
-                }else{
+                } else {
                     message.warning('请选择活动')
                 }
-                
+
                 break;
             case '2':
-                if(values.length > 0){
+                if (values.length > 0) {
                     this.setState({
                         showPromotionModal: false,
                         groupBdata: values,
-                        tagsSourceB:[]
+                        tagsSourceB: []
                     });
-                }else{
+                } else {
                     message.warning('请选择活动')
                 }
-                
+
                 break;
         }
         console.log(values, 'showPromotion-----------------')
@@ -645,7 +650,7 @@ class CreateShareRulesModal extends Component {
             labelCol: { span: 3 },
             wrapperCol: { span: 20 },
         }
-        console.log(this.state,'this.state------------------render')
+        console.log(this.state, 'this.state------------------render')
         switch (groupType) {
             case '0'://如果是组内共享
                 if (groupData.length > 0) {
