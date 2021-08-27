@@ -548,7 +548,7 @@ export default class ShareRules extends Component {
     }
     //共享规则删除确认框
     renderCancelConfirmModal() {
-        const alertCancelText = '组间共享规则引用了这个规则，请解除引用后再操作删除。';
+        const alertCancelText = ' 组间共享规则引用了这个规则，请解除引用后再操作删除。';
         const { linkFlag, selectedGroupID, shareGroupInfosList } = this.state;
         let linkedGroupName = '';
         if (linkFlag) {
@@ -582,14 +582,12 @@ export default class ShareRules extends Component {
                 ]}
                 onCancel={this.handleCancel}
                 width="443px"
-            // className={styles.createModal}
             >
                 <p className={styles.alertModalTitle} >
                     {
-                        linkFlag ? linkedGroupName + alertCancelText : <b style={{ textAlign: 'center', marginLeft: '100px' }}>确定要删除吗？</b>
+                        linkFlag ? linkedGroupName + alertCancelText : <b style={{ textAlign: 'center', marginLeft: '88px',fontSize:'16px' }}>确定要删除吗？</b>
                     }
                 </p>
-
             </Modal>
         )
     }

@@ -46,12 +46,19 @@ class PromotionSelectorModal extends Component {
     }
 
     render() {
-        const { defaultValue, extendShopList } = this.props;
+        let finalOptions = [];
+        const { defaultValue, extendShopList,filterArr } = this.props;
         const { loading, filters } = this.state;
-        console.log(filters,'filters00000000000')
+        console.log(filterArr,'filters00000000000')
 
-        const options = this.props.options || this.state.options || [];
+        let options = this.props.options || [];
         console.log(options,'options------------')
+        
+        finalOptions = options.filter(item => {
+            return filterArr.indexOf(item.value) < 0;
+
+        })
+        console.log(finalOptions,'filterOptions--------------')
         return (
             <Modal
                 {...this.props}
@@ -62,7 +69,7 @@ class PromotionSelectorModal extends Component {
                     <FilterSelector
                         title="活动"
                         doGroup={true}
-                        options={options}
+                        options={finalOptions}
                         filters={filters}
                         isPromotion={true}
                         defaultValue={defaultValue}

@@ -55,7 +55,7 @@ async function queryShareRuleDetail(data) {
 }
 
 /**
- *  编辑时获取已存在活动列表，共享规则时不能选择
+ *  获取已存在活动列表，共享规则时不能选择
  */
 async function queryShareRuleDetailList(data) {
     const { groupID } = getAccountInfo();
@@ -67,8 +67,8 @@ async function queryShareRuleDetailList(data) {
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;
     if (code === '000') {
-        const { shareGroupInfos = [] } = obj;
-        return shareGroupInfos;
+        const { shareRulePromotionInfos = [] } = obj;
+        return shareRulePromotionInfos;
     }
     message.error(msg);
     return [];
