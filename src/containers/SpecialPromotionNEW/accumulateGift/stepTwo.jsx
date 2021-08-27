@@ -361,7 +361,7 @@ class StepTwo extends React.Component {
                     wrapperCol={{ span: 17 }}
                     required={isRequire}
                     validateStatus={shopStatus ? 'success' : 'error'}
-                    help={shopStatus ? null : '店铺不能为空'}
+                    help={shopStatus ? null : '不选默认所有店铺可用'}
                 >
                     <ShopSelector
                         value={convertShopIdList}

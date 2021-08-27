@@ -222,7 +222,7 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         isSpecial: false,
         text: '会员专享菜品，利用低价吸引用户注册会员',
         example: '',
-        // tags: ['pos', SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9, '小程序'],
+        tags: ['微信'],
         key: '5020',
         isNew: true,
         right: 10,

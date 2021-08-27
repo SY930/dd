@@ -233,7 +233,7 @@ const COMMON_LABEL = defineMessages({
     k5f211mg: { id: 'Sale.k5f211mg', defaultMessage: '执行顺序' },
     k5f2124s: { id: 'Sale.k5f2124s', defaultMessage: '活动执行设置' },
     k5f212mo: { id: 'Sale.k5f212mo', defaultMessage: '设置自动执行后，在SaaS结账界面将会严格按您设置的执行顺序自动执行营销活动，不再需要手动选择，将减少营业员手动操作的步骤，方便结账更快进行' },
-    k5f21352: { id: 'Sale.k5f21352', defaultMessage: '对SaaS结账时可使用的活动（除团购活动外）您可以根据店铺情况设置让活动自动执行' },
+    k5f21352: { id: 'Sale.k5f21352', defaultMessage: '对SaaS结账时可使用的活动, 收银员手动结账时需要遵循的活动执行顺序' },
     k5f213qb: { id: 'Sale.k5f213qb', defaultMessage: '选择活动' },
     k5f49c4d: { id: 'Sale.k5f49c4d', defaultMessage: '券购买金额' },
     k5f49i2k: { id: 'Sale.k5f49i2k', defaultMessage: '券面金额' },
