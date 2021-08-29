@@ -1,3 +1,4 @@
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Row, Icon } from 'antd';
@@ -44,9 +45,14 @@ class FilterSelector extends React.Component {
     }
 
     handleFilterChange = (values) => {
-        const { options, extraFilters } = this.props;
+        const { options, extraFilters,isPromotion} = this.props;
         const { filterKey, filters } = this.state;
-        const nextFilters = { ...filters, [filterKey]: values };
+        let nextFilters = {};
+        if(isPromotion){
+            nextFilters = { [filterKey]: values };
+        }else{
+            nextFilters = { ...filters,[filterKey]: values };
+        }
         this.setState({
             filters: nextFilters,
             filteredOptions: filterOptions(options, {
@@ -74,9 +80,9 @@ class FilterSelector extends React.Component {
 
     render() {
         const {
-            title, className, options, filters: oriFilters, tableColumns,isPromotion
+            title, className, options, filters: oriFilters, tableColumns,
         } = this.props;
-        let { filterKey, filters, selected, filteredOptions } = this.state;
+        const { filterKey, filters, selected, filteredOptions } = this.state;
 
         const resultDisplay = tableColumns.length ? 'table' : 'stripped';
         const curFilter = oriFilters.find(filter => filter.key === filterKey) || {};
@@ -92,10 +98,10 @@ class FilterSelector extends React.Component {
         const selectedItems = options.filter(
             option => selected.indexOf(option.value) !== -1
         );
-        
         console.log(filters,'filters---------1')
         console.log(filterKey,'filterKey---------1')
         console.log(curFilter,'curFilter------------')
+        console.log(options,'renderoptions===============')
         return (
             <div className={classnames(isProfessionalTheme() ? style.hllFilterSelectorPro : style.hllFilterSelector, className)}>
                 <div className={style.filterKeyList}>
@@ -210,3 +216,4 @@ FilterSelector.propTypes = {
 };
 
 export default FilterSelector;
+

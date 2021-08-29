@@ -64,9 +64,6 @@ export default class ShareRules extends Component {
         }).then(boolen => {
             if (boolen) {
                 this.queryAll();
-                this.setState({
-                    isInitModal: false
-                })
             }
         })
         // 请求获取所有基础营销活动--共享用

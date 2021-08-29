@@ -3,12 +3,9 @@ import { connect } from 'react-redux';
 import { Modal, Tree, Button, Tooltip, Input, message, Form, Radio, Row, Col, Tag, Select } from 'antd';
 import _ from 'lodash';
 import { BASIC_PROMOTION_MAP, GIFT_MAP } from "../../constants/promotionType";
-import { FILTERS } from "./PromotionSelectorModal/config";
-import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
-import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { injectIntl } from './IntlDecor';
 import guideImg from './assets/guide.png';
-import PromotionSelectorModal from "./PromotionSelectorModal/PromotionSelectorModal";
+import PromotionSelectorModal from "./PromotionSelectorModal";
 import styles from './style.less';
 import { queryShareRuleDetail,queryShareRuleDetailList } from './AxiosFactory';
 
