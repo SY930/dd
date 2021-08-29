@@ -17,7 +17,7 @@ import {
 import { BASIC_PROMOTION_MAP, GIFT_MAP } from "../../constants/promotionType";
 import CreateShareRulesModal from "./CreateShareRulesModal";
 import { FetchGiftList } from "../GiftNew/_action";
-import { getRuleGroupList, queryShareRuleDetail, addShareRuleGroup, updateShareRuleGroup, deleteShareRuleGroup, initShareRuleGroup } from './AxiosFactory';
+import { getRuleGroupList, queryShareRuleDetail, addShareRuleGroup, updateShareRuleGroup, deleteShareRuleGroup, initShareRuleGroup,setStorageValue,getStorageValue } from './AxiosFactory';
 import { fetchAllPromotionListAC } from "../../redux/actions/saleCenterNEW/promotionDetailInfo.action";
 import emptyPage from '../../assets/empty_page.png'
 import { fetchPromotionScopeInfo } from "../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
@@ -52,20 +52,30 @@ export default class ShareRules extends Component {
         isShowDetail: false,//显示详情
         isEditModal: false,//显示编辑确认框
         isCancelModal: false,//显示删除确认框
-        isInitModal: true,//显示初始化弹窗
+        isInitModal: false,//显示初始化弹窗
         linkFlag: false,//共享组是否被引用
         isShopEnv: this.props.user.shopID > 0 ? true : false,//是否店铺环境
 
     }
     componentDidMount() {
-        initShareRuleGroup({
-            groupID: this.props.user.accountInfo.groupID,
-            shopID: this.props.user.shopID > 0 ? this.props.user.shopID : '',
-        }).then(boolen => {
-            if (boolen) {
-                this.queryAll();
-            }
-        })
+        const initialized = getStorageValue('isInitialized')
+        if(initialized){
+            this.queryAll();
+        }else{
+            this.setState({
+                isInitModal:true
+            })
+            initShareRuleGroup({
+                groupID: this.props.user.accountInfo.groupID,
+                shopID: this.props.user.shopID > 0 ? this.props.user.shopID : '',
+            }).then(boolen => {
+                if (boolen) {
+                    setStorageValue('isInitialized',true,86400000*365)
+                    this.queryAll();
+                }
+            })
+        }
+        
         // 请求获取所有基础营销活动--共享用
         this.props.fetchAllPromotionList({
             groupID: this.props.user.accountInfo.groupID,
@@ -720,7 +730,7 @@ export default class ShareRules extends Component {
                     }
                     )
                     :
-                    !isInitModal ?
+                    isInitModal ?
                         <div className={styles.emptyData}>
                             <img src={emptyPage} alt="" style={{ width: '50px' }} />
                             <p className={styles.emptyDataText} style={{ marginTop: '12px' }}>暂无数据，请新建共享规则</p>
