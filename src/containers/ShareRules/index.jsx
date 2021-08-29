@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Icon, Button, Input, Select, Alert, Spin, Tooltip, Popconfirm, message, Modal, Checkbox, Row, Col, Table } from 'antd';
+import { Icon, Button, Input, Select, message, Modal, Row, Col, Table, Card } from 'antd';
 import registerPage from '../../../index';
 import { SHARE_RULES_GROUP, SHARE_RULES_SHOP } from "../../constants/entryCodes";
 import styles from './style.less'
@@ -10,26 +10,21 @@ import {
     changeSearchType,
     createOrUpdateCertainShareGroup,
     deleteCertainShareGroup,
-    // queryShareGroups,
     removeItemFromCertainShareGroup,
     startCreateShareGroup,
     startEditCertainShareGroup,
 } from "../../redux/actions/shareRules/index";
 import { BASIC_PROMOTION_MAP, GIFT_MAP } from "../../constants/promotionType";
 import CreateShareRulesModal from "./CreateShareRulesModal";
-import BatchGroupEditModal from './BatchGroupEditModal';
 import { FetchGiftList } from "../GiftNew/_action";
-import { getRuleGroupList, queryShareRuleDetail, queryShareRuleDetailList, addShareRuleGroup, updateShareRuleGroup, deleteShareRuleGroup } from './AxiosFactory';
+import { getRuleGroupList, queryShareRuleDetail, addShareRuleGroup, updateShareRuleGroup, deleteShareRuleGroup, initShareRuleGroup } from './AxiosFactory';
 import { fetchAllPromotionListAC } from "../../redux/actions/saleCenterNEW/promotionDetailInfo.action";
 import emptyPage from '../../assets/empty_page.png'
 import { fetchPromotionScopeInfo } from "../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { injectIntl } from './IntlDecor';
-import PriceInput from '../SaleCenterNEW/common/PriceInput';
-import groupImg from './assets/createOriginGroup.png';
 import shopImg from './assets/createOriginShop.png';
-import CouponTrdChannelStockNums from 'containers/GiftNew/GiftAdd/common/CouponTrdChannelStockNums';
 
 const { Option, OptGroup } = Select;
 const AVAILABLE_PROMOTIONS = Object.keys(BASIC_PROMOTION_MAP);
@@ -57,11 +52,23 @@ export default class ShareRules extends Component {
         isShowDetail: false,//显示详情
         isEditModal: false,//显示编辑确认框
         isCancelModal: false,//显示删除确认框
+        isInitModal: true,//显示初始化弹窗
         linkFlag: false,//共享组是否被引用
         isShopEnv: this.props.user.shopID > 0 ? true : false,//是否店铺环境
 
     }
     componentDidMount() {
+        initShareRuleGroup({
+            groupID: this.props.user.accountInfo.groupID,
+            shopID: this.props.user.shopID > 0 ? this.props.user.shopID : '',
+        }).then(boolen => {
+            if (boolen) {
+                this.queryAll();
+                this.setState({
+                    isInitModal: false
+                })
+            }
+        })
         // 请求获取所有基础营销活动--共享用
         this.props.fetchAllPromotionList({
             groupID: this.props.user.accountInfo.groupID,
@@ -75,17 +82,24 @@ export default class ShareRules extends Component {
             pageSize: 10000,
             pageNo: 1,
         }, true);
-        this.queryAll();
         this.props.getAllShops();
     }
+    //获取共享组列表
     queryAll = () => {
         getRuleGroupList({
             groupID: this.props.user.accountInfo.groupID,
             shopID: this.props.user.shopID > 0 ? this.props.user.shopID : '',
         }).then((list) => {
-            this.setState({
-                shareGroupInfosList: list
-            })
+            if(list.length > 0){
+                this.setState({
+                    isInitModal: false,
+                    shareGroupInfosList: list,
+                })
+            }else{
+                this.setState({
+                    shareGroupInfosList: [],
+                })
+            }
         });
     }
     querySearchResult = () => {
@@ -101,7 +115,6 @@ export default class ShareRules extends Component {
         }).then((list) => {
             if (list && list.length > 0) {
                 let filterList = [];
-                console.log(list, searchNameInput, 'list start')
                 if (searchNameInput) {
                     list.forEach((item) => {
                         if (item.rulePromotionInfos && item.rulePromotionInfos.length > 0) {
@@ -115,8 +128,6 @@ export default class ShareRules extends Component {
                 } else {
                     filterList = list
                 }
-                console.log(filterList, 'list00000000000000000000')
-
                 this.setState({
                     shareGroupInfosList: filterList
                 })
@@ -135,7 +146,7 @@ export default class ShareRules extends Component {
         })
     }
     handleOk = (data, create) => {
-        console.log(data, create, 'data handleOK')
+        data.shopID = this.props.user.shopID || '';
         if (create) {
             addShareRuleGroup(data).then((boolen) => {
                 if (boolen) {
@@ -165,7 +176,6 @@ export default class ShareRules extends Component {
         this.handleCancel()
     }
     handleEdit = (id) => {
-        console.log(id, 'id----------------')
         queryShareRuleDetail({ shareRuleID: id }).then(data => {
             this.setState({
                 isEdit: true,
@@ -360,29 +370,6 @@ export default class ShareRules extends Component {
                 key: 'eventWay',
                 className: 'textCenter',
                 width: 100,
-                // render(value, record) {
-                //     return (
-                //         <span>
-                //             <a
-                //                 href="javaScript:;"
-                //                 onClick={() => {
-                //                     this.handleEdit(record, 'detail')
-                //                 }}
-                //             >
-                //                 查看
-                //             </a>
-                //             <Authority rightCode={GIFT_DETAIL_QUERY}>
-                //                 {
-                //                     (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
-                //                         <a disabled={true}>详情</a>
-                //                     ) : (
-                //                         <a href="javaScript:;" onClick={() => this.handleMore(record)}>详情</a>
-                //                     )
-                //                 }
-                //             </Authority>
-                //         </span>
-                //     )
-                // },
             },
             {
                 title: '活动名称',
@@ -453,10 +440,6 @@ export default class ShareRules extends Component {
             default:
                 dataSource = []
         }
-
-        console.log(
-            dataSource, dataSourceA, dataSourceB, 'hanleyouhan  dangwo bucunzai '
-        )
 
         return (
             <Modal
@@ -546,7 +529,7 @@ export default class ShareRules extends Component {
             </Modal>
         )
     }
-    //共享规则删除确认框
+    //共享规则删除确认框 
     renderCancelConfirmModal() {
         const alertCancelText = ' 组间共享规则引用了这个规则，请解除引用后再操作删除。';
         const { linkFlag, selectedGroupID, shareGroupInfosList } = this.state;
@@ -585,8 +568,24 @@ export default class ShareRules extends Component {
             >
                 <p className={styles.alertModalTitle} >
                     {
-                        linkFlag ? linkedGroupName + alertCancelText : <b style={{ textAlign: 'center', marginLeft: '88px',fontSize:'16px' }}>确定要删除吗？</b>
+                        linkFlag ? linkedGroupName + alertCancelText : <b style={{ textAlign: 'center', marginLeft: '88px', fontSize: '16px' }}>确定要删除吗？</b>
                     }
+                </p>
+            </Modal>
+        )
+    }
+    //显示初始化弹窗
+    renderInitModal() {
+        const alertCancelText = ' 共享规则加载中，请稍等。。。';
+        return (
+            <Modal
+                maskClosable={true}
+                visible={true}
+                width="360px"
+                wrapClassName={styles.initModalBox}
+            >
+                <p className={styles.alertModalTitle} >
+                    {alertCancelText}
                 </p>
             </Modal>
         )
@@ -634,7 +633,7 @@ export default class ShareRules extends Component {
         )
     }
     renderContent() {
-        const { shareGroupInfosList } = this.state;
+        const { shareGroupInfosList, isInitModal } = this.state;
         return (
             <Row className={styles.bodyContainer} style={{ height: `calc(100% - 123px)` }}>
                 {shareGroupInfosList && shareGroupInfosList.length > 0 ?
@@ -722,13 +721,21 @@ export default class ShareRules extends Component {
                                 </Col>
                         )
                     }
-                    ) : <p className={styles.noData}>暂无数据</p>
+                    )
+                    :
+                    !isInitModal ?
+                        <div className={styles.emptyData}>
+                            <img src={emptyPage} alt="" style={{ width: '50px' }} />
+                            <p className={styles.emptyDataText} style={{ marginTop: '12px' }}>暂无数据，请新建共享规则</p>
+                        </div>
+                        :
+                        null
                 }
             </Row>
         )
     }
     render() {
-        const { isCreate, isEdit, selected, isShowDetail, shareRuleInfo, shareGroupInfosList, isCancelModal, isEditModal } = this.state;
+        const { isCreate, isEdit, selected, isShowDetail, shareRuleInfo, shareGroupInfosList, isCancelModal, isEditModal, isInitModal } = this.state;
         const { isSaving } = this.props;
         let shareGroupList = shareGroupInfosList.filter((item) => item.linkFlag == '0' && item.shareRuleType == '0')
         return (
@@ -754,6 +761,7 @@ export default class ShareRules extends Component {
                 }
                 {isShowDetail && this.renderRuleDetailModal()}
                 {isCancelModal && this.renderCancelConfirmModal()}
+                {isInitModal && this.renderInitModal()}
                 {isEditModal && this.renderEditConfirmModal()}
             </div>
         )
@@ -764,12 +772,7 @@ function mapStateToProps(state) {
     return {
         isQuerying: state.share_rules.get('isQuerying'),
         isSaving: state.share_rules.get('isSaving'),
-        shareGroups: state.share_rules.get('shareGroups'),
         isCreate: state.share_rules.get('isCreate'),
-        isRemoving: state.share_rules.get('isRemoving'),
-        isDeleting: state.share_rules.get('isDeleting'),
-        searchPromotionType: state.share_rules.get('searchPromotionType'),
-        searchPromotionName: state.share_rules.get('searchPromotionName'),
         isEdit: state.share_rules.get('isEdit'),
         share_rules: state.messageTemplateState.get('messageTemplateList'),
         user: state.user.toJS(),

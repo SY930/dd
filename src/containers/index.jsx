@@ -17,6 +17,7 @@ export { default as LoyaltyPromotionPage } from './NewCreatePromotions/LoyaltyPr
 export { default as FansInteractivityPage } from './NewCreatePromotions/FansInteractivityPage';
 export { default as OnlinePromotionPage } from './NewCreatePromotions/OnlinePromotionPage';
 export { default as ShareRules } from './ShareRules/index';
+export { default as ShareRulesOld } from './ShareRulesOld/index';
 export { default as PromotionCalendar } from './PromotionCalendar';
 export { default as WeChatCouponManagementList } from './WeChatCouponManagement';
 export { default as ZhiFuBaoCouponList } from './ZhiFuBaoCouponManagement';

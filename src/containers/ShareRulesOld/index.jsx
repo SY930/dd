@@ -16,8 +16,8 @@ import {
     Col,
 } from 'antd';
 import registerPage from '../../../index';
-import { SHARE_RULES_GROUP, SHARE_RULES_SHOP } from "../../constants/entryCodes";
-import style from './oldStyle.less'
+import { SHARE_RULES_GROUP_OLD, SHARE_RULES_SHOP_OLD } from "../../constants/entryCodes";
+import style from './style.less'
 import { share_rules } from '../../redux/reducer/shareRules'
 import {
     changeSearchName,
@@ -45,12 +45,12 @@ import PriceInput from '../SaleCenterNEW/common/PriceInput';
 const { Option, OptGroup } = Select;
 const AVAILABLE_PROMOTIONS = Object.keys(BASIC_PROMOTION_MAP);
 
-@registerPage([SHARE_RULES_GROUP, SHARE_RULES_SHOP], {
+@registerPage([SHARE_RULES_GROUP_OLD, SHARE_RULES_SHOP_OLD], {
     share_rules
 })
 @connect(mapStateToProps, mapDispatchToProps)
 @injectIntl()
-export default class ShareRules extends Component {
+export default class ShareRulesOld extends Component {
 
     state = {
         isCreate: false,

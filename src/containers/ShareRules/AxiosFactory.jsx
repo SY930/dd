@@ -12,7 +12,26 @@ function getAccountInfo() {
     const { user } = getStore().getState();
     return user.get('accountInfo').toJS();
 }
-
+/**
+ *  获取页面初始状态
+ */
+async function initShareRuleGroup(data) {
+    const { groupID } = getAccountInfo();
+    const method = '/promotion/promotionShareRuleGroup_initShareRuleGroup.ajax';
+    const params = { service, type, data: { 
+        groupID,
+        ...data
+    }, method };
+    const response = await axios.post(url + method, params);
+    
+    const { code, message: msg, data: obj } = response;
+    if (code === '000') {
+        const { initialized } = obj
+        return initialized;
+    }
+    message.error(msg);
+    return false;
+}
 /**
  *  获取共享规则列表
  */
@@ -44,7 +63,6 @@ async function queryShareRuleDetail(data) {
         ...data
     }, method };
     const response = await axios.post(url + method, params);
-    console.log(response,'response sdffdfdf')
     const { code, message: msg, data: obj } = response;
     if (code === '000') {
         const { shareRuleInfo = {} } = obj;
@@ -127,4 +145,4 @@ async function deleteShareRuleGroup(data) {
     message.error(msg);
     return false;
 }
-export { getRuleGroupList,queryShareRuleDetail,queryShareRuleDetailList,addShareRuleGroup,updateShareRuleGroup,deleteShareRuleGroup }
+export { initShareRuleGroup,getRuleGroupList,queryShareRuleDetail,queryShareRuleDetailList,addShareRuleGroup,updateShareRuleGroup,deleteShareRuleGroup }

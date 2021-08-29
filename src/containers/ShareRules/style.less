@@ -27,7 +27,24 @@
         }
     }
 }
-.noData{
+.initModalBox{
+    :global{
+        .ant-modal{
+            top: 40%;
+        }
+        .ant-modal-content{
+            border-radius: 10px;
+            padding: 10px;
+        }
+        .ant-modal-footer {
+            display: none;
+        }
+        .ant-modal-close{
+            display: none;
+        }
+    }
+}
+.emptyData{
     position: absolute;
     font-size: 14px;
     color: #666;
