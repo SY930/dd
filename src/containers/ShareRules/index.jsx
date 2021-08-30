@@ -645,6 +645,7 @@ export default class ShareRules extends Component {
     }
     renderContent() {
         const { shareGroupInfosList } = this.state;
+        const { shopID} = this.props.user;
         return (
             <Row className={styles.bodyContainer} style={{ height: `calc(100% - 123px)` }}>
                 {shareGroupInfosList && shareGroupInfosList.length > 0 ?
@@ -689,8 +690,8 @@ export default class ShareRules extends Component {
                                     }
                                     <div className={styles.activityOperate}>
                                         <span className={styles.operateDetail} onClick={(e) => this.handleShowDetailModal(e, groupInfo.shareRuleID)}>查看详情</span>
-                                        {groupInfo.shopID > 0 ? null : <span className={styles.operateEdit} onClick={groupInfo.linkFlag ? () => this.showEditModal(groupInfo.shareRuleID, groupInfo.linkFlag) : () => this.handleEdit(groupInfo.shareRuleID, groupInfo.linkFlag)}>编辑</span>}
-                                        {groupInfo.shopID > 0 ? null : <span className={styles.operateDelete} onClick={() => this.showDeleteModal(groupInfo.shareRuleID, groupInfo.linkFlag)}>删除</span>}
+                                        {groupInfo.shopID > 0 && shopID <= 0  ? null : <span className={styles.operateEdit} onClick={groupInfo.linkFlag ? () => this.showEditModal(groupInfo.shareRuleID, groupInfo.linkFlag) : () => this.handleEdit(groupInfo.shareRuleID, groupInfo.linkFlag)}>编辑</span>}
+                                        {groupInfo.shopID > 0 && shopID <= 0 ? null : <span className={styles.operateDelete} onClick={() => this.showDeleteModal(groupInfo.shareRuleID, groupInfo.linkFlag)}>删除</span>}
                                     </div>
                                 </Col>
                                 :
@@ -726,8 +727,8 @@ export default class ShareRules extends Component {
                                     }
                                     <div className={styles.activityOperate}>
                                         <span className={styles.operateDetail} onClick={(e) => this.handleShowDetailModal(e, groupInfo.shareRuleID)} value={JSON.stringify(groupInfo)}>查看详情</span>
-                                        {groupInfo.shopID > 0 ? null : <span className={styles.operateEdit} onClick={groupInfo.linkFlag ? () => this.showEditModal(groupInfo.shareRuleID, groupInfo.linkFlag) : () => this.handleEdit(groupInfo.shareRuleID, groupInfo.linkFlag)}>编辑</span>}
-                                        {groupInfo.shopID > 0 ? null : <span className={styles.operateDelete} onClick={() => this.showDeleteModal(groupInfo.shareRuleID, groupInfo.linkFlag)}>删除</span>}
+                                        {groupInfo.shopID > 0 && shopID <= 0 ? null : <span className={styles.operateEdit} onClick={groupInfo.linkFlag ? () => this.showEditModal(groupInfo.shareRuleID, groupInfo.linkFlag) : () => this.handleEdit(groupInfo.shareRuleID, groupInfo.linkFlag)}>编辑</span>}
+                                        {groupInfo.shopID > 0 && shopID <= 0 ? null : <span className={styles.operateDelete} onClick={() => this.showDeleteModal(groupInfo.shareRuleID, groupInfo.linkFlag)}>删除</span>}
                                     </div>
                                 </Col>
                         )
