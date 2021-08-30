@@ -747,7 +747,7 @@ class CreateShareRulesModal extends Component {
     render() {
         let defaultValue = [];
         const options = this.getAllOptions()
-        const { form: { getFieldDecorator } } = this.props;
+        const { form: { getFieldDecorator },isCreate } = this.props;
         const { shareRuleType, showPromotionModal, shareRuleName, groupType, tagsSource = [], tagsSourceA = [], tagsSourceB = [], groupAdata, groupBdata, groupData,filterArr } = this.state;
         const formItemLayout = {
             labelCol: { span: 3 },
@@ -824,7 +824,7 @@ class CreateShareRulesModal extends Component {
                         label="共享类型"
                         {...formItemLayout}
                     >
-                        <Radio.Group value={String(shareRuleType)} onChange={this.handleShareTypeChange}>
+                        <Radio.Group value={String(shareRuleType)} onChange={this.handleShareTypeChange} disabled={!isCreate}>
                             <Radio.Button value="0">组内共享</Radio.Button>
                             <Radio.Button value="1">组间共享</Radio.Button>
                         </Radio.Group>
