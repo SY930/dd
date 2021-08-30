@@ -138,6 +138,10 @@ export default class ShareRules extends Component {
                 this.setState({
                     shareGroupInfosList: filterList
                 })
+            }else{
+                this.setState({
+                    shareGroupInfosList: []
+                })
             }
         });
     }
@@ -640,7 +644,7 @@ export default class ShareRules extends Component {
         )
     }
     renderContent() {
-        const { shareGroupInfosList, isInitModal } = this.state;
+        const { shareGroupInfosList } = this.state;
         return (
             <Row className={styles.bodyContainer} style={{ height: `calc(100% - 123px)` }}>
                 {shareGroupInfosList && shareGroupInfosList.length > 0 ?
@@ -730,13 +734,10 @@ export default class ShareRules extends Component {
                     }
                     )
                     :
-                    isInitModal ?
-                        <div className={styles.emptyData}>
-                            <img src={emptyPage} alt="" style={{ width: '50px' }} />
-                            <p className={styles.emptyDataText} style={{ marginTop: '12px' }}>暂无数据，请新建共享规则</p>
-                        </div>
-                        :
-                        null
+                    <div className={styles.emptyData}>
+                        <img src={emptyPage} alt="" style={{ width: '50px' }} />
+                        <p className={styles.emptyDataText} style={{ marginTop: '12px' }}>暂无数据</p>
+                    </div>
                 }
             </Row>
         )
