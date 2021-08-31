@@ -75,7 +75,7 @@ class StepTwo extends React.Component {
             selections: [],
             selections_shopsInfo: { shopsInfo: [] },
             isRequire: true,
-            timeInterval:0//评价送礼新增评价设置 0 代表不限制
+            countCycleDays:0//评价送礼新增评价设置 0 代表不限制
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -85,7 +85,7 @@ class StepTwo extends React.Component {
         this.onCardLevelChange = this.onCardLevelChange.bind(this);
         this.renderShopsOptions = this.renderShopsOptions.bind(this);
         this.editBoxForShopsChange = this.editBoxForShopsChange.bind(this);
-        this.handleTimeIntervalChange = this.handleTimeIntervalChange.bind(this);
+        this.handleCountCycleDaysChange = this.handleCountCycleDaysChange.bind(this);
     }
 
     componentDidMount() {
@@ -165,7 +165,7 @@ class StepTwo extends React.Component {
             if (this.props.type == '70' || this.props.type == '64') {
                 opts.selections = specialPromotion.shopIDList || [];
                 opts.selections_shopsInfo = { shopsInfo: specialPromotion.shopIDList || [] };
-                opts.timeInterval = specialPromotion.timeInterval || 0;
+                opts.countCycleDays = specialPromotion.countCycleDays || 0;
             }
             this.setState(opts)
         }
@@ -311,7 +311,8 @@ class StepTwo extends React.Component {
                 smsTemplate: this.state.message,
                 shopIDList: this.state.selections,
                 shopRange: this.state.selections.length > 0 ? 1 : 2,
-                timeInterval:this.state.timeInterval
+                countCycleDays:this.state.countCycleDays,
+                partInTimes:1
             } :
             {
                 cardLevelIDList: this.state.cardLevelIDList || [],
@@ -380,10 +381,10 @@ class StepTwo extends React.Component {
             shopStatus: val.length > 0,
         })
     }
-    handleTimeIntervalChange(e){
+    handleCountCycleDaysChange(e){
         const { value } = e.target;
         this.setState({
-            timeInterval:value
+            countCycleDays:value
         })
     }
     async loadShopSchema() {
@@ -440,9 +441,9 @@ class StepTwo extends React.Component {
                     >
                         <span>同一用户</span> 
                         {
-                            getFieldDecorator('timeInterval', {
-                                initialValue: this.state.timeInterval,
-                                onChange: this.handleTimeIntervalChange,
+                            getFieldDecorator('countCycleDays', {
+                                initialValue: this.state.countCycleDays,
+                                onChange: this.handleCountCycleDaysChange,
                                 rules: [
                                     {
                                         validator: (rule, v, cb) => {
