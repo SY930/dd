@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Spin } from 'antd';
+import { Modal, Spin,message } from 'antd';
 import FilterSelector from '../../components/common/FilterSelector';
 
 export const FILTERS = [{
@@ -76,6 +76,10 @@ class PromotionSelectorModal extends Component {
     }
 
     handleOk = () => {
+        if(this.selected && this.selected.length > 100){
+            message.warning('最多选择100个活动')
+            return
+        }
         this.props.onOk(this.selected);
     }
 
