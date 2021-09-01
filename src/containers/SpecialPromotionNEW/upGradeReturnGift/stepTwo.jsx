@@ -312,7 +312,7 @@ class StepTwo extends React.Component {
                 shopIDList: this.state.selections,
                 shopRange: this.state.selections.length > 0 ? 1 : 2,
                 countCycleDays:this.state.countCycleDays,
-                partInTimes:1
+                partInTimes:this.state.countCycleDays ? 1 : 0
             } :
             {
                 cardLevelIDList: this.state.cardLevelIDList || [],
@@ -447,17 +447,17 @@ class StepTwo extends React.Component {
                                 rules: [
                                     {
                                         validator: (rule, v, cb) => {
-                                            console.log(v,'v---------------')
-                                            if(v > 1500){
-                                                return cb('请输入0-1500的整数');
+                                            if( Number(v) && /^\+?\d{0,4}$/.test(v) && 0 <= v && v < 1500){
+                                                console.log('go here')
+                                                cb();
                                             }
-                                            cb()
+                                            cb(rule.message)
                                         },
+                                        message: '请输入0-1500的整数',
                                     },
                                 ],
                             })(
                                 <Input 
-                                    type='number' 
                                     style={{width:80,marginLeft:10,marginRight:10}}
                                 />
                             )
