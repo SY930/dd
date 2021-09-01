@@ -137,6 +137,7 @@ class NewCustomerPage extends Component {
             awakenTip,
             RValue,
         } = this.getQueryVariable()
+        console.log("🚀 ~ file: NewCustomerPage.jsx ~ line 140 ~ NewCustomerPage ~ fromCrmJump ~ this.getQueryVariable()", this.getQueryVariable())
         // 测试使用
         // const  {
         //     from = 'rfm',

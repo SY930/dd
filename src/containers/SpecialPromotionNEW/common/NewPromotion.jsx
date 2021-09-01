@@ -93,6 +93,7 @@ export default class NewPromotion extends React.Component {
         }
           // 从RFM群发礼品、消费返礼品、唤醒送礼的时候，需要先创建会员群体
           const {$eventInfo,RFMParams} = specialPromotion
+          console.log("🚀 ~ file: NewPromotion.jsx ~ line 98 ~ NewPromotion ~ onFinish ~ this.props.promotionType", this.props.promotionType, RFMParams)
           if((['53', '62', '63'].includes(this.props.promotionType)) && RFMParams) {
           await  createMemberGroupNew.call(this,{
                 RFMParams
