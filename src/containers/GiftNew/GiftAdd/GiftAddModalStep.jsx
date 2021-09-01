@@ -2467,6 +2467,7 @@ class GiftAddModalStep extends React.PureComponent {
         if(formData.applyScene){
             formData.applyScene = formData.applyScene.toString()
         }
+        
         // 折扣上限显示
         if (value == '111' && formData.discountOffMax == 0) {
             formData.discountOffMax = ''
@@ -3104,6 +3105,20 @@ class GiftAddModalStep extends React.PureComponent {
                         <RadioGroup>
                             <Radio value={'0'}>按分类</Radio>
                             <Radio value={'1'}>按菜品</Radio>
+                        </RadioGroup>
+                    )
+                },
+            },
+            subRule: {
+                label: '配菜计算',
+                type: 'custom',
+                defaultValue: 0,
+                render: (decorator, form) => {
+                    const giftVal = this.props.gift.value;
+                    return decorator({})(
+                        <RadioGroup className={ giftVal == '111' ? styles.subRule  : ''}>
+                            <Radio value={0}>不参与</Radio>
+                            <Radio value={1}>参与</Radio>
                         </RadioGroup>
                     )
                 },
