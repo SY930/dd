@@ -156,6 +156,7 @@ class NewCustomerPage extends Component {
 
 
         if (from === 'rfm') {
+            console.log("🚀 ~ file: NewCustomerPage.jsx ~ line 159 ~ NewCustomerPage ~ fromCrmJump ~ from", from)
             const item = CRM_PROMOTION_TYPES[53];
             this.handleNewPromotionCardClick(item);
             this.props.setSpecialPromotionCardGroupID(`${groupMembersName} -- 【共${totalMembers}人】`);
