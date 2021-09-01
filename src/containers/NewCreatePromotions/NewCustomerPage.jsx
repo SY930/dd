@@ -163,6 +163,7 @@ class NewCustomerPage extends Component {
                 mfrGrades: [mfrGrades],
                 awakenTip,
                 RValue,
+                groupMembersName,
             })
             this.clearUrl();
 
