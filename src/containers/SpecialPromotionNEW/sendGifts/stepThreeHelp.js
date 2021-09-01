@@ -15,8 +15,19 @@ const createMemberGroup = function (data) {
         "HTTP_SERVICE_URL_CRM"
     );
 };
+const createMemberGroupNew = function (data) {
+    const { RFMParams } = data;
 
-export { createMemberGroup };
+    return axiosData(
+        "/crm/newRfmModelService_addRfmGroupMembers.ajax",
+        RFMParams,
+        null,
+        { path: "data" },
+        "HTTP_SERVICE_URL_CRM"
+    );
+};
+
+export { createMemberGroup, createMemberGroupNew };
 
 export default {
     createMemberGroup,

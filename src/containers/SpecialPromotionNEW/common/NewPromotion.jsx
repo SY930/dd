@@ -13,7 +13,7 @@ import { message } from 'antd';
 import { jumpPage } from '@hualala/platform-base'
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { COMMON_SPE } from 'i18n/common/special';
-import { createMemberGroup } from '../sendGifts/stepThreeHelp'
+import { createMemberGroupNew } from '../sendGifts/stepThreeHelp'
 
 export default class NewPromotion extends React.Component {
     constructor(props) {
@@ -91,24 +91,24 @@ export default class NewPromotion extends React.Component {
             opts.event.recommendRulelst = typeof recommendRule === 'number' ? recommendRule  : recommendRule.join(',')
             opts.event.recommendRule  =  ''
         }
-          // 从RFM群发礼品的时候，需要先创建会员群体
+          // 从RFM群发礼品、消费返礼品、唤醒送礼的时候，需要先创建会员群体
           const {$eventInfo,RFMParams} = specialPromotion
-          if(this.props.promotionType === '53' && RFMParams) {
-          await  createMemberGroup.call(this,{
+          if((['53', '62', '63'].includes(this.props.promotionType)) && RFMParams) {
+          await  createMemberGroupNew.call(this,{
                 RFMParams
             }).then(res => {
                 const {
                     groupMembersID,
                     groupMembersName,
-                    totalMembers,
-                    groupMembersRemark,
+                    groupMembersCount,
+                    // groupMembersRemark,
                 } = res;
                 opts.event = {
                    ...opts.event,
                    cardGroupID: groupMembersID,
                    cardGroupName: groupMembersName,
-                   cardCount: totalMembers,
-                   cardGroupRemark: groupMembersRemark,
+                   cardCount: groupMembersCount,
+                //    cardGroupRemark: groupMembersRemark,
                 }
 
 

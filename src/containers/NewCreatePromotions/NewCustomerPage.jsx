@@ -133,11 +133,9 @@ class NewCustomerPage extends Component {
             totalMembers,
             groupMembersName,
             groupID,
-            levelKey,
-            levelType,
-            monetaryType,
-            reportMonth,
-            createBy,
+            mfrGrades,
+            awakenTip,
+            RValue,
         } = this.getQueryVariable()
         // 测试使用
         // const  {
@@ -162,11 +160,9 @@ class NewCustomerPage extends Component {
             this.props.setSpecialPromotionCardGroupID(`${groupMembersName} -- 【共${totalMembers}人】`);
             this.props.saveRFMParams({
                 groupID,
-                levelKey,
-                levelType,
-                monetaryType,
-                reportMonth,
-                creator: createBy
+                mfrGrades,
+                awakenTip,
+                RValue,
             })
             this.clearUrl();
 
