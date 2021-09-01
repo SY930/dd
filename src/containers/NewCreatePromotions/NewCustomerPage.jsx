@@ -160,7 +160,7 @@ class NewCustomerPage extends Component {
             this.props.setSpecialPromotionCardGroupID(`${groupMembersName} -- 【共${totalMembers}人】`);
             this.props.saveRFMParams({
                 groupID,
-                mfrGrades: [mfrGrades],
+                mfrGrades: mfrGrades.split(','),
                 awakenTip,
                 RValue,
                 groupMembersName,
