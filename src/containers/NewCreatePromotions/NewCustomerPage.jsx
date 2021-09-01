@@ -137,7 +137,6 @@ class NewCustomerPage extends Component {
             awakenTip,
             RValue,
         } = this.getQueryVariable()
-        console.log("🚀 ~ file: NewCustomerPage.jsx ~ line 140 ~ NewCustomerPage ~ fromCrmJump ~ this.getQueryVariable()", this.getQueryVariable())
         // 测试使用
         // const  {
         //     from = 'rfm',
@@ -156,13 +155,12 @@ class NewCustomerPage extends Component {
 
 
         if (from === 'rfm') {
-            console.log("🚀 ~ file: NewCustomerPage.jsx ~ line 159 ~ NewCustomerPage ~ fromCrmJump ~ from", from)
             const item = CRM_PROMOTION_TYPES[53];
             this.handleNewPromotionCardClick(item);
             this.props.setSpecialPromotionCardGroupID(`${groupMembersName} -- 【共${totalMembers}人】`);
             this.props.saveRFMParams({
                 groupID,
-                mfrGrades,
+                mfrGrades: [mfrGrades],
                 awakenTip,
                 RValue,
             })
