@@ -422,7 +422,7 @@ class CreateShareRulesModal extends Component {
             })
 
         } else {
-            queryShareRuleDetailList({ queryCondition: { shareRuleType: '0' } }).then(list => {
+            queryShareRuleDetailList({ queryCondition: { shareRuleType: '2' } }).then(list => {
                 if (referenceType == '0') {
                     list.forEach(item => {
                         filterArr.push(item.promotionID)
