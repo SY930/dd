@@ -698,10 +698,17 @@ class SpecialDetailInfo extends Component {
                 return acc;
             }, []);
             if (!intervalDaysArray.length) {
+                // 从RFM过来带有R值要回显到第一个档位中 消费天数
+                const { specialPromotion } = this.props;
+                const { RFMParams } = specialPromotion.toJS();
+                const RFMObj = {};
+                if (RFMParams && RFMParams.RValue) {
+                    RFMObj.RValue = RFMParams.RValue;
+                }
                 wakeupSendGiftsDataArray = [
                     {
                         key: getIntervalID(),
-                        intervalDays: undefined,
+                        intervalDays: RFMObj.RValue || undefined,
                         gifts: [...data],
                     },
                 ];
@@ -3340,7 +3347,6 @@ class SpecialDetailInfo extends Component {
         const RFMObj = {};
         if (RFMParams && RFMParams.awakenTip) {
             RFMObj.awakenTip = RFMParams.awakenTip;
-            RFMObj.RValue = RFMParams.RValue;
         }
         const disabledGifts = type == 75 && !isNew;
         const multiConfig = this.getMultipleLevelConfig();
@@ -3351,7 +3357,7 @@ class SpecialDetailInfo extends Component {
         return (
             <div>
                 {wakeupSendGiftsDataArray.map(
-                    ({ intervalDays = RFMObj.RValue, gifts, key }, index, arr) => (
+                    ({ intervalDays, gifts, key }, index, arr) => (
                         <div key={`${key}`}>
                             <Row key={`${key}`}>
                                 <Col span={4}>
