@@ -126,7 +126,6 @@ class Chou2Le extends Component {
             }
             lottery[index] = { id: `${sortIndex}`, giftOdds,giftTotalCount, userCount, ...newItem };
         });
-        // console.log('lottery', lottery);
         return { consumeType: `${stype}`, sceneType: `${sceneType}`, eventID, consumeTotalAmount, lottery };
     }
     /** 得到form, 根据step不同，获得对应的form对象 */
@@ -139,7 +138,6 @@ class Chou2Le extends Component {
         form.validateFields((e, v) => {
             if (!e) {
                 const {  validCycle, cycleType } = v;
-                // console.log('vvv', v);
                 // 根据周期类型删除曾选择的缓存垃圾数据
                 let cycleObj = {};
                 if(cycleType) {
