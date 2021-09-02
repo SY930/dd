@@ -142,7 +142,6 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
             return false;
         }
         this.setState({ stageAmountFlag, stageCountFlag });
-
         if (((stageType == 2 && stageAmountFlag) || (stageType == 1 && stageCountFlag))) {
             const priceLst = dishes.map((price) => {
                 return {
@@ -154,6 +153,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                     price: price.price,
                     payPrice: price.payPrice,
                     imagePath: price.imgePath,
+                    weightOffset: price.weightOffset,
                 }
             });
             const rule = {

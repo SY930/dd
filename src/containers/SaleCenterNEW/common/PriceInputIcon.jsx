@@ -90,7 +90,7 @@ class PriceInputIcon extends React.Component {
     }
 
     render() {
-        const { size } = this.props;
+        const { size, disabled, prefix } = this.props;
         const state = this.state;
         return (
             <span>
@@ -98,7 +98,7 @@ class PriceInputIcon extends React.Component {
                     type="text"
                     size={size}
                     value={state.number}
-                    prefix={<Icon type="edit" />}
+                    prefix={prefix || <Icon type="edit" />}
                     onBlur={this.handleBlur}
                     onChange={this.handleNumberChange}
                     addonBefore={this.props.addonBefore}
@@ -110,6 +110,7 @@ class PriceInputIcon extends React.Component {
                     }}
                     onClick={e => this.selected(e)}
                     onPressEnter={this.check}
+                    disabled={disabled}
                 />
             </span>
         );
