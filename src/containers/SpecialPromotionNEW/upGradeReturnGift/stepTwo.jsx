@@ -447,8 +447,7 @@ class StepTwo extends React.Component {
                                 rules: [
                                     {
                                         validator: (rule, v, cb) => {
-                                            if( Number(v) && /^\+?\d{0,4}$/.test(v) && 0 <= v && v < 1500){
-                                                console.log('go here')
+                                            if( !isNaN(v) && /^\+?\d{0,4}$/.test(v) &&  v <= 1500){
                                                 cb();
                                             }
                                             cb(rule.message)
