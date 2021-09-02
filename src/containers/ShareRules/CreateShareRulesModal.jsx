@@ -57,6 +57,8 @@ class CreateShareRulesModal extends Component {
             this.handleRuleGroupNameBChange = this.handleRuleGroupNameBChange.bind(this),
             this.handleReferenceIDChange = this.handleReferenceIDChange.bind(this)
         this.handleRuleGroupNameBChange = this.handleRuleGroupNameBChange.bind(this)
+        this.tagsArrA = [];
+        this.tagsArrB = [];
     }
     componentDidMount() {
         const options = this.getAllOptions();
@@ -240,7 +242,6 @@ class CreateShareRulesModal extends Component {
             }
         })
         let tagsArr = tags.length > 0 ? tags : origin ? origin : [];
-        console.log(tagsArr, 'tagsARR----------------')
         tagsArr.forEach((item) => {
             activityArr.push({
                 promotionName: item.label,
@@ -471,7 +472,7 @@ class CreateShareRulesModal extends Component {
         }
     }
     handlePromotionSelectorChange(value) {
-        console.log(value)
+
     }
     handleSelectModalOk = (values) => {
         const { groupType } = this.state;
@@ -578,9 +579,10 @@ class CreateShareRulesModal extends Component {
 
         let tagsArrA = tagsA.length > 0 ? tagsA : tagsSourceA ? tagsSourceA : [];
         let tagsArrB = tagsB.length > 0 ? tagsB : tagsSourceB ? tagsSourceB : [];
+        this.tagsArrA = tagsArrA;
+        this.tagsArrB = tagsArrB;
         if (referenceID) {
             tagsArrA = [];
-            console.log(selectedActivityArr, 'selectedActivityArr----------')
             if (selectedActivityArr && selectedActivityArr.length > 0) {
                 selectedActivityArr.forEach((item) => {
                     tagsArrA.push({
@@ -592,7 +594,6 @@ class CreateShareRulesModal extends Component {
                 })
             }
         }
-        console.log(tagsArrA, tagsArrB, 'tagsArrA============= tagsArrB')
         const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
             labelCol: { span: 3 },
@@ -748,7 +749,8 @@ class CreateShareRulesModal extends Component {
         let defaultValue = [];
         const options = this.getAllOptions()
         const { form: { getFieldDecorator }, isCreate } = this.props;
-        const { shareRuleType, showPromotionModal, shareRuleName, groupType, tagsSource = [], tagsSourceA = [], tagsSourceB = [], groupAdata, groupBdata, groupData, filterArr } = this.state;
+        const { shareRuleType, showPromotionModal, shareRuleName, groupType, tagsSource = [], tagsSourceA = [], tagsSourceB = [], groupAdata, groupBdata, groupData } = this.state;
+        let {filterArr} = this.state;
         const formItemLayout = {
             labelCol: { span: 3 },
             wrapperCol: { span: 20 },
@@ -785,6 +787,11 @@ class CreateShareRulesModal extends Component {
                 }
                 break;
         }
+        filterArr = filterArr.filter(item => {//保留自身
+            if(defaultValue.indexOf(item) < 0){
+                return item
+            }
+        })
         return (
             <Modal
                 maskClosable={true}

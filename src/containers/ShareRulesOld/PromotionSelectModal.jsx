@@ -203,7 +203,6 @@ class PromotionSelectModal extends Component {
                     }
                 }).filter(item => selected.includes(item.activityID))
             )
-            console.log(result, 'result-------------------')
             this.props.handleAddAct(result)
             this.props.handleCancel()
         }

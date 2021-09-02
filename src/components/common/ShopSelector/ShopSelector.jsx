@@ -85,7 +85,6 @@ class ShopSelector extends Component {
             if (!shopInfo) return ret;
             return ret.concat({ value: shopInfo.value, label: shopInfo.shopName });
         }, []);
-        console.log(value,'value-------122112')
         return (
             <div className={style.wrapper}>
                 {size === 'default' &&

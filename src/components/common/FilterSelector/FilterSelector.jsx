@@ -98,10 +98,7 @@ class FilterSelector extends React.Component {
         const selectedItems = options.filter(
             option => selected.indexOf(option.value) !== -1
         );
-        console.log(filters,'filters---------1')
-        console.log(filterKey,'filterKey---------1')
-        console.log(curFilter,'curFilter------------')
-        console.log(options,'renderoptions===============')
+
         return (
             <div className={classnames(isProfessionalTheme() ? style.hllFilterSelectorPro : style.hllFilterSelector, className)}>
                 <div className={style.filterKeyList}>
