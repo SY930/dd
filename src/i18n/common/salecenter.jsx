@@ -480,7 +480,7 @@ const COMMON_LABEL = defineMessages({
     k636qubm: { id: 'Sale.k636qubm', defaultMessage: '邀请人最多可参与N次邀请活动' },
     k636qujy: { id: 'Sale.k636qujy', defaultMessage: '标签样式' },
     k636qusa: { id: 'Sale.k636qusa', defaultMessage: '规则设置' },
-    k636qv0m: { id: 'Sale.k636qv0m', defaultMessage: '新建规则' },
+    k636qv0m: { id: 'Sale.k636qv0m', defaultMessage: '新建共享规则' },
     k636qvxy: { id: 'Sale.k636qvxy', defaultMessage: '【消费返积分】、【消费返礼品】、【加价换购】默认与其他基础营销共享，其他基础营销之间默认不共享，如需共享请选择相应的活动创建共享活动组' },
     k636qw6a: { id: 'Sale.k636qw6a', defaultMessage: '营销活动共享组' },
     k639vdry: { id: 'Sale.k639vdry', defaultMessage: '您还未创建共享活动规则' },

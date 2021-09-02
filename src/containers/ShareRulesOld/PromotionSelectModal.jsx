@@ -20,7 +20,7 @@ const TreeNode = Tree.TreeNode;
 const AVAILABLE_PROMOTIONS = Object.keys(BASIC_PROMOTION_MAP);
 
 const AVAILABLE_GIFTS = [
-    '10', '20', '21', '110', '111', '22','115'
+    '10', '20', '21', '110', '111', '22', '115'
 ];
 const EXPANDTO500 = ['292428', '253686']
 @injectIntl()

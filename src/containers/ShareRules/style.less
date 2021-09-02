@@ -1,25 +1,65 @@
 @green: #1AB495;
+
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size:22px;
-    font-weight:400;
-    color:rgba(102,102,102,1);
+    font-size: 22px;
+    font-weight: 400;
+    color: rgba(102, 102, 102, 1);
     height: 60px;
     padding: 0 20px;
+
     .titleArea {
         display: flex;
         align-items: center;
-        .title {
-            margin-right: 20px;
+
+        .subTitle {
+            font-size: 12px;
+            color: #999;
+            margin-left: 8px;
         }
+
         :global {
             .ant-alert {
-                margin-bottom: 0!important;
+                margin-bottom: 0 !important;
             }
         }
     }
+}
+.initModalBox{
+    :global{
+        .ant-modal{
+            top: 40%;
+        }
+        .ant-modal-content{
+            border-radius: 10px;
+            padding: 10px;
+        }
+        .ant-modal-footer {
+            display: none;
+        }
+        .ant-modal-close{
+            display: none;
+        }
+    }
+}
+.emptyData{
+    position: absolute;
+    font-size: 14px;
+    color: #666;
+    width: 200px;
+    height: 100px;
+    margin: auto;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    margin-left: -100px;
+}
+.divideLine {
+    width: 100%;
+    height: 15px;
+    background: #F3F3F3
 }
 
 .headerActions {
@@ -27,23 +67,229 @@
     align-items: center;
     height: 48px;
     margin: 0 20px;
-    border-top: 1px solid rgba(243,243,243,1);
+    border-top: 1px solid rgba(243, 243, 243, 1);
+
     .headerLabel {
         margin-right: 10px;
     }
 }
-
+.alertModalTitle{
+    font-weight: 400;
+    color: #666;
+    font-size: 14px;
+    margin-left: 35px;
+}
 .bodyContainer {
     overflow-y: auto;
     overflow-x: hidden;
-    display: flex;
     position: relative;
-    flex-wrap: wrap;
     padding: 20px;
+    .columnsWrapper {
+        position: relative;
+        float: left;
+        width: 340px;
+        height: 210px;
+        margin-right: 20px;
+        margin-bottom: 24px;
+        box-sizing: border-box;
+        padding: 16px;
+        background: #FFFFFF;
+        box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.12);
+        border-radius: 8px;
+        overflow: hidden;
+
+        .activityTitle {
+            overflow: hidden;
+        }
+
+        .titleText {
+            float: left;
+            max-width: 220px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            font-size: 18px;
+            font-family: PingFang-SC-Bold, PingFang-SC;
+            font-weight: bold;
+            color: #333333;
+            line-height: 18px;
+        }
+
+        .titleTag {
+            float: left;
+            width: 58px;
+            height: 18px;
+            margin-left: 5px;
+            line-height: 18px;
+            text-align: center;
+            background: #FDF0E9;
+            border-radius: 2px;
+            font-size: 12px;
+            font-family: PingFang-SC-Medium, PingFang-SC;
+            font-weight: 500;
+            color: #EF8648;
+        }
+
+        .teamShare {
+            background-color: #eaf6f6;
+            color: #1BB496;
+        }
+
+        .contMtd {
+            font-size: 14px;
+            font-weight: 600;
+            color: #666666;
+            line-height: 14px;
+        }
+
+        .contList {
+            margin-top: 5px;
+            overflow: hidden;
+            max-height: 80px;
+
+            p {
+                margin-top: 10px;
+                font-size: 12px;
+                color: #999999;
+                line-height: 14px;
+
+                b {
+                    color: #595959;
+                    margin-left: 5px;
+                }
+            }
+        }
+
+        .activityCont {
+            margin-top: 16px;
+            width: 308px;
+            height: 115px;
+            padding: 12px;
+            background: #F9F9F9;
+            border-radius: 8px;
+
+            .contScrollBox {
+                height: 80px;
+                overflow: hidden;
+            }
+        }
+
+        .activityBothCont {
+            margin-top: 16px;
+            width: 308px;
+            overflow: hidden;
+
+            .contBothBox {
+                position: relative;
+                float: left;
+                padding: 10px;
+                height: 115px;
+                overflow: hidden;
+                width: 148px;
+                margin-right: 12px;
+                background: #F9F9F9;
+                border-radius: 8px;
+
+                .contScrollBox {
+                    height: 82px;
+                    overflow: hidden;
+
+                    b {
+                        position: relative;
+                        top: -3px;
+                    }
+                }
+
+                .bothQuoteTag {
+                    position: absolute;
+                    right: -14px;
+                    top: 5px;
+                    font-size: 10px;
+                    width: 55px;
+                    height: 18px;
+                    color: #fff;
+                    background-color: #1AB495;
+                    text-align: center;
+                    line-height: 18px;
+                    transform: rotate(45deg);
+                }
+            }
+
+            .contMtd {
+                max-width: 120px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+            }
+
+            .contList {
+                p {
+                    span {
+                        display: inline-block;
+                        max-width: 100px;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+                }
+            }
+
+            .contBothBox:last-child {
+                margin-right: 0;
+            }
+        }
+
+        .activityOperate {
+            position: absolute;
+            bottom: 16px;
+            right: 6px;
+            font-size: 12px;
+            color: #1BB496;
+
+            span {
+                float: left;
+                margin-right: 12px;
+                cursor: pointer;
+            }
+        }
+
+        .activityOrigin {
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+            font-size: 14px;
+            color: #666;
+            .tagImg {
+                margin-top: 2px;
+                width: 14px;
+                float: left;
+            }
+            span {
+                float: left;
+                margin-left: 6px;
+                margin-top: -1px;
+            }
+        }
+
+        .quoteTag {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 46px;
+            height: 18px;
+            font-size: 12px;
+            color: #fff;
+            line-height: 18px;
+            background: #1BB496;
+            border-radius: 0px 8px 0px 8px;
+            text-align: center;
+        }
+    }
+
     .spinner {
         width: 100%;
         height: 100%;
-        background-color: rgba(255,255,255,0.5);
+        background-color: rgba(255, 255, 255, 0.5);
         text-align: center;
         position: absolute;
         z-index: 99;
@@ -63,190 +309,253 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
+
     .primaryTip {
-        font-size:12px;
-        font-weight:bold;
-        color:rgba(69,69,69,1);
+        font-size: 12px;
+        font-weight: bold;
+        color: rgba(69, 69, 69, 1);
         margin-top: 30px;
     }
+
     .tip {
-        font-size:12px;
-        font-weight:400;
-        color:rgba(153,153,153,1);
+        font-size: 12px;
+        font-weight: 400;
+        color: rgba(153, 153, 153, 1);
         margin-top: 10px;
     }
 }
 
+.createModal {
+    :global {
+        .ant-modal-body {
+            overflow: hidden;
+            max-height: 1000px;
+        }
+    }
 
-.shareGroupWrapper {
-    flex: none;
-    min-width: 100px;
-    height:262px;
-    background:rgba(255,255,255,1);
-    border:1px solid rgba(233,233,233,1);
-    margin-bottom: 15px;
-    border-radius:5px;
-    overflow: hidden;
-    &:hover {
-        border:1px solid rgba(26,179,149,1);
-    }
-    &:nth-child(odd) {
-        // margin-right: 10px;
-    }
-    .shareGroupHeader {
-        display: flex;
-        align-items: center;
-        padding: 0 20px;
-        height: 50px;
-        background:rgba(248,248,248,1);
-        justify-content: space-between;
-        .shareGroupTitle {
-            // width: 500px;
-            font-size:14px;
-            font-weight:bold;
-            color:rgba(51,51,51,1);
-            flex: none;
-            max-width: 12em;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
+    .previewImgWrapper {
+        margin-top: 8px;
+        font-size: 12px;
+        font-family: MicrosoftYaHei;
+        color: #AEAEAE;
+        line-height: 20px;
+
+        span {
+            float: left;
         }
-        .shareGroupTitleTip {
-            // margin-left: 12px;
-            font-size:12px;
-            color:#999999;
-            flex: none;
-            max-width: 12em;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
-        }
-    }
-    .shareGroupBody {
-        height: 216px;
-        overflow-y: auto;
-        .shareGroupItem {
-            margin: 0 15px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            background-color: #FFFFFF;
-            &:not(:last-child) {
-                border-bottom: 1px solid #E9E9E9;
+
+        div {
+            float: left;
+
+            b {
+                position: relative;
+                font-style: normal;
+                color: #1AB495;
+                cursor: pointer;
             }
-            &:nth-child(even) {
-                background-color: #FAFAFA;
+
+            img {
+                position: absolute;
+                display: none;
+                top: 45px;
+                left: 90px;
+                width: 470px;
+                height: 283px;
+                z-index: 9;
             }
-            &:last-child {
-                margin-bottom: 5px;
-            }
-            .typeTag {
-                flex: none;
-                width: 8em;
-                &>span {
-                    display: inline-block;
-                    text-align: center;
-                    border: 1px solid rgba(247,192,160,1);
-                    color: #EE7D3A;
-                    border-radius:3px;
-                    padding: 0 5px;
+
+            &:hover {
+                img {
+                    display: block;
                 }
             }
-            .itemAction {
-                width: 10%;
-                display: flex;
-                justify-content: center;
+        }
+    }
+
+    .activityGroup {
+        position: relative;
+        width: 550px;
+        height: 275px;
+        background: #F9F9F9;
+        border-radius: 8px;
+        padding: 16px 10px;
+        overflow: hidden;
+        .disabledBox{
+            position: absolute;
+            width: 530px;
+            height: 200px;
+            z-index: 9;
+            cursor: not-allowed;
+        }
+        .disabledContBox{
+            position: absolute;
+            width: 480px;
+            height: 100px;
+            z-index: 9;
+            cursor: not-allowed;
+        }
+        b {
+            color: #666;
+            font-size: 12px;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        .radioLeft,
+        .radioRight {
+            position: relative;
+            top: -12px;
+            color: #b6b6b6;
+            margin-left: 22px;
+        }
+
+        :global {
+            .ant-radio-wrapper {
+                margin-right: 15px;
+                margin-bottom: 0;
             }
-            .itemTitle {
-                width: 80%;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
+        }
+
+        .leftLabel {
+            position: relative;
+            left: -10px;
+            color: rgba(0, 0, 0, 0.65);
+
+            i {
+                position: relative;
+                font-style: normal;
+                color: #b6b6b6;
+                top: -10px;
+                left: 10px;
+            }
+        }
+
+        .activityTagsWrapper {
+            padding: 5px;
+            width: 450px;
+            height: 98px;
+            background: #FFFFFF;
+            border-radius: 4px;
+            border: 1px solid #E7E7E7;
+            overflow: hidden;
+
+            .activityTagsScroll {
+                max-height: 90px;
+                overflow-y: auto;
+            }
+        }
+        .emptyAddActivityBtn{
+            position: relative;
+            top: -100px;
+            left: 160px;
+            width: 200px;
+            height: 90px;
+            margin-top: 5px;
+            color: #1db395;
+            border: none;
+            background: transparent;
+        }
+        .addActivityBtn {
+            margin-top: 5px;
+            color: #1db395;
+            border: none;
+            background: transparent;
+        }
+    }
+
+    .activityInnerGroup {
+        width: 630px;
+        background-color: #fff;
+        padding: 16px 0;
+
+        .activityTagsWrapper {
+            width: 545px;
+        }
+    }
+
+    .detailsListLeft {
+        margin-bottom: 23px;
+        overflow: hidden;
+
+        b {
+            font-size: 12px;
+            color: #333333;
+            line-height: 16px;
+        }
+
+        span {
+            margin-left: 8px;
+            font-size: 12px;
+            font-weight: 400;
+            color: #666666;
+            line-height: 17px;
+        }
+
+        .tableWrapperLeft {
+            font-weight: bold;
+            float: left;
+            font-size: 12px;
+            color: #333333;
+            line-height: 16px;
+        }
+
+        .tableWrapperRight {
+            position: relative;
+            float: left;
+            margin-left: 8px;
+            width: 570px;
+            overflow: hidden;
+
+            :global {
+                .tableTitle {
+                    span {
+                        font-weight: bold;
+                        color: #333;
+                    }
+                }
+
+                .textCenter {
+                    text-align: center;
+                }
+
+                .ant-table-middle .ant-table-thead>tr>th:not(.ant-table-selection-column),
+                .ant-table-middle .ant-table-tbody>tr>td {
+                    padding: 6px 8px
+                }
+
+                .ant-table-tbody>tr>td,
+                .ant-table-thead>tr>th {
+                    line-height: 15px;
+                }
+            }
+
+            .detailActivityName {
+                width: 100%;
+                height: 30px;
+                line-height: 30px;
+                text-align: center;
+                font-weight: 600;
+                color: #333;
+                border: 1px solid #e9e9e9;
+                border-bottom: none;
+                background: #f7f7f7;
+            }
+
+            .detailIsLinkedTag {
+                position: absolute;
+                right: -18px;
+                top: -4px;
+                font-size: 10px;
+                width: 55px;
+                height: 28px;
+                color: #fff;
+                background-color: #1AB495;
+                text-align: center;
+                line-height: 38px;
+                transform: rotate(45deg);
+                z-index: 9;
             }
         }
     }
-}
 
-.flexSpacer {
-    flex: 1;
-}
-
-.toBeChoosedBlock {
-    width: 628px;
-    height: 96px;
-    background: #FFFFFF;
-    border-radius: 4px;
-    border: 1px solid #D9D9D9;
-    overflow-y: auto;
-}
-
-.chooseItemSpan {
-    height: 22px;
-    background: #F5F5F5;
-    border-radius: 4px;
-    display: inline-block;
-    margin:4px;
-    padding: 1px 8px;
-}
-
-.shareTitle {
-    font-size: 14px;
-    margin-bottom: 8px;
-}
-
-.closeIcon {
-    cursor: pointer;
-    margin-left: 3px;
-}
-.activityBlock {
-    display: inline-block;
-    margin-top: 16px;
-    :global{
-        .ant-radio-button-wrapper-checked:first-child {
-            border-color: @green;
-        }
-        .ant-radio-button-wrapper-checked{
-            border-color: @green;
-            color: @green;
-            box-shadow: -1px 0 0 0 @green;
-        }
-        .ant-radio-button-wrapper:hover, .ant-radio-button-wrapper-focused {
-            color: @green;
-        }
-    }
-}
-.addActSpan {
-    color: @green;
-    margin-top: 12px;
-    display: inline-block;
-    cursor: pointer; 
-}
-.editNameIcon {
-    cursor: pointer;
-    font-weight: 500;
-}
-.addRuleBtn {
-    position: absolute;
-    right: 130px;
-}
-.titleDix {
-    display: inline-block; 
-    max-width: 10em;
-    // width: 60%;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    vertical-align: middle;
-}
-.disabledTitleDix {
-    .titleDix;
-    color: #999999;
-}
-.infoDivNames {
-    background: #f6e1d9;
-    padding: 5px;
-    width: 100%;
-    max-height: 60px;
-    min-height: 35px;
-    overflow-y: auto;
 }

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Row, Icon } from 'antd';
@@ -44,9 +45,14 @@ class FilterSelector extends React.Component {
     }
 
     handleFilterChange = (values) => {
-        const { options, extraFilters } = this.props;
+        const { options, extraFilters,isPromotion} = this.props;
         const { filterKey, filters } = this.state;
-        const nextFilters = { ...filters, [filterKey]: values };
+        let nextFilters = {};
+        if(isPromotion){
+            nextFilters = { [filterKey]: values };
+        }else{
+            nextFilters = { ...filters,[filterKey]: values };
+        }
         this.setState({
             filters: nextFilters,
             filteredOptions: filterOptions(options, {
@@ -207,3 +213,4 @@ FilterSelector.propTypes = {
 };
 
 export default FilterSelector;
+

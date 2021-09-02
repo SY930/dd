@@ -226,8 +226,8 @@ class ShopSelectModal extends Component {
     render() {
         const { defaultValue, extendShopList } = this.props;
         const { loading, filters } = this.state;
-
         const options = this.props.options || this.state.options || [];
+     
         return (
             <Modal
                 {...this.props}
