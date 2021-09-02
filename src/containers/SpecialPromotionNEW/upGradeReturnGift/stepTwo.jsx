@@ -305,14 +305,13 @@ class StepTwo extends React.Component {
         if (this.state.giveStatus == 'error') {
             flag = false;
         }
-
         const opts = this.props.type == '70' || this.props.type == '64' ?
             {
                 smsTemplate: this.state.message,
                 shopIDList: this.state.selections,
                 shopRange: this.state.selections.length > 0 ? 1 : 2,
                 countCycleDays:this.state.countCycleDays,
-                partInTimes:this.state.countCycleDays ? 1 : 0
+                partInTimes:this.state.countCycleDays > 0 ? 1 : 0
             } :
             {
                 cardLevelIDList: this.state.cardLevelIDList || [],
