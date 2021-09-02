@@ -51,7 +51,6 @@ class PromotionAutoRunModal extends Component {
         }
     }
     handleInnerOk = () => {
-        debugger
         const {
             promotionList,
             selectedRowKeys: rowKeys,
