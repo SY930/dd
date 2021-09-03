@@ -64,13 +64,13 @@ export default class MoneyLimitTypeAndValue extends Component {
                 moenyLimitValue,
             },
         } = this.props;
+
         const moneyLimitTypeVal = JSON.parse(moneyLimitType);
         const defaultLabelArr = _.filter(this.getSelectOptions(),function(o){
             const selectVal = JSON.parse(o.value);
             return selectVal.moneyLimitType == moneyLimitTypeVal.moneyLimitType  &&  selectVal.amountType == moneyLimitTypeVal.amountType;
         });
         const defaultLabel  = defaultLabelArr.length >  0 ? defaultLabelArr[0].label : '不限';
-        
         if (moneyLimitTypeVal.moneyLimitType == '0') {
             return (
                 <PriceInput
@@ -117,7 +117,7 @@ export default class MoneyLimitTypeAndValue extends Component {
                 addonAfter='元，使用一张'
                 value={{ number: moenyLimitValue }}
                 maxNum={5}
-                modal={'int'}
+                // modal={'int'}
             />
         )
     }
