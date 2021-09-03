@@ -17,7 +17,7 @@ import {
 import { BASIC_PROMOTION_MAP, GIFT_MAP } from "../../constants/promotionType";
 import CreateShareRulesModal from "./CreateShareRulesModal";
 import { FetchGiftList } from "../GiftNew/_action";
-import { getRuleGroupList, queryShareRuleDetail, addShareRuleGroup, updateShareRuleGroup, deleteShareRuleGroup, initShareRuleGroup,setStorageValue,getStorageValue } from './AxiosFactory';
+import { getRuleGroupList, queryShareRuleDetail, addShareRuleGroup, updateShareRuleGroup, deleteShareRuleGroup, initShareRuleGroup, setStorageValue, getStorageValue } from './AxiosFactory';
 import { fetchAllPromotionListAC } from "../../redux/actions/saleCenterNEW/promotionDetailInfo.action";
 import emptyPage from '../../assets/empty_page.png'
 import { fetchPromotionScopeInfo } from "../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
@@ -59,23 +59,23 @@ export default class ShareRules extends Component {
     }
     componentDidMount() {
         const initialized = getStorageValue('isInitialized')
-        if(initialized){
+        if (initialized) {
             this.queryAll();
-        }else{
+        } else {
             this.setState({
-                isInitModal:true
+                isInitModal: true
             })
             initShareRuleGroup({
                 groupID: this.props.user.accountInfo.groupID,
                 shopID: this.props.user.shopID > 0 ? this.props.user.shopID : '',
             }).then(boolen => {
                 if (boolen) {
-                    setStorageValue('isInitialized',true,86400000*365)
+                    setStorageValue('isInitialized', true, 86400000 * 365)
                     this.queryAll();
                 }
             })
-        
-        
+
+        }
         // 请求获取所有基础营销活动--共享用
         this.props.fetchAllPromotionList({
             groupID: this.props.user.accountInfo.groupID,
@@ -97,12 +97,12 @@ export default class ShareRules extends Component {
             groupID: this.props.user.accountInfo.groupID,
             shopID: this.props.user.shopID > 0 ? this.props.user.shopID : '',
         }).then((list) => {
-            if(list.length > 0){
+            if (list.length > 0) {
                 this.setState({
                     isInitModal: false,
                     shareGroupInfosList: list,
                 })
-            }else{
+            } else {
                 this.setState({
                     isInitModal: false,
                     shareGroupInfosList: [],
@@ -139,7 +139,7 @@ export default class ShareRules extends Component {
                 this.setState({
                     shareGroupInfosList: filterList
                 })
-            }else{
+            } else {
                 this.setState({
                     shareGroupInfosList: []
                 })
@@ -646,7 +646,7 @@ export default class ShareRules extends Component {
     }
     renderContent() {
         const { shareGroupInfosList } = this.state;
-        const { shopID} = this.props.user;
+        const { shopID } = this.props.user;
         return (
             <Row className={styles.bodyContainer} style={{ height: `calc(100% - 123px)` }}>
                 {shareGroupInfosList && shareGroupInfosList.length > 0 ?
@@ -691,7 +691,7 @@ export default class ShareRules extends Component {
                                     }
                                     <div className={styles.activityOperate}>
                                         <span className={styles.operateDetail} onClick={(e) => this.handleShowDetailModal(e, groupInfo.shareRuleID)}>查看详情</span>
-                                        {groupInfo.shopID > 0 && shopID <= 0  ? null : <span className={styles.operateEdit} onClick={groupInfo.linkFlag ? () => this.showEditModal(groupInfo.shareRuleID, groupInfo.linkFlag) : () => this.handleEdit(groupInfo.shareRuleID, groupInfo.linkFlag)}>编辑</span>}
+                                        {groupInfo.shopID > 0 && shopID <= 0 ? null : <span className={styles.operateEdit} onClick={groupInfo.linkFlag ? () => this.showEditModal(groupInfo.shareRuleID, groupInfo.linkFlag) : () => this.handleEdit(groupInfo.shareRuleID, groupInfo.linkFlag)}>编辑</span>}
                                         {groupInfo.shopID > 0 && shopID <= 0 ? null : <span className={styles.operateDelete} onClick={() => this.showDeleteModal(groupInfo.shareRuleID, groupInfo.linkFlag)}>删除</span>}
                                     </div>
                                 </Col>
