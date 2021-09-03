@@ -74,7 +74,7 @@ export default class ShareRules extends Component {
                     this.queryAll();
                 }
             })
-        }
+        
         
         // 请求获取所有基础营销活动--共享用
         this.props.fetchAllPromotionList({
@@ -104,6 +104,7 @@ export default class ShareRules extends Component {
                 })
             }else{
                 this.setState({
+                    isInitModal: false,
                     shareGroupInfosList: [],
                 })
             }
