@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Modal, Row, Col, Input, Form, Select,Radio,DatePicker, Icon, Tooltip } from 'antd';
+import { Modal, Row, Col, Input, Form, Select,Radio,DatePicker, Icon, Tooltip, Switch } from 'antd';
 import BaseForm from '../../../components/common/BaseForm';
+import ShopSelector from 'components/ShopSelector';
 import styles from './GiftInfo.less';
 import { fetchData, axiosData } from '../../../helpers/util';
 import _ from 'lodash';
@@ -9,6 +10,7 @@ import moment from 'moment'
 import {
     FetchGiftLevel,
 } from '../_action';
+import { getPromotionShopSchema } from "../../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
 import { FORMITEM_CONFIG } from './_QuatoCardFormConfig';
 import PriceInput from "../../SaleCenterNEW/common/PriceInput";
 const giftEffectTimeHours = [
@@ -64,13 +66,15 @@ class CardOperate extends React.Component {
             levelList: [],
             selectedRow: [],
             validUntilDay: '0',
-            effectType: '0'
+            effectType: '0',
+            _sellShopInfos: [],
         }
         this.form = null;
         this.proGiftLevel = this.proGiftLevel.bind(this);
     }
     componentDidMount() {
-        const { levelList, FetchGiftLevel, visible, type, selectedRow } = this.props;
+        const { levelList, FetchGiftLevel, visible, type, selectedRow, getPromotionShopSchema, user } = this.props;
+        getPromotionShopSchema({ groupID: user.getIn(['accountInfo', 'groupID']) })
         this.initForm(visible, type, selectedRow)
         const _levelList = levelList.toJS();
         FetchGiftLevel({queryCardType: 1}).then((data = []) => {
@@ -89,7 +93,7 @@ class CardOperate extends React.Component {
                 operateRemarkLabel = '';
             switch (type) {
                 case 'sendCard':
-                    formKeys = [{ keys: ['batchNO', 'startEnd', 'distanceNum', 'effectType', 'useCardTypeID', 'useCardLevelID', 'remark'] }];
+                    formKeys = [{ keys: ['batchNO', 'startEnd', 'distanceNum', 'effectType', 'useCardTypeID', 'useCardLevelID', 'batchSell', 'sellShopInfos', 'remark'] }];
                     operateRemarkLabel = '备注';
                     break;
                 case 'batchCancel':
@@ -175,6 +179,8 @@ class CardOperate extends React.Component {
              delete _params.effectTime99validUntilDate
             let reqParams = {
                 ..._params,
+                sellShopInfos: this.state._sellShopInfos,
+                batchSell: params.batchSell ? 1 : 0,
                 batchNO: (_params.batchNO || '').trim(),
                 endNO: (_params.endNO || '').trim(),
                 startNO: (_params.startNO || '').trim(),
@@ -338,9 +344,27 @@ class CardOperate extends React.Component {
 
         this.setState({
             formKeys,
-            effectType:  value
+            effectType: value,
         })
     }
+
+    handleShopSelectorChange = (values) => {
+        const shopData = this.props.shopSchema.toJS().shopSchema || {};
+        const temp = []
+        values.forEach((item) => {
+            const shopNameObj = (shopData.shops && shopData.shops.filter((every) => {
+                return every.shopID == item
+            })[0]) || {};
+            temp.push({
+                shopName: shopNameObj.shopName || '',
+                shopID: item,
+            })
+        })
+        this.setState({
+            _sellShopInfos: temp,
+        })
+    }
+
     render() {
         const { title = '', visible, type } = this.props;
         const { formKeys, operateRemarkLabel, cardList, levelList,validUntilDay,effectType } = this.state;
@@ -514,16 +538,15 @@ class CardOperate extends React.Component {
                 // defaultValue: [moment(),moment()],
                 render: decorator => (
                     decorator(
-                         {
+                        {
                             rules: [
                                 { required: true, message: '固定有效期不能为空' },
                             ],
-                         }
+                        }
                     )(<RangePicker
                         placeholder={['开始日期','结束日期']}
-                      />)
-
-                )
+                    />)
+                ),
             },
             useCardTypeID: {
                 label: useCardTypeLabel,
@@ -551,17 +574,38 @@ class CardOperate extends React.Component {
                     { required: true, message: '会员卡等级不能为空' },
                 ],
             },
+            batchSell: {
+                label: '是否批量售卖',
+                type: 'custom',
+                defaultValue: true,
+                render: decorator => decorator({})(
+                    <Switch defaultChecked={true} size="small" />
+                ),
+            },    
+            sellShopInfos: {
+                type: 'custom',
+                label: '可售卖店铺',
+                defaultValue: [],
+                render: decorator => decorator({
+                    onChange: this.handleShopSelectorChange,
+                })(
+                    <ShopSelector />
+                ),
+                // props: {
+                //     placeholder: '默认全部店铺',
+                // },
+            },
             remark: {
                 label: operateRemarkLabel,
                 type: 'textarea',
                 placeholder: `请输入${operateRemarkLabel}`,
                 rules: [{ required: true, message: `${operateRemarkLabel}不能为空` },
-                { max: 250, message: '字符不能超过250个' }],
+                    { max: 250, message: '字符不能超过250个' }],
             },
         };
         const formItemLayout = {
-            labelCol: {span: 5},
-            wrapperCol: {span: 17}
+            labelCol: { span: 5 },
+            wrapperCol: { span: 17 },
         }
         return (
             <Modal
@@ -577,7 +621,7 @@ class CardOperate extends React.Component {
                     <Row>
                         <div style={{ border: '3px dashed #e9e9e9', margin: '0 auto', width: 420, padding: 10 }}>
                             {[{ tip1: '666', tip2: '3位标识符', tip3: '（系统固定）' }, { tip1: 'XXXXXX', tip2: '6位批次号', tip3: '（手动输入）' },
-                            { tip1: 'YYYYYY', tip2: '6位顺序号', tip3: '（手动输入）' }, { tip1: 'ZZZ', tip2: '3位随机号', tip3: '（系统随机）' }].map((node, index) => {
+                                { tip1: 'YYYYYY', tip2: '6位顺序号', tip3: '（手动输入）' }, { tip1: 'ZZZ', tip2: '3位随机号', tip3: '（系统随机）' }].map((node, index) => {
                                 return (
                                     <div key={node.tip1} style={{ textAlign: 'center', width: 98, display: 'inline-block' }}>
                                         <div style={{ textAlign: 'center', width: index != 3 ? 88 : 93, display: 'inline-block' }}>
@@ -615,12 +659,17 @@ class CardOperate extends React.Component {
 function mapStateToProps(state) {
     return {
         levelList: state.sale_giftInfoNew.get('levelList'),
+        shopSchema: state.sale_shopSchema_New,
+        user: state.user,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         FetchGiftLevel: opts => dispatch(FetchGiftLevel(opts)),
+        getPromotionShopSchema: (opts) => {
+            dispatch(getPromotionShopSchema(opts));
+        },
     }
 }
 
