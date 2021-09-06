@@ -1,18 +1,19 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Modal, Row, Col, Input, Form, Select,Radio,DatePicker, Icon, Tooltip, Switch } from 'antd';
-import BaseForm from '../../../components/common/BaseForm';
-import ShopSelector from 'components/ShopSelector';
-import styles from './GiftInfo.less';
-import { fetchData, axiosData } from '../../../helpers/util';
+import { Modal, Row, Col, Input, Form, Radio, DatePicker, Icon, Tooltip, Switch } from 'antd';
 import _ from 'lodash';
 import moment from 'moment'
+import ShopSelector from 'components/ShopSelector';
+import BaseForm from '../../../components/common/BaseForm';
+import styles from './GiftInfo.less';
+import { fetchData, axiosData } from '../../../helpers/util';
 import {
     FetchGiftLevel,
 } from '../_action';
-import { getPromotionShopSchema } from "../../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
-import { FORMITEM_CONFIG } from './_QuatoCardFormConfig';
-import PriceInput from "../../SaleCenterNEW/common/PriceInput";
+import { getPromotionShopSchema } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
+// import { FORMITEM_CONFIG } from './_QuatoCardFormConfig';
+import PriceInput from '../../SaleCenterNEW/common/PriceInput';
+
 const giftEffectTimeHours = [
     {
         value: '0',
@@ -68,6 +69,8 @@ class CardOperate extends React.Component {
             validUntilDay: '0',
             effectType: '0',
             _sellShopInfos: [],
+            canUseShops: [], // 已经被占用的卡类适用店铺id
+            queryCanUseShopStatus: '',
         }
         this.form = null;
         this.proGiftLevel = this.proGiftLevel.bind(this);
@@ -139,11 +142,45 @@ class CardOperate extends React.Component {
             selectedRow: this.props.selectedRow,
         });
     }
+
+    // 查询已选卡类型的可用店铺
+    queryCanuseShops = (cardTypeIDs) => {
+        const { user } = this.props
+        axiosData('/crm/cardTypeShopService_getListCardTypeShop.ajax', {
+            groupID: user.getIn(['accountInfo', 'groupID']),
+            cardTypeIds: cardTypeIDs,
+            queryCardType: 1, // questArr.length === 0 ? 0 : 1,
+        }, null, { path: 'data.cardTypeShopList' })
+            .then((cardTypeShopList) => {
+                const { _sellShopInfos } = this.state;
+                const shopsInfo = _sellShopInfos.map(v => String(v.shopID));
+                let canUseShops = [];
+                canUseShops.push(...shopsInfo);
+                (cardTypeShopList || []).forEach((cardType) => {
+                    cardType.cardTypeShopResDetailList.forEach((shop) => {
+                        canUseShops.push(String(shop.shopID))
+                    })
+                });
+                canUseShops = Array.from(new Set(canUseShops));
+                this.setState({ canUseShops, _sellShopInfos, queryCanUseShopStatus: 'success' });
+            }).catch((err) => {
+                console.error(err);
+                this.setState({
+                    queryCanUseShopStatus: 'error',
+                })
+                // this.props.saleCenterQueryOnlineRestaurantStatus('error');
+            })
+    }
+
     handleFormChange = (key, value) => {
         switch (key) {
             case 'useCardTypeID':
+                this.queryCanuseShops(value);
                 this.form.resetFields(['useCardLevelID']);
                 this.getLevelsByCardTypeID(value);
+                this.setState({
+                    _sellShopInfos: [],
+                })
                 break;
         }
     }
@@ -338,7 +375,7 @@ class CardOperate extends React.Component {
             formKeys[0].keys = formKeys[0].keys.filter(v => {
                 return   v !== 'effectTime99validUntilDate'
             })
-            formKeys[0].keys.splice(4,0, 'giftValidUntilDayCount')
+            formKeys[0].keys.splice(4, 0, 'giftValidUntilDayCount')
             this.form.resetFields(['effectTime99validUntilDate'])
         }
 
@@ -367,7 +404,7 @@ class CardOperate extends React.Component {
 
     render() {
         const { title = '', visible, type } = this.props;
-        const { formKeys, operateRemarkLabel, cardList, levelList,validUntilDay,effectType } = this.state;
+        const { formKeys, operateRemarkLabel, cardList, levelList,validUntilDay,effectType, queryCanUseShopStatus, canUseShops, _sellShopInfos } = this.state;
         
         let effectTypeLabel = (
             <span>
@@ -387,12 +424,8 @@ class CardOperate extends React.Component {
         );
         let useCardTypeLabel = (
             <span>
-                会员卡类型 
-                <Tooltip title={
-                    <p>
-                       未关联店铺的卡，不在选择范围内
-                    </p>
-                }>
+                会员卡类型
+                <Tooltip title={<p>未关联店铺的卡，不在选择范围内</p>}>
                     <Icon
                         style={{marginLeft: '5px'}}
                         type={'question-circle'}
@@ -413,7 +446,7 @@ class CardOperate extends React.Component {
                             if (v === '') cb();
                             v > 0 && v <= 999999 ? cb() : cb(rule.message);
                         },
-                        message: '批次号必须是1-999999之间的整数'
+                        message: '批次号必须是1-999999之间的整数',
                     },
                     { validator: (rule, v, cb) => {
                         String(v || '').trim().length <= 6 ? cb() : cb(rule.message);
@@ -587,11 +620,35 @@ class CardOperate extends React.Component {
                 label: '可售卖店铺',
                 defaultValue: [],
                 render: decorator => decorator({
-                    onChange: this.handleShopSelectorChange,
+                    // onChange: this.handleShopSelectorChange,
                 })(
                     <div>
-                        <ShopSelector />
+                        <ShopSelector
+                            value={_sellShopInfos.map(v => String(v.shopID))}
+                            canUseShops={canUseShops}
+                            onChange={this.handleShopSelectorChange}
+                        />
                         <p style={{ color: '#e0a359' }}>不选时以会员卡类型适用店铺为准</p>
+                        {
+                            queryCanUseShopStatus === 'error' && (
+                                <Tooltip title={'查询可用店铺失败, 点击重试'}>
+                                    <Icon
+                                        type="exclamation-circle"
+                                        style={{
+                                            left: '102%',
+                                            top: 28,
+                                            color: 'rgba(239, 72, 72, 0.81)',
+                                            position: 'absolute',
+                                            cursor: 'pointer',
+                                        }}
+                                        onClick={() => {
+                                            this.queryCanuseShops(this.state.cardLevelIDList)
+                                        }}
+                                    />
+                                </Tooltip>
+                            )
+                        }
+
                     </div>
                 ),
                 // props: {
