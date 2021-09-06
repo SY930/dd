@@ -581,7 +581,7 @@ class CardOperate extends React.Component {
                 render: decorator => decorator({})(
                     <Switch defaultChecked={true} size="small" />
                 ),
-            },    
+            },
             sellShopInfos: {
                 type: 'custom',
                 label: '可售卖店铺',
@@ -589,7 +589,10 @@ class CardOperate extends React.Component {
                 render: decorator => decorator({
                     onChange: this.handleShopSelectorChange,
                 })(
-                    <ShopSelector />
+                    <div>
+                        <ShopSelector />
+                        <p style={{ color: '#e0a359' }}>不选时以会员卡类型适用店铺为准</p>
+                    </div>
                 ),
                 // props: {
                 //     placeholder: '默认全部店铺',
