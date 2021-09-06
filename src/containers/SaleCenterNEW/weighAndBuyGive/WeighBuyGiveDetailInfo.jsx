@@ -244,7 +244,7 @@ class WeighBuyGiveDetailInfo extends React.Component {
             if (!floatDown[i]) {
                 floatDownFlag[i] = false
             }
-            if (Number(this.state.floatDown[i]) > Number(this.state.giveFoodCount[i])) {
+            if (Number(this.state.floatDown[i]) >= Number(this.state.giveFoodCount[i])) {
                 flag = false
             }
         }
