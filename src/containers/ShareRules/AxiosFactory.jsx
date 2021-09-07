@@ -147,11 +147,12 @@ async function deleteShareRuleGroup(data) {
 }
 
 //缓存筛选到的菜品
-const setStorageValue = (key, value, expire) => {
+const setStorageValue = (key, value, expire,groupID) => {
     let obj = {
         data: value,
         time: Date.now(),
-        expire: expire
+        expire: expire,
+        groupID
     };
     //localStorage 设置的值不能为对象,转为json字符串
     localStorage.setItem(key, JSON.stringify(obj).replaceAll("\r|\n",""));
@@ -166,6 +167,6 @@ const getStorageValue = key => {
         localStorage.removeItem(key);
         return null;
     }
-    return val.data;
+    return val;
 }
 export { initShareRuleGroup,getRuleGroupList,queryShareRuleDetail,queryShareRuleDetailList,addShareRuleGroup,updateShareRuleGroup,deleteShareRuleGroup,setStorageValue,getStorageValue }

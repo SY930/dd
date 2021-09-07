@@ -58,19 +58,20 @@ export default class ShareRules extends Component {
 
     }
     componentDidMount() {
-        const initialized = getStorageValue('isInitialized')
-        if (initialized) {
+        let {groupID} = this.props.user.accountInfo;
+        let initializedObj = getStorageValue('isInitialized');
+        if (initializedObj && initializedObj.groupID == groupID) {
             this.queryAll();
         } else {
             this.setState({
                 isInitModal: true
             })
             initShareRuleGroup({
-                groupID: this.props.user.accountInfo.groupID,
+                groupID,
                 shopID: this.props.user.shopID > 0 ? this.props.user.shopID : '',
             }).then(boolen => {
                 if (boolen) {
-                    setStorageValue('isInitialized', true, 86400000 * 365)
+                    setStorageValue('isInitialized', true, 86400000 * 365,groupID)
                     this.queryAll();
                 }
             })
@@ -78,14 +79,14 @@ export default class ShareRules extends Component {
         }
         // 请求获取所有基础营销活动--共享用
         this.props.fetchAllPromotionList({
-            groupID: this.props.user.accountInfo.groupID,
+            groupID,
             shopID: this.props.user.shopID > 0 ? this.props.user.shopID : undefined,
             isActive: 1,
             status: 2,
         })
         // 请求获取所有哗啦啦券列表--共享用
         this.props.FetchGiftList({
-            groupID: this.props.user.accountInfo.groupID,
+            groupID,
             pageSize: 10000,
             pageNo: 1,
         }, true);
