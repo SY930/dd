@@ -3470,7 +3470,17 @@ class SpecialDetailInfo extends Component {
                                         </div>
                                         {/* 从RFM创建的唤醒送礼需要展示改提示和R值 */}
                                         {
-                                            RFMObj.awakenTip && <p>此处填写的天数会影响最终推送的人群,值越小影响越小</p>
+                                            RFMObj.awakenTip && <p 
+                                            style={{
+                                                borderTop: '1px solid #D9D9D9',
+                                                height: '36px',
+                                                background: '#FFFBE6',
+                                                lineHeight: '36px',
+                                                fontSize: '12px',
+                                                color: '#666',
+                                                paddingLeft: '12px',
+                                            }}
+                                        ><Icon type="exclamation-circle" style={{ fontSize: 12, color: '#FAAD14', marginRight: 9 }}/>此处填写天数将影响最终推送人数，天数值与实际推送人数成反比例关系。</p>
                                         }
                                       
                                     </div>
