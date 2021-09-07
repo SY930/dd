@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
     Select,
+    message
 } from 'antd';
 import _ from 'lodash';
 import PriceInput from 'containers/SaleCenterNEW/common/PriceInput';
@@ -22,6 +23,13 @@ const SELECT_OPTIONS = [
 
 export default class MoneyLimitTypeAndValue extends Component {
     handleTypeAndValueChange = (v) => {
+        if(v && v.moenyLimitValue){
+            if(typeof Number(v.moenyLimitValue) === 'number' && Number(v.moenyLimitValue) % 1 === 0){
+            }else{
+                message.warning('只能输入整数')
+                v.moenyLimitValue = parseInt(Number(v.moenyLimitValue))
+            }
+        }
         this.props.onChange({
             ...this.props.value,
             ...v,
