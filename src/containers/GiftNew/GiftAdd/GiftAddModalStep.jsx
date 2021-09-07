@@ -422,7 +422,7 @@ class GiftAddModalStep extends React.PureComponent {
                                     break;
                 case 'moenyLimitValue':    this.handleLimitValueChangeDebounced({key, value});
                                     break;
-                case 'discountRate':    this.handleDiscountRateChangeDebounced({key, value});
+                case 'discountRate':       this.handleDiscountRateChangeDebounced({key, value});
                                     break;
                 case 'stageAmount':
                     this.handleStageAmountChangeDebounced({key, value});
@@ -968,7 +968,8 @@ class GiftAddModalStep extends React.PureComponent {
                 processFinalCategoryAndDishData(params, 'foodsboxs',value);
             }
             if (value == '111') { // 折扣券
-                params.discountRate = params.discountRate.number;
+                let {discountRate:{number:discountNumber}} = data;
+                params.discountRate = params.discountRate.number ? params.discountRate.number : discountNumber ? discountNumber : '' ;
                 if (Number(params.discountType) === 0) {
                     params.foodSelectType = 2;
                     params.couponFoodScopes = [];
@@ -1152,7 +1153,7 @@ class GiftAddModalStep extends React.PureComponent {
                     message: '折扣要大于0, 小于等于10',
                 },
             ],
-            initialValue: discountRate && discountRate.hasOwnProperty('number')  ? discountRate : {number: discountRate},
+            initialValue: discountRate && discountRate.hasOwnProperty('number')  ? discountRate : {number: String(discountRate)},
         })(
             <PriceInput
                 addonBefore={
