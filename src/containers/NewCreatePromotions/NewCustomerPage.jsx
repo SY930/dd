@@ -133,7 +133,7 @@ class NewCustomerPage extends Component {
             totalMembers,
             groupMembersName,
             groupID,
-            mfrGrades,
+            mfrGrades = '',
             awakenTip,
             RValue,
         } = this.getQueryVariable()
