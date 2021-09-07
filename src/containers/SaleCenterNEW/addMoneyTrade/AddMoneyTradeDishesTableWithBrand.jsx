@@ -86,7 +86,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
         if (!priceLst.length) return;
         const data = priceLst.reduce((acc, item) => {
             const dish = dishes.find(d => d.value === `${item.brandID || 0}__${item.foodName}${item.foodUnitName}`);
-            dish && acc.push({ ...dish, payPrice: item.payPrice });
+            dish && acc.push({ ...dish, payPrice: item.payPrice, weightOffset: item.weightOffset });
             return acc;
         }, [])
         this.setState({ data })
