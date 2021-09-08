@@ -32,18 +32,124 @@
         border: 1px solid #F3F3F3;
     }
     .launchActiveTableBox {
-        margin-top: 20px;
-        padding: 0 0 10px 16px;
-        padding-left: 16px;
-        padding-bottom: 20px;
+        padding: 20px 0 20px 16px;
         overflow: auto;
     }
     .activeCardItem {
+        position: relative;
         width: 382px;
         height: 200px;
-        margin: 0 24px 0 24px;
+        margin: 0 24px 24px 0px;
+        padding: 16px 0 0 16px;
         background: #FFFFFF;
         box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.12);
         border-radius: 8px;
+        font-size: 14px;
+        color: #666666;
+        font-weight: 500;
+        .activeCardBottomName {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 177px;
+            height: 34px;
+            line-height: 34px;
+            text-align: center;
+            overflow: hidden;
+            background: #F9F9F9;
+            border-radius: 0px 99px 0px 8px;
+            font-size: 16px;
+        }
+        .activeCardHeader {
+            justify-content: space-between;
+            padding-right: 16px;
+            margin-bottom: 20px;
+            :global {
+                .ant-switch {
+                    width: 28px;
+                    height: 14px;
+                    border-radius: 40px;
+                }
+            }
+        }
+        h3 {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333333; 
+        }
+        p {
+            max-width: 84px;
+            width: 84px;
+            overflow: hidden;
+            color: #999999;
+            flex: none;
+        }
+        >div {
+            display: flex;
+            margin-bottom: 12px;
+            line-height: 14px;
+            > span {
+                overflow: hidden;
+                max-width: 280px;
+                width: 280px;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+        }
+        .activeCardTime {
+            overflow: hidden;
+            max-width: 145px;
+            width: 145px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .cardIcon {
+            width: 46px;
+            height: 18px;
+            line-height: 18px;
+            margin-left: 4px;
+            text-align: center;
+            font-size: 12px;
+            border-radius: 4px;
+        }
+        .execute {
+            color: #12B493;
+            background: rgba(27, 180, 150, .12);
+        }
+        .suspend {
+            color: #FF5959;
+            background: rgba(255, 89, 89, .12);
+        }
+        .end {
+            background: rgba(153, 153, 153, .12);
+            color: #999999;
+        }
+        .cardBtnBox {
+            justify-content: flex-end;
+            padding-right: 16px;
+        }
+        .cardBtn {
+            padding-top: 1px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #1BB496;
+            cursor: pointer;
+            > span {
+                &:first-child {
+                    margin-right: 10px
+                }
+            }
+        }
+    }
+    .paginationBox {
+        :global {
+            .ant-pagination-options {
+                display: flex;
+                .ant-select {
+                    width: 85px;
+                }
+            }
+
+        }
     }
 }
