@@ -1,18 +1,15 @@
 import React, { Component } from 'react';
 import {
-    Table,
     message,
     Button,
     Icon,
-    Input,
-    Select,
-    Tooltip,
-    Spin,
-    Tabs
+    Tabs,
+    Modal,
 } from 'antd';
-import moment from 'moment';
+// import moment from 'moment';
 import SuccessPage from './SuccessPage';
 import PromotionPage from './PromotionPage'
+import SuccessModalContent from './Modal/SuccessModalContent';
 import style from './AlipayCoupon.less'
 import { axiosData } from "../../helpers/util";
 
@@ -26,9 +23,9 @@ export default class AlipayCouponDeliveryPage extends Component {
 
         this.state = {
             tabKeys: 'successPage',
+            successModalVisible: false, // 新建支付成功页头投放弹窗
+            promotionModalVisible: false, // 新建会场大促投放弹窗
         };
-        // this.tableActionRef = null;
-        // this.bodyRef = null;
     }
 
     componentDidMount() {
@@ -77,9 +74,36 @@ export default class AlipayCouponDeliveryPage extends Component {
     // console.log("🚀 ~ file: AlipayCouponDeliveryPage.jsx ~ line 71 ~ AlipayCouponDeliveryPage ~ v", key)
     }
 
+    handleModle = (key) => {
+        if (key === 'successPage') {
+            this.setState({
+                successModalVisible: true,
+            })
+            return null;
+        }
+        this.setState({
+            promotionModalVisible: true,
+        })
+        return null;
+    }
+
+    handleClose = () => {
+        const { tabKeys } = this.state;
+        if (tabKeys === 'successPage') {
+            this.setState({
+                successModalVisible: false,
+            })
+            return null;
+        }
+        this.setState({
+            promotionModalVisible: false,
+        })
+        return null;
+    }
+
 
     render() {
-        const { tabKeys } = this.state;
+        const { tabKeys, successModalVisible } = this.state;
         return (
             <div style={{ height: '100%' }}>
                 <div className={style.AlipayCouponHeader}>
@@ -87,7 +111,7 @@ export default class AlipayCouponDeliveryPage extends Component {
                     <Button
                         type="ghost"
                         onClick={() => {
-                            // jumpPage({ menuID: PROMOTION_WECHAT_COUPON_CREATE })
+                            this.handleModle(tabKeys);
                         }}
                     >
                         <Icon type="plus" />
@@ -104,6 +128,15 @@ export default class AlipayCouponDeliveryPage extends Component {
                         </TabPane>
                     </Tabs>
                 </div>
+                <Modal
+                    title="新建支付成功页投放"
+                    maskClosable={true}
+                    width={700}
+                    visible={successModalVisible}
+                    onCancel={this.handleClose}
+                >
+                    <SuccessModalContent />
+                </Modal>
             </div>
         )
     }

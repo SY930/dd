@@ -22,7 +22,12 @@
         }
     }
 }
-.SuccessPageBox {
+.CouponGiftBox {
+    padding: 16px 0 16px 14px;
+    background: #F7F7F7;
+    border-radius: 4px; 
+}
+.SuccessPageBox, .PromotionPageBox {
     height: 100%;
     padding-left: 16px;
     .bottomLine {
@@ -51,14 +56,28 @@
             position: absolute;
             left: 0;
             bottom: 0;
-            width: 177px;
+            padding: 9px 20px 9px;
             height: 34px;
-            line-height: 34px;
+            // line-height: 34px;
             text-align: center;
             overflow: hidden;
-            background: #F9F9F9;
             border-radius: 0px 99px 0px 8px;
             font-size: 16px;
+        }
+        .signup {
+            background: #F9F9F9;
+        }
+        .nosignup {
+            background: rgba(26, 180, 149, .8);
+            color: rgba(255, 255, 255, .8);
+        }
+        .nocheck {
+            background: rgba(235, 154, 50, .12);
+            color: #EB9A32;
+        }
+        .checkerror {
+            background: rgba(255, 89, 89, .12);
+            color: #FF5959;
         }
         .activeCardHeader {
             justify-content: space-between;

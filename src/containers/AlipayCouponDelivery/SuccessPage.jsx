@@ -4,7 +4,7 @@ import styles from './AlipayCoupon.less'
 
 const FormItem = Form.Item;
 
-export class SuccessPage extends Component {
+class SuccessPage extends Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -59,7 +59,7 @@ export class SuccessPage extends Component {
                 </Form>
                 <div className={styles.bottomLine}></div>
                 <div className={styles.launchActiveTableBox} style={{ height: 'calc(100% - 204px)' }}>
-                    <div style={{ display: 'flex', height: '200px', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', height: 'auto', flexWrap: 'wrap' }}>
                         <div className={styles.activeCardItem}>
                             <div className={styles.activeCardHeader}>
                                 <h3>双十一支付宝投放活动</h3>
@@ -234,7 +234,6 @@ export class SuccessPage extends Component {
                                 <span>0/1000</span>
                             </div>
                             <div className={styles.cardBtnBox}>
-                                {/* <div className={styles.activeCardBottomName}>618支付宝活动计划</div> */}
                                 <div className={styles.cardBtn}>
                                     <span>编辑</span>
                                     <span>删除</span>
@@ -245,7 +244,6 @@ export class SuccessPage extends Component {
                 </div>
                 <div className={styles.paginationBox}>
                     <Pagination defaultCurrent={3} total={500} showSizeChanger={true} onShowSizeChange={this.onShowSizeChange} showQuickJumper={true} />
-
                 </div>
             </div>
         )
