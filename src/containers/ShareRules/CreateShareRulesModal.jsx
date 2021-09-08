@@ -748,7 +748,7 @@ class CreateShareRulesModal extends Component {
     render() {
         let defaultValue = [];
         const options = this.getAllOptions()
-        const { form: { getFieldDecorator }, isCreate } = this.props;
+        const { form: { getFieldDecorator }, isCreate,groupID } = this.props;
         const { shareRuleType, showPromotionModal, shareRuleName, groupType, tagsSource = [], tagsSourceA = [], tagsSourceB = [], groupAdata, groupBdata, groupData } = this.state;
         let {filterArr} = this.state;
         const formItemLayout = {
@@ -859,6 +859,7 @@ class CreateShareRulesModal extends Component {
                             <PromotionSelectorModal
                                 visible={true}
                                 options={options}
+                                groupID={groupID}
                                 filterArr={filterArr}
                                 defaultValue={defaultValue}
                                 onOk={this.handleSelectModalOk}

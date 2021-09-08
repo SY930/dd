@@ -50,6 +50,7 @@ export const FILTERS = [{
         {value: '-20',label: '会员折扣'},
     ]
 }];
+const accountList = ['253686','292428'];//这两个集团放开 500个
 class PromotionSelectorModal extends Component {
     state = {
         loading: false,
@@ -76,10 +77,19 @@ class PromotionSelectorModal extends Component {
     }
 
     handleOk = () => {
-        if(this.selected && this.selected.length > 100){
-            message.warning('最多选择100个活动')
-            return
+        const { groupID } = this.props;
+        if(accountList.indexOf(groupID) > -1){
+            if(this.selected && this.selected.length > 500){
+                message.warning('最多选择500个活动')
+                return
+            }
+        }else{
+            if(this.selected && this.selected.length > 100){
+                message.warning('最多选择100个活动')
+                return
+            }
         }
+        
         this.props.onOk(this.selected);
     }
 
@@ -116,13 +126,6 @@ class PromotionSelectorModal extends Component {
     }
 }
 
-// ShopSelectModal.defaultProps = {
-//     options: [],
-//     filters: [],
-//     defaultValue: [],
-//     onChange() {},
-//     onOk() {},
-// };
 PromotionSelectorModal.defaultProps = {
     title: '选择活动',
     width: 700,
