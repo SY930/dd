@@ -27,7 +27,7 @@ const EFFECT_TYPE_OPT_TWO = [
     { label: '固定有效期', value: 'dfd' },
 ];
 
-class SuccessModalContent extends Component {
+class Step1 extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -41,6 +41,11 @@ class SuccessModalContent extends Component {
             linkWay: '0', // 支付宝链接方式
             authorizeModalVisible: false, // 代运营授权弹窗
         }
+    }
+
+    componentDidMount() {
+        const { getForm = () => { }, form } = this.props;
+        getForm(form);
     }
 
     // 日期
@@ -117,7 +122,7 @@ class SuccessModalContent extends Component {
     }
 
     handleAuthSubmit = (form) => {
-        form.validateFields((err, values) => { 
+        form.validateFields((err, values) => {
             if (!err) {
                 console.log('handleAuthSubmit', values);
                 // TODO:请求接口 关闭弹窗
@@ -465,4 +470,4 @@ class SuccessModalContent extends Component {
     }
 }
 
-export default Form.create()(SuccessModalContent)
+export default Form.create()(Step1)

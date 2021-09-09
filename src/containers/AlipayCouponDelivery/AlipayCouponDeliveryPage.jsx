@@ -10,6 +10,7 @@ import {
 import SuccessPage from './SuccessPage';
 import PromotionPage from './PromotionPage'
 import SuccessModalContent from './Modal/SuccessModalContent';
+import PromotionModalContent from './Modal/PromotionModalContent';
 import style from './AlipayCoupon.less'
 import { axiosData } from "../../helpers/util";
 
@@ -101,9 +102,18 @@ export default class AlipayCouponDeliveryPage extends Component {
         return null;
     }
 
+    // 处理支付宝成功页创建的投放活动
+    handleSuccesModalSubmit = (form) => {
+        form.validateFields((err, values) => {
+            if (!err) {
+                console.log('handleAuthSubmit', values);
+                // TODO:请求接口 关闭弹窗
+            }
+        })
+    }
 
     render() {
-        const { tabKeys, successModalVisible } = this.state;
+        const { tabKeys, successModalVisible, promotionModalVisible } = this.state;
         return (
             <div style={{ height: '100%' }}>
                 <div className={style.AlipayCouponHeader}>
@@ -135,7 +145,17 @@ export default class AlipayCouponDeliveryPage extends Component {
                     visible={successModalVisible}
                     onCancel={this.handleClose}
                 >
-                    <SuccessModalContent />
+                    <SuccessModalContent onCancel={this.handleClose} handleSubmit={this.handleSuccesModalSubmit} />
+                </Modal>
+                <Modal
+                    title="新建会场大促投放"
+                    maskClosable={true}
+                    footer={null}
+                    width={700}
+                    visible={promotionModalVisible}
+                    onCancel={this.handleClose}
+                >
+                    <PromotionModalContent onCancel={this.handleClose} />
                 </Modal>
             </div>
         )
