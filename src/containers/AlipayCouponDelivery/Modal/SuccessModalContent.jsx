@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Input, DatePicker, Select, Radio, Row, Col } from 'antd'
+import { Form, Input, DatePicker, Select, Radio, Row, Col, Icon } from 'antd'
 import moment from 'moment'
 import { SALE_CENTER_GIFT_EFFICT_TIME, SALE_CENTER_GIFT_EFFICT_DAY } from '../../../redux/actions/saleCenterNEW/types';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
@@ -115,23 +115,25 @@ class SuccessModalContent extends Component {
         const { getFieldDecorator } = form;
         return (
             <Row>
-                <Col span={18} offset={4} className={styles.IndirectBox}>
+                <Col span={16} offset={4} className={styles.IndirectBox}>
                     <FormItem
                         labelCol={{ span: 0 }}
                         wrapperCol={{ span: 24 }}
                         required={true}
                     >
 
-                        <Select onChange={this.handleIndirectSelect} style={{ width: '80%' }}>
+                        <Select onChange={this.handleIndirectSelect}>
                             {
                                 EFFECT_TYPE_OPT.map(({ label, value }) => (
                                     <Select.Option key={value} value={value}>{label}</Select.Option>
                                 ))
                             }
                         </Select>
-                        <span>已授权</span>
+                        {/* <Icon type="close-circle" /> */}
+                        <span className={styles.authorizeTip}> <Icon type="check-circle" /> 已授权</span>
+
                     </FormItem>
-                    <p>商户完成支付宝代运营授权才可完成创建投放活动。</p>
+                    <p><Icon type="exclamation-circle" />商户完成支付宝代运营授权才可完成创建投放活动。 <span>点击去授权</span> </p>
                 </Col>
             </Row>
         )
@@ -143,11 +145,11 @@ class SuccessModalContent extends Component {
         const { getFieldDecorator } = form;
         return (
             <Row>
-                <Col span={18} offset={4} className={styles.CouponGiftBox}>
+                <Col span={16} offset={4} className={styles.CouponGiftBox}>
                     <FormItem
                         label="投放数量"
                         labelCol={{ span: 4 }}
-                        wrapperCol={{ span: 18 }}
+                        wrapperCol={{ span: 16 }}
                     >
                         {getFieldDecorator('giftNo', {
                             // value: { number: this.state.giftNo },
@@ -173,7 +175,7 @@ class SuccessModalContent extends Component {
                     <FormItem
                         label="生效方式"
                         labelCol={{ span: 4 }}
-                        wrapperCol={{ span: 18 }}
+                        wrapperCol={{ span: 16 }}
                     >
                         <RadioGroup
                             value={this.state.effectType}
@@ -192,7 +194,7 @@ class SuccessModalContent extends Component {
                                 <FormItem
                                     label="相对有效期"
                                     labelCol={{ span: 4 }}
-                                    wrapperCol={{ span: 18 }}
+                                    wrapperCol={{ span: 16 }}
                                 >
                                     <span className={styles.formLabel}></span>
                                     <RadioGroup
@@ -210,7 +212,7 @@ class SuccessModalContent extends Component {
                                 <FormItem
                                     label="何时生效"
                                     labelCol={{ span: 4 }}
-                                    wrapperCol={{ span: 18 }}
+                                    wrapperCol={{ span: 16 }}
                                 >
                                     <Select
                                         size="default"
@@ -227,7 +229,7 @@ class SuccessModalContent extends Component {
                                 </FormItem>
                                 <FormItem
                                     labelCol={{ span: 4 }}
-                                    wrapperCol={{ span: 18 }}
+                                    wrapperCol={{ span: 16 }}
                                     label={'有效天数'}
                                 >
                                     {getFieldDecorator('giftValidDays', {
@@ -261,20 +263,20 @@ class SuccessModalContent extends Component {
                                 label="固定有效期"
                                 className={[styles.FormItemStyle, styles.labeleBeforeSlect].join(' ')}
                                 labelCol={{ span: 4 }}
-                                wrapperCol={{ span: 18 }}
+                                wrapperCol={{ span: 16 }}
                             >{getFieldDecorator('giftValidRange', {
-                                onChange: this.handleGiftValidRangeChange,
-                                rules: [
-                                    { required: true, message: '请输入有效时间' },
-                                ],
-                            })(
-                                <RangePicker
-                                    format="YYYY-MM-DD"
-                                // disabledDate={
-                                // current => current && current.format('YYYYMMDD') < moment().format('YYYYMMDD')
-                                // }
-                                />
-                            )}
+                                    onChange: this.handleGiftValidRangeChange,
+                                    rules: [
+                                        { required: true, message: '请输入有效时间' },
+                                    ],
+                                })(
+                                    <RangePicker
+                                        format="YYYY-MM-DD"
+                                        // disabledDate={
+                                        // current => current && current.format('YYYYMMDD') < moment().format('YYYYMMDD')
+                                        // }
+                                    />
+                                )}
                             </FormItem>
                         )
                     }
@@ -289,101 +291,105 @@ class SuccessModalContent extends Component {
         const { couponValue, linkWay } = this.state;
         console.log('🚀 ~ file: SuccessModalContent.jsx ~ line 245 ~ SuccessModalContent ~ render ~ couponValue', couponValue)
         return (
-            <Form>
-                <FormItem
-                    label="活动名称"
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 18 }}
-                    required={true}
-                >
-                    {getFieldDecorator('title', {
-                        rules: [
-                            { required: true, message: '请输入活动名称' },
-                        ],
-                    })(
-                        <Input
-                            placeholder="请输入投放名称"
-                        />
-                    )}
-                </FormItem>
-                <FormItem
-                    label="起止时间"
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 18 }}
-                    required={true}
-                >
-                    {getFieldDecorator('rangePicker', {
-                        rules: [{ required: true, message: '请输入日期' }],
-                        onchange: this.handleRangeChange,
-                    })(
-                        <RangePicker
-                            style={{ width: '100%' }}
-                            disabledDate={null}
-                        />
-                    )}
-                </FormItem>
-                <FormItem
-                    label="选择优惠券"
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 18 }}
-                    required={true}
-                >
-                    {
-                        getFieldDecorator('Coupon', {
-                            onChange: this.handleCouponChange,
-                            rules: [
-                                { required: true, message: '请选择优惠券' },
-                            ],
-                        })(
-                            <Select >
-                                {
-                                    EFFECT_TYPE_OPT.map(({ label, value }) => (
-                                        <Select.Option key={value} value={value}>{label}</Select.Option>
-                                    ))
-                                }
-                            </Select>
-                        )
-                    }
-                </FormItem>
-                {couponValue && this.renderCoupon()}
-                <FormItem
-                    label="支付宝链接方式"
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 18 }}
-                // required={true}
-                >
-                    {getFieldDecorator('linkWay', {
-                        onChange: this.handleLinkWay,
-                        initialValue: linkWay,
-                        // rules: [{ required: true, message: '请输入活动名称' }],
+            <Row>
+                <Col span={24} offset={1} className={styles.IndirectBox}>
+                    <Form className={styles.SuccessModalContentBox}>
+                        <FormItem
+                            label="活动名称"
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 16 }}
+                            required={true}
+                        >
+                            {getFieldDecorator('title', {
+                                rules: [
+                                    { required: true, message: '请输入活动名称' },
+                                ],
+                            })(
+                                <Input
+                                    placeholder="请输入投放名称"
+                                />
+                            )}
+                        </FormItem>
+                        <FormItem
+                            label="起止时间"
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 16 }}
+                            required={true}
+                        >
+                            {getFieldDecorator('rangePicker', {
+                                rules: [{ required: true, message: '请输入日期' }],
+                                onchange: this.handleRangeChange,
+                            })(
+                                <RangePicker
+                                    style={{ width: '100%' }}
+                                    disabledDate={null}
+                                />
+                            )}
+                        </FormItem>
+                        <FormItem
+                            label="选择优惠券"
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 16 }}
+                            required={true}
+                        >
+                            {
+                                getFieldDecorator('Coupon', {
+                                    onChange: this.handleCouponChange,
+                                    rules: [
+                                        { required: true, message: '请选择优惠券' },
+                                    ],
+                                })(
+                                    <Select >
+                                        {
+                                            EFFECT_TYPE_OPT.map(({ label, value }) => (
+                                                <Select.Option key={value} value={value}>{label}</Select.Option>
+                                            ))
+                                        }
+                                    </Select>
+                                )
+                            }
+                        </FormItem>
+                        {couponValue && this.renderCoupon()}
+                        <FormItem
+                            label="支付宝链接方式"
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 16 }}
+                        // required={true}
+                        >
+                            {getFieldDecorator('linkWay', {
+                                onChange: this.handleLinkWay,
+                                initialValue: linkWay,
+                                // rules: [{ required: true, message: '请输入活动名称' }],
 
-                    })(
-                        <RadioGroup>
-                            <RadioButton value="0">间连</RadioButton>
-                            <RadioButton value="1">直连</RadioButton>
-                        </RadioGroup>
-                    )}
-                </FormItem>
-                {
-                    linkWay === '0' && this.renderIndirect()
-                }
-                <FormItem
-                    label="跳转小程序"
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 18 }}
-                    required={true}
-                >
-                    {getFieldDecorator('title', {
-                        rules: [
-                            { required: true, message: '请输入小程序appid' },
-                        ],
-                    })(
-                        <Input
-                            placeholder="请输入小程序appid"
-                        />
-                    )}
-                </FormItem>
-            </Form>
+                            })(
+                                <RadioGroup>
+                                    <RadioButton value="0">间连</RadioButton>
+                                    <RadioButton value="1">直连</RadioButton>
+                                </RadioGroup>
+                            )}
+                        </FormItem>
+                        {
+                            linkWay === '0' && this.renderIndirect()
+                        }
+                        <FormItem
+                            label="跳转小程序"
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 16 }}
+                            required={true}
+                        >
+                            {getFieldDecorator('title', {
+                                rules: [
+                                    { required: true, message: '请输入小程序appid' },
+                                ],
+                            })(
+                                <Input
+                                    placeholder="请输入小程序appid"
+                                />
+                            )}
+                        </FormItem>
+                    </Form>
+                </Col>
+            </Row>
         )
     }
 }
