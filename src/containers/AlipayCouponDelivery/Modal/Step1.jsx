@@ -369,8 +369,8 @@ class Step1 extends Component {
         const { couponValue, linkWay } = this.state;
         return (
             <Row>
-                <Col span={24} offset={1} className={styles.IndirectBox}>
-                    <Form className={styles.SuccessModalContentBox}>
+                <Col span={24} offset={1}>
+                    <Form className={styles.crmSuccessModalContentBox}>
                         <FormItem
                             label="活动名称"
                             labelCol={{ span: 4 }}

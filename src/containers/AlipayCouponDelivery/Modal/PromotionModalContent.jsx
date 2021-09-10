@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Form, Input, DatePicker, Select, Radio, Row, Col, Steps, Button } from 'antd'
 import Step1 from './Step1'
+import Step2 from './Step2'
 import { SALE_CENTER_GIFT_EFFICT_TIME, SALE_CENTER_GIFT_EFFICT_DAY } from '../../../redux/actions/saleCenterNEW/types';
 
 import styles from '../AlipayCoupon.less';
@@ -85,7 +86,7 @@ class PromotionModalContent extends Component {
 
     renderFooter(current) {
         const btn0 = (<Button key="0" onClick={this.onToggle} className={styles.cancelBtn}>取消</Button>);
-        const btn1 = (<Button key="1" type="primary" onClick={this.onGoPrev}>上一步</Button>);
+        const btn1 = (<Button key="1" type="primary" onClick={this.onGoPrev} className={styles.prevBtn}>上一步</Button>);
         const btn2 = (<Button key="2" type="primary" onClick={this.onGoStep2}>下一步</Button>);
         const btn3 = (<Button key="3" type="primary" onClick={this.onGoDone}>保存</Button>);
         const step1 = ([btn0, btn2]);
@@ -112,6 +113,14 @@ class PromotionModalContent extends Component {
                             // formData={formData1}
                             // onGoStep2={this.onGoStep2}
                             // onToggle={this.onToggle}
+                        />
+                    }
+                    {
+                        current === 2 && <Step2
+                            getForm={this.onSetForm}
+                        // formData={formData1}
+                        // onGoStep2={this.onGoStep2}
+                        // onToggle={this.onToggle}
                         />
                     }
                 </Col>

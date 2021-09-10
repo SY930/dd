@@ -52,6 +52,17 @@
         font-size: 14px;
         color: #666666;
         font-weight: 500;
+        &::after {
+            content: '';
+            display: inline-block;
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 185px;
+            height: 156px;
+            background: url('http://res.hualala.com/basicdoc/401087a0-5573-4495-84cd-1c4234348454.png') no-repeat;
+            background-size: 100% 100%;
+        }
         .activeCardBottomName {
             position: absolute;
             left: 0;
@@ -182,11 +193,14 @@
 
     }
 }
-.SuccessModalContentBox {
+.crmSuccessModalContentBox {
+    margin-top: 28px;
     .IndirectBox {
         position: relative;
         background: #F7F7F7;
         border-radius: 4px;
+        margin-top: 6px;
+        margin-bottom: 10px;
     }
     .authorizeTip {
         position: absolute;
@@ -217,7 +231,7 @@
     
 }
 .PromotionModalContentBox {
-    padding: 0 60px;
+    padding: 0 50px;
     .promotionFooter {
         text-align: center;
         :global {
@@ -231,5 +245,63 @@
     }
     .cancelBtn {
         margin-right: 12px;
+    }
+    .prevBtn {
+        margin-right: 12px;
+    }
+}
+
+.crmSignUpBox {
+    .imageUploadItem {
+        display: flex;
+        align-items: center;
+        :global {
+            .ant-form-item-control-wrapper {
+                .ant-form-item-control {
+                    display: flex;
+                    align-items: center;
+                }
+            }
+        }
+    }
+    .textWrap {
+        margin-left: 12px;
+        font-size: 12px;
+        line-height: 24px;
+        color: #999999;
+    }
+    .signInfo {
+        position: relative;
+        margin: 28px 0 20px;
+        padding: 16px 0 18px 16px;
+        box-shadow: 0px 2px 12px 0px rgba(11, 11, 11, 0.05);
+        border-radius: 8px;
+        &::after {
+            content: '';
+            display: inline-block;
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 121px;
+            height: 92px;
+            background: url('http://res.hualala.com/basicdoc/3bdff800-1ac4-48b2-8886-0abc81f135e4.png') no-repeat;
+            background-size: 100% 100%;
+        }
+        > h4 {
+            margin-bottom: 20px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333333;
+        }
+        > div {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #999999;
+            // justify-content: space-between;
+            p {
+                flex: 1;
+            }
+        }
     }
 }
