@@ -296,11 +296,7 @@ class CreateShareRulesModal extends Component {
                 activityType: '10',
                 activitySource: '1',
                 basicType: `${promotion.promotionType}`,
-            })).reduce((acc, curr) => {
-                acc.push(...curr);
-                return acc;
-            }, []).filter(item => AVAILABLE_PROMOTIONS.includes(item.type));
-
+            })).filter(item => AVAILABLE_PROMOTIONS.includes(item.type));
             options = [
                 ...allPromotionArray,
                 ...allGiftsArray.filter(item => AVAILABLE_GIFTS.includes(String(item.giftType))).map(item => ({
@@ -332,7 +328,6 @@ class CreateShareRulesModal extends Component {
                 },
             ]
         }
-
         return options
 
     }

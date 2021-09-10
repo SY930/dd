@@ -3,26 +3,7 @@ import { SALE_LABEL } from 'i18n/common/salecenter';
  * 集团视角新建营销活动页面 5个大分类的constants
  *
  */
-// export const BASIC_PROMOTION_MAP = {
-//     '2020': SALE_LABEL.k5ezcu1b,
-//     '1010': SALE_LABEL.k67b2sac,
-//     '4010': SALE_LABEL.k67b2sio,
-//     '1050': SALE_LABEL.k67b2sr0,
-//     '1070': SALE_LABEL.k67b3uk0,
-//     '5010': SALE_LABEL.k5m5auib,
-//     '1090': SALE_LABEL.k67b3usc,
-//     '2010': SALE_LABEL.k67b3v0o,
-//     '2030': SALE_LABEL.k67b2pqo,
-//     '1030': SALE_LABEL.k67b3v90,
-//     '1020': SALE_LABEL.k67b3vhc,
-//     '1060': SALE_LABEL.k67b3vpo,
-//     '2040': SALE_LABEL.k67b3vy0,
-//     '2050': SALE_LABEL.k67b3w6c,
-//     '1040': SALE_LABEL.k67b3weo,
-//     '2080': SALE_LABEL.k67b3wn0,
-//     '1080': SALE_LABEL.k67b2qo0,
-//     '2070': SALE_LABEL.k67b2qwc,
-// }
+
 export const BASIC_PROMOTION_MAP = {
     '2020': '折扣',
     '1010': '特价菜',
@@ -46,20 +27,6 @@ export const BASIC_PROMOTION_MAP = {
     '1021': '称重买赠',
 }
 
-// export const GIFT_MAP = {
-//     '10': SALE_LABEL.k5m5avfn,
-//     '20': SALE_LABEL.k5m5avnz,
-//     '21': SALE_LABEL.k5m5avwb,
-//     '30': SALE_LABEL.k67g7tk4,
-//     '40': SALE_LABEL.k67g7tsg,
-//     '42': SALE_LABEL.k67g7u0s,
-//     '80': SALE_LABEL.k67g7u94,
-//     '90': SALE_LABEL.k67g7uhg,
-//     '100': SALE_LABEL.k5m6e393,
-//     '91': SALE_LABEL.k67g7ups,
-//     '110': SALE_LABEL.k636qvpm,
-//     '111': SALE_LABEL.k636qvha,
-// }
 export const GIFT_MAP = {
     '22': '配送券',
     '10': '代金券',
