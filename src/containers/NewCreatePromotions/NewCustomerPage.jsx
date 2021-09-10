@@ -157,6 +157,7 @@ class NewCustomerPage extends Component {
 
 
         if (from === 'rfm') {
+            // debugger 参考
             const item = CRM_PROMOTION_TYPES[53];
             this.handleNewPromotionCardClick(item);
             this.props.setSpecialPromotionCardGroupID(`${groupMembersName} -- 【共${totalMembers}人】`);
@@ -177,7 +178,20 @@ class NewCustomerPage extends Component {
             })
             this.handleNewPromotionCardClick(item[0]);
             this.clearUrl();
-        }else {
+        } if(from === 'openCard'){
+            const item = CRM_PROMOTION_TYPES[52];
+            this.handleNewPromotionCardClick(item);
+            this.props.setSpecialPromotionCardGroupID(`${groupMembersName} -- 【共${totalMembers}人】`);
+            this.props.saveRFMParams({
+                groupID,
+                levelKey,
+                levelType,
+                monetaryType,
+                reportMonth,
+                creator: createBy
+            })
+            this.clearUrl();
+        } else {
             const saleID = type;
             if (!saleID) {
                 return;
