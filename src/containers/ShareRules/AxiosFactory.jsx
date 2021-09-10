@@ -1,6 +1,6 @@
 import { message } from 'antd';
 import { axios, getStore } from '@hualala/platform-base';
-// import { fetchData, axiosData } from '../../../../helpers/util';
+
 /** restful 风格函数命名， get获取，post增加，put更新，delete删除 */
 /**
  * axios 默认请求参数
@@ -169,4 +169,36 @@ const getStorageValue = key => {
     }
     return val;
 }
-export { initShareRuleGroup,getRuleGroupList,queryShareRuleDetail,queryShareRuleDetailList,addShareRuleGroup,updateShareRuleGroup,deleteShareRuleGroup,setStorageValue,getStorageValue }
+//获取券模板
+async function FetchGiftList(data) {
+    const { groupID } = getAccountInfo();
+    const method = '/coupon/couponService_getBoards.ajax';
+    const params = { service, type, data: { 
+        groupID,
+        ...data
+    }, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: {crmGiftList} } = response;
+    if (code === '000') {
+        return crmGiftList;
+    }
+    message.error(msg);
+    return [];
+}
+//请求获取所有基础营销活动
+async function fetchAllPromotionList(data) {
+    const { groupID } = getAccountInfo();
+    const method = '/promotion/docPromotionService_query.ajax';
+    const params = { service, type, data: { 
+        groupID,
+        ...data
+    }, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: {promotionLst} } = response;
+    if (code === '000') {
+        return promotionLst;
+    }
+    message.error(msg);
+    return [];
+}
+export { initShareRuleGroup,getRuleGroupList,queryShareRuleDetail,queryShareRuleDetailList,addShareRuleGroup,updateShareRuleGroup,deleteShareRuleGroup,setStorageValue,getStorageValue,FetchGiftList,fetchAllPromotionList }

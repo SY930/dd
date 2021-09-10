@@ -16,8 +16,7 @@ import {
 } from "../../redux/actions/shareRules/index";
 import { BASIC_PROMOTION_MAP, GIFT_MAP } from "../../constants/promotionType";
 import CreateShareRulesModal from "./CreateShareRulesModal";
-import { FetchGiftList } from "../GiftNew/_action";
-import { getRuleGroupList, queryShareRuleDetail, addShareRuleGroup, updateShareRuleGroup, deleteShareRuleGroup, initShareRuleGroup, setStorageValue, getStorageValue } from './AxiosFactory';
+import { getRuleGroupList, queryShareRuleDetail, addShareRuleGroup, updateShareRuleGroup, deleteShareRuleGroup, initShareRuleGroup, setStorageValue, getStorageValue,FetchGiftList,fetchAllPromotionList } from './AxiosFactory';
 import { fetchAllPromotionListAC } from "../../redux/actions/saleCenterNEW/promotionDetailInfo.action";
 import emptyPage from '../../assets/empty_page.png'
 import { fetchPromotionScopeInfo } from "../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
@@ -55,6 +54,7 @@ export default class ShareRules extends Component {
         isInitModal: false,//显示初始化弹窗
         linkFlag: false,//共享组是否被引用
         isShopEnv: this.props.user.shopID > 0 ? true : false,//是否店铺环境
+        giftAndCouponList:[]
 
     }
     componentDidMount() {
@@ -77,19 +77,27 @@ export default class ShareRules extends Component {
             })
 
         }
-        // 请求获取所有基础营销活动--共享用
-        this.props.fetchAllPromotionList({
-            groupID,
-            shopID: this.props.user.shopID > 0 ? this.props.user.shopID : undefined,
-            isActive: 1,
-            status: 2,
-        })
         // 请求获取所有哗啦啦券列表--共享用
-        this.props.FetchGiftList({
-            groupID,
-            pageSize: 10000,
-            pageNo: 1,
-        }, true);
+        Promise.all([
+            FetchGiftList({
+                groupID,
+                pageSize: 10000,
+                pageNo: 1,
+            }),
+            fetchAllPromotionList({
+                groupID,
+                shopID: this.props.user.shopID > 0 ? this.props.user.shopID : undefined,
+                isActive: 1,
+                status: 2,
+                pageNo: 1, pageSize: 10000,
+            })
+        ]).then((data) => {
+            if(data && data.length > 0){
+                this.setState({
+                    giftAndCouponList:data
+                })
+            }
+        })
         this.props.getAllShops();
     }
     //获取共享组列表
@@ -767,6 +775,7 @@ export default class ShareRules extends Component {
                             selectedPromotions={selected}
                             groupID={this.props.user.accountInfo.groupID}
                             userName={this.props.user.accountInfo.userName}
+                            giftAndCouponList={this.state.giftAndCouponList}
                         />
                     )
                 }
@@ -806,13 +815,6 @@ function mapDispatchToProps(dispatch) {
         createOrUpdateCertainShareGroup: (opts) => dispatch(createOrUpdateCertainShareGroup(opts)),
         deleteCertainShareGroup: opts => dispatch(deleteCertainShareGroup(opts)),
         removeItemFromCertainShareGroup: opts => dispatch(removeItemFromCertainShareGroup(opts)),
-
-        fetchAllPromotionList: (opts) => {
-            dispatch(fetchAllPromotionListAC(opts))
-        },
-        FetchGiftList: (opts, isAllGifts) => {
-            dispatch(FetchGiftList(opts, isAllGifts))
-        },
         getAllShops: (opts) => {
             dispatch(fetchPromotionScopeInfo(opts));
         },
