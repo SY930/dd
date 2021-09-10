@@ -626,7 +626,7 @@ class WeighBuyGiveDetailInfo extends React.Component {
                                             labelCol={{ span: 9, offset: 1 }}
                                             wrapperCol={{ span: 12, offset: 0 }}
                                             validateStatus={this.state.floatUpFlag[index] == '' ? 'error' : 'success'}
-                                            help={this.state.floatUpFlag[index] ? this.state.floatUp[index] && (Number(this.state.floatUp[index]) <= Number(this.state.floatDown[index])) ? '误差最大值需大于误差最小值' : null : '请输入大于0，整数5位以内且小数2位内的数'}
+                                            help={this.state.floatUpFlag[index] ? this.state.floatUp[index] && (Number(this.state.floatUp[index]) <= Number(this.state.giveFoodCount[index])) ? '赠送最大值需大于赠送数量' : null : '请输入大于0，整数5位以内且小数2位内的数'}
                                         >
                                             <Input key={2}
                                                 addonAfter={'斤'}
