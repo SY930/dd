@@ -289,14 +289,14 @@ class CreateShareRulesModal extends Component {
         let options = [];
         if (giftAndCouponList && giftAndCouponList.length > 0) {
             allGiftsArray = giftAndCouponList[0] ? giftAndCouponList[0] : [];
-            allPromotionArray = giftAndCouponList[1].map(promotion => ({
+            allPromotionArray = giftAndCouponList[1] ? giftAndCouponList[1].map(promotion => ({
                 value: promotion.promotionIDStr,
                 label: `${BASIC_PROMOTION_MAP[promotion.promotionType]} - ${promotion.promotionCode} - ${promotion.promotionName}`,
                 type: `${promotion.promotionType}`,
                 activityType: '10',
                 activitySource: '1',
                 basicType: `${promotion.promotionType}`,
-            })).filter(item => AVAILABLE_PROMOTIONS.includes(item.type));
+            })).filter(item => AVAILABLE_PROMOTIONS.includes(item.type)) : [];
             options = [
                 ...allPromotionArray,
                 ...allGiftsArray.filter(item => AVAILABLE_GIFTS.includes(String(item.giftType))).map(item => ({
