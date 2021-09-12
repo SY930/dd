@@ -194,9 +194,13 @@ async function fetchAllPromotionList(data) {
         ...data
     }, method };
     const response = await axios.post(url + method, params);
-    const { code, message: msg, data: {promotionLst:[]} } = response;
+    const { code, message: msg, data: obj } = response;
     if (code === '000') {
-        return promotionLst;
+        if(obj && obj.promotionLst && obj.promotionLst.length > 0){
+            return obj.promotionLst
+        }else{
+            return []
+        }
     }
     message.error(msg);
     return [];
