@@ -239,7 +239,7 @@ class BuyAFreeDetailInfo extends React.Component {
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
-                    <RadioGroup value={subRule} onChange={this.handleChangeSubRule} defaultValue={0}>
+                    <RadioGroup value={subRule} onChange={this.handleChangeSubRule} defaultValue={1}>
                         <Radio key={1} value={1}>参与</Radio>
                         <Radio key={0} value={0}>不参与</Radio>
                         <Tooltip title={'配菜包括配菜、子菜、做法加价等'}>
