@@ -50,7 +50,7 @@ export const FILTERS = [{
         {value: '-20',label: '会员折扣'},
     ]
 }];
-const accountList = ['253686','292428'];//这两个集团放开 500个
+const accountList = ['253686','292428','1348'];//这里的集团共享组数量放开 500个
 class PromotionSelectorModal extends Component {
     state = {
         loading: false,
@@ -77,8 +77,8 @@ class PromotionSelectorModal extends Component {
     }
 
     handleOk = () => {
-        const { groupID } = this.props;
-        if(accountList.indexOf(groupID) > -1){
+        const { groupID,shareRuleType } = this.props;
+        if(accountList.indexOf(groupID) > -1 && shareRuleType == '0'){
             if(this.selected && this.selected.length > 500){
                 message.warning('最多选择500个活动')
                 return

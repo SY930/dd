@@ -868,6 +868,7 @@ class CreateShareRulesModal extends Component {
                                 <PromotionSelectorModal
                                     visible={true}
                                     options={options}
+                                    shareRuleType={shareRuleType}
                                     groupID={groupID}
                                     filterArr={filterArr}
                                     defaultValue={defaultValue}
