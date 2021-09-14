@@ -1153,13 +1153,13 @@ class GiftAddModalStep extends React.PureComponent {
                     message: '折扣要大于0, 小于等于10',
                 },
             ],
-            initialValue: discountRate && discountRate.hasOwnProperty('number')  ? discountRate : {number: String(discountRate)},
+            initialValue: discountRate && discountRate.hasOwnProperty('number')  ? discountRate : {number: discountRate},
         })(
             <PriceInput
                 addonBefore={
                     decorator({
                         key: 'discountType',
-                        initialValue: String(discountType || 0),
+                        initialValue: discountType ? String(discountType) : '0',
                     })(<Select
                         style={{
                             width: 150,
