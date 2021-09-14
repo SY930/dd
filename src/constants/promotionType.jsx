@@ -695,7 +695,17 @@ export const SALE_PROMOTION_TYPES = [
         right: 2,
         bottom: -14,
         isHot: true,
-    }
+    },
+    {
+        title: SALE_LABEL.k67b3wvc,
+        color: '#84aac6',
+        text: SALE_LABEL.k67cp4la,
+        example: '',
+        tags: [SALE_LABEL.k639vh0m],
+        key: '10072',
+        right: 15,
+        bottom: 0,
+    },
 ];
 
 /**
