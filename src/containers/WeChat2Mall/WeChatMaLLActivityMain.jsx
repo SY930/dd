@@ -9,6 +9,9 @@ import { ActivityLogo } from '../SaleCenterNEW/ActivityLogo/ActivityLogo'; // �
 import styles from '../SaleCenterNEW/ActivityPage.less';
 import WeChatMallSale from './miaosha/Wrapper';
 import { axiosData, getAccountInfo } from '../../helpers/util';
+import {
+    promotionScopeInfoAdapter,
+} from '../../redux/actions/saleCenterNEW/types';
 // import { myActivities_NEW as sale_myActivities_NEW } from '../../redux/reducer/saleCenterNEW/myActivities.reducer';
 import {
     toggleIsCopyAC,
@@ -52,16 +55,21 @@ class ActivityMain extends React.Component {
                 this.props.callbackthree(arg);
             },
             onFinish: (cb) => (data) => {
+                const { promotionScopeInfo } = this.props
+            // console.log("🚀 ~ file: WeChatMaLLActivityMain.jsx ~ line 55 ~ ActivityMain ~ renderActivityTags ~ data", data,  this.props.data)
                 this.setState({
                     confirmLoading: true,
                 });
                 const url = this.props.data ?
-                    this.props.isCopy ? '/promotion/extra/extraEventService_addExtraEvent.ajax' : '/promotion/extra/extraEventService_updateExtraEvent.ajax'
-                    : '/promotion/extra/extraEventService_addExtraEvent.ajax';
+                    this.props.isCopy ? '/promotion/extra/shopExtraEventService_addExtraEvent.ajax' : '/promotion/extra/shopExtraEventService_updateExtraEvent.ajax'
+                    : '/promotion/extra/shopExtraEventService_addExtraEvent.ajax';
+                const scopeInfo = promotionScopeInfoAdapter(promotionScopeInfo.get('$scopeInfo').toJS(), true); // 店铺信息
+                // console.log("🚀 ~ file: WeChatMaLLActivityMain.jsx ~ line 67 ~ ActivityMain ~ renderActivityTags ~ scopeInfo", scopeInfo)
                 const params = {
                     ...data,
                     extraEventType: '10072',
-                    shopID: this.props.user.shopID
+                    shopID: scopeInfo.brandIDLst || this.props.user.shopID,
+                    // shopID: scopeInfo.brandIDLst,
                 };
                 const userName = getAccountInfo().userName
                 if (this.props.data && this.props.data.itemID) {
@@ -103,6 +111,10 @@ class ActivityMain extends React.Component {
                         <br />
                     </Col>
                     <Col span={18} className={styles.activityMainRight} style={{ padding: '15px 15px 10px 15px' }}>
+                        {
+                            !this.props.isUpdate ?
+                                <div className={styles.stepOneDisabled}></div> : null
+                        }
                         {this.renderActivityTags()}
                     </Col>
                 </Row>
@@ -116,6 +128,8 @@ function mapStateToProps(state) {
         saleCenter: state.sale_saleCenter_NEW,
         user: state.user.toJS(),
         isCopy: state.sale_myActivities_NEW.get('isCopy'),
+        promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
+        isUpdate: state.sale_myActivities_NEW.get('isUpdate'),
     };
 }
 

@@ -1,20 +1,22 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import { Form, message } from 'antd'
-import { axios } from '@hualala/platform-base';
+// import { axios } from '@hualala/platform-base';
+// import { isEqual } from 'lodash';
 import ShopSelector from '../../../components/ShopSelector';
 import { isFilterShopType } from '../../../helpers/util'
-import { getPromotionShopSchema, fetchPromotionScopeInfo, saleCenterSetScopeInfoAC, saleCenterGetShopByParamAC, SCENARIOS, fetchFilterShops } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
+import { getPromotionShopSchema, fetchPromotionScopeInfo, saleCenterSetScopeInfoAC } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 
 const Immutable = require('immutable');
 
 export class ScopeInfo extends Component {
     constructor(props) {
         super(props)
-        const shopSchema = props.shopSchema.getIn(['shopSchema']).toJS();
+        // const shopSchema = props.shopSchema.getIn(['shopSchema']).toJS();
+        console.log(props.data, 'props.data>>>>>>')
         this.state = {
-            dynamicShopSchema: shopSchema, // 随品牌的添加删除而变化
-            selections: this.props.promotionScopeInfo.getIn(['$scopeInfo']).toJS().shopsInfo || [],
+            // dynamicShopSchema: shopSchema, // 随品牌的添加删除而变化
+            selections: props.data.shopID ? props.data.shopID : [],
             brands: [],
             isRequire: true,
         }
@@ -27,16 +29,16 @@ export class ScopeInfo extends Component {
             finish: undefined,
             cancel: undefined,
         });
-        const { promotionBasicInfo, promotionScopeInfo } = this.props;
+        const { promotionBasicInfo, promotionScopeInfo, fetchPromotionScopeInfoAC } = this.props;
         const promotionType = promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         // this.loadShopSchema();
-		this.setState({ allShopsSet: !!promotionBasicInfo.get('$filterShops').toJS().allShopSet });
+        // this.setState({ allShopsSet: !!promotionBasicInfo.get('$filterShops').toJS().allShopSet });
         if (!promotionScopeInfo.getIn(['refs', 'initialized'])) {
             let parm = {}
             if (isFilterShopType(promotionType)) {
                 parm = { productCode: 'HLL_CRM_License' }
             }
-            fetchPromotionScopeInfo({ _groupID: this.props.user.toJS().accountInfo.groupID, ...parm });
+            fetchPromotionScopeInfoAC({ _groupID: this.props.user.toJS().accountInfo.groupID, ...parm });
         }
         if (this.props.user.toJS().shopID <= 0) {
             let parm = {}
@@ -56,12 +58,20 @@ export class ScopeInfo extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        // const previousSchema = this.state.shopSchema;
+        // const nextShopSchema = nextProps.shopSchema.getIn(['shopSchema']).toJS();
+        // if (!isEqual(previousSchema, nextShopSchema)) {
+        //     this.setState({shopSchema: nextShopSchema, // 后台请求来的值
+        //         dynamicShopSchema: nextShopSchema, // 随品牌的添加删除而变化
+        //     });
+        // }
         if (nextProps.promotionBasicInfo.get('$filterShops').toJS().shopList) {
             this.setState({ filterShops: nextProps.promotionBasicInfo.get('$filterShops').toJS().shopList })
         } else {
             this.setState({ filterShops: [] })
         }
-        this.setState({ allShopsSet: !!nextProps.promotionBasicInfo.get('$filterShops').toJS().allShopSet });
+        // this.setState({ allShopsSet: !!nextProps.promotionBasicInfo.get('$filterShops').toJS().allShopSet });
+         console.log(this.props.promotionScopeInfo.getIn(['refs', 'data']), 'this.props.promotionScopeInfo.getIn(');
         if (JSON.stringify(nextProps.promotionScopeInfo.getIn(['refs', 'data'])) !=
             JSON.stringify(this.props.promotionScopeInfo.getIn(['refs', 'data']))) {
             const _data = Immutable.Map.isMap(nextProps.promotionScopeInfo.getIn(['$scopeInfo'])) ?
@@ -100,39 +110,44 @@ export class ScopeInfo extends Component {
 
     // async loadShopSchema() {
     //     const { data } = await axios.post('/api/shopapi/schema', {});
-    //     const { brands, shops } = data;
+    //     const { brands } = data;
     //     this.setState({
     //         brandList: brands,
     //     });
-    //     this.countIsRequire(shops);
+    //     // this.countIsRequire(shops);
     // }
 
 	handleSubmit = (isPrev) => {
-		let flag = true;
+	    // const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
+	    let flag = true;
 	    this.props.form.validateFieldsAndScroll((err1, basicValues) => {
-            if (err1) {
-                flag = false;
-            }
-        });
+	        if (err1) {
+	            flag = false;
+	        }
+	    });
 		const { selections } = this.state;
 		if (selections.length === 0 && !this.props.user.toJS().shopID > 0) {
 			flag = false;
             message.warning('请选择适用店铺')
 		}
 		if(!this.props.user.toJS().shopID) {
-            const {isRequire} = this.state;
+            const { isRequire } = this.state;
             if (isRequire && !selections[0]) {
                 flag = false;
             }
         }
 		if (flag) {
             const states = {
-                brands: this.state.brands,
+                brands: this.state.selections,
             }
             if (this.props.user.toJS().shopID > 0 && this.props.isNew) {
-                states.shopsInfo =  [{ shopID: this.props.user.toJS().shopID }];
+                states.shopsInfo = [{ shopID: this.props.user.toJS().shopID }];
             }
-            this.props.saleCenterSetScopeInfo(states);
+            // this.props.onChange({
+            //     shopID: states.brands,
+            // })
+            this.props.saleCenterSetScopeInfo(states); // 把选择的商品存入redux
+            console.log("🚀 ~ file: ScopeInfo.jsx ~ line 146 ~ ScopeInfo ~ states", states)
         }
         return flag || isPrev;
 	}
@@ -190,7 +205,7 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(saleCenterSetScopeInfoAC(opts));
         },
 
-        fetchPromotionScopeInfo: (opts) => {
+        fetchPromotionScopeInfoAC: (opts) => {
             dispatch(fetchPromotionScopeInfo(opts));
         },
         getPromotionShopSchema: (opts) => {
@@ -199,4 +214,4 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(ScopeInfo));
+export default connect(mapStateToProps, mapDispatchToProps)(Form.create()(ScopeInfo))

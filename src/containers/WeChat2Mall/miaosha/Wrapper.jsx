@@ -10,7 +10,7 @@ class Wrapper extends React.Component {
         this.handles = []; // store the callback
         this.state = {
             itemID: props.previousData ? props.previousData.itemID : undefined,
-            data: props.previousData ? {...props.previousData} : {},
+            data: props.previousData ? { ...props.previousData } : {},
         };
         this.steps = [
             {
@@ -61,7 +61,7 @@ class Wrapper extends React.Component {
      * @param data: 传递给后端的字段map
      */
     handleDataChange = (data) => {
-        this.setState({data: {...this.state.data, ...data}});
+        this.setState({ data: { ...this.state.data, ...data } });
     }
 
     handleNext = (cb, index) => {
@@ -96,7 +96,6 @@ class Wrapper extends React.Component {
         if (flag) {
             setTimeout(() => {
                 this.onFinish(() => {
-                    cb();
                     this.props.callbacktwo(3);
                 });
             }, 0);

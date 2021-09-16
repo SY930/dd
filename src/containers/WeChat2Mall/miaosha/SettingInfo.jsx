@@ -2,87 +2,69 @@ import React from 'react';
 import { connect } from 'react-redux';
 import {
     Form,
-    Select,
     Icon,
     Table,
     Tooltip,
     Input,
     message,
+    Button,
+    Row,
+    Col,
 } from 'antd';
+import ImageUpload from 'components/common/ImageUpload'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
-import SingleGoodSelector from '../../../components/common/GoodSelector'
+// import SingleGoodSelector from '../../../components/common/GoodSelector'
+import FoodSelectModal from '../../../components/common//FoodSelector/FoodSelectModal'
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
+import {
+    memoizedExpandCategoriesAndDishes,
+} from '../../../utils';
 import selfStyle from '../style.less'
 
 const FormItem = Form.Item;
-const Option = Select.Option;
+// const Option = Select.Option;
 
 class SettingInfo extends React.Component {
     constructor(props) {
         super(props);
-        const {
-            good,
-            unitInfo,
-        } = this.getInitialGoodAndUnitInfo();
+        // let priceLst;
+        // try {
+        //     priceLst = props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
+        // } catch (e) {
+        //     priceLst = []
+        // }
         this.state = {
             productsLimit: props.data.productsLimit > 0 ? props.data.productsLimit : undefined, // 不填写则默认不限
             tag: props.data.tag || undefined, // 活动主题, 后端如果返回'' ，还是希望显示placeholder
-            goodsList: unitInfo,
-            selectedGood: good,
+            bannerUrl: props.bannerUrl || '',
+            selectorModalVisible: false,
+            data: props.data.productList || [],
+            // priceLst,
         };
         this.columns = [
             {
                 title: '规格',
-                dataIndex: 'unitName1',
-                key: 'unitName1',
+                dataIndex: 'label',
+                key: 'label',
                 fixed: 'left',
                 width: 100,
                 render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
             },
             {
-                title: '积分售价（分）',
-                dataIndex: 'sellPoint',
-                width: 120,
-                key: 'sellPoint',
-                className: 'TableTxtRight',
-                render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
-            },
-            {
                 title: '会员售价（元）',
-                dataIndex: 'sellPrice',
-                key: 'sellPrice',
+                dataIndex: 'vipPrice',
+                key: 'vipPrice',
                 width: 120,
                 className: 'TableTxtRight',
                 render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
             },
             {
                 title: '原价（元）',
-                dataIndex: 'prePrice',
-                key: 'prePrice',
+                dataIndex: 'newPrice',
+                key: 'newPrice',
                 width: 100,
                 className: 'TableTxtRight',
                 render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
-            },
-            {
-                title: '秒杀积分(分)',
-                dataIndex: 'point',
-                key: 'point',
-                width: 120,
-                className: 'noPadding',
-                render: (text, record, index) => {
-                    return (
-                        <span className={selfStyle.rightAlign}>
-                            <PriceInput
-                                modal="float"
-                                prefix={<Icon type="edit" />}
-                                placeholder="秒杀积分"
-                                value={{ number: record.point }}
-                                maxNum={6}
-                                onChange={(val) => { this.onCellChange(index, 'point', val) }}
-                            />
-                        </span>
-                    )
-                },
             },
             {
                 title: '秒杀现金(元)',
@@ -99,7 +81,7 @@ class SettingInfo extends React.Component {
                                 placeholder="秒杀现金"
                                 value={{ number: record.price }}
                                 maxNum={6}
-                                onChange={(val) => { this.onCellChange(index, 'price', val) }}
+                                onChange={(val) => { this.onCellPriceChange(index, val, record) }}
                             />
                         </span>
                     )
@@ -120,7 +102,7 @@ class SettingInfo extends React.Component {
                                 placeholder="秒杀库存"
                                 value={{ number: record.storage }}
                                 maxNum={6}
-                                onChange={(val) => { this.onCellChange(index, 'storage', val) }}
+                                onChange={(val) => { this.onCellStorageChange(index, val) }}
                             />
                         </span>
                     )
@@ -135,90 +117,101 @@ class SettingInfo extends React.Component {
             finish: this.handleSubmit,
             cancel: undefined,
         });
-    }
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.goods !== this.props.goods) {
-            const {
-                good,
-                unitInfo,
-            } = this.getInitialGoodAndUnitInfo(nextProps);
-            this.setState({
-                selectedGood: good,
-                goodsList: unitInfo,
-            })
-        }
+        // if (this.props.allBrands.size && this.props.allCategories.size && this.props.allDishes.size) {
+        //     this.mapPriceLstToDataThenEmit()
+        // }
     }
 
-    getInitialGoodAndUnitInfo = (props = this.props) => {
-        const goods = props.goods.toJS();
-        console.log("🚀 ~ file: SettingInfo.jsx ~ line 154 ~ SettingInfo ~ goods", goods, props)
-        const { goodsList = [] } = props.data;
-        if (!goods.length || !goodsList.length) {
-            return {
-                good: null,
-                unitInfo: [],
+    // componentDidUpdate(prevProps) {
+    //     if (this.props.allCategories.size && this.props.allDishes.size) {
+    //         if (!prevProps.allCategories.size || !prevProps.allDishes.size) {
+    //             this.mapPriceLstToDataThenEmit()
+    //         }
+    //     }
+    //     if (this.props.selectedBrands !== prevProps.selectedBrands) {
+    //         if (JSON.stringify(this.props.selectedBrands.toJSON()) !== JSON.stringify(prevProps.selectedBrands.toJSON())) {
+    //             this.setState({
+    //                 data: [],
+    //             });
+    //             this.props.onChange([]);
+    //         }
+    //     }
+    // }
+
+    onCellStorageChange = (index, val) => {
+        const data = [...this.state.data];
+        const num = val.number;
+        const records = data[index];
+        records.storage = num
+        this.setState({ data });
+        this.props.onChange(data.map(item => ({ ...item })));
+    }
+
+    onCellPriceChange = (index, val) => {
+        if (!val) {
+            return message.warn('秒杀现金价不能为空');
+        }
+        const data = [...this.state.data];
+        let num = val.number;
+        const records = data[index];
+        if (val.number > +records.newPrice) { // 秒杀价需小于原价
+            num = records.newPrice;
+        } else if (val.number < 0) { // 秒杀价不小于0
+            num = '0';
+        }
+        records.price = num
+        // record.salePercent = (num / record.prePrice * 10).toFixed(2)
+        this.setState({ data });
+        this.props.onChange(data.map(item => ({ ...item })));
+    }
+
+
+    mapPriceLstToDataThenEmit = () => {
+        const {
+            allBrands,
+            allCategories,
+            allDishes,
+        } = this.props;
+        const { dishes } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes);
+        const { priceLst } = this.state;
+        if (!priceLst.length) return;
+        const data = priceLst.reduce((acc, item) => {
+            const dish = dishes.find(d => d.value === `${item.brandID || 0}__${item.foodName}${item.foodUnitName}`);
+            if (dish) {
+                dish.newPrice = item.price
+                acc.push(dish)
             }
-        }
-        const goodID = goodsList[0].foodItemID;
-        const matchedGood = goods.find(item => item.goodID === goodID);
-        if (!matchedGood) {
-            return {
-                good: null,
-                unitInfo: [],
-            }
-        }
-        return {
-            good: matchedGood,
-            unitInfo: matchedGood.goodUnitInfo.map((unit) => {
-                const savedUnitInfo = goodsList.find(item => item.foodID === unit.unitID);
-                if (savedUnitInfo) {
-                    return {
-                        ...unit,
-                        point: savedUnitInfo.point,
-                        price: savedUnitInfo.price,
-                        storage: savedUnitInfo.storage || undefined,
-                    }
-                }
-                return unit;
-            }),
-        }
+            return acc;
+        }, [])
+        this.setState({ data })
+        this.props.onChange(data)
     }
 
     handleSubmit = () => {
         let flag = true;
         const {
-            selectedGood,
-            goodsList,
-            ...rest
+            data,
+            productsLimit,
+            tag,
+            bannerUrl,
         } = this.state;
-        if (!selectedGood) {
+        if (!data.length) {
             message.warning('请选择参与活动的商品');
             return false;
         }
-        for (const good of goodsList) {
+        for (const good of data) {
             if (!(good.storage > 0)) {
-                message.warning(`规格：【${good.unitName1}】所设置的库存要大于0`)
+                message.warning(`规格：【${good.foodName}】所设置的库存要大于0`)
                 flag = false;
                 break;
             }
-            if (good.point > +good.sellPoint) {
-                message.warning(`规格：【${good.unitName1}】所设置的秒杀积分不能大于积分售价`)
+           if (good.price > +good.newPrice) {
+                message.warning(`规格：【${good.foodName}】所设置的秒杀现金不能大于原价`)
                 flag = false;
                 break;
             }
-            if (good.sellPrice > 0) {
-                if (good.price > +good.sellPrice) {
-                    message.warning(`规格：【${good.unitName1}】所设置的秒杀现金不能大于现金售价`)
-                    flag = false;
-                    break;
-                }
-            } else if (good.price > +good.prePrice) {
-                message.warning(`规格：【${good.unitName1}】所设置的秒杀现金不能大于原价`)
-                flag = false;
-                break;
-            }
-            if (!(good.price > 0 || good.point > 0)) {
-                message.warning(`规格：【${good.unitName1}】所设置的秒杀现金和秒杀积分至少要有一个大于0`)
+            if (!(good.price > 0)) {
+                message.warning(`规格：【${good.foodName}】所设置的秒杀现金要大于0`)
                 flag = false;
                 break;
             }
@@ -233,18 +226,17 @@ class SettingInfo extends React.Component {
             return false;
         }
         this.props.onChange({
-            ...rest,
-            productsLimit: rest.productsLimit || 0,
+            // productsLimit,
+            tag,
+            bannerUrl,
+            productsLimit: productsLimit || 0,
             // goodsList 需要按照后端格式组装一下
-            goodsList: goodsList.map(item => ({
-                foodID: item.unitID,
-                foodItemID: selectedGood.goodID,
-                point: item.point,
-                purchaseLimit: item.purchaseLimit,
+            productList: data.map(item => ({
+                foodItemID: item.foodID,
                 storage: item.storage || 0,
                 price: item.price,
-                specType: item.unitName1,
-                name: selectedGood.goodName,
+                name: item.foodName,
+                originalPrice: item.newPrice,
             })),
         })
         return flag;
@@ -253,25 +245,91 @@ class SettingInfo extends React.Component {
     handleProductsLimitChange = (value) => {
         this.setState({ productsLimit: value.number });
     }
-    handleGoodChange = (good) => {
-        this.setState({
-            selectedGood: good,
-            goodsList: good ? [...good.goodUnitInfo] : [],
-        })
-    }
+    // handleGoodChange = (good) => {
+    //     this.setState({
+    //         selectedGood: good,
+    //         goodsList: good ? [...good.goodUnitInfo] : [],
+    //     })
+    // }
     handleTagChange = ({ target: { value } }) => {
         this.setState({
             tag: value,
         })
     }
-    onCellChange = (index, key, value) => {
-        const { goodsList } = this.state;
-        goodsList[index][key] = value.number;
-        this.setState({ goodsList })
+
+    handleSelectDishes = () => {
+        this.setState({
+            selectorModalVisible: true,
+        })
+    }
+
+    handleModalCancel = () => {
+        this.setState({
+            selectorModalVisible: false,
+        })
+    }
+
+    handleShareImageChangne = ({ key, value }) => {
+        this.setState({ [key]: value });
+    }
+
+    handleModalOk = (v) => {
+        const {
+            allBrands,
+            allCategories,
+            allDishes,
+        } = this.props;
+        const { dishes } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes);
+        const dishObjects = v.reduce((acc, curr) => {
+            const dishObj = dishes.find(item => item.value === curr);
+            if (dishObj) {
+                const reservedDish = this.state.data.find(item => item.value === dishObj.value);
+                acc.push(reservedDish ? { ...dishObj, newPrice: reservedDish.newPrice, salePercent: reservedDish.salePercent } : { ...dishObj, salePercent: '10' })
+            }
+            return acc;
+        }, [])
+        this.setState({
+            selectorModalVisible: false,
+            data: dishObjects,
+        })
+        this.props.onChange({
+            ...dishObjects,
+        })
+    }
+
+    renderFoodSelectorModal = () => {
+        const {
+            allBrands,
+            allCategories,
+            allDishes,
+        } = this.props;
+        let { dishes, categories, brands } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes)
+        const selectedBrands = this.props.selectedBrands.toJS();
+        if (selectedBrands.length) {
+            brands = brands.filter(({ value }) => value == 0 || selectedBrands.includes(value))
+            categories = categories.filter(({ brandID: value }) => value == 0 || selectedBrands.includes(value))
+            dishes = dishes.filter(({ brandID: value }) => value == 0 || selectedBrands.includes(value))
+        }
+        const initialValue = this.state.data.map(item => `${item.brandID || 0}__${item.foodName}${item.unit}`);
+        return (
+            <FoodSelectModal
+                allBrands={brands}
+                allCategories={categories}
+                allDishes={dishes}
+                mode="dish"
+                initialValue={initialValue}
+                multiple={false}
+                onOk={this.handleModalOk}
+                onCancel={this.handleModalCancel}
+            />
+        )
     }
 
     render() {
         const { getFieldDecorator } = this.props.form;
+        const { selectorModalVisible, data, bannerUrl } = this.state;
+        const displayDataSource = data.map((item, index) => ({ ...item, index }));
+        console.log("🚀 ~ file: SettingInfo.jsx ~ line 368 ~ SettingInfo ~ render ~ displayDataSource", displayDataSource)
         return (
             <Form>
                 <FormItem
@@ -281,12 +339,12 @@ class SettingInfo extends React.Component {
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
-                    <SingleGoodSelector
-                        allDishes={this.props.goods.toJS()}
-                        allCategories={this.props.goodCategories.toJS()}
-                        value={this.state.selectedGood ? this.state.selectedGood.value : undefined}
-                        onChange={this.handleGoodChange}
-                    />
+                    <Button
+                        // className={styles.gTitleLink}
+                        onClick={this.handleSelectDishes}
+                    >
+                        {'批量添加商品'}
+                    </Button>
                 </FormItem>
                 <FormItem
                     label="秒杀价"
@@ -298,8 +356,8 @@ class SettingInfo extends React.Component {
                     <Table
                         bordered={true}
                         columns={this.columns}
-                        dataSource={this.state.goodsList}
-                        scroll={{ x: 780 }}
+                        dataSource={displayDataSource}
+                        // scroll={{ x: 380 }}
                         pagination={false}
                     />
                 </FormItem>
@@ -378,6 +436,39 @@ class SettingInfo extends React.Component {
                         />
                     </Tooltip>
                 </FormItem>
+
+                <FormItem
+                    label="活动图片"
+                    // className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 20 }}
+                >
+                    <Row>
+                        <Col span={24} >
+                            <ImageUpload
+                                value={bannerUrl}
+                                limitType={'.jpeg,.jpg,.png,.JPEG,.JPG,.PNG'}
+                                limitSize={5 * 1024 * 1024}
+                                onChange={value => this.handleShareImageChangne({ key: 'bannerUrl', value })}
+                            />
+                            {/* <CropperUploader
+                                // className={styles.uploadCom}
+                                width={120}
+                                height={110}
+                                cropperRatio={200 / 200}
+                                limit={1024 * 5}
+                                allowedType={['image/png', 'image/jpeg']}
+                                value={bannerUrl}
+                                uploadTest="上传图片"
+                                onChange={value => this.handleShareImageChangne({ key: 'bannerUrl', value })}
+                            /> */}
+                        </Col>
+                        {/* <Col span={18} className={styles.grayFontPic} > */}
+                        <p >图片建议尺寸：690*260，支持PNG、JPG格式，大小不超过5M，此图设置后将展示小程序活动页面展示</p>
+                        {/* </Col> */}
+                    </Row>
+                </FormItem>
+                {selectorModalVisible && this.renderFoodSelectorModal()}
             </Form>
         )
     }
@@ -387,11 +478,11 @@ const mapStateToProps = (state) => {
         goodCategories: state.sale_promotionDetailInfo_NEW.get('goodCategories'),
         goods: state.sale_promotionDetailInfo_NEW.get('goods'),
         /** 基础营销活动范围中设置的品牌 */
-        // selectedBrands: state.sale_promotionScopeInfo_NEW.getIn(['$scopeInfo', 'brands']),
+        selectedBrands: state.sale_promotionScopeInfo_NEW.getIn(['$scopeInfo', 'brands']),
         /** 基本档获取的所有品牌（由店铺schema接口获取，所以似乎品牌下没有店铺的话不会在这里？） */
-        // allBrands: state.sale_promotionScopeInfo_NEW.getIn(['refs', 'data', 'brands']),
-        // goodCategories: state.sale_promotionDetailInfo_NEW.getIn(['$categoryAndFoodInfo', 'categories']),
-        // goods: state.sale_promotionDetailInfo_NEW.getIn(['$categoryAndFoodInfo', 'dishes']),
+        allBrands: state.sale_promotionScopeInfo_NEW.getIn(['refs', 'data', 'brands']),
+        allCategories: state.sale_promotionDetailInfo_NEW.getIn(['$categoryAndFoodInfo', 'categories']),
+        allDishes: state.sale_promotionDetailInfo_NEW.getIn(['$categoryAndFoodInfo', 'dishes']),
     };
 };
 

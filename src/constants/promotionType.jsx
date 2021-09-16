@@ -736,6 +736,29 @@ export const HOUSEKEEPER_TYPES = [
     },
 ]
 
+export const WECHAT_MALL2_ACTIVITIES = [
+    {
+        title: SALE_LABEL.k67b3wvc,
+        color: '#84aac6',
+        text: SALE_LABEL.k67cp4la,
+        example: '',
+        tags: [SALE_LABEL.k639vh0m],
+        key: '10072',
+        right: 15,
+        bottom: 0,
+    },
+    {
+        title: SALE_LABEL.k67b3x3o,
+        color: '#84aac6',
+        text: SALE_LABEL.k67cpnlv,
+        example: '',
+        tags: [SALE_LABEL.k639vh0m],
+        key: '10071',
+        right: 5,
+        bottom: 0,
+    },
+];
+
 export const WECHAT_MALL_ACTIVITIES = [
     {
         title: SALE_LABEL.k67b3wvc,

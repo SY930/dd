@@ -467,6 +467,7 @@ class NewCustomerPage extends Component {
         };
         this.props.fetchFoodCategoryInfo({ ...opts });
         this.props.fetchFoodMenuInfo({ ...opts });
+        this.props.toggleIsBasicUpdate(true);
         this.props.setBasicPromotionType({
             promotionType: key,
         });

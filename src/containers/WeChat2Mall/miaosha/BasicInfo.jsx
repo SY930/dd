@@ -2,14 +2,7 @@ import React from 'react'
 import {
     Input,
     Form,
-    Select,
     DatePicker,
-    Checkbox,
-    message,
-    Tag,
-    Row,
-    Col,
-    Icon,
 } from 'antd';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 // import CustomTimeRangeInput from '../../../containers/SaleCenterNEW/common/CustomTimeRangeInput';
@@ -166,12 +159,12 @@ class BasicInfo extends React.Component {
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
-                    {getFieldDecorator('promotionName', {
+                    {getFieldDecorator('name', {
                         rules: [{
                             whitespace: true,
                             required: true,
-                            message: '汉字、字母、数字组成，不多于50个字符',
-                            pattern: /^[\u4E00-\u9FA5A-Za-z0-9\.\（\）\(\)\-\-]{1,50}$/,
+                            message: '汉字、字母、数字组成，必须2-5个字符',
+                            pattern: /^[\u4E00-\u9FA5A-Za-z0-9\.\（\）\(\)\-\-]{2,5}$/,
                         }],
                         initialValue: this.state.name,
                     })(
