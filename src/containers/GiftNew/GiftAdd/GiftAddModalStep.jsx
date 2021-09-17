@@ -76,6 +76,7 @@ import { MultipleGoodSelector } from '../../../components/common/GoodSelector'
 
 import {
     fetchFoodCategoryInfoAC,
+    fetchFoodMenuInfoLightAC,
     fetchFoodMenuInfoAC,
     getMallGoodsAndCategories,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
@@ -215,6 +216,7 @@ class GiftAddModalStep extends React.PureComponent {
             getPromotionShopSchema,
             fetchFoodCategoryInfo,
             fetchFoodMenuInfo,
+            fetchFoodMenuLightInfo,
             accountInfo,
         } = this.props;
         const groupID = accountInfo.get('groupID');
@@ -228,7 +230,8 @@ class GiftAddModalStep extends React.PureComponent {
             params = {...params, productCode: 'HLL_CRM_License'}
         }
         fetchFoodCategoryInfo(params, isHuaTian(), thisGift.data.subGroupID);
-        fetchFoodMenuInfo(params, isHuaTian(), thisGift.data.subGroupID);
+        // fetchFoodMenuInfo(params, isHuaTian(), thisGift.data.subGroupID);
+        fetchFoodMenuLightInfo(params, isHuaTian(), thisGift.data.subGroupID); // 轻量级接口
         getPromotionShopSchema(params);
         const { name, data, value } = thisGift;
         const { values } = this.state;
@@ -3312,6 +3315,9 @@ function mapDispatchToProps(dispatch) {
 
         fetchFoodMenuInfo: (opts, flag, id) => {
             dispatch(fetchFoodMenuInfoAC(opts, flag, id))
+        },
+        fetchFoodMenuLightInfo: (opts, flag, id) => {
+            dispatch(fetchFoodMenuInfoLightAC(opts, flag, id))
         },
         cancelCreateOrEditGift: opts => dispatch(cancelCreateOrEditGift(opts)),
         changeGiftFormKeyValue: opts => dispatch(changeGiftFormKeyValue(opts)),

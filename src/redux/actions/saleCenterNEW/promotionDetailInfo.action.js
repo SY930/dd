@@ -262,6 +262,71 @@ const fetchFoodMenuFailed = () => {
     }
 };
 
+export const fetchFoodMenuInfoLightAC = (params = {}, isHuaTian, subGroupID) => {
+    if (isHuaTian) {
+        return (dispatch) => {
+            dispatch(getRawFoodMenuSuccess({records: []})); // 起reset作用
+            dispatch({
+                type: SALE_CENTER_SET_CURRENT_FOOD_SELECTOR_MODE,
+                payload: params.shopID && params.shopID > 0
+            })
+            if (params.shopID && params.shopID > 0) {
+                return axiosData('/promotion/queryShopFoodInfo.ajax', { ...params, subGroupID, bookID: 0, pageNo: -1 }, {}, { path: 'data.foodInfoList' }).then((res = []) => {
+                    dispatch(fetchFoodMenuSuccess({records: res}))
+                    dispatch(getRawFoodMenuSuccess({records: res}));
+                }).catch(e => {
+                    dispatch(fetchFoodMenuFailed(e));
+                });
+            } else {
+                return axiosData('/promotion/queryGroupFoodInfo.ajax', { ...params, subGroupID, bookID: 0, pageNo: -1}, {}, {path: 'data.foodInfoList'})
+                    .then(
+                        (records = []) => {
+                            dispatch(fetchFoodMenuSuccess({records}));
+                            dispatch(getRawFoodMenuSuccess({records}));
+                        },
+                        error => dispatch(fetchFoodMenuFailed(error))
+                    )
+                    .catch(e => {
+                        console.log('err: ', e);
+                    });
+            }
+        }
+    }
+    return (dispatch) => {
+        dispatch({
+            type: SALE_CENTER_SET_CURRENT_FOOD_SELECTOR_MODE,
+            payload: params.shopID && params.shopID > 0
+        })
+        dispatch(getRawFoodMenuSuccess({records: []})); // 起reset作用
+        if (params.shopID && params.shopID > 0) {
+            return axiosData('/shopapi/queryShopFoodInfoList.svc', { ...params, bookID: 0, pageNo: -1}, {}, {path: 'data'}, 'HTTP_SERVICE_URL_SHOPAPI')
+            .then(
+                records => {
+                    dispatch(fetchFoodMenuSuccess(records));
+                    dispatch(getRawFoodMenuSuccess(records));
+                },
+                error => dispatch(fetchFoodMenuFailed(error))
+            )
+            .catch(e => {
+                console.log('err: ', e);
+            });
+        } else {
+            return axiosData('/shopapi/queryGroupSubFoods.svc', { ...params, bookID: 0, pageNo: -1}, {}, {path: 'data'}, 'HTTP_SERVICE_URL_SHOPAPI')
+                    .then(
+                        (records = []) => {
+                        console.log("file: promotionDetailInfo.action.js ~ line 318 ~ return ~ records 新街口", records)
+                            dispatch(fetchFoodMenuSuccess(records));
+                            dispatch(getRawFoodMenuSuccess(records));
+                        },
+                        error => dispatch(fetchFoodMenuFailed(error))
+                    )
+                    .catch(e => {
+                        console.log('err: ', e);
+                    });
+        }
+    }
+}
+
 export const fetchFoodMenuInfoAC = (params = {}, isHuaTian, subGroupID) => {
     if (isHuaTian) {
         return (dispatch) => {
@@ -314,6 +379,7 @@ export const fetchFoodMenuInfoAC = (params = {}, isHuaTian, subGroupID) => {
             return axiosData('/shopapi/queryGroupFood.svc', { ...params, bookID: 0, pageNo: -1}, {}, {path: 'data'}, 'HTTP_SERVICE_URL_SHOPAPI')
                     .then(
                         (records = []) => {
+                            console.log("🚀 ~ file: promotionDetailInfo.action.js ~ line 318 ~ return ~ records 原始街口", records)
                             dispatch(fetchFoodMenuSuccess(records));
                             dispatch(getRawFoodMenuSuccess(records));
                         },
