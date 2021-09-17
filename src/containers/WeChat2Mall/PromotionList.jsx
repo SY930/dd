@@ -11,7 +11,7 @@ import Authority from '../../components/common/Authority'
 import { axiosData } from '../../helpers/util'
 import registerPage from '../../../index';
 import ActivityMain from './WeChatMaLLActivityMain';
-import { WECHAT_MALL_CREATE, WECHAT_MALL_LIST } from '../../constants/entryCodes';
+import { WECHAT_MALL_LIST } from '../../constants/entryCodes';
 import {
     toggleIsUpdateAC,
     toggleIsCopyAC,
@@ -234,13 +234,10 @@ export class WeChatMallPromotionList extends React.Component {
 
     queryEvents(opts) {
         const shopID = this.props.user.shopID;
-        console.log("🚀 ~ file: PromotionList.jsx ~ line 221 ~ WeChatMallPromotionList ~ queryEvents ~ shopID", shopID)
         // if (shopID == undefined || shopID === 'undefined' || !(shopID > 0)) {
         //     return;
         // }
         const params = { ...opts, shopID };
-        debugger
-        console.log("🚀 ~ file: PromotionList.jsx ~ line 225 ~ WeChatMallPromotionList ~ queryEvents ~ params", params)
         axiosData(
             '/promotion/extra/shopExtraEventService_getExtraEvents.ajax',
             params,
@@ -249,7 +246,6 @@ export class WeChatMallPromotionList extends React.Component {
             'HTTP_SERVICE_URL_PROMOTION_NEW'
         )
             .then((res) => {
-                console.log("🚀 ~ file: PromotionList.jsx ~ line 234 ~ WeChatMallPromotionList ~ .then ~ res", res)
                 this.setState({
                     loading: false,
                     dataSource: (res.extraEventList || []).map((item, index) => ({ ...item, index: index + 1 })),
@@ -361,7 +357,7 @@ export class WeChatMallPromotionList extends React.Component {
                 <div className={headerClasses}>
                     <span className={styles.customHeader}>
                         商城活动信息
-                        <Button
+                        {/* <Button
                             type="ghost"
                             icon="plus"
                             className={styles.jumpToCreate}
@@ -369,7 +365,7 @@ export class WeChatMallPromotionList extends React.Component {
                                 () => {
                                     jumpPage({ menuID: WECHAT_MALL_CREATE })
                                 }
-                            }>新建</Button>
+                            }>新建</Button> */}
                     </span>
                 </div>
             </div>
@@ -463,7 +459,7 @@ export class WeChatMallPromotionList extends React.Component {
     }
 
     renderTables() {
-        console.log(this.state.loading, 'this.state.loading')
+        // console.log(this.state.loading, 'this.state.loading')
         const columns = [
             {
                 title: '序号',
@@ -485,11 +481,9 @@ export class WeChatMallPromotionList extends React.Component {
                 render: (text, record, index) => {
                     // 有点懒 sorry
                     const format = record.extraEventType == 10072 ? 'YYYYMMDDHHmmss' : 'YYYYMMDD';
-                    console.log("🚀 ~ file: PromotionList.jsx ~ line 444 ~ WeChatMallPromotionList ~ renderTables ~ format", format,  moment().format(format), moment(record.endTime, format).format(format))
                     const isExpired = moment().format(format) > moment(record.endTime, format).format(format);
                     const isOngoing = moment().format(format) <= moment(record.endTime, format).format(format)
                         && moment().format(format) >= moment(record.startTime, format).format(format);
-                    console.log("🚀 ~ file: PromotionList.jsx ~ line 446 ~ WeChatMallPromotionList ~ renderTables ~ isOngoing", isOngoing)
 
                     const buttonText = (record.status == 1 ? '禁用' : '启用');
                     return (<span>
@@ -530,6 +524,7 @@ export class WeChatMallPromotionList extends React.Component {
                                 //     this.handleCopy(record, true)
                                 // }}
                                 onClick={() => {
+                                    
                                     this.handleCopy(record, true, true)
                                 }}
                             >复制</a> : null
@@ -721,11 +716,13 @@ export class WeChatMallPromotionList extends React.Component {
     }
 
     handleCopy(record, isUpdate, isCopy) {
-        const shopID = this.props.user.shopID;
-        this.props.getMallGoodsAndCategories(shopID);
+        if (record.extraEventType == '10072') {
+            // 点击按钮请求商品
+            this.queryWeChat2Mall(record.extraEventType)
+        }
         this.props.toggleIsUpdate(isUpdate);
         this.props.toggleIsCopy(isCopy);
-        const timeGap = this.changeStrToDate(record.endTime) - this.changeStrToDate(record.startTime)
+        const timeGap = this.changeStrToDate(String(record.endTime)) - this.changeStrToDate(String(record.startTime))
         let endTime = moment(new Date().getTime() + timeGap).format(DATE_FORMAT)
         let startTime = moment(new Date().getTime()).format(DATE_FORMAT)
         record.endTime = endTime
@@ -734,6 +731,7 @@ export class WeChatMallPromotionList extends React.Component {
         this.setState({
             selectedRecord: record,
             updateModalVisible: true,
+            curKey: String(record.extraEventType),
             isUpdate,
             isCopy,
         });

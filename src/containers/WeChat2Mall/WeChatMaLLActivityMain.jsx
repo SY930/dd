@@ -56,19 +56,18 @@ class ActivityMain extends React.Component {
             },
             onFinish: (cb) => (data) => {
                 const { promotionScopeInfo } = this.props
-            // console.log("🚀 ~ file: WeChatMaLLActivityMain.jsx ~ line 55 ~ ActivityMain ~ renderActivityTags ~ data", data,  this.props.data)
                 this.setState({
                     confirmLoading: true,
                 });
                 const url = this.props.data ?
                     this.props.isCopy ? '/promotion/extra/shopExtraEventService_addExtraEvent.ajax' : '/promotion/extra/shopExtraEventService_updateExtraEvent.ajax'
                     : '/promotion/extra/shopExtraEventService_addExtraEvent.ajax';
-                const scopeInfo = promotionScopeInfoAdapter(promotionScopeInfo.get('$scopeInfo').toJS(), true); // 店铺信息
-                // console.log("🚀 ~ file: WeChatMaLLActivityMain.jsx ~ line 67 ~ ActivityMain ~ renderActivityTags ~ scopeInfo", scopeInfo)
+                // const scopeInfo = promotionScopeInfoAdapter(promotionScopeInfo.get('$scopeInfo').toJS(), true); // 店铺信息
                 const params = {
                     ...data,
                     extraEventType: '10072',
-                    shopID: scopeInfo.brandIDLst || this.props.user.shopID,
+                    shopID: this.props.user.shopID,
+                    shopIDs: promotionScopeInfo.get('$scopeInfo').toJS().brands,
                     // shopID: scopeInfo.brandIDLst,
                 };
                 const userName = getAccountInfo().userName

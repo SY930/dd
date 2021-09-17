@@ -12,12 +12,9 @@ const Immutable = require('immutable');
 export class ScopeInfo extends Component {
     constructor(props) {
         super(props)
-        // const shopSchema = props.shopSchema.getIn(['shopSchema']).toJS();
-        console.log(props.data, 'props.data>>>>>>')
         this.state = {
-            // dynamicShopSchema: shopSchema, // 随品牌的添加删除而变化
-            selections: props.data.shopID ? props.data.shopID : [],
-            brands: [],
+            selections: props.data.shopIDs ? props.data.shopIDs : [],
+            // brands: [],
             isRequire: true,
         }
     }
@@ -31,8 +28,6 @@ export class ScopeInfo extends Component {
         });
         const { promotionBasicInfo, promotionScopeInfo, fetchPromotionScopeInfoAC } = this.props;
         const promotionType = promotionBasicInfo.get('$basicInfo').toJS().promotionType;
-        // this.loadShopSchema();
-        // this.setState({ allShopsSet: !!promotionBasicInfo.get('$filterShops').toJS().allShopSet });
         if (!promotionScopeInfo.getIn(['refs', 'initialized'])) {
             let parm = {}
             if (isFilterShopType(promotionType)) {
@@ -47,75 +42,7 @@ export class ScopeInfo extends Component {
             }
             getPromotionShopSchema({ groupID: this.props.user.toJS().accountInfo.groupID, ...parm });
         }
-        if (this.props.promotionScopeInfo.getIn(['refs', 'data', 'shops']).size > 0 && this.props.promotionScopeInfo.getIn(['refs', 'data', 'brands']).size > 0) {
-            const _stateFromRedux = this.props.promotionScopeInfo.getIn(['$scopeInfo']).toJS();
-            // const {
-            // } = _stateFromRedux;
-            this.setState({
-                brands: _stateFromRedux.brands,
-            });
-        }
     }
-
-    componentWillReceiveProps(nextProps) {
-        // const previousSchema = this.state.shopSchema;
-        // const nextShopSchema = nextProps.shopSchema.getIn(['shopSchema']).toJS();
-        // if (!isEqual(previousSchema, nextShopSchema)) {
-        //     this.setState({shopSchema: nextShopSchema, // 后台请求来的值
-        //         dynamicShopSchema: nextShopSchema, // 随品牌的添加删除而变化
-        //     });
-        // }
-        if (nextProps.promotionBasicInfo.get('$filterShops').toJS().shopList) {
-            this.setState({ filterShops: nextProps.promotionBasicInfo.get('$filterShops').toJS().shopList })
-        } else {
-            this.setState({ filterShops: [] })
-        }
-        // this.setState({ allShopsSet: !!nextProps.promotionBasicInfo.get('$filterShops').toJS().allShopSet });
-         console.log(this.props.promotionScopeInfo.getIn(['refs', 'data']), 'this.props.promotionScopeInfo.getIn(');
-        if (JSON.stringify(nextProps.promotionScopeInfo.getIn(['refs', 'data'])) !=
-            JSON.stringify(this.props.promotionScopeInfo.getIn(['refs', 'data']))) {
-            const _data = Immutable.Map.isMap(nextProps.promotionScopeInfo.getIn(['$scopeInfo'])) ?
-                nextProps.promotionScopeInfo.getIn(['$scopeInfo']).toJS() :
-                nextProps.promotionScopeInfo.getIn(['$scopeInfo']);
-            this.setState({
-                brands: _data.brands,
-            });
-        }
-    }
-
-    // countIsRequire(shopList) {
-    //     const { promotionScopeInfo, isNew } = this.props;
-    //     const { size } = promotionScopeInfo.getIn(['refs', 'data', 'shops']);
-    //     const oldShops = promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS();
-    //     const { length } = shopList;
-    //     // a 新建营销活动，先获取此集团的所有店铺数据，如果此用户为全部店铺权限，表单内店铺组件非必选
-    //     // 如果用户权限为某几个店铺的权限，组件为必选项。
-    //     // b 编辑活动，全部店铺权限用户非必选
-    //     // 店铺受限用户，首先判断历史数据是否是全部店铺的数据，如果是，店铺组件为非必选。
-    //     // 反之，店铺为必选，用户必选一个用户权限之内的店铺选项。
-    //     if (isNew) {
-    //         if (length < size) {
-    //             this.setState({ isRequire: true });
-    //             return;
-    //         }
-    //         this.setState({ isRequire: false });
-    //     } else {
-    //         if (oldShops[0] && length < size) {
-    //             this.setState({ isRequire: true });
-    //             return;
-    //         }
-    //         this.setState({ isRequire: false });
-    //     }
-    // }
-
-    // async loadShopSchema() {
-    //     const { data } = await axios.post('/api/shopapi/schema', {});
-    //     const { brands } = data;
-    //     this.setState({
-    //         brandList: brands,
-    //     });
-    //     // this.countIsRequire(shops);
-    // }
 
 	handleSubmit = (isPrev) => {
 	    // const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
@@ -147,7 +74,6 @@ export class ScopeInfo extends Component {
             //     shopID: states.brands,
             // })
             this.props.saleCenterSetScopeInfo(states); // 把选择的商品存入redux
-            console.log("🚀 ~ file: ScopeInfo.jsx ~ line 146 ~ ScopeInfo ~ states", states)
         }
         return flag || isPrev;
 	}
@@ -155,13 +81,12 @@ export class ScopeInfo extends Component {
     editBoxForShopsChange = (val) => {
         this.setState({
             selections: val,
-            // shopStatus: val.length > 0,
         });
     }
 
     render() {
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
-        const { brands, allShopSet, selections, isRequire } = this.state;
+        const { selections, isRequire } = this.state;
         const valid = (isRequire && !selections[0]);
         return (
             <Form.Item
@@ -175,14 +100,11 @@ export class ScopeInfo extends Component {
             >
 
                 <ShopSelector
-                    value={selections}
-                    brandList={brands}
+                    value={selections.map(v => String(v))}
+                    // brandList={brands}
                     onChange={this.editBoxForShopsChange}
                     filterParm={isFilterShopType(promotionType) ? { productCode: 'HLL_CRM_License' } : {}}
                 />
-                {allShopSet ?
-                    <p style={{ color: '#e24949' }}>同时段内，店铺已被其它同类活动全部占用, 请返回第一步重新选择时段</p>
-                    : null}
             </Form.Item>
         );
     }

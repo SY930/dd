@@ -36,16 +36,16 @@ class SettingInfo extends React.Component {
         this.state = {
             productsLimit: props.data.productsLimit > 0 ? props.data.productsLimit : undefined, // 不填写则默认不限
             tag: props.data.tag || undefined, // 活动主题, 后端如果返回'' ，还是希望显示placeholder
-            bannerUrl: props.bannerUrl || '',
+            bannerUrl: props.data.bannerUrl || '',
             selectorModalVisible: false,
-            data: props.data.productList || [],
-            // priceLst,
+            productList: [], // 为了和菜品弹窗数据一起回显，先把数据滞空 内部data
+            _productList: props.data.productList || [], // 外部数据
         };
         this.columns = [
             {
                 title: '规格',
-                dataIndex: 'label',
-                key: 'label',
+                dataIndex: 'name',
+                key: 'name',
                 fixed: 'left',
                 width: 100,
                 render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
@@ -117,43 +117,35 @@ class SettingInfo extends React.Component {
             finish: this.handleSubmit,
             cancel: undefined,
         });
-        // if (this.props.allBrands.size && this.props.allCategories.size && this.props.allDishes.size) {
-        //     this.mapPriceLstToDataThenEmit()
-        // }
+        if (this.props.allBrands.size && this.props.allCategories.size && this.props.allDishes.size) {
+            this.mapPriceLstToDataThenEmit()
+        }
     }
 
-    // componentDidUpdate(prevProps) {
-    //     if (this.props.allCategories.size && this.props.allDishes.size) {
-    //         if (!prevProps.allCategories.size || !prevProps.allDishes.size) {
-    //             this.mapPriceLstToDataThenEmit()
-    //         }
-    //     }
-    //     if (this.props.selectedBrands !== prevProps.selectedBrands) {
-    //         if (JSON.stringify(this.props.selectedBrands.toJSON()) !== JSON.stringify(prevProps.selectedBrands.toJSON())) {
-    //             this.setState({
-    //                 data: [],
-    //             });
-    //             this.props.onChange([]);
-    //         }
-    //     }
-    // }
+    componentDidUpdate(prevProps) {
+        if (this.props.allBrands.size && this.props.allCategories.size && this.props.allDishes.size) {
+            if (!prevProps.allBrands.size || !prevProps.allCategories.size || !prevProps.allDishes.size) {
+                this.mapPriceLstToDataThenEmit()
+            }
+        }
+    }
 
     onCellStorageChange = (index, val) => {
-        const data = [...this.state.data];
+        const productList = [...this.state.productList];
         const num = val.number;
-        const records = data[index];
+        const records = productList[index];
         records.storage = num
-        this.setState({ data });
-        this.props.onChange(data.map(item => ({ ...item })));
+        this.setState({ productList });
+        // this.props.onChange(productList.map(item => ({ ...item })));
     }
 
     onCellPriceChange = (index, val) => {
         if (!val) {
             return message.warn('秒杀现金价不能为空');
         }
-        const data = [...this.state.data];
+        const productList = [...this.state.productList];
         let num = val.number;
-        const records = data[index];
+        const records = productList[index];
         if (val.number > +records.newPrice) { // 秒杀价需小于原价
             num = records.newPrice;
         } else if (val.number < 0) { // 秒杀价不小于0
@@ -161,8 +153,8 @@ class SettingInfo extends React.Component {
         }
         records.price = num
         // record.salePercent = (num / record.prePrice * 10).toFixed(2)
-        this.setState({ data });
-        this.props.onChange(data.map(item => ({ ...item })));
+        this.setState({ productList });
+        // this.props.onChange(productList.map(item => ({ ...item })));
     }
 
 
@@ -173,33 +165,29 @@ class SettingInfo extends React.Component {
             allDishes,
         } = this.props;
         const { dishes } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes);
-        const { priceLst } = this.state;
-        if (!priceLst.length) return;
-        const data = priceLst.reduce((acc, item) => {
-            const dish = dishes.find(d => d.value === `${item.brandID || 0}__${item.foodName}${item.foodUnitName}`);
-            if (dish) {
-                dish.newPrice = item.price
-                acc.push(dish)
-            }
-            return acc;
-        }, [])
-        this.setState({ data })
-        this.props.onChange(data)
+        const { _productList } = this.state;
+        if (!_productList.length) return;
+        const data = this.findFoodData(dishes, _productList);
+        data[0].name = _productList[0].name;
+        data[0].storage = _productList[0].storage;
+        data[0].foodItemID = _productList[0].foodItemID
+        this.setState({ productList: data }) // 用外部数据填充内部数据显示，这样可保证看到数据时点击弹窗也有数据
+        // this.props.onChange(data)
     }
 
     handleSubmit = () => {
         let flag = true;
         const {
-            data,
+            productList,
             productsLimit,
             tag,
             bannerUrl,
         } = this.state;
-        if (!data.length) {
+        if (!productList.length) {
             message.warning('请选择参与活动的商品');
             return false;
         }
-        for (const good of data) {
+        for (const good of productList) {
             if (!(good.storage > 0)) {
                 message.warning(`规格：【${good.foodName}】所设置的库存要大于0`)
                 flag = false;
@@ -231,12 +219,15 @@ class SettingInfo extends React.Component {
             bannerUrl,
             productsLimit: productsLimit || 0,
             // goodsList 需要按照后端格式组装一下
-            productList: data.map(item => ({
+            productList: productList.map(item => ({
                 foodItemID: item.foodID,
                 storage: item.storage || 0,
                 price: item.price,
                 name: item.foodName,
                 originalPrice: item.newPrice,
+                newPrice: item.newPrice,
+                // label: item.label,
+                vipPrice: item.vipPrice,
             })),
         })
         return flag;
@@ -273,6 +264,19 @@ class SettingInfo extends React.Component {
         this.setState({ [key]: value });
     }
 
+    handleFindFoodData = (dishes, v = []) => {
+        const dishObjects = v.reduce((acc, curr) => {
+            const dishObj = dishes.find(item => item.value === curr);
+            if (dishObj) {
+                const reservedDish = this.state.productList.find(item => item.value === dishObj.value);
+                acc.push(reservedDish ? { ...dishObj, newPrice: reservedDish.newPrice, name: reservedDish.foodName }
+                    : { ...dishObj, salePercent: '10', name: dishObj.foodName })
+            }
+            return acc;
+        }, [])
+        return dishObjects
+    }
+
     handleModalOk = (v) => {
         const {
             allBrands,
@@ -280,21 +284,24 @@ class SettingInfo extends React.Component {
             allDishes,
         } = this.props;
         const { dishes } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes);
-        const dishObjects = v.reduce((acc, curr) => {
-            const dishObj = dishes.find(item => item.value === curr);
-            if (dishObj) {
-                const reservedDish = this.state.data.find(item => item.value === dishObj.value);
-                acc.push(reservedDish ? { ...dishObj, newPrice: reservedDish.newPrice, salePercent: reservedDish.salePercent } : { ...dishObj, salePercent: '10' })
-            }
-            return acc;
-        }, [])
+        const dishObjects = this.handleFindFoodData(dishes, v);
         this.setState({
             selectorModalVisible: false,
-            data: dishObjects,
+            productList: dishObjects,
         })
         this.props.onChange({
             ...dishObjects,
         })
+    }
+
+    // 回显
+    findFoodData = (dishes, productList) => {
+        const data = dishes.find(item => item.foodID == productList[0].foodItemID) || {};
+        console.log("🚀 ~ file: SettingInfo.jsx ~ line 310 ~ SettingInfo ~ data>>>>>>>", data)
+        if (data.foodName) {
+            return [data]
+        }
+        return [];
     }
 
     renderFoodSelectorModal = () => {
@@ -303,14 +310,20 @@ class SettingInfo extends React.Component {
             allCategories,
             allDishes,
         } = this.props;
-        let { dishes, categories, brands } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes)
-        const selectedBrands = this.props.selectedBrands.toJS();
-        if (selectedBrands.length) {
-            brands = brands.filter(({ value }) => value == 0 || selectedBrands.includes(value))
-            categories = categories.filter(({ brandID: value }) => value == 0 || selectedBrands.includes(value))
-            dishes = dishes.filter(({ brandID: value }) => value == 0 || selectedBrands.includes(value))
-        }
-        const initialValue = this.state.data.map(item => `${item.brandID || 0}__${item.foodName}${item.unit}`);
+        const { dishes, categories, brands } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes)
+        // console.log("🚀 ~ file: SettingInfo.jsx ~ line 301 ~ SettingInfo ~ brands", brands)
+        // const selectedBrands = this.props.selectedBrands.toJS();
+        // console.log("🚀 ~ file: SettingInfo.jsx ~ line 303 ~ SettingInfo ~ selectedBrands", selectedBrands)
+        // if (selectedBrands.length) {
+        //     brands = brands.filter(({ value }) => value == 0 || selectedBrands.includes(value))
+        //     categories = categories.filter(({ brandID: value }) => value == 0 || selectedBrands.includes(value))
+        //     dishes = dishes.filter(({ brandID: value }) => value == 0 || selectedBrands.includes(value))
+        // }
+        // const { productList } = this.state;
+        const findFoodData = this.findFoodData(dishes, this.state.productList);
+        console.log("🚀 ~ file: SettingInfo.jsx ~ line 333 ~ SettingInfo ~ findFoodData", findFoodData)
+        const initialValue = findFoodData.map(item => `${item.brandID || 0}__${item.foodName}${item.unit}`);
+        console.log("🚀 ~ file: SettingInfo.jsx ~ line 334 ~ SettingInfo ~ initialValue", initialValue)
         return (
             <FoodSelectModal
                 allBrands={brands}
@@ -327,9 +340,8 @@ class SettingInfo extends React.Component {
 
     render() {
         const { getFieldDecorator } = this.props.form;
-        const { selectorModalVisible, data, bannerUrl } = this.state;
-        const displayDataSource = data.map((item, index) => ({ ...item, index }));
-        console.log("🚀 ~ file: SettingInfo.jsx ~ line 368 ~ SettingInfo ~ render ~ displayDataSource", displayDataSource)
+        const { selectorModalVisible, productList, bannerUrl } = this.state;
+        const displayDataSource = productList.map((item, index) => ({ ...item, index }));
         return (
             <Form>
                 <FormItem
@@ -451,17 +463,6 @@ class SettingInfo extends React.Component {
                                 limitSize={5 * 1024 * 1024}
                                 onChange={value => this.handleShareImageChangne({ key: 'bannerUrl', value })}
                             />
-                            {/* <CropperUploader
-                                // className={styles.uploadCom}
-                                width={120}
-                                height={110}
-                                cropperRatio={200 / 200}
-                                limit={1024 * 5}
-                                allowedType={['image/png', 'image/jpeg']}
-                                value={bannerUrl}
-                                uploadTest="上传图片"
-                                onChange={value => this.handleShareImageChangne({ key: 'bannerUrl', value })}
-                            /> */}
                         </Col>
                         {/* <Col span={18} className={styles.grayFontPic} > */}
                         <p >图片建议尺寸：690*260，支持PNG、JPG格式，大小不超过5M，此图设置后将展示小程序活动页面展示</p>
@@ -478,7 +479,7 @@ const mapStateToProps = (state) => {
         goodCategories: state.sale_promotionDetailInfo_NEW.get('goodCategories'),
         goods: state.sale_promotionDetailInfo_NEW.get('goods'),
         /** 基础营销活动范围中设置的品牌 */
-        selectedBrands: state.sale_promotionScopeInfo_NEW.getIn(['$scopeInfo', 'brands']),
+        // selectedBrands: state.sale_promotionScopeInfo_NEW.getIn(['$scopeInfo', 'brands']),
         /** 基本档获取的所有品牌（由店铺schema接口获取，所以似乎品牌下没有店铺的话不会在这里？） */
         allBrands: state.sale_promotionScopeInfo_NEW.getIn(['refs', 'data', 'brands']),
         allCategories: state.sale_promotionDetailInfo_NEW.getIn(['$categoryAndFoodInfo', 'categories']),
