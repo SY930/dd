@@ -4,7 +4,7 @@ import { jumpPage } from '@hualala/platform-base';
 import { connect } from 'react-redux';
 import {
     Table, Icon, Select, DatePicker,
-    Button, Modal, Row, Col, message,
+    Button, Modal, message,
     Input,
 } from 'antd';
 import Authority from '../../components/common/Authority'
@@ -139,9 +139,11 @@ export class WeChatMallPromotionList extends React.Component {
     }
 
     handleDisableClickEvent(record, status) { // toggle, 2 关闭 1开启 3终止
+        console.log(this.props.user, 'this.props.user')
+        const { user = {} } = this.props
         axiosData(
-            '/promotion/extra/extraEventService_toggleExtraEvent.ajax',
-            { itemID: record.itemID, shopID: this.props.user.shopID, status },
+            '/promotion/extra/shopExtraEventService_modifyExtraEventStatus.ajax',
+            { itemID: String(record.itemID), status, modifyBy: user.accountInfo ? user.accountInfo.userName : '', subGroupID: record.subGroupID },
             null,
             { path: 'data.extraEventList' },
             'HTTP_SERVICE_URL_PROMOTION_NEW'
@@ -201,8 +203,8 @@ export class WeChatMallPromotionList extends React.Component {
         const opt = {
         };
         if (promotionDateRange !== '' && promotionDateRange !== undefined && promotionDateRange[0] !== undefined) {
-            opt.startTime = promotionDateRange[0].format('YYYYMMDDHHmm');
-            opt.endTime = promotionDateRange[1].format('YYYYMMDDHHmm');
+            opt.startTime = promotionDateRange[0].format('YYYYMMDDHHmmss');
+            opt.endTime = promotionDateRange[1].format('YYYYMMDDHHmmss');
         }
         if (extraEventType) {
             opt.extraEventType = extraEventType;
@@ -321,33 +323,6 @@ export class WeChatMallPromotionList extends React.Component {
                 />
             </Modal>
         )
-        // return (
-        //     <Modal
-        //         wrapClassName="progressBarModal"
-        //         title={this.state.modalTitle}
-        //         visible={this.state.updateModalVisible}
-        //         footer={false}
-        //         width={1000}
-        //         height="569px"
-        //         maskClosable={false}
-        //         onCancel={() => {
-        //             this.handleDismissUpdateModal();
-        //         }}
-        //     >
-        //         <ActivityMain
-        //             index={index}
-        //             eventWay={`${selectedRecord.extraEventType}`}
-        //             isNew={true}
-        //             data={this.state.selectedRecord}
-        //             callbackthree={(arg) => {
-        //                 if (arg == 3) {
-        //                     this.handleDismissUpdateModal(false);
-        //                     !!this.state.isUpdate && this.handleQuery(this.state.pageNo);
-        //                 }
-        //             }}
-        //         />
-        //     </Modal>
-        // );
     }
 
     renderHeader() {
@@ -357,15 +332,6 @@ export class WeChatMallPromotionList extends React.Component {
                 <div className={headerClasses}>
                     <span className={styles.customHeader}>
                         商城活动信息
-                        {/* <Button
-                            type="ghost"
-                            icon="plus"
-                            className={styles.jumpToCreate}
-                            onClick={
-                                () => {
-                                    jumpPage({ menuID: WECHAT_MALL_CREATE })
-                                }
-                            }>新建</Button> */}
                     </span>
                 </div>
             </div>
@@ -384,9 +350,9 @@ export class WeChatMallPromotionList extends React.Component {
                         <li>
                             <RangePicker
                                 style={{ width: 260 }}
-                                showTime={{ format: 'HH:mm' }}
+                                showTime={{ format: 'HH:mm:ss' }}
                                 className={styles.ActivityDateDayleft}
-                                format="YYYY-MM-DD HH:mm"
+                                format="YYYY-MM-DD HH:mm:ss"
                                 placeholder={['开始时间', '结束时间']}
                                 onChange={this.onDateQualificationChange}
                             />
@@ -519,10 +485,6 @@ export class WeChatMallPromotionList extends React.Component {
                         {
                             record.extraEventType == 10072 ? <a
                                 href="#"
-                                // disabled={record.status == 1 || isOngoing || isExpired || record.status == 3}
-                                // onClick={record.status == 1 || isOngoing || isExpired || record.status == 3 ? null : () => {
-                                //     this.handleCopy(record, true)
-                                // }}
                                 onClick={() => {
                                     
                                     this.handleCopy(record, true, true)
@@ -688,9 +650,7 @@ export class WeChatMallPromotionList extends React.Component {
     handleEdit(record, isUpdate) {
         // const shopID = this.props.user.shopID;
         if (record.extraEventType == '10072') {
-            // const shopID = this.props.user.shopID;
             // 点击按钮请求商品
-            // this.props.getMallGoodsAndCategories(shopID);
             this.queryWeChat2Mall(record.extraEventType)
         }
         this.props.toggleIsUpdate(isUpdate);
@@ -701,19 +661,13 @@ export class WeChatMallPromotionList extends React.Component {
             isUpdate,
             isNew: false,
         })
-        // this.props.getMallGoodsAndCategories(shopID);
-        // this.setState({
-        //     selectedRecord: record,
-        //     updateModalVisible: true,
-        //     isUpdate
-        // });
     }
 
-    changeStrToDate = (str) => {
-        const pattern = /(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/;
-        const formatedDate = str.replace(pattern, '$1/$2/$3 $4:$5:$6');
-        return new Date(formatedDate).getTime();
-    }
+    // changeStrToDate = (str) => {
+    //     const pattern = /(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/;
+    //     const formatedDate = str.replace(pattern, '$1/$2/$3 $4:$5:$6');
+    //     return new Date(formatedDate).getTime();
+    // }
 
     handleCopy(record, isUpdate, isCopy) {
         if (record.extraEventType == '10072') {
@@ -722,12 +676,6 @@ export class WeChatMallPromotionList extends React.Component {
         }
         this.props.toggleIsUpdate(isUpdate);
         this.props.toggleIsCopy(isCopy);
-        const timeGap = this.changeStrToDate(String(record.endTime)) - this.changeStrToDate(String(record.startTime))
-        let endTime = moment(new Date().getTime() + timeGap).format(DATE_FORMAT)
-        let startTime = moment(new Date().getTime()).format(DATE_FORMAT)
-        record.endTime = endTime
-        record.startTime = startTime
-        // endTime.format(DATE_FORMAT)
         this.setState({
             selectedRecord: record,
             updateModalVisible: true,
@@ -754,7 +702,6 @@ export class WeChatMallPromotionList extends React.Component {
                         {this.renderTables()}
                     </div>
                 </div>
-                {/* {this.state.selectedRecord && this.renderModifyRecordInfoModal(0)} */}
                 { (updateModalVisible && curKey == '10072') && this.renderModifyRecordInfoModal() }
             </div>
         );

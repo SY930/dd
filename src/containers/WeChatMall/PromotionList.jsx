@@ -123,9 +123,10 @@ export class WeChatMallPromotionList extends React.Component {
     }
 
     handleDisableClickEvent(record, status) { // toggle, 2 关闭 1开启 3终止
+        console.log(this.props.user, 'this.props.user')
         axiosData(
-            '/promotion/extra/extraEventService_toggleExtraEvent.ajax',
-            { itemID: record.itemID, shopID: this.props.user.shopID, status },
+            '/promotion/extra/shopExtraEventService_modifyExtraEventStatus.ajax',
+            { itemID: record.itemID, status, modifyBy: this.props.user.userName },
             null,
             { path: 'data.extraEventList' },
             'HTTP_SERVICE_URL_PROMOTION_NEW'

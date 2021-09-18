@@ -296,8 +296,8 @@ class SettingInfo extends React.Component {
 
     // 回显
     findFoodData = (dishes, productList) => {
+        if (!productList.length) return [];
         const data = dishes.find(item => item.foodID == productList[0].foodItemID) || {};
-        console.log("🚀 ~ file: SettingInfo.jsx ~ line 310 ~ SettingInfo ~ data>>>>>>>", data)
         if (data.foodName) {
             return [data]
         }
