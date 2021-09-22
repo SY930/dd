@@ -48,7 +48,8 @@ import {
 import {
     fetchFoodCategoryInfoAC,
     fetchFoodMenuInfoAC,
-    saleCenterResetDetailInfoAC as saleCenterResetBasicDetailInfoAC
+    saleCenterResetDetailInfoAC as saleCenterResetBasicDetailInfoAC,
+    getMallGoodsAndCategories,
 } from "../../redux/actions/saleCenterNEW/promotionDetailInfo.action";
 import {
     saleCenterResetBasicInfoAC,
@@ -72,6 +73,7 @@ import { getStore } from '@hualala/platform-base'
 import Chou2Le from "../PromotionV3/Chou2Le";   // 抽抽乐
 import BlindBox from "../PromotionV3/BlindBox";   // 盲盒
 import PassWordCoupon from "../PromotionV3/PassWordCoupon";   // 口令领券
+import ActivityMain from '../WeChat2Mall/WeChatMaLLActivityMain'; // 秒杀
 import { jumpPage, closePage } from '@hualala/platform-base';
 
 import { setThemeClass } from '../../utils/index'
@@ -428,9 +430,59 @@ class NewCustomerPage extends Component {
         );
     }
 
+    // 秒杀活动
+    renderWeChat2MallModal() {
+        return (
+            <Modal
+                wrapClassName="progressBarModal"
+                title={'创建秒杀活动'}
+                // maskClosable={false}
+                footer={false}
+                // style={{
+                //     top: 20,
+                // }}
+                width={1000}
+                visible={true}
+                // onOk={this.onOk}
+                onCancel={this.onV3Click}
+            >
+                <ActivityMain
+                    index={0}
+                    // steps={this.props.steps}
+                    isNew={true}
+                    callbackthree={(arg) => {
+                        if (arg == 3) {
+                            this.onV3Click()
+                        }
+                    }}
+                />
+            </Modal>
+        )
+    }
+
+    // 请求菜品
+    queryWeChat2Mall = (key) => {
+        const opts = {
+            _groupID: this.props.user.accountInfo.groupID,
+            shopID: this.props.user.shopID,
+        };
+        this.props.fetchFoodCategoryInfo({ ...opts });
+        this.props.fetchFoodMenuInfo({ ...opts });
+        this.props.toggleIsBasicUpdate(true);
+        this.props.setBasicPromotionType({
+            promotionType: key,
+        });
+    }
+
     //** 第三版 重构 抽抽乐活动 点击事件 */
     onV3Click = (key) => {
         if (key) this.setState({ curKey: key })
+        if (key === '10072') {
+            // const shopID = this.props.user.shopID;
+            // 点击按钮请求商品
+            // this.props.getMallGoodsAndCategories(shopID);
+            this.queryWeChat2Mall(key)
+        }
         this.setState(ps => ({ v3visible: !ps.v3visible }));
     }
 
@@ -609,6 +661,7 @@ class NewCustomerPage extends Component {
                 { (v3visible && curKey == '78') && <Chou2Le onToggle={this.onV3Click} />}
                 { (v3visible && curKey == '79') && <BlindBox onToggle={this.onV3Click} />}
                 { (v3visible && curKey == '83') && <PassWordCoupon onToggle={this.onV3Click} />}
+                { (v3visible && curKey == '10072') && this.renderWeChat2MallModal() }
             </div>
         )
     }
@@ -667,7 +720,10 @@ function mapDispatchToProps(dispatch) {
         },
         getAuthLicenseData: (opts) => {
             return dispatch(getAuthLicenseData(opts))
-        }
+        },
+        getMallGoodsAndCategories: (opts) => {
+            dispatch(getMallGoodsAndCategories(opts))
+        },
     }
 }
 

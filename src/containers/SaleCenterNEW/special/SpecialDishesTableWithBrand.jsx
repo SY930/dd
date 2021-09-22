@@ -175,6 +175,7 @@ class SpecialDishesTableWithBrand extends Component {
             allCategories,
             allDishes,
         } = this.props;
+        console.log(allDishes.toJS(), 'this.props')
         let { dishes, categories, brands } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes)
         const selectedBrands = this.props.selectedBrands.toJS();
         if (selectedBrands.length) {
