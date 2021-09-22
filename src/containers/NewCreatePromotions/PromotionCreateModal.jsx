@@ -192,7 +192,7 @@ class PromotionCreateModal extends Component {
         this.setSpecialModalVisible(true);
     }
 
-    handleBasicPromotionCreate(index, promotionEntity) {
+    handleBasicPromotionCreate(index, promotionEntity = {}) {
         if (isHuaTian(this.props.user.accountInfo.groupID)) {
             message.warning(BASIC_PROMOTION_CREATE_DISABLED_TIP);
             return;

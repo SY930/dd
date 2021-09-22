@@ -248,7 +248,7 @@ class NewCustomerPage extends Component {
     }
 
     // 点击营销卡片处理函数
-    handleNewPromotionCardClick(promotionEntity) {
+    handleNewPromotionCardClick(promotionEntity={}) {
         const { key, isSpecial } = promotionEntity;
         if (HUALALA.ENVIRONMENT === 'production-release' && UNRELEASED_PROMOTION_TYPES.includes(`${key}`)) {
             return message.success(SALE_LABEL.k6316gwc);//活动尚未开放
@@ -263,7 +263,7 @@ class NewCustomerPage extends Component {
     }
 
     // 创建基础营销
-    handleBasicPromotionCreate(index, promotionEntity) {
+    handleBasicPromotionCreate(index, promotionEntity = {}) {
         if (isHuaTian(this.props.user.accountInfo.groupID)) {
             message.warning(BASIC_PROMOTION_CREATE_DISABLED_TIP);
             return;
@@ -272,6 +272,7 @@ class NewCustomerPage extends Component {
             message.warn(SALE_LABEL.k5nh24u9);
             return;
         }
+        // debugger
         const key = promotionEntity.key;
         const opts = {
             _groupID: this.props.user.accountInfo.groupID,

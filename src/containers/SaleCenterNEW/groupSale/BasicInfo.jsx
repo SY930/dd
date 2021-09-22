@@ -11,6 +11,7 @@ import {
 } from 'antd';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
+import DayHourMinPicker from './DayHourMinPicker'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -26,12 +27,12 @@ class BasicInfo extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            description: props.data.description,
-            startTime: props.data.startTime,
-            endTime: props.data.endTime,
-            name: props.data.name,
+            description: props.data && props.data.description,
+            startTime: props.data && props.data.startTime,
+            endTime: props.data && props.data.endTime,
+            name: props.data && props.data.name,
             // 后端是分钟，前端是小时
-            reservationTime: Math.floor((props.data.reservationTime || 0) / 60),
+            reservationTime: Math.floor(((props.data && props.data.reservationTime) || 0) / 60),
         };
     }
 
@@ -53,9 +54,16 @@ class BasicInfo extends React.Component {
         });
         // 存到wrapper
         if (nextFlag) {
+            const time = this.state.reservationTime || {}
+            const {
+                day = 0,
+                hour = 0,
+                min = 0,
+            } = time
+            const minRate = (Number(day) * 24 * 60) + (Number(hour) * 60) + Number(min)
             this.props.onChange({
                 ...this.state,
-                reservationTime: this.state.reservationTime * 60,
+                reservationTime: minRate,
             });
         }
         return nextFlag;
@@ -66,9 +74,9 @@ class BasicInfo extends React.Component {
             description: e.target.value,
         });
     }
-    handleReservationTimeChange = ({ number }) => {
+    handleReservationTimeChange = (data) => {
         this.setState({
-            reservationTime: number,
+            reservationTime: data,
         });
     }
 
@@ -132,7 +140,7 @@ class BasicInfo extends React.Component {
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
-                    {getFieldDecorator('promotionName', {
+                    {getFieldDecorator('name', {
                         rules: [{
                             whitespace: true,
                             required: true,
@@ -143,41 +151,6 @@ class BasicInfo extends React.Component {
                     })(
                         <Input placeholder="请输入活动名称" onChange={this.handleNameChange} />
                     )}
-                </FormItem>
-                <FormItem
-                    label="活动起止日期"
-                    className={[styles.FormItemStyle, styles.cardLevelTree].join(' ')}
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 17 }}
-                >
-                    <Row>
-                        <Col span={21}>
-                            {getFieldDecorator('rangePicker', {
-                            rules: [{
-                                required: true,
-                                message: '请选择活动起止时间',
-                            }],
-                            onChange: this.handleDateRangeChange,
-                            initialValue: this.state.startTime && this.state.endTime ? [moment(this.state.startTime, DATE_FORMAT), moment(this.state.endTime, DATE_FORMAT)] : [],
-                        })(
-                            <RangePicker
-                                className={styles.ActivityDateDayleft}
-                                disabledDate={disabledDate}
-                                style={{ width: '100%' }}
-                                format="YYYY-MM-DD"
-                                placeholder={['开始日期', '结束日期']}
-                            />
-                        )}
-                        </Col>
-                        <Col offset={1} span={2}>
-                            <div className={styles.ActivityDateDay}>
-                                <span>
-                                    {this.getDateCount()}
-                                </span>
-                                <span>天</span>
-                            </div>
-                        </Col>
-                    </Row>
                 </FormItem>
                 <FormItem
                     label="拼团有效期"
@@ -192,43 +165,83 @@ class BasicInfo extends React.Component {
                             rules: [
                                 {
                                     validator: (rule, v, cb) => {
-                                        if (!v || (!v.number)) {
-                                            return cb('拼团有效期必须大于0');
-                                        } else if (v.number > this.getDateCount() * 24) {
-                                            return cb('拼团有效期不能超过活动持续时间');
+                                        const day = Number(v.day || 0)
+                                        const hour = Number(v.hour || 0)
+                                        const min = Number(v.min || 0)
+                                        if (day == 'NaN' || hour == 'NaN' || min == 'NaN') {
+                                            return cb('请填写合规的时分秒数据');
+                                        }
+                                        if (day < 0 || hour < 0 || min < 0) {
+                                            return cb('请填写合规的时分秒数据');
+                                        }
+                                        if (hour > 60 || min > 60) {
+                                            return cb('请填写合规的时分秒数据');
+                                        }
+                                        if (day % 1 !== 0 || hour % 1 !== 0 || min % 1 !== 0) {
+                                            return cb('请填写合规的时分秒数据');
                                         }
                                         cb()
                                     },
                                 }
                             ],
-                            initialValue: {number: this.state.reservationTime},
-                            onChange: this.handleReservationTimeChange
+                            initialValue: { number: this.state.reservationTime },
+                            onChange: this.handleReservationTimeChange,
                         })(
-                            <PriceInput
-                                addonAfter="小时"
-                                disabled={!this.state.startTime || !this.state.endTime}
-                                placeholder="请输入拼团有效期"
-                                modal="int"
-                                maxNum={6}
-                            />
+                            // debugger
+                            <DayHourMinPicker />
                         )
                     }
                     <span
                         style={{
                             position: 'absolute',
-                            right: -90,
+                            right: 10,
                             color: '#787878',
                             top: 6,
                         }}
                     >
-                        {this.getTimeDesc()}
+                        {/* {this.getTimeDesc()} */}
                         &nbsp;
-                        <Tooltip title={`用户开团后，需要在${this.getTimeDesc()}内成团，超时则拼团失败`}>
+                        <Tooltip title={`若设置1日，用户开团后，需要在1日内成团，超时则拼团失败`}>
                             <Icon
                                 type="question-circle"
                             />
                         </Tooltip>
                     </span>
+                </FormItem>
+                <FormItem
+                    label="活动起止日期"
+                    className={[styles.FormItemStyle, styles.cardLevelTree].join(' ')}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <Row>
+                        <Col span={21}>
+                            {getFieldDecorator('rangePicker', {
+                                rules: [{
+                                    required: true,
+                                    message: '请选择活动起止时间',
+                                }],
+                                onChange: this.handleDateRangeChange,
+                                initialValue: this.state.startTime && this.state.endTime ? [moment(this.state.startTime, DATE_FORMAT), moment(this.state.endTime, DATE_FORMAT)] : [],
+                            })(
+                                <RangePicker
+                                    className={styles.ActivityDateDayleft}
+                                    disabledDate={disabledDate}
+                                    style={{ width: '100%' }}
+                                    format="YYYY-MM-DD"
+                                    placeholder={['开始日期', '结束日期']}
+                                />
+                            )}
+                        </Col>
+                        <Col offset={1} span={2}>
+                            <div className={styles.ActivityDateDay}>
+                                <span>
+                                    {this.getDateCount()}
+                                </span>
+                                <span>天</span>
+                            </div>
+                        </Col>
+                    </Row>
                 </FormItem>
                 <FormItem
                     label="活动说明"
@@ -245,7 +258,7 @@ class BasicInfo extends React.Component {
                         initialValue: this.state.description,
                         onChange: this.handleDescriptionChange,
                     })(
-                        <Input type="textarea" placeholder="活动说明最多200个字符"/>
+                        <Input type="textarea" placeholder="活动说明最多200个字符" />
                     )}
                 </FormItem>
             </Form>

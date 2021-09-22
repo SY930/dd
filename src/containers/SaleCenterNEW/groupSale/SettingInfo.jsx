@@ -9,15 +9,20 @@ import {
     Checkbox,
     Table,
     message,
+    Upload,
+    TreeSelect,
 } from 'antd';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
-import selfStyle from '../style.less'
+import selfStyle from './style.less'
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 import SingleGoodSelector from '../../../components/common/GoodSelector'
+import ImageUpload from 'components/common/ImageUpload';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
+const limitType = '.jpeg,.jpg,.png,.gif,.JPEG,.JPG,.PNG,.GIF';
+const fileSize = 3 * 1024 * 1024;
 
 const RADIO_OPTIONS = Object.freeze([
     {
@@ -36,68 +41,34 @@ class SettingInfo extends React.Component {
             good,
             unitInfo,
         } = this.getInitialGoodAndUnitInfo();
+        let data = props.data || {}
         this.state = {
-            activeType: props.data.activeType || 0,
-            isJoin: props.data.isJoin === undefined ? 1 : props.data.isJoin, // 默认checked
-            virtualGroup: props.data.virtualGroup, // 默认unchecked
-            joinCount: props.data.joinCount === undefined ? 2 : props.data.joinCount, // 参团人数默认为2
-            productsLimit: props.data.productsLimit > 0 ? props.data.productsLimit : undefined, // 不填写则默认不限
+            activeType: data.activeType || 0,
+            isJoin: data.isJoin === undefined ? 1 : data.isJoin, // 默认checked
+            virtualGroup: data.virtualGroup, // 默认unchecked
+            joinCount: data.joinCount === undefined ? 2 : data.joinCount, // 参团人数默认为2
+            productsLimit: data.productsLimit > 0 ? data.productsLimit : undefined, // 不填写则默认不限
             goodsList: unitInfo,
-            selectedGood: good,  
+            selectedGood: good,
+            bannerUrl: '',
+            virtualSales: '',
         };
         this.columns = [
             {
-                title: '规格',
-                dataIndex: 'unitName1',
-                key: 'unitName1',
-                fixed: 'left',
+                title: '商品名称',
+                dataIndex: 'label',
+                key: 'label',
+                // fixed: 'left',
                 width: 100,
-                render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
-            },
-            {
-                title: '积分售价（分）',
-                dataIndex: 'sellPoint',
-                width: 120,
-                key: 'sellPoint',
-                className: 'TableTxtRight',
-                render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
-            },
-            {
-                title: '会员售价（元）',
-                dataIndex: 'sellPrice',
-                key: 'sellPrice',
-                width: 120,
-                className: 'TableTxtRight',
                 render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
             },
             {
                 title: '原价（元）',
-                dataIndex: 'prePrice',
-                key: 'prePrice',
+                dataIndex: 'giftValue',
+                key: 'giftValue',
                 width: 100,
                 className: 'TableTxtRight',
                 render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
-            },
-            {
-                title: '拼团积分(分)',
-                dataIndex: 'point',
-                key: 'point',
-                width: 120,
-                className: 'noPadding',
-                render: (text, record, index) => {
-                    return (
-                        <span className={selfStyle.rightAlign}>
-                            <PriceInput
-                                modal="float"
-                                prefix={<Icon type="edit" />}
-                                placeholder="拼团积分"
-                                value={{ number: record.point }}
-                                maxNum={6}
-                                onChange={(val) => { this.onCellChange(index, 'point', val) }}
-                            />
-                        </span>
-                    )
-                },
             },
             {
                 title: '拼团现金(元)',
@@ -164,9 +135,15 @@ class SettingInfo extends React.Component {
         }
     }
 
+    onUpload = (url) => {
+        this.setState({
+            bannerUrl: url,
+        })
+    }
+
     getInitialGoodAndUnitInfo = (props = this.props) => {
         const goods = props.goods.toJS();
-        const { goodsList = [] } = props.data;
+        const { goodsList = [] } = props.data || {};
         if (!goods.length || !goodsList.length) {
             return {
                 good: null,
@@ -184,6 +161,7 @@ class SettingInfo extends React.Component {
         return {
             good: matchedGood,
             unitInfo: matchedGood.goodUnitInfo.map(unit => {
+                debugger
                 const savedUnitInfo = goodsList.find(item => item.foodID === unit.unitID);
                 if (savedUnitInfo) {
                     return {
@@ -223,35 +201,35 @@ class SettingInfo extends React.Component {
         } else {
             for (const good of goodsList) {
                 if (good.storage >= +good.goodStock) {
-                    message.warning(`规格：【${good.unitName1}】所设置的库存要小于总库存`)
+                    message.warning(`规格：【${good.label}】所设置的库存要小于总库存`)
                     flag = false;
                     break;
                 }
                 if (!(good.storage > 0)) {
-                    message.warning(`规格：【${good.unitName1}】所设置的库存要大于0`)
+                    message.warning(`规格：【${good.label}】所设置的库存要大于0`)
                     flag = false;
                     break;
                 }
                 if (good.point > +good.sellPoint) {
-                    message.warning(`规格：【${good.unitName1}】所设置的拼团积分不能大于积分售价`)
+                    message.warning(`规格：【${good.label}】所设置的拼团积分不能大于积分售价`)
                     flag = false;
                     break;
                 }
                 if (good.sellPrice > 0) {
                     if (good.price > +good.sellPrice) {
-                        message.warning(`规格：【${good.unitName1}】所设置的秒杀现金不能大于现金售价`)
+                        message.warning(`规格：【${good.label}】所设置的秒杀现金不能大于现金售价`)
                         flag = false;
                         break;
                     }
                 } else {
                     if (good.price > +good.prePrice) {
-                        message.warning(`规格：【${good.unitName1}】所设置的秒杀现金不能大于原价`)
+                        message.warning(`规格：【${good.label}】所设置的秒杀现金不能大于原价`)
                         flag = false;
                         break;
                     }
                 }
-                if (!(good.price > 0 || good.point > 0)) {
-                    message.warning(`规格：【${good.unitName1}】所设置的拼团现金和拼团积分至少要有一个大于0`)
+                if (!(good.price > 0)) {
+                    message.warning(`规格：【${good.label}】所设置的拼团现金要大于0`)
                     flag = false;
                     break;
                 }
@@ -269,31 +247,33 @@ class SettingInfo extends React.Component {
             ...rest,
             productsLimit: rest.productsLimit || 0,
             // goodsList 需要按照后端格式组装一下
-            goodsList: goodsList.map(item => ({
-                foodID: item.unitID,
-                foodItemID: selectedGood.goodID,
-                point: item.point,
-                purchaseLimit: item.purchaseLimit,
+            productList: goodsList.map(item => ({
+                originalPrice: item.giftValue,
+                foodItemID: item.value,
                 storage: item.storage,
                 price: item.price,
-                specType: item.unitName1,
-                name: selectedGood.goodName,
-            }))
+                name: item.label,
+            })),
         })
         return flag;
     }
 
     onReservationChange = (value) => {
-        this.setState({reservationTime: value.number});
+        this.setState({ reservationTime: value.number });
     }
     handleProductsLimitChange = (value) => {
-        this.setState({productsLimit: value.number});
+        this.setState({ productsLimit: value.number });
     }
 
     handleGoodChange = (good) => {
+        const {
+            unionList = []
+        } = this.props
+        const goodsList = unionList.filter((item) => { return item.value == good })
+        // debugger
         this.setState({
             selectedGood: good,
-            goodsList: good ? [...good.goodUnitInfo] : [],
+            goodsList,
         })
     }
 
@@ -308,6 +288,13 @@ class SettingInfo extends React.Component {
             virtualGroup: +checked,
         });
     }
+
+    handleVirtualSalesChange = (event) => {
+        this.setState({
+            virtualSales: event.number,
+        });
+    }
+
     handleIsJoinChange = ({ target: { checked } }) => {
         this.setState({
             isJoin: +checked,
@@ -316,6 +303,7 @@ class SettingInfo extends React.Component {
 
     render() {
         const { getFieldDecorator } = this.props.form;
+        const { treeData = [] } = this.props
         // debugger
         return (
             <Form>
@@ -323,8 +311,8 @@ class SettingInfo extends React.Component {
                     label="拼团类型"
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
-                    wrapperCol={{span: 7 }}
-                    style={{position: 'relative'}}
+                    wrapperCol={{ span: 7 }}
+                    style={{ position: 'relative' }}
                 >
                     <RadioGroup
                         value={this.state.activeType}
@@ -353,11 +341,16 @@ class SettingInfo extends React.Component {
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
-                    <SingleGoodSelector
-                        allDishes={this.props.goods.toJS()}
-                        allCategories={this.props.goodCategories.toJS()}
-                        value={this.state.selectedGood ? this.state.selectedGood.value : undefined}
+                    {/* debugger */}
+                    <TreeSelect
+                        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                        treeData={treeData}
+                        placeholder="请选择礼品名称"
+                        showSearch={true}
+                        treeNodeFilterProp="label"
+                        value={this.state.selectedGood}
                         onChange={this.handleGoodChange}
+                        allowClear={true}
                     />
                 </FormItem>
                 <FormItem
@@ -371,7 +364,7 @@ class SettingInfo extends React.Component {
                         bordered={true}
                         columns={this.columns}
                         dataSource={this.state.goodsList}
-                        scroll={{ x: 780 }}
+                        // scroll={{ x: 780 }}
                         pagination={false}
                     />
                 </FormItem>
@@ -396,7 +389,7 @@ class SettingInfo extends React.Component {
                                     },
                                 }
                             ],
-                            initialValue: {number: this.state.joinCount},
+                            initialValue: { number: this.state.joinCount },
                             onChange: this.handleJoinCountChange
                         })(
                             <PriceInput
@@ -413,7 +406,7 @@ class SettingInfo extends React.Component {
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 8 }}
-                    style={{position: 'relative'}}
+                    style={{ position: 'relative' }}
                 >
                     {
                         getFieldDecorator('productsLimit', {
@@ -429,7 +422,7 @@ class SettingInfo extends React.Component {
                                     },
                                 }
                             ],
-                            initialValue: {number: this.state.productsLimit},
+                            initialValue: { number: this.state.productsLimit },
                             onChange: this.handleProductsLimitChange
                         })(
                             <PriceInput
@@ -450,14 +443,14 @@ class SettingInfo extends React.Component {
                                 top: 8,
                             }}
                         />
-                    </Tooltip> 
+                    </Tooltip>
                 </FormItem>
                 <FormItem
                     label="凑团设置"
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 4 }}
-                    style={{position: 'relative'}}
+                    style={{ position: 'relative' }}
                 >
                     <Checkbox
                         style={{ marginTop: 6 }}
@@ -476,14 +469,14 @@ class SettingInfo extends React.Component {
                                 top: 8,
                             }}
                         />
-                    </Tooltip> 
+                    </Tooltip>
                 </FormItem>
                 <FormItem
                     label="模拟成团"
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 4 }}
-                    style={{position: 'relative'}}
+                    wrapperCol={{ span: 5 }}
+                    style={{ position: 'relative' }}
                 >
                     <Checkbox
                         style={{ marginTop: 6 }}
@@ -502,7 +495,65 @@ class SettingInfo extends React.Component {
                                 top: 8,
                             }}
                         />
-                    </Tooltip>                 
+                    </Tooltip>
+                </FormItem>
+                <FormItem
+                    label="模拟销量"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 8 }}
+                    style={{ position: 'relative' }}
+                >
+                    {
+                        getFieldDecorator('virtualSales', {
+                            rules: [
+                                {
+                                    validator: (rule, v, cb) => {
+                                        if (!v || (!v.number && v.number !== 0)) {
+                                            return cb();
+                                        } else if (v.number < 1 || v.number > 9999) {
+                                            return cb('商品限购数量范围为1～9999');
+                                        }
+                                        cb()
+                                    },
+                                }
+                            ],
+                            initialValue: { number: this.state.virtualSales },
+                            onChange: this.handleVirtualSalesChange
+                        })(
+                            <PriceInput
+                                placeholder="请输入数字"
+                                modal="int"
+                                maxNum={6}
+                            />
+                        )
+                    }
+                </FormItem>
+                {/* debugger */}
+                <FormItem
+                    label="活动图片"
+                    required={true}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 20 }}
+                    className={styles.diffUpload}
+                >
+                    {
+                        getFieldDecorator('bannerUrl', {
+                            rules: [
+                                { required: true, message: '活动图片不得为空' },
+                            ],
+                            initialValue: this.state.bannerUrl,
+                            onChange: this.onUpload,
+                        })(
+                            <ImageUpload
+                                limitType={limitType}
+                                limitSize={fileSize}
+                            />
+                        )
+                    }
+                    <p className={styles.antuploadhint}>
+                        建议尺寸: 690*260像素, 大小不超过5M。此图设置后将在小程序活动页面展示
+                    </p>
                 </FormItem>
             </Form>
         )

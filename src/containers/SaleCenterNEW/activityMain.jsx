@@ -65,8 +65,12 @@ import NewAddUpFreeActivity from './addUpFree/NewAddUpFreeActivity'; // 累计�
 import NewAddUpGiveActivity from './addUpGive/NewAddUpGiveActivity'; // 累计赠送
 import AddUpGiveDetailInfo from './addUpGive/addUpGiveDetailInfo';
 
+// debugger
 import NewWeighBuyGiveActivity from './weighAndBuyGive/NewWeighBuyGiveActivity'; // 称重买赠
 import WeighBuyGiveDetailInfo from './weighAndBuyGive/WeighBuyGiveDetailInfo';
+
+import GroupSaleActivity from './groupSale/GroupSaleActivity'; // 称重买赠
+import SettingInfo from './groupSale/SettingInfo'; //拼团活动
 
 import NewRecommendFood from './recommendFood/NewRecommendFood'; // 推荐菜
 import RecommendFoodDetailInfo from './recommendFood/recommendFoodDetailInfo';
@@ -139,6 +143,7 @@ class ActivityMain extends React.Component {
     }
 
     componentDidMount() {
+        // debugger
         const pagesArr = [
             {
                 wrapper: NewFullCutActivity,
@@ -215,6 +220,10 @@ class ActivityMain extends React.Component {
                 child: MemberExclusiveDetailInfo,
             },
             {
+                wrapper: GroupSaleActivity,
+                child: SettingInfo,
+            },
+            {
                 wrapper: NewFullCutActivity,
                 child: FullCutDetailInfo,
             },
@@ -223,6 +232,7 @@ class ActivityMain extends React.Component {
                 child: SpecialDetailInfo,
             },
         ]
+        // debugger
         const pages = pagesArr.map((promotion, index) => {
             return React.createElement(promotion.wrapper, {
                 callbacktwo: (arg) => {

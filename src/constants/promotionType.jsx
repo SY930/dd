@@ -44,6 +44,7 @@ export const BASIC_PROMOTION_MAP = {
     '1080': '累计次数赠送',
     '2070': '累计次数减免',
     '1021': '称重买赠',
+    '10071': '拼团活动',
 }
 
 // export const GIFT_MAP = {
@@ -695,7 +696,17 @@ export const SALE_PROMOTION_TYPES = [
         right: 2,
         bottom: -14,
         isHot: true,
-    }
+    },
+    {
+        title: SALE_LABEL.k67b3x3o,
+        color: '#84aac6',
+        text: SALE_LABEL.k67cpnlv,
+        example: '',
+        tags: [SALE_LABEL.k639vh0m],
+        key: '10071',
+        right: 5,
+        bottom: 0,
+    },
 ];
 
 /**
