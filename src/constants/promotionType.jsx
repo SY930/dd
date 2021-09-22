@@ -697,7 +697,7 @@ export const SALE_PROMOTION_TYPES = [
         isHot: true,
     },
     {
-        title: SALE_LABEL.k67b3wvc,
+        title: '秒杀',
         color: '#84aac6',
         text: SALE_LABEL.k67cp4la,
         example: '',

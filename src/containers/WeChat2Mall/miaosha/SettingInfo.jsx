@@ -321,9 +321,9 @@ class SettingInfo extends React.Component {
         // }
         // const { productList } = this.state;
         const findFoodData = this.findFoodData(dishes, this.state.productList);
-        console.log("🚀 ~ file: SettingInfo.jsx ~ line 333 ~ SettingInfo ~ findFoodData", findFoodData)
+        // console.log("🚀 ~ file: SettingInfo.jsx ~ line 333 ~ SettingInfo ~ findFoodData", findFoodData)
         const initialValue = findFoodData.map(item => `${item.brandID || 0}__${item.foodName}${item.unit}`);
-        console.log("🚀 ~ file: SettingInfo.jsx ~ line 334 ~ SettingInfo ~ initialValue", initialValue)
+        // console.log("🚀 ~ file: SettingInfo.jsx ~ line 334 ~ SettingInfo ~ initialValue", initialValue)
         return (
             <FoodSelectModal
                 allBrands={brands}
