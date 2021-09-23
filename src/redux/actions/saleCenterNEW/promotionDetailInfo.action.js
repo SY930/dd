@@ -379,7 +379,7 @@ export const fetchFoodMenuInfoAC = (params = {}, isHuaTian, subGroupID) => {
             return axiosData('/shopapi/queryGroupFood.svc', { ...params, bookID: 0, pageNo: -1}, {}, {path: 'data'}, 'HTTP_SERVICE_URL_SHOPAPI')
                     .then(
                         (records = []) => {
-                            console.log("🚀 ~ file: promotionDetailInfo.action.js ~ line 318 ~ return ~ records 原始街口", records)
+                            // console.log("🚀 ~ file: promotionDetailInfo.action.js ~ line 318 ~ return ~ records 原始街口", records)
                             dispatch(fetchFoodMenuSuccess(records));
                             dispatch(getRawFoodMenuSuccess(records));
                         },
