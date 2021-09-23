@@ -48,7 +48,7 @@ class LowPriceDetailInfo extends React.Component {
             disType: '3',
             ruleType: '1',
             targetScope: '0',
-            subRule:0
+            subRule: 1
         };
 
         this.renderPromotionRule = this.renderPromotionRule.bind(this);

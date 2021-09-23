@@ -33,7 +33,7 @@ class BuyAFreeDetailInfo extends React.Component {
                 },
             ],
             ruleType: '0',
-            subRule:0
+            subRule:1
         };
         this.renderFoodNeedCalc = this.renderFoodNeedCalc.bind(this);
         this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
