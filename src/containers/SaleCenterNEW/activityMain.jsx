@@ -65,7 +65,6 @@ import NewAddUpFreeActivity from './addUpFree/NewAddUpFreeActivity'; // 累计�
 import NewAddUpGiveActivity from './addUpGive/NewAddUpGiveActivity'; // 累计赠送
 import AddUpGiveDetailInfo from './addUpGive/addUpGiveDetailInfo';
 
-// debugger
 import NewWeighBuyGiveActivity from './weighAndBuyGive/NewWeighBuyGiveActivity'; // 称重买赠
 import WeighBuyGiveDetailInfo from './weighAndBuyGive/WeighBuyGiveDetailInfo';
 
@@ -113,7 +112,7 @@ class ActivityMain extends React.Component {
                     </div>
                     <div style={{ marginBottom: 20, whiteSpace: 'pre-line' }}>
                         {this.props.promotionType ?
-                            activityCategories.find(type => type.key === this.props.promotionType).desc || '': ''}
+                            activityCategories.find(type => type.key == this.props.promotionType).desc || '': ''}
                     </div>
                 </div>
             );
@@ -135,15 +134,14 @@ class ActivityMain extends React.Component {
             default:
                 return (
                     <div className={styles.promotionTip}>
-                        <div style={{ marginBottom: 20 }}>{this.props.promotionType ? activityCategories.find(type => type.key === this.props.promotionType).text || '': ''}</div>
-                        <div>{this.props.promotionType ? activityCategories.find(type => type.key === this.props.promotionType).example || '' : ''}</div>
+                        <div style={{ marginBottom: 20 }}>{this.props.promotionType ? activityCategories.find(type => type.key == this.props.promotionType).text || '': ''}</div>
+                        <div>{this.props.promotionType ? activityCategories.find(type => type.key == this.props.promotionType).example || '' : ''}</div>
                     </div>
                 );
         }
     }
 
     componentDidMount() {
-        // debugger
         const pagesArr = [
             {
                 wrapper: NewFullCutActivity,
@@ -232,7 +230,9 @@ class ActivityMain extends React.Component {
                 child: SpecialDetailInfo,
             },
         ]
-        // debugger
+        const {
+            data = {}
+        } = this.props
         const pages = pagesArr.map((promotion, index) => {
             return React.createElement(promotion.wrapper, {
                 callbacktwo: (arg) => {
@@ -246,6 +246,7 @@ class ActivityMain extends React.Component {
                 isCopy: this.props.isCopy,
                 component: promotion.child,
                 isOnline: this.isOnline(),
+                data,
             });
         });
         this.setState({

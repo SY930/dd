@@ -1077,7 +1077,6 @@ class PromotionBasicInfo extends React.Component {
         const k5m5ayg0 = intl.formatMessage(SALE_STRING.k5m5ayg0);
         const k5m678if = intl.formatMessage(SALE_STRING.k5m678if);
         const k5m679wf = intl.formatMessage(SALE_STRING.k5m679wf);
-        // debugger
         return (
 
             <Form className={styles.FormStyle}>

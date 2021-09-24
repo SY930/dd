@@ -37,6 +37,7 @@ import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import BasicInfo from './BasicInfo';
 import ActivityRange from './ActivityRange'
 import { getCardList } from '../../GiftNew/GiftAdd/AxiosFactory';
+import { axiosData } from '../../../helpers/util';
 
 class GroupSaleActivity extends NewPromotion {
     constructor(props) {
@@ -46,6 +47,8 @@ class GroupSaleActivity extends NewPromotion {
         this.state = {
             giftTreeData: [],
             unionList: [],
+            data: props.data || {},
+            itemID: props.data && props.data.itemID,
         };
         this.onFinish = this.onFinish.bind(this);
         this.handleNext = this.handleNext.bind(this);
@@ -153,67 +156,39 @@ class GroupSaleActivity extends NewPromotion {
             shopIDs,
             productList,
         }
-        debugger
-        if (this.props.isNew === false && !isCopy) {
-            promotionInfo.master.promotionID = basicInfo.promotionID;
-            this.props.updateNewPromotion({
-                data: { promotionInfo },
-                success: () => {
-                    message.success(SALE_LABEL.k5do0ps6, 5);
+        if (this.props.isNew === false) {
+            const {
+                itemID,
+            } = this.state
+            params.itemID = itemID
+            axiosData('/promotion/extra/shopExtraEventService_updateExtraEvent.ajax', params, null, {}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+                .then(() => {
+                    message.success('活动更新完成');
                     this.setState({
                         loading: false,
                     });
-                    cb();
-                    this.props.clear();
-                },
-                fail: () => {
-                    message.error(SALE_LABEL.k5doax7i);
+                    cb && cb();
+                }, (err) => {
+                    message.warning(err)
                     this.setState({
                         loading: false,
                     });
-                },
-                sameCode: () => {
-                    message.error(SALE_LABEL.k5m5ax20);
-                    this.setState({
-                        loading: false,
-                    });
-                },
-            });
+                })
         } else {
-            this.props.addNewPromotion({
-                data: { promotionInfo },
-                success: () => {
-                    cb();
-                    message.success(SALE_LABEL.k5do0ps6, 5);
+            axiosData('/promotion/extra/shopExtraEventService_addExtraEvent.ajax', params, null, {}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+                .then(() => {
+                    message.success('活动创建完成');
                     this.setState({
                         loading: false,
                     });
-                    this.props.clear();
-                    let target;
-                    if (this.props.user.get('shopID')) {
-                        target = isOnline ? ONLINE_PROMOTION_MANAGEMENT_SHOP :
-                            SALE_CENTER_PAGE_SHOP;
-                    } else {
-                        target = isOnline ? ONLINE_PROMOTION_MANAGEMENT_GROUP :
-                            SALE_CENTER_PAGE;
-                    }
-                    const menuList = this.props.user.get('menuList').toJS();
-                    const menuID = menuList.find(tab => tab.entryCode === target).menuID
-                    jumpPage({ menuID })
-                },
-                fail: () => {
-                    message.error(SALE_LABEL.k5doax7i);
+                    jumpPage({ pageID: '10000730002' })
+                    cb && cb();
+                }, (err) => {
+                    message.warning(err)
                     this.setState({
                         loading: false,
                     });
-                },
-                sameCode: () => {
-                    message.error(SALE_LABEL.k5m5ax20);
-                    this.setState({
-                        loading: false,
-                    });
-                },
-            });
+                })
         }
     }
 
@@ -281,8 +256,8 @@ class GroupSaleActivity extends NewPromotion {
         const {
             giftTreeData,
             unionList,
+            data = {},
         } = this.state
-        // debugger
         const steps = [
             {
                 title: SALE_LABEL.k5g5bcqo,
@@ -294,6 +269,7 @@ class GroupSaleActivity extends NewPromotion {
                             this.handles[0] = handles;
                         }}
                         onChange={this.handleDataChange}
+                        data={data}
                     />
                 ),
             },
@@ -308,6 +284,7 @@ class GroupSaleActivity extends NewPromotion {
                         isNew={isNew}
                         isCopy={isCopy}
                         onChange={this.handleDataChange}
+                        data={data}
                     />
                 ),
             },
@@ -328,6 +305,7 @@ class GroupSaleActivity extends NewPromotion {
                         isOnline,
                         treeData: giftTreeData,
                         unionList,
+                        data,
                     }
                 ),
             },

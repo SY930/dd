@@ -14,7 +14,6 @@ class Wrapper extends React.Component {
         this.steps = [
             {
                 title: '基本信息',
-                // debugger
                 content: (
                     <BasicInfo
                         getSubmitFn={(handles) => {
@@ -27,7 +26,6 @@ class Wrapper extends React.Component {
             },
             {
                 title: '活动内容',
-                // debugger
                 content: (
                     <SettingInfo
                         getSubmitFn={(handles) => {

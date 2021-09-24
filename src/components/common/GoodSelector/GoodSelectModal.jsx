@@ -94,7 +94,6 @@ class GoodSelectModal extends Component {
             filteredDishesOptions = filteredDishesOptions.map(dish => ({...dish, disabled: !selectedGoodResults.includes(dish.value)}))
         }
         const selectedItems = allDishes.filter(({value}) => selectedGoodResults.includes(value))
-        debugger
         return (
             <div className={style.hllFilterSelector}>
                 <Row type="flex">

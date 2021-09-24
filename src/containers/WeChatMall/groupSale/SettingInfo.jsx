@@ -316,7 +316,6 @@ class SettingInfo extends React.Component {
 
     render() {
         const { getFieldDecorator } = this.props.form;
-        // debugger
         return (
             <Form>
                 <FormItem

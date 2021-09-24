@@ -11,7 +11,9 @@ import Authority from '../../components/common/Authority'
 import { axiosData } from '../../helpers/util'
 import registerPage from '../../../index';
 import ActivityMain from './WeChatMaLLActivityMain';
-import { WECHAT_MALL_LIST } from '../../constants/entryCodes';
+import { default as ActivityMain2 } from '../SaleCenterNEW/activityMain'
+// import SettingInfo from '../SaleCenterNEW/groupSale/SettingInfo'
+import { WECHAT_GROUP_LIST } from '../../constants/entryCodes';
 import {
     toggleIsUpdateAC,
     toggleIsCopyAC,
@@ -65,7 +67,8 @@ const mapDispatchToProps = (dispatch) => {
         },
     };
 };
-@registerPage([WECHAT_MALL_LIST], {
+
+@registerPage([WECHAT_GROUP_LIST], {
     sale_myActivities_NEW,
     sale_promotionBasicInfo_NEW,
 })
@@ -130,9 +133,9 @@ export class WeChatMallPromotionList extends React.Component {
 
     componentDidUpdate(previousProps) {
         if (this.props.user.activeTabKey !== previousProps.user.activeTabKey
-            && this.props.user.activeTabKey === WECHAT_MALL_LIST) {
+            && this.props.user.activeTabKey === WECHAT_GROUP_LIST) {
             const tabArr = this.props.user.tabList.map((tab) => tab.value);
-            if (tabArr.includes(WECHAT_MALL_LIST)) {
+            if (tabArr.includes(WECHAT_GROUP_LIST)) {
                 this.handleQuery(); // tab里已有该tab，从别的tab切换回来，就自动查询，如果是新打开就不执行此刷新函数，而执行加载周期里的
             }
         }
@@ -291,7 +294,7 @@ export class WeChatMallPromotionList extends React.Component {
         })
     };
 
-    renderModifyRecordInfoModal() {
+    renderModifyRecordInfoModal(type) {
         const { selectedRecord } = this.state;
         // const index = WECHAT_MALL2_ACTIVITIES.findIndex(item => item.key === `${selectedRecord.extraEventType}`)
         // if (index === -1) return null;
@@ -306,21 +309,42 @@ export class WeChatMallPromotionList extends React.Component {
                 // onOk={this.onOk}
                 onCancel={this.handleCloseModal}
             >
-                <ActivityMain
-                    index={0}
-                    isNew={false}
-                    isCopy={false}
-                    data={selectedRecord}
-                    callbackthree={(arg) => {
-                        if (arg == 3) {
-                            !!this.state.isUpdate && this.handleQuery(this.state.pageNo);
-                            this.setState({
-                                isCopy: false,
-                                updateModalVisible: false,
-                            })
-                        }
-                    }}
-                />
+                {
+                    type === '10072' ?
+                        <ActivityMain
+                            index={0}
+                            isNew={false}
+                            isCopy={false}
+                            data={selectedRecord}
+                            callbackthree={(arg) => {
+                                if (arg == 3) {
+                                    !!this.state.isUpdate && this.handleQuery(this.state.pageNo);
+                                    this.setState({
+                                        isCopy: false,
+                                        updateModalVisible: false,
+                                    })
+                                }
+                            }}
+                        /> :
+                        <ActivityMain2
+                            index={22}
+                            isNew={false}
+                            isCopy={false}
+                            data={selectedRecord}
+                            callbackthree={(arg) => {
+                                if (arg == 3) {
+                                    !!this.state.isUpdate && this.handleQuery(this.state.pageNo);
+                                    this.setState({
+                                        isCopy: false,
+                                        updateModalVisible: false,
+                                    })
+                                }
+                            }}
+                        >
+                        </ActivityMain2>
+                }
+
+
             </Modal>
         )
     }
@@ -486,7 +510,7 @@ export class WeChatMallPromotionList extends React.Component {
                             record.extraEventType == 10072 ? <a
                                 href="#"
                                 onClick={() => {
-                                    
+
                                     this.handleCopy(record, true, true)
                                 }}
                             >复制</a> : null
@@ -649,7 +673,7 @@ export class WeChatMallPromotionList extends React.Component {
      */
     handleEdit(record, isUpdate) {
         // const shopID = this.props.user.shopID;
-        if (record.extraEventType == '10072') {
+        if (record.extraEventType == '10072' || record.extraEventType == '10071') {
             // 点击按钮请求商品
             this.queryWeChat2Mall(record.extraEventType)
         }
@@ -702,7 +726,8 @@ export class WeChatMallPromotionList extends React.Component {
                         {this.renderTables()}
                     </div>
                 </div>
-                { (updateModalVisible && curKey == '10072') && this.renderModifyRecordInfoModal() }
+                {(updateModalVisible && curKey == '10072') && this.renderModifyRecordInfoModal('10072')}
+                {(updateModalVisible && curKey == '10071') && this.renderModifyRecordInfoModal('10071')}
             </div>
         );
     }

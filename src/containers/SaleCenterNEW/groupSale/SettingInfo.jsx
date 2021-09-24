@@ -48,10 +48,17 @@ class SettingInfo extends React.Component {
             virtualGroup: data.virtualGroup, // 默认unchecked
             joinCount: data.joinCount === undefined ? 2 : data.joinCount, // 参团人数默认为2
             productsLimit: data.productsLimit > 0 ? data.productsLimit : undefined, // 不填写则默认不限
-            goodsList: unitInfo,
-            selectedGood: good,
-            bannerUrl: '',
-            virtualSales: '',
+            goodsList: data.productList && data.productList.map((item) => {
+                return {
+                    ...item,
+                    label: item.name,
+                    giftValue: item.originalPrice,
+                    itemID: item.itemID,
+                }
+            }) || [],
+            selectedGood: data.productList && data.productList[0].foodItemID,
+            bannerUrl: data.bannerUrl,
+            virtualSales: data.virtualSales,
         };
         this.columns = [
             {
@@ -105,7 +112,7 @@ class SettingInfo extends React.Component {
                                 prefix={<Icon type="edit" />}
                                 placeholder="拼团库存"
                                 value={{ number: record.storage }}
-                                maxNum={6}
+                                maxNum={7}
                                 onChange={(val) => { this.onCellChange(index, 'storage', val) }}
                             />
                         </span>
@@ -131,6 +138,11 @@ class SettingInfo extends React.Component {
             this.setState({
                 selectedGood: good,
                 goodsList: unitInfo,
+            })
+        }
+        if (nextProps.data.productList && !this.state.itemID) {
+            this.setState({
+                itemID: nextProps.data.productList[0].itemID,
             })
         }
     }
@@ -161,7 +173,6 @@ class SettingInfo extends React.Component {
         return {
             good: matchedGood,
             unitInfo: matchedGood.goodUnitInfo.map(unit => {
-                debugger
                 const savedUnitInfo = goodsList.find(item => item.foodID === unit.unitID);
                 if (savedUnitInfo) {
                     return {
@@ -200,6 +211,11 @@ class SettingInfo extends React.Component {
             return false;
         } else {
             for (const good of goodsList) {
+                if (good.storage >= 1000000) {
+                    message.warning(`规格：【${good.label}】所设置的拼团库存需要小于1000000`)
+                    flag = false;
+                    break;
+                }
                 if (good.storage >= +good.goodStock) {
                     message.warning(`规格：【${good.label}】所设置的库存要小于总库存`)
                     flag = false;
@@ -253,6 +269,7 @@ class SettingInfo extends React.Component {
                 storage: item.storage,
                 price: item.price,
                 name: item.label,
+                itemID: this.state.itemID,
             })),
         })
         return flag;
@@ -270,7 +287,6 @@ class SettingInfo extends React.Component {
             unionList = []
         } = this.props
         const goodsList = unionList.filter((item) => { return item.value == good })
-        // debugger
         this.setState({
             selectedGood: good,
             goodsList,
@@ -304,7 +320,6 @@ class SettingInfo extends React.Component {
     render() {
         const { getFieldDecorator } = this.props.form;
         const { treeData = [] } = this.props
-        // debugger
         return (
             <Form>
                 <FormItem
@@ -341,7 +356,6 @@ class SettingInfo extends React.Component {
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
-                    {/* debugger */}
                     <TreeSelect
                         dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                         treeData={treeData}
@@ -511,8 +525,8 @@ class SettingInfo extends React.Component {
                                     validator: (rule, v, cb) => {
                                         if (!v || (!v.number && v.number !== 0)) {
                                             return cb();
-                                        } else if (v.number < 1 || v.number > 9999) {
-                                            return cb('商品限购数量范围为1～9999');
+                                        } else if (v.number < 0 || v.number >= 1000000) {
+                                            return cb('必须为正整数且小于1000000');
                                         }
                                         cb()
                                     },
@@ -524,12 +538,11 @@ class SettingInfo extends React.Component {
                             <PriceInput
                                 placeholder="请输入数字"
                                 modal="int"
-                                maxNum={6}
+                                maxNum={7}
                             />
                         )
                     }
                 </FormItem>
-                {/* debugger */}
                 <FormItem
                     label="活动图片"
                     required={true}

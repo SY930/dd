@@ -32,7 +32,7 @@ class BasicInfo extends React.Component {
             endTime: props.data && props.data.endTime,
             name: props.data && props.data.name,
             // 后端是分钟，前端是小时
-            reservationTime: Math.floor(((props.data && props.data.reservationTime) || 0) / 60),
+            reservationTime: this.getReservationTime((props.data && props.data.reservationTime) || 0),
         };
     }
 
@@ -43,6 +43,19 @@ class BasicInfo extends React.Component {
             finish: undefined,
             cancel: undefined,
         });
+    }
+
+    getReservationTime = (time) => {
+        let reserve = Number(time)
+        const day = Math.floor(reserve / (24 * 60))
+        reserve %= (24 * 60)
+        const hour = Math.floor(reserve / (60))
+        const min = reserve % 60
+        return {
+            day,
+            hour,
+            min,
+        }
     }
 
     handleSubmit = () => {
@@ -129,7 +142,6 @@ class BasicInfo extends React.Component {
     }
 
     render() {
-        // debugger
         const { getFieldDecorator } = this.props.form;
         return (
             <Form className={styles.FormStyle}>
@@ -184,10 +196,9 @@ class BasicInfo extends React.Component {
                                     },
                                 }
                             ],
-                            initialValue: { number: this.state.reservationTime },
+                            initialValue: this.state.reservationTime,
                             onChange: this.handleReservationTimeChange,
                         })(
-                            // debugger
                             <DayHourMinPicker />
                         )
                     }

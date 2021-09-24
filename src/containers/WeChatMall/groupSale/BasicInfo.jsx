@@ -121,7 +121,6 @@ class BasicInfo extends React.Component {
     }
 
     render() {
-        // debugger
         const { getFieldDecorator } = this.props.form;
         return (
             <Form className={styles.FormStyle}>

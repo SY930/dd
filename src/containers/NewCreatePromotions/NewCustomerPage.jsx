@@ -274,7 +274,6 @@ class NewCustomerPage extends Component {
             message.warn(SALE_LABEL.k5nh24u9);
             return;
         }
-        // debugger
         const key = promotionEntity.key;
         const opts = {
             _groupID: this.props.user.accountInfo.groupID,

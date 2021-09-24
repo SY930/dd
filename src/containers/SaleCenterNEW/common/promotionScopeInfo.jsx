@@ -52,6 +52,7 @@ class PromotionScopeInfo extends React.Component {
 
         const shopSchema = props.shopSchema.getIn(['shopSchema']).toJS();
         const ifOffLine = props.promotionBasicInfo.get('$basicInfo').toJS().promotionType === '1021'
+        const ifGroupSale = props.promotionBasicInfo.get('$basicInfo').toJS().promotionType == '10071'
         this.state = {
             cities: [],
             areas: [],
@@ -69,7 +70,7 @@ class PromotionScopeInfo extends React.Component {
             // be caution, state key is diff with redux key.
             brands: [],
             shopsInfo: [],
-            selections: this.props.promotionScopeInfo.getIn(['$scopeInfo']).toJS().shopsInfo || [],
+            selections: ifGroupSale ? this.props.data.shopIDs || [] : this.props.promotionScopeInfo.getIn(['$scopeInfo']).toJS().shopsInfo || [],
             initialized: false,
             voucherVerify: '0',
             voucherVerifyChannel: '1',
@@ -123,7 +124,6 @@ class PromotionScopeInfo extends React.Component {
                 flag = false;
             }
         }
-        // debugger
         if (promotionType == '10071') {
             this.props.onChange({
                 shopIDs: selections,
@@ -742,7 +742,6 @@ class PromotionScopeInfo extends React.Component {
 
     render() {
         const promotionType = this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType'])
-        // debugger
         return (
             <div style={{ position: "absolute", width: '100%' }}>
                 {
