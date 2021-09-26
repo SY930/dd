@@ -7,11 +7,13 @@ import {
 	Button, Modal, Row, Col, message,
 	Input,
 } from 'antd';
+import CreateCouponContent from '../Modal/CreateCouponContent'
 import { debounce } from 'lodash'
 import styles from '../AlipayCoupon.less'
 import { axiosData } from '../../../helpers/util'
 import registerPage from '../../../../index';
 import { PROMOTION_ZHIFUBAO_COUPON_LIST } from '../../../constants/entryCodes';
+import { getCardList, getShopPid, getIndirectList } from '../AxiosFactory';
 const moment = require('moment');
 
 
@@ -42,12 +44,17 @@ class CouponManageList extends Component {
 			couponID: '', // 券ID
 			channel: '', // 渠道
 			couponDateRange: '', // 创建时间
+            createCouponModalVisible: false,
+            treeData: [],
+            shopPid: [], // 直连PID
+            indirectList: [], // 间连列表
 		}
 		this.handleQuery = debounce(this.handleQuery.bind(this), 500);
 	}
 
 	componentDidMount() {
 		// this.handleQuery();
+       this.initData();
 		this.onWindowResize();
 		window.addEventListener('resize', this.onWindowResize);
 	}
@@ -73,6 +80,24 @@ class CouponManageList extends Component {
         }
     }
 
+    initData = () => {
+        getCardList({giftTypes: [10, 21]}).then(x => {
+            this.setState({ treeData: x });
+        });
+        getShopPid().then((res) => {
+            this.setState({
+                shopPid: res,
+            })
+            console.log("🚀 ~ file: CouponManageList.jsx ~ line 59 ~ CouponManageList ~ getShopPid ~ res", res)
+        })
+        getIndirectList().then((res) => {
+            this.setState({
+                indirectList: res,
+            })
+        console.log("🚀 ~ file: CouponManageList.jsx ~ line 89 ~ CouponManageList ~ getIndirectList ~ res", res)
+            
+        })
+    }
 	  // 切换每页显示条数
 	  onShowSizeChange = (current, pageSize) => {
         this.setState({
@@ -156,23 +181,41 @@ class CouponManageList extends Component {
         //     })
     }
 
+    handleCreateCouponModal = () => {
+        this.setState({
+            createCouponModalVisible: true,
+        })
+    }
+
+    handleCloseModal = () => {
+        this.setState({
+            createCouponModalVisible: false,
+        })
+        return null;
+    }
+
+    handleSuccesModalSubmit = () => {
+        
+    }
+
 
 	renderHeader = () => {
 		const headerClasses = `layoutsToolLeft ${styles.headerWithBgColor}`;
 		return (
 			<div className={headerClasses}>
 				<span className={styles.customHeader}>
-					商城活动信息
+                    第三方券管理
 				</span>
 				<div>
 					<Button
 						type="ghost"
-						className={styles.jumpToCreate}
+                        style={{ marginRight: 10 }}
 					>已删除第三方券</Button>
 					<Button
 						type="ghost"
 						icon="plus"
 						className={styles.jumpToCreate}
+                        onClick={this.handleCreateCouponModal}
 					>新建第三方券</Button>
 				</div>
 			</div>
@@ -359,6 +402,15 @@ class CouponManageList extends Component {
 						{this.renderTables()}
 					</div>
 				</div>
+                {
+                    this.state.createCouponModalVisible &&  <CreateCouponContent
+                    handleSubmit={this.handleSuccesModalSubmit}
+                    treeData={this.state.treeData}
+                    shopPid={this.state.shopPid}
+                    indirectList={this.state.indirectList}
+                    handleCloseModal={this.handleCloseModal}
+                />
+                }
 			</div>
 		)
 	}
