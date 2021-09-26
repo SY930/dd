@@ -706,6 +706,7 @@ export const SALE_PROMOTION_TYPES = [
         key: '10071',
         right: 5,
         bottom: 0,
+        filter: true,
     }, {
         title: '秒杀',
         color: '#84aac6',
@@ -715,6 +716,7 @@ export const SALE_PROMOTION_TYPES = [
         key: '10072',
         right: 15,
         bottom: 0,
+        filter: true, // 可过滤
     },
 ];
 

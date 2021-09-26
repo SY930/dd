@@ -5,6 +5,7 @@ import {
     Col,
     message,
 } from 'antd';
+import { jumpPage } from '@hualala/platform-base';
 import { ActivityLogo } from '../SaleCenterNEW/ActivityLogo/ActivityLogo'; // 活动logo
 import styles from '../SaleCenterNEW/ActivityPage.less';
 import WeChatMallSale from './miaosha/Wrapper';
@@ -85,8 +86,12 @@ class ActivityMain extends React.Component {
                         this.setState({
                             confirmLoading: false,
                         });
+                        // 创建完成跳转页面
+                        if (!this.props.data && !this.props.isCopy)  {
+                            jumpPage({ pageID: '10000730002' })
+                        }
+                        message.success(`活动${this.props.data ?  (this.props.isCopy ? '复制' : '更新') : '创建'}完成`);
                         this.props.toggleIsCopy(false)
-                        message.success(`活动${this.props.data ? '更新' : '创建'}完成`);
                         cb && cb();
                     }, err => {
                         this.setState({

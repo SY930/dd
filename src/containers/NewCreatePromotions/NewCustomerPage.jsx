@@ -80,6 +80,7 @@ import { setThemeClass } from '../../utils/index'
 const activityList = [
     '80', '66', '81', 'housekeeper', 'intelligentGiftRule', '82'
 ]
+const CONTAIN_GROUPID_SHOW = ['317964', '11157']; // 拼团秒杀只针对茶百道显示
 @registerPage([NEW_SALE_BOX], {
 })
 @connect(mapStateToProps, mapDispatchToProps)
@@ -514,6 +515,7 @@ class NewCustomerPage extends Component {
         const state = getStore().getState();
         const { groupID } = state.user.get('accountInfo').toJS();
         const { houseKeepStatus,gentGiftStatus } = this.state;
+        console.log(SALE_PROMOTION_TYPES.filter(item => !item.filter), '>>>>>>>>>>>>>.')
         // let keeperFlag = avaHouseKeeperGroups.includes(groupID)
         // let intelligentFlag = avaIntelligentGiftRuleGroups.includes(groupID)
         // 管家活动列表是否为空
@@ -583,7 +585,7 @@ class NewCustomerPage extends Component {
             },
             {
                 title: k6316iio,
-                list: SALE_PROMOTION_TYPES,
+                list: CONTAIN_GROUPID_SHOW.includes(String(groupID)) ? SALE_PROMOTION_TYPES : SALE_PROMOTION_TYPES.filter(item => !item.filter),
             },
             {
                 title: '管家活动',
