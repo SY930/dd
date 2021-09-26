@@ -114,7 +114,9 @@ class CreateCouponContent extends Component {
             }
             this.setState({
                 smidList: res,
-                smidModalVisible: true,
+                // smidModalVisible: true,
+            }, () => {
+                this.handleSmidSubmit();
             })
         })
     }
@@ -592,9 +594,9 @@ class CreateCouponContent extends Component {
                         </Form>
                     </Col>
                 </Row>
-                {
+                {/* {
                     this.renderSmidModal()
-                }
+                } */}
             </Modal>
         )
     }
