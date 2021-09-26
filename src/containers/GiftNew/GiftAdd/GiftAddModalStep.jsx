@@ -76,6 +76,7 @@ import { MultipleGoodSelector } from '../../../components/common/GoodSelector'
 
 import {
     fetchFoodCategoryInfoAC,
+    fetchFoodMenuInfoLightAC,
     fetchFoodMenuInfoAC,
     getMallGoodsAndCategories,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
@@ -215,6 +216,7 @@ class GiftAddModalStep extends React.PureComponent {
             getPromotionShopSchema,
             fetchFoodCategoryInfo,
             fetchFoodMenuInfo,
+            fetchFoodMenuLightInfo,
             accountInfo,
         } = this.props;
         const groupID = accountInfo.get('groupID');
@@ -228,7 +230,8 @@ class GiftAddModalStep extends React.PureComponent {
             params = {...params, productCode: 'HLL_CRM_License'}
         }
         fetchFoodCategoryInfo(params, isHuaTian(), thisGift.data.subGroupID);
-        fetchFoodMenuInfo(params, isHuaTian(), thisGift.data.subGroupID);
+        // fetchFoodMenuInfo(params, isHuaTian(), thisGift.data.subGroupID);
+        fetchFoodMenuLightInfo(params, isHuaTian(), thisGift.data.subGroupID); // 轻量级接口
         getPromotionShopSchema(params);
         const { name, data, value } = thisGift;
         const { values } = this.state;
@@ -443,6 +446,7 @@ class GiftAddModalStep extends React.PureComponent {
                 if(firstKeys[describe][1] != undefined && firstKeys[describe][1].hasOwnProperty('keys')) {
                     let keys = [...firstKeys[describe][1].keys];
                     if (value != 0) {
+                        // keys.push('foodsboxs','subRule')
                         keys.push('foodsboxs')
                     } else {
                         keys = []
@@ -2467,6 +2471,7 @@ class GiftAddModalStep extends React.PureComponent {
         if(formData.applyScene){
             formData.applyScene = formData.applyScene.toString()
         }
+        
         // 折扣上限显示
         if (value == '111' && formData.discountOffMax == 0) {
             formData.discountOffMax = ''
@@ -3108,6 +3113,20 @@ class GiftAddModalStep extends React.PureComponent {
                     )
                 },
             },
+            subRule: {
+                label: '配菜计算',
+                type: 'custom',
+                defaultValue: 0,
+                render: (decorator, form) => {
+                    const giftVal = this.props.gift.value;
+                    return decorator({})(
+                        <RadioGroup className={ giftVal == '111' ? styles.subRule  : ''}>
+                            <Radio value={0}>不参与</Radio>
+                            <Radio value={1}>参与</Radio>
+                        </RadioGroup>
+                    )
+                },
+            },
             // 买赠券折扣
             // discountRateSetting: {
             //     label: '折扣',
@@ -3312,6 +3331,9 @@ function mapDispatchToProps(dispatch) {
 
         fetchFoodMenuInfo: (opts, flag, id) => {
             dispatch(fetchFoodMenuInfoAC(opts, flag, id))
+        },
+        fetchFoodMenuLightInfo: (opts, flag, id) => {
+            dispatch(fetchFoodMenuInfoLightAC(opts, flag, id))
         },
         cancelCreateOrEditGift: opts => dispatch(cancelCreateOrEditGift(opts)),
         changeGiftFormKeyValue: opts => dispatch(changeGiftFormKeyValue(opts)),

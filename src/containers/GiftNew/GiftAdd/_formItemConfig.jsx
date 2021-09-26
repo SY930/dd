@@ -298,7 +298,7 @@ export const MALL_COUPON_BASIC_SETTING_FORM_ITEMS = {
                 push: 3,
             },
             keys: [
-                // 'isNeedCustomerInfo',
+                'isNeedCustomerInfo',
             ]
         },
     ],
@@ -597,6 +597,7 @@ export const FIRST_KEYS = {
                 'pushMessage',
                 'buyGiveFoods',
                 'buyGiveSecondaryFoods',
+                'subRule',
                 'discountRule',                     // 优惠规则
                 'stageAmount',
                 'giveFoodCount',
@@ -968,6 +969,7 @@ export const THIRD_KEYS = (() => ({
                 'selectBrands',
                 'foodsboxs',
                 'shopNames',
+                // 'subRule',
                 'isNeedCustomerInfo'
             ]
         },
@@ -982,6 +984,7 @@ export const THIRD_KEYS = (() => ({
                 'selectBrands',
                 'foodScopes',
                 'shopNames',
+                'subRule',
                 'isNeedCustomerInfo'
             ]
         },
@@ -996,6 +999,7 @@ export const THIRD_KEYS = (() => ({
                 'selectBrands',
                 'foodScopes',
                 'shopNames',
+                'subRule',
                 'isNeedCustomerInfo'
             ]
         },
