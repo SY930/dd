@@ -248,7 +248,7 @@ class MyActivities extends React.Component {
             pageNo: 1,
             queryDisabled: false,
             currentPromotionID: '',
-            runType:'0'
+            runType: '0'
         };
         this.handleDismissUpdateModal = this.handleDismissUpdateModal.bind(this);
         this.checkDetailInfo = this.checkDetailInfo.bind(this);
@@ -710,7 +710,7 @@ class MyActivities extends React.Component {
             });
         }
     }
-    
+
     // Row Actions: 查看
     checkDetailInfo() {
         const _record = arguments[1];
@@ -783,20 +783,20 @@ class MyActivities extends React.Component {
                 maskClosable={false}
                 onCancel={this.handleDismissUpdateModal}
             >
-                { this.state.updateModalVisible && this.renderContentOfThisModal()}
+                {this.state.updateModalVisible && this.renderContentOfThisModal()}
             </Modal>
         );
     }
-    setRunDataList(){
-        const { promotionList,queryPromotionList } = this.props;
+    setRunDataList() {
+        const { promotionList, queryPromotionList } = this.props;
         let type = 0;
-        if(promotionList && promotionList.length > 0){
+        if (promotionList && promotionList.length > 0) {
             type = promotionList[0].executeType
             this.setState({
-                runType:type
+                runType: type
             })
         }
-        queryPromotionList({type})
+        queryPromotionList({ type })
         this.props.openPromotionAutoRunListModal();
     }
     renderHeader() {
@@ -1214,20 +1214,37 @@ class MyActivities extends React.Component {
                                     }}
                                 >{COMMON_LABEL.delete}</a>
                             </Authority>
-                            <Authority rightCode={BASIC_PROMOTION_UPDATE}>
-                                <a
-                                    href="#"
-                                    disabled={!isGroupPro || record.status != 3}
-                                    onClick={() => {
-                                        this.props.toggleIsUpdate(true)
-                                        this.setState({
-                                            isCopy:true,
-                                            modalTitle:'复制活动信息'
-                                        })
-                                        this.handleUpdateOpe(text, record, index);
-                                    }}
-                                >复制</a>
-                            </Authority>
+                            {
+                                record.promotionType === '1050' ?
+                                    <a
+                                        href="#"
+                                        // disabled={!isGroupPro || record.status != 3}
+                                        onClick={() => {
+                                            this.props.toggleIsUpdate(true)
+                                            this.setState({
+                                                isCopy: true,
+                                                modalTitle: '复制活动信息'
+                                            })
+                                            this.handleUpdateOpe(text, record, index);
+                                        }}
+                                    >复制</a>
+                                    :
+                                    <Authority rightCode={BASIC_PROMOTION_UPDATE}>
+                                        <a
+                                            href="#"
+                                            disabled={!isGroupPro || record.status != 3}
+                                            onClick={() => {
+                                                this.props.toggleIsUpdate(true)
+                                                this.setState({
+                                                    isCopy: true,
+                                                    modalTitle: '复制活动信息'
+                                                })
+                                                this.handleUpdateOpe(text, record, index);
+                                            }}
+                                        >复制</a>
+                                    </Authority>
+                            }
+
                         </span>
 
                     );
@@ -1238,7 +1255,7 @@ class MyActivities extends React.Component {
                 key: 'status',
                 dataIndex: 'status',
                 width: 80,
-                className:'TableTxtCenter',
+                className: 'TableTxtCenter',
                 render: (text, record, index) => {
                     const defaultChecked = (record.isActive == '1' ? true : false); // 开启 / 禁用
                     const isGroupPro = record.maintenanceLevel == '0';
@@ -1253,7 +1270,7 @@ class MyActivities extends React.Component {
                             return record.userType == 1 || record.userType == 3 || !isGroupPro;
                         }
                     })()
-                    return(
+                    return (
                         <Authority rightCode={BASIC_PROMOTION_UPDATE}>
                             <Switch
                                 // size="small"
@@ -1424,7 +1441,7 @@ class MyActivities extends React.Component {
     }
 
     render() {
-        const {runType} = this.state;
+        const { runType } = this.state;
         return (
             <div style={{ backgroundColor: '#F3F3F3' }} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 <div>
@@ -1441,7 +1458,7 @@ class MyActivities extends React.Component {
                     </div>
                 </div>
                 {this.renderModifyRecordInfoModal()}
-                <PromotionAutoRunModal runType={runType}/>
+                <PromotionAutoRunModal runType={runType} />
                 {
                     !this.state.exportVisible ? null :
                         <ExportModal
