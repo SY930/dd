@@ -201,11 +201,11 @@ class BasicInfo extends React.Component {
                             [moment(this.state.startTime, DATE_FORMAT), moment(this.state.endTime, DATE_FORMAT)] : [],
                     })(
                         <RangePicker
-                            showTime={{ format: 'HH:mm' }}
+                            showTime={{ format: 'HH:mm:ss' }}
                             className={styles.ActivityDateDayleft}
                             disabledDate={disabledDate}
                             style={{ width: '100%' }}
-                            format="YYYY-MM-DD HH:mm"
+                            format="YYYY-MM-DD HH:mm:ss"
                             placeholder={['开始时间', '结束时间']}
                         />
                     )}
