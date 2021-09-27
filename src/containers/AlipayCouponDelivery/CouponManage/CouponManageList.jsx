@@ -40,20 +40,23 @@ class CouponManageList extends Component {
 			pageSizes: 30, // 默认显示的条数
             pageNo: 1,
 			dataSource: [],
-			couponName: '', // 第三方券名称
-			couponID: '', // 券ID
-			channel: '', // 渠道
+			batchName: '', // 第三方券名称
+            giftItemID: '', // 券ID
+			platformType: '', // 关联平台
 			couponDateRange: '', // 创建时间
             createCouponModalVisible: false,
             treeData: [],
             shopPid: [], // 直连PID
             indirectList: [], // 间连列表
+            viewModalVisible: false, // 查看券详情弹窗
+            viewData: {}, // 券详情内容
+            editData: {}, // 编辑券详情内容
 		}
 		this.handleQuery = debounce(this.handleQuery.bind(this), 500);
 	}
 
 	componentDidMount() {
-		// this.handleQuery();
+		this.handleQuery();
        this.initData();
 		this.onWindowResize();
 		window.addEventListener('resize', this.onWindowResize);
@@ -116,25 +119,25 @@ class CouponManageList extends Component {
 
 	getParams = () => {
         const {
-			couponName,
-			couponID,
-			channel,
+			batchName,
+			giftItemID,
+			platformType,
 			couponDateRange,
         } = this.state;
         const opt = {
         };
         if (couponDateRange !== '' && couponDateRange !== undefined && couponDateRange[0] !== undefined) {
-            opt.appointedStartTime = couponDateRange[0].format('YYYYMMDDHHmm'); // 开始时间
-            opt.appointedEndTime = couponDateRange[1].format('YYYYMMDDHHmm'); // 结束时间
+            opt.startTime = couponDateRange[0].format('YYYYMMDDHHmmss'); // 开始时间
+            opt.endTime = couponDateRange[1].format('YYYYMMDDHHmmss'); // 结束时间
         }
-        // if (channel) {
-            opt.channel = channel;
-        // }
-        if (couponName !== '' && couponName !== undefined) {
-            opt.couponName = couponName;
+        if (platformType) {
+            opt.platformType = platformType;
         }
-        if (couponID) {
-            opt.couponID = couponID
+        if (batchName !== '' && batchName !== undefined) {
+            opt.batchName = batchName;
+        }
+        if (giftItemID) {
+            opt.giftItemID = giftItemID
         }
         return opt
     }
@@ -158,32 +161,35 @@ class CouponManageList extends Component {
 	queryEvents = (opts) => {
         // const shopID = this.props.user.shopID;
 
-        const params = { ...opts, shopID };
-        // axiosData(
-        //     '/promotion/extra/extraEventService_getExtraEvents.ajax',
-        //     params,
-        //     null,
-        //     { path: '' },
-        //     'HTTP_SERVICE_URL_PROMOTION_NEW'
-        // )
-        //     .then((res) => {
-        //         this.setState({
-        //             loading: false,
-        //             dataSource: (res.extraEventList || []).map((item, index) => ({ ...item, index: index + 1 })),
-        //             pageNo: res.pageNo || 1,
-        //             pageSizes: res.pageSize || 30,
-        //             total: res.totalSize || 0,
-        //         });
-        //     }, err => {
-        //         this.setState({
-        //             loading: false,
-        //         });
-        //     })
+        const params = { ...opts };
+        axiosData(
+            'couponCodeBatchService/queryBatchList.ajax',
+            params,
+            null,
+            { path: '' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
+        )
+            .then((res) => {
+                console.log("🚀 ~ file: CouponManageList.jsx ~ line 170 ~ CouponManageList ~ .then ~ res", res)
+                const { data = {} } = res;
+                this.setState({
+                    loading: false,
+                    dataSource: (data.couponCodeBatchInfos || []).map((item, index) => ({ ...item, index: index + 1 })),
+                    pageNo: data.pageNo || 1,
+                    pageSizes: data.pageSize || 30,
+                    total: data.totalSize || 0,
+                });
+            }, err => {
+                this.setState({
+                    loading: false,
+                });
+            })
     }
 
     handleCreateCouponModal = () => {
         this.setState({
             createCouponModalVisible: true,
+            editData: {},
         })
     }
 
@@ -198,6 +204,42 @@ class CouponManageList extends Component {
         
     }
 
+    handleView = (record, flag) => {
+        const {itemID } = record;
+        const params = { itemID };
+        axiosData(
+            'couponCodeBatchService/getBatchDetail.ajax',
+            params,
+            null,
+            { path: '' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
+        )
+            .then((res) => {
+                console.log("🚀 ~ file: CouponManageList.jsx ~ line 170 ~ CouponManageList ~ .then ~ res", res)
+                const { data = {}, code } = res;
+                if (code === '000') {
+                    if (flag) {
+                        this.setState({
+                            editData: data.couponCodeBatchInfo,
+                            createCouponModalVisible: true
+                        });
+                    } else {
+                        this.setState({
+                            viewData: data.couponCodeBatchInfo,
+                            viewModalVisible: true
+                        });
+                    }
+                   
+                }
+            })
+    }
+
+    handleCloseVidwModal = () => {
+        this.setState({
+            viewModalVisible: false,
+        })
+    }
+
 
 	renderHeader = () => {
 		const headerClasses = `layoutsToolLeft ${styles.headerWithBgColor}`;
@@ -207,11 +249,11 @@ class CouponManageList extends Component {
                     第三方券管理
 				</span>
 				<div>
-					<Button
+					{/* <Button
 						type="ghost"
                         style={{ marginRight: 10 }}
-                        
-					>已删除第三方券</Button>
+
+					>已删除第三方券</Button> */}
 					<Button
 						type="ghost"
 						icon="plus"
@@ -234,7 +276,7 @@ class CouponManageList extends Component {
 								placeholder="请输入三方券名称"
 								onChange={(e) => {
 									this.setState({
-										couponName: e.target.value,
+										batchName: e.target.value,
 									});
 								}}
 							/>
@@ -245,7 +287,7 @@ class CouponManageList extends Component {
 								placeholder="请输入券ID"
 								onChange={(e) => {
 									this.setState({
-										couponID: e.target.value,
+                                        giftItemID: e.target.value,
 									});
 								}}
 							/>
@@ -260,11 +302,11 @@ class CouponManageList extends Component {
                                 placeholder="请选择关联渠道"
                                 onChange={(value) => {
                                     this.setState({
-                                        channel: value,
+                                        platformType: value,
                                     });
                                 }}
                             >
-                                <Option value={'0'}>全部</Option>
+                                <Option value={''}>全部</Option>
                                 <Option value={'1'}>支付宝</Option>
                             </Select>
                         </li>
@@ -276,7 +318,7 @@ class CouponManageList extends Component {
                                 style={{ width: 260 }}
                                 showTime={{ format: 'HH:mm' }}
                                 className={styles.ActivityDateDayleft}
-                                format="YYYY-MM-DD HH:mm"
+                                format="YYYY-MM-DD"
                                 placeholder={['开始日期', '结束日期']}
                                 onChange={this.onDateQualificationChange}
                             />
@@ -296,9 +338,9 @@ class CouponManageList extends Component {
                 title: '序号',
                 dataIndex: 'index',
                 className: 'TableTxtCenter',
-                width: 50,
+                // width: 50,
                 // fixed:'left',
-                key: 'key',
+                key: 'index',
                 render: (text, record, index) => {
                     return (this.state.pageNo - 1) * this.state.pageSizes + text;
                 },
@@ -307,7 +349,7 @@ class CouponManageList extends Component {
                 title: '操作',
                 key: 'operation',
                 // className: 'TableTxtCenter',
-                width: 160,
+                // width: 160,
                 // fixed: 'left',
                 render: (text, record, index) => {
                     // 有点懒 sorry
@@ -319,16 +361,15 @@ class CouponManageList extends Component {
                     return (<span>
 						<a
                             href="#"
-                            // disabled={record.status == 1 || isOngoing || isExpired || record.status == 3}
-                            // onClick={record.status == 1 || isOngoing || isExpired || record.status == 3 ? null : () => {
-                            //     this.handleEdit(record, true)
-                            // }}
+                            onClick={() => {
+                                this.handleView(record, true)
+                            }}
                         >编辑</a>
 						<a
 							href="#"
-						// onClick={() => {
-						//     this.handleEdit(record, false)
-						// }}
+                            onClick={() => {
+                                this.handleView(record, false)
+                            }}
 						>
 							查看
 						</a>
@@ -338,7 +379,7 @@ class CouponManageList extends Component {
 						// onClick={isExpired || record.status == 3 ? null : () => {
 						//     this.handleDisableClickEvent(record, 3);
 						// }}
-						>删除</a>
+						>停用</a>
 						<a
 							href="#"
                             // disabled={isExpired || record.status == 3}
@@ -350,11 +391,48 @@ class CouponManageList extends Component {
                     );
                 },
             },
+            {
+                title: '第三方券名称',
+                dataIndex: 'batchName',
+                key: 'batchName',
+                render: (text) => text,
+            },
+            {
+                title: '券ID',
+                dataIndex: 'giftItemID',
+                key: 'giftItemID',
+                render: (text) => text,
+            },
+            {
+                title: '关联渠道',
+                dataIndex: 'channelID',
+                key: 'channelID',
+                render: (text) => {
+                    return ['60', 60].includes(text) ? '支付宝' : ''
+                },
+            },
+            {
+                title: '剩余数量',
+                dataIndex: 'stock',
+                key: 'stock',
+                render: (text, record) => {
+                    const { receive } = record
+                    if (text) {
+                        return Number(text) - Number(receive)
+                    }
+                }
+            },
+            {
+                title: '创建时间',
+                dataIndex: 'startTime',
+                key: 'startTime',
+                render: (text) => text && moment(text, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm'),
+            },
 		];
 		return (
             <div className={['layoutsContent', styles.tableClass].join(' ')} style={{ height: this.state.contentHeight }}>
                 <Table
-                    scroll={{ x: 1600, y: this.state.contentHeight - 108 }}
+                    scrollY={{ y: this.state.contentHeight - 108 }}
                     bordered={true}
                     columns={columns}
                     dataSource={this.state.dataSource}
@@ -405,12 +483,20 @@ class CouponManageList extends Component {
 				</div>
                 {
                     this.state.createCouponModalVisible &&  <CreateCouponContent
-                    handleSubmit={this.handleSuccesModalSubmit}
-                    treeData={this.state.treeData}
-                    shopPid={this.state.shopPid}
-                    indirectList={this.state.indirectList}
-                    handleCloseModal={this.handleCloseModal}
+                        // handleSubmit={this.handleSuccesModalSubmit}
+                        treeData={this.state.treeData}
+                        shopPid={this.state.shopPid}
+                        indirectList={this.state.indirectList}
+                        handleCloseModal={this.handleCloseModal}
+                        handleQuery={this.handleQuery}
+                        editData={this.state.editData}
                 />
+                }
+                {
+                    this.state.viewModalVisible && <ViewCouponContent 
+                        viewData={this.state.viewData}
+                        handleCloseVidwModal={this.handleCloseVidwModal}
+                    />
                 }
 			</div>
 		)
@@ -418,3 +504,116 @@ class CouponManageList extends Component {
 }
 
 export default CouponManageList
+
+class ViewCouponContent extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            viewData: props.viewData,
+        }
+    }
+    render() {
+        const { viewData } = this.state;
+        const { stock, receive, merchantType } = viewData;
+        const columns = [
+            {
+                title: '券名称',
+                key: ''
+            },
+            {
+                title: '生成数量',
+                key: 'stock',
+                dataIndex: 'stock',
+            },
+            {
+                title: '生效方式',
+                key: 'effectType',
+                dataIndex: 'effectType',
+                render: (text) => {
+                    if (text == 3) {
+                        return '相对有效期'
+                    }
+                    return '固定有效期'
+                }
+            },
+            {
+                title: '规则',
+                key: 'rule',
+                dataIndex: 'rule',
+                render: (text, record) => {
+                    if (record.effectType == 3) {
+                        return '按天'
+                    }
+                    return '固定有效期'
+                }
+            },
+            {
+                title: '生效时间',
+                key: 'times',
+                dataIndex: 'times',
+                render: (text, record) => {
+                    if (record.effectType == 3) { //
+                        return `自领取${record.effectGiftTimeHours}天有效`;
+                    }
+                    return moment(record.eGiftEffectTime, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm')/moment(record.validUntilDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm')
+                }
+            },
+            {
+                title: '有效天数',
+                key: 'days',
+                dataIndex: 'days',
+                render: (text, record) => {
+                    if (record.effectType == 3) {
+                        return record.validUntilDays;
+                    }
+                    if (record.validUntilDate) {
+                        return moment(record.validUntilDate, 'YYYYMMDD').format('YYYY-MM-D').diff(moment(record.eGiftEffectTime, 'YYYYMMDD').format('YYYY-MM-D'),'days');
+                    }
+                }
+            }
+        ];
+        return (
+            <Modal
+                title={'第三方支付宝券详情'}
+                maskClosable={true}
+                width={700}
+                visible={true}
+                onCancel={this.props.handleCloseVidwModal}
+                footer={null}
+            >
+                <Row className={styles.CouponViewInfo}>
+                    <Col span={24} offset={1} className={styles.signInfo}>
+                        <h4>{viewData.batchName}</h4>
+                        <div style={{ marginBottom: 12 }}>
+                            <p>第三方券ID： <span></span></p>
+                            <p>关联小程序： <span>{viewData.jumpAppID}</span></p>
+                        </div>
+                        <div>
+                            <p>剩余/总数： <span>{stock ? Number(stock) - Number(receive) : ''}/{viewData.stock}</span></p>
+                        </div>
+                    </Col>
+                    <Col span={24} className={styles.relationCoupon__table}>
+                        <p>关联优惠券</p>
+                        <Table 
+                            pagination={false}
+                            bordered={true}
+                            columns={columns}
+                            dataSource={[this.state.viewData]}
+                        />
+                    </Col>
+                    <Col>
+                        <div style={{ marginBottom: 12 }}>
+                            <p>支付宝链接方式： <span>{merchantType == 1 ? '直连' : '间连'}</span></p>
+                        </div>
+                        <div style={{ marginBottom: 12 }}>
+                            <p>支付宝pid号： <span></span></p>
+                        </div>
+                    </Col>
+                    <div className={styles.promotionFooter__footer}>
+                        <Button key="0" onClick={this.props.handleCloseVidwModal}>关闭</Button>
+                    </div>
+                </Row>
+            </Modal>
+        )
+    }
+}

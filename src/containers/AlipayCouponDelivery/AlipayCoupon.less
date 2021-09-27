@@ -337,3 +337,51 @@
         overflow: hidden;
     }
 }
+// 第三方支付宝券详情
+.CouponViewInfo {
+    .promotionFooter__footer {
+        text-align: center;
+        :global {
+            .ant-btn {
+                width: 104px;
+                height: 42px;
+                margin-top: 30px;
+                font-size: 16px;
+            }
+        }
+    }
+    .signInfo {
+        position: relative;
+        margin: 0px 0 20px;
+        padding: 16px 0 18px 16px;
+        box-shadow: 0px 2px 12px 0px rgba(11, 11, 11, 0.05);
+        border-radius: 8px;
+        &::after {
+            content: '';
+            display: inline-block;
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 121px;
+            height: 92px;
+            background: url('http://res.hualala.com/basicdoc/3bdff800-1ac4-48b2-8886-0abc81f135e4.png') no-repeat;
+            background-size: 100% 100%;
+        }
+        > h4 {
+            margin-bottom: 20px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #333333;
+        }
+        > div {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #999999;
+            // justify-content: space-between;
+            p {
+                flex: 1;
+            }
+        }
+    }
+}
