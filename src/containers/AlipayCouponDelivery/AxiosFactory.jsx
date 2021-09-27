@@ -150,13 +150,34 @@ async function isAuth(value) {
         method };
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;
-    console.log("🚀 ~ file: AxiosFactory.jsx ~ line 130 ~ getSmid ~ data", obj)
     if (code === '000') {
-        const { unionReportInfoDataList } = obj;
-        return unionReportInfoDataList
+        return '已授权'
+    }
+    // message.error(msg);
+    return '';
+}
+
+async function goAuthorizeAC(value) {
+    const method = 'alipaySpOperationInfoService/applySpOperation.ajax';
+    const { groupID } = getAccountInfo();
+    const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+        type,
+        data: {
+            groupID,
+            operateType: 'OPERATION_AUTH',
+            accessProductCode: 'OPENAPI_AUTH_DEFAULT',
+            merchantNo: value.merchantNo,
+            alipayAccount: value.alipayAccount,
+        },
+        method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: obj } = response;
+    if (code === '000') {
+        message.success(msg);
+        return '成功'
     }
     message.error(msg);
-    return [];
+    return '';
 }
 
 export {
@@ -165,4 +186,5 @@ export {
     getIndirectList,
     getSmid,
     isAuth,
+    goAuthorizeAC,
 }

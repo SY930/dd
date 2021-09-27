@@ -210,6 +210,7 @@ class CouponManageList extends Component {
 					<Button
 						type="ghost"
                         style={{ marginRight: 10 }}
+                        
 					>已删除第三方券</Button>
 					<Button
 						type="ghost"

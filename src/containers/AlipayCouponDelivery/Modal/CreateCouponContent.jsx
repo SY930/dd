@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import { Form, Input, DatePicker, Select, Radio, Row, Col, Icon, Modal, TreeSelect, message, Table } from 'antd'
 import moment from 'moment'
-import { axios } from '@hualala/platform-base';
+import { axios, getStore } from '@hualala/platform-base';
 import AuthorizeModalContent from './AuthorizeContent';
-import { getSmid, isAuth } from '../AxiosFactory'
+import { getSmid, isAuth, goAuthorizeAC } from '../AxiosFactory'
 import { SALE_CENTER_GIFT_EFFICT_DAY } from '../../../redux/actions/saleCenterNEW/types';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
+import { axiosData } from '../../../helpers/util'
 import styles from '../AlipayCoupon.less';
 
 const { RangePicker } = DatePicker;
@@ -15,7 +16,7 @@ const RadioGroup = Radio.Group;
 const RadioButton = Radio.Button;
 // 生效方式
 const EFFECT_TYPE_OPT = [
-    { label: '相对有效期', value: '1' },
+    { label: '相对有效期', value: '3' },
     { label: '固定有效期', value: '2' },
 ];
 
@@ -23,9 +24,9 @@ class CreateCouponContent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            successStartEnd: [],
+            successStartEnd: [], // 开始时间 结束时间
             consumeGiftID: '',
-            effectType: '1', // 相对有效期
+            effectType: '3', // 相对有效期
             // dayOrHour: '0', // 按天 按小时  默认按天
             whenToEffect: '0', // 何时生效
             validUntilDays: '', // 有效天数
@@ -34,14 +35,15 @@ class CreateCouponContent extends Component {
             authorizeModalVisible: false, // 代运营授权弹窗
             merchantID: '', // 选择的间连和直连
             smidList: [], // smid列表
-            smidUserSelect: [], // 用户选择的smid
+            // smidUserSelect: [], // 用户选择的smid
             smidModalVisible: false,
+            shopIsAuth: '0', // 0不显示  1未授权 2已授权 商家是否授权
         }
     }
 
     // 日期
     handleRangeChange = (date, dateString) => {
-        console.log('🚀 ~ file: SuccessModalContent.jsx ~ line 16 ~ SuccessModalContent ~ handleRangeChange ~ val', date, dateString)
+    console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 46 ~ CreateCouponContent ~ dateString", dateString)
         this.setState({
             successStartEnd: dateString,
         })
@@ -49,7 +51,6 @@ class CreateCouponContent extends Component {
 
     // 优惠券
     handleCouponChange = (value) => {
-        console.log('🚀 ~ file: SuccessModalContent.jsx ~ line 49 ~ SuccessModalContent ~ value', value)
         this.setState({
             consumeGiftID: value,
         })
@@ -110,14 +111,15 @@ class CreateCouponContent extends Component {
         // 根据选择的主体获取smid
         getSmid(value).then((res) => {
             if (!res) {
+                this.setState({
+                    shopIsAuth: '0',
+                })
                 return message.warn('该结算主体没有绑定smid，请选择其他主体！')
             }
             this.setState({
                 smidList: res,
-                // smidModalVisible: true,
-            }, () => {
-                this.handleSmidSubmit();
             })
+            this.handleSmidSubmit(res);
         })
     }
 
@@ -126,14 +128,17 @@ class CreateCouponContent extends Component {
         this.setState({
             merchantID: value,
         })
-
     }
 
     handleAuthSubmit = (form) => {
+        const { smidList } = this.state;
+        const { bankMerchantCode } = smidList[0];
         form.validateFields((err, values) => {
             if (!err) {
-                console.log('handleAuthSubmit', values);
-                // TODO:请求接口 关闭弹窗
+                // console.log('handleAuthSubmit', values);
+                values.merchantNo = bankMerchantCode;
+                this.goAuthorizeAC(values)
+                this.handleAuthModalClose()
             }
         })
     }
@@ -160,13 +165,19 @@ class CreateCouponContent extends Component {
         })
     }
 
-    handleSmidSubmit = () => {
-        const { smidUserSelect } = this.state;
-        const { settleID } = smidUserSelect[0];
+    handleSmidSubmit = (smidList) => {
+        const { bankMerchantCode } = smidList[0];
         // 去查看该主体有没有授权
-        isAuth(settleID).then((res) => {
-        console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 166 ~ CreateCouponContent ~ isAuth ~ res", res)
-            
+        isAuth(bankMerchantCode).then((res) => {
+            if (res) {
+                this.setState({
+                    shopIsAuth: '2',
+                })
+            } else {
+                this.setState({
+                    shopIsAuth: '1', // 需要授权
+                })
+            }
         })
     }
 
@@ -174,8 +185,18 @@ class CreateCouponContent extends Component {
         const { form } = this.props
         form.validateFields((err, values) => {
             if (!err) {
-                console.log('handleAuthSubmit', values);
-                const { effectType, effectGiftTimeHours, merchantID, giftValidRange = [] } = this.state;
+                // console.log('handleAuthSubmit', values);
+                const { effectType, effectGiftTimeHours, merchantID } = this.state;
+                const { user } = getStore().getState();
+                const { groupID } = user.get('accountInfo').toJS()
+                const rangePicker = values.rangePicker;
+                const giftValidRange = values.giftValidRange || [];
+                if (!effectGiftTimeHours) {
+                    return message.error('请输入生效时间')
+                }
+                if (!merchantID) {
+                    return message.error('请输入支付宝链接方式')
+                }
                 const res = {
                     batchName: values.batchName,
                     channelID: 60,
@@ -183,33 +204,52 @@ class CreateCouponContent extends Component {
                     stock: values.stock.number,
                     effectType,
                     effectGiftTimeHours,
-                    endTime: giftValidRange[1] ? giftValidRange[1] : '',
-                    startTime: giftValidRange[0] ? giftValidRange[1] : '',
+                    endTime: rangePicker[1].format('YYYYMMDDHHmmss'),
+                    EGiftEffectTime: giftValidRange[0] ? giftValidRange[0].format('YYYYMMDDHHmmss') : '',
+                    validUntilDate: giftValidRange[1] ? giftValidRange[1].format('YYYYMMDDHHmmss') : '',
+                    startTime: rangePicker[0].format('YYYYMMDDHHmmss'),
                     giftItemID: values.giftItemID,
                     giftType: 10,
                     jumpAppID: values.jumpAppID,
                     merchantID,
                     merchantType: values.merchantType,
                     platformType: 1,
-                    validUntilDays: values.validUntilDays.number,
+                    validUntilDays: values.validUntilDays ? values.validUntilDays.number : '',
+                }
+                if (giftValidRange[0]) {
+                    res.EGiftEffectTime = giftValidRange[0] ? giftValidRange[0].format('YYYYMMDDHHmmss') : '';
+                    res.validUntilDate = giftValidRange[1] ? giftValidRange[1].format('YYYYMMDDHHmmss') : ''
                 }
                 const url = '/api/v1/universal?';
-                const mothod = 'couponCodeBatchService/addBatch.ajax';
+                const method = 'couponCodeBatchService/addBatch.ajax';
                 const params = {
                     service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
                     type: 'post',
-                    data: res,
-                    mothod,
+                    // couponCodeBatchInfo: res,
+                    data: {
+                        couponCodeBatchInfo: res,
+                        groupID,
+                    },
+                    method,
                 };
-                axios.post(url + mothod, params).then((res) => {
-                    if (res.code === '000') {
-                        return message.success('创建成功')
+                axios.post(url + method, params).then((res) => {
+                console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 227 ~ CreateCouponContent ~ axios.post ~ res", res)
+                    const { code, message: msg } = res;
+                    if (code === '000') {
+                        message.success(msg);
+                        // return '成功'
                     }
-                    message.error(res.message)
-
-                }).catch((err) => {
-
+                    message.error(msg);
                 })
+                // axiosData(mothod, params, null, { path: null }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then((res) => {
+                //     if (res.code === '000') {
+                //         return message.success('创建成功')
+                //     }
+                //     message.error(res.message)
+
+                // }).catch((err) => {
+
+                // })
 
             }
         })
@@ -239,11 +279,36 @@ class CreateCouponContent extends Component {
         )
     }
 
+    renderTip = () => {
+        const { shopIsAuth, merchantID } = this.state;
+        if (!merchantID) return null;
+        if (shopIsAuth === '1') {
+            return (<span className={styles.authorizeTip}> <Icon type="check-circle" /> 未授权</span>)
+        } else if (shopIsAuth === '2') {
+            return (<span className={styles.authorizeTip}> <Icon type="check-circle" /> 已授权</span>)
+        }
+        return null
+    }
+
+    renderGoAuth = () => {
+        const { shopIsAuth } = this.state;
+        if (shopIsAuth === '1') {
+            return (
+                <p className={styles.authorizeBottomTip}>
+                    <Icon type="exclamation-circle" style={{ color: '#FAAD14', marginRight: '3px' }} />
+                    商户完成支付宝代运营授权才可完成创建投放活动。
+                    <span className={styles.goAuthorize} onClick={() => { this.goAuthorize() }}>点击去授权</span>
+                </p>
+            )
+        }
+        return null
+    }
+
     // 间连
     renderIndirect = () => {
-        // const { form } = this.props;
+        const { form } = this.props;
         // const { getFieldDecorator } = form;
-        const { authorizeModalVisible } = this.state;
+        const { authorizeModalVisible, shopIsAuth, merchantID } = this.state;
         return (
             <Row>
                 <Col span={16} offset={4} className={styles.IndirectBox}>
@@ -262,14 +327,13 @@ class CreateCouponContent extends Component {
                             }
                         </Select>
                         {/* <Icon type="close-circle" /> */}
-                        <span className={styles.authorizeTip}> <Icon type="check-circle" /> 已授权</span>
-
+                        {
+                            this.renderTip()
+                        }
                     </FormItem>
-                    <p className={styles.authorizeBottomTip}>
-                        <Icon type="exclamation-circle" style={{ color: '#FAAD14', marginRight: '3px' }} />
-                        商户完成支付宝代运营授权才可完成创建投放活动。
-                        <span className={styles.goAuthorize} onClick={() => { this.goAuthorize() }}>点击去授权</span>
-                    </p>
+                    {
+                        this.renderGoAuth()
+                    }
                 </Col>
                 <Col>
                     <Modal
@@ -277,10 +341,13 @@ class CreateCouponContent extends Component {
                         maskClosable={true}
                         width={520}
                         visible={authorizeModalVisible}
+                        // onOk={this.handleAuthSubmit}
+                        footer={null}
                         onCancel={this.handleAuthModalClose}
                     >
                         <AuthorizeModalContent
                             onCancel={this.handleAuthModalClose}
+                            // form={form}
                             handleSubmit={this.handleAuthSubmit}
                         />
                     </Modal>
@@ -297,7 +364,7 @@ class CreateCouponContent extends Component {
             <Row>
                 <Col span={16} offset={4} className={styles.CouponGiftBox}>
                     <FormItem
-                        label="投放数量"
+                        label="总数量"
                         labelCol={{ span: 4 }}
                         wrapperCol={{ span: 16 }}
                     >
@@ -305,7 +372,7 @@ class CreateCouponContent extends Component {
                             // value: { number: this.state.giftNo },
                             // onChange: this.handleGiftNumChange,
                             rules: [
-                                { required: true, message: '投放数量为必填项' },
+                                { required: true, message: '总数量为必填项' },
                                 {
                                     validator: (rule, v, cb) => {
                                         if (!v) {
@@ -339,7 +406,7 @@ class CreateCouponContent extends Component {
                         </RadioGroup>
                     </FormItem>
                     {
-                        this.state.effectType === '1' && (
+                        this.state.effectType === '3' && (
                             <div>
                                 {/* <FormItem
                                     label="相对有效期"
@@ -363,6 +430,7 @@ class CreateCouponContent extends Component {
                                     label="生效时间"
                                     labelCol={{ span: 4 }}
                                     wrapperCol={{ span: 16 }}
+                                    required={true}
                                 >
                                     <Select
                                         size="default"
@@ -381,12 +449,13 @@ class CreateCouponContent extends Component {
                                     labelCol={{ span: 4 }}
                                     wrapperCol={{ span: 16 }}
                                     label={'有效天数'}
+                                    required={true}
                                 >
                                     {getFieldDecorator('validUntilDays', {
                                         value: { number: this.state.validUntilDays },
                                         onChange: this.handleGiftValidDaysChange,
                                         rules: [
-                                            // { required: true, message: '有效天数为必填项' },
+                                            { required: true, message: '有效天数为必填项' },
                                             {
                                                 validator: (rule, v, cb) => {
                                                     if (!v) {
@@ -414,19 +483,20 @@ class CreateCouponContent extends Component {
                                 className={[styles.FormItemStyle, styles.labeleBeforeSlect].join(' ')}
                                 labelCol={{ span: 5 }}
                                 wrapperCol={{ span: 16 }}
+                                required={true}
                             >{getFieldDecorator('giftValidRange', {
-                                onChange: this.handleGiftValidRangeChange,
-                                rules: [
-                                    { required: true, message: '请输入有效时间' },
-                                ],
-                            })(
-                                <RangePicker
-                                    format="YYYY-MM-DD HH:mm"
-                                // disabledDate={
-                                // current => current && current.format('YYYYMMDD') < moment().format('YYYYMMDD')
-                                // }
-                                />
-                            )}
+                                    onChange: this.handleGiftValidRangeChange,
+                                    rules: [
+                                        { required: true, message: '请输入有效时间' },
+                                    ],
+                                })(
+                                    <RangePicker
+                                        format="YYYY-MM-DD HH:mm"
+                                    // disabledDate={
+                                    // current => current && current.format('YYYYMMDD') < moment().format('YYYYMMDD')
+                                    // }
+                                    />
+                                )}
                             </FormItem>
                         )
                     }
@@ -514,22 +584,23 @@ class CreateCouponContent extends Component {
                                     />
                                 )}
                             </FormItem>
-                            {/* <FormItem
-                            label="起止时间"
-                            labelCol={{ span: 4 }}
-                            wrapperCol={{ span: 16 }}
-                            required={true}
-                        >
-                            {getFieldDecorator('rangePicker', {
-                                rules: [{ required: true, message: '请输入日期' }],
-                                onchange: this.handleRangeChange,
-                            })(
-                                <RangePicker
-                                    style={{ width: '100%' }}
-                                    disabledDate={null}
-                                />
-                            )}
-                        </FormItem> */}
+                            <FormItem
+                                label="投放时间"
+                                labelCol={{ span: 4 }}
+                                wrapperCol={{ span: 16 }}
+                                required={true}
+                            >
+                                {getFieldDecorator('rangePicker', {
+                                    rules: [{ required: true, message: '请输入日期' }],
+                                    onchange: this.handleRangeChange,
+                                })(
+                                    <RangePicker
+                                        style={{ width: '100%' }}
+                                        disabledDate={null}
+                                        format="YYYY-MM-DD"
+                                    />
+                                )}
+                            </FormItem>
                             <FormItem
                                 label="选择优惠券"
                                 labelCol={{ span: 4 }}
