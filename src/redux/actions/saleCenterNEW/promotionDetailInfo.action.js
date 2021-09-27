@@ -160,6 +160,59 @@ export const getMallGoodsAndCategories = (shopID) => {
     }
 }
 
+
+export const fetchFoodCategoryInfoLightAC = (opts = {}, isHuaTian, subGroupID) => {
+    if (isHuaTian) {
+        return (dispatch) => {
+            dispatch({
+                type: SALE_CENTER_SET_CURRENT_FOOD_SELECTOR_MODE,
+                payload: opts.shopID && opts.shopID > 0
+            })
+            // 起reset作用
+            dispatch(getRawFoodCatgorySuccess({records: []}))
+            if (opts.shopID && opts.shopID > 0) {
+                return axiosData('/promotion/queryShopFoodCategory.ajax', { ...opts, subGroupID, bookID: 0, type: '0' }, {}, { path: 'data.foodCategoryList' }).then((res = []) => {
+                    dispatch(getFoodCategorySuccessToProcess({records: res}))
+                    dispatch(getRawFoodCatgorySuccess({records: res}))
+                }).catch(e => {
+                    dispatch(fetchFoodCategoryFailed(e));
+                });
+            } else {
+                return axiosData('/promotion/queryGroupFoodCategory.ajax', { ...opts, subGroupID, bookID: 0, type: '0'}, {}, {path: 'data.foodCategoryList'})
+                    .then(
+                        (records = []) => {
+                            dispatch(getFoodCategorySuccessToProcess({records: records}))
+                            dispatch(getRawFoodCatgorySuccess({records: records}))
+                        },
+                        error => dispatch(fetchFoodCategoryFailed(error))
+                    )
+                    .catch(e => {
+                        console.log('err: ', e);
+                    });
+            }
+        }
+    }
+    return (dispatch) => {
+        dispatch({
+            type: SALE_CENTER_SET_CURRENT_FOOD_SELECTOR_MODE,
+            payload: opts.shopID && opts.shopID > 0
+        })
+        // 起reset作用
+        dispatch(getRawFoodCatgorySuccess({records: []}))
+        dispatch(fetchFoodCategoryStart());
+        const url = opts.shopID && opts.shopID > 0 ?
+  	            '/shopapi/queryShopFoodClass.svc' : '/shopapi/querySubGroupFoodCategoryInfo.svc';
+        axiosData(url, { ...opts, bookID: 0 }, {}, { path: 'data' }, 'HTTP_SERVICE_URL_SHOPAPI')
+        .then((data) => {
+            dispatch(getFoodCategorySuccessToProcess(data));
+            dispatch(getRawFoodCatgorySuccess(data))
+        }).catch((error) => {
+            dispatch(fetchFoodCategoryFailed(error))
+        });
+    }
+};
+
+
 export const fetchFoodCategoryInfoAC = (opts = {}, isHuaTian, subGroupID) => {
     if (isHuaTian) {
         return (dispatch) => {
@@ -314,7 +367,7 @@ export const fetchFoodMenuInfoLightAC = (params = {}, isHuaTian, subGroupID) => 
             return axiosData('/shopapi/queryGroupSubFoods.svc', { ...params, bookID: 0, pageNo: -1}, {}, {path: 'data'}, 'HTTP_SERVICE_URL_SHOPAPI')
                     .then(
                         (records = []) => {
-                        console.log("file: promotionDetailInfo.action.js ~ line 318 ~ return ~ records 新街口", records)
+                        // console.log("file: promotionDetailInfo.action.js ~ line 318 ~ return ~ records 新街口", records)
                             dispatch(fetchFoodMenuSuccess(records));
                             dispatch(getRawFoodMenuSuccess(records));
                         },

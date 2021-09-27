@@ -77,6 +77,7 @@ import { MultipleGoodSelector } from '../../../components/common/GoodSelector'
 import {
     fetchFoodCategoryInfoAC,
     fetchFoodMenuInfoLightAC,
+    fetchFoodCategoryInfoLightAC,
     fetchFoodMenuInfoAC,
     getMallGoodsAndCategories,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
@@ -216,6 +217,7 @@ class GiftAddModalStep extends React.PureComponent {
             getPromotionShopSchema,
             fetchFoodCategoryInfo,
             fetchFoodMenuInfo,
+            fetchFoodCategoryLightInfo,
             fetchFoodMenuLightInfo,
             accountInfo,
         } = this.props;
@@ -229,7 +231,8 @@ class GiftAddModalStep extends React.PureComponent {
         if(isFilterShopType()){
             params = {...params, productCode: 'HLL_CRM_License'}
         }
-        fetchFoodCategoryInfo(params, isHuaTian(), thisGift.data.subGroupID);
+        fetchFoodCategoryLightInfo(params, isHuaTian(), thisGift.data.subGroupID); // 菜品分类轻量级接口
+        // fetchFoodCategoryInfo(params, isHuaTian(), thisGift.data.subGroupID);
         // fetchFoodMenuInfo(params, isHuaTian(), thisGift.data.subGroupID);
         fetchFoodMenuLightInfo(params, isHuaTian(), thisGift.data.subGroupID); // 轻量级接口
         getPromotionShopSchema(params);
@@ -3335,6 +3338,9 @@ function mapDispatchToProps(dispatch) {
         fetchFoodMenuLightInfo: (opts, flag, id) => {
             dispatch(fetchFoodMenuInfoLightAC(opts, flag, id))
         },
+        fetchFoodCategoryLightInfo: (opts, flag, id) => {
+            dispatch(fetchFoodCategoryInfoLightAC(opts, flag, id))
+        }, 
         cancelCreateOrEditGift: opts => dispatch(cancelCreateOrEditGift(opts)),
         changeGiftFormKeyValue: opts => dispatch(changeGiftFormKeyValue(opts)),
         FetchGiftList: opts => dispatch(FetchGiftList(opts)),
