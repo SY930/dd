@@ -13,7 +13,7 @@ const { RangePicker } = DatePicker;
 // const CheckboxGroup = Checkbox.Group;
 const moment = require('moment');
 
-const DATE_FORMAT = 'YYYYMMDDHHmm00';
+const DATE_FORMAT = 'YYYYMMDDHHmmss';
 const disabledDate = (current) => {
     // Can not select days before today
     return current && current.format('YYYYMMDD') < moment().format('YYYYMMDD');
@@ -163,8 +163,8 @@ class BasicInfo extends React.Component {
                         rules: [{
                             whitespace: true,
                             required: true,
-                            message: '汉字、字母、数字组成，必须2-5个字符',
-                            pattern: /^[\u4E00-\u9FA5A-Za-z0-9\.\（\）\(\)\-\-]{2,5}$/,
+                            message: '汉字、字母、数字组成，必须1-50个字符',
+                            pattern: /^[\u4E00-\u9FA5A-Za-z0-9\.\（\）\(\)\-\-]{1,50}$/,
                         }],
                         initialValue: this.state.name,
                     })(
