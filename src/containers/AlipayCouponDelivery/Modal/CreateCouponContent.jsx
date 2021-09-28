@@ -532,7 +532,8 @@ class CreateCouponContent extends Component {
                                     ],
                                 })(
                                     <RangePicker
-                                        format="YYYY-MM-DD HH:mm:ss"
+                                        format="YYYY-MM-DD"
+                                        showTime="HH:mm:ss"
                                     // disabledDate={
                                     // current => current && current.format('YYYYMMDD') < moment().format('YYYYMMDD')
                                     // }
@@ -645,7 +646,8 @@ class CreateCouponContent extends Component {
                                     <RangePicker
                                         style={{ width: '100%' }}
                                         disabledDate={null}
-                                        format="YYYY-MM-DD HH:mm:ss"
+                                        format="YYYY-MM-DD"
+                                        showTime="HH:mm:ss"
                                     />
                                 )}
                             </FormItem>

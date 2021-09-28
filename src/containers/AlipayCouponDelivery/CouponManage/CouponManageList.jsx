@@ -51,6 +51,7 @@ class CouponManageList extends Component {
             viewModalVisible: false, // 查看券详情弹窗
             viewData: {}, // 券详情内容
             editData: {}, // 编辑券详情内容
+            batchStatus: '', // 使用状态
 		}
 		this.handleQuery = debounce(this.handleQuery.bind(this), 500);
 	}
@@ -91,13 +92,11 @@ class CouponManageList extends Component {
             this.setState({
                 shopPid: res,
             })
-            console.log("🚀 ~ file: CouponManageList.jsx ~ line 59 ~ CouponManageList ~ getShopPid ~ res", res)
         })
         getIndirectList().then((res) => {
             this.setState({
                 indirectList: res,
             })
-        console.log("🚀 ~ file: CouponManageList.jsx ~ line 89 ~ CouponManageList ~ getIndirectList ~ res", res)
             
         })
     }
@@ -123,6 +122,7 @@ class CouponManageList extends Component {
 			giftItemID,
 			platformType,
 			couponDateRange,
+            batchStatus,
         } = this.state;
         const opt = {
         };
@@ -138,6 +138,9 @@ class CouponManageList extends Component {
         }
         if (giftItemID) {
             opt.giftItemID = giftItemID
+        }
+        if (batchStatus) {
+            opt.batchStatus = batchStatus
         }
         return opt
     }
@@ -203,6 +206,23 @@ class CouponManageList extends Component {
     handleSuccesModalSubmit = () => {
         
     }
+    handleStopClickEvent = (record) => {
+        const {itemID } = record;
+        const params = { trdCouponTemplateInfo: { itemID, batchStatus: 2} };
+        axiosData(
+            'couponCodeBatchService/switchStatus.ajax',
+            params,
+            null,
+            { path: '' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
+        ).then((res) => {
+            const { code, message: msg } = res;
+            if (code === '000') { 
+               return message.success(msg)
+             }
+             return message.error(msg)
+        })
+    }
 
     handleView = (record, flag) => {
         const {itemID } = record;
@@ -215,7 +235,6 @@ class CouponManageList extends Component {
             'HTTP_SERVICE_URL_PROMOTION_NEW'
         )
             .then((res) => {
-                console.log("🚀 ~ file: CouponManageList.jsx ~ line 170 ~ CouponManageList ~ .then ~ res", res)
                 const { data = {}, code } = res;
                 if (code === '000') {
                     if (flag) {
@@ -298,8 +317,8 @@ class CouponManageList extends Component {
                         <li>
                             <Select
                                 style={{ width: '160px' }}
-                                defaultValue="0"
-                                placeholder="请选择关联渠道"
+                                defaultValue=""
+                                // placeholder="请选择关联渠道"
                                 onChange={(value) => {
                                     this.setState({
                                         platformType: value,
@@ -308,6 +327,23 @@ class CouponManageList extends Component {
                             >
                                 <Option value={''}>全部</Option>
                                 <Option value={'1'}>支付宝</Option>
+                            </Select>
+                        </li>
+                        <li>
+                            <h5>使用状态</h5>
+                        </li>
+                        <li>
+                            <Select
+                                style={{ width: '160px' }}
+                                defaultValue=""
+                                onChange={(value) => {
+                                    this.setState({
+                                        batchStatus: value,
+                                    });
+                                }}
+                            >
+                                <Option value={''}>全部</Option>
+                                <Option value={'3'}>停用</Option>
                             </Select>
                         </li>
 						<li>
@@ -352,19 +388,13 @@ class CouponManageList extends Component {
                 // width: 160,
                 // fixed: 'left',
                 render: (text, record, index) => {
-                    // 有点懒 sorry
-                    // const format = record.extraEventType == 72 ? 'YYYYMMDDHHmm' : 'YYYYMMDD';
-                    // const isExpired = moment().format(format) > moment(record.endTime, format).format(format);
-                    // const isOngoing = moment().format(format) <= moment(record.endTime, format).format(format)
-                    //     && moment().format(format) >= moment(record.startTime, format).format(format);
-                    // const buttonText = (record.status == 1 ? '禁用' : '启用');
                     return (<span>
-						<a
+						{/* <a
                             href="#"
                             onClick={() => {
                                 this.handleView(record, true)
                             }}
-                        >编辑</a>
+                        >编辑</a> */}
 						<a
 							href="#"
                             onClick={() => {
@@ -373,13 +403,22 @@ class CouponManageList extends Component {
 						>
 							查看
 						</a>
-						<a
+                        <a
 							href="#"
-						// disabled={isExpired || record.status == 3}
-						// onClick={isExpired || record.status == 3 ? null : () => {
-						//     this.handleDisableClickEvent(record, 3);
-						// }}
-						>停用</a>
+                            disabled={record.batchStatus == 1 ? false : true}
+                            onClick={record.batchStatus == 1 ? () => {
+                                this.handleStopClickEvent(record);
+                            }: null} 跳转活动投放页面
+                        >停用</a> 
+                        {/* {
+                            record.batchStatus == '1' && <a
+                                href="#"
+                            // disabled={isExpired || record.status == 3}
+                            onClick={() => {
+                                this.handleStopClickEvent(record);
+                            }}
+                            >停用</a>
+                        } */}
 						<a
 							href="#"
                             // disabled={isExpired || record.status == 3}
@@ -514,7 +553,7 @@ class ViewCouponContent extends Component {
     }
     render() {
         const { viewData } = this.state;
-        const { stock, receive, merchantType } = viewData;
+        const { stock, receive, merchantType, merchantID } = viewData;
         const columns = [
             {
                 title: '券名称',
@@ -536,17 +575,17 @@ class ViewCouponContent extends Component {
                     return '固定有效期'
                 }
             },
-            {
-                title: '规则',
-                key: 'rule',
-                dataIndex: 'rule',
-                render: (text, record) => {
-                    if (record.effectType == 3) {
-                        return '按天'
-                    }
-                    return '固定有效期'
-                }
-            },
+            // {
+            //     title: '规则',
+            //     key: 'rule',
+            //     dataIndex: 'rule',
+            //     render: (text, record) => {
+            //         if (record.effectType == 3) {
+            //             return '按天'
+            //         }
+            //         return '固定有效期'
+            //     }
+            // },
             {
                 title: '生效时间',
                 key: 'times',
@@ -555,22 +594,22 @@ class ViewCouponContent extends Component {
                     if (record.effectType == 3) { //
                         return `自领取${record.effectGiftTimeHours}天有效`;
                     }
-                    return moment(record.eGiftEffectTime, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm')/moment(record.validUntilDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm')
+                    return moment(record.EGiftEffectTime, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')/moment(record.validUntilDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')
                 }
             },
-            {
-                title: '有效天数',
-                key: 'days',
-                dataIndex: 'days',
-                render: (text, record) => {
-                    if (record.effectType == 3) {
-                        return record.validUntilDays;
-                    }
-                    if (record.validUntilDate) {
-                        return moment(record.validUntilDate, 'YYYYMMDD').format('YYYY-MM-D').diff(moment(record.eGiftEffectTime, 'YYYYMMDD').format('YYYY-MM-D'),'days');
-                    }
-                }
-            }
+            // {
+            //     title: '有效天数',
+            //     key: 'days',
+            //     dataIndex: 'days',
+            //     render: (text, record) => {
+            //         if (record.effectType == 3) {
+            //             return record.validUntilDays;
+            //         }
+            //         if (record.validUntilDate) {
+            //             return moment(record.validUntilDate, 'YYYYMMDD').format('YYYY-MM-D').diff(moment(record.eGiftEffectTime, 'YYYYMMDD').format('YYYY-MM-D'),'days');
+            //         }
+            //     }
+            // }
         ];
         return (
             <Modal
@@ -606,7 +645,7 @@ class ViewCouponContent extends Component {
                             <p>支付宝链接方式： <span>{merchantType == 1 ? '直连' : '间连'}</span></p>
                         </div>
                         <div style={{ marginBottom: 12 }}>
-                            <p>支付宝pid号： <span></span></p>
+                            <p>支付宝{merchantType == 1 ? `pid` : `smid`}号： <span>{merchantID}</span></p>
                         </div>
                     </Col>
                     <div className={styles.promotionFooter__footer}>
