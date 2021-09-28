@@ -103,7 +103,7 @@ class CouponManageList extends Component {
 	  // 切换每页显示条数
 	  onShowSizeChange = (current, pageSize) => {
         this.setState({
-            loading: true
+            loading: true,
         }, () => {
             this.handleQuery(1, pageSize)
         })
@@ -173,7 +173,6 @@ class CouponManageList extends Component {
             'HTTP_SERVICE_URL_PROMOTION_NEW'
         )
             .then((res) => {
-                console.log("🚀 ~ file: CouponManageList.jsx ~ line 170 ~ CouponManageList ~ .then ~ res", res)
                 const { data = {} } = res;
                 this.setState({
                     loading: false,

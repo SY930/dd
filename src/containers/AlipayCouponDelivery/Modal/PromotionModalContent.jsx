@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Form, Input, DatePicker, Select, Radio, Row, Col, Steps, Button } from 'antd'
+import { Form, Input, DatePicker, Select, Radio, Row, Col, Steps, Button, Modal } from 'antd'
+import { getAlipayRecruitPlan, getBatchDetail } from '../AxiosFactory'
 import Step1 from './Step1'
 import Step2 from './Step2'
 import { SALE_CENTER_GIFT_EFFICT_TIME, SALE_CENTER_GIFT_EFFICT_DAY } from '../../../redux/actions/saleCenterNEW/types';
@@ -17,117 +18,144 @@ class PromotionModalContent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            current: 1,
-            formData1: {}, // 第1步的表单原始数据
-            formData2: {}, // 第2步的表单原始数据
-            form: null,
+            planId: '',
+            recruitPlans: {}, // 报名活动原数据
+            enrollRules: [], // 报名展示信息
+            couponDetail: {}, // 优惠券详情
         }
     }
 
-    // 上一步
-    onGoPrev = () => {
-        const { current, form } = this.state;
-        // const { formData1 } = this.state
-        // 没保存就点上一步
-        if (current === 2) {
+    getAlipayRecruitPlans = (v) => {
+        getAlipayRecruitPlan(v).then((res) => {
+            if (res) {
+                // if ()
+                this.setState({
+                    recruitPlans: res,
+                    enrollRules: res.enrollRules.length ? res.enrollRules : [],
+                })
+            }
+        })
+    }
+
+    handlePromotionChange = (value) => {
+        this.setState({
+            planId: value,
+        })
+        this.getAlipayRecruitPlans(value)
+    }
+
+    handleCouponChange = (value) => {
+        getBatchDetail(value).then((res) => {
             this.setState({
-                // formData2: {...form.getFieldsValue(), defaultTpl: formData1.defaultTpl || 0},
+                couponDetail: res,
             })
-        }
-        this.setState(ps => ({ current: ps.current - 1 }));
-        // this.onSetForm(null);
-    }
-
-    onGoNext = () => {
-        this.setState(ps => ({ current: ps.current + 1 }));
-        this.onSetForm(null);
-    }
-
-    // 下一步
-    onGoStep2 = () => {
-        const { form } = this.state;
-        // const { formData1: formData1Copy } = this.state;
-        // console.log('formData1Copy: ', formData1Copy);
-        // form.validateFields((e, v) => {
-            // if (!e) {
-                // const data = this.transformData1({ ...v });
-                // const formData1 = { ...data, defaultTpl: formData1Copy.defaultTpl || 0 }
-                // console.log('formData1: ', formData1);
-                // this.setState({ formData1 }); //  保存第一步的数据
-                this.onGoNext();
-            // }
-        // });
-    }
-
-    // 保存
-    onGoDone = () => {
-        // const { form, formData1 } = this.state;
-        // form.validateFields((e, v) => {
-
-
-        //     const data = {
-        //         ...formData1,
-        //         ...v,
-        //     }
-        //     this.onSubmit(data);
-
-        // })
-    }
-
-    onToggle = () => {
-        const { onCancel } = this.props;
-        onCancel();
-        // closePage()
-    }
-
-    onSetForm = (form) => {
-        this.setState({ form });
-    }
-
-    renderFooter(current) {
-        const btn0 = (<Button key="0" onClick={this.onToggle} className={styles.cancelBtn}>取消</Button>);
-        const btn1 = (<Button key="1" type="primary" onClick={this.onGoPrev} className={styles.prevBtn}>上一步</Button>);
-        const btn2 = (<Button key="2" type="primary" onClick={this.onGoStep2}>下一步</Button>);
-        const btn3 = (<Button key="3" type="primary" onClick={this.onGoDone}>保存</Button>);
-        const step1 = ([btn0, btn2]);
-        const step2 = ([btn0, btn1, btn3]);
-        return { 1: step1, 2: step2 }[current];
+        })
     }
 
 
     render() {
-        const { current, formData1, formData2, form } = this.state;
+        // const { planId } = this.state;
+        const { form, couponList, promotionList } = this.props;
+        const { getFieldDecorator } = form;
         return (
-            <Row className={styles.PromotionModalContentBox}>
-                <Col span={24}>
-                    <Steps current={current - 1} className={styles.ProgressBar}>
-                        <Step title="活动内容" />
-                        <Step title="活动报名" />
-                    </Steps>
-                </Col>
-                <Col span={24}>
-                    {
-                        current === 1 &&
-                        <Step1
-                            getForm={this.onSetForm}
-                            // formData={formData1}
-                            // onGoStep2={this.onGoStep2}
-                            // onToggle={this.onToggle}
-                        />
-                    }
-                    {
-                        current === 2 && <Step2
-                            getForm={this.onSetForm}
-                        // formData={formData1}
-                        // onGoStep2={this.onGoStep2}
-                        // onToggle={this.onToggle}
-                        />
-                    }
-                </Col>
-                <Col className={styles.promotionFooter}>
-                    {this.renderFooter(current)}
-                </Col>
-            </Row>
+
+            <Modal
+                title="新建会场大促投放"
+                maskClosable={true}
+                width={700}
+                visible={true}
+                onCancel={this.props.onCancel}
+                onOk={this.handleSubmit}
+            >
+                <Row>
+                    <Col span={24} offset={1} className={styles.IndirectBox}>
+                        <Form className={styles.crmSuccessModalContentBox}>
+                            <FormItem
+                                label="第三方券名称"
+                                labelCol={{ span: 5 }}
+                                wrapperCol={{ span: 16 }}
+                                required={true}
+                            >
+                                {getFieldDecorator('batchName', {
+                                    // initialValue: editData.batchName || '',
+                                    rules: [
+                                        { required: true, message: '请输入第三方券名称' },
+                                    ],
+                                })(
+                                    <Input
+                                        placeholder="请输入投放名称"
+                                    />
+                                )}
+                            </FormItem>
+                            <FormItem
+                                label="选择第三方支付宝券"
+                                labelCol={{ span: 5 }}
+                                wrapperCol={{ span: 16 }}
+                                required={true}
+                            >
+                                {
+                                    getFieldDecorator('giftItemID', {
+                                        // initialValue: editData.giftItemID || '',
+                                        onChange: this.handleCouponChange,
+                                        rules: [
+                                            { required: true, message: '请选择第三方支付宝券' },
+                                        ],
+                                    })(
+                                        <Select placeholder={'请选择一个支付宝大促'}>
+                                            {
+                                                couponList.map(({ giftItemID, giftName }) => (
+                                                    <Select.Option key={giftItemID} value={giftItemID}>{giftName}</Select.Option>
+                                                ))
+                                            }
+                                        </Select>
+                                    )
+                                }
+                            </FormItem>
+                            <FormItem
+                                label="选择支付宝大促"
+                                labelCol={{ span: 5 }}
+                                wrapperCol={{ span: 16 }}
+                                required={true}
+                            >
+                                {
+                                    getFieldDecorator('planId', {
+                                        // initialValue: editData.giftItemID || '',
+                                        onChange: this.handlePromotionChange,
+                                        rules: [
+                                            { required: true, message: '请选择支付宝大促' },
+                                        ],
+                                    })(
+                                        <Select placeholder={'请选择一个支付宝大促'}>
+                                            {
+                                                promotionList.map(({ planId, planName }) => (
+                                                    <Select.Option key={planId} value={planId}>{planName}</Select.Option>
+                                                ))
+                                            }
+                                        </Select>
+                                    )
+                                }
+                            </FormItem>
+                            {/* {planId && this.renderPromotion()} */}
+                            <FormItem
+                                label="活动详情"
+                                labelCol={{ span: 5 }}
+                                wrapperCol={{ span: 16 }}
+                                // required={true}
+                            >
+                                {getFieldDecorator('jumpAppID', {
+                                    // initialValue: editData.jumpAppID,
+                                })(
+                                    <Input
+                                        type="textarea"
+                                        placeholder="请输入活动详情"
+                                    />
+                                )}
+                            </FormItem>
+                        </Form>
+                    </Col>
+                </Row>
+
+            </Modal>
         )
     }
 }

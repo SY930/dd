@@ -114,6 +114,7 @@ async function getIndirectList() {
     return [];
 }
 
+// 获取间连商户的smid
 async function getSmid(value) {
     const method = 'channelZpayReportService/queryUnionMerchantNoBySettleID.ajax';
     const { groupID } = getAccountInfo();
@@ -127,7 +128,6 @@ async function getSmid(value) {
         method };
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;
-    console.log("🚀 ~ file: AxiosFactory.jsx ~ line 130 ~ getSmid ~ data", obj)
     if (code === '000') {
         const { unionReportInfoDataList } = obj;
         return unionReportInfoDataList
@@ -135,7 +135,7 @@ async function getSmid(value) {
     message.error(msg);
     return [];
 }
-
+// smid账号是否授权
 async function isAuth(value) {
     const method = 'alipaySpOperationInfoService/querySpOperationInfo.ajax';
     const { groupID } = getAccountInfo();
@@ -157,6 +157,7 @@ async function isAuth(value) {
     return '';
 }
 
+// 去授权
 async function goAuthorizeAC(value) {
     const method = 'alipaySpOperationInfoService/applySpOperation.ajax';
     const { groupID } = getAccountInfo();
@@ -180,6 +181,95 @@ async function goAuthorizeAC(value) {
     return '';
 }
 
+// 支付宝券查询
+async function getAlipayCouponList() {
+    const method = 'couponCodeBatchService/queryBatchList.ajax';
+    const { groupID } = getAccountInfo();
+    const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+        type,
+        data: {
+            groupID,
+            pageNo: 1,
+            pageSize: 999999,
+            channelID: 60,
+        },
+        method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: obj } = response;
+    if (code === '000') {
+        const { couponCodeBatchInfos } = obj
+        // message.success(msg);
+        return couponCodeBatchInfos
+    }
+    message.error(msg);
+    return [];
+}
+
+// 支付宝大促
+async function getAlipayPromotionList() {
+    const method = 'AlipayRecruitPlanInfoService/recruitPlanListQuery.ajax';
+    const { groupID } = getAccountInfo();
+    const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+        type,
+        data: {
+            groupID,
+            pageNum: 1,
+            pageSize: 100,
+        },
+        method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: obj } = response;
+    if (code === '000') {
+        const { data } = obj
+        // message.success(msg);
+        return data
+    }
+    message.error(msg);
+    return [];
+}
+
+// 选择大促加载报名素材
+async function getAlipayRecruitPlan(value) {
+    const method = 'AlipayRecruitPlanInfoService/recruitPlanQuery.ajax';
+    const { groupID } = getAccountInfo();
+    const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+        type,
+        data: {
+            groupID,
+            planId: value,
+        },
+        method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: obj } = response;
+    if (code === '000') {
+        return obj
+    }
+    message.error(msg);
+    return null;
+}
+
+// 获取券详情
+async function getBatchDetail(value) {
+    const method = 'couponCodeBatchService/getBatchDetail.ajax';
+    const { groupID } = getAccountInfo();
+    const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+        type,
+        data: {
+            groupID,
+            itemID: value,
+        },
+        method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: obj } = response;
+    if (code === '000') {
+        const { couponCodeBatchInfo } = obj
+        return couponCodeBatchInfo
+    }
+    message.error(msg);
+    return null;
+}
+
+
 export {
     getCardList,
     getShopPid,
@@ -187,4 +277,8 @@ export {
     getSmid,
     isAuth,
     goAuthorizeAC,
+    getAlipayCouponList,
+    getAlipayPromotionList,
+    getAlipayRecruitPlan,
+    getBatchDetail,
 }

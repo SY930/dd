@@ -12,6 +12,7 @@ import PromotionPage from './PromotionPage'
 import SuccessModalContent from './Modal/SuccessModalContent';
 import PromotionModalContent from './Modal/PromotionModalContent';
 import style from './AlipayCoupon.less'
+import { getAlipayCouponList, getAlipayPromotionList } from './AxiosFactory';
 import { axiosData } from "../../helpers/util";
 
 
@@ -26,17 +27,16 @@ export default class AlipayCouponDeliveryPage extends Component {
             tabKeys: 'successPage',
             successModalVisible: false, // 新建支付成功页头投放弹窗
             promotionModalVisible: false, // 新建会场大促投放弹窗
+            couponList: [], //  第三方支付宝券
+            promotionList: [], // 支付宝大促
         };
     }
 
     componentDidMount() {
-        // this.onWindowResize();
-        // window.addEventListener('resize', this.onWindowResize)
-        // this.query();
+        this.initData()
     }
 
     componentWillUnmount() {
-        // window.removeEventListener('resize', this.onWindowResize)
     }
     // query = () => {
     //     const groupID = this.props.user.accountInfo.groupID
@@ -57,22 +57,24 @@ export default class AlipayCouponDeliveryPage extends Component {
     //     })
     // }
 
-    onWindowResize = () => {
-        // try {
-        //     const actionRowHeight = this.tableActionRef.offsetHeight;
-        //     const bodyHeight = this.bodyRef.offsetHeight;
-        //     // padding: 20
-        //     this.setState({ tableHeight: bodyHeight - actionRowHeight - 40 })
-        // } catch (e) {
-        //     // oops
-        // }
+
+    initData = () => {
+        getAlipayCouponList().then((res) => {
+            this.setState({
+                couponList: res,
+            })
+        })
+        getAlipayPromotionList().then((res) => {
+            this.setState({
+                promotionList: res,
+            })
+        })
     }
 
     handleChangeTabs = (key) => {
         this.setState({
             tabKeys: key,
         })
-    // console.log("🚀 ~ file: AlipayCouponDeliveryPage.jsx ~ line 71 ~ AlipayCouponDeliveryPage ~ v", key)
     }
 
     handleModle = (key) => {
@@ -138,25 +140,24 @@ export default class AlipayCouponDeliveryPage extends Component {
                         </TabPane>
                     </Tabs>
                 </div>
-                <Modal
-                    title="新建支付成功页投放"
-                    maskClosable={true}
-                    width={700}
-                    visible={successModalVisible}
-                    onCancel={this.handleClose}
-                >
-                    <SuccessModalContent onCancel={this.handleClose} handleSubmit={this.handleSuccesModalSubmit} />
-                </Modal>
-                <Modal
-                    title="新建会场大促投放"
-                    maskClosable={true}
-                    footer={null}
-                    width={700}
-                    visible={promotionModalVisible}
-                    onCancel={this.handleClose}
-                >
-                    <PromotionModalContent onCancel={this.handleClose} />
-                </Modal>
+                {
+                    successModalVisible && <Modal
+                        title="新建支付成功页投放"
+                        maskClosable={true}
+                        width={700}
+                        visible={true}
+                        onCancel={this.handleClose}
+                    >
+                        <SuccessModalContent onCancel={this.handleClose} handleSubmit={this.handleSuccesModalSubmit} />
+                    </Modal>
+                }
+                {
+                    promotionModalVisible && <PromotionModalContent
+                        onCancel={this.handleClose}
+                        couponList={this.state.couponList}
+                        promotionList={this.state.promotionList}
+                    />
+                }
             </div>
         )
     }
