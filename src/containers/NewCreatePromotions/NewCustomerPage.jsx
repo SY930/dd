@@ -515,7 +515,6 @@ class NewCustomerPage extends Component {
         const state = getStore().getState();
         const { groupID } = state.user.get('accountInfo').toJS();
         const { houseKeepStatus,gentGiftStatus } = this.state;
-        console.log(SALE_PROMOTION_TYPES.filter(item => !item.filter), '>>>>>>>>>>>>>.')
         // let keeperFlag = avaHouseKeeperGroups.includes(groupID)
         // let intelligentFlag = avaIntelligentGiftRuleGroups.includes(groupID)
         // 管家活动列表是否为空

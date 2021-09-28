@@ -35,7 +35,7 @@ class SettingInfo extends React.Component {
         // }
         this.state = {
             productsLimit: props.data.productsLimit > 0 ? props.data.productsLimit : undefined, // 不填写则默认不限
-            tag: props.data.tag || undefined, // 活动主题, 后端如果返回'' ，还是希望显示placeholder
+            tag: props.data.tag || '秒杀', // 活动主题, 后端如果返回'' ，还是希望显示placeholder
             bannerUrl: props.data.bannerUrl || '',
             selectorModalVisible: false,
             productList: [], // 为了和菜品弹窗数据一起回显，先把数据滞空 内部data
@@ -193,8 +193,9 @@ class SettingInfo extends React.Component {
                 flag = false;
                 break;
             }
-           if (good.price > +good.newPrice) {
-                message.warning(`规格：【${good.foodName}】所设置的秒杀现金不能大于原价`)
+            console.log(good.price >= +good.newPrice, 'good.price >= +good.newPrice')
+           if (good.price >= +good.newPrice) {
+                message.warning(`规格：【${good.foodName}】所设置的秒杀现金不能大于等于原价`)
                 flag = false;
                 break;
             }
@@ -297,7 +298,7 @@ class SettingInfo extends React.Component {
     // 回显
     findFoodData = (dishes, productList) => {
         if (!productList.length) return [];
-        const data = dishes.find(item => item.foodID == productList[0].foodItemID) || {};
+        const data = dishes.find(item => item.foodID == productList[0].foodItemID || productList[0].foodID) || {};
         if (data.foodName) {
             return [data]
         }
@@ -311,19 +312,14 @@ class SettingInfo extends React.Component {
             allDishes,
         } = this.props;
         const { dishes, categories, brands } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes)
-        // console.log("🚀 ~ file: SettingInfo.jsx ~ line 301 ~ SettingInfo ~ brands", brands)
         // const selectedBrands = this.props.selectedBrands.toJS();
-        // console.log("🚀 ~ file: SettingInfo.jsx ~ line 303 ~ SettingInfo ~ selectedBrands", selectedBrands)
         // if (selectedBrands.length) {
         //     brands = brands.filter(({ value }) => value == 0 || selectedBrands.includes(value))
         //     categories = categories.filter(({ brandID: value }) => value == 0 || selectedBrands.includes(value))
         //     dishes = dishes.filter(({ brandID: value }) => value == 0 || selectedBrands.includes(value))
         // }
-        // const { productList } = this.state;
         const findFoodData = this.findFoodData(dishes, this.state.productList);
-        // console.log("🚀 ~ file: SettingInfo.jsx ~ line 333 ~ SettingInfo ~ findFoodData", findFoodData)
         const initialValue = findFoodData.map(item => `${item.brandID || 0}__${item.foodName}${item.unit}`);
-        // console.log("🚀 ~ file: SettingInfo.jsx ~ line 334 ~ SettingInfo ~ initialValue", initialValue)
         return (
             <FoodSelectModal
                 allBrands={brands}
