@@ -145,7 +145,7 @@ class CouponManageList extends Component {
         return opt
     }
 
-	handleQuery(pageNo, pageSize) {
+	handleQuery = (pageNo, pageSize) => {
         if (!this.state.loading) {
             this.setState({
                 loading: true,

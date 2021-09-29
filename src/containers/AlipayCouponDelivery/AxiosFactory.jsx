@@ -269,6 +269,50 @@ async function getBatchDetail(value) {
     return null;
 }
 
+// 素材图片资源上传接口
+async function uploadImageUrl(value) {
+    const method = 'AlipayRecruitPlanInfoService/materialImageUpload.ajax';
+    const { groupID } = getAccountInfo();
+    const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+        type,
+        data: {
+            groupID,
+            imageUrl: value,
+        },
+        method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: obj } = response;
+    if (code === '000') {
+        const { resourceId } = obj
+        console.log("🚀 ~ file: AxiosFactory.jsx ~ line 287 ~ uploadImageUrl ~ obj", obj)
+        return resourceId
+    }
+    message.error(msg);
+    return null;
+}
+
+// 获取会场大促活动列表
+async function queryEventList(opts) {
+    const method = 'trdEventService/queryEventList.ajax';
+    const { groupID } = getAccountInfo();
+    const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+        type,
+        data: {
+            groupID,
+            ...opts,
+        },
+        method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: obj } = response;
+    if (code === '000') {
+        // const { trdEventInfos } = obj
+        console.log("🚀 ~ file: AxiosFactory.jsx ~ line 287 ~ uploadImageUrl ~ obj", obj)
+        return obj
+    }
+    message.error(msg);
+    return null;
+}
+
 
 export {
     getCardList,
@@ -281,4 +325,6 @@ export {
     getAlipayPromotionList,
     getAlipayRecruitPlan,
     getBatchDetail,
+    uploadImageUrl,
+    queryEventList,
 }

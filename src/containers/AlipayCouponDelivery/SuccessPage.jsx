@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Input, Button, Icon, Switch, Pagination } from 'antd';
+import { axiosData } from '../../helpers/util'
 import styles from './AlipayCoupon.less'
 
 const FormItem = Form.Item;
@@ -7,18 +8,76 @@ const FormItem = Form.Item;
 class SuccessPage extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            loading: false,
+            pageSizes: 20, // 默认显示的条数
+            pageNum: 1,
+            dataSource: [],
+        };
     }
-
 
     componentDidMount() {
-
+        this.handleQuery();
+        // this.initData()
     }
-    onShowSizeChange = (current, pageSize) => {
 
+    onShowSizeChange = (current, pageSize) => {
+        this.setState({
+            loading: true,
+        }, () => {
+            this.handleQuery(1, pageSize)
+        })
+    };
+
+    getParams = () => {
+        const { form } = this.props
+        let opt = {};
+        form.validateFields((err, values) => {
+            if (!err) {
+                opt = { ...values }
+            }
+        })
+        return opt
     }
 
     handleSubmit = () => {}
+
+    handleQuery = (pageNum, pageSize) => {
+        if (!this.state.loading) {
+            this.setState({
+                loading: true,
+            });
+        }
+        const _opt = this.getParams();
+        const opt = {
+            pageSize: pageSize || this.state.pageSizes,
+            pageNum: pageNum || this.state.pageNum,
+            ..._opt,
+        };
+        this.queryEvents(opt);
+    }
+
+    queryEvents = (opts) => {
+        const params = { ...opts };
+        axiosData(
+            'trdEventService/queryEventList.ajax',
+            params,
+            null,
+            { path: '' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
+        ).then((res) => {
+            console.log("🚀 ~ file: PromotionPage.jsx ~ line 69 ~ PromotionPage ~ ).then ~ res", res)
+            const { trdEventInfos = [] } = res;
+            this.setState({
+                loading: false,
+                dataSource: (trdEventInfos || []).map((item, index) => ({ ...item, index: index + 1 })),
+                pageNo: res.pageNo || 1,
+                pageSizes: res.pageSize || 30,
+                total: res.totalSize || 0,
+            });
+        })
+    }
+
 
     render() {
         const { form } = this.props;
@@ -38,7 +97,7 @@ class SuccessPage extends Component {
                             />
                         )}
                     </FormItem>
-                    <FormItem
+                    {/* <FormItem
                         label="投放ID"
                         labelCol={{ span: 6 }}
                         wrapperCol={{ span: 18 }}
@@ -49,7 +108,7 @@ class SuccessPage extends Component {
                                 placeholder="请输入ID"
                             />
                         )}
-                    </FormItem>
+                    </FormItem> */}
                     <FormItem>
                         <Button type="primary" className={styles.speBtn} htmlType="submit">
                             <Icon type="search" />
