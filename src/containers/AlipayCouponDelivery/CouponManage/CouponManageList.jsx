@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import {
 	Table, Icon, Select, DatePicker,
 	Button, Modal, Row, Col, message,
-	Input,
+	Input, Tooltip,
 } from 'antd';
 import CreateCouponContent from '../Modal/CreateCouponContent'
 import { debounce } from 'lodash'
@@ -552,11 +552,12 @@ class ViewCouponContent extends Component {
     }
     render() {
         const { viewData } = this.state;
-        const { stock, receive, merchantType, merchantID } = viewData;
+        const { stock, receive, merchantType, merchantID, trdBatchID } = viewData;
         const columns = [
             {
-                title: '券名称',
-                key: ''
+                title: '券ID',
+                key: 'giftItemID',
+                dataIndex: 'giftItemID',
             },
             {
                 title: '生成数量',
@@ -574,17 +575,6 @@ class ViewCouponContent extends Component {
                     return '固定有效期'
                 }
             },
-            // {
-            //     title: '规则',
-            //     key: 'rule',
-            //     dataIndex: 'rule',
-            //     render: (text, record) => {
-            //         if (record.effectType == 3) {
-            //             return '按天'
-            //         }
-            //         return '固定有效期'
-            //     }
-            // },
             {
                 title: '生效时间',
                 key: 'times',
@@ -596,19 +586,6 @@ class ViewCouponContent extends Component {
                     return moment(record.EGiftEffectTime, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')/moment(record.validUntilDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')
                 }
             },
-            // {
-            //     title: '有效天数',
-            //     key: 'days',
-            //     dataIndex: 'days',
-            //     render: (text, record) => {
-            //         if (record.effectType == 3) {
-            //             return record.validUntilDays;
-            //         }
-            //         if (record.validUntilDate) {
-            //             return moment(record.validUntilDate, 'YYYYMMDD').format('YYYY-MM-D').diff(moment(record.eGiftEffectTime, 'YYYYMMDD').format('YYYY-MM-D'),'days');
-            //         }
-            //     }
-            // }
         ];
         return (
             <Modal
@@ -623,7 +600,7 @@ class ViewCouponContent extends Component {
                     <Col span={24} offset={1} className={styles.signInfo}>
                         <h4>{viewData.batchName}</h4>
                         <div style={{ marginBottom: 12 }}>
-                            <p>第三方券ID： <span></span></p>
+                            <p>第三方券ID： <Tooltip title={trdBatchID}><span>{trdBatchID.length > 15 ? `${trdBatchID.slice(0, 6)}...${trdBatchID.slice(-10)}` : trdBatchID}</span></Tooltip></p>
                             <p>关联小程序： <span>{viewData.jumpAppID}</span></p>
                         </div>
                         <div>
@@ -631,7 +608,7 @@ class ViewCouponContent extends Component {
                         </div>
                     </Col>
                     <Col span={24} className={styles.relationCoupon__table}>
-                        <p>关联优惠券</p>
+                        <p className={styles.relationText__span} style={{ marginRight: 0 }}>关联优惠券：</p>
                         <Table 
                             pagination={false}
                             bordered={true}
@@ -641,10 +618,10 @@ class ViewCouponContent extends Component {
                     </Col>
                     <Col>
                         <div style={{ marginBottom: 12 }}>
-                            <p>支付宝链接方式： <span>{merchantType == 1 ? '直连' : '间连'}</span></p>
+                            <p><span className={styles.relationText__span}>支付宝链接方式：</span> <span>{merchantType == 1 ? '直连' : '间连'}</span></p>
                         </div>
                         <div style={{ marginBottom: 12 }}>
-                            <p>支付宝{merchantType == 1 ? `pid` : `smid`}号： <span>{merchantID}</span></p>
+                            <p><span className={styles.relationText__span}>支付宝{merchantType == 1 ? `pid` : `smid`}号：</span> <span>{merchantID}</span></p>
                         </div>
                     </Col>
                     <div className={styles.promotionFooter__footer}>

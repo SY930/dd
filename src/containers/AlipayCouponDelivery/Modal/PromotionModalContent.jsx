@@ -22,6 +22,7 @@ class PromotionModalContent extends Component {
         super(props);
         this.state = {
             marketingType: '',
+            marketingName: '', // 选择大促的名字
             recruitPlans: {}, // 报名活动原数据
             enrollRules: [], // 报名展示信息
             couponDetail: {}, // 优惠券详情
@@ -68,11 +69,13 @@ class PromotionModalContent extends Component {
     }
 
     handlePromotionChange = (value) => {
+        // 根据
         this.setState({
-            marketingType: value,
-            resourceIds: [], // 清空上传的resourceIds
+            marketingType: value.key,
+            marketingName: value.label,
+            resourceIds: [], // 清空上传的resourceIds--[编辑图片后的码]
         })
-        this.getAlipayRecruitPlans(value)
+        this.getAlipayRecruitPlans(value.key)
     }
 
     handleCouponChange = (value) => {
@@ -136,7 +139,8 @@ class PromotionModalContent extends Component {
                     eventWay: '20002', // 大促20002 成功 20001
                     platformType: '1',
                     deliveryType: 2, // 2代表大促活动  1代表成功页
-                    marketingType: values.marketingType, // 大促的pid
+                    marketingType: values.marketingType.key, // 大促的pid
+                    marketingName: values.marketingType.label,
                     deliveryInfo: JSON.stringify(deliveryInfoData),
                     merchantID: couponDetail.merchantID, // 直连间连 pid smid
                     merchantType: couponDetail.merchantType, // 直连 间连
@@ -344,7 +348,7 @@ class PromotionModalContent extends Component {
                                             { required: true, message: '请选择支付宝大促' },
                                         ],
                                     })(
-                                        <Select placeholder={'请选择一个支付宝大促'}>
+                                        <Select placeholder={'请选择一个支付宝大促'} labelInValue >
                                             {
                                                 promotionList.map(({ planId, planName }) => (
                                                     <Select.Option key={planId} value={planId}>{planName}</Select.Option>

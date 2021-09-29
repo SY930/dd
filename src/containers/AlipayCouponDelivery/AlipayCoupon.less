@@ -52,6 +52,7 @@
         font-size: 14px;
         color: #666666;
         font-weight: 500;
+        cursor: pointer;
         &::after {
             content: '';
             display: inline-block;
@@ -70,6 +71,7 @@
             padding: 9px 20px 9px;
             height: 34px;
             // line-height: 34px;
+            background: #F9F9F9;
             text-align: center;
             overflow: hidden;
             border-radius: 0px 99px 0px 8px;
@@ -343,6 +345,8 @@
 }
 // 第三方支付宝券详情
 .CouponViewInfo {
+    font-size: 14px;
+    color: #999999;
     .promotionFooter__footer {
         text-align: center;
         :global {
@@ -351,6 +355,24 @@
                 height: 42px;
                 margin-top: 30px;
                 font-size: 16px;
+            }
+        }
+    }
+    .relationText__span {
+        display: inline-block;
+        width: 118px;
+        text-align: right;
+    }
+    .relationCoupon__table {
+        display: flex;
+        margin-bottom: 16px;
+        > p {
+           margin-right: 16px;
+
+        }
+        :global {
+            .ant-table-wrapper {
+                flex: 1;
             }
         }
     }
@@ -380,8 +402,6 @@
         > div {
             display: flex;
             align-items: center;
-            font-size: 14px;
-            color: #999999;
             // justify-content: space-between;
             p {
                 flex: 1;

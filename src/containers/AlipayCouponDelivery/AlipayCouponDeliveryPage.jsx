@@ -198,22 +198,17 @@ export default class AlipayCouponDeliveryPage extends Component {
                     </Tabs>
                 </div>
                 {
-                    successModalVisible && <Modal
-                        title="新建支付成功页投放"
-                        maskClosable={true}
-                        width={700}
-                        visible={true}
-                        onCancel={this.handleClose}
-                    >
-                        <SuccessModalContent onCancel={this.handleClose} handleSubmit={this.handleSuccesModalSubmit} />
-                    </Modal>
+                    successModalVisible &&
+                        <SuccessModalContent
+                            onCancel={this.handleClose}
+                            couponList={this.state.couponList}
+                        />
                 }
                 {
                     promotionModalVisible && <PromotionModalContent
                         onCancel={this.handleClose}
                         couponList={this.state.couponList}
                         promotionList={this.state.promotionList}
-                        // dataSource={this.state.dataSource}
                     />
                 }
             </div>

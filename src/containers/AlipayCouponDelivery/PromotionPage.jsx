@@ -12,6 +12,7 @@ const EVENT_STATUS = {
     1: '执行中',
     2: '已结束',
     13: '审核未通过',
+    11: '审核中',
 };
 
 class PromotionPage extends Component {
@@ -51,37 +52,6 @@ class PromotionPage extends Component {
         return opt
     }
 
-    // handleQuery = (pageNum, pageSize) => {
-    //     if (!this.state.loading) {
-    //         this.setState({
-    //             loading: true,
-    //         });
-    //     }
-    //     const _opt = this.getParams();
-    //     const opt = {
-    //         pageSize: pageSize || this.state.pageSizes,
-    //         pageNum: pageNum || this.state.pageNum,
-    //         ..._opt,
-    //     };
-    //     this.queryEvents(opt);
-    // }
-
-    // queryEvents = (opts) => {
-    //     const params = { ...opts };
-    //     queryEventList(params).then((res) => {
-    //         console.log("🚀 ~ file: PromotionPage.jsx ~ line 69 ~ PromotionPage ~ ).then ~ res", res)
-    //         // if (res) {
-    //         const { trdEventInfos = [] } = res;
-    //         this.setState({
-    //             loading: false,
-    //             dataSource: (trdEventInfos || []).map((item, index) => ({ ...item, index: index + 1 })),
-    //             pageNo: res.pageNo || 1,
-    //             pageSizes: res.pageSize || 30,
-    //             total: res.totalSize || 0,
-    //         });
-    //         // }
-    //     })
-    // }
 
     getLinkCoupon = (giftConfInfos) => {
 
@@ -125,7 +95,7 @@ class PromotionPage extends Component {
         e.preventDefault()
         const { handleQuery } = this.props;
         const opt = this.getParams();
-        handleQuery(null, null, opt);
+        handleQuery(1, null, opt);
     }
 
     render() {
@@ -203,10 +173,11 @@ class PromotionPage extends Component {
                                             <p>创建时间：</p>
                                             <span className={styles.activeCardTime}>2020.12.21 - 2022.1.31</span>
                                             <span className={classnames(styles.cardIcon, {
-                                                [styles.pendding]: item.eventStatus == 0,
+                                                [styles.pendding]: item.eventStatus == 0 || item.eventStatus == 11,
                                                 [styles.execute]: item.eventStatus == 1,
                                                 [styles.end]: item.eventStatus == 2,
                                                 [styles.suspend]: item.eventStatus == 13,
+                                                // [styles.pendding]: item.eventStatus == 11,
                                             })}
                                             >{EVENT_STATUS[item.eventStatus] || '--'}</span>
                                         </div>
@@ -219,7 +190,9 @@ class PromotionPage extends Component {
                                             <span>0/1000</span>
                                         </div>
                                         <div className={styles.cardBtnBox}>
-                                            {/* <div className={styles.activeCardBottomName}>618支付宝活动计划</div> */}
+                                            {
+                                                item.marketingName && <div className={styles.activeCardBottomName}>{item.marketingName}</div>
+                                            }
                                             <div className={styles.cardBtn}>
                                                 {/* <span>编辑</span> */}
                                                 {/* <span>删除</span> */}
@@ -303,14 +276,14 @@ class ViewCouponContent extends Component {
                         <h4>{viewData.eventName}</h4>
                         <div style={{ marginBottom: 12 }}>
                             <p>投放活动ID： <span></span></p>
-                            <p>支付宝大促： <span></span></p>
+                            <p>支付宝大促： <span>{viewData.marketingName}</span></p>
                         </div>
                         <div>
                             <p>投放时间： <span></span></p>
                         </div>
                     </Col>
                     <Col span={24} className={styles.relationCoupon__table}>
-                        <p>关联优惠券</p>
+                        <p>关联优惠券：</p>
                         <Table
                             pagination={false}
                             bordered={true}
