@@ -20,26 +20,13 @@ class PromotionPage extends Component {
         super(props);
         this.state = {
             viewModalVisible: false,
-            // loading: false,
-            // pageSizes: 20, // 默认显示的条数
-            // pageNum: 1,
-            // dataSource: [],
         };
     }
 
 
     componentDidMount() {
-        // this.handleQuery();
-        // this.initData()
     }
 
-    // onShowSizeChange = (current, pageSize) => {
-    //     this.setState({
-    //         loading: true,
-    //     }, () => {
-    //         this.handleQuery(1, pageSize)
-    //     })
-    // };
 
     getParams = () => {
         const { form } = this.props

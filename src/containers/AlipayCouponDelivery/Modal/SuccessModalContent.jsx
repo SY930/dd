@@ -1,141 +1,101 @@
 import React, { Component } from 'react'
-import { Form, Input, DatePicker, Select, Radio, Row, Col, Icon, Modal } from 'antd'
+import { Form, Input, DatePicker, Select, Radio, Row, Col, Icon, Modal, message } from 'antd'
 import moment from 'moment'
-import AuthorizeModalContent from './AuthorizeContent';
-import { SALE_CENTER_GIFT_EFFICT_TIME, SALE_CENTER_GIFT_EFFICT_DAY } from '../../../redux/actions/saleCenterNEW/types';
-import PriceInput from '../../SaleCenterNEW/common/PriceInput';
+import { getDeliveryChannel, getBatchDetail } from '../AxiosFactory'
+import { axiosData } from '../../../helpers/util'
 import styles from '../AlipayCoupon.less';
 
-const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
-const { Option } = Select;
-const RadioGroup = Radio.Group;
-const RadioButton = Radio.Button;
-// 生效方式
-const EFFECT_TYPE_OPT = [
-    { label: '相对有效期', value: '1' },
-    { label: '固定有效期', value: '2' },
-];
 
-// 相对有效期
-const COUNT_TYPE_OPT = [
-    { label: '按小时', value: '0' },
-    { label: '按天', value: '1' },
-];
-const EFFECT_TYPE_OPT_TWO = [
-    { label: '相对有效期', value: 'qbc' },
-    { label: '固定有效期', value: 'dfd' },
-];
 
 class SuccessModalContent extends Component {
     constructor(props) {
         super(props);
         this.state = {
             successStartEnd: [],
-            couponValue: '',
-            effectType: '1', // 相对有效期
-            dayOrHour: '0', // 按天 按小时
-            whenToEffect: '0', // 何时生效
-            giftValidDays: '', // 有效天数
-            giftValidRange: [], // 固定有效期
-            linkWay: '0', // 支付宝链接方式
-            authorizeModalVisible: false, // 代运营授权弹窗
+            deliveryChannelInfoList: [],
+            couponDetail: {}, // 优惠券详情
         }
     }
 
-    // 日期
-    handleRangeChange = (date, dateString) => {
-        console.log('🚀 ~ file: SuccessModalContent.jsx ~ line 16 ~ SuccessModalContent ~ handleRangeChange ~ val', date, dateString)
-        this.setState({
-            successStartEnd: dateString,
-        })
+    componentDidMount() {
+        getDeliveryChannel().then((res) => {
+            if (res) {
+                this.setState({
+                    deliveryChannelInfoList: res,
+                })
+            }
+        });
     }
 
-    // 优惠券
+    getDeliveryChannel = () => {
+
+    }
+
     handleCouponChange = (value) => {
-        console.log('🚀 ~ file: SuccessModalContent.jsx ~ line 49 ~ SuccessModalContent ~ value', value)
-        this.setState({
-            couponValue: value,
+        getBatchDetail(value).then((res) => {
+            this.setState({
+                couponDetail: res,
+            })
         })
     }
 
-    // 生效方式
-    handleEffectTypeChange = (e) => {
-        this.setState({
-            effectType: e.target.value,
-        })
-    }
-
-    // 相对有效期
-    handleDayOrHourChange = (e) => {
-        const dayOrHour = e.target.value;
-        let whenToEffect = '1';
-        if (dayOrHour === '0') {
-            whenToEffect = '0';
-        }
-        this.setState({
-            dayOrHour,
-            whenToEffect,
-        })
-    }
-
-    // 何时生效
-    handleWhenToEffectChange = (val) => {
-        this.setState({
-            whenToEffect: val,
-        })
-    }
-
-    // 有效天数
-    handleGiftValidDaysChange = (val) => {
-        this.setState({
-            giftValidDays: val.number,
-        })
-    }
-
-    // 固定有效期
-    handleGiftValidRangeChange = (val) => {
-        this.setState({
-            giftValidRange: val,
-        })
-    }
-
-    handleLinkWay = (e) => {
-        this.setState({
-            linkWay: e.target.value,
-        })
-    }
-
-    // 选择间连主体
-    handleIndirectSelect = (value) => {
-
-    }
-
-    // 选择直连主体
-    handleDirectSelect = () => {
-
-    }
-
-    handleAuthSubmit = (form) => {
-        form.validateFields((err, values) => { 
+    handleSubmit = () => {
+        const { form } = this.props;
+        const { couponDetail } = this.state
+        form.validateFields((err, values) => {
             if (!err) {
-                console.log('handleAuthSubmit', values);
+                console.log('handleSubmit', values);
+                const data = {
+                    eventName: values.eventName,
+                    eventWay: '20001', // 大促20002 成功 20001
+                    platformType: '1',
+                    deliveryType: 1, // 2代表大促活动  1代表成功页
+                    merchantID: couponDetail.merchantID, // 直连间连 pid smid
+                    merchantType: couponDetail.merchantType, // 直连 间连
+                    deliveryInfo: values.channelID,
+                    giftConfInfos: [{
+                        giftID: couponDetail.itemID,
+                    }],
+                }
+                const params = { trdEventInfo: { ...data } };
+                axiosData(
+                    'trdEventService/addEvent.ajax',
+                    params,
+                    null,
+                    { path: '' },
+                    'HTTP_SERVICE_URL_PROMOTION_NEW'
+                )
+                    .then((res) => {
+                        console.log("🚀 ~ file: PromotionModalContent.jsx ~ line 153 ~ PromotionModalContent ~ .then ~ res", res)
+                        const { code, message: msg } = res;
+                        if (code === '000') {
+                            message.success('创建成功');
+                            this.props.onCancel();
+                            // TODO: 关闭窗口 请求数据
+                            return
+                        }
+                        message.error(msg);
+                    }, (error) => {
+                        console.log(error)
+                        // 关闭窗口
+                    })
                 // TODO:请求接口 关闭弹窗
             }
         })
     }
 
-    handleAuthModalClose = () => {
-        this.setState({
-            authorizeModalVisible: false,
-        })
-    }
+    // handleAuthModalClose = () => {
+    //     this.setState({
+    //         authorizeModalVisible: false,
+    //     })
+    // }
 
 
     render() {
-        const { form, couponList } = this.props;
+        const { form, couponList, editData = [] } = this.props;
         const { getFieldDecorator } = form;
-        const { couponValue, linkWay } = this.state;
+        // const { couponValue, linkWay } = this.state;
         return (
             <Modal
                 title="新建支付成功页投放"
@@ -155,6 +115,7 @@ class SuccessModalContent extends Component {
                                 required={true}
                             >
                                 {getFieldDecorator('eventName', {
+                                    initialValue: editData.eventName || '',
                                     rules: [
                                         { required: true, message: '请输入活动名称' },
                                     ],
@@ -203,27 +164,30 @@ class SuccessModalContent extends Component {
                                     </p>
                                 </FormItem>
                             }
-                            {/* <FormItem
+                            <FormItem
                                 label="选择支付成功页"
                                 labelCol={{ span: 5 }}
                                 wrapperCol={{ span: 16 }}
                                 required={true}
                             >
                                 {
-                                    getFieldDecorator('giftItemID', {
-                                        // initialValue: editData.giftItemID || '',
-                                        onChange: this.handleCouponChange,
+                                    getFieldDecorator('channelID', {
+                                        initialValue: editData.deliveryInfo || '',
+                                        // onChange: this.handleCouponChange,
                                         rules: [
                                             { required: true, message: '请选择支付成功页' },
                                         ],
                                     })(
                                         <Select placeholder={'请选择支付成功页'}>
-                                 
-                                            <Select.Option key={itemID} value={itemID}>{giftName}</Select.Option>
+                                            {
+                                                (this.state.deliveryChannelInfoList || []).map(({ channel, channelName }) => (
+                                                    <Select.Option key={channel} value={channel}>{channelName}</Select.Option>
+                                                ))
+                                            }
                                         </Select>
                                     )
                                 }
-                            </FormItem> */}
+                            </FormItem>
                         </Form>
                     </Col>
                 </Row>

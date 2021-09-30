@@ -87,7 +87,6 @@ class PromotionModalContent extends Component {
     }
 
     handleImageChange = (value, item, index) => {
-        console.log("🚀 ~ file: PromotionModalContent.jsx ~ line 75 ~ PromotionModalContent ~ value, item, index", value, item, index)
         const { url } = value;
         if (!url) return;
         const path = DOMAIN + url;
@@ -109,7 +108,6 @@ class PromotionModalContent extends Component {
         const { form } = this.props;
         const { resourceIds, couponDetail } = this.state;
         form.validateFields((err, values) => {
-            console.log("🚀 ~ file: PromotionModalContent.jsx ~ line 102 ~ form.validateFields ~ values", values)
             if (!err) {
                 const deliveryInfoData = { // 报名素材对象，传给后端的数据格式
                     data: {
@@ -165,6 +163,7 @@ class PromotionModalContent extends Component {
                         if (code === '000') {
                             message.success('创建成功');
                             this.props.onCancel();
+                            this.props.handleQuery();
                             // TODO: 关闭窗口 请求数据
                             return
                         }

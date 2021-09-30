@@ -81,7 +81,6 @@ async function getShopPid() {
         },
         method };
     const response = await axios.post(url + method, params);
-    console.log("🚀 ~ file: AxiosFactory.jsx ~ line 83 ~ getShopPid ~ response", response)
     const { code, message: msg, data: obj } = response;
     if (code === '000') {
         const { authPidDataList } = obj;
@@ -284,7 +283,6 @@ async function uploadImageUrl(value) {
     const { code, message: msg, data: obj } = response;
     if (code === '000') {
         const { resourceId } = obj
-        console.log("🚀 ~ file: AxiosFactory.jsx ~ line 287 ~ uploadImageUrl ~ obj", obj)
         return resourceId
     }
     message.error(msg);
@@ -306,8 +304,31 @@ async function queryEventList(opts) {
     const { code, message: msg, data: obj } = response;
     if (code === '000') {
         // const { trdEventInfos } = obj
-        console.log("🚀 ~ file: AxiosFactory.jsx ~ line 287 ~ uploadImageUrl ~ obj", obj)
         return obj
+    }
+    message.error(msg);
+    return null;
+}
+
+// 成功页创建时 -> 获取渠道 ->  选择支付成功页
+async function getDeliveryChannel(opts) {
+    const method = '/alipayActivityDeliveryInfoService/deliveryChannelQuery.ajax';
+    const { groupID } = getAccountInfo();
+    const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+        type,
+        data: {
+            groupID,
+            belongMerchantInfo: 'ISV_FOR_MERCHANT',
+            boothCode: 'PAY_RESULT',
+            pageSize: 100,
+            pageNum: 1,
+        },
+        method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: obj } = response;
+    if (code === '000') {
+        const { deliveryChannelInfoList } = obj
+        return deliveryChannelInfoList
     }
     message.error(msg);
     return null;
@@ -327,4 +348,5 @@ export {
     getBatchDetail,
     uploadImageUrl,
     queryEventList,
+    getDeliveryChannel,
 }

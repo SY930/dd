@@ -33,6 +33,7 @@ export default class AlipayCouponDeliveryPage extends Component {
             pageSizes: 20, // 默认显示的条数
             pageNo: 1,
             dataSource: [],
+            successEditData: {}, // 成功页投放编辑数据
             // totalSize: 0,
         };
     }
@@ -47,7 +48,7 @@ export default class AlipayCouponDeliveryPage extends Component {
 
 
     onShowSizeChange = (current, pageSize) => {
-    console.log("🚀 ~ file: AlipayCouponDeliveryPage.jsx ~ line 50 ~ AlipayCouponDeliveryPage ~ pageSize", pageSize, current)
+        console.log("🚀 ~ file: AlipayCouponDeliveryPage.jsx ~ line 50 ~ AlipayCouponDeliveryPage ~ pageSize", pageSize, current)
         this.setState({
             loading: true,
         }, () => {
@@ -73,7 +74,6 @@ export default class AlipayCouponDeliveryPage extends Component {
     queryEvents = (opts) => {
         const params = { ...opts };
         queryEventList(params).then((res) => {
-            console.log("🚀 ~ file: PromotionPage.jsx ~ line 69 ~ PromotionPage ~ ).then ~ res", res)
             // if (res) {
             const { trdEventInfos = [] } = res;
             this.setState({
@@ -86,25 +86,6 @@ export default class AlipayCouponDeliveryPage extends Component {
             // }
         })
     }
-    // query = () => {
-    //     const groupID = this.props.user.accountInfo.groupID
-    //     this.setState({ isQuerying: true })
-    //     axiosData(
-    //         `/payCoupon/getPayCouponBatchList?groupID=${groupID}`,
-    //         {},
-    //         {},
-    //         { path: 'payCouponInfos' },
-    //         'HTTP_SERVICE_URL_WECHAT'
-    //     ).then(res => {
-    //         this.setState({
-    //             isQuerying: false,
-    //             couponList: Array.isArray(res) ? res : []
-    //         })
-    //     }).catch(e => {
-    //         this.setState({ isQuerying: false })
-    //     })
-    // }
-
 
     initData = () => {
         getAlipayCouponList().then((res) => {
@@ -162,10 +143,38 @@ export default class AlipayCouponDeliveryPage extends Component {
         return null;
     }
 
+    handleSuccessEdit = ({ itemID }) => {
+        const params = { itemID };
+        axiosData(
+            'trdEventService/getEventDetail.ajax',
+            params,
+            null,
+            { path: '' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
+        )
+            .then((res) => {
+                const { data = {}, code } = res;
+                if (code === '000') {
+                    const { trdEventInfo } = data;
+                    // try {
+                    //     const deliveryInfo = JSON.parse(trdEventInfo.deliveryInfo);
+                    //     trdEventInfo.deliveryInfo = deliveryInfo;
+                    // } catch (error) {
+                    //     trdEventInfo.deliveryInfo = {
+                    //         activeUrl: [],
+                    //     };
+                    // }
+                    this.setState({
+                        successEditData: trdEventInfo,
+                        successModalVisible: true,
+                    });
+                }
+            })
+    }
+
 
     render() {
-        const { tabKeys, successModalVisible, promotionModalVisible, dataSource, pageSizes, pageNo, total } = this.state;
-        console.log("🚀 ~ file: AlipayCouponDeliveryPage.jsx ~ line 166 ~ AlipayCouponDeliveryPage ~ render ~ dataSource", dataSource)
+        const { tabKeys, successModalVisible, promotionModalVisible, dataSource, pageSizes, pageNo, total, successEditData } = this.state;
         return (
             <div style={{ height: '100%' }}>
                 <div className={style.AlipayCouponHeader}>
@@ -183,7 +192,16 @@ export default class AlipayCouponDeliveryPage extends Component {
                 <div className={style.AlipayCouponTabs}>
                     <Tabs defaultActiveKey={tabKeys} onChange={this.handleChangeTabs}>
                         <TabPane tab="支付成功页投放" key="successPage">
-                            <SuccessPage />
+                            <SuccessPage
+                                dataSource={dataSource}
+                                pageSize={pageSizes}
+                                pageNo={pageNo}
+                                total={total}
+                                handleQuery={this.handleQuery}
+                                onShowSizeChange={this.onShowSizeChange}
+                                handleEdit={this.handleSuccessEdit}
+                                eidtData={successEditData}
+                            />
                         </TabPane>
                         <TabPane tab="会场大促活动投放" key="promotionPage">
                             <PromotionPage
@@ -199,16 +217,19 @@ export default class AlipayCouponDeliveryPage extends Component {
                 </div>
                 {
                     successModalVisible &&
-                        <SuccessModalContent
-                            onCancel={this.handleClose}
-                            couponList={this.state.couponList}
-                        />
+                    <SuccessModalContent
+                        onCancel={this.handleClose}
+                        couponList={this.state.couponList}
+                        handleQuery={this.handleQuery}
+                        // handleModle={}
+                    />
                 }
                 {
                     promotionModalVisible && <PromotionModalContent
                         onCancel={this.handleClose}
                         couponList={this.state.couponList}
                         promotionList={this.state.promotionList}
+                        handleQuery={this.handleQuery}
                     />
                 }
             </div>
