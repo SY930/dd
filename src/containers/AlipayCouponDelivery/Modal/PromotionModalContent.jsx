@@ -79,6 +79,10 @@ class PromotionModalContent extends Component {
     }
 
     handleCouponChange = (value) => {
+        // const couponDetail = this.props.couponList.find(item => item.itemD === value)
+        // this.setState({
+        //     couponDetail,
+        // })
         getBatchDetail(value).then((res) => {
             this.setState({
                 couponDetail: res,
@@ -163,7 +167,7 @@ class PromotionModalContent extends Component {
                         if (code === '000') {
                             message.success('创建成功');
                             this.props.onCancel();
-                            this.props.handleQuery();
+                            this.props.handleQuery(null, null, { eventWays: ['20002'] });
                             // TODO: 关闭窗口 请求数据
                             return
                         }
@@ -302,7 +306,7 @@ class PromotionModalContent extends Component {
                             >
                                 {/* TODO:根据itemID选出giftItemID */}
                                 {
-                                    getFieldDecorator('giftItemID', {
+                                    getFieldDecorator('itemID', {
                                         // initialValue: editData.giftItemID || '',
                                         onChange: this.handleCouponChange,
                                         rules: [
@@ -311,8 +315,8 @@ class PromotionModalContent extends Component {
                                     })(
                                         <Select placeholder={'请选择一个支付宝大促'}>
                                             {
-                                                couponList.map(({ giftName, itemID }) => (
-                                                    <Select.Option key={itemID} value={itemID}>{giftName}</Select.Option>
+                                                couponList.map(({ batchName, itemID }) => (
+                                                    <Select.Option key={itemID} value={itemID}>{batchName}</Select.Option>
                                                 ))
                                             }
                                         </Select>

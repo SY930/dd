@@ -319,9 +319,9 @@ class CreateCouponContent extends Component {
         const { shopIsAuth, merchantID } = this.state;
         if (!merchantID) return null;
         if (shopIsAuth === '1') {
-            return (<span className={styles.authorizeTip}> <Icon type="check-circle" /> 未授权</span>)
+            return (<span className={[styles.authorizeTip, styles.noAuth].join(' ')}> <Icon type="check-circle" style={{ color: '#FF2D2D' }} /> 未授权</span>)
         } else if (shopIsAuth === '2') {
-            return (<span className={styles.authorizeTip}> <Icon type="check-circle" /> 已授权</span>)
+            return (<span className={[styles.authorizeTip, styles.authed].join(' ')}> <Icon type="check-circle" style={{ color: '#12B493' }} /> 已授权</span>)
         }
         return null
     }

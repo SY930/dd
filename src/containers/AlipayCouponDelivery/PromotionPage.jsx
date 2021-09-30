@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Form, Input, Button, Icon, Switch, Pagination, Col, Row, Modal, Table } from 'antd';
 import classnames from 'classnames';
 import moment from 'moment';
+import emptyPage from '../../assets/empty_page.png'
 import { getAlipayCouponList, queryEventList } from './AxiosFactory';
 import { axiosData } from '../../helpers/util'
 import styles from './AlipayCoupon.less'
@@ -36,6 +37,7 @@ class PromotionPage extends Component {
                 opt = { ...values }
             }
         })
+        opt.eventWays = ['20002'];
         return opt
     }
 
@@ -103,25 +105,25 @@ class PromotionPage extends Component {
                             />
                         )}
                     </FormItem>
-                    {/* <FormItem
+                    <FormItem
                         label="投放ID"
                         labelCol={{ span: 6 }}
                         wrapperCol={{ span: 18 }}
                     >
-                        {getFieldDecorator('planId', {
+                        {getFieldDecorator('itemID', {
                         })(
                             <Input
                                 placeholder="请输入ID"
                             />
                         )}
                     </FormItem>
-                    <FormItem
+                    {/* <FormItem
                         label="支付宝会场大促计划名称"
                         labelCol={{ span: 9 }}
                         wrapperCol={{ span: 15 }}
                         style={{ width: '400px' }}
                     >
-                        {getFieldDecorator('title', {
+                        {getFieldDecorator('marketingName', {
                         })(
                             <Input
                                 placeholder="请输入活动名"
@@ -139,7 +141,7 @@ class PromotionPage extends Component {
                 <div className={styles.launchActiveTableBox} style={{ height: 'calc(100% - 204px)' }}>
                     <div style={{ display: 'flex', height: 'auto', flexWrap: 'wrap' }}>
                         {
-                            (dataSource || []).map((item) => {
+                            dataSource.length ? dataSource.map((item) => {
                                 return (
                                     <div
                                         className={styles.activeCardItem}
@@ -158,7 +160,9 @@ class PromotionPage extends Component {
                                         </div>
                                         <div>
                                             <p>创建时间：</p>
-                                            <span className={styles.activeCardTime}>2020.12.21 - 2022.1.31</span>
+                                            <span className={styles.activeCardTime}>{
+                                                moment(new Date(Number(item.createStamp)), 'YYYYMMDDHHmmss').format('YYYY-MM-DD')
+                                            }</span>
                                             <span className={classnames(styles.cardIcon, {
                                                 [styles.pendding]: item.eventStatus == 0 || item.eventStatus == 11,
                                                 [styles.execute]: item.eventStatus == 1,
@@ -187,7 +191,10 @@ class PromotionPage extends Component {
                                         </div>
                                     </div>
                                 )
-                            })
+                            }) : <div style={{textAlign: 'center', width: '100%' }}>
+                                <img src={emptyPage} alt="" style={{ width: '50px' }} />
+                                <p className={styles.emptyDataText} style={{ marginTop: '12px' }}>暂无数据</p>
+                            </div>
                         }
                     </div>
                 </div>

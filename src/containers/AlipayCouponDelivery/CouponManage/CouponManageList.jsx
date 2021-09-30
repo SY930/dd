@@ -552,12 +552,12 @@ class ViewCouponContent extends Component {
     }
     render() {
         const { viewData } = this.state;
-        const { stock, receive, merchantType, merchantID, trdBatchID } = viewData;
+        const { stock, receive, merchantType, merchantID, itemID } = viewData;
         const columns = [
             {
-                title: '券ID',
-                key: 'giftItemID',
-                dataIndex: 'giftItemID',
+                title: '券名称',
+                key: 'giftName',
+                dataIndex: 'giftName',
             },
             {
                 title: '生成数量',
@@ -600,7 +600,7 @@ class ViewCouponContent extends Component {
                     <Col span={24} offset={1} className={styles.signInfo}>
                         <h4>{viewData.batchName}</h4>
                         <div style={{ marginBottom: 12 }}>
-                            <p>第三方券ID： <Tooltip title={trdBatchID}><span>{trdBatchID.length > 15 ? `${trdBatchID.slice(0, 6)}...${trdBatchID.slice(-10)}` : trdBatchID}</span></Tooltip></p>
+                            <p>券批次ID： <Tooltip title={itemID}><span>{itemID.length > 15 ? `${itemID.slice(0, 6)}...${itemID.slice(-10)}` : itemID}</span></Tooltip></p>
                             <p>关联小程序： <span>{viewData.jumpAppID}</span></p>
                         </div>
                         <div>

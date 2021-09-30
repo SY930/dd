@@ -13,19 +13,20 @@ class SuccessModalContent extends Component {
         super(props);
         this.state = {
             successStartEnd: [],
-            deliveryChannelInfoList: [],
+            deliveryChannelInfoList: props.deliveryChannelInfoList || [],
             couponDetail: {}, // 优惠券详情
+            couponList: props.couponList || [],
         }
     }
 
     componentDidMount() {
-        getDeliveryChannel().then((res) => {
-            if (res) {
-                this.setState({
-                    deliveryChannelInfoList: res,
-                })
-            }
-        });
+        // getDeliveryChannel().then((res) => {
+        //     if (res) {
+        //         this.setState({
+        //             deliveryChannelInfoList: res,
+        //         })
+        //     }
+        // });
     }
 
     getDeliveryChannel = () => {
@@ -67,11 +68,11 @@ class SuccessModalContent extends Component {
                     'HTTP_SERVICE_URL_PROMOTION_NEW'
                 )
                     .then((res) => {
-                        console.log("🚀 ~ file: PromotionModalContent.jsx ~ line 153 ~ PromotionModalContent ~ .then ~ res", res)
                         const { code, message: msg } = res;
                         if (code === '000') {
                             message.success('创建成功');
                             this.props.onCancel();
+                            this.props.handleQuery(null, null, { eventWays: ['20001'] });
                             // TODO: 关闭窗口 请求数据
                             return
                         }
@@ -93,7 +94,9 @@ class SuccessModalContent extends Component {
 
 
     render() {
-        const { form, couponList, editData = [] } = this.props;
+        const { form, couponList, editData = {} } = this.props;
+        const { giftConfInfos = [] } = editData;
+        console.log("🚀 ~ file: SuccessModalContent.jsx ~ line 97 ~ SuccessModalContent ~ render ~ editData", editData)
         const { getFieldDecorator } = form;
         // const { couponValue, linkWay } = this.state;
         return (
@@ -107,7 +110,7 @@ class SuccessModalContent extends Component {
             >
                 <Row>
                     <Col span={24} offset={1} className={styles.IndirectBox}>
-                        <Form className={styles.SuccessModalContentBox}>
+                        <Form className={styles.crmSuccessModalContentBox}>
                             <FormItem
                                 label="活动名称"
                                 labelCol={{ span: 5 }}
@@ -133,17 +136,17 @@ class SuccessModalContent extends Component {
                             >
                                 {/* TODO:根据itemID选出giftItemID */}
                                 {
-                                    getFieldDecorator('giftItemID', {
-                                        // initialValue: editData.giftItemID || '',
+                                    getFieldDecorator('itemID', {
+                                        initialValue: giftConfInfos[0] ? giftConfInfos[0].giftID : '',
                                         onChange: this.handleCouponChange,
                                         rules: [
                                             { required: true, message: '请选择第三方支付宝券' },
                                         ],
                                     })(
-                                        <Select placeholder={'请选择一个支付宝大促'}>
+                                        <Select placeholder={'请选择第三方支付宝券'}>
                                             {
-                                                couponList.map(({ giftName, itemID }) => (
-                                                    <Select.Option key={itemID} value={itemID}>{giftName}</Select.Option>
+                                                (this.state.couponList || []).map(({ batchName, itemID }) => (
+                                                    <Select.Option key={itemID} value={`${itemID}`}>{batchName}</Select.Option>
                                                 ))
                                             }
                                         </Select>
@@ -152,7 +155,7 @@ class SuccessModalContent extends Component {
                             </FormItem>
                             {/* TODO: 跳转 */}
                             {
-                                !couponList.length && <FormItem
+                                !(this.state.couponList.length) && <FormItem
                                     style={{ padding: 0 }}
                                     label=""
                                     wrapperCol={{ offset: 5, span: 16 }}
