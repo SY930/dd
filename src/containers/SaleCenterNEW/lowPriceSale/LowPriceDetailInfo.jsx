@@ -240,7 +240,23 @@ class LowPriceDetailInfo extends React.Component {
         const { user:{groupID} } = this.props;
         const {subRule} = this.state;
         return (
-            groupID == '300452' || groupID == '11157' || groupID == '189702' ? 
+            // groupID == '300452' || groupID == '11157' || groupID == '189702' ? 
+            //     <FormItem
+            //         label={'配菜是否参与计算'}
+            //         className={styles.FormItemStyle}
+            //         labelCol={{ span: 4 }}
+            //     >
+            //         <RadioGroup value={subRule} onChange={this.handleChangeSubRule} defaultValue={1}>
+            //             <Radio key={1} value={1}>参与</Radio>
+            //             <Radio key={0} value={0}>不参与</Radio>
+            //             <Tooltip title={'配菜包括配菜、做法加价等'}>
+            //                 <Icon
+            //                     type="question-circle-o"
+            //                     className={styles.question}
+            //                 />
+            //             </Tooltip>
+            //         </RadioGroup>
+            //     </FormItem> : ''
                 <FormItem
                     label={'配菜是否参与计算'}
                     className={styles.FormItemStyle}
@@ -256,7 +272,7 @@ class LowPriceDetailInfo extends React.Component {
                             />
                         </Tooltip>
                     </RadioGroup>
-                </FormItem> : ''
+                </FormItem>
         )
     }
     handleChangeSubRule(e){
