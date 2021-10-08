@@ -49,7 +49,7 @@ export default class AlipayCouponDeliveryPage extends Component {
 
 
     onShowSizeChange = (current, pageSize) => {
-        console.log("🚀 ~ file: AlipayCouponDeliveryPage.jsx ~ line 50 ~ AlipayCouponDeliveryPage ~ pageSize", pageSize, current)
+        // console.log("🚀 ~ file: AlipayCouponDeliveryPage.jsx ~ line 50 ~ AlipayCouponDeliveryPage ~ pageSize", pageSize, current)
         this.setState({
             loading: true,
         }, () => {
@@ -114,7 +114,7 @@ export default class AlipayCouponDeliveryPage extends Component {
             tabKeys: key,
         }, () => {
             // TODO: 传不同的数据
-            console.log(key, 'key')
+            // console.log(key, 'key')
             if (key === 'successPage') { // 成功页
                 this.handleQuery(null, null, { eventWays: ['20001'] }); // 默认传成功页
                 // this.clearData()
@@ -154,7 +154,6 @@ export default class AlipayCouponDeliveryPage extends Component {
     }
 
     handleSuccessEdit = ({ itemID }) => {
-    console.log("🚀 ~ file: AlipayCouponDeliveryPage.jsx ~ line 147 ~ AlipayCouponDeliveryPage ~ itemID", itemID)
         const params = { itemID };
         axiosData(
             'trdEventService/getEventDetail.ajax',

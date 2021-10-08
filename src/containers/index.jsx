@@ -19,9 +19,9 @@ export { default as OnlinePromotionPage } from './NewCreatePromotions/OnlineProm
 export { default as ShareRules } from './ShareRules/index';
 export { default as ShareRulesOld } from './ShareRulesOld/index';
 export { default as PromotionCalendar } from './PromotionCalendar';
-// export { default as WeChatCouponManagementList } from './WeChatCouponManagement';
+export { default as WeChatCouponManagementList } from './WeChatCouponManagement';
 export { default as AlipayCouponDeliveryPage } from './AlipayCouponDelivery';
-// export { default as ZhiFuBaoCouponList } from './ZhiFuBaoCouponManagement';
+export { default as ZhiFuBaoCouponList } from './ZhiFuBaoCouponManagement';
 export { default as CouponManageList } from './AlipayCouponDelivery/CouponManage/CouponManageList';
 export { default as WeChatCouponCreate } from './WeChatCouponManagement/WeChatCouponCreate';
 export { default as TrdPromotionInterface } from './TrdPromotionInterface';

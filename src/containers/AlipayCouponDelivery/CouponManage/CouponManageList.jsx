@@ -12,7 +12,7 @@ import { debounce } from 'lodash'
 import styles from '../AlipayCoupon.less'
 import { axiosData } from '../../../helpers/util'
 import registerPage from '../../../../index';
-import { PROMOTION_ZHIFUBAO_COUPON_LIST } from '../../../constants/entryCodes';
+import { THIRD_VOUCHER_MANAGEMENT } from '../../../constants/entryCodes';
 import { getCardList, getShopPid, getIndirectList } from '../AxiosFactory';
 const moment = require('moment');
 
@@ -30,7 +30,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const { RangePicker } = DatePicker;
 
-@registerPage([PROMOTION_ZHIFUBAO_COUPON_LIST], {})
+@registerPage([THIRD_VOUCHER_MANAGEMENT], {})
 @connect(mapStateToProps, mapDispatchToProps)
 class CouponManageList extends Component {
 	constructor(props) {
@@ -407,23 +407,13 @@ class CouponManageList extends Component {
                             disabled={record.batchStatus == 1 ? false : true}
                             onClick={record.batchStatus == 1 ? () => {
                                 this.handleStopClickEvent(record);
-                            }: null} 跳转活动投放页面
+                            }: null}
                         >停用</a> 
-                        {/* {
-                            record.batchStatus == '1' && <a
-                                href="#"
-                            // disabled={isExpired || record.status == 3}
-                            onClick={() => {
-                                this.handleStopClickEvent(record);
-                            }}
-                            >停用</a>
-                        } */}
 						<a
 							href="#"
-                            // disabled={isExpired || record.status == 3}
-                            // onClick={isExpired || record.status == 3 ? null : () => {
-                            //     this.handleDisableClickEvent(record, 3);
-                            // }} 跳转活动投放页面
+                            onClick={() => {
+                                jumpPage({ menuID: '100008993' })
+                            }}
                         >投放</a> 
                     </span>
                     );

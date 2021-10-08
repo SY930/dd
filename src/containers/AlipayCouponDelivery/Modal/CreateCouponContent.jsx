@@ -3,10 +3,10 @@ import { Form, Input, DatePicker, Select, Radio, Row, Col, Icon, Modal, TreeSele
 import moment from 'moment'
 import { axios, getStore } from '@hualala/platform-base';
 import AuthorizeModalContent from './AuthorizeContent';
-import { getSmid, isAuth, goAuthorizeAC } from '../AxiosFactory'
+import { getSmid, isAuth } from '../AxiosFactory'
 import { SALE_CENTER_GIFT_EFFICT_DAY } from '../../../redux/actions/saleCenterNEW/types';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
-import { axiosData } from '../../../helpers/util'
+// import { axiosData } from '../../../helpers/util'
 import styles from '../AlipayCoupon.less';
 
 const { RangePicker } = DatePicker;
@@ -24,7 +24,7 @@ class CreateCouponContent extends Component {
     constructor(props) {
         super(props);
         const { editData } = props;
-        console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 27 ~ CreateCouponContent ~ constructor ~ editData", editData)
+        // console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 27 ~ CreateCouponContent ~ constructor ~ editData", editData)
         this.state = {
             successStartEnd: [], // 开始时间 结束时间
             giftItemID: editData.giftItemID ? editData.giftItemID : '', // 优惠券id
@@ -44,7 +44,7 @@ class CreateCouponContent extends Component {
 
     // 日期
     handleRangeChange = (date, dateString) => {
-    console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 46 ~ CreateCouponContent ~ dateString", dateString)
+    // console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 46 ~ CreateCouponContent ~ dateString", dateString)
         this.setState({
             successStartEnd: dateString,
         })
@@ -197,7 +197,7 @@ class CreateCouponContent extends Component {
                 const { user } = getStore().getState();
                 const { groupID } = user.get('accountInfo').toJS()
                 const rangePicker = values.rangePicker;
-                console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 200 ~ CreateCouponContent ~ form.validateFields ~ rangePicker", rangePicker)
+                // console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 200 ~ CreateCouponContent ~ form.validateFields ~ rangePicker", rangePicker)
                 const giftValidRange = values.giftValidRange || [];
                 if (!effectGiftTimeHours && values.effectType === '3') {
                     return message.error('请输入生效时间')
@@ -242,7 +242,7 @@ class CreateCouponContent extends Component {
                     }
                     method = 'couponCodeBatchService/updateBatch.ajax';
                     datas.itemID = editData.itemID;
-                    console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 233 ~ CreateCouponContent ~ form.validateFields ~ datas", datas)
+                    // console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 233 ~ CreateCouponContent ~ form.validateFields ~ datas", datas)
                 }
                 const params = {
                     service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
@@ -399,7 +399,7 @@ class CreateCouponContent extends Component {
         const { form } = this.props;
         const { getFieldDecorator } = form;
         const { editData } = this.state;
-        console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 391 ~ CreateCouponContent ~ editData", this.state)
+        // console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 391 ~ CreateCouponContent ~ editData", this.state)
         return (
             <Row>
                 <Col span={16} offset={4} className={styles.CouponGiftBox}>
@@ -600,7 +600,7 @@ class CreateCouponContent extends Component {
         const { giftItemID, merchantType, editData } = this.state;
         let title = '新建第三方支付宝券';
         if (editData.batchName) {
-            console.log(moment(editData.startTime), 'moment(editData.startTime)')
+            // console.log(moment(editData.startTime), 'moment(editData.startTime)')
             title = '编辑第三方支付宝券';
         }
         return (

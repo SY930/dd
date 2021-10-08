@@ -2,7 +2,7 @@ import React from 'react';
 import { connect, Provider } from 'react-redux';
 import AlipayCouponDeliveryPage from './AlipayCouponDeliveryPage';
 import registerPage from '../../index';
-import { PROMOTION_WECHAT_COUPON_LIST } from '../../constants/entryCodes';
+import { ACTIVITY_LAUNCH } from '../../constants/entryCodes';
 // @registerPage([PROMOTION_WECHAT_COUPON_LIST]);
 // @connect(mapStateToProps)
 
@@ -16,4 +16,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default registerPage([PROMOTION_WECHAT_COUPON_LIST], {})(connect(mapStateToProps)(getProvider))
+export default registerPage([ACTIVITY_LAUNCH], {})(connect(mapStateToProps)(getProvider))
