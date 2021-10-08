@@ -171,7 +171,7 @@ class SuccessPage extends Component {
                                                 style={{ flex: 'none' }}
                                                 onClick={e=>e.stopPropagation()}
                                             >
-                                                <Switch style={{ position: 'relative', zIndex: '10' }} size="small" value={item.eventStatus != 0} onChange={(value) => { this.handleChangeStatus(value, item) }} />
+                                                <Switch style={{ position: 'relative', zIndex: '10' }} size="small" checked={item.eventStatus != 0} onChange={(value) => { this.handleChangeStatus(value, item) }} />
                                             </div>
                                         </div>
                                         <div>
