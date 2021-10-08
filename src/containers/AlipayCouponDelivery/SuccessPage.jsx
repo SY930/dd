@@ -298,7 +298,7 @@ class ViewCouponContent extends Component {
                             <p style={{ flex: 'none'}}>支付宝支付成功页： <span>{findDeliveryInfo.channelName}</span></p>
                         </div>
                         <div>
-                            <p>创建时间： <span></span></p>
+                            <p>创建时间： <span>{moment(new Date(Number(viewData.createStamp)), 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}</span></p>
                         </div>
                     </Col>
                     <Col span={24} className={styles.relationCoupon__table}>
