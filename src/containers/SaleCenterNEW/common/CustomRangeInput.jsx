@@ -50,8 +50,11 @@ class CustomRangeInput extends React.Component {
             start: value.start,
             end: value.end,
         });
-        if (this.props.addonAfterUnit != nextProps.addonAfterUnit && this.props.addonAfter != nextProps.addonAfter) {
-            this.setState({ addonAfterUnit: nextProps.addonAfterUnit, addonAfter: nextProps.addonAfter });
+        if (this.props.addonAfterUnit != nextProps.addonAfterUnit) {
+            this.setState({ addonAfterUnit: nextProps.addonAfterUnit });
+        }
+        if (this.props.addonAfter != nextProps.addonAfter) {
+            this.setState({ addonAfter: nextProps.addonAfter });
         }
         if (this.props.addonBefore != nextProps.addonBefore) {
             this.setState({ addonBefore: nextProps.addonBefore })
