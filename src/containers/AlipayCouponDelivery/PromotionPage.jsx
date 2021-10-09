@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
-import { Form, Input, Button, Icon, Switch, Pagination, Col, Row, Modal, Table } from 'antd';
+import { Form, Input, Button, Icon, Pagination, Col, Row, Modal, Table } from 'antd';
 import classnames from 'classnames';
 import moment from 'moment';
 import emptyPage from '../../assets/empty_page.png'
-import { getAlipayCouponList, queryEventList } from './AxiosFactory';
 import { axiosData } from '../../helpers/util'
 import styles from './AlipayCoupon.less'
 

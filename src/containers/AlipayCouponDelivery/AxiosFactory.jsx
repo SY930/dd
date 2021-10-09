@@ -8,7 +8,6 @@
 import _ from 'lodash';
 import { message } from 'antd';
 import { axios, getStore } from '@hualala/platform-base';
-import { axiosData } from '../../helpers/util'
 /**
  * axios 默认请求参数
  * url 加 ？ 的目的就是为了在浏览器 network 里面方便看到请求的接口路径

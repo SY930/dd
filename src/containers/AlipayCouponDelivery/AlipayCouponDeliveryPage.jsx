@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import {
-    message,
     Button,
     Icon,
     Tabs,
-    Modal,
 } from 'antd';
 // import moment from 'moment';
 import SuccessPage from './SuccessPage';
@@ -13,7 +11,7 @@ import SuccessModalContent from './Modal/SuccessModalContent';
 import PromotionModalContent from './Modal/PromotionModalContent';
 import style from './AlipayCoupon.less'
 import { getAlipayCouponList, getAlipayPromotionList, queryEventList, getDeliveryChannel } from './AxiosFactory';
-import { axiosData } from "../../helpers/util";
+import { axiosData } from '../../helpers/util';
 
 
 const TabPane = Tabs.TabPane;
@@ -21,8 +19,6 @@ const TabPane = Tabs.TabPane;
 export default class AlipayCouponDeliveryPage extends Component {
     constructor(props) {
         super(props);
-        // console.log("🚀 ~ file: AlipayCouponDeliveryPage.jsx ~ line 23 ~ AlipayCouponDeliveryPage ~ constructor ~ props", props)
-
         this.state = {
             tabKeys: 'successPage',
             successModalVisible: false, // 新建支付成功页头投放弹窗

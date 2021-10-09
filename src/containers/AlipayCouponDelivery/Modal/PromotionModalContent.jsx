@@ -1,21 +1,13 @@
 import React, { Component } from 'react'
-import { Form, Input, DatePicker, Select, Radio, Row, Col, Steps, Button, Modal, Icon, message } from 'antd'
+import { Form, Input, Select, Row, Col, Modal, Icon, message } from 'antd'
 import ImageUpload from 'components/common/ImageUpload';
 import { getAlipayRecruitPlan, getBatchDetail, uploadImageUrl } from '../AxiosFactory'
 import { axiosData } from '../../../helpers/util'
-import Step1 from './Step1'
-import Step2 from './Step2'
-import { SALE_CENTER_GIFT_EFFICT_TIME, SALE_CENTER_GIFT_EFFICT_DAY } from '../../../redux/actions/saleCenterNEW/types';
-
 import styles from '../AlipayCoupon.less';
+
 const DOMAIN = 'http://res.hualala.com/';
 
-const { Step } = Steps;
-const { RangePicker } = DatePicker;
 const FormItem = Form.Item;
-const { Option } = Select;
-const RadioGroup = Radio.Group;
-const RadioButton = Radio.Button;
 
 class PromotionModalContent extends Component {
     constructor(props) {
@@ -131,11 +123,9 @@ class PromotionModalContent extends Component {
                         aftsFileId: item[index],
                         mediaType: 'IMAGE',
                     };
-                    // console.log(JSON.stringify(imageData), '-----JSON.stringify(imageData)')
                 })
                 deliveryInfoData.data = JSON.stringify(deliveryInfoData.data)
                 // JSON.stringify(materials.activityImage);
-                // console.log(deliveryInfoData, 'deliveryInfoData>>>>>>>>>>>', JSON.stringify(deliveryInfoData))
                 const data = {
                     eventName: values.eventName,
                     eventWay: '20002', // 大促20002 成功 20001
@@ -152,7 +142,7 @@ class PromotionModalContent extends Component {
                         },
                     ],
                 }
-                console.log(data, 'data_________')
+                // console.log(data, 'data_________')
                 const params = { trdEventInfo: { ...data } };
                 axiosData(
                     'trdEventService/addEvent.ajax',
@@ -162,13 +152,11 @@ class PromotionModalContent extends Component {
                     'HTTP_SERVICE_URL_PROMOTION_NEW'
                 )
                     .then((res) => {
-                        console.log("🚀 ~ file: PromotionModalContent.jsx ~ line 153 ~ PromotionModalContent ~ .then ~ res", res)
                         const { code, message: msg } = res;
                         if (code === '000') {
                             message.success('创建成功');
                             this.props.onCancel();
                             this.props.handleQuery(null, null, { eventWays: ['20002'] });
-                            // TODO: 关闭窗口 请求数据
                             return
                         }
                         message.error(msg);

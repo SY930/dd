@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { Form, Input, DatePicker, Select, Radio, Row, Col, Icon, Modal, message } from 'antd'
-import moment from 'moment'
-import { getDeliveryChannel, getBatchDetail } from '../AxiosFactory'
+import { Form, Input, Select, Row, Col, Icon, Modal, message } from 'antd'
+// import moment from 'moment'
+import { getBatchDetail } from '../AxiosFactory'
 import { axiosData } from '../../../helpers/util'
 import styles from '../AlipayCoupon.less';
 
@@ -20,17 +20,6 @@ class SuccessModalContent extends Component {
     }
 
     componentDidMount() {
-        // getDeliveryChannel().then((res) => {
-        //     if (res) {
-        //         this.setState({
-        //             deliveryChannelInfoList: res,
-        //         })
-        //     }
-        // });
-    }
-
-    getDeliveryChannel = () => {
-
     }
 
     handleCouponChange = (value) => {
@@ -46,7 +35,7 @@ class SuccessModalContent extends Component {
         const { couponDetail } = this.state
         form.validateFields((err, values) => {
             if (!err) {
-                console.log('handleSubmit', values);
+                // console.log('handleSubmit', values);
                 const data = {
                     eventName: values.eventName,
                     eventWay: '20001', // 大促20002 成功 20001
@@ -73,7 +62,6 @@ class SuccessModalContent extends Component {
                             message.success('创建成功');
                             this.props.onCancel();
                             this.props.handleQuery(null, null, { eventWays: ['20001'] });
-                            // TODO: 关闭窗口 请求数据
                             return
                         }
                         message.error(msg);
@@ -81,7 +69,6 @@ class SuccessModalContent extends Component {
                         console.log(error)
                         // 关闭窗口
                     })
-                // TODO:请求接口 关闭弹窗
             }
         })
     }
@@ -96,7 +83,6 @@ class SuccessModalContent extends Component {
     render() {
         const { form, couponList, editData = {} } = this.props;
         const { giftConfInfos = [] } = editData;
-        console.log("🚀 ~ file: SuccessModalContent.jsx ~ line 97 ~ SuccessModalContent ~ render ~ editData", editData)
         const { getFieldDecorator } = form;
         // const { couponValue, linkWay } = this.state;
         return (

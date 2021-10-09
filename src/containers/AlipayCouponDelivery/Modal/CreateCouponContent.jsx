@@ -24,7 +24,6 @@ class CreateCouponContent extends Component {
     constructor(props) {
         super(props);
         const { editData } = props;
-        // console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 27 ~ CreateCouponContent ~ constructor ~ editData", editData)
         this.state = {
             successStartEnd: [], // 开始时间 结束时间
             giftItemID: editData.giftItemID ? editData.giftItemID : '', // 优惠券id
@@ -44,7 +43,6 @@ class CreateCouponContent extends Component {
 
     // 日期
     handleRangeChange = (date, dateString) => {
-    // console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 46 ~ CreateCouponContent ~ dateString", dateString)
         this.setState({
             successStartEnd: dateString,
         })
@@ -112,7 +110,6 @@ class CreateCouponContent extends Component {
 
     // 选择间连主体
     handleIndirectSelect = (value) => {
-    // console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 114 ~ CreateCouponContent ~ value", value)
         this.setState({
             merchantID: value,
         })
@@ -154,7 +151,6 @@ class CreateCouponContent extends Component {
         const { bankMerchantCode } = smidList[0];
         form.validateFields((err, values) => {
             if (!err) {
-                // console.log('handleAuthSubmit', values);
                 values.merchantNo = bankMerchantCode;
                 goAuthorizeAC(values).then((res) => {
                     if (res) {
@@ -168,7 +164,6 @@ class CreateCouponContent extends Component {
     handleDirectAuthSubmit = (form) => {
         form.validateFields((err, values) => {
             if (!err) {
-                // console.log('handleDirectAuthSubmit', values);
                 values.merchantNo = this.state.merchantID;
                 goAuthorizeAC(values).then((res) => {
                     if (res) {
@@ -221,12 +216,11 @@ class CreateCouponContent extends Component {
         const { form } = this.props
         form.validateFields((err, values) => {
             if (!err) {
-                console.log('handleAuthSubmit', values);
+                // console.log('handleAuthSubmit', values);
                 const { effectType, effectGiftTimeHours, merchantID, editData } = this.state;
                 const { user } = getStore().getState();
                 const { groupID } = user.get('accountInfo').toJS()
                 const rangePicker = values.rangePicker;
-                // console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 200 ~ CreateCouponContent ~ form.validateFields ~ rangePicker", rangePicker)
                 const giftValidRange = values.giftValidRange || [];
                 if (!effectGiftTimeHours && values.effectType === '3') {
                     return message.error('请输入生效时间')
@@ -271,7 +265,6 @@ class CreateCouponContent extends Component {
                     }
                     method = 'couponCodeBatchService/updateBatch.ajax';
                     datas.itemID = editData.itemID;
-                    // console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 233 ~ CreateCouponContent ~ form.validateFields ~ datas", datas)
                 }
                 const params = {
                     service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
@@ -453,7 +446,6 @@ class CreateCouponContent extends Component {
         const { form } = this.props;
         const { getFieldDecorator } = form;
         const { editData } = this.state;
-        // console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 391 ~ CreateCouponContent ~ editData", this.state)
         return (
             <Row>
                 <Col span={16} offset={4} className={styles.CouponGiftBox}>
@@ -606,7 +598,6 @@ class CreateCouponContent extends Component {
             type: 'radio',
             columnTitle: '选择',
             onChange: (selectedRowKeys, selectedRows) => {
-                // console.log(selectedRowKeys, selectedRows)
                 this.setState({
                     smidUserSelect: selectedRows,
                 })
@@ -654,7 +645,6 @@ class CreateCouponContent extends Component {
         const { giftItemID, merchantType, editData } = this.state;
         let title = '新建第三方支付宝券';
         if (editData.batchName) {
-            // console.log(moment(editData.startTime), 'moment(editData.startTime)')
             title = '编辑第三方支付宝券';
         }
         return (
