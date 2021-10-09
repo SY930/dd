@@ -8,7 +8,7 @@ import styles from './AlipayCoupon.less'
 
 const FormItem = Form.Item;
 const EVENT_STATUS = {
-    0: '待审核',
+    0: '已暂停',
     1: '执行中',
     2: '已结束',
     // 13: '审核未通过',
@@ -96,7 +96,7 @@ class SuccessPage extends Component {
         // e.stopPropagation();
         // console.log("🚀 ~ file: SuccessPage.jsx ~ line 96 ~ SuccessPage ~ value", value);
         const eventStatus = value ? 1 : 0;
-        const params = { eventStatus, itemID };
+        const params = { trdEventInfo: { eventStatus, itemID } };
         axiosData(
             'trdEventService/switchStatus.ajax',
             params,
@@ -193,23 +193,22 @@ class SuccessPage extends Component {
                                             })}
                                             >{EVENT_STATUS[item.eventStatus] || '--'}</span>
                                         </div>
-                                        <div>
+                                        {/* <div>
                                             <p>关联优惠券：</p>
                                             <span>{this.getLinkCoupon(item.giftConfInfos)}</span>
                                         </div>
                                         <div>
                                             <p>剩余数量：</p>
                                             <span>0/1000</span>
-                                        </div>
-                                        <div className={styles.cardBtnBox}>
+                                        </div> */}
+                                        {/* <div className={styles.cardBtnBox}>
                                             <div className={styles.cardBtn}
                                                 onClick={(e) => {
                                                     this.handleEdit(e, item, true)
                                                 }}>
                                                 <span>编辑</span>
-                                                {/* <span>删除</span> */}
                                             </div>
-                                        </div>
+                                        </div> */}
                                     </div>
                                 )
                             }) : <div style={{ textAlign: 'center', width: '100%' }}>

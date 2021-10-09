@@ -173,7 +173,7 @@ async function goAuthorizeAC(value) {
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;
     if (code === '000') {
-        message.success(msg);
+        message.success('等支付宝授权后，可使用改账号创建券');
         return '成功'
     }
     message.error(msg);

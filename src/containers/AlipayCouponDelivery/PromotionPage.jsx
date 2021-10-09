@@ -156,7 +156,7 @@ class PromotionPage extends Component {
                                         </div>
                                         <div>
                                             <p>投放活动ID：</p>
-                                            <span>{item.planId}</span>
+                                            <span>{item.itemID}</span>
                                         </div>
                                         <div>
                                             <p>创建时间：</p>
@@ -172,14 +172,14 @@ class PromotionPage extends Component {
                                             })}
                                             >{EVENT_STATUS[item.eventStatus] || '--'}</span>
                                         </div>
-                                        <div>
+                                        {/* <div>
                                             <p>关联优惠券：</p>
                                             <span>{this.getLinkCoupon(item.giftConfInfos)}</span>
                                         </div>
                                         <div>
                                             <p>剩余数量：</p>
                                             <span>0/1000</span>
-                                        </div>
+                                        </div> */}
                                         <div className={styles.cardBtnBox}>
                                             {
                                                 item.marketingName && <div className={styles.activeCardBottomName}>{item.marketingName}</div>
@@ -269,11 +269,11 @@ class ViewCouponContent extends Component {
                     <Col span={24} offset={1} className={styles.signInfo}>
                         <h4>{viewData.eventName}</h4>
                         <div style={{ marginBottom: 12 }}>
-                            <p>投放活动ID： <span></span></p>
+                            <p>投放活动ID： <span>{viewData.itemID}</span></p>
                             <p>支付宝大促： <span>{viewData.marketingName}</span></p>
                         </div>
                         <div>
-                            <p>投放时间： <span></span></p>
+                            <p>投放时间： <span>{moment(new Date(Number(viewData.createStamp)), 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}</span></p>
                         </div>
                     </Col>
                     <Col span={24} className={styles.relationCoupon__table}>

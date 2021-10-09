@@ -3,7 +3,7 @@ import { Form, Input, DatePicker, Select, Radio, Row, Col, Icon, Modal, TreeSele
 import moment from 'moment'
 import { axios, getStore } from '@hualala/platform-base';
 import AuthorizeModalContent from './AuthorizeContent';
-import { getSmid, isAuth } from '../AxiosFactory'
+import { getSmid, isAuth, goAuthorizeAC } from '../AxiosFactory'
 import { SALE_CENTER_GIFT_EFFICT_DAY } from '../../../redux/actions/saleCenterNEW/types';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 // import { axiosData } from '../../../helpers/util'
@@ -104,6 +104,7 @@ class CreateCouponContent extends Component {
         // editData.merchantID = '';
         this.setState({
             merchantType: e.target.value,
+            shopIsAuth: '0',
             // editData,
 
         })
@@ -135,6 +136,17 @@ class CreateCouponContent extends Component {
         this.setState({
             merchantID: value,
         })
+        isAuth(value).then((res) => {
+            if (res) {
+                this.setState({
+                    shopIsAuth: '2',
+                })
+            } else {
+                this.setState({
+                    shopIsAuth: '1', // 需要授权
+                })
+            }
+        })
     }
 
     handleAuthSubmit = (form) => {
@@ -144,8 +156,25 @@ class CreateCouponContent extends Component {
             if (!err) {
                 // console.log('handleAuthSubmit', values);
                 values.merchantNo = bankMerchantCode;
-                this.goAuthorizeAC(values)
-                this.handleAuthModalClose()
+                goAuthorizeAC(values).then((res) => {
+                    if (res) {
+                        this.handleAuthModalClose()
+                    }
+                })
+            }
+        })
+    }
+
+    handleDirectAuthSubmit = (form) => {
+        form.validateFields((err, values) => {
+            if (!err) {
+                // console.log('handleDirectAuthSubmit', values);
+                values.merchantNo = this.state.merchantID;
+                goAuthorizeAC(values).then((res) => {
+                    if (res) {
+                        this.handleAuthModalClose()
+                    }
+                })
             }
         })
     }
@@ -192,7 +221,7 @@ class CreateCouponContent extends Component {
         const { form } = this.props
         form.validateFields((err, values) => {
             if (!err) {
-                // console.log('handleAuthSubmit', values);
+                console.log('handleAuthSubmit', values);
                 const { effectType, effectGiftTimeHours, merchantID, editData } = this.state;
                 const { user } = getStore().getState();
                 const { groupID } = user.get('accountInfo').toJS()
@@ -283,14 +312,13 @@ class CreateCouponContent extends Component {
                 // }).catch((err) => {
 
                 // })
-
             }
         })
     }
 
     // 直连
     renderDirect = () => {
-        const { editData } = this.state;
+        const { editData, authorizeModalVisible } = this.state;
         // if (editData.merchantType == )
         const value = editData.merchantType && editData.merchantType == '1' ? editData.merchantID : '';
         return (
@@ -301,15 +329,40 @@ class CreateCouponContent extends Component {
                         wrapperCol={{ span: 24 }}
                         required={true}
                         className={styles.directSelect}
+                        label="账务主体pid"
                     >
                         <Select onChange={this.handleDirectSelect} placeholder={'请选择支付宝pid号'} defaultValue={value}>
                             {
                                 this.props.shopPid.map(({ channelAccount, channelName }) => (
-                                    <Select.Option key={channelAccount} value={`${channelAccount}`}>{channelName}</Select.Option>
+                                    <Select.Option key={channelAccount} value={`${channelAccount}`}>{channelName}-{channelAccount}</Select.Option>
                                 ))
                             }
                         </Select>
+                        {
+                            this.renderTip()
+                        }
                     </FormItem>
+                    {
+                        this.renderGoAuth()
+                    }
+                </Col>
+                <Col>
+                    <Modal
+                        title="代运营授权"
+                        maskClosable={true}
+                        width={520}
+                        visible={authorizeModalVisible}
+                        // onOk={this.handleAuthSubmit}
+                        footer={null}
+                        onCancel={this.handleAuthModalClose}
+                    >
+                        <AuthorizeModalContent
+                            onCancel={this.handleAuthModalClose}
+                            // value={merchantID}
+                            // form={form}
+                            handleSubmit={this.handleDirectAuthSubmit}
+                        />
+                    </Modal>
                 </Col>
             </Row>
         )
@@ -319,7 +372,7 @@ class CreateCouponContent extends Component {
         const { shopIsAuth, merchantID } = this.state;
         if (!merchantID) return null;
         if (shopIsAuth === '1') {
-            return (<span className={[styles.authorizeTip, styles.noAuth].join(' ')}> <Icon type="check-circle" style={{ color: '#FF2D2D' }} /> 未授权</span>)
+            return (<span className={[styles.authorizeTip, styles.noAuth].join(' ')}> <Icon type="close-circle-o" style={{ color: '#FF2D2D' }} /> 未授权</span>)
         } else if (shopIsAuth === '2') {
             return (<span className={[styles.authorizeTip, styles.authed].join(' ')}> <Icon type="check-circle" style={{ color: '#12B493' }} /> 已授权</span>)
         }
@@ -355,6 +408,7 @@ class CreateCouponContent extends Component {
                         wrapperCol={{ span: 24 }}
                         required={true}
                         className={styles.indirectSelect}
+                        label="账务主体"
                     >
 
                         <Select onChange={this.handleIndirectSelect}>
