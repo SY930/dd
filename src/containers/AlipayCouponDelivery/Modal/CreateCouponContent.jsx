@@ -311,6 +311,8 @@ class CreateCouponContent extends Component {
 
     // 直连
     renderDirect = () => {
+        const { form } = this.props;
+        const { getFieldDecorator } = form;
         const { editData, authorizeModalVisible } = this.state;
         // if (editData.merchantType == )
         const value = editData.merchantType && editData.merchantType == '1' ? editData.merchantID : '';
@@ -322,15 +324,20 @@ class CreateCouponContent extends Component {
                         wrapperCol={{ span: 24 }}
                         required={true}
                         className={styles.directSelect}
-                        label="账务主体pid"
                     >
-                        <Select onChange={this.handleDirectSelect} placeholder={'请选择支付宝pid号'} defaultValue={value}>
+                        {getFieldDecorator('channelAccount', {
+                            initialValue: value || undefined,
+                            rules: [
+                                { required: true, message: '请选择支付宝pid号' },
+                            ],
+                        })(<Select onChange={this.handleDirectSelect} placeholder={'请选择支付宝pid号'}>
                             {
                                 this.props.shopPid.map(({ channelAccount, channelName }) => (
                                     <Select.Option key={channelAccount} value={`${channelAccount}`}>{channelName}-{channelAccount}</Select.Option>
                                 ))
                             }
-                        </Select>
+                        </Select>)}
+                        
                         {
                             this.renderTip()
                         }
@@ -388,8 +395,8 @@ class CreateCouponContent extends Component {
 
     // 间连
     renderIndirect = () => {
-        // const { form } = this.props;
-        // const { getFieldDecorator } = form;
+        const { form } = this.props;
+        const { getFieldDecorator } = form;
         const { authorizeModalVisible } = this.state;
         // const { editData } = this.state;
         // const value = editData.merchantType && editData.merchantType == '2' ? editData.merchantID : '';
@@ -401,16 +408,19 @@ class CreateCouponContent extends Component {
                         wrapperCol={{ span: 24 }}
                         required={true}
                         className={styles.indirectSelect}
-                        label="账务主体"
+                        // label="账务主体"
                     >
-
-                        <Select onChange={this.handleIndirectSelect}>
+                        {getFieldDecorator('settleUnitID', {
+                            rules: [
+                                { required: true, message: '请输入结算主体' },
+                            ],
+                        })(<Select onChange={this.handleIndirectSelect} placeholder={'请输入结算主体'}>
                             {
                                 this.props.indirectList.map(({ settleUnitName, settleUnitID }) => (
                                     <Select.Option key={settleUnitID} value={`${settleUnitID}`}>{settleUnitName}</Select.Option>
                                 ))
                             }
-                        </Select>
+                        </Select>)}
                         {/* <Icon type="close-circle" /> */}
                         {
                             this.renderTip()
