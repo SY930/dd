@@ -29,6 +29,8 @@ import {
     SALE_CENTER_CARDGROUPID,
     SALE_CENTER_QUERY_GROUP_CRM_RFM,
     SALE_CENTER_GET_AUTH_DATA,
+    SALE_CENTER_SELFDEFINE,
+    SALE_CENTER_JUMP_OPEN_CARD,
 } from "../../actions/saleCenterNEW/specialPromotion.action";
 
 const $initialState = Immutable.fromJS({
@@ -59,6 +61,7 @@ const $initialState = Immutable.fromJS({
         excludedDate: [], // 活动排除日期：excludedDate，格式为 yyyyMMdd，例：20181210
         validCycle: null, // 可选择每日、每周、每月，每一项的第一位表示周期类型w-周,m-月,第二位之后表示周期内值,如w1表示每周一,m2表示每周二，m1表示每月1号，当表示每日时该字段为null
     },
+    isBenefitJumpOpenCard: false, // 从权益卡跳转过来交互开卡赠送的
     $jumpUrlInfos: [],
     $giftInfo: [],
     $eventRecommendSettings: [],
@@ -227,9 +230,21 @@ export const specialPromotion_NEW = ($$state = $initialState, action) => {
                 ["customerCount"],
                 action.payload.customerCount
             );
+        // debugger 强制填入默认数据
         case SALE_CENTER_CARDGROUPID:
             return $$state.setIn(
                 ["$eventInfo", "groupMemberID"],
+                Immutable.fromJS(action.payload)
+            );
+        case SALE_CENTER_SELFDEFINE:
+            return $$state.setIn(
+                ["$eventInfo"],
+                Immutable.fromJS(action.payload)
+            );
+        case SALE_CENTER_JUMP_OPEN_CARD:
+            // debugger
+            return $$state.setIn(
+                ["$isBenefitJumpOpenCard"],
                 Immutable.fromJS(action.payload)
             );
         case SALE_CENTER_QUERY_GROUP_CRM_RFM:

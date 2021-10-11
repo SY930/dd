@@ -40,6 +40,7 @@ class NewCardGive extends NewPromotion {
                     getSubmitFn={(handles) => {
                         this.handles[0] = handles;
                     }}
+                    ifJumpOpenCard={this.props.specialPromotion.isBenefitJumpOpenCard}
                     isNew={this.props.isNew}
                 />),
             },
@@ -51,6 +52,7 @@ class NewCardGive extends NewPromotion {
                         getSubmitFn={(handles) => {
                             this.handles[1] = handles;
                         }}
+                        ifJumpOpenCard={this.props.specialPromotion.isBenefitJumpOpenCard}
                         isNew={this.props.isNew}
                     />
                 ),
@@ -63,6 +65,7 @@ class NewCardGive extends NewPromotion {
                         getSubmitFn={(handles) => {
                             this.handles[2] = handles;
                         }}
+                        ifJumpOpenCard={this.props.specialPromotion.isBenefitJumpOpenCard}
                         onChange={(rule) => {
                             this.setState({ rule });
                         }}

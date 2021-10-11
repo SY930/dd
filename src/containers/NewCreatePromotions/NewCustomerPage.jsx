@@ -43,7 +43,9 @@ import {
     saleCenterSetSpecialBasicInfoAC,
     saleCenterSetSpecialBasicInfoCardGroupID,
     saleCenterSaveCreateMemberGroupParams,
-    getAuthLicenseData
+    getAuthLicenseData,
+    saleCenterSetSpecialActivityInfoByForce,
+    saleCenterSetJumpOpenCardParams,
 } from "../../redux/actions/saleCenterNEW/specialPromotion.action";
 import {
     fetchFoodCategoryInfoAC,
@@ -179,9 +181,21 @@ class NewCustomerPage extends Component {
             this.handleNewPromotionCardClick(item[0]);
             this.clearUrl();
         } if(from === 'openCard'){
-            const item = CRM_PROMOTION_TYPES[52];
+            // debugger 开卡赠送
+            console.log('after jump the page now enter the openCard')
+            const item = NEW_CUSTOMER_PROMOTION_TYPES[52];
+            // 新建逻辑
             this.handleNewPromotionCardClick(item);
-            this.props.setSpecialPromotionCardGroupID(`${groupMembersName} -- 【共${totalMembers}人】`);
+            // “默认数据”debugger
+            this.props.setSpecialPromotionInfo({
+                promotionName: '权益卡开卡发放活动',
+                sendMsg: '0',
+                description: '权益卡开卡发放活动',
+                sourceWayLimit: '0',
+                cardLevelRangeType: '0',
+                defaultCardType: 'test还未保存的权益卡名称',
+            });
+            this.props.saleCenterSetJumpOpenCardParams(true)
             this.props.saveRFMParams({
                 groupID,
                 levelKey,
@@ -375,6 +389,12 @@ class NewCustomerPage extends Component {
     setSpecialModalVisible(specialModalVisible) {
         this.setState({ specialModalVisible });
         if (!specialModalVisible) {
+            // debugger
+            const ifJumpOpenCard = this.props.specialPromotion.isBenefitJumpOpenCard
+            console.log('ifJumpOpenCard', ifJumpOpenCard)
+            jumpPage({ pageID: '1000072012' });
+            jumpPage({ menuID: 'editBenefitCard' });
+            this.props.saleCenterSetJumpOpenCardParams(false)
             this.props.saleCenterResetSpecailDetailInfo();
         }
     }
@@ -414,6 +434,8 @@ class NewCustomerPage extends Component {
         const { intl } = this.props;
         const create = intl.formatMessage(COMMON_STRING.create);
         const title = <p>{create} {promotionType}</p>;
+        console.log(' now debugger  2')
+        // debugger 这里是新建的时候 弹的弹窗 也是编辑的时候
         return (
             <Modal
                 wrapClassName={'progressBarModal'}
@@ -674,6 +696,12 @@ function mapDispatchToProps(dispatch) {
         },
         setSpecialPromotionCardGroupID: (opts) => {
             dispatch(saleCenterSetSpecialBasicInfoCardGroupID(opts));
+        },
+        setSpecialPromotionInfo: (opts) => {
+            dispatch(saleCenterSetSpecialActivityInfoByForce(opts));
+        },
+        saleCenterSetJumpOpenCardParams: (opts) => {
+            dispatch(saleCenterSetJumpOpenCardParams(opts));
         },
         saveRFMParams: (opts) => {
             dispatch(saleCenterSaveCreateMemberGroupParams(opts))

@@ -263,6 +263,9 @@ class CardLevel extends React.Component {
         }else {
           getExcludeCardLevelIds = this.state.getExcludeCardLevelIds
         }
+        const {
+            ifJumpOpenCard = false,  
+        } = this.props
         const treeData = [];
         const eventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
         const excludeEvent = eventInfo.excludeEventCardLevelIdModelList || [];
@@ -348,6 +351,7 @@ class CardLevel extends React.Component {
                                         treeData={treeData}
                                         getPopupContainer={(node) => node.parentNode}
                                         onChange={this.handleSelectChange}
+                                        disabled={ifJumpOpenCard}
                                     />
                                 )
                             }

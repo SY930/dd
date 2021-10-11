@@ -1750,7 +1750,6 @@ class MySpecialActivities extends React.Component {
                 </div>
             );
         }
-
         if (mySpecialActivities.status === 'success') {
             return (<ActivityMain
                 isCopy={_state.isCopy}

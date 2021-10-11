@@ -359,7 +359,8 @@ class StepTwo extends React.Component {
         const {
             form: {
                 getFieldDecorator,
-            }
+            },
+            ifJumpOpenCard = false,
         } = this.props;
         // 控制小红点
         const eventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
@@ -374,7 +375,7 @@ class StepTwo extends React.Component {
         return (
             <div>
                 <FormItem label={`${this.props.intl.formatMessage(STRING_SPE.d216426238818026)}`} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
-                    <RadioGroup onChange={this.handleGroupOrCatRadioChange} value={`${localType}`}>
+                    <RadioGroup onChange={this.handleGroupOrCatRadioChange} value={`${localType}`} disabled={ifJumpOpenCard}>
                         <Radio key={'5'} value={'5'}>{this.props.intl.formatMessage(STRING_SPE.dd5a33b5g874114)}</Radio>
                         {/* 会员卡类 */}
                         <Radio key={'0'} value={'0'}>{this.props.intl.formatMessage(STRING_SPE.d170093144c11061)}</Radio>
@@ -393,6 +394,7 @@ class StepTwo extends React.Component {
                         catOrCard="cat"
                         type={this.props.type}
                         form={this.props.form}
+                        ifJumpOpenCard={ifJumpOpenCard}
                     />
                 )}
                 {
@@ -592,7 +594,7 @@ class StepTwo extends React.Component {
         const { cardLevelRangeType, getExcludeCardLevelIds = [], excludeCardTypeShops, isNew } = this.state;
         const info = this.props.specialPromotion.get('$eventInfo').toJS();
         const sendFlag = info.smsGate == '1' || info.smsGate == '3' || info.smsGate == '4';
-
+        const { ifJumpOpenCard = false } = this.props
 
         return (
             <div>
@@ -603,6 +605,7 @@ class StepTwo extends React.Component {
                                     value={String(info.sourceWayLimit || '0')}
                                     placeholder={this.props.intl.formatMessage(STRING_SPE.dojv2jin820221)}
                                     getPopupContainer={(node) => node.parentNode}
+                                    disabled={ifJumpOpenCard}
                             >
                                 <Option key="0" value="0">{this.props.intl.formatMessage(STRING_SPE.d31ei98dbgi21253)}</Option>
                                 <Option key="1" value="1">{this.props.intl.formatMessage(STRING_SPE.d2b1b731e10d2291)}</Option>

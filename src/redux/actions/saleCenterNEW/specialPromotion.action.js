@@ -82,6 +82,12 @@ export const SALE_CENTER_CARDGROUPID =
 export const SALE_CENTER_GET_AUTH_DATA =
     'sale center: SALE_CENTER_GET_AUTH_DATA';
 
+export const SALE_CENTER_SELFDEFINE =
+    'sale center: according to jumppage messages, define some properties ahead';
+
+export const SALE_CENTER_JUMP_OPEN_CARD =
+    'sale center: benefit card jump to open card activity'
+
 export const saleCenterSetSpecialBasicInfoAC = (opts) => {
     return {
         type: SALE_CENTER_SET_SPECIAL_PROMOTION_EVENT_INFO,
@@ -94,6 +100,19 @@ export const saleCenterSetSpecialBasicInfoCardGroupID = (opts) => {
         payload: opts,
     };
 };
+export const saleCenterSetSpecialActivityInfoByForce = (opts) => {
+    return {
+        type: SALE_CENTER_SELFDEFINE,
+        payload: opts,
+    };
+};
+
+export const saleCenterSetJumpOpenCardParams = (opts) => {
+    return {
+        type: SALE_CENTER_JUMP_OPEN_CARD,
+        payload: opts,
+    }
+}
 export const saleCenterQueryOnlineRestaurantStatus = (opts) => {
     return {
         type: SALE_CENTER_QUERY_ONLINE_RESTAURANT_SHOPS_STATUS,
@@ -191,7 +210,7 @@ export const saleCenterCheckExist = (opts) => {
 // 获得排除卡id集合 getExcludeCardLevelIds
 export const saleCenterGetExcludeCardLevelIds = (opts) => {
     if (!opts.eventWay) {
-        return (dispatch) => {};
+        return (dispatch) => { };
     }
     return (dispatch) => {
         fetch('/api/specialPromotion/getExcludeCardLevelIds_NEW', {
@@ -224,13 +243,13 @@ export const saleCenterGetExcludeCardLevelIds = (opts) => {
                     });
                 }
             })
-            .catch((error) => {});
+            .catch((error) => { });
     };
 };
 // 获取线上餐厅送礼不可选择的卡类型和卡类型对应的适用店铺
 export const getEventExcludeCardTypes = (opts) => {
     if (!opts.eventWay) {
-        return (dispatch) => {};
+        return (dispatch) => { };
     }
     return (dispatch) => {
         axiosData(
@@ -262,11 +281,11 @@ export const getAuthLicenseData = (opts) => {
                 service: 'HTTP_SERVICE_URL_CRM',
                 method: '/crm/crmAuthLicenseService.queryCrmPluginLicenses.ajax',
                 type: 'post',
-                data: {...opts, groupID: getStore().getState().user.getIn(['accountInfo', 'groupID'])},
+                data: { ...opts, groupID: getStore().getState().user.getIn(['accountInfo', 'groupID']) },
             })
             .then((res) => {
-                let {data = {}, code} = res
-                if(code === '000'){
+                let { data = {}, code } = res
+                if (code === '000') {
                     dispatch({
                         type: SALE_CENTER_GET_AUTH_DATA,
                         payload: {
@@ -394,7 +413,7 @@ export const saleCenterQueryFsmGroupSettleUnit = (opts) => {
                     }
                 }
             })
-            .catch((error) => {});
+            .catch((error) => { });
     };
 };
 // 获取同时段的唤醒活动
@@ -431,7 +450,7 @@ export const saleCenterGetExcludeEventList = (opts) => {
                     });
                 }
             })
-            .catch((error) => {});
+            .catch((error) => { });
     };
 };
 // export const addSpecialPromotion = opts => ({ type: SALE_CENTER_ADD_SPECIAL_PROMOTION_START, payload: opts });
@@ -506,7 +525,7 @@ export const addSpecialPromotion = (opts) => {
                     return dispatch(addSpecialPromotionFail(err));
                 }
             )
-            .catch((err) => {});
+            .catch((err) => { });
     };
 };
 
@@ -648,7 +667,7 @@ export const fetchSpecialGroupMember = (opts) => {
                     return dispatch(fetchSpecialGroupMemberFail(err));
                 }
             )
-            .catch((err) => {});
+            .catch((err) => { });
     };
 };
 
