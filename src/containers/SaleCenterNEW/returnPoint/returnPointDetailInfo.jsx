@@ -117,6 +117,7 @@ class ReturnPointDetailInfo extends React.Component {
             this.setState({
                 display,
                 ruleType: _rule.returnPointStageType,
+                returnPointType: _rule.returnPointType,
                 ruleInfo,
                 ruleInfo1,
                 checkedPoints: checkedPoints,
@@ -153,7 +154,7 @@ class ReturnPointDetailInfo extends React.Component {
         if (ruleType == '2') {
             rule = {
                 returnPointStageType: parseInt(ruleType),
-                returnPointType:returnPointType,
+                returnPointType: returnPointType,
                 returnPointStage: ruleInfo.map((ruleInfo) => {
                     if (ruleInfo && ruleInfo.start && ruleInfo.end) {
                         return {
@@ -232,7 +233,7 @@ class ReturnPointDetailInfo extends React.Component {
 
         let _validationStatus,
             _helpMsg;
-        if ((parseFloat(value.end) >= 0) || (value.start == null && value.end != null) || (value.start != null && value.end == null)) {
+        if ((parseFloat(value.end) > 0) || (value.start == null && value.end != null) || (value.start != null && value.end == null)) {
             _validationStatus = 'success';
             _helpMsg = null
         } else {
@@ -310,6 +311,7 @@ class ReturnPointDetailInfo extends React.Component {
         const { intl } = this.props;
         const k6hdptsx = intl.formatMessage(SALE_STRING.k6hdptsx);
         let unit  =  returnPointType == '1' ? '%' : '';
+        console.log(unit,returnPointType,'returnPoint============')
         return (
             <Col>
                 <FormItem

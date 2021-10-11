@@ -29,7 +29,7 @@ class CustomRangeInput extends React.Component {
             end: value ? value.end : null,
             addonBefore: this.props.addonBefore || SALE_LABEL.k5nh214x,
             addonAfter: this.props.addonAfter || k5ezdbiy,
-            addonAfterUnit: this.props.addonAfterUnit || k5ezdbiy,
+            addonAfterUnit: this.props.addonAfterUnit,
         };
 
         this.onStartChange = this.onStartChange.bind(this);
