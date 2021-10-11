@@ -167,7 +167,7 @@ class NewCustomerPage extends Component {
             })
             this.clearUrl();
 
-        } if(from === 'giftInfo'){
+        } else if(from === 'giftInfo'){
             if(!type) return;
             const item = NEW_CUSTOMER_PROMOTION_TYPES.filter((val) => {
                 return val.key == type;
