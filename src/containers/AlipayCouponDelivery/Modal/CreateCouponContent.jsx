@@ -333,7 +333,7 @@ class CreateCouponContent extends Component {
                         })(<Select onChange={this.handleDirectSelect} placeholder={'请选择支付宝pid号'}>
                             {
                                 this.props.shopPid.map(({ channelAccount, channelName }) => (
-                                    <Select.Option key={channelAccount} value={`${channelAccount}`}>{channelName}-{channelAccount}</Select.Option>
+                                    <Select.Option key={channelAccount} value={`${channelAccount}`}>{channelName}</Select.Option>
                                 ))
                             }
                         </Select>)}
