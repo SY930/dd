@@ -173,14 +173,14 @@ class NewCustomerPage extends Component {
             })
             this.clearUrl();
 
-        } if(from === 'giftInfo'){
+        } else if(from === 'giftInfo'){
             if(!type) return;
             const item = NEW_CUSTOMER_PROMOTION_TYPES.filter((val) => {
                 return val.key == type;
             })
             this.handleNewPromotionCardClick(item[0]);
             this.clearUrl();
-        } if(from === 'openCard'){
+        } else if(from === 'openCard'){
             // debugger 开卡赠送
             console.log('after jump the page now enter the openCard')
             const item = NEW_CUSTOMER_PROMOTION_TYPES[52];
