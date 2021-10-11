@@ -707,6 +707,16 @@ export const ACTIVITY_CATEGORIES = (function () {
             text: '仅适用于POS2.5，应用于称重类商品，买1斤A赠送0.5斤A，或是买1斤A赠送0.5斤B。支持买赠和每买赠。',
             example: '',
             key: "10071",
+            filter: true,
+        },
+        {
+            idx: 23,
+            color: "#84aac6",
+            title: '秒杀',
+            text: '',
+            example: '',
+            key: "10072",
+            filter: true,
         },
     ];
     return basic;
