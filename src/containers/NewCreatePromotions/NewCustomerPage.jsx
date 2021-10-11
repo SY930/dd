@@ -96,8 +96,8 @@ class NewCustomerPage extends Component {
         v3visible: false,       // 第三版活动组件是否显示
         curKey: '',             //当前活动入口值
         authLicenseData: {},
-        houseKeepStatus:false,//是否有流失唤醒
-        gentGiftStatus:false,//是否有智能发券
+        houseKeepStatus: false,//是否有流失唤醒
+        gentGiftStatus: false,//是否有智能发券
     }
 
     componentDidMount() {
@@ -173,14 +173,14 @@ class NewCustomerPage extends Component {
             })
             this.clearUrl();
 
-        } else if(from === 'giftInfo'){
-            if(!type) return;
+        } else if (from === 'giftInfo') {
+            if (!type) return;
             const item = NEW_CUSTOMER_PROMOTION_TYPES.filter((val) => {
                 return val.key == type;
             })
             this.handleNewPromotionCardClick(item[0]);
             this.clearUrl();
-        } else if(from === 'openCard'){
+        } else if (from === 'openCard') {
             // debugger 开卡赠送
             console.log('after jump the page now enter the openCard')
             const item = NEW_CUSTOMER_PROMOTION_TYPES[52];
@@ -240,19 +240,19 @@ class NewCustomerPage extends Component {
         const { groupID } = state.user.get('accountInfo').toJS();
         const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', '', '/api/v1/universal?'];
         const method = '/messageSendService/queryMsgConfig.ajax';
-        const params = { service, type, data: { groupID,shopID:groupID,messageCode: param }, method };
+        const params = { service, type, data: { groupID, shopID: groupID, messageCode: param }, method };
         const response = await axios.post(url + method, params);
-        const { code, message: msg,data } = response;
+        const { code, message: msg, data } = response;
         if (code === '000') {
-            const { authConfig:{authStatus} } = data;
-            if(param == 'CRM_VOUCHER_AUTOMATIC_ISSUANCE' && authStatus == 'AUTHORIZED'){
+            const { authConfig: { authStatus } } = data;
+            if (param == 'CRM_VOUCHER_AUTOMATIC_ISSUANCE' && authStatus == 'AUTHORIZED') {
                 this.setState({
-                    gentGiftStatus:true
+                    gentGiftStatus: true
                 })
             }
-            if(param == 'MEMBER_MARKET_PLAN' && authStatus == 'AUTHORIZED'){
+            if (param == 'MEMBER_MARKET_PLAN' && authStatus == 'AUTHORIZED') {
                 this.setState({
-                    houseKeepStatus:true
+                    houseKeepStatus: true
                 })
             }
             return true;
@@ -392,9 +392,11 @@ class NewCustomerPage extends Component {
             // debugger
             const ifJumpOpenCard = this.props.specialPromotion.isBenefitJumpOpenCard
             console.log('ifJumpOpenCard', ifJumpOpenCard)
-            jumpPage({ pageID: '1000072012' });
-            jumpPage({ menuID: 'editBenefitCard' });
-            this.props.saleCenterSetJumpOpenCardParams(false)
+            if (ifJumpOpenCard) {
+                jumpPage({ pageID: '1000072012' });
+                jumpPage({ menuID: 'editBenefitCard' });
+                this.props.saleCenterSetJumpOpenCardParams(false)
+            }
             this.props.saleCenterResetSpecailDetailInfo();
         }
     }
@@ -417,7 +419,7 @@ class NewCustomerPage extends Component {
                 onOk={() => this.setBasicModalVisible(false)}
                 onCancel={() => this.setBasicModalVisible(false)}
             >
-                { this.state.basicModalVisible && <BasicActivityMain
+                {this.state.basicModalVisible && <BasicActivityMain
                     index={this.state.basicIndex}
                     isNew={true}
                     callbackthree={(arg) => {
@@ -497,7 +499,7 @@ class NewCustomerPage extends Component {
     filterMenuByGroup = (displayList = [], allMenu = []) => {
         const state = getStore().getState();
         const { groupID } = state.user.get('accountInfo').toJS();
-        const { houseKeepStatus,gentGiftStatus } = this.state;
+        const { houseKeepStatus, gentGiftStatus } = this.state;
         // let keeperFlag = avaHouseKeeperGroups.includes(groupID)
         // let intelligentFlag = avaIntelligentGiftRuleGroups.includes(groupID)
         // 管家活动列表是否为空
@@ -641,9 +643,9 @@ class NewCustomerPage extends Component {
                 </div>
                 {this.renderBasicPromotionModal()}
                 {this.renderSpecialPromotionModal()}
-                { (v3visible && curKey == '78') && <Chou2Le onToggle={this.onV3Click} />}
-                { (v3visible && curKey == '79') && <BlindBox onToggle={this.onV3Click} />}
-                { (v3visible && curKey == '83') && <PassWordCoupon onToggle={this.onV3Click} />}
+                {(v3visible && curKey == '78') && <Chou2Le onToggle={this.onV3Click} />}
+                {(v3visible && curKey == '79') && <BlindBox onToggle={this.onV3Click} />}
+                {(v3visible && curKey == '83') && <PassWordCoupon onToggle={this.onV3Click} />}
             </div>
         )
     }
