@@ -275,7 +275,7 @@ class NewActivity extends React.Component {
         return (
             <Modal
                 wrapClassName="progressBarModal"
-                title={'创建秒杀活动'}
+                title={'新建秒杀活动'}
                 footer={false}
                 width={1000}
                 visible={true}

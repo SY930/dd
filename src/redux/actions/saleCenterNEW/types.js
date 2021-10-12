@@ -709,15 +709,15 @@ export const ACTIVITY_CATEGORIES = (function () {
             key: "10071",
             filter: true,
         },
-        {
-            idx: 23,
-            color: "#84aac6",
-            title: '秒杀',
-            text: '',
-            example: '',
-            key: "10072",
-            filter: true,
-        },
+        // {
+        //     idx: 23,
+        //     color: "#84aac6",
+        //     title: '秒杀',
+        //     text: '',
+        //     example: '',
+        //     key: "10072",
+        //     filter: true,
+        // },
     ];
     return basic;
 })();

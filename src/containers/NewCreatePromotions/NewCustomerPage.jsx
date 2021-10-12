@@ -435,7 +435,7 @@ class NewCustomerPage extends Component {
         return (
             <Modal
                 wrapClassName="progressBarModal"
-                title={'创建秒杀活动'}
+                title={'新建秒杀活动'}
                 // maskClosable={false}
                 footer={false}
                 // style={{
