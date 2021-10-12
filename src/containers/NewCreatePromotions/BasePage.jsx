@@ -193,6 +193,7 @@ class BasePage extends Component {
     }
 
     renderBasicPromotionModal() {
+        console.log('open modal 1')
         const promotionType = this.props.saleCenter.get('activityCategories').toJS()[this.state.basicIndex].title;
         const { intl } = this.props;
         const create = intl.formatMessage(COMMON_STRING.create);

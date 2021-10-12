@@ -196,14 +196,14 @@ class NewCustomerPage extends Component {
                 defaultCardType: 'test还未保存的权益卡名称',
             });
             this.props.saleCenterSetJumpOpenCardParams(true)
-            this.props.saveRFMParams({
-                groupID,
-                levelKey,
-                levelType,
-                monetaryType,
-                reportMonth,
-                creator: createBy
-            })
+            // this.props.saveRFMParams({
+            //     groupID,
+            //     levelKey,
+            //     levelType,
+            //     monetaryType,
+            //     reportMonth,
+            //     creator: createBy
+            // })
             this.clearUrl();
         } else {
             const saleID = type;
@@ -401,6 +401,7 @@ class NewCustomerPage extends Component {
         }
     }
     renderBasicPromotionModal() {
+        console.log('open modal 2')
         const promotionType = this.props.saleCenter.get('activityCategories').toJS()[this.state.basicIndex].title;
         const { intl } = this.props;
         const create = intl.formatMessage(COMMON_STRING.create);
