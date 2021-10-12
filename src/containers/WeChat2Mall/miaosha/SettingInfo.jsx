@@ -171,6 +171,7 @@ class SettingInfo extends React.Component {
         data[0].name = _productList[0].name;
         data[0].storage = _productList[0].storage;
         data[0].foodItemID = _productList[0].foodItemID
+        data[0].price = _productList[0].price
         this.setState({ productList: data }) // 用外部数据填充内部数据显示，这样可保证看到数据时点击弹窗也有数据
         // this.props.onChange(data)
     }
