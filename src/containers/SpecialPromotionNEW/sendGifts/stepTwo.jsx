@@ -32,7 +32,7 @@ const moment = require('moment');
 const Immutable = require('immutable');
 const FormItem = Form.Item;
 const Option = Select.Option;
-
+const RFM_TYPE = ['RFM会员群体', 'RFM模型', '重要价值会员', '重要深耕会员', '重要维持会员', '重要挽留会员', '一般价值会员', '一般潜力会员', '一般维持会员', '一般挽留会员'];
 @injectIntl
 class Two extends React.Component {
     constructor(props) {
@@ -92,6 +92,7 @@ class Two extends React.Component {
                 opts.settleUnitID = '0';
                 opts.accountNo = '0';
             }
+            console.log(opts, 'opts>>>>>>>>>>>>>>>>>>>>>')
             this.props.setSpecialBasicInfo(opts)
         }
 
@@ -147,10 +148,12 @@ class Two extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        console.log("🚀 ~ file: stepTwo.jsx ~ line 150 ~ Two ~ componentWillReceiveProps ~ nextProps", nextProps.specialPromotion.get('$eventInfo').size)
         // 修改时,初始化state
         if (this.props.specialPromotion.get('$eventInfo') != nextProps.specialPromotion.get('$eventInfo') &&
             nextProps.specialPromotion.get('$eventInfo').size > 30) {
             const specialPromotion = nextProps.specialPromotion.get('$eventInfo').toJS();
+            console.log("🚀 ~ file: stepTwo.jsx ~ line 154 ~ Two ~ nextProps.specialPromotion.get ~ specialPromotion", specialPromotion)
             this.setState({
                 message: specialPromotion.smsTemplate,
                 isVipBirthdayMonth: specialPromotion.isVipBirthdayMonth,
@@ -226,6 +229,7 @@ class Two extends React.Component {
     }
 
     handleSelectChange(value) {
+        // console.log("🚀 ~ file: stepTwo.jsx ~ line 232 ~ Two ~ handleSelectChange ~ value", value)
         if (value == '0') {
             this.setState({
                 groupMembersID: value,
@@ -257,9 +261,8 @@ class Two extends React.Component {
         const totalCustomerCount = this.props.specialPromotion.get('customerCount');
         const groupMembersID = this.state.groupMembersID
         const isDisableGroupSelect = typeof groupMembersID === 'string' && groupMembersID.includes &&
-          groupMembersID.includes('RFM会员群体') &&
+          RFM_TYPE.some((item) => groupMembersID.includes(item))&&
           groupMembersID.includes('--')
-
         return (
             <Form>
                 <FormItem

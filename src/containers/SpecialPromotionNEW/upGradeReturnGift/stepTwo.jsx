@@ -45,6 +45,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const moment = require('moment');
+const RFM_TYPE = ['RFM会员群体', 'RFM模型', '重要价值会员', '重要深耕会员', '重要维持会员', '重要挽留会员', '一般价值会员', '一般潜力会员', '一般维持会员', '一般挽留会员'];
 @injectIntl
 class StepTwo extends React.Component {
     constructor(props) {
@@ -475,6 +476,10 @@ class StepTwo extends React.Component {
                 <Option key="1">{this.props.intl.formatMessage(STRING_SPE.de8g998md25272)}</Option>
             </Select>
         );
+        const groupMembersID = this.state.groupMembersID
+        const isDisableGroupSelect = typeof groupMembersID === 'string' && groupMembersID.includes &&
+          RFM_TYPE.some((item) => groupMembersID.includes(item))&&
+          groupMembersID.includes('--') // RFM跳转后不可编辑会员群体
         return (
             <Form>
                 {
@@ -511,6 +516,7 @@ class StepTwo extends React.Component {
                                         initialValue: this.state.groupMembersID,
                                     })(
                                         <Select
+                                            disabled={isDisableGroupSelect}
                                             style={{ width: '100%' }}
                                             showSearch
                                             notFoundContent={`${this.props.intl.formatMessage(STRING_SPE.d2c8a4hdjl248)}`}
