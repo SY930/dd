@@ -1,4 +1,4 @@
-import { Col, Form, Icon, Row, Select, Checkbox, message,Radio } from 'antd';
+import { Col, Form, Icon, Row, Select, Checkbox, message,Radio,Tooltip } from 'antd';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
@@ -149,7 +149,6 @@ class ReturnPointDetailInfo extends React.Component {
             return p && c.validationStatus === 'success';
         }, true);
         let rule;
-        console.log(ruleType,'ruletype00000000')
         // construct state to specified format
         if (ruleType == '2') {
             rule = {
@@ -230,16 +229,28 @@ class ReturnPointDetailInfo extends React.Component {
     onCustomRangeInputChange(value, index, type) {
         const { intl } = this.props;
         const k6hdptkl = intl.formatMessage(SALE_STRING.k6hdptkl);
-
+        const {returnPointType} = this.state;
         let _validationStatus,
             _helpMsg;
-        if ((parseFloat(value.end) > 0) || (value.start == null && value.end != null) || (value.start != null && value.end == null)) {
-            _validationStatus = 'success';
-            _helpMsg = null
-        } else {
-            _validationStatus = 'error';
-            _helpMsg = k6hdptkl
+        if(returnPointType == '1'){
+            if ((parseFloat(value.end) >= 0) || (value.start == null && value.end != null) || (value.start != null && value.end == null)) {
+                _validationStatus = 'success';
+                _helpMsg = null
+            } else {
+                _validationStatus = 'error';
+                _helpMsg = k6hdptkl
+            }
         }
+        if(returnPointType == '2'){
+            if ((/^[1-9]\d{0,5}$/.test(Number(value.end))) || Number(value.end) == 1000000) {
+                _validationStatus = 'success';
+                _helpMsg = null
+            } else {
+                _validationStatus = 'error';
+                _helpMsg = '固定积分请输入1-1000000的整数'
+            }
+        }
+        
 
         const _tmp = type === '1' ? this.state.ruleInfo : this.state.ruleInfo1;
         _tmp[index] = {
@@ -311,7 +322,6 @@ class ReturnPointDetailInfo extends React.Component {
         const { intl } = this.props;
         const k6hdptsx = intl.formatMessage(SALE_STRING.k6hdptsx);
         let unit  =  returnPointType == '1' ? '%' : '';
-        console.log(unit,returnPointType,'returnPoint============')
         return (
             <Col>
                 <FormItem
@@ -327,6 +337,9 @@ class ReturnPointDetailInfo extends React.Component {
                         <Radio value={'1'}>按比例返</Radio >
                         <Radio value={'2'}>按固定值返</Radio >
                     </RadioGroup >
+                    <Tooltip title={'需POS版本支持，若POS版本不支持，则按比例返还'}>
+                        <Icon style={{ marginLeft: 1 }} type="question-circle" />
+                    </Tooltip>
                 </FormItem>
                 {
                     ruleInfo.map((ruleInfo, index) => {
@@ -355,9 +368,9 @@ class ReturnPointDetailInfo extends React.Component {
                                             addonAfterUnit={unit}
                                             value={_value}
                                             onChange={(value) => {
-                                                const _index = index;
-                                                this.onCustomRangeInputChange(value, _index, '1');
-                                            }
+                                                    const _index = index;
+                                                    this.onCustomRangeInputChange(value, _index, '1');
+                                                }
                                             }
                                         />
                                     </FormItem>

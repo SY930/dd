@@ -154,7 +154,7 @@ const SALE_STRING = {
     k6hdpsvl: { id: 'Sale.k6hdpsvl', defaultMessage: '结束时间' },
     k6hdpt3x: { id: 'Sale.k6hdpt3x', defaultMessage: '消费满一定金额赠送' },
     k6hdptc9: { id: 'Sale.k6hdptc9', defaultMessage: '消费每满一定金额赠送' },
-    k6hdptkl: { id: 'Sale.k6hdptkl', defaultMessage: '请输入正确的赠送积分或赠送卡值' },
+    k6hdptkl: { id: 'Sale.k6hdptkl', defaultMessage: '请输入正确的返积分比例或返卡值比例' },
     k6hdptsx: { id: 'Sale.k6hdptsx', defaultMessage: '返积分比例' },
     k6hdpuyl: { id: 'Sale.k6hdpuyl', defaultMessage: '不限份数享受特价' },
     k6hfzdh8: { id: 'Sale.k6hfzdh8', defaultMessage: '空表示0' },
