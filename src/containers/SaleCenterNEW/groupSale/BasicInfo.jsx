@@ -18,6 +18,7 @@ const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const moment = require('moment');
 const DATE_FORMAT = 'YYYYMMDD000000';
+const END_DATE_FORMAT = 'YYYYMMDD235959';
 const disabledDate = (current) => {
     // Can not select days before today
     return current && current.format('YYYYMMDD') < moment().format('YYYYMMDD');
@@ -96,7 +97,7 @@ class BasicInfo extends React.Component {
     handleDateRangeChange = (value, dateString) => { // value: Selected Time, dateString: Formatted Selected Time
         if (value.length > 1) {
             const startTime = value[0].format(DATE_FORMAT);
-            const endTime = value[1].format(DATE_FORMAT);
+            const endTime = value[1].format(END_DATE_FORMAT);
             this.setState({
                 startTime,
                 endTime,
@@ -109,7 +110,7 @@ class BasicInfo extends React.Component {
             return 0
         }
         return moment(this.state.endTime, DATE_FORMAT)
-            .diff(moment(this.state.startTime, DATE_FORMAT), 'days') + 1;
+            .diff(moment(this.state.startTime, END_DATE_FORMAT), 'days') + 1;
     }
 
     handleNameChange = (e) => {

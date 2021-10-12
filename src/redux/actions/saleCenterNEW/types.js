@@ -704,7 +704,7 @@ export const ACTIVITY_CATEGORIES = (function () {
             idx: 22,
             color: "#84aac6",
             title: '拼团活动',
-            text: '仅适用于POS2.5，应用于称重类商品，买1斤A赠送0.5斤A，或是买1斤A赠送0.5斤B。支持买赠和每买赠。',
+            text: '邀请好友来拼团，也可直接购买',
             example: '',
             key: "10071",
             filter: true,

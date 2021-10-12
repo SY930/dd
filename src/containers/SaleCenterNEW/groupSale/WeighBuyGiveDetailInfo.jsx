@@ -30,7 +30,6 @@ const Option = Select.Option;
 const Immutable = require('immutable');
 
 @injectIntl()
-// debugger
 class WeighBuyGiveDetailInfo extends React.Component {
     constructor(props) {
         super(props);
