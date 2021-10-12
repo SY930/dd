@@ -41,7 +41,7 @@ class CouponManageList extends Component {
             pageNo: 1,
 			dataSource: [],
 			batchName: '', // 第三方券名称
-            giftItemID: '', // 券ID
+            itemID: '', // 券ID
 			platformType: '', // 关联平台
 			couponDateRange: '', // 创建时间
             createCouponModalVisible: false,
@@ -119,7 +119,7 @@ class CouponManageList extends Component {
 	getParams = () => {
         const {
 			batchName,
-			giftItemID,
+			itemID,
 			platformType,
 			couponDateRange,
             batchStatus,
@@ -136,8 +136,8 @@ class CouponManageList extends Component {
         if (batchName !== '' && batchName !== undefined) {
             opt.batchName = batchName;
         }
-        if (giftItemID) {
-            opt.giftItemID = giftItemID
+        if (itemID) {
+            opt.itemID = itemID
         }
         if (batchStatus) {
             opt.batchStatus = batchStatus
@@ -305,7 +305,7 @@ class CouponManageList extends Component {
 								placeholder="请输入券ID"
 								onChange={(e) => {
 									this.setState({
-                                        giftItemID: e.target.value,
+                                        itemID: e.target.value,
 									});
 								}}
 							/>
@@ -342,7 +342,7 @@ class CouponManageList extends Component {
                                 }}
                             >
                                 <Option value={''}>全部</Option>
-                                <Option value={'3'}>停用</Option>
+                                <Option value={'2'}>停用</Option>
                             </Select>
                         </li>
 						<li>
@@ -427,8 +427,8 @@ class CouponManageList extends Component {
             },
             {
                 title: '券ID',
-                dataIndex: 'giftItemID',
-                key: 'giftItemID',
+                dataIndex: 'itemID',
+                key: 'itemID',
                 render: (text) => text,
             },
             {

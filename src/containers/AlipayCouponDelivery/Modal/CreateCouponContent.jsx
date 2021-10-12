@@ -4,7 +4,7 @@ import moment from 'moment'
 import { axios, getStore } from '@hualala/platform-base';
 import AuthorizeModalContent from './AuthorizeContent';
 import { getSmid, isAuth, goAuthorizeAC } from '../AxiosFactory'
-import { SALE_CENTER_GIFT_EFFICT_DAY } from '../../../redux/actions/saleCenterNEW/types';
+import { SALE_CENTER_GIFT_EFFICT_DAY_ALIPAY } from '../../../redux/actions/saleCenterNEW/types';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 // import { axiosData } from '../../../helpers/util'
 import styles from '../AlipayCoupon.less';
@@ -534,7 +534,7 @@ class CreateCouponContent extends Component {
                                         onChange={this.handleWhenToEffectChange}
                                     >
                                         {
-                                            (SALE_CENTER_GIFT_EFFICT_DAY)
+                                            (SALE_CENTER_GIFT_EFFICT_DAY_ALIPAY)
                                                 .map((item, index) => {
                                                     return (<Option value={item.value} key={index}>{item.label}</Option>);
                                                 })
