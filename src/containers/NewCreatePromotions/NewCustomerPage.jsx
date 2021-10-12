@@ -405,6 +405,7 @@ class NewCustomerPage extends Component {
     }
     renderBasicPromotionModal() {
         // debugger
+        console.log("this.props.saleCenter.get('activityCategories').toJS()", this.props.saleCenter.get('activityCategories').toJS())
         const promotionType =this.props.saleCenter.get('activityCategories').toJS() && this.props.saleCenter.get('activityCategories').toJS().length && this.props.saleCenter.get('activityCategories').toJS()[this.state.basicIndex] && this.props.saleCenter.get('activityCategories').toJS()[this.state.basicIndex].title;
         const { intl } = this.props;
         const create = intl.formatMessage(COMMON_STRING.create);
