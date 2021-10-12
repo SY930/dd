@@ -127,8 +127,8 @@ class CouponManageList extends Component {
         const opt = {
         };
         if (couponDateRange !== '' && couponDateRange !== undefined && couponDateRange[0] !== undefined) {
-            opt.startTime = couponDateRange[0].format('YYYYMMDDHHmmss'); // 开始时间
-            opt.endTime = couponDateRange[1].format('YYYYMMDDHHmmss'); // 结束时间
+            opt.createStampStart = couponDateRange[0].format('YYYY-MM-DD HH:mm:ss'); // 开始时间
+            opt.createStampEnd = couponDateRange[1].format('YYYY-MM-DD HH:mm:ss'); // 结束时间
         }
         if (platformType) {
             opt.platformType = platformType;
@@ -207,7 +207,7 @@ class CouponManageList extends Component {
     }
     handleStopClickEvent = (record) => {
         const {itemID } = record;
-        const params = { trdCouponTemplateInfo: { itemID, batchStatus: 2} };
+        const params = { couponCodeBatchInfo: { itemID, batchStatus: 2} };
         axiosData(
             'couponCodeBatchService/switchStatus.ajax',
             params,
@@ -217,6 +217,7 @@ class CouponManageList extends Component {
         ).then((res) => {
             const { code, message: msg } = res;
             if (code === '000') { 
+                this.handleQuery()
                return message.success(msg)
              }
              return message.error(msg)
@@ -452,9 +453,9 @@ class CouponManageList extends Component {
             },
             {
                 title: '创建时间',
-                dataIndex: 'startTime',
-                key: 'startTime',
-                render: (text) => text && moment(text, 'YYYYMMDDHHmmss').format('YYYY-MM-DD HH:mm'),
+                dataIndex: 'createStampStr',
+                key: 'createStampStr',
+                render: (text) => text,
             },
 		];
 		return (
