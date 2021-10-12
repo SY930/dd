@@ -281,6 +281,7 @@ class NewCustomerPage extends Component {
         if (HUALALA.ENVIRONMENT === 'production-release' && UNRELEASED_PROMOTION_TYPES.includes(`${key}`)) {
             return message.success(SALE_LABEL.k6316gwc);//活动尚未开放
         }
+        debugger
         if (isSpecial) {
             const specialIndex = this.props.saleCenter.get('characteristicCategories').toJS().findIndex(promotion => promotion.key === key);
             this.handleSpecialPromotionCreate(specialIndex, promotionEntity)
@@ -401,7 +402,7 @@ class NewCustomerPage extends Component {
         }
     }
     renderBasicPromotionModal() {
-        console.log('open modal 2')
+        debugger
         const promotionType = this.props.saleCenter.get('activityCategories').toJS()[this.state.basicIndex].title;
         const { intl } = this.props;
         const create = intl.formatMessage(COMMON_STRING.create);
