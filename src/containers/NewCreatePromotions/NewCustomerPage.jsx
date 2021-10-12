@@ -183,7 +183,9 @@ class NewCustomerPage extends Component {
         } else if (from === 'openCard') {
             // debugger 开卡赠送
             console.log('after jump the page now enter the openCard')
-            const item = NEW_CUSTOMER_PROMOTION_TYPES[52];
+            const item = NEW_CUSTOMER_PROMOTION_TYPES.filter((item) => {
+                return item.key == 52
+            })[0];
             // 新建逻辑
             this.handleNewPromotionCardClick(item);
             // “默认数据”debugger
