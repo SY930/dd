@@ -283,7 +283,6 @@ class NewCustomerPage extends Component {
         if (HUALALA.ENVIRONMENT === 'production-release' && UNRELEASED_PROMOTION_TYPES.includes(`${key}`)) {
             return message.success(SALE_LABEL.k6316gwc);//活动尚未开放
         }
-        debugger
         if (isSpecial) {
             const specialIndex = this.props.saleCenter.get('characteristicCategories').toJS().findIndex(promotion => promotion.key === key);
             this.handleSpecialPromotionCreate(specialIndex, promotionEntity)
@@ -406,7 +405,11 @@ class NewCustomerPage extends Component {
     renderBasicPromotionModal() {
         // debugger
         console.log("this.props.saleCenter.get('activityCategories').toJS()", this.props.saleCenter.get('activityCategories').toJS())
-        const promotionType =this.props.saleCenter.get('activityCategories').toJS() && this.props.saleCenter.get('activityCategories').toJS().length && this.props.saleCenter.get('activityCategories').toJS()[this.state.basicIndex] && this.props.saleCenter.get('activityCategories').toJS()[this.state.basicIndex].title;
+        console.log('this.state.basicIndex', this.state.basicIndex)
+        const {
+            basicIndex = 0
+        } = this.state
+        const promotionType = this.props.saleCenter.get('activityCategories').toJS()[this.state.basicIndex] && this.props.saleCenter.get('activityCategories').toJS()[this.state.basicIndex].title;
         const { intl } = this.props;
         const create = intl.formatMessage(COMMON_STRING.create);
         const title = <p>{create} {promotionType}</p>;
