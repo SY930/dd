@@ -439,7 +439,7 @@ export class WeChatMallPromotionList extends React.Component {
                         </li>
                         <li>
                             <Authority rightCode={BASIC_PROMOTION_QUERY}>
-                                <Button type="primary" onClick={() => this.handleQuery()} disabled={this.state.loading}><Icon type="search" />查询</Button>
+                                <Button type="primary" onClick={() => this.handleQuery(1)} disabled={this.state.loading}><Icon type="search" />查询</Button>
                             </Authority>
                         </li>
                     </ul>
