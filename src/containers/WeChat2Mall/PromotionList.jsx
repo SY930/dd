@@ -142,7 +142,6 @@ export class WeChatMallPromotionList extends React.Component {
     }
 
     handleDisableClickEvent(record, status) { // toggle, 2 关闭 1开启 3终止
-        console.log(this.props.user, 'this.props.user')
         const { user = {} } = this.props
         axiosData(
             '/promotion/extra/shopExtraEventService_modifyExtraEventStatus.ajax',
@@ -449,7 +448,6 @@ export class WeChatMallPromotionList extends React.Component {
     }
 
     renderTables() {
-        // console.log(this.state.loading, 'this.state.loading')
         const columns = [
             {
                 title: '序号',

@@ -194,7 +194,6 @@ class SettingInfo extends React.Component {
                 flag = false;
                 break;
             }
-            console.log(good.price >= +good.newPrice, 'good.price >= +good.newPrice')
            if (good.price >= +good.newPrice) {
                 message.warning(`规格：【${good.foodName}】所设置的秒杀现金不能大于等于原价`)
                 flag = false;
