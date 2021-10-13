@@ -279,6 +279,7 @@ class PromotionModalContent extends Component {
                                     // initialValue: editData.batchName || '',
                                     rules: [
                                         { required: true, message: '请输入活动名称' },
+                                        { max: 20, message: '活动名称20字以内' },
                                     ],
                                 })(
                                     <Input

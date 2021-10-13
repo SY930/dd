@@ -10,7 +10,7 @@ import PromotionPage from './PromotionPage'
 import SuccessModalContent from './Modal/SuccessModalContent';
 import PromotionModalContent from './Modal/PromotionModalContent';
 import style from './AlipayCoupon.less'
-import { getAlipayCouponList, getAlipayPromotionList, queryEventList, getDeliveryChannel } from './AxiosFactory';
+import { getAlipayCouponList, getAlipayPromotionList, queryEventList } from './AxiosFactory';
 import { axiosData } from '../../helpers/util';
 
 
@@ -30,7 +30,6 @@ export default class AlipayCouponDeliveryPage extends Component {
             pageNo: 1,
             dataSource: [],
             successEditData: {}, // 成功页投放编辑数据
-            deliveryChannelInfoList: [], // 选择成功页
             // totalSize: 0,
         };
     }
@@ -95,13 +94,6 @@ export default class AlipayCouponDeliveryPage extends Component {
                 promotionList: res,
             })
         })
-        getDeliveryChannel().then((res) => {
-            if (res) {
-                this.setState({
-                    deliveryChannelInfoList: res,
-                })
-            }
-        });
     }
 
     handleChangeTabs = (key) => {
@@ -199,7 +191,7 @@ export default class AlipayCouponDeliveryPage extends Component {
                                 handleQuery={this.handleQuery}
                                 onShowSizeChange={this.onShowSizeChange}
                                 handleSuccessEdit={this.handleSuccessEdit}
-                                deliveryChannelInfoList={this.state.deliveryChannelInfoList}
+                                // deliveryChannelInfoList={this.state.deliveryChannelInfoList}
                             />
                         </TabPane>
                         <TabPane tab="会场大促活动投放" key="promotionPage">
@@ -221,7 +213,7 @@ export default class AlipayCouponDeliveryPage extends Component {
                         couponList={this.state.couponList}
                         handleQuery={this.handleQuery}
                         editData={successEditData}
-                        deliveryChannelInfoList={this.state.deliveryChannelInfoList}
+                        // deliveryChannelInfoList={this.state.deliveryChannelInfoList}
                         // handleModle={}
                     />
                 }

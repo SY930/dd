@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Form, Input, Select, Row, Col, Icon, Modal, message } from 'antd'
 // import moment from 'moment'
-import { getBatchDetail } from '../AxiosFactory'
+import { getBatchDetail, getDeliveryChannel } from '../AxiosFactory'
 import { axiosData } from '../../../helpers/util'
 import styles from '../AlipayCoupon.less';
 
@@ -13,7 +13,7 @@ class SuccessModalContent extends Component {
         super(props);
         this.state = {
             successStartEnd: [],
-            deliveryChannelInfoList: props.deliveryChannelInfoList || [],
+            deliveryChannelInfoList: [],
             couponDetail: {}, // 优惠券详情
             couponList: props.couponList || [],
         }
@@ -22,8 +22,21 @@ class SuccessModalContent extends Component {
     componentDidMount() {
     }
 
+    getDeliveryChannels = (record) => {
+        getDeliveryChannel({ merchantId: record.merchantID, merchantIdType: record.merchantType }).then((res) => {
+            if (res) {
+                this.setState({
+                    deliveryChannelInfoList: res,
+                })
+            }
+        })
+    }
+
     handleCouponChange = (value) => {
         getBatchDetail(value).then((res) => {
+            // const merchantID = res.merchantID;
+            // 根据merchantID获取选择支付成功页
+            this.getDeliveryChannels(res)
             this.setState({
                 couponDetail: res,
             })
@@ -107,6 +120,7 @@ class SuccessModalContent extends Component {
                                     initialValue: editData.eventName || '',
                                     rules: [
                                         { required: true, message: '请输入活动名称' },
+                                        { max: 20, message: '活动名称20字以内' },
                                     ],
                                 })(
                                     <Input
@@ -123,7 +137,7 @@ class SuccessModalContent extends Component {
                                 {/* TODO:根据itemID选出giftItemID */}
                                 {
                                     getFieldDecorator('itemID', {
-                                        initialValue: giftConfInfos[0] ? giftConfInfos[0].giftID : '',
+                                        initialValue: giftConfInfos[0] ? giftConfInfos[0].giftID : undefined,
                                         onChange: this.handleCouponChange,
                                         rules: [
                                             { required: true, message: '请选择第三方支付宝券' },
@@ -161,13 +175,13 @@ class SuccessModalContent extends Component {
                             >
                                 {
                                     getFieldDecorator('channelID', {
-                                        initialValue: editData.deliveryInfo || '',
+                                        initialValue: editData.deliveryInfo || undefined,
                                         // onChange: this.handleCouponChange,
                                         rules: [
                                             { required: true, message: '请选择支付成功页' },
                                         ],
                                     })(
-                                        <Select placeholder={'请选择支付成功页'}>
+                                        <Select placeholder={'请先选择第三方支付宝券'}>
                                             {
                                                 (this.state.deliveryChannelInfoList || []).map(({ channel, channelName }) => (
                                                     <Select.Option key={channel} value={channel}>{channelName}</Select.Option>

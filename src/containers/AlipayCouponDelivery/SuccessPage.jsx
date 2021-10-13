@@ -3,6 +3,7 @@ import { Form, Input, Button, Icon, Switch, Pagination, message, Modal, Table, R
 import classnames from 'classnames';
 import moment from 'moment';
 import emptyPage from '../../assets/empty_page.png'
+import { getDeliveryChannel } from './AxiosFactory'
 import { axiosData } from '../../helpers/util'
 import styles from './AlipayCoupon.less'
 
@@ -250,8 +251,18 @@ class ViewCouponContent extends Component {
         super(props)
         this.state = {
             viewData: props.viewData || {},
-            deliveryChannelInfoList: props.deliveryChannelInfoList || [],
+            deliveryChannelInfoList: [],
         }
+    }
+    componentDidMount() {
+        const { viewData } = this.state;
+        getDeliveryChannel({ merchantId: viewData.merchantID, merchantIdType: viewData.merchantType }).then((res) => {
+            if (res) {
+                this.setState({
+                    deliveryChannelInfoList: res,
+                })
+            }
+        })
     }
     render() {
         

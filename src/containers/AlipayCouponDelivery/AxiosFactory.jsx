@@ -317,7 +317,11 @@ async function getDeliveryChannel(opts) {
         type,
         data: {
             groupID,
-            belongMerchantInfo: 'ISV_FOR_MERCHANT',
+            belongMerchantInfo: {
+                merchantId: opts.merchantId,
+                merchantIdType: opts.merchantIdType == 1 ? 'PID' : opts.merchantIdType == 2 ? 'SMID' : null,
+                businessType: 'ISV_FOR_MERCHANT',
+            },
             boothCode: 'PAY_RESULT',
             pageSize: 100,
             pageNum: 1,
