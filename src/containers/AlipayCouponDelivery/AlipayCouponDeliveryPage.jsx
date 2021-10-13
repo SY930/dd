@@ -108,6 +108,7 @@ export default class AlipayCouponDeliveryPage extends Component {
         this.setState({
             ...this.state, // 清空数据
             tabKeys: key,
+            pageNo: 1,
         }, () => {
             // TODO: 传不同的数据
             // console.log(key, 'key')

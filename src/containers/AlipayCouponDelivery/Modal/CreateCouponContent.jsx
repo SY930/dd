@@ -462,7 +462,7 @@ class CreateCouponContent extends Component {
                     <FormItem
                         label="总数量"
                         labelCol={{ span: 4 }}
-                        wrapperCol={{ span: 16 }}
+                        wrapperCol={{ span: 17 }}
                     >
                         {getFieldDecorator('stock', {
                             initialValue: { number: editData.stock },
@@ -484,11 +484,12 @@ class CreateCouponContent extends Component {
                             addonAfter="个"
                             modal="int"
                         />)}
+                        <div className={styles.authorizeBottomTip} style={{ padding: 0, textAlign: 'center' }}>如券用于支付宝会场大促投放，其总数量应大于200</div>
                     </FormItem>
                     <FormItem
                         label="生效方式"
                         labelCol={{ span: 4 }}
-                        wrapperCol={{ span: 16 }}
+                        wrapperCol={{ span: 17 }}
                     >
                         <RadioGroup
                             value={this.state.effectType}
@@ -525,7 +526,7 @@ class CreateCouponContent extends Component {
                                 <FormItem
                                     label="生效时间"
                                     labelCol={{ span: 4 }}
-                                    wrapperCol={{ span: 16 }}
+                                    wrapperCol={{ span: 17 }}
                                     required={true}
                                 >
                                     <Select
@@ -543,7 +544,7 @@ class CreateCouponContent extends Component {
                                 </FormItem>
                                 <FormItem
                                     labelCol={{ span: 4 }}
-                                    wrapperCol={{ span: 16 }}
+                                    wrapperCol={{ span: 17 }}
                                     label={'有效天数'}
                                     required={true}
                                 >
