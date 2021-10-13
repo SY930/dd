@@ -117,7 +117,7 @@ class ReturnPointDetailInfo extends React.Component {
             this.setState({
                 display,
                 ruleType: _rule.returnPointStageType,
-                returnPointType: _rule.returnPointType,
+                returnPointType: _rule.returnPointType ? _rule.returnPointType : '1',
                 ruleInfo,
                 ruleInfo1,
                 checkedPoints: checkedPoints,
