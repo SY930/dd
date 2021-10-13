@@ -61,7 +61,7 @@ import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from './IntlDecor';
 
-const CONTAIN_GROUPID_SHOW = ['317964', '11157']; // 拼团秒杀只针对茶百道显示
+const CONTAIN_GROUPID_SHOW = ['317964', '189702']; // 拼团秒杀只针对茶百道显示
 
 const allBasicActivitiesArr = [
     ...NEW_CUSTOMER_PROMOTION_TYPES,

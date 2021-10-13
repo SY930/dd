@@ -80,7 +80,7 @@ import { setThemeClass } from '../../utils/index'
 const activityList = [
     '80', '66', '81', 'housekeeper', 'intelligentGiftRule', '82'
 ]
-const CONTAIN_GROUPID_SHOW = ['317964', '11157']; // 拼团秒杀只针对茶百道显示
+const CONTAIN_GROUPID_SHOW = ['317964', '189702']; // 拼团秒杀只针对茶百道显示
 @registerPage([NEW_SALE_BOX], {
 })
 @connect(mapStateToProps, mapDispatchToProps)
