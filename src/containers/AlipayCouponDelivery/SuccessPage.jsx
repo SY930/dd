@@ -226,7 +226,9 @@ class SuccessPage extends Component {
                         pageSize={pageSize}
                         total={total}
                         showSizeChanger={true}
-                        onShowSizeChange={onShowSizeChange}
+                        onShowSizeChange={(page, pageSizes) => {
+                            handleQuery(page, pageSizes, opt)
+                        }}
                         showQuickJumper={true}
                         onChange={(page, pageSizes) => {
                             handleQuery(page, pageSizes, opt)
