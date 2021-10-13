@@ -129,7 +129,7 @@ class NewCustomerPage extends Component {
     }
     fromCrmJump() {
         const {
-            from,
+            from = 'openCard', // debugger 测试
             type,
             gmID,
             totalMembers,
@@ -141,23 +141,6 @@ class NewCustomerPage extends Component {
             reportMonth,
             createBy,
         } = this.getQueryVariable()
-        // 测试使用
-        // const  {
-        //     from = 'rfm',
-        //     type,
-        //     gmID,
-        //     totalMembers,
-        //     groupMembersName,
-        //     groupID = '1155' ,
-        //     levelKey = 'LH',
-        //     levelType = '0',
-        //     monetaryType = '0',
-        //     reportMonth = '2020-05',
-        //     createBy = 'wenjie'
-        // } = this.getQueryVariable()
-
-
-
         if (from === 'rfm') {
             // debugger 参考
             const item = CRM_PROMOTION_TYPES[53];
@@ -181,12 +164,12 @@ class NewCustomerPage extends Component {
             this.handleNewPromotionCardClick(item[0]);
             this.clearUrl();
         } else if (from === 'openCard') {
-            // debugger 开卡赠送
             console.log('after jump the page now enter the openCard')
             const item = NEW_CUSTOMER_PROMOTION_TYPES.filter((item) => {
                 return item.key == 52
             })[0];
             // 新建逻辑
+            debugger
             this.handleNewPromotionCardClick(item);
             // “默认数据”debugger
             this.props.setSpecialPromotionInfo({
@@ -198,14 +181,6 @@ class NewCustomerPage extends Component {
                 defaultCardType: 'test还未保存的权益卡名称',
             });
             this.props.saleCenterSetJumpOpenCardParams(true)
-            // this.props.saveRFMParams({
-            //     groupID,
-            //     levelKey,
-            //     levelType,
-            //     monetaryType,
-            //     reportMonth,
-            //     creator: createBy
-            // })
             this.clearUrl();
         } else {
             const saleID = type;
@@ -287,6 +262,7 @@ class NewCustomerPage extends Component {
             const specialIndex = this.props.saleCenter.get('characteristicCategories').toJS().findIndex(promotion => promotion.key === key);
             this.handleSpecialPromotionCreate(specialIndex, promotionEntity)
         } else {
+            console.log('the basic promotion been clicked !!!!!!', 'handleNewPromotionCardClick')
             const basicIndex = this.props.saleCenter.get('activityCategories').toJS().findIndex(promotion => promotion.key === key);
             this.handleBasicPromotionCreate(basicIndex, promotionEntity)
         }
