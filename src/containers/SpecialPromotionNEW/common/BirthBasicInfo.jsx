@@ -76,7 +76,7 @@ class PromotionBasicInfo extends React.Component {
         this.props.queryWechatMpInfo({ subGroupID: specialPromotion.subGroupID });
 
         const { giftAdvanceDays, eventRemark, eventName, involvementGiftAdvanceDays, eventStartDate, eventEndDate } = specialPromotion
-
+        // debugger
         this.setState({
             advanceDays: giftAdvanceDays,
             description: eventRemark,
@@ -227,6 +227,8 @@ class PromotionBasicInfo extends React.Component {
         const categorys = this.props.saleCenter.get('characteristicCategories').toJS();
         const type = this.props.type;
         const item = categorys.find(v => v.key === type);
+        // debugger
+        console.log('debugger', 'renderPromotionType')
         const lab = type ? categorys.find((cc) => {
             return cc.key === type
         }).title : '';

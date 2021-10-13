@@ -56,14 +56,16 @@ class SendMsgInfo extends React.Component {
                 }
             )
         } else {
-            this.setState(
-                {accountNo: specialPromotion.accountNo > 0 ? specialPromotion.accountNo : (
-                    specialPromotion.equityAccountInfoList.find(account => !!account.hasPermission) || {accountNo: ''}
-                ).accountNo},
-                () => {
-                    this.props.onChange({ accountNo: this.state.accountNo });
-                }
-            )
+            if(specialPromotion.accountNo !== undefined) {
+                this.setState(
+                    {accountNo: specialPromotion.accountNo > 0 ? specialPromotion.accountNo : (
+                        specialPromotion.equityAccountInfoList.find(account => !!account.hasPermission) || {accountNo: ''}
+                    ).accountNo},
+                    () => {
+                        this.props.onChange({ accountNo: this.state.accountNo });
+                    }
+                )
+            }
         }
     }
 

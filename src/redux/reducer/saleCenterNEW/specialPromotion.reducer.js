@@ -242,9 +242,8 @@ export const specialPromotion_NEW = ($$state = $initialState, action) => {
                 Immutable.fromJS(action.payload)
             );
         case SALE_CENTER_JUMP_OPEN_CARD:
-            // debugger
             return $$state.setIn(
-                ["$isBenefitJumpOpenCard"],
+                ["isBenefitJumpOpenCard"],
                 Immutable.fromJS(action.payload)
             );
         case SALE_CENTER_QUERY_GROUP_CRM_RFM:

@@ -76,6 +76,7 @@ class CardLevel extends React.Component {
             // console.log('旧版本局部会员');
             // ID是一长串字符串，说明是旧版本局部会员，因其cardLevelRangeType默认返回0，前端会渲染为全部会员，
             // 所以要更改为cardLevelRangeType为2（局部范围），并且按照新版把cardLevelIDList数组加入原来局部的cardLevelID
+            debugger
             let cardLevelRangeType = '2',
                 cardLevelID = '0',
                 cardLevelIDList = thisEventInfo.cardLevelID ? [thisEventInfo.cardLevelID] : [];
@@ -90,6 +91,7 @@ class CardLevel extends React.Component {
                 })
             })
         } else {
+            debugger
             this.setState({
                 cardLevelRangeType: cardLevelRangeType || thisEventInfo.cardLevelRangeType || '0',
                 cardLevelIDList: thisEventInfo.cardLevelIDList || [],

@@ -110,9 +110,11 @@ class NewCustomerPage extends Component {
         });
 
     }
-    componentWillReceiveProps() {
+    componentWillReceiveProps(nextProps) {
         // todo:上线放开
-        this.fromCrmJump();
+        if (JSON.stringify(this.props) !== JSON.stringify(nextProps)) {
+            this.fromCrmJump();
+        }
     }
     getQueryVariable() {
         const search = window.decodeURIComponent(window.location.search)
@@ -169,16 +171,17 @@ class NewCustomerPage extends Component {
                 return item.key == 52
             })[0];
             // 新建逻辑
-            debugger
+            // debugger
             this.handleNewPromotionCardClick(item);
             // “默认数据”debugger
             this.props.setSpecialPromotionInfo({
-                promotionName: '权益卡开卡发放活动',
-                sendMsg: '0',
-                description: '权益卡开卡发放活动',
+                eventName: '权益卡开卡发放活动',
+                smsGate: '0',
+                eventRemark: '权益卡开卡发放活动',
                 sourceWayLimit: '0',
-                cardLevelRangeType: '0',
+                cardLevelRangeType: '2',
                 defaultCardType: 'test还未保存的权益卡名称',
+                eventWay: 52,
             });
             this.props.saleCenterSetJumpOpenCardParams(true)
             this.clearUrl();
