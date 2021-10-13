@@ -89,6 +89,7 @@ class PromotionPage extends Component {
     render() {
         const { form, dataSource, pageSize, pageNo, total, onShowSizeChange, handleQuery } = this.props;
         const { getFieldDecorator } = form;
+        const opt = this.getParams();
         return (
             <div className={styles.PromotionPageBox}>
                 <Form onSubmit={this.handleSubmit} layout="inline">
@@ -206,7 +207,7 @@ class PromotionPage extends Component {
                         onShowSizeChange={onShowSizeChange}
                         showQuickJumper={true}
                         onChange={(page, pageSizes) => {
-                            handleQuery(page, pageSizes)
+                            handleQuery(page, pageSizes, opt)
                         }}
                     />
                 </div>

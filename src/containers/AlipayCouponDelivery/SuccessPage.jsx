@@ -119,6 +119,7 @@ class SuccessPage extends Component {
     render() {
         const { form, dataSource, pageSize, pageNo, total, onShowSizeChange, handleQuery } = this.props;
         const { getFieldDecorator } = form;
+        const opt = this.getParams();
         return (
             <div className={styles.SuccessPageBox}>
                 <Form onSubmit={this.handleSubmit} layout="inline">
@@ -228,7 +229,7 @@ class SuccessPage extends Component {
                         onShowSizeChange={onShowSizeChange}
                         showQuickJumper={true}
                         onChange={(page, pageSizes) => {
-                            handleQuery(page, pageSizes)
+                            handleQuery(page, pageSizes, opt)
                         }}
                     />
                 </div>
