@@ -969,6 +969,8 @@ class GiftAddModalStep extends React.PureComponent {
                     params.foodNameList = params.couponFoodScopes
                     .map(target => `${target.targetName}${target.targetUnitName || ''}`)
                     .join(',');
+                }else{
+                    params.foodNameList = []
                 }
                 params.isFoodCatNameList = params.foodSelectType;
             } else { // foodbxs数据,目前代金券和折扣券用
@@ -1830,14 +1832,16 @@ class GiftAddModalStep extends React.PureComponent {
             scopeList = couponFoodScopeList.map(food => ({scopeType: 2, ...food}));
             foodSelectType = 0;
         }
-        if (!scopeList.length) { // 历史数据，只有fooNameList，兼容显示
-            let { isFoodCatNameList = '1', foodNameList = [] } = this.props.gift.data;
-            scopeList = foodNameList.map(nameStr => ({
-                scopeType: isFoodCatNameList == 1 ? 1 : 2,
-                targetName: nameStr,
-                targetUnitName: '',
-            }))
-        }
+
+        // if (!scopeList.length) { // 历史数据，只有fooNameList，兼容显示
+        //     let { isFoodCatNameList = '1', foodNameList = [] } = this.props.gift.data;
+        //     scopeList = foodNameList.map(nameStr => ({
+        //         scopeType: isFoodCatNameList == 1 ? 1 : 2,
+        //         targetName: nameStr,
+        //         targetUnitName: '',
+        //     }))
+        // }
+
         return (
             <div
                 style={{
