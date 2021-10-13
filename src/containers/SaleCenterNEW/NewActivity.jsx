@@ -26,6 +26,7 @@ import {
 } from "../../redux/actions/saleCenterNEW/specialPromotion.action";
 import styles from './ActivityPage.less'
 import ActivityMain from './activityMain';
+import WeChatMaLLActivityMain from '../WeChat2Mall/WeChatMaLLActivityMain'; // 秒杀
 import Authority from './../../components/common/Authority';
 import {
     saleCenterResetBasicInfoAC,
@@ -45,7 +46,7 @@ import {
 import {
     ACTIVITY_CATEGORIES,
 } from '../../redux/actions/saleCenterNEW/types';
-import { jumpPage } from '@hualala/platform-base'
+import { jumpPage, getStore } from '@hualala/platform-base'
 import {
     SALE_CENTER_PAGE,
     SALE_CENTER_PAGE_SHOP,
@@ -59,6 +60,8 @@ import {
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from './IntlDecor';
+
+const CONTAIN_GROUPID_SHOW = ['317964', '11157']; // 拼团秒杀只针对茶百道显示
 
 const allBasicActivitiesArr = [
     ...NEW_CUSTOMER_PROMOTION_TYPES,
@@ -105,7 +108,7 @@ function mapDispatchToProps(dispatch) {
         },
         getAuthLicenseData: (opts) => {
             return dispatch(getAuthLicenseData(opts))
-        }
+        },
     };
 }
 @connect(mapStateToProps, mapDispatchToProps)
@@ -118,6 +121,8 @@ class NewActivity extends React.Component {
             index: 0,
             promotionType: 0,
             contentHeight: document.documentElement.clientHeight || document.body.clientHeight,
+            curKey: '',             //当前活动入口值
+            v3visible: false,
         };
 
         this.renderActivityButtons = this._renderActivityButtons.bind(this);
@@ -141,6 +146,29 @@ class NewActivity extends React.Component {
         const contentHeight = document.querySelector('.ant-tabs-tabpane-active').getBoundingClientRect().height - 40;
         this.setState({ contentHeight });
     }
+
+    onV3Click = (key) => {
+        if (key) this.setState({ curKey: key })
+        if (key === '10072') {
+            this.queryWeChat2Mall(key)
+        }
+        this.setState(ps => ({ v3visible: !ps.v3visible }));
+    }
+
+    // 请求菜品
+    queryWeChat2Mall = (key) => {
+        const opts = {
+            _groupID: this.props.user.accountInfo.groupID,
+            shopID: this.props.user.shopID,
+        };
+        this.props.fetchFoodCategoryInfo({ ...opts });
+        this.props.fetchFoodMenuInfo({ ...opts });
+        this.props.toggleIsUpdate(true);
+        this.props.setPromotionType({
+            promotionType: key,
+        });
+    }
+
     setModal1Visible(modal1Visible) {
         this.setState({ modal1Visible });
         if (!modal1Visible) {
@@ -156,6 +184,7 @@ class NewActivity extends React.Component {
 
     render() {
         const headerClasses = `${styles.headerWithBgColor}`;
+        const { v3visible, curKey } = this.state;
         return (
             <Row className="layoutsContainer">
                 <Col span={24} style={{padding: 0}} className="layoutsHeader">
@@ -189,6 +218,7 @@ class NewActivity extends React.Component {
                 >
                     {this.renderActivityButtons()}
                     {this.renderModal()}
+                    { (v3visible && curKey == '10072') && this.renderWeChat2MallModal() }
                 </Col>
             </Row>
         );
@@ -203,8 +233,13 @@ class NewActivity extends React.Component {
         this.onButtonClicked(index, activity);
     }
 
+    
+
 
     _renderActivityButtons() {
+        const state = getStore().getState();
+        const { groupID } = state.user.get('accountInfo').toJS();
+        const ACTIVITY_CATEGORIES_FILTER = CONTAIN_GROUPID_SHOW.includes(String(groupID)) ? ACTIVITY_CATEGORIES : ACTIVITY_CATEGORIES.filter(item => !item.filter)
         return (
             <div
                 className={styles.scrollableMessageContainer}
@@ -212,7 +247,7 @@ class NewActivity extends React.Component {
                     marginBottom: 20
                 }}
             >
-                {ACTIVITY_CATEGORIES.filter(item => !item.isOffline).map((activity, index) => {
+                {ACTIVITY_CATEGORIES_FILTER.filter(item => !item.isOffline).map((activity, index) => {
                 return (
                     <div
                         key={`NewActivity${index}`}
@@ -225,6 +260,7 @@ class NewActivity extends React.Component {
                                    this.handleCardClick(index, activity)
                                 }}
                                 index={index}
+                                onV3Click={() => { this.onV3Click(activity.key) }}
                             />
                         </Authority>
                     </div>
@@ -232,6 +268,30 @@ class NewActivity extends React.Component {
             })}
             </div>
         );
+    }
+
+    // 秒杀活动
+    renderWeChat2MallModal() {
+        return (
+            <Modal
+                wrapClassName="progressBarModal"
+                title={'新建秒杀活动'}
+                footer={false}
+                width={1000}
+                visible={true}
+                onCancel={this.onV3Click}
+            >
+                <WeChatMaLLActivityMain
+                    index={0}
+                    isNew={true}
+                    callbackthree={(arg) => {
+                        if (arg == 3) {
+                            this.onV3Click()
+                        }
+                    }}
+                />
+            </Modal>
+        )
     }
 
     _renderModal() {

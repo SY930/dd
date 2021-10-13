@@ -236,6 +236,7 @@ class NewActivity extends React.Component {
             return;
         }
         const shopID = this.props.user.shopID;
+        // 点击按钮请求商品
         this.props.getMallGoodsAndCategories(shopID);
         this.setState({
             updateModalVisible: true,

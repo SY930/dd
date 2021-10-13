@@ -28,6 +28,7 @@ export const FILTERS = [{
         {value: '1080',label: '累计次数赠送'},
         {value: '2070',label: '累计次数减免'},
         {value: '1021',label: '称重买赠'},
+        {value: '10071',label: '拼团活动'},
     ]
 }, {
     name: 'hllCoupon',
