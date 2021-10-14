@@ -131,7 +131,7 @@ class NewCustomerPage extends Component {
     }
     fromCrmJump() {
         const {
-            from = 'openCard', // debugger 测试
+            from, // debugger 测试
             type,
             gmID,
             totalMembers,
@@ -365,12 +365,13 @@ class NewCustomerPage extends Component {
             }, 100);
             return closePage(SALE_CENTER_PAYHAVEGIFT)
         }
+        debugger
         this.setSpecialModalVisible(true);
     }
     setSpecialModalVisible(specialModalVisible) {
+        debugger
         this.setState({ specialModalVisible });
         if (!specialModalVisible) {
-            // debugger
             const ifJumpOpenCard = this.props.specialPromotion.isBenefitJumpOpenCard
             console.log('ifJumpOpenCard', ifJumpOpenCard)
             if (ifJumpOpenCard) {

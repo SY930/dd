@@ -366,7 +366,6 @@ class StepTwo extends React.Component {
         const eventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
         const excludeEvent = eventInfo.excludeEventCardLevelIdModelList || [];
         const { cardLevelRangeType } = this.state;
-        debugger
         let localType = '0';
         if (cardLevelRangeType == 5) {
             localType = '5';
