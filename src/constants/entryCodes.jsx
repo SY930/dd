@@ -15,6 +15,8 @@ export const SET_WECHAT_MESSAGE_TEMPLATE = '100009991'; // 短信模板
 export const WECHAT_MALL_CREATE = 'wechat_mall_create'; // 门店视角 CREATE
 export const WECHAT_MALL_LIST = 'crm.shop.promotion'; // 门店视角 LIST
 
+export const WECHAT_GROUP_LIST = '10000730002'; // 集团视角 LIST
+
 export const NEW_CUSTOMER = '1000073001'; // 创建会员拉新活动
 export const FANS_INTERACTIVITY = '1000073002'; // 创建粉丝互动活动
 export const REPEAT_PROMOTION = '1000073003'; // 创建促进复购活动

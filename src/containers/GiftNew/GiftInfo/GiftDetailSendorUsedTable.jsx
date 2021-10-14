@@ -89,6 +89,23 @@ class GiftSendOrUsedCount extends React.Component {
                 key: 'usingTime',
                 render: value => <Tooltip title={value}><span>{value == '0' ? '' : value}</span></Tooltip>,
             },
+            {
+                title: '操作人',
+                className:'TableTxtCenter',
+                dataIndex: 'createBy',
+                width: 160,
+                key: 'createBy',
+            },
+            {
+                title: '备注',
+                className:'TableTxtCenter',
+                dataIndex: 'getRemark',
+                width: 160,
+                key: 'getRemark',
+                render: (t) => {
+                    return <Tooltip title={t}>{t}</Tooltip>
+                }
+            },
         ]
         this.state = {
             loading: true,

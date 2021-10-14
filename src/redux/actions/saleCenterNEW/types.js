@@ -700,6 +700,24 @@ export const ACTIVITY_CATEGORIES = (function () {
             example: '',
             key: "5020",
         },
+        {
+            idx: 22,
+            color: "#84aac6",
+            title: '拼团活动',
+            text: '邀请好友来拼团，也可直接购买',
+            example: '',
+            key: "10071",
+            filter: true,
+        },
+        // {
+        //     idx: 23,
+        //     color: "#84aac6",
+        //     title: '秒杀',
+        //     text: '',
+        //     example: '',
+        //     key: "10072",
+        //     filter: true,
+        // },
     ];
     return basic;
 })();

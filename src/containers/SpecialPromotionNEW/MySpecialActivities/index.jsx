@@ -345,6 +345,9 @@ class MySpecialActivities extends React.Component {
     }
     // 关闭更新
     handleDismissUpdateModal() {
+        if(this.state.isCopy) {
+            this.handleQuery(this.state.pageNo)
+        }
         this.setState({
             updateModalVisible: false,
             isCopy: false,
@@ -1236,16 +1239,17 @@ class MySpecialActivities extends React.Component {
                         {/* 第一版只做群发礼品的复制功能*/}
                         {
                             record.eventWay === 53
-                            && <Authority rightCode={SPECIAL_PROMOTION_UPDATE}>
+                            && 
+                            // <Authority rightCode={SPECIAL_PROMOTION_UPDATE}>
                                 <a
                                     href="#"
-                                    disabled={
-                                        record.eventWay == '64' ? null :
-                                            record.isActive != '0' || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record))
-                                                || record.eventWay === 80 || (moment(record.eventEndDate, 'YYYYMMDD').format('YYYYMMDD') < moment().format('YYYYMMDD'))
-                                                ? true
-                                                : false
-                                    }
+                                    // disabled={
+                                    //     record.eventWay == '64' ? null :
+                                    //         record.isActive != '0' || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record))
+                                    //             || record.eventWay === 80 || (moment(record.eventEndDate, 'YYYYMMDD').format('YYYYMMDD') < moment().format('YYYYMMDD'))
+                                    //             ? true
+                                    //             : false
+                                    // }
                                     onClick={(e) => {
                                         if (record.eventWay == '64') {
                                             //对评价送礼活动做专门处理，该活动在活动启用时候也能操作选择店铺
@@ -1257,9 +1261,9 @@ class MySpecialActivities extends React.Component {
                                                 this.handleUpdateOpe(text, record, index);
                                             }
                                         } else {
-                                            if (record.isActive != '0' || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) || record.eventWay === 80) {
-                                                e.preventDefault()
-                                            } else {
+                                            // if (record.isActive != '0' || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) || record.eventWay === 80) {
+                                            //     e.preventDefault()
+                                            // } else {
                                                 if (Number(record.eventWay) === 70) {
                                                     message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
                                                     return;
@@ -1282,13 +1286,13 @@ class MySpecialActivities extends React.Component {
                                                 })
                                                 this.handleUpdateOpe(text, record, index);
                                             }
-                                        }
+                                        // }
 
                                     }}
                                 >
                                     复制
                            </a>
-                            </Authority>
+                            // </Authority>
                         }
                         {
                             isDecorationAvailable(record) && (
@@ -1750,7 +1754,6 @@ class MySpecialActivities extends React.Component {
                 </div>
             );
         }
-
         if (mySpecialActivities.status === 'success') {
             return (<ActivityMain
                 isCopy={_state.isCopy}

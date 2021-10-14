@@ -57,6 +57,7 @@ class SendGiftPanel extends Component {
             whenToEffect: '0',        // 何时生效
             giftValidDays: 1,        // 有效天数
             cellNo: '',             // 用户手机号
+            operateRemark: '',     // 备注
             accountNo: '',
             availableSmsCount: 0,
             giftValidRange: [],
@@ -132,6 +133,7 @@ class SendGiftPanel extends Component {
             message: smsTemplate,
             accountNo,
             cellNo: customerMobile,
+            operateRemark,
             giftNo: giftNum,
             giftValidRange: [effectTime, validUntilDate],
             giftValidDays: validUntilDays,
@@ -156,7 +158,7 @@ class SendGiftPanel extends Component {
             params.accountNo = accountNo;
         }
 
-        params = {...params, validUntilDays, giftNum, customerMobile, smsGate};
+        params = {...params, validUntilDays, giftNum, customerMobile, smsGate, operateRemark };
         return params;
     }
 
@@ -221,6 +223,11 @@ class SendGiftPanel extends Component {
             cellNo: val.number,
         })
     }
+    handleRemarkChange = (e) => {
+        this.setState({
+            operateRemark: e.target.value,
+        })
+    }
 
     handleDayOrHourChange(event) {
         const dayOrHour = event.target.value;
@@ -276,6 +283,31 @@ class SendGiftPanel extends Component {
                         ]
                     })(<PriceInput modal="int"/>)}
                 </FormItem>);
+    }
+
+    renderRemarks() {
+        const { getFieldDecorator } = this.props.form;
+        return (<FormItem
+            label="备注"
+            className={styles.FormItemStyle}
+            style={{
+                margin: '1em 0'
+            }}
+            labelCol={{ span: 4 }}
+            // hasFeedback
+            wrapperCol={{ span: 17 }}
+        >
+            {getFieldDecorator('operateRemark', {
+                onChange: this.handleRemarkChange,
+                rules: [
+                    // { required: true, message: '不能为空' },
+                    // {
+                    //     message: '汉字、字母、数字组成，不多于100个字符',
+                    //     pattern: /^[\u4E00-\u9FA5A-Za-z0-9.（）()\-]{1,100}$/,
+                    // },
+                ],
+            })(<Input type="textarea" placeholder="请输入备注信息" maxLength={100} />)}
+        </FormItem>);
     }
 
     renderGift() {
@@ -514,6 +546,9 @@ class SendGiftPanel extends Component {
                         {this.renderMsgSelector()}
                     </div>
                 )}
+                </Col>
+                <Col offset={3} span={17}>
+                    {this.renderRemarks()}
                 </Col>
                 <Col  offset={3} span={15} style={{
                     textAlign: 'right'

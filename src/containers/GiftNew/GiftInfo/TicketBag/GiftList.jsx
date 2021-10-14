@@ -7,7 +7,7 @@ import BaseForm from '../../../../components/common/BaseForm';
 import Authority from '../../../../components/common/Authority';
 import GiftCfg from '../../../../constants/Gift';
 import {
-    GIFT_LIST_UPDATE,
+    GIFT_LIST_UPDATE,GIFT_LIST_QUERY
 } from "../../../../constants/authorityCodes";
 import {
     FetchGiftList,
@@ -167,7 +167,7 @@ class GiftList extends Component {
                                 />
                             </li>
                             <li>
-                                <Authority rightCode={GIFT_LIST_UPDATE}>
+                                <Authority rightCode={GIFT_LIST_QUERY}>
                                     <Button type="primary" onClick={() => this.onQueryList()}>
                                         <Icon type="search" />
                                         查询

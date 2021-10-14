@@ -99,7 +99,6 @@ class CategoryAndFoodSelector extends Component {
         const { priceLst: thispriceLst = [] } = this.props
         if (singleDish) {
             if (priceLst.length !== thispriceLst.length) {
-                //debuggger
                 const value = getDishesInfoFromPriceOrScopeList(priceLst).dishes
                 this.setState({
                     dishes: value

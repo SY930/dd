@@ -1375,6 +1375,9 @@
 .cardWrap_21{
     .cardWrap(@shallowOrange);
 }
+.cardWrap_22{
+    .cardWrap(@deepOrange);
+}
 
 .priceInputSingle{
     :global{
@@ -2454,4 +2457,50 @@
     position: relative;
     top: 2px;
     left: -5px;
+}
+
+.avatar-uploader,
+.avatar-uploader-trigger,
+.avatar {
+  width: 76px;
+  height: 76px;
+  border: 1px solid #dfdfdf;
+}
+.thinAvatar-uploader,
+.thinAvatar-uploader-trigger,
+.thinAvatar {
+    height: 76px;
+    width: 76px;
+    border: 1px solid #dfdfdf;
+}
+.avatar-uploader {
+  display: block;
+  border: 1px solid #dfdfdf;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.avatar-uploader-trigger {
+  display: table-cell;
+  vertical-align: middle;
+  font-size: 28px;
+  color: #999;
+}
+.horizontal-modifier {
+  width: 255px;
+  height: 105px;
+}
+
+// .diffUpload {
+//     position: relative;
+//     :global {
+//         .avatar-uploader-trigger {
+//             height: 76px;
+//             width: 76px;
+//             border: 1px solid #dfdfdf;
+//         }
+//     }
+// }
+
+.antuploadhint {
+    color: #dfdfdf;
 }

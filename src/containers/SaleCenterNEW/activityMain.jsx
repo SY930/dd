@@ -68,6 +68,9 @@ import AddUpGiveDetailInfo from './addUpGive/addUpGiveDetailInfo';
 import NewWeighBuyGiveActivity from './weighAndBuyGive/NewWeighBuyGiveActivity'; // 称重买赠
 import WeighBuyGiveDetailInfo from './weighAndBuyGive/WeighBuyGiveDetailInfo';
 
+import GroupSaleActivity from './groupSale/GroupSaleActivity'; // 称重买赠
+import SettingInfo from './groupSale/SettingInfo'; //拼团活动
+
 import NewRecommendFood from './recommendFood/NewRecommendFood'; // 推荐菜
 import RecommendFoodDetailInfo from './recommendFood/recommendFoodDetailInfo';
 
@@ -109,7 +112,7 @@ class ActivityMain extends React.Component {
                     </div>
                     <div style={{ marginBottom: 20, whiteSpace: 'pre-line' }}>
                         {this.props.promotionType ?
-                            activityCategories.find(type => type.key === this.props.promotionType).desc || '': ''}
+                            activityCategories.find(type => type.key == this.props.promotionType).desc || '': ''}
                     </div>
                 </div>
             );
@@ -131,8 +134,8 @@ class ActivityMain extends React.Component {
             default:
                 return (
                     <div className={styles.promotionTip}>
-                        <div style={{ marginBottom: 20 }}>{this.props.promotionType ? activityCategories.find(type => type.key === this.props.promotionType).text || '': ''}</div>
-                        <div>{this.props.promotionType ? activityCategories.find(type => type.key === this.props.promotionType).example || '' : ''}</div>
+                        <div style={{ marginBottom: 20 }}>{this.props.promotionType ? activityCategories.find(type => type.key == this.props.promotionType).text || '': ''}</div>
+                        <div>{this.props.promotionType ? activityCategories.find(type => type.key == this.props.promotionType).example || '' : ''}</div>
                     </div>
                 );
         }
@@ -215,6 +218,10 @@ class ActivityMain extends React.Component {
                 child: MemberExclusiveDetailInfo,
             },
             {
+                wrapper: GroupSaleActivity,
+                child: SettingInfo,
+            },
+            {
                 wrapper: NewFullCutActivity,
                 child: FullCutDetailInfo,
             },
@@ -223,6 +230,9 @@ class ActivityMain extends React.Component {
                 child: SpecialDetailInfo,
             },
         ]
+        const {
+            data = {}
+        } = this.props
         const pages = pagesArr.map((promotion, index) => {
             return React.createElement(promotion.wrapper, {
                 callbacktwo: (arg) => {
@@ -236,6 +246,7 @@ class ActivityMain extends React.Component {
                 isCopy: this.props.isCopy,
                 component: promotion.child,
                 isOnline: this.isOnline(),
+                data,
             });
         });
         this.setState({
