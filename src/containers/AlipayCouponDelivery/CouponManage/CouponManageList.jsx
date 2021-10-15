@@ -360,7 +360,7 @@ class CouponManageList extends Component {
                             />
                         </li>
 						<li>
-                            <Button type="primary" onClick={() => this.handleQuery()} disabled={this.state.loading}><Icon type="search" />搜索</Button>
+                            <Button type="primary" onClick={() => this.handleQuery(1)} disabled={this.state.loading}><Icon type="search" />搜索</Button>
                         </li>
 					</ul>
 				</div>

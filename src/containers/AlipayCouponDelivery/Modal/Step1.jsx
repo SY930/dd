@@ -137,7 +137,6 @@ class Step1 extends Component {
     }
 
     goAuthorize = () => {
-        console.log('>>>>>>>>>>>>>..')
         this.setState({
             authorizeModalVisible: true,
         })
