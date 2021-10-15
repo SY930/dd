@@ -230,9 +230,6 @@ class CreateCouponContent extends Component {
                 }
                 const endTime = rangePicker[1].format('YYYYMMDD');
                 const startTime = rangePicker[0].format('YYYYMMDD')
-                if (endTime <= startTime) {
-                    return message.error('投放时间的结束时间必须大于开始时间')
-                }
                 const datas = {
                     batchName: values.batchName,
                     channelID: 60,
@@ -701,18 +698,6 @@ class CreateCouponContent extends Component {
                                     // initialValue: editData.startTime > 0 ? [moment(editData.startTime, 'YYYYMMDD'), moment(editData.endTime, 'YYYYMMDD')] : [],
                                     rules: [
                                         { required: true, message: '请输入日期' },
-                                        {
-                                            validator: (rule, v, cb) => {
-                                                if (!v) {
-                                                    return cb();
-                                                }
-                                                if (v && v[0] && (v[1].format('YYYYMMDD') <= v[0].format('YYYYMMDD'))) {
-                                                    return cb(rule.message)
-                                                }
-                                                cb();
-                                            },
-                                            message: '输入的结束时间必须大于开始时间',
-                                        },
                                     ],
                                     // onchange: this.handleRangeChange,
                                 })(
