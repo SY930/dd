@@ -58,7 +58,7 @@ class CouponManageList extends Component {
 
 	componentDidMount() {
 		this.handleQuery();
-       this.initData();
+        this.initData();
 		this.onWindowResize();
 		window.addEventListener('resize', this.onWindowResize);
 	}
@@ -85,7 +85,7 @@ class CouponManageList extends Component {
     }
 
     initData = () => {
-        getCardList({giftTypes: [10, 21]}).then(x => {
+        getCardList({giftTypes:[10, 111]}).then(x => {
             this.setState({ treeData: x });
         });
         getShopPid().then((res) => {
@@ -461,7 +461,7 @@ class CouponManageList extends Component {
 		return (
             <div className={['layoutsContent', styles.tableClass].join(' ')} style={{ height: this.state.contentHeight }}>
                 <Table
-                    scrollY={{ y: this.state.contentHeight - 108 }}
+                    scroll={{ y: this.state.contentHeight - 108 }}
                     bordered={true}
                     columns={columns}
                     dataSource={this.state.dataSource}
@@ -572,7 +572,7 @@ class ViewCouponContent extends Component {
                 dataIndex: 'times',
                 render: (text, record) => {
                     if (record.effectType == 3) { //
-                        return `自领取${record.effectGiftTimeHours}天有效`;
+                        return `自领取${record.validUntilDays}天有效`;
                     }
                     return moment(record.EGiftEffectTime, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')/moment(record.validUntilDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')
                 }

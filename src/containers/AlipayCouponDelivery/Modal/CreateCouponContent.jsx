@@ -228,6 +228,11 @@ class CreateCouponContent extends Component {
                 if (!merchantID) {
                     return message.error('请输入支付宝链接方式')
                 }
+                const endTime = rangePicker[1].format('YYYYMMDD');
+                const startTime = rangePicker[0].format('YYYYMMDD')
+                if (endTime <= startTime) {
+                    return message.error('投放时间的结束时间必须大于开始时间')
+                }
                 const datas = {
                     batchName: values.batchName,
                     channelID: 60,
@@ -235,10 +240,10 @@ class CreateCouponContent extends Component {
                     stock: values.stock.number,
                     effectType,
                     effectGiftTimeHours,
-                    endTime: rangePicker[1].format('YYYYMMDDHHmmss'),
+                    endTime: `${endTime}235959`,
                     EGiftEffectTime: giftValidRange[0] ? giftValidRange[0].format('YYYYMMDDHHmmss') : '',
                     validUntilDate: giftValidRange[1] ? giftValidRange[1].format('YYYYMMDDHHmmss') : '',
-                    startTime: rangePicker[0].format('YYYYMMDDHHmmss'),
+                    startTime: `${startTime}000000`,
                     giftItemID: values.giftItemID,
                     giftType: 10,
                     jumpAppID: values.jumpAppID,
@@ -337,7 +342,6 @@ class CreateCouponContent extends Component {
                                 ))
                             }
                         </Select>)}
-                        
                         {
                             this.renderTip()
                         }
@@ -408,7 +412,7 @@ class CreateCouponContent extends Component {
                         wrapperCol={{ span: 24 }}
                         required={true}
                         className={styles.indirectSelect}
-                        // label="账务主体"
+                    // label="账务主体"
                     >
                         {getFieldDecorator('settleUnitID', {
                             rules: [
@@ -694,15 +698,27 @@ class CreateCouponContent extends Component {
                                 required={true}
                             >
                                 {getFieldDecorator('rangePicker', {
-                                    initialValue: editData.startTime > 0 ? [moment(editData.startTime, 'YYYYMMDD'), moment(editData.endTime, 'YYYYMMDD')] : [],
-                                    rules: [{ required: true, message: '请输入日期' }],
-                                    onchange: this.handleRangeChange,
+                                    // initialValue: editData.startTime > 0 ? [moment(editData.startTime, 'YYYYMMDD'), moment(editData.endTime, 'YYYYMMDD')] : [],
+                                    rules: [
+                                        { required: true, message: '请输入日期' },
+                                        {
+                                            validator: (rule, v, cb) => {
+                                                if (!v) {
+                                                    return cb();
+                                                }
+                                                if (v && v[0] && (v[1].format('YYYYMMDD') <= v[0].format('YYYYMMDD'))) {
+                                                    return cb(rule.message)
+                                                }
+                                                cb();
+                                            },
+                                            message: '输入的结束时间必须大于开始时间',
+                                        },
+                                    ],
+                                    // onchange: this.handleRangeChange,
                                 })(
                                     <RangePicker
                                         style={{ width: '100%' }}
-                                        disabledDate={null}
                                         format="YYYY-MM-DD"
-                                        showTime="HH:mm:ss"
                                     />
                                 )}
                             </FormItem>

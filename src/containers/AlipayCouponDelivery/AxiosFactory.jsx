@@ -13,11 +13,12 @@ import { axios, getStore } from '@hualala/platform-base';
  * url 加 ？ 的目的就是为了在浏览器 network 里面方便看到请求的接口路径
  */
 /** restful 风格函数命名， get获取，post增加，put更新，delete删除 */
-const [service, type, api, url] = ['HTTP_SERVICE_URL_CRM', 'post', 'alipay/', '/api/v1/universal?'];
+const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', 'alipay/', '/api/v1/universal?'];
 
 const giftTypeName = [
     { label: '全部', value: '' },
     { label: '代金券', value: '10' },
+    { label: '折扣券', value: '111' },
 ];
 
 function getAccountInfo() {
@@ -26,13 +27,13 @@ function getAccountInfo() {
 }
 
 function proGiftTreeData(giftTypes) {
-    const _giftTypes = _.filter(giftTypes, (giftItem) => {
-        if (giftItem.giftType == 10) return true;
-        return false;
-    });
+    // const _giftTypes = _.filter(giftTypes, (giftItem) => {
+    //     if (giftItem.giftType == 10 || giftItem.giftType == 111) return true;
+    //     return false;
+    // });
     let treeData = [];
     const gifts = [];
-    _giftTypes.map((gt, idx) => {
+    giftTypes.map((gt, idx) => {
         const giftTypeItem = _.find(giftTypeName, { value: String(gt.giftType) }) || {};
         treeData.push({
             label: giftTypeItem.label || '--',
