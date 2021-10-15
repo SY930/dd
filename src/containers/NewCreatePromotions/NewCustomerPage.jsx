@@ -133,7 +133,7 @@ class NewCustomerPage extends Component {
     }
     fromCrmJump() {
         const {
-            from = 'groupsendGift', // debugger 测试
+            from, // debugger 测试
             type,
             gmID,
             totalMembers,
@@ -403,6 +403,7 @@ class NewCustomerPage extends Component {
             const isBenefitJumpSendGift = this.props.specialPromotion.isBenefitJumpSendGift
             console.log('ifJumpOpenCard', ifJumpOpenCard)
             if (ifJumpOpenCard || isBenefitJumpSendGift) {
+                closePage();
                 jumpPage({ pageID: '1000072012' });
                 jumpPage({ menuID: 'editBenefitCard' });
                 this.props.saleCenterSetJumpOpenCardParams(false)
