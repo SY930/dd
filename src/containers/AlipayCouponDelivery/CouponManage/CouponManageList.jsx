@@ -85,7 +85,7 @@ class CouponManageList extends Component {
     }
 
     initData = () => {
-        getCardList({giftTypes:[10, 111]}).then(x => {
+        getCardList({giftTypes:[10]}).then(x => {
             this.setState({ treeData: x });
         });
         getShopPid().then((res) => {
