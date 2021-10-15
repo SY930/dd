@@ -127,8 +127,10 @@ class CouponManageList extends Component {
         const opt = {
         };
         if (couponDateRange !== '' && couponDateRange !== undefined && couponDateRange[0] !== undefined) {
-            opt.createStampStart = couponDateRange[0].format('YYYY-MM-DD HH:mm:ss'); // 开始时间
-            opt.createStampEnd = couponDateRange[1].format('YYYY-MM-DD HH:mm:ss'); // 结束时间
+            const createStampStart = couponDateRange[0].format('YYYY-MM-DD');
+            const createStampEnd = couponDateRange[1].format('YYYY-MM-DD');
+            opt.createStampStart = `${createStampStart} 00:00:00`; // 开始时间
+            opt.createStampEnd = `${createStampEnd} 23:59:59`; // 结束时间
         }
         if (platformType) {
             opt.platformType = platformType;
@@ -343,6 +345,7 @@ class CouponManageList extends Component {
                                 }}
                             >
                                 <Option value={''}>全部</Option>
+                                <Option value={'1'}>执行中</Option>
                                 <Option value={'2'}>停用</Option>
                             </Select>
                         </li>
@@ -352,7 +355,7 @@ class CouponManageList extends Component {
                         <li>
                             <RangePicker
                                 style={{ width: 260 }}
-                                showTime={{ format: 'HH:mm' }}
+                                // showTime={{ format: 'HH:mm' }}
                                 className={styles.ActivityDateDayleft}
                                 format="YYYY-MM-DD"
                                 placeholder={['开始日期', '结束日期']}
@@ -374,7 +377,7 @@ class CouponManageList extends Component {
                 title: '序号',
                 dataIndex: 'index',
                 className: 'TableTxtCenter',
-                // width: 50,
+                width: 50,
                 // fixed:'left',
                 key: 'index',
                 render: (text, record, index) => {
@@ -385,7 +388,7 @@ class CouponManageList extends Component {
                 title: '操作',
                 key: 'operation',
                 // className: 'TableTxtCenter',
-                // width: 160,
+                width: 160,
                 // fixed: 'left',
                 render: (text, record, index) => {
                     return (<span>
@@ -424,18 +427,21 @@ class CouponManageList extends Component {
                 title: '第三方券名称',
                 dataIndex: 'batchName',
                 key: 'batchName',
+                width: 400,
                 render: (text) => text,
             },
             {
                 title: '券ID',
                 dataIndex: 'itemID',
                 key: 'itemID',
+                width: 400,
                 render: (text) => text,
             },
             {
                 title: '关联渠道',
                 dataIndex: 'channelID',
                 key: 'channelID',
+                width: 300,
                 render: (text) => {
                     return ['60', 60].includes(text) ? '支付宝' : ''
                 },
@@ -444,6 +450,7 @@ class CouponManageList extends Component {
                 title: '剩余数量',
                 dataIndex: 'stock',
                 key: 'stock',
+                width: 100,
                 render: (text, record) => {
                     const { receive } = record
                     if (text) {
@@ -455,6 +462,7 @@ class CouponManageList extends Component {
                 title: '创建时间',
                 dataIndex: 'createStampStr',
                 key: 'createStampStr',
+                width: 400,
                 render: (text) => text,
             },
 		];
