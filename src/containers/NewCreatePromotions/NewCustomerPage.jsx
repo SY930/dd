@@ -114,7 +114,7 @@ class NewCustomerPage extends Component {
     componentWillReceiveProps(nextProps) {
         // todo:上线放开
         // debugger
-        if (JSON.stringify(nextProps) !== JSON.stringify(nextProps)) {
+        if (JSON.stringify(this.props) !== JSON.stringify(nextProps)) {
             this.fromCrmJump();
         }
     }
@@ -133,7 +133,7 @@ class NewCustomerPage extends Component {
     }
     fromCrmJump() {
         const {
-            from, // debugger 测试
+            from = 'groupsendGift', // debugger 测试
             type,
             gmID,
             totalMembers,
