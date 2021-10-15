@@ -576,6 +576,19 @@ class ViewCouponContent extends Component {
             },
             {
                 title: '生效时间',
+                key: 'Stimes',
+                dataIndex: 'Stimes',
+                render: (text, record) => {
+                    if (record.effectType == 3) { //
+                        const effectGiftTimeHours = record.effectGiftTimeHours;
+                        const t = effectGiftTimeHours > 0 ? `${record.effectGiftTimeHours}天生效` : '立即生效'
+                        return t;
+                    }
+                    return moment(record.EGiftEffectTime, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')/moment(record.validUntilDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')
+                }
+            },
+            {
+                title: '有效时间',
                 key: 'times',
                 dataIndex: 'times',
                 render: (text, record) => {
