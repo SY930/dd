@@ -557,6 +557,9 @@ class ViewCouponContent extends Component {
                 title: '券名称',
                 key: 'giftName',
                 dataIndex: 'giftName',
+                render: (t) => {
+                    return <Tooltip title={t}>{t}</Tooltip>;
+                }
             },
             {
                 title: '生成数量',
@@ -582,9 +585,10 @@ class ViewCouponContent extends Component {
                     if (record.effectType == 3) { //
                         const effectGiftTimeHours = record.effectGiftTimeHours;
                         const t = effectGiftTimeHours > 0 ? `${record.effectGiftTimeHours}天生效` : '立即生效'
-                        return t;
+                        return <Tooltip title={t}>{t}</Tooltip>;
                     }
-                    return moment(record.EGiftEffectTime, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')/moment(record.validUntilDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')
+                    const time = `${moment(record.eGiftEffectTime, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}/${moment(record.validUntilDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}`;
+                    return <Tooltip title={time}>{time}</Tooltip>;
                 }
             },
             {
@@ -593,9 +597,11 @@ class ViewCouponContent extends Component {
                 dataIndex: 'times',
                 render: (text, record) => {
                     if (record.effectType == 3) { //
-                        return `自领取${record.validUntilDays}天有效`;
+                        const t = `自领取${record.validUntilDays}天有效`;
+                        return <Tooltip title={t}>{t}</Tooltip>
                     }
-                    return moment(record.EGiftEffectTime, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')/moment(record.validUntilDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')
+                    const time = `${moment(record.eGiftEffectTime, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}/${moment(record.validUntilDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}`;
+                    return <Tooltip title={time}>{time}</Tooltip>;;
                 }
             },
         ];
