@@ -30,8 +30,9 @@ class NewSendGifts extends NewPromotion {
     constructor(props) {
         super(props);
     }
-    render() {
 
+    render() {
+        const isBenefitJumpSendGift = this.props.specialPromotion.isBenefitJumpSendGift
         if (this.props.component === undefined) {
             throw new Error('component is required');
         }
@@ -46,6 +47,7 @@ class NewSendGifts extends NewPromotion {
                     getSubmitFn={(handles) => {
                         this.handles[0] = handles;
                     }}
+                    isBenefitJumpSendGift
                 />),
             },
             {
@@ -56,6 +58,7 @@ class NewSendGifts extends NewPromotion {
                         getSubmitFn={(handles) => {
                             this.handles[1] = handles;
                         }}
+                        isBenefitJumpSendGift
                     />
                 ),
             },
@@ -67,6 +70,7 @@ class NewSendGifts extends NewPromotion {
                         getSubmitFn={(handles) => {
                             this.handles[2] = handles;
                         }}
+                        isBenefitJumpSendGift
                     />
                 ),
                 // content: (

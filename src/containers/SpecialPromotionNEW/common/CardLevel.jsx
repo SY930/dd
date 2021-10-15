@@ -335,7 +335,7 @@ class CardLevel extends React.Component {
                                 getFieldDecorator('treeSelect', {
                                     rules: [{
                                         type: 'array',
-                                        required: true,
+                                        required: ifJumpOpenCard ? false : true,
                                         message: `${this.props.intl.formatMessage(STRING_SPE.d4546omm0r6172)}`,
                                     }],
                                     initialValue: this.state.cardLevelIDList,

@@ -150,11 +150,11 @@ class StepOne extends React.Component {
 
         // 群发短信以及其它可发短信的活动，要查权益账户和短信签名
         // if (this.props.type == '50' || fullOptionSmsGate.includes(`${this.props.type}`)) {
-            specialPromotion.settleUnitID > 0 && !(specialPromotion.accountNo > 0) ?
-                this.props.saleCenterQueryFsmGroupSettleUnit({ groupID: this.props.user.accountInfo.groupID })
-                :
-                this.props.queryFsmGroupEquityAccount();
-            this.props.querySMSSignitureList();
+        specialPromotion.settleUnitID > 0 && !(specialPromotion.accountNo > 0) ?
+            this.props.saleCenterQueryFsmGroupSettleUnit({ groupID: this.props.user.accountInfo.groupID })
+            :
+            this.props.queryFsmGroupEquityAccount();
+        this.props.querySMSSignitureList();
         // }
         // 活动名称auto focus
         try {
@@ -200,18 +200,18 @@ class StepOne extends React.Component {
 
         const validCycleType = getFieldValue('dateInPeriodType');
         let validCycle = null;
-        if(getFieldValue('dateDescInPeroid') instanceof Array) {
-            if(validCycleType == 'm') {
+        if (getFieldValue('dateDescInPeroid') instanceof Array) {
+            if (validCycleType == 'm') {
                 validCycle = getFieldValue('dateDescInPeroid').filter(item => item.startsWith('m'));
-            }  else if(validCycleType == 'w'){
+            } else if (validCycleType == 'w') {
                 validCycle = getFieldValue('dateDescInPeroid').filter(item => item.startsWith('w'));
             }
         }
 
         // 是否同一天
         let rangePickerVal = getFieldValue('rangePicker');
-        if(rangePickerVal instanceof Array && rangePickerVal.length == 2) {
-            if(rangePickerVal[0].isSame(rangePickerVal[1])) {
+        if (rangePickerVal instanceof Array && rangePickerVal.length == 2) {
+            if (rangePickerVal[0].isSame(rangePickerVal[1])) {
                 validCycle = [];    // 同一天，周期选择传空
             }
         }
@@ -320,8 +320,8 @@ class StepOne extends React.Component {
         } catch (error) {
             timeString = ''
         }
-        if(typeof(timeString) == 'string' && timeString.length > 0) {
-            if (timeString.substring(2, 4) != '00' && timeString.substring(2, 4) != '30' ) {
+        if (typeof (timeString) == 'string' && timeString.length > 0) {
+            if (timeString.substring(2, 4) != '00' && timeString.substring(2, 4) != '30') {
                 timeString = `${timeString.substring(0, 2)}0000`
             }
             this.setState({
@@ -348,35 +348,44 @@ class StepOne extends React.Component {
      * @ref http://jira.hualala.com/browse/WTCRM-2538
     */
     renderDateOfSendingPromotionSelector = () => {
-        const { type, form: {
-            getFieldDecorator: decorator,
-            getFieldValue,
-            setFieldsValue
-        } } = this.props;
+        const {
+            type,
+            form: {
+                getFieldDecorator: decorator,
+                getFieldValue,
+                setFieldsValue
+            },
+            isBenefitJumpSendGift = false
+        } = this.props;
 
         // 根据选择的时间来判断是否显示周期选择器
         let rangePickerVal = getFieldValue('rangePicker');
-        if(rangePickerVal instanceof Array && rangePickerVal.length == 2) {
+        if (rangePickerVal instanceof Array && rangePickerVal.length == 2) {
             // 判断是否是同一天
             let isSame = rangePickerVal[0].isSame(rangePickerVal[1]);
-            if(isSame) {
+            if (isSame) {
                 return null;
             }
         }
 
         const {
-            $eventInfo : {
-                validCycle
-            } 
+            $eventInfo: {
+                validCycle,
+                dateRangeType,
+            }
         } = this.props.specialPromotion.toJS();
         let dateInPeriodType = 'm';                // 默认为月
-
-        if(validCycle instanceof Array && validCycle.length > 0) {
-            if(validCycle[0].startsWith('w')) {
+        // debugger
+        if (validCycle instanceof Array && validCycle.length > 0) {
+            if (validCycle[0].startsWith('w')) {
                 dateInPeriodType = 'w'
-            } 
-        } else if(validCycle == null) {             // 为每日时后端返回null
-            dateInPeriodType = 'd'  
+            }
+        } else if (validCycle == null) {             // 为每日时后端返回null
+            dateInPeriodType = 'd'
+        }
+        if (isBenefitJumpSendGift) {
+            // debugger
+            dateInPeriodType = dateRangeType
         }
 
         return (
@@ -397,14 +406,15 @@ class StepOne extends React.Component {
                                 initialValue: dateInPeriodType,
                                 onChange: (val) => {
                                     // 清除数据
-                                    if(getFieldValue('dateInPeriodType') != val) {
+                                    // debugger
+                                    if (getFieldValue('dateInPeriodType') != val) {
                                         setFieldsValue({
                                             dateDescInPeroid: []
                                         })
                                     }
                                 }
                             })(
-                                <Select>
+                                <Select disabled={isBenefitJumpSendGift}>
                                     <Option value="m">每月</Option>
                                     <Option value="w">每周</Option>
                                     <Option value="d">每日</Option>
@@ -420,7 +430,7 @@ class StepOne extends React.Component {
                                 </p>
                             }>
                                 <Icon
-                                    style={{marginLeft: '5px', marginTop: '8px'}}
+                                    style={{ marginLeft: '5px', marginTop: '8px' }}
                                     type={'question-circle'}
                                 />
                             </Tooltip>
@@ -439,20 +449,20 @@ class StepOne extends React.Component {
     */
     renderDatePickerInWeekOrMonth = () => {
 
-        const { form: { 
+        const { form: {
             getFieldDecorator: decorator,
             getFieldValue
-        }} = this.props;
+        } } = this.props;
 
         const dateInPeriodType = getFieldValue('dateInPeriodType')
 
         let initialValue = [];
         const {
-            $eventInfo : {
+            $eventInfo: {
                 validCycle
-            } 
+            }
         } = this.props.specialPromotion.toJS();
-        if(validCycle instanceof Array && validCycle.length > 0) {
+        if (validCycle instanceof Array && validCycle.length > 0) {
             initialValue = validCycle;
         }
         if (dateInPeriodType == 'd') {
@@ -489,29 +499,29 @@ class StepOne extends React.Component {
      * @description 渲染仅发送时间组件
     */
     renderSendTimeSelector = () => {
-        const { form: { 
+        const { form: {
             getFieldDecorator: decorator,
-            getFieldValue 
-        }, type} = this.props;
+            getFieldValue
+        }, type } = this.props;
 
         let {
-            $eventInfo : {
+            $eventInfo: {
                 startTime,
                 // eventStartDate,
                 // eventEndDate,
-            } 
+            }
         } = this.props.specialPromotion.toJS();
-        let {dateRange: date} = this.state
+        let { dateRange: date } = this.state
 
         let eventStartDate = date[0] ? date[0].format('YYYYMMDD') : '';
         let eventEndDate = date[1] ? date[1].format('YYYYMMDD') : '';
-        
+
         // 不可用时间组件
         // （当活动起止日期为同一天时），活动执行当天可以修改的发送时间为系统时间的后半小时的整点或半点
         let curHour = moment().get('hour');
         let curMinute = moment().get('minute');
         let disabledHours = () => {
-            if(eventStartDate == eventEndDate && moment().format('YYYYMMDD') == eventEndDate){
+            if (eventStartDate == eventEndDate && moment().format('YYYYMMDD') == eventEndDate) {
                 let hours = this.range(0, 24);
                 let addHour = curMinute > 30 ? 1 : 0.5
                 return hours.filter(item => item < curHour + addHour)
@@ -520,15 +530,15 @@ class StepOne extends React.Component {
         };
         let disabledMinutes = (selectedHour) => {
             let result = this.range(0, 60);
-            if(eventStartDate == eventEndDate && moment().format('YYYYMMDD') == eventEndDate){
+            if (eventStartDate == eventEndDate && moment().format('YYYYMMDD') == eventEndDate) {
                 let addHour = curMinute > 30 ? 3 : 2
                 if (curHour + addHour == selectedHour) {
-                    if(curMinute > 30 || curMinute == 0){
+                    if (curMinute > 30 || curMinute == 0) {
                         return result.filter(item => item != 0 && item != 30)
-                    }else{
+                    } else {
                         return result.filter(item => item != 30)
                     }
-                }else if (selectedHour == null || selectedHour > curHour + addHour) {
+                } else if (selectedHour == null || selectedHour > curHour + addHour) {
                     return result.filter(item => item != 0 && item != 30);
                 }
             }
@@ -536,14 +546,14 @@ class StepOne extends React.Component {
         }
 
         let timeStringInitialValue = '';
-        if(startTime != undefined && startTime.length > 0) {
+        if (startTime != undefined && startTime.length > 0) {
             timeStringInitialValue = moment(startTime, 'HHmm');
         }
 
         return (
-            <FormItem 
+            <FormItem
                 label='发送时间'
-                className={styles.FormItemStyle} 
+                className={styles.FormItemStyle}
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 8 }}
             >
@@ -560,7 +570,7 @@ class StepOne extends React.Component {
                         format="HH:mm"
                         style={{ width: '100%' }}
                         onChange={this.onTimePickerChange}
-                        hideDisabledOptions = {true}
+                        hideDisabledOptions={true}
                         placeholder={this.props.intl.formatMessage(STRING_SPE.d21645473363b18164)}
                     />
                 )}
@@ -572,6 +582,9 @@ class StepOne extends React.Component {
     }
 
     render() {
+        const {
+            isBenefitJumpSendGift = false,
+        } = this.props
         // 营销基础信息
         let { startTime, timeString } = this.state,
             timeStringInitialValue = '',
@@ -649,7 +662,7 @@ class StepOne extends React.Component {
         }
         let rangePickerLabel = (
             <span>
-                活动起止日期 
+                活动起止日期
                 <Tooltip title={
                     <p>
                         <p>当选择的活动起止日期为同一天时（如2020-07-16~2020-07-16），表示只在这一天给会员发券一次</p>
@@ -657,11 +670,11 @@ class StepOne extends React.Component {
                     </p>
                 }>
                     <Icon
-                        style={{marginLeft: '5px'}}
+                        style={{ marginLeft: '5px' }}
                         type={'question-circle'}
                     />
                 </Tooltip>
-             </span>
+            </span>
         )
         return (
             <Form>
@@ -700,6 +713,7 @@ class StepOne extends React.Component {
                                         className={styles.ActivityDateDayleft}
                                         style={{ width: '100%' }}
                                         disabledDate={null}
+                                        disabled={isBenefitJumpSendGift}
                                     />
                                 )}
                             </Col>
@@ -715,7 +729,7 @@ class StepOne extends React.Component {
 
                             </Col>
                         </Row>
-                        
+
                     </FormItem>
                     {
                         // 渲染周期选择期
@@ -767,7 +781,7 @@ class StepOne extends React.Component {
                                 </Select>
                             </FormItem>
                         )
-                    }                
+                    }
                     <FormItem
                         label={this.props.intl.formatMessage(STRING_SPE.d7ekp859lc11113)}
                         className={styles.FormItemStyle}

@@ -259,6 +259,9 @@ class Two extends React.Component {
         const isDisableGroupSelect = typeof groupMembersID === 'string' && groupMembersID.includes &&
           groupMembersID.includes('RFM会员群体') &&
           groupMembersID.includes('--')
+        const {
+            isBenefitJumpSendGift = false,
+        } = this.props
 
         return (
             <Form>
@@ -276,7 +279,7 @@ class Two extends React.Component {
                         initialValue: this.state.groupMembersID,
                     })(
                         <Select
-                            disabled={isDisableGroupSelect}
+                            disabled={isDisableGroupSelect || isBenefitJumpSendGift}
                             showSearch
                             notFoundContent={`${this.props.intl.formatMessage(STRING_SPE.d2c8a4hdjl248)}`}
                             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}

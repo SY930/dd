@@ -88,6 +88,10 @@ export const SALE_CENTER_SELFDEFINE =
 export const SALE_CENTER_JUMP_OPEN_CARD =
     'sale center: benefit card jump to open card activity'
 
+export const SALE_CENTER_JUMP_SEND_GIFT =
+    'sale center: benefit card jump to group send gift activity'
+
+
 export const saleCenterSetSpecialBasicInfoAC = (opts) => {
     return {
         type: SALE_CENTER_SET_SPECIAL_PROMOTION_EVENT_INFO,
@@ -113,6 +117,14 @@ export const saleCenterSetJumpOpenCardParams = (opts) => {
         payload: opts,
     }
 }
+
+export const saleCenterSetJumpSendGiftParams = (opts) => {
+    return {
+        type: SALE_CENTER_JUMP_SEND_GIFT,
+        payload: opts,
+    }
+}
+
 export const saleCenterQueryOnlineRestaurantStatus = (opts) => {
     return {
         type: SALE_CENTER_QUERY_ONLINE_RESTAURANT_SHOPS_STATUS,
