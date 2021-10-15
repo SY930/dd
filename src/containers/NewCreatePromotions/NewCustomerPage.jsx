@@ -133,7 +133,7 @@ class NewCustomerPage extends Component {
     }
     fromCrmJump() {
         const {
-            from = 'groupsendGift', // debugger 测试
+            from, // debugger 测试
             type,
             gmID,
             totalMembers,
