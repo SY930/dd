@@ -584,10 +584,10 @@ class ViewCouponContent extends Component {
                 render: (text, record) => {
                     if (record.effectType == 3) { //
                         const effectGiftTimeHours = record.effectGiftTimeHours;
-                        const t = effectGiftTimeHours > 0 ? `${record.effectGiftTimeHours}天生效` : '立即生效'
+                        const t = effectGiftTimeHours > 0 ? `${effectGiftTimeHours}后天生效` : '立即生效'
                         return <Tooltip title={t}>{t}</Tooltip>;
                     }
-                    const time = `${moment(record.eGiftEffectTime, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}/${moment(record.validUntilDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}`;
+                    const time = record.EGiftEffectTime ? `${moment(record.EGiftEffectTime, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}/${moment(record.validUntilDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}` : '--';
                     return <Tooltip title={time}>{time}</Tooltip>;
                 }
             },
@@ -600,7 +600,7 @@ class ViewCouponContent extends Component {
                         const t = `自领取${record.validUntilDays}天有效`;
                         return <Tooltip title={t}>{t}</Tooltip>
                     }
-                    const time = `${moment(record.eGiftEffectTime, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}/${moment(record.validUntilDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}`;
+                    const time = record.EGiftEffectTime ? `${moment(record.EGiftEffectTime, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}/${moment(record.validUntilDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}` : '--';
                     return <Tooltip title={time}>{time}</Tooltip>;;
                 }
             },
