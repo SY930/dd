@@ -16,6 +16,7 @@ class SuccessModalContent extends Component {
             deliveryChannelInfoList: [],
             couponDetail: {}, // 优惠券详情
             couponList: props.couponList || [],
+            confirmLoading: false,
         }
     }
 
@@ -46,6 +47,9 @@ class SuccessModalContent extends Component {
     handleSubmit = () => {
         const { form } = this.props;
         const { couponDetail } = this.state
+        this.setState({
+            confirmLoading: true,
+        })
         form.validateFields((err, values) => {
             if (!err) {
                 // console.log('handleSubmit', values);
@@ -75,10 +79,19 @@ class SuccessModalContent extends Component {
                             message.success('创建成功');
                             this.props.onCancel();
                             this.props.handleQuery(null, null, { eventWays: ['20001'] });
+                            this.setState({
+                                confirmLoading: false,
+                            })
                             return
                         }
+                        this.setState({
+                            confirmLoading: false,
+                        })
                         message.error(msg);
                     }, (error) => {
+                        this.setState({
+                            confirmLoading: false,
+                        })
                         console.log(error)
                         // 关闭窗口
                     })
@@ -97,7 +110,7 @@ class SuccessModalContent extends Component {
         const { form, couponList, editData = {} } = this.props;
         const { giftConfInfos = [] } = editData;
         const { getFieldDecorator } = form;
-        // const { couponValue, linkWay } = this.state;
+        const { confirmLoading } = this.state;
         return (
             <Modal
                 title="新建支付成功页投放"
@@ -106,6 +119,7 @@ class SuccessModalContent extends Component {
                 visible={true}
                 onCancel={this.props.onCancel}
                 onOk={this.handleSubmit}
+                confirmLoading={confirmLoading}
             >
                 <Row>
                     <Col span={24} offset={1} className={styles.IndirectBox}>

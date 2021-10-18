@@ -20,6 +20,8 @@ class PromotionModalContent extends Component {
             couponDetail: {}, // 优惠券详情
             materialData: [], // 报名素材
             resourceIds: [],
+            description: '', // 活动描述
+            confirmLoading: false,
         }
     }
 
@@ -54,6 +56,7 @@ class PromotionModalContent extends Component {
                 this.setState({
                     recruitPlans: res,
                     enrollRules: res.enrollRules.length ? res.enrollRules : [],
+                    description: res.description || '',
                     materialData,
                 })
             }
@@ -103,6 +106,9 @@ class PromotionModalContent extends Component {
     handleSubmit = () => {
         const { form } = this.props;
         const { resourceIds, couponDetail } = this.state;
+        this.setState({
+            confirmLoading: true,
+        })
         form.validateFields((err, values) => {
             if (!err) {
                 const deliveryInfoData = { // 报名素材对象，传给后端的数据格式
@@ -157,10 +163,19 @@ class PromotionModalContent extends Component {
                             message.success('创建成功');
                             this.props.onCancel();
                             this.props.handleQuery(null, null, { eventWays: ['20002'] });
+                            this.setState({
+                                confirmLoading: false,
+                            })
                             return
                         }
+                        this.setState({
+                            confirmLoading: false,
+                        })
                         message.error(msg);
                     }, (error) => {
+                        this.setState({
+                            confirmLoading: false,
+                        })
                         console.log(error)
                         // 关闭窗口
                     })
@@ -246,6 +261,13 @@ class PromotionModalContent extends Component {
                             )
                         })
                     }
+                    {
+                        this.state.description &&
+                        <div
+                            style={{ wordBreak: 'break-all', paddingRight: 14 }}
+                            dangerouslySetInnerHTML={{ __html: this.state.description }}
+                        ></div>
+                    }
                 </Col>
             </Row>
         )
@@ -256,6 +278,7 @@ class PromotionModalContent extends Component {
         // const { marketingType } = this.state;
         const { form, couponList, promotionList } = this.props;
         const { getFieldDecorator } = form;
+        const { confirmLoading } = this.state;
         return (
 
             <Modal
@@ -265,6 +288,7 @@ class PromotionModalContent extends Component {
                 visible={true}
                 onCancel={this.props.onCancel}
                 onOk={this.handleSubmit}
+                confirmLoading={confirmLoading}
             >
                 <Row>
                     <Col span={24} offset={1} className={styles.IndirectBox}>
