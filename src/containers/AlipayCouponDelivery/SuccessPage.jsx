@@ -128,7 +128,7 @@ class SuccessPage extends Component {
                         labelCol={{ span: 6 }}
                         wrapperCol={{ span: 18 }}
                     >
-                        {getFieldDecorator('title', {
+                        {getFieldDecorator('eventName', {
                         })(
                             <Input
                                 placeholder="请输入投放名称"
