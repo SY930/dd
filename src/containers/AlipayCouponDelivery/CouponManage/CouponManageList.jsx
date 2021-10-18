@@ -469,7 +469,7 @@ class CouponManageList extends Component {
 		return (
             <div className={['layoutsContent', styles.tableClass].join(' ')} style={{ height: this.state.contentHeight }}>
                 <Table
-                    scroll={{ y: this.state.contentHeight - 108 }}
+                    scroll={{ x: 2000, y: this.state.contentHeight - 108 }}
                     bordered={true}
                     columns={columns}
                     dataSource={this.state.dataSource}
