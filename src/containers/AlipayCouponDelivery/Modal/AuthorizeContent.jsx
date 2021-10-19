@@ -25,7 +25,7 @@ class AuthorizeContent extends Component {
                     <Form.Item
                         label="需授权支付宝账号"
                         labelCol={{ span: 8 }}
-                        wrapperCol={{ span: 16 }}
+                        wrapperCol={{ span: 14 }}
                     // required={true}
                     >
                         {getFieldDecorator('alipayAccount', {
@@ -44,7 +44,7 @@ class AuthorizeContent extends Component {
                         <span> <Icon type="exclamation-circle" style={{ color: '#FAAD14', marginRight: '3px' }} /></span>
                         <p>确认授权后，对应账号将收到代运营授权信息，请根据收到信息提示完成授权。</p>
                     </div>
-                    <div className={styles.promotionFooter}>
+                    <div className={styles.promotionFooter} style={{ overflow: 'hidden' }}>
                         <Button key="0" onClick={this.props.onCancel} style={{ marginRight: 10 }}>取消</Button>
                         <Button key="3" type="primary" htmlType="submit">确定</Button>
                     </div>
