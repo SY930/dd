@@ -898,6 +898,7 @@ export const SECOND_KEYS = (() => ({
                 'giftShareType',
                 'moneyLimitTypeAndValue',
                 'shopNames',
+                'excludeShops',
                 'showGiftRule',
                 'giftImagePath',
                 'isSynch',
@@ -923,6 +924,7 @@ export const SECOND_KEYS = (() => ({
                 'giftShareType',
                 'moneyLimitTypeAndValue',
                 'shopNames',
+                'excludeShops',
                 'showGiftRule',
                 'giftImagePath',
                 'aggregationChannels',
@@ -949,6 +951,7 @@ export const SECOND_KEYS = (() => ({
                 'moneyLimitTypeAndValue',
                 'customerUseCountLimit',
                 'shopNames',
+                'excludeShops',
                 'showGiftRule',
                 'giftImagePath',
                 'isSynch',
@@ -969,6 +972,7 @@ export const THIRD_KEYS = (() => ({
                 'selectBrands',
                 'foodsboxs',
                 'shopNames',
+                'excludeShops',
                 // 'subRule',
                 'isNeedCustomerInfo'
             ]
@@ -984,6 +988,7 @@ export const THIRD_KEYS = (() => ({
                 'selectBrands',
                 'foodScopes',
                 'shopNames',
+                'excludeShops',
                 'subRule',
                 'isNeedCustomerInfo'
             ]
@@ -999,6 +1004,7 @@ export const THIRD_KEYS = (() => ({
                 'selectBrands',
                 'foodScopes',
                 'shopNames',
+                'excludeShops',
                 'subRule',
                 'isNeedCustomerInfo'
             ]
