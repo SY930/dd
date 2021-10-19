@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Form, Input, Select, Row, Col, Modal, Icon, message } from 'antd'
 import ImageUpload from 'components/common/ImageUpload';
-import { getAlipayRecruitPlan, getBatchDetail, uploadImageUrl } from '../AxiosFactory'
+import { getAlipayRecruitPlan, getBatchDetail, uploadImageUrl, getAlipayCouponList } from '../AxiosFactory'
 import { axiosData } from '../../../helpers/util'
 import styles from '../AlipayCoupon.less';
 
@@ -22,7 +22,16 @@ class PromotionModalContent extends Component {
             resourceIds: [],
             description: '', // 活动描述
             confirmLoading: false,
+            couponList: [],
         }
+    }
+
+    componentDidMount() {
+        getAlipayCouponList().then((res) => {
+            this.setState({
+                couponList: res,
+            })
+        })
     }
 
     getAlipayRecruitPlans = (v) => {
@@ -276,7 +285,7 @@ class PromotionModalContent extends Component {
 
     render() {
         // const { marketingType } = this.state;
-        const { form, couponList, promotionList } = this.props;
+        const { form, promotionList } = this.props;
         const { getFieldDecorator } = form;
         const { confirmLoading } = this.state;
         return (
@@ -328,7 +337,7 @@ class PromotionModalContent extends Component {
                                     })(
                                         <Select placeholder={'请选择一个支付宝大促'}>
                                             {
-                                                couponList.map(({ batchName, itemID }) => (
+                                                this.state.couponList.map(({ batchName, itemID }) => (
                                                     <Select.Option key={itemID} value={itemID}>{batchName}</Select.Option>
                                                 ))
                                             }
@@ -338,7 +347,7 @@ class PromotionModalContent extends Component {
                             </FormItem>
                             {/* TODO: 跳转 */}
                             {
-                                !couponList.length && <FormItem
+                                !(this.state.couponList.length).length && <FormItem
                                     style={{ padding: 0 }}
                                     label=""
                                     wrapperCol={{ offset: 5, span: 16 }}

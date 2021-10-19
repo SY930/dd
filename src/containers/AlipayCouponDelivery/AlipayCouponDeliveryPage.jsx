@@ -23,7 +23,6 @@ export default class AlipayCouponDeliveryPage extends Component {
             tabKeys: 'successPage',
             successModalVisible: false, // 新建支付成功页头投放弹窗
             promotionModalVisible: false, // 新建会场大促投放弹窗
-            couponList: [], //  第三方支付宝券
             promotionList: [], // 支付宝大促
             loading: false,
             pageSizes: 20, // 默认显示的条数
@@ -84,11 +83,6 @@ export default class AlipayCouponDeliveryPage extends Component {
     }
 
     initData = () => {
-        getAlipayCouponList().then((res) => {
-            this.setState({
-                couponList: res,
-            })
-        })
         getAlipayPromotionList().then((res) => {
             this.setState({
                 promotionList: res,
@@ -210,7 +204,6 @@ export default class AlipayCouponDeliveryPage extends Component {
                     successModalVisible &&
                     <SuccessModalContent
                         onCancel={this.handleClose}
-                        couponList={this.state.couponList}
                         handleQuery={this.handleQuery}
                         editData={successEditData}
                         // deliveryChannelInfoList={this.state.deliveryChannelInfoList}
@@ -220,7 +213,6 @@ export default class AlipayCouponDeliveryPage extends Component {
                 {
                     promotionModalVisible && <PromotionModalContent
                         onCancel={this.handleClose}
-                        couponList={this.state.couponList}
                         promotionList={this.state.promotionList}
                         handleQuery={this.handleQuery}
                     />

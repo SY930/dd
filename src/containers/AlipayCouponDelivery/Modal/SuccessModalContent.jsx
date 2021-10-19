@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Form, Input, Select, Row, Col, Icon, Modal, message } from 'antd'
 // import moment from 'moment'
-import { getBatchDetail, getDeliveryChannel } from '../AxiosFactory'
+import { getBatchDetail, getDeliveryChannel, getAlipayCouponList } from '../AxiosFactory'
 import { axiosData } from '../../../helpers/util'
 import styles from '../AlipayCoupon.less';
 
@@ -15,12 +15,17 @@ class SuccessModalContent extends Component {
             successStartEnd: [],
             deliveryChannelInfoList: [],
             couponDetail: {}, // 优惠券详情
-            couponList: props.couponList || [],
+            couponList: [],
             confirmLoading: false,
         }
     }
 
     componentDidMount() {
+        getAlipayCouponList().then((res) => {
+            this.setState({
+                couponList: res,
+            })
+        })
     }
 
     getDeliveryChannels = (record) => {
@@ -107,7 +112,7 @@ class SuccessModalContent extends Component {
 
 
     render() {
-        const { form, couponList, editData = {} } = this.props;
+        const { form, editData = {} } = this.props;
         const { giftConfInfos = [] } = editData;
         const { getFieldDecorator } = form;
         const { confirmLoading } = this.state;
