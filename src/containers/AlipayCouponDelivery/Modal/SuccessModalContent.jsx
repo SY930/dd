@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Input, Select, Row, Col, Icon, Modal, message } from 'antd'
+import { jumpPage } from '@hualala/platform-base';
 // import moment from 'moment'
 import { getBatchDetail, getDeliveryChannel, getAlipayCouponList } from '../AxiosFactory'
 import { axiosData } from '../../../helpers/util'
@@ -36,6 +37,11 @@ class SuccessModalContent extends Component {
                 })
             }
         })
+    }
+
+    goCreateCoupon = () => {
+        this.props.onCancel();
+        jumpPage({ menuID: '100008992' })
     }
 
     handleCouponChange = (value) => {
@@ -97,8 +103,8 @@ class SuccessModalContent extends Component {
                         this.setState({
                             confirmLoading: false,
                         })
+                        this.props.onCancel();
                         console.log(error)
-                        // 关闭窗口
                     })
             }
         })
@@ -182,7 +188,7 @@ class SuccessModalContent extends Component {
                                     <p className={styles.authorizeBottomTip}>
                                         <Icon type="exclamation-circle" style={{ color: '#FAAD14', marginRight: '3px' }} />
                                         没有可用第三方支付宝券？
-                                        <span className={styles.goAuthorize} onClick={() => { this.goAuthorize() }}>点击创建</span>
+                                        <span className={styles.goAuthorize} onClick={() => { this.goCreateCoupon() }}>点击创建</span>
                                     </p>
                                 </FormItem>
                             }

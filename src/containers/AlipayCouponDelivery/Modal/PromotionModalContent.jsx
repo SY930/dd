@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Input, Select, Row, Col, Modal, Icon, message } from 'antd'
+import { jumpPage } from '@hualala/platform-base';
 import ImageUpload from 'components/common/ImageUpload';
 import { getAlipayRecruitPlan, getBatchDetail, uploadImageUrl, getAlipayCouponList } from '../AxiosFactory'
 import { axiosData } from '../../../helpers/util'
@@ -71,6 +72,12 @@ class PromotionModalContent extends Component {
             }
         })
     }
+
+    goCreateCoupon = () => {
+        this.props.onCancel();
+        jumpPage({ menuID: '100008992' })
+    }
+
 
     handlePromotionChange = (value) => {
         // 根据
@@ -185,8 +192,8 @@ class PromotionModalContent extends Component {
                         this.setState({
                             confirmLoading: false,
                         })
+                        this.props.onCancel();
                         console.log(error)
-                        // 关闭窗口
                     })
             }
         })
@@ -355,7 +362,7 @@ class PromotionModalContent extends Component {
                                     <p className={styles.authorizeBottomTip}>
                                         <Icon type="exclamation-circle" style={{ color: '#FAAD14', marginRight: '3px' }} />
                                         没有可用第三方支付宝券？
-                                        <span className={styles.goAuthorize} onClick={() => { this.goAuthorize() }}>点击创建</span>
+                                        <span className={styles.goAuthorize} onClick={() => { this.goCreateCoupon() }}>点击创建</span>
                                     </p>
                                 </FormItem>
                             }

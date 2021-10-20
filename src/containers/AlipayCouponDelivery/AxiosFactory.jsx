@@ -196,7 +196,7 @@ async function getAlipayCouponList() {
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;
     if (code === '000') {
-        const { couponCodeBatchInfos } = obj
+        const { couponCodeBatchInfos = [] } = obj
         // message.success(msg);
         return couponCodeBatchInfos
     }
