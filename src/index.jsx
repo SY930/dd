@@ -68,6 +68,12 @@ registerLocalPage([
         parent: [entryCodes.NEW_SALE_BOX],
     },
     {
+        key: entryCodes.THIRD_VOUCHER_MANAGEMENT,
+        value: entryCodes.THIRD_VOUCHER_MANAGEMENT,
+        label: '第三方券管理',
+        parent: [entryCodes.THIRD_VOUCHER_MANAGEMENT],
+    },
+    {
         key: entryCodes.ACTIVITY_LAUNCH,
         value: entryCodes.ACTIVITY_LAUNCH,
         label: '支付宝商家券投放',
