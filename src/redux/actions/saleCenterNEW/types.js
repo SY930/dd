@@ -411,6 +411,11 @@ export const SALE_CENTER_GIFT_EFFICT_DAY = Object.freeze([
     },
 ]);
 
+export const SALE_CENTER_GIFT_EFFICT_DAY_ALIPAY = Object.freeze([{
+    label: (<span>立即生效</span>),
+    value: '0',
+}, ...SALE_CENTER_GIFT_EFFICT_DAY])
+
 export const SALE_CENTER_ACTIVITY_SUITSENCE_LIST = [{
     value: 'All',
     label: '全部',

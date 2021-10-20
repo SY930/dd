@@ -1,0 +1,445 @@
+.flex() {
+    display: flex;
+    align-items: center;
+}
+.AlipayCouponHeader {
+    height: 50px;
+    .flex();
+    justify-content: space-between;
+    padding: 0 16px;
+    color: #595959;
+    font-size: 20px;
+    font-weight: 400;
+}
+.AlipayCouponTabs {
+    height: 100%;
+    :global {
+        .ant-tabs-line {
+            height: inherit;
+        }
+        .ant-tabs-content {
+            height: inherit;
+        }
+    }
+}
+.CouponGiftBox {
+    padding: 16px 0 16px 14px;
+    background: #F7F7F7;
+    border-radius: 4px; 
+    .imageUploadItem {
+        // :global{
+        //     .uploader {
+        //         float: left;
+        //     }
+        // } 
+        // display: flex;
+        // align-items: center;
+        // .uploader {
+        //     float: left;
+        // }
+        // :global {
+        //     .ant-form-item-control-wrapper {
+        //         .ant-form-item-control {
+                   
+        //         }
+        //     }
+        // }
+    }
+}
+.SuccessPageBox, .PromotionPageBox {
+    height: 100%;
+    padding-left: 16px;
+    .bottomLine {
+        width: 100%;
+        margin-top: 10px;
+        height: 2px;
+        border: 1px solid #F3F3F3;
+    }
+    .launchActiveTableBox {
+        padding: 20px 0 20px 16px;
+        overflow: auto;
+    }
+    .activeCardItem {
+        position: relative;
+        width: 382px;
+        height: 200px;
+        margin: 0 24px 24px 0px;
+        padding: 16px 0 0 16px;
+        background: #FFFFFF;
+        box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.12);
+        border-radius: 8px;
+        font-size: 14px;
+        color: #666666;
+        font-weight: 500;
+        cursor: pointer;
+        &::after {
+            content: '';
+            display: inline-block;
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 185px;
+            height: 156px;
+            background: url('http://res.hualala.com/basicdoc/401087a0-5573-4495-84cd-1c4234348454.png') no-repeat;
+            background-size: 100% 100%;
+        }
+        .activeCardBottomName {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            padding: 9px 20px 9px;
+            height: 34px;
+            // line-height: 34px;
+            background: #F9F9F9;
+            text-align: center;
+            overflow: hidden;
+            border-radius: 0px 99px 0px 8px;
+            font-size: 16px;
+        }
+        .signup {
+            background: #F9F9F9;
+        }
+        .nosignup {
+            background: rgba(26, 180, 149, .8);
+            color: rgba(255, 255, 255, .8);
+        }
+        .nocheck {
+            background: rgba(235, 154, 50, .12);
+            color: #EB9A32;
+        }
+        .checkerror {
+            background: rgba(255, 89, 89, .12);
+            color: #FF5959;
+        }
+        .activeCardHeader {
+            justify-content: space-between;
+            padding-right: 16px;
+            margin-bottom: 20px;
+            :global {
+                .ant-switch {
+                    width: 28px;
+                    height: 14px;
+                    border-radius: 40px;
+                }
+            }
+        }
+        h3 {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333333; 
+        }
+        p {
+            max-width: 84px;
+            width: 84px;
+            overflow: hidden;
+            color: #999999;
+            flex: none;
+        }
+        >div {
+            display: flex;
+            margin-bottom: 12px;
+            line-height: 14px;
+            > span {
+                overflow: hidden;
+                max-width: 280px;
+                width: 280px;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+        }
+        .activeCardTime {
+            overflow: hidden;
+            max-width: 76px;
+            width: 76px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .cardIcon {
+            width: 46px;
+            height: 18px;
+            line-height: 18px;
+            margin-left: 4px;
+            text-align: center;
+            font-size: 12px;
+            border-radius: 4px;
+        }
+        .execute {
+            color: #12B493;
+            background: rgba(27, 180, 150, .12);
+        }
+        .pendding {
+            background: rgba(235, 154, 50, .12);
+            color: #EB9A32;
+        }
+        .suspend {
+            width: 78px;
+            color: #FF5959;
+            background: rgba(255, 89, 89, .12);
+        }
+        .end {
+            background: rgba(153, 153, 153, .12);
+            color: #999999;
+        }
+        .cardBtnBox {
+            justify-content: flex-end;
+            padding-right: 16px;
+        }
+        .cardBtn {
+            position: relative;
+            z-index: 10;
+            padding-top: 1px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #1BB496;
+            cursor: pointer;
+            > span {
+                &:first-child {
+                    margin-right: 10px
+                }
+            }
+        }
+    }
+    .paginationBox {
+        :global {
+            .ant-pagination-options {
+                display: flex;
+                .ant-select {
+                    width: 85px;
+                }
+            }
+
+        }
+    }
+}
+
+.AuthModalContentBox {
+    .authTip {
+        display: flex;
+        padding: 12px 18px 8px 17px;
+        background: #FFFBE6;
+        border-radius: 4px;
+
+    }
+    .promotionFooter {
+        text-align: center;
+        :global {
+            .ant-btn {
+                width: 104px;
+                height: 42px;
+                margin-top: 30px;
+                font-size: 16px;
+            }
+        }
+    }
+}
+.crmSuccessModalContentBox {
+    // margin-top: 28px;
+    .IndirectBox {
+        position: relative;
+        background: #F7F7F7;
+        border-radius: 4px;
+        margin-top: 6px;
+        margin-bottom: 10px;
+        // .authorizeBottomTip {
+        //     background: #FFFBE6;
+        //     border-radius: 0px 0px 4px 4px;
+        // } 
+    }
+    .authorizeTip {
+        position: absolute;
+        width: 90px;
+        margin-left: 25px;
+        font-size: 12px;
+    }
+    .noAuth {
+        color: #FF2D2D;
+    }
+    .authed {
+        color: #12B493;
+    }
+    .indirectSelect {
+        padding: 10px 18px 10px 12px;
+    }
+    .authorizeBottomTip {
+        height: 40px;
+        line-height: 40px;
+        padding-left: 13px;
+        background: #FFFBE6;
+        border-radius: 0px 0px 4px 4px;
+    }
+    .goAuthorize {
+        cursor: pointer;
+        color: #12B493;
+    }
+    .DirectBox {
+        position: relative;
+        background: #F7F7F7;
+        border-radius: 4px;
+    }
+    .directSelect {
+        padding: 10px 18px 10px 12px;
+    }
+    
+}
+.PromotionModalContentBox {
+    padding: 0 50px;
+    .promotionFooter {
+        text-align: center;
+        :global {
+            .ant-btn {
+                width: 104px;
+                height: 42px;
+                margin-top: 30px;
+                font-size: 16px;
+            }
+        }
+    }
+    .cancelBtn {
+        margin-right: 12px;
+    }
+    .prevBtn {
+        margin-right: 12px;
+    }
+}
+
+.crmSignUpBox {
+    .imageUploadItem {
+        display: flex;
+        align-items: center;
+        :global {
+            .ant-form-item-control-wrapper {
+                .ant-form-item-control {
+                    display: flex;
+                    align-items: center;
+                }
+            }
+        }
+    }
+    .textWrap {
+        margin-left: 12px;
+        font-size: 12px;
+        line-height: 24px;
+        color: #999999;
+    }
+    .signInfo {
+        position: relative;
+        margin: 28px 0 20px;
+        padding: 16px 0 18px 16px;
+        box-shadow: 0px 2px 12px 0px rgba(11, 11, 11, 0.05);
+        border-radius: 8px;
+        &::after {
+            content: '';
+            display: inline-block;
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 121px;
+            height: 92px;
+            background: url('http://res.hualala.com/basicdoc/3bdff800-1ac4-48b2-8886-0abc81f135e4.png') no-repeat;
+            background-size: 100% 100%;
+        }
+        > h4 {
+            margin-bottom: 20px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333333;
+        }
+        > div {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #999999;
+            // justify-content: space-between;
+            p {
+                flex: 1;
+            }
+        }
+    }
+}
+
+// 第三方券管理
+.CouponManageListBox {
+    .pageContentWrapper {
+        background-color: #FFFFFF;
+        padding: 15px 30px 30px;
+    }
+    .customHeader {
+        font-size: 20px;
+        color: #595959;
+    }
+    .headerWithBgColor {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        line-height: 50px;
+        background-color: #FFFFFF;
+        padding: 0 20px;
+        overflow: hidden;
+    }
+}
+// 第三方支付宝券详情
+.CouponViewInfo {
+    font-size: 14px;
+    color: #999999;
+    .promotionFooter__footer {
+        text-align: center;
+        :global {
+            .ant-btn {
+                width: 104px;
+                height: 42px;
+                margin-top: 30px;
+                font-size: 16px;
+            }
+        }
+    }
+    .relationText__span {
+        display: inline-block;
+        width: 118px;
+        text-align: right;
+    }
+    .relationCoupon__table {
+        display: flex;
+        margin-bottom: 16px;
+        > p {
+           margin-right: 16px;
+
+        }
+        :global {
+            .ant-table-wrapper {
+                flex: 1;
+            }
+        }
+    }
+    .signInfo {
+        position: relative;
+        margin: 0px 0 20px;
+        padding: 16px 0 18px 16px;
+        box-shadow: 0px 2px 12px 0px rgba(11, 11, 11, 0.05);
+        border-radius: 8px;
+        &::after {
+            content: '';
+            display: inline-block;
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 121px;
+            height: 92px;
+            background: url('http://res.hualala.com/basicdoc/3bdff800-1ac4-48b2-8886-0abc81f135e4.png') no-repeat;
+            background-size: 100% 100%;
+        }
+        > h4 {
+            margin-bottom: 20px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #333333;
+        }
+        > div {
+            display: flex;
+            align-items: center;
+            // justify-content: space-between;
+            p {
+                flex: 1;
+            }
+        }
+    }
+}
