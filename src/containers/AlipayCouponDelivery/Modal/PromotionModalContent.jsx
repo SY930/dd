@@ -347,7 +347,7 @@ class PromotionModalContent extends Component {
                             </FormItem>
                             {/* TODO: 跳转 */}
                             {
-                                !(this.state.couponList.length).length && <FormItem
+                                !(this.state.couponList.length) && <FormItem
                                     style={{ padding: 0 }}
                                     label=""
                                     wrapperCol={{ offset: 5, span: 16 }}
