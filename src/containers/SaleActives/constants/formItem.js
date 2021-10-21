@@ -71,6 +71,11 @@ export const formItem = {
         label: '活动说明',
         placeholder: '请输入活动说明，至多1000字',
     },
+    smsGate:{
+        type: 'custom',
+        label: '礼品消息',
+        placeholder: '请选择',
+    },
     consumeTotalAmount: {
         type: 'custom',
         label: '参与限制',

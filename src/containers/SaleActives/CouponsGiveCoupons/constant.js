@@ -5,7 +5,8 @@ import { TreeSelect } from 'antd';
 
 const {
     actType, eventName, eventRemark, eventLimitDate,
-    consumeGiftID,afterPayJumpType, miniProgramInfo, eventDate,shopIDList
+    consumeGiftID,afterPayJumpType, miniProgramInfo, 
+    eventDate,shopIDList,smsGate
 } = formItem
 export const formItems1 = {
     actType: {
@@ -24,6 +25,7 @@ export const formItems1 = {
     eventLimitDate,
     shopIDList,
     eventRemark,
+    smsGate
 };
 
 export const formKeys1 = [
@@ -32,6 +34,7 @@ export const formKeys1 = [
     'eventLimitDate',
     'shopIDList',
     'eventRemark',
+    'smsGate'
 ];
 
 export const imgUrl = 'http://res.hualala.com';

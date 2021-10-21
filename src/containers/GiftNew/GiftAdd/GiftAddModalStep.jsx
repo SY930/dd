@@ -2522,17 +2522,17 @@ class GiftAddModalStep extends React.PureComponent {
 
             pushMessage: {
                 label: <span>
-                <span>消息推送</span>
+                <span>推送方式</span>
                 <Tooltip title={
                     <div>
                         <p>
-                            微信推送：在所选公众号推送券到账/券到期/券核销提醒
+                            公众号推送：在所选公众号推送 券到账/券到期/券核销提醒
                         </p>
                         <p>
-                            小程序推送：在所选小程序推送礼品到账提醒/礼品过期提醒
+                            服务通知：在所选小程序推送礼品到账提醒/礼品过期提醒
                         </p>
                         <p>
-                            短信推送：仅在券到期前N天推送到期提醒
+                            短信推送：推送 券到账/券到期/券剩余数量 短信提醒
                         </p>
                     </div>
                     
@@ -2565,7 +2565,18 @@ class GiftAddModalStep extends React.PureComponent {
                     message: '请选择推送的小程序',
                 }],
                 type: 'custom',
-                render: decorator => decorator({})(<PushMessageMpID formData = {formData} groupID={groupID}/>),
+                render: (decorator,form) => {
+                    return (
+                        <Col>
+                            {
+                                decorator({})(
+                                    <PushMessageMpID formData = {formData} groupID={groupID}/>
+                                )
+                            }
+                            <span>* 此处为该券模板支持的推送方式，最终是否推送消息以营销活动配置为准</span>
+                        </Col>
+                    )
+                }
             },
             giftImagePath: {
                 label: '礼品图样',

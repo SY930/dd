@@ -258,7 +258,7 @@ class GrabRedPacket extends React.Component {
                 } else {
                     orderList = "31"
                 }
-                const shopRange = shopIDList[0] ? '1' : '2';
+                const shopRange = shopIDList && shopIDList[0] ? '1' : '2';
                 // return
                 this.props.dispatch({
                     type: typePath,

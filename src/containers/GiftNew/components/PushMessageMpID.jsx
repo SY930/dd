@@ -151,10 +151,10 @@ class PushMessageMpID extends Component {
                         width={200}
                         showCheckAll={false}
                         options={[{
-                            label: '微信推送',
+                            label: '公众号推送',
                             value: 'wechat',
                         }, {
-                            label: '小程序推送',
+                            label: '服务通知',
                             value: 'mini',
                         },{
                             label: '短信推送',
@@ -199,13 +199,13 @@ class PushMessageMpID extends Component {
                         }
                     </Select>
                     <span>
-                        到期前
+                        券到账提醒;券剩余数量提醒;券到期前
                         <Select
                             notFoundContent={'未搜索到结果'}
                             value={reminderTime}
                             onChange={this.handleDaysChange}
                             style={{
-                                width: 55,
+                                width: 45,
                                 display: 'inline-block',
                                 margin: '0 7px',
                             }}
