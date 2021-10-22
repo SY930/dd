@@ -145,7 +145,8 @@ class NewCustomerPage extends Component {
             reportMonth,
             createBy,
             BenefitName='',
-            RangeType='w',
+            rangeType='w',
+            jumpSepid = ''
         } = this.getQueryVariable()
         if (from === 'rfm') {
             // debugger 参考
@@ -175,6 +176,7 @@ class NewCustomerPage extends Component {
                 return item.key == 52
             })[0];
             // 新建逻辑
+            // jumpSepid 判断有没有id来判断是否可以查到活动内容
             // debugger
             this.handleNewPromotionCardClick(item);
             // “默认数据”debugger
@@ -187,6 +189,7 @@ class NewCustomerPage extends Component {
                 defaultCardType: BenefitName,
                 eventWay: 52,
             });
+            // isBenefitJumpOpenCard
             this.props.saleCenterSetJumpOpenCardParams(true)
             this.clearUrl();
         } else if (from === 'groupsendGift') {
@@ -194,6 +197,7 @@ class NewCustomerPage extends Component {
             const item = REPEAT_PROMOTION_TYPES.filter((item) => {
                 return item.key == 53
             })[0];
+            // jumpSepid 判断有没有id来判断是否可以查到活动内容
             // 新建逻辑
             // debugger
             this.handleNewPromotionCardClick(item);
@@ -204,11 +208,11 @@ class NewCustomerPage extends Component {
                 eventRemark: '权益卡周期权益',
                 eventStartDate: moment(new Date()).format('YYYYMMDD'),
                 eventEndDate: moment(new Date(new Date().setFullYear(new Date().getFullYear()+10))).format('YYYYMMDD'),
-                dateRangeType: RangeType,
+                dateRangeType: rangeType,
                 groupMemberID: '权益卡有效会员',
                 eventWay: 53,
             });
-            debugger
+            // isBenefitJumpSendGift
             this.props.saleCenterSetJumpSendGiftParams(true)
             this.clearUrl();
         } else {

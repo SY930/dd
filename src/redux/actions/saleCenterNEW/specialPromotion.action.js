@@ -482,6 +482,7 @@ export const addSpecialPromotionTimeout = () => ({
 });
 
 export const addSpecialPromotion = (opts) => {
+    debugger
     return (dispatch) => {
         dispatch({
             type: SALE_CENTER_ADD_SPECIAL_PROMOTION_START,

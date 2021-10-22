@@ -1037,6 +1037,7 @@ class SpecialDetailInfo extends Component {
                     giftName,
                     giftCount: 1,
                 };
+                // debugger
                 this.props.setSpecialGiftInfo([params]);
                 return true;
             }
