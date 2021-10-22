@@ -83,20 +83,20 @@ class SuccessModalContent extends Component {
         form.validateFields((err, values) => {
             if (!err) {
                 // console.log('handleSubmit', values);
+                if (couponDetail.merchantType == 2 && !this.state.bindUserId) {
+                    return message.error('三方券间连账号没有关联M4');
+                }
                 const data = {
                     eventName: values.eventName,
                     eventWay: '20001', // 大促20002 成功 20001
                     platformType: '1',
                     deliveryType: 1, // 2代表大促活动  1代表成功页
-                    merchantID: couponDetail.merchantID, // 直连间连 pid smid
+                    merchantID: couponDetail.merchantType == 2 ? this.state.bindUserId : couponDetail.merchantID, // 直连间连 pid smid
                     merchantType: couponDetail.merchantType, // 直连 间连
                     deliveryInfo: values.channelID,
                     giftConfInfos: [{
                         giftID: couponDetail.itemID,
                     }],
-                }
-                if (data.merchantType == 2) { // 间连
-                    data.bindUserId = this.state.bindUserId;
                 }
                 const params = { trdEventInfo: { ...data } };
                 axiosData(

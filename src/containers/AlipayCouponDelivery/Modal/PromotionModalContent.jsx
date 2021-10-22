@@ -167,6 +167,9 @@ class PromotionModalContent extends Component {
                 })
                 deliveryInfoData.data = JSON.stringify(deliveryInfoData.data)
                 // JSON.stringify(materials.activityImage);
+                if (couponDetail.merchantType == 2 && !this.state.bindUserId) {
+                    return message.error('三方券间连账号没有关联M4');
+                }
                 const data = {
                     eventName: values.eventName,
                     eventWay: '20002', // 大促20002 成功 20001
@@ -175,16 +178,13 @@ class PromotionModalContent extends Component {
                     marketingType: values.marketingType.key, // 大促的pid
                     marketingName: values.marketingType.label,
                     deliveryInfo: JSON.stringify(deliveryInfoData),
-                    merchantID: couponDetail.merchantID, // 直连间连 pid smid
+                    merchantID: couponDetail.merchantType == 2 ? this.state.bindUserId : couponDetail.merchantID, // 直连间连 pid smid
                     merchantType: couponDetail.merchantType, // 直连 间连
                     giftConfInfos: [
                         {
                             giftID: couponDetail.itemID,
                         },
                     ],
-                }
-                if (data.merchantType == 2) { // 间连
-                    data.bindUserId = this.state.bindUserId;
                 }
                 // console.log(data, 'data_________')
                 const params = { trdEventInfo: { ...data } };
