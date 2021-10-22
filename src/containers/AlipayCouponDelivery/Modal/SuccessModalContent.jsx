@@ -18,7 +18,6 @@ class SuccessModalContent extends Component {
             couponDetail: {}, // 优惠券详情
             couponList: [],
             confirmLoading: false,
-            bindUserId: '',
         }
     }
 
@@ -40,21 +39,6 @@ class SuccessModalContent extends Component {
         })
     }
 
-    getBindUserId = (id) => {
-        isAuth(id).then((res) => {
-            if (res) {
-                const { bindUserId } = res;
-                this.setState({
-                    bindUserId,
-                })
-            } else {
-                this.setState({
-                    bindUserId: '',
-                })
-            }
-        })
-    }
-
     goCreateCoupon = () => {
         this.props.onCancel();
         jumpPage({ menuID: '100008992' })
@@ -64,9 +48,6 @@ class SuccessModalContent extends Component {
         getBatchDetail(value).then((res) => {
             // const merchantID = res.merchantID;
             // 根据merchantID获取选择支付成功页
-            if (res.merchantType == 2) { // 券选的是间连的话，需要根据merchantID获取bindUserId
-                this.getBindUserId(res.merchantID)
-            }
             this.getDeliveryChannels(res)
             this.setState({
                 couponDetail: res,
@@ -83,15 +64,12 @@ class SuccessModalContent extends Component {
         form.validateFields((err, values) => {
             if (!err) {
                 // console.log('handleSubmit', values);
-                if (couponDetail.merchantType == 2 && !this.state.bindUserId) {
-                    return message.error('三方券间连账号没有关联M4');
-                }
                 const data = {
                     eventName: values.eventName,
                     eventWay: '20001', // 大促20002 成功 20001
                     platformType: '1',
                     deliveryType: 1, // 2代表大促活动  1代表成功页
-                    merchantID: couponDetail.merchantType == 2 ? this.state.bindUserId : couponDetail.merchantID, // 直连间连 pid smid
+                    merchantID: couponDetail.merchantID, // 直连间连 pid smid
                     merchantType: couponDetail.merchantType, // 直连 间连
                     deliveryInfo: values.channelID,
                     giftConfInfos: [{
