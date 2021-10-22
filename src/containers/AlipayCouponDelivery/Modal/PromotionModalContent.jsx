@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Form, Input, Select, Row, Col, Modal, Icon, message } from 'antd'
 import { jumpPage } from '@hualala/platform-base';
 import ImageUpload from 'components/common/ImageUpload';
-import { getAlipayRecruitPlan, getBatchDetail, uploadImageUrl, getAlipayCouponList } from '../AxiosFactory'
+import { getAlipayRecruitPlan, getBatchDetail, uploadImageUrl, getAlipayCouponList, isAuth } from '../AxiosFactory'
 import { axiosData } from '../../../helpers/util'
 import styles from '../AlipayCoupon.less';
 
@@ -24,6 +24,7 @@ class PromotionModalContent extends Component {
             description: '', // 活动描述
             confirmLoading: false,
             couponList: [],
+            bindUserId: '',
         }
     }
 
@@ -73,6 +74,21 @@ class PromotionModalContent extends Component {
         })
     }
 
+    getBindUserId = (id) => {
+        isAuth(id).then((res) => {
+            if (res) {
+                const { bindUserId } = res;
+                this.setState({
+                    bindUserId,
+                })
+            } else {
+                this.setState({
+                    bindUserId: '',
+                })
+            }
+        })
+    }
+
     goCreateCoupon = () => {
         this.props.onCancel();
         jumpPage({ menuID: '100008992' })
@@ -95,6 +111,9 @@ class PromotionModalContent extends Component {
         //     couponDetail,
         // })
         getBatchDetail(value).then((res) => {
+            if (res.merchantType == 2) { // 券选的是间连的话，需要根据merchantID获取bindUserId
+                this.getBindUserId(res.merchantID)
+            }
             this.setState({
                 couponDetail: res,
             })
@@ -163,6 +182,9 @@ class PromotionModalContent extends Component {
                             giftID: couponDetail.itemID,
                         },
                     ],
+                }
+                if (data.merchantType == 2) { // 间连
+                    data.bindUserId = this.state.bindUserId;
                 }
                 // console.log(data, 'data_________')
                 const params = { trdEventInfo: { ...data } };

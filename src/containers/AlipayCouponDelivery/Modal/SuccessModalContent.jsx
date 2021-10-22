@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Form, Input, Select, Row, Col, Icon, Modal, message } from 'antd'
 import { jumpPage } from '@hualala/platform-base';
 // import moment from 'moment'
-import { getBatchDetail, getDeliveryChannel, getAlipayCouponList } from '../AxiosFactory'
+import { getBatchDetail, getDeliveryChannel, getAlipayCouponList, isAuth } from '../AxiosFactory'
 import { axiosData } from '../../../helpers/util'
 import styles from '../AlipayCoupon.less';
 
@@ -18,6 +18,7 @@ class SuccessModalContent extends Component {
             couponDetail: {}, // 优惠券详情
             couponList: [],
             confirmLoading: false,
+            bindUserId: '',
         }
     }
 
@@ -39,6 +40,21 @@ class SuccessModalContent extends Component {
         })
     }
 
+    getBindUserId = (id) => {
+        isAuth(id).then((res) => {
+            if (res) {
+                const { bindUserId } = res;
+                this.setState({
+                    bindUserId,
+                })
+            } else {
+                this.setState({
+                    bindUserId: '',
+                })
+            }
+        })
+    }
+
     goCreateCoupon = () => {
         this.props.onCancel();
         jumpPage({ menuID: '100008992' })
@@ -48,6 +64,9 @@ class SuccessModalContent extends Component {
         getBatchDetail(value).then((res) => {
             // const merchantID = res.merchantID;
             // 根据merchantID获取选择支付成功页
+            if (res.merchantType == 2) { // 券选的是间连的话，需要根据merchantID获取bindUserId
+                this.getBindUserId(res.merchantID)
+            }
             this.getDeliveryChannels(res)
             this.setState({
                 couponDetail: res,
@@ -75,6 +94,9 @@ class SuccessModalContent extends Component {
                     giftConfInfos: [{
                         giftID: couponDetail.itemID,
                     }],
+                }
+                if (data.merchantType == 2) { // 间连
+                    data.bindUserId = this.state.bindUserId;
                 }
                 const params = { trdEventInfo: { ...data } };
                 axiosData(
@@ -109,13 +131,6 @@ class SuccessModalContent extends Component {
             }
         })
     }
-
-    // handleAuthModalClose = () => {
-    //     this.setState({
-    //         authorizeModalVisible: false,
-    //     })
-    // }
-
 
     render() {
         const { form, editData = {} } = this.props;
@@ -159,7 +174,6 @@ class SuccessModalContent extends Component {
                                 wrapperCol={{ span: 16 }}
                                 required={true}
                             >
-                                {/* TODO:根据itemID选出giftItemID */}
                                 {
                                     getFieldDecorator('itemID', {
                                         initialValue: giftConfInfos[0] ? giftConfInfos[0].giftID : undefined,

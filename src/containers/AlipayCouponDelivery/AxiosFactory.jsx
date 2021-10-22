@@ -150,9 +150,9 @@ async function isAuth(value) {
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;
     if (code === '000') {
-        return '已授权'
+        return obj
     }
-    // message.error(msg);
+    message.error(msg);
     return '';
 }
 
