@@ -1482,7 +1482,7 @@ class MySpecialActivities extends React.Component {
                 },
             },
         ];
-        debugger
+        // debugger
         return (
             <div className={`layoutsContent ${styles.tableClass}`}>
                 <Table
