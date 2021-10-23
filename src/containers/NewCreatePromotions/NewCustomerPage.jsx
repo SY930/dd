@@ -503,7 +503,7 @@ class NewCustomerPage extends Component {
             if (ifJumpOpenCard || isBenefitJumpSendGift) {
                 closePage();
                 // jumpPage({ pageID: '1000072012' });
-                jumpPage({ menuID: 'editBenefitCard' });
+                // jumpPage({ menuID: 'editBenefitCard' });
                 this.props.saleCenterSetJumpOpenCardParams(false)
                 this.props.saleCenterSetJumpSendGiftParams(false)
             }
