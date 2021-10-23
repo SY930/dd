@@ -166,7 +166,7 @@ class NewCustomerPage extends Component {
     }
     fromCrmJump() {
         const {
-            from = 'groupsendGift', // debugger 测试
+            from = '', // debugger 测试
             type,
             gmID,
             totalMembers,
@@ -178,9 +178,9 @@ class NewCustomerPage extends Component {
             reportMonth,
             createBy,
             BenefitName = '',
-            rangeType = 'w',
-            jumpSepid = '7018836646103616405',
-            // jumpSepid = '',
+            rangeType = 'm',
+            // jumpSepid = '7018836646103616405',
+            jumpSepid = '',
         } = this.getQueryVariable()
         const state = getStore().getState();
         if (from === 'rfm') {
