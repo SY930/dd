@@ -79,6 +79,8 @@ export const fetchSpecialPromotionList = (opts) => {
     return dispatch => {
         opts.start && opts.start();
         dispatch({ type: SPECIAL_PROMOTION_FETCH_PROMOTION_LIST, payload: opts });
+        debugger// 主要这块没确认
+        opts.data.createScenes = '0'
         fetch('/api/specialPromotion/queryEvents_NEW', {
             method: 'POST',
             body: JSON.stringify(opts.data),
