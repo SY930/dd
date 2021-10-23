@@ -128,8 +128,8 @@ export default class NewPromotion extends React.Component {
                     });
                     if (jumpToCrmFlag) {
                         debugger
-                        closePage();
-                        jumpPage({ pageID: '1000072012', type: specialPromotion.isBenefitJumpOpenCard ? 52 : 53, from: 'saleCenterBenefit' });
+                        // closePage();
+                        // jumpPage({ pageID: '1000072012', type: specialPromotion.isBenefitJumpOpenCard ? 52 : 53, from: 'saleCenterBenefit' });
                         jumpPage({ menuID: 'editBenefitCard', type: specialPromotion.isBenefitJumpOpenCard ? 52 : 53, from: 'saleCenterBenefit' });
                     }
                     cb();
@@ -153,8 +153,8 @@ export default class NewPromotion extends React.Component {
                     cb();
                     if (jumpToCrmFlag) {
                         debugger
-                        closePage();
-                        jumpPage({ pageID: '1000072012', type: specialPromotion.isBenefitJumpOpenCard ? 52 : 53, from: 'saleCenterBenefit', jumpSepid: res.itemID });
+                        // closePage();
+                        // jumpPage({ pageID: '1000072012', type: specialPromotion.isBenefitJumpOpenCard ? 52 : 53, from: 'saleCenterBenefit', jumpSepid: res.itemID });
                         jumpPage({ menuID: 'editBenefitCard', type: specialPromotion.isBenefitJumpOpenCard ? 52 : 53, from: 'saleCenterBenefit', jumpSepid: res.itemID });
                     } else {
                         const menuID = this.props.user.menuList.find(tab => tab.entryCode === '1000076003').menuID
