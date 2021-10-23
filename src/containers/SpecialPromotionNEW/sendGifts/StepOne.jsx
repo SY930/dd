@@ -375,7 +375,6 @@ class StepOne extends React.Component {
             }
         } = this.props.specialPromotion.toJS();
         let dateInPeriodType = 'm';                // 默认为月
-        // debugger
         if (validCycle instanceof Array && validCycle.length > 0) {
             if (validCycle[0].startsWith('w')) {
                 dateInPeriodType = 'w'
@@ -384,8 +383,10 @@ class StepOne extends React.Component {
             dateInPeriodType = 'd'
         }
         if (isBenefitJumpSendGift) {
-            // debugger
-            dateInPeriodType = dateRangeType
+            debugger
+            if(this.props.isNew) {
+                dateInPeriodType = dateRangeType
+            }
         }
 
         return (

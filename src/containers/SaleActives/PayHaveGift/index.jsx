@@ -38,7 +38,6 @@ class PayHaveGift extends React.Component {
     }
 
     getDetail = (itemID) => {
-
         this.props.dispatch({
             type: 'createActiveCom/queryEventDetail_NEW_payHaveGift',
             payload: {

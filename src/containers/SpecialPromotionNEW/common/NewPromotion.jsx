@@ -14,7 +14,7 @@ import { jumpPage, closePage } from '@hualala/platform-base'
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { COMMON_SPE } from 'i18n/common/special';
 import { createMemberGroup } from '../sendGifts/stepThreeHelp'
-
+import { connect } from 'react-redux';
 export default class NewPromotion extends React.Component {
     constructor(props) {
         super(props);
@@ -34,7 +34,6 @@ export default class NewPromotion extends React.Component {
     // CustomProgressBar onFinish 事件回调，当表单校验无误会调用该事件
     async onFinish(cb) {
         const { specialPromotion, user } = this.props;
-        debugger
         const smsGate = specialPromotion.$eventInfo.smsGate;
         if (specialPromotion.$eventInfo.eventWay == '50'
             || (smsGate == '1' || smsGate == '3' || smsGate == '4')) {
@@ -68,6 +67,7 @@ export default class NewPromotion extends React.Component {
                 return message.warning(COMMON_SPE.dd5a476c91d4150);
             }
         }
+        debugger
         const opts = {
             event: {
                 ...specialPromotion.$eventInfo,
@@ -75,7 +75,7 @@ export default class NewPromotion extends React.Component {
                 userID: user.accountInfo.accountID,
                 loginName: user.accountInfo.loginName,
                 userName: user.accountInfo.userName,
-                createScenes: (specialPromotion.isBenefitJumpOpenCard || specialPromotion.isBenefitJumpSendGift) ? 1 : 0,
+                createScenes: (specialPromotion.isBenefitJumpOpenCard || specialPromotion.isBenefitJumpSendGift) ? '1' : '0',
             },
             jumpUrlInfos: specialPromotion.$eventInfo.jumpUrlInfos,
             gifts: specialPromotion.$giftInfo,
@@ -121,7 +121,7 @@ export default class NewPromotion extends React.Component {
         if (this.props.isNew === false && !this.props.isCopy) {
             this.props.updateSpecialPromotion && this.props.updateSpecialPromotion({
                 data: opts,
-                success: () => {
+                success: (res) => {
                     message.success(COMMON_SPE.d4h17ei7f3g518);
                     this.setState({
                         loading: false,
@@ -131,8 +131,6 @@ export default class NewPromotion extends React.Component {
                         closePage();
                         jumpPage({ pageID: '1000072012', type: specialPromotion.isBenefitJumpOpenCard ? 52 : 53, from: 'saleCenterBenefit' });
                         jumpPage({ menuID: 'editBenefitCard', type: specialPromotion.isBenefitJumpOpenCard ? 52 : 53, from: 'saleCenterBenefit' });
-                        this.props.saleCenterSetJumpOpenCardParams(false)
-                        this.props.saleCenterSetJumpSendGiftParams(false)
                     }
                     cb();
                 },
@@ -147,7 +145,7 @@ export default class NewPromotion extends React.Component {
             // 创建特色营销活动
             this.props.addSpecialPromotion && this.props.addSpecialPromotion({
                 data: opts,
-                success: () => {
+                success: (res) => {
                     message.success(COMMON_SPE.d34idrcqen7223);
                     this.setState({
                         loading: false,
@@ -156,10 +154,8 @@ export default class NewPromotion extends React.Component {
                     if (jumpToCrmFlag) {
                         debugger
                         closePage();
-                        jumpPage({ pageID: '1000072012', type: specialPromotion.isBenefitJumpOpenCard ? 52 : 53, from: 'saleCenterBenefit' });
-                        jumpPage({ menuID: 'editBenefitCard', type: specialPromotion.isBenefitJumpOpenCard ? 52 : 53, from: 'saleCenterBenefit' });
-                        this.props.saleCenterSetJumpOpenCardParams(false)
-                        this.props.saleCenterSetJumpSendGiftParams(false)
+                        jumpPage({ pageID: '1000072012', type: specialPromotion.isBenefitJumpOpenCard ? 52 : 53, from: 'saleCenterBenefit', jumpSepid: res.itemID });
+                        jumpPage({ menuID: 'editBenefitCard', type: specialPromotion.isBenefitJumpOpenCard ? 52 : 53, from: 'saleCenterBenefit', jumpSepid: res.itemID });
                     } else {
                         const menuID = this.props.user.menuList.find(tab => tab.entryCode === '1000076003').menuID
                         jumpPage({ menuID })

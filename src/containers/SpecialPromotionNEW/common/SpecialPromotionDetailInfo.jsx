@@ -440,6 +440,7 @@ class SpecialDetailInfo extends Component {
         if (type == 61) {
             upGradeInitPerfectCheckBox.call(this)
         }
+
     }
     getMultipleLevelConfig = () => {
         const { type } = this.props;
@@ -1037,7 +1038,6 @@ class SpecialDetailInfo extends Component {
                     giftName,
                     giftCount: 1,
                 };
-                // debugger
                 this.props.setSpecialGiftInfo([params]);
                 return true;
             }

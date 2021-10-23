@@ -47,7 +47,8 @@ class NewSendGifts extends NewPromotion {
                     getSubmitFn={(handles) => {
                         this.handles[0] = handles;
                     }}
-                    isBenefitJumpSendGift
+                    isNew={this.props.isNew}
+                    isBenefitJumpSendGift={isBenefitJumpSendGift}
                 />),
             },
             {
@@ -58,7 +59,8 @@ class NewSendGifts extends NewPromotion {
                         getSubmitFn={(handles) => {
                             this.handles[1] = handles;
                         }}
-                        isBenefitJumpSendGift
+                        isNew={this.props.isNew}
+                        isBenefitJumpSendGift={isBenefitJumpSendGift}
                     />
                 ),
             },
@@ -70,7 +72,8 @@ class NewSendGifts extends NewPromotion {
                         getSubmitFn={(handles) => {
                             this.handles[2] = handles;
                         }}
-                        isBenefitJumpSendGift
+                        isNew={this.props.isNew}
+                        isBenefitJumpSendGift={isBenefitJumpSendGift}
                     />
                 ),
                 // content: (

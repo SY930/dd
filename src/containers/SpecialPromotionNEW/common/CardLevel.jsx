@@ -343,7 +343,7 @@ class CardLevel extends React.Component {
                                     <TreeSelect
                                         style={{ width: '100%' }}
                                         dropdownStyle={{ maxHeight: 200, overflow: 'auto' }}
-                                        placeholder={ifJumpOpenCard ? defaultCardType : `${this.props.intl.formatMessage(STRING_SPE.d34id95hnj7281)}${this.props.catOrCard == 'card' ? `${this.props.intl.formatMessage(STRING_SPE.d34id95hnj8241)}` : `${this.props.intl.formatMessage(STRING_SPE.d170093144c11061)}`}`}
+                                        placeholder={ifJumpOpenCard ? '当前正在编辑的权益卡' : `${this.props.intl.formatMessage(STRING_SPE.d34id95hnj7281)}${this.props.catOrCard == 'card' ? `${this.props.intl.formatMessage(STRING_SPE.d34id95hnj8241)}` : `${this.props.intl.formatMessage(STRING_SPE.d170093144c11061)}`}`}
                                         allowClear={true}
                                         multiple={true}
                                         showSearch

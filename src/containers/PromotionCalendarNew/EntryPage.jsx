@@ -424,6 +424,7 @@ export default class EntryPage extends Component {
 
     // 编辑
     handleSpecialUpdateOpe(_record) {
+        // debugger
         this.props.fetchSpecialDetail({
             data: {
                 itemID: _record ? _record.eventID : this.state.currentItemID, // 点击重试时record为undefiend

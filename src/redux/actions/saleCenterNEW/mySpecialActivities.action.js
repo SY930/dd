@@ -401,6 +401,7 @@ export const fetchSpecialDetailTimeout = () => ({ type: SALE_CENTER_FETCH_SPECIA
 export const fetchSpecialDetailAC = opts => {
     return dispatch => {
         dispatch({ type: SALE_CENTER_FETCH_SPECIAL_DETAIL_START, payload: opts });
+        // debugger
         fetch('/api/specialPromotion/queryEventDetail_NEW', {
             method: 'POST',
             body: JSON.stringify(opts.data),

@@ -76,7 +76,6 @@ class PromotionBasicInfo extends React.Component {
         this.props.queryWechatMpInfo({ subGroupID: specialPromotion.subGroupID });
 
         const { giftAdvanceDays, eventRemark, eventName, involvementGiftAdvanceDays, eventStartDate, eventEndDate } = specialPromotion
-        // debugger
         this.setState({
             advanceDays: giftAdvanceDays,
             description: eventRemark,
@@ -86,7 +85,6 @@ class PromotionBasicInfo extends React.Component {
             actDate: (eventStartDate && eventEndDate) ? [moment(eventStartDate), moment(eventEndDate)] : [],
             actDateTemp: (eventStartDate && eventEndDate) ? [moment(eventStartDate), moment(eventEndDate)] : []
         });
-
 
         specialPromotion.settleUnitID > 0 && !(specialPromotion.accountNo > 0) ?
             this.props.saleCenterQueryFsmGroupSettleUnit({ groupID: this.props.user.accountInfo.groupID })
@@ -148,7 +146,7 @@ class PromotionBasicInfo extends React.Component {
 
                 const eventStartDate = actDate[0] && moment(actDate[0]).format(format)
                 const eventEndDate = actDate[1] && moment(actDate[1]).format(format)
-
+                debugger
                 if (nextFlag) {
                     this.props.setSpecialBasicInfo({
                         eventRemark: this.state.description,
@@ -337,7 +335,7 @@ class PromotionBasicInfo extends React.Component {
             >
                 <Row>
                     <Col span={19}>
-            {/* debugger */}
+                        {/* debugger */}
                         <RangePicker disabled={ifJumpOpenCard} allowClear={false} value={actDate} onChange={this.handleActDateChange} disabledDate={(currentDate) => {
                             if (this.props.isNew) {
                                 return false

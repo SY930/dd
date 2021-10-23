@@ -482,7 +482,6 @@ export const addSpecialPromotionTimeout = () => ({
 });
 
 export const addSpecialPromotion = (opts) => {
-    debugger
     return (dispatch) => {
         dispatch({
             type: SALE_CENTER_ADD_SPECIAL_PROMOTION_START,
@@ -519,7 +518,7 @@ export const addSpecialPromotion = (opts) => {
                 (response) => {
                     if (response.code === '000') {
                         setTimeout(() => {
-                            opts.success && opts.success();
+                            opts.success && opts.success(response);
                         }, 0);
                         return dispatch(
                             addSpecialPromotionSuccess(response.datas)
@@ -594,7 +593,7 @@ export const updateSpecialPromotion = (opts) => {
             .then((response) => {
                 if (response.code === '000') {
                     setTimeout(() => {
-                        opts.success && opts.success();
+                        opts.success && opts.success(response);
                     }, 0);
                     return dispatch(updateSpecialPromotionSuccess(response));
                 }

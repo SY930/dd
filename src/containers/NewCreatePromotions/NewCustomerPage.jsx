@@ -49,6 +49,9 @@ import {
     saleCenterSetJumpSendGiftParams,
 } from "../../redux/actions/saleCenterNEW/specialPromotion.action";
 import {
+    fetchSpecialDetailAC,
+} from '../../redux/actions/saleCenterNEW/mySpecialActivities.action';
+import {
     fetchFoodCategoryInfoAC,
     fetchFoodMenuInfoAC,
     saleCenterResetDetailInfoAC as saleCenterResetBasicDetailInfoAC
@@ -76,6 +79,10 @@ import Chou2Le from "../PromotionV3/Chou2Le";   // 抽抽乐
 import BlindBox from "../PromotionV3/BlindBox";   // 盲盒
 import PassWordCoupon from "../PromotionV3/PassWordCoupon";   // 口令领券
 import { jumpPage, closePage } from '@hualala/platform-base';
+import {
+    getSpecialPromotionIdx,
+    specialPromotionBasicDataAdapter,
+} from '../../redux/actions/saleCenterNEW/types';
 
 import { setThemeClass } from '../../utils/index'
 const activityList = [
@@ -99,6 +106,9 @@ class NewCustomerPage extends Component {
         authLicenseData: {},
         houseKeepStatus: false,//是否有流失唤醒
         gentGiftStatus: false,//是否有智能发券
+        isJumpNew: true,
+        ifJumpSetData: false,
+        ifJumpSelfDefine: false,
     }
 
     componentDidMount() {
@@ -131,9 +141,32 @@ class NewCustomerPage extends Component {
         }
         return params
     }
+
+    handleSuccessData = (response = {}) => {
+        const _serverToRedux = false;
+        if (response === undefined || response.data === undefined) {
+            message.error(`请求回来的数据有误`);
+            return null;
+        }
+        const {
+            ifJumpSetData
+        } = this.state
+        if (!ifJumpSetData) {
+            console.log('now refresh the eventInfo data , and it is wrong')
+            this.props.setSpecialPromotionType(specialPromotionBasicDataAdapter(response, _serverToRedux));
+            this.setState({
+                ifJumpSetData: true,
+            })
+        }
+
+    }
+
+    failFn = () => {
+        message.error('查询活动失败')
+    }
     fromCrmJump() {
         const {
-            from, // debugger 测试
+            from = 'groupsendGift', // debugger 测试
             type,
             gmID,
             totalMembers,
@@ -144,10 +177,12 @@ class NewCustomerPage extends Component {
             monetaryType,
             reportMonth,
             createBy,
-            BenefitName='',
-            rangeType='w',
-            jumpSepid = ''
+            BenefitName = '',
+            rangeType = 'w',
+            jumpSepid = '7018836646103616405',
+            // jumpSepid = '',
         } = this.getQueryVariable()
+        const state = getStore().getState();
         if (from === 'rfm') {
             // debugger 参考
             const item = CRM_PROMOTION_TYPES[53];
@@ -162,13 +197,16 @@ class NewCustomerPage extends Component {
                 creator: createBy
             })
             this.clearUrl();
-
+            this.props.saleCenterSetJumpOpenCardParams(false)
+            this.props.saleCenterSetJumpSendGiftParams(false)
         } else if (from === 'giftInfo') {
             if (!type) return;
             const item = NEW_CUSTOMER_PROMOTION_TYPES.filter((val) => {
                 return val.key == type;
             })
             this.handleNewPromotionCardClick(item[0]);
+            this.props.saleCenterSetJumpOpenCardParams(false)
+            this.props.saleCenterSetJumpSendGiftParams(false)
             this.clearUrl();
         } else if (from === 'openCard') {
             console.log('after jump the page now enter the openCard')
@@ -178,42 +216,95 @@ class NewCustomerPage extends Component {
             // 新建逻辑
             // jumpSepid 判断有没有id来判断是否可以查到活动内容
             // debugger
-            this.handleNewPromotionCardClick(item);
-            // “默认数据”debugger
-            this.props.setSpecialPromotionInfo({
-                eventName: '权益卡开卡发放活动',
-                smsGate: '0',
-                eventRemark: '权益卡开卡发放活动',
-                sourceWayLimit: '0',
-                cardLevelRangeType: '2',
-                defaultCardType: BenefitName,
-                eventWay: 52,
-            });
-            // isBenefitJumpOpenCard
+            setTimeout(() => {
+                this.handleNewPromotionCardClick(item, true);
+            }, 2000)
+            if (jumpSepid) {
+                this.props.fetchSpecialDetail({
+                    data: {
+                        itemID: jumpSepid,
+                        groupID: state.user.get('accountInfo').toJS().groupID,
+                    },
+                    success: this.handleSuccessData,
+                    fail: this.failFn,
+                })
+                this.setState({
+                    isJumpNew: false,
+                })
+            } else {
+                const {
+                    ifJumpSelfDefine
+                } = this.state
+                if (!ifJumpSelfDefine) {
+                    this.props.setSpecialPromotionInfo({
+                        eventName: '权益卡开卡发放活动',
+                        smsGate: '0',
+                        eventRemark: '权益卡开卡发放活动',
+                        sourceWayLimit: '0',
+                        cardLevelRangeType: '2',
+                        defaultCardType: BenefitName,
+                        eventWay: 52,
+                    });
+                    this.setState({
+                        ifJumpSelfDefine: true
+                    })
+                }
+            }
             this.props.saleCenterSetJumpOpenCardParams(true)
+            this.props.saleCenterSetJumpSendGiftParams(false)
+
+            // “默认数据”debugger
+
+            // isBenefitJumpOpenCard
+
             this.clearUrl();
         } else if (from === 'groupsendGift') {
             console.log('after jump the page now enter the groupsendGift')
             const item = REPEAT_PROMOTION_TYPES.filter((item) => {
                 return item.key == 53
             })[0];
+            setTimeout(() => {
+                this.handleNewPromotionCardClick(item, true);
+            }, 2000)
             // jumpSepid 判断有没有id来判断是否可以查到活动内容
+            if (jumpSepid) {
+                this.props.fetchSpecialDetail({
+                    data: {
+                        itemID: jumpSepid,
+                        groupID: state.user.get('accountInfo').toJS().groupID,
+                    },
+                    success: this.handleSuccessData,
+                    fail: this.failFn,
+                })
+                this.setState({
+                    isJumpNew: false,
+                })
+            } else {
+                // “默认数据”debugger
+                const {
+                    ifJumpSelfDefine
+                } = this.state
+                if (!ifJumpSelfDefine) {
+                    this.props.setSpecialPromotionInfo({
+                        eventName: '权益卡周期权益',
+                        smsGate: '0',
+                        eventRemark: '权益卡周期权益',
+                        eventStartDate: moment(new Date()).format('YYYYMMDD'),
+                        eventEndDate: moment(new Date(new Date().setFullYear(new Date().getFullYear() + 10))).format('YYYYMMDD'),
+                        dateRangeType: rangeType,
+                        groupMemberID: '权益卡有效会员',
+                        eventWay: 53,
+                    });
+                    this.setState({
+                        ifJumpSelfDefine: true
+                    })
+                }
+                // isBenefitJumpSendGift
+            }
+            this.props.saleCenterSetJumpSendGiftParams(true)
+            this.props.saleCenterSetJumpOpenCardParams(false)
             // 新建逻辑
             // debugger
-            this.handleNewPromotionCardClick(item);
-            // “默认数据”debugger
-            this.props.setSpecialPromotionInfo({
-                eventName: '权益卡周期权益',
-                smsGate: '0',
-                eventRemark: '权益卡周期权益',
-                eventStartDate: moment(new Date()).format('YYYYMMDD'),
-                eventEndDate: moment(new Date(new Date().setFullYear(new Date().getFullYear()+10))).format('YYYYMMDD'),
-                dateRangeType: rangeType,
-                groupMemberID: '权益卡有效会员',
-                eventWay: 53,
-            });
-            // isBenefitJumpSendGift
-            this.props.saleCenterSetJumpSendGiftParams(true)
             this.clearUrl();
         } else {
             const saleID = type;
@@ -223,6 +314,8 @@ class NewCustomerPage extends Component {
             const item = CRM_PROMOTION_TYPES[saleID];
             this.handleNewPromotionCardClick(item);
             this.props.setSpecialPromotionCardGroupID(gmID);
+            this.props.saleCenterSetJumpOpenCardParams(false)
+            this.props.saleCenterSetJumpSendGiftParams(false)
             this.clearUrl();
         }
 
@@ -286,7 +379,7 @@ class NewCustomerPage extends Component {
     }
 
     // 点击营销卡片处理函数
-    handleNewPromotionCardClick(promotionEntity) {
+    handleNewPromotionCardClick(promotionEntity, ifskip) {
         const { key, isSpecial } = promotionEntity;
         if (HUALALA.ENVIRONMENT === 'production-release' && UNRELEASED_PROMOTION_TYPES.includes(`${key}`)) {
             return message.success(SALE_LABEL.k6316gwc);//活动尚未开放
@@ -294,7 +387,7 @@ class NewCustomerPage extends Component {
         // debugger
         if (isSpecial) {
             const specialIndex = this.props.saleCenter.get('characteristicCategories').toJS().findIndex(promotion => promotion.key === key);
-            this.handleSpecialPromotionCreate(specialIndex, promotionEntity)
+            this.handleSpecialPromotionCreate(specialIndex, promotionEntity, ifskip)
         } else {
             console.log('the basic promotion been clicked !!!!!!', 'handleNewPromotionCardClick')
             const basicIndex = this.props.saleCenter.get('activityCategories').toJS().findIndex(promotion => promotion.key === key);
@@ -344,7 +437,7 @@ class NewCustomerPage extends Component {
     }
 
     // 创建特色营销
-    handleSpecialPromotionCreate(index, activity) {
+    handleSpecialPromotionCreate(index, activity, ifskip) {
         // 唤醒送礼 品牌不可创建
         if ('63' === activity.key && isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
             message.warning(SPECIAL_PROMOTION_CREATE_DISABLED_TIP);
@@ -360,9 +453,11 @@ class NewCustomerPage extends Component {
             specialIndex: index,
         });
         this.props.toggleIsSpecialUpdate(true);
-        this.props.setSpecialPromotionType({
-            eventWay: key,
-        });
+        if (!ifskip) {
+            this.props.setSpecialPromotionType({
+                eventWay: key,
+            });
+        }
         // debugger
         // 完善资料送礼只能创建一次
         // if (key === '60') {
@@ -402,7 +497,7 @@ class NewCustomerPage extends Component {
     setSpecialModalVisible(specialModalVisible) {
         this.setState({ specialModalVisible });
         if (!specialModalVisible) {
-            // debugger
+            debugger
             const ifJumpOpenCard = this.props.specialPromotion.isBenefitJumpOpenCard
             const isBenefitJumpSendGift = this.props.specialPromotion.isBenefitJumpSendGift
             console.log('ifJumpOpenCard', ifJumpOpenCard)
@@ -458,6 +553,9 @@ class NewCustomerPage extends Component {
         const create = intl.formatMessage(COMMON_STRING.create);
         const title = <p>{create} {promotionType}</p>;
         console.log(' now debugger  2')
+        const {
+            isJumpNew = true,
+        } = this.state
         // debugger 这里是新建的时候 弹的弹窗 也是编辑的时候
         return (
             <Modal
@@ -475,7 +573,7 @@ class NewCustomerPage extends Component {
             >
                 {this.state.specialModalVisible ? <SpecialActivityMain
                     index={this.state.specialIndex}
-                    isNew={true}
+                    isNew={true && isJumpNew}
                     callbackthree={(arg) => {
                         if (arg == 3) {
                             this.setSpecialModalVisible(false);
@@ -734,6 +832,9 @@ function mapDispatchToProps(dispatch) {
         },
         getAuthLicenseData: (opts) => {
             return dispatch(getAuthLicenseData(opts))
+        },
+        fetchSpecialDetail: (opts) => {
+            return dispatch(fetchSpecialDetailAC(opts))
         }
     }
 }
