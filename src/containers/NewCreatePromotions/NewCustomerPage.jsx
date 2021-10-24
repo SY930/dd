@@ -165,7 +165,7 @@ class NewCustomerPage extends Component {
     }
     fromCrmJump() {
         const {
-            from = '', // debugger 测试
+            from = 'openCard', // debugger 测试
             type,
             gmID,
             totalMembers,
@@ -178,8 +178,8 @@ class NewCustomerPage extends Component {
             createBy,
             BenefitName = '',
             rangeType = 'm',
-            // jumpSepid = '7018836646103616405',
-            jumpSepid = '',
+            jumpSepid = '7022523733810088853',
+            // jumpSepid = '',
         } = this.getQueryVariable()
         const state = getStore().getState();
         if (from === 'rfm') {
@@ -501,7 +501,8 @@ class NewCustomerPage extends Component {
             const isBenefitJumpSendGift = this.props.specialPromotion.isBenefitJumpSendGift
             console.log('ifJumpOpenCard', ifJumpOpenCard)
             if (ifJumpOpenCard || isBenefitJumpSendGift) {
-                closePage();
+                const menuID = this.props.user.menuList.find(tab => tab.entryCode === '10000730001').menuID
+                closePage(menuID);
                 // jumpPage({ pageID: '1000072012' });
                 // jumpPage({ menuID: 'editBenefitCard' });
                 this.props.saleCenterSetJumpOpenCardParams(false)
