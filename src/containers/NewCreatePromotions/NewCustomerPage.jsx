@@ -165,7 +165,7 @@ class NewCustomerPage extends Component {
     }
     fromCrmJump() {
         const {
-            from = 'openCard', // debugger 测试
+            from = '', // debugger 测试
             type,
             gmID,
             totalMembers,
@@ -178,7 +178,7 @@ class NewCustomerPage extends Component {
             createBy,
             BenefitName = '',
             rangeType = 'm',
-            jumpSepid = '7022523733810088853',
+            jumpSepid = '',
             // jumpSepid = '',
         } = this.getQueryVariable()
         const state = getStore().getState();
