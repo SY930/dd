@@ -689,7 +689,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                     cardScopeIDs.length === 0 ? <p style={{ color: 'orange', marginLeft: 110 }}>{SALE_LABEL.k5m4pxz2}</p> : null
                 }
                 {
-                    this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) == '1010' || this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) == '2020' &&
+                    (this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) == '1010' || this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) == '2020') &&
                     <FormItem
                         label={<span>
                             卡值不足不参与
