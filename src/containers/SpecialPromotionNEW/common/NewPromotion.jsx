@@ -112,10 +112,7 @@ export default class NewPromotion extends React.Component {
                     cardCount: totalMembers,
                     cardGroupRemark: groupMembersRemark,
                 }
-
-
             })
-
         }
         let jumpToCrmFlag = specialPromotion.isBenefitJumpOpenCard || specialPromotion.isBenefitJumpSendGift
         if (this.props.isNew === false && !this.props.isCopy) {
