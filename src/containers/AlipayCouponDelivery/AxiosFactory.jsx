@@ -152,7 +152,7 @@ async function isAuth(value) {
     if (code === '000') {
         return obj
     }
-    message.error(msg);
+    // message.error(msg);
     return '';
 }
 
