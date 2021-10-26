@@ -77,7 +77,7 @@ class Two extends React.Component {
                 cardGroupName: groupMembers.groupMembersName,
                 cardCount: groupMembers.totalMembers,
                 cardGroupRemark: groupMembers.groupMembersRemark,
-                cardLevelRangeType:  (this.state.cardLevelRangeType | 0) || (this.state.groupMembersID == '0' ? '0' : '2'),
+                cardLevelRangeType: (this.state.cardLevelRangeType | 0) || (this.state.groupMembersID == '0' ? '0' : '2'),
             }
 
             if (smsGate == '1' || smsGate == '3' || smsGate == '4') {
@@ -114,7 +114,7 @@ class Two extends React.Component {
             cancel: undefined,
         });
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
-        if(specialPromotion.groupMemberID){
+        if (specialPromotion.groupMemberID) {
             this.setState({
                 groupMembersID: specialPromotion.groupMemberID
             })
@@ -257,8 +257,8 @@ class Two extends React.Component {
         const totalCustomerCount = this.props.specialPromotion.get('customerCount');
         const groupMembersID = this.state.groupMembersID
         const isDisableGroupSelect = typeof groupMembersID === 'string' && groupMembersID.includes &&
-          groupMembersID.includes('RFM会员群体') &&
-          groupMembersID.includes('--')
+            groupMembersID.includes('RFM会员群体') &&
+            groupMembersID.includes('--')
         const {
             isBenefitJumpSendGift = false,
         } = this.props
@@ -281,7 +281,7 @@ class Two extends React.Component {
                         initialValue: this.state.groupMembersID,
                     })(
                         <Select
-                            disabled={isDisableGroupSelect || isBenefitJumpSendGift}
+                            disabled={this.props.isBenefitJumpSendGift || isDisableGroupSelect}
                             showSearch
                             notFoundContent={`${this.props.intl.formatMessage(STRING_SPE.d2c8a4hdjl248)}`}
                             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
