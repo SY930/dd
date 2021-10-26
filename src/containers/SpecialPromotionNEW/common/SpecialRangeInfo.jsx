@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Checkbox, Radio, Select, message, Tooltip, Icon } from 'antd';
+import { Form, Checkbox, Radio, Select, message, Tooltip, Icon, Input } from 'antd';
 import { connect } from 'react-redux'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
@@ -584,6 +584,9 @@ class SpecialRangeInfo extends React.Component {
         });
     }
     render() {
+        const inputStyle = {
+            width: '100%', display: 'inline-block', paddingBottom: 7
+        };
         return (
             <Form>
                 {this.props.type === '21' ? this.renderFreeGetJoinRange() : null}
@@ -619,7 +622,7 @@ class SpecialRangeInfo extends React.Component {
                         </FormItem>) : null
                 }
                 {
-                    this.props.type !== '23' ?
+                    (this.props.type !== '23' && this.props.type !== '20')  ?
                         <FormItem
                             label={`${this.props.intl.formatMessage(STRING_SPE.d143141l5s0247)}`}
                             className={styles.noPadding}
@@ -627,10 +630,66 @@ class SpecialRangeInfo extends React.Component {
                             labelCol={{ span: 4 }}
                         >
                             <RadioGroup onChange={this.handleVipBirthdayMonthChange} value={this.state.isVipBirthdayMonth}>
-                                <Radio value={'0'}>{this.props.intl.formatMessage(STRING_SPE.d31ei98dbgi21253)}</Radio>
+                                <Radio value={'0'}>{this.props.intl.formatMessage(STRING_SPE.d31ei98dbgi21253)}</Radio> 
                                 <Radio value={'1'}>{this.props.intl.formatMessage(STRING_SPE.de8fn8fabn25238)}</Radio>
                             </RadioGroup>
                         </FormItem> : null
+                }
+                {
+                    this.props.type === '20' ? 
+                        <div>
+                            <FormItem
+                                label={`${this.props.intl.formatMessage(STRING_SPE.d143141l5s0247)}`}
+                                className={styles.noPadding}
+                                wrapperCol={{ span: 17 }}
+                                labelCol={{ span: 4 }}
+                            >
+                                {/* 摇奖活动 */}
+                                <RadioGroup onChange={this.handleVipBirthdayMonthChange} value={this.state.isVipBirthdayMonth}>
+                                    <Radio value={'0'}>{this.props.intl.formatMessage(STRING_SPE.d31ei98dbgi21253)}</Radio>
+                                    <Radio value={'1'}>{this.props.intl.formatMessage(STRING_SPE.de8fn8fabn25238)}</Radio>
+                                    <Radio value={'2'}>仅限消费用户参与</Radio>
+                                </RadioGroup>
+                            </FormItem>
+                            {
+                                this.state.isVipBirthdayMonth === '2' &&
+                                <FormItem
+                                    label={'消费限制'}
+                                    required
+                                    labelCol={{ span: 4 }}
+                                    wrapperCol={{ span: 17 }}
+                                >
+                                    <RadioGroup onChange={this.handleLimitConsumeUser} value={this.state.isLimitConsumeUser} style={{ display: 'flex', marginTop: '-3px' }}>
+                                        <Radio value={'0'} style={{ width: '50%' }}>
+                                            <div style={inputStyle}>
+                                                <FormItem validateStatus={this.state.countCycleDaysStatus}>
+                                                    <PriceInput
+                                                        addonBefore={'当天卡值消费满'}
+                                                        addonAfter={'元可参与'}
+                                                        value={{ number: this.state.deductPoints }}
+                                                        // defaultValue={{ number: this.state.deductPoints }}
+                                                        onChange={this.onCurCardConsume}
+                                                    />
+                                                </FormItem>
+                                            </div>
+                                        </Radio>
+                                        <Radio value={'1'} style={{ width: '50%', marginLeft: 25 }}>
+                                            <div style={inputStyle}>
+                                                <FormItem validateStatus={this.state.countCycleDaysStatus}>
+                                                    <PriceInput
+                                                        addonBefore={'活动至今卡值消费满'}
+                                                        addonAfter={'元可参与'}
+                                                        value={{ number: this.state.deductPoints }}
+                                                        // defaultValue={{ number: this.state.deductPoints }}
+                                                        onChange={this.onSumCardConsume}
+                                                    />
+                                                </FormItem>
+                                            </div>
+                                        </Radio>
+                                    </RadioGroup>
+                                </FormItem>
+                            }
+                        </div> : null
                 }
                 {
                     this.props.type == '30' ?
