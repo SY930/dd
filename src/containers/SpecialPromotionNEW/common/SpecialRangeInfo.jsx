@@ -54,6 +54,11 @@ class SpecialRangeInfo extends React.Component {
             autoRegister: 1, // 是否需用户填写注册信息
             defaultCardType: '', // 用户静默注册为何种会员
             shopIDList: [],
+            consumeLimit: '0', // 消费限制 0：当天， 1：活动至今
+            curCardConsume: '', // 当天卡值消费满
+            curCardConsumeStatus: 'success',
+            sumCardConsume: '', // 活动至今卡值消费满
+            sumCardConsumeStatus: 'success',
         };
 
         this.handlePrev = this.handlePrev.bind(this);
@@ -537,6 +542,19 @@ class SpecialRangeInfo extends React.Component {
             })
         }
     }
+    onCurCardConsume = (value) => {
+        this.setState({
+            curCardConsume: value.number,
+            curCardConsumeStatus: value.number > 0 ? 'success' : 'error',
+        })
+    }
+    onSumCardConsume = (value) => {
+        this.setState({
+            sumCardConsume: value.number,
+            sumCardConsumeStatus: value.number > 0 ? 'success' : 'error',
+        })
+    }
+
     handleJoinRangeChange(val) {
         this.setState({
             joinRange: val,
@@ -570,6 +588,12 @@ class SpecialRangeInfo extends React.Component {
             isVipBirthdayMonth: e.target.value,
         });
     }
+
+    handleConsumeLimit = (e) => {
+        this.setState({
+            consumeLimit: e.target.value,
+        });
+    } 
     handleautoRefundChange = (e) => {
         this.setState({
             autoRefund: e.target.value,
@@ -659,14 +683,15 @@ class SpecialRangeInfo extends React.Component {
                                     labelCol={{ span: 4 }}
                                     wrapperCol={{ span: 17 }}
                                 >
-                                    <RadioGroup onChange={this.handleLimitConsumeUser} value={this.state.isLimitConsumeUser} style={{ display: 'flex', marginTop: '-3px' }}>
+                                    <RadioGroup onChange={this.handleConsumeLimit} value={this.state.consumeLimit} style={{ display: 'flex', marginTop: '-3px' }}>
                                         <Radio value={'0'} style={{ width: '50%' }}>
                                             <div style={inputStyle}>
-                                                <FormItem validateStatus={this.state.countCycleDaysStatus}>
+                                                <FormItem validateStatus={this.state.curCardConsumeStatus}>
                                                     <PriceInput
                                                         addonBefore={'当天卡值消费满'}
                                                         addonAfter={'元可参与'}
-                                                        value={{ number: this.state.deductPoints }}
+                                                        disabled={this.state.consumeLimit.indexOf('0') === -1}
+                                                        value={{ number: this.state.curCardConsume }}
                                                         // defaultValue={{ number: this.state.deductPoints }}
                                                         onChange={this.onCurCardConsume}
                                                     />
@@ -675,11 +700,12 @@ class SpecialRangeInfo extends React.Component {
                                         </Radio>
                                         <Radio value={'1'} style={{ width: '50%', marginLeft: 25 }}>
                                             <div style={inputStyle}>
-                                                <FormItem validateStatus={this.state.countCycleDaysStatus}>
+                                                <FormItem validateStatus={this.state.sumCardConsumeStatus}>
                                                     <PriceInput
                                                         addonBefore={'活动至今卡值消费满'}
                                                         addonAfter={'元可参与'}
-                                                        value={{ number: this.state.deductPoints }}
+                                                        disabled={this.state.consumeLimit.indexOf('1') === -1}
+                                                        value={{ number: this.state.sumCardConsume }}
                                                         // defaultValue={{ number: this.state.deductPoints }}
                                                         onChange={this.onSumCardConsume}
                                                     />
