@@ -271,13 +271,13 @@ const formItems = {
         type: 'radio',
         label: '购买需选择售卖店铺',
         options: needSelectShop,
-        defaultValue: '0',
+        defaultValue: 0,
     },
     isAutoRefund: {
         type: 'radio',
         label: revokeLabel,
         options: revokeOpts,
-        defaultValue: 1,
+        defaultValue: '1',
     },
     isRefundSelf: {
         type: 'radio',
