@@ -338,7 +338,7 @@ class CardLevel extends React.Component {
                                         required: ifJumpOpenCard ? false : true,
                                         message: `${this.props.intl.formatMessage(STRING_SPE.d4546omm0r6172)}`,
                                     }],
-                                    initialValue: this.state.cardLevelIDList,
+                                    initialValue: ifJumpOpenCard ? this.state.cardLevelIDList : [],
                                 })(
                                     <TreeSelect
                                         style={{ width: '100%' }}
