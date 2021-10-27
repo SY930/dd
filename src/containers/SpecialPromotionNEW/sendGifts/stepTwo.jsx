@@ -91,7 +91,6 @@ class Two extends React.Component {
                 opts.settleUnitID = '0';
                 opts.accountNo = '0';
             }
-            console.log(opts, 'opts>>>>>>>>>>>>>>>>>>>>>')
             this.props.setSpecialBasicInfo(opts)
         }
 
@@ -147,12 +146,10 @@ class Two extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("🚀 ~ file: stepTwo.jsx ~ line 150 ~ Two ~ componentWillReceiveProps ~ nextProps", nextProps.specialPromotion.get('$eventInfo').size)
         // 修改时,初始化state
         if (this.props.specialPromotion.get('$eventInfo') != nextProps.specialPromotion.get('$eventInfo') &&
             nextProps.specialPromotion.get('$eventInfo').size > 30) {
             const specialPromotion = nextProps.specialPromotion.get('$eventInfo').toJS();
-            console.log("🚀 ~ file: stepTwo.jsx ~ line 154 ~ Two ~ nextProps.specialPromotion.get ~ specialPromotion", specialPromotion)
             this.setState({
                 message: specialPromotion.smsTemplate,
                 isVipBirthdayMonth: specialPromotion.isVipBirthdayMonth,

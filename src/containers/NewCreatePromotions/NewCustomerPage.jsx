@@ -132,6 +132,7 @@ class NewCustomerPage extends Component {
             gmID,
             totalMembers,
             groupMembersName,
+            groupMembersID,
             groupID,
             mfrGrades = '',
             awakenTip,
@@ -164,6 +165,8 @@ class NewCustomerPage extends Component {
                 awakenTip,
                 RValue,
                 groupMembersName,
+                totalMembers,
+                groupMembersID,
             })
             this.clearUrl();
 
