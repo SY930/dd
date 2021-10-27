@@ -91,30 +91,27 @@ export default class NewPromotion extends React.Component {
             opts.event.recommendRulelst = typeof recommendRule === 'number' ? recommendRule  : recommendRule.join(',')
             opts.event.recommendRule  =  ''
         }
-          // 从RFM群发礼品、消费返礼品、唤醒送礼的时候，需要先创建会员群体
-          const {$eventInfo,RFMParams} = specialPromotion
-          if((['53', '62', '63'].includes(this.props.promotionType)) && RFMParams) {
-          await  createMemberGroupNew.call(this,{
-                RFMParams
-            }).then(res => {
-                const {
-                    groupMembersID,
-                    groupMembersName,
-                    groupMembersCount,
-                    // groupMembersRemark,
-                } = res;
-                opts.event = {
-                   ...opts.event,
-                   cardGroupID: groupMembersID,
-                   cardGroupName: groupMembersName,
-                   cardCount: groupMembersCount,
-                //    cardGroupRemark: groupMembersRemark,
-                }
-
-
-            })
-
-          }
+        // 从RFM群发礼品、消费返礼品、唤醒送礼的时候，不需要先创建会员群体，因为跳转营销时已经创建过了
+        //   const {$eventInfo,RFMParams} = specialPromotion
+        //   if((['53', '62', '63'].includes(this.props.promotionType)) && RFMParams) {
+        //   await  createMemberGroupNew.call(this,{
+        //         RFMParams
+        //     }).then(res => {
+        //         const {
+        //             groupMembersID,
+        //             groupMembersName,
+        //             groupMembersCount,
+        //             // groupMembersRemark,
+        //         } = res;
+        //         opts.event = {
+        //            ...opts.event,
+        //            cardGroupID: groupMembersID,
+        //            cardGroupName: groupMembersName,
+        //            cardCount: groupMembersCount,
+        //         //    cardGroupRemark: groupMembersRemark,
+        //         }
+        //     })
+        //   }
         if (this.props.isNew === false && !this.props.isCopy) {
             this.props.updateSpecialPromotion && this.props.updateSpecialPromotion({
                 data: opts,
