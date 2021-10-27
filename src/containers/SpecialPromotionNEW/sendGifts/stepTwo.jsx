@@ -32,7 +32,6 @@ const moment = require('moment');
 const Immutable = require('immutable');
 const FormItem = Form.Item;
 const Option = Select.Option;
-
 @injectIntl
 class Two extends React.Component {
     constructor(props) {
@@ -226,6 +225,7 @@ class Two extends React.Component {
     }
 
     handleSelectChange(value) {
+        // console.log("🚀 ~ file: stepTwo.jsx ~ line 232 ~ Two ~ handleSelectChange ~ value", value)
         if (value == '0') {
             this.setState({
                 groupMembersID: value,
@@ -256,10 +256,8 @@ class Two extends React.Component {
         const getFieldDecorator = this.props.form.getFieldDecorator;
         const totalCustomerCount = this.props.specialPromotion.get('customerCount');
         const groupMembersID = this.state.groupMembersID
-        const isDisableGroupSelect = typeof groupMembersID === 'string' && groupMembersID.includes &&
-          groupMembersID.includes('RFM会员群体') &&
-          groupMembersID.includes('--')
-
+        const isDisableGroupSelect = typeof groupMembersID === 'string' && groupMembersID.includes && 
+            groupMembersID.includes('--')
         return (
             <Form>
                 <FormItem

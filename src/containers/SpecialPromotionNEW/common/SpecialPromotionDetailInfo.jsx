@@ -698,10 +698,17 @@ class SpecialDetailInfo extends Component {
                 return acc;
             }, []);
             if (!intervalDaysArray.length) {
+                // 从RFM过来带有R值要回显到第一个档位中 消费天数
+                const { specialPromotion } = this.props;
+                const { RFMParams } = specialPromotion.toJS();
+                const RFMObj = {};
+                if (RFMParams && RFMParams.RValue) {
+                    RFMObj.RValue = RFMParams.RValue;
+                }
                 wakeupSendGiftsDataArray = [
                     {
                         key: getIntervalID(),
-                        intervalDays: undefined,
+                        intervalDays: RFMObj.RValue || undefined,
                         gifts: [...data],
                     },
                 ];
@@ -3333,7 +3340,13 @@ class SpecialDetailInfo extends Component {
             form: { getFieldDecorator },
             isNew,
             type,
+            specialPromotion
         } = this.props;
+        const { RFMParams } = specialPromotion.toJS();
+        const RFMObj = {};
+        if (RFMParams && RFMParams.awakenTip) {
+            RFMObj.awakenTip = RFMParams.awakenTip;
+        }
         const disabledGifts = type == 75 && !isNew;
         const multiConfig = this.getMultipleLevelConfig();
         const userCount = this.props.specialPromotion.getIn([
@@ -3353,104 +3366,122 @@ class SpecialDetailInfo extends Component {
                                     </div>
                                 </Col>
                                 <Col style={{ position: "relative" }} span={17}>
-                                    <div className={selfStyle.grayHeader}>
-                                        {multiConfig.levelLabel}&nbsp;
-                                        <FormItem>
-                                            {getFieldDecorator(
-                                                `intervalDays${key}`,
-                                                {
-                                                    onChange: ({
-                                                        number: val,
-                                                    }) =>
-                                                        this.handleIntervalDaysChange(
-                                                            val,
-                                                            index
-                                                        ),
-                                                    initialValue: {
-                                                        number: intervalDays,
-                                                    },
-                                                    rules: [
-                                                        {
-                                                            validator: (
-                                                                rule,
-                                                                v,
-                                                                cb
-                                                            ) => {
-                                                                if (
-                                                                    !v ||
-                                                                    !(
-                                                                        v.number >
-                                                                        0
-                                                                    )
-                                                                ) {
-                                                                    return cb(
-                                                                        "必须大于0"
-                                                                    );
-                                                                }
-                                                                const limit = this.getMultipleLevelValueLimit();
-                                                                if (
-                                                                    limit &&
-                                                                    !(
-                                                                        v.number <=
-                                                                        limit
-                                                                    )
-                                                                ) {
-                                                                    return cb(
-                                                                        `不能大于${limit}`
-                                                                    );
-                                                                }
-                                                                if (
-                                                                    limit &&
-                                                                    index ===
-                                                                        arr.length -
-                                                                            1 &&
-                                                                    v.number !=
-                                                                        limit
-                                                                ) {
-                                                                    // 最后一档必须填满限制
-                                                                    return cb(
-                                                                        `最后一档必须等于${limit}`
-                                                                    );
-                                                                }
-                                                                for (
-                                                                    let i = 0;
-                                                                    i < index;
-                                                                    i++
-                                                                ) {
-                                                                    const days =
-                                                                        arr[i]
-                                                                            .intervalDays;
+                                    <div className={selfStyle.grayTopBox}>
+                                        <div className={selfStyle.grayHeader}>
+                                            {multiConfig.levelLabel}&nbsp;
+                                            <FormItem>
+                                                {getFieldDecorator(
+                                                    `intervalDays${key}`,
+                                                    {
+                                                        onChange: ({
+                                                            number: val,
+                                                        }) =>
+                                                            this.handleIntervalDaysChange(
+                                                                val,
+                                                                index
+                                                            ),
+                                                        initialValue: {
+                                                            number: intervalDays,
+                                                        },
+                                                        rules: [
+                                                            {
+                                                                validator: (
+                                                                    rule,
+                                                                    v,
+                                                                    cb
+                                                                ) => {
                                                                     if (
-                                                                        days > 0
+                                                                        !v ||
+                                                                        !(
+                                                                            v.number >
+                                                                            0
+                                                                        )
                                                                     ) {
-                                                                        // 档位设置不可以重叠
-                                                                        if (
+                                                                        return cb(
+                                                                            "必须大于0"
+                                                                        );
+                                                                    }
+                                                                    const limit = this.getMultipleLevelValueLimit();
+                                                                    if (
+                                                                        limit &&
+                                                                        !(
                                                                             v.number <=
-                                                                            +days
+                                                                            limit
+                                                                        )
+                                                                    ) {
+                                                                        return cb(
+                                                                            `不能大于${limit}`
+                                                                        );
+                                                                    }
+                                                                    if (
+                                                                        limit &&
+                                                                        index ===
+                                                                        arr.length -
+                                                                        1 &&
+                                                                        v.number !=
+                                                                        limit
+                                                                    ) {
+                                                                        // 最后一档必须填满限制
+                                                                        return cb(
+                                                                            `最后一档必须等于${limit}`
+                                                                        );
+                                                                    }
+                                                                    for (
+                                                                        let i = 0;
+                                                                        i < index;
+                                                                        i++
+                                                                    ) {
+                                                                        const days =
+                                                                            arr[i]
+                                                                                .intervalDays;
+                                                                        if (
+                                                                            days > 0
                                                                         ) {
-                                                                            return cb(
-                                                                                "档位数值需大于上一档位"
-                                                                            );
+                                                                            // 档位设置不可以重叠
+                                                                            if (
+                                                                                v.number <=
+                                                                                +days
+                                                                            ) {
+                                                                                return cb(
+                                                                                    "档位数值需大于上一档位"
+                                                                                );
+                                                                            }
                                                                         }
                                                                     }
-                                                                }
-                                                                cb();
+                                                                    cb();
+                                                                },
                                                             },
-                                                        },
-                                                    ],
-                                                }
-                                            )(
-                                                <PriceInput
-                                                    disabled={
-                                                        userCount > 0 ||
-                                                        disabledGifts
+                                                        ],
                                                     }
-                                                    maxNum={5}
-                                                    modal="int"
-                                                />
-                                            )}
-                                        </FormItem>
-                                        {multiConfig.levelAffix}
+                                                )(
+                                                    <PriceInput
+                                                        disabled={
+                                                            userCount > 0 ||
+                                                            disabledGifts
+                                                        }
+                                                        maxNum={5}
+                                                        modal="int"
+                                                    />
+                                                )}
+                                            </FormItem>
+                                            {multiConfig.levelAffix}
+
+                                        </div>
+                                        {/* 从RFM创建的唤醒送礼需要展示改提示和R值 */}
+                                        {
+                                            RFMObj.awakenTip && <p 
+                                            style={{
+                                                borderTop: '1px solid #D9D9D9',
+                                                height: '36px',
+                                                background: '#FFFBE6',
+                                                lineHeight: '36px',
+                                                fontSize: '12px',
+                                                color: '#666',
+                                                paddingLeft: '12px',
+                                            }}
+                                        ><Icon type="exclamation-circle" style={{ fontSize: 12, color: '#FAAD14', marginRight: 9 }}/>此处填写天数将影响最终推送人数，天数值与实际推送人数成反比例关系。</p>
+                                        }
+                                      
                                     </div>
                                     {userCount > 0 || disabledGifts ? null : (
                                         <div
