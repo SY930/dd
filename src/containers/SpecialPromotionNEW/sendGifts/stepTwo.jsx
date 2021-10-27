@@ -256,7 +256,7 @@ class Two extends React.Component {
         const getFieldDecorator = this.props.form.getFieldDecorator;
         const totalCustomerCount = this.props.specialPromotion.get('customerCount');
         const groupMembersID = this.state.groupMembersID
-        const isDisableGroupSelect = typeof groupMembersID === 'string' && groupMembersID.includes &&
+        const isDisableGroupSelect = typeof groupMembersID === 'string' && groupMembersID.includes && 
             groupMembersID.includes('--')
         return (
             <Form>
