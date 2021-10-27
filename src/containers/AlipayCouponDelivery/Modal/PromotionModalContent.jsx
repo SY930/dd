@@ -164,7 +164,6 @@ class PromotionModalContent extends Component {
                         },
                     ],
                 }
-                // console.log(data, 'data_________')
                 const params = { trdEventInfo: { ...data } };
                 axiosData(
                     'trdEventService/addEvent.ajax',
