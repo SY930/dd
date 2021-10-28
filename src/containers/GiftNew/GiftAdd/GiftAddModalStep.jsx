@@ -1677,7 +1677,7 @@ class GiftAddModalStep extends React.PureComponent {
         });
     }
     renderShopNames(decorator) {
-        const { shopNames = [],excludeShops = [],selectBrands = [] } = this.state.values;
+        const { shopNames = [],excludeShops = [],selectBrands = [],applyScene } = this.state.values;
         const { gift: { data } } = this.props;
         const brandList = selectBrands.map(x=>x.targetID);
         console.log(this.state.values,'this.state.values-----------------')
@@ -1685,7 +1685,7 @@ class GiftAddModalStep extends React.PureComponent {
         return (
             <Row style={{ marginBottom: shopNames.length === 0 ? -15 : 0 }}>
                 <Col style={{position:'relative'}}>
-                    {selectBrands && selectBrands.length == 0 && excludeShops.length == 0 ? null : <div className={styles.disabledWrapper}></div>}
+                    {applyScene == 2 || (selectBrands && selectBrands.length == 0 && excludeShops.length == 0) ? null : <div className={styles.disabledWrapper}></div>}
                     {decorator({})(
                         <ShopSelector
                             onChange={
@@ -2347,6 +2347,8 @@ class GiftAddModalStep extends React.PureComponent {
                     secondKeysToDisplay[0].keys = [...SECOND_KEYS[describe][0].keys];
                     thirdKeysToDisplay[0].keys = [...THIRD_KEYS[describe][0].keys];
                     fourthKeysToDisplay[0].keys = [...FOURTH_KEYS[describe][0].keys];
+                    thirdKeysToDisplay[0].keys = thirdKeysToDisplay[0].keys.filter(item => item != 'excludeShops');
+                    console.log(thirdKeysToDisplay[0].keys,'thirdKeysToDisplay[0].keys')
                     if(values.mallScope == '0' || values.mallScope == undefined) {
                         fourthKeysToDisplay[0].keys = fourthKeysToDisplay[0].keys.filter((key)=>{
                             return key !== 'mallIncludeGoodSelector';
@@ -3269,7 +3271,7 @@ class GiftAddModalStep extends React.PureComponent {
             }
         }
         const combineTypes = hasMallArr;
-        console.log(displaySecondKeys,'displaySecondKeys--------=-=-=-')
+        console.log(formData,'formData--------=-=-=-**********')
         return (
             <div>
                 <div
