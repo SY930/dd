@@ -147,6 +147,7 @@ class NewCustomerPage extends Component {
             message.error(`请求回来的数据有误`);
             return null;
         }
+        response.data.cardLevelIDList = []
         const {
             ifJumpSetData
         } = this.state
@@ -178,8 +179,8 @@ class NewCustomerPage extends Component {
             createBy,
             BenefitName = '',
             rangeType = 'm',
+            // jumpSepid = '7023667831451421589',
             jumpSepid = '',
-            // jumpSepid = '',
         } = this.getQueryVariable()
         const state = getStore().getState();
         if (from === 'rfm') {
