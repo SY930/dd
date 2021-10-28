@@ -578,12 +578,12 @@ class GiftAddModalStep extends React.PureComponent {
             this.setState({ delivery: value });
         }
         if(key === 'selectBrands'){//重新选择店铺，适用店铺和排除店铺都清空
-            values.shopNames = [];
-            values.excludeShops = [];
-            formRef.setFieldsValue({
-                shopNames: [],
-                excludeShops: [],
-            });
+            // values.shopNames = [];
+            // values.excludeShops = [];
+            // formRef.setFieldsValue({
+            //     shopNames: [],
+            //     excludeShops: [],
+            // });
             console.log(this.secondForm,'thissecondddddddd')
             if(giftType == '22' || giftType == '110' || giftType == '111' ){
                 if(this.secondForm){
@@ -846,6 +846,7 @@ class GiftAddModalStep extends React.PureComponent {
 
     handleFinish = () => {
         const { values, groupTypes, delivery} = this.state;
+        console.log(values,'values handle finish **************')
         const { type, gift: { value, data } } = this.props;
         this.secondForm.validateFieldsAndScroll((err, formValues) => {
             if (err) return;
@@ -880,6 +881,14 @@ class GiftAddModalStep extends React.PureComponent {
             let shopNames = '',
                 shopIDs = '',
                 callServer;
+                console.log(this.state.shopSchema.shops,'this.state.shopSchema.shopsthis.state.shopSchema.shopsthis.state.shopSchema.shops')
+            if(values && values.excludeShops && values.excludeShops.length > 0){
+                params.shopNames = values.excludeShops;
+                params.shopScopeType = 2;
+                delete params.excludeShops;
+            }else{
+                params.shopScopeType = 1;
+            }
             try {
                 if (params.shopNames) {
                     const shops = this.state.shopSchema.shops;
@@ -1685,7 +1694,7 @@ class GiftAddModalStep extends React.PureComponent {
         return (
             <Row style={{ marginBottom: shopNames.length === 0 ? -15 : 0 }}>
                 <Col style={{position:'relative'}}>
-                    {/* {applyScene == 2 || (selectBrands && selectBrands.length == 0 && excludeShops.length == 0) ? null : <div className={styles.disabledWrapper}></div>} */}
+                    {applyScene == 2 || (selectBrands && selectBrands.length == 0 && excludeShops.length == 0) ? null : <div className={styles.disabledWrapper}></div>}
                     {decorator({})(
                         <ShopSelector
                             onChange={
@@ -2500,12 +2509,13 @@ class GiftAddModalStep extends React.PureComponent {
         // 判断是否是空对象
         // 影响 PhonePreview 回显。
         let formData =JSON.stringify(values) == '{}' ? data : values ;
-        console.log(formData,'formdata>>>>>>>>>>>>>>>>>')
         const { firstKeysToDisplay: displayFirstKeys, secondKeysToDisplay: displaySecondKeys,thirdKeysToDisplay:displayThirdKeys,fourthKeysToDisplay:displayFourthKeys} = this.justifyFormKeysToDisplay();
 
         if (formData.shopNames && formData.shopNames.length > 0 && formData.shopNames[0].id) {
             formData.shopNames = formData.shopNames.map(shop => shop.id);
         }
+        console.log(formData,'formdata>>>>>>>>>>>>>>>>>')
+
         if (formData.moneyTopLimitValue) {
             formData.moneyTopLimitType = '1'
         } else {
@@ -3252,7 +3262,6 @@ class GiftAddModalStep extends React.PureComponent {
         formData.giftShareType = String(formData.giftShareType);
         formData.couponPeriodSettings = formData.couponPeriodSettingList;
         if(!formData.pushMessage) {
-            
             const sendType = ['wechat']
             if (formData.openPushSms) {
                 sendType.push('msg')
@@ -3268,7 +3277,15 @@ class GiftAddModalStep extends React.PureComponent {
             }
         }
         const combineTypes = hasMallArr;
-        console.log(formData,'formData--------=-=-=-**********')
+        formData.shopScopeType == '2';
+        if(formData.shopScopeType == '1'){
+            formData.shopNames = formData.shopNames;
+            formData.excludeShops = [];
+        }else{
+            formData.excludeShops = formData.shopNames;
+            formData.shopNames = [];
+        }
+        console.log(formData,'formDataformDataformDataformDataformDataformDataformDataformData')
         return (
             <div>
                 <div
