@@ -1685,7 +1685,7 @@ class GiftAddModalStep extends React.PureComponent {
         return (
             <Row style={{ marginBottom: shopNames.length === 0 ? -15 : 0 }}>
                 <Col style={{position:'relative'}}>
-                    {applyScene == 2 || (selectBrands && selectBrands.length == 0 && excludeShops.length == 0) ? null : <div className={styles.disabledWrapper}></div>}
+                    {/* {applyScene == 2 || (selectBrands && selectBrands.length == 0 && excludeShops.length == 0) ? null : <div className={styles.disabledWrapper}></div>} */}
                     {decorator({})(
                         <ShopSelector
                             onChange={
@@ -3006,9 +3006,6 @@ class GiftAddModalStep extends React.PureComponent {
                     )
                 },
             },
-
-
-
             transferLimitType: {
                 label: '转赠设置',
                 type: 'custom',
