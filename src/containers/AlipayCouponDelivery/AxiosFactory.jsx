@@ -18,6 +18,7 @@ const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', 'al
 const giftTypeName = [
     { label: '全部', value: '' },
     { label: '代金券', value: '10' },
+    { label: '菜品兑换券', value: '21' },
     { label: '折扣券', value: '111' },
 ];
 

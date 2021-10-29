@@ -14,6 +14,8 @@ import { axiosData } from '../../../helpers/util'
 import registerPage from '../../../../index';
 import { THIRD_VOUCHER_MANAGEMENT } from '../../../constants/entryCodes';
 import { getCardList, getShopPid, getIndirectList } from '../AxiosFactory';
+import WEIXIN from '../../../assets/weixin.png';
+import ZHIFUBAO from '../../../assets/zhifubao.png'
 const moment = require('moment');
 
 
@@ -45,6 +47,7 @@ class CouponManageList extends Component {
 			platformType: '', // 关联平台
 			couponDateRange: '', // 创建时间
             createCouponModalVisible: false,
+            createThirdCouponVisble: false,
             treeData: [],
             shopPid: [], // 直连PID
             indirectList: [], // 间连列表
@@ -52,6 +55,10 @@ class CouponManageList extends Component {
             viewData: {}, // 券详情内容
             editData: {}, // 编辑券详情内容
             batchStatus: '', // 使用状态
+            // couponCodeDockingType: '', // 券码对接类型: 1-订单获取, 2-批量预存导入
+            channelID: 60, // 60支付宝 50微信
+            title: '',
+            platformTypeCreate: 1, // 平台：1 支付宝   3微信
 		}
 		this.handleQuery = debounce(this.handleQuery.bind(this), 500);
 	}
@@ -85,7 +92,7 @@ class CouponManageList extends Component {
     }
 
     initData = () => {
-        getCardList({giftTypes:[10]}).then(x => {
+        getCardList({giftTypes:[10, 111, 21]}).then(x => {
             this.setState({ treeData: x });
         });
         getShopPid().then((res) => {
@@ -192,7 +199,41 @@ class CouponManageList extends Component {
 
     handleCreateCouponModal = () => {
         this.setState({
+            createThirdCouponVisble: true,
+        })
+    }
+
+    handleCloseThirdCouponModal = () => {
+        this.setState({
+            createThirdCouponVisble: false,
+        })
+    }
+
+    // handleCreateCouponModal = () => {
+    //     this.setState({
+    //         createCouponModalVisible: true,
+    //         editData: {},
+    //     })
+    // }
+
+    handleCreateCouponContentModal = ({ type, channelID, platformTypeCreate }, title) => {
+        if (type === 1) { // 支付宝券
+            getCardList({giftTypes:[10]}).then(x => {
+                this.setState({ 
+                    treeData: x 
+                });
+            });
+        } else { // 微信券
+            getCardList({giftTypes:[10, 111, 21]}).then(x => {
+                this.setState({ treeData: x });
+            });
+        }
+        this.setState({
             createCouponModalVisible: true,
+            couponCodeDockingType,
+            channelID,
+            platformTypeCreate,
+            title,
             editData: {},
         })
     }
@@ -519,6 +560,38 @@ class CouponManageList extends Component {
 					</div>
 				</div>
                 {
+                    this.state.createThirdCouponVisble && <Modal
+                        title="创建第三方券"
+                        visible={true}
+                        width={520}
+                        onCancel={this.handleCloseThirdCouponModal}
+                        footer={null}
+                        maskClosable={true}
+                    >
+                        <ul className={styles.createCouponModal__flex__ul}>
+                            <li
+                                onClick={() => {
+                                    this.handleCreateCouponContentModal({ type: 1, channelID: 60, platformTypeCreate: 1 }, '新建第三方支付宝券')
+                                }}
+                                className={styles.createCouponModal__item__li}
+                                style={{ marginRight: '72px' }}
+                            >
+                                <p><img src={ZHIFUBAO}></img></p>
+                                <span>第三方支付宝券</span>
+                            </li>
+                            <li
+                                className={styles.createCouponModal__item__li}
+                                onClick={() => {
+                                    this.handleCreateCouponContentModal({ type: 2, channelID: 50, platformTypeCreate: 3 }, '新建第三方微信券')
+                                }}
+                            >
+                                <p><img src={WEIXIN}></img></p>
+                                <span>第三方微信券</span>
+                            </li>
+                        </ul>
+                    </Modal>
+                }
+                {
                     this.state.createCouponModalVisible &&  <CreateCouponContent
                         // handleSubmit={this.handleSuccesModalSubmit}
                         treeData={this.state.treeData}
@@ -527,6 +600,10 @@ class CouponManageList extends Component {
                         handleCloseModal={this.handleCloseModal}
                         handleQuery={this.handleQuery}
                         editData={this.state.editData}
+                        // couponCodeDockingType={this.state.couponCodeDockingType}
+                        title={this.state.title}
+                        platformType={this.state.platformTypeCreate}
+                        channelID={this.state.channelID}
                 />
                 }
                 {

@@ -31,7 +31,7 @@ class CreateCouponContent extends Component {
             effectGiftTimeHours: editData.effectGiftTimeHours ? `${editData.effectGiftTimeHours}` : '', // 生效时间
             validUntilDays: editData.validUntilDays ? `${editData.validUntilDays}` : '', // 有效天数
             giftValidRange: [], // 固定有效期
-            merchantType: '1', // 支付宝链接方式
+            merchantType: '1', // 支付宝链接方式  1 直连 | 2 间连
             authorizeModalVisible: false, // 代运营授权弹窗
             merchantID: `${props.editData.merchantID}` || '', // 选择的间连和直连
             smidList: [], // smid列表
@@ -213,7 +213,7 @@ class CreateCouponContent extends Component {
     }
 
     handleSubmit = () => {
-        const { form } = this.props
+        const { form, channelID, platformType } = this.props
         form.validateFields((err, values) => {
             if (!err) {
                 // console.log('handleAuthSubmit', values);
@@ -232,8 +232,8 @@ class CreateCouponContent extends Component {
                 const startTime = rangePicker[0].format('YYYYMMDD')
                 const datas = {
                     batchName: values.batchName,
-                    channelID: 60,
-                    couponCodeDockingType: 2,
+                    channelID,
+                    couponCodeDockingType: 1,
                     stock: values.stock.number,
                     effectType,
                     effectGiftTimeHours,
@@ -246,7 +246,7 @@ class CreateCouponContent extends Component {
                     jumpAppID: values.jumpAppID,
                     merchantID,
                     merchantType: values.merchantType,
-                    platformType: 1,
+                    platformType,
                     validUntilDays: values.validUntilDays ? values.validUntilDays.number : '',
                 }
                 if (giftValidRange[0]) {
@@ -652,13 +652,13 @@ class CreateCouponContent extends Component {
     }
 
     render() {
-        const { form } = this.props;
+        const { form, title } = this.props;
         const { getFieldDecorator } = form;
         const { giftItemID, merchantType, editData } = this.state;
-        let title = '新建第三方支付宝券';
-        if (editData.batchName) {
-            title = '编辑第三方支付宝券';
-        }
+        // let title = '新建第三方支付宝券';
+        // if (editData.batchName) {
+        //     title = '编辑第三方支付宝券';
+        // }
         return (
             <Modal
                 title={title}
