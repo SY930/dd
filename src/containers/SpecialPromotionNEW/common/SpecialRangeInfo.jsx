@@ -721,7 +721,7 @@ class SpecialRangeInfo extends React.Component {
                                     <RadioGroup onChange={this.handleConsumeType} value={this.state.consumeType} style={{ display: 'flex', marginTop: '-3px' }}>
                                         <Radio value={'14'} style={{ width: '50%' }}>
                                             <div style={inputStyle}>
-                                                <FormItem validateStatus={this.state.curCardConsumeStatus} help={this.state.curCardConsumeStatus === 'error' && '10以内正整数'}>
+                                                <FormItem validateStatus={this.state.curCardConsumeStatus} help={this.state.curCardConsumeStatus === 'error' && '10位以内正整数'}>
                                                     <PriceInput
                                                         addonBefore={'当天卡值消费满'}
                                                         addonAfter={'元可参与'}
@@ -735,7 +735,7 @@ class SpecialRangeInfo extends React.Component {
                                         </Radio>
                                         <Radio value={'2'} style={{ width: '50%', marginLeft: 25 }}>
                                             <div style={inputStyle}>
-                                                <FormItem validateStatus={this.state.sumCardConsumeStatus} help={this.state.sumCardConsumeStatus === 'error' && '10以内正整数'}>
+                                                <FormItem validateStatus={this.state.sumCardConsumeStatus} help={this.state.sumCardConsumeStatus === 'error' && '10位以内正整数'}>
                                                     <PriceInput
                                                         addonBefore={'活动至今卡值消费满'}
                                                         addonAfter={'元可参与'}
