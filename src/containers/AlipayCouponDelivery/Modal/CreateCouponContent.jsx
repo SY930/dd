@@ -6,6 +6,7 @@ import AuthorizeModalContent from './AuthorizeContent';
 import { getSmid, isAuth, goAuthorizeAC } from '../AxiosFactory'
 import { SALE_CENTER_GIFT_EFFICT_DAY_ALIPAY } from '../../../redux/actions/saleCenterNEW/types';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
+import WXContent from './WXContent';
 // import { axiosData } from '../../../helpers/util'
 import styles from '../AlipayCoupon.less';
 
@@ -213,7 +214,7 @@ class CreateCouponContent extends Component {
     }
 
     handleSubmit = () => {
-        const { form, channelID, platformType } = this.props
+        const { form, channelID, platformType, type } = this.props
         form.validateFields((err, values) => {
             if (!err) {
                 // console.log('handleAuthSubmit', values);
@@ -311,7 +312,7 @@ class CreateCouponContent extends Component {
         })
     }
 
-    // 直连
+    // 支付宝直连
     renderDirect = () => {
         const { form } = this.props;
         const { getFieldDecorator } = form;
@@ -394,7 +395,7 @@ class CreateCouponContent extends Component {
         return null
     }
 
-    // 间连
+    // 支付宝间连
     renderIndirect = () => {
         const { form } = this.props;
         const { getFieldDecorator } = form;
@@ -450,6 +451,13 @@ class CreateCouponContent extends Component {
                 </Col>
             </Row>
         )
+    }
+
+    renderZhifubaoContent = (merchantType) => {
+        return (<div>
+            {merchantType === '2' && this.renderIndirect()}
+            {merchantType === '1' && this.renderDirect()}
+        </div>)
     }
 
     // 优惠券
@@ -652,7 +660,7 @@ class CreateCouponContent extends Component {
     }
 
     render() {
-        const { form, title } = this.props;
+        const { form, title, type } = this.props;
         const { getFieldDecorator } = form;
         const { giftItemID, merchantType, editData } = this.state;
         // let title = '新建第三方支付宝券';
@@ -751,25 +759,46 @@ class CreateCouponContent extends Component {
                                     </RadioGroup>
                                 )}
                             </FormItem>
-                            {merchantType === '2' && this.renderIndirect()}
-                            {merchantType === '1' && this.renderDirect()}
-                            <FormItem
-                                label="跳转小程序"
-                                labelCol={{ span: 4 }}
-                                wrapperCol={{ span: 16 }}
-                                required={true}
-                            >
-                                {getFieldDecorator('jumpAppID', {
-                                    initialValue: editData.jumpAppID,
-                                    rules: [
-                                        { required: true, message: '请输入小程序appid' },
-                                    ],
-                                })(
-                                    <Input
-                                        placeholder="请输入小程序appid"
-                                    />
-                                )}
-                            </FormItem>
+                            { type === 1 && this.renderZhifubaoContent(merchantType) }
+                            { type === 2 && <WXContent form={form} />}
+                            {
+                                type === 1 && <FormItem
+                                    label="跳转小程序"
+                                    labelCol={{ span: 4 }}
+                                    wrapperCol={{ span: 16 }}
+                                    required={true}
+                                >
+                                    {getFieldDecorator('jumpAppID', {
+                                        initialValue: editData.jumpAppID,
+                                        rules: [
+                                            { required: true, message: '请输入小程序appid' },
+                                        ],
+                                    })(
+                                        <Input
+                                            placeholder="请输入小程序appid"
+                                        />
+                                    )}
+                                </FormItem>
+                            }
+                            {
+                                type === 2 && <FormItem
+                                    label="用户最大领取数量"
+                                    labelCol={{ span: 4 }}
+                                    wrapperCol={{ span: 8 }}
+                                    required={true}
+                                >
+                                    {getFieldDecorator('maxCouponsPerUser', {
+                                        rules: [
+                                            { required: true, message: '请输入用户最大领取数量' },
+                                        ],
+                                    })(
+                                        <Input
+                                            placeholder="请输入用户最大领取数量"
+                                            addonAfter="个"
+                                        />
+                                    )}
+                                </FormItem>
+                            }
                         </Form>
                     </Col>
                 </Row>

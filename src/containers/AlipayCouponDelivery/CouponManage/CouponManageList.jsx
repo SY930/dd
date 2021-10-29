@@ -56,6 +56,7 @@ class CouponManageList extends Component {
             editData: {}, // 编辑券详情内容
             batchStatus: '', // 使用状态
             // couponCodeDockingType: '', // 券码对接类型: 1-订单获取, 2-批量预存导入
+            type: '', // 前端标识 1 支付宝 | 2 微信
             channelID: 60, // 60支付宝 50微信
             title: '',
             platformTypeCreate: 1, // 平台：1 支付宝   3微信
@@ -230,7 +231,7 @@ class CouponManageList extends Component {
         }
         this.setState({
             createCouponModalVisible: true,
-            couponCodeDockingType,
+            type,
             channelID,
             platformTypeCreate,
             title,
@@ -600,7 +601,7 @@ class CouponManageList extends Component {
                         handleCloseModal={this.handleCloseModal}
                         handleQuery={this.handleQuery}
                         editData={this.state.editData}
-                        // couponCodeDockingType={this.state.couponCodeDockingType}
+                        type={this.state.type}
                         title={this.state.title}
                         platformType={this.state.platformTypeCreate}
                         channelID={this.state.channelID}
