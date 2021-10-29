@@ -584,15 +584,17 @@ class SpecialRangeInfo extends React.Component {
         }
     }
     onCurCardConsume = (value) => {
+        const reg = /^[1-9]\d{0,9}$/;
         this.setState({
             curCardConsume: value.number,
-            curCardConsumeStatus: value.number > 0 ? 'success' : 'error',
+            curCardConsumeStatus: reg.test(value.number) ? 'success' : 'error',
         })
     }
     onSumCardConsume = (value) => {
+        const reg = /^[1-9]\d{0,9}$/;
         this.setState({
             sumCardConsume: value.number,
-            sumCardConsumeStatus: value.number > 0 ? 'success' : 'error',
+            sumCardConsumeStatus: reg.test(value.number) ? 'success' : 'error',
         })
     }
 
@@ -704,11 +706,12 @@ class SpecialRangeInfo extends React.Component {
                                 className={styles.noPadding}
                                 wrapperCol={{ span: 17 }}
                                 labelCol={{ span: 4 }}
+                                required
                             >
                                 {/* 摇奖活动 */}
                                 <RadioGroup onChange={this.handleIsConsumeTypeChange} value={this.state.isConsumeType}>
                                     <Radio value={'0'}>不限制</Radio>
-                                    <Radio value={'1'}>仅限消费用户参与</Radio>
+                                    <Radio value={'1'}>仅限卡值消费用户参与</Radio>
                                 </RadioGroup>
                             </FormItem>
                             {
