@@ -192,7 +192,7 @@ class GiftAddModalStep extends React.PureComponent {
             scopeLst: [],
             unit: '¥',
             isActivityFoods:false,//是否选择了菜品分类
-            groupID:''
+            groupID:'',
         };
         this.firstForm = null;
         this.secondForm = null;
@@ -277,10 +277,7 @@ class GiftAddModalStep extends React.PureComponent {
 
         // 从redux里获取 shareGifts （共享券列表）。从列表页点击编辑的时候触发的网络请求，根据券id去获取共享券列表
         const { sharedGifts } = nextProps;
-
-
         const _sharedGifts = sharedGifts && sharedGifts.toJS();
-
         if (nextProps.shopSchema.getIn(['shopSchema']) !== this.props.shopSchema.getIn(['shopSchema'])) {
             let shopSchema = nextProps.shopSchema.getIn(['shopSchema']).toJS();
             let malls = [];
@@ -399,6 +396,7 @@ class GiftAddModalStep extends React.PureComponent {
 
     // 处理表单数据变化
     handleFormChange(key, value, formRef) {
+        console.log(key,value,'keyvalue+++++++++++++++++')
         const { gift: { name: describe, data,value:giftType }, type } = this.props;
         const { firstKeys, secondKeys, values } = this.state;
         const newKeys = [...secondKeys[describe][0].keys];
@@ -577,23 +575,7 @@ class GiftAddModalStep extends React.PureComponent {
         if(key==='delivery') {
             this.setState({ delivery: value });
         }
-        if(key === 'selectBrands'){//重新选择店铺，适用店铺和排除店铺都清空
-            // values.shopNames = [];
-            // values.excludeShops = [];
-            // formRef.setFieldsValue({
-            //     shopNames: [],
-            //     excludeShops: [],
-            // });
-            console.log(this.secondForm,'thissecondddddddd')
-            if(giftType == '22' || giftType == '110' || giftType == '111' ){
-                if(this.secondForm){
-                    this.secondForm.setFieldsValue({shopNames: [],excludeShops: []});
-                }
-            }
-        }
-        this.setState({ 
-            values:Object.assign({},values)
-        });
+        
     }
 
     handleCancel = (cb) => {
@@ -846,7 +828,6 @@ class GiftAddModalStep extends React.PureComponent {
 
     handleFinish = () => {
         const { values, groupTypes, delivery} = this.state;
-        console.log(values,'values handle finish **************')
         const { type, gift: { value, data } } = this.props;
         this.secondForm.validateFieldsAndScroll((err, formValues) => {
             if (err) return;
@@ -881,13 +862,19 @@ class GiftAddModalStep extends React.PureComponent {
             let shopNames = '',
                 shopIDs = '',
                 callServer;
-                console.log(this.state.shopSchema.shops,'this.state.shopSchema.shopsthis.state.shopSchema.shopsthis.state.shopSchema.shops')
-            if(values && values.excludeShops && values.excludeShops.length > 0){
+            // if(values && values.shopIDs && values.shopIDs.length > 0){
+            //     params.shopNames = values.shopIDs;
+            // }
+            console.log(values,'values======================handleFinish')
+            if(values.selectedShops && values.selectedShops.length > 0){
+                params.shopNames = values.selectedShops;
+            }
+            if(values.excludeShops && values.excludeShops.length > 0){
                 params.shopNames = values.excludeShops;
-                params.shopScopeType = 2;
-                delete params.excludeShops;
-            }else{
-                params.shopScopeType = 1;
+            }
+            if(values.selectedShops.length == 0 && values.excludeShops.length == 0  ){
+                params.shopNames = [];
+                params.shopScopeType = 0;
             }
             try {
                 if (params.shopNames) {
@@ -1091,7 +1078,7 @@ class GiftAddModalStep extends React.PureComponent {
             this.setState({
                 finishLoading: true,
             });
-            console.log(params,'params<<<<<<<<<<<<<<')
+
             const { accountInfo, startSaving, endSaving } = this.props;
             const groupName = accountInfo.get('groupName');
             startSaving();
@@ -1672,34 +1659,28 @@ class GiftAddModalStep extends React.PureComponent {
             </Row>
         )
     }
-
-    handleShopSelectorChange(values) {
-        console.log(values,'values--------------handleShopSelectorChange')
-        this.setState({
-            values: {...this.state.values, shopNames: values}
-            
-        });
-    }
-    handleExcludeShopSelectorChange(values) {
-        this.setState({
-            values: {...this.state.values, excludeShops: values}
+    changeShopNames = (val) => {
+        const {values} = this.state;
+        console.log(val,'vaalue******************')
+        values.shopNames = val;
+        values.shopScopeType = 1;
+        values.excludeShops = [];
+        this.setState({ 
+            values:Object.assign({},values)
         });
     }
     renderShopNames(decorator) {
         const { shopNames = [],excludeShops = [],selectBrands = [],applyScene } = this.state.values;
         const { gift: { data } } = this.props;
         const brandList = selectBrands.map(x=>x.targetID);
-        console.log(this.state.values,'this.state.values-----------------')
-        console.log(data,'this.props.data-------------------')
         return (
             <Row style={{ marginBottom: shopNames.length === 0 ? -15 : 0 }}>
                 <Col style={{position:'relative'}}>
                     {applyScene == 2 || (selectBrands && selectBrands.length == 0 && excludeShops.length == 0) ? null : <div className={styles.disabledWrapper}></div>}
-                    {decorator({})(
+                    {decorator({
+                        onChange:this.changeShopNames
+                    })(
                         <ShopSelector
-                            onChange={
-                                this.handleShopSelectorChange
-                            }
                             brandList={brandList}
                             isCreateCoupon = {true}
                             // schemaData={this.state.shopSchema}
@@ -1723,15 +1704,28 @@ class GiftAddModalStep extends React.PureComponent {
             </Row>
         )
     }
+    changeExcludeShopNames = (val) => {
+        const {values} = this.state;
+        console.log(val,'changeExcludeShopNames')
+        values.shopNames = val;
+        values.shopScopeType = 2;
+        values.selectedShops = [];
+        this.setState({ 
+            values:Object.assign({},values)
+        });
+    }
     renderExcludeShops(decorator) {
-        let { shopNames = [],selectBrands = []} = this.state.values;
+        let { selectedShops = [],selectBrands = []} = this.state.values;
+        console.log(selectBrands,'selectBrands*********************')
         let { gift: { data } } = this.props;
         const brandList = selectBrands.map(x=>x.targetID);
         return (
             <Row style={{ marginBottom: 5,position:'relative' }}>
-                {selectBrands && selectBrands.length > 0 && shopNames.length == 0 ? null : <div className={styles.disabledWrapper}></div>}
+                {selectBrands && selectBrands.length > 0 && selectedShops.length == 0 ? null : <div className={styles.disabledWrapper}></div>}
                 <Col>
-                    {decorator({})(
+                    {decorator({
+                        onChange:this.changeExcludeShopNames
+                    })(
                         <ShopSelector
                             brandList={brandList}
                             isCreateCoupon = {true}
@@ -2357,7 +2351,6 @@ class GiftAddModalStep extends React.PureComponent {
                     thirdKeysToDisplay[0].keys = [...THIRD_KEYS[describe][0].keys];
                     fourthKeysToDisplay[0].keys = [...FOURTH_KEYS[describe][0].keys];
                     thirdKeysToDisplay[0].keys = thirdKeysToDisplay[0].keys.filter(item => item != 'excludeShops');
-                    console.log(thirdKeysToDisplay[0].keys,'thirdKeysToDisplay[0].keys')
                     if(values.mallScope == '0' || values.mallScope == undefined) {
                         fourthKeysToDisplay[0].keys = fourthKeysToDisplay[0].keys.filter((key)=>{
                             return key !== 'mallIncludeGoodSelector';
@@ -2494,9 +2487,45 @@ class GiftAddModalStep extends React.PureComponent {
             />
         )
     }
-
-
-
+    //重新选择所属品牌，清空适用店铺和排除店铺
+    changeSelectedBrands(value,form){
+        console.log(value,'value****************')
+        const {values} = this.state;
+        const { gift: { value:giftType }, type } = this.props;
+        values.selectedShops = [];
+        values.excludeShops = [];
+        values.shopNames = [];
+        values.shopIDs = [];
+        values.selectBrands = value;
+        form.setFieldsValue({
+            selectedShops: [],
+            excludeShops: [],
+            shopIDs:[]
+        });
+        if(giftType == '22' || giftType == '110' || giftType == '111' ){
+            if(this.secondForm){
+                this.secondForm.setFieldsValue({
+                    selectedShops: [],
+                    excludeShops: [],
+                    shopIDs:[]
+                });
+            }
+        }
+        this.setState({ 
+            values:Object.assign({},values)
+        });
+    }
+    renderSelectBrands = (decorator,form) => {
+        const { values} = this.state;
+        return  decorator({
+            key:'selectBrands',
+            initialValue:values.selectBrands,
+            onChange:(value) => this.changeSelectedBrands(value,form)
+        })(
+            <SelectBrands />
+        )
+    }
+    
     /**
      * @description
      * @params this.props.gift 传入的参数
@@ -2514,7 +2543,6 @@ class GiftAddModalStep extends React.PureComponent {
         if (formData.shopNames && formData.shopNames.length > 0 && formData.shopNames[0].id) {
             formData.shopNames = formData.shopNames.map(shop => shop.id);
         }
-        console.log(formData,'formdata>>>>>>>>>>>>>>>>>')
 
         if (formData.moneyTopLimitValue) {
             formData.moneyTopLimitType = '1'
@@ -2626,7 +2654,7 @@ class GiftAddModalStep extends React.PureComponent {
             selectBrands: {
                 label: '所属品牌',
                 type: 'custom',
-                render: decorator => decorator({})(<SelectBrands/>),
+                render: (decorator, form) => this.renderSelectBrands(decorator, form)
             },
             cardTypeList: {
                 label: '适用卡类',
@@ -2743,7 +2771,7 @@ class GiftAddModalStep extends React.PureComponent {
                 ],
                 disabled: type !== 'add' && type !== 'copy',
             },
-            shopNames: {
+            selectedShops: {
                 type: 'custom',
                 label: '适用店铺',
                 defaultValue: [],
@@ -3277,15 +3305,13 @@ class GiftAddModalStep extends React.PureComponent {
             }
         }
         const combineTypes = hasMallArr;
-        formData.shopScopeType == '2';
-        if(formData.shopScopeType == '1'){
-            formData.shopNames = formData.shopNames;
+        if(formData.shopScopeType == 1){
+            formData.selectedShops = formData.shopNames;
             formData.excludeShops = [];
-        }else{
+        }else if(formData.shopScopeType == 2){
             formData.excludeShops = formData.shopNames;
-            formData.shopNames = [];
+            formData.selectedShops = [];
         }
-        console.log(formData,'formDataformDataformDataformDataformDataformDataformDataformData')
         return (
             <div>
                 <div

@@ -439,7 +439,7 @@ export const MALL_COUPON_APPLY_SETTING_FORM_ITEMS = {
                 'giftShareType',
                 'moneyLimitTypeAndValue',
                 'customerUseCountLimit',
-                // 'shopNames',
+                // 'selectedShops',
                 'showGiftRule',
                 'giftImagePath',
                 // 'aggregationChannels',
@@ -465,7 +465,7 @@ export const MALL_COUPON_APPLY_SETTING_FORM_ITEMS = {
                 'giftShareType',
                 'moneyLimitTypeAndValue',
                 'customerUseCountLimit',
-                // 'shopNames',
+                // 'selectedShops',
                 'showGiftRule',
                 'giftImagePath',
                 // 'aggregationChannels',
@@ -741,7 +741,7 @@ export const SECOND_KEYS = (() => ({
                 'giftShareType',
                 'moneyLimitTypeAndValue',
                 'customerUseCountLimit',
-                // 'shopNames',
+                // 'selectedShops',
                 // 'amountType',
                 'showGiftRule',
                 'giftImagePath',
@@ -770,7 +770,7 @@ export const SECOND_KEYS = (() => ({
                 'giftShareType',
                 'moneyLimitTypeAndValue',
                 'customerUseCountLimit',
-                'shopNames',
+                'selectedShops',
                 // 'amountType',
                 'showGiftRule',
                 'giftImagePath',
@@ -797,7 +797,7 @@ export const SECOND_KEYS = (() => ({
                 'giftShareType',
                 'moneyLimitTypeAndValue',
                 'customerUseCountLimit',
-                // 'shopNames',
+                // 'selectedShops',
                 'showGiftRule',
                 'giftImagePath',
                 'aggregationChannels',
@@ -825,7 +825,7 @@ export const SECOND_KEYS = (() => ({
                 'giftShareType',
                 'moneyLimitTypeAndValue',
                 'customerUseCountLimit',
-                // 'shopNames',
+                // 'selectedShops',
                 'showGiftRule',
                 'giftImagePath',
                 'aggregationChannels',
@@ -872,7 +872,7 @@ export const SECOND_KEYS = (() => ({
                 pull: 2,
             },
             keys: [
-                'shopNames',
+                'selectedShops',
                 'transferLimitType',
                 'couponTrdChannelStockNums',
                 'isSynch',
@@ -897,7 +897,7 @@ export const SECOND_KEYS = (() => ({
                 'isOnlineExchangeable',
                 'giftShareType',
                 'moneyLimitTypeAndValue',
-                'shopNames',
+                'selectedShops',
                 'excludeShops',
                 'showGiftRule',
                 'giftImagePath',
@@ -923,7 +923,7 @@ export const SECOND_KEYS = (() => ({
                 'isOnlineExchangeable',
                 'giftShareType',
                 'moneyLimitTypeAndValue',
-                'shopNames',
+                'selectedShops',
                 'excludeShops',
                 'showGiftRule',
                 'giftImagePath',
@@ -950,7 +950,7 @@ export const SECOND_KEYS = (() => ({
                 'giftShareType',
                 'moneyLimitTypeAndValue',
                 'customerUseCountLimit',
-                'shopNames',
+                'selectedShops',
                 'excludeShops',
                 'showGiftRule',
                 'giftImagePath',
@@ -971,7 +971,7 @@ export const THIRD_KEYS = (() => ({
             keys: [
                 'selectBrands',
                 'foodsboxs',
-                'shopNames',
+                'selectedShops',
                 'excludeShops',
                 // 'subRule',
                 'isNeedCustomerInfo'
@@ -987,7 +987,7 @@ export const THIRD_KEYS = (() => ({
             keys: [
                 'selectBrands',
                 'foodScopes',
-                'shopNames',
+                'selectedShops',
                 'excludeShops',
                 'subRule',
                 'isNeedCustomerInfo'
@@ -1003,7 +1003,7 @@ export const THIRD_KEYS = (() => ({
             keys: [
                 'selectBrands',
                 'foodScopes',
-                'shopNames',
+                'selectedShops',
                 'excludeShops',
                 'subRule',
                 'isNeedCustomerInfo'
@@ -1062,7 +1062,7 @@ export const FOURTH_KEYS = (() => ({
 export const FORM_ITEMS_GIFTS_RULES_TO_EXCLUDE_IN_MALL_SCENE = [
     'supportOrderTypeLst',              // 适用业务
     'isOfflineCanUsing',                // 使用场景
-    'shopNames',                        // 可使用店铺
+    'selectedShops',                        // 可使用店铺
     'aggregationChannels',              // 投放场景
     'TrdTemplate',                      // 是否关联第三方券
 ]
