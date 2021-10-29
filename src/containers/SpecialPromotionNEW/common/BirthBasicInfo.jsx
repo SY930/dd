@@ -146,7 +146,6 @@ class PromotionBasicInfo extends React.Component {
 
                 const eventStartDate = actDate[0] && moment(actDate[0]).format(format)
                 const eventEndDate = actDate[1] && moment(actDate[1]).format(format)
-                debugger
                 if (nextFlag) {
                     this.props.setSpecialBasicInfo({
                         eventRemark: this.state.description,
@@ -225,8 +224,6 @@ class PromotionBasicInfo extends React.Component {
         const categorys = this.props.saleCenter.get('characteristicCategories').toJS();
         const type = this.props.type;
         const item = categorys.find(v => v.key === type);
-        // debugger
-        console.log('debugger', 'renderPromotionType')
         const lab = type ? categorys.find((cc) => {
             return cc.key === type
         }).title : '';
@@ -335,7 +332,6 @@ class PromotionBasicInfo extends React.Component {
             >
                 <Row>
                     <Col span={19}>
-                        {/* debugger */}
                         <RangePicker disabled={ifJumpOpenCard} allowClear={false} value={actDate} onChange={this.handleActDateChange} disabledDate={(currentDate) => {
                             if (this.props.isNew) {
                                 return false

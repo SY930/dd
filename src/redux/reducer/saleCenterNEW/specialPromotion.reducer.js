@@ -81,7 +81,6 @@ export const specialPromotion_NEW = ($$state = $initialState, action) => {
     switch (action.type) {
         case SALE_CENTER_SET_SPECIAL_PROMOTION_EVENT_INFO:
             // 新短信模板上线后 需要把以前审核失败/待审核的活动在编辑时短信模板情况, 强制选择审核通过的短信模板
-            // debugger
             if (
                 action.payload.data &&
                 (action.payload.data.status == 21 ||
@@ -233,7 +232,6 @@ export const specialPromotion_NEW = ($$state = $initialState, action) => {
                 ["customerCount"],
                 action.payload.customerCount
             );
-        // debugger 强制填入默认数据
         case SALE_CENTER_CARDGROUPID:
             return $$state.setIn(
                 ["$eventInfo", "groupMemberID"],

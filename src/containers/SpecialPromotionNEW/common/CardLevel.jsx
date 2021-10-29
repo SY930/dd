@@ -90,7 +90,6 @@ class CardLevel extends React.Component {
                 })
             })
         } else {
-            // debugger
             this.setState({
                 cardLevelRangeType: cardLevelRangeType || thisEventInfo.cardLevelRangeType || '0',
                 cardLevelIDList: thisEventInfo.cardLevelIDList || [],

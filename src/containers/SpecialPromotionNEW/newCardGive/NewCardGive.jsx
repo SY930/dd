@@ -32,7 +32,6 @@ class NewCardGive extends NewPromotion {
         }
         console.log('this.props.isNew', this.props.isNew)
         console.log('this.props.specialPromotion', this.props.specialPromotion)
-        // debugger
         const steps = [
 
             {

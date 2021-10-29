@@ -101,7 +101,7 @@ const fetchCardType = function (opts) {
  *
  * @returns
  */
-const renderGivePointFn = function () {
+const renderGivePointFn = function (isBenefitJumpSendGift) {
     const {
         perfectReturnGiftCheckBoxStatus,
         perfectReturnGiftPoint,
@@ -155,7 +155,9 @@ const renderGivePointFn = function () {
                     />
                 )}
             </FormItem>
-            <FormItem
+            {
+                isBenefitJumpSendGift ? null : 
+                <FormItem
                 wrapperCol={{ span: 12 }}
                 labelCol={{ span: 6 }}
                 className={styles.FormItemSecondStyle}
@@ -187,6 +189,8 @@ const renderGivePointFn = function () {
                     })}
                 </Select>
             </FormItem>
+            }
+            
         </div>
     );
 };
@@ -304,7 +308,7 @@ export const renderThree = function (type, isBenefitJumpSendGift) {
                 label: "赠送积分",
                 key: "perfectReturnGiftPoint",
             })}
-            {perfectReturnGiftPoint && renderGivePointFn.call(this)}
+            {perfectReturnGiftPoint && renderGivePointFn.call(this, isBenefitJumpSendGift)}
             {
                 type == '60' ?
                     renderCheckbox.call(this, {
@@ -414,7 +418,6 @@ export const initPerfectCheckBox = function (isBenefitJumpSendGift) {
     perfectReturnGiftCheckBoxStatus.perfectReturnGiftCoupon = couponItem;
     perfectReturnGiftCheckBoxStatus.perfectReturnGiftGrowthValue = growthValueItem;
     if (!pointItem && !couponItem && !growthValueItem) {
-        // debugger 编辑回显情况需要排除
         if (!isBenefitJumpSendGift) {
             perfectReturnGiftCheckBoxStatus.perfectReturnGiftCoupon = true;
         }

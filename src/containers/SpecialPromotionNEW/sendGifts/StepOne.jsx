@@ -383,7 +383,6 @@ class StepOne extends React.Component {
             dateInPeriodType = 'd'
         }
         if (isBenefitJumpSendGift) {
-            debugger
             if(this.props.isNew) {
                 dateInPeriodType = dateRangeType
             }
@@ -407,7 +406,6 @@ class StepOne extends React.Component {
                                 initialValue: dateInPeriodType,
                                 onChange: (val) => {
                                     // 清除数据
-                                    // debugger
                                     if (getFieldValue('dateInPeriodType') != val) {
                                         setFieldsValue({
                                             dateDescInPeroid: []

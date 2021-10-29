@@ -147,6 +147,7 @@ class NewCustomerPage extends Component {
             message.error(`请求回来的数据有误`);
             return null;
         }
+        response.data.cardGroupID = '权益卡有效会员'
         response.data.cardLevelIDList = []
         const {
             ifJumpSetData
@@ -166,7 +167,7 @@ class NewCustomerPage extends Component {
     }
     fromCrmJump() {
         const {
-            from = '', // debugger 测试
+            from = '', 
             type,
             gmID,
             totalMembers,
@@ -179,12 +180,11 @@ class NewCustomerPage extends Component {
             createBy,
             BenefitName = '',
             rangeType = 'm',
-            // jumpSepid = '7023667831451421589',
+            // jumpSepid = '7024319846141660053',
             jumpSepid = '',
         } = this.getQueryVariable()
         const state = getStore().getState();
         if (from === 'rfm') {
-            // debugger 参考
             const item = CRM_PROMOTION_TYPES[53];
             this.handleNewPromotionCardClick(item);
             this.props.setSpecialPromotionCardGroupID(`${groupMembersName} -- 【共${totalMembers}人】`);
@@ -215,7 +215,6 @@ class NewCustomerPage extends Component {
             })[0];
             // 新建逻辑
             // jumpSepid 判断有没有id来判断是否可以查到活动内容
-            // debugger
             setTimeout(() => {
                 this.handleNewPromotionCardClick(item, true);
             }, 2000)
@@ -253,7 +252,6 @@ class NewCustomerPage extends Component {
             this.props.saleCenterSetJumpOpenCardParams(true)
             this.props.saleCenterSetJumpSendGiftParams(false)
 
-            // “默认数据”debugger
 
             // isBenefitJumpOpenCard
 
@@ -280,7 +278,6 @@ class NewCustomerPage extends Component {
                     isJumpNew: false,
                 })
             } else {
-                // “默认数据”debugger
                 const {
                     ifJumpSelfDefine
                 } = this.state
@@ -304,7 +301,6 @@ class NewCustomerPage extends Component {
             this.props.saleCenterSetJumpSendGiftParams(true)
             this.props.saleCenterSetJumpOpenCardParams(false)
             // 新建逻辑
-            // debugger
             this.clearUrl();
         } else {
             const saleID = type;
@@ -384,7 +380,6 @@ class NewCustomerPage extends Component {
         if (HUALALA.ENVIRONMENT === 'production-release' && UNRELEASED_PROMOTION_TYPES.includes(`${key}`)) {
             return message.success(SALE_LABEL.k6316gwc);//活动尚未开放
         }
-        // debugger
         if (isSpecial) {
             const specialIndex = this.props.saleCenter.get('characteristicCategories').toJS().findIndex(promotion => promotion.key === key);
             this.handleSpecialPromotionCreate(specialIndex, promotionEntity, ifskip)
@@ -458,7 +453,6 @@ class NewCustomerPage extends Component {
                 eventWay: key,
             });
         }
-        // debugger
         // 完善资料送礼只能创建一次
         // if (key === '60') {
         //     if (isHuaTian()) {
@@ -497,7 +491,6 @@ class NewCustomerPage extends Component {
     setSpecialModalVisible(specialModalVisible) {
         this.setState({ specialModalVisible });
         if (!specialModalVisible) {
-            debugger
             const ifJumpOpenCard = this.props.specialPromotion.isBenefitJumpOpenCard
             const isBenefitJumpSendGift = this.props.specialPromotion.isBenefitJumpSendGift
             console.log('ifJumpOpenCard', ifJumpOpenCard)
@@ -553,11 +546,9 @@ class NewCustomerPage extends Component {
         const { intl } = this.props;
         const create = intl.formatMessage(COMMON_STRING.create);
         const title = <p>{create} {promotionType}</p>;
-        console.log(' now debugger  2')
         const {
             isJumpNew = true,
         } = this.state
-        // debugger 这里是新建的时候 弹的弹窗 也是编辑的时候
         return (
             <Modal
                 wrapClassName={'progressBarModal'}

@@ -264,7 +264,6 @@ class Two extends React.Component {
         } = this.props
         // isBenefitJumpSendGift
         console.log('isBenefitJumpSendGift', isBenefitJumpSendGift)
-        debugger
         return (
             <Form>
                 <FormItem

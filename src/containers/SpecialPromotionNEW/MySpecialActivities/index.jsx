@@ -1482,7 +1482,6 @@ class MySpecialActivities extends React.Component {
                 },
             },
         ];
-        // debugger
         return (
             <div className={`layoutsContent ${styles.tableClass}`}>
                 <Table
@@ -1694,7 +1693,6 @@ class MySpecialActivities extends React.Component {
     handleUpdateOpe() {
         let _record = arguments[1];
         const user = this.props.user;
-        debugger // debugger
         this.props.fetchSpecialDetail({
             data: {
                 itemID: _record ? _record.itemID : this.state.currentItemID, // 点击重试时record为undefiend

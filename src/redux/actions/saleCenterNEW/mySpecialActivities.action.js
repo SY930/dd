@@ -79,7 +79,6 @@ export const fetchSpecialPromotionList = (opts) => {
     return dispatch => {
         opts.start && opts.start();
         dispatch({ type: SPECIAL_PROMOTION_FETCH_PROMOTION_LIST, payload: opts });
-        debugger// 主要这块没确认
         opts.data.createScenes = '0'
         fetch('/api/specialPromotion/queryEvents_NEW', {
             method: 'POST',
@@ -403,7 +402,6 @@ export const fetchSpecialDetailTimeout = () => ({ type: SALE_CENTER_FETCH_SPECIA
 export const fetchSpecialDetailAC = opts => {
     return dispatch => {
         dispatch({ type: SALE_CENTER_FETCH_SPECIAL_DETAIL_START, payload: opts });
-        // debugger
         fetch('/api/specialPromotion/queryEventDetail_NEW', {
             method: 'POST',
             body: JSON.stringify(opts.data),

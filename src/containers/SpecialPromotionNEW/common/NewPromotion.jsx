@@ -67,7 +67,6 @@ export default class NewPromotion extends React.Component {
                 return message.warning(COMMON_SPE.dd5a476c91d4150);
             }
         }
-        debugger
         const opts = {
             event: {
                 ...specialPromotion.$eventInfo,
@@ -125,7 +124,6 @@ export default class NewPromotion extends React.Component {
                     });
                     cb();
                     if (jumpToCrmFlag) {
-                        debugger
                         // closePage();
                         // jumpPage({ pageID: '1000072012', type: specialPromotion.isBenefitJumpOpenCard ? 52 : 53, from: 'saleCenterBenefit' });
                         jumpPage({ menuID: 'editBenefitCard', from: 'saleCenterBenefit', jumpSepid: res.itemID });
@@ -149,7 +147,6 @@ export default class NewPromotion extends React.Component {
                     });
                     cb();
                     if (jumpToCrmFlag) {
-                        debugger
                         // closePage();
                         // jumpPage({ pageID: '1000072012', type: specialPromotion.isBenefitJumpOpenCard ? 52 : 53, from: 'saleCenterBenefit' });
                         jumpPage({ menuID: 'editBenefitCard', from: 'saleCenterBenefit', jumpSepid: res.itemID });
