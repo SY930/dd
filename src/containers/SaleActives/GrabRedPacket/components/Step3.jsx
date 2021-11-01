@@ -351,8 +351,8 @@ class Step3 extends React.Component {
                 placeholder: '请输入人数',
                 rules: [{
                     required: true,
-                    pattern: /^(([1-9]\d{0,4}))$/,
-                    message: '请输入大于0的5位以内整数',
+                    pattern: /^([2-9]|[1-9]\d{1,4})$/,
+                    message: '请输入大于1的5位数以内整数',
                 }],
                 wrapperCol: { span: 15 },
             },

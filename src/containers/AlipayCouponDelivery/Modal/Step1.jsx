@@ -50,7 +50,6 @@ class Step1 extends Component {
 
     // 日期
     handleRangeChange = (date, dateString) => {
-        console.log('🚀 ~ file: SuccessModalContent.jsx ~ line 16 ~ SuccessModalContent ~ handleRangeChange ~ val', date, dateString)
         this.setState({
             successStartEnd: dateString,
         })
@@ -58,7 +57,6 @@ class Step1 extends Component {
 
     // 优惠券
     handleCouponChange = (value) => {
-        console.log('🚀 ~ file: SuccessModalContent.jsx ~ line 49 ~ SuccessModalContent ~ value', value)
         this.setState({
             couponValue: value,
         })

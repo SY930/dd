@@ -188,9 +188,9 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         bottom: 7,
     },
     {
-        title: '会员专享菜',
+        title: '会员专属菜',
         isSpecial: false,
-        text: '会员专享菜品，利用低价吸引用户注册会员',
+        text: '会员专属菜品，利用低价吸引用户注册会员',
         example: '',
         tags: ['微信'],
         key: '5020',

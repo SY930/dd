@@ -291,9 +291,8 @@ class AdvancedPromotionDetailSetting extends React.Component {
             </FormItem>
         )
     }
-
+   
     renderPaymentSetting() {
-
         return (
             <FormItem
                 label={'金额核算'}
@@ -343,7 +342,6 @@ class AdvancedPromotionDetailSetting extends React.Component {
             </FormItem>
         )
     }
-
     onPromotionChange(val) {
         this.setState({
             mutexPromotions: val,
@@ -691,11 +689,11 @@ class AdvancedPromotionDetailSetting extends React.Component {
                     cardScopeIDs.length === 0 ? <p style={{ color: 'orange', marginLeft: 110 }}>{SALE_LABEL.k5m4pxz2}</p> : null
                 }
                 {
-                    this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) == '1010' &&
+                    (this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) == '1010' || this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) == '2020') &&
                     <FormItem
                         label={<span>
                             卡值不足不参与
-                        <Tooltip title={'仅线上点餐支持，POS不支持'}>
+                            <Tooltip title={'仅线上点餐支持，POS不支持'}>
                                 <Icon style={{ marginLeft: 5, marginRight: -5 }} type="question-circle" />
                             </Tooltip>
                         </span>}
@@ -730,7 +728,6 @@ class AdvancedPromotionDetailSetting extends React.Component {
         const {
             justUserSetting
         } = this.props
-
         if (justUserSetting) {
             return (
                 <div>
