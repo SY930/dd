@@ -386,7 +386,7 @@ class ReturnGiftDetailInfo extends React.Component {
                         wrapperCol={{ span: 17 }}
                     >
                         <RadioGroup
-                            value={String(activeCode)}
+                            value={activeCode ? String(activeCode) : '1'}
                             onChange={(e) => this.activeCodeRadioChange(e)}
                         >
                             <Radio key={'1'} value={'1'}>消费送礼</Radio >

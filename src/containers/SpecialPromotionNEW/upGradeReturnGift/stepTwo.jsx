@@ -528,6 +528,10 @@ class StepTwo extends React.Component {
                 <Option key="1">{this.props.intl.formatMessage(STRING_SPE.de8g998md25272)}</Option>
             </Select>
         );
+        const groupMembersID = this.state.groupMembersID
+        const isDisableGroupSelect = typeof groupMembersID === 'string' && groupMembersID.includes &&
+              groupMembersID.includes('--') // RFM跳转后不可编辑会员群体
+
         return (
             <Form>
                 {
@@ -564,6 +568,7 @@ class StepTwo extends React.Component {
                                         initialValue: this.state.groupMembersID,
                                     })(
                                         <Select
+                                            disabled={isDisableGroupSelect}
                                             style={{ width: '100%' }}
                                             showSearch
                                             notFoundContent={`${this.props.intl.formatMessage(STRING_SPE.d2c8a4hdjl248)}`}

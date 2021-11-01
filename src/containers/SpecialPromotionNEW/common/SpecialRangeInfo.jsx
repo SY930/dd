@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Checkbox, Radio, Select, message, Tooltip, Icon } from 'antd';
+import { Form, Checkbox, Radio, Select, message, Row, Col } from 'antd';
 import { connect } from 'react-redux'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
@@ -54,6 +54,12 @@ class SpecialRangeInfo extends React.Component {
             autoRegister: 1, // 是否需用户填写注册信息
             defaultCardType: '', // 用户静默注册为何种会员
             shopIDList: [],
+            isConsumeType: '0', // 消费限制  0 不限制 1仅消费用户参与  前端回显使用
+            consumeType: '14', // 仅消费用户参与 14：当天， 2：活动至今
+            curCardConsume: '0', // 当天卡值消费满  前端回显使用
+            curCardConsumeStatus: 'success',
+            sumCardConsume: '0', // 活动至今卡值消费满  前端回显使用
+            sumCardConsumeStatus: 'success',
         };
 
         this.handlePrev = this.handlePrev.bind(this);
@@ -91,6 +97,10 @@ class SpecialRangeInfo extends React.Component {
         });
         if (this.props.specialPromotion.getIn(['$eventInfo', 'itemID'])) {
             const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
+            const { consumeType, consumeTotalAmount} = specialPromotion;
+            let isConsumeType = '0';
+            let curCardConsume = '0';
+            let sumCardConsume = '0';
             let joinRange = [],
                 freeGetJoinRange = [],
                 joinCount = '0',
@@ -130,6 +140,12 @@ class SpecialRangeInfo extends React.Component {
                 joinCount = '1';
                 partInTimesNoValidName = 'partInTimesNoValid';
             }
+            if (consumeType != '0') {
+                isConsumeType = '1';
+                consumeType == '14' ? curCardConsume = consumeTotalAmount : sumCardConsume = consumeTotalAmount;
+            } else {
+                isConsumeType = '0';
+            }
             this.setState({
                 joinRange,
                 freeGetJoinRange,
@@ -146,6 +162,10 @@ class SpecialRangeInfo extends React.Component {
                 cardLevelRangeType: specialPromotion.cardLevelRangeType || '0',
                 [partInTimesNoValidName]: specialPromotion.partInTimes, // 最大参与次数
                 autoRegister: specialPromotion.autoRegister == 0 ? 0 : 1,
+                isConsumeType,
+                consumeType: String(consumeType),
+                curCardConsume,
+                sumCardConsume,
             })
         }
     }
@@ -177,6 +197,10 @@ class SpecialRangeInfo extends React.Component {
             autoRegister,
             defaultCardType,
             shopIDList,
+            curCardConsume,
+            sumCardConsume,
+            isConsumeType,
+            consumeType,
         } = this.state;
         const opts = {
             rewardOnly,
@@ -186,6 +210,8 @@ class SpecialRangeInfo extends React.Component {
             cardLevelID: this.state.cardLevelID || '0',
             cardLevelIDList: this.state.cardLevelIDList || [],
             cardLevelRangeType: this.state.cardLevelRangeType || '0',
+            consumeType: '0',
+            // consumeTotalAmount: '', // 消费金额
         };
         if (this.props.type === '22' && (maxPartInPerson === '' || maxPartInPerson === null)) {
             nextFlag = false;
@@ -233,6 +259,26 @@ class SpecialRangeInfo extends React.Component {
                 opts.shopIDList = [];
             }
             opts.shopRange = opts.shopIDList.length > 0 ? 1 : 2
+        }
+        if (this.props.type === '20') { // 摇奖活动 消费限制
+            if (isConsumeType !== '0') {
+                if (consumeType === '14' && curCardConsume <= 0) {
+                   this.setState({
+                       curCardConsumeStatus: 'error'
+                   })
+                    return false
+                }
+                if (consumeType === '2' && sumCardConsume <= 0 ) {
+                    this.setState({
+                        sumCardConsumeStatus: 'error'
+                    })
+                    return false
+                }
+                opts.consumeType = consumeType;
+                opts.consumeTotalAmount = consumeType === '14' ? curCardConsume : sumCardConsume; // 消费金额
+            } else {
+                opts.consumeType = '0';
+            }
         }
 
         if (nextFlag) {
@@ -537,6 +583,21 @@ class SpecialRangeInfo extends React.Component {
             })
         }
     }
+    onCurCardConsume = (value) => {
+        const reg = /^[1-9]\d{0,9}$/;
+        this.setState({
+            curCardConsume: value.number,
+            curCardConsumeStatus: reg.test(value.number) ? 'success' : 'error',
+        })
+    }
+    onSumCardConsume = (value) => {
+        const reg = /^[1-9]\d{0,9}$/;
+        this.setState({
+            sumCardConsume: value.number,
+            sumCardConsumeStatus: reg.test(value.number) ? 'success' : 'error',
+        })
+    }
+
     handleJoinRangeChange(val) {
         this.setState({
             joinRange: val,
@@ -570,6 +631,22 @@ class SpecialRangeInfo extends React.Component {
             isVipBirthdayMonth: e.target.value,
         });
     }
+
+    handleIsConsumeTypeChange = (e) => {
+        this.setState({
+            isConsumeType: e.target.value,
+            sumCardConsumeStatus: 'success',
+            curCardConsumeStatus: 'success',
+        })
+    }
+
+    handleConsumeType = (e) => {
+        this.setState({
+            consumeType: e.target.value,
+            sumCardConsumeStatus: 'success',
+            curCardConsumeStatus: 'success',
+        });
+    } 
     handleautoRefundChange = (e) => {
         this.setState({
             autoRefund: e.target.value,
@@ -584,6 +661,9 @@ class SpecialRangeInfo extends React.Component {
         });
     }
     render() {
+        const inputStyle = {
+            width: '100%', display: 'inline-block',  verticalAlign: 'middle',
+        };
         return (
             <Form>
                 {this.props.type === '21' ? this.renderFreeGetJoinRange() : null}
@@ -619,7 +699,63 @@ class SpecialRangeInfo extends React.Component {
                         </FormItem>) : null
                 }
                 {
-                    this.props.type !== '23' ?
+                    this.props.type === '20' ? 
+                        <div>
+                            <FormItem
+                                label={`消费限制`}
+                                className={styles.noPadding}
+                                wrapperCol={{ span: 17 }}
+                                labelCol={{ span: 4 }}
+                                required
+                            >
+                                {/* 摇奖活动 */}
+                                <RadioGroup onChange={this.handleIsConsumeTypeChange} value={this.state.isConsumeType}>
+                                    <Radio value={'0'}>不限制</Radio>
+                                    <Radio value={'1'}>仅限卡值消费用户参与</Radio>
+                                </RadioGroup>
+                            </FormItem>
+                            {
+                                this.state.isConsumeType === '1' &&
+                                <Row>
+                                    <Col span={17} offset={4}>
+                                    <RadioGroup onChange={this.handleConsumeType} value={this.state.consumeType} style={{ display: 'flex', marginTop: '-3px' }}>
+                                        <Radio value={'14'} style={{ width: '50%' }}>
+                                            <div style={inputStyle}>
+                                                <FormItem validateStatus={this.state.curCardConsumeStatus} help={this.state.curCardConsumeStatus === 'error' && '10位以内正整数'}>
+                                                    <PriceInput
+                                                        addonBefore={'当天卡值消费满'}
+                                                        addonAfter={'元可参与'}
+                                                        disabled={this.state.consumeType.indexOf('14') === -1}
+                                                        value={{ number: this.state.curCardConsume }}
+                                                        // defaultValue={{ number: this.state.deductPoints }}
+                                                        onChange={this.onCurCardConsume}
+                                                    />
+                                                </FormItem>
+                                            </div>
+                                        </Radio>
+                                        <Radio value={'2'} style={{ width: '50%', marginLeft: 25 }}>
+                                            <div style={inputStyle}>
+                                                <FormItem validateStatus={this.state.sumCardConsumeStatus} help={this.state.sumCardConsumeStatus === 'error' && '10位以内正整数'}>
+                                                    <PriceInput
+                                                        addonBefore={'活动至今卡值消费满'}
+                                                        addonAfter={'元可参与'}
+                                                        disabled={this.state.consumeType.indexOf('2') === -1}
+                                                        value={{ number: this.state.sumCardConsume }}
+                                                        // defaultValue={{ number: this.state.deductPoints }}
+                                                        onChange={this.onSumCardConsume}
+                                                    />
+                                                </FormItem>
+                                            </div>
+                                        </Radio>
+                                    </RadioGroup>
+                                    </Col>
+                                </Row>
+                                    
+                            }
+                        </div> : null
+                }
+                {
+                    (this.props.type !== '23')  ?
                         <FormItem
                             label={`${this.props.intl.formatMessage(STRING_SPE.d143141l5s0247)}`}
                             className={styles.noPadding}
@@ -627,7 +763,7 @@ class SpecialRangeInfo extends React.Component {
                             labelCol={{ span: 4 }}
                         >
                             <RadioGroup onChange={this.handleVipBirthdayMonthChange} value={this.state.isVipBirthdayMonth}>
-                                <Radio value={'0'}>{this.props.intl.formatMessage(STRING_SPE.d31ei98dbgi21253)}</Radio>
+                                <Radio value={'0'}>{this.props.intl.formatMessage(STRING_SPE.d31ei98dbgi21253)}</Radio> 
                                 <Radio value={'1'}>{this.props.intl.formatMessage(STRING_SPE.de8fn8fabn25238)}</Radio>
                             </RadioGroup>
                         </FormItem> : null

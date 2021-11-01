@@ -135,12 +135,11 @@ class NewCustomerPage extends Component {
             gmID,
             totalMembers,
             groupMembersName,
+            groupMembersID,
             groupID,
-            levelKey,
-            levelType,
-            monetaryType,
-            reportMonth,
-            createBy,
+            mfrGrades = '',
+            awakenTip,
+            RValue,
         } = this.getQueryVariable()
         // 测试使用
         // const  {
@@ -160,20 +159,21 @@ class NewCustomerPage extends Component {
 
 
         if (from === 'rfm') {
-            const item = CRM_PROMOTION_TYPES[53];
+            const item = CRM_PROMOTION_TYPES[type];
             this.handleNewPromotionCardClick(item);
             this.props.setSpecialPromotionCardGroupID(`${groupMembersName} -- 【共${totalMembers}人】`);
             this.props.saveRFMParams({
                 groupID,
-                levelKey,
-                levelType,
-                monetaryType,
-                reportMonth,
-                creator: createBy
+                mfrGrades: mfrGrades.split(','),
+                awakenTip,
+                RValue,
+                groupMembersName,
+                totalMembers,
+                groupMembersID,
             })
             this.clearUrl();
 
-        } if(from === 'giftInfo'){
+        } else if(from === 'giftInfo'){
             if(!type) return;
             const item = NEW_CUSTOMER_PROMOTION_TYPES.filter((val) => {
                 return val.key == type;

@@ -62,19 +62,6 @@ class CreateCouponContent extends Component {
         })
     }
 
-    // 相对有效期
-    // handleDayOrHourChange = (e) => {
-    //     const dayOrHour = e.target.value;
-    //     let effectGiftTimeHours = '1';
-    //     if (dayOrHour === '0') {
-    //         effectGiftTimeHours = '0';
-    //     }
-    //     this.setState({
-    //         dayOrHour,
-    //         effectGiftTimeHours,
-    //     })
-    // }
-
     // 何时生效
     handleWhenToEffectChange = (val) => {
         this.setState({
@@ -196,17 +183,21 @@ class CreateCouponContent extends Component {
         })
     }
 
+
     handleSmidSubmit = (smidList) => {
         const { bankMerchantCode } = smidList[0];
         // 去查看该主体有没有授权
         isAuth(bankMerchantCode).then((res) => {
             if (res) {
+                const { bindUserId } = res;
                 this.setState({
                     shopIsAuth: '2',
+                    bindUserId, // 间连主体关联M4
                 })
             } else {
                 this.setState({
                     shopIsAuth: '1', // 需要授权
+                    bindUserId: '', // 间连主体未联M4
                 })
             }
         })
@@ -227,6 +218,9 @@ class CreateCouponContent extends Component {
                 }
                 if (!merchantID) {
                     return message.error('请输入支付宝链接方式')
+                }
+                if (values.merchantType === '2' && !this.state.bindUserId) { // 间连需要关联M4
+                    return message.error('间连的支付宝账号未关联M4')
                 }
                 const endTime = rangePicker[1].format('YYYYMMDD');
                 const startTime = rangePicker[0].format('YYYYMMDD')
@@ -298,15 +292,6 @@ class CreateCouponContent extends Component {
                     // this.props.handleCloseModal();
                     console.log(error)
                 })
-                // axiosData(mothod, params, null, { path: null }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then((res) => {
-                //     if (res.code === '000') {
-                //         return message.success('创建成功')
-                //     }
-                //     message.error(res.message)
-
-                // }).catch((err) => {
-
-                // })
             }
         })
     }
@@ -592,9 +577,6 @@ class CreateCouponContent extends Component {
                                     <RangePicker
                                         format="YYYY-MM-DD"
                                         showTime="HH:mm:ss"
-                                    // disabledDate={
-                                    // current => current && current.format('YYYYMMDD') < moment().format('YYYYMMDD')
-                                    // }
                                     />
                                 )}
                             </FormItem>
@@ -605,51 +587,51 @@ class CreateCouponContent extends Component {
         )
     }
 
-    renderSmidModal = () => {
-        const rowRadioSelection = {
-            type: 'radio',
-            columnTitle: '选择',
-            onChange: (selectedRowKeys, selectedRows) => {
-                this.setState({
-                    smidUserSelect: selectedRows,
-                })
-            },
-        }
-        const columns = [
-            {
-                title: 'channelNo',
-                dataIndex: 'channelNo',
-                key: 'channelNo',
-                render: t => t,
-            },
-            {
-                title: 'smid',
-                key: 'settleID',
-                dataIndex: 'settleID',
-                render: text => text,
-            },
-        ];
-        return (
-            <Modal
-                title="SMID列表"
-                maskClosable={true}
-                width={700}
-                visible={this.state.smidModalVisible}
-                onCancel={this.handleCloseSmidModal}
-                onOk={this.handleSmidSubmit}
-            >
-                <Table
-                    bordered={true}
-                    rowSelection={rowRadioSelection}
-                    columns={columns}
-                    dataSource={this.state.smidList}
-                    rowKey="bankChannelId"
-                    pagination={false}
-                />
+    // renderSmidModal = () => {
+    //     const rowRadioSelection = {
+    //         type: 'radio',
+    //         columnTitle: '选择',
+    //         onChange: (selectedRowKeys, selectedRows) => {
+    //             this.setState({
+    //                 smidUserSelect: selectedRows,
+    //             })
+    //         },
+    //     }
+    //     const columns = [
+    //         {
+    //             title: 'channelNo',
+    //             dataIndex: 'channelNo',
+    //             key: 'channelNo',
+    //             render: t => t,
+    //         },
+    //         {
+    //             title: 'smid',
+    //             key: 'settleID',
+    //             dataIndex: 'settleID',
+    //             render: text => text,
+    //         },
+    //     ];
+    //     return (
+    //         <Modal
+    //             title="SMID列表"
+    //             maskClosable={true}
+    //             width={700}
+    //             visible={this.state.smidModalVisible}
+    //             onCancel={this.handleCloseSmidModal}
+    //             onOk={this.handleSmidSubmit}
+    //         >
+    //             <Table
+    //                 bordered={true}
+    //                 rowSelection={rowRadioSelection}
+    //                 columns={columns}
+    //                 dataSource={this.state.smidList}
+    //                 rowKey="bankChannelId"
+    //                 pagination={false}
+    //             />
 
-            </Modal>
-        )
-    }
+    //         </Modal>
+    //     )
+    // }
 
     render() {
         const { form } = this.props;
