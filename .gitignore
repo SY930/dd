@@ -13,3 +13,5 @@ lib
 static
 gitignore-analyze.html
 sh.exe.stackdump
+.lock
+package-lock.json
