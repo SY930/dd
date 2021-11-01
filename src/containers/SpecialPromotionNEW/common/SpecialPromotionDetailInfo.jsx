@@ -14,6 +14,7 @@ import {
     Popconfirm,
     Tooltip,
     Checkbox,
+    Button
 } from "antd";
 import { connect } from "react-redux";
 import Immutable from "immutable";
@@ -3667,6 +3668,11 @@ class SpecialDetailInfo extends Component {
             </div>
         )
     }
+
+    // 添加商家券
+    addWXCoupon = () => {
+
+    }
     render() {
         const { giveCoupon } = this.state;
         const { type } = this.props;
@@ -3766,7 +3772,7 @@ class SpecialDetailInfo extends Component {
                 {
                     type === '61' && renderUpGradeThree.call(this,this.props.isNew)
                 }
-                { !['52', '30', '60','61', '64', '53'].includes(type) &&
+                { !['52', '30', '60','61', '64', '53', '23'].includes(type) &&
                 <Row>
                     <Col span={17} offset={4}>
                         <AddGifts
@@ -3808,6 +3814,30 @@ class SpecialDetailInfo extends Component {
                 )}
                 {[ "66", "65"].includes(type) && this.renderShareInfo2()}
                 {["30"].includes(type) && this.renderShareInfo3()}
+                {
+                    type == '23' && (
+                        <Row>
+                            <Col span={17} offset={4}>
+                                <AddGifts
+                                    maxCount={type == '21' || type == '30' ? 1 : 10}
+                                    disabledGifts={type == '67' && this.state.disabledGifts}
+                                    type={this.props.type}
+                                    isNew={this.props.isNew}
+                                    value={
+                                        this.state.data
+                                            .filter(gift => gift.sendType === 0)
+                                            .sort((a, b) => a.needCount - b.needCount)
+                                    }
+                                    onChange={(gifts) => this.gradeChange(gifts, 0)}
+                                />
+                            </Col>
+                            <Col span={17} offset={4}>
+                                <p>第三方微信优惠券 <span><Button onClick={this.addWXCoupon}>添加</Button></span></p>
+                                <p>第三方微信优惠券领取后，可同步微信卡包展示。</p>
+                            </Col>
+                        </Row>
+                )
+                }
             </div>
         );
     }
