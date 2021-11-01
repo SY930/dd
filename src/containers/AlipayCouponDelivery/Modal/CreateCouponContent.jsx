@@ -39,7 +39,18 @@ class CreateCouponContent extends Component {
             smidModalVisible: false,
             shopIsAuth: '0', // 0不显示  1未授权 2已授权 商家是否授权
             editData: _.cloneDeep(editData),
+            WXMerchantID: '', // 微信的MerchantID
+            masterMerchantID: '', // 微信的masterMerchantID
+            confirmLoading: false,
         }
+    }
+
+    // 选择微信的财务主体后改变MerchantID
+    onChangeWXMerchantID = (record) => {
+        this.setState({
+            WXMerchantID: record.merchantID,
+            masterMerchantID: record.masterMerchantID,
+        })
     }
 
     // 日期
@@ -218,6 +229,7 @@ class CreateCouponContent extends Component {
         form.validateFields((err, values) => {
             if (!err) {
                 // console.log('handleAuthSubmit', values);
+                this.setState({ confirmLoading: true })
                 const { effectType, effectGiftTimeHours, merchantID, editData } = this.state;
                 const { user } = getStore().getState();
                 const { groupID } = user.get('accountInfo').toJS()
@@ -254,10 +266,15 @@ class CreateCouponContent extends Component {
                     datas.EGiftEffectTime = giftValidRange[0] ? giftValidRange[0].format('YYYYMMDDHHmmss') : '';
                     datas.validUntilDate = giftValidRange[1] ? giftValidRange[1].format('YYYYMMDDHHmmss') : ''
                 }
-                if (values.merchantType == '2') { // 间连传smid
+                if (values.merchantType == '2' && type === 1) { // 间连传smid && 支付宝
                     const { smidList } = this.state;
                     const { bankMerchantCode } = smidList[0];
                     datas.merchantID = bankMerchantCode;
+                }
+                if (type === 2) { // 微信
+                    datas.merchantID = this.state.WXMerchantID;
+                    datas.maxCouponsPerUser = values.maxCouponsPerUser;
+                    datas.masterMerchantID = this.state.masterMerchantID
                 }
                 const url = '/api/v1/universal?';
                 let method = 'couponCodeBatchService/addBatch.ajax';
@@ -291,23 +308,17 @@ class CreateCouponContent extends Component {
                         message.success('创建成功');
                         this.props.handleCloseModal();
                         this.props.handleQuery();
+                        this.setState({ confirmLoading: false })
                         return
                     }
                     // this.props.handleCloseModal();
+                    this.setState({ confirmLoading: false })
                     message.error(msg);
                 }).catch((error) => {
                     // this.props.handleCloseModal();
+                    this.setState({ confirmLoading: false })
                     console.log(error)
                 })
-                // axiosData(mothod, params, null, { path: null }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then((res) => {
-                //     if (res.code === '000') {
-                //         return message.success('创建成功')
-                //     }
-                //     message.error(res.message)
-
-                // }).catch((err) => {
-
-                // })
             }
         })
     }
@@ -675,6 +686,7 @@ class CreateCouponContent extends Component {
                 visible={true}
                 onCancel={this.handleCloseModal}
                 onOk={this.handleSubmit}
+                confirmLoading={this.state.confirmLoading}
             >
                 <Row>
                     <Col span={24} offset={1} className={styles.IndirectBox}>
@@ -742,10 +754,9 @@ class CreateCouponContent extends Component {
                             </FormItem>
                             {giftItemID && this.renderCoupon()}
                             <FormItem
-                                label="支付宝链接方式"
+                                label="链接方式"
                                 labelCol={{ span: 4 }}
                                 wrapperCol={{ span: 16 }}
-                            // required={true}
                             >
                                 {getFieldDecorator('merchantType', {
                                     onChange: this.handleLinkWay,
@@ -760,7 +771,7 @@ class CreateCouponContent extends Component {
                                 )}
                             </FormItem>
                             { type === 1 && this.renderZhifubaoContent(merchantType) }
-                            { type === 2 && <WXContent form={form} />}
+                            { type === 2 && <WXContent form={form} merchantType={merchantType} onChangeWXMerchantID={this.onChangeWXMerchantID} />}
                             {
                                 type === 1 && <FormItem
                                     label="跳转小程序"
@@ -790,11 +801,24 @@ class CreateCouponContent extends Component {
                                     {getFieldDecorator('maxCouponsPerUser', {
                                         rules: [
                                             { required: true, message: '请输入用户最大领取数量' },
+                                            {
+                                                validator: (rule, v, cb) => {
+                                                    if (!v) {
+                                                        return cb();
+                                                    }
+                                                    if (v > 100) {
+                                                        return cb(rule.message);
+                                                    }
+                                                    cb();
+                                                },
+                                                message: '必须输入数字, 且不超过100',
+                                            },
                                         ],
                                     })(
                                         <Input
                                             placeholder="请输入用户最大领取数量"
                                             addonAfter="个"
+                                            type="number"
                                         />
                                     )}
                                 </FormItem>

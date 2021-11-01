@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Row, Col, Select } from 'antd'
-import { getWeChatMpAndAppInfo } from '../AxiosFactory';
+import { getWeChatMpAndAppInfo, getPayChannel } from '../AxiosFactory';
 import styles from '../AlipayCoupon.less';
 
 class WXContent extends Component {
@@ -8,10 +8,28 @@ class WXContent extends Component {
         super(props);
         this.state = {
             mpAndAppList: [],
+            payChannelList: [],
         };
     }
     componentDidMount() {
         this.initData();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.merchantType !== this.props.merchantType) {
+            const channelCode = nextProps.merchantType == '1' ? 'wechat' : 'hualalaAinong';
+            getPayChannel(channelCode).then((res) => {
+                this.setState({
+                    payChannelList: res,
+                })
+            })
+        }
+    }
+
+
+    onChangeWXMerchantID = (value) => {
+        const findItem = this.state.payChannelList.find(item => value === `${item.settleID}`) || {}
+        this.props.onChangeWXMerchantID(findItem)
     }
 
     initData = () => {
@@ -21,6 +39,11 @@ class WXContent extends Component {
                     mpAndAppList: res,
                 })
             }
+        })
+        getPayChannel('wechat').then((res) => {
+            this.setState({
+                payChannelList: res,
+            })
         })
     }
 
@@ -45,8 +68,8 @@ class WXContent extends Component {
                             ],
                         })(<Select placeholder={'请选择公众号/小程序'}>
                             {
-                                this.state.mpAndAppList.map(({ channelAccount, channelName }) => (
-                                    <Select.Option key={channelAccount} value={`${channelAccount}`}>{channelAccount} - {channelName}</Select.Option>
+                                this.state.mpAndAppList.map(({ appID, mpName }) => (
+                                    <Select.Option key={appID} value={`${appID}`}>{mpName}</Select.Option>
                                 ))
                             }
                         </Select>)}
@@ -58,15 +81,16 @@ class WXContent extends Component {
                         className={styles.directSelect}
                         label={'账务主体'}
                     >
-                        {getFieldDecorator('jumpAppID', {
+                        {getFieldDecorator('settleID', {
                             // initialValue: value || undefined,
+                            onChange: this.onChangeWXMerchantID,
                             rules: [
                                 { required: true, message: '请选择账务主体' },
                             ],
                         })(<Select placeholder={'请选择账务主体'}>
                             {
-                                this.props.shopPid.map(({ channelAccount, channelName }) => (
-                                    <Select.Option key={channelAccount} value={`${channelAccount}`}>{channelAccount} - {channelName}</Select.Option>
+                                (this.state.payChannelList || []).map(item => (
+                                    <Select.Option key={item.settleID} value={`${item.settleID}`}>{item.settleName}</Select.Option>
                                 ))
                             }
                         </Select>)}

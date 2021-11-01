@@ -343,7 +343,7 @@ async function getDeliveryChannel(opts) {
 async function getWeChatMpAndAppInfo() {
     const method = '/mpInfo/getAppsAndMps';
     const { groupID } = getAccountInfo();
-    const params = { service: 'HTTP_SERVICE_URL_WECHAT', data: { groupID } };
+    const params = { service: 'HTTP_SERVICE_URL_WECHAT', data: { groupID }, method, type };
     const response = await axios.post(url + method, params);
     const { result: { code, message: msg }, mpInfoResDataList } = response;
     if (code === '000') {
@@ -354,10 +354,10 @@ async function getWeChatMpAndAppInfo() {
 }
 
 // 微信财务主体
-async function getPayChannel() {
+async function getPayChannel(channelCode) {
     const method = '/wxpay/getBusinessCouponPayChannel';
     const { groupID } = getAccountInfo();
-    const params = { service: 'HTTP_SERVICE_URL_ISV_API', data: { groupID, channelCode: 'hualalaAinong' } };
+    const params = { service: 'HTTP_SERVICE_URL_ISV_API', data: { groupID, channelCode }, method, type };
     const response = await axios.post(url + method, params);
     const { result: { code, message: msg }, payChannelList } = response;
     if (code === '000') {
@@ -383,4 +383,5 @@ export {
     queryEventList,
     getDeliveryChannel,
     getWeChatMpAndAppInfo,
+    getPayChannel,
 }
