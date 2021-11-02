@@ -1715,7 +1715,7 @@ class GiftAddModalStep extends React.PureComponent {
         });
     }
     renderExcludeShops(decorator) {
-        let { selectedShops = [],selectBrands = []} = this.state.values;
+        const { shopNames = [],selectedShops = [],selectBrands = []} = this.state.values;
         console.log(selectBrands,'selectBrands*********************')
         let { gift: { data } } = this.props;
         const brandList = selectBrands.map(x=>x.targetID);
@@ -1729,11 +1729,23 @@ class GiftAddModalStep extends React.PureComponent {
                         <ShopSelector
                             brandList={brandList}
                             isCreateCoupon = {true}
-                            // schemaData={this.state.shopSchema}
                             filterParm={isFilterShopType() ? {productCode: 'HLL_CRM_License'} : {}}
                         />
                     )}
                 </Col>
+                <p style={{ 
+                    color: 'orange', 
+                    display: shopNames.length > 0 ? 'none' : 'block' ,
+                    width: '100%',
+                    height: '32px',
+                    lineHeight:'32px',
+                    background: '#FFFBE6',
+                    borderRadius: '4px',
+                    border: '1px solid #FFE58F',
+                    marginTop:'4px',
+                    marginBottom:'14px',
+                    paddingLeft:'10px'
+                }}>排除店铺不选择时，默认所有店铺都不排除</p>
             </Row>
         )
     }
@@ -2783,7 +2795,7 @@ class GiftAddModalStep extends React.PureComponent {
                     <span>排除店铺</span>
                     <Tooltip title={
                         <p>
-                            必须选择所属店铺后才能操作，适用店铺和排除店铺不可以同时选择
+                            必须选择所属品牌后才能操作，适用店铺和排除店铺不可以同时选择
                         </p>
                     }>
                         <Icon style={{ marginLeft: 5, marginRight: 5}} type="question-circle" />
