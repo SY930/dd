@@ -52,7 +52,6 @@ import {
     handleCashChange,
     handleSubmitRecommendGifts,
     renderCashFn,
-
     renderRecommendGiftsFn,
     renderGivePointFn,
     validatedRuleDataFn,
@@ -67,6 +66,8 @@ import { getStore } from '@hualala/platform-base/lib';
 import { renderThree,addPointData,initPerfectCheckBox } from '../perfectReturnGift/StepThreeHelp'
 import { renderUpGradeThree,upGradeAddPointData,upGradeInitPerfectCheckBox } from '../upGradeReturnGift/StepThreeHelp'
 import { freeGetStep3Render } from '../freeGet/step3'
+import WxCouponModal from "../onLineReturnGift/WxCouponModal";
+import SleectedWxCouponTable from '../onLineReturnGift/SleectedWxCouponTable';
 const moment = require("moment");
 const FormItem = Form.Item;
 
@@ -340,7 +341,10 @@ class SpecialDetailInfo extends Component {
                 upGradeReturnGiftCoupon: true,
             },
             cardTypeArr: [], // 充值到会员卡列表
-            freeGetLimit: '0'
+            freeGetLimit: '0',
+            wxCouponList: [], // 微信商家券列表
+            wxCouponVisible: false,
+            couponValue: '0',
         };
     }
     componentDidMount() {
@@ -3671,10 +3675,30 @@ class SpecialDetailInfo extends Component {
 
     // 添加商家券
     addWXCoupon = () => {
-
+        this.setState({
+            wxCouponVisible: true,
+        })
     }
+
+    onWXCouponCancel = () => {
+        this.setState({
+            wxCouponVisible: false,
+        })
+    }
+
+    onWxCouponChange = (rowSelected) => {
+        this.setState({ sleectedWxCouponList: rowSelected })
+    }
+
+    handleCouponChange = ({ target: { value }}) => {
+    console.log("🚀 ~ file: SpecialPromotionDetailInfo.jsx ~ line 3694 ~ SpecialDetailInfo ~ value", value)
+        this.setState({
+            couponValue: value,
+        })
+    }
+
     render() {
-        const { giveCoupon } = this.state;
+        const { giveCoupon, couponValue } = this.state;
         const { type } = this.props;
         if (type == "68") {
             // 推荐有礼的render与其它活动相差较大
@@ -3816,27 +3840,58 @@ class SpecialDetailInfo extends Component {
                 {["30"].includes(type) && this.renderShareInfo3()}
                 {
                     type == '23' && (
-                        <Row>
-                            <Col span={17} offset={4}>
-                                <AddGifts
-                                    maxCount={type == '21' || type == '30' ? 1 : 10}
-                                    disabledGifts={type == '67' && this.state.disabledGifts}
-                                    type={this.props.type}
-                                    isNew={this.props.isNew}
-                                    value={
-                                        this.state.data
-                                            .filter(gift => gift.sendType === 0)
-                                            .sort((a, b) => a.needCount - b.needCount)
+                        <div>
+                            <FormItem label="优惠券" labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
+                                <p>
+                                    <RadioGroup onChange={this.handleCouponChange} value={`${couponValue}`} defaultValue={'0'}>
+                                        <RadioButton value="0">哗啦啦优惠券</RadioButton>
+                                        <RadioButton value="1">第三方微信优惠券</RadioButton>
+                                    </RadioGroup>
+                                </p>
+                            </FormItem>
+                            <Row>
+                                <Col span={17} offset={4}>
+                                    {
+                                        couponValue == '0' && (
+                                            <AddGifts
+                                                maxCount={type == '21' || type == '30' ? 1 : 10}
+                                                disabledGifts={type == '67' && this.state.disabledGifts}
+                                                type={this.props.type}
+                                                isNew={this.props.isNew}
+                                                value={
+                                                    this.state.data
+                                                        .filter(gift => gift.sendType === 0)
+                                                        .sort((a, b) => a.needCount - b.needCount)
+                                                }
+                                                onChange={(gifts) => this.gradeChange(gifts, 0)}
+                                            />
+                                        )
                                     }
-                                    onChange={(gifts) => this.gradeChange(gifts, 0)}
-                                />
-                            </Col>
-                            <Col span={17} offset={4}>
-                                <p>第三方微信优惠券 <span><Button onClick={this.addWXCoupon}>添加</Button></span></p>
-                                <p>第三方微信优惠券领取后，可同步微信卡包展示。</p>
-                            </Col>
-                        </Row>
-                )
+                                    {
+                                        couponValue == '1' && (
+                                            <div>
+                                                <p style={{ margin: '10px 0 8px' }}><span><Button icon="plus" onClick={this.addWXCoupon} >添加第三方微信优惠券</Button></span></p>
+                                                <p className={styles.wxCouponTips}> <Icon type="exclamation-circle" style={{ color: '#FAAD14' }}/><span>第三方微信优惠券领取后，可同步微信卡包展示。</span></p>
+                                                <SleectedWxCouponTable
+                                                    sleectedWxCouponList={this.state.sleectedWxCouponList}
+                                                    onWxCouponChange={this.onWxCouponChange}
+                                                />
+                                                {
+                                                    this.state.wxCouponVisible &&
+                                                    <WxCouponModal
+                                                        onCancel={this.onWXCouponCancel}
+                                                        sleectedWxCouponList={this.state.sleectedWxCouponList}
+                                                        user={this.props.user}
+                                                        onWxCouponChange={this.onWxCouponChange}
+                                                    />
+                                                }
+                                            </div>
+                                        )
+                                    }
+                                </Col>
+                            </Row>
+                        </div>
+                    )
                 }
             </div>
         );

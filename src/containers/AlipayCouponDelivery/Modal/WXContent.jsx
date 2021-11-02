@@ -16,8 +16,10 @@ class WXContent extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        const { form } = this.props;
         if (nextProps.merchantType !== this.props.merchantType) {
             const channelCode = nextProps.merchantType == '1' ? 'wechat' : 'hualalaAinong';
+            form.setFieldsValue({ settleID: '' })
             getPayChannel(channelCode).then((res) => {
                 this.setState({
                     payChannelList: res,

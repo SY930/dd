@@ -371,6 +371,7 @@ class CouponManageList extends Component {
                             >
                                 <Option value={''}>全部</Option>
                                 <Option value={'1'}>支付宝</Option>
+                                <Option value={'3'}>微信</Option>
                             </Select>
                         </li>
                         <li>
