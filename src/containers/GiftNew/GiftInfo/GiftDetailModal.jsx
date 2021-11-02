@@ -87,7 +87,8 @@ class GiftDetailModal extends Component {
 
     render() {
         const { visible, data } = this.props;
-        const { giftType } = data;
+        console.log(data,'data---------------')
+        const { giftType,shopScopeType } = data;
         let infoItem = [];
         if (giftType === '80') {
             infoItem = [
@@ -108,7 +109,7 @@ class GiftDetailModal extends Component {
                     labelCol: { span: 4 },
                     itemCol: { span: 20 },
                     maxL: 40,
-                    keys: { createStamp: '创建时间', giftRemark: '使用说明', shopNames: '适用店铺' },
+                    keys: { createStamp: '创建时间', giftRemark: '使用说明', shopNames: shopScopeType == '1' ? '适用店铺' : '排除店铺' },
                 },
             ];
         }

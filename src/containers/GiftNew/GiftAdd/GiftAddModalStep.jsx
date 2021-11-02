@@ -1715,9 +1715,9 @@ class GiftAddModalStep extends React.PureComponent {
     }
     renderExcludeShops(decorator) {
         const { shopNames = [],selectedShops = [],selectBrands = []} = this.state.values;
-        console.log(selectBrands,'selectBrands*********************')
         let { gift: { data } } = this.props;
         const brandList = selectBrands.map(x=>x.targetID);
+        console.log(brandList,'brandlIST------------')
         return (
             <Row style={{ marginBottom: 5,position:'relative' }}>
                 <Col style={{position:'relative'}}>
