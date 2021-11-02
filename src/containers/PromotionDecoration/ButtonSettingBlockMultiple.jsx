@@ -41,7 +41,7 @@ export default class buttonSettingBlockMultiple extends Component {
             <div>
                 <div className={style.defaultRowWrapper}>
                     {
-                        DEFAULT_COLOR_THEME.map(item => (
+                        DEFAULT_COLOR_THEME.map((item, index) => (
                             <ColoredButton
                                 isSelected={btnColor === item.btnColor && item.btnBgColor === btnBgColor}
                                 label={item.label}
@@ -51,6 +51,7 @@ export default class buttonSettingBlockMultiple extends Component {
                                     btnBgColor: v.buttonBgColor,
                                     btnColor: v.buttonColor
                                 })}
+                                key={`${this.props.keys}-${index}`}
                             />
                         ))
                     }
