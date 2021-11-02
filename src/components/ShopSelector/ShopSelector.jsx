@@ -108,7 +108,12 @@ class ShopSelector extends Component {
         this.setState({ options: alloptions });
     }
     handleAdd = () => {
-        this.setState({ showModal: true });
+        const {brandList} = this.props;
+        console.log(brandList,'brandlist>>>>>>>>>>>>')
+        this.setState({ showModal: true },() => {
+            this.loadShops2(brandList);
+        });
+        
     }
 
     handleClose = (tarID) => {
