@@ -1683,7 +1683,6 @@ class GiftAddModalStep extends React.PureComponent {
                         <ShopSelector
                             brandList={brandList}
                             isCreateCoupon = {true}
-                            // schemaData={this.state.shopSchema}
                             filterParm={isFilterShopType() ? {productCode: 'HLL_CRM_License'} : {}}
                         />
                     )}
@@ -1721,8 +1720,8 @@ class GiftAddModalStep extends React.PureComponent {
         const brandList = selectBrands.map(x=>x.targetID);
         return (
             <Row style={{ marginBottom: 5,position:'relative' }}>
-                {selectBrands && selectBrands.length > 0 && selectedShops.length == 0 ? null : <div className={styles.disabledWrapper}></div>}
-                <Col>
+                <Col style={{position:'relative'}}>
+                    {selectBrands && selectBrands.length > 0 && selectedShops.length == 0 ? null : <div className={styles.disabledWrapper}></div>}
                     {decorator({
                         onChange:this.changeExcludeShopNames
                     })(
