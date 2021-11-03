@@ -109,7 +109,6 @@ class ShopSelector extends Component {
     }
     handleAdd = () => {
         const {brandList} = this.props;
-        console.log(brandList,'brandlist>>>>>>>>>>>>')
         this.setState({ showModal: true },() => {
             this.loadShops2(brandList);
         });

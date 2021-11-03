@@ -109,7 +109,7 @@ class GiftDetailModal extends Component {
                     labelCol: { span: 4 },
                     itemCol: { span: 20 },
                     maxL: 40,
-                    keys: { createStamp: '创建时间', giftRemark: '使用说明', shopNames: shopScopeType == '1' ? '适用店铺' : '排除店铺' },
+                    keys: { createStamp: '创建时间', giftRemark: '使用说明', shopNames: '适用店铺' },
                 },
             ];
         }
@@ -241,6 +241,8 @@ class InfoDisplay extends Component {
 
     render() {
         const { infoItem, infoData = {} } = this.props;
+        let selectedBrands = infoData.selectBrands && infoData.selectBrands.map(target => `${target.targetName}`).join(',');
+        let shopScopeType = infoData.shopScopeType;
         return (
             <Row>
                 {
@@ -260,11 +262,17 @@ class InfoDisplay extends Component {
                                             _.isArray(value)
                                                 ? <Col {...itemCol} className={styles.breakWordsWrap}>{value.map((item, idx) => (<span
                                                     key={idx}
-                                                >{`${++idx}、${item}`}<br /></span>))}</Col>
+                                                >{`${++idx}、${item}`}1<br /></span>))}</Col>
                                                 : <Col {...itemCol} className={styles.breakWordsWrap}>{
                                                     getByteLength(value) > maxL
-                                                        ? (<Tooltip title={value}>{value}</Tooltip>)
-                                                        : value
+                                                        ? (<Tooltip title={value}>
+                                                                {
+                                                                    key == 'shopNames' && shopScopeType == '2' ? `仅 ${selectedBrands} 品牌可用，其中${value}店铺不可用` :  value
+                                                                }
+                                                            </Tooltip>)
+                                                        : 
+                                                        key == 'shopNames' && shopScopeType == '2' ? `仅 ${selectedBrands} 品牌可用，其中${value}店铺不可用` :  value
+                                                        
                                                 }</Col>
                                         }
                                     </Row>)
