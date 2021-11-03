@@ -87,7 +87,8 @@ class GiftDetailModal extends Component {
 
     render() {
         const { visible, data } = this.props;
-        const { giftType } = data;
+        console.log(data,'data---------------')
+        const { giftType,shopScopeType } = data;
         let infoItem = [];
         if (giftType === '80') {
             infoItem = [
@@ -240,6 +241,8 @@ class InfoDisplay extends Component {
 
     render() {
         const { infoItem, infoData = {} } = this.props;
+        let selectedBrands = infoData.selectBrands && infoData.selectBrands.map(target => `${target.targetName}`).join(',');
+        let shopScopeType = infoData.shopScopeType;
         return (
             <Row>
                 {
@@ -259,11 +262,17 @@ class InfoDisplay extends Component {
                                             _.isArray(value)
                                                 ? <Col {...itemCol} className={styles.breakWordsWrap}>{value.map((item, idx) => (<span
                                                     key={idx}
-                                                >{`${++idx}、${item}`}<br /></span>))}</Col>
+                                                >{`${++idx}、${item}`}1<br /></span>))}</Col>
                                                 : <Col {...itemCol} className={styles.breakWordsWrap}>{
                                                     getByteLength(value) > maxL
-                                                        ? (<Tooltip title={value}>{value}</Tooltip>)
-                                                        : value
+                                                        ? (<Tooltip title={value}>
+                                                                {
+                                                                    key == 'shopNames' && shopScopeType == '2' ? `仅 ${selectedBrands} 品牌可用，其中${value}店铺不可用` :  value
+                                                                }
+                                                            </Tooltip>)
+                                                        : 
+                                                        key == 'shopNames' && shopScopeType == '2' ? `仅 ${selectedBrands} 品牌可用，其中${value}店铺不可用` :  value
+                                                        
                                                 }</Col>
                                         }
                                     </Row>)

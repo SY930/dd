@@ -45,7 +45,7 @@ class ShopSelector extends Component {
         if (!isEqual(this.props.schemaData, nextProps.schemaData)) {
             this.loadShops({}, nextProps.schemaData, true);
         }
-        if (!isEqual(this.props.brandList, nextProps.brandList)) {
+        if (nextProps.brandList && nextProps.brandList.length > 0) {
             this.loadShops2(nextProps.brandList);
         }
         if (!isEqual(this.props.canUseShops, nextProps.canUseShops)) {
@@ -108,7 +108,11 @@ class ShopSelector extends Component {
         this.setState({ options: alloptions });
     }
     handleAdd = () => {
-        this.setState({ showModal: true });
+        const {brandList} = this.props;
+        this.setState({ showModal: true },() => {
+            this.loadShops2(brandList);
+        });
+        
     }
 
     handleClose = (tarID) => {
@@ -143,7 +147,7 @@ class ShopSelector extends Component {
             if (!shopInfo) return ret;
             return ret.concat({ value: shopInfo.value, label: shopInfo.shopName });
         }, []);
-
+        console.log(this.props,'thisprops----------1123')
         return (
             <div className="hll-shop-selector">
                 {size === 'default' &&

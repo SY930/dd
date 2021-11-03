@@ -128,7 +128,15 @@
         left: 25.67%;
     }
 }
-
+.disabledWrapper{
+    position: absolute;
+    width: 99%;
+    height: 100%;
+    cursor: not-allowed;
+    background: #000;
+    opacity: .08;
+    z-index: 9;
+}
 .speDiv {
     :global{
         .ant-upload-list-picture-card .ant-upload-list-item-thumbnail, .ant-upload-list-picture-card .ant-upload-list-item-thumbnail img {
@@ -147,7 +155,7 @@
 }
 .selectFoodsWrapper{
     position: relative;
-    width: 440px;
+    width: 486px;
     // height: 390px;
     background: #F7F7F7;
     border-radius: 3px;
