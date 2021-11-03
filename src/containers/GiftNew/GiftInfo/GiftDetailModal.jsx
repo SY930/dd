@@ -87,7 +87,6 @@ class GiftDetailModal extends Component {
 
     render() {
         const { visible, data } = this.props;
-        console.log(data,'data---------------')
         const { giftType,shopScopeType } = data;
         let infoItem = [];
         if (giftType === '80') {

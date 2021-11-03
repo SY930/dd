@@ -147,7 +147,6 @@ class ShopSelector extends Component {
             if (!shopInfo) return ret;
             return ret.concat({ value: shopInfo.value, label: shopInfo.shopName });
         }, []);
-        console.log(this.props,'thisprops----------1123')
         return (
             <div className="hll-shop-selector">
                 {size === 'default' &&

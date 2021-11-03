@@ -396,7 +396,6 @@ class GiftAddModalStep extends React.PureComponent {
 
     // 处理表单数据变化
     handleFormChange(key, value, formRef) {
-        console.log(key,value,'keyvalue+++++++++++++++++')
         const { gift: { name: describe, data,value:giftType }, type } = this.props;
         const { firstKeys, secondKeys, values } = this.state;
         const newKeys = [...secondKeys[describe][0].keys];
@@ -865,7 +864,6 @@ class GiftAddModalStep extends React.PureComponent {
             // if(values && values.shopIDs && values.shopIDs.length > 0){
             //     params.shopNames = values.shopIDs;
             // }
-            console.log(values,'values======================handleFinish')
             if(values.selectedShops && values.selectedShops.length > 0){
                 params.shopNames = values.selectedShops;
             }
@@ -1661,7 +1659,6 @@ class GiftAddModalStep extends React.PureComponent {
     }
     changeShopNames = (val) => {
         const {values} = this.state;
-        console.log(val,'vaalue******************')
         values.shopNames = val;
         values.shopScopeType = 1;
         values.excludeShops = [];
@@ -1705,7 +1702,6 @@ class GiftAddModalStep extends React.PureComponent {
     }
     changeExcludeShopNames = (val) => {
         const {values} = this.state;
-        console.log(val,'changeExcludeShopNames')
         values.shopNames = val;
         values.shopScopeType = 2;
         values.selectedShops = [];
@@ -1717,7 +1713,6 @@ class GiftAddModalStep extends React.PureComponent {
         const { shopNames = [],selectedShops = [],selectBrands = []} = this.state.values;
         let { gift: { data } } = this.props;
         const brandList = selectBrands.map(x=>x.targetID);
-        console.log(brandList,'brandlIST------------')
         return (
             <Row style={{ marginBottom: 5,position:'relative' }}>
                 <Col style={{position:'relative'}}>
@@ -2500,7 +2495,6 @@ class GiftAddModalStep extends React.PureComponent {
     }
     //重新选择所属品牌，清空适用店铺和排除店铺
     changeSelectedBrands(value,form){
-        console.log(value,'value****************')
         const {values} = this.state;
         const { gift: { value:giftType }, type } = this.props;
         values.selectedShops = [];
