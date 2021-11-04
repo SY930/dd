@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Modal, Table, Input, Button } from 'antd';
+import { Modal, Table, Input, Button, message } from 'antd';
 import { axiosData } from '../../../helpers/util';
 
 const Search = Input.Search;
@@ -79,6 +79,9 @@ class WxCouponModal extends Component {
     render() {
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
+                if (selectedRowKeys.length > 10) {
+                    return message.warn('最多选择10个券')
+                }
                 this.setState({ sleectedWxCouponList: selectedRows, selectedRowKeys })
             },
             selectedRowKeys: this.state.selectedRowKeys,

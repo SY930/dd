@@ -989,11 +989,132 @@ const handleSubmitRecommendGifts = function (isPrev) {
 }
 
 
+// 保存线上餐厅送礼
+const handleSubmitOnLineReturnGifts = function (isPrev) {
+    if (isPrev) return true;
+    let flag = true;
+    this.props.form.validateFieldsAndScroll(
+        { force: true },
+        (error, basicValues) => {
+            if (error) {
+                flag = false;
+            }
+        }
+    );
+
+    if (!flag) {
+        return false;
+    }
+    let {
+        data,
+    } = this.state;
+    const {
+        couponValue, // 0 哗啦啦优惠券 1：第三方券
+        giftGetRule,
+        saveMoneySetIds,
+        shareImagePath,
+        shareTitle,
+        cleanCount,
+        sleectedWxCouponList,
+    } = this.state;
+    if (couponValue === '0') {
+        const validatedRuleData = data.map((ruleInfo, index) => {
+            const giftValidDaysOrEffect =
+                ruleInfo.effectType != '2'
+                    ? 'giftValidDays'
+                    : 'giftEffectiveTime';
+
+            // check gift count
+            return Object.assign(ruleInfo, {
+                giftCount: this.checkgiftCount(
+                    ruleInfo.giftCount,
+                    index,
+                    data
+                ),
+                giftInfo: this.checkGiftInfo(
+                    ruleInfo.giftInfo,
+                    index,
+                    data
+                ),
+                giftOdds: this.checkGiftOdds(ruleInfo.giftOdds),
+                needCount: this.checkNeedCount(ruleInfo.needCount, index),
+                [giftValidDaysOrEffect]:
+                    ruleInfo.effectType != '2'
+                        ? this.checkGiftValidDays(
+                            ruleInfo.giftValidDays,
+                            index
+                        )
+                        : this.checkGiftValidDays(
+                            ruleInfo.giftEffectiveTime,
+                            index
+                        ),
+            });
+        });
+        const validateFlag = validatedRuleData.reduce((p, ruleInfo) => {
+            const _validStatusOfCurrentIndex = Object.keys(ruleInfo).reduce(
+                (flg, key) => {
+                    if (
+                        ruleInfo[key] instanceof Object &&
+                        ruleInfo[key].hasOwnProperty('validateStatus')
+                    ) {
+                        const _valid =
+                            ruleInfo[key].validateStatus === 'success';
+                        return flg && _valid;
+                    }
+                    return flg;
+                },
+                true
+            );
+            return p && _validStatusOfCurrentIndex;
+        }, true);
+        data = validatedRuleData;
+        this.setState({ data });
+
+        if (validateFlag) {
+            const giftInfo = this.getGiftInfo(data);
+            this.props.setSpecialBasicInfo(giftInfo);
+            this.props.setSpecialBasicInfo({
+                giftGetRule,
+                saveMoneySetIds,
+                shareImagePath,
+                shareTitle,
+                cleanCount,
+            });
+            this.props.setSpecialGiftInfo(giftInfo); // 发起action
+
+            return true;
+        }
+        return false;
+    }
+    const giftInfo = sleectedWxCouponList.map((item) => {
+        return {
+            ...item,
+            giftName: item.batchName,
+            giftID: item.itemID,
+            giftEffectTimeHours: item.effectGiftTimeHours,
+            sendType: '0',
+            giftCount: Number(item.stock) - Number(item.receive),
+            presentType: 7,
+        }
+    })
+    this.props.setSpecialBasicInfo(giftInfo);
+    this.props.setSpecialBasicInfo({
+        giftGetRule,
+        saveMoneySetIds,
+        shareImagePath,
+        shareTitle,
+        cleanCount,
+    });
+
+    this.props.setSpecialGiftInfo(giftInfo); // 发起action
+    return true;
+}
 export {
     checkChoose,
     queryRedPackets,
     handleCashChange,
     handleSubmitRecommendGifts,
+    handleSubmitOnLineReturnGifts,
     renderCashFn,
     renderRecommendGiftsFn,
     renderGivePointFn,
@@ -1009,6 +1130,7 @@ export default {
     queryRedPackets,
     handleCashChange,
     handleSubmitRecommendGifts,
+    handleSubmitOnLineReturnGifts,
     renderCashFn,
     renderRecommendGiftsFn,
     renderGivePointFn,

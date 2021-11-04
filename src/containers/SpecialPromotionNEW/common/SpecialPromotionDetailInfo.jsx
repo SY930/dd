@@ -51,6 +51,7 @@ import {
     queryRedPackets,
     handleCashChange,
     handleSubmitRecommendGifts,
+    handleSubmitOnLineReturnGifts,
     renderCashFn,
     renderRecommendGiftsFn,
     renderGivePointFn,
@@ -174,6 +175,7 @@ class SpecialDetailInfo extends Component {
             data,
             wakeupSendGiftsDataArray, // 唤醒送礼专用
             pointObj,
+            isThirdCoupon,
         } = this.initState();
         const eventRecommendSettings = this.initEventRecommendSettings();
         const selectedMpId = props.specialPromotion.getIn([
@@ -344,7 +346,8 @@ class SpecialDetailInfo extends Component {
             freeGetLimit: '0',
             wxCouponList: [], // 微信商家券列表
             wxCouponVisible: false,
-            couponValue: '0',
+            couponValue: isThirdCoupon ? '1' : '0',
+            sleectedWxCouponList: [], // 选择的微信第三方优惠券
         };
     }
     componentDidMount() {
@@ -578,8 +581,13 @@ class SpecialDetailInfo extends Component {
         let eventRecommendSettings = this.props.specialPromotion
         .get("$eventRuleInfos")
         .toJS();
-        const data = this.initiateDefaultGifts();
+        let data = this.initiateDefaultGifts();
         const type = this.props.type
+        let isThirdCoupon = false; // 是否保存的是微信三方券
+        if (giftInfo && giftInfo.length) {
+            const { presentType } = giftInfo[0];
+            presentType == 7 ? isThirdCoupon = true : isThirdCoupon =  false;
+        }
         let pointObj = {
             presentValue: "",
             givePoints: false,
@@ -612,68 +620,74 @@ class SpecialDetailInfo extends Component {
         if(type == 60 || type == 61 || type == 53) {
             giftInfo = giftInfo.filter(v => v.presentType === 1)
         }
-        giftInfo.forEach((gift, index) => {
-            if ((this.props.type == "52" || this.props.type == "64") && gift.presentType === 2) {
-                pointObj = {
-                    ...pointObj,
-                    presentValue: gift.presentValue,
-                    givePoints: true,
-                };
-                return;
-            }
-            if ((this.props.type == "52" || this.props.type == "64") && gift.presentType === 1) {
-                pointObj = { ...pointObj, giveCoupon: true };
-            }
-            if (data[index] !== undefined) {
-                data[index].sendType = gift.sendType || 0;
-                data[index].recommendType = gift.recommendType || 0;
-            } else {
-                const typePropertyName =
-                    this.props.type == "68" ? "recommendType" : "sendType";
-                const typeValue =
-                    this.props.type == "68"
-                        ? gift.recommendType
-                        : gift.sendType;
-                data[index] = getDefaultGiftData(typeValue, typePropertyName);
-            }
-            data[index].giftEffectiveTime.value =
-                gift.effectType != "2"
-                    ? gift.giftEffectTimeHours
-                    : [
-                          moment(gift.effectTime, "YYYYMMDD"),
-                          moment(gift.validUntilDate, "YYYYMMDD"),
-                      ];
-            data[index].effectType = `${gift.effectType}`;
-            data[index].giftInfo.giftName = gift.giftName;
-            if(this.props.type == '30' && gift.presentType === 4){
-                data[index].giftInfo.giftName = '';
-            }
-            data[index].needCount.value = gift.needCount || 0;
-            data[index].giftInfo.giftItemID = gift.giftID;
-            data[index].giftInfo.itemID = gift.itemID;
-            data[index].giftValidDays.value = gift.giftValidUntilDayCount;
-            if (
-                this.props.type != "20" &&
-                this.props.type != "30" &&
-                this.props.type != "70"
-            ) {
-                data[index].giftCount.value = gift.giftCount;
-            } else {
-                data[index].giftTotalCount.value = gift.giftTotalCount;
-            }
-            data[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(2);
-            data[index].lastConsumeIntervalDays = gift.lastConsumeIntervalDays
-                ? `${gift.lastConsumeIntervalDays}`
-                : undefined;
-            if(this.props.type === '68') {
-                if(data[index].recommendType === 0) {
-                    data[index].recommendType = `${gift.recommendType}#999`
-                } else {
-                    data[index].recommendType = `${gift.recommendType}#${gift.recommendRule}`
+        if (type == 23 && isThirdCoupon) {  //线上餐厅送礼保存的是微信三方券信息
+            data = giftInfo;
+        }
+        if (!isThirdCoupon) {
+            giftInfo.forEach((gift, index) => {
+                if ((this.props.type == "52" || this.props.type == "64") && gift.presentType === 2) {
+                    pointObj = {
+                        ...pointObj,
+                        presentValue: gift.presentValue,
+                        givePoints: true,
+                    };
+                    return;
                 }
+                if ((this.props.type == "52" || this.props.type == "64") && gift.presentType === 1) {
+                    pointObj = { ...pointObj, giveCoupon: true };
+                }
+                if (data[index] !== undefined) {
+                    data[index].sendType = gift.sendType || 0;
+                    data[index].recommendType = gift.recommendType || 0;
+                } else {
+                    const typePropertyName =
+                        this.props.type == "68" ? "recommendType" : "sendType";
+                    const typeValue =
+                        this.props.type == "68"
+                            ? gift.recommendType
+                            : gift.sendType;
+                    data[index] = getDefaultGiftData(typeValue, typePropertyName);
+                }
+                data[index].giftEffectiveTime.value =
+                    gift.effectType != "2"
+                        ? gift.giftEffectTimeHours
+                        : [
+                              moment(gift.effectTime, "YYYYMMDD"),
+                              moment(gift.validUntilDate, "YYYYMMDD"),
+                          ];
+                data[index].effectType = `${gift.effectType}`;
+                data[index].giftInfo.giftName = gift.giftName;
+                if(this.props.type == '30' && gift.presentType === 4){
+                    data[index].giftInfo.giftName = '';
+                }
+                data[index].needCount.value = gift.needCount || 0;
+                data[index].giftInfo.giftItemID = gift.giftID;
+                data[index].giftInfo.itemID = gift.itemID;
+                data[index].giftValidDays.value = gift.giftValidUntilDayCount;
+                if (
+                    this.props.type != "20" &&
+                    this.props.type != "30" &&
+                    this.props.type != "70"
+                ) {
+                    data[index].giftCount.value = gift.giftCount;
+                } else {
+                    data[index].giftTotalCount.value = gift.giftTotalCount;
+                }
+                data[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(2);
+                data[index].lastConsumeIntervalDays = gift.lastConsumeIntervalDays
+                    ? `${gift.lastConsumeIntervalDays}`
+                    : undefined;
+                if(this.props.type === '68') {
+                    if(data[index].recommendType === 0) {
+                        data[index].recommendType = `${gift.recommendType}#999`
+                    } else {
+                        data[index].recommendType = `${gift.recommendType}#${gift.recommendRule}`
+                    }
+    
+                }
+            });
+        }
 
-            }
-        });
 
         if (this.props.type == "68") {
             const typeList = ['1#1','2#1','0#999','1#2','2#2','1#3','2#3']
@@ -733,6 +747,7 @@ class SpecialDetailInfo extends Component {
             data,
             wakeupSendGiftsDataArray,
             pointObj,
+            isThirdCoupon,
         };
     };
 
@@ -949,9 +964,11 @@ class SpecialDetailInfo extends Component {
     handleSubmit =   (isPrev) => {
         const {type} = this.props
         if(type === '68') {
-        return    handleSubmitRecommendGifts.call(this,isPrev)
+            return handleSubmitRecommendGifts.call(this,isPrev)
+        } else if (type === '23') {
+            return handleSubmitOnLineReturnGifts.call(this, isPrev)
         } else {
-          return  this.handleSubmitOld(isPrev)
+            return this.handleSubmitOld(isPrev)
         }
     }
 
@@ -980,7 +997,7 @@ class SpecialDetailInfo extends Component {
         if (!flag) {
             return false;
         }
-
+        debugger
         let {
             data,
             shareImagePath,
@@ -1219,7 +1236,6 @@ class SpecialDetailInfo extends Component {
                 };
                 this.props.setSpecialBasicInfo(shareInfo);
             }
-            decodeURI
             if (['30'].includes(type)) {
                 const { shareTitle, shareImagePath } = this.state;
                 const shareInfo = { shareTitle, shareImagePath }
@@ -3691,7 +3707,6 @@ class SpecialDetailInfo extends Component {
     }
 
     handleCouponChange = ({ target: { value }}) => {
-    console.log("🚀 ~ file: SpecialPromotionDetailInfo.jsx ~ line 3694 ~ SpecialDetailInfo ~ value", value)
         this.setState({
             couponValue: value,
         })
