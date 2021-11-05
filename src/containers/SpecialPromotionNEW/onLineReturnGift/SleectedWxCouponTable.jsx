@@ -14,18 +14,7 @@ const columns = that => ([
         dataIndex: 'batchName',
         key: 'batchName',
         width: 200,
-        render: text => <Tooltip title={text}>{text}</Tooltip>,
-    }, {
-        title: '剩余数量',
-        dataIndex: 'stock',
-        key: 'stock',
-        width: 80,
-        render: (text, record) => {
-            const { receive } = record
-            if (text) {
-                return Number(text) - Number(receive)
-            }
-        },
+        render: (text, record) => <Tooltip title={text || record.giftName}>{text || record.giftName}</Tooltip>,
     }, {
         title: '操作',
         key: 'operation',
@@ -61,14 +50,16 @@ class SleectedWxCouponTable extends Component {
 
     render() {
         return (
-            <Table
-                scroll={{ x: 500 }}
-                bordered={true}
-                columns={columns(this)}
-                dataSource={this.props.sleectedWxCouponList}
-                rowKey={'itemID'}
-                pagination={false}
-            />
+            <div style={{ marginTop: 10 }}>
+                <Table
+                    scroll={{ x: 500 }}
+                    bordered={true}
+                    columns={columns(this)}
+                    dataSource={this.props.sleectedWxCouponList}
+                    rowKey={'itemID'}
+                    pagination={false}
+                />
+            </div>
         )
     }
 }

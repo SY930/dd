@@ -993,12 +993,14 @@ const handleSubmitRecommendGifts = function (isPrev) {
 const handleSubmitOnLineReturnGifts = function (isPrev) {
     if (isPrev) return true;
     let flag = true;
+    let giftCouponCount = '';
     this.props.form.validateFieldsAndScroll(
         { force: true },
         (error, basicValues) => {
             if (error) {
                 flag = false;
             }
+            giftCouponCount = basicValues.giftCount;
         }
     );
 
@@ -1086,6 +1088,11 @@ const handleSubmitOnLineReturnGifts = function (isPrev) {
         }
         return false;
     }
+    if (sleectedWxCouponList.length <= 0) {
+        message.warn('请添加一个第三方微信优惠券');
+        return false
+    }
+    console.log(giftCouponCount, 'giftCouponCount')
     const giftInfo = sleectedWxCouponList.map((item) => {
         return {
             ...item,
@@ -1093,7 +1100,7 @@ const handleSubmitOnLineReturnGifts = function (isPrev) {
             giftID: item.itemID,
             giftEffectTimeHours: item.effectGiftTimeHours,
             sendType: '0',
-            giftCount: Number(item.stock) - Number(item.receive),
+            giftCount: giftCouponCount,
             presentType: 7,
         }
     })

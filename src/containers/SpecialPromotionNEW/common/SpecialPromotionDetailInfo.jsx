@@ -173,6 +173,7 @@ class SpecialDetailInfo extends Component {
         this.getDefaultGiftData = getDefaultGiftData.bind(this)
         const {
             data,
+            thirdCouponData,
             wakeupSendGiftsDataArray, // 唤醒送礼专用
             pointObj,
             isThirdCoupon,
@@ -347,7 +348,8 @@ class SpecialDetailInfo extends Component {
             wxCouponList: [], // 微信商家券列表
             wxCouponVisible: false,
             couponValue: isThirdCoupon ? '1' : '0',
-            sleectedWxCouponList: [], // 选择的微信第三方优惠券
+            giftCouponCount: thirdCouponData.length > 0  && isThirdCoupon ?  thirdCouponData[0].giftCount : '1', // 用户单次领取优惠券张数
+            sleectedWxCouponList: thirdCouponData.length > 0 && isThirdCoupon ? thirdCouponData : [], // 选择的微信第三方优惠券
         };
     }
     componentDidMount() {
@@ -581,7 +583,8 @@ class SpecialDetailInfo extends Component {
         let eventRecommendSettings = this.props.specialPromotion
         .get("$eventRuleInfos")
         .toJS();
-        let data = this.initiateDefaultGifts();
+        const data = this.initiateDefaultGifts();
+        let thirdCouponData = [];
         const type = this.props.type
         let isThirdCoupon = false; // 是否保存的是微信三方券
         if (giftInfo && giftInfo.length) {
@@ -621,7 +624,7 @@ class SpecialDetailInfo extends Component {
             giftInfo = giftInfo.filter(v => v.presentType === 1)
         }
         if (type == 23 && isThirdCoupon) {  //线上餐厅送礼保存的是微信三方券信息
-            data = giftInfo;
+            thirdCouponData = giftInfo;
         }
         if (!isThirdCoupon) {
             giftInfo.forEach((gift, index) => {
@@ -748,6 +751,7 @@ class SpecialDetailInfo extends Component {
             wakeupSendGiftsDataArray,
             pointObj,
             isThirdCoupon,
+            thirdCouponData,
         };
     };
 
@@ -3869,8 +3873,8 @@ class SpecialDetailInfo extends Component {
                                     {
                                         couponValue == '0' && (
                                             <AddGifts
-                                                maxCount={type == '21' || type == '30' ? 1 : 10}
-                                                disabledGifts={type == '67' && this.state.disabledGifts}
+                                                maxCount={10}
+                                                // disabledGifts={type == '67' && this.state.disabledGifts}
                                                 type={this.props.type}
                                                 isNew={this.props.isNew}
                                                 value={
@@ -3886,7 +3890,33 @@ class SpecialDetailInfo extends Component {
                                         couponValue == '1' && (
                                             <div>
                                                 <p style={{ margin: '10px 0 8px' }}><span><Button icon="plus" onClick={this.addWXCoupon} >添加第三方微信优惠券</Button></span></p>
-                                                <p className={styles.wxCouponTips}> <Icon type="exclamation-circle" style={{ color: '#FAAD14' }}/><span>第三方微信优惠券领取后，可同步微信卡包展示。</span></p>
+                                                <p className={styles.wxCouponTips}> <Icon type="exclamation-circle" style={{ color: '#FAAD14' }} /><span>第三方微信优惠券领取后，可同步微信卡包展示。</span></p>
+                                                <FormItem
+                                                    label={'用户单次领取优惠券张数'}
+                                                    // className={styles.FormItemStyle}
+                                                    labelCol={{ span: 8}}
+                                                    wrapperCol={{ span: 16 }}
+                                                >
+                                                    {this.props.form.getFieldDecorator("giftCount", {
+                                                        rules: [
+                                                            {
+                                                                validator: (rule, v, cb) => {
+                                                                    if (v > 99 || v < 1) {
+                                                                        return cb('请输入为1-99的整数');
+                                                                    }
+                                                                    cb()
+                                                                },
+                                                            },
+                                                            { required: true, message: '请输入领取张数' },
+                                                        ],
+                                                        initialValue: this.state.giftCouponCount || '1',
+                                                    })(
+                                                        <Input
+                                                            placeholder={'请输入1-99的整数'}
+                                                            type="number"
+                                                        />
+                                                    )}
+                                                </FormItem>
                                                 <SleectedWxCouponTable
                                                     sleectedWxCouponList={this.state.sleectedWxCouponList}
                                                     onWxCouponChange={this.onWxCouponChange}
