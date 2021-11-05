@@ -872,7 +872,7 @@ class GiftAddModalStep extends React.PureComponent {
             }
             if(values.selectedShops.length == 0 && values.excludeShops.length == 0  ){
                 params.shopNames = [];
-                params.shopScopeType = 0;
+                params.shopScopeType = 1;
             }
             try {
                 if (params.shopNames) {
