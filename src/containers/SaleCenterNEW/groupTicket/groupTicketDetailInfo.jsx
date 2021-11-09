@@ -6,6 +6,7 @@ import React, { Component } from 'react'
 import {
     Form,
     Select,
+    message,
 } from 'antd';
 import { connect } from 'react-redux'
 
@@ -25,7 +26,7 @@ import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from '../IntlDecor';
 
 const Immutable = require('immutable');
-
+const LAOWANG_GROUPID = ['1348', '11157', '189702']
 @injectIntl()
 class GroupTicketDetailInfo extends React.Component {
     constructor(props) {
@@ -43,6 +44,7 @@ class GroupTicketDetailInfo extends React.Component {
             giftValueFlag: true,
             transFeeFlag: true,
             costIncome: '1',
+            subsidyAmount: '', // 补贴金额
         };
 
         this.renderGroupTicket = this.renderGroupTicket.bind(this);
@@ -80,7 +82,7 @@ class GroupTicketDetailInfo extends React.Component {
             stageAmount: _rule.stage ? _rule.stage[0].stageAmount : _rule.stageAmount,
             giftMaxUseNum: _rule.stage ? _rule.stage[0].giftMaxUseNum : _rule.giftMaxUseNum,
             costIncome: _rule.costIncome,
-
+            subsidyAmount: _rule.subsidyAmount == '0' ? '' : _rule.subsidyAmount,
         });
     }
     componentWillReceiveProps(nextProps) {
@@ -97,7 +99,7 @@ class GroupTicketDetailInfo extends React.Component {
         const points = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'points']);
         const evidence = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'evidence']);
         const invoice = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'invoice']);
-
+        const { accountInfo: { groupID } } = this.props;
         // if (_state.giftPrice == null || _state.giftPrice == '') {
         //     _state.giftPriceFlag = false;
         // }
@@ -111,12 +113,20 @@ class GroupTicketDetailInfo extends React.Component {
 
         if (_state.giftValueFlag && _state.giftMaxUseNum > 0 && _state.giftMaxUseNum <= 999 && _state.transFeeFlag) {
             let rule;
+            const { giftValue, subsidyAmount } = _state;
+            const diff = parseFloat(subsidyAmount) > parseFloat(giftValue);
+            if (subsidyAmount && diff && LAOWANG_GROUPID.includes(String(groupID))) {
+                nextFlag = false;
+                message.warning('补贴金额必须小于券面金额');
+                return nextFlag;
+            }
             if (_state.stageType == '2') {
                 rule = {
                     giftPrice: _state.giftPrice || 0,
                     transFee: _state.transFee,
                     giftValue: _state.giftValue,
                     stageType: _state.stageType,
+                    subsidyAmount: _state.subsidyAmount,
                     stage: [
                         {
                             stageAmount: _state.stageAmount,
@@ -146,6 +156,7 @@ class GroupTicketDetailInfo extends React.Component {
                     evidence,
                     invoice,
                     costIncome: _state.costIncome,
+                    subsidyAmount: _state.subsidyAmount,
                 };
             } else {
                 rule = {
@@ -161,6 +172,7 @@ class GroupTicketDetailInfo extends React.Component {
                     evidence,
                     invoice,
                     costIncome: _state.costIncome,
+                    subsidyAmount: _state.subsidyAmount,
                 };
             }
             // save state to redux
@@ -189,6 +201,15 @@ class GroupTicketDetailInfo extends React.Component {
             giftPrice = value.number;
         }
         this.setState({ giftPrice });
+    }
+    onSubsidyChange = (value) => {
+        let { subsidyAmount } = this.state;
+        if (value.number == null || value.number == '') {
+            subsidyAmount = value.number;
+        } else {
+            subsidyAmount = value.number;
+        }
+        this.setState({ subsidyAmount });
     }
     onGiftValueChange(value) {
         let { giftValue, giftValueFlag } = this.state;
@@ -221,6 +242,7 @@ class GroupTicketDetailInfo extends React.Component {
     }
     renderGroupTicket = () => {
         const { intl } = this.props;
+        const { accountInfo: { groupID } } = this.props;
         const k5ezdbiy = intl.formatMessage(SALE_STRING.k5ezdbiy);
 
         const k5f3y5ml = intl.formatMessage(SALE_STRING.k5f3y5ml);
@@ -290,7 +312,7 @@ class GroupTicketDetailInfo extends React.Component {
                         modal="float"
                     />
                 </FormItem>
-                <FormItem
+                <FormItem // 费用是否计入实收
                     label={SALE_LABEL.k5f4a4be}
                     className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
                     labelCol={{ span: 4 }}
@@ -302,11 +324,30 @@ class GroupTicketDetailInfo extends React.Component {
                             defaultValue={'1'}
                             getPopupContainer={(node) => node.parentNode}
                     >
-    <Option value="0">{k5f3y6yg}</Option>
-        <Option value="1">{k5f3y6b4}</Option>
+                        <Option value="0">{k5f3y6yg}</Option>
+                        <Option value="1">{k5f3y6b4}</Option>
                     </Select>
                 </FormItem>
-
+                {
+                    LAOWANG_GROUPID.includes(String(groupID)) &&
+                    <FormItem // 仅针对1348可见
+                        label={'补贴金额'}
+                        className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 17 }}
+                    >
+                        <PriceInput
+                            addonBefore={''}
+                            addonAfter={k5ezdbiy}
+                            discountMode
+                            discountFloat={2}
+                            onChange={this.onSubsidyChange}
+                            value={{ number: this.state.subsidyAmount }}
+                            defaultValue={{ number: this.state.subsidyAmount }}
+                            modal="float"
+                        />
+                    </FormItem>
+                }
                 <FormItem label={SALE_LABEL.k5f4aaf0} className={[styles.FormItemStyle, styles.groupTicket, styles.priceInputSingle].join(' ')} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
                     <Select
                         size="default"
@@ -393,7 +434,7 @@ function mapStateToProps(state) {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
-
+        accountInfo: state.user.get("accountInfo").toJS(),
     }
 }
 
