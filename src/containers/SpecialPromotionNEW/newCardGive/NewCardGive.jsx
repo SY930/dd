@@ -25,7 +25,6 @@ class NewCardGive extends NewPromotion {
     constructor(props) {
         super(props);
     }
-
     render() {
         if (this.props.component === undefined) {
             throw new Error('component is required');

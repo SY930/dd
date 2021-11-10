@@ -871,6 +871,7 @@ class SpecialDetailInfo extends Component {
                     giftID: giftInfo.giftInfo.giftItemID,
                     itemID: giftInfo.giftInfo.itemID,
                     giftName: giftInfo.giftInfo.giftName,
+                    giftType: giftInfo.giftInfo.parentId,
                 };
             } else {
                 // 固定期限
@@ -897,6 +898,7 @@ class SpecialDetailInfo extends Component {
                     giftID: giftInfo.giftInfo.giftItemID,
                     giftName: giftInfo.giftInfo.giftName,
                     itemID: giftInfo.giftInfo.itemID,
+                    giftType: giftInfo.giftInfo.parentId,
                 };
             }
             if (
