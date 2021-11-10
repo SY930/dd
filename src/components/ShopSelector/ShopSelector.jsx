@@ -19,7 +19,7 @@ class ShopSelector extends Component {
         filters: null,
         alloptions: [],
         allfilters: [],
-        isShopSelectorShow:'2'
+        isShopSelectorShow: '2'
     }
 
     componentDidMount() {
@@ -34,13 +34,13 @@ class ShopSelector extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if(nextProps.isShopSelectorShow){
+        if (nextProps.isShopSelectorShow) {
             this.setState({
-                isShopSelectorShow:nextProps.isShopSelectorShow
+                isShopSelectorShow: nextProps.isShopSelectorShow
             })
         }
         if (!isEqual(this.props.filterShopIds, nextProps.filterShopIds)) {
-            this.loadShops({}, nextProps.schemaData, true,nextProps.filterShopIds);
+            this.loadShops({}, nextProps.schemaData, true, nextProps.filterShopIds);
         }
         if (!isEqual(this.props.schemaData, nextProps.schemaData)) {
             this.loadShops({}, nextProps.schemaData, true);
@@ -53,14 +53,14 @@ class ShopSelector extends Component {
         }
     }
 
-    loadShops(params = {}, cache = this.props.schemaData, isForce = false,filterShopIds = []) {
-        let {filterParm = {},isCreateCoupon = false} = this.props;//isCreateCoupon是否创建券的时候
+    loadShops(params = {}, cache = this.props.schemaData, isForce = false, filterShopIds = []) {
+        let { filterParm = {}, isCreateCoupon = false } = this.props;//isCreateCoupon是否创建券的时候
         if (!isForce && (this.props.options || this.state.options)) return Promise.resolve();
-        params = {...params, ...filterParm}
+        params = { ...params, ...filterParm }
         return loadShopSchema(params, cache)
             .then(({ shops, ...filterOptions }) => {
                 shops = shops.filter(shop => !filterShopIds.includes(shop.shopID));
-                if(isCreateCoupon){
+                if (isCreateCoupon) {
                     shops = shops.filter(shop => shop.operationMode != '3');
                 }
                 this.setState({
@@ -118,7 +118,7 @@ class ShopSelector extends Component {
     }
 
     handleModalOk = (values) => {
-        const {eventWay} = this.props;
+        const { eventWay } = this.props;
         this.props.onChange(values);
 
         this.setState({ showModal: false });
@@ -130,7 +130,7 @@ class ShopSelector extends Component {
     }
 
     render() {
-        const { value = [], onChange, size, placeholder, extendShopList, eventWay, ...otherProps } = this.props;
+        const { value = [], onChange, size, placeholder, extendShopList, eventWay, disabled, ...otherProps, } = this.props;
         const { showModal } = this.state;
         let options = this.props.options || this.state.options || [];
         if (Array.isArray(extendShopList)) {
@@ -153,6 +153,7 @@ class ShopSelector extends Component {
                         items={items}
                         onAdd={this.handleAdd}
                         onClose={this.handleClose}
+                        disabled={disabled}
                     />
                 }
                 {size === 'small' &&
@@ -180,9 +181,9 @@ class ShopSelector extends Component {
                         onCancel={this.handleModalCancel}
                     />
                 }
-                
-                <div style={{color:'orange',fontSize:'12'}}>
-                    {eventWay&&eventWay=='82'?`不选默认全部店铺可用` : null}
+
+                <div style={{ color: 'orange', fontSize: '12' }}>
+                    {eventWay && eventWay == '82' ? `不选默认全部店铺可用` : null}
                 </div>
             </div>
         );

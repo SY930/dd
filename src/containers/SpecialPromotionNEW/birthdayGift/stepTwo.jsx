@@ -548,7 +548,7 @@ class StepTwo extends React.Component {
     renderShopsOptions() {
         let { shopIDList, isRequire, shopStatus, canUseShopIDs, excludeCardTypeShops, isShowShopTip, cardLevelIDList } = this.state
         const selectedShopIdStrings = shopIDList.map(shopIdNum => String(shopIdNum));
-
+        const { ifJumpOpenCard = false } = this.props
         let excludeShopIDList = []
         canUseShopIDs = [...canUseShopIDs, '-1']
 
@@ -562,7 +562,6 @@ class StepTwo extends React.Component {
         }
 
         canUseShopIDs = canUseShopIDs.filter(v => !excludeShopIDList.includes(Number(v)))
-
         return (
             <Form.Item
                 label={this.props.intl.formatMessage(STRING_SPE.db60a0b75aca181)}
@@ -575,6 +574,7 @@ class StepTwo extends React.Component {
                     onChange={
                         this.editBoxForShopsChange
                     }
+                    disabled={ifJumpOpenCard}
                     canUseShops={canUseShopIDs}
                     extendShopList={[{
                         value: '-1',
