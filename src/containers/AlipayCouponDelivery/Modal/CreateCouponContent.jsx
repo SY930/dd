@@ -319,7 +319,7 @@ class CreateCouponContent extends Component {
                             ],
                         })(<Select onChange={this.handleDirectSelect} placeholder={'请选择支付宝pid号 - 账号名称'}>
                             {
-                                this.props.shopPid.map(({ channelAccount, channelName }) => (
+                                (this.props.shopPid || []).map(({ channelAccount, channelName }) => (
                                     <Select.Option key={channelAccount} value={`${channelAccount}`}>{channelAccount} - {channelName}</Select.Option>
                                 ))
                             }
@@ -402,7 +402,7 @@ class CreateCouponContent extends Component {
                             ],
                         })(<Select onChange={this.handleIndirectSelect} placeholder={'请输入结算主体'}>
                             {
-                                this.props.indirectList.map(({ settleUnitName, settleUnitID }) => (
+                                (this.props.indirectList || []).map(({ settleUnitName, settleUnitID }) => (
                                     <Select.Option key={settleUnitID} value={`${settleUnitID}`}>{settleUnitName}</Select.Option>
                                 ))
                             }
