@@ -83,7 +83,7 @@ async function getShopPid() {
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;
     if (code === '000') {
-        const { authPidDataList } = obj;
+        const { authPidDataList = [] } = obj;
         return authPidDataList
     }
     message.error(msg);
