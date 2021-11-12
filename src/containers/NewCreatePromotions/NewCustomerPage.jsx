@@ -167,7 +167,7 @@ class NewCustomerPage extends Component {
     }
     fromCrmJump() {
         const {
-            from = 'groupsendGift', 
+            from = '', 
             type,
             gmID,
             totalMembers,
