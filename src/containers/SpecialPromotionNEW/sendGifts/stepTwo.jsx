@@ -302,6 +302,7 @@ class Two extends React.Component {
                             form={this.props.form}
                             value={this.state.message}
                             settleUnitID={this.state.settleUnitID}
+                            isBenefitJumpSendGift={isBenefitJumpSendGift}
                             onChange={
                                 (val) => {
                                     if (val instanceof Object) {

@@ -50,17 +50,19 @@ class SendMsgInfo extends React.Component {
         })
         if (specialPromotion.settleUnitID > 0 && !(specialPromotion.accountNo > 0)) {
             this.setState(
-                {settleUnitID: specialPromotion.settleUnitID},
+                { settleUnitID: specialPromotion.settleUnitID },
                 () => {
                     this.props.onChange({ settleUnitID: this.state.settleUnitID });
                 }
             )
         } else {
-            if(specialPromotion.accountNo !== undefined) {
+            if (specialPromotion.accountNo !== undefined) {
                 this.setState(
-                    {accountNo: specialPromotion.accountNo > 0 ? specialPromotion.accountNo : (
-                        specialPromotion.equityAccountInfoList.find(account => !!account.hasPermission) || {accountNo: ''}
-                    ).accountNo},
+                    {
+                        accountNo: specialPromotion.accountNo > 0 ? specialPromotion.accountNo : (
+                            specialPromotion.equityAccountInfoList.find(account => !!account.hasPermission) || { accountNo: '' }
+                        ).accountNo
+                    },
                     () => {
                         this.props.onChange({ accountNo: this.state.accountNo });
                     }
@@ -86,7 +88,7 @@ class SendMsgInfo extends React.Component {
 
             this.setState({
                 accountNo: accountNo > 0 ? accountNo : ( // 找到第一个有权限的equityAccount
-                    equityAccountInfoList.find(account => !!account.hasPermission) || {accountNo: ''}
+                    equityAccountInfoList.find(account => !!account.hasPermission) || { accountNo: '' }
                 ).accountNo,
             }, () => {
                 this.props.onChange && this.props.onChange({ accountNo: this.state.accountNo });
@@ -144,6 +146,9 @@ class SendMsgInfo extends React.Component {
             form: { getFieldDecorator },
             minMessageCount = 0,
         } = this.props;
+        const {
+            isBenefitJumpSendGift = false,
+        } = this.props
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
         const { settleUnitID, accountNo } = this.state;
         // 旧活动, 已设置settleUnitID的情况下, 继续渲染settleUnitID; 其它情况都渲染accountNo, !(accountNo > 0) 是为了防止undefined
@@ -160,9 +165,9 @@ class SendMsgInfo extends React.Component {
                                 wrapperCol={{ span: 17 }}
                             >
                                 <Select onChange={this.handleSettleUnitIDChange}
-                                        value={settleUnitID}
-                                        placeholder={this.props.intl.formatMessage(STRING_SPE.d5671dc445081113)}
-                                        getPopupContainer={(node) => node.parentNode}
+                                    value={settleUnitID}
+                                    placeholder={this.props.intl.formatMessage(STRING_SPE.d5671dc445081113)}
+                                    getPopupContainer={(node) => node.parentNode}
                                 >
                                     {(specialPromotion.accountInfoList || []).map((accountInfo) => {
                                         return (<Option key={accountInfo.settleUnitID}>{accountInfo.settleUnitName}</Option>)
@@ -173,7 +178,7 @@ class SendMsgInfo extends React.Component {
                                         (specialPromotion.accountInfoList || []).map((accountInfo) => {
                                             if (accountInfo.settleUnitID == settleUnitID) {
                                                 return (
-                                                    <div key={accountInfo.settleUnitID}  style={{ margin: '8px 8px 0', color: accountInfo.smsCount ? 'inherit' : 'red'}}>{`${this.props.intl.formatMessage(STRING_SPE.d454642qgm0190)}${accountInfo.smsCount || 0}${this.props.intl.formatMessage(STRING_SPE.dk45jg26g8152)}`}</div>
+                                                    <div key={accountInfo.settleUnitID} style={{ margin: '8px 8px 0', color: accountInfo.smsCount ? 'inherit' : 'red' }}>{`${this.props.intl.formatMessage(STRING_SPE.d454642qgm0190)}${accountInfo.smsCount || 0}${this.props.intl.formatMessage(STRING_SPE.dk45jg26g8152)}`}</div>
                                                 )
                                             }
                                         })
@@ -192,9 +197,9 @@ class SendMsgInfo extends React.Component {
                                 help={accountNo > 0 ? '' : `${this.props.intl.formatMessage(STRING_SPE.d34iceo4ec1176)}`}
                             >
                                 <Select onChange={this.handleAccountNoChange}
-                                        value={accountNo || undefined}
-                                        placeholder={this.props.intl.formatMessage(STRING_SPE.db60b40190a02137)}
-                                        getPopupContainer={(node) => node.parentNode}
+                                    value={accountNo || undefined}
+                                    placeholder={this.props.intl.formatMessage(STRING_SPE.db60b40190a02137)}
+                                    getPopupContainer={(node) => node.parentNode}
                                 >
                                     {(specialPromotion.equityAccountInfoList || []).map((accountInfo) => {
                                         return (
@@ -212,7 +217,7 @@ class SendMsgInfo extends React.Component {
                                         (specialPromotion.equityAccountInfoList || []).map((accountInfo) => {
                                             if (accountInfo.accountNo == accountNo) {
                                                 return (
-                                                    <div key={accountInfo.accountNo}  style={{ margin: '8px 8px 0', color: accountInfo.smsCount ? 'inherit' : 'red'}}>{`${this.props.intl.formatMessage(STRING_SPE.d454642qgm0190)}${accountInfo.smsCount || 0}${this.props.intl.formatMessage(STRING_SPE.dk45jg26g8152)}`}</div>
+                                                    <div key={accountInfo.accountNo} style={{ margin: '8px 8px 0', color: accountInfo.smsCount ? 'inherit' : 'red' }}>{`${this.props.intl.formatMessage(STRING_SPE.d454642qgm0190)}${accountInfo.smsCount || 0}${this.props.intl.formatMessage(STRING_SPE.dk45jg26g8152)}`}</div>
                                                 )
                                             }
                                         })
@@ -237,7 +242,7 @@ class SendMsgInfo extends React.Component {
                                 message: `${this.props.intl.formatMessage(STRING_SPE.dojwje9qt4115)}`,
                             }],
                         })(
-                            <MsgSelector selectedMessage={this.state.message}/>
+                            <MsgSelector isBenefitJumpSendGift={isBenefitJumpSendGift} selectedMessage={this.state.message} />
                         )}
 
                     </FormItem>
@@ -246,7 +251,7 @@ class SendMsgInfo extends React.Component {
         }
         return (
             <div className={styles.noMsg}>
-            {this.props.intl.formatMessage(STRING_SPE.d1700dd4833c5259)}
+                {this.props.intl.formatMessage(STRING_SPE.d1700dd4833c5259)}
             </div>
         )
     }
