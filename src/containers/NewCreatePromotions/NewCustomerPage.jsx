@@ -128,7 +128,7 @@ class NewCustomerPage extends Component {
     }
     fromCrmJump() {
         const {
-            from,
+            from = 'doNothingButSth',
             type,
             gmID,
             totalMembers,
@@ -181,6 +181,19 @@ class NewCustomerPage extends Component {
                 return val.key == type;
             })
             this.handleNewPromotionCardClick(item[0]);
+            this.clearUrl();
+        } else if (from === 'doNothingButSth') {
+            const saleID = type;
+            // this.setState({ currentCategoryIndex: 4 })
+            if (!saleID) {
+                setTimeout(() => {
+                    this.setState({ currentCategoryIndex: 4 })
+                }, 500)
+                return;
+            }
+            const item = CRM_PROMOTION_TYPES[saleID];
+            this.handleNewPromotionCardClick(item);
+            this.props.setSpecialPromotionCardGroupID(gmID);
             this.clearUrl();
         }else {
             const saleID = type;

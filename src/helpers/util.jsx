@@ -768,7 +768,7 @@ export function isFilterShopType(curType){
  * 
  * return       {authStatus, authPluginStatus} 产品授权状态
  */
-export function checkAuthLicense(licenseData, productCode = 'HLL_CRM_NEW', status = true) {
+export function checkAuthLicense(licenseData = {}, productCode = 'HLL_CRM_NEW', status = true) {
     // 暂时关闭授权状态校验
     // if(!status) return {authStatus: true}
 
