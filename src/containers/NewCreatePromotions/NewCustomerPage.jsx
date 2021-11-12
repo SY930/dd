@@ -128,7 +128,7 @@ class NewCustomerPage extends Component {
     }
     fromCrmJump() {
         const {
-            from = 'doNothingButSth',
+            from = '',
             type,
             gmID,
             totalMembers,
