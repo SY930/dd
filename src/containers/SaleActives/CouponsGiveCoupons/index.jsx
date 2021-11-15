@@ -66,7 +66,7 @@ class CouponsGiveCoupons extends React.Component {
     handleFinish = (cb,current) => {
         if(typeof this[`submitFn${current}`]  === 'function' && this[`submitFn${current}`]()) {
             const { formData, type } = this.props.createActiveCom
-            const { eventLimitDate, gifts, eventName, eventRemark, shopIDList } = formData
+            const { eventLimitDate, gifts, eventName, eventRemark, shopIDList,smsGate } = formData
             const  { itemID } = decodeUrl()
             this.props.dispatch({
                 type: itemID ? 'createActiveCom/updateEvent_NEW__couponsGiveCoupons' : 'createActiveCom/addEvent_NEW_couponsGiveCoupons',
@@ -78,6 +78,7 @@ class CouponsGiveCoupons extends React.Component {
                         shopIDList,
                         eventEndDate: moment(eventLimitDate[1]).format(format),
                         eventStartDate: moment(eventLimitDate[0]).format(format),
+                        smsGate
                     },
                     gifts: gifts
                 },
