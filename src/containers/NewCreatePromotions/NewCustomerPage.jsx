@@ -117,6 +117,7 @@ class NewCustomerPage extends Component {
     }
     getQueryVariable() {
         const search = window.decodeURIComponent(window.location.search)
+        console.log('window.location.search', window.location.search)
         var query = search.substr(1)
         query = query.split('&')
         var params = {}
@@ -130,7 +131,7 @@ class NewCustomerPage extends Component {
     }
     fromCrmJump() {
         const {
-            from,
+            from = '',
             type,
             gmID,
             totalMembers,
@@ -141,6 +142,7 @@ class NewCustomerPage extends Component {
             awakenTip,
             RValue,
         } = this.getQueryVariable()
+        console.log('now entered jump groupMembersID groupMembersName', groupMembersID, groupMembersName)
         // 测试使用
         // const  {
         //     from = 'rfm',
@@ -161,7 +163,9 @@ class NewCustomerPage extends Component {
         if (from === 'rfm') {
             const item = CRM_PROMOTION_TYPES[type];
             this.handleNewPromotionCardClick(item);
-            this.props.setSpecialPromotionCardGroupID(`${groupMembersName} -- 【共${totalMembers}人】`);
+            if(groupMembersName) {
+                this.props.setSpecialPromotionCardGroupID(`${groupMembersName} -- 【共${totalMembers}人】`);
+            }
             this.props.saveRFMParams({
                 groupID,
                 mfrGrades: mfrGrades.split(','),
@@ -179,6 +183,19 @@ class NewCustomerPage extends Component {
                 return val.key == type;
             })
             this.handleNewPromotionCardClick(item[0]);
+            this.clearUrl();
+        } else if (from === 'doNothingButSth') {
+            const saleID = type;
+            // this.setState({ currentCategoryIndex: 4 })
+            if (!saleID) {
+                setTimeout(() => {
+                    this.setState({ currentCategoryIndex: 4 })
+                }, 500)
+                return;
+            }
+            const item = CRM_PROMOTION_TYPES[saleID];
+            this.handleNewPromotionCardClick(item);
+            this.props.setSpecialPromotionCardGroupID(gmID);
             this.clearUrl();
         }else {
             const saleID = type;
