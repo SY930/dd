@@ -82,7 +82,7 @@ class GroupTicketDetailInfo extends React.Component {
             stageAmount: _rule.stage ? _rule.stage[0].stageAmount : _rule.stageAmount,
             giftMaxUseNum: _rule.stage ? _rule.stage[0].giftMaxUseNum : _rule.giftMaxUseNum,
             costIncome: _rule.costIncome,
-            subsidyAmount: _rule.subsidyAmount == '0' ? '' : _rule.subsidyAmount,
+            subsidyAmount: _rule.subsidyAmount == '0' ? '0' : _rule.subsidyAmount,
         });
     }
     componentWillReceiveProps(nextProps) {
@@ -126,7 +126,7 @@ class GroupTicketDetailInfo extends React.Component {
                     transFee: _state.transFee,
                     giftValue: _state.giftValue,
                     stageType: _state.stageType,
-                    subsidyAmount: _state.subsidyAmount,
+                    subsidyAmount: _state.subsidyAmount || 0,
                     stage: [
                         {
                             stageAmount: _state.stageAmount,
@@ -156,7 +156,7 @@ class GroupTicketDetailInfo extends React.Component {
                     evidence,
                     invoice,
                     costIncome: _state.costIncome,
-                    subsidyAmount: _state.subsidyAmount,
+                    subsidyAmount: _state.subsidyAmount || 0,
                 };
             } else {
                 rule = {
@@ -172,7 +172,7 @@ class GroupTicketDetailInfo extends React.Component {
                     evidence,
                     invoice,
                     costIncome: _state.costIncome,
-                    subsidyAmount: _state.subsidyAmount,
+                    subsidyAmount: _state.subsidyAmount || 0,
                 };
             }
             // save state to redux
