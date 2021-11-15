@@ -228,7 +228,6 @@ class CardLevel extends React.Component {
             const thisCatIds = cat.cardTypeLevelList.map(card => card.cardLevelID);
             return _.intersection(thisCatIds, cardLevelIDList).length > 0
         });
-
         return (
             <FormItem
                 validateStatus={defaultCardType ? 'success' : 'error'}
@@ -256,13 +255,16 @@ class CardLevel extends React.Component {
     }
     render() {
         const { getFieldDecorator } = this.props.form;
-        const { cardInfo = [] } = this.state;
+        const { cardInfo = [], defaultCardType } = this.state;
         let getExcludeCardLevelIds = []
         if(this.props.type == '52') {
           getExcludeCardLevelIds = this.props.getExcludeCardLevelIds
         }else {
           getExcludeCardLevelIds = this.state.getExcludeCardLevelIds
         }
+        const {
+            ifJumpOpenCard = false,  
+        } = this.props
         const treeData = [];
         const eventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
         const excludeEvent = eventInfo.excludeEventCardLevelIdModelList || [];
@@ -314,7 +316,7 @@ class CardLevel extends React.Component {
                 {
                     this.props.type != '61' ?
                         <FormItem label={this.props.label || `${this.props.intl.formatMessage(STRING_SPE.d31eiebii4b4112)}`} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
-                            <RadioGroup onChange={this.handleRadioChange} value={`${this.state.cardLevelRangeType}`}>
+                            <RadioGroup onChange={this.handleRadioChange} value={`${this.state.cardLevelRangeType}`} disabled={ifJumpOpenCard}>
                                 <Radio key={'0'} value={'0'} disabled={this.state.allCheckDisabel}>{this.props.cusAllLabel ||  `${this.props.intl.formatMessage(STRING_SPE.d1kgd7kahd0869)}`}</Radio>
                                 <Radio key={'2'} value={'2'}>{this.props.catOrCard == 'card' ? `${this.props.intl.formatMessage(STRING_SPE.d34id95hnj8241)}` : (this.props.cusPartialLabel || `${this.props.intl.formatMessage(STRING_SPE.d170093144c11061)}`)}</Radio>
                             </RadioGroup>
@@ -332,15 +334,15 @@ class CardLevel extends React.Component {
                                 getFieldDecorator('treeSelect', {
                                     rules: [{
                                         type: 'array',
-                                        required: true,
+                                        required: ifJumpOpenCard ? false : true,
                                         message: `${this.props.intl.formatMessage(STRING_SPE.d4546omm0r6172)}`,
                                     }],
-                                    initialValue: this.state.cardLevelIDList,
+                                    initialValue: ifJumpOpenCard ? [] : this.state.cardLevelIDList,
                                 })(
                                     <TreeSelect
                                         style={{ width: '100%' }}
                                         dropdownStyle={{ maxHeight: 200, overflow: 'auto' }}
-                                        placeholder={`${this.props.intl.formatMessage(STRING_SPE.d34id95hnj7281)}${this.props.catOrCard == 'card' ? `${this.props.intl.formatMessage(STRING_SPE.d34id95hnj8241)}` : `${this.props.intl.formatMessage(STRING_SPE.d170093144c11061)}`}`}
+                                        placeholder={ifJumpOpenCard ? '当前正在编辑的权益卡 ' : `${this.props.intl.formatMessage(STRING_SPE.d34id95hnj7281)}${this.props.catOrCard == 'card' ? `${this.props.intl.formatMessage(STRING_SPE.d34id95hnj8241)}` : `${this.props.intl.formatMessage(STRING_SPE.d170093144c11061)}`}`}
                                         allowClear={true}
                                         multiple={true}
                                         showSearch
@@ -348,6 +350,7 @@ class CardLevel extends React.Component {
                                         treeData={treeData}
                                         getPopupContainer={(node) => node.parentNode}
                                         onChange={this.handleSelectChange}
+                                        disabled={ifJumpOpenCard}
                                     />
                                 )
                             }

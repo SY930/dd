@@ -20,7 +20,8 @@ import {
     saleCenterSetSpecialBasicInfoAC,
     saveCurrentcanUseShopIDs,
     getEventExcludeCardTypes,
-    getGroupCRMCustomAmount } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
+    getGroupCRMCustomAmount
+} from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import SendMsgInfo from '../common/SendMsgInfo';
 import CardLevel from '../common/CardLevel';
 import { queryGroupMembersList } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
@@ -81,7 +82,7 @@ class StepTwo extends React.Component {
             cancel: undefined,
         });
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
-        if(specialPromotion.groupMemberID){
+        if (specialPromotion.groupMemberID) {
             this.setState({
                 groupMembersID: specialPromotion.groupMemberID
             })
@@ -94,8 +95,8 @@ class StepTwo extends React.Component {
         });
         if (this.props.type == '52') {
             let parm = {}
-            if(isFilterShopType(this.props.type)){
-                parm = {productCode: 'HLL_CRM_License'}
+            if (isFilterShopType(this.props.type)) {
+                parm = { productCode: 'HLL_CRM_License' }
             }
             this.props.getShopSchemaInfo({ groupID: this.props.user.accountInfo.groupID, ...parm });
             // 过滤适用卡类列表
@@ -123,7 +124,8 @@ class StepTwo extends React.Component {
             const previousSchema = this.state.shopSchema;
             const nextShopSchema = nextProps.shopSchemaInfo.getIn(['shopSchema']).toJS();
             if (!isEqual(previousSchema, nextShopSchema)) {
-                this.setState({ shopSchema: nextShopSchema, // 后台请求来的值
+                this.setState({
+                    shopSchema: nextShopSchema, // 后台请求来的值
                 });
             }
             // 遍历所有排除卡
@@ -141,8 +143,8 @@ class StepTwo extends React.Component {
                     return acc;
                 }, []);
                 this.setState({
-                occupiedShops,
-                excludeCardTypeShops: nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops']).toJS()
+                    occupiedShops,
+                    excludeCardTypeShops: nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops']).toJS()
                 })
             }
         }
@@ -175,10 +177,10 @@ class StepTwo extends React.Component {
         const { excludeCardTypeShops } = this.state
         const { cardLevelIDList } = obj
         let isShowShopTip = false
-        if(cardLevelIDList) {
-            if(Array.isArray(excludeCardTypeShops)) {
+        if (cardLevelIDList) {
+            if (Array.isArray(excludeCardTypeShops)) {
                 const chooseItem = excludeCardTypeShops.filter(v => cardLevelIDList.includes(v.cardTypeID))
-                isShowShopTip =  chooseItem.find(v => v.shopIDList && v.shopIDList.length)
+                isShowShopTip = chooseItem.find(v => v.shopIDList && v.shopIDList.length)
             }
             this.setState({
                 isShowShopTip
@@ -255,22 +257,22 @@ class StepTwo extends React.Component {
         }
 
         // 开卡增礼品加适用店铺
-        const { shopIDList, canUseShopIDs , cardLevelRangeType, excludeCardTypeShops, cardLevelIDList } = this.state
+        const { shopIDList, canUseShopIDs, cardLevelRangeType, excludeCardTypeShops, cardLevelIDList } = this.state
         if (this.props.type == '52' && cardLevelRangeType == '2') {
             opts.shopIDList = shopIDList
             opts.shopRange = opts.shopIDList.length > 0 ? 1 : 2
-            opts.canUseShopIDs =  canUseShopIDs
+            opts.canUseShopIDs = canUseShopIDs
             // 如果卡类选择了店铺，新建的时候还选择了这个卡，必须要选择店铺
 
             let isShowShopTip = false
-            if(cardLevelIDList) {
-                if(Array.isArray(excludeCardTypeShops)) {
+            if (cardLevelIDList) {
+                if (Array.isArray(excludeCardTypeShops)) {
                     const chooseItem = excludeCardTypeShops.filter(v => cardLevelIDList.includes(v.cardTypeID))
-                    isShowShopTip =  chooseItem.find(v => v.shopIDList && v.shopIDList.length)
+                    isShowShopTip = chooseItem.find(v => v.shopIDList && v.shopIDList.length)
                 }
             }
 
-            if(isShowShopTip && !shopIDList.length) {
+            if (isShowShopTip && !shopIDList.length) {
                 flag = false
             }
 
@@ -279,18 +281,18 @@ class StepTwo extends React.Component {
             })
 
 
-        } else if(this.props.type == '52' && cardLevelRangeType != '2') {
+        } else if (this.props.type == '52' && cardLevelRangeType != '2') {
             opts.shopIDList = []
             opts.shopRange = opts.shopIDList.length > 0 ? 1 : 2
-            opts.canUseShopIDs =  canUseShopIDs
+            opts.canUseShopIDs = canUseShopIDs
         }
-        
+
         // 授权门店过滤
-        if(isFilterShopType(this.props.type)){
+        if (isFilterShopType(this.props.type)) {
             let dynamicShopSchema = Object.assign({}, this.props.shopSchemaInfo.toJS());
-            let {shopSchema = {}} = dynamicShopSchema
-            let {shops = []} = shopSchema
-            let {shopIDList = []} = opts
+            let { shopSchema = {} } = dynamicShopSchema
+            let { shops = [] } = shopSchema
+            let { shopIDList = [] } = opts
             // 是否存在自助
             let flag = shopIDList.includes(-1) || shopIDList.includes('-1')
             let extra = flag ? [-1] : []
@@ -302,7 +304,7 @@ class StepTwo extends React.Component {
     }
     // 会员群体Option
     renderOptions() {
-        return  this.state.groupMembersList.map((groupMembers, index) => (
+        return this.state.groupMembersList.map((groupMembers, index) => (
             <Option key={groupMembers.groupMembersID}>{`${groupMembers.groupMembersName}【${this.props.intl.formatMessage(STRING_SPE.de8fb5g9592274)}${groupMembers.totalMembers}${this.props.intl.formatMessage(STRING_SPE.d170093144c13204)}】`}</Option>
         ));
     }
@@ -359,7 +361,8 @@ class StepTwo extends React.Component {
         const {
             form: {
                 getFieldDecorator,
-            }
+            },
+            ifJumpOpenCard = false,
         } = this.props;
         // 控制小红点
         const eventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
@@ -374,7 +377,7 @@ class StepTwo extends React.Component {
         return (
             <div>
                 <FormItem label={`${this.props.intl.formatMessage(STRING_SPE.d216426238818026)}`} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
-                    <RadioGroup onChange={this.handleGroupOrCatRadioChange} value={`${localType}`}>
+                    <RadioGroup onChange={this.handleGroupOrCatRadioChange} value={`${localType}`} disabled={ifJumpOpenCard}>
                         <Radio key={'5'} value={'5'}>{this.props.intl.formatMessage(STRING_SPE.dd5a33b5g874114)}</Radio>
                         {/* 会员卡类 */}
                         <Radio key={'0'} value={'0'}>{this.props.intl.formatMessage(STRING_SPE.d170093144c11061)}</Radio>
@@ -393,6 +396,7 @@ class StepTwo extends React.Component {
                         catOrCard="cat"
                         type={this.props.type}
                         form={this.props.form}
+                        ifJumpOpenCard={ifJumpOpenCard}
                     />
                 )}
                 {
@@ -410,7 +414,7 @@ class StepTwo extends React.Component {
                                         message: `${this.props.intl.formatMessage(STRING_SPE.d1e04j2h621796)}`,
                                     }],
                                     initialValue: this.state.cardLevelIDList,
-                                    onChange: (v) => this.setState({cardLevelIDList: v})
+                                    onChange: (v) => this.setState({ cardLevelIDList: v })
                                 })(
                                     <BirthdayCardLevelSelector />
                                 )}
@@ -418,7 +422,7 @@ class StepTwo extends React.Component {
                                     !eventInfo.allCardLevelCheck && excludeEvent.length == 0 ? null :
 
                                         <Icon
-                                            style={{ top: 30}}
+                                            style={{ top: 30 }}
                                             type="exclamation-circle" className={styles.cardLevelTreeIcon}
                                             onClick={() => {
                                                 this.setState({ tableDisplay: !this.state.tableDisplay })
@@ -515,14 +519,14 @@ class StepTwo extends React.Component {
         }
         let occupiedShops = []
         const { canUseShopIDs, excludeCardTypeShops, cardLevelIDList } = this.state;
-        if(cardLevelIDList.length !== 0){
-          cardLevelIDList.forEach((item) => {
-            excludeCardTypeShops.forEach((excludeShop) => {
-              if(excludeShop.cardTypeID === item) {
-                occupiedShops.push(...excludeShop.shopIDList.map(id => `${id}`))
-              }
+        if (cardLevelIDList.length !== 0) {
+            cardLevelIDList.forEach((item) => {
+                excludeCardTypeShops.forEach((excludeShop) => {
+                    if (excludeShop.cardTypeID === item) {
+                        occupiedShops.push(...excludeShop.shopIDList.map(id => `${id}`))
+                    }
+                })
             })
-          })
         }
         dynamicShopSchema.shops = dynamicShopSchema.shops.filter(shop => !occupiedShops.includes(`${shop.shopID}`) && canUseShopIDs.includes(`${shop.shopID}`));
         const shops = dynamicShopSchema.shops;
@@ -535,30 +539,29 @@ class StepTwo extends React.Component {
                 return accumulateArr;
             }, []));
         // dynamicShopSchema.businessModels = dynamicShopSchema.businessModels && dynamicShopSchema.businessModels instanceof Array ? dynamicShopSchema.businessModels.filter(collection => availableBM.includes(collection.businessModel)) : [];
-        dynamicShopSchema.businessModels = dynamicShopSchema.businessModels && dynamicShopSchema.businessModels instanceof Array ? dynamicShopSchema.businessModels: [];
+        dynamicShopSchema.businessModels = dynamicShopSchema.businessModels && dynamicShopSchema.businessModels instanceof Array ? dynamicShopSchema.businessModels : [];
         dynamicShopSchema.citys = dynamicShopSchema.citys && dynamicShopSchema.citys instanceof Array ? dynamicShopSchema.citys.filter(collection => availableCities.includes(collection.cityID)) : [];
         dynamicShopSchema.shopCategories = dynamicShopSchema.shopCategories && dynamicShopSchema.shopCategories instanceof Array ? dynamicShopSchema.shopCategories.filter(collection => availableCategories.includes(collection.shopCategoryID)) : [];
         dynamicShopSchema.brands = dynamicShopSchema.brands && dynamicShopSchema.brands instanceof Array ? dynamicShopSchema.brands.filter(brandCollection => availableBrands.includes(brandCollection.brandID)) : [];
         return dynamicShopSchema;
     }
     renderShopsOptions() {
-        let { shopIDList, isRequire, shopStatus, canUseShopIDs ,excludeCardTypeShops, isShowShopTip, cardLevelIDList } = this.state
+        let { shopIDList, isRequire, shopStatus, canUseShopIDs, excludeCardTypeShops, isShowShopTip, cardLevelIDList } = this.state
         const selectedShopIdStrings = shopIDList.map(shopIdNum => String(shopIdNum));
-
+        const { ifJumpOpenCard = false } = this.props
         let excludeShopIDList = []
-        canUseShopIDs = [...canUseShopIDs,'-1']
+        canUseShopIDs = [...canUseShopIDs, '-1']
 
-        if(Array.isArray(excludeCardTypeShops)) {
+        if (Array.isArray(excludeCardTypeShops)) {
             const chooseItemList = excludeCardTypeShops.filter(v => cardLevelIDList.includes(v.cardTypeID))
             chooseItemList.forEach(v => {
-                if(Array.isArray(v.shopIDList)) {
+                if (Array.isArray(v.shopIDList)) {
                     excludeShopIDList = excludeShopIDList.concat(v.shopIDList)
                 }
             })
         }
 
         canUseShopIDs = canUseShopIDs.filter(v => !excludeShopIDList.includes(Number(v)))
-
         return (
             <Form.Item
                 label={this.props.intl.formatMessage(STRING_SPE.db60a0b75aca181)}
@@ -571,6 +574,7 @@ class StepTwo extends React.Component {
                     onChange={
                         this.editBoxForShopsChange
                     }
+                    disabled={ifJumpOpenCard}
                     canUseShops={canUseShopIDs}
                     extendShopList={[{
                         value: '-1',
@@ -579,11 +583,11 @@ class StepTwo extends React.Component {
                         shopName: '网上自助',
                         disabled: excludeShopIDList.includes(-1)
                     }]}
-                    filterParm={isFilterShopType(this.props.type) ? {productCode: 'HLL_CRM_License'} : {}}
+                    filterParm={isFilterShopType(this.props.type) ? { productCode: 'HLL_CRM_License' } : {}}
                 />
-                { isShowShopTip && !selectedShopIdStrings.length  ?
-                <div style={{color: 'red'}}>店铺不能为空</div>
-                : null}
+                {isShowShopTip && !selectedShopIdStrings.length ?
+                    <div style={{ color: 'red' }}>店铺不能为空</div>
+                    : null}
 
             </Form.Item>
         );
@@ -592,7 +596,7 @@ class StepTwo extends React.Component {
         const { cardLevelRangeType, getExcludeCardLevelIds = [], excludeCardTypeShops, isNew } = this.state;
         const info = this.props.specialPromotion.get('$eventInfo').toJS();
         const sendFlag = info.smsGate == '1' || info.smsGate == '3' || info.smsGate == '4';
-
+        const { ifJumpOpenCard = false } = this.props
 
         return (
             <div>
@@ -600,9 +604,10 @@ class StepTwo extends React.Component {
                     this.props.type == '52' && (
                         <FormItem label={`${this.props.intl.formatMessage(STRING_SPE.du382scl819184)}`} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
                             <Select onChange={this.handleSourceWayLimitChange}
-                                    value={String(info.sourceWayLimit || '0')}
-                                    placeholder={this.props.intl.formatMessage(STRING_SPE.dojv2jin820221)}
-                                    getPopupContainer={(node) => node.parentNode}
+                                value={String(info.sourceWayLimit || '0')}
+                                placeholder={this.props.intl.formatMessage(STRING_SPE.dojv2jin820221)}
+                                getPopupContainer={(node) => node.parentNode}
+                                disabled={ifJumpOpenCard}
                             >
                                 <Option key="0" value="0">{this.props.intl.formatMessage(STRING_SPE.d31ei98dbgi21253)}</Option>
                                 <Option key="1" value="1">{this.props.intl.formatMessage(STRING_SPE.d2b1b731e10d2291)}</Option>
@@ -620,6 +625,7 @@ class StepTwo extends React.Component {
                         form={this.props.form}
                         getExcludeCardLevelIds={getExcludeCardLevelIds}
                         excludeCardTypeShops={isNew && excludeCardTypeShops}
+                        ifJumpOpenCard={ifJumpOpenCard}
                     />
                 )}
                 {

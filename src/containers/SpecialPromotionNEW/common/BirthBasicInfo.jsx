@@ -24,7 +24,7 @@ import {
     saleCenterGetExcludeEventList,
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import { SEND_MSG } from '../../../redux/actions/saleCenterNEW/types'
-import {queryWechatMpInfo} from "../../GiftNew/_action";
+import { queryWechatMpInfo } from "../../GiftNew/_action";
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
 import moment from 'moment'
@@ -32,7 +32,7 @@ import moment from 'moment'
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
-const {  RangePicker } = DatePicker;
+const { RangePicker } = DatePicker;
 const format = 'YYYYMMDD'
 
 
@@ -73,20 +73,18 @@ class PromotionBasicInfo extends React.Component {
             cancel: undefined,
         });
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
-        this.props.queryWechatMpInfo({subGroupID: specialPromotion.subGroupID});
+        this.props.queryWechatMpInfo({ subGroupID: specialPromotion.subGroupID });
 
-        const { giftAdvanceDays, eventRemark, eventName, involvementGiftAdvanceDays, eventStartDate, eventEndDate  } = specialPromotion
-
+        const { giftAdvanceDays, eventRemark, eventName, involvementGiftAdvanceDays, eventStartDate, eventEndDate } = specialPromotion
         this.setState({
-            advanceDays:  giftAdvanceDays,
+            advanceDays: giftAdvanceDays,
             description: eventRemark,
             sendMsg: `${specialPromotion.smsGate || this.state.smsGate || '0'}`,
             name: eventName,
             involvementGiftAdvanceDays: involvementGiftAdvanceDays || 0,
-            actDate: (eventStartDate && eventEndDate) ? [moment(eventStartDate),moment(eventEndDate)] : [],
-            actDateTemp: (eventStartDate && eventEndDate) ? [moment(eventStartDate),moment(eventEndDate)] : []
+            actDate: (eventStartDate && eventEndDate) ? [moment(eventStartDate), moment(eventEndDate)] : [],
+            actDateTemp: (eventStartDate && eventEndDate) ? [moment(eventStartDate), moment(eventEndDate)] : []
         });
-
 
         specialPromotion.settleUnitID > 0 && !(specialPromotion.accountNo > 0) ?
             this.props.saleCenterQueryFsmGroupSettleUnit({ groupID: this.props.user.accountInfo.groupID })
@@ -146,9 +144,8 @@ class PromotionBasicInfo extends React.Component {
                 }
                 const { actDate } = this.state
 
-                const  eventStartDate = actDate[0] && moment(actDate[0]).format(format)
+                const eventStartDate = actDate[0] && moment(actDate[0]).format(format)
                 const eventEndDate = actDate[1] && moment(actDate[1]).format(format)
-
                 if (nextFlag) {
                     this.props.setSpecialBasicInfo({
                         eventRemark: this.state.description,
@@ -233,7 +230,7 @@ class PromotionBasicInfo extends React.Component {
         const rangeType = this.props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']);
         const tip = (
             <div style={{ display: this.state.tipDisplay, height: 135, width: 470 }} className={styles.tip}>
-                <p>{type ?  item ? item.tip : '' : ''}</p>
+                <p>{type ? item ? item.tip : '' : ''}</p>
                 <div>
                     <div className={styles.tipBtn}>
                         <Button
@@ -322,60 +319,60 @@ class PromotionBasicInfo extends React.Component {
     }
 
     renderPeriodSelector = () => {
-
+        const { ifJumpOpenCard = false } = this.props
         // 日期选择器
-        const { actDate, actDateTemp} = this.state
-        let {type} = this.props
+        const { actDate, actDateTemp } = this.state
+        let { type } = this.props
         return (
-                <FormItem
-                    label={'活动起止日期'}
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 17 }}
-                    >
-                    <Row>
-                        <Col span={19}>
+            <FormItem
+                label={'活动起止日期'}
+                className={styles.FormItemStyle}
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 17 }}
+            >
+                <Row>
+                    <Col span={19}>
+                        <RangePicker disabled={ifJumpOpenCard} allowClear={false} value={actDate} onChange={this.handleActDateChange} disabledDate={(currentDate) => {
+                            if (this.props.isNew) {
+                                return false
+                            }
+                            // 完善资料送礼52 生日赠送 51 日期限制
+                            let disabledDates = !currentDate.isBetween(actDateTemp[0], actDateTemp[1], null, '[]')
+                            return disabledDates
+                        }} />
 
-                            <RangePicker allowClear={false} value={actDate} onChange={this.handleActDateChange} disabledDate= {(currentDate) => {
-                                if(this.props.isNew) {
-                                    return false
-                                }
-                                // 完善资料送礼52 生日赠送 51 日期限制
-                                let disabledDates = !currentDate.isBetween(actDateTemp[0], actDateTemp[1], null, '[]')
-                                return disabledDates
-                            }} />
-
-                        </Col>
-                        <Col offset={1} span={4}>
-                            <div className={styles.ActivityDateDay}>
-                                <span>
-                                    {this.getDateCount()}
-                                </span>
-                                <span>天</span>
-                            </div>
-                        </Col>
-                    </Row>
-                </FormItem>
+                    </Col>
+                    <Col offset={1} span={4}>
+                        <div className={styles.ActivityDateDay}>
+                            <span>
+                                {this.getDateCount()}
+                            </span>
+                            <span>天</span>
+                        </div>
+                    </Col>
+                </Row>
+            </FormItem>
 
         )
     }
 
     getDateCount() {
-        const {  actDate } = this.state;
-        if (undefined ===  actDate[0] || undefined ===  actDate[1]) {
+        const { actDate } = this.state;
+        if (undefined === actDate[0] || undefined === actDate[1]) {
             return 0
         }
 
-        if ( actDate[0] === null ||   actDate[1] === null) {
+        if (actDate[0] === null || actDate[1] === null) {
             return 0
         }
 
-        return   actDate[1]
-            .diff( actDate[0], 'days') + 1;
+        return actDate[1]
+            .diff(actDate[0], 'days') + 1;
     }
     render() {
         // TODO:编码不能重复
         const { getFieldDecorator } = this.props.form;
+        const { ifJumpOpenCard = false } = this.props
 
 
         return (
@@ -392,12 +389,12 @@ class PromotionBasicInfo extends React.Component {
                         rules: [
                             { required: true, message: `${this.props.intl.formatMessage(STRING_SPE.da8of2e6el5231)}` },
                             { max: 50, message: `${this.props.intl.formatMessage(STRING_SPE.de8fcgn43i698)}` },
-                        /*    {
-                            whitespace: true,
-                            required: true,
-                            message: '汉字、字母、数字组成，不多于50个字符',
-                            pattern: /^[\u4E00-\u9FA5A-Za-z0-9\.\（\）\(\)\-\-]{1,50}$/,
-                        }*/
+                            /*    {
+                                whitespace: true,
+                                required: true,
+                                message: '汉字、字母、数字组成，不多于50个字符',
+                                pattern: /^[\u4E00-\u9FA5A-Za-z0-9\.\（\）\(\)\-\-]{1,50}$/,
+                            }*/
                         ],
                         initialValue: this.state.name,
                     })(
@@ -406,10 +403,10 @@ class PromotionBasicInfo extends React.Component {
                             onChange={this.handleNameChange}
                             ref={node => this.promotionNameInputRef = node}
                         />
-                        )}
+                    )}
                 </FormItem>
 
-                {showActDataType.includes(this.props.type) ?  this.renderPeriodSelector()  : null}
+                {showActDataType.includes(this.props.type) ? this.renderPeriodSelector() : null}
 
                 {this.renderMoreInfo()}
 
@@ -420,9 +417,9 @@ class PromotionBasicInfo extends React.Component {
                     wrapperCol={{ span: 17 }}
                 >
                     <Select size="default"
-                            value={this.state.sendMsg}
-                            onChange={this.handleSendMsgChange}
-                            getPopupContainer={(node) => node.parentNode}
+                        value={this.state.sendMsg}
+                        onChange={this.handleSendMsgChange}
+                        getPopupContainer={(node) => node.parentNode}
                     >
                         {
                             SEND_MSG.map((item) => {
@@ -441,9 +438,9 @@ class PromotionBasicInfo extends React.Component {
                             wrapperCol={{ span: 17 }}
                         >
                             <Select size="default"
-                                    value={`${this.state.signID}`}
-                                    onChange={this.handleSignIDChange}
-                                    getPopupContainer={(node) => node.parentNode}
+                                value={`${this.state.signID}`}
+                                onChange={this.handleSignIDChange}
+                                getPopupContainer={(node) => node.parentNode}
                             >
                                 <Option value={''} key={''}>{this.props.intl.formatMessage(STRING_SPE.d2c89sj1s61092)}</Option>
                                 {
@@ -469,7 +466,7 @@ class PromotionBasicInfo extends React.Component {
                         initialValue: this.state.description,
                     })(
                         <Input type="textarea" placeholder={this.props.intl.formatMessage(STRING_SPE.d34id2b3ir14116)} onChange={this.handleDescriptionChange} />
-                        )}
+                    )}
                 </FormItem>
 
             </Form>

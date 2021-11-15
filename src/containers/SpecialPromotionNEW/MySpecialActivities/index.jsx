@@ -1486,7 +1486,6 @@ class MySpecialActivities extends React.Component {
                 },
             },
         ];
-
         return (
             <div className={`layoutsContent ${styles.tableClass}`}>
                 <Table

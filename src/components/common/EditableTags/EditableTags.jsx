@@ -11,9 +11,9 @@ class EditableTags extends Component {
     }
 
     render() {
-        const { title, placeholder, items, onAdd } = this.props;
+        const { title, placeholder, items, onAdd, disabled } = this.props;
         return items.length > 0 ? (
-            <div className={style.wrapper}>
+            <div className={style.wrapper} style={{ pointerEvents: disabled ? 'none' : 'all', cursor:  disabled ? 'not-allowed' : 'pointer', background: disabled ? '#f3f3f3c4' : ''}}>
                 <div className={style.itemsWrapper}>
                     {items.map(item => (
                         <Tag
@@ -29,7 +29,7 @@ class EditableTags extends Component {
                 <Icon type="plus-circle-o" title={`添加${title}`} onClick={onAdd} />
             </div>
         ) : (
-            <div className={`${style.wrapper} ${style.empty}`}>
+            <div className={`${style.wrapper} ${style.empty}`} style={{ pointerEvents: disabled ? 'none' : 'all', cursor:  disabled ? 'not-allowed' : 'pointer', background: disabled ? '#f3f3f3c4' : ''}}>
                 <Icon type="plus-circle-o" title={`添加${title}`} onClick={onAdd} />
                 {placeholder && <div>{placeholder}</div>}
             </div>
