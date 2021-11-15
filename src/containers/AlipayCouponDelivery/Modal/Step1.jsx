@@ -122,7 +122,6 @@ class Step1 extends Component {
     handleAuthSubmit = (form) => {
         form.validateFields((err, values) => {
             if (!err) {
-                console.log('handleAuthSubmit', values);
                 // TODO:请求接口 关闭弹窗
             }
         })

@@ -117,7 +117,6 @@ class NewCustomerPage extends Component {
     }
     getQueryVariable() {
         const search = window.decodeURIComponent(window.location.search)
-        console.log('window.location.search', window.location.search)
         var query = search.substr(1)
         query = query.split('&')
         var params = {}
@@ -142,7 +141,6 @@ class NewCustomerPage extends Component {
             awakenTip,
             RValue,
         } = this.getQueryVariable()
-        console.log('now entered jump groupMembersID groupMembersName', groupMembersID, groupMembersName)
         // 测试使用
         // const  {
         //     from = 'rfm',
