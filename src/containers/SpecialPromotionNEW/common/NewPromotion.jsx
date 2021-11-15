@@ -67,6 +67,15 @@ export default class NewPromotion extends React.Component {
                 return message.warning(COMMON_SPE.dd5a476c91d4150);
             }
         }
+        let giftData
+        if(specialPromotion.isBenefitJumpOpenCard || specialPromotion.isBenefitJumpSendGift) {
+            giftData = specialPromotion.$giftInfo.map((item) => {
+                delete item.cardTypeID
+                return item
+            })
+        } else {
+            giftData =  specialPromotion.$giftInfo
+        }
         const opts = {
             event: {
                 ...specialPromotion.$eventInfo,
@@ -77,10 +86,9 @@ export default class NewPromotion extends React.Component {
                 createScenes: (specialPromotion.isBenefitJumpOpenCard || specialPromotion.isBenefitJumpSendGift) ? '1' : '0',
             },
             jumpUrlInfos: specialPromotion.$eventInfo.jumpUrlInfos,
-            gifts: specialPromotion.$giftInfo,
+            gifts: giftData,
             recommendEventRuleInfos: specialPromotion.$eventRecommendSettings,
         };
-
         // 生日赠送 且 非会员群体时
         if (this.props.promotionType === '51' && specialPromotion.$eventInfo.cardLevelRangeType != 5) {
             delete opts.event.cardGroupID
