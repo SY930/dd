@@ -201,7 +201,7 @@ class SuccessModalContent extends Component {
                                         <Select placeholder={'请先选择第三方支付宝券'}>
                                             {
                                                 (this.state.deliveryChannelInfoList || []).map(({ channel, channelName }) => (
-                                                    <Select.Option key={channel} value={channel}>{channelName}</Select.Option>
+                                                    <Select.Option key={channel} value={channel}>{channelName} - {channel}</Select.Option>
                                                 ))
                                             }
                                         </Select>
