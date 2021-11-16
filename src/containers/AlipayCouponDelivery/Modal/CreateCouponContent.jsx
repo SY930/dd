@@ -42,6 +42,7 @@ class CreateCouponContent extends Component {
             WXMerchantID: '', // 微信的MerchantID
             masterMerchantID: '', // 微信的masterMerchantID
             confirmLoading: false,
+            tips: false,
         }
     }
 
@@ -200,6 +201,18 @@ class CreateCouponContent extends Component {
         this.setState({
             authorizeModalVisible: false,
         })
+    }
+
+    handleStockNumChange = (value) => {
+        if (value.number && value.number > 200) {
+            this.setState({
+                tips: true,
+            })
+        } else {
+            this.setState({
+                tips: false,
+            })
+        }
     }
 
     goAuthorize = () => {
@@ -473,7 +486,7 @@ class CreateCouponContent extends Component {
 
     // 优惠券
     renderCoupon = () => {
-        const { form } = this.props;
+        const { form, type } = this.props;
         const { getFieldDecorator } = form;
         const { editData } = this.state;
         return (
@@ -486,7 +499,7 @@ class CreateCouponContent extends Component {
                     >
                         {getFieldDecorator('stock', {
                             initialValue: { number: editData.stock },
-                            // onChange: this.handleGiftNumChange,
+                            onChange: this.handleStockNumChange,
                             rules: [
                                 { required: true, message: '总数量为必填项' },
                                 {
@@ -504,7 +517,10 @@ class CreateCouponContent extends Component {
                             addonAfter="个"
                             modal="int"
                         />)}
-                        <div className={styles.authorizeBottomTip} style={{ padding: 0, textAlign: 'center' }}>如券用于支付宝会场大促投放，其总数量应大于200</div>
+                        {
+                            type === 1 && this.state.tips &&
+                            (<div className={styles.authorizeBottomTip} style={{ padding: 0, textAlign: 'center' }}>如券用于支付宝会场大促投放，其总数量应大于200</div>)
+                        }
                     </FormItem>
                     <FormItem
                         label="生效方式"
@@ -705,6 +721,7 @@ class CreateCouponContent extends Component {
                                 })(
                                     <Input
                                         placeholder="请输入投放名称"
+                                        style={{ height: '30px' }}
                                     />
                                 )}
                             </FormItem>
@@ -722,7 +739,7 @@ class CreateCouponContent extends Component {
                                     // onchange: this.handleRangeChange,
                                 })(
                                     <RangePicker
-                                        style={{ width: '100%' }}
+                                        style={{ width: '100%', height: 30 }}
                                         format="YYYY-MM-DD"
                                     />
                                 )}
@@ -787,6 +804,7 @@ class CreateCouponContent extends Component {
                                     })(
                                         <Input
                                             placeholder="请输入小程序appid"
+                                            style={{ height: '30px' }}
                                         />
                                     )}
                                 </FormItem>
@@ -819,6 +837,8 @@ class CreateCouponContent extends Component {
                                             placeholder="请输入用户最大领取数量"
                                             addonAfter="个"
                                             type="number"
+                                            min={0}
+                                            style={{ height: '30px' }}
                                         />
                                     )}
                                 </FormItem>

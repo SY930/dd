@@ -23,6 +23,7 @@
     }
 }
 .CouponGiftBox {
+    margin-bottom: 6px;
     padding: 16px 0 16px 14px;
     background: #F7F7F7;
     border-radius: 4px; 
@@ -273,11 +274,19 @@
     }
     .DirectBox {
         position: relative;
+        margin-bottom: 6px;
         background: #F7F7F7;
         border-radius: 4px;
     }
     .directSelect {
         padding: 10px 18px 10px 12px;
+    }
+    :global {
+        .ant-calendar-picker {
+            .ant-calendar-picker-input {
+                height: 100%;
+            }
+        }
     }
     
 }

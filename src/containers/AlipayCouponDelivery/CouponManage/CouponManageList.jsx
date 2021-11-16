@@ -430,7 +430,7 @@ class CouponManageList extends Component {
 			{
                 title: '操作',
                 key: 'operation',
-                // className: 'TableTxtCenter',
+                className: 'TableTxtCenter',
                 width: 160,
                 // fixed: 'left',
                 render: (text, record, index) => {
@@ -470,21 +470,21 @@ class CouponManageList extends Component {
                 title: '第三方券名称',
                 dataIndex: 'batchName',
                 key: 'batchName',
-                width: 400,
+                width: 300,
                 render: (text) => text,
             },
             {
                 title: '券ID',
                 dataIndex: 'itemID',
                 key: 'itemID',
-                width: 400,
+                width: 200,
                 render: (text) => text,
             },
             {
                 title: '关联渠道',
                 dataIndex: 'channelID',
                 key: 'channelID',
-                width: 300,
+                width: 90,
                 render: (text) => {
                     return ['60', 60].includes(text) ? '支付宝' : ''
                 },
@@ -493,7 +493,7 @@ class CouponManageList extends Component {
                 title: '剩余数量',
                 dataIndex: 'stock',
                 key: 'stock',
-                width: 100,
+                width: 90,
                 render: (text, record) => {
                     const { receive } = record
                     if (text) {
@@ -503,6 +503,7 @@ class CouponManageList extends Component {
             },
             {
                 title: '创建时间',
+                className: 'TableTxtCenter',
                 dataIndex: 'createStampStr',
                 key: 'createStampStr',
                 width: 400,
@@ -512,7 +513,7 @@ class CouponManageList extends Component {
 		return (
             <div className={['layoutsContent', styles.tableClass].join(' ')} style={{ height: this.state.contentHeight }}>
                 <Table
-                    scroll={{ x: 2000, y: this.state.contentHeight - 108 }}
+                    scroll={{ x: 800, y: this.state.contentHeight - 108 }}
                     bordered={true}
                     columns={columns}
                     dataSource={this.state.dataSource}
