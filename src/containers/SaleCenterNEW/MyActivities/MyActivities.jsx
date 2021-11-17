@@ -641,7 +641,7 @@ class MyActivities extends React.Component {
         }
         return [
             all,
-            ...ACTIVITY_CATEGORIES,
+            ...ACTIVITY_CATEGORIES.slice(0, ACTIVITY_CATEGORIES.length-1),
         ]
     }
 
