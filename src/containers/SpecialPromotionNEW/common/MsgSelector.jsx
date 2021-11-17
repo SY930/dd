@@ -8,8 +8,8 @@ import { jumpPage } from '@hualala/platform-base';
 import {
     Icon
 } from 'antd';
-import {getMessageTemplateList} from "../../BasicSettings/actions";
-import {SET_MSG_TEMPLATE} from "../../../constants/entryCodes";
+import { getMessageTemplateList } from "../../BasicSettings/actions";
+import { SET_MSG_TEMPLATE } from "../../../constants/entryCodes";
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE, COMMON_SPE } from 'i18n/common/special';
 
@@ -56,12 +56,22 @@ class MsgSelector extends React.Component {
     }
 
     jumpAway = (e) => {
+        const {
+            isBenefitJumpSendGift = false,
+        } = this.props
         e.preventDefault();
         e.stopPropagation();
-        const menuID = this.props.user.menuList.find(tab => tab.entryCode === SET_MSG_TEMPLATE).menuID
-        menuID && jumpPage({ menuID });
-        const cancelBtn = document.querySelector('.cancelBtnJs');
-        cancelBtn && cancelBtn.click();
+        if (!isBenefitJumpSendGift) {
+            const menuID = this.props.user.menuList.find(tab => tab.entryCode === SET_MSG_TEMPLATE).menuID
+            menuID && jumpPage({ menuID });
+            const cancelBtn = document.querySelector('.cancelBtnJs');
+            cancelBtn && cancelBtn.click();
+        } else {
+            const cancelBtn = document.querySelector('.cancelBtnJs');
+            cancelBtn && cancelBtn.click();
+            const menuID = this.props.user.menuList.find(tab => tab.entryCode === SET_MSG_TEMPLATE).menuID
+            menuID && jumpPage({ menuID });
+        }
     }
 
     render() {
@@ -70,26 +80,26 @@ class MsgSelector extends React.Component {
         (this.props.selectedMessage && !messageTemplateList.includes(this.props.selectedMessage)) && messageTemplateList.unshift(this.props.selectedMessage);
         return (
 
-            <div style={{maxHeight: '240px', overflowY: 'auto'}}>
-                {!!messageTemplateList.length &&  messageTemplateList.map((message, index) => {
+            <div style={{ maxHeight: '240px', overflowY: 'auto' }}>
+                {!!messageTemplateList.length && messageTemplateList.map((message, index) => {
                     return (
-                        <MessageDisplayBox  selected={message === this.props.selectedMessage}
-                                            message={message}
-                                            key={index}
-                                            onClick={() => this.handleMsgSelect(message)}
+                        <MessageDisplayBox selected={message === this.props.selectedMessage}
+                            message={message}
+                            key={index}
+                            onClick={() => this.handleMsgSelect(message)}
                         />
                     );
                 })}
                 {
                     !messageTemplateList.length &&
                     <div className={`${styles.leanBox} ${styles.emptyMessageBox}`}>
-                     {this.props.intl.formatMessage(STRING_SPE.dojvjdafo0208)}<a onClick={this.jumpAway}>{this.props.intl.formatMessage(STRING_SPE.d56716c805b3134)}</a>
+                        {this.props.intl.formatMessage(STRING_SPE.dojvjdafo0208)}<a onClick={this.jumpAway}>{this.props.intl.formatMessage(STRING_SPE.d56716c805b3134)}</a>
                     </div>
                 }
                 {
                     !!messageTemplateList.length &&
                     <div className={`${styles.leanBox} ${styles.emptyMessageBox}`}>
-                    {this.props.intl.formatMessage(STRING_SPE.d1e05b4srh236)}<a onClick={this.jumpAway}>{this.props.intl.formatMessage(STRING_SPE.d56716c805b3134)}</a>
+                        {this.props.intl.formatMessage(STRING_SPE.d1e05b4srh236)}<a onClick={this.jumpAway}>{this.props.intl.formatMessage(STRING_SPE.d56716c805b3134)}</a>
                     </div>
                 }
             </div>
@@ -111,11 +121,11 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-function MessageDisplayBox(props){
+function MessageDisplayBox(props) {
     const classNames = classnames(
-        {[styles.messageDisplayBox]: !props.selected},
-        {[styles.leanBox]: !props.selected},
-        {[styles.isSelectedMessage]: props.selected}
+        { [styles.messageDisplayBox]: !props.selected },
+        { [styles.leanBox]: !props.selected },
+        { [styles.isSelectedMessage]: props.selected }
     );
     return (
         <div title={props.selected ? `${COMMON_SPE.d7h7h72c98c018}` : `${COMMON_SPE.du38ot6hu1140}`}

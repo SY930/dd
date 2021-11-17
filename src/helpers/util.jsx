@@ -745,17 +745,17 @@ export function axiosData(api, params, opts, {
  * curType      当前活动type值
  * return       bool || true 启用中  false  关闭中
  */
-export function isFilterShopType(curType){
+export function isFilterShopType(curType) {
     // return false;
     // 没有对应的type   默认true
-    if(!curType){
+    if (!curType) {
         return true;
     }
     // 授权店铺过滤活动类型  
     // 开卡赠送  52  线上餐厅送礼  23  抽抽乐78  评价送礼  64
     // 消费返利品 3010  消费返积分 3020
-    let filterType = ['23', '52', '78', '64', '3010', '3020','82'];
-    
+    let filterType = ['23', '52', '78', '64', '3010', '3020', '82'];
+
     return filterType.includes(curType)
 }
 
@@ -768,28 +768,28 @@ export function isFilterShopType(curType){
  * 
  * return       {authStatus, authPluginStatus} 产品授权状态
  */
-export function checkAuthLicense(licenseData={}, productCode = 'HLL_CRM_NEW', status = true) {
+export function checkAuthLicense(licenseData = {}, productCode = 'HLL_CRM_NEW', status = true) {
     // 暂时关闭授权状态校验
     // if(!status) return {authStatus: true}
 
-    let {basicLicenseStatus, plugins = []} = licenseData
+    let { basicLicenseStatus, plugins = [] } = licenseData
     // 集团授权信息
-    if(productCode === 'HLL_CRM_NEW'){
-        if(basicLicenseStatus == 1){
-            return {authStatus: true};
-        }else{
-            return {authStatus: false}
+    if (productCode === 'HLL_CRM_NEW') {
+        if (basicLicenseStatus == 1) {
+            return { authStatus: true };
+        } else {
+            return { authStatus: false }
         }
     }
     // 插件授权信息
-    if(!plugins || plugins.length <= 0){
-        return {authPluginStatus: false}
-    }else{
+    if (!plugins || plugins.length <= 0) {
+        return { authPluginStatus: false }
+    } else {
         let pluginInfo = plugins.find(item => item.productCode == productCode) || {}
-        if(pluginInfo.licenseStatus == 1){
-            return {pluginInfo, authPluginStatus: true}
-        }else{
-            return {authPluginStatus: false};
+        if (pluginInfo.licenseStatus == 1) {
+            return { pluginInfo, authPluginStatus: true }
+        } else {
+            return { authPluginStatus: false };
         }
     }
 }

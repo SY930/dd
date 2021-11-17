@@ -71,7 +71,7 @@ const fetchCardType = function (opts) {
         null,
         { path: "data.cardTypeBaseInfoList" }
     ).then((records) => {
-        const { perfectReturnGiftCardTypeValue, perfectReturnGiftCardGrowthValue} = this.state;
+        const { perfectReturnGiftCardTypeValue, perfectReturnGiftCardGrowthValue } = this.state;
         if (
             Array.isArray(records) &&
             records[0] &&
@@ -101,7 +101,7 @@ const fetchCardType = function (opts) {
  *
  * @returns
  */
-const renderGivePointFn = function () {
+const renderGivePointFn = function (isBenefitJumpSendGift) {
     const {
         perfectReturnGiftCheckBoxStatus,
         perfectReturnGiftPoint,
@@ -155,38 +155,42 @@ const renderGivePointFn = function () {
                     />
                 )}
             </FormItem>
-            <FormItem
+            {
+                isBenefitJumpSendGift ? null : 
+                <FormItem
                 wrapperCol={{ span: 12 }}
                 labelCol={{ span: 6 }}
                 className={styles.FormItemSecondStyle}
                 label={(
                     <span>
-                      充值到会员卡&nbsp;
-                      <Tooltip title="如果用户没有该卡类型的卡，则不送积分">
-                        <Icon style={{ marginLeft: 5, marginRight: -5}} type="question-circle" />
-                      </Tooltip>
+                        充值到会员卡&nbsp;
+                        <Tooltip title="如果用户没有该卡类型的卡，则不送积分">
+                            <Icon style={{ marginLeft: 5, marginRight: -5 }} type="question-circle" />
+                        </Tooltip>
                     </span>
-                  )}
+                )}
             >
-                
-                    <Select
-                        showSearch={true}
-                        value={perfectReturnGiftCardTypeValue}
-                        onChange={handleCardChange.bind(this)}
-                        disabled={giftSendCount > 0}
-                    >
-                        {cardTypeArr.map((item) => {
-                            return (
-                                <Option
-                                    key={item.cardTypeID}
-                                    value={item.cardTypeID}
-                                >
-                                    {item.cardTypeName}
-                                </Option>
-                            );
-                        })}
-                    </Select>
+
+                <Select
+                    showSearch={true}
+                    value={perfectReturnGiftCardTypeValue}
+                    onChange={handleCardChange.bind(this)}
+                    disabled={giftSendCount > 0}
+                >
+                    {cardTypeArr.map((item) => {
+                        return (
+                            <Option
+                                key={item.cardTypeID}
+                                value={item.cardTypeID}
+                            >
+                                {item.cardTypeName}
+                            </Option>
+                        );
+                    })}
+                </Select>
             </FormItem>
+            }
+            
         </div>
     );
 };
@@ -258,30 +262,30 @@ const renderGrowthValueFn = function () {
                 className={styles.FormItemSecondStyle}
                 label={(
                     <span>
-                      充值到会员卡&nbsp;
-                      <Tooltip title="如果用户没有该卡类型的卡，则不送成长值">
-                        <Icon style={{ marginLeft: 5, marginRight: -5}} type="question-circle" />
-                      </Tooltip>
+                        充值到会员卡&nbsp;
+                        <Tooltip title="如果用户没有该卡类型的卡，则不送成长值">
+                            <Icon style={{ marginLeft: 5, marginRight: -5 }} type="question-circle" />
+                        </Tooltip>
                     </span>
-                  )}
+                )}
             >
-                    <Select
-                        showSearch={true}
-                        value={perfectReturnGiftCardGrowthValue}
-                        onChange={handleGrowthCardChange.bind(this)}
-                        disabled={giftSendCount > 0}
-                    >
-                        {cardTypeArr.map((item) => {
-                            return (
-                                <Option
-                                    key={item.cardTypeID}
-                                    value={item.cardTypeID}
-                                >
-                                    {item.cardTypeName}
-                                </Option>
-                            );
-                        })}
-                    </Select>
+                <Select
+                    showSearch={true}
+                    value={perfectReturnGiftCardGrowthValue}
+                    onChange={handleGrowthCardChange.bind(this)}
+                    disabled={giftSendCount > 0}
+                >
+                    {cardTypeArr.map((item) => {
+                        return (
+                            <Option
+                                key={item.cardTypeID}
+                                value={item.cardTypeID}
+                            >
+                                {item.cardTypeName}
+                            </Option>
+                        );
+                    })}
+                </Select>
             </FormItem>
         </div>
     );
@@ -291,29 +295,28 @@ const renderGrowthValueFn = function () {
  *
  * @returns
  */
-export const renderThree = function (type) {
+export const renderThree = function (type, isBenefitJumpSendGift) {
     const { perfectReturnGiftCheckBoxStatus, data } = this.state;
-    const {
+    let {
         perfectReturnGiftPoint,
         perfectReturnGiftCoupon,
         perfectReturnGiftGrowthValue,
     } = perfectReturnGiftCheckBoxStatus;
-
     return (
         <div style={{ marginLeft: "40px" }}>
             {renderCheckbox.call(this, {
                 label: "赠送积分",
                 key: "perfectReturnGiftPoint",
             })}
-            {perfectReturnGiftPoint && renderGivePointFn.call(this)}
+            {perfectReturnGiftPoint && renderGivePointFn.call(this, isBenefitJumpSendGift)}
             {
-                type == '60' ? 
-                renderCheckbox.call(this, {
-                    label: "赠送成长值",
-                    key: "perfectReturnGiftGrowthValue",
-                }) : null
+                type == '60' ?
+                    renderCheckbox.call(this, {
+                        label: "赠送成长值",
+                        key: "perfectReturnGiftGrowthValue",
+                    }) : null
             }
-            {type== '60' ? perfectReturnGiftGrowthValue && renderGrowthValueFn.call(this) : null}
+            {type == '60' ? perfectReturnGiftGrowthValue && renderGrowthValueFn.call(this) : null}
             {renderCheckbox.call(this, {
                 label: "赠送优惠券",
                 key: "perfectReturnGiftCoupon",
@@ -359,7 +362,7 @@ export const addPointData = function (giftInfo) {
     this.props.form.validateFieldsAndScroll(
         { force: true },
         (error, basicValues) => {
-            const { perfectReturnGiftPoint, perfectReturnGiftGrowthValue} = basicValues;
+            const { perfectReturnGiftPoint, perfectReturnGiftGrowthValue } = basicValues;
             presentPointValue = perfectReturnGiftPoint && perfectReturnGiftPoint.number;
             presentGrowthValue = perfectReturnGiftGrowthValue && perfectReturnGiftGrowthValue.number;
         }
@@ -367,17 +370,17 @@ export const addPointData = function (giftInfo) {
     giftInfo = giftInfo.filter((v) => v.presentType !== 2);
     if (perfectReturnGiftPoint) {
         giftInfo.push({
-            presentValue:presentPointValue,
+            presentValue: presentPointValue,
             presentType: 2,
             giftCount: 1,
             giftName: `${presentPointValue}积分`,
             cardTypeID: perfectReturnGiftCardTypeValue,
             itemID: !this.props.isNew ? this.perfectPointItem.itemID : "",
         });
-    } 
-    if(perfectReturnGiftGrowthValue){
+    }
+    if (perfectReturnGiftGrowthValue) {
         giftInfo.push({
-            presentValue:presentGrowthValue,
+            presentValue: presentGrowthValue,
             presentType: 6,
             giftCount: 1,
             giftName: `${presentGrowthValue}成长值`,
@@ -405,7 +408,7 @@ export const addPointData = function (giftInfo) {
  * 初始化选中数据
  *
  */
-export const initPerfectCheckBox = function () {
+export const initPerfectCheckBox = function (isBenefitJumpSendGift) {
     const giftInfo = this.props.specialPromotion.get("$giftInfo").toJS();
     const { perfectReturnGiftCheckBoxStatus } = this.state;
     const pointItem = giftInfo.find((v) => v.presentType === 2);
@@ -415,10 +418,14 @@ export const initPerfectCheckBox = function () {
     perfectReturnGiftCheckBoxStatus.perfectReturnGiftCoupon = couponItem;
     perfectReturnGiftCheckBoxStatus.perfectReturnGiftGrowthValue = growthValueItem;
     if (!pointItem && !couponItem && !growthValueItem) {
-        perfectReturnGiftCheckBoxStatus.perfectReturnGiftCoupon = true;
+        if (!isBenefitJumpSendGift) {
+            perfectReturnGiftCheckBoxStatus.perfectReturnGiftCoupon = true;
+        }
     }
+
     this.perfectPointItem = pointItem || {};
     this.perfectGrowthItem = growthValueItem || {};
+
     this.setState({
         perfectReturnGiftCheckBoxStatus,
         perfectReturnGiftPoint: pointItem && pointItem.presentValue,

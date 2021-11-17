@@ -1,15 +1,22 @@
 import React from 'react'
-import { Input, Row, Col, DatePicker, Tooltip, Icon, Select, Radio, message } from 'antd'
+import { Input, Row, Col, DatePicker, Tooltip, Icon, Select, Radio, message,Button } from 'antd'
 import styles from '../CreateActive.less'
 import moment from 'moment'
 import PriceInput from '../../../components/common/PriceInput/PriceInput'
 import { checkAuthLicense } from '../../../helpers/util';
-
+import { jumpPage, axios } from '@hualala/platform-base';
 const { RangePicker } = DatePicker;
 const Option = Select.Option;
 const DATE_FORMAT = 'YYYYMMDD000000';
 const RadioGroup = Radio.Group;
-
+// 是否发信息
+const SEND_MSG = [
+    { label: '不发送', value: "0" },
+    { label: '仅推送短信', value: "1" },
+    { label: '仅推送微信(公众号)', value: "2" },
+    { label: '同时发送短信和微信(公众号)', value: "4" },
+    { label: '微信(公众号)推送不成功则发送短信', value: "3" },
+];
 // 活动说明的render函数
 export function renderEventRemark(d) {
     const { formData, authLicenseData } = this.props.createActiveCom;
@@ -30,7 +37,30 @@ export function renderEventRemark(d) {
         </div>
     );
 }
-
+// 是否发送礼品相关消息的render函数
+export function sendSmsGateRender(d) {
+    const { formData, authLicenseData } = this.props.createActiveCom;
+    return (
+        <div className={styles.textAreaWrap}>
+            {d({
+                initialValue:formData.smsGate ? String(formData.smsGate) : '0'
+            })(
+                <Select style={{ width: '293px' }}>
+                    {
+                        SEND_MSG.map((item) => {
+                            return (<Option value={`${item.value}`} key={`${item.value}`}>{item.label}</Option>)
+                        })
+                    }
+                </Select>
+            )}
+            <div className={styles.settingBtn}>
+                <Icon type="exclamation-circle" className={styles.warningIcon}/>
+                <span className={styles.confirmMsg}>请确认已配置并启用短信模版。</span>
+                <Button className={styles.goToSetting} onClick={() => {jumpPage({ pageID: 'shop.jituan.SMS' })}}>点击去配置</Button>
+            </div>
+        </div>
+    );
+}
 // 投放日期的render函数
 
 export function eventDateRender(d) {

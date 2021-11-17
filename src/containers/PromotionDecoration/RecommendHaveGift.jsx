@@ -16,6 +16,9 @@ export default class RecommendHaveGift extends Component {
     handleLinearGradientChange = (color1, color2) => {
         this.props.onChange({ key: ['btnBgColor'], value: `linear-gradient(${color1},${color2})` })
     }
+    handleFaceLinearGradientChange = (color1, color2) => {
+        this.props.onChange({ key: ['faceToFaceBtnBgColor'], value: `linear-gradient(${color1},${color2})` })
+    }
     renderPhonePreview() {
         const {
             decorationInfo: {
@@ -23,6 +26,8 @@ export default class RecommendHaveGift extends Component {
                 bgImg = `${baseUrl}/364c0698-6252-42c1-b54e-fbabfc162c08.png`,
                 btnBgColor = 'linear-gradient(#F27267,#D24C41)',
                 btnColor = '#FFFFFF',
+                faceToFaceBtnBgColor = 'linear-gradient(#F27267,#D24C41)',
+                faceToFaceBtnColor = '#FFFFFF',
             },
         } = this.props;
         return (
@@ -37,7 +42,7 @@ export default class RecommendHaveGift extends Component {
                     <div style={styles.tip}>每邀请一位新用户储值后可返还</div>
                     <img style={styles.award} src={`${baseUrl}/641e20de-c148-4f43-b51c-457273118466.png`} alt="" />
                     <div style={{ ...styles.btn, background: btnBgColor, color: btnColor }}>立即邀请</div>
-                    <div style={{ ...styles.btn, ...styles.faceBtn }}>面对面邀请</div>
+                    <div style={{ ...styles.btn, ...styles.faceBtn, background: faceToFaceBtnBgColor, color: faceToFaceBtnColor }}>面对面邀请</div>
                 </div>
             </div>
         )
@@ -49,6 +54,8 @@ export default class RecommendHaveGift extends Component {
                 bgImg,
                 btnBgColor = 'linear-gradient(#F27267,#D24C41)',
                 btnColor = '#FFFFFF',
+                faceToFaceBtnBgColor = 'linear-gradient(#F27267,#D24C41)',
+                faceToFaceBtnColor = '#FFFFFF',
             },
             onChange,
         } = this.props;
@@ -75,7 +82,7 @@ export default class RecommendHaveGift extends Component {
                     <ColorSettingBlock title="请选取一个你喜欢的颜色" value={bgColor} onChange={value => onChange({ key: ['bgColor'], value })} />
                 </div>
 
-                <div className={style.sectionWrapper}>
+                <div className={style.sectionWrapper} key="btn1">
                     <div style={{ top: 5 }} className={style.label}>按钮样式</div>
                     <ButtonSettingBlockMultiple
                         btnColor={btnColor}
@@ -86,6 +93,27 @@ export default class RecommendHaveGift extends Component {
                             }
                         }}
                         handleLinearGradientChange={this.handleLinearGradientChange}
+                        key="btn1"
+                        keys="btn1"
+                    />
+
+                </div>
+                <div className={style.sectionWrapper} key="btn2">
+                    <div style={{ top: 5 }} className={style.label}>按钮样式二</div>
+                    <ButtonSettingBlockMultiple
+                        btnColor={faceToFaceBtnColor}
+                        btnBgColor={faceToFaceBtnBgColor}
+                        onChange={(v) => {
+                            if (v.btnBgColor) {
+                                onChange({ key: ['faceToFaceBtnBgColor'], value: v.btnBgColor })
+                                onChange({ key: ['faceToFaceBtnColor'], value: v.btnColor })
+                            } else {
+                                onChange({ key: ['faceToFaceBtnColor'], value: v.btnColor })
+                            }
+                        }}
+                        handleLinearGradientChange={this.handleFaceLinearGradientChange}
+                        key="btn2"
+                        keys="btn2"
                     />
 
                 </div>
@@ -171,7 +199,7 @@ const styles = {
         top: '16px',
     },
     faceBtn: {
-        border: '1px solid #F7720B',
+        // border: '1px solid #F7720B',
         color: '#F7720B',
         top: '32px',
     },

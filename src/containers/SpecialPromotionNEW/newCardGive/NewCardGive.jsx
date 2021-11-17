@@ -25,12 +25,12 @@ class NewCardGive extends NewPromotion {
     constructor(props) {
         super(props);
     }
-
     render() {
         if (this.props.component === undefined) {
             throw new Error('component is required');
         }
-
+        console.log('this.props.isNew', this.props.isNew)
+        console.log('this.props.specialPromotion', this.props.specialPromotion)
         const steps = [
 
             {
@@ -40,6 +40,7 @@ class NewCardGive extends NewPromotion {
                     getSubmitFn={(handles) => {
                         this.handles[0] = handles;
                     }}
+                    ifJumpOpenCard={this.props.specialPromotion.isBenefitJumpOpenCard}
                     isNew={this.props.isNew}
                 />),
             },
@@ -51,6 +52,7 @@ class NewCardGive extends NewPromotion {
                         getSubmitFn={(handles) => {
                             this.handles[1] = handles;
                         }}
+                        ifJumpOpenCard={this.props.specialPromotion.isBenefitJumpOpenCard}
                         isNew={this.props.isNew}
                     />
                 ),
@@ -63,6 +65,7 @@ class NewCardGive extends NewPromotion {
                         getSubmitFn={(handles) => {
                             this.handles[2] = handles;
                         }}
+                        ifJumpOpenCard={this.props.specialPromotion.isBenefitJumpOpenCard}
                         onChange={(rule) => {
                             this.setState({ rule });
                         }}

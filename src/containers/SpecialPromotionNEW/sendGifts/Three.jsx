@@ -60,7 +60,7 @@ class Three extends React.Component {
 
 
     componentDidMount() {
-    
+
     }
 
     // Actions
@@ -92,7 +92,7 @@ class Three extends React.Component {
     }
 
     // 选择会员卡
-    onCardTypeIDChange = ()=>{
+    onCardTypeIDChange = () => {
 
     }
 
@@ -100,36 +100,36 @@ class Three extends React.Component {
     onBagChange = (item) => {
         // const { onBagChange, index} =this.props;
         // onBagChange(item, index);
-        if(item) {
-            this.setState({ bag: [item]});
+        if (item) {
+            this.setState({ bag: [item] });
             return;
         }
-        this.setState({ bag: null});
+        this.setState({ bag: null });
     }
 
 
     // 独立优惠券或者券包
     renderCouponOrCouponPack = () => {
         const { couponType, disabledGifts = false, bag } = this.state;
-        const { accountInfo : {
+        const { accountInfo: {
             groupID
-        }} = this.props.user;
+        } } = this.props.user;
         // 独立优惠券
         // if(couponType == '1') {
-            return (
-                <div style={{padding: '5px 0'}}>
-                    <AddGifts
-                        maxCount={10}
-                        disabledGifts={disabledGifts}
-                        type={'53'}
-                        isNew={this.props.isNew}
-                        value={
-                            this.state.data
-                        }
-                        onChange={gifts => this.gradeChange(gifts, 0)}
-                    />
-                </div>
-            )
+        return (
+            <div style={{ padding: '5px 0' }}>
+                <AddGifts
+                    maxCount={10}
+                    disabledGifts={disabledGifts}
+                    type={'53'}
+                    isNew={this.props.isNew}
+                    value={
+                        this.state.data
+                    }
+                    onChange={gifts => this.gradeChange(gifts, 0)}
+                />
+            </div>
+        )
         // } 
         // 券包
         // else if( couponType == '4') {
@@ -145,12 +145,12 @@ class Three extends React.Component {
 
     renderDiscountCouponPanel = () => {
         const { sendCoupon, disabledGifts = false } = this.state;
-        if(sendCoupon == false) {
+        if (sendCoupon == false) {
             return null;
         }
         return (
             <div>
-                <div style={{padding: '5px 0'}}>
+                <div style={{ padding: '5px 0' }}>
                     {/* { this.discountCouponPanel() } */}
                 </div>
                 {
@@ -161,10 +161,13 @@ class Three extends React.Component {
     }
 
     // 是否渲染返积分
-    renderPoint = ()=>{
+    renderPoint = () => {
         const { sendPoint } = this.state;
-        if(sendPoint) {
-            return <Point />
+        const {
+            isBenefitJumpSendGift = false,
+        } = this.props
+        if (sendPoint) {
+            return <Point isBenefitJumpSendGift={isBenefitJumpSendGift} />
         }
         return null;
     }

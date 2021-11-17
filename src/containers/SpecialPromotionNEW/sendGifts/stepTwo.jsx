@@ -76,7 +76,7 @@ class Two extends React.Component {
                 cardGroupName: groupMembers.groupMembersName,
                 cardCount: groupMembers.totalMembers,
                 cardGroupRemark: groupMembers.groupMembersRemark,
-                cardLevelRangeType:  (this.state.cardLevelRangeType | 0) || (this.state.groupMembersID == '0' ? '0' : '2'),
+                cardLevelRangeType: (this.state.cardLevelRangeType | 0) || (this.state.groupMembersID == '0' ? '0' : '2'),
             }
 
             if (smsGate == '1' || smsGate == '3' || smsGate == '4') {
@@ -113,7 +113,7 @@ class Two extends React.Component {
             cancel: undefined,
         });
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
-        if(specialPromotion.groupMemberID){
+        if (specialPromotion.groupMemberID) {
             this.setState({
                 groupMembersID: specialPromotion.groupMemberID
             })
@@ -256,8 +256,13 @@ class Two extends React.Component {
         const getFieldDecorator = this.props.form.getFieldDecorator;
         const totalCustomerCount = this.props.specialPromotion.get('customerCount');
         const groupMembersID = this.state.groupMembersID
-        const isDisableGroupSelect = typeof groupMembersID === 'string' && groupMembersID.includes && 
+        const isDisableGroupSelect = typeof groupMembersID === 'string' && groupMembersID.includes &&
             groupMembersID.includes('--')
+        const {
+            isBenefitJumpSendGift = false,
+        } = this.props
+        // isBenefitJumpSendGift
+        console.log('isBenefitJumpSendGift', isBenefitJumpSendGift)
         return (
             <Form>
                 <FormItem
@@ -274,7 +279,7 @@ class Two extends React.Component {
                         initialValue: this.state.groupMembersID,
                     })(
                         <Select
-                            disabled={isDisableGroupSelect}
+                            disabled={this.props.isBenefitJumpSendGift || isDisableGroupSelect}
                             showSearch
                             notFoundContent={`${this.props.intl.formatMessage(STRING_SPE.d2c8a4hdjl248)}`}
                             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
@@ -296,6 +301,7 @@ class Two extends React.Component {
                             form={this.props.form}
                             value={this.state.message}
                             settleUnitID={this.state.settleUnitID}
+                            isBenefitJumpSendGift={isBenefitJumpSendGift}
                             onChange={
                                 (val) => {
                                     if (val instanceof Object) {

@@ -23,7 +23,7 @@ export default class Point extends React.Component {
     }
 
     // 会员卡变更
-    onCardTypeIDChange = ()=>{
+    onCardTypeIDChange = () => {
 
     }
 
@@ -33,33 +33,39 @@ export default class Point extends React.Component {
             cardList,
             cardTypeID
         } = this.state;
+        const {
+            isBenefitJumpSendGift = false,
+        } = this.props
         return (
             <div>
                 <Form.Item
                     label={'赠送积分'}
-                    labelCol={{span: 4, offset: 0}}
-                    wrapperCol = {{ span: 10 }}
+                    labelCol={{ span: 4, offset: 0 }}
+                    wrapperCol={{ span: 10 }}
                 >
-                    <Input value={point} addonAfter="积分" onChange={({target:{value:val}})=>this.modifyStateWithKeyVal('point', val)}/>
+                    <Input value={point} addonAfter="积分" onChange={({ target: { value: val } }) => this.modifyStateWithKeyVal('point', val)} />
                 </Form.Item>
-                <Form.Item
-                    label={'充值到会员卡'}
-                    labelCol={{span: 4, offset: 0}}
-                    wrapperCol = {{ span: 10 }}
-                >
-                    <Select value={cardTypeID || ''} onChange={this.onCardTypeIDChange}>
-                        {
-                            cardList.map(c => {
-                                return (<Option
-                                    key={c.cardTypeID}
-                                    value={c.cardTypeID}
-                                >
-                                    {c.cardTypeName}
-                                </Option>)
-                            })
-                        }
-                    </Select>
-                </Form.Item>   
+                {
+                    isBenefitJumpSendGift ? null :
+                        <Form.Item
+                            label={'充值到会员卡'}
+                            labelCol={{ span: 4, offset: 0 }}
+                            wrapperCol={{ span: 10 }}
+                        >
+                            <Select value={cardTypeID || ''} onChange={this.onCardTypeIDChange}>
+                                {
+                                    cardList.map(c => {
+                                        return (<Option
+                                            key={c.cardTypeID}
+                                            value={c.cardTypeID}
+                                        >
+                                            {c.cardTypeName}
+                                        </Option>)
+                                    })
+                                }
+                            </Select>
+                        </Form.Item>
+                }
             </div>
         )
     }
