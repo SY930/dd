@@ -511,7 +511,7 @@ class CouponManageList extends Component {
             },
 		];
 		return (
-            <div className={['layoutsContent', styles.tableClass].join(' ')} style={{ height: this.state.contentHeight }}>
+            <div className={['layoutsContent', styles.tableClass].join(' ')} style={{ height: this.state.contentHeight, padding: '20px 0' }}>
                 <Table
                     scroll={{ x: 800, y: this.state.contentHeight - 108 }}
                     bordered={true}
@@ -548,20 +548,21 @@ class CouponManageList extends Component {
 
 	render() {
 		return (
-			<div style={{ backgroundColor: '#F3F3F3' }} className={['layoutsContainer', styles.CouponManageListBox].join(' ')} ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
-				<div>
-					{this.renderHeader()}
-				</div>
-				<div className="layoutsLineBlock"></div>
-				<div>
-					<div className={styles.pageContentWrapper}>
-						<div style={{ padding: 0 }} className="layoutsHeader">
-							{this.renderFilterBar()}
-							<div style={{ margin: '0' }} className="layoutsLine"></div>
-						</div>
-						{this.renderTables()}
-					</div>
-				</div>
+			<div className={['layoutsContainer', styles.CouponManageListBox].join(' ')} ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
+                <div>
+                    {this.renderHeader()}
+                </div>
+                <div style={{ margin: '0 20px' }} className="layoutsLine"></div>
+
+                <div>
+                    <div style={{ background: '#fff', padding: '12px 30px 0' }} className="layoutsHeader">
+                        {this.renderFilterBar()}
+                    </div>
+                    <div className="layoutsLineBlock"></div>
+                    <div className={styles.pageContentWrapper}>
+                        {this.renderTables()}
+                    </div>
+                </div>
                 {
                     this.state.createThirdCouponVisble && <Modal
                         title="创建第三方券"

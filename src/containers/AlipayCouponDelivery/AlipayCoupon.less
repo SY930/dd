@@ -73,6 +73,11 @@
         color: #666666;
         font-weight: 500;
         cursor: pointer;
+        border: 1px solid transparent;
+        &:hover {
+            border: 1px solid #1AB495;
+            border-radius: 8px;
+        }
         &::after {
             content: '';
             display: inline-block;
@@ -94,7 +99,7 @@
             background: #F9F9F9;
             text-align: center;
             overflow: hidden;
-            border-radius: 0px 99px 0px 8px;
+            border-radius: 0px 99px 0px 18px;
             font-size: 16px;
         }
         .signup {
@@ -370,7 +375,7 @@
 .CouponManageListBox {
     .pageContentWrapper {
         background-color: #FFFFFF;
-        padding: 15px 30px 30px;
+        padding: 0 20px;
     }
     .customHeader {
         font-size: 20px;
@@ -474,5 +479,9 @@
         border-radius: 12px;
         border: 1px solid #F6F6F6;
         cursor: pointer;
+        margin-bottom: 10px;
+        &:hover {
+            border: 1px solid #1AB495;
+        }
     }
 }

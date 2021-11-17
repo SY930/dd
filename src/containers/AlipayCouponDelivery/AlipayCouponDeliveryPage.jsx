@@ -175,7 +175,7 @@ export default class AlipayCouponDeliveryPage extends Component {
                     </Button>
                 </div>
                 <div className={style.AlipayCouponTabs}>
-                    <Tabs defaultActiveKey={tabKeys} onChange={this.handleChangeTabs}>
+                    <Tabs defaultActiveKey={tabKeys} onChange={this.handleChangeTabs} className="tabsStyles">
                         <TabPane tab="支付成功页投放" key="successPage">
                             <SuccessPage
                                 dataSource={dataSource}
