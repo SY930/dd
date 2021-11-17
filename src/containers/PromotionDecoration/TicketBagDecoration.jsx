@@ -33,6 +33,17 @@ export default class TicketBagDecoration extends Component {
     constructor(props) {
         super(props)
     }
+
+    getCouponImg = (imgVal) => {
+        if (!imgVal) return 'http://res.hualala.com/basicdoc/ef060596-786a-4aa7-8d99-4846d753d7e9.png';
+        const reg = /[http|https]*?:\/\/res\.hualala\.com\/(.*)?(gif|png|jpg|jpeg)/gi;
+        if (reg.test(imgVal)) {
+            return imgVal
+        } else {
+            return `http://res.hualala.com/${imgVal}`
+        }
+    }
+
     renderPhonePreview() {
         const {
             decorationInfo: {
@@ -44,7 +55,7 @@ export default class TicketBagDecoration extends Component {
                 priceCheckedvalue = 1,
             },
         } = this.props;
-
+        const couponImgValue = this.getCouponImg(couponImg);
         return (
             <div className={style.previewArea}>
                 {/* <div className={style.scrollTip}>
@@ -60,7 +71,7 @@ export default class TicketBagDecoration extends Component {
                         decorateType === 1 ?
                             <div>
                                 <div className={style.blindBanner}>
-                                    <img style={{ width: '100%', height: '100%' }} src={couponImg || headPic} alt="" />
+                                    <img style={{ width: '100%', height: '100%' }} src={couponImgValue} alt="" />
                                 </div>
                                 <div className={style.couponsBox}>
                                     <img src={coupons4} />
@@ -103,7 +114,7 @@ export default class TicketBagDecoration extends Component {
                                         position: 'absolute',
                                         top: 0,
                                         left: 28
-                                    }} src={couponImg || headPic} alt="" />
+                                    }} src={couponImgValue} alt="" />
                                     <div style={{
                                         width: 13,
                                         height: 85,
@@ -146,7 +157,7 @@ export default class TicketBagDecoration extends Component {
         const {
             decorationInfo: {
                 TipColor = '#fd6631',//购买提示文本
-                couponImg = 'http://res.hualala.com/basicdoc/ef060596-786a-4aa7-8d99-4846d753d7e9.png',//背景图
+                couponImg,
                 couponBtnBgColor = '#fd6631',//券包按钮背景色
                 couponBtnColor = '#fff',//券包按钮字体颜色
                 decorateType = 1,//装修类型 1:公众号, 2:小程序
@@ -154,6 +165,7 @@ export default class TicketBagDecoration extends Component {
             },
             onChange,
         } = this.props;
+        const couponImgValue = this.getCouponImg(couponImg);
         return (
             <div style={{ paddingTop: 35 }}>
                 <div className={style.sectionWrapper}>
@@ -168,7 +180,7 @@ export default class TicketBagDecoration extends Component {
                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
                         <DecorationUploader
                             limit={0}
-                            value={couponImg}
+                            value={couponImgValue}
                             onChange={value => onChange({ key: ['couponImg'], value })}
                         />
                         <div className={style.uploaderTip}>
