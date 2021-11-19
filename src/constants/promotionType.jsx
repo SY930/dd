@@ -434,6 +434,17 @@ export const REPEAT_PROMOTION_TYPES = [
         bottom: 13,
         isOffline: true
     },
+    {
+        title: '千人千面',
+        isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        text: '可根据设置条件筛选用户，推送不同的营销活动',
+        tags: [SALE_LABEL.k639vgbm],
+        example: '',
+        key: '3000',
+        right: 16,
+        bottom: 6,
+        isNew: true,
+    },
 ];
 
 /**
