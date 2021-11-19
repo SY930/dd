@@ -346,7 +346,7 @@ class CreateCouponContent extends Component {
         const value = editData.merchantType && editData.merchantType == '1' ? editData.merchantID : '';
         return (
             <Row>
-                <Col span={16} offset={4} className={styles.DirectBox}>
+                <Col span={16} offset={5} className={styles.DirectBox}>
                     <FormItem
                         labelCol={{ span: 0 }}
                         wrapperCol={{ span: 24 }}
@@ -429,7 +429,7 @@ class CreateCouponContent extends Component {
         // const value = editData.merchantType && editData.merchantType == '2' ? editData.merchantID : '';
         return (
             <Row>
-                <Col span={16} offset={4} className={styles.IndirectBox}>
+                <Col span={16} offset={5} className={styles.IndirectBox}>
                     <FormItem
                         labelCol={{ span: 0 }}
                         wrapperCol={{ span: 24 }}
@@ -492,7 +492,7 @@ class CreateCouponContent extends Component {
         const { editData } = this.state;
         return (
             <Row>
-                <Col span={16} offset={4} className={styles.CouponGiftBox}>
+                <Col span={16} offset={5} className={styles.CouponGiftBox}>
                     <FormItem
                         label="总数量"
                         labelCol={{ span: 4 }}
@@ -710,7 +710,7 @@ class CreateCouponContent extends Component {
                         <Form className={styles.crmSuccessModalContentBox}>
                             <FormItem
                                 label="第三方券名称"
-                                labelCol={{ span: 4 }}
+                                labelCol={{ span: 5 }}
                                 wrapperCol={{ span: 16 }}
                                 required={true}
                             >
@@ -728,7 +728,7 @@ class CreateCouponContent extends Component {
                             </FormItem>
                             <FormItem
                                 label="投放时间"
-                                labelCol={{ span: 4 }}
+                                labelCol={{ span: 5 }}
                                 wrapperCol={{ span: 16 }}
                                 required={true}
                             >
@@ -747,7 +747,7 @@ class CreateCouponContent extends Component {
                             </FormItem>
                             <FormItem
                                 label="选择优惠券"
-                                labelCol={{ span: 4 }}
+                                labelCol={{ span: 5 }}
                                 wrapperCol={{ span: 16 }}
                                 required={true}
                             >
@@ -773,7 +773,7 @@ class CreateCouponContent extends Component {
                             {giftItemID && this.renderCoupon()}
                             <FormItem
                                 label="链接方式"
-                                labelCol={{ span: 4 }}
+                                labelCol={{ span: 5 }}
                                 wrapperCol={{ span: 16 }}
                             >
                                 {getFieldDecorator('merchantType', {
@@ -793,7 +793,7 @@ class CreateCouponContent extends Component {
                             {
                                 type === 1 && <FormItem
                                     label="跳转小程序"
-                                    labelCol={{ span: 4 }}
+                                    labelCol={{ span: 5 }}
                                     wrapperCol={{ span: 16 }}
                                     required={true}
                                 >
@@ -813,8 +813,8 @@ class CreateCouponContent extends Component {
                             {
                                 type === 2 && <FormItem
                                     label="用户最大领取数量"
-                                    labelCol={{ span: 4 }}
-                                    wrapperCol={{ span: 8 }}
+                                    labelCol={{ span: 5 }}
+                                    wrapperCol={{ span: 9 }}
                                     required={true}
                                 >
                                     {getFieldDecorator('maxCouponsPerUser', {

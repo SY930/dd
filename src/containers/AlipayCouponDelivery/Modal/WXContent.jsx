@@ -55,7 +55,7 @@ class WXContent extends Component {
         const { getFieldDecorator } = form;
         return (
             <Row>
-                <Col span={16} offset={4} className={styles.DirectBox}>
+                <Col span={16} offset={5} className={styles.DirectBox}>
                     <Form.Item
                         labelCol={{ span: 8 }}
                         wrapperCol={{ span: 16 }}
