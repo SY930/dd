@@ -825,12 +825,12 @@ class CreateCouponContent extends Component {
                                                     if (!v) {
                                                         return cb();
                                                     }
-                                                    if (v > 100) {
+                                                    if (v > 100 || v < 0) {
                                                         return cb(rule.message);
                                                     }
                                                     cb();
                                                 },
-                                                message: '必须输入数字, 且不超过100',
+                                                message: '必须输入数字, 且大于0小于100',
                                             },
                                         ],
                                     })(
