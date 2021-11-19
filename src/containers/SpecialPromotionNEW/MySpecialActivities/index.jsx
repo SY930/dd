@@ -1096,11 +1096,14 @@ class MySpecialActivities extends React.Component {
                 width: 300,
                 // fixed:'left',
                 render: (text, record, index) => {
+                    // status 0-初始化   1-等待执行  2-执行中  3-执行完毕  4-执行失败  5-审核中  6-中断  
+                    // 50-群发短信  53-群发礼品  执行中不能编辑
                     const statusState = (
                         (record.eventWay == '50' || record.eventWay == '53')
                         &&
-                        (record.status != '0' && record.status != '1' && record.status != '5' && record.status != '21')
+                        (record.status == 2)
                     );
+                    console.log(statusState, 'index', index)
                     if(record.eventWay === 80) {
                         return this.renderPayHaveGift(text,index,record)
                     }
@@ -1110,7 +1113,7 @@ class MySpecialActivities extends React.Component {
                                 href="#"
                                 disabled={
                                     record.eventWay == '64' ? null : 
-                                    record.isActive != '0' || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) || record.eventWay === 80
+                                     statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && (record.isActive != '0' || !isMine(record))) || record.eventWay === 80
                                         ? true
                                         : null
                                 }
@@ -1125,7 +1128,7 @@ class MySpecialActivities extends React.Component {
                                             this.handleUpdateOpe(text, record, index);
                                         }
                                     } else {
-                                        if (record.isActive != '0' || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) || record.eventWay === 80) {
+                                        if (statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && (record.isActive != '0' || !isMine(record) )) || record.eventWay === 80) {
                                             e.preventDefault()
                                         } else {
                                             if (Number(record.eventWay) === 70) {
