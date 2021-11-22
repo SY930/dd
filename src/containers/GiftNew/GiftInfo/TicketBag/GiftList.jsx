@@ -31,7 +31,7 @@ class GiftList extends Component {
             visible: false,
             queryParams: {
                 pageNo: 1,
-                pageSize: 20,
+                pageSize: 25,
                 action: '1',
             },        // 临时查询缓存，具体对象查看QueryForm对象
             dataSource: [],
@@ -187,6 +187,7 @@ class GiftList extends Component {
                         pagination={{
                             showSizeChanger: true,
                             pageSize,
+                            pageSizeOptions: ['25','50','100','200'],
                             current: pageNo,
                             total: this.state.total,
                             showQuickJumper: true,

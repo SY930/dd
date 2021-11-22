@@ -244,7 +244,7 @@ class MyActivities extends React.Component {
             promotionOrder: '',
             channelLst: '',
             promotionShop: '',
-            pageSizes: 30, // 默认显示的条数
+            pageSizes: 25, // 默认显示的条数
             pageNo: 1,
             queryDisabled: false,
             currentPromotionID: '',
@@ -621,6 +621,8 @@ class MyActivities extends React.Component {
     onShowSizeChange = (current, pageSize) => {
         this.setState({
             pageSizes: pageSize,
+        },()=>{
+            this.handleQuery();
         })
     };
     isOnlinePromotionPage = () => {
@@ -1414,6 +1416,7 @@ class MyActivities extends React.Component {
                     loading={this.state.loading}
                     pagination={{
                         pageSize: this.state.pageSizes,
+                        pageSizeOptions: ['25','50','100','200'],
                         current: this.state.pageNo,
                         showQuickJumper: true,
                         showSizeChanger: true,
