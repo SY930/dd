@@ -1,4 +1,5 @@
 import React, { PureComponent as Component } from 'react';
+import { connect } from 'react-redux';
 import { Modal, Steps, Button, message } from 'antd';
 import { jumpPage, closePage } from '@hualala/platform-base';
 import moment from 'moment';
@@ -9,6 +10,10 @@ import Step3 from './Step3';
 import style from 'components/basic/ProgressBar/ProgressBar.less';
 import css from './style.less';
 import { TF, DF, imgURI } from './Common';
+
+import {
+    fetchFoodMenuInfoLightAC,
+} from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 
 const Step = Steps.Step;
 class ManyFace extends Component {
@@ -21,22 +26,9 @@ class ManyFace extends Component {
         brandList: [],
         sceneList: [],
         form: null,
-        // groupCardTypeList: [],
-        // mpList: [],
-        // settleUnitInfoList: [],
-        // needShow: 0,
         authLicenseData: {},
     };
     componentDidMount() {
-        // getGroupCardTypeList().then(list => {
-        //     this.setState({ groupCardTypeList: list });
-        // })
-        // getWechatMpList().then(list => {
-        //     this.setState({ mpList: list });
-        // })
-        // getSettleList().then(list => {
-        //     this.setState({ settleUnitInfoList: list });
-        // })
         this.getInitData();
         this.getEventDetail();
     }
@@ -184,9 +176,11 @@ class ManyFace extends Component {
     }
 
     getInitData = () => {
-        getBrandList().then((list) => {
+        getBrandList().then((list) => { // 获取品牌
             this.setState({ brandList: list });
         });
+        // 获取菜品
+
     }
 
     getEventDetail() {
@@ -422,4 +416,30 @@ class ManyFace extends Component {
         )
     }
 }
-export default ManyFace
+function mapStateToProps(state) {
+    return {
+        // params: state.sale_giftInfoNew.get('listParams'),
+        // giftData: state.sale_giftInfoNew.get('giftSort'),
+        // shopSchema: state.sale_shopSchema_New,
+        // accountInfo: state.user.get('accountInfo'),
+        // menuList: state.user.get('menuList'),
+        // sharedGifts: state.sale_giftInfoNew.get('sharedGifts'),
+
+        // // 商城商品及分类信息
+        // goodCategories: state.sale_promotionDetailInfo_NEW.get('goodCategories').toJS(),
+        // goods: state.sale_promotionDetailInfo_NEW.get('goods').toJS(),
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        fetchFoodMenuLightInfo: (opts, flag, id) => {
+            dispatch(fetchFoodMenuInfoLightAC(opts, flag, id))
+        },
+    };
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(ManyFace);

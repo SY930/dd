@@ -2,10 +2,7 @@ import React, { PureComponent as Component } from 'react';
 import { Modal, Alert, message, Switch, Form } from 'antd';
 import BaseForm from 'components/common/BaseForm';
 import { formKeys31, formKeys32, formItems3, formItemLayout } from './Common';
-import Lottery from '../Camp/BlindBoxLottery';
-import OpenLottery from '../Camp/BlindBoxLottery/OpenLottery';
-import Share from '../Camp/Share';
-import Uploader from '../Camp/Uploader';
+import MyFaceRule from '../Camp/MyFaceRule/MyFaceRule';
 import css from './style.less';
 
 const FormItem = Form.Item;
@@ -25,7 +22,7 @@ class Step3 extends Component {
     }
 
     onChange = (key, value) => {
-        
+        console.log('file: Step3.jsx ~ line 25 ~ Step3 ~ key, value', key, value)
     }
 
     needShowChange = (checked, e) => {
@@ -50,19 +47,11 @@ class Step3 extends Component {
     
     /** formItems 重新设置 */
     resetFormItems() {
-        const render = d => d()(<Lottery form={this.props.form} decorator={d} />);
-        const OpenRender = d => d()(<OpenLottery decorator={d} />);
-        const shareRender = d => d()(<Share decorator={d} />);
-        const openBoxRender = d => d()(this.openBoxRender());
-        const uploaderRender = d => d()(<Uploader decorator={d} />);
-        const { needShow, lottery, openLottery, shareInfo, eventImagePath, ...other } = formItems3;
+        const render = d => d()(<MyFaceRule form={this.props.form} decorator={d} />);
+        const { lottery, ...others } = formItems3;
         return {
-            ...other,
-            needShow: {...needShow, render: openBoxRender },
-            openLottery: {...openLottery, render: OpenRender},
+            ...others,
             lottery: { ...lottery, render },
-            shareInfo: { ...shareInfo, render: shareRender },
-            eventImagePath: { ...eventImagePath, render: uploaderRender },
         };
     }
 
