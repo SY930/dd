@@ -248,7 +248,8 @@ class CreateCouponContent extends Component {
                     this.setState({ confirmLoading: false })
                     return message.error('请输入支付宝链接方式')
                 }
-                if (values.merchantType === '2' && !this.state.bindUserId) { // 间连需要关联M4
+                if (values.merchantType === '2' && !this.state.bindUserId && type != 2) { // 间连需要关联M4
+                    this.setState({ confirmLoading: false })
                     return message.error('间连的支付宝账号未关联M4')
                 }
                 const endTime = rangePicker[1].format('YYYYMMDD');

@@ -91,8 +91,8 @@ class WxCouponModal extends Component {
     render() {
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
-                if (selectedRowKeys.length > 1) {
-                    return message.warn('最多选择1个券')
+                if (selectedRowKeys.length > 10) {
+                    return message.warn('最多选择10个券')
                 }
                 this.setState({ sleectedWxCouponList: selectedRows, selectedRowKeys })
             },
