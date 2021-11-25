@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Form, Input, Select, Row, Col, Icon, Modal, message } from 'antd'
 import { jumpPage } from '@hualala/platform-base';
 // import moment from 'moment'
-import { getBatchDetail, getDeliveryChannel, getAlipayCouponList } from '../AxiosFactory'
+import { getBatchDetail, getDeliveryChannel, getAlipayCouponList, isAuth } from '../AxiosFactory'
 import { axiosData } from '../../../helpers/util'
 import styles from '../AlipayCoupon.less';
 
@@ -110,13 +110,6 @@ class SuccessModalContent extends Component {
         })
     }
 
-    // handleAuthModalClose = () => {
-    //     this.setState({
-    //         authorizeModalVisible: false,
-    //     })
-    // }
-
-
     render() {
         const { form, editData = {} } = this.props;
         const { giftConfInfos = [] } = editData;
@@ -159,7 +152,6 @@ class SuccessModalContent extends Component {
                                 wrapperCol={{ span: 16 }}
                                 required={true}
                             >
-                                {/* TODO:根据itemID选出giftItemID */}
                                 {
                                     getFieldDecorator('itemID', {
                                         initialValue: giftConfInfos[0] ? giftConfInfos[0].giftID : undefined,
