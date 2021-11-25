@@ -80,7 +80,7 @@ const formItems3 = {
         type: 'custom',
         render: () => (<p />),
         defaultValue: [lottDefVal],
-        wrapperCol: { span: 18 },
+        wrapperCol: { span: 24 },
     },
 };
 

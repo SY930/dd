@@ -440,7 +440,7 @@ export const REPEAT_PROMOTION_TYPES = [
         text: '可根据设置条件筛选用户，推送不同的营销活动',
         tags: [SALE_LABEL.k639vgbm],
         example: '',
-        key: '3000',
+        key: '85',
         right: 16,
         bottom: 6,
         isNew: true,

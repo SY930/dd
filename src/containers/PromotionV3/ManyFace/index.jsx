@@ -7,13 +7,13 @@ import { getBrandList, putEvent, getEvent, postEvent, getGroupCardTypeList, getW
 import Step1 from './Step1';
 import Step2 from './Step2';
 import Step3 from './Step3';
+import {
+    fetchFoodMenuInfoLightAC, fetchFoodCategoryInfoLightAC,
+} from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
+import { fetchPromotionScopeInfo } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action'
+import { isHuaTian } from '../../../constants/projectHuatianConf';
 import style from 'components/basic/ProgressBar/ProgressBar.less';
 import css from './style.less';
-import { TF, DF, imgURI } from './Common';
-
-import {
-    fetchFoodMenuInfoLightAC,
-} from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 
 const Step = Steps.Step;
 class ManyFace extends Component {
@@ -176,11 +176,15 @@ class ManyFace extends Component {
     }
 
     getInitData = () => {
-        getBrandList().then((list) => { // 获取品牌
-            this.setState({ brandList: list });
-        });
-        // 获取菜品
-
+        const { fetchFoodCategoryLightInfo, fetchFoodMenuLightInfo, accountInfo, fetchPromotionScopeInfo } = this.props
+        // getBrandList().then((list) => { // 获取品牌
+        //     this.setState({ brandList: list });
+        // });
+        const groupID = accountInfo.get('groupID');
+        // 获取菜品分类
+        fetchFoodCategoryLightInfo({ groupID, shopID: this.props.user.shopID }); // 菜品分类轻量级接口
+        fetchFoodMenuLightInfo({ groupID, shopID: this.props.user.shopID }); // 轻量级接口
+        fetchPromotionScopeInfo({ groupID }) // 品牌
     }
 
     getEventDetail() {
@@ -418,6 +422,8 @@ class ManyFace extends Component {
 }
 function mapStateToProps(state) {
     return {
+        accountInfo: state.user.get('accountInfo'),
+        user: state.user.toJS(),
         // params: state.sale_giftInfoNew.get('listParams'),
         // giftData: state.sale_giftInfoNew.get('giftSort'),
         // shopSchema: state.sale_shopSchema_New,
@@ -435,6 +441,12 @@ function mapDispatchToProps(dispatch) {
     return {
         fetchFoodMenuLightInfo: (opts, flag, id) => {
             dispatch(fetchFoodMenuInfoLightAC(opts, flag, id))
+        },
+        fetchFoodCategoryLightInfo: (opts, flag, id) => {
+            dispatch(fetchFoodCategoryInfoLightAC(opts, flag, id))
+        },
+        fetchPromotionScopeInfo: (opts) => {
+            dispatch(fetchPromotionScopeInfo(opts));
         },
     };
 }

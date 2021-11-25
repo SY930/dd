@@ -833,7 +833,7 @@ class NewCustomerPage extends Component {
                 {(v3visible && curKey == '79') && <BlindBox onToggle={this.onV3Click} />}
                 {(v3visible && curKey == '83') && <PassWordCoupon onToggle={this.onV3Click} />}
                 {(v3visible && curKey == '10072') && this.renderWeChat2MallModal()}
-                {(v3visible && curKey == '3000') && <ManyFace onToggle={this.onV3Click} />}
+                {(v3visible && curKey == '85') && <ManyFace onToggle={this.onV3Click} />}
             </div >
         )
     }
