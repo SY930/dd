@@ -250,9 +250,11 @@ class CreateCouponContent extends Component {
                 const rangePicker = values.rangePicker;
                 const giftValidRange = values.giftValidRange || [];
                 if (!effectGiftTimeHours && values.effectType === '3') {
+                    this.setState({ confirmLoading: false })
                     return message.error('请输入生效时间')
                 }
                 if (!merchantID) {
+                    this.setState({ confirmLoading: false })
                     return message.error('请输入支付宝链接方式')
                 }
                 const endTime = rangePicker[1].format('YYYYMMDD');
@@ -317,11 +319,13 @@ class CreateCouponContent extends Component {
                             message.success('更新成功');
                             this.props.handleCloseModal();
                             this.props.handleQuery();
+                            this.props.onParentCancel();
                             return
                         }
                         message.success('创建成功');
                         this.props.handleCloseModal();
                         this.props.handleQuery();
+                        this.props.onParentCancel();
                         this.setState({ confirmLoading: false })
                         return
                     }

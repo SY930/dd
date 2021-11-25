@@ -608,6 +608,7 @@ class CouponManageList extends Component {
                         title={this.state.title}
                         platformType={this.state.platformTypeCreate}
                         channelID={this.state.channelID}
+                        onParentCancel={this.handleCloseThirdCouponModal}
                 />
                 }
                 {
