@@ -3901,8 +3901,8 @@ class SpecialDetailInfo extends Component {
                                                         rules: [
                                                             {
                                                                 validator: (rule, v, cb) => {
-                                                                    if (v > 99 || v < 1) {
-                                                                        return cb('请输入为1-99的整数');
+                                                                    if (v > 10 || v < 1) {
+                                                                        return cb('请输入为1-10的整数');
                                                                     }
                                                                     cb()
                                                                 },

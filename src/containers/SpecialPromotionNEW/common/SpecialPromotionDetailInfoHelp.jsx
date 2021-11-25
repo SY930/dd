@@ -1092,7 +1092,7 @@ const handleSubmitOnLineReturnGifts = function (isPrev) {
         message.warn('请添加一个第三方微信优惠券');
         return false
     }
-    console.log(giftCouponCount, 'giftCouponCount')
+    // console.log(giftCouponCount, 'giftCouponCount')
     const giftInfo = sleectedWxCouponList.map((item) => {
         return {
             ...item,
@@ -1102,6 +1102,7 @@ const handleSubmitOnLineReturnGifts = function (isPrev) {
             sendType: '0',
             giftCount: giftCouponCount,
             presentType: 7,
+            giftValidUntilDayCount: item.validUntilDays,
         }
     })
     this.props.setSpecialBasicInfo(giftInfo);

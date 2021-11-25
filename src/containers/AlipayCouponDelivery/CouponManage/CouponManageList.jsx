@@ -486,7 +486,7 @@ class CouponManageList extends Component {
                 key: 'channelID',
                 width: 90,
                 render: (text) => {
-                    return ['60', 60].includes(text) ? '支付宝' : ''
+                    return ['60', 60].includes(text) ? '支付宝' : '微信'
                 },
             },
             {
