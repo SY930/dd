@@ -79,6 +79,7 @@ import BlindBox from "../../PromotionV3/BlindBox";   // 盲盒
 import PassWordCoupon from "../../PromotionV3/PassWordCoupon";   // 口令领券
 import { isFormalRelease } from "../../../utils/index"
 import indexStyles from './mySpecialActivities.less'
+import ManyFace from '../../PromotionV3/ManyFace';
 const confirm = Modal.confirm;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
@@ -103,6 +104,7 @@ const DECORATABLE_PROMOTIONS = [
     '76',
     '68',
     '79',
+    '85'
 ]
 const isDecorationAvailable = ({ eventWay }) => {
     return DECORATABLE_PROMOTIONS.includes(`${eventWay}`)
@@ -781,6 +783,7 @@ class MySpecialActivities extends React.Component {
                 { (v3visible && curKey == '78') && <Chou2Le onToggle={this.onV3Click} id={itemID} view={view} />}
                 { (v3visible && curKey == '79') && <BlindBox onToggle={this.onV3Click} id={itemID} view={view} />}
                 { (v3visible && curKey == '83') && <PassWordCoupon onToggle={this.onV3Click} id={itemID} view={view} />}
+                { (v3visible && curKey == '85') && <ManyFace onToggle={this.onV3Click} id={itemID} view={view} />}
                 <Modal
                     title="提取活动链接"
                     visible={isShowCopyUrl}
@@ -1132,7 +1135,7 @@ class MySpecialActivities extends React.Component {
                                                 message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
                                                 return;
                                             }
-                                            if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83) {
+                                            if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83 || record.eventWay === 85) {
                                                 this.onV3Click(record.itemID, false, record.eventWay);
                                                 return;
                                             }
@@ -1161,7 +1164,7 @@ class MySpecialActivities extends React.Component {
                                     message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
                                     return;
                                 }
-                                if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83) {
+                                if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83 || record.eventWay === 85) {
                                     this.onV3Click(record.itemID, true, record.eventWay);
                                     return;
                                 }
@@ -1232,6 +1235,7 @@ class MySpecialActivities extends React.Component {
                                     }
                                     this.checkDetailInfo(text, record, index);
                                 }}
+                                disabled={record.eventWay == 85}
                             >
                                 {/* 活动跟踪 */}
                                 {this.props.intl.formatMessage(STRING_SPE.d5g3d7ahfq35134)}</a>

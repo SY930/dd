@@ -24,7 +24,7 @@ const formItems1 = {
     eventName: {
         type: 'text',
         label: '活动名称',
-        rules: ['required', 'stringLength'],
+        rules: ['required', 'stringLength', { max: '50', message: '不能超过50个字符' }],
     },
     eventRange: {
         type: 'custom',
@@ -37,7 +37,7 @@ const formItems1 = {
     eventRemark: {
         type: 'textarea',
         label: '活动规则',
-        rules: ['required', 'description'],
+        rules: ['description', { max: '1000', message: '不多于1000个字符' }],
     },
 };
 
@@ -48,8 +48,8 @@ const formItems2 = {
     sceneList: {
         type: 'combo',
         label: '应用场景',
-        options: [],
-        defaultValue: [],
+        options: [{ label: '点餐页弹窗海报图', value: '1' }],
+        defaultValue: '1',
     },
     brandList: {
         type: 'combo',
@@ -64,27 +64,41 @@ const formItems2 = {
         label: '适用店铺',
         render: () => (<p />),
         defaultValue: [],
+        rules: ['required'],
     },
 };
 
 const keys1 = ['presentValue1'];
 const keys2 = ['presentValue2', 'settleUnitID'];
-const formKeys2 = ['sceneList', 'brandList', 'shopIDList'];
+const formKeys2 = ['sceneList', 'shopIDList'];
 /**
  * formItem3
  */
-const lottDefVal = { id: '1', needShow: 0, giftOdds: '', giftTotalCount: '', presentValue: '', isPoint: false, isTicket: true, presentType: '1' };
+const faceDefVal = {
+    id: '0',
+    triggerScene: '1', // 点餐页弹窗海报图
+    conditionType: '1', // 会员身份1， 会员标签2
+    conditionName: '是否持卡会员', // 是否持卡会员| 会员身份
+    conditionValue: 'whetherHasCard', // 是否持卡key | 7023267909942119317
+    targetName: '持卡会员',
+    targetValue: '1', // 1 是持卡会员 0否
+    // 点击触发的事件
+    triggerEventName: '购物车夹菜',
+    triggerEventValue: '',
+    triggerEventCustomInfo: '',
+    everyTagsRule: [], // 前端自己用
+}
 
 const formItems3 = {
-    lottery: {
+    faceRule: {
         type: 'custom',
         render: () => (<p />),
-        defaultValue: [lottDefVal],
+        defaultValue: [faceDefVal],
         wrapperCol: { span: 24 },
     },
 };
 
-const formKeys32 = ['lottery']
+const formKeys32 = ['faceRule']
 
 
 export {

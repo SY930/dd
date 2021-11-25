@@ -1,8 +1,9 @@
 import React, { PureComponent as Component } from 'react';
 import { connect } from 'react-redux';
 import { Modal, Steps, Button, message } from 'antd';
-import { jumpPage, closePage } from '@hualala/platform-base';
+import { jumpPage, closePage, axios } from '@hualala/platform-base';
 import moment from 'moment';
+import _ from 'lodash';
 import { getBrandList, putEvent, getEvent, postEvent, getGroupCardTypeList, getWechatMpList, getSettleList, getSceneList } from './AxiosFactory';
 import Step1 from './Step1';
 import Step2 from './Step2';
@@ -16,6 +17,7 @@ import style from 'components/basic/ProgressBar/ProgressBar.less';
 import css from './style.less';
 
 const Step = Steps.Step;
+const DF = 'YYYYMMDD';
 class ManyFace extends Component {
     /* 页面需要的各类状态属性 */
     state = {
@@ -27,10 +29,14 @@ class ManyFace extends Component {
         sceneList: [],
         form: null,
         authLicenseData: {},
+        // tagsList: [], // 会员标签的所有属性
+        // tagCategories: [],
+        // tagTypes: [],
+        tagRuleDetails: [],
     };
     componentDidMount() {
         this.getInitData();
-        this.getEventDetail();
+        this.searchCrmTag();
     }
 
     /** *
@@ -51,8 +57,13 @@ class ManyFace extends Component {
     /* 2-3表单 */
     onGoStep3 = () => {
         const { form } = this.state;
+
         form.validateFields((e, v) => {
             if (!e) {
+                console.log("🚀 ~ file: index.jsx ~ line 60 ~ ManyFace ~ form.validateFields ~ v", v)
+                // if (v.shopIDList.length < 0) {
+                //     return message.warn('请选择店铺')
+                // }
                 this.setState({ formData2: v });
                 this.onGoNext();
             }
@@ -61,52 +72,23 @@ class ManyFace extends Component {
 
     /* 第3步表单提交数据 */
     onGoDone = () => {
-        const { form, formData2, needShow } = this.state;
+        const { form, formData2, formData1 } = this.state;
         const { defaultCardType } = formData2;
         form.validateFields((e, v) => {
             if (!e) {
-                const { eventImagePath, openLottery, lottery } = v;
-                const isChecked = lottery.every(x => {
-                    return x.isPoint || x.isTicket;
-                });
-                if (!isChecked) {
-                    message.error('赠送积分或优惠券，必选一项');
-                    return;
-                }
-                const isGift = lottery.every(x => {
-                    if (x.isTicket && x.presentType === '1') {
-                        return x.giftList.every(g => {
-                            if (g.effectType === '1') {
-                                return g.giftID && g.giftCount && g.giftValidUntilDayCount;
-                            } else {
-                                return g.giftID && g.giftCount && g.rangeDate;
-                            }
-                        })
+                const { faceRule } = v;
+                const faceData = _.cloneDeep(faceRule)
+                const formData3 = faceData.map((item) => {
+                    if (item.triggerEventValue === 'customLink') {
+                        item.triggerEventCustomInfo = item.triggerEventCustomInfo.value;
+                    } else {
+                        item.triggerEventCustomInfo = JSON.stringify(item.triggerEventCustomInfo)
                     }
-                    return true;
-                });
-                if (!isGift) {
-                    message.error('礼品项必填');
-                    return;
-                }
+                    return {
+                        ...item,
+                    }
+                })
 
-                if (needShow) {
-                    let { giftList = [], isTicket, isPoint } = openLottery
-                    if (isTicket) {
-                        let isGiftOpen = giftList.every(g => {
-                            if (g.effectType === '1') {
-                                return g.giftID && g.giftCount && g.giftValidUntilDayCount;
-                            } else {
-                                return g.giftID && g.giftCount && g.rangeDate;
-                            }
-                        })
-                        if (!isGiftOpen && giftList.length > 0) {
-                            message.error('明盒礼品项必填');
-                            return;
-                        }
-                    }
-                }
-                const formData3 = this.setStep3Data(v);
                 this.onSubmit(formData3);
             }
         });
@@ -114,18 +96,16 @@ class ManyFace extends Component {
 
     // 提交
     onSubmit = (formData3) => {
-        const { formData1 } = this.state;
+        const { formData1, formData2 } = this.state;
         const { id } = this.props;
-        const { eventRange, ...others1, } = formData1;
+        const { eventRange, ...others1 } = formData1;
         const newEventRange = this.formatEventRange(eventRange);
-        const step2Data = this.setStep2Data();
-        const { gifts, eventImagePath, ...others3, } = formData3;
-        const newEventImagePath = eventImagePath ? eventImagePath.url ? eventImagePath.url : eventImagePath : ''
-        let event = { ...others1, ...others3, ...newEventRange, ...step2Data, eventWay: '79', eventImagePath: newEventImagePath };
+        // shopRange全部店铺和部分店铺的
+        const event = { ...others1, ...newEventRange, ...formData2, eventWay: '85', shopRange: '1' };
         if (id) {
             const itemID = id;
-            const allData = { event: { ...event, itemID }, gifts };
-            postEvent(allData).then(x => {
+            const allData = { event: { ...event, itemID }, eventConditionInfos: formData3 };
+            postEvent(allData).then((x) => {
                 if (x) {
                     this.onToggle();
                     closePage();
@@ -134,8 +114,8 @@ class ManyFace extends Component {
             });
             return;
         }
-        const allData = { event, gifts };
-        putEvent({ ...allData }).then(x => {
+        const allData = { event, eventConditionInfos: formData3 };
+        putEvent({ ...allData }).then((x) => {
             if (x) {
                 this.onToggle();
                 closePage();
@@ -177,9 +157,6 @@ class ManyFace extends Component {
 
     getInitData = () => {
         const { fetchFoodCategoryLightInfo, fetchFoodMenuLightInfo, accountInfo, fetchPromotionScopeInfo } = this.props
-        // getBrandList().then((list) => { // 获取品牌
-        //     this.setState({ brandList: list });
-        // });
         const groupID = accountInfo.get('groupID');
         // 获取菜品分类
         fetchFoodCategoryLightInfo({ groupID, shopID: this.props.user.shopID }); // 菜品分类轻量级接口
@@ -189,145 +166,84 @@ class ManyFace extends Component {
 
     getEventDetail() {
         const { id } = this.props;
-        // if(id) {
-        //     getEvent({ itemID: id }).then(obj => {
-        //         const { data, gifts = [] } = obj;
-        //         const formData1 = this.setData4Step1(data);
-        //         const formData2 = this.setData4Step2(data);
-        //         this.setState({ formData1, formData2 });
-        //         const formData3 = this.setData4Step3(data, gifts);
-        //         this.setState({ formData3 });
-        //     });
-        // }
+        if (id) {
+            getEvent({ itemID: id }).then((obj) => {
+                const { data, eventConditionInfos = [] } = obj;
+                const formData1 = this.setData4Step1(data);
+                const formData2 = this.setData4Step2(data);
+                this.setState({ formData1, formData2 });
+                const formData3 = this.setData4Step3(data, eventConditionInfos);
+                this.setState({ formData3: { faceRule: formData3 } });
+            });
+        }
     }
+
 
     /** *
      * 回显数据
      */
-    setData4Step1 = (data) =>{
-        // let { eventStartDate: sd, eventEndDate: ed, smsGate } = data;
-        // const eventRange = [moment(sd), moment(ed)];
-        // smsGate = `${smsGate}`
-
-        // return { ...data, eventRange, smsGate };
+    setData4Step1 = (data) => {
+        let { eventStartDate: sd, eventEndDate: ed } = data;
+        const eventRange = [moment(sd), moment(ed)];
+        return { ...data, eventRange };
     }
 
     setData4Step2 = (data) => {
-
+        const { shopIDList: slist } = data;
+        const shopIDList = slist ? slist.map(x => `${x}`) : [];
+        return { shopIDList };
     }
-    setData4Step3 = (data, gifts) =>{
-
-    }
-
-    // 提交前数据
-    setStep2Data = () => {
-        // const { formData2 } = this.state;
-        // const { mpIDList, participateRule, presentValue1, presentValue2, settleUnitID, joinCount, defaultCardType, autoRegister } = formData2;
-        // // 参与条件
-        // let parm = {}
-        // if (participateRule == '0') {
-        //     parm = {}
-        // } else if (participateRule == '1') {
-        //     parm = {
-        //         presentValue: presentValue1
-        //     }
-        // } else {
-        //     parm = {
-        //         presentValue: presentValue2,
-        //         settleUnitID
-        //     }
-        // }
-        // // 参与次数
-        // let partInTimes = 0;
-        // let countCycleDays = 0;
-        // if (joinCount.joinCount == '0') {
-        //     partInTimes = 0;
-        //     countCycleDays = 0;
-        // } else if (joinCount.joinCount == '1') {
-        //     partInTimes = joinCount.partInTimesNoValid;
-        //     countCycleDays = 0;
-        // } else {
-        //     partInTimes = joinCount.partInTimes;
-        //     countCycleDays = joinCount.countCycleDays;
-        // }
-
-        // return { participateRule, ...parm, partInTimes, countCycleDays, defaultCardType };
-    }
-
-    setStep3Data = (formData) => {
-        let { needShow, formData2 } = this.state
-        // 注册卡类项  加入到积分礼品项中
-        let { lottery, eventImagePath, openLottery, shareInfo } = formData;
-        const gifts = [];   // 后端要的专属key名
-        // 盲盒礼品
-        lottery.forEach((x, i) => {
-            const { giftOdds, giftTotalCount, isPoint, isTicket, presentType, giftList, ...others } = x;
-            const sortIndex = i + 1;       // 后端要的排序
-            const rawObj = { sortIndex, giftOdds, giftTotalCount, presentType, needShow: 0 };    // 基础数据
-            if (isPoint) {
-                const { presentValue } = x;
-                const obj = { ...others, ...rawObj, presentType: '2', presentValue };
-                gifts.push(obj);
-            }
-            if (isTicket) {
-                const { giftList } = x;
-                // 1 独立优惠券
-                if (presentType === '1') {
-                    giftList.forEach(x => {
-                        const { rangeDate, countType, effectType: etype, giftTotalCount, ...others } = x;
-                        const rangeObj = this.formatRangeDate(rangeDate);
-                        let { effectTime, validUntilDate } = rangeObj
-                        let effectType = etype;
-                        if (etype === '1' && countType === '1') {
-                            effectType = '3';
+    setData4Step3 = (data, eventConditionInfos = []) => {
+        let faceData = []
+        if (eventConditionInfos.length) {
+            faceData = eventConditionInfos.map((item) => {
+                if (item.conditionType == '2') { // 会员标签
+                    const everyTags = this.state.tagRuleDetails.filter(itm => itm.tagCategoryID == item.conditionValue)
+                    // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 249 ~ MyFaceRule ~ value.map ~ everyTags", everyTags)
+                    item.everyTagsRule = everyTags.map((itm) => {
+                        return {
+                            ...itm,
+                            label: itm.tagName,
+                            value: itm.tagRuleID,
                         }
-                        if (etype != '2') {
-                            effectTime = '0';
-                            validUntilDate = '0';
-                        }
-                        const obj = { ...others, ...rawObj, ...rangeObj, effectType, effectTime, validUntilDate, countType };
-                        gifts.push(obj);
                     });
+                    try {
+                        item.triggerEventCustomInfo = JSON.parse(item.triggerEventCustomInfo)
+                    } catch (error) {
+                        item.triggerEventCustomInfo = [];
+                    }
+                } else {
+                    item.everyTagsRule = [];
+                    item.triggerEventCustomInfo = { value: item.triggerEventCustomInfo }
                 }
-            }
-        });
-        // 明盒礼品
-        if (needShow) {
-            const { isPoint, isTicket, presentType, giftList, ...others } = openLottery;
-            const rawObj = { presentType, needShow: 1 };    // 基础数据
-            if (isPoint) {
-                const { presentValue } = openLottery;
-                const obj = { ...rawObj, ...others, presentType: '2', presentValue };
-                gifts.push(obj);
-            }
-            if (isTicket) {
-                const { giftList } = openLottery;
-                // 1 独立优惠券
-                if (presentType === '1') {
-                    giftList.forEach(x => {
-                        const { rangeDate, countType, effectType: etype, giftTotalCount, ...others } = x;
-                        const rangeObj = this.formatRangeDate(rangeDate);
-                        let { effectTime, validUntilDate } = rangeObj
-                        let effectType = etype;
-                        if (etype === '1' && countType === '1') {
-                            effectType = '3';
-                        }
-                        if (etype != '2') {
-                            effectTime = '0';
-                            validUntilDate = '0';
-                        }
-                        const obj = { ...rawObj, ...rangeObj, ...others, effectType, effectTime, validUntilDate };
-                        gifts.push(obj);
-                    });
-                }
-            }
+                return { ...item }
+            })
+        // console.log("🚀 ~ file: index.jsx ~ line 193 ~ ManyFace ~ faceData", faceData)
         }
-
-        return { eventImagePath, gifts, ...shareInfo };
+        return faceData
     }
 
-    getNeedShow = (key) => {
-        this.setState({ needShow: key })
+    // 查询会员标签
+    searchCrmTag = () => {
+        const { accountInfo } = this.props;
+        axios.post('/api/v1/universal', {
+            service: 'HTTP_SERVICE_URL_CRM',
+            method: '/tag/tagService_queryAllTagsByTagTypeID.ajax',
+            type: 'post',
+            data: { groupID: accountInfo.get('groupID'), tagTypeIDs: '1,2,3,5' },
+        }).then((res) => {
+            if (res.code === '000') {
+                const { tagRuleDetails = [] } = res.data;
+                this.setState({
+                    tagRuleDetails, // 标签第三步特特征
+                }, () => {
+                    this.getEventDetail();
+                })
+            } else {
+                message.error(res.data.message);
+                this.getEventDetail();
+            }
+        })
     }
 
     //
@@ -365,8 +281,7 @@ class ManyFace extends Component {
         return { 1: step1, 2: step2, 3: step3 }[current];
     }
     render() {
-        const { current, formData1, formData2, formData3, form, brandList, userCount } = this.state;
-        const { groupCardTypeList, mpList, settleUnitInfoList } = this.state;
+        const { current, formData1, formData2, formData3, form, brandList } = this.state;
         const footer = this.renderFooter(current);
         return (
             <Modal
