@@ -11,7 +11,7 @@ export const programList = [
     { label: '会员权益购买', value: 'member/packetInterests' },
 ];
 export const faceDefVal = {
-    id: '1',
+    id: '0',
     triggerScene: '1', // 点餐页弹窗海报图
     conditionType: '1', // 会员身份1， 会员标签2
     conditionName: '是否持卡会员', // 是否持卡会员| 会员身份
@@ -23,4 +23,5 @@ export const faceDefVal = {
     triggerEventValue: '',
     triggerEventCustomInfo: '',
     everyTagsRule: [],
+    isTagRemove: false,
 };

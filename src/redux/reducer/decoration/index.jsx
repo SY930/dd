@@ -16,6 +16,7 @@ const $initialState = Immutable.fromJS({
         type: '',
         needCount: '',
         giftArr: [],
+        faceArr: [],
     },
     decorationInfo: defaultDecorationInfo,
     loading: false,

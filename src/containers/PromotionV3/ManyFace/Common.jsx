@@ -87,6 +87,7 @@ const faceDefVal = {
     triggerEventValue: '',
     triggerEventCustomInfo: '',
     everyTagsRule: [], // 前端自己用
+    isTagRemove: false, // 选择的会员标签是否被删
 }
 
 const formItems3 = {

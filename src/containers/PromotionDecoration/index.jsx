@@ -24,6 +24,8 @@ import SignInDecorationBoard from './SignInDecorationBoard'
 import RecommendHaveGift from './RecommendHaveGift'
 import BlindBoxDecorationBoard from './BlindBoxDecorationBoard';
 import TicketBagDecoration from './TicketBagDecoration'
+import ManyFaceDecoration from './ManyFaceDecoration';
+
 import {
     getDecorationInfo,
     saveDecorationInfo,
@@ -45,6 +47,7 @@ const mapStateToProps = (state) => {
         type: state.sale_promotion_decoration.getIn(['currentPromotion', 'type']),
         needCount: state.sale_promotion_decoration.getIn(['currentPromotion', 'needCount']),
         giftArr: state.sale_promotion_decoration.getIn(['currentPromotion', 'giftArr']).toJS(),
+        faceArr: state.sale_promotion_decoration.getIn(['currentPromotion', 'faceArr']).toJS(),
         loading: state.sale_promotion_decoration.getIn(['loading']),
         decorationInfo: state.sale_promotion_decoration.get('decorationInfo'),
         user: state.user,
@@ -306,6 +309,8 @@ export default class PromotionDecoration extends Component {
                 return <BlindBoxDecorationBoard onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
             case 'ticketbag':
                 return <TicketBagDecoration onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
+            case '85':
+                return <ManyFaceDecoration onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} faceArr={faceArr}/>
             default:
                 return <div></div>
         }

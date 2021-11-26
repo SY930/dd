@@ -499,9 +499,8 @@ class MyFaceRule extends Component {
         // TODO: 查看状态不可编辑
         // 防止回显没数据不显示礼品组件
         if (!value[0]) {
-            value.push({ id: '1' });
+            value.push({ ...faceDefVal });
         }
-
         return (
             <div>
                 {

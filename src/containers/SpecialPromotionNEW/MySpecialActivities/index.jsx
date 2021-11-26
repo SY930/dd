@@ -1581,15 +1581,19 @@ class MySpecialActivities extends React.Component {
         const { eventWay, itemID, eventName, needCount = '' } = response.data;
         const user = this.props.user;
         let result = []
-        response.gifts.forEach((item) => {
+        response.gifts && response.gifts.forEach((item) => {
             result.push(item.needCount)
         })
+        if (response.eventConditionInfos) {
+            result = response.eventConditionInfos;
+        }
         this.props.selectPromotionForDecoration({
             type: `${eventWay}`,
             id: itemID,
             title: eventName,
             needCount,
-            giftArr: result
+            giftArr: result,
+            faceArr: result,
         });
         jumpPage({ menuID: PROMOTION_DECORATION })
     }
