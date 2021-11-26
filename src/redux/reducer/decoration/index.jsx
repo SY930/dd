@@ -10,7 +10,7 @@ import {
 } from '../../actions/decoration';
 
 const defaultDecorationInfo = {}
-const defaultFaceDecorationInfo = [],
+const defaultFaceDecorationInfo = []
 
 const $initialState = Immutable.fromJS({
     currentPromotion: {
