@@ -446,22 +446,28 @@ class CouponManageList extends Component {
                             onClick={() => {
                                 this.handleView(record, false)
                             }}
-						>
-							查看
-						</a>
-                        <a
-							href="#"
-                            disabled={record.batchStatus == 1 ? false : true}
-                            onClick={record.batchStatus == 1 ? () => {
-                                this.handleStopClickEvent(record);
-                            }: null}
-                        >停用</a> 
-						<a
-							href="#"
-                            onClick={() => {
-                                jumpPage({ menuID: '100008993' })
-                            }}
-                        >投放</a> 
+                        >
+                            查看
+                        </a>
+                        {
+                            record.channelID == 60 && (
+                                <span>
+                                    <a
+                                        href="#"
+                                        disabled={record.batchStatus == 1 ? false : true}
+                                        onClick={record.batchStatus == 1 ? () => {
+                                            this.handleStopClickEvent(record);
+                                        } : null}
+                                    >停用</a>
+                                    <a
+                                        href="#"
+                                        onClick={() => {
+                                            jumpPage({ menuID: '100008993' })
+                                        }}
+                                    >投放</a>
+                                </span>
+                            )
+                        }
                     </span>
                     );
                 },
@@ -634,6 +640,7 @@ class ViewCouponContent extends Component {
     render() {
         const { viewData } = this.state;
         const { stock, receive, merchantType, merchantID, itemID } = viewData;
+        let title = viewData.platformType == 1 ? '支付宝' : '微信';
         const columns = [
             {
                 title: '券名称',
@@ -689,7 +696,7 @@ class ViewCouponContent extends Component {
         ];
         return (
             <Modal
-                title={'第三方支付宝券详情'}
+                title={`第三方${title}券详情`}
                 maskClosable={true}
                 width={700}
                 visible={true}
@@ -718,10 +725,10 @@ class ViewCouponContent extends Component {
                     </Col>
                     <Col>
                         <div style={{ marginBottom: 12 }}>
-                            <p><span className={styles.relationText__span}>支付宝链接方式：</span> <span>{merchantType == 1 ? '直连' : '间连'}</span></p>
+                            <p><span className={styles.relationText__span}>{title}链接方式：</span> <span>{merchantType == 1 ? '直连' : '间连'}</span></p>
                         </div>
                         <div style={{ marginBottom: 12 }}>
-                            <p><span className={styles.relationText__span}>支付宝{merchantType == 1 ? `pid` : `smid`}号：</span> <span>{merchantID}</span></p>
+                            <p><span className={styles.relationText__span}>{title}{merchantType == 1 ? `pid` : `smid`}号：</span> <span>{merchantID}</span></p>
                         </div>
                     </Col>
                     <div className={styles.promotionFooter__footer}>

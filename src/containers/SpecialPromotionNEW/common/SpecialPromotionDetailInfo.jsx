@@ -3930,6 +3930,7 @@ class SpecialDetailInfo extends Component {
                                                         onWxCouponChange={this.onWxCouponChange}
                                                     />
                                                 }
+                                                   <div className={userCount > 0 ? styles.opacitySet : null}></div>
                                             </div>
                                         )
                                     }
