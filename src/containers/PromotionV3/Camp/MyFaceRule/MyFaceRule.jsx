@@ -415,7 +415,9 @@ class MyFaceRule extends Component {
     }
 
     renderInput = (i, v) => {
-        return (<FormItem>
+        return (<FormItem 
+        // validateStatus={v.triggerEventCustomInfo.value ? 'success' : 'error'} help={v.triggerEventCustomInfo.value ? '' : '请输入自定义链接'}
+        >
             <Input
                 style={{ marginLeft: 8 }}
                 onChange={(_v) => { this.onChangeCustomUrl(i, 'triggerEventCustomInfo', _v) }}
@@ -428,7 +430,9 @@ class MyFaceRule extends Component {
     // 选择菜品
     renderFoods = (i, item) => {
         return (
-            <div style={{ display: 'inlineBlock', width: '262px', marginLeft: 8, marginTop: 7 }}>
+            <FormItem style={{ display: 'inlineBlock', width: '262px', marginLeft: 8, marginTop: 7 }} 
+            // validateStatus={item.triggerEventCustomInfo.foodName ? 'success' : 'error'} help={item.triggerEventCustomInfo.foodName ? '' : '请选择一个菜品'}
+            >
                 <Input
                     type="text"
                     style={{ width: 170 }}
@@ -448,7 +452,7 @@ class MyFaceRule extends Component {
                         this.renderSelectFoods(i, item)
                         : null
                 }
-            </div>
+            </FormItem>
         )
     }
 
@@ -459,7 +463,7 @@ class MyFaceRule extends Component {
             allDishes,
         } = this.props;
         const { dishes, categories, brands } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes)
-        const data = item.triggerEventCustomInfo.foodKey ? [item.triggerEventCustomInfo] : [];
+        const data = item.triggerEventCustomInfo.foodName ? [item.triggerEventCustomInfo] : [];
         const initialValue = data.map(itms => `${itms.brandID || 0}__${itms.foodName}${itms.unit}`);
         return (
             <FoodSelectModal
@@ -551,7 +555,9 @@ class MyFaceRule extends Component {
                                         {
                                             v.conditionType == '2' &&
                                             <div style={{ display: 'flex' }}>
-                                                <FormItem>
+                                                <FormItem required={true}
+                                                // validateStatus={v.conditionValue ? 'success' : 'error'} help={v.conditionValue ? '' : '请输入会员标签属性'}
+                                                >
                                                     <Select style={{ width: '120px', marginLeft: 8 }} value={v.conditionValue} onChange={(_v) => { this.onTagAttribute(i, 'conditionValue', _v) }}>
                                                         {
                                                             // TODO: 会员标签如果删除就提示已删除重新选择，需要匹配一下
@@ -561,7 +567,9 @@ class MyFaceRule extends Component {
                                                         }
                                                     </Select>
                                                 </FormItem>
-                                                <FormItem>
+                                                <FormItem required={true} 
+                                                // validateStatus={v.targetValue ? 'success' : 'error'} help={v.targetValue ? '' : '请输入会员标签属性'}
+                                                >
                                                     <Select style={{ width: '120px', marginLeft: 8 }} value={v.targetValue} onChange={(_v) => { this.onEveryTagsRule(i, 'targetValue', _v, v) }}>
                                                         {
                                                             (v.everyTagsRule || []).map(({ value: key, label }) => {
@@ -575,7 +583,9 @@ class MyFaceRule extends Component {
                                     </div>
                                     <div className={styles.MyFaceRuleSubConntet} style={{ display: 'flex' }}>
                                         <p>点击触发事件</p>
-                                        <FormItem>
+                                        <FormItem 
+                                        // validateStatus={v.triggerEventValue ? 'success' : 'error'} help={v.triggerEventValue ? '' : '请输入触发事件'}
+                                        >
                                             <Select style={{ width: '120px' }} value={v.triggerEventValue} onChange={(_v) => { this.onEvents(i, 'triggerEventValue', _v) }}>
                                                 {
                                                     (this.state.eventSelectOption || []).map(({ value: key, label }) => {

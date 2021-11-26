@@ -30,6 +30,7 @@ import {
     getDecorationInfo,
     saveDecorationInfo,
     updateDecorationItem,
+    updateDecorationFaceItem,
     resetDecorationInfo,
     getCouponsDecorationInfo,
 } from '../../redux/actions/decoration';
@@ -50,7 +51,7 @@ const mapStateToProps = (state) => {
         faceArr: state.sale_promotion_decoration.getIn(['currentPromotion', 'faceArr']).toJS(),
         loading: state.sale_promotion_decoration.getIn(['loading']),
         decorationInfo: state.sale_promotion_decoration.get('decorationInfo'),
-        faceDecorationInfo: state.sale_promotion_decoration.get('faceDecorationInfo'),
+        faceDecorationInfo: state.sale_promotion_decoration.get('faceDecorationInfo').toJS(),
         user: state.user,
     };
 };
@@ -68,6 +69,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         updateDecorationItem: (opts) => {
             dispatch(updateDecorationItem(opts))
+        },
+        updateDecorationFaceItem: (opts) => {
+            dispatch(updateDecorationFaceItem(opts))
         },
         resetDecorationInfo: (opts) => {
             dispatch(resetDecorationInfo(opts))
@@ -120,6 +124,20 @@ export default class PromotionDecoration extends Component {
         this.props.resetDecorationInfo();
     }
 
+    getfaceDecorationInfo = (info = []) => {
+        const { faceArr } = this.props;
+        const faceArrCopy = faceArr.map((item, index) => {
+            const findImg = info.find((ditem) => {
+                if (ditem && ditem.condition) { return ditem.condition === item.itemID}
+            }) || {};
+            item.image = findImg.image || 'http://res.hualala.com/basicdoc/eb519bc1-d7d6-410c-8bf9-8bfe92645bcf.png';
+            return {
+                ...item,
+            }
+        })
+       return faceArrCopy
+    }
+
     handleVaild = (flag) => {
         this.setState({
             ifVaild: flag
@@ -156,6 +174,17 @@ export default class PromotionDecoration extends Component {
 
     handleFaceSave = () => {
         const { type, id, faceDecorationInfo, user } = this.props;
+        this.props.saveDecorationInfo({
+            type,
+            id,
+            decorationInfo: faceDecorationInfo,
+        }).then(() => {
+            message.success(SALE_LABEL.k5do0ps6);
+            closePage();
+            switch (type) {
+                default: jumpPage({ pageID: SPECIAL_PAGE })
+            }
+        })
     }
 
     handleSave = () => {
@@ -225,7 +254,24 @@ export default class PromotionDecoration extends Component {
             }
         })
     }
+    handleFaceReset = () => {
+        const { updateDecorationFaceItem, faceArr } = this.props;
+        const faceArrs = faceArr.map((item, index) => {
+            item.image = 'http://res.hualala.com/basicdoc/eb519bc1-d7d6-410c-8bf9-8bfe92645bcf.png';
+
+            return {
+                image: item.image,
+                condition: item.itemID,
+            }
+        })
+        updateDecorationFaceItem({ key: null, value: faceArrs })
+
+    }
     handleReset = () => {
+        const { type } = this.props
+        if (type == '85') {
+            this.handleFaceReset()
+        }
         this.props.resetDecorationInfo();
         this.setState({
             gatherPointFlag: true,
@@ -291,7 +337,8 @@ export default class PromotionDecoration extends Component {
     }
 
     renderContent() {
-        const { type, decorationInfo, updateDecorationItem, needCount = '', faceArr = [], faceDecorationInfo } = this.props;
+        const { type, decorationInfo, updateDecorationItem, needCount = '', faceArr = [], faceDecorationInfo, updateDecorationFaceItem } = this.props;
+        const _faceDecorationInfo = this.getfaceDecorationInfo(faceDecorationInfo);
         const { gatherPointFlag } = this.state
         const giftArr = this.handleGiftArr()
         switch (type) {
@@ -318,7 +365,7 @@ export default class PromotionDecoration extends Component {
             case 'ticketbag':
                 return <TicketBagDecoration onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
             case '85':
-                return <ManyFaceDecoration onChange={updateDecorationItem} decorationInfo={faceDecorationInfo.toJS()} type={type} faceArr={faceArr}/>
+                return <ManyFaceDecoration onChange={updateDecorationFaceItem} decorationInfo={_faceDecorationInfo} type={type} faceArr={faceArr}/>
             default:
                 return <div></div>
         }

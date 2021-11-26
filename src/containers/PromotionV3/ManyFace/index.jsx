@@ -60,10 +60,6 @@ class ManyFace extends Component {
 
         form.validateFields((e, v) => {
             if (!e) {
-                console.log("🚀 ~ file: index.jsx ~ line 60 ~ ManyFace ~ form.validateFields ~ v", v)
-                // if (v.shopIDList.length < 0) {
-                //     return message.warn('请选择店铺')
-                // }
                 this.setState({ formData2: v });
                 this.onGoNext();
             }
@@ -72,12 +68,47 @@ class ManyFace extends Component {
 
     /* 第3步表单提交数据 */
     onGoDone = () => {
-        const { form, formData2, formData1 } = this.state;
-        const { defaultCardType } = formData2;
+        const { form } = this.state;
+        // const { defaultCardType } = formData2;
+
         form.validateFields((e, v) => {
             if (!e) {
                 const { faceRule } = v;
                 const faceData = _.cloneDeep(faceRule)
+                let flag = false;
+                // console.log("🚀 ~ file: index.jsx ~ line 82 ~ ManyFace ~ form.validateFields ~ faceData", faceData)
+                faceRule.map((itm) => {
+                    if (itm.conditionType == 2) {
+                        if (!itm.conditionValue) {
+                            flag = true;
+                            // itm.validateStatus = 'error';
+                            message.warn('请选择会员标签')
+                            return null
+                        }
+                        if (!itm.targetValue) {
+                            flag = true;
+                            // itm.validateStatus = 'error';
+                            message.warn('请选择会员标签属性')
+                            return null
+                        }
+                        // if (!itm.)
+                    }
+                    if (!itm.triggerEventValue) {
+                        flag = true;
+                        // itm.validateStatus = 'error';
+                        message.warn('请选择触发事件')
+                        return null
+                    }
+                    if (_.isEmpty(itm.triggerEventCustomInfo)) {
+                        flag = true;
+                        // itm.validateStatus = 'error';
+                        message.warn('请选择触发事件')
+                        return null
+                    }
+                })
+                if (flag) {
+                    return
+                }
                 const formData3 = faceData.map((item) => {
                     if (item.triggerEventValue === 'customLink') {
                         item.triggerEventCustomInfo = item.triggerEventCustomInfo.value;
@@ -199,7 +230,6 @@ class ManyFace extends Component {
             faceData = eventConditionInfos.map((item) => {
                 if (item.conditionType == '2') { // 会员标签
                     const everyTags = this.state.tagRuleDetails.filter(itm => itm.tagCategoryID == item.conditionValue)
-                    // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 249 ~ MyFaceRule ~ value.map ~ everyTags", everyTags)
                     item.everyTagsRule = everyTags.map((itm) => {
                         return {
                             ...itm,
@@ -207,14 +237,17 @@ class ManyFace extends Component {
                             value: itm.tagRuleID,
                         }
                     });
+                } else {
+                    item.everyTagsRule = [];
+                }
+                if (item.triggerEventValue === 'customLink') {
+                    item.triggerEventCustomInfo = { value: item.triggerEventCustomInfo }
+                } else  {
                     try {
                         item.triggerEventCustomInfo = JSON.parse(item.triggerEventCustomInfo)
                     } catch (error) {
-                        item.triggerEventCustomInfo = [];
+                        item.triggerEventCustomInfo = {};
                     }
-                } else {
-                    item.everyTagsRule = [];
-                    item.triggerEventCustomInfo = { value: item.triggerEventCustomInfo }
                 }
                 return { ...item }
             })
@@ -295,7 +328,7 @@ class ManyFace extends Component {
             >
                 <ul className={css.mainBox}>
                     <li className={css.left}>
-                        <h3 className={css.logo}>千人千面</h3>
+                        <h3 className={css.logo} style={{ background: '#BF8D65' }}>千人千面</h3>
                         <p className={css.gray}>可根据设置条件筛选用户，推送不同的营销活动</p>
                     </li>
                     <li className={css.right}>

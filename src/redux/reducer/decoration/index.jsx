@@ -47,16 +47,24 @@ export const promotion_decoration = ($$state = $initialState, action) => {
             return $$state.set('decorationInfo', Immutable.fromJS(defaultDecorationInfo))
                 .set('faceDecorationInfo', Immutable.fromJS(defaultFaceDecorationInfo))
         case GET_DECORATION_FACE_SUCCESS:
-            let info;
+            let infoFace;
             try {
-                info = JSON.parse(action.payload)
+                infoFace = JSON.parse(action.payload)
             } catch (e) {
-                info = defaultFaceDecorationInfo;
+                infoFace = defaultFaceDecorationInfo;
             }
-            return $$state.mergeIn(['decorationInfo'], info);
+            console.log("🚀 ~ file: index.jsx ~ line 55 ~ infoFace", infoFace)
+
+            return $$state.mergeDeepIn(['faceDecorationInfo'], infoFace);
         case UPDATE_DECORATION_ITEM_FACE:
-            const { key, value } = action.payload;
-            return $$state.setIn(['faceDecorationInfo', ...key], Immutable.fromJS(value));
+            const { key: index, value: v } = action.payload;
+            // console.log("🚀 ~ file: index.jsx ~ line 59 ~ action.payload", action.payload)
+            if(index == null) {
+                // console.log("🚀 ~ file: index.jsx ~ line 59 ~ action.payloadvvvvvvvvvvvvvvvv", v,)
+                // return $$state.set('faceDecorationInfo', Immutable.fromJS(v))
+                return $$state.mergeIn(['faceDecorationInfo'], v)
+            }
+            return $$state.setIn(['faceDecorationInfo', index], v);
         default: return $$state;
     }
 };

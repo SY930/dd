@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Tabs, Button, Icon } from 'antd';
+import _ from 'lodash';
 import CropperUploader from 'components/common/CropperUploader'
 import style from './style.less';
 import ColorSettingBlock from './ColorSettingBlock'
@@ -16,11 +17,80 @@ import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { injectIntl } from './IntlDecor';
 
 const { TabPane } = Tabs;
+const num = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
 @injectIntl()
 export default class ManyFaceDecoration extends Component {
 
     state = {
         tabKey: '1',
+        faceArrCopy: [],
+    }
+
+    componentDidMount() {
+        // const { decorationInfo, faceArr, onChange } = this.props;
+        // // console.log(this.state.decorationInfo, 'decorationInfo----')
+        // let faceArrCopy = _.cloneDeep(faceArr);
+        // // if (decorationInfo.length) {
+        // faceArrCopy = faceArrCopy.map((item, index) => {
+        //     // const findImg = decorationInfo.filter((ditem) => ditem.condition === item.itemID);
+        //     item.image = 'http://res.hualala.com/basicdoc/eb519bc1-d7d6-410c-8bf9-8bfe92645bcf.png';
+        //     return {
+        //         ...item,
+        //     }
+        // })
+        // // }
+        // // onChange({ key: null, value: faceArrCopy})
+        // this.setState({
+        //     faceArrCopy
+        // })
+    }
+
+    componentDidUpdate(nextProps) {
+        //      const { decorationInfo = [] } = this.props;
+        // console.log("🚀 ~ file: ManyFaceDecoration.jsx ~ line 50 ~ ManyFaceDecoration ~ componentWillReceiveProps ~ decorationInfo", nextProps.decorationInfo)
+            
+        //     let { faceArrCopy = [] } = this.state;
+        //     faceArrCopy = faceArrCopy.map((item, index) => {
+        //         const findImg = nextProps.decorationInfo.find((ditem) => ditem.condition === item.itemID) || {};
+        //         item.image = findImg.image || 'http://res.hualala.com/basicdoc/eb519bc1-d7d6-410c-8bf9-8bfe92645bcf.png';
+        //         return {
+        //             ...item,
+        //         }
+        //     })
+        //     this.setState({
+        //         faceArrCopy
+        //     })
+    }
+
+    // componentWillReceiveProps(nextProps) {
+    //     const { decorationInfo = [] } = this.props;
+    //     if (nextProps.decorationInfo.length > 0) {
+    //     console.log("🚀 ~ file: ManyFaceDecoration.jsx ~ line 50 ~ ManyFaceDecoration ~ componentWillReceiveProps ~ decorationInfo", nextProps.decorationInfo)
+            
+    //         let { faceArrCopy = [] } = this.state;
+    //         faceArrCopy = faceArrCopy.map((item, index) => {
+    //             const findImg = decorationInfo.find((ditem) => ditem.condition === item.itemID) || {};
+    //             item.image = findImg.image || 'http://res.hualala.com/basicdoc/eb519bc1-d7d6-410c-8bf9-8bfe92645bcf.png';
+    //             return {
+    //                 ...item,
+    //             }
+    //         })
+    //         this.setState({
+    //             faceArrCopy
+    //         })
+    //     }
+    // }
+
+    onChangeImage = (data) => {
+        const { onChange } = this.props
+        const { faceArrCopy } = this.state;
+        // const index = data.key;
+        // faceArrCopy[index] = { ...faceArrCopy[index], ...data.value }
+        // console.log("🚀 ~ file: ManyFaceDecoration.jsx ~ line 52 ~ ManyFaceDecoration ~ faceArrCopy", faceArrCopy)
+        onChange({ ...data })
+        this.setState({
+            faceArrCopy,
+        })
     }
 
     renderPhonePreview() {
@@ -38,7 +108,7 @@ export default class ManyFaceDecoration extends Component {
                 <img src={iphone} alt="" />
 
                 <div className={style.simpleDisplayBlock}>
-                    <div className={style.imgWrapper} style={{ height: '100%'}}>
+                    <div className={style.imgWrapper} style={{ height: '100%' }}>
                         <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
                             <img src={endImg} style={{ width: '100%', height: '100%' }} alt="" />
                         </div>
@@ -59,11 +129,8 @@ export default class ManyFaceDecoration extends Component {
     }
     render() {
         const {
-            decorationInfo: {
-                enterImg,
-                enterColor = '#EA0327',
-            },
-            faceArr,
+            decorationInfo = [],
+            // faceArr,
             onChange,
         } = this.props;
         return (
@@ -73,24 +140,51 @@ export default class ManyFaceDecoration extends Component {
                     <Tabs activeKey={this.state.tabKey} onTabClick={(tabKey) => this.setState({ tabKey })} className={style.customTabWrapper}>
                         <TabPane tab={'点餐页弹窗海报图'} key="1">
                             <div style={{ paddingTop: 45 }}>
-                                {/* <div className={style.sectionWrapper}>
-                                    <div style={{ top: 30 }} className={style.label}>活动主图</div>
-                                    <div style={{ width: 350 }} className={style.uploaderWrapper}>
-                                        <CropperUploader
-                                            isAbsoluteUrl={true}
-                                            cropperRatio={920 / 550}
-                                            limit={1000}
-                                            width={160}
-                                            value={enterImg}
-                                            onChange={value => onChange({ key: ['enterImg'], value })}
-                                        />
-                                        <div className={style.uploaderTip}>
-                                            <p>* {SALE_LABEL.k6346ckg}1000KB</p>
-                                            <p>* {SALE_LABEL.k6346css}920x1346像素</p>
-                                            <p>* 支持JPG、PNG图片文件</p>
-                                        </div>
-                                    </div>
-                                </div> */}
+                            {
+                                    decorationInfo.map((item, index) => {
+                                        return (
+                                            <div className={style.sectionWrapper} key={index}>
+                                                <div style={{ margin: '0 0 10px -115px', fontSize: 14 }}>条件{num[index]}：<span>{item.targetName}</span></div>
+                                                <div style={{ top: 60 }} className={style.label}>活动主图</div>
+                                                <div style={{ width: 350 }} className={style.uploaderWrapper}>
+                                                    <DecorationUploader
+                                                        limit={0}
+                                                        value={item.image}
+                                                        onChange={(value) => {
+                                                            const v = { image: value, condition: item.itemID }
+                                                            const obj = { key: index, value: v };
+                                                            // onChange({ key: index, value: v })
+                                                           this.onChangeImage(obj)
+                                                        }}
+                                                    />
+                                                    <div className={style.uploaderTip}>
+                                                        <p>* 图片建议尺寸 526X788像素</p>
+                                                        <p>* 不大于1000KB</p>
+                                                        <p>* 支持png、jpg、jpeg、gif</p>
+                                                    </div>
+                                                    {/* <CropperUploader
+                                                        isAbsoluteUrl={true}
+                                                        cropperRatio={920 / 550}
+                                                        limit={1000}
+                                                        width={160}
+                                                        value={item.image}
+                                                        onChange={(value) => {
+                                                            const v = { image: value, condition: item.itemID }
+                                                            const obj = { key: index, value: v };
+                                                            // onChange({ key: index, value: v })
+                                                           this.onChangeImage(obj)
+                                                        }}
+                                                    />
+                                                    <div className={style.uploaderTip}>
+                                                        <p>* {SALE_LABEL.k6346ckg}1000KB</p>
+                                                        <p>* {SALE_LABEL.k6346css}920x1346像素</p>
+                                                        <p>* 支持JPG、PNG图片文件</p>
+                                                    </div> */}
+                                               </div>
+                                         </div>
+                                   )
+                                    })
+                                }
                             </div>
                         </TabPane>
                         {/* <TabPane tab={'领取后'} key="2">
@@ -98,7 +192,7 @@ export default class ManyFaceDecoration extends Component {
                         </TabPane> */}
                     </Tabs>
                 </div>
-            </div>
+            </div >
         )
     }
 }

@@ -37,7 +37,7 @@ const formItems1 = {
     eventRemark: {
         type: 'textarea',
         label: '活动规则',
-        rules: ['description', { max: '1000', message: '不多于1000个字符' }],
+        rules: ['description2'],
     },
 };
 
