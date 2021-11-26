@@ -50,6 +50,7 @@ const mapStateToProps = (state) => {
         faceArr: state.sale_promotion_decoration.getIn(['currentPromotion', 'faceArr']).toJS(),
         loading: state.sale_promotion_decoration.getIn(['loading']),
         decorationInfo: state.sale_promotion_decoration.get('decorationInfo'),
+        faceDecorationInfo: state.sale_promotion_decoration.get('faceDecorationInfo'),
         user: state.user,
     };
 };
@@ -153,9 +154,16 @@ export default class PromotionDecoration extends Component {
         }
     }
 
+    handleFaceSave = () => {
+        const { type, id, faceDecorationInfo, user } = this.props;
+    }
+
     handleSave = () => {
         const { ifVaild } = this.state
         const { type, id, decorationInfo, user } = this.props;
+        if (type == '85') {
+            return this.handleFaceSave();
+        }
         const cinfo = {
             TipColor: '#fd6631',//购买提示文本
             couponImg: 'http://res.hualala.com/basicdoc/ef060596-786a-4aa7-8d99-4846d753d7e9.png',//背景图
@@ -283,7 +291,7 @@ export default class PromotionDecoration extends Component {
     }
 
     renderContent() {
-        const { type, decorationInfo, updateDecorationItem, needCount = '', } = this.props;
+        const { type, decorationInfo, updateDecorationItem, needCount = '', faceArr = [], faceDecorationInfo } = this.props;
         const { gatherPointFlag } = this.state
         const giftArr = this.handleGiftArr()
         switch (type) {
@@ -310,7 +318,7 @@ export default class PromotionDecoration extends Component {
             case 'ticketbag':
                 return <TicketBagDecoration onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
             case '85':
-                return <ManyFaceDecoration onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} faceArr={faceArr}/>
+                return <ManyFaceDecoration onChange={updateDecorationItem} decorationInfo={faceDecorationInfo.toJS()} type={type} faceArr={faceArr}/>
             default:
                 return <div></div>
         }

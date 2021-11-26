@@ -5,6 +5,7 @@ export const UPDATE_DECORATION_ITEM = 'sale center:: UPDATE_DECORATION_ITEM';
 export const RESET_DECORATION_INFO = 'sale center:: RESET_DECORATION_INFO';
 export const SET_DECORATION_LOADING = 'sale center:: SET_DECORATION_LOADING';
 export const GET_DECORATION_SUCCESS = 'sale center:: GET_DECORATION_SUCCESS';
+export const GET_DECORATION_FACE_SUCCESS = 'sale center:: GET_DECORATION_FACE_SUCCESS';
 
 export const selectPromotionForDecoration = opts => ({
     type: SELECT_PROMOTION_FOR_DECORATION,
@@ -31,10 +32,17 @@ export const getDecorationInfo = (opts) => {
                     type: SET_DECORATION_LOADING,
                     payload: false,
                 });
-                dispatch({
-                    type: GET_DECORATION_SUCCESS,
-                    payload: data
-                });
+                if (opts.type == '85') {
+                    dispatch({
+                        type: GET_DECORATION_FACE_SUCCESS,
+                        payload: data,
+                    });
+                } else {
+                    dispatch({
+                        type: GET_DECORATION_SUCCESS,
+                        payload: data,
+                    });
+                }
             }, (err) => { // network error catch
                 dispatch({
                     type: SET_DECORATION_LOADING,
@@ -86,7 +94,7 @@ export const saveDecorationInfo = (opts) => {
                 eventID: opts.id,
                 eventWay: opts.type,
                 eventType: opts.type.length === 4 ? 2 : 1,
-                eventDecorate: JSON.stringify(opts.decorationInfo),
+                eventDecorate: opts.type == '85' ? JSON.stringify(opts.faceDecorationInfo) : JSON.stringify(opts.decorationInfo),
             },
             null,
             {path: '',},
