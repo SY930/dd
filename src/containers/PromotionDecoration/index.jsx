@@ -270,7 +270,7 @@ export default class PromotionDecoration extends Component {
     handleReset = () => {
         const { type } = this.props
         if (type == '85') {
-            this.handleFaceReset()
+           return this.handleFaceReset();
         }
         this.props.resetDecorationInfo();
         this.setState({
@@ -338,6 +338,7 @@ export default class PromotionDecoration extends Component {
 
     renderContent() {
         const { type, decorationInfo, updateDecorationItem, needCount = '', faceArr = [], faceDecorationInfo, updateDecorationFaceItem } = this.props;
+        console.log("🚀 ~ file: index.jsx ~ line 342 ~ PromotionDecoration ~ renderContent ~ faceDecorationInfo", faceDecorationInfo)
         const _faceDecorationInfo = this.getfaceDecorationInfo(faceDecorationInfo);
         const { gatherPointFlag } = this.state
         const giftArr = this.handleGiftArr()

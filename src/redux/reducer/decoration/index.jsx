@@ -53,14 +53,10 @@ export const promotion_decoration = ($$state = $initialState, action) => {
             } catch (e) {
                 infoFace = defaultFaceDecorationInfo;
             }
-            console.log("🚀 ~ file: index.jsx ~ line 55 ~ infoFace", infoFace)
-
             return $$state.mergeDeepIn(['faceDecorationInfo'], infoFace);
         case UPDATE_DECORATION_ITEM_FACE:
             const { key: index, value: v } = action.payload;
-            // console.log("🚀 ~ file: index.jsx ~ line 59 ~ action.payload", action.payload)
             if(index == null) {
-                // console.log("🚀 ~ file: index.jsx ~ line 59 ~ action.payloadvvvvvvvvvvvvvvvv", v,)
                 // return $$state.set('faceDecorationInfo', Immutable.fromJS(v))
                 return $$state.mergeIn(['faceDecorationInfo'], v)
             }
