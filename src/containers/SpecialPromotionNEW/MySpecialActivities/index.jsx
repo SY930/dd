@@ -278,6 +278,7 @@ class MySpecialActivities extends React.Component {
                 { value: '81', label: '消费券返券' },
                 { value: '82', label: '拼手气抢红包' },
                 { value: '83', label: '口令领券' },
+                { value: '85', label: '千人千面' },
 
             ],
         }
