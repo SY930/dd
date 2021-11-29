@@ -728,7 +728,7 @@ class ViewCouponContent extends Component {
                             <p><span className={styles.relationText__span}>{title}链接方式：</span> <span>{merchantType == 1 ? '直连' : '间连'}</span></p>
                         </div>
                         <div style={{ marginBottom: 12 }}>
-                            <p><span className={styles.relationText__span}>{title}{merchantType == 1 ? `pid` : `smid`}号：</span> <span>{merchantID}</span></p>
+                            <p><span className={styles.relationText__span}>{title}{merchantType == 1 ? `pid` : viewData.platformType == '1' ? 'smid' : '结算主体'}号：</span> <span>{merchantID}</span></p>
                         </div>
                     </Col>
                     <div className={styles.promotionFooter__footer}>
