@@ -25,7 +25,7 @@ export default class AlipayCouponDeliveryPage extends Component {
             promotionModalVisible: false, // 新建会场大促投放弹窗
             promotionList: [], // 支付宝大促
             loading: false,
-            pageSizes: 20, // 默认显示的条数
+            pageSizes: 25, // 默认显示的条数
             pageNo: 1,
             dataSource: [],
             successEditData: {}, // 成功页投放编辑数据
