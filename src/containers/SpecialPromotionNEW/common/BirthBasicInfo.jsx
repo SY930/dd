@@ -337,7 +337,7 @@ class PromotionBasicInfo extends React.Component {
                                 return false
                             }
                             // 完善资料送礼52 生日赠送 51 日期限制
-                            let disabledDates = !currentDate.isBetween(actDateTemp[0], actDateTemp[1], null, '[]')
+                            let disabledDates = currentDate && currentDate.format('YYYYMMDD') < moment().format('YYYYMMDD');
                             return disabledDates
                         }} />
 
