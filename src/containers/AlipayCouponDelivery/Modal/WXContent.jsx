@@ -34,6 +34,10 @@ class WXContent extends Component {
         this.props.onChangeWXMerchantID(findItem)
     }
 
+    onChangeWXJumpAppID = ({ key, label }) => {
+        this.props.onChangeWXJumpAppID({ key, label })
+    }
+
     initData = () => {
         getWeChatMpAndAppInfo().then((res) => {
             if (res) {
@@ -65,10 +69,11 @@ class WXContent extends Component {
                     >
                         {getFieldDecorator('jumpAppID', {
                             // initialValue: value || undefined,
+                            onChange: this.onChangeWXJumpAppID,
                             rules: [
                                 { required: true, message: '请选择公众号/小程序' },
                             ],
-                        })(<Select placeholder={'请选择公众号/小程序'}>
+                        })(<Select placeholder={'请选择公众号/小程序'} labelInValue>
                             {
                                 this.state.mpAndAppList.map(({ appID, mpName }) => (
                                     <Select.Option key={appID} value={`${appID}`}>{mpName}</Select.Option>

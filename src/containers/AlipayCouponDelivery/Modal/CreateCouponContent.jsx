@@ -42,6 +42,9 @@ class CreateCouponContent extends Component {
             editData: _.cloneDeep(editData),
             WXMerchantID: '', // 微信的MerchantID
             masterMerchantID: '', // 微信的masterMerchantID
+            WXMerchantIDName: '', // 微信账务主体名字
+            WXJumpAppID: '',
+            WXJumpAppIDName: '',
             confirmLoading: false,
             tips: false,
         }
@@ -52,6 +55,15 @@ class CreateCouponContent extends Component {
         this.setState({
             WXMerchantID: record.merchantID,
             masterMerchantID: record.masterMerchantID,
+            WXMerchantIDName: record.settleName,
+        })
+    }
+
+    // 微信跳转公众号和小程
+    onChangeWXJumpAppID = ({ key, label }) => {
+        this.setState({
+            WXJumpAppID: key,
+            WXJumpAppIDName: label,
         })
     }
 
@@ -285,7 +297,8 @@ class CreateCouponContent extends Component {
                 if (type === 2) { // 微信
                     datas.merchantID = this.state.WXMerchantID;
                     datas.maxCouponsPerUser = values.maxCouponsPerUser;
-                    datas.masterMerchantID = this.state.masterMerchantID
+                    datas.masterMerchantID = this.state.masterMerchantID;
+                    datas.jumpAppID = this.state.WXJumpAppID;
                 }
                 const url = '/api/v1/universal?';
                 let method = 'couponCodeBatchService/addBatch.ajax';
@@ -785,7 +798,7 @@ class CreateCouponContent extends Component {
                                 )}
                             </FormItem>
                             { type === 1 && this.renderZhifubaoContent(merchantType) }
-                            { type === 2 && <WXContent form={form} merchantType={merchantType} onChangeWXMerchantID={this.onChangeWXMerchantID} />}
+                            { type === 2 && <WXContent form={form} merchantType={merchantType} onChangeWXMerchantID={this.onChangeWXMerchantID} onChangeWXJumpAppID={this.onChangeWXJumpAppID} />}
                             {
                                 type === 1 && <FormItem
                                     label="跳转小程序"
