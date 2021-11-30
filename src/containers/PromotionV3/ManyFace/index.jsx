@@ -239,14 +239,17 @@ class ManyFace extends Component {
         if (eventConditionInfos.length) {
             faceData = eventConditionInfos.map((item) => {
                 if (item.conditionType == '2') { // 会员标签
-                    const everyTags = this.state.tagRuleDetails.filter(itm => itm.tagCategoryID == item.conditionValue)
-                    item.everyTagsRule = everyTags.map((itm) => {
+                    const everyTags = this.state.tagRuleDetails.filter(itm => itm.tagCategoryID == item.conditionValue);
+                    item.everyTagsRule = (everyTags || []).map((itm) => {
                         return {
                             ...itm,
                             label: itm.tagName,
                             value: itm.tagRuleID,
                         }
                     });
+                    if (item.everyTagsRule.length <=0) {
+                        message.warn(`${item.conditionName}标签属性已经不存在或者被删除了，请重新选择会员标签`)
+                    }
                 } else {
                     item.everyTagsRule = [];
                 }
@@ -278,7 +281,7 @@ class ManyFace extends Component {
             if (res.code === '000') {
                 const { tagRuleDetails = [] } = res.data;
                 this.setState({
-                    tagRuleDetails, // 标签第三步特特征
+                    tagRuleDetails, // 标签第三步特征
                 }, () => {
                     this.getEventDetail();
                 })

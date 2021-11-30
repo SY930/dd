@@ -94,6 +94,9 @@ class MyFaceRule extends Component {
     }
 
     onTagAttribute = (idx, key, value) => {
+        const { value: data } = this.props;
+        const hasValue = data.some(d => d.conditionValue == value);
+        if (hasValue) return message.warn('不能选择相同的会员标签属性');
         // 筛选标签属性的子属性
         const item = this.state.tagsList.filter(itm => itm.tagCategoryID == value)
         const everyTags = this.state.tagRuleDetails.filter(itm => itm.tagCategoryID == value)
@@ -262,8 +265,7 @@ class MyFaceRule extends Component {
 
     // 查询所有营销活动
     searchAllActivity = () => {
-        // TODO: 查询groupID 不能写死
-        const { accountInfo, shopID, viewpointID } = this.props;
+        const { accountInfo, shopID } = this.props;
 
         const reqParam = {
             groupID: accountInfo.get('groupID'),
@@ -285,7 +287,6 @@ class MyFaceRule extends Component {
     }
     // 查询商城活动
     searchAllMallActivity = () => {
-        // TODO: 查询groupID
         const { accountInfo } = this.props;
         axios.post('/api/v1/universal', {
             service: 'HTTP_SERVICE_URL_SHOPAPI',
@@ -348,7 +349,7 @@ class MyFaceRule extends Component {
     }
 
     handleModalOk = (i, item, values = []) => {
-        console.log("🚀 ~ file: MyFaceRule.jsx ~ line 237 ~ MyFaceRule ~ valuehhhhhhhhh", values)
+        // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 237 ~ MyFaceRule ~ valuehhhhhhhhh", values)
         if (values.length > 1) {
             message.warn('只能选择一个菜品');
             return;
@@ -498,9 +499,8 @@ class MyFaceRule extends Component {
 
     render() {
         const { value = [], decorator } = this.props;
-        console.log("🚀 ~ file: MyFaceRule.jsx ~ line 31 ~ MyFaceRule ~ render ~ value", value)
+        // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 31 ~ MyFaceRule ~ render ~ value", value)
         // const { length } = value;
-        // TODO: 查看状态不可编辑
         // 防止回显没数据不显示礼品组件
         if (!value[0]) {
             value.push({ ...faceDefVal });
@@ -560,7 +560,7 @@ class MyFaceRule extends Component {
                                                 >
                                                     <Select style={{ width: '120px', marginLeft: 8 }} value={v.conditionValue} onChange={(_v) => { this.onTagAttribute(i, 'conditionValue', _v) }}>
                                                         {
-                                                            // TODO: 会员标签如果删除就提示已删除重新选择，需要匹配一下
+                                                            // 会员标签如果删除就提示已删除重新选择，需要匹配一下
                                                             (this.state.tagsList || []).map(({ value: key, label }) => {
                                                                 return <Select.Option key={key} value={`${key}`}>{label}</Select.Option>
                                                             })
@@ -603,13 +603,18 @@ class MyFaceRule extends Component {
                                     {
                                         i == 0 && <a data-idx={i} href={'javascript:;'} onClick={this.add}>  <Icon type="plus-circle-o" style={{ fontSize: 26, color: '#12B493' }} /> </a>
                                     }
-                                    {i > 0 &&
+                                    {i > 0 && i < 9 &&
                                         <div style={{ width: 60, cursor: 'pointer' }}>
                                             <a onClick={this.add} data-idx={i} href={'javascript:;'}>  <Icon type="plus-circle-o" style={{ fontSize: 26, color: '#12B493' }} /> </a>
                                             <a onClick={e => this.del(e, v)} data-idx={i} href={'javascript:;'}>
                                                 <Icon type="minus-circle-o" style={{ fontSize: 26, color: '#Ed7773' }} />
                                             </a>
                                         </div>
+                                    }
+                                    {
+                                        i >= 9 && <a onClick={e => this.del(e, v)} data-idx={i} href={'javascript:;'}>
+                                            <Icon type="minus-circle-o" style={{ fontSize: 26, color: '#Ed7773' }} />
+                                        </a>
                                     }
                                 </div>
                             </div>

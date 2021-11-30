@@ -717,7 +717,6 @@ class NewCustomerPage extends Component {
 
     render() {
         const { whiteList, v3visible, curKey } = this.state;
-        console.log("🚀 ~ file: NewCustomerPage.jsx ~ line 720 ~ NewCustomerPage ~ render ~ curKey", curKey)
         const state = getStore().getState();
         const { groupID } = state.user.get('accountInfo').toJS();
         const { intl } = this.props;
