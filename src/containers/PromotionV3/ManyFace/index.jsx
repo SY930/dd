@@ -12,7 +12,10 @@ import {
     fetchFoodMenuInfoLightAC, fetchFoodCategoryInfoLightAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import { fetchPromotionScopeInfo } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action'
-import { isHuaTian } from '../../../constants/projectHuatianConf';
+import {
+    saleCenterSetSpecialBasicInfoAC,
+} from '../../../redux/actions/saleCenterNEW/specialPromotion.action';
+// import { isHuaTian } from '../../../constants/projectHuatianConf';
 import style from 'components/basic/ProgressBar/ProgressBar.less';
 import css from './style.less';
 
@@ -48,6 +51,13 @@ class ManyFace extends Component {
         form.validateFields((e, v) => {
             if (!e) {
                 const formData1 = { ...v };
+                // 保存redux第一步的日期数据
+                const { eventRange } = v;
+                const newEventRange = this.formatEventRange(eventRange);
+                this.props.setSpecialBasicInfo({
+                    ...formData1,
+                    ...newEventRange,
+                });
                 this.setState({ formData1 });
                 this.onGoNext();
             }
@@ -395,6 +405,9 @@ function mapDispatchToProps(dispatch) {
         },
         fetchPromotionScopeInfo: (opts) => {
             dispatch(fetchPromotionScopeInfo(opts));
+        },
+        setSpecialBasicInfo: (opts) => {
+            dispatch(saleCenterSetSpecialBasicInfoAC(opts));
         },
     };
 }
