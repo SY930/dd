@@ -1103,6 +1103,7 @@ const handleSubmitOnLineReturnGifts = function (isPrev) {
             giftCount: giftCouponCount,
             presentType: 7,
             giftValidUntilDayCount: item.validUntilDays,
+            effectTime: item.EGiftEffectTime,
         }
     })
     this.props.setSpecialBasicInfo(giftInfo);
