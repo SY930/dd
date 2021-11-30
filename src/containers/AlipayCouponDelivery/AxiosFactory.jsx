@@ -353,6 +353,20 @@ async function getWeChatMpAndAppInfo() {
     return null;
 }
 
+// 获取小程序
+async function getMpAppList() {
+    const method = '/miniProgramCodeManage/getApps';
+    const { groupID } = getAccountInfo();
+    const params = { service: 'HTTP_SERVICE_URL_WECHAT', data: { groupID, page: { current: 1, pageSize: 1000 } }, method, type };
+    const response = await axios.post(url + method, params);
+    const { result: { code, message: msg }, apps = [] } = response;
+    if (code === '000') {
+        return apps
+    }
+    message.error(msg);
+    return null;
+}
+
 // 微信财务主体
 async function getPayChannel(channelCode) {
     const method = '/wxpay/getBusinessCouponPayChannel';
@@ -384,4 +398,5 @@ export {
     getDeliveryChannel,
     getWeChatMpAndAppInfo,
     getPayChannel,
+    getMpAppList,
 }

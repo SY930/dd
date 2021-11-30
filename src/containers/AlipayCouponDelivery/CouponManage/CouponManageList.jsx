@@ -13,7 +13,7 @@ import styles from '../AlipayCoupon.less'
 import { axiosData } from '../../../helpers/util'
 import registerPage from '../../../../index';
 import { THIRD_VOUCHER_MANAGEMENT } from '../../../constants/entryCodes';
-import { getCardList, getShopPid, getIndirectList } from '../AxiosFactory';
+import { getCardList, getShopPid, getIndirectList, getMpAppList, getPayChannel } from '../AxiosFactory';
 import WEIXIN from '../../../assets/weixin.png';
 import ZHIFUBAO from '../../../assets/zhifubao.png'
 const moment = require('moment');
@@ -635,8 +635,38 @@ class ViewCouponContent extends Component {
         super(props)
         this.state = {
             viewData: props.viewData,
+            payChannelList: [],
+            mpAndAppList: [],
         }
     }
+    componentDidMount() {
+        const channelCode = this.state.viewData.merchantType == '1' ? 'wechat' : 'hualalaAinong';
+        getPayChannel(channelCode).then((res) => {
+            this.setState({
+                payChannelList: res,
+            })
+        })
+        getMpAppList().then((res) => {
+            if (res) {
+                this.setState({
+                    mpAndAppList: res,
+                })
+            }
+        })
+    
+    }
+
+    getWXMerchantID = (data) => {
+        const { payChannelList } = this.state;
+        const { settleName = '' } = payChannelList.find((item) => item.merchantID == data.merchantID) || {}
+        return `${data.merchantID}_${settleName}`
+    }
+    getJumpAppName = (data) => {
+        const { mpAndAppList } = this.state;
+        const { nickName = '' } = mpAndAppList.find((item) => item.appID == data.jumpAppID) || {}
+        return nickName ? `${nickName}` : `${data.jumpAppID}`
+    }
+
     render() {
         const { viewData } = this.state;
         const { stock, receive, merchantType, merchantID, itemID } = viewData;
@@ -708,7 +738,8 @@ class ViewCouponContent extends Component {
                         <h4>{viewData.batchName}</h4>
                         <div style={{ marginBottom: 12 }}>
                             <p>券批次ID： <Tooltip title={itemID}><span>{itemID.length > 15 ? `${itemID.slice(0, 6)}...${itemID.slice(-10)}` : itemID}</span></Tooltip></p>
-                            <p>关联小程序： <span>{viewData.jumpAppID}</span></p>
+                            <p>关联小程序：
+                                 <span>{viewData.platformType == 3 ? this.getJumpAppName(viewData) : viewData.jumpAppID}</span></p>
                         </div>
                         <div>
                             <p>剩余/总数： <span>{stock ? Number(stock) - Number(receive) : ''}/{viewData.stock}</span></p>
@@ -728,7 +759,9 @@ class ViewCouponContent extends Component {
                             <p><span className={styles.relationText__span}>{title}链接方式：</span> <span>{merchantType == 1 ? '直连' : '间连'}</span></p>
                         </div>
                         <div style={{ marginBottom: 12 }}>
-                            <p><span className={styles.relationText__span}>{title}{merchantType == 1 ? `pid` : viewData.platformType == '1' ? 'smid' : '结算主体'}号：</span> <span>{merchantID}</span></p>
+                            <p><span className={styles.relationText__span}>{title}{merchantType == 1 ? (viewData.platformType == '1' ? 'pid' : '账务主体') : viewData.platformType == '1' ? 'smid' : '账务主体'}号：</span> 
+                                <span>{ viewData.platformType == '3' ? this.getWXMerchantID(viewData) : merchantID}</span>
+                            </p>
                         </div>
                     </Col>
                     <div className={styles.promotionFooter__footer}>

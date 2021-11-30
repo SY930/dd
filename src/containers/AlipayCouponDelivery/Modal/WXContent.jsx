@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Row, Col, Select } from 'antd'
-import { getWeChatMpAndAppInfo, getPayChannel } from '../AxiosFactory';
+import { getMpAppList, getPayChannel } from '../AxiosFactory';
 import styles from '../AlipayCoupon.less';
 
 class WXContent extends Component {
@@ -39,7 +39,7 @@ class WXContent extends Component {
     }
 
     initData = () => {
-        getWeChatMpAndAppInfo().then((res) => {
+        getMpAppList().then((res) => {
             if (res) {
                 this.setState({
                     mpAndAppList: res,
@@ -65,18 +65,18 @@ class WXContent extends Component {
                         wrapperCol={{ span: 16 }}
                         required={true}
                         className={styles.directSelect}
-                        label={'选择公众号/小程序'}
+                        label={'选择小程序'}
                     >
                         {getFieldDecorator('jumpAppID', {
                             // initialValue: value || undefined,
                             onChange: this.onChangeWXJumpAppID,
                             rules: [
-                                { required: true, message: '请选择公众号/小程序' },
+                                { required: true, message: '请选择小程序' },
                             ],
-                        })(<Select placeholder={'请选择公众号/小程序'} labelInValue>
+                        })(<Select placeholder={'请选择小程序'} labelInValue>
                             {
-                                this.state.mpAndAppList.map(({ appID, mpName }) => (
-                                    <Select.Option key={appID} value={`${appID}`}>{mpName}</Select.Option>
+                                this.state.mpAndAppList.map(({ appID, nickName }) => (
+                                    <Select.Option key={appID} value={`${appID}`}>{nickName}</Select.Option>
                                 ))
                             }
                         </Select>)}
