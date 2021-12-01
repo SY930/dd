@@ -154,12 +154,13 @@ class CreateShareRulesModal extends Component {
         let nextFlag = true
         params.ruleDetails = [];
         const { groupID, userName, isCreate } = this.props;
-        const { options, shareRuleID, shareRuleName, shareRuleType, referenceType, ruleGroupNameA, ruleGroupNameB,
+        const { shareRuleID, shareRuleName, shareRuleType, referenceType, ruleGroupNameA, ruleGroupNameB,
             tagsSource, tagsSourceA, tagsSourceB, groupData, groupAdata, groupBdata, referenceID } = this.state;
         params.groupID = groupID;
         params.userName = userName;
         params.shareRuleType = shareRuleType;
         params.shareRuleName = shareRuleName;
+        const options = this.getAllOptions();
         if (!params.shareRuleName) {
             message.warning('规则名称必填')
             nextFlag = false;
