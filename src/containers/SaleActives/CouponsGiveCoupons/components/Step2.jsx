@@ -558,7 +558,7 @@ class Step2 extends React.Component {
                     type='primary'
                     onClick={this.addTab}
                     className={styles.addRulesBtn}
-                    disabled={isView&&!isEdit}
+                    disabled={isView&&!isEdit || ifDisable}
                 >
                     <Icon type="plus" />
                     添加规则
