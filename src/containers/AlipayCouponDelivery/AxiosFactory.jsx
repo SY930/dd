@@ -18,6 +18,7 @@ const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', 'al
 const giftTypeName = [
     { label: '全部', value: '' },
     { label: '代金券', value: '10' },
+    { label: '菜品兑换券', value: '21' },
     { label: '折扣券', value: '111' },
 ];
 
@@ -106,7 +107,7 @@ async function getIndirectList() {
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;
     if (code === '000') {
-        const { records } = obj;
+        const { records = [] } = obj;
         return records
     }
     message.error(msg);
@@ -338,6 +339,48 @@ async function getDeliveryChannel(opts) {
     return null;
 }
 
+// 获取微信公众号/小程序
+async function getWeChatMpAndAppInfo() {
+    const method = '/mpInfo/getAppsAndMps';
+    const { groupID } = getAccountInfo();
+    const params = { service: 'HTTP_SERVICE_URL_WECHAT', data: { groupID }, method, type };
+    const response = await axios.post(url + method, params);
+    const { result: { code, message: msg }, mpInfoResDataList } = response;
+    if (code === '000') {
+        return mpInfoResDataList
+    }
+    message.error(msg);
+    return null;
+}
+
+// 获取小程序
+async function getMpAppList() {
+    const method = '/miniProgramCodeManage/getApps';
+    const { groupID } = getAccountInfo();
+    const params = { service: 'HTTP_SERVICE_URL_WECHAT', data: { groupID, page: { current: 1, pageSize: 1000 } }, method, type };
+    const response = await axios.post(url + method, params);
+    const { result: { code, message: msg }, apps = [] } = response;
+    if (code === '000') {
+        return apps
+    }
+    message.error(msg);
+    return null;
+}
+
+// 微信财务主体
+async function getPayChannel(channelCode) {
+    const method = '/wxpay/getBusinessCouponPayChannel';
+    const { groupID } = getAccountInfo();
+    const params = { service: 'HTTP_SERVICE_URL_ISV_API', data: { groupID, channelCode }, method, type };
+    const response = await axios.post(url + method, params);
+    const { result: { code, message: msg }, payChannelList } = response;
+    if (code === '000') {
+        return payChannelList
+    }
+    message.error(msg);
+    return null;
+}
+
 
 export {
     getCardList,
@@ -353,4 +396,7 @@ export {
     uploadImageUrl,
     queryEventList,
     getDeliveryChannel,
+    getWeChatMpAndAppInfo,
+    getPayChannel,
+    getMpAppList,
 }

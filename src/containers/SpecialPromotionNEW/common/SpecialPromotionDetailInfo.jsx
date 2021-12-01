@@ -14,6 +14,7 @@ import {
     Popconfirm,
     Tooltip,
     Checkbox,
+    Button
 } from "antd";
 import { connect } from "react-redux";
 import Immutable from "immutable";
@@ -50,8 +51,8 @@ import {
     queryRedPackets,
     handleCashChange,
     handleSubmitRecommendGifts,
+    handleSubmitOnLineReturnGifts,
     renderCashFn,
-
     renderRecommendGiftsFn,
     renderGivePointFn,
     validatedRuleDataFn,
@@ -66,6 +67,8 @@ import { getStore } from '@hualala/platform-base/lib';
 import { renderThree, addPointData, initPerfectCheckBox } from '../perfectReturnGift/StepThreeHelp'
 import { renderUpGradeThree, upGradeAddPointData, upGradeInitPerfectCheckBox } from '../upGradeReturnGift/StepThreeHelp'
 import { freeGetStep3Render } from '../freeGet/step3'
+import WxCouponModal from "../onLineReturnGift/WxCouponModal";
+import SleectedWxCouponTable from '../onLineReturnGift/SleectedWxCouponTable';
 const moment = require("moment");
 const FormItem = Form.Item;
 
@@ -170,8 +173,10 @@ class SpecialDetailInfo extends Component {
         this.getDefaultGiftData = getDefaultGiftData.bind(this)
         const {
             data,
+            thirdCouponData,
             wakeupSendGiftsDataArray, // 唤醒送礼专用
             pointObj,
+            isThirdCoupon,
         } = this.initState();
         const eventRecommendSettings = this.initEventRecommendSettings();
         const selectedMpId = props.specialPromotion.getIn([
@@ -339,7 +344,12 @@ class SpecialDetailInfo extends Component {
                 upGradeReturnGiftCoupon: true,
             },
             cardTypeArr: [], // 充值到会员卡列表
-            freeGetLimit: '0'
+            freeGetLimit: '0',
+            wxCouponList: [], // 微信商家券列表
+            wxCouponVisible: false,
+            couponValue: isThirdCoupon ? '1' : '0',
+            giftCouponCount: thirdCouponData.length > 0  && isThirdCoupon ?  thirdCouponData[0].giftCount : '1', // 用户单次领取优惠券张数
+            sleectedWxCouponList: thirdCouponData.length > 0 && isThirdCoupon ? thirdCouponData : [], // 选择的微信第三方优惠券
         };
     }
     componentDidMount() {
@@ -575,7 +585,13 @@ class SpecialDetailInfo extends Component {
             .get("$eventRuleInfos")
             .toJS();
         const data = this.initiateDefaultGifts();
+        let thirdCouponData = [];
         const type = this.props.type
+        let isThirdCoupon = false; // 是否保存的是微信三方券
+        if (giftInfo && giftInfo.length) {
+            const { presentType } = giftInfo[0];
+            presentType == 7 ? isThirdCoupon = true : isThirdCoupon =  false;
+        }
         let pointObj = {
             presentValue: "",
             givePoints: false,
@@ -608,68 +624,74 @@ class SpecialDetailInfo extends Component {
         if (type == 60 || type == 61 || type == 53) {
             giftInfo = giftInfo.filter(v => v.presentType === 1)
         }
-        giftInfo.forEach((gift, index) => {
-            if ((this.props.type == "52" || this.props.type == "64") && gift.presentType === 2) {
-                pointObj = {
-                    ...pointObj,
-                    presentValue: gift.presentValue,
-                    givePoints: true,
-                };
-                return;
-            }
-            if ((this.props.type == "52" || this.props.type == "64") && gift.presentType === 1) {
-                pointObj = { ...pointObj, giveCoupon: true };
-            }
-            if (data[index] !== undefined) {
-                data[index].sendType = gift.sendType || 0;
-                data[index].recommendType = gift.recommendType || 0;
-            } else {
-                const typePropertyName =
-                    this.props.type == "68" ? "recommendType" : "sendType";
-                const typeValue =
-                    this.props.type == "68"
-                        ? gift.recommendType
-                        : gift.sendType;
-                data[index] = getDefaultGiftData(typeValue, typePropertyName);
-            }
-            data[index].giftEffectiveTime.value =
-                gift.effectType != "2"
-                    ? gift.giftEffectTimeHours
-                    : [
-                        moment(gift.effectTime, "YYYYMMDD"),
-                        moment(gift.validUntilDate, "YYYYMMDD"),
-                    ];
-            data[index].effectType = `${gift.effectType}`;
-            data[index].giftInfo.giftName = gift.giftName;
-            if (this.props.type == '30' && gift.presentType === 4) {
-                data[index].giftInfo.giftName = '';
-            }
-            data[index].needCount.value = gift.needCount || 0;
-            data[index].giftInfo.giftItemID = gift.giftID;
-            data[index].giftInfo.itemID = gift.itemID;
-            data[index].giftValidDays.value = gift.giftValidUntilDayCount;
-            if (
-                this.props.type != "20" &&
-                this.props.type != "30" &&
-                this.props.type != "70"
-            ) {
-                data[index].giftCount.value = gift.giftCount;
-            } else {
-                data[index].giftTotalCount.value = gift.giftTotalCount;
-            }
-            data[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(2);
-            data[index].lastConsumeIntervalDays = gift.lastConsumeIntervalDays
-                ? `${gift.lastConsumeIntervalDays}`
-                : undefined;
-            if (this.props.type === '68') {
-                if (data[index].recommendType === 0) {
-                    data[index].recommendType = `${gift.recommendType}#999`
-                } else {
-                    data[index].recommendType = `${gift.recommendType}#${gift.recommendRule}`
+        if (type == 23 && isThirdCoupon) {  //线上餐厅送礼保存的是微信三方券信息
+            thirdCouponData = giftInfo;
+        }
+        if (!isThirdCoupon) {
+            giftInfo.forEach((gift, index) => {
+                if ((this.props.type == "52" || this.props.type == "64") && gift.presentType === 2) {
+                    pointObj = {
+                        ...pointObj,
+                        presentValue: gift.presentValue,
+                        givePoints: true,
+                    };
+                    return;
                 }
+                if ((this.props.type == "52" || this.props.type == "64") && gift.presentType === 1) {
+                    pointObj = { ...pointObj, giveCoupon: true };
+                }
+                if (data[index] !== undefined) {
+                    data[index].sendType = gift.sendType || 0;
+                    data[index].recommendType = gift.recommendType || 0;
+                } else {
+                    const typePropertyName =
+                        this.props.type == "68" ? "recommendType" : "sendType";
+                    const typeValue =
+                        this.props.type == "68"
+                            ? gift.recommendType
+                            : gift.sendType;
+                    data[index] = getDefaultGiftData(typeValue, typePropertyName);
+                }
+                data[index].giftEffectiveTime.value =
+                    gift.effectType != "2"
+                        ? gift.giftEffectTimeHours
+                        : [
+                              moment(gift.effectTime, "YYYYMMDD"),
+                              moment(gift.validUntilDate, "YYYYMMDD"),
+                          ];
+                data[index].effectType = `${gift.effectType}`;
+                data[index].giftInfo.giftName = gift.giftName;
+                if(this.props.type == '30' && gift.presentType === 4){
+                    data[index].giftInfo.giftName = '';
+                }
+                data[index].needCount.value = gift.needCount || 0;
+                data[index].giftInfo.giftItemID = gift.giftID;
+                data[index].giftInfo.itemID = gift.itemID;
+                data[index].giftValidDays.value = gift.giftValidUntilDayCount;
+                if (
+                    this.props.type != "20" &&
+                    this.props.type != "30" &&
+                    this.props.type != "70"
+                ) {
+                    data[index].giftCount.value = gift.giftCount;
+                } else {
+                    data[index].giftTotalCount.value = gift.giftTotalCount;
+                }
+                data[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(2);
+                data[index].lastConsumeIntervalDays = gift.lastConsumeIntervalDays
+                    ? `${gift.lastConsumeIntervalDays}`
+                    : undefined;
+                if(this.props.type === '68') {
+                    if(data[index].recommendType === 0) {
+                        data[index].recommendType = `${gift.recommendType}#999`
+                    } else {
+                        data[index].recommendType = `${gift.recommendType}#${gift.recommendRule}`
+                    }
+    
+                }
+            });
+        }
 
-            }
-        });
 
         if (this.props.type == "68") {
             const typeList = ['1#1', '2#1', '0#999', '1#2', '2#2', '1#3', '2#3']
@@ -736,6 +758,8 @@ class SpecialDetailInfo extends Component {
             data,
             wakeupSendGiftsDataArray,
             pointObj,
+            isThirdCoupon,
+            thirdCouponData,
         };
     };
 
@@ -951,10 +975,12 @@ class SpecialDetailInfo extends Component {
         return this.handleSubmit(true);
     };
 
-    handleSubmit = (isPrev) => {
-        const { type } = this.props
-        if (type === '68') {
-            return handleSubmitRecommendGifts.call(this, isPrev)
+    handleSubmit =   (isPrev) => {
+        const {type} = this.props
+        if(type === '68') {
+            return handleSubmitRecommendGifts.call(this,isPrev)
+        } else if (type === '23') {
+            return handleSubmitOnLineReturnGifts.call(this, isPrev)
         } else {
             return this.handleSubmitOld(isPrev)
         }
@@ -984,7 +1010,7 @@ class SpecialDetailInfo extends Component {
         if (!flag) {
             return false;
         }
-
+        debugger
         let {
             data,
             shareImagePath,
@@ -1223,7 +1249,6 @@ class SpecialDetailInfo extends Component {
                 };
                 this.props.setSpecialBasicInfo(shareInfo);
             }
-            decodeURI
             if (['30'].includes(type)) {
                 const { shareTitle, shareImagePath } = this.state;
                 const shareInfo = { shareTitle, shareImagePath }
@@ -3700,8 +3725,32 @@ class SpecialDetailInfo extends Component {
             </div>
         )
     }
+
+    // 添加商家券
+    addWXCoupon = () => {
+        this.setState({
+            wxCouponVisible: true,
+        })
+    }
+
+    onWXCouponCancel = () => {
+        this.setState({
+            wxCouponVisible: false,
+        })
+    }
+
+    onWxCouponChange = (rowSelected) => {
+        this.setState({ sleectedWxCouponList: rowSelected })
+    }
+
+    handleCouponChange = ({ target: { value }}) => {
+        this.setState({
+            couponValue: value,
+        })
+    }
+
     render() {
-        const { giveCoupon } = this.state;
+        const { giveCoupon, couponValue } = this.state;
         const { type, isBenefitJumpSendGift = false } = this.props;
         if (type == "68") {
             // 推荐有礼的render与其它活动相差较大
@@ -3799,23 +3848,23 @@ class SpecialDetailInfo extends Component {
                 {
                     type === '61' && renderUpGradeThree.call(this, this.props.isNew)
                 }
-                {!['52', '30', '60', '61', '64', '53'].includes(type) &&
-                    <Row>
-                        <Col span={17} offset={4}>
-                            <AddGifts
-                                maxCount={type == '21' || type == '30' ? 1 : 10}
-                                disabledGifts={type == '67' && this.state.disabledGifts}
-                                type={this.props.type}
-                                isNew={this.props.isNew}
-                                value={
-                                    this.state.data
-                                        .filter(gift => gift.sendType === 0)
-                                        .sort((a, b) => a.needCount - b.needCount)
-                                }
-                                onChange={(gifts) => this.gradeChange(gifts, 0)}
-                            />
-                        </Col>
-                    </Row>}
+                { !['52', '30', '60','61', '64', '53', '23'].includes(type) &&
+                <Row>
+                    <Col span={17} offset={4}>
+                        <AddGifts
+                            maxCount={type == '21' || type == '30' ? 1 : 10}
+                            disabledGifts={type == '67' && this.state.disabledGifts}
+                            type={this.props.type}
+                            isNew={this.props.isNew}
+                            value={
+                                this.state.data
+                                .filter(gift => gift.sendType === 0)
+                                .sort((a, b) => a.needCount - b.needCount)
+                            }
+                            onChange={(gifts) => this.gradeChange(gifts, 0)}
+                        />
+                    </Col>
+                </Row>}
                 {type == "65" && (
                     <p className={styles.coloredBorderedLabel}>
                         {this.props.intl.formatMessage(
@@ -3841,6 +3890,88 @@ class SpecialDetailInfo extends Component {
                 )}
                 {["66", "65"].includes(type) && this.renderShareInfo2()}
                 {["30"].includes(type) && this.renderShareInfo3()}
+                {
+                    type == '23' && (
+                        <div>
+                            <FormItem label="优惠券" labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
+                                <p>
+                                    <RadioGroup onChange={this.handleCouponChange} value={`${couponValue}`} defaultValue={'0'}>
+                                        <RadioButton value="0">哗啦啦优惠券</RadioButton>
+                                        <RadioButton value="1">第三方微信优惠券</RadioButton>
+                                    </RadioGroup>
+                                </p>
+                            </FormItem>
+                            <Row>
+                                <Col span={17} offset={4}>
+                                    {
+                                        couponValue == '0' && (
+                                            <AddGifts
+                                                maxCount={10}
+                                                // disabledGifts={type == '67' && this.state.disabledGifts}
+                                                type={this.props.type}
+                                                isNew={this.props.isNew}
+                                                value={
+                                                    this.state.data
+                                                        .filter(gift => gift.sendType === 0)
+                                                        .sort((a, b) => a.needCount - b.needCount)
+                                                }
+                                                onChange={(gifts) => this.gradeChange(gifts, 0)}
+                                            />
+                                        )
+                                    }
+                                    {
+                                        couponValue == '1' && (
+                                            <div>
+                                                <p style={{ margin: '10px 0 8px' }}><span><Button icon="plus" onClick={this.addWXCoupon} >添加第三方微信优惠券</Button></span></p>
+                                                <p className={styles.wxCouponTips}> <Icon type="exclamation-circle" style={{ color: '#FAAD14' }} /><span>第三方微信优惠券领取后，可同步微信卡包展示。</span></p>
+                                                <FormItem
+                                                    label={'用户单次领取优惠券张数'}
+                                                    // className={styles.FormItemStyle}
+                                                    labelCol={{ span: 8}}
+                                                    wrapperCol={{ span: 16 }}
+                                                >
+                                                    {this.props.form.getFieldDecorator("giftCount", {
+                                                        rules: [
+                                                            {
+                                                                validator: (rule, v, cb) => {
+                                                                    if (v > 10 || v < 1) {
+                                                                        return cb('请输入为1-10的整数');
+                                                                    }
+                                                                    cb()
+                                                                },
+                                                            },
+                                                            { required: true, message: '请输入领取张数' },
+                                                        ],
+                                                        initialValue: this.state.giftCouponCount || '1',
+                                                    })(
+                                                        <Input
+                                                            placeholder={'请输入1-99的整数'}
+                                                            type="number"
+                                                        />
+                                                    )}
+                                                </FormItem>
+                                                <SleectedWxCouponTable
+                                                    sleectedWxCouponList={this.state.sleectedWxCouponList}
+                                                    onWxCouponChange={this.onWxCouponChange}
+                                                />
+                                                {
+                                                    this.state.wxCouponVisible &&
+                                                    <WxCouponModal
+                                                        onCancel={this.onWXCouponCancel}
+                                                        sleectedWxCouponList={this.state.sleectedWxCouponList}
+                                                        user={this.props.user}
+                                                        onWxCouponChange={this.onWxCouponChange}
+                                                    />
+                                                }
+                                                   <div className={userCount > 0 ? styles.opacitySet : null}></div>
+                                            </div>
+                                        )
+                                    }
+                                </Col>
+                            </Row>
+                        </div>
+                    )
+                }
             </div>
         );
     }

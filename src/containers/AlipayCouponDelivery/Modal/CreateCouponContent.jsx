@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
 import { Form, Input, DatePicker, Select, Radio, Row, Col, Icon, Modal, TreeSelect, message, Table } from 'antd'
 import moment from 'moment'
+import _ from 'lodash'
 import { axios, getStore } from '@hualala/platform-base';
 import AuthorizeModalContent from './AuthorizeContent';
 import { getSmid, isAuth, goAuthorizeAC } from '../AxiosFactory'
 import { SALE_CENTER_GIFT_EFFICT_DAY_ALIPAY } from '../../../redux/actions/saleCenterNEW/types';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
+import WXContent from './WXContent';
 // import { axiosData } from '../../../helpers/util'
 import styles from '../AlipayCoupon.less';
 
@@ -31,14 +33,38 @@ class CreateCouponContent extends Component {
             effectGiftTimeHours: editData.effectGiftTimeHours ? `${editData.effectGiftTimeHours}` : '', // 生效时间
             validUntilDays: editData.validUntilDays ? `${editData.validUntilDays}` : '', // 有效天数
             giftValidRange: [], // 固定有效期
-            merchantType: '1', // 支付宝链接方式
+            merchantType: '1', // 支付宝链接方式  1 直连 | 2 间连
             authorizeModalVisible: false, // 代运营授权弹窗
             merchantID: `${props.editData.merchantID}` || '', // 选择的间连和直连
             smidList: [], // smid列表
             smidModalVisible: false,
             shopIsAuth: '0', // 0不显示  1未授权 2已授权 商家是否授权
             editData: _.cloneDeep(editData),
+            WXMerchantID: '', // 微信的MerchantID
+            masterMerchantID: '', // 微信的masterMerchantID
+            WXMerchantIDName: '', // 微信账务主体名字
+            WXJumpAppID: '',
+            WXJumpAppIDName: '',
+            confirmLoading: false,
+            tips: false,
         }
+    }
+
+    // 选择微信的财务主体后改变MerchantID
+    onChangeWXMerchantID = (record) => {
+        this.setState({
+            WXMerchantID: record.merchantID,
+            masterMerchantID: record.masterMerchantID,
+            WXMerchantIDName: record.settleName,
+        })
+    }
+
+    // 微信跳转公众号和小程
+    onChangeWXJumpAppID = ({ key, label }) => {
+        this.setState({
+            WXJumpAppID: key,
+            WXJumpAppIDName: label,
+        })
     }
 
     // 日期
@@ -177,6 +203,18 @@ class CreateCouponContent extends Component {
         })
     }
 
+    handleStockNumChange = (value) => {
+        if (value.number && value.number > 200) {
+            this.setState({
+                tips: true,
+            })
+        } else {
+            this.setState({
+                tips: false,
+            })
+        }
+    }
+
     goAuthorize = () => {
         this.setState({
             authorizeModalVisible: true,
@@ -204,30 +242,34 @@ class CreateCouponContent extends Component {
     }
 
     handleSubmit = () => {
-        const { form } = this.props
+        const { form, channelID, platformType, type } = this.props
         form.validateFields((err, values) => {
             if (!err) {
                 // console.log('handleAuthSubmit', values);
+                this.setState({ confirmLoading: true })
                 const { effectType, effectGiftTimeHours, merchantID, editData } = this.state;
                 const { user } = getStore().getState();
                 const { groupID } = user.get('accountInfo').toJS()
                 const rangePicker = values.rangePicker;
                 const giftValidRange = values.giftValidRange || [];
                 if (!effectGiftTimeHours && values.effectType === '3') {
+                    this.setState({ confirmLoading: false })
                     return message.error('请输入生效时间')
                 }
                 if (!merchantID) {
+                    this.setState({ confirmLoading: false })
                     return message.error('请输入支付宝链接方式')
                 }
-                if (values.merchantType === '2' && !this.state.bindUserId) { // 间连需要关联M4
+                if (values.merchantType === '2' && !this.state.bindUserId && type != 2) { // 间连需要关联M4
+                    this.setState({ confirmLoading: false })
                     return message.error('间连的支付宝账号未关联M4')
                 }
                 const endTime = rangePicker[1].format('YYYYMMDD');
                 const startTime = rangePicker[0].format('YYYYMMDD')
                 const datas = {
                     batchName: values.batchName,
-                    channelID: 60,
-                    couponCodeDockingType: 2,
+                    channelID,
+                    couponCodeDockingType: 1,
                     stock: values.stock.number,
                     effectType,
                     effectGiftTimeHours,
@@ -240,17 +282,23 @@ class CreateCouponContent extends Component {
                     jumpAppID: values.jumpAppID,
                     merchantID,
                     merchantType: values.merchantType,
-                    platformType: 1,
+                    platformType,
                     validUntilDays: values.validUntilDays ? values.validUntilDays.number : '',
                 }
                 if (giftValidRange[0]) {
                     datas.EGiftEffectTime = giftValidRange[0] ? giftValidRange[0].format('YYYYMMDDHHmmss') : '';
                     datas.validUntilDate = giftValidRange[1] ? giftValidRange[1].format('YYYYMMDDHHmmss') : ''
                 }
-                if (values.merchantType == '2') { // 间连传smid
+                if (values.merchantType == '2' && type === 1) { // 间连传smid && 支付宝
                     const { smidList } = this.state;
                     const { bankMerchantCode } = smidList[0];
                     datas.merchantID = bankMerchantCode;
+                }
+                if (type === 2) { // 微信
+                    datas.merchantID = this.state.WXMerchantID;
+                    datas.maxCouponsPerUser = values.maxCouponsPerUser;
+                    datas.masterMerchantID = this.state.masterMerchantID;
+                    datas.jumpAppID = this.state.WXJumpAppID;
                 }
                 const url = '/api/v1/universal?';
                 let method = 'couponCodeBatchService/addBatch.ajax';
@@ -279,24 +327,29 @@ class CreateCouponContent extends Component {
                             message.success('更新成功');
                             this.props.handleCloseModal();
                             this.props.handleQuery();
+                            this.props.onParentCancel();
                             return
                         }
                         message.success('创建成功');
                         this.props.handleCloseModal();
                         this.props.handleQuery();
+                        this.props.onParentCancel();
+                        this.setState({ confirmLoading: false })
                         return
                     }
                     // this.props.handleCloseModal();
+                    this.setState({ confirmLoading: false })
                     message.error(msg);
                 }).catch((error) => {
                     // this.props.handleCloseModal();
+                    this.setState({ confirmLoading: false })
                     console.log(error)
                 })
             }
         })
     }
 
-    // 直连
+    // 支付宝直连
     renderDirect = () => {
         const { form } = this.props;
         const { getFieldDecorator } = form;
@@ -305,7 +358,7 @@ class CreateCouponContent extends Component {
         const value = editData.merchantType && editData.merchantType == '1' ? editData.merchantID : '';
         return (
             <Row>
-                <Col span={16} offset={4} className={styles.DirectBox}>
+                <Col span={16} offset={5} className={styles.DirectBox}>
                     <FormItem
                         labelCol={{ span: 0 }}
                         wrapperCol={{ span: 24 }}
@@ -379,7 +432,7 @@ class CreateCouponContent extends Component {
         return null
     }
 
-    // 间连
+    // 支付宝间连
     renderIndirect = () => {
         const { form } = this.props;
         const { getFieldDecorator } = form;
@@ -388,7 +441,7 @@ class CreateCouponContent extends Component {
         // const value = editData.merchantType && editData.merchantType == '2' ? editData.merchantID : '';
         return (
             <Row>
-                <Col span={16} offset={4} className={styles.IndirectBox}>
+                <Col span={16} offset={5} className={styles.IndirectBox}>
                     <FormItem
                         labelCol={{ span: 0 }}
                         wrapperCol={{ span: 24 }}
@@ -437,14 +490,21 @@ class CreateCouponContent extends Component {
         )
     }
 
+    renderZhifubaoContent = (merchantType) => {
+        return (<div>
+            {merchantType === '2' && this.renderIndirect()}
+            {merchantType === '1' && this.renderDirect()}
+        </div>)
+    }
+
     // 优惠券
     renderCoupon = () => {
-        const { form } = this.props;
+        const { form, type } = this.props;
         const { getFieldDecorator } = form;
         const { editData } = this.state;
         return (
             <Row>
-                <Col span={16} offset={4} className={styles.CouponGiftBox}>
+                <Col span={16} offset={5} className={styles.CouponGiftBox}>
                     <FormItem
                         label="总数量"
                         labelCol={{ span: 4 }}
@@ -452,7 +512,7 @@ class CreateCouponContent extends Component {
                     >
                         {getFieldDecorator('stock', {
                             initialValue: { number: editData.stock },
-                            // onChange: this.handleGiftNumChange,
+                            onChange: this.handleStockNumChange,
                             rules: [
                                 { required: true, message: '总数量为必填项' },
                                 {
@@ -470,7 +530,10 @@ class CreateCouponContent extends Component {
                             addonAfter="个"
                             modal="int"
                         />)}
-                        <div className={styles.authorizeBottomTip} style={{ padding: 0, textAlign: 'center' }}>如券用于支付宝会场大促投放，其总数量应大于200</div>
+                        {
+                            type === 1 && this.state.tips &&
+                            (<div className={styles.authorizeBottomTip} style={{ padding: 0, textAlign: 'center' }}>如券用于支付宝会场大促投放，其总数量应大于200</div>)
+                        }
                     </FormItem>
                     <FormItem
                         label="生效方式"
@@ -634,13 +697,13 @@ class CreateCouponContent extends Component {
     // }
 
     render() {
-        const { form } = this.props;
+        const { form, title, type } = this.props;
         const { getFieldDecorator } = form;
         const { giftItemID, merchantType, editData } = this.state;
-        let title = '新建第三方支付宝券';
-        if (editData.batchName) {
-            title = '编辑第三方支付宝券';
-        }
+        // let title = '新建第三方支付宝券';
+        // if (editData.batchName) {
+        //     title = '编辑第三方支付宝券';
+        // }
         return (
             <Modal
                 title={title}
@@ -649,13 +712,14 @@ class CreateCouponContent extends Component {
                 visible={true}
                 onCancel={this.handleCloseModal}
                 onOk={this.handleSubmit}
+                confirmLoading={this.state.confirmLoading}
             >
                 <Row>
                     <Col span={24} offset={1} className={styles.IndirectBox}>
                         <Form className={styles.crmSuccessModalContentBox}>
                             <FormItem
                                 label="第三方券名称"
-                                labelCol={{ span: 4 }}
+                                labelCol={{ span: 5 }}
                                 wrapperCol={{ span: 16 }}
                                 required={true}
                             >
@@ -667,12 +731,13 @@ class CreateCouponContent extends Component {
                                 })(
                                     <Input
                                         placeholder="请输入投放名称"
+                                        style={{ height: '30px' }}
                                     />
                                 )}
                             </FormItem>
                             <FormItem
                                 label="投放时间"
-                                labelCol={{ span: 4 }}
+                                labelCol={{ span: 5 }}
                                 wrapperCol={{ span: 16 }}
                                 required={true}
                             >
@@ -684,14 +749,14 @@ class CreateCouponContent extends Component {
                                     // onchange: this.handleRangeChange,
                                 })(
                                     <RangePicker
-                                        style={{ width: '100%' }}
+                                        style={{ width: '100%', height: 30 }}
                                         format="YYYY-MM-DD"
                                     />
                                 )}
                             </FormItem>
                             <FormItem
                                 label="选择优惠券"
-                                labelCol={{ span: 4 }}
+                                labelCol={{ span: 5 }}
                                 wrapperCol={{ span: 16 }}
                                 required={true}
                             >
@@ -716,10 +781,9 @@ class CreateCouponContent extends Component {
                             </FormItem>
                             {giftItemID && this.renderCoupon()}
                             <FormItem
-                                label="支付宝链接方式"
-                                labelCol={{ span: 4 }}
+                                label="链接方式"
+                                labelCol={{ span: 5 }}
                                 wrapperCol={{ span: 16 }}
-                            // required={true}
                             >
                                 {getFieldDecorator('merchantType', {
                                     onChange: this.handleLinkWay,
@@ -733,25 +797,62 @@ class CreateCouponContent extends Component {
                                     </RadioGroup>
                                 )}
                             </FormItem>
-                            {merchantType === '2' && this.renderIndirect()}
-                            {merchantType === '1' && this.renderDirect()}
-                            <FormItem
-                                label="跳转小程序"
-                                labelCol={{ span: 4 }}
-                                wrapperCol={{ span: 16 }}
-                                required={true}
-                            >
-                                {getFieldDecorator('jumpAppID', {
-                                    initialValue: editData.jumpAppID,
-                                    rules: [
-                                        { required: true, message: '请输入小程序appid' },
-                                    ],
-                                })(
-                                    <Input
-                                        placeholder="请输入小程序appid"
-                                    />
-                                )}
-                            </FormItem>
+                            { type === 1 && this.renderZhifubaoContent(merchantType) }
+                            { type === 2 && <WXContent form={form} merchantType={merchantType} onChangeWXMerchantID={this.onChangeWXMerchantID} onChangeWXJumpAppID={this.onChangeWXJumpAppID} />}
+                            {
+                                type === 1 && <FormItem
+                                    label="跳转小程序"
+                                    labelCol={{ span: 5 }}
+                                    wrapperCol={{ span: 16 }}
+                                    required={true}
+                                >
+                                    {getFieldDecorator('jumpAppID', {
+                                        initialValue: editData.jumpAppID,
+                                        rules: [
+                                            { required: true, message: '请输入小程序appid' },
+                                        ],
+                                    })(
+                                        <Input
+                                            placeholder="请输入小程序appid"
+                                            style={{ height: '30px' }}
+                                        />
+                                    )}
+                                </FormItem>
+                            }
+                            {
+                                type === 2 && <FormItem
+                                    label="用户最大领取数量"
+                                    labelCol={{ span: 5 }}
+                                    wrapperCol={{ span: 9 }}
+                                    required={true}
+                                >
+                                    {getFieldDecorator('maxCouponsPerUser', {
+                                        rules: [
+                                            { required: true, message: '请输入用户最大领取数量' },
+                                            {
+                                                validator: (rule, v, cb) => {
+                                                    if (!v) {
+                                                        return cb();
+                                                    }
+                                                    if (v > 10 || v < 0) {
+                                                        return cb(rule.message);
+                                                    }
+                                                    cb();
+                                                },
+                                                message: '必须输入数字, 且大于0小于10',
+                                            },
+                                        ],
+                                    })(
+                                        <Input
+                                            placeholder="请输入用户最大领取数量"
+                                            addonAfter="个"
+                                            type="number"
+                                            min={0}
+                                            style={{ height: '30px' }}
+                                        />
+                                    )}
+                                </FormItem>
+                            }
                         </Form>
                     </Col>
                 </Row>

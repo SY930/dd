@@ -23,6 +23,7 @@
     }
 }
 .CouponGiftBox {
+    margin-bottom: 6px;
     padding: 16px 0 16px 14px;
     background: #F7F7F7;
     border-radius: 4px; 
@@ -72,6 +73,11 @@
         color: #666666;
         font-weight: 500;
         cursor: pointer;
+        border: 1px solid transparent;
+        &:hover {
+            border: 1px solid #1AB495;
+            border-radius: 8px;
+        }
         &::after {
             content: '';
             display: inline-block;
@@ -93,7 +99,7 @@
             background: #F9F9F9;
             text-align: center;
             overflow: hidden;
-            border-radius: 0px 99px 0px 8px;
+            border-radius: 0px 99px 0px 18px;
             font-size: 16px;
         }
         .signup {
@@ -273,11 +279,19 @@
     }
     .DirectBox {
         position: relative;
+        margin-bottom: 6px;
         background: #F7F7F7;
         border-radius: 4px;
     }
     .directSelect {
         padding: 10px 18px 10px 12px;
+    }
+    :global {
+        .ant-calendar-picker {
+            .ant-calendar-picker-input {
+                height: 100%;
+            }
+        }
     }
     
 }
@@ -361,7 +375,7 @@
 .CouponManageListBox {
     .pageContentWrapper {
         background-color: #FFFFFF;
-        padding: 15px 30px 30px;
+        padding: 0 20px;
     }
     .customHeader {
         font-size: 20px;
@@ -440,6 +454,34 @@
             p {
                 flex: 1;
             }
+        }
+    }
+}
+
+.createCouponModal__flex__ul {
+    display: flex;
+    justify-content: center;
+    .createCouponModal__item__li {
+        img  {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            margin-bottom: 16px;
+        }
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 148px;
+        height: 148px;
+        background: #FFFFFF;
+        box-shadow: 0px 2px 12px 0px rgba(218, 218, 218, 0.5);
+        border-radius: 12px;
+        border: 1px solid #F6F6F6;
+        cursor: pointer;
+        margin-bottom: 10px;
+        &:hover {
+            border: 1px solid #1AB495;
         }
     }
 }
