@@ -158,7 +158,7 @@ export default class Editor extends Component {
         return current && current.valueOf() < yesterday;
     }
     imageUploadDom = () => {
-        const width = 100, height = 95, limit = 1024 * 2, cropperRatio = 200 / 200; 
+        const width = 100, height = 95, limit = 1024 * 2, cropperRatio = 520 / 416; 
         const children = (
             <div>
                 <p className="ant-upload-hint">小程序分享图</p>
