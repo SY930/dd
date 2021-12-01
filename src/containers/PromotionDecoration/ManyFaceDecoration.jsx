@@ -110,7 +110,7 @@ export default class ManyFaceDecoration extends Component {
                 <div className={style.simpleDisplayBlock}>
                     <div className={style.imgWrapper} style={{ height: '100%' }}>
                         <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
-                            <img src={endImg} style={{ width: '100%', height: '100%' }} alt="" />
+                            <img src='http://res.hualala.com/basicdoc/884351d8-1788-4c2d-b0fd-949936d92369.png' style={{ width: '100%', height: '100%' }} alt="" />
                         </div>
                         <div className={style.tagWrapper}>
                             <img src={tagImg} alt="" />
