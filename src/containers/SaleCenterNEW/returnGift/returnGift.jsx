@@ -502,6 +502,7 @@ class ReturnGift extends React.Component {
             this.state.infos[index].giftInfo.giftName === null) {
             return null;
         }
+        debugger
         return [
             this.state.infos[index].giftInfo.giftItemID,
             this.state.infos[index].giftInfo.giftName,
