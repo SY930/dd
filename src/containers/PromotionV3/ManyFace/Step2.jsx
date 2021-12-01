@@ -67,12 +67,18 @@ class Step2 extends Component {
     }
     /** formItems 重新设置 */
     resetFormItems() {
-        const originTreeData = this.props.shopSchema.toJS();
+        // const originTreeData = this.props.shopSchema.toJS();
         const shopData = this.props.shopSchema.toJS().shops;
         const filterShopData = shopData.filter(item => this.state.filterShop.indexOf(item.shopID) < 0);
-        originTreeData.shops = filterShopData;
+        // console.log("resetFormItems ~ filterShopData", filterShopData.map(shop => shop.shopID))
+        // originTreeData.shops = filterShopData;
         const { brands } = this.state;
-        const render = d => d()(<ShopSelector filterParm={isFilterShopType() ? { productCode: 'HLL_CRM_License' } : {}} brandList={brands} schemaData={originTreeData} />);
+        const render = d => d()(<ShopSelector
+            filterParm={isFilterShopType() ? { productCode: 'HLL_CRM_License' } : {}}
+            brandList={brands}
+            canUseShops={filterShopData.map(shop => shop.shopID)}
+        // schemaData={originTreeData}
+        />);
         const options = this.getBrandOpts();
         const optionsScenceList = this.getScenceList();
         const { shopIDList, brandList, sceneList } = formItems2;
