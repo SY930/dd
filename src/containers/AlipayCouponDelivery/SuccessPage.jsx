@@ -224,6 +224,7 @@ class SuccessPage extends Component {
                     <Pagination
                         current={pageNo}
                         pageSize={pageSize}
+                        pageSizeOptions={['25','50','100','200']}
                         total={total}
                         showSizeChanger={true}
                         onShowSizeChange={(page, pageSizes) => {

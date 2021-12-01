@@ -37,7 +37,7 @@ class CouponManageList extends Component {
 		super(props)
 		this.state = {
 			loading: false,
-			pageSizes: 30, // 默认显示的条数
+			pageSizes: 25, // 默认显示的条数
             pageNo: 1,
 			dataSource: [],
 			batchName: '', // 第三方券名称
@@ -481,6 +481,7 @@ class CouponManageList extends Component {
                     }
                     pagination={{
                         pageSize: this.state.pageSizes,
+                        pageSizeOptions: ['25','50','100','200'],
                         current: this.state.pageNo,
                         showQuickJumper: true,
                         showSizeChanger: true,

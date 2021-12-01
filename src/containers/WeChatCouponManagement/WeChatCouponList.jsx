@@ -67,7 +67,7 @@ class WeChatCouponList extends Component {
             queryBatchStatus: '',
             isQuerying: false,
             couponList: [],
-            pageSize: 30,
+            pageSize: 25,
             pageNo: 1,
             total: 0,
             tableHeight: 800,
@@ -181,6 +181,7 @@ class WeChatCouponList extends Component {
             isQuerying,
             tableHeight,
             selectedCoupon,
+            pageSize,
         } = this.state;
         const couponList = this.state.couponList.map((item, index) => ({...item, index: index + 1}))
         const columns = [
@@ -357,8 +358,10 @@ class WeChatCouponList extends Component {
                         loading={isQuerying}
                         pagination={{
                             showQuickJumper: true,
-                            defaultPageSize: 20,
+                            defaultPageSize: 25,
                             showSizeChanger: true,
+                            pageSize,
+                            pageSizeOptions: ['25','50','100','200'],
                             // total: couponList.length,
                             showTotal: (total, range) => `本页${range[0]}-${range[1]} / 共 ${total} 条`,
                         }}
