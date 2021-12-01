@@ -122,7 +122,7 @@ export default class BlindBoxDecorationBoard extends Component {
                     <div style={{ top: 30 }} className={style.label}>{SALE_LABEL.k6346c3s}</div>
                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
                         <DecorationUploader
-                            limit={0}
+                            limit={1000}
                             value={bgImg}
                             onChange={value => onChange({ key: ['bgImg'], value })}
                         />

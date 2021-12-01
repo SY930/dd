@@ -14,7 +14,7 @@ export const FILTERS = [{
     labelKey: 'shopCategoryName',
     callserver: 'getShopBrand',
     callparams: {},
-},  {
+}, {
     name: 'businessModels',
     key: 'businessModel',
     label: '经营模式',

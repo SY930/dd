@@ -162,6 +162,7 @@ class MainTable extends Component {
             title: name,
             needCount: '1',
             giftArr: [],
+            faceArr: [],
         })
         jumpPage({ menuID: PROMOTION_DECORATION })
     }

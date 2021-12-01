@@ -5,9 +5,12 @@ import {
     RESET_DECORATION_INFO,
     SET_DECORATION_LOADING,
     GET_DECORATION_SUCCESS,
+    GET_DECORATION_FACE_SUCCESS,
+    UPDATE_DECORATION_ITEM_FACE,
 } from '../../actions/decoration';
 
 const defaultDecorationInfo = {}
+const defaultFaceDecorationInfo = []
 
 const $initialState = Immutable.fromJS({
     currentPromotion: {
@@ -16,8 +19,10 @@ const $initialState = Immutable.fromJS({
         type: '',
         needCount: '',
         giftArr: [],
+        faceArr: [],
     },
     decorationInfo: defaultDecorationInfo,
+    faceDecorationInfo: defaultFaceDecorationInfo,
     loading: false,
 });
 
@@ -40,6 +45,22 @@ export const promotion_decoration = ($$state = $initialState, action) => {
             return $$state.setIn(['decorationInfo', ...key], Immutable.fromJS(value));
         case RESET_DECORATION_INFO:
             return $$state.set('decorationInfo', Immutable.fromJS(defaultDecorationInfo))
+                .set('faceDecorationInfo', Immutable.fromJS(defaultFaceDecorationInfo))
+        case GET_DECORATION_FACE_SUCCESS:
+            let infoFace;
+            try {
+                infoFace = JSON.parse(action.payload)
+            } catch (e) {
+                infoFace = defaultFaceDecorationInfo;
+            }
+            return $$state.mergeDeepIn(['faceDecorationInfo'], infoFace);
+        case UPDATE_DECORATION_ITEM_FACE:
+            const { key: index, value: v } = action.payload;
+            if(index == null) {
+                // return $$state.set('faceDecorationInfo', Immutable.fromJS(v))
+                return $$state.mergeIn(['faceDecorationInfo'], v)
+            }
+            return $$state.setIn(['faceDecorationInfo', index], v);
         default: return $$state;
     }
 };

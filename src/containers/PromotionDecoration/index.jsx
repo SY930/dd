@@ -24,10 +24,13 @@ import SignInDecorationBoard from './SignInDecorationBoard'
 import RecommendHaveGift from './RecommendHaveGift'
 import BlindBoxDecorationBoard from './BlindBoxDecorationBoard';
 import TicketBagDecoration from './TicketBagDecoration'
+import ManyFaceDecoration from './ManyFaceDecoration';
+
 import {
     getDecorationInfo,
     saveDecorationInfo,
     updateDecorationItem,
+    updateDecorationFaceItem,
     resetDecorationInfo,
     getCouponsDecorationInfo,
 } from '../../redux/actions/decoration';
@@ -45,8 +48,10 @@ const mapStateToProps = (state) => {
         type: state.sale_promotion_decoration.getIn(['currentPromotion', 'type']),
         needCount: state.sale_promotion_decoration.getIn(['currentPromotion', 'needCount']),
         giftArr: state.sale_promotion_decoration.getIn(['currentPromotion', 'giftArr']).toJS(),
+        faceArr: state.sale_promotion_decoration.getIn(['currentPromotion', 'faceArr']).toJS(),
         loading: state.sale_promotion_decoration.getIn(['loading']),
         decorationInfo: state.sale_promotion_decoration.get('decorationInfo'),
+        faceDecorationInfo: state.sale_promotion_decoration.get('faceDecorationInfo').toJS(),
         user: state.user,
     };
 };
@@ -64,6 +69,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         updateDecorationItem: (opts) => {
             dispatch(updateDecorationItem(opts))
+        },
+        updateDecorationFaceItem: (opts) => {
+            dispatch(updateDecorationFaceItem(opts))
         },
         resetDecorationInfo: (opts) => {
             dispatch(resetDecorationInfo(opts))
@@ -116,6 +124,20 @@ export default class PromotionDecoration extends Component {
         this.props.resetDecorationInfo();
     }
 
+    getfaceDecorationInfo = (info = []) => {
+        const { faceArr } = this.props;
+        const faceArrCopy = faceArr.map((item, index) => {
+            const findImg = info.find((ditem) => {
+                if (ditem && ditem.condition) { return ditem.condition === item.itemID}
+            }) || {};
+            item.image = findImg.image || 'http://res.hualala.com/basicdoc/884351d8-1788-4c2d-b0fd-949936d92369.png';
+            return {
+                ...item,
+            }
+        })
+       return faceArrCopy
+    }
+
     handleVaild = (flag) => {
         this.setState({
             ifVaild: flag
@@ -150,9 +172,27 @@ export default class PromotionDecoration extends Component {
         }
     }
 
+    handleFaceSave = () => {
+        const { type, id, faceDecorationInfo, user } = this.props;
+        this.props.saveDecorationInfo({
+            type,
+            id,
+            decorationInfo: faceDecorationInfo,
+        }).then(() => {
+            message.success(SALE_LABEL.k5do0ps6);
+            closePage();
+            switch (type) {
+                default: jumpPage({ pageID: SPECIAL_PAGE })
+            }
+        })
+    }
+
     handleSave = () => {
         const { ifVaild } = this.state
         const { type, id, decorationInfo, user } = this.props;
+        if (type == '85') {
+            return this.handleFaceSave();
+        }
         const cinfo = {
             TipColor: '#fd6631',//购买提示文本
             couponImg: 'http://res.hualala.com/basicdoc/ef060596-786a-4aa7-8d99-4846d753d7e9.png',//背景图
@@ -214,7 +254,24 @@ export default class PromotionDecoration extends Component {
             }
         })
     }
+    handleFaceReset = () => {
+        const { updateDecorationFaceItem, faceArr } = this.props;
+        const faceArrs = faceArr.map((item, index) => {
+            item.image = 'http://res.hualala.com/basicdoc/eb519bc1-d7d6-410c-8bf9-8bfe92645bcf.png';
+
+            return {
+                image: item.image,
+                condition: item.itemID,
+            }
+        })
+        updateDecorationFaceItem({ key: null, value: faceArrs })
+
+    }
     handleReset = () => {
+        const { type } = this.props
+        if (type == '85') {
+           return this.handleFaceReset();
+        }
         this.props.resetDecorationInfo();
         this.setState({
             gatherPointFlag: true,
@@ -280,7 +337,11 @@ export default class PromotionDecoration extends Component {
     }
 
     renderContent() {
-        const { type, decorationInfo, updateDecorationItem, needCount = '', } = this.props;
+        const { type, decorationInfo, updateDecorationItem, needCount = '', faceArr = [], faceDecorationInfo, updateDecorationFaceItem } = this.props;
+        let _faceDecorationInfo = [];
+        if (type == '85') {
+            _faceDecorationInfo = this.getfaceDecorationInfo(faceDecorationInfo);
+        }
         const { gatherPointFlag } = this.state
         const giftArr = this.handleGiftArr()
         switch (type) {
@@ -306,6 +367,8 @@ export default class PromotionDecoration extends Component {
                 return <BlindBoxDecorationBoard onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
             case 'ticketbag':
                 return <TicketBagDecoration onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
+            case '85':
+                return <ManyFaceDecoration onChange={updateDecorationFaceItem} decorationInfo={_faceDecorationInfo} type={type} faceArr={faceArr}/>
             default:
                 return <div></div>
         }

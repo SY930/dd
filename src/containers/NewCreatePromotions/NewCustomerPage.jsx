@@ -80,6 +80,7 @@ import Chou2Le from "../PromotionV3/Chou2Le";   // 抽抽乐
 import BlindBox from "../PromotionV3/BlindBox";   // 盲盒
 import PassWordCoupon from "../PromotionV3/PassWordCoupon";   // 口令领券
 import ActivityMain from '../WeChat2Mall/WeChatMaLLActivityMain'; // 秒杀
+import ManyFace from '../PromotionV3/ManyFace';
 import { jumpPage, closePage } from '@hualala/platform-base';
 import {
     getSpecialPromotionIdx,
@@ -831,6 +832,7 @@ class NewCustomerPage extends Component {
                 {(v3visible && curKey == '79') && <BlindBox onToggle={this.onV3Click} />}
                 {(v3visible && curKey == '83') && <PassWordCoupon onToggle={this.onV3Click} />}
                 {(v3visible && curKey == '10072') && this.renderWeChat2MallModal()}
+                {(v3visible && curKey == '85') && <ManyFace onToggle={this.onV3Click} />}
             </div >
         )
     }
