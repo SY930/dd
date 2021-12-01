@@ -3,7 +3,7 @@
  * 
 */
 import React, { PureComponent as Component } from 'react';
-import { Button, message, Alert ,Select,Form,Col,Radio} from 'antd';
+import { Button, message, Alert ,Select,Form,Col,Radio, Input } from 'antd';
 import moment from 'moment';
 import BaseForm from 'components/common/BaseForm';
 import ShopSelector from 'components/ShopSelector';
@@ -17,6 +17,19 @@ import { putTicketBag, postTicketBag } from './AxiosFactory';
 const Option = Select.Option;
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
+
+// const ImageView = (props) => {
+//     const url = `http://res.hualala.com/${props.value || 'basicdoc/ca249689-3339-4895-b481-43322147862f.png'}`
+//     const _styles = {
+//         width: '198px',
+//         height: '96px',
+//         objectFit: 'contain',
+//     }
+//     return (
+//         <img src={url} alt="logo" style={_styles}></img>
+//     )
+// }
+
 export default class Editor extends Component {
     state = {
         newFormKeys: formKeys,
@@ -181,7 +194,7 @@ export default class Editor extends Component {
         const { check, detail, settlesOpts } = this.props;
         const { sendCount = 0 } = detail || {};
         let [couponPackageType,cycleType,couponSendWay,couponPackageRadioSelect] = ['1', '','1','1'];
-        if(this.form) {
+        if (this.form) {
             couponPackageType = this.form.getFieldValue('couponPackageType');
             cycleType = this.form.getFieldValue('cycleType');
             couponSendWay = this.form.getFieldValue('couponSendWay');
@@ -227,7 +240,7 @@ export default class Editor extends Component {
             couponPackageFirstGift: { ...couponPackageFirstGift, render:render },
             couponPackageFollowGift: { ...couponPackageFollowGift, render:render },
             shopInfos: { ...shopInfos, render: render1 },
-            couponPackageImage: { ...couponPackageImage, render: render2 },
+            // couponPackageImage: { ...couponPackageImage, render: render2 }, // 屏蔽掉
             validCycle: { ...validCycle, render: render3 },
             settleUnitID: { ...settleUnitID , options: settlesOpts},
             defaultCardTypeID: {...defaultCardTypeID,render:render5},
@@ -385,3 +398,4 @@ export default class Editor extends Component {
         );
     }
 }
+
