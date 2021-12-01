@@ -10,7 +10,7 @@ export default class TicketBag extends Component {
     state = {
         list: [],
         loading: false,
-        queryParams: {},        // 临时查询缓存，具体对象查看QueryForm对象
+        queryParams: { pageNo:1, pageSize:25 },        // 临时查询缓存，具体对象查看QueryForm对象
         visible: false,
     };
     componentDidMount() {

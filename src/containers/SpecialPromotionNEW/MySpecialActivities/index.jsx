@@ -218,7 +218,7 @@ class MySpecialActivities extends React.Component {
             isActive: '',
             eventName: '',
             editEventWay: '',
-            pageSizes: 30,
+            pageSizes: 25,
             pageNo: 1,
             record: {
                 eventInfo: {},
@@ -974,6 +974,8 @@ class MySpecialActivities extends React.Component {
     onShowSizeChange = (current, pageSize) => {
         this.setState({
             pageSizes: pageSize,
+        },()=>{
+            this.handleQuery();
         })
     };
 
@@ -1507,6 +1509,7 @@ class MySpecialActivities extends React.Component {
                     scroll={{ x: 1630, y: 'calc(100vh - 390px)' }}
                     pagination={{
                         pageSize: this.state.pageSizes,
+                        pageSizeOptions: ['25','50','100','200'],
                         current: this.state.pageNo,
                         showQuickJumper: true,
                         showSizeChanger: true,

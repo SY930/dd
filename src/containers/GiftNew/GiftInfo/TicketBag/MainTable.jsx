@@ -38,6 +38,7 @@ class MainTable extends Component {
         detail: {},
         couponPackageID: '',
         stock: '',
+        pageSize: 25,
     };
     /* 根据父组件传来的数据判断是否需要更新分页组件 */
     componentWillReceiveProps(np) {
@@ -138,9 +139,12 @@ class MainTable extends Component {
     /* 分页改变执行 */
     onPageChange = (pageNo, pageSize) => {
         const { onSavePaging, onQuery } = this.props;
-        const params = { pageSize, pageNo };
-        onSavePaging(params);
-        onQuery(params);
+        this.setState({ pageSize } ,()=>{
+            const params = { pageSize, pageNo };
+            onSavePaging(params);
+            onQuery(params);
+        })
+        
     }
     /* 是否显示 */
     onToggleModal = () => {
@@ -232,7 +236,7 @@ class MainTable extends Component {
         const { loading, page, groupID } = this.props;
         const columns = this.generateColumns();
         const dataSource = this.generateDataSource();
-        const pagination = { ...page, onChange: this.onPageChange, onShowSizeChange: this.onPageChange };
+        const pagination = { ...page, onChange: this.onPageChange, onShowSizeChange: this.onPageChange,pageSizeOptions: ['25','50','100','200'], pageSize:this.state.pageSize};
         return (
             <div className={styles.tableBox}>
                 <Table
