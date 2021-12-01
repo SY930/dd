@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
-import { Row, Col, Icon, Form, Select, message, Input, Button } from 'antd';
+import { Row, Col, Icon, Form, Select, message, Input, Button, Tooltip } from 'antd';
 import { axios } from '@hualala/platform-base';
 import FoodSelectModal from '../../../../components/common/FoodSelector/FoodSelectModal'
 import styles from './styles.less';
@@ -516,7 +516,7 @@ class MyFaceRule extends Component {
                                     <span>规则{i + 1}</span>
                                     <p style={{ height: 24 }}></p>
                                     <div className={styles.MyFaceRuleSubConntet} style={{ display: 'flex' }}>
-                                        <p> <span className={styles.tip}>*</span>目标范围</p>
+                                        <p> <span className={styles.tip}>*</span>目标范围 <Tooltip placement="top" title="会员标签属性被删除后请重新选择"><Icon type="exclamation-circle" /></Tooltip></p>
                                         <FormItem>
                                             <Select style={{ width: '120px' }} value={`${v.conditionType}`} onChange={(_v) => { this.onRange(i, 'conditionType', _v) }} >
                                                 {
