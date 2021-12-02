@@ -128,7 +128,7 @@ export default class PromotionDecoration extends Component {
         const { faceArr } = this.props;
         const faceArrCopy = faceArr.map((item, index) => {
             const findImg = info.find((ditem) => {
-                if (ditem && ditem.condition) { return ditem.condition === item.itemID}
+                if (ditem && ditem.condition) { return ditem.condition == item.itemID}
             }) || {};
             item.image = findImg.image || 'http://res.hualala.com/basicdoc/884351d8-1788-4c2d-b0fd-949936d92369.png';
             return {
