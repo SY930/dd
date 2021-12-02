@@ -69,11 +69,12 @@ class MyFaceRule extends Component {
         const list = [...value];
         const faceObj = value[idx];
         list[idx] = { ...faceObj, ...params };
+        // // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 72 ~ MyFaceRule ~ list", list)
         onChange(list);
     }
 
     onRange = (idx, key, value) => {
-        // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 74 ~ MyFaceRule ~ key, value", key, value)
+        // // // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 74 ~ MyFaceRule ~ key, value", key, value)
         if (value == '1') { // 会员身份
             this.onChange(idx, { [key]: value, conditionValue: 'whetherHasCard', conditionName: '是否持卡会员', targetName: '持卡会员', targetValue: '0' })
             this.setState({
@@ -179,7 +180,7 @@ class MyFaceRule extends Component {
         } else {
             newActivityList = [];
         }
-        // console.log(newActivityList, 'newActivityList')
+        // // // console.log(newActivityList, 'newActivityList')
         let linkUrlOption = [];
         if (params === '5') {
             linkUrlOption = mallActivityList.map((items) => {
@@ -243,7 +244,7 @@ class MyFaceRule extends Component {
             // value.map((item, idx) => {
             //     if (item.conditionType == '2') { // 会员标签
             //         const everyTags = this.state.tagRuleDetails.filter(itm => itm.tagCategoryID == item.conditionValue)
-            //         console.log("🚀 ~ file: MyFaceRule.jsx ~ line 249 ~ MyFaceRule ~ value.map ~ everyTags", everyTags)
+            //         // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 249 ~ MyFaceRule ~ value.map ~ everyTags", everyTags)
             //         everyTagsRule[idx] = everyTags.map((itm) => {
             //             return {
             //                 ...itm,
@@ -255,7 +256,7 @@ class MyFaceRule extends Component {
             //         everyTagsRule[idx] = null;
             //     }
             // })
-            // console.log("🚀 ~ _______________________-", everyTagsRule)
+            //  console.log("🚀 ~ _______________________-", everyTagsRule)
             // this.setState({
             //     everyTagsRule,
             // })
@@ -322,7 +323,7 @@ class MyFaceRule extends Component {
                 tagTypes.map((item) => {
                     tagsList.push(...item.categoryEntries)
                 })
-                // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 252 ~ MyFaceRule ~ tagTypes.map ~ tagsList", tagsList)
+                // // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 252 ~ MyFaceRule ~ tagTypes.map ~ tagsList", tagsList)
 
                 this.setState({
                     tagCategories: res.tagCategories,
@@ -342,14 +343,15 @@ class MyFaceRule extends Component {
         })
     }
 
-    showDishSelector = () => {
+    showDishSelector = (idx, key) => {
+        this.onChange(idx, { [key]: true })
         this.setState({
             isShowDishSelector: true,
         })
     }
 
     handleModalOk = (i, item, values = []) => {
-        // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 237 ~ MyFaceRule ~ valuehhhhhhhhh", values)
+        // // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 237 ~ MyFaceRule ~ valuehhhhhhhhh", values)
         if (values.length > 1) {
             message.warn('只能选择一个菜品');
             return;
@@ -377,12 +379,13 @@ class MyFaceRule extends Component {
             }
             return acc;
         }, [])
-        // console.log(dishObjects, 'dishObjects--------')
+        // // console.log(dishObjects, 'dishObjects--------')
+        this.handleModalCancel(i, 'isShowDishSelector');
         this.onChange(i, { 'triggerEventCustomInfo': dishObjects[0] || {} })
-        this.handleModalCancel();
     }
 
-    handleModalCancel = () => {
+    handleModalCancel = (idx, key) => {
+        this.onChange(idx, { [key]: false })
         this.setState({
             isShowDishSelector: false,
         })
@@ -416,7 +419,7 @@ class MyFaceRule extends Component {
     }
 
     renderInput = (i, v) => {
-        return (<FormItem 
+        return (<FormItem
         // validateStatus={v.triggerEventCustomInfo.value ? 'success' : 'error'} help={v.triggerEventCustomInfo.value ? '' : '请输入自定义链接'}
         >
             <Input
@@ -444,12 +447,12 @@ class MyFaceRule extends Component {
                     type="default"
                     // disabled={true}
                     style={{ display: 'inlineBlock', marginLeft: '10px' }}
-                    onClick={this.showDishSelector}
+                    onClick={() => { this.showDishSelector(i, 'isShowDishSelector') }}
                 >
                     选择菜品
                 </Button>
                 {
-                    this.state.isShowDishSelector ?
+                    (this.state.isShowDishSelector && item.isShowDishSelector) ?
                         this.renderSelectFoods(i, item)
                         : null
                 }
@@ -474,7 +477,7 @@ class MyFaceRule extends Component {
                 mode="dish"
                 initialValue={initialValue}
                 onOk={(value) => { this.handleModalOk(i, item, value) }}
-                onCancel={this.handleModalCancel}
+                onCancel={() => { this.handleModalCancel(i, 'isShowDishSelector') }}
             />
         )
     }
@@ -499,7 +502,7 @@ class MyFaceRule extends Component {
 
     render() {
         const { value = [], decorator } = this.props;
-        // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 31 ~ MyFaceRule ~ render ~ value", value)
+        // // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 31 ~ MyFaceRule ~ render ~ value", value)
         // const { length } = value;
         // 防止回显没数据不显示礼品组件
         if (!value[0]) {
