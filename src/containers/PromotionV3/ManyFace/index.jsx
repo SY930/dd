@@ -262,7 +262,7 @@ class ManyFace extends Component {
                         item.triggerEventCustomInfo = {};
                     }
                 }
-                return { ...item }
+                return { ...item, id: item.itemID, isShowDishSelector: false }
             })
         // console.log("🚀 ~ file: index.jsx ~ line 193 ~ ManyFace ~ faceData", faceData)
         }

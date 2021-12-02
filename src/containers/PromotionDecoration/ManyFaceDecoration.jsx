@@ -27,22 +27,15 @@ export default class ManyFaceDecoration extends Component {
     }
 
     componentDidMount() {
-        // const { decorationInfo, faceArr, onChange } = this.props;
-        // // console.log(this.state.decorationInfo, 'decorationInfo----')
-        // let faceArrCopy = _.cloneDeep(faceArr);
-        // // if (decorationInfo.length) {
-        // faceArrCopy = faceArrCopy.map((item, index) => {
-        //     // const findImg = decorationInfo.filter((ditem) => ditem.condition === item.itemID);
-        //     item.image = 'http://res.hualala.com/basicdoc/eb519bc1-d7d6-410c-8bf9-8bfe92645bcf.png';
-        //     return {
-        //         ...item,
-        //     }
-        // })
-        // // }
-        // // onChange({ key: null, value: faceArrCopy})
-        // this.setState({
-        //     faceArrCopy
-        // })
+        const { decorationInfo, onChange } = this.props;
+        const faceDecorationD = decorationInfo.map((item, index) => {
+            return {
+                // ...item,
+                condition: item.itemID,
+                image: item.image,
+            }
+        })
+        onChange({ key: null, value: faceDecorationD })
     }
 
     componentDidUpdate(nextProps) {

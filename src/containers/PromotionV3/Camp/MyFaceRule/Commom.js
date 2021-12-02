@@ -23,5 +23,6 @@ export const faceDefVal = {
     triggerEventValue: '',
     triggerEventCustomInfo: '',
     everyTagsRule: [],
-    isTagRemove: false,
+    // isTagRemove: false,
+    isShowDishSelector: false,
 };

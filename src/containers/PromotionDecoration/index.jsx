@@ -137,7 +137,6 @@ export default class PromotionDecoration extends Component {
         })
        return faceArrCopy
     }
-
     handleVaild = (flag) => {
         this.setState({
             ifVaild: flag
@@ -173,11 +172,21 @@ export default class PromotionDecoration extends Component {
     }
 
     handleFaceSave = () => {
-        const { type, id, faceDecorationInfo, user } = this.props;
+        const { type, id, faceDecorationInfo, faceArr } = this.props;
+        let faceDecorationData = faceDecorationInfo;
+        if (!faceDecorationInfo.length) {
+            faceDecorationData = faceArr.map((item, index) => {
+                return {
+                    // ...item,
+                    condition: item.itemID,
+                    image: 'http://res.hualala.com/basicdoc/884351d8-1788-4c2d-b0fd-949936d92369.png'
+                }
+            })
+        }
         this.props.saveDecorationInfo({
             type,
             id,
-            decorationInfo: faceDecorationInfo,
+            decorationInfo: faceDecorationData,
         }).then(() => {
             message.success(SALE_LABEL.k5do0ps6);
             closePage();

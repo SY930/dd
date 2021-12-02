@@ -87,7 +87,8 @@ const faceDefVal = {
     triggerEventValue: '',
     triggerEventCustomInfo: '',
     everyTagsRule: [], // 前端自己用
-    isTagRemove: false, // 选择的会员标签是否被删
+    // isTagRemove: false, // 选择的会员标签是否被删
+    isShowDishSelector: false, // 选择菜品弹窗是否显示
 }
 
 const formItems3 = {
