@@ -177,9 +177,18 @@ export default class PromotionDecoration extends Component {
         if (!faceDecorationInfo.length) {
             faceDecorationData = faceArr.map((item, index) => {
                 return {
-                    // ...item,
                     condition: item.itemID,
                     image: 'http://res.hualala.com/basicdoc/884351d8-1788-4c2d-b0fd-949936d92369.png'
+                }
+            })
+        } else {
+            faceDecorationData = faceArr.map((item, index) => {
+                const findImg = faceDecorationData.find((ditem) => {
+                    if (ditem && ditem.condition) { return ditem.condition == item.itemID}
+                }) || {};
+                return {
+                    condition: item.itemID,
+                    image: findImg.image || 'http://res.hualala.com/basicdoc/884351d8-1788-4c2d-b0fd-949936d92369.png'
                 }
             })
         }
@@ -266,7 +275,7 @@ export default class PromotionDecoration extends Component {
     handleFaceReset = () => {
         const { updateDecorationFaceItem, faceArr } = this.props;
         const faceArrs = faceArr.map((item, index) => {
-            item.image = 'http://res.hualala.com/basicdoc/eb519bc1-d7d6-410c-8bf9-8bfe92645bcf.png';
+            item.image = 'http://res.hualala.com/basicdoc/884351d8-1788-4c2d-b0fd-949936d92369.png';
 
             return {
                 image: item.image,

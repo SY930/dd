@@ -27,18 +27,21 @@ export default class ManyFaceDecoration extends Component {
     }
 
     componentDidMount() {
-        const { decorationInfo, onChange } = this.props;
-        const faceDecorationD = decorationInfo.map((item, index) => {
-            return {
-                // ...item,
-                condition: item.itemID,
-                image: item.image,
-            }
-        })
-        onChange({ key: null, value: faceDecorationD })
+        // const { decorationInfo, onChange } = this.props;
+        // const faceDecorationD = decorationInfo.map((item, index) => {
+        // console.log("🚀 ~ file: ManyFaceDecoration.jsx ~ line 32 ~ ManyFaceDecoration ~ faceDecorationD ~ item", item)
+        //     return {
+        //         // ...item,
+        //         condition: item.itemID,
+        //         image: item.image,
+        //     }
+        // })
+        // console.log("~ line 38 ~ ManyFaceDecoration ~ faceDecorationD ~ faceDecorationD", faceDecorationD)
+        // onChange({ key: null, value: faceDecorationD })
     }
 
     componentDidUpdate(nextProps) {
+
         //      const { decorationInfo = [] } = this.props;
         // console.log("🚀 ~ file: ManyFaceDecoration.jsx ~ line 50 ~ ManyFaceDecoration ~ componentWillReceiveProps ~ decorationInfo", nextProps.decorationInfo)
             
