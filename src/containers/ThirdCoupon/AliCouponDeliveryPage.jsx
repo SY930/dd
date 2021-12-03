@@ -16,7 +16,7 @@ import { axiosData } from '../../helpers/util';
 
 const TabPane = Tabs.TabPane;
 
-export default class AlipayCouponDeliveryPage extends Component {
+export default class ThirdCoupon extends Component {
     constructor(props) {
         super(props);
         this.state = {

@@ -8,6 +8,7 @@ import { getSmid, isAuth, goAuthorizeAC } from '../AxiosFactory'
 import { SALE_CENTER_GIFT_EFFICT_DAY_ALIPAY } from '../../../redux/actions/saleCenterNEW/types';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 import WXContent from './WXContent';
+import DouyinContent from './DouyinContent'
 // import { axiosData } from '../../../helpers/util'
 import styles from '../AlipayCoupon.less';
 
@@ -351,14 +352,15 @@ class CreateCouponContent extends Component {
 
     // 支付宝直连
     renderDirect = () => {
-        const { form } = this.props;
+        const { form, type } = this.props;
         const { getFieldDecorator } = form;
         const { editData, authorizeModalVisible } = this.state;
+        const offset = type == 3 ? 5 : 4
         // if (editData.merchantType == )
         const value = editData.merchantType && editData.merchantType == '1' ? editData.merchantID : '';
         return (
             <Row>
-                <Col span={16} offset={5} className={styles.DirectBox}>
+                <Col span={16} offset={offset} className={styles.DirectBox}>
                     <FormItem
                         labelCol={{ span: 0 }}
                         wrapperCol={{ span: 24 }}
@@ -434,14 +436,15 @@ class CreateCouponContent extends Component {
 
     // 支付宝间连
     renderIndirect = () => {
-        const { form } = this.props;
+        const { form, type } = this.props;
         const { getFieldDecorator } = form;
         const { authorizeModalVisible } = this.state;
         // const { editData } = this.state;
         // const value = editData.merchantType && editData.merchantType == '2' ? editData.merchantID : '';
+        const offset = type == 2 ? 5 : 4
         return (
             <Row>
-                <Col span={16} offset={5} className={styles.IndirectBox}>
+                <Col span={16} offset={offset} className={styles.IndirectBox}>
                     <FormItem
                         labelCol={{ span: 0 }}
                         wrapperCol={{ span: 24 }}
@@ -502,9 +505,10 @@ class CreateCouponContent extends Component {
         const { form, type } = this.props;
         const { getFieldDecorator } = form;
         const { editData } = this.state;
+        const offset = type == 2 ? 5 : 4;
         return (
             <Row>
-                <Col span={16} offset={5} className={styles.CouponGiftBox}>
+                <Col span={16} offset={offset} className={styles.CouponGiftBox}>
                     <FormItem
                         label="总数量"
                         labelCol={{ span: 4 }}
@@ -650,52 +654,6 @@ class CreateCouponContent extends Component {
         )
     }
 
-    // renderSmidModal = () => {
-    //     const rowRadioSelection = {
-    //         type: 'radio',
-    //         columnTitle: '选择',
-    //         onChange: (selectedRowKeys, selectedRows) => {
-    //             this.setState({
-    //                 smidUserSelect: selectedRows,
-    //             })
-    //         },
-    //     }
-    //     const columns = [
-    //         {
-    //             title: 'channelNo',
-    //             dataIndex: 'channelNo',
-    //             key: 'channelNo',
-    //             render: t => t,
-    //         },
-    //         {
-    //             title: 'smid',
-    //             key: 'settleID',
-    //             dataIndex: 'settleID',
-    //             render: text => text,
-    //         },
-    //     ];
-    //     return (
-    //         <Modal
-    //             title="SMID列表"
-    //             maskClosable={true}
-    //             width={700}
-    //             visible={this.state.smidModalVisible}
-    //             onCancel={this.handleCloseSmidModal}
-    //             onOk={this.handleSmidSubmit}
-    //         >
-    //             <Table
-    //                 bordered={true}
-    //                 rowSelection={rowRadioSelection}
-    //                 columns={columns}
-    //                 dataSource={this.state.smidList}
-    //                 rowKey="bankChannelId"
-    //                 pagination={false}
-    //             />
-
-    //         </Modal>
-    //     )
-    // }
-
     render() {
         const { form, title, type } = this.props;
         const { getFieldDecorator } = form;
@@ -704,6 +662,15 @@ class CreateCouponContent extends Component {
         // if (editData.batchName) {
         //     title = '编辑第三方支付宝券';
         // }
+        const formItemLayout = type == 2 ? {
+            labelCol: { span: 5 },
+            wrapperCol: { span: 16 },
+        } : {
+            labelCol: { span: 4 },
+            wrapperCol: { span: 16 },
+        }
+        console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 665 ~ CreateCouponContent ~ render ~ formItemLayout", formItemLayout)
+
         return (
             <Modal
                 title={title}
@@ -719,8 +686,7 @@ class CreateCouponContent extends Component {
                         <Form className={styles.crmSuccessModalContentBox}>
                             <FormItem
                                 label="第三方券名称"
-                                labelCol={{ span: 5 }}
-                                wrapperCol={{ span: 16 }}
+                                {...formItemLayout}
                                 required={true}
                             >
                                 {getFieldDecorator('batchName', {
@@ -737,8 +703,7 @@ class CreateCouponContent extends Component {
                             </FormItem>
                             <FormItem
                                 label="投放时间"
-                                labelCol={{ span: 5 }}
-                                wrapperCol={{ span: 16 }}
+                                {...formItemLayout}
                                 required={true}
                             >
                                 {getFieldDecorator('rangePicker', {
@@ -756,8 +721,7 @@ class CreateCouponContent extends Component {
                             </FormItem>
                             <FormItem
                                 label="选择优惠券"
-                                labelCol={{ span: 5 }}
-                                wrapperCol={{ span: 16 }}
+                                {...formItemLayout}
                                 required={true}
                             >
                                 {
@@ -780,29 +744,29 @@ class CreateCouponContent extends Component {
                                 }
                             </FormItem>
                             {giftItemID && this.renderCoupon()}
-                            <FormItem
-                                label="链接方式"
-                                labelCol={{ span: 5 }}
-                                wrapperCol={{ span: 16 }}
-                            >
-                                {getFieldDecorator('merchantType', {
-                                    onChange: this.handleLinkWay,
-                                    initialValue: editData.merchantType ? `${editData.merchantType}` : merchantType,
-                                    // rules: [{ required: true, message: '请输入活动名称' }],
+                            {
+                                type !== 3 && <FormItem
+                                    label="链接方式"
+                                    {...formItemLayout}
+                                >
+                                    {getFieldDecorator('merchantType', {
+                                        onChange: this.handleLinkWay,
+                                        initialValue: editData.merchantType ? `${editData.merchantType}` : merchantType,
+                                        // rules: [{ required: true, message: '请输入活动名称' }],
 
-                                })(
-                                    <RadioGroup>
-                                        <RadioButton value="2">间连</RadioButton>
-                                        <RadioButton value="1">直连</RadioButton>
-                                    </RadioGroup>
-                                )}
-                            </FormItem>
+                                    })(
+                                        <RadioGroup>
+                                            <RadioButton value="2">间连</RadioButton>
+                                            <RadioButton value="1">直连</RadioButton>
+                                        </RadioGroup>
+                                    )}
+                                </FormItem>
+                            }
                             { type === 1 && this.renderZhifubaoContent(merchantType) }
-                            { type === 2 && <WXContent form={form} merchantType={merchantType} onChangeWXMerchantID={this.onChangeWXMerchantID} onChangeWXJumpAppID={this.onChangeWXJumpAppID} />}
                             {
                                 type === 1 && <FormItem
                                     label="跳转小程序"
-                                    labelCol={{ span: 5 }}
+                                    labelCol={{ span: 4 }}
                                     wrapperCol={{ span: 16 }}
                                     required={true}
                                 >
@@ -819,7 +783,9 @@ class CreateCouponContent extends Component {
                                     )}
                                 </FormItem>
                             }
-                            {
+                            { type === 2 && <WXContent form={form} merchantType={merchantType} onChangeWXMerchantID={this.onChangeWXMerchantID} onChangeWXJumpAppID={this.onChangeWXJumpAppID} />}
+                            { type === 3 && <DouyinContent form={form} merchantType={merchantType} />}
+                            {/* {
                                 type === 2 && <FormItem
                                     label="用户最大领取数量"
                                     labelCol={{ span: 5 }}
@@ -852,7 +818,7 @@ class CreateCouponContent extends Component {
                                         />
                                     )}
                                 </FormItem>
-                            }
+                            } */}
                         </Form>
                     </Col>
                 </Row>

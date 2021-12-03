@@ -16,6 +16,7 @@ import { THIRD_VOUCHER_MANAGEMENT } from '../../../constants/entryCodes';
 import { getCardList, getShopPid, getIndirectList, getMpAppList, getPayChannel } from '../AxiosFactory';
 import WEIXIN from '../../../assets/weixin.png';
 import ZHIFUBAO from '../../../assets/zhifubao.png'
+import DOUYIN from '../../../assets/douyin.png'
 const moment = require('moment');
 
 
@@ -56,10 +57,10 @@ class CouponManageList extends Component {
             editData: {}, // 编辑券详情内容
             batchStatus: '', // 使用状态
             // couponCodeDockingType: '', // 券码对接类型: 1-订单获取, 2-批量预存导入
-            type: '', // 前端标识 1 支付宝 | 2 微信
+            type: '', // 前端标识 1 支付宝 | 2 微信 | 3 抖音
             channelID: 60, // 60支付宝 50微信
             title: '',
-            platformTypeCreate: 1, // 平台：1 支付宝   3微信
+            platformTypeCreate: 1, // 平台：1 支付宝   3微信  4 抖音
 		}
 		this.handleQuery = debounce(this.handleQuery.bind(this), 500);
 	}
@@ -224,8 +225,13 @@ class CouponManageList extends Component {
                     treeData: x 
                 });
             });
-        } else { // 微信券
+        } else if (type === 2) { // 微信券
             getCardList({giftTypes:[10, 111, 21]}).then(x => {
+                this.setState({ treeData: x });
+            });
+        } else { // 抖音
+            // TODO: 增加商品兑换券
+            getCardList({giftTypes:[10, 21]}).then(x => { 
                 this.setState({ treeData: x });
             });
         }
@@ -318,7 +324,7 @@ class CouponManageList extends Component {
 
 					>已删除第三方券</Button> */}
 					<Button
-						type="ghost"
+						type="primary"
 						icon="plus"
 						className={styles.jumpToCreate}
                         onClick={this.handleCreateCouponModal}
@@ -372,6 +378,7 @@ class CouponManageList extends Component {
                                 <Option value={''}>全部</Option>
                                 <Option value={'1'}>支付宝</Option>
                                 <Option value={'3'}>微信</Option>
+                                {/* <Option value={'3'}>抖音</Option> */}
                             </Select>
                         </li>
                         <li>
@@ -574,7 +581,7 @@ class CouponManageList extends Component {
                     this.state.createThirdCouponVisble && <Modal
                         title="创建第三方券"
                         visible={true}
-                        width={520}
+                        width={700}
                         onCancel={this.handleCloseThirdCouponModal}
                         footer={null}
                         maskClosable={true}
@@ -585,7 +592,6 @@ class CouponManageList extends Component {
                                     this.handleCreateCouponContentModal({ type: 1, channelID: 60, platformTypeCreate: 1 }, '新建第三方支付宝券')
                                 }}
                                 className={styles.createCouponModal__item__li}
-                                style={{ marginRight: '72px' }}
                             >
                                 <p><img src={ZHIFUBAO}></img></p>
                                 <span>第三方支付宝券</span>
@@ -598,6 +604,16 @@ class CouponManageList extends Component {
                             >
                                 <p><img src={WEIXIN}></img></p>
                                 <span>第三方微信券</span>
+                            </li>
+                            {/* TODO： 更新platformType和channelID */}
+                            <li
+                                className={styles.createCouponModal__item__li}
+                                onClick={() => {
+                                    this.handleCreateCouponContentModal({ type: 3, channelID: 80, platformTypeCreate: 4 }, '新建第三方抖音券')
+                                }}
+                            >
+                                <p><img src={DOUYIN}></img></p>
+                                <span>抖音</span>
                             </li>
                         </ul>
                     </Modal>
