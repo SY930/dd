@@ -456,7 +456,7 @@ class CreateCouponContent extends Component {
                         })(<Select onChange={this.handleIndirectSelect} placeholder={'请输入结算主体'}>
                             {
                                 (this.props.indirectList || []).map(({ settleUnitName, settleUnitID }) => (
-                                    <Select.Option key={settleUnitID} value={`${settleUnitID}`}>{settleUnitName}</Select.Option>
+                                    <Select.Option key={settleUnitID} value={`${settleUnitID}`}>{settleUnitID} - {settleUnitName}</Select.Option>
                                 ))
                             }
                         </Select>)}
