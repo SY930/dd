@@ -51,7 +51,7 @@ export const FILTERS = [{
         {value: '-20',label: '会员折扣'},
     ]
 }];
-const accountList = ['253686','292428','1348'];//这里的集团共享组数量放开 500个
+const accountList = ['253686','292428','1348','318422'];//这里的集团共享组数量放开 500个
 class PromotionSelectorModal extends Component {
     state = {
         loading: false,
