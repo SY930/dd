@@ -87,7 +87,7 @@ export default class ShareRules extends Component {
             fetchAllPromotionList({
                 groupID,
                 shopID: this.props.user.shopID > 0 ? this.props.user.shopID : undefined,
-                isActive: 1,
+                isActive: -1,
                 status: 2,
                 pageNo: 1, pageSize: 10000,
             })
@@ -260,7 +260,7 @@ export default class ShareRules extends Component {
                         共享规则设置
                     </span>
                     <span className={styles.subTitle}>
-                        各类营销（基础营销、哗啦啦优惠券、会员权益）内活动默认互斥，需要多个活动共享时需创建共享规则实现。
+                        基础营销、哗啦啦优惠券活动间默认互斥，与会员权益默认共享，需要多个活动共享时需创建共享规则实现。
                     </span>
                 </div>
                 <Button
