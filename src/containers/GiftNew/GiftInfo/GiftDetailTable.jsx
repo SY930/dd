@@ -595,6 +595,17 @@ class GiftDetailTable extends Component {
                 label: '礼品名称',
                 type: 'text',
                 placeholder: '请输入礼品名称',
+                rules: [
+                    {
+                        validator: (rule, v, cb) => {
+                            if(String(v || '').includes('，')||String(v || '').includes(',')) {
+                                cb(rule.message);
+                            }
+                            cb();
+                        },
+                        message: '请不要输入逗号',
+                    },
+                ],
             },
             giftItemID: {
                 label: '礼品ID',
