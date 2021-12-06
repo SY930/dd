@@ -80,6 +80,7 @@ class StepTwo extends React.Component {
             consumeType,
             shopIDList: props.specialPromotionInfo.getIn(['$eventInfo', 'shopIDList'], Immutable.fromJS([])).toJS() || [],
             isRequire: true,
+            foodPriceType: '0',
         }
     }
 
@@ -151,6 +152,11 @@ class StepTwo extends React.Component {
         this.setState({
             radioType: value,
             consumeType: value === 0 ? '8' : '4',
+        })
+    }
+    handleFoodPriceTypeChange = ({ target: { value } }) => {
+        this.setState({
+            foodPriceType: value,
         })
     }
     handleCategoryAndFoodChange = (val) => {
@@ -290,7 +296,7 @@ class StepTwo extends React.Component {
         }
     }
     render() {
-        const { isRequire, shopStatus } = this.state;
+        const { isRequire, shopStatus,  } = this.state;
         const { foodScopeList, shopIDList } = this.state;
         const convertShopIdList = shopIDList.length ? shopIDList.join(',').split(',') : [];
         let cardTypeList = this.props.crmCardTypeNew.get('cardTypeLst');
@@ -349,6 +355,20 @@ class StepTwo extends React.Component {
                 >
                     { this.renderComboInput() }
                 </FormItem>
+                {
+                    this.state.radioType == '1' ? 
+                        <FormItem
+                            label={'数量核算'}
+                            className={styles.FormItemStyle}
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 17 }}
+                        >
+                            <RadioGroup onChange={this.handleFoodPriceTypeChange} value={this.state.foodPriceType}>
+                                <Radio value={'0'}>无限制</Radio>
+                                <Radio value={'1'}>仅原价菜品集点</Radio>
+                            </RadioGroup>
+                        </FormItem> : null
+                }
                 {
                     this.isShowFoodSelector() && (
                         <CategoryAndFoodSelector showRequiredMark scopeLst={foodScopeList} onChange={this.handleCategoryAndFoodChange} />
