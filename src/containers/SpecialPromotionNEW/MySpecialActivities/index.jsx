@@ -1110,7 +1110,6 @@ class MySpecialActivities extends React.Component {
                         &&
                         (record.status == 2)
                     );
-                    console.log(statusState, 'index', index)
                     if(record.eventWay === 80) {
                         return this.renderPayHaveGift(text,index,record)
                     }

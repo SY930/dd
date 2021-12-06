@@ -29,8 +29,6 @@ class NewCardGive extends NewPromotion {
         if (this.props.component === undefined) {
             throw new Error('component is required');
         }
-        console.log('this.props.isNew', this.props.isNew)
-        console.log('this.props.specialPromotion', this.props.specialPromotion)
         const steps = [
 
             {

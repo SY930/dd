@@ -157,7 +157,6 @@ class NewCustomerPage extends Component {
             ifJumpSetData
         } = this.state
         if (!ifJumpSetData) {
-            console.log('now refresh the eventInfo data , and it is wrong')
             this.props.setSpecialPromotionType(specialPromotionBasicDataAdapter(response, _serverToRedux));
             this.setState({
                 ifJumpSetData: true,
@@ -220,7 +219,6 @@ class NewCustomerPage extends Component {
             this.props.saleCenterSetJumpSendGiftParams(false)
             this.clearUrl();
         } else if (from === 'openCard') {
-            console.log('after jump the page now enter the openCard')
             const item = NEW_CUSTOMER_PROMOTION_TYPES.filter((item) => {
                 return item.key == 52
             })[0];
@@ -268,7 +266,6 @@ class NewCustomerPage extends Component {
 
             this.clearUrl();
         } else if (from === 'groupsendGift') {
-            console.log('after jump the page now enter the groupsendGift')
             const item = REPEAT_PROMOTION_TYPES.filter((item) => {
                 return item.key == 53
             })[0];
@@ -408,7 +405,6 @@ class NewCustomerPage extends Component {
             const specialIndex = this.props.saleCenter.get('characteristicCategories').toJS().findIndex(promotion => promotion.key === key);
             this.handleSpecialPromotionCreate(specialIndex, promotionEntity, ifskip)
         } else {
-            console.log('the basic promotion been clicked !!!!!!', 'handleNewPromotionCardClick')
             const basicIndex = this.props.saleCenter.get('activityCategories').toJS().findIndex(promotion => promotion.key === key);
             this.handleBasicPromotionCreate(basicIndex, promotionEntity)
         }
@@ -517,7 +513,6 @@ class NewCustomerPage extends Component {
         if (!specialModalVisible) {
             const ifJumpOpenCard = this.props.specialPromotion.isBenefitJumpOpenCard
             const isBenefitJumpSendGift = this.props.specialPromotion.isBenefitJumpSendGift
-            console.log('ifJumpOpenCard', ifJumpOpenCard)
             if (ifJumpOpenCard || isBenefitJumpSendGift) {
                 const menuID = this.props.user.menuList.find(tab => tab.entryCode === '10000730001').menuID
                 closePage(menuID);
@@ -530,8 +525,6 @@ class NewCustomerPage extends Component {
         }
     }
     renderBasicPromotionModal() {
-        console.log("this.props.saleCenter.get('activityCategories').toJS()", this.props.saleCenter.get('activityCategories').toJS())
-        console.log('this.state.basicIndex', this.state.basicIndex)
         const {
             basicIndex = 0
         } = this.state

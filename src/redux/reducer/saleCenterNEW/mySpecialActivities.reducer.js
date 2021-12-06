@@ -177,10 +177,7 @@ export const mySpecialActivities_NEW = ($$state = $initialState, action) => {
             return $$state.setIn(['$specialDetailInfo', 'status'], 'pending');
 
         case SALE_CENTER_FETCH_SPECIAL_DETAIL_OK:
-            console.log($$state.getIn(['$specialDetailInfo', 'status'], '--$$state.getIn(['))
-
             if ($$state.getIn(['$specialDetailInfo', 'status']) === 'pending') {
-                console.log('装修数据-----：', action.payload)
                 return $$state.setIn(['$specialDetailInfo', 'status'], 'success')
                     .setIn(['$specialDetailInfo', 'data', 'eventInfo'], Immutable.fromJS(action.payload))
                     .setIn(['giftsLevel'], Immutable.fromJS(action.payload.gifts))

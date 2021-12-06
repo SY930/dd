@@ -35,7 +35,6 @@ export const getDecorationInfo = (opts) => {
             path: 'eventDecorate',
         }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
             .then((data) => {
-                console.log("🚀 ~ file: index.jsx ~ line 38 ~ .then ~ data", data, opts)
                 dispatch({
                     type: SET_DECORATION_LOADING,
                     payload: false,

@@ -261,8 +261,6 @@ class Two extends React.Component {
         const {
             isBenefitJumpSendGift = false,
         } = this.props
-        // isBenefitJumpSendGift
-        console.log('isBenefitJumpSendGift', isBenefitJumpSendGift)
         return (
             <Form>
                 <FormItem
