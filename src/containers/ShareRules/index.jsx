@@ -54,7 +54,8 @@ export default class ShareRules extends Component {
         isInitModal: false,//显示初始化弹窗
         linkFlag: false,//共享组是否被引用
         isShopEnv: this.props.user.shopID > 0 ? true : false,//是否店铺环境
-        giftAndCouponList:[]
+        giftAndCouponList:[],
+        shareRuleName: '',
 
     }
     componentDidMount() {
@@ -120,11 +121,13 @@ export default class ShareRules extends Component {
         });
     }
     querySearchResult = () => {
-        const { shareTypeInput, createOriginInput, searchTypeInput, searchNameInput } = this.state;
+        const { shareTypeInput, createOriginInput, searchTypeInput, searchNameInput, shareRuleName } = this.state;
         let queryCondition = {};
         queryCondition.shareRuleType = shareTypeInput;
         queryCondition.createType = createOriginInput;
         queryCondition.eventWay = searchTypeInput;
+        queryCondition.shareRuleName = shareRuleName;
+        // debugger
         getRuleGroupList({
             groupID: this.props.user.accountInfo.groupID,
             shopID: this.props.user.shopID > 0 ? this.props.user.shopID : '',
@@ -299,6 +302,7 @@ export default class ShareRules extends Component {
             shareTypeInput,
             createOriginInput,
             searchNameInput,
+            shareRuleName,
         } = this.state;
         const {
             isQuerying,
@@ -368,6 +372,14 @@ export default class ShareRules extends Component {
                     onChange={(e) => this.setState({ searchNameInput: e.target.value })}
                     style={{ width: 180, marginRight: 20 }}
                     placeholder="请输入营销活动名称"
+                />
+                <span className={styles.headerLabel}>共享规则名称</span>
+                {/* debugger */}
+                <Input
+                    value={shareRuleName}
+                    onChange={(e) => this.setState({ shareRuleName: e.target.value })}
+                    style={{ width: 180, marginRight: 20 }}
+                    placeholder="请输入共享规则名称"
                 />
                 <Button
                     type="primary"
