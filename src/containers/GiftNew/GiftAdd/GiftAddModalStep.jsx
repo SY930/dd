@@ -751,9 +751,10 @@ class GiftAddModalStep extends React.PureComponent {
         delete params.selectMall;
 
         // 适用菜品方式 0：按菜品单品 1：按菜品分类 2：不限制
-        // mallScope : 0 按分类， 1 按商品
+        // mallScope : 0 按分类， 1 按菜品
         // 商城分类模式
         if(params.mallScope == '0' || params.mallScope == undefined) {
+            console.log('gohererere')
             let existCouponFoodScopes = params.couponFoodScopes;
             let mallCategorySet = new Set(params.mallCategory);
             // 分类
@@ -795,7 +796,9 @@ class GiftAddModalStep extends React.PureComponent {
             } else {
                 params.isExcludeFood = false;
             }
-
+            if(params.applyScene == '2' && params.excludeFoodScopes && params.excludeFoodScopes.length > 0){//店铺商城都选中，且有排除店铺时
+                params.isExcludeFood = true;
+            }
         } else if(params.mallScope == '1') {    // 商品模式
             params.isExcludeFood = false;
             // params.couponFoodScopes = [];
