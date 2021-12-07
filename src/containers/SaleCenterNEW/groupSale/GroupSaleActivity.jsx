@@ -66,7 +66,6 @@ class GroupSaleActivity extends NewPromotion {
             const unionList = giftList.reduce((result, item) => {
                 return result.concat(item.children)
             }, [])
-            debugger
             this.setState({ giftTreeData: giftList, unionList, });
         });
     }
