@@ -38,7 +38,7 @@ class WxCouponModal extends Component {
         this.state = {
             wxCouponList: [],
             pageNo: 1,
-            pageSize: 30,
+            pageSize: 10,
             sleectedWxCouponList: [],
             selectedRowKeys: [],
             keyword: '',
@@ -61,6 +61,7 @@ class WxCouponModal extends Component {
             keyword: value,
         })
     }
+
     handleSubmit = () => {
         const { sleectedWxCouponList } = this.state;
         if (sleectedWxCouponList.length) {
@@ -82,12 +83,26 @@ class WxCouponModal extends Component {
             'couponCodeBatchService/queryBatchList.ajax',
             { ...params1 },
             null,
-            { path: 'data.couponCodeBatchInfos' },
+            { path: null },
             'HTTP_SERVICE_URL_PROMOTION_NEW'
         ).then((records) => {
-            this.setState({
-                wxCouponList: records || [],
-            });
+            const { code, data } = records
+            if (code === '000') {
+                const { couponCodeBatchInfos = [], totalSize = 0 } = data;
+                this.setState({
+                    wxCouponList: couponCodeBatchInfos || [],
+                    total: totalSize,
+                });
+            }
+        });
+    }
+
+    onShowSizeChange = (pageNo, pageSize) => {
+        this.setState({
+            pageSizes: pageSize,
+            pageNo,
+        }, () => {
+            this.handleQuery();
         });
     }
 
@@ -135,8 +150,10 @@ class WxCouponModal extends Component {
                         showTotal: (total, range) => `本页${range[0]}-${range[1]} / 共 ${total} 条`,
                         onChange: (page, pageSize) => {
                             this.setState({
+                                pageSizes: pageSize,
+                                pageNo: page,
                             }, () => {
-                                this.handleQuery(page, this.state.pageSizes);
+                                this.handleQuery();
                             });
                         },
                     }}
