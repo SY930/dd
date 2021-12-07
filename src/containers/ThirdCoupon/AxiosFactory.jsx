@@ -332,7 +332,7 @@ async function getDeliveryChannel(opts) {
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;
     if (code === '000') {
-        const { deliveryChannelInfoList } = obj
+        const { deliveryChannelInfoList = [] } = obj
         return deliveryChannelInfoList
     }
     message.error(msg);
@@ -345,7 +345,7 @@ async function getWeChatMpAndAppInfo() {
     const { groupID } = getAccountInfo();
     const params = { service: 'HTTP_SERVICE_URL_WECHAT', data: { groupID }, method, type };
     const response = await axios.post(url + method, params);
-    const { result: { code, message: msg }, mpInfoResDataList } = response;
+    const { result: { code, message: msg }, mpInfoResDataList = [] } = response;
     if (code === '000') {
         return mpInfoResDataList
     }
@@ -357,7 +357,7 @@ async function getWeChatMpAndAppInfo() {
 async function getMpAppList() {
     const method = '/miniProgramCodeManage/getApps';
     const { groupID } = getAccountInfo();
-    const params = { service: 'HTTP_SERVICE_URL_WECHAT', data: { groupID, page: { current: 1, pageSize: 1000 } }, method, type };
+    const params = { service: 'HTTP_SERVICE_URL_WECHAT', data: { groupID, page: { current: 1, pageSize: 10000000 } }, method, type };
     const response = await axios.post(url + method, params);
     const { result: { code, message: msg }, apps = [] } = response;
     if (code === '000') {
@@ -373,9 +373,23 @@ async function getPayChannel(channelCode) {
     const { groupID } = getAccountInfo();
     const params = { service: 'HTTP_SERVICE_URL_ISV_API', data: { groupID, channelCode }, method, type };
     const response = await axios.post(url + method, params);
-    const { result: { code, message: msg }, payChannelList } = response;
+    const { result: { code, message: msg }, payChannelList = [] } = response;
     if (code === '000') {
         return payChannelList
+    }
+    message.error(msg);
+    return null;
+}
+
+// 获取页面路径
+async function getLinks() {
+    const method = '/link/getlinks';
+    const { groupID } = getAccountInfo();
+    const params = { service: 'HTTP_SERVICE_URL_WECHAT', data: { groupID, type: 'mini_menu_type' }, method, type };
+    const response = await axios.post(url + method, params);
+    const { result: { code, message: msg }, linkList = [] } = response;
+    if (code === '000') {
+        return linkList
     }
     message.error(msg);
     return null;
@@ -399,4 +413,5 @@ export {
     getWeChatMpAndAppInfo,
     getPayChannel,
     getMpAppList,
+    getLinks,
 }

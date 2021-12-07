@@ -22,7 +22,6 @@ class Step3 extends Component {
     }
 
     onChange = (key, value) => {
-        // console.log('file: Step3.jsx ~ line 25 ~ Step3 ~ key, value', key, value)
     }
     
     /** formItems 重新设置 */

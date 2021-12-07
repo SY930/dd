@@ -57,7 +57,6 @@ class Lottery extends Component {
     onAllChange(data){
         const { tabKey } = this.state;
         const { value, onChange } = this.props;
-        // console.log("🚀 ~ file: index.jsx ~ line 60 ~ Lottery ~ onAllChange ~ value", value)
         const list = [...value];
         const item = list[tabKey - 1];
         list[tabKey - 1] = { ...item, ...data };

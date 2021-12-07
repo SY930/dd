@@ -8,6 +8,7 @@ import {
 	Input, Tooltip,
 } from 'antd';
 import CreateCouponContent from '../Modal/CreateCouponContent'
+import ScenePutContent from '../Modal/ScenePutContent'
 import { debounce } from 'lodash'
 import styles from '../AlipayCoupon.less'
 import { axiosData } from '../../../helpers/util'
@@ -61,6 +62,7 @@ class CouponManageList extends Component {
             channelID: 60, // 60支付宝 50微信
             title: '',
             platformTypeCreate: 1, // 平台：1 支付宝   3微信  4 抖音
+            WXLaunchVisible: false,
 		}
 		this.handleQuery = debounce(this.handleQuery.bind(this), 500);
 	}
@@ -211,12 +213,11 @@ class CouponManageList extends Component {
         })
     }
 
-    // handleCreateCouponModal = () => {
-    //     this.setState({
-    //         createCouponModalVisible: true,
-    //         editData: {},
-    //     })
-    // }
+    handleCloseWXLaunchModal = () => {
+        this.setState({
+            WXLaunchVisible: false
+        })
+    }
 
     handleCreateCouponContentModal = ({ type, channelID, platformTypeCreate }, title) => {
         if (type === 1) { // 支付宝券
@@ -475,6 +476,17 @@ class CouponManageList extends Component {
                                 </span>
                             )
                         }
+                        {
+                            record.channelID == 50 && <a
+                                href="#"
+                                onClick={() => {
+                                    this.setState({
+                                        WXLaunchVisible: true
+                                    })
+                                    // jumpPage({ menuID: '100008993' })
+                                }}
+                            >投放</a>
+                        }
                     </span>
                     );
                 },
@@ -497,16 +509,34 @@ class CouponManageList extends Component {
                 title: '关联渠道',
                 dataIndex: 'channelID',
                 key: 'channelID',
-                width: 90,
+                width: 80,
                 render: (text) => {
                     return ['60', 60].includes(text) ? '支付宝' : '微信'
                 },
             },
             {
+                title: '券code模式',
+                dataIndex: 'mode',
+                key: 'mode',
+                width: 90,
+            },
+            {
+                title: '微信批次号',
+                dataIndex: 'number',
+                key: 'number',
+                width: 90,
+            },
+            {
+                title: '投放场景',
+                dataIndex: 'scene',
+                key: 'scene',
+                width: 90,
+            },
+            {
                 title: '剩余数量',
                 dataIndex: 'stock',
                 key: 'stock',
-                width: 90,
+                width: 80,
                 render: (text, record) => {
                     const { receive } = record
                     if (text) {
@@ -519,7 +549,7 @@ class CouponManageList extends Component {
                 className: 'TableTxtCenter',
                 dataIndex: 'createStampStr',
                 key: 'createStampStr',
-                width: 400,
+                width: 300,
                 render: (text) => text,
             },
 		];
@@ -608,9 +638,9 @@ class CouponManageList extends Component {
                             {/* TODO： 更新platformType和channelID */}
                             <li
                                 className={styles.createCouponModal__item__li}
-                                onClick={() => {
-                                    this.handleCreateCouponContentModal({ type: 3, channelID: 80, platformTypeCreate: 4 }, '新建第三方抖音券')
-                                }}
+                                // onClick={() => {
+                                //     this.handleCreateCouponContentModal({ type: 3, channelID: 70, platformTypeCreate: 4 }, '新建第三方抖音券')
+                                // }}
                             >
                                 <p><img src={DOUYIN}></img></p>
                                 <span>抖音</span>
@@ -639,6 +669,9 @@ class CouponManageList extends Component {
                         viewData={this.state.viewData}
                         handleCloseVidwModal={this.handleCloseVidwModal}
                     />
+                }
+                {
+                    this.state.WXLaunchVisible && <ScenePutContent onCancel={this.handleCloseWXLaunchModal}/>
                 }
 			</div>
 		)

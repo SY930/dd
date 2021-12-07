@@ -43,7 +43,6 @@ export default class ThirdCoupon extends Component {
 
 
     onShowSizeChange = (current, pageSize) => {
-        // console.log("🚀 ~ file: AlipayCouponDeliveryPage.jsx ~ line 50 ~ AlipayCouponDeliveryPage ~ pageSize", pageSize, current)
         this.setState({
             loading: true,
         }, () => {

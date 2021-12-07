@@ -326,6 +326,15 @@ class NewCustomerPage extends Component {
             this.handleNewPromotionCardClick(item);
             this.props.setSpecialPromotionCardGroupID(gmID);
             this.clearUrl();
+        } else if (from === 'scenePut') {
+            if (!type) return;
+            const item = NEW_CUSTOMER_PROMOTION_TYPES.filter((val) => {
+                return val.key == type;
+            })
+            this.handleNewPromotionCardClick(item[0]);
+            this.props.saleCenterSetJumpOpenCardParams(false)
+            this.props.saleCenterSetJumpSendGiftParams(false)
+            this.clearUrl();
         } else {
             const saleID = type;
             if (!saleID) {
@@ -530,8 +539,6 @@ class NewCustomerPage extends Component {
         }
     }
     renderBasicPromotionModal() {
-        console.log("this.props.saleCenter.get('activityCategories').toJS()", this.props.saleCenter.get('activityCategories').toJS())
-        console.log('this.state.basicIndex', this.state.basicIndex)
         const {
             basicIndex = 0
         } = this.state

@@ -7,8 +7,8 @@ import AuthorizeModalContent from './AuthorizeContent';
 import { getSmid, isAuth, goAuthorizeAC } from '../AxiosFactory'
 import { SALE_CENTER_GIFT_EFFICT_DAY_ALIPAY } from '../../../redux/actions/saleCenterNEW/types';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
-import WXContent from './WXContent';
-import DouyinContent from './DouyinContent'
+import WXContent from '../Comp/WXContent';
+import DouyinContent from '../Comp/DouyinContent'
 // import { axiosData } from '../../../helpers/util'
 import styles from '../AlipayCoupon.less';
 
@@ -669,7 +669,6 @@ class CreateCouponContent extends Component {
             labelCol: { span: 4 },
             wrapperCol: { span: 16 },
         }
-        console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 665 ~ CreateCouponContent ~ render ~ formItemLayout", formItemLayout)
 
         return (
             <Modal

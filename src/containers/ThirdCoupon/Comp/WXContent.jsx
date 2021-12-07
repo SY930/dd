@@ -1,14 +1,29 @@
 import React, { Component } from 'react'
-import { Form, Row, Col, Select, Input } from 'antd'
-import { getMpAppList, getPayChannel } from '../AxiosFactory';
+import { Form, Row, Col, Select, Input, Radio } from 'antd'
+import { getMpAppList, getPayChannel, getLinks } from '../AxiosFactory';
 import styles from '../AlipayCoupon.less';
 
+const RadioGroup = Radio.Group;
+const Option = Select.Option;
+
+const validateWayList = [
+    {
+        value: 'OFF_LINE',
+        label: '出示二维码核销',
+    },
+    {
+        value: 'MINI_PROGRAMS',
+        label: '跳转小程序使用',
+    },
+]
 class WXContent extends Component {
     constructor(props) {
         super(props);
         this.state = {
             mpAndAppList: [],
             payChannelList: [],
+            validateWay: 'OFF_LINE',
+            linksList: [],
         };
     }
     componentDidMount() {
@@ -50,6 +65,33 @@ class WXContent extends Component {
             this.setState({
                 payChannelList: res,
             })
+        })
+        getLinks().then((res) => {
+            this.setState({
+                linksList: res,
+            })
+        })
+        // getlinks = () => {
+        //     axiosData('/link/getlinks', {
+        //         type: 'mini_menu_type',
+        //     }, null, {
+        //         path: '',
+        //     }, 'HTTP_SERVICE_URL_WECHAT')
+        //         .then((res) => {
+        //             const { result, linkList } = res
+        //             const code = (result || {}).code
+        //             if (code === '000') {
+        //                 this.setState({
+        //                     linksList: linkList || []
+        //                 })
+        //             }
+        //         })
+        // }
+    }
+
+    handleChangeValidateWay = ({ target: x }) => {
+        this.setState({
+            validateWay: x.value,
         })
     }
 
@@ -119,7 +161,7 @@ class WXContent extends Component {
                                     if (!v) {
                                         return cb();
                                     }
-                                    if (v > 10 || v < 0) {
+                                    if (v > 10 || v <= 0) {
                                         return cb(rule.message);
                                     }
                                     cb();
@@ -137,6 +179,91 @@ class WXContent extends Component {
                         />
                     )}
                 </Form.Item>
+                <Form.Item
+                    label="券code模式"
+                    labelCol={{ span: 5 }}
+                    wrapperCol={{ span: 15 }}
+                    required={true}
+                >
+                    {getFieldDecorator('codeMode', {
+                        initialValue: 'WECHATPAY_MODE',
+                        rules: [
+                            { required: true },
+                        ],
+                    })(
+                        <RadioGroup>
+                            <Radio value="WECHATPAY_MODE">WECHATPAY_MODE</Radio>
+                            <Radio value="MERCHANT_API">MERCHANT_API</Radio>
+                        </RadioGroup>
+                    )}
+                </Form.Item>
+                <Form.Item
+                    label="核销方式"
+                    labelCol={{ span: 5 }}
+                    wrapperCol={{ span: 15 }}
+                    required={true}
+                >
+                    {getFieldDecorator('validateWay', {
+                        initialValue: 'OFF_LINE',
+                        onChange: this.handleChangeValidateWay,
+                        rules: [
+                            { required: true },
+                        ],
+                    })(
+                        <RadioGroup>
+                            <Radio value="OFF_LINE">出示二维码核销</Radio>
+                            <Radio value="MINI_PROGRAMS">跳转小程序使用</Radio>
+                        </RadioGroup>
+                    )}
+                </Form.Item>
+                {
+                    this.state.validateWay === 'MINI_PROGRAMS' && <div>
+                        <Form.Item
+                            label="小程序名称"
+                            labelCol={{ span: 5 }}
+                            wrapperCol={{ span: 15 }}
+                            required={true}
+                        >
+                            {getFieldDecorator('miniProgramsAppId', {
+                                rules: [
+                                    { required: true },
+                                ],
+                            })(
+                                <Select
+                                    placeholder="请选择小程序名称"
+                                >
+                                    {
+                                        this.state.mpAndAppList.map(({ appID, nickName }) => (
+                                            <Select.Option key={appID} value={`${appID}`}>{nickName}</Select.Option>
+                                        ))
+                                    }
+                                </Select>
+                            )}
+                        </Form.Item>
+                        <Form.Item
+                            label="页面路径"
+                            labelCol={{ span: 5 }}
+                            wrapperCol={{ span: 15 }}
+                        >
+                            {getFieldDecorator('miniProgramsPath', {
+                                rules: [
+                                    { required: true },
+                                ],
+                            })(
+                                <Select
+                                    placeholder="请选择页面路径"
+                                >
+                                    {
+                                        this.state.linksList.map((mp) => {
+                                            const data = mp.value || {}
+                                            return <Option key={data.urlTpl} value={data.urlTpl}>{data.title}</Option>
+                                        })
+                                    }
+                                </Select>
+                            )}
+                        </Form.Item>
+                    </div>
+                }
             </div>
         )
     }

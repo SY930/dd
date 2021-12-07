@@ -223,43 +223,7 @@ class MyFaceRule extends Component {
     initData = () => {
         const { value = [] } = this.state;
         const everyTagsRule = [];
-        // const { everyTagsRule } = this.state;
-        // const item = this.state.tagsList.filter(itm => itm.tagCategoryID == value)
-        // const everyTags = this.state.tagRuleDetails.filter(itm => itm.tagCategoryID == value)
-        // this.onChange(idx, { [key]: value, conditionName: item[0] ? item[0].label : '', targetValue: '', targetName: '' })
-        // // const everyTagsRule = [];
-        // everyTagsRule[idx] = everyTags.map((itm) => {
-        //     return {
-        //         ...itm,
-        //         label: itm.tagName,
-        //         value: itm.tagRuleID,
-        //     }
-        // });
-        // this.setState({
-        //     [`targetValue_${idx}`]: '',
-        //     // everyTagsRule: [...e],
-        //     everyTagsRule,
-        // })
         if (value.length > 0) {
-            // value.map((item, idx) => {
-            //     if (item.conditionType == '2') { // 会员标签
-            //         const everyTags = this.state.tagRuleDetails.filter(itm => itm.tagCategoryID == item.conditionValue)
-            //         // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 249 ~ MyFaceRule ~ value.map ~ everyTags", everyTags)
-            //         everyTagsRule[idx] = everyTags.map((itm) => {
-            //             return {
-            //                 ...itm,
-            //                 label: itm.tagName,
-            //                 value: itm.tagRuleID,
-            //             }
-            //         });
-            //     } else {
-            //         everyTagsRule[idx] = null;
-            //     }
-            // })
-            //  console.log("🚀 ~ _______________________-", everyTagsRule)
-            // this.setState({
-            //     everyTagsRule,
-            // })
         }
     }
 
