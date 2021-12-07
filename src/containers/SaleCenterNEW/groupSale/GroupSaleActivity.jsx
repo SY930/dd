@@ -58,7 +58,7 @@ class GroupSaleActivity extends NewPromotion {
     }
 
     componentDidMount() {
-        getCardList({}).then(x => {
+        getCardList({applyScenes: ['0']}).then(x => {
             const type = [10, 20, 21, 111, 110]
             const giftList = x.filter((item) => {
                 return type.includes(item.key)
@@ -66,6 +66,7 @@ class GroupSaleActivity extends NewPromotion {
             const unionList = giftList.reduce((result, item) => {
                 return result.concat(item.children)
             }, [])
+            debugger
             this.setState({ giftTreeData: giftList, unionList, });
         });
     }
