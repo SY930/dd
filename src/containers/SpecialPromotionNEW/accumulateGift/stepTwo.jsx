@@ -6,6 +6,7 @@ import {
     Select,
     Radio,
     message,
+    Switch
 } from 'antd';
 import {
     fetchPromotionScopeInfo,
@@ -13,6 +14,7 @@ import {
 import {
     fetchFoodCategoryInfoAC,
     fetchFoodMenuInfoAC,
+    saleCenterSetPromotionDetailAC
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import { saleCenterSetSpecialBasicInfoAC, saleCenterGetShopOfEventByDate } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
@@ -21,7 +23,6 @@ import CategoryAndFoodSelector from 'containers/SaleCenterNEW/common/CategoryAnd
 import ShopSelector from '../../../components/ShopSelector';
 import { FetchCrmCardTypeLst } from '../../../redux/actions/saleCenterNEW/crmCardType.action';
 import { axios } from '@hualala/platform-base';
-
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -80,6 +81,7 @@ class StepTwo extends React.Component {
             consumeType,
             shopIDList: props.specialPromotionInfo.getIn(['$eventInfo', 'shopIDList'], Immutable.fromJS([])).toJS() || [],
             isRequire: true,
+            foodPriceType: '0',
         }
     }
 
@@ -153,6 +155,11 @@ class StepTwo extends React.Component {
             consumeType: value === 0 ? '8' : '4',
         })
     }
+    handleFoodPriceTypeChange = ({ target: { value } }) => {
+        this.setState({
+            foodPriceType: value,
+        })
+    }
     handleCategoryAndFoodChange = (val) => {
         const scopeList = [];
         val.foodCategory.forEach((item) => {
@@ -188,7 +195,7 @@ class StepTwo extends React.Component {
             foodScopeList: scopeList,
         })
     }
-
+    
     renderComboInput() {
         const { radioType, consumeTotalAmount, consumeTotalTimes, consumeType } = this.state;
         const { form: { getFieldDecorator } } = this.props;
@@ -290,7 +297,7 @@ class StepTwo extends React.Component {
         }
     }
     render() {
-        const { isRequire, shopStatus } = this.state;
+        const { isRequire, shopStatus,  } = this.state;
         const { foodScopeList, shopIDList } = this.state;
         const convertShopIdList = shopIDList.length ? shopIDList.join(',').split(',') : [];
         let cardTypeList = this.props.crmCardTypeNew.get('cardTypeLst');
@@ -350,6 +357,20 @@ class StepTwo extends React.Component {
                     { this.renderComboInput() }
                 </FormItem>
                 {
+                    this.state.radioType == '1' ? 
+                        <FormItem
+                            label={'数量核算'}
+                            className={styles.FormItemStyle}
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 17 }}
+                        >
+                            <RadioGroup onChange={this.handleFoodPriceTypeChange} value={this.state.foodPriceType}>
+                                <Radio value={'0'}>无限制</Radio>
+                                <Radio value={'1'}>仅原价菜品集点</Radio>
+                            </RadioGroup>
+                        </FormItem> : null
+                }
+                {
                     this.isShowFoodSelector() && (
                         <CategoryAndFoodSelector showRequiredMark scopeLst={foodScopeList} onChange={this.handleCategoryAndFoodChange} />
                     )
@@ -370,6 +391,7 @@ class StepTwo extends React.Component {
                         // schemaData={this.props.shopSchema.toJS()}
                     />
                 </FormItem>
+               
             </Form>
         );
     }
@@ -377,6 +399,7 @@ class StepTwo extends React.Component {
 const mapStateToProps = (state) => {
     return {
         specialPromotionInfo: state.sale_specialPromotion_NEW,
+        promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         crmCardTypeNew: state.sale_crmCardTypeNew,
         shopSchema: state.sale_shopSchema_New.getIn(['shopSchema']),
     };
@@ -384,6 +407,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        setPromotionDetail: (opts) => {
+            dispatch(saleCenterSetPromotionDetailAC(opts))
+        },
         setSpecialBasicInfo: (opts) => {
             dispatch(saleCenterSetSpecialBasicInfoAC(opts));
         },
