@@ -6,6 +6,7 @@ import {
     Select,
     Radio,
     message,
+    Switch
 } from 'antd';
 import {
     fetchPromotionScopeInfo,
@@ -81,6 +82,7 @@ class StepTwo extends React.Component {
             shopIDList: props.specialPromotionInfo.getIn(['$eventInfo', 'shopIDList'], Immutable.fromJS([])).toJS() || [],
             isRequire: true,
             foodPriceType: '0',
+            isBenifitActive:false
         }
     }
 
@@ -194,7 +196,12 @@ class StepTwo extends React.Component {
             foodScopeList: scopeList,
         })
     }
-
+    handleBenifitSwitchChange = (value) => {
+        console.log(value,'vaalue00000000')
+        this.setState({
+            isBenifitActive: value,
+        })
+    }
     renderComboInput() {
         const { radioType, consumeTotalAmount, consumeTotalTimes, consumeType } = this.state;
         const { form: { getFieldDecorator } } = this.props;
@@ -390,6 +397,35 @@ class StepTwo extends React.Component {
                         // schemaData={this.props.shopSchema.toJS()}
                     />
                 </FormItem>
+                <FormItem
+                    label={'与其他优惠不共享'}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                    style={{marginTop:'15'}}
+                >
+                    <Switch className={styles.contentSwitch} style={{width: 80}} checked={this.state.isBenifitActive} checkedChildren="启用" unCheckedChildren="关闭" onChange={this.handleBenifitSwitchChange}  />
+                    <span style={{marginLeft:12}}>仅小程序订单执行优惠不共享,其他渠道的订单,用券后仍可正常集点</span>
+                </FormItem>
+                {
+                    this.state.isBenifitActive ? 
+                    <FormItem
+                        label=" "
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 17 }}
+                        required={isRequire}
+                        validateStatus={shopStatus ? 'success' : 'error'}
+                        help={shopStatus ? null : '至少选择一项优惠'}
+                    >
+                        <ShopSelector
+                            value={convertShopIdList}
+                            onChange={v => {
+                                this.setState({ shopIDList: v, shopStatus: v.length > 0 })}}
+                            // schemaData={this.props.shopSchema.toJS()}
+                        />
+                    </FormItem> : null
+                }
             </Form>
         );
     }
