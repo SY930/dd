@@ -68,7 +68,8 @@ class CouponManageList extends Component {
 	}
 
 	componentDidMount() {
-		this.handleQuery();
+        const { from } =  this.getQueryVariable();
+        this.handleSearch(from);
         this.initData();
 		this.onWindowResize();
 		window.addEventListener('resize', this.onWindowResize);
@@ -76,6 +77,9 @@ class CouponManageList extends Component {
 
 	componentWillUnmount() {
 		window.removeEventListener('resize', this.onWindowResize);
+        this.setState({
+            platformType: '',
+        })
 	}
 
 	onWindowResize = () => {
@@ -126,6 +130,20 @@ class CouponManageList extends Component {
         });
     }
 
+    getQueryVariable() {
+        const search = window.decodeURIComponent(window.location.search)
+        var query = search.substr(1)
+        query = query.split('&')
+        var params = {}
+        for (let i = 0; i < query.length; i++) {
+            let q = query[i].split('=')
+            if (q.length === 2) {
+                params[q[0]] = q[1]
+            }
+        }
+        return params
+    }
+
 
 	getParams = () => {
         const {
@@ -156,6 +174,28 @@ class CouponManageList extends Component {
             opt.batchStatus = batchStatus
         }
         return opt
+    }
+
+    handleSearch = (from) => {
+        if (from === 'wx') {
+            this.setState({
+                platformType: '3'
+            }, () => {
+                this.handleQuery();
+            })
+        } else if (from === 'zhifubao') {
+            this.setState({
+                platformType: '1'
+            }, () => {
+                this.handleQuery();
+            })
+        } else {
+            this.setState({
+                platformType: ''
+            }, () => {
+                this.handleQuery();
+            })
+        }
     }
 
 	handleQuery = (pageNo, pageSize) => {
@@ -368,7 +408,7 @@ class CouponManageList extends Component {
                         <li>
                             <Select
                                 style={{ width: '160px' }}
-                                defaultValue=""
+                                defaultValue={this.state.platformType}
                                 // placeholder="请选择关联渠道"
                                 onChange={(value) => {
                                     this.setState({
