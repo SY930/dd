@@ -185,15 +185,15 @@ class WXContent extends Component {
                     wrapperCol={{ span: 15 }}
                     required={true}
                 >
-                    {getFieldDecorator('codeMode', {
-                        initialValue: 'WECHATPAY_MODE',
+                    {getFieldDecorator('couponCodeDockingType', {
+                        initialValue: '1',
                         rules: [
                             { required: true },
                         ],
                     })(
                         <RadioGroup>
-                            <Radio value="WECHATPAY_MODE">WECHATPAY_MODE</Radio>
-                            <Radio value="MERCHANT_API">MERCHANT_API</Radio>
+                            <Radio value="3">WECHATPAY_MODE</Radio>
+                            <Radio value="1">MERCHANT_API</Radio>
                         </RadioGroup>
                     )}
                 </Form.Item>

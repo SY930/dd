@@ -270,7 +270,7 @@ class CreateCouponContent extends Component {
                 const datas = {
                     batchName: values.batchName,
                     channelID,
-                    couponCodeDockingType: 1,
+                    // couponCodeDockingType: 1, // 支付宝默认传1，微信需要用户手动选择1，3
                     stock: values.stock.number,
                     effectType,
                     effectGiftTimeHours,
@@ -294,12 +294,16 @@ class CreateCouponContent extends Component {
                     const { smidList } = this.state;
                     const { bankMerchantCode } = smidList[0];
                     datas.merchantID = bankMerchantCode;
+                    datas.couponCodeDockingType = 1;
                 }
                 if (type === 2) { // 微信
                     datas.merchantID = this.state.WXMerchantID;
                     datas.maxCouponsPerUser = values.maxCouponsPerUser;
                     datas.masterMerchantID = this.state.masterMerchantID;
                     datas.jumpAppID = this.state.WXJumpAppID;
+                    datas.couponCodeDockingType = values.couponCodeDockingType;
+                    datas.miniProgramsAppId = values.miniProgramsAppId;
+                    datas.miniProgramsPath = values.miniProgramsPath;
                 }
                 const url = '/api/v1/universal?';
                 let method = 'couponCodeBatchService/addBatch.ajax';
