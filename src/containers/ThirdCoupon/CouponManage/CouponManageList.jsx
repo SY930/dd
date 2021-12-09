@@ -375,11 +375,13 @@ class CouponManageList extends Component {
                     第三方券管理
 				</span>
 				<div>
-					{/* <Button
+					<Button
 						type="ghost"
                         style={{ marginRight: 10 }}
-
-					>已删除第三方券</Button> */}
+                        onClick={() => {
+                            jumpPage({ menuID: '100008993' })
+                        }}
+					>第三方投放</Button>
 					<Button
 						type="primary"
 						icon="plus"
@@ -536,16 +538,33 @@ class CouponManageList extends Component {
                         {
                             record.channelID == 50 && <a
                                 href="#"
-                                disabled={record.eventStatus == 1}
-                                onClick={record.eventStatus == 0 ? () => {
+                                disabled={!!record.eventStatus}
+                                onClick={!!record.eventStatus ?  null : () => {
                                     this.setState({
                                         wxData: record,
+                                        isEdit: false,
+                                        title: '投放场景'
                                     }, () => {
                                         this.handleShowWxModal()
                                     })
                                     // jumpPage({ menuID: '100008993' })
-                                } : null}
+                                }}
                             >投放</a>
+                        }
+                        {
+                             record.channelID == 50 && !!record.eventStatus && 
+                             <a
+                             href="#"
+                             onClick={() => {
+                                this.setState({
+                                    wxData: record,
+                                    isEdit: true,
+                                    title: '投放详情'
+                                }, () => {
+                                    this.handleShowWxModal()
+                                })
+                             }}
+                         >投放详情</a>
                         }
                     </span>
                     );
@@ -576,21 +595,31 @@ class CouponManageList extends Component {
             },
             {
                 title: '券code模式',
-                dataIndex: 'mode',
-                key: 'mode',
+                dataIndex: 'couponCodeDockingType',
+                key: 'couponCodeDockingType',
                 width: 90,
+                render: (text) => {
+                    if (text == '3' && record.platformType == 3) {
+                        return <span>WECHATPAY_MODE<Tooltip title="适用于企鹅吉市等场景对接"><Icon type="question-circle-o" style={{ marginLeft: 5 }} /></Tooltip></span>
+                    }
+                    if (text == '1' && record.platformType == 3) {
+                        return 'MERCHANT_API'
+                    }
+                    // if (text == 2) {
+                    //     return 'MERCHANT_UPLOAD'
+                    // }
+                    return '--'
+                }
             },
             {
                 title: '微信批次号',
-                dataIndex: 'number',
-                key: 'number',
+                dataIndex: 'trdBatchID',
+                key: 'trdBatchID',
                 width: 90,
-            },
-            {
-                title: '投放场景',
-                dataIndex: 'scene',
-                key: 'scene',
-                width: 90,
+                render: (text, record) => {
+                    if (record.platformType == 1)  return '--'
+                    return text
+                }
             },
             {
                 title: '剩余数量',
@@ -731,7 +760,7 @@ class CouponManageList extends Component {
                     />
                 }
                 {
-                    this.state.WXLaunchVisible && <ScenePutContent onCancel={this.handleCloseWXLaunchModal} wxData={this.state.wxData}/>
+                    this.state.WXLaunchVisible && <ScenePutContent onCancel={this.handleCloseWXLaunchModal} wxData={this.state.wxData} isEdit={this.state.isEdit} title={this.state.title}/>
                 }
 			</div>
 		)

@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
-import { Form, Row, Col, Select, Input, Radio } from 'antd'
+import { Form, Row, Col, Select, Input, Radio, Icon, Tooltip } from 'antd'
 import { getMpAppList, getPayChannel, getLinks } from '../AxiosFactory';
 import styles from '../AlipayCoupon.less';
 
 const RadioGroup = Radio.Group;
+const RadioButton = Radio.Button;
 const Option = Select.Option;
 
 const validateWayList = [
@@ -99,6 +100,7 @@ class WXContent extends Component {
     render() {
         const { form } = this.props;
         const { getFieldDecorator } = form;
+        const icon = (<span>小程序名称<Tooltip title="用户领取微信商家券后，同步在小程序/公众号个人中心展示。"><Icon type="question-circle-o" style={{ marginLeft: 5 }} /></Tooltip></span>)
         return (
             <div>
                 <Row>
@@ -108,7 +110,7 @@ class WXContent extends Component {
                             wrapperCol={{ span: 16 }}
                             required={true}
                             className={styles.directSelect}
-                            label={'选择小程序'}
+                            label={icon}
                         >
                             {getFieldDecorator('jumpAppID', {
                                 // initialValue: value || undefined,
@@ -211,58 +213,62 @@ class WXContent extends Component {
                         ],
                     })(
                         <RadioGroup>
-                            <Radio value="OFF_LINE">出示二维码核销</Radio>
-                            <Radio value="MINI_PROGRAMS">跳转小程序使用</Radio>
+                            <RadioButton value="OFF_LINE">线下二维码核销</RadioButton>
+                            <RadioButton value="MINI_PROGRAMS">跳转小程序使用</RadioButton>
                         </RadioGroup>
                     )}
                 </Form.Item>
                 {
-                    this.state.validateWay === 'MINI_PROGRAMS' && <div>
-                        <Form.Item
-                            label="小程序名称"
-                            labelCol={{ span: 5 }}
-                            wrapperCol={{ span: 15 }}
-                            required={true}
-                        >
-                            {getFieldDecorator('miniProgramsAppId', {
-                                rules: [
-                                    { required: true, message: '请选择小程序名称' },
-                                ],
-                            })(
-                                <Select
-                                    placeholder="请选择小程序名称"
-                                >
-                                    {
-                                        this.state.mpAndAppList.map(({ appID, nickName }) => (
-                                            <Select.Option key={appID} value={`${appID}`}>{nickName}</Select.Option>
-                                        ))
-                                    }
-                                </Select>
-                            )}
-                        </Form.Item>
-                        <Form.Item
-                            label="页面路径"
-                            labelCol={{ span: 5 }}
-                            wrapperCol={{ span: 15 }}
-                        >
-                            {getFieldDecorator('miniProgramsPath', {
-                                rules: [
-                                    { required: true, message: '请选择页面路径' },
-                                ],
-                            })(
-                                <Select
-                                    placeholder="请选择页面路径"
-                                >
-                                    {
-                                        this.state.linksList.map((mp) => {
-                                            const data = mp.value || {}
-                                            return <Option key={data.urlTpl} value={data.urlTpl}>{data.title}</Option>
-                                        })
-                                    }
-                                </Select>
-                            )}
-                        </Form.Item>
-                    </div>
+                    this.state.validateWay === 'MINI_PROGRAMS' && <Row>
+                        <Col span={16} offset={5} className={styles.DirectBox}>
+                            <Form.Item
+                                label={icon}
+                                labelCol={{ span: 6 }}
+                                wrapperCol={{ span: 16 }}
+                                required={true}
+                                className={styles.directSelect}
+                            >
+                                {getFieldDecorator('miniProgramsAppId', {
+                                    rules: [
+                                        { required: true, message: '请选择小程序名称' },
+                                    ],
+                                })(
+                                    <Select
+                                        placeholder="请选择小程序名称"
+                                    >
+                                        {
+                                            this.state.mpAndAppList.map(({ appID, nickName }) => (
+                                                <Select.Option key={appID} value={`${appID}`}>{nickName}</Select.Option>
+                                            ))
+                                        }
+                                    </Select>
+                                )}
+                            </Form.Item>
+                            <Form.Item
+                                label="页面路径"
+                                labelCol={{ span: 6 }}
+                                wrapperCol={{ span: 16 }}
+                                className={styles.directSelect}
+                            >
+                                {getFieldDecorator('miniProgramsPath', {
+                                    rules: [
+                                        { required: true, message: '请选择页面路径' },
+                                    ],
+                                })(
+                                    <Select
+                                        placeholder="请选择页面路径"
+                                    >
+                                        {
+                                            this.state.linksList.map((mp) => {
+                                                const data = mp.value || {}
+                                                return <Option key={data.urlTpl} value={data.urlTpl}>{data.title}</Option>
+                                            })
+                                        }
+                                    </Select>
+                                )}
+                            </Form.Item>
+                        </Col>
+                    </Row>
                 }
             </div>
         )

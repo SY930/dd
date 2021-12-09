@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Input, DatePicker, Select, Radio, Row, Col, Icon, Modal, TreeSelect, message, Table } from 'antd'
+import { Form, Input, Select, Radio, Row, Col, Icon, Modal, message, Button } from 'antd'
 import { axios, jumpPage, getStore } from '@hualala/platform-base';
 import _ from 'lodash';
 import { getMpAppList, getPayChannel, getLinks } from '../AxiosFactory';
@@ -75,17 +75,25 @@ class ScenePutContent extends Component {
 
 
     render() {
-        // const { form } = this.props;
+        const { title, isEdit, onCancel } = this.props;
         // const { getFieldDecorator } = form;
+        let footer = [
+            <Button key="2" onClick={onCancel}>取消</Button>,
+            <Button key="3" type={'primary'} onClick={this.handleSubmit} loading={this.state.confirmLoading}>确定</Button>,
+        ];
+        if (isEdit) {
+            footer = [<Button key="back" onClick={onCancel}>关闭</Button>]
+        }
         return (
             <Modal
-                title="选择投放场景"
+                title={title}
                 maskClosable={true}
                 width={500}
                 visible={true}
-                onCancel={this.props.onCancel}
-                onOk={this.handleSubmit}
-                confirmLoading={this.state.confirmLoading}
+                onCancel={onCancel}
+                // onOk={this.handleSubmit}
+                footer={footer}
+                // confirmLoading={this.state.confirmLoading}
             >
 
                 <Form.Item
@@ -94,10 +102,20 @@ class ScenePutContent extends Component {
                     wrapperCol={{ span: 15 }}
                     required={true}
                 >
-                    <RadioGroup onChange={this.onChange} value={this.state.value}>
+                    <Select
+                        onChange={this.onChange}
+                        value={this.state.value}
+                        // placeholder="请选择页面路径"
+                    >
+                        {
+                            [{ value: '0', label: '企鹅吉市' }].map(({ value, label }) => {
+                                return <Option value={value}>{label}</Option>
+                            })
+                        }
+                    </Select>
+                    {/* <RadioGroup onChange={this.onChange} value={this.state.value}>
                         <Radio value="0">企鹅吉市</Radio>
-                        <Radio value="1">线上餐厅送礼</Radio>
-                    </RadioGroup>
+                    </RadioGroup> */}
                 </Form.Item>
 
             </Modal>
