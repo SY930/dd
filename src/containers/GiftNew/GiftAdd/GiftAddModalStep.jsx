@@ -135,7 +135,7 @@ const processFinalCategoryAndDishData = (params, property,value) => {
             }
             params.isExcludeFood = excludeDishes && excludeDishes.length > 0 ? '1' : '0';
             // 菜品限制范围类型：1,包含菜品分类;2,包含菜品;3,不包含菜品分类;4不包含菜品
-            params.couponFoodScopes = foodCategory.map((cat) => {
+            params.couponFoodScopes = (foodCategory || []).map((cat) => {
                 return {
                     targetID: cat.foodCategoryID,
                     targetCode: cat.foodCategoryCode,
@@ -143,7 +143,7 @@ const processFinalCategoryAndDishData = (params, property,value) => {
                     brandID: cat.brandID || '0',
                     isShop:true
                 }
-            }).concat(dishes.map((food) => {
+            }).concat((dishes|| []).map((food) => {
                 return {
                     targetID: food.itemID,
                     targetCode: food.foodCode,
@@ -153,7 +153,7 @@ const processFinalCategoryAndDishData = (params, property,value) => {
                     isShop:true
                 }
             }));
-            params.excludeFoodScopes = excludeDishes.map((food) => {
+            params.excludeFoodScopes = (excludeDishes|| []).map((food) => {
                 return {
                     targetID: food.itemID,
                     targetCode: food.foodCode,
