@@ -536,14 +536,15 @@ class CouponManageList extends Component {
                         {
                             record.channelID == 50 && <a
                                 href="#"
-                                onClick={() => {
+                                disabled={record.eventStatus == 1}
+                                onClick={record.eventStatus == 0 ? () => {
                                     this.setState({
                                         wxData: record,
                                     }, () => {
                                         this.handleShowWxModal()
                                     })
                                     // jumpPage({ menuID: '100008993' })
-                                }}
+                                } : null}
                             >投放</a>
                         }
                     </span>
@@ -833,6 +834,7 @@ class ViewCouponContent extends Component {
                 }
             },
         ];
+        let styleName = viewData.platformType == 1 ? 'signInfoZhifubao' : 'signInfoWx'
         return (
             <Modal
                 title={`第三方${title}券详情`}
@@ -843,7 +845,7 @@ class ViewCouponContent extends Component {
                 footer={null}
             >
                 <Row className={styles.CouponViewInfo}>
-                    <Col span={24} offset={1} className={styles.signInfo}>
+                    <Col span={24} offset={1} className={[styles.signInfo, styles[styleName]].join(' ')}>
                         <h4>{viewData.batchName}</h4>
                         <div style={{ marginBottom: 12 }}>
                             <p>券批次ID： <Tooltip title={itemID}><span>{itemID.length > 15 ? `${itemID.slice(0, 6)}...${itemID.slice(-10)}` : itemID}</span></Tooltip></p>
