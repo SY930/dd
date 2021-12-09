@@ -598,7 +598,7 @@ class CouponManageList extends Component {
                 dataIndex: 'couponCodeDockingType',
                 key: 'couponCodeDockingType',
                 width: 90,
-                render: (text) => {
+                render: (text, record) => {
                     if (text == '3' && record.platformType == 3) {
                         return <span>WECHATPAY_MODE<Tooltip title="适用于企鹅吉市等场景对接"><Icon type="question-circle-o" style={{ marginLeft: 5 }} /></Tooltip></span>
                     }
