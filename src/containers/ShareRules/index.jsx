@@ -88,7 +88,7 @@ export default class ShareRules extends Component {
                 groupID,
                 shopID: this.props.user.shopID > 0 ? this.props.user.shopID : undefined,
                 isActive: -1,
-                // status: 2,
+                status: 4,//正在执行的活动和未开始执行的活动
                 pageNo: 1, pageSize: 10000,
             })
         ]).then((data) => {
