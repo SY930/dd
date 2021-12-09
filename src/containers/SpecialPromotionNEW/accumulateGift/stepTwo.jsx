@@ -14,6 +14,7 @@ import {
 import {
     fetchFoodCategoryInfoAC,
     fetchFoodMenuInfoAC,
+    saleCenterSetPromotionDetailAC
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import { saleCenterSetSpecialBasicInfoAC, saleCenterGetShopOfEventByDate } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
@@ -22,7 +23,7 @@ import CategoryAndFoodSelector from 'containers/SaleCenterNEW/common/CategoryAnd
 import ShopSelector from '../../../components/ShopSelector';
 import { FetchCrmCardTypeLst } from '../../../redux/actions/saleCenterNEW/crmCardType.action';
 import { axios } from '@hualala/platform-base';
-
+import NoShareBenifit  from 'containers/SaleCenterNEW/common/NoShareBenifit.jsx';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -82,8 +83,10 @@ class StepTwo extends React.Component {
             shopIDList: props.specialPromotionInfo.getIn(['$eventInfo', 'shopIDList'], Immutable.fromJS([])).toJS() || [],
             isRequire: true,
             foodPriceType: '0',
-            isBenifitActive:false
+            isBenifitActive:false,
+            eventMutexDependRuleInfos:[]
         }
+        this.selectNoShareBenifit = this.selectNoShareBenifit.bind(this);
     }
 
     componentDidMount() {
@@ -202,6 +205,22 @@ class StepTwo extends React.Component {
             isBenifitActive: value,
         })
     }
+    selectNoShareBenifit(val) {
+        console.log(val,'val00000000000000000======')
+        this.setState({
+            eventMutexDependRuleInfos: val,
+        });
+        this.props.setPromotionDetail({
+            blackList: this.state.blackListRadio != '0',
+            mutexPromotions: val.map((promotion) => {
+                return {
+                    promotionIDStr: promotion.promotionIDStr || '',
+                    sharedType: promotion.sharedType ? promotion.sharedType : '10',
+                    finalShowName: promotion.finalShowName || SALE_LABEL.k5m3onpk,
+                }
+            }),
+        });
+    }
     renderComboInput() {
         const { radioType, consumeTotalAmount, consumeTotalTimes, consumeType } = this.state;
         const { form: { getFieldDecorator } } = this.props;
@@ -304,6 +323,8 @@ class StepTwo extends React.Component {
     }
     render() {
         const { isRequire, shopStatus,  } = this.state;
+        const promotions = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'mutexPromotions']).toJS();
+        console.log(promotions,'promotions----------')
         const { foodScopeList, shopIDList } = this.state;
         const convertShopIdList = shopIDList.length ? shopIDList.join(',').split(',') : [];
         let cardTypeList = this.props.crmCardTypeNew.get('cardTypeLst');
@@ -409,22 +430,21 @@ class StepTwo extends React.Component {
                 </FormItem>
                 {
                     this.state.isBenifitActive ? 
-                    <FormItem
-                        label=" "
-                        className={styles.FormItemStyle}
-                        labelCol={{ span: 4 }}
-                        wrapperCol={{ span: 17 }}
-                        required={isRequire}
-                        validateStatus={shopStatus ? 'success' : 'error'}
-                        help={shopStatus ? null : '至少选择一项优惠'}
-                    >
-                        <ShopSelector
-                            value={convertShopIdList}
-                            onChange={v => {
-                                this.setState({ shopIDList: v, shopStatus: v.length > 0 })}}
-                            // schemaData={this.props.shopSchema.toJS()}
-                        />
-                    </FormItem> : null
+                        <FormItem
+                            label=" "
+                            className={styles.FormItemStyle}
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 17 }}
+                            required={isRequire}
+                            validateStatus={shopStatus ? 'success' : 'error'}
+                            help={shopStatus ? null : '至少选择一项优惠'}
+                        >
+                            <NoShareBenifit onChange={(val) => {
+                                this.selectNoShareBenifit(val)
+                            }}
+                            />
+                        </FormItem>
+                        : null
                 }
             </Form>
         );
@@ -433,6 +453,7 @@ class StepTwo extends React.Component {
 const mapStateToProps = (state) => {
     return {
         specialPromotionInfo: state.sale_specialPromotion_NEW,
+        promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         crmCardTypeNew: state.sale_crmCardTypeNew,
         shopSchema: state.sale_shopSchema_New.getIn(['shopSchema']),
     };
@@ -440,6 +461,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        setPromotionDetail: (opts) => {
+            dispatch(saleCenterSetPromotionDetailAC(opts))
+        },
         setSpecialBasicInfo: (opts) => {
             dispatch(saleCenterSetSpecialBasicInfoAC(opts));
         },
