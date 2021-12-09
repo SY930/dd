@@ -118,9 +118,9 @@ const processFinalCategoryAndDishData = (params, property,value) => {
                 }
             }else{
                 categoryOrDish = params[property].categoryOrDish;
-                foodCategory = params[property].foodCategory;
-                excludeDishes = params[property].excludeDishes;
-                dishes = params[property].dishes;
+                foodCategory = params[property].foodCategory || [];
+                excludeDishes = params[property].excludeDishes || [];
+                dishes = params[property].dishes || [];
                 // categoryOrDish 0 分类， 1 菜品
                 // foodSelectType 1 分类， 0 菜品， 2 全选
                 foodSelectType = 1 - categoryOrDish;
@@ -2784,6 +2784,15 @@ class GiftAddModalStep extends React.PureComponent {
                 size: 'large',
                 rules: [
                     { required: true, message: '礼品名称不能为空' },
+                    {
+                        validator: (rule, v, cb) => {
+                            if(String(v || '').includes('，')||String(v || '').includes(',')) {
+                                cb(rule.message);
+                            }
+                            cb();
+                        },
+                        message: '请不要输入逗号',
+                    },
                     { max: this.props.type == 'add' ? 35 : 50, message: `不能超过${this.props.type == 'add' ? `35`: `50`}个字符` },
                     /*{
                         message: '汉字、字母、数字、小数点，50个字符以内',
