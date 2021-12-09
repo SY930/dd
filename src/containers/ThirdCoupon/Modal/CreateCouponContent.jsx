@@ -77,6 +77,7 @@ class CreateCouponContent extends Component {
 
     // 优惠券
     handleCouponChange = (value) => {
+    // console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 80 ~ CreateCouponContent ~ value", value)
         this.setState({
             giftItemID: value,
         })
@@ -242,6 +243,45 @@ class CreateCouponContent extends Component {
         })
     }
 
+    handleDouyinSubmit = (values, groupId) => {
+        const { giftValidRange = [], batchName, giftItemID, effectType, stock, shopId, isExchange } = values;
+        const { effectGiftTimeHours } = this.state
+        const endTime = giftValidRange[1] ? giftValidRange[1].format('YYYYMMDDHHmmss') : '';
+        const startTime = giftValidRange[0] ? giftValidRange[0].format('YYYYMMDDHHmmss') : ''
+        const platformCouponBatchCO = {
+            batchName,
+            batchStatus: 1,
+            couponId: giftItemID,
+            // couponName:
+            // couponType
+            createTime: startTime, // 固定有效期生效时间
+            endTime, // 固定有效期失效时间
+            effectType,
+            groupId,
+            platformType: '2',
+            relativeValidityType: effectGiftTimeHours,
+            relativeValidityValue: values.validUntilDays ? values.validUntilDays.number : '',
+            stock,
+            shopId,
+            isExchange: Number(isExchange),
+        };
+        const url = '/api/v1/universal?';
+        const method = 'platformCoupinBatch/add.ajax';
+        const params = {
+            service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+            type: 'post',
+            // couponCodeBatchInfo: res,
+            data: {
+                platformCouponBatchCO,
+                groupID: groupId,
+            },
+            method,
+        };
+        axios.post(url + method, params).then((res) => {
+        console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 279 ~ CreateCouponContent ~ axios.post ~ res", res)
+        })
+    }
+
     handleSubmit = () => {
         const { form, channelID, platformType, type } = this.props
         form.validateFields((err, values) => {
@@ -253,6 +293,10 @@ class CreateCouponContent extends Component {
                 const { groupID } = user.get('accountInfo').toJS()
                 const rangePicker = values.rangePicker;
                 const giftValidRange = values.giftValidRange || [];
+                if (type == 3) { // 抖音
+                    this.handleDouyinSubmit(values, groupID)
+                    return null
+                }
                 if (!effectGiftTimeHours && values.effectType === '3') {
                     this.setState({ confirmLoading: false })
                     return message.error('请输入生效时间')
@@ -261,7 +305,7 @@ class CreateCouponContent extends Component {
                     this.setState({ confirmLoading: false })
                     return message.error('请输入支付宝链接方式')
                 }
-                if (values.merchantType === '2' && !this.state.bindUserId && type != 2) { // 间连需要关联M4
+                if (values.merchantType === '2' && !this.state.bindUserId && type == 1) { // 支付宝间连需要关联M4
                     this.setState({ confirmLoading: false })
                     return message.error('间连的支付宝账号未关联M4')
                 }
@@ -696,7 +740,7 @@ class CreateCouponContent extends Component {
                                 {getFieldDecorator('batchName', {
                                     initialValue: editData.batchName || '',
                                     rules: [
-                                        { required: true, message: '请输入第三方券名称' },
+                                        { required: true, message: '请输入第三方券名称,最大20个字符', max: 20 },
                                     ],
                                 })(
                                     <Input
@@ -705,24 +749,27 @@ class CreateCouponContent extends Component {
                                     />
                                 )}
                             </FormItem>
-                            <FormItem
-                                label="投放时间"
-                                {...formItemLayout}
-                                required={true}
-                            >
-                                {getFieldDecorator('rangePicker', {
-                                    // initialValue: editData.startTime > 0 ? [moment(editData.startTime, 'YYYYMMDD'), moment(editData.endTime, 'YYYYMMDD')] : [],
-                                    rules: [
-                                        { required: true, message: '请输入日期' },
-                                    ],
-                                    // onchange: this.handleRangeChange,
-                                })(
-                                    <RangePicker
-                                        style={{ width: '100%', height: 30 }}
-                                        format="YYYY-MM-DD"
-                                    />
-                                )}
-                            </FormItem>
+                            {
+                                type != 3 && <FormItem
+                                    label="投放时间"
+                                    {...formItemLayout}
+                                    required={true}
+                                >
+                                    {getFieldDecorator('rangePicker', {
+                                        // initialValue: editData.startTime > 0 ? [moment(editData.startTime, 'YYYYMMDD'), moment(editData.endTime, 'YYYYMMDD')] : [],
+                                        rules: [
+                                            { required: true, message: '请输入日期' },
+                                        ],
+                                        // onchange: this.handleRangeChange,
+                                    })(
+                                        <RangePicker
+                                            style={{ width: '100%', height: 30 }}
+                                            format="YYYY-MM-DD"
+                                        />
+                                    )}
+                                </FormItem>
+                            }
+                            
                             <FormItem
                                 label="选择优惠券"
                                 {...formItemLayout}
@@ -743,6 +790,7 @@ class CreateCouponContent extends Component {
                                             showSearch={true}
                                             treeNodeFilterProp="label"
                                             allowClear={true}
+                                            // labelInValue
                                         />
                                     )
                                 }

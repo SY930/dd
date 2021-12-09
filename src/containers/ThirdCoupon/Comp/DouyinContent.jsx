@@ -28,20 +28,20 @@ class DouyinContent extends Component {
         const { getFieldDecorator } = form;
         return (
             <Row>
-                <Col span={16}>
+                <Col span={24}>
                     <Form.Item
-                        label="商户名称"
+                        label="抖音店铺ID"
                         labelCol={{ span: 4 }}
                         wrapperCol={{ span: 9 }}
                         required={true}
                     >
-                        {getFieldDecorator('maxCouponsPerUser', {
+                        {getFieldDecorator('shopId', {
                             rules: [
-                                { required: true, message: '请输入商户名称' },
+                                { required: true, message: '请输入抖音店铺ID' },
                             ],
                         })(
                             <Input
-                                placeholder="请输入商户名称"
+                                placeholder="请输入抖音店铺ID"
                                 style={{ height: '30px' }}
                             />
                         )}
@@ -52,7 +52,7 @@ class DouyinContent extends Component {
                         wrapperCol={{ span: 9 }}
                         required={true}
                     >
-                        {getFieldDecorator('hhh', {
+                        {getFieldDecorator('isExchange', {
                             initialValue: '1',
                             rules: [
                                 { required: true },
