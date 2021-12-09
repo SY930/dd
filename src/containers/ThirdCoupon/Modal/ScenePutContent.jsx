@@ -27,10 +27,11 @@ class ScenePutContent extends Component {
 
     handleSubmit = () => {
         if (this.state.value === '0') {
+            const { batchName, merchantType, trdBatchID } = this.props.wxData;
             // TODO: 请求接口，关闭弹窗
             this.setState({ confirmLoading: true })
             const url = '/api/v1/universal?';
-            const method = 'couponCodeBatchService/addBatch.ajax';
+            const method = 'trdEventService/addEvent.ajax';
             const { user } = getStore().getState();
             const { groupID } = user.get('accountInfo').toJS()
             const params = {
@@ -38,7 +39,15 @@ class ScenePutContent extends Component {
                 type: 'post',
                 // couponCodeBatchInfo: res,
                 data: {
-                    couponCodeBatchInfo: {},
+                    trdEventInfo: {
+                        eventName: batchName,
+                        eventWay: '20003',
+                        platformType: '3',
+                        merchantID: '1800009380',
+                        merchantType,
+                        trdEventID: trdBatchID,
+                        marketingType: 'BUSIFAVOR_STOCK',
+                    },
                     groupID,
                 },
                 method,

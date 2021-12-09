@@ -63,6 +63,7 @@ class CouponManageList extends Component {
             title: '',
             platformTypeCreate: 1, // 平台：1 支付宝   3微信  4 抖音
             WXLaunchVisible: false,
+            wxData: {},
 		}
 		this.handleQuery = debounce(this.handleQuery.bind(this), 500);
 	}
@@ -74,6 +75,7 @@ class CouponManageList extends Component {
 		this.onWindowResize();
 		window.addEventListener('resize', this.onWindowResize);
 	}
+
 
 	componentWillUnmount() {
 		window.removeEventListener('resize', this.onWindowResize);
@@ -130,7 +132,13 @@ class CouponManageList extends Component {
         });
     }
 
-    getQueryVariable() {
+    clearUrl = () => {
+        var { href } = window.location;
+        var [valiable] = href.split('?');
+        window.history.pushState(null, null, valiable);
+    }
+
+    getQueryVariable = () => {
         const search = window.decodeURIComponent(window.location.search)
         var query = search.substr(1)
         query = query.split('&')
@@ -182,12 +190,14 @@ class CouponManageList extends Component {
                 platformType: '3'
             }, () => {
                 this.handleQuery();
+                this.clearUrl();
             })
         } else if (from === 'zhifubao') {
             this.setState({
                 platformType: '1'
             }, () => {
                 this.handleQuery();
+                this.clearUrl();
             })
         } else {
             this.setState({
@@ -350,6 +360,12 @@ class CouponManageList extends Component {
         })
     }
 
+    handleShowWxModal = () => {
+        this.setState({
+            WXLaunchVisible: true,
+        })
+    }
+
 
 	renderHeader = () => {
 		const headerClasses = `layoutsToolLeft ${styles.headerWithBgColor}`;
@@ -410,6 +426,7 @@ class CouponManageList extends Component {
                                 style={{ width: '160px' }}
                                 defaultValue={this.state.platformType}
                                 // placeholder="请选择关联渠道"
+                                value={this.state.platformType}
                                 onChange={(value) => {
                                     this.setState({
                                         platformType: value,
@@ -521,7 +538,9 @@ class CouponManageList extends Component {
                                 href="#"
                                 onClick={() => {
                                     this.setState({
-                                        WXLaunchVisible: true
+                                        wxData: record,
+                                    }, () => {
+                                        this.handleShowWxModal()
                                     })
                                     // jumpPage({ menuID: '100008993' })
                                 }}
@@ -711,7 +730,7 @@ class CouponManageList extends Component {
                     />
                 }
                 {
-                    this.state.WXLaunchVisible && <ScenePutContent onCancel={this.handleCloseWXLaunchModal}/>
+                    this.state.WXLaunchVisible && <ScenePutContent onCancel={this.handleCloseWXLaunchModal} wxData={this.state.wxData}/>
                 }
 			</div>
 		)

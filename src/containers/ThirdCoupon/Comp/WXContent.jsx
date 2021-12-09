@@ -226,7 +226,7 @@ class WXContent extends Component {
                         >
                             {getFieldDecorator('miniProgramsAppId', {
                                 rules: [
-                                    { required: true },
+                                    { required: true, message: '请选择小程序名称' },
                                 ],
                             })(
                                 <Select
@@ -247,7 +247,7 @@ class WXContent extends Component {
                         >
                             {getFieldDecorator('miniProgramsPath', {
                                 rules: [
-                                    { required: true },
+                                    { required: true, message: '请选择页面路径' },
                                 ],
                             })(
                                 <Select

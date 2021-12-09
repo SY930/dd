@@ -304,6 +304,7 @@ class CreateCouponContent extends Component {
                     datas.couponCodeDockingType = values.couponCodeDockingType;
                     datas.miniProgramsAppId = values.miniProgramsAppId;
                     datas.miniProgramsPath = values.miniProgramsPath;
+                    datas.validateWay = values.validateWay;
                 }
                 const url = '/api/v1/universal?';
                 let method = 'couponCodeBatchService/addBatch.ajax';
