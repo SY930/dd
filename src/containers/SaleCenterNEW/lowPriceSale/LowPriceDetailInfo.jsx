@@ -104,7 +104,7 @@ class LowPriceDetailInfo extends React.Component {
         this.setState({
             display,
             ruleType,
-            subRule,
+            subRule: subRule === undefined ? 1 : subRule,
             discountRate: _rule.discountRate ? Number((_rule.discountRate * 1).toFixed(3)).toString() : '',
             disType: _rule.disType ? String(_rule.disType) : '3',
             freeAmount: _rule.freeAmount ? String(_rule.freeAmount) : '',
