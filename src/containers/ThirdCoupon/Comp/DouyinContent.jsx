@@ -13,7 +13,7 @@ class DouyinContent extends Component {
         };
     }
     componentDidMount() {
-        this.initData();
+        // this.initData();
     }
 
     componentWillReceiveProps(nextProps) {

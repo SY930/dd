@@ -266,9 +266,10 @@ class CreateCouponContent extends Component {
             isExchange: Number(isExchange),
             channelID: 70,
             couponCodeDockingType: 1,
+            giftType: 10, // TODO: 需要重新取值
         };
         const url = '/api/v1/universal?';
-        const method = 'platformCoupinBatch/add.ajax';
+        const method = '/couponCodeBatchService/addBatch.ajax';
         const params = {
             service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
             type: 'post',
