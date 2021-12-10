@@ -27,7 +27,7 @@ class ScenePutContent extends Component {
 
     handleSubmit = () => {
         if (this.state.value === '0') {
-            const { batchName, merchantType, trdBatchID } = this.props.wxData;
+            const { batchName, merchantType, trdBatchID, itemID } = this.props.wxData;
             // TODO: 请求接口，关闭弹窗
             this.setState({ confirmLoading: true })
             const url = '/api/v1/universal?';
@@ -47,6 +47,7 @@ class ScenePutContent extends Component {
                         merchantType,
                         trdEventID: trdBatchID,
                         marketingType: 'BUSIFAVOR_STOCK',
+                        giftConfInfos: [{ giftID: itemID }],
                     },
                     groupID,
                 },
