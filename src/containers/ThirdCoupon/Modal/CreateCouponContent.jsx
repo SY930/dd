@@ -248,22 +248,24 @@ class CreateCouponContent extends Component {
         const { effectGiftTimeHours } = this.state
         const endTime = giftValidRange[1] ? giftValidRange[1].format('YYYYMMDDHHmmss') : '';
         const startTime = giftValidRange[0] ? giftValidRange[0].format('YYYYMMDDHHmmss') : ''
-        const platformCouponBatchCO = {
+        const couponCodeBatchInfo = {
             batchName,
-            batchStatus: 1,
-            couponId: giftItemID,
+            // batchStatus: 1,
+            giftItemID,
             // couponName:
             // couponType
-            createTime: startTime, // 固定有效期生效时间
-            endTime, // 固定有效期失效时间
+            EGiftEffectTime: startTime, // 固定有效期生效时间
+            validUntilDate: endTime, // 固定有效期失效时间
             effectType,
             groupId,
             platformType: '2',
-            relativeValidityType: effectGiftTimeHours,
-            relativeValidityValue: values.validUntilDays ? values.validUntilDays.number : '',
+            effectGiftTimeHours,
+            validUntilDays: values.validUntilDays ? values.validUntilDays.number : '',
             stock: stock.number,
             shopId,
             isExchange: Number(isExchange),
+            channelID: 70,
+            couponCodeDockingType: 1,
         };
         const url = '/api/v1/universal?';
         const method = 'platformCoupinBatch/add.ajax';
@@ -272,7 +274,7 @@ class CreateCouponContent extends Component {
             type: 'post',
             // couponCodeBatchInfo: res,
             data: {
-                platformCouponBatchCO,
+                couponCodeBatchInfo,
                 groupID: groupId,
             },
             method,

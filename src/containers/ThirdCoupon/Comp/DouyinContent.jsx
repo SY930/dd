@@ -45,11 +45,11 @@ class DouyinContent extends Component {
                     >
                         {getFieldDecorator('shopId', {
                             rules: [
-                                { required: true, message: '请输入抖音店铺ID' },
+                                { required: true, message: '请选择抖音店铺ID' },
                             ],
                         })(
                             <Select
-                                placeholder="请选择小程序名称"
+                                placeholder="请选择抖音店铺ID"
                             >
                                 {
                                     (this.state.shopList || []).map(({ shopId, shopName }) => (
