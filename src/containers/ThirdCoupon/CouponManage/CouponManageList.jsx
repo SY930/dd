@@ -609,7 +609,7 @@ class CouponManageList extends Component {
                     if (text == '3' && record.platformType == 3) {
                         return <span>WECHATPAY_MODE<Tooltip title="适用于企鹅吉市等场景对接"><Icon type="question-circle-o" style={{ marginLeft: 5 }} /></Tooltip></span>
                     }
-                    if (text == '1' && (record.platformType == 3 || record.platformType == 1)) {
+                    if (text == '1' && record.platformType == 3) {
                         return 'MERCHANT_API'
                     }
                     if (text == '2' && record.platformType == 1) {
@@ -624,8 +624,8 @@ class CouponManageList extends Component {
                 key: 'trdBatchID',
                 width: 140,
                 render: (text, record) => {
-                    if (record.platformType == 1)  return '--'
-                    return text
+                    if (record.platformType == 3)  return <Tooltip title={text}>{text}</Tooltip>
+                    return '--'
                 }
             },
             {
