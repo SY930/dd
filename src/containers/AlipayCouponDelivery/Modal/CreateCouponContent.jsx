@@ -299,6 +299,7 @@ class CreateCouponContent extends Component {
                     datas.maxCouponsPerUser = values.maxCouponsPerUser;
                     datas.masterMerchantID = this.state.masterMerchantID;
                     datas.jumpAppID = this.state.WXJumpAppID;
+                    datas.couponCodeDockingType = 1;
                 }
                 const url = '/api/v1/universal?';
                 let method = 'couponCodeBatchService/addBatch.ajax';
