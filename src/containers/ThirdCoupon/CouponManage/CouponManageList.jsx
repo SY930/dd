@@ -604,17 +604,17 @@ class CouponManageList extends Component {
                 title: '券code模式',
                 dataIndex: 'couponCodeDockingType',
                 key: 'couponCodeDockingType',
-                width: 90,
+                width: 160,
                 render: (text, record) => {
                     if (text == '3' && record.platformType == 3) {
                         return <span>WECHATPAY_MODE<Tooltip title="适用于企鹅吉市等场景对接"><Icon type="question-circle-o" style={{ marginLeft: 5 }} /></Tooltip></span>
                     }
-                    if (text == '1' && record.platformType == 3) {
+                    if (text == '1' && (record.platformType == 3 || record.platformType == 1)) {
                         return 'MERCHANT_API'
                     }
-                    // if (text == 2) {
-                    //     return 'MERCHANT_UPLOAD'
-                    // }
+                    if (text == '2' && record.platformType == 1) {
+                        return 'MERCHANT_UPLOAD'
+                    }
                     return '--'
                 }
             },
@@ -622,7 +622,7 @@ class CouponManageList extends Component {
                 title: '微信批次号',
                 dataIndex: 'trdBatchID',
                 key: 'trdBatchID',
-                width: 90,
+                width: 140,
                 render: (text, record) => {
                     if (record.platformType == 1)  return '--'
                     return text
@@ -645,7 +645,7 @@ class CouponManageList extends Component {
                 className: 'TableTxtCenter',
                 dataIndex: 'createStampStr',
                 key: 'createStampStr',
-                width: 300,
+                width: 180,
                 render: (text) => text,
             },
 		];

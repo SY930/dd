@@ -395,6 +395,33 @@ async function getLinks() {
     return null;
 }
 
+// // 获取抖音店铺
+// async function getDouyinShop() {
+//     const method = '/dyshop/selectList';
+//     const { groupID } = getAccountInfo();
+//     const params = { service: 'HTTP_SERVICE_URL_WECHAT', data: { groupID, dyShopCO: { groupId: groupID } }, method, type };
+//     const response = await axios.post(url + method, params);
+//     const { result: { code, message: msg }, data = [] } = response;
+//     if (code === '000') {
+//         return data
+//     }
+//     message.error(msg);
+//     return null;
+// }
+
+// 获取抖音店铺
+async function getDouyinShop() {
+    const method = 'dyshop/selectList';
+    const { groupID } = getAccountInfo();
+    const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW', data: { groupID, dyShopCO: { groupId: groupID } }, method, type };
+    const response = await axios.post(url + method, params);
+    const { result: { code, message: msg }, data = [] } = response;
+    if (code === '000') {
+        return data
+    }
+    message.error(msg);
+    return null;
+}
 
 export {
     getCardList,
@@ -414,4 +441,5 @@ export {
     getPayChannel,
     getMpAppList,
     getLinks,
+    getDouyinShop,
 }

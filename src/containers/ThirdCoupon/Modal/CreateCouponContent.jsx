@@ -244,7 +244,7 @@ class CreateCouponContent extends Component {
     }
 
     handleDouyinSubmit = (values, groupId) => {
-        const { giftValidRange = [], batchName, giftItemID, effectType, stock, shopId, isExchange } = values;
+        const { giftValidRange = [], batchName, giftItemID, effectType, stock = {}, shopId, isExchange } = values;
         const { effectGiftTimeHours } = this.state
         const endTime = giftValidRange[1] ? giftValidRange[1].format('YYYYMMDDHHmmss') : '';
         const startTime = giftValidRange[0] ? giftValidRange[0].format('YYYYMMDDHHmmss') : ''
@@ -261,7 +261,7 @@ class CreateCouponContent extends Component {
             platformType: '2',
             relativeValidityType: effectGiftTimeHours,
             relativeValidityValue: values.validUntilDays ? values.validUntilDays.number : '',
-            stock,
+            stock: stock.number,
             shopId,
             isExchange: Number(isExchange),
         };
@@ -278,7 +278,23 @@ class CreateCouponContent extends Component {
             method,
         };
         axios.post(url + method, params).then((res) => {
-        console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 279 ~ CreateCouponContent ~ axios.post ~ res", res)
+            // console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 279 ~ CreateCouponContent ~ axios.post ~ res", res)
+            const { code, message: msg } = res;
+            if (code === '000') {
+                message.success('创建成功');
+                this.props.handleCloseModal();
+                this.props.handleQuery();
+                this.props.onParentCancel();
+                this.setState({ confirmLoading: false })
+                return
+            }
+            // this.props.handleCloseModal();
+            this.setState({ confirmLoading: false })
+            message.error(msg);
+        }).catch((error) => {
+            // this.props.handleCloseModal();
+            this.setState({ confirmLoading: false })
+            console.log(error)
         })
     }
 
@@ -314,7 +330,7 @@ class CreateCouponContent extends Component {
                 const datas = {
                     batchName: values.batchName,
                     channelID,
-                    // couponCodeDockingType: 1, // 支付宝默认传1，微信需要用户手动选择1，3
+                    couponCodeDockingType: 2, // 支付宝默认传2批量预存，微信需要用户手动选择1，3
                     stock: values.stock.number,
                     effectType,
                     effectGiftTimeHours,
@@ -338,7 +354,6 @@ class CreateCouponContent extends Component {
                     const { smidList } = this.state;
                     const { bankMerchantCode } = smidList[0];
                     datas.merchantID = bankMerchantCode;
-                    datas.couponCodeDockingType = 1;
                 }
                 if (type === 2) { // 微信
                     datas.merchantID = this.state.WXMerchantID;

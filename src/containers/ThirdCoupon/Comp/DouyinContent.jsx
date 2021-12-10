@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Row, Col, Select, Input, Radio } from 'antd'
-import { getMpAppList, getPayChannel } from '../AxiosFactory';
+import { getMpAppList, getDouyinShop } from '../AxiosFactory';
 import styles from '../AlipayCoupon.less';
 
 const RadioGroup = Radio.Group;
@@ -9,6 +9,7 @@ class DouyinContent extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            shopList: [],
         };
     }
     componentDidMount() {
@@ -20,6 +21,13 @@ class DouyinContent extends Component {
 
 
     initData = () => {
+        getDouyinShop().then((res) => {
+            if (res) {
+                this.setState({
+                    shopList: res,
+                })
+            }
+        })
     }
 
 
@@ -32,7 +40,7 @@ class DouyinContent extends Component {
                     <Form.Item
                         label="抖音店铺ID"
                         labelCol={{ span: 4 }}
-                        wrapperCol={{ span: 9 }}
+                        wrapperCol={{ span: 16 }}
                         required={true}
                     >
                         {getFieldDecorator('shopId', {
@@ -40,16 +48,21 @@ class DouyinContent extends Component {
                                 { required: true, message: '请输入抖音店铺ID' },
                             ],
                         })(
-                            <Input
-                                placeholder="请输入抖音店铺ID"
-                                style={{ height: '30px' }}
-                            />
+                            <Select
+                                placeholder="请选择小程序名称"
+                            >
+                                {
+                                    (this.state.shopList || []).map(({ shopId, shopName }) => (
+                                        <Select.Option key={shopId} value={`${shopId}`}>{shopName}</Select.Option>
+                                    ))
+                                }
+                            </Select>
                         )}
                     </Form.Item>
                     <Form.Item
                         label="是否需要兑换"
                         labelCol={{ span: 4 }}
-                        wrapperCol={{ span: 9 }}
+                        wrapperCol={{ span: 16 }}
                         required={true}
                     >
                         {getFieldDecorator('isExchange', {
