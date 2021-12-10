@@ -269,7 +269,7 @@ class CreateCouponContent extends Component {
                 const datas = {
                     batchName: values.batchName,
                     channelID,
-                    couponCodeDockingType: 1,
+                    couponCodeDockingType: 2,
                     stock: values.stock.number,
                     effectType,
                     effectGiftTimeHours,
