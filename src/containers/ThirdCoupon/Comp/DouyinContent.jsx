@@ -45,18 +45,22 @@ class DouyinContent extends Component {
                     >
                         {getFieldDecorator('shopId', {
                             rules: [
-                                { required: true, message: '请选择抖音店铺ID' },
+                                { required: true, message: '请输入抖音店铺ID' },
                             ],
                         })(
-                            <Select
-                                placeholder="请选择抖音店铺ID"
-                            >
-                                {
-                                    (this.state.shopList || []).map(({ shopId, shopName }) => (
-                                        <Select.Option key={shopId} value={`${shopId}`}>{shopName}</Select.Option>
-                                    ))
-                                }
-                            </Select>
+                            <Input
+                                placeholder="请输入抖音店铺ID"
+                                style={{ height: '30px' }}
+                            />
+                            // <Select
+                            //     placeholder="请选择抖音店铺ID"
+                            // >
+                            //     {
+                            //         (this.state.shopList || []).map(({ shopId, shopName }) => (
+                            //             <Select.Option key={shopId} value={`${shopId}`}>{shopName}</Select.Option>
+                            //         ))
+                            //     }
+                            // </Select>
                         )}
                     </Form.Item>
                     <Form.Item
