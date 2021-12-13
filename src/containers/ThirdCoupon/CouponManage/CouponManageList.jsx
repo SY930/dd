@@ -619,12 +619,12 @@ class CouponManageList extends Component {
                 }
             },
             {
-                title: '微信批次号',
+                title: '批次号',
                 dataIndex: 'trdBatchID',
                 key: 'trdBatchID',
                 width: 140,
                 render: (text, record) => {
-                    if (record.platformType == 3)  return <Tooltip title={text}>{text}</Tooltip>
+                    if (record.platformType == 3 || record.platformType == 1)  return <Tooltip title={text}>{text}</Tooltip>
                     return '--'
                 }
             },
@@ -838,8 +838,10 @@ class ViewCouponContent extends Component {
                 render: (text) => {
                     if (text == 3) {
                         return '相对有效期'
+                    } else if (text == 2) {
+                        return '固定有效期'
                     }
-                    return '固定有效期'
+                    return '--'
                 }
             },
             {
@@ -851,9 +853,13 @@ class ViewCouponContent extends Component {
                         const effectGiftTimeHours = record.effectGiftTimeHours;
                         const t = effectGiftTimeHours > 0 ? `${effectGiftTimeHours}后天生效` : '立即生效'
                         return <Tooltip title={t}>{t}</Tooltip>;
+                    } else if (record.effectType == 2) {
+                        const time = record.EGiftEffectTime ? `${moment(record.EGiftEffectTime, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}/${moment(record.validUntilDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}` : '--';
+                        return <Tooltip title={time}>{time}</Tooltip>;
+                    } else {
+                        return '--'
                     }
-                    const time = record.EGiftEffectTime ? `${moment(record.EGiftEffectTime, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}/${moment(record.validUntilDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}` : '--';
-                    return <Tooltip title={time}>{time}</Tooltip>;
+                   
                 }
             },
             {
@@ -864,9 +870,13 @@ class ViewCouponContent extends Component {
                     if (record.effectType == 3) { //
                         const t = `自领取${record.validUntilDays}天有效`;
                         return <Tooltip title={t}>{t}</Tooltip>
+                    } else if (record.effectType == 2) {
+                        const time = record.EGiftEffectTime ? `${moment(record.EGiftEffectTime, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}/${moment(record.validUntilDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}` : '--';
+                        return <Tooltip title={time}>{time}</Tooltip>;;
+                    } else {
+                        return '--'
                     }
-                    const time = record.EGiftEffectTime ? `${moment(record.EGiftEffectTime, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}/${moment(record.validUntilDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}` : '--';
-                    return <Tooltip title={time}>{time}</Tooltip>;;
+
                 }
             },
         ];
