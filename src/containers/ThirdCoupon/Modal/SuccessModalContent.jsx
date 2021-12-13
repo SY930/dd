@@ -75,6 +75,7 @@ class SuccessModalContent extends Component {
                     giftConfInfos: [{
                         giftID: couponDetail.itemID,
                     }],
+                    masterMerchantID: couponDetail.masterMerchantID,
                 }
                 const params = { trdEventInfo: { ...data } };
                 axiosData(
