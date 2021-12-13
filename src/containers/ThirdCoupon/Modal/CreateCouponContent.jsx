@@ -31,7 +31,7 @@ class CreateCouponContent extends Component {
             successStartEnd: [], // 开始时间 结束时间
             giftItemID: editData.giftItemID ? editData.giftItemID : '', // 优惠券id
             effectType: editData.effectType ? `${editData.effectType}` : '3', // 相对有效期
-            effectGiftTimeHours: editData.effectGiftTimeHours ? `${editData.effectGiftTimeHours}` : '', // 生效时间
+            effectGiftTimeHours: editData.effectGiftTimeHours ? `${editData.effectGiftTimeHours}` : '0', // 生效时间
             validUntilDays: editData.validUntilDays ? `${editData.validUntilDays}` : '', // 有效天数
             giftValidRange: [], // 固定有效期
             merchantType: '1', // 支付宝链接方式  1 直连 | 2 间连
