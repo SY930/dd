@@ -543,7 +543,7 @@ class CouponManageList extends Component {
                             )
                         }
                         {
-                            record.channelID == 50 && <a
+                            record.channelID == 50 && record.couponCodeDockingType == 3 && <a
                                 href="#"
                                 disabled={!!record.eventStatus}
                                 onClick={!!record.eventStatus ?  null : () => {
@@ -559,7 +559,7 @@ class CouponManageList extends Component {
                             >投放</a>
                         }
                         {
-                             record.channelID == 50 && !!record.eventStatus && 
+                             record.channelID == 50 && !!record.eventStatus && record.couponCodeDockingType == 3 &&
                              <a
                              href="#"
                              onClick={() => {
