@@ -81,7 +81,7 @@ class StepTwo extends React.Component {
             consumeType,
             shopIDList: props.specialPromotionInfo.getIn(['$eventInfo', 'shopIDList'], Immutable.fromJS([])).toJS() || [],
             isRequire: true,
-            foodPriceType: '0',
+            foodPriceType: props.specialPromotionInfo.getIn(['$eventInfo', 'foodPriceType']) || '0',
         }
     }
 
@@ -303,6 +303,7 @@ class StepTwo extends React.Component {
         let cardTypeList = this.props.crmCardTypeNew.get('cardTypeLst');
         cardTypeList = Immutable.List.isList(cardTypeList) ? cardTypeList.toJS().filter(({regFromLimit}) => !!regFromLimit) : [];
         const { isNew } = this.props;
+        console.log(this.state.foodPriceType,'foodPriceType')
         return (
             <Form className={styles.cardLevelTree}>
                 <FormItem
@@ -364,7 +365,7 @@ class StepTwo extends React.Component {
                             labelCol={{ span: 4 }}
                             wrapperCol={{ span: 17 }}
                         >
-                            <RadioGroup onChange={this.handleFoodPriceTypeChange} value={this.state.foodPriceType}>
+                            <RadioGroup onChange={this.handleFoodPriceTypeChange} value={String(this.state.foodPriceType)}>
                                 <Radio value={'0'}>无限制</Radio>
                                 <Radio value={'1'}>仅原价菜品集点</Radio>
                             </RadioGroup>
