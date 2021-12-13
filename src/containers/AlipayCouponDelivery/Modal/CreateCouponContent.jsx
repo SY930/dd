@@ -47,6 +47,7 @@ class CreateCouponContent extends Component {
             WXJumpAppIDName: '',
             confirmLoading: false,
             tips: false,
+            giftType: '',
         }
     }
 
@@ -76,8 +77,10 @@ class CreateCouponContent extends Component {
 
     // 优惠券
     handleCouponChange = (value) => {
+        const [v, type] = value.split('_')
         this.setState({
-            giftItemID: value,
+            giftItemID: v,
+            giftType: type,
         })
     }
 
@@ -247,7 +250,7 @@ class CreateCouponContent extends Component {
             if (!err) {
                 // console.log('handleAuthSubmit', values);
                 this.setState({ confirmLoading: true })
-                const { effectType, effectGiftTimeHours, merchantID, editData } = this.state;
+                const { effectType, effectGiftTimeHours, merchantID, editData, giftType } = this.state;
                 const { user } = getStore().getState();
                 const { groupID } = user.get('accountInfo').toJS()
                 const rangePicker = values.rangePicker;
@@ -278,7 +281,7 @@ class CreateCouponContent extends Component {
                     validUntilDate: giftValidRange[1] ? giftValidRange[1].format('YYYYMMDDHHmmss') : '',
                     startTime: `${startTime}000000`,
                     giftItemID: values.giftItemID,
-                    giftType: 10,
+                    giftType,
                     jumpAppID: values.jumpAppID,
                     merchantID,
                     merchantType: values.merchantType,
