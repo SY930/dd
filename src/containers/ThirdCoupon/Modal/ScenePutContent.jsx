@@ -60,6 +60,7 @@ class ScenePutContent extends Component {
                 if (code === '000') {
                     message.success('投放成功');
                     this.setState({ confirmLoading: false })
+                    this.props.handleQuery();
                     return
                 }
                 this.setState({ confirmLoading: false })

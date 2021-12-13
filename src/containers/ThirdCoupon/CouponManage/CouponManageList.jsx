@@ -767,7 +767,7 @@ class CouponManageList extends Component {
                     />
                 }
                 {
-                    this.state.WXLaunchVisible && <ScenePutContent onCancel={this.handleCloseWXLaunchModal} wxData={this.state.wxData} isEdit={this.state.isEdit} title={this.state.title}/>
+                    this.state.WXLaunchVisible && <ScenePutContent onCancel={this.handleCloseWXLaunchModal} wxData={this.state.wxData} isEdit={this.state.isEdit} title={this.state.title} handleQuery={this.handleQuery} />
                 }
 			</div>
 		)
