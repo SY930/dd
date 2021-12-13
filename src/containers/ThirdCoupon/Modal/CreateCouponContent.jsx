@@ -48,6 +48,7 @@ class CreateCouponContent extends Component {
             WXJumpAppIDName: '',
             confirmLoading: false,
             tips: false,
+            giftType: '',
         }
     }
 
@@ -77,9 +78,10 @@ class CreateCouponContent extends Component {
 
     // 优惠券
     handleCouponChange = (value) => {
-    // console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 80 ~ CreateCouponContent ~ value", value)
+        const [v, type] = value.split('_')
         this.setState({
-            giftItemID: value,
+            giftItemID: v,
+            giftType: type,
         })
     }
 
@@ -245,7 +247,7 @@ class CreateCouponContent extends Component {
 
     handleDouyinSubmit = (values, groupId) => {
         const { giftValidRange = [], batchName, giftItemID, effectType, stock = {}, shopId, isExchange } = values;
-        const { effectGiftTimeHours } = this.state
+        const { effectGiftTimeHours, giftType } = this.state
         const endTime = giftValidRange[1] ? giftValidRange[1].format('YYYYMMDDHHmmss') : '';
         const startTime = giftValidRange[0] ? giftValidRange[0].format('YYYYMMDDHHmmss') : ''
         const couponCodeBatchInfo = {
@@ -266,7 +268,7 @@ class CreateCouponContent extends Component {
             isExchange: Number(isExchange),
             channelID: 70,
             couponCodeDockingType: 1,
-            giftType: 10, // TODO: 需要重新取值
+            giftType,
         };
         const url = '/api/v1/universal?';
         const method = '/couponCodeBatchService/addBatch.ajax';
@@ -281,7 +283,6 @@ class CreateCouponContent extends Component {
             method,
         };
         axios.post(url + method, params).then((res) => {
-            // console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 279 ~ CreateCouponContent ~ axios.post ~ res", res)
             const { code, message: msg } = res;
             if (code === '000') {
                 message.success('创建成功');
@@ -307,7 +308,7 @@ class CreateCouponContent extends Component {
             if (!err) {
                 // console.log('handleAuthSubmit', values);
                 this.setState({ confirmLoading: true })
-                const { effectType, effectGiftTimeHours, merchantID, editData } = this.state;
+                const { effectType, effectGiftTimeHours, merchantID, editData, giftType } = this.state;
                 const { user } = getStore().getState();
                 const { groupID } = user.get('accountInfo').toJS()
                 const rangePicker = values.rangePicker;
@@ -342,7 +343,7 @@ class CreateCouponContent extends Component {
                     validUntilDate: giftValidRange[1] ? giftValidRange[1].format('YYYYMMDDHHmmss') : '',
                     startTime: `${startTime}000000`,
                     giftItemID: values.giftItemID,
-                    giftType: 10,
+                    giftType,
                     jumpAppID: values.jumpAppID,
                     merchantID,
                     merchantType: values.merchantType,
@@ -795,7 +796,7 @@ class CreateCouponContent extends Component {
                             >
                                 {
                                     getFieldDecorator('giftItemID', {
-                                        initialValue: editData.giftItemID || '',
+                                        // initialValue: editData.giftItemID || '',
                                         onChange: this.handleCouponChange,
                                         rules: [
                                             { required: true, message: '请选择优惠券' },

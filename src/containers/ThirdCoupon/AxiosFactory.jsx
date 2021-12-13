@@ -44,7 +44,7 @@ function proGiftTreeData(giftTypes) {
         gt.crmGifts.map((gift) => {
             treeData[idx].children.push({
                 label: gift.giftName,
-                value: String(gift.giftItemID),
+                value: `${gift.giftItemID}_${gift.giftType}`,
                 key: gift.giftItemID,
                 giftValue: gift.giftValue,
                 giftType: gt.giftType,
