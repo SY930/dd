@@ -250,7 +250,7 @@ class CreateCouponContent extends Component {
             if (!err) {
                 // console.log('handleAuthSubmit', values);
                 this.setState({ confirmLoading: true })
-                const { effectType, effectGiftTimeHours, merchantID, editData, giftType } = this.state;
+                const { effectType, effectGiftTimeHours, merchantID, editData, giftType, giftItemID } = this.state;
                 const { user } = getStore().getState();
                 const { groupID } = user.get('accountInfo').toJS()
                 const rangePicker = values.rangePicker;
@@ -280,7 +280,7 @@ class CreateCouponContent extends Component {
                     EGiftEffectTime: giftValidRange[0] ? giftValidRange[0].format('YYYYMMDDHHmmss') : '',
                     validUntilDate: giftValidRange[1] ? giftValidRange[1].format('YYYYMMDDHHmmss') : '',
                     startTime: `${startTime}000000`,
-                    giftItemID: values.giftItemID,
+                    giftItemID,
                     giftType,
                     jumpAppID: values.jumpAppID,
                     merchantID,
