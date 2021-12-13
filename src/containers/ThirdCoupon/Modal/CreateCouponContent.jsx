@@ -246,10 +246,14 @@ class CreateCouponContent extends Component {
     }
 
     handleDouyinSubmit = (values, groupId) => {
-        const { giftValidRange = [], batchName, effectType, stock = {}, shopId, isExchange } = values;
-        const { effectGiftTimeHours, giftType, giftItemID } = this.state
+        const { giftValidRange = [], batchName, stock = {}, shopId, isExchange } = values;
+        const { effectGiftTimeHours, giftType, giftItemID, effectType } = this.state
         const endTime = giftValidRange[1] ? giftValidRange[1].format('YYYYMMDDHHmmss') : '';
         const startTime = giftValidRange[0] ? giftValidRange[0].format('YYYYMMDDHHmmss') : ''
+        if (!effectGiftTimeHours && effectType === '3') {
+            this.setState({ confirmLoading: false })
+            return message.error('请输入生效时间')
+        }
         const couponCodeBatchInfo = {
             batchName,
             // batchStatus: 1,
