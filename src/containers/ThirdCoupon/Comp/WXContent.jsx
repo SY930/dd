@@ -194,8 +194,8 @@ class WXContent extends Component {
                         ],
                     })(
                         <RadioGroup>
-                            <Radio value="3">WECHATPAY_MODE <Tooltip title="对应同步创建三方券"><Icon type="question-circle-o" style={{ marginLeft: 5 }} /></Tooltip></Radio>
-                            <Radio value="1">MERCHANT_API<Tooltip title="接口实时发放"><Icon type="question-circle-o" style={{ marginLeft: 5 }} /></Tooltip></Radio>
+                            <Radio value="3">WECHATPAY_MODE <Tooltip title="投放企鹅吉市等场景"><Icon type="question-circle-o" style={{ marginLeft: 5 }} /></Tooltip></Radio>
+                            <Radio value="1">MERCHANT_API<Tooltip title="投放线上餐厅送礼等场景"><Icon type="question-circle-o" style={{ marginLeft: 5 }} /></Tooltip></Radio>
                         </RadioGroup>
                     )}
                 </Form.Item>

@@ -662,6 +662,7 @@ class CouponManageList extends Component {
                             spinning: this.state.loading,
                         }
                     }
+                    className={styles.CouponTableList}
                     pagination={{
                         pageSize: this.state.pageSizes,
                         pageSizeOptions: ['25','50','100','200'],

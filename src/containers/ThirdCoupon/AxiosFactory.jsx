@@ -411,7 +411,7 @@ async function getLinks() {
 
 // 获取抖音店铺
 async function getDouyinShop() {
-    const method = 'dyshop/selectList';
+    const method = 'couponCodeBatchService/tiktokShopList.ajax';
     const { groupID } = getAccountInfo();
     const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW', data: { groupID, dyShopCO: { groupId: groupID } }, method, type };
     const response = await axios.post(url + method, params);
