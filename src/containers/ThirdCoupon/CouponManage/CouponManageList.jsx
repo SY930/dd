@@ -288,7 +288,6 @@ class CouponManageList extends Component {
                 this.setState({ treeData: x });
             });
         } else { // 抖音
-            // TODO: 增加商品兑换券
             getCardList({giftTypes:[10, 111, 21]}).then(x => { 
                 this.setState({ treeData: x });
             });
@@ -445,7 +444,7 @@ class CouponManageList extends Component {
                                 <Option value={''}>全部</Option>
                                 <Option value={'1'}>支付宝</Option>
                                 <Option value={'3'}>微信</Option>
-                                <Option value={'2'}>抖音</Option>
+                                {/* <Option value={'2'}>抖音</Option> */}
                             </Select>
                         </li>
                         <li>
@@ -708,7 +707,7 @@ class CouponManageList extends Component {
                     this.state.createThirdCouponVisble && <Modal
                         title="创建第三方券"
                         visible={true}
-                        width={700}
+                        width={520}
                         onCancel={this.handleCloseThirdCouponModal}
                         footer={null}
                         maskClosable={true}
@@ -732,8 +731,7 @@ class CouponManageList extends Component {
                                 <p><img src={WEIXIN}></img></p>
                                 <span>第三方微信券</span>
                             </li>
-                            {/* TODO： 更新platformType和channelID */}
-                            <li
+                            {/* <li
                                 className={styles.createCouponModal__item__li}
                                 onClick={() => {
                                     this.handleCreateCouponContentModal({ type: 3, channelID: 70, platformTypeCreate: 4 }, '新建第三方抖音券')
@@ -741,7 +739,7 @@ class CouponManageList extends Component {
                             >
                                 <p><img src={DOUYIN}></img></p>
                                 <span>抖音</span>
-                            </li>
+                            </li> */}
                         </ul>
                     </Modal>
                 }
