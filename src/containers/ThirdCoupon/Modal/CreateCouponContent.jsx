@@ -120,6 +120,7 @@ class CreateCouponContent extends Component {
         this.setState({
             merchantType: e.target.value,
             shopIsAuth: '0',
+            smidList: [],
             // editData,
 
         })
@@ -129,19 +130,21 @@ class CreateCouponContent extends Component {
     handleIndirectSelect = (value) => {
         this.setState({
             merchantID: value,
-        })
-        // 根据选择的主体获取smid
-        getSmid(value).then((res) => {
-            if (!res) {
+            smidList: [],
+        }, () => {
+            // 根据选择的主体获取smid
+            getSmid(value).then((res) => {
+                if (!res) {
+                    this.setState({
+                        shopIsAuth: '0',
+                    })
+                    return message.warn('该结算主体没有绑定smid，请选择其他主体！')
+                }
                 this.setState({
-                    shopIsAuth: '0',
+                    smidList: res,
                 })
-                return message.warn('该结算主体没有绑定smid，请选择其他主体！')
-            }
-            this.setState({
-                smidList: res,
+                this.handleSmidSubmit(res);
             })
-            this.handleSmidSubmit(res);
         })
     }
 
@@ -510,7 +513,8 @@ class CreateCouponContent extends Component {
     renderIndirect = () => {
         const { form, type } = this.props;
         const { getFieldDecorator } = form;
-        const { authorizeModalVisible } = this.state;
+        const { authorizeModalVisible, smidList = [], merchantType } = this.state;
+        const { bankMerchantCode } = smidList[0] || {};
         // const { editData } = this.state;
         // const value = editData.merchantType && editData.merchantType == '2' ? editData.merchantID : '';
         const offset = type == 2 ? 5 : 4
@@ -531,7 +535,7 @@ class CreateCouponContent extends Component {
                         })(<Select onChange={this.handleIndirectSelect} placeholder={'请输入结算主体'}>
                             {
                                 (this.props.indirectList || []).map(({ settleUnitName, settleUnitID }) => (
-                                    <Select.Option key={settleUnitID} value={`${settleUnitID}`}>{settleUnitID} - {settleUnitName}</Select.Option>
+                                    <Select.Option key={settleUnitID} value={`${settleUnitID}`}>{settleUnitName}</Select.Option>
                                 ))
                             }
                         </Select>)}
@@ -543,6 +547,8 @@ class CreateCouponContent extends Component {
                     {
                         this.renderGoAuth()
                     }
+                    { bankMerchantCode && <span style={{ marginLeft: '15px' }}>渠道商户号：{bankMerchantCode}</span>}
+
                 </Col>
                 <Col>
                     <Modal
