@@ -117,7 +117,7 @@ class ScenePutContent extends Component {
                             })
                         }
                     </Select>
-                    <span>投放企鹅吉市请先联系企鹅吉市商务对接</span>
+                    <span>投放企鹅吉市请先联系哗啦啦商务进行沟通</span>
                     {/* <RadioGroup onChange={this.onChange} value={this.state.value}>
                         <Radio value="0">企鹅吉市</Radio>
                     </RadioGroup> */}
