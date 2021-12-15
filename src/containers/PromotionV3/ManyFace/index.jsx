@@ -86,7 +86,6 @@ class ManyFace extends Component {
                 const { faceRule } = v;
                 const faceData = _.cloneDeep(faceRule)
                 let flag = false;
-                // console.log("🚀 ~ file: index.jsx ~ line 82 ~ ManyFace ~ form.validateFields ~ faceData", faceData)
                 faceRule.map((itm) => {
                     if (itm.conditionType == 2) {
                         if (!itm.conditionValue) {
@@ -120,7 +119,7 @@ class ManyFace extends Component {
                     return
                 }
                 const formData3 = faceData.map((item) => {
-                    if (item.triggerEventValue === 'customLink') {
+                    if (item.triggerEventValue === 'customLink' || item.triggerEventValue === 'toOpenCard') {
                         item.triggerEventCustomInfo = item.triggerEventCustomInfo.value;
                     } else {
                         item.triggerEventCustomInfo = JSON.stringify(item.triggerEventCustomInfo)
@@ -253,7 +252,7 @@ class ManyFace extends Component {
                 } else {
                     item.everyTagsRule = [];
                 }
-                if (item.triggerEventValue === 'customLink') {
+                if (item.triggerEventValue === 'customLink' || item.triggerEventValue === 'toOpenCard') {
                     item.triggerEventCustomInfo = { value: item.triggerEventCustomInfo }
                 } else  {
                     try {
@@ -264,7 +263,6 @@ class ManyFace extends Component {
                 }
                 return { ...item, id: item.itemID, isShowDishSelector: false }
             })
-        // console.log("🚀 ~ file: index.jsx ~ line 193 ~ ManyFace ~ faceData", faceData)
         }
         return faceData
     }
@@ -385,16 +383,6 @@ function mapStateToProps(state) {
     return {
         accountInfo: state.user.get('accountInfo'),
         user: state.user.toJS(),
-        // params: state.sale_giftInfoNew.get('listParams'),
-        // giftData: state.sale_giftInfoNew.get('giftSort'),
-        // shopSchema: state.sale_shopSchema_New,
-        // accountInfo: state.user.get('accountInfo'),
-        // menuList: state.user.get('menuList'),
-        // sharedGifts: state.sale_giftInfoNew.get('sharedGifts'),
-
-        // // 商城商品及分类信息
-        // goodCategories: state.sale_promotionDetailInfo_NEW.get('goodCategories').toJS(),
-        // goods: state.sale_promotionDetailInfo_NEW.get('goods').toJS(),
     }
 }
 

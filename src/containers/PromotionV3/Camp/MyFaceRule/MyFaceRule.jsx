@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
-import { Row, Col, Icon, Form, Select, message, Input, Button, Tooltip } from 'antd';
-import { axios } from '@hualala/platform-base';
+import { Icon, Form, Select, message, Input, Button, Tooltip } from 'antd';
+import { axios, getStore } from '@hualala/platform-base';
 import FoodSelectModal from '../../../../components/common/FoodSelector/FoodSelectModal'
 import styles from './styles.less';
 import { programList, faceDefVal } from './Commom'
@@ -19,6 +19,9 @@ const mapStateToProps = (state) => {
         accountInfo: state.user.get('accountInfo'),
     }
 }
+
+// TODO: 合代码时把11157去掉
+const GROUPID_SHOW = ['130442', '11157', '189702'];
 class MyFaceRule extends Component {
     constructor(props) {
         super(props);
@@ -42,6 +45,7 @@ class MyFaceRule extends Component {
                 // { label: '商城', value: '5' },
                 // { label: '跳转至小程序', value: '11' },
                 { label: '菜品加入购物车', value: 'shoppingCartAddFood' },
+                // { label: '小程序开卡', value: 'toOpenCard' }, // 仅针对九毛九集团可见
             ],
             mallActivityList: [],
             allActivityList: [],
@@ -61,6 +65,7 @@ class MyFaceRule extends Component {
         // this.searchAllMallActivity();
         this.searchCrmTag();
         // this.initData()
+        this.initEventSelectOption();
     }
 
 
@@ -69,12 +74,10 @@ class MyFaceRule extends Component {
         const list = [...value];
         const faceObj = value[idx];
         list[idx] = { ...faceObj, ...params };
-        // // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 72 ~ MyFaceRule ~ list", list)
         onChange(list);
     }
 
     onRange = (idx, key, value) => {
-        // // // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 74 ~ MyFaceRule ~ key, value", key, value)
         if (value == '1') { // 会员身份
             this.onChange(idx, { [key]: value, conditionValue: 'whetherHasCard', conditionName: '是否持卡会员', targetName: '持卡会员', targetValue: '0' })
             this.setState({
@@ -123,7 +126,7 @@ class MyFaceRule extends Component {
     onEvents = (idx, key, value) => {
         const item = this.state.eventSelectOption.filter(itm => itm.value == value)
         this.onChange(idx, { [key]: value, triggerEventName: item[0] ? item[0].label : '', triggerEventCustomInfo: {} })
-        this.getAvtivity(idx, value, key)
+        // this.getAvtivity(idx, value, key)
     }
 
     onEventsLinkValue = (idx, key, value) => {
@@ -220,49 +223,18 @@ class MyFaceRule extends Component {
     }
 
 
-    initData = () => {
-        const { value = [] } = this.state;
-        const everyTagsRule = [];
-        // const { everyTagsRule } = this.state;
-        // const item = this.state.tagsList.filter(itm => itm.tagCategoryID == value)
-        // const everyTags = this.state.tagRuleDetails.filter(itm => itm.tagCategoryID == value)
-        // this.onChange(idx, { [key]: value, conditionName: item[0] ? item[0].label : '', targetValue: '', targetName: '' })
-        // // const everyTagsRule = [];
-        // everyTagsRule[idx] = everyTags.map((itm) => {
-        //     return {
-        //         ...itm,
-        //         label: itm.tagName,
-        //         value: itm.tagRuleID,
-        //     }
-        // });
-        // this.setState({
-        //     [`targetValue_${idx}`]: '',
-        //     // everyTagsRule: [...e],
-        //     everyTagsRule,
-        // })
-        if (value.length > 0) {
-            // value.map((item, idx) => {
-            //     if (item.conditionType == '2') { // 会员标签
-            //         const everyTags = this.state.tagRuleDetails.filter(itm => itm.tagCategoryID == item.conditionValue)
-            //         // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 249 ~ MyFaceRule ~ value.map ~ everyTags", everyTags)
-            //         everyTagsRule[idx] = everyTags.map((itm) => {
-            //             return {
-            //                 ...itm,
-            //                 label: itm.tagName,
-            //                 value: itm.tagRuleID,
-            //             }
-            //         });
-            //     } else {
-            //         everyTagsRule[idx] = null;
-            //     }
-            // })
-            //  console.log("🚀 ~ _______________________-", everyTagsRule)
-            // this.setState({
-            //     everyTagsRule,
-            // })
+    initEventSelectOption = () => {
+        const { eventSelectOption } = this.state;
+        // const eventSelectOptionCopy = eventSelectOption;
+        const state = getStore().getState();
+        const { groupID } = state.user.get('accountInfo').toJS();
+        if (GROUPID_SHOW.includes(`${groupID}`)) {
+            eventSelectOption.push({ label: '小程序开卡', value: 'toOpenCard' })
         }
+        this.setState({
+            eventSelectOption,
+        })
     }
-
 
     // 查询所有营销活动
     searchAllActivity = () => {
@@ -323,7 +295,6 @@ class MyFaceRule extends Component {
                 tagTypes.map((item) => {
                     tagsList.push(...item.categoryEntries)
                 })
-                // // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 252 ~ MyFaceRule ~ tagTypes.map ~ tagsList", tagsList)
 
                 this.setState({
                     tagCategories: res.tagCategories,
@@ -351,7 +322,6 @@ class MyFaceRule extends Component {
     }
 
     handleModalOk = (i, item, values = []) => {
-        // // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 237 ~ MyFaceRule ~ valuehhhhhhhhh", values)
         if (values.length > 1) {
             message.warn('只能选择一个菜品');
             return;
@@ -403,18 +373,18 @@ class MyFaceRule extends Component {
     }
 
     del = ({ target }, data) => {
-        const { activityOption } = this.state;
+        // const { activityOption } = this.state;
         const { everyTagsRule } = data;
         const { idx } = target.closest('a').dataset;
         const { value, onChange } = this.props;
         const list = [...value];
         list.splice(+idx, 1);
         everyTagsRule.splice(+idx, 1)
-        activityOption.splice(+idx, 1)
+        // activityOption.splice(+idx, 1)
         onChange(list);
         this.setState({
             everyTagsRule,
-            activityOption,
+            // activityOption,
         })
     }
 
@@ -428,6 +398,17 @@ class MyFaceRule extends Component {
                 value={v.triggerEventCustomInfo.value || ''}
             />
             <span>不支持储值套餐链接</span>
+        </FormItem>)
+    }
+
+    renderOpenCardInput = (i, v) => {
+        return (<FormItem>
+            <Input
+                style={{ marginLeft: 8, width: '264px' }}
+                onChange={(_v) => { this.onChangeCustomUrl(i, 'triggerEventCustomInfo', _v) }}
+                value={v.triggerEventCustomInfo.value || ''}
+                placeholder="默认开通本店铺适用的线上卡类型"
+            />
         </FormItem>)
     }
 
@@ -502,7 +483,6 @@ class MyFaceRule extends Component {
 
     render() {
         const { value = [], decorator } = this.props;
-        // // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 31 ~ MyFaceRule ~ render ~ value", value)
         // const { length } = value;
         // 防止回显没数据不显示礼品组件
         if (!value[0]) {
@@ -597,8 +577,9 @@ class MyFaceRule extends Component {
                                                 }
                                             </Select>
                                         </FormItem>
-                                        {(v.triggerEventValue == 'customLink') && this.renderInput(i, v, decorator)}
-                                        {v.triggerEventValue == 'shoppingCartAddFood' && this.renderFoods(i, v, decorator)}
+                                        {v.triggerEventValue == 'customLink' && this.renderInput(i, v)}
+                                        {v.triggerEventValue == 'shoppingCartAddFood' && this.renderFoods(i, v)}
+                                        { v.triggerEventValue == 'toOpenCard' && this.renderOpenCardInput(i, v)}
                                         {/* {this.renderSelect(i, v, decorator, [])} */}
                                     </div>
                                 </div>
