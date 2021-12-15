@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Modal, Spin,message } from 'antd';
 import FilterSelector from '../../components/common/FilterSelector';
-
+import { ACCOUNTLIST } from './Config';
 export const FILTERS = [{
     name: 'basicPromotion',
     key: 'basicType',
@@ -51,7 +51,7 @@ export const FILTERS = [{
         {value: '-20',label: '会员折扣'},
     ]
 }];
-const accountList = ['253686','292428','1348','318422'];//这里的集团共享组数量放开 500个
+
 class PromotionSelectorModal extends Component {
     state = {
         loading: false,
@@ -79,7 +79,7 @@ class PromotionSelectorModal extends Component {
 
     handleOk = () => {
         const { groupID,shareRuleType } = this.props;
-        if(accountList.indexOf(groupID) > -1 && shareRuleType == '0'){
+        if(ACCOUNTLIST.indexOf(groupID) > -1 && shareRuleType == '0'){
             if(this.selected && this.selected.length > 500){
                 message.warning('最多选择500个活动')
                 return
