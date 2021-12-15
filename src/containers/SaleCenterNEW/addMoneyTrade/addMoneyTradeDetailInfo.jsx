@@ -16,6 +16,8 @@ import {
     message,
     Col,
     Row,
+    Tooltip,
+    Icon,
 } from 'antd';
 import { connect } from 'react-redux'
 import PriceInput from '../common/PriceInput';
@@ -41,7 +43,7 @@ import AddMoneyTradeDishesTableWithBrand from './AddMoneyTradeDishesTableWithBra
 import AddMoneyTradeDishesTableWithoutBrand from './AddMoneyTradeDishesTableWithoutBrand'
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
-import {injectIntl} from '../IntlDecor';
+import { injectIntl } from '../IntlDecor';
 
 @injectIntl()
 class AddfreeAmountTradeDetailInfo extends React.Component {
@@ -74,6 +76,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
             return {
                 display: false,
                 stageType: 2,
+                calType: 0,
                 stageAmount: '',
                 stageCount: '',
                 freeAmount: '',
@@ -92,8 +95,9 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         return {
             display,
             stageType: _rule.stageType || 2,
+            calType: _rule.calType || 0,
             stageAmount: _rule.stage ? _rule.stage[0].stageAmount : '',
-            stageCount: _rule.stage ? _rule.stage[0].stageCount: '',
+            stageCount: _rule.stage ? _rule.stage[0].stageCount : '',
             freeAmount: _rule.stage ? _rule.stage[0].freeAmount : '',
             isLimited: _rule.totalFoodMax > 0 ? '1' : '0',
             totalFoodMax: _rule.totalFoodMax || undefined,
@@ -111,6 +115,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         let {
             stageAmount,
             stageType,
+            calType,
             stageCount,
             dishes,
             stageCountFlag,
@@ -158,6 +163,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
             });
             const rule = {
                 stageType,
+                calType,
                 totalFoodMax: this.canLimitBeSet() && isLimited == '1' ? totalFoodMax : undefined,
                 stageStyle: Number(ruleType) > 1 ? 1 : 2, // 1 每满XX加价（可加N次）  2 满XX加价（加1次）
                 stage: [
@@ -200,11 +206,15 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         const previousRuleType = this.state.previousRuleType;
         const ruleType = this.state.ruleType;
         if (previousRuleType !== null) {
-            this.setState({stageType, ruleType: previousRuleType, previousRuleType: ruleType});
+            this.setState({ stageType, ruleType: previousRuleType, previousRuleType: ruleType });
         } else {
-            this.setState({stageType, ruleType: '0', previousRuleType: ruleType});
+            this.setState({ stageType, ruleType: '0', previousRuleType: ruleType });
         }
 
+    }
+
+    onCalTypeChange = (e) => {
+        this.setState({ calType: Number(e.target.value) });
     }
     // 减免金额
     onStageAmountChange(value) {
@@ -232,12 +242,12 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         this.setState({ stageCount, stageCountFlag });
     }
 
-    renderDishsSelectionBox() {
+    renderDishsSelectionBox(calType) {
         return (
             <div style={{ position: 'relative' }}>
-                { !this.canLimitBeSet() && (
+                {!this.canLimitBeSet() && (
                     <div style={{ position: 'absolute', top: 12, left: 60 }}>
-    （{SALE_LABEL.k5kqf0s3}）
+                        （{SALE_LABEL.k5kqf0s3}）
                     </div>
                 )}
                 {
@@ -251,6 +261,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                     ) : (
                         <AddMoneyTradeDishesTableWithBrand
                             legacyPayPrice={this.state.freeAmount}
+                            calType={calType}
                             onChange={(value) => {
                                 this.onDishesChange(value);
                             }}
@@ -276,7 +287,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
             <FormItem className={[styles.FormItemStyle, styles.formItemForMore].join(' ')} wrapperCol={{ span: 17, offset: 4 }} >
                 <span className={styles.gTip}>{SALE_LABEL.k5ezdwpv}</span>
                 <span className={styles.gDate} onClick={this.onChangeClick}>
-                {SALE_LABEL.k5ezdx9f} {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
+                    {SALE_LABEL.k5ezdx9f} {!this.state.display && <Iconlist className="down-blue" iconName={'down'} width="13px" height="13px" />}
                     {this.state.display && <Iconlist className="down-blue" iconName={'up'} width="13px" height="13px" />}
                 </span>
             </FormItem>
@@ -328,19 +339,19 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
             status,
         } = this.getTotalMaxValidateInfo();
         return (
-            <div style={{height: '50px', marginTop: '8px'}} className={styles.flexContainer}>
-                <div style={{lineHeight: '28px', marginRight: '14px'}}>
+            <div style={{ height: '50px', marginTop: '8px' }} className={styles.flexContainer}>
+                <div style={{ lineHeight: '28px', marginRight: '14px' }}>
                     {SALE_LABEL.k5kqf18r}
                 </div>
-                <div style={{width: '300px'}}>
+                <div style={{ width: '300px' }}>
                     <Row>
-                        <Col  span={this.state.isLimited == 0 ? 24 : 8}>
+                        <Col span={this.state.isLimited == 0 ? 24 : 8}>
                             <Select onChange={this.handleIsLimitedChange}
-                                    value={String(this.state.isLimited)}
-                                    getPopupContainer={(node) => node.parentNode}
+                                value={String(this.state.isLimited)}
+                                getPopupContainer={(node) => node.parentNode}
                             >
-    <Option key="0" value={'0'}>{k5koakb3}</Option>
-        <Option key="1" value={'1'}>{k5kp4vhr}</Option>
+                                <Option key="0" value={'0'}>{k5koakb3}</Option>
+                                <Option key="1" value={'1'}>{k5kp4vhr}</Option>
                             </Select>
                         </Col>
                         {
@@ -363,7 +374,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                         }
                     </Row>
                 </div>
-        </div>
+            </div>
         )
     }
 
@@ -403,68 +414,83 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                         </RadioGroup>
                     </FormItem>
                     {this.state.stageType == 2 ?
-                    <FormItem
-                        className={[styles.FormItemStyle, styles.explainBack].join(' ')}
-                        wrapperCol={{ span: 17, offset: 4 }}
-                        validateStatus={this.state.stageAmountFlag ? 'success' : 'error'}
-                        help={this.state.stageAmountFlag ? null : SALE_LABEL.k5kqf1pf}
-                    >
-                        <PriceInput
-                            addonBefore={
-                                <Select size="default"
+                        <FormItem
+                            className={[styles.FormItemStyle, styles.explainBack].join(' ')}
+                            wrapperCol={{ span: 17, offset: 4 }}
+                            validateStatus={this.state.stageAmountFlag ? 'success' : 'error'}
+                            help={this.state.stageAmountFlag ? null : SALE_LABEL.k5kqf1pf}
+                        >
+                            <PriceInput
+                                addonBefore={
+                                    <Select size="default"
                                         onChange={this.ruleTypeChange}
                                         value={this.state.ruleType}
                                         getPopupContainer={(node) => node.parentNode}
-                                >
-                            <Option key="0" value="0">{k5ez4ovx}</Option>
-                            <Option key="2" value="2">{k5ez4pdf}</Option>
-                            <Option key="1" value="1">{k5koalgr}</Option>
-                            <Option key="3" value="3">{k5kqf1xr}</Option>
-                                </Select>
-                            }
-                            addonAfter={k5ezdbiy}
-                            value={{ number: this.state.stageAmount }}
-                            defaultValue={{ number: this.state.stageAmount }}
-                            onChange={this.onStageAmountChange}
-                            modal="int"
-                        />
-                    </FormItem> :
-                    <FormItem
-                        className={[styles.FormItemStyle, styles.explainBack].join(' ')}
-                        wrapperCol={{ span: 17, offset: 4 }}
-                        validateStatus={this.state.stageCountFlag ? 'success' : 'error'}
-                        help={this.state.stageCountFlag ? null : SALE_LABEL.k5kqf263}>
-                        <PriceInput
-                            addonBefore={
-                                <Select size="default"
+                                    >
+                                        <Option key="0" value="0">{k5ez4ovx}</Option>
+                                        <Option key="2" value="2">{k5ez4pdf}</Option>
+                                        <Option key="1" value="1">{k5koalgr}</Option>
+                                        <Option key="3" value="3">{k5kqf1xr}</Option>
+                                    </Select>
+                                }
+                                addonAfter={k5ezdbiy}
+                                value={{ number: this.state.stageAmount }}
+                                defaultValue={{ number: this.state.stageAmount }}
+                                onChange={this.onStageAmountChange}
+                                modal="int"
+                            />
+                        </FormItem> :
+                        <FormItem
+                            className={[styles.FormItemStyle, styles.explainBack].join(' ')}
+                            wrapperCol={{ span: 17, offset: 4 }}
+                            validateStatus={this.state.stageCountFlag ? 'success' : 'error'}
+                            help={this.state.stageCountFlag ? null : SALE_LABEL.k5kqf263}>
+                            <PriceInput
+                                addonBefore={
+                                    <Select size="default"
                                         onChange={this.ruleTypeChange}
                                         value={this.state.ruleType}
                                         getPopupContainer={(node) => node.parentNode}
-                                >
-                            <Option key="0" value="0">{k5kqf2ef}</Option>
-                            <Option key="2" value="2">{k5kqf2mr}</Option>
-                            <Option key="1" value="1">{k5kqf2v3}</Option>
-                            <Option key="3" value="3">{k5kqf33f}</Option>
-                                </Select>
-                            }
-                            addonAfter={k5ez4qy4}
-                            value={{ number: this.state.stageCount }}
-                            defaultValue={{ number: this.state.stageCount }}
-                            onChange={this.onStageCountChange}
-                            modal="int"
-                        />
-                    </FormItem>
+                                    >
+                                        <Option key="0" value="0">{k5kqf2ef}</Option>
+                                        <Option key="2" value="2">{k5kqf2mr}</Option>
+                                        <Option key="1" value="1">{k5kqf2v3}</Option>
+                                        <Option key="3" value="3">{k5kqf33f}</Option>
+                                    </Select>
+                                }
+                                addonAfter={k5ez4qy4}
+                                value={{ number: this.state.stageCount }}
+                                defaultValue={{ number: this.state.stageCount }}
+                                onChange={this.onStageCountChange}
+                                modal="int"
+                            />
+                        </FormItem>
                     }
+                    <FormItem
+                        label={'换购方式'}
+                        required={true}
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 17 }}
+                    >
+                        <RadioGroup onChange={this.onCalTypeChange} value={this.state.calType}>
+                            <Radio key={'0'} value={0}>按活动价格</Radio>
+                            <Radio key={'1'} value={1}>按减免价格</Radio>
+                        </RadioGroup>
+                        <Tooltip title={'换购价格 = 门店菜品价格 － 减免价格'}>
+                            <Icon type="question-circle" style={{ cursor: 'pointer' }} />
+                        </Tooltip>
+                    </FormItem>
                     {
                         this.state.ruleType == '0' || this.state.ruleType == '2' ?
                             null :
                             <ConnectedScopeListSelector isShopMode={this.props.isShopFoodSelectorMode} />
                     }
 
-                    {this.renderDishsSelectionBox()}
+                    {this.renderDishsSelectionBox(this.state.calType)}
                     {this.canLimitBeSet() && this.renderTotalFoodMax()}
                     {this.renderAdvancedSettingButton()}
-                    {this.state.display ? <AdvancedPromotionDetailSetting payLimit={this.state.stageType == 2}   /> : null}
+                    {this.state.display ? <AdvancedPromotionDetailSetting payLimit={this.state.stageType == 2} /> : null}
                 </Form>
             </div>
         )

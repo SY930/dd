@@ -188,6 +188,9 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
             selectorModalVisible,
             data,
         } = this.state;
+        const {
+            calType = 0,
+        } = this.props
         const resultTableColumns = [
             {
                 title: COMMON_LABEL.serialNumber,
@@ -266,7 +269,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
                 className: 'TableTxtRight',
             },
             {
-                title: SALE_LABEL.k5kqz2nx,
+                title: calType == 1 ? '减免价' : SALE_LABEL.k5kqz2nx,
                 width: 60,
                 dataIndex: 'payPrice',
                 key: 'payPrice',
