@@ -3242,6 +3242,84 @@ class GiftAddModalStep extends React.PureComponent {
                     )
                 },
             },
+            duihuanrule: {
+                label: '兑换菜品属性',
+                type: 'custom',
+                defaultValue: '0',
+                render: (decorator, form) => {
+                    // const applyScene = form.getFieldValue('applyScene');
+                    // let descTxt = applyScene != '1' ? '菜品' : '商品';
+                    return decorator({})(
+                        <RadioGroup>
+                            <Radio value={'0'}>普通菜品</Radio>
+                            <Radio value={'1'}>称重菜品</Radio>
+                            <Tooltip title={
+                            <p>
+                                仅POS2.5支持；仅能”按菜品“选择活动范围且仅可以兑换”需要确认数量“的菜品；不支持商城券
+                            </p>
+                        }>
+                            <Icon type="question-circle" />
+                        </Tooltip>
+                        </RadioGroup>
+                    )
+                },
+            },
+            dhcpzl: {
+                label: <span>
+                <span>兑换菜品重量</span>
+                <Tooltip title={
+                    <p>
+                        兑换菜品的重量，以斤为单位
+                    </p>
+                }>
+                    <Icon style={{ marginLeft: 5, marginRight: 5}} type="question-circle" />
+                </Tooltip></span>,
+                type: 'custom',
+                required: true,
+                defaultValue: '',
+                rules: [{ required: true, message: '不能为空' }, {
+                    validator: (rule, v, cb) => {
+                        if (!/(^\+?\d{0,8}$)|(^\+?\d{0,8}\.\d{0,2}$)/.test(Number(v))) {
+                            cb(rule.message);
+                        }
+                        cb();
+                    },
+                    message: '整数不超过8位，小数不超过2位',
+                }],
+                render: (decorator, form) => {
+                    return decorator({})(
+                        <Input size="large" addonAfter="斤" />
+                    )
+                },
+            },
+            czwcz: {
+                label: <span>
+                <span>称重误差值</span>
+                <Tooltip title={
+                    <p>
+                        兑换菜品的重量误差，以斤为单位
+                    </p>
+                }>
+                    <Icon style={{ marginLeft: 5, marginRight: 5}} type="question-circle" />
+                </Tooltip></span>,
+                type: 'custom',
+                required: true,
+                defaultValue: '',
+                rules: [{ required: true, message: '不能为空' }, {
+                    validator: (rule, v, cb) => {
+                        if (!/(^\+?\d{0,8}$)|(^\+?\d{0,8}\.\d{0,2}$)/.test(Number(v))) {
+                            cb(rule.message);
+                        }
+                        cb();
+                    },
+                    message: '整数不超过8位，小数不超过2位',
+                }],
+                render: (decorator, form) => {
+                    return decorator({})(
+                        <Input size="large" addonAfter="斤" addonBefore={'±'}/>
+                    )
+                },
+            },
             subRule: {
                 label: '配菜计算',
                 type: 'custom',
