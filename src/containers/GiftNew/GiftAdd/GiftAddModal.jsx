@@ -463,6 +463,15 @@ class GiftAddModal extends React.Component {
                 size: 'large',
                 rules: [
                     { required: true, message: '礼品名称不能为空' },
+                    {
+                        validator: (rule, v, cb) => {
+                            if(String(v || '').includes('，')||String(v || '').includes(',')) {
+                                cb(rule.message);
+                            }
+                            cb();
+                        },
+                        message: '请不要输入逗号',
+                    },
                     { max: this.props.type == 'add' ? 35 : 50, message: `不能超过${this.props.type == 'add' ? `35`: `50`}个字符` },
                 ],
                 disabled: type !== 'add' && type !== 'copy',
