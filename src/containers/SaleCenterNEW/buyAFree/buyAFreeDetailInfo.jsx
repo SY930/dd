@@ -97,7 +97,7 @@ class BuyAFreeDetailInfo extends React.Component {
             display,
             ruleType: _ruleType,
             data,
-            subRule:_rule.subRule
+            subRule:_rule.subRule === undefined ? 1 : _rule.subRule,
         });
     }
 
