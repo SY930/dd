@@ -1010,7 +1010,6 @@ class SpecialDetailInfo extends Component {
         if (!flag) {
             return false;
         }
-        debugger
         let {
             data,
             shareImagePath,
