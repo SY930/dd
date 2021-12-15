@@ -113,7 +113,7 @@ class ScenePutContent extends Component {
                     >
                         {
                             [{ value: '0', label: '企鹅吉市' }].map(({ value, label }) => {
-                                return <Option value={value}>{label}</Option>
+                                return <Option value={value} key={value}>{label}</Option>
                             })
                         }
                     </Select>
