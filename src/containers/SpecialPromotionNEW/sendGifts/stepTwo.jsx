@@ -225,7 +225,6 @@ class Two extends React.Component {
     }
 
     handleSelectChange(value) {
-        // console.log("🚀 ~ file: stepTwo.jsx ~ line 232 ~ Two ~ handleSelectChange ~ value", value)
         if (value == '0') {
             this.setState({
                 groupMembersID: value,

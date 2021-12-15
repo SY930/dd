@@ -8,6 +8,7 @@ import {
 	Input, Tooltip,
 } from 'antd';
 import CreateCouponContent from '../Modal/CreateCouponContent'
+import ScenePutContent from '../Modal/ScenePutContent'
 import { debounce } from 'lodash'
 import styles from '../AlipayCoupon.less'
 import { axiosData } from '../../../helpers/util'
@@ -16,6 +17,7 @@ import { THIRD_VOUCHER_MANAGEMENT } from '../../../constants/entryCodes';
 import { getCardList, getShopPid, getIndirectList, getMpAppList, getPayChannel } from '../AxiosFactory';
 import WEIXIN from '../../../assets/weixin.png';
 import ZHIFUBAO from '../../../assets/zhifubao.png'
+import DOUYIN from '../../../assets/douyin.png'
 const moment = require('moment');
 
 
@@ -56,23 +58,30 @@ class CouponManageList extends Component {
             editData: {}, // 编辑券详情内容
             batchStatus: '', // 使用状态
             // couponCodeDockingType: '', // 券码对接类型: 1-订单获取, 2-批量预存导入
-            type: '', // 前端标识 1 支付宝 | 2 微信
+            type: '', // 前端标识 1 支付宝 | 2 微信 | 3 抖音
             channelID: 60, // 60支付宝 50微信
             title: '',
-            platformTypeCreate: 1, // 平台：1 支付宝   3微信
+            platformTypeCreate: 1, // 平台：1 支付宝   3微信  4 抖音
+            WXLaunchVisible: false,
+            wxData: {},
 		}
 		this.handleQuery = debounce(this.handleQuery.bind(this), 500);
 	}
 
 	componentDidMount() {
-		this.handleQuery();
+        const { from } =  this.getQueryVariable();
+        this.handleSearch(from);
         this.initData();
 		this.onWindowResize();
 		window.addEventListener('resize', this.onWindowResize);
 	}
 
+
 	componentWillUnmount() {
 		window.removeEventListener('resize', this.onWindowResize);
+        this.setState({
+            platformType: '',
+        })
 	}
 
 	onWindowResize = () => {
@@ -123,6 +132,26 @@ class CouponManageList extends Component {
         });
     }
 
+    clearUrl = () => {
+        var { href } = window.location;
+        var [valiable] = href.split('?');
+        window.history.pushState(null, null, valiable);
+    }
+
+    getQueryVariable = () => {
+        const search = window.decodeURIComponent(window.location.search)
+        var query = search.substr(1)
+        query = query.split('&')
+        var params = {}
+        for (let i = 0; i < query.length; i++) {
+            let q = query[i].split('=')
+            if (q.length === 2) {
+                params[q[0]] = q[1]
+            }
+        }
+        return params
+    }
+
 
 	getParams = () => {
         const {
@@ -153,6 +182,37 @@ class CouponManageList extends Component {
             opt.batchStatus = batchStatus
         }
         return opt
+    }
+
+    handleSearch = (from) => {
+        if (from === 'wx') {
+            this.setState({
+                platformType: '3'
+            }, () => {
+                this.handleQuery();
+                this.clearUrl();
+            })
+        } else if (from === 'zhifubao') {
+            this.setState({
+                platformType: '1'
+            }, () => {
+                this.handleQuery();
+                this.clearUrl();
+            })
+        } else if (from === 'douyin') {
+            this.setState({
+                platformType: '2'
+            }, () => {
+                this.handleQuery();
+                this.clearUrl();
+            })
+        } else {
+            this.setState({
+                platformType: ''
+            }, () => {
+                this.handleQuery();
+            })
+        }
     }
 
 	handleQuery = (pageNo, pageSize) => {
@@ -210,12 +270,11 @@ class CouponManageList extends Component {
         })
     }
 
-    // handleCreateCouponModal = () => {
-    //     this.setState({
-    //         createCouponModalVisible: true,
-    //         editData: {},
-    //     })
-    // }
+    handleCloseWXLaunchModal = () => {
+        this.setState({
+            WXLaunchVisible: false
+        })
+    }
 
     handleCreateCouponContentModal = ({ type, channelID, platformTypeCreate }, title) => {
         if (type === 1) { // 支付宝券
@@ -224,8 +283,12 @@ class CouponManageList extends Component {
                     treeData: x 
                 });
             });
-        } else { // 微信券
+        } else if (type === 2) { // 微信券
             getCardList({giftTypes:[10, 111, 21]}).then(x => {
+                this.setState({ treeData: x });
+            });
+        } else { // 抖音
+            getCardList({giftTypes:[10, 111, 21]}).then(x => { 
                 this.setState({ treeData: x });
             });
         }
@@ -303,6 +366,12 @@ class CouponManageList extends Component {
         })
     }
 
+    handleShowWxModal = () => {
+        this.setState({
+            WXLaunchVisible: true,
+        })
+    }
+
 
 	renderHeader = () => {
 		const headerClasses = `layoutsToolLeft ${styles.headerWithBgColor}`;
@@ -312,13 +381,15 @@ class CouponManageList extends Component {
                     第三方券管理
 				</span>
 				<div>
-					{/* <Button
-						type="ghost"
-                        style={{ marginRight: 10 }}
-
-					>已删除第三方券</Button> */}
 					<Button
 						type="ghost"
+                        style={{ marginRight: 10 }}
+                        onClick={() => {
+                            jumpPage({ menuID: '100008993' })
+                        }}
+					>第三方投放</Button>
+					<Button
+						type="primary"
 						icon="plus"
 						className={styles.jumpToCreate}
                         onClick={this.handleCreateCouponModal}
@@ -361,8 +432,9 @@ class CouponManageList extends Component {
                         <li>
                             <Select
                                 style={{ width: '160px' }}
-                                defaultValue=""
+                                defaultValue={this.state.platformType}
                                 // placeholder="请选择关联渠道"
+                                value={this.state.platformType}
                                 onChange={(value) => {
                                     this.setState({
                                         platformType: value,
@@ -372,6 +444,7 @@ class CouponManageList extends Component {
                                 <Option value={''}>全部</Option>
                                 <Option value={'1'}>支付宝</Option>
                                 <Option value={'3'}>微信</Option>
+                                {/* <Option value={'2'}>抖音</Option> */}
                             </Select>
                         </li>
                         <li>
@@ -468,6 +541,37 @@ class CouponManageList extends Component {
                                 </span>
                             )
                         }
+                        {
+                            record.channelID == 50 && record.couponCodeDockingType == 3 && <a
+                                href="#"
+                                disabled={!!record.eventStatus}
+                                onClick={!!record.eventStatus ?  null : () => {
+                                    this.setState({
+                                        wxData: record,
+                                        isEdit: false,
+                                        title: '投放场景'
+                                    }, () => {
+                                        this.handleShowWxModal()
+                                    })
+                                    // jumpPage({ menuID: '100008993' })
+                                }}
+                            >投放</a>
+                        }
+                        {
+                             record.channelID == 50 && !!record.eventStatus && record.couponCodeDockingType == 3 &&
+                             <a
+                             href="#"
+                             onClick={() => {
+                                this.setState({
+                                    wxData: record,
+                                    isEdit: true,
+                                    title: '投放详情'
+                                }, () => {
+                                    this.handleShowWxModal()
+                                })
+                             }}
+                         >投放详情</a>
+                        }
                     </span>
                     );
                 },
@@ -490,16 +594,44 @@ class CouponManageList extends Component {
                 title: '关联渠道',
                 dataIndex: 'channelID',
                 key: 'channelID',
-                width: 90,
+                width: 80,
                 render: (text) => {
-                    return ['60', 60].includes(text) ? '支付宝' : '微信'
+                    return ['60', 60].includes(text) ? '支付宝' : (['70', 70].includes(text) ? '抖音' : '微信')
                 },
+            },
+            {
+                title: '券code模式',
+                dataIndex: 'couponCodeDockingType',
+                key: 'couponCodeDockingType',
+                width: 160,
+                render: (text, record) => {
+                    if (text == '3' && record.platformType == 3) {
+                        return <span>WECHATPAY_MODE<Tooltip title="适用于企鹅吉市等场景对接"><Icon type="question-circle-o" style={{ marginLeft: 5 }} /></Tooltip></span>
+                    }
+                    if (text == '1' && record.platformType == 3) {
+                        return 'MERCHANT_API'
+                    }
+                    if (text == '2' && record.platformType == 1) {
+                        return 'MERCHANT_UPLOAD'
+                    }
+                    return '--'
+                }
+            },
+            {
+                title: '批次号',
+                dataIndex: 'trdBatchID',
+                key: 'trdBatchID',
+                width: 140,
+                render: (text, record) => {
+                    if (record.platformType == 3 || record.platformType == 1)  return <Tooltip title={text}>{text}</Tooltip>
+                    return '--'
+                }
             },
             {
                 title: '剩余数量',
                 dataIndex: 'stock',
                 key: 'stock',
-                width: 90,
+                width: 80,
                 render: (text, record) => {
                     const { receive } = record
                     if (text) {
@@ -512,7 +644,7 @@ class CouponManageList extends Component {
                 className: 'TableTxtCenter',
                 dataIndex: 'createStampStr',
                 key: 'createStampStr',
-                width: 400,
+                width: 180,
                 render: (text) => text,
             },
 		];
@@ -529,6 +661,7 @@ class CouponManageList extends Component {
                             spinning: this.state.loading,
                         }
                     }
+                    className={styles.CouponTableList}
                     pagination={{
                         pageSize: this.state.pageSizes,
                         pageSizeOptions: ['25','50','100','200'],
@@ -585,7 +718,6 @@ class CouponManageList extends Component {
                                     this.handleCreateCouponContentModal({ type: 1, channelID: 60, platformTypeCreate: 1 }, '新建第三方支付宝券')
                                 }}
                                 className={styles.createCouponModal__item__li}
-                                style={{ marginRight: '72px' }}
                             >
                                 <p><img src={ZHIFUBAO}></img></p>
                                 <span>第三方支付宝券</span>
@@ -599,6 +731,15 @@ class CouponManageList extends Component {
                                 <p><img src={WEIXIN}></img></p>
                                 <span>第三方微信券</span>
                             </li>
+                            {/* <li
+                                className={styles.createCouponModal__item__li}
+                                onClick={() => {
+                                    this.handleCreateCouponContentModal({ type: 3, channelID: 70, platformTypeCreate: 4 }, '新建第三方抖音券')
+                                }}
+                            >
+                                <p><img src={DOUYIN}></img></p>
+                                <span>抖音</span>
+                            </li> */}
                         </ul>
                     </Modal>
                 }
@@ -623,6 +764,9 @@ class CouponManageList extends Component {
                         viewData={this.state.viewData}
                         handleCloseVidwModal={this.handleCloseVidwModal}
                     />
+                }
+                {
+                    this.state.WXLaunchVisible && <ScenePutContent onCancel={this.handleCloseWXLaunchModal} wxData={this.state.wxData} isEdit={this.state.isEdit} title={this.state.title} handleQuery={this.handleQuery} />
                 }
 			</div>
 		)
@@ -670,8 +814,8 @@ class ViewCouponContent extends Component {
 
     render() {
         const { viewData } = this.state;
-        const { stock, receive, merchantType, merchantID, itemID } = viewData;
-        let title = viewData.platformType == 1 ? '支付宝' : '微信';
+        const { stock, receive, merchantType, merchantID, itemID, platformType} = viewData;
+        let title = viewData.platformType == 1 ? '支付宝' : viewData.platformType == 2 ? '抖音' : '微信';
         const columns = [
             {
                 title: '券名称',
@@ -693,8 +837,10 @@ class ViewCouponContent extends Component {
                 render: (text) => {
                     if (text == 3) {
                         return '相对有效期'
+                    } else if (text == 2) {
+                        return '固定有效期'
                     }
-                    return '固定有效期'
+                    return '--'
                 }
             },
             {
@@ -706,9 +852,13 @@ class ViewCouponContent extends Component {
                         const effectGiftTimeHours = record.effectGiftTimeHours;
                         const t = effectGiftTimeHours > 0 ? `${effectGiftTimeHours}后天生效` : '立即生效'
                         return <Tooltip title={t}>{t}</Tooltip>;
+                    } else if (record.effectType == 2) {
+                        const time = record.EGiftEffectTime ? `${moment(record.EGiftEffectTime, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}/${moment(record.validUntilDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}` : '--';
+                        return <Tooltip title={time}>{time}</Tooltip>;
+                    } else {
+                        return '--'
                     }
-                    const time = record.EGiftEffectTime ? `${moment(record.EGiftEffectTime, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}/${moment(record.validUntilDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}` : '--';
-                    return <Tooltip title={time}>{time}</Tooltip>;
+                   
                 }
             },
             {
@@ -719,12 +869,17 @@ class ViewCouponContent extends Component {
                     if (record.effectType == 3) { //
                         const t = `自领取${record.validUntilDays}天有效`;
                         return <Tooltip title={t}>{t}</Tooltip>
+                    } else if (record.effectType == 2) {
+                        const time = record.EGiftEffectTime ? `${moment(record.EGiftEffectTime, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}/${moment(record.validUntilDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}` : '--';
+                        return <Tooltip title={time}>{time}</Tooltip>;;
+                    } else {
+                        return '--'
                     }
-                    const time = record.EGiftEffectTime ? `${moment(record.EGiftEffectTime, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}/${moment(record.validUntilDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}` : '--';
-                    return <Tooltip title={time}>{time}</Tooltip>;;
+
                 }
             },
         ];
+        let styleName = platformType == 1 ? 'signInfoZhifubao' : platformType == 2 ? 'signInfoDouyin' : 'signInfoWx'
         return (
             <Modal
                 title={`第三方${title}券详情`}
@@ -735,12 +890,14 @@ class ViewCouponContent extends Component {
                 footer={null}
             >
                 <Row className={styles.CouponViewInfo}>
-                    <Col span={24} offset={1} className={styles.signInfo}>
+                    <Col span={24} offset={1} className={[styles.signInfo, styles[styleName]].join(' ')}>
                         <h4>{viewData.batchName}</h4>
                         <div style={{ marginBottom: 12 }}>
                             <p>券批次ID： <Tooltip title={itemID}><span>{itemID.length > 15 ? `${itemID.slice(0, 6)}...${itemID.slice(-10)}` : itemID}</span></Tooltip></p>
-                            <p>关联小程序：
-                                 <span>{viewData.platformType == 3 ? this.getJumpAppName(viewData) : viewData.jumpAppID}</span></p>
+                            {
+                                platformType != 2 &&    <p>关联小程序：
+                                <span>{platformType == 3 ? this.getJumpAppName(viewData) : viewData.jumpAppID}</span></p>
+                            }
                         </div>
                         <div>
                             <p>剩余/总数： <span>{stock ? Number(stock) - Number(receive) : ''}/{viewData.stock}</span></p>
@@ -755,16 +912,18 @@ class ViewCouponContent extends Component {
                             dataSource={[this.state.viewData]}
                         />
                     </Col>
-                    <Col>
+                    {
+                        platformType != 2 && <Col>
                         <div style={{ marginBottom: 12 }}>
                             <p><span className={styles.relationText__span}>{title}链接方式：</span> <span>{merchantType == 1 ? '直连' : '间连'}</span></p>
                         </div>
                         <div style={{ marginBottom: 12 }}>
-                            <p><span className={styles.relationText__span}>{title}{merchantType == 1 ? (viewData.platformType == '1' ? 'pid' : '账务主体') : viewData.platformType == '1' ? 'smid' : '账务主体'}号：</span> 
-                                <span>{ viewData.platformType == '3' ? this.getWXMerchantID(viewData) : merchantID}</span>
+                            <p><span className={styles.relationText__span}>{title}{merchantType == 1 ? (platformType == '1' ? 'pid' : '账务主体') : platformType == '1' ? 'smid' : '账务主体'}号：</span> 
+                                <span>{platformType == '3' ? this.getWXMerchantID(viewData) : merchantID}</span>
                             </p>
                         </div>
                     </Col>
+                    }
                     <div className={styles.promotionFooter__footer}>
                         <Button key="0" onClick={this.props.handleCloseVidwModal}>关闭</Button>
                     </div>

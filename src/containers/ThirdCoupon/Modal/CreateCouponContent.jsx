@@ -7,7 +7,8 @@ import AuthorizeModalContent from './AuthorizeContent';
 import { getSmid, isAuth, goAuthorizeAC } from '../AxiosFactory'
 import { SALE_CENTER_GIFT_EFFICT_DAY_ALIPAY } from '../../../redux/actions/saleCenterNEW/types';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
-import WXContent from './WXContent';
+import WXContent from '../Comp/WXContent';
+import DouyinContent from '../Comp/DouyinContent'
 // import { axiosData } from '../../../helpers/util'
 import styles from '../AlipayCoupon.less';
 
@@ -30,7 +31,7 @@ class CreateCouponContent extends Component {
             successStartEnd: [], // 开始时间 结束时间
             giftItemID: editData.giftItemID ? editData.giftItemID : '', // 优惠券id
             effectType: editData.effectType ? `${editData.effectType}` : '3', // 相对有效期
-            effectGiftTimeHours: editData.effectGiftTimeHours ? `${editData.effectGiftTimeHours}` : '', // 生效时间
+            effectGiftTimeHours: editData.effectGiftTimeHours ? `${editData.effectGiftTimeHours}` : '0', // 生效时间
             validUntilDays: editData.validUntilDays ? `${editData.validUntilDays}` : '', // 有效天数
             giftValidRange: [], // 固定有效期
             merchantType: '1', // 支付宝链接方式  1 直连 | 2 间连
@@ -119,6 +120,7 @@ class CreateCouponContent extends Component {
         this.setState({
             merchantType: e.target.value,
             shopIsAuth: '0',
+            smidList: [],
             // editData,
 
         })
@@ -128,19 +130,21 @@ class CreateCouponContent extends Component {
     handleIndirectSelect = (value) => {
         this.setState({
             merchantID: value,
-        })
-        // 根据选择的主体获取smid
-        getSmid(value).then((res) => {
-            if (!res) {
+            smidList: [],
+        }, () => {
+            // 根据选择的主体获取smid
+            getSmid(value).then((res) => {
+                if (!res) {
+                    this.setState({
+                        shopIsAuth: '0',
+                    })
+                    return message.warn('该结算主体没有绑定smid，请选择其他主体！')
+                }
                 this.setState({
-                    shopIsAuth: '0',
+                    smidList: res,
                 })
-                return message.warn('该结算主体没有绑定smid，请选择其他主体！')
-            }
-            this.setState({
-                smidList: res,
+                this.handleSmidSubmit(res);
             })
-            this.handleSmidSubmit(res);
         })
     }
 
@@ -244,6 +248,67 @@ class CreateCouponContent extends Component {
         })
     }
 
+    handleDouyinSubmit = (values, groupId) => {
+        const { giftValidRange = [], batchName, stock = {}, shopId, isExchange } = values;
+        const { effectGiftTimeHours, giftType, giftItemID, effectType } = this.state
+        const endTime = giftValidRange[1] ? giftValidRange[1].format('YYYYMMDDHHmmss') : '';
+        const startTime = giftValidRange[0] ? giftValidRange[0].format('YYYYMMDDHHmmss') : ''
+        if (!effectGiftTimeHours && effectType === '3') {
+            this.setState({ confirmLoading: false })
+            return message.error('请输入生效时间')
+        }
+        const couponCodeBatchInfo = {
+            batchName,
+            // batchStatus: 1,
+            giftItemID,
+            // couponName:
+            // couponType
+            EGiftEffectTime: startTime, // 固定有效期生效时间
+            validUntilDate: endTime, // 固定有效期失效时间
+            effectType,
+            groupId,
+            platformType: '2',
+            effectGiftTimeHours,
+            validUntilDays: values.validUntilDays ? values.validUntilDays.number : '',
+            stock: stock.number,
+            shopId,
+            isExchange: Number(isExchange),
+            channelID: 70,
+            couponCodeDockingType: 1,
+            giftType,
+        };
+        const url = '/api/v1/universal?';
+        const method = '/couponCodeBatchService/addBatch.ajax';
+        const params = {
+            service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+            type: 'post',
+            // couponCodeBatchInfo: res,
+            data: {
+                couponCodeBatchInfo,
+                groupID: groupId,
+            },
+            method,
+        };
+        axios.post(url + method, params).then((res) => {
+            const { code, message: msg } = res;
+            if (code === '000') {
+                message.success('创建成功');
+                this.props.handleCloseModal();
+                this.props.handleQuery();
+                this.props.onParentCancel();
+                this.setState({ confirmLoading: false })
+                return
+            }
+            // this.props.handleCloseModal();
+            this.setState({ confirmLoading: false })
+            message.error(msg);
+        }).catch((error) => {
+            // this.props.handleCloseModal();
+            this.setState({ confirmLoading: false })
+            console.log(error)
+        })
+    }
+
     handleSubmit = () => {
         const { form, channelID, platformType, type } = this.props
         form.validateFields((err, values) => {
@@ -255,6 +320,10 @@ class CreateCouponContent extends Component {
                 const { groupID } = user.get('accountInfo').toJS()
                 const rangePicker = values.rangePicker;
                 const giftValidRange = values.giftValidRange || [];
+                if (type == 3) { // 抖音
+                    this.handleDouyinSubmit(values, groupID)
+                    return null
+                }
                 if (!effectGiftTimeHours && values.effectType === '3') {
                     this.setState({ confirmLoading: false })
                     return message.error('请输入生效时间')
@@ -263,7 +332,7 @@ class CreateCouponContent extends Component {
                     this.setState({ confirmLoading: false })
                     return message.error('请输入支付宝链接方式')
                 }
-                if (values.merchantType === '2' && !this.state.bindUserId && type != 2) { // 间连需要关联M4
+                if (values.merchantType === '2' && !this.state.bindUserId && type == 1) { // 支付宝间连需要关联M4
                     this.setState({ confirmLoading: false })
                     return message.error('间连的支付宝账号未关联M4')
                 }
@@ -272,7 +341,7 @@ class CreateCouponContent extends Component {
                 const datas = {
                     batchName: values.batchName,
                     channelID,
-                    couponCodeDockingType: 2,
+                    couponCodeDockingType: 2, // 支付宝默认传2批量预存，微信需要用户手动选择1，3
                     stock: values.stock.number,
                     effectType,
                     effectGiftTimeHours,
@@ -302,7 +371,10 @@ class CreateCouponContent extends Component {
                     datas.maxCouponsPerUser = values.maxCouponsPerUser;
                     datas.masterMerchantID = this.state.masterMerchantID;
                     datas.jumpAppID = this.state.WXJumpAppID;
-                    datas.couponCodeDockingType = 1;
+                    datas.couponCodeDockingType = values.couponCodeDockingType;
+                    datas.miniProgramsAppId = values.miniProgramsAppId;
+                    datas.miniProgramsPath = values.miniProgramsPath;
+                    datas.validateWay = values.validateWay;
                 }
                 const url = '/api/v1/universal?';
                 let method = 'couponCodeBatchService/addBatch.ajax';
@@ -355,14 +427,15 @@ class CreateCouponContent extends Component {
 
     // 支付宝直连
     renderDirect = () => {
-        const { form } = this.props;
+        const { form, type } = this.props;
         const { getFieldDecorator } = form;
         const { editData, authorizeModalVisible } = this.state;
+        const offset = type == 3 ? 5 : 4
         // if (editData.merchantType == )
         const value = editData.merchantType && editData.merchantType == '1' ? editData.merchantID : '';
         return (
             <Row>
-                <Col span={16} offset={5} className={styles.DirectBox}>
+                <Col span={16} offset={offset} className={styles.DirectBox}>
                     <FormItem
                         labelCol={{ span: 0 }}
                         wrapperCol={{ span: 24 }}
@@ -438,14 +511,16 @@ class CreateCouponContent extends Component {
 
     // 支付宝间连
     renderIndirect = () => {
-        const { form } = this.props;
+        const { form, type } = this.props;
         const { getFieldDecorator } = form;
-        const { authorizeModalVisible } = this.state;
+        const { authorizeModalVisible, smidList = [], merchantType } = this.state;
+        const { bankMerchantCode } = smidList[0] || {};
         // const { editData } = this.state;
         // const value = editData.merchantType && editData.merchantType == '2' ? editData.merchantID : '';
+        const offset = type == 2 ? 5 : 4
         return (
             <Row>
-                <Col span={16} offset={5} className={styles.IndirectBox}>
+                <Col span={16} offset={offset} className={styles.IndirectBox}>
                     <FormItem
                         labelCol={{ span: 0 }}
                         wrapperCol={{ span: 24 }}
@@ -460,7 +535,7 @@ class CreateCouponContent extends Component {
                         })(<Select onChange={this.handleIndirectSelect} placeholder={'请输入结算主体'}>
                             {
                                 (this.props.indirectList || []).map(({ settleUnitName, settleUnitID }) => (
-                                    <Select.Option key={settleUnitID} value={`${settleUnitID}`}>{settleUnitID} - {settleUnitName}</Select.Option>
+                                    <Select.Option key={settleUnitID} value={`${settleUnitID}`}>{settleUnitName}</Select.Option>
                                 ))
                             }
                         </Select>)}
@@ -472,6 +547,8 @@ class CreateCouponContent extends Component {
                     {
                         this.renderGoAuth()
                     }
+                    { bankMerchantCode && <span style={{ marginLeft: '15px' }}>渠道商户号：{bankMerchantCode}</span>}
+
                 </Col>
                 <Col>
                     <Modal
@@ -506,9 +583,10 @@ class CreateCouponContent extends Component {
         const { form, type } = this.props;
         const { getFieldDecorator } = form;
         const { editData } = this.state;
+        const offset = type == 2 ? 5 : 4;
         return (
             <Row>
-                <Col span={16} offset={5} className={styles.CouponGiftBox}>
+                <Col span={16} offset={offset} className={styles.CouponGiftBox}>
                     <FormItem
                         label="总数量"
                         labelCol={{ span: 4 }}
@@ -654,52 +732,6 @@ class CreateCouponContent extends Component {
         )
     }
 
-    // renderSmidModal = () => {
-    //     const rowRadioSelection = {
-    //         type: 'radio',
-    //         columnTitle: '选择',
-    //         onChange: (selectedRowKeys, selectedRows) => {
-    //             this.setState({
-    //                 smidUserSelect: selectedRows,
-    //             })
-    //         },
-    //     }
-    //     const columns = [
-    //         {
-    //             title: 'channelNo',
-    //             dataIndex: 'channelNo',
-    //             key: 'channelNo',
-    //             render: t => t,
-    //         },
-    //         {
-    //             title: 'smid',
-    //             key: 'settleID',
-    //             dataIndex: 'settleID',
-    //             render: text => text,
-    //         },
-    //     ];
-    //     return (
-    //         <Modal
-    //             title="SMID列表"
-    //             maskClosable={true}
-    //             width={700}
-    //             visible={this.state.smidModalVisible}
-    //             onCancel={this.handleCloseSmidModal}
-    //             onOk={this.handleSmidSubmit}
-    //         >
-    //             <Table
-    //                 bordered={true}
-    //                 rowSelection={rowRadioSelection}
-    //                 columns={columns}
-    //                 dataSource={this.state.smidList}
-    //                 rowKey="bankChannelId"
-    //                 pagination={false}
-    //             />
-
-    //         </Modal>
-    //     )
-    // }
-
     render() {
         const { form, title, type } = this.props;
         const { getFieldDecorator } = form;
@@ -708,6 +740,14 @@ class CreateCouponContent extends Component {
         // if (editData.batchName) {
         //     title = '编辑第三方支付宝券';
         // }
+        const formItemLayout = type == 2 ? {
+            labelCol: { span: 5 },
+            wrapperCol: { span: 16 },
+        } : {
+            labelCol: { span: 4 },
+            wrapperCol: { span: 16 },
+        }
+
         return (
             <Modal
                 title={title}
@@ -723,14 +763,13 @@ class CreateCouponContent extends Component {
                         <Form className={styles.crmSuccessModalContentBox}>
                             <FormItem
                                 label="第三方券名称"
-                                labelCol={{ span: 5 }}
-                                wrapperCol={{ span: 16 }}
+                                {...formItemLayout}
                                 required={true}
                             >
                                 {getFieldDecorator('batchName', {
                                     initialValue: editData.batchName || '',
                                     rules: [
-                                        { required: true, message: '请输入第三方券名称' },
+                                        { required: true, message: '请输入第三方券名称,最大20个字符', max: 20 },
                                     ],
                                 })(
                                     <Input
@@ -739,34 +778,35 @@ class CreateCouponContent extends Component {
                                     />
                                 )}
                             </FormItem>
-                            <FormItem
-                                label="投放时间"
-                                labelCol={{ span: 5 }}
-                                wrapperCol={{ span: 16 }}
-                                required={true}
-                            >
-                                {getFieldDecorator('rangePicker', {
-                                    // initialValue: editData.startTime > 0 ? [moment(editData.startTime, 'YYYYMMDD'), moment(editData.endTime, 'YYYYMMDD')] : [],
-                                    rules: [
-                                        { required: true, message: '请输入日期' },
-                                    ],
-                                    // onchange: this.handleRangeChange,
-                                })(
-                                    <RangePicker
-                                        style={{ width: '100%', height: 30 }}
-                                        format="YYYY-MM-DD"
-                                    />
-                                )}
-                            </FormItem>
+                            {
+                                type != 3 && <FormItem
+                                    label="投放时间"
+                                    {...formItemLayout}
+                                    required={true}
+                                >
+                                    {getFieldDecorator('rangePicker', {
+                                        // initialValue: editData.startTime > 0 ? [moment(editData.startTime, 'YYYYMMDD'), moment(editData.endTime, 'YYYYMMDD')] : [],
+                                        rules: [
+                                            { required: true, message: '请输入日期' },
+                                        ],
+                                        // onchange: this.handleRangeChange,
+                                    })(
+                                        <RangePicker
+                                            style={{ width: '100%', height: 30 }}
+                                            format="YYYY-MM-DD"
+                                        />
+                                    )}
+                                </FormItem>
+                            }
+                            
                             <FormItem
                                 label="选择优惠券"
-                                labelCol={{ span: 5 }}
-                                wrapperCol={{ span: 16 }}
+                                {...formItemLayout}
                                 required={true}
                             >
                                 {
                                     getFieldDecorator('giftItemID', {
-                                        initialValue: editData.giftItemID || '',
+                                        // initialValue: editData.giftItemID || '',
                                         onChange: this.handleCouponChange,
                                         rules: [
                                             { required: true, message: '请选择优惠券' },
@@ -779,34 +819,35 @@ class CreateCouponContent extends Component {
                                             showSearch={true}
                                             treeNodeFilterProp="label"
                                             allowClear={true}
+                                            // labelInValue
                                         />
                                     )
                                 }
                             </FormItem>
                             {giftItemID && this.renderCoupon()}
-                            <FormItem
-                                label="链接方式"
-                                labelCol={{ span: 5 }}
-                                wrapperCol={{ span: 16 }}
-                            >
-                                {getFieldDecorator('merchantType', {
-                                    onChange: this.handleLinkWay,
-                                    initialValue: editData.merchantType ? `${editData.merchantType}` : merchantType,
-                                    // rules: [{ required: true, message: '请输入活动名称' }],
+                            {
+                                type !== 3 && <FormItem
+                                    label="链接方式"
+                                    {...formItemLayout}
+                                >
+                                    {getFieldDecorator('merchantType', {
+                                        onChange: this.handleLinkWay,
+                                        initialValue: editData.merchantType ? `${editData.merchantType}` : merchantType,
+                                        // rules: [{ required: true, message: '请输入活动名称' }],
 
-                                })(
-                                    <RadioGroup>
-                                        <RadioButton value="2">间连</RadioButton>
-                                        <RadioButton value="1">直连</RadioButton>
-                                    </RadioGroup>
-                                )}
-                            </FormItem>
+                                    })(
+                                        <RadioGroup>
+                                            <RadioButton value="2">间连</RadioButton>
+                                            <RadioButton value="1">直连</RadioButton>
+                                        </RadioGroup>
+                                    )}
+                                </FormItem>
+                            }
                             { type === 1 && this.renderZhifubaoContent(merchantType) }
-                            { type === 2 && <WXContent form={form} merchantType={merchantType} onChangeWXMerchantID={this.onChangeWXMerchantID} onChangeWXJumpAppID={this.onChangeWXJumpAppID} />}
                             {
                                 type === 1 && <FormItem
                                     label="跳转小程序"
-                                    labelCol={{ span: 5 }}
+                                    labelCol={{ span: 4 }}
                                     wrapperCol={{ span: 16 }}
                                     required={true}
                                 >
@@ -823,7 +864,9 @@ class CreateCouponContent extends Component {
                                     )}
                                 </FormItem>
                             }
-                            {
+                            { type === 2 && <WXContent form={form} merchantType={merchantType} onChangeWXMerchantID={this.onChangeWXMerchantID} onChangeWXJumpAppID={this.onChangeWXJumpAppID} />}
+                            { type === 3 && <DouyinContent form={form} merchantType={merchantType} />}
+                            {/* {
                                 type === 2 && <FormItem
                                     label="用户最大领取数量"
                                     labelCol={{ span: 5 }}
@@ -856,7 +899,7 @@ class CreateCouponContent extends Component {
                                         />
                                     )}
                                 </FormItem>
-                            }
+                            } */}
                         </Form>
                     </Col>
                 </Row>
