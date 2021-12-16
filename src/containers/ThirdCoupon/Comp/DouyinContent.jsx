@@ -13,7 +13,7 @@ class DouyinContent extends Component {
         };
     }
     componentDidMount() {
-        // this.initData();
+        this.initData();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -48,19 +48,15 @@ class DouyinContent extends Component {
                                 { required: true, message: '请输入抖音店铺ID' },
                             ],
                         })(
-                            <Input
-                                placeholder="请输入抖音店铺ID"
-                                style={{ height: '30px' }}
-                            />
-                            // <Select
-                            //     placeholder="请选择抖音店铺ID"
-                            // >
-                            //     {
-                            //         (this.state.shopList || []).map(({ shopId, shopName }) => (
-                            //             <Select.Option key={shopId} value={`${shopId}`}>{shopName}</Select.Option>
-                            //         ))
-                            //     }
-                            // </Select>
+                            <Select
+                                placeholder="请选择抖音店铺ID"
+                            >
+                                {
+                                    (this.state.shopList || []).map(({ shopID, shopName }) => (
+                                        <Select.Option key={shopID} value={`${shopID}`}>{shopName}</Select.Option>
+                                    ))
+                                }
+                            </Select>
                         )}
                     </Form.Item>
                     <Form.Item
