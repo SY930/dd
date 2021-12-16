@@ -574,6 +574,16 @@ class GiftAddModalStep extends React.PureComponent {
         if(key==='delivery') {
             this.setState({ delivery: value });
         }
+
+        if(key == 'duihuanrule'){
+            if(value == 1){
+                formRef.setFieldsValue({
+                    mallScope :'1'
+                });
+                this.handleFormChange('mallScope','1', formRef)
+            }     
+                
+        }
         
     }
 
@@ -805,6 +815,7 @@ class GiftAddModalStep extends React.PureComponent {
             let couponFoodScopes = params.applyScene == '2' ? params.couponFoodScopes : [];
             if(params.mallIncludeGood instanceof Array && params.mallIncludeGood.length > 0) {
                 let mallIncludeGoodSet = new Set(params.mallIncludeGood);
+                console.log(111,goods)
                 params.couponFoodScopes = goods.filter((item)=>{
                     return mallIncludeGoodSet.has(item.goodID);
                 }).map((item)=>{
@@ -2485,7 +2496,7 @@ class GiftAddModalStep extends React.PureComponent {
             applySceneOpts = [{label:'店铺券',value:'0'}]
         }
         let disabled = false
-        if(type == 'edit' || describe == '不定额代金券') {
+        if(type == 'edit' || describe == '不定额代金券' || form.getFieldValue('duihuanrule') == 1) {
             disabled = true;
         }
         return  decorator({
@@ -3235,7 +3246,7 @@ class GiftAddModalStep extends React.PureComponent {
                     // const applyScene = form.getFieldValue('applyScene');
                     // let descTxt = applyScene != '1' ? '菜品' : '商品';
                     return decorator({})(
-                        <RadioGroup>
+                        <RadioGroup disabled={form.getFieldValue('duihuanrule') == 1}>
                             <Radio value={'0'}>按分类</Radio>
                             <Radio value={'1'}>按菜品</Radio>
                         </RadioGroup>
@@ -3243,7 +3254,7 @@ class GiftAddModalStep extends React.PureComponent {
                 },
             },
             duihuanrule: {
-                label: '兑换菜品属性',
+                label: '兑换菜品类型',
                 type: 'custom',
                 defaultValue: '0',
                 render: (decorator, form) => {
@@ -3287,9 +3298,9 @@ class GiftAddModalStep extends React.PureComponent {
                     message: '整数不超过8位，小数不超过2位',
                 }],
                 render: (decorator, form) => {
-                    return decorator({})(
+                    return form.getFieldValue('duihuanrule') == 1?decorator({})(
                         <Input size="large" addonAfter="斤" />
-                    )
+                    ):null
                 },
             },
             czwcz: {
@@ -3315,9 +3326,9 @@ class GiftAddModalStep extends React.PureComponent {
                     message: '整数不超过8位，小数不超过2位',
                 }],
                 render: (decorator, form) => {
-                    return decorator({})(
+                    return form.getFieldValue('duihuanrule') == 1?decorator({})(
                         <Input size="large" addonAfter="斤" addonBefore={'±'}/>
-                    )
+                    ):null
                 },
             },
             subRule: {
