@@ -95,7 +95,6 @@ class SuccessPage extends Component {
 
     handleChangeStatus = (value, { itemID }) => {
         // e.stopPropagation();
-        // console.log("🚀 ~ file: SuccessPage.jsx ~ line 96 ~ SuccessPage ~ value", value);
         const eventStatus = value ? 1 : 0;
         const params = { trdEventInfo: { eventStatus, itemID } };
         axiosData(

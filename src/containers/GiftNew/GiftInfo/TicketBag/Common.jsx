@@ -165,7 +165,19 @@ const formItems = {
     couponPackageName: {
         type: 'text',
         label: '券包名称',
-        rules: ['required', 'stringLength'],
+        rules: [
+            'required',
+            'stringLength',
+            {
+                validator: (rule, v, cb) => {
+                    if(String(v || '').includes('，')||String(v || '').includes(',')) {
+                        cb(rule.message);
+                    }
+                    cb();
+                },
+                message: '请不要输入逗号',
+            },
+        ],
     },
     couponPackageValue: {
         type: 'text',

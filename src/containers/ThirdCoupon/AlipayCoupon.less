@@ -349,7 +349,6 @@
             bottom: 0;
             width: 121px;
             height: 92px;
-            background: url('http://res.hualala.com/basicdoc/3bdff800-1ac4-48b2-8886-0abc81f135e4.png') no-repeat;
             background-size: 100% 100%;
         }
         > h4 {
@@ -390,6 +389,13 @@
         padding: 0 20px;
         overflow: hidden;
     }
+    .CouponTableList {
+        :global {
+            .ant-table-pagination {
+                float: left;
+            }
+        }
+    }
 }
 // 第三方支付宝券详情
 .CouponViewInfo {
@@ -424,6 +430,16 @@
             }
         }
     }
+    .signInfoZhifubao {
+        &::after {
+            background: url('http://res.hualala.com/basicdoc/3bdff800-1ac4-48b2-8886-0abc81f135e4.png') no-repeat;
+        }
+    }
+    .signInfoWx {
+        &::after {
+            background: url('http://res.hualala.com/basicdoc/5dbd185f-dd47-45b4-bbe3-d20392d6f0e5.png') no-repeat;
+        }
+    }
     .signInfo {
         position: relative;
         margin: 0px 0 20px;
@@ -438,7 +454,7 @@
             bottom: 0;
             width: 121px;
             height: 92px;
-            background: url('http://res.hualala.com/basicdoc/3bdff800-1ac4-48b2-8886-0abc81f135e4.png') no-repeat;
+            // background: url('http://res.hualala.com/basicdoc/3bdff800-1ac4-48b2-8886-0abc81f135e4.png') no-repeat;
             background-size: 100% 100%;
         }
         > h4 {
@@ -460,7 +476,7 @@
 
 .createCouponModal__flex__ul {
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     .createCouponModal__item__li {
         img  {
             display: inline-block;

@@ -17,7 +17,6 @@ class MutliGift extends Component {
     }
     onChange = (idx, params) => {
         const { value, onChange } = this.props;
-        // console.log("🚀 ~ file: MutliGift.jsx ~ line 20 ~ MutliGift ~ value0-----", value)
         let {treeData} = this.state
         let list = [...value];
         const giftObj = value[idx];

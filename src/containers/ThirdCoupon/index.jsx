@@ -1,13 +1,13 @@
 import React from 'react';
 import { connect, Provider } from 'react-redux';
-import AlipayCouponDeliveryPage from './AlipayCouponDeliveryPage';
+import AliCouponDeliveryPage from './AliCouponDeliveryPage';
 import registerPage from '../../index';
 import { ACTIVITY_LAUNCH } from '../../constants/entryCodes';
 // @registerPage([PROMOTION_WECHAT_COUPON_LIST]);
 // @connect(mapStateToProps)
 
 const getProvider = (props) => {
-    return (<Provider><AlipayCouponDeliveryPage {...props} /></Provider>)
+    return (<Provider><AliCouponDeliveryPage {...props} /></Provider>)
 }
 
 function mapStateToProps(state) {

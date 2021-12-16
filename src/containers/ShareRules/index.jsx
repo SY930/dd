@@ -16,7 +16,7 @@ import {
 } from "../../redux/actions/shareRules/index";
 import { BASIC_PROMOTION_MAP, GIFT_MAP } from "../../constants/promotionType";
 import CreateShareRulesModal from "./CreateShareRulesModal";
-import { getRuleGroupList, queryShareRuleDetail, addShareRuleGroup, updateShareRuleGroup, deleteShareRuleGroup, initShareRuleGroup, setStorageValue, getStorageValue,FetchGiftList,fetchAllPromotionList } from './AxiosFactory';
+import { getRuleGroupList, queryShareRuleDetail, addShareRuleGroup, updateShareRuleGroup, deleteShareRuleGroup, initShareRuleGroup, setStorageValue, getStorageValue, FetchGiftList, fetchAllPromotionList } from './AxiosFactory';
 import { fetchAllPromotionListAC } from "../../redux/actions/saleCenterNEW/promotionDetailInfo.action";
 import emptyPage from '../../assets/empty_page.png'
 import { fetchPromotionScopeInfo } from "../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
@@ -54,11 +54,12 @@ export default class ShareRules extends Component {
         isInitModal: false,//显示初始化弹窗
         linkFlag: false,//共享组是否被引用
         isShopEnv: this.props.user.shopID > 0 ? true : false,//是否店铺环境
-        giftAndCouponList:[]
+        giftAndCouponList: [],
+        shareRuleName: '',
 
     }
     componentDidMount() {
-        let {groupID} = this.props.user.accountInfo;
+        let { groupID } = this.props.user.accountInfo;
         let initializedObj = getStorageValue('isInitialized');
         if (initializedObj && initializedObj.groupID == groupID) {
             this.queryAll();
@@ -71,7 +72,7 @@ export default class ShareRules extends Component {
                 shopID: this.props.user.shopID > 0 ? this.props.user.shopID : '',
             }).then(boolen => {
                 if (boolen) {
-                    setStorageValue('isInitialized', true, 86400000 * 365,groupID)
+                    setStorageValue('isInitialized', true, 86400000 * 365, groupID)
                     this.queryAll();
                 }
             })
@@ -87,14 +88,14 @@ export default class ShareRules extends Component {
             fetchAllPromotionList({
                 groupID,
                 shopID: this.props.user.shopID > 0 ? this.props.user.shopID : undefined,
-                isActive: 1,
-                status: 2,
+                isActive: -1,
+                status: 4,//正在执行的活动和未开始执行的活动
                 pageNo: 1, pageSize: 10000,
             })
         ]).then((data) => {
-            if(data && data.length > 0){
+            if (data && data.length > 0) {
                 this.setState({
-                    giftAndCouponList:data
+                    giftAndCouponList: data
                 })
             }
         })
@@ -120,7 +121,7 @@ export default class ShareRules extends Component {
         });
     }
     querySearchResult = () => {
-        const { shareTypeInput, createOriginInput, searchTypeInput, searchNameInput } = this.state;
+        const { shareTypeInput, createOriginInput, searchTypeInput, searchNameInput, shareRuleName } = this.state;
         let queryCondition = {};
         queryCondition.shareRuleType = shareTypeInput;
         queryCondition.createType = createOriginInput;
@@ -142,9 +143,29 @@ export default class ShareRules extends Component {
                             })
                         }
                     })
+                    if (shareRuleName) {
+                        let temp = []
+                        filterList.forEach((item) => {
+                            if (item.shareRuleName && item.shareRuleName.indexOf(shareRuleName) > -1) {
+                                temp.push(item)
+                            }
+                        })
+                        filterList = temp
+                    }
                 } else {
-                    filterList = list
+                    if (shareRuleName) {
+                        let temp = []
+                        list.forEach((item) => {
+                            if (item.shareRuleName && item.shareRuleName.indexOf(shareRuleName) > -1) {
+                                temp.push(item)
+                            }
+                        })
+                        filterList = temp
+                    } else {
+                        filterList = list
+                    }
                 }
+                
                 this.setState({
                     shareGroupInfosList: filterList
                 })
@@ -260,7 +281,7 @@ export default class ShareRules extends Component {
                         共享规则设置
                     </span>
                     <span className={styles.subTitle}>
-                        各类营销（基础营销、哗啦啦优惠券、会员权益）内活动默认互斥，需要多个活动共享时需创建共享规则实现。
+                        基础营销、哗啦啦优惠券活动间默认互斥，与会员权益默认共享，需要多个活动共享时需创建共享规则实现。
                     </span>
                 </div>
                 <Button
@@ -299,6 +320,7 @@ export default class ShareRules extends Component {
             shareTypeInput,
             createOriginInput,
             searchNameInput,
+            shareRuleName,
         } = this.state;
         const {
             isQuerying,
@@ -368,6 +390,13 @@ export default class ShareRules extends Component {
                     onChange={(e) => this.setState({ searchNameInput: e.target.value })}
                     style={{ width: 180, marginRight: 20 }}
                     placeholder="请输入营销活动名称"
+                />
+                <span className={styles.headerLabel}>共享规则名称</span>
+                <Input
+                    value={shareRuleName}
+                    onChange={(e) => this.setState({ shareRuleName: e.target.value })}
+                    style={{ width: 180, marginRight: 20 }}
+                    placeholder="请输入共享规则名称"
                 />
                 <Button
                     type="primary"
@@ -490,7 +519,7 @@ export default class ShareRules extends Component {
                             <div className={styles.detailsListLeft}>
                                 <div className={styles.tableWrapperLeft}>
                                     活动组A
-                                <br />
+                                    <br />
                                     <span style={{ color: '#999', fontWeight: 'normal' }}>{shareGroupArr && shareGroupArr.length > 0 ? '共享' : '互斥'}</span>
                                 </div>
                                 <div className={styles.tableWrapperRight}>
@@ -514,7 +543,7 @@ export default class ShareRules extends Component {
                             <div className={styles.detailsListLeft}>
                                 <div className={styles.tableWrapperLeft}>
                                     活动组B
-                                <br />
+                                    <br />
                                     <span style={{ color: '#999', fontWeight: 'normal' }}>(互斥)</span>
                                 </div>
                                 <div className={styles.tableWrapperRight}>
@@ -582,7 +611,7 @@ export default class ShareRules extends Component {
                     linkFlag ? null :
                         <Button key="1" type="primary" size="small" onClick={this.handleDelete}>
                             确定
-                    </Button>,
+                        </Button>,
                 ]}
                 onCancel={this.handleCancel}
                 width="443px"

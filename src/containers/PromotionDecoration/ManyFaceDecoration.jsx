@@ -27,62 +27,14 @@ export default class ManyFaceDecoration extends Component {
     }
 
     componentDidMount() {
-        // const { decorationInfo, onChange } = this.props;
-        // const faceDecorationD = decorationInfo.map((item, index) => {
-        // console.log("🚀 ~ file: ManyFaceDecoration.jsx ~ line 32 ~ ManyFaceDecoration ~ faceDecorationD ~ item", item)
-        //     return {
-        //         // ...item,
-        //         condition: item.itemID,
-        //         image: item.image,
-        //     }
-        // })
-        // console.log("~ line 38 ~ ManyFaceDecoration ~ faceDecorationD ~ faceDecorationD", faceDecorationD)
-        // onChange({ key: null, value: faceDecorationD })
     }
 
-    componentDidUpdate(nextProps) {
-
-        //      const { decorationInfo = [] } = this.props;
-        // console.log("🚀 ~ file: ManyFaceDecoration.jsx ~ line 50 ~ ManyFaceDecoration ~ componentWillReceiveProps ~ decorationInfo", nextProps.decorationInfo)
-            
-        //     let { faceArrCopy = [] } = this.state;
-        //     faceArrCopy = faceArrCopy.map((item, index) => {
-        //         const findImg = nextProps.decorationInfo.find((ditem) => ditem.condition === item.itemID) || {};
-        //         item.image = findImg.image || 'http://res.hualala.com/basicdoc/eb519bc1-d7d6-410c-8bf9-8bfe92645bcf.png';
-        //         return {
-        //             ...item,
-        //         }
-        //     })
-        //     this.setState({
-        //         faceArrCopy
-        //     })
-    }
-
-    // componentWillReceiveProps(nextProps) {
-    //     const { decorationInfo = [] } = this.props;
-    //     if (nextProps.decorationInfo.length > 0) {
-    //     console.log("🚀 ~ file: ManyFaceDecoration.jsx ~ line 50 ~ ManyFaceDecoration ~ componentWillReceiveProps ~ decorationInfo", nextProps.decorationInfo)
-            
-    //         let { faceArrCopy = [] } = this.state;
-    //         faceArrCopy = faceArrCopy.map((item, index) => {
-    //             const findImg = decorationInfo.find((ditem) => ditem.condition === item.itemID) || {};
-    //             item.image = findImg.image || 'http://res.hualala.com/basicdoc/eb519bc1-d7d6-410c-8bf9-8bfe92645bcf.png';
-    //             return {
-    //                 ...item,
-    //             }
-    //         })
-    //         this.setState({
-    //             faceArrCopy
-    //         })
-    //     }
-    // }
 
     onChangeImage = (data) => {
         const { onChange } = this.props
         const { faceArrCopy } = this.state;
         // const index = data.key;
         // faceArrCopy[index] = { ...faceArrCopy[index], ...data.value }
-        // console.log("🚀 ~ file: ManyFaceDecoration.jsx ~ line 52 ~ ManyFaceDecoration ~ faceArrCopy", faceArrCopy)
         onChange({ ...data })
         this.setState({
             faceArrCopy,

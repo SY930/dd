@@ -8,7 +8,7 @@ import guideImg from './assets/guide.png';
 import PromotionSelectorModal from "./PromotionSelectorModal";
 import styles from './style.less';
 import { queryShareRuleDetail, queryShareRuleDetailList } from './AxiosFactory';
-
+import { ACCOUNTLIST } from './Config';
 const AVAILABLE_PROMOTIONS = Object.keys(BASIC_PROMOTION_MAP);
 const AVAILABLE_GIFTS = [
     '10', '20', '21', '110', '111', '22', '115'
@@ -528,6 +528,7 @@ class CreateShareRulesModal extends Component {
         let tags = [];
         const options = this.getAllOptions();
         const { tagsSource, groupData } = this.state;
+        const { groupID } = this.props;
         options.forEach((item, index) => {
             if (groupData.length > 0) {
                 groupData.forEach((item1, index1) => {
@@ -556,14 +557,14 @@ class CreateShareRulesModal extends Component {
                             })}
                         </Col>
                     </Col>
-                    <Button icon="plus" className={tagsArr.length == 0 ? styles.emptyAddActivityBtn : styles.addActivityBtn} onClick={() => this.setPromotionModalShow('0')}>添加(至多添加100个)</Button>
+                        <Button icon="plus" className={tagsArr.length == 0 ? styles.emptyAddActivityBtn : styles.addActivityBtn} onClick={() => this.setPromotionModalShow('0')}>添加(至多添加{ACCOUNTLIST.indexOf(groupID) > -1 ? 500 : 100 }个)</Button>
                 </FormItem>
             </Col>
         )
     }
     renderBetweenGroupCont() {//组间共享
         let tagsA = [], tagsB = [];
-        const { isCreate } = this.props;
+        const { isCreate,groupID } = this.props;
         const options = this.getAllOptions();
         const { shareRuleType, referenceType, referenceID, shareGroupArrA, shareGroupArrB, tagsSourceA, tagsSourceB, groupAdata, groupBdata, shareGroupList, selectedActivityArr } = this.state;
         options.forEach((item, index) => {
@@ -699,7 +700,7 @@ class CreateShareRulesModal extends Component {
                                 shareRuleType == '1' && referenceType == '1' ?
                                     null
                                     :
-                                    <Button icon="plus" style={{ left: `${tagsArrA.length == 0 ? '125px' : '-15px'}` }} className={tagsArrA.length == 0 ? styles.emptyAddActivityBtn : styles.addActivityBtn} onClick={() => this.setPromotionModalShow('1')}>添加(至多添加100个)</Button>
+                                    <Button icon="plus" style={{ left: `${tagsArrA.length == 0 ? '125px' : '-15px'}` }} className={tagsArrA.length == 0 ? styles.emptyAddActivityBtn : styles.addActivityBtn} onClick={() => this.setPromotionModalShow('1')}>添加(至多添加{ACCOUNTLIST.indexOf(groupID) > -1 ? 500 : 100 }个)</Button>
                             }
                         </FormItem>
                     </Col>
@@ -746,7 +747,7 @@ class CreateShareRulesModal extends Component {
                                     }
                                 </Col>
                             </Col>
-                            <Button icon="plus" style={{ left: `${tagsArrB.length == 0 ? '125px' : '-15px'}` }} className={tagsArrB.length == 0 ? styles.emptyAddActivityBtn : styles.addActivityBtn} onClick={() => this.setPromotionModalShow('2')}>添加(至多添加100个)</Button>
+                            <Button icon="plus" style={{ left: `${tagsArrB.length == 0 ? '125px' : '-15px'}` }} className={tagsArrB.length == 0 ? styles.emptyAddActivityBtn : styles.addActivityBtn} onClick={() => this.setPromotionModalShow('2')}>添加(至多添加{ACCOUNTLIST.indexOf(groupID) > -1 ? 500 : 100 }个)</Button>
                         </FormItem>
                     </Col>
                 </FormItem>

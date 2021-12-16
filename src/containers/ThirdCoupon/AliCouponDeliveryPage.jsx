@@ -16,7 +16,7 @@ import { axiosData } from '../../helpers/util';
 
 const TabPane = Tabs.TabPane;
 
-export default class AlipayCouponDeliveryPage extends Component {
+export default class ThirdCoupon extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -43,7 +43,6 @@ export default class AlipayCouponDeliveryPage extends Component {
 
 
     onShowSizeChange = (current, pageSize) => {
-        // console.log("🚀 ~ file: AlipayCouponDeliveryPage.jsx ~ line 50 ~ AlipayCouponDeliveryPage ~ pageSize", pageSize, current)
         this.setState({
             loading: true,
         }, () => {

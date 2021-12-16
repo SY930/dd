@@ -323,6 +323,15 @@ class NewCustomerPage extends Component {
             this.handleNewPromotionCardClick(item);
             this.props.setSpecialPromotionCardGroupID(gmID);
             this.clearUrl();
+        } else if (from === 'scenePut') {
+            if (!type) return;
+            const item = NEW_CUSTOMER_PROMOTION_TYPES.filter((val) => {
+                return val.key == type;
+            })
+            this.handleNewPromotionCardClick(item[0]);
+            this.props.saleCenterSetJumpOpenCardParams(false)
+            this.props.saleCenterSetJumpSendGiftParams(false)
+            this.clearUrl();
         } else {
             const saleID = type;
             if (!saleID) {
