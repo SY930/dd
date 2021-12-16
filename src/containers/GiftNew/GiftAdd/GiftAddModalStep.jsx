@@ -1936,6 +1936,7 @@ class GiftAddModalStep extends React.PureComponent {
                                 scopeLst={scopeList}
                                 showEmptyTips={true}
                                 mallScope={mallScope}
+                                giftType={value}
                             />
                             :
                             <GiftCategoryAndFoodSelector
