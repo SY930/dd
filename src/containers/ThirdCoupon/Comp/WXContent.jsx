@@ -314,7 +314,7 @@ class WXContent extends Component {
                                 required={true}
                                 className={styles.directSelect}
                             >
-                                {getFieldDecorator('miniProgramsAppId2', {
+                                {getFieldDecorator('entranceMiniProgramsAppId', {
                                     rules: [
                                         { required: true, message: '请选择小程序名称' },
                                     ],
@@ -336,7 +336,7 @@ class WXContent extends Component {
                                 wrapperCol={{ span: 16 }}
                                 className={styles.directSelect}
                             >
-                                {getFieldDecorator('miniProgramsPath2', {
+                                {getFieldDecorator('entranceMiniProgramsPath', {
                                     rules: [
                                         { required: true, message: '请选择页面路径' },
                                     ],

@@ -337,7 +337,7 @@ class CreateCouponContent extends Component {
                     return message.error('间连的支付宝账号未关联M4')
                 }
                 const endTime = rangePicker[1].format('YYYYMMDD');
-                const startTime = rangePicker[0].format('YYYYMMDD')
+                const startTime = rangePicker[0].format('YYYYMMDD');
                 const datas = {
                     batchName: values.batchName,
                     channelID,
@@ -375,6 +375,10 @@ class CreateCouponContent extends Component {
                     datas.miniProgramsAppId = values.miniProgramsAppId;
                     datas.miniProgramsPath = values.miniProgramsPath;
                     datas.validateWay = values.validateWay;
+                    datas.joinWay = values.joinWay;
+                    datas.entranceMiniProgramsAppId = values.entranceMiniProgramsAppId;
+                    datas.entranceMiniProgramsPath = values.entranceMiniProgramsPath;
+                    datas.entranceWords = values.entranceWords
                 }
                 const url = '/api/v1/universal?';
                 let method = 'couponCodeBatchService/addBatch.ajax';
