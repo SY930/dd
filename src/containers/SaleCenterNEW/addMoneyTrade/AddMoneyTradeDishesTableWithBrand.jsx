@@ -86,7 +86,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
         if (!priceLst.length) return;
         const data = priceLst.reduce((acc, item) => {
             const dish = dishes.find(d => d.value === `${item.brandID || 0}__${item.foodName}${item.foodUnitName}`);
-            dish && acc.push({ ...dish, payPrice: item.payPrice, weightOffset: item.weightOffset });
+            dish && acc.push({ ...dish, payPrice: item.payPrice, weightOffset: item.weightOffset, maxNum: item.maxNum });
             return acc;
         }, [])
         this.setState({ data })
@@ -116,6 +116,20 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
             num = '0';
         }
         record.weightOffset = num;
+        this.setState({ data });
+        this.props.onChange(data.map(item => ({ ...item })));
+    }
+
+    onFloatMaxNumChange = (val, { index }) => {
+        const data = [...this.state.data];
+        let num = val.number;
+        const record = data[index];
+        if (val.number >= 0) {// 特价不超过售价价
+            num = val.number;
+        } else if (val.number < 0) {// 特价不小于0
+            num = '0';
+        }
+        record.maxNum = num;
         this.setState({ data });
         this.props.onChange(data.map(item => ({ ...item })));
     }
@@ -291,6 +305,42 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
             },
             {
                 title:
+                    <span>最大换购数量
+                        <Tooltip title={'称重菜品仅支持POS2.5且默认规格为“斤”'}>
+                            <Icon
+                                style = {{
+                                    marginLeft: 3,
+                                    cursor: 'pointer',
+                                }}
+                                type="question-circle"
+                            />
+                        </Tooltip>
+                    </span>,
+                width: 110,
+                dataIndex: 'maxNum',
+                key: 'maxNum',
+                className: 'noPadding',
+                render: (text, record, index) => {
+                    return (
+                        <div
+                            style={{ height: '100%', }}
+                            className={styles.rightAlign}
+                        >
+                            <PriceInputIcon
+                                type="text"
+                                modal={record.IsNeedConfirmFoodNumber ? "float" : "int"}
+                                // disabled={!record.IsNeedConfirmFoodNumber}
+                                value={{ number: record.maxNum}}
+                                index={index}
+                                prefix={'±'}
+                                onChange={(val) => { this.onFloatMaxNumChange(val, record) }}
+                            />
+                        </div>
+                    )
+                },
+            },
+            {
+                title:
                     <span>称重误差值(斤)
                         <Tooltip title={'仅支持POS2.5，仅“需要确定数量”的菜品才能编辑称重误差值，其他菜品不能编辑此项'}>
                             <Icon
@@ -343,7 +393,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
                     </Col>
                 </Row>
                 <Row>
-                    <Col>
+                    <Col style={{overflow: 'auto', display: 'flex'}}>
                         <Table
                             bordered={true}
                             dataSource={displayDataSource}
