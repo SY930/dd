@@ -298,12 +298,13 @@ class WXContent extends Component {
                             >
                                 {getFieldDecorator('entranceWords', {
                                     rules: [
-                                        { required: true, message: '请输入标题' },
+                                        { required: true, message: '请输入标题,最多5个字符' },
                                     ],
                                 })(
                                     <Input
-                                        placeholder="请输入标题"
+                                        placeholder="请输入标题,最多5个字符"
                                         min={0}
+                                        maxLength={5}
                                     />
                                 )}
                             </Form.Item>
