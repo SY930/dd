@@ -433,6 +433,7 @@ export const fetchSpecialDetailAC = opts => {
                     redirect && window.setTimeout(() => doRedirect(), 1500);
                 } else if (result.code === '000') {
                     opts.success && opts.success(result);
+                    console.log(result,'result=======kkkkkkkkkkk')
                     return dispatch(fetchSpecialDetailFullfilled(result));
                 }else {
                     opts.fail && opts.fail();

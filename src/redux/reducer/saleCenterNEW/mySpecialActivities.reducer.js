@@ -181,6 +181,7 @@ export const mySpecialActivities_NEW = ($$state = $initialState, action) => {
                 return $$state.setIn(['$specialDetailInfo', 'status'], 'success')
                     .setIn(['$specialDetailInfo', 'data', 'eventInfo'], Immutable.fromJS(action.payload))
                     .setIn(['giftsLevel'], Immutable.fromJS(action.payload.gifts))
+                    .setIn(['eventMutexDependRuleInfos'], Immutable.fromJS(action.payload.eventMutexDependRuleInfos))
                     .setIn(['eventConditionInfos'], Immutable.fromJS(action.payload.eventConditionInfos));
             }
             return $$state;

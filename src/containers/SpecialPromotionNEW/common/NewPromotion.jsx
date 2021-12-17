@@ -89,6 +89,7 @@ export default class NewPromotion extends React.Component {
             },
             jumpUrlInfos: specialPromotion.$eventInfo.jumpUrlInfos,
             gifts: giftData,
+            eventMutexDependRuleInfos: specialPromotion.$eventInfo.eventMutexDependRuleInfos,
             recommendEventRuleInfos: specialPromotion.$eventRecommendSettings,
         };
         // 生日赠送 且 非会员群体时

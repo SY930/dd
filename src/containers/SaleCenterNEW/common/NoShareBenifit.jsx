@@ -1,6 +1,7 @@
 import { HualalaEditorBox, HualalaTreeSelect, HualalaGroupSelect, HualalaSelected, HualalaSearchInput, CC2PY } from '../../../components/common';
 import React from 'react';
-import { connect } from 'react-redux'; import { Tree, message } from 'antd';
+import { connect } from 'react-redux'; 
+import { Tree, message, Spin } from 'antd';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from '../IntlDecor';
@@ -25,11 +26,9 @@ class NoShareBenifit extends React.Component {
         this.state = {
             promotionCollection: [], // 拼好的allPromotionList,目前是所有基础营销活动-》[n个类别]-》活动列表,type
             mutexPromotions: [], // 后台detail拿过来的数据,含之前创建的共享活动idstr数组
-
             promotionOptions: [], // 当前的已选分类下子项,右侧option选项
             promotionCurrentSelections: [], // 已选打勾子项ID，右侧
             promotionSelections: new Set(), // 已选各个分类下子项，用于下方tag选项
-
             vouchersData: [], // 电子代金券数据
             couponsData: [], // 菜品优惠券数据
             buyGiveData: [], // 买赠优惠券数据
@@ -37,12 +36,10 @@ class NoShareBenifit extends React.Component {
             vouchersDataSelections: [], // 已选电子代金券数据
             couponsDataSelections: [], // 已选菜品优惠券数据
             exchangeCouponsDataSelections: [], // 已选菜品兑换券数据
-
             labelKeyType: 'finalShowName',
             valueKeyType: 'promotionIDStr',
-
             limitNum: 30,        //营销活动共享限制数量
-
+            loading: true
         };
 
         this.handleTreeNodeChange = this.handleTreeNodeChange.bind(this);
@@ -98,6 +95,7 @@ class NoShareBenifit extends React.Component {
 
         this.setState({
             promotionSelections: mutexPromotions,
+            loading:false
         });
     }
 
@@ -309,48 +307,50 @@ class NoShareBenifit extends React.Component {
             });
         }
         return (
-            <div className={styles.treeSelectMain}>
-                <HualalaEditorBox
-                    label={'不共享的优惠活动'}
-                    itemName={'finalShowName'}
-                    itemID={'promotionIDStr'}
-                    data={promotionSelections}
-                    onChange={this.handleEditorBoxChange}
-                    onTagClose={this.handleSelectedChange}
-                >
-                    <HualalaTreeSelect level1Title={SALE_LABEL.k5m5auyz}>
-                        {/* //搜索框 */}
-                        <HualalaSearchInput onChange={this.handleSearchInputChange} />
-                        {/* //左侧树 */}
-                        <Tree onSelect={this.handleTreeNodeChange} title={'content'}>
-                            <TreeNode key={'hualala'} title={SALE_LABEL.k5m5av7b}>
-                                <TreeNode key={'vouchers'} title={SALE_LABEL.k5m5avfn} />
-                                <TreeNode key={'coupons'} title={SALE_LABEL.k5m5avnz} />
-                                <TreeNode key={'exchangeCoupons'} title={SALE_LABEL.k5m5avwb} />
-                                <TreeNode key={'buyGive'} title={k636qvpm} />
-                            </TreeNode>
-                        </Tree>
-                        {/* //右侧复选框  isLimit 数量限制 */}
-                        <HualalaGroupSelect
-                            options={this.state.promotionOptions}
-                            labelKey={'finalShowName'}
-                            valueKey={'promotionIDStr'}
-                            value={this.state.promotionCurrentSelections}
-                            onChange={this.handleGroupSelect}
-                            isLimit={Array.from(promotionSelections).length >= this.state.limitNum || false}
-                        />
-                        {/* //下方已选的tag */}
-                        <HualalaSelected
+            <Spin spinning={this.state.loading}>
+                <div className={styles.treeSelectMain}>
+                        <HualalaEditorBox
+                            label={'不共享的优惠活动'}
                             itemName={'finalShowName'}
                             itemID={'promotionIDStr'}
-                            selectdTitle={SALE_LABEL.k5m5awd0}
-                            value={promotionSelections}
-                            onChange={this.handleSelectedChange}
-                            onClear={() => this.clear()}
-                        />
-                    </HualalaTreeSelect>
-                </HualalaEditorBox>
-            </div>
+                            data={promotionSelections}
+                            onChange={this.handleEditorBoxChange}
+                            onTagClose={this.handleSelectedChange}
+                        >
+                            <HualalaTreeSelect level1Title={SALE_LABEL.k5m5auyz}>
+                                {/* //搜索框 */}
+                                <HualalaSearchInput onChange={this.handleSearchInputChange} />
+                                {/* //左侧树 */}
+                                <Tree onSelect={this.handleTreeNodeChange} title={'content'}>
+                                    <TreeNode key={'hualala'} title={SALE_LABEL.k5m5av7b}>
+                                        <TreeNode key={'vouchers'} title={SALE_LABEL.k5m5avfn} />
+                                        <TreeNode key={'coupons'} title={SALE_LABEL.k5m5avnz} />
+                                        <TreeNode key={'exchangeCoupons'} title={SALE_LABEL.k5m5avwb} />
+                                        <TreeNode key={'buyGive'} title={k636qvpm} />
+                                    </TreeNode>
+                                </Tree>
+                                {/* //右侧复选框  isLimit 数量限制 */}
+                                <HualalaGroupSelect
+                                    options={this.state.promotionOptions}
+                                    labelKey={'finalShowName'}
+                                    valueKey={'promotionIDStr'}
+                                    value={this.state.promotionCurrentSelections}
+                                    onChange={this.handleGroupSelect}
+                                    isLimit={Array.from(promotionSelections).length >= this.state.limitNum || false}
+                                />
+                                {/* //下方已选的tag */}
+                                <HualalaSelected
+                                    itemName={'finalShowName'}
+                                    itemID={'promotionIDStr'}
+                                    selectdTitle={SALE_LABEL.k5m5awd0}
+                                    value={promotionSelections}
+                                    onChange={this.handleSelectedChange}
+                                    onClear={() => this.clear()}
+                                />
+                            </HualalaTreeSelect>
+                        </HualalaEditorBox>
+                </div>
+             </Spin>
         );
     }
 

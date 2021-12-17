@@ -554,6 +554,7 @@ export const updateSpecialPromotionTimeout = () => ({
 });
 
 export const updateSpecialPromotion = (opts) => {
+    console.log(opts,'opts========0000000000')
     return (dispatch) => {
         // 微信推送mpID，在编辑时清空
         const { event, ...rest } = opts.data;
