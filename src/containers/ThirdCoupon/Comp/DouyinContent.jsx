@@ -59,7 +59,7 @@ class DouyinContent extends Component {
                             </Select>
                         )}
                     </Form.Item>
-                    <Form.Item
+                    {/* <Form.Item
                         label="是否需要兑换"
                         labelCol={{ span: 4 }}
                         wrapperCol={{ span: 16 }}
@@ -76,7 +76,7 @@ class DouyinContent extends Component {
                                 <Radio value="0">否</Radio>
                             </RadioGroup>
                         )}
-                    </Form.Item>
+                    </Form.Item> */}
                     {/*  */}
                 </Col>
             </Row>

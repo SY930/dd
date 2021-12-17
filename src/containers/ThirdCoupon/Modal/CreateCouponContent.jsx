@@ -249,7 +249,7 @@ class CreateCouponContent extends Component {
     }
 
     handleDouyinSubmit = (values, groupId) => {
-        const { giftValidRange = [], batchName, stock = {}, shopId, isExchange } = values;
+        const { giftValidRange = [], batchName, stock = {}, shopId } = values;
         const { effectGiftTimeHours, giftType, giftItemID, effectType } = this.state
         const endTime = giftValidRange[1] ? giftValidRange[1].format('YYYYMMDDHHmmss') : '';
         const startTime = giftValidRange[0] ? giftValidRange[0].format('YYYYMMDDHHmmss') : ''
@@ -272,7 +272,7 @@ class CreateCouponContent extends Component {
             validUntilDays: values.validUntilDays ? values.validUntilDays.number : '',
             stock: stock.number,
             shopId,
-            isExchange: Number(isExchange),
+            // isExchange: Number(isExchange),
             channelID: 70,
             couponCodeDockingType: 1,
             giftType,
