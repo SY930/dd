@@ -575,7 +575,7 @@ class GiftAddModalStep extends React.PureComponent {
             this.setState({ delivery: value });
         }
 
-        if(key == 'duihuanrule'){
+        if(key == 'foodUnitType'){
             if(value == 1){
                 formRef.setFieldsValue({
                     mallScope :'1'
@@ -2497,7 +2497,7 @@ class GiftAddModalStep extends React.PureComponent {
             applySceneOpts = [{label:'店铺券',value:'0'}]
         }
         let disabled = false
-        if(type == 'edit' || describe == '不定额代金券' || form.getFieldValue('duihuanrule') == 1) {
+        if(type == 'edit' || describe == '不定额代金券' || form.getFieldValue('foodUnitType') == 1) {
             disabled = true;
         }
         return  decorator({
@@ -3247,14 +3247,14 @@ class GiftAddModalStep extends React.PureComponent {
                     // const applyScene = form.getFieldValue('applyScene');
                     // let descTxt = applyScene != '1' ? '菜品' : '商品';
                     return decorator({})(
-                        <RadioGroup disabled={form.getFieldValue('duihuanrule') == 1}>
+                        <RadioGroup disabled={form.getFieldValue('foodUnitType') == 1}>
                             <Radio value={'0'}>按分类</Radio>
                             <Radio value={'1'}>按菜品</Radio>
                         </RadioGroup>
                     )
                 },
             },
-            duihuanrule: {
+            foodUnitType: {
                 label: '兑换菜品类型',
                 type: 'custom',
                 defaultValue: '0',
@@ -3276,7 +3276,7 @@ class GiftAddModalStep extends React.PureComponent {
                     )
                 },
             },
-            dhcpzl: {
+            weight: {
                 label: <span>
                 <span>兑换菜品重量</span>
                 <Tooltip title={
@@ -3299,12 +3299,12 @@ class GiftAddModalStep extends React.PureComponent {
                     message: '整数不超过8位，小数不超过2位',
                 }],
                 render: (decorator, form) => {
-                    return form.getFieldValue('duihuanrule') == 1?decorator({})(
+                    return form.getFieldValue('foodUnitType') == 1?decorator({})(
                         <Input size="large" addonAfter="斤" />
                     ):null
                 },
             },
-            czwcz: {
+            weightOffset: {
                 label: <span>
                 <span>称重误差值</span>
                 <Tooltip title={
@@ -3327,7 +3327,7 @@ class GiftAddModalStep extends React.PureComponent {
                     message: '整数不超过8位，小数不超过2位',
                 }],
                 render: (decorator, form) => {
-                    return form.getFieldValue('duihuanrule') == 1?decorator({})(
+                    return form.getFieldValue('foodUnitType') == 1?decorator({})(
                         <Input size="large" addonAfter="斤" addonBefore={'±'}/>
                     ):null
                 },
