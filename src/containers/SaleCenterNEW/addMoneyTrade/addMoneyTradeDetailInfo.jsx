@@ -231,14 +231,20 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
     }
 
     // 减免数量
-    onStageCountChange(value) {
+    onStageCountChange(e) {
         let { stageCount, stageCountFlag } = this.state;
-        if (value.number == null || value.number == '') {
+        if (e.target.value == null || e.target.value == '') {
             stageCountFlag = false;
-            stageCount = value.number;
+            stageCount = e.target.value;
         } else {
-            stageCountFlag = true;
-            stageCount = value.number;
+            const reg = /^(([1-9]\d{0,100})|0)(\.\d{0,2})?$/
+            if (reg.test(e.target.value)) {
+                stageCountFlag = true;
+                stageCount = e.target.value;
+            } else {
+                stageCountFlag = false;
+                stageCount = e.target.value;
+            }
         }
         this.setState({ stageCount, stageCountFlag });
     }
@@ -436,7 +442,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                                         <Option key="3" value="3">{k5kqf1xr}</Option>
                                     </Select>
                                 }
-                                addonAfter={'份(斤)'}
+                                addonAfter={'元'}
                                 value={this.state.stageAmount}
                                 defaultValue={this.state.stageAmount}
                                 onChange={this.onStageAmountChange}
@@ -447,8 +453,8 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                             className={[styles.FormItemStyle, styles.explainBack].join(' ')}
                             wrapperCol={{ span: 17, offset: 4 }}
                             validateStatus={this.state.stageCountFlag ? 'success' : 'error'}
-                            help={this.state.stageCountFlag ? null : `${SALE_LABEL.k5kqf263}，支持两位小数`}>
-                            <PriceInput
+                            help={this.state.stageCountFlag ? null : SALE_LABEL.k5kqf263}>
+                            <Input
                                 addonBefore={
                                     <Select size="default"
                                         onChange={this.ruleTypeChange}
@@ -461,11 +467,11 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                                         <Option key="3" value="3">{k5kqf33f}</Option>
                                     </Select>
                                 }
-                                addonAfter={k5ez4qy4}
-                                value={{ number: this.state.stageCount }}
-                                defaultValue={{ number: this.state.stageCount }}
+                                addonAfter={'份(斤)'}
+                                value={this.state.stageCount}
+                                defaultValue={this.state.stageCount}
                                 onChange={this.onStageCountChange}
-                                modal="int"
+                                // modal="int"
                             />
                         </FormItem>
                     }
