@@ -96,13 +96,13 @@ class StepTwo extends React.Component {
         if(eventMutexDependRuleInfos && eventMutexDependRuleInfos.length > 0){
             this.setState({
                 isBenifitActive:true,
-                benifitType:eventMutexDependRuleInfos[0].targetID === 0 ? '1' : '2'
+                benifitType:eventMutexDependRuleInfos[0].targetID == 0 ? '1' : '2'
             })
             this.props.setPromotionDetail({
-                mutexPromotions: val.map((promotion) => {
+                mutexPromotions: eventMutexDependRuleInfos.map((promotion) => {
                     return {
                         promotionIDStr: promotion.targetID || '',
-                        sharedType: '10',
+                        // sharedType: '10',
                         finalShowName: promotion.targetName || SALE_LABEL.k5m3onpk,
                     }
                 }),
