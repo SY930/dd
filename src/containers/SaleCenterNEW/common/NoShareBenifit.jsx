@@ -92,10 +92,13 @@ class NoShareBenifit extends React.Component {
                 })
             }
         })
-
+        if(promotionCollection && promotionCollection.length > 0){
+            this.setState({
+                loading:false
+            })
+        }
         this.setState({
             promotionSelections: mutexPromotions,
-            loading:false
         });
     }
 
@@ -117,7 +120,6 @@ class NoShareBenifit extends React.Component {
 
         // 用户选择过的互斥活动
         const _mutexPromotions = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'mutexPromotions']) ? this.props.promotionDetailInfo.getIn(['$promotionDetail', 'mutexPromotions']).toJS() : [];
-        console.log(_mutexPromotions,'_mutexPromotions===========')
         const crmGiftList = this.props.giftInfoNew.toJS().dataSource.crmGiftList || [];
         let vouchersData = [],
             couponsData = [],
@@ -209,6 +211,7 @@ class NoShareBenifit extends React.Component {
                     buyGiveData.push(crmGift);
                 }
             });
+
             this.setState({
                 vouchersData,
                 couponsData,
@@ -248,6 +251,7 @@ class NoShareBenifit extends React.Component {
         if (this.props.myActivities.toJS().$promotionDetailInfo.data) {
             SelfPromotion = this.props.myActivities.getIn(['$promotionDetailInfo', 'data', 'promotionInfo', 'master', 'promotionIDStr']);
         }
+
         this.setState({
             promotionCollection: promotionCollection.map((promotionCategery) => {
                 const promotionName = promotionCategery.promotionName.filter((promotion) => {
@@ -286,7 +290,6 @@ class NoShareBenifit extends React.Component {
         const DISABLED_PROMOTION_TYPE = [
             k5m4q0ae, k5m4q0iq
         ];
-
         const _promotionCollection = this.state.promotionCollection;
         const promotionSelections = new Set();
         this.state.promotionSelections.forEach(item => {
