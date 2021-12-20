@@ -3263,8 +3263,8 @@ class GiftAddModalStep extends React.PureComponent {
                     // let descTxt = applyScene != '1' ? '菜品' : '商品';
                     return decorator({})(
                         <RadioGroup>
-                            <Radio value={'0'}>普通菜品</Radio>
-                            <Radio value={'1'}>称重菜品</Radio>
+                            <Radio value={0}>普通菜品</Radio>
+                            <Radio value={1}>称重菜品</Radio>
                             <Tooltip title={
                             <p>
                                 仅POS2.5支持；仅能”按菜品“选择活动范围且仅可以兑换”需要确认数量“的菜品；不支持商城券
