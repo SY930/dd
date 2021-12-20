@@ -3257,7 +3257,7 @@ class GiftAddModalStep extends React.PureComponent {
             foodUnitType: {
                 label: '兑换菜品类型',
                 type: 'custom',
-                defaultValue: '0',
+                defaultValue: 0,
                 render: (decorator, form) => {
                     // const applyScene = form.getFieldValue('applyScene');
                     // let descTxt = applyScene != '1' ? '菜品' : '商品';
