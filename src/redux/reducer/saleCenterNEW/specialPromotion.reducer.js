@@ -78,7 +78,6 @@ const $initialState = Immutable.fromJS({
 });
 
 export const specialPromotion_NEW = ($$state = $initialState, action) => {
-    console.log($initialState.toJS(),action.type,'action.typeaction.typeaction.typeaction.typeaction.type')
     switch (action.type) {
         case SALE_CENTER_SET_SPECIAL_PROMOTION_EVENT_INFO:
             // 新短信模板上线后 需要把以前审核失败/待审核的活动在编辑时短信模板情况, 强制选择审核通过的短信模板
