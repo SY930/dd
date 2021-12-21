@@ -254,6 +254,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                     this.props.isShopFoodSelectorMode ? (
                         <AddMoneyTradeDishesTableWithoutBrand
                             legacyPayPrice={this.state.freeAmount}
+                            calType={calType}
                             onChange={(value) => {
                                 this.onDishesChange(value);
                             }}
