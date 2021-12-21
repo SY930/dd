@@ -110,6 +110,10 @@ class StepTwo extends React.Component {
                     }),
                 });
             }
+        }else{
+            this.setState({
+                isBenifitActive: false,
+            })
         }
         this.props.getSubmitFn({
             prev: undefined,
@@ -248,6 +252,10 @@ class StepTwo extends React.Component {
                     targetName: '',
                     sharedType: '10'
                 }]
+            })
+        }else{
+            this.setState({
+                eventMutexDependRuleInfos: []
             })
         }
         this.setState({
