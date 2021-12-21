@@ -188,6 +188,7 @@ class CreateCouponContent extends Component {
         form.validateFields((err, values) => {
             if (!err) {
                 values.merchantNo = bankMerchantCode;
+                // TODO：非M4完成M4的升级，调用接口
                 goAuthorizeAC(values).then((res) => {
                     if (res) {
                         this.handleAuthModalClose()
@@ -519,12 +520,14 @@ class CreateCouponContent extends Component {
     }
 
     renderGoAuth = () => {
-        const { shopIsAuth } = this.state;
+        const { shopIsAuth, merchantType } = this.state;
         if (shopIsAuth === '1') {
             return (
                 <p className={styles.authorizeBottomTip}>
                     <Icon type="exclamation-circle" style={{ color: '#FAAD14', marginRight: '3px' }} />
-                    商户完成支付宝代运营授权才可完成创建投放活动。
+                    {
+                        merchantType === '2' ? '商户完成支付宝代运营才能完成创建活动，对于间连非M4代运营授权同步完成M4升级' : '商户完成支付宝代运营授权才可完成创建投放活动。'
+                    }
                     <span className={styles.goAuthorize} onClick={() => { this.goAuthorize() }}>点击去授权</span>
                 </p>
             )
@@ -536,7 +539,7 @@ class CreateCouponContent extends Component {
     renderIndirect = () => {
         const { form, type } = this.props;
         const { getFieldDecorator } = form;
-        const { authorizeModalVisible, smidList = [] } = this.state;
+        const { authorizeModalVisible, smidList = [], merchantType } = this.state;
         const { bankMerchantCode } = smidList[0] || {};
         // const { editData } = this.state;
         // const value = editData.merchantType && editData.merchantType == '2' ? editData.merchantID : '';
@@ -567,10 +570,10 @@ class CreateCouponContent extends Component {
                             this.renderTip()
                         }
                     </FormItem>
+                    { bankMerchantCode && <span style={{ marginLeft: '15px' }}>渠道商户号：{bankMerchantCode}</span>}
                     {
                         this.renderGoAuth()
                     }
-                    { bankMerchantCode && <span style={{ marginLeft: '15px' }}>渠道商户号：{bankMerchantCode}</span>}
 
                 </Col>
                 <Col>
@@ -587,6 +590,7 @@ class CreateCouponContent extends Component {
                             onCancel={this.handleAuthModalClose}
                             // form={form}
                             handleSubmit={this.handleAuthSubmit}
+                            merchantType={merchantType}
                         />
                     </Modal>
                 </Col>
