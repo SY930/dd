@@ -87,6 +87,7 @@ class ManyFace extends Component {
                 const faceData = _.cloneDeep(faceRule)
                 let flag = false;
                 faceRule.map((itm) => {
+                    // console.log(index.jsx ~ line 90 ~ ManyFace ~ faceRule.map ~ itm", itm)
                     if (itm.conditionType == 2) {
                         if (!itm.conditionValue) {
                             flag = true;
@@ -108,7 +109,7 @@ class ManyFace extends Component {
                         message.warn('请选择触发事件')
                         return null
                     }
-                    if (_.isEmpty(itm.triggerEventCustomInfo)) {
+                    if (_.isEmpty(itm.triggerEventCustomInfo) && itm.triggerEventValue !== 'toOpenCard') {
                         flag = true;
                         // itm.validateStatus = 'error';
                         message.warn('请选择触发事件')
@@ -120,7 +121,7 @@ class ManyFace extends Component {
                 }
                 const formData3 = faceData.map((item) => {
                     if (item.triggerEventValue === 'customLink' || item.triggerEventValue === 'toOpenCard') {
-                        item.triggerEventCustomInfo = item.triggerEventCustomInfo.value;
+                        item.triggerEventCustomInfo = item.triggerEventCustomInfo.value || '';
                     } else {
                         item.triggerEventCustomInfo = JSON.stringify(item.triggerEventCustomInfo)
                     }

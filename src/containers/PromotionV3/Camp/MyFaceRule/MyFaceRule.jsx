@@ -393,21 +393,20 @@ class MyFaceRule extends Component {
         // validateStatus={v.triggerEventCustomInfo.value ? 'success' : 'error'} help={v.triggerEventCustomInfo.value ? '' : '请输入自定义链接'}
         >
             <Input
-                style={{ marginLeft: 8 }}
+                style={{ marginLeft: 8, width: '249px', height: '32px' }}
                 onChange={(_v) => { this.onChangeCustomUrl(i, 'triggerEventCustomInfo', _v) }}
                 value={v.triggerEventCustomInfo.value || ''}
             />
-            <span>不支持储值套餐链接</span>
+            <p>不支持储值套餐链接</p>
         </FormItem>)
     }
 
     renderOpenCardInput = (i, v) => {
         return (<FormItem>
             <Input
-                style={{ marginLeft: 8, width: '264px' }}
-                onChange={(_v) => { this.onChangeCustomUrl(i, 'triggerEventCustomInfo', _v) }}
-                value={v.triggerEventCustomInfo.value || ''}
-                placeholder="默认开通本店铺适用的线上卡类型"
+                style={{ marginLeft: 8, width: '249px', height: '32px' }}
+                value={'默认开通本店铺适用的线上卡类型'}
+                disabled={true}
             />
         </FormItem>)
     }
@@ -415,19 +414,19 @@ class MyFaceRule extends Component {
     // 选择菜品
     renderFoods = (i, item) => {
         return (
-            <FormItem style={{ display: 'inlineBlock', width: '262px', marginLeft: 8, marginTop: 7 }} 
+            <FormItem style={{ display: 'inlineBlock', width: '262px', marginLeft: 8, marginTop: 2 }}
             // validateStatus={item.triggerEventCustomInfo.foodName ? 'success' : 'error'} help={item.triggerEventCustomInfo.foodName ? '' : '请选择一个菜品'}
             >
                 <Input
                     type="text"
-                    style={{ width: 170 }}
+                    style={{ width: 159, height: 32 }}
                     disabled={true}
                     value={item.triggerEventCustomInfo ? item.triggerEventCustomInfo.foodName : ''}
                 />
                 <Button
                     type="default"
                     // disabled={true}
-                    style={{ display: 'inlineBlock', marginLeft: '10px' }}
+                    style={{ display: 'inlineBlock', marginLeft: '10px', height: 32 }}
                     onClick={() => { this.showDishSelector(i, 'isShowDishSelector') }}
                 >
                     选择菜品
