@@ -84,7 +84,7 @@ class StepTwo extends React.Component {
             isRequire: true,
             foodPriceType: '0',
             isBenifitActive:false,
-            eventMutexDependRuleInfos: props.mySpecialActivities.getIn(['eventMutexDependRuleInfos'], Immutable.fromJS([])).toJS() || [],
+            eventMutexDependRuleInfos: props.mySpecialActivities.getIn(['eventMutexDependRuleInfos'], Immutable.fromJS([])) ? props.mySpecialActivities.getIn(['eventMutexDependRuleInfos'], Immutable.fromJS([])).toJS() : [],
             benifitType:'1',
         }
         this.selectNoShareBenifit = this.selectNoShareBenifit.bind(this);
