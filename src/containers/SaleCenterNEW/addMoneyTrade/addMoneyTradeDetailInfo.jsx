@@ -213,7 +213,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
     // 减免金额
     onStageAmountChange(e) {
         let { stageAmount, stageAmountFlag } = this.state;
-        if (e.target.value == null || e.target.value == '') {
+        if (e.target.value == null || e.target.value == '' || e.target.value == '0') {
             stageAmountFlag = false;
             stageAmount = e.target.value;
         } else {
@@ -233,7 +233,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
     // 减免数量
     onStageCountChange(e) {
         let { stageCount, stageCountFlag } = this.state;
-        if (e.target.value == null || e.target.value == '') {
+        if (e.target.value == null || e.target.value == '' || e.target.value == '0') {
             stageCountFlag = false;
             stageCount = e.target.value;
         } else {
@@ -471,7 +471,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                                 value={this.state.stageCount}
                                 defaultValue={this.state.stageCount}
                                 onChange={this.onStageCountChange}
-                                // modal="int"
+                            // modal="int"
                             />
                         </FormItem>
                     }
