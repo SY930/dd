@@ -119,6 +119,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
         this.setState({ data });
         this.props.onChange(data.map(item => ({ ...item })));
     }
+    
 
     onFloatMaxNumChange = (val, { index }) => {
         const data = [...this.state.data];
