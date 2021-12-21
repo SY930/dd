@@ -410,6 +410,22 @@ async function getDouyinShop() {
     return [];
 }
 
+// 获取支付宝店铺
+async function queryAliShopsAC(ipRoleId) {
+    // const method = 'AlipayAntMerchantExpandService/shopPageQuery.ajax';
+    // const { groupID } = getAccountInfo();
+    // const params = { service, type, data: { groupID, ipRoleId, pageNum: 1, pageSize: 10000 }, method };
+    // const response = await axios.post(url + method, params);
+    // const { code, message: msg, shopInfos = [] } = response;
+    // if (code === '000') {
+    //     // const { tiktokShopInfoList = [] } = obj;
+    //     return shopInfos;
+    // }
+    // message.error(msg);
+    // return [];
+    return [{ 'shopId':"2021012600077000000015961164", 'shopName':"凯德MALL(西直门店)(暂停营业)", 'shopStatus':"01" }, { 'shopId':"20210000000015961164", 'shopName':"凯德MALL(西直门店)", 'shopStatus':"01" }]
+}
+
 export {
     getCardList,
     getShopPid,
@@ -429,4 +445,5 @@ export {
     getMpAppList,
     getLinks,
     getDouyinShop,
+    queryAliShopsAC,
 }

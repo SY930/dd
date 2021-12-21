@@ -4,11 +4,12 @@ import moment from 'moment'
 import _ from 'lodash'
 import { axios, getStore } from '@hualala/platform-base';
 import AuthorizeModalContent from './AuthorizeContent';
-import { getSmid, isAuth, goAuthorizeAC } from '../AxiosFactory'
+import { getSmid, isAuth, goAuthorizeAC, queryAliShopsAC } from '../AxiosFactory'
 import { SALE_CENTER_GIFT_EFFICT_DAY_ALIPAY } from '../../../redux/actions/saleCenterNEW/types';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 import WXContent from '../Comp/WXContent';
 import DouyinContent from '../Comp/DouyinContent'
+import AliContent from '../Comp/AliContent';
 // import { axiosData } from '../../../helpers/util'
 import styles from '../AlipayCoupon.less';
 
@@ -51,6 +52,7 @@ class CreateCouponContent extends Component {
             confirmLoading: false,
             tips: false,
             giftType: '',
+            aliShops: [],
         }
     }
 
@@ -68,6 +70,15 @@ class CreateCouponContent extends Component {
         this.setState({
             WXJumpAppID: key,
             WXJumpAppIDName: label,
+        })
+    }
+
+    queryAliShops = (smid) => {
+        queryAliShopsAC(smid).then((res) => {
+            console.log(" CreateCouponContent.jsx ~ line 78 ~ CreateCouponContent ~ queryAliShopsAC ~ res", res)
+            this.setState({
+                aliShops: res,
+            })
         })
     }
 
@@ -117,12 +128,14 @@ class CreateCouponContent extends Component {
 
     handleLinkWay = (e) => {
         // 回显时选择链接方式先清空
-        // const { editData } = this.state;
+        const { form } = this.props;
         // editData.merchantID = '';
+        form.setFieldsValue({ shopId: [] })
         this.setState({
             merchantType: e.target.value,
             shopIsAuth: '0',
             smidList: [],
+            aliShops: [],
             // editData,
 
         })
@@ -157,6 +170,7 @@ class CreateCouponContent extends Component {
         })
         isAuth(value).then((res) => {
             if (res) {
+                this.queryAliShops(value);
                 this.setState({
                     shopIsAuth: '2',
                 })
@@ -237,6 +251,7 @@ class CreateCouponContent extends Component {
         isAuth(bankMerchantCode).then((res) => {
             if (res) {
                 const { bindUserId } = res;
+                this.queryAliShops(bindUserId) // 支付宝门店
                 this.setState({
                     shopIsAuth: '2',
                     bindUserId, // 间连主体关联M4
@@ -340,8 +355,8 @@ class CreateCouponContent extends Component {
                 }
                 const startTime = rangePicker[0].format(DATE_FORMAT);
                 const endTime = rangePicker[1].format(END_DATE_FORMAT);
-                const EGiftEffectTime = giftValidRange[0].format(DATE_FORMAT);
-                const validUntilDate = giftValidRange[1].format(END_DATE_FORMAT);
+                // const EGiftEffectTime = giftValidRange[0].format(DATE_FORMAT);
+                // const validUntilDate = giftValidRange[1].format(END_DATE_FORMAT);
                 const datas = {
                     batchName: values.batchName,
                     channelID,
@@ -350,8 +365,8 @@ class CreateCouponContent extends Component {
                     effectType,
                     effectGiftTimeHours,
                     endTime,
-                    EGiftEffectTime,
-                    validUntilDate,
+                    // EGiftEffectTime,
+                    // validUntilDate,
                     startTime,
                     giftItemID,
                     giftType,
@@ -362,8 +377,8 @@ class CreateCouponContent extends Component {
                     validUntilDays: values.validUntilDays ? values.validUntilDays.number : '',
                 }
                 if (giftValidRange[0]) {
-                    datas.EGiftEffectTime = `${EGiftEffectTime}`;
-                    datas.validUntilDate = `${validUntilDate}`;
+                    datas.EGiftEffectTime = giftValidRange[0].format(DATE_FORMAT);
+                    datas.validUntilDate = giftValidRange[1].format(END_DATE_FORMAT);
                 }
                 if (values.merchantType == '2' && type === 1) { // 间连传smid && 支付宝
                     const { smidList } = this.state;
@@ -725,7 +740,7 @@ class CreateCouponContent extends Component {
     render() {
         const { form, title, type } = this.props;
         const { getFieldDecorator } = form;
-        const { giftItemID, merchantType, editData } = this.state;
+        const { giftItemID, merchantType, editData, aliShops } = this.state;
         // let title = '新建第三方支付宝券';
         // if (editData.batchName) {
         //     title = '编辑第三方支付宝券';
@@ -821,7 +836,7 @@ class CreateCouponContent extends Component {
                                 >
                                     {getFieldDecorator('merchantType', {
                                         onChange: this.handleLinkWay,
-                                        initialValue: editData.merchantType ? `${editData.merchantType}` : merchantType,
+                                        initialValue: merchantType,
                                         // rules: [{ required: true, message: '请输入活动名称' }],
                                     })(
                                         <RadioGroup>
@@ -832,26 +847,7 @@ class CreateCouponContent extends Component {
                                 </FormItem>
                             }
                             { type === 1 && this.renderZhifubaoContent(merchantType) }
-                            {
-                                type === 1 && <FormItem
-                                    label="跳转小程序"
-                                    labelCol={{ span: 4 }}
-                                    wrapperCol={{ span: 16 }}
-                                    required={true}
-                                >
-                                    {getFieldDecorator('jumpAppID', {
-                                        initialValue: editData.jumpAppID,
-                                        rules: [
-                                            { required: true, message: '请输入小程序appid' },
-                                        ],
-                                    })(
-                                        <Input
-                                            placeholder="请输入小程序appid"
-                                            style={{ height: '30px' }}
-                                        />
-                                    )}
-                                </FormItem>
-                            }
+                            {type === 1 && <AliContent form={form} merchantType={merchantType} aliShops={aliShops} />}
                             { type === 2 && <WXContent form={form} merchantType={merchantType} onChangeWXMerchantID={this.onChangeWXMerchantID} onChangeWXJumpAppID={this.onChangeWXJumpAppID} />}
                             { type === 3 && <DouyinContent form={form} merchantType={merchantType} />}
                         </Form>
