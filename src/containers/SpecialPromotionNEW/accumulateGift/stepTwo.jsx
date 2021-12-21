@@ -95,18 +95,20 @@ class StepTwo extends React.Component {
         console.log(eventMutexDependRuleInfos,'eventMutexDependRuleInfos---------------')
         if(eventMutexDependRuleInfos && eventMutexDependRuleInfos.length > 0){
             this.setState({
-                isBenifitActive:true,
-                benifitType:eventMutexDependRuleInfos[0].targetID == 0 ? '1' : '2'
+                isBenifitActive: true,
+                benifitType: eventMutexDependRuleInfos[0].targetID == 0 ? '1' : '2'
             })
-            this.props.setPromotionDetail({
-                mutexPromotions: eventMutexDependRuleInfos.map((promotion) => {
-                    return {
-                        promotionIDStr: promotion.targetID || '',
-                        // sharedType: '10',
-                        finalShowName: promotion.targetName || SALE_LABEL.k5m3onpk,
-                    }
-                }),
-            });
+            if(eventMutexDependRuleInfos[0].targetID != 0){
+                this.props.setPromotionDetail({
+                    mutexPromotions: eventMutexDependRuleInfos.map((promotion) => {
+                        return {
+                            promotionIDStr: promotion.targetID || '',
+                            // sharedType: '10',
+                            finalShowName: promotion.targetName || SALE_LABEL.k5m3onpk,
+                        }
+                    }),
+                });
+            }
         }
         this.props.getSubmitFn({
             prev: undefined,
