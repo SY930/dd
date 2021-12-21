@@ -340,8 +340,8 @@ class CreateCouponContent extends Component {
                 }
                 const startTime = rangePicker[0].format(DATE_FORMAT);
                 const endTime = rangePicker[1].format(END_DATE_FORMAT);
-                const EGiftEffectTime = giftValidRange[0].format(DATE_FORMAT);
-                const validUntilDate = giftValidRange[1].format(END_DATE_FORMAT);
+                // const EGiftEffectTime = giftValidRange[0].format(DATE_FORMAT);
+                // const validUntilDate = giftValidRange[1].format(END_DATE_FORMAT);
                 const datas = {
                     batchName: values.batchName,
                     channelID,
@@ -350,8 +350,8 @@ class CreateCouponContent extends Component {
                     effectType,
                     effectGiftTimeHours,
                     endTime,
-                    EGiftEffectTime,
-                    validUntilDate,
+                    // EGiftEffectTime,
+                    // validUntilDate,
                     startTime,
                     giftItemID,
                     giftType,
@@ -362,8 +362,8 @@ class CreateCouponContent extends Component {
                     validUntilDays: values.validUntilDays ? values.validUntilDays.number : '',
                 }
                 if (giftValidRange[0]) {
-                    datas.EGiftEffectTime = `${EGiftEffectTime}`;
-                    datas.validUntilDate = `${validUntilDate}`;
+                    datas.EGiftEffectTime = giftValidRange[0].format(DATE_FORMAT);
+                    datas.validUntilDate = giftValidRange[1].format(END_DATE_FORMAT);
                 }
                 if (values.merchantType == '2' && type === 1) { // 间连传smid && 支付宝
                     const { smidList } = this.state;
