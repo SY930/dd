@@ -395,32 +395,19 @@ async function getLinks() {
     return null;
 }
 
-// // 获取抖音店铺
-// async function getDouyinShop() {
-//     const method = '/dyshop/selectList';
-//     const { groupID } = getAccountInfo();
-//     const params = { service: 'HTTP_SERVICE_URL_WECHAT', data: { groupID, dyShopCO: { groupId: groupID } }, method, type };
-//     const response = await axios.post(url + method, params);
-//     const { result: { code, message: msg }, data = [] } = response;
-//     if (code === '000') {
-//         return data
-//     }
-//     message.error(msg);
-//     return null;
-// }
-
 // 获取抖音店铺
 async function getDouyinShop() {
-    const method = 'couponCodeBatchService/tiktokShopList.ajax';
+    const method = 'couponCodeBatch/tiktokShopList.ajax';
     const { groupID } = getAccountInfo();
-    const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW', data: { groupID, dyShopCO: { groupId: groupID } }, method, type };
+    const params = { service, type, data: { groupID, dyShopCO: { groupID } }, method };
     const response = await axios.post(url + method, params);
-    const { result: { code, message: msg }, data = [] } = response;
+    const { code, message: msg, data: obj } = response;
     if (code === '000') {
-        return data
+        const { tiktokShopInfoList = [] } = obj;
+        return tiktokShopInfoList;
     }
     message.error(msg);
-    return null;
+    return [];
 }
 
 export {

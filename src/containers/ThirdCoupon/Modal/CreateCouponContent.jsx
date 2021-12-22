@@ -22,6 +22,8 @@ const EFFECT_TYPE_OPT = [
     { label: '相对有效期', value: '3' },
     { label: '固定有效期', value: '2' },
 ];
+const DATE_FORMAT = 'YYYYMMDD000000';
+const END_DATE_FORMAT = 'YYYYMMDD235959';
 
 class CreateCouponContent extends Component {
     constructor(props) {
@@ -249,10 +251,10 @@ class CreateCouponContent extends Component {
     }
 
     handleDouyinSubmit = (values, groupId) => {
-        const { giftValidRange = [], batchName, stock = {}, shopId, isExchange } = values;
+        const { giftValidRange = [], batchName, stock = {}, shopId } = values;
         const { effectGiftTimeHours, giftType, giftItemID, effectType } = this.state
-        const endTime = giftValidRange[1] ? giftValidRange[1].format('YYYYMMDDHHmmss') : '';
-        const startTime = giftValidRange[0] ? giftValidRange[0].format('YYYYMMDDHHmmss') : ''
+        const EGiftEffectTime = giftValidRange[0] ? giftValidRange[0].format(DATE_FORMAT) : ''
+        const validUntilDate = giftValidRange[1] ? giftValidRange[1].format(END_DATE_FORMAT) : '';
         if (!effectGiftTimeHours && effectType === '3') {
             this.setState({ confirmLoading: false })
             return message.error('请输入生效时间')
@@ -263,8 +265,8 @@ class CreateCouponContent extends Component {
             giftItemID,
             // couponName:
             // couponType
-            EGiftEffectTime: startTime, // 固定有效期生效时间
-            validUntilDate: endTime, // 固定有效期失效时间
+            EGiftEffectTime, // 固定有效期生效时间
+            validUntilDate, // 固定有效期失效时间
             effectType,
             groupId,
             platformType: '2',
@@ -272,7 +274,7 @@ class CreateCouponContent extends Component {
             validUntilDays: values.validUntilDays ? values.validUntilDays.number : '',
             stock: stock.number,
             shopId,
-            isExchange: Number(isExchange),
+            // isExchange: Number(isExchange),
             channelID: 70,
             couponCodeDockingType: 1,
             giftType,
@@ -318,7 +320,7 @@ class CreateCouponContent extends Component {
                 const { effectType, effectGiftTimeHours, merchantID, editData, giftType, giftItemID } = this.state;
                 const { user } = getStore().getState();
                 const { groupID } = user.get('accountInfo').toJS()
-                const rangePicker = values.rangePicker;
+                const rangePicker = values.rangePicker || [];
                 const giftValidRange = values.giftValidRange || [];
                 if (type == 3) { // 抖音
                     this.handleDouyinSubmit(values, groupID)
@@ -336,8 +338,10 @@ class CreateCouponContent extends Component {
                     this.setState({ confirmLoading: false })
                     return message.error('间连的支付宝账号未关联M4')
                 }
-                const endTime = rangePicker[1].format('YYYYMMDD');
-                const startTime = rangePicker[0].format('YYYYMMDD')
+                const startTime = rangePicker[0].format(DATE_FORMAT);
+                const endTime = rangePicker[1].format(END_DATE_FORMAT);
+                // const EGiftEffectTime = giftValidRange[0].format(DATE_FORMAT);
+                // const validUntilDate = giftValidRange[1].format(END_DATE_FORMAT);
                 const datas = {
                     batchName: values.batchName,
                     channelID,
@@ -345,10 +349,10 @@ class CreateCouponContent extends Component {
                     stock: values.stock.number,
                     effectType,
                     effectGiftTimeHours,
-                    endTime: `${endTime}235959`,
-                    EGiftEffectTime: giftValidRange[0] ? giftValidRange[0].format('YYYYMMDDHHmmss') : '',
-                    validUntilDate: giftValidRange[1] ? giftValidRange[1].format('YYYYMMDDHHmmss') : '',
-                    startTime: `${startTime}000000`,
+                    endTime,
+                    // EGiftEffectTime,
+                    // validUntilDate,
+                    startTime,
                     giftItemID,
                     giftType,
                     jumpAppID: values.jumpAppID,
@@ -358,8 +362,8 @@ class CreateCouponContent extends Component {
                     validUntilDays: values.validUntilDays ? values.validUntilDays.number : '',
                 }
                 if (giftValidRange[0]) {
-                    datas.EGiftEffectTime = giftValidRange[0] ? giftValidRange[0].format('YYYYMMDDHHmmss') : '';
-                    datas.validUntilDate = giftValidRange[1] ? giftValidRange[1].format('YYYYMMDDHHmmss') : ''
+                    datas.EGiftEffectTime = giftValidRange[0].format(DATE_FORMAT);
+                    datas.validUntilDate = giftValidRange[1].format(END_DATE_FORMAT);
                 }
                 if (values.merchantType == '2' && type === 1) { // 间连传smid && 支付宝
                     const { smidList } = this.state;
