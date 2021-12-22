@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
-import { Row, Col, Icon, Form, Select, message, Input, Button, Tooltip } from 'antd';
-import { axios } from '@hualala/platform-base';
+import { Icon, Form, Select, message, Input, Button, Tooltip } from 'antd';
+import { axios, getStore } from '@hualala/platform-base';
 import FoodSelectModal from '../../../../components/common/FoodSelector/FoodSelectModal'
 import styles from './styles.less';
 import { programList, faceDefVal } from './Commom'
@@ -19,6 +19,9 @@ const mapStateToProps = (state) => {
         accountInfo: state.user.get('accountInfo'),
     }
 }
+
+// TODO: 合代码时把11157去掉
+const GROUPID_SHOW = ['130442', '11157', '189702'];
 class MyFaceRule extends Component {
     constructor(props) {
         super(props);
@@ -42,6 +45,7 @@ class MyFaceRule extends Component {
                 // { label: '商城', value: '5' },
                 // { label: '跳转至小程序', value: '11' },
                 { label: '菜品加入购物车', value: 'shoppingCartAddFood' },
+                // { label: '小程序开卡', value: 'toOpenCard' }, // 仅针对九毛九集团可见
             ],
             mallActivityList: [],
             allActivityList: [],
@@ -61,6 +65,7 @@ class MyFaceRule extends Component {
         // this.searchAllMallActivity();
         this.searchCrmTag();
         // this.initData()
+        this.initEventSelectOption();
     }
 
 
@@ -69,12 +74,10 @@ class MyFaceRule extends Component {
         const list = [...value];
         const faceObj = value[idx];
         list[idx] = { ...faceObj, ...params };
-        // // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 72 ~ MyFaceRule ~ list", list)
         onChange(list);
     }
 
     onRange = (idx, key, value) => {
-        // // // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 74 ~ MyFaceRule ~ key, value", key, value)
         if (value == '1') { // 会员身份
             this.onChange(idx, { [key]: value, conditionValue: 'whetherHasCard', conditionName: '是否持卡会员', targetName: '持卡会员', targetValue: '0' })
             this.setState({
@@ -123,7 +126,7 @@ class MyFaceRule extends Component {
     onEvents = (idx, key, value) => {
         const item = this.state.eventSelectOption.filter(itm => itm.value == value)
         this.onChange(idx, { [key]: value, triggerEventName: item[0] ? item[0].label : '', triggerEventCustomInfo: {} })
-        this.getAvtivity(idx, value, key)
+        // this.getAvtivity(idx, value, key)
     }
 
     onEventsLinkValue = (idx, key, value) => {
@@ -220,13 +223,18 @@ class MyFaceRule extends Component {
     }
 
 
-    initData = () => {
-        const { value = [] } = this.state;
-        const everyTagsRule = [];
-        if (value.length > 0) {
+    initEventSelectOption = () => {
+        const { eventSelectOption } = this.state;
+        // const eventSelectOptionCopy = eventSelectOption;
+        const state = getStore().getState();
+        const { groupID } = state.user.get('accountInfo').toJS();
+        if (GROUPID_SHOW.includes(`${groupID}`)) {
+            eventSelectOption.push({ label: '小程序开卡', value: 'toOpenCard' })
         }
+        this.setState({
+            eventSelectOption,
+        })
     }
-
 
     // 查询所有营销活动
     searchAllActivity = () => {
@@ -287,7 +295,6 @@ class MyFaceRule extends Component {
                 tagTypes.map((item) => {
                     tagsList.push(...item.categoryEntries)
                 })
-                // // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 252 ~ MyFaceRule ~ tagTypes.map ~ tagsList", tagsList)
 
                 this.setState({
                     tagCategories: res.tagCategories,
@@ -315,7 +322,6 @@ class MyFaceRule extends Component {
     }
 
     handleModalOk = (i, item, values = []) => {
-        // // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 237 ~ MyFaceRule ~ valuehhhhhhhhh", values)
         if (values.length > 1) {
             message.warn('只能选择一个菜品');
             return;
@@ -367,18 +373,18 @@ class MyFaceRule extends Component {
     }
 
     del = ({ target }, data) => {
-        const { activityOption } = this.state;
+        // const { activityOption } = this.state;
         const { everyTagsRule } = data;
         const { idx } = target.closest('a').dataset;
         const { value, onChange } = this.props;
         const list = [...value];
         list.splice(+idx, 1);
         everyTagsRule.splice(+idx, 1)
-        activityOption.splice(+idx, 1)
+        // activityOption.splice(+idx, 1)
         onChange(list);
         this.setState({
             everyTagsRule,
-            activityOption,
+            // activityOption,
         })
     }
 
@@ -387,30 +393,40 @@ class MyFaceRule extends Component {
         // validateStatus={v.triggerEventCustomInfo.value ? 'success' : 'error'} help={v.triggerEventCustomInfo.value ? '' : '请输入自定义链接'}
         >
             <Input
-                style={{ marginLeft: 8 }}
+                style={{ marginLeft: 8, width: '249px', height: '32px' }}
                 onChange={(_v) => { this.onChangeCustomUrl(i, 'triggerEventCustomInfo', _v) }}
                 value={v.triggerEventCustomInfo.value || ''}
             />
-            <span>不支持储值套餐链接</span>
+            <p>不支持储值套餐链接</p>
+        </FormItem>)
+    }
+
+    renderOpenCardInput = (i, v) => {
+        return (<FormItem>
+            <Input
+                style={{ marginLeft: 8, width: '249px', height: '32px' }}
+                value={'默认开通本店铺适用的线上卡类型'}
+                disabled={true}
+            />
         </FormItem>)
     }
 
     // 选择菜品
     renderFoods = (i, item) => {
         return (
-            <FormItem style={{ display: 'inlineBlock', width: '262px', marginLeft: 8, marginTop: 7 }} 
+            <FormItem style={{ display: 'inlineBlock', width: '262px', marginLeft: 8, marginTop: 2 }}
             // validateStatus={item.triggerEventCustomInfo.foodName ? 'success' : 'error'} help={item.triggerEventCustomInfo.foodName ? '' : '请选择一个菜品'}
             >
                 <Input
                     type="text"
-                    style={{ width: 170 }}
+                    style={{ width: 159, height: 32 }}
                     disabled={true}
                     value={item.triggerEventCustomInfo ? item.triggerEventCustomInfo.foodName : ''}
                 />
                 <Button
                     type="default"
                     // disabled={true}
-                    style={{ display: 'inlineBlock', marginLeft: '10px' }}
+                    style={{ display: 'inlineBlock', marginLeft: '10px', height: 32 }}
                     onClick={() => { this.showDishSelector(i, 'isShowDishSelector') }}
                 >
                     选择菜品
@@ -466,7 +482,6 @@ class MyFaceRule extends Component {
 
     render() {
         const { value = [], decorator } = this.props;
-        // // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 31 ~ MyFaceRule ~ render ~ value", value)
         // const { length } = value;
         // 防止回显没数据不显示礼品组件
         if (!value[0]) {
@@ -561,8 +576,9 @@ class MyFaceRule extends Component {
                                                 }
                                             </Select>
                                         </FormItem>
-                                        {(v.triggerEventValue == 'customLink') && this.renderInput(i, v, decorator)}
-                                        {v.triggerEventValue == 'shoppingCartAddFood' && this.renderFoods(i, v, decorator)}
+                                        {v.triggerEventValue == 'customLink' && this.renderInput(i, v)}
+                                        {v.triggerEventValue == 'shoppingCartAddFood' && this.renderFoods(i, v)}
+                                        { v.triggerEventValue == 'toOpenCard' && this.renderOpenCardInput(i, v)}
                                         {/* {this.renderSelect(i, v, decorator, [])} */}
                                     </div>
                                 </div>

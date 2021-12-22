@@ -14,6 +14,7 @@ import {resetOccupiedWeChatInfo} from "../../redux/actions/saleCenterNEW/queryWe
 import {toggleIsUpdateAC} from "../../redux/actions/saleCenterNEW/myActivities.action";
 import SpecialActivityMain from '../SpecialPromotionNEW/activityMain';
 import BasicActivityMain from '../SaleCenterNEW/activityMain';
+import ActivityMain from '../WeChat2Mall/WeChatMaLLActivityMain'; // 秒杀
 import {
     fetchFoodCategoryInfoAC,
     fetchFoodMenuInfoAC,
@@ -51,6 +52,7 @@ import { getStore } from '@hualala/platform-base'
 import Chou2Le from "../PromotionV3/Chou2Le";   // 抽抽乐
 import BlindBox from "../PromotionV3/BlindBox";   // 抽抽乐
 import PassWordCoupon from "../PromotionV3/PassWordCoupon";   // 口令领券
+import ManyFace from '../PromotionV3/ManyFace'; // 千人千面
 import { jumpPage, closePage } from '@hualala/platform-base';
 
 // 跳转到带装修的活动设置页面
@@ -218,6 +220,30 @@ class PromotionCreateModal extends Component {
         });
     }
 
+    // 秒杀活动
+    renderWeChat2MallModal() {
+        return (
+            <Modal
+                wrapClassName="progressBarModal"
+                title={'新建秒杀活动'}
+                footer={false}
+                width={1000}
+                visible={true}
+                onCancel={this.onV3Click}
+            >
+                <ActivityMain
+                    index={0}
+                    isNew={true}
+                    callbackthree={(arg) => {
+                        if (arg == 3) {
+                            this.onV3Click()
+                        }
+                    }}
+                />
+            </Modal>
+        )
+    }
+
     renderSpecialPromotionModal() {
         const promotionType = this.props.saleCenter.get('characteristicCategories').toJS()[this.state.specialIndex].title;
         const { intl } = this.props;
@@ -379,6 +405,8 @@ class PromotionCreateModal extends Component {
                 {(v3visible && curKey == '78') && (<Chou2Le onToggle={this.onV3Click} />)}
                 {(v3visible && curKey == '79') && (<BlindBox onToggle={this.onV3Click} />)}
                 {(v3visible && curKey == '83') && (<PassWordCoupon onToggle={this.onV3Click} />)}
+                {(v3visible && curKey == '10072') && this.renderWeChat2MallModal()}
+                {(v3visible && curKey == '85') && <ManyFace onToggle={this.onV3Click} />}
             </div>
         )
     }

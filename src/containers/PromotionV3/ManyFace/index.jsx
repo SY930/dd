@@ -86,8 +86,8 @@ class ManyFace extends Component {
                 const { faceRule } = v;
                 const faceData = _.cloneDeep(faceRule)
                 let flag = false;
-                // console.log("🚀 ~ file: index.jsx ~ line 82 ~ ManyFace ~ form.validateFields ~ faceData", faceData)
                 faceRule.map((itm) => {
+                    // console.log(index.jsx ~ line 90 ~ ManyFace ~ faceRule.map ~ itm", itm)
                     if (itm.conditionType == 2) {
                         if (!itm.conditionValue) {
                             flag = true;
@@ -109,7 +109,7 @@ class ManyFace extends Component {
                         message.warn('请选择触发事件')
                         return null
                     }
-                    if (_.isEmpty(itm.triggerEventCustomInfo)) {
+                    if (_.isEmpty(itm.triggerEventCustomInfo) && itm.triggerEventValue !== 'toOpenCard') {
                         flag = true;
                         // itm.validateStatus = 'error';
                         message.warn('请选择触发事件')
@@ -120,8 +120,8 @@ class ManyFace extends Component {
                     return
                 }
                 const formData3 = faceData.map((item) => {
-                    if (item.triggerEventValue === 'customLink') {
-                        item.triggerEventCustomInfo = item.triggerEventCustomInfo.value;
+                    if (item.triggerEventValue === 'customLink' || item.triggerEventValue === 'toOpenCard') {
+                        item.triggerEventCustomInfo = item.triggerEventCustomInfo.value || '';
                     } else {
                         item.triggerEventCustomInfo = JSON.stringify(item.triggerEventCustomInfo)
                     }
@@ -253,7 +253,7 @@ class ManyFace extends Component {
                 } else {
                     item.everyTagsRule = [];
                 }
-                if (item.triggerEventValue === 'customLink') {
+                if (item.triggerEventValue === 'customLink' || item.triggerEventValue === 'toOpenCard') {
                     item.triggerEventCustomInfo = { value: item.triggerEventCustomInfo }
                 } else  {
                     try {
@@ -264,7 +264,6 @@ class ManyFace extends Component {
                 }
                 return { ...item, id: item.itemID, isShowDishSelector: false }
             })
-        // console.log("🚀 ~ file: index.jsx ~ line 193 ~ ManyFace ~ faceData", faceData)
         }
         return faceData
     }
@@ -385,16 +384,6 @@ function mapStateToProps(state) {
     return {
         accountInfo: state.user.get('accountInfo'),
         user: state.user.toJS(),
-        // params: state.sale_giftInfoNew.get('listParams'),
-        // giftData: state.sale_giftInfoNew.get('giftSort'),
-        // shopSchema: state.sale_shopSchema_New,
-        // accountInfo: state.user.get('accountInfo'),
-        // menuList: state.user.get('menuList'),
-        // sharedGifts: state.sale_giftInfoNew.get('sharedGifts'),
-
-        // // 商城商品及分类信息
-        // goodCategories: state.sale_promotionDetailInfo_NEW.get('goodCategories').toJS(),
-        // goods: state.sale_promotionDetailInfo_NEW.get('goods').toJS(),
     }
 }
 
