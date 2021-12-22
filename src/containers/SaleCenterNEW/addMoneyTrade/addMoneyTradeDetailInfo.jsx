@@ -16,6 +16,7 @@ import {
     message,
     Col,
     Row,
+    Input,
     Tooltip,
     Icon,
 } from 'antd';
@@ -159,6 +160,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                     payPrice: price.payPrice,
                     imagePath: price.imgePath,
                     weightOffset: price.weightOffset,
+                    maxNum: price.maxNum,
                 }
             });
             const rule = {
@@ -217,27 +219,40 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         this.setState({ calType: Number(e.target.value) });
     }
     // 减免金额
-    onStageAmountChange(value) {
+    onStageAmountChange(e) {
         let { stageAmount, stageAmountFlag } = this.state;
-        if (value.number == null || value.number == '') {
+        if (e.target.value == null || e.target.value == '' || e.target.value == '0') {
             stageAmountFlag = false;
-            stageAmount = value.number;
+            stageAmount = e.target.value;
         } else {
-            stageAmountFlag = true;
-            stageAmount = value.number;
+            const reg = /^(([1-9]\d{0,100})|0)(\.\d{0,2})?$/
+            if (reg.test(e.target.value)) {
+                stageAmountFlag = true;
+                stageAmount = e.target.value;
+            } else {
+                stageAmountFlag = false;
+                stageAmount = e.target.value;
+            }
+
         }
         this.setState({ stageAmount, stageAmountFlag });
     }
 
     // 减免数量
-    onStageCountChange(value) {
+    onStageCountChange(e) {
         let { stageCount, stageCountFlag } = this.state;
-        if (value.number == null || value.number == '') {
+        if (e.target.value == null || e.target.value == '' || e.target.value == '0') {
             stageCountFlag = false;
-            stageCount = value.number;
+            stageCount = e.target.value;
         } else {
-            stageCountFlag = true;
-            stageCount = value.number;
+            const reg = /^(([1-9]\d{0,100})|0)(\.\d{0,2})?$/
+            if (reg.test(e.target.value)) {
+                stageCountFlag = true;
+                stageCount = e.target.value;
+            } else {
+                stageCountFlag = false;
+                stageCount = e.target.value;
+            }
         }
         this.setState({ stageCount, stageCountFlag });
     }
@@ -412,6 +427,9 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                         <RadioGroup onChange={this.onRadioChange} value={this.state.stageType}>
                             <Radio key={'2'} value={2}>{k5koakjf}</Radio>
                             <Radio key={'1'} value={1}>{k5koakrr}</Radio>
+                            <Tooltip title='仅POS2.5支持数量为小数，POS2.0输入小数时向上取整，如输入2.3，则取为3份'>
+                                <Icon style={{ marginLeft: -7, marginRight: -5 }} type="question-circle" />
+                            </Tooltip>
                         </RadioGroup>
                     </FormItem>
                     {this.state.stageType == 2 ?
@@ -421,7 +439,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                             validateStatus={this.state.stageAmountFlag ? 'success' : 'error'}
                             help={this.state.stageAmountFlag ? null : SALE_LABEL.k5kqf1pf}
                         >
-                            <PriceInput
+                            <Input
                                 addonBefore={
                                     <Select size="default"
                                         onChange={this.ruleTypeChange}
@@ -434,11 +452,11 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                                         <Option key="3" value="3">{k5kqf1xr}</Option>
                                     </Select>
                                 }
-                                addonAfter={k5ezdbiy}
-                                value={{ number: this.state.stageAmount }}
-                                defaultValue={{ number: this.state.stageAmount }}
+                                addonAfter={'元'}
+                                value={this.state.stageAmount}
+                                defaultValue={this.state.stageAmount}
                                 onChange={this.onStageAmountChange}
-                                modal="int"
+                            // modal="int"
                             />
                         </FormItem> :
                         <FormItem
@@ -446,7 +464,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                             wrapperCol={{ span: 17, offset: 4 }}
                             validateStatus={this.state.stageCountFlag ? 'success' : 'error'}
                             help={this.state.stageCountFlag ? null : SALE_LABEL.k5kqf263}>
-                            <PriceInput
+                            <Input
                                 addonBefore={
                                     <Select size="default"
                                         onChange={this.ruleTypeChange}
@@ -459,11 +477,11 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                                         <Option key="3" value="3">{k5kqf33f}</Option>
                                     </Select>
                                 }
-                                addonAfter={k5ez4qy4}
-                                value={{ number: this.state.stageCount }}
-                                defaultValue={{ number: this.state.stageCount }}
+                                addonAfter={'份(斤)'}
+                                value={this.state.stageCount}
+                                defaultValue={this.state.stageCount}
                                 onChange={this.onStageCountChange}
-                                modal="int"
+                            // modal="int"
                             />
                         </FormItem>
                     }

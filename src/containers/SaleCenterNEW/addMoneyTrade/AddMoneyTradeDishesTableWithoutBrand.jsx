@@ -7,6 +7,7 @@ import {
     Form,
     Tooltip,
     Popconfirm,
+    Icon,
 } from 'antd';
 import {
     memoizedShopCategoriesAndDishes,
@@ -16,7 +17,7 @@ import styles from '../ActivityPage.less'
 import PriceInputIcon from '../common/PriceInputIcon';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
-import {injectIntl} from '../IntlDecor';
+import { injectIntl } from '../IntlDecor';
 
 
 const FormItem = Form.Item;
@@ -74,29 +75,29 @@ class AddMoneyTradeDishesTableWithoutBrand extends Component {
         if (!priceLst.length) return;
         const data = priceLst.reduce((acc, item) => {
             const dish = dishes.find(d => d.value === `${item.foodName}${item.foodUnitName}`);
-            dish && acc.push({...dish, payPrice: item.payPrice});
+            dish && acc.push({ ...dish, payPrice: item.payPrice, weightOffset: item.weightOffset,  maxNum: item.maxNum  });
             return acc;
         }, [])
         this.setState({ data })
         this.props.onChange(data)
     }
-    onCellChange = (val, {index}) => {
+    onCellChange = (val, { index }) => {
         const data = [...this.state.data];
         let num = val.number;
         const record = data[index];
         if (val.number > +record.price) {// 特价不超过售价价
             num = record.price;
-        }else if (val.number < 0) {// 特价不小于0
+        } else if (val.number < 0) {// 特价不小于0
             num = '0';
         }
         record.payPrice = num;
-        this.setState({data});
-        this.props.onChange(data.map(item => ({...item})));
+        this.setState({ data });
+        this.props.onChange(data.map(item => ({ ...item })));
     }
     handleDel = (record) => {
         const data = [...this.state.data];
         data.splice(record.index, 1);
-        this.setState({data})
+        this.setState({ data })
         this.props.onChange(data)
     };
     handleModalOk = (v) => {
@@ -109,7 +110,7 @@ class AddMoneyTradeDishesTableWithoutBrand extends Component {
             const dishObj = dishes.find(item => item.value === curr);
             if (dishObj) {
                 const reservedDish = this.state.data.find(item => item.value === dishObj.value);
-                acc.push(reservedDish ? {...dishObj, payPrice: reservedDish.payPrice} : dishObj)
+                acc.push(reservedDish ? { ...dishObj, payPrice: reservedDish.payPrice } : dishObj)
             }
             return acc;
         }, [])
@@ -147,6 +148,35 @@ class AddMoneyTradeDishesTableWithoutBrand extends Component {
             />
         )
     }
+
+    onFloatChange = (val, { index }) => {
+        const data = [...this.state.data];
+        let num = val.number;
+        const record = data[index];
+        if (val.number >= 0) {// 特价不超过售价价
+            num = val.number;
+        } else if (val.number < 0) {// 特价不小于0
+            num = '0';
+        }
+        record.weightOffset = num;
+        this.setState({ data });
+        this.props.onChange(data.map(item => ({ ...item })));
+    }
+
+    onFloatMaxNumChange = (val, { index }) => {
+        const data = [...this.state.data];
+        let num = val.number;
+        const record = data[index];
+        if (val.number >= 0) {// 特价不超过售价价
+            num = val.number;
+        } else if (val.number < 0) {// 特价不小于0
+            num = '0';
+        }
+        record.maxNum = num;
+        this.setState({ data });
+        this.props.onChange(data.map(item => ({ ...item })));
+    }
+
     render() {
         const {
             selectorModalVisible,
@@ -174,7 +204,7 @@ class AddMoneyTradeDishesTableWithoutBrand extends Component {
                     return (
                         <div>
                             <Popconfirm title={SALE_LABEL.k5dnw1q3} onConfirm={() => this.handleDel(record)}>
-                                <a title={ COMMON_LABEL.delete }>{ COMMON_LABEL.delete }</a>
+                                <a title={COMMON_LABEL.delete}>{COMMON_LABEL.delete}</a>
                             </Popconfirm>
                         </div>
                     );
@@ -227,7 +257,7 @@ class AddMoneyTradeDishesTableWithoutBrand extends Component {
                 render: (text, record, index) => {
                     return (
                         <div
-                            style={(record.payPrice > 0) && (+record.payPrice <= +record.price) ? {height: '100%'} : {height: '100%', border: '1px solid #f04134'}}
+                            style={(record.payPrice > 0) && (+record.payPrice <= +record.price) ? { height: '100%' } : { height: '100%', border: '1px solid #f04134' }}
                             className={styles.rightAlign}
                         >
                             <PriceInputIcon
@@ -242,8 +272,80 @@ class AddMoneyTradeDishesTableWithoutBrand extends Component {
                     )
                 },
             },
+            {
+                title:
+                    <span>最大换购数量
+                        <Tooltip title={'称重菜品仅支持POS2.5且默认规格为“斤”'}>
+                            <Icon
+                                style={{
+                                    marginLeft: 3,
+                                    cursor: 'pointer',
+                                }}
+                                type="question-circle"
+                            />
+                        </Tooltip>
+                    </span>,
+                width: 110,
+                dataIndex: 'maxNum',
+                key: 'maxNum',
+                className: 'noPadding',
+                render: (text, record, index) => {
+                    return (
+                        <div
+                            style={{ height: '100%', }}
+                            className={styles.rightAlign}
+                        >
+                            <PriceInputIcon
+                                type="text"
+                                modal={record.IsNeedConfirmFoodNumber ? "float" : "int"}
+                                // disabled={!record.IsNeedConfirmFoodNumber}
+                                value={{ number: record.maxNum }}
+                                index={index}
+                                prefix={'±'}
+                                onChange={(val) => { this.onFloatMaxNumChange(val, record) }}
+                            />
+                        </div>
+                    )
+                },
+            },
+            {
+                title:
+                    <span>称重误差值(斤)
+                        <Tooltip title={'仅支持POS2.5，仅“需要确定数量”的菜品才能编辑称重误差值，其他菜品不能编辑此项'}>
+                            <Icon
+                                style={{
+                                    marginLeft: 3,
+                                    cursor: 'pointer',
+                                }}
+                                type="question-circle"
+                            />
+                        </Tooltip>
+                    </span>,
+                width: 110,
+                dataIndex: 'weightOffset',
+                key: 'weightOffset',
+                className: 'noPadding',
+                render: (text, record, index) => {
+                    return (
+                        <div
+                            style={{ height: '100%', }}
+                            className={styles.rightAlign}
+                        >
+                            <PriceInputIcon
+                                type="text"
+                                modal="float"
+                                disabled={!record.IsNeedConfirmFoodNumber}
+                                value={{ number: record.weightOffset }}
+                                index={index}
+                                prefix={'±'}
+                                onChange={(val) => { this.onFloatChange(val, record) }}
+                            />
+                        </div>
+                    )
+                },
+            },
         ];
-        const displayDataSource = data.map((item, index) => ({...item, index}))
+        const displayDataSource = data.map((item, index) => ({ ...item, index }))
         return (
             <FormItem className={styles.FormItemStyle}>
                 <Row>
