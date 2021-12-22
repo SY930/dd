@@ -379,6 +379,10 @@ class CreateCouponContent extends Component {
                     datas.miniProgramsAppId = values.miniProgramsAppId;
                     datas.miniProgramsPath = values.miniProgramsPath;
                     datas.validateWay = values.validateWay;
+                    datas.joinWay = values.joinWay;
+                    datas.entranceMiniProgramsAppId = values.entranceMiniProgramsAppId;
+                    datas.entranceMiniProgramsPath = values.entranceMiniProgramsPath;
+                    datas.entranceWords = values.entranceWords
                 }
                 const url = '/api/v1/universal?';
                 let method = 'couponCodeBatchService/addBatch.ajax';
@@ -517,7 +521,7 @@ class CreateCouponContent extends Component {
     renderIndirect = () => {
         const { form, type } = this.props;
         const { getFieldDecorator } = form;
-        const { authorizeModalVisible, smidList = [], merchantType } = this.state;
+        const { authorizeModalVisible, smidList = [] } = this.state;
         const { bankMerchantCode } = smidList[0] || {};
         // const { editData } = this.state;
         // const value = editData.merchantType && editData.merchantType == '2' ? editData.merchantID : '';
@@ -640,24 +644,6 @@ class CreateCouponContent extends Component {
                     {
                         this.state.effectType === '3' && (
                             <div>
-                                {/* <FormItem
-                                    label="相对有效期"
-                                    labelCol={{ span: 4 }}
-                                    wrapperCol={{ span: 16 }}
-                                >
-                                    <span className={styles.formLabel}></span>
-                                    <RadioGroup
-                                        className={styles.radioMargin}
-                                        value={this.state.dayOrHour}
-                                        onChange={this.handleDayOrHourChange}
-                                    >
-                                        {
-                                            COUNT_TYPE_OPT.map((item, index) => {
-                                                return <Radio value={item.value} key={index}>{item.label}</Radio>
-                                            })
-                                        }
-                                    </RadioGroup>
-                                </FormItem> */}
                                 <FormItem
                                     label="生效时间"
                                     labelCol={{ span: 4 }}
@@ -789,7 +775,6 @@ class CreateCouponContent extends Component {
                                     required={true}
                                 >
                                     {getFieldDecorator('rangePicker', {
-                                        // initialValue: editData.startTime > 0 ? [moment(editData.startTime, 'YYYYMMDD'), moment(editData.endTime, 'YYYYMMDD')] : [],
                                         rules: [
                                             { required: true, message: '请输入日期' },
                                         ],
@@ -838,7 +823,6 @@ class CreateCouponContent extends Component {
                                         onChange: this.handleLinkWay,
                                         initialValue: editData.merchantType ? `${editData.merchantType}` : merchantType,
                                         // rules: [{ required: true, message: '请输入活动名称' }],
-
                                     })(
                                         <RadioGroup>
                                             <RadioButton value="2">间连</RadioButton>
@@ -870,40 +854,6 @@ class CreateCouponContent extends Component {
                             }
                             { type === 2 && <WXContent form={form} merchantType={merchantType} onChangeWXMerchantID={this.onChangeWXMerchantID} onChangeWXJumpAppID={this.onChangeWXJumpAppID} />}
                             { type === 3 && <DouyinContent form={form} merchantType={merchantType} />}
-                            {/* {
-                                type === 2 && <FormItem
-                                    label="用户最大领取数量"
-                                    labelCol={{ span: 5 }}
-                                    wrapperCol={{ span: 9 }}
-                                    required={true}
-                                >
-                                    {getFieldDecorator('maxCouponsPerUser', {
-                                        rules: [
-                                            { required: true, message: '请输入用户最大领取数量' },
-                                            {
-                                                validator: (rule, v, cb) => {
-                                                    if (!v) {
-                                                        return cb();
-                                                    }
-                                                    if (v > 10 || v < 0) {
-                                                        return cb(rule.message);
-                                                    }
-                                                    cb();
-                                                },
-                                                message: '必须输入数字, 且大于0小于10',
-                                            },
-                                        ],
-                                    })(
-                                        <Input
-                                            placeholder="请输入用户最大领取数量"
-                                            addonAfter="个"
-                                            type="number"
-                                            min={0}
-                                            style={{ height: '30px' }}
-                                        />
-                                    )}
-                                </FormItem>
-                            } */}
                         </Form>
                     </Col>
                 </Row>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Row, Col, Select, Input, Radio, Icon, Tooltip } from 'antd'
-import { getMpAppList, getPayChannel, getLinks } from '../AxiosFactory';
+import { getMpAppList, getPayChannel, getLinks, getWeChatMpAndAppInfo } from '../AxiosFactory';
 import styles from '../AlipayCoupon.less';
 
 const RadioGroup = Radio.Group;
@@ -25,6 +25,8 @@ class WXContent extends Component {
             payChannelList: [],
             validateWay: 'OFF_LINE',
             linksList: [],
+            joinWay: '1',
+            AppList: [],
         };
     }
     componentDidMount() {
@@ -55,7 +57,7 @@ class WXContent extends Component {
     }
 
     initData = () => {
-        getMpAppList().then((res) => {
+        getWeChatMpAndAppInfo().then((res) => {
             if (res) {
                 this.setState({
                     mpAndAppList: res,
@@ -72,22 +74,13 @@ class WXContent extends Component {
                 linksList: res,
             })
         })
-        // getlinks = () => {
-        //     axiosData('/link/getlinks', {
-        //         type: 'mini_menu_type',
-        //     }, null, {
-        //         path: '',
-        //     }, 'HTTP_SERVICE_URL_WECHAT')
-        //         .then((res) => {
-        //             const { result, linkList } = res
-        //             const code = (result || {}).code
-        //             if (code === '000') {
-        //                 this.setState({
-        //                     linksList: linkList || []
-        //                 })
-        //             }
-        //         })
-        // }
+        getMpAppList().then((res) => {
+            if (res) {
+                this.setState({
+                    AppList: res,
+                })
+            }
+        })
     }
 
     handleChangeValidateWay = ({ target: x }) => {
@@ -95,39 +88,44 @@ class WXContent extends Component {
             validateWay: x.value,
         })
     }
-
+    handleChangeJoinWay = ({ target: x }) => {
+        this.setState({
+            joinWay: x.value,
+        })
+    }
 
     render() {
         const { form } = this.props;
         const { getFieldDecorator } = form;
-        const icon = (<span>小程序名称<Tooltip title="用户领取微信商家券后，同步在小程序/公众号个人中心展示。"><Icon type="question-circle-o" style={{ marginLeft: 5 }} /></Tooltip></span>)
+        const icon = (<span>小程序名称<Tooltip title="用户领取微信商家券后，同步在小程序个人中心展示。"><Icon type="question-circle-o" style={{ marginLeft: 5 }} /></Tooltip></span>)
+        const iconAppAndMp = (<span>小程序/公众号<Tooltip title="用户领取微信商家券后，同步在小程序/公众号个人中心展示。"><Icon type="question-circle-o" style={{ marginLeft: 5 }} /></Tooltip></span>)
         return (
             <div>
                 <Row>
                     <Col span={16} offset={5} className={styles.DirectBox}>
                         <Form.Item
-                            labelCol={{ span: 6 }}
+                            labelCol={{ span: 7 }}
                             wrapperCol={{ span: 16 }}
                             required={true}
                             className={styles.directSelect}
-                            label={icon}
+                            label={iconAppAndMp}
                         >
                             {getFieldDecorator('jumpAppID', {
                                 // initialValue: value || undefined,
                                 onChange: this.onChangeWXJumpAppID,
                                 rules: [
-                                    { required: true, message: '请选择小程序' },
+                                    { required: true, message: '请选择小程序/公众号' },
                                 ],
-                            })(<Select placeholder={'请选择小程序'} labelInValue>
+                            })(<Select placeholder={'请选择小程序/公众号'} labelInValue>
                                 {
-                                    this.state.mpAndAppList.map(({ appID, nickName }) => (
-                                        <Select.Option key={appID} value={`${appID}`}>{nickName}</Select.Option>
+                                    this.state.mpAndAppList.map(({ appID, mpName }) => (
+                                        <Select.Option key={appID} value={`${appID}`}>{mpName}</Select.Option>
                                     ))
                                 }
                             </Select>)}
                         </Form.Item>
                         <Form.Item
-                            labelCol={{ span: 6 }}
+                            labelCol={{ span: 7 }}
                             wrapperCol={{ span: 16 }}
                             required={true}
                             className={styles.directSelect}
@@ -237,7 +235,7 @@ class WXContent extends Component {
                                         placeholder="请选择小程序名称"
                                     >
                                         {
-                                            this.state.mpAndAppList.map(({ appID, nickName }) => (
+                                            this.state.AppList.map(({ appID, nickName }) => (
                                                 <Select.Option key={appID} value={`${appID}`}>{nickName}</Select.Option>
                                             ))
                                         }
@@ -251,6 +249,95 @@ class WXContent extends Component {
                                 className={styles.directSelect}
                             >
                                 {getFieldDecorator('miniProgramsPath', {
+                                    rules: [
+                                        { required: true, message: '请选择页面路径' },
+                                    ],
+                                })(
+                                    <Select
+                                        placeholder="请选择页面路径"
+                                    >
+                                        {
+                                            this.state.linksList.map((mp) => {
+                                                const data = mp.value || {}
+                                                return <Option key={data.urlTpl} value={data.urlTpl}>{data.title}</Option>
+                                            })
+                                        }
+                                    </Select>
+                                )}
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                }
+                <Form.Item
+                    label="自定义入口"
+                    labelCol={{ span: 5 }}
+                    wrapperCol={{ span: 15 }}
+                    required={true}
+                >
+                    {getFieldDecorator('joinWay', {
+                        initialValue: '1',
+                        onChange: this.handleChangeJoinWay,
+                        rules: [
+                            { required: true },
+                        ],
+                    })(
+                        <RadioGroup>
+                            <RadioButton value="1">公众号</RadioButton>
+                            <RadioButton value="2">小程序</RadioButton>
+                        </RadioGroup>
+                    )}
+                </Form.Item>
+                {
+                    this.state.joinWay === '2' && <Row>
+                        <Col span={16} offset={5} className={styles.DirectBox}>
+                            <Form.Item
+                                label="标题"
+                                labelCol={{ span: 6 }}
+                                wrapperCol={{ span: 15 }}
+                                required={true}
+                            >
+                                {getFieldDecorator('entranceWords', {
+                                    rules: [
+                                        { required: true, message: '请输入标题,最多5个字符' },
+                                    ],
+                                })(
+                                    <Input
+                                        placeholder="请输入标题,最多5个字符"
+                                        min={0}
+                                        maxLength={5}
+                                    />
+                                )}
+                            </Form.Item>
+                            <Form.Item
+                                label={icon}
+                                labelCol={{ span: 6 }}
+                                wrapperCol={{ span: 16 }}
+                                required={true}
+                                className={styles.directSelect}
+                            >
+                                {getFieldDecorator('entranceMiniProgramsAppId', {
+                                    rules: [
+                                        { required: true, message: '请选择小程序名称' },
+                                    ],
+                                })(
+                                    <Select
+                                        placeholder="请选择小程序名称"
+                                    >
+                                        {
+                                            this.state.AppList.map(({ appID, nickName }) => (
+                                                <Select.Option key={appID} value={`${appID}`}>{nickName}</Select.Option>
+                                            ))
+                                        }
+                                    </Select>
+                                )}
+                            </Form.Item>
+                            <Form.Item
+                                label="页面路径"
+                                labelCol={{ span: 6 }}
+                                wrapperCol={{ span: 16 }}
+                                className={styles.directSelect}
+                            >
+                                {getFieldDecorator('entranceMiniProgramsPath', {
                                     rules: [
                                         { required: true, message: '请选择页面路径' },
                                     ],

@@ -282,6 +282,7 @@ const GiftCfg = {
         { value: '133', label: '口令领券'},
         { value: '134', label: '彩蛋猫送礼'},
         { value: '135', label: '支付宝商家券发放'},
+        { value: '136', label: '抖音商城发放'},
     ],
     giftSendStatus: [
         { value: '', label: '全部' },
