@@ -34,6 +34,7 @@ class AccumulateGiftWrapper extends NewPromotion {
                 content: (
                     <StepTwo
                         isNew={this.props.isNew}
+                        groupID={this.props.user.accountInfo.groupID}
                         getSubmitFn={(handles) => {
                             this.handles[1] = handles;
                         }}
