@@ -183,7 +183,6 @@ class MyFaceRule extends Component {
         } else {
             newActivityList = [];
         }
-        // // // console.log(newActivityList, 'newActivityList')
         let linkUrlOption = [];
         if (params === '5') {
             linkUrlOption = mallActivityList.map((items) => {
@@ -349,7 +348,6 @@ class MyFaceRule extends Component {
             }
             return acc;
         }, [])
-        // // console.log(dishObjects, 'dishObjects--------')
         this.handleModalCancel(i, 'isShowDishSelector');
         this.onChange(i, { 'triggerEventCustomInfo': dishObjects[0] || {} })
     }

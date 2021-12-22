@@ -764,7 +764,6 @@ class GiftAddModalStep extends React.PureComponent {
         // mallScope : 0 按分类， 1 按菜品
         // 商城分类模式
         if(params.mallScope == '0' || params.mallScope == undefined) {
-            console.log('gohererere')
             let existCouponFoodScopes = params.couponFoodScopes;
             let mallCategorySet = new Set(params.mallCategory);
             // 分类

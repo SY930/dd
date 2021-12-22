@@ -23,10 +23,11 @@ import CategoryAndFoodSelector from 'containers/SaleCenterNEW/common/CategoryAnd
 import ShopSelector from '../../../components/ShopSelector';
 import { FetchCrmCardTypeLst } from '../../../redux/actions/saleCenterNEW/crmCardType.action';
 import { axios } from '@hualala/platform-base';
+import NoShareBenifit from 'containers/SaleCenterNEW/common/NoShareBenifit.jsx';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
-
+const allowGroup = ['39932', '189702', '11157'];//集点卡活动与券互斥功能开放范围
 const CONSUME_AMOUNT_OPTIONS = [
     {
         label: '任意消费满',
@@ -76,16 +77,43 @@ class StepTwo extends React.Component {
             radioType: consumeType >= 8 ? 0 : 1,
             foodScopeList: props.specialPromotionInfo.getIn(['$eventInfo', 'foodScopeList'], Immutable.fromJS([])).toJS(),
             needCount: props.specialPromotionInfo.getIn(['$eventInfo', 'needCount']) || undefined,
+            groupID: props.specialPromotionInfo.getIn(['$eventInfo', 'groupID']) || undefined,
             consumeTotalAmount: props.specialPromotionInfo.getIn(['$eventInfo', 'consumeTotalAmount']) || undefined, // 不想显示0
             consumeTotalTimes: props.specialPromotionInfo.getIn(['$eventInfo', 'consumeTotalTimes']) || undefined,
             consumeType,
             shopIDList: props.specialPromotionInfo.getIn(['$eventInfo', 'shopIDList'], Immutable.fromJS([])).toJS() || [],
             isRequire: true,
             foodPriceType: props.specialPromotionInfo.getIn(['$eventInfo', 'foodPriceType']) || '0',
+            isBenifitActive: false,
+            eventMutexDependRuleInfos: props.mySpecialActivities.getIn(['eventMutexDependRuleInfos'], Immutable.fromJS([])) ? props.mySpecialActivities.getIn(['eventMutexDependRuleInfos'], Immutable.fromJS([])).toJS() : [],
+            benifitType: '1',
         }
+        this.selectNoShareBenifit = this.selectNoShareBenifit.bind(this);
     }
 
     componentDidMount() {
+        const { eventMutexDependRuleInfos, groupID } = this.state;
+        if (eventMutexDependRuleInfos && eventMutexDependRuleInfos.length > 0) {
+            this.setState({
+                isBenifitActive: true,
+                benifitType: eventMutexDependRuleInfos[0].targetID == 0 ? '1' : '2'
+            })
+            if (eventMutexDependRuleInfos[0].targetID != 0) {
+                this.props.setPromotionDetail({
+                    mutexPromotions: eventMutexDependRuleInfos.map((promotion) => {
+                        return {
+                            promotionIDStr: promotion.targetID || '',
+                            // sharedType: '10',
+                            finalShowName: promotion.targetName || SALE_LABEL.k5m3onpk,
+                        }
+                    }),
+                });
+            }
+        }else{
+            this.setState({
+                isBenifitActive: false,
+            })
+        }
         this.props.getSubmitFn({
             prev: undefined,
             next: this.handleSubmit,
@@ -101,9 +129,9 @@ class StepTwo extends React.Component {
         const {
             consumeType,
         } = this.state;
-        return Boolean([ ...CONSUME_AMOUNT_OPTIONS, ...CONSUME_TIMES_OPTIONS ]
-        .find(item => item.value === `${consumeType}`)
-        .showFood);
+        return Boolean([...CONSUME_AMOUNT_OPTIONS, ...CONSUME_TIMES_OPTIONS]
+            .find(item => item.value === `${consumeType}`)
+            .showFood);
     }
 
     handleSubmit = () => {
@@ -113,7 +141,7 @@ class StepTwo extends React.Component {
                 flag = false;
             }
         });
-        const { foodScopeList } = this.state;
+        const { foodScopeList, eventMutexDependRuleInfos } = this.state;
         if (this.isShowFoodSelector() && !foodScopeList.length) {
             flag = false;
             message.warning('请设置适用菜品')
@@ -160,6 +188,26 @@ class StepTwo extends React.Component {
             foodPriceType: value,
         })
     }
+    handleBenifitTypeChange = ({ target: { value } }) => {
+        if (value == '1') {
+            let allArr = [{
+                mutexDependType: 1,
+                ruleType: 10,
+                targetID: 0,
+                targetName: '',
+                sharedType: '10'
+            }]
+            this.props.setPromotionDetail({
+                mutexPromotions: []
+            });
+            this.setState({
+                eventMutexDependRuleInfos: allArr
+            })
+        }
+        this.setState({
+            benifitType: value,
+        })
+    }
     handleCategoryAndFoodChange = (val) => {
         const scopeList = [];
         val.foodCategory.forEach((item) => {
@@ -195,7 +243,56 @@ class StepTwo extends React.Component {
             foodScopeList: scopeList,
         })
     }
-    
+    handleBenifitSwitchChange = (value) => {
+        if (value) {
+            this.setState({
+                eventMutexDependRuleInfos: [{
+                    mutexDependType: 1,
+                    ruleType: 10,
+                    targetID: 0,
+                    targetName: '',
+                    sharedType: '10'
+                }]
+            })
+        }else{
+            this.setState({
+                eventMutexDependRuleInfos: []
+            })
+        }
+        this.props.setPromotionDetail({
+            mutexPromotions: []
+        });
+        this.setState({
+            isBenifitActive: value,
+        })
+    }
+    selectNoShareBenifit(val) {
+        if (val && val.length > 0) {
+            let insertArr = [];
+            val.forEach((item) => {
+                insertArr.push({
+                    mutexDependType: 1,
+                    ruleType: 10,
+                    targetID: item.promotionIDStr,
+                    targetName: item.finalShowName,
+                    sharedType: item.sharedType
+                })
+            })
+            this.setState({
+                eventMutexDependRuleInfos: insertArr,
+            });
+            this.props.setPromotionDetail({
+                blackList: this.state.blackListRadio != '0',
+                mutexPromotions: val.map((promotion) => {
+                    return {
+                        promotionIDStr: promotion.promotionIDStr || '',
+                        sharedType: promotion.sharedType ? promotion.sharedType : '10',
+                        finalShowName: promotion.finalShowName || SALE_LABEL.k5m3onpk,
+                    }
+                }),
+            });
+        }
+    }
     renderComboInput() {
         const { radioType, consumeTotalAmount, consumeTotalTimes, consumeType } = this.state;
         const { form: { getFieldDecorator } } = this.props;
@@ -209,7 +306,7 @@ class StepTwo extends React.Component {
                             if (!v) {
                                 return cb();
                             }
-                            v.number > 0? cb() : cb('必须大于0');
+                            v.number > 0 ? cb() : cb('必须大于0');
                         },
                     }
                 ]
@@ -241,7 +338,7 @@ class StepTwo extends React.Component {
                         if (!v) {
                             return cb();
                         }
-                        v.number > 0? cb() : cb('必须大于0');
+                        v.number > 0 ? cb() : cb('必须大于0');
                     },
                 }
             ]
@@ -266,11 +363,11 @@ class StepTwo extends React.Component {
         )
     }
     async loadShopSchema() {
-        const { data } = await axios.post('/api/shopapi/schema',{});
+        const { data } = await axios.post('/api/shopapi/schema', {});
         const { shops } = data;
         this.countIsRequire(shops);
     }
-    countIsRequire(shopList){
+    countIsRequire(shopList) {
         const { shopSchema, specialPromotionInfo } = this.props;
         const { size } = shopSchema.getIn(['shops']);       // 总店铺数
         const eventInfo = specialPromotionInfo.getIn(['$eventInfo']).toJS();
@@ -282,14 +379,14 @@ class StepTwo extends React.Component {
         // b 编辑活动，全部店铺权限用户非必选
         // 店铺受限用户，首先判断历史数据是否是全部店铺的数据，如果是，店铺组件为非必选。
         // 反之，店铺为必选，用户必选一个用户权限之内的店铺选项。
-        if(!isOld){
-            if(length<size){
+        if (!isOld) {
+            if (length < size) {
                 this.setState({ isRequire: true });
                 return;
             }
             this.setState({ isRequire: false });
         } else {
-            if(oldShops[0] && length<size){
+            if (oldShops[0] && length < size) {
                 this.setState({ isRequire: true });
                 return;
             }
@@ -297,13 +394,11 @@ class StepTwo extends React.Component {
         }
     }
     render() {
-        const { isRequire, shopStatus,  } = this.state;
-        const { foodScopeList, shopIDList } = this.state;
+        const { isRequire, shopStatus, foodScopeList, shopIDList, groupID } = this.state;
         const convertShopIdList = shopIDList.length ? shopIDList.join(',').split(',') : [];
         let cardTypeList = this.props.crmCardTypeNew.get('cardTypeLst');
-        cardTypeList = Immutable.List.isList(cardTypeList) ? cardTypeList.toJS().filter(({regFromLimit}) => !!regFromLimit) : [];
+        cardTypeList = Immutable.List.isList(cardTypeList) ? cardTypeList.toJS().filter(({ regFromLimit }) => !!regFromLimit) : [];
         const { isNew } = this.props;
-        console.log(this.state.foodPriceType,'foodPriceType')
         return (
             <Form className={styles.cardLevelTree}>
                 <FormItem
@@ -314,28 +409,28 @@ class StepTwo extends React.Component {
                     wrapperCol={{ span: 17 }}
                 >
                     {this.props.form.getFieldDecorator('needCount', {
-                            rules: [
-                                {
-                                    validator: (rule, v, cb) => {
-                                        if (!v || (!v.number && v.number !== 0)) {
-                                            return cb('总计点数为必填项');
-                                        } else if (!(v.number > 0 && v.number <= 20)) {
-                                            return cb('总计点数必须大于0, 不超过20');
-                                        }
-                                        cb()
-                                    },
-                                }
-                            ],
-                            initialValue: {number: this.state.needCount},
-                            onChange: this.handlePointTotalNumberChange
-                        })(
-                            <PriceInput
-                                addonAfter="个"
-                                disabled={!isNew}
-                                modal="int"
-                                maxNum={3}
-                            />
-                        )
+                        rules: [
+                            {
+                                validator: (rule, v, cb) => {
+                                    if (!v || (!v.number && v.number !== 0)) {
+                                        return cb('总计点数为必填项');
+                                    } else if (!(v.number > 0 && v.number <= 20)) {
+                                        return cb('总计点数必须大于0, 不超过20');
+                                    }
+                                    cb()
+                                },
+                            }
+                        ],
+                        initialValue: { number: this.state.needCount },
+                        onChange: this.handlePointTotalNumberChange
+                    })(
+                        <PriceInput
+                            addonAfter="个"
+                            disabled={!isNew}
+                            modal="int"
+                            maxNum={3}
+                        />
+                    )
                     }
                 </FormItem>
                 <FormItem
@@ -355,10 +450,10 @@ class StepTwo extends React.Component {
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
-                    { this.renderComboInput() }
+                    {this.renderComboInput()}
                 </FormItem>
                 {
-                    this.state.radioType == '1' ? 
+                    this.state.radioType == '1' ?
                         <FormItem
                             label={'数量核算'}
                             className={styles.FormItemStyle}
@@ -388,11 +483,64 @@ class StepTwo extends React.Component {
                     <ShopSelector
                         value={convertShopIdList}
                         onChange={v => {
-                            this.setState({ shopIDList: v, shopStatus: v.length > 0 })}}
-                        // schemaData={this.props.shopSchema.toJS()}
+                            this.setState({ shopIDList: v, shopStatus: v.length > 0 })
+                        }}
+                    // schemaData={this.props.shopSchema.toJS()}
                     />
                 </FormItem>
-               
+                {
+                    allowGroup.includes(groupID) ?
+                        <div>
+                            <FormItem
+                                label={'与优惠券不共享'}
+                                className={styles.FormItemStyle}
+                                labelCol={{ span: 4 }}
+                                wrapperCol={{ span: 17 }}
+                                style={{ marginTop: '15' }}
+                            >
+                                <div className={styles.couponSwitch}>
+                                    <Switch checked={this.state.isBenifitActive} checkedChildren="开" unCheckedChildren="关" onChange={this.handleBenifitSwitchChange} />
+                                    {/* <span style={{marginLeft:12}}>仅小程序订单执行优惠不共享,其他渠道的订单,用券后仍可正常集点</span> */}
+                                </div>
+
+                            </FormItem>
+                            {
+                                this.state.isBenifitActive ?
+                                    <FormItem
+                                        label={' '}
+                                        className={styles.FormItemStyle}
+                                        labelCol={{ span: 4 }}
+                                        wrapperCol={{ span: 17 }}
+                                    >
+                                        <RadioGroup onChange={this.handleBenifitTypeChange} value={this.state.benifitType}>
+                                            <Radio value={'1'}>与所有优惠券不共享</Radio>
+                                            <Radio value={'2'}>与部分优惠券不共享</Radio>
+                                        </RadioGroup>
+                                    </FormItem>
+                                    : null
+                            }
+                            {
+                                this.state.isBenifitActive ? 
+                                    <FormItem
+                                        label="不共享优惠"
+                                        className={styles.FormItemStyle}
+                                        labelCol={{ span: 4 }}
+                                        wrapperCol={{ span: 17 }}
+                                        required={isRequire}
+                                        validateStatus={shopStatus ? 'success' : 'error'}
+                                        help={shopStatus ? null : '至少选择一项优惠'}
+                                        style={{ display: this.state.benifitType == '2' ? 'block' : 'none' }}
+                                    >
+                                        <NoShareBenifit onChange={(val) => {
+                                            this.selectNoShareBenifit(val)
+                                        }}
+                                        />
+                                    </FormItem> : null
+                            }
+                            
+                        </div>
+                        : null
+                }
             </Form>
         );
     }
@@ -403,6 +551,7 @@ const mapStateToProps = (state) => {
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         crmCardTypeNew: state.sale_crmCardTypeNew,
         shopSchema: state.sale_shopSchema_New.getIn(['shopSchema']),
+        mySpecialActivities: state.sale_mySpecialActivities_NEW,
     };
 };
 

@@ -1092,7 +1092,6 @@ const handleSubmitOnLineReturnGifts = function (isPrev) {
         message.warn('请添加一个第三方微信优惠券');
         return false
     }
-    // console.log(giftCouponCount, 'giftCouponCount')
     const giftInfo = sleectedWxCouponList.map((item) => {
         return {
             ...item,

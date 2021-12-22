@@ -22,8 +22,6 @@ class Step2 extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.specialPromotionInfo.toJS().$eventInfo.eventStartDate) {
-            // console.log(nextProps.specialPromotionInfo.toJS())
-            // const a = this.props;
             const param = {
                 eventStartDate: nextProps.specialPromotionInfo.toJS().$eventInfo.eventStartDate,
                 eventEndDate: nextProps.specialPromotionInfo.toJS().$eventInfo.eventEndDate,
@@ -70,7 +68,6 @@ class Step2 extends Component {
         // const originTreeData = this.props.shopSchema.toJS();
         const shopData = this.props.shopSchema.toJS().shops;
         const filterShopData = shopData.filter(item => this.state.filterShop.indexOf(item.shopID) < 0);
-        // console.log("resetFormItems ~ filterShopData", filterShopData.map(shop => shop.shopID))
         // originTreeData.shops = filterShopData;
         const { brands } = this.state;
         const render = d => d()(<ShopSelector

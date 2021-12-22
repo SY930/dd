@@ -87,7 +87,6 @@ class ManyFace extends Component {
                 const faceData = _.cloneDeep(faceRule)
                 let flag = false;
                 faceRule.map((itm) => {
-                    // console.log(index.jsx ~ line 90 ~ ManyFace ~ faceRule.map ~ itm", itm)
                     if (itm.conditionType == 2) {
                         if (!itm.conditionValue) {
                             flag = true;

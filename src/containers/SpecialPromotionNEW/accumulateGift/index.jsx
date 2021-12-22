@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import StepTwo from './stepTwo'; // 活动范围
 import StepFour from './StepFour'; // 投放场景
 import SpecialDetailInfo from '../common/SpecialPromotionDetailInfo'; // 选择礼品
-
 import NewPromotion from '../common/NewPromotion';
 import CustomProgressBar from '../../SaleCenterNEW/common/CustomProgressBar';
 import StepOneWithDateRange from '../common/StepOneWithDateRange';
