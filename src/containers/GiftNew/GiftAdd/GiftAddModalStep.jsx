@@ -361,6 +361,14 @@ class GiftAddModalStep extends React.PureComponent {
     }
 
 
+    handleFoodUnitTypeChange = (val) => {
+
+        this.setState({
+            foodUnitType: val
+        })
+
+    }
+
     // 买赠券，处理优惠规则变更，动态调整表结构
     handleDiscountRuleChange = (val) => {
         // const { gift: { name: describe, data }, type } = this.props;
@@ -547,7 +555,9 @@ class GiftAddModalStep extends React.PureComponent {
                     }
                 }
                 break;
-
+            case 'foodUnitType':
+                this.handleFoodUnitTypeChange(value);
+                break;
             case 'discountRule':
                 // 买赠券，处理优惠规则变更，动态调整表结构
                 this.handleDiscountRuleChange(value);
@@ -1936,6 +1946,7 @@ class GiftAddModalStep extends React.PureComponent {
                                 showEmptyTips={true}
                                 mallScope={mallScope}
                                 giftType={value}
+                                foodUnitType={this.state.foodUnitType}
                             />
                             :
                             <GiftCategoryAndFoodSelector
