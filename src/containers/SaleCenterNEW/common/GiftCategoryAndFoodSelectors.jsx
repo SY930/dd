@@ -301,6 +301,10 @@ class CategoryAndFoodSelector extends Component {
         if (dishFilter) {
             dishes = dishFilter(dishes)
         }
+        
+        if(this.props.giftType == 21){
+            dishes = dishes.filter((item) => item.isNeedConfirmFoodNumber == 1)
+        }
 
         const dishLabel2 = dishLabel || k5gfsvlz;
         if (this.props.dishOnly) {
