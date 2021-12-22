@@ -815,7 +815,6 @@ class GiftAddModalStep extends React.PureComponent {
             let couponFoodScopes = params.applyScene == '2' ? params.couponFoodScopes : [];
             if(params.mallIncludeGood instanceof Array && params.mallIncludeGood.length > 0) {
                 let mallIncludeGoodSet = new Set(params.mallIncludeGood);
-                console.log(111,goods)
                 params.couponFoodScopes = goods.filter((item)=>{
                     return mallIncludeGoodSet.has(item.goodID);
                 }).map((item)=>{
