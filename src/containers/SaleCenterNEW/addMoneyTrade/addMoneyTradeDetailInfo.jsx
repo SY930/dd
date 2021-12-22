@@ -417,7 +417,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                         <RadioGroup onChange={this.onRadioChange} value={this.state.stageType}>
                             <Radio key={'2'} value={2}>{k5koakjf}</Radio>
                             <Radio key={'1'} value={1}>{k5koakrr}</Radio>
-                            <Tooltip title='仅POS2.5支持数量为小数，POS2.0输入小数时向下取值，如输入2.7，则取为2份'>
+                            <Tooltip title='仅POS2.5支持数量为小数，POS2.0输入小数时向上取整，如输入2.3，则取为3份'>
                                 <Icon style={{ marginLeft: -7, marginRight: -5 }} type="question-circle" />
                             </Tooltip>
                         </RadioGroup>
