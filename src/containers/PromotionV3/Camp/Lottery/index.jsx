@@ -156,10 +156,7 @@ class Lottery extends Component {
                                                         required: true,
                                                         validator: (rule, v, cb) => {
                                                             const reg = /(?!^0\.0?0$)^[0-9][0-9]?(\.[0-9]{1,2})?$|^100$/;
-                                                            if(!reg.test(v)) {
-                                                                return cb('请输入0到100的数,可输入两位小数');
-                                                            }
-                                                            if (this.count > 100) {
+                                                            if (!reg.test(v) || this.count > 100) {
                                                                 return cb('奖品中奖概率之和应为0.01~100%');
                                                             }
                                                             cb();
