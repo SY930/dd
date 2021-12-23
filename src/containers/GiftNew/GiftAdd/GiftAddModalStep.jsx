@@ -3300,13 +3300,16 @@ class GiftAddModalStep extends React.PureComponent {
                 required: true,
                 defaultValue: '',
                 rules: [{ required: true, message: '不能为空' }, {
-                    validator: (rule, v, cb) => {
-                        if (!/(^\+?\d{0,8}$)|(^\+?\d{0,8}\.\d{0,2}$)/.test(Number(v))) {
-                            cb(rule.message);
+                    validator: (rule, value, callback) => {
+                        const pattern = /^(([1-9]\d{0,7})|0)(\.\d{0,2})?$/;
+                        if(!pattern.test(value)){
+                            return callback('最大支持8位整数，2位小数');
                         }
-                        cb();
+                        if (!+value>0) {
+                            return callback('兑换菜品重量要大于0');
+                        }
+                        return callback();
                     },
-                    message: '整数不超过8位，小数不超过2位',
                 }],
                 render: (decorator, form) => {
                     return form.getFieldValue('foodUnitType') == 1?decorator({})(
@@ -3328,13 +3331,16 @@ class GiftAddModalStep extends React.PureComponent {
                 required: true,
                 defaultValue: '',
                 rules: [{ required: true, message: '不能为空' }, {
-                    validator: (rule, v, cb) => {
-                        if (!/(^\+?\d{0,8}$)|(^\+?\d{0,8}\.\d{0,2}$)/.test(Number(v))) {
-                            cb(rule.message);
+                    validator: (rule, value, callback) => {
+                        const pattern = /^(([1-9]\d{0,7})|0)(\.\d{0,2})?$/;
+                        if(!pattern.test(value)){
+                            return callback('最大支持8位整数，2位小数');
                         }
-                        cb();
+                        if (!+value>0) {
+                            return callback('称重误差值要大于0');
+                        }
+                        return callback();
                     },
-                    message: '整数不超过8位，小数不超过2位',
                 }],
                 render: (decorator, form) => {
                     return form.getFieldValue('foodUnitType') == 1?decorator({})(
