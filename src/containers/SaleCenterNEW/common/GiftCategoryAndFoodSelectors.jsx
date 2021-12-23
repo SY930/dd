@@ -302,7 +302,7 @@ class CategoryAndFoodSelector extends Component {
             dishes = dishFilter(dishes)
         }
         
-        if(this.props.giftType == 21){
+        if(this.props.giftType == 21 && this.props.foodUnitType == 1){
             dishes = dishes.filter((item) => item.isNeedConfirmFoodNumber == 1)
         }
 
