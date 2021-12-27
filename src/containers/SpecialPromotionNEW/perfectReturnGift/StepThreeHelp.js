@@ -108,6 +108,7 @@ const renderGivePointFn = function (isBenefitJumpSendGift) {
         perfectReturnGiftCardTypeValue,
         cardTypeArr,
     } = this.state;
+    console.log(cardTypeArr,'cardTypeArr==========')
     const {
         form: { getFieldDecorator },
     } = this.props;
@@ -176,6 +177,7 @@ const renderGivePointFn = function (isBenefitJumpSendGift) {
                     value={perfectReturnGiftCardTypeValue}
                     onChange={handleCardChange.bind(this)}
                     disabled={giftSendCount > 0}
+                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
                     {cardTypeArr.map((item) => {
                         return (
