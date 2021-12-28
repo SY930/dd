@@ -181,6 +181,30 @@ async function goAuthorizeAC(value) {
     return '';
 }
 
+// 间连升级M4
+async function goUpdateM4AC(value) {
+    const method = 'alipaySpOperationInfoService/applySpOperation.ajax';
+    const { groupID } = getAccountInfo();
+    const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+        type,
+        data: {
+            groupID,
+            operateType: 'ACCOUNT_BIND',
+            accessProductCode: 'OPENAPI_BIND_DEFAULT',
+            merchantNo: value.merchantNo,
+            alipayAccount: value.alipayAccount,
+        },
+        method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: obj } = response;
+    if (code === '000') {
+        // message.success('等支付宝授权后，可使用改账号创建券');
+        return '成功'
+    }
+    message.error(msg);
+    return '';
+}
+
 // 支付宝券查询
 async function getAlipayCouponList() {
     const method = 'couponCodeBatchService/queryBatchList.ajax';
@@ -412,18 +436,18 @@ async function getDouyinShop() {
 
 // 获取支付宝店铺
 async function queryAliShopsAC(ipRoleId) {
-    // const method = 'AlipayAntMerchantExpandService/shopPageQuery.ajax';
-    // const { groupID } = getAccountInfo();
-    // const params = { service, type, data: { groupID, ipRoleId, pageNum: 1, pageSize: 10000 }, method };
-    // const response = await axios.post(url + method, params);
-    // const { code, message: msg, shopInfos = [] } = response;
-    // if (code === '000') {
-    //     // const { tiktokShopInfoList = [] } = obj;
-    //     return shopInfos;
-    // }
-    // message.error(msg);
-    // return [];
-    return [{ 'shopId':"2021012600077000000015961164", 'shopName':"凯德MALL(西直门店)(暂停营业)", 'shopStatus':"01" }, { 'shopId':"20210000000015961164", 'shopName':"凯德MALL(西直门店)", 'shopStatus':"01" }]
+    const method = 'AlipayAntMerchantExpandService/shopPageQuery.ajax';
+    const { groupID } = getAccountInfo();
+    const params = { service, type, data: { groupID, ipRoleId, pageNum: 1, pageSize: 100 }, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: obj } = response;
+    if (code === '000') {
+        const { shopInfos = [] } = obj;
+        return shopInfos;
+    }
+    message.error(msg);
+    return [];
+    // return [{ 'shopId':"2021012600077000000015961164", 'shopName':"凯德MALL(西直门店)(暂停营业)", 'shopStatus':"01" }, { 'shopId':"20210000000015961164", 'shopName':"凯德MALL(西直门店)", 'shopStatus':"01" }]
 }
 
 export {
@@ -446,4 +470,5 @@ export {
     getLinks,
     getDouyinShop,
     queryAliShopsAC,
+    goUpdateM4AC,
 }

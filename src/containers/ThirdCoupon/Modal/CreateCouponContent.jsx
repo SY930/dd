@@ -4,7 +4,7 @@ import moment from 'moment'
 import _ from 'lodash'
 import { axios, getStore } from '@hualala/platform-base';
 import AuthorizeModalContent from './AuthorizeContent';
-import { getSmid, isAuth, goAuthorizeAC, queryAliShopsAC } from '../AxiosFactory'
+import { getSmid, isAuth, goAuthorizeAC, queryAliShopsAC, goUpdateM4AC } from '../AxiosFactory'
 import { SALE_CENTER_GIFT_EFFICT_DAY_ALIPAY } from '../../../redux/actions/saleCenterNEW/types';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 import WXContent from '../Comp/WXContent';
@@ -53,6 +53,7 @@ class CreateCouponContent extends Component {
             tips: false,
             giftType: '',
             aliShops: [],
+            entranceWords: [], // 支付宝门店
         }
     }
 
@@ -73,9 +74,15 @@ class CreateCouponContent extends Component {
         })
     }
 
+    // 处理选择的门店数据
+    onChangeEntranceWords = (value) => {
+        this.setState({
+            entranceWords: value,
+        })
+    }
+
     queryAliShops = (smid) => {
         queryAliShopsAC(smid).then((res) => {
-            console.log(" CreateCouponContent.jsx ~ line 78 ~ CreateCouponContent ~ queryAliShopsAC ~ res", res)
             this.setState({
                 aliShops: res,
             })
@@ -188,7 +195,8 @@ class CreateCouponContent extends Component {
         form.validateFields((err, values) => {
             if (!err) {
                 values.merchantNo = bankMerchantCode;
-                // TODO：非M4完成M4的升级，调用接口
+                // 非M4完成M4的升级，调用接口
+                goUpdateM4AC(values);
                 goAuthorizeAC(values).then((res) => {
                     if (res) {
                         this.handleAuthModalClose()
@@ -333,7 +341,7 @@ class CreateCouponContent extends Component {
             if (!err) {
                 // console.log('handleAuthSubmit', values);
                 this.setState({ confirmLoading: true })
-                const { effectType, effectGiftTimeHours, merchantID, editData, giftType, giftItemID } = this.state;
+                const { effectType, effectGiftTimeHours, merchantID, editData, giftType, giftItemID, entranceWords } = this.state;
                 const { user } = getStore().getState();
                 const { groupID } = user.get('accountInfo').toJS()
                 const rangePicker = values.rangePicker || [];
@@ -385,6 +393,9 @@ class CreateCouponContent extends Component {
                     const { smidList } = this.state;
                     const { bankMerchantCode } = smidList[0];
                     datas.merchantID = bankMerchantCode;
+                }
+                if (type === 1) { // 支付宝
+                    datas.entranceWords = entranceWords;
                 }
                 if (type === 2) { // 微信
                     datas.merchantID = this.state.WXMerchantID;
@@ -851,7 +862,7 @@ class CreateCouponContent extends Component {
                                 </FormItem>
                             }
                             { type === 1 && this.renderZhifubaoContent(merchantType) }
-                            {type === 1 && <AliContent form={form} merchantType={merchantType} aliShops={aliShops} />}
+                            {type === 1 && <AliContent form={form} merchantType={merchantType} aliShops={aliShops} onChangeEntranceWords={this.onChangeEntranceWords} />}
                             { type === 2 && <WXContent form={form} merchantType={merchantType} onChangeWXMerchantID={this.onChangeWXMerchantID} onChangeWXJumpAppID={this.onChangeWXJumpAppID} />}
                             { type === 3 && <DouyinContent form={form} merchantType={merchantType} />}
                         </Form>

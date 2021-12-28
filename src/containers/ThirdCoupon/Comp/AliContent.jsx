@@ -7,6 +7,14 @@ const RadioButton = Radio.Button;
 const Option = Select.Option;
 
 class AliContent extends Component {
+    onChange = (value = []) => {
+        const { onChangeEntranceWords } = this.props;
+        const entranceWords = value.map((item) => {
+            const [shopId = '', shopName = ''] = item.split('_');
+            return { shopId, shopName }
+        })
+        onChangeEntranceWords(JSON.stringify(entranceWords))
+    }
     render() {
         const { form } = this.props;
         const { getFieldDecorator } = form;
@@ -18,10 +26,11 @@ class AliContent extends Component {
                     wrapperCol={{ span: 16 }}
                     required={true}
                 >
-                    {getFieldDecorator('shopId', {
+                    {getFieldDecorator('entranceWords', {
                         rules: [
                             { required: true, message: '请先选择已授权的直连或间连的商户,再选择支付宝门店' },
                         ],
+                        onChange: this.onChange,
                     })(
                         <Select
                             placeholder="请先选择已授权的直连或间连的商户"
@@ -30,7 +39,7 @@ class AliContent extends Component {
                         >
                             {
                                 (this.props.aliShops || []).map(({ shopId, shopName }) => (
-                                    <Select.Option key={shopId} value={`${shopId}`}>{shopName}</Select.Option>
+                                    <Select.Option key={shopId} value={`${shopId}_${shopName}`}>{shopName}</Select.Option>
                                 ))
                             }
                         </Select>
