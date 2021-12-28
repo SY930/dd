@@ -27,6 +27,9 @@ class Lottery extends Component {
     }
     onEdit = (targetKey, action) => {
         this[action](targetKey);
+        this.setState({
+            tabKey:targetKey - 1
+        })
     }
     // presentType 礼品1， 积分为2，券包4
     add = () => {
@@ -131,7 +134,7 @@ class Lottery extends Component {
                         <Tabs
                             hideAdd={1}
                             onChange={this.onChange}
-                            activeKey={tabKey}
+                            activeKey={String(tabKey)}
                             type="editable-card"
                             onEdit={this.onEdit}
                         >
