@@ -13,7 +13,6 @@ class NewMemberExclusiveFood extends NewPromotion {
     constructor(props) {
         super(props);
     }
-
     render() { // 基类还有一个render方法
         const {
             isNew,

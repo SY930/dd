@@ -466,6 +466,8 @@ class PromotionScopeInfo extends React.Component {
         const k5krn7fx = intl.formatMessage(SALE_STRING.k5krn7fx);
         const k5m67atr = intl.formatMessage(SALE_STRING.k5m67atr);
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
+        const basicInfo = this.props.promotionBasicInfo.get('$basicInfo').toJS()
+        const isSelDefined = basicInfo.recommendType == 1
         if (this.props.isOnline) return null;
         let plainOptions = null;
         if (promotionType == '5020') {
@@ -486,22 +488,25 @@ class PromotionScopeInfo extends React.Component {
                 {
                     label: k5m67a4r,
                     value: '10',
+                    disabled: isSelDefined
                 }, {
                     label: k5m67ad3,
                     value: '11',
+                    disabled: isSelDefined
                 }, {
                     label: k5m67alf,
                     value: '20',
+                    disabled: isSelDefined
                 }, {
                     label: k5krn7fx,
                     value: '31',
                 }, {
                     label: k5m67atr,
                     value: '21',
+                    disabled: isSelDefined
                 },
             ];
-        }
-
+        }     
         return (
             <Form.Item
                 label={SALE_LABEL.k5dlpt47}
