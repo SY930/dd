@@ -479,7 +479,6 @@ class NoThresholdDiscountFoodSelectorForShop extends Component {
                         <Button
                             // className={styles.gTitleLink}
                             onClick={this.handleModalOpen}
-                            type='primary'
                             style={{
                                 position: 'absolute',
                                 right: 11,
