@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { jumpPage } from '@hualala/platform-base';
 import promotionCalendarBg from '../../../assets/promotion_calendar_bg.png'
-import promotionCalendarBanner from '../../../assets/promotion_calendar_banner.jpg'
+import promotion_calendar_banner2022 from '../../../assets/promotion_calendar_banner2022.png'
 import style from './style.less'
 import {PROMOTION_CALENDAR_GROUP} from "../../../constants/entryCodes";
 
@@ -14,13 +14,13 @@ class PromotionCalendarBanner extends Component {
                 className={style.bannerWrapper}
                 style={{
                     // background: `url(${promotionCalendarBg})`,
-                    backgroundColor: `#1c6efc`,
+                    backgroundColor: `rgba(83, 115, 255, 1)`,
                 }}
                 onClick={() => {
                     jumpPage({ menuID: jumpTarget || PROMOTION_CALENDAR_GROUP })
                 }}
             >
-                <img src={promotionCalendarBanner} alt="2021年营销日历" />
+                <img style={{height:'100%'}} src={promotion_calendar_banner2022} alt="2022年营销日历" />
             </div>
         )
     }
