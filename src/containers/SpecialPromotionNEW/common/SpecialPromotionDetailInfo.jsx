@@ -344,6 +344,7 @@ class SpecialDetailInfo extends Component {
                 upGradeReturnGiftCoupon: true,
             },
             cardTypeArr: [], // 充值到会员卡列表
+            cardTypeArrCardGrowth: [],
             freeGetLimit: '0',
             wxCouponList: [], // 微信商家券列表
             wxCouponVisible: false,
