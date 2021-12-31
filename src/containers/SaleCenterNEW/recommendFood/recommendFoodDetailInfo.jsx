@@ -49,7 +49,7 @@ class RecommendFoodDetailInfo extends React.Component {
                     ruleType: 1,
                     startTime: '0000',
                     endTime: '2359',
-                    item: [{
+                    items: [{
                         num: '',
                         count: '',
                         validationStatus: 'success',
@@ -72,8 +72,8 @@ class RecommendFoodDetailInfo extends React.Component {
                     };
                 }
                 item.rule = rule;
-                if (!item.rule.item) {
-                    item.rule.item = [{
+                if (!item.rule.items) {
+                    item.rule.items = [{
                         num: '',
                         count: '',
                         validationStatus: 'success',
@@ -130,7 +130,7 @@ class RecommendFoodDetailInfo extends React.Component {
                 } = foodRuleList[i];
                 rule.recommendType = 1
                 // 校验数据是否合规
-                const ruleItem = rule.item || [{}]
+                const ruleItem = rule.items || [{}]
                 let flagSuccess = false
                 ruleItem.forEach((every) => {
                     if (every.validationStatus == 'error') {
@@ -340,7 +340,7 @@ class RecommendFoodDetailInfo extends React.Component {
         } = this.state
         const rule = foodRuleList[0] ? foodRuleList[0].rule : {}
         const {
-            item = []
+            items = []
         } = rule
         const _start = value.start;
         const _end = value.end;
@@ -353,7 +353,7 @@ class RecommendFoodDetailInfo extends React.Component {
             _validationStatus = 'error';
             _helpMsg = '请完整填写添加的推荐规则'
         }
-        const _tmp = item
+        const _tmp = items
         if (
             _validationStatus === 'success' &&
             _start && _end &&
@@ -378,7 +378,7 @@ class RecommendFoodDetailInfo extends React.Component {
             validationStatus: _validationStatus,
             helpMsg: _helpMsg,
         };
-        foodRuleList[0].rule.item = _tmp
+        foodRuleList[0].rule.items = _tmp
         this.setState({ foodRuleList, });
     }
 
@@ -388,16 +388,16 @@ class RecommendFoodDetailInfo extends React.Component {
         } = this.state
         const rule = foodRuleList[0] ? foodRuleList[0].rule : {}
         const {
-            item = []
+            items = []
         } = rule
-        const _tmp = item;
+        const _tmp = items;
         _tmp.push({
             validationStatus: 'success',
             helpMsg: null,
             num: null,
             count: null,
         });
-        foodRuleList[0].rule.item = _tmp
+        foodRuleList[0].rule.items = _tmp
         this.setState({
             foodRuleList,
         });
@@ -409,11 +409,11 @@ class RecommendFoodDetailInfo extends React.Component {
         } = this.state
         const rule = foodRuleList[0] ? foodRuleList[0].rule : {}
         const {
-            item = []
+            items = []
         } = rule
-        const _tmp = item;
+        const _tmp = items;
         _tmp.splice(index, 1);
-        foodRuleList[0].rule.item = _tmp
+        foodRuleList[0].rule.items = _tmp
         this.setState({
             foodRuleList,
         });
@@ -430,9 +430,9 @@ class RecommendFoodDetailInfo extends React.Component {
             rule = {}
         } = foodRuleList[0]
         const {
-            item = []
+            items = []
         } = rule
-        const _len = item.length;
+        const _len = items.length;
         if (this.state.maxCount == 1) {
             return null;
         }
@@ -486,10 +486,10 @@ class RecommendFoodDetailInfo extends React.Component {
             rule = {}
         } = foodRuleList[0]
         const {
-            item = []
+            items = []
         } = rule
-        const len = item.length
-        return (item.map((ruleInfo, index) => {
+        const len = items.length
+        return (items.map((ruleInfo, index) => {
             const _value = {
                 start: null,
                 end: null,
