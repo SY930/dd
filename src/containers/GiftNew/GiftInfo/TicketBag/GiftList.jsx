@@ -106,8 +106,8 @@ class GiftList extends Component {
             g.giftType = String(g.giftType);
             g.giftTypeName = _.find(GiftCfg.giftTypeName, { value: String(g.giftType) }) ? _.find(GiftCfg.giftTypeName, { value: String(g.giftType) }).label : '未定义';
             g.createTime = g.createStamp == 0 ? '--' : g.createStamp.split('.')[0];
-            g.actionTime = g.actionStamp == 0 ? '--' : g.actionStamp.split('.')[0];
-            g.operateTime = <div>{g.createTime}<br />{g.actionTime}</div>;
+            g.updateStamp = g.updateStamp == 0 ? '--' : g.updateStamp.split('.')[0];
+            g.operateTime = <div>{g.createTime}<br />{g.updateStamp}</div>;
             g.createBy = g.createBy == undefined ? '--' : g.createBy;
             g.modifyBy = g.modifyBy == undefined ? '--' : g.modifyBy;
             g.operator = `${g.createBy} / ${g.modifyBy}`;

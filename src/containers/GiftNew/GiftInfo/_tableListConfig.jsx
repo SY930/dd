@@ -172,8 +172,8 @@ export const COLUMNS = [
         },
     }, {
         title: '创建时间/修改时间',
-        dataIndex: 'updateStamp',
-        key: 'updateStamp',
+        dataIndex: 'operateTime',
+        key: 'operateTime',
         width: 150,
         className: 'x-tc',
     },
