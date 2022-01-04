@@ -33,6 +33,9 @@ import {
     MONTH_OPTIONS,
     WEEK_OPTIONS,
 } from '../../../redux/actions/saleCenterNEW/fullCutActivity.action';
+import {
+    saleCenterSetPromotionDetailAC,
+} from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 
 
 import {
@@ -980,6 +983,16 @@ class PromotionBasicInfo extends React.Component {
     }
 
     onChangeRecommendType = (e) => {
+        const {
+            recommendType
+        } = this.state
+        if (e.target.value != recommendType) {
+            const rule = { stageType: 0 };
+            this.props.setPromotionDetail({
+                foodRuleList: [],
+                rule,
+            });
+        }
         this.setState({
             recommendType: e.target.value,
         })
@@ -1370,6 +1383,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         fetchFilterShops: (opts) => {
             dispatch(fetchFilterShops(opts));
+        },
+        setPromotionDetail: (opts) => {
+            dispatch(saleCenterSetPromotionDetailAC(opts))
         },
     }
 };

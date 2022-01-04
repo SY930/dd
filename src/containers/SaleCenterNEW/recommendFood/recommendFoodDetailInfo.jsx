@@ -96,6 +96,57 @@ class RecommendFoodDetailInfo extends React.Component {
         });
     }
 
+    componentWillReceiveProps(nextProps) {
+        const foodRuleList1 = Immutable.List.isList(this.props.$foodRuleList) ? this.props.$foodRuleList.toJS() : [];
+        const foodRuleList = Immutable.List.isList(nextProps.$foodRuleList) ? nextProps.$foodRuleList.toJS() : [];
+        if(JSON.stringify(foodRuleList) !== JSON.stringify(foodRuleList1)) {
+            if (!foodRuleList.length) { // 新建，给一组默认值
+                foodRuleList.push({
+                    rule: {
+                        ruleType: 1,
+                        startTime: '0000',
+                        endTime: '2359',
+                        items: [{
+                            num: '',
+                            count: '',
+                            validationStatus: 'success',
+                            helpMsg: null,
+                        }]
+                    },
+                    priceList: [],
+                    scopeList: [],
+                })
+            } else { // 编辑，已经查询并存到了store，rule字段在后端存储是json string
+                foodRuleList.forEach(item => {
+                    let rule;
+                    try {
+                        rule = JSON.parse(item.rule);
+                    } catch (e) {
+                        rule = {
+                            ruleType: 1,
+                            startTime: '0000',
+                            endTime: '2359',
+                        };
+                    }
+                    item.rule = rule;
+                    if (!item.rule.items) {
+                        item.rule.items = [{
+                            num: '',
+                            count: '',
+                            validationStatus: 'success',
+                            helpMsg: null,
+                        }]
+                    }
+                    item.scopeList = Array.isArray(item.scopeList) ? item.scopeList : [];
+                    item.priceList = Array.isArray(item.priceList) ? item.priceList : [];
+                })
+            }
+            this.setState({
+                foodRuleList,
+            });
+        }
+    }
+
     handleSubmit = () => {
         let { foodRuleList } = this.state;
         let nextFlag = true;
