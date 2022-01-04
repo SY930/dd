@@ -193,7 +193,8 @@ class PromotionScopeInfo extends React.Component {
             }
             getPromotionShopSchema({ groupID: this.props.user.toJS().accountInfo.groupID, ...parm });
         }
-
+        const basicInfo = this.props.promotionBasicInfo.get('$basicInfo').toJS()
+        const isSelDefined = basicInfo.recommendType == 1
         if (this.props.promotionScopeInfo.getIn(['refs', 'data', 'shops']).size > 0 && this.props.promotionScopeInfo.getIn(['refs', 'data', 'brands']).size > 0) {
             const _stateFromRedux = this.props.promotionScopeInfo.getIn(['$scopeInfo']).toJS();
             const {
@@ -203,6 +204,7 @@ class PromotionScopeInfo extends React.Component {
                 evidence,
                 invoice = '0',
             } = _stateFromRedux;
+
             this.setState({
                 voucherVerify,
                 voucherVerifyChannel,
@@ -212,7 +214,7 @@ class PromotionScopeInfo extends React.Component {
                 brands: _stateFromRedux.brands,
                 channel: promotionType === '1021' ? '1' : _stateFromRedux.channel,
                 auto: _stateFromRedux.auto,
-                orderType: _stateFromRedux.orderType,
+                orderType: isSelDefined ? ['31'] : _stateFromRedux.orderType,
                 initialized: true,
                 usageMode: _stateFromRedux.usageMode || 1,
             });
@@ -233,6 +235,13 @@ class PromotionScopeInfo extends React.Component {
         } else {
             this.setState({ filterShops: [] })
         }
+        const basicInfo = nextProps.promotionBasicInfo.get('$basicInfo').toJS()
+        const isSelDefined = basicInfo.recommendType == 1
+        if(isSelDefined) {
+            this.setState({
+                orderType: ['31']
+            })
+        }
         this.setState({ allShopsSet: !!nextProps.promotionBasicInfo.get('$filterShops').toJS().allShopSet });
         const promotionType = nextProps.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         if (JSON.stringify(nextProps.promotionScopeInfo.getIn(['refs', 'data'])) !=
@@ -240,11 +249,13 @@ class PromotionScopeInfo extends React.Component {
             const _data = Immutable.Map.isMap(nextProps.promotionScopeInfo.getIn(['$scopeInfo'])) ?
                 nextProps.promotionScopeInfo.getIn(['$scopeInfo']).toJS() :
                 nextProps.promotionScopeInfo.getIn(['$scopeInfo']);
+            const basicInfo = nextProps.promotionBasicInfo.get('$basicInfo').toJS()
+            const isSelDefined = basicInfo.recommendType == 1
             this.setState({
                 brands: _data.brands,
                 channel: promotionType === '1021' ? '1' : _data.channel,
                 auto: _data.auto,
-                orderType: _data.orderType,
+                orderType: isSelDefined ? ['31'] : _data.orderType,
                 // TODO: shopsIdInfo converted to shopsInfo
                 initialized: true,
                 usageMode: _data.usageMode || 1,
@@ -506,7 +517,7 @@ class PromotionScopeInfo extends React.Component {
                     disabled: isSelDefined
                 },
             ];
-        }     
+        }
         return (
             <Form.Item
                 label={SALE_LABEL.k5dlpt47}
