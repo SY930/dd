@@ -50,8 +50,8 @@ class RecommendFoodDetailInfo extends React.Component {
                     startTime: '0000',
                     endTime: '2359',
                     items: [{
-                        num: '',
-                        count: '',
+                        num: 0,
+                        count: 0,
                         validationStatus: 'success',
                         helpMsg: null,
                     }]
@@ -74,8 +74,8 @@ class RecommendFoodDetailInfo extends React.Component {
                 item.rule = rule;
                 if (!item.rule.items) {
                     item.rule.items = [{
-                        num: '',
-                        count: '',
+                        num: 0,
+                        count: 0,
                         validationStatus: 'success',
                         helpMsg: null,
                     }]
@@ -107,8 +107,8 @@ class RecommendFoodDetailInfo extends React.Component {
                         startTime: '0000',
                         endTime: '2359',
                         items: [{
-                            num: '',
-                            count: '',
+                            num: 0,
+                            count: 0,
                             validationStatus: 'success',
                             helpMsg: null,
                         }]
@@ -131,8 +131,8 @@ class RecommendFoodDetailInfo extends React.Component {
                     item.rule = rule;
                     if (!item.rule.items) {
                         item.rule.items = [{
-                            num: '',
-                            count: '',
+                            num: 0,
+                            count: 0,
                             validationStatus: 'success',
                             helpMsg: null,
                         }]
@@ -423,9 +423,10 @@ class RecommendFoodDetailInfo extends React.Component {
             _validationStatus = 'error';
             _helpMsg = '人数需每个档位递增，份数需每个档位递增'
         }
+        debugger
         _tmp[index] = {
-            num: _start,
-            count: _end,
+            num: Number(_start),
+            count: Number(_end),
             validationStatus: _validationStatus,
             helpMsg: _helpMsg,
         };
@@ -445,8 +446,8 @@ class RecommendFoodDetailInfo extends React.Component {
         _tmp.push({
             validationStatus: 'success',
             helpMsg: null,
-            num: null,
-            count: null,
+            num: 0,
+            count: 0,
         });
         foodRuleList[0].rule.items = _tmp
         this.setState({
