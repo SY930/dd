@@ -423,7 +423,6 @@ class RecommendFoodDetailInfo extends React.Component {
             _validationStatus = 'error';
             _helpMsg = '人数需每个档位递增，份数需每个档位递增'
         }
-        debugger
         _tmp[index] = {
             num: Number(_start),
             count: Number(_end),
@@ -567,7 +566,7 @@ class RecommendFoodDetailInfo extends React.Component {
                                     _value
                                 }
                                 firstInputAppend={true}
-                                relation={'人就餐，点菜分数不足'}
+                                relation={'人就餐，点菜份数不足'}
                                 onChange={(value) => {
                                     this.onCustomRangeInputChange(value, index);
                                 }
