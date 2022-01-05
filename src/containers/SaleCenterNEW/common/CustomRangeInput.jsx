@@ -9,13 +9,14 @@
 */
 
 import React, { PropTypes } from 'react';
-import { Form, Input, Button, Col, Row, InputNumber, Icon,
+import {
+    Form, Input, Button, Col, Row, InputNumber, Icon,
 } from 'antd';
 import PriceInput from './PriceInput';
 import styles from '../ActivityPage.less';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
-import {injectIntl} from '../IntlDecor';
+import { injectIntl } from '../IntlDecor';
 
 @injectIntl()
 class CustomRangeInput extends React.Component {
@@ -83,37 +84,41 @@ class CustomRangeInput extends React.Component {
     }
 
     render() {
+        const {
+            firstInputAppend
+        } = this.props
         return (
             <Row
                 className={styles.rightInput}
             >
-                <Col span={13}>
+                <Col span={firstInputAppend ? 5 : 13}>
                     <PriceInput
                         disabled={this.props.disabled}
-                        addonBefore={this.state.addonBefore}
-                        placeholder={this.props.startPlaceHolder}
-                        addonAfter={this.state.addonAfter}
+                        addonBefore={firstInputAppend ? "" : this.state.addonBefore}
+                        placeholder={firstInputAppend ? "" : this.props.startPlaceHolder}
+                        addonAfter={firstInputAppend ? "" : this.state.addonAfter}
                         onChange={this.onStartChange}
                         value={{ number: this.state.start }}
-                        modal="float"
+                        modal={firstInputAppend ? "int" : "float"}
                     />
                 </Col>
 
-                <Col span={4}>
-                    <div>{this.props.relation || SALE_LABEL.k5nh21d9}</div>
+                <Col span={firstInputAppend ? 6 : 4}>
+                    <div style={firstInputAppend ? { marginTop: 7, marginLeft: 5, } : {}}>{this.props.relation || SALE_LABEL.k5nh21d9}</div>
                 </Col>
-            
-                <Col span={7}>
+
+                <Col span={firstInputAppend ? 5 : 7}>
                     <PriceInput
                         discountMode={this.props.discountMode}
                         placeholder={this.props.endPlaceHolder}
                         addonAfter={this.state.addonAfterUnit}
                         onChange={this.onEndChange}
+                        addonAfter={firstInputAppend ? "份" : ''}
                         value={{ number: this.state.end }}
-                        modal="float"
+                        modal={firstInputAppend ? "int" : "float"}
                     />
                 </Col>
-            </Row>
+            </Row >
         );
     }
 }

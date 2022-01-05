@@ -37,6 +37,7 @@ class ConnectedScopeListSelector extends Component {
     }
     render() {
         const scopeLst = this.props.scopeLst.toJS();
+        const priceList = this.props.priceList || []
         const { isShopMode, component } = this.props;
         const Comp = component || (isShopMode ? CategoryAndFoodSelectorForShop : CategoryAndFoodSelector);
         return (
@@ -44,12 +45,13 @@ class ConnectedScopeListSelector extends Component {
                 dishFilter={this.dishFilter}
                 scopeLst={scopeLst}
                 onChange={this.handleScopeLstChange}
+                priceListData={priceList}
                 scopeTip={this.props.promotionType === '2020' ? (
                     <CloseableTip content={
                         <div>
-                    <p>{SALE_LABEL.k5m4pzle}：</p>
-                    <p>{SALE_LABEL.k5m4pztq}</p>
-                    <p>{SALE_LABEL.k5m4q022}</p>
+                            <p>{SALE_LABEL.k5m4pzle}：</p>
+                            <p>{SALE_LABEL.k5m4pztq}</p>
+                            <p>{SALE_LABEL.k5m4q022}</p>
                         </div>
                     } />
                 ) : null}
