@@ -336,6 +336,7 @@ export const fetchSpecialPromotionDetailAC = opts => {
             if(opts.eventWay == 30 || opts.eventWay == 78){
                 url = '/specialPromotion/queryEventTrackInfo.ajax'
             }
+            param.data.statGiftRecovery = true;//统计礼品回收: false-不统计, true-统计 默认不统计
             return axiosData(url, param.data, {needThrow: true}, { path: '' },
                 'HTTP_SERVICE_URL_PROMOTION_NEW')
                     .then((res) => {
