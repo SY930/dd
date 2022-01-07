@@ -259,6 +259,8 @@ class CreateCouponContent extends Component {
             this.setState({ confirmLoading: false })
             return message.error('请输入生效时间')
         }
+        const startTime = moment().format(DATE_FORMAT);
+        const endTime = moment().add(3, 'years').format(END_DATE_FORMAT)
         const couponCodeBatchInfo = {
             batchName,
             // batchStatus: 1,
@@ -267,6 +269,8 @@ class CreateCouponContent extends Component {
             // couponType
             EGiftEffectTime, // 固定有效期生效时间
             validUntilDate, // 固定有效期失效时间
+            startTime,
+            endTime,
             effectType,
             groupId,
             platformType: '2',
