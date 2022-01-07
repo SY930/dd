@@ -89,6 +89,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
             dish && acc.push({ ...dish, payPrice: item.payPrice, weightOffset: item.weightOffset, maxNum: item.maxNum });
             return acc;
         }, [])
+        debugger
         this.setState({ data })
         this.props.onChange(data)
     }
@@ -102,6 +103,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
             num = '0';
         }
         record.payPrice = num;
+        debugger
         this.setState({ data });
         this.props.onChange(data.map(item => ({ ...item })));
     }
@@ -116,6 +118,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
             num = '0';
         }
         record.weightOffset = num;
+        debugger
         this.setState({ data });
         this.props.onChange(data.map(item => ({ ...item })));
     }
@@ -131,6 +134,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
             num = '0';
         }
         record.maxNum = num;
+        debugger
         this.setState({ data });
         this.props.onChange(data.map(item => ({ ...item })));
     }
@@ -138,6 +142,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
     handleDel = (record) => {
         const data = [...this.state.data];
         data.splice(record.index, 1);
+        debugger
         this.setState({ data })
         this.props.onChange(data)
     };
@@ -152,10 +157,11 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
             const dishObj = dishes.find(item => item.value === curr);
             if (dishObj) {
                 const reservedDish = this.state.data.find(item => item.value === dishObj.value);
-                acc.push(reservedDish ? { ...dishObj, payPrice: reservedDish.payPrice } : dishObj)
+                acc.push(reservedDish ? { ...dishObj, payPrice: reservedDish.payPrice, maxNum: reservedDish.maxNum } : dishObj)
             }
             return acc;
         }, [])
+        debugger
         this.setState({
             selectorModalVisible: false,
             data: dishObjects,
@@ -203,6 +209,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
             selectorModalVisible,
             data,
         } = this.state;
+        console.log('now current data is', data)
         const {
             calType = 0,
         } = this.props
