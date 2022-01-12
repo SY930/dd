@@ -360,7 +360,7 @@ export default class Editor extends Component {
                 const price = couponPackagePrice || couponPackagePrice2;
                 const shopInfos = shops ? shops.map(x=>({shopID:x})) : [];  // 店铺可能未选
                 const remainStock = stock || '-1';           // 如果清空库存，给后端传-1
-                const maxBuyCount = buyCount ? buyCount : '-1';
+                const maxBuyCount = buyCount ? buyCount : '0';
                 const couponPackageInfo = { ...timeObj, ...dateObj, ...others, ...cycleObj,validCycle,cycleType,
                     remainStock,maxBuyCount, couponSendWay,couponPackagePrice: price };
                 const params = { groupID, couponPackageInfo, couponPackageGiftConfigs:couponPackageArr, shopInfos };
