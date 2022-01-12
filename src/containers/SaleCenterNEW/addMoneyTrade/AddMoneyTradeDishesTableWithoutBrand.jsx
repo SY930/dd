@@ -110,7 +110,7 @@ class AddMoneyTradeDishesTableWithoutBrand extends Component {
             const dishObj = dishes.find(item => item.value === curr);
             if (dishObj) {
                 const reservedDish = this.state.data.find(item => item.value === dishObj.value);
-                acc.push(reservedDish ? { ...dishObj, payPrice: reservedDish.payPrice } : dishObj)
+                acc.push(reservedDish ? { ...dishObj, payPrice: reservedDish.payPrice, maxNum: reservedDish.payPrice, } : dishObj)
             }
             return acc;
         }, [])
