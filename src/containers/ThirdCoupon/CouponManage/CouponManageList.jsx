@@ -61,7 +61,7 @@ class CouponManageList extends Component {
             type: '', // 前端标识 1 支付宝 | 2 微信 | 3 抖音
             channelID: 60, // 60支付宝 50微信
             title: '',
-            platformTypeCreate: 1, // 平台：1 支付宝   3微信  4 抖音
+            platformTypeCreate: 1, // 平台：1 支付宝   3微信  2 抖音(小风车)
             WXLaunchVisible: false,
             wxData: {},
 		}
@@ -444,7 +444,8 @@ class CouponManageList extends Component {
                                 <Option value={''}>全部</Option>
                                 <Option value={'1'}>支付宝</Option>
                                 <Option value={'3'}>微信</Option>
-                                <Option value={'2'}>抖音</Option>
+                                <Option value={'2'}>抖音（小黄车）</Option>
+                                <Option value={'5'}>抖音（小风车）</Option>
                             </Select>
                         </li>
                         <li>
@@ -592,11 +593,20 @@ class CouponManageList extends Component {
             },
             {
                 title: '关联渠道',
+                dataIndex: 'platformType',
+                key: 'platformType',
+                width: 80,
+                render: (text) => {
+                    return ['1', 1].includes(text) ? '支付宝' : (['2', 2].includes(text) ? '抖音' : '微信')
+                },
+            },
+            {
+                title: '对接业务',
                 dataIndex: 'channelID',
                 key: 'channelID',
                 width: 80,
                 render: (text) => {
-                    return ['60', 60].includes(text) ? '支付宝' : (['70', 70].includes(text) ? '抖音' : '微信')
+                    return text == 70 ? '抖音电商' : (text == 80 ? '抖音团购' : '--')
                 },
             },
             {
@@ -707,7 +717,7 @@ class CouponManageList extends Component {
                     this.state.createThirdCouponVisble && <Modal
                         title="创建第三方券"
                         visible={true}
-                        width={700}
+                        width={750}
                         onCancel={this.handleCloseThirdCouponModal}
                         footer={null}
                         maskClosable={true}
@@ -734,11 +744,20 @@ class CouponManageList extends Component {
                             <li
                                 className={styles.createCouponModal__item__li}
                                 onClick={() => {
-                                    this.handleCreateCouponContentModal({ type: 3, channelID: 70, platformTypeCreate: 4 }, '新建第三方抖音券')
+                                    this.handleCreateCouponContentModal({ type: 3, channelID: 70, platformTypeCreate: 2 }, '新建第三方抖音券')
                                 }}
                             >
                                 <p><img src={DOUYIN}></img></p>
-                                <span>抖音</span>
+                                <span>抖音（小黄车）</span>
+                            </li>
+                            <li
+                                className={styles.createCouponModal__item__li}
+                                onClick={() => {
+                                    this.handleCreateCouponContentModal({ type: 4, channelID: 80, platformTypeCreate: 5 }, '新建第三方抖音券')
+                                }}
+                            >
+                                <p><img src={DOUYIN}></img></p>
+                                <span>抖音（小风车）</span>
                             </li>
                         </ul>
                     </Modal>

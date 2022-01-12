@@ -273,7 +273,7 @@ class CreateCouponContent extends Component {
             endTime,
             effectType,
             groupId,
-            platformType: '2',
+            platformType: this.props.platformType,
             effectGiftTimeHours,
             validUntilDays: values.validUntilDays ? values.validUntilDays.number : '',
             stock: stock.number,
@@ -819,7 +819,7 @@ class CreateCouponContent extends Component {
                             </FormItem>
                             {giftItemID && this.renderCoupon()}
                             {
-                                type !== 3 && <FormItem
+                                (type !== 3 && type !== 4) && <FormItem
                                     label="链接方式"
                                     {...formItemLayout}
                                 >
