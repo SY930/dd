@@ -597,7 +597,7 @@ class CouponManageList extends Component {
                 key: 'platformType',
                 width: 80,
                 render: (text) => {
-                    return ['1', 1].includes(text) ? '支付宝' : (['2', 2].includes(text) ? '抖音' : '微信')
+                    return ['1', 1].includes(text) ? '支付宝' : (['2', 2, '5', 5].includes(text) ? '抖音' : '微信')
                 },
             },
             {
