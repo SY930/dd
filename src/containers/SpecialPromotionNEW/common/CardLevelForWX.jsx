@@ -416,6 +416,7 @@ class CardLevelForWX extends React.Component {
                                 className={`${styles.linkSelectorRight} advancedDetailClassJs`}
                                 getPopupContainer={(node) => node.parentNode}
                                 onChange={this.handleSelectChange}
+                                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                             >
                                 {
                                     cardInfo.map(type => <Select.Option key={type.cardTypeID} value={type.cardTypeID}>{type.cardTypeName}</Select.Option>)

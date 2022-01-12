@@ -176,6 +176,7 @@ const renderGivePointFn = function (isBenefitJumpSendGift) {
                     value={perfectReturnGiftCardTypeValue}
                     onChange={handleCardChange.bind(this)}
                     disabled={giftSendCount > 0}
+                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
                     {cardTypeArr.map((item) => {
                         return (
