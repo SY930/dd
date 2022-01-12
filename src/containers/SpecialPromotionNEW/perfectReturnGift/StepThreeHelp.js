@@ -60,7 +60,36 @@ const renderCheckbox = function ({ key, children, label }) {
     );
 };
 /**
- * 获取充值会员卡列表
+ * 获取充值会员卡列表 赠送成长值
+ * @param {*} opts, 完善资料送礼 过滤掉消费升降级卡型
+ * levelChangeType = 3 代表只需要成长值升降级的卡类型
+ */
+
+const fetchCardTypeCardGrowthValue = function (opts) {
+    axiosData(
+        "/crm/cardTypeLevelService_queryCardTypeBaseInfoList.ajax",
+        { ...opts, isNeedWechatCardTypeInfo: true },
+        null,
+        { path: "data.cardTypeBaseInfoList" }
+    ).then((records) => {
+        const { perfectReturnGiftCardGrowthValue } = this.state;
+        if (
+            Array.isArray(records) &&
+            records[0] &&
+            !perfectReturnGiftCardGrowthValue
+        ) {
+            this.setState({
+                perfectReturnGiftCardGrowthValue: records[0].cardTypeID,
+            });
+        }
+        this.setState({
+            cardTypeArrCardGrowth: records || [],
+        });
+    });
+}
+
+/**
+ * 获取充值会员卡列表 赠送积分
  *
  * @param {*} opts
  */
@@ -71,7 +100,7 @@ const fetchCardType = function (opts) {
         null,
         { path: "data.cardTypeBaseInfoList" }
     ).then((records) => {
-        const { perfectReturnGiftCardTypeValue, perfectReturnGiftCardGrowthValue } = this.state;
+        const { perfectReturnGiftCardTypeValue } = this.state;
         if (
             Array.isArray(records) &&
             records[0] &&
@@ -79,15 +108,6 @@ const fetchCardType = function (opts) {
         ) {
             this.setState({
                 perfectReturnGiftCardTypeValue: records[0].cardTypeID,
-            });
-        }
-        if (
-            Array.isArray(records) &&
-            records[0] &&
-            !perfectReturnGiftCardGrowthValue
-        ) {
-            this.setState({
-                perfectReturnGiftCardGrowthValue: records[0].cardTypeID,
             });
         }
         this.setState({
@@ -176,6 +196,7 @@ const renderGivePointFn = function (isBenefitJumpSendGift) {
                     value={perfectReturnGiftCardTypeValue}
                     onChange={handleCardChange.bind(this)}
                     disabled={giftSendCount > 0}
+                    optionFilterProp="children"
                     filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
                     {cardTypeArr.map((item) => {
@@ -207,7 +228,7 @@ const renderGrowthValueFn = function () {
         perfectReturnGiftCheckBoxStatus,
         perfectReturnGiftGrowthValue,
         perfectReturnGiftCardGrowthValue,
-        cardTypeArr,
+        cardTypeArrCardGrowth,
     } = this.state;
     const {
         form: { getFieldDecorator },
@@ -275,8 +296,10 @@ const renderGrowthValueFn = function () {
                     value={perfectReturnGiftCardGrowthValue}
                     onChange={handleGrowthCardChange.bind(this)}
                     disabled={giftSendCount > 0}
+                    optionFilterProp="children"
+                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
-                    {cardTypeArr.map((item) => {
+                    {cardTypeArrCardGrowth.map((item) => {
                         return (
                             <Option
                                 key={item.cardTypeID}
@@ -434,7 +457,10 @@ export const initPerfectCheckBox = function (isBenefitJumpSendGift) {
         perfectReturnGiftGrowthValue: growthValueItem && growthValueItem.presentValue,
         perfectReturnGiftCardGrowthValue: growthValueItem && growthValueItem.cardTypeID,
     });
+    const { type } = this.props;
+    const opts = type == 60 ? { levelChangeType: 3 } : {} 
     fetchCardType.call(this, {});
+    fetchCardTypeCardGrowthValue.call(this, opts)
 };
 
 export default {
