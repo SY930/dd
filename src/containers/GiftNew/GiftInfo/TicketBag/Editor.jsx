@@ -209,6 +209,7 @@ export default class Editor extends Component {
         const render1 = d => d()(<ShopSelector disabled={check} />);
         const render2 = d => d()(<ImageUpload />);
         const render3 = d => d()(<EveryDay type={cycleType} disabled={disGift} />);
+        const render4 = d => d()(this.imageUploadDom());
         const render5 = d => d()(<Select
             style={{
                 width: 354
@@ -223,7 +224,20 @@ export default class Editor extends Component {
                 )
             }
         </Select>);
-        const render4 = d => d()(this.imageUploadDom());
+        const render6 = d => d()(<Select
+            style={{
+                width: 354
+            }}
+            showSearch={true}
+            allowClear={true}
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
+            {
+                settlesOpts.map((type, index) =>
+                    <Option key={index} value={String(type.value)} >{type.label}</Option>
+                )
+            }
+        </Select>);
         let disDate = {};
         const isEdit = !!detail;    // 编辑状态下
         let stockRule = {};
@@ -242,7 +256,7 @@ export default class Editor extends Component {
             shopInfos: { ...shopInfos, render: render1 },
             // couponPackageImage: { ...couponPackageImage, render: render2 }, // 屏蔽掉
             validCycle: { ...validCycle, render: render3 },
-            settleUnitID: { ...settleUnitID , options: settlesOpts},
+            settleUnitID: { ...settleUnitID,render:render6},
             defaultCardTypeID: {...defaultCardTypeID,render:render5},
             isAutoRefund: { ...isAutoRefund, disabled: isEdit },
             remainStock: { ...remainStock, ...stockRule },

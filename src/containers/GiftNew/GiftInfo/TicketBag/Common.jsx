@@ -204,11 +204,8 @@ const formItems = {
         }],
     },
     settleUnitID: {
-        type: 'combo',
         label: '券包结算主体',
-        options: [
-            
-        ],
+        type: 'custom',
         defaultValue: '',
         rules: ['required'],
     },
