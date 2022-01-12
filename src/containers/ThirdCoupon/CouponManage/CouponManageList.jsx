@@ -278,7 +278,7 @@ class CouponManageList extends Component {
 
     handleCreateCouponContentModal = ({ type, channelID, platformTypeCreate }, title) => {
         if (type === 1) { // 支付宝券
-            getCardList({giftTypes:[10]}).then(x => {
+            getCardList({giftTypes:[10, 111]}).then(x => {
                 this.setState({ 
                     treeData: x 
                 });

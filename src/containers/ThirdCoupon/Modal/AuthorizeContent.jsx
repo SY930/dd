@@ -42,7 +42,10 @@ class AuthorizeContent extends Component {
 
                     <div className={styles.authTip}>
                         <span> <Icon type="exclamation-circle" style={{ color: '#FAAD14', marginRight: '3px' }} /></span>
-                        <p>确认授权后，对应账号将收到代运营授权信息，请根据收到信息提示完成授权。</p>
+                        <p>{
+                            this.props.merchantType === '2' ? '确认授权后，对应账号将收到代运营授权信息，请根据收到信息提示文档授权，对于间连非M4代运营授权同步完成M4升级。' :
+                                '确认授权后，对应账号将收到代运营授权信息，请根据收到信息提示文档授权。'
+                        }</p>
                     </div>
                     <div className={styles.promotionFooter} style={{ overflow: 'hidden' }}>
                         <Button key="0" onClick={this.props.onCancel} style={{ marginRight: 10 }}>取消</Button>

@@ -4,11 +4,12 @@ import moment from 'moment'
 import _ from 'lodash'
 import { axios, getStore } from '@hualala/platform-base';
 import AuthorizeModalContent from './AuthorizeContent';
-import { getSmid, isAuth, goAuthorizeAC } from '../AxiosFactory'
+import { getSmid, isAuth, goAuthorizeAC, queryAliShopsAC, goUpdateM4AC } from '../AxiosFactory'
 import { SALE_CENTER_GIFT_EFFICT_DAY_ALIPAY } from '../../../redux/actions/saleCenterNEW/types';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 import WXContent from '../Comp/WXContent';
 import DouyinContent from '../Comp/DouyinContent'
+import AliContent from '../Comp/AliContent';
 // import { axiosData } from '../../../helpers/util'
 import styles from '../AlipayCoupon.less';
 
@@ -51,6 +52,8 @@ class CreateCouponContent extends Component {
             confirmLoading: false,
             tips: false,
             giftType: '',
+            aliShops: [],
+            entranceWords: [], // 支付宝门店
         }
     }
 
@@ -68,6 +71,21 @@ class CreateCouponContent extends Component {
         this.setState({
             WXJumpAppID: key,
             WXJumpAppIDName: label,
+        })
+    }
+
+    // 处理选择的门店数据
+    onChangeEntranceWords = (value) => {
+        this.setState({
+            entranceWords: value,
+        })
+    }
+
+    queryAliShops = (smid) => {
+        queryAliShopsAC(smid).then((res) => {
+            this.setState({
+                aliShops: res,
+            })
         })
     }
 
@@ -117,12 +135,14 @@ class CreateCouponContent extends Component {
 
     handleLinkWay = (e) => {
         // 回显时选择链接方式先清空
-        // const { editData } = this.state;
+        const { form } = this.props;
         // editData.merchantID = '';
+        form.setFieldsValue({ shopId: [] })
         this.setState({
             merchantType: e.target.value,
             shopIsAuth: '0',
             smidList: [],
+            aliShops: [],
             // editData,
 
         })
@@ -157,6 +177,7 @@ class CreateCouponContent extends Component {
         })
         isAuth(value).then((res) => {
             if (res) {
+                this.queryAliShops(value);
                 this.setState({
                     shopIsAuth: '2',
                 })
@@ -174,6 +195,8 @@ class CreateCouponContent extends Component {
         form.validateFields((err, values) => {
             if (!err) {
                 values.merchantNo = bankMerchantCode;
+                // 非M4完成M4的升级，调用接口
+                goUpdateM4AC(values);
                 goAuthorizeAC(values).then((res) => {
                     if (res) {
                         this.handleAuthModalClose()
@@ -237,6 +260,7 @@ class CreateCouponContent extends Component {
         isAuth(bankMerchantCode).then((res) => {
             if (res) {
                 const { bindUserId } = res;
+                this.queryAliShops(bindUserId) // 支付宝门店
                 this.setState({
                     shopIsAuth: '2',
                     bindUserId, // 间连主体关联M4
@@ -321,7 +345,7 @@ class CreateCouponContent extends Component {
             if (!err) {
                 // console.log('handleAuthSubmit', values);
                 this.setState({ confirmLoading: true })
-                const { effectType, effectGiftTimeHours, merchantID, editData, giftType, giftItemID } = this.state;
+                const { effectType, effectGiftTimeHours, merchantID, editData, giftType, giftItemID, entranceWords } = this.state;
                 const { user } = getStore().getState();
                 const { groupID } = user.get('accountInfo').toJS()
                 const rangePicker = values.rangePicker || [];
@@ -373,6 +397,9 @@ class CreateCouponContent extends Component {
                     const { smidList } = this.state;
                     const { bankMerchantCode } = smidList[0];
                     datas.merchantID = bankMerchantCode;
+                }
+                if (type === 1) { // 支付宝
+                    datas.entranceWords = entranceWords;
                 }
                 if (type === 2) { // 微信
                     datas.merchantID = this.state.WXMerchantID;
@@ -508,12 +535,14 @@ class CreateCouponContent extends Component {
     }
 
     renderGoAuth = () => {
-        const { shopIsAuth } = this.state;
+        const { shopIsAuth, merchantType } = this.state;
         if (shopIsAuth === '1') {
             return (
                 <p className={styles.authorizeBottomTip}>
                     <Icon type="exclamation-circle" style={{ color: '#FAAD14', marginRight: '3px' }} />
-                    商户完成支付宝代运营授权才可完成创建投放活动。
+                    {
+                        merchantType === '2' ? '商户完成支付宝代运营才能完成创建活动，对于间连非M4代运营授权同步完成M4升级' : '商户完成支付宝代运营授权才可完成创建投放活动。'
+                    }
                     <span className={styles.goAuthorize} onClick={() => { this.goAuthorize() }}>点击去授权</span>
                 </p>
             )
@@ -525,7 +554,7 @@ class CreateCouponContent extends Component {
     renderIndirect = () => {
         const { form, type } = this.props;
         const { getFieldDecorator } = form;
-        const { authorizeModalVisible, smidList = [] } = this.state;
+        const { authorizeModalVisible, smidList = [], merchantType } = this.state;
         const { bankMerchantCode } = smidList[0] || {};
         // const { editData } = this.state;
         // const value = editData.merchantType && editData.merchantType == '2' ? editData.merchantID : '';
@@ -556,10 +585,10 @@ class CreateCouponContent extends Component {
                             this.renderTip()
                         }
                     </FormItem>
+                    { bankMerchantCode && <span style={{ marginLeft: '15px' }}>渠道商户号：{bankMerchantCode}</span>}
                     {
                         this.renderGoAuth()
                     }
-                    { bankMerchantCode && <span style={{ marginLeft: '15px' }}>渠道商户号：{bankMerchantCode}</span>}
 
                 </Col>
                 <Col>
@@ -576,6 +605,7 @@ class CreateCouponContent extends Component {
                             onCancel={this.handleAuthModalClose}
                             // form={form}
                             handleSubmit={this.handleAuthSubmit}
+                            merchantType={merchantType}
                         />
                     </Modal>
                 </Col>
@@ -729,7 +759,7 @@ class CreateCouponContent extends Component {
     render() {
         const { form, title, type } = this.props;
         const { getFieldDecorator } = form;
-        const { giftItemID, merchantType, editData } = this.state;
+        const { giftItemID, merchantType, editData, aliShops } = this.state;
         // let title = '新建第三方支付宝券';
         // if (editData.batchName) {
         //     title = '编辑第三方支付宝券';
@@ -825,7 +855,7 @@ class CreateCouponContent extends Component {
                                 >
                                     {getFieldDecorator('merchantType', {
                                         onChange: this.handleLinkWay,
-                                        initialValue: editData.merchantType ? `${editData.merchantType}` : merchantType,
+                                        initialValue: merchantType,
                                         // rules: [{ required: true, message: '请输入活动名称' }],
                                     })(
                                         <RadioGroup>
@@ -836,26 +866,7 @@ class CreateCouponContent extends Component {
                                 </FormItem>
                             }
                             { type === 1 && this.renderZhifubaoContent(merchantType) }
-                            {
-                                type === 1 && <FormItem
-                                    label="跳转小程序"
-                                    labelCol={{ span: 4 }}
-                                    wrapperCol={{ span: 16 }}
-                                    required={true}
-                                >
-                                    {getFieldDecorator('jumpAppID', {
-                                        initialValue: editData.jumpAppID,
-                                        rules: [
-                                            { required: true, message: '请输入小程序appid' },
-                                        ],
-                                    })(
-                                        <Input
-                                            placeholder="请输入小程序appid"
-                                            style={{ height: '30px' }}
-                                        />
-                                    )}
-                                </FormItem>
-                            }
+                            {type === 1 && <AliContent form={form} merchantType={merchantType} aliShops={aliShops} onChangeEntranceWords={this.onChangeEntranceWords} />}
                             { type === 2 && <WXContent form={form} merchantType={merchantType} onChangeWXMerchantID={this.onChangeWXMerchantID} onChangeWXJumpAppID={this.onChangeWXJumpAppID} />}
                             { type === 3 && <DouyinContent form={form} merchantType={merchantType} />}
                         </Form>
