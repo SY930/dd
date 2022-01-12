@@ -898,7 +898,13 @@ class ViewCouponContent extends Component {
                 }
             },
         ];
-        let styleName = platformType == 1 ? 'signInfoZhifubao' : platformType == 2 ? 'signInfoDouyin' : 'signInfoWx'
+        const styleMap = {
+            1: 'signInfoZhifubao',
+            2: 'signInfoDouyin',
+            3: 'signInfoWx',
+            5: 'signInfoDouyin',
+        }
+        let styleName = styleMap[platformType];
         return (
             <Modal
                 title={`第三方${title}券详情`}
@@ -914,7 +920,7 @@ class ViewCouponContent extends Component {
                         <div style={{ marginBottom: 12 }}>
                             <p>券批次ID： <Tooltip title={itemID}><span>{itemID.length > 15 ? `${itemID.slice(0, 6)}...${itemID.slice(-10)}` : itemID}</span></Tooltip></p>
                             {
-                                platformType != 2 &&    <p>关联小程序：
+                                (platformType == 1 || platformType == 3) &&  <p>关联小程序：
                                 <span>{platformType == 3 ? this.getJumpAppName(viewData) : viewData.jumpAppID}</span></p>
                             }
                         </div>
@@ -932,7 +938,7 @@ class ViewCouponContent extends Component {
                         />
                     </Col>
                     {
-                        platformType != 2 && <Col>
+                        (platformType == 1 || platformType == 3) && <Col>
                         <div style={{ marginBottom: 12 }}>
                             <p><span className={styles.relationText__span}>{title}链接方式：</span> <span>{merchantType == 1 ? '直连' : '间连'}</span></p>
                         </div>
