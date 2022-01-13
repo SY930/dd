@@ -24,11 +24,11 @@ class AliContent extends Component {
                     label="选择支付宝门店"
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 16 }}
-                    required={true}
+                    // required={true}
                 >
                     {getFieldDecorator('entranceWords', {
                         rules: [
-                            { required: true, message: '请先选择已授权的直连或间连的商户,再选择支付宝门店' },
+                            // { required: true, message: '请先选择已授权的直连或间连的商户,再选择支付宝门店' },
                         ],
                         onChange: this.onChange,
                     })(
