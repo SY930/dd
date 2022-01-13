@@ -185,28 +185,31 @@ class CouponManageList extends Component {
     }
 
     handleSearch = (from) => {
-        if (from === 'wx') {
+        if (from) {
             this.setState({
-                platformType: '3'
+                // platformType: '3'
+                platformType: from,
             }, () => {
                 this.handleQuery();
                 this.clearUrl();
             })
-        } else if (from === 'zhifubao') {
-            this.setState({
-                platformType: '1'
-            }, () => {
-                this.handleQuery();
-                this.clearUrl();
-            })
-        } else if (from === 'douyin') {
-            this.setState({
-                platformType: '2'
-            }, () => {
-                this.handleQuery();
-                this.clearUrl();
-            })
-        } else {
+        } 
+        // else if (from === 'zhifubao') {
+        //     this.setState({
+        //         platformType: '1'
+        //     }, () => {
+        //         this.handleQuery();
+        //         this.clearUrl();
+        //     })
+        // } else if (from === 'douyin') {
+        //     this.setState({
+        //         platformType: '2'
+        //     }, () => {
+        //         this.handleQuery();
+        //         this.clearUrl();
+        //     })
+        // } 
+        else {
             this.setState({
                 platformType: ''
             }, () => {

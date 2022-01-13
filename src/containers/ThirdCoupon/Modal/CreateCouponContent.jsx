@@ -326,7 +326,7 @@ class CreateCouponContent extends Component {
                 const { groupID } = user.get('accountInfo').toJS()
                 const rangePicker = values.rangePicker || [];
                 const giftValidRange = values.giftValidRange || [];
-                if (type == 3) { // 抖音
+                if (type == 3 || type == 4) { // 抖音
                     this.handleDouyinSubmit(values, groupID)
                     return null
                 }
