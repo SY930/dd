@@ -608,8 +608,8 @@ class CouponManageList extends Component {
                 dataIndex: 'channelID',
                 key: 'channelID',
                 width: 80,
-                render: (text) => {
-                    return text == 70 ? '抖音电商' : (text == 80 ? '抖音团购' : '--')
+                render: (text, record) => {
+                    return record.platformType == 2 ? '抖音电商' : (record.platformType == 5 ? '抖音团购' : '--')
                 },
             },
             {

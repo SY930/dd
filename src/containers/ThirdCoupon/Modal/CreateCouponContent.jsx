@@ -279,7 +279,7 @@ class CreateCouponContent extends Component {
             stock: stock.number,
             shopId,
             // isExchange: Number(isExchange),
-            channelID: 70,
+            channelID: this.props.channelID,
             couponCodeDockingType: 1,
             giftType,
         };
