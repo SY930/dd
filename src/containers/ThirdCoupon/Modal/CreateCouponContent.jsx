@@ -399,7 +399,7 @@ class CreateCouponContent extends Component {
                     datas.merchantID = bankMerchantCode;
                 }
                 if (type === 1) { // 支付宝
-                    datas.entranceWords = entranceWords;
+                    if (entranceWords.length) { datas.entranceWords = entranceWords; }
                 }
                 if (type === 2) { // 微信
                     datas.merchantID = this.state.WXMerchantID;

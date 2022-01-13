@@ -49,11 +49,11 @@ class AliContent extends Component {
                     label="跳转小程序"
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 16 }}
-                    // required={true}
+                    required={true}
                 >
                     {getFieldDecorator('jumpAppID', {
                         rules: [
-                            // { required: true, message: '请输入小程序appid' },
+                            { required: true, message: '请输入小程序appid' },
                         ],
                     })(
                         <Input
