@@ -118,6 +118,11 @@ class AddMoneyTradeDishesTableWithoutBrand extends Component {
             selectorModalVisible: false,
             data: dishObjects,
         })
+        dishObjects.map((i)=>{
+            if(!i.maxNum){
+                i.maxNum = 1
+            }
+        })
         this.props.onChange(dishObjects)
     }
     handleModalCancel = () => {
@@ -167,12 +172,11 @@ class AddMoneyTradeDishesTableWithoutBrand extends Component {
         const data = [...this.state.data];
         let num = val.number;
         const record = data[index];
-        if (val.number >= 0) {// 特价不超过售价价
-            num = val.number;
-        } else if (val.number <= 0) {// 特价不小于0
-            num = '';
-        }
-        record.maxNum = num;
+        if (val.number == 0) {// 特价不超过售价价
+            record.maxNum = 1;
+        }else{
+            record.maxNum = num;
+        } 
         this.setState({ data });
         this.props.onChange(data.map(item => ({ ...item })));
     }
