@@ -169,8 +169,8 @@ class AddMoneyTradeDishesTableWithoutBrand extends Component {
         const record = data[index];
         if (val.number >= 0) {// 特价不超过售价价
             num = val.number;
-        } else if (val.number < 0) {// 特价不小于0
-            num = '0';
+        } else if (val.number <= 0) {// 特价不小于0
+            num = '';
         }
         record.maxNum = num;
         this.setState({ data });
