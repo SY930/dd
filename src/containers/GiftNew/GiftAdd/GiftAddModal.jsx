@@ -527,7 +527,7 @@ class GiftAddModal extends React.Component {
                 placeholder: '请输入礼品详情',
                 rules: [
                     { required: true, message: '礼品详情不能为空' },
-                    { max: 400, message: '最多400个字符' },
+                    { max: 1000, message: '最多1000个字符' },
                 ],
             },
             wishing: {
