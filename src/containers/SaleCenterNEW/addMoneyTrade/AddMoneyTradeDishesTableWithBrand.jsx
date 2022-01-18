@@ -125,11 +125,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
         const data = [...this.state.data];
         let num = val.number;
         const record = data[index];
-        if (val.number == 0) {// 特价不超过售价价
-            record.maxNum = 1;
-        }else{
-            record.maxNum = num;
-        } 
+        record.maxNum = num;
         this.setState({ data });
         this.props.onChange(data.map(item => ({ ...item })));
     }
