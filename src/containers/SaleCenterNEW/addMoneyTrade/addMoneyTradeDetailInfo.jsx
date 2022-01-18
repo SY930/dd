@@ -143,6 +143,10 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
             message.warning(SALE_LABEL.k5kqf0bf)
             return false;
         }
+        if (dishes.some(dish => !(dish.maxNum > 0))) {
+            message.warning('最大换购数量必须大于0')
+            return false;
+        }
         if (dishes.some(dish => +dish.payPrice > +dish.price)) {
             message.warning(SALE_LABEL.k5kqf0jr)
             return false;
