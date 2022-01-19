@@ -172,6 +172,7 @@ export const fetchSpecialPromotionDetailData = (opts) => {
          if(opts.eventWay == 30 || opts.eventWay == 78){
             url = '/specialPromotion/queryEventTrackInfo.ajax'
          }
+         opts.data.statGiftRecovery = true;//统计礼品回收: false-不统计, true-统计 默认不统计
         axiosData(url, opts.data, {needThrow: true}, { path: '' },
             'HTTP_SERVICE_URL_PROMOTION_NEW')
                 .then((res) => {
