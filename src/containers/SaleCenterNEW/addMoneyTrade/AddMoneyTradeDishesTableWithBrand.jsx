@@ -89,7 +89,6 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
             dish && acc.push({ ...dish, payPrice: item.payPrice, weightOffset: item.weightOffset, maxNum: item.maxNum });
             return acc;
         }, [])
-        debugger
         this.setState({ data })
         this.props.onChange(data)
     }
@@ -103,7 +102,6 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
             num = '0';
         }
         record.payPrice = num;
-        debugger
         this.setState({ data });
         this.props.onChange(data.map(item => ({ ...item })));
     }
@@ -118,7 +116,6 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
             num = '0';
         }
         record.weightOffset = num;
-        debugger
         this.setState({ data });
         this.props.onChange(data.map(item => ({ ...item })));
     }
@@ -128,13 +125,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
         const data = [...this.state.data];
         let num = val.number;
         const record = data[index];
-        if (val.number >= 0) {// 特价不超过售价价
-            num = val.number;
-        } else if (val.number < 0) {// 特价不小于0
-            num = '0';
-        }
         record.maxNum = num;
-        debugger
         this.setState({ data });
         this.props.onChange(data.map(item => ({ ...item })));
     }
@@ -142,7 +133,6 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
     handleDel = (record) => {
         const data = [...this.state.data];
         data.splice(record.index, 1);
-        debugger
         this.setState({ data })
         this.props.onChange(data)
     };
@@ -161,11 +151,17 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
             }
             return acc;
         }, [])
-        debugger
         this.setState({
             selectorModalVisible: false,
             data: dishObjects,
         })
+        
+        dishObjects.map((i)=>{
+            if(!i.maxNum){
+                i.maxNum = 1
+            }
+        })
+
         this.props.onChange(dishObjects)
     }
     handleModalCancel = () => {
