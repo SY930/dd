@@ -297,13 +297,13 @@ class CreateCouponContent extends Component {
             endTime,
             effectType,
             groupId,
-            platformType: '2',
+            platformType: this.props.platformType,
             effectGiftTimeHours,
             validUntilDays: values.validUntilDays ? values.validUntilDays.number : '',
             stock: stock.number,
             shopId,
             // isExchange: Number(isExchange),
-            channelID: 70,
+            channelID: this.props.channelID,
             couponCodeDockingType: 1,
             giftType,
         };
@@ -350,7 +350,7 @@ class CreateCouponContent extends Component {
                 const { groupID } = user.get('accountInfo').toJS()
                 const rangePicker = values.rangePicker || [];
                 const giftValidRange = values.giftValidRange || [];
-                if (type == 3) { // 抖音
+                if (type == 3 || type == 4) { // 抖音
                     this.handleDouyinSubmit(values, groupID)
                     return null
                 }
@@ -849,7 +849,7 @@ class CreateCouponContent extends Component {
                             </FormItem>
                             {giftItemID && this.renderCoupon()}
                             {
-                                type !== 3 && <FormItem
+                                (type !== 3 && type !== 4) && <FormItem
                                     label="链接方式"
                                     {...formItemLayout}
                                 >

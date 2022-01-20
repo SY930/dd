@@ -61,7 +61,7 @@ class CouponManageList extends Component {
             type: '', // 前端标识 1 支付宝 | 2 微信 | 3 抖音
             channelID: 60, // 60支付宝 50微信
             title: '',
-            platformTypeCreate: 1, // 平台：1 支付宝   3微信  4 抖音
+            platformTypeCreate: 1, // 平台：1 支付宝   3微信  2 抖音(小风车)
             WXLaunchVisible: false,
             wxData: {},
 		}
@@ -185,28 +185,31 @@ class CouponManageList extends Component {
     }
 
     handleSearch = (from) => {
-        if (from === 'wx') {
+        if (from) {
             this.setState({
-                platformType: '3'
+                // platformType: '3'
+                platformType: from,
             }, () => {
                 this.handleQuery();
                 this.clearUrl();
             })
-        } else if (from === 'zhifubao') {
-            this.setState({
-                platformType: '1'
-            }, () => {
-                this.handleQuery();
-                this.clearUrl();
-            })
-        } else if (from === 'douyin') {
-            this.setState({
-                platformType: '2'
-            }, () => {
-                this.handleQuery();
-                this.clearUrl();
-            })
-        } else {
+        } 
+        // else if (from === 'zhifubao') {
+        //     this.setState({
+        //         platformType: '1'
+        //     }, () => {
+        //         this.handleQuery();
+        //         this.clearUrl();
+        //     })
+        // } else if (from === 'douyin') {
+        //     this.setState({
+        //         platformType: '2'
+        //     }, () => {
+        //         this.handleQuery();
+        //         this.clearUrl();
+        //     })
+        // } 
+        else {
             this.setState({
                 platformType: ''
             }, () => {
@@ -444,7 +447,8 @@ class CouponManageList extends Component {
                                 <Option value={''}>全部</Option>
                                 <Option value={'1'}>支付宝</Option>
                                 <Option value={'3'}>微信</Option>
-                                <Option value={'2'}>抖音</Option>
+                                <Option value={'2'}>抖音（小黄车）</Option>
+                                <Option value={'5'}>抖音（小风车）</Option>
                             </Select>
                         </li>
                         <li>
@@ -592,11 +596,20 @@ class CouponManageList extends Component {
             },
             {
                 title: '关联渠道',
+                dataIndex: 'platformType',
+                key: 'platformType',
+                width: 80,
+                render: (text) => {
+                    return ['1', 1].includes(text) ? '支付宝' : (['2', 2, '5', 5].includes(text) ? '抖音' : '微信')
+                },
+            },
+            {
+                title: '对接业务',
                 dataIndex: 'channelID',
                 key: 'channelID',
                 width: 80,
-                render: (text) => {
-                    return ['60', 60].includes(text) ? '支付宝' : (['70', 70].includes(text) ? '抖音' : '微信')
+                render: (text, record) => {
+                    return record.platformType == 2 ? '抖音电商' : (record.platformType == 5 ? '抖音团购' : '--')
                 },
             },
             {
@@ -707,7 +720,7 @@ class CouponManageList extends Component {
                     this.state.createThirdCouponVisble && <Modal
                         title="创建第三方券"
                         visible={true}
-                        width={700}
+                        width={750}
                         onCancel={this.handleCloseThirdCouponModal}
                         footer={null}
                         maskClosable={true}
@@ -734,11 +747,20 @@ class CouponManageList extends Component {
                             <li
                                 className={styles.createCouponModal__item__li}
                                 onClick={() => {
-                                    this.handleCreateCouponContentModal({ type: 3, channelID: 70, platformTypeCreate: 4 }, '新建第三方抖音券')
+                                    this.handleCreateCouponContentModal({ type: 3, channelID: 70, platformTypeCreate: 2 }, '新建第三方抖音券')
                                 }}
                             >
                                 <p><img src={DOUYIN}></img></p>
-                                <span>抖音</span>
+                                <span>抖音（小黄车）</span>
+                            </li>
+                            <li
+                                className={styles.createCouponModal__item__li}
+                                onClick={() => {
+                                    this.handleCreateCouponContentModal({ type: 4, channelID: 80, platformTypeCreate: 5 }, '新建第三方抖音券')
+                                }}
+                            >
+                                <p><img src={DOUYIN}></img></p>
+                                <span>抖音（小风车）</span>
                             </li>
                         </ul>
                     </Modal>
@@ -879,7 +901,13 @@ class ViewCouponContent extends Component {
                 }
             },
         ];
-        let styleName = platformType == 1 ? 'signInfoZhifubao' : platformType == 2 ? 'signInfoDouyin' : 'signInfoWx'
+        const styleMap = {
+            1: 'signInfoZhifubao',
+            2: 'signInfoDouyin',
+            3: 'signInfoWx',
+            5: 'signInfoDouyin',
+        }
+        let styleName = styleMap[platformType];
         return (
             <Modal
                 title={`第三方${title}券详情`}
@@ -895,7 +923,7 @@ class ViewCouponContent extends Component {
                         <div style={{ marginBottom: 12 }}>
                             <p>券批次ID： <Tooltip title={itemID}><span>{itemID.length > 15 ? `${itemID.slice(0, 6)}...${itemID.slice(-10)}` : itemID}</span></Tooltip></p>
                             {
-                                platformType != 2 &&    <p>关联小程序：
+                                (platformType == 1 || platformType == 3) &&  <p>关联小程序：
                                 <span>{platformType == 3 ? this.getJumpAppName(viewData) : viewData.jumpAppID}</span></p>
                             }
                         </div>
@@ -913,7 +941,7 @@ class ViewCouponContent extends Component {
                         />
                     </Col>
                     {
-                        platformType != 2 && <Col>
+                        (platformType == 1 || platformType == 3) && <Col>
                         <div style={{ marginBottom: 12 }}>
                             <p><span className={styles.relationText__span}>{title}链接方式：</span> <span>{merchantType == 1 ? '直连' : '间连'}</span></p>
                         </div>
