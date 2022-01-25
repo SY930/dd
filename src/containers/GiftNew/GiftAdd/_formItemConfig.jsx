@@ -789,6 +789,7 @@ export const SECOND_KEYS = (() => ({
             },
             keys: [
                 'transferType',
+                'transferWriteOff',
                 'transferTitle',
                 'transferImage',
                 'usingWeekType',

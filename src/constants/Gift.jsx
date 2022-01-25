@@ -151,6 +151,10 @@ const GiftCfg = {
         { label: '不可转赠', value: 0 },
         { label: '可转赠', value: 1 },
     ],
+    transferWriteOff: [
+        { label: '可核销', value: 1 },
+        { label: '不可核销', value: 0 },
+    ],
     isHolidaysUsing: [
         { label: '不限制', value: '0' },
         { label: '不含节假日', value: '1' },

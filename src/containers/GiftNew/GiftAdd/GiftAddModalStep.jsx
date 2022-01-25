@@ -874,9 +874,9 @@ class GiftAddModalStep extends React.PureComponent {
             params = this.formatFormData(params);
             // 券转赠  图片信息
             if(formValues.transferType){
-                let {transferTitle, transferImage = {}} = formValues
+                let {transferTitle, transferImage = {}, transferWriteOff} = formValues
                 let {transferImagePath = '', transferThumbnailImagePath = ''} = transferImage
-                params = {...params, transferInfo: JSON.stringify({transferTitle, transferImagePath, transferThumbnailImagePath}) }
+                params = {...params, transferInfo: JSON.stringify({transferTitle, transferWriteOff, transferImagePath, transferThumbnailImagePath}) }
                 delete params.transferImage;
             }
 
@@ -2327,9 +2327,10 @@ class GiftAddModalStep extends React.PureComponent {
         // 券转赠 分享信息 数据转换
         let {transferType, transferInfo = '{}'} = data
         transferInfo = JSON.parse(transferInfo)
-        let {transferTitle = '', transferThumbnailImagePath = '', transferImagePath = ''} = transferInfo
+        let {transferTitle = '', transferThumbnailImagePath = '', transferImagePath = '', transferWriteOff = ''} = transferInfo
         if(transferType){
             data.transferTitle = transferTitle
+            data.transferWriteOff = transferWriteOff
             data.transferImage = {transferImagePath, transferThumbnailImagePath}
         }
 
@@ -2429,7 +2430,7 @@ class GiftAddModalStep extends React.PureComponent {
         if(describe == '代金券' || describe == '菜品优惠券' || describe == '菜品兑换券' || describe == '折扣券' || describe == '配送券' || describe == '买赠券' || describe == '不定额代金券') {
             if(values.transferType == '0' || values.transferType == undefined) {
                 secondKeysToDisplay[0].keys = secondKeysToDisplay[0].keys.filter((key)=>{
-                    return key !== 'transferTitle' &&　key !== 'transferImage';
+                    return key !== 'transferTitle' &&　key !== 'transferImage' && key !== 'transferWriteOff';
                 });
             } else {
                 secondKeysToDisplay[0].keys = secondKeysToDisplay[0].keys.filter((key)=>{
@@ -3216,6 +3217,12 @@ class GiftAddModalStep extends React.PureComponent {
                 type: 'custom',
                 defaultValue: [{periodStart: '000000', periodEnd: '235900'}],
                 render: decorator => this.renderCouponPeriodSettings(decorator),
+            },
+            transferWriteOff: {
+                label: '转赠中是否可核销',
+                type: 'radio',
+                defaultValue: 0,
+                options: GiftCfg.transferWriteOff,
             },
             // 转赠分享
             transferTitle: {
