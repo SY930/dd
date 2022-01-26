@@ -1057,6 +1057,7 @@ class LotteryThirdStep extends React.Component {
                     tempArr.push(tempObj);
                 }
             })
+            debugger
             setSpecialGiftInfo(tempArr);
             setSpecialBasicInfo({ shareImagePath, shareTitle })
             return true;

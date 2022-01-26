@@ -562,6 +562,7 @@ export const updateSpecialPromotion = (opts) => {
             type: SALE_CENTER_UPDATE_SPECIAL_PROMOTION_START,
             payload: opts,
         });
+        debugger
         fetch('/api/specialPromotion/updateEvent_NEW', {
             method: 'POST',
             body: JSON.stringify({ event, ...rest }),

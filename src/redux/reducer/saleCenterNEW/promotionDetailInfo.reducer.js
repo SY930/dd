@@ -400,6 +400,7 @@ export const promotionDetailInfo_NEW = ($$state = $initialState, action) => {
             return $$state;
 
         case SALE_CENTER_FETCH_GIFT_LIST_SUCCESS:
+            debugger
             return $$state
                 .setIn(['$giftInfo', 'data'], Immutable.fromJS(
                     Array.isArray(action.payload.crmGiftTypes) ?

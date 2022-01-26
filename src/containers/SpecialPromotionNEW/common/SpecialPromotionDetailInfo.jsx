@@ -948,7 +948,8 @@ class SpecialDetailInfo extends Component {
             gifts.sendType = giftInfo.sendType || 0;
             gifts.recommendType = giftInfo.recommendType || 0;
             gifts.lastConsumeIntervalDays = giftInfo.lastConsumeIntervalDays;
-            gifts.needCount =
+            gifts.lastConsumeIntervalDays = giftInfo.lastConsumeIntervalDays;
+            gifts.giftTypeDebugger = giftInfo.giftTypeDebugger ? giftInfo.giftTypeDebugger : '1'
                 typeof giftInfo.needCount === "object"
                     ? giftInfo.needCount.value
                     : giftInfo.needCount;
@@ -1072,6 +1073,7 @@ class SpecialDetailInfo extends Component {
                     giftName,
                     giftCount: 1,
                 };
+                debugger
                 this.props.setSpecialGiftInfo([params]);
                 return true;
             }
@@ -1082,6 +1084,7 @@ class SpecialDetailInfo extends Component {
             if (bag[0]) {
                 const { couponPackageID } = bag[0];
                 const params = { sortIndex: 1, giftID: couponPackageID, presentType: 4, giftOdds: "3" };
+                debugger
                 this.props.setSpecialGiftInfo([params]);
                 const { shareTitle, shareImagePath } = this.state;
                 const shareInfo = { shareTitle, shareImagePath }
@@ -1206,6 +1209,7 @@ class SpecialDetailInfo extends Component {
                 );
                 return false;
             }
+            debugger
             let giftInfo = this.getGiftInfo(data);
             // 完善资料送礼添加积分数据
             if (type === '60') {
@@ -1289,6 +1293,7 @@ class SpecialDetailInfo extends Component {
                     v.giftTotalCopies = giftTotalCopies
                 })
             }
+            debugger
             this.props.setSpecialGiftInfo(giftInfo);//发起action
 
             return true;

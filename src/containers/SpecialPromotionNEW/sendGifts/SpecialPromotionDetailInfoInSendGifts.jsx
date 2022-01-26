@@ -323,6 +323,7 @@ class SpecialDetailInfo extends Component {
                           cleanCount,
                       }
             );
+            debugger
             this.props.setSpecialGiftInfo(giftInfo);
 
             return true;
@@ -389,6 +390,7 @@ class SpecialDetailInfo extends Component {
         const typePropertyName = "sendType";
         if (!Array.isArray(gifts)) return;
         const { data } = this.state;
+        debugger
         this.setState({
             data: [
                 ...data.filter((item) => item[typePropertyName] !== typeValue),

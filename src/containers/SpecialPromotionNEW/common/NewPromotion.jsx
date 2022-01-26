@@ -70,6 +70,7 @@ export default class NewPromotion extends React.Component {
             }
         }
         let giftData
+        debugger
         if(specialPromotion.isBenefitJumpOpenCard || specialPromotion.isBenefitJumpSendGift) {
             giftData = specialPromotion.$giftInfo.map((item) => {
                 delete item.cardTypeID

@@ -104,17 +104,21 @@ class AddGifts extends React.Component {
             key: 0, value: '1', name: `${this.props.intl.formatMessage(STRING_SPE.d142vrmqvc0114)}`,
         },
         { key: 1, value: '2', name: `${this.props.intl.formatMessage(STRING_SPE.d7h7ge7d1001237)}` }])
+        this.GIFT_BELONGING_TYPE = Object.freeze([{
+            key: 0, value: '1', name: `餐饮券`,
+        },
+        { key: 1, value: '2', name: `零售券` }])
     }
 
     initGiftInfo = (props = this.props) => {
         let giftInfo;
         try {
-            if(props.zhifubaoCoupons){
+            if (props.zhifubaoCoupons) {
                 giftInfo = props.promotionDetailInfo.getIn(['$giftInfo', 'data']).toJS()
-                .filter(giftTypes => giftTypes.giftType < 90 || (giftTypes.giftType == '110') || (giftTypes.giftType == '111')|| (giftTypes.giftType == '114'));
-            }else{
+                    .filter(giftTypes => giftTypes.giftType < 90 || (giftTypes.giftType == '110') || (giftTypes.giftType == '111') || (giftTypes.giftType == '114'));
+            } else {
                 giftInfo = props.promotionDetailInfo.getIn(['$giftInfo', 'data']).toJS()
-                .filter(giftTypes => giftTypes.giftType < 90 || (giftTypes.giftType == '110') || (giftTypes.giftType == '111'));
+                    .filter(giftTypes => giftTypes.giftType < 90 || (giftTypes.giftType == '110') || (giftTypes.giftType == '111'));
             }
         } catch (err) {
             giftInfo = [];
@@ -169,7 +173,7 @@ class AddGifts extends React.Component {
             typePropertyName,
             typeValue,
         } = this.props;
-        _infos.push({...JSON.parse(JSON.stringify(defaultData)), [typePropertyName]: typeValue});
+        _infos.push({ ...JSON.parse(JSON.stringify(defaultData)), [typePropertyName]: typeValue });
         this.setState({
             infos: _infos,
         }, () => {
@@ -187,16 +191,16 @@ class AddGifts extends React.Component {
             <div className={[selfStyle.listWrapper, isAttached ? selfStyle.isAttached : ''].join(' ')}>
                 {this.renderItems()}
                 { // 膨胀大礼包固定3档礼品，不可添加, 免费领取固定1个礼品，不可添加
-                    (this.state.infos.length < 10 && type != '66'   && type != '30' && theme !== 'green') && (
+                    (this.state.infos.length < 10 && type != '66' && type != '30' && theme !== 'green') && (
                         <div className={selfStyle.addLink} onClick={this.add}>
                             + {this.props.intl.formatMessage(STRING_SPE.d1qe2ar9n936298)}
                         </div>
                     )
                 }
                 {
-                    (this.state.infos.length < 10 && type != '66'   && type != '30' && theme === 'green') && (
-                        <Button style={{display: 'flex', alignItems: 'center', color: 'rgba(0, 0, 0, 0.65)'}} className={selfStyle.addLink} onClick={this.add}>
-                              <Icon type="plus" />点击添加礼品
+                    (this.state.infos.length < 10 && type != '66' && type != '30' && theme === 'green') && (
+                        <Button style={{ display: 'flex', alignItems: 'center', color: 'rgba(0, 0, 0, 0.65)' }} className={selfStyle.addLink} onClick={this.add}>
+                            <Icon type="plus" />点击添加礼品
                         </Button>
                     )
                 }
@@ -208,17 +212,17 @@ class AddGifts extends React.Component {
 
     renderItems() {
         let filteredGiftInfo = this.state.giftInfo.filter(cat => cat.giftType && cat.giftType != 90)
-            .map(cat => ({...cat, index: SALE_CENTER_GIFT_TYPE.findIndex(type => String(type.value) === String(cat.giftType))}));
+            .map(cat => ({ ...cat, index: SALE_CENTER_GIFT_TYPE.findIndex(type => String(type.value) === String(cat.giftType)) }));
         const arr = [`${this.props.intl.formatMessage(STRING_SPE.da8oel25o02265)}`,
-            `${this.props.intl.formatMessage(STRING_SPE.d1kgda4ea393183)}`,
-            `${this.props.intl.formatMessage(STRING_SPE.db60a2a3891c4274)}`,
-            `${this.props.intl.formatMessage(STRING_SPE.dojv8nhwu5170)}`,
-            `${this.props.intl.formatMessage(STRING_SPE.d31eic607f0657)}`,
-            `${this.props.intl.formatMessage(STRING_SPE.d2c89pf9007224)}`,
-            `${this.props.intl.formatMessage(STRING_SPE.dojv8nhwu842)}`,
-            `${this.props.intl.formatMessage(STRING_SPE.de8fc980mc940)}`,
-            `${this.props.intl.formatMessage(STRING_SPE.dk45kc7bd8107)}`,
-            `${this.props.intl.formatMessage(STRING_SPE.du389nqve112)}`];
+        `${this.props.intl.formatMessage(STRING_SPE.d1kgda4ea393183)}`,
+        `${this.props.intl.formatMessage(STRING_SPE.db60a2a3891c4274)}`,
+        `${this.props.intl.formatMessage(STRING_SPE.dojv8nhwu5170)}`,
+        `${this.props.intl.formatMessage(STRING_SPE.d31eic607f0657)}`,
+        `${this.props.intl.formatMessage(STRING_SPE.d2c89pf9007224)}`,
+        `${this.props.intl.formatMessage(STRING_SPE.dojv8nhwu842)}`,
+        `${this.props.intl.formatMessage(STRING_SPE.de8fc980mc940)}`,
+        `${this.props.intl.formatMessage(STRING_SPE.dk45kc7bd8107)}`,
+        `${this.props.intl.formatMessage(STRING_SPE.du389nqve112)}`];
         const toggleFun = (index) => {
             const { disArr = [] } = this.state;
             const toggle = !disArr[index];
@@ -229,13 +233,13 @@ class AddGifts extends React.Component {
         const { intl, theme } = this.props;
 
         return this.state.infos.map((info, index, arr) => {
-            
+
             let validateStatus,
                 addonBefore,
                 help,
                 valueNuber,
                 onChangeFunc;
-            if (this.props.type != '20'  && this.props.type != '30' && this.props.type != '70') {
+            if (this.props.type != '20' && this.props.type != '30' && this.props.type != '70') {
 
                 validateStatus = info.giftCount.validateStatus;
                 addonBefore = `${this.props.intl.formatMessage(STRING_SPE.dojv8nhwu12190)}`;
@@ -251,9 +255,9 @@ class AddGifts extends React.Component {
                 onChangeFunc = this.handlegiftTotalCountChange;
             }
             return (
-                <div key={`${index}`} style={  theme === 'green' ? {background: '#f7f7f7' } : null} className={selfStyle.giftWrapper}>
-                    <div style={  theme === 'green' ? {background: '#1ab495',color: 'fff'} : null} className={selfStyle.giftNoLabel}>
-            {COMMON_SPE.du389nqve1491}{`${index + 1}`}
+                <div key={`${index}`} style={theme === 'green' ? { background: '#f7f7f7' } : null} className={selfStyle.giftWrapper}>
+                    <div style={theme === 'green' ? { background: '#1ab495', color: 'fff' } : null} className={selfStyle.giftNoLabel}>
+                        {COMMON_SPE.du389nqve1491}{`${index + 1}`}
                     </div>
                     {
                         (arr.length > 1 && this.props.type != '66') && (
@@ -262,93 +266,116 @@ class AddGifts extends React.Component {
                             </Popconfirm>
                         )
                     }
-                        {/* 膨胀需要人数, 只有膨胀大礼包的2 3 档需要 */}
-                        {
-                            (this.props.type == '66' && index > 0)  && (
-                                <FormItem
-                                    className={[styles.FormItemStyle, styles.FormItemHelpLabel].join(' ')}
-                                    labelCol={{ span: 0 }}
-                                    wrapperCol={{ span: 24 }}
-                                    validateStatus={info.needCount.validateStatus}
-                                    help={info.needCount.msg}
-                                >
-                                    <PriceInput
-                                        addonBefore={this.props.intl.formatMessage(STRING_SPE.dk45kc7bd81539)}
-                                        maxNum={5}
-                                        value={{ number: info.needCount.value }}
-                                        onChange={val => this.handleGiftNeedCountChange(val, index)}
-                                        addonAfter={this.props.intl.formatMessage(STRING_SPE.d170093144c13204)}
-                                        modal="int"
-                                    />
-                                </FormItem>
-                            )
-                        }
-                        {/* 礼品名称 */}
-                        <FormItem
-                            label={intl.formatMessage(STRING_GIFT.giftName)}
-                            className={[styles.FormItemStyle, styles.labeleBeforeSlect, styles.labeleBeforeSlectMargin,
-                                this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}
-                            labelCol={{ span: 8 }}
-                            wrapperCol={{ span: 16 }}
-                            validateStatus={info.giftInfo.validateStatus}
-                            help={info.giftInfo.msg}
-                            style={{marginTop: '8px'}}
-                            required={true}
-                        >
-                            <ExpandTree
-                                idx={index}
-                                value={this.getGiftValue(index)}
-                                data={_.sortBy(filteredGiftInfo, 'index')}
-                                onChange={(value) => {
-                                    this.handleGiftChange(value, index);
-                                }}
-                                onClick={(value) => {
-                                    const { disArr = [] } = this.state;
-                                    disArr[index] = false;
-                                    this.setState({ disArr })
-                                }}
-                                disArr={this.state.disArr || []}
+                    {/* 膨胀需要人数, 只有膨胀大礼包的2 3 档需要 */}
+                    {
+                        (this.props.type == '66' && index > 0) && (
+                            <FormItem
+                                className={[styles.FormItemStyle, styles.FormItemHelpLabel].join(' ')}
+                                labelCol={{ span: 0 }}
+                                wrapperCol={{ span: 24 }}
+                                validateStatus={info.needCount.validateStatus}
+                                help={info.needCount.msg}
                             >
-                                <Input
-                                    value={(this.getGiftValue(index) || '').split(',')[1]}
-                                    className="input_click"
-                                    onClick={() => { toggleFun(index); }}
-                                    placeholder="请选择礼品名称"
+                                <PriceInput
+                                    addonBefore={this.props.intl.formatMessage(STRING_SPE.dk45kc7bd81539)}
+                                    maxNum={5}
+                                    value={{ number: info.needCount.value }}
+                                    onChange={val => this.handleGiftNeedCountChange(val, index)}
+                                    addonAfter={this.props.intl.formatMessage(STRING_SPE.d170093144c13204)}
+                                    modal="int"
                                 />
-                                <Icon
-                                    type="down"
-                                    style={{ position: 'absolute', top: 10, right: 10 }}
-                                    className="input_click"
-                                    onClick={() => { toggleFun(index); }}
-                                />
-                            </ExpandTree>
-                        </FormItem>
-                        {/* 礼品个数 */}
+                            </FormItem>
+                        )
+                    }
+                    {/* debugger */}
+                    {
                         <FormItem
-                            label={addonBefore}
-                            required={true}
-                            className={[styles.FormItemStyle, styles.labeleBeforeSlect, styles.labeleBeforeSlectMargin,  this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}
-                            labelCol={{ span: 8 }}
-                            wrapperCol={{ span: 16 }}
-                            validateStatus={validateStatus}
-                            help={help}
-                            colon={false}
+                            className={[styles.FormItemStyle].join(' ')}
+                            style={{ marginTop: '8px' }}
                         >
-                            <PriceInput
-                                maxNum={50}
-                                value={{ number: valueNuber }}
-                                onChange={val => onChangeFunc(val, index)}
-                                addonAfter={this.props.intl.formatMessage(STRING_SPE.d142vrmqvc1730)}
-                                modal="int"
-                                placeholder="请输入礼品数量"
-                            />
-
+                            <span style={{ paddingLeft: '8px' }} className={[styles.formLabel, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}>礼品属性</span>
+                            <RadioGroup
+                                className={styles.radioMargin}
+                                value={info.giftTypeDebugger == '2' ? '2' : '1'}
+                                onChange={val => this.handleGiftTypeDebuggerChange(val, index)}
+                                // disabled={info.effectTypeIsDisabled}
+                            >
+                                {
+                                    this.GIFT_BELONGING_TYPE.map((item, index) => {
+                                        return <Radio value={item.value} key={index}>{item.name}</Radio>
+                                    })
+                                }
+                            </RadioGroup>
                         </FormItem>
-                        {/* ....... */}
+                    }
+                    {/* 礼品名称 */}
+                    <FormItem
+                        label={intl.formatMessage(STRING_GIFT.giftName)}
+                        className={[styles.FormItemStyle, styles.labeleBeforeSlect, styles.labeleBeforeSlectMargin,
+                        this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}
+                        labelCol={{ span: 8 }}
+                        wrapperCol={{ span: 16 }}
+                        validateStatus={info.giftInfo.validateStatus}
+                        help={info.giftInfo.msg}
+                        required={true}
+                        style={{ marginTop: '-4px' }}
+                    >
+                        <ExpandTree
+                            idx={index}
+                            value={this.getGiftValue(index)}
+                            data={_.sortBy(filteredGiftInfo, 'index')}
+                            onChange={(value) => {
+                                this.handleGiftChange(value, index);
+                            }}
+                            onClick={(value) => {
+                                const { disArr = [] } = this.state;
+                                disArr[index] = false;
+                                this.setState({ disArr })
+                            }}
+                            disArr={this.state.disArr || []}
+                        >
+                            <Input
+                                value={(this.getGiftValue(index) || '').split(',')[1]}
+                                className="input_click"
+                                onClick={() => { toggleFun(index); }}
+                                placeholder="请选择礼品名称"
+                            />
+                            <Icon
+                                type="down"
+                                style={{ position: 'absolute', top: 10, right: 10 }}
+                                className="input_click"
+                                onClick={() => { toggleFun(index); }}
+                            />
+                        </ExpandTree>
+                    </FormItem>
+                    {/* 礼品个数 */}
+                    <FormItem
+                        label={addonBefore}
+                        required={true}
+                        className={[styles.FormItemStyle, styles.labeleBeforeSlect, styles.labeleBeforeSlectMargin, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}
+                        labelCol={{ span: 8 }}
+                        wrapperCol={{ span: 16 }}
+                        validateStatus={validateStatus}
+                        help={help}
+                        colon={false}
+                    >
+                        <PriceInput
+                            maxNum={50}
+                            value={{ number: valueNuber }}
+                            onChange={val => onChangeFunc(val, index)}
+                            addonAfter={this.props.intl.formatMessage(STRING_SPE.d142vrmqvc1730)}
+                            modal="int"
+                            placeholder="请输入礼品数量"
+                        />
+
+                    </FormItem>
+                    {/* ....... */}
+                    {
+                        info.giftTypeDebugger != '2' ? 
                         <FormItem
                             className={[styles.FormItemStyle].join(' ')}
                         >
-                            <span style={{paddingLeft: '8px'}} className={[styles.formLabel, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}>{this.props.intl.formatMessage(STRING_SPE.du389nqve18246)}</span>
+                            <span style={{ paddingLeft: '8px' }} className={[styles.formLabel, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}>{this.props.intl.formatMessage(STRING_SPE.du389nqve18246)}</span>
                             <RadioGroup
                                 className={styles.radioMargin}
                                 value={info.effectType == '2' ? '2' : '1'}
@@ -361,31 +388,31 @@ class AddGifts extends React.Component {
                                     })
                                 }
                             </RadioGroup>
-                        </FormItem>
+                        </FormItem> : null
+                    }
+                    {info.giftTypeDebugger != '2' ? this.renderValidOptions(info, index) : null}
+                    {/* ....... */}
+                    {/* 中奖比率 */}
+                    {
+                        this.props.type == '20' ?
+                            (
+                                <FormItem
+                                    className={[styles.FormItemStyle, styles.FormItemHelpLabel].join(' ')}
+                                    validateStatus={info.giftOdds.validateStatus}
+                                    help={info.giftOdds.msg}
+                                >
+                                    <PriceInput
+                                        addonBefore={this.props.intl.formatMessage(STRING_SPE.d2b1b80326011987)}
+                                        addonAfter="%"
+                                        modal="float"
+                                        value={{ number: info.giftOdds.value }}
+                                        onChange={(val) => { this.handleGiftOddsChange(val, index); }}
+                                    />
+                                </FormItem>
+                            ) : null
+                    }
 
-                        {this.renderValidOptions(info, index)}
-                        {/* ....... */}
-                        {/* 中奖比率 */}
-                        {
-                            this.props.type == '20' ?
-                                (
-                                    <FormItem
-                                        className={[styles.FormItemStyle, styles.FormItemHelpLabel].join(' ')}
-                                        validateStatus={info.giftOdds.validateStatus}
-                                        help={info.giftOdds.msg}
-                                    >
-                                        <PriceInput
-                                            addonBefore={this.props.intl.formatMessage(STRING_SPE.d2b1b80326011987)}
-                                            addonAfter="%"
-                                            modal="float"
-                                            value={{ number: info.giftOdds.value }}
-                                            onChange={(val) => { this.handleGiftOddsChange(val, index); }}
-                                        />
-                                    </FormItem>
-                                ) : null
-                        }
-
-                    </div>
+                </div>
             );
         });
     }
@@ -432,7 +459,7 @@ class AddGifts extends React.Component {
         const _value = val.number || 0;
         if (_value > 0 && _value <= 1000) {
             if (index === 1) {
-                const higherLevelValue =  _infos[2].needCount.value;
+                const higherLevelValue = _infos[2].needCount.value;
                 if (higherLevelValue > 0 && higherLevelValue <= 1000) {
                     if (_value >= +higherLevelValue) {
                         _infos[index].needCount.validateStatus = 'error';
@@ -449,7 +476,7 @@ class AddGifts extends React.Component {
                 }
             }
             if (index === 2) {
-                const lowerLevelValue =  _infos[1].needCount.value;
+                const lowerLevelValue = _infos[1].needCount.value;
                 if (lowerLevelValue > 0 && lowerLevelValue <= 1000) {
                     if (_value <= +lowerLevelValue) {
                         _infos[index].needCount.validateStatus = 'error';
@@ -467,7 +494,7 @@ class AddGifts extends React.Component {
             }
         } else {
             _infos[index].needCount.validateStatus = 'error';
-            _infos[index].needCount.msg =  `${this.props.intl.formatMessage(STRING_SPE.dojv8nhwv2416)}`;
+            _infos[index].needCount.msg = `${this.props.intl.formatMessage(STRING_SPE.dojv8nhwv2416)}`;
         }
         this.setState({
             infos: _infos,
@@ -494,7 +521,7 @@ class AddGifts extends React.Component {
                     <FormItem
                         className={[styles.FormItemStyle].join(' ')}
                     >
-                        <span style={{paddingLeft: '8px'}} className={[styles.formLabel, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}>{this.props.intl.formatMessage(STRING_SPE.d142vrmqvc0114)}</span>
+                        <span style={{ paddingLeft: '8px' }} className={[styles.formLabel, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}>{this.props.intl.formatMessage(STRING_SPE.d142vrmqvc0114)}</span>
                         <RadioGroup
                             className={styles.radioMargin}
                             value={info.effectType == '3' ? '1' : '0'}
@@ -518,7 +545,7 @@ class AddGifts extends React.Component {
                     </FormItem>
                     <FormItem
                         label={this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kd27139)}
-                        className={[styles.FormItemStyle, styles.labeleBeforeSlect ,   this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}
+                        className={[styles.FormItemStyle, styles.labeleBeforeSlect, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}
                         labelCol={{ span: 8 }}
                         wrapperCol={{ span: 16 }}
                     >
@@ -543,7 +570,7 @@ class AddGifts extends React.Component {
 
 
                     <FormItem
-                        className={[styles.FormItemStyle, styles.labeleBeforeSlect, styles.priceInputSingle,   this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}
+                        className={[styles.FormItemStyle, styles.labeleBeforeSlect, styles.priceInputSingle, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}
                         labelCol={{ span: 8 }}
                         wrapperCol={{ span: 16 }}
                         label={`${this.props.intl.formatMessage(STRING_SPE.d17009bd421d28267)}`}
@@ -575,7 +602,7 @@ class AddGifts extends React.Component {
             disabled: info.giftEffectiveTime.disabled
         };
         if (typeof info.giftEffectiveTime.value === 'object') {
-            if(info.giftEffectiveTime.value.length > 0){
+            if (info.giftEffectiveTime.value.length > 0) {
                 pickerProps.value = info.giftEffectiveTime.value;
             }
         }
@@ -586,7 +613,7 @@ class AddGifts extends React.Component {
         return (
             <FormItem
                 label={this.props.intl.formatMessage(STRING_SPE.d7h7ge7d1001237)}
-                className={[styles.FormItemStyle, styles.labeleBeforeSlect,   this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}
+                className={[styles.FormItemStyle, styles.labeleBeforeSlect, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 16 }}
                 required={true}
@@ -636,6 +663,17 @@ class AddGifts extends React.Component {
         });
     }
 
+    // 礼品属性改变
+    handleGiftTypeDebuggerChange(e, index) {
+        const _infos = this.state.infos;
+        _infos[index].giftTypeDebugger = e.target.value;
+        this.setState({
+            infos: _infos,
+        }, () => {
+            this.props.onChange && this.props.onChange(this.state.infos);
+        });
+    }
+
 
     getGiftValue(index) {
         if (this.state.infos[index].giftInfo.giftItemID === null ||
@@ -657,7 +695,7 @@ class AddGifts extends React.Component {
             this.setState({
                 infos: _infos,
             }, () => {
-                this.props.onChange && this.props.onChange(this.state.infos,index);
+                this.props.onChange && this.props.onChange(this.state.infos, index);
             });
         } else {
             const _infos = this.state.infos;
@@ -668,17 +706,17 @@ class AddGifts extends React.Component {
             this.setState({
                 infos: _infos,
             }, () => {
-                this.props.onChange && this.props.onChange(this.state.infos,index);
+                this.props.onChange && this.props.onChange(this.state.infos, index);
             });
         }
     }
 
     handlegiftTotalCountChange(value, index) {
         const _infos = this.state.infos;
-        const {type} = this.props;
+        const { type } = this.props;
 
         _infos[index].giftTotalCount.value = value.number;
-        if(type == '21'){
+        if (type == '21') {
             _infos[index].giftTotalCopies.value = value.number;
         }
 
@@ -686,14 +724,14 @@ class AddGifts extends React.Component {
         if (_value > 0 && _value <= 1000000000) {
             _infos[index].giftTotalCount.validateStatus = 'success';
             _infos[index].giftTotalCount.msg = null;
-            if(type  == '21'){
+            if (type == '21') {
                 _infos[index].giftTotalCopies.validateStatus = 'success';
                 _infos[index].giftTotalCopies.msg = null;
             }
         } else {
             _infos[index].giftTotalCount.validateStatus = 'error';
             _infos[index].giftTotalCount.msg = `${this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kd3282)}`;
-            if(type  == '21'){
+            if (type == '21') {
                 _infos[index].giftTotalCopies.validateStatus = 'error';
                 _infos[index].giftTotalCopies.msg = `${this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kd3282)}`;;
             }
@@ -707,10 +745,10 @@ class AddGifts extends React.Component {
     handlegiftCountChange = (value, index) => {
         const _infos = this.state.infos;
         _infos[index].giftCount.value = value.number;
-        
+
         const _value = parseFloat(value.number);
         if (_value > 0) {
-            if (_value > 50 && (this.props.type != '20'   && this.props.type != '30' && this.props.type != '70')) {
+            if (_value > 50 && (this.props.type != '20' && this.props.type != '30' && this.props.type != '70')) {
                 _infos[index].giftCount.validateStatus = 'error';
                 _infos[index].giftCount.msg = `${this.props.intl.formatMessage(STRING_SPE.d4h176ei7g133276)}`;
             } else {
@@ -721,7 +759,7 @@ class AddGifts extends React.Component {
             _infos[index].giftCount.validateStatus = 'error';
             _infos[index].giftCount.msg = `${this.props.intl.formatMessage(STRING_SPE.da8oel25o134160)}`;
         }
-        
+
         this.setState({
             infos: _infos,
         }, () => {
