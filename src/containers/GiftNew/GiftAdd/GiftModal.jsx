@@ -67,8 +67,8 @@ const formItems = {
                 if (+value < 1) {
                     return callback('请输入大于0的数字');
                 }
-                if (+value > 3650) {
-                    return callback('有效天数最长3650天');
+                if (+value > 730) {
+                    return callback('有效天数最长730天');
                 }
                 return callback();
             },
