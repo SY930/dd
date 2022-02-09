@@ -22,7 +22,7 @@ import { getAccountInfo } from 'helpers/util'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import PriceInput from "../../SaleCenterNEW/common/PriceInput";
 import CloseableTip from "../../../components/common/CloseableTip/index";
-import {axiosData} from "../../../helpers/util";
+import { axiosData } from "../../../helpers/util";
 import {
     getWechatMpInfo, getImgTextList
 } from './AxiosFactory';
@@ -54,14 +54,15 @@ class GenerateBatchGifts extends Component {
             includeRandomCode: false, // 券码是否包含随机码 true: 包含, false: 不包含
             mpError: false,
             imgError: false,
-            mpInfoList:[],//公众号列表
+            mpInfoList: [],//公众号列表
             imgList: [],//图文消息列表
             sendCouponType: '1',//生成形式 1 券码 2 二维码" 默认券码
-            mpID:'',//选中公众号ID
-            imgID:'',//选中的图文消息ID
-            mpTitle:'',//图文title
-            imageUrl:'',//图文imageUr
-            mpDescription:'',//图文description
+            sendCouponExpand: '1',
+            mpID: '',//选中公众号ID
+            imgID: '',//选中的图文消息ID
+            mpTitle: '',//图文title
+            imageUrl: '',//图文imageUr
+            mpDescription: '',//图文description
             item: defaultImgTxt,
         };
         this.handleQuery = this.handleQuery.bind(this);
@@ -79,7 +80,7 @@ class GenerateBatchGifts extends Component {
         this.handleIncludeRandomCode = this.handleIncludeRandomCode.bind(this);
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.handleQuery()
         this.onQueryStep2Data();
     }
@@ -101,7 +102,7 @@ class GenerateBatchGifts extends Component {
     }
     handleQuery(pageNo = this.state.pageNo) {
         this.setState({
-           loading: true,
+            loading: true,
         });
         const params = {
             giftItemID: this.props.giftItemID,
@@ -110,7 +111,7 @@ class GenerateBatchGifts extends Component {
             params.startDate = this.state.queryDateRange[0].format('YYYYMMDD');
             params.endDate = this.state.queryDateRange[1].format('YYYYMMDD');
         }
-        axiosData('/gift/getCouponBatch.ajax', {...params, pageNo}, {}, {path: ''}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+        axiosData('/gift/getCouponBatch.ajax', { ...params, pageNo }, {}, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
             .then(res => {
                 this.setState({
                     historyList: res.giftBatchResList || [],
@@ -134,6 +135,12 @@ class GenerateBatchGifts extends Component {
     handleSelectSendCouponType(event) {
         this.setState({
             sendCouponType: event.target.value,
+        });
+    }
+
+    handleSelectSendCouponExpand = (e) => {
+        this.setState({
+            sendCouponExpand: e.target.value,
         });
     }
     handleDescriptionChange(event) {
@@ -178,7 +185,7 @@ class GenerateBatchGifts extends Component {
                         errors: ['终止号必须大于等于起始号'],
                     }
                 })
-            } else if (endNoValue.number && (Number(endNoValue.number) - (Number(val.number || 0) ) >= BATCH_LIMIT)) {
+            } else if (endNoValue.number && (Number(endNoValue.number) - (Number(val.number || 0)) >= BATCH_LIMIT)) {
                 this.props.form.setFields({
                     endNo: {
                         value: endNoValue,
@@ -204,7 +211,7 @@ class GenerateBatchGifts extends Component {
 
     handleExport(record) {
         const { itemID } = record;
-        axiosData('/crmimport/crmExportService_doExportGiftPwdInfo.ajax', {itemID, giftItemID: this.props.giftItemID}, {}, {path: 'data'}, )
+        axiosData('/crmimport/crmExportService_doExportGiftPwdInfo.ajax', { itemID, giftItemID: this.props.giftItemID }, {}, { path: 'data' },)
             .then(res => {
                 this.handleQuery()
             })
@@ -216,12 +223,12 @@ class GenerateBatchGifts extends Component {
             '/gift/batchGenCouponCode.ajax',
             { ...record, createBy: getAccountInfo().userName },
             {},
-            {path: 'message'},
+            { path: 'message' },
             'HTTP_SERVICE_URL_PROMOTION_NEW'
         ).then(res => {
-                message.success(res || '请求成功');
-                this.handleQuery();
-            })
+            message.success(res || '请求成功');
+            this.handleQuery();
+        })
     }
 
     getDateCount() {
@@ -234,7 +241,7 @@ class GenerateBatchGifts extends Component {
     }
 
     mapStateToRequestParams() {
-        const params = {giftItemID: this.props.giftItemID};
+        const params = { giftItemID: this.props.giftItemID };
         // 映射state到后端字段
         let {
             includeRandomCode: pwdEndByRand,
@@ -242,6 +249,7 @@ class GenerateBatchGifts extends Component {
             endNo: endNO,
             giftCount: giftNum,
             sendCouponType,
+            sendCouponExpand,
             autoGenerating: generatePwdType, // 生成方式  1：系统自动生成随机的唯一密码 2：按照指定的规则生成 默认为自动生成
             description: remark,
             validDateRange: [EGiftEffectTime, validUntilDate], // EGiftEffectTime 属于后端typo; [0] 为券有效期起始时间, [1] 为券有效期终止时间
@@ -249,16 +257,16 @@ class GenerateBatchGifts extends Component {
             mpID,
             imgID
         } = this.state;
-        if(sendCouponType == '2'){//如果是二维码
-            if(!mpID){
+        if (sendCouponType == '2') {//如果是二维码
+            if (!mpID) {
                 message.warning('请选择公众号')
                 return
             }
-            if(!imgID){
+            if (!imgID) {
                 message.warning('请选择图文消息')
                 return
             }
-            let {imgPath, digest: description, resTitle: title} = item
+            let { imgPath, digest: description, resTitle: title } = item
             params.mpID = mpID;
             params.title = title;
             params.description = description;
@@ -279,7 +287,7 @@ class GenerateBatchGifts extends Component {
             EGiftEffectTime = moment().format('YYYYMMDD'); // 不填为永久, 实现上为今天 + 100 年
             validUntilDate = moment().add(100, 'year').format('YYYYMMDD');
         }
-        params.sendCouponType = sendCouponType;
+        params.sendCouponType = sendCouponType == 2 ? sendCouponType : sendCouponExpand;
         params.remark = remark;
         params.EGiftEffectTime = EGiftEffectTime;
         params.validUntilDate = validUntilDate;
@@ -299,13 +307,14 @@ class GenerateBatchGifts extends Component {
                 confirmLoading: true,
             });
             const params = this.mapStateToRequestParams();
-            axiosData('/gift/batchGenCouponCode.ajax', { ...params, createBy: getAccountInfo().userName }, {}, {path: 'message'}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+            axiosData('/gift/batchGenCouponCode.ajax', { ...params, createBy: getAccountInfo().userName }, {}, { path: 'message' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
                 .then(res => {
                     this.setState({
                         confirmLoading: false,
                         modalVisible: false,
                         autoGenerating: '1', // 是否系统自动生成券码 1 自动, 2 手动填写起止号, string
                         sendCouponType: '1',//生成形式 1 券码 2 二维码" 默认券码
+                        sendCouponExpand: '1',
                         validDateRange: [], // 制券时选择的有效日期
                         giftCount: undefined, // 张数
                         startNo: undefined,
@@ -339,6 +348,7 @@ class GenerateBatchGifts extends Component {
             confirmLoading: false,
             autoGenerating: '1', // 是否系统自动生成券码 1 自动, 2 手动填写起止号, string
             sendCouponType: '1',//生成形式 1 券码 2 二维码" 默认券码
+            sendCouponExpand: '1',
             validDateRange: [], // 制券时选择的有效日期
             giftCount: undefined, // 张数
             startNo: undefined,
@@ -371,7 +381,7 @@ class GenerateBatchGifts extends Component {
                         }}
                     >
                         <Icon type="search" />
-                        { COMMON_LABEL.query }
+                        {COMMON_LABEL.query}
                     </Button>
 
                     <Button
@@ -394,7 +404,7 @@ class GenerateBatchGifts extends Component {
                 width: 50,
                 key: 'index',
                 render: (text, record, index) => {
-                    return (this.state.pageNo - 1) * this.state.pageSizes + index +1;
+                    return (this.state.pageNo - 1) * this.state.pageSizes + index + 1;
                 },
             },
             {
@@ -424,7 +434,7 @@ class GenerateBatchGifts extends Component {
                 width: 90,
                 key: 'key3',
                 render: text => {
-                    return <span title={text}>{text}</span> ;
+                    return <span title={text}>{text}</span>;
                 },
             },
             {
@@ -463,7 +473,7 @@ class GenerateBatchGifts extends Component {
                             default: return '--'
                         }
                     })(status);
-                    return <span title={text}>{text}</span> ;
+                    return <span title={text}>{text}</span>;
                 },
             },
             {
@@ -481,7 +491,7 @@ class GenerateBatchGifts extends Component {
                                 onClick={() => {
                                     this.handleExport(record)
                                 }}
-                            >{ COMMON_LABEL.export }</a>
+                            >{COMMON_LABEL.export}</a>
                         )
                     } else if (record.status == 8) {
                         return (
@@ -531,26 +541,26 @@ class GenerateBatchGifts extends Component {
                 wrapperCol={{ span: 8 }}
                 required
             >{
-                getFieldDecorator('giftCount', {
-                    initialValue: {number: this.state.giftCount},
-                    onChange: this.handleGiftCountChange,
-                    rules: [
-                        {
-                            validator: (rule, v, cb) => {
-                                if (!v || !v.number) {
-                                    return cb('张数为必填项');
-                                }
-                                v.number > 0 && v.number <= BATCH_LIMIT ? cb() : cb(`不能超过${Math.floor(BATCH_LIMIT / 10000)}万张`);
+                    getFieldDecorator('giftCount', {
+                        initialValue: { number: this.state.giftCount },
+                        onChange: this.handleGiftCountChange,
+                        rules: [
+                            {
+                                validator: (rule, v, cb) => {
+                                    if (!v || !v.number) {
+                                        return cb('张数为必填项');
+                                    }
+                                    v.number > 0 && v.number <= BATCH_LIMIT ? cb() : cb(`不能超过${Math.floor(BATCH_LIMIT / 10000)}万张`);
+                                },
                             },
-                        },
-                    ]
-                })(
-                    <PriceInput
-                        modal="int"
-                        addonAfter="张"
-                    />
-                )
-            }
+                        ]
+                    })(
+                        <PriceInput
+                            modal="int"
+                            addonAfter="张"
+                        />
+                    )
+                }
             </FormItem>
         )
     }
@@ -573,7 +583,7 @@ class GenerateBatchGifts extends Component {
                         >
                             {
                                 getFieldDecorator('startNo', {
-                                    initialValue: {number: this.state.startNo},
+                                    initialValue: { number: this.state.startNo },
                                     onChange: this.handleStartNoChange,
                                     rules: [
                                         {
@@ -601,7 +611,7 @@ class GenerateBatchGifts extends Component {
                         >
                             {
                                 getFieldDecorator('endNo', {
-                                    initialValue: {number: this.state.endNo},
+                                    initialValue: { number: this.state.endNo },
                                     onChange: this.handleEndNoChange,
                                     rules: [
                                         {
@@ -640,7 +650,7 @@ class GenerateBatchGifts extends Component {
                         modal="int"
                         addonAfter="张"
                         disabled
-                        value={{number: (this.state.endNo >= this.state.startNo) ? Number(this.state.endNo || 0) - Number(this.state.startNo || 0) + 1 : ''}}
+                        value={{ number: (this.state.endNo >= this.state.startNo) ? Number(this.state.endNo || 0) - Number(this.state.startNo || 0) + 1 : '' }}
                     />
                 </FormItem>
                 <FormItem
@@ -692,10 +702,10 @@ class GenerateBatchGifts extends Component {
             const { resContent = {} } = imgList.find(x => `${x.itemID}` === imgID);
             const { resources = [] } = JSON.parse(resContent);
             temp = resources[0];
-            this.setState({ 
+            this.setState({
                 item: temp,
                 imgID,
-             });
+            });
             return
         }
         // this.onGetQrImg({ mpID, imgID, item, shops: shopInfo })
@@ -703,8 +713,8 @@ class GenerateBatchGifts extends Component {
             imgID,
         });
     }
-    renderPictureAndTextMsg(){
-        const {mpInfoList,imgList,mpID,item,imgID} = this.state;
+    renderPictureAndTextMsg() {
+        const { mpInfoList, imgList, mpID, item, imgID } = this.state;
         return (
             <div style={{ marginBottom: 20 }} className={styles.typeBox}>
                 <div className={styles.accountBox}>
@@ -741,7 +751,7 @@ class GenerateBatchGifts extends Component {
                     </div>}
             </div>
         )
-        
+
     }
     renderModalContent() {
         const { getFieldDecorator } = this.props.form;
@@ -776,8 +786,8 @@ class GenerateBatchGifts extends Component {
                             content={
                                 <div>
                                     <p>有效期</p>
-                                    <br/>
-                                    <p>有效期<span style={{fontWeight: 'bold'}}>不填</span>代表<span style={{fontWeight: 'bold'}}>永久</span>有效</p>
+                                    <br />
+                                    <p>有效期<span style={{ fontWeight: 'bold' }}>不填</span>代表<span style={{ fontWeight: 'bold' }}>永久</span>有效</p>
                                 </div>
                             }
                         />
@@ -801,20 +811,38 @@ class GenerateBatchGifts extends Component {
                     >
                         <RadioGroup onChange={this.handleSelectSendCouponType} value={this.state.sendCouponType}>
                             <Radio key={'1'} value={'1'}>券码</Radio>
-                            <Radio key={'2'} value={'2'}>二维码</Radio>
+                            <Radio key={'2'} value={'2'}>领取码</Radio>
                         </RadioGroup>
+
                         <Tooltip title={'选择二维码时，显示”请选择公众号“，必须选择一个公众号，默认生成的二维码有效期为30天'}>
                             <Icon type="question-circle-o" />
                         </Tooltip>
                     </FormItem>
                     {
+                        this.state.sendCouponType == 1 ?
+                            <FormItem
+                                label={<span></span>}
+                                className={styles.FormItemStyle}
+                                labelCol={{ span: 6 }}
+                                wrapperCol={{ span: 18 }}
+                                style={{ marginTop: -20 }}
+                            >
+                                <RadioGroup onChange={this.handleSelectSendCouponExpand} value={this.state.sendCouponExpand}>
+                                    <Radio key={'1'} value={'1'}>文本</Radio>
+                                    <Radio key={'2'} value={'3'}>条形码</Radio>
+                                    <Radio key={'3'} value={'4'}>二维码</Radio>
+                                </RadioGroup>
+                            </FormItem> : null
+                    }
+
+                    {
                         this.state.sendCouponType === '2' && this.renderPictureAndTextMsg()
                     }
                     {
-                        this.state.autoGenerating ==='1' && this.renderAutoGeneratingRules()
+                        this.state.autoGenerating === '1' && this.renderAutoGeneratingRules()
                     }
                     {
-                        this.state.autoGenerating ==='2' && this.renderManualGeneratingRules()
+                        this.state.autoGenerating === '2' && this.renderManualGeneratingRules()
                     }
                     <FormItem
                         label="备注"
@@ -823,23 +851,23 @@ class GenerateBatchGifts extends Component {
                         wrapperCol={{ span: 8 }}
                         required
                     >{
-                        getFieldDecorator('description', {
-                            initialValue: this.state.description,
-                            onChange: this.handleDescriptionChange,
-                            rules: [
-                                { required: true, message: '不能为空' },
-                                {
-                                    message: '汉字、字母、数字组成，不多于20个字符',
-                                    pattern: /^[\u4E00-\u9FA5A-Za-z0-9.（）()\-]{1,20}$/,
-                                },
-                            ],
-                        })(
-                            <Input
-                                type="textarea"
-                                placeholder="请输入备注信息"
-                            />
-                        )
-                    }
+                            getFieldDecorator('description', {
+                                initialValue: this.state.description,
+                                onChange: this.handleDescriptionChange,
+                                rules: [
+                                    { required: true, message: '不能为空' },
+                                    {
+                                        message: '汉字、字母、数字组成，不多于20个字符',
+                                        pattern: /^[\u4E00-\u9FA5A-Za-z0-9.（）()\-]{1,20}$/,
+                                    },
+                                ],
+                            })(
+                                <Input
+                                    type="textarea"
+                                    placeholder="请输入备注信息"
+                                />
+                            )
+                        }
                     </FormItem>
                 </Form>
             </div>
