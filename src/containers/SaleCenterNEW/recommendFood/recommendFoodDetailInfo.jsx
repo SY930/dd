@@ -99,7 +99,7 @@ class RecommendFoodDetailInfo extends React.Component {
     componentWillReceiveProps(nextProps) {
         const foodRuleList1 = Immutable.List.isList(this.props.$foodRuleList) ? this.props.$foodRuleList.toJS() : [];
         const foodRuleList = Immutable.List.isList(nextProps.$foodRuleList) ? nextProps.$foodRuleList.toJS() : [];
-        if(JSON.stringify(foodRuleList) !== JSON.stringify(foodRuleList1)) {
+        if (JSON.stringify(foodRuleList) !== JSON.stringify(foodRuleList1)) {
             if (!foodRuleList.length) { // 新建，给一组默认值
                 foodRuleList.push({
                     rule: {
@@ -204,6 +204,7 @@ class RecommendFoodDetailInfo extends React.Component {
                     message.warning(`最多添加100道推荐菜品`)
                     return false;
                 }
+                debugger
                 promotionDetail.dishes.forEach((group, groupIdx) => {
                     priceList.push({
                         foodUnitID: group.itemID,
@@ -233,6 +234,7 @@ class RecommendFoodDetailInfo extends React.Component {
             }
             if (!nextFlag) return false;
             const rule = { stageType: 0 };
+            debugger
             this.props.setPromotionDetail({
                 foodRuleList: foodRuleList.map(item => ({
                     rule: JSON.stringify(item.rule),
@@ -490,7 +492,7 @@ class RecommendFoodDetailInfo extends React.Component {
         if (_len == 1 && this.state.maxCount > _len) {
             return (
                 <span className={styles.iconsStyle}>
-                    <Icon className={styles.pulsIcon} disabled={false} type="plus-circle-o" onClick={this.addRuleItem} />
+                    <Icon className={styles.pulsIcon} style={{ marginTop: 20 }} disabled={false} type="plus-circle-o" onClick={this.addRuleItem} />
                 </span>
             )
         }
@@ -499,6 +501,7 @@ class RecommendFoodDetailInfo extends React.Component {
                 <span className={styles.iconsStyle}>
                     <Icon
                         className={styles.deleteIconLeft}
+                        style={{ marginTop: 20 }}
                         type="minus-circle-o"
                         onClick={(e) => {
                             const _index = index;
@@ -511,10 +514,11 @@ class RecommendFoodDetailInfo extends React.Component {
         if (index == _len - 1 && _len < this.state.maxCount) {
             return (
                 <span className={styles.iconsStyle}>
-                    <Icon className={styles.pulsIcon} type="plus-circle-o" onClick={this.addRuleItem} />
+                    <Icon style={{ marginTop: 20 }} className={styles.pulsIcon} type="plus-circle-o" onClick={this.addRuleItem} />
                     <Icon
                         className={styles.deleteIcon}
                         type="minus-circle-o"
+                        style={{ marginTop: 20 }}
                         onClick={(e) => {
                             const _index = index;
                             this.deleteRule(_index, e)
@@ -540,6 +544,8 @@ class RecommendFoodDetailInfo extends React.Component {
             items = []
         } = rule
         const len = items.length
+        let component = this.props.isShopFoodSelectorMode ? NoThresholdDiscountFoodSelectorForShop :
+            NoThresholdDiscountFoodSelector;
         return (items.map((ruleInfo, index) => {
             const _value = {
                 start: null,
@@ -553,14 +559,24 @@ class RecommendFoodDetailInfo extends React.Component {
             }
 
             return (
-                <Row key={index} style={{ marginBottom: 13 }}>
+                <Row key={index} style={{ marginBottom: 13, background: '#80808024', padding: '20px 0px', borderRadius: 7 }}>
                     <Col>
                         <FormItem
-                            label=""
+                            label="推荐规则"
                             className={styles.FormItemStyle}
                             validateStatus={ruleInfo.validationStatus}
                             help={ruleInfo.helpMsg}
+                            labelCol={{
+                                span: 4,
+                            }}
+                            wrapperCol={{
+                                span: 20,
+                            }}
+                            style={{
+                                marginBottom: 10
+                            }}
                         >
+                            {/* debugger */}
                             <CustomRangeInput
                                 value={
                                     _value
@@ -572,8 +588,15 @@ class RecommendFoodDetailInfo extends React.Component {
                                 }
                                 }
                             />
-                            <span className={styles.appenOnSpan}>{index == len - 1 ? ',则推荐如下菜品' : ''}</span>
+                            <span className={styles.appenOnSpan}>{',则推荐如下菜品'}</span>
                         </FormItem>
+                        <ConnectedScopeListSelector
+                            component={component}
+                            isShopMode={this.props.isShopFoodSelectorMode}
+                            priceList={foodRuleList[index] && foodRuleList[index].priceList}
+                            noExclude={true}
+                            dishIndex={index}
+                        />
                     </Col>
                     <Col>
                         {this.renderOperationIcon(index)}
@@ -603,13 +626,13 @@ class RecommendFoodDetailInfo extends React.Component {
                 <div>
                     <Form className={styles.FormStyle}>
                         <FormItem
-                            label={'推荐规则'}
+                            // label={'推荐规则'}
                             className={styles.FormItemStyle}
-                            labelCol={{
-                                span: 4,
-                            }}
+                            // labelCol={{
+                            //     span: 4,
+                            // }}
                             wrapperCol={{
-                                span: 20,
+                                span: 24,
                             }}
                         >
                             {
@@ -620,6 +643,7 @@ class RecommendFoodDetailInfo extends React.Component {
                     <Form className={styles.FormStyle}>
                         <ConnectedScopeListSelector
                             component={component}
+                            noDish={true}
                             isShopMode={this.props.isShopFoodSelectorMode}
                             priceList={foodRuleList[0] && foodRuleList[0].priceList}
                         />
