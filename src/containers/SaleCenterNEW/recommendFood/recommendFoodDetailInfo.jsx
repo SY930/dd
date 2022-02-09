@@ -140,6 +140,14 @@ class RecommendFoodDetailInfo extends React.Component {
                     item.scopeList = Array.isArray(item.scopeList) ? item.scopeList : [];
                     item.priceList = Array.isArray(item.priceList) ? item.priceList : [];
                 })
+                const RecomendFoodRule = foodRuleList.filter((item) => {
+                    return item.rule.recommendType !== 2
+                })
+                let items = []
+                RecomendFoodRule.forEach((item) => {
+                    items.push(item.rule.recommendRule)
+                })
+                foodRuleList[0].items = items
             }
             this.setState({
                 foodRuleList,
@@ -168,20 +176,19 @@ class RecommendFoodDetailInfo extends React.Component {
         const isSelDefined = basicInfo.recommendType == 1
         const promotionDetail = promotionDetailInfo.toJS()
         if (isSelDefined) {
-            foodRuleList = [foodRuleList[0]]
-            for (let i = 0; i < foodRuleList.length; i++) {
+            let tempFoodList = [foodRuleList[0]]
+            const {
+                rule = {}
+            } = foodRuleList[0];
+            const ruleItem = rule.items || [{}]
+            for (let i = 0; i < ruleItem.length; i++) {
+                if (i !== 0) {
+                    tempFoodList.push(_.cloneDeep(foodRuleList[0]))
+                }
+                tempFoodList[i].rule.recommendRule = ruleItem[i]
+                tempFoodList[i].rule.recommendType = 1
                 let priceList = [],
                     scopeList = [];
-                const {
-                    data = [],
-                    priceListAuto = []
-                } = foodRuleList[i];
-                const {
-                    rule = {}
-                } = foodRuleList[i];
-                rule.recommendType = 1
-                // 校验数据是否合规
-                const ruleItem = rule.items || [{}]
                 let flagSuccess = false
                 ruleItem.forEach((every) => {
                     if (every.validationStatus == 'error') {
@@ -195,53 +202,85 @@ class RecommendFoodDetailInfo extends React.Component {
                     message.warning(`添加的推荐规则请正确填写`)
                     return false;
                 }
-                if (!promotionDetail.dishes.length) {
-                    message.warning(`请选择推荐菜品`)
+                let replacePriceLst = []
+                if (!promotionDetail.dishes[i] || !promotionDetail.dishes[i].length) {
+                    if(promotionDetail.dishes[i]&&!promotionDetail.dishes[i].length) {
+                        message.warning(`请对第${i + 1}档位，选择推荐菜品`)
+                        return false;
+                    } else {
+                        const RecomendFoodRule = foodRuleList.filter((item) => {
+                            return item.rule.recommendType !== 2
+                        })
+                        if(RecomendFoodRule[i].priceList.length) {
+                            replacePriceLst = RecomendFoodRule[i].priceList
+                        }
+                    }
+                }
+                if (promotionDetail.dishes[i] && promotionDetail.dishes[i].length > 100) {
+                    message.warning(`最多添加100道推荐菜品, 第${i + 1}档位添加多与100道菜品`)
                     return false;
                 }
-
-                if (promotionDetail.dishes.length > 100) {
-                    message.warning(`最多添加100道推荐菜品`)
-                    return false;
-                }
-                debugger
-                promotionDetail.dishes.forEach((group, groupIdx) => {
-                    priceList.push({
-                        foodUnitID: group.itemID,
-                        foodUnitCode: group.foodKey,
-                        foodName: group.foodName,
-                        foodUnitName: group.unit,
-                        brandID: group.brandID || '0',
-                        price: parseFloat(group.price),
-                        stageNo: 0,
-                        num: 0,
-                    })
-                });
+                console.log(tempFoodList,)
+                if(replacePriceLst.length) {
+                    priceList = replacePriceLst
+                } else {
+                    if(!promotionDetail.dishes[i] || !promotionDetail.dishes[i].length) {
+                        message.warning(`请对第${i + 1}档位，选择推荐菜品`)
+                        return false;
+                    }
+                    promotionDetail.dishes[i].forEach((group, groupIdx) => {
+                        priceList.push({
+                            foodUnitID: group.itemID,
+                            foodUnitCode: group.foodKey,
+                            foodName: group.foodName,
+                            foodUnitName: group.unit,
+                            foodCategoryName: group.foodCategoryName,
+                            brandID: group.brandID || '0',
+                            price: parseFloat(group.price),
+                            stageNo: 0,
+                            num: 0,
+                        })
+                    });
+                } 
+                tempFoodList[i].priceList = priceList;
+                tempFoodList[i].scopeList = scopeList;
+            }
+            //排除菜品单独算
+            const ExcludeFoodRule = foodRuleList.filter((item) => {
+                return item.rule.recommendType === 2
+            })
+            if(promotionDetail.excludeDishesData && promotionDetail.excludeDishesData.length) {
+                let tempFood = _.cloneDeep(foodRuleList[0])
+                let priceList = []
                 promotionDetail.excludeDishesData.forEach((group) => {
                     priceList.push({
                         foodUnitID: group.itemID,
                         foodUnitCode: group.foodKey,
                         foodName: group.foodName,
                         foodUnitName: group.unit,
+                        foodCategoryName: group.foodCategoryName,
                         brandID: group.brandID || '0',
                         price: parseFloat(group.price),
                         stageNo: -2,
                         num: 0,
                     })
                 })
-                foodRuleList[i].priceList = priceList;
-                foodRuleList[i].scopeList = scopeList;
+                tempFood.priceList = priceList
+                tempFood.rule.recommendType = 2
+                tempFoodList.push(tempFood)
+            } else if(ExcludeFoodRule[0].priceList.length&& !promotionDetail.excludeDishesData) {
+                let tempFood = ExcludeFoodRule[0]
+                tempFoodList.push(tempFood)
             }
             if (!nextFlag) return false;
-            const rule = { stageType: 0 };
-            debugger
+            const tempRule = { stageType: 0 };
             this.props.setPromotionDetail({
-                foodRuleList: foodRuleList.map(item => ({
+                foodRuleList: tempFoodList.map(item => ({
                     rule: JSON.stringify(item.rule),
                     scopeList: item.scopeList,
                     priceList: item.priceList,
                 })),
-                rule,
+                rule: tempRule,
             });
             return true;
         } else {
@@ -537,12 +576,8 @@ class RecommendFoodDetailInfo extends React.Component {
         if (!foodRuleList[0]) {
             return
         }
-        const {
-            rule = {}
-        } = foodRuleList[0]
-        const {
-            items = []
-        } = rule
+        const { rule = {} } = foodRuleList[0]
+        const items = rule.items
         const len = items.length
         let component = this.props.isShopFoodSelectorMode ? NoThresholdDiscountFoodSelectorForShop :
             NoThresholdDiscountFoodSelector;
@@ -576,7 +611,6 @@ class RecommendFoodDetailInfo extends React.Component {
                                 marginBottom: 10
                             }}
                         >
-                            {/* debugger */}
                             <CustomRangeInput
                                 value={
                                     _value
@@ -619,6 +653,9 @@ class RecommendFoodDetailInfo extends React.Component {
         const k6hdp74n = intl.formatMessage(SALE_STRING.k6hdp74n);
         const basicInfo = this.props.promotionBasicInfo.get('$basicInfo').toJS()
         const isSelDefined = basicInfo.recommendType == 1
+        const ExcludeFoodRule = foodRuleList.filter((item) => {
+            return item.rule.recommendType === 2
+        })
         if (isSelDefined) {
             let component = this.props.isShopFoodSelectorMode ? NoThresholdDiscountFoodSelectorForShop :
                 NoThresholdDiscountFoodSelector;
@@ -645,7 +682,7 @@ class RecommendFoodDetailInfo extends React.Component {
                             component={component}
                             noDish={true}
                             isShopMode={this.props.isShopFoodSelectorMode}
-                            priceList={foodRuleList[0] && foodRuleList[0].priceList}
+                            priceList={ExcludeFoodRule[0] &&ExcludeFoodRule[0].priceList}
                         />
                     </Form>
                 </div>

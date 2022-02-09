@@ -188,7 +188,6 @@ class NoThresholdDiscountFoodSelector extends Component {
         }
         if(noExclude) {
             let temp = promotionDetail.dishes
-            debugger
             temp[dishIndex] = dishObjects
             this.props.onChange({
                 categoryOrDish,
