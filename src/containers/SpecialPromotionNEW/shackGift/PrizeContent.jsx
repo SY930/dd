@@ -21,45 +21,45 @@ import { STRING_SPE } from 'i18n/common/special';
 import { SALE_STRING } from 'i18n/common/salecenter';
 import TicketBag from '../../BasicModules/TicketBag';
 
-let _FLAG = true;
+let _FLAGSHACK = true;
 @injectIntl
 export default class PrizeContent extends React.Component {
     constructor(props) {
         super(props);
+        const { item = {}, typeValue = '0'} = props.info.giveCoupon.value;
         this.VALIDATE_TYPE = Object.freeze([{
             key: 0, value: '1', name: `${this.props.intl.formatMessage(STRING_SPE.d142vrmqvc0114)}`,
         },
         { key: 1, value: '2', name: `${this.props.intl.formatMessage(STRING_SPE.d7h7ge7d1001237)}` }]);
         this.state = {
-            typeValue: '0',
-            item: {},
-            bag: '',
+            typeValue: typeValue,
+            bag: _.isEmpty(item) ? [] : [item],
             allTreeData: [],
+        }
+    }
+
+    componentDidMount() {
+        const { bag } = this.state;
+        if (bag.length) { // 向下传递bag
+            this.setState({
+                bag,
+            })
         }
     }
 
     componentDidUpdate(preProps) {
         const { filteredGiftInfo } = this.props;
-        console.log("🚀 ~ file: PrizeContent.jsx ~ line 42 ~ PrizeContent ~ componentDidUpdate ~ filteredGiftInfo", filteredGiftInfo, preProps)
-        if (_FLAG && this.props.isCopy && filteredGiftInfo.length) {
+        if (_FLAGSHACK && this.props.isCopy && filteredGiftInfo.length) { // 复制功能，执行一次
             this.proGiftTreeData(filteredGiftInfo);
-            _FLAG = false;
+            _FLAGSHACK = false;
         }
     }
 
-    componentWillReceiveProps(np) {
-        if (np.info.giveCoupon.value.item) {
-            const { typeValue: tv } = this.state;
-            const { typeValue, item = {} } = np.info.giveCoupon.value;
-            this.setState({ typeValue, bag: [item] });
-            if (!typeValue) {
-                this.setState({ typeValue: tv });
-            }
-        }
+    componentWillUnmount() {
+        _FLAGSHACK = true;
     }
 
     proGiftTreeData = (giftTypes) => {
-    console.log("🚀 ~ file: PrizeContent.jsx ~ line 62 ~ PrizeContent ~ giftTypes", giftTypes)
         const { handleGiftChange, index, info, } = this.props
         const { giftItemID, giftName } = info.giveCoupon.value.giftInfo;
         const _giftTypes = _.filter(giftTypes, giftItem => giftItem.giftType != 90);
@@ -73,20 +73,14 @@ export default class PrizeContent extends React.Component {
             });
         });
         const findData = treeData.find(i => i.giftItemID === giftItemID) || {};
-        console.log("🚀 ~ file: PrizeContent.jsx ~ line 75 ~ PrizeContent ~ findData", findData)
+        //  复制功能 如果礼品被停用则不显示礼品名称 
         if (!findData.giftItemID) {
             handleGiftChange(',' ,index)
         }
-        console.log(treeData, 'treeData-------')
-        // this.setState({
-        //     allTreeData: treeData,
-        // })
-        // return treeData
     }
 
     getGiftValue = (index) => {
         const { info, handleGiftChange } = this.props;
-        const { allTreeData } = this.state
         const { giftItemID, giftName } = info.giveCoupon.value.giftInfo
         // const tempArr = _.sortBy(filteredGiftInfo, 'index');
         if (giftItemID == null || giftName == null) {
@@ -96,15 +90,6 @@ export default class PrizeContent extends React.Component {
                 // }
                 // http://jira.hualala.com/browse/WTCRM-3886 摇奖活动选择券组件去掉默认的券
                 return null;
-        }
-        //  复制功能 如果礼品被停用则不显示礼品名称 
-        if (this.props.isCopy) {
-            //  allThreeData.find((item) => item.)
-            // if (giftType) { // 有giftType说明礼品没有停用
-            //     return [giftItemID, giftName].join(',');
-            // } else {
-            //     return null
-            // }
         }
         // 新增和编辑
         return [giftItemID, giftName].join(',');

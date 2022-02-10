@@ -1249,7 +1249,7 @@ class MySpecialActivities extends React.Component {
                         {/* 第一版只做群发礼品的复制功能*/}
                         {/* 摇奖活动增加复制,并且活动不是禁用状态  */}
                         {
-                            (record.eventWay === 53 || (record.eventWay === 20 && record.isActive != '0'))
+                            (record.eventWay === 53 || record.eventWay === 20)
                             && 
                             // <Authority rightCode={SPECIAL_PROMOTION_UPDATE}>
                                 <a
