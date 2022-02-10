@@ -21,6 +21,7 @@ import { STRING_SPE } from 'i18n/common/special';
 import { SALE_STRING } from 'i18n/common/salecenter';
 import TicketBag from '../../BasicModules/TicketBag';
 
+let _FLAG = true;
 @injectIntl
 export default class PrizeContent extends React.Component {
     constructor(props) {
@@ -33,8 +34,19 @@ export default class PrizeContent extends React.Component {
             typeValue: '0',
             item: {},
             bag: '',
+            allTreeData: [],
         }
     }
+
+    componentDidUpdate(preProps) {
+        const { filteredGiftInfo } = this.props;
+        console.log("🚀 ~ file: PrizeContent.jsx ~ line 42 ~ PrizeContent ~ componentDidUpdate ~ filteredGiftInfo", filteredGiftInfo, preProps)
+        if (_FLAG && this.props.isCopy && filteredGiftInfo.length) {
+            this.proGiftTreeData(filteredGiftInfo);
+            _FLAG = false;
+        }
+    }
+
     componentWillReceiveProps(np) {
         if (np.info.giveCoupon.value.item) {
             const { typeValue: tv } = this.state;
@@ -45,11 +57,39 @@ export default class PrizeContent extends React.Component {
             }
         }
     }
+
+    proGiftTreeData = (giftTypes) => {
+    console.log("🚀 ~ file: PrizeContent.jsx ~ line 62 ~ PrizeContent ~ giftTypes", giftTypes)
+        const { handleGiftChange, index, info, } = this.props
+        const { giftItemID, giftName } = info.giveCoupon.value.giftInfo;
+        const _giftTypes = _.filter(giftTypes, giftItem => giftItem.giftType != 90);
+        let treeData = [];
+        _giftTypes.map((gt, idx) => {
+            gt.crmGifts.map((gift) => {
+                treeData.push({
+                    giftName: gift.giftName,
+                    giftItemID: gift.giftItemID,
+                });
+            });
+        });
+        const findData = treeData.find(i => i.giftItemID === giftItemID) || {};
+        console.log("🚀 ~ file: PrizeContent.jsx ~ line 75 ~ PrizeContent ~ findData", findData)
+        if (!findData.giftItemID) {
+            handleGiftChange(',' ,index)
+        }
+        console.log(treeData, 'treeData-------')
+        // this.setState({
+        //     allTreeData: treeData,
+        // })
+        // return treeData
+    }
+
     getGiftValue = (index) => {
-        const { info, filteredGiftInfo, handleGiftChange } = this.props;
-        const tempArr = _.sortBy(filteredGiftInfo, 'index');
-        if (info.giveCoupon.value.giftInfo.giftItemID == null ||
-            info.giveCoupon.value.giftInfo.giftName == null) {
+        const { info, handleGiftChange } = this.props;
+        const { allTreeData } = this.state
+        const { giftItemID, giftName } = info.giveCoupon.value.giftInfo
+        // const tempArr = _.sortBy(filteredGiftInfo, 'index');
+        if (giftItemID == null || giftName == null) {
                 // if(tempArr.length){
                 //     handleGiftChange([tempArr[0].crmGifts[0].giftItemID, tempArr[0].crmGifts[0].giftName].join(','),index);
                 //     return[tempArr[0].crmGifts[0].giftItemID, tempArr[0].crmGifts[0].giftName].join(',');
@@ -57,7 +97,17 @@ export default class PrizeContent extends React.Component {
                 // http://jira.hualala.com/browse/WTCRM-3886 摇奖活动选择券组件去掉默认的券
                 return null;
         }
-        return [info.giveCoupon.value.giftInfo.giftItemID, info.giveCoupon.value.giftInfo.giftName].join(',');
+        //  复制功能 如果礼品被停用则不显示礼品名称 
+        if (this.props.isCopy) {
+            //  allThreeData.find((item) => item.)
+            // if (giftType) { // 有giftType说明礼品没有停用
+            //     return [giftItemID, giftName].join(',');
+            // } else {
+            //     return null
+            // }
+        }
+        // 新增和编辑
+        return [giftItemID, giftName].join(',');
     }
     ChangeCheckBoxOne = (e) => {
         const { handleGivePointsChange, index } = this.props;
@@ -235,6 +285,7 @@ export default class PrizeContent extends React.Component {
             handleGiveCardChange,
             disabled,
             groupID,
+            isCopy,
         } = this.props;
         const { typeValue, bag } = this.state;
         return (
