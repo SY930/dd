@@ -83,6 +83,18 @@ class RecommendFoodDetailInfo extends React.Component {
                 item.scopeList = Array.isArray(item.scopeList) ? item.scopeList : [];
                 item.priceList = Array.isArray(item.priceList) ? item.priceList : [];
             })
+            const RecomendFoodRule = foodRuleList.filter((item) => {
+                return item.rule.recommendType !== 2
+            })
+            let tempItems = []
+            RecomendFoodRule.forEach((item) => {
+                tempItems.push({
+                    ...item.rule.recommendRule,
+                    validationStatus: 'success',
+                    helpMsg: null
+                })
+            })
+            foodRuleList[0].rule.items = tempItems
         }
         this.state = {
             foodRuleList,
@@ -147,7 +159,7 @@ class RecommendFoodDetailInfo extends React.Component {
                 RecomendFoodRule.forEach((item) => {
                     items.push(item.rule.recommendRule)
                 })
-                foodRuleList[0].items = items
+                foodRuleList[0].rule.items = items
             }
             this.setState({
                 foodRuleList,
@@ -185,8 +197,6 @@ class RecommendFoodDetailInfo extends React.Component {
                 if (i !== 0) {
                     tempFoodList.push(_.cloneDeep(foodRuleList[0]))
                 }
-                tempFoodList[i].rule.recommendRule = ruleItem[i]
-                tempFoodList[i].rule.recommendType = 1
                 let priceList = [],
                     scopeList = [];
                 let flagSuccess = false
@@ -202,6 +212,10 @@ class RecommendFoodDetailInfo extends React.Component {
                     message.warning(`添加的推荐规则请正确填写`)
                     return false;
                 }
+                delete ruleItem[i].validationStatus
+                delete ruleItem[i].helpMsg
+                tempFoodList[i].rule.recommendRule = ruleItem[i]
+                tempFoodList[i].rule.recommendType = 1
                 let replacePriceLst = []
                 if (!promotionDetail.dishes[i] || !promotionDetail.dishes[i].length) {
                     if(promotionDetail.dishes[i]&&!promotionDetail.dishes[i].length) {
@@ -242,6 +256,7 @@ class RecommendFoodDetailInfo extends React.Component {
                         })
                     });
                 } 
+                delete tempFoodList[i].rule.items
                 tempFoodList[i].priceList = priceList;
                 tempFoodList[i].scopeList = scopeList;
             }
@@ -266,6 +281,8 @@ class RecommendFoodDetailInfo extends React.Component {
                     })
                 })
                 tempFood.priceList = priceList
+                delete tempFood.rule.items
+                delete tempFood.rule.recommendRule
                 tempFood.rule.recommendType = 2
                 tempFoodList.push(tempFood)
             } else if(ExcludeFoodRule[0].priceList.length&& !promotionDetail.excludeDishesData) {
@@ -273,7 +290,7 @@ class RecommendFoodDetailInfo extends React.Component {
                 tempFoodList.push(tempFood)
             }
             if (!nextFlag) return false;
-            const tempRule = { stageType: 0 };
+            const tempRule = { stageType: isSelDefined ? 1 : 0 };
             this.props.setPromotionDetail({
                 foodRuleList: tempFoodList.map(item => ({
                     rule: JSON.stringify(item.rule),
@@ -352,7 +369,7 @@ class RecommendFoodDetailInfo extends React.Component {
                 foodRuleList[i].scopeList = scopeList;
             }
             if (!nextFlag) return false;
-            const rule = { stageType: 0 };
+            const rule = { stageType: isSelDefined ? 1 : 0 };
             this.props.setPromotionDetail({
                 foodRuleList: foodRuleList.map(item => ({
                     rule: JSON.stringify(item.rule),
@@ -575,10 +592,9 @@ class RecommendFoodDetailInfo extends React.Component {
         } = this.state
         if (!foodRuleList[0]) {
             return
-        }
-        const { rule = {} } = foodRuleList[0]
-        const items = rule.items
-        const len = items.length
+        } 
+        const { rule={} } = foodRuleList[0]
+        const { items=[] } = rule
         let component = this.props.isShopFoodSelectorMode ? NoThresholdDiscountFoodSelectorForShop :
             NoThresholdDiscountFoodSelector;
         return (items.map((ruleInfo, index) => {
