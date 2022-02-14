@@ -188,7 +188,7 @@ class RecommendFoodDetailInfo extends React.Component {
         const isSelDefined = basicInfo.recommendType == 1
         const promotionDetail = promotionDetailInfo.toJS()
         if (isSelDefined) {
-            let tempFoodList = [foodRuleList[0]]
+            let tempFoodList = [_.cloneDeep(foodRuleList[0])]
             const {
                 rule = {}
             } = foodRuleList[0];
@@ -285,7 +285,7 @@ class RecommendFoodDetailInfo extends React.Component {
                 delete tempFood.rule.recommendRule
                 tempFood.rule.recommendType = 2
                 tempFoodList.push(tempFood)
-            } else if(ExcludeFoodRule[0].priceList.length&& !promotionDetail.excludeDishesData) {
+            } else if(ExcludeFoodRule.length && ExcludeFoodRule[0].priceList.length&& !promotionDetail.excludeDishesData) {
                 let tempFood = ExcludeFoodRule[0]
                 tempFoodList.push(tempFood)
             }
