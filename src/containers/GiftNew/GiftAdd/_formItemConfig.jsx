@@ -733,6 +733,7 @@ export const SECOND_KEYS = (() => ({
             },
             keys: [
                 'transferType',
+                'transferringAvailable',
                 'transferTitle',
                 'transferImage',
                 'usingWeekType',
@@ -818,6 +819,7 @@ export const SECOND_KEYS = (() => ({
             },
             keys: [
                 'transferType',
+                'transferringAvailable',
                 'transferTitle',
                 'transferImage',
                 'usingWeekType',
@@ -891,6 +893,7 @@ export const SECOND_KEYS = (() => ({
             },
             keys: [
                 'transferType',
+                'transferringAvailable',
                 'transferTitle',
                 'transferImage',
                 'usingWeekType',
@@ -917,6 +920,7 @@ export const SECOND_KEYS = (() => ({
             },
             keys: [
                 'transferType',
+                'transferringAvailable',
                 'transferTitle',
                 'transferImage',
                 'usingWeekType',
@@ -945,6 +949,7 @@ export const SECOND_KEYS = (() => ({
             },
             keys: [
                 'transferType',
+                'transferringAvailable',
                 'transferTitle',
                 'transferImage',
                 'usingWeekType',
