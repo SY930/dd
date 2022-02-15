@@ -110,9 +110,9 @@ class NoThresholdDiscountFoodSelector extends Component {
                 render: (text, record, index) => `${index + 1}`,
             },
             {
-                title: '菜品分类',
-                dataIndex: 'foodCategoryName',
-                key: 'foodCategoryName',
+                title: '线上菜品分类',
+                dataIndex: 'foodOnlineCategoryName',
+                key: 'foodOnlineCategoryName',
                 width: 90,
                 className: 'TableTxtCenter',
                 render: (text, record, index) => {
@@ -537,6 +537,7 @@ class NoThresholdDiscountFoodSelector extends Component {
             dish && acc.push(dish)
             return acc;
         }, [])
+        // debugger
         return (
             <div>
                 {
