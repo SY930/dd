@@ -537,7 +537,6 @@ class NoThresholdDiscountFoodSelector extends Component {
             dish && acc.push(dish)
             return acc;
         }, [])
-        // debugger
         return (
             <div>
                 {
