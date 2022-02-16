@@ -21,35 +21,69 @@ import { STRING_SPE } from 'i18n/common/special';
 import { SALE_STRING } from 'i18n/common/salecenter';
 import TicketBag from '../../BasicModules/TicketBag';
 
+let _FLAGSHACK = true;
 @injectIntl
 export default class PrizeContent extends React.Component {
     constructor(props) {
         super(props);
+        const { item = {}, typeValue = '0'} = props.info.giveCoupon.value;
         this.VALIDATE_TYPE = Object.freeze([{
             key: 0, value: '1', name: `${this.props.intl.formatMessage(STRING_SPE.d142vrmqvc0114)}`,
         },
         { key: 1, value: '2', name: `${this.props.intl.formatMessage(STRING_SPE.d7h7ge7d1001237)}` }]);
         this.state = {
-            typeValue: '0',
-            item: {},
-            bag: '',
+            typeValue: typeValue,
+            bag: _.isEmpty(item) ? [] : [item],
+            allTreeData: [],
         }
     }
-    componentWillReceiveProps(np) {
-        if (np.info.giveCoupon.value.item) {
-            const { typeValue: tv } = this.state;
-            const { typeValue, item = {} } = np.info.giveCoupon.value;
-            this.setState({ typeValue, bag: [item] });
-            if (!typeValue) {
-                this.setState({ typeValue: tv });
-            }
+
+    componentDidMount() {
+        const { bag } = this.state;
+        if (bag.length) { // 向下传递bag
+            this.setState({
+                bag,
+            })
         }
     }
+
+    componentDidUpdate(preProps) {
+        const { filteredGiftInfo } = this.props;
+        if (_FLAGSHACK && this.props.isCopy && filteredGiftInfo.length) { // 复制功能，执行一次
+            this.proGiftTreeData(filteredGiftInfo);
+            _FLAGSHACK = false;
+        }
+    }
+
+    componentWillUnmount() {
+        _FLAGSHACK = true;
+    }
+
+    proGiftTreeData = (giftTypes) => {
+        const { handleGiftChange, index, info, } = this.props
+        const { giftItemID, giftName } = info.giveCoupon.value.giftInfo;
+        const _giftTypes = _.filter(giftTypes, giftItem => giftItem.giftType != 90);
+        let treeData = [];
+        _giftTypes.map((gt, idx) => {
+            gt.crmGifts.map((gift) => {
+                treeData.push({
+                    giftName: gift.giftName,
+                    giftItemID: gift.giftItemID,
+                });
+            });
+        });
+        const findData = treeData.find(i => i.giftItemID === giftItemID) || {};
+        //  复制功能 如果礼品被停用则不显示礼品名称 
+        if (!findData.giftItemID) {
+            handleGiftChange(',' ,index)
+        }
+    }
+
     getGiftValue = (index) => {
-        const { info, filteredGiftInfo, handleGiftChange } = this.props;
-        const tempArr = _.sortBy(filteredGiftInfo, 'index');
-        if (info.giveCoupon.value.giftInfo.giftItemID == null ||
-            info.giveCoupon.value.giftInfo.giftName == null) {
+        const { info, handleGiftChange } = this.props;
+        const { giftItemID, giftName } = info.giveCoupon.value.giftInfo
+        // const tempArr = _.sortBy(filteredGiftInfo, 'index');
+        if (giftItemID == null || giftName == null) {
                 // if(tempArr.length){
                 //     handleGiftChange([tempArr[0].crmGifts[0].giftItemID, tempArr[0].crmGifts[0].giftName].join(','),index);
                 //     return[tempArr[0].crmGifts[0].giftItemID, tempArr[0].crmGifts[0].giftName].join(',');
@@ -57,7 +91,8 @@ export default class PrizeContent extends React.Component {
                 // http://jira.hualala.com/browse/WTCRM-3886 摇奖活动选择券组件去掉默认的券
                 return null;
         }
-        return [info.giveCoupon.value.giftInfo.giftItemID, info.giveCoupon.value.giftInfo.giftName].join(',');
+        // 新增和编辑
+        return [giftItemID, giftName].join(',');
     }
     ChangeCheckBoxOne = (e) => {
         const { handleGivePointsChange, index } = this.props;
@@ -235,6 +270,7 @@ export default class PrizeContent extends React.Component {
             handleGiveCardChange,
             disabled,
             groupID,
+            isCopy,
         } = this.props;
         const { typeValue, bag } = this.state;
         return (

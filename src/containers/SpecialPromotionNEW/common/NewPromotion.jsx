@@ -139,6 +139,10 @@ export default class NewPromotion extends React.Component {
             });
         } else {
             // 创建特色营销活动
+            if ((this.props.promotionType === '20' || this.props.promotionType === '53') && opts.event) {
+                // 复制的礼品不传userCount
+                opts.event.userCount && delete opts.event.userCount;
+            }
             this.props.addSpecialPromotion && this.props.addSpecialPromotion({
                 data: opts,
                 success: (res) => {

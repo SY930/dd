@@ -46,6 +46,7 @@ class NewShackGift extends NewPromotion {
                 title: `${this.props.intl.formatMessage(STRING_SPE.d2c8987eai0135)}`,
                 content: (
                     <StepOneWithDateRange
+                        isCopy={this.props.isCopy}
                         type={`${specialPromotion.$eventInfo.eventWay}`}
                         getSubmitFn={(handles) => {
                             this.handles[0] = handles;
@@ -84,6 +85,7 @@ class NewShackGift extends NewPromotion {
                         levelPrize = {levelPrize}
                         updateLevelPrize={saleCenterLotteryLevelPrizeData}
                         isNew={this.props.isNew}
+                        isCopy={this.props.isCopy}
                         type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
                         getSubmitFn={(handles) => {
                             this.handles[2] = handles;
