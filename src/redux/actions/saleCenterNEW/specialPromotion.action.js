@@ -271,6 +271,10 @@ export const getEventExcludeCardTypes = (opts) => {
             { path: '' },
             'HTTP_SERVICE_URL_PROMOTION_NEW'
         ).then(({ excludeCardTypeIDs = [], excludeCardTypeShops = [] }) => {
+            debugger 
+            console.log('debugger', 'this is the part where user query excludeCardType and the result is', Array.isArray(excludeCardTypeIDs)
+            ? excludeCardTypeIDs
+            : [])
             dispatch({
                 type: SALE_CENTER_GET_EXCLUDE_CARD_TYPE_AND_SHOP,
                 payload: {

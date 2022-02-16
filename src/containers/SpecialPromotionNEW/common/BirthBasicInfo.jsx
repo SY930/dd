@@ -135,6 +135,7 @@ class PromotionBasicInfo extends React.Component {
                     opts.itemID = this.props.specialPromotion.getIn(['$eventInfo', 'itemID']);
                     this.props.saleCenterGetExcludeCardLevelIds(opts);
                     if (opts.eventStartDate) {
+                        console.log(' debugger this is the part 4 where user querythe action getEventExcludeCardTypes, opts is: ', opts)
                         this.props.getEventExcludeCardTypes(opts);
                     }
                 }
@@ -164,6 +165,11 @@ class PromotionBasicInfo extends React.Component {
                     };
 
                     if (this.props.type == '52') {
+                        console.log(' debugger this is the part 5 where user querythe action getEventExcludeCardTypes, opts is: ', {
+                            ...opts,
+                            eventStartDate: eventStartDate ? eventStartDate : '20000625',
+                            eventEndDate: eventEndDate ? eventEndDate : '21000531'
+                        })
                         this.props.getEventExcludeCardTypes({
                             ...opts,
                             eventStartDate: eventStartDate ? eventStartDate : '20000625',

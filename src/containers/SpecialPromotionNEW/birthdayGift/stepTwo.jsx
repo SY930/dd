@@ -129,6 +129,7 @@ class StepTwo extends React.Component {
                 });
             }
             // 遍历所有排除卡
+            // debugger
             if (this.props.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeIDs'])
                 !== nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeIDs'])) {
                 this.setState({ getExcludeCardLevelIds: nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeIDs']).toJS() }, () => {

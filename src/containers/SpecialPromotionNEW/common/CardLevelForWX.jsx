@@ -116,14 +116,17 @@ class CardLevelForWX extends React.Component {
                 getExcludeCardLevelIdsStatus: true,
             }, () => {
                 this.props.saleCenterGetExcludeCardLevelIds(opts2); // 之前此接口过滤卡类, 现在只用来更新卡类占用table
+                console.log(' debugger this is the part 2 where user querythe action getEventExcludeCardTypes, opts is: ', opts2)
                 this.props.getEventExcludeCardTypes(opts2);
             })
         }
         // 遍历所有排除卡
+        // debugger
         if (this.props.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeIDs'])
             !== nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeIDs'])) {
             // true全部占用
             this.setState({ getExcludeCardLevelIds: nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeIDs']).toJS() })
+            console.log('debugger setting the  getExcludeCardLevelIds as: ', nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeIDs']).toJS() )
         }
         if (this.props.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops'])
             !== nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeShops'])) {
@@ -176,6 +179,7 @@ class CardLevelForWX extends React.Component {
         let cardInfo = this.props.cardInfo ? this.props.cardInfo.toJS()
             .filter(item => this.state.cardInfo.findIndex(cardType => cardType.cardTypeID === item.cardTypeID) > -1) : [];
         let questArr = [];
+        // debugger
         if (cardTypeIDs && cardTypeIDs.length) {
             if (cardLevelRangeType == '5') {// 卡等级
                 cardTypeIDs.forEach(id => {
@@ -370,9 +374,11 @@ class CardLevelForWX extends React.Component {
         let { getExcludeCardLevelIds = [], cardLevelRangeType } = this.state;
         let cardInfo = this.props.cardInfo ? this.props.cardInfo.toJS()
             .filter(item => this.state.cardInfo.findIndex(cardType => cardType.cardTypeID === item.cardTypeID) > -1) : [];
+        console.log('debugger', 'getExcludeCardLevelIds', getExcludeCardLevelIds)
         if (getExcludeCardLevelIds.length) {
             cardInfo = cardInfo.filter(cardType => !getExcludeCardLevelIds.includes(cardType.cardTypeID))
         }
+        console.log('debugger', 'cardInfo', cardInfo)
         const boxData = [];
         this.state.cardLevelIDList.forEach((id) => {
             cardInfo.forEach((cat) => {
@@ -383,6 +389,7 @@ class CardLevelForWX extends React.Component {
                 })
             })
         });
+        debugger
         return (
             <Form className={styles.cardLevelTree}>
                 <FormItem
