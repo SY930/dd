@@ -68,7 +68,7 @@ class LotteryThirdStep extends React.Component {
                 giftInfo = [];
             }
             this.setState({
-                giftTreeData: this.proGiftTreeData(giftInfo),
+                // giftTreeData: this.proGiftTreeData(giftInfo),
                 giftInfo,
             });
         }
@@ -162,8 +162,13 @@ class LotteryThirdStep extends React.Component {
                     // infos[index].giveCoupon.value.giftCount.value = gift.giftTotalCount;
                     infos[index].giveCoupon.value.giftCount.value = '1';
                     //优惠券信息 优惠券名称、id等
-                    infos[index].giveCoupon.value.giftInfo.giftName = gift.giftName;
-                    infos[index].giveCoupon.value.giftInfo.giftItemID = gift.giftID;
+                    // if (gift.giftType) { // 有giftType 说明礼品没有停用
+                        infos[index].giveCoupon.value.giftInfo.giftName = gift.giftName;
+                        infos[index].giveCoupon.value.giftInfo.giftItemID = gift.giftID;
+                    // } else {
+                        // infos[index].giveCoupon.value.giftInfo.giftName = null;
+                        // infos[index].giveCoupon.value.giftInfo.giftItemID = null;
+                    // }
                 }else{
                     infos[index].giveCoupon.value = _.cloneDeep(defaultGiveCoupon);
                     infos[index].giveCoupon.value.isOn = false;
@@ -308,6 +313,7 @@ class LotteryThirdStep extends React.Component {
             const _infos = this.state.infos;
             _infos[index].giveCoupon.value.giftInfo.giftItemID = newValue[0];
             _infos[index].giveCoupon.value.giftInfo.giftName = newValue[1];
+            // _infos[index].giveCoupon.value.giftInfo.giftType = newValue[2];
             _infos[index].giveCoupon.value.giftInfo.validateStatus = 'success';
             _infos[index].giveCoupon.value.giftInfo.msg = null;
             this.setState({
@@ -317,6 +323,7 @@ class LotteryThirdStep extends React.Component {
             const _infos = this.state.infos;
             _infos[index].giveCoupon.value.giftInfo.giftName = null;
             _infos[index].giveCoupon.value.giftInfo.giftItemID = null;
+            // _infos[index].giveCoupon.value.giftInfo.giftType = null;
             _infos[index].giveCoupon.value.giftInfo.validateStatus = 'error';
             _infos[index].giveCoupon.value.giftInfo.msg = `${this.props.intl.formatMessage(STRING_SPE.d16hffkc88d3164)}`;
             this.setState({
@@ -708,20 +715,20 @@ class LotteryThirdStep extends React.Component {
         const _giftTypes = _.filter(giftTypes, giftItem => giftItem.giftType != 90);
         let treeData = [];
         _giftTypes.map((gt, idx) => {
-            treeData.push({
-                label: _.find(SALE_CENTER_GIFT_TYPE, { value: String(gt.giftType) }) ? _.find(SALE_CENTER_GIFT_TYPE, { value: String(gt.giftType) }).label : '',
-                key: gt.giftType,
-                children: [],
-            });
+            // treeData.push({
+            //     label: _.find(SALE_CENTER_GIFT_TYPE, { value: String(gt.giftType) }) ? _.find(SALE_CENTER_GIFT_TYPE, { value: String(gt.giftType) }).label : '',
+            //     key: gt.giftType,
+            //     children: [],
+            // });
             gt.crmGifts.map((gift) => {
-                treeData[idx].children.push({
-                    label: gift.giftName,
-                    value: `${gift.giftItemID},${gift.giftName}`,
-                    key: gift.giftItemID,
+                treeData.push({
+                    giftName: gift.giftName,
+                    // value: `${gift.giftItemID},${gift.giftName}`,
+                    giftItemID: gift.giftItemID,
                 });
             });
         });
-        return treeData = _.sortBy(treeData, 'key');
+        return treeData
     }
 
     /**
@@ -1125,6 +1132,7 @@ class LotteryThirdStep extends React.Component {
         const { user } = this.props;
         let filteredGiftInfo = giftInfo.filter(cat => cat.giftType && cat.giftType != 90)
             .map(cat => ({...cat, index: SALE_CENTER_GIFT_TYPE.findIndex(type => String(type.value) === String(cat.giftType))}));
+
         let panelArr = this.getPaneArr(infos);
         return (
             <div className={style.stepWrapper}>
@@ -1193,6 +1201,7 @@ class LotteryThirdStep extends React.Component {
                                     handleRangePickerChange={this.handleRangePickerChange}
                                     disabled={this.props.disabled}
                                     onBagChange={this.onBagChange}
+                                    isCopy={this.props.isCopy}
                                 />
                             </TabPane>
                         )

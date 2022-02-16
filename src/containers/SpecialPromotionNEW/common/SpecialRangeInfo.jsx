@@ -633,8 +633,14 @@ class SpecialRangeInfo extends React.Component {
     }
 
     handleIsConsumeTypeChange = (e) => {
+        const v = e.target.value;
+        let consumeType = '0';
+        if (v != '0') {
+            consumeType = '14'; // 默认值
+        }
         this.setState({
             isConsumeType: e.target.value,
+            consumeType,
             sumCardConsumeStatus: 'success',
             curCardConsumeStatus: 'success',
         })
