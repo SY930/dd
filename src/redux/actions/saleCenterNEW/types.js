@@ -1276,9 +1276,8 @@ export const promotionDetailInfoAdapter = function (source, dir) {
                 });
             });
         }
-
         if (source.dishes !== null) {
-            (source.dishes || []).map((item) => {
+            (source.dishes || []).map((item = {}) => {
                 scope.push({
                     scopeType: "2",
                     targetID: item.itemID,

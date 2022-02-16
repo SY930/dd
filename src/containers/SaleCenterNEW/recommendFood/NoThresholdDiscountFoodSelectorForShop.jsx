@@ -109,9 +109,9 @@ class NoThresholdDiscountFoodSelectorForShop extends Component {
                 render: (text, record, index) => `${index + 1}`,
             },
             {
-                title: '菜品分类',
-                dataIndex: 'foodCategoryName',
-                key: 'foodCategoryName',
+                title: '线上菜品分类',
+                dataIndex: 'foodOnlineCategoryName',
+                key: 'foodOnlineCategoryName',
                 width: 90,
                 className: 'TableTxtCenter',
                 render: (text, record, index) => {
@@ -148,7 +148,10 @@ class NoThresholdDiscountFoodSelectorForShop extends Component {
     mapSelectedValueToObjectsThenEmit = () => {
         const {
             allCategories,
-            allDishes
+            allDishes,
+            noDish,
+            noExclude,
+            dishIndex
         } = this.props;
         const { dishes, categories } = memoizedShopCategoriesAndDishes(allCategories, allDishes)
         const {
@@ -168,13 +171,27 @@ class NoThresholdDiscountFoodSelectorForShop extends Component {
             dish && acc.push(dish)
             return acc;
         }, [])
-        this.props.onChange({
-            categoryOrDish,
-            dishes: dishObjects,
-            excludeDishes: excludeDishValues,
-            foodCategory: [],
-            excludeDishesData: excludedDishes,
-        })
+        const { promotionDetailInfo = {} } = this.props
+        const promotionDetail = promotionDetailInfo.toJS()
+        if(noDish) {
+            this.props.onChange({
+                categoryOrDish,
+                excludeDishes: excludeDishValues,
+                foodCategory: [],
+                excludeDishesData: excludedDishes,
+            }) 
+        }
+        if(noExclude) {
+            let temp = promotionDetail.dishes
+            temp[dishIndex] = dishObjects
+            this.props.onChange({
+                categoryOrDish,
+                dishes: temp,
+                // excludeDishes: excludeDishValues,
+                foodCategory: [],
+                // excludeDishesData: excludedDishes,
+            })
+        }
         // } else {
         //     const excludeDishObjects = excludeDishValues.reduce((acc, curr) => {
         //         const dish = dishes.find(item => item.value === curr);
@@ -443,6 +460,8 @@ class NoThresholdDiscountFoodSelectorForShop extends Component {
             dishFilter,
             showExludeDishes,
             showEmptyTips,
+            noDish,
+            noExclude,
         } = this.props;
         const {
             categories: selectedCategoryObj,
@@ -470,34 +489,37 @@ class NoThresholdDiscountFoodSelectorForShop extends Component {
         }, [])
         return (
             <div>
-                <FormItem className={styles.FormItemStyle}>
-                    <Row>
-                        <Col span={4}>
-                            <div style={{ textAlign: 'right', paddingRight: 8 }} className={styles.gTitle}>推荐菜品</div>
-                        </Col>
-                        {/* <Col span={4} offset={13}> */}
-                        <Button
-                            // className={styles.gTitleLink}
-                            onClick={this.handleModalOpen}
-                            style={{
-                                position: 'absolute',
-                                right: 11,
-                            }}
-                        >
-                            添加菜品
-                        </Button>
-                        <Col span={16}>
-                            <Table
-                                bordered={true}
-                                dataSource={dishObjects}
-                                columns={this.columns}
-                                pagination={{ size: 'small', pageSize: 10 }}
-                            />
-                        </Col>
-                        {/* </Col> */}
-                    </Row>
-                    {this.state.selectorModalVisible && this.renderFoodSelectorModal()}
-                </FormItem>
+                {
+                    noDish ? null :
+                        <FormItem className={styles.FormItemStyle}>
+                            <Row>
+                                <Col span={4}>
+                                    <div style={{ textAlign: 'right', paddingRight: 8 }} className={styles.gTitle}>推荐菜品</div>
+                                </Col>
+                                {/* <Col span={4} offset={13}> */}
+                                <Button
+                                    // className={styles.gTitleLink}
+                                    onClick={this.handleModalOpen}
+                                    style={{
+                                        position: 'absolute',
+                                        right: 11,
+                                    }}
+                                >
+                                    添加菜品
+                                </Button>
+                                <Col span={16}>
+                                    <Table
+                                        bordered={true}
+                                        dataSource={dishObjects}
+                                        columns={this.columns}
+                                        pagination={{ size: 'small', pageSize: 10 }}
+                                    />
+                                </Col>
+                                {/* </Col> */}
+                            </Row>
+                            {this.state.selectorModalVisible && this.renderFoodSelectorModal()}
+                        </FormItem>
+                }
                 {
                     (showEmptyTips && this.state.categories.length === 0) && (
                         <div
@@ -514,7 +536,7 @@ class NoThresholdDiscountFoodSelectorForShop extends Component {
                     )
                 }
                 {
-                    showExludeDishes && (
+                    (showExludeDishes && !noExclude) && (
                         <FormItem label={'不计入点菜份数'} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
                             <FoodSelector
                                 mode="dish"
@@ -548,6 +570,7 @@ const mapStateToPropsForPromotion = (state) => {
     return {
         allCategories: state.sale_promotionDetailInfo_NEW.getIn(['$categoryAndFoodInfo', 'categories']),
         allDishes: state.sale_promotionDetailInfo_NEW.getIn(['$categoryAndFoodInfo', 'dishes']),
+        promotionDetailInfo: state.sale_promotionDetailInfo_NEW.getIn(['$promotionDetail']),
     }
 }
 NoThresholdDiscountFoodSelectorForShop.defaultProps = {

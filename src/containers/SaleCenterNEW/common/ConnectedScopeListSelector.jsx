@@ -46,6 +46,9 @@ class ConnectedScopeListSelector extends Component {
                 scopeLst={scopeLst}
                 onChange={this.handleScopeLstChange}
                 priceListData={priceList}
+                noDish={this.props.noDish}
+                noExclude={this.props.noExclude}
+                dishIndex={this.props.dishIndex}
                 scopeTip={this.props.promotionType === '2020' ? (
                     <CloseableTip content={
                         <div>
