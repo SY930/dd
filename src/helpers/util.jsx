@@ -599,9 +599,10 @@ export function checkPermission(rightCode) {
     const rightList = getRightListFromRedux();
     if (!rightCode || !rightList || !rightList.length) return false;
     const rightCodes = rightCode.split(',');
-    return !!rightCodes.find(
+    const isExsit = !!rightCodes.find(
         code => !!sortedFindBy(rightList, { rightCode: code }, right => right.rightCode)
     );
+    return isExsit
 }
 
 export function authorityFunc(user, rightCode) {
