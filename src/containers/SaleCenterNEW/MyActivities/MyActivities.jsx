@@ -1178,7 +1178,7 @@ class MyActivities extends React.Component {
                 className: 'TableTxtCenter',
                 width: 180,
                 render: (text, record, index) => {
-                    const isGroupPro = record.maintenanceLevel == '0';
+                    const isGroupPro = record.maintenanceLevel == '0';//区分集团和店铺
                     return (
                         <span>
                             <Authority rightCode={BASIC_LOOK_PROMOTION_QUERY}>
