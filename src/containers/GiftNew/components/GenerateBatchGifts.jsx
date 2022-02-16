@@ -211,8 +211,7 @@ class GenerateBatchGifts extends Component {
 
     handleExport(record) {
         const { itemID, sendCouponType } = record;
-        debugger
-        axiosData('/crmimport/crmExportService_doExportGiftPwdInfo.ajax', { itemID, giftItemID: this.props.giftItemID, sendCouponType }, {}, { path: 'data' },)
+        axiosData('/crmimport/crmExportService_doExportGiftPwdInfo.ajax', { itemID, giftItemID: this.props.giftItemID, sendCouponType: parseInt(sendCouponType) }, {}, { path: 'data' },)
             .then(res => {
                 this.handleQuery()
             })
