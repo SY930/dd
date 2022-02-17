@@ -1669,7 +1669,7 @@ class MyActivities extends React.Component {
                     const isGroupPro = record.maintenanceLevel == '0';//区分集团和店铺
                     return (
                         <span>
-                            <Authority rightCode={BASIC_LOOK_PROMOTION_QUERY}>
+                            <Authority rightCode={BASIC_LOOK_PROMOTION_QUERY} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
                                 <a
                                     href="#"
                                     onClick={() => {
@@ -1696,7 +1696,7 @@ class MyActivities extends React.Component {
                                     </Authority>
                                 )
                             }
-                            <Authority rightCode={BASIC_PROMOTION_DELETE}>
+                            <Authority rightCode={BASIC_PROMOTION_DELETE} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
                                 {/* 非禁用状态不能删除 */}
                                 <a
                                     href="#"
@@ -1954,6 +1954,7 @@ class MyActivities extends React.Component {
     }
 
     render() {
+        console.log('taipingdao')
         const { runType, dataSource } = this.state;
         const { stylesShow, tabKeys } = this.props;
         return (
