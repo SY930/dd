@@ -596,13 +596,15 @@ const getRightListFromRedux = (() => {
  * @return {Boolean}
  */
 export function checkPermission(rightCode,entryID) {
+    console.log(rightCode,entryID,'rightCode,entryID')
     const rightList = getRightListFromRedux();
     if (!rightCode || !rightList || !rightList.length) return false;
     const rightCodes = rightCode.split(',');
-    const isExsit = !!rightCodes.find(
+    const isExist = !!rightCodes.find(
         code => !!sortedFindBy(rightList, { rightCode: code,entryID }, right => right.rightCode)
     );
-    return isExsit
+    console.log(isExist,'isEXSIT')
+    return isExist
 }
 
 export function authorityFunc(user, rightCode) {
