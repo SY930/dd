@@ -592,15 +592,15 @@ const getRightListFromRedux = (() => {
 
 /**
  * 检查当前账户是否具有该权限
- * @param {String} rightCode 权限编码，多个编码用逗号隔开，有任一权限即可通过检查
+ * @param {String} rightCode 权限编码，多个编码用逗号隔开，有任一权限即可通过检查, 权限控制是由页面ID和rightCode 共同控制的
  * @return {Boolean}
  */
-export function checkPermission(rightCode) {
+export function checkPermission(rightCode,entryID) {
     const rightList = getRightListFromRedux();
     if (!rightCode || !rightList || !rightList.length) return false;
     const rightCodes = rightCode.split(',');
     const isExsit = !!rightCodes.find(
-        code => !!sortedFindBy(rightList, { rightCode: code }, right => right.rightCode)
+        code => !!sortedFindBy(rightList, { rightCode: code,entryID }, right => right.rightCode)
     );
     return isExsit
 }

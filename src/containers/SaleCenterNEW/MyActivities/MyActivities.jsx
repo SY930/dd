@@ -27,7 +27,9 @@ import {
     ONLINE_PROMOTION_MANAGEMENT_GROUP,
     PROMOTION_DECORATION,
 } from '../../../constants/entryCodes';
-
+import {
+    BASIC_PROMOTION_MANAGE_PAGE,
+} from '../../../constants/entryIds';
 import {
     initializationOfMyActivities,
     toggleSelectedActivityStateAC,
@@ -1194,7 +1196,7 @@ class MyActivities extends React.Component {
                             </Authority>
                             {
                                 !isHuaTian() && (
-                                    <Authority rightCode={BASIC_PROMOTION_UPDATE}>
+                                    <Authority rightCode={BASIC_PROMOTION_UPDATE} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
                                         <a
                                             href="#"
                                             disabled={!isGroupPro}
