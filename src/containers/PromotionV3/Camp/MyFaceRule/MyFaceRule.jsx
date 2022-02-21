@@ -20,8 +20,7 @@ const mapStateToProps = (state) => {
     }
 }
 
-// TODO: 合代码时把11157去掉
-const GROUPID_SHOW = ['130442', '11157', '189702'];
+const GROUPID_SHOW = ['130442', '189702'];
 class MyFaceRule extends Component {
     constructor(props) {
         super(props);
