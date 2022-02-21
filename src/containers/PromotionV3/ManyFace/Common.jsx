@@ -45,11 +45,18 @@ const formKeys1 = ['eventType', 'eventName', 'eventRange', 'eventRemark'];
 
 
 const formItems2 = {
+    useApp: {
+        type: 'radio',
+        label: '适用客户端',
+        options: [{ label: 'H5餐厅', value: '1' }, { label: '小程序2.0', value: '2' }],
+        defaultValue: '1',
+    },
     sceneList: {
-        type: 'combo',
+        type: 'custom',
         label: '应用场景',
         options: [{ label: '点餐页弹窗海报图', value: '1' }],
         defaultValue: '1',
+        render: () => (<p />),
     },
     brandList: {
         type: 'combo',
@@ -70,7 +77,7 @@ const formItems2 = {
 
 const keys1 = ['presentValue1'];
 const keys2 = ['presentValue2', 'settleUnitID'];
-const formKeys2 = ['sceneList', 'shopIDList'];
+const formKeys2 = ['useApp', 'sceneList', 'shopIDList'];
 /**
  * formItem3
  */

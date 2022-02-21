@@ -1,11 +1,16 @@
 import React, { PureComponent as Component } from 'react';
 import { connect } from 'react-redux';
-import { Form } from 'antd';
+import { Checkbox } from 'antd';
 import BaseForm from 'components/common/BaseForm';
 import ShopSelector from 'components/ShopSelector';
 import { formKeys2, formItems2, formItemLayout } from './Common';
 import { getPromotionShopSchema } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import { isFilterShopType, axiosData } from '../../../helpers/util'
+
+const CheckboxGroup = Checkbox.Group;
+
+const optiosH5 = [{ label: '点餐页弹窗海报图', value: '1' }];
+const optiosApp2 = [{ label: '点餐页弹窗海报图', value: '1', disabled: false }, { label: '点餐页广告图（即将上线）', value: '2', disabled: true }]
 
 class Step2 extends Component {
     /* 页面需要的各类状态属性 */
@@ -56,38 +61,37 @@ class Step2 extends Component {
             return { label: brandName, value: brandID };
         });
     }
-    getScenceList = () => {
-        const { sceneList = [] } = this.props;
-        return sceneList.map((x) => {
-            const { brandID, brandName } = x;
-            return { label: brandName, value: brandID };
-        });
-    }
+
     /** formItems 重新设置 */
-    resetFormItems() {
+    resetFormItems = () => {
         // const originTreeData = this.props.shopSchema.toJS();
         const shopData = this.props.shopSchema.toJS().shops;
         const filterShopData = shopData.filter(item => this.state.filterShop.indexOf(item.shopID) < 0);
         // originTreeData.shops = filterShopData;
         const { brands } = this.state;
+        const { shopIDList, sceneList, useApp } = formItems2;
         const render = d => d()(<ShopSelector
             filterParm={isFilterShopType() ? { productCode: 'HLL_CRM_License' } : {}}
             brandList={brands}
             canUseShops={filterShopData.map(shop => shop.shopID)}
         // schemaData={originTreeData}
         />);
-        const options = this.getBrandOpts();
-        const optionsScenceList = this.getScenceList();
-        const { shopIDList, brandList, sceneList } = formItems2;
+        const renderScene = (d, form) => {
+            return form.getFieldValue('useApp') === '1' ? d({})(
+                <CheckboxGroup options={optiosH5} />
+            ) : d({})(
+                <CheckboxGroup options={optiosApp2} />
+            )
+        }
         return {
-            sceneList: { ...sceneList, optionsScenceList },
+            useApp,
+            sceneList: { ...sceneList, render: renderScene },
             shopIDList: { ...shopIDList, render },
-            brandList: { ...brandList, options },
         };
     }
     render() {
         // const { formKeys2 } = this.state;
-        const { formData, getForm, form } = this.props;
+        const { formData, getForm } = this.props;
         const newFormItems = this.resetFormItems();
         return (
             <div>
