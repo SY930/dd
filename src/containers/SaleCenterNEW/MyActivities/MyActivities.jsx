@@ -27,7 +27,9 @@ import {
     ONLINE_PROMOTION_MANAGEMENT_GROUP,
     PROMOTION_DECORATION,
 } from '../../../constants/entryCodes';
-
+import {
+    BASIC_PROMOTION_MANAGE_PAGE,
+} from '../../../constants/entryIds';
 import {
     initializationOfMyActivities,
     toggleSelectedActivityStateAC,
@@ -1178,10 +1180,10 @@ class MyActivities extends React.Component {
                 className: 'TableTxtCenter',
                 width: 180,
                 render: (text, record, index) => {
-                    const isGroupPro = record.maintenanceLevel == '0';
+                    const isGroupPro = record.maintenanceLevel == '0';//区分集团和店铺
                     return (
                         <span>
-                            <Authority rightCode={BASIC_LOOK_PROMOTION_QUERY}>
+                            <Authority rightCode={BASIC_LOOK_PROMOTION_QUERY} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
                                 <a
                                     href="#"
                                     onClick={() => {
@@ -1194,7 +1196,7 @@ class MyActivities extends React.Component {
                             </Authority>
                             {
                                 !isHuaTian() && (
-                                    <Authority rightCode={BASIC_PROMOTION_UPDATE}>
+                                    <Authority rightCode={BASIC_PROMOTION_UPDATE} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
                                         <a
                                             href="#"
                                             disabled={!isGroupPro}
@@ -1206,7 +1208,7 @@ class MyActivities extends React.Component {
                                     </Authority>
                                 )
                             }
-                            <Authority rightCode={BASIC_PROMOTION_DELETE}>
+                            <Authority rightCode={BASIC_PROMOTION_DELETE} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
                                 {/* 非禁用状态不能删除 */}
                                 <a
                                     href="#"
