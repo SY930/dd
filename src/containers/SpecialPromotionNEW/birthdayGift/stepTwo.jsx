@@ -100,6 +100,12 @@ class StepTwo extends React.Component {
             }
             this.props.getShopSchemaInfo({ groupID: this.props.user.accountInfo.groupID, ...parm });
             // 过滤适用卡类列表
+                groupID: this.props.user.accountInfo.groupID,
+                eventStartDate: '20000625',
+                eventEndDate: '21000531',
+                eventWay: '52',
+                itemID: specialPromotion.itemID || ''
+            })
             this.props.getEventExcludeCardTypes({
                 groupID: this.props.user.accountInfo.groupID,
                 eventStartDate: '20000625',
@@ -129,7 +135,6 @@ class StepTwo extends React.Component {
                 });
             }
             // 遍历所有排除卡
-            // debugger
             if (this.props.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeIDs'])
                 !== nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeIDs'])) {
                 this.setState({ getExcludeCardLevelIds: nextProps.specialPromotion.getIn(['$eventInfo', 'excludeCardTypeIDs']).toJS() }, () => {

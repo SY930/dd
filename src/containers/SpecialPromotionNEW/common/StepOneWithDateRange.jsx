@@ -502,7 +502,6 @@ class StepOneWithDateRange extends React.Component {
                 });
                 this.props.saleCenterGetExcludeCardLevelIds(opts);
                 // 线上餐厅送礼还需要再查一个接口: http://wiki.hualala.com/pages/viewpage.action?pageId=30511315
-                console.log('this is the part 1 where user querythe action getEventExcludeCardTypes, opts is: ', opts)
                 this.props.type === '23' && this.props.getEventExcludeCardTypes(opts)
             }
             // if (this.props.type === '63') {
