@@ -100,12 +100,6 @@ class StepTwo extends React.Component {
             }
             this.props.getShopSchemaInfo({ groupID: this.props.user.accountInfo.groupID, ...parm });
             // 过滤适用卡类列表
-                groupID: this.props.user.accountInfo.groupID,
-                eventStartDate: '20000625',
-                eventEndDate: '21000531',
-                eventWay: '52',
-                itemID: specialPromotion.itemID || ''
-            })
             this.props.getEventExcludeCardTypes({
                 groupID: this.props.user.accountInfo.groupID,
                 eventStartDate: '20000625',
