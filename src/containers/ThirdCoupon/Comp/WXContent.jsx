@@ -137,7 +137,12 @@ class WXContent extends Component {
                                 rules: [
                                     { required: true, message: '请选择账务主体' },
                                 ],
-                            })(<Select placeholder={'请选择账务主体'}>
+                            })(<Select
+                                placeholder={'请选择账务主体'}
+                                showSearch={true}
+                                allowClear={true}
+                                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                            >
                                 {
                                     (this.state.payChannelList || []).map(item => (
                                         <Select.Option key={item.settleID} value={`${item.settleID}`}>{item.settleName}</Select.Option>
