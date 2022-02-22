@@ -1,6 +1,6 @@
 
 export const programList = [
-    { label: '无', value: '0' },
+    { label: '无', value: '' },
     { label: '首页', value: 'home' },
     { label: '分享好友', value: 'share' },
     { label: '我的', value: 'center' },
@@ -22,6 +22,11 @@ export const faceDefVal = {
     triggerEventName: '购物车夹菜',
     triggerEventValue: '',
     triggerEventCustomInfo: '',
+    // 点击触发的事件 小程序2.0
+    triggerEventName2: '购物车夹菜',
+    triggerEventValue2: '',
+    triggerEventCustomInfo2: '',
+    // children: [], // 点击小程序触发事件后的三级联动菜单
     everyTagsRule: [],
     // isTagRemove: false,
     isShowDishSelector: false,

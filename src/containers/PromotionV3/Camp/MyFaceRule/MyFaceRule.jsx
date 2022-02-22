@@ -21,33 +21,31 @@ const mapStateToProps = (state) => {
 }
 
 // TODO: 合代码时把11157去掉
-const GROUPID_SHOW = ['130442', '11157', '189702'];
+const GROUPID_SHOW = ['130442', '189702'];
+const empty = [{ label: '无', value: '' }];
 class MyFaceRule extends Component {
     constructor(props) {
         super(props);
         this.state = {
             eventSelectOption: [
                 { label: '无', value: '', children: [] },
-                // { label: '小程序', value: '0', children: programList },
-                // { label: '分享裂变', value: '8' },
-                // { label: '膨胀大礼包', value: '9' },
-                // { label: '免费领取', value: '3' },
-                // { label: '摇奖活动', value: 'event_20' },
-                // { label: '完善资料送礼活动', value: 'event_60' },
-                // { label: '推荐有礼', value: '13' },
-                // { label: '集点活动', value: '15' },
-                // { label: '签到活动', value: '16' },
-                // { label: '一键拨号', value: '6' },
-                // { label: '自定义页面', value: '1' },
+                { label: '小程序', value: '0', children: programList },
+                { label: '分享裂变', value: '8', children: [] },
+                { label: '膨胀大礼包', value: '9', children: [] },
+                { label: '免费领取', value: '3', children: [] },
+                { label: '摇奖活动', value: 'event_20', children: [] },
+                { label: '完善资料送礼活动', value: 'event_60', children: [] },
+                { label: '推荐有礼', value: '13', children: [] },
+                { label: '集点活动', value: '15', children: [] },
+                { label: '签到活动', value: '16', children: [] },
+                { label: '一键拨号', value: '6', children: [] },
+                // { label: '自定义页面', value: '1', children: [] },
+                // { label: '软文，文本消息', value: '7', children: [] },
+                { label: '商城', value: '5', children: [] },
+                { label: '跳转至小程序', value: '11', children: [] },
+                { label: '盲盒活动', value: '20', children: [] },
                 { label: '自定义链接', value: 'customLink' },
-                // { label: '软文，文本消息', value: '7' },
-                // { label: '商城', value: '5' },
-                // { label: '跳转至小程序', value: '11' },
                 { label: '菜品加入购物车', value: 'shoppingCartAddFood' },
-
-
-
-                // { label: '盲盒活动', value: '20' },
                 // { label: '小程序开卡', value: 'toOpenCard' }, // 仅针对九毛九集团可见
             ],
             mallActivityList: [],
@@ -64,11 +62,18 @@ class MyFaceRule extends Component {
     }
 
     componentDidMount() {
-        this.searchAllActivity();
+        // this.searchAllActivity();
         // this.searchAllMallActivity();
         this.searchCrmTag();
         // this.initData()
         this.initEventSelectOption();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (!_.isEqual(nextProps.allActivityList, this.props.allActivityList)) {
+            console.log('componentWillReceiveProps执行')
+            this.initEventSelectOption();
+        }
     }
 
 
@@ -137,16 +142,15 @@ class MyFaceRule extends Component {
     onEvents = (idx, key, value) => {
         const item = this.state.eventSelectOption.filter(itm => itm.value == value)
         this.onChange(idx, { [key]: value, triggerEventName: item[0] ? item[0].label : '', triggerEventCustomInfo: {} })
-        // this.getAvtivity(idx, value, key)
+    }
+
+    onEventsApp = (idx, key, value) => {
+        const item = this.state.eventSelectOption.filter(itm => itm.value == value)
+        this.onChange(idx, { [key]: value, triggerEventName2: item[0] ? item[0].label : '', triggerEventCustomInfo2: {} })
     }
 
     onEventsLinkValue = (idx, key, value) => {
-        const { activityOption } = this.state
-        const item = (activityOption[idx] || []).filter(itm => itm.value == value)
-        this.onChange(idx, { [key]: { eventID: value, eventWay: 20, eventName: item[0] ? item[0].label : '', value } })
-        this.setState({
-            [key]: { eventID: value, eventWay: 20, eventName: item[0] ? item[0].label : '', value },
-        })
+        this.onChange(idx, { [key]: { value } })
     }
 
     onChangeCustomUrl = (idx, key, { target }) => {
@@ -157,8 +161,8 @@ class MyFaceRule extends Component {
     }
 
     // 获取活动
-    getAvtivity = (idx, params, key) => {
-        const { allActivityList, mallActivityList, activityOption } = this.state;
+    getAvtivity = (params) => {
+        const { allActivityList = [], allMallActivity = [] } = this.props;
         let newActivityList = [];
         if (params === '8') { // 分享裂变
             newActivityList = allActivityList && allActivityList.filter((item = []) => item.eventWay === 65);
@@ -184,7 +188,7 @@ class MyFaceRule extends Component {
         }
         let linkUrlOption = [];
         if (params === '5') {
-            linkUrlOption = mallActivityList.map((items) => {
+            linkUrlOption = allMallActivity.map((items) => {
                 return {
                     label: items.shopName,
                     value: items.shopID.toString(),
@@ -198,90 +202,30 @@ class MyFaceRule extends Component {
                 }
             }) : []
         }
+        linkUrlOption = empty.concat(linkUrlOption);
         let activitySelectOption = [];
         activitySelectOption = [...linkUrlOption];
-        if (!params) {
-            activitySelectOption = [{ label: '无', value: '' }]
-        } else if (params) {
-            if (params === '0') {
-                activitySelectOption = [{ label: '无', value: '' }, ...programList]
-            } else if (params === 'event_60') {
-                activitySelectOption = [{ label: '完善资料送礼', value: 'complete/giftList' }]
-            } else if (!linkUrlOption.length) {
-                activitySelectOption = [{ label: '无', value: '' }];
-            }
+
+        if (params === 'event_60') {
+            activitySelectOption = [{ ...empty[0] }, { label: '完善资料送礼', value: 'complete/giftList' }]
         }
-        activityOption[idx] = activitySelectOption;
-        this.setState({
-            activityOption,
-            [key]: params,
-            // linkUrl: activitySelectOption[0].value,
-        })
-        // return activitySelectOption
+        return activitySelectOption
     }
 
 
     initEventSelectOption = () => {
-        // const { eventSelectOption } = this.state;
-        // const { sceneList } = this.props;
-        // const eventSelectOptionCopy = eventSelectOption;
-        // const state = getStore().getState();
-        // const { groupID } = state.user.get('accountInfo').toJS();
-        // if (GROUPID_SHOW.includes(`${groupID}`)) {
-        //     eventSelectOption.push({ label: '小程序开卡', value: 'toOpenCard' })
-        // }
-        // let eventSelectOption2 = [];
-        // if (sceneList === '2') {
-
-        // } else {
-        //     eventSelectOption2 = eventSelectOption
-        // }
-        // this.setState({
-        //     eventSelectOption: eventSelectOption2,
-        // })
-    }
-
-    // 查询所有营销活动
-    searchAllActivity = () => {
-        const { accountInfo, shopID } = this.props;
-
-        const reqParam = {
-            groupID: accountInfo.get('groupID'),
+        let eventList = [];
+        const { eventSelectOption } = this.state;
+        if (this.props.useApp === '1') { // H5餐厅
+            eventList = _.filter(eventSelectOption, item => ['', 'customLink', 'shoppingCartAddFood'].includes(item.value))
+        } else { // 小程序2.0
+            eventList = _.map(_.filter(eventSelectOption, item => !['', '0', 'customLink', 'shoppingCartAddFood'].includes(item.value)), it => ({ ...it, children: this.getAvtivity(it.value) }))
+            const restList = _.filter(eventSelectOption, item => ['', '0'].includes(item.value));
+            eventList = restList.concat(eventList)
         }
-        axios.post('/api/v1/universal', {
-            service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
-            method: '/specialPromotion/queryListWithoutCustomerInfo.ajax',
-            type: 'post',
-            data: reqParam,
-        }).then((res) => {
-            if (res.code === '000') {
-                this.setState({
-                    allActivityList: res.eventList,
-                })
-            } else {
-                message.error(res.data.message);
-            }
-        })
-    }
-    // 查询商城活动
-    searchAllMallActivity = () => {
-        const { accountInfo } = this.props;
-        axios.post('/api/v1/universal', {
-            service: 'HTTP_SERVICE_URL_SHOPAPI',
-            method: '/shop/getShopBaseInfo.svc',
-            type: 'post',
-            data: {
-                groupID: accountInfo.get('groupID'),
-                operationMode: '3',
-            },
-        }).then((res) => {
-            if (res.code === '000') {
-                this.setState({
-                    mallActivityList: res.data.shopBaseInfoDetails,
-                })
-            } else {
-                message.error(res.data.message);
-            }
+        console.log(eventList, 'eventList');
+        this.setState({
+            eventSelectOption: eventList,
         })
     }
 
@@ -392,6 +336,17 @@ class MyFaceRule extends Component {
         })
     }
 
+    renderInput2 = (i, v) => {
+        return (<FormItem>
+            <Input
+                style={{ marginLeft: 8, width: '249px', height: '32px' }}
+                onChange={(_v) => { this.onChangeCustomUrl(i, 'triggerEventCustomInfo2', _v) }}
+                value={v.triggerEventCustomInfo.value || ''}
+                placeholder="请输入要拨打的号码"
+            />
+        </FormItem>)
+    }
+
     renderInput = (i, v) => {
         return (<FormItem
         // validateStatus={v.triggerEventCustomInfo.value ? 'success' : 'error'} help={v.triggerEventCustomInfo.value ? '' : '请输入自定义链接'}
@@ -413,6 +368,28 @@ class MyFaceRule extends Component {
                 disabled={true}
             />
         </FormItem>)
+    }
+
+    renderJumpApp = (i, v) => {
+    console.log("🚀 ~ file: MyFaceRule.jsx ~ line 374 ~ MyFaceRule ~ i, v", i, v)
+        return (
+            <div>
+                <p>
+                    <span style={{ paddingRight: '12px' }}>微信小程序ID </span>
+                    <Input
+                        style={{ maxWidth: 220, marginTop: '10px', marginBottom: '10px' }}
+                        placeholder="请输入微信小程序ID"
+                    />
+                </p>
+                <p style={{ marginBottom: '10px' }}>
+                    <span>支付宝小程序ID </span>
+                    <Input
+                        style={{ maxWidth: 220 }}
+                        placeholder="请输入支付宝小程序ID"
+                    />
+                </p>
+            </div>
+        )
     }
 
     // 选择菜品
@@ -467,15 +444,16 @@ class MyFaceRule extends Component {
     }
 
     renderSelect = (i, v) => {
-        if (v.triggerEventValue == 'customLink' || v.triggerEventValue == 'shoppingCartAddFood') return null;
+        const options = this.state.eventSelectOption.filter(item => item.value === v.triggerEventValue2) || [];
+        const [option] = options;
         return (<FormItem>
             <Select
                 style={{ width: '249px', marginLeft: 8 }}
-                value={v.triggerEventCustomInfo ? v.triggerEventCustomInfo.value : ''}
-                onChange={(_v) => { this.onEventsLinkValue(i, 'triggerEventCustomInfo', _v) }}
+                value={v.triggerEventCustomInfo2.value ? v.triggerEventCustomInfo2.value : ''}
+                onChange={(_v) => { this.onEventsLinkValue(i, 'triggerEventCustomInfo2', _v) }}
             >
                 {
-                    (this.state.activityOption[i] || []).map(({ value, label }) => {
+                    (option.children || []).map(({ value, label }) => {
                         return <Select.Option key={value} value={`${value}`}>{label}</Select.Option>
                     })
                 }
@@ -483,9 +461,51 @@ class MyFaceRule extends Component {
         </FormItem>)
     }
 
+    renderH5Events = (v, i) => {
+        return (
+            <div style={{ display: 'flex' }}>
+                <FormItem>
+                    <Select style={{ width: '120px' }} value={v.triggerEventValue || ''} onChange={(_v) => { this.onEvents(i, 'triggerEventValue', _v) }}>
+                        {
+                            (this.state.eventSelectOption || []).map(({ value: key, label }) => {
+                                return <Select.Option key={key} value={`${key}`}>{label}</Select.Option>
+                            })
+                        }
+                    </Select>
+                </FormItem>
+                {v.triggerEventValue === 'customLink' && this.renderInput(i, v)}
+                {v.triggerEventValue === 'shoppingCartAddFood' && this.renderFoods(i, v)}
+            </div>
+        )
+    }
+
+    renderAPPEvents = (v, i) => {
+        return (
+            <div>
+                <div style={{ display: 'flex' }}>
+                    <FormItem
+                    // key={unionId}
+                    >
+                        <Select style={{ width: '120px' }} value={v.triggerEventValue2 || ''} onChange={(_v) => { this.onEventsApp(i, 'triggerEventValue2', _v) }}>
+                            {
+                                (this.state.eventSelectOption || []).map(({ value: key, label }) => {
+                                    return <Select.Option key={key} value={`${key}`}>{label}</Select.Option>
+                                })
+                            }
+                        </Select>
+                    </FormItem>
+                    {/* 11 跳转小程序和 6 一键拨号 单独处理 */}
+                    {v.triggerEventValue2 && v.triggerEventValue2 != '6' && v.triggerEventValue2 != '11' && this.renderSelect(i, v)}
+                    {v.triggerEventValue2 == '6' && this.renderInput2(i, v)}
+                </div>
+                {v.triggerEventValue2 == '11' && this.renderJumpApp(i, v)}
+            </div>
+        )
+    }
+
 
     render() {
-        const { value = [], sceneList, form } = this.props;
+        const { value = [], form, useApp } = this.props;
         // const { length } = value;
         // 防止回显没数据不显示礼品组件
         if (!value[0]) {
@@ -501,6 +521,7 @@ class MyFaceRule extends Component {
                                 <div className={styles.MyFaceRuleConntet}>
                                     <span>规则{i + 1}</span>
                                     <p style={{ height: 24 }}></p>
+                                    {/* 目标范围 */}
                                     <div className={styles.MyFaceRuleSubConntet} style={{ display: 'flex' }}>
                                         <p> <span className={styles.tip}>*</span>目标范围 <Tooltip placement="top" title="会员标签属性被删除后请重新选择"><Icon type="exclamation-circle" /></Tooltip></p>
                                         <FormItem>
@@ -577,25 +598,14 @@ class MyFaceRule extends Component {
                                             </FormItem>
                                         }
                                     </div>
+                                    {/* 点击触发事件 */}
                                     <div className={styles.MyFaceRuleSubConntet} style={{ display: 'flex' }}>
                                         <p>点击触发事件</p>
-                                        <FormItem 
-                                        // validateStatus={v.triggerEventValue ? 'success' : 'error'} help={v.triggerEventValue ? '' : '请输入触发事件'}
-                                        >
-                                            <Select style={{ width: '120px' }} value={v.triggerEventValue} onChange={(_v) => { this.onEvents(i, 'triggerEventValue', _v) }}>
-                                                {
-                                                    (this.state.eventSelectOption || []).map(({ value: key, label }) => {
-                                                        return <Select.Option key={key} value={`${key}`}>{label}</Select.Option>
-                                                    })
-                                                }
-                                            </Select>
-                                        </FormItem>
-                                        {v.triggerEventValue == 'customLink' && this.renderInput(i, v)}
-                                        {v.triggerEventValue == 'shoppingCartAddFood' && this.renderFoods(i, v)}
-                                        {/* { v.triggerEventValue == 'toOpenCard' && this.renderOpenCardInput(i, v)} */}
-                                        {/* {this.renderSelect(i, v, decorator, [])} */}
+                                        { useApp === '1' && this.renderH5Events(v, i) }
+                                        { useApp === '2' && this.renderAPPEvents(v, i)}
                                     </div>
                                 </div>
+                                {/* 添加删除操作 */}
                                 <div>
                                     {
                                         i == 0 && <a data-idx={i} href={'javascript:;'} onClick={this.add}>  <Icon type="plus-circle-o" style={{ fontSize: 26, color: '#12B493' }} /> </a>

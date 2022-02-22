@@ -185,7 +185,37 @@ async function getSceneList() {
     return [];
 }
 
+// 查询所有营销活动
+async function searchAllActivity() {
+    const { groupID } = getAccountInfo();
+    const data = { groupID };
+    const method = '/specialPromotion/queryListWithoutCustomerInfo.ajax';
+    const params = { service, type, data, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, eventList = [] } = response;
+    if (code === '000') {
+        return eventList;
+    }
+    message.error(msg);
+    return [];
+}
+
+// 查询商城活动
+async function searchAllMallActivity() {
+    const { groupID } = getAccountInfo();
+    const data = { groupID, operationMode: '3' };
+    const method = '/shop/getShopBaseInfo.svc';
+    const params = { service: 'HTTP_SERVICE_URL_SHOPAPI', type, data, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: { shopBaseInfoDetails = [] } } = response;
+    if (code === '000') {
+        return shopBaseInfoDetails;
+    }
+    message.error(msg);
+    return [];
+}
+
 
 export {
-    getBrandList, getSceneList, putEvent, getEvent, postEvent, getGroupCardTypeList, getWechatMpList, getSettleList, getAuthLicenseData,
+    getBrandList, getSceneList, putEvent, getEvent, postEvent, getGroupCardTypeList, getWechatMpList, getSettleList, getAuthLicenseData, searchAllActivity, searchAllMallActivity
 }

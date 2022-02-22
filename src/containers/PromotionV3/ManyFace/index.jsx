@@ -4,7 +4,7 @@ import { Modal, Steps, Button, message } from 'antd';
 import { jumpPage, closePage, axios } from '@hualala/platform-base';
 import moment from 'moment';
 import _ from 'lodash';
-import { getBrandList, putEvent, getEvent, postEvent, getGroupCardTypeList, getWechatMpList, getSettleList, getSceneList } from './AxiosFactory';
+import { getBrandList, putEvent, getEvent, postEvent, searchAllActivity, searchAllMallActivity } from './AxiosFactory';
 import Step1 from './Step1';
 import Step2 from './Step2';
 import Step3 from './Step3';
@@ -36,6 +36,8 @@ class ManyFace extends Component {
         // tagCategories: [],
         // tagTypes: [],
         tagRuleDetails: [],
+        allActivity: [],
+        allMallActivity: [],
     };
     componentDidMount() {
         this.getInitData();
@@ -70,8 +72,7 @@ class ManyFace extends Component {
 
         form.validateFields((e, v) => {
             if (!e) {
-                this.setState({ formData2: v });
-                this.onGoNext();
+                this.setState({ formData2: v }, () => { this.onGoNext() });
             }
         });
     }
@@ -108,7 +109,7 @@ class ManyFace extends Component {
                         message.warn('请选择触发事件')
                         return null
                     }
-                    if (_.isEmpty(itm.triggerEventCustomInfo) && itm.triggerEventValue !== 'toOpenCard') {
+                    if (_.isEmpty(itm.triggerEventCustomInfo)) {
                         flag = true;
                         // itm.validateStatus = 'error';
                         message.warn('请选择触发事件')
@@ -119,7 +120,7 @@ class ManyFace extends Component {
                     return
                 }
                 const formData3 = faceData.map((item) => {
-                    if (item.triggerEventValue === 'customLink' || item.triggerEventValue === 'toOpenCard') {
+                    if (item.triggerEventValue === 'customLink') {
                         item.triggerEventCustomInfo = item.triggerEventCustomInfo.value || '';
                     } else {
                         item.triggerEventCustomInfo = JSON.stringify(item.triggerEventCustomInfo)
@@ -196,12 +197,25 @@ class ManyFace extends Component {
     }
 
     getInitData = () => {
-        const { fetchFoodCategoryLightInfo, fetchFoodMenuLightInfo, accountInfo, fetchPromotionScopeInfo } = this.props
+        const { fetchFoodCategoryLightInfo, fetchFoodMenuLightInfo, accountInfo, fetchPromotionScopeInfoAC } = this.props
         const groupID = accountInfo.get('groupID');
         // 获取菜品分类
         fetchFoodCategoryLightInfo({ groupID, shopID: this.props.user.shopID }); // 菜品分类轻量级接口
         fetchFoodMenuLightInfo({ groupID, shopID: this.props.user.shopID }); // 轻量级接口
-        fetchPromotionScopeInfo({ groupID }) // 品牌
+        fetchPromotionScopeInfoAC({ groupID }) // 品牌
+
+        // 获取商城和营销活动
+        Promise.all([searchAllActivity(), searchAllMallActivity()]).then((data = []) => {
+            this.setState({
+                allActivity: data[0] || [],
+                allMallActivity: data[1] || [],
+            })
+        }).catch(() => {
+            this.setState({
+                allActivity: [],
+                allMallActivity: [],
+            })
+        })
     }
 
     getEventDetail() {
@@ -252,7 +266,7 @@ class ManyFace extends Component {
                 } else {
                     item.everyTagsRule = [];
                 }
-                if (item.triggerEventValue === 'customLink' || item.triggerEventValue === 'toOpenCard') {
+                if (item.triggerEventValue === 'customLink') {
                     item.triggerEventCustomInfo = { value: item.triggerEventCustomInfo }
                 } else  {
                     try {
@@ -369,9 +383,11 @@ class ManyFace extends Component {
                         {current === 3 &&
                             <Step3
                                 form={form}
-                                sceneList={formData2.sceneList || ''}
+                                useApp={formData2.useApp || ''}
                                 getForm={this.onSetForm}
                                 formData={formData3}
+                                allActivity={this.state.allActivity}
+                                allMallActivity={this.state.allMallActivity}
                             />
                         }
                     </li>
@@ -395,7 +411,7 @@ function mapDispatchToProps(dispatch) {
         fetchFoodCategoryLightInfo: (opts, flag, id) => {
             dispatch(fetchFoodCategoryInfoLightAC(opts, flag, id))
         },
-        fetchPromotionScopeInfo: (opts) => {
+        fetchPromotionScopeInfoAC: (opts) => {
             dispatch(fetchPromotionScopeInfo(opts));
         },
         setSpecialBasicInfo: (opts) => {
