@@ -369,6 +369,7 @@ class ManyFace extends Component {
                         {current === 3 &&
                             <Step3
                                 form={form}
+                                sceneList={formData2.sceneList || ''}
                                 getForm={this.onSetForm}
                                 formData={formData3}
                             />

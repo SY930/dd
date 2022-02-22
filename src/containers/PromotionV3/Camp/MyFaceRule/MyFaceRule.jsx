@@ -27,12 +27,11 @@ class MyFaceRule extends Component {
         super(props);
         this.state = {
             eventSelectOption: [
-                { label: '无', value: '' },
-                // { label: '小程序', value: '0' },
+                { label: '无', value: '', children: [] },
+                // { label: '小程序', value: '0', children: programList },
                 // { label: '分享裂变', value: '8' },
                 // { label: '膨胀大礼包', value: '9' },
                 // { label: '免费领取', value: '3' },
-                // { label: '盲盒活动', value: '20' },
                 // { label: '摇奖活动', value: 'event_20' },
                 // { label: '完善资料送礼活动', value: 'event_60' },
                 // { label: '推荐有礼', value: '13' },
@@ -45,6 +44,10 @@ class MyFaceRule extends Component {
                 // { label: '商城', value: '5' },
                 // { label: '跳转至小程序', value: '11' },
                 { label: '菜品加入购物车', value: 'shoppingCartAddFood' },
+
+
+
+                // { label: '盲盒活动', value: '20' },
                 // { label: '小程序开卡', value: 'toOpenCard' }, // 仅针对九毛九集团可见
             ],
             mallActivityList: [],
@@ -115,6 +118,14 @@ class MyFaceRule extends Component {
         this.onChange(idx, { [key]: value, conditionName: item[0] ? item[0].label : '', targetValue: '', targetName: '', everyTagsRule })
     }
 
+    onCrmGroup = (idx, key, value) => {
+        const { value: data } = this.props;
+        const hasValue = data.some(d => d.conditionValue == value);
+        if (hasValue) return message.warn('不能选择相同的会员群体属性');
+        const item = [].filter(itm => itm.tagCategoryID == value)
+        this.onChange(idx, { [key]: value, conditionName: item[0] ? item[0].label : '', targetValue: '', targetName: '' })
+    }
+
     onEveryTagsRule = (idx, key, value, data) => {
         const item = data.everyTagsRule.filter(itm => itm.value == value)
         this.onChange(idx, { [key]: value, targetName: item[0] ? item[0].label : '' })
@@ -145,38 +156,26 @@ class MyFaceRule extends Component {
         })
     }
 
-    // getEveryTagsRule = (item) => {
-    //     if (item.conditionType == '2') {
-    //         // const everyTagsRule = this.state.tagRuleDetails.filter(itm => itm.tagCategoryID == item.conditionValue)
-    //         const { everyTagsRule } = this.state;
-    //         const everyTagsRuleOption = [{ label: '无', value: '' }, ...everyTagsRule]
-    //         // const tagsList = this.state.tagsList
-    //         return everyTagsRuleOption
-    //     }
-    //     return []
-    // }
-
-
     // 获取活动
     getAvtivity = (idx, params, key) => {
         const { allActivityList, mallActivityList, activityOption } = this.state;
         let newActivityList = [];
-        if (params === '8') {
+        if (params === '8') { // 分享裂变
             newActivityList = allActivityList && allActivityList.filter((item = []) => item.eventWay === 65);
-        } else if (params === '9') {
+        } else if (params === '9') { // 膨胀大礼包
             newActivityList = allActivityList && allActivityList.filter((item = []) => item.eventWay === 66);
-        } else if (params === '3') {
+        } else if (params === '3') { // 免费领取
             newActivityList = allActivityList && allActivityList.filter((item = []) => item.eventWay === 21);
-        } else if (params === 'event_20') {
+        } else if (params === 'event_20') { // 摇奖活动
             newActivityList = allActivityList && allActivityList.filter((item = []) => item.eventWay === 20);
         } else if (params === 'event_60') { // 完善资料送礼活动
             // newActivityList = allActivityList && allActivityList.filter((item = []) => item.eventWay === 7); // 完善资料送礼活动接口未返回，目前自己定义的
             newActivityList = [{ label: '完善资料送礼', value: 'complete/giftList' }]
-        } else if (params === '13') {
+        } else if (params === '13') { // 推荐有礼
             newActivityList = allActivityList && allActivityList.filter((item = []) => item.eventWay === 68);
-        } else if (params === '15') {
+        } else if (params === '15') { // 集点活动
             newActivityList = allActivityList && allActivityList.filter((item = []) => item.eventWay === 75);
-        } else if (params === '16') {
+        } else if (params === '16') { // 签到活动
             newActivityList = allActivityList && allActivityList.filter((item = []) => item.eventWay === 76);
         } else if (params === '20') {
             newActivityList = allActivityList && allActivityList.filter((item = []) => item.eventWay === 79);
@@ -223,16 +222,23 @@ class MyFaceRule extends Component {
 
 
     initEventSelectOption = () => {
-        const { eventSelectOption } = this.state;
+        // const { eventSelectOption } = this.state;
+        // const { sceneList } = this.props;
         // const eventSelectOptionCopy = eventSelectOption;
-        const state = getStore().getState();
-        const { groupID } = state.user.get('accountInfo').toJS();
-        if (GROUPID_SHOW.includes(`${groupID}`)) {
-            eventSelectOption.push({ label: '小程序开卡', value: 'toOpenCard' })
-        }
-        this.setState({
-            eventSelectOption,
-        })
+        // const state = getStore().getState();
+        // const { groupID } = state.user.get('accountInfo').toJS();
+        // if (GROUPID_SHOW.includes(`${groupID}`)) {
+        //     eventSelectOption.push({ label: '小程序开卡', value: 'toOpenCard' })
+        // }
+        // let eventSelectOption2 = [];
+        // if (sceneList === '2') {
+
+        // } else {
+        //     eventSelectOption2 = eventSelectOption
+        // }
+        // this.setState({
+        //     eventSelectOption: eventSelectOption2,
+        // })
     }
 
     // 查询所有营销活动
@@ -479,7 +485,7 @@ class MyFaceRule extends Component {
 
 
     render() {
-        const { value = [], decorator } = this.props;
+        const { value = [], sceneList, form } = this.props;
         // const { length } = value;
         // 防止回显没数据不显示礼品组件
         if (!value[0]) {
@@ -500,13 +506,11 @@ class MyFaceRule extends Component {
                                         <FormItem>
                                             <Select style={{ width: '120px' }} value={`${v.conditionType}`} onChange={(_v) => { this.onRange(i, 'conditionType', _v) }} >
                                                 {
-                                                    [{ label: '会员身份', value: '1' }, { label: '会员标签', value: '2' }].map(({ value: key, label }) => {
+                                                    [{ label: '会员身份', value: '1' }, { label: '会员标签', value: '2' }, { label: '会员群体', value: '3' }].map(({ value: key, label }) => {
                                                         return <Select.Option key={key} value={`${key}`}>{label}</Select.Option>
                                                     })
                                                 }
                                             </Select>
-                                            {/* )
-                                            } */}
                                         </FormItem>
                                         {
                                             v.conditionType == '1' &&
@@ -560,6 +564,18 @@ class MyFaceRule extends Component {
                                                 </FormItem>
                                             </div>
                                         }
+                                        {
+                                            v.conditionType == '3' &&
+                                            <FormItem required={true}>
+                                                <Select style={{ width: '120px', marginLeft: 8 }} value={v.conditionValue} onChange={(_v) => { this.onCrmGroup(i, 'conditionValue', _v) }}>
+                                                    {
+                                                        ([]).map(({ value: key, label }) => {
+                                                            return <Select.Option key={key} value={`${key}`}>{label}</Select.Option>
+                                                        })
+                                                    }
+                                                </Select>
+                                            </FormItem>
+                                        }
                                     </div>
                                     <div className={styles.MyFaceRuleSubConntet} style={{ display: 'flex' }}>
                                         <p>点击触发事件</p>
@@ -576,7 +592,7 @@ class MyFaceRule extends Component {
                                         </FormItem>
                                         {v.triggerEventValue == 'customLink' && this.renderInput(i, v)}
                                         {v.triggerEventValue == 'shoppingCartAddFood' && this.renderFoods(i, v)}
-                                        { v.triggerEventValue == 'toOpenCard' && this.renderOpenCardInput(i, v)}
+                                        {/* { v.triggerEventValue == 'toOpenCard' && this.renderOpenCardInput(i, v)} */}
                                         {/* {this.renderSelect(i, v, decorator, [])} */}
                                     </div>
                                 </div>
