@@ -486,10 +486,19 @@ class CreateCouponContent extends Component {
                             rules: [
                                 { required: true, message: '请选择支付宝pid号' },
                             ],
-                        })(<Select onChange={this.handleDirectSelect} placeholder={'请选择支付宝pid号 - 账号名称'}>
+                        })(<Select
+                            onChange={this.handleDirectSelect}
+                            placeholder={'请选择支付宝pid号 - 账号名称'}
+                            showSearch={true}
+                            allowClear={true}
+                            filterOption={(input, option) => {
+                                const [chlid, t, child2] = option.props.children;
+                                return chlid.includes(input.toLowerCase()) || child2.includes(input.toLowerCase())
+                            }}
+                        >
                             {
                                 (this.props.shopPid || []).map(({ channelAccount, channelName }) => (
-                                    <Select.Option key={channelAccount} value={`${channelAccount}`}>{channelAccount} - {channelName}</Select.Option>
+                                    <Select.Option key={channelAccount} value={`${channelAccount}`}>{channelName} - {channelAccount}</Select.Option>
                                 ))
                             }
                         </Select>)}
@@ -573,7 +582,13 @@ class CreateCouponContent extends Component {
                             rules: [
                                 { required: true, message: '请输入结算主体' },
                             ],
-                        })(<Select onChange={this.handleIndirectSelect} placeholder={'请输入结算主体'}>
+                        })(<Select
+                            onChange={this.handleIndirectSelect}
+                            placeholder={'请输入结算主体'}
+                            showSearch={true}
+                            allowClear={true}
+                            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                        >
                             {
                                 (this.props.indirectList || []).map(({ settleUnitName, settleUnitID }) => (
                                     <Select.Option key={settleUnitID} value={`${settleUnitID}`}>{settleUnitName}</Select.Option>
