@@ -1,0 +1,60 @@
+#drag-table {
+    width: 100%;
+
+    thead {
+        tr {
+            background: #F5F5F5;
+            border-radius: 3px 3px 0px 0px;
+            text-align: center;
+            line-height: 42px;
+
+            td {
+                border-right: 1px solid #e7e7e7;
+                font-size: 12px;
+                color: #333;
+                text-align: center;
+            }
+
+        }
+    }
+
+    tbody {
+        tr {
+            line-height: 40px;
+            &:nth-child(even){
+                background: #f9f9f9;
+            }
+            td {
+                border-right: 1px solid #e7e7e7;
+                color: #333;
+                font-size: 12px;
+                text-align: center;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+
+                .defaultTag {
+                    display: block;
+                    margin-top: 7px;
+                    margin-left: 5px;
+                    float: left;
+                    width: 32px;
+                    height: 16px;
+                    line-height: 16px;
+                    text-align: center;
+                    background: #FFFFFF;
+                    border-radius: 2px;
+                    border: 1px solid #1BB496;
+                    color: #1BB496;
+                    font-size: 10px;
+                }
+            }
+        }
+    }
+
+    .backgoundImg {
+        width: 7px;
+        margin-top: -1px;
+        margin-right: 3px;
+    }
+}
