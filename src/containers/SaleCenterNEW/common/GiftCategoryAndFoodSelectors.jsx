@@ -442,7 +442,7 @@ class CategoryAndFoodSelector extends Component {
                                 borderRadius: '4px',
                                 border: '1px solid #FFE58F',
                                 paddingLeft: '10px',
-                                marginLeft:'75px',
+                                marginLeft:'68px',
                                 marginTop:'-10px'
                             }}
                         >
