@@ -2,7 +2,7 @@
  * @Author: dangxiaorun
  * @Date: 2022-02-22 11:56:09
  * @LastEditors: dangxiaorun
- * @LastEditTime: 2022-02-23 11:20:08
+ * @LastEditTime: 2022-02-25 15:38:28
  * @Description: file content
  */
 import React, {Component} from 'react';
@@ -12,7 +12,9 @@ import drag from './assets/drag.png'
 
 let sortable = null;
 export default class SortableTable extends Component {
-
+    state = {
+        sortableDom: true, //为了解决sortable插件的排序错误
+    }
     componentDidMount() {
         this.draftSort()
     }
@@ -21,6 +23,7 @@ export default class SortableTable extends Component {
         const {
             handleReSort
         } = this.props
+        const _this = this;
         let el = document.getElementById('drag-items');
         sortable = Sortable.create(el, {
             animation: 500,
@@ -29,6 +32,16 @@ export default class SortableTable extends Component {
             onEnd: function (evt) {
                 var arr = sortable.toArray();
                 handleReSort && handleReSort(arr)
+                // 以下是对sortablejs出现的错误进行的纠正，因为插件出现了bug，重新排序后的顺序出现了问题，之后用别的插件进行替代。
+                _this.setState({
+                    sortableDom: false
+                }, () => {
+                    _this.setState({
+                        sortableDom: true
+                    }, () => {
+                        _this.draftSort()
+                    })
+                });
                 return false
             }
         });
@@ -38,8 +51,11 @@ export default class SortableTable extends Component {
             columns = [],
             dataSource = []
         } = this.props
+        const {
+            sortableDom
+        } = this.state
         return (
-            <table>
+                sortableDom &&  <table className={styles.tableWarp}>
                 <thead data-id='thead'>
                     <tr>
                         <td style={{ width: 100 }}>
@@ -52,10 +68,10 @@ export default class SortableTable extends Component {
                         }
                     </tr>
                 </thead>
-                <tbody data-key={Math.random()} id='drag-items'>
+                <tbody id='drag-items'>
                     {dataSource.length > 0 ?
                         dataSource.map((item, index) => {
-                            return <tr className={'draggable'} data-id={index} data-index={index} key={Math.random()}>
+                            return <tr className={'draggable'} data-id={index} data-index={index}>
                                 {
                                     <td style={{ width: 100 }}>
                                         {index + 1}
@@ -77,7 +93,7 @@ export default class SortableTable extends Component {
                         <tr><td colSpan='10' style={{ textAlign: 'center' }}>暂无数据</td></tr>
                     }
                 </tbody>
-            </table>
+            </table>     
         )
     }
 }
