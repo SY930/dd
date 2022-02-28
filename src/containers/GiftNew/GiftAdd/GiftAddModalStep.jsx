@@ -3455,7 +3455,7 @@ class GiftAddModalStep extends React.PureComponent {
             formData.selectedShops = [];
         }
         return (
-            <div>
+            <div className={styles2.formContainer}>
                 <div
                     style={{
                         margin: '20px 0 10px 94px'
