@@ -260,6 +260,9 @@ class AddMoneyTradeDishesTableWithoutBrand extends Component {
                 key: 'price',
                 width: 72,
                 className: 'TableTxtRight',
+                render: (text, record, index) => {
+                    return <Tooltip title={text}>{text}</Tooltip>
+                },
             },
             {
                 title: calType == 1 ? '减免价(元)' : '活动价(元)',
