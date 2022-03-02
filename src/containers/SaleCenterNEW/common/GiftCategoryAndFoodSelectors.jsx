@@ -421,7 +421,7 @@ class CategoryAndFoodSelector extends Component {
                     <FoodSelector
                         background={this.props.background}
                         mode="category"
-                        placeholder=""
+                        placeholder="点击选择菜品分类"
                         allDishes={dishes}
                         allCategories={categories}
                         allBrands={brands}
@@ -442,7 +442,7 @@ class CategoryAndFoodSelector extends Component {
                                 borderRadius: '4px',
                                 border: '1px solid #FFE58F',
                                 paddingLeft: '10px',
-                                marginLeft:'75px',
+                                marginLeft:'68px',
                                 marginTop:'-10px'
                             }}
                         >
@@ -456,7 +456,7 @@ class CategoryAndFoodSelector extends Component {
                             <FoodSelector
                                 background={this.props.background}
                                 mode="dish"
-                                placeholder=""
+                                placeholder="点击选择排除菜品"
                                 allDishes={filteredDishes}
                                 allCategories={filteredCategories}
                                 allBrands={filteredBrands}

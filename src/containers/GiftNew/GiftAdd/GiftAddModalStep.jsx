@@ -1695,7 +1695,7 @@ class GiftAddModalStep extends React.PureComponent {
         const { gift: { data } } = this.props;
         const brandList = selectBrands.map(x=>x.targetID);
         return (
-            <Row style={{ marginBottom: shopNames.length === 0 ? -15 : 0 }}>
+            <Row style={{ marginBottom: shopNames.length === 0 ? -15 : 0, width: 302 }}>
                 <Col style={{position:'relative'}}>
                     {applyScene == 2 || (selectBrands && selectBrands.length == 0 && excludeShops.length == 0) ? null : <div className={styles.disabledWrapper}></div>}
                     {decorator({
@@ -1738,7 +1738,7 @@ class GiftAddModalStep extends React.PureComponent {
         let { gift: { data } } = this.props;
         const brandList = selectBrands.map(x=>x.targetID);
         return (
-            <Row style={{ marginBottom: 5,position:'relative' }}>
+            <Row style={{ marginBottom: 5,position:'relative', width: 302 }}>
                 <Col style={{position:'relative'}}>
                     {selectBrands && selectBrands.length > 0 && selectedShops.length == 0 ? null : <div className={styles.disabledWrapper}></div>}
                     {decorator({
@@ -2692,7 +2692,7 @@ class GiftAddModalStep extends React.PureComponent {
             giftImagePath: {
                 label: '礼品图样',
                 type: 'custom',
-                render: decorator => decorator({})(<GiftImagePath/>),
+                render: decorator => decorator({})(<GiftImagePath contentHeight='auto'/>),
             },
             selectBrands: {
                 label: '所属品牌',
@@ -3455,7 +3455,7 @@ class GiftAddModalStep extends React.PureComponent {
             formData.selectedShops = [];
         }
         return (
-            <div>
+            <div className={styles2.formContainer}>
                 <div
                     style={{
                         margin: '20px 0 10px 94px'
@@ -3469,6 +3469,10 @@ class GiftAddModalStep extends React.PureComponent {
                     getRefs={refs => this.firstFormRefMap = refs}
                     formItems={formItems}
                     formData={formData}
+                    formItemLayout={{
+                        labelCol: {span: 7},
+                        wrapperCol: {span: 17}
+                    }}
                     formKeys={displayFirstKeys}
                     onChange={(key, value) => this.handleFormChange(key, value, this.firstForm)}
                     getSubmitFn={(handles) => {
@@ -3543,6 +3547,10 @@ class GiftAddModalStep extends React.PureComponent {
                     getForm={form => this.secondForm = form}
                     formItems={formItems}
                     formData={formData}
+                    formItemLayout={{
+                        labelCol: {span: 7},
+                        wrapperCol: {span: 17}
+                    }}
                     formKeys={displaySecondKeys}
                     onChange={(key, value) => this.handleFormChange(key, value, this.secondForm)}
                     getSubmitFn={(handles) => {

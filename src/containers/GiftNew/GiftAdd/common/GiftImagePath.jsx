@@ -24,6 +24,9 @@ class GiftImagePath extends Component {
 
     render() {
         const modifierClassName = this.props.modifierClassName;
+        const {
+            contentHeight = ''
+        } = this.props
         const props = {
             name: 'myFile',
             disabled: this.props.disabled,
@@ -54,7 +57,7 @@ class GiftImagePath extends Component {
         return (
             <Row>
                 <Col>
-                    <FormItem style={{ height: this.props.wrapperHeight - 60 }}>
+                    <FormItem style={{ height: contentHeight || this.props.wrapperHeight - 60 }}>
                         <div className={styles.speDiv} style={{float: 'left', marginRight: '10px'}}>
                             <ImageUpload
                                 {...props}

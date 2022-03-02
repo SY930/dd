@@ -1451,7 +1451,7 @@ class TrdTemplate extends React.Component {
         const { giftItemId } = this.props
 
         return (
-            <div ref={e => this.wrapperDOM = e}>
+            <div ref={e => this.wrapperDOM = e} style={{ position: 'relative', left: -33}}>
                 <Spin spinning={loading}>
                     <FormItem
                         label='是否关联第三方券'
