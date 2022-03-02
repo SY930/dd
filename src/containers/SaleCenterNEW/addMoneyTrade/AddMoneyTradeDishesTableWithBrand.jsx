@@ -8,6 +8,7 @@ import {
     Tooltip,
     Popconfirm,
     Icon,
+    // Pagination,
 } from 'antd';
 import {
     memoizedExpandCategoriesAndDishes,
@@ -18,6 +19,7 @@ import PriceInputIcon from '../common/PriceInputIcon';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { injectIntl } from '../IntlDecor';
+import  SortableTable from '../common/SortableTable'
 
 const FormItem = Form.Item;
 
@@ -53,6 +55,8 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
             selectorModalVisible: false,
             priceLst,
             data: [],
+            total: 0,
+            pageNo: 1,
         }
     }
     componentDidMount() {
@@ -119,7 +123,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
         this.setState({ data });
         this.props.onChange(data.map(item => ({ ...item })));
     }
-    
+
 
     onFloatMaxNumChange = (val, { index }) => {
         const data = [...this.state.data];
@@ -155,9 +159,9 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
             selectorModalVisible: false,
             data: dishObjects,
         })
-        
-        dishObjects.map((i)=>{
-            if(!i.maxNum){
+
+        dishObjects.map((i) => {
+            if (!i.maxNum) {
                 i.maxNum = 1
             }
         })
@@ -200,24 +204,32 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
             />
         )
     }
+
+    handleSort = (arr) => {
+        const {
+            data = []
+        } = this.state
+        let temp = arr.map((item) => {
+            return data[item]
+        })
+        this.setState({
+            data: temp,
+        })
+        this.props.onChange(temp)
+    }
+    
     render() {
         const {
             selectorModalVisible,
             data,
+            total,
+            pageNo,
         } = this.state;
         console.log('now current data is', data)
         const {
             calType = 0,
         } = this.props
         const resultTableColumns = [
-            {
-                title: COMMON_LABEL.serialNumber,
-                dataIndex: 'index',
-                key: 'index',
-                width: 50,
-                className: 'TableTxtCenter',
-                render: (text) => `${text + 1}`,
-            },
             {
                 title: COMMON_LABEL.actions,
                 dataIndex: 'operation',
@@ -232,7 +244,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
                                 onConfirm={() => this.handleDel(record)}
                                 getPopupContainer={_ => document.getElementById('_addMoneyTradeDetail')}
                             >
-                                <a title={COMMON_LABEL.delete}>{COMMON_LABEL.delete}</a>
+                                <a title={COMMON_LABEL.delete}>清除</a>
                             </Popconfirm>
                         </div>
                     );
@@ -280,22 +292,25 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
             },
             {
                 // 本组件接收到的售价已经是处理过的了
-                title: SALE_LABEL.k5kqz2fl,
+                title: '售价(元)',
                 dataIndex: 'price',
                 key: 'price',
                 width: 72,
                 className: 'TableTxtRight',
+                render: (text, record, index) => {
+                    return <Tooltip title={text}>{text}</Tooltip>
+                },
             },
             {
-                title: calType == 1 ? '减免价' : SALE_LABEL.k5kqz2nx,
-                width: 60,
+                title: calType == 1 ? '减免价(元)' : '活动价(元)',
+                width: 100,
                 dataIndex: 'payPrice',
                 key: 'payPrice',
                 className: 'noPadding',
                 render: (text, record, index) => {
                     return (
                         <div
-                            style={(record.payPrice > 0) && (+record.payPrice <= +record.price) ? { height: '100%' } : { height: '100%', border: '1px solid #f04134' }}
+                            style={(record.payPrice > 0) && (+record.payPrice <= +record.price) ? { height: '100%', padding: '0px 5px' } : { height: '100%', border: '1px solid #f04134', padding: '0px 5px' }}
                             className={styles.rightAlign}
                         >
                             <PriceInputIcon
@@ -315,7 +330,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
                     <span>最大换购数量
                         <Tooltip title={'称重菜品仅支持POS2.5且默认规格为“斤”'}>
                             <Icon
-                                style = {{
+                                style={{
                                     marginLeft: 3,
                                     cursor: 'pointer',
                                 }}
@@ -330,14 +345,14 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
                 render: (text, record, index) => {
                     return (
                         <div
-                            style={{ height: '100%', }}
+                            style={{ height: '90%', padding: '0px 5px' }}
                             className={styles.rightAlign}
                         >
                             <PriceInputIcon
                                 type="text"
                                 modal={record.IsNeedConfirmFoodNumber ? "float" : "int"}
                                 // disabled={!record.IsNeedConfirmFoodNumber}
-                                value={{ number: record.maxNum}}
+                                value={{ number: record.maxNum }}
                                 index={index}
                                 prefix={'±'}
                                 onChange={(val) => { this.onFloatMaxNumChange(val, record) }}
@@ -351,7 +366,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
                     <span>称重误差值(斤)
                         <Tooltip title={'仅支持POS2.5，仅“需要确定数量”的菜品才能编辑称重误差值，其他菜品不能编辑此项'}>
                             <Icon
-                                style = {{
+                                style={{
                                     marginLeft: 3,
                                     cursor: 'pointer',
                                 }}
@@ -366,14 +381,14 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
                 render: (text, record, index) => {
                     return (
                         <div
-                            style={{ height: '100%', }}
+                            style={{ height: '90%', padding: '0px 5px' }}
                             className={styles.rightAlign}
                         >
                             <PriceInputIcon
                                 type="text"
                                 modal="float"
                                 disabled={!record.IsNeedConfirmFoodNumber}
-                                value={{ number: record.weightOffset}}
+                                value={{ number: record.weightOffset }}
                                 index={index}
                                 prefix={'±'}
                                 onChange={(val) => { this.onFloatChange(val, record) }}
@@ -384,12 +399,14 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
             },
         ];
         const displayDataSource = data.map((item, index) => ({ ...item, index }))
+        console.log('displayDataSource is:', displayDataSource)
         return (
             <FormItem className={styles.FormItemStyle}>
                 <Row>
                     <Col span={4}>
                         <span className={[styles.gTitle, styles.fakeRequired].join(' ')}>{SALE_LABEL.k6hhubf3}</span>
                     </Col>
+                    {/* <span className={styles.expalinFont}>以下活动菜品用户可任选其一参与换购</span> */}
                     <Col span={4} offset={16}>
                         <a
                             className={styles.gTitleLink}
@@ -399,14 +416,14 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
                         </a>
                     </Col>
                 </Row>
-                <Row>
-                    <Col style={{overflow: 'auto', display: 'flex'}}>
-                        <Table
-                            bordered={true}
-                            dataSource={displayDataSource}
+                <Row className={styles.overflowRow}>
+                    <Col className={styles.dragTableWraper} style={{ overflow: 'auto', display: 'flex' }}>
+                        {/* 因为我们兼容的antd版本是2X版本所以并不支持拖拽排序，重写table逻辑 */}
+                        <SortableTable
                             columns={resultTableColumns}
-                            pagination={{ size: 'small', pageSize: 10 }}
-                        />
+                            dataSource={displayDataSource}
+                            handleReSort={this.handleSort}
+                        ></SortableTable>
                     </Col>
                 </Row>
                 {selectorModalVisible && this.renderFoodSelectorModal()}

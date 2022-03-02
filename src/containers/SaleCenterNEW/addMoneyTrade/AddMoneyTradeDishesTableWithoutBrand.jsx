@@ -18,7 +18,7 @@ import PriceInputIcon from '../common/PriceInputIcon';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { injectIntl } from '../IntlDecor';
-
+import  SortableTable from '../common/SortableTable'
 
 const FormItem = Form.Item;
 
@@ -75,7 +75,7 @@ class AddMoneyTradeDishesTableWithoutBrand extends Component {
         if (!priceLst.length) return;
         const data = priceLst.reduce((acc, item) => {
             const dish = dishes.find(d => d.value === `${item.foodName}${item.foodUnitName}`);
-            dish && acc.push({ ...dish, payPrice: item.payPrice, weightOffset: item.weightOffset,  maxNum: item.maxNum  });
+            dish && acc.push({ ...dish, payPrice: item.payPrice, weightOffset: item.weightOffset, maxNum: item.maxNum });
             return acc;
         }, [])
         this.setState({ data })
@@ -118,8 +118,8 @@ class AddMoneyTradeDishesTableWithoutBrand extends Component {
             selectorModalVisible: false,
             data: dishObjects,
         })
-        dishObjects.map((i)=>{
-            if(!i.maxNum){
+        dishObjects.map((i) => {
+            if (!i.maxNum) {
                 i.maxNum = 1
             }
         })
@@ -177,6 +177,19 @@ class AddMoneyTradeDishesTableWithoutBrand extends Component {
         this.props.onChange(data.map(item => ({ ...item })));
     }
 
+    handleSort = (arr) => {
+        const {
+            data = []
+        } = this.state
+        let temp = arr.map((item) => {
+            return data[item]
+        })
+        this.setState({
+            data: temp,
+        })
+        this.props.onChange(temp)
+    }
+
     render() {
         const {
             selectorModalVisible,
@@ -204,7 +217,7 @@ class AddMoneyTradeDishesTableWithoutBrand extends Component {
                     return (
                         <div>
                             <Popconfirm title={SALE_LABEL.k5dnw1q3} onConfirm={() => this.handleDel(record)}>
-                                <a title={COMMON_LABEL.delete}>{COMMON_LABEL.delete}</a>
+                                <a title={COMMON_LABEL.delete}>清除</a>
                             </Popconfirm>
                         </div>
                     );
@@ -242,14 +255,17 @@ class AddMoneyTradeDishesTableWithoutBrand extends Component {
             },
             {
                 // 本组件接收到的售价已经是处理过的了
-                title: SALE_LABEL.k5kqz2fl,
+                title: '售价(元)',
                 dataIndex: 'price',
                 key: 'price',
                 width: 72,
                 className: 'TableTxtRight',
+                render: (text, record, index) => {
+                    return <Tooltip title={text}>{text}</Tooltip>
+                },
             },
             {
-                title: calType == 1 ? '减免价' : SALE_LABEL.k5kqz2nx,
+                title: calType == 1 ? '减免价(元)' : '活动价(元)',
                 width: 80,
                 dataIndex: 'payPrice',
                 key: 'payPrice',
@@ -352,6 +368,7 @@ class AddMoneyTradeDishesTableWithoutBrand extends Component {
                     <Col span={4}>
                         <span className={[styles.gTitle, styles.fakeRequired].join(' ')}>活动菜品</span>
                     </Col>
+                    {/* <span className={styles.expalinFont}>以下活动菜品用户可任选其一参与换购</span> */}
                     <Col span={4} offset={16}>
                         <a
                             className={styles.gTitleLink}
@@ -363,12 +380,11 @@ class AddMoneyTradeDishesTableWithoutBrand extends Component {
                 </Row>
                 <Row>
                     <Col>
-                        <Table
-                            bordered={true}
-                            dataSource={displayDataSource}
+                        <SortableTable
                             columns={resultTableColumns}
-                            pagination={{ size: 'small', pageSize: 10 }}
-                        />
+                            dataSource={displayDataSource}
+                            handleReSort={this.handleSort}
+                        ></SortableTable>
                     </Col>
                 </Row>
                 {selectorModalVisible && this.renderFoodSelectorModal()}
