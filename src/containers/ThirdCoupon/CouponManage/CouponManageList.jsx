@@ -824,9 +824,9 @@ class ViewCouponContent extends Component {
     }
 
     getWXMerchantID = (data) => {
-        const { payChannelList } = this.state;
-        const { settleName = '' } = payChannelList.find((item) => item.merchantID == data.merchantID) || {}
-        return `${data.merchantID}_${settleName}`
+        // const { payChannelList } = this.state;
+        // const { settleName = '' } = payChannelList.find((item) => item.merchantID == data.merchantID) || {}
+        return `${data.merchantID}`
     }
     getJumpAppName = (data) => {
         const { mpAndAppList } = this.state;

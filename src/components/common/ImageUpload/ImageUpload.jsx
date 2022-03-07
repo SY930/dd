@@ -90,7 +90,29 @@ class ImageUpload extends React.Component {
             fileList: this.getFileListFromValue(url),
         });
     }
-
+    handleSuccessChange = (response, file) => {
+        const { url, imgHWP } = response;
+        if (!url) {
+            message.error(response.resultMsg || '图片上传失败，请稍后重试');
+            return this.setState({ fileList: [] });
+        }
+        if (this.props.hwpName) {
+            this.props.onChange({
+                url,
+                [this.props.hwpName]: imgHWP,
+            });
+        } else if(this.props.getFileName) {
+            this.props.onChange({
+                url,
+                fileName: this.fileName,
+            });
+        } else {
+            this.props.onChange(url);
+        }
+        return this.setState({
+            fileList: this.getFileListFromValue(url),
+        });
+    }
     handlePreview = (file) => {
         this.setState({
             previewVisible: true,
@@ -155,6 +177,7 @@ class ImageUpload extends React.Component {
                     onChange={this.handleChange}
                     onPreview={this.handlePreview}
                     onRemove={this.handleRemove}
+                    onSuccess={this.handleSuccessChange}
                 >
                     {fileList.length < 1 &&
                         <div>

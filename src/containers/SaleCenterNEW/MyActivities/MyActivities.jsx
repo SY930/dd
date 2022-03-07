@@ -28,9 +28,6 @@ import {
     PROMOTION_DECORATION,
 } from '../../../constants/entryCodes';
 import {
-    BASIC_PROMOTION_MANAGE_PAGE,
-} from '../../../constants/entryIds';
-import {
     initializationOfMyActivities,
     toggleSelectedActivityStateAC,
     fetchPromotionList,
@@ -1183,7 +1180,7 @@ class MyActivities extends React.Component {
                     const isGroupPro = record.maintenanceLevel == '0';//区分集团和店铺
                     return (
                         <span>
-                            <Authority rightCode={BASIC_LOOK_PROMOTION_QUERY} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
+                            <Authority rightCode={BASIC_LOOK_PROMOTION_QUERY}>
                                 <a
                                     href="#"
                                     onClick={() => {
@@ -1196,7 +1193,7 @@ class MyActivities extends React.Component {
                             </Authority>
                             {
                                 !isHuaTian() && (
-                                    <Authority rightCode={BASIC_PROMOTION_UPDATE} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
+                                    <Authority rightCode={BASIC_PROMOTION_UPDATE}>
                                         <a
                                             href="#"
                                             disabled={!isGroupPro}
@@ -1208,7 +1205,7 @@ class MyActivities extends React.Component {
                                     </Authority>
                                 )
                             }
-                            <Authority rightCode={BASIC_PROMOTION_DELETE} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
+                            <Authority rightCode={BASIC_PROMOTION_DELETE}>
                                 {/* 非禁用状态不能删除 */}
                                 <a
                                     href="#"

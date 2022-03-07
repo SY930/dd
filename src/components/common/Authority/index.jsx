@@ -5,17 +5,17 @@ class Authority extends React.Component {
     disabled = true
 
     componentWillMount() {
-        this.disabled = !checkPermission(this.props.rightCode,this.props.entryId);
+        this.disabled = !checkPermission(this.props.rightCode);
     }
 
     componentWillReceiveProps(nextProps) {
         this.disabled = this.props.rightCode === nextProps.rightCode ? this.disabled
-            : !checkPermission(nextProps.rightCode,nextProps.entryId);
+            : !checkPermission(nextProps.rightCode);
     }
 
     renderChild(child) {
         if (!React.isValidElement(child)) return child;
-        const { rightCode, entryId,children, ...otherProps } = this.props;
+        const { rightCode, children, ...otherProps } = this.props;
         const disabled = this.disabled === true || child.props.disabled;
         return React.cloneElement(child, {
             ...otherProps,
