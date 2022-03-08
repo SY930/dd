@@ -6,7 +6,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import registerPage from '../../../index';
-import { NEW_SALE_BOX, SALE_CENTER_PAYHAVEGIFT } from "../../constants/entryCodes";
+import { NEW_ON_SALE_ACTIVITY_BOX, SALE_CENTER_PAYHAVEGIFT } from "../../constants/entryCodes";
 // SALE_CENTER_PAYHAVEGIFT 称重买赠跳转  NEW_SALE_BOX 页面编码
 import { axiosData, checkAuthLicense } from '../../helpers/util';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
@@ -97,7 +97,7 @@ const activityList = [
     '80', '66', '81', 'housekeeper', 'intelligentGiftRule', '82'
 ]
 const CONTAIN_GROUPID_SHOW = ['317964', '189702']; // 拼团秒杀只针对茶百道显示
-@registerPage([NEW_SALE_BOX], {
+@registerPage([NEW_ON_SALE_ACTIVITY_BOX], {
 })
 @connect(mapStateToProps, mapDispatchToProps)
 @injectIntl()
@@ -672,6 +672,7 @@ class NewCustomerPage extends Component {
     checkAuth = (allMenu, category) => {
         const { currentCategoryIndex } = this.state;
         let { authStatus } = checkAuthLicense(this.state.authLicenseData)
+        console.log("🚀 ~ file: NewOnSaleActivityPage.jsx ~ line 675 ~ NewCustomerPage ~ authStatus", authStatus, category)
         // authStatus = true;
         if (!authStatus) {
             category = category.filter(item => (item.list == FANS_INTERACTIVITY_PROMOTION_TYPES || item.list == SALE_PROMOTION_TYPES || item.title == '最新活动'))
@@ -740,47 +741,43 @@ class NewCustomerPage extends Component {
         const k6316i20 = intl.formatMessage(SALE_STRING.k6316i20);
         const k5eng042 = intl.formatMessage(SALE_STRING.k5eng042);
         let ALL_PROMOTION_CATEGORIES = [
-            {
-                title: '最新活动',
-                list: NEW_CUSTOMER_PROMOTION_TYPES.concat(FANS_INTERACTIVITY_PROMOTION_TYPES, REPEAT_PROMOTION_TYPES, LOYALTY_PROMOTION_TYPES, SALE_PROMOTION_TYPES, ONLINE_PROMOTION_TYPES).filter(item => item.isNew && item.key != 67 && item.key != 68),
-            },
+            // {
+            //     title: '最新活动',
+            //     list: NEW_CUSTOMER_PROMOTION_TYPES.concat(FANS_INTERACTIVITY_PROMOTION_TYPES, REPEAT_PROMOTION_TYPES, LOYALTY_PROMOTION_TYPES, SALE_PROMOTION_TYPES, ONLINE_PROMOTION_TYPES).filter(item => item.isNew && item.key != 67 && item.key != 68),
+            // },
             // {
             //     title: '热门活动',
             //     list: NEW_CUSTOMER_PROMOTION_TYPES.concat(FANS_INTERACTIVITY_PROMOTION_TYPES, REPEAT_PROMOTION_TYPES, LOYALTY_PROMOTION_TYPES, SALE_PROMOTION_TYPES, ONLINE_PROMOTION_TYPES).filter((item) => { return item.isHot && item.key != 67 && item.key != 68}),
             // },
-            {
-                title: k6316hto,
-                list: NEW_CUSTOMER_PROMOTION_TYPES,
-            },
-            {
-                title: k6316hd0,
-                list: FANS_INTERACTIVITY_PROMOTION_TYPES,
-            },
-            {
-                title: k6316iac,
-                list: REPEAT_PROMOTION_TYPES,
-            },
-            {
-                title: k6316hlc,
-                list: LOYALTY_PROMOTION_TYPES,
-            },
+            // {
+            //     title: k6316hto,
+            //     list: NEW_CUSTOMER_PROMOTION_TYPES,
+            // },
+            // {
+            //     title: k6316hd0,
+            //     list: FANS_INTERACTIVITY_PROMOTION_TYPES,
+            // },
+            // {
+            //     title: k6316iac,
+            //     list: REPEAT_PROMOTION_TYPES,
+            // },
+            // {
+            //     title: k6316hlc,
+            //     list: LOYALTY_PROMOTION_TYPES,
+            // },
             {
                 title: k6316iio,
                 list: CONTAIN_GROUPID_SHOW.includes(String(groupID)) ? SALE_PROMOTION_TYPES : SALE_PROMOTION_TYPES.filter(item => !item.filter),
             },
-            {
-                title: '管家活动',
-                list: HOUSEKEEPER_TYPES,
-            },
+            // {
+            //     title: '管家活动',
+            //     list: HOUSEKEEPER_TYPES,
+            // },
         ]
         let allMenus = [
             '全部活动',
-            <span style={{ position: 'relative' }}><img style={{ position: 'absolute', left: -19, top: 4, width: 16 }} src={newPic} />最新活动</span>,
-            // <span style={{position: 'relative'}}><img style={{position: 'absolute', left: -17, top: 4}} src={hot}/>热门活动</span>,
             ...(ALL_PROMOTION_CATEGORIES.slice(1)).map(item => item.title),
         ];
-        const { currentCategoryIndex } = this.state;
-        // const displayList = currentCategoryIndex === 0 ? ALL_PROMOTION_CATEGORIES.slice(1) : [ALL_PROMOTION_CATEGORIES[currentCategoryIndex - 1]];
 
         // 插件授权状态--营销盒子大礼包
         let { authPluginStatus } = checkAuthLicense(this.state.authLicenseData, 'HLL_CRM_Marketingbox')
@@ -799,7 +796,7 @@ class NewCustomerPage extends Component {
             <div className={selfStyle.newDiv}>
                 <div className={selfStyle.titleArea}>营销活动</div>
                 <div className={selfStyle.grayBar}></div>
-                <div className={selfStyle.menuArea}>
+                {/* <div className={selfStyle.menuArea}>
                     {
                         allMenu.map((title, index) => (
                             <div
@@ -810,7 +807,7 @@ class NewCustomerPage extends Component {
                             </div>
                         ))
                     }
-                </div>
+                </div> */}
                 <div className={selfStyle.contentArea}>
                     {
                         displayList.map(({ title, list }) => (

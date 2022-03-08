@@ -234,6 +234,8 @@ class BasePage extends Component {
                 <div className="layoutsTool" style={{height: '79px'}}>
                     <div className={styles1.headerWithBgColor}>
                         <div className={styles1.customHeader}>
+                            {/* 这里 线上营销管理 店铺视角 */}
+                            {/* 线上营销 */}
                             {this.props.categoryTitle}
                         </div>
                     </div>

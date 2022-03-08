@@ -11,6 +11,8 @@ export { default as MessageTemplatesPage } from './BasicSettings/SmsSettingPage'
 export { default as WeChatMessageSettingPage } from './BasicSettings/WeChatMessageSettingPage';
 
 export { default as NewCustomerPage } from './NewCreatePromotions/NewCustomerPage';
+export { default as NewSaleActivityPage } from './NewCreatePromotions/NewSaleActivityPage';
+export { default as NewOnSaleActivityPage } from './NewCreatePromotions/NewOnSaleActivityPage';
 export { default as RepeatPromotionPage } from './NewCreatePromotions/RepeatPromotionPage';
 export { default as SalePromotionPage } from './NewCreatePromotions/SalePromotionPage';
 export { default as LoyaltyPromotionPage } from './NewCreatePromotions/LoyaltyPromotionPage';

@@ -18,10 +18,11 @@ export const WECHAT_MALL_LIST = 'crm.shop.promotion'; // 门店视角 LIST
 export const WECHAT_GROUP_LIST = '10000730002'; // 集团视角 LIST
 
 export const NEW_CUSTOMER = '1000073001'; // 创建会员拉新活动
-export const FANS_INTERACTIVITY = '1000073002'; // 创建粉丝互动活动
-export const REPEAT_PROMOTION = '1000073003'; // 创建促进复购活动
-export const LOYALTY_PROMOTION = '1000073004'; // 创建会员关怀活动
-export const SALE_PROMOTION = '1000073005'; // 创建促进销量活动
+
+export const FANS_INTERACTIVITY = '1000073002'; // 创建粉丝互动活动 页面已禁用
+export const REPEAT_PROMOTION = '1000073003'; // 创建促进复购活动 页面已禁用
+export const LOYALTY_PROMOTION = '1000073004'; // 创建会员关怀活动 页面已禁用
+export const SALE_PROMOTION = '1000073005'; // 创建促进销量活动 页面已禁用
 
 export const SHARE_RULES_GROUP = '1000080001'; // 创建共享群组页面
 export const SHARE_RULES_SHOP = 'shop.promotion.gongxiangshezhi'; // 创建共享群组页面
@@ -42,13 +43,16 @@ export const CRM_ALIPAY_AUTH = 'crm.Alipay_card_authority.edit';//支付宝卡�
 
 export const PROMOTION_DECORATION = 'promotion_decoration'; // 营销活动装修页
 
-export const ONLINE_PROMOTION_CREATE_GROUP = '1000083001'; // 新建线上营销 集团视角
+export const ONLINE_PROMOTION_CREATE_GROUP = '1000083001'; // 新建线上营销 集团视角 页面已禁用
+
 export const ONLINE_PROMOTION_CREATE_SHOP = '1000086002'; // 新建线上营销 店铺视角
 export const ONLINE_PROMOTION_MANAGEMENT_GROUP = '1000086001'; // 线上营销管理 集团视角
 export const ONLINE_PROMOTION_MANAGEMENT_SHOP = '1000086003'; // 线上营销管理 店铺视角
 
 export const TRD_PROMOTION_INTERFACE = '100009992';
 export const NEW_SALE_BOX = '10000730001';                  // 营销盒子（新）
+export const NEW_SALE_ACTIVITY_BOX = '10000730008';         // 营销活动（新）
+export const NEW_ON_SALE_ACTIVITY_BOX = '10000730088';         // 促销活动（新）
 
 
 export const SALE_CENTER_PAYHAVEGIFT = 'promotion_active_payHaveGift' // 营销活动，微信支付有礼
