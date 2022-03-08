@@ -2557,6 +2557,72 @@ class GiftAddModalStep extends React.PureComponent {
             <SelectBrands />
         )
     }
+
+    renderSubLedgerAmount = (decorator,form) => {
+        const { accountInfo } = this.props;
+        const groupID = accountInfo.get('groupID');
+        if (!['317964', 317964, '11157'].includes(groupID)) return null
+        return (
+            <Row>
+                {
+                    decorator({})(
+                        <RadioGroup>
+                            <Radio value={0}>按固定</Radio>
+                            <Radio value={1}>按比例</Radio>
+                        </RadioGroup>
+                    )
+                }
+                <Col span={16} style={{ marginBottom: 20 }}>
+                    {
+                        form.getFieldValue('separateAccountType') == '0' ? (
+                            <FormItem>
+                            {decorator({
+                                key: 'separateAccountValue',
+                                rules: [{ required: true, message: '不能为空' }, {
+                                    validator: (rule, v, cb) => {
+                                        if (v > 100000) {
+                                            cb('最大支持输入100000元')
+                                        }
+                                        if (!/(^\+?\d{0,6}$)|(^\+?\d{0,6}\.\d{0,2}$)/.test(Number(v))) {
+                                            cb(rule.message);
+                                        }
+                                        cb();
+                                    },
+                                    message: '整数不超过6位，小数不超过2位',
+                                }],
+                            })(<Input
+                                addonAfter="元"
+                                max="100000"
+                            />)}
+                        </FormItem>
+                        ) : (
+                            <FormItem>
+                            {decorator({
+                                key: 'separateAccountValue',
+                                rules: [{ required: true, message: '不能为空' }, {
+                                    validator: (rule, v, cb) => {
+                                        if (v > 100) {
+                                            cb('请输入100以内的正整数')
+                                        }
+                                        if (!/^[0-9]\d{0,3}$/.test(Number(v))) {
+                                            cb(rule.message);
+                                        }
+                                        cb();
+                                    },
+                                    message: '请输入100以内的正整数',
+                                }],
+                            })(<Input
+                                addonAfter="%"
+                                max="100"
+                            />)}
+                        </FormItem>
+                        )
+                    }
+               
+                </Col>
+            </Row>
+        )
+    }
     
     /**
      * @description
@@ -3025,6 +3091,18 @@ class GiftAddModalStep extends React.PureComponent {
                             message: '整数不超过8位，小数不超过2位',
                         }
                     ],
+            },
+            // 仅针对茶百道集团显示
+            separateAccountType: {
+                label: '集团给门店的分账金额',
+                type: 'custom',
+                rules: [
+                    { required: true,message:'至少选择一项' },
+                ],
+                labelCol: { span: 7 },
+                wrapperCol: { span: 16 },
+                defaultValue: 0,
+                render: (decorator, form) => this.renderSubLedgerAmount(decorator, form), // <GiftPromotion></GiftPromotion>,
             },
             delivery: {
                 label: <span>
