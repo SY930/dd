@@ -111,6 +111,7 @@ class NewCustomerPage extends Component {
         specialIndex: 0,
         currentCategoryIndex: 0,
         currentPlatformIndex: 0,
+        sceneMap: {0: '', 1: 'app', 2: 'pos', 3: 'wx'},
         v3visible: false,       // 第三版活动组件是否显示
         curKey: '',             //当前活动入口值
         authLicenseData: {},
@@ -665,10 +666,9 @@ class NewCustomerPage extends Component {
     filterMenuByGroup = (displayList = [], allMenu = []) => {
         const state = getStore().getState();
         const { groupID } = state.user.get('accountInfo').toJS();
-        const { houseKeepStatus, gentGiftStatus } = this.state;
+        const { houseKeepStatus, gentGiftStatus, sceneMap, currentPlatformIndex: cPIdx } = this.state;
         // 管家活动列表是否为空
-        let isKeeperEmpty = false
-
+        let isKeeperEmpty = false;
         displayList = displayList.map((item) => {
             if (item.title == '管家活动') {
                 let { list = [] } = item
@@ -686,7 +686,14 @@ class NewCustomerPage extends Component {
             return item
         })
 
-        if (isKeeperEmpty) {
+        if (sceneMap[cPIdx]) {
+            displayList = (displayList || []).map((item) => {
+                item.list = (item.list || []).filter((itm) => (itm.signs || []).includes(sceneMap[cPIdx]))
+                return { ...item }
+            })
+        }
+
+        if (isKeeperEmpty || (displayList.some(item => item.title != '管家活动') && sceneMap[cPIdx])) {
             allMenu = allMenu.filter(item => item != '管家活动')
             displayList = displayList.filter(item => item.title != '管家活动')
         }
@@ -744,7 +751,7 @@ class NewCustomerPage extends Component {
         var { displayList, allMenu } = this.checkAuth(allMenus, ALL_PROMOTION_CATEGORIES)
         // 管家活动-列表显示过滤
         var { displayList, allMenu } = this.filterMenuByGroup(displayList, allMenu)
-        console.log("🚀 ~ file: NewSaleActivityPage.jsx ~ line 747 ~ NewCustomerPage ~ render ~ displayList", displayList)
+        console.log("🚀 ~ file: NewSaleActivityPage.jsx ~ line 747 ~ NewCustomerPage ~ render ~ displayList", displayList, allMenu)
         const speController = groupID == '295896'
         //集团id：295896 
         // 开通桌边砍活动
