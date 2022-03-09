@@ -644,12 +644,12 @@ class NewCustomerPage extends Component {
         // debugger
         // authStatus = true;
         if (!authStatus) {
-            category = category.filter(item => (item.list == FANS_INTERACTIVITY_PROMOTION_TYPES || item.list == SALE_PROMOTION_TYPES || item.title == '人气活动'))
+            category = category.filter(item => (item.list == FANS_INTERACTIVITY_PROMOTION_TYPES || item.title == '人气活动'))
         }
         let displayList = currentCategoryIndex === 0 ? category.slice(1) : [category[currentCategoryIndex - (!authStatus ? 0 : 1)]];
         // 未授权   只留  互动营销-随机立减 和 促进销量
         if (!authStatus) {
-            displayList = displayList.filter(item => (item.title == '互动营销' || item.title == '促进销量'))
+            displayList = displayList.filter(item => (item.title == '互动营销'))
             displayList.map(item => {
                 if (item.title == '互动营销') {
                     let info = item.list.filter(item => item.key == '2030')
@@ -657,7 +657,7 @@ class NewCustomerPage extends Component {
                 }
             })
             // 
-            allMenu = allMenu.filter(item => (item == '互动营销' || item == '促进销量' || item == '全部活动'))
+            allMenu = allMenu.filter(item => (item == '互动营销' || item == '全部活动'))
         }
         return { displayList, allMenu }
     }
@@ -693,7 +693,7 @@ class NewCustomerPage extends Component {
             })
         }
 
-        if (isKeeperEmpty || (displayList.some(item => item.title != '管家活动') && sceneMap[cPIdx])) {
+        if (isKeeperEmpty || sceneMap[cPIdx]) {
             allMenu = allMenu.filter(item => item != '管家活动')
             displayList = displayList.filter(item => item.title != '管家活动')
         }
@@ -751,7 +751,6 @@ class NewCustomerPage extends Component {
         var { displayList, allMenu } = this.checkAuth(allMenus, ALL_PROMOTION_CATEGORIES)
         // 管家活动-列表显示过滤
         var { displayList, allMenu } = this.filterMenuByGroup(displayList, allMenu)
-        console.log("🚀 ~ file: NewSaleActivityPage.jsx ~ line 747 ~ NewCustomerPage ~ render ~ displayList", displayList, allMenu)
         const speController = groupID == '295896'
         //集团id：295896 
         // 开通桌边砍活动
@@ -760,7 +759,7 @@ class NewCustomerPage extends Component {
                 <div className={selfStyle.titleArea}>
                     营销活动
                     <div className={selfStyle.platformArea}>
-                        <span>应用平台</span>
+                        <span className={selfStyle.platformTitle}>应用平台</span>
                         <div className={selfStyle.platformBox}>
                         {
                             [{name: '全部', value: 0}, {name: '小程序', value: 'app'}, {name: 'POS', value: 'pos'}, {name: '微信', value: 'wx'}].map((item, index) => (

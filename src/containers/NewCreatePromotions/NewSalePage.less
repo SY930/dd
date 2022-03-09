@@ -52,11 +52,21 @@
     }
     .selectedMenuItem {
         // font-weight: bold;
-        padding-left: 18px;
+        position: relative;
+        padding-left: 20px;
         color: #333333;
         background: #E9F6F6FF;
         color: #1FA983FF;
-        border-left: 2px solid #1FA983FF;
+        // border-left: 2px solid #1FA983FF;
+        &::after {
+            position: absolute;
+            content: ' ';
+            width: 2px;
+            height: 16px;
+            background: #12B493;
+            left: 0;
+            top: 12px;
+        }
     }
 }
 .grayBar{
@@ -74,6 +84,13 @@
     padding: 21px;
     .platformArea {
         display: flex;
+        align-items: center;
+        height: 21px;
+    }
+    .platformTitle {
+        padding: 0 8px 0 16px;
+        font-size: 12px;
+        color: #666;
     }
     .platformBox {
         display: flex;

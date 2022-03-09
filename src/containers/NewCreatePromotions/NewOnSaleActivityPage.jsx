@@ -9,13 +9,11 @@ import registerPage from '../../../index';
 import { NEW_ON_SALE_ACTIVITY_BOX, SALE_CENTER_PAYHAVEGIFT } from "../../constants/entryCodes";
 // SALE_CENTER_PAYHAVEGIFT 称重买赠跳转  NEW_SALE_BOX 页面编码
 import { axiosData, checkAuthLicense } from '../../helpers/util';
-import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
+import { COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { injectIntl } from './IntlDecor';
-import selfStyle from './NewCustomerPage.less';
-import newPic from './assets/new.png';
+import selfStyle from './NewSalePage.less';
 import moment from 'moment'
-import { avaHouseKeeperGroups, avaIntelligentGiftRuleGroups } from './_avaGroupConfig'
 
 import {
     Modal,
@@ -23,19 +21,11 @@ import {
 } from 'antd';
 import {
     NEW_CUSTOMER_PROMOTION_TYPES,
-    FANS_INTERACTIVITY_PROMOTION_TYPES,
     REPEAT_PROMOTION_TYPES,
-    LOYALTY_PROMOTION_TYPES,
     SALE_PROMOTION_TYPES,
-    ONLINE_PROMOTION_TYPES,
     CRM_PROMOTION_TYPES,
-    HOUSEKEEPER_TYPES,
 } from 'constants/promotionType';
-import NewPromotionCard from "./NewPromotionCard";
-const limitedTypes = [
-    '67',
-    '68',
-]
+import NewSaleCard from "./NewSaleCard";
 const UNRELEASED_PROMOTION_TYPES = [
 ]
 import {
@@ -69,33 +59,26 @@ import { saleCenterResetScopeInfoAC } from "../../redux/actions/saleCenterNEW/pr
 import { resetOccupiedWeChatInfo } from "../../redux/actions/saleCenterNEW/queryWeixinAccounts.action";
 import { toggleIsUpdateAC } from "../../redux/actions/saleCenterNEW/myActivities.action";
 import { checkPermission } from "../../helpers/util";
-import { BASIC_PROMOTION_CREATE, SPECIAL_PROMOTION_CREATE } from "../../constants/authorityCodes";
-import SpecialActivityMain from '../SpecialPromotionNEW/activityMain'; // 特色营销
+import { BASIC_PROMOTION_CREATE } from "../../constants/authorityCodes";
+// import SpecialActivityMain from '../SpecialPromotionNEW/activityMain'; // 特色营销
 import BasicActivityMain from '../SaleCenterNEW/activityMain'; // 基础营销弹窗
 import {
     BASIC_PROMOTION_CREATE_DISABLED_TIP, // 基础
-    isBrandOfHuaTianGroupList, // 特色
+    // isBrandOfHuaTianGroupList, // 特色
     isHuaTian, // 基础
-    SPECIAL_PROMOTION_CREATE_DISABLED_TIP, // 特色
+    // SPECIAL_PROMOTION_CREATE_DISABLED_TIP, // 特色
 } from "../../constants/projectHuatianConf";
-import { axios } from '@hualala/platform-base';
-import { getStore } from '@hualala/platform-base'
-import Chou2Le from "../PromotionV3/Chou2Le";   // 抽抽乐
-import BlindBox from "../PromotionV3/BlindBox";   // 盲盒
-import PassWordCoupon from "../PromotionV3/PassWordCoupon";   // 口令领券
+import { axios, getStore } from '@hualala/platform-base';
 import ActivityMain from '../WeChat2Mall/WeChatMaLLActivityMain'; // 秒杀 基础
-import ManyFace from '../PromotionV3/ManyFace'; // 千人千面
-import { jumpPage, closePage } from '@hualala/platform-base';
+// import { jumpPage, closePage } from '@hualala/platform-base';
 import {
-    getSpecialPromotionIdx,
     specialPromotionBasicDataAdapter,
 } from '../../redux/actions/saleCenterNEW/types';
 
-import { setThemeClass } from '../../utils/index'
 // 特色营销 跳转页面
-const activityList = [
-    '80', '66', '81', 'housekeeper', 'intelligentGiftRule', '82'
-]
+// const activityList = [
+//     '80', '66', '81', 'housekeeper', 'intelligentGiftRule', '82'
+// ]
 const CONTAIN_GROUPID_SHOW = ['317964', '189702']; // 拼团秒杀只针对茶百道显示
 @registerPage([NEW_ON_SALE_ACTIVITY_BOX], {
 })
@@ -107,7 +90,7 @@ class NewCustomerPage extends Component {
         whiteList: [],
         basicModalVisible: false,
         basicIndex: 0,
-        specialModalVisible: false,
+        // specialModalVisible: false,
         specialIndex: 0,
         currentCategoryIndex: 0,
         v3visible: false,       // 第三版活动组件是否显示
@@ -118,6 +101,8 @@ class NewCustomerPage extends Component {
         isJumpNew: true,
         ifJumpSetData: false,
         ifJumpSelfDefine: false,
+        currentPlatformIndex: 0,
+        sceneMap: {0: '', 1: 'app', 2: 'pos', 3: 'wx'},
     }
 
     componentDidMount() {
@@ -417,13 +402,13 @@ class NewCustomerPage extends Component {
         if (HUALALA.ENVIRONMENT === 'production-release' && UNRELEASED_PROMOTION_TYPES.includes(`${key}`)) {
             return message.success(SALE_LABEL.k6316gwc);//活动尚未开放
         }
-        if (isSpecial) {
-            const specialIndex = this.props.saleCenter.get('characteristicCategories').toJS().findIndex(promotion => promotion.key === key);
-            this.handleSpecialPromotionCreate(specialIndex, promotionEntity, ifskip)
-        } else {
+        // if (isSpecial) {
+            // const specialIndex = this.props.saleCenter.get('characteristicCategories').toJS().findIndex(promotion => promotion.key === key);
+            // this.handleSpecialPromotionCreate(specialIndex, promotionEntity, ifskip)
+        // } else {
             const basicIndex = this.props.saleCenter.get('activityCategories').toJS().findIndex(promotion => promotion.key === key);
             this.handleBasicPromotionCreate(basicIndex, promotionEntity)
-        }
+        // }
     }
 
     // 创建基础营销
@@ -451,12 +436,6 @@ class NewCustomerPage extends Component {
         this.setState({
             basicIndex: index,
         });
-        // if (activityList.includes(key)) {
-        //     setTimeout(() => {
-        //         jumpPage({ menuID: SALE_CENTER_PAYHAVEGIFT, typeKey: key })
-        //     }, 100);
-        //     return closePage(SALE_CENTER_PAYHAVEGIFT)
-        // }
     }
 
     setBasicModalVisible(basicModalVisible) {
@@ -469,79 +448,52 @@ class NewCustomerPage extends Component {
     }
 
     // 创建特色营销
-    handleSpecialPromotionCreate(index, activity, ifskip) {
-        // 唤醒送礼 品牌不可创建
-        if ('63' === activity.key && isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
-            message.warning(SPECIAL_PROMOTION_CREATE_DISABLED_TIP);
-            return;
-        }
-        if (!checkPermission(SPECIAL_PROMOTION_CREATE)) {
-            message.warn(SALE_LABEL.k5nh24u9);
-            return;
-        }
-        const key = activity.key;
-        const { user } = this.props;
-        this.setState({
-            specialIndex: index,
-        });
-        this.props.toggleIsSpecialUpdate(true);
-        if (!ifskip) { // 权益卡传TRUE
-            this.props.setSpecialPromotionType({
-                eventWay: key,
-            });
-        }
-        // 完善资料送礼只能创建一次
-        // if (key === '60') {
-        //     if (isHuaTian()) {
-        //         return message.warning(SPECIAL_PROMOTION_CREATE_DISABLED_TIP);
-        //     }
-        //     this.props.saleCenterCheckSpecialExist({
-        //         eventWay: key,
-        //         data: {
-        //             groupID: user.accountInfo.groupID,
-        //             eventWay: key,
-        //         },
-        //         success: (val) => {
-        //             if (key === '60' && val.serviceCode === 1) {
-        //                 message.warning(SALE_LABEL.k6316h4o);
-        //             } else {
-        //                 this.setSpecialModalVisible(true);
-        //                 this.props.setSpecialPromotionType({
-        //                     eventName: activity.title,
-        //                 });
-        //             }
-        //         },
-        //         fail: () => {
-        //             message.error(SALE_LABEL.k5dmw1z4);
-        //         },
-        //     });
-        //     return;
-        // }
-        if (activityList.includes(key)) {
-            setTimeout(() => {
-                jumpPage({ menuID: SALE_CENTER_PAYHAVEGIFT, typeKey: key })
-            }, 100);
-            return closePage(SALE_CENTER_PAYHAVEGIFT)
-        }
-        this.setSpecialModalVisible(true);
-    }
-    setSpecialModalVisible(specialModalVisible) {
-        this.setState({ specialModalVisible });
-        if (!specialModalVisible) {
-            const ifJumpOpenCard = this.props.specialPromotion.isBenefitJumpOpenCard
-            const isBenefitJumpSendGift = this.props.specialPromotion.isBenefitJumpSendGift
-            if (ifJumpOpenCard || isBenefitJumpSendGift) {
-                const menuID = this.props.user.menuList.find(tab => tab.entryCode === '10000730001').menuID
-                closePage(menuID);
-                // jumpPage({ pageID: '1000072012' });
-                // jumpPage({ menuID: 'editBenefitCard' });
-                this.props.saleCenterSetJumpOpenCardParams(false)
-                this.props.saleCenterSetJumpSendGiftParams(false)
-            }
-            // 调用重置特色营销数据和重置占用微信ID数据
-            this.props.saleCenterResetSpecailDetailInfo();
-        }
-    }
+    // handleSpecialPromotionCreate(index, activity, ifskip) {
+    //     // 唤醒送礼 品牌不可创建
+    //     if ('63' === activity.key && isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
+    //         message.warning(SPECIAL_PROMOTION_CREATE_DISABLED_TIP);
+    //         return;
+    //     }
+    //     if (!checkPermission(SPECIAL_PROMOTION_CREATE)) {
+    //         message.warn(SALE_LABEL.k5nh24u9);
+    //         return;
+    //     }
+    //     const key = activity.key;
+    //     const { user } = this.props;
+    //     this.setState({
+    //         specialIndex: index,
+    //     });
+    //     this.props.toggleIsSpecialUpdate(true);
+    //     if (!ifskip) { // 权益卡传TRUE
+    //         this.props.setSpecialPromotionType({
+    //             eventWay: key,
+    //         });
+    //     }
+    //     if (activityList.includes(key)) {
+    //         setTimeout(() => {
+    //             jumpPage({ menuID: SALE_CENTER_PAYHAVEGIFT, typeKey: key })
+    //         }, 100);
+    //         return closePage(SALE_CENTER_PAYHAVEGIFT)
+    //     }
+    //     this.setSpecialModalVisible(true);
+    // }
+    // setSpecialModalVisible(specialModalVisible) {
+    //     this.setState({ specialModalVisible });
+    //     if (!specialModalVisible) {
+    //         const ifJumpOpenCard = this.props.specialPromotion.isBenefitJumpOpenCard
+    //         const isBenefitJumpSendGift = this.props.specialPromotion.isBenefitJumpSendGift
+    //         if (ifJumpOpenCard || isBenefitJumpSendGift) {
+    //             const menuID = this.props.user.menuList.find(tab => tab.entryCode === '10000730001').menuID
+    //             closePage(menuID);
+    //             // jumpPage({ pageID: '1000072012' });
+    //             // jumpPage({ menuID: 'editBenefitCard' });
+    //             this.props.saleCenterSetJumpOpenCardParams(false)
+    //             this.props.saleCenterSetJumpSendGiftParams(false)
+    //         }
+    //         // 调用重置特色营销数据和重置占用微信ID数据
+    //         this.props.saleCenterResetSpecailDetailInfo();
+    //     }
+    // }
 
     renderBasicPromotionModal() {
         const {
@@ -577,40 +529,40 @@ class NewCustomerPage extends Component {
             </Modal>
         );
     }
-    renderSpecialPromotionModal() {
-        const { title: promotionType } = this.props.saleCenter.get('characteristicCategories').toJS()[this.state.specialIndex];
-        const { intl } = this.props;
-        const create = intl.formatMessage(COMMON_STRING.create);
-        const title = <p>{create} {promotionType}</p>;
-        const {
-            isJumpNew = true,
-        } = this.state
-        return (
-            <Modal
-                wrapClassName={'progressBarModal'}
-                title={title}
-                maskClosable={false}
-                footer={false}
-                style={{
-                    top: 20,
-                }}
-                width={1000}
-                visible={this.state.specialModalVisible}
-                onOk={() => this.setSpecialModalVisible(false)}
-                onCancel={() => this.setSpecialModalVisible(false)}
-            >
-                {this.state.specialModalVisible ? <SpecialActivityMain
-                    index={this.state.specialIndex}
-                    isNew={true && isJumpNew}
-                    callbackthree={(arg) => {
-                        if (arg == 3) {
-                            this.setSpecialModalVisible(false);
-                        }
-                    }}
-                /> : null}
-            </Modal>
-        );
-    }
+    // renderSpecialPromotionModal() {
+    //     const { title: promotionType } = this.props.saleCenter.get('characteristicCategories').toJS()[this.state.specialIndex];
+    //     const { intl } = this.props;
+    //     const create = intl.formatMessage(COMMON_STRING.create);
+    //     const title = <p>{create} {promotionType}</p>;
+    //     const {
+    //         isJumpNew = true,
+    //     } = this.state
+    //     return (
+    //         <Modal
+    //             wrapClassName={'progressBarModal'}
+    //             title={title}
+    //             maskClosable={false}
+    //             footer={false}
+    //             style={{
+    //                 top: 20,
+    //             }}
+    //             width={1000}
+    //             visible={this.state.specialModalVisible}
+    //             onOk={() => this.setSpecialModalVisible(false)}
+    //             onCancel={() => this.setSpecialModalVisible(false)}
+    //         >
+    //             {this.state.specialModalVisible ? <SpecialActivityMain
+    //                 index={this.state.specialIndex}
+    //                 isNew={true && isJumpNew}
+    //                 callbackthree={(arg) => {
+    //                     if (arg == 3) {
+    //                         this.setSpecialModalVisible(false);
+    //                     }
+    //                 }}
+    //             /> : null}
+    //         </Modal>
+    //     );
+    // }
 
     // 秒杀活动
     renderWeChat2MallModal() {
@@ -669,115 +621,43 @@ class NewCustomerPage extends Component {
     }
 
     //产品授权-集团授权信息
-    checkAuth = (allMenu, category) => {
+    checkAuth = (category = []) => {
         const { currentCategoryIndex } = this.state;
         let { authStatus } = checkAuthLicense(this.state.authLicenseData)
-        console.log("🚀 ~ file: NewOnSaleActivityPage.jsx ~ line 675 ~ NewCustomerPage ~ authStatus", authStatus, category)
         // authStatus = true;
+        let displayList = category.length ? [category[currentCategoryIndex]] : [];
+        // 未授权   只留促进销量
         if (!authStatus) {
-            category = category.filter(item => (item.list == FANS_INTERACTIVITY_PROMOTION_TYPES || item.list == SALE_PROMOTION_TYPES || item.title == '最新活动'))
+            displayList = (displayList || []).filter(item => (item.title == '促进销量'))
         }
-        let displayList = currentCategoryIndex === 0 ? category.slice(1) : [category[currentCategoryIndex - (!authStatus ? 0 : 1)]];
-        // 未授权   只留  粉丝互动-随机立减 和 促进销量
-        if (!authStatus) {
-            displayList = displayList.filter(item => (item.title == '粉丝互动' || item.title == '促进销量'))
-            displayList.map(item => {
-                if (item.title == '粉丝互动') {
-                    let info = item.list.filter(item => item.key == '2030')
-                    item.list = info
-                }
-            })
-            // 
-            allMenu = allMenu.filter(item => (item == '粉丝互动' || item == '促进销量' || item == '全部活动'))
-        }
-        return { displayList, allMenu }
+
+        return { displayList }
     }
 
     // 管家活动-依据集团权限-返回活动入口
-    filterMenuByGroup = (displayList = [], allMenu = []) => {
-        const state = getStore().getState();
-        const { groupID } = state.user.get('accountInfo').toJS();
-        const { houseKeepStatus, gentGiftStatus } = this.state;
-        // let keeperFlag = avaHouseKeeperGroups.includes(groupID)
-        // let intelligentFlag = avaIntelligentGiftRuleGroups.includes(groupID)
-        // 管家活动列表是否为空
-        let isKeeperEmpty = false
-
-        displayList = displayList.map((item) => {
-            if (item.title == '管家活动') {
-                let { list = [] } = item
-                let data = list
-
-                if (!houseKeepStatus) {
-                    data = data.filter(item => item.key != 'housekeeper')
-                }
-                if (!gentGiftStatus) {
-                    data = data.filter(item => item.key != 'intelligentGiftRule')
-                }
-                item.list = data
-                isKeeperEmpty = data.length <= 0
-            }
-            return item
-        })
-
-        if (isKeeperEmpty) {
-            allMenu = allMenu.filter(item => item != '管家活动')
-            displayList = displayList.filter(item => item.title != '管家活动')
+    filterMenuByGroup = (displayList = []) => {
+        const { currentPlatformIndex: cPIdx, sceneMap } = this.state;
+        if (sceneMap[cPIdx]) {
+            displayList = (displayList || []).map((item) => {
+                item.list = (item.list || []).filter((itm) => (itm.signs || []).includes(sceneMap[cPIdx]))
+                return { ...item }
+            })
         }
-
-        return { displayList, allMenu }
+        return { displayList }
     }
 
     render() {
-        const { whiteList, v3visible, curKey } = this.state;
+        const { whiteList, v3visible, curKey, currentPlatformIndex } = this.state;
         const state = getStore().getState();
         const { groupID } = state.user.get('accountInfo').toJS();
         const { intl } = this.props;
-        const k6316hto = intl.formatMessage(SALE_STRING.k6316hto);
-        const k6316hd0 = intl.formatMessage(SALE_STRING.k6316hd0);
-        const k6316iac = intl.formatMessage(SALE_STRING.k6316iac);
-        const k6316hlc = intl.formatMessage(SALE_STRING.k6316hlc);
         const k6316iio = intl.formatMessage(SALE_STRING.k6316iio);
-        const k6316i20 = intl.formatMessage(SALE_STRING.k6316i20);
-        const k5eng042 = intl.formatMessage(SALE_STRING.k5eng042);
         let ALL_PROMOTION_CATEGORIES = [
-            // {
-            //     title: '最新活动',
-            //     list: NEW_CUSTOMER_PROMOTION_TYPES.concat(FANS_INTERACTIVITY_PROMOTION_TYPES, REPEAT_PROMOTION_TYPES, LOYALTY_PROMOTION_TYPES, SALE_PROMOTION_TYPES, ONLINE_PROMOTION_TYPES).filter(item => item.isNew && item.key != 67 && item.key != 68),
-            // },
-            // {
-            //     title: '热门活动',
-            //     list: NEW_CUSTOMER_PROMOTION_TYPES.concat(FANS_INTERACTIVITY_PROMOTION_TYPES, REPEAT_PROMOTION_TYPES, LOYALTY_PROMOTION_TYPES, SALE_PROMOTION_TYPES, ONLINE_PROMOTION_TYPES).filter((item) => { return item.isHot && item.key != 67 && item.key != 68}),
-            // },
-            // {
-            //     title: k6316hto,
-            //     list: NEW_CUSTOMER_PROMOTION_TYPES,
-            // },
-            // {
-            //     title: k6316hd0,
-            //     list: FANS_INTERACTIVITY_PROMOTION_TYPES,
-            // },
-            // {
-            //     title: k6316iac,
-            //     list: REPEAT_PROMOTION_TYPES,
-            // },
-            // {
-            //     title: k6316hlc,
-            //     list: LOYALTY_PROMOTION_TYPES,
-            // },
             {
                 title: k6316iio,
                 list: CONTAIN_GROUPID_SHOW.includes(String(groupID)) ? SALE_PROMOTION_TYPES : SALE_PROMOTION_TYPES.filter(item => !item.filter),
             },
-            // {
-            //     title: '管家活动',
-            //     list: HOUSEKEEPER_TYPES,
-            // },
         ]
-        let allMenus = [
-            '全部活动',
-            ...(ALL_PROMOTION_CATEGORIES.slice(1)).map(item => item.title),
-        ];
 
         // 插件授权状态--营销盒子大礼包
         let { authPluginStatus } = checkAuthLicense(this.state.authLicenseData, 'HLL_CRM_Marketingbox')
@@ -786,37 +666,35 @@ class NewCustomerPage extends Component {
          * 页面活动列表显示过滤
          */
         // auth-插件授权-列表显示过滤
-        var { displayList, allMenu } = this.checkAuth(allMenus, ALL_PROMOTION_CATEGORIES)
+        var { displayList } = this.checkAuth(ALL_PROMOTION_CATEGORIES)
         // 管家活动-列表显示过滤
-        var { displayList, allMenu } = this.filterMenuByGroup(displayList, allMenu)
+        var { displayList } = this.filterMenuByGroup(displayList)
         const speController = groupID == '295896'
         //集团id：295896 
         // 开通桌边砍活动
         return (
             <div className={selfStyle.newDiv}>
-                <div className={selfStyle.titleArea}>营销活动</div>
+                <div className={selfStyle.titleArea}>促销活动
+                <div className={selfStyle.platformArea}>
+                        <span className={selfStyle.platformTitle}>应用平台</span>
+                        <div className={selfStyle.platformBox}>
+                        {
+                            [{name: '全部', value: 0}, {name: '小程序', value: 'app'}, {name: 'POS', value: 'pos'}, {name: '微信', value: 'wx'}].map((item, index) => (
+                                <div onClick={() => { this.setState({currentPlatformIndex: index })}} className={`${selfStyle.platformItem} ${index === currentPlatformIndex ? selfStyle.selectedItem : ''} ${index === currentPlatformIndex + 1 ? selfStyle.removeLine : ''}`}><span>{item.name}</span></div>
+                            ))
+                        }
+                        </div>
+                    </div>
+                </div>
                 <div className={selfStyle.grayBar}></div>
-                {/* <div className={selfStyle.menuArea}>
+                <div className={selfStyle.contentArea} style={{ paddingLeft: 20 }}>
                     {
-                        allMenu.map((title, index) => (
-                            <div
-                                onClick={() => this.setState({ currentCategoryIndex: index })}
-                                className={`${selfStyle.menuItem} ${index === currentCategoryIndex ? selfStyle.selectedMenuItem : ''}`}
-                            >
-                                {title}
-                            </div>
-                        ))
-                    }
-                </div> */}
-                <div className={selfStyle.contentArea}>
-                    {
-                        displayList.map(({ title, list }) => (
+                        (displayList || []).map(({ title, list }) => (
                             <div>
-                                <div className={selfStyle.contentTitle}>{title}</div>
                                 <div className={selfStyle.cardWrapper}>
                                     {
                                         list.filter(item => !item.isOffline || (speController && item.key == '67')).map((item, index) => (
-                                            <NewPromotionCard
+                                            <NewSaleCard
                                                 size="special"
                                                 key={item.key}
                                                 promotionEntity={item}
@@ -836,12 +714,7 @@ class NewCustomerPage extends Component {
                     }
                 </div>
                 {this.renderBasicPromotionModal()}
-                {this.renderSpecialPromotionModal()}
-                {(v3visible && curKey == '78') && <Chou2Le onToggle={this.onV3Click} />}
-                {(v3visible && curKey == '79') && <BlindBox onToggle={this.onV3Click} />}
-                {(v3visible && curKey == '83') && <PassWordCoupon onToggle={this.onV3Click} />}
                 {(v3visible && curKey == '10072') && this.renderWeChat2MallModal()}
-                {(v3visible && curKey == '85') && <ManyFace onToggle={this.onV3Click} />}
             </div >
         )
     }
