@@ -2,13 +2,6 @@
 import { Modal, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { Component } from 'react';
-import pos from './assets/pos.png';
-import wx from './assets/wx.png';
-// import bg0 from './assets/bg0.png';
-// import bg1 from './assets/bg1.png';
-// import bg2 from './assets/bg2.png';
-// import bg3 from './assets/bg3.png';
-// import xcx from './assets/xcx.png';
 import xinsale from './assets/xinsale.png';
 import styles from './cardStyle.less';
 
@@ -120,37 +113,6 @@ class NewPromotionCard extends Component {
             index,
             size,
         } = this.props;
-        // let backgroundImageString;
-        // switch (index % 4) {
-        //     case 1: backgroundImageString = bg1; break;
-        //     case 2: backgroundImageString = bg2; break;
-        //     case 3: backgroundImageString = bg3; break;
-        //     default: backgroundImageString = bg0;
-        // }
-
-        // if (size === 'small') {
-        //     return (
-        //         <div className={styles.smallContainer} onClick={this.onClick}>
-        //             {this.renderPulgin(key, 'ath')}
-        //             <div className={styles.title}>
-        //                 {title}
-        //             </div>
-        //             <div className={styles.cardBackgroundImage}>
-        //                 <img src={backgroundImageString} alt="oops" />
-        //             </div>
-        //             <div className={styles.cardLogo} style={{
-        //                 right: right * 0.62,
-        //                 bottom: bottom * 0.62,
-        //             }}>
-        //                 {V3KEYS.includes(key) ?
-        //                     <img style={{ maxWidth: '90px', maxHeight: '90px' }} src={V3LOGO[key]} alt="oops" /> :
-        //                     <img style={{ maxWidth: '90px', maxHeight: '90px' }} src={require(`./assets/logo_${key}.png`)} alt="oops" />
-        //                 }
-        //             </div>
-        //         </div>
-        //     )
-        // }
-
         // if(size === 'special') {
         let wechatFlag = 1;
         return (

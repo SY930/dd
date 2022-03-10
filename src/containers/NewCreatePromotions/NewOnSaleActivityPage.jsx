@@ -107,9 +107,9 @@ class NewCustomerPage extends Component {
 
     componentDidMount() {
         this.getWhite();
-        this.fromCrmJump();
-        this.getHouseKeepActivityAuthStatus('MEMBER_MARKET_PLAN');
-        this.getHouseKeepActivityAuthStatus('CRM_VOUCHER_AUTOMATIC_ISSUANCE');
+        // this.fromCrmJump();
+        // this.getHouseKeepActivityAuthStatus('MEMBER_MARKET_PLAN');
+        // this.getHouseKeepActivityAuthStatus('CRM_VOUCHER_AUTOMATIC_ISSUANCE');
         this.props.getAuthLicenseData({ productCode: 'HLL_CRM_Marketingbox' }).then((res) => {
             this.setState({ authLicenseData: res })
         });
@@ -118,7 +118,7 @@ class NewCustomerPage extends Component {
     componentWillReceiveProps(nextProps) {
         // todo:上线放开
         if (JSON.stringify(this.props) !== JSON.stringify(nextProps)) {
-            this.fromCrmJump();
+            // this.fromCrmJump();
         }
     }
     getQueryVariable() {
@@ -355,30 +355,30 @@ class NewCustomerPage extends Component {
         })
     }
     //验证集团是否参加管家活动
-    getHouseKeepActivityAuthStatus = async (param) => {
-        const state = getStore().getState();
-        const { groupID } = state.user.get('accountInfo').toJS();
-        const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', '', '/api/v1/universal?'];
-        const method = '/messageSendService/queryMsgConfig.ajax';
-        const params = { service, type, data: { groupID, shopID: groupID, messageCode: param }, method };
-        const response = await axios.post(url + method, params);
-        const { code, message: msg, data } = response;
-        if (code === '000') {
-            const { authConfig: { authStatus } } = data;
-            if (param == 'CRM_VOUCHER_AUTOMATIC_ISSUANCE' && authStatus == 'AUTHORIZED') {
-                this.setState({
-                    gentGiftStatus: true
-                })
-            }
-            if (param == 'MEMBER_MARKET_PLAN' && authStatus == 'AUTHORIZED') {
-                this.setState({
-                    houseKeepStatus: true
-                })
-            }
-            return true;
-        }
-        message.error(msg);
-    }
+    // getHouseKeepActivityAuthStatus = async (param) => {
+    //     const state = getStore().getState();
+    //     const { groupID } = state.user.get('accountInfo').toJS();
+    //     const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', '', '/api/v1/universal?'];
+    //     const method = '/messageSendService/queryMsgConfig.ajax';
+    //     const params = { service, type, data: { groupID, shopID: groupID, messageCode: param }, method };
+    //     const response = await axios.post(url + method, params);
+    //     const { code, message: msg, data } = response;
+    //     if (code === '000') {
+    //         const { authConfig: { authStatus } } = data;
+    //         if (param == 'CRM_VOUCHER_AUTOMATIC_ISSUANCE' && authStatus == 'AUTHORIZED') {
+    //             this.setState({
+    //                 gentGiftStatus: true
+    //             })
+    //         }
+    //         if (param == 'MEMBER_MARKET_PLAN' && authStatus == 'AUTHORIZED') {
+    //             this.setState({
+    //                 houseKeepStatus: true
+    //             })
+    //         }
+    //         return true;
+    //     }
+    //     message.error(msg);
+    // }
 
     onClickOpen = async (eventWay) => {
         const state = getStore().getState();
@@ -669,6 +669,7 @@ class NewCustomerPage extends Component {
         var { displayList } = this.checkAuth(ALL_PROMOTION_CATEGORIES)
         // 管家活动-列表显示过滤
         var { displayList } = this.filterMenuByGroup(displayList)
+        console.log("🚀 ~ file: NewOnSaleActivityPage.jsx ~ line 672 ~ NewCustomerPage ~ render ~ displayList", displayList)
         const speController = groupID == '295896'
         //集团id：295896 
         // 开通桌边砍活动
@@ -733,16 +734,16 @@ function mapDispatchToProps(dispatch) {
         setSpecialPromotionType: (opts) => {
             dispatch(saleCenterSetSpecialBasicInfoAC(opts));
         },
-        saleCenterResetSpecailDetailInfo: (opts) => {
-            dispatch(saleCenterResetSpecialDetailInfoAC(opts));
-            dispatch(resetOccupiedWeChatInfo());
-        },
-        saleCenterCheckSpecialExist: (opts) => {
-            dispatch(saleCenterCheckExist(opts));
-        },
-        toggleIsSpecialUpdate: (opts) => {
-            dispatch(toggleIsUpdateAC(opts))
-        },
+        // saleCenterResetSpecailDetailInfo: (opts) => {
+        //     dispatch(saleCenterResetSpecialDetailInfoAC(opts));
+        //     dispatch(resetOccupiedWeChatInfo());
+        // },
+        // saleCenterCheckSpecialExist: (opts) => {
+        //     dispatch(saleCenterCheckExist(opts));
+        // },
+        // toggleIsSpecialUpdate: (opts) => {
+        //     dispatch(toggleIsUpdateAC(opts))
+        // },
         // 基础营销actions
         setBasicPromotionType: (opts) => {
             dispatch(saleCenterSetBasicInfoAC(opts));

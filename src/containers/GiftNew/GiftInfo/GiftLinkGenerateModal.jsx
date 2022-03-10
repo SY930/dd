@@ -12,7 +12,7 @@ import { jumpPage } from '@hualala/platform-base';
 import QRCode from 'qrcode.react';
 import emptyPage from '../../../assets/empty_page.png';
 import { axiosData, fetchData } from '../../../helpers/util'
-import { NEW_SALE_BOX } from '../../../constants/entryCodes'
+import { NEW_SALE_ACTIVITY_BOX } from '../../../constants/entryCodes'
 import style from './GiftInfo.less';
 
 
@@ -75,7 +75,7 @@ export default class GiftLinkGenerateModal extends Component {
     }
 
     handleJumpAway = () => {
-        jumpPage({pageID: NEW_SALE_BOX,from:'giftInfo',type:'21'});
+        jumpPage({pageID: NEW_SALE_ACTIVITY_BOX,from:'giftInfo',type:'21'});
         this.props.onCancel();
     }
 
