@@ -597,6 +597,7 @@ class GiftAddModalStep extends React.PureComponent {
 
         if (key == 'separateAccountType') {
             formRef.setFieldsValue({ separateAccountValue: '0' })
+            this.handleFormChange('separateAccountValue', '0', formRef)
         }
         if (key == 'separateAccountValue') {
             formRef.setFieldsValue({ separateAccountValue: value })
