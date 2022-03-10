@@ -2572,7 +2572,7 @@ class GiftAddModalStep extends React.PureComponent {
         return (
             <Row>
                 {
-                    decorator({
+                    decorator('separateAccountType', {
                         onChange: (e) => { this.handleChangeSubLedgerAmount(e, form) }
                     })(
                         <RadioGroup>
