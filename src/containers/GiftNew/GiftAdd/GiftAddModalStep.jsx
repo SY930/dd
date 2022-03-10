@@ -594,6 +594,13 @@ class GiftAddModalStep extends React.PureComponent {
             }     
                 
         }
+
+        if (key == 'separateAccountType') {
+            formRef.setFieldsValue({ separateAccountValue: '0' })
+        }
+        if (key == 'separateAccountValue') {
+            formRef.setFieldsValue({ separateAccountValue: value })
+        }
         
     }
 
@@ -2207,14 +2214,6 @@ class GiftAddModalStep extends React.PureComponent {
         this.props.getMallGoodsAndCategories(shopID);
     }
 
-    handleChangeSubLedgerAmount = ({ target }, form) => {
-        const { value } = target
-        if (value == '1') {
-            form.setFieldsValue({ separateAccountValue: '0' })
-        }
-    }
-
-
     renderBuyGiveFoodsboxs(decorator) {
         const { gift: { data } } = this.props;
         let { couponFoodScopeList = []} = data;
@@ -2573,7 +2572,6 @@ class GiftAddModalStep extends React.PureComponent {
             <Row>
                 {
                     decorator('separateAccountType', {
-                        onChange: (e) => { this.handleChangeSubLedgerAmount(e, form) }
                     })(
                         <RadioGroup>
                             <Radio value={0}>按固定</Radio>
