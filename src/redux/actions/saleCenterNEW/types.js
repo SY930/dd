@@ -114,6 +114,22 @@ export const SALE_CENTER_ACTIVITY_ORDER_TYPE = Object.freeze({
     "21": "自提",
 });
 
+
+export const SALE_CENTER_COUPON_TYPE = Object.freeze([
+    {
+        label: '满减券',
+        value: "601",
+    },
+    {
+        label: '打折券',
+        value: "602",
+    },
+    {
+        label: '商品券',
+        value: "603",
+    },
+]);
+
 export const SALE_CENTER_GIFT_TYPE = Object.freeze([
     {
         label: SALE_LABEL.k5m5avfn,

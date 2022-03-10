@@ -99,7 +99,6 @@ export const specialPromotion_NEW = ($$state = $initialState, action) => {
                         giftInfo = [...giftInfo, ...rule1Data.gifts];
                     }
                 }
-                debugger
                 return $$state
                     .mergeIn(
                         ["$eventInfo"],
@@ -138,7 +137,6 @@ export const specialPromotion_NEW = ($$state = $initialState, action) => {
             );
 
         case SALE_CENTER_SET_SPECIAL_PROMOTION_GIFT_INFO:
-            debugger
             return $$state.set("$giftInfo", Immutable.fromJS(action.payload));
         case SALE_CENTER_SET_SPECIAL_PROMOTION_RECOMMEND_SETTINGS_INFO:
             return $$state.set(

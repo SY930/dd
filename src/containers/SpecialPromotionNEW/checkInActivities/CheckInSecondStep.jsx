@@ -668,7 +668,6 @@ class CheckInSecondStep extends React.Component {
                 giftGetRule,
                 needCount: athNeedCount,
             })
-            debugger
             this.props.setSpecialGiftInfo(gifts);
             this.props.setPromotionDetail({
                 rule: this.state.rule,

@@ -198,6 +198,7 @@ class LotteryThirdStep extends React.Component {
                     infos[index].giveRedPacket.isOn = false;
                 }
                 infos[index].giftTotalCount.value = gift.giftTotalCount
+                infos[index].presentType = gift.presentType
                 infos[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(2);
                 // infos[index].shareTitle.value = gift.shareTitle;
                 // infos[index].giftConfImagePath.value = gift.giftConfImagePath || 'basicdoc/f75ed282-4d1c-4f5d-ab29-a92529cbadcf.png' ;
@@ -1057,7 +1058,6 @@ class LotteryThirdStep extends React.Component {
                     tempArr.push(tempObj);
                 }
             })
-            debugger
             setSpecialGiftInfo(tempArr);
             setSpecialBasicInfo({ shareImagePath, shareTitle })
             return true;

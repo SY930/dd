@@ -14,14 +14,17 @@ import {
     SALE_CENTER_GIFT_TYPE,
     SALE_CENTER_GIFT_EFFICT_TIME,
     SALE_CENTER_GIFT_EFFICT_DAY,
+    SALE_CENTER_COUPON_TYPE
 } from '../../../redux/actions/saleCenterNEW/types';
 import { injectIntl } from 'i18n/common/injectDecorator';
 import { STRING_GIFT } from 'i18n/common/gift';
 import { STRING_SPE, COMMON_SPE } from 'i18n/common/special';
+import { axios } from '@hualala/platform-base';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const RangePicker = DatePicker.RangePicker;
+const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', 'alipay/', '/api/v1/universal?'];
 // const TreeNode = Tree.TreeNode;
 // const Search = Input.Search;
 const defaultData = {
@@ -86,6 +89,7 @@ class AddGifts extends React.Component {
             ...this.initGiftInfo(),
             infos: this.props.value || [JSON.parse(JSON.stringify(defaultData))],
             maxCount: this.props.maxCount || 3,
+            couponData: [],
         };
 
         this.handlegiftTotalCountChange = this.handlegiftTotalCountChange.bind(this);
@@ -107,7 +111,7 @@ class AddGifts extends React.Component {
         this.GIFT_BELONGING_TYPE = Object.freeze([{
             key: 0, value: '1', name: `餐饮券`,
         },
-        { key: 1, value: '2', name: `零售券` }])
+        { key: 1, value: '8', name: `零售券` }])
     }
 
     initGiftInfo = (props = this.props) => {
@@ -129,6 +133,28 @@ class AddGifts extends React.Component {
         }
     }
 
+    componentDidMount() {
+        // 请求零售券
+        this.getCouponsData()         
+    }
+
+    getCouponsData = async () => {
+        const {
+            user
+        } = this.props
+        const method = '/retailCouponService/queryCouponTypeBatchGroup.ajax';
+        const params = { service, type, data: {groupID: user.accountInfo.groupID}, method };
+        const response = await axios.post(url + method, params);
+        const { code, message: msg, data: obj } = response;
+        if (code === '000') {
+            const { couponTypeBatchGroupInfoList = [] } = obj;
+            this.setState({
+                couponData: this.proCouponData(couponTypeBatchGroupInfoList)
+            })
+        }
+        message.error(msg);
+        return [];
+    }
     componentWillReceiveProps(nextProps) {
         if (nextProps.promotionDetailInfo.getIn(['$giftInfo', 'data']) !== this.props.promotionDetailInfo.getIn(['$giftInfo', 'data'])) {
             this.setState({
@@ -137,6 +163,28 @@ class AddGifts extends React.Component {
         }
     }
 
+    proCouponData(giftTypes) {
+        const _giftTypes = giftTypes;
+        let treeData = [];
+        let result = _giftTypes.map((gt, idx) => {
+            let item = {...gt}
+            treeData.push({
+                label: _.find(SALE_CENTER_COUPON_TYPE, { value: String(gt.couponType) }) ? _.find(SALE_CENTER_COUPON_TYPE, { value: String(gt.couponType) }).label : '',
+                key: gt.couponType,
+                children: [],
+            });
+            item.giftType = gt.couponType
+            item.crmGifts = gt.couponBatchInfoList.map((gift) => {
+                let temp = {...gift}
+                temp.giftName = gift.couponBatchName
+                temp.giftItemID = gift.couponBatchID
+                temp.giftType = gift.couponType
+                return temp
+            });
+            return item
+        });
+        return result;
+    }
     proGiftTreeData(giftTypes) {
         const _giftTypes = _.filter(giftTypes, giftItem => giftItem.giftType != 90);
         let treeData = [];
@@ -211,6 +259,9 @@ class AddGifts extends React.Component {
 
 
     renderItems() {
+        const {
+            couponData = []
+        } = this.state
         let filteredGiftInfo = this.state.giftInfo.filter(cat => cat.giftType && cat.giftType != 90)
             .map(cat => ({ ...cat, index: SALE_CENTER_GIFT_TYPE.findIndex(type => String(type.value) === String(cat.giftType)) }));
         const arr = [`${this.props.intl.formatMessage(STRING_SPE.da8oel25o02265)}`,
@@ -254,6 +305,7 @@ class AddGifts extends React.Component {
                 addonBefore = `${this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kc13243)}`;
                 onChangeFunc = this.handlegiftTotalCountChange;
             }
+            console.log('info.presentType', info.presentType)
             return (
                 <div key={`${index}`} style={theme === 'green' ? { background: '#f7f7f7' } : null} className={selfStyle.giftWrapper}>
                     <div style={theme === 'green' ? { background: '#1ab495', color: 'fff' } : null} className={selfStyle.giftNoLabel}>
@@ -287,7 +339,6 @@ class AddGifts extends React.Component {
                             </FormItem>
                         )
                     }
-                    {/* debugger */}
                     {
                         <FormItem
                             className={[styles.FormItemStyle].join(' ')}
@@ -296,9 +347,9 @@ class AddGifts extends React.Component {
                             <span style={{ paddingLeft: '8px' }} className={[styles.formLabel, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}>礼品属性</span>
                             <RadioGroup
                                 className={styles.radioMargin}
-                                value={info.giftTypeDebugger == '2' ? '2' : '1'}
-                                onChange={val => this.handleGiftTypeDebuggerChange(val, index)}
-                                // disabled={info.effectTypeIsDisabled}
+                                value={info.presentType == '8' ? '8' : '1'}
+                                onChange={val => this.handlePresentTypeChange(val, index)}
+                            // disabled={info.effectTypeIsDisabled}
                             >
                                 {
                                     this.GIFT_BELONGING_TYPE.map((item, index) => {
@@ -323,7 +374,8 @@ class AddGifts extends React.Component {
                         <ExpandTree
                             idx={index}
                             value={this.getGiftValue(index)}
-                            data={_.sortBy(filteredGiftInfo, 'index')}
+                            data={_.sortBy(info.presentType == 8 ? couponData :filteredGiftInfo, 'index')}
+                            filterLable={info.presentType == 8 ? SALE_CENTER_COUPON_TYPE : SALE_CENTER_GIFT_TYPE}
                             onChange={(value) => {
                                 this.handleGiftChange(value, index);
                             }}
@@ -371,26 +423,26 @@ class AddGifts extends React.Component {
                     </FormItem>
                     {/* ....... */}
                     {
-                        info.giftTypeDebugger != '2' ? 
-                        <FormItem
-                            className={[styles.FormItemStyle].join(' ')}
-                        >
-                            <span style={{ paddingLeft: '8px' }} className={[styles.formLabel, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}>{this.props.intl.formatMessage(STRING_SPE.du389nqve18246)}</span>
-                            <RadioGroup
-                                className={styles.radioMargin}
-                                value={info.effectType == '2' ? '2' : '1'}
-                                onChange={val => this.handleValidateTypeChange(val, index)}
-                                disabled={info.effectTypeIsDisabled}
+                        info.presentType != '8' ?
+                            <FormItem
+                                className={[styles.FormItemStyle].join(' ')}
                             >
-                                {
-                                    this.VALIDATE_TYPE.map((item, index) => {
-                                        return <Radio value={item.value} key={index}>{item.name}</Radio>
-                                    })
-                                }
-                            </RadioGroup>
-                        </FormItem> : null
+                                <span style={{ paddingLeft: '8px' }} className={[styles.formLabel, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}>{this.props.intl.formatMessage(STRING_SPE.du389nqve18246)}</span>
+                                <RadioGroup
+                                    className={styles.radioMargin}
+                                    value={info.effectType == '2' ? '2' : '1'}
+                                    onChange={val => this.handleValidateTypeChange(val, index)}
+                                    disabled={info.effectTypeIsDisabled}
+                                >
+                                    {
+                                        this.VALIDATE_TYPE.map((item, index) => {
+                                            return <Radio value={item.value} key={index}>{item.name}</Radio>
+                                        })
+                                    }
+                                </RadioGroup>
+                            </FormItem> : null
                     }
-                    {info.giftTypeDebugger != '2' ? this.renderValidOptions(info, index) : null}
+                    {info.presentType != '8' ? this.renderValidOptions(info, index) : null}
                     {/* ....... */}
                     {/* 中奖比率 */}
                     {
@@ -664,9 +716,10 @@ class AddGifts extends React.Component {
     }
 
     // 礼品属性改变
-    handleGiftTypeDebuggerChange(e, index) {
+    handlePresentTypeChange(e, index) {
         const _infos = this.state.infos;
-        _infos[index].giftTypeDebugger = e.target.value;
+        _infos[index].presentType = e.target.value;
+        this.handleGiftChange('', index)
         this.setState({
             infos: _infos,
         }, () => {

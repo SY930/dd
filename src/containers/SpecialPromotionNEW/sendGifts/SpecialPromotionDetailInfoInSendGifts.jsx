@@ -136,6 +136,7 @@ class SpecialDetailInfo extends Component {
             data[index].effectType = `${gift.effectType}`;
             data[index].giftInfo.giftName = gift.giftName;
             data[index].needCount.value = gift.needCount || 0;
+            data[index].presentType = gift.presentType
             data[index].giftInfo.giftItemID = gift.giftID;
             data[index].giftValidDays.value = gift.giftValidUntilDayCount;
             data[index].giftTotalCount.value = gift.giftTotalCount;
@@ -323,7 +324,6 @@ class SpecialDetailInfo extends Component {
                           cleanCount,
                       }
             );
-            debugger
             this.props.setSpecialGiftInfo(giftInfo);
 
             return true;
@@ -390,7 +390,6 @@ class SpecialDetailInfo extends Component {
         const typePropertyName = "sendType";
         if (!Array.isArray(gifts)) return;
         const { data } = this.state;
-        debugger
         this.setState({
             data: [
                 ...data.filter((item) => item[typePropertyName] !== typeValue),

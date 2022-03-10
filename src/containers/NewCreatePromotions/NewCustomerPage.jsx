@@ -157,7 +157,6 @@ class NewCustomerPage extends Component {
             ifJumpSetData
         } = this.state
         if (!ifJumpSetData) {
-            debugger
             this.props.setSpecialPromotionType(specialPromotionBasicDataAdapter(response, _serverToRedux));
             this.setState({
                 ifJumpSetData: true,
