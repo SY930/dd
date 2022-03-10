@@ -2207,6 +2207,13 @@ class GiftAddModalStep extends React.PureComponent {
         this.props.getMallGoodsAndCategories(shopID);
     }
 
+    handleChangeSubLedgerAmount = ({ target }, form) => {
+        const { value } = target
+        if (value == '1') {
+            form.setFieldsValue({ separateAccountValue: '0' })
+        }
+    }
+
 
     renderBuyGiveFoodsboxs(decorator) {
         const { gift: { data } } = this.props;
@@ -2565,7 +2572,9 @@ class GiftAddModalStep extends React.PureComponent {
         return (
             <Row>
                 {
-                    decorator({})(
+                    decorator({
+                        onChange: (e) => { this.handleChangeSubLedgerAmount(e, form) }
+                    })(
                         <RadioGroup>
                             <Radio value={0}>按固定</Radio>
                             <Radio value={1}>按比例</Radio>
