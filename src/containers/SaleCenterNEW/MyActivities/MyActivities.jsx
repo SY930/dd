@@ -1288,25 +1288,25 @@ class MyActivities extends React.Component {
                     )
                 }
             },
-            {
-                title: COMMON_LABEL.sort,
-                className: 'TableTxtCenter',
-                dataIndex: 'sortOrder',
-                key: 'sortOrder',
-                width: 120,
-                render: (text, record, index) => {
-                    const canNotSortUp = this.state.pageNo == 1 && index == 0;
-                    const canNotSortDown = (this.state.pageNo - 1) * this.state.pageSizes + index + 1 == this.state.total;
-                    return (
-                        <span>
-                            <span><Iconlist title={k5eng7pt} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'TOP')} /></span>
-                            <span><Iconlist title={k5engk5b} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'UP')} /></span>
-                            <span className={styles.upsideDown}><Iconlist title={k5engpht} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'DOWN')} /></span>
-                            <span className={styles.upsideDown}><Iconlist title={k5engebq} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'BOTTOM')} /></span>
-                        </span>
-                    )
-                },
-            },
+            // {
+            //     title: COMMON_LABEL.sort,
+            //     className: 'TableTxtCenter',
+            //     dataIndex: 'sortOrder',
+            //     key: 'sortOrder',
+            //     width: 120,
+            //     render: (text, record, index) => {
+            //         const canNotSortUp = this.state.pageNo == 1 && index == 0;
+            //         const canNotSortDown = (this.state.pageNo - 1) * this.state.pageSizes + index + 1 == this.state.total;
+            //         return (
+            //             <span>
+            //                 <span><Iconlist title={k5eng7pt} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'TOP')} /></span>
+            //                 <span><Iconlist title={k5engk5b} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'UP')} /></span>
+            //                 <span className={styles.upsideDown}><Iconlist title={k5engpht} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'DOWN')} /></span>
+            //                 <span className={styles.upsideDown}><Iconlist title={k5engebq} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'BOTTOM')} /></span>
+            //             </span>
+            //         )
+            //     },
+            // },
             {
                 title: SALE_LABEL.k5dk5uwl,
                 dataIndex: 'promotionType',
@@ -1356,7 +1356,17 @@ class MyActivities extends React.Component {
                 },
             },
             {
-                title: SALE_LABEL.k5dli0fu,
+                title: '创建来源',
+                className: 'TableTxtCenter',
+                dataIndex: 'maintenanceLevel',
+                key: 'maintenanceLevel',
+                width: 80,
+                render: (t) => {
+                    return t == '0' ? '集团创建' : '门店创建'
+                }
+            },
+            {
+                title: '活动状态',
                 className: 'TableTxtCenter',
                 dataIndex: 'status',
                 key: 'valid',
@@ -1365,7 +1375,6 @@ class MyActivities extends React.Component {
                     return status == '1' ? k5dlp2gl : status == '2' ? k5dlp7zc : k5dlpczr;
                 },
             },
-
             {
                 title: SALE_LABEL.k5dmps71,
                 dataIndex: '',
@@ -1392,19 +1401,19 @@ class MyActivities extends React.Component {
                     return `${moment(new Date(parseInt(record.createTime))).format('YYYY-MM-DD HH:mm:ss')} / ${moment(new Date(parseInt(record.actionTime))).format('YYYY-MM-DD HH:mm:ss')}`;
                 },
             },
-            {
-                title: SALE_LABEL.k5dlbwqo,
-                dataIndex: 'isActive',
-                className: 'TableTxtCenter',
-                key: 'isActive',
-                width: 100,
-                render: (isActive) => {
-                    return (isActive == '1' ? COMMON_LABEL.enable : COMMON_LABEL.disable);
-                },
-            },
+            // {
+            //     title: SALE_LABEL.k5dlbwqo,
+            //     dataIndex: 'isActive',
+            //     className: 'TableTxtCenter',
+            //     key: 'isActive',
+            //     width: 100,
+            //     render: (isActive) => {
+            //         return (isActive == '1' ? COMMON_LABEL.enable : COMMON_LABEL.disable);
+            //     },
+            // },
         ];
         return (
-            <div className={`layoutsContent ${styles.tableClass}`} style={{ height: this.state.contentHeight }}>
+            <div className={`layoutsContent ${styles.tableClass}`}>
                 <Table
                     ref={this.setTableRef}
                     scroll={{ x: 1700, y: this.state.contentHeight - 93 }}
@@ -1446,12 +1455,12 @@ class MyActivities extends React.Component {
         const { runType } = this.state;
         return (
             <div style={{ backgroundColor: '#F3F3F3' }} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
-                <div>
+                {/* <div>
                     {this.renderHeader()}
                 </div>
-                <PromotionCalendarBanner />
+                <PromotionCalendarBanner /> */}
                 <div>
-                    <div className={styles.pageContentWrapper}>
+                    <div className={styles.pageContentWrapper} style={{ minHeight: 'calc(100vh - 160px)' }}>
                         <div style={{ padding: '0' }} className="layoutsHeader">
                             {this.renderFilterBar()}
                             <div style={{ margin: '0' }} className="layoutsLine"></div>

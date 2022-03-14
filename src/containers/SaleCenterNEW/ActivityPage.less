@@ -2309,10 +2309,66 @@
         float: right;
     }
 }
+.Sale__Activite__Tip {
+    padding-top: 0 !important;
+    min-width: 125px;
+  :global {
+    .ant-tooltip-arrow{
+            display: none;
+        }
+        .ant-tooltip-placement-bottomLeft {
+            padding-top: 0;
+        }
+        .ant-tooltip-inner {
+            background-color: #fff;
+        }
+    }
+}
+.Sale__Activite__moveMore {
+    > a {
+        display: block;
+        margin-bottom: 9px;
+        font-size: 14px;
+        font-weight: 400;
+        color: #666666;
+    }
+    // :global {
+    //     .ant-tooltip-placement-bottomLeft .ant-tooltip-arrow {
+    //         display: none;
+    //     }
+    //     .ant-tooltip-placement-bottomLeft {
+    //         padding-top: 0;
+    //     }
+    //     .ant-tooltip-inner {
+    //         background-color: #fff;
+    //     }
+    // }
+}
 
 .pageContentWrapper {
     background-color: #FFFFFF;
     padding: 15px 30px 30px;
+    .more {
+        // cursor: pointer;
+        position: relative;
+    }
+    .moveMore {
+        // display: none;
+        // position: absolute;
+        // width: 125px;
+        // height: 127px;
+        // background: #FFFFFF;
+        // box-shadow: 0px 0px 12px 0px rgba(194, 194, 194, 0.5);
+        // border-radius: 5px;
+        // z-index: 777;
+        // left: 0;
+        // top: 0;
+    
+        // display: flex;
+    }
+    .moveMoreShow {
+        // display: block;
+    }
 }
 
 .tableClass {
