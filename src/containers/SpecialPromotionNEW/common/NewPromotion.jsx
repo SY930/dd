@@ -37,7 +37,6 @@ export default class NewPromotion extends React.Component {
     async onFinish(cb) {
         const { specialPromotion, user } = this.props;
         const smsGate = specialPromotion.$eventInfo.smsGate;
-        // //debugger
         if (specialPromotion.$eventInfo.eventWay == '50'
             || (smsGate == '1' || smsGate == '3' || smsGate == '4')) {
             if (specialPromotion.$eventInfo.accountNo > 0) { // 权益账户的情况
@@ -116,7 +115,6 @@ export default class NewPromotion extends React.Component {
             }
         }
         let jumpToCrmFlag = specialPromotion.isBenefitJumpOpenCard || specialPromotion.isBenefitJumpSendGift;
-        // //debugger
         if (this.props.isNew === false && !this.props.isCopy) {
             this.props.updateSpecialPromotion && this.props.updateSpecialPromotion({
                 data: opts,
@@ -198,7 +196,6 @@ export default class NewPromotion extends React.Component {
     }
 
     handleFinish(cb, index) {
-        // //debugger
         let flag = true;
         if (undefined !== this.handles[index].finish && typeof this.handles[index].finish === 'function') {
             flag = this.handles[index].finish();

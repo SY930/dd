@@ -205,7 +205,6 @@ export const upGradeInitPerfectCheckBox = function () {
     const { upGradeReturnGiftCheckBoxStatus } = this.state;
     const pointItem = giftInfo.find((v) => v.presentType === 2);
     const couponItem = giftInfo.find((v) => { return v.presentType === 1 || v.presentType === 8 });
-    // //debugger
     upGradeReturnGiftCheckBoxStatus.upGradeReturnGiftPoint = pointItem;
     upGradeReturnGiftCheckBoxStatus.upGradeReturnGiftCoupon = couponItem;
     if (!pointItem && !couponItem) {

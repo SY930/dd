@@ -305,7 +305,6 @@ class AddGifts extends React.Component {
                 addonBefore = `${this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kc13243)}`;
                 onChangeFunc = this.handlegiftTotalCountChange;
             }
-            console.log('info.presentType', info.presentType)
             return (
                 <div key={`${index}`} style={theme === 'green' ? { background: '#f7f7f7' } : null} className={selfStyle.giftWrapper}>
                     <div style={theme === 'green' ? { background: '#1ab495', color: 'fff' } : null} className={selfStyle.giftNoLabel}>
@@ -339,7 +338,7 @@ class AddGifts extends React.Component {
                             </FormItem>
                         )
                     }
-                    {
+                    { (this.props.type == '53' || this.props.type == '51' || this.props.type == '63' || this.props.type == '62') &&
                         <FormItem
                             className={[styles.FormItemStyle].join(' ')}
                             style={{ marginTop: '8px' }}

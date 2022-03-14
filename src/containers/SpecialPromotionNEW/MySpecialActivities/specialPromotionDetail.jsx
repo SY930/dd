@@ -425,7 +425,6 @@ class SpecialPromotionDetail extends React.Component {
         }
         if (way == 78) {
             const rec = records.filter(record => [1, 4].includes(record.presentType));
-            ////debugger
             return (
                 <div>
                     <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>

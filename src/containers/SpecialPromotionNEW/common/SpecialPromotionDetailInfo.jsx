@@ -956,7 +956,6 @@ class SpecialDetailInfo extends Component {
                 : giftInfo.needCount;
             return gifts;
         });
-        // //debugger
         return giftArr;
     };
     checkNeedCount = (needCount, index) => {
@@ -981,7 +980,6 @@ class SpecialDetailInfo extends Component {
 
     handleSubmit = (isPrev) => {
         const { type } = this.props
-        // //debugger
         if (type === '68') {
             return handleSubmitRecommendGifts.call(this, isPrev)
         } else if (type === '23') {
@@ -998,13 +996,11 @@ class SpecialDetailInfo extends Component {
         let giftTotalCopies = '';
         let flag = true;
         const priceReg = /^(([1-9]\d{0,5})(\.\d{0,2})?|0.\d?[1-9]{1})$/;
-        //debugger
         this.props.form.validateFieldsAndScroll(
             { force: true },
             (error, basicValues) => {
                 if (error) {
                     flag = false;
-                    //debugger
                 } else {
                     if (type == '21') {
                         giftTotalCount = basicValues.giftTotalCount ? basicValues.giftTotalCount.number : 2147483647;
@@ -1167,7 +1163,6 @@ class SpecialDetailInfo extends Component {
                 (flag, key) => {
                     const keyArr = ['giftCount', 'giftInfo']
                     if (ruleInfo.presentType == '8') {
-                        // //debugger
                         if (
                             ruleInfo[key] instanceof Object &&
                             ruleInfo[key].hasOwnProperty("validateStatus") &&
