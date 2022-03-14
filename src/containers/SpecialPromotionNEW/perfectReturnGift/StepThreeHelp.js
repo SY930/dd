@@ -352,9 +352,14 @@ export const renderThree = function (type, isBenefitJumpSendGift) {
                             maxCount={10}
                             type={this.props.type}
                             isNew={this.props.isNew}
-                            value={data
+                            value={
+                                function(){
+                                    //debugger
+                                   return data
                                 .filter((gift) => gift.sendType === 0)
-                                .sort((a, b) => a.needCount - b.needCount)}
+                                .sort((a, b) => a.needCount - b.needCount)}()
+                                }
+                                
                             onChange={(gifts) => this.gradeChange(gifts, 0)}
                         />
                     </Col>
@@ -417,7 +422,8 @@ export const addPointData = function (giftInfo) {
     // }
 
     if (!perfectReturnGiftCoupon) {
-        giftInfo = giftInfo.filter((v) => v.presentType && v.presentType !== 1);
+        giftInfo = giftInfo.filter((v) => v.presentType && (v.presentType !== 1 || v.presentType !== 8) );
+        // //debugger
     } else {
         giftInfo.forEach((v) => {
             if (!v.presentType) {
@@ -436,7 +442,8 @@ export const initPerfectCheckBox = function (isBenefitJumpSendGift) {
     const giftInfo = this.props.specialPromotion.get("$giftInfo").toJS();
     const { perfectReturnGiftCheckBoxStatus } = this.state;
     const pointItem = giftInfo.find((v) => v.presentType === 2);
-    const couponItem = giftInfo.find((v) => v.presentType === 1);
+    const couponItem = giftInfo.find((v) => { return v.presentType === 1 || v.presentType === 8 });
+    // //debugger
     const growthValueItem = giftInfo.find((v) => v.presentType === 6);
     perfectReturnGiftCheckBoxStatus.perfectReturnGiftPoint = pointItem;
     perfectReturnGiftCheckBoxStatus.perfectReturnGiftCoupon = couponItem;

@@ -251,7 +251,8 @@ class LotteryThirdStep extends React.Component {
                         if(every.sortIndex == item.sortIndex){
                             flag = false
                             //进行合并
-                            if(item.presentType == 1){
+                            if(item.presentType == 1 ||item.presentType === 8){
+                                ////debugger
                                 temparr[num].effectType = item.effectType;
                                 temparr[num].giftValidUntilDayCount = item.giftValidUntilDayCount;
                                 if(item.effectType != '2'){
@@ -978,6 +979,7 @@ class LotteryThirdStep extends React.Component {
         let giveCardObj = data.giveCardValue.value;
         let tempObj = {};
         tempObj.sortIndex = data.sortIndex;
+        //debugger
         if(type == 'points'){
             tempObj.presentValue = pointsObj.givePointsValue.value;
             tempObj.cardTypeID = pointsObj.card.value;

@@ -349,7 +349,7 @@ class SpecialDetailInfo extends Component {
             wxCouponList: [], // 微信商家券列表
             wxCouponVisible: false,
             couponValue: isThirdCoupon ? '1' : '0',
-            giftCouponCount: thirdCouponData.length > 0  && isThirdCoupon ?  thirdCouponData[0].giftCount : '1', // 用户单次领取优惠券张数
+            giftCouponCount: thirdCouponData.length > 0 && isThirdCoupon ? thirdCouponData[0].giftCount : '1', // 用户单次领取优惠券张数
             sleectedWxCouponList: thirdCouponData.length > 0 && isThirdCoupon ? thirdCouponData : [], // 选择的微信第三方优惠券
         };
     }
@@ -591,7 +591,7 @@ class SpecialDetailInfo extends Component {
         let isThirdCoupon = false; // 是否保存的是微信三方券
         if (giftInfo && giftInfo.length) {
             const { presentType } = giftInfo[0];
-            presentType == 7 ? isThirdCoupon = true : isThirdCoupon =  false;
+            presentType == 7 ? isThirdCoupon = true : isThirdCoupon = false;
         }
         let pointObj = {
             presentValue: "",
@@ -602,10 +602,10 @@ class SpecialDetailInfo extends Component {
             // 将券和其他礼品分开
             const otherGifts = []
             giftInfo = giftInfo.filter(v => {
-                if (v.presentType !== 1) {
+                if (v.presentType !== 1 || v.presentType !== 8) {
                     otherGifts.push(v)
                 }
-                return v.presentType === 1
+                return v.presentType === 1 || v.presentType !== 8
             })
             this.recommendOtherGifts = otherGifts
 
@@ -623,7 +623,7 @@ class SpecialDetailInfo extends Component {
         }
 
         if (type == 60 || type == 61 || type == 53) {
-            giftInfo = giftInfo.filter(v => v.presentType === 1)
+            giftInfo = giftInfo.filter(v => v.presentType === 1 || v.presentType === 8)
         }
         if (type == 23 && isThirdCoupon) {  //线上餐厅送礼保存的是微信三方券信息
             thirdCouponData = giftInfo;
@@ -638,7 +638,7 @@ class SpecialDetailInfo extends Component {
                     };
                     return;
                 }
-                if ((this.props.type == "52" || this.props.type == "64") && gift.presentType === 1) {
+                if ((this.props.type == "52" || this.props.type == "64") && (gift.presentType === 1 ||gift.presentType === 8)) {
                     pointObj = { ...pointObj, giveCoupon: true };
                 }
                 if (data[index] !== undefined) {
@@ -657,12 +657,12 @@ class SpecialDetailInfo extends Component {
                     gift.effectType != "2"
                         ? gift.giftEffectTimeHours
                         : [
-                              moment(gift.effectTime, "YYYYMMDD"),
-                              moment(gift.validUntilDate, "YYYYMMDD"),
-                          ];
+                            moment(gift.effectTime, "YYYYMMDD"),
+                            moment(gift.validUntilDate, "YYYYMMDD"),
+                        ];
                 data[index].effectType = `${gift.effectType}`;
                 data[index].giftInfo.giftName = gift.giftName;
-                if(this.props.type == '30' && gift.presentType === 4){
+                if (this.props.type == '30' && gift.presentType === 4) {
                     data[index].giftInfo.giftName = '';
                 }
                 data[index].needCount.value = gift.needCount || 0;
@@ -683,13 +683,13 @@ class SpecialDetailInfo extends Component {
                 data[index].lastConsumeIntervalDays = gift.lastConsumeIntervalDays
                     ? `${gift.lastConsumeIntervalDays}`
                     : undefined;
-                if(this.props.type === '68') {
-                    if(data[index].recommendType === 0) {
+                if (this.props.type === '68') {
+                    if (data[index].recommendType === 0) {
                         data[index].recommendType = `${gift.recommendType}#999`
                     } else {
                         data[index].recommendType = `${gift.recommendType}#${gift.recommendRule}`
                     }
-    
+
                 }
             });
         }
@@ -951,11 +951,12 @@ class SpecialDetailInfo extends Component {
             gifts.lastConsumeIntervalDays = giftInfo.lastConsumeIntervalDays;
             gifts.lastConsumeIntervalDays = giftInfo.lastConsumeIntervalDays;
             gifts.presentType = giftInfo.presentType ? giftInfo.presentType : '1'
-                typeof giftInfo.needCount === "object"
-                    ? giftInfo.needCount.value
-                    : giftInfo.needCount;
+            typeof giftInfo.needCount === "object"
+                ? giftInfo.needCount.value
+                : giftInfo.needCount;
             return gifts;
         });
+        // //debugger
         return giftArr;
     };
     checkNeedCount = (needCount, index) => {
@@ -978,10 +979,11 @@ class SpecialDetailInfo extends Component {
         return this.handleSubmit(true);
     };
 
-    handleSubmit =   (isPrev) => {
-        const {type} = this.props
-        if(type === '68') {
-            return handleSubmitRecommendGifts.call(this,isPrev)
+    handleSubmit = (isPrev) => {
+        const { type } = this.props
+        // //debugger
+        if (type === '68') {
+            return handleSubmitRecommendGifts.call(this, isPrev)
         } else if (type === '23') {
             return handleSubmitOnLineReturnGifts.call(this, isPrev)
         } else {
@@ -996,11 +998,13 @@ class SpecialDetailInfo extends Component {
         let giftTotalCopies = '';
         let flag = true;
         const priceReg = /^(([1-9]\d{0,5})(\.\d{0,2})?|0.\d?[1-9]{1})$/;
+        //debugger
         this.props.form.validateFieldsAndScroll(
             { force: true },
             (error, basicValues) => {
                 if (error) {
                     flag = false;
+                    //debugger
                 } else {
                     if (type == '21') {
                         giftTotalCount = basicValues.giftTotalCount ? basicValues.giftTotalCount.number : 2147483647;
@@ -1161,15 +1165,31 @@ class SpecialDetailInfo extends Component {
         let validateFlag = validatedRuleData.reduce((p, ruleInfo) => {
             const _validStatusOfCurrentIndex = Object.keys(ruleInfo).reduce(
                 (flag, key) => {
-                    if (
-                        ruleInfo[key] instanceof Object &&
-                        ruleInfo[key].hasOwnProperty("validateStatus")
-                    ) {
-                        const _valid =
-                            ruleInfo[key].validateStatus === "success";
-                        return flag && _valid;
+                    const keyArr = ['giftCount', 'giftInfo']
+                    if (ruleInfo.presentType == '8') {
+                        // //debugger
+                        if (
+                            ruleInfo[key] instanceof Object &&
+                            ruleInfo[key].hasOwnProperty("validateStatus") &&
+                            keyArr.includes(key)
+                        ) {
+                            const _valid =
+                                ruleInfo[key].validateStatus === "success";
+                            return flag && _valid;
+                        } else {
+                            return flag
+                        }
+                    } else {
+                        if (
+                            ruleInfo[key] instanceof Object &&
+                            ruleInfo[key].hasOwnProperty("validateStatus")
+                        ) {
+                            const _valid =
+                                ruleInfo[key].validateStatus === "success";
+                            return flag && _valid;
+                        }
+                        return flag;
                     }
-                    return flag;
                 },
                 true
             );
@@ -3499,19 +3519,19 @@ class SpecialDetailInfo extends Component {
                                         </div>
                                         {/* 从RFM创建的唤醒送礼需要展示改提示和R值 */}
                                         {
-                                            RFMObj.awakenTip && <p 
-                                            style={{
-                                                borderTop: '1px solid #D9D9D9',
-                                                height: '36px',
-                                                background: '#FFFBE6',
-                                                lineHeight: '36px',
-                                                fontSize: '12px',
-                                                color: '#666',
-                                                paddingLeft: '12px',
-                                            }}
-                                        ><Icon type="exclamation-circle" style={{ fontSize: 12, color: '#FAAD14', marginRight: 9 }}/>此处填写天数将影响最终推送人数，天数值与实际推送人数成反比例关系。</p>
+                                            RFMObj.awakenTip && <p
+                                                style={{
+                                                    borderTop: '1px solid #D9D9D9',
+                                                    height: '36px',
+                                                    background: '#FFFBE6',
+                                                    lineHeight: '36px',
+                                                    fontSize: '12px',
+                                                    color: '#666',
+                                                    paddingLeft: '12px',
+                                                }}
+                                            ><Icon type="exclamation-circle" style={{ fontSize: 12, color: '#FAAD14', marginRight: 9 }} />此处填写天数将影响最终推送人数，天数值与实际推送人数成反比例关系。</p>
                                         }
-                                      
+
                                     </div>
                                     {userCount > 0 || disabledGifts ? null : (
                                         <div
@@ -3745,7 +3765,7 @@ class SpecialDetailInfo extends Component {
         this.setState({ sleectedWxCouponList: rowSelected })
     }
 
-    handleCouponChange = ({ target: { value }}) => {
+    handleCouponChange = ({ target: { value } }) => {
         this.setState({
             couponValue: value,
         })
@@ -3850,23 +3870,25 @@ class SpecialDetailInfo extends Component {
                 {
                     type === '61' && renderUpGradeThree.call(this, this.props.isNew)
                 }
-                { !['52', '30', '60','61', '64', '53', '23'].includes(type) &&
-                <Row>
-                    <Col span={17} offset={4}>
-                        <AddGifts
-                            maxCount={type == '21' || type == '30' ? 1 : 10}
-                            disabledGifts={type == '67' && this.state.disabledGifts}
-                            type={this.props.type}
-                            isNew={this.props.isNew}
-                            value={
-                                this.state.data
-                                .filter(gift => gift.sendType === 0)
-                                .sort((a, b) => a.needCount - b.needCount)
-                            }
-                            onChange={(gifts) => this.gradeChange(gifts, 0)}
-                        />
-                    </Col>
-                </Row>}
+                {!['52', '30', '60', '61', '64', '53', '23'].includes(type) &&
+                    <Row>
+                        <Col span={17} offset={4}>
+                            <AddGifts
+                                maxCount={type == '21' || type == '30' ? 1 : 10}
+                                disabledGifts={type == '67' && this.state.disabledGifts}
+                                type={this.props.type}
+                                isNew={this.props.isNew}
+                                value={ v => {
+                                    return this.state.data
+                                    .filter(gift => gift.sendType === 0)
+                                    .sort((a, b) => a.needCount - b.needCount)
+                                }
+                                    
+                                }
+                                onChange={(gifts) => this.gradeChange(gifts, 0)}
+                            />
+                        </Col>
+                    </Row>}
                 {type == "65" && (
                     <p className={styles.coloredBorderedLabel}>
                         {this.props.intl.formatMessage(
@@ -3929,7 +3951,7 @@ class SpecialDetailInfo extends Component {
                                                 <FormItem
                                                     label={'用户单次领取优惠券张数'}
                                                     // className={styles.FormItemStyle}
-                                                    labelCol={{ span: 8}}
+                                                    labelCol={{ span: 8 }}
                                                     wrapperCol={{ span: 16 }}
                                                 >
                                                     {this.props.form.getFieldDecorator("giftCount", {
@@ -3965,7 +3987,7 @@ class SpecialDetailInfo extends Component {
                                                         onWxCouponChange={this.onWxCouponChange}
                                                     />
                                                 }
-                                                   <div className={userCount > 0 ? styles.opacitySet : null}></div>
+                                                <div className={userCount > 0 ? styles.opacitySet : null}></div>
                                             </div>
                                         )
                                     }

@@ -812,6 +812,7 @@ const handleSubmitRecommendGifts = function (isPrev) {
         { force: true },
         (error, basicValues) => {
             if (error) {
+                //debugger
                 flag = false;
             }
             // 编辑的时候有概率被推荐人会出现积分被校验
@@ -998,6 +999,7 @@ const handleSubmitOnLineReturnGifts = function (isPrev) {
         { force: true },
         (error, basicValues) => {
             if (error) {
+                //debugger
                 flag = false;
             }
             giftCouponCount = basicValues.giftCount;

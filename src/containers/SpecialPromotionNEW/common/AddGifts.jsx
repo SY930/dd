@@ -4,7 +4,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { DatePicker, Radio, Form, Select, Input, Icon, Popconfirm, Button } from 'antd';
+import { DatePicker, Radio, Form, Select, Input, Icon, Popconfirm, Button, message } from 'antd';
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import selfStyle from './addGifts.less';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
@@ -151,8 +151,9 @@ class AddGifts extends React.Component {
             this.setState({
                 couponData: this.proCouponData(couponTypeBatchGroupInfoList)
             })
+        }else {
+            message.error(msg);
         }
-        message.error(msg);
         return [];
     }
     componentWillReceiveProps(nextProps) {
@@ -282,7 +283,6 @@ class AddGifts extends React.Component {
             this.setState({ disArr })
         }
         const { intl, theme } = this.props;
-
         return this.state.infos.map((info, index, arr) => {
 
             let validateStatus,
