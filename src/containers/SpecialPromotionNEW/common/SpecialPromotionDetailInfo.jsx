@@ -3878,12 +3878,9 @@ class SpecialDetailInfo extends Component {
                                 disabledGifts={type == '67' && this.state.disabledGifts}
                                 type={this.props.type}
                                 isNew={this.props.isNew}
-                                value={ v => {
-                                    return this.state.data
+                                value={this.state.data
                                     .filter(gift => gift.sendType === 0)
-                                    .sort((a, b) => a.needCount - b.needCount)
-                                }
-                                    
+                                    .sort((a, b) => a.needCount - b.needCount)                                    
                                 }
                                 onChange={(gifts) => this.gradeChange(gifts, 0)}
                             />
