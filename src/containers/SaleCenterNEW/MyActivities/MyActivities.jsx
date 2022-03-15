@@ -328,10 +328,12 @@ class MyActivities extends React.Component {
         this.setState(opt)
     }
 
-    handleDisableClickEvent(text, record) {
+    handleDisableClickEvent(text, record,  index, nextActive, modalTip) {
         this.props.toggleSelectedActivityState({
             record,
-            cb: this.toggleStateCallBack,
+            nextActive,
+            modalTip,
+            cb: () => {},
         });
     }
 
@@ -346,38 +348,38 @@ class MyActivities extends React.Component {
     }
 
     confirmDelete = (record) => {
-        const delTitle = `【${record.promotionName ? record.promotionName.length > 20 ? record.promotionName.substring(0, 20) + '...' : record.promotionName : ''}】`;
-        confirm({
-            width: 433,
-            iconType: 'exclamation-circle',
-            title: <span style={{ color: '#434343' }}>您确定要删除{delTitle}吗 ？</span>,
-            content: (
-                <span style={{ color: '#aeaeae' }}>
-                    {SALE_LABEL.k5do4z54}
-                </span>
-            ),
-            onOk: () => {
-                const params = {
-                    groupID: record.groupID,
-                    shopID: record.shopID,
-                    promotionID: record.promotionIDStr,
-                    isActive: 2,
-                    modifiedBy: getAccountInfo().userName
-                }
-                return axiosData(
-                    '/promotion/docPromotionService_setActive.ajax',
-                    params,
-                    {},
-                    { path: 'data' },
-                    'HTTP_SERVICE_URL_PROMOTION_NEW'
-                ).then(() => {
-                    message.success(SALE_LABEL.k5do0ps6);
-                    this.tryToRefresh();
-                    this.tryToUpdateNameList();
-                }).catch((error) => { });
-            },
-            onCancel() { },
-        });
+        // const delTitle = `【${record.promotionName ? record.promotionName.length > 20 ? record.promotionName.substring(0, 20) + '...' : record.promotionName : ''}】`;
+        // confirm({
+        //     width: 433,
+        //     iconType: 'exclamation-circle',
+        //     title: <span style={{ color: '#434343' }}>您确定要删除{delTitle}吗 ？</span>,
+        //     content: (
+        //         <span style={{ color: '#aeaeae' }}>
+        //             {SALE_LABEL.k5do4z54}
+        //         </span>
+        //     ),
+        //     onOk: () => {
+        const params = {
+            groupID: record.groupID,
+            shopID: record.shopID,
+            promotionID: record.promotionIDStr,
+            isActive: 2,
+            modifiedBy: getAccountInfo().userName
+        }
+        return axiosData(
+            '/promotion/docPromotionService_setActive.ajax',
+            params,
+            {},
+            { path: 'data' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
+        ).then(() => {
+            message.success(SALE_LABEL.k5do0ps6);
+            this.tryToRefresh();
+            this.tryToUpdateNameList();
+        }).catch((error) => { });
+        //     },
+        //     onCancel() { },
+        // });
     }
 
     toggleStateCallBack = () => {
@@ -712,6 +714,95 @@ class MyActivities extends React.Component {
         }
     }
 
+    // 点击按钮前先弹窗
+    handleEditActive = (record) => (handleNext) => {
+        if (record.maintenanceLevel == '1') { // 门店活动无法编辑
+            Modal.info({
+                title: `活动无法编辑`,
+                content: '活动为门店账号创建，你不能进行编辑。',
+                iconType: 'exclamation-circle',
+                okText: '确定'
+            });
+            return;
+        }
+        if (record.isActive == '1') { // 正在进行中的活动弹窗提示
+            Modal.confirm({
+                title: `活动编辑`,
+                content: '活动正在进行中，确定要进行编辑吗？',
+                iconType: 'exclamation-circle',
+                onOk() {
+                    handleNext();
+                },
+                onCancel() { },
+            });
+        } else {
+            handleNext()
+        }
+    }
+
+    // 状态启用禁用前判断是否是门店
+    handleSattusActive = (record) => (handleNext) => {
+        if (record.maintenanceLevel == '1') {
+            Modal.info({
+                title: `活动无法操作`,
+                content: '活动为门店账号创建，你不能进行编辑。',
+                okText: '确定',
+                iconType: 'exclamation-circle',
+                onOk() {
+                },
+                onCancel() {},
+              });
+            return
+        }
+        if (record.status == '3') {
+            Modal.info({
+                title: `活动无法启用`,
+                content: '活动已结束，请修改可用的活动时间。',
+                okText: '确定',
+                iconType: 'exclamation-circle',
+                onOk() {
+                },
+                onCancel() {},
+              });
+            return
+        }
+        handleNext();
+    }
+
+   // 点击删除按钮先弹窗
+    handleDelActive = (record) => (handleNext) => {
+        if (record.maintenanceLevel == '1') {
+            Modal.info({
+                title: `活动无法删除`,
+                content: '活动为门店账号创建，你不能进行删除。',
+                iconType: 'exclamation-circle',
+                okText: '确定',
+            });
+            return;
+        }
+        if (record.isActive == '1') {
+            Modal.confirm({
+                title: `确认删除这个活动`,
+                content: '活动正在启用中，删除后无法恢复，线上投放的活动链接及二维码将会失效。',
+                iconType: 'question-circle',
+                onOk() {
+                    handleNext();
+                },
+                onCancel() { },
+            });
+            return
+        }
+        Modal.confirm({
+            title: `确认删除这个活动`,
+            content: '删除后无法恢复，线上投放的活动链接及二维码将会失效。',
+            iconType: 'question-circle',
+            onOk() {
+                handleNext();
+            },
+            onCancel() { },
+        });
+    }
+
     // Row Actions: 查看
     checkDetailInfo() {
         const _record = arguments[1];
@@ -1003,7 +1094,7 @@ class MyActivities extends React.Component {
                             {this.renderShopsInTreeSelectMode()}
                         </li>
                         <li>
-                            <h5>{SALE_LABEL.k5dli0fu}</h5>
+                            <h5>活动状态</h5>
                         </li>
                         <li>
                             <Select
@@ -1196,10 +1287,12 @@ class MyActivities extends React.Component {
                                     <Authority rightCode={BASIC_PROMOTION_UPDATE}>
                                         <a
                                             href="#"
-                                            disabled={!isGroupPro}
+                                            // disabled={!isGroupPro}
                                             onClick={() => {
-                                                this.props.toggleIsUpdate(true)
-                                                this.handleUpdateOpe(text, record, index);
+                                                this.handleEditActive(record)(() => {
+                                                    this.props.toggleIsUpdate(true)
+                                                    this.handleUpdateOpe(text, record, index);
+                                                })
                                             }}
                                         >{COMMON_LABEL.edit}</a>
                                     </Authority>
@@ -1209,13 +1302,16 @@ class MyActivities extends React.Component {
                                 {/* 非禁用状态不能删除 */}
                                 <a
                                     href="#"
-                                    disabled={!isGroupPro || record.isActive != 0 || !isMine(record)}
+                                    // disabled={!isGroupPro || record.isActive != 0 || !isMine(record)}
                                     onClick={() => {
-                                        this.confirmDelete(record)
+                                        if (!isMine(record)) {
+                                            return 
+                                        }
+                                        this.handleDelActive(record)(() => this.confirmDelete(record))
                                     }}
                                 >{COMMON_LABEL.delete}</a>
                             </Authority>
-                            {
+                            {/* {
                                 record.promotionType === '1050' ?
                                     <a
                                         href="#"
@@ -1244,7 +1340,7 @@ class MyActivities extends React.Component {
                                             }}
                                         >复制</a>
                                     </Authority>
-                            }
+                            } */}
 
                         </span>
 
@@ -1252,7 +1348,7 @@ class MyActivities extends React.Component {
                 },
             },
             {
-                title: '状态',
+                title: '启用/禁用',
                 key: 'status',
                 dataIndex: 'status',
                 width: 80,
@@ -1261,8 +1357,8 @@ class MyActivities extends React.Component {
                     const defaultChecked = (record.isActive == '1' ? true : false); // 开启 / 禁用
                     const isGroupPro = record.maintenanceLevel == '0';
                     const isToggleActiveDisabled = (() => {
-                        if (!isGroupOfHuaTianGroupList()) {
-                            return !isGroupPro
+                        if (!isGroupOfHuaTianGroupList()) { // 门店创建
+                            return false 
                         }
                         if (isHuaTian()) {
                             return record.userType == 2 || record.userType == 0;
@@ -1276,11 +1372,12 @@ class MyActivities extends React.Component {
                             <Switch
                                 // size="small"
                                 className={styles.switcher}
-                                checkedChildren={<Icon type="check" className={styles.actionIconPostion} />}
-                                unCheckedChildren={<Icon type="close" className={styles.actionIconPostion} />}
+                                checkedChildren={'启用'}
+                                unCheckedChildren={'禁用'}
                                 checked={defaultChecked}
                                 onChange={() => {
-                                    this.handleDisableClickEvent(record.operation, record, index);
+                                    this.handleSattusActive(record)(() => this.handleDisableClickEvent(record.operation, record, index, null, '使用状态修改成功'))
+                                    
                                 }}
                                 disabled={isToggleActiveDisabled}
                             />
@@ -1372,7 +1469,7 @@ class MyActivities extends React.Component {
                 key: 'valid',
                 width: 72,
                 render: (status) => {
-                    return status == '1' ? k5dlp2gl : status == '2' ? k5dlp7zc : k5dlpczr;
+                    return status == '1' ? <span className={styles.unBegin}>{k5dlp2gl}</span> : status == '2' ? <span className={styles.begin}>{k5dlp7zc}</span> : <span className={styles.end}>{k5dlpczr}</span>;
                 },
             },
             {
@@ -1416,7 +1513,7 @@ class MyActivities extends React.Component {
             <div className={`layoutsContent ${styles.tableClass}`}>
                 <Table
                     ref={this.setTableRef}
-                    scroll={{ x: 1700, y: this.state.contentHeight - 93 }}
+                    scroll={{ x: 1700, y: 'calc(100vh - 440px)' }}
                     className={styles.sepcialActivesTable}
                     bordered={true}
                     columns={columns}

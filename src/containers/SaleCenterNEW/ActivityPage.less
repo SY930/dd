@@ -2378,6 +2378,12 @@
             bottom: 8px;
         }
     }
+    .unBegin {
+        color: #F3394A;
+    }
+    .begin {
+        color: #27D527;
+    }
 
     padding: 20px 0;
 }
@@ -2798,8 +2804,24 @@
 }
 
 .switcher {
-    height: 16px;
-    width: 36px;
+    height: 24px;
+    width: 60px;
+    border-radius: 20px;
+    :global{
+        // .ant-switch {
+            // background: red;
+            .ant-switch-inner {
+                top: -3px;
+                left: 25px;
+            }
+        // }
+    }
+    &::after {
+        width: 22px !important;
+        height: 22px !important;    
+        border-radius: 20px;
+        left: 2px;
+    }
     // line-height: 12px;
 }
 
@@ -2807,6 +2829,17 @@
     .actionIconPostion {
         position: relative;
         top: -6px;
+    }
+    :global {
+        .ant-switch-checked {
+            &:after {
+                left: 59%;
+                top: 0px;
+            }
+            .ant-switch-inner{
+                left: 5px;               
+             }
+        }
     }
 }
 
