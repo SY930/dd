@@ -892,46 +892,40 @@ class MyActivities extends React.Component {
         this.props.openPromotionAutoRunListModal();
     }
     renderHeader() {
-        const headerClasses = `layoutsToolLeft ${styles.basicPromotionHeader} ${styles.headerWithBgColor}`;
-        const {
-            queryPromotionAutoRunList,
-            queryPromotionList,
-            openPromotionAutoRunListModal,
-            intl,
-        } = this.props;
+        // const {
+        //     queryPromotionAutoRunList,
+        //     queryPromotionList,
+        //     openPromotionAutoRunListModal,
+        //     intl,
+        // } = this.props;
         return (
-            <div className="layoutsTool" style={{ height: '64px' }}>
-                <div className={headerClasses}>
-                    <span className={styles.customHeader}>
-                        {this.isOnlinePromotionPage() ? SALE_LABEL.k5dbdped : SALE_LABEL.k5dbefat}
-                    </span>
-                    <div>
-                        {
-                            !isHuaTian() && !this.isOnlinePromotionPage() && (
-                                <Authority rightCode={AUTO_RUN_QUERY}>
+            <div className="layoutsTool">
+                <div style={{ position: 'fixed', top: '79px', right: '20px' }}>
+                    {
+                        !isHuaTian() && !this.isOnlinePromotionPage() && (
+                            <Authority rightCode={AUTO_RUN_QUERY}>
+                                <Button
+                                    onClick={() => this.setRunDataList()}
+                                    icon="plus"
+                                    className={styles.customPrimaryButton}
+                                >
+                                    执行顺序（原自动执行）
+                                </Button>
+                            </Authority>
+                        )
+                    }
+                    {
+                        !this.isOnlinePromotionPage() && (
+                            <span>
+                                <Authority rightCode={BASIC_PROMOTION_QUERY}>
                                     <Button
-                                        onClick={() => this.setRunDataList()}
-                                        icon="plus"
-                                        className={styles.customPrimaryButton}
-                                    >
-                                        执行顺序（原自动执行）
-                                    </Button>
+                                        type="ghost"
+                                        onClick={() => this.setState({ exportVisible: true })}
+                                    ><Icon type="export" />{COMMON_LABEL.export}</Button>
                                 </Authority>
-                            )
-                        }
-                        {
-                            !this.isOnlinePromotionPage() && (
-                                <span>
-                                    <Authority rightCode={BASIC_PROMOTION_QUERY}>
-                                        <Button
-                                            type="ghost"
-                                            onClick={() => this.setState({ exportVisible: true })}
-                                        ><Icon type="export" />{COMMON_LABEL.export}</Button>
-                                    </Authority>
-                                </span>
-                            )
-                        }
-                    </div>
+                            </span>
+                        )
+                    }
                 </div>
             </div>
         );
@@ -1371,7 +1365,7 @@ class MyActivities extends React.Component {
                         <Authority rightCode={BASIC_PROMOTION_UPDATE}>
                             <Switch
                                 // size="small"
-                                className={styles.switcher}
+                                className={styles.switcherSale}
                                 checkedChildren={'启用'}
                                 unCheckedChildren={'禁用'}
                                 checked={defaultChecked}
@@ -1552,10 +1546,10 @@ class MyActivities extends React.Component {
         const { runType } = this.state;
         return (
             <div style={{ backgroundColor: '#F3F3F3' }} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
-                {/* <div>
+                 <div>
                     {this.renderHeader()}
                 </div>
-                <PromotionCalendarBanner /> */}
+               {/* <PromotionCalendarBanner /> */}
                 <div>
                     <div className={styles.pageContentWrapper} style={{ minHeight: 'calc(100vh - 160px)' }}>
                         <div style={{ padding: '0' }} className="layoutsHeader">

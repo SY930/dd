@@ -74,7 +74,7 @@ import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_GIFT } from 'i18n/common/gift';
 import { STRING_SPE } from 'i18n/common/special';
 import { getStore } from '@hualala/platform-base'
-import { SALE_STRING } from 'i18n/common/salecenter'
+// import { SALE_STRING } from 'i18n/common/salecenter'
 import EmptyPage from "../../../components/common/EmptyPage";
 import Chou2Le from "../../PromotionV3/Chou2Le";   // 抽抽乐
 import BlindBox from "../../PromotionV3/BlindBox";   // 盲盒
@@ -842,7 +842,10 @@ class MySpecialActivities extends React.Component {
         const { v3visible, itemID, view, isShowCopyUrl, urlContent, curKey,  tabKeys } = this.state;
         return (
             <div style={{ backgroundColor: this.state.authStatus ? '#F3F3F3' : '#fff' }} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
-                {this.renderHeader()}
+                {
+                  this.renderHeader()
+                    
+                }
                 {
                     !this.state.authStatus ?
                         <EmptyPage /> :
@@ -951,19 +954,25 @@ class MySpecialActivities extends React.Component {
     }
 
     renderHeader() {
+        const {tabKeys} = this.state
         const headerClasses = `layoutsToolLeft ${styles.headerWithBgColor}`;
         return (
             <div className="layoutsTool" style={{ height: '64px' }}>
                 <div className={headerClasses}>
                     <span className={styles.customHeader}>活动管理</span>
-                    {/* <span className={styles.exportBtn}>
-                        <Authority rightCode={SPECIAL_PROMOTION_QUERY}>
-                            <Button
-                                type="ghost"
-                                onClick={() => this.setState({ exportVisible: true })}
-                            ><Icon type="export" />{COMMON_LABEL.export}</Button>
-                        </Authority>
-                    </span> */}
+                    {
+                        tabKeys === 'saleSpecialPage' && (
+                            <span className={styles.exportBtn}>
+                                <Authority rightCode={SPECIAL_PROMOTION_QUERY}>
+                                    <Button
+                                        type="ghost"
+                                        onClick={() => this.setState({ exportVisible: true })}
+                                    ><Icon type="export" />{COMMON_LABEL.export}</Button>
+                                </Authority>
+                            </span>
+                        )
+                    }
+                    
                 </div>
             </div>
         );
@@ -1465,7 +1474,7 @@ class MySpecialActivities extends React.Component {
                     return(
                         <Switch
                         // size="small"
-                        className={styles.switcher}
+                        className={styles.switcherSale}
                         checkedChildren={'启用'}
                         unCheckedChildren={'禁用'}
                         checked={defaultChecked}
