@@ -121,7 +121,7 @@ export const SALE_CENTER_COUPON_TYPE = Object.freeze([
         value: "601",
     },
     {
-        label: '打折券',
+        label: '折扣券',
         value: "602",
     },
     {
