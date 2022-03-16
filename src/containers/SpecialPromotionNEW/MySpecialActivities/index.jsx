@@ -82,6 +82,7 @@ import PassWordCoupon from "../../PromotionV3/PassWordCoupon";   // 口令领券
 import { isFormalRelease } from "../../../utils/index"
 import indexStyles from './mySpecialActivities.less'
 import ManyFace from '../../PromotionV3/ManyFace';
+import CardSaleActive from './CardSaleActive';
 const confirm = Modal.confirm;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
@@ -249,6 +250,7 @@ class MySpecialActivities extends React.Component {
             channelContent: '',
             channelOptions: _.range(0, 10).map(item => ({ label: `渠道${item + 1}`, value: `渠道${item + 1}` })),
             tabKeys: 'saleSpecialPage',
+            stylesShow: 'card',
         };
         this.cfg = {
             eventWay: [
@@ -839,7 +841,7 @@ class MySpecialActivities extends React.Component {
 
 
     render() {
-        const { v3visible, itemID, view, isShowCopyUrl, urlContent, curKey,  tabKeys } = this.state;
+        const { v3visible, itemID, view, isShowCopyUrl, urlContent, curKey,  tabKeys, stylesShow, dataSource } = this.state;
         return (
             <div style={{ backgroundColor: this.state.authStatus ? '#F3F3F3' : '#fff' }} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 {
@@ -858,11 +860,44 @@ class MySpecialActivities extends React.Component {
                                             {this.renderFilterBar()}
                                             <div style={{ margin: '0' }} className="layoutsLine"></div>
                                         </div>
-                                        {this.renderTables()}
+
+                                        {stylesShow === 'list' ?
+                                            this.renderTables() :
+                                            <CardSaleActive
+                                                dataSource={dataSource}
+                                                type='special'
+                                                cfg={this.cfg}
+                                                onV3Click={this.onV3Click}
+                                                handleShowDetail={this.handleShowDetail}
+                                                toggleIsUpdate={this.props.toggleIsUpdate}
+                                                handleUpdateOpe={this.handleUpdateOpe}
+                                                handleSattusActive={(item, index) => {
+                                                    this.handleSattusActive(item)(() => this.handleDisableClickEvent(item.operation, item, index, null, ''))
+                                                }}
+                                                user={this.props.user}
+                                                onChangePage={this.onChangePage}
+                                                onShowSizeChange={this.onShowSizeChange}
+                                                pageNo={this.state.pageNo}
+                                                pageSizes={this.state.pageSizes}
+                                                total={this.state.total}
+                                                handleEditActive={this.handleEditActive}
+                                                handleDelActive={this.handleDelActive}
+                                                checkDeleteInfo={this.checkDeleteInfo}
+                                                isCopy={
+                                                    () => {
+                                                        this.setState({
+                                                            isCopy: true
+                                                        })
+                                                    }
+                                                }
+                                                checkDetailInfo={this.checkDetailInfo}
+                                                handleDecorationStart={this.handleDecorationStart}
+                                                handleCopyUrl={this.handleCopyUrl}
+                                            />}
                                     </div>
                                 </TabPane>
                                 <TabPane tab="促销活动" key="onSalePage">
-                                    <MyActivities />
+                                    <MyActivities stylesShow={this.state.stylesShow}/>
                                 </TabPane>
                             </Tabs>
                         </div>
@@ -1071,6 +1106,47 @@ class MySpecialActivities extends React.Component {
             </div>
 
         );
+    }
+    // 
+    onChangePage = (page, pageSize) => {
+        this.setState({
+            pageNo: page,
+        });
+        const opt = {
+            pageSize,
+            pageNo: page,
+        };
+        const {
+            queryEventWay,
+            promotionDateRange,
+            isActive,
+            eventName,
+        } = this.state;
+        if (queryEventWay !== '' && queryEventWay !== undefined) {
+            opt.eventWay = queryEventWay;
+        }
+
+        if (promotionDateRange !== '' && promotionDateRange.length !== 0) {
+            opt.eventStartDate = promotionDateRange[0].format('YYYYMMDD');
+            opt.eventEndDate = promotionDateRange[1].format('YYYYMMDD');
+        }
+
+        if (eventName !== '' && eventName !== undefined) {
+            opt.eventName = eventName;
+        }
+
+        if (isActive !== '') {
+            opt.isActive = isActive == '-1' ? '-1' : isActive == '1' ? '1' : '0';
+        }
+        this.props.query({
+            data: {
+                groupID: this.props.user.accountInfo.groupID,
+                ...opt,
+            },
+            // start: () => this.setState({loading: true}),
+            // end: () => this.setState({loading: false}),
+            fail: (msg) => message.error(msg),
+        });
     }
     // 切换每页显示条数
     onShowSizeChange = (current, pageSize) => {
@@ -1341,17 +1417,17 @@ class MySpecialActivities extends React.Component {
                                 onClick={(e) => {
                                     if (record.eventWay == '64') {
                                         //对评价送礼活动做专门处理，该活动在活动启用时候也能操作选择店铺
-                                        if (record.isActive != '0') {
-                                            this.handleEditActive(record)(() => {
-                                                this.props.toggleIsUpdate(false)
-                                                this.handleUpdateOpe(text, record, index);
-                                            })
-                                        } else {
-                                            this.handleEditActive(record)(() => {
-                                                this.props.toggleIsUpdate(true)
-                                                this.handleUpdateOpe(text, record, index);
-                                            })
-                                        }
+                                        // if (record.isActive != '0') {
+                                        //     this.handleEditActive(record)(() => {
+                                        //         this.props.toggleIsUpdate(false)
+                                        //         this.handleUpdateOpe(text, record, index);
+                                        //     })
+                                        // } else {
+                                        //     this.handleEditActive(record)(() => {
+                                        //         this.props.toggleIsUpdate(true)
+                                        //         this.handleUpdateOpe(text, record, index);
+                                        //     })
+                                        // }
                                     } else {
                                         // if ((record.isActive != '0' && record.isActive != '-1') || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && (record.isActive != '0' || !isMine(record) )) || record.eventWay === 80) {
                                         //     e.preventDefault()
@@ -1639,50 +1715,14 @@ class MySpecialActivities extends React.Component {
                         total: this.state.total || 0,
                         showTotal: (total, range) => `${this.props.intl.formatMessage(STRING_SPE.d2b1c6b31a93638)}${range[0]}-${range[1]} / ${this.props.intl.formatMessage(STRING_SPE.dk46lj779a7119)} ${total} ${this.props.intl.formatMessage(STRING_SPE.d34ikgs6o6845)}`,
                         onChange: (page, pageSize) => {
-                            this.setState({
-                                pageNo: page,
-                            });
-                            const opt = {
-                                pageSize,
-                                pageNo: page,
-                            };
-                            const {
-                                queryEventWay,
-                                promotionDateRange,
-                                isActive,
-                                eventName,
-                            } = this.state;
-                            if (queryEventWay !== '' && queryEventWay !== undefined) {
-                                opt.eventWay = queryEventWay;
-                            }
-
-                            if (promotionDateRange !== '' && promotionDateRange.length !== 0) {
-                                opt.eventStartDate = promotionDateRange[0].format('YYYYMMDD');
-                                opt.eventEndDate = promotionDateRange[1].format('YYYYMMDD');
-                            }
-
-                            if (eventName !== '' && eventName !== undefined) {
-                                opt.eventName = eventName;
-                            }
-
-                            if (isActive !== '') {
-                                opt.isActive = isActive == '-1' ? '-1' : isActive == '1' ? '1' : '0';
-                            }
-                            this.props.query({
-                                data: {
-                                    groupID: this.props.user.accountInfo.groupID,
-                                    ...opt,
-                                },
-                                // start: () => this.setState({loading: true}),
-                                // end: () => this.setState({loading: false}),
-                                fail: (msg) => message.error(msg),
-                            });
+                           this.onChangePage(page, pageSize)
                         },
                     }}
                 />
             </div>
         );
     }
+
     // 删除
     checkDeleteInfo(text, record) {
         this.props.deleteSelectedRecord({
@@ -1835,6 +1875,7 @@ class MySpecialActivities extends React.Component {
     // 编辑
     handleUpdateOpe() {
         let _record = arguments[1];
+        console.log("🚀 ~ file: index.jsx ~ line 1852 ~ MySpecialActivities ~ handleUpdateOpe ~ _record", _record)
         const user = this.props.user;
         this.props.fetchSpecialDetail({
             data: {
