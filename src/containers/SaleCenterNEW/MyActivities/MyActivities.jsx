@@ -100,6 +100,7 @@ import { ONLINE_PROMOTION_TYPES } from '../../../constants/promotionType';
 import { selectPromotionForDecoration } from '../../../redux/actions/decoration';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { injectIntl } from '../IntlDecor';
+import Card from '../../../assets/card.png';
 
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
@@ -328,12 +329,12 @@ class MyActivities extends React.Component {
         this.setState(opt)
     }
 
-    handleDisableClickEvent(text, record,  index, nextActive, modalTip) {
+    handleDisableClickEvent(text, record, index, nextActive, modalTip) {
         this.props.toggleSelectedActivityState({
             record,
             nextActive,
             modalTip,
-            cb: () => {},
+            cb: () => { },
         });
     }
 
@@ -622,7 +623,7 @@ class MyActivities extends React.Component {
     onShowSizeChange = (current, pageSize) => {
         this.setState({
             pageSizes: pageSize,
-        },()=>{
+        }, () => {
             this.handleQuery();
         })
     };
@@ -644,7 +645,7 @@ class MyActivities extends React.Component {
         }
         return [
             all,
-            ...ACTIVITY_CATEGORIES.slice(0, ACTIVITY_CATEGORIES.length-1),
+            ...ACTIVITY_CATEGORIES.slice(0, ACTIVITY_CATEGORIES.length - 1),
         ]
     }
 
@@ -750,8 +751,8 @@ class MyActivities extends React.Component {
                 iconType: 'exclamation-circle',
                 onOk() {
                 },
-                onCancel() {},
-              });
+                onCancel() { },
+            });
             return
         }
         if (record.status == '3') {
@@ -762,14 +763,14 @@ class MyActivities extends React.Component {
                 iconType: 'exclamation-circle',
                 onOk() {
                 },
-                onCancel() {},
-              });
+                onCancel() { },
+            });
             return
         }
         handleNext();
     }
 
-   // 点击删除按钮先弹窗
+    // 点击删除按钮先弹窗
     handleDelActive = (record) => (handleNext) => {
         if (record.maintenanceLevel == '1') {
             Modal.info({
@@ -921,10 +922,23 @@ class MyActivities extends React.Component {
                                     <Button
                                         type="ghost"
                                         onClick={() => this.setState({ exportVisible: true })}
-                                    ><Icon type="export" />{COMMON_LABEL.export}</Button>
+                                    ><Icon type="upload" />导出历史</Button>
                                 </Authority>
                             </span>
                         )
+                    }
+                    {
+                        !this.isOnlinePromotionPage() && <span className={styles.exportBtn}>
+                            {
+                                this.props.stylesShow === 'list' ? <Button
+                                    type="ghost"
+                                    onClick={() => this.props.stylesChange('card')}
+                                ><span className={styles.cardImg}><img src={Card} />卡片展示</span></Button> :
+                                    <Button type="ghost"
+                                        onClick={() => this.props.stylesChange('list')}
+                                    ><Icon type="bars" />列表展示</Button>
+                            }
+                        </span>
                     }
                 </div>
             </div>
@@ -1299,7 +1313,7 @@ class MyActivities extends React.Component {
                                     // disabled={!isGroupPro || record.isActive != 0 || !isMine(record)}
                                     onClick={() => {
                                         if (!isMine(record)) {
-                                            return 
+                                            return
                                         }
                                         this.handleDelActive(record)(() => this.confirmDelete(record))
                                     }}
@@ -1352,7 +1366,7 @@ class MyActivities extends React.Component {
                     const isGroupPro = record.maintenanceLevel == '0';
                     const isToggleActiveDisabled = (() => {
                         if (!isGroupOfHuaTianGroupList()) { // 门店创建
-                            return false 
+                            return false
                         }
                         if (isHuaTian()) {
                             return record.userType == 2 || record.userType == 0;
@@ -1371,7 +1385,7 @@ class MyActivities extends React.Component {
                                 checked={defaultChecked}
                                 onChange={() => {
                                     this.handleSattusActive(record)(() => this.handleDisableClickEvent(record.operation, record, index, null, '使用状态修改成功'))
-                                    
+
                                 }}
                                 disabled={isToggleActiveDisabled}
                             />
@@ -1515,7 +1529,7 @@ class MyActivities extends React.Component {
                     loading={this.state.loading}
                     pagination={{
                         pageSize: this.state.pageSizes,
-                        pageSizeOptions: ['25','50','100','200'],
+                        pageSizeOptions: ['25', '50', '100', '200'],
                         current: this.state.pageNo,
                         showQuickJumper: true,
                         showSizeChanger: true,
@@ -1546,10 +1560,10 @@ class MyActivities extends React.Component {
         const { runType } = this.state;
         return (
             <div style={{ backgroundColor: '#F3F3F3' }} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
-                 <div>
+                <div>
                     {this.renderHeader()}
                 </div>
-               {/* <PromotionCalendarBanner /> */}
+                {/* <PromotionCalendarBanner /> */}
                 <div>
                     <div className={styles.pageContentWrapper} style={{ minHeight: 'calc(100vh - 160px)' }}>
                         <div style={{ padding: '0' }} className="layoutsHeader">

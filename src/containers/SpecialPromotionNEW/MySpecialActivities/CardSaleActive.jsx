@@ -92,7 +92,7 @@ class CardSaleActive extends Component {
             return '--';
         }
         const t = `${moment(new Date(parseInt(record.createStamp))).format('YYYY-MM-DD HH:mm:ss')} / ${moment(new Date(parseInt(record.actionStamp))).format('YYYY-MM-DD HH:mm:ss')}`
-        return <Tooltip title={t}>{t}</Tooltip>;
+        return <Tooltip title={t}><em>{t}</em></Tooltip>;
     }
 
     handleShowDetailModal = (e, record, index) => {
@@ -266,7 +266,7 @@ class CardSaleActive extends Component {
                                             <div className={styles.contBothBox}>
                                                 <div className={styles.contList}>
                                                     <p><span>创建人/修改人：</span> <em>{this.getOperator(item)}</em></p>
-                                                    <p><span>创建时间/修改时间：</span> <em>{this.getOperateTime(item)}</em></p>
+                                                    <p><em>创建时间/修改时间：</em> {this.getOperateTime(item)}</p>
                                                 </div>
                                             </div>
 
