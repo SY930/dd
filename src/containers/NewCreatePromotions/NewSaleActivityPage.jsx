@@ -735,6 +735,10 @@ class NewCustomerPage extends Component {
             '人气活动',
             ...(ALL_PROMOTION_CATEGORIES.slice(1)).map(item => item.title),
         ];
+
+        ALL_PROMOTION_CATEGORIES = ALL_PROMOTION_CATEGORIES.map((item) => ({...item,
+            list: _.sortBy(item.list, (o) => (o.isNew))}));
+
         const { currentCategoryIndex, currentPlatformIndex } = this.state;
 
         // 插件授权状态--营销盒子大礼包
