@@ -112,10 +112,10 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         right: 13,
         bottom: 3,
         isHot: true,
-        isNew: true,
+        isNew: new Date('2022/03/17').getTime(),
     },
     {
-        title: SALE_LABEL.k635s5id,
+        title: '好友助力（原膨胀大礼包）',
         isSpecial: true,
         tags: [SALE_LABEL.k639vgbm],
         signs: ['app'],
@@ -124,7 +124,7 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         key: '66',
         right: 16,
         bottom: 2,
-        isNew: true,
+        isNew: new Date('2022/03/17').getTime(),
     },
     {
         title: SALE_LABEL.k639vh8y,
@@ -136,11 +136,11 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         key: '67',
         right: 13,
         bottom: 1,
-        isNew: true,
+        isNew: new Date('2022/03/17').getTime(),
         isOffline: true,     //是否下线状态
     },
     {
-        title: SALE_LABEL.k639vhha,
+        title: '老带新（原推荐有礼）',
         isSpecial: true,
         tags: [SALE_LABEL.k639vgjy, '小程序'],
         signs: ['wx', 'app'],
@@ -149,10 +149,10 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         key: '68',
         right: 11,
         bottom: 0,
-        isNew: true,
+        isNew: new Date('2022/03/17').getTime(),
     },
     {
-        title: SALE_LABEL.k636p0yo,
+        title: '免费赠券（原免费领取）',
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
         tags: [SALE_LABEL.k5krn6z9, SALE_LABEL.k639vgbm],
         signs: ['wx', 'app'],
@@ -174,7 +174,7 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         bottom: 0,
     },
     {
-        title: SALE_LABEL.k67b2otb,
+        title: '扫码点餐送礼（原线上餐厅送礼）',
         isSpecial: true,
         tags: [SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9, SALE_LABEL.k639vgbm],
         signs: ['xwx', 'wx', 'app'],
@@ -203,7 +203,7 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         tags: ['微信'],
         signs: ['wx'],
         key: '5020',
-        isNew: true,
+        isNew: new Date('2022/03/17').getTime(),
         right: 10,
         bottom: 0,
     },
@@ -225,7 +225,7 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
         right: 12,
         bottom: 4,
         isHot: true,
-        isNew: true,
+        isNew: new Date('2022/03/17').getTime(),
     },
     {
         title: '签到',
@@ -238,7 +238,7 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
         right: 14,
         bottom: 12,
         isHot: true,
-        isNew: true,
+        isNew: new Date('2022/03/17').getTime(),
     },
     {
         title: '支付后广告',
@@ -250,7 +250,7 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
         key: '77',
         right: 16,
         bottom: 6,
-        isNew: true,
+        isNew: new Date('2022/03/17').getTime(),
     },
     {
         title: '下单抽抽乐',
@@ -262,7 +262,7 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
         key: '78',
         right: 12,
         bottom: 4,
-        isNew: true,
+        isNew: new Date('2022/03/17').getTime(),
     },
     // 摇奖活动
     {
@@ -301,8 +301,8 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
     {
         title: SALE_LABEL.k67b2pqo,
         isSpecial: false,
-        tags: ['pos', SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9, '小程序'],
-        signs: ['pos', 'wx', 'app'],
+        tags: [SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9, '小程序'],
+        signs: ['wx', 'app'],
         text: SALE_LABEL.k67b4sxe,
         example: SALE_LABEL.k67cpoj7,
         key: '2030',
@@ -319,7 +319,7 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
         key: '82',
         right: 16,
         bottom: 2,
-        isNew: true,
+        isNew: new Date('2022/03/17').getTime(),
     },
     {
         title: '口令领券',
@@ -332,7 +332,7 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
         right: 12,
         bottom: 4,
         isHot: true,
-        isNew: true,
+        isNew: new Date('2022/03/17').getTime(),
     },
 ];
 
@@ -353,7 +353,7 @@ export const REPEAT_PROMOTION_TYPES = [
         right: 16,
         bottom: 6,
         isHot: true,
-        isNew: true,
+        isNew: new Date('2022/03/17').getTime(),
     },
     {
         title: '微信支付有礼',
@@ -366,7 +366,7 @@ export const REPEAT_PROMOTION_TYPES = [
         right: 16,
         bottom: 6,
         isHot: true,
-        isNew: true,
+        isNew: new Date('2022/03/17').getTime(),
     },
     {
         title: '集点卡',
@@ -379,7 +379,7 @@ export const REPEAT_PROMOTION_TYPES = [
         right: 16,
         bottom: 6,
         isHot: true,
-        isNew: true,
+        isNew: new Date('2022/03/17').getTime(),
     },
     // 群发礼品
     {
@@ -471,7 +471,7 @@ export const REPEAT_PROMOTION_TYPES = [
         key: '85',
         right: 16,
         bottom: 6,
-        isNew: true,
+        isNew: new Date('2022/03/17').getTime(),
     },
 ];
 

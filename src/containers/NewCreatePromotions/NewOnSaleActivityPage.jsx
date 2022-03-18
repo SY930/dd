@@ -680,7 +680,7 @@ class NewCustomerPage extends Component {
                         <span className={selfStyle.platformTitle}>应用平台</span>
                         <div className={selfStyle.platformBox}>
                         {
-                            [{name: '全部', value: 0}, {name: '小程序', value: 'app'}, {name: 'POS', value: 'pos'}, {name: '微信', value: 'wx'}].map((item, index) => (
+                            [{name: '全部', value: 0}, {name: '小程序', value: 'app'}, {name: 'POS', value: 'pos'}, {name: 'H5餐厅', value: 'wx'}].map((item, index) => (
                                 <div onClick={() => { this.setState({currentPlatformIndex: index })}} className={`${selfStyle.platformItem} ${index === currentPlatformIndex ? selfStyle.selectedItem : ''} ${index === currentPlatformIndex + 1 ? selfStyle.removeLine : ''}`}><span>{item.name}</span></div>
                             ))
                         }

@@ -115,10 +115,11 @@ class NewPromotionCard extends Component {
         } = this.props;
         // if(size === 'special') {
         let wechatFlag = 1;
+        const showNew = new Date().getTime() - isNew < (1000 * 3600 * 24 * 31)
         return (
             <div className={styles.speNewContainer} onClick={this.onClick}>
                 <p className={styles.expandableP}>
-                    {isNew ? <span><img className={styles.xinImg} src={xinsale} /></span> : null}
+                    {showNew ? <span><img className={styles.xinImg} src={xinsale} /></span> : null}
                     {this.renderPulgin(key)}
                 </p>
                 <div className={styles.title}>
@@ -138,13 +139,13 @@ class NewPromotionCard extends Component {
                                 tag.props.defaultMessage.includes('小程序') ?
                                 <span className={styles.speTagSpanNew}>小程序</span> :
                                     tag.props.defaultMessage.includes('微信') ?
-                                    <span className={styles.speTagSpanNew}>微信</span> :
+                                    <span className={styles.speTagSpanNew}>H5餐厅</span> :
                                         tag.props.defaultMessage.includes('pos') ?<span>POS</span>  :
-                                            <p className={styles.speTagSpanNew_span}><span>小程序</span><span>POS</span><span>微信</span></p>
+                                            <p className={styles.speTagSpanNew_span}><span>小程序</span><span>POS</span><span>H5餐厅</span></p>
                                 : tag.includes('pos') ?
                                 <span className={styles.speTagSpanNew}>POS</span> :
                                     tag.includes('微信') ?
-                                    <span className={styles.speTagSpanNew}>微信</span> :
+                                    <span className={styles.speTagSpanNew}>H5餐厅</span> :
                                         tag.includes('小程序') ?  <span className={styles.speTagSpanNew}>小程序</span> : null
                         }</div>)
                     })}
