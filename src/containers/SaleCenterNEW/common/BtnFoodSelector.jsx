@@ -139,7 +139,7 @@ export default class BtnFoodSelector extends Component {
                         <FoodSelectModal
                             allBrands={allBrands}
                             allCategories={allCategories}
-                            multiple={false}
+                            multiple={true}
                             allDishes={allDishes}
                             mode={mode}
                             initialValue={value || []}

@@ -132,7 +132,7 @@ class FoodSelectModal extends Component {
             selectedCategoryTypes: [],
             /** 单品模式状态 */
             selectedCategories: [],
-            selectedDishResults: props.mode === 'dish' ? props.initialValue.slice() : [],
+            selectedDishResults: props.mode === 'dish' ? props.initialValue && props.initialValue.slice() : [],
         }
     }
     componentWillReceiveProps(nextProps) {

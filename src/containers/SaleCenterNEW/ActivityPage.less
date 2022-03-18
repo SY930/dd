@@ -1695,28 +1695,44 @@
 .actRuleForm {
     .grayLineDiv {
         display: inline-block;
-        width: 505px;
-        height: 162px;
-        background: #FFFFFF;
+        width: 460px;
+        height: 331px;
+        background: #F9F9F9;
         border-radius: 4px;
+        padding-top: 8px;
         border: 1px solid #E7E7E7;
+        margin-bottom: 10px;
     }
 
     .darkGrayDiv {
         display: inline-block;
-        width: 505px;
-        height: 54px;
-        background: #F8F8F8;
+        width: 459px;
+        height: 89px;
+        // background: #F8F8F8;
         border-radius: 4px 4px 0px 0px;
         border-bottom: 1px solid #E7E7E7;
         border-right: 1px solid #E7E7E7;
+
+        // border-bottom: 1px solid #E7E7E7;
+        // border-right: 1px solid #E7E7E7; 
+        :global {
+            .ant-col-16 {
+                background: white;
+                display: inline-block;
+                height: 68px;
+                margin: 5px 0px;
+            }
+        }
+
     }
 
     .leftBox {
         display: inline-block;
         width: 60%;
-        height: 54px;
+        height: 45px;
         padding: 6px 0px;
+        position: relative;
+        top: 0px;
 
         :global {
             .ant-form-explain {
@@ -1728,8 +1744,11 @@
     .rightBox {
         display: inline-block;
         width: 40%;
-        height: 54px;
+        height: 45px;
         padding: 6px 0px;
+        position: relative;
+        top: 0px;
+        left: -20px;
 
         :global {
             .ant-form-explain {
@@ -2983,4 +3002,72 @@
     position: relative;
     top: 8px;
     left: -41px;
+}
+
+.levelTittle {
+    color: #000;
+    margin: 5px;
+    position: absolute;
+    background: #1DB395;
+    padding: 6px;
+    left: -5px;
+    top: -5px;
+    color: white;
+    border-radius: 4px 0px 10px 0px;
+}
+
+.grayLevel {
+    width: 118%;
+    padding-left: 0px;
+    position: relative;
+}
+
+.levelDelete {
+    font-size: 21px;
+    color: #E57575;
+    cursor: pointer;
+}
+
+.levelAdd {
+    top: 5px;
+    font-size: 21px;
+    color: #1DB395;
+    cursor: pointer;
+    /* float: left; */
+    margin-right: 10px;
+}
+
+.iconBox {
+    position: absolute;
+    left: 472px;
+    top: 5px;
+    font-size: 21px;
+    color: #E57575;
+    cursor: pointer;
+    display: flex;
+}
+
+.grayLevelFont {
+    font-size: 12px;
+    font-family: MicrosoftYaHei;
+    color: #999999;
+    line-height: 12px;
+    display: inline-block;
+    position: relative;
+    line-height: 30px;
+}
+
+.measurmentSelect {
+    :global {
+        .ant-select-lg .ant-select-selection--single {
+            height: 28px;
+            width: 45px;
+            left: -2px;
+            border-radius: 0px 3px 3px 0px;
+        }
+
+        .ant-select-dropdown {
+            width: 46px !important;
+        }
+    }
 }
