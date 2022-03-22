@@ -751,7 +751,6 @@ class NewCustomerPage extends Component {
         var { displayList, allMenu } = this.checkAuth(allMenus, ALL_PROMOTION_CATEGORIES)
         // 管家活动-列表显示过滤
         var { displayList, allMenu } = this.filterMenuByGroup(displayList, allMenu)
-        console.log("🚀 ~ file: NewSaleActivityPage.jsx ~ line 749 ~ NewCustomerPage ~ render ~ displayList", displayList)
         const speController = groupID == '295896'
         //集团id：295896 
         // 开通桌边砍活动

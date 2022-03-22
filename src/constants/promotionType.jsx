@@ -343,7 +343,7 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
  */
 export const REPEAT_PROMOTION_TYPES = [
     {
-        title: '消费券返券',
+        title: '用券送礼（原消费券返券）',
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
         text: '会员消费了A券返B券，消费B券返C券，循环返券拉动复购',
         tags: ['pos', SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9, SALE_LABEL.k639vgbm],
