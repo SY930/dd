@@ -675,7 +675,7 @@ class NewCustomerPage extends Component {
         // 开通桌边砍活动
         return (
             <div className={selfStyle.newDiv}>
-                <div className={selfStyle.titleArea}>促销活动
+                <div className={selfStyle.titleArea} style={{ justifyContent: 'start'}}>促销活动
                 <div className={selfStyle.platformArea}>
                         <span className={selfStyle.platformTitle}>应用平台</span>
                         <div className={selfStyle.platformBox}>
