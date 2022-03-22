@@ -2,7 +2,7 @@
 import _ from 'lodash'
 import { getStore } from '@hualala/platform-base'
 
-import { NEW_SALE_BOX, PROMOTION_CALENDAR_NEW, SALE_CENTER_PAGE, SHARE_RULES_GROUP, GIFT_PAGE, SPECIAL_PAGE, PROMOTION_ZHIFUBAO_COUPON_LIST, SET_MSG_TEMPLATE, PROMOTION_WECHAT_COUPON_LIST } from '../constants/entryCodes'
+import { NEW_SALE_BOX, PROMOTION_CALENDAR_NEW, SALE_CENTER_PAGE, SHARE_RULES_GROUP, GIFT_PAGE, SPECIAL_PAGE, PROMOTION_ZHIFUBAO_COUPON_LIST, SET_MSG_TEMPLATE, PROMOTION_WECHAT_COUPON_LIST, NEW_SALE_ACTIVITY_BOX } from '../constants/entryCodes'
 // = 'shop.jituan.wechat.mp'
 
 
@@ -11,6 +11,18 @@ const AssociateConfigFactory = () => {
         // entry code
         // 营销盒子
         [NEW_SALE_BOX]: {
+            toAsk: [
+                {
+                    title: '推荐有礼活动如何创建',
+                    url: 'http://service.hualala.com/categoryList/detail?categoryKey=cfc08aa9626f461e8dc8d86757425195&docKey=404850e1db2941468285bfc63c4af464'
+                },
+                {
+                    title: '集点卡活动如何创建',
+                    url: 'http://service.hualala.com/categoryList/detail?categoryKey=cfc08aa9626f461e8dc8d86757425195&docKey=4f72ef468fdb4a3eb3933fe5c6533df5'
+                },
+            ],
+        },
+        [NEW_SALE_ACTIVITY_BOX]: {
             toAsk: [
                 {
                     title: '推荐有礼活动如何创建',
