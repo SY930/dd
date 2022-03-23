@@ -93,6 +93,16 @@ const mapStateToProps = (state) => {
         shopList: state.user.getIn(['accountInfo', 'dataPermissions', 'shopList'])
     };
 };
+const pageRouterMap = {
+    '30':{page: 'pages/subOr/voucherCenter/redeemDetail/main'},
+    '20':{page: 'pages/web/common/main'},
+    '21':{page: 'pages/subOr/voucherCenter/voucherDetail/main'},
+    '79':{page: 'pages/promotion/blindBox/index'},
+    '68':{page: 'pages/promotion/recommend/main'},
+    '65':{page: 'pages/promotion/share/main'},
+    '66':{page: 'pages/promotion/expand/main'},
+    '83':{page: 'pages/promotion/passwordCoupons/main'},//口令领券
+}
 const DECORATABLE_PROMOTIONS = [
     '20',
     '21',
@@ -106,6 +116,8 @@ const DECORATABLE_PROMOTIONS = [
     '79',
     '85'
 ]
+
+
 const isDecorationAvailable = ({ eventWay }) => {
     return DECORATABLE_PROMOTIONS.includes(`${eventWay}`)
 }
@@ -737,7 +749,14 @@ class MySpecialActivities extends React.Component {
                                 {this.renderApp()}
                                 <Button className={indexStyles.wxBtn} type="primary" onClick={this.creatReleaseQrCode} loading={xcxLoad}>生成小程序码</Button>
                             </div>
-                            <div className={indexStyles.qrCodeBox}>
+                            <div className={indexStyles.qrCodeBox} style={{ margin: 0 }}>
+                                {
+                                    qrCodeImage && <div className={indexStyles.copyWrapHeader}>
+                                       <div className={indexStyles.label}> 小程序路径 </div>
+                                       <Input value={pageRouterMap[eventWay].page} style={{ width: '50%', margin: '0 10px' }}/>
+                                        <Button className={indexStyles.wxBtn} type="primary" onClick={this.handleToCopyRouter}>复制</Button>
+                                    </div>
+                                }
                                 {
                                     qrCodeImage ? <img className={indexStyles.miniProgramBox} src={qrCodeImage} id='__promotion_xcx_qr_img' alt="小程序二维码" /> : ''
                                 }
@@ -1703,6 +1722,15 @@ class MySpecialActivities extends React.Component {
     handleToCopyUrl = () => {
         const { urlContent } = this.state
         if (copy(urlContent)) {
+            message.warn('复制成功')
+        } else {
+            message.warn('复制失败')
+        }
+    }
+
+    handleToCopyRouter = () => {
+        const { eventWay } = this.state
+        if (copy(pageRouterMap[eventWay].page)) {
             message.warn('复制成功')
         } else {
             message.warn('复制失败')
