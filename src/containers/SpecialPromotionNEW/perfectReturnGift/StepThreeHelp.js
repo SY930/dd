@@ -436,7 +436,7 @@ export const initPerfectCheckBox = function (isBenefitJumpSendGift) {
     const giftInfo = this.props.specialPromotion.get("$giftInfo").toJS();
     const { perfectReturnGiftCheckBoxStatus } = this.state;
     const pointItem = giftInfo.find((v) => v.presentType === 2);
-    const couponItem = giftInfo.find((v) => v.presentType === 1);
+    const couponItem = giftInfo.find((v) => v.presentType === 1 || v.presentType === 8);
     const growthValueItem = giftInfo.find((v) => v.presentType === 6);
     perfectReturnGiftCheckBoxStatus.perfectReturnGiftPoint = pointItem;
     perfectReturnGiftCheckBoxStatus.perfectReturnGiftCoupon = couponItem;

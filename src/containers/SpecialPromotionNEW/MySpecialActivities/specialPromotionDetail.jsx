@@ -78,7 +78,7 @@ import {
     renderOverViewData
 } from './specialPromotionDetailHelp'
 import _ from 'lodash'
-const showNoLimitType = ['60','52']
+const showNoLimitType = ['60', '52']
 
 @injectIntl
 class SpecialPromotionDetail extends React.Component {
@@ -118,9 +118,9 @@ class SpecialPromotionDetail extends React.Component {
         if (eventEntity.eventWay == 68) {
             axiosData(
                 '/specialPromotion/queryRecommendEventData.ajax',
-                {eventID: eventEntity.itemID},
-                {needThrow: true},
-                {path: ''},
+                { eventID: eventEntity.itemID },
+                { needThrow: true },
+                { path: '' },
                 'HTTP_SERVICE_URL_PROMOTION_NEW',
             ).then(res => {
                 this.setState({
@@ -130,12 +130,12 @@ class SpecialPromotionDetail extends React.Component {
             // 获取数据总揽和奖励统计
             axiosData(
                 '/specialPromotion/queryRecommendEventSummary.ajax',
-                {eventID: eventEntity.itemID},
-                {needThrow: true},
-                {path: ''},
+                { eventID: eventEntity.itemID },
+                { needThrow: true },
+                { path: '' },
                 'HTTP_SERVICE_URL_PROMOTION_NEW',
             ).then(res => {
-                if(res.code === '000') {
+                if (res.code === '000') {
                     const dataOverviewDataSource = [{}]
                     dataOverviewColumns.forEach(v => {
                         dataOverviewDataSource[0][v.key] = res[v.key]
@@ -239,7 +239,7 @@ class SpecialPromotionDetail extends React.Component {
             }).title
         }
         return (
-            <div style={{marginBottom: 20}}>
+            <div style={{ marginBottom: 20 }}>
                 <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d2c8987eai0135)}</h5>
                 <Row>
                     <Col span={4} style={{ textAlign: 'right' }}>{this.props.intl.formatMessage(STRING_SPE.d4h177f79da1218)}</Col>
@@ -266,7 +266,7 @@ class SpecialPromotionDetail extends React.Component {
                                 <Col span={18} style={{ textAlign: 'left' }}>
                                     {
                                         (record.eventStartDate !== '20000101' && record.eventEndDate !== '29991231' &&
-                                        record.eventStartDate !== '0' && record.eventEndDate !== '0') ?
+                                            record.eventStartDate !== '0' && record.eventEndDate !== '0') ?
                                             `${moment(record.eventStartDate, 'YYYY/MM/DD').format('YYYY/MM/DD')} - ${moment(record.eventEndDate, 'YYYY/MM/DD').format('YYYY/MM/DD')}` : '不限制'
                                     }
                                 </Col>
@@ -274,18 +274,18 @@ class SpecialPromotionDetail extends React.Component {
                         ) : null
                 }
                 {
-                    showNoLimitType.includes(String(record.eventWay)) &&  record.eventStartDate == '20000101' && record.eventEndDate == '29991231' ?
-                    (
-                        <Row>
-                            <Col span={4} style={{ textAlign: 'right' }}>{this.props.intl.formatMessage(STRING_SPE.db60c8ac0a379138)}</Col>
-                            <Col span={1} style={{ textAlign: 'center' }}>:</Col>
-                            <Col span={18} style={{ textAlign: 'left' }}>
-                            不限制
+                    showNoLimitType.includes(String(record.eventWay)) && record.eventStartDate == '20000101' && record.eventEndDate == '29991231' ?
+                        (
+                            <Row>
+                                <Col span={4} style={{ textAlign: 'right' }}>{this.props.intl.formatMessage(STRING_SPE.db60c8ac0a379138)}</Col>
+                                <Col span={1} style={{ textAlign: 'center' }}>:</Col>
+                                <Col span={18} style={{ textAlign: 'left' }}>
+                                    不限制
 
-                            </Col>
-                        </Row>
-                    )
-                    : null
+                                </Col>
+                            </Row>
+                        )
+                        : null
                 }
                 <Row>
                     <Col span={4} style={{ textAlign: 'right' }}>{this.props.intl.formatMessage(STRING_SPE.d7ekp859lc11113)}</Col>
@@ -305,17 +305,17 @@ class SpecialPromotionDetail extends React.Component {
             records = []
         }
         const way = this.state.eventInfo.data.eventWay;
-        if(way == 66) {
+        if (way == 66) {
 
-             const list1 = records.filter(v => v.sendType == 0)
-             const list2 = records.filter(v => v.sendType == 1)
+            const list1 = records.filter(v => v.sendType == 0)
+            const list2 = records.filter(v => v.sendType == 1)
             return (<div>
-                  <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
-                  <div style={{marginTop: '10px',marginBottom: '5px'}}>发起人奖励统计</div>
-                <Col style={{marginBottom: '10px'}}  span={24}>
+                <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
+                <div style={{ marginTop: '10px', marginBottom: '5px' }}>发起人奖励统计</div>
+                <Col style={{ marginBottom: '10px' }} span={24}>
                     {this.renderGiftInfoTable(list1, way)}
                 </Col>
-                <div style={{ marginBottom: '5px'}}>助力人奖励统计</div>
+                <div style={{ marginBottom: '5px' }}>助力人奖励统计</div>
                 <Col span={24}>
                     {this.renderGiftInfoTable(list2, way)}
                 </Col>
@@ -329,9 +329,9 @@ class SpecialPromotionDetail extends React.Component {
             let couponList = []
             const couponCurrent = this.props.mySpecialActivities.data.eventInfo.eventRuleInfos
 
-            if(couponCurrent.length) {
+            if (couponCurrent.length) {
                 couponCurrent.forEach(v => {
-                    if(Array.isArray(v.gifts)) {
+                    if (Array.isArray(v.gifts)) {
                         couponList = couponList.concat(v.gifts)
                     }
                 })
@@ -356,7 +356,7 @@ class SpecialPromotionDetail extends React.Component {
                     </Col> */}
                     <div>{this.props.intl.formatMessage(STRING_SPE.da9060bn7f2110)}</div>
                     <Col span={24}>
-                        {this.renderGiftInfoTable(records.filter(record => record.recommendType === 0 && record.presentType === 1),'beRecommend')}
+                        {this.renderGiftInfoTable(records.filter(record => record.recommendType === 0 && record.presentType === 1), 'beRecommend')}
                     </Col>
 
                     {this.renderSearch()}
@@ -394,7 +394,7 @@ class SpecialPromotionDetail extends React.Component {
                 <div>
                     <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
                     <Col span={24}>
-                        {this.renderGiftInfoTable(records.filter(record => record.presentType === 1))}
+                        {this.renderGiftInfoTable(records.filter(record => { return record.presentType === 1 || record.presentType === 8 }))}
                     </Col>
                     <Col style={{ marginTop: 10 }} span={18}>
                         {this.renderPointsTable()}
@@ -424,7 +424,7 @@ class SpecialPromotionDetail extends React.Component {
             )
         }
         if (way == 78) {
-            const rec = records.filter(record => [1,4].includes(record.presentType));
+            const rec = records.filter(record => [1, 4].includes(record.presentType));
             return (
                 <div>
                     <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
@@ -435,7 +435,7 @@ class SpecialPromotionDetail extends React.Component {
                         {this.renderPointsTable()}
                     </Col>
                     <Col style={{ marginTop: 10 }} span={18}>
-                    {this.renderCardValueTable()}
+                        {this.renderCardValueTable()}
                     </Col>
                     {this.renderSearch()}
                     <Col span={24}>
@@ -444,8 +444,8 @@ class SpecialPromotionDetail extends React.Component {
                 </div>
             )
         }
-        if(way == 60) {
-            const list = records.filter(v => v.presentType === 1)
+        if (way == 60) {
+            const list = records.filter(v => { return v.presentType === 1 || v.presentType === 8 })
             return (
                 <div>
                     <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
@@ -462,7 +462,7 @@ class SpecialPromotionDetail extends React.Component {
                 </div>
             )
         }
-        if(way == 61) {
+        if (way == 61) {
 
             const list = records.filter(v => v.presentType === 1)
             return (
@@ -481,9 +481,9 @@ class SpecialPromotionDetail extends React.Component {
                 </div>
             )
         }
-        if(way == 64) {//评价送礼
+        if (way == 64) {//评价送礼
 
-            const list = records.filter(v => v.presentType === 1)
+            const list = records.filter(v => { return v.presentType === 1 || v.presentType === 8 })
             return (
                 <div>
                     <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
@@ -491,8 +491,8 @@ class SpecialPromotionDetail extends React.Component {
                         {this.renderGiftInfoTable(list, way)}
                     </Col>
                     <Col style={{ marginTop: 10 }} span={18}>
-                            {this.renderPointsTable()}
-                        </Col>
+                        {this.renderPointsTable()}
+                    </Col>
                     {this.renderSearch()}
                     <Col span={24}>
                         {this.renderActivityInfoTable()}
@@ -500,9 +500,9 @@ class SpecialPromotionDetail extends React.Component {
                 </div>
             )
         }
-        if(way == 79) {//盲盒
+        if (way == 79) {//盲盒
 
-            const list = records.filter(v => v.presentType === 1)
+            const list = records.filter(v => { return v.presentType === 1 || v.presentType === 8 })
             return (
                 <div>
                     <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
@@ -510,8 +510,8 @@ class SpecialPromotionDetail extends React.Component {
                         {this.renderGiftInfoTable(list, way)}
                     </Col>
                     <Col style={{ marginTop: 10 }} span={18}>
-                            {this.renderPointsTable()}
-                        </Col>
+                        {this.renderPointsTable()}
+                    </Col>
                     {this.renderSearch()}
                     <Col span={24}>
                         {this.renderActivityInfoTable()}
@@ -519,9 +519,9 @@ class SpecialPromotionDetail extends React.Component {
                 </div>
             )
         }
-        if(way == 83) {//口令领券
+        if (way == 83) {//口令领券
 
-            const list = records.filter(v => v.presentType === 1)
+            const list = records.filter(v => { return v.presentType === 1 || v.presentType === 8 })
             return (
                 <div>
                     <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
@@ -538,9 +538,9 @@ class SpecialPromotionDetail extends React.Component {
                 </div>
             )
         }
-        if(way == 52) {//
+        if (way == 52) {//
 
-            const list = records.filter(v => v.presentType === 1)
+            const list = records.filter(v => { return v.presentType === 1 || v.presentType === 8 })
             return (
                 <div>
                     <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
@@ -548,8 +548,8 @@ class SpecialPromotionDetail extends React.Component {
                         {this.renderGiftInfoTable(list, way)}
                     </Col>
                     <Col style={{ marginTop: 10 }} span={18}>
-                            {this.renderPointsTable()}
-                        </Col>
+                        {this.renderPointsTable()}
+                    </Col>
                     {this.renderSearch()}
                     <Col span={24}>
                         {this.renderActivityInfoTable()}
@@ -557,9 +557,9 @@ class SpecialPromotionDetail extends React.Component {
                 </div>
             )
         }
-        if(way == 53) {//群发礼品
+        if (way == 53) {//群发礼品
 
-            const list = records.filter(v => v.presentType === 1)
+            const list = records.filter(v => { return v.presentType === 1 || v.presentType === 8 })
             return (
                 <div>
                     <h5><span></span>{this.props.intl.formatMessage(STRING_SPE.d16hh2cja4h0276)}</h5>
@@ -567,8 +567,8 @@ class SpecialPromotionDetail extends React.Component {
                         {this.renderGiftInfoTable(list, way)}
                     </Col>
                     <Col style={{ marginTop: 10 }} span={18}>
-                            {this.renderPointsTable()}
-                        </Col>
+                        {this.renderPointsTable()}
+                    </Col>
                     {this.renderSearch()}
                     <Col span={24}>
                         {this.renderActivityInfoTable()}
@@ -680,7 +680,7 @@ class SpecialPromotionDetail extends React.Component {
         );
     }
     // 礼品信息表格
-    renderGiftInfoTable(records,type) {
+    renderGiftInfoTable(records, type) {
         const way = this.state.eventInfo.data.eventWay;
         const { intl } = this.props
 
@@ -709,10 +709,10 @@ class SpecialPromotionDetail extends React.Component {
                 key: 'EGiftSingleCount',
                 className: 'TableTxtRight',
                 render(text) {
-                    if(way == '30') {
+                    if (way == '30') {
                         return text == 0 ? '' : text
                     }
-                    if(way == '21' && text == 2147483647) {
+                    if (way == '21' && text == 2147483647) {
                         text = '不限制'
                     }
                     return text
@@ -758,7 +758,7 @@ class SpecialPromotionDetail extends React.Component {
             // }
             // 积分兑换 如果是 -1 改为不限制
             let giftTotalCount = gift.giftTotalCount;
-            if(way==30 && gift.giftTotalCount===-1){
+            if (way == 30 && gift.giftTotalCount === -1) {
                 giftTotalCount = '不限制'
             }
             return {
@@ -773,30 +773,30 @@ class SpecialPromotionDetail extends React.Component {
                 resumeGiftsCountPercent: gift.giftSendCount == 0 ? '0%' : `${Math.round((gift.resumeGiftsCount || 0) / (gift.giftSendCount) * 10000) / 100}%`,
             }
         });
-        if(this.props.record.eventInfo.data.eventWay == 68) {
+        if (this.props.record.eventInfo.data.eventWay == 68) {
             // rewardType 1 为卡值 2 为积分 3 红包
             let filterKeys = [
-                {name: '赠送积分',id: '2'},
-                {name: '赠送卡值',id: '1'},
-                {name: '现金红包',id: '4'},
+                { name: '赠送积分', id: '2' },
+                { name: '赠送卡值', id: '1' },
+                { name: '现金红包', id: '4' },
             ]
 
-            let {recommendRewardSummaryData,recommendedRewardSummaryData} = this.state
+            let { recommendRewardSummaryData, recommendedRewardSummaryData } = this.state
             const recommendRewardSummaryDataList = []
-            if(type === 'beRecommend') {
-                filterKeys = [ {name: '赠送积分',id: '2'}]
+            if (type === 'beRecommend') {
+                filterKeys = [{ name: '赠送积分', id: '2' }]
                 filterKeys.forEach(v => {
                     recommendedRewardSummaryData.forEach(item => {
-                        if(item.rewardType == v.id) {
+                        if (item.rewardType == v.id) {
                             item.rewardTypeName = v.name
                             recommendRewardSummaryDataList.push(item)
                         }
                     })
-                    })
+                })
             } else {
                 filterKeys.forEach(v => {
                     recommendRewardSummaryData.forEach(item => {
-                        if(item.rewardType == v.id) {
+                        if (item.rewardType == v.id) {
                             item.rewardTypeName = v.name
                             recommendRewardSummaryDataList.push(item)
                         }
@@ -807,8 +807,8 @@ class SpecialPromotionDetail extends React.Component {
 
 
 
-            const  columnsNew = _.cloneDeep(columns)
-            columnsNew.splice(1,0,{
+            const columnsNew = _.cloneDeep(columns)
+            columnsNew.splice(1, 0, {
                 title: '赠送类型',
                 dataIndex: 'mySendType',
                 key: 'mySendType',
@@ -817,17 +817,17 @@ class SpecialPromotionDetail extends React.Component {
             columnsNew.pop()
             return (
                 <div>
-                    {recommendRewardSummaryDataList.map((val,index) => {
+                    {recommendRewardSummaryDataList.map((val, index) => {
 
                         return <div>
-                             <div>&nbsp;</div>
+                            <div>&nbsp;</div>
                             <Table
-                                style={{width: '80%'}}
+                                style={{ width: '80%' }}
                                 dataSource={[
                                     val
                                 ]}
-                                columns={beRecommendTitleList[index].map((v,i) => {
-                                    const column =  _.cloneDeep(tempColumns)[i]
+                                columns={beRecommendTitleList[index].map((v, i) => {
+                                    const column = _.cloneDeep(tempColumns)[i]
                                     column.title = v
                                     return column
                                 })}
@@ -849,7 +849,7 @@ class SpecialPromotionDetail extends React.Component {
             <Table dataSource={dataSource} columns={columns} bordered={true} pagination={false} />
         );
     }
-    renderCardValueTable () {
+    renderCardValueTable() {
         const columns = [
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.dk46m1ib4k18146)}`,
@@ -951,9 +951,9 @@ class SpecialPromotionDetail extends React.Component {
         try {
             dataSource = [{
                 title: `${this.props.intl.formatMessage(STRING_SPE.dk46b2bc3b1333)}`,
-                sendAmount:this.props.mySpecialActivities.data.eventInfo.eventPointData ? this.props.mySpecialActivities.data.eventInfo.eventPointData.sendPointAmount : null,
-                sendCount:this.props.mySpecialActivities.data.eventInfo.eventPointData ? this.props.mySpecialActivities.data.eventInfo.eventPointData.sendCount : null,
-            },{
+                sendAmount: this.props.mySpecialActivities.data.eventInfo.eventPointData ? this.props.mySpecialActivities.data.eventInfo.eventPointData.sendPointAmount : null,
+                sendCount: this.props.mySpecialActivities.data.eventInfo.eventPointData ? this.props.mySpecialActivities.data.eventInfo.eventPointData.sendCount : null,
+            }, {
                 title: '赠送成长值',
                 ...this.props.mySpecialActivities.data.eventInfo.growthValueData,
             }];
@@ -1021,7 +1021,7 @@ class SpecialPromotionDetail extends React.Component {
                     <h5><span></span>参与记录</h5>
                 </Col>
                 <Col span={24}>
-                    <Col span={2} style={{ marginTop: 4}}>{this.props.intl.formatMessage(STRING_SPE.d5672ba595d82123)}</Col>
+                    <Col span={2} style={{ marginTop: 4 }}>{this.props.intl.formatMessage(STRING_SPE.d5672ba595d82123)}</Col>
                     <Col span={6}><Input onBlur={this.handleInputChange} /></Col>
                     <Col span={3}><Button type="primary" onClick={this.resetQuery}>{this.props.intl.formatMessage(STRING_SPE.da9060bn7g2223)}</Button></Col>
                     {
@@ -1037,7 +1037,7 @@ class SpecialPromotionDetail extends React.Component {
                                 >
                                     <Button disabled={!records[0]} type="ghost" onClick={this.handleExport}>{this.props.intl.formatMessage(STRING_GIFT.doja0cxma25)}</Button>
                                 </Popover>
-                                </Col>
+                            </Col>
                         )
                     }
                 </Col>
@@ -1054,25 +1054,25 @@ class SpecialPromotionDetail extends React.Component {
             null,
             { path: 'data' },
         ).then(records => {
-            if(records.sameRequest){
+            if (records.sameRequest) {
                 this.setState({
                     popContent: '已有导出任务 请勿重复操作，',
                     popA: '查看导出结果',
                     sameItemID: records.sameItemID,
                 })
-            }else{
+            } else {
                 this.setState({
                     popContent: '数据导出中 请',
                     popA: '查看导出进度',
                 })
             }
-            if(records.highMoment == 1){
+            if (records.highMoment == 1) {
                 this.setState({
-                    popContent: <div><p style={{whiteSpace: 'nowrap'}}>营业高峰期(11:00-14:00,17:00</p><p style={{whiteSpace: 'nowrap'}}>-20:30)暂停使用数据导出功能</p></div>,
+                    popContent: <div><p style={{ whiteSpace: 'nowrap' }}>营业高峰期(11:00-14:00,17:00</p><p style={{ whiteSpace: 'nowrap' }}>-20:30)暂停使用数据导出功能</p></div>,
                     popA: '',
                     tooltipVisble: true,
                 })
-            }else{
+            } else {
                 this.setState({
                     tooltipVisble: false,
                 })
@@ -1083,9 +1083,9 @@ class SpecialPromotionDetail extends React.Component {
         })
     }
     renderPopOver = () => {
-        const { popContent = '', popA ='' } = this.state;
-        return(
-            <div className={styles.popDiv} style={{width: this.state.tooltipVisble ? 160 : 'auto'}}>
+        const { popContent = '', popA = '' } = this.state;
+        return (
+            <div className={styles.popDiv} style={{ width: this.state.tooltipVisble ? 160 : 'auto' }}>
                 <span>{popContent}</span>
                 <a className={styles.greenLink} onClick={this.openOther}>{popA}</a>
             </div>
@@ -1093,14 +1093,14 @@ class SpecialPromotionDetail extends React.Component {
     }
     openOther = () => {
         this.setState({
-        popoverVisible: false,
+            popoverVisible: false,
         });
         this.setState({
             exportVisible: true,
         });
     };
     handleVisibleChange = visible => {
-        this.setState({ popoverVisible: visible});
+        this.setState({ popoverVisible: visible });
     };
     renderCollectPointsTable() {
         const columns = [
@@ -1178,11 +1178,11 @@ class SpecialPromotionDetail extends React.Component {
     }
 
     handleUserTablePageChange(pageNo, pageSize) {
-        this.setState({pageNo, pageSize}, () => this.query());
+        this.setState({ pageNo, pageSize }, () => this.query());
     }
 
     handleUserTablePageSizeChange(current, pageSize) {
-        this.setState({pageNo: 1, pageSize}, () => this.query(true));
+        this.setState({ pageNo: 1, pageSize }, () => this.query(true));
     }
 
     handleInviteeModalOpen = (record) => {
@@ -1209,7 +1209,7 @@ class SpecialPromotionDetail extends React.Component {
                 key: 'idx',
                 className: 'TableTxtCenter',
                 width: 30,
-                render:(text, record, index)=> {
+                render: (text, record, index) => {
                     return (this.state.pageNo - 1) * this.state.pageSize + Number(index + 1);
                 }
             },
@@ -1219,7 +1219,7 @@ class SpecialPromotionDetail extends React.Component {
                 key: 'participateMark',
                 className: 'TableTxtCenter',
                 width: 100,
-                render:(text)=> {
+                render: (text) => {
                     return (<Tooltip title={text || ''}>{text}</Tooltip>)
                 }
             }),
@@ -1229,7 +1229,7 @@ class SpecialPromotionDetail extends React.Component {
                 key: 'customerID',
                 width: 150,
                 className: 'TableTxtCenter',
-                render:(text)=> {
+                render: (text) => {
                     return (<Tooltip title={text}>{text}</Tooltip>)
                 }
             },
@@ -1239,7 +1239,7 @@ class SpecialPromotionDetail extends React.Component {
                 key: 'name',
                 className: 'TableTxtCenter',
                 width: 100,
-                render:(text)=> {
+                render: (text) => {
                     return (<Tooltip title={text || ''}>{text}</Tooltip>)
                 }
             },
@@ -1249,29 +1249,29 @@ class SpecialPromotionDetail extends React.Component {
                 key: 'telephoneNo',
                 className: 'TableTxtRight',
                 width: 100,
-                render:(text)=> {
+                render: (text) => {
                     return (<Tooltip title={text || ''}>{text}</Tooltip>)
                 }
             },
-            eventWay == 20 &&({
+            eventWay == 20 && ({
                 title: `${this.props.intl.formatMessage(STRING_SPE.de8g85ajmb27114)}`,
                 dataIndex: 'winFlag',
                 key: 'winFlag',
                 className: 'TableTxtCenter',
                 width: 100,
-                render:(level)=> {
+                render: (level) => {
                     if (!level) return '--'
                     if (level === -1) return `${this.props.intl.formatMessage(STRING_SPE.de8g85ajmb28176)}`
                     return `${levelArray[level - 1]}${this.props.intl.formatMessage(STRING_SPE.dd5aa2689df29246)}`
                 }
             }),
-            eventWay == 78 &&({
+            eventWay == 78 && ({
                 title: `${this.props.intl.formatMessage(STRING_SPE.de8g85ajmb27114)}`,
                 dataIndex: 'winFlag',
                 key: 'winFlag',
                 className: 'TableTxtCenter',
                 width: 100,
-                render:(level)=> {
+                render: (level) => {
                     if (!level) return '--'
                     if (level === -1) return `${this.props.intl.formatMessage(STRING_SPE.de8g85ajmb28176)}`
                     return `奖项${levelArray[level - 1]}`
@@ -1291,8 +1291,8 @@ class SpecialPromotionDetail extends React.Component {
                 key: 'look',
                 className: 'TableTxtCenter',
                 width: 40,
-                render:(text, record)=> {
-                    return (<a onClick={()=>this.handleGiftDetailModalOpen(record)}>查看</a>)
+                render: (text, record) => {
+                    return (<a onClick={() => this.handleGiftDetailModalOpen(record)}>查看</a>)
                 }
             }),
             eventWay == 75 && ({
@@ -1301,7 +1301,7 @@ class SpecialPromotionDetail extends React.Component {
                 key: 'pointCount',
                 className: 'TableTxtCenter',
                 width: 100,
-                render:(text, record)=> {
+                render: (text, record) => {
                     return (record.joinCount + record.remainIngNum)
                 }
             }),
@@ -1320,7 +1320,7 @@ class SpecialPromotionDetail extends React.Component {
                 dataIndex: 'joinCount',
                 key: 'joinCount',
                 className: 'TableTxtCenter',
-                render:(text, record)=> {
+                render: (text, record) => {
                     if (text > 0) {
                         return (<a onClick={() => this.handleInviteeModalOpen(record)} title={text}>{text}</a>)
                     }
@@ -1334,7 +1334,7 @@ class SpecialPromotionDetail extends React.Component {
                 dataIndex: 'joinCount',
                 key: 'joinCount',
                 className: 'TableTxtCenter',
-                render:(text, record)=> {
+                render: (text, record) => {
                     if (text > 0) {
                         return (<a onClick={() => this.handleInviteeModalOpen(record)} title={text}>{text}</a>)
                     }
@@ -1350,7 +1350,7 @@ class SpecialPromotionDetail extends React.Component {
                     dataIndex: 'joinCount',
                     key: 'joinCount',
                     className: 'TableTxtCenter',
-                    render:(text, record)=> {
+                    render: (text, record) => {
                         if (text > 0) {
                             return (<a onClick={() => this.handleInviteeModalOpen(record)} title={text}>{text}</a>)
                         }
@@ -1427,10 +1427,10 @@ class SpecialPromotionDetail extends React.Component {
             }
         });
         let len = null;
-        if(eventWay == 68){
+        if (eventWay == 68) {
             len = 2000
         }
-        if(eventWay == 66){
+        if (eventWay == 66) {
             len = 700
         }
         return (
@@ -1438,7 +1438,7 @@ class SpecialPromotionDetail extends React.Component {
                 dataSource={dataSource}
                 columns={columns.filter(Boolean)}
                 bordered={true}
-                scroll={eventWay == 68 || eventWay == 66 ? {x: len} : {}}
+                scroll={eventWay == 68 || eventWay == 66 ? { x: len } : {}}
                 pagination={{
                     current: this.state.pageNo,
                     total: this.state.total,

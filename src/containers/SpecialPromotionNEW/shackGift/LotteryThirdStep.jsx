@@ -203,6 +203,7 @@ class LotteryThirdStep extends React.Component {
                     infos[index].giveRedPacket.isOn = false;
                 }
                 infos[index].giftTotalCount.value = gift.giftTotalCount
+                infos[index].presentType = gift.presentType
                 infos[index].giftOdds.value = parseFloat(gift.giftOdds).toFixed(2);
                 // infos[index].shareTitle.value = gift.shareTitle;
                 // infos[index].giftConfImagePath.value = gift.giftConfImagePath || 'basicdoc/f75ed282-4d1c-4f5d-ab29-a92529cbadcf.png' ;
@@ -255,7 +256,7 @@ class LotteryThirdStep extends React.Component {
                         if(every.sortIndex == item.sortIndex){
                             flag = false
                             //进行合并
-                            if(item.presentType == 1){
+                            if(item.presentType == 1 ||item.presentType === 8){
                                 temparr[num].effectType = item.effectType;
                                 temparr[num].giftValidUntilDayCount = item.giftValidUntilDayCount;
                                 if(item.effectType != '2'){
