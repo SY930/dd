@@ -26,19 +26,18 @@ const handleChangeBox = function ({ key }) {
  * @param {*} { key, children, label }
  * @returns
  */
-const renderCheckbox = function ({ key, children, label },isNew) {
+const renderCheckbox = function ({ key, children, label }, upGrade, sendCount) {
     if (!key) return null;
     const { upGradeReturnGiftCheckBoxStatus } = this.state;
     const checked = upGradeReturnGiftCheckBoxStatus[key];
-    const giftSendCount =
-        this.upGradePointItem && this.upGradePointItem.giftSendCount;
+        // console.log(giftSendCount, 'giftSendCount', this.upGradePointItem, 'this.upGradePointItem', isNew, 'isNew') 
     return (
         <div style={{ display: "flex" }}>
             <div style={{ paddingTop: "12px" }}>
                 <Checkbox
                     checked={checked}
                     onChange={handleChangeBox.call(this, { key })}
-                    disabled={giftSendCount > 0 || (JSON.stringify(this.upGradePointItem) == "{}" && !isNew)}
+                    disabled={sendCount > 0 || (JSON.stringify(upGrade) == "{}")}
                 />
                 <span style={{ padding: 0 }}>{label}</span>
             </div>
@@ -116,18 +115,21 @@ export const renderUpGradeThree = function (isNew) {
         upGradeReturnGiftPoint,
         upGradeReturnGiftCoupon,
     } = upGradeReturnGiftCheckBoxStatus;
-
+    const giftSendCountPoint =
+    this.upGradePointItem && this.upGradePointItem.giftSendCount;
+    const giftSendCountCoupon =
+    this.upGradeCouponItem && this.upGradeCouponItem.giftSendCount;
     return (
         <div style={{ marginLeft: "40px" }}>
             {renderCheckbox.call(this, {
                 label: "赠送积分",
                 key: "upGradeReturnGiftPoint",
-            },isNew)}
+            },isNew, this.upGradePointItem, giftSendCountPoint)}
             {upGradeReturnGiftPoint && renderGivePointFn.call(this)}
             {renderCheckbox.call(this, {
                 label: "赠送优惠券",
                 key: "upGradeReturnGiftCoupon",
-            }, isNew)}
+            }, isNew, this.upGradeCouponItem, giftSendCountCoupon)}
             {upGradeReturnGiftCoupon && (
                 <Row>
                     <Col span={17} offset={1}>
@@ -203,7 +205,7 @@ export const upGradeAddPointData = function (giftInfo) {
 export const upGradeInitPerfectCheckBox = function () {
     const giftInfo = this.props.specialPromotion.get("$giftInfo").toJS();
     const { upGradeReturnGiftCheckBoxStatus } = this.state;
-    const pointItem = giftInfo.find((v) => v.presentType === 2);
+    const pointItem = giftInfo.find((v) => v.presentType === 2); // 积分
     const couponItem = giftInfo.find((v) => { return v.presentType === 1 || v.presentType === 8 });
     upGradeReturnGiftCheckBoxStatus.upGradeReturnGiftPoint = pointItem;
     upGradeReturnGiftCheckBoxStatus.upGradeReturnGiftCoupon = couponItem;
@@ -211,6 +213,7 @@ export const upGradeInitPerfectCheckBox = function () {
         upGradeReturnGiftCheckBoxStatus.upGradeReturnGiftCoupon = true;
     }
     this.upGradePointItem = pointItem || {};
+    this.upGradeCouponItem = couponItem || {};
     this.setState({
         upGradeReturnGiftCheckBoxStatus,
         upGradeReturnGiftPoint: pointItem && pointItem.presentValue,
