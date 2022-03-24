@@ -127,7 +127,7 @@ export const renderUpGradeThree = function (isNew) {
             {renderCheckbox.call(this, {
                 label: "赠送优惠券",
                 key: "upGradeReturnGiftCoupon",
-            })}
+            }, isNew)}
             {upGradeReturnGiftCoupon && (
                 <Row>
                     <Col span={17} offset={1}>
