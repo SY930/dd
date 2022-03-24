@@ -48,8 +48,8 @@ const formItems2 = {
     useApp: {
         type: 'radio',
         label: '适用客户端',
-        options: [{ label: 'H5餐厅', value: '1' }, { label: '小程序2.0', value: '2' }],
-        defaultValue: '1',
+        options: [{ label: '小程序2.0', value: '2' }, { label: 'H5餐厅', value: '1' }],
+        defaultValue: '2',
     },
     sceneList: {
         type: 'custom',

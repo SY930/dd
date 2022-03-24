@@ -18,11 +18,11 @@ export const faceDefVal = {
     conditionValue: 'whetherHasCard', // 是否持卡key | 7023267909942119317
     targetName: '持卡会员',
     targetValue: '1', // 1 是持卡会员 0否
-    // 点击触发的事件
+    // 点击触发的事件  小程序2.0
     triggerEventName: '购物车夹菜',
     triggerEventValue: '',
     triggerEventCustomInfo: '',
-    // 点击触发的事件 小程序2.0
+    // 点击触发的事件 h5
     triggerEventName2: '购物车夹菜',
     triggerEventValue2: '',
     triggerEventCustomInfo2: '',
