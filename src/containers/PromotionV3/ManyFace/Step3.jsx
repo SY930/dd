@@ -29,7 +29,7 @@ class Step3 extends Component {
         const render = d => d()(<MyFaceRule
             form={this.props.form}
             decorator={d}
-            useApp={this.props.useApp}
+            clientType={this.props.clientType}
             allActivityList={this.props.allActivity}
             allMallActivity={this.props.allMallActivity}
         />);

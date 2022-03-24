@@ -90,13 +90,13 @@ class MyFaceRule extends Component {
         if (value == '1') { // 会员身份
             this.onChange(idx, { [key]: value, conditionValue: 'whetherHasCard', conditionName: '是否持卡会员', targetName: '持卡会员', targetValue: '0' })
             this.setState({
-                isShowIdentity: true,
+                isShowIdentity: !this.state.isShowIdentity,
                 isShowTag: false,
             })
         } else { // 会员标签
             this.onChange(idx, { [key]: value, conditionValue: '', conditionName: '', targetName: '', targetValue: '' })
             this.setState({
-                isShowTag: true,
+                isShowTag: !this.state.isShowTag,
                 isShowIdentity: false,
             })
         }
@@ -128,8 +128,8 @@ class MyFaceRule extends Component {
         const { value: data } = this.props;
         const hasValue = data.some(d => d.conditionValue == value);
         if (hasValue) return message.warn('不能选择相同的会员群体属性');
-        const item = [].filter(itm => itm.tagCategoryID == value)
-        this.onChange(idx, { [key]: value, conditionName: item[0] ? item[0].label : '', targetValue: '', targetName: '' })
+        const item = this.state.memberParams.filter(itm => itm.groupMembersID == value)
+        this.onChange(idx, { [key]: value, conditionName: item[0] ? item[0].groupMembersName : '', targetValue: '', targetName: '' })
     }
 
     onEveryTagsRule = (idx, key, value, data) => {
@@ -213,7 +213,7 @@ class MyFaceRule extends Component {
             newActivityList = [];
         }
         let linkUrlOption = [];
-        if (params === '5') {
+        if (params === 'jumpToMall') {
             linkUrlOption = allMallActivity.map((items) => {
                 return {
                     label: items.shopName,
@@ -242,11 +242,11 @@ class MyFaceRule extends Component {
     initEventSelectOption = () => {
         let eventList = [];
         const { eventSelectOption } = this.state;
-        if (this.props.useApp === '1') { // H5餐厅
+        if (this.props.clientType === '1') { // H5餐厅
             eventList = _.filter(eventSelectOption, item => ['', 'customLink', 'shoppingCartAddFood'].includes(item.value))
         } else { // 小程序2.0
-            eventList = _.map(_.filter(eventSelectOption, item => !['', '0', 'customLink', 'shoppingCartAddFood'].includes(item.value)), it => ({ ...it, children: this.getAvtivity(it.value) }))
-            const restList = _.filter(eventSelectOption, item => ['', '0'].includes(item.value));
+            eventList = _.map(_.filter(eventSelectOption, item => !['', 'miniAppPage', 'customLink', 'shoppingCartAddFood'].includes(item.value)), it => ({ ...it, children: this.getAvtivity(it.value) }))
+            const restList = _.filter(eventSelectOption, item => ['', 'miniAppPage'].includes(item.value));
             eventList = restList.concat(eventList)
         }
         console.log(eventList, 'eventList');
@@ -471,6 +471,7 @@ class MyFaceRule extends Component {
 
     renderSelect = (i, v) => {
         const options = this.state.eventSelectOption.filter(item => item.value === v.triggerEventValue) || [];
+        // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 474 ~ MyFaceRule ~ options", options)
         const [option] = options;
         return (<FormItem>
             <Select
@@ -522,7 +523,7 @@ class MyFaceRule extends Component {
                     </FormItem>
                     {/* jumpToMiniApp 跳转小程序和 speedDial 一键拨号 单独处理 */}
                     {v.triggerEventValue && v.triggerEventValue != 'speedDial' && v.triggerEventValue != 'jumpToMiniApp' && this.renderSelect(i, v)}
-                    {v.triggerEventValue == 'jumpToMiniApp' && this.renderInputApp(i, v)}
+                    {v.triggerEventValue == 'speedDial' && this.renderInputApp(i, v)}
                 </div>
                 {v.triggerEventValue == 'jumpToMiniApp' && this.renderJumpApp(i, v)}
             </div>
@@ -531,12 +532,13 @@ class MyFaceRule extends Component {
 
 
     render() {
-        const { value = [], form, useApp } = this.props;
+        const { value = [], form, clientType } = this.props;
         // const { length } = value;
         // 防止回显没数据不显示礼品组件
         if (!value[0]) {
             value.push({ ...faceDefVal });
         }
+        console.log(this.state.memberParams, 'memberParams')
         return (
             <div>
                 {
@@ -618,8 +620,8 @@ class MyFaceRule extends Component {
                                             <FormItem required={true}>
                                                 <Select style={{ width: '120px', marginLeft: 8 }} value={v.conditionValue} onChange={(_v) => { this.onCrmGroup(i, 'conditionValue', _v) }}>
                                                     {
-                                                        (this.state.memberParams || []).map(({ groupMembersID: key, groupMembersName: label }) => {
-                                                            return <Select.Option key={key} value={`${key}`}>{label}</Select.Option>
+                                                        (this.state.memberParams || []).map(({ groupMembersID, groupMembersName }) => {
+                                                            return <Select.Option key={groupMembersID} value={groupMembersID}>{groupMembersName}</Select.Option>
                                                         })
                                                     }
                                                 </Select>
@@ -629,8 +631,8 @@ class MyFaceRule extends Component {
                                     {/* 点击触发事件 */}
                                     <div className={styles.MyFaceRuleSubConntet} style={{ display: 'flex' }}>
                                         <p>点击触发事件</p>
-                                        {useApp === '1' && this.renderH5Events(v, i)}
-                                        {useApp === '2' && this.renderAPPEvents(v, i)}
+                                        {clientType === '1' && this.renderH5Events(v, i)}
+                                        {clientType === '2' && this.renderAPPEvents(v, i)}
                                     </div>
                                 </div>
                                 {/* 添加删除操作 */}

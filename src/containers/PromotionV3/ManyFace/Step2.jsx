@@ -69,7 +69,7 @@ class Step2 extends Component {
         const filterShopData = shopData.filter(item => this.state.filterShop.indexOf(item.shopID) < 0);
         // originTreeData.shops = filterShopData;
         const { brands } = this.state;
-        const { shopIDList, sceneList, useApp } = formItems2;
+        const { shopIDList, sceneList, clientType } = formItems2;
         const render = d => d()(<ShopSelector
             filterParm={isFilterShopType() ? { productCode: 'HLL_CRM_License' } : {}}
             brandList={brands}
@@ -77,14 +77,14 @@ class Step2 extends Component {
         // schemaData={originTreeData}
         />);
         const renderScene = (d, form) => {
-            return form.getFieldValue('useApp') === '1' ? d({})(
+            return form.getFieldValue('clientType') === '1' ? d({})(
                 <CheckboxGroup options={optiosH5} />
             ) : d({})(
                 <CheckboxGroup options={optiosApp2} />
             )
         }
         return {
-            useApp,
+            clientType,
             sceneList: { ...sceneList, render: renderScene },
             shopIDList: { ...shopIDList, render },
         };

@@ -79,13 +79,14 @@ class ManyFace extends Component {
 
     /* 第3步表单提交数据 */
     onGoDone = () => {
-        const { form } = this.state;
+        const { form, formData2 } = this.state;
         // const { defaultCardType } = formData2;
 
         form.validateFields((e, v) => {
             if (!e) {
                 const { faceRule } = v;
                 const faceData = _.cloneDeep(faceRule)
+                // TODO： 校验区分
                 let flag = false;
                 faceRule.map((itm) => {
                     if (itm.conditionType == 2) {
@@ -101,7 +102,6 @@ class ManyFace extends Component {
                             message.warn('请选择会员标签属性')
                             return null
                         }
-                        // if (!itm.)
                     }
                     if (!itm.triggerEventValue) {
                         flag = true;
@@ -116,23 +116,87 @@ class ManyFace extends Component {
                         return null
                     }
                 })
-                if (flag) {
-                    return
+                // if (flag) {
+                //     return
+                // }
+                if (formData2.clientType == '1') {
+                    this.onPreSubmitH5(faceData)
+                } else {
+                    this.onPreSubmitApp(faceData)
                 }
-                const formData3 = faceData.map((item) => {
-                    if (item.triggerEventValue === 'customLink') {
-                        item.triggerEventCustomInfo = item.triggerEventCustomInfo.value || '';
-                    } else {
-                        item.triggerEventCustomInfo = JSON.stringify(item.triggerEventCustomInfo)
-                    }
-                    return {
-                        ...item,
-                    }
-                })
-
-                this.onSubmit(formData3);
             }
         });
+    }
+
+    onCheck = faceRule => (next) => {
+        console.log(faceRule, 'faceRule'); // TODO  历史数据小程序开卡去掉
+        let flag = false;
+        faceRule.map((itm) => {
+            if (itm.conditionType == 2) {
+                if (!itm.conditionValue) {
+                    flag = true;
+                    // itm.validateStatus = 'error';
+                    message.warn('请选择会员标签')
+                    return null
+                }
+                if (!itm.targetValue) {
+                    flag = true;
+                    // itm.validateStatus = 'error';
+                    message.warn('请选择会员标签属性')
+                    return null
+                }
+            }
+            if (!itm.triggerEventValue) {
+                flag = true;
+                // itm.validateStatus = 'error';
+                message.warn('请选择触发事件')
+                return null
+            }
+            if (_.isEmpty(itm.triggerEventCustomInfo)) {
+                flag = true;
+                // itm.validateStatus = 'error';
+                message.warn('请选择触发事件')
+                return null
+            }
+        })
+        if (flag) {
+            return
+        }
+        next()
+    }
+
+    // TODO : 删除无用的key 回显处理。 校验处理 
+    // 小程序2.0
+    onPreSubmitApp = (faceData) => {
+        const formData3 = faceData.map((item) => {
+            if (['miniAppPage', 'speedDial'].includes(item.triggerEventValue2)) {
+                item.triggerEventCustomInfo = item.triggerEventCustomInfo2.value || '';
+            } else {
+                item.triggerEventCustomInfo = JSON.stringify(item.triggerEventCustomInfo2)
+            }
+            return {
+                ...item,
+            }
+        })
+        this.onCheck(formData3)(() => this.onSubmit(formData3))
+        // this.onSubmit(formData3);
+    }
+
+    onPreSubmitH5 = (faceData) => {
+        const formData3 = faceData.map((item) => {
+            if (['customLink'].includes(item.triggerEventValue)) {
+                item.triggerEventCustomInfo = item.triggerEventCustomInfo.value || '';
+            } else {
+                item.triggerEventCustomInfo = JSON.stringify(item.triggerEventCustomInfo)
+            }
+            item.triggerEventName = item.triggerEventName2;
+            item.triggerEventValue = item.triggerEventValue2;
+            return {
+                ...item,
+            }
+        })
+        this.onCheck(formData3)(() => this.onSubmit(formData3))
+        // this.onSubmit(formData3);
     }
 
     // 提交
@@ -260,7 +324,7 @@ class ManyFace extends Component {
                             value: itm.tagRuleID,
                         }
                     });
-                    if (item.everyTagsRule.length <=0) {
+                    if (item.everyTagsRule.length <= 0) {
                         message.warn(`${item.conditionName}标签属性已经不存在或者被删除了，请重新选择会员标签`)
                     }
                 } else {
@@ -268,7 +332,7 @@ class ManyFace extends Component {
                 }
                 if (item.triggerEventValue === 'customLink') {
                     item.triggerEventCustomInfo = { value: item.triggerEventCustomInfo }
-                } else  {
+                } else {
                     try {
                         item.triggerEventCustomInfo = JSON.parse(item.triggerEventCustomInfo)
                     } catch (error) {
@@ -383,7 +447,7 @@ class ManyFace extends Component {
                         {current === 3 &&
                             <Step3
                                 form={form}
-                                useApp={formData2.useApp || ''}
+                                clientType={formData2.clientType || ''}
                                 getForm={this.onSetForm}
                                 formData={formData3}
                                 allActivity={this.state.allActivity}
