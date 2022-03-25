@@ -301,6 +301,31 @@ class MySpecialActivities extends React.Component {
         this.handleUpdateOpe = this.handleUpdateOpe.bind(this);
     }
 
+    componentDidMount() {
+        // 千人千面活动创建和更新完，点去装修跳转页面
+        this.fromCrmJump();
+    }
+
+    fromCrmJump = () => {
+        const { from, record } = this.getQueryVariable();
+        if (from === 'manyFace') {
+            this.handleUpdateOpe(null, record);
+        }
+    }
+
+    getQueryVariable() {
+        const search = window.decodeURIComponent(window.location.search)
+        var query = search.substr(1)
+        query = query.split('&')
+        var params = {}
+        for (let i = 0; i < query.length; i++) {
+            let q = query[i].split('=')
+            if (q.length === 2) {
+                params[q[0]] = q[1]
+            }
+        }
+        return params
+    }
     /**
      * @description toggle the advanced qualification selection.
      * */

@@ -38,6 +38,7 @@ class ManyFace extends Component {
         tagRuleDetails: [],
         allActivity: [],
         allMallActivity: [],
+        formDataLen: 0, // 数据的长度
     };
     componentDidMount() {
         this.getInitData();
@@ -80,45 +81,13 @@ class ManyFace extends Component {
     /* 第3步表单提交数据 */
     onGoDone = () => {
         const { form, formData2 } = this.state;
+        // console.log("🚀 ~ file: index.jsx ~ line 83 ~ ManyFace ~ formData2", formData2)
         // const { defaultCardType } = formData2;
 
         form.validateFields((e, v) => {
             if (!e) {
                 const { faceRule } = v;
                 const faceData = _.cloneDeep(faceRule)
-                // TODO： 校验区分
-                let flag = false;
-                faceRule.map((itm) => {
-                    if (itm.conditionType == 2) {
-                        if (!itm.conditionValue) {
-                            flag = true;
-                            // itm.validateStatus = 'error';
-                            message.warn('请选择会员标签')
-                            return null
-                        }
-                        if (!itm.targetValue) {
-                            flag = true;
-                            // itm.validateStatus = 'error';
-                            message.warn('请选择会员标签属性')
-                            return null
-                        }
-                    }
-                    if (!itm.triggerEventValue) {
-                        flag = true;
-                        // itm.validateStatus = 'error';
-                        message.warn('请选择触发事件')
-                        return null
-                    }
-                    if (_.isEmpty(itm.triggerEventCustomInfo)) {
-                        flag = true;
-                        // itm.validateStatus = 'error';
-                        message.warn('请选择触发事件')
-                        return null
-                    }
-                })
-                // if (flag) {
-                //     return
-                // }
                 if (formData2.clientType == '1') {
                     this.onPreSubmitH5(faceData)
                 } else {
@@ -129,50 +98,58 @@ class ManyFace extends Component {
     }
 
     onCheck = faceRule => (next) => {
-        console.log(faceRule, 'faceRule'); // TODO  历史数据小程序开卡去掉
+        console.log(faceRule, 'faceRule-------'); // TODO  历史数据小程序开卡去掉
         let flag = false;
         faceRule.map((itm) => {
             if (itm.conditionType == 2) {
                 if (!itm.conditionValue) {
                     flag = true;
-                    // itm.validateStatus = 'error';
                     message.warn('请选择会员标签')
                     return null
                 }
                 if (!itm.targetValue) {
                     flag = true;
-                    // itm.validateStatus = 'error';
                     message.warn('请选择会员标签属性')
                     return null
                 }
             }
             if (!itm.triggerEventValue) {
                 flag = true;
-                // itm.validateStatus = 'error';
                 message.warn('请选择触发事件')
                 return null
             }
             if (_.isEmpty(itm.triggerEventCustomInfo)) {
                 flag = true;
-                // itm.validateStatus = 'error';
                 message.warn('请选择触发事件')
                 return null
             }
+            if (_.isArray(itm.triggerEventCustomInfo)) {
+                itm.triggerEventCustomInfo.map((infoItem) => {
+                    if (!infoItem.appID) {
+                        flag = true;
+                        message.warn('请填写appID')
+                        return null
+                    }
+                })
+            }
         })
+        console.log(flag, 'flag')
         if (flag) {
             return
         }
         next()
     }
 
-    // TODO : 删除无用的key 回显处理。 校验处理 
+    // TODO : 删除无用的key 回显处理。 校验处理
     // 小程序2.0
     onPreSubmitApp = (faceData) => {
         const formData3 = faceData.map((item) => {
-            if (['miniAppPage', 'speedDial'].includes(item.triggerEventValue2)) {
-                item.triggerEventCustomInfo = item.triggerEventCustomInfo2.value || '';
+            if (['miniAppPage', 'speedDial'].includes(item.triggerEventValue)) {
+                item.triggerEventCustomInfo = item.triggerEventCustomInfo.value || '';
+            } else if (['jumpToMiniApp'].includes(item.triggerEventValue)) {
+                item.triggerEventCustomInfo = JSON.stringify(item.triggerEventCustomInfoApp)
             } else {
-                item.triggerEventCustomInfo = JSON.stringify(item.triggerEventCustomInfo2)
+                item.triggerEventCustomInfo = JSON.stringify(item.triggerEventCustomInfo)
             }
             return {
                 ...item,
@@ -184,10 +161,10 @@ class ManyFace extends Component {
 
     onPreSubmitH5 = (faceData) => {
         const formData3 = faceData.map((item) => {
-            if (['customLink'].includes(item.triggerEventValue)) {
-                item.triggerEventCustomInfo = item.triggerEventCustomInfo.value || '';
+            if (['customLink'].includes(item.triggerEventValue2)) {
+                item.triggerEventCustomInfo = item.triggerEventCustomInfo2.value || '';
             } else {
-                item.triggerEventCustomInfo = JSON.stringify(item.triggerEventCustomInfo)
+                item.triggerEventCustomInfo = JSON.stringify(item.triggerEventCustomInfo2)
             }
             item.triggerEventName = item.triggerEventName2;
             item.triggerEventValue = item.triggerEventValue2;
@@ -201,17 +178,27 @@ class ManyFace extends Component {
 
     // 提交
     onSubmit = (formData3) => {
-        const { formData1, formData2 } = this.state;
+        const { formData1, formData2, formDataLen } = this.state;
         const { id } = this.props;
         const { eventRange, ...others1 } = formData1;
         const newEventRange = this.formatEventRange(eventRange);
         // shopRange全部店铺和部分店铺的
         const event = { ...others1, ...newEventRange, ...formData2, eventWay: '85', shopRange: '1' };
+        const eventConditionInfos = _.map(formData3, item =>
+            (_.omit(item, ['triggerEventCustomInfo2', 'triggerEventValue2', 'triggerEventName2', 'triggerEventCustomInfoApp', 'everyTagsRule', 'isShowDishSelector', 'id']))
+        )
+        const len = eventConditionInfos.length;
+        // console.log(eventConditionInfos, 'eventConditionInfos')
         if (id) {
             const itemID = id;
-            const allData = { event: { ...event, itemID }, eventConditionInfos: formData3 };
+            const allData = { event: { ...event, itemID }, eventConditionInfos };
+            // 根据数据是否变化来判断是否弹窗
             postEvent(allData).then((x) => {
                 if (x) {
+                    if (formDataLen < len) {
+                        this.onShowModle(x)
+                        return
+                    }
                     this.onToggle();
                     closePage();
                     jumpPage({ pageID: '1000076003' });
@@ -219,16 +206,35 @@ class ManyFace extends Component {
             });
             return;
         }
-        const allData = { event, eventConditionInfos: formData3 };
+        const allData = { event, eventConditionInfos };
         putEvent({ ...allData }).then((x) => {
             if (x) {
-                this.onToggle();
-                closePage();
-                jumpPage({ pageID: '1000076003' });
+                // 跳转弹窗
+                this.onShowModle(x)
+                // jumpPage({ pageID: '1000076003', from: 'manyFace', record: x });
             }
         })
     }
 
+    onShowModle = (x) => {
+        const _this = this;
+        Modal.info(({
+            title: '设置成功',
+            content: '你可以在【活动管理也】装修/查看/编辑你的活动，不装修则会展示默认图',
+            okText: '马上去装修',
+            cancelText: '先这样',
+            onOk() {
+                _this.onToggle();
+                closePage();
+                jumpPage({ pageID: '1000076003', from: 'manyFace', record: x });
+            },
+            onCancel() {
+                _this.onToggle();
+                closePage();
+                jumpPage({ pageID: '1000076003' })
+            },
+        }))
+    }
     /** 得到form, 根据step不同，获得对应的form对象 */
     onSetForm = (form) => {
         this.setState({ form });
@@ -289,9 +295,9 @@ class ManyFace extends Component {
                 const { data, eventConditionInfos = [] } = obj;
                 const formData1 = this.setData4Step1(data);
                 const formData2 = this.setData4Step2(data);
-                this.setState({ formData1, formData2 });
+                this.setState({ formData1, formData2, originClientType: data.clientType });
                 const formData3 = this.setData4Step3(data, eventConditionInfos);
-                this.setState({ formData3: { faceRule: formData3 } });
+                this.setState({ formData3: { faceRule: formData3 }, formDataLen: formData3.length, isEdit: true });
             });
         }
     }
@@ -307,42 +313,97 @@ class ManyFace extends Component {
     }
 
     setData4Step2 = (data) => {
-        const { shopIDList: slist } = data;
+        const { shopIDList: slist, clientType = '1' } = data;
         const shopIDList = slist ? slist.map(x => `${x}`) : [];
-        return { shopIDList };
+        return { shopIDList, clientType };
     }
     setData4Step3 = (data, eventConditionInfos = []) => {
+    console.log("🚀 ~ file: index.jsx ~ line 321 ~ ManyFace ~ data", data)
         let faceData = []
         if (eventConditionInfos.length) {
-            faceData = eventConditionInfos.map((item) => {
-                if (item.conditionType == '2') { // 会员标签
-                    const everyTags = this.state.tagRuleDetails.filter(itm => itm.tagCategoryID == item.conditionValue);
-                    item.everyTagsRule = (everyTags || []).map((itm) => {
-                        return {
-                            ...itm,
-                            label: itm.tagName,
-                            value: itm.tagRuleID,
-                        }
-                    });
-                    if (item.everyTagsRule.length <= 0) {
-                        message.warn(`${item.conditionName}标签属性已经不存在或者被删除了，请重新选择会员标签`)
-                    }
-                } else {
-                    item.everyTagsRule = [];
-                }
-                if (item.triggerEventValue === 'customLink') {
-                    item.triggerEventCustomInfo = { value: item.triggerEventCustomInfo }
-                } else {
-                    try {
-                        item.triggerEventCustomInfo = JSON.parse(item.triggerEventCustomInfo)
-                    } catch (error) {
-                        item.triggerEventCustomInfo = {};
-                    }
-                }
-                return { ...item, id: item.itemID, isShowDishSelector: false }
-            })
+            const { clientType = '1'} = data
+            console.log("🚀 ~ file: index.jsx ~ line 325 ~ ManyFace ~ clientType", clientType)
+            // TODO: 区分h5 和 app (区分小程序 跳转小程序、活动、)
+            if (clientType == '1') {
+                faceData = this.setData4Step3H5(eventConditionInfos)
+            } else {
+                faceData = this.setData4Step3App(eventConditionInfos)
+            }
         }
+        console.log(faceData, 'faceDatafaceData回显')
         return faceData
+    }
+
+    setData4Step3App = (faceData) => {
+        const data = faceData.map((item) => {
+            if (item.conditionType == '2') { // 会员标签
+                const everyTags = this.state.tagRuleDetails.filter(itm => itm.tagCategoryID == item.conditionValue);
+                item.everyTagsRule = (everyTags || []).map((itm) => {
+                    return {
+                        ...itm,
+                        label: itm.tagName,
+                        value: itm.tagRuleID,
+                    }
+                });
+                if (item.everyTagsRule.length <= 0) {
+                    message.warn(`${item.conditionName}标签属性已经不存在或者被删除了，请重新选择会员标签`)
+                }
+            } else {
+                item.everyTagsRule = [];
+            }
+            if (['miniAppPage', 'speedDial'].includes(item.triggerEventValue)) {
+                item.triggerEventCustomInfo = { value: item.triggerEventCustomInfo }
+            } else if (item.triggerEventName === '小程序开卡') { // 兼容老数据的小程序开卡时间，其回显的值 置为空
+                item.triggerEventValue = '';
+            }  else if(['jumpToMiniApp'].includes(item.triggerEventValue)) {
+                try {
+                    item.triggerEventCustomInfoApp = JSON.parse(item.triggerEventCustomInfo)
+                } catch (error) {
+                    item.triggerEventCustomInfoApp = [{ platformType: 'wechat', appID: '', appName: '微信小程序名称' }, { platformType: 'alipay', appID: '', appName: '支付宝小程序名称' }];
+                }
+            } else {
+                try {
+                    item.triggerEventCustomInfo = JSON.parse(item.triggerEventCustomInfo)
+                } catch (error) {
+                    item.triggerEventCustomInfo = {};
+                }
+            }
+            return { ...item, id: item.itemID, isShowDishSelector: false }
+        })
+        return data;
+    }
+
+    setData4Step3H5 = (faceData) => {
+        const data = faceData.map((item) => {
+            if (item.conditionType == '2') { // 会员标签
+                const everyTags = this.state.tagRuleDetails.filter(itm => itm.tagCategoryID == item.conditionValue);
+                item.everyTagsRule = (everyTags || []).map((itm) => {
+                    return {
+                        ...itm,
+                        label: itm.tagName,
+                        value: itm.tagRuleID,
+                    }
+                });
+                if (item.everyTagsRule.length <= 0) {
+                    message.warn(`${item.conditionName}标签属性已经不存在或者被删除了，请重新选择会员标签`)
+                }
+            } else {
+                item.everyTagsRule = [];
+            }
+            if (item.triggerEventValue === 'customLink') {
+                item.triggerEventCustomInfo2 = { value: item.triggerEventCustomInfo }
+            } else {
+                try {
+                    item.triggerEventCustomInfo2 = JSON.parse(item.triggerEventCustomInfo)
+                } catch (error) {
+                    item.triggerEventCustomInfo2 = {};
+                }
+            }
+            item.triggerEventName2 = item.triggerEventName;
+            item.triggerEventValue2 = item.triggerEventValue;
+            return { ...item, id: item.itemID, isShowDishSelector: false }
+        })
+        return data;
     }
 
     // 查询会员标签
@@ -448,6 +509,8 @@ class ManyFace extends Component {
                             <Step3
                                 form={form}
                                 clientType={formData2.clientType || ''}
+                                originClientType={this.state.originClientType}
+                                isEdit={this.state.isEdit}
                                 getForm={this.onSetForm}
                                 formData={formData3}
                                 allActivity={this.state.allActivity}

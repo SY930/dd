@@ -32,6 +32,8 @@ class Step3 extends Component {
             clientType={this.props.clientType}
             allActivityList={this.props.allActivity}
             allMallActivity={this.props.allMallActivity}
+            originClientType={this.props.originClientType}
+            isEdit={this.props.isEdit}
         />);
         const { faceRule, ...others } = formItems3;
         return {

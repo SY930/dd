@@ -90,9 +90,15 @@ const faceDefVal = {
     targetName: '持卡会员',
     targetValue: '1', // 1 是持卡会员 0否
     // 点击触发的事件
-    triggerEventName: '购物车夹菜',
-    triggerEventValue: '',
-    triggerEventCustomInfo: '',
+    triggerEventName1: '购物车夹菜',
+    triggerEventValue1: '',
+    triggerEventCustomInfo1: '',
+    triggerEventCustomInfoApp1: [{ platformType: 'wechat', appID: '', appName: '微信小程序名称' }, { platformType: 'alipay', appID: '', appName: '支付宝小程序名称' }], // 跳转至小程序
+    
+    // 点击触发的事件 h5
+    triggerEventName2: '购物车夹菜',
+    triggerEventValue2: '',
+    triggerEventCustomInfo2: '',
     everyTagsRule: [], // 前端自己用
     // isTagRemove: false, // 选择的会员标签是否被删
     isShowDishSelector: false, // 选择菜品弹窗是否显示
