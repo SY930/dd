@@ -401,7 +401,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
         const displayDataSource = data.map((item, index) => ({ ...item, index }))
         console.log('displayDataSource is:', displayDataSource)
         return (
-            <FormItem className={styles.FormItemStyle}>
+            <FormItem className={styles.FormItemStyle} style={{position: 'relative', left: 13}}>
                 <Row>
                     <Col span={4}>
                         <span className={[styles.gTitle, styles.fakeRequired].join(' ')}>{SALE_LABEL.k6hhubf3}</span>
@@ -409,10 +409,10 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
                     {/* <span className={styles.expalinFont}>以下活动菜品用户可任选其一参与换购</span> */}
                     <Col span={4} offset={16}>
                         <a
-                            className={styles.gTitleLink}
+                            className={styles.gTitleLinkA}
                             onClick={this.handleSelectDishes}
                         >
-                            {SALE_LABEL.k5gfsv5b}
+                            增加活动菜
                         </a>
                     </Col>
                 </Row>

@@ -493,6 +493,24 @@
     }
 }
 
+.gTitleLinkA {
+    line-height: 30px;
+    text-align: right;
+    cursor: pointer;
+    color: @link-color;
+    display: inline-block;
+    width: 100%;
+    position: relative;
+    left: -22px;
+    &::before{
+        content: '+';
+        color: @link-color;;
+    }
+    &:hover {
+        color: @link-hover ;
+    }
+}
+
 .gDate {
     text-align: right;
     cursor: pointer;

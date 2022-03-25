@@ -265,7 +265,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
         return (
             <div style={{ position: 'relative' }}>
                 {!this.canLimitBeSet() && (
-                    <div style={{ position: 'absolute', top: 12, left: 60 }}>
+                    <div style={{ position: 'absolute', top: 12, left: 78 }}>
                         （{SALE_LABEL.k5kqf0s3}）
                     </div>
                 )}
@@ -422,7 +422,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                         label={SALE_LABEL.k5ez4n7x}
                         required={true}
                         className={styles.FormItemStyle}
-                        labelCol={{ span: 4 }}
+                        labelCol={{ span: 3 }}
                         wrapperCol={{ span: 17 }}
                     >
                         <p>
@@ -439,7 +439,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                     {this.state.stageType == 2 ?
                         <FormItem
                             className={[styles.FormItemStyle, styles.explainBack].join(' ')}
-                            wrapperCol={{ span: 17, offset: 4 }}
+                            wrapperCol={{ span: 17, offset: 3 }}
                             validateStatus={this.state.stageAmountFlag ? 'success' : 'error'}
                             help={this.state.stageAmountFlag ? null : SALE_LABEL.k5kqf1pf}
                         >
@@ -465,7 +465,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                         </FormItem> :
                         <FormItem
                             className={[styles.FormItemStyle, styles.explainBack].join(' ')}
-                            wrapperCol={{ span: 17, offset: 4 }}
+                            wrapperCol={{ span: 17, offset: 3 }}
                             validateStatus={this.state.stageCountFlag ? 'success' : 'error'}
                             help={this.state.stageCountFlag ? null : SALE_LABEL.k5kqf263}>
                             <Input
@@ -493,7 +493,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                         label={'换购方式'}
                         required={true}
                         className={styles.FormItemStyle}
-                        labelCol={{ span: 4 }}
+                        labelCol={{ span: 3 }}
                         wrapperCol={{ span: 17 }}
                     >
                         <RadioGroup onChange={this.onCalTypeChange} value={this.state.calType}>
