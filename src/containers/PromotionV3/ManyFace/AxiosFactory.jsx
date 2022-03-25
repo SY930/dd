@@ -111,7 +111,7 @@ async function putEvent(data) {
     const { code, message: msg } = response;
     if (code === '000') {
         message.success('添加成功');
-        return true;
+        return response;
     }
     message.error(msg);
     return false;

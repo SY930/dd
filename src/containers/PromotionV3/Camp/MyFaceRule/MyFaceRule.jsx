@@ -65,14 +65,12 @@ class MyFaceRule extends Component {
     componentDidMount() {
         // this.searchAllActivity();
         // this.searchAllMallActivity();
-        console.log('componentDidMount>>>>>>>>>>>>>>>>>>>>')
         this.searchCrmTag();
         this.getGroupListAll()
         this.initEventSelectOption();
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log(nextProps.clientType, this.props.clientType, '-------')
         if (!_.isEqual(nextProps.allActivityList, this.props.allActivityList) || nextProps.clientType !== this.props.clientType) {
             console.log('componentWillReceiveProps执行')
             this.initEventSelectOption();
@@ -173,12 +171,11 @@ class MyFaceRule extends Component {
     }
 
     onChangeAppID = (idx, key, { target }, parent, index) => {
-        parent.triggerEventCustomInfoApp[index].appID = target.value;
-        console.log("🚀 ~ file: MyFaceRule.jsx ~ line 171 ~ MyFaceRule ~ parent", parent)
+        parent.triggerEventCustomInfoApp1[index].appID = target.value;
         // parent.triggerEventCustomInfo = [];
         // parent.triggerEventCustomInfo = 
         // const triggerEventCustomInfo = parent.triggerEventCustomInfo[0];
-        this.onChange(idx, { [key]: parent.triggerEventCustomInfoApp })
+        this.onChange(idx, { [key]: parent.triggerEventCustomInfoApp1 })
     }
 
     getGroupListAll = () => {
@@ -265,7 +262,7 @@ class MyFaceRule extends Component {
         if (this.props.clientType === '1') { // H5餐厅
             eventList = _.filter(eventSelectOption, item => ['', 'customLink', 'shoppingCartAddFood'].includes(item.value))
         } else { // 小程序2.0
-            eventList = _.map(_.filter(eventSelectOption, item => !['', 'miniAppPage', 'customLink', 'shoppingCartAddFood'].includes(item.value)), it => ({ ...it, children: this.getAvtivity(it.value) }))
+            eventList = _.map(_.filter(eventSelectOption, item => !['', 'miniAppPage'].includes(item.value)), it => ({ ...it, children: this.getAvtivity(it.value) }))
             const restList = _.filter(eventSelectOption, item => ['', 'miniAppPage'].includes(item.value));
             eventList = restList.concat(eventList)
         }
@@ -318,7 +315,7 @@ class MyFaceRule extends Component {
         })
     }
 
-    handleModalOk = (i, item, values = []) => {
+    handleModalOk = (i, item, values = [], key) => {
         if (values.length > 1) {
             message.warn('只能选择一个菜品');
             return;
@@ -347,7 +344,7 @@ class MyFaceRule extends Component {
             return acc;
         }, [])
         this.handleModalCancel(i, 'isShowDishSelector');
-        this.onChange(i, { 'triggerEventCustomInfo2': dishObjects[0] || {} })
+        this.onChange(i, { [key]: dishObjects[0] || {} })
     }
 
     handleModalCancel = (idx, key) => {
@@ -388,37 +385,27 @@ class MyFaceRule extends Component {
         return (<FormItem>
             <Input
                 style={{ marginLeft: 8, width: '249px', height: '32px' }}
-                onChange={(_v) => { this.onChangeCustomUrl(i, 'triggerEventCustomInfo', _v) }}
-                value={v.triggerEventCustomInfo.value || ''}
+                onChange={(_v) => { this.onChangeCustomUrl(i, 'triggerEventCustomInfo1', _v) }}
+                value={v.triggerEventCustomInfo1.value || ''}
                 placeholder="请输入要拨打的号码"
             />
         </FormItem>)
     }
 
-    renderInput = (i, v) => {
+    renderInput = (i, v, key) => {
         return (<FormItem
         >
             <Input
                 style={{ marginLeft: 8, width: '249px', height: '32px' }}
-                onChange={(_v) => { this.onChangeCustomUrl(i, 'triggerEventCustomInfo2', _v) }}
-                value={v.triggerEventCustomInfo2.value || ''}
+                onChange={(_v) => { this.onChangeCustomUrl(i, key, _v) }}
+                value={v[key].value || ''}
             />
             <p>不支持储值套餐链接</p>
         </FormItem>)
     }
 
-    // renderOpenCardInput = (i, v) => {
-    //     return (<FormItem>
-    //         <Input
-    //             style={{ marginLeft: 8, width: '249px', height: '32px' }}
-    //             value={'默认开通本店铺适用的线上卡类型'}
-    //             disabled={true}
-    //         />
-    //     </FormItem>)
-    // }
     // 跳转至小程序
     renderJumpApp = (i, v) => {
-        // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 374 ~ MyFaceRule ~ i, v", i, v)
         return (
             <div className={styles.jumpAppBox}>
                 <p>
@@ -426,8 +413,8 @@ class MyFaceRule extends Component {
                     <Input
                         style={{ maxWidth: 220, marginTop: '10px', marginBottom: '10px' }}
                         placeholder="请输入微信小程序ID"
-                        defaultValue={v.triggerEventCustomInfoApp[0].appID}
-                        onChange={(_v) => { this.onChangeAppID(i, 'triggerEventCustomInfoApp', _v, v, 0) }}
+                        defaultValue={v.triggerEventCustomInfoApp1[0].appID}
+                        onChange={(_v) => { this.onChangeAppID(i, 'triggerEventCustomInfoApp1', _v, v, 0) }}
                     />
                 </p>
                 <p style={{ marginBottom: '10px' }}>
@@ -435,8 +422,8 @@ class MyFaceRule extends Component {
                     <Input
                         style={{ maxWidth: 220 }}
                         placeholder="请输入支付宝小程序ID"
-                        defaultValue={v.triggerEventCustomInfoApp[1].appID}
-                        onChange={(_v) => { this.onChangeAppID(i, 'triggerEventCustomInfoApp', _v, v, 1) }}
+                        defaultValue={v.triggerEventCustomInfoApp1[1].appID}
+                        onChange={(_v) => { this.onChangeAppID(i, 'triggerEventCustomInfoApp1', _v, v, 1) }}
                     />
                 </p>
             </div>
@@ -444,7 +431,7 @@ class MyFaceRule extends Component {
     }
 
     // 选择菜品
-    renderFoods = (i, item) => {
+    renderFoods = (i, item, key) => {
         return (
             <FormItem style={{ display: 'inlineBlock', width: '262px', marginLeft: 8, marginTop: 2 }}
             >
@@ -452,7 +439,7 @@ class MyFaceRule extends Component {
                     type="text"
                     style={{ width: 159, height: 32 }}
                     disabled={true}
-                    value={item.triggerEventCustomInfo2 ? item.triggerEventCustomInfo2.foodName : ''}
+                    value={item[key] ? item[key].foodName : ''}
                 />
                 <Button
                     type="default"
@@ -464,21 +451,21 @@ class MyFaceRule extends Component {
                 </Button>
                 {
                     (this.state.isShowDishSelector && item.isShowDishSelector) ?
-                        this.renderSelectFoods(i, item)
+                        this.renderSelectFoods(i, item, key)
                         : null
                 }
             </FormItem>
         )
     }
 
-    renderSelectFoods = (i, item) => {
+    renderSelectFoods = (i, item, key) => {
         const {
             allBrands,
             allCategories,
             allDishes,
         } = this.props;
         const { dishes, categories, brands } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes)
-        const data = item.triggerEventCustomInfo2.foodName ? [item.triggerEventCustomInfo2] : [];
+        const data = item[key].foodName ? [item[key]] : [];
         const initialValue = data.map(itms => `${itms.brandID || 0}__${itms.foodName}${itms.unit}`);
         return (
             <FoodSelectModal
@@ -487,21 +474,21 @@ class MyFaceRule extends Component {
                 allDishes={dishes}
                 mode="dish"
                 initialValue={initialValue}
-                onOk={(value) => { this.handleModalOk(i, item, value) }}
+                onOk={(value) => { this.handleModalOk(i, item, value, key) }}
                 onCancel={() => { this.handleModalCancel(i, 'isShowDishSelector') }}
             />
         )
     }
 
     renderSelect = (i, v, parentValue, parentName) => {
-        const options = this.state.eventSelectOption.filter(item => item.value === v.triggerEventValue) || [];
+        const options = this.state.eventSelectOption.filter(item => item.value === v.triggerEventValue1) || [];
         // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 474 ~ MyFaceRule ~ options", options)
         const [option] = options;
         return (<FormItem>
             <Select
                 style={{ width: '249px', marginLeft: 8 }}
-                value={v.triggerEventCustomInfo.eventID ? v.triggerEventCustomInfo.eventID : ''}
-                onChange={(_v) => { this.onEventsLinkValue(i, 'triggerEventCustomInfo', _v, parentName, parentValue) }}
+                value={v.triggerEventCustomInfo1.eventID ? v.triggerEventCustomInfo1.eventID : ''}
+                onChange={(_v) => { this.onEventsLinkValue(i, 'triggerEventCustomInfo1', _v, parentName, parentValue) }}
             >
                 {
                     (option.children || []).map(({ value, label }) => {
@@ -514,14 +501,13 @@ class MyFaceRule extends Component {
 
     // 选择小程序
     renderSelectApp = (i, v) => {
-    console.log("🚀 ~ file: MyFaceRule.jsx ~ line 510 ~ MyFaceRule ~ v", v)
-        const options = this.state.eventSelectOption.filter(item => item.value === v.triggerEventValue) || [];
+        const options = this.state.eventSelectOption.filter(item => item.value === v.triggerEventValue1) || [];
         const [option] = options;
         return (<FormItem>
             <Select
                 style={{ width: '249px', marginLeft: 8 }}
-                value={v.triggerEventCustomInfo.value ? v.triggerEventCustomInfo.value : ''}
-                onChange={(_v) => { this.onEventsLinkValueApp(i, 'triggerEventCustomInfo', _v) }}
+                value={v.triggerEventCustomInfo1.value ? v.triggerEventCustomInfo1.value : ''}
+                onChange={(_v) => { this.onEventsLinkValueApp(i, 'triggerEventCustomInfo1', _v) }}
             >
                 {
                     (option.children || []).map(({ value, label }) => {
@@ -544,8 +530,8 @@ class MyFaceRule extends Component {
                         }
                     </Select>
                 </FormItem>
-                {v.triggerEventValue2 === 'customLink' && this.renderInput(i, v)}
-                {v.triggerEventValue2 === 'shoppingCartAddFood' && this.renderFoods(i, v)}
+                {v.triggerEventValue2 === 'customLink' && this.renderInput(i, v, 'triggerEventCustomInfo2')}
+                {v.triggerEventValue2 === 'shoppingCartAddFood' && this.renderFoods(i, v, 'triggerEventCustomInfo2')}
             </div>
         )
     }
@@ -568,10 +554,18 @@ class MyFaceRule extends Component {
                     {/* jumpToMiniApp 跳转小程序和 speedDial 一键拨号 单独处理 */}
                     {v.triggerEventValue1 == 'miniAppPage' && this.renderSelectApp(i, v)}
                     {/* 营销活动 */}
-                    {v.triggerEventValue1 && v.triggerEventValue1 != 'speedDial' && v.triggerEventValue1 != 'jumpToMiniApp' && v.triggerEventValue1 !== 'miniAppPage' && this.renderSelect(i, v, v.triggerEventValue1, v.triggerEventName1)}
-                    {v.triggerEventValue == 'speedDial' && this.renderInputApp(i, v)}
+                    {v.triggerEventValue1
+                    && v.triggerEventValue1 != 'speedDial'
+                    && v.triggerEventValue1 != 'jumpToMiniApp'
+                    && v.triggerEventValue1 !== 'miniAppPage'
+                    && v.triggerEventValue1 !== 'customLink'
+                    && v.triggerEventValue1 !== 'shoppingCartAddFood'
+                    && this.renderSelect(i, v, v.triggerEventValue1, v.triggerEventName1)}
+                    {v.triggerEventValue1 == 'speedDial' && this.renderInputApp(i, v)}
                 </div>
-                {v.triggerEventValue == 'jumpToMiniApp' && this.renderJumpApp(i, v)}
+                {v.triggerEventValue1 == 'jumpToMiniApp' && this.renderJumpApp(i, v)}
+                {v.triggerEventValue1 == 'customLink' && this.renderInput(i, v, 'triggerEventCustomInfo1')}
+                {v.triggerEventValue1 === 'shoppingCartAddFood' && this.renderFoods(i, v, 'triggerEventCustomInfo1')}
             </div>
         )
     }
@@ -579,7 +573,7 @@ class MyFaceRule extends Component {
 
     render() {
         const { value = [], form, clientType } = this.props;
-        console.log("🚀 ~ file: MyFaceRule.jsx ~ line 577 ~ MyFaceRule ~ render ~ clientType", clientType, value)
+        // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 577 ~ MyFaceRule ~ render ~ clientType", clientType, value)
         // const { length } = value;
         // 防止回显没数据不显示礼品组件
         if (!value[0]) {

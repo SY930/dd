@@ -301,15 +301,10 @@ class MySpecialActivities extends React.Component {
         this.handleUpdateOpe = this.handleUpdateOpe.bind(this);
     }
 
-    componentDidMount() {
-        // 千人千面活动创建和更新完，点去装修跳转页面
-        this.fromCrmJump();
-    }
-
     fromCrmJump = () => {
-        const { from, record } = this.getQueryVariable();
+        const { from, itemID } = this.getQueryVariable();
         if (from === 'manyFace') {
-            this.handleUpdateOpe(null, record);
+            this.handleDecorationStart({itemID});
         }
     }
 
@@ -410,6 +405,9 @@ class MySpecialActivities extends React.Component {
             let { authStatus } = checkAuthLicense(res)
             this.setState({ authStatus })
         });
+        console.log('componentDidMountcomponentDidMountcomponentDidMount')
+        // 千人千面活动创建和更新完，点去装修跳转页面
+        this.fromCrmJump();
     }
 
     // 产品授权
@@ -809,7 +807,7 @@ class MySpecialActivities extends React.Component {
                 { (v3visible && curKey == '78') && <Chou2Le onToggle={this.onV3Click} id={itemID} view={view} />}
                 { (v3visible && curKey == '79') && <BlindBox onToggle={this.onV3Click} id={itemID} view={view} />}
                 { (v3visible && curKey == '83') && <PassWordCoupon onToggle={this.onV3Click} id={itemID} view={view} />}
-                { (v3visible && curKey == '85') && <ManyFace onToggle={this.onV3Click} id={itemID} view={view} />}
+                { (v3visible && curKey == '85') && <ManyFace onToggle={this.onV3Click} id={itemID} view={view}  handleDecorationStart={this.handleDecorationStart}/>}
                 <Modal
                     title="提取活动链接"
                     visible={isShowCopyUrl}
@@ -1660,6 +1658,7 @@ class MySpecialActivities extends React.Component {
     };
 
     handleDecorationStart = (record) => {
+    console.log("🚀 ~ file: index.jsx ~ line 1661 ~ MySpecialActivities ~ record", record)
         const user = this.props.user;
         this.props.fetchSpecialDetail({
             data: {

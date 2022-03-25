@@ -1,6 +1,6 @@
 import React, { PureComponent as Component } from 'react';
 import { connect } from 'react-redux';
-import { Modal, Steps, Button, message } from 'antd';
+import { Modal, Steps, Button, message, Icon } from 'antd';
 import { jumpPage, closePage, axios } from '@hualala/platform-base';
 import moment from 'moment';
 import _ from 'lodash';
@@ -98,7 +98,7 @@ class ManyFace extends Component {
     }
 
     onCheck = faceRule => (next) => {
-        console.log(faceRule, 'faceRule-------'); // TODO  历史数据小程序开卡去掉
+        // console.log(faceRule, 'faceRule-------'); // TODO  历史数据小程序开卡去掉
         let flag = false;
         faceRule.map((itm) => {
             if (itm.conditionType == 2) {
@@ -133,7 +133,7 @@ class ManyFace extends Component {
                 })
             }
         })
-        console.log(flag, 'flag')
+        // console.log(flag, 'flag')
         if (flag) {
             return
         }
@@ -144,13 +144,16 @@ class ManyFace extends Component {
     // 小程序2.0
     onPreSubmitApp = (faceData) => {
         const formData3 = faceData.map((item) => {
-            if (['miniAppPage', 'speedDial'].includes(item.triggerEventValue)) {
-                item.triggerEventCustomInfo = item.triggerEventCustomInfo.value || '';
-            } else if (['jumpToMiniApp'].includes(item.triggerEventValue)) {
-                item.triggerEventCustomInfo = JSON.stringify(item.triggerEventCustomInfoApp)
+            if (['miniAppPage', 'speedDial', 'customLink'].includes(item.triggerEventValue1)) {
+                item.triggerEventCustomInfo = item.triggerEventCustomInfo1.value || '';
+            } else if (['jumpToMiniApp'].includes(item.triggerEventValue1)) {
+                item.triggerEventCustomInfo = JSON.stringify(item.triggerEventCustomInfoApp1)
             } else {
-                item.triggerEventCustomInfo = JSON.stringify(item.triggerEventCustomInfo)
+                item.triggerEventCustomInfo = JSON.stringify(item.triggerEventCustomInfo1)
             }
+            item.triggerEventValue = item.triggerEventValue1;
+            item.triggerEventName = item.triggerEventName1;
+            item.clientType = '2'
             return {
                 ...item,
             }
@@ -168,6 +171,7 @@ class ManyFace extends Component {
             }
             item.triggerEventName = item.triggerEventName2;
             item.triggerEventValue = item.triggerEventValue2;
+            item.clientType = '1'
             return {
                 ...item,
             }
@@ -185,7 +189,10 @@ class ManyFace extends Component {
         // shopRange全部店铺和部分店铺的
         const event = { ...others1, ...newEventRange, ...formData2, eventWay: '85', shopRange: '1' };
         const eventConditionInfos = _.map(formData3, item =>
-            (_.omit(item, ['triggerEventCustomInfo2', 'triggerEventValue2', 'triggerEventName2', 'triggerEventCustomInfoApp', 'everyTagsRule', 'isShowDishSelector', 'id']))
+            (_.omit(item, ['triggerEventCustomInfo2', 'triggerEventValue2', 'triggerEventName2',
+                'triggerEventCustomInfoApp1', 'everyTagsRule', 'isShowDishSelector', 'id',
+                'triggerEventCustomInfo1', 'triggerEventValue1', 'triggerEventName1',
+            ]))
         )
         const len = eventConditionInfos.length;
         // console.log(eventConditionInfos, 'eventConditionInfos')
@@ -211,25 +218,33 @@ class ManyFace extends Component {
             if (x) {
                 // 跳转弹窗
                 this.onShowModle(x)
-                // jumpPage({ pageID: '1000076003', from: 'manyFace', record: x });
             }
         })
     }
-
     onShowModle = (x) => {
         const _this = this;
-        Modal.info(({
-            title: '设置成功',
+        const id = this.props.id;
+        const title = (<div> <span></span>设置成功</div>)
+        Modal.confirm(({
+            title,
             content: '你可以在【活动管理也】装修/查看/编辑你的活动，不装修则会展示默认图',
             okText: '马上去装修',
             cancelText: '先这样',
+            iconType: 'check-circle',
             onOk() {
                 _this.onToggle();
-                closePage();
-                jumpPage({ pageID: '1000076003', from: 'manyFace', record: x });
+                // closePage();
+                if (id) {
+                    _this.props.handleDecorationStart({ itemID: id })
+                    return
+                }
+                jumpPage({ pageID: '1000076003', from: 'manyFace', itemID: x.itemID });
             },
             onCancel() {
                 _this.onToggle();
+                if (id) {
+                    return
+                }
                 closePage();
                 jumpPage({ pageID: '1000076003' })
             },
@@ -294,9 +309,9 @@ class ManyFace extends Component {
             getEvent({ itemID: id }).then((obj) => {
                 const { data, eventConditionInfos = [] } = obj;
                 const formData1 = this.setData4Step1(data);
-                const formData2 = this.setData4Step2(data);
+                const formData2 = this.setData4Step2(data, eventConditionInfos);
                 this.setState({ formData1, formData2, originClientType: data.clientType });
-                const formData3 = this.setData4Step3(data, eventConditionInfos);
+                const formData3 = this.setData4Step3(eventConditionInfos);
                 this.setState({ formData3: { faceRule: formData3 }, formDataLen: formData3.length, isEdit: true });
             });
         }
@@ -312,17 +327,16 @@ class ManyFace extends Component {
         return { ...data, eventRange };
     }
 
-    setData4Step2 = (data) => {
-        const { shopIDList: slist, clientType = '1' } = data;
+    setData4Step2 = (data, eventConditionInfos) => {
+        const { shopIDList: slist } = data;
+        const clientType = eventConditionInfos[0] ? String(eventConditionInfos[0].clientType) : '1';
         const shopIDList = slist ? slist.map(x => `${x}`) : [];
         return { shopIDList, clientType };
     }
-    setData4Step3 = (data, eventConditionInfos = []) => {
-    console.log("🚀 ~ file: index.jsx ~ line 321 ~ ManyFace ~ data", data)
+    setData4Step3 = (eventConditionInfos = []) => {
         let faceData = []
         if (eventConditionInfos.length) {
-            const { clientType = '1'} = data
-            console.log("🚀 ~ file: index.jsx ~ line 325 ~ ManyFace ~ clientType", clientType)
+            const { clientType } = eventConditionInfos[0];
             // TODO: 区分h5 和 app (区分小程序 跳转小程序、活动、)
             if (clientType == '1') {
                 faceData = this.setData4Step3H5(eventConditionInfos)
@@ -351,25 +365,30 @@ class ManyFace extends Component {
             } else {
                 item.everyTagsRule = [];
             }
-            if (['miniAppPage', 'speedDial'].includes(item.triggerEventValue)) {
-                item.triggerEventCustomInfo = { value: item.triggerEventCustomInfo }
+            if (['miniAppPage', 'speedDial', 'customLink'].includes(item.triggerEventValue)) {
+                item.triggerEventCustomInfo1 = { value: item.triggerEventCustomInfo }
             } else if (item.triggerEventName === '小程序开卡') { // 兼容老数据的小程序开卡时间，其回显的值 置为空
-                item.triggerEventValue = '';
+                item.triggerEventValue1 = '';
             }  else if(['jumpToMiniApp'].includes(item.triggerEventValue)) {
                 try {
-                    item.triggerEventCustomInfoApp = JSON.parse(item.triggerEventCustomInfo)
+                    item.triggerEventCustomInfoApp1 = JSON.parse(item.triggerEventCustomInfo)
                 } catch (error) {
-                    item.triggerEventCustomInfoApp = [{ platformType: 'wechat', appID: '', appName: '微信小程序名称' }, { platformType: 'alipay', appID: '', appName: '支付宝小程序名称' }];
+                    item.triggerEventCustomInfoApp1 = [{ platformType: 'wechat', appID: '', appName: '微信小程序名称' }, { platformType: 'alipay', appID: '', appName: '支付宝小程序名称' }];
                 }
             } else {
                 try {
-                    item.triggerEventCustomInfo = JSON.parse(item.triggerEventCustomInfo)
+                    item.triggerEventCustomInfo1 = JSON.parse(item.triggerEventCustomInfo)
                 } catch (error) {
-                    item.triggerEventCustomInfo = {};
+                    item.triggerEventCustomInfo1 = {};
                 }
             }
+            item.triggerEventName1 = item.triggerEventName;
+            item.triggerEventValue1 = item.triggerEventValue;
+
+            // console.log({ ...item, id: item.itemID, isShowDishSelector: false }, '----')
             return { ...item, id: item.itemID, isShowDishSelector: false }
         })
+        // console.log(data, 'data---')
         return data;
     }
 
@@ -399,8 +418,10 @@ class ManyFace extends Component {
                     item.triggerEventCustomInfo2 = {};
                 }
             }
+            item.triggerEventCustomInfoApp1 = [{ platformType: 'wechat', appID: '', appName: '微信小程序名称' }, { platformType: 'alipay', appID: '', appName: '支付宝小程序名称' }];
             item.triggerEventName2 = item.triggerEventName;
             item.triggerEventValue2 = item.triggerEventValue;
+
             return { ...item, id: item.itemID, isShowDishSelector: false }
         })
         return data;
@@ -515,6 +536,7 @@ class ManyFace extends Component {
                                 formData={formData3}
                                 allActivity={this.state.allActivity}
                                 allMallActivity={this.state.allMallActivity}
+                                // handleDecorationStart={this.props.handleDecorationStart ? this.handleDecorationStart : () => {}}
                             />
                         }
                     </li>
