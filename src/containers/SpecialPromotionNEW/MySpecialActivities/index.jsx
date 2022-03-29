@@ -1025,6 +1025,7 @@ class MySpecialActivities extends React.Component {
                                     <Button
                                         type="ghost"
                                         onClick={() => this.setState({ exportVisible: true })}
+                                        style={{ marginRight: 10 }}
                                     ><Icon type="upload" />导出历史</Button>
                                 </Authority>
                             </span>

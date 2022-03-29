@@ -116,6 +116,21 @@
     display: flex;
     flex-wrap: wrap;
     padding: 20px;
+    .active__span {
+        margin-left: 3px;
+        padding: 3px 5px;
+        border-radius: 4px;
+    }
+    .unBegin {
+        .active__span;
+        color: #FF5959 !important;
+        background: rgba(255, 89, 89, .12)
+    }
+    .begin {
+        .active__span;
+        color: #12B493  !important;
+        background: rgba(27, 180, 150, .12);
+    }
     
     .columnsWrapper {
         position: relative;
@@ -266,7 +281,7 @@
 
         .activityOrigin {
             position: absolute;
-            bottom: 16px;
+            bottom: 8px;
             left: 16px;
             font-size: 14px;
             color: #666;

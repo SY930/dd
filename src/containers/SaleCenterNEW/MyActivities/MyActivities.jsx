@@ -101,6 +101,7 @@ import { selectPromotionForDecoration } from '../../../redux/actions/decoration'
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { injectIntl } from '../IntlDecor';
 import Card from '../../../assets/card.png';
+import CardSaleActive from './CardSaleActive';
 
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
@@ -922,6 +923,7 @@ class MyActivities extends React.Component {
                                     <Button
                                         type="ghost"
                                         onClick={() => this.setState({ exportVisible: true })}
+                                        style={{ marginRight: 10 }}
                                     ><Icon type="upload" />导出历史</Button>
                                 </Authority>
                             </span>
@@ -1557,7 +1559,8 @@ class MyActivities extends React.Component {
     }
 
     render() {
-        const { runType } = this.state;
+        const { runType,  dataSource } = this.state;
+        const {stylesShow} = this.props;
         return (
             <div style={{ backgroundColor: '#F3F3F3' }} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 <div>
@@ -1570,7 +1573,40 @@ class MyActivities extends React.Component {
                             {this.renderFilterBar()}
                             <div style={{ margin: '0' }} className="layoutsLine"></div>
                         </div>
-                        {this.renderTables()}
+                        {
+                        stylesShow === 'list' ? this.renderTables() :
+                        <CardSaleActive
+                            dataSource={dataSource}
+                            type="sale"
+                            entryCode={this.props.entryCode}
+                            // cfg={this.cfg}
+                            handleSattusActive={this.handleSattusActive}
+                            handleDisableClickEvent={this.handleDisableClickEvent}
+                            handleUpdateOpe={this.handleUpdateOpe}
+                            toggleIsUpdate={this.props.toggleIsUpdate}
+                            handleEditActive={this.handleEditActive}
+                            handleDelActive={this.handleDelActive}
+                            confirmDelete={this.confirmDelete}
+                            pageNo={this.state.pageNo}
+                            pageSizes={this.state.pageSizes}
+                            total={this.state.total}
+                            onChangePage={(page, pageSize) => {
+                                this.setState({
+                                    pageNo: page,
+                                })
+                                const opt = {
+                                    pageSize,
+                                    pageNo: page,
+                                    usageMode: -1,
+                                    ...this.getParams(),
+                                    fail: () => message.error(SALE_LABEL.k5dmw1z4),
+                                };
+                                opt.cb = this.showNothing;
+                                this.props.query(opt);
+                            }}
+                            onShowSizeChange={this.onShowSizeChange}
+                        />
+                        }
                     </div>
                 </div>
                 {this.renderModifyRecordInfoModal()}
