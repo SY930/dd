@@ -145,6 +145,7 @@ class CardSaleActive extends Component {
                         {data && data.length > 0 ?
                             data.map((item, index) => {
                                 const defaultChecked = (item.isActive == '1' ? true : false);
+                                const isGroupPro = item.maintenanceLevel == '0';// 区分集团和店铺
                                 return (
                                     <Col key={index} className={styles.columnsWrapper}>
                                         <p className={styles.activityTitle}>
@@ -229,6 +230,36 @@ class CardSaleActive extends Component {
                                                     删除
                                                 </span>
                                             </Authority>
+                                            {
+                                                item.promotionType === '1050' ?
+                                                    <a
+                                                        href="#"
+                                                        // disabled={!isGroupPro || record.status != 3}
+                                                        onClick={() => {
+                                                            this.props.toggleIsUpdate(true)
+                                                            this.setState({
+                                                                isCopy: true,
+                                                                modalTitle: '复制活动信息'
+                                                            })
+                                                            this.props.handleUpdateOpe(_, item, index);
+                                                        }}
+                                                    >复制</a>
+                                                    :
+                                                    <Authority rightCode={BASIC_PROMOTION_UPDATE}>
+                                                        <a
+                                                            href="#"
+                                                            disabled={!isGroupPro || item.status != 3}
+                                                            onClick={() => {
+                                                                this.props.toggleIsUpdate(true)
+                                                                this.setState({
+                                                                    isCopy: true,
+                                                                    modalTitle: '复制活动信息',
+                                                                })
+                                                                this.handleUpdateOpe(_, item, index);
+                                                            }}
+                                                        >复制</a>
+                                                    </Authority>
+                                            }
                                         </div>
                                     </Col>
 

@@ -1321,7 +1321,7 @@ class MyActivities extends React.Component {
                                     }}
                                 >{COMMON_LABEL.delete}</a>
                             </Authority>
-                            {/* {
+                            {
                                 record.promotionType === '1050' ?
                                     <a
                                         href="#"
@@ -1350,7 +1350,7 @@ class MyActivities extends React.Component {
                                             }}
                                         >复制</a>
                                     </Authority>
-                            } */}
+                            }
 
                         </span>
 
