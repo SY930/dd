@@ -901,6 +901,7 @@ class MySpecialActivities extends React.Component {
                                                 checkDetailInfo={this.checkDetailInfo}
                                                 handleDecorationStart={this.handleDecorationStart}
                                                 handleCopyUrl={this.handleCopyUrl}
+                                                handelStopEvent={this.handelStopEvent}
                                             />}
                                     </div>
                                 </TabPane>
@@ -1239,6 +1240,7 @@ class MySpecialActivities extends React.Component {
                             this.checkDetailInfo(text, record, index);
                         }}
                     >
+                        {/* 活动跟踪 */}
                         {this.props.intl.formatMessage(STRING_SPE.d5g3d7ahfq35134)}</a>
                 </Authority>
                 {

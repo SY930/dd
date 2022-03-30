@@ -143,7 +143,48 @@ class CardSaleActive extends Component {
         })
     }
 
+    renderWXTip = (text, record, index) => {
+        return (
+            <div className={[stylesPage.Sale__Activite__moveMore, stylesPage.moveMoreShow].join(' ')}>
+                <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY}>
+                    <a
+                        href="#"
+                        className={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record) ? stylesPage.textDisabled : null}
+                        onClick={() => {
+                            if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) {
+                                return;
+                            }
+                            if (Number(record.eventWay) === 70) {
+                                message.warning('该活动已下线');
+                                return;
+                            }
+                            this.props.checkDetailInfo(text, record, index);
+                        }}
+                        disabled={record.eventWay == 85}
+                    >活动跟踪</a>
+                </Authority>
+                <a
+                    href="#"
+                    className={record.isActive == '-1' || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) ? styles.textDisabled : null}
+                    onClick={() => {
+                        if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
+                            return;
+                        }
+                        record.isActive == '-1' ? null :
+                            this.props.handelStopEvent(_, record, index, '-1', '活动终止成功');
+                    }}
+                >
+                    终止
+                </a>
+
+            </div>
+        )
+    }
+
     renderTipTitle = (text, record, index) => {
+        if (record.eventWay == '80') {
+            return this.renderWXTip(text, record, index)
+        }
         return (
             <div className={[stylesPage.Sale__Activite__moveMore, stylesPage.moveMoreShow].join(' ')}>
                 <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY}>
@@ -227,7 +268,6 @@ class CardSaleActive extends Component {
                         </a>
                     )
                 }
-
             </div>
         )
     }
@@ -287,31 +327,35 @@ class CardSaleActive extends Component {
                                             >
                                                 查看
                                             </span>
-                                            <Authority rightCode={SPECIAL_PROMOTION_UPDATE}>
-                                                <span
-                                                    className={styles.operateEdit}
-                                                    onClick={(e) => { this.handleEditActive(e, item, index) }}
-                                                >
-                                                    编辑
-                                                </span>
-                                            </Authority>
-                                            <Authority rightCode={SPECIAL_PROMOTION_DELETE}>
-                                                <span
-                                                    className={styles.operateDelete}
-                                                    onClick={() => {
-                                                        if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || item.eventWay === 80) {
-                                                            return;
-                                                        }
-                                                        if (Number(item.eventWay) === 70) {
-                                                            message.warning(`该活动已下线`);
-                                                            return;
-                                                        }
-                                                        this.props.handleDelActive(item)(() => this.props.checkDeleteInfo(_, item, index));
-                                                    }}
-                                                >
-                                                    删除
-                                                </span>
-                                            </Authority>
+                                            {
+                                                item.eventWay != '80' && <Authority rightCode={SPECIAL_PROMOTION_UPDATE}>
+                                                    <span
+                                                        className={styles.operateEdit}
+                                                        onClick={(e) => { this.handleEditActive(e, item, index) }}
+                                                    >
+                                                        编辑
+                                                    </span>
+                                                </Authority>
+                                            }
+                                            {
+                                                item.eventWay != '80' && <Authority rightCode={SPECIAL_PROMOTION_DELETE}>
+                                                    <span
+                                                        className={styles.operateDelete}
+                                                        onClick={() => {
+                                                            if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || item.eventWay === 80) {
+                                                                return;
+                                                            }
+                                                            if (Number(item.eventWay) === 70) {
+                                                                message.warning(`该活动已下线`);
+                                                                return;
+                                                            }
+                                                            this.props.handleDelActive(item)(() => this.props.checkDeleteInfo(_, item, index));
+                                                        }}
+                                                    >
+                                                        删除
+                                                    </span>
+                                                </Authority>
+                                            }
                                             <Tooltip placement="bottomLeft" title={this.renderTipTitle(_, item, index)} overlayClassName={stylesPage.Sale__Activite__Tip}>
                                                 <span style={{
                                                     position: 'relative',
