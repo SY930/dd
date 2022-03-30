@@ -99,6 +99,16 @@ const mapStateToProps = (state) => {
         shopList: state.user.getIn(['accountInfo', 'dataPermissions', 'shopList'])
     };
 };
+const pageRouterMap = {
+    '30': { page: 'pages/subOr/voucherCenter/redeemDetail/main' },
+    '20': { page: 'pages/web/common/main' },
+    '21': { page: 'pages/subOr/voucherCenter/voucherDetail/main' },
+    '79': { page: 'pages/promotion/blindBox/index' },
+    '68': { page: 'pages/promotion/recommend/main' },
+    '65': { page: 'pages/promotion/share/main' },
+    '66': { page: 'pages/promotion/expand/main' },
+    '83': { page: 'pages/promotion/passwordCoupons/main' },//口令领券
+}
 const DECORATABLE_PROMOTIONS = [
     '20',
     '21',
@@ -112,6 +122,8 @@ const DECORATABLE_PROMOTIONS = [
     '79',
     '85'
 ]
+
+
 const isDecorationAvailable = ({ eventWay }) => {
     return DECORATABLE_PROMOTIONS.includes(`${eventWay}`)
 }
@@ -249,6 +261,9 @@ class MySpecialActivities extends React.Component {
             allWeChatAccountList: [],
             pushMessageMpID: '',
             groupID: '',
+            isCopy: false,
+            pushMessageMpID: '',
+            groupID: '',
             channelContent: '',
             channelOptions: _.range(0, 10).map(item => ({ label: `渠道${item + 1}`, value: `渠道${item + 1}` })),
             tabKeys: 'saleSpecialPage',
@@ -309,6 +324,26 @@ class MySpecialActivities extends React.Component {
         this.handleUpdateOpe = this.handleUpdateOpe.bind(this);
     }
 
+    fromCrmJump = () => {
+        const { from, itemID } = this.getQueryVariable();
+        if (from === 'manyFace') {
+            this.handleDecorationStart({ itemID });
+        }
+    }
+
+    getQueryVariable() {
+        const search = window.decodeURIComponent(window.location.search)
+        var query = search.substr(1)
+        query = query.split('&')
+        var params = {}
+        for (let i = 0; i < query.length; i++) {
+            let q = query[i].split('=')
+            if (q.length === 2) {
+                params[q[0]] = q[1]
+            }
+        }
+        return params
+    }
     /**
      * @description toggle the advanced qualification selection.
      * */
@@ -393,6 +428,9 @@ class MySpecialActivities extends React.Component {
             let { authStatus } = checkAuthLicense(res)
             this.setState({ authStatus })
         });
+        // console.log('componentDidMountcomponentDidMountcomponentDidMount')
+        // 千人千面活动创建和更新完，点去装修跳转页面
+        this.fromCrmJump();
     }
 
     // 产品授权
@@ -833,7 +871,14 @@ class MySpecialActivities extends React.Component {
                                 {this.renderApp()}
                                 <Button className={indexStyles.wxBtn} type="primary" onClick={this.creatReleaseQrCode} loading={xcxLoad}>生成小程序码</Button>
                             </div>
-                            <div className={indexStyles.qrCodeBox}>
+                            <div className={indexStyles.qrCodeBox} style={{ margin: 0 }}>
+                                {
+                                    qrCodeImage && <div className={indexStyles.copyWrapHeader}>
+                                        <div className={indexStyles.label}> 小程序路径 </div>
+                                        <Input value={pageRouterMap[eventWay].page} style={{ width: '50%', margin: '0 10px' }} />
+                                        <Button className={indexStyles.wxBtn} type="primary" onClick={this.handleToCopyRouter}>复制</Button>
+                                    </div>
+                                }
                                 {
                                     qrCodeImage ? <img className={indexStyles.miniProgramBox} src={qrCodeImage} id='__promotion_xcx_qr_img' alt="小程序二维码" /> : ''
                                 }
@@ -906,7 +951,7 @@ class MySpecialActivities extends React.Component {
                                     </div>
                                 </TabPane>
                                 <TabPane tab="促销活动" key="onSalePage">
-                                    <MyActivities stylesChange={this.stylesChange} stylesShow={stylesShow}/>
+                                    <MyActivities stylesChange={this.stylesChange} stylesShow={stylesShow} />
                                 </TabPane>
                             </Tabs>
                         </div>
@@ -924,7 +969,7 @@ class MySpecialActivities extends React.Component {
                 {(v3visible && curKey == '78') && <Chou2Le onToggle={this.onV3Click} id={itemID} view={view} />}
                 {(v3visible && curKey == '79') && <BlindBox onToggle={this.onV3Click} id={itemID} view={view} />}
                 {(v3visible && curKey == '83') && <PassWordCoupon onToggle={this.onV3Click} id={itemID} view={view} />}
-                {(v3visible && curKey == '85') && <ManyFace onToggle={this.onV3Click} id={itemID} view={view} />}
+                {(v3visible && curKey == '85') && <ManyFace onToggle={this.onV3Click} id={itemID} view={view} handleDecorationStart={this.handleDecorationStart} />}
                 <Modal
                     title="提取活动链接"
                     visible={isShowCopyUrl}
@@ -1225,6 +1270,17 @@ class MySpecialActivities extends React.Component {
                 >
                     {COMMON_LABEL.view}
                 </a>
+                <Tooltip placement="bottomLeft" title={this.renderWXTipTitle(text, record, index)} overlayClassName={styles.Sale__Activite__Tip}>
+                <a href="#">更多</a>
+            </Tooltip>
+            </div>
+          
+        )
+    }
+
+    renderWXTipTitle = (text, record, index) => {
+        return (
+            <div  className={[styles.Sale__Activite__moveMore, styles.moveMoreShow].join(' ')}>
                 <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY}>
                     <a
                         href="#"
@@ -1540,13 +1596,12 @@ class MySpecialActivities extends React.Component {
                                     this.handelStopEvent(text, record, index, '-1', `${this.props.intl.formatMessage(STRING_SPE.d17012f5c16c32211)}`);
                             }}
                         >
-                        {this.props.intl.formatMessage(STRING_SPE.du3bnfobe3346)}
+                            {this.props.intl.formatMessage(STRING_SPE.du3bnfobe3346)}
                         </a> */}
                         <Tooltip placement="bottomLeft" title={this.renderTipTitle(text, record, index)} overlayClassName={styles.Sale__Activite__Tip}>
                             <a href="#">更多</a>
                         </Tooltip>
                         {/* <a className={styles.more}> 更多</a> */}
-
                     </span>
                     );
                 },
@@ -1573,7 +1628,7 @@ class MySpecialActivities extends React.Component {
                             checked={defaultChecked}
                             onChange={(e) => {
                                 if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80) {
-                                    e.preventDefault();
+                                    // e.preventDefault();
                                     return;
                                 }
                                 if (Number(record.eventWay) === 70) {
@@ -1583,7 +1638,7 @@ class MySpecialActivities extends React.Component {
                                 // record.isActive == '-1' || statusState ? null :
                                 this.handleSattusActive(record)(() => this.handleDisableClickEvent(record.operation, record, index, null, `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3831197)}`))
                             }}
-                        // disabled={(record.isActive == '-1' || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) || record.eventWay === 80 ? true : false}
+                            // disabled={ (record.isActive == '-1' || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) || record.eventWay === 80 ? true : false}
                         />
                     )
                 }
@@ -1815,6 +1870,7 @@ class MySpecialActivities extends React.Component {
     };
 
     handleDecorationStart = (record) => {
+        console.log("🚀 ~ file: index.jsx ~ line 1661 ~ MySpecialActivities ~ record", record)
         const user = this.props.user;
         this.props.fetchSpecialDetail({
             data: {
@@ -1883,6 +1939,15 @@ class MySpecialActivities extends React.Component {
     handleToCopyUrl = () => {
         const { urlContent } = this.state
         if (copy(urlContent)) {
+            message.warn('复制成功')
+        } else {
+            message.warn('复制失败')
+        }
+    }
+
+    handleToCopyRouter = () => {
+        const { eventWay } = this.state
+        if (copy(pageRouterMap[eventWay].page)) {
             message.warn('复制成功')
         } else {
             message.warn('复制失败')
