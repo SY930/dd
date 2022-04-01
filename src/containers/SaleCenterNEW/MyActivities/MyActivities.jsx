@@ -785,7 +785,7 @@ class MyActivities extends React.Component {
         if (record.isActive == '1') {
             Modal.confirm({
                 title: `确认删除这个活动`,
-                content: '活动正在启用中，删除后无法恢复，线上投放的活动链接及二维码将会失效。',
+                content: '活动正在启用中，删除后无法恢复。',
                 iconType: 'question-circle',
                 onOk() {
                     handleNext();
@@ -796,7 +796,7 @@ class MyActivities extends React.Component {
         }
         Modal.confirm({
             title: `确认删除这个活动`,
-            content: '删除后无法恢复，线上投放的活动链接及二维码将会失效。',
+            content: '删除后无法恢复',
             iconType: 'question-circle',
             onOk() {
                 handleNext();
@@ -1339,7 +1339,7 @@ class MyActivities extends React.Component {
                                     <Authority rightCode={BASIC_PROMOTION_UPDATE}>
                                         <a
                                             href="#"
-                                            disabled={!isGroupPro || record.status != 3}
+                                            disabled={!isGroupPro}
                                             onClick={() => {
                                                 this.props.toggleIsUpdate(true)
                                                 this.setState({

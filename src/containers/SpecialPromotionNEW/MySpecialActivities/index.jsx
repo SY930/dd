@@ -683,10 +683,10 @@ class MySpecialActivities extends React.Component {
     }
 
     handleSattusActive = (record) => (handleNext) => {
-        if (record.isActive == '-1') {
+        if (record.isActive == '-1' || record.isActive == '2') {
             Modal.info({
                 title: `活动无法启用`,
-                content: '活动已结束，请修改可用的活动时间。',
+                content: `活动已${record.isActive == '-1' ? '结束' : '失效'}，请修改可用的活动时间。`,
                 okText: '确定',
                 // cancelText: null,
                 iconType: 'exclamation-circle',
@@ -1349,7 +1349,7 @@ class MySpecialActivities extends React.Component {
                                     this.handleUpdateOpe(text, record, index);
                                 }
                             } else {
-                                if (record.isActive != '0' || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record))) {
+                                if ((isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record))) {
                                     e.preventDefault()
                                 } else {
                                     if (Number(record.eventWay) === 70) {
@@ -1488,48 +1488,48 @@ class MySpecialActivities extends React.Component {
                                 //         : null
                                 // }
                                 onClick={(e) => {
-                                    if (record.eventWay == '64') {
-                                        //对评价送礼活动做专门处理，该活动在活动启用时候也能操作选择店铺
-                                        // if (record.isActive != '0') {
-                                        //     this.handleEditActive(record)(() => {
-                                        //         this.props.toggleIsUpdate(false)
-                                        //         this.handleUpdateOpe(text, record, index);
-                                        //     })
-                                        // } else {
-                                        //     this.handleEditActive(record)(() => {
-                                        //         this.props.toggleIsUpdate(true)
-                                        //         this.handleUpdateOpe(text, record, index);
-                                        //     })
-                                        // }
-                                    } else {
-                                        // if ((record.isActive != '0' && record.isActive != '-1') || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && (record.isActive != '0' || !isMine(record) )) || record.eventWay === 80) {
-                                        //     e.preventDefault()
-                                        // } else {
-                                        if (Number(record.eventWay) === 70) {
-                                            message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
-                                            return;
-                                        }
-                                        if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83 || record.eventWay === 85) {
-                                            this.handleEditActive(record)(() => this.onV3Click(record.itemID, false, record.eventWay))
-                                            return;
-                                        }
-                                        if (record.eventWay === 66 || record.eventWay === 81 || record.eventWay === 82) {
-                                            this.handleEditActive(record)(() => {
-                                                this.handleShowDetail({
-                                                    record,
-                                                    isView: false,
-                                                    isEdit: true
-                                                })
-                                            })
-                                            return;
-                                        }
+                                    // if (record.eventWay == '64') {
+                                    //     //对评价送礼活动做专门处理，该活动在活动启用时候也能操作选择店铺
+                                    //     if (record.isActive != '0') {
+                                    //         this.handleEditActive(record)(() => {
+                                    //             this.props.toggleIsUpdate(false)
+                                    //             this.handleUpdateOpe(text, record, index);
+                                    //         })
+                                    //     } else {
+                                    //         this.handleEditActive(record)(() => {
+                                    //             this.props.toggleIsUpdate(true)
+                                    //             this.handleUpdateOpe(text, record, index);
+                                    //         })
+                                    //     }
+                                    // } else {
+                                    // if ((record.isActive != '0' && record.isActive != '-1') || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && (record.isActive != '0' || !isMine(record) )) || record.eventWay === 80) {
+                                    //     e.preventDefault()
+                                    // } else {
+                                    if (Number(record.eventWay) === 70) {
+                                        message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
+                                        return;
+                                    }
+                                    if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83 || record.eventWay === 85) {
+                                        this.handleEditActive(record)(() => this.onV3Click(record.itemID, false, record.eventWay))
+                                        return;
+                                    }
+                                    if (record.eventWay === 66 || record.eventWay === 81 || record.eventWay === 82) {
                                         this.handleEditActive(record)(() => {
-                                            this.props.toggleIsUpdate(true)
-                                            this.handleUpdateOpe(text, record, index);
+                                            this.handleShowDetail({
+                                                record,
+                                                isView: false,
+                                                isEdit: true
+                                            })
                                         })
+                                        return;
+                                    }
+                                    this.handleEditActive(record)(() => {
+                                        this.props.toggleIsUpdate(true)
+                                        this.handleUpdateOpe(text, record, index);
+                                    })
 
                                         // }
-                                    }
+                                    // }
 
                                 }}
                             >
@@ -1622,7 +1622,7 @@ class MySpecialActivities extends React.Component {
                     return (
                         <Switch
                             // size="small"
-                            className={styles.switcherSale}
+                            className={`${styles.switcherSale} ${record.eventWay == '80' ? styles.switcherdisabled : ''}`}
                             checkedChildren={'启用'}
                             unCheckedChildren={'禁用'}
                             checked={defaultChecked}
@@ -1638,7 +1638,7 @@ class MySpecialActivities extends React.Component {
                                 // record.isActive == '-1' || statusState ? null :
                                 this.handleSattusActive(record)(() => this.handleDisableClickEvent(record.operation, record, index, null, `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3831197)}`))
                             }}
-                            // disabled={ (record.isActive == '-1' || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) || record.eventWay === 80 ? true : false}
+                            // disabled={record.eventWay === 80 ? true : false}
                         />
                     )
                 }

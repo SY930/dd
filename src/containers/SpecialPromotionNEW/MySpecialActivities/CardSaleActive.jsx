@@ -213,7 +213,7 @@ class CardSaleActive extends Component {
                     <a
                         href="#"
                         onClick={(e) => {
-                            if (record.isActive != '0' || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record))) {
+                            if ((isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record))) {
                                 e.preventDefault()
                             } else {
                                 if (Number(record.eventWay) === 70) {
@@ -288,8 +288,9 @@ class CardSaleActive extends Component {
                                             <span className={`${styles.status} ${styles.teamShare}`}>
                                                 <Switch
                                                     size="small"
-                                                    className={styles.switcherSaleCard}
+                                                    className={`${styles.switcherSaleCard} ${item.eventWay == '80' ? styles.switcherdisabled : ''}`}
                                                     checked={defaultChecked}
+                                                    // disabled={item.eventWay == '80'}
                                                     onChange={(e) => {
                                                         if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || item.eventWay === 80) {
                                                             e.preventDefault();

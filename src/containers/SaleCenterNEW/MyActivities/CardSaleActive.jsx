@@ -248,14 +248,14 @@ class CardSaleActive extends Component {
                                                     <Authority rightCode={BASIC_PROMOTION_UPDATE}>
                                                         <a
                                                             href="#"
-                                                            disabled={!isGroupPro || item.status != 3}
+                                                            disabled={!isGroupPro}
                                                             onClick={() => {
                                                                 this.props.toggleIsUpdate(true)
                                                                 this.setState({
                                                                     isCopy: true,
                                                                     modalTitle: '复制活动信息',
                                                                 })
-                                                                this.handleUpdateOpe(_, item, index);
+                                                                this.props.handleUpdateOpe(_, item, index);
                                                             }}
                                                         >复制</a>
                                                     </Authority>
