@@ -93,16 +93,7 @@ const mapStateToProps = (state) => {
         shopList: state.user.getIn(['accountInfo', 'dataPermissions', 'shopList'])
     };
 };
-const pageRouterMap = {
-    '30':{page: 'pages/subOr/voucherCenter/redeemDetail/main'},
-    '20':{page: 'pages/web/common/main'},
-    '21':{page: 'pages/subOr/voucherCenter/voucherDetail/main'},
-    '79':{page: 'pages/promotion/blindBox/index'},
-    '68':{page: 'pages/promotion/recommend/main'},
-    '65':{page: 'pages/promotion/share/main'},
-    '66':{page: 'pages/promotion/expand/main'},
-    '83':{page: 'pages/promotion/passwordCoupons/main'},//口令领券
-}
+
 const DECORATABLE_PROMOTIONS = [
     '20',
     '21',
@@ -257,6 +248,8 @@ class MySpecialActivities extends React.Component {
             groupID:'',
             channelContent: '',
             channelOptions: _.range(0, 10).map(item => ({ label: `渠道${item + 1}`, value: `渠道${item + 1}` })),
+            page: '',
+            scene: '',
         };
         this.cfg = {
             eventWay: [
@@ -555,7 +548,7 @@ class MySpecialActivities extends React.Component {
             let { result: { code, message: msg }, qrCodeImage = '' } = data
             this.setState({ xcxLoad: false })
             if (code === '000') {
-                this.setState({ qrCodeImage });
+                this.setState({ qrCodeImage, scene: params.scene, page: params.page });
             }
         }).catch(({ message: msg }) => {
             this.setState({ xcxLoad: false })
@@ -693,7 +686,7 @@ class MySpecialActivities extends React.Component {
 
     // 渲染复制链接modal内容
     renderCopyUrlModal () {
-        const  {urlContent, eventWay, qrCodeImage, xcxLoad, channelContent} = this.state
+        const  {urlContent, eventWay, qrCodeImage, xcxLoad, channelContent, page, scene} = this.state
         const hideCTBox = [66,79,82,83]; // 不显示餐厅
         const hideWXBox = [22]; // 不显示微信
         return (<div className={indexStyles.copyCont}>
@@ -753,7 +746,7 @@ class MySpecialActivities extends React.Component {
                                 {
                                     qrCodeImage && <div className={indexStyles.copyWrapHeader}>
                                        <div className={indexStyles.label}> 小程序路径 </div>
-                                       <Input value={pageRouterMap[eventWay].page} style={{ width: '50%', margin: '0 10px' }}/>
+                                       <Input value={`${page}?${scene}`} style={{ width: '50%', margin: '0 10px' }}/>
                                         <Button className={indexStyles.wxBtn} type="primary" onClick={this.handleToCopyRouter}>复制</Button>
                                     </div>
                                 }
@@ -1729,8 +1722,8 @@ class MySpecialActivities extends React.Component {
     }
 
     handleToCopyRouter = () => {
-        const { eventWay } = this.state
-        if (copy(pageRouterMap[eventWay].page)) {
+        const { page, scene } = this.state
+        if (copy(`${page}?${scene}`)) {
             message.warn('复制成功')
         } else {
             message.warn('复制失败')
