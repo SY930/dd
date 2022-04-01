@@ -84,7 +84,7 @@ const CONTAIN_GROUPID_SHOW = ['317964', '189702']; // 拼团秒杀只针对茶�
 })
 @connect(mapStateToProps, mapDispatchToProps)
 @injectIntl()
-class NewCustomerPage extends Component {
+class NewOnSaleActivityPage extends Component {
 
     state = {
         whiteList: [],
@@ -793,4 +793,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default NewCustomerPage
+export default NewOnSaleActivityPage

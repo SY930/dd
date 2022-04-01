@@ -21,7 +21,8 @@ import {
 } from '../../../redux/actions/saleCenterNEW/types';
 import {
     SALE_CENTER_PAGE_SHOP,
-    SALE_CENTER_PAGE,
+    // SALE_CENTER_PAGE,
+    SPECIAL_PAGE,
     ONLINE_PROMOTION_MANAGEMENT_GROUP,
     ONLINE_PROMOTION_MANAGEMENT_SHOP,
 } from '../../../constants/entryCodes';
@@ -175,11 +176,11 @@ class NewPromotion extends React.Component {
                         SALE_CENTER_PAGE_SHOP;
                     } else {
                         target = isOnline ? ONLINE_PROMOTION_MANAGEMENT_GROUP :
-                        SALE_CENTER_PAGE;
+                        SPECIAL_PAGE;
                     }
                     const menuList = this.props.user.get('menuList').toJS();
                     const menuID = menuList.find(tab => tab.entryCode === target).menuID
-                    jumpPage({ menuID })
+                    jumpPage({ menuID, from: 'onSale' })
                 },
                 fail: () => {
                     message.error(SALE_LABEL.k5doax7i);
