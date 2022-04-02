@@ -536,6 +536,9 @@ class MySpecialActivities extends React.Component {
              page: pageMap[eventWay].page,
              width:280
          }
+         if (eventWay == '21') {
+            params.scene = `scene=${params.scene}`
+         }
         this.setState({xcxLoad: true})
         const callServer = axiosData(
             '/maQrCode/getReleaseQrCode',
