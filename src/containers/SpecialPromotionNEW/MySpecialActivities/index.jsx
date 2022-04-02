@@ -536,8 +536,9 @@ class MySpecialActivities extends React.Component {
              page: pageMap[eventWay].page,
              width:280
          }
-         if (eventWay == '21') {
-            params.scene = `scene=${params.scene}`
+         const paramsRouter = _.cloneDeep(params)
+         if (eventWay == '20') {
+            paramsRouter.scene = `scene=${paramsRouter.scene}`
          }
         this.setState({xcxLoad: true})
         const callServer = axiosData(
@@ -551,7 +552,7 @@ class MySpecialActivities extends React.Component {
             let { result: { code, message: msg }, qrCodeImage = '' } = data
             this.setState({ xcxLoad: false })
             if (code === '000') {
-                this.setState({ qrCodeImage, scene: params.scene, page: params.page });
+                this.setState({ qrCodeImage, scene: paramsRouter.scene, page: paramsRouter.page });
             }
         }).catch(({ message: msg }) => {
             this.setState({ xcxLoad: false })
