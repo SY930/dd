@@ -227,7 +227,7 @@ class ManyFace extends Component {
         const title = (<div> <span></span>设置成功</div>)
         Modal.confirm(({
             title,
-            content: '你可以在【活动管理也】装修/查看/编辑你的活动，不装修则会展示默认图',
+            content: '你可以在【活动管理页】装修/查看/编辑你的活动，不装修则会展示默认图',
             okText: '马上去装修',
             cancelText: '先这样',
             iconType: 'check-circle',
