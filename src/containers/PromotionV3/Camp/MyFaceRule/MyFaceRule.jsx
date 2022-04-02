@@ -560,6 +560,7 @@ class MyFaceRule extends Component {
                     && v.triggerEventValue1 !== 'miniAppPage'
                     && v.triggerEventValue1 !== 'customLink'
                     && v.triggerEventValue1 !== 'shoppingCartAddFood'
+                    && v.triggerEventValue1 !== 'toOpenCard'
                     && this.renderSelect(i, v, v.triggerEventValue1, v.triggerEventName1)}
                     {v.triggerEventValue1 == 'speedDial' && this.renderInputApp(i, v)}
                 </div>
@@ -579,7 +580,7 @@ class MyFaceRule extends Component {
         if (!value[0]) {
             value.push({ ...faceDefVal });
         }
-        console.log(this.state.memberParams, 'memberParams')
+        // console.log(this.state.memberParams, 'memberParams')
         return (
             <div>
                 {

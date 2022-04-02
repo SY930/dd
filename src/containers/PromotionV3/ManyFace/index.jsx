@@ -113,6 +113,13 @@ class ManyFace extends Component {
                     return null
                 }
             }
+            if (itm.conditionType == 3) {
+                if (!itm.conditionValue) {
+                    flag = true;
+                    message.warn('请选择会员群体属性')
+                    return null
+                }
+            }
             if (!itm.triggerEventValue) {
                 flag = true;
                 message.warn('请选择触发事件')
@@ -350,6 +357,8 @@ class ManyFace extends Component {
 
     setData4Step3App = (faceData) => {
         const data = faceData.map((item) => {
+            item.triggerEventName1 = item.triggerEventName;
+            item.triggerEventValue1 = item.triggerEventValue;
             if (item.conditionType == '2') { // 会员标签
                 const everyTags = this.state.tagRuleDetails.filter(itm => itm.tagCategoryID == item.conditionValue);
                 item.everyTagsRule = (everyTags || []).map((itm) => {
@@ -382,8 +391,6 @@ class ManyFace extends Component {
                     item.triggerEventCustomInfo1 = {};
                 }
             }
-            item.triggerEventName1 = item.triggerEventName;
-            item.triggerEventValue1 = item.triggerEventValue;
 
             // console.log({ ...item, id: item.itemID, isShowDishSelector: false }, '----')
             return { ...item, id: item.itemID, isShowDishSelector: false }
