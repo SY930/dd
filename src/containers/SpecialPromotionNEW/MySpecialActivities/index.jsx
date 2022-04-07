@@ -360,6 +360,7 @@ class MySpecialActivities extends React.Component {
     }
 
     toggleStateFailCallBack(val) {
+        console.log("🚀 ~ file: index.jsx ~ line 363 ~ MySpecialActivities ~ toggleStateFailCallBack ~ val", val)
         message.error(val);
     }
 
@@ -925,7 +926,7 @@ class MySpecialActivities extends React.Component {
                                                 toggleIsUpdate={this.props.toggleIsUpdate}
                                                 handleUpdateOpe={this.handleUpdateOpe}
                                                 handleSattusActive={(item, index) => {
-                                                    this.handleSattusActive(item)(() => this.handleDisableClickEvent(item.operation, item, index, null, ''))
+                                                    this.handleSattusActive(item)(() => this.handleDisableClickEvent(item.operation, item, index, null, '使用状态修改成功'))
                                                 }}
                                                 user={this.props.user}
                                                 onChangePage={this.onChangePage}

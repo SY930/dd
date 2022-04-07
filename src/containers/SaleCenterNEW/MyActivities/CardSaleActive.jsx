@@ -237,10 +237,7 @@ class CardSaleActive extends Component {
                                                         // disabled={!isGroupPro || record.status != 3}
                                                         onClick={() => {
                                                             this.props.toggleIsUpdate(true)
-                                                            this.setState({
-                                                                isCopy: true,
-                                                                modalTitle: '复制活动信息'
-                                                            })
+                                                            this.props.updateCopy()
                                                             this.props.handleUpdateOpe(_, item, index);
                                                         }}
                                                     >复制</a>
@@ -249,12 +246,10 @@ class CardSaleActive extends Component {
                                                         <a
                                                             href="#"
                                                             disabled={!isGroupPro}
+                                                            style={!isGroupPro ? { color: 'gray', opacity: '.5' } : {}}
                                                             onClick={() => {
                                                                 this.props.toggleIsUpdate(true)
-                                                                this.setState({
-                                                                    isCopy: true,
-                                                                    modalTitle: '复制活动信息',
-                                                                })
+                                                                this.props.updateCopy()
                                                                 this.props.handleUpdateOpe(_, item, index);
                                                             }}
                                                         >复制</a>

@@ -14,7 +14,7 @@ import { connect } from 'react-redux';
 import {
     Table, Icon, Select, DatePicker,
     Button, Modal, Row, Col, message,
-    TreeSelect, Switch,
+    TreeSelect, Switch, Input,
     Spin,
 } from 'antd';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
@@ -237,7 +237,7 @@ class MyActivities extends React.Component {
             promotionType: '',
             editPromotionType: '',
             promotionDateRange: '',
-            promotionValid: '',
+            promotionValid: '2',
             promotionState: '',
             promotionCategory: '',
             promotionTags: '',
@@ -249,7 +249,8 @@ class MyActivities extends React.Component {
             pageNo: 1,
             queryDisabled: false,
             currentPromotionID: '',
-            runType: '0'
+            runType: '0',
+            promotionCode: '',
         };
         this.handleDismissUpdateModal = this.handleDismissUpdateModal.bind(this);
         this.checkDetailInfo = this.checkDetailInfo.bind(this);
@@ -483,6 +484,7 @@ class MyActivities extends React.Component {
             channelLst,
             promotionShop,
             promotionName,
+            promotionCode,
         } = this.state;
         const opt = {};
         if (promotionType !== '' && promotionType !== undefined && promotionType !== 'undefined') {
@@ -518,6 +520,9 @@ class MyActivities extends React.Component {
         }
         if (promotionName !== '' && promotionName !== undefined) {
             opt.promotionName = promotionName;
+        }
+        if (promotionCode !== '' && promotionCode !== undefined) {
+            opt.promotionCode = promotionCode;
         }
         opt.groupID = this.props.user.accountInfo.groupID;
         opt.sourceType = +this.isOnlinePromotionPage();
@@ -983,6 +988,9 @@ class MyActivities extends React.Component {
         const opt = this.getParams();
         const { intl } = this.props;
         const k5eng042 = intl.formatMessage(SALE_STRING.k5eng042);
+        const k5dlp2gl = intl.formatMessage(SALE_STRING.k5dlp2gl);
+        const k5dlp7zc = intl.formatMessage(SALE_STRING.k5dlp7zc);
+        const k5dlpczr = intl.formatMessage(SALE_STRING.k5dlpczr);
         return (
             <div>
                 <div className="layoutsSearch">
@@ -1052,7 +1060,36 @@ class MyActivities extends React.Component {
                                 }}
                             />
                         </li>
-
+                        <li>
+                            <h5>活动状态</h5>
+                        </li>
+                        <li>
+                            <Select
+                                placeholder=""
+                                defaultValue={'2'}
+                                style={{ width: 100 }}
+                                onChange={(value) => {
+                                    this.setState({
+                                        promotionValid: value,
+                                    });
+                                }}
+                            >
+                                <Option key="0" value={'0'}>{k5eng042}</Option>
+                                <Option key="1" value={'1'}>{k5dlp2gl}</Option>
+                                <Option key="2" value={'2'}>{k5dlp7zc}</Option>
+                                <Option key="3" value={'3'}>{k5dlpczr}</Option>
+                            </Select>
+                        </li>
+                        <li>
+                            <h5>活动编码</h5>
+                        </li>
+                        <li>
+                            <Input placeholder="活动编码" maxLength={20} value={this.state.promotionCode} onChange={(e) => {
+                                this.setState({
+                                    promotionCode: e.target.value,
+                                })
+                            }}/>
+                        </li>
                         <li>
                             <Authority rightCode={BASIC_PROMOTION_QUERY}>
                                 <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}><Icon type="search" />{COMMON_LABEL.query}</Button>
@@ -1103,27 +1140,6 @@ class MyActivities extends React.Component {
                         <li>
                             {this.renderShopsInTreeSelectMode()}
                         </li>
-                        <li>
-                            <h5>活动状态</h5>
-                        </li>
-                        <li>
-                            <Select
-                                placeholder=""
-                                defaultValue={'0'}
-                                style={{ width: 100 }}
-                                onChange={(value) => {
-                                    this.setState({
-                                        promotionValid: value,
-                                    });
-                                }}
-                            >
-                                <Option key="0" value={'0'}>{k5eng042}</Option>
-                                <Option key="1" value={'1'}>{k5dlp2gl}</Option>
-                                <Option key="2" value={'2'}>{k5dlp7zc}</Option>
-                                <Option key="3" value={'3'}>{k5dlpczr}</Option>
-                            </Select>
-                        </li>
-
                         <li>
                             <h5>{SALE_LABEL.k5dljb1v}</h5>
                         </li>
@@ -1605,6 +1621,12 @@ class MyActivities extends React.Component {
                                 this.props.query(opt);
                             }}
                             onShowSizeChange={this.onShowSizeChange}
+                            updateCopy={() => {
+                                this.setState({
+                                    isCopy: true,
+                                    modalTitle: '复制活动信息'
+                                })
+                            }}
                         />
                         }
                     </div>
