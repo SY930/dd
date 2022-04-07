@@ -120,7 +120,8 @@ const DECORATABLE_PROMOTIONS = [
     '76',
     '68',
     '79',
-    '85'
+    '85',
+    '83'
 ]
 
 
