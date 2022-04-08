@@ -627,7 +627,7 @@ class MySpecialActivities extends React.Component {
 
     // 点击按钮前先弹窗
     handleEditActive = (record) => (handleNext) => {
-        if (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && (record.isActive != '0' || !isMine(record))) {
+        if (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && (record.isActive != '0' || !isMine(record)) && record.eventWay != 64) {
             Modal.confirm({
                 title: `活动编辑`,
                 content: '活动无法编辑。',
@@ -652,7 +652,7 @@ class MySpecialActivities extends React.Component {
 
     // 点击删除按钮先弹窗
     handleDelActive = (record) => (handleNext) => {
-        if (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && (record.isActive != '0' || !isMine(record))) {
+        if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
             Modal.confirm({
                 title: `活动删除`,
                 content: '活动无法删除。',
@@ -1482,12 +1482,10 @@ class MySpecialActivities extends React.Component {
                         <Authority rightCode={SPECIAL_PROMOTION_UPDATE}>
                             <a
                                 href="#"
-                                // disabled={
-                                //     record.eventWay == '64' ? null : 
-                                //     (record.isActive != '0' && record.isActive != '-1') || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && (record.isActive != '0' || !isMine(record))) || record.eventWay === 80
-                                //         ? true
-                                //         : null
-                                // }
+                                disabled={
+                                    record.eventWay == '64' ? null : 
+                                     (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && (record.isActive != '0' || !isMine(record)))
+                                }
                                 onClick={(e) => {
                                     // if (record.eventWay == '64') {
                                     //     //对评价送礼活动做专门处理，该活动在活动启用时候也能操作选择店铺
@@ -1566,9 +1564,9 @@ class MySpecialActivities extends React.Component {
                         <Authority rightCode={SPECIAL_PROMOTION_DELETE}>
                             <a
                                 href="#"
-                                // disabled={record.isActive != '0' || record.userCount != 0 || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80 ? true : null}
+                                disabled={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)}
                                 onClick={() => {
-                                    if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80) {
+                                    if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
                                         return;
                                     }
                                     if (Number(record.eventWay) === 70) {
@@ -1628,6 +1626,7 @@ class MySpecialActivities extends React.Component {
                             unCheckedChildren={'禁用'}
                             checked={defaultChecked}
                             onChange={(e) => {
+                                // isBrandOfHuaTianGroupList 华天集团品牌下的集团
                                 if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80) {
                                     // e.preventDefault();
                                     return;
@@ -1639,7 +1638,7 @@ class MySpecialActivities extends React.Component {
                                 // record.isActive == '-1' || statusState ? null :
                                 this.handleSattusActive(record)(() => this.handleDisableClickEvent(record.operation, record, index, null, `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3831197)}`))
                             }}
-                            // disabled={record.eventWay === 80 ? true : false}
+                            disabled={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)}
                         />
                     )
                 }

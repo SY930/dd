@@ -288,12 +288,12 @@ class CardSaleActive extends Component {
                                             <span className={`${styles.status} ${styles.teamShare}`}>
                                                 <Switch
                                                     size="small"
-                                                    className={`${styles.switcherSaleCard} ${item.eventWay == '80' ? styles.switcherdisabled : ''}`}
+                                                    className={`${styles.switcherSaleCard} ${item.eventWay == '80' || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) ? styles.switcherdisabled : ''}`}
                                                     checked={defaultChecked}
                                                     // disabled={item.eventWay == '80'}
-                                                    onChange={(e) => {
+                                                    onChange={() => {
                                                         if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || item.eventWay === 80) {
-                                                            e.preventDefault();
+                                                            // e.preventDefault();
                                                             return;
                                                         }
                                                         this.props.handleSattusActive(item, index)

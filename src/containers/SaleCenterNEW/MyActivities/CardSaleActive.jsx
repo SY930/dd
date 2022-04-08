@@ -153,14 +153,15 @@ class CardSaleActive extends Component {
                                             <span className={`${styles.status} ${styles.teamShare}`}>
                                                 <Switch
                                                     size="small"
-                                                    className={styles.switcherSaleCard}
+                                                    // className={styles.switcherSaleCard}
+                                                    className={`${styles.switcherSaleCard} ${this.isToggleActiveDisabled(item) ? styles.switcherdisabled : ''}`}
                                                     checked={defaultChecked}
                                                     onChange={(e) => {
                                                         this.props.handleSattusActive(item)(() => {
                                                             this.props.handleDisableClickEvent(_, item, index, null, '使用状态修改成功')
                                                         })
                                                     }}
-                                                    disabled={this.isToggleActiveDisabled(item)}
+                                                    // disabled={this.isToggleActiveDisabled(item)}
                                                 />
                                             </span>
                                         </p>
