@@ -528,6 +528,18 @@ export default class PrizeContent extends React.Component {
                                                         />
                                                     </ExpandTree>
                                                 </FormItem>
+                                                {/* 礼品ID */}
+                                                {
+                                                    this.getGiftValue(index) ? 
+                                                    <FormItem
+                                                        className={style.FormItemSecondStyle}
+                                                    >
+                                                        <div className={style.labelSecondDiv}>
+                                                            <span>礼品ID</span>
+                                                        </div>
+                                                        <span style={{display:'inline-block',height:'32px'}}>{(this.getGiftValue(index) || '').split(',')[0]}</span>
+                                                    </FormItem> : null
+                                                }
                                                 {/* 礼品个数 */}
                                                 <FormItem
                                                     // wrapperCol={{ span: 12 }}
@@ -547,6 +559,7 @@ export default class PrizeContent extends React.Component {
                                                         modal="int"
                                                     />
                                                 </FormItem>
+
                                                 <FormItem
                                                     // wrapperCol={{ span: 12 }}
                                                     className={style.FormItemSecondStyle}

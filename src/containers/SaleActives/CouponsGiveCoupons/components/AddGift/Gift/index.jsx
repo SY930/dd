@@ -11,10 +11,12 @@ export default class Gift extends Component {
         options: [], // 生效时间下拉框
         formKeys: formKeys1,
         countType: '0',
+        giftIDNumber:''
     };
 
     /** 表单内容变化时的监听 */
     onFormChange = (key, value) => {
+        console.log(key,value,'value0000000000000')
         const { idx, onChange } = this.props;
         if (key === 'countType') {
             const options = (value === '0') ? timeOpts : dayOpts;
@@ -34,6 +36,14 @@ export default class Gift extends Component {
                 this.setState({ formKeys: formKeys2 });
             }
         }
+        if (key === 'giftID'){
+            this.setState(
+                {
+                    giftIDNumber:value
+                }
+            )
+        }
+
         onChange({ [key]: value }, this.form);
     }
     /** 得到form */
@@ -64,10 +74,12 @@ export default class Gift extends Component {
         }
     }
     render() {
-        const { formKeys } = this.state;
-        const { formData } = this.props;
+        const { formKeys,giftIDNumber } = this.state;
+        let { formData } = this.props;
         const newFormItems = this.resetFormItems();
-
+        if(formData){
+            formData.giftIDNumber = giftIDNumber ? giftIDNumber : formData.giftID;
+        }
         return (
             <div className={css.mainBox}>
                 <BaseForm

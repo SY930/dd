@@ -10,6 +10,7 @@ export default class Gift extends Component {
     state = {
         options: [], // 生效时间下拉框
         formKeys: formKeys1,
+        giftIDNumber:''
     };
 
     /** 表单内容变化时的监听 */
@@ -29,6 +30,11 @@ export default class Gift extends Component {
             } else {
                 this.setState({ formKeys: formKeys2 });
             }
+        }
+        if (key === 'giftID'){
+            this.setState({
+                giftIDNumber:value
+            })
         }
         onChange({ [key]: value }, this.form);
     }
@@ -57,9 +63,9 @@ export default class Gift extends Component {
     }
     render() {
         const { formKeys } = this.state;
-        const { formData } = this.props;
+        let { formData } = this.props;
         const newFormItems = this.resetFormItems();
-
+        formData = {...formData, giftIDNumber: giftIDNumber ? giftIDNumber : formData.giftID}
         return (
             <div className={css.mainBox}>
                 <BaseForm
