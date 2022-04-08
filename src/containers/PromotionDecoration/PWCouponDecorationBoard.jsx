@@ -34,7 +34,7 @@ export default class PWCouponDecorationBoard extends Component {
     renderPhonePreview() {
         const {
             decorationInfo: {
-                activeImg = 'http://res.hualala.com/basicdoc/72a72d50-759d-4e8d-86c5-2bf0e040cfa3.png',
+                activeImg = 'http://res.hualala.com/basicdoc/7f17bec7-d01d-464b-a0c6-6e8837b3f988.png',
                 exchangeBtnImg='http://res.hualala.com/basicdoc/2d63a0a3-b64f-4a34-bc96-e461a7602ce2.png',
                 homeBtnBgColor='#F2CF9E',
                 homeTextColor='#6E441A',
@@ -62,9 +62,9 @@ export default class PWCouponDecorationBoard extends Component {
                     <p style={{ background: `${ruleBtnBgColor}` }}><span style={{color: `${ruleBtnTextColor}`}}>规则</span></p><p style={{ background: `${homeBtnBgColor}`,}}><span style={{ color: `${homeTextColor}`}}>首页</span></p>
                     <div style={{ width: '100%', textAlign: 'center' }}>
                         <div className={style.PWCouponGiftTimeText} style={{ color: `${activeTimeColor}`}} > { isShowAcitveTime &&  <span>活动时间7.1~7.30</span>}</div>
-                        <img style={{ width: '230px' }} src={"http://res.hualala.com/basicdoc/2fe87748-309d-4636-a646-128d6f8d4c6d.png"} alt="" />
+                        {/* <img style={{ width: '230px' }} src={"http://res.hualala.com/basicdoc/2fe87748-309d-4636-a646-128d6f8d4c6d.png"} alt="" /> */}
                         <img src='http://res.hualala.com/basicdoc/ed00ca7d-c65a-4c67-a39a-e280d71cf36a.png'alt='' className={style.pwCouponImg} style={{  width: 154, height: 39 }}/>
-                        <img src={`${exchangeBtnImg}`} alt='' className={style.pwCouponImg} style={{ top: '420', left: '48', width: 185, height: 37}}/>
+                        <img src={`${exchangeBtnImg}`} alt='' className={style.pwCouponImg} style={{ top: '404', left: '48', width: 185, height: 37}}/>
                     </div>
 
                 </div>
