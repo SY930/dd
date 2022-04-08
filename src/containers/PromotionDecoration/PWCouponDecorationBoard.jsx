@@ -34,10 +34,10 @@ export default class PWCouponDecorationBoard extends Component {
     renderPhonePreview() {
         const {
             decorationInfo: {
-                activeBg = '#feae1b',
+                activeImg,
                 btnBg = '#FFEDC2',
                 btnTextColor = '#AA7246',
-                activeImg,
+                // activeImg,
                 alertBackgroundImage,
                 canGetGiftTitleColor = '#AA7246',
                 giftListTitleColor = '#AA7246',
@@ -54,39 +54,34 @@ export default class PWCouponDecorationBoard extends Component {
                     {SALE_LABEL.k635s5a1}
                 </div>
                 <div className={style.typeTitle}>
-                    {SALE_LABEL.k636p0yo}
+                    口令领券
+                    {/* {SALE_LABEL.k636p0yo} */}
                 </div>
                 <img src={iphone} alt="" />
                 <img className={style.fakeHeader} src={phoneTop} alt="" />
-
-                <div style={{ background: activeBg }} className={style.scrollArea}>
-                    <img style={{ width: '100%' }} src={activeImg || freeGift} alt="" />
-                    <div style={{ width: '100%' }}>
-                        <div className={style.freeGiftTimeText}  >活动时间：2019/09/08 - 2019/09/09</div>
-                        {isShowGiftListContent ? <div style={{ color: giftListTitleColor }} className={style.freeGiftGetGift}>
-                            <div><img style={{ width: '14px', height: '14px' }} src={trumpetImg} /> 用户 ****领取了优惠券</div>
-                            <div>2019/09/08 09:03:00</div>
-                        </div> : null}
-                        {
-                            isShowCanGetGift ? <div className={style.freeGiftcanGetGiftList}>
-                                <div style={{ marginTop: '10px', color: canGetGiftTitleColor }}>可领礼品</div>
-                            </div> : null
-                        }
-
-                        <div className={style.freeGiftBtnWrap}>
-                            <div style={{ background: btnBg, color: btnTextColor }}>立即领取</div>
-                        </div>
+            <div className={style.PWCouponDecorationBox}>
+                <div style={{ background: 'url(http://res.hualala.com/basicdoc/72a72d50-759d-4e8d-86c5-2bf0e040cfa3.png) no-repeat', backgroundSize: 'contain' }} className={style.pwCouponscrollArea}>
+                    <p><span>规则</span></p><p><span>首页</span></p>
+                    <div style={{ width: '100%', textAlign: 'center' }}>
+                        <div className={style.PWCouponGiftTimeText}  >活动时间7.1~7.30</div>
+                        <img style={{ width: '230px' }} src={"http://res.hualala.com/basicdoc/2fe87748-309d-4636-a646-128d6f8d4c6d.png"} alt="" />
+                        <img src='http://res.hualala.com/basicdoc/ed00ca7d-c65a-4c67-a39a-e280d71cf36a.png'alt='' className={style.pwCouponImg} style={{  width: 154, height: 39 }}/>
+                        <img src='http://res.hualala.com/basicdoc/2d63a0a3-b64f-4a34-bc96-e461a7602ce2.png'alt='' className={style.pwCouponImg} style={{ top: '420', left: '48', width: 185, height: 37}}/>
                     </div>
 
                 </div>
+                </div>
                 {this.state.activeTab === '2' ?
                     <div className={style.blindGiftSuccessModal}>
-                        <div className={style.successAlertWrapper}>
-                            <img className={style.freeGiftSuccessModalImg1} src={alertBackgroundImage || modalImg1} />
-                            <div className={style.blindGiftSuccessModalCon}>
-                                <div className={style.blindGiftSuccessTip} style={{ fontSize: 20 }}>领取成功!</div>
+                        <div className={style.pwCouponSuccessAlertBox}>
+                            <img className={style.pwCouponSuccessModalImg} src={'http://res.hualala.com/basicdoc/7cde3a57-17f3-4b55-a915-e6c24022db2c.png'} />
+                            <div className={style.pwCouponSuccessModalCon}>
+                                <div className={style.blindGiftSuccessTip} >恭喜您获得以下礼品</div>
+                                <img src='http://res.hualala.com/basicdoc/e369f935-dc48-430b-8726-25566274004d.png' alt='' />
+                                <img src='http://res.hualala.com/basicdoc/e369f935-dc48-430b-8726-25566274004d.png' alt='' />
+                                <img src='http://res.hualala.com/basicdoc/e369f935-dc48-430b-8726-25566274004d.png' alt='' />
                                 {/* <div className={style.blindGiftSuccessTip}>{successTip}</div> */}
-                                <p className={style.blindSuccessBtnColor} style={{ backgroundColor: successBtnColor, color: successBtnTextColor }}>确定</p>
+                                <p className={style.blindSuccessBtnColor} style={{ background: '#FD6E5B', color: '#fff', marginTop: 19 }}>查看我的优惠券</p>
                             </div>
                         </div>
                     </div>
@@ -128,12 +123,23 @@ export default class PWCouponDecorationBoard extends Component {
                     </div>
                 </div>
                 <div className={style.sectionWrapper}>
-                    <div className={style.label}>背景颜色</div>
-                    <ColorSettingBlock title={"请选取一个你喜欢的颜色"} value={activeBg} onChange={(value) => onChange({ key: ['activeBg'], value })} />
+                    <div style={{ top: 30 }} className={style.label}>兑换按钮</div>
+                    <div style={{ width: 350 }} className={style.uploaderWrapper}>
+                        <DecorationUploader
+                            limit={0}
+                            value={activeImg}
+                            onChange={value => onChange({ key: ['activeImg'], value })}
+                        />
+                        <div className={style.uploaderTip}>
+                            <p>* 图片建议尺寸240x48像素</p>
+                            <p>* 不大于1000KB</p>
+                            <p>* 支持png、jpg、jpeg、gif</p>
+                        </div>
+                    </div>
                 </div>
 
                 <div className={style.sectionWrapper}>
-                    <div style={{ top: 5 }} className={style.label}>{SALE_LABEL.k636p2l0}</div>
+                    <div style={{ top: 5 }} className={style.label}>首页按钮</div>
                     <div className={style.inlineRow}>
                         <span>{SALE_LABEL.k6346bn4}</span>
                         <div className={style.borderedColorWrapper}>
@@ -156,41 +162,42 @@ export default class PWCouponDecorationBoard extends Component {
                     </div>
                 </div>
                 <div className={style.sectionWrapper}>
-                    <div style={{ top: 5 }} className={style.label}>可领礼品</div>
+                    <div style={{ top: 5 }} className={style.label}>规则按钮</div>
+                    <div className={style.inlineRow}>
+                        <span>{SALE_LABEL.k6346bn4}</span>
+                        <div className={style.borderedColorWrapper}>
+                            <WrappedColorPicker
+                                alpha={100}
+                                color={btnBg}
+                                onChange={({ color }) => onChange({ key: ['btnBg'], value: color })}
+                                placement="topLeft"
+                            />
+                        </div>
+                        <span>按钮文字</span>
+                        <div className={style.borderedColorWrapper}>
+                            <WrappedColorPicker
+                                alpha={100}
+                                color={btnTextColor}
+                                onChange={({ color }) => onChange({ key: ['btnTextColor'], value: color })}
+                                placement="topLeft"
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div className={style.sectionWrapper}>
+                    <div style={{ top: 5 }} className={style.label}>活动时间</div>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         <Switch checked={isShowCanGetGift} onChange={(e) => {
                             onChange({ key: ['isShowCanGetGift'], value: e });
                         }} style={{ width: '48px', height: '24px', borderRadius: '12px', marginRight: '16px' }} checkedChildren="开" unCheckedChildren="关" />
                         <div className={style.inlineRow}>
-                            <span>标题文字</span>
+                            <span>文字颜色</span>
                             <div className={style.borderedColorWrapper}>
                                 <WrappedColorPicker
                                     alpha={100}
                                     color={canGetGiftTitleColor}
                                     onChange={({ color }) => {
                                         onChange({ key: ['canGetGiftTitleColor'], value: color });
-                                    }}
-                                    placement="topLeft"
-                                />
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-                <div className={style.sectionWrapper}>
-                    <div style={{ top: 5 }} className={style.label}>领取列表</div>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <Switch checked={isShowGiftListContent} onChange={(e) => {
-                            onChange({ key: ['isShowGiftListContent'], value: e });
-                        }} style={{ width: '48px', height: '24px', borderRadius: '12px', marginRight: '16px' }} checkedChildren="开" unCheckedChildren="关" />
-                        <div className={style.inlineRow}>
-                            <span>显示文字</span>
-                            <div className={style.borderedColorWrapper}>
-                                <WrappedColorPicker
-                                    alpha={100}
-                                    color={giftListTitleColor}
-                                    onChange={({ color }) => {
-                                        onChange({ key: ['giftListTitleColor'], value: color });
                                     }}
                                     placement="topLeft"
                                 />
@@ -234,38 +241,36 @@ export default class PWCouponDecorationBoard extends Component {
                             </div>
                         </div>
                     </div>
-                    <div style={{overflow: 'hidden',height: 50, paddingTop: 10}}>
-                        <span style={{ marginLeft:44,float:'left',color: '#333333', whiteSpace: 'nowrap',fontWeight:'bold',fontSize:14 }}>引导文案</span>
+                    {/* <div style={{overflow: 'hidden',height: 50, paddingTop: 10}}> */}
+                        {/* <span style={{ marginLeft:44,float:'left',color: '#333333', whiteSpace: 'nowrap',fontWeight:'bold',fontSize:14 }}>引导文案</span> */}
                         {/* <div style={{marginLeft:49,float:'left', width: '512px', marginTop: -6 }}> */}
                             {/* <Input value={successTip} maxLength={30} onChange={this.handleExplainChange} addonAfter={<div>{successTip.length}/30</div>} /> */}
                         {/* </div> */}
-                    </div>
+                    {/* </div> */}
                     
                     <div className={style.sectionWrapper}>
-                        <div style={{ top: 5 }} className={style.label}>按钮样式</div>
-                        <div className={style.inlineRow}>
-                            <span>{SALE_LABEL.k6346bn4}</span>
-                            <div className={style.borderedColorWrapper}>
-                                <WrappedColorPicker
-                                    alpha={100}
-                                    color={successBtnColor}
-                                    onChange={({ color }) => onChange({ key: ['successBtnColor'], value: color })}
-                                    placement="topLeft"
-                                />
-                            </div>
+                    <div style={{ top: 5 }} className={style.label}>按钮样式</div>
+                    <div className={style.inlineRow}>
+                        <span>{SALE_LABEL.k6346bn4}</span>
+                        <div className={style.borderedColorWrapper}>
+                            <WrappedColorPicker
+                                alpha={100}
+                                color={successBtnColor}
+                                onChange={({ color }) => onChange({ key: ['btnBg'], value: color })}
+                                placement="topLeft"
+                            />
                         </div>
-                        <div style={{ marginTop: 10 }} className={style.inlineRow}>
-                            <span>{SALE_LABEL.k6346bvg}</span>
-                            <div className={style.borderedColorWrapper}>
-                                <WrappedColorPicker
-                                    alpha={100}
-                                    color={successBtnTextColor}
-                                    onChange={({ color }) => onChange({ key: ['successBtnTextColor'], value: color })}
-                                    placement="topLeft"
-                                />
-                            </div>
+                        <span>按钮文字</span>
+                        <div className={style.borderedColorWrapper}>
+                            <WrappedColorPicker
+                                alpha={100}
+                                color={successBtnTextColor}
+                                onChange={({ color }) => onChange({ key: ['btnTextColor'], value: color })}
+                                placement="topLeft"
+                            />
                         </div>
                     </div>
+                </div>
                 </div>
             </div>
         )

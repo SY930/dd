@@ -700,6 +700,65 @@
     font-weight: 500;
     color: rgba(136, 104, 50, 1);
 }
+.PWCouponDecorationBox {
+    position: absolute; 
+    top: 120px;
+     left: 92px;
+     width: 287px;
+     border-radius: 30px;
+     background: #f9dba9;
+     .pwCouponImg {
+        position: absolute;
+        left: 65px;
+        top: 360px;
+     }
+     .pwCouponscrollArea {
+        height: 550px;
+        border-radius: 0 0 30px 30px;
+        overflow-y: auto;
+
+        &::-webkit-scrollbar {
+            width: 3px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: #ddd;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: #666;
+        }
+        > p {
+            float: right;
+            width: 42px;
+            height: 22px;
+            margin: 12px 9px 0 0;
+            background: #F2CF9E;
+            border-radius: 11px;
+            text-align: center;
+            line-height: 22px;
+            > span {
+                display: inline-block;
+              
+               color: #6E441A;
+               transform: scale(.8);
+            }
+        }
+     }
+}
+.PWCouponGiftTimeText {
+    width: 76%;
+    height: 22px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 157px auto 17px;
+    // margin-top: 157px;
+    // background: rgba(0, 0, 0, 0.08);
+    border-radius: 6px;
+    font-weight: 500;
+    color: #87580E;
+}
 
 .freeGiftGetGift {
     width: 90%;
@@ -774,6 +833,11 @@
 .freeGiftSuccessModalImg1 {
     width: 100%;
 }
+.pwCouponSuccessModalImg {
+    position: absolute;
+    width: 100%;
+    z-index: 10;
+}
 
 .freeGiftSuccessModalCon,.blindGiftSuccessModalCon {
     width: 100%;
@@ -784,6 +848,22 @@
     border-radius: 0 0 10px 10px;
 }
 
+.pwCouponSuccessModalCon {
+    position: absolute;
+    width: 100%;
+    top: 100px;
+    padding-top: 25px;
+    padding-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 12px;
+    background: #FFF8E5;
+
+    > img {
+        margin-bottom: 6px;
+    }
+}
 .freeGiftSuccessTip {
     font-size: 12px;
     font-weight: 400;
@@ -860,6 +940,13 @@
         width: 80%;
         left: 50%;
         top: 100px;
+        transform: translateX(-50%);
+    }
+    .pwCouponSuccessAlertBox {
+        position: absolute;
+        width: 80%;
+        left: 50%;
+        top: 50px;
         transform: translateX(-50%);
     }
     .blindGiftSuccessTip{
