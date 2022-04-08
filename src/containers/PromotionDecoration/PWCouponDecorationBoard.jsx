@@ -34,18 +34,16 @@ export default class PWCouponDecorationBoard extends Component {
     renderPhonePreview() {
         const {
             decorationInfo: {
-                activeImg,
-                btnBg = '#FFEDC2',
-                btnTextColor = '#AA7246',
-                // activeImg,
-                alertBackgroundImage,
-                canGetGiftTitleColor = '#AA7246',
-                giftListTitleColor = '#AA7246',
-                // successTip = '请前往商家公众号查看/使用',
-                isShowGiftListContent = true,
-                isShowCanGetGift = true,
-                successBtnColor = '#FFE494',
-                successBtnTextColor = '#A74818',
+                activeImg = 'http://res.hualala.com/basicdoc/72a72d50-759d-4e8d-86c5-2bf0e040cfa3.png',
+                exchangeBtnImg='http://res.hualala.com/basicdoc/2d63a0a3-b64f-4a34-bc96-e461a7602ce2.png',
+                homeBtnBgColor='#F2CF9E',
+                homeTextColor='#6E441A',
+                ruleBtnBgColor='#F2CF9E',
+                ruleBtnTextColor='6E441A',
+                activeTimeColor='#87580E',
+                alertBgImg='http://res.hualala.com/basicdoc/7cde3a57-17f3-4b55-a915-e6c24022db2c.png',
+                successBtnBgColor='#FD6E5B',
+                successTextColor='#fff',
             },
         } = this.props;
         return (
@@ -60,13 +58,13 @@ export default class PWCouponDecorationBoard extends Component {
                 <img src={iphone} alt="" />
                 <img className={style.fakeHeader} src={phoneTop} alt="" />
             <div className={style.PWCouponDecorationBox}>
-                <div style={{ background: 'url(http://res.hualala.com/basicdoc/72a72d50-759d-4e8d-86c5-2bf0e040cfa3.png) no-repeat', backgroundSize: 'contain' }} className={style.pwCouponscrollArea}>
-                    <p><span>规则</span></p><p><span>首页</span></p>
+                <div style={{ backgroundImage: `url(${activeImg})`, backgroundRepeat: 'no-repeat', backgroundSize: 'contain' }} className={style.pwCouponscrollArea}>
+                    <p style={{ background: `${ruleBtnBgColor}` }}><span style={{color: `${ruleBtnTextColor}`}}>规则</span></p><p style={{ background: `${homeBtnBgColor}`,}}><span style={{ color: `${homeTextColor}`}}>首页</span></p>
                     <div style={{ width: '100%', textAlign: 'center' }}>
-                        <div className={style.PWCouponGiftTimeText}  >活动时间7.1~7.30</div>
+                        <div className={style.PWCouponGiftTimeText} style={{ color: `${activeTimeColor}`}} >活动时间7.1~7.30</div>
                         <img style={{ width: '230px' }} src={"http://res.hualala.com/basicdoc/2fe87748-309d-4636-a646-128d6f8d4c6d.png"} alt="" />
                         <img src='http://res.hualala.com/basicdoc/ed00ca7d-c65a-4c67-a39a-e280d71cf36a.png'alt='' className={style.pwCouponImg} style={{  width: 154, height: 39 }}/>
-                        <img src='http://res.hualala.com/basicdoc/2d63a0a3-b64f-4a34-bc96-e461a7602ce2.png'alt='' className={style.pwCouponImg} style={{ top: '420', left: '48', width: 185, height: 37}}/>
+                        <img src={`${exchangeBtnImg}`} alt='' className={style.pwCouponImg} style={{ top: '420', left: '48', width: 185, height: 37}}/>
                     </div>
 
                 </div>
@@ -74,14 +72,14 @@ export default class PWCouponDecorationBoard extends Component {
                 {this.state.activeTab === '2' ?
                     <div className={style.blindGiftSuccessModal}>
                         <div className={style.pwCouponSuccessAlertBox}>
-                            <img className={style.pwCouponSuccessModalImg} src={'http://res.hualala.com/basicdoc/7cde3a57-17f3-4b55-a915-e6c24022db2c.png'} />
+                            <img className={style.pwCouponSuccessModalImg} src={`${alertBgImg}`} />
                             <div className={style.pwCouponSuccessModalCon}>
                                 <div className={style.blindGiftSuccessTip} >恭喜您获得以下礼品</div>
                                 <img src='http://res.hualala.com/basicdoc/e369f935-dc48-430b-8726-25566274004d.png' alt='' />
                                 <img src='http://res.hualala.com/basicdoc/e369f935-dc48-430b-8726-25566274004d.png' alt='' />
                                 <img src='http://res.hualala.com/basicdoc/e369f935-dc48-430b-8726-25566274004d.png' alt='' />
                                 {/* <div className={style.blindGiftSuccessTip}>{successTip}</div> */}
-                                <p className={style.blindSuccessBtnColor} style={{ background: '#FD6E5B', color: '#fff', marginTop: 19 }}>查看我的优惠券</p>
+                                <p className={style.blindSuccessBtnColor} style={{ background: `${successBtnBgColor}`, color: `${successTextColor}`, marginTop: 19 }}>查看我的优惠券</p>
                             </div>
                         </div>
                     </div>
@@ -94,14 +92,14 @@ export default class PWCouponDecorationBoard extends Component {
     renderSettingPanel() {
         const {
             decorationInfo: {
-                activeBg = '#feae1b',
-                btnBg = '#FFEDC2',
-                btnTextColor = '#AA7246',
-                canGetGiftTitleColor = '#AA7246',
-                giftListTitleColor = '#AA7246',
                 activeImg,
-                isShowGiftListContent = true,
-                isShowCanGetGift = true
+                exchangeBtnImg,
+                homeBtnBgColor='#F2CF9E',
+                homeTextColor='#6E441A',
+                ruleBtnBgColor='#F2CF9E',
+                ruleBtnTextColor='#6E441A',
+                activeTimeColor='#87580E',
+                isShowAcitveTime = true,
             },
             onChange,
         } = this.props;
@@ -127,8 +125,8 @@ export default class PWCouponDecorationBoard extends Component {
                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
                         <DecorationUploader
                             limit={0}
-                            value={activeImg}
-                            onChange={value => onChange({ key: ['activeImg'], value })}
+                            value={exchangeBtnImg}
+                            onChange={value => onChange({ key: ['exchangeBtnImg'], value })}
                         />
                         <div className={style.uploaderTip}>
                             <p>* 图片建议尺寸240x48像素</p>
@@ -145,8 +143,8 @@ export default class PWCouponDecorationBoard extends Component {
                         <div className={style.borderedColorWrapper}>
                             <WrappedColorPicker
                                 alpha={100}
-                                color={btnBg}
-                                onChange={({ color }) => onChange({ key: ['btnBg'], value: color })}
+                                color={homeBtnBgColor}
+                                onChange={({ color }) => onChange({ key: ['homeBtnBgColor'], value: color })}
                                 placement="topLeft"
                             />
                         </div>
@@ -154,8 +152,8 @@ export default class PWCouponDecorationBoard extends Component {
                         <div className={style.borderedColorWrapper}>
                             <WrappedColorPicker
                                 alpha={100}
-                                color={btnTextColor}
-                                onChange={({ color }) => onChange({ key: ['btnTextColor'], value: color })}
+                                color={homeTextColor}
+                                onChange={({ color }) => onChange({ key: ['homeTextColor'], value: color })}
                                 placement="topLeft"
                             />
                         </div>
@@ -168,8 +166,8 @@ export default class PWCouponDecorationBoard extends Component {
                         <div className={style.borderedColorWrapper}>
                             <WrappedColorPicker
                                 alpha={100}
-                                color={btnBg}
-                                onChange={({ color }) => onChange({ key: ['btnBg'], value: color })}
+                                color={ruleBtnBgColor}
+                                onChange={({ color }) => onChange({ key: ['ruleBtnBgColor'], value: color })}
                                 placement="topLeft"
                             />
                         </div>
@@ -177,8 +175,8 @@ export default class PWCouponDecorationBoard extends Component {
                         <div className={style.borderedColorWrapper}>
                             <WrappedColorPicker
                                 alpha={100}
-                                color={btnTextColor}
-                                onChange={({ color }) => onChange({ key: ['btnTextColor'], value: color })}
+                                color={ruleBtnTextColor}
+                                onChange={({ color }) => onChange({ key: ['ruleBtnTextColor'], value: color })}
                                 placement="topLeft"
                             />
                         </div>
@@ -187,17 +185,17 @@ export default class PWCouponDecorationBoard extends Component {
                 <div className={style.sectionWrapper}>
                     <div style={{ top: 5 }} className={style.label}>活动时间</div>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <Switch checked={isShowCanGetGift} onChange={(e) => {
-                            onChange({ key: ['isShowCanGetGift'], value: e });
+                        <Switch checked={isShowAcitveTime} onChange={(e) => {
+                            onChange({ key: ['isShowAcitveTime'], value: e });
                         }} style={{ width: '48px', height: '24px', borderRadius: '12px', marginRight: '16px' }} checkedChildren="开" unCheckedChildren="关" />
                         <div className={style.inlineRow}>
                             <span>文字颜色</span>
                             <div className={style.borderedColorWrapper}>
                                 <WrappedColorPicker
                                     alpha={100}
-                                    color={canGetGiftTitleColor}
+                                    color={activeTimeColor}
                                     onChange={({ color }) => {
-                                        onChange({ key: ['canGetGiftTitleColor'], value: color });
+                                        onChange({ key: ['activeTimeColor'], value: color });
                                     }}
                                     placement="topLeft"
                                 />
@@ -214,9 +212,9 @@ export default class PWCouponDecorationBoard extends Component {
         const {
             decorationInfo: {
                 // successTip = '请前往商家公众号查看/使用',
-                alertBackgroundImage,
-                successBtnColor = '#FFE494',
-                successBtnTextColor = '#A74818',
+                alertBgImg,
+                successBtnBgColor='#FD6E5B',
+                successTextColor='#fff',
             },
             onChange
         } = this.props;
@@ -229,13 +227,13 @@ export default class PWCouponDecorationBoard extends Component {
                             <CropperUploader
                                 isAbsoluteUrl={true}
                                 limit={1000}
-                                value={alertBackgroundImage}
+                                value={alertBgImg}
                                 cropperRatio={546 / 184}
                                 // width={245}
-                                onChange={value => onChange({ key: ['alertBackgroundImage'], value })}
+                                onChange={value => onChange({ key: ['alertBgImg'], value })}
                             />
                             <div className={style.uploaderTip}>
-                                <p>* 图片建议尺寸546x184像素</p>
+                                <p>* 图片建议尺寸222x122像素</p>
                                 <p>* 不大于1000KB</p>
                                 <p>* 支持png、jpg、jpeg、gif</p>
                             </div>
@@ -255,8 +253,8 @@ export default class PWCouponDecorationBoard extends Component {
                         <div className={style.borderedColorWrapper}>
                             <WrappedColorPicker
                                 alpha={100}
-                                color={successBtnColor}
-                                onChange={({ color }) => onChange({ key: ['btnBg'], value: color })}
+                                color={successBtnBgColor}
+                                onChange={({ color }) => onChange({ key: ['successBtnBgColor'], value: color })}
                                 placement="topLeft"
                             />
                         </div>
@@ -264,8 +262,8 @@ export default class PWCouponDecorationBoard extends Component {
                         <div className={style.borderedColorWrapper}>
                             <WrappedColorPicker
                                 alpha={100}
-                                color={successBtnTextColor}
-                                onChange={({ color }) => onChange({ key: ['btnTextColor'], value: color })}
+                                color={successTextColor}
+                                onChange={({ color }) => onChange({ key: ['successTextColor'], value: color })}
                                 placement="topLeft"
                             />
                         </div>
