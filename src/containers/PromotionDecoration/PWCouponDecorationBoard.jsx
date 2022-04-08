@@ -39,12 +39,12 @@ export default class PWCouponDecorationBoard extends Component {
                 homeBtnBgColor='#F2CF9E',
                 homeTextColor='#6E441A',
                 ruleBtnBgColor='#F2CF9E',
-                ruleBtnTextColor='6E441A',
+                ruleBtnTextColor='#6E441A',
                 activeTimeColor='#87580E',
                 alertBgImg='http://res.hualala.com/basicdoc/7cde3a57-17f3-4b55-a915-e6c24022db2c.png',
                 successBtnBgColor='#FD6E5B',
                 successTextColor='#fff',
-            },
+                isShowAcitveTime=true,            },
         } = this.props;
         return (
             <div className={style.previewArea}>
@@ -61,7 +61,7 @@ export default class PWCouponDecorationBoard extends Component {
                 <div style={{ backgroundImage: `url(${activeImg})`, backgroundRepeat: 'no-repeat', backgroundSize: 'contain' }} className={style.pwCouponscrollArea}>
                     <p style={{ background: `${ruleBtnBgColor}` }}><span style={{color: `${ruleBtnTextColor}`}}>规则</span></p><p style={{ background: `${homeBtnBgColor}`,}}><span style={{ color: `${homeTextColor}`}}>首页</span></p>
                     <div style={{ width: '100%', textAlign: 'center' }}>
-                        <div className={style.PWCouponGiftTimeText} style={{ color: `${activeTimeColor}`}} >活动时间7.1~7.30</div>
+                        <div className={style.PWCouponGiftTimeText} style={{ color: `${activeTimeColor}`}} > { isShowAcitveTime &&  <span>活动时间7.1~7.30</span>}</div>
                         <img style={{ width: '230px' }} src={"http://res.hualala.com/basicdoc/2fe87748-309d-4636-a646-128d6f8d4c6d.png"} alt="" />
                         <img src='http://res.hualala.com/basicdoc/ed00ca7d-c65a-4c67-a39a-e280d71cf36a.png'alt='' className={style.pwCouponImg} style={{  width: 154, height: 39 }}/>
                         <img src={`${exchangeBtnImg}`} alt='' className={style.pwCouponImg} style={{ top: '420', left: '48', width: 185, height: 37}}/>
