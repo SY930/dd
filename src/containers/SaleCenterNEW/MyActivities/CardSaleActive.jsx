@@ -222,6 +222,7 @@ class CardSaleActive extends Component {
                                             <Authority rightCode={BASIC_PROMOTION_DELETE}>
                                                 <span
                                                     className={styles.operateDelete}
+                                                    disabled={!isMine(item)}
                                                     onClick={() => {
                                                         if (!isMine(item)) {
                                                             return
