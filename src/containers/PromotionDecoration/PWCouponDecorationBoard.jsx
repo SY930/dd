@@ -106,7 +106,7 @@ export default class PWCouponDecorationBoard extends Component {
         return (
             <div className={style.freeGiftDecorationWrap} style={{ paddingTop: 35 }}>
                 <div className={style.sectionWrapper}>
-                    <div style={{ top: 30 }} className={style.label}>{SALE_LABEL.k6346c3s}</div>
+                    <div style={{ top: 30 }} className={style.label}>活动背景</div>
                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
                         <DecorationUploader
                             limit={0}
@@ -222,7 +222,7 @@ export default class PWCouponDecorationBoard extends Component {
             <div>
                 <div >
                     <div className={style.sectionWrapper}>
-                        <div style={{ top: 30 }} className={style.label}>弹窗背景图</div>
+                        <div style={{ top: 30 }} className={style.label}>弹窗主图</div>
                         <div style={{ width: 350 }} className={style.uploaderWrapper}>
                             <CropperUploader
                                 isAbsoluteUrl={true}
