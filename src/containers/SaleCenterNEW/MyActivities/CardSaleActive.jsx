@@ -236,7 +236,7 @@ class CardSaleActive extends Component {
                                                 item.promotionType === '1050' ?
                                                     <a
                                                         href="#"
-                                                        // disabled={!isGroupPro || record.status != 3}
+                                                        disabled={isHuaTian()}
                                                         onClick={() => {
                                                             this.props.toggleIsUpdate(true)
                                                             this.props.updateCopy()
@@ -247,8 +247,8 @@ class CardSaleActive extends Component {
                                                     <Authority rightCode={BASIC_PROMOTION_UPDATE}>
                                                         <a
                                                             href="#"
-                                                            disabled={!isGroupPro}
-                                                            style={!isGroupPro ? { color: 'gray', opacity: '.5' } : {}}
+                                                            disabled={!isGroupPro || isHuaTian()}
+                                                            style={!isGroupPro || isHuaTian() ? { color: 'gray', opacity: '.5' } : {}}
                                                             onClick={() => {
                                                                 this.props.toggleIsUpdate(true)
                                                                 this.props.updateCopy()

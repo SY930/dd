@@ -1338,11 +1338,12 @@ class MyActivities extends React.Component {
                                     }}
                                 >{COMMON_LABEL.delete}</a>
                             </Authority>
+                            {/* 华天集团促销活动不可编辑 */}
                             {
                                 record.promotionType === '1050' ?
                                     <a
                                         href="#"
-                                        // disabled={!isGroupPro || record.status != 3}
+                                        disabled={isHuaTian()}
                                         onClick={() => {
                                             this.props.toggleIsUpdate(true)
                                             this.setState({
@@ -1356,7 +1357,7 @@ class MyActivities extends React.Component {
                                     <Authority rightCode={BASIC_PROMOTION_UPDATE}>
                                         <a
                                             href="#"
-                                            disabled={!isGroupPro}
+                                            disabled={!isGroupPro || isHuaTian()}
                                             onClick={() => {
                                                 this.props.toggleIsUpdate(true)
                                                 this.setState({
