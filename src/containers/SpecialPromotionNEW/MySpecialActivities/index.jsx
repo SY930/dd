@@ -1350,31 +1350,31 @@ class MySpecialActivities extends React.Component {
                                     this.handleUpdateOpe(text, record, index);
                                 }
                             } else {
-                                if ((isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record))) {
-                                    e.preventDefault()
-                                } else {
-                                    if (Number(record.eventWay) === 70) {
-                                        message.warning(`该活动已下线`);
-                                        return;
-                                    }
-                                    if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83) {
-                                        this.onV3Click(record.itemID, false, record.eventWay);
-                                        return;
-                                    }
-                                    if (record.eventWay === 66 || record.eventWay === 81 || record.eventWay === 82) {
-                                        this.handleShowDetail({
-                                            record,
-                                            isView: false,
-                                            isEdit: true
-                                        })
-                                        return;
-                                    }
-                                    this.props.toggleIsUpdate(true)
-                                    this.setState({
-                                        isCopy: true,
-                                    })
-                                    this.handleUpdateOpe(text, record, index);
+                                // if ((isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record))) {
+                                //     e.preventDefault()
+                                // } else {
+                                if (Number(record.eventWay) === 70) {
+                                    message.warning(`该活动已下线`);
+                                    return;
                                 }
+                                if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83) {
+                                    this.onV3Click(record.itemID, false, record.eventWay);
+                                    return;
+                                }
+                                if (record.eventWay === 66 || record.eventWay === 81 || record.eventWay === 82) {
+                                    this.handleShowDetail({
+                                        record,
+                                        isView: false,
+                                        isEdit: true
+                                    })
+                                    return;
+                                }
+                                this.props.toggleIsUpdate(true)
+                                this.setState({
+                                    isCopy: true,
+                                })
+                                this.handleUpdateOpe(text, record, index);
+                                // }
                             }
 
                         }}

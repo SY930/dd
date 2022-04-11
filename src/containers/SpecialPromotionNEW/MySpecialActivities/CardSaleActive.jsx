@@ -212,30 +212,30 @@ class CardSaleActive extends Component {
                     // <Authority rightCode={SPECIAL_PROMOTION_UPDATE}>
                     <a
                         href="#"
-                        onClick={(e) => {
-                            if ((isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record))) {
-                                e.preventDefault()
-                            } else {
-                                if (Number(record.eventWay) === 70) {
-                                    message.warning('该活动已下线');
-                                    return;
-                                }
-                                if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83) {
-                                    this.props.onV3Click(record.itemID, false, record.eventWay);
-                                    return;
-                                }
-                                if (record.eventWay === 66 || record.eventWay === 81 || record.eventWay === 82) {
-                                    this.props.handleShowDetail({
-                                        record,
-                                        isView: false,
-                                        isEdit: true,
-                                    })
-                                    return;
-                                }
-                                this.props.toggleIsUpdate(true)
-                                this.props.isCopy()
-                                this.props.handleUpdateOpe(text, record, index);
+                        onClick={() => {
+                            // if ((isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record))) {
+                            //     e.preventDefault()
+                            // } else {
+                            if (Number(record.eventWay) === 70) {
+                                message.warning('该活动已下线');
+                                return;
                             }
+                            if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83) {
+                                this.props.onV3Click(record.itemID, false, record.eventWay);
+                                return;
+                            }
+                            if (record.eventWay === 66 || record.eventWay === 81 || record.eventWay === 82) {
+                                this.props.handleShowDetail({
+                                    record,
+                                    isView: false,
+                                    isEdit: true,
+                                })
+                                return;
+                            }
+                            this.props.toggleIsUpdate(true)
+                            this.props.isCopy()
+                            this.props.handleUpdateOpe(text, record, index);
+                            // }
                             // }
                         }}
                     >
@@ -332,7 +332,13 @@ class CardSaleActive extends Component {
                                                 item.eventWay != '80' && <Authority rightCode={SPECIAL_PROMOTION_UPDATE}>
                                                     <span
                                                         className={styles.operateEdit}
-                                                        onClick={(e) => { this.handleEditActive(e, item, index) }}
+                                                        disabled={
+                                                            item.eventWay == '64' ? null : 
+                                                             (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && (item.isActive != '0' || !isMine(item)))
+                                                        }
+                                                        onClick={(e) => {
+                                                            this.handleEditActive(e, item, index)
+                                                        }}
                                                     >
                                                         编辑
                                                     </span>
@@ -342,6 +348,7 @@ class CardSaleActive extends Component {
                                                 item.eventWay != '80' && <Authority rightCode={SPECIAL_PROMOTION_DELETE}>
                                                     <span
                                                         className={styles.operateDelete}
+                                                        disabled={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)}
                                                         onClick={() => {
                                                             if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || item.eventWay === 80) {
                                                                 return;

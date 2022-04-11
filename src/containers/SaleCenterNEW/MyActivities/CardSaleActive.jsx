@@ -157,6 +157,7 @@ class CardSaleActive extends Component {
                                                     className={`${styles.switcherSaleCard} ${this.isToggleActiveDisabled(item) ? styles.switcherdisabled : ''}`}
                                                     checked={defaultChecked}
                                                     onChange={(e) => {
+                                                        if (this.isToggleActiveDisabled(item)) return null
                                                         this.props.handleSattusActive(item)(() => {
                                                             this.props.handleDisableClickEvent(_, item, index, null, '使用状态修改成功')
                                                         })

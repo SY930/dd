@@ -749,20 +749,6 @@ class MyActivities extends React.Component {
 
     // 状态启用禁用前判断是否是门店
     handleSattusActive = (record) => (handleNext) => {
-        const isToggleActiveDisabled = (() => {
-            if (!isGroupOfHuaTianGroupList()) { // 门店创建
-                return false
-            }
-            if (isHuaTian()) {
-                return record.userType == 2 || record.userType == 0;
-            }
-            if (isBrandOfHuaTianGroupList()) {
-                return record.userType == 1 || record.userType == 3 || !isGroupPro;
-            }
-        })()
-        if (isToggleActiveDisabled) {
-            return
-        }
         if (record.maintenanceLevel == '1') {
             Modal.info({
                 title: `活动无法操作`,
