@@ -51,13 +51,6 @@ class ManyFace extends Component {
         form.validateFields((e, v) => {
             if (!e) {
                 const formData1 = { ...v };
-                // 保存redux第一步的日期数据
-                const { eventRange } = v;
-                const newEventRange = this.formatEventRange(eventRange);
-                this.props.setSpecialBasicInfo({
-                    ...formData1,
-                    ...newEventRange,
-                });
                 this.setState({ formData1 });
                 this.onGoNext();
             }
