@@ -62,7 +62,7 @@ export default class Gift extends Component {
         }
     }
     render() {
-        const { formKeys } = this.state;
+        const { formKeys, giftIDNumber} = this.state;
         let { formData } = this.props;
         const newFormItems = this.resetFormItems();
         formData = {...formData, giftIDNumber: giftIDNumber ? giftIDNumber : formData.giftID}
