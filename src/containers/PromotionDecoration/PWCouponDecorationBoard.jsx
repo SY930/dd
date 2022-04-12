@@ -58,7 +58,7 @@ export default class PWCouponDecorationBoard extends Component {
                 <img src={iphone} alt="" />
                 <img className={style.fakeHeader} src={phoneTop} alt="" />
             <div className={style.PWCouponDecorationBox}>
-                <div style={{ backgroundImage: `url(${activeImg})`, backgroundRepeat: 'no-repeat', backgroundSize: 'contain' }} className={style.pwCouponscrollArea}>
+                <div style={{ backgroundImage: `url(${activeImg})`, backgroundRepeat: 'no-repeat', backgroundSize: 'cover' }} className={style.pwCouponscrollArea}>
                     <p style={{ background: `${ruleBtnBgColor}` }}><span style={{color: `${ruleBtnTextColor}`}}>规则</span></p><p style={{ background: `${homeBtnBgColor}`,}}><span style={{ color: `${homeTextColor}`}}>首页</span></p>
                     <div style={{ width: '100%', textAlign: 'center' }}>
                         <div className={style.PWCouponGiftTimeText} style={{ color: `${activeTimeColor}`}} > { isShowAcitveTime &&  <span>活动时间7.1~7.30</span>}</div>
