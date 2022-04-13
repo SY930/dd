@@ -28,6 +28,7 @@ const DECORATABLE_PROMOTIONS = [
     '68',
     '79',
     '85',
+    '83',
 ]
 const copyUrlList = [
     '21', // 免费领取
@@ -38,7 +39,6 @@ const copyUrlList = [
     '68', // 推荐有礼
     '79', // 盲盒
     '66', // 膨胀大礼包
-    '83', // 口令领券
 ]
 const isDecorationAvailable = ({ eventWay }) => {
     return DECORATABLE_PROMOTIONS.includes(`${eventWay}`)

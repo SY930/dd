@@ -25,6 +25,7 @@ import RecommendHaveGift from './RecommendHaveGift'
 import BlindBoxDecorationBoard from './BlindBoxDecorationBoard';
 import TicketBagDecoration from './TicketBagDecoration'
 import ManyFaceDecoration from './ManyFaceDecoration';
+import PassWordCouponDecorationBoard from './PWCouponDecorationBoard'
 
 import {
     getDecorationInfo,
@@ -387,6 +388,8 @@ export default class PromotionDecoration extends Component {
                 return <TicketBagDecoration onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
             case '85':
                 return <ManyFaceDecoration onChange={updateDecorationFaceItem} decorationInfo={_faceDecorationInfo} type={type} faceArr={faceArr}/>
+            case '83':
+                return <PassWordCouponDecorationBoard onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
             default:
                 return <div></div>
         }
