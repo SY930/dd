@@ -112,7 +112,7 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         right: 13,
         bottom: 3,
         isHot: true,
-        isNew: new Date('2022/03/17').getTime(),
+        isNew: new Date('2022/04/12').getTime(),
     },
     {
         title: '好友助力（原膨胀大礼包）',
@@ -124,7 +124,7 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         key: '66',
         right: 16,
         bottom: 2,
-        isNew: new Date('2022/03/17').getTime(),
+        isNew: new Date('2022/04/12').getTime(),
     },
     {
         title: SALE_LABEL.k639vh8y,
@@ -136,7 +136,7 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         key: '67',
         right: 13,
         bottom: 1,
-        isNew: new Date('2022/03/17').getTime(),
+        isNew: new Date('2022/04/12').getTime(),
         isOffline: true,     //是否下线状态
     },
     {
@@ -149,7 +149,7 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         key: '68',
         right: 11,
         bottom: 0,
-        isNew: new Date('2022/03/17').getTime(),
+        isNew: new Date('2022/04/12').getTime(),
     },
     {
         title: '免费赠券（原免费领取）',
@@ -203,7 +203,7 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         tags: ['微信'],
         signs: ['wx'],
         key: '5020',
-        isNew: new Date('2022/03/17').getTime(),
+        isNew: new Date('2022/04/12').getTime(),
         right: 10,
         bottom: 0,
     },
@@ -225,7 +225,7 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
         right: 12,
         bottom: 4,
         isHot: true,
-        isNew: new Date('2022/03/17').getTime(),
+        isNew: new Date('2022/04/12').getTime(),
     },
     {
         title: '签到',
@@ -238,7 +238,7 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
         right: 14,
         bottom: 12,
         isHot: true,
-        isNew: new Date('2022/03/17').getTime(),
+        isNew: new Date('2022/04/12').getTime(),
     },
     {
         title: '支付后广告',
@@ -250,7 +250,7 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
         key: '77',
         right: 16,
         bottom: 6,
-        isNew: new Date('2022/03/17').getTime(),
+        isNew: new Date('2022/04/12').getTime(),
     },
     {
         title: '下单抽抽乐',
@@ -262,7 +262,7 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
         key: '78',
         right: 12,
         bottom: 4,
-        isNew: new Date('2022/03/17').getTime(),
+        isNew: new Date('2022/04/12').getTime(),
     },
     // 摇奖活动
     {
@@ -319,7 +319,7 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
         key: '82',
         right: 16,
         bottom: 2,
-        isNew: new Date('2022/03/17').getTime(),
+        isNew: new Date('2022/04/12').getTime(),
     },
     {
         title: '口令领券',
@@ -332,7 +332,7 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
         right: 12,
         bottom: 4,
         isHot: true,
-        isNew: new Date('2022/03/17').getTime(),
+        isNew: new Date('2022/04/12').getTime(),
     },
 ];
 
@@ -353,7 +353,7 @@ export const REPEAT_PROMOTION_TYPES = [
         right: 16,
         bottom: 6,
         isHot: true,
-        isNew: new Date('2022/03/17').getTime(),
+        isNew: new Date('2022/04/12').getTime(),
     },
     {
         title: '微信支付有礼',
@@ -366,7 +366,7 @@ export const REPEAT_PROMOTION_TYPES = [
         right: 16,
         bottom: 6,
         isHot: true,
-        isNew: new Date('2022/03/17').getTime(),
+        isNew: new Date('2022/04/12').getTime(),
     },
     {
         title: '集点卡',
@@ -379,7 +379,7 @@ export const REPEAT_PROMOTION_TYPES = [
         right: 16,
         bottom: 6,
         isHot: true,
-        isNew: new Date('2022/03/17').getTime(),
+        isNew: new Date('2022/04/12').getTime(),
     },
     // 群发礼品
     {
@@ -471,7 +471,7 @@ export const REPEAT_PROMOTION_TYPES = [
         key: '85',
         right: 16,
         bottom: 6,
-        isNew: new Date('2022/03/17').getTime(),
+        isNew: new Date('2022/04/12').getTime(),
     },
 ];
 
