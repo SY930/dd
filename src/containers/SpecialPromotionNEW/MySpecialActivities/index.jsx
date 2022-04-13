@@ -7,7 +7,8 @@ import { COMMON_LABEL } from 'i18n/common';
 import {
     Table, Input, Select, DatePicker,
     Button, Modal, message,
-    Spin, Icon, Alert, Switch,
+    Spin, Icon, Alert, Switch, Tabs,
+    Tooltip,
 } from 'antd';
 import { throttle, isEmpty } from 'lodash';
 import { jumpPage, closePage } from '@hualala/platform-base'
@@ -40,6 +41,7 @@ import {
 } from '../../../redux/actions/saleCenterNEW/types';
 
 import ActivityMain from '../activityMain';
+import MyActivities from '../../SaleCenterNEW/MyActivities/MyActivities'
 
 import registerPage from '../../../index';
 import { SPECIAL_PAGE, PROMOTION_DECORATION, SALE_CENTER_PAYHAVEGIFT } from '../../../constants/entryCodes';
@@ -72,7 +74,7 @@ import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_GIFT } from 'i18n/common/gift';
 import { STRING_SPE } from 'i18n/common/special';
 import { getStore } from '@hualala/platform-base'
-import { SALE_STRING } from 'i18n/common/salecenter'
+// import { SALE_STRING } from 'i18n/common/salecenter'
 import EmptyPage from "../../../components/common/EmptyPage";
 import Chou2Le from "../../PromotionV3/Chou2Le";   // 抽抽乐
 import BlindBox from "../../PromotionV3/BlindBox";   // 盲盒
@@ -80,9 +82,13 @@ import PassWordCoupon from "../../PromotionV3/PassWordCoupon";   // 口令领券
 import { isFormalRelease } from "../../../utils/index"
 import indexStyles from './mySpecialActivities.less'
 import ManyFace from '../../PromotionV3/ManyFace';
+import CardSaleActive from './CardSaleActive';
+import Card from '../../../assets/card.png';
+
 const confirm = Modal.confirm;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
+const TabPane = Tabs.TabPane;
 const mapStateToProps = (state) => {
     return {
         mySpecialActivities: state.sale_mySpecialActivities_NEW,
@@ -93,7 +99,6 @@ const mapStateToProps = (state) => {
         shopList: state.user.getIn(['accountInfo', 'dataPermissions', 'shopList'])
     };
 };
-
 const DECORATABLE_PROMOTIONS = [
     '20',
     '21',
@@ -244,12 +249,17 @@ class MySpecialActivities extends React.Component {
             qrItemID: '', // 点击提取链接/二维码 当前活动的itemID
             giftArr: [],
             allWeChatAccountList: [],
-            pushMessageMpID:'',
-            groupID:'',
+            pushMessageMpID: '',
+            groupID: '',
+            isCopy: false,
+            pushMessageMpID: '',
+            groupID: '',
             channelContent: '',
             channelOptions: _.range(0, 10).map(item => ({ label: `渠道${item + 1}`, value: `渠道${item + 1}` })),
             page: '',
             scene: '',
+            tabKeys: 'saleSpecialPage',
+            stylesShow: 'list',
         };
         this.cfg = {
             eventWay: [
@@ -306,6 +316,26 @@ class MySpecialActivities extends React.Component {
         this.handleUpdateOpe = this.handleUpdateOpe.bind(this);
     }
 
+    fromCrmJump = () => {
+        const { from, itemID } = this.getQueryVariable();
+        if (from === 'manyFace') {
+            this.handleDecorationStart({ itemID });
+        }
+    }
+
+    getQueryVariable() {
+        const search = window.decodeURIComponent(window.location.search)
+        var query = search.substr(1)
+        query = query.split('&')
+        var params = {}
+        for (let i = 0; i < query.length; i++) {
+            let q = query[i].split('=')
+            if (q.length === 2) {
+                params[q[0]] = q[1]
+            }
+        }
+        return params
+    }
     /**
      * @description toggle the advanced qualification selection.
      * */
@@ -322,6 +352,7 @@ class MySpecialActivities extends React.Component {
     }
 
     toggleStateFailCallBack(val) {
+        console.log("🚀 ~ file: index.jsx ~ line 363 ~ MySpecialActivities ~ toggleStateFailCallBack ~ val", val)
         message.error(val);
     }
 
@@ -353,7 +384,7 @@ class MySpecialActivities extends React.Component {
     }
     // 关闭更新
     handleDismissUpdateModal() {
-        if(this.state.isCopy) {
+        if (this.state.isCopy) {
             this.handleQuery(this.state.pageNo)
         }
         this.setState({
@@ -390,6 +421,9 @@ class MySpecialActivities extends React.Component {
             let { authStatus } = checkAuthLicense(res)
             this.setState({ authStatus })
         });
+        // console.log('componentDidMountcomponentDidMountcomponentDidMount')
+        // 千人千面活动创建和更新完，点去装修跳转页面
+        this.fromCrmJump();
     }
 
     // 产品授权
@@ -581,12 +615,100 @@ class MySpecialActivities extends React.Component {
         })
     }
 
+    handleChangeTabs = (key) => {
+        this.setState({
+            tabKeys: key,
+        })
+    }
+
+    // 点击按钮前先弹窗
+    handleEditActive = (record) => (handleNext) => {
+        if (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && (record.isActive != '0' || !isMine(record)) && record.eventWay != 64) {
+            Modal.confirm({
+                title: `活动编辑`,
+                content: '活动无法编辑。',
+                iconType: 'exclamation-circle',
+            });
+            return;
+        }
+        if (record.isActive == '1') { // 正在进行中的活动弹窗提示
+            Modal.confirm({
+                title: `活动编辑`,
+                content: '活动正在进行中，确定要进行编辑吗？',
+                iconType: 'exclamation-circle',
+                onOk() {
+                    handleNext();
+                },
+                onCancel() { },
+            });
+        } else {
+            handleNext()
+        }
+    }
+
+    // 点击删除按钮先弹窗
+    handleDelActive = (record) => (handleNext) => {
+        if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
+            Modal.confirm({
+                title: `活动删除`,
+                content: '活动无法删除。',
+                iconType: 'question-circle'
+            });
+            return;
+        }
+        if (record.isActive == '1') {
+            Modal.confirm({
+                title: `确认删除这个活动`,
+                content: '活动正在启用中，删除后无法恢复，线上投放的活动链接及二维码将会失效。',
+                iconType: 'question-circle',
+                onOk() {
+                    handleNext();
+                },
+                onCancel() { },
+            });
+            return
+        }
+        Modal.confirm({
+            title: `确认删除这个活动`,
+            content: '删除后无法恢复，线上投放的活动链接及二维码将会失效。',
+            iconType: 'question-circle',
+            onOk() {
+                handleNext();
+            },
+            onCancel() { },
+        });
+    }
+
+    handleSattusActive = (record) => (handleNext) => {
+        if (record.isActive == '-1' || record.isActive == '2') {
+            Modal.info({
+                title: `活动无法启用`,
+                content: `活动已${record.isActive == '-1' ? '结束' : '失效'}，请修改可用的活动时间。`,
+                okText: '确定',
+                // cancelText: null,
+                iconType: 'exclamation-circle',
+                onOk() {
+                },
+                onCancel() { },
+                // okType: 'primary'
+            });
+            return
+        }
+        handleNext();
+    }
+
+    // 列表样式切换
+    stylesChange = (val) => {
+        this.setState({
+            stylesShow: val
+        })
+    }
     // 渲染小程序列表
     renderApp() {
         const { apps = [] } = this.state;
-        return(
-            <Select style={{ width: '40%', margin: '0 10px'}} onChange={this.handleAppChange}>
-                {apps.map((x, index)=>{
+        return (
+            <Select style={{ width: '40%', margin: '0 10px' }} onChange={this.handleAppChange}>
+                {apps.map((x, index) => {
                     return <Option key={index} value={x.appID} >{x.nickName || '缺失nickName子段'}</Option>
                 })}
             </Select>
@@ -769,22 +891,66 @@ class MySpecialActivities extends React.Component {
 
 
     render() {
-        const { v3visible, itemID, view, isShowCopyUrl, urlContent, curKey } = this.state;
+        const { v3visible, itemID, view, isShowCopyUrl, urlContent, curKey, tabKeys, stylesShow, dataSource } = this.state;
         return (
             <div style={{ backgroundColor: this.state.authStatus ? '#F3F3F3' : '#fff' }} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
-                {this.renderHeader()}
+                {
+                    this.renderHeader()
+
+                }
                 {
                     !this.state.authStatus ?
                         <EmptyPage /> :
                         <div>
                             <PromotionCalendarBanner />
-                            <div className={styles.pageContentWrapper} style={{ minHeight: 'calc(100vh - 160px)' }}>
-                                <div style={{ padding: '0' }} className="layoutsHeader">
-                                    {this.renderFilterBar()}
-                                    <div style={{ margin: '0' }} className="layoutsLine"></div>
-                                </div>
-                                {this.renderTables()}
-                            </div>
+                            <Tabs defaultActiveKey={tabKeys} onChange={this.handleChangeTabs} className="tabsStyles" style={{ backgroundColor: '#fff' }}>
+                                <TabPane tab="营销活动" key="saleSpecialPage">
+                                    <div className={styles.pageContentWrapper} style={{ minHeight: 'calc(100vh - 160px)' }}>
+                                        <div style={{ padding: '0' }} className="layoutsHeader">
+                                            {this.renderFilterBar()}
+                                            <div style={{ margin: '0' }} className="layoutsLine"></div>
+                                        </div>
+
+                                        {stylesShow === 'list' ?
+                                            this.renderTables() :
+                                            <CardSaleActive
+                                                dataSource={dataSource}
+                                                type='special'
+                                                cfg={this.cfg}
+                                                onV3Click={this.onV3Click}
+                                                handleShowDetail={this.handleShowDetail}
+                                                toggleIsUpdate={this.props.toggleIsUpdate}
+                                                handleUpdateOpe={this.handleUpdateOpe}
+                                                handleSattusActive={(item, index) => {
+                                                    this.handleSattusActive(item)(() => this.handleDisableClickEvent(item.operation, item, index, null, '使用状态修改成功'))
+                                                }}
+                                                user={this.props.user}
+                                                onChangePage={this.onChangePage}
+                                                onShowSizeChange={this.onShowSizeChange}
+                                                pageNo={this.state.pageNo}
+                                                pageSizes={this.state.pageSizes}
+                                                total={this.state.total}
+                                                handleEditActive={this.handleEditActive}
+                                                handleDelActive={this.handleDelActive}
+                                                checkDeleteInfo={this.checkDeleteInfo}
+                                                isCopy={
+                                                    () => {
+                                                        this.setState({
+                                                            isCopy: true
+                                                        })
+                                                    }
+                                                }
+                                                checkDetailInfo={this.checkDetailInfo}
+                                                handleDecorationStart={this.handleDecorationStart}
+                                                handleCopyUrl={this.handleCopyUrl}
+                                                handelStopEvent={this.handelStopEvent}
+                                            />}
+                                    </div>
+                                </TabPane>
+                                <TabPane tab="促销活动" key="onSalePage">
+                                    <MyActivities stylesChange={this.stylesChange} stylesShow={stylesShow} />
+                                </TabPane>
+                            </Tabs>
                         </div>
 
                 }
@@ -797,10 +963,10 @@ class MySpecialActivities extends React.Component {
                             handleClose={() => this.setState({ exportVisible: false })}
                         />
                 }
-                { (v3visible && curKey == '78') && <Chou2Le onToggle={this.onV3Click} id={itemID} view={view} />}
-                { (v3visible && curKey == '79') && <BlindBox onToggle={this.onV3Click} id={itemID} view={view} />}
-                { (v3visible && curKey == '83') && <PassWordCoupon onToggle={this.onV3Click} id={itemID} view={view} />}
-                { (v3visible && curKey == '85') && <ManyFace onToggle={this.onV3Click} id={itemID} view={view} />}
+                {(v3visible && curKey == '78') && <Chou2Le onToggle={this.onV3Click} id={itemID} view={view} />}
+                {(v3visible && curKey == '79') && <BlindBox onToggle={this.onV3Click} id={itemID} view={view} />}
+                {(v3visible && curKey == '83') && <PassWordCoupon onToggle={this.onV3Click} id={itemID} view={view} />}
+                {(v3visible && curKey == '85') && <ManyFace onToggle={this.onV3Click} id={itemID} view={view} handleDecorationStart={this.handleDecorationStart} />}
                 <Modal
                     title="提取活动链接"
                     visible={isShowCopyUrl}
@@ -874,19 +1040,40 @@ class MySpecialActivities extends React.Component {
     }
 
     renderHeader() {
+        const { tabKeys, stylesShow } = this.state
         const headerClasses = `layoutsToolLeft ${styles.headerWithBgColor}`;
         return (
             <div className="layoutsTool" style={{ height: '64px' }}>
                 <div className={headerClasses}>
-                    <span className={styles.customHeader}>{this.props.intl.formatMessage(STRING_SPE.dd5aa016c5d869)}</span>
-                    <span className={styles.exportBtn}>
-                        <Authority rightCode={SPECIAL_PROMOTION_QUERY}>
-                            <Button
-                                type="ghost"
-                                onClick={() => this.setState({ exportVisible: true })}
-                            ><Icon type="export" />{COMMON_LABEL.export}</Button>
-                        </Authority>
-                    </span>
+                    <span className={styles.customHeader}>活动管理</span>
+                    {
+                        tabKeys === 'saleSpecialPage' && (
+                            <span className={styles.exportBtn}>
+                                {
+                                    stylesShow === 'list' ? <Button
+                                        type="ghost"
+                                        onClick={() => this.stylesChange('card')}
+                                    ><span className={styles.cardImg}><img src={Card} />卡片展示</span></Button> :
+                                        <Button type="ghost"
+                                            onClick={() => this.stylesChange('list')}
+                                        ><Icon type="bars" />列表展示</Button>
+                                }
+                            </span>
+                        )
+                    }
+                    {
+                        tabKeys === 'saleSpecialPage' && (
+                            <span className={styles.exportBtn}>
+                                <Authority rightCode={SPECIAL_PROMOTION_QUERY}>
+                                    <Button
+                                        type="ghost"
+                                        onClick={() => this.setState({ exportVisible: true })}
+                                        style={{ marginRight: 10 }}
+                                    ><Icon type="upload" />导出历史</Button>
+                                </Authority>
+                            </span>
+                        )
+                    }
                 </div>
             </div>
         );
@@ -986,11 +1173,52 @@ class MySpecialActivities extends React.Component {
 
         );
     }
+    // 
+    onChangePage = (page, pageSize) => {
+        this.setState({
+            pageNo: page,
+        });
+        const opt = {
+            pageSize,
+            pageNo: page,
+        };
+        const {
+            queryEventWay,
+            promotionDateRange,
+            isActive,
+            eventName,
+        } = this.state;
+        if (queryEventWay !== '' && queryEventWay !== undefined) {
+            opt.eventWay = queryEventWay;
+        }
+
+        if (promotionDateRange !== '' && promotionDateRange.length !== 0) {
+            opt.eventStartDate = promotionDateRange[0].format('YYYYMMDD');
+            opt.eventEndDate = promotionDateRange[1].format('YYYYMMDD');
+        }
+
+        if (eventName !== '' && eventName !== undefined) {
+            opt.eventName = eventName;
+        }
+
+        if (isActive !== '') {
+            opt.isActive = isActive == '-1' ? '-1' : isActive == '1' ? '1' : '0';
+        }
+        this.props.query({
+            data: {
+                groupID: this.props.user.accountInfo.groupID,
+                ...opt,
+            },
+            // start: () => this.setState({loading: true}),
+            // end: () => this.setState({loading: false}),
+            fail: (msg) => message.error(msg),
+        });
+    }
     // 切换每页显示条数
     onShowSizeChange = (current, pageSize) => {
         this.setState({
             pageSizes: pageSize,
-        },()=>{
+        }, () => {
             this.handleQuery();
         })
     };
@@ -1039,6 +1267,17 @@ class MySpecialActivities extends React.Component {
                 >
                     {COMMON_LABEL.view}
                 </a>
+                <Tooltip placement="bottomLeft" title={this.renderWXTipTitle(text, record, index)} overlayClassName={styles.Sale__Activite__Tip}>
+                <a href="#">更多</a>
+            </Tooltip>
+            </div>
+          
+        )
+    }
+
+    renderWXTipTitle = (text, record, index) => {
+        return (
+            <div  className={[styles.Sale__Activite__moveMore, styles.moveMoreShow].join(' ')}>
                 <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY}>
                     <a
                         href="#"
@@ -1054,25 +1293,137 @@ class MySpecialActivities extends React.Component {
                             this.checkDetailInfo(text, record, index);
                         }}
                     >
+                        {/* 活动跟踪 */}
                         {this.props.intl.formatMessage(STRING_SPE.d5g3d7ahfq35134)}</a>
                 </Authority>
                 {
-                    record.eventWay === 80 ? 
+                    record.eventWay === 80 ?
+                        <a
+                            href="#"
+                            className={record.isActive == '-1' || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) ? styles.textDisabled : null}
+                            onClick={() => {
+                                if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
+                                    return;
+                                }
+                                record.isActive == '-1' ? null :
+                                    this.handelStopEvent(text, record, index, '-1', `${this.props.intl.formatMessage(STRING_SPE.d17012f5c16c32211)}`);
+                            }}
+                        >
+                            {this.props.intl.formatMessage(STRING_SPE.du3bnfobe3346)}
+                        </a> : null
+                }
+
+            </div>
+        )
+    }
+
+    renderTipTitle = (text, record, index) => {
+        return (
+            <div className={[styles.Sale__Activite__moveMore, styles.moveMoreShow].join(' ')}>
+                {/* 第一版只做群发礼品的复制功能*/}
+                {/* 摇奖活动增加复制,并且活动不是禁用状态  */}
+                {
+                    (record.eventWay === 53 || record.eventWay === 20)
+                    &&
+                    // <Authority rightCode={SPECIAL_PROMOTION_UPDATE}>
                     <a
                         href="#"
-                        className={record.isActive == '-1' || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) ? styles.textDisabled : null}
-                        onClick={() => {
-                            if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
-                                return;
+                        // disabled={
+                        //     record.eventWay == '64' ? null :
+                        //         record.isActive != '0' || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record))
+                        //             || record.eventWay === 80 || (moment(record.eventEndDate, 'YYYYMMDD').format('YYYYMMDD') < moment().format('YYYYMMDD'))
+                        //             ? true
+                        //             : false
+                        // }
+                        onClick={(e) => {
+                            if (record.eventWay == '64') {
+                                //对评价送礼活动做专门处理，该活动在活动启用时候也能操作选择店铺
+                                if (record.isActive != '0') {
+                                    this.props.toggleIsUpdate(false)
+                                    this.handleUpdateOpe(text, record, index);
+                                } else {
+                                    this.props.toggleIsUpdate(true)
+                                    this.handleUpdateOpe(text, record, index);
+                                }
+                            } else {
+                                // if ((isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record))) {
+                                //     e.preventDefault()
+                                // } else {
+                                if (Number(record.eventWay) === 70) {
+                                    message.warning(`该活动已下线`);
+                                    return;
+                                }
+                                if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83) {
+                                    this.onV3Click(record.itemID, false, record.eventWay);
+                                    return;
+                                }
+                                if (record.eventWay === 66 || record.eventWay === 81 || record.eventWay === 82) {
+                                    this.handleShowDetail({
+                                        record,
+                                        isView: false,
+                                        isEdit: true
+                                    })
+                                    return;
+                                }
+                                this.props.toggleIsUpdate(true)
+                                this.setState({
+                                    isCopy: true,
+                                })
+                                this.handleUpdateOpe(text, record, index);
+                                // }
                             }
-                            record.isActive == '-1' ? null :
-                                this.handelStopEvent(text, record, index, '-1', `${this.props.intl.formatMessage(STRING_SPE.d17012f5c16c32211)}`);
+
                         }}
                     >
-                        {this.props.intl.formatMessage(STRING_SPE.du3bnfobe3346)}
-                    </a> : null
+                        复制
+                    </a>
+                    // </Authority>
                 }
-                
+                {
+                    isDecorationAvailable(record) && (
+                        <a
+                            href="#"
+                            onClick={() => {
+                                this.handleDecorationStart(record)
+                            }}
+                        >
+                            装修
+                            {/* {this.props.intl.formatMessage(STRING_SPE.dk46ld30bk34245)} */}
+                        </a>
+                    )
+                }
+                <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY}>
+                    <a
+                        href="#"
+                        className={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record) ? styles.textDisabled : null}
+                        onClick={() => {
+                            if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) {
+                                return;
+                            }
+                            if (Number(record.eventWay) === 70) {
+                                message.warning(`该活动已下线`);
+                                return;
+                            }
+                            this.checkDetailInfo(text, record, index);
+                        }}
+                        disabled={record.eventWay == 85}
+                    >
+                        活动跟踪</a>
+                    {/* {this.props.intl.formatMessage(STRING_SPE.d5g3d7ahfq35134)}*/}
+                </Authority>
+                {
+                    isCanCopyUrl(record) && (
+                        <a
+                            href="#"
+                            onClick={() => {
+                                this.handleCopyUrl(record)
+                            }}
+                        >
+                            下载链接/二维码
+                        </a>
+                    )
+                }
+
             </div>
         )
     }
@@ -1115,19 +1466,13 @@ class MySpecialActivities extends React.Component {
             {
                 title: COMMON_LABEL.actions,
                 key: 'operation',
-                width: 300,
+                width: 130,
+                className: 'TableTxtCenter',
                 // fixed:'left',
                 render: (text, record, index) => {
                     // status 0-初始化   1-等待执行  2-执行中  3-执行完毕  4-执行失败  5-审核中  6-中断  
-                    // 50-群发短信  53-群发礼品  执行中不能编辑 
-                    // record.isActive == '1'  状态启用中不可编辑
-                    const statusState = (
-                        (record.eventWay == '50' || record.eventWay == '53')
-                        &&
-                        (record.status == 2)
-                    );
-                    if(record.eventWay === 80) {
-                        return this.renderPayHaveGift(text,index,record)
+                    if (record.eventWay === 80) {
+                        return this.renderPayHaveGift(text, index, record)
                     }
                     return (<span>
                         <Authority rightCode={SPECIAL_PROMOTION_UPDATE}>
@@ -1135,44 +1480,51 @@ class MySpecialActivities extends React.Component {
                                 href="#"
                                 disabled={
                                     record.eventWay == '64' ? null : 
-                                    (record.isActive != '0' && record.isActive != '-1') || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && (record.isActive != '0' || !isMine(record))) || record.eventWay === 80
-                                        ? true
-                                        : null
+                                     (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && (record.isActive != '0' || !isMine(record)))
                                 }
                                 onClick={(e) => {
-                                    if (record.eventWay == '64') {
-                                        //对评价送礼活动做专门处理，该活动在活动启用时候也能操作选择店铺
-                                        if (record.isActive != '0') {
-                                            this.props.toggleIsUpdate(false)
-                                            this.handleUpdateOpe(text, record, index);
-                                        } else {
-                                            this.props.toggleIsUpdate(true)
-                                            this.handleUpdateOpe(text, record, index);
-                                        }
-                                    } else {
-                                        if ((record.isActive != '0' && record.isActive != '-1') || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && (record.isActive != '0' || !isMine(record) )) || record.eventWay === 80) {
-                                            e.preventDefault()
-                                        } else {
-                                            if (Number(record.eventWay) === 70) {
-                                                message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
-                                                return;
-                                            }
-                                            if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83 || record.eventWay === 85) {
-                                                this.onV3Click(record.itemID, false, record.eventWay);
-                                                return;
-                                            }
-                                            if (record.eventWay === 66 || record.eventWay === 81 || record.eventWay === 82) {
-                                                this.handleShowDetail({
-                                                    record,
-                                                    isView: false,
-                                                    isEdit: true
-                                                })
-                                                return;
-                                            }
-                                            this.props.toggleIsUpdate(true)
-                                            this.handleUpdateOpe(text, record, index);
-                                        }
+                                    // if (record.eventWay == '64') {
+                                    //     //对评价送礼活动做专门处理，该活动在活动启用时候也能操作选择店铺
+                                    //     if (record.isActive != '0') {
+                                    //         this.handleEditActive(record)(() => {
+                                    //             this.props.toggleIsUpdate(false)
+                                    //             this.handleUpdateOpe(text, record, index);
+                                    //         })
+                                    //     } else {
+                                    //         this.handleEditActive(record)(() => {
+                                    //             this.props.toggleIsUpdate(true)
+                                    //             this.handleUpdateOpe(text, record, index);
+                                    //         })
+                                    //     }
+                                    // } else {
+                                    // if ((record.isActive != '0' && record.isActive != '-1') || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && (record.isActive != '0' || !isMine(record) )) || record.eventWay === 80) {
+                                    //     e.preventDefault()
+                                    // } else {
+                                    if (Number(record.eventWay) === 70) {
+                                        message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
+                                        return;
                                     }
+                                    if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83 || record.eventWay === 85) {
+                                        this.handleEditActive(record)(() => this.onV3Click(record.itemID, false, record.eventWay))
+                                        return;
+                                    }
+                                    if (record.eventWay === 66 || record.eventWay === 81 || record.eventWay === 82) {
+                                        this.handleEditActive(record)(() => {
+                                            this.handleShowDetail({
+                                                record,
+                                                isView: false,
+                                                isEdit: true
+                                            })
+                                        })
+                                        return;
+                                    }
+                                    this.handleEditActive(record)(() => {
+                                        this.props.toggleIsUpdate(true)
+                                        this.handleUpdateOpe(text, record, index);
+                                    })
+
+                                        // }
+                                    // }
 
                                 }}
                             >
@@ -1208,17 +1560,17 @@ class MySpecialActivities extends React.Component {
                         <Authority rightCode={SPECIAL_PROMOTION_DELETE}>
                             <a
                                 href="#"
-                                disabled={record.isActive != '0' || record.userCount != 0 || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80 ? true : null}
+                                disabled={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)}
                                 onClick={() => {
-                                    if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80) {
+                                    if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
                                         return;
                                     }
                                     if (Number(record.eventWay) === 70) {
                                         message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
                                         return;
                                     }
-                                    record.isActive != '0' || record.userCount != 0 || statusState ? null :
-                                        this.checkDeleteInfo(text, record, index);
+                                    // record.isActive != '0' || record.userCount != 0 || statusState ? null :
+                                    this.handleDelActive(record)(() => this.checkDeleteInfo(text, record, index));
                                 }}
                             >
                                 {COMMON_LABEL.delete}
@@ -1239,125 +1591,22 @@ class MySpecialActivities extends React.Component {
                                     this.handelStopEvent(text, record, index, '-1', `${this.props.intl.formatMessage(STRING_SPE.d17012f5c16c32211)}`);
                             }}
                         >
-                        {this.props.intl.formatMessage(STRING_SPE.du3bnfobe3346)}
+                            {this.props.intl.formatMessage(STRING_SPE.du3bnfobe3346)}
                         </a> */}
-
-
-                        <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY}>
-                            <a
-                                href="#"
-                                className={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record) ? styles.textDisabled : null}
-                                onClick={() => {
-                                    if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) {
-                                        return;
-                                    }
-                                    if (Number(record.eventWay) === 70) {
-                                        message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
-                                        return;
-                                    }
-                                    this.checkDetailInfo(text, record, index);
-                                }}
-                                disabled={record.eventWay == 85}
-                            >
-                                {/* 活动跟踪 */}
-                                {this.props.intl.formatMessage(STRING_SPE.d5g3d7ahfq35134)}</a>
-                        </Authority>
-                        {/* 第一版只做群发礼品的复制功能*/}
-                        {/* 摇奖活动增加复制,并且活动不是禁用状态  */}
-                        {
-                            (record.eventWay === 53 || record.eventWay === 20)
-                            && 
-                            // <Authority rightCode={SPECIAL_PROMOTION_UPDATE}>
-                                <a
-                                    href="#"
-                                    // disabled={
-                                    //     record.eventWay == '64' ? null :
-                                    //         record.isActive != '0' || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record))
-                                    //             || record.eventWay === 80 || (moment(record.eventEndDate, 'YYYYMMDD').format('YYYYMMDD') < moment().format('YYYYMMDD'))
-                                    //             ? true
-                                    //             : false
-                                    // }
-                                    onClick={(e) => {
-                                        if (record.eventWay == '64') {
-                                            //对评价送礼活动做专门处理，该活动在活动启用时候也能操作选择店铺
-                                            if (record.isActive != '0') {
-                                                this.props.toggleIsUpdate(false)
-                                                this.handleUpdateOpe(text, record, index);
-                                            } else {
-                                                this.props.toggleIsUpdate(true)
-                                                this.handleUpdateOpe(text, record, index);
-                                            }
-                                        } else {
-                                            // if (record.isActive != '0' || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) || record.eventWay === 80) {
-                                            //     e.preventDefault()
-                                            // } else {
-                                                if (Number(record.eventWay) === 70) {
-                                                    message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
-                                                    return;
-                                                }
-                                                if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83) {
-                                                    this.onV3Click(record.itemID, false, record.eventWay);
-                                                    return;
-                                                }
-                                                if (record.eventWay === 66 || record.eventWay === 81 || record.eventWay === 82) {
-                                                    this.handleShowDetail({
-                                                        record,
-                                                        isView: false,
-                                                        isEdit: true
-                                                    })
-                                                    return;
-                                                }
-                                                this.props.toggleIsUpdate(true)
-                                                this.setState({
-                                                    isCopy: true,
-                                                })
-                                                this.handleUpdateOpe(text, record, index);
-                                            }
-                                        // }
-
-                                    }}
-                                >
-                                    复制
-                           </a>
-                            // </Authority>
-                        }
-                        {
-                            isDecorationAvailable(record) && (
-                                <a
-                                    href="#"
-                                    onClick={() => {
-                                        this.handleDecorationStart(record)
-                                    }}
-                                >
-                                    {/* 装修 */}
-                                    {this.props.intl.formatMessage(STRING_SPE.dk46ld30bk34245)}
-                                </a>
-                            )
-                        }
-
-                        {
-                            isCanCopyUrl(record) && (
-                                <a
-                                    href="#"
-                                    onClick={() => {
-                                        this.handleCopyUrl(record)
-                                    }}
-                                >
-                                    下载链接/二维码
-                                </a>
-                            )
-                        }
-                        
+                        <Tooltip placement="bottomLeft" title={this.renderTipTitle(text, record, index)} overlayClassName={styles.Sale__Activite__Tip}>
+                            <a href="#">更多</a>
+                        </Tooltip>
+                        {/* <a className={styles.more}> 更多</a> */}
                     </span>
                     );
                 },
             },
             {
-                title: '状态',
+                title: '启用/禁用',
                 key: 'status',
                 dataIndex: 'status',
                 width: 80,
-                className:'TableTxtCenter',
+                className: 'TableTxtCenter',
                 render: (text, record, index) => {
                     const defaultChecked = (record.isActive == '1' ? true : false);
                     const statusState = (
@@ -1365,50 +1614,51 @@ class MySpecialActivities extends React.Component {
                         &&
                         (record.status == 2) // 执行中的状态不可更改
                     );
-                    return(
+                    return (
                         <Switch
-                        // size="small"
-                        className={styles.switcher}
-                        checkedChildren={<Icon type="check" className={styles.actionIconPostion} />}
-                        unCheckedChildren={<Icon type="close" className={styles.actionIconPostion} />}
-                        checked={defaultChecked}
-                        onChange={(e) => {
-                            if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80) {
-                                e.preventDefault();
-                                return;
-                            }
-                            if (Number(record.eventWay) === 70) {
-                                message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
-                                return;
-                            }
-                            record.isActive == '-1' || statusState ? null :
-                                this.handleDisableClickEvent(record.operation, record, index, null, `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3831197)}`);
-                        }}
-                        disabled={(record.isActive == '-1' || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) || record.eventWay === 80 ? true : false}
-                    />
+                            // size="small"
+                            className={`${styles.switcherSale} ${record.eventWay == '80' ? styles.switcherdisabled : ''}`}
+                            checkedChildren={'启用'}
+                            unCheckedChildren={'禁用'}
+                            checked={defaultChecked}
+                            onChange={(e) => {
+                                // isBrandOfHuaTianGroupList 华天集团品牌下的集团
+                                if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80) {
+                                    // e.preventDefault();
+                                    return;
+                                }
+                                if (Number(record.eventWay) === 70) {
+                                    message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
+                                    return;
+                                }
+                                // record.isActive == '-1' || statusState ? null :
+                                this.handleSattusActive(record)(() => this.handleDisableClickEvent(record.operation, record, index, null, `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3831197)}`))
+                            }}
+                            disabled={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)}
+                        />
                     )
                 }
             },
-            {
-                title: COMMON_LABEL.sort,
-                className:'TableTxtCenter',
-                dataIndex: 'sortOrder',
-                key: 'sortOrder',
-                width: 120,
-                // fixed:'center',
-                render: (text, record, index) => {
-                    const canNotSortUp = this.state.pageNo == 1 && index == 0;
-                    const canNotSortDown = (this.state.pageNo - 1) * this.state.pageSizes + index + 1 == this.state.total;
-                    return (
-                        <span>
-                            <span><Iconlist title={`${this.props.intl.formatMessage(STRING_SPE.d5g3d7ahfq3651)}`} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'TOP')} /></span>
-                            <span><Iconlist title={`${this.props.intl.formatMessage(STRING_SPE.da905h2m1237216)}`} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'UP')} /></span>
-                            <span className={styles.upsideDown}><Iconlist title={`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe3831)}`} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'DOWN')} /></span>
-                            <span className={styles.upsideDown}><Iconlist title={`${this.props.intl.formatMessage(STRING_SPE.d16hh1kkf9a3922)}`} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'BOTTOM')} /></span>
-                        </span>
-                    )
-                },
-            },
+            // {
+            //     title: COMMON_LABEL.sort,
+            //     className:'TableTxtCenter',
+            //     dataIndex: 'sortOrder',
+            //     key: 'sortOrder',
+            //     width: 120,
+            //     // fixed:'center',
+            //     render: (text, record, index) => {
+            //         const canNotSortUp = this.state.pageNo == 1 && index == 0;
+            //         const canNotSortDown = (this.state.pageNo - 1) * this.state.pageSizes + index + 1 == this.state.total;
+            //         return (
+            //             <span>
+            //                 <span><Iconlist title={`${this.props.intl.formatMessage(STRING_SPE.d5g3d7ahfq3651)}`} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'TOP')} /></span>
+            //                 <span><Iconlist title={`${this.props.intl.formatMessage(STRING_SPE.da905h2m1237216)}`} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'UP')} /></span>
+            //                 <span className={styles.upsideDown}><Iconlist title={`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe3831)}`} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'DOWN')} /></span>
+            //                 <span className={styles.upsideDown}><Iconlist title={`${this.props.intl.formatMessage(STRING_SPE.d16hh1kkf9a3922)}`} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'BOTTOM')} /></span>
+            //             </span>
+            //         )
+            //     },
+            // },
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.d4h177f79da1218)}`,
                 dataIndex: 'eventWay',
@@ -1468,19 +1718,6 @@ class MySpecialActivities extends React.Component {
                 },
             },
             {
-                title: `${this.props.intl.formatMessage(STRING_SPE.de8g7jed1l4364)}`,
-                className: 'TableTxtCenter',
-                dataIndex: 'operateTime',
-                key: 'operateTime',
-                width: 300,
-                render: (text, record, index) => {
-                    if (record.actionStamp === '' && record.createStamp === '') {
-                        return '--';
-                    }
-                    return `${moment(new Date(parseInt(record.createStamp))).format('YYYY-MM-DD HH:mm:ss')} / ${moment(new Date(parseInt(record.actionStamp))).format('YYYY-MM-DD HH:mm:ss')}`;
-                },
-            },
-            {
                 title: `${this.props.intl.formatMessage(STRING_SPE.d2b1c68ddaa344161)}`,
                 dataIndex: 'operator',
                 width: 120,
@@ -1500,18 +1737,31 @@ class MySpecialActivities extends React.Component {
                 },
             },
             {
-                title: `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3711176)}`,
+                title: `${this.props.intl.formatMessage(STRING_SPE.de8g7jed1l4364)}`,
                 className: 'TableTxtCenter',
-                dataIndex: 'isActive',
-                key: 'isActive',
-                width: 100,
-                render: (isActive) => {
-                    // db60c8ac0a3715210  已终止
-                    // db60c8ac0a371314 已启用
-                    // d16hh1kkf9914292 已禁用
-                    return isActive == '-1' ? `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3715210)}` : isActive == '1' ? `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a371314)}` : `${this.props.intl.formatMessage(STRING_SPE.d16hh1kkf9914292)}`;
+                dataIndex: 'operateTime',
+                key: 'operateTime',
+                width: 300,
+                render: (text, record, index) => {
+                    if (record.actionStamp === '' && record.createStamp === '') {
+                        return '--';
+                    }
+                    return `${moment(new Date(parseInt(record.createStamp))).format('YYYY-MM-DD HH:mm:ss')} / ${moment(new Date(parseInt(record.actionStamp))).format('YYYY-MM-DD HH:mm:ss')}`;
                 },
             },
+            // {
+            //     title: `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3711176)}`,
+            //     className: 'TableTxtCenter',
+            //     dataIndex: 'isActive',
+            //     key: 'isActive',
+            //     width: 100,
+            //     render: (isActive) => {
+            //         // db60c8ac0a3715210  已终止
+            //         // db60c8ac0a371314 已启用
+            //         // d16hh1kkf9914292 已禁用
+            //         return isActive == '-1' ? `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3715210)}` : isActive == '1' ? `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a371314)}` : `${this.props.intl.formatMessage(STRING_SPE.d16hh1kkf9914292)}`;
+            //     },
+            // },
         ];
         return (
             <div className={`layoutsContent ${styles.tableClass}`}>
@@ -1522,10 +1772,10 @@ class MySpecialActivities extends React.Component {
                     columns={columns}
                     dataSource={this.state.dataSource}
                     loading={this.state.loading}
-                    scroll={{ x: 1630, y: 'calc(100vh - 390px)' }}
+                    scroll={{ x: 1630, y: 'calc(100vh - 440px)' }}
                     pagination={{
                         pageSize: this.state.pageSizes,
-                        pageSizeOptions: ['25','50','100','200'],
+                        pageSizeOptions: ['25', '50', '100', '200'],
                         current: this.state.pageNo,
                         showQuickJumper: true,
                         showSizeChanger: true,
@@ -1533,73 +1783,38 @@ class MySpecialActivities extends React.Component {
                         total: this.state.total || 0,
                         showTotal: (total, range) => `${this.props.intl.formatMessage(STRING_SPE.d2b1c6b31a93638)}${range[0]}-${range[1]} / ${this.props.intl.formatMessage(STRING_SPE.dk46lj779a7119)} ${total} ${this.props.intl.formatMessage(STRING_SPE.d34ikgs6o6845)}`,
                         onChange: (page, pageSize) => {
-                            this.setState({
-                                pageNo: page,
-                            });
-                            const opt = {
-                                pageSize,
-                                pageNo: page,
-                            };
-                            const {
-                                queryEventWay,
-                                promotionDateRange,
-                                isActive,
-                                eventName,
-                            } = this.state;
-                            if (queryEventWay !== '' && queryEventWay !== undefined) {
-                                opt.eventWay = queryEventWay;
-                            }
-
-                            if (promotionDateRange !== '' && promotionDateRange.length !== 0) {
-                                opt.eventStartDate = promotionDateRange[0].format('YYYYMMDD');
-                                opt.eventEndDate = promotionDateRange[1].format('YYYYMMDD');
-                            }
-
-                            if (eventName !== '' && eventName !== undefined) {
-                                opt.eventName = eventName;
-                            }
-
-                            if (isActive !== '') {
-                                opt.isActive = isActive == '-1' ? '-1' : isActive == '1' ? '1' : '0';
-                            }
-                            this.props.query({
-                                data: {
-                                    groupID: this.props.user.accountInfo.groupID,
-                                    ...opt,
-                                },
-                                // start: () => this.setState({loading: true}),
-                                // end: () => this.setState({loading: false}),
-                                fail: (msg) => message.error(msg),
-                            });
+                            this.onChangePage(page, pageSize)
                         },
                     }}
                 />
             </div>
         );
     }
+
     // 删除
     checkDeleteInfo(text, record) {
-        const delTitle = (<span>【{record.eventName}】</span>)
-        confirm({
-            width: 433,
-            title: <span style={{ color: '#434343' }}>您确定要删除{delTitle}吗 ？</span>,
-            content: (
-                <span>{this.props.intl.formatMessage(STRING_SPE.db60c90bb48b034)}~</span>
-            ),
-            footer: `${this.props.intl.formatMessage(STRING_SPE.db60c90bb48b034)}`,
-            onOk: () => {
-                this.props.deleteSelectedRecord({
-                    ...record,
-                    success: () => {
-                        message.success(`${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3950145)}`);
-                    },
-                    fail: (msg) => {
-                        message.error(msg);
-                    },
-                });
+        this.props.deleteSelectedRecord({
+            ...record,
+            success: () => {
+                message.success(`${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3950145)}`);
             },
-            onCancel: () => { },
+            fail: (msg) => {
+                message.error(msg);
+            },
         });
+        // const delTitle = (<span>【{record.eventName}】</span>)
+        // confirm({
+        //     width: 433,
+        //     title: <span style={{ color: '#434343' }}>您确定要删除{delTitle}吗 ？</span>,
+        //     content: (
+        //         <span>{this.props.intl.formatMessage(STRING_SPE.db60c90bb48b034)}~</span>
+        //     ),
+        //     footer: `${this.props.intl.formatMessage(STRING_SPE.db60c90bb48b034)}`,
+        //     onOk: () => {
+
+        //     },
+        //     onCancel: () => { },
+        // });
     }
     handleGiftsData = (response) => {
         const { eventWay, itemID, eventName, needCount = '' } = response.data;
@@ -1651,6 +1866,7 @@ class MySpecialActivities extends React.Component {
     };
 
     handleDecorationStart = (record) => {
+        console.log("🚀 ~ file: index.jsx ~ line 1661 ~ MySpecialActivities ~ record", record)
         const user = this.props.user;
         this.props.fetchSpecialDetail({
             data: {
@@ -1662,7 +1878,7 @@ class MySpecialActivities extends React.Component {
         })
     }
 
-    handleCopyUrl = (record,mpId) => {
+    handleCopyUrl = (record, mpId) => {
         const { pushMessageMpID, channelContent } = this.state;
         let mpID = mpId ? mpId : pushMessageMpID;
         let eventWayData, groupIdData, itemIdData;
@@ -1859,7 +2075,7 @@ class MySpecialActivities extends React.Component {
                 title={this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3955121)}
                 maskClosable={false}
                 visible={this.state.visible}
-                footer={<Button onClick={this.handleClose}>{ COMMON_LABEL.close }</Button>}
+                footer={<Button onClick={this.handleClose}>{COMMON_LABEL.close}</Button>}
                 // closable={false}
                 width="700px"
                 onCancel={this.handleClose}

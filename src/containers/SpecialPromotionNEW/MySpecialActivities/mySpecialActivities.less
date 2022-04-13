@@ -95,3 +95,275 @@
     }
 }
 
+// 卡片样式
+.cardSaleActive {
+    .paginationBox {
+        :global {
+            .ant-pagination-options {
+                display: flex;
+                .ant-select {
+                    width: 85px;
+                }
+            }
+
+        }
+    }
+
+
+}
+.textDisabled,
+.textDisabled:link,
+.textDisabled:visited,
+.textDisabled:hover,
+.textDisabled:active {
+    color: gray;
+    cursor: not-allowed;
+}
+.cardContainer {
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px;
+    .active__span {
+        margin-left: 3px;
+        padding: 3px 5px;
+        border-radius: 4px;
+    }
+    .unBegin {
+        .active__span;
+        color: #FF5959 !important;
+        background: rgba(255, 89, 89, .12)
+    }
+    .begin {
+        .active__span;
+        color: #12B493  !important;
+        background: rgba(27, 180, 150, .12);
+    }
+    
+    .columnsWrapper {
+        position: relative;
+        // float: left;
+        width: 382px;
+        height: 220px;
+        margin-right: 24px;
+        margin-bottom: 24px;
+        box-sizing: border-box;
+        padding: 16px;
+        background: #FFFFFF;
+        box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.12);
+        border-radius: 8px;
+        overflow: hidden;
+        .activityTitle {
+            overflow: hidden;
+        }
+
+        .titleText {
+            float: left;
+            max-width: 220px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            font-size: 18px;
+            font-family: PingFang-SC-Bold, PingFang-SC;
+            font-weight: bold;
+            color: #333333;
+            line-height: 18px;
+        }
+
+        .status {
+            float: right;
+            width: 28px;
+            height: 14px;
+         
+        }
+        .switcherSaleCard {
+            width: 28px;
+            height: 14px;
+            border-radius: 15px;
+        }
+        .switcherdisabled {
+            cursor: not-allowed;
+            color: #bcbcbc;
+            // :global{
+            //         .ant-switch-inner {
+            //             top: -1px;
+            //             height: 24px;
+            //         }
+            // }
+        }
+        :global {
+            .ant-switch:after {
+                border-radius: 12px;
+            }
+        }
+        .centerBox {
+            > p {
+                margin: 14px 0 10px;
+                > span {
+                    color: #999999;
+                }
+                > em {
+                    color: #595959;
+                }
+            }
+        }
+        em {
+            font-style: normal;
+        }
+
+        .contList {
+            margin-top: 5px;
+            overflow: hidden;
+            max-height: 80px;
+            p {
+                display: flex;
+                align-items: center;
+                &:last-child {
+                    margin-top: 10px;
+                }
+                line-height: 14px;
+                span {
+                    display: inline-block;
+                    color: #999999;
+                    min-width: 88px;
+                font-size: 12px;
+
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+                em {
+                    max-width: 200px;
+                    display: inline-block;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    color: #999999;
+                    font-size: 12px;
+                }
+            }
+        }
+
+        .activityCont {
+            margin-top: 16px;
+            width: 308px;
+            height: 115px;
+            padding: 12px;
+            background: #F9F9F9;
+            border-radius: 8px;
+
+            .contScrollBox {
+                height: 80px;
+                overflow: hidden;
+            }
+        }
+
+        .activityBothCont {
+            margin-top: 16px;
+            overflow: hidden;
+
+            // .contMtd {
+            //     max-width: 120px;
+            //     overflow: hidden;
+            //     white-space: nowrap;
+            //     text-overflow: ellipsis;
+            // }
+
+
+            .contBothBox:last-child {
+                margin-right: 0;
+            }
+        }
+
+        .contBothBox {
+            position: relative;
+            padding: 12px;
+            overflow: hidden;
+            margin-right: 12px;
+            background: #F9F9F9;
+            border-radius: 8px;
+        }
+
+        .activityOperate {
+            position: absolute;
+            bottom: 8px;
+            right: 6px;
+            font-size: 12px;
+            color: #1BB496;
+            span {
+                float: left;
+                margin-right: 12px;
+                cursor: pointer;
+            }
+            > a {
+                color: #1BB496;
+            }
+        }
+
+        .activityOrigin {
+            position: absolute;
+            bottom: 8px;
+            left: 16px;
+            font-size: 14px;
+            color: #666;
+            .tagImg {
+                margin-top: 2px;
+                width: 14px;
+                float: left;
+            }
+            span {
+                float: left;
+                max-width: 165px;
+                margin-left: 6px;
+                margin-top: -1px;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+            }
+        }
+        // .quoteTag {
+        //     position: absolute;
+        //     top: 0;
+        //     right: 0;
+        //     width: 46px;
+        //     height: 18px;
+        //     font-size: 12px;
+        //     color: #fff;
+        //     line-height: 18px;
+        //     background: #1BB496;
+        //     border-radius: 0px 8px 0px 8px;
+        //     text-align: center;
+        // }
+    }
+
+    .arrow {
+        position: absolute;
+        top: 7px;
+        right: 0;
+        display: inline-block;
+        width: 0;
+        height: 0;
+        border-left: 3px solid transparent;
+        border-right: 3px solid transparent;
+        border-top: 2px solid #1BB496;
+    }
+
+    .spinner {
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.5);
+        text-align: center;
+        position: absolute;
+        z-index: 99;
+    }
+    .emptyData {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+}
+
