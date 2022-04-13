@@ -278,6 +278,7 @@ class SpecialRangeInfo extends React.Component {
                 opts.consumeTotalAmount = consumeType === '14' ? curCardConsume : sumCardConsume; // 消费金额
             } else {
                 opts.consumeType = '0';
+                opts.consumeTotalAmount = '0'
             }
         }
 
