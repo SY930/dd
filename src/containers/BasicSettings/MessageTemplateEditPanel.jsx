@@ -99,6 +99,7 @@ class MessageTemplateEditPanel extends React.Component {
             this.setState({loading: true});
             if (this.props.templateEntity) {
                 this.props.updateMessageTemplate({
+                    userID:this.props.user.accountInfo.accountID,
                     template: message,
                     modifyBy: this.props.user.accountInfo.userName,
                     itemID: this.props.templateEntity.itemID,
@@ -116,6 +117,7 @@ class MessageTemplateEditPanel extends React.Component {
                     })
             } else {
                 this.props.createMessageTemplate({
+                    userID:this.props.user.accountInfo.accountID,
                     template: message,
                     createBy: this.props.user.accountInfo.userName,
                     groupName: this.props.user.accountInfo.groupName
