@@ -12,7 +12,7 @@ import { jumpPage } from '@hualala/platform-base';
 import QRCode from 'qrcode.react';
 import emptyPage from '../../../assets/empty_page.png';
 import { axiosData, fetchData } from '../../../helpers/util'
-import { NEW_SALE_BOX } from '../../../constants/entryCodes'
+import { NEW_SALE_ACTIVITY_BOX } from '../../../constants/entryCodes'
 import style from './GiftInfo.less';
 
 
@@ -75,7 +75,7 @@ export default class GiftLinkGenerateModal extends Component {
     }
 
     handleJumpAway = () => {
-        jumpPage({pageID: NEW_SALE_BOX,from:'giftInfo',type:'21'});
+        jumpPage({pageID: NEW_SALE_ACTIVITY_BOX,from:'giftInfo',type:'21'});
         this.props.onCancel();
     }
 
@@ -212,7 +212,7 @@ export default class GiftLinkGenerateModal extends Component {
 
                 <div className={style.infoArea}>
                     <div className={style.titleText} style={{ marginBottom: 5 }}>礼品投放创建步骤：</div>
-                    <div>1、请前往“营销中心-营销盒子-会员拉新”创建“免费领取”活动</div>
+                    <div>1、请前往“营销中心-营销活动-会员拉新”创建“免费领取”活动</div>
                     <div>2、活动参与范围请选择“礼品链接投放”，并选取该礼品</div>
                 </div>
             </div>
