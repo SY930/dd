@@ -73,6 +73,10 @@ const AssociateConfigFactory = () => {
                     title: '如何新增&修改营销活动？',
                     url: 'http://service.hualala.com/categoryList/detail?categoryKey=3f6c9b4051e346f9a30c235ff790c02a&docKey=255998210e8c40788941a493abeeca68'
                 },
+                {
+                    title: '如何设置基础营销活动自动执行',
+                    url: 'http://service.hualala.com/categoryList/detail?categoryKey=cfc08aa9626f461e8dc8d86757425195&docKey=5e89318bddb24cb8ab2c78dd19ca1e7c'
+                },
             ],
         },
         // 支付宝代金券 
