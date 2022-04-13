@@ -78,6 +78,13 @@ export default class NewPromotion extends React.Component {
         } else {
             giftData =  specialPromotion.$giftInfo
         }
+        if (this.props.promotionType === '60' || this.props.promotionType === '61') {
+            giftData.map((item,index) => {
+                if(item.presentType == '1' && !item.giftID){
+                    giftData.splice(index,1)
+                }
+            })
+        }
         const opts = {
             event: {
                 ...specialPromotion.$eventInfo,
