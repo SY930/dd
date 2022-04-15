@@ -355,6 +355,7 @@ class ManyFace extends Component {
                             <Step2
                                 form={form}
                                 getForm={this.onSetForm}
+                                formData1={formData1}
                                 formData={formData2}
                                 brandList={brandList}
                             />
