@@ -78,7 +78,7 @@ export default class NewPromotion extends React.Component {
         } else {
             giftData =  specialPromotion.$giftInfo
         }
-        if (this.props.promotionType === '60' || this.props.promotionType === '61') {
+        if (this.props.promotionType === '60' || this.props.promotionType === '61' || this.props.promotionType === '53') {
             giftData.map((item,index) => {
                 if(item.presentType == '1' && !item.giftID){
                     giftData.splice(index,1)
@@ -123,6 +123,7 @@ export default class NewPromotion extends React.Component {
         }
         let jumpToCrmFlag = specialPromotion.isBenefitJumpOpenCard || specialPromotion.isBenefitJumpSendGift;
         if (this.props.isNew === false && !this.props.isCopy) {
+            debugger
             this.props.updateSpecialPromotion && this.props.updateSpecialPromotion({
                 data: opts,
                 success: (res) => {
