@@ -305,6 +305,10 @@ class CardLevelForWX extends React.Component {
     }
     renderShopsOptions() {
         const { isRequire, shopStatus, canUseShops } = this.state;
+        console.log("🚀 ~ file: CardLevelForWX.jsx ~ line 308 ~ CardLevelForWX ~ renderShopsOptions ~ canUseShops", canUseShops)
+        // const finalCanUseShops = canUseShops.filter
+        // occupiedShops
+        console.log("🚀 ~ file: CardLevelForWX.jsx ~ line 311 ~ CardLevelForWX ~ renderShopsOptions ~ occupiedShops", occupiedShops)
         const { queryCanUseShopStatus } = this.props;
         return (
             <div className={styles.giftWrap}>
