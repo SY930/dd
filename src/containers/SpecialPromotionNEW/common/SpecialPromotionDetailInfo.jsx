@@ -951,9 +951,12 @@ class SpecialDetailInfo extends Component {
             gifts.lastConsumeIntervalDays = giftInfo.lastConsumeIntervalDays;
             gifts.lastConsumeIntervalDays = giftInfo.lastConsumeIntervalDays;
             gifts.presentType = giftInfo.presentType ? giftInfo.presentType : '1'
-            typeof giftInfo.needCount === "object"
-                ? giftInfo.needCount.value
-                : giftInfo.needCount;
+            gifts.needCount = giftInfo.needCount ? giftInfo.needCount : ''
+            if(giftInfo.needCount === "object"){
+                gifts.needCount = giftInfo.needCount.value
+            }else{
+                gifts.needCount = giftInfo.needCount
+            }
             return gifts;
         });
         return giftArr;
@@ -1113,9 +1116,7 @@ class SpecialDetailInfo extends Component {
                 this.props.type != "30" &&
                 this.props.type != "70"
             ) {
-
-                // check gift count
-                return Object.assign(ruleInfo, {
+                let tempData = Object.assign(ruleInfo, {
                     giftCount: this.checkgiftCount(
                         ruleInfo.giftCount,
                         index,
@@ -1139,6 +1140,8 @@ class SpecialDetailInfo extends Component {
                                 index
                             ),
                 });
+                // check gift count
+                return tempData
             }
 
             // check total count
