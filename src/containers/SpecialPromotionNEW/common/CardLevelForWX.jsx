@@ -19,6 +19,7 @@ import {
     Select,
     Icon,
     Tooltip,
+    message
 } from 'antd';
 
 import {
@@ -212,6 +213,9 @@ class CardLevelForWX extends React.Component {
                 canUseShops = Array.from(new Set(canUseShops));
                 this.props.saveCurrentCanUseShops(canUseShops)
                 this.props.saleCenterQueryOnlineRestaurantStatus('success');
+                if (canUseShops.length <= 0) {
+                    message.warning('改卡类无适用的店铺，请选择其他卡类')
+                }
                 this.setState({ canUseShops, selections_shopsInfo: { shopsInfo } });
             }).catch(err => {
                 this.props.saleCenterQueryOnlineRestaurantStatus('error');
@@ -304,11 +308,8 @@ class CardLevelForWX extends React.Component {
         })
     }
     renderShopsOptions() {
-        const { isRequire, shopStatus, canUseShops } = this.state;
-        console.log("🚀 ~ file: CardLevelForWX.jsx ~ line 308 ~ CardLevelForWX ~ renderShopsOptions ~ canUseShops", canUseShops)
-        // const finalCanUseShops = canUseShops.filter
-        // occupiedShops
-        console.log("🚀 ~ file: CardLevelForWX.jsx ~ line 311 ~ CardLevelForWX ~ renderShopsOptions ~ occupiedShops", occupiedShops)
+        const { isRequire, shopStatus, canUseShops = [], occupiedShops = [] } = this.state;
+        const finalCanUseShops = canUseShops.filter(shopID => !occupiedShops.includes(shopID))
         const { queryCanUseShopStatus } = this.props;
         return (
             <div className={styles.giftWrap}>
@@ -326,8 +327,9 @@ class CardLevelForWX extends React.Component {
                         onChange={
                             this.editBoxForShopsChange
                         }
-                        canUseShops={canUseShops}
+                        canUseShops={finalCanUseShops}
                         // schemaData={this.getDynamicShopSchema()}
+                        disabled={finalCanUseShops.length <= 0}
                         filterParm={isFilterShopType(this.props.type) ? {productCode: 'HLL_CRM_License'} : {}}
                     />
                     {
