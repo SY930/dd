@@ -951,7 +951,6 @@ class SpecialDetailInfo extends Component {
             gifts.lastConsumeIntervalDays = giftInfo.lastConsumeIntervalDays;
             gifts.lastConsumeIntervalDays = giftInfo.lastConsumeIntervalDays;
             gifts.presentType = giftInfo.presentType ? giftInfo.presentType : '1'
-            gifts.needCount = giftInfo.needCount ? giftInfo.needCount : ''
             if(giftInfo.needCount === "object"){
                 gifts.needCount = giftInfo.needCount.value
             }else{
