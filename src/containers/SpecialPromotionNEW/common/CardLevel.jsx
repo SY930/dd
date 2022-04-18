@@ -244,7 +244,8 @@ class CardLevel extends React.Component {
                     onChange={this.handleDefaultCardTypeChange}
                     value={defaultCardType || undefined}
                     placeholder={this.props.intl.formatMessage(STRING_SPE.d1700a2d61fb3202)}
-                    getPopupContainer={(node) => node.parentNode}
+                    // getPopupContainer={(node) => node.parentNode}
+                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
                     {
                         DefaultCardTypes.map(cate => <Option key={cate.cardTypeID} value={cate.cardTypeID}>{cate.cardTypeName}</Option>)

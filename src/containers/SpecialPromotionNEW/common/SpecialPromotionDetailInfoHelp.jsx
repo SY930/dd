@@ -367,7 +367,7 @@ const renderGivePointFn = function (roleType, ruleType) {
                 {
                     onChange: this.handleRecommendSettingsChange(roleType, 'pointLimitValue', ruleType),
                     initialValue: {
-                        number: pointLimitValue,
+                        number: pointLimitValue || undefined,
                     },
                     rules: [
                         {

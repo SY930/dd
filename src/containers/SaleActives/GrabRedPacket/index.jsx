@@ -313,7 +313,7 @@ class GrabRedPacket extends React.Component {
             jumpPage({ pageID: '1000076003' })
         } else {
             //营销盒子
-            jumpPage({ pageID: '10000730001' })
+            jumpPage({ pageID: '10000730008' })
         }
         this.props.dispatch({
             type: 'createActiveCom/clearData'

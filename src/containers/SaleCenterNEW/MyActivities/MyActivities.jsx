@@ -14,7 +14,7 @@ import { connect } from 'react-redux';
 import {
     Table, Icon, Select, DatePicker,
     Button, Modal, Row, Col, message,
-    TreeSelect, Switch,
+    TreeSelect, Switch, Input,
     Spin,
 } from 'antd';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
@@ -100,6 +100,8 @@ import { ONLINE_PROMOTION_TYPES } from '../../../constants/promotionType';
 import { selectPromotionForDecoration } from '../../../redux/actions/decoration';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { injectIntl } from '../IntlDecor';
+import Card from '../../../assets/card.png';
+import CardSaleActive from './CardSaleActive';
 
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
@@ -235,7 +237,7 @@ class MyActivities extends React.Component {
             promotionType: '',
             editPromotionType: '',
             promotionDateRange: '',
-            promotionValid: '',
+            promotionValid: '2',
             promotionState: '',
             promotionCategory: '',
             promotionTags: '',
@@ -247,7 +249,8 @@ class MyActivities extends React.Component {
             pageNo: 1,
             queryDisabled: false,
             currentPromotionID: '',
-            runType: '0'
+            runType: '0',
+            promotionCode: '',
         };
         this.handleDismissUpdateModal = this.handleDismissUpdateModal.bind(this);
         this.checkDetailInfo = this.checkDetailInfo.bind(this);
@@ -328,10 +331,12 @@ class MyActivities extends React.Component {
         this.setState(opt)
     }
 
-    handleDisableClickEvent(text, record) {
+    handleDisableClickEvent(text, record, index, nextActive, modalTip) {
         this.props.toggleSelectedActivityState({
             record,
-            cb: this.toggleStateCallBack,
+            nextActive,
+            modalTip,
+            cb: () => { },
         });
     }
 
@@ -346,38 +351,38 @@ class MyActivities extends React.Component {
     }
 
     confirmDelete = (record) => {
-        const delTitle = `【${record.promotionName ? record.promotionName.length > 20 ? record.promotionName.substring(0, 20) + '...' : record.promotionName : ''}】`;
-        confirm({
-            width: 433,
-            iconType: 'exclamation-circle',
-            title: <span style={{ color: '#434343' }}>您确定要删除{delTitle}吗 ？</span>,
-            content: (
-                <span style={{ color: '#aeaeae' }}>
-                    {SALE_LABEL.k5do4z54}
-                </span>
-            ),
-            onOk: () => {
-                const params = {
-                    groupID: record.groupID,
-                    shopID: record.shopID,
-                    promotionID: record.promotionIDStr,
-                    isActive: 2,
-                    modifiedBy: getAccountInfo().userName
-                }
-                return axiosData(
-                    '/promotion/docPromotionService_setActive.ajax',
-                    params,
-                    {},
-                    { path: 'data' },
-                    'HTTP_SERVICE_URL_PROMOTION_NEW'
-                ).then(() => {
-                    message.success(SALE_LABEL.k5do0ps6);
-                    this.tryToRefresh();
-                    this.tryToUpdateNameList();
-                }).catch((error) => { });
-            },
-            onCancel() { },
-        });
+        // const delTitle = `【${record.promotionName ? record.promotionName.length > 20 ? record.promotionName.substring(0, 20) + '...' : record.promotionName : ''}】`;
+        // confirm({
+        //     width: 433,
+        //     iconType: 'exclamation-circle',
+        //     title: <span style={{ color: '#434343' }}>您确定要删除{delTitle}吗 ？</span>,
+        //     content: (
+        //         <span style={{ color: '#aeaeae' }}>
+        //             {SALE_LABEL.k5do4z54}
+        //         </span>
+        //     ),
+        //     onOk: () => {
+        const params = {
+            groupID: record.groupID,
+            shopID: record.shopID,
+            promotionID: record.promotionIDStr,
+            isActive: 2,
+            modifiedBy: getAccountInfo().userName
+        }
+        return axiosData(
+            '/promotion/docPromotionService_setActive.ajax',
+            params,
+            {},
+            { path: 'data' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
+        ).then(() => {
+            message.success(SALE_LABEL.k5do0ps6);
+            this.tryToRefresh();
+            this.tryToUpdateNameList();
+        }).catch((error) => { });
+        //     },
+        //     onCancel() { },
+        // });
     }
 
     toggleStateCallBack = () => {
@@ -479,6 +484,7 @@ class MyActivities extends React.Component {
             channelLst,
             promotionShop,
             promotionName,
+            promotionCode,
         } = this.state;
         const opt = {};
         if (promotionType !== '' && promotionType !== undefined && promotionType !== 'undefined') {
@@ -514,6 +520,9 @@ class MyActivities extends React.Component {
         }
         if (promotionName !== '' && promotionName !== undefined) {
             opt.promotionName = promotionName;
+        }
+        if (promotionCode !== '' && promotionCode !== undefined) {
+            opt.promotionCode = promotionCode;
         }
         opt.groupID = this.props.user.accountInfo.groupID;
         opt.sourceType = +this.isOnlinePromotionPage();
@@ -620,7 +629,7 @@ class MyActivities extends React.Component {
     onShowSizeChange = (current, pageSize) => {
         this.setState({
             pageSizes: pageSize,
-        },()=>{
+        }, () => {
             this.handleQuery();
         })
     };
@@ -642,7 +651,7 @@ class MyActivities extends React.Component {
         }
         return [
             all,
-            ...ACTIVITY_CATEGORIES.slice(0, ACTIVITY_CATEGORIES.length-1),
+            ...ACTIVITY_CATEGORIES.slice(0, ACTIVITY_CATEGORIES.length - 1),
         ]
     }
 
@@ -710,6 +719,95 @@ class MyActivities extends React.Component {
                 currentPromotionID: _record.promotionIDStr,
             });
         }
+    }
+
+    // 点击按钮前先弹窗
+    handleEditActive = (record) => (handleNext) => {
+        if (record.maintenanceLevel == '1') { // 门店活动无法编辑
+            Modal.info({
+                title: `活动无法编辑`,
+                content: '活动为门店账号创建，你不能进行编辑。',
+                iconType: 'exclamation-circle',
+                okText: '确定'
+            });
+            return;
+        }
+        if (record.isActive == '1') { // 正在进行中的活动弹窗提示
+            Modal.confirm({
+                title: `活动编辑`,
+                content: '活动正在进行中，确定要进行编辑吗？',
+                iconType: 'exclamation-circle',
+                onOk() {
+                    handleNext();
+                },
+                onCancel() { },
+            });
+        } else {
+            handleNext()
+        }
+    }
+
+    // 状态启用禁用前判断是否是门店
+    handleSattusActive = (record) => (handleNext) => {
+        if (record.maintenanceLevel == '1') {
+            Modal.info({
+                title: `活动无法操作`,
+                content: '活动为门店账号创建，你不能进行编辑。',
+                okText: '确定',
+                iconType: 'exclamation-circle',
+                onOk() {
+                },
+                onCancel() { },
+            });
+            return
+        }
+        if (record.status == '3') {
+            Modal.info({
+                title: `活动无法启用`,
+                content: '活动已结束，请修改可用的活动时间。',
+                okText: '确定',
+                iconType: 'exclamation-circle',
+                onOk() {
+                },
+                onCancel() { },
+            });
+            return
+        }
+        handleNext();
+    }
+
+    // 点击删除按钮先弹窗
+    handleDelActive = (record) => (handleNext) => {
+        if (record.maintenanceLevel == '1') {
+            Modal.info({
+                title: `活动无法删除`,
+                content: '活动为门店账号创建，你不能进行删除。',
+                iconType: 'exclamation-circle',
+                okText: '确定',
+            });
+            return;
+        }
+        if (record.isActive == '1') {
+            Modal.confirm({
+                title: `确认删除这个活动`,
+                content: '活动正在启用中，删除后无法恢复。',
+                iconType: 'question-circle',
+                onOk() {
+                    handleNext();
+                },
+                onCancel() { },
+            });
+            return
+        }
+        Modal.confirm({
+            title: `确认删除这个活动`,
+            content: '删除后无法恢复',
+            iconType: 'question-circle',
+            onOk() {
+                handleNext();
+            },
+            onCancel() { },
+        });
     }
 
     // Row Actions: 查看
@@ -801,46 +899,54 @@ class MyActivities extends React.Component {
         this.props.openPromotionAutoRunListModal();
     }
     renderHeader() {
-        const headerClasses = `layoutsToolLeft ${styles.basicPromotionHeader} ${styles.headerWithBgColor}`;
-        const {
-            queryPromotionAutoRunList,
-            queryPromotionList,
-            openPromotionAutoRunListModal,
-            intl,
-        } = this.props;
+        // const {
+        //     queryPromotionAutoRunList,
+        //     queryPromotionList,
+        //     openPromotionAutoRunListModal,
+        //     intl,
+        // } = this.props;
         return (
-            <div className="layoutsTool" style={{ height: '64px' }}>
-                <div className={headerClasses}>
-                    <span className={styles.customHeader}>
-                        {this.isOnlinePromotionPage() ? SALE_LABEL.k5dbdped : SALE_LABEL.k5dbefat}
-                    </span>
-                    <div>
-                        {
-                            !isHuaTian() && !this.isOnlinePromotionPage() && (
-                                <Authority rightCode={AUTO_RUN_QUERY}>
+            <div className="layoutsTool">
+                <div style={{ position: 'fixed', top: '79px', right: '20px' }}>
+                    {
+                        !isHuaTian() && !this.isOnlinePromotionPage() && (
+                            <Authority rightCode={AUTO_RUN_QUERY}>
+                                <Button
+                                    onClick={() => this.setRunDataList()}
+                                    icon="plus"
+                                    className={styles.customPrimaryButton}
+                                >
+                                    执行顺序（原自动执行）
+                                </Button>
+                            </Authority>
+                        )
+                    }
+                    {
+                        !this.isOnlinePromotionPage() && (
+                            <span>
+                                <Authority rightCode={BASIC_PROMOTION_QUERY}>
                                     <Button
-                                        onClick={() => this.setRunDataList()}
-                                        icon="plus"
-                                        className={styles.customPrimaryButton}
-                                    >
-                                        执行顺序（原自动执行）
-                                    </Button>
+                                        type="ghost"
+                                        onClick={() => this.setState({ exportVisible: true })}
+                                        style={{ marginRight: 10 }}
+                                    ><Icon type="upload" />导出历史</Button>
                                 </Authority>
-                            )
-                        }
-                        {
-                            !this.isOnlinePromotionPage() && (
-                                <span>
-                                    <Authority rightCode={BASIC_PROMOTION_QUERY}>
-                                        <Button
-                                            type="ghost"
-                                            onClick={() => this.setState({ exportVisible: true })}
-                                        ><Icon type="export" />{COMMON_LABEL.export}</Button>
-                                    </Authority>
-                                </span>
-                            )
-                        }
-                    </div>
+                            </span>
+                        )
+                    }
+                    {
+                        !this.isOnlinePromotionPage() && <span className={styles.exportBtn}>
+                            {
+                                this.props.stylesShow === 'list' ? <Button
+                                    type="ghost"
+                                    onClick={() => this.props.stylesChange('card')}
+                                ><span className={styles.cardImg}><img src={Card} />卡片展示</span></Button> :
+                                    <Button type="ghost"
+                                        onClick={() => this.props.stylesChange('list')}
+                                    ><Icon type="bars" />列表展示</Button>
+                            }
+                        </span>
+                    }
                 </div>
             </div>
         );
@@ -882,6 +988,9 @@ class MyActivities extends React.Component {
         const opt = this.getParams();
         const { intl } = this.props;
         const k5eng042 = intl.formatMessage(SALE_STRING.k5eng042);
+        const k5dlp2gl = intl.formatMessage(SALE_STRING.k5dlp2gl);
+        const k5dlp7zc = intl.formatMessage(SALE_STRING.k5dlp7zc);
+        const k5dlpczr = intl.formatMessage(SALE_STRING.k5dlpczr);
         return (
             <div>
                 <div className="layoutsSearch">
@@ -951,7 +1060,36 @@ class MyActivities extends React.Component {
                                 }}
                             />
                         </li>
-
+                        <li>
+                            <h5>活动状态</h5>
+                        </li>
+                        <li>
+                            <Select
+                                placeholder=""
+                                defaultValue={'2'}
+                                style={{ width: 100 }}
+                                onChange={(value) => {
+                                    this.setState({
+                                        promotionValid: value,
+                                    });
+                                }}
+                            >
+                                <Option key="0" value={'0'}>{k5eng042}</Option>
+                                <Option key="1" value={'1'}>{k5dlp2gl}</Option>
+                                <Option key="2" value={'2'}>{k5dlp7zc}</Option>
+                                <Option key="3" value={'3'}>{k5dlpczr}</Option>
+                            </Select>
+                        </li>
+                        <li>
+                            <h5>活动编码</h5>
+                        </li>
+                        <li>
+                            <Input placeholder="活动编码" maxLength={20} value={this.state.promotionCode} onChange={(e) => {
+                                this.setState({
+                                    promotionCode: e.target.value,
+                                })
+                            }}/>
+                        </li>
                         <li>
                             <Authority rightCode={BASIC_PROMOTION_QUERY}>
                                 <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}><Icon type="search" />{COMMON_LABEL.query}</Button>
@@ -1002,27 +1140,6 @@ class MyActivities extends React.Component {
                         <li>
                             {this.renderShopsInTreeSelectMode()}
                         </li>
-                        <li>
-                            <h5>{SALE_LABEL.k5dli0fu}</h5>
-                        </li>
-                        <li>
-                            <Select
-                                placeholder=""
-                                defaultValue={'0'}
-                                style={{ width: 100 }}
-                                onChange={(value) => {
-                                    this.setState({
-                                        promotionValid: value,
-                                    });
-                                }}
-                            >
-                                <Option key="0" value={'0'}>{k5eng042}</Option>
-                                <Option key="1" value={'1'}>{k5dlp2gl}</Option>
-                                <Option key="2" value={'2'}>{k5dlp7zc}</Option>
-                                <Option key="3" value={'3'}>{k5dlpczr}</Option>
-                            </Select>
-                        </li>
-
                         <li>
                             <h5>{SALE_LABEL.k5dljb1v}</h5>
                         </li>
@@ -1196,10 +1313,12 @@ class MyActivities extends React.Component {
                                     <Authority rightCode={BASIC_PROMOTION_UPDATE}>
                                         <a
                                             href="#"
-                                            disabled={!isGroupPro}
+                                            // disabled={!isGroupPro}
                                             onClick={() => {
-                                                this.props.toggleIsUpdate(true)
-                                                this.handleUpdateOpe(text, record, index);
+                                                this.handleEditActive(record)(() => {
+                                                    this.props.toggleIsUpdate(true)
+                                                    this.handleUpdateOpe(text, record, index);
+                                                })
                                             }}
                                         >{COMMON_LABEL.edit}</a>
                                     </Authority>
@@ -1209,17 +1328,22 @@ class MyActivities extends React.Component {
                                 {/* 非禁用状态不能删除 */}
                                 <a
                                     href="#"
-                                    disabled={!isGroupPro || record.isActive != 0 || !isMine(record)}
+                                    // disabled={!isGroupPro || record.isActive != 0 || !isMine(record)}
+                                    disabled={!isMine(record)}
                                     onClick={() => {
-                                        this.confirmDelete(record)
+                                        if (!isMine(record)) {
+                                            return
+                                        }
+                                        this.handleDelActive(record)(() => this.confirmDelete(record))
                                     }}
                                 >{COMMON_LABEL.delete}</a>
                             </Authority>
+                            {/* 华天集团促销活动不可编辑 */}
                             {
                                 record.promotionType === '1050' ?
                                     <a
                                         href="#"
-                                        // disabled={!isGroupPro || record.status != 3}
+                                        disabled={isHuaTian()}
                                         onClick={() => {
                                             this.props.toggleIsUpdate(true)
                                             this.setState({
@@ -1233,7 +1357,7 @@ class MyActivities extends React.Component {
                                     <Authority rightCode={BASIC_PROMOTION_UPDATE}>
                                         <a
                                             href="#"
-                                            disabled={!isGroupPro || record.status != 3}
+                                            disabled={!isGroupPro || isHuaTian()}
                                             onClick={() => {
                                                 this.props.toggleIsUpdate(true)
                                                 this.setState({
@@ -1252,7 +1376,7 @@ class MyActivities extends React.Component {
                 },
             },
             {
-                title: '状态',
+                title: '启用/禁用',
                 key: 'status',
                 dataIndex: 'status',
                 width: 80,
@@ -1261,8 +1385,8 @@ class MyActivities extends React.Component {
                     const defaultChecked = (record.isActive == '1' ? true : false); // 开启 / 禁用
                     const isGroupPro = record.maintenanceLevel == '0';
                     const isToggleActiveDisabled = (() => {
-                        if (!isGroupOfHuaTianGroupList()) {
-                            return !isGroupPro
+                        if (!isGroupOfHuaTianGroupList()) { // 门店创建
+                            return false
                         }
                         if (isHuaTian()) {
                             return record.userType == 2 || record.userType == 0;
@@ -1275,12 +1399,13 @@ class MyActivities extends React.Component {
                         <Authority rightCode={BASIC_PROMOTION_UPDATE}>
                             <Switch
                                 // size="small"
-                                className={styles.switcher}
-                                checkedChildren={<Icon type="check" className={styles.actionIconPostion} />}
-                                unCheckedChildren={<Icon type="close" className={styles.actionIconPostion} />}
+                                className={styles.switcherSale}
+                                checkedChildren={'启用'}
+                                unCheckedChildren={'禁用'}
                                 checked={defaultChecked}
                                 onChange={() => {
-                                    this.handleDisableClickEvent(record.operation, record, index);
+                                    this.handleSattusActive(record)(() => this.handleDisableClickEvent(record.operation, record, index, null, '使用状态修改成功'))
+
                                 }}
                                 disabled={isToggleActiveDisabled}
                             />
@@ -1288,25 +1413,25 @@ class MyActivities extends React.Component {
                     )
                 }
             },
-            {
-                title: COMMON_LABEL.sort,
-                className: 'TableTxtCenter',
-                dataIndex: 'sortOrder',
-                key: 'sortOrder',
-                width: 120,
-                render: (text, record, index) => {
-                    const canNotSortUp = this.state.pageNo == 1 && index == 0;
-                    const canNotSortDown = (this.state.pageNo - 1) * this.state.pageSizes + index + 1 == this.state.total;
-                    return (
-                        <span>
-                            <span><Iconlist title={k5eng7pt} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'TOP')} /></span>
-                            <span><Iconlist title={k5engk5b} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'UP')} /></span>
-                            <span className={styles.upsideDown}><Iconlist title={k5engpht} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'DOWN')} /></span>
-                            <span className={styles.upsideDown}><Iconlist title={k5engebq} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'BOTTOM')} /></span>
-                        </span>
-                    )
-                },
-            },
+            // {
+            //     title: COMMON_LABEL.sort,
+            //     className: 'TableTxtCenter',
+            //     dataIndex: 'sortOrder',
+            //     key: 'sortOrder',
+            //     width: 120,
+            //     render: (text, record, index) => {
+            //         const canNotSortUp = this.state.pageNo == 1 && index == 0;
+            //         const canNotSortDown = (this.state.pageNo - 1) * this.state.pageSizes + index + 1 == this.state.total;
+            //         return (
+            //             <span>
+            //                 <span><Iconlist title={k5eng7pt} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'TOP')} /></span>
+            //                 <span><Iconlist title={k5engk5b} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'UP')} /></span>
+            //                 <span className={styles.upsideDown}><Iconlist title={k5engpht} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'DOWN')} /></span>
+            //                 <span className={styles.upsideDown}><Iconlist title={k5engebq} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'BOTTOM')} /></span>
+            //             </span>
+            //         )
+            //     },
+            // },
             {
                 title: SALE_LABEL.k5dk5uwl,
                 dataIndex: 'promotionType',
@@ -1356,16 +1481,25 @@ class MyActivities extends React.Component {
                 },
             },
             {
-                title: SALE_LABEL.k5dli0fu,
+                title: '创建来源',
+                className: 'TableTxtCenter',
+                dataIndex: 'maintenanceLevel',
+                key: 'maintenanceLevel',
+                width: 80,
+                render: (t) => {
+                    return t == '0' ? '集团创建' : '门店创建'
+                }
+            },
+            {
+                title: '活动状态',
                 className: 'TableTxtCenter',
                 dataIndex: 'status',
                 key: 'valid',
                 width: 72,
                 render: (status) => {
-                    return status == '1' ? k5dlp2gl : status == '2' ? k5dlp7zc : k5dlpczr;
+                    return status == '1' ? <span className={styles.unBegin}>{k5dlp2gl}</span> : status == '2' ? <span className={styles.begin}>{k5dlp7zc}</span> : <span className={styles.end}>{k5dlpczr}</span>;
                 },
             },
-
             {
                 title: SALE_LABEL.k5dmps71,
                 dataIndex: '',
@@ -1392,22 +1526,22 @@ class MyActivities extends React.Component {
                     return `${moment(new Date(parseInt(record.createTime))).format('YYYY-MM-DD HH:mm:ss')} / ${moment(new Date(parseInt(record.actionTime))).format('YYYY-MM-DD HH:mm:ss')}`;
                 },
             },
-            {
-                title: SALE_LABEL.k5dlbwqo,
-                dataIndex: 'isActive',
-                className: 'TableTxtCenter',
-                key: 'isActive',
-                width: 100,
-                render: (isActive) => {
-                    return (isActive == '1' ? COMMON_LABEL.enable : COMMON_LABEL.disable);
-                },
-            },
+            // {
+            //     title: SALE_LABEL.k5dlbwqo,
+            //     dataIndex: 'isActive',
+            //     className: 'TableTxtCenter',
+            //     key: 'isActive',
+            //     width: 100,
+            //     render: (isActive) => {
+            //         return (isActive == '1' ? COMMON_LABEL.enable : COMMON_LABEL.disable);
+            //     },
+            // },
         ];
         return (
-            <div className={`layoutsContent ${styles.tableClass}`} style={{ height: this.state.contentHeight }}>
+            <div className={`layoutsContent ${styles.tableClass}`}>
                 <Table
                     ref={this.setTableRef}
-                    scroll={{ x: 1700, y: this.state.contentHeight - 93 }}
+                    scroll={{ x: 1700, y: 'calc(100vh - 440px)' }}
                     className={styles.sepcialActivesTable}
                     bordered={true}
                     columns={columns}
@@ -1415,7 +1549,7 @@ class MyActivities extends React.Component {
                     loading={this.state.loading}
                     pagination={{
                         pageSize: this.state.pageSizes,
-                        pageSizeOptions: ['25','50','100','200'],
+                        pageSizeOptions: ['25', '50', '100', '200'],
                         current: this.state.pageNo,
                         showQuickJumper: true,
                         showSizeChanger: true,
@@ -1443,20 +1577,60 @@ class MyActivities extends React.Component {
     }
 
     render() {
-        const { runType } = this.state;
+        const { runType,  dataSource } = this.state;
+        const {stylesShow} = this.props;
         return (
             <div style={{ backgroundColor: '#F3F3F3' }} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 <div>
                     {this.renderHeader()}
                 </div>
-                <PromotionCalendarBanner />
+                {/* <PromotionCalendarBanner /> */}
                 <div>
-                    <div className={styles.pageContentWrapper}>
+                    <div className={styles.pageContentWrapper} style={{ minHeight: 'calc(100vh - 160px)' }}>
                         <div style={{ padding: '0' }} className="layoutsHeader">
                             {this.renderFilterBar()}
                             <div style={{ margin: '0' }} className="layoutsLine"></div>
                         </div>
-                        {this.renderTables()}
+                        {
+                        stylesShow === 'list' ? this.renderTables() :
+                        <CardSaleActive
+                            dataSource={dataSource}
+                            type="sale"
+                            entryCode={this.props.entryCode}
+                            // cfg={this.cfg}
+                            handleSattusActive={this.handleSattusActive}
+                            handleDisableClickEvent={this.handleDisableClickEvent}
+                            handleUpdateOpe={this.handleUpdateOpe}
+                            toggleIsUpdate={this.props.toggleIsUpdate}
+                            handleEditActive={this.handleEditActive}
+                            handleDelActive={this.handleDelActive}
+                            confirmDelete={this.confirmDelete}
+                            pageNo={this.state.pageNo}
+                            pageSizes={this.state.pageSizes}
+                            total={this.state.total}
+                            onChangePage={(page, pageSize) => {
+                                this.setState({
+                                    pageNo: page,
+                                })
+                                const opt = {
+                                    pageSize,
+                                    pageNo: page,
+                                    usageMode: -1,
+                                    ...this.getParams(),
+                                    fail: () => message.error(SALE_LABEL.k5dmw1z4),
+                                };
+                                opt.cb = this.showNothing;
+                                this.props.query(opt);
+                            }}
+                            onShowSizeChange={this.onShowSizeChange}
+                            updateCopy={() => {
+                                this.setState({
+                                    isCopy: true,
+                                    modalTitle: '复制活动信息'
+                                })
+                            }}
+                        />
+                        }
                     </div>
                 </div>
                 {this.renderModifyRecordInfoModal()}

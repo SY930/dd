@@ -191,6 +191,8 @@ class NewActivity extends React.Component {
                     <div style={{height: '79px', backgroundColor: '#F3F3F3'}}>
                         <div className={headerClasses}>
                             <span  className={styles.customHeader}>
+                                {/* 门店下的基础营销活动*/}
+                                {/* dfff */}
                                 {COMMON_LABEL.create} {SALE_LABEL.k5m4q17q}
                             </span>
                             <span className={styles.jumpToCreateNew}>

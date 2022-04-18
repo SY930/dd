@@ -31,7 +31,7 @@ class IntelligentGiftRule extends React.Component {
 
     onCancel = () => {
         closePage()
-        jumpPage({pageID: '10000730001'})
+        jumpPage({pageID: '10000730008'})
     }
 
     onSubmit = () => {

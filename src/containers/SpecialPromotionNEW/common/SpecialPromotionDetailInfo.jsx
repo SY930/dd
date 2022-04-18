@@ -605,6 +605,9 @@ class SpecialDetailInfo extends Component {
                 if (v.presentType !== 1 || v.presentType !== 8) {
                     otherGifts.push(v)
                 }
+                if (v.presentType === 2) { // 过滤掉积分数据
+                    return false
+                }
                 return v.presentType === 1 || v.presentType !== 8
             })
             this.recommendOtherGifts = otherGifts
@@ -844,6 +847,7 @@ class SpecialDetailInfo extends Component {
 
             })
         }
+        // console.log(initEventRecommendSettings,'initEventRecommendSettings', this.recommendOtherGifts)
 
         // 回显直接推荐人和间接推荐人数据
         initEventRecommendSettings.forEach(v => {
