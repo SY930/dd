@@ -214,7 +214,7 @@ class CardLevelForWX extends React.Component {
                 this.props.saveCurrentCanUseShops(canUseShops)
                 this.props.saleCenterQueryOnlineRestaurantStatus('success');
                 if (canUseShops.length <= 0) {
-                    message.warning('改卡类无适用的店铺，请选择其他卡类')
+                    message.warning('该卡类无适用的店铺，请选择其他卡类')
                 }
                 this.setState({ canUseShops, selections_shopsInfo: { shopsInfo } });
             }).catch(err => {
