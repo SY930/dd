@@ -29,7 +29,6 @@ class PureTable extends Component {
             method,
             type: 'post',
             data: { 
-                batchItemID
             },
         });
         const { code, data, msg } = response;
