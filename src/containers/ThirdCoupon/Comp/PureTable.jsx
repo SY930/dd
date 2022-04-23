@@ -23,7 +23,6 @@ class PureTable extends Component {
     }
 
     handleChekTime = async () => {
-        const {batchItemID} = this.props.params;
         const method = 'dyCoupon/xfc/verifyHighMoment';
         const response = await axios.post('/api/v1/universal', {
             service: 'HTTP_SERVICE_URL_PROMOTION_DOUYIN',
@@ -56,12 +55,13 @@ class PureTable extends Component {
     handleExport = async () => {
         const { groupID } = this.getAccountInfo()
         const method = '/dyCoupon/xfc/exportCouponOrderList'
-        
+        const {batchItemID} = this.props.params;
         const response = await axios.get(`/api/v1/export?groupID=${groupID}&dyOrderID=${this.state.dyOrderID}&couponCode=${this.state.couponCode}`, {
             responseType: 'blob',
             params: {
                 service: 'HTTP_SERVICE_URL_PROMOTION_DOUYIN',
                 method,
+                batchItemID
             },
         });
         if (response) {
