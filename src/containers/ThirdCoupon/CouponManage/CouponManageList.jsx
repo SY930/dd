@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom';
 import { jumpPage } from '@hualala/platform-base';
 import { connect } from 'react-redux';
 import {
-	Table, Icon, Select, DatePicker,
-	Button, Modal, Row, Col, message,
-	Input, Tooltip,
+    Table, Icon, Select, DatePicker,
+    Button, Modal, Row, Col, message,
+    Input, Tooltip,
 } from 'antd';
 import CreateCouponContent from '../Modal/CreateCouponContent'
 import ScenePutContent from '../Modal/ScenePutContent'
@@ -14,7 +14,7 @@ import styles from '../AlipayCoupon.less'
 import { axiosData } from '../../../helpers/util'
 import registerPage from '../../../../index';
 import { THIRD_VOUCHER_MANAGEMENT } from '../../../constants/entryCodes';
-import { getCardList, getShopPid, getIndirectList, getMpAppList, getPayChannel } from '../AxiosFactory';
+import { getCardList, getShopPid, getIndirectList, getMpAppList, getPayChannel, getRetailList } from '../AxiosFactory';
 import WEIXIN from '../../../assets/weixin.png';
 import ZHIFUBAO from '../../../assets/zhifubao.png'
 import DOUYIN from '../../../assets/douyin.png'
@@ -22,14 +22,14 @@ const moment = require('moment');
 
 
 const mapStateToProps = (state) => {
-	return {
-		user: state.user.toJS(),
-	};
+    return {
+        user: state.user.toJS(),
+    };
 };
 
 const mapDispatchToProps = (dispatch) => {
-	return {
-	};
+    return {
+    };
 };
 
 const { RangePicker } = DatePicker;
@@ -37,20 +37,22 @@ const { RangePicker } = DatePicker;
 @registerPage([THIRD_VOUCHER_MANAGEMENT], {})
 @connect(mapStateToProps, mapDispatchToProps)
 class CouponManageList extends Component {
-	constructor(props) {
-		super(props)
-		this.state = {
-			loading: false,
-			pageSizes: 25, // 默认显示的条数
+    constructor(props) {
+        super(props)
+        this.state = {
+            loading: false,
+            pageSizes: 25, // 默认显示的条数
             pageNo: 1,
-			dataSource: [],
-			batchName: '', // 第三方券名称
+            dataSource: [],
+            batchName: '', // 第三方券名称
             itemID: '', // 券ID
-			platformType: '', // 关联平台
-			couponDateRange: '', // 创建时间
+            platformType: '', // 关联平台
+            promotionType: -1, // 关联平台
+            couponDateRange: '', // 创建时间
             createCouponModalVisible: false,
             createThirdCouponVisble: false,
             treeData: [],
+            treeDataX: [],
             shopPid: [], // 直连PID
             indirectList: [], // 间连列表
             viewModalVisible: false, // 查看券详情弹窗
@@ -64,27 +66,27 @@ class CouponManageList extends Component {
             platformTypeCreate: 1, // 平台：1 支付宝   3微信  2 抖音(小风车)
             WXLaunchVisible: false,
             wxData: {},
-		}
-		this.handleQuery = debounce(this.handleQuery.bind(this), 500);
-	}
+        }
+        this.handleQuery = debounce(this.handleQuery.bind(this), 500);
+    }
 
-	componentDidMount() {
-        const { from } =  this.getQueryVariable();
+    componentDidMount() {
+        const { from } = this.getQueryVariable();
         this.handleSearch(from);
         this.initData();
-		this.onWindowResize();
-		window.addEventListener('resize', this.onWindowResize);
-	}
+        this.onWindowResize();
+        window.addEventListener('resize', this.onWindowResize);
+    }
 
 
-	componentWillUnmount() {
-		window.removeEventListener('resize', this.onWindowResize);
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.onWindowResize);
         this.setState({
             platformType: '',
         })
-	}
+    }
 
-	onWindowResize = () => {
+    onWindowResize = () => {
         const parentDoms = ReactDOM.findDOMNode(this.layoutsContainer); // 获取父级的doms节点
         if (parentDoms != null) { // 如果父级节点不是空将执行下列代码
             const parentHeight = parentDoms.getBoundingClientRect().height; // 获取到父级的高度存到变量 parentHeight
@@ -102,7 +104,7 @@ class CouponManageList extends Component {
     }
 
     initData = () => {
-        getCardList({giftTypes:[10, 111, 21]}).then(x => {
+        getCardList({ giftTypes: [10, 111, 21] }).then(x => {
             this.setState({ treeData: x });
         });
         getShopPid().then((res) => {
@@ -114,11 +116,11 @@ class CouponManageList extends Component {
             this.setState({
                 indirectList: res,
             })
-            
+
         })
     }
-	  // 切换每页显示条数
-	  onShowSizeChange = (current, pageSize) => {
+    // 切换每页显示条数
+    onShowSizeChange = (current, pageSize) => {
         this.setState({
             loading: true,
         }, () => {
@@ -126,7 +128,7 @@ class CouponManageList extends Component {
         })
     };
 
-	onDateQualificationChange = (value) => {
+    onDateQualificationChange = (value) => {
         this.setState({
             couponDateRange: value,
         });
@@ -153,13 +155,14 @@ class CouponManageList extends Component {
     }
 
 
-	getParams = () => {
+    getParams = () => {
         const {
-			batchName,
-			itemID,
-			platformType,
-			couponDateRange,
+            batchName,
+            itemID,
+            platformType,
+            couponDateRange,
             batchStatus,
+            promotionType,
         } = this.state;
         const opt = {
         };
@@ -178,6 +181,9 @@ class CouponManageList extends Component {
         if (itemID) {
             opt.itemID = itemID
         }
+        if (promotionType) {
+            opt.promotionType = promotionType
+        }
         if (batchStatus) {
             opt.batchStatus = batchStatus
         }
@@ -193,7 +199,7 @@ class CouponManageList extends Component {
                 this.handleQuery();
                 this.clearUrl();
             })
-        } 
+        }
         // else if (from === 'zhifubao') {
         //     this.setState({
         //         platformType: '1'
@@ -218,7 +224,7 @@ class CouponManageList extends Component {
         }
     }
 
-	handleQuery = (pageNo, pageSize) => {
+    handleQuery = (pageNo, pageSize) => {
         if (!this.state.loading) {
             this.setState({
                 loading: true,
@@ -234,7 +240,7 @@ class CouponManageList extends Component {
         this.queryEvents(opt);
     }
 
-	queryEvents = (opts) => {
+    queryEvents = (opts) => {
         // const shopID = this.props.user.shopID;
 
         const params = { ...opts };
@@ -281,19 +287,22 @@ class CouponManageList extends Component {
 
     handleCreateCouponContentModal = ({ type, channelID, platformTypeCreate }, title) => {
         if (type === 1) { // 支付宝券
-            getCardList({giftTypes:[10, 111]}).then(x => {
-                this.setState({ 
-                    treeData: x 
+            getCardList({ giftTypes: [10, 111] }).then(x => {
+                this.setState({
+                    treeData: x
                 });
             });
         } else if (type === 2) { // 微信券
-            getCardList({giftTypes:[10, 111, 21]}).then(x => {
+            getCardList({ giftTypes: [10, 111, 21] }).then(x => {
                 this.setState({ treeData: x });
             });
         } else { // 抖音
-            getCardList({giftTypes:[10, 111, 21]}).then(x => { 
+            getCardList({ giftTypes: [10, 111, 21] }).then(x => {
                 this.setState({ treeData: x });
             });
+            getRetailList().then(v => {
+                this.setState({ treeDataX: v });
+            })
         }
         this.setState({
             createCouponModalVisible: true,
@@ -313,11 +322,11 @@ class CouponManageList extends Component {
     }
 
     handleSuccesModalSubmit = () => {
-        
+
     }
     handleStopClickEvent = (record) => {
-        const {itemID } = record;
-        const params = { couponCodeBatchInfo: { itemID, batchStatus: 2} };
+        const { itemID } = record;
+        const params = { couponCodeBatchInfo: { itemID, batchStatus: 2 } };
         axiosData(
             'couponCodeBatchService/switchStatus.ajax',
             params,
@@ -326,16 +335,16 @@ class CouponManageList extends Component {
             'HTTP_SERVICE_URL_PROMOTION_NEW'
         ).then((res) => {
             const { code, message: msg } = res;
-            if (code === '000') { 
+            if (code === '000') {
                 this.handleQuery()
-               return message.success(msg)
-             }
-             return message.error(msg)
+                return message.success(msg)
+            }
+            return message.error(msg)
         })
     }
 
     handleView = (record, flag) => {
-        const {itemID } = record;
+        const { itemID } = record;
         const params = { itemID };
         axiosData(
             'couponCodeBatchService/getBatchDetail.ajax',
@@ -358,7 +367,7 @@ class CouponManageList extends Component {
                             viewModalVisible: true
                         });
                     }
-                   
+
                 }
             })
     }
@@ -376,60 +385,77 @@ class CouponManageList extends Component {
     }
 
 
-	renderHeader = () => {
-		const headerClasses = `layoutsToolLeft ${styles.headerWithBgColor}`;
-		return (
-			<div className={headerClasses}>
-				<span className={styles.customHeader}>
+    renderHeader = () => {
+        const headerClasses = `layoutsToolLeft ${styles.headerWithBgColor}`;
+        return (
+            <div className={headerClasses}>
+                <span className={styles.customHeader}>
                     第三方券管理
-				</span>
-				<div>
-					<Button
-						type="ghost"
+                </span>
+                <div>
+                    <Button
+                        type="ghost"
                         style={{ marginRight: 10 }}
                         onClick={() => {
                             jumpPage({ menuID: '100008993' })
                         }}
-					>第三方投放</Button>
-					<Button
-						type="primary"
-						icon="plus"
-						className={styles.jumpToCreate}
+                    >第三方投放</Button>
+                    <Button
+                        type="primary"
+                        icon="plus"
+                        className={styles.jumpToCreate}
                         onClick={this.handleCreateCouponModal}
-					>新建第三方券</Button>
-				</div>
-			</div>
-		);
-	}
+                    >新建第三方券</Button>
+                </div>
+            </div>
+        );
+    }
 
-	renderFilterBar = () => {
-		return (
-			<div>
-				<div className="layoutsSearch">
-					<ul>
-						<li>第三方券名称</li>
-						<li>
-							<Input
-								placeholder="请输入三方券名称"
-								onChange={(e) => {
-									this.setState({
-										batchName: e.target.value,
-									});
-								}}
-							/>
-						</li>
-						<li>券ID</li>
-						<li>
-							<Input
-								placeholder="请输入券ID"
-								onChange={(e) => {
-									this.setState({
+    renderFilterBar = () => {
+        return (
+            <div>
+                <div className="layoutsSearch">
+                    <ul>
+                        <li>第三方券名称</li>
+                        <li>
+                            <Input
+                                placeholder="请输入三方券名称"
+                                onChange={(e) => {
+                                    this.setState({
+                                        batchName: e.target.value,
+                                    });
+                                }}
+                            />
+                        </li>
+                        <li>券ID</li>
+                        <li>
+                            <Input
+                                placeholder="请输入券ID"
+                                onChange={(e) => {
+                                    this.setState({
                                         itemID: e.target.value,
-									});
-								}}
-							/>
-						</li>
-						<li>
+                                    });
+                                }}
+                            />
+                        </li>
+                        <li>业态</li>
+                        <li>
+                            <Select
+                                style={{ width: '160px' }}
+                                defaultValue={this.state.promotionType}
+                                value={this.state.promotionType}
+                                onChange={(value) => {
+                                    this.setState({
+                                        promotionType: value,
+                                    });
+                                }}
+                            >
+                                <Option value={-1}>全部</Option>
+                                <Option value={0}>餐饮</Option>
+                                <Option value={1}>零售</Option>
+                            </Select>
+                        </li>
+                        <li>
                             <h5>关联渠道</h5>
                         </li>
                         <li>
@@ -469,7 +495,7 @@ class CouponManageList extends Component {
                                 <Option value={'2'}>停用</Option>
                             </Select>
                         </li>
-						<li>
+                        <li>
                             <h5>创建时间</h5>
                         </li>
                         <li>
@@ -482,18 +508,18 @@ class CouponManageList extends Component {
                                 onChange={this.onDateQualificationChange}
                             />
                         </li>
-						<li>
+                        <li>
                             <Button type="primary" onClick={() => this.handleQuery(1)} disabled={this.state.loading}><Icon type="search" />搜索</Button>
                         </li>
-					</ul>
-				</div>
-			</div>
-		)
-	}
+                    </ul>
+                </div>
+            </div>
+        )
+    }
 
-	renderTables = () => {
-		const columns = [
-			{
+    renderTables = () => {
+        const columns = [
+            {
                 title: '序号',
                 dataIndex: 'index',
                 className: 'TableTxtCenter',
@@ -504,7 +530,7 @@ class CouponManageList extends Component {
                     return (this.state.pageNo - 1) * this.state.pageSizes + text;
                 },
             },
-			{
+            {
                 title: '操作',
                 key: 'operation',
                 className: 'TableTxtCenter',
@@ -512,14 +538,14 @@ class CouponManageList extends Component {
                 // fixed: 'left',
                 render: (text, record, index) => {
                     return (<span>
-						{/* <a
+                        {/* <a
                             href="#"
                             onClick={() => {
                                 this.handleView(record, true)
                             }}
                         >编辑</a> */}
-						<a
-							href="#"
+                        <a
+                            href="#"
                             onClick={() => {
                                 this.handleView(record, false)
                             }}
@@ -549,7 +575,7 @@ class CouponManageList extends Component {
                             record.channelID == 50 && record.couponCodeDockingType == 3 && <a
                                 href="#"
                                 disabled={!!record.eventStatus}
-                                onClick={!!record.eventStatus ?  null : () => {
+                                onClick={!!record.eventStatus ? null : () => {
                                     this.setState({
                                         wxData: record,
                                         isEdit: false,
@@ -562,19 +588,19 @@ class CouponManageList extends Component {
                             >投放</a>
                         }
                         {
-                             record.channelID == 50 && !!record.eventStatus && record.couponCodeDockingType == 3 &&
-                             <a
-                             href="#"
-                             onClick={() => {
-                                this.setState({
-                                    wxData: record,
-                                    isEdit: true,
-                                    title: '投放详情'
-                                }, () => {
-                                    this.handleShowWxModal()
-                                })
-                             }}
-                         >投放详情</a>
+                            record.channelID == 50 && !!record.eventStatus && record.couponCodeDockingType == 3 &&
+                            <a
+                                href="#"
+                                onClick={() => {
+                                    this.setState({
+                                        wxData: record,
+                                        isEdit: true,
+                                        title: '投放详情'
+                                    }, () => {
+                                        this.handleShowWxModal()
+                                    })
+                                }}
+                            >投放详情</a>
                         }
                     </span>
                     );
@@ -593,6 +619,13 @@ class CouponManageList extends Component {
                 key: 'itemID',
                 width: 200,
                 render: (text) => text,
+            },
+            {
+                title: '业态',
+                dataIndex: 'promotionType',
+                key: 'promotionType',
+                width: 200,
+                render: (promotionType) => promotionType ? '零售' : '餐饮',
             },
             {
                 title: '关联渠道',
@@ -636,7 +669,7 @@ class CouponManageList extends Component {
                 key: 'trdBatchID',
                 width: 140,
                 render: (text, record) => {
-                    if (record.platformType == 3 || record.platformType == 1)  return <Tooltip title={text}>{text}</Tooltip>
+                    if (record.platformType == 3 || record.platformType == 1) return <Tooltip title={text}>{text}</Tooltip>
                     return '--'
                 }
             },
@@ -660,8 +693,8 @@ class CouponManageList extends Component {
                 width: 180,
                 render: (text) => text,
             },
-		];
-		return (
+        ];
+        return (
             <div className={['layoutsContent', styles.tableClass].join(' ')} style={{ height: this.state.contentHeight, padding: '20px 0' }}>
                 <Table
                     scroll={{ x: 800, y: this.state.contentHeight - 108 }}
@@ -677,7 +710,7 @@ class CouponManageList extends Component {
                     className={styles.CouponTableList}
                     pagination={{
                         pageSize: this.state.pageSizes,
-                        pageSizeOptions: ['25','50','100','200'],
+                        pageSizeOptions: ['25', '50', '100', '200'],
                         current: this.state.pageNo,
                         showQuickJumper: true,
                         showSizeChanger: true,
@@ -696,12 +729,12 @@ class CouponManageList extends Component {
                 />
             </div>
         );
-	}
+    }
 
 
-	render() {
-		return (
-			<div className={['layoutsContainer', styles.CouponManageListBox].join(' ')} ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
+    render() {
+        return (
+            <div className={['layoutsContainer', styles.CouponManageListBox].join(' ')} ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 <div>
                     {this.renderHeader()}
                 </div>
@@ -766,9 +799,10 @@ class CouponManageList extends Component {
                     </Modal>
                 }
                 {
-                    this.state.createCouponModalVisible &&  <CreateCouponContent
+                    this.state.createCouponModalVisible && <CreateCouponContent
                         // handleSubmit={this.handleSuccesModalSubmit}
                         treeData={this.state.treeData}
+                        treeDataX={this.state.treeDataX}
                         shopPid={this.state.shopPid}
                         indirectList={this.state.indirectList}
                         handleCloseModal={this.handleCloseModal}
@@ -779,10 +813,10 @@ class CouponManageList extends Component {
                         platformType={this.state.platformTypeCreate}
                         channelID={this.state.channelID}
                         onParentCancel={this.handleCloseThirdCouponModal}
-                />
+                    />
                 }
                 {
-                    this.state.viewModalVisible && <ViewCouponContent 
+                    this.state.viewModalVisible && <ViewCouponContent
                         viewData={this.state.viewData}
                         handleCloseVidwModal={this.handleCloseVidwModal}
                     />
@@ -790,9 +824,9 @@ class CouponManageList extends Component {
                 {
                     this.state.WXLaunchVisible && <ScenePutContent onCancel={this.handleCloseWXLaunchModal} wxData={this.state.wxData} isEdit={this.state.isEdit} title={this.state.title} handleQuery={this.handleQuery} />
                 }
-			</div>
-		)
-	}
+            </div>
+        )
+    }
 }
 
 export default CouponManageList
@@ -820,7 +854,7 @@ class ViewCouponContent extends Component {
                 })
             }
         })
-    
+
     }
 
     getWXMerchantID = (data) => {
@@ -836,7 +870,7 @@ class ViewCouponContent extends Component {
 
     render() {
         const { viewData } = this.state;
-        const { stock, receive, merchantType, merchantID, itemID, platformType} = viewData;
+        const { stock, receive, merchantType, merchantID, itemID, platformType } = viewData;
         let title = viewData.platformType == 1 ? '支付宝' : viewData.platformType == 2 ? '抖音' : '微信';
         const columns = [
             {
@@ -880,7 +914,7 @@ class ViewCouponContent extends Component {
                     } else {
                         return '--'
                     }
-                   
+
                 }
             },
             {
@@ -923,8 +957,8 @@ class ViewCouponContent extends Component {
                         <div style={{ marginBottom: 12 }}>
                             <p>券批次ID： <Tooltip title={itemID}><span>{itemID.length > 15 ? `${itemID.slice(0, 6)}...${itemID.slice(-10)}` : itemID}</span></Tooltip></p>
                             {
-                                (platformType == 1 || platformType == 3) &&  <p>关联小程序：
-                                <span>{platformType == 3 ? this.getJumpAppName(viewData) : viewData.jumpAppID}</span></p>
+                                (platformType == 1 || platformType == 3) && <p>关联小程序：
+                                    <span>{platformType == 3 ? this.getJumpAppName(viewData) : viewData.jumpAppID}</span></p>
                             }
                         </div>
                         <div>
@@ -933,7 +967,7 @@ class ViewCouponContent extends Component {
                     </Col>
                     <Col span={24} className={styles.relationCoupon__table}>
                         <p className={styles.relationText__span} style={{ marginRight: 0 }}>关联优惠券：</p>
-                        <Table 
+                        <Table
                             pagination={false}
                             bordered={true}
                             columns={columns}
@@ -942,15 +976,15 @@ class ViewCouponContent extends Component {
                     </Col>
                     {
                         (platformType == 1 || platformType == 3) && <Col>
-                        <div style={{ marginBottom: 12 }}>
-                            <p><span className={styles.relationText__span}>{title}链接方式：</span> <span>{merchantType == 1 ? '直连' : '间连'}</span></p>
-                        </div>
-                        <div style={{ marginBottom: 12 }}>
-                            <p><span className={styles.relationText__span}>{title}{merchantType == 1 ? (platformType == '1' ? 'pid' : '账务主体') : platformType == '1' ? 'smid' : '账务主体'}号：</span> 
-                                <span>{platformType == '3' ? this.getWXMerchantID(viewData) : merchantID}</span>
-                            </p>
-                        </div>
-                    </Col>
+                            <div style={{ marginBottom: 12 }}>
+                                <p><span className={styles.relationText__span}>{title}链接方式：</span> <span>{merchantType == 1 ? '直连' : '间连'}</span></p>
+                            </div>
+                            <div style={{ marginBottom: 12 }}>
+                                <p><span className={styles.relationText__span}>{title}{merchantType == 1 ? (platformType == '1' ? 'pid' : '账务主体') : platformType == '1' ? 'smid' : '账务主体'}号：</span>
+                                    <span>{platformType == '3' ? this.getWXMerchantID(viewData) : merchantID}</span>
+                                </p>
+                            </div>
+                        </Col>
                     }
                     <div className={styles.promotionFooter__footer}>
                         <Button key="0" onClick={this.props.handleCloseVidwModal}>关闭</Button>
