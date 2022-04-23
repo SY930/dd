@@ -23,12 +23,15 @@ class PureTable extends Component {
     }
 
     handleChekTime = async () => {
+        const {batchItemID} = this.props.params;
         const method = 'dyCoupon/xfc/verifyHighMoment';
         const response = await axios.post('/api/v1/universal', {
             service: 'HTTP_SERVICE_URL_PROMOTION_DOUYIN',
             method,
             type: 'post',
-            data: { },
+            data: { 
+                batchItemID
+            },
         });
         const { code, data, msg } = response;
         if (code === '000') {
