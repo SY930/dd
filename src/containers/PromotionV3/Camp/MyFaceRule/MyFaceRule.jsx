@@ -155,7 +155,7 @@ class MyFaceRule extends Component {
     }
 
     // 活动数据格式 {"eventID", 1111111111, "eventWay": 20,"eventName": "摇一摇吧"}
-    onEventsLinkValue = (idx, key, value, parentValue, parentName) => {
+    onEventsLinkValue = (idx, key, value, parentName, parentValue) => {
         this.onChange(idx, { [key]: { eventID: value, eventWay: parentValue, eventName: parentName } })
     }
 

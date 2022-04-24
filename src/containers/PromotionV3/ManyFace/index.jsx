@@ -194,7 +194,7 @@ class ManyFace extends Component {
         const { eventRange, ...others1 } = formData1;
         const newEventRange = this.formatEventRange(eventRange);
         // shopRange全部店铺和部分店铺的
-        const event = { ...others1, ...newEventRange, ...formData2, eventWay: '85', shopRange: '1' };
+        const event = { ...others1, ...newEventRange, ...formData2, shopRange: '1' };
         const eventConditionInfos = _.map(formData3, item =>
             (_.omit(item, ['triggerEventCustomInfo2', 'triggerEventValue2', 'triggerEventName2',
                 'triggerEventCustomInfoApp1', 'everyTagsRule', 'isShowDishSelector', 'id',
@@ -214,8 +214,8 @@ class ManyFace extends Component {
                         return
                     }
                     this.onToggle();
-                    closePage();
-                    jumpPage({ pageID: '1000076003' });
+                    // closePage();
+                    // jumpPage({ pageID: '1000076003' });
                 }
             });
             return;
