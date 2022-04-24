@@ -205,7 +205,7 @@ class ManyFace extends Component {
         // console.log(eventConditionInfos, 'eventConditionInfos')
         if (id) {
             const itemID = id;
-            const allData = { event: { ...event, itemID }, eventConditionInfos };
+            const allData = { event: { ...event, itemID, isActive: this.props.activeStatus }, eventConditionInfos };
             // 根据数据是否变化来判断是否弹窗
             postEvent(allData).then((x) => {
                 if (x) {
