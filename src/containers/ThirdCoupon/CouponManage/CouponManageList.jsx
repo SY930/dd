@@ -451,8 +451,8 @@ class CouponManageList extends Component {
                                 }}
                             >
                                 <Option value={''}>全部</Option>
-                                <Option value={0}>餐饮</Option>
-                                <Option value={1}>零售</Option>
+                                <Option value={'0'}>餐饮</Option>
+                                <Option value={'1'}>零售</Option>
                             </Select>
                         </li>
                         <li>
