@@ -451,8 +451,8 @@ class CouponManageList extends Component {
                                 }}
                             >
                                 <Option value={''}>全部</Option>
-                                <Option value={'0'}>餐饮</Option>
-                                <Option value={'1'}>零售</Option>
+                                <Option value={1}>餐饮</Option>
+                                <Option value={2}>零售</Option>
                             </Select>
                         </li>
                         <li>
@@ -625,7 +625,7 @@ class CouponManageList extends Component {
                 dataIndex: 'promotionType',
                 key: 'promotionType',
                 width: 200,
-                render: (promotionType) => promotionType ? '零售' : '餐饮',
+                render: (promotionType) => promotionType === 2 ? '零售' : '餐饮',
             },
             {
                 title: '关联渠道',

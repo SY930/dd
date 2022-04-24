@@ -118,7 +118,7 @@ class CreateCouponContent extends Component {
             giftType: type,
         });
 
-        if (this.props.form.getFieldValue('promotionType') === 1) {
+        if (this.props.form.getFieldValue('promotionType') === 2) {
             const targetGift = this.props.treeDataX.map(v => v.children).flat().find(g => { 
                 return g.giftValue === v
             });
@@ -319,7 +319,6 @@ class CreateCouponContent extends Component {
     handleDouyinSubmit = (values, groupId) => {
         const { giftValidRange = [], batchName, stock = {}, shopId, promotionType } = values;
         const { effectGiftTimeHours, giftType, giftItemID, effectType } = this.state
-        debugger
         const EGiftEffectTime = giftValidRange[0] ? giftValidRange[0].format(DATE_FORMAT) : ''
         const validUntilDate = giftValidRange[1] ? giftValidRange[1].format(END_DATE_FORMAT) : '';
         if (!effectGiftTimeHours && effectType === '3') {
@@ -856,11 +855,11 @@ class CreateCouponContent extends Component {
                             >
                                 {getFieldDecorator('promotionType', {
                                     onChange: this.handlePromotionTypeChange,
-                                    initialValue: 0,
+                                    initialValue: 1,
                                 })(
                                     <RadioGroup>
-                                        <Radio key={'1'} value={0}>餐饮</Radio>
-                                        <Radio key={'2'} value={1}>零售</Radio>
+                                        <Radio key={'1'} value={1}>餐饮</Radio>
+                                        <Radio key={'2'} value={2}>零售</Radio>
                                     </RadioGroup>
                                 )}
                             </FormItem>}
@@ -922,7 +921,7 @@ class CreateCouponContent extends Component {
                                         })(
                                             <TreeSelect
                                                 dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                                                treeData={form.getFieldValue('promotionType') ? this.props.treeDataX : this.props.treeData}
+                                                treeData={form.getFieldValue('promotionType') === 2 ? this.props.treeDataX : this.props.treeData}
                                                 placeholder="请选择礼品名称"
                                                 showSearch={true}
                                                 treeNodeFilterProp="label"
