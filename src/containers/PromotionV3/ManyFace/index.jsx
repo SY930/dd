@@ -214,8 +214,8 @@ class ManyFace extends Component {
                         return
                     }
                     this.onToggle();
-                    // closePage();
-                    // jumpPage({ pageID: '1000076003' });
+                    closePage();
+                    jumpPage({ pageID: '1000076003' });
                 }
             });
             return;
