@@ -119,7 +119,9 @@ class CreateCouponContent extends Component {
         });
 
         if (this.props.form.getFieldValue('promotionType') === 1) {
-            const targetGift = this.props.treeDataX.map(v => v.children).flat().find(v => v.giftValue === value);
+            const targetGift = this.props.treeDataX.map(v => v.children).flat().find(g => { 
+                return g.giftValue === v
+            });
 
             this.setState({
                 effectType: targetGift.promotionDictType === 1 ? '2' : '3',
@@ -317,6 +319,7 @@ class CreateCouponContent extends Component {
     handleDouyinSubmit = (values, groupId) => {
         const { giftValidRange = [], batchName, stock = {}, shopId, promotionType } = values;
         const { effectGiftTimeHours, giftType, giftItemID, effectType } = this.state
+        debugger
         const EGiftEffectTime = giftValidRange[0] ? giftValidRange[0].format(DATE_FORMAT) : ''
         const validUntilDate = giftValidRange[1] ? giftValidRange[1].format(END_DATE_FORMAT) : '';
         if (!effectGiftTimeHours && effectType === '3') {
@@ -364,7 +367,7 @@ class CreateCouponContent extends Component {
         axios.post(url + method, params).then((res) => {
             const { code, message: msg } = res;
             if (code === '000') {
-                message.success('创建成功');
+                // message.success('创建成功');
                 this.props.handleCloseModal();
                 this.props.handleQuery();
                 this.props.onParentCancel();
