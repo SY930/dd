@@ -47,7 +47,7 @@ class CouponManageList extends Component {
             batchName: '', // 第三方券名称
             itemID: '', // 券ID
             platformType: '', // 关联平台
-            promotionType: -1, // 关联平台
+            promotionType: '', // 关联平台
             couponDateRange: '', // 创建时间
             createCouponModalVisible: false,
             createThirdCouponVisble: false,
@@ -450,7 +450,7 @@ class CouponManageList extends Component {
                                     });
                                 }}
                             >
-                                <Option value={-1}>全部</Option>
+                                <Option value={''}>全部</Option>
                                 <Option value={0}>餐饮</Option>
                                 <Option value={1}>零售</Option>
                             </Select>
