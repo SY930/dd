@@ -10,7 +10,7 @@ import {
     Spin, Icon, Alert, Switch, Tabs,
     Tooltip,
 } from 'antd';
-import { throttle, isEmpty } from 'lodash';
+import { throttle, isEmpty, cloneDeep } from 'lodash';
 import { jumpPage, closePage } from '@hualala/platform-base'
 import moment from 'moment';
 import copy from 'copy-to-clipboard'
@@ -571,7 +571,7 @@ class MySpecialActivities extends React.Component {
              page: pageMap[eventWay].page,
              width:280
          }
-         const paramsRouter = _.cloneDeep(params)
+         const paramsRouter = cloneDeep(params)
          if (eventWay == '20') {
             paramsRouter.scene = `scene=${paramsRouter.scene}`
          }
