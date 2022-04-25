@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
 import registerPage from '../../index';
+import { jumpPage } from '@hualala/platform-base';
 import imgSrc from '../../assets/empty_ph.png';
 import {
     Row,
@@ -86,6 +87,10 @@ class MessageTemplatesPage extends React.Component {
         })
     }
 
+    goToSettings = () => {
+        jumpPage({pageID: 'shop.jituan.workflow'})
+    }
+
     render() {
         const messageTemplateList = this.state.messageTemplateList;
         const pendingTemplates = messageTemplateList.filter(item => item.auditStatus == 1);
@@ -116,6 +121,7 @@ class MessageTemplatesPage extends React.Component {
                                         }
                                     }>{ COMMON_LABEL.create }</Button>
                             </Authority>
+                            <span className={styles.tipsBox}>短信模版可以线上审批啦，快去设置审批人吧，<span className={styles.goToSettings} onClick={this.goToSettings}>去设置</span></span>
                         </span>
                     </div>
                 </div>

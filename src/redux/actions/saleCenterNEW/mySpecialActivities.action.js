@@ -290,7 +290,7 @@ export const deleteSelectedRecordAC = (opts) => {
                     itemID: opts.itemID,
                 }));
             } else {
-                opts.fail && opts.fail(responseJSON.resultmsg);
+                opts.fail && opts.fail(responseJSON.resultmsg || responseJSON.message);
                 dispatch(deleteSelectedRecordFail())
             }
         }).catch((error) => {

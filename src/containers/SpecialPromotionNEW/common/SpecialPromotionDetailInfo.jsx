@@ -605,6 +605,9 @@ class SpecialDetailInfo extends Component {
                 if (v.presentType !== 1 || v.presentType !== 8) {
                     otherGifts.push(v)
                 }
+                if (v.presentType === 2) { // 过滤掉积分数据
+                    return false
+                }
                 return v.presentType === 1 || v.presentType !== 8
             })
             this.recommendOtherGifts = otherGifts
@@ -844,6 +847,7 @@ class SpecialDetailInfo extends Component {
 
             })
         }
+        // console.log(initEventRecommendSettings,'initEventRecommendSettings', this.recommendOtherGifts)
 
         // 回显直接推荐人和间接推荐人数据
         initEventRecommendSettings.forEach(v => {
@@ -951,9 +955,13 @@ class SpecialDetailInfo extends Component {
             gifts.lastConsumeIntervalDays = giftInfo.lastConsumeIntervalDays;
             gifts.lastConsumeIntervalDays = giftInfo.lastConsumeIntervalDays;
             gifts.presentType = giftInfo.presentType ? giftInfo.presentType : '1'
-            typeof giftInfo.needCount === "object"
-                ? giftInfo.needCount.value
-                : giftInfo.needCount;
+            if(giftInfo.needCount){
+                if(typeof giftInfo.needCount === "object"){
+                    gifts.needCount = giftInfo.needCount.value ? giftInfo.needCount.value : ''
+                }else{
+                    gifts.needCount = giftInfo.needCount ? giftInfo.needCount : ''
+                }
+            }
             return gifts;
         });
         return giftArr;
@@ -1113,9 +1121,7 @@ class SpecialDetailInfo extends Component {
                 this.props.type != "30" &&
                 this.props.type != "70"
             ) {
-
-                // check gift count
-                return Object.assign(ruleInfo, {
+                let tempData = Object.assign(ruleInfo, {
                     giftCount: this.checkgiftCount(
                         ruleInfo.giftCount,
                         index,
@@ -1139,6 +1145,8 @@ class SpecialDetailInfo extends Component {
                                 index
                             ),
                 });
+                // check gift count
+                return tempData
             }
 
             // check total count

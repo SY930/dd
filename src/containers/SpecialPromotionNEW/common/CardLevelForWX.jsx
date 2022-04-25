@@ -366,6 +366,7 @@ class CardLevelForWX extends React.Component {
 
     render() {
         const eventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
+        // console.log("🚀 ~ file: CardLevelForWX.jsx ~ line 369 ~ CardLevelForWX ~ render ~ eventInfo", eventInfo)
         const excludeEvent = eventInfo.excludeEventCardLevelIdModelList || [];
         let { getExcludeCardLevelIds = [], cardLevelRangeType } = this.state;
         let cardInfo = this.props.cardInfo ? this.props.cardInfo.toJS()
@@ -385,6 +386,7 @@ class CardLevelForWX extends React.Component {
         });
         return (
             <Form className={styles.cardLevelTree}>
+                {/* d216426238818026 会员范围 */}
                 <FormItem
                     label={this.props.intl.formatMessage(STRING_SPE.d216426238818026)}
                     className={styles.FormItemStyle}
@@ -392,6 +394,7 @@ class CardLevelForWX extends React.Component {
                     wrapperCol={{ span: 17 }}
                 >
                     <RadioGroup onChange={this.handleRadioChange} value={`${this.state.cardLevelRangeType}`}>
+                        {/* d1700a52800c2287 线上卡类别  */}
                         <Radio key={'2'} value={'2'}>{`${this.props.intl.formatMessage(STRING_SPE.d1700a52800c2287)}`}</Radio>
                         <Radio key={'5'} value={'5'}>{`${this.props.intl.formatMessage(STRING_SPE.d31eif72jb0395)}`}</Radio>
                     </RadioGroup>
@@ -463,10 +466,12 @@ class CardLevelForWX extends React.Component {
                 {
                     !eventInfo.allCardLevelCheck && excludeEvent.length == 0 && this.state.cardLevelIDList.length === 0 ? (
                         <p style={{ color: 'orange', marginLeft: 110, marginTop: '-5px' }}>
+                            {/* 不选择默认全选  */}
                         {this.props.intl.formatMessage(STRING_SPE.da8ofl352k60)}
                         </p>
                     ) : (eventInfo.allCardLevelCheck || excludeEvent.length > 0) && this.state.cardLevelIDList.length === 0  ? (
                         <p style={{ color: 'red', marginLeft: 110, marginTop: '-5px' }}>
+                            {/* 有卡类被占用, 不得为空  du38h0lpm7158 */}
                         {this.props.intl.formatMessage(STRING_SPE.du38h0lpm7158)}
                         </p>
                     ) : null
@@ -476,6 +481,7 @@ class CardLevelForWX extends React.Component {
                         <div
                             style={{ display: this.state.tableDisplay ? 'block' : 'none', width: '71%', marginLeft: '110px' }}
                         >
+                            {/* 同时段内，卡类/卡等级被以下活动占用 */}
                             <ExcludeCardTable isWeChatOnly={true} catOrCard={'cat'} />
                         </div>
                 }

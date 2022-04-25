@@ -291,7 +291,8 @@ class MyFaceRule extends Component {
                 const { tagRuleDetails = [], tagTypes = [] } = res.data;
                 const tagsList = [];
                 tagTypes.map((item) => {
-                    tagsList.push(...item.categoryEntries)
+                    const { categoryEntries = [] } = item
+                    tagsList.push(...categoryEntries)
                 })
 
                 this.setState({

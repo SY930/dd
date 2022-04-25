@@ -163,6 +163,7 @@ render() {
             </p>
             <div className={styles.title}>
                 {title}
+                {/* 标题后面的图标 */}
                 <div className={styles.speTag}>
                     {tags.map((tag, i) => {
                         if (!wechatFlag && tag.props && tag.props.defaultMessage.includes('微信') || !wechatFlag && !tag.props && tag.includes('微信')) {
@@ -197,6 +198,7 @@ render() {
                     </div>*/}
             </Tooltip>
 
+            {/* logo */}
             <div className={styles.speCardLogo} style={{
                 right: right * 0.62,
                 bottom: bottom * 0.62,

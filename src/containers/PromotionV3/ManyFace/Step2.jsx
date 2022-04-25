@@ -1,12 +1,14 @@
 import React, { PureComponent as Component } from 'react';
 import { connect } from 'react-redux';
-import { Form } from 'antd';
+import moment from 'moment';
+// import { Form } from 'antd';
 import BaseForm from 'components/common/BaseForm';
 import ShopSelector from 'components/ShopSelector';
 import { formKeys2, formItems2, formItemLayout } from './Common';
 import { getPromotionShopSchema } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import { isFilterShopType, axiosData } from '../../../helpers/util'
 
+const DF = 'YYYYMMDD';
 class Step2 extends Component {
     /* 页面需要的各类状态属性 */
     state = {
@@ -21,10 +23,13 @@ class Step2 extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.specialPromotionInfo.toJS().$eventInfo.eventStartDate) {
+        const { formData1 } = nextProps
+        const { eventRange } = formData1;
+        const newEventRange = this.formatEventRange(eventRange);
+        if (newEventRange.eventStartDate) {
             const param = {
-                eventStartDate: nextProps.specialPromotionInfo.toJS().$eventInfo.eventStartDate,
-                eventEndDate: nextProps.specialPromotionInfo.toJS().$eventInfo.eventEndDate,
+                eventStartDate: newEventRange.eventStartDate,
+                eventEndDate: newEventRange.eventEndDate,
                 eventWay: '85',
             }
             axiosData(
@@ -63,6 +68,14 @@ class Step2 extends Component {
             return { label: brandName, value: brandID };
         });
     }
+
+    formatEventRange = (eventRange) => {
+        const [sd, ed] = eventRange;
+        const eventStartDate = moment(sd).format(DF);
+        const eventEndDate = moment(ed).format(DF);
+        return { eventStartDate, eventEndDate };
+    }
+
     /** formItems 重新设置 */
     resetFormItems() {
         // const originTreeData = this.props.shopSchema.toJS();

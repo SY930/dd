@@ -72,7 +72,7 @@ class ScenePutContent extends Component {
         } else {
             // 跳转线上餐厅送礼
             // jumpPage({})
-            jumpPage({ pageID: '10000730001', type: 23, from: 'scenePut' });
+            jumpPage({ pageID: '10000730008', type: 23, from: 'scenePut' });
         }
         this.props.onCancel();
     }
