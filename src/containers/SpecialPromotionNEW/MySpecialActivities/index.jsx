@@ -8,7 +8,7 @@ import {
     Table, Input, Select, DatePicker,
     Button, Modal, message,
     Spin, Icon, Alert, Switch, Tabs,
-    Tooltip,
+    Tooltip, Popover, Menu
 } from 'antd';
 import { throttle, isEmpty, cloneDeep } from 'lodash';
 import { jumpPage, closePage } from '@hualala/platform-base'
@@ -16,6 +16,7 @@ import moment from 'moment';
 import copy from 'copy-to-clipboard'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import ExportModal from "../../GiftNew/GiftInfo/ExportModal";
+import PlanModal from '../common/PlanModal'
 import Cfg from '../../../constants/SpecialPromotionCfg';
 import Authority from '../../../components/common/Authority';
 import { saleCenterSetSpecialBasicInfoAC, saleCenterResetDetailInfoAC, getAuthLicenseData } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
@@ -89,6 +90,8 @@ const confirm = Modal.confirm;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const TabPane = Tabs.TabPane;
+const MenuItemGroup = Menu.ItemGroup;
+
 const mapStateToProps = (state) => {
     return {
         mySpecialActivities: state.sale_mySpecialActivities_NEW,
@@ -224,7 +227,7 @@ class MySpecialActivities extends React.Component {
             eventWay: '',   //下载链接eventWay
             queryEventWay: '',   //搜索eventWay
             promotionDateRange: '',
-            isActive: '',
+            isActive: '1',
             eventName: '',
             editEventWay: '',
             pageSizes: 25,
@@ -261,6 +264,8 @@ class MySpecialActivities extends React.Component {
             scene: '',
             tabKeys: 'saleSpecialPage',
             stylesShow: 'list',
+            planModalVisible: false,
+            filterSchemeList: [],
         };
         this.cfg = {
             eventWay: [
@@ -324,6 +329,35 @@ class MySpecialActivities extends React.Component {
         }
     }
 
+    // 删除方案
+    removePlan = (record, itemID) => {
+        const _this = this;
+        Modal.confirm({
+            title: `确认删除方案【${record.schemeName}】`,
+            content: '删除是不可恢复操作,请慎重考虑',
+            iconType: 'question-circle',
+            onOk() {
+                // handleNext();
+                axiosData(
+                    '/filterSchemeService/delete.ajax',
+                    {
+                        itemID,
+                        groupID: getStore().getState().user.getIn(['accountInfo', 'groupID'])
+                    },
+                    null,
+                    { path: null },
+                    'HTTP_SERVICE_URL_PROMOTION_NEW'
+                ).then((res) => {
+                    console.log("🚀 ~ file: index.jsx ~ line 350 ~ MySpecialActivities ~ ).then ~ res", res)
+                    if (res.code === '000') {
+                        message.success('删除成功')
+                        _this.getSearchListContent()
+                    }
+                });
+            },
+            onCancel() { },
+        });
+    }
     getQueryVariable() {
         const search = window.decodeURIComponent(window.location.search)
         var query = search.substr(1)
@@ -336,6 +370,68 @@ class MySpecialActivities extends React.Component {
             }
         }
         return params
+    }
+
+    goSearch = ({ key }) => {
+        const record = this.state.filterSchemeList.find(item => item.itemID === key)
+        console.log("🚀 ~ file: index.jsx ~ line 375 ~ MySpecialActivities ~ record", record)
+        const filterRule = record.filterRule || '{}';
+        const itm = JSON.parse(filterRule)
+        const { isActive } = itm
+        console.log("🚀 ~ file: index.jsx ~ line 375 ~ MySpecialActivities ~ isActive", isActive)
+        this.setState({ isActive }, () => {
+            this.handleQuery()
+        })
+    }
+
+    getSearchTitle = (name) => {
+        return (
+            <div><span className={styles.customPro}></span>{name}</div>
+        )
+    }
+
+
+    getSearchContent = () => {
+        const { filterSchemeList } = this.state
+        return (
+            <div>
+                <Menu
+                    // onClick={this.handleClick}
+                    style={{ width: 240 }}
+                    defaultSelectedKeys={['1']}
+                    defaultOpenKeys={['sub1']}
+                    mode="inline"
+                    className={styles.saleSearchProgram}
+                    onClick={this.goSearch}
+                >
+                    <MenuItemGroup key="g1" title={this.getSearchTitle('自定义方案')}>
+                        {
+                            (filterSchemeList || []).map((item) => {
+                                const filterRule = item.filterRule || '{}';
+                                const itm = JSON.parse(filterRule);
+                                console.log("🚀 ~ file: index.jsx ~ line 408 ~ MySpecialActivities ~ itm", itm)
+                                return (
+                                    <Menu.Item key={item.itemID}>
+                                        <span className={styles.menuTitle}>
+                                            {itm.schemeName}
+                                        </span>
+                                        <Icon type="close-circle-o" onClick={() => { this.removePlan(itm, item.itemID) }} />
+                                    </Menu.Item>
+                                )
+                            })
+                        }
+                    </MenuItemGroup>
+                    <MenuItemGroup key="g2" title={this.getSearchTitle('系统预置')}>
+                        <Menu.Item key="g21">
+                            <span className={styles.menuTitle}>
+                                暂无
+                            </span>
+                        </Menu.Item>
+                    </MenuItemGroup>
+                </Menu>
+                <Button type="ghost" style={{ width: '100%' }} icon="plus" onClick={() => { this.setState({ planModalVisible: true }) }}> 将当前查询条件保存为方案</Button>
+            </div>
+        )
     }
     /**
      * @description toggle the advanced qualification selection.
@@ -353,7 +449,6 @@ class MySpecialActivities extends React.Component {
     }
 
     toggleStateFailCallBack(val) {
-        console.log("🚀 ~ file: index.jsx ~ line 363 ~ MySpecialActivities ~ toggleStateFailCallBack ~ val", val)
         message.error(val);
     }
 
@@ -401,17 +496,18 @@ class MySpecialActivities extends React.Component {
             fetchSpecialPromotionList,
         } = this.props;
         this.queryWechatMpInfo();
-        fetchSpecialPromotionList({
-            data: {
-                groupID: this.props.user.accountInfo.groupID,
-                // _role:this.props.user.accountInfo.roleType,
-                // _loginName:this.props.user.accountInfo.loginName,
-                // _groupLoginName:this.props.user.accountInfo.groupLoginName,
-                pageSize: this.state.pageSizes,
-                pageNo: 1,
-            },
-            fail: (msg) => { message.error(msg) },
-        });
+        // fetchSpecialPromotionList({
+        //     data: {
+        //         groupID: this.props.user.accountInfo.groupID,
+        //         // _role:this.props.user.accountInfo.roleType,
+        //         // _loginName:this.props.user.accountInfo.loginName,
+        //         // _groupLoginName:this.props.user.accountInfo.groupLoginName,
+        //         pageSize: this.state.pageSizes,
+        //         pageNo: 1,
+        //     },
+        //     fail: (msg) => { message.error(msg) },
+        // });
+        this.handleQuery();
         // 把groupID传给后台，后台执行自动终止
         this.props.updateExpiredActiveState({
             groupID: this.props.user.accountInfo.groupID,
@@ -425,6 +521,7 @@ class MySpecialActivities extends React.Component {
         // console.log('componentDidMountcomponentDidMountcomponentDidMount')
         // 千人千面活动创建和更新完，点去装修跳转页面
         this.fromCrmJump();
+        this.getSearchListContent() // 查询方案列表
     }
 
     // 产品授权
@@ -443,6 +540,29 @@ class MySpecialActivities extends React.Component {
             this.setState({ authLicenseData: data })
             let { authStatus } = checkAuthLicense(this.state.authLicenseData)
             this.setState({ authStatus })
+        });
+    }
+
+    // 查询方案列表
+    getSearchListContent = () => {
+        axiosData(
+            '/filterSchemeService/queryList.ajax',
+            {
+                filterType: 11,
+                pageNo: 1,
+                pageSize: 100,
+                groupID: getStore().getState().user.getIn(['accountInfo', 'groupID'])
+            },
+            null,
+            { path: null },
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
+        ).then((res) => {
+            if (res.code === '000') {
+                const { data: { filterSchemeList = [] } } = res;
+                this.setState({
+                    filterSchemeList
+                })
+            }
         });
     }
 
@@ -949,7 +1069,7 @@ class MySpecialActivities extends React.Component {
                                     </div>
                                 </TabPane>
                                 <TabPane tab="促销活动" key="onSalePage">
-                                    <MyActivities stylesChange={this.stylesChange} stylesShow={stylesShow} />
+                                    <MyActivities stylesChange={this.stylesChange} stylesShow={stylesShow} tabKeys={tabKeys} />
                                 </TabPane>
                             </Tabs>
                         </div>
@@ -977,6 +1097,14 @@ class MySpecialActivities extends React.Component {
                 >
                     {this.renderCopyUrlModal()}
                 </Modal>
+                {
+                    this.state.planModalVisible && <PlanModal
+                        onCancel={() => { this.setState({ planModalVisible: false }) }}
+                        isActive={this.state.isActive}
+                        onSearch={this.getSearchListContent}
+                        filterSchemeList={this.state.filterSchemeList}
+                    />
+                }
             </div>
         );
     }
@@ -1040,39 +1168,46 @@ class MySpecialActivities extends React.Component {
         }
     }
 
+    renderPlanBtn = () => {
+        return (
+            <Popover content={this.getSearchContent()} trigger="click" placement="bottom" title={null}>
+                <Button type="ghost" icon='search' style={{ marginRight: 10 }}>查询方案</Button>
+            </Popover>
+        )
+    }
+
     renderHeader() {
         const { tabKeys, stylesShow } = this.state
-        const headerClasses = `layoutsToolLeft ${styles.headerWithBgColor}`;
+        const headerClasses = `layoutsToolLeft ${styles.headerWithBgColor} ${styles.topHeaderBox}`;
         return (
             <div className="layoutsTool" style={{ height: '64px' }}>
                 <div className={headerClasses}>
                     <span className={styles.customHeader}>活动管理</span>
                     {
                         tabKeys === 'saleSpecialPage' && (
-                            <span className={styles.exportBtn}>
-                                {
-                                    stylesShow === 'list' ? <Button
-                                        type="ghost"
-                                        onClick={() => this.stylesChange('card')}
-                                    ><span className={styles.cardImg}><img src={Card} />卡片展示</span></Button> :
-                                        <Button type="ghost"
-                                            onClick={() => this.stylesChange('list')}
-                                        ><Icon type="bars" />列表展示</Button>
-                                }
-                            </span>
-                        )
-                    }
-                    {
-                        tabKeys === 'saleSpecialPage' && (
-                            <span className={styles.exportBtn}>
-                                <Authority rightCode={SPECIAL_PROMOTION_QUERY}>
-                                    <Button
-                                        type="ghost"
-                                        onClick={() => this.setState({ exportVisible: true })}
-                                        style={{ marginRight: 10 }}
-                                    ><Icon type="upload" />导出历史</Button>
-                                </Authority>
-                            </span>
+                            <div>
+                                <span className={styles.exportBtn}>
+                                    {
+                                        stylesShow === 'list' ? <Button
+                                            type="ghost"
+                                            onClick={() => this.stylesChange('card')}
+                                        ><span className={styles.cardImg}><img src={Card} />卡片展示</span></Button> :
+                                            <Button type="ghost"
+                                                onClick={() => this.stylesChange('list')}
+                                            ><Icon type="bars" />列表展示</Button>
+                                    }
+                                </span>
+                                <span className={styles.exportBtn}>
+                                    <Authority rightCode={SPECIAL_PROMOTION_QUERY}>
+                                        <Button
+                                            type="ghost"
+                                            onClick={() => this.setState({ exportVisible: true })}
+                                            style={{ marginRight: 10 }}
+                                        ><Icon type="upload" />导出历史</Button>
+                                    </Authority>
+                                </span>
+                                {this.renderPlanBtn()}
+                            </div>
                         )
                     }
                 </div>
@@ -1132,7 +1267,8 @@ class MySpecialActivities extends React.Component {
                         <li>
                             <Select
                                 style={{ width: 80 }}
-                                defaultValue=""
+                                defaultValue="1"
+                                value={this.state.isActive}
                                 placeholder={this.props.intl.formatMessage(STRING_SPE.dd5aa016c5d12116)}
                                 onChange={(value) => {
                                     this.setState({
@@ -1481,7 +1617,7 @@ class MySpecialActivities extends React.Component {
                                 href="#"
                                 disabled={
                                     record.eventWay == '64' ? null : 
-                                     (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && (record.isActive != '0' || !isMine(record)))
+                                    (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && (record.isActive != '0' || !isMine(record)))
                                 }
                                 onClick={(e) => {
                                     // if (record.eventWay == '64') {
