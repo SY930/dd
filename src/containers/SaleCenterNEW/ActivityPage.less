@@ -2352,6 +2352,82 @@
         }
     }
 }
+.topHeaderBox {
+    display: flex;
+    justify-content: space-between;
+}
+.saleSearchProgram {
+    .menuTitle {
+        display: flex;
+        overflow: hidden;
+        white-space: pre-line;
+        text-overflow: ellipsis;
+        align-items: baseline;
+        height: auto;
+        width: 100%;
+    }
+    :global {
+        .ant-menu-item-group-title {
+            font-size: 13px;
+            font-family: PingFangSC;
+            font-weight: 600;
+            color: #666666;
+            margin-left: -10px;
+            padding-bottom: 1px;
+        }
+        .ant-menu-item .anticon {
+            margin-right: 0px;
+            font-size: 12px;
+            font-family: PingFangSC;
+            font-weight: 400;
+            color: #b7b7b7;
+            display: none;
+        }
+        .ant-menu-item {
+            &:hover {
+                .anticon {
+                    display: inline-block;
+                }
+            }
+        }
+        .ant-menu-item-group-list .ant-menu-item {
+            display: flex;
+            align-items: center;
+            height: auto;
+            margin: 6px 0;
+            padding: 6px 0 6px 16px;
+            border-radius: 3px;
+            line-height: 18px;
+        }
+        .ant-menu-item-group-list .ant-menu-item-active {
+            color: #555;
+            font-size: 12px;
+        }
+
+        .ant-menu-item-group-list .ant-menu-item-selected {
+            background-color: #E0F2FF;
+            color: #379FF1;
+            border-right-color: transparent;
+        }
+        .ant-menu-item-group-list .ant-menu-item:hover {
+            background-color: #eeeeee;
+            // color: rgba(0, 0, 0, 0.65);
+        }
+       .ant-menu-item-group-list .ant-menu-item-selected:hover {
+            background-color: #E0F2FF;
+        }
+    }
+    .customPro {
+        border-radius: 2px;
+        height: 14px;
+        width: 3px;
+        display: inline-block;
+        position: relative;
+        top: 2px;
+        margin-right: 7px;
+        background: #4ca2ee;
+    }
+}
 .Sale__Activite__Tip {
     padding-top: 0 !important;
     min-width: 125px;
@@ -3221,4 +3297,77 @@
 .goToSettings {
     color: #89caea;
     cursor: pointer;
+}
+
+.saleSearchProgram {
+    .menuTitle {
+        display: flex;
+        overflow: hidden;
+        white-space: pre-line;
+        text-overflow: ellipsis;
+        align-items: baseline;
+        height: auto;
+        width: 100%;
+    }
+    :global {
+        .ant-menu-item-group-title {
+            font-size: 13px;
+            font-family: PingFangSC;
+            font-weight: 600;
+            color: #666666;
+            margin-left: -10px;
+            padding-bottom: 1px;
+        }
+        .ant-menu-item .anticon {
+            margin-right: 0px;
+            font-size: 12px;
+            font-family: PingFangSC;
+            font-weight: 400;
+            color: #b7b7b7;
+            display: none;
+        }
+        .ant-menu-item {
+            &:hover {
+                .anticon {
+                    display: inline-block;
+                }
+            }
+        }
+        .ant-menu-item-group-list .ant-menu-item {
+            display: flex;
+            align-items: center;
+            height: auto;
+            margin: 6px 0;
+            padding: 6px 0 6px 16px;
+            border-radius: 3px;
+            line-height: 18px;
+        }
+        .ant-menu-item-group-list .ant-menu-item-active {
+            color: #555;
+            font-size: 12px;
+        }
+
+        .ant-menu-item-group-list .ant-menu-item-selected {
+            background-color: #E0F2FF;
+            color: #379FF1;
+            border-right-color: transparent;
+        }
+        .ant-menu-item-group-list .ant-menu-item:hover {
+            background-color: #eeeeee;
+            // color: rgba(0, 0, 0, 0.65);
+        }
+       .ant-menu-item-group-list .ant-menu-item-selected:hover {
+            background-color: #E0F2FF;
+        }
+    }
+    .customPro {
+        border-radius: 2px;
+        height: 14px;
+        width: 3px;
+        display: inline-block;
+        position: relative;
+        top: 2px;
+        margin-right: 7px;
+        background: #4ca2ee;
+    }
 }

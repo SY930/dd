@@ -15,11 +15,11 @@ import {
     Table, Icon, Select, DatePicker,
     Button, Modal, Row, Col, message,
     TreeSelect, Switch, Input,
-    Spin,
+    Spin, Popover, Menu
 } from 'antd';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { throttle } from 'lodash'
-import { jumpPage } from '@hualala/platform-base'
+import { jumpPage, getStore } from '@hualala/platform-base'
 import registerPage from '../../../index';
 import { Iconlist } from "../../../components/basic/IconsFont/IconsFont";
 import {
@@ -69,6 +69,7 @@ import styles from '../ActivityPage.less';
 import Authority from '../../../components/common/Authority';
 import ActivityMain from '../activityMain';
 import PromotionNameSelect from '../common/PromotionNameSelect';
+import PlanModal from '../../SpecialPromotionNEW/common/PlanModal';
 
 import { promotionBasicInfo_NEW as sale_promotionBasicInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionBasicInfo.reducer';
 import { promotionDetailInfo_NEW as sale_promotionDetailInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionDetailInfo.reducer';
@@ -108,6 +109,7 @@ const { RangePicker } = DatePicker;
 const Immutable = require('immutable');
 const moment = require('moment');
 const confirm = Modal.confirm;
+const MenuItemGroup = Menu.ItemGroup;
 
 const mapStateToProps = (state) => {
     return {
@@ -238,7 +240,7 @@ class MyActivities extends React.Component {
             editPromotionType: '',
             promotionDateRange: '',
             promotionValid: '2',
-            promotionState: '',
+            promotionState: '1',
             promotionCategory: '',
             promotionTags: '',
             promotionBrands: '',
@@ -251,6 +253,8 @@ class MyActivities extends React.Component {
             currentPromotionID: '',
             runType: '0',
             promotionCode: '',
+            filterSchemeList: [],
+            planModalVisible: false
         };
         this.handleDismissUpdateModal = this.handleDismissUpdateModal.bind(this);
         this.checkDetailInfo = this.checkDetailInfo.bind(this);
@@ -298,12 +302,123 @@ class MyActivities extends React.Component {
         });
         queryPromotionAutoRunList()
         this.onWindowResize();
+        this.getSearchListContent() // 查询方案列表
         window.addEventListener('resize', this.onWindowResize);
 
     }
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.onWindowResize);
+    }
+
+    goSearch = ({ key }) => {
+        const record = this.state.filterSchemeList.find(item => item.itemID === key)
+        const filterRule = record.filterRule || '{}';
+        const itm = JSON.parse(filterRule)
+        const { isActive } = itm
+        this.setState({ promotionState: isActive == '0' ? '2' : '1' }, () => {
+            this.handleQuery()
+        })
+    }
+
+    // 删除方案
+    removePlan = (record, itemID) => {
+        const _this = this;
+        Modal.confirm({
+            title: `确认删除方案【${record.schemeName}】`,
+            content: '删除是不可恢复操作,请慎重考虑',
+            iconType: 'question-circle',
+            onOk() {
+                // handleNext();
+                axiosData(
+                    '/filterSchemeService/delete.ajax',
+                    {
+                        itemID,
+                        groupID: getStore().getState().user.getIn(['accountInfo', 'groupID'])
+                    },
+                    null,
+                    { path: null },
+                    'HTTP_SERVICE_URL_PROMOTION_NEW'
+                ).then((res) => {
+                    if (res.code === '000') {
+                        message.success('删除成功')
+                        _this.getSearchListContent()
+                    }
+                });
+            },
+            onCancel() { },
+        });
+    }
+
+    // 查询方案列表
+    getSearchListContent = () => {
+        axiosData(
+            '/filterSchemeService/queryList.ajax',
+            {
+                filterType: 11,
+                pageNo: 1,
+                pageSize: 100,
+                groupID: getStore().getState().user.getIn(['accountInfo', 'groupID'])
+            },
+            null,
+            { path: null },
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
+        ).then((res) => {
+            if (res.code === '000') {
+                const { data: { filterSchemeList = [] } } = res;
+                this.setState({
+                    filterSchemeList
+                })
+            }
+        });
+    }
+
+    getSearchTitle = (name) => {
+        return (
+            <div><span className={styles.customPro}></span>{name}</div>
+        )
+    }
+
+    getSearchContent = () => {
+        const { filterSchemeList } = this.state
+        return (
+            <div>
+                <Menu
+                    // onClick={this.handleClick}
+                    style={{ width: 240 }}
+                    defaultSelectedKeys={['1']}
+                    defaultOpenKeys={['sub1']}
+                    mode="inline"
+                    className={styles.saleSearchProgram}
+                    onClick={this.goSearch}
+                >
+                    <MenuItemGroup key="g1" title={this.getSearchTitle('自定义方案')}>
+                        {
+                            (filterSchemeList || []).map((item) => {
+                                const filterRule = item.filterRule || '{}';
+                                const itm = JSON.parse(filterRule);
+                                return (
+                                    <Menu.Item key={item.itemID}>
+                                        <span className={styles.menuTitle}>
+                                            {itm.schemeName}
+                                        </span>
+                                        <Icon type="close-circle-o" onClick={() => { this.removePlan(itm, item.itemID) }} />
+                                    </Menu.Item>
+                                )
+                            })
+                        }
+                    </MenuItemGroup>
+                    <MenuItemGroup key="g2" title={this.getSearchTitle('系统预置')}>
+                        <Menu.Item key="g21">
+                            <span className={styles.menuTitle}>
+                                暂无
+                            </span>
+                        </Menu.Item>
+                    </MenuItemGroup>
+                </Menu>
+                <Button type="ghost" style={{ width: '100%' }} icon="plus" onClick={() => { this.setState({ planModalVisible: true }) }}> 将当前查询条件保存为方案</Button>
+            </div>
+        )
     }
     /**
      * @description toggle the advanced qualification selection.
@@ -910,6 +1025,13 @@ class MyActivities extends React.Component {
                 <div style={{ position: 'fixed', top: '79px', right: '20px' }}>
                     {
                         !isHuaTian() && !this.isOnlinePromotionPage() && (
+                            <Popover content={this.getSearchContent()} trigger="click" placement="bottom" title={null}>
+                                <Button type="ghost" icon='search' style={{ marginRight: 10 }}>查询方案</Button>
+                            </Popover>
+                        )
+                    }
+                    {
+                        !isHuaTian() && !this.isOnlinePromotionPage() && (
                             <Authority rightCode={AUTO_RUN_QUERY}>
                                 <Button
                                     onClick={() => this.setRunDataList()}
@@ -1034,7 +1156,8 @@ class MyActivities extends React.Component {
                         <li>
                             <Select
                                 style={{ width: 60 }}
-                                defaultValue="0"
+                                defaultValue="1"
+                                value={this.state.promotionState}
                                 placeholder=""
                                 onChange={(value) => {
                                     this.setState({
@@ -1578,11 +1701,11 @@ class MyActivities extends React.Component {
 
     render() {
         const { runType,  dataSource } = this.state;
-        const {stylesShow} = this.props;
+        const {stylesShow, tabKeys } = this.props;
         return (
             <div style={{ backgroundColor: '#F3F3F3' }} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 <div>
-                    {this.renderHeader()}
+                    {this.props.tabKeys !== 'saleSpecialPage' && this.renderHeader()}
                 </div>
                 {/* <PromotionCalendarBanner /> */}
                 <div>
@@ -1641,6 +1764,14 @@ class MyActivities extends React.Component {
                             basicPromotion
                             handleClose={() => this.setState({ exportVisible: false })}
                         />
+                }
+                 {
+                    this.state.planModalVisible && <PlanModal
+                        onCancel={() => { this.setState({ planModalVisible: false }) }}
+                        isActive={this.state.promotionState == '1' ? '1' : '0'}
+                        onSearch={this.getSearchListContent}
+                        filterSchemeList={this.state.filterSchemeList}
+                    />
                 }
             </div>
         );
