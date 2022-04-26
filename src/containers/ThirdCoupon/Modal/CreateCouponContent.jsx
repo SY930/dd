@@ -54,6 +54,7 @@ class CreateCouponContent extends Component {
             giftType: '',
             aliShops: [],
             entranceWords: [], // 支付宝门店
+            douyinGift: null,
         }
     }
 
@@ -96,13 +97,54 @@ class CreateCouponContent extends Component {
         })
     }
 
+    handlePromotionTypeChange = (promotionType) => {
+        this.props.form.setFieldsValue({
+            promotionType,
+            giftItemID: undefined,
+            giftValidRange: [],
+        })
+        this.setState({
+            giftItemID: undefined,
+            effectType: '2',
+            douyinGift: null,
+        })
+    }
+
     // 优惠券
     handleCouponChange = (value) => {
         const [v, type] = value.split('_')
         this.setState({
             giftItemID: v,
             giftType: type,
-        })
+        });
+
+        if (this.props.form.getFieldValue('promotionType') === 2) {
+            const targetGift = this.props.treeDataX.map(v => v.children).flat().find(g => { 
+                return g.giftValue === v
+            });
+
+            this.setState({
+                effectType: targetGift.promotionDictType === 1 ? '2' : '3',
+                douyinGift: targetGift,
+            }, () => {
+                if (targetGift.promotionDictType === 1) {
+                    this.props.form.setFieldsValue({
+                        giftValidRange: [
+                            moment(targetGift.promotionStartTime, 'YYYYMMDD'),
+                            moment(targetGift.promotionEndTime, 'YYYYMMDD'),
+                        ]
+                    })
+                } else {
+                    this.props.form.setFieldsValue({
+                        validUntilDays: { number: targetGift.validityDays, modal: 'int', maxNum: 5 }
+                    })
+                }
+            });
+        } else {
+            this.setState({
+                douyinGift: null,
+            })
+        }
     }
 
     // 生效方式
@@ -275,7 +317,7 @@ class CreateCouponContent extends Component {
     }
 
     handleDouyinSubmit = (values, groupId) => {
-        const { giftValidRange = [], batchName, stock = {}, shopId } = values;
+        const { giftValidRange = [], batchName, stock = {}, shopId, promotionType } = values;
         const { effectGiftTimeHours, giftType, giftItemID, effectType } = this.state
         const EGiftEffectTime = giftValidRange[0] ? giftValidRange[0].format(DATE_FORMAT) : ''
         const validUntilDate = giftValidRange[1] ? giftValidRange[1].format(END_DATE_FORMAT) : '';
@@ -286,6 +328,8 @@ class CreateCouponContent extends Component {
         const startTime = moment().format(DATE_FORMAT);
         const endTime = moment().add(3, 'years').format(END_DATE_FORMAT)
         const couponCodeBatchInfo = {
+            promotionType,
+            trdPromotionCode: +giftItemID,
             batchName,
             // batchStatus: 1,
             giftItemID,
@@ -322,7 +366,7 @@ class CreateCouponContent extends Component {
         axios.post(url + method, params).then((res) => {
             const { code, message: msg } = res;
             if (code === '000') {
-                message.success('创建成功');
+                // message.success('创建成功');
                 this.props.handleCloseModal();
                 this.props.handleQuery();
                 this.props.onParentCancel();
@@ -600,7 +644,7 @@ class CreateCouponContent extends Component {
                             this.renderTip()
                         }
                     </FormItem>
-                    { bankMerchantCode && <span style={{ marginLeft: '15px' }}>渠道商户号：{bankMerchantCode}</span>}
+                    {bankMerchantCode && <span style={{ marginLeft: '15px' }}>渠道商户号：{bankMerchantCode}</span>}
                     {
                         this.renderGoAuth()
                     }
@@ -685,7 +729,7 @@ class CreateCouponContent extends Component {
                         >
                             {
                                 EFFECT_TYPE_OPT.map((item, index) => {
-                                    return <Radio value={item.value} key={index}>{item.label}</Radio>
+                                    return <Radio disabled={!!this.state.douyinGift} value={item.value} key={index}>{item.label}</Radio>
                                 })
                             }
                         </RadioGroup>
@@ -701,6 +745,7 @@ class CreateCouponContent extends Component {
                                 >
                                     <Select
                                         size="default"
+                                        disabled={!!this.state.douyinGift}
                                         defaultValue={this.state.effectGiftTimeHours}
                                         onChange={this.handleWhenToEffectChange}
                                     >
@@ -734,6 +779,7 @@ class CreateCouponContent extends Component {
                                             },
                                         ],
                                     })(<PriceInput
+                                        disabled={!!this.state.douyinGift}
                                         addonBefore=""
                                         addonAfter="天"
                                         maxNum={5}
@@ -751,7 +797,8 @@ class CreateCouponContent extends Component {
                                 labelCol={{ span: 5 }}
                                 wrapperCol={{ span: 16 }}
                                 required={true}
-                            >{getFieldDecorator('giftValidRange', {
+                            >
+                                {getFieldDecorator('giftValidRange', {
                                     initialValue: editData.eGiftEffectTime > 0 ? [moment(editData.eGiftEffectTime, 'YYYYMMDD'), moment(editData.validUntilDate, 'YYYYMMDD')] : [],
                                     onChange: this.handleGiftValidRangeChange,
                                     rules: [
@@ -759,6 +806,7 @@ class CreateCouponContent extends Component {
                                     ],
                                 })(
                                     <RangePicker
+                                        disabled={!!this.state.douyinGift}
                                         format="YYYY-MM-DD"
                                         showTime="HH:mm:ss"
                                     />
@@ -799,7 +847,22 @@ class CreateCouponContent extends Component {
             >
                 <Row>
                     <Col span={24} offset={1} className={styles.IndirectBox}>
-                        <Form className={styles.crmSuccessModalContentBox}>
+                        <Form form={form} className={styles.crmSuccessModalContentBox}>
+                            {((type === 3) || (type === 4)) && <FormItem
+                                label="业态选择"
+                                {...formItemLayout}
+                                required={true}
+                            >
+                                {getFieldDecorator('promotionType', {
+                                    onChange: this.handlePromotionTypeChange,
+                                    initialValue: 1,
+                                })(
+                                    <RadioGroup>
+                                        <Radio key={'1'} value={1}>餐饮</Radio>
+                                        <Radio key={'2'} value={2}>零售</Radio>
+                                    </RadioGroup>
+                                )}
+                            </FormItem>}
                             <FormItem
                                 label="第三方券名称"
                                 {...formItemLayout}
@@ -836,32 +899,40 @@ class CreateCouponContent extends Component {
                                     )}
                                 </FormItem>
                             }
-                            
+
                             <FormItem
-                                label="选择优惠券"
-                                {...formItemLayout}
-                                required={true}
+                                noStyle={true}
+                                shouldUpdate={(prevValue, curValue) => {
+                                    return prevValue.promotionType !== curValue.promotionType;
+                                }}
                             >
-                                {
-                                    getFieldDecorator('giftItemID', {
-                                        // initialValue: editData.giftItemID || '',
-                                        onChange: this.handleCouponChange,
-                                        rules: [
-                                            { required: true, message: '请选择优惠券' },
-                                        ],
-                                    })(
-                                        <TreeSelect
-                                            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                                            treeData={this.props.treeData}
-                                            placeholder="请选择礼品名称"
-                                            showSearch={true}
-                                            treeNodeFilterProp="label"
-                                            allowClear={true}
-                                            // labelInValue
-                                        />
-                                    )
-                                }
+                                <FormItem
+                                    label="选择优惠券"
+                                    {...formItemLayout}
+                                    required={true}
+                                >
+                                    {
+                                        getFieldDecorator('giftItemID', {
+                                            // initialValue: editData.giftItemID || '',
+                                            onChange: this.handleCouponChange,
+                                            rules: [
+                                                { required: true, message: '请选择优惠券' },
+                                            ],
+                                        })(
+                                            <TreeSelect
+                                                dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                                                treeData={form.getFieldValue('promotionType') === 2 ? this.props.treeDataX : this.props.treeData}
+                                                placeholder="请选择礼品名称"
+                                                showSearch={true}
+                                                treeNodeFilterProp="label"
+                                                allowClear={true}
+                                            />
+                                        )
+                                    }
+                                </FormItem>
                             </FormItem>
+
+
                             {giftItemID && this.renderCoupon()}
                             {
                                 (type !== 3 && type !== 4) && <FormItem
@@ -880,10 +951,10 @@ class CreateCouponContent extends Component {
                                     )}
                                 </FormItem>
                             }
-                            { type === 1 && this.renderZhifubaoContent(merchantType) }
+                            {type === 1 && this.renderZhifubaoContent(merchantType)}
                             {type === 1 && <AliContent form={form} merchantType={merchantType} aliShops={aliShops} onChangeEntranceWords={this.onChangeEntranceWords} />}
-                            { type === 2 && <WXContent form={form} merchantType={merchantType} onChangeWXMerchantID={this.onChangeWXMerchantID} onChangeWXJumpAppID={this.onChangeWXJumpAppID} />}
-                            { type === 3 && <DouyinContent form={form} merchantType={merchantType} />}
+                            {type === 2 && <WXContent form={form} merchantType={merchantType} onChangeWXMerchantID={this.onChangeWXMerchantID} onChangeWXJumpAppID={this.onChangeWXJumpAppID} />}
+                            {type === 3 && <DouyinContent form={form} merchantType={merchantType} />}
                         </Form>
                     </Col>
                 </Row>
