@@ -633,7 +633,6 @@ class NewCustomerPage extends Component {
     checkAuth = (allMenu, category) => {
         const { currentCategoryIndex } = this.state;
         let { authStatus } = checkAuthLicense(this.state.authLicenseData)
-        // debugger
         // authStatus = true;
         if (!authStatus) {
             category = category.filter(item => (item.list == FANS_INTERACTIVITY_PROMOTION_TYPES || item.title == '人气活动'))
