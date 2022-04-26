@@ -20,6 +20,9 @@ const giftTypeName = [
     { label: '代金券', value: '10' },
     { label: '菜品兑换券', value: '21' },
     { label: '折扣券', value: '111' },
+    { label: '打折劵', value: '602' },
+    { label: '满减券', value: '601' },
+    { label: '商品劵', value: '603' },
 ];
 
 function getAccountInfo() {
@@ -58,6 +61,30 @@ function proGiftTreeData(giftTypes) {
     return treeData = _.sortBy(treeData, 'key');
 }
 
+function proDouyinGiftTreeData(giftTypes) {
+    const treeData = [];
+    const filterGiftTypes = giftTypes.filter(v => giftTypeName.some(g => g.value == v.giftType));
+    filterGiftTypes.map((gt, idx) => {
+        const giftTypeItem = _.find(giftTypeName, { value: String(gt.giftType) }) || {};
+        treeData.push({
+            label: giftTypeItem.label || '--',
+            key: gt.promotionType,
+            children: [],
+        });
+        gt.list.map((gift) => {
+            treeData[idx].children.push({
+                ...gift,
+                label: gift.promotionName,
+                value: `${gift.id}_${gift.promotionType}_${gift.promotionName}`,
+                key: `${gift.id}`,
+                giftValue: `${gift.id}`,
+                giftType: gt.promotionType,
+            });
+        });
+    });
+    return _.sortBy(treeData, 'key');
+}
+
 async function getCardList(data) {
     const method = '/coupon/couponService_getSortedCouponBoardList.ajax';
     const params = { service, type, data, method };
@@ -71,16 +98,30 @@ async function getCardList(data) {
     return [];
 }
 
+export async function getRetailList() {
+    const method = '/trdShopMall/couponPromotionInfoService_promotionInfoList.ajax';
+    const params = { service, type, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, crmGiftTypes = [] } = response;
+    if (code === '000') {
+        return proDouyinGiftTreeData(crmGiftTypes);
+    }
+    message.error(msg);
+    return [];
+}
+
 // 直连PID
 async function getShopPid() {
     const method = 'channelAlipayPartnerService/queryAuthPidByCompanyId.ajax';
     const { groupID } = getAccountInfo();
-    const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+    const params = {
+        service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
         type,
         data: {
             companyID: groupID, pageNo: 1, pageSize: 10000,
         },
-        method };
+        method
+    };
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;
     if (code === '000') {
@@ -95,7 +136,8 @@ async function getShopPid() {
 async function getIndirectList() {
     const method = 'settleUnitManagerService/querySettleBaseInfoList.ajax';
     const { groupID } = getAccountInfo();
-    const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+    const params = {
+        service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
         type,
         data: {
             groupID,
@@ -103,7 +145,8 @@ async function getIndirectList() {
             queryType: 'ALL',
             processStatusList: [3],
         },
-        method };
+        method
+    };
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;
     if (code === '000') {
@@ -118,14 +161,16 @@ async function getIndirectList() {
 async function getSmid(value) {
     const method = 'channelZpayReportService/queryUnionMerchantNoBySettleID.ajax';
     const { groupID } = getAccountInfo();
-    const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+    const params = {
+        service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
         type,
         data: {
             groupID,
             settleID: value,
             payMethod: 'ALIPAY',
         },
-        method };
+        method
+    };
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;
     if (code === '000') {
@@ -139,7 +184,8 @@ async function getSmid(value) {
 async function isAuth(value) {
     const method = 'alipaySpOperationInfoService/querySpOperationInfo.ajax';
     const { groupID } = getAccountInfo();
-    const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+    const params = {
+        service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
         type,
         data: {
             groupID,
@@ -147,7 +193,8 @@ async function isAuth(value) {
             accessProductCode: 'OPENAPI_AUTH_DEFAULT',
             merchantNo: value,
         },
-        method };
+        method
+    };
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;
     if (code === '000') {
@@ -161,7 +208,8 @@ async function isAuth(value) {
 async function goAuthorizeAC(value) {
     const method = 'alipaySpOperationInfoService/applySpOperation.ajax';
     const { groupID } = getAccountInfo();
-    const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+    const params = {
+        service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
         type,
         data: {
             groupID,
@@ -170,7 +218,8 @@ async function goAuthorizeAC(value) {
             merchantNo: value.merchantNo,
             alipayAccount: value.alipayAccount,
         },
-        method };
+        method
+    };
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;
     if (code === '000') {
@@ -185,7 +234,8 @@ async function goAuthorizeAC(value) {
 async function goUpdateM4AC(value) {
     const method = 'alipaySpOperationInfoService/applySpOperation.ajax';
     const { groupID } = getAccountInfo();
-    const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+    const params = {
+        service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
         type,
         data: {
             groupID,
@@ -194,7 +244,8 @@ async function goUpdateM4AC(value) {
             merchantNo: value.merchantNo,
             alipayAccount: value.alipayAccount,
         },
-        method };
+        method
+    };
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;
     if (code === '000') {
@@ -209,7 +260,8 @@ async function goUpdateM4AC(value) {
 async function getAlipayCouponList() {
     const method = 'couponCodeBatchService/queryBatchList.ajax';
     const { groupID } = getAccountInfo();
-    const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+    const params = {
+        service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
         type,
         data: {
             groupID,
@@ -217,7 +269,8 @@ async function getAlipayCouponList() {
             pageSize: 999999,
             channelID: 60,
         },
-        method };
+        method
+    };
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;
     if (code === '000') {
@@ -233,14 +286,16 @@ async function getAlipayCouponList() {
 async function getAlipayPromotionList() {
     const method = 'AlipayRecruitPlanInfoService/recruitPlanListQuery.ajax';
     const { groupID } = getAccountInfo();
-    const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+    const params = {
+        service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
         type,
         data: {
             groupID,
             pageNum: 1,
             pageSize: 100,
         },
-        method };
+        method
+    };
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;
     if (code === '000') {
@@ -256,13 +311,15 @@ async function getAlipayPromotionList() {
 async function getAlipayRecruitPlan(value) {
     const method = 'AlipayRecruitPlanInfoService/recruitPlanQuery.ajax';
     const { groupID } = getAccountInfo();
-    const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+    const params = {
+        service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
         type,
         data: {
             groupID,
             planId: value,
         },
-        method };
+        method
+    };
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;
     if (code === '000') {
@@ -276,13 +333,15 @@ async function getAlipayRecruitPlan(value) {
 async function getBatchDetail(value) {
     const method = 'couponCodeBatchService/getBatchDetail.ajax';
     const { groupID } = getAccountInfo();
-    const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+    const params = {
+        service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
         type,
         data: {
             groupID,
             itemID: value,
         },
-        method };
+        method
+    };
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;
     if (code === '000') {
@@ -297,13 +356,15 @@ async function getBatchDetail(value) {
 async function uploadImageUrl(value) {
     const method = 'AlipayRecruitPlanInfoService/materialImageUpload.ajax';
     const { groupID } = getAccountInfo();
-    const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+    const params = {
+        service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
         type,
         data: {
             groupID,
             imageUrl: value,
         },
-        method };
+        method
+    };
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;
     if (code === '000') {
@@ -318,13 +379,15 @@ async function uploadImageUrl(value) {
 async function queryEventList(opts) {
     const method = 'trdEventService/queryEventList.ajax';
     const { groupID } = getAccountInfo();
-    const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+    const params = {
+        service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
         type,
         data: {
             groupID,
             ...opts,
         },
-        method };
+        method
+    };
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;
     if (code === '000') {
@@ -339,7 +402,8 @@ async function queryEventList(opts) {
 async function getDeliveryChannel(opts) {
     const method = '/alipayActivityDeliveryInfoService/deliveryChannelQuery.ajax';
     const { groupID } = getAccountInfo();
-    const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+    const params = {
+        service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
         type,
         data: {
             groupID,
@@ -352,7 +416,8 @@ async function getDeliveryChannel(opts) {
             pageSize: 100,
             pageNum: 1,
         },
-        method };
+        method
+    };
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;
     if (code === '000') {
