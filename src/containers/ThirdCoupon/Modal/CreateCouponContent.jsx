@@ -112,20 +112,21 @@ class CreateCouponContent extends Component {
 
     // 优惠券
     handleCouponChange = (value) => {
-        const [v, type] = value.split('_')
+        const [v, type, name] = value.split('_')
         this.setState({
             giftItemID: v,
             giftType: type,
         });
 
         if (this.props.form.getFieldValue('promotionType') === 2) {
-            const targetGift = this.props.treeDataX.map(v => v.children).flat().find(g => { 
+            const targetGift = this.props.treeDataX.map(v => v.children).flat().find(g => {
                 return g.giftValue === v
             });
 
             this.setState({
                 effectType: targetGift.promotionDictType === 1 ? '2' : '3',
                 douyinGift: targetGift,
+                promotionName: name,
             }, () => {
                 if (targetGift.promotionDictType === 1) {
                     this.props.form.setFieldsValue({
@@ -318,7 +319,7 @@ class CreateCouponContent extends Component {
 
     handleDouyinSubmit = (values, groupId) => {
         const { giftValidRange = [], batchName, stock = {}, shopId, promotionType } = values;
-        const { effectGiftTimeHours, giftType, giftItemID, effectType } = this.state
+        const { effectGiftTimeHours, giftType, giftItemID, effectType, promotionName = '' } = this.state
         const EGiftEffectTime = giftValidRange[0] ? giftValidRange[0].format(DATE_FORMAT) : ''
         const validUntilDate = giftValidRange[1] ? giftValidRange[1].format(END_DATE_FORMAT) : '';
         if (!effectGiftTimeHours && effectType === '3') {
@@ -350,6 +351,7 @@ class CreateCouponContent extends Component {
             channelID: this.props.channelID,
             couponCodeDockingType: 1,
             giftType,
+            giftName: promotionName,
         };
         const url = '/api/v1/universal?';
         const method = '/couponCodeBatchService/addBatch.ajax';
