@@ -233,6 +233,20 @@ class ReturnGift extends React.Component {
                             />
                         </ExpandTree>
                     </FormItem>
+                    {/* 礼品ID */}
+                    <FormItem
+                        label={"礼品ID"}
+                        labelCol={{ span: 5 }}
+                        wrapperCol={{ span: 18 }}
+                        colon={false}
+                    >
+                        <PriceInput
+                            maxNum={50}
+                            value={{ number: info.giftInfo.giftItemID}}
+                            disabled={true}
+                            modal="int"
+                        />
+                    </FormItem> 
                     <div className={selfStyle.flexControlWrapper}>
                         <div style={{ width: '50%' }}>
                             <FormItem
