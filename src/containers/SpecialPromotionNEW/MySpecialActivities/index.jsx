@@ -266,6 +266,7 @@ class MySpecialActivities extends React.Component {
             stylesShow: 'list',
             planModalVisible: false,
             filterSchemeList: [],
+            activeStatus: ''
         };
         this.cfg = {
             eventWay: [
@@ -409,7 +410,7 @@ class MySpecialActivities extends React.Component {
                             (filterSchemeList || []).map((item) => {
                                 const filterRule = item.filterRule || '{}';
                                 const itm = JSON.parse(filterRule);
-                                console.log("🚀 ~ file: index.jsx ~ line 408 ~ MySpecialActivities ~ itm", itm)
+                                // console.log("🚀 ~ file: index.jsx ~ line 408 ~ MySpecialActivities ~ itm", itm)
                                 return (
                                     <Menu.Item key={item.itemID}>
                                         <span className={styles.menuTitle}>
@@ -630,8 +631,8 @@ class MySpecialActivities extends React.Component {
         }
     }
     //** 第三版 重构 抽抽乐活动 点击事件 */
-    onV3Click = (itemID, view, key) => {
-        this.setState(ps => ({ v3visible: !ps.v3visible }));
+    onV3Click = (itemID, view, key, isActive) => {
+        this.setState(ps => ({ v3visible: !ps.v3visible, activeStatus: isActive }));
         if (itemID) {
             this.setState({ itemID, view, curKey: key });
         }
@@ -1087,7 +1088,7 @@ class MySpecialActivities extends React.Component {
                 {(v3visible && curKey == '78') && <Chou2Le onToggle={this.onV3Click} id={itemID} view={view} />}
                 {(v3visible && curKey == '79') && <BlindBox onToggle={this.onV3Click} id={itemID} view={view} />}
                 {(v3visible && curKey == '83') && <PassWordCoupon onToggle={this.onV3Click} id={itemID} view={view} />}
-                {(v3visible && curKey == '85') && <ManyFace onToggle={this.onV3Click} id={itemID} view={view} handleDecorationStart={this.handleDecorationStart} />}
+                {(v3visible && curKey == '85') && <ManyFace onToggle={this.onV3Click} id={itemID} view={view} handleDecorationStart={this.handleDecorationStart} activeStatus={this.state.activeStatus}/>}
                 <Modal
                     title="提取活动链接"
                     visible={isShowCopyUrl}
@@ -1642,7 +1643,7 @@ class MySpecialActivities extends React.Component {
                                         return;
                                     }
                                     if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83 || record.eventWay === 85) {
-                                        this.handleEditActive(record)(() => this.onV3Click(record.itemID, false, record.eventWay))
+                                        this.handleEditActive(record)(() => this.onV3Click(record.itemID, false, record.eventWay, record.isActive))
                                         return;
                                     }
                                     if (record.eventWay === 66 || record.eventWay === 81 || record.eventWay === 82) {
