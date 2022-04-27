@@ -124,7 +124,7 @@ class CardSaleActive extends Component {
             return;
         }
         if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83 || record.eventWay === 85) {
-            this.props.handleEditActive(record)(() => this.props.onV3Click(record.itemID, false, record.eventWay))
+            this.props.handleEditActive(record)(() => this.props.onV3Click(record.itemID, false, record.eventWay, record.isActive))
             return;
         }
         if (record.eventWay === 66 || record.eventWay === 81 || record.eventWay === 82) {

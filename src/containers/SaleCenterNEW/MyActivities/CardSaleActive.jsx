@@ -227,7 +227,7 @@ class CardSaleActive extends Component {
                                                         if (!isMine(item)) {
                                                             return
                                                         }
-                                                        this.props.handleDelActive(item)(() => this.props.confirmDelete(_, item, index));
+                                                        this.props.handleDelActive(item)(() => this.props.confirmDelete(item));
                                                     }}
                                                 >
                                                     删除

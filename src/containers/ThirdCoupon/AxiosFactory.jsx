@@ -75,7 +75,7 @@ function proDouyinGiftTreeData(giftTypes) {
             treeData[idx].children.push({
                 ...gift,
                 label: gift.promotionName,
-                value: `${gift.id}_${gift.promotionType}`,
+                value: `${gift.id}_${gift.promotionType}_${gift.promotionName}`,
                 key: `${gift.id}`,
                 giftValue: `${gift.id}`,
                 giftType: gt.promotionType,

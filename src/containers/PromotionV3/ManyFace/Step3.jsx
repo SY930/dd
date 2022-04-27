@@ -26,7 +26,15 @@ class Step3 extends Component {
     
     /** formItems 重新设置 */
     resetFormItems() {
-        const render = d => d()(<MyFaceRule form={this.props.form} decorator={d} />);
+        const render = d => d()(<MyFaceRule
+            form={this.props.form}
+            decorator={d}
+            clientType={this.props.clientType}
+            allActivityList={this.props.allActivity}
+            allMallActivity={this.props.allMallActivity}
+            originClientType={this.props.originClientType}
+            isEdit={this.props.isEdit}
+        />);
         const { faceRule, ...others } = formItems3;
         return {
             ...others,

@@ -75,6 +75,16 @@ export default class ManyFaceDecoration extends Component {
             </div>
         )
     }
+
+    renderTitle = (item) => {
+        if (item.conditionType == 1) {
+            const subName = item.targetValue == 1 ? '是' : '非'
+            const name = `${subName}${item.targetName}`
+            return <span>{name}</span>
+        }
+        return <span>{item.targetName || item.conditionName}</span>
+    }
+
     render() {
         const {
             decorationInfo = [],
@@ -92,7 +102,7 @@ export default class ManyFaceDecoration extends Component {
                                     decorationInfo.map((item, index) => {
                                         return (
                                             <div className={style.sectionWrapper} key={index}>
-                                                <div style={{ margin: '0 0 10px -115px', fontSize: 14 }}>条件{num[index]}：<span>{item.targetName}</span></div>
+                                                <div style={{ margin: '0 0 10px -115px', fontSize: 14 }}>条件{num[index]}：<span>{this.renderTitle(item)}</span></div>
                                                 <div style={{ top: 60 }} className={style.label}>活动主图</div>
                                                 <div style={{ width: 350 }} className={style.uploaderWrapper}>
                                                     <DecorationUploader
