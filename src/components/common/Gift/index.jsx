@@ -10,7 +10,7 @@ export default class Gift extends Component {
     state = {
         options: [], // 生效时间下拉框
         formKeys: formKeys1,
-
+        giftIDNumber: ''
     };
     /** 表单内容变化时的监听 */
     onFormChange = (key, value) => {
@@ -34,8 +34,6 @@ export default class Gift extends Component {
             this.isInit = true
             return
         }
-
-
         if (key === 'effectType') { // 生效方式
             if (value === '1') {
                 this.setState({ formKeys: formKeys1 }, () => {
@@ -46,6 +44,12 @@ export default class Gift extends Component {
                 this.setState({ formKeys: formKeys2 });
             }
         }
+        if (key === 'giftID'){
+            this.setState({
+                giftIDNumber:value
+            })
+        }
+
 
         onChange(idx, { [key]: value });
     }
@@ -75,8 +79,11 @@ export default class Gift extends Component {
         }
     }
     render() {
-        const { formKeys } = this.state;
-        const { formData } = this.props;
+        const { formKeys,giftIDNumber } = this.state;
+        let { formData } = this.props;
+        if(formData){
+            formData.giftIDNumber = giftIDNumber ? giftIDNumber : formData.giftID;
+        }
         const newFormItems = this.resetFormItems();
         return (
             <div className={css.mainBox}>

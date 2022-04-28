@@ -12,7 +12,8 @@ export default class Gift extends Component {
         formKeys: formKeys1,
         // 组件是否为编辑状态  默认false  首次进入onFormChange  不重置giftEffectTimeHours
         countTypeEditFlag: false,
-        effectTypeEditFlag: false
+        effectTypeEditFlag: false,
+        giftIDNumber:''
     };
     /** 表单内容变化时的监听 */
     onFormChange = (key, value) => {
@@ -40,6 +41,11 @@ export default class Gift extends Component {
             }
             this.setState({effectTypeEditFlag: true})
         }else{
+            if (key === 'giftID'){
+                this.setState({
+                    giftIDNumber:value
+                })
+            }
             onChange(idx, { [key]: value });
         }
     }
@@ -67,10 +73,10 @@ export default class Gift extends Component {
         }
     }
     render() {
-        const { formKeys } = this.state;
+        const { formKeys,giftIDNumber } = this.state;
         let { formData } = this.props;
         let {giftEffectTimeHours} = formData
-        formData = {...formData, giftEffectTimeHours: String(giftEffectTimeHours)}
+        formData = {...formData, giftEffectTimeHours: String(giftEffectTimeHours),giftIDNumber: giftIDNumber ? giftIDNumber : formData.giftID}
         const newFormItems = this.resetFormItems();
         return (
             <div className={css.mainBox}>

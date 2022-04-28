@@ -284,24 +284,24 @@ class AddGifts extends React.Component {
         }
         const { intl, theme } = this.props;
         return this.state.infos.map((info, index, arr) => {
-
             let validateStatus,
                 addonBefore,
                 help,
                 valueNuber,
+                giftItemID,
                 onChangeFunc;
             if (this.props.type != '20' && this.props.type != '30' && this.props.type != '70') {
-
                 validateStatus = info.giftCount.validateStatus;
                 addonBefore = `${this.props.intl.formatMessage(STRING_SPE.dojv8nhwu12190)}`;
                 help = info.giftCount.msg;
                 valueNuber = info.giftCount.value;
+                giftItemID = info.giftInfo.giftItemID
                 onChangeFunc = this.handlegiftCountChange;
             } else {
-
                 validateStatus = info.giftTotalCount.validateStatus;
                 help = info.giftTotalCount.msg;
                 valueNuber = info.giftTotalCount.value;
+                giftItemID = info.giftInfo.giftItemID
                 addonBefore = `${this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kc13243)}`;
                 onChangeFunc = this.handlegiftTotalCountChange;
             }
@@ -399,6 +399,23 @@ class AddGifts extends React.Component {
                             />
                         </ExpandTree>
                     </FormItem>
+
+                    {/* 礼品ID */}
+                    <FormItem
+                        label={"礼品ID"}
+                        className={[styles.FormItemStyle, styles.labeleBeforeSlect, styles.labeleBeforeSlectMargin, this.props.theme === 'green' ? selfStyle.labeleBeforeSlect : ''].join(' ')}
+                        labelCol={{ span: 8 }}
+                        wrapperCol={{ span: 16 }}
+                        colon={false}
+                    >
+                        <PriceInput
+                            maxNum={50}
+                            value={{ number: giftItemID }}
+                            disabled={true}
+                            modal="int"
+                        />
+                    </FormItem>        
+
                     {/* 礼品个数 */}
                     <FormItem
                         label={addonBefore}
@@ -736,6 +753,7 @@ class AddGifts extends React.Component {
     }
 
     handleGiftChange(value, index) {
+        console.log(value,index,'value000000000000')
         if (value) {
             const newValue = value.split(',');
             const _infos = this.state.infos;
