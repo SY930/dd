@@ -14,7 +14,7 @@ import { connect } from 'react-redux';
 import {
     Table, Icon, Select, DatePicker,
     Button, Modal, Row, Col, message,
-    TreeSelect, Switch, Input,
+    TreeSelect, Switch, Input, Radio,
     Spin,
 } from 'antd';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
@@ -65,6 +65,7 @@ import {
     promotionDetailInfoAdapter,
     TRIPLE_STATE,
 } from '../../../redux/actions/saleCenterNEW/types';
+import axios from 'axios';
 import styles from '../ActivityPage.less';
 import Authority from '../../../components/common/Authority';
 import ActivityMain from '../activityMain';
@@ -105,6 +106,7 @@ import CardSaleActive from './CardSaleActive';
 
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
+const { Group: RadioGroup } = Radio;
 const Immutable = require('immutable');
 const moment = require('moment');
 const confirm = Modal.confirm;
@@ -251,6 +253,8 @@ class MyActivities extends React.Component {
             currentPromotionID: '',
             runType: '0',
             promotionCode: '',
+            operateModalVisible: false,
+            executeTimeType: 0,
         };
         this.handleDismissUpdateModal = this.handleDismissUpdateModal.bind(this);
         this.checkDetailInfo = this.checkDetailInfo.bind(this);
@@ -886,6 +890,87 @@ class MyActivities extends React.Component {
             </Modal>
         );
     }
+    handleExecuteTimeType = (e) => {
+        this.setState({
+            executeTimeType: e.target.value,
+        })
+    }
+    parseResponseJson = (rsp, successCode) => {
+        const resultcode = rsp.resultcode === undefined ? rsp.code : rsp.resultcode;
+        const resultmsg = rsp.resultmsg === undefined
+            ? (rsp.msg === undefined ? rsp.message : rsp.msg)
+            : rsp.resultmsg;
+        const isSuccess = rsp.success !== undefined ? rsp.success : (resultcode === successCode);
+        const doRelogin = resultcode === '0011111100000001'
+            || resultcode === 'RELOGIN001'
+            || resultcode === 'FP10005';
+        // const redirectUrl = doRelogin && (rsp.data && rsp.data.redirectUrl || '').replace(
+        //   /^(.+redirectURL=).+$/, `$1${window.location.origin}`);
+        return {
+            success: isSuccess,
+            code: resultcode,
+            msg: doRelogin ? '会话失效,请重新登录' : resultmsg || rsp.statusText || '网络错误，请稍后重试',
+            redirect: doRelogin
+        };
+    }
+    handleOperateSave = () => {
+        const {
+            executeTimeType
+        } = this.state
+        axiosData('/promotion/promotionParamsService_updatePromotionParams.ajax', {
+            groupID: this.props.user.accountInfo.groupID,
+            params: {
+                groupID: this.props.user.accountInfo.groupID,
+                executeTimeType,
+            },
+        }, null, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+            .then((res) => {
+                if(res.code === '000') {
+                    message.success('保存成功')
+                    this.setState({
+                        operateModalVisible: false,
+                    })
+                }
+            })
+        // axios.post('/api/v1/universal', {
+        //     service: 'HTTP_SERVICE_URL_PROMOTION_NEW', // ? domain :'HTTP_SERVICE_URL_CRM', //'HTTP_SERVICE_URL_PROMOTION_NEW'
+        //     method: '/promotion/promotionParamsService_updatePromotionParams.ajax',
+        //     type: 'post',
+        //     params: {
+        //         groupID: this.props.user.accountInfo.groupID,
+        //         executeTimeType,
+        //     },
+        // })
+        //     .then((json) => {
+        //         let { code, message, result } = json;
+        //         if (!code) {
+        //             code = (result || {}).code;
+        //         }
+        //         if (!message) {
+        //             message = (result || {}).message;
+        //         }
+        //         if (code !== '000') {
+        //             const { redirect, msg } = this.parseResponseJson(json, '000');
+        //             Modal.error({
+        //                 title: '啊哦！好像有问题呦~~',
+        //                 content: `${msg}`,
+        //             });
+        //             redirect && window.setTimeout(() => doRedirect(), 1500);
+        //             return Promise.reject({ code, message, response: json });
+        //         }
+        //         if (!path) {
+        //             return Promise.resolve(json);
+        //         }
+        //         const paths = path.split('.');
+        //         const data = paths.reduce((ret, path) => {
+        //             if (!ret) return ret;
+        //             return ret[path];
+        //         }, json);
+        //     })
+        //     .catch((error) => {
+        //         return Promise.reject(error);
+        //     });
+    }
     setRunDataList() {
         const { promotionList, queryPromotionList } = this.props;
         let type = 0;
@@ -898,6 +983,69 @@ class MyActivities extends React.Component {
         queryPromotionList({ type })
         this.props.openPromotionAutoRunListModal();
     }
+    renderOperateModal = () => {
+        return (
+            <Modal
+                wrapClassName="progressBarModal"
+                title={'执行时间配置'}
+                visible={this.state.operateModalVisible}
+                footer={
+                    <div style={{ textAlign: 'center' }}>
+                        <Button type="ghost"
+                            onClick={() => {
+                                this.setState({
+                                    operateModalVisible: false,
+                                })
+                            }}>
+                            取消
+                        </Button>
+                        <Button
+                            style={{ marginLeft: 8 }}
+                            type="primary"
+                            loading={this.state.loading}
+                            onClick={this.handleOperateSave}>
+                            确定
+                        </Button>
+                    </div>
+                }
+                width={600}
+                height="569px"
+                maskClosable={false}
+                onCancel={() => {
+                    this.setState({
+                        operateModalVisible: false,
+                    })
+                }}
+            >
+                <div>
+                    <div>
+                        <span>当顾客在POS上结账时，促销活动时间计算规则</span>
+                    </div>
+                    <div style={{ marginTop: 13 }}>
+                        <span>计算规则：</span>
+                        <RadioGroup onChange={this.handleExecuteTimeType} value={this.state.executeTimeType}>
+                            <Radio key={'1'} value={1}>按开台时间计算</Radio>
+                            <Radio key={'2'} value={0}>按结账时间计算</Radio>
+                        </RadioGroup>
+                    </div>
+                </div>
+            </Modal>
+        );
+    }
+    openOptModal = () => {
+        this.setState({
+            operateModalVisible: true,
+        })
+        axiosData('/promotion/promotionParamsService_queryPromotionParams.ajax', {
+            groupID: this.props.user.accountInfo.groupID,
+        }, null, { path: 'data.params' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+            .then((res) => {
+                const { executeTimeType } = res
+                this.setState({
+                    executeTimeType,
+                })
+            })
+    }
     renderHeader() {
         // const {
         //     queryPromotionAutoRunList,
@@ -908,6 +1056,19 @@ class MyActivities extends React.Component {
         return (
             <div className="layoutsTool">
                 <div style={{ position: 'fixed', top: '79px', right: '20px' }}>
+                    {
+                        !this.isOnlinePromotionPage() && (
+                            <span>
+                                <Authority rightCode={BASIC_PROMOTION_QUERY}>
+                                    <Button
+                                        type="ghost"
+                                        onClick={this.openOptModal}
+                                        style={{ marginRight: 10 }}
+                                    ><Icon type="clock-circle-o" />执行时间</Button>
+                                </Authority>
+                            </span>
+                        )
+                    }
                     {
                         !isHuaTian() && !this.isOnlinePromotionPage() && (
                             <Authority rightCode={AUTO_RUN_QUERY}>
@@ -1088,7 +1249,7 @@ class MyActivities extends React.Component {
                                 this.setState({
                                     promotionCode: e.target.value,
                                 })
-                            }}/>
+                            }} />
                         </li>
                         <li>
                             <Authority rightCode={BASIC_PROMOTION_QUERY}>
@@ -1577,8 +1738,8 @@ class MyActivities extends React.Component {
     }
 
     render() {
-        const { runType,  dataSource } = this.state;
-        const {stylesShow} = this.props;
+        const { runType, dataSource } = this.state;
+        const { stylesShow } = this.props;
         return (
             <div style={{ backgroundColor: '#F3F3F3' }} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 <div>
@@ -1592,48 +1753,49 @@ class MyActivities extends React.Component {
                             <div style={{ margin: '0' }} className="layoutsLine"></div>
                         </div>
                         {
-                        stylesShow === 'list' ? this.renderTables() :
-                        <CardSaleActive
-                            dataSource={dataSource}
-                            type="sale"
-                            entryCode={this.props.entryCode}
-                            // cfg={this.cfg}
-                            handleSattusActive={this.handleSattusActive}
-                            handleDisableClickEvent={this.handleDisableClickEvent}
-                            handleUpdateOpe={this.handleUpdateOpe}
-                            toggleIsUpdate={this.props.toggleIsUpdate}
-                            handleEditActive={this.handleEditActive}
-                            handleDelActive={this.handleDelActive}
-                            confirmDelete={this.confirmDelete}
-                            pageNo={this.state.pageNo}
-                            pageSizes={this.state.pageSizes}
-                            total={this.state.total}
-                            onChangePage={(page, pageSize) => {
-                                this.setState({
-                                    pageNo: page,
-                                })
-                                const opt = {
-                                    pageSize,
-                                    pageNo: page,
-                                    usageMode: -1,
-                                    ...this.getParams(),
-                                    fail: () => message.error(SALE_LABEL.k5dmw1z4),
-                                };
-                                opt.cb = this.showNothing;
-                                this.props.query(opt);
-                            }}
-                            onShowSizeChange={this.onShowSizeChange}
-                            updateCopy={() => {
-                                this.setState({
-                                    isCopy: true,
-                                    modalTitle: '复制活动信息'
-                                })
-                            }}
-                        />
+                            stylesShow === 'list' ? this.renderTables() :
+                                <CardSaleActive
+                                    dataSource={dataSource}
+                                    type="sale"
+                                    entryCode={this.props.entryCode}
+                                    // cfg={this.cfg}
+                                    handleSattusActive={this.handleSattusActive}
+                                    handleDisableClickEvent={this.handleDisableClickEvent}
+                                    handleUpdateOpe={this.handleUpdateOpe}
+                                    toggleIsUpdate={this.props.toggleIsUpdate}
+                                    handleEditActive={this.handleEditActive}
+                                    handleDelActive={this.handleDelActive}
+                                    confirmDelete={this.confirmDelete}
+                                    pageNo={this.state.pageNo}
+                                    pageSizes={this.state.pageSizes}
+                                    total={this.state.total}
+                                    onChangePage={(page, pageSize) => {
+                                        this.setState({
+                                            pageNo: page,
+                                        })
+                                        const opt = {
+                                            pageSize,
+                                            pageNo: page,
+                                            usageMode: -1,
+                                            ...this.getParams(),
+                                            fail: () => message.error(SALE_LABEL.k5dmw1z4),
+                                        };
+                                        opt.cb = this.showNothing;
+                                        this.props.query(opt);
+                                    }}
+                                    onShowSizeChange={this.onShowSizeChange}
+                                    updateCopy={() => {
+                                        this.setState({
+                                            isCopy: true,
+                                            modalTitle: '复制活动信息'
+                                        })
+                                    }}
+                                />
                         }
                     </div>
                 </div>
                 {this.renderModifyRecordInfoModal()}
+                {this.renderOperateModal()}
                 <PromotionAutoRunModal runType={runType} />
                 {
                     !this.state.exportVisible ? null :
