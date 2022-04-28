@@ -58,7 +58,6 @@ class SuccessModalContent extends Component {
     handleSubmit = () => {
         const { form } = this.props;
         const { couponDetail } = this.state
-        console.log("🚀 ~ file: SuccessModalContent.jsx ~ line 61 ~ SuccessModalContent ~ couponDetail", couponDetail)
         this.setState({
             confirmLoading: true,
         })

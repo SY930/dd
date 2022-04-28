@@ -9,6 +9,7 @@ import {
 } from 'antd';
 import CreateCouponContent from '../Modal/CreateCouponContent'
 import ScenePutContent from '../Modal/ScenePutContent'
+import DYCouponInfoMoldeContent from '../Modal/DYCouponInfoMoldeContent';
 import { debounce } from 'lodash'
 import styles from '../AlipayCoupon.less'
 import { columnsView, getColumns } from '../config';
@@ -259,6 +260,12 @@ class CouponManageList extends Component {
         })
     }
 
+    handleCloseDYCouponInfoModal = () => {
+        this.setState({
+            dyCouponInfoVisible: false,
+        })
+    }
+
     handleCloseThirdCouponModal = () => {
         this.setState({
             createThirdCouponVisble: false,
@@ -360,6 +367,13 @@ class CouponManageList extends Component {
 
                 }
             })
+    }
+
+    // 抖音（小风车）增加优惠券已发放详情
+    handleCouponInfo = (record) => {
+        this.setState({
+            dyCouponInfoVisible: true
+        })
     }
 
     handleCloseVidwModal = () => {
@@ -652,6 +666,7 @@ class CouponManageList extends Component {
                 {
                     this.state.WXLaunchVisible && <ScenePutContent onCancel={this.handleCloseWXLaunchModal} wxData={this.state.wxData} isEdit={this.state.isEdit} title={this.state.title} handleQuery={this.handleQuery} />
                 }
+                { this.state.dyCouponInfoVisible && <DYCouponInfoMoldeContent onCancel={this.handleCloseDYCouponInfoModal} />}
             </div>
         )
     }

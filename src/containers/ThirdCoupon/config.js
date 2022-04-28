@@ -32,6 +32,18 @@ export const getColumns = _this => ([
                     查看
 				</a>
 				{
+					record.platformType === 5 && (
+						<a
+						href="#"
+						onClick={() => {
+							_this.handleCouponInfo(record, false)
+						}}
+					>
+											详情
+					</a>
+					)
+				}
+				{
 					record.channelID == 60 && (
 						<span>
 							<a
