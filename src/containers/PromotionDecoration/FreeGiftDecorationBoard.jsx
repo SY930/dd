@@ -41,6 +41,7 @@ export default class FreeGiftDecorationBoard extends Component {
                 alertBackgroundImage,
                 canGetGiftTitleColor = '#AA7246',
                 giftListTitleColor = '#AA7246',
+                giftListTimeColor = '#AA7246',
                 successTip = '请前往商家公众号查看/使用',
                 isShowGiftListContent = true,
                 isShowCanGetGift = true,
@@ -62,7 +63,7 @@ export default class FreeGiftDecorationBoard extends Component {
                 <div style={{ background: activeBg }} className={style.scrollArea}>
                     <img style={{ width: '100%' }} src={activeImg || freeGift} alt="" />
                     <div style={{ width: '100%' }}>
-                        <div className={style.freeGiftTimeText}  >活动时间：2019/09/08 - 2019/09/09</div>
+                        <div className={style.freeGiftTimeText}  style={{color:giftListTimeColor}}>活动时间：2019/09/08 - 2019/09/09</div>
                         {isShowGiftListContent ? <div style={{ color: giftListTitleColor }} className={style.freeGiftGetGift}>
                             <div><img style={{ width: '14px', height: '14px' }} src={trumpetImg} /> 用户 ****领取了优惠券</div>
                             <div>2019/09/08 09:03:00</div>
@@ -104,6 +105,7 @@ export default class FreeGiftDecorationBoard extends Component {
                 btnTextColor = '#AA7246',
                 canGetGiftTitleColor = '#AA7246',
                 giftListTitleColor = '#AA7246',
+                giftListTimeColor = '#AA7246',
                 activeImg,
                 isShowGiftListContent = true,
                 isShowCanGetGift = true
@@ -155,6 +157,27 @@ export default class FreeGiftDecorationBoard extends Component {
                         </div>
                     </div>
                 </div>
+                <div className={style.sectionWrapper}>
+                    <div style={{ top: 5 }} className={style.label}>活动时间</div>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <div style={{ width: '48px', height: '24px', borderRadius: '12px', marginRight: '16px' }}></div>
+                        <div className={style.inlineRow}>
+                            <span>标题文字</span>
+                            <div className={style.borderedColorWrapper}>
+                                <WrappedColorPicker
+                                    alpha={100}
+                                    color={giftListTimeColor}
+                                    onChange={({ color }) => {
+                                        onChange({ key: ['giftListTimeColor'], value: color });
+                                    }}
+                                    placement="topLeft"
+                                />
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
                 <div className={style.sectionWrapper}>
                     <div style={{ top: 5 }} className={style.label}>可领礼品</div>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
