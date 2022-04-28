@@ -58,6 +58,7 @@ class SuccessModalContent extends Component {
     handleSubmit = () => {
         const { form } = this.props;
         const { couponDetail } = this.state
+        console.log("🚀 ~ file: SuccessModalContent.jsx ~ line 61 ~ SuccessModalContent ~ couponDetail", couponDetail)
         this.setState({
             confirmLoading: true,
         })
@@ -75,7 +76,6 @@ class SuccessModalContent extends Component {
                     giftConfInfos: [{
                         giftID: couponDetail.itemID,
                     }],
-                    masterMerchantID: couponDetail.masterMerchantID,
                 }
                 const params = { trdEventInfo: { ...data } };
                 axiosData(

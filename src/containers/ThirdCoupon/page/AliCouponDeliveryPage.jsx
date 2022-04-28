@@ -7,11 +7,11 @@ import {
 // import moment from 'moment';
 import SuccessPage from './SuccessPage';
 import PromotionPage from './PromotionPage'
-import SuccessModalContent from './Modal/SuccessModalContent';
-import PromotionModalContent from './Modal/PromotionModalContent';
-import style from './AlipayCoupon.less'
-import { getAlipayCouponList, getAlipayPromotionList, queryEventList } from './AxiosFactory';
-import { axiosData } from '../../helpers/util';
+import SuccessModalContent from '../Modal/SuccessModalContent';
+import PromotionModalContent from '../Modal/PromotionModalContent';
+import style from '../AlipayCoupon.less'
+import { getAlipayPromotionList, queryEventList } from '../AxiosFactory';
+import { axiosData } from '../../../helpers/util';
 
 
 const TabPane = Tabs.TabPane;

@@ -47,7 +47,7 @@ function proGiftTreeData(giftTypes) {
         gt.crmGifts.map((gift) => {
             treeData[idx].children.push({
                 label: gift.giftName,
-                value: `${gift.giftItemID}_${gift.giftType}`,
+                value: `${gift.giftItemID}_${gift.giftType}_${gift.giftValue}`,
                 key: gift.giftItemID,
                 giftValue: gift.giftValue,
                 giftType: gt.giftType,
@@ -75,7 +75,7 @@ function proDouyinGiftTreeData(giftTypes) {
             treeData[idx].children.push({
                 ...gift,
                 label: gift.promotionName,
-                value: `${gift.id}_${gift.promotionType}_${gift.promotionName}`,
+                value: `${gift.id}_${gift.promotionType}_'33'_${gift.promotionName}`,
                 key: `${gift.id}`,
                 giftValue: `${gift.id}`,
                 giftType: gt.promotionType,

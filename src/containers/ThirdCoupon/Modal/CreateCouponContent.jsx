@@ -10,6 +10,7 @@ import PriceInput from '../../SaleCenterNEW/common/PriceInput';
 import WXContent from '../Comp/WXContent';
 import DouyinContent from '../Comp/DouyinContent'
 import AliContent from '../Comp/AliContent';
+import EDiscountContent from '../Comp/EDiscountContent';
 // import { axiosData } from '../../../helpers/util'
 import styles from '../AlipayCoupon.less';
 
@@ -55,6 +56,7 @@ class CreateCouponContent extends Component {
             aliShops: [],
             entranceWords: [], // 支付宝门店
             douyinGift: null,
+            giftValue: '', // 券面值
         }
     }
 
@@ -112,13 +114,18 @@ class CreateCouponContent extends Component {
 
     // 优惠券
     handleCouponChange = (value) => {
-        const [v, type, name] = value.split('_')
+        const { form } = this.props
+        const [v, type, giftValue, name] = value.split('_');
+        // if ()
+        // const gift = this.state.
+        form.setFieldsValue({giftFaceValue : giftValue})
         this.setState({
             giftItemID: v,
             giftType: type,
-        });
+            giftValue: type == '10' ? giftValue : null,
+        })
 
-        if (this.props.form.getFieldValue('promotionType') === 2) {
+        if (this.props.form.getFieldValue('promotionType') === 2) { // 零售
             const targetGift = this.props.treeDataX.map(v => v.children).flat().find(g => {
                 return g.giftValue === v
             });
@@ -263,6 +270,9 @@ class CreateCouponContent extends Component {
     }
 
     handleCloseModal = () => {
+        this.setState({
+            giftValue: null,
+        })
         this.props.handleCloseModal();
     }
 
@@ -317,6 +327,61 @@ class CreateCouponContent extends Component {
         })
     }
 
+    handleEdiscountSubmit = (values, groupId, groupShortName) => {
+        const { giftValidRange = [] } = values;
+        const { effectGiftTimeHours, giftType, giftItemID, effectType } = this.state;
+        const EGiftEffectTime = giftValidRange[0] ? giftValidRange[0].format(DATE_FORMAT) : ''
+        const validUntilDate = giftValidRange[1] ? giftValidRange[1].format(END_DATE_FORMAT) : '';
+        const data = {
+            ...values,
+            validUntilDays: values.validUntilDays ? values.validUntilDays.number : '',
+            stock: values.stock ? values.stock.number : '',
+            channelID: this.props.channelID,
+            couponCodeDockingType: 1,
+            groupId,
+            giftType,
+            effectGiftTimeHours,
+            giftItemID,
+            effectType,
+            platformType: this.props.platformType,
+            groupShortName,
+            EGiftEffectTime,
+            validUntilDate,
+        };
+        const startTime = moment().format(DATE_FORMAT);
+        const endTime = moment().add(3, 'years').format(END_DATE_FORMAT) // 定时任务需要时间传值
+        const url = '/api/v1/universal?';
+        const method = '/couponCodeBatchService/addBatch.ajax';
+        const params = {
+            service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+            type: 'post',
+            // couponCodeBatchInfo: res,
+            data: {
+                // couponCodeBatchInfo,
+                couponCodeBatchInfo: { ...data, startTime, endTime },
+                groupID: groupId,
+                groupShortName,
+            },
+            method,
+        };
+        axios.post(url + method, params).then((res) => {
+            const { code, message: msg } = res;
+            if (code === '000') {
+                message.success('创建成功');
+                this.props.handleCloseModal();
+                this.props.handleQuery();
+                this.props.onParentCancel();
+                this.setState({ confirmLoading: false })
+                return
+            }
+            this.setState({ confirmLoading: false })
+            message.error(msg);
+        }).catch((error) => {
+            this.setState({ confirmLoading: false })
+            console.log(error)
+        })
+    }
+
     handleDouyinSubmit = (values, groupId) => {
         const { giftValidRange = [], batchName, stock = {}, shopId, promotionType } = values;
         const { effectGiftTimeHours, giftType, giftItemID, effectType, promotionName = '' } = this.state
@@ -327,15 +392,12 @@ class CreateCouponContent extends Component {
             return message.error('请输入生效时间')
         }
         const startTime = moment().format(DATE_FORMAT);
-        const endTime = moment().add(3, 'years').format(END_DATE_FORMAT)
+        const endTime = moment().add(3, 'years').format(END_DATE_FORMAT) // 定时任务需要时间传值
         const couponCodeBatchInfo = {
             promotionType,
             trdPromotionCode: +giftItemID,
             batchName,
-            // batchStatus: 1,
             giftItemID,
-            // couponName:
-            // couponType
             EGiftEffectTime, // 固定有效期生效时间
             validUntilDate, // 固定有效期失效时间
             startTime,
@@ -347,7 +409,6 @@ class CreateCouponContent extends Component {
             validUntilDays: values.validUntilDays ? values.validUntilDays.number : '',
             stock: stock.number,
             shopId,
-            // isExchange: Number(isExchange),
             channelID: this.props.channelID,
             couponCodeDockingType: 1,
             giftType,
@@ -375,11 +436,9 @@ class CreateCouponContent extends Component {
                 this.setState({ confirmLoading: false })
                 return
             }
-            // this.props.handleCloseModal();
             this.setState({ confirmLoading: false })
             message.error(msg);
         }).catch((error) => {
-            // this.props.handleCloseModal();
             this.setState({ confirmLoading: false })
             console.log(error)
         })
@@ -389,15 +448,18 @@ class CreateCouponContent extends Component {
         const { form, channelID, platformType, type } = this.props
         form.validateFields((err, values) => {
             if (!err) {
-                // console.log('handleAuthSubmit', values);
                 this.setState({ confirmLoading: true })
                 const { effectType, effectGiftTimeHours, merchantID, editData, giftType, giftItemID, entranceWords } = this.state;
                 const { user } = getStore().getState();
-                const { groupID } = user.get('accountInfo').toJS()
+                const { groupID, groupName } = user.get('accountInfo').toJS()
                 const rangePicker = values.rangePicker || [];
                 const giftValidRange = values.giftValidRange || [];
                 if (type == 3 || type == 4) { // 抖音
                     this.handleDouyinSubmit(values, groupID)
+                    return null
+                }
+                if (type == 5) { // e折
+                    this.handleEdiscountSubmit(values, groupID, groupName)
                     return null
                 }
                 if (!effectGiftTimeHours && values.effectType === '3') {
@@ -414,26 +476,23 @@ class CreateCouponContent extends Component {
                 }
                 const startTime = rangePicker[0].format(DATE_FORMAT);
                 const endTime = rangePicker[1].format(END_DATE_FORMAT);
-                // const EGiftEffectTime = giftValidRange[0].format(DATE_FORMAT);
-                // const validUntilDate = giftValidRange[1].format(END_DATE_FORMAT);
                 const datas = {
                     batchName: values.batchName,
-                    channelID,
+                    jumpAppID: values.jumpAppID,
+                    merchantType: values.merchantType,
+                    // ...values,
                     couponCodeDockingType: 2, // 支付宝默认传2批量预存，微信需要用户手动选择1，3
-                    stock: values.stock.number,
+                    channelID,
                     effectType,
+                    stock: values.stock.number,
+                    validUntilDays: values.validUntilDays ? values.validUntilDays.number : '',
                     effectGiftTimeHours,
                     endTime,
-                    // EGiftEffectTime,
-                    // validUntilDate,
                     startTime,
                     giftItemID,
                     giftType,
-                    jumpAppID: values.jumpAppID,
                     merchantID,
-                    merchantType: values.merchantType,
                     platformType,
-                    validUntilDays: values.validUntilDays ? values.validUntilDays.number : '',
                 }
                 if (giftValidRange[0]) {
                     datas.EGiftEffectTime = giftValidRange[0].format(DATE_FORMAT);
@@ -449,9 +508,9 @@ class CreateCouponContent extends Component {
                 }
                 if (type === 2) { // 微信
                     datas.merchantID = this.state.WXMerchantID;
-                    datas.maxCouponsPerUser = values.maxCouponsPerUser;
                     datas.masterMerchantID = this.state.masterMerchantID;
                     datas.jumpAppID = this.state.WXJumpAppID;
+                    datas.maxCouponsPerUser = values.maxCouponsPerUser;
                     datas.couponCodeDockingType = values.couponCodeDockingType;
                     datas.miniProgramsAppId = values.miniProgramsAppId;
                     datas.miniProgramsPath = values.miniProgramsPath;
@@ -498,11 +557,9 @@ class CreateCouponContent extends Component {
                         this.setState({ confirmLoading: false })
                         return
                     }
-                    // this.props.handleCloseModal();
                     this.setState({ confirmLoading: false })
                     message.error(msg);
                 }).catch((error) => {
-                    // this.props.handleCloseModal();
                     this.setState({ confirmLoading: false })
                     console.log(error)
                 })
@@ -883,7 +940,8 @@ class CreateCouponContent extends Component {
                                 )}
                             </FormItem>
                             {
-                                type != 3 && <FormItem
+                                // 微信和支付宝需要用户输入投放时间
+                                (type === 1 || type === 2) && <FormItem
                                     label="投放时间"
                                     {...formItemLayout}
                                     required={true}
@@ -892,7 +950,6 @@ class CreateCouponContent extends Component {
                                         rules: [
                                             { required: true, message: '请输入日期' },
                                         ],
-                                        // onchange: this.handleRangeChange,
                                     })(
                                         <RangePicker
                                             style={{ width: '100%', height: 30 }}
@@ -937,7 +994,8 @@ class CreateCouponContent extends Component {
 
                             {giftItemID && this.renderCoupon()}
                             {
-                                (type !== 3 && type !== 4) && <FormItem
+                                // 微信和支付宝
+                                (type === 1 || type === 2) && <FormItem
                                     label="链接方式"
                                     {...formItemLayout}
                                 >
@@ -957,6 +1015,7 @@ class CreateCouponContent extends Component {
                             {type === 1 && <AliContent form={form} merchantType={merchantType} aliShops={aliShops} onChangeEntranceWords={this.onChangeEntranceWords} />}
                             {type === 2 && <WXContent form={form} merchantType={merchantType} onChangeWXMerchantID={this.onChangeWXMerchantID} onChangeWXJumpAppID={this.onChangeWXJumpAppID} />}
                             {type === 3 && <DouyinContent form={form} merchantType={merchantType} />}
+                            {type === 5 && <EDiscountContent form={form} merchantType={merchantType} giftValue={this.state.giftValue} />}
                         </Form>
                     </Col>
                 </Row>
