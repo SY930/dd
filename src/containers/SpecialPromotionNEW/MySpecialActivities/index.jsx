@@ -704,7 +704,7 @@ class MySpecialActivities extends React.Component {
             let { result: { code, message: msg }, qrCodeImage = '' } = data
             this.setState({ xcxLoad: false })
             if (code === '000') {
-                this.setState({ qrCodeImage, scene: paramsRouter.scene, page: paramsRouter.page });
+                this.setState({ qrCodeImage, scene: paramsRouter.scene, page: `${paramsRouter.page}.html` });
             }
         }).catch(({ message: msg }) => {
             this.setState({ xcxLoad: false })
