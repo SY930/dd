@@ -26,7 +26,7 @@ import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from '../IntlDecor';
 
 const Immutable = require('immutable');
-const LAOWANG_GROUPID = ['1348', '189702']
+const LAOWANG_GROUPID = ['1348', '189702','130442'];
 @injectIntl()
 class GroupTicketDetailInfo extends React.Component {
     constructor(props) {
