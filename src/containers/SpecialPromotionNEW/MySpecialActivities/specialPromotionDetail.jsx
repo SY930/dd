@@ -11,6 +11,7 @@
 import moment from 'moment';
 import React, { PropTypes } from 'react';
 import SpecialPromotionExportModal from 'containers/SpecialPromotionNEW/common/SpecialPromotionExportModal'
+import SpecialPromotionDetailExportModal from 'containers/SpecialPromotionNEW/common/SpecialPromotionDetailExportModal'
 import { connect } from 'react-redux';
 import {
     Modal,
@@ -95,6 +96,9 @@ class SpecialPromotionDetail extends React.Component {
             userInfo: record.userInfo.list,
             pageNo: record.userInfo.pageNo || 1,
             total: record.userInfo.totalSize || 0,
+            detailPageNo: 1,
+            detailPageSize: 10,
+            detailTotal: 0,
             inviteeModalVisble: false,
             giftDetailModalVisble: false,
             selectedInviter: null,
@@ -104,13 +108,101 @@ class SpecialPromotionDetail extends React.Component {
             sameItemID: '',
             dataOverviewDataSource: [],
             recommendRewardSummaryData: [],
-            recommendedRewardSummaryData: []
+            recommendedRewardSummaryData: [],
+            detailModalVisible: false,
+            detailDataSource: [],
+            detailPopoverVisible: false,
+            detailTooltipVisble: false,
+            detailPopA: '',
+            detailPopContent: '',
+            detailSameItemID: '',
+            exportDetailVisible: false,
+            currentOperateId: '',
+            detailLoading: false,
         };
         this.handleUserTablePageChange = this.handleUserTablePageChange.bind(this);
         this.handleUserTablePageSizeChange = this.handleUserTablePageSizeChange.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.query = this.query.bind(this);
         this.resetQuery = this.query.bind(this, true); // 手动点击查询， 视为刷新， 从第1页开始
+        this.detailColumns = [
+            {
+                title: `序号`,
+                dataIndex: 'index',
+                key: 'index',
+                className: 'TableTxtCenter',
+                render: (text, record, index) => {
+                    return (this.state.detailPageNo - 1) * this.state.detailPageSize + index;
+                },
+                width: 10,
+            },
+            {
+                title: `客户编码`,
+                dataIndex: 'customerID',
+                key: 'customerID',
+                className: 'TableTxtCenter',
+                width: 100,
+            },
+            {
+                title: `姓名`,
+                dataIndex: 'customerName',
+                key: 'customerName',
+                className: 'TableTxtCenter',
+                width: 100,
+            },
+            {
+                title: `手机号`,
+                dataIndex: 'customerMobile',
+                key: 'customerMobile',
+                className: 'TableTxtCenter',
+                width: 100,
+            },
+            {
+                title: `参与时间`,
+                dataIndex: 'createStampShow',
+                key: 'createStampShow',
+                className: 'TableTxtCenter',
+                width: 100,
+            },
+            {
+                title: `集点状态`,
+                dataIndex: 'pointChangeType',
+                key: 'pointChangeType',
+                className: 'TableTxtCenter',
+                render: (text) => {
+                    return text == '1' ? '消费' : text == '2' ? '退款' : '兑换'
+                },
+                width: 50,
+            },
+            {
+                title: `已集点数`,
+                dataIndex: 'finalCollectCount',
+                key: 'finalCollectCount',
+                className: 'TableTxtCenter',
+                width: 50,
+            },
+            {
+                title: `兑换点数`,
+                dataIndex: 'finalUsedCount',
+                key: 'finalUsedCount',
+                className: 'TableTxtCenter',
+                width: 50,
+            },
+            {
+                title: `未兑换点数`,
+                dataIndex: 'finalAvailableCount',
+                key: 'finalAvailableCount',
+                className: 'TableTxtCenter',
+                width: 50,
+            },
+            {
+                title: `关联账单号`,
+                dataIndex: 'posOrderNo',
+                key: 'posOrderNo',
+                className: 'TableTxtCenter',
+                width: 160,
+            },
+        ];
     }
 
     componentDidMount() {
@@ -178,10 +270,52 @@ class SpecialPromotionDetail extends React.Component {
             }
         }
     }
+    onHandleExport = () => {
+        const { currentOperateId } = this.state;
+        const { user } = this.props
+        axiosData(
+            '/crm/export/exportEventCustomerCollectPointDetail.ajax',
+            {
+                eventCustomerID: currentOperateId,
+                groupID: user.accountInfo.groupID,
+                exportType: 19,
+            },
+            null,
+            { path: 'data' },
+        ).then(records => {
+            if (records.sameRequest) {
+                this.setState({
+                    detailPopContent: '已有导出任务 请勿重复操作，',
+                    detailPopA: '查看导出结果',
+                    detailSameItemID: records.sameItemID,
+                })
+            } else {
+                this.setState({
+                    detailPopContent: '数据导出中 请',
+                    detailPopA: '查看导出进度',
+                })
+            }
+            if (records.highMoment == 1) {
+                this.setState({
+                    detailPopContent: <div><p style={{ whiteSpace: 'nowrap' }}>营业高峰期(11:00-14:00,17:00</p><p style={{ whiteSpace: 'nowrap' }}>-20:30)暂停使用数据导出功能</p></div>,
+                    detailPopA: '',
+                    detailTooltipVisble: true,
+                })
+            } else {
+                this.setState({
+                    detailTooltipVisble: false,
+                })
+            }
+            this.setState({
+                detailPopoverVisible: true,
+            });
+        })
+    }
 
     render() {
         const eventEntity = this.props.record.eventInfo.data;
         const { sameItemID, keyword } = this.state;
+        console.log('this.state.detailDataSource', this.state.detailDataSource)
         return (
             <div className={styles.showInfo}>
                 {
@@ -191,6 +325,17 @@ class SpecialPromotionDetail extends React.Component {
                             eventName={eventEntity.eventName}
                             handleClose={() => this.setState({ exportVisible: false, sameItemID: '' })}
                             sameItemID={sameItemID}
+                            keyword={keyword}
+                        />
+                    )
+                }
+                {
+                    this.state.exportDetailVisible && (
+                        <SpecialPromotionDetailExportModal
+                            eventID={eventEntity.itemID}
+                            eventName={eventEntity.eventName}
+                            handleClose={() => this.setState({ exportDetailVisible: false, sameItemID: '' })}
+                            sameItemID={this.state.detailSameItemID}
                             keyword={keyword}
                         />
                     )
@@ -223,6 +368,68 @@ class SpecialPromotionDetail extends React.Component {
                         />
                     )
                 }
+                <Modal
+                    title="客户参与详情"
+                    maskClosable={true}
+                    width={800}
+                    visible={this.state.detailModalVisible}
+                    // onOk={this.handleAuthSubmit}
+                    footer={[
+                        <Button type="ghost" onClick={() => {
+                            this.setState({
+                                detailModalVisible: false,
+                            }, () => {
+                                const { setVisible } = this.props
+                                setVisible && setVisible(true)
+                            })
+                        }}>关闭</Button>,
+                        <Button type="primary" onClick={this.handleDetailModalOpen.bind(this, this.state.currentOperateId, true)}>刷新</Button>,
+                    ]}
+                    onCancel={() => {
+                        this.setState({
+                            detailModalVisible: false,
+                        },() => {
+                            const { setVisible } = this.props
+                            setVisible && setVisible(true)
+                        })
+                    }}
+                >
+                    <div>
+                        <Popover
+                            content={this.renderDetailPopOver()}
+                            placement="topRight"
+                            title={false}
+                            trigger="click"
+                            visible={this.state.detailPopoverVisible}
+                            onVisibleChange={this.handleDetailVisibleChange}
+                        >
+                            <Button
+                                className={styles.ExportRightBtn}
+                                onClick={this.onHandleExport}
+                                type='primary'
+                            >导出</Button>
+                        </Popover>
+
+                        <Table
+                            dataSource={this.state.detailDataSource || []}
+                            columns={this.detailColumns}
+                            bordered={true}
+                            loading={this.state.detailLoading}
+                            pagination={{
+                                current: this.state.detailPageNo,
+                                total: this.state.detailTotal,
+                                showQuickJumper: true,
+                                showSizeChanger: false, // 暂时不改变pageSize
+                                onShowSizeChange: this.handleDetailTablePageSizeChange,
+                                pageSize: this.state.detailPageSize,
+                                showTotal: (total, range) => `${this.props.intl.formatMessage(STRING_SPE.d2b1c6b31a93638)} ${range[0]} - ${range[1]} / ${this.props.intl.formatMessage(STRING_SPE.dk46lj779a7119)} ${total} ${this.props.intl.formatMessage(STRING_SPE.d34ikgs6o6845)}`,
+                                pageSizeOptions: ['5', '10', '20', '40'],
+                                onChange: this.handleDetailTablePageChange
+                            }}
+                            scroll={{ x: 1400 }}
+                        />
+                    </div>
+                </Modal>
             </div>
         );
     }
@@ -1091,6 +1298,23 @@ class SpecialPromotionDetail extends React.Component {
             </div>
         );
     }
+    renderDetailPopOver = () => {
+        const { detailPopContent = '', detailPopA = '' } = this.state;
+        return (
+            <div className={styles.popDiv} style={{ width: this.state.detailPopoverVisible ? 160 : 'auto' }}>
+                <span>{detailPopContent}</span>
+                <a className={styles.greenLink} onClick={this.openDetailOther}>{detailPopA}</a>
+            </div>
+        );
+    }
+    openDetailOther = () => {
+        this.setState({
+            detailPopoverVisible: false,
+        });
+        this.setState({
+            exportDetailVisible: true,
+        });
+    }
     openOther = () => {
         this.setState({
             popoverVisible: false,
@@ -1102,6 +1326,9 @@ class SpecialPromotionDetail extends React.Component {
     handleVisibleChange = visible => {
         this.setState({ popoverVisible: visible });
     };
+    handleDetailVisibleChange = visible => {
+        this.setState({ detailPopoverVisible: visible });
+    }
     renderCollectPointsTable() {
         const columns = [
             {
@@ -1180,9 +1407,18 @@ class SpecialPromotionDetail extends React.Component {
     handleUserTablePageChange(pageNo, pageSize) {
         this.setState({ pageNo, pageSize }, () => this.query());
     }
-
+    handleDetailTablePageChange = (pageNo, pageSize) => {
+        this.setState({ detailPageNo: pageNo, detailPageSize: pageSize }, () => {
+            this.handleDetailModalOpen(this.state.currentOperateId)
+        });
+    }
     handleUserTablePageSizeChange(current, pageSize) {
         this.setState({ pageNo: 1, pageSize }, () => this.query(true));
+    }
+    handleDetailTablePageSizeChange = (current, detailPageSize) => {
+        this.setState({ detailPageNo: 1, detailPageSize }, () => {
+            this.handleDetailModalOpen(this.state.currentOperateId)
+        });
     }
 
     handleInviteeModalOpen = (record) => {
@@ -1196,6 +1432,42 @@ class SpecialPromotionDetail extends React.Component {
         this.setState({
             giftDetailModalVisble: true,
             selectedInviter: record,
+        })
+    }
+    handleDetailModalOpen = (itemID, ifSuccess) => {
+        const {
+            detailPageNo,
+            detailPageSize,
+        } = this.state
+        const { setVisible } = this.props
+        setVisible && setVisible(false)
+        this.setState({ detailModalVisible: true, currentOperateId: itemID, detailLoading: true })
+        axiosData(
+            '/specialPromotion/queryEventCollectPointDetail.ajax',
+            {
+                pageSize: detailPageSize,
+                pageNo: detailPageNo,
+                eventCustomerID: itemID,
+                // eventCustomerID: '7083795896185392021',
+            },
+            {},
+            { path: 'data' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW',
+        ).then(({ totalSize = 0, pageNo = 1, pageSize, ...res }) => {
+            this.setState({
+                detailDataSource: res.collectPointDetailList ? res.collectPointDetailList : [],
+                detailTotal: totalSize,
+                detailPageNo: pageNo,
+                detailPageSize: pageSize,
+                detailLoading: false,
+            })
+            if (ifSuccess) {
+                message.success('刷新成功')
+            }
+        }).catch((err) => {
+            this.setState({
+                detailLoading: false,
+            })
         })
     }
 
@@ -1277,13 +1549,13 @@ class SpecialPromotionDetail extends React.Component {
                     return `奖项${levelArray[level - 1]}`
                 }
             }),
-            {
-                title: `${this.props.intl.formatMessage(STRING_SPE.du3bopq1r4120)}`,
-                dataIndex: 'joinTime',
-                key: 'joinTime',
-                className: 'TableTxtCenter',
-                width: 120,
-            },
+            // {
+            //     title: `${this.props.intl.formatMessage(STRING_SPE.du3bopq1r4120)}`,
+            //     dataIndex: 'joinTime',
+            //     key: 'joinTime',
+            //     className: 'TableTxtCenter',
+            //     width: 120,
+            // },
             // 群发礼品
             eventWay == 53 && ({
                 title: '礼品详情',
@@ -1312,6 +1584,18 @@ class SpecialPromotionDetail extends React.Component {
                 className: 'TableTxtCenter',
                 width: 100,
                 render: joinCount => joinCount || 0,
+            }),
+            eventWay == 75 && ({
+                title: '操作',
+                dataIndex: 'operate',
+                key: 'operate',
+                className: 'TableTxtCenter',
+                width: 100,
+                render: (text, record) => {
+                    return <a onClick={this.handleDetailModalOpen.bind(this, record.itemID)}>
+                        详情
+                    </a>
+                }
             }),
         ];
         if (eventWay == 65) { // 分享裂变活动表格不太一样
