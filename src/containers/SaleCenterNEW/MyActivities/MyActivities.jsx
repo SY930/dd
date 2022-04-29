@@ -286,7 +286,7 @@ class MyActivities extends React.Component {
             queryPromotionList,
             queryPromotionAutoRunList,
         } = this.props;
-        this.handleQuery();
+        // this.handleQuery();
         fetchPromotionCategories({
             groupID: this.props.user.accountInfo.groupID,
             phraseType: '0',
@@ -340,6 +340,9 @@ class MyActivities extends React.Component {
                 this.handleQuery()
                 // this.clearUrl()
             })
+        }
+        if (!from) {
+            this.handleQuery()
         }
     }
 
@@ -1380,6 +1383,7 @@ class MyActivities extends React.Component {
                             <Select
                                 placeholder=""
                                 defaultValue={'2'}
+                                value={this.state.promotionValid}
                                 style={{ width: 100 }}
                                 onChange={(value) => {
                                     this.setState({

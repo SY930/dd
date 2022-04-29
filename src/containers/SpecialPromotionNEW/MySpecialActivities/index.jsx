@@ -354,6 +354,9 @@ class MySpecialActivities extends React.Component {
                 tabKeys: 'onSalePage',
             })
         }
+        if (!from) {
+            this.handleQuery(); // 直接进入页面请求数据
+        }
     }
 
     // 删除方案
@@ -519,7 +522,6 @@ class MySpecialActivities extends React.Component {
             fetchSpecialPromotionList,
         } = this.props;
         this.queryWechatMpInfo();
-        this.handleQuery();
         // 把groupID传给后台，后台执行自动终止
         this.props.updateExpiredActiveState({
             groupID: this.props.user.accountInfo.groupID,

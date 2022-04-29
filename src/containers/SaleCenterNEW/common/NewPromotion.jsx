@@ -10,7 +10,7 @@
 
 import React from 'react';
 import { message } from 'antd';
-import { jumpPage } from '@hualala/platform-base'
+import { closePage, jumpPage } from '@hualala/platform-base'
 import PromotionBasicInfo from './promotionBasicInfo';
 import PromotionScopeInfo from './promotionScopeInfo';
 import CustomProgressBar from './CustomProgressBar';
@@ -179,6 +179,7 @@ class NewPromotion extends React.Component {
                     }
                     const menuList = this.props.user.get('menuList').toJS();
                     const menuID = menuList.find(tab => tab.entryCode === target).menuID
+                    menuID && closePage(menuID)
                     jumpPage({ menuID, from: 'onSale' })
                 },
                 fail: () => {
