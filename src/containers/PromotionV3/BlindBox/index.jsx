@@ -276,8 +276,8 @@ class BlindBox extends Component {
             postEvent(allData).then(x => {
                 if(x) {
                     this.onToggle();
-                    closePage();
-                    jumpPage({ pageID: '1000076003'});
+                    // closePage();
+                    // jumpPage({ pageID: '1000076003', from: 'edit'});
                 }
             });
             return;
@@ -287,7 +287,7 @@ class BlindBox extends Component {
             if(x) {
                 this.onToggle();
                 closePage();
-                jumpPage({ pageID: '1000076003'});
+                jumpPage({ pageID: '1000076003', from: 'create'});
             }
         })
     }

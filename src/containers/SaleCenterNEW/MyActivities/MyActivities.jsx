@@ -307,12 +307,40 @@ class MyActivities extends React.Component {
         queryPromotionAutoRunList()
         this.onWindowResize();
         this.getSearchListContent() // 查询方案列表
+        this.fromOnsaleJump() // 促销活动创建后情况筛选框状态
         window.addEventListener('resize', this.onWindowResize);
 
     }
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.onWindowResize);
+    }
+
+    getQueryVariable() {
+        const search = window.decodeURIComponent(window.location.search)
+        var query = search.substr(1)
+        query = query.split('&')
+        var params = {}
+        for (let i = 0; i < query.length; i++) {
+            let q = query[i].split('=')
+            if (q.length === 2) {
+                params[q[0]] = q[1]
+            }
+        }
+        return params
+    }
+
+    fromOnsaleJump = () => {
+        const { from, itemID } = this.getQueryVariable();
+        if (from === 'onSale') {
+            this.setState({
+                promotionState: '0', // 使用状态
+                promotionValid: '0', 
+            },() => {
+                this.handleQuery()
+                // this.clearUrl()
+            })
+        }
     }
 
     goSearch = ({ key }) => {
@@ -1312,7 +1340,8 @@ class MyActivities extends React.Component {
                         </li>
 
                         <li>
-                            <h5>{SALE_LABEL.k5dlbwqo}</h5>
+                            {/* 使用状态 */}
+                            <h5>{SALE_LABEL.k5dlbwqo}</h5> 
                         </li>
                         <li>
                             <Select

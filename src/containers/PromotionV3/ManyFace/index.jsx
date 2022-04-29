@@ -212,8 +212,8 @@ class ManyFace extends Component {
                         return
                     }
                     this.onToggle();
-                    closePage();
-                    jumpPage({ pageID: '1000076003' });
+                    // closePage();
+                    // jumpPage({ pageID: '1000076003' });
                 }
             });
             return;
@@ -243,7 +243,11 @@ class ManyFace extends Component {
                     _this.props.handleDecorationStart({ itemID: id })
                     return
                 }
-                jumpPage({ pageID: '1000076003', from: 'manyFace', itemID: x.itemID });
+                const menuID = _this.props.user.menuList.find(tab => tab.entryCode === '1000076003').menuID
+                menuID && closePage(menuID)
+                setTimeout(() => {
+                    jumpPage({ pageID: '1000076003', from: 'manyFace', itemID: x.itemID });
+                })
             },
             onCancel() {
                 _this.onToggle();
@@ -251,7 +255,7 @@ class ManyFace extends Component {
                     return
                 }
                 closePage();
-                jumpPage({ pageID: '1000076003' })
+                jumpPage({ pageID: '1000076003', from: 'create' });
             },
         }))
     }

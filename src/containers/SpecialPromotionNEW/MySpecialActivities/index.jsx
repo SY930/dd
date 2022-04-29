@@ -323,10 +323,36 @@ class MySpecialActivities extends React.Component {
         this.handleUpdateOpe = this.handleUpdateOpe.bind(this);
     }
 
+    clearUrl() {
+        var { href } = window.location;
+        var [valiable] = href.split('?');
+        window.history.pushState(null, null, valiable);
+    }
+
     fromCrmJump = () => {
         const { from, itemID } = this.getQueryVariable();
         if (from === 'manyFace') {
-            this.handleDecorationStart({ itemID });
+            this.setState({
+                isActive: '',
+                tabKeys: 'saleSpecialPage'
+            },() => {
+                this.handleQuery()
+                this.clearUrl()
+                this.handleDecorationStart({ itemID });
+            })
+        } else if (from === 'create') {
+            // 创建活动后更新使用状态为不限
+            this.setState({
+                isActive: '',
+                tabKeys: 'saleSpecialPage'
+            },() => {
+                this.handleQuery()
+                this.clearUrl()
+            })
+        } else if(from === 'onSale') {// 创建促销活动tab默认打开促销活动
+            this.setState({
+                tabKeys: 'onSalePage',
+            })
         }
     }
 
@@ -493,17 +519,6 @@ class MySpecialActivities extends React.Component {
             fetchSpecialPromotionList,
         } = this.props;
         this.queryWechatMpInfo();
-        // fetchSpecialPromotionList({
-        //     data: {
-        //         groupID: this.props.user.accountInfo.groupID,
-        //         // _role:this.props.user.accountInfo.roleType,
-        //         // _loginName:this.props.user.accountInfo.loginName,
-        //         // _groupLoginName:this.props.user.accountInfo.groupLoginName,
-        //         pageSize: this.state.pageSizes,
-        //         pageNo: 1,
-        //     },
-        //     fail: (msg) => { message.error(msg) },
-        // });
         this.handleQuery();
         // 把groupID传给后台，后台执行自动终止
         this.props.updateExpiredActiveState({
@@ -1066,7 +1081,7 @@ class MySpecialActivities extends React.Component {
                                     </div>
                                 </TabPane>
                                 <TabPane tab="促销活动" key="onSalePage">
-                                    <MyActivities stylesChange={this.stylesChange} stylesShow={stylesShow} tabKeys={tabKeys} />
+                                    <MyActivities stylesChange={this.stylesChange} stylesShow={stylesShow} tabKeys={tabKeys}/>
                                 </TabPane>
                             </Tabs>
                         </div>
