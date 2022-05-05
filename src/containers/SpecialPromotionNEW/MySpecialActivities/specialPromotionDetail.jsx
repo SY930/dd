@@ -132,7 +132,7 @@ class SpecialPromotionDetail extends React.Component {
                 key: 'index',
                 className: 'TableTxtCenter',
                 render: (text, record, index) => {
-                    return (this.state.detailPageNo - 1) * this.state.detailPageSize + index;
+                    return ((this.state.detailPageNo - 1) * this.state.detailPageSize + index)+1;
                 },
                 width: 10,
             },
