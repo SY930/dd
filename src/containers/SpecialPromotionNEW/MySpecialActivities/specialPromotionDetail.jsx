@@ -201,6 +201,13 @@ class SpecialPromotionDetail extends React.Component {
                 key: 'changeCount',
                 className: 'TableTxtCenter',
                 width: 50,
+                render: (text, record) => {
+                    if(record.pointChangeType == '3') {
+                        return '0'
+                    } else {
+                        return text
+                    }
+                }
             },
             {
                 title:
@@ -214,6 +221,13 @@ class SpecialPromotionDetail extends React.Component {
                 key: 'finalUsedCount',
                 className: 'TableTxtCenter',
                 width: 50,
+                render: (text, record) => {
+                    if(record.pointChangeType == '3') {
+                        return parseInt(record.changeCount) * -1
+                    } else {
+                        return '0'
+                    }
+                }
             },
             {
                 title:
