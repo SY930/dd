@@ -23,6 +23,7 @@ import {
     Button,
     Tooltip,
     Popover,
+    Icon,
 } from 'antd';
 
 const Option = Select.Option;
@@ -132,7 +133,7 @@ class SpecialPromotionDetail extends React.Component {
                 key: 'index',
                 className: 'TableTxtCenter',
                 render: (text, record, index) => {
-                    return ((this.state.detailPageNo - 1) * this.state.detailPageSize + index)+1;
+                    return ((this.state.detailPageNo - 1) * this.state.detailPageSize + index) + 1;
                 },
                 width: 10,
             },
@@ -158,7 +159,21 @@ class SpecialPromotionDetail extends React.Component {
                 width: 100,
             },
             {
-                title: `参与时间`,
+                title:<span>
+                    <span>参与时间</span>
+                    <Tooltip title={
+                        <div>
+                            <p>
+                                1.若本行数据记录了已集点数，则参与时间为本次消费时间or本次消费撤销时间
+                            </p>
+                            <p>
+                                2.若本行数据记录了兑换点数，则参与时间为顾客手动兑换礼品的时间。
+                            </p>
+                        </div>
+                    }>
+                        <Icon style={{ marginLeft: 0, marginRight: 5 }} type="question-circle-o" />
+                    </Tooltip>
+                </span>,
                 dataIndex: 'createStampShow',
                 key: 'createStampShow',
                 className: 'TableTxtCenter',
@@ -175,22 +190,40 @@ class SpecialPromotionDetail extends React.Component {
                 width: 50,
             },
             {
-                title: `已集点数`,
-                dataIndex: 'finalCollectCount',
-                key: 'finalCollectCount',
+                title:
+                    <span>
+                        <span>已集点数</span>
+                        <Tooltip title='数值>0时，本次消费的集点数，即本行账单号中的已集点数；数值<0时，本次反结账撤销的集点数，即本行反结账账单中撤销的集点数。'>
+                            <Icon style={{ marginLeft: 0, marginRight: 5 }} type="question-circle-o" />
+                        </Tooltip>
+                    </span>,
+                    dataIndex: 'changeCount',
+                key: 'changeCount',
                 className: 'TableTxtCenter',
                 width: 50,
             },
             {
-                title: `兑换点数`,
-                dataIndex: 'finalUsedCount',
+                title:
+                    <span>
+                        <span>兑换点数</span>
+                        <Tooltip title='本次兑换点数，即本次顾客兑换礼品已经消耗的点数'>
+                            <Icon style={{ marginLeft: 0, marginRight: 5 }} type="question-circle-o" />
+                        </Tooltip>
+                    </span>,
+                    dataIndex: 'finalUsedCount',
                 key: 'finalUsedCount',
                 className: 'TableTxtCenter',
                 width: 50,
             },
             {
-                title: `未兑换点数`,
-                dataIndex: 'finalAvailableCount',
+                title:
+                    <span>
+                        <span>未兑换点数</span>
+                        <Tooltip title='截止到本行参与时间，未兑换点数的总合计'>
+                            <Icon style={{ marginLeft: 0, marginRight: 5 }} type="question-circle-o" />
+                        </Tooltip>
+                    </span>,
+                    dataIndex: 'finalAvailableCount',
                 key: 'finalAvailableCount',
                 className: 'TableTxtCenter',
                 width: 50,
@@ -388,7 +421,7 @@ class SpecialPromotionDetail extends React.Component {
                     onCancel={() => {
                         this.setState({
                             detailModalVisible: false,
-                        },() => {
+                        }, () => {
                             const { setVisible } = this.props
                             setVisible && setVisible(true)
                         })
