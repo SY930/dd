@@ -1093,7 +1093,7 @@ class GiftAddModalStep extends React.PureComponent {
             params.openPushSms = params.pushMessage && params.pushMessage.sendType.indexOf('msg') !== -1 ? 1 : 0
             params.reminderTime = params.pushMessage && params.pushMessage.reminderTime
             params.pushMessageMpID = params.pushMessage && params.pushMessage.pushMessageMpID
-            params.pushMimiAppMsg = params.pushMessage && params.pushMessage.pushMimiAppMsg
+            params.pushMimiAppMsg = params.pushMessage && params.pushMessage.sendType.includes('mini') ? params.pushMessage.pushMimiAppMsg : null
             // 商城券参数调整
             if(hasMallArr.includes(value)){
                 this.adjustParamsOfMallGift(params);
@@ -2341,6 +2341,7 @@ class GiftAddModalStep extends React.PureComponent {
             data.transferImage = {transferImagePath, transferThumbnailImagePath}
         }
 
+
         return data;
     }
 
@@ -2482,6 +2483,7 @@ class GiftAddModalStep extends React.PureComponent {
 
 
         // }
+        // console.log(firstKeysToDisplay, 'firstKeysToDisplay');
         return {
             firstKeysToDisplay,
             secondKeysToDisplay,
@@ -2640,6 +2642,7 @@ class GiftAddModalStep extends React.PureComponent {
     render() {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
             { firstKeys, secondKeys, values, unit,groupID } = this.state;
+
         const {applyScene} = values;
         // 判断是否是空对象
         // 影响 PhonePreview 回显。
