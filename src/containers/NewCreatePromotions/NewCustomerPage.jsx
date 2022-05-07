@@ -312,6 +312,16 @@ class NewCustomerPage extends Component {
             this.props.saleCenterSetJumpOpenCardParams(false)
             // 新建逻辑
             this.clearUrl();
+        }else if (from === 'tagsSendGroupGift') { // 群发礼品
+            console.log('gohere1111111>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+            const item = REPEAT_PROMOTION_TYPES.filter((item) => {
+                return item.key == 53
+            })[0];
+            setTimeout(() => {
+                this.handleNewPromotionCardClick(item, true);
+            }, 1000)
+            // 新建逻辑
+            this.clearUrl();
         } else if (from === 'doNothingButSth') {
             const saleID = type;
             // this.setState({ currentCategoryIndex: 4 })
