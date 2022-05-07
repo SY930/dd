@@ -1,284 +1,284 @@
-import React from "react"
-import { Icon, Tooltip } from "antd"
-import moment from "moment"
-import { jumpPage } from "@hualala/platform-base"
+import React from 'react'
+import { Icon, Tooltip } from 'antd'
+import moment from 'moment'
+import { jumpPage } from '@hualala/platform-base'
 
 export const getColumns = _this => ([
-	{
-		title: "序号",
-		dataIndex: "index",
-		className: "TableTxtCenter",
-		width: 50,
-		// fixed:'left',
-		key: "index",
-		render: (text) => {
-			return (_this.state.pageNo - 1) * _this.state.pageSizes + text
-		},
-	},
-	{
-		title: "操作",
-		key: "operation",
-		className: "TableTxtCenter",
-		width: 160,
-		// fixed: 'left',
-		render: (text, record) => {
-			return (<span>
-				<a
-					href="#"
-					onClick={() => {
-						_this.handleView(record, false)
-					}}
-				>
+    {
+        title: '序号',
+        dataIndex: 'index',
+        className: 'TableTxtCenter',
+        width: 50,
+        // fixed:'left',
+        key: 'index',
+        render: (text) => {
+            return (_this.state.pageNo - 1) * _this.state.pageSizes + text
+        },
+    },
+    {
+        title: '操作',
+        key: 'operation',
+        className: 'TableTxtCenter',
+        width: 160,
+        // fixed: 'left',
+        render: (text, record) => {
+            return (<span>
+                <a
+                    href="#"
+                    onClick={() => {
+                        _this.handleView(record, false)
+                    }}
+                >
                     查看
-				</a>
-				{
-					record.platformType === 5 && (
-						<a
-						href="#"
-						onClick={() => {
-							_this.handleCouponInfo(record, false)
-						}}
-					>
-											详情
-					</a>
-					)
-				}
-				{
-					record.channelID == 60 && (
-						<span>
-							<a
-								href="#"
-								disabled={record.batchStatus != 1}
-								onClick={record.batchStatus == 1 ? () => {
-									_this.handleStopClickEvent(record)
-								} : null}
-							>停用</a>
-							<a
-								href="#"
-								onClick={() => {
-									jumpPage({ menuID: "100008993" })
-								}}
-							>投放</a>
-						</span>
-					)
-				}
-				{
-					record.channelID == 50 && record.couponCodeDockingType == 3 && <a
-						href="#"
-						disabled={!!record.eventStatus}
-						onClick={record.eventStatus ? null : () => {
-							_this.setState({
-								wxData: record,
-								isEdit: false,
-								title: "投放场景",
-							}, () => {
-								_this.handleShowWxModal()
-							})
-						}}
-					>投放</a>
-				}
-				{
-					record.channelID == 50 && !!record.eventStatus && record.couponCodeDockingType == 3 &&
+                </a>
+                {
+                    record.platformType === 5 && (
+                        <a
+                            href="#"
+                            onClick={() => {
+                                _this.handleCouponInfo(record, false)
+                            }}
+                        >
+                            详情
+                        </a>
+                    )
+                }
+                {
+                    record.channelID == 60 && (
+                        <span>
+                            <a
+                                href="#"
+                                disabled={record.batchStatus != 1}
+                                onClick={record.batchStatus == 1 ? () => {
+                                    _this.handleStopClickEvent(record)
+                                } : null}
+                            >停用</a>
+                            <a
+                                href="#"
+                                onClick={() => {
+                                    jumpPage({ menuID: '100008993' })
+                                }}
+                            >投放</a>
+                        </span>
+                    )
+                }
+                {
+                    record.channelID == 50 && record.couponCodeDockingType == 3 && <a
+                        href="#"
+                        disabled={!!record.eventStatus}
+                        onClick={record.eventStatus ? null : () => {
+                            _this.setState({
+                                wxData: record,
+                                isEdit: false,
+                                title: '投放场景',
+                            }, () => {
+                                _this.handleShowWxModal()
+                            })
+                        }}
+                    >投放</a>
+                }
+                {
+                    record.channelID == 50 && !!record.eventStatus && record.couponCodeDockingType == 3 &&
                     <a
-                    	href="#"
-                    	onClick={() => {
+                        href="#"
+                        onClick={() => {
 					        _this.setState({
 					            wxData: record,
 					            isEdit: true,
-					            title: "投放详情",
+					            title: '投放详情',
 					        }, () => {
 					            _this.handleShowWxModal()
 					        })
 					    }}
                     >投放详情</a>
-				}
-			</span>
-			)
-		},
-	},
-	{
-		title: "第三方券名称",
-		dataIndex: "batchName",
-		key: "batchName",
-		width: 300,
-		render: text => text,
-	},
-	{
-		title: "券ID",
-		dataIndex: "itemID",
-		key: "itemID",
-		width: 200,
-		render: text => text,
-	},
-	{
-		title: "业态",
-		dataIndex: "promotionType",
-		key: "promotionType",
-		width: 200,
-		render: (promotionType) => promotionType === 2 ? "零售" : promotionType === 1 ? "餐饮" : "--",
-	},
-	{
-		title: "关联渠道",
-		dataIndex: "platformType",
-		key: "platformType",
-		width: 80,
-		render: (text) => {
-			const channelMap = {
-				1: "支付宝",
-				2: "抖音",
-				5: "抖音",
-				3: "微信",
-				6: "E折",
-			}
-			return channelMap[text] || "--"
-		},
-	},
-	{
-		title: "券面价值",
-		dataIndex: "giftFaceValue",
-		key: "giftFaceValue",
-		width: 80,
-		render: text => text || "--",
-	},
-	{
-		title: "投放价格",
-		dataIndex: "deliveryValue",
-		key: "deliveryValue",
-		width: 80,
-		render: text => text || "--",
-	},
-	{
-		title: "对接业务",
-		dataIndex: "channelID",
-		key: "channelID",
-		width: 80,
-		render: (text, record) => {
-			return record.platformType == 2 ? "抖音电商" : (record.platformType == 5 ? "抖音团购" : "--")
-		},
-	},
-	{
-		title: "券code模式",
-		dataIndex: "couponCodeDockingType",
-		key: "couponCodeDockingType",
-		width: 160,
-		render: (text, record) => {
-			if (text == "3" && record.platformType == 3) {
-				return <span>WECHATPAY_MODE<Tooltip title="适用于企鹅吉市等场景对接"><Icon type="question-circle-o" style={{ marginLeft: 5 }} /></Tooltip></span>
-			}
-			if (text == "1" && record.platformType == 3) {
-				return "MERCHANT_API"
-			}
-			if (text == "2" && record.platformType == 1) {
-				return "MERCHANT_UPLOAD"
-			}
-			return "--"
-		},
-	},
-	{
-		title: "批次号",
-		dataIndex: "trdBatchID",
-		key: "trdBatchID",
-		width: 140,
-		render: (text, record) => {
-			if (record.platformType == 3 || record.platformType == 1) return <Tooltip title={text}>{text}</Tooltip>
-			return "--"
-		},
-	},
-	{
-		title: "剩余数量",
-		dataIndex: "stock",
-		key: "stock",
-		width: 80,
-		render: (text, record) => {
-			const { receive } = record
-			if (text) {
-				return Number(text) - Number(receive)
-			}
-		},
-	},
-	{
-		title: "创建时间",
-		className: "TableTxtCenter",
-		dataIndex: "createStampStr",
-		key: "createStampStr",
-		width: 180,
-		render: text => text,
-	},
-	{
-		title: "审核状态",
-		className: "TableTxtCenter",
-		dataIndex: "batchStatus",
-		key: "batchStatus",
-		width: 180,
-		render: (text) => {
-			const statusMap = {
-				3: "待审核",
-				4: "审核通过",
-				5: "审核失败",
-			}
-			return statusMap[text] || "--"
-		},
-	},
+                }
+            </span>
+            )
+        },
+    },
+    {
+        title: '第三方券名称',
+        dataIndex: 'batchName',
+        key: 'batchName',
+        width: 300,
+        render: text => text,
+    },
+    {
+        title: '券ID',
+        dataIndex: 'itemID',
+        key: 'itemID',
+        width: 200,
+        render: text => text,
+    },
+    {
+        title: '业态',
+        dataIndex: 'promotionType',
+        key: 'promotionType',
+        width: 200,
+        render: promotionType => (promotionType === 2 ? '零售' : promotionType === 1 ? '餐饮' : '--'),
+    },
+    {
+        title: '关联渠道',
+        dataIndex: 'platformType',
+        key: 'platformType',
+        width: 80,
+        render: (text) => {
+            const channelMap = {
+                1: '支付宝',
+                2: '抖音',
+                5: '抖音',
+                3: '微信',
+                6: 'E折',
+            }
+            return channelMap[text] || '--'
+        },
+    },
+    {
+        title: '券面价值',
+        dataIndex: 'giftFaceValue',
+        key: 'giftFaceValue',
+        width: 80,
+        render: text => text || '--',
+    },
+    {
+        title: '投放价格',
+        dataIndex: 'deliveryValue',
+        key: 'deliveryValue',
+        width: 80,
+        render: text => text || '--',
+    },
+    {
+        title: '对接业务',
+        dataIndex: 'channelID',
+        key: 'channelID',
+        width: 80,
+        render: (text, record) => {
+            return record.platformType == 2 ? '抖音电商' : (record.platformType == 5 ? '抖音团购' : '--')
+        },
+    },
+    {
+        title: '券code模式',
+        dataIndex: 'couponCodeDockingType',
+        key: 'couponCodeDockingType',
+        width: 160,
+        render: (text, record) => {
+            if (text == '3' && record.platformType == 3) {
+                return <span>WECHATPAY_MODE<Tooltip title="适用于企鹅吉市等场景对接"><Icon type="question-circle-o" style={{ marginLeft: 5 }} /></Tooltip></span>
+            }
+            if (text == '1' && record.platformType == 3) {
+                return 'MERCHANT_API'
+            }
+            if (text == '2' && record.platformType == 1) {
+                return 'MERCHANT_UPLOAD'
+            }
+            return '--'
+        },
+    },
+    {
+        title: '批次号',
+        dataIndex: 'trdBatchID',
+        key: 'trdBatchID',
+        width: 140,
+        render: (text, record) => {
+            if (record.platformType == 3 || record.platformType == 1) return <Tooltip title={text}>{text}</Tooltip>
+            return '--'
+        },
+    },
+    {
+        title: '剩余数量',
+        dataIndex: 'stock',
+        key: 'stock',
+        width: 80,
+        render: (text, record) => {
+            const { receive } = record
+            if (text) {
+                return Number(text) - Number(receive)
+            }
+        },
+    },
+    {
+        title: '创建时间',
+        className: 'TableTxtCenter',
+        dataIndex: 'createStampStr',
+        key: 'createStampStr',
+        width: 180,
+        render: text => text,
+    },
+    {
+        title: '审核状态',
+        className: 'TableTxtCenter',
+        dataIndex: 'batchStatus',
+        key: 'batchStatus',
+        width: 180,
+        render: (text) => {
+            const statusMap = {
+                3: '待审核',
+                4: '审核通过',
+                5: '审核失败',
+            }
+            return statusMap[text] || '--'
+        },
+    },
 ])
 
 export const columnsView = [
-	{
-		title: "券名称",
-		key: "giftName",
-		dataIndex: "giftName",
-		render: (t) => {
-			return <Tooltip title={t}>{t}</Tooltip>
-		},
-	},
-	{
-		title: "生成数量",
-		key: "stock",
-		dataIndex: "stock",
-	},
-	{
-		title: "生效方式",
-		key: "effectType",
-		dataIndex: "effectType",
-		render: (text) => {
-			if (text == 3) {
-				return "相对有效期"
-			} else if (text == 2) {
-				return "固定有效期"
-			}
-			return "--"
-		},
-	},
-	{
-		title: "生效时间",
-		key: "Stimes",
-		dataIndex: "Stimes",
-		render: (text, record) => {
-			if (record.effectType == 3) { //
-				const effectGiftTimeHours = record.effectGiftTimeHours
-				const t = effectGiftTimeHours > 0 ? `${effectGiftTimeHours}后天生效` : "立即生效"
-				return <Tooltip title={t}>{t}</Tooltip>
-			} else if (record.effectType == 2) {
-				const time = record.EGiftEffectTime ? `${moment(record.EGiftEffectTime, "YYYYMMDDHHmmss").format("YYYY-MM-DD")}/${moment(record.validUntilDate, "YYYYMMDDHHmmss").format("YYYY-MM-DD")}` : "--"
-				return <Tooltip title={time}>{time}</Tooltip>
-			}
-			return "--"
-		},
-	},
-	{
-		title: "有效时间",
-		key: "times",
-		dataIndex: "times",
-		render: (text, record) => {
-			if (record.effectType == 3) { //
-				const t = `自领取${record.validUntilDays}天有效`
-				return <Tooltip title={t}>{t}</Tooltip>
-			} else if (record.effectType == 2) {
-				const time = record.EGiftEffectTime ? `${moment(record.EGiftEffectTime, "YYYYMMDDHHmmss").format("YYYY-MM-DD")}/${moment(record.validUntilDate, "YYYYMMDDHHmmss").format("YYYY-MM-DD")}` : "--"
-				return <Tooltip title={time}>{time}</Tooltip>
-			}
-			return "--"
-		},
-	},
+    {
+        title: '券名称',
+        key: 'giftName',
+        dataIndex: 'giftName',
+        render: (t) => {
+            return <Tooltip title={t}>{t}</Tooltip>
+        },
+    },
+    {
+        title: '生成数量',
+        key: 'stock',
+        dataIndex: 'stock',
+    },
+    {
+        title: '生效方式',
+        key: 'effectType',
+        dataIndex: 'effectType',
+        render: (text) => {
+            if (text == 3) {
+                return '相对有效期'
+            } else if (text == 2) {
+                return '固定有效期'
+            }
+            return '--'
+        },
+    },
+    {
+        title: '生效时间',
+        key: 'Stimes',
+        dataIndex: 'Stimes',
+        render: (text, record) => {
+            if (record.effectType == 3) { //
+                const effectGiftTimeHours = record.effectGiftTimeHours
+                const t = effectGiftTimeHours > 0 ? `${effectGiftTimeHours}后天生效` : '立即生效'
+                return <Tooltip title={t}>{t}</Tooltip>
+            } else if (record.effectType == 2) {
+                const time = record.EGiftEffectTime ? `${moment(record.EGiftEffectTime, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}/${moment(record.validUntilDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}` : '--'
+                return <Tooltip title={time}>{time}</Tooltip>
+            }
+            return '--'
+        },
+    },
+    {
+        title: '有效时间',
+        key: 'times',
+        dataIndex: 'times',
+        render: (text, record) => {
+            if (record.effectType == 3) { //
+                const t = `自领取${record.validUntilDays}天有效`
+                return <Tooltip title={t}>{t}</Tooltip>
+            } else if (record.effectType == 2) {
+                const time = record.EGiftEffectTime ? `${moment(record.EGiftEffectTime, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}/${moment(record.validUntilDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}` : '--'
+                return <Tooltip title={time}>{time}</Tooltip>
+            }
+            return '--'
+        },
+    },
 ]
 
 

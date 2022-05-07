@@ -5,18 +5,18 @@ const { Option } = Select
 
 class PureTable extends Component {
     state = {
-        thirdId: '',
-        code: ''
+        dyOrderID: '',
+        couponCode: '',
     }
 
 
     handleSubmit = () => {
         const { getData } = this.props;
-        getData({ thirdId: this.state.thirdId, code: this.state.code });
+        getData({ dyOrderID: this.state.dyOrderID, couponCode: this.state.couponCode });
     }
 
     handleExport = () => {
-        
+
     }
 
     render() {
@@ -33,7 +33,7 @@ class PureTable extends Component {
                         <Input
                             placeholder="请输入第三方订单号"
                             onChange={(e) => {
-                                this.setState({ thirdId: e.target.value })
+                                this.setState({ dyOrderID: e.target.value })
                             }}
                         />
                     </Form.Item>
@@ -43,7 +43,7 @@ class PureTable extends Component {
                         <Input
                             placeholder="请输入优惠券码"
                             onChange={(e) => {
-                                this.setState({ code: e.target.value })
+                                this.setState({ couponCode: e.target.value })
                             }}
                         />
                     </Form.Item>
@@ -60,28 +60,28 @@ class PureTable extends Component {
                 </Form>
                 <div className="layoutsLineBlock" style={{ margin: '12px 0 20px' }}></div>
                 <div style={{ ...style, overflow: 'auto', height: 'calc(100vh - 200px)' }}>
-                <Table
-                    key={Math.random()}
-                    scroll={{ y: tableHeight, x: 1500 }}
-                    bordered={true}
-                    loading={loading}
-                    columns={columns}
-                    dataSource={dataSource}
-                    pagination={{
-                        pageSize: page.pageSize,
-                        current: page.pageNo,
-                        showQuickJumper: true,
-                        showSizeChanger: true,
-                        onShowSizeChange: (pageNo, pageSize) => {
-                                this.props.getData({ result: this.state.result, importType: this.state.importType, pageNo, pageSize })
-                        },
-                        onChange: (_page, pageSize) => {
-                                this.props.getData({ result: this.state.result, importType: this.state.importType, pageNo: _page, pageSize })
+                    <Table
+                        key={Math.random()}
+                        scroll={{ y: tableHeight, x: 1500 }}
+                        bordered={true}
+                        loading={loading}
+                        columns={columns}
+                        dataSource={dataSource}
+                        pagination={{
+                            pageSize: page.pageSize,
+                            current: page.pageNo,
+                            showQuickJumper: true,
+                            showSizeChanger: true,
+                            onShowSizeChange: (pageNo, pageSize) => {
+                                this.props.getData({ dyOrderID: this.state.dyOrderID, couponCode: this.state.couponCode, pageNo, pageSize })
                             },
-                        total: page.totalSize,
-                        showTotal: (total, range) => `本页${range[0]}-${range[1]} / 共 ${total} 条`,
-                    }}
-                />
+                            onChange: (_page, pageSize) => {
+                                this.props.getData({ dyOrderID: this.state.dyOrderID, couponCode: this.state.couponCode, pageNo: _page, pageSize })
+                            },
+                            total: page.total,
+                            showTotal: (total, range) => `本页${range[0]}-${range[1]} / 共 ${total} 条`,
+                        }}
+                    />
                 </div>
             </Row>
         )

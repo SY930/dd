@@ -1,16 +1,57 @@
 import React, { Component } from 'react'
-import { Form, Input, Select, Radio, Row, Col, Icon, Modal, message, Button } from 'antd'
+import { Form, Modal } from 'antd'
 import PureTable from '../Comp/PureTable';
 import connectTable from '../Comp/TableFactory';
 
-const columns = []
+const columns = [
+    {
+        title: '券码',
+        key: 'code',
+        dataIndex: 'code',
+    },
+    {
+        title: '发放时间',
+        key: 'createStamp',
+        dataIndex: 'createStamp',
+    },
+    {
+        title: '第三方订单号',
+        key: 'dyOrderID',
+        dataIndex: 'dyOrderID',
+    },
+    {
+        title: '第三方使用状态',
+        key: 'syncStatusName',
+        dataIndex: 'syncStatusName',
+    },
+    {
+        title: '哗啦啦使用状态',
+        key: 'statusName',
+        dataIndex: 'statusName',
+    },
+    {
+        title: '核销门店',
+        key: 'shopName',
+        dataIndex: 'shopName',
+    },
+    {
+        title: '核销时间',
+        key: 'actionStamp',
+        dataIndex: 'actionStamp',
+    },
+    {
+        title: '备注',
+        key: 'responseMsg',
+        dataIndex: 'responseMsg',
+    },
+]
 
 const mapDataToProps = (data) => {
-    return data || []
+    return data.list || []
 }
 
 const HistoryTable = connectTable({
-    callserver: '/crmimport/crmImportService_queryCrmImportHistories.ajax',
+    callserver: '/dyCoupon/xfc/findCouponList',
     mapDataToProps,
     columns,
 })(PureTable);

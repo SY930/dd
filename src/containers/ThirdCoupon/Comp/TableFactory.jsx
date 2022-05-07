@@ -48,7 +48,7 @@ export default function connectTable(options) {
                     type: 'post',
                     data: { groupID: $$groupID, ...dataParams, ...opts },
                 }).then((response) => {
-                    this.setState({ dataSource: response.data, loading: false, page: response.data.page ? response.data.page : {} });
+                    this.setState({ dataSource: response.data, loading: false, page: response.data.pageInfo ? response.data.pageInfo : {} });
                 }).catch((error) => {
                     this.setState({ error, loading: false });
                 });
