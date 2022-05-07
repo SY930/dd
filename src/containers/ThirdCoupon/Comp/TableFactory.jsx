@@ -43,7 +43,7 @@ export default function connectTable(options) {
                 const { params, $$groupID } = this.props;
                 const dataParams = _.cloneDeep(params)
                 axios.post(`/api/v1/universal?${callserver}`, {
-                    service: 'HTTP_SERVICE_URL_CRM',
+                    service: 'HTTP_SERVICE_URL_PROMOTION_DOUYIN',
                     method: callserver,
                     type: 'post',
                     data: { groupID: $$groupID, ...dataParams, ...opts },
