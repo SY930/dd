@@ -1016,13 +1016,13 @@ class MySpecialActivities extends React.Component {
                     this.renderHeader()
 
                 }
-                {
-                    !this.state.authStatus ?
-                        <EmptyPage /> :
-                        <div>
-                            <PromotionCalendarBanner />
-                            <Tabs defaultActiveKey={tabKeys} onChange={this.handleChangeTabs} className="tabsStyles" style={{ backgroundColor: '#fff' }}>
-                                <TabPane tab="营销活动" key="saleSpecialPage">
+                <div>
+                    <PromotionCalendarBanner />
+                    <Tabs defaultActiveKey={tabKeys} onChange={this.handleChangeTabs} className="tabsStyles" style={{ backgroundColor: '#fff' }}>
+                        <TabPane tab="营销活动" key="saleSpecialPage">
+                            {
+                                !this.state.authStatus ?
+                                    <div style={{  minHeight: 'calc(100vh - 160px)' }}><EmptyPage /> </div>:
                                     <div className={styles.pageContentWrapper} style={{ minHeight: 'calc(100vh - 160px)' }}>
                                         <div style={{ padding: '0' }} className="layoutsHeader">
                                             {this.renderFilterBar()}
@@ -1064,14 +1064,14 @@ class MySpecialActivities extends React.Component {
                                                 handelStopEvent={this.handelStopEvent}
                                             />}
                                     </div>
-                                </TabPane>
-                                <TabPane tab="促销活动" key="onSalePage">
-                                    <MyActivities stylesChange={this.stylesChange} stylesShow={stylesShow} tabKeys={tabKeys} />
-                                </TabPane>
-                            </Tabs>
-                        </div>
+                            }
 
-                }
+                        </TabPane>
+                        <TabPane tab="促销活动" key="onSalePage">
+                            <MyActivities stylesChange={this.stylesChange} stylesShow={stylesShow} tabKeys={tabKeys} />
+                        </TabPane>
+                    </Tabs>
+                </div>
                 {this.renderModals()}
                 {this.renderUpdateModals()}
                 {
