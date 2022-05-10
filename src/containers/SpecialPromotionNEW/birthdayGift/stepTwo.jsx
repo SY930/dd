@@ -10,7 +10,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { Form, Icon, Select, Radio, message } from 'antd';
+import { Form, Icon, Select, Radio, message,TreeSelect } from 'antd';
 import { isEqual, uniq } from 'lodash';
 import Immutable from 'immutable'
 import { axios } from '@hualala/platform-base';
@@ -67,6 +67,9 @@ class StepTwo extends React.Component {
             occupiedShops: [], // 已经被占用的卡类适用店铺id
             shopIDList: this.props.specialPromotion.getIn(['$eventInfo', 'shopIDList'], Immutable.fromJS([])).toJS() || [],
             excludeCardTypeShops: [],
+            filters:[],
+            selectedTags:[],
+            tagIncludes:[],
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -81,6 +84,9 @@ class StepTwo extends React.Component {
             finish: undefined,
             cancel: undefined,
         });
+        if(this.props.type == '51'){
+            this.queryTagData();
+        }
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
         if (specialPromotion.groupMemberID) {
             this.setState({
@@ -173,6 +179,68 @@ class StepTwo extends React.Component {
             }
         }
     }
+    //获取标签树
+    queryTagData = () => {
+        const params = {
+            groupID: this.props.$$groupID,
+            tagTypeIDs: '1,2,3,4,5'
+        }
+        axiosData(
+            '/tag/tagService_queryAllTagsByTagTypeID.ajax',
+            params,
+            {},
+            { path: '' }
+        ).then((res) => {
+            if (res.code === '000') {
+                const filters = this.orgCateData(res.data.tagTypes, res.data.tagRuleDetails)
+                this.setState({
+                    filters,
+                    tagRuleDetails: res.data.tagRuleDetails
+                })
+            } else {
+                message.error(res.message)
+            }
+        })
+    }
+
+    orgCateData = (arr = [], details = []) => {
+        arr = arr.filter((item)=>{
+            return item.categoryEntries && item.categoryEntries.length > 0
+        })
+        return arr.map((item, index) => {
+            return {
+                ...item,
+                label: item.tagTypeName,
+                key: item.tagTypeID,
+                value: item.tagTypeID,
+                children: item.categoryEntries.map((every) => {
+                    return {
+                        ...every,
+                        key: every.tagCategoryID,
+                        value: every.tagCategoryID,
+                        label: every.tagCategoryName,
+                        children: this.getChildren(every.tagRuleIDs, details)
+                    }
+                }),
+            }
+        })
+    }
+
+    getChildren(tags, details) {
+        let child = []
+        tags && tags.length > 0 && tags.map((i) => {
+            details.map((j) => {
+                if (j.tagRuleID == i) {
+                    child.push({
+                        key: j.tagRuleID,
+                        value: j.tagRuleID + '@@' + j.tagTypeID + '@@' + j.tagName,
+                        label: j.tagName,
+                    })
+                }
+            })
+        })
+        return child
+    }
     onCardLevelChange(obj) {
         const { excludeCardTypeShops } = this.state
         const { cardLevelIDList } = obj
@@ -243,6 +311,12 @@ class StepTwo extends React.Component {
                 opts.cardGroupID = this.state.groupMembersID;
             }
         }
+
+        opts.selectedTags = null;
+        if(this.props.type == '51' && this.state.cardLevelRangeType == 7) {
+            opts.selectedTags = this.state.selectedTags;
+        }
+
         if (smsGate == '1' || smsGate == '3' || smsGate == '4') {
             if (this.state.settleUnitID > 0 || this.state.accountNo > 0) {
                 opts.settleUnitID = this.state.settleUnitID;
@@ -257,7 +331,8 @@ class StepTwo extends React.Component {
         }
 
         // 开卡增礼品加适用店铺
-        const { shopIDList, canUseShopIDs, cardLevelRangeType, excludeCardTypeShops, cardLevelIDList } = this.state
+        const { shopIDList, canUseShopIDs, cardLevelRangeType, excludeCardTypeShops, cardLevelIDList,selectedTags } = this.state
+
         if (this.props.type == '52' && cardLevelRangeType == '2') {
             opts.shopIDList = shopIDList
             opts.shopRange = opts.shopIDList.length > 0 ? 1 : 2
@@ -349,6 +424,7 @@ class StepTwo extends React.Component {
             cardLevelRangeType: type,
             cardLevelIDList: [],
             groupMembersID: undefined,
+            selectedTags:null
         })
         this.props.setSpecialBasicInfo({ cardLevelIDList: [] });
     }
@@ -373,12 +449,43 @@ class StepTwo extends React.Component {
             localType = '5';
         } else if (cardLevelRangeType == 6) {
             localType = '6';
+        } else if (cardLevelRangeType == 7) {
+            localType = '7';
         }
+        const labelProps1 = {
+            treeData: this.state.filters,
+            value: this.state.tagIncludes,
+            defaultValue: [],
+            onChange: (e) => {
+                console.log(e,'e fo,men yao tiaojiao')
+                let tagIn = []
+                e.map((i) => {
+                    let tag = {}
+                    tag.tagRuleID = i.split('@@')[0]
+                    tag.tagTypeID = i.split('@@')[1]
+                    tag.tagName = i.split('@@')[2]
+                    tagIn.push(tag)
+                })
+                this.setState({ selectedTags: tagIn, tagIncludes: e })
+            },
+            treeCheckable: true,
+            showCheckedStrategy: TreeSelect.SHOW_CHILD,
+            searchPlaceholder: '请选择会员标签',
+            style: {
+                width: 472, 
+                maxHeight:96,
+                overflow:'auto',
+                // border:'1px solid #d9d9d9',
+                borderRadius:'3px'
+            },
+            dropdownStyle: { maxHeight: 275, overflow: 'auto' },
+        };
         return (
             <div>
                 <FormItem label={`${this.props.intl.formatMessage(STRING_SPE.d216426238818026)}`} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
                     <RadioGroup onChange={this.handleGroupOrCatRadioChange} value={`${localType}`} disabled={ifJumpOpenCard}>
                         <Radio key={'5'} value={'5'}>{this.props.intl.formatMessage(STRING_SPE.dd5a33b5g874114)}</Radio>
+                        <Radio key={'7'} value={'7'}>会员标签</Radio>
                         {/* 会员卡类 */}
                         <Radio key={'0'} value={'0'}>{this.props.intl.formatMessage(STRING_SPE.d170093144c11061)}</Radio>
                         <Radio key={'6'} value={'6'}>{this.props.intl.formatMessage(STRING_SPE.dk45j2cah011173)}</Radio>
@@ -438,6 +545,24 @@ class StepTwo extends React.Component {
                             }
                         </div>
                     )
+                }
+                {
+                    localType === '7' ? 
+                        <FormItem
+                            label={`会员标签`}
+                            className={styles.FormItemStyle}
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 17 }}
+                        >
+                            {this.props.form.getFieldDecorator('selectedTags', {
+                                rules: [{
+                                    required: true,
+                                    message: `请选择会员标签`,
+                                }],
+                                initialValue: this.state.tagIncludes,
+                            })(<TreeSelect {...labelProps1} className={styles.treeSelect}/>)
+                            }
+                        </FormItem> : null
                 }
             </div>
         )
