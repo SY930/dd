@@ -884,6 +884,7 @@ export const SECOND_KEYS = (() => ({
             },
             keys: [
                 'selectedShops',
+                'deductMoneyType',
                 'transferLimitType',
                 'couponTrdChannelStockNums',
                 'isSynch',
