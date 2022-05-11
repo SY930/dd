@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
-import { Form, Input, Button, Table, Select, Row, Col } from 'antd'
+import { axios, getStore } from '@hualala/platform-base';
+import {
+    fetchData,
+} from '../../../helpers/util';
+import { Form, Input, Button, Table, Select, Row, message } from 'antd'
 
 const { Option } = Select
 
@@ -10,13 +14,58 @@ class PureTable extends Component {
     }
 
 
+    getAccountInfo = () => {
+        const state = getStore().getState();
+        return state.user.get('accountInfo').toJS();
+    }
+
     handleSubmit = () => {
         const { getData } = this.props;
         getData({ dyOrderID: this.state.dyOrderID, couponCode: this.state.couponCode });
     }
 
-    handleExport = () => {
-
+    handleExport = async () => {
+        const { groupID } = this.getAccountInfo()
+        const method = '/dyCoupon/xfc/exportCouponOrderList'
+        
+        const response = await axios.get(`/api/v1/export?groupID=${groupID}&dyOrderID=${this.state.dyOrderID}&couponCode=${this.state.couponCode}&service=HTTP_SERVICE_URL_PROMOTION_DOUYIN&method=${method}`, {
+            service: 'HTTP_SERVICE_URL_PROMOTION_DOUYIN',
+            method,
+            responseType: 'blob',
+        });
+        if (response) {
+            const reader = new FileReader();
+            reader.readAsDataURL(response); // 转换为base64
+            reader.onload = (e) => {
+                const a = document.createElement('a');
+                a.download = 'data.xlsx';// 下载文件名
+                a.href = e.target.result;
+                $("body").append(a);
+                a.click();
+                $(a).remove();
+            }
+        }
+        // var url = `/api/dyCoupon/exprot?groupID=${groupID}&dyOrderID=${this.state.dyOrderID}&couponCode=${this.state.couponCode}`
+        // var xhr = new XMLHttpRequest();
+        // xhr.open('get', url, true);        // 也可以使用POST方式，根据接口
+        // xhr.responseType = "blob";    // 返回类型blob
+        // xhr.onload = function () {
+        //     if (this.status === 200) {
+        //         var blob = this.response;
+        //         var reader = new FileReader();
+        //         reader.readAsDataURL(blob);    // 转换为base64，可以直接放入a表情href
+        //         reader.onload = function (e) {
+        //             var a = document.createElement('a');
+        //             a.download = 'data.xlsx';//下载文件名
+        //             a.href = e.target.result;
+        //             $("body").append(a);    // 修复firefox中无法触发click
+        //             a.click();
+        //             $(a).remove();
+        //         }
+        //     }
+        // };
+        // 发送ajax请求
+        // xhr.send()
     }
 
     render() {
@@ -27,8 +76,8 @@ class PureTable extends Component {
                 <Form layout="inline" style={style}>
                     <Form.Item
                         label="第三方订单号"
-                        // labelCol={{ span: 7 }}
-                        // wrapperCol={{ span: 14 }}
+                    // labelCol={{ span: 7 }}
+                    // wrapperCol={{ span: 14 }}
                     >
                         <Input
                             placeholder="请输入第三方订单号"
