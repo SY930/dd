@@ -28,10 +28,12 @@ class PureTable extends Component {
         const { groupID } = this.getAccountInfo()
         const method = '/dyCoupon/xfc/exportCouponOrderList'
         
-        const response = await axios.get(`/api/v1/export?groupID=${groupID}&dyOrderID=${this.state.dyOrderID}&couponCode=${this.state.couponCode}&service=HTTP_SERVICE_URL_PROMOTION_DOUYIN&method=${method}`, {
-            service: 'HTTP_SERVICE_URL_PROMOTION_DOUYIN',
-            method,
+        const response = await axios.get(`/api/v1/export?groupID=${groupID}&dyOrderID=${this.state.dyOrderID}&couponCode=${this.state.couponCode}`, {
             responseType: 'blob',
+            params: {
+                service: 'HTTP_SERVICE_URL_PROMOTION_DOUYIN',
+                method,
+            },
         });
         if (response) {
             const reader = new FileReader();
@@ -45,27 +47,6 @@ class PureTable extends Component {
                 $(a).remove();
             }
         }
-        // var url = `/api/dyCoupon/exprot?groupID=${groupID}&dyOrderID=${this.state.dyOrderID}&couponCode=${this.state.couponCode}`
-        // var xhr = new XMLHttpRequest();
-        // xhr.open('get', url, true);        // 也可以使用POST方式，根据接口
-        // xhr.responseType = "blob";    // 返回类型blob
-        // xhr.onload = function () {
-        //     if (this.status === 200) {
-        //         var blob = this.response;
-        //         var reader = new FileReader();
-        //         reader.readAsDataURL(blob);    // 转换为base64，可以直接放入a表情href
-        //         reader.onload = function (e) {
-        //             var a = document.createElement('a');
-        //             a.download = 'data.xlsx';//下载文件名
-        //             a.href = e.target.result;
-        //             $("body").append(a);    // 修复firefox中无法触发click
-        //             a.click();
-        //             $(a).remove();
-        //         }
-        //     }
-        // };
-        // 发送ajax请求
-        // xhr.send()
     }
 
     render() {
