@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { axios, getStore } from '@hualala/platform-base';
+import moment from 'moment'
 import {
     fetchData,
 } from '../../../helpers/util';
@@ -40,7 +41,8 @@ class PureTable extends Component {
             reader.readAsDataURL(response); // 转换为base64
             reader.onload = (e) => {
                 const a = document.createElement('a');
-                a.download = 'data.xlsx';// 下载文件名
+                const fileName = moment().format('YYYYMMDD HH:mm:ss');
+                a.download = `${fileName}.xlsx`;// 下载文件名
                 a.href = e.target.result;
                 $("body").append(a);
                 a.click();
