@@ -49,6 +49,14 @@ const FORMITEMS = {
         labelCol: { span: 4 },
         wrapperCol: { span: 20 },
     },
+    timeRangeNoUsed: {
+        label: '作废时间',
+        type: 'datepickerRange',
+        showTime: true,
+        format,
+        labelCol: { span: 4 },
+        wrapperCol: { span: 20 },
+    },
     mobileNum: {
         label: '手机号',
         type: 'text',
@@ -206,6 +214,7 @@ const WX_SEND_COLUMNS = [...BASE_COLUMNS.slice(0, 5), {
 }, ...BASE_COLUMNS.slice(5)]
 const USED_SPE_FORMKEYS = [{ col: { span: 12 }, keys: ['timeRangeUsed', 'giftPWD'] }, { col: { span: 11, offset: 1 }, keys: ['usingShopID'] }];
 const USED_FORMKEYS = [{ col: { span: 12 }, keys: ['timeRangeUsed'] }, { col: { span: 11, offset: 1 }, keys: ['usingShopID'] }];
+const NO_USED_FORMKEYS = [{ col: { span: 12 }, keys: ['timeRangeNoUsed', 'giftPWD'] }];
 
 const USED_SPE_COLUMNS = [
     {
@@ -294,7 +303,104 @@ const USED_SPE_COLUMNS = [
         render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
         key: 'transCardNo',
     },
+    {
+        title: '操作人',
+        className: 'TableTxtCenter',
+        dataIndex: 'operator',
+        width: 160,
+        key: 'operator',
+    },
+
 ];
+
+// 作废column
+const NO_USED_SPE_COLUMNS = [
+    {
+        title: '序号',
+        dataIndex: 'index',
+        width: 80,
+        className: 'TableTxtCenter',
+        key: 'index',
+        render: (text, record, index) => {
+            return index + 1;
+        },
+    }, {
+        title: '券编码',
+        dataIndex: 'giftPWD',
+        width: 150,
+        className: 'TableTxtCenter',
+        key: 'giftPWD',
+        render: (value) => {
+            const label = String(value);
+            return <Tooltip title={label}><span>{label}</span></Tooltip>
+        },
+    }, {
+        title: '获得方式',
+        dataIndex: 'getWay',
+        width: 80,
+        className: 'TableTxtCenter',
+        key: 'getWay',
+        render: (value) => {
+            const label = mapValueToLabel(GiftCfg.getWay, String(value));
+            return <Tooltip title={label}><span>{label}</span></Tooltip>
+        },
+    }, {
+        title: '获得时间',
+        width: 150,
+        dataIndex: 'createTime',
+        className: 'TableTxtCenter',
+        key: 'createTime',
+        render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
+    }, {
+        title: '获得店铺',
+        className: 'TableTxtCenter',
+        dataIndex: 'sendShopName',
+        key: 'sendShopName',
+        render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
+    }, {
+        // TODO: 更新参数
+        title: '作废时间',
+        width: 150,
+        dataIndex: 'actionStampDesc',
+        className: 'TableTxtCenter',
+        key: 'actionStampDesc',
+        render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
+    }, {
+        title: '客户编号',
+        className: 'TableTxtCenter',
+        dataIndex: 'customerID',
+        key: 'customerID',
+        width: 200,
+        render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
+    }, {
+        title: '姓名',
+        className: 'TableTxtCenter',
+        dataIndex: 'customerName',
+        key: 'customerName',
+    }, {
+        title: '性别',
+        className: 'TableTxtCenter',
+        dataIndex: 'customerSex',
+        key: 'customerSex',
+        render: (value) => {
+            return <span>{mapValueToLabel(GiftCfg.sex, String(value))}</span>
+        },
+    }, {
+        title: '手机号',
+        dataIndex: 'customerMobile',
+        className: 'TableTxtCenter',
+        width: 100,
+        render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
+        key: 'customerMobile',
+    }, {
+        title: '操作人',
+        className: 'TableTxtCenter',
+        dataIndex: 'createBy',
+        width: 160,
+        key: 'createBy',
+    },
+];
+
 const USED_COLUMNS = [
     {
         title: '序号',
@@ -372,4 +478,5 @@ const USED_COLUMNS = [
         key: 'transCardNo',
     },
 ];
-export { FORMITEMS, SEND_FORMKEYS, SEND_COLUMNS, WX_SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS, WX_SEND_FORMKEYS, SEND_GIFTPWD_FORMKEYS, SEND_GIFTPWD_FORMKEYS1,USED_SPE_COLUMNS, USED_SPE_FORMKEYS, BASE_COLUMNS };
+export { FORMITEMS, SEND_FORMKEYS, SEND_COLUMNS, WX_SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS, WX_SEND_FORMKEYS, SEND_GIFTPWD_FORMKEYS, SEND_GIFTPWD_FORMKEYS1,USED_SPE_COLUMNS, USED_SPE_FORMKEYS, BASE_COLUMNS, NO_USED_SPE_COLUMNS, NO_USED_FORMKEYS };
+

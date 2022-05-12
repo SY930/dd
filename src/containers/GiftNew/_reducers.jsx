@@ -30,6 +30,7 @@ import {
     GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL,
     GIFT_NEW_FETCH_SEND_TOTAL_OK,
     GIFT_NEW_FETCH_USED_TOTAL_OK,
+    GIFT_NEW_FETCH_NO_USE_TOTAL_OK,
     GIFT_NEW_RESET_SEND_USED_TOTAL,
     GIFT_NEW_START_CREATE_GIFT,
     GIFT_NEW_START_EDIT_GIFT,
@@ -40,6 +41,8 @@ import {
     GIFT_NEW_FETCH_SEND_LIST_OK,
     GIFT_NEW_FETCH_USED_LIST_OK,
     GIFT_NEW_SAVE_BRANDS_TO_STORE,
+    GIFT_NEW_FETCH_SEND_TOTAL_FAIL,
+    GIFT_NEW_FETCH_NO_USED_LIST_OK,
 } from './_action';
 
 const $initialEditState = Immutable.fromJS({
@@ -69,6 +72,7 @@ const $initialState = Immutable.fromJS({
     sendorUsedList: [],
     sendList: [],
     usedList: [],
+    noUsedList: [],
     sendorUsedKey: 'send',
     redPacketInfoList: [],
     sendorUsedPage: {
@@ -81,6 +85,7 @@ const $initialState = Immutable.fromJS({
     },
     totalSendCount: 0,
     totalUsedCount: 0,
+    totalNoUsedCount: 0,
     detailVisible: false,
     giftSort: [],
     allGiftList: [],
@@ -173,12 +178,16 @@ export function giftInfoNew($$state = $initialState, action) {
             return $$state.set('quotaList', Immutable.fromJS(action.payload.quotaList));
         case GIFT_NEW_FETCH_SEND_OR_USED_LIST_OK:
             return $$state.set('sendorUsedList', Immutable.fromJS(action.payload.sendorUsedList));
+        case GIFT_NEW_FETCH_NO_USED_LIST_OK:
+            const noUsedList = action.payload.noUsedList;
+            return $$state
+                .set('noUsedList', Immutable.fromJS(noUsedList));
         case GIFT_NEW_FETCH_SEND_LIST_OK:
             // 实际是一个obj,不是list
             const sendorUsedList = action.payload.sendorUsedList;
             return $$state
-            .set('sendList', Immutable.fromJS(sendorUsedList))
-            .set('redPacketInfoList',  Immutable.fromJS(sendorUsedList.summaryByGiftStatusList || []));
+                .set('sendList', Immutable.fromJS(sendorUsedList))
+                .set('redPacketInfoList', Immutable.fromJS(sendorUsedList.summaryByGiftStatusList || []));
         case GIFT_NEW_FETCH_USED_LIST_OK:
             return $$state.set('usedList', Immutable.fromJS(action.payload.sendorUsedList));
         case GIFT_NEW_UPDATE_SEND_OR_USED_TAB_KEY:
@@ -205,13 +214,16 @@ export function giftInfoNew($$state = $initialState, action) {
             return $$state.set('totalSendCount', action.payload.total || 0);
         case GIFT_NEW_FETCH_USED_TOTAL_OK:
             return $$state.set('totalUsedCount', action.payload.total || 0);
+        case GIFT_NEW_FETCH_NO_USE_TOTAL_OK:
+            return $$state.set('totalNoUsedCount', action.payload.total || 0);
         case GIFT_NEW_RESET_SEND_USED_TOTAL:
             return $$state
                 .set('sendList', Immutable.fromJS([]))
                 .set('usedList', Immutable.fromJS([]))
                 .set('redPacketInfoList', Immutable.fromJS([]))
                 .set('totalUsedCount', 0)
-                .set('totalSendCount', 0);
+                .set('totalSendCount', 0)
+                .set('totalNoUsedCount', 0);
         case GIFT_NEW_QUERY_WECHAT_MPINFO_START:
             return $$state.set('mpListLoading', true);
         case GIFT_NEW_QUERY_WECHAT_MPINFO_SUCCESS:
@@ -224,6 +236,9 @@ export function giftInfoNew($$state = $initialState, action) {
                 .set('mpListLoading', false);
         case GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL:
             return $$state.set('mpListLoading', false);
+        case GIFT_NEW_FETCH_SEND_TOTAL_FAIL:
+            return $$state.set('totalNoUsedCount', 0);
+
         default:
             return $$state
     }

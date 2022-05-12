@@ -28,6 +28,7 @@ class GiftDetailModal extends Component {
         if (giftType !== '90') {
             FetchSendorUsedList({isSend: true, params: { pageNo: 1, pageSize: 10, giftItemID } });
             giftType !== '91' && FetchSendorUsedList({isSend: false, params: {giftStatus: '2', pageNo: 1, pageSize: 10, giftItemID } })
+            giftType !== '91' && FetchSendorUsedList({ isSend: false, params: { giftStatus: '13', pageNo: 1, pageSize: 10, giftItemID } })
         }
     }
     componentWillReceiveProps(nextProps) {
@@ -141,11 +142,19 @@ class GiftDetailModal extends Component {
                 key: 'usedCount',
                 className: 'TableTxtCenter',
             },
+            {
+                title: '作废数',
+                dataIndex: 'noUsedCount',
+                key: 'noUsedCount',
+                className: 'TableTxtCenter',
+            },
         ];
         const totalData = [{
             sendCount: this.props.sendTotalSize || 0,
             usedCount: this.props.usedTotalSize || 0,
+            noUsedCount: this.props.noUsedTotalSize || 0,
         }];
+
         return (
             <Modal
                 key="礼品使用详情"
@@ -201,6 +210,7 @@ class GiftDetailModal extends Component {
                                     data={data}
                                     sendCount={this.props.sendTotalSize || 0}
                                     usedCount={this.props.usedTotalSize || 0}
+                                    noUsedCount={this.props.noUsedTotalSize || 0}
                                 />
                             </Row>
                         </div>
@@ -215,6 +225,7 @@ function mapStateToProps(state) {
         sendorUsedKey: state.sale_giftInfoNew.get('sendorUsedKey'),
         sendTotalSize: state.sale_giftInfoNew.get('totalSendCount'),
         usedTotalSize: state.sale_giftInfoNew.get('totalUsedCount'),
+        noUsedTotalSize: state.sale_giftInfoNew.get('totalNoUsedCount'),
     }
 }
 function mapDispatchToProps(dispatch) {
