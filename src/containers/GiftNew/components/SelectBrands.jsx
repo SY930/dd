@@ -76,7 +76,7 @@ class SelectBrands extends Component {
                 value={realValue}
                 onChange={this.handleSelectChange}
                 style={{
-                    width: '300px'
+                    width: '439px'
                 }}
             >
                 {

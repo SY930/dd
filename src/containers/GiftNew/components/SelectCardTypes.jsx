@@ -24,10 +24,14 @@ class SelectCardTypes extends Component {
             {path: 'data.groupCardTypeList'}
         ).then((list) => {
             const cardTypeList = [];
+            const cardLevelIDList = [];
             if (Array.isArray(list)) {
-                cardTypeList.push(...list.map(item => ({cardTypeID: String(item.cardTypeID), cardTypeName: item.cardTypeName})))
+                cardTypeList.push(...list.map(item => ({cardTypeID: String(item.cardTypeID), cardTypeName: item.cardTypeName})));
+                cardLevelIDList.push(...list.map(item => (String(item.cardTypeID))));
             }
-            this.setState({ cardTypeList });
+            this.setState({ cardTypeList },() => {
+                this.props.onSendCardLevelID(cardLevelIDList)
+            });
         });
     }
 

@@ -553,6 +553,7 @@ export const FIRST_KEYS = {
                 'selectBrands',
                 'pushMessage',
                 'cardTypeList',
+                'selectedMemberRightShops',
                 'giftRemark',
             ],
         },

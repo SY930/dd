@@ -58,6 +58,7 @@ import {getPromotionShopSchema} from '../../../redux/actions/saleCenterNEW/promo
 import TrdTemplate from './common/TrdTemplate';
 import CouponTrdChannelStockNums from './common/CouponTrdChannelStockNums';
 import ShopSelector from "components/ShopSelector";
+import ShopSelectorTwo from "components/ShopSelectorTwo";
 import IsSync from "./common/IsSync";
 import GiftImagePath from './common/GiftImagePath';
 import {debounce} from 'lodash';
@@ -193,6 +194,9 @@ class GiftAddModalStep extends React.PureComponent {
             unit: '¥',
             isActivityFoods:false,//是否选择了菜品分类
             groupID:'',
+            cardTypeShopList: {},
+            canUseShopIDs: [],
+            canUseShopIDsAll: [],
         };
         this.firstForm = null;
         this.secondForm = null;
@@ -236,6 +240,7 @@ class GiftAddModalStep extends React.PureComponent {
         // fetchFoodMenuInfo(params, isHuaTian(), thisGift.data.subGroupID);
         fetchFoodMenuLightInfo(params, isHuaTian(), thisGift.data.subGroupID); // 轻量级接口
         getPromotionShopSchema(params);
+        this.querycanUseShopIDs();
         const { name, data, value } = thisGift;
         const { values } = this.state;
         if (type === 'edit' && value == '111') {
@@ -332,7 +337,96 @@ class GiftAddModalStep extends React.PureComponent {
         }
 
     }
-
+    // onCardLevelChange(obj) {
+    //     const { excludeCardTypeShops } = this.state
+    //     const { cardLevelIDList } = obj
+    //     let isShowShopTip = false
+    //     if (cardLevelIDList) {
+    //         if (Array.isArray(excludeCardTypeShops)) {
+    //             const chooseItem = excludeCardTypeShops.filter(v => cardLevelIDList.includes(v.cardTypeID))
+    //             isShowShopTip = chooseItem.find(v => v.shopIDList && v.shopIDList.length)
+    //         }
+    //         this.setState({
+    //             isShowShopTip
+    //         })
+    //     }
+    //     this.setState({
+    //         ...obj,
+    //     })
+    //     const { cardLevelIDList } = obj;
+    //     this.querycanUseShopIDs(cardLevelIDList)
+    // }
+    // onHandleSelect(obj) {
+    //     if (obj && obj.cardLevelIDList) {
+    //         const { cardLevelIDList } = obj
+    //         // 根据卡类筛选店铺
+    //         const { cardTypeShopList, canUseShopIDsAll } = this.state
+    //         if (cardLevelIDList.length === 0) {
+    //             this.setState({
+    //                 canUseShopIDs: canUseShopIDsAll,
+    //             })
+    //             return
+    //         }
+    //         const shopIDs = []
+    //         cardLevelIDList.forEach((item) => {
+    //             if (cardTypeShopList[item]) {
+    //                 shopIDs.push(...cardTypeShopList[item])
+    //             }
+    //         })
+    //         this.setState({
+    //             canUseShopIDs: shopIDs,
+    //         })
+    //         // 清空当前选择的店铺
+    //         this.setState({
+    //             shopIDList: [],
+    //         })
+    //     }
+    // }
+    // 查询已选卡类型的可用店铺
+    querycanUseShopIDs = (tids = []) => {
+        console.log('tids', tids);
+        axiosData('/crm/cardTypeShopService_getListCardTypeShop.ajax', {
+            groupID: this.props.accountInfo.get('groupID'),
+            queryCardType: 1, // questArr.length === 0 ? 0 : 1,
+            cardTypeIds: tids.join(','),
+        }, null, { path: 'data.cardTypeShopList' })
+            .then((cardTypeShopList) => {
+                console.log(cardTypeShopList,'cardTypeShopList>>>>>>>>>>>')
+                const obj = {}
+                const canUseShopIDsAll = []
+                cardTypeShopList.forEach((item) => {
+                    const shopIDs = []
+                    item.cardTypeShopResDetailList.forEach((element) => {
+                        shopIDs.push(String(element.shopID))
+                        canUseShopIDsAll.push(String(element.shopID))
+                    })
+                    obj[String(item.cardTypeID)] = shopIDs
+                })
+                if (canUseShopIDsAll.length == 0) {
+                    message.warning('该卡类无适用的店铺，请选择其他卡类')
+                }
+                this.setState({
+                    cardTypeShopList: obj,
+                    canUseShopIDs:canUseShopIDsAll
+                })
+            }).catch(err => {
+            })
+    }
+    // 初始化店铺数据
+    // initShopData = (v) => {
+    //     // 根据卡类筛选店铺
+    //     const { cardLevelIDList, cardTypeShopList, canUseShopIDsAll } = this.state
+    //     const shopIDs = []
+    //     cardLevelIDList.forEach((item) => {
+    //         if (cardTypeShopList[item]) {
+    //             shopIDs.push(...cardTypeShopList[item])
+    //         }
+    //     })
+    //     console.log(shopIDs,cardLevelIDList,'cardLevelIDList-----------')
+    //     this.setState({
+    //         canUseShopIDs: shopIDs.length === 0 && cardLevelIDList.length === 0 ? canUseShopIDsAll : shopIDs, // 没有选卡类所有店铺都可选
+    //     })
+    // }
     isHuaTianSpecificCoupon = () => {
         const { type, gift: { value, data } } = this.props;
         if (value != 10) return false;
@@ -574,6 +668,18 @@ class GiftAddModalStep extends React.PureComponent {
                 if(giftType == '22'){
                     values.giftValue = value;
                 }
+                break;
+            case 'cardTypeList':
+                if(value && value.length > 0){
+                    let questArr = value.map(cardType => cardType.cardTypeID)
+                    console.log(value,'value==========')
+                    this.querycanUseShopIDs(questArr)
+                }else{
+                    this.setState({
+                        canUseShopIDs:[]
+                    })
+                }
+                
                 break;
             default:
                 break;
@@ -1698,12 +1804,14 @@ class GiftAddModalStep extends React.PureComponent {
             values:Object.assign({},values)
         });
     }
+
     renderShopNames(decorator) {
         const { shopNames = [],excludeShops = [],selectBrands = [],applyScene } = this.state.values;
-        const { gift: { data } } = this.props;
+        const { type, gift: { value, data } } = this.props;
+        console.log(type,'type>>>>>>>>>>>>')
         const brandList = selectBrands.map(x=>x.targetID);
         return (
-            <Row style={{ marginBottom: shopNames.length === 0 ? -15 : 0, width: 302 }}>
+            <Row style={{ marginBottom: shopNames.length === 0 ? -15 : 0, width: '302px' }}>
                 <Col style={{position:'relative'}}>
                     {applyScene == 2 || (selectBrands && selectBrands.length == 0 && excludeShops.length == 0) ? null : <div className={styles.disabledWrapper}></div>}
                     {decorator({
@@ -1729,6 +1837,41 @@ class GiftAddModalStep extends React.PureComponent {
                     marginBottom:'14px',
                     paddingLeft:'10px'
                 }}>未选择门店时默认所有门店通用</p>
+            </Row>
+        )
+    }
+    renderMemberRightShopNames(decorator) {
+        const { shopNames = [],excludeShops = [],selectBrands = [],applyScene } = this.state.values;
+        const { type, gift: { value, data } } = this.props;
+        console.log(type,'type>>>>>>>>>>>>')
+        const brandList = selectBrands.map(x=>x.targetID);
+        return (
+            <Row style={{ marginBottom: shopNames.length === 0 ? -15 : 0, width: '439px' }}>
+                <Col style={{position:'relative'}}>
+                    {decorator({
+                        onChange:this.changeShopNames
+                    })(
+                        <ShopSelectorTwo
+                            brandList={brandList}
+                            canUseShops={this.state.canUseShopIDs}
+                            isCreateCoupon = {true}
+                            filterParm={isFilterShopType() ? {productCode: 'HLL_CRM_License'} : {}}
+                        />
+                    )}
+                </Col>
+                <p style={{ 
+                    color: 'orange', 
+                    display: shopNames.length > 0 ? 'none' : 'block' ,
+                    width: '100%',
+                    height: '32px',
+                    lineHeight:'32px',
+                    background: '#FFFBE6',
+                    borderRadius: '4px',
+                    border: '1px solid #FFE58F',
+                    marginTop:'4px',
+                    marginBottom:'14px',
+                    paddingLeft:'10px'
+                }}>默认所选品牌+卡类型下全部店铺适用</p>
             </Row>
         )
     }
@@ -2776,7 +2919,7 @@ class GiftAddModalStep extends React.PureComponent {
             cardTypeList: {
                 label: '适用卡类',
                 type: 'custom',
-                render: decorator => decorator({})(<SelectCardTypes/>),
+                render: decorator => decorator({})(<SelectCardTypes />),
             },
 
             // 券增加商城类别
@@ -2902,6 +3045,12 @@ class GiftAddModalStep extends React.PureComponent {
                 label: '适用店铺',
                 defaultValue: [],
                 render: decorator => this.renderShopNames(decorator),
+            },
+            selectedMemberRightShops: {
+                type: 'custom',
+                label: '适用店铺',
+                defaultValue: [],
+                render: decorator => this.renderMemberRightShopNames(decorator),
             },
             excludeShops: {
                 type: 'custom',
