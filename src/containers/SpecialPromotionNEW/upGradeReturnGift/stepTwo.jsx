@@ -644,7 +644,7 @@ class StepTwo extends React.Component {
                             >
                                 <RadioGroup onChange={this.handleGroupOrCatRadioChange} value={`${localType}`}>
                                     <Radio key={'5'} value={'5'}>会员群体</Radio>
-                                    <Radio key={'7'} value={'7'}>会员标签</Radio>
+                                    {/* <Radio key={'7'} value={'7'}>会员标签</Radio> */}
                                     <Radio key={'2'} value={'2'}>会员卡类</Radio>
                                     <Radio key={'6'} value={'6'}>会员卡等级</Radio>
                                 </RadioGroup>

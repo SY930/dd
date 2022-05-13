@@ -314,7 +314,7 @@ class StepTwo extends React.Component {
 
         opts.selectedTags = null;
         if(this.props.type == '51' && this.state.cardLevelRangeType == 7) {
-            opts.selectedTags = this.state.selectedTags;
+            opts.customerRangeConditionIDs = this.state.selectedTags.map(item => item.tagRuleID);
         }
 
         if (smsGate == '1' || smsGate == '3' || smsGate == '4') {

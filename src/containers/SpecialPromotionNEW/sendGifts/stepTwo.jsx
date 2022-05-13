@@ -83,11 +83,12 @@ class Two extends React.Component {
                 cardGroupName: groupMembers.groupMembersName,
                 cardCount: groupMembers.totalMembers,
                 cardGroupRemark: groupMembers.groupMembersRemark,
-                cardLevelRangeType: (this.state.cardLevelRangeType | 0) || (this.state.groupMembersID == '0' ? '0' : '2'),
-                
-                selectedTags: this.state.selectedTags
+                cardLevelRangeType: (String(this.state.cardLevelRangeType) | '0') || (this.state.groupMembersID == '0' ? '0' : '2'),
+                localType:this.state.localType
             }
-
+            if(this.state.cardLevelRangeType == '7'){
+                opts.customerRangeConditionIDs = this.state.selectedTags.map(item => item.tagRuleID)
+            }
             if (smsGate == '1' || smsGate == '3' || smsGate == '4') {
                 if (this.state.settleUnitID > 0 || this.state.accountNo > 0) {
                     opts.settleUnitID = this.state.settleUnitID;
@@ -100,6 +101,8 @@ class Two extends React.Component {
                 opts.settleUnitID = '0';
                 opts.accountNo = '0';
             }
+            console.log(opts,'opts--------------->>>>>>>>>>>>>>>>>')
+
             this.props.setSpecialBasicInfo(opts)
         }
 
@@ -128,6 +131,7 @@ class Two extends React.Component {
                 groupMembersID: specialPromotion.groupMemberID
             })
         }
+        console.log(specialPromotion,'specialPromotionspecialPromotionspecialPromotionspecialPromotion')
         if (Object.keys(specialPromotion).length > 30) {
             this.setState({
                 message: specialPromotion.smsTemplate,
@@ -137,8 +141,7 @@ class Two extends React.Component {
                 cardCount: specialPromotion.totalMembers,
                 cardGroupRemark: specialPromotion.groupMembersRemark,
                 cardLevelRangeType: specialPromotion.cardLevelRangeType || '0',
-
-                localType:specialPromotion.localType || '5'
+                localType:specialPromotion.cardLevelRangeType == '7' ? '7' : '5',
             })
         }
         // 初始化店铺信息
@@ -170,7 +173,7 @@ class Two extends React.Component {
                 cardCount: specialPromotion.totalMembers,
                 cardGroupRemark: specialPromotion.groupMembersRemark,
                 cardLevelRangeType: specialPromotion.cardLevelRangeType || '0',
-                localType:specialPromotion.localType || '5'
+                localType:specialPromotion.cardLevelRangeType == '7' ? '7' : '5',
             })
         }
         // 获取会员等级信息
@@ -326,6 +329,11 @@ class Two extends React.Component {
     }
     handleGroupOrCatRadioChange = (e) => {
         const type = e.target.value;
+        if(type == '7'){
+            this.setState({
+                cardLevelRangeType:'7'
+            })
+        }
         this.setState({
             // cardLevelRangeType: type,此处该字段跟别的地方不一样
             localType: type,
@@ -381,7 +389,7 @@ class Two extends React.Component {
                 >
                     <RadioGroup onChange={this.handleGroupOrCatRadioChange} value={`${this.state.localType}`}>
                         <Radio key={'5'} value={'5'}>会员群体</Radio>
-                        <Radio key={'7'} value={'7'}>会员标签</Radio>
+                        {/* <Radio key={'7'} value={'7'}>会员标签</Radio> */}
                     </RadioGroup>
                 </FormItem>
                 {
