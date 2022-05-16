@@ -71,13 +71,13 @@ class DYCouponInfoMoldeContent extends Component {
             <Modal
                 title="已发放优惠券列表"
                 maskClosable={true}
-                width={800}
+                width={850}
                 visible={true}
                 onCancel={onCancel}
                 footer={null}
                 // confirmLoading={this.state.confirmLoading}
             >
-                <HistoryTable />
+                <HistoryTable params={{ batchItemID: this.props.batchItemID }} />
             </Modal>
         )
     }
