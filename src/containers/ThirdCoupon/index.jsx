@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect, Provider } from 'react-redux';
-import AliCouponDeliveryPage from './AliCouponDeliveryPage';
+import AliCouponDeliveryPage from './page/AliCouponDeliveryPage';
 import registerPage from '../../index';
 import { ACTIVITY_LAUNCH } from '../../constants/entryCodes';
 // @registerPage([PROMOTION_WECHAT_COUPON_LIST]);

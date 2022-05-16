@@ -11,6 +11,7 @@ import CreateCouponContent from '../Modal/CreateCouponContent'
 import ScenePutContent from '../Modal/ScenePutContent'
 import { debounce } from 'lodash'
 import styles from '../AlipayCoupon.less'
+import { columnsView, getColumns } from '../config';
 import { axiosData } from '../../../helpers/util'
 import registerPage from '../../../../index';
 import { THIRD_VOUCHER_MANAGEMENT } from '../../../constants/entryCodes';
@@ -66,6 +67,7 @@ class CouponManageList extends Component {
             platformTypeCreate: 1, // 平台：1 支付宝   3微信  2 抖音(小风车)
             WXLaunchVisible: false,
             wxData: {},
+            cachesTreeData: [],
         }
         this.handleQuery = debounce(this.handleQuery.bind(this), 500);
     }
@@ -199,23 +201,7 @@ class CouponManageList extends Component {
                 this.handleQuery();
                 this.clearUrl();
             })
-        }
-        // else if (from === 'zhifubao') {
-        //     this.setState({
-        //         platformType: '1'
-        //     }, () => {
-        //         this.handleQuery();
-        //         this.clearUrl();
-        //     })
-        // } else if (from === 'douyin') {
-        //     this.setState({
-        //         platformType: '2'
-        //     }, () => {
-        //         this.handleQuery();
-        //         this.clearUrl();
-        //     })
-        // } 
-        else {
+        } else {
             this.setState({
                 platformType: ''
             }, () => {
@@ -294,6 +280,10 @@ class CouponManageList extends Component {
             });
         } else if (type === 2) { // 微信券
             getCardList({ giftTypes: [10, 111, 21] }).then(x => {
+                this.setState({ treeData: x });
+            });
+        } else if (type === 5) { // e折
+            getCardList({ giftTypes: [10, 21] }).then(x => {
                 this.setState({ treeData: x });
             });
         } else { // 抖音
@@ -475,6 +465,7 @@ class CouponManageList extends Component {
                                 <Option value={'3'}>微信</Option>
                                 <Option value={'2'}>抖音（小黄车）</Option>
                                 <Option value={'5'}>抖音（小风车）</Option>
+                                <Option value={'6'}>E折券</Option>
                             </Select>
                         </li>
                         <li>
@@ -493,6 +484,10 @@ class CouponManageList extends Component {
                                 <Option value={''}>全部</Option>
                                 <Option value={'1'}>执行中</Option>
                                 <Option value={'2'}>停用</Option>
+                                <Option value={'3'}>待审核</Option>
+                                <Option value={'4'}>审核通过</Option>
+                                <Option value={'5'}>审核失败</Option>
+
                             </Select>
                         </li>
                         <li>
@@ -518,188 +513,12 @@ class CouponManageList extends Component {
     }
 
     renderTables = () => {
-        const columns = [
-            {
-                title: '序号',
-                dataIndex: 'index',
-                className: 'TableTxtCenter',
-                width: 50,
-                // fixed:'left',
-                key: 'index',
-                render: (text, record, index) => {
-                    return (this.state.pageNo - 1) * this.state.pageSizes + text;
-                },
-            },
-            {
-                title: '操作',
-                key: 'operation',
-                className: 'TableTxtCenter',
-                width: 160,
-                // fixed: 'left',
-                render: (text, record, index) => {
-                    return (<span>
-                        {/* <a
-                            href="#"
-                            onClick={() => {
-                                this.handleView(record, true)
-                            }}
-                        >编辑</a> */}
-                        <a
-                            href="#"
-                            onClick={() => {
-                                this.handleView(record, false)
-                            }}
-                        >
-                            查看
-                        </a>
-                        {
-                            record.channelID == 60 && (
-                                <span>
-                                    <a
-                                        href="#"
-                                        disabled={record.batchStatus == 1 ? false : true}
-                                        onClick={record.batchStatus == 1 ? () => {
-                                            this.handleStopClickEvent(record);
-                                        } : null}
-                                    >停用</a>
-                                    <a
-                                        href="#"
-                                        onClick={() => {
-                                            jumpPage({ menuID: '100008993' })
-                                        }}
-                                    >投放</a>
-                                </span>
-                            )
-                        }
-                        {
-                            record.channelID == 50 && record.couponCodeDockingType == 3 && <a
-                                href="#"
-                                disabled={!!record.eventStatus}
-                                onClick={!!record.eventStatus ? null : () => {
-                                    this.setState({
-                                        wxData: record,
-                                        isEdit: false,
-                                        title: '投放场景'
-                                    }, () => {
-                                        this.handleShowWxModal()
-                                    })
-                                    // jumpPage({ menuID: '100008993' })
-                                }}
-                            >投放</a>
-                        }
-                        {
-                            record.channelID == 50 && !!record.eventStatus && record.couponCodeDockingType == 3 &&
-                            <a
-                                href="#"
-                                onClick={() => {
-                                    this.setState({
-                                        wxData: record,
-                                        isEdit: true,
-                                        title: '投放详情'
-                                    }, () => {
-                                        this.handleShowWxModal()
-                                    })
-                                }}
-                            >投放详情</a>
-                        }
-                    </span>
-                    );
-                },
-            },
-            {
-                title: '第三方券名称',
-                dataIndex: 'batchName',
-                key: 'batchName',
-                width: 300,
-                render: (text) => text,
-            },
-            {
-                title: '券ID',
-                dataIndex: 'itemID',
-                key: 'itemID',
-                width: 200,
-                render: (text) => text,
-            },
-            {
-                title: '业态',
-                dataIndex: 'promotionType',
-                key: 'promotionType',
-                width: 200,
-                render: (promotionType) => promotionType === 2 ? '零售' : '餐饮',
-            },
-            {
-                title: '关联渠道',
-                dataIndex: 'platformType',
-                key: 'platformType',
-                width: 80,
-                render: (text) => {
-                    return ['1', 1].includes(text) ? '支付宝' : (['2', 2, '5', 5].includes(text) ? '抖音' : '微信')
-                },
-            },
-            {
-                title: '对接业务',
-                dataIndex: 'channelID',
-                key: 'channelID',
-                width: 80,
-                render: (text, record) => {
-                    return record.platformType == 2 ? '抖音电商' : (record.platformType == 5 ? '抖音团购' : '--')
-                },
-            },
-            {
-                title: '券code模式',
-                dataIndex: 'couponCodeDockingType',
-                key: 'couponCodeDockingType',
-                width: 160,
-                render: (text, record) => {
-                    if (text == '3' && record.platformType == 3) {
-                        return <span>WECHATPAY_MODE<Tooltip title="适用于企鹅吉市等场景对接"><Icon type="question-circle-o" style={{ marginLeft: 5 }} /></Tooltip></span>
-                    }
-                    if (text == '1' && record.platformType == 3) {
-                        return 'MERCHANT_API'
-                    }
-                    if (text == '2' && record.platformType == 1) {
-                        return 'MERCHANT_UPLOAD'
-                    }
-                    return '--'
-                }
-            },
-            {
-                title: '批次号',
-                dataIndex: 'trdBatchID',
-                key: 'trdBatchID',
-                width: 140,
-                render: (text, record) => {
-                    if (record.platformType == 3 || record.platformType == 1) return <Tooltip title={text}>{text}</Tooltip>
-                    return '--'
-                }
-            },
-            {
-                title: '剩余数量',
-                dataIndex: 'stock',
-                key: 'stock',
-                width: 80,
-                render: (text, record) => {
-                    const { receive } = record
-                    if (text) {
-                        return Number(text) - Number(receive)
-                    }
-                }
-            },
-            {
-                title: '创建时间',
-                className: 'TableTxtCenter',
-                dataIndex: 'createStampStr',
-                key: 'createStampStr',
-                width: 180,
-                render: (text) => text,
-            },
-        ];
         return (
             <div className={['layoutsContent', styles.tableClass].join(' ')} style={{ height: this.state.contentHeight, padding: '20px 0' }}>
                 <Table
                     scroll={{ x: 800, y: this.state.contentHeight - 108 }}
                     bordered={true}
-                    columns={columns}
+                    columns={getColumns(this)}
                     dataSource={this.state.dataSource}
                     loading={
                         {
@@ -753,7 +572,7 @@ class CouponManageList extends Component {
                     this.state.createThirdCouponVisble && <Modal
                         title="创建第三方券"
                         visible={true}
-                        width={750}
+                        width={880}
                         onCancel={this.handleCloseThirdCouponModal}
                         footer={null}
                         maskClosable={true}
@@ -794,6 +613,15 @@ class CouponManageList extends Component {
                             >
                                 <p><img src={DOUYIN}></img></p>
                                 <span>抖音（小风车）</span>
+                            </li>
+                            <li
+                                className={styles.createCouponModal__item__li}
+                                onClick={() => {
+                                    this.handleCreateCouponContentModal({ type: 5, channelID: 90, platformTypeCreate: 6, giftTypes: [10, 21], }, '新建第三方E折券')
+                                }}
+                            >
+                                <p><img src='http://res.hualala.com/basicdoc/550f5482-f0df-44b5-ac5d-a930b3f5c839.png'></img></p>
+                                <span>E折券 </span>
                             </li>
                         </ul>
                     </Modal>
@@ -838,6 +666,14 @@ class ViewCouponContent extends Component {
             viewData: props.viewData,
             payChannelList: [],
             mpAndAppList: [],
+            titleMap: {
+                1: '支付宝',
+                2: '抖音',
+                5: '抖音',
+                3: '微信',
+                6: 'E折',
+            }
+
         }
     }
     componentDidMount() {
@@ -858,9 +694,10 @@ class ViewCouponContent extends Component {
     }
 
     getWXMerchantID = (data) => {
-        // const { payChannelList } = this.state;
-        // const { settleName = '' } = payChannelList.find((item) => item.merchantID == data.merchantID) || {}
-        return `${data.merchantID}`
+        const { payChannelList } = this.state;
+        const { settleName = '' } = payChannelList.find((item) => item.merchantID == data.merchantID) || {}
+        return `${data.merchantID}_${settleName}`
+
     }
     getJumpAppName = (data) => {
         const { mpAndAppList } = this.state;
@@ -871,75 +708,13 @@ class ViewCouponContent extends Component {
     render() {
         const { viewData } = this.state;
         const { stock, receive, merchantType, merchantID, itemID, platformType } = viewData;
-        let title = viewData.platformType == 1 ? '支付宝' : viewData.platformType == 2 ? '抖音' : '微信';
-        const columns = [
-            {
-                title: '券名称',
-                key: 'giftName',
-                dataIndex: 'giftName',
-                render: (t) => {
-                    return <Tooltip title={t}>{t}</Tooltip>;
-                }
-            },
-            {
-                title: '生成数量',
-                key: 'stock',
-                dataIndex: 'stock',
-            },
-            {
-                title: '生效方式',
-                key: 'effectType',
-                dataIndex: 'effectType',
-                render: (text) => {
-                    if (text == 3) {
-                        return '相对有效期'
-                    } else if (text == 2) {
-                        return '固定有效期'
-                    }
-                    return '--'
-                }
-            },
-            {
-                title: '生效时间',
-                key: 'Stimes',
-                dataIndex: 'Stimes',
-                render: (text, record) => {
-                    if (record.effectType == 3) { //
-                        const effectGiftTimeHours = record.effectGiftTimeHours;
-                        const t = effectGiftTimeHours > 0 ? `${effectGiftTimeHours}后天生效` : '立即生效'
-                        return <Tooltip title={t}>{t}</Tooltip>;
-                    } else if (record.effectType == 2) {
-                        const time = record.EGiftEffectTime ? `${moment(record.EGiftEffectTime, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}/${moment(record.validUntilDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}` : '--';
-                        return <Tooltip title={time}>{time}</Tooltip>;
-                    } else {
-                        return '--'
-                    }
-
-                }
-            },
-            {
-                title: '有效时间',
-                key: 'times',
-                dataIndex: 'times',
-                render: (text, record) => {
-                    if (record.effectType == 3) { //
-                        const t = `自领取${record.validUntilDays}天有效`;
-                        return <Tooltip title={t}>{t}</Tooltip>
-                    } else if (record.effectType == 2) {
-                        const time = record.EGiftEffectTime ? `${moment(record.EGiftEffectTime, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}/${moment(record.validUntilDate, 'YYYYMMDDHHmmss').format('YYYY-MM-DD')}` : '--';
-                        return <Tooltip title={time}>{time}</Tooltip>;;
-                    } else {
-                        return '--'
-                    }
-
-                }
-            },
-        ];
+        let title = this.state.titleMap[platformType];
         const styleMap = {
             1: 'signInfoZhifubao',
             2: 'signInfoDouyin',
             3: 'signInfoWx',
             5: 'signInfoDouyin',
+            6: 'signInfoEzhe'
         }
         let styleName = styleMap[platformType];
         return (
@@ -960,9 +735,17 @@ class ViewCouponContent extends Component {
                                 (platformType == 1 || platformType == 3) && <p>关联小程序：
                                     <span>{platformType == 3 ? this.getJumpAppName(viewData) : viewData.jumpAppID}</span></p>
                             }
+                            {
+                                platformType == 6 && <p>优惠券面值： <span>{viewData.giftFaceValue || '--'}</span></p>
+                            }
+
                         </div>
                         <div>
                             <p>剩余/总数： <span>{stock ? Number(stock) - Number(receive) : ''}/{viewData.stock}</span></p>
+                            {
+                                platformType == 6 && <p>售价： <span>{viewData.deliveryValue || '--'}</span></p>
+                            }
+
                         </div>
                     </Col>
                     <Col span={24} className={styles.relationCoupon__table}>
@@ -970,7 +753,7 @@ class ViewCouponContent extends Component {
                         <Table
                             pagination={false}
                             bordered={true}
-                            columns={columns}
+                            columns={columnsView}
                             dataSource={[this.state.viewData]}
                         />
                     </Col>

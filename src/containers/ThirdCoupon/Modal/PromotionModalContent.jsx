@@ -301,7 +301,7 @@ class PromotionModalContent extends Component {
                     {
                         this.state.description &&
                         <div
-                            style={{ wordBreak: 'break-all', paddingRight: 14 }}
+                            style={{ wordBreak: 'break-all' }}
                             dangerouslySetInnerHTML={{ __html: this.state.description }}
                         ></div>
                     }

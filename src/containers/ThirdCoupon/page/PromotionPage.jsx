@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import { Form, Input, Button, Icon, Pagination, Col, Row, Modal, Table } from 'antd';
 import classnames from 'classnames';
 import moment from 'moment';
-import emptyPage from '../../assets/empty_page.png'
-import { axiosData } from '../../helpers/util'
-import styles from './AlipayCoupon.less'
+import emptyPage from '../../../assets/empty_page.png'
+import { axiosData } from '../../../helpers/util'
+import styles from '../AlipayCoupon.less'
 
 const FormItem = Form.Item;
 const EVENT_STATUS = {

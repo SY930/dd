@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 import { Form, Input, Button, Icon, Switch, Pagination, message, Modal, Table, Row, Col } from 'antd';
 import classnames from 'classnames';
 import moment from 'moment';
-import emptyPage from '../../assets/empty_page.png'
-import { getDeliveryChannel } from './AxiosFactory'
-import { axiosData } from '../../helpers/util'
-import styles from './AlipayCoupon.less'
+import emptyPage from '../../../assets/empty_page.png'
+import { getDeliveryChannel } from '../AxiosFactory'
+import { axiosData } from '../../../helpers/util'
+import styles from '../AlipayCoupon.less'
 
 const FormItem = Form.Item;
 const EVENT_STATUS = {
