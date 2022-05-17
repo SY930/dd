@@ -196,6 +196,23 @@ class StepTwo extends React.Component {
                 this.setState({
                     filters,
                     tagRuleDetails: res.data.tagRuleDetails
+                },()=>{
+                    let { customerRangeConditionIDs } = this.props.specialPromotion.get('$eventInfo').toJS();
+                    let useData = [];
+                    if(res.data.tagRuleDetails && res.data.tagRuleDetails.length > 0){
+                        if(customerRangeConditionIDs && customerRangeConditionIDs.length > 0){
+                            res.data.tagRuleDetails.map(item => {
+                                customerRangeConditionIDs.map(d => {
+                                    if(item.tagRuleID == d){
+                                        useData.push(item.tagRuleID + '@@' + item.tagTypeID + '@@' + item.tagName);
+                                    }
+                                })
+                            })
+                        }
+                    }
+                    this.setState({
+                        tagIncludes:useData
+                    })
                 })
             } else {
                 message.error(res.message)
