@@ -1,17 +1,14 @@
 import React, { Component } from 'react';
+import { Form, Input, Button, Table, Select, Row, Popover, message } from 'antd';
 import { axios, getStore } from '@hualala/platform-base';
 import moment from 'moment'
-import {
-    fetchData,
-} from '../../../helpers/util';
-import { Form, Input, Button, Table, Select, Row, message } from 'antd'
-
-const { Option } = Select
 
 class PureTable extends Component {
     state = {
         dyOrderID: '',
         couponCode: '',
+        popContent: <div><p style={{ whiteSpace: 'nowrap' }}>营业高峰期(11:00-14:00,17:00</p><p style={{ whiteSpace: 'nowrap' }}>-20:30)暂停使用数据导出功能</p></div>,
+        tooltipVisble: false,
     }
 
 
@@ -23,6 +20,36 @@ class PureTable extends Component {
     handleSubmit = () => {
         const { getData } = this.props;
         getData({ dyOrderID: this.state.dyOrderID, couponCode: this.state.couponCode });
+    }
+
+    handleChekTime = async () => {
+        const { groupID } = this.getAccountInfo()
+        const method = '/dyCoupon/xfc/verifyHighMoment';
+        const response = await axios.post(`/api/v1/universal?groupID=${groupID}`, {
+            params: {
+                service: 'HTTP_SERVICE_URL_PROMOTION_DOUYIN',
+                method,
+            },
+        });
+        const { code, data, msg } = response;
+        console.log("🚀 ~ file: PureTable.jsx ~ line 35 ~ PureTable ~ handleChekTime= ~ data", data)
+        if (code === '000') {
+            if (data) {
+                this.setState({
+                    popoverVisible: true,
+                });
+            } else { // 非高峰
+                this.setState({
+                    popoverVisible: false,
+                });
+                this.handleExport();
+            }
+        } else {
+            message.error(`请求出错${msg}， 请重试`)
+            this.setState({
+                popoverVisible: false,
+            });
+        }
     }
 
     handleExport = async () => {
@@ -49,6 +76,19 @@ class PureTable extends Component {
                 $(a).remove();
             }
         }
+    }
+
+    handleVisibleChange = (visible) => {
+        this.setState({ popoverVisible: visible });
+    };
+
+    renderPopOver = () => {
+        const { popContent = '' } = this.state;
+        return (
+            <div style={{ width: this.state.tooltipVisble ? 160 : 'auto' }}>
+                <span>{popContent}</span>
+            </div>
+        );
     }
 
     render() {
@@ -85,9 +125,18 @@ class PureTable extends Component {
                         </Button>
                     </Form.Item>
                     <Form.Item>
-                        <Button type="ghost" onClick={() => { this.handleExport() }}>
-                            导出
-                        </Button>
+                        <Popover
+                            content={this.renderPopOver()}
+                            placement="topRight"
+                            title={false}
+                            trigger="click"
+                            visible={this.state.popoverVisible}
+                            // onVisibleChange={this.handleVisibleChange}
+                        >
+                            <Button type="ghost" onClick={this.handleChekTime} disabled={dataSource.length <= 0}>
+                                导出
+                            </Button>
+                        </Popover>
                     </Form.Item>
                 </Form>
                 <div className="layoutsLineBlock" style={{ margin: '12px 0 20px' }}></div>
