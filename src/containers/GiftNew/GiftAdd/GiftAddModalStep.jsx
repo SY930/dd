@@ -1843,7 +1843,7 @@ class GiftAddModalStep extends React.PureComponent {
     renderMemberRightShopNames(decorator) {
         const { shopNames = [],excludeShops = [],selectBrands = [],applyScene } = this.state.values;
         const { type, gift: { value, data } } = this.props;
-        console.log(type,'type>>>>>>>>>>>>')
+        console.log(type,'type>>>>>>>>>>>>1')
         const brandList = selectBrands.map(x=>x.targetID);
         return (
             <Row style={{ marginBottom: shopNames.length === 0 ? -15 : 0, width: '439px' }}>
@@ -3662,6 +3662,9 @@ class GiftAddModalStep extends React.PureComponent {
         }
         if (this.props.gift.value == '22') {
             formData.delivery = formData.giftValue;
+        }
+        if(this.props.gift.value == '80'){
+            formData.selectedMemberRightShops = formData.selectedShops;
         }
         formData.shareIDs = this.state.sharedGifts;
         formData.giftShareType = String(formData.giftShareType);

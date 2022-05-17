@@ -209,7 +209,7 @@ class ShopSelectorTwo extends Component {
         }
         console.log(options,'options-----------')
         const filters = this.props.filters || this.state.filters;
-
+        console.log(value,'value00000000000000000')
         const items = value.reduce((ret, shopID) => {
             const shopInfo = options.find(shop => shop.value === shopID);
             if (!shopInfo) return ret;
