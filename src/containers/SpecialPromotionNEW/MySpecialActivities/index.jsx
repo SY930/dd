@@ -352,6 +352,8 @@ class MySpecialActivities extends React.Component {
         } else if(from === 'onSale') {// 创建促销活动tab默认打开促销活动
             this.setState({
                 tabKeys: 'onSalePage',
+            }, () => {
+                this.clearUrl()
             })
         }
         if (!from) {
