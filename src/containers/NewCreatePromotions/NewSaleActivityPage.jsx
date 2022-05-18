@@ -310,6 +310,67 @@ class NewCustomerPage extends Component {
             this.props.saleCenterSetJumpOpenCardParams(false)
             // 新建逻辑
             this.clearUrl();
+        } else if (from === 'tagsSendGroupGift') { // 从标签系统进入群发礼品
+            console.log('gohere133333>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+            const item = REPEAT_PROMOTION_TYPES.filter((item) => {
+                return item.key == 53
+            })[0];
+            setTimeout(() => {
+                this.handleNewPromotionCardClick(item);
+            }, 500)
+            // 新建逻辑
+            this.props.saleCenterSetJumpOpenCardParams(false)
+            this.props.saleCenterSetJumpSendGiftParams(false)
+            this.clearUrl();
+
+        } else if (from === 'tagsSendGroupMsg') { // 从标签系统进入群发短信
+            console.log('gohere133333>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+            const item = REPEAT_PROMOTION_TYPES.filter((item) => {
+                return item.key == 50
+            })[0];
+            setTimeout(() => {
+                this.handleNewPromotionCardClick(item);
+            }, 500)
+            // 新建逻辑
+            this.props.saleCenterSetJumpOpenCardParams(false)
+            this.props.saleCenterSetJumpSendGiftParams(false)
+            this.clearUrl();
+        } else if (from === 'tagsBirthSend') { // 从标签系统进入生日赠送
+            console.log('gohere133333>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+            const item = LOYALTY_PROMOTION_TYPES.filter((item) => {
+                return item.key == 51
+            })[0];
+            setTimeout(() => {
+                this.handleNewPromotionCardClick(item);
+            }, 500)
+            // 新建逻辑
+            this.props.saleCenterSetJumpOpenCardParams(false)
+            this.props.saleCenterSetJumpSendGiftParams(false)
+            this.clearUrl();
+        } else if (from === 'tagsWakeUpSendGift') { // 从标签系统进入唤醒送礼
+            console.log('gohere133333>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+            const item = LOYALTY_PROMOTION_TYPES.filter((item) => {
+                return item.key == 63
+            })[0];
+            setTimeout(() => {
+                this.handleNewPromotionCardClick(item);
+            }, 500)
+            // 新建逻辑
+            this.props.saleCenterSetJumpOpenCardParams(false)
+            this.props.saleCenterSetJumpSendGiftParams(false)
+            this.clearUrl();
+        } else if (from === 'tagsConsumeSendGift') { // 从标签系统进入累计消费送礼
+            console.log('gohere133333>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+            const item = LOYALTY_PROMOTION_TYPES.filter((item) => {
+                return item.key == 62
+            })[0];
+            setTimeout(() => {
+                this.handleNewPromotionCardClick(item);
+            }, 500)
+            // 新建逻辑
+            this.props.saleCenterSetJumpOpenCardParams(false)
+            this.props.saleCenterSetJumpSendGiftParams(false)
+            this.clearUrl();
         } else if (from === 'doNothingButSth') {
             const saleID = type;
             // this.setState({ currentCategoryIndex: 4 })
@@ -512,6 +573,7 @@ class NewCustomerPage extends Component {
         const { intl } = this.props;
         const create = intl.formatMessage(COMMON_STRING.create);
         const title = <p>{create} {promotionType}</p>;
+        console.log(title,'title')
         return (
             <Modal
                 wrapClassName="progressBarModal"
@@ -543,6 +605,7 @@ class NewCustomerPage extends Component {
         const { intl } = this.props;
         const create = intl.formatMessage(COMMON_STRING.create);
         const title = <p>{create} {promotionType}</p>;
+        console.log(title,'title in special')
         const {
             isJumpNew = true,
         } = this.state

@@ -18,6 +18,7 @@ import {
     Icon,
     Input,
     Tooltip,
+    TreeSelect
 } from 'antd';
 import {isEqual, uniq, isEmpty} from 'lodash';
 import {
@@ -41,8 +42,7 @@ import BaseHualalaModal from "../../SaleCenterNEW/common/BaseHualalaModal";
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
 import { axios } from '@hualala/platform-base';
-import { isFilterShopType } from '../../../helpers/util'
-
+import { isFilterShopType, axiosData} from '../../../helpers/util';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -75,7 +75,10 @@ class StepTwo extends React.Component {
             selections: [],
             selections_shopsInfo: { shopsInfo: [] },
             isRequire: true,
-            countCycleDays:0//评价送礼新增评价设置 0 代表不限制
+            countCycleDays:0,//评价送礼新增评价设置 0 代表不限制
+            filters:[],
+            selectedTags:[],
+            tagIncludes:[],
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -94,8 +97,7 @@ class StepTwo extends React.Component {
         this.setState({
             localType: cardLevelRangeType || '5',
         })
-        
-        // 
+        this.queryTagData();
         this.props.FetchCrmCardTypeLst({});
         this.props.getSubmitFn({
             prev: undefined,
@@ -181,6 +183,68 @@ class StepTwo extends React.Component {
             this.props.getGroupCRMCustomAmount()
         }
         this.loadShopSchema();
+    }
+    //获取标签树
+    queryTagData = () => {
+        const params = {
+            groupID: this.props.$$groupID,
+            tagTypeIDs: '1,2,3,4,5'
+        }
+        axiosData(
+            '/tag/tagService_queryAllTagsByTagTypeID.ajax',
+            params,
+            {},
+            { path: '' }
+        ).then((res) => {
+            if (res.code === '000') {
+                const filters = this.orgCateData(res.data.tagTypes, res.data.tagRuleDetails)
+                this.setState({
+                    filters,
+                    tagRuleDetails: res.data.tagRuleDetails
+                })
+            } else {
+                message.error(res.message)
+            }
+        })
+    }
+
+    orgCateData = (arr = [], details = []) => {
+        arr = arr.filter((item)=>{
+            return item.categoryEntries && item.categoryEntries.length > 0
+        })
+        return arr.map((item, index) => {
+            return {
+                ...item,
+                label: item.tagTypeName,
+                key: item.tagTypeID,
+                value: item.tagTypeID,
+                children: item.categoryEntries.map((every) => {
+                    return {
+                        ...every,
+                        key: every.tagCategoryID,
+                        value: every.tagCategoryID,
+                        label: every.tagCategoryName,
+                        children: this.getChildren(every.tagRuleIDs, details)
+                    }
+                }),
+            }
+        })
+    }
+
+    getChildren(tags, details) {
+        let child = []
+        tags && tags.length > 0 && tags.map((i) => {
+            details.map((j) => {
+                if (j.tagRuleID == i) {
+                    child.push({
+                        key: j.tagRuleID,
+                        value: j.tagRuleID + '@@' + j.tagTypeID + '@@' + j.tagName,
+                        label: j.tagName,
+                    })
+                }
+            })
+        })
+        return child
     }
 
     filterAvailableShops() {
@@ -332,8 +396,13 @@ class StepTwo extends React.Component {
             }
         }
         if (this.props.type == '62') {
-            const { consumeType, numberValue } = this.state;
+            const { consumeType, numberValue,selectedTags,localType } = this.state;
+            console.log(selectedTags,consumeType,'selectedTags>>>>>>>>>>>>>>>>>>>>>>>')
             opts.consumeType = consumeType;
+            opts.selectedTags = null;
+            if(localType == 7){
+                opts.selectedTags = selectedTags;
+            }
             consumeType % 2 === 0 ? opts.consumeTotalAmount = numberValue.number || 0 : opts.consumeTotalTimes = numberValue.number;
             if ((consumeType % 2 === 0 && (numberValue.number < 0 || numberValue.number === '')) || (consumeType == '1' && numberValue.number < 1)) {
                 flag = false;
@@ -504,13 +573,13 @@ class StepTwo extends React.Component {
             localType: type,
             cardLevelIDList: [],
             groupMembersID: undefined,
+            selectedTags:null,
         })
         this.props.setSpecialBasicInfo({ cardLevelIDList: [], cardGroupID: '' });
     }
 
     render() {
         let {localType, cardLevelIDList } = this.state;
-
         const sendFlag = true;
         const totalCustomerCount = this.props.specialPromotion.get('customerCount');
         const tip = this.state.consumeType % 2 === 0 ? `${this.props.intl.formatMessage(STRING_SPE.d1e09r9slq0172)}` : `${this.props.intl.formatMessage(STRING_SPE.d16hh4899ii1154)}`;
@@ -529,9 +598,35 @@ class StepTwo extends React.Component {
             </Select>
         );
         const groupMembersID = this.state.groupMembersID
-        const isDisableGroupSelect = typeof groupMembersID === 'string' && groupMembersID.includes &&
-              groupMembersID.includes('--') // RFM跳转后不可编辑会员群体
-
+        const isDisableGroupSelect = typeof groupMembersID === 'string' && groupMembersID.includes && groupMembersID.includes('--'); // RFM跳转后不可编辑会员群体
+        const labelProps1 = {
+            treeData: this.state.filters,
+            value: this.state.tagIncludes,
+            defaultValue: [],
+            onChange: (e) => {
+                console.log(e,'e fo,men yao tiaojiao')
+                let tagIn = []
+                e.map((i) => {
+                    let tag = {}
+                    tag.tagRuleID = i.split('@@')[0]
+                    tag.tagTypeID = i.split('@@')[1]
+                    tag.tagName = i.split('@@')[2]
+                    tagIn.push(tag)
+                })
+                this.setState({ selectedTags: tagIn, tagIncludes: e })
+            },
+            treeCheckable: true,
+            showCheckedStrategy: TreeSelect.SHOW_CHILD,
+            searchPlaceholder: '请选择会员标签',
+            style: {
+                width: 472, 
+                maxHeight:96,
+                overflow:'auto',
+                // border:'1px solid #d9d9d9',
+                borderRadius:'3px'
+            },
+            dropdownStyle: { maxHeight: 275, overflow: 'auto' },
+        };
         return (
             <Form>
                 {
@@ -542,13 +637,14 @@ class StepTwo extends React.Component {
                         // 累计消费送礼box
                         <div>       
                             <FormItem
-                                label="累计维度"
+                                label="会员范围"
                                 className={styles.FormItemStyle}
                                 labelCol={{ span: 4 }}
                                 wrapperCol={{ span: 17 }}
                             >
                                 <RadioGroup onChange={this.handleGroupOrCatRadioChange} value={`${localType}`}>
                                     <Radio key={'5'} value={'5'}>会员群体</Radio>
+                                    {/* <Radio key={'7'} value={'7'}>会员标签</Radio> */}
                                     <Radio key={'2'} value={'2'}>会员卡类</Radio>
                                     <Radio key={'6'} value={'6'}>会员卡等级</Radio>
                                 </RadioGroup>
@@ -581,7 +677,11 @@ class StepTwo extends React.Component {
                                             {this.renderOptions()}
                                         </Select>
                                     )}
-                                </FormItem> :  
+                                </FormItem> :  null
+                            }
+
+                            {
+                                this.state.localType == '2' || this.state.localType == '6' ? 
                                 <CardLevels
                                     catOrCard="cat"
                                     onChange={this.onCardLevelChange}
@@ -590,8 +690,28 @@ class StepTwo extends React.Component {
                                     form={this.props.form}
                                     cardLevelRangeType={localType}
                                     cardLevelIDList={cardLevelIDList}
-                                />
+                                /> : null
                             }
+
+                            {
+                                this.state.localType == '7' ? 
+                                    <FormItem
+                                        label={`会员标签`}
+                                        className={styles.FormItemStyle}
+                                        labelCol={{ span: 4 }}
+                                        wrapperCol={{ span: 17 }}
+                                    >
+                                        {this.props.form.getFieldDecorator('selectedTags', {
+                                            rules: [{
+                                                required: true,
+                                                message: `请选择会员标签`,
+                                            }],
+                                            initialValue: this.state.tagIncludes,
+                                        })(<TreeSelect {...labelProps1} className={styles.treeSelect}/>)
+                                        }
+                                    </FormItem> : null
+                            }
+                            
                             <FormItem
                                 label={`累计条件`}
                                 className={styles.FormItemStyle}
@@ -613,13 +733,15 @@ class StepTwo extends React.Component {
                                 />)
                                 }
                             </FormItem>
-                        </div> : (this.props.type == '70' || this.props.type == '64' ? null :
+                        </div> 
+                        : 
+                        (this.props.type == '70' || this.props.type == '64' ? null :
                             <CardLevel
                                 onChange={this.onCardLevelChange}
                                 catOrCard={'card'}
                                 type={this.props.type}
                                 form={this.props.form}
-                            />)
+                        />)
                 }
                 {
                     smsGate == '1' || smsGate == '3' ||  smsGate == '4'?
