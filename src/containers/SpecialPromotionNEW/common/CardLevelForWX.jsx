@@ -196,7 +196,6 @@ class CardLevelForWX extends React.Component {
             }
             questArr = cardInfo.map(cardType => cardType.cardTypeID)
         }
-        console.log(questArr,'questArr==========')
         axiosData('/crm/cardTypeShopService_getListCardTypeShop.ajax', {
             groupID: this.props.user.accountInfo.groupID,
             cardTypeIds: uniq(questArr).join(','),
@@ -204,7 +203,6 @@ class CardLevelForWX extends React.Component {
         }, null, { path: 'data.cardTypeShopList' })
             .then(cardTypeShopList => {
                 const shopsInfo = this.state.selections_shopsInfo.shopsInfo.map(shopID => String(shopID));
-                console.log(shopsInfo,'shopsInfo??????????')
                 let canUseShops = [];
                 canUseShops.push(...shopsInfo);
                 (cardTypeShopList || []).forEach((cardType) => {
@@ -213,7 +211,6 @@ class CardLevelForWX extends React.Component {
                     })
                 });
                 canUseShops = Array.from(new Set(canUseShops));
-                console.log(canUseShops,'canUseShops00000000000')
                 this.props.saveCurrentCanUseShops(canUseShops)
                 this.props.saleCenterQueryOnlineRestaurantStatus('success');
                 if (canUseShops.length <= 0) {

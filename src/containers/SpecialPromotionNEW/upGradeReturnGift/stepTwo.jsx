@@ -397,7 +397,6 @@ class StepTwo extends React.Component {
         }
         if (this.props.type == '62') {
             const { consumeType, numberValue,selectedTags,localType } = this.state;
-            console.log(selectedTags,consumeType,'selectedTags>>>>>>>>>>>>>>>>>>>>>>>')
             opts.consumeType = consumeType;
             opts.selectedTags = null;
             if(localType == 7){
@@ -604,7 +603,6 @@ class StepTwo extends React.Component {
             value: this.state.tagIncludes,
             defaultValue: [],
             onChange: (e) => {
-                console.log(e,'e fo,men yao tiaojiao')
                 let tagIn = []
                 e.map((i) => {
                     let tag = {}

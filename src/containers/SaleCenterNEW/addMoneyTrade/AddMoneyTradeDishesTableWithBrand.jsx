@@ -225,7 +225,6 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
             total,
             pageNo,
         } = this.state;
-        console.log('now current data is', data)
         const {
             calType = 0,
         } = this.props
@@ -399,7 +398,6 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
             },
         ];
         const displayDataSource = data.map((item, index) => ({ ...item, index }))
-        console.log('displayDataSource is:', displayDataSource)
         return (
             <FormItem className={styles.FormItemStyle} style={{position: 'relative', left: 13}}>
                 <Row>

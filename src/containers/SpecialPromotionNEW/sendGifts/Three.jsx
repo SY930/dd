@@ -68,7 +68,7 @@ class Three extends React.Component {
         this.setState({
             [key]: val,
         }, () => {
-            console.log(this.state.sendCoupon)
+            // console.log(this.state.sendCoupon)
         })
     }
 

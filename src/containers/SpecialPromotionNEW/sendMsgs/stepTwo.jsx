@@ -473,7 +473,6 @@ class StepTwo extends React.Component {
             value: this.state.tagIncludes,
             defaultValue: [],
             onChange: (e) => {
-                console.log(e,'e fo,men yao tiaojiao')
                 let tagIn = []
                 e.map((i) => {
                     let tag = {}

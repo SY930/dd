@@ -33,7 +33,6 @@ class ShopSelectorTwo extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('kui lan ---------')
         if (nextProps.isShopSelectorShow) {
             this.setState({
                 isShopSelectorShow: nextProps.isShopSelectorShow
@@ -46,7 +45,6 @@ class ShopSelectorTwo extends Component {
             this.loadShops({}, nextProps.schemaData, true);
         }
         if (!isEqual(this.props.brandList, nextProps.brandList) || !isEqual(this.props.canUseShops, nextProps.canUseShops)) {
-            console.log('go here componentWillReceiveProps')
             this.loadFilterShops(nextProps.brandList,nextProps.canUseShops);
         }
         // if (!isEqual(this.props.canUseShops, nextProps.canUseShops)) {
@@ -81,17 +79,14 @@ class ShopSelectorTwo extends Component {
             });
     }
     loadFilterShops(brandList = [],canUseShops = []) {
-        console.log('loadFilterSHops===========')
         const { alloptions,allfilters,options } = this.state;
         if (!allfilters[0]) { return }
         const newFilter = JSON.parse(JSON.stringify(allfilters));
-        console.log(brandList,canUseShops,'params------------------------')
         if (brandList && brandList.length > 0) { //如果有品牌
             const brands = allfilters[0];
             const leftBrands = brands.options.filter(x => brandList.includes(x.brandID));
             newFilter[0].options = leftBrands;
             const filterFirstOptions = alloptions.filter(x => brandList.includes(x.brandID));
-            console.log(filterFirstOptions,'leftShops>>>>>> in loadShops2')
             if(canUseShops && canUseShops.length > 0){//如果有卡类
                 const filterTwoOptions = filterFirstOptions.filter((x) => {
                     if (canUseShops.includes(x.shopID)) {
@@ -99,7 +94,6 @@ class ShopSelectorTwo extends Component {
                     }
                 });
                 if(filterTwoOptions.length > 0){
-                    console.log(filterTwoOptions,'leftShops>>>>>> in loadShops3')
                     this.setState({ options: filterTwoOptions,filters:newFilter });
                 }else{
                     this.setState({
@@ -130,7 +124,6 @@ class ShopSelectorTwo extends Component {
                     }
                 });
                 if(filterTwoOptions.length > 0){
-                    console.log(filterTwoOptions,'leftShops>>>>>> in loadShops3')
                     this.setState({ options: filterTwoOptions,filters:newFilter });
                 }else{
                     this.setState({
@@ -146,40 +139,9 @@ class ShopSelectorTwo extends Component {
             }
         }
     }
-    // loadShops3(canUseShops = [],brandList = []) {
-    //     console.log(canUseShops,'canUseShops============')
-    //     const { alloptions,options } = this.state;
-    //     if (canUseShops[0]) {
-    //         const leftShops = options.filter((x) => {
-    //             if (canUseShops.includes(x.shopID)) {
-    //                 return { ...x, disabled: false }
-    //             }
-    //             // return x;
-    //         });
-    //         if(leftShops.length > 0){
-    //             console.log(leftShops,'leftShops>>>>>> in loadShops3')
-    //             this.setState({ options: leftShops },() => {
-    //                 this.loadShops2(brandList);
-    //             });
-    //         }else{
-    //             this.setState({
-    //                 options:[]
-    //             })
-    //             message.warning('无适用的店铺')
-    //         }
-    //         return
-    //     }
-    //     this.setState({ options: options },() => {
-    //         this.loadShops2(brandList);
-    //     });
-    // }
+   
     handleAdd = () => {
         this.setState({ showModal: true });
-        // const {brandList} = this.props;
-        // this.setState({ showModal: true },() => {
-        //     this.loadShops2(brandList);
-        // });
-        
     }
 
     handleClose = (tarID) => {
@@ -207,9 +169,7 @@ class ShopSelectorTwo extends Component {
         if (Array.isArray(extendShopList)) {
             options = [...extendShopList, ...options]
         }
-        console.log(options,'options-----------')
         const filters = this.props.filters || this.state.filters;
-        console.log(value,'value00000000000000000')
         const items = value.reduce((ret, shopID) => {
             const shopInfo = options.find(shop => shop.value === shopID);
             if (!shopInfo) return ret;

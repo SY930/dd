@@ -477,7 +477,6 @@ class WeighBuyGiveDetailInfo extends React.Component {
         const {
             level = ['1']
         } = this.state
-        console.log('stageMeasurment', this.state.stageMeasurment)
         return (
             <FormItem
                 label={'活动规则'}
@@ -708,12 +707,6 @@ class WeighBuyGiveDetailInfo extends React.Component {
 
     render() {
         const { ifMultiGrade, foodRuleList, priceListFlag, scopeLstFlag, scopeLst, priceList, stageAmount, giveFoodCount, floatUp, floatDown } = this.state;
-        console.log('scopeLst', scopeLst)
-        console.log('priceList', priceList)
-        console.log('stageAmount', stageAmount)
-        console.log('giveFoodCount', giveFoodCount)
-        console.log('floatUp', floatUp)
-        console.log('floatDown', floatDown)
         return (
             <div>
                 <Form className={[styles.FormStyle, styles.bugGive].join(' ')}>

@@ -101,7 +101,6 @@ class Two extends React.Component {
                 opts.settleUnitID = '0';
                 opts.accountNo = '0';
             }
-            console.log(opts,'opts--------------->>>>>>>>>>>>>>>>>')
 
             this.props.setSpecialBasicInfo(opts)
         }
@@ -131,7 +130,6 @@ class Two extends React.Component {
                 groupMembersID: specialPromotion.groupMemberID
             })
         }
-        console.log(specialPromotion,'specialPromotionspecialPromotionspecialPromotionspecialPromotion')
         if (Object.keys(specialPromotion).length > 30) {
             this.setState({
                 message: specialPromotion.smsTemplate,
@@ -377,13 +375,11 @@ class Two extends React.Component {
         const {
             isBenefitJumpSendGift = false,
         } = this.props
-        console.log(this.state.filters,this.state.tagIncludes,'this.state.filters')
         const labelProps1 = {
             treeData: this.state.filters,
             value: this.state.tagIncludes,
             defaultValue: [],
             onChange: (e) => {
-                console.log(e,'e fo,men yao tiaojiao')
                 let tagIn = []
                 e.map((i) => {
                     let tag = {}

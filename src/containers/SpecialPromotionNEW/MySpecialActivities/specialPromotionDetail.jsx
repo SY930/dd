@@ -362,7 +362,6 @@ class SpecialPromotionDetail extends React.Component {
     render() {
         const eventEntity = this.props.record.eventInfo.data;
         const { sameItemID, keyword } = this.state;
-        console.log('this.state.detailDataSource', this.state.detailDataSource)
         return (
             <div className={styles.showInfo}>
                 {

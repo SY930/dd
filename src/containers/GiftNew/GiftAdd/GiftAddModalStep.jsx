@@ -337,61 +337,14 @@ class GiftAddModalStep extends React.PureComponent {
         }
 
     }
-    // onCardLevelChange(obj) {
-    //     const { excludeCardTypeShops } = this.state
-    //     const { cardLevelIDList } = obj
-    //     let isShowShopTip = false
-    //     if (cardLevelIDList) {
-    //         if (Array.isArray(excludeCardTypeShops)) {
-    //             const chooseItem = excludeCardTypeShops.filter(v => cardLevelIDList.includes(v.cardTypeID))
-    //             isShowShopTip = chooseItem.find(v => v.shopIDList && v.shopIDList.length)
-    //         }
-    //         this.setState({
-    //             isShowShopTip
-    //         })
-    //     }
-    //     this.setState({
-    //         ...obj,
-    //     })
-    //     const { cardLevelIDList } = obj;
-    //     this.querycanUseShopIDs(cardLevelIDList)
-    // }
-    // onHandleSelect(obj) {
-    //     if (obj && obj.cardLevelIDList) {
-    //         const { cardLevelIDList } = obj
-    //         // 根据卡类筛选店铺
-    //         const { cardTypeShopList, canUseShopIDsAll } = this.state
-    //         if (cardLevelIDList.length === 0) {
-    //             this.setState({
-    //                 canUseShopIDs: canUseShopIDsAll,
-    //             })
-    //             return
-    //         }
-    //         const shopIDs = []
-    //         cardLevelIDList.forEach((item) => {
-    //             if (cardTypeShopList[item]) {
-    //                 shopIDs.push(...cardTypeShopList[item])
-    //             }
-    //         })
-    //         this.setState({
-    //             canUseShopIDs: shopIDs,
-    //         })
-    //         // 清空当前选择的店铺
-    //         this.setState({
-    //             shopIDList: [],
-    //         })
-    //     }
-    // }
     // 查询已选卡类型的可用店铺
     querycanUseShopIDs = (tids = []) => {
-        console.log('tids', tids);
         axiosData('/crm/cardTypeShopService_getListCardTypeShop.ajax', {
             groupID: this.props.accountInfo.get('groupID'),
             queryCardType: 1, // questArr.length === 0 ? 0 : 1,
             cardTypeIds: tids.join(','),
         }, null, { path: 'data.cardTypeShopList' })
             .then((cardTypeShopList) => {
-                console.log(cardTypeShopList,'cardTypeShopList>>>>>>>>>>>')
                 const obj = {}
                 const canUseShopIDsAll = []
                 cardTypeShopList.forEach((item) => {
@@ -412,21 +365,6 @@ class GiftAddModalStep extends React.PureComponent {
             }).catch(err => {
             })
     }
-    // 初始化店铺数据
-    // initShopData = (v) => {
-    //     // 根据卡类筛选店铺
-    //     const { cardLevelIDList, cardTypeShopList, canUseShopIDsAll } = this.state
-    //     const shopIDs = []
-    //     cardLevelIDList.forEach((item) => {
-    //         if (cardTypeShopList[item]) {
-    //             shopIDs.push(...cardTypeShopList[item])
-    //         }
-    //     })
-    //     console.log(shopIDs,cardLevelIDList,'cardLevelIDList-----------')
-    //     this.setState({
-    //         canUseShopIDs: shopIDs.length === 0 && cardLevelIDList.length === 0 ? canUseShopIDsAll : shopIDs, // 没有选卡类所有店铺都可选
-    //     })
-    // }
     isHuaTianSpecificCoupon = () => {
         const { type, gift: { value, data } } = this.props;
         if (value != 10) return false;
@@ -672,7 +610,6 @@ class GiftAddModalStep extends React.PureComponent {
             case 'cardTypeList':
                 if(value && value.length > 0){
                     let questArr = value.map(cardType => cardType.cardTypeID)
-                    console.log(value,'value==========')
                     this.querycanUseShopIDs(questArr)
                 }else{
                     this.setState({
@@ -1808,7 +1745,6 @@ class GiftAddModalStep extends React.PureComponent {
     renderShopNames(decorator) {
         const { shopNames = [],excludeShops = [],selectBrands = [],applyScene } = this.state.values;
         const { type, gift: { value, data } } = this.props;
-        console.log(type,'type>>>>>>>>>>>>')
         const brandList = selectBrands.map(x=>x.targetID);
         return (
             <Row style={{ marginBottom: shopNames.length === 0 ? -15 : 0, width: '302px' }}>
@@ -1843,7 +1779,6 @@ class GiftAddModalStep extends React.PureComponent {
     renderMemberRightShopNames(decorator) {
         const { shopNames = [],excludeShops = [],selectBrands = [],applyScene } = this.state.values;
         const { type, gift: { value, data } } = this.props;
-        console.log(type,'type>>>>>>>>>>>>1')
         const brandList = selectBrands.map(x=>x.targetID);
         return (
             <Row style={{ marginBottom: shopNames.length === 0 ? -15 : 0, width: '439px' }}>

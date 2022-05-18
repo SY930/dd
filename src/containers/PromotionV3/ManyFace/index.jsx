@@ -354,7 +354,6 @@ class ManyFace extends Component {
                 faceData = this.setData4Step3App(eventConditionInfos)
             }
         }
-        // console.log(faceData, 'faceDatafaceData回显')
         return faceData
     }
 
@@ -394,11 +393,8 @@ class ManyFace extends Component {
                     item.triggerEventCustomInfo1 = {};
                 }
             }
-
-            // console.log({ ...item, id: item.itemID, isShowDishSelector: false }, '----')
             return { ...item, id: item.itemID, isShowDishSelector: false }
         })
-        // console.log(data, 'data---')
         return data;
     }
 

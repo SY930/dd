@@ -34,7 +34,6 @@ class ShopSelector extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('kui lan ---------')
         if (nextProps.isShopSelectorShow) {
             this.setState({
                 isShopSelectorShow: nextProps.isShopSelectorShow
@@ -89,7 +88,6 @@ class ShopSelector extends Component {
             const leftBrands = brands.options.filter(x => brandList.includes(x.brandID));
             newFilter[0].options = leftBrands;
             const leftShops = alloptions.filter(x => brandList.includes(x.brandID));
-            console.log(leftShops,'leftShops>>>>>> in loadShops2')
             this.setState({ options: leftShops, filters: newFilter });
             return;
         } 
@@ -105,7 +103,6 @@ class ShopSelector extends Component {
                 }
                 return x;
             });
-            console.log(leftShops,'leftShops>>>>>> in loadShops3')
             this.setState({ options: leftShops });
             return;
         }
@@ -145,9 +142,7 @@ class ShopSelector extends Component {
         if (Array.isArray(extendShopList)) {
             options = [...extendShopList, ...options]
         }
-        console.log(options,'options-----------')
         const filters = this.props.filters || this.state.filters;
-
         const items = value.reduce((ret, shopID) => {
             const shopInfo = options.find(shop => shop.value === shopID);
             if (!shopInfo) return ret;
