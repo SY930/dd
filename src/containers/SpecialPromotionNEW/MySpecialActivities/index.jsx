@@ -2181,6 +2181,11 @@ class MySpecialActivities extends React.Component {
             visible: false,
         })
     }
+    setMVisible = (ifVisible) => {
+        this.setState({
+            visible: ifVisible,
+        })
+    }
     // 活动详情页
     renderModals() {
         const mySpecialActivities = this.props.mySpecialActivities.get('$specialDetailInfo').toJS();
@@ -2200,7 +2205,7 @@ class MySpecialActivities extends React.Component {
             );
         }
         if (mySpecialActivities.status === 'success') {
-            renderContentOfTheModal = (<SpecialPromotionDetail record={mySpecialActivities.data} />);
+            renderContentOfTheModal = (<SpecialPromotionDetail setVisible={this.setMVisible} record={mySpecialActivities.data} />);
         }
 
         return (
@@ -2210,7 +2215,7 @@ class MySpecialActivities extends React.Component {
                 visible={this.state.visible}
                 footer={<Button onClick={this.handleClose}>{COMMON_LABEL.close}</Button>}
                 // closable={false}
-                width="700px"
+                width="800px"
                 onCancel={this.handleClose}
             >
                 {renderContentOfTheModal}
