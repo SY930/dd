@@ -212,8 +212,8 @@ class ManyFace extends Component {
                         return
                     }
                     this.onToggle();
-                    closePage();
-                    jumpPage({ pageID: '1000076003' });
+                    // closePage();
+                    // jumpPage({ pageID: '1000076003' });
                 }
             });
             return;
@@ -230,6 +230,7 @@ class ManyFace extends Component {
         const _this = this;
         const id = this.props.id;
         const title = (<div> <span></span>设置成功</div>)
+        const menuID = _this.props.user.menuList.find(tab => tab.entryCode === '1000076003').menuID
         Modal.confirm(({
             title,
             content: '你可以在【活动管理页】装修/查看/编辑你的活动，不装修则会展示默认图',
@@ -243,15 +244,19 @@ class ManyFace extends Component {
                     _this.props.handleDecorationStart({ itemID: id })
                     return
                 }
-                jumpPage({ pageID: '1000076003', from: 'manyFace', itemID: x.itemID });
+                // const menuID = _this.props.user.menuList.find(tab => tab.entryCode === '1000076003').menuID
+                menuID && closePage(menuID)
+                setTimeout(() => {
+                    jumpPage({ pageID: '1000076003', from: 'manyFace', itemID: x.itemID });
+                })
             },
             onCancel() {
                 _this.onToggle();
                 if (id) {
                     return
                 }
-                closePage();
-                jumpPage({ pageID: '1000076003' })
+                menuID && closePage(menuID)
+                jumpPage({ pageID: '1000076003', from: 'create' });
             },
         }))
     }

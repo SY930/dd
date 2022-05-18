@@ -1,4 +1,5 @@
 import React, { PureComponent as Component } from 'react';
+import { connect } from 'react-redux'
 import { Modal, Steps, Button, message } from 'antd';
 import { jumpPage, closePage } from '@hualala/platform-base';
 import moment from 'moment';
@@ -224,8 +225,8 @@ class Chou2Le extends Component {
             postEvent(allData).then(x => {
                 if(x) {
                     this.onToggle();
-                    closePage();
-                    jumpPage({ pageID: '1000076003'});
+                    // closePage();
+                    // jumpPage({ pageID: '1000076003' });
                 }
             });
             return;
@@ -234,8 +235,10 @@ class Chou2Le extends Component {
         putEvent({...allData}).then(x => {
             if(x) {
                 this.onToggle();
-                closePage();
-                jumpPage({ pageID: '1000076003'});
+                // closePage();
+                const menuID = this.props.user.menuList.find(tab => tab.entryCode === '1000076003').menuID
+                menuID && closePage(menuID)
+                jumpPage({ pageID: '1000076003', from: 'create'});
             }
         })
     }
@@ -431,4 +434,14 @@ class Chou2Le extends Component {
         )
     }
 }
-export default Chou2Le
+function mapStateToProps(state) {
+    return {
+        accountInfo: state.user.get('accountInfo'),
+        user: state.user.toJS(),
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    null,
+)(Chou2Le);
