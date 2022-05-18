@@ -755,6 +755,8 @@ class MySpecialActivities extends React.Component {
     handleChangeTabs = (key) => {
         this.setState({
             tabKeys: key,
+        }, () => {
+            this.handleQuery()
         })
     }
 
