@@ -2806,7 +2806,9 @@ class GiftAddModalStep extends React.PureComponent {
         if(formData.applyScene){
             formData.applyScene = formData.applyScene.toString()
         }
-        
+        if(formData.deductMoneyType){
+            formData.deductMoneyType = String(formData.deductMoneyType)
+        }
         // 折扣上限显示
         if (value == '111' && formData.discountOffMax == 0) {
             formData.discountOffMax = ''
@@ -3375,6 +3377,17 @@ class GiftAddModalStep extends React.PureComponent {
                         </Row>
                     )
                 },
+            },
+            deductMoneyType:{
+                label: '卡值消费顺序',
+                type: 'combo',
+                // disabled: type !== 'add' && type !== 'copy',
+                defaultValue: '0',
+                options: [
+                    { label: '先消费现金卡值', value: '1' },
+                    { label: '先消费赠送卡值', value: '2' },
+                    { label: '现金卡值和赠送卡值同时使用', value: '0' },
+                ],
             },
             couponTrdChannelStockNums: {
                 label: '投放渠道',
