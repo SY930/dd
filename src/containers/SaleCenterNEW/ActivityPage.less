@@ -2466,7 +2466,7 @@
 
 .pageContentWrapper {
     background-color: #FFFFFF;
-    padding: 15px 30px 30px;
+    padding: 6px 30px 30px;
     .more {
         // cursor: pointer;
         position: relative;
@@ -2487,6 +2487,11 @@
     }
     .moveMoreShow {
         // display: block;
+    }
+    :global {
+        .ant-table-tbody > tr > td, .ant-table-thead > tr > th {
+            line-height: 35px;
+        }
     }
 }
 
@@ -2935,6 +2940,7 @@
     height: 24px;
     width: 60px;
     border-radius: 20px;
+    background: #ccc;
     :global{
         // .ant-switch {
             // background: red;
