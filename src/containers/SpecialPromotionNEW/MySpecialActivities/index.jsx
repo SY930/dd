@@ -352,6 +352,8 @@ class MySpecialActivities extends React.Component {
         } else if(from === 'onSale') {// 创建促销活动tab默认打开促销活动
             this.setState({
                 tabKeys: 'onSalePage',
+            }, () => {
+                this.clearUrl()
             })
         }
         if (!from) {
@@ -753,6 +755,8 @@ class MySpecialActivities extends React.Component {
     handleChangeTabs = (key) => {
         this.setState({
             tabKeys: key,
+        }, () => {
+            this.handleQuery()
         })
     }
 
@@ -1035,7 +1039,7 @@ class MySpecialActivities extends React.Component {
                 }
                 <div>
                     <PromotionCalendarBanner />
-                    <Tabs defaultActiveKey={tabKeys} onChange={this.handleChangeTabs} className="tabsStyles" style={{ backgroundColor: '#fff' }}>
+                    <Tabs defaultActiveKey={tabKeys} onChange={this.handleChangeTabs} className="tabsStyles" style={{ backgroundColor: '#fff' }} activeKey={tabKeys}>
                         <TabPane tab="营销活动" key="saleSpecialPage">
                             {
                                 !this.state.authStatus ?
