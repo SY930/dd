@@ -64,6 +64,7 @@ class SelectBrands extends Component {
     }
 
     render() {
+        const {type} = this.props;
         const realValue = (this.props.value || []).map(target => String(target.targetID))
         return (
             <Select
@@ -76,7 +77,7 @@ class SelectBrands extends Component {
                 value={realValue}
                 onChange={this.handleSelectChange}
                 style={{
-                    width: '439px'
+                    width: type== '80' ? '440px' : '300px'
                 }}
             >
                 {
