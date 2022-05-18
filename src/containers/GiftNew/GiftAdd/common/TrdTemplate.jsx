@@ -1473,6 +1473,7 @@ class TrdTemplate extends React.Component {
                                     style={{
                                         lineHeight: 1.5,
                                         margin: '20px 0 20px 34px',
+                                        left:'0'
                                     }}
                                     className={styles.logoGroupHeader}
                                 >
