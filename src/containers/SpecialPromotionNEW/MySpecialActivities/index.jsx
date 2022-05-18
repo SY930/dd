@@ -1035,7 +1035,7 @@ class MySpecialActivities extends React.Component {
                 }
                 <div>
                     <PromotionCalendarBanner />
-                    <Tabs defaultActiveKey={tabKeys} onChange={this.handleChangeTabs} className="tabsStyles" style={{ backgroundColor: '#fff' }}>
+                    <Tabs defaultActiveKey={tabKeys} onChange={this.handleChangeTabs} className="tabsStyles" style={{ backgroundColor: '#fff' }} activeKey={tabKeys}>
                         <TabPane tab="营销活动" key="saleSpecialPage">
                             {
                                 !this.state.authStatus ?
