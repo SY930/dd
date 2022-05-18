@@ -222,19 +222,26 @@ class Two extends React.Component {
                 },() => {
                     let { customerRangeConditionIDs } = this.props.specialPromotion.get('$eventInfo').toJS();
                     let useData = [];
+                    let selectTags = [];
                     if(res.data.tagRuleDetails && res.data.tagRuleDetails.length > 0){
                         if(customerRangeConditionIDs && customerRangeConditionIDs.length > 0){
                             res.data.tagRuleDetails.map(item => {
                                 customerRangeConditionIDs.map(d => {
                                     if(item.tagRuleID == d){
                                         useData.push(item.tagRuleID + '@@' + item.tagTypeID + '@@' + item.tagName);
+                                        selectTags.push({
+                                            tagRuleID:item.tagRuleID,
+                                            tagTypeID:item.tagTypeID,
+                                            tagName:item.tagName
+                                        })
                                     }
                                 })
                             })
                         }
                     }
                     this.setState({
-                        tagIncludes:useData
+                        tagIncludes:useData,
+                        selectedTags:selectTags
                     })
                 })
             } else {
