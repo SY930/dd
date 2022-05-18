@@ -23,16 +23,14 @@ class PureTable extends Component {
     }
 
     handleChekTime = async () => {
-        const { groupID } = this.getAccountInfo()
-        const method = '/dyCoupon/xfc/verifyHighMoment';
-        const response = await axios.post(`/api/v1/universal?groupID=${groupID}`, {
-            params: {
-                service: 'HTTP_SERVICE_URL_PROMOTION_DOUYIN',
-                method,
-            },
+        const method = 'dyCoupon/xfc/verifyHighMoment';
+        const response = await axios.post('/api/v1/universal', {
+            service: 'HTTP_SERVICE_URL_PROMOTION_DOUYIN',
+            method,
+            type: 'post',
+            data: { },
         });
         const { code, data, msg } = response;
-        console.log("🚀 ~ file: PureTable.jsx ~ line 35 ~ PureTable ~ handleChekTime= ~ data", data)
         if (code === '000') {
             if (data) {
                 this.setState({
