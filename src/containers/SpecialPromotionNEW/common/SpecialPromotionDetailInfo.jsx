@@ -847,7 +847,6 @@ class SpecialDetailInfo extends Component {
 
             })
         }
-        // console.log(initEventRecommendSettings,'initEventRecommendSettings', this.recommendOtherGifts)
 
         // 回显直接推荐人和间接推荐人数据
         initEventRecommendSettings.forEach(v => {

@@ -323,10 +323,41 @@ class MySpecialActivities extends React.Component {
         this.handleUpdateOpe = this.handleUpdateOpe.bind(this);
     }
 
+    clearUrl() {
+        var { href } = window.location;
+        var [valiable] = href.split('?');
+        window.history.pushState(null, null, valiable);
+    }
+
     fromCrmJump = () => {
         const { from, itemID } = this.getQueryVariable();
         if (from === 'manyFace') {
-            this.handleDecorationStart({ itemID });
+            this.setState({
+                isActive: '',
+                tabKeys: 'saleSpecialPage'
+            },() => {
+                this.handleQuery()
+                this.clearUrl()
+                this.handleDecorationStart({ itemID });
+            })
+        } else if (from === 'create') {
+            // 创建活动后更新使用状态为不限
+            this.setState({
+                isActive: '',
+                tabKeys: 'saleSpecialPage'
+            },() => {
+                this.handleQuery()
+                this.clearUrl()
+            })
+        } else if(from === 'onSale') {// 创建促销活动tab默认打开促销活动
+            this.setState({
+                tabKeys: 'onSalePage',
+            }, () => {
+                this.clearUrl()
+            })
+        }
+        if (!from) {
+            this.handleQuery(); // 直接进入页面请求数据
         }
     }
 
@@ -493,18 +524,6 @@ class MySpecialActivities extends React.Component {
             fetchSpecialPromotionList,
         } = this.props;
         this.queryWechatMpInfo();
-        // fetchSpecialPromotionList({
-        //     data: {
-        //         groupID: this.props.user.accountInfo.groupID,
-        //         // _role:this.props.user.accountInfo.roleType,
-        //         // _loginName:this.props.user.accountInfo.loginName,
-        //         // _groupLoginName:this.props.user.accountInfo.groupLoginName,
-        //         pageSize: this.state.pageSizes,
-        //         pageNo: 1,
-        //     },
-        //     fail: (msg) => { message.error(msg) },
-        // });
-        this.handleQuery();
         // 把groupID传给后台，后台执行自动终止
         this.props.updateExpiredActiveState({
             groupID: this.props.user.accountInfo.groupID,
@@ -736,6 +755,8 @@ class MySpecialActivities extends React.Component {
     handleChangeTabs = (key) => {
         this.setState({
             tabKeys: key,
+        }, () => {
+            this.handleQuery()
         })
     }
 
@@ -1018,7 +1039,7 @@ class MySpecialActivities extends React.Component {
                 }
                 <div>
                     <PromotionCalendarBanner />
-                    <Tabs defaultActiveKey={tabKeys} onChange={this.handleChangeTabs} className="tabsStyles" style={{ backgroundColor: '#fff' }}>
+                    <Tabs defaultActiveKey={tabKeys} onChange={this.handleChangeTabs} className="tabsStyles" style={{ backgroundColor: '#fff' }} activeKey={tabKeys}>
                         <TabPane tab="营销活动" key="saleSpecialPage">
                             {
                                 !this.state.authStatus ?
@@ -1590,8 +1611,9 @@ class MySpecialActivities extends React.Component {
                 dataIndex: 'index',
                 className: 'TableTxtCenter',
                 width: 60,
-                // fixed:'left',
+                fixed:'left',
                 key: 'key',
+                // ellipsis: true,
                 render: (text, record, index) => {
                     return (this.state.pageNo - 1) * this.state.pageSizes + text;
                 },
@@ -1600,9 +1622,10 @@ class MySpecialActivities extends React.Component {
             {
                 title: COMMON_LABEL.actions,
                 key: 'operation',
-                width: 130,
+                width: 180,
                 className: 'TableTxtCenter',
-                // fixed:'left',
+                fixed:'left',
+                // ellipsis: true,
                 render: (text, record, index) => {
                     // status 0-初始化   1-等待执行  2-执行中  3-执行完毕  4-执行失败  5-审核中  6-中断  
                     if (record.eventWay === 80) {
@@ -1739,8 +1762,10 @@ class MySpecialActivities extends React.Component {
                 title: '启用/禁用',
                 key: 'status',
                 dataIndex: 'status',
-                width: 80,
+                width: 100,
                 className: 'TableTxtCenter',
+                fixed:'left',
+                // ellipsis: true,
                 render: (text, record, index) => {
                     const defaultChecked = (record.isActive == '1' ? true : false);
                     const statusState = (
@@ -1797,8 +1822,9 @@ class MySpecialActivities extends React.Component {
                 title: `${this.props.intl.formatMessage(STRING_SPE.d4h177f79da1218)}`,
                 dataIndex: 'eventWay',
                 key: 'eventWay',
-                width: 100,
-                // fixed:'left',
+                width: 130,
+                fixed:'left',
+                // ellipsis: true,
                 render: (text, record) => {
                     return <span>{record.eventWay == 70 ? `${this.props.intl.formatMessage(STRING_SPE.d5672b44908540146)}` : mapValueToLabel(this.cfg.eventWay, String(record.eventWay))}</span>
                 },
@@ -1808,8 +1834,9 @@ class MySpecialActivities extends React.Component {
                 title: `${this.props.intl.formatMessage(STRING_SPE.d4546grade4128)}`,
                 dataIndex: 'eventName',
                 key: 'eventName',
-                // fixed:'left',
-                width: 200,
+                fixed:'left',
+                width: 220,
+                // ellipsis: true,
                 render: text => <span title={text}>{text}</span>,
             },
             // {
@@ -1842,7 +1869,7 @@ class MySpecialActivities extends React.Component {
                 className: 'TableTxtCenter',
                 dataIndex: 'validDate',
                 key: '',
-                width: 180,
+                // width: 220,
                 render: (validDate) => {
                     if (validDate.start === '0' || validDate.end === '0' ||
                         validDate.start === '20000101' || validDate.end === '29991231') {
@@ -1854,7 +1881,7 @@ class MySpecialActivities extends React.Component {
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.d2b1c68ddaa344161)}`,
                 dataIndex: 'operator',
-                width: 120,
+                // width: 120,
                 key: 'operator',
                 render: (text, record) => {
                     if (!record.operator) {
@@ -1875,12 +1902,13 @@ class MySpecialActivities extends React.Component {
                 className: 'TableTxtCenter',
                 dataIndex: 'operateTime',
                 key: 'operateTime',
-                width: 300,
+                // width: 300,
                 render: (text, record, index) => {
                     if (record.actionStamp === '' && record.createStamp === '') {
                         return '--';
                     }
-                    return `${moment(new Date(parseInt(record.createStamp))).format('YYYY-MM-DD HH:mm:ss')} / ${moment(new Date(parseInt(record.actionStamp))).format('YYYY-MM-DD HH:mm:ss')}`;
+                    const t = `${moment(new Date(parseInt(record.createStamp))).format('YYYY-MM-DD HH:mm:ss')} / ${moment(new Date(parseInt(record.actionStamp))).format('YYYY-MM-DD HH:mm:ss')}`
+                    return <Tooltip title={t}>{t}</Tooltip>;
                 },
             },
             // {
@@ -1906,7 +1934,8 @@ class MySpecialActivities extends React.Component {
                     columns={columns}
                     dataSource={this.state.dataSource}
                     loading={this.state.loading}
-                    scroll={{ x: 1630, y: 'calc(100vh - 440px)' }}
+                    scroll={{ x: 1000, y: 'calc(100vh - 440px)' }}
+                    size="default"
                     pagination={{
                         pageSize: this.state.pageSizes,
                         pageSizeOptions: ['25', '50', '100', '200'],
@@ -2181,6 +2210,11 @@ class MySpecialActivities extends React.Component {
             visible: false,
         })
     }
+    setMVisible = (ifVisible) => {
+        this.setState({
+            visible: ifVisible,
+        })
+    }
     // 活动详情页
     renderModals() {
         const mySpecialActivities = this.props.mySpecialActivities.get('$specialDetailInfo').toJS();
@@ -2200,7 +2234,7 @@ class MySpecialActivities extends React.Component {
             );
         }
         if (mySpecialActivities.status === 'success') {
-            renderContentOfTheModal = (<SpecialPromotionDetail record={mySpecialActivities.data} />);
+            renderContentOfTheModal = (<SpecialPromotionDetail setVisible={this.setMVisible} record={mySpecialActivities.data} />);
         }
 
         return (
@@ -2210,7 +2244,7 @@ class MySpecialActivities extends React.Component {
                 visible={this.state.visible}
                 footer={<Button onClick={this.handleClose}>{COMMON_LABEL.close}</Button>}
                 // closable={false}
-                width="700px"
+                width="800px"
                 onCancel={this.handleClose}
             >
                 {renderContentOfTheModal}

@@ -1,4 +1,5 @@
 import React, { PureComponent as Component } from 'react';
+import { connect } from 'react-redux'
 import { Modal, Steps, Button, message } from 'antd';
 import { jumpPage, closePage } from '@hualala/platform-base';
 import moment from 'moment';
@@ -276,8 +277,8 @@ class BlindBox extends Component {
             postEvent(allData).then(x => {
                 if(x) {
                     this.onToggle();
-                    closePage();
-                    jumpPage({ pageID: '1000076003'});
+                    // closePage();
+                    // jumpPage({ pageID: '1000076003', from: 'edit'});
                 }
             });
             return;
@@ -286,8 +287,10 @@ class BlindBox extends Component {
         putEvent({...allData}).then(x => {
             if(x) {
                 this.onToggle();
-                closePage();
-                jumpPage({ pageID: '1000076003'});
+                // closePage();
+                const menuID = this.props.user.menuList.find(tab => tab.entryCode === '1000076003').menuID
+                menuID && closePage(menuID)
+                jumpPage({ pageID: '1000076003', from: 'create'});
             }
         })
     }
@@ -528,4 +531,15 @@ class BlindBox extends Component {
         )
     }
 }
-export default BlindBox
+
+function mapStateToProps(state) {
+    return {
+        accountInfo: state.user.get('accountInfo'),
+        user: state.user.toJS(),
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    null,
+)(BlindBox);

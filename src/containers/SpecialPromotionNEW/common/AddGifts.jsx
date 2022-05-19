@@ -753,7 +753,6 @@ class AddGifts extends React.Component {
     }
 
     handleGiftChange(value, index) {
-        console.log(value,index,'value000000000000')
         if (value) {
             const newValue = value.split(',');
             const _infos = this.state.infos;

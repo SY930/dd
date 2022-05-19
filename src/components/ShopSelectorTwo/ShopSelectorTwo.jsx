@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Icon } from 'antd';
+import { Icon,message } from 'antd';
 import classnames from 'classnames';
 import { isEqual } from 'lodash';
 
@@ -12,7 +12,7 @@ import { loadShopSchema } from './utils';
 
 import './assets/ShopSelector.less';
 
-class ShopSelector extends Component {
+class ShopSelectorTwo extends Component {
     state = {
         showModal: false,
         options: null,
@@ -28,8 +28,7 @@ class ShopSelector extends Component {
             this.props.defaultCheckAll && this.props.onChange(
                 _shops.map(shop => shop.value)
             );
-            this.loadShops2(this.props.brandList);
-            this.loadShops3(this.props.canUseShops);
+            this.loadFilterShops(this.props.brandList,this.props.canUseShops);
         });
     }
 
@@ -45,12 +44,12 @@ class ShopSelector extends Component {
         if (!isEqual(this.props.schemaData, nextProps.schemaData)) {
             this.loadShops({}, nextProps.schemaData, true);
         }
-        if (!isEqual(this.props.brandList, nextProps.brandList)) {
-            this.loadShops2(nextProps.brandList);
+        if (!isEqual(this.props.brandList, nextProps.brandList) || !isEqual(this.props.canUseShops, nextProps.canUseShops)) {
+            this.loadFilterShops(nextProps.brandList,nextProps.canUseShops);
         }
-        if (!isEqual(this.props.canUseShops, nextProps.canUseShops)) {
-            this.loadShops3(nextProps.canUseShops);
-        }
+        // if (!isEqual(this.props.canUseShops, nextProps.canUseShops)) {
+        //     this.loadShops3(nextProps.canUseShops,nextProps.brandList);
+        // }
     }
 
     loadShops(params = {}, cache = this.props.schemaData, isForce = false, filterShopIds = []) {
@@ -79,42 +78,70 @@ class ShopSelector extends Component {
                 return shops;
             });
     }
-    loadShops2(brandList = []) {
-        const { alloptions, allfilters } = this.state;
+    loadFilterShops(brandList = [],canUseShops = []) {
+        const { alloptions,allfilters,options } = this.state;
         if (!allfilters[0]) { return }
         const newFilter = JSON.parse(JSON.stringify(allfilters));
-        if (brandList[0]) {
+        if (brandList && brandList.length > 0) { //如果有品牌
             const brands = allfilters[0];
             const leftBrands = brands.options.filter(x => brandList.includes(x.brandID));
             newFilter[0].options = leftBrands;
-            const leftShops = alloptions.filter(x => brandList.includes(x.brandID));
-            this.setState({ options: leftShops, filters: newFilter });
-            return;
-        } 
-        this.setState({ options: alloptions, filters: allfilters });
-    }
-    loadShops3(canUseShops = []) {
-
-        const { alloptions } = this.state;
-        if (canUseShops[0]) {
-            const leftShops = alloptions.map((x) => {
-                if (!canUseShops.includes(x.shopID)) {
-                    return { ...x, disabled: true }
+            const filterFirstOptions = alloptions.filter(x => brandList.includes(x.brandID));
+            if(canUseShops && canUseShops.length > 0){//如果有卡类
+                const filterTwoOptions = filterFirstOptions.filter((x) => {
+                    if (canUseShops.includes(x.shopID)) {
+                        return { ...x, disabled: false }
+                    }
+                });
+                if(filterTwoOptions.length > 0){
+                    this.setState({ options: filterTwoOptions,filters:newFilter });
+                }else{
+                    this.setState({
+                        options:[],
+                        filters:newFilter
+                    })
+                    message.warning('无适用的店铺')
                 }
-                return x;
-            });
-            this.setState({ options: leftShops });
-            return;
+                return
+            }else{//没有卡类
+                if(filterFirstOptions && filterFirstOptions.length > 0){
+                    this.setState({
+                        options:filterFirstOptions,filters:newFilter
+                    })
+                }else{
+                    this.setState({
+                        options:[],filters:newFilter
+                    })
+                    message.warning('无适用的店铺')
+                }
+                return 
+            }
+        } else {//如果没有品牌
+            if(canUseShops && canUseShops.length > 0){//如果有选择卡类
+                const filterTwoOptions = alloptions.filter((x) => {
+                    if (canUseShops.includes(x.shopID)) {
+                        return { ...x, disabled: false }
+                    }
+                });
+                if(filterTwoOptions.length > 0){
+                    this.setState({ options: filterTwoOptions,filters:newFilter });
+                }else{
+                    this.setState({
+                        options:[],filters:newFilter
+                    })
+                    message.warning('无适用的店铺')
+                }
+                return
+            }else{//如果没有选择的卡类
+                this.setState({
+                    options:alloptions,filters:newFilter
+                })
+            }
         }
-        this.setState({ options: alloptions });
     }
+   
     handleAdd = () => {
         this.setState({ showModal: true });
-        // const {brandList} = this.props;
-        // this.setState({ showModal: true },() => {
-        //     this.loadShops2(brandList);
-        // });
-        
     }
 
     handleClose = (tarID) => {
@@ -194,7 +221,7 @@ class ShopSelector extends Component {
     }
 }
 
-ShopSelector.defaultProps = {
+ShopSelectorTwo.defaultProps = {
     // FIXME: set default value for a controled component will get antd form warning.
     // value: [],
     // onChange() {},
@@ -203,7 +230,7 @@ ShopSelector.defaultProps = {
     defaultCheckAll: false,
 };
 
-ShopSelector.propTypes = {
+ShopSelectorTwo.propTypes = {
     /** 当前选择的项 */
     value: PropTypes.arrayOf(PropTypes.string),
     /** 选项改变时的回调 */
@@ -219,4 +246,4 @@ ShopSelector.propTypes = {
     ]),
 };
 
-export default ShopSelector;
+export default ShopSelectorTwo;

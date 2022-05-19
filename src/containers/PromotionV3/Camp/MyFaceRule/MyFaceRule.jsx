@@ -74,7 +74,6 @@ class MyFaceRule extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (!_.isEqual(nextProps.allActivityList, this.props.allActivityList) || nextProps.clientType !== this.props.clientType) {
-            console.log('componentWillReceiveProps执行')
             this.initEventSelectOption();
         }
     }
@@ -159,7 +158,6 @@ class MyFaceRule extends Component {
 
     onEventsApp = (idx, key, value) => {
         const item = this.state.eventSelectOption.filter(itm => itm.value == value)
-        console.log("🚀 ~ file: MyFaceRule.jsx ~ line 161 ~ MyFaceRule ~ item", item)
         // const triggerEventCustomInfo1 = item[0].value === "jumpToMiniApp" ? jumpApp : {}
         // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 163 ~ MyFaceRule ~ triggerEventCustomInfo1", triggerEventCustomInfo1)
         this.onChange(idx, { [key]: value, triggerEventName1: item[0] ? item[0].label : '', triggerEventCustomInfo1: {}, triggerEventCustomInfoApp1: _.cloneDeep(jumpApp) })
@@ -182,7 +180,6 @@ class MyFaceRule extends Component {
     }
 
     onChangeAppID = (idx, key, { target }, parent, index) => {
-    console.log("🚀 ~ file: MyFaceRule.jsx ~ line 180 ~ MyFaceRule ~ parent", parent)
         parent.triggerEventCustomInfoApp1[index].appID = target.value;
         // parent.triggerEventCustomInfo = [];
         // parent.triggerEventCustomInfo = 
@@ -278,7 +275,6 @@ class MyFaceRule extends Component {
             const restList = _.filter(eventSelectOption, item => ['', 'miniAppPage'].includes(item.value));
             eventList = restList.concat(eventList)
         }
-        console.log(eventList, 'eventList');
         this.setState({
             eventSelectOption: eventList,
         })
@@ -593,7 +589,6 @@ class MyFaceRule extends Component {
         if (!value[0]) {
             value.push({ ...faceDefVal });
         }
-        // console.log(this.state.memberParams, 'memberParams')
         return (
             <div>
                 {

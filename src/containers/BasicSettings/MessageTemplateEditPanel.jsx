@@ -243,6 +243,7 @@ class MessageTemplateEditPanel extends React.Component {
                                     marginLeft: '-2em',
                                 }}>{SALE_LABEL.k5m6e3pr}：</span>{SALE_LABEL.k6h90rqx}；</div>
                                 <div>{SALE_LABEL.k6h90s7l}<span style={{color: 'red'}}>{SALE_LABEL.k6h90sfx}</span>，{SALE_LABEL.k6h90so9}；</div>
+                                <div>请注意是否已输入<span style={{color: 'red'}}>门店名称</span>等关键信息；</div>
                                 <div>{SALE_LABEL.k6h90rz9}；</div>
                             </div>
                         } type="warning" />

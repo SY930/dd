@@ -234,7 +234,6 @@ class RecommendFoodDetailInfo extends React.Component {
                     message.warning(`最多添加100道推荐菜品, 第${i + 1}档位添加多与100道菜品`)
                     return false;
                 }
-                console.log(tempFoodList,)
                 if(replacePriceLst.length) {
                     priceList = replacePriceLst
                 } else {

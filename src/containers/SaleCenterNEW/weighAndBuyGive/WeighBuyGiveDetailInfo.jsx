@@ -411,7 +411,7 @@ class WeighBuyGiveDetailInfo extends React.Component {
     onStageMeasurmentChange = (value, index) => {
         let { stageAmount, stageAmountFlag, foodRuleList } = this.state;
         if (stageAmount[index] == null || stageAmount[index] == '' || stageAmount[index] == '0' || (value == 1 && !/^(([1-9]\d{0,4})|0)(\.\d{0,2})?$/.test(stageAmount[index])) ||
-        (value == 2 && !/^\+?\d{0,5}$/.test(stageAmount[index]))
+            (value == 2 && !/^\+?\d{0,5}$/.test(stageAmount[index]))
         ) {
             stageAmountFlag[index] = false;
         } else {
@@ -477,7 +477,6 @@ class WeighBuyGiveDetailInfo extends React.Component {
         const {
             level = ['1']
         } = this.state
-        console.log('stageMeasurment', this.state.stageMeasurment)
         return (
             <FormItem
                 label={'活动规则'}
@@ -533,12 +532,11 @@ class WeighBuyGiveDetailInfo extends React.Component {
                                             help={this.state.stageAmountFlag[index] ? null : this.state.stageMeasurment[index] == 1 ? '请输入大于0，整数5位以内且小数2位内的数' : '请输入5位以内正整数'}
                                         >
                                             <Input key={2}
-                                                // addonAfter={'斤'}
                                                 value={this.state.stageAmount[index]}
                                                 onChange={(value) => {
                                                     this.onStageAmountChange(value, index);
                                                 }}
-                                                placeholder={this.state.stageMeasurment[index] == 1 ? '请输入商品重量': '请输入购买金额'}
+                                                placeholder={this.state.stageMeasurment[index] == 1 ? '请输入商品重量' : '请输入购买金额'}
                                             />
                                             <Select
                                                 style={{
@@ -552,7 +550,7 @@ class WeighBuyGiveDetailInfo extends React.Component {
                                                 value={this.state.stageMeasurment[index] || 1}
                                             >
                                                 <Option key={1} value={1} >
-                                                    斤
+                                                    份
                                                 </Option>
                                                 <Option key={2} value={2} >
                                                     元
@@ -591,7 +589,7 @@ class WeighBuyGiveDetailInfo extends React.Component {
                                             help={this.state.giveFoodCountFlag[index] ? Number(this.state.giveFoodCount[index]) > Number(this.state.stageAmount[index]) ? '赠送数量不能大于购买数量' : null : '请输入大于0，整数5位以内且小数2位内的数'}
                                         >
                                             <Input key={2}
-                                                addonAfter={'斤'}
+                                                addonAfter={'份'}
                                                 value={this.state.giveFoodCount[index]}
                                                 onChange={(value) => {
                                                     this.onGiveFoodCountChange(value, index);
@@ -610,7 +608,7 @@ class WeighBuyGiveDetailInfo extends React.Component {
                                             help={this.state.floatDownFlag[index] ? this.state.floatDown[index] && (Number(this.state.floatDown[index]) >= Number(this.state.giveFoodCount[index])) ? '赠送最小值需小于赠送数量' : null : '请输入大于0，整数5位以内且小数2位内的数'}
                                         >
                                             <Input key={2}
-                                                addonAfter={'斤'}
+                                                addonAfter={'份'}
                                                 value={this.state.floatDown[index]}
                                                 onChange={(value) => {
                                                     this.onFloatDownChange(value, index);
@@ -628,7 +626,7 @@ class WeighBuyGiveDetailInfo extends React.Component {
                                             help={this.state.floatUpFlag[index] ? this.state.floatUp[index] && (Number(this.state.floatUp[index]) <= Number(this.state.giveFoodCount[index])) ? '赠送最大值需大于赠送数量' : null : '请输入大于0，整数5位以内且小数2位内的数'}
                                         >
                                             <Input key={2}
-                                                addonAfter={'斤'}
+                                                addonAfter={'份'}
                                                 value={this.state.floatUp[index]}
                                                 onChange={(value) => {
                                                     this.onFloatUpChange(value, index);
@@ -649,7 +647,7 @@ class WeighBuyGiveDetailInfo extends React.Component {
         let value = e.target.value
         let { stageAmount, stageAmountFlag, foodRuleList, stageMeasurment } = this.state;
         if (value == null || value == '' || value == '0' || (stageMeasurment[index] == 1 && !/^(([1-9]\d{0,4})|0)(\.\d{0,2})?$/.test(value)) ||
-        (stageMeasurment[index] == 2 && !/^\+?\d{0,5}$/.test(value))
+            (stageMeasurment[index] == 2 && !/^\+?\d{0,5}$/.test(value))
         ) {
             stageAmountFlag[index] = false;
             stageAmount[index] = value;
@@ -709,12 +707,6 @@ class WeighBuyGiveDetailInfo extends React.Component {
 
     render() {
         const { ifMultiGrade, foodRuleList, priceListFlag, scopeLstFlag, scopeLst, priceList, stageAmount, giveFoodCount, floatUp, floatDown } = this.state;
-        console.log('scopeLst', scopeLst)
-        console.log('priceList', priceList)
-        console.log('stageAmount', stageAmount)
-        console.log('giveFoodCount', giveFoodCount)
-        console.log('floatUp', floatUp)
-        console.log('floatDown', floatDown)
         return (
             <div>
                 <Form className={[styles.FormStyle, styles.bugGive].join(' ')}>

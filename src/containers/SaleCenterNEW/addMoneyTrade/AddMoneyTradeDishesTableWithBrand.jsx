@@ -225,7 +225,6 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
             total,
             pageNo,
         } = this.state;
-        console.log('now current data is', data)
         const {
             calType = 0,
         } = this.props
@@ -328,7 +327,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
             {
                 title:
                     <span>最大换购数量
-                        <Tooltip title={'称重菜品仅支持POS2.5且默认规格为“斤”'}>
+                        <Tooltip title={'称重菜品仅支持POS2.5'}>
                             <Icon
                                 style={{
                                     marginLeft: 3,
@@ -363,7 +362,7 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
             },
             {
                 title:
-                    <span>称重误差值(斤)
+                    <span>称重误差值(份)
                         <Tooltip title={'仅支持POS2.5，仅“需要确定数量”的菜品才能编辑称重误差值，其他菜品不能编辑此项'}>
                             <Icon
                                 style={{
@@ -399,7 +398,6 @@ class AddMoneyTradeDishesTableWithBrand extends Component {
             },
         ];
         const displayDataSource = data.map((item, index) => ({ ...item, index }))
-        console.log('displayDataSource is:', displayDataSource)
         return (
             <FormItem className={styles.FormItemStyle} style={{position: 'relative', left: 13}}>
                 <Row>

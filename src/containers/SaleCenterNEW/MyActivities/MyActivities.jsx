@@ -15,7 +15,7 @@ import {
     Table, Icon, Select, DatePicker,
     Button, Modal, Row, Col, message,
     TreeSelect, Switch, Input, Radio,
-    Spin, Popover, Menu
+    Spin, Popover, Menu, Tooltip
 } from 'antd';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { throttle } from 'lodash'
@@ -286,7 +286,7 @@ class MyActivities extends React.Component {
             queryPromotionList,
             queryPromotionAutoRunList,
         } = this.props;
-        this.handleQuery();
+        // this.handleQuery();
         fetchPromotionCategories({
             groupID: this.props.user.accountInfo.groupID,
             phraseType: '0',
@@ -307,12 +307,43 @@ class MyActivities extends React.Component {
         queryPromotionAutoRunList()
         this.onWindowResize();
         this.getSearchListContent() // 查询方案列表
+        this.fromOnsaleJump() // 促销活动创建后情况筛选框状态
         window.addEventListener('resize', this.onWindowResize);
 
     }
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.onWindowResize);
+    }
+
+    getQueryVariable() {
+        const search = window.decodeURIComponent(window.location.search)
+        var query = search.substr(1)
+        query = query.split('&')
+        var params = {}
+        for (let i = 0; i < query.length; i++) {
+            let q = query[i].split('=')
+            if (q.length === 2) {
+                params[q[0]] = q[1]
+            }
+        }
+        return params
+    }
+
+    fromOnsaleJump = () => {
+        const { from, itemID } = this.getQueryVariable();
+        if (from === 'onSale') {
+            this.setState({
+                promotionState: '0', // 使用状态
+                promotionValid: '0', 
+            },() => {
+                this.handleQuery()
+                // this.clearUrl()
+            })
+        }
+        if (!from) {
+            this.handleQuery()
+        }
     }
 
     goSearch = ({ key }) => {
@@ -1312,7 +1343,8 @@ class MyActivities extends React.Component {
                         </li>
 
                         <li>
-                            <h5>{SALE_LABEL.k5dlbwqo}</h5>
+                            {/* 使用状态 */}
+                            <h5>{SALE_LABEL.k5dlbwqo}</h5> 
                         </li>
                         <li>
                             <Select
@@ -1351,6 +1383,7 @@ class MyActivities extends React.Component {
                             <Select
                                 placeholder=""
                                 defaultValue={'2'}
+                                value={this.state.promotionValid}
                                 style={{ width: 100 }}
                                 onChange={(value) => {
                                     this.setState({
@@ -1568,6 +1601,7 @@ class MyActivities extends React.Component {
                 className: 'TableTxtCenter',
                 width: 50,
                 key: 'key',
+                fixed:'left',
                 render: (text, record, index) => {
                     return (this.state.pageNo - 1) * this.state.pageSizes + text;
                 },
@@ -1577,6 +1611,7 @@ class MyActivities extends React.Component {
                 key: 'operation',
                 className: 'TableTxtCenter',
                 width: 180,
+                fixed:'left',
                 render: (text, record, index) => {
                     const isGroupPro = record.maintenanceLevel == '0';//区分集团和店铺
                     return (
@@ -1663,8 +1698,9 @@ class MyActivities extends React.Component {
                 title: '启用/禁用',
                 key: 'status',
                 dataIndex: 'status',
-                width: 80,
+                width: 90,
                 className: 'TableTxtCenter',
+                fixed:'left',
                 render: (text, record, index) => {
                     const defaultChecked = (record.isActive == '1' ? true : false); // 开启 / 禁用
                     const isGroupPro = record.maintenanceLevel == '0';
@@ -1720,6 +1756,7 @@ class MyActivities extends React.Component {
                 title: SALE_LABEL.k5dk5uwl,
                 dataIndex: 'promotionType',
                 key: 'promotionType',
+                fixed:'left',
                 width: 120,
                 render: (promotionType) => {
                     const promotion = this.getAllPromotionTypes().filter((promotion) => {
@@ -1733,6 +1770,7 @@ class MyActivities extends React.Component {
                 title: SALE_LABEL.k5dlcm1i,
                 dataIndex: 'promotionName',
                 key: 'promotionName',
+                fixed:'left',
                 width: 200,
                 render: (promotionName) => {
                     let text = promotionName;
@@ -1769,7 +1807,7 @@ class MyActivities extends React.Component {
                 className: 'TableTxtCenter',
                 dataIndex: 'maintenanceLevel',
                 key: 'maintenanceLevel',
-                width: 80,
+                // width: 80,
                 render: (t) => {
                     return t == '0' ? '集团创建' : '门店创建'
                 }
@@ -1807,7 +1845,8 @@ class MyActivities extends React.Component {
                     if (record.createTime == '0' && record.actionTime == '0') {
                         return '--';
                     }
-                    return `${moment(new Date(parseInt(record.createTime))).format('YYYY-MM-DD HH:mm:ss')} / ${moment(new Date(parseInt(record.actionTime))).format('YYYY-MM-DD HH:mm:ss')}`;
+                    const t = `${moment(new Date(parseInt(record.createTime))).format('YYYY-MM-DD HH:mm:ss')} / ${moment(new Date(parseInt(record.actionTime))).format('YYYY-MM-DD HH:mm:ss')}`;
+                    return <Tooltip title={t}>{t}</Tooltip>;
                 },
             },
             // {
@@ -1825,12 +1864,13 @@ class MyActivities extends React.Component {
             <div className={`layoutsContent ${styles.tableClass}`}>
                 <Table
                     ref={this.setTableRef}
-                    scroll={{ x: 1700, y: 'calc(100vh - 440px)' }}
+                    scroll={{ x: 1000, y: 'calc(100vh - 440px)' }}
                     className={styles.sepcialActivesTable}
                     bordered={true}
                     columns={columns}
                     dataSource={this.state.dataSource}
                     loading={this.state.loading}
+                    size="default"
                     pagination={{
                         pageSize: this.state.pageSizes,
                         pageSizeOptions: ['25', '50', '100', '200'],

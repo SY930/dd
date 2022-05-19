@@ -164,7 +164,8 @@ export default class NewPromotion extends React.Component {
                         jumpPage({ menuID: 'editBenefitCard', from: 'saleCenterBenefit', jumpSepid: res.itemID });
                     } else {
                         const menuID = this.props.user.menuList.find(tab => tab.entryCode === '1000076003').menuID
-                        jumpPage({ menuID })
+                        menuID && closePage(menuID)
+                        jumpPage({ menuID, from: 'create' })
                     }
                 },
                 fail: (info) => {

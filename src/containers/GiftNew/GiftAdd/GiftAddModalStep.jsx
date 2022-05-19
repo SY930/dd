@@ -58,6 +58,7 @@ import {getPromotionShopSchema} from '../../../redux/actions/saleCenterNEW/promo
 import TrdTemplate from './common/TrdTemplate';
 import CouponTrdChannelStockNums from './common/CouponTrdChannelStockNums';
 import ShopSelector from "components/ShopSelector";
+import ShopSelectorTwo from "components/ShopSelectorTwo";
 import IsSync from "./common/IsSync";
 import GiftImagePath from './common/GiftImagePath';
 import {debounce} from 'lodash';
@@ -193,6 +194,9 @@ class GiftAddModalStep extends React.PureComponent {
             unit: '¥',
             isActivityFoods:false,//是否选择了菜品分类
             groupID:'',
+            cardTypeShopList: {},
+            canUseShopIDs: [],
+            canUseShopIDsAll: [],
         };
         this.firstForm = null;
         this.secondForm = null;
@@ -236,6 +240,7 @@ class GiftAddModalStep extends React.PureComponent {
         // fetchFoodMenuInfo(params, isHuaTian(), thisGift.data.subGroupID);
         fetchFoodMenuLightInfo(params, isHuaTian(), thisGift.data.subGroupID); // 轻量级接口
         getPromotionShopSchema(params);
+        this.querycanUseShopIDs();
         const { name, data, value } = thisGift;
         const { values } = this.state;
         if (type === 'edit' && value == '111') {
@@ -332,7 +337,34 @@ class GiftAddModalStep extends React.PureComponent {
         }
 
     }
-
+    // 查询已选卡类型的可用店铺
+    querycanUseShopIDs = (tids = []) => {
+        axiosData('/crm/cardTypeShopService_getListCardTypeShop.ajax', {
+            groupID: this.props.accountInfo.get('groupID'),
+            queryCardType: 1, // questArr.length === 0 ? 0 : 1,
+            cardTypeIds: tids.join(','),
+        }, null, { path: 'data.cardTypeShopList' })
+            .then((cardTypeShopList) => {
+                const obj = {}
+                const canUseShopIDsAll = []
+                cardTypeShopList.forEach((item) => {
+                    const shopIDs = []
+                    item.cardTypeShopResDetailList.forEach((element) => {
+                        shopIDs.push(String(element.shopID))
+                        canUseShopIDsAll.push(String(element.shopID))
+                    })
+                    obj[String(item.cardTypeID)] = shopIDs
+                })
+                if (canUseShopIDsAll.length == 0) {
+                    message.warning('该卡类无适用的店铺，请选择其他卡类')
+                }
+                this.setState({
+                    cardTypeShopList: obj,
+                    canUseShopIDs:canUseShopIDsAll
+                })
+            }).catch(err => {
+            })
+    }
     isHuaTianSpecificCoupon = () => {
         const { type, gift: { value, data } } = this.props;
         if (value != 10) return false;
@@ -574,6 +606,17 @@ class GiftAddModalStep extends React.PureComponent {
                 if(giftType == '22'){
                     values.giftValue = value;
                 }
+                break;
+            case 'cardTypeList':
+                if(value && value.length > 0){
+                    let questArr = value.map(cardType => cardType.cardTypeID)
+                    this.querycanUseShopIDs(questArr)
+                }else{
+                    this.setState({
+                        canUseShopIDs:[]
+                    })
+                }
+                
                 break;
             default:
                 break;
@@ -1093,7 +1136,7 @@ class GiftAddModalStep extends React.PureComponent {
             params.openPushSms = params.pushMessage && params.pushMessage.sendType.indexOf('msg') !== -1 ? 1 : 0
             params.reminderTime = params.pushMessage && params.pushMessage.reminderTime
             params.pushMessageMpID = params.pushMessage && params.pushMessage.pushMessageMpID
-            params.pushMimiAppMsg = params.pushMessage && params.pushMessage.pushMimiAppMsg
+            params.pushMimiAppMsg = params.pushMessage && params.pushMessage.sendType.includes('mini') ? params.pushMessage.pushMimiAppMsg : null
             // 商城券参数调整
             if(hasMallArr.includes(value)){
                 this.adjustParamsOfMallGift(params);
@@ -1698,12 +1741,13 @@ class GiftAddModalStep extends React.PureComponent {
             values:Object.assign({},values)
         });
     }
+
     renderShopNames(decorator) {
         const { shopNames = [],excludeShops = [],selectBrands = [],applyScene } = this.state.values;
-        const { gift: { data } } = this.props;
+        const { type, gift: { value, data } } = this.props;
         const brandList = selectBrands.map(x=>x.targetID);
         return (
-            <Row style={{ marginBottom: shopNames.length === 0 ? -15 : 0, width: 302 }}>
+            <Row style={{ marginBottom: shopNames.length === 0 ? -15 : 0, width: '302px' }}>
                 <Col style={{position:'relative'}}>
                     {applyScene == 2 || (selectBrands && selectBrands.length == 0 && excludeShops.length == 0) ? null : <div className={styles.disabledWrapper}></div>}
                     {decorator({
@@ -1729,6 +1773,40 @@ class GiftAddModalStep extends React.PureComponent {
                     marginBottom:'14px',
                     paddingLeft:'10px'
                 }}>未选择门店时默认所有门店通用</p>
+            </Row>
+        )
+    }
+    renderMemberRightShopNames(decorator) {
+        const { shopNames = [],excludeShops = [],selectBrands = [],applyScene } = this.state.values;
+        const { type, gift: { value, data } } = this.props;
+        const brandList = selectBrands.map(x=>x.targetID);
+        return (
+            <Row style={{ marginBottom: shopNames.length === 0 ? -15 : 0, width: '439px' }}>
+                <Col style={{position:'relative'}}>
+                    {decorator({
+                        onChange:this.changeShopNames
+                    })(
+                        <ShopSelectorTwo
+                            brandList={brandList}
+                            canUseShops={this.state.canUseShopIDs}
+                            isCreateCoupon = {true}
+                            filterParm={isFilterShopType() ? {productCode: 'HLL_CRM_License'} : {}}
+                        />
+                    )}
+                </Col>
+                <p style={{ 
+                    color: 'orange', 
+                    display: shopNames.length > 0 ? 'none' : 'block' ,
+                    width: '100%',
+                    height: '32px',
+                    lineHeight:'32px',
+                    background: '#FFFBE6',
+                    borderRadius: '4px',
+                    border: '1px solid #FFE58F',
+                    marginTop:'4px',
+                    marginBottom:'14px',
+                    paddingLeft:'10px'
+                }}>默认所选品牌+卡类型下全部店铺适用</p>
             </Row>
         )
     }
@@ -2341,6 +2419,7 @@ class GiftAddModalStep extends React.PureComponent {
             data.transferImage = {transferImagePath, transferThumbnailImagePath}
         }
 
+
         return data;
     }
 
@@ -2482,6 +2561,7 @@ class GiftAddModalStep extends React.PureComponent {
 
 
         // }
+        // console.log(firstKeysToDisplay, 'firstKeysToDisplay');
         return {
             firstKeysToDisplay,
             secondKeysToDisplay,
@@ -2556,12 +2636,13 @@ class GiftAddModalStep extends React.PureComponent {
     }
     renderSelectBrands = (decorator,form) => {
         const { values} = this.state;
+        const { gift: { value } } = this.props;
         return  decorator({
             key:'selectBrands',
             initialValue:values.selectBrands,
             onChange:(value) => this.changeSelectedBrands(value,form)
         })(
-            <SelectBrands />
+            <SelectBrands type={value}/>
         )
     }
 
@@ -2640,6 +2721,7 @@ class GiftAddModalStep extends React.PureComponent {
     render() {
         const { gift: { name: describe, value, data }, visible, type } = this.props,
             { firstKeys, secondKeys, values, unit,groupID } = this.state;
+
         const {applyScene} = values;
         // 判断是否是空对象
         // 影响 PhonePreview 回显。
@@ -2663,7 +2745,9 @@ class GiftAddModalStep extends React.PureComponent {
         if(formData.applyScene){
             formData.applyScene = formData.applyScene.toString()
         }
-        
+        if(formData.deductMoneyType){
+            formData.deductMoneyType = String(formData.deductMoneyType)
+        }
         // 折扣上限显示
         if (value == '111' && formData.discountOffMax == 0) {
             formData.discountOffMax = ''
@@ -2776,7 +2860,7 @@ class GiftAddModalStep extends React.PureComponent {
             cardTypeList: {
                 label: '适用卡类',
                 type: 'custom',
-                render: decorator => decorator({})(<SelectCardTypes/>),
+                render: decorator => decorator({})(<SelectCardTypes />),
             },
 
             // 券增加商城类别
@@ -2902,6 +2986,12 @@ class GiftAddModalStep extends React.PureComponent {
                 label: '适用店铺',
                 defaultValue: [],
                 render: decorator => this.renderShopNames(decorator),
+            },
+            selectedMemberRightShops: {
+                type: 'custom',
+                label: '适用店铺',
+                defaultValue: [],
+                render: decorator => this.renderMemberRightShopNames(decorator),
             },
             excludeShops: {
                 type: 'custom',
@@ -3227,6 +3317,17 @@ class GiftAddModalStep extends React.PureComponent {
                     )
                 },
             },
+            deductMoneyType:{
+                label: '卡值消费顺序',
+                type: 'combo',
+                // disabled: type !== 'add' && type !== 'copy',
+                defaultValue: '0',
+                options: [
+                    { label: '先消费现金卡值', value: '1' },
+                    { label: '先消费赠送卡值', value: '2' },
+                    { label: '现金卡值和赠送卡值同时使用', value: '0' },
+                ],
+            },
             couponTrdChannelStockNums: {
                 label: '投放渠道',
                 type: 'custom',
@@ -3513,6 +3614,9 @@ class GiftAddModalStep extends React.PureComponent {
         }
         if (this.props.gift.value == '22') {
             formData.delivery = formData.giftValue;
+        }
+        if(this.props.gift.value == '80'){
+            formData.selectedMemberRightShops = formData.selectedShops;
         }
         formData.shareIDs = this.state.sharedGifts;
         formData.giftShareType = String(formData.giftShareType);

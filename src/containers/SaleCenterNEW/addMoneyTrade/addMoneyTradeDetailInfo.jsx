@@ -481,7 +481,7 @@ class AddfreeAmountTradeDetailInfo extends React.Component {
                                         <Option key="3" value="3">{k5kqf33f}</Option>
                                     </Select>
                                 }
-                                addonAfter={'份(斤)'}
+                                addonAfter={'份'}
                                 value={this.state.stageCount}
                                 defaultValue={this.state.stageCount}
                                 onChange={this.onStageCountChange}
