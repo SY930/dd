@@ -2636,12 +2636,13 @@ class GiftAddModalStep extends React.PureComponent {
     }
     renderSelectBrands = (decorator,form) => {
         const { values} = this.state;
+        const { gift: { value } } = this.props;
         return  decorator({
             key:'selectBrands',
             initialValue:values.selectBrands,
             onChange:(value) => this.changeSelectedBrands(value,form)
         })(
-            <SelectBrands />
+            <SelectBrands type={value}/>
         )
     }
 
