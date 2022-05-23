@@ -108,8 +108,12 @@ class CouponManageList extends Component {
 
     initData = () => {
         getCardList({ giftTypes: [10, 111, 21] }).then(x => {
-            this.setState({ treeData: x });
+            this.setState({ cacheTreeData: x });
         });
+        // 抖音
+        getRetailList().then(v => {
+            this.setState({ treeDataX: v });
+        })
         getShopPid().then((res) => {
             this.setState({
                 shopPid: res,
@@ -141,6 +145,19 @@ class CouponManageList extends Component {
         var { href } = window.location;
         var [valiable] = href.split('?');
         window.history.pushState(null, null, valiable);
+    }
+
+    getTreeData = (giftTypes) => {
+        const { cacheTreeData } = this.state
+        let treeData = []
+        if (cacheTreeData.length > 0) {
+            treeData = (cacheTreeData || []).filter((item) => giftTypes.includes(item.key))
+        } else {
+            getCardList({ giftTypes }).then(x => {
+                this.setState({ treeData: x });
+            });
+        }
+        return treeData
     }
 
     getQueryVariable = () => {
@@ -278,29 +295,23 @@ class CouponManageList extends Component {
         })
     }
 
-    handleCreateCouponContentModal = ({ type, channelID, platformTypeCreate }, title) => {
-        if (type === 1) { // 支付宝券
-            getCardList({ giftTypes: [10, 111] }).then(x => {
-                this.setState({
-                    treeData: x
-                });
-            });
-        } else if (type === 2) { // 微信券
-            getCardList({ giftTypes: [10, 111, 21] }).then(x => {
-                this.setState({ treeData: x });
-            });
-        } else if (type === 5) { // e折
-            getCardList({ giftTypes: [10, 21] }).then(x => {
-                this.setState({ treeData: x });
-            });
-        } else { // 抖音
-            getCardList({ giftTypes: [10, 111, 21] }).then(x => {
-                this.setState({ treeData: x });
-            });
-            getRetailList().then(v => {
-                this.setState({ treeDataX: v });
-            })
-        }
+    // 微信编辑
+    handleEdit = (record) => {
+        const treeData = this.getTreeData([10, 111, 21])
+        this.setState({
+            channelID: record.channelID,
+            type: 2,
+            editData: record,
+            createCouponModalVisible: true,
+            platformTypeCreate: record.platformType,
+            treeData,
+            title: '编辑第三方微信商家券'
+        })
+    }
+
+    // 创建
+    handleCreateCouponContentModal = ({ type, channelID, platformTypeCreate, giftTypes }, title) => {
+       const treeData = this.getTreeData(giftTypes)
         this.setState({
             createCouponModalVisible: true,
             type,
@@ -308,6 +319,7 @@ class CouponManageList extends Component {
             platformTypeCreate,
             title,
             editData: {},
+            treeData,
         })
     }
 
@@ -321,9 +333,9 @@ class CouponManageList extends Component {
     handleSuccesModalSubmit = () => {
 
     }
-    handleStopClickEvent = (record) => {
+    handleStopClickEvent = (record, batchStatus) => {
         const { itemID } = record;
-        const params = { couponCodeBatchInfo: { itemID, batchStatus: 2 } };
+        const params = { couponCodeBatchInfo: { itemID, batchStatus } };
         axiosData(
             'couponCodeBatchService/switchStatus.ajax',
             params,
@@ -595,7 +607,7 @@ class CouponManageList extends Component {
                         <ul className={styles.createCouponModal__flex__ul}>
                             <li
                                 onClick={() => {
-                                    this.handleCreateCouponContentModal({ type: 1, channelID: 60, platformTypeCreate: 1 }, '新建第三方支付宝券')
+                                    this.handleCreateCouponContentModal({ type: 1, channelID: 60, platformTypeCreate: 1, giftTypes: [10, 111] }, '新建第三方支付宝券')
                                 }}
                                 className={styles.createCouponModal__item__li}
                             >
@@ -605,7 +617,7 @@ class CouponManageList extends Component {
                             <li
                                 className={styles.createCouponModal__item__li}
                                 onClick={() => {
-                                    this.handleCreateCouponContentModal({ type: 2, channelID: 50, platformTypeCreate: 3 }, '新建第三方微信券')
+                                    this.handleCreateCouponContentModal({ type: 2, channelID: 50, platformTypeCreate: 3, giftTypes: [10, 111, 21] }, '新建第三方微信券')
                                 }}
                             >
                                 <p><img src={WEIXIN}></img></p>
@@ -614,7 +626,7 @@ class CouponManageList extends Component {
                             <li
                                 className={styles.createCouponModal__item__li}
                                 onClick={() => {
-                                    this.handleCreateCouponContentModal({ type: 3, channelID: 70, platformTypeCreate: 2 }, '新建第三方抖音券')
+                                    this.handleCreateCouponContentModal({ type: 3, channelID: 70, platformTypeCreate: 2, giftTypes: [10, 111, 21] }, '新建第三方抖音券')
                                 }}
                             >
                                 <p><img src={DOUYIN}></img></p>
@@ -623,7 +635,7 @@ class CouponManageList extends Component {
                             <li
                                 className={styles.createCouponModal__item__li}
                                 onClick={() => {
-                                    this.handleCreateCouponContentModal({ type: 4, channelID: 80, platformTypeCreate: 5 }, '新建第三方抖音券')
+                                    this.handleCreateCouponContentModal({ type: 4, channelID: 80, platformTypeCreate: 5, giftTypes: [10, 111, 21] }, '新建第三方抖音券')
                                 }}
                             >
                                 <p><img src={DOUYIN}></img></p>

@@ -19,7 +19,7 @@ export const getColumns = _this => ([
         title: '操作',
         key: 'operation',
         className: 'TableTxtCenter',
-        width: 160,
+        width: 180,
         // fixed: 'left',
         render: (text, record) => {
             return (<span>
@@ -44,13 +44,52 @@ export const getColumns = _this => ([
                     )
                 }
                 {
+                    // 券code模式为MERCHANT_API的显示“停用”按钮
+                    record.platformType === 3 && record.batchStatus === 1 && record.couponCodeDockingType === 1 && ( // 启用中显示停用
+                        <a
+                            href="#"
+                            onClick={() => {
+                                _this.handleStopClickEvent(record, 2)
+                            }}
+                        >
+                            停用
+                        </a>
+                    )
+                }
+                {
+                    // 券code模式为MERCHANT_API的显示“停用”按钮
+                    record.platformType === 3 && record.batchStatus === 2 && (
+                        <a
+                            href="#"
+                            onClick={() => {
+                                _this.handleStopClickEvent(record, 1)
+                            }}
+                        >
+                            启用
+                        </a>
+                    )
+                }
+                {
+                    record.platformType === 3 && record.batchStatus === 2 && (
+                        <a
+                            href="#"
+                            onClick={() => {
+                                // _this.handleCouponInfo(record, false)
+                                _this.handleEdit(record)
+                            }}
+                        >
+                            编辑
+                        </a>
+                    )
+                }
+                {
                     record.channelID == 60 && (
                         <span>
                             <a
                                 href="#"
                                 disabled={record.batchStatus != 1}
                                 onClick={record.batchStatus == 1 ? () => {
-                                    _this.handleStopClickEvent(record)
+                                    _this.handleStopClickEvent(record, 2)
                                 } : null}
                             >停用</a>
                             <a

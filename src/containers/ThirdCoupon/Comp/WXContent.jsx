@@ -20,12 +20,13 @@ const validateWayList = [
 class WXContent extends Component {
     constructor(props) {
         super(props);
+        // const { } = props.editData
         this.state = {
             mpAndAppList: [],
             payChannelList: [],
-            validateWay: 'OFF_LINE',
+            validateWay: `${props.editData.validateWay || 'OFF_LINE'}`,
             linksList: [],
-            joinWay: '1',
+            joinWay: `${props.editData.joinWay || '1'}`,
             AppList: [],
         };
     }
@@ -48,12 +49,19 @@ class WXContent extends Component {
 
 
     onChangeWXMerchantID = (value) => {
+    // console.log("🚀 ~ file: WXContent.jsx ~ line 51 ~ WXContent ~ value", value)
         const findItem = this.state.payChannelList.find(item => value === `${item.settleID}`) || {}
         this.props.onChangeWXMerchantID(findItem)
     }
 
     onChangeWXJumpAppID = ({ key, label }) => {
         this.props.onChangeWXJumpAppID({ key, label })
+    }
+
+    getJumpAppID = ({ jumpAppID }) => {
+        const findItem = this.state.mpAndAppList.find(item => item.appID === jumpAppID) || {}
+        console.log("🚀 ~ file: WXContent.jsx ~ line 62 ~ WXContent ~ findItem", findItem)
+        return { key: jumpAppID, label: findItem.mpName || '' }
     }
 
     initData = () => {
@@ -95,10 +103,11 @@ class WXContent extends Component {
     }
 
     render() {
-        const { form } = this.props;
+        const { form, editData } = this.props;
         const { getFieldDecorator } = form;
         const icon = (<span>小程序名称<Tooltip title="用户领取微信商家券后，同步在小程序个人中心展示。"><Icon type="question-circle-o" style={{ marginLeft: 5 }} /></Tooltip></span>)
         const iconAppAndMp = (<span>小程序/公众号<Tooltip title="用户领取微信商家券后，同步在小程序/公众号个人中心展示。"><Icon type="question-circle-o" style={{ marginLeft: 5 }} /></Tooltip></span>)
+        const WXJumpAppID = editData.jumpAppID && this.getJumpAppID(editData)
         return (
             <div>
                 <Row>
@@ -111,7 +120,7 @@ class WXContent extends Component {
                             label={iconAppAndMp}
                         >
                             {getFieldDecorator('jumpAppID', {
-                                // initialValue: value || undefined,
+                                initialValue: editData.jumpAppID ? WXJumpAppID : undefined,
                                 onChange: this.onChangeWXJumpAppID,
                                 rules: [
                                     { required: true, message: '请选择小程序/公众号' },
@@ -132,7 +141,7 @@ class WXContent extends Component {
                             label={'账务主体'}
                         >
                             {getFieldDecorator('settleID', {
-                                // initialValue: value || undefined,
+                                // initialValue: undefined,
                                 onChange: this.onChangeWXMerchantID,
                                 rules: [
                                     { required: true, message: '请选择账务主体' },
@@ -159,6 +168,7 @@ class WXContent extends Component {
                     required={true}
                 >
                     {getFieldDecorator('maxCouponsPerUser', {
+                        initialValue: editData.maxCouponsPerUser || '',
                         rules: [
                             { required: true, message: '请输入用户最大领取数量' },
                             {
@@ -191,7 +201,7 @@ class WXContent extends Component {
                     required={true}
                 >
                     {getFieldDecorator('couponCodeDockingType', {
-                        initialValue: '1',
+                        initialValue: `${editData.couponCodeDockingType || '1'}`,
                         rules: [
                             { required: true },
                         ],
@@ -209,7 +219,7 @@ class WXContent extends Component {
                     required={true}
                 >
                     {getFieldDecorator('validateWay', {
-                        initialValue: 'OFF_LINE',
+                        initialValue: `${editData.validateWay || 'OFF_LINE'}`,
                         onChange: this.handleChangeValidateWay,
                         rules: [
                             { required: true },
@@ -232,6 +242,7 @@ class WXContent extends Component {
                                 className={styles.directSelect}
                             >
                                 {getFieldDecorator('miniProgramsAppId', {
+                                    initialValue: `${editData.miniProgramsAppId || ''}`,
                                     rules: [
                                         { required: true, message: '请选择小程序名称' },
                                     ],
@@ -254,6 +265,7 @@ class WXContent extends Component {
                                 className={styles.directSelect}
                             >
                                 {getFieldDecorator('miniProgramsPath', {
+                                    initialValue: `${editData.miniProgramsPath || ''}`,
                                     rules: [
                                         { required: true, message: '请选择页面路径' },
                                     ],
@@ -280,7 +292,7 @@ class WXContent extends Component {
                     required={true}
                 >
                     {getFieldDecorator('joinWay', {
-                        initialValue: '1',
+                        initialValue: `${editData.joinWay || '1'}`,
                         onChange: this.handleChangeJoinWay,
                         rules: [
                             { required: true },
@@ -302,6 +314,7 @@ class WXContent extends Component {
                                 required={true}
                             >
                                 {getFieldDecorator('entranceWords', {
+                                    initialValue: `${editData.entranceWords || ''}`,
                                     rules: [
                                         { required: true, message: '请输入标题,最多5个字符' },
                                     ],
@@ -321,6 +334,7 @@ class WXContent extends Component {
                                 className={styles.directSelect}
                             >
                                 {getFieldDecorator('entranceMiniProgramsAppId', {
+                                    initialValue: `${editData.entranceMiniProgramsAppId || ''}`,
                                     rules: [
                                         { required: true, message: '请选择小程序名称' },
                                     ],
@@ -343,6 +357,7 @@ class WXContent extends Component {
                                 className={styles.directSelect}
                             >
                                 {getFieldDecorator('entranceMiniProgramsPath', {
+                                    initialValue: `${editData.entranceMiniProgramsPath || ''}`,
                                     rules: [
                                         { required: true, message: '请选择页面路径' },
                                     ],
