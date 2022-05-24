@@ -1595,13 +1595,13 @@ class SpecialPromotionDetail extends React.Component {
                     return `奖项${levelArray[level - 1]}`
                 }
             }),
-            // {
-            //     title: `${this.props.intl.formatMessage(STRING_SPE.du3bopq1r4120)}`,
-            //     dataIndex: 'joinTime',
-            //     key: 'joinTime',
-            //     className: 'TableTxtCenter',
-            //     width: 120,
-            // },
+            eventWay !== 75 && ({
+                title: `${this.props.intl.formatMessage(STRING_SPE.du3bopq1r4120)}`,
+                dataIndex: 'joinTime',
+                key: 'joinTime',
+                className: 'TableTxtCenter',
+                width: 120,
+            }),
             // 群发礼品
             eventWay == 53 && ({
                 title: '礼品详情',
@@ -1763,6 +1763,7 @@ class SpecialPromotionDetail extends React.Component {
         if (eventWay == 66) {
             len = 700
         }
+        console.log(columns,eventWay,'eventWay>>>>>>>>>>>>>>>>>>>>>>>>')
         return (
             <Table
                 dataSource={dataSource}
