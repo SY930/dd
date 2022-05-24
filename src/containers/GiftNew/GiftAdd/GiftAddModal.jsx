@@ -339,8 +339,12 @@ class GiftAddModal extends React.Component {
             if (formData.openPushSms) {
                 sendType.push('msg')
             }
+            if (formData.pushMimiAppMsg) {
+                sendType.push('mini')
+            }
             formData.pushMessage = {
                 pushMessageMpID: formData.pushMessageMpID,
+                pushMimiAppMsg: formData.pushMimiAppMsg,
                 sendType,
                 reminderTime: formData.reminderTime || 3,
             }
