@@ -273,6 +273,18 @@ class CouponManageList extends Component {
             })
     }
 
+    handleChangeTable = (key) => {
+    // console.log("🚀 ~ file: CouponManageList.jsx ~ line 277 ~ CouponManageList ~ key", key)
+        if (key === '2') {
+           this.setState({
+               platformType: '3',
+               batchStatus: '2',
+           }, () => {
+               this.handleQuery()
+           })
+        }
+    }
+
     handleCreateCouponModal = () => {
         this.setState({
             createThirdCouponVisble: true,
@@ -587,7 +599,7 @@ class CouponManageList extends Component {
                     {this.renderHeader()}
                 </div>
                 <div style={{ margin: '0 20px' }} className="layoutsLine"></div>
-                <Tabs defaultActiveKey="1" className="tabsStyles">
+                <Tabs defaultActiveKey="1" className="tabsStyles" onChange={this.handleChangeTable}>
                     <TabPane key={'1'} tab="第三方券查询">
                         <div>
                             <div style={{ background: '#fff', padding: '12px 30px 0' }} className="layoutsHeader">
@@ -600,7 +612,15 @@ class CouponManageList extends Component {
                         </div>
                     </TabPane>
                     <TabPane key={'2'} tab="已停用第三方券">
-                        <StopTables />
+                    <div>
+                            {/* <div style={{ background: '#fff', padding: '12px 30px 0' }} className="layoutsHeader">
+                                {this.renderFilterBar()}
+                            </div> */}
+                            <div className="layoutsLineBlock"></div>
+                            <div className={styles.pageContentWrapper}>
+                                {this.renderTables()}
+                            </div>
+                        </div>
                     </TabPane>
                 </Tabs>
                 {
