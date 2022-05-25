@@ -58,7 +58,7 @@ export const getColumns = _this => ([
                 }
                 {
                     // 券code模式为MERCHANT_API的显示“停用”按钮
-                    record.platformType === 3 && record.batchStatus === 2 && (
+                    record.platformType === 3 && record.batchStatus === 0 && (
                         <a
                             href="#"
                             onClick={() => {
@@ -82,6 +82,7 @@ export const getColumns = _this => ([
                         </a>
                     )
                 }
+                {/* 支付宝 */}
                 {
                     record.channelID == 60 && (
                         <span>

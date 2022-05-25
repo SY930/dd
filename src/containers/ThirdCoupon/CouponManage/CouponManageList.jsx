@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import {
     Table, Icon, Select, DatePicker,
     Button, Modal, Row, Col, message,
-    Input, Tooltip,
+    Input, Tooltip, Tabs
 } from 'antd';
 import CreateCouponContent from '../Modal/CreateCouponContent'
 import ScenePutContent from '../Modal/ScenePutContent'
@@ -20,6 +20,7 @@ import { getCardList, getShopPid, getIndirectList, getMpAppList, getPayChannel, 
 import WEIXIN from '../../../assets/weixin.png';
 import ZHIFUBAO from '../../../assets/zhifubao.png'
 import DOUYIN from '../../../assets/douyin.png'
+import StopTables from './StopTables';
 const moment = require('moment');
 
 
@@ -35,6 +36,7 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 const { RangePicker } = DatePicker;
+const TabPane = Tabs.TabPane;
 
 @registerPage([THIRD_VOUCHER_MANAGEMENT], {})
 @connect(mapStateToProps, mapDispatchToProps)
@@ -585,16 +587,22 @@ class CouponManageList extends Component {
                     {this.renderHeader()}
                 </div>
                 <div style={{ margin: '0 20px' }} className="layoutsLine"></div>
-
-                <div>
-                    <div style={{ background: '#fff', padding: '12px 30px 0' }} className="layoutsHeader">
-                        {this.renderFilterBar()}
-                    </div>
-                    <div className="layoutsLineBlock"></div>
-                    <div className={styles.pageContentWrapper}>
-                        {this.renderTables()}
-                    </div>
-                </div>
+                <Tabs defaultActiveKey="1" className="tabsStyles">
+                    <TabPane key={'1'} tab="第三方券查询">
+                        <div>
+                            <div style={{ background: '#fff', padding: '12px 30px 0' }} className="layoutsHeader">
+                                {this.renderFilterBar()}
+                            </div>
+                            <div className="layoutsLineBlock"></div>
+                            <div className={styles.pageContentWrapper}>
+                                {this.renderTables()}
+                            </div>
+                        </div>
+                    </TabPane>
+                    <TabPane key={'2'} tab="已停用第三方券">
+                        <StopTables />
+                    </TabPane>
+                </Tabs>
                 {
                     this.state.createThirdCouponVisble && <Modal
                         title="创建第三方券"
@@ -676,9 +684,11 @@ class CouponManageList extends Component {
                         handleCloseVidwModal={this.handleCloseVidwModal}
                     />
                 }
+                {/* 投放企鹅吉市 */}
                 {
                     this.state.WXLaunchVisible && <ScenePutContent onCancel={this.handleCloseWXLaunchModal} wxData={this.state.wxData} isEdit={this.state.isEdit} title={this.state.title} handleQuery={this.handleQuery} />
                 }
+                {/* 抖音详情 */}
                 { this.state.dyCouponInfoVisible && <DYCouponInfoMoldeContent onCancel={this.handleCloseDYCouponInfoModal} batchItemID={this.state.batchItemID}/>}
             </div>
         )
