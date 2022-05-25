@@ -40,12 +40,14 @@ class GiftDetailModalTabs extends React.Component {
     }
 
     handleExport() {
-        const { selectedID } = this.props;
+        const { selectedID,activeKey } = this.props;
         // const params = _.omit(queryInfo, 'pageNo', 'pageSize');
         const { data: { giftItemID, giftName }, } = this.props;
         const params = { giftItemID, giftName };
         if (this.state.activeKey === 'used') {
             params.giftStatus = '2'
+        } else if (activeKey === 'noUsed') {
+            params.giftStatus = '13'
         }
         const { sendorUsedParams } = this.props;
         Object.assign(params, sendorUsedParams ? sendorUsedParams.toJS() : {});
@@ -97,7 +99,7 @@ class GiftDetailModalTabs extends React.Component {
         UpdateSendorUsedTabKey({ key: activeKey });
         UpdateSendorUsedPage({ page: { pageNo: 1, pageSize: 10 } });
         const params = activeKey === 'used' ? { giftItemID, pageNo: 1, pageSize: 10, giftStatus: '2' } :
-            { giftItemID, pageNo: 1, pageSize: 10 }
+            activeKey === 'send' ? { giftItemID, pageNo: 1, pageSize: 10 } : { giftItemID, pageNo: 1, pageSize: 10, giftStatus: '13' }
         FetchSendorUsedList({ params, isSend: activeKey === 'send' });
         UpdateSendorUsedParams({ params });
     }
@@ -131,22 +133,23 @@ class GiftDetailModalTabs extends React.Component {
     }
     render() {
         const { data } = this.props;
-        const { sameItemID, isExist } = this.state;
+        const { sameItemID, isExist, activeKey } = this.state;
         const tabs = data.giftType === '91' ?
             [{ tab: '发出数', key: 'send' },]
             :
             [
                 { tab: '发出数', key: 'send' },
                 { tab: '使用数', key: 'used' },
+                { tab: '作废数', key: 'noUsed' },
             ];
         return (
             <div>
                 <Tabs
                     className="tabsStyles"
-                    activeKey={this.state.activeKey}
-                    onChange={activeKey => this.onChange(activeKey)}
+                    activeKey={activeKey}
+                    onChange={tabKey => this.onChange(tabKey)}
                     tabBarExtraContent={
-                        this.state.activeKey === 'send' || this.state.activeKey === 'used' ?
+                        ['send', 'used', 'noUsed'].includes(activeKey) ?
                             <Popover
                                 content={this.renderPopOver()}
                                 placement="topRight"
@@ -155,17 +158,19 @@ class GiftDetailModalTabs extends React.Component {
                                 visible={this.state.popoverVisible}
                                 onVisibleChange={this.handleVisibleChange}
                             >
-                                <Button type="ghost"
-                                    title={this.state.activeKey === 'send' ? '导出发出信息' : '导出使用信息'}
+                                <Button
+                                    type="ghost"
+                                    title={activeKey === 'send' ? '导出发出信息' : (activeKey === 'used' ? '导出使用信息' : '导出作废信息')}
                                     disabled={
                                         (this.state.activeKey === 'send' && this.props.sendCount <= 0) ||
-                                        (this.state.activeKey === 'used' && this.props.usedCount <= 0)
+                                        (this.state.activeKey === 'used' && this.props.usedCount <= 0) ||
+                                        (activeKey === 'noUsed' && this.props.noUsedCount <= 0)
                                     }
                                     onClick={this.handleExport}
                                     style={{ top: '8px' }}
                                 >
                                     <Icon type="export" />导出
-                            </Button>
+                                </Button>
                             </Popover>
                             :
                             null

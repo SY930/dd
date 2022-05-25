@@ -13,7 +13,7 @@ import {
     UpdateSendorUsedParams,
     FetchGiftSchema,
 } from '../_action';
-import { FORMITEMS, SEND_FORMKEYS, WX_SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS, WX_SEND_FORMKEYS, SEND_GIFTPWD_FORMKEYS, SEND_GIFTPWD_FORMKEYS1,USED_SPE_COLUMNS, USED_SPE_FORMKEYS, BASE_COLUMNS } from './_tableSendConfig';
+import { FORMITEMS, SEND_FORMKEYS, WX_SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS, WX_SEND_FORMKEYS, SEND_GIFTPWD_FORMKEYS, SEND_GIFTPWD_FORMKEYS1,USED_SPE_COLUMNS, USED_SPE_FORMKEYS, BASE_COLUMNS, NO_USED_SPE_COLUMNS, NO_USED_FORMKEYS } from './_tableSendConfig';
 import { mapValueToLabel, axiosData, isFilterShopType } from 'helpers/util';
 import { messageTemplateState } from 'containers/BasicSettings/reducers';
 import TransGiftModal from './TransGiftModal';
@@ -92,9 +92,9 @@ class GiftSendOrUsedCount extends React.Component {
             {
                 title: '操作人',
                 className:'TableTxtCenter',
-                dataIndex: 'createBy',
+                dataIndex: 'operator',
                 width: 160,
-                key: 'createBy',
+                key: 'operator',
             },
             {
                 title: '备注',
@@ -130,14 +130,14 @@ class GiftSendOrUsedCount extends React.Component {
     componentWillMount() {
         let sendGiftkeys = null;
         // 后端不支持此字段getWay查询　故disable掉线上礼品卡的发送方式
-        const { _key, data: { giftItemID, giftType }, FetchGiftSchemaAC, shopData, sendList, usedList } = this.props;
+        const { _key, data: { giftItemID, giftType }, FetchGiftSchemaAC, shopData, sendList, usedList, noUsedList } = this.props;
         const formItems = Object.assign({}, FORMITEMS);
         if (giftType === '91') {
             formItems.getWay.disabled = true;
         } else {
             formItems.getWay.disabled = null;
         }
-        const sendorUsedList = _key === 'send' ? sendList : usedList;
+        const sendorUsedList = _key === 'send' ? sendList : (_key === 'used' ? usedList : noUsedList);
         const { pageNo, pageSize } = this.state;
         if(giftType == '115'){//是不定额代金券时候
             sendGiftkeys = SEND_GIFTPWD_FORMKEYS1;
@@ -200,7 +200,17 @@ class GiftSendOrUsedCount extends React.Component {
                 },
                 giftType,
             });
+        } else { // 作废数table和搜索
+            this.setState({
+                columns: NO_USED_SPE_COLUMNS,
+                formKeys: NO_USED_FORMKEYS,
+                formItems: {
+                    ...formItems,
+                },
+                giftType,
+            });
         }
+
         const _shopData = shopData.toJS();
         if (_shopData.length === 0) {
             let parm = {}
@@ -220,7 +230,7 @@ class GiftSendOrUsedCount extends React.Component {
         this.setState({formItems});
 
         this.queryForm && this.queryForm.resetFields();
-        const { sendList, usedList, _key, data: { giftItemID, giftType }, sendorUsedPage, sendorUsedParams, shopData } = nextProps;
+        const { sendList, usedList, _key, data: { giftItemID, giftType }, sendorUsedPage, sendorUsedParams, shopData, noUsedList } = nextProps;
         if(giftType == '115'){
             sendGiftkeys = SEND_GIFTPWD_FORMKEYS1
         }else{
@@ -251,8 +261,17 @@ class GiftSendOrUsedCount extends React.Component {
                 formKeys: speGift.indexOf(giftType) >= 0 ? USED_SPE_FORMKEYS : USED_FORMKEYS,
                 giftType,
             });
+        } else { // 作废数table和搜索
+            this.setState({
+                columns: NO_USED_SPE_COLUMNS,
+                formKeys: NO_USED_FORMKEYS,
+                formItems: {
+                    ...formItems,
+                },
+                giftType,
+            });
         }
-        const sendorUsedList = _key === 'send' ? sendList : usedList;
+        const sendorUsedList = _key === 'send' ? sendList : (_key === 'used' ? usedList : noUsedList);
         this.proRecords(sendorUsedList);
         const _shopData = shopData.toJS();
         this.proShopData(_shopData);
@@ -418,15 +437,24 @@ class GiftSendOrUsedCount extends React.Component {
                                 params.useEndTime = v[1].format('YYYY-MM-DD HH:mm:ss');
                             }
                             break;
+                        case 'timeRangeNoUsed':
+                            if (v.length > 0) {
+                                params.startDate = v[0].format('YYYY-MM-DD HH:mm:ss');
+                                params.endDate = v[1].format('YYYY-MM-DD HH:mm:ss');
+                            }
+                            break;
                         default:
                             params[k] = v;
                             break;
                     }
                 }
             });
-            if (used) {
+            if (used && used.giftStatus === '2') {
                 params.giftStatus = '2';
+            } else if (used && used.giftStatus === '13') {
+                params.giftStatus = '13';
             }
+
             this.reloading(() => {
                 this.setState({ loading: true });
             }).then(() => {
@@ -476,17 +504,27 @@ class GiftSendOrUsedCount extends React.Component {
                                key === 'used' ? this.state.speGift.indexOf(this.props.data.giftType) >= 0 ? { position: 'absolute', top: 101, left: 744 } :{}:{}}
                     >
                         {
-                            key === 'send' ?
+                            key === 'send' &&
                                 <Row>
                                     <Col span={24} push={5}><Button type="primary" onClick={() => this.handleQuery()}><Icon type="search" />{ COMMON_LABEL.query }</Button></Col>
                                     <Col span={0} push={0}><Button type="ghost"><Icon type="export" />{ COMMON_LABEL.export }</Button></Col>
                                 </Row>
-                                :
-                                <Row>
-                                    <Col span={10} offset={1} push={3}><Button type="primary" onClick={() => this.handleQuery({ giftStatus: '2' })}><Icon type="search" />{ COMMON_LABEL.query }</Button></Col>
-                                    <Col span={0}><Button type="ghost"><Icon type="export" />{ COMMON_LABEL.export }</Button></Col>
-                                </Row>
                         }
+                        {
+                            key === 'used' &&
+                            <Row>
+                                <Col span={10} offset={1} push={3}><Button type="primary" onClick={() => this.handleQuery({ giftStatus: '2' })}><Icon type="search" />{ COMMON_LABEL.query }</Button></Col>
+                                <Col span={0}><Button type="ghost"><Icon type="export" />{ COMMON_LABEL.export }</Button></Col>
+                            </Row>
+                        }
+                        {
+                            key === 'noUsed' &&
+                            <Row>
+                                <Col span={10} offset={1} push={3}><Button type="primary" onClick={() => this.handleQuery({ giftStatus: '13' })}><Icon type="search" />{COMMON_LABEL.query}</Button></Col>
+                                <Col span={0}><Button type="ghost"><Icon type="export" />{COMMON_LABEL.export}</Button></Col>
+                            </Row>
+                        }
+
                     </Col>
                     <Col span={24}>
                         <Table
@@ -530,6 +568,7 @@ function mapStateToProps(state) {
         // sendorUsedList: state.sale_giftInfoNew.get('sendorUsedList'),
         sendList: state.sale_giftInfoNew.get('sendList'),
         usedList: state.sale_giftInfoNew.get('usedList'),
+        noUsedList: state.sale_giftInfoNew.get('noUsedList'),
         sendorUsedPage: state.sale_giftInfoNew.get('sendorUsedPage'),
         sendorUsedParams: state.sale_giftInfoNew.get('sendorUsedParams'),
         shopData: state.sale_giftInfoNew.get('shopData'),

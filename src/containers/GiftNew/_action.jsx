@@ -16,9 +16,12 @@ export const GIFT_NEW_FETCH_SEND_LIST_OK = 'gift new:: fetch send list';
 export const GIFT_NEW_FETCH_USED_LIST_OK = 'gift new:: fetch used list';
 export const GIFT_NEW_FETCH_USED_TOTAL_OK = 'gift new:: 成功获取到发送数';
 export const GIFT_NEW_FETCH_SEND_TOTAL_OK = 'gift new:: 成功获取到使用数';
+export const GIFT_NEW_FETCH_NO_USE_TOTAL_OK = 'gift new:: 成功获取作废使用数'
+export const GIFT_NEW_FETCH_NO_USED_LIST_OK = 'gift new:: 成功获取作废列表'
 
 export const GIFT_NEW_FETCH_USED_TOTAL_FAIL = 'gift new:: 未能成功获取到发送数';
 export const GIFT_NEW_FETCH_SEND_TOTAL_FAIL = 'gift new:: 未能获取到使用数';
+export const GIFT_NEW_FETCH_NO_USE_TOTAL_FAIL = 'gift new:: 未能成功获取到作废数'
 export const GIFT_NEW_RESET_SEND_USED_TOTAL = 'gift new:: 重置发出使用数为0';
 export const GIFT_NEW_UPDATE_SEND_OR_USED_TAB_KEY = 'gift new:: update send or used key';
 export const GIFT_NEW_UPDATE_SEND_OR_USED_PAGE = 'gift new:: update send or used page';
@@ -250,6 +253,13 @@ export const getUsedListSuccessAC = (opt) => {
     }
 };
 
+export const getNoUsedListSuccessAC = (opt) => {
+    return {
+        type: GIFT_NEW_FETCH_NO_USED_LIST_OK,
+        ...opt,
+    }
+}
+
 export const getUsedTotalCountSuccessAC = (total) => {
     return {
         type: GIFT_NEW_FETCH_USED_TOTAL_OK,
@@ -264,6 +274,14 @@ export const getSendTotalCountSuccessAC = (total) => {
     }
 };
 
+export const getNoUseTotalCountSuccessAC = (total) => {
+    return {
+        type: GIFT_NEW_FETCH_NO_USE_TOTAL_OK,
+        payload: { total },
+    }
+}
+
+
 export const getUsedTotalCountFailAC = (opt) => {
     return {
         type: GIFT_NEW_FETCH_USED_TOTAL_FAIL,
@@ -277,6 +295,14 @@ export const getSendTotalCountFailAC = (opt) => {
         ...opt,
     }
 };
+
+export const getNoUseTotalCountFailAC = (opt) => {
+    return {
+        type: GIFT_NEW_FETCH_NO_USE_TOTAL_FAIL,
+        ...opt,
+    }
+}
+
 
 export const resetSendOrTotalCount = (opt) => {
     return {
@@ -295,22 +321,28 @@ export const FetchSendorUsedList = (opts) => {
         };
         if (opts.isSend) {
             sendOrUsageCountParam.excludeTransferred = true;
-        } else {    
+        } else if (opts.params.giftStatus === '2') {    
             sendOrUsageCountParam.giftStatus = 2;
+        } else {
+            sendOrUsageCountParam.giftStatus = 13;
         }
         axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', sendOrUsageCountParam, {needThrow: true}, {path: 'data.totalSize'}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
             .then(total => {
-                if (!opts.isSend) {
+                if (opts.isSend) {
+                    dispatch(getSendTotalCountSuccessAC(total))
+                }  else if (opts.params.giftStatus === '2'){
                     dispatch(getUsedTotalCountSuccessAC(total))
                 } else {
-                    dispatch(getSendTotalCountSuccessAC(total))
+                    dispatch(getNoUseTotalCountSuccessAC(total))
                 }
             })
             .catch(error => {
-                if (!opts.isSend) {
+                if (opts.isSend) {
+                    dispatch(getSendTotalCountFailAC())
+                } else if (opts.params.giftStatus === '2') {
                     dispatch(getUsedTotalCountFailAC())
                 } else {
-                    dispatch(getSendTotalCountFailAC())
+                    dispatch(getNoUseTotalCountFailAC())
                 }
             })
         return axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', { ...opts.params }, null, {
@@ -323,10 +355,16 @@ export const FetchSendorUsedList = (opts) => {
                             sendorUsedList: records || [],
                         },
                     }));
-                } else {
+                } else if (opts.params.giftStatus === '2') {
                     dispatch(getUsedListSuccessAC({
                         payload: {
                             sendorUsedList: records || [],
+                        },
+                    }));
+                } else {
+                    dispatch(getNoUsedListSuccessAC({
+                        payload: {
+                            noUsedList: records || [],
                         },
                     }));
                 }
