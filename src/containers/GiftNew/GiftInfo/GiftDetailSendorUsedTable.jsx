@@ -92,9 +92,9 @@ class GiftSendOrUsedCount extends React.Component {
             {
                 title: '操作人',
                 className:'TableTxtCenter',
-                dataIndex: 'operator',
+                dataIndex: 'createBy',
                 width: 160,
-                key: 'operator',
+                key: 'createBy',
             },
             {
                 title: '备注',

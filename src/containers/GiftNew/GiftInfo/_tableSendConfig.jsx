@@ -395,9 +395,9 @@ const NO_USED_SPE_COLUMNS = [
     }, {
         title: '操作人',
         className: 'TableTxtCenter',
-        dataIndex: 'createBy',
+        dataIndex: 'operator',
         width: 160,
-        key: 'createBy',
+        key: 'operator',
     },
 ];
 
