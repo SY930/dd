@@ -20,7 +20,6 @@ import { getCardList, getShopPid, getIndirectList, getMpAppList, getPayChannel, 
 import WEIXIN from '../../../assets/weixin.png';
 import ZHIFUBAO from '../../../assets/zhifubao.png'
 import DOUYIN from '../../../assets/douyin.png'
-import StopTables from './StopTables';
 const moment = require('moment');
 
 
