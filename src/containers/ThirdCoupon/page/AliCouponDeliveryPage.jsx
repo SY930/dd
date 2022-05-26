@@ -72,6 +72,10 @@ export default class ThirdCoupon extends Component {
             this.setState({
                 tabKeys: 'promotionPage',
             })
+        } else {
+            this.setState({
+                tabKeys: 'successPage',
+            })
         }
     }
 
