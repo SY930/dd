@@ -34,6 +34,8 @@ export default class ThirdCoupon extends Component {
     }
 
     componentDidMount() {
+        const { from } = this.getQueryVariable();
+        this.handleTabChange(from)
         this.handleQuery(null, null, { eventWays: ['20001'] }); // 默认传成功页
         this.initData()
     }
@@ -49,6 +51,29 @@ export default class ThirdCoupon extends Component {
             this.handleQuery(1, pageSize)
         })
     };
+
+
+    getQueryVariable = () => {
+        const search = window.decodeURIComponent(window.location.search)
+        let query = search.substr(1)
+        query = query.split('&')
+        const params = {}
+        for (let i = 0; i < query.length; i++) {
+            const q = query[i].split('=')
+            if (q.length === 2) {
+                params[q[0]] = q[1]
+            }
+        }
+        return params
+    }
+
+    handleTabChange = (form) => {
+        if (form === 'promotion') {
+            this.setState({
+                tabKeys: 'promotionPage',
+            })
+        }
+    }
 
     handleQuery = (pageNo, pageSize, _opt = {}) => {
         if (!this.state.loading) {
@@ -80,6 +105,7 @@ export default class ThirdCoupon extends Component {
             // }
         })
     }
+
 
     initData = () => {
         getAlipayPromotionList().then((res) => {
