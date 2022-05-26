@@ -544,6 +544,7 @@ class CreateCouponContent extends Component {
                     // }
                     method = 'couponCodeBatchService/updateBatch.ajax';
                     datas.itemID = editData.itemID;
+                    datas.groupID = groupID
                 }
                 const params = {
                     service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
@@ -873,7 +874,7 @@ class CreateCouponContent extends Component {
                                 required={true}
                             >
                                 {getFieldDecorator('giftValidRange', {
-                                    initialValue: editData.eGiftEffectTime > 0 ? [moment(editData.eGiftEffectTime, 'YYYYMMDD'), moment(editData.validUntilDate, 'YYYYMMDD')] : [],
+                                    initialValue: editData.EGiftEffectTime > 0 ? [moment(editData.EGiftEffectTime, 'YYYYMMDD'), moment(editData.validUntilDate, 'YYYYMMDD')] : [],
                                     onChange: this.handleGiftValidRangeChange,
                                     rules: [
                                         { required: true, message: '请输入有效时间' },

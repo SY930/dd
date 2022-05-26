@@ -44,12 +44,13 @@ export const getColumns = _this => ([
                     )
                 }
                 {
-                    // 券code模式为MERCHANT_API的显示“停用”按钮
+                    // 券code模式为MERCHANT_API的显示“停用”按钮  batchStatus 0 未启用  1启用  2停用
                     record.platformType === 3 && record.batchStatus === 1 && record.couponCodeDockingType === 1 && ( // 启用中显示停用
                         <a
                             href="#"
                             onClick={() => {
-                                _this.handleStopClickEvent(record, 2)
+                                // 2 status    -   3平台类型
+                                _this.handleStopClickEvent(record, 2, '3')
                             }}
                         >
                             停用
@@ -62,7 +63,7 @@ export const getColumns = _this => ([
                         <a
                             href="#"
                             onClick={() => {
-                                _this.handleStopClickEvent(record, 1)
+                                _this.handleStopClickEvent(record, 1, 3)
                             }}
                         >
                             启用
@@ -70,7 +71,7 @@ export const getColumns = _this => ([
                     )
                 }
                 {
-                    record.platformType === 3 && record.batchStatus === 2 && (
+                    record.platformType === 3 && record.batchStatus === 0 && (
                         <a
                             href="#"
                             onClick={() => {
@@ -90,7 +91,7 @@ export const getColumns = _this => ([
                                 href="#"
                                 disabled={record.batchStatus != 1}
                                 onClick={record.batchStatus == 1 ? () => {
-                                    _this.handleStopClickEvent(record, 2)
+                                    _this.handleStopClickEvent(record, 2, '1')
                                 } : null}
                             >停用</a>
                             <a

@@ -346,9 +346,9 @@ class CouponManageList extends Component {
     handleSuccesModalSubmit = () => {
 
     }
-    handleStopClickEvent = (record, batchStatus) => {
+    handleStopClickEvent = (record, batchStatus, platformType) => {
         const { itemID } = record;
-        const params = { couponCodeBatchInfo: { itemID, batchStatus } };
+        const params = { couponCodeBatchInfo: { itemID, batchStatus, platformType } };
         axiosData(
             'couponCodeBatchService/switchStatus.ajax',
             params,
