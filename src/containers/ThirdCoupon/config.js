@@ -63,7 +63,7 @@ export const getColumns = _this => ([
                         <a
                             href="#"
                             onClick={() => {
-                                _this.handleStopClickEvent(record, 1, 3)
+                                _this.handleStopClickEvent(record, 1, '3')
                             }}
                         >
                             启用

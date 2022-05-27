@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom';
-import { jumpPage } from '@hualala/platform-base';
+import { jumpPage, getStore } from '@hualala/platform-base';
 import { connect } from 'react-redux';
 import {
     Table, Icon, Select, DatePicker,
@@ -348,6 +348,8 @@ class CouponManageList extends Component {
     }
     handleStopClickEvent = (record, batchStatus, platformType) => {
         const { itemID } = record;
+        // const { user } = getStore().getState();
+        // const { groupID } = user.get('accountInfo').toJS()
         const params = { couponCodeBatchInfo: { itemID, batchStatus, platformType } };
         axiosData(
             'couponCodeBatchService/switchStatus.ajax',
