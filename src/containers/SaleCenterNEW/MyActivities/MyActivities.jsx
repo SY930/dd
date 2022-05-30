@@ -259,7 +259,7 @@ class MyActivities extends React.Component {
             planModalVisible: false,
             operateModalVisible: false,
             executeTimeType: 0,
-            ruleType: 1,
+            executeFoodUnitType: 1,
         };
         this.handleDismissUpdateModal = this.handleDismissUpdateModal.bind(this);
         this.checkDetailInfo = this.checkDetailInfo.bind(this);
@@ -1045,7 +1045,7 @@ class MyActivities extends React.Component {
 
     handleRuleType = (e) => {
         this.setState({
-            ruleType: e.target.value,
+            executeFoodUnitType: e.target.value,
         })
     }
     parseResponseJson = (rsp, successCode) => {
@@ -1068,15 +1068,15 @@ class MyActivities extends React.Component {
     }
     handleOperateSave = () => {
         const {
-            executeTimeType, 
-            ruleType
+            executeTimeType,
+            executeFoodUnitType
         } = this.state
         axiosData('/promotion/promotionParamsService_updatePromotionParams.ajax', {
             groupID: this.props.user.accountInfo.groupID,
             params: {
                 groupID: this.props.user.accountInfo.groupID,
                 executeTimeType,
-                ruleType
+                executeFoodUnitType
             },
         }, null, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
             .then((res) => {
@@ -1142,7 +1142,7 @@ class MyActivities extends React.Component {
         return (
             <Modal
                 wrapClassName="progressBarModal"
-                title={''}
+                title={'活动规则'}
                 visible={this.state.operateModalVisible}
                 footer={
                     <div style={{ textAlign: 'center' }}>
@@ -1173,42 +1173,61 @@ class MyActivities extends React.Component {
                 }}
             >
                 <div>
-                    <div>
-                        <h3>执行时间配置</h3>
-                    </div>
                     <div style={{ marginTop: 13, marginLeft: 20 }}>
-                        <div style={{ marginBottom: 10, marginTop: 10 }}>当顾客在POS上结账时，促销活动时间计算规则</div>
-                        <span>计算规则：</span>
+                        <div style={{ marginBottom: 10, marginTop: 10 }}>
+                            <span style={{
+                                width: '84px',
+                                height: '14px',
+                                fontSize: '14px',
+                                fontWeight: 500,
+                                color: '#333333',
+                                lineHeight: '14px',
+                                marginRight: 8
+                            }}>执行时间配置</span>
+                        当顾客在POS上结账时，促销活动时间计算规则</div>
+                        <span style={{ marginRight: 20 }}>计算规则 </span>
                         <RadioGroup onChange={this.handleExecuteTimeType} value={this.state.executeTimeType}>
                             <Radio key={'1'} value={1}>按开台时间计算</Radio>
                             <Radio key={'2'} value={0}>按结账时间计算</Radio>
                         </RadioGroup>
                     </div>
 
-                    <div style={{ marginTop: 30 }}>
-                        <h3>称重类菜品计算规则</h3>
+                    <div style={{ marginTop: 30, marginLeft: 20 }}>
+                        <span style={{
+                            width: '84px',
+                            height: '14px',
+                            fontSize: '14px',
+                            fontWeight: 500,
+                            color: '#333333',
+                            lineHeight: '14px',
+                            marginRight: 8
+                        }}>称重类菜品计算规则</span>
                     </div>
                     <div style={{ marginTop: 13, marginLeft: 20 }}>
-                        <RadioGroup onChange={this.handleRuleType} value={this.state.ruleType}>
-                            <Radio key={'1'} value={1}>按主规格计算</Radio>
-                            <Radio key={'2'} value={2}>优先按附注规格计算</Radio>
+                        <span style={{ marginRight: 20 }}>计算规则 </span>
+                        <RadioGroup onChange={this.handleRuleType} value={this.state.executeFoodUnitType}>
+                            <Radio key={'0'} value={0}>按主规格计算</Radio>
+                            <Radio key={'1'} value={1}>优先按附注规格计算</Radio>
                         </RadioGroup>
-                        <Tooltip placement={'right'} title={
-                        <p>
-                            <p>当称重类菜品设置了辅助规格时，将优先按</p>
-                            <p>照辅助规格来计算金额，如果未设置辅助规</p>
-                            <p>格则继续按照主规格进行计算</p>
-                        </p>
-                    }>
-                        <Icon
-                            type={'question-circle'}
-                            style={{ color: '#787878' }}
-                            className={styles.cardLevelTreeIcon}
-                        />
-                    </Tooltip>
+                        {this.state.executeFoodUnitType == 1 && <div style={{
+                            marginTop: 5,
+                            width: 400,
+                            height: 32,
+                            background: '#FFFBE4',
+                            borderRadius: 3,
+                            border: '1px solid #FFA900',
+                            lineHeight: '32px',
+                            paddingLeft: 12,
+                            color: '#666666',
+                            fontSize: '12px',
+                            fontWeight: 400
+                        }}>
+                            未设置辅助规格的称重菜品，则继续按主规格进行计算
+                        </div>
+                        }
                     </div>
                 </div>
-            </Modal>
+            </Modal >
         );
     }
     openOptModal = () => {
@@ -1219,10 +1238,10 @@ class MyActivities extends React.Component {
             groupID: this.props.user.accountInfo.groupID,
         }, null, { path: 'data.params' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
             .then((res) => {
-                const { executeTimeType, ruleType } = res
+                const { executeTimeType, executeFoodUnitType } = res
                 this.setState({
                     executeTimeType,
-                    ruleType
+                    executeFoodUnitType
                 })
             })
     }
@@ -1244,7 +1263,7 @@ class MyActivities extends React.Component {
                                         type="ghost"
                                         onClick={this.openOptModal}
                                         style={{ marginRight: 10 }}
-                                    ><Icon type="clock-circle-o" />活动规则</Button>
+                                    ><Icon type="setting" />活动规则</Button>
                                 </Authority>
                             </span>
                         )
