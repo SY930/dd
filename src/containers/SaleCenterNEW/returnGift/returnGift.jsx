@@ -84,6 +84,7 @@ class ReturnGift extends React.Component {
         this.handleGiftChange = this.handleGiftChange.bind(this);
         this.handlegiftMaxUseNumChange = this.handlegiftMaxUseNumChange.bind(this);
         this.handleValidateTypeChange = this.handleValidateTypeChange.bind(this);
+        this.handlegiftPropertyChange = this.handlegiftPropertyChange.bind(this);
         this.handleGiftValidDaysChange = this.handleGiftValidDaysChange.bind(this);
         this.handleRangePickerChange = this.handleRangePickerChange.bind(this);
         this.handleGiftEffectiveTimeChange = this.handleGiftEffectiveTimeChange.bind(this);
@@ -194,6 +195,21 @@ class ReturnGift extends React.Component {
                             </Popconfirm>
                         )
                     }
+                    <FormItem
+                        label={"礼品属性"}
+                        labelCol={{ span: 5 }}
+                        wrapperCol={{ span: 18 }}
+                        colon={false}
+                    >
+                        <RadioGroup
+                            value={info.giftPropertyType || '2'}
+                            onChange={(e) => this.handlegiftPropertyChange(e, index)}
+                            disabled={this.props.disabled}
+                        >
+                            <Radio key={'1'} value={'1'}>餐饮券</Radio >
+                            <Radio key={'2'} value={'2'}>零售券</Radio >
+                        </RadioGroup >
+                    </FormItem>
                     <FormItem
                         label={SALE_LABEL.k6d8n39k}
                         required={true}
@@ -504,6 +520,17 @@ class ReturnGift extends React.Component {
             _infos[index].giftEffectiveTime.validateStatus = _infos[index].giftEffectiveTime.value[1] ? 'success' : 'error';
             _infos[index].giftEffectiveTime.msg = _infos[index].giftEffectiveTime.value[1] ? null : SALE_LABEL.k6d9ljnr;
         }
+        this.setState({
+            infos: _infos,
+        }, () => {
+            this.props.onChange && this.props.onChange(this.state.infos);
+        });
+    }
+
+    //礼品属性改变
+    handlegiftPropertyChange(e, index) {
+        const _infos = this.state.infos;
+        _infos[index].giftPropertyType = e.target.value;
         this.setState({
             infos: _infos,
         }, () => {
