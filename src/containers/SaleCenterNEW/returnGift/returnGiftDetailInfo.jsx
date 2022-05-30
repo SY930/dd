@@ -102,7 +102,7 @@ class ReturnGiftDetailInfo extends React.Component {
         giftList.forEach(gift => {
             const emptyGift = JSON.parse(JSON.stringify(DEFAULT_GIFT_ITEM));
             emptyGift.giftNum.value = gift.giftNum;
-            emptyGift.giftPropertyType = gift.giftPropertyType || '2';
+            emptyGift.presentType = gift.presentType || 1;
             emptyGift.giftMaxUseNum.value = gift.giftMaxUseNum || 1;
             emptyGift.giftInfo.giftName = gift.giftName;
             emptyGift.giftInfo.giftItemID = gift.giftItemID;
@@ -150,7 +150,7 @@ class ReturnGiftDetailInfo extends React.Component {
             data = this.groupGiftsByStageAmount(giftList);
         } else if (stageType == 1) {// 每满
             data[0].stageAmount = $rule.get('stageAmount')
-            data[0].giftPropertyType = $rule.get('giftPropertyType') || '2'
+            data[0].presentType = $rule.get('presentType') || 1
             data[0].gifts[0].giftNum.value = $rule.get('giftNum');
             data[0].gifts[0].giftInfo.giftName = $rule.get('giftName');
             data[0].gifts[0].giftInfo.msg = null;
@@ -218,13 +218,25 @@ class ReturnGiftDetailInfo extends React.Component {
                     giftNum: item.giftNum.value,
                     giftMaxUseNum: item.giftMaxUseNum.value,
                     giftName: item.giftInfo.giftName,
-                    giftPropertyType: item.giftPropertyType || '2',
+                    presentType: item.presentType || 1,
                     giftItemID: item.giftInfo.giftItemID,
                     giftType: item.giftInfo.giftType,
                     freeCashVoucherValue: item.giftInfo.giftValue
                 }
             }
-            if (item.giftValidType == '0') {
+            if(item.presentType == 8) {
+                return {
+                    stageAmount: item.stageAmount,
+                    giftValidType: '0',
+                    giftValidDays: 1,
+                    giftEffectiveTime: 0,
+                    giftMaxUseNum: item.giftMaxUseNum.value,
+                    giftNum: item.giftNum.value,
+                    presentType: item.presentType || 1,
+                    giftName: item.giftInfo.giftName,
+                    giftItemID: item.giftInfo.giftItemID,
+                }
+            } else if (item.giftValidType == '0') {
                 return {
                     stageAmount: item.stageAmount,
                     giftValidType: item.giftValidType,
@@ -232,7 +244,7 @@ class ReturnGiftDetailInfo extends React.Component {
                     giftValidDays: item.giftValidDays.value,
                     giftEffectiveTime: (item.giftEffectiveTime.value || 0) * 60,
                     giftNum: item.giftNum.value,
-                    giftPropertyType: item.giftPropertyType || '2',
+                    presentType: item.presentType || 1,
                     giftName: item.giftInfo.giftName,
                     giftItemID: item.giftInfo.giftItemID,
                 }
@@ -243,7 +255,7 @@ class ReturnGiftDetailInfo extends React.Component {
                     giftValidDays: item.giftValidDays.value,
                     giftEffectiveTime: item.giftEffectiveTime.value,
                     giftNum: item.giftNum.value,
-                    giftPropertyType: item.giftPropertyType || '2',
+                    presentType: item.presentType || 1,
                     giftMaxUseNum: item.giftMaxUseNum.value,
                     giftName: item.giftInfo.giftName,
                     giftItemID: item.giftInfo.giftItemID,
@@ -256,7 +268,7 @@ class ReturnGiftDetailInfo extends React.Component {
                 giftStartTime: range.value[0] ? parseInt(range.value[0].format('YYYYMMDD') + '000000') : '',
                 giftEndTime: range.value[1] ? parseInt(range.value[1].format('YYYYMMDD') + '235959') : '',
                 giftNum: item.giftNum.value,
-                giftPropertyType: item.giftPropertyType || '2',
+                presentType: item.presentType || 1,
                 giftMaxUseNum: item.giftMaxUseNum.value,
                 giftName: item.giftInfo.giftName,
                 giftItemID: item.giftInfo.giftItemID,
