@@ -275,9 +275,9 @@ export default class PrizeContent extends React.Component {
         const { typeValue, bag } = this.state;
         return (
             <div style={{ position: 'relative' }}>
-                {
+                {/* {
                     disabled && <div className={style.disabledModal}></div>
-                }
+                } */}
                 <div className={style.formDiv}>
                     <Form className={style.addGrade} key={index}>
                         <div className={style.CategoryBody}>
