@@ -108,7 +108,7 @@ class GiftTimeIntervals extends Component {
         if (Array.isArray(nextProps.value)) {
             this.setState({
                 intervals: nextProps.value,
-                crossDay: nextProps.crossDay
+                // crossDay: nextProps.crossDay
             })
         }
     }
@@ -140,7 +140,8 @@ class GiftTimeIntervals extends Component {
 
     handleTimeChange = (moment, index, key) => {
         const formattedString = moment.format('HHmm') + '00';
-        const { intervals: original } = this.state;
+        const { intervals: original,crossDay } = this.state;
+        console.log(crossDay,'crossday------123')
         const intervals = JSON.parse(JSON.stringify(original));
         intervals[index][key] = formattedString;
         this.setState({ intervals }, () => {
@@ -226,7 +227,7 @@ class GiftTimeIntervals extends Component {
                 </div>
                 {
                     (!!periodStart && !!periodEnd && (periodEnd < periodStart)) && (
-                        <div style={{width:'350px',float:'left'}}>
+                        <div style={{width:'350px',float:'left',marginLeft:'10px'}}>
                             <span style={{marginRight:'10px'}}>将跨天时段00:00 - {(periodEnd || '').substring(0, 4).match(/\d{2}/g).join(':')}</span>
                             <Checkbox onChange={this.handleCrossDayChange} checked={this.state.crossDay === 1 ? true : false}>配置为次日可用时段</Checkbox>
                             <Tooltip title={
