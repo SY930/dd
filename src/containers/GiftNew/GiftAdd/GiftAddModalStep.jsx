@@ -620,6 +620,11 @@ class GiftAddModalStep extends React.PureComponent {
                 }
                 
                 break;
+            case 'notice':
+                this.setState({
+                    notice: value,
+                })
+                break;
             default:
                 break;
         }
@@ -1072,17 +1077,37 @@ class GiftAddModalStep extends React.PureComponent {
             }
 
             if (value == '10') {
-                let isRepeat = this.isRepeat(values.notice)
-                if(isRepeat){
-                    message.warning('短信提醒时间不能设置重复的值')
-                    return
+
+                let isMsg = false
+                if(this.state.values.pushMessage&&this.state.values.pushMessage.sendType){
+                    isMsg = this.state.values.pushMessage.sendType.indexOf('msg')>-1
                 }
-                let isEmpty = this.isEmpty(values.notice)
-                if(isEmpty){
-                    message.warning('短信提醒时间不能设置空值')
-                    return
+
+                if(!isMsg){
+                    params.pushMessageRuleInfoList = []
+                }else{
+                    let isRepeat = this.isRepeat(this.state.notice)
+                    if(isRepeat){
+                        message.warning('短信提醒时间不能设置重复的值')
+                        return
+                    }
+                    let isEmpty = this.isEmpty(this.state.notice)
+                    if(isEmpty){
+                        message.warning('短信提醒时间不能设置空值')
+                        return
+                    }
+    
+                    let pushMessageRuleInfoList = []
+                    let ruleDetailList = []
+    
+                    this.state.notice&&this.state.notice.length>0&&this.state.notice.map((i)=>{
+                        ruleDetailList.push({dateRule:i})
+                    })
+                    if(ruleDetailList.length>0){
+                        pushMessageRuleInfoList.push({pushType:1,ruleDetailList})
+                        params.pushMessageRuleInfoList = pushMessageRuleInfoList
+                    }
                 }
-                params.notice = values.notice
             }
 
             if (params.couponPeriodSettings && Array.isArray(params.couponPeriodSettings)) {
@@ -2818,6 +2843,21 @@ class GiftAddModalStep extends React.PureComponent {
             isMsg = formData.pushMessage.sendType.indexOf('msg')>-1
         }
        
+        let notice = []
+        if(formData.pushMessageRuleInfoList&&formData.pushMessageRuleInfoList.length>0){
+            formData.pushMessageRuleInfoList.map((i)=>{
+                if(i.pushType == 1){
+                    if(i.ruleDetailList&&i.ruleDetailList.length>0){
+                        i.ruleDetailList.map((j)=>{
+                            notice.push(j.dateRule)
+                        })
+                        
+                    }
+                }
+            })
+            formData.notice = notice
+        }
+
         // 定义所有类型的表单项，根据不同礼品类型进行配置
         const formItems = {
             ...FORMITEMS,
