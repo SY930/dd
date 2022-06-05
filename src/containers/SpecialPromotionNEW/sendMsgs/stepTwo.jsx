@@ -131,6 +131,7 @@ class StepTwo extends React.Component {
                 settleUnitID: this.state.settleUnitID || '0',
                 accountNo: this.state.accountNo,
             }
+            console.log(this.state.cardLevelRangeType,'this.state.cardLevelRangeType--------->>>>>>>')
             if(this.state.cardLevelRangeType == '7'){
                 opts.customerRangeConditionIDs = this.state.selectedTags.map(item => item.tagRuleID)
             }
@@ -168,7 +169,7 @@ class StepTwo extends React.Component {
                 cardCount: specialPromotion.totalMembers,
                 cardGroupRemark: specialPromotion.groupMembersRemark,
                 cardLevelRangeType: specialPromotion.cardLevelRangeType || '0',
-                localType:specialPromotion.localType || '5',
+                localType:specialPromotion.cardLevelRangeType == '7' ? '7' : '5',
                 customerRangeConditionIDs:specialPromotion.customerRangeConditionIDs
             })
         }
@@ -205,7 +206,7 @@ class StepTwo extends React.Component {
                 cardCount: specialPromotion.totalMembers,
                 cardGroupRemark: specialPromotion.groupMembersRemark,
                 cardLevelRangeType: specialPromotion.cardLevelRangeType || '0',
-                localType:specialPromotion.localType || '5',
+                localType:specialPromotion.cardLevelRangeType == '7' ? '7' : '5',
                 customerRangeConditionIDs:specialPromotion.customerRangeConditionIDs
             })
         }
@@ -471,7 +472,7 @@ class StepTwo extends React.Component {
     handleGroupOrCatRadioChange = (e) => {
         const type = e.target.value;
         this.setState({
-            // cardLevelRangeType: type,此处该字段跟别的地方不一样
+            cardLevelRangeType: type,//此处该字段跟别的地方不一样
             localType: type,
             groupMembersID: undefined,
             selectedTags:null
