@@ -281,6 +281,13 @@ class CouponManageList extends Component {
            }, () => {
                this.handleQuery()
            })
+        } else {
+            this.setState({
+                platformType: '',
+                batchStatus: '',
+            }, () => {
+                this.handleQuery()
+            })
         }
     }
 

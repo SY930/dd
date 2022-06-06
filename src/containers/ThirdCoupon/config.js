@@ -58,8 +58,8 @@ export const getColumns = _this => ([
                     )
                 }
                 {
-                    // 券code模式为MERCHANT_API的显示“停用”按钮
-                    record.platformType === 3 && record.batchStatus === 0 && (
+                    // 券code模式为MERCHANT_API的显示“启用”按钮
+                    record.platformType === 3 && record.batchStatus === 0 && record.couponCodeDockingType === 1 && (
                         <a
                             href="#"
                             onClick={() => {
@@ -71,7 +71,8 @@ export const getColumns = _this => ([
                     )
                 }
                 {
-                    record.platformType === 3 && record.batchStatus === 0 && (
+                    // 券code模式为MERCHANT_API的显示“编辑”按钮
+                    record.platformType === 3 && record.batchStatus === 0 && record.couponCodeDockingType === 1 && (
                         <a
                             href="#"
                             onClick={() => {

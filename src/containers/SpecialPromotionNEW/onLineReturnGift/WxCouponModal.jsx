@@ -78,7 +78,7 @@ class WxCouponModal extends Component {
         }
         const { user } = this.props;
         const { accountInfo: { groupID } } = user;
-        const params1 = { groupID, pageNo: this.state.pageNo, pageSize: this.state.pageSize, platformType: '3', itemID };
+        const params1 = { groupID, pageNo: this.state.pageNo, pageSize: this.state.pageSize, platformType: '3', itemID, batchStatus: 1 };
         axiosData(
             'couponCodeBatchService/queryBatchList.ajax',
             { ...params1 },
