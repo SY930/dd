@@ -77,10 +77,19 @@ class GiftNoticeItem extends Component {
     renderIntervalItem(value, index) {
         const { maxIntervals, intervals } = this.state;
         return (
-            <div key={`${index}`} style={{ display: 'flex' }}>
+            <div key={`${index}`} style={{
+                display: 'flex', background: '#F7F7F7',
+                borderRadius: '3px',
+                paddingLeft:20,
+                paddingTop:10
+            }}>
                 <div style={{ display: 'flex' }}>
-                    <div>券到期前</div>
-                    <PriceInput modal="int" style={{ width: 50, margin: '0 10px' }} onChange={(e) => this.handleTimeChange(e, index)} value={{ number: value }}></PriceInput>
+                    <div style={{
+                        fontSize: '12px',
+                        color: '#333333'
+                    }}>{`提示${index + 1}`}</div>
+                    <div style={{ marginLeft: 16 }}>券到期前</div>
+                    <PriceInput modal="int" style={{ width: 130, margin: '0 10px' }} placeholder="请输入1~100整数" onChange={(e) => this.handleTimeChange(e, index)} value={{ number: value }}></PriceInput>
                     <div>天提醒</div>
                 </div>
                 <div style={{ paddingTop: 5, marginLeft: 20 }}>

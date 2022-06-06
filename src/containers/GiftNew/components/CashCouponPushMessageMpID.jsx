@@ -198,24 +198,8 @@ class PushMessageMpID extends Component {
                             })
                         }
                     </Select>
-                    <span style={{visibility:'hidden'}}>
-                        券到账提醒;券剩余数量提醒;券到期前
-                        <Select
-                            notFoundContent={'未搜索到结果'}
-                            value={reminderTime}
-                            onChange={this.handleDaysChange}
-                            style={{
-                                width: 45,
-                                display: 'inline-block',
-                                margin: '0 7px',
-                            }}
-                            className={styles.selectMsg}
-                        >
-                            {
-                                daysOptions.map(({ value, label }) => <Option key={value} value={value}>{label}</Option>)
-                            }
-                        </Select>
-                        天提醒
+                    <span>
+                        可设置至多5个即将到期时间点推送提醒，时间不可重复
                     </span>
                 </div>
             </div>

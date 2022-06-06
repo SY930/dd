@@ -1764,7 +1764,7 @@ class GiftAddModalStep extends React.PureComponent {
             <Row>
                 <Col>
                     {decorator({
-                        rules: [{ required: true, message: ' ' }]
+                        rules: [{ required: false, message: ' ' }]
                     })(<GiftNoticeItem />)}
                 </Col>
             </Row>
@@ -2940,13 +2940,13 @@ class GiftAddModalStep extends React.PureComponent {
                                     <CashCouponPushMessageMpID formData = {formData} groupID={groupID}/>
                                 )
                             }
-                            <span>* 此处为该券模板支持的推送方式，最终是否推送消息以营销活动配置为准</span>
+                            {describe!='代金券'?<span>* 此处为该券模板支持的推送方式，最终是否推送消息以营销活动配置为准</span>:null}
                         </Col>
                     )
                 }
             },
             notice: {
-                label: '券到期短信提醒',
+                label: ' ',
                 type: 'custom',
                 render: decorator => isMsg?this.renderNoticeItem(decorator):null,
             },
