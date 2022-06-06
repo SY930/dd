@@ -80,17 +80,19 @@ class GiftNoticeItem extends Component {
             <div key={`${index}`} style={{
                 display: 'flex', background: '#F7F7F7',
                 borderRadius: '3px',
-                paddingLeft:20,
-                paddingTop:10
+                paddingLeft: 20,
+                paddingTop: 10
             }}>
                 <div style={{ display: 'flex' }}>
                     <div style={{
                         fontSize: '12px',
                         color: '#333333'
                     }}>{`提示${index + 1}`}</div>
-                    <div style={{ marginLeft: 16 }}>券到期前</div>
-                    <PriceInput modal="int" style={{ width: 130, margin: '0 10px' }} placeholder="请输入1~100整数" onChange={(e) => this.handleTimeChange(e, index)} value={{ number: value }}></PriceInput>
-                    <div>天提醒</div>
+                    <div style={{ marginLeft: 16, marginRight: 8 }}>券到期前</div>
+                    <div>
+                        <PriceInput modal="int" style={{ width: 130 }} placeholder="请输入1~100整数" addonAfter='天' onChange={(e) => this.handleTimeChange(e, index)} value={{ number: value }}></PriceInput>
+                    </div>
+                    <div style={{ marginLeft: 8 }} >提醒</div>
                 </div>
                 <div style={{ paddingTop: 5, marginLeft: 20 }}>
                     {

@@ -1088,12 +1088,12 @@ class GiftAddModalStep extends React.PureComponent {
                 }else{
                     let isRepeat = this.isRepeat(this.state.notice)
                     if(isRepeat){
-                        message.warning('短信提醒时间不能设置重复的值')
+                        message.warning('短信推送提醒时间不能设置重复的值')
                         return
                     }
                     let isEmpty = this.isEmpty(this.state.notice)
                     if(isEmpty){
-                        message.warning('短信提醒时间不能设置空值')
+                        message.warning('短信推送提醒时间不能设置空值')
                         return
                     }
     
