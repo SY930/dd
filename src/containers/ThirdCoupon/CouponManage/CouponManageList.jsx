@@ -531,6 +531,7 @@ class CouponManageList extends Component {
                                 }}
                             >
                                 <Option value={''}>全部</Option>
+                                <Option value={'0'}>未生效</Option>
                                 <Option value={'1'}>执行中</Option>
                                 <Option value={'2'}>停用</Option>
                                 <Option value={'3'}>待审核</Option>
