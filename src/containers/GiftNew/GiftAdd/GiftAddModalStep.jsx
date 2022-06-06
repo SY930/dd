@@ -1128,14 +1128,15 @@ class GiftAddModalStep extends React.PureComponent {
             }
             
             params.brandSelectType = (params.selectBrands || []).length > 0 ? 0 : 1;
-            params.maxUseLimit = params.maxUseLimit || '0';
-            params.customerUseCountLimit = params.customerUseCountLimit || '0';
+            params.maxUseLimit = params.maxUseLimit || '';
+            params.customerUseCountLimit = params.customerUseCountLimit || '';
             params.goldGift = Number((params.aggregationChannels || []).includes('goldGift'));
             params.vivoChannel = Number((params.aggregationChannels|| []).includes('vivoChannel'));
             params.moneyLimitType = '0';
             params.moenyLimitValue = '100';
             params.amountType = '';
             params.crossDay = crossDay;
+            console.log(params.maxUseLimit,params.customerUseCountLimit,'params.customerUseCountLimit>>>>>>>>>>>>')
             if(params.maxUseLimit && params.customerUseCountLimit){
                 if(Number(params.maxUseLimit) > Number(params.customerUseCountLimit)){
                     message.warning('会员单笔账单张数限制数值 ≤ 会员单天使用张数');
