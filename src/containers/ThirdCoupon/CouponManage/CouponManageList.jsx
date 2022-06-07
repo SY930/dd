@@ -61,7 +61,7 @@ class CouponManageList extends Component {
             viewModalVisible: false, // 查看券详情弹窗
             viewData: {}, // 券详情内容
             editData: {}, // 编辑券详情内容
-            batchStatus: '', // 使用状态
+            batchStatus: '0,1,3,4,5', // 使用状态
             // couponCodeDockingType: '', // 券码对接类型: 1-订单获取, 2-批量预存导入
             type: '', // 前端标识 1 支付宝 | 2 微信 | 3 抖音
             channelID: 60, // 60支付宝 50微信
@@ -273,10 +273,8 @@ class CouponManageList extends Component {
     }
 
     handleChangeTable = (key) => {
-    // console.log("🚀 ~ file: CouponManageList.jsx ~ line 277 ~ CouponManageList ~ key", key)
         if (key === '2') {
            this.setState({
-               platformType: '3',
                batchStatus: '2',
            }, () => {
                this.handleQuery()
@@ -284,7 +282,7 @@ class CouponManageList extends Component {
         } else {
             this.setState({
                 platformType: '',
-                batchStatus: '',
+                batchStatus: '0,1,3,4,5',
             }, () => {
                 this.handleQuery()
             })
@@ -450,7 +448,7 @@ class CouponManageList extends Component {
         );
     }
 
-    renderFilterBar = () => {
+    renderFilterBar = (stop) => {
         return (
             <div>
                 <div className="layoutsSearch">
@@ -517,42 +515,47 @@ class CouponManageList extends Component {
                                 <Option value={'6'}>E折券</Option>
                             </Select>
                         </li>
-                        <li>
-                            <h5>使用状态</h5>
-                        </li>
-                        <li>
-                            <Select
-                                style={{ width: '160px' }}
-                                defaultValue=""
-                                onChange={(value) => {
-                                    this.setState({
-                                        batchStatus: value,
-                                    });
-                                }}
-                            >
-                                <Option value={''}>全部</Option>
-                                <Option value={'0'}>未生效</Option>
-                                <Option value={'1'}>执行中</Option>
-                                <Option value={'2'}>停用</Option>
-                                <Option value={'3'}>待审核</Option>
-                                <Option value={'4'}>审核通过</Option>
-                                <Option value={'5'}>审核失败</Option>
+                        {
+                            !stop && <ul className={styles.restUl}>
+                                <li>
+                                    <h5>使用状态</h5>
+                                </li>
+                                <li>
+                                    <Select
+                                        style={{ width: '160px' }}
+                                        defaultValue="0,1,3,4,5"
+                                        onChange={(value) => {
+                                            this.setState({
+                                                batchStatus: value,
+                                            });
+                                        }}
+                                    >
+                                        <Option value={'0,1,3,4,5'}>全部</Option>
+                                        <Option value={'0'}>未生效</Option>
+                                        <Option value={'1'}>执行中</Option>
+                                        {/* <Option value={'2'}>停用</Option> */}
+                                        <Option value={'3'}>待审核</Option>
+                                        <Option value={'4'}>审核通过</Option>
+                                        <Option value={'5'}>审核失败</Option>
 
-                            </Select>
-                        </li>
-                        <li>
-                            <h5>创建时间</h5>
-                        </li>
-                        <li>
-                            <RangePicker
-                                style={{ width: 260 }}
-                                // showTime={{ format: 'HH:mm' }}
-                                className={styles.ActivityDateDayleft}
-                                format="YYYY-MM-DD"
-                                placeholder={['开始日期', '结束日期']}
-                                onChange={this.onDateQualificationChange}
-                            />
-                        </li>
+                                    </Select>
+                                </li>
+                                <li>
+                                    <h5>创建时间</h5>
+                                </li>
+                                <li>
+                                    <RangePicker
+                                        style={{ width: 260 }}
+                                        // showTime={{ format: 'HH:mm' }}
+                                        className={styles.ActivityDateDayleft}
+                                        format="YYYY-MM-DD"
+                                        placeholder={['开始日期', '结束日期']}
+                                        onChange={this.onDateQualificationChange}
+                                    />
+                                </li>
+                            </ul>
+                        }
+                        
                         <li>
                             <Button type="primary" onClick={() => this.handleQuery(1)} disabled={this.state.loading}><Icon type="search" />搜索</Button>
                         </li>
@@ -622,9 +625,9 @@ class CouponManageList extends Component {
                     </TabPane>
                     <TabPane key={'2'} tab="已停用第三方券">
                     <div>
-                            {/* <div style={{ background: '#fff', padding: '12px 30px 0' }} className="layoutsHeader">
-                                {this.renderFilterBar()}
-                            </div> */}
+                            <div style={{ background: '#fff', padding: '12px 30px 0' }} className="layoutsHeader">
+                                {this.renderFilterBar('stop')}
+                            </div>
                             <div className="layoutsLineBlock"></div>
                             <div className={styles.pageContentWrapper}>
                                 {this.renderTables()}
