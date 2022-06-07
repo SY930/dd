@@ -1138,7 +1138,7 @@ class GiftAddModalStep extends React.PureComponent {
             params.amountType = '';
             params.crossDay = crossDay;
             console.log(params.maxUseLimit,params.customerUseCountLimit,'params.customerUseCountLimit>>>>>>>>>>>>')
-            if(params.maxUseLimit && params.customerUseCountLimit){
+            if(params.customerUseCountLimit !='0' && params.maxUseLimit && params.customerUseCountLimit){
                 if(Number(params.maxUseLimit) > Number(params.customerUseCountLimit)){
                     message.warning('会员单笔账单张数限制数值 ≤ 会员单天使用张数');
                     return false
