@@ -252,7 +252,8 @@ class GiftAddModalStep extends React.PureComponent {
             let justifiedData = this.justifyServerEndKeyToFormKeys(JSON.parse(JSON.stringify(thisGift.data)));
             let values = Object.assign({}, this.state.values, justifiedData);
             this.setState({
-                values
+                values,
+                crossDay:thisGift.data.crossDay
             })
         }
 
