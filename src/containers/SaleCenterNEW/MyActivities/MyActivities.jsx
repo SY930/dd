@@ -1207,7 +1207,7 @@ class MyActivities extends React.Component {
                         <span style={{ marginRight: 20 }}>计算规则 </span>
                         <RadioGroup onChange={this.handleRuleType} value={this.state.executeFoodUnitType}>
                             <Radio key={'0'} value={0}>按主规格计算</Radio>
-                            <Radio key={'1'} value={1}>优先按附注规格计算</Radio>
+                            <Radio key={'1'} value={1}>优先按辅助规格计算</Radio>
                         </RadioGroup>
                         {this.state.executeFoodUnitType == 1 && <div style={{
                             marginTop: 5,
