@@ -3,6 +3,7 @@ import {
     TimePicker,
     Icon,
     Tooltip,
+    Checkbox
 } from 'antd';
 import moment from 'moment'
 import styles from '../../SaleCenterNEW/ActivityPage.less'
@@ -92,6 +93,7 @@ class GiftTimeIntervals extends Component {
         super(props);
         this.state = {
             maxIntervals: 5,
+            crossDay:props.crossDay,
             intervals: Array.isArray(props.value) ? props.value : [{periodStart: '000000', periodEnd: '235900'}],
         }
     }
@@ -106,6 +108,7 @@ class GiftTimeIntervals extends Component {
         if (Array.isArray(nextProps.value)) {
             this.setState({
                 intervals: nextProps.value,
+                // crossDay: nextProps.crossDay
             })
         }
     }
@@ -137,17 +140,26 @@ class GiftTimeIntervals extends Component {
 
     handleTimeChange = (moment, index, key) => {
         const formattedString = moment.format('HHmm') + '00';
-        const { intervals: original } = this.state;
+        const { intervals: original,crossDay } = this.state;
+        console.log(crossDay,'crossday------123')
         const intervals = JSON.parse(JSON.stringify(original));
         intervals[index][key] = formattedString;
         this.setState({ intervals }, () => {
             this.props.onChange(intervals)
         })
     }
-
-
+    handleCrossDayChange = (e) => {
+        const { checked } = e.target;
+        const crossDay = checked ? 1 : 0;
+        console.log(crossDay,'crossDay-------')
+        this.setState({crossDay},() => {
+            this.props.handleCrossDayChange(crossDay)
+        })
+        console.log(e,crossDay,'value00000000000')
+    }
     renderIntervalItem({periodStart, periodEnd}, index) {
-        const { maxIntervals, intervals } = this.state;
+        const { maxIntervals, intervals, crossDay } = this.state;
+        console.log(crossDay,'crossdataysdfdyyyyy')
         return (
             <div key={`${index}`} className={styles.giftTimeIntervalItem}>
                 <div className={styles.timePickerWrapper}>
@@ -191,7 +203,7 @@ class GiftTimeIntervals extends Component {
                         )
                     }
                 </div>
-                <div style={{ paddingTop: 5 }}>
+                <div style={{ paddingTop: 5,float:'left' }}>
                     {
                         (index === (intervals.length - 1) && intervals.length < maxIntervals) && (
                         !!periodStart && !!periodEnd ? (
@@ -213,6 +225,26 @@ class GiftTimeIntervals extends Component {
                     }
                     {intervals.length > 1 && <Icon onClick={() => this.removeIndex(index)} className={styles.deleteIcon} type="minus-circle-o"/>}
                 </div>
+                {
+                    (!!periodStart && !!periodEnd && (periodEnd < periodStart)) && (
+                        <div style={{width:'350px',float:'left',marginLeft:'10px'}}>
+                            <span style={{marginRight:'10px'}}>将跨天时段00:00 - {(periodEnd || '').substring(0, 4).match(/\d{2}/g).join(':')}</span>
+                            <Checkbox onChange={this.handleCrossDayChange} checked={this.state.crossDay === 1 ? true : false}>配置为次日可用时段</Checkbox>
+                            <Tooltip title={
+                                <p style={{fontSize:'12px', width:700}}>
+                                    <b>配置为次日可用时段的定义：</b><br/>
+                                    &nbsp;&nbsp;配置适用时段，起止时间跨00:00时，如果勾选【配置为次日使用】时段，则00:00至截止时间的时段，计算为次日可用时段。<br/>
+                                    &nbsp;&nbsp;配置适用时段，起止时间跨00:00时，如果未勾选【配置为次日使用】时段，则00:00至截止时间的时段，计算为当日可用时段。<br/>
+                                    <b>举例说明：</b><br/>
+                                    ·&nbsp;&nbsp;勾选【配置为次日可用】：需要券可核销时间为当日的22:00开始至次日的05:00之间，可配置【使用时段】为22:00-05:00，勾选【配置为次日可用】后，保存成功，则券的可核销时间为当日的22:00开始至次日的05:00之间。<br/>
+                                    ·&nbsp;&nbsp;未勾选【配置为次日可用】：需要券可核销时间为当日的00:00-05:00和当日22:00-23:59:59之间，可配置【使用时段】为22:00- &nbsp;&nbsp;05:00，不勾选【配置为次日可用】后，保存成功，则券的可核销时间为当日的00:00-05:00和当日22:00-23:59:59之间。<br/>
+                                </p>
+                            }>
+                                <Icon style={{ color: '#333' }} type="question-circle-o" />
+                            </Tooltip>
+                        </div>
+                    )
+                }
             </div>
         )
     }

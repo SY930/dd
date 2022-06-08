@@ -197,6 +197,7 @@ class GiftAddModalStep extends React.PureComponent {
             cardTypeShopList: {},
             canUseShopIDs: [],
             canUseShopIDsAll: [],
+            crossDay:0
         };
         this.firstForm = null;
         this.secondForm = null;
@@ -251,7 +252,8 @@ class GiftAddModalStep extends React.PureComponent {
             let justifiedData = this.justifyServerEndKeyToFormKeys(JSON.parse(JSON.stringify(thisGift.data)));
             let values = Object.assign({}, this.state.values, justifiedData);
             this.setState({
-                values
+                values,
+                crossDay:thisGift.data.crossDay
             })
         }
 
@@ -436,6 +438,7 @@ class GiftAddModalStep extends React.PureComponent {
 
     // 处理表单数据变化
     handleFormChange(key, value, formRef) {
+        console.log(key,value,'value in handleFormCHANGE')
         const { gift: { name: describe, data,value:giftType }, type } = this.props;
         const { firstKeys, secondKeys, values } = this.state;
         const newKeys = [...secondKeys[describe][0].keys];
@@ -617,6 +620,20 @@ class GiftAddModalStep extends React.PureComponent {
                     })
                 }
                 
+                break;
+            case 'customerUseCountLimit':
+                if(value && values.maxUseLimit){
+                    if(Number(value) < Number(values.maxUseLimit)){
+                        message.warning('会员单笔账单张数限制数值 ≤ 会员单天使用张数')
+                    }
+                }
+                break;    
+            case 'maxUseLimit':
+                if(value && values.customerUseCountLimit){
+                    if(Number(value) > Number(values.customerUseCountLimit)){
+                        message.warning('会员单笔账单张数限制数值 ≤ 会员单天使用张数')
+                    }
+                }
                 break;
             default:
                 break;
@@ -899,9 +916,10 @@ class GiftAddModalStep extends React.PureComponent {
     }
 
     handleFinish = () => {
-        const { values, groupTypes, delivery} = this.state;
+        const { values, groupTypes, delivery,crossDay} = this.state;
         const { type, gift: { value, data } } = this.props;
         this.secondForm.validateFieldsAndScroll((err, formValues) => {
+            console.log(formValues,'formValuesformValuesformValuesformValues')
             if (err) return;
             if (formValues.TrdTemplate) {
                 const { TrdTemplateStatus } = formValues.TrdTemplate;
@@ -923,6 +941,7 @@ class GiftAddModalStep extends React.PureComponent {
                 { giftType: value },
             );
             params = this.formatFormData(params);
+            console.log(params,'params0000000000000000')
             // 券转赠  图片信息
             if(formValues.transferType){
                 let {transferTitle, transferImage = {}, transferringAvailable} = formValues
@@ -1110,13 +1129,21 @@ class GiftAddModalStep extends React.PureComponent {
             }
             
             params.brandSelectType = (params.selectBrands || []).length > 0 ? 0 : 1;
-            params.maxUseLimit = params.maxUseLimit || '0';
+            params.maxUseLimit = params.maxUseLimit || '';
             params.customerUseCountLimit = params.customerUseCountLimit || '0';
             params.goldGift = Number((params.aggregationChannels || []).includes('goldGift'));
             params.vivoChannel = Number((params.aggregationChannels|| []).includes('vivoChannel'));
             params.moneyLimitType = '0';
             params.moenyLimitValue = '100';
             params.amountType = '';
+            params.crossDay = crossDay;
+            console.log(params.maxUseLimit,params.customerUseCountLimit,'params.customerUseCountLimit>>>>>>>>>>>>')
+            if(params.customerUseCountLimit !='0' && params.maxUseLimit && params.customerUseCountLimit){
+                if(Number(params.maxUseLimit) > Number(params.customerUseCountLimit)){
+                    message.warning('会员单笔账单张数限制数值 ≤ 会员单天使用张数');
+                    return false
+                }
+            }
             //核销限制参数处理
             
             if(params.moneyLimitTypeAndValue && params.moneyLimitTypeAndValue.moneyLimitType){
@@ -1226,6 +1253,12 @@ class GiftAddModalStep extends React.PureComponent {
         }else{
             cb(callServer,params,groupName,_that)
         }
+    }
+    handleCrossDayChange(value){
+        console.log(value,'value>>>>>>>>>>>>>')
+        this.setState({
+            crossDay: value
+        })
     }
     renderDiscountTypeAndValue(decorator) {
         const { discountType, discountRate } = this.props.gift.data;
@@ -1704,14 +1737,14 @@ class GiftAddModalStep extends React.PureComponent {
         )
     }
     
-    renderCouponPeriodSettings(decorator) {
+    renderCouponPeriodSettings(decorator,crossDay) {
         const { gift: { data } } = this.props;
         return (
             <Row>
                 <Col>
                     {decorator({
                         rules: [{ required: true, message: ' ' }]
-                    })(<GiftTimeIntervals />)}
+                    })(<GiftTimeIntervals handleCrossDayChange={(value) => this.handleCrossDayChange(value)} crossDay={crossDay}/>)}
                 </Col>
             </Row>
         )
@@ -3089,8 +3122,8 @@ class GiftAddModalStep extends React.PureComponent {
             },
             TrdTemplate: {// 是否关联第三方券
                 label: ' ',
-                labelCol: { span: 3 },
-                wrapperCol: { span: 21 },
+                labelCol: { span: 4 },
+                wrapperCol: { span: 20 },
                 type: 'custom',
                 render: (decorator) => decorator({})(
                     <TrdTemplate
@@ -3403,7 +3436,7 @@ class GiftAddModalStep extends React.PureComponent {
                 label: '使用时段',
                 type: 'custom',
                 defaultValue: [{periodStart: '000000', periodEnd: '235900'}],
-                render: decorator => this.renderCouponPeriodSettings(decorator),
+                render: decorator => this.renderCouponPeriodSettings(decorator,formData.crossDay),
             },
             transferringAvailable: {
                 label: '转赠中是否可核销',
@@ -3644,6 +3677,7 @@ class GiftAddModalStep extends React.PureComponent {
             formData.excludeShops = formData.shopNames;
             formData.selectedShops = [];
         }
+        console.log(formData,'formData0000000000000')
         return (
             <div className={styles2.formContainer}>
                 <div
@@ -3660,8 +3694,8 @@ class GiftAddModalStep extends React.PureComponent {
                     formItems={formItems}
                     formData={formData}
                     formItemLayout={{
-                        labelCol: {span: 7},
-                        wrapperCol: {span: 17}
+                        labelCol: {span: 8},
+                        wrapperCol: {span: 16}
                     }}
                     formKeys={displayFirstKeys}
                     onChange={(key, value) => this.handleFormChange(key, value, this.firstForm)}
@@ -3738,8 +3772,8 @@ class GiftAddModalStep extends React.PureComponent {
                     formItems={formItems}
                     formData={formData}
                     formItemLayout={{
-                        labelCol: {span: 7},
-                        wrapperCol: {span: 17}
+                        labelCol: {span: 8},
+                        wrapperCol: {span: 16}
                     }}
                     formKeys={displaySecondKeys}
                     onChange={(key, value) => this.handleFormChange(key, value, this.secondForm)}
