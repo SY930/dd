@@ -33,6 +33,10 @@ class PriceInput extends React.Component {
         if ('value' in nextProps) {
             const value = nextProps.value;
             this.setState({ ...value });
+            this.setState({
+                maxNum: nextProps.maxNum || 'noLimit',
+                modal: nextProps.modal || 'float',
+            })
         }
     }
     handleNumberChange(e) {

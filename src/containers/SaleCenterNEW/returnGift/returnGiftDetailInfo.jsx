@@ -38,6 +38,8 @@ const moment = require('moment');
 const type = [
     { value: '2', name: SALE_LABEL.k6d8n1ew },
     { value: '1', name: SALE_LABEL.k6d8n1n8 },
+    { value: '5', name: '消费指定商品满一定数量即赠送相应礼品' },
+    { value: '4', name: '消费指定商品每满满一定数量即赠送相应礼品' },
 ];
 const showType = [
     { value: '1', name: SALE_LABEL.k6d8n1vk },
@@ -147,7 +149,7 @@ class ReturnGiftDetailInfo extends React.Component {
         if ($giftList.size > 0) {
             const giftList = $giftList.toJS();
             data = this.groupGiftsByStageAmount(giftList);
-        } else if (stageType == 1) {// 每满
+        } else if (stageType == 1 || stageType == 4) {// 每满
             data[0].stageAmount = $rule.get('stageAmount')
             data[0].gifts[0].giftNum.value = $rule.get('giftNum');
             data[0].gifts[0].giftInfo.giftName = $rule.get('giftName');
@@ -160,7 +162,7 @@ class ReturnGiftDetailInfo extends React.Component {
             data[0].gifts[0].giftMaxUseNum.value = $rule.get('giftMaxUseNum') || $rule.get('giftMaxNum');
             data[0].gifts[0].giftValidType = $rule.get('giftType') == 112 ? '0' : $rule.get('giftValidType');
             data[0].gifts[0].giftEffectiveTime.value = $rule.get('giftType') == 112 ? 0 : $rule.get('giftStartTime') ? [moment($rule.get('giftStartTime'), 'YYYYMMDDHHmmss'), moment($rule.get('giftEndTime'), 'YYYYMMDDHHmmss')] : $rule.get('giftValidType') == 0 ? $rule.get('giftEffectiveTime') / 60 : $rule.get('giftEffectiveTime');
-        } else if (stageType == 2 || stageType == 3) {
+        } else if (stageType == 2 || stageType == 3 || stageType == 5) {
             const giftList = $rule.getIn(['stage'], Immutable.fromJS([])).toJS();
             data = this.groupGiftsByStageAmount(giftList);
         }
@@ -413,8 +415,18 @@ class ReturnGiftDetailInfo extends React.Component {
                             value={this.state.rule.stageType == '3' ? '2' : this.state.rule.stageType}
                             onChange={(val) => {
                                 const { rule, data } = this.state;
+                                let datas = []
+                                data.map((item, index) => {
+                                    datas.push({
+                                        ...item,
+                                        stageAmount: '',
+                                    })
+                                    this.props.form.setFields({
+                                        [`stageAmount${index}`]: { value: { number: '' } }
+                                    })
+                                })
                                 rule.stageType = val;
-                                this.setState({ rule, data: [data[0]] });
+                                this.setState({ rule, data: [datas[0]] });
                             }
                             }
                         >
@@ -459,13 +471,14 @@ class ReturnGiftDetailInfo extends React.Component {
         const k5ezdbiy = intl.formatMessage(SALE_STRING.k5ezdbiy);
         const k5f4b1b9 = intl.formatMessage(SALE_STRING.k5f4b1b9);
         const k67g8n9n = intl.formatMessage(SALE_STRING.k67g8n9n);
+        const k5ez4qy4 = intl.formatMessage(SALE_STRING.k5ez4qy4);
         const {
             form: {
                 getFieldDecorator,
             },
         } = this.props;
-        const isMultiple = this.state.rule.stageType == 1;
-        const { activeCode } = this.state.rule;
+        const isMultiple = this.state.rule.stageType == 1 || this.state.rule.stageType == 4;
+        const { activeCode, stageType } = this.state.rule;
         return (
             <div>
                 {
@@ -540,17 +553,17 @@ class ReturnGiftDetailInfo extends React.Component {
                                                                 }
                                                                 for (let i = 0; i < index; i++) {
                                                                     if (arr[i].stageAmount >= +v.number) {
-                                                                        return cb(k67g8n9n)
+                                                                        return cb(stageType == 4 || stageType == 5 ? '必须大于前一档位数量' : k67g8n9n)
                                                                     }
                                                                 }
                                                                 cb()
                                                             }
                                                         },
                                                     ],
-                                                })(<PriceInput style={{ width: 100 }} modal="float" maxNum={6} />)
+                                                })((stageType == 4 || stageType == 5) ? <PriceInput style={{ width: 100 }} modal="int" maxNum={4}/> : <PriceInput style={{ width: 100 }} modal="float" maxNum={6}/>)
                                             }
                                         </FormItem>
-                                    &nbsp;{k5ezdbiy}，{SALE_LABEL.k6d8n16k}
+                                    &nbsp;{stageType == 4 || stageType == 5 ? k5ez4qy4 : k5ezdbiy}，{SALE_LABEL.k6d8n16k}
                                     </div>
 
 
