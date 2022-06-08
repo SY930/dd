@@ -64,10 +64,12 @@ import GiftImagePath from './common/GiftImagePath';
 import {debounce} from 'lodash';
 import SelectBrands from "../components/SelectBrands";
 import PushMessageMpID from "../components/PushMessageMpID";
+import CashCouponPushMessageMpID from "../components/CashCouponPushMessageMpID";
 import PriceInput from "../../SaleCenterNEW/common/PriceInput";
 import AmountType from "./common/AmountType";
 import MoneyLimitTypeAndValue from '../components/MoneyLimitTypeAndValue';
 import GiftTimeIntervals, {getItervalsErrorStatus} from "./GiftTimeIntervals";
+import GiftNoticeItem from "./GiftNoticeItem";
 import {isHuaTian, isMine} from "../../../constants/projectHuatianConf";
 import SelectCardTypes from "../components/SelectCardTypes";
 import SelectMall from '../components/SelectMall';      // 选择适用店铺组件
@@ -618,6 +620,11 @@ class GiftAddModalStep extends React.PureComponent {
                 }
                 
                 break;
+            case 'notice':
+                this.setState({
+                    notice: value,
+                })
+                break;
             default:
                 break;
         }
@@ -1068,6 +1075,41 @@ class GiftAddModalStep extends React.PureComponent {
             if (value == '110') {// 买赠券
                 params = this.justifyParamsForCouponOfBuyGiven(params);
             }
+
+            if (value == '10') {
+
+                let isMsg = false
+                if(this.state.values.pushMessage&&this.state.values.pushMessage.sendType){
+                    isMsg = this.state.values.pushMessage.sendType.indexOf('msg')>-1
+                }
+
+                if(!isMsg){
+                    params.pushMessageRuleInfoList = []
+                }else{
+                    let isRepeat = this.isRepeat(this.state.notice)
+                    if(isRepeat){
+                        message.warning('短信推送提醒时间不能设置重复的值')
+                        return
+                    }
+                    let isEmpty = this.isEmpty(this.state.notice)
+                    if(isEmpty){
+                        message.warning('短信推送提醒时间不能设置空值')
+                        return
+                    }
+    
+                    let pushMessageRuleInfoList = []
+                    let ruleDetailList = []
+    
+                    this.state.notice&&this.state.notice.length>0&&this.state.notice.map((i)=>{
+                        ruleDetailList.push({dateRule:i})
+                    })
+                    if(ruleDetailList.length>0){
+                        pushMessageRuleInfoList.push({pushType:1,ruleDetailList})
+                        params.pushMessageRuleInfoList = pushMessageRuleInfoList
+                    }
+                }
+            }
+
             if (params.couponPeriodSettings && Array.isArray(params.couponPeriodSettings)) {
                 const { hasError, errorMessage } = getItervalsErrorStatus(params.couponPeriodSettings)
                 if (hasError) {
@@ -1703,7 +1745,7 @@ class GiftAddModalStep extends React.PureComponent {
             </Row>
         )
     }
-    
+
     renderCouponPeriodSettings(decorator) {
         const { gift: { data } } = this.props;
         return (
@@ -1712,6 +1754,18 @@ class GiftAddModalStep extends React.PureComponent {
                     {decorator({
                         rules: [{ required: true, message: ' ' }]
                     })(<GiftTimeIntervals />)}
+                </Col>
+            </Row>
+        )
+    }
+    
+    renderNoticeItem(decorator) {
+        return (
+            <Row>
+                <Col>
+                    {decorator({
+                        rules: [{ required: false, message: ' ' }]
+                    })(<GiftNoticeItem />)}
                 </Col>
             </Row>
         )
@@ -2712,6 +2766,28 @@ class GiftAddModalStep extends React.PureComponent {
             </Row>
         )
     }
+
+    isRepeat = (arr) => {
+        var hash = {};
+        for(var i in arr) {
+          if(hash[arr[i]]) {
+            return true;
+          }
+          // 不存在该元素，则赋值为true，可以赋任意值，相应的修改if判断条件即可
+          hash[arr[i]] = true;
+        }
+        return false;
+    }
+
+    isEmpty = (arr = []) => {
+        let flag = false
+        arr.map((i)=>{
+            if(!i){
+                flag = true
+            }
+        })
+        return flag
+    }
     
     /**
      * @description
@@ -2761,6 +2837,27 @@ class GiftAddModalStep extends React.PureComponent {
         }
         const isUnit = ['10', '91'].includes(value);
         const giftNameValid = (type === 'add') ? { max: 25, message: '不能超过25个字符' } : {};
+
+        let isMsg = false
+        if(formData.pushMessage&&formData.pushMessage.sendType){
+            isMsg = formData.pushMessage.sendType.indexOf('msg')>-1
+        }
+       
+        let notice = []
+        if(formData.pushMessageRuleInfoList&&formData.pushMessageRuleInfoList.length>0){
+            formData.pushMessageRuleInfoList.map((i)=>{
+                if(i.pushType == 1){
+                    if(i.ruleDetailList&&i.ruleDetailList.length>0){
+                        i.ruleDetailList.map((j)=>{
+                            notice.push(j.dateRule)
+                        })
+                        
+                    }
+                }
+            })
+            formData.notice = notice
+        }
+
         // 定义所有类型的表单项，根据不同礼品类型进行配置
         const formItems = {
             ...FORMITEMS,
@@ -2839,13 +2936,19 @@ class GiftAddModalStep extends React.PureComponent {
                         <Col>
                             {
                                 decorator({})(
-                                    <PushMessageMpID formData = {formData} groupID={groupID}/>
+                                    describe!='代金券'?<PushMessageMpID formData = {formData} groupID={groupID}/>:
+                                    <CashCouponPushMessageMpID formData = {formData} groupID={groupID}/>
                                 )
                             }
-                            <span>* 此处为该券模板支持的推送方式，最终是否推送消息以营销活动配置为准</span>
+                            {describe!='代金券'?<span>* 此处为该券模板支持的推送方式，最终是否推送消息以营销活动配置为准</span>:null}
                         </Col>
                     )
                 }
+            },
+            notice: {
+                label: ' ',
+                type: 'custom',
+                render: decorator => isMsg?this.renderNoticeItem(decorator):null,
             },
             giftImagePath: {
                 label: '礼品图样',
