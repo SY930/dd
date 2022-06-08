@@ -1773,13 +1773,8 @@ class GiftAddModalStep extends React.PureComponent {
             </Row>
         )
     }
-<<<<<<< HEAD
     
     renderCouponPeriodSettings(decorator,crossDay) {
-=======
-
-    renderCouponPeriodSettings(decorator) {
->>>>>>> cc4608de9e764f744c0dbb03e9674bd722fb454c
         const { gift: { data } } = this.props;
         return (
             <Row>
