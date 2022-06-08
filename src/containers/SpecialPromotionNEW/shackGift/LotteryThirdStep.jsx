@@ -210,6 +210,7 @@ class LotteryThirdStep extends React.Component {
                 infos[index].giftConfImagePath.value = gift.giftConfImagePath;
                 // infos[index].shareImagePath.value = gift.shareImagePath;
                 // infos[index].shareImageTitle.value = gift.shareImageTitle;
+                infos[index].itemID = gift.itemID;
 
             })
         }
@@ -1027,6 +1028,7 @@ class LotteryThirdStep extends React.Component {
         tempObj.giftConfImagePath = data.giftConfImagePath.value;
         // tempObj.shareImagePath = data.shareImagePath.value;
         // tempObj.shareTitle = data.shareTitle.value;
+        tempObj.itemID = data.itemID;
         return tempObj;
     }
 
