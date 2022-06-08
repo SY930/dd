@@ -508,6 +508,7 @@ export const FIRST_KEYS = {
                 'giftType',
                 'giftName',
                 'pushMessage',
+                'notice',
                 'giftValueCurrencyType',
                 'giftValue',
                 'price',

@@ -259,6 +259,7 @@ class MyActivities extends React.Component {
             planModalVisible: false,
             operateModalVisible: false,
             executeTimeType: 0,
+            executeFoodUnitType: 1,
         };
         this.handleDismissUpdateModal = this.handleDismissUpdateModal.bind(this);
         this.checkDetailInfo = this.checkDetailInfo.bind(this);
@@ -335,8 +336,8 @@ class MyActivities extends React.Component {
         if (from === 'onSale') {
             this.setState({
                 promotionState: '0', // 使用状态
-                promotionValid: '0', 
-            },() => {
+                promotionValid: '0',
+            }, () => {
                 this.handleQuery()
                 // this.clearUrl()
             })
@@ -1041,6 +1042,12 @@ class MyActivities extends React.Component {
             executeTimeType: e.target.value,
         })
     }
+
+    handleRuleType = (e) => {
+        this.setState({
+            executeFoodUnitType: e.target.value,
+        })
+    }
     parseResponseJson = (rsp, successCode) => {
         const resultcode = rsp.resultcode === undefined ? rsp.code : rsp.resultcode;
         const resultmsg = rsp.resultmsg === undefined
@@ -1061,17 +1068,19 @@ class MyActivities extends React.Component {
     }
     handleOperateSave = () => {
         const {
-            executeTimeType
+            executeTimeType,
+            executeFoodUnitType
         } = this.state
         axiosData('/promotion/promotionParamsService_updatePromotionParams.ajax', {
             groupID: this.props.user.accountInfo.groupID,
             params: {
                 groupID: this.props.user.accountInfo.groupID,
                 executeTimeType,
+                executeFoodUnitType
             },
         }, null, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
             .then((res) => {
-                if(res.code === '000') {
+                if (res.code === '000') {
                     message.success('保存成功')
                     this.setState({
                         operateModalVisible: false,
@@ -1133,7 +1142,7 @@ class MyActivities extends React.Component {
         return (
             <Modal
                 wrapClassName="progressBarModal"
-                title={'执行时间配置'}
+                title={'活动规则'}
                 visible={this.state.operateModalVisible}
                 footer={
                     <div style={{ textAlign: 'center' }}>
@@ -1164,18 +1173,61 @@ class MyActivities extends React.Component {
                 }}
             >
                 <div>
-                    <div>
-                        <span>当顾客在POS上结账时，促销活动时间计算规则</span>
-                    </div>
-                    <div style={{ marginTop: 13 }}>
-                        <span>计算规则：</span>
+                    <div style={{ marginTop: 13, marginLeft: 20 }}>
+                        <div style={{ marginBottom: 10, marginTop: 10 }}>
+                            <span style={{
+                                width: '84px',
+                                height: '14px',
+                                fontSize: '14px',
+                                fontWeight: 500,
+                                color: '#333333',
+                                lineHeight: '14px',
+                                marginRight: 8
+                            }}>执行时间配置</span>
+                        当顾客在POS上结账时，促销活动时间计算规则</div>
+                        <span style={{ marginRight: 20 }}>计算规则 </span>
                         <RadioGroup onChange={this.handleExecuteTimeType} value={this.state.executeTimeType}>
                             <Radio key={'1'} value={1}>按开台时间计算</Radio>
                             <Radio key={'2'} value={0}>按结账时间计算</Radio>
                         </RadioGroup>
                     </div>
+
+                    <div style={{ marginTop: 30, marginLeft: 20 }}>
+                        <span style={{
+                            width: '84px',
+                            height: '14px',
+                            fontSize: '14px',
+                            fontWeight: 500,
+                            color: '#333333',
+                            lineHeight: '14px',
+                            marginRight: 8
+                        }}>称重类菜品计算规则</span>
+                    </div>
+                    <div style={{ marginTop: 13, marginLeft: 20 }}>
+                        <span style={{ marginRight: 20 }}>计算规则 </span>
+                        <RadioGroup onChange={this.handleRuleType} value={this.state.executeFoodUnitType}>
+                            <Radio key={'0'} value={0}>按主规格计算</Radio>
+                            <Radio key={'1'} value={1}>优先按辅助规格计算</Radio>
+                        </RadioGroup>
+                        {this.state.executeFoodUnitType == 1 && <div style={{
+                            marginTop: 5,
+                            width: 400,
+                            height: 32,
+                            background: '#FFFBE4',
+                            borderRadius: 3,
+                            border: '1px solid #FFA900',
+                            lineHeight: '32px',
+                            paddingLeft: 12,
+                            color: '#666666',
+                            fontSize: '12px',
+                            fontWeight: 400
+                        }}>
+                            未设置辅助规格的称重菜品，则继续按主规格进行计算
+                        </div>
+                        }
+                    </div>
                 </div>
-            </Modal>
+            </Modal >
         );
     }
     openOptModal = () => {
@@ -1186,9 +1238,10 @@ class MyActivities extends React.Component {
             groupID: this.props.user.accountInfo.groupID,
         }, null, { path: 'data.params' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
             .then((res) => {
-                const { executeTimeType } = res
+                const { executeTimeType, executeFoodUnitType } = res
                 this.setState({
                     executeTimeType,
+                    executeFoodUnitType
                 })
             })
     }
@@ -1210,7 +1263,7 @@ class MyActivities extends React.Component {
                                         type="ghost"
                                         onClick={this.openOptModal}
                                         style={{ marginRight: 10 }}
-                                    ><Icon type="clock-circle-o" />执行时间</Button>
+                                    ><Icon type="setting" />活动规则</Button>
                                 </Authority>
                             </span>
                         )
@@ -1344,7 +1397,7 @@ class MyActivities extends React.Component {
 
                         <li>
                             {/* 使用状态 */}
-                            <h5>{SALE_LABEL.k5dlbwqo}</h5> 
+                            <h5>{SALE_LABEL.k5dlbwqo}</h5>
                         </li>
                         <li>
                             <Select
@@ -1601,7 +1654,7 @@ class MyActivities extends React.Component {
                 className: 'TableTxtCenter',
                 width: 50,
                 key: 'key',
-                fixed:'left',
+                fixed: 'left',
                 render: (text, record, index) => {
                     return (this.state.pageNo - 1) * this.state.pageSizes + text;
                 },
@@ -1611,7 +1664,7 @@ class MyActivities extends React.Component {
                 key: 'operation',
                 className: 'TableTxtCenter',
                 width: 180,
-                fixed:'left',
+                fixed: 'left',
                 render: (text, record, index) => {
                     const isGroupPro = record.maintenanceLevel == '0';//区分集团和店铺
                     return (
@@ -1700,7 +1753,7 @@ class MyActivities extends React.Component {
                 dataIndex: 'status',
                 width: 90,
                 className: 'TableTxtCenter',
-                fixed:'left',
+                fixed: 'left',
                 render: (text, record, index) => {
                     const defaultChecked = (record.isActive == '1' ? true : false); // 开启 / 禁用
                     const isGroupPro = record.maintenanceLevel == '0';
@@ -1756,7 +1809,7 @@ class MyActivities extends React.Component {
                 title: SALE_LABEL.k5dk5uwl,
                 dataIndex: 'promotionType',
                 key: 'promotionType',
-                fixed:'left',
+                fixed: 'left',
                 width: 120,
                 render: (promotionType) => {
                     const promotion = this.getAllPromotionTypes().filter((promotion) => {
@@ -1770,7 +1823,7 @@ class MyActivities extends React.Component {
                 title: SALE_LABEL.k5dlcm1i,
                 dataIndex: 'promotionName',
                 key: 'promotionName',
-                fixed:'left',
+                fixed: 'left',
                 width: 200,
                 render: (promotionName) => {
                     let text = promotionName;
@@ -1901,8 +1954,8 @@ class MyActivities extends React.Component {
     }
 
     render() {
-        const { runType,  dataSource } = this.state;
-        const {stylesShow, tabKeys } = this.props;
+        const { runType, dataSource } = this.state;
+        const { stylesShow, tabKeys } = this.props;
         return (
             <div style={{ backgroundColor: '#F3F3F3' }} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 <div>
@@ -1967,7 +2020,7 @@ class MyActivities extends React.Component {
                             handleClose={() => this.setState({ exportVisible: false })}
                         />
                 }
-                 {
+                {
                     this.state.planModalVisible && <PlanModal
                         onCancel={() => { this.setState({ planModalVisible: false }) }}
                         isActive={this.state.promotionState == '1' ? '1' : '0'}
