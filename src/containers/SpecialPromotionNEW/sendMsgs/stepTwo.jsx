@@ -91,9 +91,11 @@ class StepTwo extends React.Component {
             }
         });
         // 对权益账户短信条数做校验
-        if (flag && this.state.accountNo > 0) {
+        console.log(this.state.localType,'this.state.cardLevelRangeType')
+        if (flag && this.state.accountNo > 0 && this.state.localType == '5') {
             const equityAccountInfoList = this.props.specialPromotion.get('$eventInfo').toJS().equityAccountInfoList || [];
             const equityAccountInfo = equityAccountInfoList.find(item => item.accountNo === this.state.accountNo) || {};
+            console.log(this.getMinMessageCount(),this.state.cardLevelRangeType,equityAccountInfo.smsCount,'equityAccountInfo.smsCount')
             if (!(this.getMinMessageCount() <= equityAccountInfo.smsCount)) {
                 flag = false;
                 message.warning('所选权益账户短信条数不足，请更换账户或充值')
@@ -114,7 +116,7 @@ class StepTwo extends React.Component {
         });
         let flag = this.validate();
         if (flag) {
-            this.props.setSpecialBasicInfo({
+            const opts = {
                 smsTemplate: this.state.message,
                 lastTransTimeFilter: this.state.lastTransTimeFilter,
                 lastTransTime: this.state.lastTransTime || '',
@@ -128,9 +130,12 @@ class StepTwo extends React.Component {
                 cardLevelRangeType:  (this.state.cardLevelRangeType | 0) || (this.state.groupMembersID == '0' ? '0' : '2'),
                 settleUnitID: this.state.settleUnitID || '0',
                 accountNo: this.state.accountNo,
-
-                selectedTags: this.state.selectedTags
-            })
+            }
+            console.log(this.state.cardLevelRangeType,'this.state.cardLevelRangeType--------->>>>>>>')
+            if(this.state.cardLevelRangeType == '7'){
+                opts.customerRangeConditionIDs = this.state.selectedTags.map(item => item.tagRuleID)
+            }
+            this.props.setSpecialBasicInfo(opts)
         }
         return flag;
     }
@@ -164,8 +169,8 @@ class StepTwo extends React.Component {
                 cardCount: specialPromotion.totalMembers,
                 cardGroupRemark: specialPromotion.groupMembersRemark,
                 cardLevelRangeType: specialPromotion.cardLevelRangeType || '0',
-
-                localType:specialPromotion.localType || '5'
+                localType:specialPromotion.cardLevelRangeType == '7' ? '7' : '5',
+                customerRangeConditionIDs:specialPromotion.customerRangeConditionIDs
             })
         }
         // 初始化店铺信息
@@ -201,8 +206,8 @@ class StepTwo extends React.Component {
                 cardCount: specialPromotion.totalMembers,
                 cardGroupRemark: specialPromotion.groupMembersRemark,
                 cardLevelRangeType: specialPromotion.cardLevelRangeType || '0',
-
-                localType:specialPromotion.localType || '5'
+                localType:specialPromotion.cardLevelRangeType == '7' ? '7' : '5',
+                customerRangeConditionIDs:specialPromotion.customerRangeConditionIDs
             })
         }
         // 获取会员等级信息
@@ -246,6 +251,30 @@ class StepTwo extends React.Component {
                 this.setState({
                     filters,
                     tagRuleDetails: res.data.tagRuleDetails
+                },() => {
+                    let { customerRangeConditionIDs } = this.props.specialPromotion.get('$eventInfo').toJS();
+                    let useData = [];
+                    let selectTags = [];
+                    if(res.data.tagRuleDetails && res.data.tagRuleDetails.length > 0){
+                        if(customerRangeConditionIDs && customerRangeConditionIDs.length > 0){
+                            res.data.tagRuleDetails.map(item => {
+                                customerRangeConditionIDs.map(d => {
+                                    if(item.tagRuleID == d){
+                                        useData.push(item.tagRuleID + '@@' + item.tagTypeID + '@@' + item.tagName);
+                                        selectTags.push({
+                                            tagRuleID:item.tagRuleID,
+                                            tagTypeID:item.tagTypeID,
+                                            tagName:item.tagName
+                                        })
+                                    }
+                                })
+                            })
+                        }
+                    }
+                    this.setState({
+                        tagIncludes:useData,
+                        selectedTags:selectTags
+                    })
                 })
             } else {
                 message.error(res.message)
@@ -401,6 +430,7 @@ class StepTwo extends React.Component {
     getMinMessageCount() {
         const { groupMembersList, groupMembersID } = this.state;
         const totalCustomerCount = this.props.specialPromotion.get('customerCount');
+        console.log(totalCustomerCount,'totalCustomerCounttotalCustomerCount')
         if (groupMembersID > 0) {
             const groupMemberItem = groupMembersList.find(item => item.groupMembersID === groupMembersID) || {};
             return groupMemberItem.totalMembers || 0;
@@ -442,7 +472,7 @@ class StepTwo extends React.Component {
     handleGroupOrCatRadioChange = (e) => {
         const type = e.target.value;
         this.setState({
-            // cardLevelRangeType: type,此处该字段跟别的地方不一样
+            cardLevelRangeType: type,//此处该字段跟别的地方不一样
             localType: type,
             groupMembersID: undefined,
             selectedTags:null
@@ -519,7 +549,7 @@ class StepTwo extends React.Component {
                 >
                     <RadioGroup onChange={this.handleGroupOrCatRadioChange} value={`${this.state.localType}`}>
                         <Radio key={'5'} value={'5'}>会员群体</Radio>
-                        {/* <Radio key={'7'} value={'7'}>会员标签</Radio> */}
+                        <Radio key={'7'} value={'7'}>会员标签</Radio>
                     </RadioGroup>
                 </FormItem>
                 {
