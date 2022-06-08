@@ -438,7 +438,6 @@ class GiftAddModalStep extends React.PureComponent {
 
     // 处理表单数据变化
     handleFormChange(key, value, formRef) {
-        console.log(key,value,'value in handleFormCHANGE')
         const { gift: { name: describe, data,value:giftType }, type } = this.props;
         const { firstKeys, secondKeys, values } = this.state;
         const newKeys = [...secondKeys[describe][0].keys];
@@ -919,7 +918,6 @@ class GiftAddModalStep extends React.PureComponent {
         const { values, groupTypes, delivery,crossDay} = this.state;
         const { type, gift: { value, data } } = this.props;
         this.secondForm.validateFieldsAndScroll((err, formValues) => {
-            console.log(formValues,'formValuesformValuesformValuesformValues')
             if (err) return;
             if (formValues.TrdTemplate) {
                 const { TrdTemplateStatus } = formValues.TrdTemplate;
@@ -941,7 +939,6 @@ class GiftAddModalStep extends React.PureComponent {
                 { giftType: value },
             );
             params = this.formatFormData(params);
-            console.log(params,'params0000000000000000')
             // 券转赠  图片信息
             if(formValues.transferType){
                 let {transferTitle, transferImage = {}, transferringAvailable} = formValues
@@ -1137,7 +1134,6 @@ class GiftAddModalStep extends React.PureComponent {
             params.moenyLimitValue = '100';
             params.amountType = '';
             params.crossDay = crossDay;
-            console.log(params.maxUseLimit,params.customerUseCountLimit,'params.customerUseCountLimit>>>>>>>>>>>>')
             if(params.customerUseCountLimit !='0' && params.maxUseLimit && params.customerUseCountLimit){
                 if(Number(params.maxUseLimit) > Number(params.customerUseCountLimit)){
                     message.warning('会员单笔账单张数限制数值 ≤ 会员单天使用张数');
@@ -1255,7 +1251,6 @@ class GiftAddModalStep extends React.PureComponent {
         }
     }
     handleCrossDayChange(value){
-        console.log(value,'value>>>>>>>>>>>>>')
         this.setState({
             crossDay: value
         })
@@ -3677,7 +3672,6 @@ class GiftAddModalStep extends React.PureComponent {
             formData.excludeShops = formData.shopNames;
             formData.selectedShops = [];
         }
-        console.log(formData,'formData0000000000000')
         return (
             <div className={styles2.formContainer}>
                 <div

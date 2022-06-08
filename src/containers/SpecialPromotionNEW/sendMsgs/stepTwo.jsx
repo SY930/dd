@@ -91,11 +91,9 @@ class StepTwo extends React.Component {
             }
         });
         // 对权益账户短信条数做校验
-        console.log(this.state.localType,'this.state.cardLevelRangeType')
         if (flag && this.state.accountNo > 0 && this.state.localType == '5') {
             const equityAccountInfoList = this.props.specialPromotion.get('$eventInfo').toJS().equityAccountInfoList || [];
             const equityAccountInfo = equityAccountInfoList.find(item => item.accountNo === this.state.accountNo) || {};
-            console.log(this.getMinMessageCount(),this.state.cardLevelRangeType,equityAccountInfo.smsCount,'equityAccountInfo.smsCount')
             if (!(this.getMinMessageCount() <= equityAccountInfo.smsCount)) {
                 flag = false;
                 message.warning('所选权益账户短信条数不足，请更换账户或充值')
@@ -131,7 +129,6 @@ class StepTwo extends React.Component {
                 settleUnitID: this.state.settleUnitID || '0',
                 accountNo: this.state.accountNo,
             }
-            console.log(this.state.cardLevelRangeType,'this.state.cardLevelRangeType--------->>>>>>>')
             if(this.state.cardLevelRangeType == '7'){
                 opts.customerRangeConditionIDs = this.state.selectedTags.map(item => item.tagRuleID)
             }
@@ -430,7 +427,6 @@ class StepTwo extends React.Component {
     getMinMessageCount() {
         const { groupMembersList, groupMembersID } = this.state;
         const totalCustomerCount = this.props.specialPromotion.get('customerCount');
-        console.log(totalCustomerCount,'totalCustomerCounttotalCustomerCount')
         if (groupMembersID > 0) {
             const groupMemberItem = groupMembersList.find(item => item.groupMembersID === groupMembersID) || {};
             return groupMemberItem.totalMembers || 0;

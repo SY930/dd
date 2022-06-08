@@ -141,7 +141,6 @@ class GiftTimeIntervals extends Component {
     handleTimeChange = (moment, index, key) => {
         const formattedString = moment.format('HHmm') + '00';
         const { intervals: original,crossDay } = this.state;
-        console.log(crossDay,'crossday------123')
         const intervals = JSON.parse(JSON.stringify(original));
         intervals[index][key] = formattedString;
         this.setState({ intervals }, () => {
@@ -151,15 +150,12 @@ class GiftTimeIntervals extends Component {
     handleCrossDayChange = (e) => {
         const { checked } = e.target;
         const crossDay = checked ? 1 : 0;
-        console.log(crossDay,'crossDay-------')
         this.setState({crossDay},() => {
             this.props.handleCrossDayChange(crossDay)
         })
-        console.log(e,crossDay,'value00000000000')
     }
     renderIntervalItem({periodStart, periodEnd}, index) {
         const { maxIntervals, intervals, crossDay } = this.state;
-        console.log(crossDay,'crossdataysdfdyyyyy')
         return (
             <div key={`${index}`} className={styles.giftTimeIntervalItem}>
                 <div className={styles.timePickerWrapper}>
