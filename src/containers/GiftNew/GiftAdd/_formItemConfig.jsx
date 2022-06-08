@@ -166,7 +166,7 @@ export const FORMITEMS = {
                 会员单笔账单张数限制
                 <Tooltip title={
                     <p>
-                        提示文案：<br/>
+                        场景描述：<br/>
                         &nbsp;&nbsp;&nbsp;&nbsp;【结账收银】方式为：【仅主被扫线上支付自动结账】核销订单，在POS清台结账操作前，均受单笔账单张数限制约束。
                         <br/>
                         &nbsp;&nbsp;&nbsp;&nbsp;【结账收银】方式为：【自动结账】或【仅主被扫线上支付自动结账】核销订单，均受单笔账单张数限制约束。
