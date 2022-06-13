@@ -284,6 +284,7 @@ const GiftCfg = {
         { value: '130', label: '智能发券'},
         { value: '3032', label: '自定义投放'},
         { value: '131', label: '拼手气抢红包'},
+        { value: '132', label: '怪售商城'},
         { value: '133', label: '口令领券'},
         { value: '134', label: '彩蛋猫送礼'},
         { value: '135', label: '支付宝商家券发放'},
