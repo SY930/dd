@@ -140,15 +140,16 @@ class GiftDetailTable extends Component {
         this.proShopData(_shopData);
     }
 
-    getTitle = () =>{
+    getTitle = () =>{  
         let title = []
         title.push(<div>排序 
             <Icon style={{marginLeft:10}} type="reload"  onClick={()=>{
+                let { tabkey } = this.props
                 Modal.confirm({
                     title: '重置排序',
                     content: '重置后列表排序将恢复默认按照创建时间排序规则，请谨慎操作',
                     onOk() {
-                        const params = {direction:'reset'};
+                        const params = {direction:'reset', isActive: tabkey == '1'? 1:0};
                         axiosData('/coupon/couponService_updateRanking.ajax', params, {needThrow: true}, {path: undefined}, 'HTTP_SERVICE_URL_PROMOTION_NEW').then(() => {
                             if (this.tableRef &&  this.tableRef.props && this.tableRef.props.pagination && this.tableRef.props.pagination.onChange) {
                                 this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
