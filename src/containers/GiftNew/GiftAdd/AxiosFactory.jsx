@@ -15,7 +15,9 @@ import _ from 'lodash';
  */
 /** restful 风格函数命名， get获取，post增加，put更新，delete删除 */
 const [service, type, api, url] = ['HTTP_SERVICE_URL_CRM', 'post', 'alipay/', '/api/v1/universal?'];
-
+import {
+    SALE_CENTER_COUPON_TYPE
+} from '../../../redux/actions/saleCenterNEW/types';
 
 async function getCardList(data) {
     const method = '/coupon/couponService_getSortedCouponBoardList.ajax';
@@ -63,6 +65,45 @@ function proGiftTreeData(giftTypes) {
     return treeData = _.sortBy(treeData, 'key');
     // this.setState({giftTreeData: treeData})
 }
+
+//获取零售券
+async function getCouponList(data) {
+    const method = '/retailCouponService/queryCouponTypeBatchGroup.ajax';
+    const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW', type, data, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: obj } = response;
+    if (code === '000') {
+        const { couponTypeBatchGroupInfoList = [] } = obj;
+        return proCouponData(couponTypeBatchGroupInfoList);
+    }
+    message.error(msg);
+    return [];
+}
+
+function proCouponData(giftTypes) {
+    let treeData = [];
+    giftTypes.map((gt, idx) => {
+        let item = {...gt}
+        treeData.push({
+            label: _.find(SALE_CENTER_COUPON_TYPE, { value: String(gt.couponType) }) ? _.find(SALE_CENTER_COUPON_TYPE, { value: String(gt.couponType) }).label : '',
+            key: gt.couponType,
+            children: [],
+        });
+        gt.couponBatchInfoList.map((gift) => {
+            treeData[idx].children.push({
+                ...gift,
+                label: gift.couponBatchName,
+                value: `${gift.couponBatchID}_${gift.couponBatchName}`,
+                key: `${gift.couponBatchID}`,
+                giftValue: `${gift.couponBatchID}`,
+                giftType: gt.couponType,
+            });
+        });
+        return item
+    });
+    return treeData = _.sortBy(treeData, 'key');
+}
+
 export {
-    getCardList,
+    getCardList,getCouponList
 }

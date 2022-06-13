@@ -2731,7 +2731,7 @@ class GiftAddModalStep extends React.PureComponent {
     renderSubLedgerAmount = (decorator,form) => {
         const { accountInfo } = this.props;
         const groupID = accountInfo.get('groupID');
-        if (!['317964', 317964, '189702'].includes(groupID)) return null
+        if (!['317964', 317964, '11157'].includes(groupID)) return null
         return (
             <Row>
                 {

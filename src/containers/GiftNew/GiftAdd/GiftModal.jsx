@@ -3,9 +3,22 @@ import { Modal, TreeSelect } from 'antd';
 import BaseForm from '../../../components/common/BaseForm';
 import { SALE_CENTER_GIFT_EFFICT_TIME, SALE_CENTER_GIFT_EFFICT_DAY } from '../../../redux/actions/saleCenterNEW/types';
 
-const formKeys1 = ['giftItemID', 'giftCount', 'effectType', 'countType', 'giftEffectTimeHours', 'giftValidUntilDayCount'];
-const formKeys2 = ['giftItemID', 'giftCount', 'effectType', 'rangeDate'];
+const formKeys1 = ['giftItemType','giftItemID', 'giftCount', 'effectType', 'countType', 'giftEffectTimeHours', 'giftValidUntilDayCount'];
+const formKeys2 = ['giftItemType','giftItemID', 'giftCount', 'effectType', 'rangeDate'];
+const formKeys3 = ['giftItemType','giftItemID', 'giftCount'];
 const formItems = {
+
+    giftItemType: {
+        type: 'radio',
+        label: '礼品属性',
+        rules: ['required'],
+        defaultValue:'1',
+        options: [
+            { label: '餐饮券', value: '1' },
+            { label: '零售券', value: '2' },
+        ],
+    },
+
     giftItemID: {
         type: 'custom',
         label: '礼品名称',
@@ -89,6 +102,7 @@ export default class GiftModal extends Component {
     state = {
         options: [], // 生效时间下拉框
         formKeys: formKeys1,
+        couponType:'1',
     };
     /* 表单提交 */
     onOk = () => {
@@ -114,24 +128,45 @@ export default class GiftModal extends Component {
                 this.setState({ formKeys: formKeys2 });
             }
         }
+        if (key === 'giftItemType') {
+            if (value === '1') {
+                this.setState({ formKeys: formKeys1, couponType: value });
+            } else {
+                this.setState({ formKeys: formKeys3, couponType: value  });
+            }
+        }
     }
     /** 得到form */
     getForm = (node) => {
         this.form = node;
     }
     resetFormItems() {
-        const { options } = this.state;
-        const { treeData } = this.props;
+        const { options, couponType } = this.state;
+        const { treeData, couponData } = this.props;
         const { giftItemID, giftEffectTimeHours } = formItems;
-        const render = d => d()(
-            <TreeSelect
+        console.log(couponType)
+        const render = d => {
+            if(couponType == 1){
+                return  <TreeSelect
                 dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                 treeData={treeData}
                 placeholder="请选择礼品名称"
                 showSearch={true}
                 treeNodeFilterProp="label"
                 allowClear={true}
-            />);
+            />
+            }else{
+                return <TreeSelect
+                        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                        treeData={couponData}
+                        placeholder="请选择礼品名称"
+                        showSearch={true}
+                        treeNodeFilterProp="label"
+                        allowClear={true}
+                    />
+            }
+        }
+
         return {
             ...formItems,
             giftItemID: { ...giftItemID, render },
