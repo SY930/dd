@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Table, Tooltip } from 'antd';
 import styles from './Crm.less';
-import GiftModal from './GiftModal';
+import GiftModalNew from './GiftModalNew';
 import { getCardList, getCouponList } from './AxiosFactory';
 import { SALE_CENTER_GIFT_EFFICT_TIME, SALE_CENTER_GIFT_EFFICT_DAY } from '../../../redux/actions/saleCenterNEW/types';
 import GiftCfg from '../../../constants/Gift';
@@ -60,7 +60,7 @@ class GiftInfo extends Component {
         };
         // 表格头部的固定数据
         return [
-            { width: 40, title: '序号1111', dataIndex: 'idx', className: tc },
+            { width: 40, title: '序号', dataIndex: 'idx', className: tc },
             { width: 100, title: '礼品类型', dataIndex: 'giftType', className: tc, render: render3 },
             { width: 100, title: '礼品名称', dataIndex: 'giftName', className: tc, render: render4, },
             { width: 100, title: '礼品金额(元)', dataIndex: 'giftValue', className: tc },
@@ -85,32 +85,40 @@ class GiftInfo extends Component {
     }
     /** 增加 */
     onPost = (params) => {
-        const { giftTreeData } = this.state;
-        const { value, onChange } = this.props;
-        // effectType有效期限 如果为小时是 1 如果为天是 3 如果是固定有效期是 2
-        const { giftItemID, effectType, rangeDate, countType } = params;
-        let date = {};
-        if (effectType === '2') {
-            const [start, end] = rangeDate;
-            const effectTime = start.format(DF);
-            const validUntilDate = end.format(DF);
-            date = { effectTime, validUntilDate };
-        }
-        let newEffectType = effectType;
-        if (countType === '1') {
-            newEffectType = '3';
-        }
-        let obj = null;
-        giftTreeData.forEach(x => {
-            const { children } = x;
-            const card = children.find(y => y.value === giftItemID);
-            if (card) {
-                const { value: giftItemID, giftType, giftTypeName, label: giftName, giftValue } = card;
-                obj = { giftType, giftTypeName, giftItemID, giftName, giftValue };
+        if (params.giftItemType == 1) {
+            const { giftTreeData } = this.state;
+            const { value, onChange } = this.props;
+            // effectType有效期限 如果为小时是 1 如果为天是 3 如果是固定有效期是 2
+            const { giftItemID, effectType, rangeDate, countType } = params;
+            let date = {};
+            if (effectType === '2') {
+                const [start, end] = rangeDate;
+                const effectTime = start.format(DF);
+                const validUntilDate = end.format(DF);
+                date = { effectTime, validUntilDate };
             }
-        });
-        const list = [...value, { ...params, ...obj, ...date, effectType: newEffectType }];
-        onChange(list);
+            let newEffectType = effectType;
+            if (countType === '1') {
+                newEffectType = '3';
+            }
+            let obj = null;
+            giftTreeData.forEach(x => {
+                const { children } = x;
+                const card = children.find(y => y.value === giftItemID);
+                if (card) {
+                    const { value: giftItemID, giftType, giftTypeName, label: giftName, giftValue } = card;
+                    obj = { giftType, giftTypeName, giftItemID, giftName, giftValue };
+                }
+            });
+            const list = [...value, { ...params, ...obj, ...date, effectType: newEffectType }];
+            onChange(list);
+        } else {
+            const { value, onChange } = this.props;
+            const list = [...value, { presentType: params.giftItemType, giftItemID: params.giftItemID.split('_')[0], giftName: params.giftItemID.split('_')[1], giftCount: params.giftCount }];
+            onChange(list);
+        }
+
+
     }
     /** 删除 */
     onDelete = ({ target }) => {
@@ -136,7 +144,7 @@ class GiftInfo extends Component {
                     pagination={false}
                 />
                 {visible &&
-                    <GiftModal
+                    <GiftModalNew
                         treeData={giftTreeData}
                         onClose={this.toggleModal}
                         onPost={this.onPost}
