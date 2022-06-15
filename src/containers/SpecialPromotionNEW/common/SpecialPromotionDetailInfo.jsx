@@ -3733,7 +3733,6 @@ class SpecialDetailInfo extends Component {
     // 评价送礼可以按照订单金额倍率赠送
     renderEvalGift = () => {
         const { givePoints, giftGetRule = '6' } = this.state;
-        console.log("🚀 ~ file: SpecialPromotionDetailInfo.jsx ~ line 3717 ~ SpecialDetailInfo ~ giftGetRule", giftGetRule, givePoints)
         if (givePoints) {
             return (
                 <div className={selfStyle.pointBoxNew}>
