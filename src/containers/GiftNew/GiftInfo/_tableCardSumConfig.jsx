@@ -117,8 +117,8 @@ const CARD_SUM_COLUMNS = [
     },
     {
         title: '备注',
-        dataIndex: 'remark',
-        key: 'remark',
+        dataIndex: 'operateRemark',
+        key: 'operateRemark',
         className: 'TableTxtCenter',
         width: 200,
         render: (value) => { return value ? <Tooltip placement="topLeft" title={value}><span>{value}</span></Tooltip> : '--' },
