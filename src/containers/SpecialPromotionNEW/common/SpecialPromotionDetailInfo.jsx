@@ -1084,11 +1084,11 @@ class SpecialDetailInfo extends Component {
                 }
                 const giftName = giftGetRule == '7' ? '订单金额积分' : presentValue + "积分";
                 const params = {
-                    presentValue: !giftGetRuleValue ? presentValue : '',
+                    presentValue: giftGetRule != '7' ? presentValue : '',
                     presentType: 2,
                     giftName,
                     giftCount: 1,
-                    giftGetRuleValue: !presentValue ? giftGetRuleValue : '',
+                    giftGetRuleValue: giftGetRule == '7' ? giftGetRuleValue : '',
                     giftGetRule,
                 };
                 this.props.setSpecialGiftInfo([params]);
@@ -1261,11 +1261,11 @@ class SpecialDetailInfo extends Component {
                 if (givePoints) {
                     const giftName = giftGetRule == '7' ? '订单金额积分' : presentValue + "积分";
                     const params = {
-                        presentValue: !giftGetRuleValue ? presentValue : '',
+                        presentValue: giftGetRule != '7' ? presentValue : '',
                         presentType: 2,
                         giftName,
                         giftCount: 1,
-                        giftGetRuleValue: !presentValue ? giftGetRuleValue : '',
+                        giftGetRuleValue: giftGetRule == '7' ? giftGetRuleValue : '',
                         giftGetRule,
                     };
                     giftInfo = [...giftInfo, params];
