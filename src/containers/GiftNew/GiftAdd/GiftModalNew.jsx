@@ -3,12 +3,12 @@ import { Modal, TreeSelect } from 'antd';
 import BaseForm from '../../../components/common/BaseForm';
 import { SALE_CENTER_GIFT_EFFICT_TIME, SALE_CENTER_GIFT_EFFICT_DAY } from '../../../redux/actions/saleCenterNEW/types';
 
-const formKeys1 = ['giftItemType', 'giftItemID', 'giftCount', 'effectType', 'countType', 'giftEffectTimeHours', 'giftValidUntilDayCount'];
-const formKeys2 = ['giftItemType', 'giftItemID', 'giftCount', 'effectType', 'rangeDate'];
-const formKeys3 = ['giftItemType', 'giftItemID', 'giftCount'];
+const formKeys1 = ['presentType', 'giftItemID', 'giftCount', 'effectType', 'countType', 'giftEffectTimeHours', 'giftValidUntilDayCount'];
+const formKeys2 = ['presentType', 'giftItemID', 'giftCount', 'effectType', 'rangeDate'];
+const formKeys3 = ['presentType', 'giftItemID', 'giftCount'];
 const formItems = {
 
-    giftItemType: {
+    presentType: {
         type: 'radio',
         label: '礼品属性',
         rules: ['required'],
@@ -109,6 +109,7 @@ export default class GiftModal extends Component {
         this.form.validateFields((e, v) => {
             if (!e) {
                 const { onClose, onPost } = this.props;
+                console.log(222, v)
                 onPost(v);
                 onClose();
             }
@@ -128,7 +129,7 @@ export default class GiftModal extends Component {
                 this.setState({ formKeys: formKeys2 });
             }
         }
-        if (key === 'giftItemType') {
+        if (key === 'presentType') {
             if (value === '1') {
                 this.setState({ formKeys: formKeys1, couponType: value });
             } else {

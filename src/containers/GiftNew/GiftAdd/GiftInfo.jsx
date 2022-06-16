@@ -27,6 +27,17 @@ class GiftInfo extends Component {
         });
     }
 
+    getCouponType(couponBatchID){
+        let text = ''
+        this.state.giftTreeDataByCoupon&&this.state.giftTreeDataByCoupon.length>0&&this.state.giftTreeDataByCoupon.map((i)=>{
+            i.children&&i.children.length>0&&i.children.map((j)=>{
+                if(couponBatchID == j.couponBatchID){
+                    text = i.label
+                }
+            })
+        })
+        return text
+    }
 
     /* 生成表格头数据 */
     generateColumns() {
@@ -50,10 +61,25 @@ class GiftInfo extends Component {
             }
             return (<Tooltip title={text}><span>{text}</span></Tooltip>);
         };
-        const render3 = (v) => {
-            const { giftTypeName } = GiftCfg;
-            const { label } = giftTypeName.find(x => +x.value === +v) || {};
-            return (<Tooltip title={label}><span>{label}</span></Tooltip>);
+        const render2 = (v) => {
+            let text = '';
+            if (v==1) {
+                text = <span>餐饮券</span>;
+            } else {
+                text = <span>零售券</span>;
+            }
+            return (text);
+        };
+        const render3 = (v,o) => {
+            // console.log(111,v)
+            if(o.presentType == 8){
+                return this.getCouponType(o.giftItemID)
+            }else{
+                const { giftTypeName } = GiftCfg;
+                const { label } = giftTypeName.find(x => +x.value === +v) || {};
+                return (<Tooltip title={label}><span>{label}</span></Tooltip>);
+            }
+            
         };
         const render4 = (v) => {
             return (<Tooltip title={v}><span>{v}</span></Tooltip>);
@@ -61,6 +87,7 @@ class GiftInfo extends Component {
         // 表格头部的固定数据
         return [
             { width: 40, title: '序号', dataIndex: 'idx', className: tc },
+            { width: 100, title: '礼品属性', dataIndex: 'presentType', className: tc, render: render2 },
             { width: 100, title: '礼品类型', dataIndex: 'giftType', className: tc, render: render3 },
             { width: 100, title: '礼品名称', dataIndex: 'giftName', className: tc, render: render4, },
             { width: 100, title: '礼品金额(元)', dataIndex: 'giftValue', className: tc },
@@ -85,7 +112,7 @@ class GiftInfo extends Component {
     }
     /** 增加 */
     onPost = (params) => {
-        if (params.giftItemType == 1) {
+        if (params.presentType == 1) {
             const { giftTreeData } = this.state;
             const { value, onChange } = this.props;
             // effectType有效期限 如果为小时是 1 如果为天是 3 如果是固定有效期是 2
@@ -114,7 +141,7 @@ class GiftInfo extends Component {
             onChange(list);
         } else {
             const { value, onChange } = this.props;
-            const list = [...value, { presentType: params.giftItemType, giftItemID: params.giftItemID.split('_')[0], giftName: params.giftItemID.split('_')[1], giftCount: params.giftCount }];
+            const list = [...value, { presentType: params.presentType, giftItemID: params.giftItemID.split('_')[0], giftName: params.giftItemID.split('_')[1], giftCount: params.giftCount }];
             onChange(list);
         }
 
@@ -136,7 +163,7 @@ class GiftInfo extends Component {
         //礼品定额卡添加优惠券限制最多10种
         return (
             <div className={isNeedMt ? styles.cGiftInfo1 : styles.cGiftInfo}>
-                {!value[9] && <Button icon="plus" disabled={disabled} onClick={this.toggleModal}>添加礼品</Button>}
+                {!value[19] && <Button icon="plus" disabled={disabled} onClick={this.toggleModal}>添加礼品</Button>}
                 <Table
                     bordered={true}
                     columns={columns}
