@@ -1072,7 +1072,7 @@ class SpecialDetailInfo extends Component {
                     message.warning("请输入正确的积分值");
                     return;
                 }
-                if (!evalPriceReg.test(giftGetRuleValue) && giftGetRule == '7') {
+                if ((!evalPriceReg.test(giftGetRuleValue) || +giftGetRuleValue > 100)&& giftGetRule == '7') {
                     message.warning("请输入正确的倍率积分值");
                     return;
                 }
@@ -1082,13 +1082,14 @@ class SpecialDetailInfo extends Component {
                     message.warning("请输入正确的积分值");
                     return;
                 }
-                const giftName = presentValue + "积分";
+                const giftName = giftGetRule == '7' ? '订单金额积分' : presentValue + "积分";
                 const params = {
                     presentValue: !giftGetRuleValue ? presentValue : '',
                     presentType: 2,
                     giftName,
                     giftCount: 1,
                     giftGetRuleValue: !presentValue ? giftGetRuleValue : '',
+                    giftGetRule,
                 };
                 this.props.setSpecialGiftInfo([params]);
                 if ( type == '64') { this.props.setSpecialBasicInfo({ giftGetRule }) }
@@ -1258,13 +1259,14 @@ class SpecialDetailInfo extends Component {
             if (type === "52" || this.props.type == "64") {
                 const { presentValue, givePoints, giftGetRuleValue } = this.state;
                 if (givePoints) {
-                    const giftName = presentValue + "积分";
+                    const giftName = giftGetRule == '7' ? '订单金额积分' : presentValue + "积分";
                     const params = {
                         presentValue: !giftGetRuleValue ? presentValue : '',
                         presentType: 2,
                         giftName,
                         giftCount: 1,
                         giftGetRuleValue: !presentValue ? giftGetRuleValue : '',
+                        giftGetRule,
                     };
                     giftInfo = [...giftInfo, params];
                 }
@@ -3698,8 +3700,8 @@ class SpecialDetailInfo extends Component {
     renderGiftGetRuleVal = () => {
         const { giftGetRuleValue } = this.state;
         const priceReg = /^(([1-9][0-9]{0,1}|100)(\.\d{0,2})?|0.\d?[1-9]{1})$/
-        const preErr = !priceReg.test(giftGetRuleValue) ? "error" : "success";
-        const preErrText = !priceReg.test(giftGetRuleValue) && ("请输入1~100数字，支持两位小数")
+        const preErr = (!priceReg.test(giftGetRuleValue) || +giftGetRuleValue > 100) ? "error" : "success";
+        const preErrText = (!priceReg.test(giftGetRuleValue) || +giftGetRuleValue > 100) && ("请输入大于0数小于等于100的数字，支持两位小数")
         const userCount = this.props.specialPromotion.getIn([
             "$eventInfo",
             "userCount",
