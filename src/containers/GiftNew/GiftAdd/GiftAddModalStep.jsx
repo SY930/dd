@@ -86,6 +86,7 @@ import {
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import { CategoryAndFoodSelectors } from '../../SaleCenterNEW/common/GiftCategoryAndFoodSelectors';
 import { GiftCategoryAndFoodSelector } from '../../SaleCenterNEW/common/CategoryAndFoodSelector';
+import { GiftCategoryAndFoodSelectorNew } from '../../SaleCenterNEW/common/CategoryAndFoodSelectorNew';
 import AddMoneyTradeDishesTableWithBrand from 'containers/SaleCenterNEW/addMoneyTrade/AddMoneyTradeDishesTableWithBrand';
 
 
@@ -119,6 +120,17 @@ const processFinalCategoryAndDishData = (params, property,value) => {
                 } else {
                     params.foodSelectType = foodSelectType
                 }
+            }else if(value=='110'){
+                mallScope = params[property].categoryOrDish;
+                foodCategory = params[property].foodCategory;
+                excludeDishes = params[property].excludeDishes;
+                dishes = params[property].dishes;
+               
+                // mallScope 0 分类， 1 菜品
+                // foodSelectType 1 分类， 0 菜品， 2 全选
+                foodSelectType = 1-params[property].categoryOrDish;
+                params.foodSelectType = foodSelectType
+                params.mallScope = mallScope
             }else{
                 categoryOrDish = params[property].categoryOrDish;
                 foodCategory = params[property].foodCategory || [];
@@ -741,17 +753,17 @@ class GiftAddModalStep extends React.PureComponent {
         delete params.discountSortRule;
 
         params.stageAmount = params.stageAmount.number;
-        params.foodSelectType = 0;
+        // params.foodSelectType = 0;
         params.giveFoodCount = params.giveFoodCount.number;
-        params.couponFoodScopes = (params.buyGiveFoods.dishes || []).map((food) => {
-            return {
-                targetID: food.itemID,
-                targetCode: food.foodCode,
-                targetName: food.foodName,
-                targetUnitName: food.unit || '',
-                brandID: food.brandID || '0',
-            }
-        });
+        // params.couponFoodScopes = (params.buyGiveFoods.dishes || []).map((food) => {
+        //     return {
+        //         targetID: food.itemID,
+        //         targetCode: food.foodCode,
+        //         targetName: food.foodName,
+        //         targetUnitName: food.unit || '',
+        //         brandID: food.brandID || '0',
+        //     }
+        // });
         params.couponFoodOffers = (params.buyGiveSecondaryFoods.dishes || []).map((food) => {
             return {
                 foodUnitID: food.foodUnitID,
@@ -762,7 +774,7 @@ class GiftAddModalStep extends React.PureComponent {
                 brandID: food.brandID || '0',
             }
         });
-        delete params.buyGiveFoods;
+        // delete params.buyGiveFoods;
         delete params.buyGiveSecondaryFoods;
         return params;
     }
@@ -1090,6 +1102,12 @@ class GiftAddModalStep extends React.PureComponent {
             }
             if (value == '110') {// 买赠券
                 params = this.justifyParamsForCouponOfBuyGiven(params);
+                if(params.mallScope == 1){
+                    if(!params.couponFoodScopes||params.couponFoodScopes.length ==0){
+                        message.warning('请选择适用菜品')
+                        return
+                    }
+                }
             }
 
             if (value == '10') {
@@ -2037,6 +2055,7 @@ class GiftAddModalStep extends React.PureComponent {
                     width: '149.176%',
                     marginTop: -12,
                     marginBottom: -15,
+                    marginLeft:value == '110'?'105px':'',
                     display: this.isHuaTianSpecificCoupon() ? 'none' : 'block',
                 }}>
                 {
@@ -2045,6 +2064,11 @@ class GiftAddModalStep extends React.PureComponent {
                             <CategoryAndFoodSelectors
                                 scopeLst={scopeList}
                                 showEmptyTips={true}
+                                mallScope={mallScope}
+                            />
+                            :value == '110'?
+                            <GiftCategoryAndFoodSelectorNew
+                                scopeLst={scopeList}
                                 mallScope={mallScope}
                             />
                             :

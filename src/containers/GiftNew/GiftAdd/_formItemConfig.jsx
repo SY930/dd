@@ -624,7 +624,9 @@ export const FIRST_KEYS = {
                 'giftName',
                 'selectBrands',
                 'pushMessage',
-                'buyGiveFoods',
+                // 'mallScope',
+                'foodsboxs',
+                // 'buyGiveFoods',
                 'buyGiveSecondaryFoods',
                 'subRule',
                 'discountRule',                     // 优惠规则
