@@ -143,7 +143,7 @@ class GiftDetailTable extends Component {
     getTitle = () =>{  
         let title = []
         title.push(<div>排序 
-            <Icon style={{marginLeft:10}} type="reload"  onClick={()=>{
+            <img style={{marginLeft:10,height:25,width:25}} src="https://res.hualala.com/basicdoc/36ac3db9-16d2-489c-9af3-4c1659b7b2a8.png"  onClick={()=>{
                 let { tabkey } = this.props
                 Modal.confirm({
                     title: '重置排序',
