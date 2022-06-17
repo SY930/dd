@@ -109,7 +109,6 @@ export default class GiftModal extends Component {
         this.form.validateFields((e, v) => {
             if (!e) {
                 const { onClose, onPost } = this.props;
-                console.log(222, v)
                 onPost(v);
                 onClose();
             }
@@ -144,8 +143,7 @@ export default class GiftModal extends Component {
     resetFormItems() {
         const { options, couponType } = this.state;
         const { treeData, couponData } = this.props;
-        const { giftItemID, giftEffectTimeHours } = formItems;
-        console.log(couponType)
+        const { giftItemID, giftEffectTimeHours } = formItems; 
         let render = {}
 
         if (couponType == 1) {

@@ -95,8 +95,6 @@ function proCouponData(giftTypes) {
                 label: gift.couponBatchName,
                 value: `${gift.couponBatchID}_${gift.couponBatchName}`,
                 key: `${gift.couponBatchID}`,
-                giftValue: `${gift.couponBatchID}`,
-                giftType: gt.couponType,
             });
         });
         return item

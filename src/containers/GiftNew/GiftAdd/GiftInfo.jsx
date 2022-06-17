@@ -39,6 +39,18 @@ class GiftInfo extends Component {
         return text
     }
 
+    getCouponObj(couponBatchID){
+        let text = {}
+        this.state.giftTreeDataByCoupon&&this.state.giftTreeDataByCoupon.length>0&&this.state.giftTreeDataByCoupon.map((i)=>{
+            i.children&&i.children.length>0&&i.children.map((j)=>{
+                if(couponBatchID == j.couponBatchID){
+                    text = j
+                }
+            })
+        })
+        return text
+    }
+
     /* 生成表格头数据 */
     generateColumns() {
         const { disabled } = this.props;
@@ -49,17 +61,31 @@ class GiftInfo extends Component {
             );
         };
         const render1 = (v, o) => {
-            const { effectType, giftEffectTimeHours,
-                giftValidUntilDayCount, effectTime, validUntilDate } = o;
-            let text = '';
-            if ([1, 3].includes(+effectType)) {
-                const options = (+effectType === 1) ? SALE_CENTER_GIFT_EFFICT_TIME : SALE_CENTER_GIFT_EFFICT_DAY;
-                const { label } = options.find(x => +x.value === +giftEffectTimeHours);
-                text = <span>发放后{label}，有效期{giftValidUntilDayCount}天</span>;
-            } else {
-                text = effectTime + ' - ' + validUntilDate;
+            if(o.presentType == 1){
+                const { effectType, giftEffectTimeHours,
+                    giftValidUntilDayCount, effectTime, validUntilDate } = o;
+                let text = '';
+                if ([1, 3].includes(+effectType)) {
+                    const options = (+effectType === 1) ? SALE_CENTER_GIFT_EFFICT_TIME : SALE_CENTER_GIFT_EFFICT_DAY;
+                    const { label } = options.find(x => +x.value === +giftEffectTimeHours);
+                    text = <span>发放后{label}，有效期{giftValidUntilDayCount}天</span>;
+                } else {
+                    text = effectTime + ' - ' + validUntilDate;
+                }
+                return (<Tooltip title={text}><span>{text}</span></Tooltip>);
+            }else{
+                let text =''
+                let obj = this.getCouponObj(o.giftItemID)
+                if ([1, 3].includes(obj.effectType)) {
+                    const options = (obj.effectType === 1) ? SALE_CENTER_GIFT_EFFICT_TIME : SALE_CENTER_GIFT_EFFICT_DAY;
+                    const { label } = options.find(x => +x.value === +obj.giftEffectTimeHours);
+                    text = <span>发放后{label}，有效期{obj.giftValidUntilDayCount}天</span>;
+                } else {
+                    text = obj.effectTime + ' - ' + obj.validUntilDate;
+                }
+                return (<Tooltip title={text}><span>{text}</span></Tooltip>);
             }
-            return (<Tooltip title={text}><span>{text}</span></Tooltip>);
+           
         };
         const render2 = (v) => {
             let text = '';
@@ -71,7 +97,6 @@ class GiftInfo extends Component {
             return (text);
         };
         const render3 = (v,o) => {
-            // console.log(111,v)
             if(o.presentType == 8){
                 return this.getCouponType(o.giftItemID)
             }else{
@@ -84,13 +109,21 @@ class GiftInfo extends Component {
         const render4 = (v) => {
             return (<Tooltip title={v}><span>{v}</span></Tooltip>);
         };
+        const render5 = (v,o) => {
+            if(o.presentType == 8){
+                return this.getCouponObj(o.giftItemID).giftValue
+            }else{
+                return v;
+            }
+            
+        };
         // 表格头部的固定数据
         return [
             { width: 40, title: '序号', dataIndex: 'idx', className: tc },
             { width: 100, title: '礼品属性', dataIndex: 'presentType', className: tc, render: render2 },
             { width: 100, title: '礼品类型', dataIndex: 'giftType', className: tc, render: render3 },
             { width: 100, title: '礼品名称', dataIndex: 'giftName', className: tc, render: render4, },
-            { width: 100, title: '礼品金额(元)', dataIndex: 'giftValue', className: tc },
+            { width: 100, title: '礼品金额(元)', dataIndex: 'giftValue', className: tc, render: render5 },
             { width: 60, title: '礼品个数', dataIndex: 'giftCount', className: tc },
             { width: 180, title: '礼品有效期', dataIndex: 'effectTime', render: render1, className: tc },
             { width: 60, title: '操作', dataIndex: 'index', className: tc, render },
