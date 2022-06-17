@@ -18,7 +18,7 @@ import { injectIntl } from './IntlDecor';
 
 const TabPane = Tabs.TabPane;
 
-const freeGift = 'http://res.hualala.com/basicdoc/437d4ffb-aa5c-47c9-8285-c259b434375f.png'
+const freeGift = 'http://res.hualala.com/basicdoc/b90f1566-6e2b-487d-9b4d-3914379db4ff.png'
 const couponImg = 'http://res.hualala.com/basicdoc/c0ec5b4f-295c-4981-9e76-5a21269647b4.png'
 const trumpetImg = 'http://res.hualala.com/basicdoc/d0a331dd-09aa-4081-b1b8-c88e7c867139.png'
 const modalImg1 = 'http://res.hualala.com/basicdoc/cacbd1d3-6694-47e8-b17c-b71c3131b542.png'
@@ -123,7 +123,7 @@ export default class FreeGiftDecorationBoard extends Component {
                             onChange={value => onChange({ key: ['activeImg'], value })}
                         />
                         <div className={style.uploaderTip}>
-                            <p>* 图片建议尺寸750x960像素</p>
+                            <p>* 图片建议尺寸750x564像素</p>
                             <p>* 不大于1000KB</p>
                             <p>* 支持png、jpg、jpeg、gif</p>
                         </div>

@@ -92,7 +92,6 @@ class StepTwo extends React.Component {
     }
 
     componentDidMount() {
-        // 
         const cardLevelRangeType = this.props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']);
         this.setState({
             localType: cardLevelRangeType || '5',
@@ -162,6 +161,9 @@ class StepTwo extends React.Component {
             const opts = {
                 message: specialPromotion.smsTemplate,
                 cardLevelIDList: specialPromotion.cardLevelIDList,
+                cardLevelRangeType: specialPromotion.cardLevelRangeType || '0',
+                localType:specialPromotion.cardLevelRangeType == '7' ? '7' : '5',
+                customerRangeConditionIDs:specialPromotion.customerRangeConditionIDs,
                 ...addUpOpts,
             }
             if (this.props.type == '70' || this.props.type == '64') {
@@ -184,6 +186,54 @@ class StepTwo extends React.Component {
         }
         this.loadShopSchema();
     }
+    componentWillReceiveProps(nextProps) {
+        const previousSchema = this.state.shopSchema;
+        const nextShopSchema = nextProps.shopSchemaInfo.getIn(['shopSchema']).toJS();
+        if (!isEqual(previousSchema, nextShopSchema)) {
+            this.setState({shopSchema: nextShopSchema, // 后台请求来的值
+            });
+        }
+        if (this.props.crmCardTypeNew.get('cardTypeLst') !== nextProps.crmCardTypeNew.get('cardTypeLst')) {
+            const cardInfo = nextProps.crmCardTypeNew.get('cardTypeLst').toJS();
+            this.setState({
+                cardInfo: cardInfo.filter((cardType) => {
+                    return cardType.regFromLimit
+                }),
+            });
+        }
+        // 获取会员等级信息
+        if (nextProps.mySpecialActivities.$groupMembers) {
+            if (nextProps.mySpecialActivities.$groupMembers.groupMembersList instanceof Array && nextProps.mySpecialActivities.$groupMembers.groupMembersList.length > 0) {
+                this.setState({
+                    groupMembersList: nextProps.mySpecialActivities.$groupMembers.groupMembersList,
+                })
+            } else {
+                this.setState({
+                    groupMembersList: [],
+                })
+            }
+        }
+        if (this.props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']) !== nextProps.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType'])) {
+            const type = nextProps.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']);
+            this.setState({cardLevelRangeType: type === undefined ? '5' : type});
+        }
+        if (this.props.specialPromotion.getIn(['$eventInfo', 'cardGroupID']) !== nextProps.specialPromotion.getIn(['$eventInfo', 'cardGroupID'])) {
+            this.setState({cardGroupID: nextProps.specialPromotion.getIn(['$eventInfo', 'cardGroupID'])});
+        }
+        if (this.props.specialPromotion.getIn(['$eventInfo', 'localType']) !== nextProps.specialPromotion.getIn(['$eventInfo', 'localType'])) {
+            this.setState({localType: nextProps.specialPromotion.getIn(['$eventInfo', 'localType'])});
+        }
+        if (this.props.specialPromotion.getIn(['$eventInfo', 'customerRangeConditionIDs']) !== nextProps.specialPromotion.getIn(['$eventInfo', 'customerRangeConditionIDs'])) {
+            this.setState({customerRangeConditionIDs: nextProps.specialPromotion.getIn(['$eventInfo', 'customerRangeConditionIDs'])});
+        }
+        if (this.props.type == '64') {
+            const currentOccupiedShops = this.props.promotionBasicInfo.get('$filterShops').toJS().shopList;
+            const nextOccupiedShops = nextProps.promotionBasicInfo.get('$filterShops').toJS().shopList;
+            if (!isEqual(currentOccupiedShops, nextOccupiedShops)) {
+                this.setState({occupiedShopIDs: nextOccupiedShops || []});
+            }
+        }
+    }
     //获取标签树
     queryTagData = () => {
         const params = {
@@ -201,6 +251,30 @@ class StepTwo extends React.Component {
                 this.setState({
                     filters,
                     tagRuleDetails: res.data.tagRuleDetails
+                },() => {
+                    let { customerRangeConditionIDs } = this.props.specialPromotion.get('$eventInfo').toJS();
+                    let useData = [];
+                    let selectTags = [];
+                    if(res.data.tagRuleDetails && res.data.tagRuleDetails.length > 0){
+                        if(customerRangeConditionIDs && customerRangeConditionIDs.length > 0){
+                            res.data.tagRuleDetails.map(item => {
+                                customerRangeConditionIDs.map(d => {
+                                    if(item.tagRuleID == d){
+                                        useData.push(item.tagRuleID + '@@' + item.tagTypeID + '@@' + item.tagName);
+                                        selectTags.push({
+                                            tagRuleID:item.tagRuleID,
+                                            tagTypeID:item.tagTypeID,
+                                            tagName:item.tagName
+                                        })
+                                    }
+                                })
+                            })
+                        }
+                    }
+                    this.setState({
+                        tagIncludes:useData,
+                        selectedTags:selectTags
+                    })
                 })
             } else {
                 message.error(res.message)
@@ -273,48 +347,7 @@ class StepTwo extends React.Component {
         return dynamicShopSchema;
     }
 
-    componentWillReceiveProps(nextProps) {
-        const previousSchema = this.state.shopSchema;
-        const nextShopSchema = nextProps.shopSchemaInfo.getIn(['shopSchema']).toJS();
-        if (!isEqual(previousSchema, nextShopSchema)) {
-            this.setState({shopSchema: nextShopSchema, // 后台请求来的值
-            });
-        }
-        if (this.props.crmCardTypeNew.get('cardTypeLst') !== nextProps.crmCardTypeNew.get('cardTypeLst')) {
-            const cardInfo = nextProps.crmCardTypeNew.get('cardTypeLst').toJS();
-            this.setState({
-                cardInfo: cardInfo.filter((cardType) => {
-                    return cardType.regFromLimit
-                }),
-            });
-        }
-        // 获取会员等级信息
-        if (nextProps.mySpecialActivities.$groupMembers) {
-            if (nextProps.mySpecialActivities.$groupMembers.groupMembersList instanceof Array && nextProps.mySpecialActivities.$groupMembers.groupMembersList.length > 0) {
-                this.setState({
-                    groupMembersList: nextProps.mySpecialActivities.$groupMembers.groupMembersList,
-                })
-            } else {
-                this.setState({
-                    groupMembersList: [],
-                })
-            }
-        }
-        if (this.props.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']) !== nextProps.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType'])) {
-            const type = nextProps.specialPromotion.getIn(['$eventInfo', 'cardLevelRangeType']);
-            this.setState({cardLevelRangeType: type === undefined ? '5' : type});
-        }
-        if (this.props.specialPromotion.getIn(['$eventInfo', 'cardGroupID']) !== nextProps.specialPromotion.getIn(['$eventInfo', 'cardGroupID'])) {
-            this.setState({cardGroupID: nextProps.specialPromotion.getIn(['$eventInfo', 'cardGroupID'])});
-        }
-        if (this.props.type == '64') {
-            const currentOccupiedShops = this.props.promotionBasicInfo.get('$filterShops').toJS().shopList;
-            const nextOccupiedShops = nextProps.promotionBasicInfo.get('$filterShops').toJS().shopList;
-            if (!isEqual(currentOccupiedShops, nextOccupiedShops)) {
-                this.setState({occupiedShopIDs: nextOccupiedShops || []});
-            }
-        }
-    }
+    
     // 会员群体Option
     renderOptions() {
         return  this.state.groupMembersList.map((groupMembers, index) => <Option key={groupMembers.groupMembersID}>{`${groupMembers.groupMembersName}【共${groupMembers.totalMembers}人】`}</Option>);
@@ -380,6 +413,7 @@ class StepTwo extends React.Component {
             {
                 cardLevelIDList: this.state.cardLevelIDList || [],
                 cardLevelRangeType: this.props.type == '62' ? this.state.cardLevelRangeType : '2',
+                localType:this.state.localType,
                 smsTemplate: this.state.message,
             };
 
@@ -398,9 +432,8 @@ class StepTwo extends React.Component {
         if (this.props.type == '62') {
             const { consumeType, numberValue,selectedTags,localType } = this.state;
             opts.consumeType = consumeType;
-            opts.selectedTags = null;
             if(localType == 7){
-                opts.selectedTags = selectedTags;
+                opts.customerRangeConditionIDs = selectedTags.map(item => item.tagRuleID)
             }
             consumeType % 2 === 0 ? opts.consumeTotalAmount = numberValue.number || 0 : opts.consumeTotalTimes = numberValue.number;
             if ((consumeType % 2 === 0 && (numberValue.number < 0 || numberValue.number === '')) || (consumeType == '1' && numberValue.number < 1)) {
@@ -642,7 +675,7 @@ class StepTwo extends React.Component {
                             >
                                 <RadioGroup onChange={this.handleGroupOrCatRadioChange} value={`${localType}`}>
                                     <Radio key={'5'} value={'5'}>会员群体</Radio>
-                                    {/* <Radio key={'7'} value={'7'}>会员标签</Radio> */}
+                                    <Radio key={'7'} value={'7'}>会员标签</Radio>
                                     <Radio key={'2'} value={'2'}>会员卡类</Radio>
                                     <Radio key={'6'} value={'6'}>会员卡等级</Radio>
                                 </RadioGroup>

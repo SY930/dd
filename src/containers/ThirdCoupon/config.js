@@ -19,7 +19,7 @@ export const getColumns = _this => ([
         title: '操作',
         key: 'operation',
         className: 'TableTxtCenter',
-        width: 160,
+        width: 180,
         // fixed: 'left',
         render: (text, record) => {
             return (<span>
@@ -44,13 +44,55 @@ export const getColumns = _this => ([
                     )
                 }
                 {
+                    // 券code模式为MERCHANT_API的显示“停用”按钮  batchStatus 0 未启用  1启用  2停用
+                    record.platformType === 3 && record.batchStatus === 1 && record.couponCodeDockingType === 1 && ( // 启用中显示停用
+                        <a
+                            href="#"
+                            onClick={() => {
+                                // 2 status    -   3平台类型
+                                _this.handleStopClickEvent(record, 2, '3')
+                            }}
+                        >
+                            停用
+                        </a>
+                    )
+                }
+                {
+                    // 券code模式为MERCHANT_API的显示“启用”按钮
+                    record.platformType === 3 && record.batchStatus === 0 && record.couponCodeDockingType === 1 && (
+                        <a
+                            href="#"
+                            onClick={() => {
+                                _this.handleStopClickEvent(record, 1, '3')
+                            }}
+                        >
+                            启用
+                        </a>
+                    )
+                }
+                {
+                    // 券code模式为MERCHANT_API的显示“编辑”按钮
+                    record.platformType === 3 && record.batchStatus === 0 && record.couponCodeDockingType === 1 && (
+                        <a
+                            href="#"
+                            onClick={() => {
+                                // _this.handleCouponInfo(record, false)
+                                _this.handleEdit(record)
+                            }}
+                        >
+                            编辑
+                        </a>
+                    )
+                }
+                {/* 支付宝 */}
+                {
                     record.channelID == 60 && (
                         <span>
                             <a
                                 href="#"
                                 disabled={record.batchStatus != 1}
                                 onClick={record.batchStatus == 1 ? () => {
-                                    _this.handleStopClickEvent(record)
+                                    _this.handleStopClickEvent(record, 2, '1')
                                 } : null}
                             >停用</a>
                             <a

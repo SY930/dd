@@ -161,18 +161,36 @@ export const FORMITEMS = {
         options: GiftCfg.shareType,
     },
     maxUseLimit: {
-        label: '一笔订单最多使用',
+        label: (
+            <span>
+                会员单笔账单张数限制
+                <Tooltip title={
+                    <p>
+                        场景描述：<br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;【结账收银】方式为：【仅主被扫线上支付自动结账】核销订单，在POS清台结账操作前，均受单笔账单张数限制约束。
+                        <br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;【结账收银】方式为：【自动结账】或【仅主被扫线上支付自动结账】核销订单，均受单笔账单张数限制约束。
+                        <br/>
+                        仅主被扫线上支付自动结账方式举例：
+                        <br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 此券【会员单笔账单张数限制】5张，会员持有此券8张，付款未结账清台前，多次下单结账，此券多次结账合计数量最大为5张。
+                    </p>
+                }>
+                    <Icon type="question-circle" />
+                </Tooltip>
+            </span>
+        ),
         type: 'text',
-        placeholder: '不填表示不限制',
+        placeholder: '请输入1-9999之间的数字，不填表示不限制',
         surfix: '张',
         rules: [{
             validator: (rule, v = '', cb) => {
-                if (/^(?:[1-9][0-9]{0,5})?$/.test(v)) {
+                if (/^(?:[1-9][0-9]{0,3})?$/.test(v)) {
                     return cb()
                 }
                 cb(rule.message);
             },
-            message: '张数范围1~999999'
+            message: '请输入1-9999之间的数字'
         }],
     },
     customerUseCountLimit: {
@@ -415,6 +433,7 @@ export const MALL_COUPON_APPLY_SETTING_FORM_ITEMS = {
                 'giftShareType',
                 'moneyLimitTypeAndValue',
                 'customerUseCountLimit',
+                'maxUseLimit',
                 // 'amountType',
                 'showGiftRule',
                 'giftImagePath',
@@ -439,6 +458,7 @@ export const MALL_COUPON_APPLY_SETTING_FORM_ITEMS = {
                 'giftShareType',
                 'moneyLimitTypeAndValue',
                 'customerUseCountLimit',
+                'maxUseLimit',
                 // 'selectedShops',
                 'showGiftRule',
                 'giftImagePath',
@@ -465,6 +485,7 @@ export const MALL_COUPON_APPLY_SETTING_FORM_ITEMS = {
                 'giftShareType',
                 'moneyLimitTypeAndValue',
                 'customerUseCountLimit',
+                'maxUseLimit',
                 // 'selectedShops',
                 'showGiftRule',
                 'giftImagePath',
@@ -487,6 +508,7 @@ export const FIRST_KEYS = {
                 'giftType',
                 'giftName',
                 'pushMessage',
+                'notice',
                 'giftValueCurrencyType',
                 'giftValue',
                 'price',
@@ -751,6 +773,7 @@ export const SECOND_KEYS = (() => ({
                 'giftShareType',
                 'moneyLimitTypeAndValue',
                 'customerUseCountLimit',
+                'maxUseLimit',
                 // 'selectedShops',
                 // 'amountType',
                 'showGiftRule',
@@ -808,6 +831,7 @@ export const SECOND_KEYS = (() => ({
                 'giftShareType',
                 'moneyLimitTypeAndValue',
                 'customerUseCountLimit',
+                'maxUseLimit',
                 // 'selectedShops',
                 'showGiftRule',
                 'giftImagePath',
@@ -837,6 +861,7 @@ export const SECOND_KEYS = (() => ({
                 'giftShareType',
                 'moneyLimitTypeAndValue',
                 'customerUseCountLimit',
+                'maxUseLimit',
                 // 'selectedShops',
                 'showGiftRule',
                 'giftImagePath',

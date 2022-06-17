@@ -62,6 +62,7 @@ class CreateCouponContent extends Component {
 
     // 选择微信的财务主体后改变MerchantID
     onChangeWXMerchantID = (record) => {
+    console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 65 ~ CreateCouponContent ~ record", record)
         this.setState({
             WXMerchantID: record.merchantID,
             masterMerchantID: record.masterMerchantID,
@@ -110,6 +111,20 @@ class CreateCouponContent extends Component {
             effectType: '2',
             douyinGift: null,
         })
+    }
+
+
+    // 根据getGiftItemID拼接回显的值
+    getGiftItemIDs = ({ giftItemID, giftType, giftValue }) => {
+        const { treeData } = this.props;
+        const child = treeData.find(item => item.key === giftType).children
+        console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 121 ~ CreateCouponContent ~ child", child)
+        const findItem = child.find(item => item.key === giftItemID) || {}
+        console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 122 ~ CreateCouponContent ~ findItem----", findItem)
+        if (_.isEmpty(findItem)) {
+            return ''
+        }
+        return `${giftItemID}_${giftType}_${findItem.giftValue}`
     }
 
     // 优惠券
@@ -524,11 +539,12 @@ class CreateCouponContent extends Component {
                 let method = 'couponCodeBatchService/addBatch.ajax';
 
                 if (editData.batchName) {
-                    if (editData.batchStatus != '1') {
-                        return message.warn('已生效的状态才可以更新')
-                    }
+                    // if (editData.batchStatus != '2') {
+                    //     return message.warn('已shi效的状态才可以更新')
+                    // }
                     method = 'couponCodeBatchService/updateBatch.ajax';
                     datas.itemID = editData.itemID;
+                    datas.groupID = groupID
                 }
                 const params = {
                     service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
@@ -858,7 +874,7 @@ class CreateCouponContent extends Component {
                                 required={true}
                             >
                                 {getFieldDecorator('giftValidRange', {
-                                    initialValue: editData.eGiftEffectTime > 0 ? [moment(editData.eGiftEffectTime, 'YYYYMMDD'), moment(editData.validUntilDate, 'YYYYMMDD')] : [],
+                                    initialValue: editData.EGiftEffectTime > 0 ? [moment(editData.EGiftEffectTime, 'YYYYMMDD'), moment(editData.validUntilDate, 'YYYYMMDD')] : [],
                                     onChange: this.handleGiftValidRangeChange,
                                     rules: [
                                         { required: true, message: '请输入有效时间' },
@@ -882,10 +898,12 @@ class CreateCouponContent extends Component {
         const { form, title, type } = this.props;
         const { getFieldDecorator } = form;
         const { giftItemID, merchantType, editData, aliShops } = this.state;
+        console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 885 ~ CreateCouponContent ~ render ~ editData", editData, merchantType)
         // let title = '新建第三方支付宝券';
         // if (editData.batchName) {
         //     title = '编辑第三方支付宝券';
         // }
+        const giftItemIDs = editData.giftItemID && this.getGiftItemIDs(editData)
         const formItemLayout = type == 2 ? {
             labelCol: { span: 5 },
             wrapperCol: { span: 16 },
@@ -947,6 +965,7 @@ class CreateCouponContent extends Component {
                                     required={true}
                                 >
                                     {getFieldDecorator('rangePicker', {
+                                        initialValue: editData.startTime ? [moment(editData.startTime, 'YYYYMMDD'), moment(editData.endTime, 'YYYYMMDD')] : [],
                                         rules: [
                                             { required: true, message: '请输入日期' },
                                         ],
@@ -972,7 +991,7 @@ class CreateCouponContent extends Component {
                                 >
                                     {
                                         getFieldDecorator('giftItemID', {
-                                            // initialValue: editData.giftItemID || '',
+                                            initialValue: editData.giftItemID ? giftItemIDs : '',
                                             onChange: this.handleCouponChange,
                                             rules: [
                                                 { required: true, message: '请选择优惠券' },
@@ -1001,7 +1020,7 @@ class CreateCouponContent extends Component {
                                 >
                                     {getFieldDecorator('merchantType', {
                                         onChange: this.handleLinkWay,
-                                        initialValue: merchantType,
+                                        initialValue: `${editData.merchantType ? editData.merchantType : merchantType}`,
                                         // rules: [{ required: true, message: '请输入活动名称' }],
                                     })(
                                         <RadioGroup>
@@ -1013,7 +1032,7 @@ class CreateCouponContent extends Component {
                             }
                             {type === 1 && this.renderZhifubaoContent(merchantType)}
                             {type === 1 && <AliContent form={form} merchantType={merchantType} aliShops={aliShops} onChangeEntranceWords={this.onChangeEntranceWords} />}
-                            {type === 2 && <WXContent form={form} merchantType={merchantType} onChangeWXMerchantID={this.onChangeWXMerchantID} onChangeWXJumpAppID={this.onChangeWXJumpAppID} />}
+                            {type === 2 && <WXContent form={form} merchantType={merchantType} editData={editData} onChangeWXMerchantID={this.onChangeWXMerchantID} onChangeWXJumpAppID={this.onChangeWXJumpAppID} />}
                             {type === 3 && <DouyinContent form={form} merchantType={merchantType} />}
                             {type === 5 && <EDiscountContent form={form} merchantType={merchantType} giftValue={this.state.giftValue} />}
                         </Form>

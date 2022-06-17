@@ -1763,7 +1763,6 @@ class SpecialPromotionDetail extends React.Component {
         if (eventWay == 66) {
             len = 700
         }
-        console.log(columns,eventWay,'eventWay>>>>>>>>>>>>>>>>>>>>>>>>')
         return (
             <Table
                 dataSource={dataSource}

@@ -34,6 +34,8 @@ export default class ThirdCoupon extends Component {
     }
 
     componentDidMount() {
+        const { from } = this.getQueryVariable();
+        this.handleTabChange(from)
         this.handleQuery(null, null, { eventWays: ['20001'] }); // 默认传成功页
         this.initData()
     }
@@ -49,6 +51,33 @@ export default class ThirdCoupon extends Component {
             this.handleQuery(1, pageSize)
         })
     };
+
+
+    getQueryVariable = () => {
+        const search = window.decodeURIComponent(window.location.search)
+        let query = search.substr(1)
+        query = query.split('&')
+        const params = {}
+        for (let i = 0; i < query.length; i++) {
+            const q = query[i].split('=')
+            if (q.length === 2) {
+                params[q[0]] = q[1]
+            }
+        }
+        return params
+    }
+
+    handleTabChange = (form) => {
+        if (form === 'promotion') {
+            this.setState({
+                tabKeys: 'promotionPage',
+            })
+        } else {
+            this.setState({
+                tabKeys: 'successPage',
+            })
+        }
+    }
 
     handleQuery = (pageNo, pageSize, _opt = {}) => {
         if (!this.state.loading) {
@@ -80,6 +109,7 @@ export default class ThirdCoupon extends Component {
             // }
         })
     }
+
 
     initData = () => {
         getAlipayPromotionList().then((res) => {
@@ -174,7 +204,7 @@ export default class ThirdCoupon extends Component {
                     </Button>
                 </div>
                 <div className={style.AlipayCouponTabs}>
-                    <Tabs defaultActiveKey={tabKeys} onChange={this.handleChangeTabs} className="tabsStyles">
+                    <Tabs defaultActiveKey={tabKeys} onChange={this.handleChangeTabs} className="tabsStyles" key={tabKeys}>
                         <TabPane tab="支付成功页投放" key="successPage">
                             <SuccessPage
                                 dataSource={dataSource}
