@@ -3701,7 +3701,7 @@ class SpecialDetailInfo extends Component {
         const { giftGetRuleValue } = this.state;
         const priceReg = /^(([1-9][0-9]{0,1}|100)(\.\d{0,2})?|0.\d?[1-9]{1})$/
         const preErr = (!priceReg.test(giftGetRuleValue) || +giftGetRuleValue > 100) ? "error" : "success";
-        const preErrText = (!priceReg.test(giftGetRuleValue) || +giftGetRuleValue > 100) && ("请输入大于0数小于等于100的数字，支持两位小数")
+        const preErrText = (!priceReg.test(giftGetRuleValue) || +giftGetRuleValue > 100) && ("请输入大于0小于等于100的数字，支持两位小数")
         const userCount = this.props.specialPromotion.getIn([
             "$eventInfo",
             "userCount",
