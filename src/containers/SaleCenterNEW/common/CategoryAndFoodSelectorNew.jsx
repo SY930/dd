@@ -22,7 +22,7 @@ const RadioGroup = Radio.Group;
 const getFoodInfoFromScopeList = (scopeList) => {
     if (!Array.isArray(scopeList) || !scopeList.length) {
         return {
-            categoryOrDish: 1,
+            categoryOrDish: 0,
             dishes: [],
             categories: [],
             excludeDishes: [],
@@ -75,7 +75,7 @@ class CategoryAndFoodSelector extends Component {
                 dishesObj = getDishesInfoFromPriceOrScopeList(props.priceLst)
             }
             this.state = {
-                categoryOrDish: 1,
+                categoryOrDish: 0,
                 dishes: dishesObj.dishes,
                 categories: [],
                 excludeDishes: [],
