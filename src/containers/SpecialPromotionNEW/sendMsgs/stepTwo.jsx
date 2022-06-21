@@ -546,7 +546,9 @@ class StepTwo extends React.Component {
                     tagIn.push(tag);
                     tagRuleIDs.push(tag.tagRuleID);
                 });
-                this.getMemberTagsCount(tagRuleIDs);
+                if(tagRuleIDs && tagRuleIDs.length > 0){
+                    this.getMemberTagsCount(tagRuleIDs);
+                }
                 this.setState({ selectedTags: tagIn, tagIncludes: e });
             },
             treeCheckable: true,
