@@ -114,6 +114,14 @@ const CARD_SUM_COLUMNS = [
         key: 'termStr',
         className: 'TableTxtCenter',
         width: 200
+    },
+    {
+        title: '备注',
+        dataIndex: 'operateRemark',
+        key: 'operateRemark',
+        className: 'TableTxtCenter',
+        width: 200,
+        render: (value) => { return value ? <Tooltip placement="topLeft" title={value}><span>{value}</span></Tooltip> : '--' },
     }
 ];
 const CARD_SUM_FORMITEMS = {
