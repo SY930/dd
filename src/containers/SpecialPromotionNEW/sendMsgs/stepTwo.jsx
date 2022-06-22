@@ -71,6 +71,7 @@ class StepTwo extends React.Component {
             filters:[],
             selectedTags:[],
             tagIncludes:[],
+            tagsCount: undefined
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -85,16 +86,30 @@ class StepTwo extends React.Component {
 
     validate() {
         let flag = true;
+        let tagRuleIDs = [];
+        const {selectedTags,tagsCount} = this.state;
         this.props.form.validateFieldsAndScroll((err1, basicValues) => {
             if (err1) {
                 flag = false;
             }
         });
+        const equityAccountInfoList = this.props.specialPromotion.get('$eventInfo').toJS().equityAccountInfoList || [];
+        const equityAccountInfo = equityAccountInfoList.find(item => item.accountNo === this.state.accountNo) || {};
+        selectedTags.forEach((item) => {
+            tagRuleIDs.push(item.tagRuleID);
+        })
         // 对权益账户短信条数做校验
         if (flag && this.state.accountNo > 0 && this.state.localType == '5') {
-            const equityAccountInfoList = this.props.specialPromotion.get('$eventInfo').toJS().equityAccountInfoList || [];
-            const equityAccountInfo = equityAccountInfoList.find(item => item.accountNo === this.state.accountNo) || {};
+            console.log(this.state,this.getMinMessageCount(),equityAccountInfo.smsCount,'equityAccountInfo.smsCount')
             if (!(this.getMinMessageCount() <= equityAccountInfo.smsCount)) {
+                flag = false;
+                message.warning('所选权益账户短信条数不足，请更换账户或充值')
+            }
+        }
+        if (flag && this.state.accountNo > 0 && this.state.localType == '7') {
+            console.log(this.state,equityAccountInfo.smsCount,'equityAccountInfo.smsCount')
+            
+            if (!(tagsCount <= equityAccountInfo.smsCount)) {
                 flag = false;
                 message.warning('所选权益账户短信条数不足，请更换账户或充值')
             }
@@ -252,6 +267,7 @@ class StepTwo extends React.Component {
                     let { customerRangeConditionIDs } = this.props.specialPromotion.get('$eventInfo').toJS();
                     let useData = [];
                     let selectTags = [];
+                    let tagRuleIds = [];
                     if(res.data.tagRuleDetails && res.data.tagRuleDetails.length > 0){
                         if(customerRangeConditionIDs && customerRangeConditionIDs.length > 0){
                             res.data.tagRuleDetails.map(item => {
@@ -262,7 +278,8 @@ class StepTwo extends React.Component {
                                             tagRuleID:item.tagRuleID,
                                             tagTypeID:item.tagTypeID,
                                             tagName:item.tagName
-                                        })
+                                        });
+                                        tagRuleIds.push(item.tagRuleID);
                                     }
                                 })
                             })
@@ -272,6 +289,9 @@ class StepTwo extends React.Component {
                         tagIncludes:useData,
                         selectedTags:selectTags
                     })
+                    if(tagRuleIds.length > 0){
+                        this.getMemberTagsCount(tagRuleIds)
+                    }
                 })
             } else {
                 message.error(res.message)
@@ -433,6 +453,27 @@ class StepTwo extends React.Component {
         }
         return totalCustomerCount || 0;
     }
+    getMemberTagsCount(data){
+        const params = {
+            tagRuleIDs: data
+        }
+        axiosData(
+            '/specialPromotion/queryTagCustomerNum.ajax',
+            params,
+            {},
+            { path: '' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW',
+        ).then((res) => {
+            if (res.code === '000') {
+                this.setState({
+                    tagsCount: res.data.tagCustomerNum
+                })
+                console.log(res,'res===============')
+            } else {
+                message.error(res.message)
+            }
+        })
+    }
     /**
      * 测试手机号是否输入合法
      */
@@ -499,15 +540,20 @@ class StepTwo extends React.Component {
             value: this.state.tagIncludes,
             defaultValue: [],
             onChange: (e) => {
-                let tagIn = []
+                let tagIn = [];
+                let tagRuleIDs = [];
                 e.map((i) => {
                     let tag = {}
                     tag.tagRuleID = i.split('@@')[0]
                     tag.tagTypeID = i.split('@@')[1]
                     tag.tagName = i.split('@@')[2]
-                    tagIn.push(tag)
-                })
-                this.setState({ selectedTags: tagIn, tagIncludes: e })
+                    tagIn.push(tag);
+                    tagRuleIDs.push(tag.tagRuleID);
+                });
+                if(tagRuleIDs && tagRuleIDs.length > 0){
+                    this.getMemberTagsCount(tagRuleIDs);
+                }
+                this.setState({ selectedTags: tagIn, tagIncludes: e });
             },
             treeCheckable: true,
             showCheckedStrategy: TreeSelect.SHOW_CHILD,
