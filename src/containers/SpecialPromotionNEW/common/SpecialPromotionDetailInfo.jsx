@@ -186,7 +186,7 @@ class SpecialDetailInfo extends Component {
         ]);
         const giftGetRule = props.specialPromotion.getIn(
             ["$eventInfo", "giftGetRule"],
-            props.type == "75" ? 2 : 0
+            props.type == "75" ? 2 : props.type == '64' ? '6' : 0
         );
         const discountRatio = props.specialPromotion.getIn([
             "$eventInfo",
@@ -216,7 +216,7 @@ class SpecialDetailInfo extends Component {
             Immutable.List.isList($saveMoneySetIds) && $saveMoneySetIds.size > 0
                 ? $saveMoneySetIds.toJS()
                 : [];
-        const { givePoints, presentValue, giveCoupon } = pointObj;
+        const { givePoints, presentValue, giveCoupon, giftGetRuleValue } = pointObj;
         // const specialPromotion = props.specialPromotion.get('$eventInfo').toJS();
         this.state = {
             data,
@@ -227,7 +227,7 @@ class SpecialDetailInfo extends Component {
                 1
             ),
             /** 膨胀大礼包相关 */
-            giftGetRule,
+            giftGetRule: props.type == '64' && giftGetRule == '0' ? '6' : giftGetRule,
             /** 膨胀大礼包相关结束 */
             /** 小程序分享相关 */
             shareImagePath: props.specialPromotion.getIn([
@@ -304,6 +304,7 @@ class SpecialDetailInfo extends Component {
             saveMoneySetType: saveMoneySetIds.length > 0 ? "1" : "0", // 前端内部状态，saveMoneySetIds数组为空表示全部套餐
             givePoints,
             presentValue,
+            giftGetRuleValue, // 评价送礼积分倍率值
             giveCoupon,
             shareTitlePL: "",
             shareSubtitlePL: "",
@@ -597,6 +598,7 @@ class SpecialDetailInfo extends Component {
             presentValue: "",
             givePoints: false,
             giveCoupon: false,
+            giftGetRuleValue: '',
         };
         if (type == 68) {
             // 将券和其他礼品分开
@@ -637,6 +639,7 @@ class SpecialDetailInfo extends Component {
                     pointObj = {
                         ...pointObj,
                         presentValue: gift.presentValue,
+                        giftGetRuleValue: gift.giftGetRuleValue,
                         givePoints: true,
                     };
                     return;
@@ -1003,6 +1006,7 @@ class SpecialDetailInfo extends Component {
         let giftTotalCopies = '';
         let flag = true;
         const priceReg = /^(([1-9]\d{0,5})(\.\d{0,2})?|0.\d?[1-9]{1})$/;
+        const evalPriceReg = /^(([1-9][0-9]{0,1}|100)(\.\d{0,2})?|0.\d?[1-9]{1})$/;
         this.props.form.validateFieldsAndScroll(
             { force: true },
             (error, basicValues) => {
@@ -1058,30 +1062,37 @@ class SpecialDetailInfo extends Component {
             return true;
         }
         if (type === "52" || this.props.type == "64") {
-            const { presentValue, givePoints, giveCoupon } = this.state;
+            const { presentValue, givePoints, giveCoupon, giftGetRuleValue } = this.state;
             if (!givePoints && !giveCoupon) {
                 message.warning("赠送积分和优惠券必选一项");
                 return;
             }
             if (givePoints) {
-                if (!priceReg.test(presentValue)) {
+                if (!priceReg.test(presentValue) && giftGetRule == '6') {
                     message.warning("请输入正确的积分值");
+                    return;
+                }
+                if ((!evalPriceReg.test(giftGetRuleValue) || +giftGetRuleValue > 100)&& giftGetRule == '7') {
+                    message.warning("请输入正确的倍率积分值");
                     return;
                 }
             }
             if (givePoints && !giveCoupon) {
-                if (!priceReg.test(presentValue)) {
+                if (!priceReg.test(presentValue) && giftGetRule == '6') {
                     message.warning("请输入正确的积分值");
                     return;
                 }
-                const giftName = presentValue + "积分";
+                const giftName = giftGetRule == '7' ? '订单金额积分' : presentValue + "积分";
                 const params = {
-                    presentValue,
+                    presentValue: giftGetRule != '7' ? presentValue : '',
                     presentType: 2,
                     giftName,
                     giftCount: 1,
+                    giftGetRuleValue: giftGetRule == '7' ? giftGetRuleValue : '',
+                    giftGetRule,
                 };
                 this.props.setSpecialGiftInfo([params]);
+                if ( type == '64') { this.props.setSpecialBasicInfo({ giftGetRule }) }
                 return true;
             }
         }
@@ -1246,14 +1257,16 @@ class SpecialDetailInfo extends Component {
                 giftInfo = upGradeAddPointData.call(this, giftInfo)
             }
             if (type === "52" || this.props.type == "64") {
-                const { presentValue, givePoints } = this.state;
+                const { presentValue, givePoints, giftGetRuleValue } = this.state;
                 if (givePoints) {
-                    const giftName = presentValue + "积分";
+                    const giftName = giftGetRule == '7' ? '订单金额积分' : presentValue + "积分";
                     const params = {
-                        presentValue,
+                        presentValue: giftGetRule != '7' ? presentValue : '',
                         presentType: 2,
                         giftName,
                         giftCount: 1,
+                        giftGetRuleValue: giftGetRule == '7' ? giftGetRuleValue : '',
+                        giftGetRule,
                     };
                     giftInfo = [...giftInfo, params];
                 }
@@ -3625,6 +3638,120 @@ class SpecialDetailInfo extends Component {
         const { value } = target;
         this.setState({ presentValue: value });
     };
+
+    onChangeEvalGift = ({ target }) => {
+        const { value } = target;
+        this.setState({ giftGetRule: value });
+    }
+
+    onGiftGetRuleValChange = ({ target }) => {
+        const { value } = target;
+        this.setState({ giftGetRuleValue: value });
+    }
+
+    // 开卡赠送和评价送礼固定积分
+    renderOpenCard = () => {
+        const { type } = this.props;
+        const { givePoints, presentValue } = this.state;
+
+        const evaErrText = '请输入大于0，整数5位以内且小数2位以内的数值'
+        const evaReg = /^(([1-9]\d{0,4})(\.\d{0,2})?|0.\d?[1-9]{1})$/;
+        const priceReg = type == '52' ? /^(([1-9]\d{0,5})(\.\d{0,2})?|0.\d?[1-9]{1})$/ : evaReg;
+        const preErr = !priceReg.test(presentValue) ? "error" : "success";
+        const preErrText = !priceReg.test(presentValue)
+            ? (type == '52' ? "请输入1~1000000数字，支持两位小数" : evaErrText)
+            : "";
+        const userCount = this.props.specialPromotion.getIn([
+            "$eventInfo",
+            "userCount",
+        ]);
+        const labelCol = type == '64' ? { span: 4 } : { span: 12 };
+        const wrapperCol = type == '64' ? { span: 6 } : { span: 12 };
+        if (givePoints) {
+            return  <div className={type == '52' ? `${selfStyle.pointBox}` : ''}>
+            <p
+             className={userCount > 0 ? styles.opacitySet : ""}
+            // className={styles.opacitySet}
+            ></p>
+            {/* <div className={selfStyle.title}>
+                <span>赠送积分</span>
+            </div> */}
+            <FormItem
+                label={'赠送积分'}
+                labelCol={labelCol}
+                wrapperCol={wrapperCol}
+                className={""}
+                validateStatus={preErr}
+                required={type == '64'}
+                help={preErrText}
+            >
+                <Input
+                    addonAfter={"积分"}
+                    value={presentValue}
+                    onChange={this.onGivePointsValueChange}
+                />
+            </FormItem>
+        </div>
+        }
+        return null
+    }
+
+    // 倍率积分
+    renderGiftGetRuleVal = () => {
+        const { giftGetRuleValue } = this.state;
+        const priceReg = /^(([1-9][0-9]{0,1}|100)(\.\d{0,2})?|0.\d?[1-9]{1})$/
+        const preErr = (!priceReg.test(giftGetRuleValue) || +giftGetRuleValue > 100) ? "error" : "success";
+        const preErrText = (!priceReg.test(giftGetRuleValue) || +giftGetRuleValue > 100) && ("请输入大于0小于等于100的数字，支持两位小数")
+        const userCount = this.props.specialPromotion.getIn([
+            "$eventInfo",
+            "userCount",
+        ]);
+        return (
+            <div>
+                <p
+                    className={userCount > 0 ? styles.opacitySet : ""}
+                ></p>
+                <div style={{ display: 'flex'}}>
+                    <FormItem
+                        label={'赠送订单实付金额的'}
+                        labelCol={{ span: 11 }}
+                        wrapperCol={{ span: 13 }}
+                        className={""}
+                        validateStatus={preErr}
+                        required={true}
+                        help={preErrText}
+                    >
+                        <Input
+                            addonAfter={"倍"}
+                            value={giftGetRuleValue}
+                             onChange={this.onGiftGetRuleValChange}
+                        />
+                    </FormItem>
+                    <span style={{ lineHeight: '39px', marginLeft: '8px'}}>积分 <Tooltip title="例：实付100 * 2倍则会赠送200积分。由于订单实付金额可能数额较大，请慎重设置倍率">  <Icon type="question-circle-o" /></Tooltip></span>
+                </div>
+            </div>
+        )
+    }
+
+    // 评价送礼可以按照订单金额倍率赠送
+    renderEvalGift = () => {
+        const { givePoints, giftGetRule = '6' } = this.state;
+        if (givePoints) {
+            return (
+                <div className={selfStyle.pointBoxNew}>
+                    <RadioGroup onChange={this.onChangeEvalGift} defaultValue="6" value={`${giftGetRule}`} size="large" style={{ margin: '0 0 14px 14px' }}>
+                        <RadioButton value="6">固定积分</RadioButton>
+                        <RadioButton value="7">倍率积分</RadioButton>
+                    </RadioGroup>
+                    { giftGetRule == '6' && this.renderOpenCard()}
+                    { giftGetRule == '7' && this.renderGiftGetRuleVal()}
+                </div>
+            )
+        }
+
+        return null
+
+    }
     // 包含 开卡送礼52、评价送礼64
     renderNewCardGive() {
         const { type, specialPromotion } = this.props;
@@ -3654,31 +3781,8 @@ class SpecialDetailInfo extends Component {
                         赠送积分
                     </Checkbox>
                 </FormItem>
-                {givePoints && (
-                    <div className={selfStyle.pointBox}>
-                        <p
-                            className={userCount > 0 ? styles.opacitySet : ""}
-                        ></p>
-                        {/* <div className={selfStyle.title}>
-                            <span>赠送积分</span>
-                        </div> */}
-                        <FormItem
-                            label={'赠送积分'}
-                            labelCol={{ span: 12 }}
-                            wrapperCol={{ span: 12 }}
-                            className={""}
-                            validateStatus={preErr}
-                            required={type == '64'}
-                            help={preErrText}
-                        >
-                            <Input
-                                addonAfter={"积分"}
-                                value={presentValue}
-                                onChange={this.onGivePointsValueChange}
-                            />
-                        </FormItem>
-                    </div>
-                )}
+                { type == '52' && this.renderOpenCard() }
+                { type == '64' && this.renderEvalGift() }
                 <FormItem
                     style={{ padding: "0px 40px" }}
                     wrapperCol={{ span: 24 }}
