@@ -115,7 +115,8 @@ class GroupTicketDetailInfo extends React.Component {
             let rule;
             const { giftValue, subsidyAmount } = _state;
             const diff = parseFloat(subsidyAmount) > parseFloat(giftValue);
-            if (subsidyAmount && diff && LAOWANG_GROUPID.includes(String(groupID))) {
+            // if (subsidyAmount && diff && LAOWANG_GROUPID.includes(String(groupID))) {
+            if (subsidyAmount && diff) {
                 nextFlag = false;
                 message.warning('补贴金额必须小于券面金额');
                 return nextFlag;
@@ -329,7 +330,7 @@ class GroupTicketDetailInfo extends React.Component {
                     </Select>
                 </FormItem>
                 {
-                    LAOWANG_GROUPID.includes(String(groupID)) &&
+                    // LAOWANG_GROUPID.includes(String(groupID)) &&
                     <FormItem // 仅针对1348可见
                         label={'补贴金额'}
                         className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
