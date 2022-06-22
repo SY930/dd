@@ -3661,7 +3661,7 @@ class GiftAddModalStep extends React.PureComponent {
                 }],
                 render: (decorator, form) => {
                     return form.getFieldValue('foodUnitType') == 1?decorator({})(
-                        <Input size="large" addonAfter="斤" />
+                        <Input size="large" addonAfter="份" />
                     ):null
                 },
             },
@@ -3692,7 +3692,7 @@ class GiftAddModalStep extends React.PureComponent {
                 }],
                 render: (decorator, form) => {
                     return form.getFieldValue('foodUnitType') == 1?decorator({})(
-                        <Input size="large" addonAfter="斤" addonBefore={'±'}/>
+                        <Input size="large" addonAfter="份" addonBefore={'±'}/>
                     ):null
                 },
             },
