@@ -142,6 +142,7 @@ class GiftDetailTable extends Component {
 
     getTitle = () =>{  
         let title = []
+        let that = this
         title.push(<div>排序 
             <img style={{marginLeft:10,height:14,width:14}} src="https://res.hualala.com/basicdoc/36ac3db9-16d2-489c-9af3-4c1659b7b2a8.png"  onClick={()=>{
                 let { tabkey } = this.props
@@ -151,8 +152,8 @@ class GiftDetailTable extends Component {
                     onOk() {
                         const params = {direction:'reset', isActive: tabkey == '1'? 1:0};
                         axiosData('/coupon/couponService_updateRanking.ajax', params, {needThrow: true}, {path: undefined}, 'HTTP_SERVICE_URL_PROMOTION_NEW').then(() => {
-                            if (this.tableRef &&  this.tableRef.props && this.tableRef.props.pagination && this.tableRef.props.pagination.onChange) {
-                                this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
+                            if (that.tableRef &&  that.tableRef.props && that.tableRef.props.pagination && that.tableRef.props.pagination.onChange) {
+                                that.tableRef.props.pagination.onChange(that.tableRef.props.pagination.current, that.tableRef.props.pagination.pageSize);
                             }
                             }).catch(err => {
                                 message.warning(err || 'sorry, 排序功能故障, 请稍后再试!');
