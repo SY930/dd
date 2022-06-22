@@ -267,6 +267,7 @@ class StepTwo extends React.Component {
                     let { customerRangeConditionIDs } = this.props.specialPromotion.get('$eventInfo').toJS();
                     let useData = [];
                     let selectTags = [];
+                    let tagRuleIds = [];
                     if(res.data.tagRuleDetails && res.data.tagRuleDetails.length > 0){
                         if(customerRangeConditionIDs && customerRangeConditionIDs.length > 0){
                             res.data.tagRuleDetails.map(item => {
@@ -277,7 +278,8 @@ class StepTwo extends React.Component {
                                             tagRuleID:item.tagRuleID,
                                             tagTypeID:item.tagTypeID,
                                             tagName:item.tagName
-                                        })
+                                        });
+                                        tagRuleIds.push(item.tagRuleID);
                                     }
                                 })
                             })
@@ -287,6 +289,9 @@ class StepTwo extends React.Component {
                         tagIncludes:useData,
                         selectedTags:selectTags
                     })
+                    if(tagRuleIds.length > 0){
+                        this.getMemberTagsCount(tagRuleIds)
+                    }
                 })
             } else {
                 message.error(res.message)
