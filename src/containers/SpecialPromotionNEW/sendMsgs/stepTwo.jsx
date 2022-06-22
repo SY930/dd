@@ -473,7 +473,6 @@ class StepTwo extends React.Component {
                 message.error(res.message)
             }
         })
-        return 4
     }
     /**
      * 测试手机号是否输入合法
