@@ -87,7 +87,11 @@ class StepTwo extends React.Component {
     validate() {
         let flag = true;
         let tagRuleIDs = [];
-        const {selectedTags,tagsCount} = this.state;
+        const {selectedTags,tagsCount,message:smsTemplate} = this.state;
+        if(!smsTemplate){
+            message.warning('必须选择一条短信模板');
+            flag = false;
+        }
         this.props.form.validateFieldsAndScroll((err1, basicValues) => {
             if (err1) {
                 flag = false;
