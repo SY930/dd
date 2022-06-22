@@ -86,8 +86,7 @@ class StepTwo extends React.Component {
 
     validate() {
         let flag = true;
-        let tagRuleIDs = [];
-        const {selectedTags,tagsCount,message:smsTemplate} = this.state;
+        const {tagsCount,message:smsTemplate} = this.state;
         if(!smsTemplate){
             message.warning('必须选择一条短信模板');
             flag = false;
@@ -99,9 +98,6 @@ class StepTwo extends React.Component {
         });
         const equityAccountInfoList = this.props.specialPromotion.get('$eventInfo').toJS().equityAccountInfoList || [];
         const equityAccountInfo = equityAccountInfoList.find(item => item.accountNo === this.state.accountNo) || {};
-        selectedTags.forEach((item) => {
-            tagRuleIDs.push(item.tagRuleID);
-        })
         // 对权益账户短信条数做校验
         if (flag && this.state.accountNo > 0 && this.state.localType == '5') {
             if (!(this.getMinMessageCount() <= equityAccountInfo.smsCount)) {
