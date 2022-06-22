@@ -20,6 +20,7 @@ import {
     Input,
     Icon,
     Popconfirm,
+    message,
 } from 'antd';
 import styles from '../ActivityPage.less';
 import selfStyle from './style.less';
@@ -31,6 +32,9 @@ import {BATCH_STATUS} from "../../WeChatCouponManagement/WeChatCouponList";
 import { DEFAULT_GIFT_ITEM } from './returnGiftDetailInfo'
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from '../IntlDecor';
+import { axios } from '@hualala/platform-base';
+
+const [service, requestType, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', 'alipay/', '/api/v1/universal?'];
 
 const moment = require('moment');
 const FormItem = Form.Item;
@@ -43,6 +47,7 @@ import {
     SALE_CENTER_GIFT_TYPE,
     SALE_CENTER_GIFT_EFFICT_TIME,
     SALE_CENTER_GIFT_EFFICT_DAY,
+    SALE_CENTER_COUPON_TYPE,
 } from '../../../redux/actions/saleCenterNEW/types';
 
 
@@ -77,6 +82,7 @@ class ReturnGift extends React.Component {
         super(props);
         this.state = {
             infos: this.props.value,
+            couponData: [],
         };
         this.add = this.add.bind(this);
         this.remove = this.remove.bind(this);
@@ -84,9 +90,57 @@ class ReturnGift extends React.Component {
         this.handleGiftChange = this.handleGiftChange.bind(this);
         this.handlegiftMaxUseNumChange = this.handlegiftMaxUseNumChange.bind(this);
         this.handleValidateTypeChange = this.handleValidateTypeChange.bind(this);
+        this.handlegiftPropertyChange = this.handlegiftPropertyChange.bind(this);
         this.handleGiftValidDaysChange = this.handleGiftValidDaysChange.bind(this);
         this.handleRangePickerChange = this.handleRangePickerChange.bind(this);
         this.handleGiftEffectiveTimeChange = this.handleGiftEffectiveTimeChange.bind(this);
+    }
+
+    componentDidMount() {
+        // 请求零售券
+        this.getCouponsData()         
+    }
+
+    getCouponsData = async () => {
+        const {
+            user
+        } = this.props
+        const method = '/retailCouponService/queryCouponTypeBatchGroup.ajax';
+        const params = { service, type: requestType, data: {groupID: user.accountInfo.groupID}, method };
+        const response = await axios.post(url + method, params);
+        const { code, message: msg, data: obj } = response;
+        if (code === '000') {
+            const { couponTypeBatchGroupInfoList = [] } = obj;
+            this.setState({
+                couponData: this.proCouponData(couponTypeBatchGroupInfoList)
+            })
+        }else {
+            message.error(msg);
+        }
+        return [];
+    }
+
+    proCouponData(giftTypes) {
+        const _giftTypes = giftTypes;
+        let treeData = [];
+        let result = _giftTypes.map((gt, idx) => {
+            let item = {...gt}
+            treeData.push({
+                label: _.find(SALE_CENTER_COUPON_TYPE, { value: String(gt.couponType) }) ? _.find(SALE_CENTER_COUPON_TYPE, { value: String(gt.couponType) }).label : '',
+                key: gt.couponType,
+                children: [],
+            });
+            item.giftType = gt.couponType
+            item.crmGifts = gt.couponBatchInfoList.map((gift) => {
+                let temp = {...gift}
+                temp.giftName = gift.couponBatchName
+                temp.giftItemID = gift.couponBatchID
+                temp.giftType = gift.couponType
+                return temp
+            });
+            return item
+        });
+        return result;
     }
 
     remove(index) {
@@ -136,6 +190,9 @@ class ReturnGift extends React.Component {
 
 
     renderItems() {
+        const {
+            couponData = []
+        } = this.state
         const { intl,activeCode } = this.props;
         const k5f3y5ml = intl.formatMessage(SALE_STRING.k5f3y5ml);
 
@@ -164,7 +221,7 @@ class ReturnGift extends React.Component {
                 })
             }
         });
-        _giftInfo.sort((a, b) => a.index - b.index)
+        // _giftInfo.sort((a, b) => a.index - b.index)
         const toggleFun = (index) => {
             const { disArr = [] } = this.state;
             const { disabled } = this.props;
@@ -195,6 +252,21 @@ class ReturnGift extends React.Component {
                         )
                     }
                     <FormItem
+                        label={"礼品属性"}
+                        labelCol={{ span: 5 }}
+                        wrapperCol={{ span: 18 }}
+                        colon={false}
+                    >
+                        <RadioGroup
+                            value={info.presentType || 1}
+                            onChange={(e) => this.handlegiftPropertyChange(e, index)}
+                            disabled={this.props.disabled}
+                        >
+                            <Radio key={'1'} value={1}>餐饮券</Radio >
+                            <Radio key={'8'} value={8}>零售券</Radio >
+                        </RadioGroup >
+                    </FormItem>
+                    <FormItem
                         label={SALE_LABEL.k6d8n39k}
                         required={true}
                         validateStatus={info.giftInfo.validateStatus}
@@ -205,7 +277,8 @@ class ReturnGift extends React.Component {
                         <ExpandTree
                             idx={index}
                             value={this.getGiftValue(index)}
-                            data={_giftInfo}
+                            data={_.sortBy(info.presentType == 8 ? couponData :_giftInfo, 'index')}
+                            filterLable={info.presentType == 8 ? SALE_CENTER_COUPON_TYPE : SALE_CENTER_GIFT_TYPE}
                             onChange={(value) => {
                                 this.handleGiftChange(value, index);
                             }}
@@ -308,7 +381,7 @@ class ReturnGift extends React.Component {
                             </div>
                         ) : (
                             <div>
-                                <FormItem
+                                {info.presentType != 8 && <FormItem
                                     label={SALE_LABEL.k6d8n3yk}
                                     labelCol={{ span: 5 }}
                                     wrapperCol={{ span: 18 }}
@@ -325,8 +398,8 @@ class ReturnGift extends React.Component {
                                             })
                                         }
                                     </RadioGroup>
-                                </FormItem>
-                                {this.renderValidOptions(info, index)}
+                                </FormItem>}
+                                {info.presentType != 8 && this.renderValidOptions(info, index)}
                             </div>
                         )
                     }
@@ -511,6 +584,18 @@ class ReturnGift extends React.Component {
         });
     }
 
+    //礼品属性改变
+    handlegiftPropertyChange(e, index) {
+        const _infos = this.state.infos;
+        _infos[index].presentType = e.target.value;
+        this.handleGiftChange('', index)
+        this.setState({
+            infos: _infos,
+        }, () => {
+            this.props.onChange && this.props.onChange(this.state.infos);
+        });
+    }
+
     getGiftValue(index) {
         if (this.state.infos[index].giftInfo.giftItemID === null ||
             this.state.infos[index].giftInfo.giftName === null) {
@@ -618,6 +703,7 @@ class ReturnGift extends React.Component {
 const mapStateToProps = (state) => {
     return {
         allCrmGifts: state.sale_promotionDetailInfo_NEW.getIn(['$giftInfo', 'data']),
+        user: state.user.toJS(),
     };
 };
 
