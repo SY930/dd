@@ -100,15 +100,12 @@ class StepTwo extends React.Component {
         })
         // 对权益账户短信条数做校验
         if (flag && this.state.accountNo > 0 && this.state.localType == '5') {
-            console.log(this.state,this.getMinMessageCount(),equityAccountInfo.smsCount,'equityAccountInfo.smsCount')
             if (!(this.getMinMessageCount() <= equityAccountInfo.smsCount)) {
                 flag = false;
                 message.warning('所选权益账户短信条数不足，请更换账户或充值')
             }
         }
         if (flag && this.state.accountNo > 0 && this.state.localType == '7') {
-            console.log(this.state,equityAccountInfo.smsCount,'equityAccountInfo.smsCount')
-            
             if (!(tagsCount <= equityAccountInfo.smsCount)) {
                 flag = false;
                 message.warning('所选权益账户短信条数不足，请更换账户或充值')
@@ -468,7 +465,6 @@ class StepTwo extends React.Component {
                 this.setState({
                     tagsCount: res.data.tagCustomerNum
                 })
-                console.log(res,'res===============')
             } else {
                 message.error(res.message)
             }
