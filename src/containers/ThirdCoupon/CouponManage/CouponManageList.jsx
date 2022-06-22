@@ -760,7 +760,16 @@ class ViewCouponContent extends Component {
                 })
             }
         })
+    }
 
+    renderNumber = (stock) => {        
+        const { viewData } = this.state;
+        switch (stock) {
+            case -1:
+                return "不限制";
+            default:
+                return <span>{stock ? Number(stock) - Number(viewData.receive) : ''}/{viewData.stock}</span>;
+        }
     }
 
     getWXMerchantID = (data) => {
@@ -811,7 +820,7 @@ class ViewCouponContent extends Component {
 
                         </div>
                         <div>
-                            <p>剩余/总数： <span>{stock ? Number(stock) - Number(receive) : ''}/{viewData.stock}</span></p>
+                            <p>剩余/总数： { this.renderNumber(stock)}</p>
                             {
                                 platformType == 6 && <p>售价： <span>{viewData.deliveryValue || '--'}</span></p>
                             }

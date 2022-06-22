@@ -232,7 +232,10 @@ export const getColumns = _this => ([
         key: 'stock',
         width: 80,
         render: (text, record) => {
-            const { receive } = record
+            const { receive, platformType } = record
+            if (text === -1 && platformType === 5) {
+                return '不限制'
+            }
             if (text) {
                 return Number(text) - Number(receive)
             }
@@ -276,6 +279,12 @@ export const columnsView = [
         title: '生成数量',
         key: 'stock',
         dataIndex: 'stock',
+        render: (t, record) => {
+            if (t === -1 && record.platformType === 5) {
+                return '不限制'
+            }
+            return t
+        },
     },
     {
         title: '生效方式',

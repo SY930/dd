@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Input, DatePicker, Select, Radio, Row, Col, Icon, Modal, TreeSelect, message, Table } from 'antd'
+import { Form, Input, DatePicker, Select, Radio, Row, Col, Icon, Modal, TreeSelect, message } from 'antd'
 import moment from 'moment'
 import _ from 'lodash'
 import { axios, getStore } from '@hualala/platform-base';
@@ -57,12 +57,12 @@ class CreateCouponContent extends Component {
             entranceWords: [], // 支付宝门店
             douyinGift: null,
             giftValue: '', // 券面值
+            stockLimit: editData.stock == '-1' ? '-1' : '0',
         }
     }
 
     // 选择微信的财务主体后改变MerchantID
     onChangeWXMerchantID = (record) => {
-    console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 65 ~ CreateCouponContent ~ record", record)
         this.setState({
             WXMerchantID: record.merchantID,
             masterMerchantID: record.masterMerchantID,
@@ -83,6 +83,19 @@ class CreateCouponContent extends Component {
         this.setState({
             entranceWords: value,
         })
+    }
+
+
+
+    // 根据getGiftItemID拼接回显的值
+    getGiftItemIDs = ({ giftItemID, giftType, giftValue }) => {
+        const { treeData } = this.props;
+        const child = treeData.find(item => item.key === giftType).children
+        const findItem = child.find(item => item.key === giftItemID) || {}
+        if (_.isEmpty(findItem)) {
+            return ''
+        }
+        return `${giftItemID}_${giftType}_${findItem.giftValue}`
     }
 
     queryAliShops = (smid) => {
@@ -113,27 +126,13 @@ class CreateCouponContent extends Component {
         })
     }
 
-
-    // 根据getGiftItemID拼接回显的值
-    getGiftItemIDs = ({ giftItemID, giftType, giftValue }) => {
-        const { treeData } = this.props;
-        const child = treeData.find(item => item.key === giftType).children
-        console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 121 ~ CreateCouponContent ~ child", child)
-        const findItem = child.find(item => item.key === giftItemID) || {}
-        console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 122 ~ CreateCouponContent ~ findItem----", findItem)
-        if (_.isEmpty(findItem)) {
-            return ''
-        }
-        return `${giftItemID}_${giftType}_${findItem.giftValue}`
-    }
-
     // 优惠券
     handleCouponChange = (value) => {
         const { form } = this.props
         const [v, type, giftValue, name] = value.split('_');
         // if ()
         // const gift = this.state.
-        form.setFieldsValue({giftFaceValue : giftValue})
+        form.setFieldsValue({ giftFaceValue: giftValue })
         this.setState({
             giftItemID: v,
             giftType: type,
@@ -141,7 +140,7 @@ class CreateCouponContent extends Component {
         })
 
         if (this.props.form.getFieldValue('promotionType') === 2) { // 零售
-            const targetGift = this.props.treeDataX.map(v => v.children).flat().find(g => {
+            const targetGift = this.props.treeDataX.map(item => item.children).flat().find((g) => {
                 return g.giftValue === v
             });
 
@@ -155,7 +154,7 @@ class CreateCouponContent extends Component {
                         giftValidRange: [
                             moment(targetGift.promotionStartTime, 'YYYYMMDD'),
                             moment(targetGift.promotionEndTime, 'YYYYMMDD'),
-                        ]
+                        ],
                     })
                 } else {
                     this.props.form.setFieldsValue({
@@ -315,6 +314,13 @@ class CreateCouponContent extends Component {
         }
     }
 
+    handleStockLimitChange = ({ target }) => {
+        const { value } = target;
+        this.setState({
+            stockLimit: value,
+        })
+    }
+
     goAuthorize = () => {
         this.setState({
             authorizeModalVisible: true,
@@ -422,7 +428,7 @@ class CreateCouponContent extends Component {
             platformType: this.props.platformType,
             effectGiftTimeHours,
             validUntilDays: values.validUntilDays ? values.validUntilDays.number : '',
-            stock: stock.number,
+            stock: stock.number ? stock.number : '-1',
             shopId,
             channelID: this.props.channelID,
             couponCodeDockingType: 1,
@@ -754,25 +760,76 @@ class CreateCouponContent extends Component {
         </div>)
     }
 
-    // 优惠券
-    renderCoupon = () => {
+    renderOther = () => {
         const { form, type } = this.props;
         const { getFieldDecorator } = form;
         const { editData } = this.state;
-        const offset = type == 2 ? 5 : 4;
         return (
-            <Row>
-                <Col span={16} offset={offset} className={styles.CouponGiftBox}>
-                    <FormItem
-                        label="总数量"
+            <FormItem
+                label="总数量"
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 17 }}
+            >
+                {getFieldDecorator('stock', {
+                    initialValue: { number: editData.stock },
+                    onChange: this.handleStockNumChange,
+                    rules: [
+                        { required: true, message: '总数量为必填项' },
+                        {
+                            validator: (rule, v, cb) => {
+                                if (!v) {
+                                    return cb();
+                                }
+                                v.number > 0 && v.number <= 999999 ? cb() : cb(rule.message);
+                            },
+                            message: '礼品个数为1到999999',
+                        },
+                    ],
+                })(<PriceInput
+                    // addonBefore={'礼品个数:'}
+                    addonAfter="个"
+                    modal="int"
+                />)}
+                {
+                    type === 1 && this.state.tips &&
+                    (<div className={styles.authorizeBottomTip} style={{ padding: 0, textAlign: 'center' }}>如券用于支付宝会场大促投放，其总数量应大于200</div>)
+                }
+            </FormItem>
+        )
+    }
+
+    // 风车库存增加不限制
+    renderFengChe = () => {
+        const { form } = this.props;
+        const { getFieldDecorator } = form;
+        const { editData, stockLimit } = this.state;
+        return (
+            <div>
+                <FormItem
+                    label="库存"
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                    required={true}
+                >
+                    <RadioGroup
+                        defaultValue={'0'}
+                        value={stockLimit}
+                        onChange={this.handleStockLimitChange}
+                    >
+                        <Radio value={'0'}>限制</Radio>
+                        <Radio value={'-1'}>不限制</Radio>
+                    </RadioGroup>
+                </FormItem>
+                {
+                    stockLimit == '0' && <FormItem
                         labelCol={{ span: 4 }}
-                        wrapperCol={{ span: 17 }}
+                        wrapperCol={{ span: 17, offset: 4 }}
                     >
                         {getFieldDecorator('stock', {
                             initialValue: { number: editData.stock },
                             onChange: this.handleStockNumChange,
                             rules: [
-                                { required: true, message: '总数量为必填项' },
+                                { required: true, message: '库存为必填项' },
                                 {
                                     validator: (rule, v, cb) => {
                                         if (!v) {
@@ -788,11 +845,23 @@ class CreateCouponContent extends Component {
                             addonAfter="个"
                             modal="int"
                         />)}
-                        {
-                            type === 1 && this.state.tips &&
-                            (<div className={styles.authorizeBottomTip} style={{ padding: 0, textAlign: 'center' }}>如券用于支付宝会场大促投放，其总数量应大于200</div>)
-                        }
                     </FormItem>
+                }
+            </div>
+        )
+    }
+
+    // 优惠券
+    renderCoupon = () => {
+        const { form, type } = this.props;
+        const { getFieldDecorator } = form;
+        const { editData } = this.state;
+        const offset = type == 2 ? 5 : 4;
+        return (
+            <Row>
+                <Col span={16} offset={offset} className={styles.CouponGiftBox}>
+                    {/* 总数量 库存 */}
+                    { type == 4 ? this.renderFengChe() : this.renderOther() }
                     <FormItem
                         label="生效方式"
                         labelCol={{ span: 4 }}
@@ -898,7 +967,7 @@ class CreateCouponContent extends Component {
         const { form, title, type } = this.props;
         const { getFieldDecorator } = form;
         const { giftItemID, merchantType, editData, aliShops } = this.state;
-        console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 885 ~ CreateCouponContent ~ render ~ editData", editData, merchantType)
+        // console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 885 ~ CreateCouponContent ~ render ~ editData", editData, merchantType)
         // let title = '新建第三方支付宝券';
         // if (editData.batchName) {
         //     title = '编辑第三方支付宝券';
