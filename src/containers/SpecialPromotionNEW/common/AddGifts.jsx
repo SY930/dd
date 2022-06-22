@@ -338,7 +338,7 @@ class AddGifts extends React.Component {
                             </FormItem>
                         )
                     }
-                    { (this.props.type == '53' || this.props.type == '51' || this.props.type == '63' || this.props.type == '62') &&
+                    { (this.props.type == '53' || this.props.type == '51' || this.props.type == '63' || this.props.type == '62' || this.props.type == '52') &&
                         <FormItem
                             className={[styles.FormItemStyle].join(' ')}
                             style={{ marginTop: '8px' }}
