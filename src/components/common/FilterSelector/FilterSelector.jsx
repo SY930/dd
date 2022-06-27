@@ -1,7 +1,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Row, Icon } from 'antd';
+import { Row, Icon, Input, Button, message } from 'antd';
 import classnames from 'classnames';
 import { isEqual } from 'lodash';
 
@@ -18,6 +18,8 @@ class FilterSelector extends React.Component {
         filters: {},
         selected: this.props.defaultValue,
         filteredOptions: filterOptions(this.props.options, this.props.extraFilters),
+        fastAddVisible: false,
+        inputText:''
     }
 
     componentDidMount() {
@@ -76,6 +78,72 @@ class FilterSelector extends React.Component {
         this.setState({
             selected: values,
         });
+    }
+
+    checkDisabled = () =>{
+        
+        let flag = false
+        let inputText = this.state.inputText
+        let inputTextArr = inputText.split(',')
+        inputTextArr = inputTextArr.filter(i=>i!='')
+        if(!this.state.inputText || inputTextArr.length == 0){
+            flag = true
+        }
+       return flag
+    }
+
+    checkAll = () => {
+
+        let inputText = this.state.inputText
+        let options = this.props.options
+        let inputTextArr = inputText.split(',')
+        inputTextArr = inputTextArr.filter(i=>i!='')
+
+        let selected = []
+
+        inputTextArr.map((i) => {
+            let flag = false
+            options.map((j) => {
+                if (i.trim() == j.shopID) {
+                    flag = true
+                }
+            })
+
+            if (!flag) {
+                selected.push(i.trim())
+            }
+        })
+
+        return selected
+    }
+
+    add = () => {
+        let inputText = this.state.inputText
+        let options = this.props.options
+
+        let selected = this.state.selected
+
+        let inputTextArr = inputText.split(',')
+
+        let checkArr = this.checkAll()
+
+        if (checkArr.length > 0) {
+            message.warning(`未找到正确的店铺{ ${checkArr} }`)
+            return
+        }
+
+        options.map((i) => {
+            inputTextArr.map((j) => {
+                if (i.shopID == j) {
+                    if (selected.indexOf(j) == -1) {
+                        selected.push(j)
+                    }
+                }
+            })
+        })
+
+        this.setState({ selected, fastAddVisible: !this.state.fastAddVisible })
+
     }
 
     render() {
@@ -152,6 +220,25 @@ class FilterSelector extends React.Component {
                         />
                     </div>
                 </Row>
+                <Row>
+                    <div style={{ float: 'right', marginTop: 10 }}>
+                        <a onClick={() => {
+                            this.setState({ fastAddVisible: !this.state.fastAddVisible })
+                        }}>批量录入</a>
+                    </div>
+                </Row>
+                {this.state.fastAddVisible && <Row>
+                    <Input
+                        type="textarea"
+                        placeholder="在此录入门店ID，多个门店ID以“,”分隔"
+                        onChange={(e) => {
+                            this.setState({ inputText: e.target.value })
+                        }}
+                    />
+                </Row>}
+                {this.state.fastAddVisible && <Row>
+                    <Button type="primary" style={{ float: 'right', marginTop: 10 }} disabled={this.checkDisabled()} onClick={this.add}>添加</Button>
+                </Row>}
                 <SelectedList
                     title={title}
                     className={style.selectedList}
