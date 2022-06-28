@@ -20,7 +20,7 @@ import PlanModal from '../common/PlanModal'
 import Cfg from '../../../constants/SpecialPromotionCfg';
 import Authority from '../../../components/common/Authority';
 import { saleCenterSetSpecialBasicInfoAC, saleCenterResetDetailInfoAC, getAuthLicenseData } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
-
+import ExpireDateNotice from '../../../components/common/ExpireDateNotice';
 import {
     toggleSelectedActivityStateAC,
     fetchSpecialPromotionList,
@@ -1198,9 +1198,10 @@ class MySpecialActivities extends React.Component {
         const { tabKeys, stylesShow } = this.state
         const headerClasses = `layoutsToolLeft ${styles.headerWithBgColor} ${styles.topHeaderBox}`;
         return (
-            <div className="layoutsTool" style={{ height: '64px' }}>
+            <div className="layoutsTool" style={{ height: '64px',position:'relative' }}>
                 <div className={headerClasses}>
                     <span className={styles.customHeader}>活动管理</span>
+                    <ExpireDateNotice productCode="HLL_CRM_Marketingbox" marginLeft="-230" marginTop="8"/>
                     {
                         tabKeys === 'saleSpecialPage' && (
                             <div>

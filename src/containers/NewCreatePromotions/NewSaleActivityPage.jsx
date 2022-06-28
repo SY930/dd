@@ -13,7 +13,7 @@ import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { injectIntl } from './IntlDecor';
 import selfStyle from './NewSalePage.less';
 import moment from 'moment'
-
+import ExpireDateNotice from '../../components/common/ExpireDateNotice';
 import {
     Modal,
     message,
@@ -807,7 +807,7 @@ class NewCustomerPage extends Component {
         // 开通桌边砍活动
         return (
             <div className={selfStyle.newDiv}>
-                <div className={selfStyle.titleArea}>
+                <div className={selfStyle.titleArea} style={{position:'relative'}}>
                     <div style={{ display: 'flex' }}>
                     营销活动
                     <div className={selfStyle.platformArea}>
@@ -821,6 +821,7 @@ class NewCustomerPage extends Component {
                         </div>
                     </div>
                     </div>
+                    <ExpireDateNotice productCode="HLL_CRM_Marketingbox" marginLeft="-230" marginTop="8"/>
                     <div>
                         <Button type="ghost" onClick={() => { jumpPage({ pageID: '10000888' }); }}>营销短信模板</Button>
                     </div>
