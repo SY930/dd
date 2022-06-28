@@ -31,12 +31,12 @@ class ExpireDateNotice extends React.Component {
             method: '/crm/crmAuthLicenseService.queryCrmPluginLicenses.ajax',
         }).then((ret) => {
             if (ret.code === '000') {
-                // const {basicAuthEndDate} = ret.data;
+                const {basicAuthEndDate} = ret.data;
                 let endDate = '';
                 let showDate = '';
                 let curTime = new Date().getTime();
                 let interval = 30 * 24 * 60 * 60 * 1000;//30天倒计时
-                let basicAuthEndDate = '20220723';
+                // let basicAuthEndDate = '20220723';
                 if (basicAuthEndDate) {
                     endDate = basicAuthEndDate.match(/(\d{4})(\d{2})(\d{2})/).filter((item, index) => index > 0).join('/');
                     showDate = basicAuthEndDate.match(/(\d{4})(\d{2})(\d{2})/).filter((item, index) => index > 0).join('-');
