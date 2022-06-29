@@ -38,8 +38,8 @@ class ExpireDateNotice extends React.Component {
                 let interval = 30 * 24 * 60 * 60 * 1000;//30天倒计时
                 // let basicAuthEndDate = '20220723';
                 if (basicAuthEndDate) {
-                    endDate = basicAuthEndDate.match(/(\d{4})(\d{2})(\d{2})/).filter((item, index) => index > 0).join('/');
-                    showDate = basicAuthEndDate.match(/(\d{4})(\d{2})(\d{2})/).filter((item, index) => index > 0).join('-');
+                    endDate = String(basicAuthEndDate).match(/(\d{4})(\d{2})(\d{2})/).filter((item, index) => index > 0).join('/');
+                    showDate = String(basicAuthEndDate).match(/(\d{4})(\d{2})(\d{2})/).filter((item, index) => index > 0).join('-');
                 };
                 let endDateToString = Date.parse(endDate);
                 if (!endDateToString) return;
