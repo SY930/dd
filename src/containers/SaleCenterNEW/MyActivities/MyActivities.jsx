@@ -27,6 +27,7 @@ import {
     ONLINE_PROMOTION_MANAGEMENT_GROUP,
     PROMOTION_DECORATION,
 } from '../../../constants/entryCodes';
+import { BASIC_PROMOTION_MANAGE_PAGE } from '../../../constants/entryIds'
 import {
     initializationOfMyActivities,
     toggleSelectedActivityStateAC,
@@ -1636,6 +1637,7 @@ class MyActivities extends React.Component {
     }
 
     renderTables() {
+        console.log(BASIC_PROMOTION_MANAGE_PAGE,'BASIC_PROMOTION_MANAGE_PAGE')
         const { intl } = this.props;
         const k5eng7pt = intl.formatMessage(SALE_STRING.k5eng7pt);
         const k5engebq = intl.formatMessage(SALE_STRING.k5engebq);
