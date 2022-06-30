@@ -3711,11 +3711,11 @@ class SpecialDetailInfo extends Component {
                 <p
                     className={userCount > 0 ? styles.opacitySet : ""}
                 ></p>
-                <div style={{ display: 'flex'}}>
+                <div style={{ position: 'relative' }}>
                     <FormItem
                         label={'赠送订单实付金额的'}
-                        labelCol={{ span: 11 }}
-                        wrapperCol={{ span: 13 }}
+                        labelCol={{ span: 6 }}
+                        wrapperCol={{ span: 6 }}
                         className={""}
                         validateStatus={preErr}
                         required={true}
@@ -3727,7 +3727,7 @@ class SpecialDetailInfo extends Component {
                              onChange={this.onGiftGetRuleValChange}
                         />
                     </FormItem>
-                    <span style={{ lineHeight: '39px', marginLeft: '8px'}}>积分 <Tooltip title="例：实付100 * 2倍则会赠送200积分。由于订单实付金额可能数额较大，请慎重设置倍率">  <Icon type="question-circle-o" /></Tooltip></span>
+                    <span style={{ position: 'absolute', right: '246px',  top: '0', lineHeight: '39px', }}>积分 <Tooltip title="例：实付100 * 2倍则会赠送200积分。由于订单实付金额可能数额较大，请慎重设置倍率">  <Icon type="question-circle-o" /></Tooltip></span>
                 </div>
             </div>
         )
