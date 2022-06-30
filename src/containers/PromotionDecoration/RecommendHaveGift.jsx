@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Tabs } from 'antd';
 import style from './style.less';
 import ColorSettingBlock from './ColorSettingBlock'
 import DecorationUploader from './DecorationUploader';
@@ -11,39 +12,77 @@ import ButtonSettingBlockMultiple from './ButtonSettingBlockMultiple'
 
 const baseUrl = 'http://res.hualala.com/basicdoc'
 
+const TabPane = Tabs.TabPane;
 
 export default class RecommendHaveGift extends Component {
+    state = {
+        // activeTab: '1',
+    }
     handleLinearGradientChange = (color1, color2) => {
         this.props.onChange({ key: ['btnBgColor'], value: `linear-gradient(${color1},${color2})` })
     }
+
+    handleBtnInvitedChange = (color1, color2) => {
+        this.props.onChange({ key: ['btnBgColorInvited'], value: `linear-gradient(${color1},${color2})` })
+    }
     handleFaceLinearGradientChange = (color1, color2) => {
         this.props.onChange({ key: ['faceToFaceBtnBgColor'], value: `linear-gradient(${color1},${color2})` })
+    }
+    handelTabChange = (e) => {
+        this.props.handelTabRecommendChange(e)
     }
     renderPhonePreview() {
         const {
             decorationInfo: {
                 bgColor = '#FBB335',
-                bgImg = `${baseUrl}/364c0698-6252-42c1-b54e-fbabfc162c08.png`,
+                bgImg,
                 btnBgColor = 'linear-gradient(#F27267,#D24C41)',
                 btnColor = '#FFFFFF',
                 faceToFaceBtnBgColor = 'linear-gradient(#F27267,#D24C41)',
                 faceToFaceBtnColor = '#FFFFFF',
+                bgColorInvited = '#FBB335',
+                bgImgInvited,
+                btnBgColorInvited = 'linear-gradient(#F27267,#D24C41)',
+                btnColorInvited = '#FFFFFF',
             },
         } = this.props;
+
         return (
-            <div className={style.previewArea}>
-                <div className={style.typeTitle}>
-                    推荐有礼
-                </div>
-                <img src={iphone} alt="" />
-                <img className={style.fakeHeader} src={phoneTop} alt="" />
-                <div style={{ background: bgColor }} className={style.scrollArea}>
-                    <img style={{ width: '100%' }} src={bgImg} alt="" />
-                    <div style={styles.tip}>每邀请一位新用户储值后可返还</div>
-                    <img style={styles.award} src={`${baseUrl}/641e20de-c148-4f43-b51c-457273118466.png`} alt="" />
-                    <div style={{ ...styles.btn, background: btnBgColor, color: btnColor }}>立即邀请</div>
-                    <div style={{ ...styles.btn, ...styles.faceBtn, background: faceToFaceBtnBgColor, color: faceToFaceBtnColor }}>面对面邀请</div>
-                </div>
+            <div>
+                {
+                    this.props.activeTab === '1' ? (<div className={style.previewArea}>
+                        <div className={style.typeTitle}>
+                            推荐有礼
+                        </div>
+                        <img src={iphone} alt="" />
+                        <img className={style.fakeHeader} src={phoneTop} alt="" />
+                        <div style={{ background: bgColor }} className={style.scrollArea}>
+                            <img style={{ width: '100%' }} src={bgImg || `${baseUrl}/364c0698-6252-42c1-b54e-fbabfc162c08.png`} alt="" />
+                            <div style={styles.tip}>每邀请一位新用户储值后可返还</div>
+                            <img style={styles.award} src={`${baseUrl}/641e20de-c148-4f43-b51c-457273118466.png`} alt="" />
+                            <div style={styles.center}>
+                                <div style={{ ...styles.btn, background: btnBgColor, color: btnColor }}>立即邀请</div>
+                                <div style={{ ...styles.btn, ...styles.faceBtn, background: faceToFaceBtnBgColor, color: faceToFaceBtnColor }}>面对面邀请</div>
+                            </div>
+                        </div>
+                    </div>) : (
+                        <div className={style.previewArea}>
+                            <div className={style.typeTitle}>
+                                推荐有礼
+                            </div>
+                            <img src={iphone} alt="" />
+                            <img className={style.fakeHeader} src={phoneTop} alt="" />
+                            <div style={{ background: bgColorInvited }} className={style.scrollArea}>
+                                <img style={{ width: '100%' }} src={bgImgInvited || `${baseUrl}/364c0698-6252-42c1-b54e-fbabfc162c08.png`} alt="" />
+                                <div style={styles.centerFlex}><img src={`${baseUrl}/090c6330-cf50-45ea-9da7-904cf4152819.png`} alt="" style={{ width: '105px' }} /></div>
+                                <img style={styles.award} src={`${baseUrl}/5f51bb71-0c37-4de6-8b91-c720d5cbd2cc.png`} alt="" />
+                                <div style={styles.center}>
+                                    <div style={{ ...styles.btn, background: btnBgColorInvited, color: btnColorInvited }}>立即领取</div>
+                                </div>
+                            </div>
+                        </div>
+                    )
+                }
             </div>
         )
     }
@@ -62,7 +101,7 @@ export default class RecommendHaveGift extends Component {
 
         return (
             <div style={{ paddingTop: 35 }}>
-                <div className={style.sectionWrapper}>
+                <div className={style.sectionWrapper} style={{ marginLeft: '112px' }}>
                     <div style={{ top: 30 }} className={style.label}>{SALE_LABEL.k6346c3s}</div>
                     <div style={{ width: 350 }} className={style.uploaderWrapper}>
                         <DecorationUploader
@@ -77,13 +116,16 @@ export default class RecommendHaveGift extends Component {
                         </div>
                     </div>
                 </div>
-                <div className={style.sectionWrapper}>
+                <div className={style.sectionWrapper} style={{ marginLeft: '112px' }}>
                     <div className={style.label}>主题颜色</div>
                     <ColorSettingBlock title="请选取一个你喜欢的颜色" value={bgColor} onChange={value => onChange({ key: ['bgColor'], value })} />
                 </div>
 
-                <div className={style.sectionWrapper} key="btn1">
-                    <div style={{ top: 5 }} className={style.label}>按钮样式</div>
+                <div className={style.sectionWrapper} key="btn1" style={{ marginLeft: '112px' }}>
+                    <div style={{ top: 5 }} >
+                        <p className={style.label}> 按钮样式</p>
+                        <p className={style.subLabel} style={{ left: '-150px' }}>(立即邀请)</p>
+                    </div>
                     <ButtonSettingBlockMultiple
                         btnColor={btnColor}
                         btnBgColor={btnBgColor}
@@ -98,8 +140,11 @@ export default class RecommendHaveGift extends Component {
                     />
 
                 </div>
-                <div className={style.sectionWrapper} key="btn2">
-                    <div style={{ top: 5 }} className={style.label}>按钮样式二</div>
+                <div className={style.sectionWrapper} key="btn2" style={{ marginLeft: '112px' }}>
+                    <div style={{ top: 5 }} >
+                        <p className={style.label}>按钮样式</p>
+                        <p className={style.subLabel}>(面对面邀请)</p>
+                    </div>
                     <ButtonSettingBlockMultiple
                         btnColor={faceToFaceBtnColor}
                         btnBgColor={faceToFaceBtnBgColor}
@@ -120,11 +165,74 @@ export default class RecommendHaveGift extends Component {
             </div>
         )
     }
+
+    renderSettingedPage = () => {
+        const {
+            decorationInfo: {
+                bgColorInvited = '#FBB335',
+                bgImgInvited,
+                btnBgColorInvited = 'linear-gradient(#F27267,#D24C41)',
+                btnColorInvited = '#FFFFFF',
+            },
+            onChange,
+        } = this.props;
+
+        return (
+            <div style={{ paddingTop: 35 }}>
+                <div className={style.sectionWrapper} style={{ marginLeft: '112px' }}>
+                    <div style={{ top: 30 }} className={style.label}>{SALE_LABEL.k6346c3s}</div>
+                    <div style={{ width: 350 }} className={style.uploaderWrapper}>
+                        <DecorationUploader
+                            limit={0}
+                            value={bgImgInvited}
+                            onChange={value => onChange({ key: ['bgImgInvited'], value })}
+                        />
+                        <div className={style.uploaderTip}>
+                            <p>* 建议图片尺寸 1080x716像素</p>
+                            <p>* 不大于1000KB</p>
+                            <p>* 支持png、jpg</p>
+                        </div>
+                    </div>
+                </div>
+                <div className={style.sectionWrapper} style={{ marginLeft: '112px' }}>
+                    <div className={style.label}>主题颜色</div>
+                    <ColorSettingBlock title="请选取一个你喜欢的颜色" value={bgColorInvited} onChange={value => onChange({ key: ['bgColorInvited'], value })} />
+                </div>
+
+                <div className={style.sectionWrapper} key="btn1" style={{ marginLeft: '112px' }}>
+                    <div style={{ top: 5 }} >
+                        <p className={style.label}> 按钮样式</p>
+                        <p className={style.subLabel} style={{ left: '-150px' }}>(立即参与)</p>
+                    </div>
+                    <ButtonSettingBlockMultiple
+                        btnColor={btnColorInvited}
+                        btnBgColor={btnBgColorInvited}
+                        onChange={(v) => {
+                            onChange({ key: ['btnColorInvited'], value: v.btnColor })
+                            onChange({ key: ['btnBgColorInvited'], value: v.btnBgColor })
+                        }}
+                        handleLinearGradientChange={this.handleBtnInvitedChange}
+                        key="btn3"
+                        keys="btn3"
+                    />
+
+                </div>
+            </div>
+        )
+    }
+
     render() {
+        const { activeTab } = this.props
         return (
             <div className={style.boardWrapper}>
                 {this.renderPhonePreview()}
-                {this.renderSettingPanel()}
+                {/* {this.renderSettingPanel()} */}
+                <div className={style.freeGiftTab} style={{ margin: '46px 0 0 20px' }}>
+                    <Tabs activeKey={activeTab} onChange={this.handelTabChange} className={style.customTabWrapper} >
+                        <TabPane tab="推荐页" key="1">{this.renderSettingPanel()}</TabPane>
+                        <TabPane tab="被推荐页" key="2">{this.renderSettingedPage()}</TabPane>
+                    </Tabs>
+                </div>
             </div>
         )
     }
@@ -132,6 +240,18 @@ export default class RecommendHaveGift extends Component {
 
 
 const styles = {
+    center: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    centerFlex: {
+        display: 'flex',
+        // flexDirection: 'column',
+        // alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: '-19px',
+    },
     actRule: {
         width: '65px',
         height: '24px',
@@ -194,8 +314,8 @@ const styles = {
         alignItems: 'center',
         // background:'linear-gradient(#FFDF88, #FFBB50',
         position: 'relative',
-        transform: 'translateX(-50%)',
-        marginLeft: '50%',
+        // transform: 'translateX(-50%)',
+        // marginLeft: '50%',
         top: '16px',
     },
     faceBtn: {

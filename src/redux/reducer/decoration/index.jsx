@@ -42,6 +42,9 @@ export const promotion_decoration = ($$state = $initialState, action) => {
             return $$state.set('currentPromotion', Immutable.fromJS(action.payload));
         case UPDATE_DECORATION_ITEM:
             const { key, value } = action.payload;
+            if (key == null) {
+                return  $$state.mergeIn(['decorationInfo'], value)
+            }
             return $$state.setIn(['decorationInfo', ...key], Immutable.fromJS(value));
         case RESET_DECORATION_INFO:
             return $$state.set('decorationInfo', Immutable.fromJS(defaultDecorationInfo))
