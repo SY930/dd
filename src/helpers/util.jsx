@@ -599,6 +599,7 @@ export function checkPermission(rightCode,entryID=null) {
     let isExist = false;
     console.log(rightCode,entryID,'rightCode,entryID')
     const rightList = getRightListFromRedux();
+    console.log(rightList,'rightlist>>>>>>>>>>>>>>>>')
     if (!rightCode || !rightList || !rightList.length) return false;
     const rightCodes = rightCode.split(',');
     if(entryID){
