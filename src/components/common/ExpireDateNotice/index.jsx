@@ -31,25 +31,31 @@ class ExpireDateNotice extends React.Component {
             method: '/crm/crmAuthLicenseService.queryCrmPluginLicenses.ajax',
         }).then((ret) => {
             if (ret.code === '000') {
-                const {basicAuthEndDate} = ret.data;
+                let basicAuthEndDate = null;
+                if(productCode = 'HLL_CRM_Marketingbox'){
+                    let {plugins} = ret.data;
+                    basicAuthEndDate = plugins && plugins.length > 0 ? plugins[0].authEndDate : null;
+                }else{
+                    basicAuthEndDate = ret.data.basicAuthEndDate ? ret.data.basicAuthEndDate : null;
+                }
                 let endDate = '';
                 let showDate = '';
                 let curTime = new Date().getTime();
                 let interval = 30 * 24 * 60 * 60 * 1000;//30天倒计时
-                // let basicAuthEndDate = '20220723';
                 if (basicAuthEndDate) {
                     endDate = String(basicAuthEndDate).match(/(\d{4})(\d{2})(\d{2})/).filter((item, index) => index > 0).join('/');
                     showDate = String(basicAuthEndDate).match(/(\d{4})(\d{2})(\d{2})/).filter((item, index) => index > 0).join('-');
                 };
                 let endDateToString = Date.parse(endDate);
                 if (!endDateToString) return;
-                if (0 <= (endDateToString - curTime) <= interval) {
+                let disTime = endDateToString - curTime;
+                if ( disTime > 0 && disTime <= interval ) {
                     this.setState({
                         showDate,
                         isExpire:'near'
                     })
                 }
-                if (endDateToString - curTime < 0) {
+                if (disTime < 0) {
                     this.setState({
                         isExpire:'expired'
                     })
