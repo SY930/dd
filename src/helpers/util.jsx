@@ -602,15 +602,18 @@ export function checkPermission(rightCode,entryID=null) {
     console.log(rightList,'rightlist>>>>>>>>>>>>>>>>')
     if (!rightCode || !rightList || !rightList.length) return false;
     const rightCodes = rightCode.split(',');
+    console.log(rightCodes,'rightCodes----------------')
     if(entryID){
         rightCodes.map((code,index)=>{
-            if(_.find(rightList,{rightCode:code,entryID})){
+            let isExsitArr = _.filter(rightList,{rightCode:code,entryID:entryID});
+            console.log(isExsitArr,'isExsitArr')
+            if(isExsitArr.length > 0){
                 isExist = true;
             }
         })
     }else{
         isExist = !!rightCodes.find(
-            code => !!sortedFindBy(rightList, { rightCode: code,entryID }, right => right.rightCode)
+            code => !!sortedFindBy(rightList, { rightCode: code }, right => right.rightCode)
         );
     }
     
