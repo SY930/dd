@@ -43,7 +43,7 @@ class ScenePutContent extends Component {
                         eventName: batchName,
                         eventWay: '20003',
                         platformType: '3',
-                        merchantID: '1800009380',
+                        merchantID: '1800009740',
                         merchantType,
                         trdEventID: trdBatchID,
                         marketingType: 'BUSIFAVOR_STOCK',
