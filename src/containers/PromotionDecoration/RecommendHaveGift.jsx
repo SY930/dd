@@ -202,7 +202,7 @@ export default class RecommendHaveGift extends Component {
                 <div className={style.sectionWrapper} key="btn1" style={{ marginLeft: '112px' }}>
                     <div style={{ top: 5 }} >
                         <p className={style.label}> 按钮样式</p>
-                        <p className={style.subLabel} style={{ left: '-150px' }}>(立即参与)</p>
+                        <p className={style.subLabel} style={{ left: '-150px' }}>(立即领取)</p>
                     </div>
                     <ButtonSettingBlockMultiple
                         btnColor={btnColorInvited}
