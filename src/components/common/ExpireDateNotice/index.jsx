@@ -32,7 +32,7 @@ class ExpireDateNotice extends React.Component {
         }).then((ret) => {
             if (ret.code === '000') {
                 let basicAuthEndDate = null;
-                if(productCode = 'HLL_CRM_Marketingbox'){
+                if(productCode === 'HLL_CRM_Marketingbox'){
                     let {plugins} = ret.data;
                     basicAuthEndDate = plugins && plugins.length > 0 ? plugins[0].authEndDate : null;
                 }else{
