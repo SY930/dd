@@ -192,7 +192,7 @@ class CardSaleActive extends Component {
                                             </div>
                                         }
                                         <div className={styles.activityOperate}>
-                                            <Authority rightCode={BASIC_LOOK_PROMOTION_QUERY}>
+                                            <Authority rightCode={BASIC_LOOK_PROMOTION_QUERY} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
                                                 <span
                                                     className={styles.operateDetail}
                                                     onClick={() => {
