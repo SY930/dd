@@ -27,7 +27,7 @@ import {
     ONLINE_PROMOTION_MANAGEMENT_GROUP,
     PROMOTION_DECORATION,
 } from '../../../constants/entryCodes';
-import { BASIC_PROMOTION_MANAGE_PAGE } from '../../../constants/entryIds'
+import { BASIC_PROMOTION_MANAGE_PAGE } from '../../../constants/entryIds';
 import {
     initializationOfMyActivities,
     toggleSelectedActivityStateAC,
@@ -1728,7 +1728,7 @@ class MyActivities extends React.Component {
                                         }}
                                     >复制</a>
                                     :
-                                    <Authority rightCode={BASIC_PROMOTION_UPDATE}>
+                                    <Authority rightCode={BASIC_PROMOTION_UPDATE} >
                                         <a
                                             href="#"
                                             disabled={!isGroupPro || isHuaTian()}

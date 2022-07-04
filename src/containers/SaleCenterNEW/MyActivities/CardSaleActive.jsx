@@ -12,6 +12,7 @@ import {
     BASIC_PROMOTION_UPDATE,
     BASIC_PROMOTION_DELETE,
 } from '../../../constants/authorityCodes';
+import { BASIC_PROMOTION_MANAGE_PAGE } from '../../../constants/entryIds';
 import {
     ACTIVITY_CATEGORIES,
 } from '../../../redux/actions/saleCenterNEW/types';
@@ -204,7 +205,7 @@ class CardSaleActive extends Component {
                                             </Authority>
                                             {
                                                 !isHuaTian() && (
-                                                    <Authority rightCode={BASIC_PROMOTION_UPDATE}>
+                                                    <Authority rightCode={BASIC_PROMOTION_UPDATE} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
                                                         <span
                                                             className={styles.operateEdit}
                                                             onClick={(e) => {
@@ -219,7 +220,7 @@ class CardSaleActive extends Component {
                                                     </Authority>
                                                 )
                                             }
-                                            <Authority rightCode={BASIC_PROMOTION_DELETE}>
+                                            <Authority rightCode={BASIC_PROMOTION_DELETE} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
                                                 <span
                                                     className={styles.operateDelete}
                                                     disabled={!isMine(item)}

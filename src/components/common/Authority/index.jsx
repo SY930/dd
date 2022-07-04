@@ -10,7 +10,7 @@ class Authority extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         this.disabled = this.props.rightCode === nextProps.rightCode ? this.disabled
-            : !checkPermission(nextProps.rightCode,this.props.entryId);
+            : !checkPermission(nextProps.rightCode,nextProps.entryId);
     }
 
     renderChild(child) {
