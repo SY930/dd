@@ -1288,7 +1288,7 @@ class MyActivitiesShop extends React.Component {
                 </div>
                 <PromotionCalendarBanner jumpTarget={PROMOTION_CALENDAR_SHOP} />
                 <div>
-                    <div className={styles.pageContentWrapper}>
+                    <div className={styles.pageContentWrapper} >
                         <div style={{padding: 0}} className="layoutsHeader">
                             {this.renderFilterBar()}
                             <div style={{ margin: '0'}} className="layoutsLine"></div>
