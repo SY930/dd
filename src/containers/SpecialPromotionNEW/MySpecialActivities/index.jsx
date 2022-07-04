@@ -1201,7 +1201,7 @@ class MySpecialActivities extends React.Component {
             <div className="layoutsTool" style={{ height: '64px',position:'relative' }}>
                 <div className={headerClasses}>
                     <span className={styles.customHeader}>活动管理</span>
-                    <ExpireDateNotice productCode="HLL_CRM_Marketingbox" marginLeft="-230" marginTop="8"/>
+                    <ExpireDateNotice productCode="HLL_CRM_Marketingbox" marginLeft="-430" marginTop="8"/>
                     {
                         tabKeys === 'saleSpecialPage' && (
                             <div>
