@@ -41,7 +41,7 @@ class ChannelModal extends React.Component {
         ]}
       >
         <Form>
-          {modalType == 'group' ? <Form.Item label="分组名称" labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
+          {modalType == 'group' ? <Form.Item label="分组名称" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
             {getFieldDecorator('groupName', {
               rules: [
                 { required: true, message: '请输入分组名称' },
@@ -52,7 +52,7 @@ class ChannelModal extends React.Component {
               <Input placeholder='请输入分组名称' />
             )}
           </Form.Item> : <div>
-            <Form.Item label="选择分组" labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
+            <Form.Item label="选择分组" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
               {getFieldDecorator('groupID', {
                 rules: [
                   { required: true, message: '请选择分组' }
@@ -68,7 +68,7 @@ class ChannelModal extends React.Component {
                 />
               )}
             </Form.Item>
-            <Form.Item label="渠道名称" labelCol={{ span: 6 }} wrapperCol={{ span: 16 }}>
+            <Form.Item label="渠道名称" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
               {getFieldDecorator('channelName', {
                 rules: [
                   { required: true, message: '请输入渠道名称' },

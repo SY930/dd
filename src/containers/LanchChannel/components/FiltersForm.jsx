@@ -36,7 +36,7 @@ class FiltersForm extends React.Component {
       channelName: {
         type: 'text',
         label: '渠道名称',
-        placeholder: '可输入渠道名称查询',
+        placeholder: '请输入渠道名称',
       },
       effectTime: {
         type: 'custom',
@@ -55,10 +55,10 @@ class FiltersForm extends React.Component {
       createUser: {
         type: 'text',
         label: '创建人',
-        placeholder: '可输入创建人查询',
+        placeholder: '请输入创建人',
       },
     }
-    const formKeys = ['channelName', 'effectTime', 'createUser'];
+    const formKeys = ['effectTime', 'createUser', 'channelName'];
     return (
       <div style={{ display: 'flex', alignItems: 'center', marginTop: 4 }}>
         <BaseForm
@@ -70,7 +70,7 @@ class FiltersForm extends React.Component {
         />
         <Button type="primary" onClick={() => this.handleQuery()} style={{ marginTop: -4, marginLeft: 20 }}>
           <Icon type="search" />
-          查询
+          搜索
         </Button>
       </div>
     );

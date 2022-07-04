@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table } from 'antd';
+import { Table, Modal } from 'antd';
 import styles from '../style.less'
 
 class List extends Component {
@@ -21,7 +21,20 @@ class List extends Component {
     })
   }
 
-  delChannel = () => { }
+  delChannel = () => {
+    Modal.confirm({
+      title: '确定要删除该渠道？',
+      content: '删除渠道后，已引用的活动将无法继续记录用户的参与信息。',
+      okText: '确定',
+      cancelText: '取消',
+      onOk() {
+        console.log('OK');
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+  }
 
   render() {
     const { editChannel, loading, list, selectedRowKeys, changeRowKeys, total } = this.props
