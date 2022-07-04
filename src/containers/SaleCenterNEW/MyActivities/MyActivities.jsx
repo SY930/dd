@@ -1462,7 +1462,7 @@ class MyActivities extends React.Component {
                             }} />
                         </li>
                         <li>
-                            <Authority rightCode={BASIC_PROMOTION_QUERY}>
+                            <Authority rightCode={BASIC_PROMOTION_QUERY} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
                                 <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}><Icon type="search" />{COMMON_LABEL.query}</Button>
                             </Authority>
                         </li>
@@ -1728,7 +1728,7 @@ class MyActivities extends React.Component {
                                         }}
                                     >复制</a>
                                     :
-                                    <Authority rightCode={BASIC_PROMOTION_UPDATE} >
+                                    <Authority>
                                         <a
                                             href="#"
                                             disabled={!isGroupPro || isHuaTian()}
@@ -1771,7 +1771,7 @@ class MyActivities extends React.Component {
                         }
                     })()
                     return (
-                        <Authority rightCode={BASIC_PROMOTION_UPDATE}>
+                        <Authority>
                             <Switch
                                 // size="small"
                                 className={styles.switcherSale}

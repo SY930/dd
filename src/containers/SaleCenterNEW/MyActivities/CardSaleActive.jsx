@@ -246,7 +246,7 @@ class CardSaleActive extends Component {
                                                         }}
                                                     >复制</a>
                                                     :
-                                                    <Authority rightCode={BASIC_PROMOTION_UPDATE}>
+                                                    <Authority>
                                                         <a
                                                             href="#"
                                                             disabled={!isGroupPro || isHuaTian()}
