@@ -3352,7 +3352,7 @@ class GiftAddModalStep extends React.PureComponent {
                 rules: [
                     { required: true,message:'至少选择一项' },
                 ],
-                labelCol: { span: 7 },
+                labelCol: { span: 8 },
                 wrapperCol: { span: 16 },
                 defaultValue: 0,
                 render: (decorator, form) => this.renderSubLedgerAmount(decorator, form), // <GiftPromotion></GiftPromotion>,
