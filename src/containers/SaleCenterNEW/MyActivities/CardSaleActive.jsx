@@ -246,18 +246,16 @@ class CardSaleActive extends Component {
                                                         }}
                                                     >复制</a>
                                                     :
-                                                    <Authority>
-                                                        <a
-                                                            href="#"
-                                                            disabled={!isGroupPro || isHuaTian()}
-                                                            style={!isGroupPro || isHuaTian() ? { color: 'gray', opacity: '.5' } : {}}
-                                                            onClick={() => {
-                                                                this.props.toggleIsUpdate(true)
-                                                                this.props.updateCopy()
-                                                                this.props.handleUpdateOpe(_, item, index);
-                                                            }}
-                                                        >复制</a>
-                                                    </Authority>
+                                                    <a
+                                                        href="#"
+                                                        disabled={!isGroupPro || isHuaTian()}
+                                                        style={!isGroupPro || isHuaTian() ? { color: 'gray', opacity: '.5' } : {}}
+                                                        onClick={() => {
+                                                            this.props.toggleIsUpdate(true)
+                                                            this.props.updateCopy()
+                                                            this.props.handleUpdateOpe(_, item, index);
+                                                        }}
+                                                    >复制</a>
                                             }
                                         </div>
                                     </Col>

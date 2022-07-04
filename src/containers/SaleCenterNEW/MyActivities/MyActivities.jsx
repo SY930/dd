@@ -1728,20 +1728,18 @@ class MyActivities extends React.Component {
                                         }}
                                     >复制</a>
                                     :
-                                    <Authority>
-                                        <a
-                                            href="#"
-                                            disabled={!isGroupPro || isHuaTian()}
-                                            onClick={() => {
-                                                this.props.toggleIsUpdate(true)
-                                                this.setState({
-                                                    isCopy: true,
-                                                    modalTitle: '复制活动信息'
-                                                })
-                                                this.handleUpdateOpe(text, record, index);
-                                            }}
-                                        >复制</a>
-                                    </Authority>
+                                    <a
+                                        href="#"
+                                        disabled={!isGroupPro || isHuaTian()}
+                                        onClick={() => {
+                                            this.props.toggleIsUpdate(true)
+                                            this.setState({
+                                                isCopy: true,
+                                                modalTitle: '复制活动信息'
+                                            })
+                                            this.handleUpdateOpe(text, record, index);
+                                        }}
+                                    >复制</a>
                             }
 
                         </span>
@@ -1771,20 +1769,18 @@ class MyActivities extends React.Component {
                         }
                     })()
                     return (
-                        <Authority>
-                            <Switch
-                                // size="small"
-                                className={styles.switcherSale}
-                                checkedChildren={'启用'}
-                                unCheckedChildren={'禁用'}
-                                checked={defaultChecked}
-                                onChange={() => {
-                                    this.handleSattusActive(record)(() => this.handleDisableClickEvent(record.operation, record, index, null, '使用状态修改成功'))
+                        <Switch
+                            // size="small"
+                            className={styles.switcherSale}
+                            checkedChildren={'启用'}
+                            unCheckedChildren={'禁用'}
+                            checked={defaultChecked}
+                            onChange={() => {
+                                this.handleSattusActive(record)(() => this.handleDisableClickEvent(record.operation, record, index, null, '使用状态修改成功'))
 
-                                }}
-                                disabled={isToggleActiveDisabled}
-                            />
-                        </Authority>
+                            }}
+                            disabled={isToggleActiveDisabled}
+                        />
                     )
                 }
             },
