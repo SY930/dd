@@ -55,7 +55,7 @@ class PureTable extends Component {
         const { groupID } = this.getAccountInfo()
         const method = '/dyCoupon/xfc/exportCouponOrderList'
         const {batchItemID} = this.props.params;
-        const response = await axios.get(`/api/v1/export?groupID=${groupID}&dyOrderID=${this.state.dyOrderID}&couponCode=${this.state.couponCode}`, {
+        const response = await axios.get(`/api/v1/export?groupID=${groupID}&batchItemID=${batchItemID}&dyOrderID=${this.state.dyOrderID}&couponCode=${this.state.couponCode}`, {
             responseType: 'blob',
             params: {
                 service: 'HTTP_SERVICE_URL_PROMOTION_DOUYIN',
