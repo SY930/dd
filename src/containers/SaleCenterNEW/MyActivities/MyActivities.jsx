@@ -27,6 +27,7 @@ import {
     ONLINE_PROMOTION_MANAGEMENT_GROUP,
     PROMOTION_DECORATION,
 } from '../../../constants/entryCodes';
+import { BASIC_PROMOTION_MANAGE_PAGE } from '../../../constants/entryIds';
 import {
     initializationOfMyActivities,
     toggleSelectedActivityStateAC,
@@ -1461,7 +1462,7 @@ class MyActivities extends React.Component {
                             }} />
                         </li>
                         <li>
-                            <Authority rightCode={BASIC_PROMOTION_QUERY}>
+                            <Authority rightCode={BASIC_PROMOTION_QUERY} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
                                 <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}><Icon type="search" />{COMMON_LABEL.query}</Button>
                             </Authority>
                         </li>
@@ -1636,6 +1637,7 @@ class MyActivities extends React.Component {
     }
 
     renderTables() {
+        console.log(BASIC_PROMOTION_MANAGE_PAGE,'BASIC_PROMOTION_MANAGE_PAGE')
         const { intl } = this.props;
         const k5eng7pt = intl.formatMessage(SALE_STRING.k5eng7pt);
         const k5engebq = intl.formatMessage(SALE_STRING.k5engebq);
@@ -1669,7 +1671,7 @@ class MyActivities extends React.Component {
                     const isGroupPro = record.maintenanceLevel == '0';//区分集团和店铺
                     return (
                         <span>
-                            <Authority rightCode={BASIC_LOOK_PROMOTION_QUERY}>
+                            <Authority rightCode={BASIC_LOOK_PROMOTION_QUERY} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
                                 <a
                                     href="#"
                                     onClick={() => {
@@ -1682,7 +1684,7 @@ class MyActivities extends React.Component {
                             </Authority>
                             {
                                 !isHuaTian() && (
-                                    <Authority rightCode={BASIC_PROMOTION_UPDATE}>
+                                    <Authority rightCode={BASIC_PROMOTION_UPDATE} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
                                         <a
                                             href="#"
                                             // disabled={!isGroupPro}
@@ -1696,7 +1698,7 @@ class MyActivities extends React.Component {
                                     </Authority>
                                 )
                             }
-                            <Authority rightCode={BASIC_PROMOTION_DELETE}>
+                            <Authority rightCode={BASIC_PROMOTION_DELETE} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
                                 {/* 非禁用状态不能删除 */}
                                 <a
                                     href="#"
@@ -1726,20 +1728,18 @@ class MyActivities extends React.Component {
                                         }}
                                     >复制</a>
                                     :
-                                    <Authority rightCode={BASIC_PROMOTION_UPDATE}>
-                                        <a
-                                            href="#"
-                                            disabled={!isGroupPro || isHuaTian()}
-                                            onClick={() => {
-                                                this.props.toggleIsUpdate(true)
-                                                this.setState({
-                                                    isCopy: true,
-                                                    modalTitle: '复制活动信息'
-                                                })
-                                                this.handleUpdateOpe(text, record, index);
-                                            }}
-                                        >复制</a>
-                                    </Authority>
+                                    <a
+                                        href="#"
+                                        disabled={!isGroupPro || isHuaTian()}
+                                        onClick={() => {
+                                            this.props.toggleIsUpdate(true)
+                                            this.setState({
+                                                isCopy: true,
+                                                modalTitle: '复制活动信息'
+                                            })
+                                            this.handleUpdateOpe(text, record, index);
+                                        }}
+                                    >复制</a>
                             }
 
                         </span>
@@ -1769,20 +1769,18 @@ class MyActivities extends React.Component {
                         }
                     })()
                     return (
-                        <Authority rightCode={BASIC_PROMOTION_UPDATE}>
-                            <Switch
-                                // size="small"
-                                className={styles.switcherSale}
-                                checkedChildren={'启用'}
-                                unCheckedChildren={'禁用'}
-                                checked={defaultChecked}
-                                onChange={() => {
-                                    this.handleSattusActive(record)(() => this.handleDisableClickEvent(record.operation, record, index, null, '使用状态修改成功'))
+                        <Switch
+                            // size="small"
+                            className={styles.switcherSale}
+                            checkedChildren={'启用'}
+                            unCheckedChildren={'禁用'}
+                            checked={defaultChecked}
+                            onChange={() => {
+                                this.handleSattusActive(record)(() => this.handleDisableClickEvent(record.operation, record, index, null, '使用状态修改成功'))
 
-                                }}
-                                disabled={isToggleActiveDisabled}
-                            />
-                        </Authority>
+                            }}
+                            disabled={isToggleActiveDisabled}
+                        />
                     )
                 }
             },
@@ -1954,6 +1952,7 @@ class MyActivities extends React.Component {
     }
 
     render() {
+        console.log('taipingdao')
         const { runType, dataSource } = this.state;
         const { stylesShow, tabKeys } = this.props;
         return (
