@@ -597,16 +597,12 @@ const getRightListFromRedux = (() => {
  */
 export function checkPermission(rightCode,entryID=null) {
     let isExist = false;
-    console.log(rightCode,entryID,'rightCode,entryID')
     const rightList = getRightListFromRedux();
-    console.log(rightList,'rightlist>>>>>>>>>>>>>>>>')
     if (!rightCode || !rightList || !rightList.length) return false;
     const rightCodes = rightCode.split(',');
-    console.log(rightCodes,'rightCodes----------------')
     if(entryID){
         rightCodes.map((code,index)=>{
             let isExsitArr = _.filter(rightList,{rightCode:code,entryID:entryID});
-            console.log(isExsitArr,'isExsitArr')
             if(isExsitArr.length > 0){
                 isExist = true;
             }
@@ -616,8 +612,6 @@ export function checkPermission(rightCode,entryID=null) {
             code => !!sortedFindBy(rightList, { rightCode: code }, right => right.rightCode)
         );
     }
-    
-    console.log(isExist,'isEXSIT')
     return isExist
 }
 

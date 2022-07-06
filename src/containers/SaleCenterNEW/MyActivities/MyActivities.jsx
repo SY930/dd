@@ -1637,7 +1637,6 @@ class MyActivities extends React.Component {
     }
 
     renderTables() {
-        console.log(BASIC_PROMOTION_MANAGE_PAGE,'BASIC_PROMOTION_MANAGE_PAGE')
         const { intl } = this.props;
         const k5eng7pt = intl.formatMessage(SALE_STRING.k5eng7pt);
         const k5engebq = intl.formatMessage(SALE_STRING.k5engebq);
@@ -1952,7 +1951,6 @@ class MyActivities extends React.Component {
     }
 
     render() {
-        console.log('taipingdao')
         const { runType, dataSource } = this.state;
         const { stylesShow, tabKeys } = this.props;
         return (

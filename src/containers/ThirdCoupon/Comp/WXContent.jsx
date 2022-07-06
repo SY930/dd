@@ -60,7 +60,6 @@ class WXContent extends Component {
 
     getJumpAppID = ({ jumpAppID }) => {
         const findItem = this.state.mpAndAppList.find(item => item.appID === jumpAppID) || {}
-        console.log("🚀 ~ file: WXContent.jsx ~ line 62 ~ WXContent ~ findItem", findItem)
         return { key: jumpAppID, label: findItem.mpName || '' }
     }
 
