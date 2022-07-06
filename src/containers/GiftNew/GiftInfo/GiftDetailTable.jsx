@@ -90,8 +90,8 @@ class GiftDetailTable extends Component {
                 const canNotSortDown = (this.state.queryParams.pageNo - 1) * this.state.queryParams.pageSize + index + 1 == this.state.total;
                 return (
                     <span>
-                        <span><Iconlist title={'置顶'} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'top')}/></span>
-                        <span><Iconlist title={'上移'} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'up')}/></span>
+                        <span className={styles2.upsideDown}><Iconlist title={'置顶'} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'top')}/></span>
+                        <span className={styles2.upsideDown}><Iconlist title={'上移'} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'up')}/></span>
                         <span className={styles2.upsideDown}><Iconlist title={'下移'} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'down')}/></span>
                         <span className={styles2.upsideDown}><Iconlist title={'置底'} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'bottom')}/></span>
                     </span>
@@ -683,7 +683,7 @@ class GiftDetailTable extends Component {
         const { tabkey } = this.props;
         const { groupID } = this.props.user.accountInfo;
         return (
-            <div style={{backgroundColor: '#F3F3F3'}} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
+            <div className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 <div className="layoutsTool" style={{height: '64px'}}>
                     <div className={headerClasses}>
                         <span className={styles2.customHeader}>
@@ -719,7 +719,8 @@ class GiftDetailTable extends Component {
                             <Authority rightCode={GIFT_LIST_QUERY}>
                                 <Button
                                     type="ghost"
-                                    style={{ margin: '0 24px' }}
+                                    className={styles.jumpToCreateInfo}
+                                    style={{ margin: 5 }}
                                     onClick={() => this.setState({ exportVisible: true })}
                                 ><Icon type="export" />导出历史</Button>
                             </Authority>
