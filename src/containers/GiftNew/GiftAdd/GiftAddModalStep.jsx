@@ -106,8 +106,8 @@ const processFinalCategoryAndDishData = (params, property,value) => {
         if (params[property] && params[property] instanceof Object) {
             if(hasMallArr.includes(value)){
                 mallScope = params.mallScope;
-                foodCategory = params[property].foodCategory;
-                excludeDishes = params[property].excludeDishes;
+                foodCategory = params[property].foodCategory || [];
+                excludeDishes = params[property].excludeDishes || [];
                 dishes = params[property].dishes;
                
                 // mallScope 0 分类， 1 菜品
