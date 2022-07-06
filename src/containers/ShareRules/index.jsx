@@ -16,6 +16,7 @@ import {
 } from "../../redux/actions/shareRules/index";
 import { BASIC_PROMOTION_MAP, GIFT_MAP } from "../../constants/promotionType";
 import CreateShareRulesModal from "./CreateShareRulesModal";
+import ExpireDateNotice from '../../components/common/ExpireDateNotice';
 import { getRuleGroupList, queryShareRuleDetail, addShareRuleGroup, updateShareRuleGroup, deleteShareRuleGroup, initShareRuleGroup, setStorageValue, getStorageValue, FetchGiftList, fetchAllPromotionList } from './AxiosFactory';
 import { fetchAllPromotionListAC } from "../../redux/actions/saleCenterNEW/promotionDetailInfo.action";
 import emptyPage from '../../assets/empty_page.png'
@@ -276,10 +277,11 @@ export default class ShareRules extends Component {
     renderHeader(isEmpty) {
         return (
             <div className={styles.header}>
-                <div className={styles.titleArea}>
+                <div className={styles.titleArea} style={{position:'relative'}}>
                     <span className={styles.title}>
                         共享规则设置
                     </span>
+                    <ExpireDateNotice productCode="HLL_CRM_Marketingbox" marginLeft="366px" marginTop="-10"/>
                     <span className={styles.subTitle}>
                         基础营销、哗啦啦优惠券活动间默认互斥，与会员权益默认共享，需要多个活动共享时需创建共享规则实现。
                     </span>
