@@ -290,6 +290,7 @@ const GiftCfg = {
         { value: '136', label: '抖音商城发放'},
         { value: '137', label: '抖音团购发放'},
         { value: '139', label: '续费发放'},
+        { value: '160', label: '联通饭票'},
     ],
     giftSendStatus: [
         { value: '', label: '全部' },
