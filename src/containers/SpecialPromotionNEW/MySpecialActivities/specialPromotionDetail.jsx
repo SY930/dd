@@ -1517,8 +1517,13 @@ class SpecialPromotionDetail extends React.Component {
         })
     }
 
+    checkChannel = (record) => {
+        
+    }
+
     // 活动参与表格
     renderActivityInfoTable() {
+        const hasChannelActivity = [20, 21, 22, 30, 65, 68]
         const eventWay = this.state.eventInfo.data.eventWay;
         const columns = [
             {
@@ -1744,6 +1749,16 @@ class SpecialPromotionDetail extends React.Component {
                     width: 200,
                 },
             ]);
+        }
+        if (hasChannelActivity.includes(eventWay)) {
+            columns.push({
+                title: '投放渠道',
+                dataIndex: 'lanchChannel',
+                key: 'lanchChannel',
+                render: (text, record) => {
+                    return <a onClick={this.checkChannel}>查看</a>
+                }
+            })
         }
         const userInfo = this.state.userInfo || [];
         const dataSource = userInfo.map((user, index) => {

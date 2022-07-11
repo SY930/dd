@@ -8,7 +8,7 @@ import {
     Table, Input, Select, DatePicker,
     Button, Modal, message,
     Spin, Icon, Alert, Switch, Tabs,
-    Tooltip, Popover, Menu
+    Tooltip, Popover, Menu, TreeSelect
 } from 'antd';
 import { throttle, isEmpty, cloneDeep } from 'lodash';
 import { jumpPage, closePage } from '@hualala/platform-base'
@@ -259,6 +259,7 @@ class MySpecialActivities extends React.Component {
             pushMessageMpID: '',
             groupID: '',
             channelContent: '',
+            launchChannelID: '',
             channelOptions: _.range(0, 10).map(item => ({ label: `渠道${item + 1}`, value: `渠道${item + 1}` })),
             page: '',
             scene: '',
@@ -266,7 +267,8 @@ class MySpecialActivities extends React.Component {
             stylesShow: 'list',
             planModalVisible: false,
             filterSchemeList: [],
-            activeStatus: ''
+            activeStatus: '',
+            sortedChannelList: [],
         };
         this.cfg = {
             eventWay: [
@@ -322,6 +324,44 @@ class MySpecialActivities extends React.Component {
         this.renderUpdateModals = this.renderUpdateModals.bind(this);
         this.handleUpdateOpe = this.handleUpdateOpe.bind(this);
     }
+
+    formatChannelData = (list) => {
+        let data = []
+        if (!list || !Array.isArray(list)) {
+          return []
+        }
+        data = list.map(item => {
+          return {
+            label: item.channelGroupName,
+            value: item.channelGroupItemID,
+            key: item.channelGroupItemID,
+            disabled: true,
+            children: item.channelInfos.map(child => {
+              return {
+                label: child.channelName,
+                value: child.itemID,
+                key: child.itemID,
+              }
+            })
+          }
+        })
+        return data
+      }
+    
+    querySortedChannelList = () => {
+        axiosData('/launchchannel/launchChannelService_querySortedChannelList.ajax',
+          {}, {}, { path: '' },
+          'HTTP_SERVICE_URL_PROMOTION_NEW')
+          .then((res) => {
+            if (res.code == '000') {
+              this.setState({
+                sortedChannelList: this.formatChannelData(res.channelSortedInfos)
+              })
+            }
+          }).catch(err => {
+            // empty catch
+          });
+      }
 
     clearUrl() {
         var { href } = window.location;
@@ -538,6 +578,7 @@ class MySpecialActivities extends React.Component {
         // 千人千面活动创建和更新完，点去装修跳转页面
         this.fromCrmJump();
         this.getSearchListContent() // 查询方案列表
+        this.querySortedChannelList()//查询渠道列表
     }
 
     // 产品授权
@@ -743,10 +784,11 @@ class MySpecialActivities extends React.Component {
         this.handleCopyUrl(null, mpId);
     }
 
-    handleCheckText = (value) => {
+    handleCheckText = (value, label) => {
         // let v = Number(value);
         this.setState({
-            channelContent: value,
+            channelContent: label[0],
+            launchChannelID: value,
         }, () => {
             this.handleCopyUrl()
         })
@@ -931,20 +973,19 @@ class MySpecialActivities extends React.Component {
     }
 
     renderChannels() {
-        const { channelOptions } = this.state;
+        const { sortedChannelList } = this.state;
         return (
-            <Select
-                placeholder="请填写投放渠道"
-                style={{
-                    width: '51%', margin: '0 10px'
-                }}
+            <TreeSelect
+                style={{ width: '51%', margin: '0 10px' }}
+                treeData={sortedChannelList}
+                dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                placeholder="请选择渠道"
+                showSearch={true}
+                treeNodeFilterProp="label"
+                allowClear={true}
+                treeDefaultExpandAll
                 onChange={this.handleCheckText}
-            >
-                {
-                    channelOptions.map(({ value, label }) => <Option key={value} value={value} label={label}>{label}</Option>)
-                }
-
-            </Select>
+            />
         )
 
     }
@@ -2041,7 +2082,7 @@ class MySpecialActivities extends React.Component {
     }
 
     handleCopyUrl = (record, mpId) => {
-        const { pushMessageMpID, channelContent } = this.state;
+        const { pushMessageMpID, channelContent, launchChannelID } = this.state;
         let mpID = mpId ? mpId : pushMessageMpID;
         let eventWayData, groupIdData, itemIdData;
         const testUrl = 'https://dohko.m.hualala.com';
@@ -2062,12 +2103,12 @@ class MySpecialActivities extends React.Component {
             url = preUrl
         }
         const urlMap = {
-            20: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
-            22: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
-            30: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
-            21: url + `/newm/eventFree?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
-            65: url + `/newm/shareFission?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
-            68: url + `/newm/recommendInvite?groupID=${groupIdData}&eventItemID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
+            20: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
+            22: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
+            30: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
+            21: url + `/newm/eventFree?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
+            65: url + `/newm/shareFission?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
+            68: url + `/newm/recommendInvite?groupID=${groupIdData}&eventItemID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
             // 83: url + `/newm/usePassword?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
         }
         /*if(actList.includes(String(eventWay))) {
