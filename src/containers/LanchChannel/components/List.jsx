@@ -21,23 +21,8 @@ class List extends Component {
     })
   }
 
-  delChannel = () => {
-    Modal.confirm({
-      title: '确定要删除该渠道？',
-      content: '删除渠道后，已引用的活动将无法继续记录用户的参与信息。',
-      okText: '确定',
-      cancelText: '取消',
-      onOk() {
-        console.log('OK');
-      },
-      onCancel() {
-        console.log('Cancel');
-      },
-    });
-  }
-
   render() {
-    const { editChannel, loading, list, selectedRowKeys, changeRowKeys, total } = this.props
+    const { editChannel, loading, list, selectedRowKeys, changeRowKeys, total, onChangeTable, delChannel } = this.props
     const { pageSize, pageNo } = this.state
     const columns = [
       {
@@ -58,15 +43,15 @@ class List extends Component {
       },
       {
         title: '创建人',
-        key: 'creator',
-        dataIndex: 'creator',
+        key: 'createBy',
+        dataIndex: 'createBy',
         className: styles.tdCenter,
         width: 120,
       },
       {
         title: '创建时间',
-        key: 'createTime',
-        dataIndex: 'createTime',
+        key: 'createStampStr',
+        dataIndex: 'createStampStr',
         className: styles.tdCenter,
         width: 180,
       },
@@ -78,8 +63,8 @@ class List extends Component {
         render: (text, record) => {
           return (
             <span>
-              <a onClick={editChannel}>编辑</a>
-              <a onClick={this.delChannel}>删除</a>
+              <a onClick={() => editChannel('channel', true, record)}>编辑</a>
+              <a onClick={() => delChannel([record.itemID])}>删除</a>
             </span>
           )
         }
@@ -95,6 +80,9 @@ class List extends Component {
           selectedRowKeys: selectedRowKeys,
           onChange: changeRowKeys
         }}
+        scroll={{ y: 'calc(100vh - 300px)' }}
+        rowKey="itemID"
+        onChange={onChangeTable}
         pagination={{
           pageSize: pageSize,
           pageSizeOptions: ['10', '20', '30', '40'],
@@ -103,7 +91,7 @@ class List extends Component {
           showSizeChanger: true,
           onShowSizeChange: this.onShowSizeChange,
           total: total || 0,
-          showTotal: (total, range) => `本页${range[0]}-${range[1]} / 共 ${total} 页`,
+          showTotal: (total, range) => `本页${range[0]}-${range[1]} / 共 ${total} 条`,
           onChange: (page, pageSize) => {
             this.onChangePage(page, pageSize)
           },

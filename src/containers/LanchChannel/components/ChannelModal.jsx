@@ -1,5 +1,6 @@
 import React from 'react';
-import { Modal, Input, Form, Button, TreeSelect } from 'antd';
+import { Modal, Input, Form, Button, Select } from 'antd';
+import { getStore } from '@hualala/platform-base';
 
 
 class ChannelModal extends React.Component {
@@ -19,20 +20,34 @@ class ChannelModal extends React.Component {
   }
 
   handleSave = () => {
+    const { modalType, isEdit, handleSubmit } = this.props;
+    const { groupID } = getStore().getState().user.get('accountInfo').toJS();
+    const reqParams = {
+      ...(groupID ? { groupID, _groupID: groupID } : {}),
+    };
     const formData = this.props.form.getFieldsValue();
-    console.log(formData)
+    let url = ''
+    let params = { ...formData, ...reqParams }
+    if (modalType == 'group') {
+      url = isEdit ? '/launchchannel/launchChannelService_updateLaunchChannelGroup.ajax' : '/launchchannel/launchChannelService_addLaunchChannelGroup.ajax'
+      params.channelGroupItemID = isEdit ? this.state.formData.itemID : undefined
+    } else if (modalType == 'channel') {
+      url = isEdit ? '/launchchannel/launchChannelService_updateChannel.ajax' : '/launchchannel/launchChannelService_addChannel.ajax'
+      params.channelItemID = isEdit ? this.state.formData.itemID : undefined
+    }
+    handleSubmit(url, params)
   }
 
   render() {
     const { formData } = this.state
-    const { modalType, modalVisible, idEdit, onCancel, form } = this.props;
+    const { modalType, modalVisible, isEdit, onCancel, form, groupData } = this.props;
     const { getFieldDecorator } = form
 
     return (
       <Modal
         maskClosable={false}
         visible={modalVisible}
-        title={`${idEdit ? '编辑' : '添加'}${modalType == 'group' ? '分组' : '渠道'}`}
+        title={`${isEdit ? '编辑' : '添加'}${modalType == 'group' ? '分组' : '渠道'}`}
         onCancel={onCancel}
         onOk={this.handleSave}
         footer={[
@@ -42,30 +57,30 @@ class ChannelModal extends React.Component {
       >
         <Form>
           {modalType == 'group' ? <Form.Item label="分组名称" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
-            {getFieldDecorator('groupName', {
+            {getFieldDecorator('channelGroupName', {
               rules: [
                 { required: true, message: '请输入分组名称' },
                 { pattern: /^[\u4E00-\u9FA5A-Za-z0-9\-]{1,10}$/, message: '输入限制为10位以内汉字、数字、大小写字母' }
               ],
-              initialValue: "",
+              initialValue: formData.channelGroupName,
             })(
               <Input placeholder='请输入分组名称' />
             )}
           </Form.Item> : <div>
             <Form.Item label="选择分组" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
-              {getFieldDecorator('groupID', {
+              {getFieldDecorator('channelGroupItemID', {
                 rules: [
                   { required: true, message: '请选择分组' }
                 ],
-                initialValue: undefined,
+                initialValue: formData.channelGroupItemID,
               })(
-                <TreeSelect
-                  placeholder='请选择分组'
-                  showSearch
-                  treeNodeFilterProp={'title'}
-                  treeData={[]}
-                  dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                />
+                <Select placeholder='请选择分组'>
+                  {
+                    groupData.map(item => {
+                      return <Select.Option value={item.itemID} key={item.itemID}>{item.channelGroupName}</Select.Option>
+                    })
+                  }
+                </Select>
               )}
             </Form.Item>
             <Form.Item label="渠道名称" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
@@ -74,7 +89,7 @@ class ChannelModal extends React.Component {
                   { required: true, message: '请输入渠道名称' },
                   { pattern: /^[\u4E00-\u9FA5A-Za-z0-9\-]{1,20}$/, message: '输入限制为20位以内汉字、数字、大小写字母' }
                 ],
-                initialValue: "",
+                initialValue: formData.channelName,
               })(
                 <Input placeholder='请输入渠道名称' />
               )}

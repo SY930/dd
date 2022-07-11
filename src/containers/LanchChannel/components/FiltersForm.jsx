@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Button, Icon, DatePicker } from 'antd';
 import BaseForm from 'components/common/BaseForm';
-import { getGroupId } from '../_action';
 
 const { RangePicker } = DatePicker;
 
@@ -15,19 +14,16 @@ class FiltersForm extends React.Component {
     this.queryFrom = null;
   }
 
-  componentWillMount() {
-    const { getGroupIdAC } = this.props;
-    getGroupIdAC();
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.queryFrom && this.queryFrom.resetFields();
-  }
-
   handleQuery = () => {
-    const { groupID } = this.props;
+    const { onSearch } = this.props;
     const formData = this.queryFrom.getFieldsValue();
-    console.log(formData)
+    let params = {
+      channelName: formData.channelName,
+      createBy: formData.createBy,
+      createStampStart: formData.createStamp && formData.createStamp.length ? formData.createStamp[0].format('YYYY-MM-DD HH:mm:ss') : '',
+      createStampEnd: formData.createStamp && formData.createStamp.length ? formData.createStamp[1].format('YYYY-MM-DD HH:mm:ss') : '',
+    }
+    onSearch(params)
   }
 
   render() {
@@ -38,12 +34,12 @@ class FiltersForm extends React.Component {
         label: '渠道名称',
         placeholder: '请输入渠道名称',
       },
-      effectTime: {
+      createStamp: {
         type: 'custom',
         label: '创建时间',
         render: (decorator) => (
           decorator({
-            key: 'effectTime',
+            key: 'createStamp',
           })(
             <RangePicker
               format="YYYY-MM-DD"
@@ -52,13 +48,13 @@ class FiltersForm extends React.Component {
           )
         )
       },
-      createUser: {
+      createBy: {
         type: 'text',
         label: '创建人',
         placeholder: '请输入创建人',
       },
     }
-    const formKeys = ['effectTime', 'createUser', 'channelName'];
+    const formKeys = ['createStamp', 'createBy', 'channelName'];
     return (
       <div style={{ display: 'flex', alignItems: 'center', marginTop: 4 }}>
         <BaseForm
@@ -77,19 +73,4 @@ class FiltersForm extends React.Component {
   }
 }
 
-function mapStateToProps({ sale_lanch_channel: saleLanchChannel }) {
-  return {
-    groupID: saleLanchChannel.get('groupId'),
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    getGroupIdAC: opts => dispatch(getGroupId(opts)),
-  }
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FiltersForm);
+export default FiltersForm;

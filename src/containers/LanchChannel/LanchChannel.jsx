@@ -1,45 +1,130 @@
 import React from 'react';
-import { Icon, Button, Row, Col, Tooltip, Modal } from 'antd';
+import { connect } from 'react-redux';
+import { Icon, Button, Row, Col, Tooltip, Modal, message } from 'antd';
 import FiltersForm from './components/FiltersForm'
 import ChannelModal from './components/ChannelModal'
 import List from './components/List'
 import GroupTree from './components/GroupTree'
 import styles from './style.less'
+import { axiosData } from '../../helpers/util';
 
 class LanchChannel extends React.Component {
 
   state = {
     modalVisible: false,
     modalType: 'group',//分组或渠道
-    idEdit: false,//添加或编辑
+    isEdit: false,//添加或编辑
     currentData: {},//编辑的数据
     selectedRowKeys: [],//选中的行
     total: 0,
     list: [],
     loading: false,
-    groupData: [{ groupName: '渠道1' }, { groupName: '渠道2' }],
+    groupData: [],
+    formData: {},
+    channelGroupItemID: '',
   }
 
-  batchDelete = () => { }
+  componentDidMount() {
+    this.getGroupList()
+    this.getChannelList({ pageNo: 1, pageSize: 10 })
+  }
 
-  onSearch = () => { }
+  getGroupList = () => {
+    axiosData('/launchchannel/launchChannelService_queryLaunchChannelGroupList.ajax',
+      {}, null, { path: '' },
+      'HTTP_SERVICE_URL_PROMOTION_NEW')
+      .then((res) => {
+        this.setState({
+          groupData: res.datas
+        })
+      }).catch(err => {
+        // empty catch
+      });
+  }
 
-  addChannel = () => {
-    this.setState({
-      modalVisible: true,
-      modalType: 'channel',
-      idEdit: false,
-      currentData: {},
+  getChannelList = (payload) => {
+    this.setState({ loading: true })
+    axiosData('/launchchannel/launchChannelService_queryChannelList.ajax',
+      { ...payload }, {}, { path: '' },
+      'HTTP_SERVICE_URL_PROMOTION_NEW')
+      .then((res) => {
+        this.setState({
+          list: res.data.datas || [],
+          loading: false,
+          total: res.data.totalSize,
+        })
+      }).catch(err => {
+        // empty catch
+        this.setState({
+          loading: false,
+        })
+      });
+  }
+
+  batchDelete = () => {
+    if (!this.state.selectedRowKeys.length) {
+      message.warning('请选择渠道');
+      return
+    }
+    this.delChannel(this.state.selectedRowKeys)
+  }
+
+  onSearch = (params) => {
+    this.setState({ formData: params })
+    this.getChannelList({
+      ...params,
+      pageNo: 1,
+      pageSize: 10,
+      channelGroupItemID: this.state.channelGroupItemID,
     })
   }
 
-  editChannel = () => { }
+  openModal = (type, isEdit, data) => {
+    this.setState({
+      modalVisible: true,
+      modalType: type,
+      isEdit: isEdit,
+      currentData: data,
+    })
+  }
+
+  delChannel = (channelIDs) => {
+    const payload = {
+      channelItemIDs: channelIDs
+    }
+    Modal.confirm({
+      title: '确定要删除该渠道？',
+      content: '删除渠道后，已引用的活动将无法继续记录用户的参与信息。',
+      okText: '确定',
+      cancelText: '取消',
+      onOk: () => {
+        axiosData('/launchchannel/launchChannelService_deleteChannel.ajax',
+          { ...payload }, {}, { path: '' },
+          'HTTP_SERVICE_URL_PROMOTION_NEW')
+          .then((res) => {
+            if (res.code == '000') {
+              message.success('删除渠道成功');
+              this.getGroupList()
+              this.getChannelList({
+                pageNo: 1,
+                pageSize: 10,
+              })
+            }
+          }).catch(err => {
+            // empty catch
+          });
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+  }
 
   onCancel = () => {
     this.setState({
       modalVisible: false,
       modalType: 'group',
-      idEdit: false,
+      isEdit: false,
       currentData: {},
     })
   }
@@ -50,25 +135,34 @@ class LanchChannel extends React.Component {
     })
   }
 
-  addGroup = () => {
-    this.setState({
-      modalVisible: true,
-      modalType: 'group',
-      idEdit: false,
-      currentData: {},
-    })
-  }
-
-  editGroup = () => { }
-
-  delGroup = () => {
+  delGroup = (item) => {
+    const payload = {
+      channelGroupItemID: item.itemID,
+    }
     Modal.confirm({
       title: '确定删除渠道分组？',
       content: '删除分组后，分组下渠道也将全部删除，已引用该渠道的活动将无法记录用户参与信息。',
       okText: '确定',
       cancelText: '取消',
-      onOk() {
-        console.log('OK');
+      onOk: () => {
+        axiosData('/launchchannel/launchChannelService_deleteLaunchChannelGroup.ajax',
+          { ...payload }, {}, { path: '' },
+          'HTTP_SERVICE_URL_PROMOTION_NEW')
+          .then((res) => {
+            if (res.code == '000') {
+              message.success('删除分组成功');
+              this.getGroupList()
+              this.getChannelList({
+                pageNo: 1,
+                pageSize: 10,
+              })
+            }
+          }).catch(err => {
+            // empty catch
+            this.setState({
+              loading: false,
+            })
+          });
       },
       onCancel() {
         console.log('Cancel');
@@ -76,10 +170,49 @@ class LanchChannel extends React.Component {
     });
   }
 
-  selectGroup = () => { }
+  selectGroup = (channelGroupItemID) => {
+    this.setState({ channelGroupItemID })
+    this.getChannelList({
+      channelGroupItemID: channelGroupItemID,
+      pageNo: 1,
+      pageSize: 10,
+      ...this.state.formData,
+    })
+  }
+
+  onChangeTable = (pagination) => {
+    this.getChannelList({
+      pageNo: pagination.current,
+      pageSize: pagination.pageSize,
+    })
+  }
+
+  handleSubmit = (url, params) => {
+    const { isEdit, modalType } = this.state
+    axiosData(
+      url,
+      { ...params },
+      {},
+      { path: '' },
+      'HTTP_SERVICE_URL_PROMOTION_NEW'
+    )
+      .then((res) => {
+        if (res.code == '000') {
+          message.success(`${isEdit ? '编辑' : '添加'}${modalType == 'group' ? '分组' : '渠道'}成功`)
+          this.onCancel()
+          this.getGroupList()
+          this.getChannelList({
+            pageNo: 1,
+            pageSize: 10,
+          })
+        }
+      }).catch(err => {
+        // empty catch
+      });
+  }
 
   render() {
-    const { modalVisible, modalType, idEdit, loading, list, selectedRowKeys, total, groupData } = this.state
+    const { modalVisible, modalType, isEdit, loading, list, selectedRowKeys, total, groupData, currentData } = this.state
 
     return (
       <div className="layoutsContainer">
@@ -93,7 +226,7 @@ class LanchChannel extends React.Component {
             </Tooltip>
           </div>
           <div>
-            <Button onClick={this.addChannel} type="ghost" icon='plus'>新增渠道</Button>
+            <Button onClick={() => this.openModal('channel', false, {})} type="ghost" icon='plus'>新增渠道</Button>
             <Button type="ghost" onClick={this.batchDelete} style={{ marginLeft: 20 }} icon="delete">批量删除</Button>
           </div>
         </div>
@@ -105,36 +238,45 @@ class LanchChannel extends React.Component {
           <Col>
             <GroupTree
               groupData={groupData}
-              addGroup={this.addGroup}
-              editGroup={this.editGroup}
+              addGroup={this.openModal}
+              editGroup={this.openModal}
               delGroup={this.delGroup}
               selectGroup={this.selectGroup}
             />
           </Col>
-          <Col style={{ flex: 1 }}>
+          <Col style={{ flex: 1 }} className={styles.tableClass}>
             <List
-              editChannel={this.editChannel}
+              editChannel={this.openModal}
               loading={loading}
               list={list}
               selectedRowKeys={selectedRowKeys}
               changeRowKeys={this.changeRowKeys}
               total={total}
+              onChangeTable={this.onChangeTable}
+              delChannel={this.delChannel}
             />
           </Col>
         </Row>
-        {
-          modalVisible && (
-            <ChannelModal
-              modalVisible={modalVisible}
-              modalType={modalType}
-              idEdit={idEdit}
-              onCancel={this.onCancel}
-            ></ChannelModal>
-          )
-        }
+        <ChannelModal
+          modalVisible={modalVisible}
+          modalType={modalType}
+          isEdit={isEdit}
+          onCancel={this.onCancel}
+          groupData={groupData}
+          handleSubmit={this.handleSubmit}
+          formData={currentData}
+        ></ChannelModal>
       </div>
     )
   }
 }
 
-export default LanchChannel
+function matStateToProps(state) {
+  return {}
+}
+
+function mapDispatchToProps(dispatch) {
+  return {}
+}
+
+export default connect(matStateToProps, mapDispatchToProps)(LanchChannel)
