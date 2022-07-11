@@ -10,11 +10,15 @@ import {
     Select,
     Modal,
     Button,
+    Radio,
+    message,
 } from 'antd';
+import { axios, HTTP_CONTENT_TYPE_WWWFORM, genQueryString, getAccountInfo } from '@hualala/platform-base'
 import BaseForm from 'components/common/BaseForm';
 import {
     memoizedExpandCategoriesAndDishes,
 } from '../../../utils';
+import { result } from 'lodash'
 import FoodSelectModal from '../../../components/common/FoodSelector/FoodSelectModal'
 import styles from '../ActivityPage.less'
 import PriceInputIcon from '../common/PriceInputIcon';
@@ -22,6 +26,7 @@ import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from '../IntlDecor';
 const FormItem = Form.Item;
+const RadioGroup = Radio.Group;
 
 const mapStateToProps = (state) => {
     return {
@@ -52,12 +57,17 @@ class SpecialDishesTableWithBrand extends Component {
             data: [],
             formKeys: ['setType', 'discount'],
             referenceModalVisible: false,
+            foodBooks: [],
+            bookID: '',
+            setType: '1',
         }
     }
     componentDidMount() {
         if (this.props.allBrands.size && this.props.allCategories.size && this.props.allDishes.size) {
             this.mapPriceLstToDataThenEmit()
         }
+        // 获取菜谱列表
+        this.getGroupFoodBook()
     }
     componentDidUpdate(prevProps) {
         if (this.props.allBrands.size && this.props.allCategories.size && this.props.allDishes.size) {
@@ -73,6 +83,18 @@ class SpecialDishesTableWithBrand extends Component {
                 this.props.onChange([]);
             }
         }
+    }
+
+    getGroupFoodBook = async() => {
+        const { groupID } = getAccountInfo();
+        const response = await axios.post('/api/queryGroupFoodBook', genQueryString({ pageNo: '-1', groupID }),  {
+            headers: { 'Content-Type': HTTP_CONTENT_TYPE_WWWFORM },
+        });
+        if (response.code !== '000') throw new Error(res.message);
+        const foodBooks = result(response, 'data.records', [])
+        this.setState({
+            foodBooks: foodBooks.map(item => ({ brandID: item.brandID, bookID: item.bookID, bookName: item.bookName }))
+        })
     }
     mapPriceLstToDataThenEmit = () => {
         const {
@@ -170,6 +192,42 @@ class SpecialDishesTableWithBrand extends Component {
             modifyModalVisible: true,
         })
     }
+    handleChangeFoodBook = (value) => {
+        this.setState({ bookID: value })
+    }
+
+    handleConfirmPrice = async() => {
+        const { bookID, setType }  = this.state
+        if (setType === '2' && !bookID) {
+            return message.warning('请选择菜谱')
+        }
+        if (setType === '1') {
+            this.setState({
+                referenceModalVisible: false,
+            })
+            return
+        }
+        console.log(this.state.bookID, 'bookID')
+        const { groupID } = getAccountInfo();
+        // /api/shopapi/queryGroupFoodCategory
+        const response = await axios.post('/api/getFoodQuery', genQueryString({ bookID, groupID, shopID: '' }),  {
+            headers: { 'Content-Type': HTTP_CONTENT_TYPE_WWWFORM },
+        });
+        if (response.code !== '000') throw new Error(res.message);
+        const foodCategory = result(response, 'data.records', [])
+        this.setState({
+            foodCategory,
+            referenceModalVisible: false,
+        })
+    }
+
+    handleSetType = ({ target }) => {
+        const {value} = target
+        this.setState({
+            setType: value,
+            foodCategory: value === '1' ? [] : this.state.foodCategory
+        })
+    }
     renderFoodSelectorModal() {
         const {
             allBrands,
@@ -198,14 +256,25 @@ class SpecialDishesTableWithBrand extends Component {
     }
 
     renderReferenceModal = () => {
+        const { setType,  foodBooks } = this.state
         const formItems = {
             setType: {
                 label: '设置方式',
-                type: 'radio',
+                type: 'custom',
                 labelCol: { span: 4 },
                 wrapperCol: { span: 14 },
-                options: [{label: '按菜品库展示', value: '1'}, {label: '按菜谱展示', value: '2'}],
-                defaultValue: '1',
+                render: () => {
+                    return (
+                        <RadioGroup onChange={this.handleSetType} value={this.state.setType}>
+                            <Radio value={'1'}>
+                                按菜品库展示
+                            </Radio>
+                            <Radio value={'2'}>
+                                按菜谱展示
+                            </Radio>
+                    </RadioGroup>
+                    )
+                }
             },
             menu: {
                 label: (<span style={{ lineHeight: '47px', display: 'inline-block' }}><span className={styles.required}>*</span>菜谱</span>),
@@ -213,16 +282,21 @@ class SpecialDishesTableWithBrand extends Component {
                 labelCol: { span: 4 },
                 wrapperCol: { span: 14 },
                 render: (decorator, form) => {
-                    return form.getFieldValue('setType') === '2' ? (
+                    return setType === '2' ? (
                         <FormItem>
                             {decorator({
                                 key: 'numberOfTimeType',
                                 rules: [{
                                     required: true, message: '请选择菜谱'
                                 }],
-                            })(<Select>
-                                <Option value="0">不限制</Option>
-                                <Option value="1">限制</Option>
+                                onChange: this.handleChangeFoodBook,
+                                initialValue: this.state.bookID,
+                            })(<Select
+                                    showSearch={true}
+                                    allowClear={true}
+                                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                                >
+                                {(foodBooks || []).map(({ bookID, bookName}) => (<Select.Option value={`${bookID}`} key={bookID}>{bookName}</Select.Option>))}
                             </Select>)}
                         </FormItem>
                     ) : null
@@ -235,13 +309,11 @@ class SpecialDishesTableWithBrand extends Component {
                 title="菜品售价参考值"
                 visible={true}
                 width="500px"
-                // onOk={this.handleOk}
+                onOk={this.handleConfirmPrice}
                 wrapClassName={styles.SpecialReferenceModalWarp}
                 onCancel={() => this.setState({ referenceModalVisible: false })}
             >
-                {
-                    this.basePriceForm && this.basePriceForm.getFieldValue('setType') === '2' &&  <div className={styles.referenceTip}>门店自建菜品按菜品库售价展示</div>
-                }
+                { setType === '2' &&  <div className={styles.referenceTip}>门店自建菜品按菜品库售价展示</div>}
                 <BaseForm
                     getForm={form => this.basePriceForm = form}
                     formItems={formItems}
@@ -469,6 +541,15 @@ class SpecialDishesTableWithBrand extends Component {
                 key: 'price',
                 width: 72,
                 className: 'TableTxtRight',
+                render: (text, record) => {
+                // console.log("🚀 ~ file: SpecialDishesTableWithBrand.jsx ~ line 544 ~ SpecialDishesTableWithBrand ~ render ~ text, record", text, record)
+                    if (this.state.setType === '2') {
+                        const food  = (this.state.foodCategory || []).find((item) => item.foodCode == record.foodCode) || {}
+                        // console.log("🚀 ~ file: SpecialDishesTableWithBrand.jsx ~ line 548 ~ SpecialDishesTableWithBrand ~ render ~ food", food)
+                        return food.price ? food.price : '--'
+                    }
+                    return text
+                }
             },
             {
                 title: SALE_LABEL.k5ezcu1b,
