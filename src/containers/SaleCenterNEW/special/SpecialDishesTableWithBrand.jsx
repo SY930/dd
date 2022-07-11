@@ -51,6 +51,7 @@ class SpecialDishesTableWithBrand extends Component {
             priceLst,
             data: [],
             formKeys: ['setType', 'discount'],
+            referenceModalVisible: false,
         }
     }
     componentDidMount() {
@@ -195,6 +196,61 @@ class SpecialDishesTableWithBrand extends Component {
             />
         )
     }
+
+    renderReferenceModal = () => {
+        const formItems = {
+            setType: {
+                label: '设置方式',
+                type: 'radio',
+                labelCol: { span: 4 },
+                wrapperCol: { span: 14 },
+                options: [{label: '按菜品库展示', value: '1'}, {label: '按菜谱展示', value: '2'}],
+                defaultValue: '1',
+            },
+            menu: {
+                label: (<span style={{ lineHeight: '47px', display: 'inline-block' }}><span className={styles.required}>*</span>菜谱</span>),
+                type: 'custom',
+                labelCol: { span: 4 },
+                wrapperCol: { span: 14 },
+                render: (decorator, form) => {
+                    return form.getFieldValue('setType') === '2' ? (
+                        <FormItem>
+                            {decorator({
+                                key: 'numberOfTimeType',
+                                rules: [{
+                                    required: true, message: '请选择菜谱'
+                                }],
+                            })(<Select>
+                                <Option value="0">不限制</Option>
+                                <Option value="1">限制</Option>
+                            </Select>)}
+                        </FormItem>
+                    ) : null
+                     
+                },
+            }
+        }
+        return (
+            <Modal
+                title="菜品售价参考值"
+                visible={true}
+                width="500px"
+                // onOk={this.handleOk}
+                wrapClassName={styles.SpecialReferenceModalWarp}
+                onCancel={() => this.setState({ referenceModalVisible: false })}
+            >
+                {
+                    this.basePriceForm && this.basePriceForm.getFieldValue('setType') === '2' &&  <div className={styles.referenceTip}>门店自建菜品按菜品库售价展示</div>
+                }
+                <BaseForm
+                    getForm={form => this.basePriceForm = form}
+                    formItems={formItems}
+                    formKeys={['setType', 'menu']}
+                    onChange={this.handleFormChange}
+                />
+            </Modal>
+        )
+    }
     /**
      * form modal
      */
@@ -225,6 +281,12 @@ class SpecialDishesTableWithBrand extends Component {
                 this.setState({modifyModalVisible: false})
             }
         });
+    }
+
+    handleChangePrice = () => {
+        this.setState({
+            referenceModalVisible: true,
+        })
     }
     renderPriceModifyModal() {
         let {formKeys} = this.state
@@ -285,6 +347,7 @@ class SpecialDishesTableWithBrand extends Component {
         const {
             selectorModalVisible,
             modifyModalVisible,
+            referenceModalVisible,
             data,
         } = this.state;
         const { intl } = this.props;
@@ -435,7 +498,7 @@ class SpecialDishesTableWithBrand extends Component {
                     <Col span={2}>
                         <span className={styles.gTitle}>{SALE_LABEL.k6hdpwcl}</span>
                     </Col>
-                    <Col span={4} offset={14}>
+                    <Col span={4} offset={10}>
                         <Button
                             // className={styles.gTitleLink}
                             onClick={this.handleModifyDishes}
@@ -451,6 +514,14 @@ class SpecialDishesTableWithBrand extends Component {
                             {'批量添加商品'}
                         </Button>
                     </Col>
+                    <Col span={4} offset={0}>
+                        <Button
+                            // className={styles.gTitleLink}
+                            onClick={this.handleChangePrice}
+                        >
+                            {'售价参考值'}
+                        </Button>
+                    </Col>
                 </Row>
                 <Row>
                     <Col>
@@ -464,6 +535,7 @@ class SpecialDishesTableWithBrand extends Component {
                 </Row>
                 {selectorModalVisible && this.renderFoodSelectorModal()}
                 {modifyModalVisible && this.renderPriceModifyModal()}
+                {referenceModalVisible && this.renderReferenceModal()}
             </FormItem>
         )
     }
