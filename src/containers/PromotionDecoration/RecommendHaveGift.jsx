@@ -209,7 +209,7 @@ export default class RecommendHaveGift extends Component {
                         btnBgColor={btnBgColorInvited}
                         onChange={(v) => {
                             onChange({ key: ['btnColorInvited'], value: v.btnColor })
-                            onChange({ key: ['btnBgColorInvited'], value: v.btnBgColor })
+                            // onChange({ key: ['btnBgColorInvited'], value: v.btnBgColor })
                         }}
                         handleLinearGradientChange={this.handleBtnInvitedChange}
                         key="btn3"
