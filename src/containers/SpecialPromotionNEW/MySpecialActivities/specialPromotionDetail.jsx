@@ -1518,7 +1518,23 @@ class SpecialPromotionDetail extends React.Component {
     }
 
     checkChannel = (record) => {
-        
+        axiosData(
+            '/specialPromotion/queryEventCustomerJoinChannel.ajax',
+            { eventCustomerItemID: record.itemID },
+            {},
+            { path: '' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW',
+        ).then((res) => {
+            if(res.code == '000') {
+                Modal.success({
+                    title: '投放渠道',
+                    content: res.data.launchChannelName || '',
+                    okText: '确定',
+                    iconType: 'info-circle-o',
+                })
+            }
+        }).catch((err) => {
+        })
     }
 
     // 活动参与表格
@@ -1755,8 +1771,9 @@ class SpecialPromotionDetail extends React.Component {
                 title: '投放渠道',
                 dataIndex: 'lanchChannel',
                 key: 'lanchChannel',
+                className: 'TableTxtCenter',
                 render: (text, record) => {
-                    return <a onClick={this.checkChannel}>查看</a>
+                    return <a onClick={() => this.checkChannel(record)}>查看</a>
                 }
             })
         }
