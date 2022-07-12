@@ -25,22 +25,31 @@ class ChannelModal extends React.Component {
     const reqParams = {
       ...(groupID ? { groupID, _groupID: groupID } : {}),
     };
-    const formData = this.props.form.getFieldsValue();
-    let url = ''
-    let params = { ...formData, ...reqParams }
-    if (modalType == 'group') {
-      url = isEdit ? '/launchchannel/launchChannelService_updateLaunchChannelGroup.ajax' : '/launchchannel/launchChannelService_addLaunchChannelGroup.ajax'
-      params.channelGroupItemID = isEdit ? this.state.formData.itemID : undefined
-    } else if (modalType == 'channel') {
-      url = isEdit ? '/launchchannel/launchChannelService_updateChannel.ajax' : '/launchchannel/launchChannelService_addChannel.ajax'
-      params.channelItemID = isEdit ? this.state.formData.itemID : undefined
-    }
-    handleSubmit(url, params)
+    this.props.form.validateFields((errs, values) => {
+      if (!errs) {
+        let url = ''
+        let params = { ...values, ...reqParams }
+        if (modalType == 'group') {
+          url = isEdit ? '/launchchannel/launchChannelService_updateLaunchChannelGroup.ajax' : '/launchchannel/launchChannelService_addLaunchChannelGroup.ajax'
+          params.channelGroupItemID = isEdit ? this.state.formData.itemID : undefined
+        } else if (modalType == 'channel') {
+          url = isEdit ? '/launchchannel/launchChannelService_updateChannel.ajax' : '/launchchannel/launchChannelService_addChannel.ajax'
+          params.channelItemID = isEdit ? this.state.formData.itemID : undefined
+        }
+        handleSubmit(url, params)
+      }
+    })
+  }
+
+  handleCancel = () => {
+    const { onCancel, form } = this.props
+    onCancel()
+    form.resetFields()
   }
 
   render() {
     const { formData } = this.state
-    const { modalType, modalVisible, isEdit, onCancel, form, groupData } = this.props;
+    const { modalType, modalVisible, isEdit, form, groupData } = this.props;
     const { getFieldDecorator } = form
 
     return (
@@ -48,10 +57,10 @@ class ChannelModal extends React.Component {
         maskClosable={false}
         visible={modalVisible}
         title={`${isEdit ? '编辑' : '添加'}${modalType == 'group' ? '分组' : '渠道'}`}
-        onCancel={onCancel}
+        onCancel={this.handleCancel}
         onOk={this.handleSave}
         footer={[
-          <Button onClick={onCancel} key="cancle">取消</Button>,
+          <Button onClick={this.handleCancel} key="cancle">取消</Button>,
           <Button type="primary" onClick={this.handleSave} key="save">确定</Button>,
         ]}
       >

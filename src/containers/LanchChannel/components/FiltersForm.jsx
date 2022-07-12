@@ -20,8 +20,8 @@ class FiltersForm extends React.Component {
     let params = {
       channelName: formData.channelName,
       createBy: formData.createBy,
-      createStampStart: formData.createStamp && formData.createStamp.length ? formData.createStamp[0].format('YYYY-MM-DD HH:mm:ss') : '',
-      createStampEnd: formData.createStamp && formData.createStamp.length ? formData.createStamp[1].format('YYYY-MM-DD HH:mm:ss') : '',
+      createStampStart: formData.createStamp && formData.createStamp.length ? formData.createStamp[0].format('YYYY-MM-DD 00:00:00') : '',
+      createStampEnd: formData.createStamp && formData.createStamp.length ? formData.createStamp[1].format('YYYY-MM-DD 23:59:59') : '',
     }
     onSearch(params)
   }

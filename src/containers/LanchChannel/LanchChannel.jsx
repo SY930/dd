@@ -213,6 +213,7 @@ class LanchChannel extends React.Component {
         if (res.code == '000') {
           message.success(`${isEdit ? '编辑' : '添加'}${modalType == 'group' ? '分组' : '渠道'}成功`)
           this.onCancel()
+          this.modalForm.resetFields()
           this.getGroupList()
           this.getChannelList(resetParams)
         }
@@ -284,6 +285,7 @@ class LanchChannel extends React.Component {
           </Col>
         </Row>
         <ChannelModal
+          ref={form => this.modalForm = form}
           modalVisible={modalVisible}
           modalType={modalType}
           isEdit={isEdit}
