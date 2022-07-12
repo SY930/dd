@@ -74,7 +74,7 @@ class List extends Component {
       <Table
         dataSource={list}
         bordered={true}
-        loading={loading}
+        // loading={loading}
         columns={columns}
         rowSelection={{
           selectedRowKeys: selectedRowKeys,

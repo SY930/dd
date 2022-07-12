@@ -7,18 +7,7 @@ import operationImg from '../assets/operation.png'
 class GroupTree extends Component {
 
   state = {
-    currentGroup: undefined,
     isExpand: true,
-  }
-
-  delChannel = () => { }
-
-  changeGroup = (item, index) => {
-    const { selectGroup } = this.props
-    this.setState({
-      currentGroup: index
-    })
-    selectGroup(item.itemID)
   }
 
   changeExpand = (e) => {
@@ -28,24 +17,16 @@ class GroupTree extends Component {
     })
   }
 
-  clickTotal = () => {
-    const { selectGroup } = this.props
-    this.setState({
-      currentGroup: '',
-    })
-    selectGroup('')
-  }
-
   render() {
-    const { groupData, addGroup, editGroup, delGroup } = this.props
-    const { currentGroup, isExpand } = this.state
+    const { groupData, addGroup, editGroup, delGroup, currentGroup, changeGroup, clickTotal } = this.props
+    const { isExpand } = this.state
 
     return (
       <div className={styles.groupWrapper}>
         <div className={classnames(styles.addButton, { [styles.active]: currentGroup === '' })}>
           <div className={styles.totalItem}>
             <Icon type={isExpand ? "caret-down" : "caret-right"} className={styles.totalIcon} onClick={this.changeExpand} />
-            <span onClick={this.clickTotal} className={styles.totalText} style={currentGroup === '' ? { color: '#fff' } : { color: '#333' }}>全部分组(4)</span>
+            <span onClick={clickTotal} className={styles.totalText} style={currentGroup === '' ? { color: '#fff' } : { color: '#333' }}>全部分组</span>
           </div>
           <Icon type='plus' onClick={() => addGroup('group', false, {})} style={{ fontSize: 15, color: '#333' }} />
         </div>
@@ -53,8 +34,8 @@ class GroupTree extends Component {
           {
             groupData.map((item, index) => (
               <div
-                className={classnames(styles.groupItem, { [styles.active]: index === currentGroup })}
-                onClick={() => this.changeGroup(item, index)}
+                className={classnames(styles.groupItem, { [styles.active]: item.itemID === currentGroup })}
+                onClick={() => changeGroup(item, index)}
                 key={item.itemID}
               >
                 <span>{item.channelGroupName}</span>
@@ -62,9 +43,9 @@ class GroupTree extends Component {
                   <Menu.Item key="0">
                     <a onClick={() => editGroup('group', true, item)}>编辑分组</a>
                   </Menu.Item>
-                  <Menu.Item key="1">
+                  {groupData.length > 1 && <Menu.Item key="1">
                     <a onClick={() => delGroup(item)}>删除分组</a>
-                  </Menu.Item>
+                  </Menu.Item>}
                 </Menu>} trigger={['hover']}>
                   <img src={operationImg} style={{ width: 16, height: 16 }} />
                 </Dropdown>

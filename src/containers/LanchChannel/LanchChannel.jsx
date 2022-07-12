@@ -21,7 +21,7 @@ class LanchChannel extends React.Component {
     loading: false,
     groupData: [],
     formData: {},
-    channelGroupItemID: '',
+    channelGroupItemID: undefined,
   }
 
   componentDidMount() {
@@ -104,10 +104,15 @@ class LanchChannel extends React.Component {
           .then((res) => {
             if (res.code == '000') {
               message.success('删除渠道成功');
+              this.setState({
+                selectedRowKeys: [],
+              })
               this.getGroupList()
               this.getChannelList({
                 pageNo: 1,
                 pageSize: 10,
+                channelGroupItemID: this.state.channelGroupItemID,
+                ...this.state.formData
               })
             }
           }).catch(err => {
@@ -184,11 +189,19 @@ class LanchChannel extends React.Component {
     this.getChannelList({
       pageNo: pagination.current,
       pageSize: pagination.pageSize,
+      channelGroupItemID: this.state.channelGroupItemID,
+      ...this.state.formData,
     })
   }
 
   handleSubmit = (url, params) => {
     const { isEdit, modalType } = this.state
+    let resetParams = {}
+    if (modalType == 'group') {
+      resetParams = isEdit ? { pageNo: 1, pageSize: 10, channelGroupItemID: this.state.channelGroupItemID } : { pageNo: 1, pageSize: 10 }
+    } else if (modalType == 'channel') {
+      resetParams = isEdit ? { pageNo: 1, pageSize: 10, channelGroupItemID: this.state.channelGroupItemID, ...this.state.formData } : { pageNo: 1, pageSize: 10, channelGroupItemID: this.state.channelGroupItemID }
+    }
     axiosData(
       url,
       { ...params },
@@ -201,18 +214,29 @@ class LanchChannel extends React.Component {
           message.success(`${isEdit ? '编辑' : '添加'}${modalType == 'group' ? '分组' : '渠道'}成功`)
           this.onCancel()
           this.getGroupList()
-          this.getChannelList({
-            pageNo: 1,
-            pageSize: 10,
-          })
+          this.getChannelList(resetParams)
         }
       }).catch(err => {
         // empty catch
       });
   }
 
+  changeGroup = (item, index) => {
+    this.setState({
+      channelGroupItemID: index
+    })
+    this.selectGroup(item.itemID)
+  }
+
+  clickTotal = () => {
+    this.setState({
+      channelGroupItemID: '',
+    })
+    this.selectGroup('')
+  }
+
   render() {
-    const { modalVisible, modalType, isEdit, loading, list, selectedRowKeys, total, groupData, currentData } = this.state
+    const { modalVisible, modalType, isEdit, loading, list, selectedRowKeys, total, groupData, currentData, channelGroupItemID } = this.state
 
     return (
       <div className="layoutsContainer">
@@ -241,7 +265,9 @@ class LanchChannel extends React.Component {
               addGroup={this.openModal}
               editGroup={this.openModal}
               delGroup={this.delGroup}
-              selectGroup={this.selectGroup}
+              currentGroup={channelGroupItemID}
+              changeGroup={this.changeGroup}
+              clickTotal={this.clickTotal}
             />
           </Col>
           <Col style={{ flex: 1 }} className={styles.tableClass}>
