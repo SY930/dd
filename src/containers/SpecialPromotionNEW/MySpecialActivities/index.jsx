@@ -260,6 +260,7 @@ class MySpecialActivities extends React.Component {
             groupID: '',
             channelContent: '',
             launchChannelID: '',
+            launchChannelIDWX: '',
             channelOptions: _.range(0, 10).map(item => ({ label: `渠道${item + 1}`, value: `渠道${item + 1}` })),
             page: '',
             scene: '',
@@ -721,7 +722,11 @@ class MySpecialActivities extends React.Component {
     }
     // 请求小程序二微码
     creatReleaseQrCode = () => {
-        const { eventWay, currAppID, qrItemID } = this.state
+        const { eventWay, currAppID, qrItemID, launchChannelIDWX } = this.state
+        if(!currAppID) {
+            message.error('请选择小程序');
+            return
+        }
         /*
         1.积分兑换： pages/subOr/voucherCenter/redeemDetail/main?eventID=6886285210829196181
         2.摇奖活动： pages/web/common/main?url=mpweb/promotion/lottery?eventID=6883767509506329493 (摇奖活动是跳转mp-web项目（h5）)
@@ -732,15 +737,15 @@ class MySpecialActivities extends React.Component {
         7.膨胀大礼包：pages/promotion/expand/main?e=6883743693912673173
         */
          const pageMap = {
-             '30':{page: 'pages/subOr/voucherCenter/redeemDetail/main', scene : `eventID=${qrItemID}`},
-             '20':{page: 'pages/web/common/main', scene : `u=l?eventID=${qrItemID}`},
-             '21':{page: 'pages/subOr/voucherCenter/voucherDetail/main', scene : `eventID=${qrItemID}`},
-             '79':{page: 'pages/promotion/blindBox/index', scene : `eventID=${qrItemID}`},
-             '68':{page: 'pages/promotion/recommend/main', scene : `e=${qrItemID}`},
-             '65':{page: 'pages/promotion/share/main', scene : `e=${qrItemID}`},
-             '66':{page: 'pages/promotion/expand/main', scene : `e=${qrItemID}`},
-             '82':{page: 'pages/promotion/grab/main', scene : `e=${qrItemID}`},
-             '83':{page: 'pages/promotion/passwordCoupons/main', scene : `e=${qrItemID}`},//口令领券
+             '30':{page: 'pages/subOr/voucherCenter/redeemDetail/main', scene : `eventID=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
+             '20':{page: 'pages/web/common/main', scene : `u=l?eventID=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
+             '21':{page: 'pages/subOr/voucherCenter/voucherDetail/main', scene : `eventID=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
+             '79':{page: 'pages/promotion/blindBox/index', scene : `eventID=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
+             '68':{page: 'pages/promotion/recommend/main', scene : `e=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
+             '65':{page: 'pages/promotion/share/main', scene : `e=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
+             '66':{page: 'pages/promotion/expand/main', scene : `e=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
+             '82':{page: 'pages/promotion/grab/main', scene : `e=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
+             '83':{page: 'pages/promotion/passwordCoupons/main', scene : `e=${qrItemID}&launchChannelID=${launchChannelIDWX}`},//口令领券
          }
          const params = {
              appID: currAppID,
@@ -787,8 +792,8 @@ class MySpecialActivities extends React.Component {
     handleCheckText = (value, label) => {
         // let v = Number(value);
         this.setState({
-            channelContent: label[0],
-            launchChannelID: value,
+            channelContent: label[0] || '',
+            launchChannelID: value || '',
         }, () => {
             this.handleCopyUrl()
         })
@@ -888,7 +893,7 @@ class MySpecialActivities extends React.Component {
     renderApp() {
         const { apps = [] } = this.state;
         return (
-            <Select style={{ width: '40%', margin: '0 10px' }} onChange={this.handleAppChange}>
+            <Select style={{ width: '51%', margin: '0 10px' }} onChange={this.handleAppChange} placeholder='请选择小程序'>
                 {apps.map((x, index) => {
                     return <Option key={index} value={x.appID} >{x.nickName || '缺失nickName子段'}</Option>
                 })}
@@ -972,19 +977,41 @@ class MySpecialActivities extends React.Component {
         )
     }
 
-    renderChannels() {
+    renderH5Channels() {
         const { sortedChannelList } = this.state;
         return (
             <TreeSelect
                 style={{ width: '51%', margin: '0 10px' }}
                 treeData={sortedChannelList}
-                dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                dropdownStyle={{ maxHeight: 260, overflow: 'auto' }}
                 placeholder="请选择渠道"
                 showSearch={true}
                 treeNodeFilterProp="label"
                 allowClear={true}
                 treeDefaultExpandAll
                 onChange={this.handleCheckText}
+            />
+        )
+
+    }
+
+    renderWXChannels() {
+        const { sortedChannelList } = this.state;
+        return (
+            <TreeSelect
+                style={{ width: '51%', margin: '0 10px' }}
+                treeData={sortedChannelList}
+                dropdownStyle={{ maxHeight: 260, overflow: 'auto' }}
+                placeholder="请选择渠道"
+                showSearch={true}
+                treeNodeFilterProp="label"
+                allowClear={true}
+                treeDefaultExpandAll
+                onChange={(value, label) => {
+                    this.setState({
+                        launchChannelIDWX: value || '',
+                    })
+                }}
             />
         )
 
@@ -1009,7 +1036,7 @@ class MySpecialActivities extends React.Component {
                             </div>
                             <div className={indexStyles.leftMpConent} >
                                 <div className={indexStyles.label}>请填写投放渠道</div>
-                                {this.renderChannels()}
+                                {this.renderH5Channels()}
                                 {/* <Input
                                     style={{
                                         width: '51%', margin: '0 10px'
@@ -1042,22 +1069,28 @@ class MySpecialActivities extends React.Component {
                     ? '' : <div className={indexStyles.copyBox}>
                         <h4 className={indexStyles.copyTitle}>小程序活动码提取</h4>
                         <Alert message="请先在小程序装修配置好该活动，再提取小程序活动码" type="warning" />
-                        <div className={indexStyles.copyUrlWrap}>
+                        <div className={indexStyles.copyUrlWrap} style={{ overflow: 'scroll' }}>
                             <div className={indexStyles.copyWrapHeader}>
-                                <div className={indexStyles.label}>请选择小程序</div>
+                                <div className={indexStyles.label} style={{ width: '25%', textAlign: 'right' }}>请选择小程序</div>
                                 {this.renderApp()}
+                            </div>
+                            <div className={indexStyles.copyWrapHeader}>
+                                <div className={indexStyles.label} style={{ width: '25%', textAlign: 'right' }}>请选择投放渠道</div>
+                                {this.renderWXChannels()}
+                            </div>
+                            <div style={{ textAlign: 'center', marginTop: 10 }}>
                                 <Button className={indexStyles.wxBtn} type="primary" onClick={this.creatReleaseQrCode} loading={xcxLoad}>生成小程序码</Button>
                             </div>
                             <div className={indexStyles.qrCodeBox} style={{ margin: 0 }}>
                                 {
                                     qrCodeImage && <div className={indexStyles.copyWrapHeader}>
-                                       <div className={indexStyles.label}> 小程序路径 </div>
-                                       <Input value={`${page}?${scene}`} style={{ width: '50%', margin: '0 10px' }}/>
+                                       <div className={indexStyles.label} style={{ width: '25%', textAlign: 'right' }}>小程序路径</div>
+                                       <Input value={`${page}?${scene}`} style={{ width: '51%', margin: '0 10px' }}/>
                                         <Button className={indexStyles.wxBtn} type="primary" onClick={this.handleToCopyRouter}>复制</Button>
                                     </div>
                                 }
                                 {
-                                    qrCodeImage ? <img className={indexStyles.miniProgramBox} src={qrCodeImage} id='__promotion_xcx_qr_img' alt="小程序二维码" /> : ''
+                                    qrCodeImage ? <img className={indexStyles.miniProgramBox} style={{ marginTop: 40 }} src={qrCodeImage} id='__promotion_xcx_qr_img' alt="小程序二维码" /> : ''
                                 }
                                 <Button className={indexStyles.xzqrCodeBtn} type="primary" disabled={!qrCodeImage} onClick={() => { this.downloadImage('__promotion_xcx_qr_img') }}>下载小程序码</Button>
                             </div>
