@@ -59,6 +59,7 @@ class SpecialDetailInfo extends React.Component {
             customerUseCountLimit, // 特价菜每人每天享受特价数量限制, 默认为1份, int, > 0
             isCustomerUseCountLimited, // 特价菜每人每天享受特价数量是否限制 0 为不限制使用数量, 1为限制
             shortRule,
+            bookID: '',
         };
 
         this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
@@ -103,6 +104,7 @@ class SpecialDetailInfo extends React.Component {
             isCustomerUseCountLimited,
             customerUseCountLimit,
             shortRule,
+            bookID
         } = this.state;
         const priceLst = data.map((item) => {
             return {
@@ -154,6 +156,9 @@ class SpecialDetailInfo extends React.Component {
                 rule.customerUseCountLimit = 0;
             }
         }
+        if (bookID) {
+            rule.bookID = bookID
+        }
         this.props.setPromotionDetail({
             priceLst,
             rule, // 为黑白名单而设
@@ -177,6 +182,10 @@ class SpecialDetailInfo extends React.Component {
         this.setState({
             data: val,
         })
+    }
+
+    onChangeBookID = (val) => {
+        this.setState({ bookID: val })
     }
 
     renderAdvancedSettingButton() {
@@ -394,6 +403,8 @@ class SpecialDetailInfo extends React.Component {
                         ) : (
                             <SpecialDishesTableWithBrand
                                 onChange={this.dishesChange}
+                                onChangeBookID={this.onChangeBookID}
+                                bookID={this.state.bookID}
                             />
                         )
                     }
