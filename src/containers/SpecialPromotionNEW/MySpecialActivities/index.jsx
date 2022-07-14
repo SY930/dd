@@ -19,7 +19,7 @@ import ExportModal from "../../GiftNew/GiftInfo/ExportModal";
 import PlanModal from '../common/PlanModal'
 import Cfg from '../../../constants/SpecialPromotionCfg';
 import Authority from '../../../components/common/Authority';
-import { BASIC_PROMOTION_MANAGE_PAGE } from '../../../constants/entryIds';
+import {  SPECIAL_PROMOTION_MANAGE_PAGE } from '../../../constants/entryIds';
 import { saleCenterSetSpecialBasicInfoAC, saleCenterResetDetailInfoAC, getAuthLicenseData } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import ExpireDateNotice from '../../../components/common/ExpireDateNotice';
 import {
@@ -1319,7 +1319,7 @@ class MySpecialActivities extends React.Component {
                         </li>
 
                         <li>
-                            <Authority rightCode={SPECIAL_PROMOTION_QUERY} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
+                            <Authority rightCode={SPECIAL_PROMOTION_QUERY} entryId={ SPECIAL_PROMOTION_MANAGE_PAGE}>
                                 <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}><Icon type="search" />
                                     {COMMON_LABEL.query}
                                 </Button>
@@ -1401,7 +1401,7 @@ class MySpecialActivities extends React.Component {
 
         return (
             <div>
-                <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
+                <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY} entryId={ SPECIAL_PROMOTION_MANAGE_PAGE}>
                     <a
                         href="#"
                         onClick={() => {
@@ -1634,7 +1634,7 @@ class MySpecialActivities extends React.Component {
                         return this.renderPayHaveGift(text, index, record)
                     }
                     return (<span>
-                        <Authority rightCode={SPECIAL_PROMOTION_UPDATE} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
+                        <Authority rightCode={SPECIAL_PROMOTION_UPDATE} entryId={ SPECIAL_PROMOTION_MANAGE_PAGE}>
                             <a
                                 href="#"
                                 disabled={
@@ -1690,7 +1690,7 @@ class MySpecialActivities extends React.Component {
                                 {COMMON_LABEL.edit}
                             </a>
                         </Authority>
-                        <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
+                        <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY} entryId={ SPECIAL_PROMOTION_MANAGE_PAGE}>
                             <a
                                 href="#"
                                 onClick={() => {
@@ -1719,7 +1719,7 @@ class MySpecialActivities extends React.Component {
                             </a>
                         </Authority>
                         
-                        <Authority rightCode={SPECIAL_PROMOTION_DELETE} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
+                        <Authority rightCode={SPECIAL_PROMOTION_DELETE} entryId={ SPECIAL_PROMOTION_MANAGE_PAGE}>
                             <a
                                 href="#"
                                 disabled={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)}

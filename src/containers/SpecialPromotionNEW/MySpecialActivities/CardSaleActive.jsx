@@ -9,7 +9,7 @@ import {
     SPECIAL_PROMOTION_UPDATE,
     SPECIAL_PROMOTION_DELETE,
 } from '../../../constants/authorityCodes';
-import { BASIC_PROMOTION_MANAGE_PAGE } from '../../../constants/entryIds';
+import {  SPECIAL_PROMOTION_MANAGE_PAGE } from '../../../constants/entryIds';
 import styles from './mySpecialActivities.less'
 import stylesPage from '../../SaleCenterNEW/ActivityPage.less';
 import emptyPage from '../../../assets/empty_page.png'
@@ -321,7 +321,7 @@ class CardSaleActive extends Component {
                                         </div> : null
                                 } */}
                                         <div className={styles.activityOperate}>
-                                            <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
+                                            <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY} entryId={ SPECIAL_PROMOTION_MANAGE_PAGE}>
                                                 <span
                                                     className={styles.operateDetail}
                                                     onClick={e => this.handleShowDetailModal(e, item, index)}
@@ -330,7 +330,7 @@ class CardSaleActive extends Component {
                                                 </span>
                                             </Authority>
                                             {
-                                                item.eventWay != '80' && <Authority rightCode={SPECIAL_PROMOTION_UPDATE} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
+                                                item.eventWay != '80' && <Authority rightCode={SPECIAL_PROMOTION_UPDATE} entryId={ SPECIAL_PROMOTION_MANAGE_PAGE}>
                                                     <span
                                                         className={styles.operateEdit}
                                                         disabled={
@@ -346,7 +346,7 @@ class CardSaleActive extends Component {
                                                 </Authority>
                                             }
                                             {
-                                                item.eventWay != '80' && <Authority rightCode={SPECIAL_PROMOTION_DELETE} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
+                                                item.eventWay != '80' && <Authority rightCode={SPECIAL_PROMOTION_DELETE} entryId={ SPECIAL_PROMOTION_MANAGE_PAGE}>
                                                     <span
                                                         className={styles.operateDelete}
                                                         disabled={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)}
