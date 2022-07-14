@@ -31,7 +31,7 @@ class List extends Component {
         width: 60,
         className: styles.tdCenter,
         render: (text, record, index) => {
-          return index + 1
+          return (pageNo - 1) * pageSize + index + 1
         }
       },
       {
