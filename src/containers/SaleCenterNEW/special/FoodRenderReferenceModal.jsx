@@ -18,7 +18,7 @@ class FoodRenderReferenceModal extends Component {
         super(props);
         this.state = {
             setType: props.setFoodType || '1',
-            bookID: '',
+            bookID: props.bookID || '',
         }
     }
 
@@ -28,7 +28,7 @@ class FoodRenderReferenceModal extends Component {
 
   handleConfirmPrice = async () => {
       const { bookID, setType } = this.state
-      if (setType === '2' && (!bookID || !this.props.bookID)) {
+      if (setType === '2' && !bookID) {
           return message.warning('请选择菜谱')
       }
       if (setType === '1') {
