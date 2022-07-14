@@ -1539,7 +1539,7 @@ class SpecialPromotionDetail extends React.Component {
 
     // 活动参与表格
     renderActivityInfoTable() {
-        const hasChannelActivity = [20, 21, 22, 30, 65, 68]
+        const hasChannelActivity = [20, 21, 22, 30, 65, 68, 66, 83, 79]
         const eventWay = this.state.eventInfo.data.eventWay;
         const columns = [
             {
