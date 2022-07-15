@@ -83,7 +83,7 @@ class ChannelModal extends React.Component {
                 ],
                 initialValue: formData.channelGroupItemID,
               })(
-                <Select placeholder='请选择分组'>
+                <Select placeholder='请选择分组' showSearch allowClear filterOption={(value, option) => option.props.children.indexOf(value) > -1}>
                   {
                     groupData.map(item => {
                       return <Select.Option value={item.itemID} key={item.itemID}>{item.channelGroupName}</Select.Option>

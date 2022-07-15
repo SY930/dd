@@ -251,7 +251,7 @@ class LanchChannel extends React.Component {
             </Tooltip>
           </div>
           <div>
-            <Button onClick={() => this.openModal('channel', false, {})} type="ghost" icon='plus'>新增渠道</Button>
+            <Button onClick={() => this.openModal('channel', false, {channelGroupItemID: channelGroupItemID || undefined})} type="ghost" icon='plus'>新增渠道</Button>
             <Button type="ghost" onClick={this.batchDelete} style={{ marginLeft: 20 }} icon="delete">批量删除</Button>
           </div>
         </div>
