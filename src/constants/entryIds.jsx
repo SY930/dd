@@ -6,4 +6,4 @@ export const SPECIAL_PROMOTION_MANAGE_PAGE = '10000400'; // 测试环境特色�
 
 // 线上环境
 // export const BASIC_PROMOTION_MANAGE_PAGE = '10000922'; // 线上环境基础营销管理页
-// export const SPECIAL_PROMOTION_MANAGE_PAGE = '10000922'; // 线上环境特色营销管理页
+// export const SPECIAL_PROMOTION_MANAGE_PAGE = '10000932'; // 线上环境特色营销管理页
