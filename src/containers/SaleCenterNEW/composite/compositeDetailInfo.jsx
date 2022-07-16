@@ -13,6 +13,7 @@ import CategoryAndFoodSelectorForShop from '../common/CategoryAndFoodSelectorFor
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from '../IntlDecor';
+import { notValidDiscountNum } from "../../../containers/SaleCenterNEW/discount/discountDetailInfo.jsx";
 
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
@@ -401,7 +402,7 @@ class CompositeDetailInfo extends React.Component {
     handleDiscountChange(idx, val) {
         const { conditions } = this.state;
         conditions[idx].discount = val.number;
-        if (conditions[idx].flag == '1' && (val.number == '' || val.number == null || val.number > 100)) {
+        if (conditions[idx].flag == '1' && (notValidDiscountNum(val.number))) {
             conditions[idx].discountStatus = 'error';
         } else {
             conditions[idx].discountStatus = 'success';
@@ -597,6 +598,7 @@ class CompositeDetailInfo extends React.Component {
         const { intl } = this.props;
         const k5ezdbiy = intl.formatMessage(SALE_STRING.k5ezdbiy);
         const k5hkj1v3 = intl.formatMessage(SALE_STRING.k5hkj1v3);
+        const k5ezdc19 = intl.formatMessage(SALE_STRING.k5ezdc19);
         const options = this.state.data.map((dataItem, dataIndex) => {
             return {
                 label: `${k5hkj1v3}${dataIndex + 1}`,
@@ -607,7 +609,7 @@ class CompositeDetailInfo extends React.Component {
             this.state.conditions.map((item, idx) => {
                 return (
                     <div key={`${idx}`} className={styles.moreFormItem}>
-                        <Col span={10} offset={3}>
+                        <Col span={6} offset={2}>
                             <li className={checkStyle.checkBoxStyles}>
                                 <FormItem>
                                     <CheckboxGroup
@@ -620,14 +622,22 @@ class CompositeDetailInfo extends React.Component {
                                 </FormItem>
                             </li>
                         </Col>
-                        <Col span={9}>
+                        <Col span={14}>
                             <FormItem className={styles.radioInLine}>
                                 <ButtonGroup size="small" >
                                     <Button  value="0" type={item.flag == '0' ? 'primary' : 'default'} onClick={(e) => { this.handleRadioChange(idx, '0') }}>{SALE_LABEL.k5ezcd0f}</Button>
                                     <Button  value="2" type={item.flag == '2' ? 'primary' : 'default'} onClick={(e) => { this.handleRadioChange(idx, '2') }}>{SALE_LABEL.k5hkj2k3}</Button>
                                     <Button  value="1" type={item.flag == '1' ? 'primary' : 'default'} onClick={(e) => { this.handleRadioChange(idx, '1') }}>{SALE_LABEL.k5ezcu1b}</Button>
                                 </ButtonGroup>
-                                <FormItem validateStatus={item.flag == '0' ? item.cutStatus : item.flag == '1' ? item.discountStatus : item.cutToStatus} style={{ paddingTop: '0px' }}>
+                                <FormItem 
+                                    validateStatus={
+                                        item.flag == '0' ? item.cutStatus : item.flag == '1' ? item.discountStatus : item.cutToStatus
+                                    } 
+                                    help={
+                                        item.flag == '1' && item.discountStatus == 'error' ? SALE_LABEL.k5gez9pw : ''
+                                    }
+                                    style={{ paddingTop: '0px' }}
+                                >
                                     {
                                         item.flag == '0' &&
                                             <PriceInput
@@ -655,10 +665,11 @@ class CompositeDetailInfo extends React.Component {
                                     {
                                         item.flag == '1' &&
                                             <PriceInput
-                                                addonAfter="%"
+                                                addonAfter={k5ezdc19}
                                                 key={`discunt${idx}`}
                                                 type="text"
                                                 modal="float"
+                                                discountMode={true}
                                                 value={{ number: item.discount }}
                                                 onChange={(val) => {
                                                     this.handleDiscountChange(idx, val);

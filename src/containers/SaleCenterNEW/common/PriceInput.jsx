@@ -7,11 +7,38 @@
  * @Last modified time: 2017-04-07T10:12:09+08:00
  * @Copyright: Copyright(c) 2017-present Hualala Co.,Ltd.
  */
-import React from 'react';
+import React, { Fragment } from 'react';
 import { Form, Input, Select, Button } from 'antd';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+const maxDiscount = 100;
+const minDiscount = 0;
+
+const renderDiscountModeDesc = (number) => {
+    let desc = '';
+    if(number === '' || number == null){
+        return ''
+    }
+    if(number <= 0){
+        desc = '折后免费'
+    }
+    if(number >= maxDiscount){
+        desc = '不打折'
+    }
+    if(number > minDiscount && number < maxDiscount){
+        if(number % 10 == 0){
+            desc = `${number / 10}折`
+        }else{
+            if(number < 1){
+                desc = `${(number / 10).toFixed(2)}折`
+            } else{
+                desc = `${(number / 10).toFixed(1)}折`
+            }
+        }
+    }
+    return `【${desc}】`;
+}
 
 class PriceInput extends React.Component {
     constructor(props) {
@@ -78,9 +105,20 @@ class PriceInput extends React.Component {
                 valueNum = parseInt(value);
             }
         }
-        this.setState({ number: valueNum }, () => {
-            this.props.onChange && this.props.onChange(Object.assign({}, this.state));
-        });
+        if(this.props.discountMode){
+            // _TODO
+            if(valueNum > maxDiscount){
+                valueNum = maxDiscount;
+            }
+
+            this.setState({ number: valueNum }, () => {
+                this.props.onChange && this.props.onChange(Object.assign({}, this.state));
+            });
+        }else{
+            this.setState({ number: valueNum }, () => {
+                this.props.onChange && this.props.onChange(Object.assign({}, this.state));
+            });
+        }
     }
 
     handleBlur(e) {
@@ -114,16 +152,26 @@ class PriceInput extends React.Component {
         delete props.maxNum; // 将maxNum 属性传递下去会产生warning
         const state = this.state;
         return (
-            <Input
-                {...props}
-                type="text"
-                size={size}
-                value={state.number}
-                onBlur={this.handleBlur}
-                onChange={this.handleNumberChange}
-                addonBefore={this.props.addonBefore}
-                addonAfter={this.props.addonAfter}
-            />
+            <span style={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
+                <Input
+                    {...props} 
+                    type="text"
+                    size={size}
+                    value={state.number}
+                    onBlur={this.handleBlur}
+                    onChange={this.handleNumberChange}
+                    addonBefore={this.props.addonBefore}
+                    addonAfter={this.props.addonAfter}
+                />
+                {
+                    this.props.discountMode ?
+                    <span style={{width: '100%'}}>
+                        {renderDiscountModeDesc(state.number)}
+                    </span>
+                    :null
+                }
+            </span>
+           
         );
     }
 }

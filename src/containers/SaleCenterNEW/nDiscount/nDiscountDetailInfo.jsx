@@ -84,15 +84,16 @@ class NDiscountDetailInfo extends React.Component {
         let nextFlag = true;
         const { nDiscount, priceLst, stageType, shortRule = '0' } = this.state;
         const disArr = [];
+        const nDiscountValidateFlags = [];
 
         Object.keys(nDiscount).map((key) => {
-            if (nDiscount[key].value == '') {
-                nextFlag = false;
-                nDiscount[key].validateFlag = false;
-            } else {
+            nDiscountValidateFlags.push(nDiscount[key].validateFlag);
+            if(nDiscount[key].validateFlag){
                 disArr.push(nDiscount[key]);
             }
-        })
+        });
+
+        nextFlag = nDiscountValidateFlags.every(validateFlag => validateFlag);
         this.setState({ nDiscount });
 
         if (nextFlag && stageType == '2') {
