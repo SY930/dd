@@ -213,7 +213,7 @@ class CompositeDetailInfo extends React.Component {
         let groupCountFlag = true;
         conditions.forEach((condition) => {
             // 校验
-            if (condition.flag == '1' && (condition.discount == null || condition.discount == '' || condition.discount > 100)) {
+            if (condition.flag == '1' && notValidDiscountNum(condition.discount)) {
                 condition.discountStatus = 'error';
                 nextFlag = false;
             }
@@ -427,6 +427,7 @@ class CompositeDetailInfo extends React.Component {
     }
 
     handlePromotionSetting(idx, val) {
+        console.log('idx=====', idx, val);
         const { data } = this.state;
         data[idx].flag = val.categoryOrDish;
         data[idx].scopeLst = [];
@@ -599,6 +600,8 @@ class CompositeDetailInfo extends React.Component {
         const k5ezdbiy = intl.formatMessage(SALE_STRING.k5ezdbiy);
         const k5hkj1v3 = intl.formatMessage(SALE_STRING.k5hkj1v3);
         const k5ezdc19 = intl.formatMessage(SALE_STRING.k5ezdc19);
+        const k5ezdckg = intl.formatMessage(SALE_STRING.k5ezdckg);
+        
         const options = this.state.data.map((dataItem, dataIndex) => {
             return {
                 label: `${k5hkj1v3}${dataIndex + 1}`,
@@ -669,6 +672,7 @@ class CompositeDetailInfo extends React.Component {
                                                 key={`discunt${idx}`}
                                                 type="text"
                                                 modal="float"
+                                                placeholder={k5ezdckg}
                                                 discountMode={true}
                                                 value={{ number: item.discount }}
                                                 onChange={(val) => {

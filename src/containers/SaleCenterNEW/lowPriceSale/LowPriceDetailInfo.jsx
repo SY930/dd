@@ -29,6 +29,7 @@ import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from '../IntlDecor';
+import { notValidDiscountNum } from "../../../containers/SaleCenterNEW/discount/discountDetailInfo.jsx";
 
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -129,7 +130,7 @@ class LowPriceDetailInfo extends React.Component {
             return
         }
         if (disType == 2) {
-            if (Number(discountRate || 0) <= 0 || Number(discountRate || 0) > 10) {
+            if (notValidDiscountNum(discountRate)) {
                 this.setState({
                     discountFlag: false
                 });
@@ -202,8 +203,7 @@ class LowPriceDetailInfo extends React.Component {
     }
 
     handleDiscountRateChange(val) {
-        const numberValue = Number(val.number || 0);
-        const discountFlag = numberValue > 0 && numberValue <= 10;
+        const discountFlag = !notValidDiscountNum(val.number);
         this.setState({
             discountRate: val.number,
             discountFlag
@@ -226,7 +226,7 @@ class LowPriceDetailInfo extends React.Component {
 
     onDiscountChange(value) {
         let { discount, discountFlag } = this.state;
-        if (value == null || value > 10) {
+        if (notValidDiscountNum(value)) {
             discountFlag = false;
             discount = value;
         } else {
@@ -295,10 +295,10 @@ class LowPriceDetailInfo extends React.Component {
                 <p>{SALE_LABEL.k5ez4nw2}</p>
                 </FormItem>
                 <Row>
-                    <Col span={8} push={1}>
+                    <Col span={7} push={1}>
                         {this.renderStageAmount()}
                     </Col>
-                    <Col span={15} push={1}>
+                    <Col span={17} push={1}>
                         {this.renderFreeAmountAndDiscount()}
                     </Col>
                 </Row>
@@ -367,16 +367,19 @@ class LowPriceDetailInfo extends React.Component {
                 validateStatus={this.state.freeAmountFlag && this.state.discountFlag ?'success':'error'}
                 help={!this.state.freeAmountFlag ? SALE_LABEL.k5ez4rmr : !this.state.discountFlag ? SALE_LABEL.k5ezcavr : null}
             >
-                <div className={[styles.flexFormItemNoMod, styles.radioInLine].join(' ')}>
+                <div 
+                    className={[styles.flexFormItemNoMod, styles.radioInLine].join(' ')} 
+                    style={{display: 'flex', justifyContent: 'space-between'}}
+                >
                     <ButtonGroup size="small">
                         <Button  value="3" type={disType == '3' ? 'primary' : 'default'} onClick={() => this.handleDisTypeChange('3')}>{k5ezcvbm}</Button>
                         <Button  value="1" type={disType == '1' ? 'primary' : 'default'} onClick={() => this.handleDisTypeChange('1')}>{SALE_LABEL.k5ezcd0f}</Button>
                         <Button  value="2" type={disType == '2' ? 'primary' : 'default'} onClick={() => this.handleDisTypeChange('2')}>{SALE_LABEL.k5ezcu1b}</Button>
                     </ButtonGroup>
                     <div style={{
-                        display: 'inline-block',
-                        width: '100px',
-                        marginLeft: '10px'
+                        flex: 1,
+                        width: '200px',
+                        marginLeft: '5px'
                     }}>
                         {disType != 2 &&
                         <PriceInput
@@ -390,16 +393,16 @@ class LowPriceDetailInfo extends React.Component {
                         />
                         }
                         {disType == 2 &&
-                        <PriceInput
-                            addonAfter={k5ezdc19}
-                            discountMode={true}
-                            value={{number: this.state.discountRate}}
-                            placeholder={k5ezdckg}
-                            defaultValue={{number: this.state.discountRate}}
-                            onChange={this.handleDiscountRateChange}
-                            maxNum={2}
-                            modal="float"
-                        />
+                            <PriceInput
+                                addonAfter={k5ezdc19}
+                                discountMode={true}
+                                value={{number: this.state.discountRate}}
+                                placeholder={k5ezdckg}
+                                defaultValue={{number: this.state.discountRate}}
+                                onChange={this.handleDiscountRateChange}
+                                maxNum={3}
+                                modal="float"
+                            />
                         }
                     </div>
                 </div>

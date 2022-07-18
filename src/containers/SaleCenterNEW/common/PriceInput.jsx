@@ -15,26 +15,25 @@ const Option = Select.Option;
 const maxDiscount = 100;
 const minDiscount = 0;
 
-const renderDiscountModeDesc = (number) => {
+export const renderDiscountModeDesc = (number) => {
     let desc = '';
     if(number === '' || number == null){
         return ''
     }
     if(number <= 0){
-        desc = '折后免费'
+        desc = '免费'
     }
     if(number >= maxDiscount){
         desc = '不打折'
     }
     if(number > minDiscount && number < maxDiscount){
-        if(number % 10 == 0){
-            desc = `${number / 10}折`
+        if(number.length > 5){
+            number = number.slice(0,5);
+        }
+        if(number % 10 == 0 || parseInt(number) == parseFloat(number)){
+            desc = `${number / 10}折`;
         }else{
-            if(number < 1){
-                desc = `${(number / 10).toFixed(2)}折`
-            } else{
-                desc = `${(number / 10).toFixed(1)}折`
-            }
+            desc = `${(number / 10).toFixed(2)}折`;
         }
     }
     return `【${desc}】`;
@@ -162,6 +161,7 @@ class PriceInput extends React.Component {
                     onChange={this.handleNumberChange}
                     addonBefore={this.props.addonBefore}
                     addonAfter={this.props.addonAfter}
+                    style={{width: this.props.discountMode && '113px'}}
                 />
                 {
                     this.props.discountMode ?

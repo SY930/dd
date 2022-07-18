@@ -27,12 +27,21 @@ const isValidNumber = (value) => value != null && value != '' && !Number.isNaN(v
 
 export const notValidDiscountNum = (strNum) => {
     if(typeof strNum == 'string'){
+        if(+strNum !== +strNum){
+            return true;
+        }
         if(strNum.indexOf('.') == -1){
             // 没有小数点
-           return strNum > 100 || (strNum.length > 1 && strNum[0] == 0) || strNum < 0
+           return strNum > 100 || (strNum.length > 1 && strNum[0] == 0) || strNum < 0;
         }else{
+            let index = strNum.indexOf('.');
             // 有小数点
-            return (strNum[0] == 0 && strNum[1] == 0) || strNum.length > 3
+            if(strNum > 0 && strNum < 10){
+                return strNum.length > 3;
+            }else if(strNum > 10){
+                return strNum.length > 4;
+            }
+            return strNum[0] == 0 || index != strNum.lastIndexOf('.');
        }
     }
     return false;
