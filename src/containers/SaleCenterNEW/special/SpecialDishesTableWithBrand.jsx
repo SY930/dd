@@ -137,6 +137,7 @@ class SpecialDishesTableWithBrand extends Component {
         }, [])
         this.setState({ data })
         this.props.onChange(data)
+        this.props.onChangeBookID(this.state.bookID)
     }
     onPriceCellChange = (val, {index}) => {
         const data = [...this.state.data];
