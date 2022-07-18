@@ -22,6 +22,10 @@ class FoodRenderReferenceModal extends Component {
         }
     }
 
+    componentDidMount() {
+        this.props.onChangeBookID(this.props.bookID)
+    }
+
   handleChangeFoodBook = (value) => {
       this.setState({ bookID: value })
   }
