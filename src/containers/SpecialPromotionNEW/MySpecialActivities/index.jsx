@@ -336,7 +336,7 @@ class MySpecialActivities extends React.Component {
             label: item.channelGroupName,
             value: item.channelGroupItemID,
             key: item.channelGroupItemID,
-            disabled: true,
+            // disabled: true,
             children: item.channelInfos.map(child => {
               return {
                 label: child.channelName,
@@ -791,12 +791,23 @@ class MySpecialActivities extends React.Component {
 
     handleCheckText = (value, label) => {
         // let v = Number(value);
-        this.setState({
-            channelContent: label[0] || '',
-            launchChannelID: value || '',
-        }, () => {
-            this.handleCopyUrl()
-        })
+        const groupIds = this.state.sortedChannelList.map(item => item.value)
+        if(groupIds.includes(value)) {
+            message.warning('请选择渠道')
+            this.setState({
+                channelContent: '',
+                launchChannelID: '',
+            }, () => {
+                this.handleCopyUrl()
+            })
+        } else {
+            this.setState({
+                channelContent: label[0] || '',
+                launchChannelID: value || '',
+            }, () => {
+                this.handleCopyUrl()
+            })
+        }
     }
 
     handleChangeTabs = (key) => {
@@ -978,7 +989,7 @@ class MySpecialActivities extends React.Component {
     }
 
     renderH5Channels() {
-        const { sortedChannelList } = this.state;
+        const { sortedChannelList, launchChannelID } = this.state;
         return (
             <TreeSelect
                 style={{ width: '51%', margin: '0 10px' }}
@@ -989,6 +1000,7 @@ class MySpecialActivities extends React.Component {
                 treeNodeFilterProp="label"
                 allowClear={true}
                 treeDefaultExpandAll
+                value={launchChannelID || undefined}
                 onChange={this.handleCheckText}
             />
         )
@@ -996,7 +1008,7 @@ class MySpecialActivities extends React.Component {
     }
 
     renderWXChannels() {
-        const { sortedChannelList } = this.state;
+        const { sortedChannelList, launchChannelIDWX } = this.state;
         return (
             <TreeSelect
                 style={{ width: '51%', margin: '0 10px' }}
@@ -1007,10 +1019,19 @@ class MySpecialActivities extends React.Component {
                 treeNodeFilterProp="label"
                 allowClear={true}
                 treeDefaultExpandAll
+                value={launchChannelIDWX || undefined}
                 onChange={(value, label) => {
-                    this.setState({
-                        launchChannelIDWX: value || '',
-                    })
+                    const groupIds = sortedChannelList.map(item => item.value)
+                    if(groupIds.includes(value)) {
+                        message.warning('请选择渠道')
+                        this.setState({
+                            launchChannelIDWX: '',
+                        })
+                    } else {
+                        this.setState({
+                            launchChannelIDWX: value || '',
+                        })
+                    }
                 }}
             />
         )
