@@ -1,6 +1,7 @@
 import React from 'react';
 import { Modal, Input, Form, Button, Select } from 'antd';
 import { getStore } from '@hualala/platform-base';
+import BaseForm from 'components/common/BaseForm';
 
 
 class ChannelModal extends React.Component {
@@ -9,6 +10,7 @@ class ChannelModal extends React.Component {
     this.state = {
       formData: {},
     };
+    this.modalFrom = null
   }
 
   componentDidUpdate(prevProps) {
@@ -25,7 +27,7 @@ class ChannelModal extends React.Component {
     const reqParams = {
       ...(groupID ? { groupID, _groupID: groupID } : {}),
     };
-    this.props.form.validateFields((errs, values) => {
+    this.modalFrom.validateFields((errs, values) => {
       if (!errs) {
         let url = ''
         let params = { ...values, ...reqParams }
@@ -37,20 +39,60 @@ class ChannelModal extends React.Component {
           params.channelItemID = isEdit ? this.state.formData.itemID : undefined
         }
         handleSubmit(url, params)
+      } else {
+        console.log(errs)
       }
     })
   }
 
   handleCancel = () => {
-    const { onCancel, form } = this.props
+    const { onCancel } = this.props
     onCancel()
-    form.resetFields()
+    this.modalFrom.resetFields()
   }
 
   render() {
     const { formData } = this.state
-    const { modalType, modalVisible, isEdit, form, groupData } = this.props;
-    const { getFieldDecorator } = form
+    const { modalType, modalVisible, isEdit, groupData } = this.props;
+    const formItems = {
+      channelGroupName: {
+        type: 'text',
+        label: '分组名称',
+        placeholder: '请输入分组名称',
+        rules: [
+          { required: true, message: '请输入分组名称' },
+          { pattern: /^[\u4E00-\u9FA5A-Za-z0-9\-]{1,10}$/, message: '输入限制为10位以内汉字、数字、大小写字母' }
+        ],
+      },
+      channelGroupItemID: {
+        type: 'custom',
+        label: '选择分组',
+        render: (decorator) => (
+          decorator({
+            key: 'channelGroupItemID',
+          })(
+            <Select placeholder='请选择分组' showSearch allowClear filterOption={(value, option) => option.props.children.indexOf(value) > -1}>
+              {
+                groupData.map(item => {
+                  return <Select.Option value={item.itemID} key={item.itemID}>{item.channelGroupName}</Select.Option>
+                })
+              }
+            </Select>
+          )
+        )
+      },
+      channelName: {
+        type: 'text',
+        label: '渠道名称',
+        placeholder: '请输入渠道名称',
+        rules: [
+          { required: true, message: '请输入渠道名称' },
+          { pattern: /^[\u4E00-\u9FA5A-Za-z0-9\-]{1,20}$/, message: '输入限制为20位以内汉字、数字、大小写字母' }
+        ],
+      },
+    }
+
+    const formKeys = modalType == 'group' ? ['channelGroupName'] : ['channelGroupItemID', 'channelName']
 
     return (
       <Modal
@@ -64,47 +106,16 @@ class ChannelModal extends React.Component {
           <Button type="primary" onClick={this.handleSave} key="save">确定</Button>,
         ]}
       >
-        <Form>
-          {modalType == 'group' ? <Form.Item label="分组名称" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
-            {getFieldDecorator('channelGroupName', {
-              rules: [
-                { required: true, message: '请输入分组名称' },
-                { pattern: /^[\u4E00-\u9FA5A-Za-z0-9\-]{1,10}$/, message: '输入限制为10位以内汉字、数字、大小写字母' }
-              ],
-              initialValue: formData.channelGroupName,
-            })(
-              <Input placeholder='请输入分组名称' />
-            )}
-          </Form.Item> : <div>
-            <Form.Item label="选择分组" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
-              {getFieldDecorator('channelGroupItemID', {
-                rules: [
-                  { required: true, message: '请选择分组' }
-                ],
-                initialValue: formData.channelGroupItemID,
-              })(
-                <Select placeholder='请选择分组' showSearch allowClear filterOption={(value, option) => option.props.children.indexOf(value) > -1}>
-                  {
-                    groupData.map(item => {
-                      return <Select.Option value={item.itemID} key={item.itemID}>{item.channelGroupName}</Select.Option>
-                    })
-                  }
-                </Select>
-              )}
-            </Form.Item>
-            <Form.Item label="渠道名称" labelCol={{ span: 4 }} wrapperCol={{ span: 16 }}>
-              {getFieldDecorator('channelName', {
-                rules: [
-                  { required: true, message: '请输入渠道名称' },
-                  { pattern: /^[\u4E00-\u9FA5A-Za-z0-9\-]{1,20}$/, message: '输入限制为20位以内汉字、数字、大小写字母' }
-                ],
-                initialValue: formData.channelName,
-              })(
-                <Input placeholder='请输入渠道名称' />
-              )}
-            </Form.Item>
-          </div>}
-        </Form>
+        <BaseForm
+          getForm={(form) => { this.modalFrom = form }}
+          formItems={formItems}
+          formItemLayout={{
+            labelCol: {span: 4},
+            wrapperCol: {span: 16}
+          }}
+          formKeys={formKeys}
+          formData={formData}
+        />
       </Modal>
     );
   }
