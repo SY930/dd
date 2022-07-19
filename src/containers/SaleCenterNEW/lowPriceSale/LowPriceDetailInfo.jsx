@@ -30,6 +30,7 @@ import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from '../IntlDecor';
 import { notValidDiscountNum } from "../../../containers/SaleCenterNEW/discount/discountDetailInfo.jsx";
+import { handlerDiscountToParam } from '../../../containers/SaleCenterNEW/common/PriceInput';
 
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -106,7 +107,7 @@ class LowPriceDetailInfo extends React.Component {
             display,
             ruleType,
             subRule: subRule === undefined ? 1 : subRule,
-            discountRate: _rule.discountRate ? Number((_rule.discountRate * 1).toFixed(3)).toString() : '',
+            discountRate: _rule.discountRate ? Number((_rule.discountRate * 10).toFixed(3)).toString() : '',
             disType: _rule.disType ? String(_rule.disType) : '3',
             freeAmount: _rule.freeAmount ? String(_rule.freeAmount) : '',
             stageAmount: _rule.stageAmount ? String(_rule.stageAmount) : '',
@@ -152,7 +153,7 @@ class LowPriceDetailInfo extends React.Component {
                     freeAmount,
                     disType,
                     stageAmount,
-                    discountRate: disType == 2 ? String(Number(discountRate || 0)) : ''
+                    discountRate: disType == 2 ? String(Number(handlerDiscountToParam(discountRate))) : ''
                 }]
             };
             this.props.setPromotionDetail({
@@ -295,10 +296,10 @@ class LowPriceDetailInfo extends React.Component {
                 <p>{SALE_LABEL.k5ez4nw2}</p>
                 </FormItem>
                 <Row>
-                    <Col span={7} push={1}>
+                    <Col span={7} push={0.5}>
                         {this.renderStageAmount()}
                     </Col>
-                    <Col span={17} push={1}>
+                    <Col span={17} push={0.5}>
                         {this.renderFreeAmountAndDiscount()}
                     </Col>
                 </Row>
@@ -402,6 +403,7 @@ class LowPriceDetailInfo extends React.Component {
                                 onChange={this.handleDiscountRateChange}
                                 maxNum={3}
                                 modal="float"
+                                inputOrigin='lowPrice'
                             />
                         }
                     </div>

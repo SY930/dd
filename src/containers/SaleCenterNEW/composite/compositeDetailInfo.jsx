@@ -14,6 +14,7 @@ import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from '../IntlDecor';
 import { notValidDiscountNum } from "../../../containers/SaleCenterNEW/discount/discountDetailInfo.jsx";
+import { handlerDiscountToParam } from '../../../containers/SaleCenterNEW/common/PriceInput';
 
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
@@ -146,7 +147,7 @@ class CompositeDetailInfo extends React.Component {
             conditions[index].groupCount = ruleStage.combineStageNo;
             conditions[index].flag = String(ruleStage.disType - 1); //减至disType=3 折扣=2，减免=1 对应前端 2 1 0
             conditions[index].cut = ruleStage.freeAmount;
-            conditions[index].discount = ruleStage.discountRate;
+            conditions[index].discount = ruleStage.discountRate * 10;
         })
         this.setState({ conditions })
     }
@@ -255,7 +256,7 @@ class CompositeDetailInfo extends React.Component {
                     rule.stage.push({
                         disType: 2,
                         combineStageNo: condition.groupCount,
-                        discountRate: condition.discount,
+                        discountRate: handlerDiscountToParam(condition.discount),
                     })
                 }
             });
@@ -678,6 +679,7 @@ class CompositeDetailInfo extends React.Component {
                                                 onChange={(val) => {
                                                     this.handleDiscountChange(idx, val);
                                                 }}
+                                                inputOrigin='compositeReduction'
                                             />
                                     }
                                 </FormItem>

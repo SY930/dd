@@ -19,6 +19,7 @@ import {
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from '../IntlDecor';
+import { handlerDiscountToParam } from '../../../containers/SaleCenterNEW/common/PriceInput';
 
 const FormItem = Form.Item;
 const Immutable = require('immutable');
@@ -95,7 +96,7 @@ class DiscountDetailInfo extends React.Component {
                 // _rule.stage若不存在，则是下单即折扣end: _rule.discountRate*10
                 return {
                     start: stageInfo.stageAmount,
-                    end: Number((stageInfo.discountRate * 1).toFixed(3)).toString(),
+                    end: Number((stageInfo.discountRate * 10).toFixed(3)).toString(),
                     validationStatus: 'success',
                     helpMsg: null,
                 }
@@ -103,9 +104,9 @@ class DiscountDetailInfo extends React.Component {
                 validationStatus: 'success',
                 helpMsg: null,
                 start: null,
-                end: Number((_rule.discountRate * 1).toFixed(3)).toString(),
+                end: Number((_rule.discountRate * 10).toFixed(3)).toString(),
             }],
-            discount: _rule.discountRate ? Number((_rule.discountRate * 1).toFixed(3)).toString() : '',
+            discount: _rule.discountRate ? Number((_rule.discountRate * 10).toFixed(3)).toString() : '',
             targetScope: _categoryOrDish,
         };
     }
@@ -142,7 +143,7 @@ class DiscountDetailInfo extends React.Component {
             rule = {
                 stageType: this.state.ruleType,
                 targetScope: this.state.targetScope,
-                discountRate: this.state.discount,
+                discountRate: handlerDiscountToParam(this.state.discount),
             };
             this.props.setPromotionDetail({
                 rule,
@@ -155,7 +156,7 @@ class DiscountDetailInfo extends React.Component {
                         return {
                             targetScope: this.state.targetScope,
                             stageAmount: ruleInfo.start,
-                            discountRate: ruleInfo.end,
+                            discountRate: handlerDiscountToParam(ruleInfo.end),
                         }
                     }),
                 }
@@ -277,7 +278,7 @@ class DiscountDetailInfo extends React.Component {
                             // wrapperCol={{span: 17}}
                             validateStatus={ruleInfo.validationStatus}
                             help={ruleInfo.helpMsg}
-                            style={{ marginLeft: '109px', width: '90%' }}
+                            style={{ marginLeft: '96px', width: '90%' }}
                         >
                             <CustomRangeInput
                                 addonBefore={
@@ -338,7 +339,6 @@ class DiscountDetailInfo extends React.Component {
                                 onChange={(value) => {
                                     this.onCustomRangeInputChange(value, index);
                                 }}
-                                addonAfter='%'
                             />
                         </FormItem>
                     </Col>
