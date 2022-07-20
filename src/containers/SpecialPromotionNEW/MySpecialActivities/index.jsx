@@ -1164,6 +1164,7 @@ class MySpecialActivities extends React.Component {
             opt.isActive = isActive == '-1' ? '-1' : (isActive == '1' ? '1' : '0');
         }
 
+        console.log(opt, 'opt')
         this.props.query({
             data: {
                 groupID: this.props.user.accountInfo.groupID,
