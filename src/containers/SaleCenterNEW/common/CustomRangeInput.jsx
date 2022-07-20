@@ -90,8 +90,9 @@ class CustomRangeInput extends React.Component {
         return (
             <Row
                 className={styles.rightInput}
+                gutter={6}
             >
-                <Col span={firstInputAppend ? 5 : 13}>
+                <Col span={firstInputAppend ? 5 : 10}>
                     <PriceInput
                         disabled={this.props.disabled}
                         addonBefore={firstInputAppend ? "" : this.state.addonBefore}
@@ -103,17 +104,18 @@ class CustomRangeInput extends React.Component {
                     />
                 </Col>
 
-                <Col span={firstInputAppend ? 6 : 4}>
+                <Col span={firstInputAppend ? 6 : 3}>
                     <div style={firstInputAppend ? { marginTop: 7, marginLeft: 5, } : {}}>{this.props.relation || SALE_LABEL.k5nh21d9}</div>
                 </Col>
 
-                <Col span={firstInputAppend ? 5 : 7}>
+                <Col span={firstInputAppend ? 5 : 11}>
                     <PriceInput
                         discountMode={this.props.discountMode}
                         placeholder={this.props.endPlaceHolder}
-                        addonAfter={this.state.addonAfterUnit}
+                        addonAfter={firstInputAppend ? '份' : this.state.addonAfterUnit}
                         onChange={this.onEndChange}
-                        addonAfter={firstInputAppend ? "份" : ''}
+                        // 折扣优化 _TODO：删除掉
+                        // addonAfter={firstInputAppend ? "份" : '1'}
                         value={{ number: this.state.end }}
                         modal={firstInputAppend ? "int" : "float"}
                     />

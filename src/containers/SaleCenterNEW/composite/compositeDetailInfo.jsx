@@ -13,6 +13,8 @@ import CategoryAndFoodSelectorForShop from '../common/CategoryAndFoodSelectorFor
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from '../IntlDecor';
+import { notValidDiscountNum } from "../../../containers/SaleCenterNEW/discount/discountDetailInfo.jsx";
+import { handlerDiscountToParam } from '../../../containers/SaleCenterNEW/common/PriceInput';
 
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
@@ -145,7 +147,7 @@ class CompositeDetailInfo extends React.Component {
             conditions[index].groupCount = ruleStage.combineStageNo;
             conditions[index].flag = String(ruleStage.disType - 1); //减至disType=3 折扣=2，减免=1 对应前端 2 1 0
             conditions[index].cut = ruleStage.freeAmount;
-            conditions[index].discount = ruleStage.discountRate;
+            conditions[index].discount = ruleStage.discountRate * 1;
         })
         this.setState({ conditions })
     }
@@ -212,7 +214,7 @@ class CompositeDetailInfo extends React.Component {
         let groupCountFlag = true;
         conditions.forEach((condition) => {
             // 校验
-            if (condition.flag == '1' && (condition.discount == null || condition.discount == '' || condition.discount > 100)) {
+            if (condition.flag == '1' && notValidDiscountNum(condition.discount)) {
                 condition.discountStatus = 'error';
                 nextFlag = false;
             }
@@ -254,7 +256,7 @@ class CompositeDetailInfo extends React.Component {
                     rule.stage.push({
                         disType: 2,
                         combineStageNo: condition.groupCount,
-                        discountRate: condition.discount,
+                        discountRate: handlerDiscountToParam(condition.discount, 1),
                     })
                 }
             });
@@ -401,7 +403,7 @@ class CompositeDetailInfo extends React.Component {
     handleDiscountChange(idx, val) {
         const { conditions } = this.state;
         conditions[idx].discount = val.number;
-        if (conditions[idx].flag == '1' && (val.number == '' || val.number == null || val.number > 100)) {
+        if (conditions[idx].flag == '1' && (notValidDiscountNum(val.number))) {
             conditions[idx].discountStatus = 'error';
         } else {
             conditions[idx].discountStatus = 'success';
@@ -426,6 +428,7 @@ class CompositeDetailInfo extends React.Component {
     }
 
     handlePromotionSetting(idx, val) {
+        console.log('idx=====', idx, val);
         const { data } = this.state;
         data[idx].flag = val.categoryOrDish;
         data[idx].scopeLst = [];
@@ -597,6 +600,9 @@ class CompositeDetailInfo extends React.Component {
         const { intl } = this.props;
         const k5ezdbiy = intl.formatMessage(SALE_STRING.k5ezdbiy);
         const k5hkj1v3 = intl.formatMessage(SALE_STRING.k5hkj1v3);
+        const k5ezdc19 = intl.formatMessage(SALE_STRING.k5ezdc19);
+        const k5ezdckg = intl.formatMessage(SALE_STRING.k5ezdckg);
+        
         const options = this.state.data.map((dataItem, dataIndex) => {
             return {
                 label: `${k5hkj1v3}${dataIndex + 1}`,
@@ -607,7 +613,7 @@ class CompositeDetailInfo extends React.Component {
             this.state.conditions.map((item, idx) => {
                 return (
                     <div key={`${idx}`} className={styles.moreFormItem}>
-                        <Col span={10} offset={3}>
+                        <Col span={6} offset={2}>
                             <li className={checkStyle.checkBoxStyles}>
                                 <FormItem>
                                     <CheckboxGroup
@@ -620,14 +626,22 @@ class CompositeDetailInfo extends React.Component {
                                 </FormItem>
                             </li>
                         </Col>
-                        <Col span={9}>
+                        <Col span={14}>
                             <FormItem className={styles.radioInLine}>
                                 <ButtonGroup size="small" >
                                     <Button  value="0" type={item.flag == '0' ? 'primary' : 'default'} onClick={(e) => { this.handleRadioChange(idx, '0') }}>{SALE_LABEL.k5ezcd0f}</Button>
                                     <Button  value="2" type={item.flag == '2' ? 'primary' : 'default'} onClick={(e) => { this.handleRadioChange(idx, '2') }}>{SALE_LABEL.k5hkj2k3}</Button>
                                     <Button  value="1" type={item.flag == '1' ? 'primary' : 'default'} onClick={(e) => { this.handleRadioChange(idx, '1') }}>{SALE_LABEL.k5ezcu1b}</Button>
                                 </ButtonGroup>
-                                <FormItem validateStatus={item.flag == '0' ? item.cutStatus : item.flag == '1' ? item.discountStatus : item.cutToStatus} style={{ paddingTop: '0px' }}>
+                                <FormItem 
+                                    validateStatus={
+                                        item.flag == '0' ? item.cutStatus : item.flag == '1' ? item.discountStatus : item.cutToStatus
+                                    } 
+                                    help={
+                                        item.flag == '1' && item.discountStatus == 'error' ? SALE_LABEL.k5gez9pw : ''
+                                    }
+                                    style={{ paddingTop: '0px' }}
+                                >
                                     {
                                         item.flag == '0' &&
                                             <PriceInput
@@ -655,14 +669,17 @@ class CompositeDetailInfo extends React.Component {
                                     {
                                         item.flag == '1' &&
                                             <PriceInput
-                                                addonAfter="%"
+                                                addonAfter={k5ezdc19}
                                                 key={`discunt${idx}`}
                                                 type="text"
                                                 modal="float"
+                                                placeholder={k5ezdckg}
+                                                discountMode={true}
                                                 value={{ number: item.discount }}
                                                 onChange={(val) => {
                                                     this.handleDiscountChange(idx, val);
                                                 }}
+                                                inputOrigin='compositeReduction'
                                             />
                                     }
                                 </FormItem>

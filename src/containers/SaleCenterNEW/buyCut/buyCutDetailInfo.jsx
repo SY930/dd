@@ -12,6 +12,8 @@ import ConnectedScopeListSelector from '../../../containers/SaleCenterNEW/common
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from '../IntlDecor';
+import { notValidDiscountNum } from "../../../containers/SaleCenterNEW/discount/discountDetailInfo.jsx";
+import { handlerDiscountToParam } from '../../../containers/SaleCenterNEW/common/PriceInput';
 
 const Immutable = require('immutable');
 
@@ -71,7 +73,7 @@ class BuyCutDetailInfo extends React.Component {
         this.setState({
             stageAmount: _rule.stageAmount,
             freeAmount: _rule.freeAmount || '',
-            discountRate: _rule.discountRate ? Number((_rule.discountRate * 1).toFixed(3)).toString() : '',
+            discountRate: _rule.discountRate ? Number((_rule.discountRate * 10).toFixed(3)).toString() : '',
             cutWay,
             ruleType,
         });
@@ -92,7 +94,7 @@ class BuyCutDetailInfo extends React.Component {
         if (freeAmount == null || freeAmount == '') {
             freeAmountFlag = false;
         }
-        if (discountRate == null || discountRate == '' || parseFloat(discountRate) > 10) {
+        if (notValidDiscountNum(discountRate)) {
             discountRateFlag = false;
         }
         this.setState({ freeAmountFlag, discountRateFlag, stageAmountFlag });
@@ -147,7 +149,7 @@ class BuyCutDetailInfo extends React.Component {
                             stageType: 0,
                             targetScope,
                             stageAmount,
-                            discountRate: parseFloat(discountRate),
+                            discountRate: handlerDiscountToParam(discountRate),
                         },
                     });
                     return true;
@@ -179,7 +181,7 @@ class BuyCutDetailInfo extends React.Component {
                             stageType: 0,
                             targetScope,
                             stageAmount,
-                            discountRate: parseFloat(discountRate),
+                            discountRate: handlerDiscountToParam(discountRate),
                         },
                     });
                     return true;
@@ -229,7 +231,7 @@ class BuyCutDetailInfo extends React.Component {
     // 折扣率change
     onDiscountRateChange(value) {
         let { discountRate, discountRateFlag } = this.state;
-        if (value.number == null || value.number == '' || parseFloat(value.number) > 10) {
+        if (notValidDiscountNum(value.number)) {
             discountRateFlag = false;
             discountRate = value.number;
         } else {

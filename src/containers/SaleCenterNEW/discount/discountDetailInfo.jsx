@@ -5,8 +5,6 @@ import React, { Component } from 'react'
 import { Row, Col, Form, Select, Radio, InputNumber, Input, Icon } from 'antd';
 import { connect } from 'react-redux'
 
-
-
 import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 
@@ -21,11 +19,34 @@ import {
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from '../IntlDecor';
+import { handlerDiscountToParam } from '../../../containers/SaleCenterNEW/common/PriceInput';
 
 const FormItem = Form.Item;
 const Immutable = require('immutable');
 const Option = Select.Option;
-const isValidNumber = (value) => value != null && value != '' && !Number.isNaN(value)
+const isValidNumber = (value) => value != null && value != '' && !Number.isNaN(value);
+
+export const notValidDiscountNum = (strNum) => {
+    if(typeof strNum == 'string'){
+        if(+strNum !== +strNum){
+            return true;
+        }
+        if(strNum.indexOf('.') == -1){
+            // 没有小数点
+           return strNum > 100 || (strNum.length > 1 && strNum[0] == 0) || strNum < 0;
+        }else{
+            let index = strNum.indexOf('.');
+            // 有小数点
+            if(strNum > 0 && strNum < 10){
+                return strNum.length > 3;
+            }else if(strNum > 10){
+                return strNum.length > 4;
+            }
+            return strNum[0] == 0 || index != strNum.lastIndexOf('.');
+       }
+    }
+    return false;
+}
 
 @injectIntl()
 class DiscountDetailInfo extends React.Component {
@@ -75,7 +96,7 @@ class DiscountDetailInfo extends React.Component {
                 // _rule.stage若不存在，则是下单即折扣end: _rule.discountRate*10
                 return {
                     start: stageInfo.stageAmount,
-                    end: Number((stageInfo.discountRate * 1).toFixed(3)).toString(),
+                    end: Number((stageInfo.discountRate * 10).toFixed(3)).toString(),
                     validationStatus: 'success',
                     helpMsg: null,
                 }
@@ -83,9 +104,9 @@ class DiscountDetailInfo extends React.Component {
                 validationStatus: 'success',
                 helpMsg: null,
                 start: null,
-                end: Number((_rule.discountRate * 1).toFixed(3)).toString(),
+                end: Number((_rule.discountRate * 10).toFixed(3)).toString(),
             }],
-            discount: _rule.discountRate ? Number((_rule.discountRate * 1).toFixed(3)).toString() : '',
+            discount: _rule.discountRate ? Number((_rule.discountRate * 10).toFixed(3)).toString() : '',
             targetScope: _categoryOrDish,
         };
     }
@@ -122,7 +143,7 @@ class DiscountDetailInfo extends React.Component {
             rule = {
                 stageType: this.state.ruleType,
                 targetScope: this.state.targetScope,
-                discountRate: this.state.discount,
+                discountRate: handlerDiscountToParam(this.state.discount),
             };
             this.props.setPromotionDetail({
                 rule,
@@ -135,7 +156,7 @@ class DiscountDetailInfo extends React.Component {
                         return {
                             targetScope: this.state.targetScope,
                             stageAmount: ruleInfo.start,
-                            discountRate: ruleInfo.end,
+                            discountRate: handlerDiscountToParam(ruleInfo.end),
                         }
                     }),
                 }
@@ -161,17 +182,28 @@ class DiscountDetailInfo extends React.Component {
         const _end = value.end;
         let _validationStatus,
             _helpMsg;
-        if (parseFloat(_end) <= 10 || (_start == null && _end != null) || (_start != null && _end == null)) {
+
+        // _TODO
+        if(notValidDiscountNum(_end)){
+            _validationStatus = 'error';
+            _helpMsg = SALE_LABEL.k5gez9pw
+        }else {
             _validationStatus = 'success';
             _helpMsg = null
-        } else {
-            _validationStatus = 'error';
-            _helpMsg = SALE_LABEL.k5gez9pw
         }
-        if (_end > 10) {
-            _validationStatus = 'error';
-            _helpMsg = SALE_LABEL.k5gez9pw
-        }
+
+        // if (parseFloat(_end) <= 10 || (_start == null && _end != null) || (_start != null && _end == null)) {
+        //     _validationStatus = 'success';
+        //     _helpMsg = null
+        // } else {
+        //     _validationStatus = 'error';
+        //     _helpMsg = SALE_LABEL.k5gez9pw
+        // }
+        
+        // if (_end > 10) {
+        //     _validationStatus = 'error';
+        //     _helpMsg = SALE_LABEL.k5gez9pw
+        // }
 
         const _tmp = this.state.ruleInfo;
         _tmp[index] = {
@@ -186,7 +218,7 @@ class DiscountDetailInfo extends React.Component {
 
     onDiscountChange(value) {
         let { discount, discountFlag } = this.state;
-        if (value == null || value > 10) {
+        if (notValidDiscountNum(value)) {
             discountFlag = false;
             discount = value;
         } else {
@@ -246,7 +278,7 @@ class DiscountDetailInfo extends React.Component {
                             // wrapperCol={{span: 17}}
                             validateStatus={ruleInfo.validationStatus}
                             help={ruleInfo.helpMsg}
-                            style={{ marginLeft: '109px', width: '70.5%' }}
+                            style={{ marginLeft: '96px', width: '90%' }}
                         >
                             <CustomRangeInput
                                 addonBefore={
