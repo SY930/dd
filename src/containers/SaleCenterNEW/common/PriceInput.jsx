@@ -54,11 +54,7 @@ export const renderDiscountModeDesc = (number) => {
         if(number.length > 5){
             number = number.slice(0,5);
         }
-        if(number % 10 == 0 || parseInt(number) == parseFloat(number)){
-            desc = `${number / 10}折`;
-        }else{
-            desc = `${(number / 10)}折`;
-        }
+        desc = `${(number / 10).toString().slice(0, 5)}折`;
     }
     return `【${desc}】`;
 }
@@ -174,7 +170,7 @@ class PriceInput extends React.Component {
         delete props.modal; // 将modal 属性传递下去会产生warning
         delete props.maxNum; // 将maxNum 属性传递下去会产生warning
         const state = this.state;
-        let width = '100%';
+        let width;
         if(discountMode){
             if(inputOrigin && (inputOrigin == 'compositeReduction' || inputOrigin == 'lowPrice')){
                 width = '113px';
@@ -184,7 +180,7 @@ class PriceInput extends React.Component {
             width
         }
         return (
-            <span style={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
+            <span style={{ display: discountMode ? 'flex': 'inline', alignItems: 'center', position: 'relative' }}>
                 <Input
                     {...props} 
                     type="text"
@@ -194,7 +190,6 @@ class PriceInput extends React.Component {
                     onChange={this.handleNumberChange}
                     addonBefore={this.props.addonBefore}
                     addonAfter={this.props.addonAfter}
-                    // style={{width: this.props.discountMode && '113px'}}
                     style={style}
                 />
                 {
