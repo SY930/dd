@@ -19,6 +19,7 @@ import ExportModal from "../../GiftNew/GiftInfo/ExportModal";
 import PlanModal from '../common/PlanModal'
 import Cfg from '../../../constants/SpecialPromotionCfg';
 import Authority from '../../../components/common/Authority';
+import {  SPECIAL_PROMOTION_MANAGE_PAGE } from '../../../constants/entryIds';
 import { saleCenterSetSpecialBasicInfoAC, saleCenterResetDetailInfoAC, getAuthLicenseData } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
 import ExpireDateNotice from '../../../components/common/ExpireDateNotice';
 import {
@@ -66,7 +67,8 @@ import { axiosData, checkAuthLicense } from "../../../helpers/util";
 import { queryWeixinAccounts } from "../../../redux/reducer/saleCenterNEW/queryWeixinAccounts.reducer";
 import {
     SPECIAL_LOOK_PROMOTION_QUERY,
-    SPECIAL_PROMOTION_DELETE, SPECIAL_PROMOTION_QUERY,
+    SPECIAL_PROMOTION_DELETE, 
+    SPECIAL_PROMOTION_QUERY,
     SPECIAL_PROMOTION_UPDATE
 } from "../../../constants/authorityCodes";
 import { isBrandOfHuaTianGroupList, isGroupOfHuaTianGroupList, isMine } from "../../../constants/projectHuatianConf";
@@ -1218,13 +1220,13 @@ class MySpecialActivities extends React.Component {
                                     }
                                 </span>
                                 <span className={styles.exportBtn}>
-                                    <Authority rightCode={SPECIAL_PROMOTION_QUERY}>
                                         <Button
                                             type="ghost"
                                             onClick={() => this.setState({ exportVisible: true })}
                                             style={{ marginRight: 10 }}
-                                        ><Icon type="upload" />导出历史</Button>
-                                    </Authority>
+                                        >
+                                            <Icon type="upload" />导出历史
+                                        </Button>
                                 </span>
                                 {this.renderPlanBtn()}
                             </div>
@@ -1318,7 +1320,7 @@ class MySpecialActivities extends React.Component {
                         </li>
 
                         <li>
-                            <Authority rightCode={SPECIAL_PROMOTION_QUERY}>
+                            <Authority rightCode={SPECIAL_PROMOTION_QUERY} entryId={ SPECIAL_PROMOTION_MANAGE_PAGE}>
                                 <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}><Icon type="search" />
                                     {COMMON_LABEL.query}
                                 </Button>
@@ -1400,33 +1402,35 @@ class MySpecialActivities extends React.Component {
 
         return (
             <div>
-                <a
-                    href="#"
-                    onClick={() => {
-                        if (Number(record.eventWay) === 70) {
-                            message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
-                            return;
-                        }
-                        if (record.eventWay === 78) {
-                            this.onV3Click(record.itemID, true);
-                            return;
-                        }
-                        if (record.eventWay === 80) {
-                            this.handleShowDetail({
-                                record,
-                                isView: true
-                            })
-                            return;
-                        }
-                        this.props.toggleIsUpdate(false)
-                        this.handleUpdateOpe(text, record, index);
-                    }}
-                >
-                    {COMMON_LABEL.view}
-                </a>
+                <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY} entryId={ SPECIAL_PROMOTION_MANAGE_PAGE}>
+                    <a
+                        href="#"
+                        onClick={() => {
+                            if (Number(record.eventWay) === 70) {
+                                message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
+                                return;
+                            }
+                            if (record.eventWay === 78) {
+                                this.onV3Click(record.itemID, true);
+                                return;
+                            }
+                            if (record.eventWay === 80) {
+                                this.handleShowDetail({
+                                    record,
+                                    isView: true
+                                })
+                                return;
+                            }
+                            this.props.toggleIsUpdate(false)
+                            this.handleUpdateOpe(text, record, index);
+                        }}
+                    >
+                        {COMMON_LABEL.view}
+                    </a>
+                </Authority>
                 <Tooltip placement="bottomLeft" title={this.renderWXTipTitle(text, record, index)} overlayClassName={styles.Sale__Activite__Tip}>
-                <a href="#">更多</a>
-            </Tooltip>
+                    <a href="#">更多</a>
+                </Tooltip>
             </div>
           
         )
@@ -1435,24 +1439,23 @@ class MySpecialActivities extends React.Component {
     renderWXTipTitle = (text, record, index) => {
         return (
             <div  className={[styles.Sale__Activite__moveMore, styles.moveMoreShow].join(' ')}>
-                <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY}>
-                    <a
-                        href="#"
-                        className={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record) ? styles.textDisabled : null}
-                        onClick={() => {
-                            if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) {
-                                return;
-                            }
-                            if (Number(record.eventWay) === 70) {
-                                message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
-                                return;
-                            }
-                            this.checkDetailInfo(text, record, index);
-                        }}
-                    >
-                        {/* 活动跟踪 */}
-                        {this.props.intl.formatMessage(STRING_SPE.d5g3d7ahfq35134)}</a>
-                </Authority>
+                <a
+                    href="#"
+                    className={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record) ? styles.textDisabled : null}
+                    onClick={() => {
+                        if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) {
+                            return;
+                        }
+                        if (Number(record.eventWay) === 70) {
+                            message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
+                            return;
+                        }
+                        this.checkDetailInfo(text, record, index);
+                    }}
+                >
+                    {/* 活动跟踪 */}
+                    {this.props.intl.formatMessage(STRING_SPE.d5g3d7ahfq35134)}
+                </a>
                 {
                     record.eventWay === 80 ?
                         <a
@@ -1549,25 +1552,23 @@ class MySpecialActivities extends React.Component {
                         </a>
                     )
                 }
-                <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY}>
-                    <a
-                        href="#"
-                        className={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record) ? styles.textDisabled : null}
-                        onClick={() => {
-                            if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) {
-                                return;
-                            }
-                            if (Number(record.eventWay) === 70) {
-                                message.warning(`该活动已下线`);
-                                return;
-                            }
-                            this.checkDetailInfo(text, record, index);
-                        }}
-                        disabled={record.eventWay == 85}
-                    >
-                        活动跟踪</a>
-                    {/* {this.props.intl.formatMessage(STRING_SPE.d5g3d7ahfq35134)}*/}
-                </Authority>
+                <a
+                    href="#"
+                    className={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record) ? styles.textDisabled : null}
+                    onClick={() => {
+                        if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) {
+                            return;
+                        }
+                        if (Number(record.eventWay) === 70) {
+                            message.warning(`该活动已下线`);
+                            return;
+                        }
+                        this.checkDetailInfo(text, record, index);
+                    }}
+                    disabled={record.eventWay == 85}
+                >
+                    活动跟踪
+                </a>
                 {
                     isCanCopyUrl(record) && (
                         <a
@@ -1634,7 +1635,7 @@ class MySpecialActivities extends React.Component {
                         return this.renderPayHaveGift(text, index, record)
                     }
                     return (<span>
-                        <Authority rightCode={SPECIAL_PROMOTION_UPDATE}>
+                        <Authority rightCode={SPECIAL_PROMOTION_UPDATE} entryId={ SPECIAL_PROMOTION_MANAGE_PAGE}>
                             <a
                                 href="#"
                                 disabled={
@@ -1690,33 +1691,36 @@ class MySpecialActivities extends React.Component {
                                 {COMMON_LABEL.edit}
                             </a>
                         </Authority>
-                        <a
-                            href="#"
-                            onClick={() => {
-                                if (Number(record.eventWay) === 70) {
-                                    message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
-                                    return;
-                                }
-                                if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83 || record.eventWay === 85) {
-                                    this.onV3Click(record.itemID, true, record.eventWay);
-                                    return;
-                                }
-                                if (record.eventWay === 80 || record.eventWay === 66 || record.eventWay === 81 || record.eventWay === 82) {
+                        <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY} entryId={ SPECIAL_PROMOTION_MANAGE_PAGE}>
+                            <a
+                                href="#"
+                                onClick={() => {
+                                    if (Number(record.eventWay) === 70) {
+                                        message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
+                                        return;
+                                    }
+                                    if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83 || record.eventWay === 85) {
+                                        this.onV3Click(record.itemID, true, record.eventWay);
+                                        return;
+                                    }
+                                    if (record.eventWay === 80 || record.eventWay === 66 || record.eventWay === 81 || record.eventWay === 82) {
 
-                                    this.handleShowDetail({
-                                        record,
-                                        isView: true,
-                                        isEdit: false
-                                    })
-                                    return;
-                                }
-                                this.props.toggleIsUpdate(false)
-                                this.handleUpdateOpe(text, record, index);
-                            }}
-                        >
-                            {COMMON_LABEL.view}
-                        </a>
-                        <Authority rightCode={SPECIAL_PROMOTION_DELETE}>
+                                        this.handleShowDetail({
+                                            record,
+                                            isView: true,
+                                            isEdit: false
+                                        })
+                                        return;
+                                    }
+                                    this.props.toggleIsUpdate(false)
+                                    this.handleUpdateOpe(text, record, index);
+                                }}
+                            >
+                                {COMMON_LABEL.view}
+                            </a>
+                        </Authority>
+                        
+                        <Authority rightCode={SPECIAL_PROMOTION_DELETE} entryId={ SPECIAL_PROMOTION_MANAGE_PAGE}>
                             <a
                                 href="#"
                                 disabled={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)}

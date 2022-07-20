@@ -9,6 +9,7 @@ import {
     SPECIAL_PROMOTION_UPDATE,
     SPECIAL_PROMOTION_DELETE,
 } from '../../../constants/authorityCodes';
+import {  SPECIAL_PROMOTION_MANAGE_PAGE } from '../../../constants/entryIds';
 import styles from './mySpecialActivities.less'
 import stylesPage from '../../SaleCenterNEW/ActivityPage.less';
 import emptyPage from '../../../assets/empty_page.png'
@@ -146,23 +147,23 @@ class CardSaleActive extends Component {
     renderWXTip = (text, record, index) => {
         return (
             <div className={[stylesPage.Sale__Activite__moveMore, stylesPage.moveMoreShow].join(' ')}>
-                <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY}>
-                    <a
-                        href="#"
-                        className={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record) ? stylesPage.textDisabled : null}
-                        onClick={() => {
-                            if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) {
-                                return;
-                            }
-                            if (Number(record.eventWay) === 70) {
-                                message.warning('该活动已下线');
-                                return;
-                            }
-                            this.props.checkDetailInfo(text, record, index);
-                        }}
-                        disabled={record.eventWay == 85}
-                    >活动跟踪</a>
-                </Authority>
+                <a
+                    href="#"
+                    className={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record) ? stylesPage.textDisabled : null}
+                    onClick={() => {
+                        if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) {
+                            return;
+                        }
+                        if (Number(record.eventWay) === 70) {
+                            message.warning('该活动已下线');
+                            return;
+                        }
+                        this.props.checkDetailInfo(text, record, index);
+                    }}
+                    disabled={record.eventWay == 85}
+                >
+                    活动跟踪
+                </a>
                 <a
                     href="#"
                     className={record.isActive == '-1' || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) ? styles.textDisabled : null}
@@ -187,23 +188,23 @@ class CardSaleActive extends Component {
         }
         return (
             <div className={[stylesPage.Sale__Activite__moveMore, stylesPage.moveMoreShow].join(' ')}>
-                <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY}>
-                    <a
-                        href="#"
-                        className={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record) ? stylesPage.textDisabled : null}
-                        onClick={() => {
-                            if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) {
-                                return;
-                            }
-                            if (Number(record.eventWay) === 70) {
-                                message.warning('该活动已下线');
-                                return;
-                            }
-                            this.props.checkDetailInfo(text, record, index);
-                        }}
-                        disabled={record.eventWay == 85}
-                    >活动跟踪</a>
-                </Authority>
+                <a
+                    href="#"
+                    className={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record) ? stylesPage.textDisabled : null}
+                    onClick={() => {
+                        if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) {
+                            return;
+                        }
+                        if (Number(record.eventWay) === 70) {
+                            message.warning('该活动已下线');
+                            return;
+                        }
+                        this.props.checkDetailInfo(text, record, index);
+                    }}
+                    disabled={record.eventWay == 85}
+                >
+                    活动跟踪
+                </a>
                 {/* 第一版只做群发礼品的复制功能 */}
                 {/* 摇奖活动增加复制,并且活动不是禁用状态  */}
                 {
@@ -235,8 +236,6 @@ class CardSaleActive extends Component {
                             this.props.toggleIsUpdate(true)
                             this.props.isCopy()
                             this.props.handleUpdateOpe(text, record, index);
-                            // }
-                            // }
                         }}
                     >
                         复制
@@ -322,14 +321,16 @@ class CardSaleActive extends Component {
                                         </div> : null
                                 } */}
                                         <div className={styles.activityOperate}>
-                                            <span
-                                                className={styles.operateDetail}
-                                                onClick={e => this.handleShowDetailModal(e, item, index)}
-                                            >
-                                                查看
-                                            </span>
+                                            <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY} entryId={ SPECIAL_PROMOTION_MANAGE_PAGE}>
+                                                <span
+                                                    className={styles.operateDetail}
+                                                    onClick={e => this.handleShowDetailModal(e, item, index)}
+                                                >
+                                                    查看
+                                                </span>
+                                            </Authority>
                                             {
-                                                item.eventWay != '80' && <Authority rightCode={SPECIAL_PROMOTION_UPDATE}>
+                                                item.eventWay != '80' && <Authority rightCode={SPECIAL_PROMOTION_UPDATE} entryId={ SPECIAL_PROMOTION_MANAGE_PAGE}>
                                                     <span
                                                         className={styles.operateEdit}
                                                         disabled={
@@ -345,7 +346,7 @@ class CardSaleActive extends Component {
                                                 </Authority>
                                             }
                                             {
-                                                item.eventWay != '80' && <Authority rightCode={SPECIAL_PROMOTION_DELETE}>
+                                                item.eventWay != '80' && <Authority rightCode={SPECIAL_PROMOTION_DELETE} entryId={ SPECIAL_PROMOTION_MANAGE_PAGE}>
                                                     <span
                                                         className={styles.operateDelete}
                                                         disabled={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)}
