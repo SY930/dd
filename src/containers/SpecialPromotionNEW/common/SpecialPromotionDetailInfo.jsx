@@ -3669,10 +3669,7 @@ class SpecialDetailInfo extends Component {
         const wrapperCol = type == '64' ? { span: 6 } : { span: 12 };
         if (givePoints) {
             return  <div className={type == '52' ? `${selfStyle.pointBox}` : ''}>
-            <p
-             className={userCount > 0 ? styles.opacitySet : ""}
-            // className={styles.opacitySet}
-            ></p>
+            {/* <p className={userCount > 0 ? styles.opacitySet : ""}></p> */}
             {/* <div className={selfStyle.title}>
                 <span>赠送积分</span>
             </div> */}
@@ -3708,9 +3705,9 @@ class SpecialDetailInfo extends Component {
         ]);
         return (
             <div>
-                <p
+                {/* <p
                     className={userCount > 0 ? styles.opacitySet : ""}
-                ></p>
+                ></p> */}
                 <div style={{ position: 'relative' }}>
                     <FormItem
                         label={'赠送订单实付金额的'}
@@ -4090,7 +4087,7 @@ class SpecialDetailInfo extends Component {
                                                         onWxCouponChange={this.onWxCouponChange}
                                                     />
                                                 }
-                                                <div className={userCount > 0 ? styles.opacitySet : null}></div>
+                                                {/* <div className={userCount > 0 ? styles.opacitySet : null}></div> */}
                                             </div>
                                         )
                                     }
