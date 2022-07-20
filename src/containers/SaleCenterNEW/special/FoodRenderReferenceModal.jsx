@@ -112,7 +112,7 @@ class FoodRenderReferenceModal extends Component {
               wrapClassName={styles.SpecialReferenceModalWarp}
               onCancel={this.props.handlePriceCancel}
           >
-              {setType === '2' && <div className={styles.referenceTip}>门店自建菜品按菜品库售价展示</div>}
+              {setType === '2' && <div className={styles.referenceTip}>所选菜品未在选定菜谱中时，则不会显示该菜品售价</div>}
               <BaseForm
                   getForm={form => this.basePriceForm = form}
                   formItems={formItems}
