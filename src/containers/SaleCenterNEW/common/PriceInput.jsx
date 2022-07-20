@@ -57,7 +57,7 @@ export const renderDiscountModeDesc = (number) => {
         if(number % 10 == 0 || parseInt(number) == parseFloat(number)){
             desc = `${number / 10}折`;
         }else{
-            desc = `${(number / 10).toFixed(2)}折`;
+            desc = `${(number / 10)}折`;
         }
     }
     return `【${desc}】`;
