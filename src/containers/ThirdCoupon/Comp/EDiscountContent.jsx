@@ -93,15 +93,12 @@ class EDiscountContent extends Component {
                                     { pattern: /(^\+?\d{0,5}$)|(^\+?\d{0,5}\.\d{0,2}$)/, message: '整数不能超过5位, 小数不能超过2位' },
                                     {
                                         validator: (rule, v, cb) => {
-                                            if (!v) {
-                                                return cb();
-                                            }
-                                            if (v <= 0) {
+                                            if (v < 0) {
                                                 return cb(rule.message);
                                             }
                                             cb();
                                         },
-                                        message: '必须输入数字, 且大于0',
+                                        message: '必须输入数字',
                                     },
                                 ],
                             })(
