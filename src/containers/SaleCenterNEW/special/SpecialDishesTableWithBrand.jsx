@@ -10,18 +10,24 @@ import {
     Select,
     Modal,
     Button,
+    Radio,
+    message,
 } from 'antd';
+import { axios, HTTP_CONTENT_TYPE_WWWFORM, genQueryString, getAccountInfo } from '@hualala/platform-base'
 import BaseForm from 'components/common/BaseForm';
 import {
     memoizedExpandCategoriesAndDishes,
 } from '../../../utils';
+import { result } from 'lodash'
 import FoodSelectModal from '../../../components/common/FoodSelector/FoodSelectModal'
+import FoodRenderReferenceModal from './FoodRenderReferenceModal'
 import styles from '../ActivityPage.less'
 import PriceInputIcon from '../common/PriceInputIcon';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from '../IntlDecor';
 const FormItem = Form.Item;
+const RadioGroup = Radio.Group;
 
 const mapStateToProps = (state) => {
     return {
@@ -39,11 +45,15 @@ class SpecialDishesTableWithBrand extends Component {
     constructor(props) {
         super(props);
         let priceLst;
+        let rule;
         try {
             priceLst = props.promotionDetailInfo.getIn(['$promotionDetail', 'priceLst']).toJS();
+            rule = props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']).toJS() 
         } catch (e) {
             priceLst = []
+            rule = {}
         }
+
         this.state = {
             selectorModalVisible: false,
             modifyModalVisible: false,
@@ -51,11 +61,20 @@ class SpecialDishesTableWithBrand extends Component {
             priceLst,
             data: [],
             formKeys: ['setType', 'discount'],
+            referenceModalVisible: false,
+            foodBooks: [],
+            bookID: rule.bookID || '',
+            setFoodType: rule.bookID ? '2' : '1',
         }
     }
     componentDidMount() {
         if (this.props.allBrands.size && this.props.allCategories.size && this.props.allDishes.size) {
             this.mapPriceLstToDataThenEmit()
+        }
+        // 获取菜谱列表
+        this.getGroupFoodBook()
+        if (this.state.bookID) {
+            this.getFoodCategory(this.state.bookID)
         }
     }
     componentDidUpdate(prevProps) {
@@ -72,6 +91,31 @@ class SpecialDishesTableWithBrand extends Component {
                 this.props.onChange([]);
             }
         }
+    }
+
+    getGroupFoodBook = async() => {
+        const { groupID } = getAccountInfo();
+        const response = await axios.post('/api/queryGroupFoodBook', genQueryString({ pageNo: '-1', groupID }),  {
+            headers: { 'Content-Type': HTTP_CONTENT_TYPE_WWWFORM },
+        });
+        if (response.code !== '000') throw new Error(res.message);
+        const foodBooks = result(response, 'data.records', [])
+        this.setState({
+            foodBooks: foodBooks.map(item => ({ brandID: item.brandID, bookID: item.bookID, bookName: item.bookName }))
+        })
+    }
+
+    getFoodCategory = async(bookID) => {
+        const { groupID } = getAccountInfo();
+        const response = await axios.post('/api/getFoodQuery', genQueryString({ bookID, groupID }),  {
+            headers: { 'Content-Type': HTTP_CONTENT_TYPE_WWWFORM },
+        });
+        if (response.code !== '000') throw new Error(response.message);
+        const foodCategory = result(response, 'data.records', [])
+        this.setState({
+            foodCategory,
+        })
+        // return foodCategory
     }
     mapPriceLstToDataThenEmit = () => {
         const {
@@ -93,6 +137,7 @@ class SpecialDishesTableWithBrand extends Component {
         }, [])
         this.setState({ data })
         this.props.onChange(data)
+        this.props.onChangeBookID(this.state.bookID)
     }
     onPriceCellChange = (val, {index}) => {
         const data = [...this.state.data];
@@ -126,6 +171,13 @@ class SpecialDishesTableWithBrand extends Component {
         record.newPrice = (record.price * num / 10).toFixed(2)
         this.setState({data});
         this.props.onChange(data.map(item => ({...item})));
+    }
+
+    onChangeBookID = (value) => {
+        this.setState({
+            bookID: value
+        })
+       this.props.onChangeBookID(value)
     }
     handleDel = (record) => {
         const data = [...this.state.data];
@@ -169,6 +221,23 @@ class SpecialDishesTableWithBrand extends Component {
             modifyModalVisible: true,
         })
     }
+    handleChangeFoodBook = (value) => {
+        this.setState({ bookID: value })
+    }
+
+   
+    handlePriceCancel = () => {
+            this.setState({
+                referenceModalVisible: false
+            })
+    }
+
+    handleSetType = (value) => {
+        this.setState({
+            setFoodType: value,
+        })
+    }
+
     renderFoodSelectorModal() {
         const {
             allBrands,
@@ -195,6 +264,7 @@ class SpecialDishesTableWithBrand extends Component {
             />
         )
     }
+
     /**
      * form modal
      */
@@ -225,6 +295,12 @@ class SpecialDishesTableWithBrand extends Component {
                 this.setState({modifyModalVisible: false})
             }
         });
+    }
+
+    handleChangePrice = () => {
+        this.setState({
+            referenceModalVisible: true,
+        })
     }
     renderPriceModifyModal() {
         let {formKeys} = this.state
@@ -285,6 +361,7 @@ class SpecialDishesTableWithBrand extends Component {
         const {
             selectorModalVisible,
             modifyModalVisible,
+            referenceModalVisible,
             data,
         } = this.state;
         const { intl } = this.props;
@@ -406,6 +483,13 @@ class SpecialDishesTableWithBrand extends Component {
                 key: 'price',
                 width: 72,
                 className: 'TableTxtRight',
+                render: (text, record) => {
+                    if (this.state.setFoodType === '2') {
+                        const food  = (this.state.foodCategory || []).find((item) => item.foodCode == record.foodCode) || {}
+                        return food.price ? food.price : '--'
+                    }
+                    return text
+                }
             },
             {
                 title: SALE_LABEL.k5ezcu1b,
@@ -435,7 +519,7 @@ class SpecialDishesTableWithBrand extends Component {
                     <Col span={2}>
                         <span className={styles.gTitle}>{SALE_LABEL.k6hdpwcl}</span>
                     </Col>
-                    <Col span={4} offset={14}>
+                    <Col span={4} offset={10}>
                         <Button
                             // className={styles.gTitleLink}
                             onClick={this.handleModifyDishes}
@@ -451,6 +535,14 @@ class SpecialDishesTableWithBrand extends Component {
                             {'批量添加商品'}
                         </Button>
                     </Col>
+                    <Col span={4} offset={0}>
+                        <Button
+                            // className={styles.gTitleLink}
+                            onClick={this.handleChangePrice}
+                        >
+                            {'售价参考值'}
+                        </Button>
+                    </Col>
                 </Row>
                 <Row>
                     <Col>
@@ -464,6 +556,15 @@ class SpecialDishesTableWithBrand extends Component {
                 </Row>
                 {selectorModalVisible && this.renderFoodSelectorModal()}
                 {modifyModalVisible && this.renderPriceModifyModal()}
+                { referenceModalVisible && <FoodRenderReferenceModal
+                    handlePriceCancel={this.handlePriceCancel}
+                    foodBooks={this.state.foodBooks}
+                    getFoodCategory={(bID) => this.getFoodCategory(bID)}
+                    onChangeBookID={(v) => this.onChangeBookID(v)}
+                    handleSetType={this.handleSetType}
+                    setFoodType={this.state.setFoodType}
+                    bookID={this.state.bookID}
+                />}
             </FormItem>
         )
     }

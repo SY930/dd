@@ -8,7 +8,7 @@ import {
     Table, Input, Select, DatePicker,
     Button, Modal, message,
     Spin, Icon, Alert, Switch, Tabs,
-    Tooltip, Popover, Menu
+    Tooltip, Popover, Menu, TreeSelect
 } from 'antd';
 import { throttle, isEmpty, cloneDeep } from 'lodash';
 import { jumpPage, closePage } from '@hualala/platform-base'
@@ -261,6 +261,8 @@ class MySpecialActivities extends React.Component {
             pushMessageMpID: '',
             groupID: '',
             channelContent: '',
+            launchChannelID: '',
+            launchChannelIDWX: '',
             channelOptions: _.range(0, 10).map(item => ({ label: `渠道${item + 1}`, value: `渠道${item + 1}` })),
             page: '',
             scene: '',
@@ -268,7 +270,8 @@ class MySpecialActivities extends React.Component {
             stylesShow: 'list',
             planModalVisible: false,
             filterSchemeList: [],
-            activeStatus: ''
+            activeStatus: '',
+            sortedChannelList: [],
         };
         this.cfg = {
             eventWay: [
@@ -324,6 +327,44 @@ class MySpecialActivities extends React.Component {
         this.renderUpdateModals = this.renderUpdateModals.bind(this);
         this.handleUpdateOpe = this.handleUpdateOpe.bind(this);
     }
+
+    formatChannelData = (list) => {
+        let data = []
+        if (!list || !Array.isArray(list)) {
+          return []
+        }
+        data = list.map(item => {
+          return {
+            label: item.channelGroupName,
+            value: item.channelGroupItemID,
+            key: item.channelGroupItemID,
+            // disabled: true,
+            children: item.channelInfos.map(child => {
+              return {
+                label: child.channelName,
+                value: child.itemID,
+                key: child.itemID,
+              }
+            })
+          }
+        })
+        return data
+      }
+    
+    querySortedChannelList = () => {
+        axiosData('/launchchannel/launchChannelService_querySortedChannelList.ajax',
+          {}, {}, { path: '' },
+          'HTTP_SERVICE_URL_PROMOTION_NEW')
+          .then((res) => {
+            if (res.code == '000') {
+              this.setState({
+                sortedChannelList: this.formatChannelData(res.channelSortedInfos)
+              })
+            }
+          }).catch(err => {
+            // empty catch
+          });
+      }
 
     clearUrl() {
         var { href } = window.location;
@@ -540,6 +581,7 @@ class MySpecialActivities extends React.Component {
         // 千人千面活动创建和更新完，点去装修跳转页面
         this.fromCrmJump();
         this.getSearchListContent() // 查询方案列表
+        // this.querySortedChannelList()//查询渠道列表
     }
 
     // 产品授权
@@ -682,7 +724,11 @@ class MySpecialActivities extends React.Component {
     }
     // 请求小程序二微码
     creatReleaseQrCode = () => {
-        const { eventWay, currAppID, qrItemID } = this.state
+        const { eventWay, currAppID, qrItemID, launchChannelIDWX } = this.state
+        if(!currAppID) {
+            message.error('请选择小程序');
+            return
+        }
         /*
         1.积分兑换： pages/subOr/voucherCenter/redeemDetail/main?eventID=6886285210829196181
         2.摇奖活动： pages/web/common/main?url=mpweb/promotion/lottery?eventID=6883767509506329493 (摇奖活动是跳转mp-web项目（h5）)
@@ -693,15 +739,15 @@ class MySpecialActivities extends React.Component {
         7.膨胀大礼包：pages/promotion/expand/main?e=6883743693912673173
         */
          const pageMap = {
-             '30':{page: 'pages/subOr/voucherCenter/redeemDetail/main', scene : `eventID=${qrItemID}`},
-             '20':{page: 'pages/web/common/main', scene : `u=l?eventID=${qrItemID}`},
-             '21':{page: 'pages/subOr/voucherCenter/voucherDetail/main', scene : `eventID=${qrItemID}`},
-             '79':{page: 'pages/promotion/blindBox/index', scene : `eventID=${qrItemID}`},
-             '68':{page: 'pages/promotion/recommend/main', scene : `e=${qrItemID}`},
-             '65':{page: 'pages/promotion/share/main', scene : `e=${qrItemID}`},
-             '66':{page: 'pages/promotion/expand/main', scene : `e=${qrItemID}`},
-             '82':{page: 'pages/promotion/grab/main', scene : `e=${qrItemID}`},
-             '83':{page: 'pages/promotion/passwordCoupons/main', scene : `e=${qrItemID}`},//口令领券
+             '30':{page: 'pages/subOr/voucherCenter/redeemDetail/main', scene : `eventID=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
+             '20':{page: 'pages/web/common/main', scene : `u=l?eventID=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
+             '21':{page: 'pages/subOr/voucherCenter/voucherDetail/main', scene : `eventID=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
+             '79':{page: 'pages/promotion/blindBox/index', scene : `eventID=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
+             '68':{page: 'pages/promotion/recommend/main', scene : `e=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
+             '65':{page: 'pages/promotion/share/main', scene : `e=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
+             '66':{page: 'pages/promotion/expand/main', scene : `e=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
+             '82':{page: 'pages/promotion/grab/main', scene : `e=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
+             '83':{page: 'pages/promotion/passwordCoupons/main', scene : `e=${qrItemID}&launchChannelID=${launchChannelIDWX}`},//口令领券
          }
          const params = {
              appID: currAppID,
@@ -745,13 +791,25 @@ class MySpecialActivities extends React.Component {
         this.handleCopyUrl(null, mpId);
     }
 
-    handleCheckText = (value) => {
+    handleCheckText = (value, label) => {
         // let v = Number(value);
-        this.setState({
-            channelContent: value,
-        }, () => {
-            this.handleCopyUrl()
-        })
+        const groupIds = this.state.sortedChannelList.map(item => item.value)
+        if(groupIds.includes(value)) {
+            message.warning('请选择渠道')
+            this.setState({
+                channelContent: '',
+                launchChannelID: '',
+            }, () => {
+                this.handleCopyUrl()
+            })
+        } else {
+            this.setState({
+                channelContent: label[0] || '',
+                launchChannelID: value || '',
+            }, () => {
+                this.handleCopyUrl()
+            })
+        }
     }
 
     handleChangeTabs = (key) => {
@@ -848,7 +906,7 @@ class MySpecialActivities extends React.Component {
     renderApp() {
         const { apps = [] } = this.state;
         return (
-            <Select style={{ width: '40%', margin: '0 10px' }} onChange={this.handleAppChange}>
+            <Select style={{ width: '51%', margin: '0 10px' }} onChange={this.handleAppChange} placeholder='请选择小程序'>
                 {apps.map((x, index) => {
                     return <Option key={index} value={x.appID} >{x.nickName || '缺失nickName子段'}</Option>
                 })}
@@ -932,21 +990,52 @@ class MySpecialActivities extends React.Component {
         )
     }
 
-    renderChannels() {
-        const { channelOptions } = this.state;
+    renderH5Channels() {
+        const { sortedChannelList, launchChannelID } = this.state;
         return (
-            <Select
-                placeholder="请填写投放渠道"
-                style={{
-                    width: '51%', margin: '0 10px'
-                }}
+            <TreeSelect
+                style={{ width: '51%', margin: '0 10px' }}
+                treeData={sortedChannelList}
+                dropdownStyle={{ maxHeight: 260, overflow: 'auto' }}
+                placeholder="请选择渠道"
+                showSearch={true}
+                treeNodeFilterProp="label"
+                allowClear={true}
+                treeDefaultExpandAll
+                value={launchChannelID || undefined}
                 onChange={this.handleCheckText}
-            >
-                {
-                    channelOptions.map(({ value, label }) => <Option key={value} value={value} label={label}>{label}</Option>)
-                }
+            />
+        )
 
-            </Select>
+    }
+
+    renderWXChannels() {
+        const { sortedChannelList, launchChannelIDWX } = this.state;
+        return (
+            <TreeSelect
+                style={{ width: '51%', margin: '0 10px' }}
+                treeData={sortedChannelList}
+                dropdownStyle={{ maxHeight: 260, overflow: 'auto' }}
+                placeholder="请选择渠道"
+                showSearch={true}
+                treeNodeFilterProp="label"
+                allowClear={true}
+                treeDefaultExpandAll
+                value={launchChannelIDWX || undefined}
+                onChange={(value, label) => {
+                    const groupIds = sortedChannelList.map(item => item.value)
+                    if(groupIds.includes(value)) {
+                        message.warning('请选择渠道')
+                        this.setState({
+                            launchChannelIDWX: '',
+                        })
+                    } else {
+                        this.setState({
+                            launchChannelIDWX: value || '',
+                        })
+                    }
+                }}
+            />
         )
 
     }
@@ -970,7 +1059,7 @@ class MySpecialActivities extends React.Component {
                             </div>
                             <div className={indexStyles.leftMpConent} >
                                 <div className={indexStyles.label}>请填写投放渠道</div>
-                                {this.renderChannels()}
+                                {this.renderH5Channels()}
                                 {/* <Input
                                     style={{
                                         width: '51%', margin: '0 10px'
@@ -1003,22 +1092,28 @@ class MySpecialActivities extends React.Component {
                     ? '' : <div className={indexStyles.copyBox}>
                         <h4 className={indexStyles.copyTitle}>小程序活动码提取</h4>
                         <Alert message="请先在小程序装修配置好该活动，再提取小程序活动码" type="warning" />
-                        <div className={indexStyles.copyUrlWrap}>
+                        <div className={indexStyles.copyUrlWrap} style={{ overflow: 'scroll' }}>
                             <div className={indexStyles.copyWrapHeader}>
-                                <div className={indexStyles.label}>请选择小程序</div>
+                                <div className={indexStyles.label} style={{ width: '25%', textAlign: 'right' }}>请选择小程序</div>
                                 {this.renderApp()}
+                            </div>
+                            <div className={indexStyles.copyWrapHeader}>
+                                <div className={indexStyles.label} style={{ width: '25%', textAlign: 'right' }}>请选择投放渠道</div>
+                                {this.renderWXChannels()}
+                            </div>
+                            <div style={{ textAlign: 'center', marginTop: 10 }}>
                                 <Button className={indexStyles.wxBtn} type="primary" onClick={this.creatReleaseQrCode} loading={xcxLoad}>生成小程序码</Button>
                             </div>
                             <div className={indexStyles.qrCodeBox} style={{ margin: 0 }}>
                                 {
                                     qrCodeImage && <div className={indexStyles.copyWrapHeader}>
-                                       <div className={indexStyles.label}> 小程序路径 </div>
-                                       <Input value={`${page}?${scene}`} style={{ width: '50%', margin: '0 10px' }}/>
+                                       <div className={indexStyles.label} style={{ width: '25%', textAlign: 'right' }}>小程序路径</div>
+                                       <Input value={`${page}?${scene}`} style={{ width: '51%', margin: '0 10px' }}/>
                                         <Button className={indexStyles.wxBtn} type="primary" onClick={this.handleToCopyRouter}>复制</Button>
                                     </div>
                                 }
                                 {
-                                    qrCodeImage ? <img className={indexStyles.miniProgramBox} src={qrCodeImage} id='__promotion_xcx_qr_img' alt="小程序二维码" /> : ''
+                                    qrCodeImage ? <img className={indexStyles.miniProgramBox} style={{ marginTop: 40 }} src={qrCodeImage} id='__promotion_xcx_qr_img' alt="小程序二维码" /> : ''
                                 }
                                 <Button className={indexStyles.xzqrCodeBtn} type="primary" disabled={!qrCodeImage} onClick={() => { this.downloadImage('__promotion_xcx_qr_img') }}>下载小程序码</Button>
                             </div>
@@ -1166,6 +1261,7 @@ class MySpecialActivities extends React.Component {
             opt.isActive = isActive == '-1' ? '-1' : (isActive == '1' ? '1' : '0');
         }
 
+        console.log(opt, 'opt')
         this.props.query({
             data: {
                 groupID: this.props.user.accountInfo.groupID,
@@ -1573,7 +1669,7 @@ class MySpecialActivities extends React.Component {
                         <a
                             href="#"
                             onClick={() => {
-                                this.handleCopyUrl(record)
+                                this.handleOpenModal(record)
                             }}
                         >
                             下载链接/二维码
@@ -2045,8 +2141,13 @@ class MySpecialActivities extends React.Component {
         })
     }
 
+    handleOpenModal = (record) => {
+        this.querySortedChannelList()
+        this.handleCopyUrl(record)
+    }
+
     handleCopyUrl = (record, mpId) => {
-        const { pushMessageMpID, channelContent } = this.state;
+        const { pushMessageMpID, channelContent, launchChannelID } = this.state;
         let mpID = mpId ? mpId : pushMessageMpID;
         let eventWayData, groupIdData, itemIdData;
         const testUrl = 'https://dohko.m.hualala.com';
@@ -2067,12 +2168,12 @@ class MySpecialActivities extends React.Component {
             url = preUrl
         }
         const urlMap = {
-            20: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
-            22: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
-            30: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
-            21: url + `/newm/eventFree?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
-            65: url + `/newm/shareFission?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
-            68: url + `/newm/recommendInvite?groupID=${groupIdData}&eventItemID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
+            20: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
+            22: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
+            30: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
+            21: url + `/newm/eventFree?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
+            65: url + `/newm/shareFission?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
+            68: url + `/newm/recommendInvite?groupID=${groupIdData}&eventItemID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
             // 83: url + `/newm/usePassword?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
         }
         /*if(actList.includes(String(eventWay))) {
