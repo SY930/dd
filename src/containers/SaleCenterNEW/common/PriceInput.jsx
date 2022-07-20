@@ -9,13 +9,14 @@
  */
 import React, { Fragment } from 'react';
 import { Form, Input, Select, Button } from 'antd';
+import styles from './PriceInput.less';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const maxDiscount = 100;
 const minDiscount = 0;
 
-export const handlerDiscountToParam = (number) => {
+export const handlerDiscountToParam = (number, divisor = 10) => {
     let discount = '0';
     if(number === '' || number == null){
         discount = '0';
@@ -31,9 +32,9 @@ export const handlerDiscountToParam = (number) => {
             number = number.slice(0,5);
         }
         if(number % 10 == 0 || parseInt(number) == parseFloat(number)){
-            discount = number / 10;
+            discount = number / divisor;
         }else{
-            discount = (number / 10).toFixed(2);
+            discount = (number / divisor).toFixed(2);
         }
     }
     return discount;
@@ -172,15 +173,22 @@ class PriceInput extends React.Component {
         const state = this.state;
         let width;
         if(discountMode){
-            if(inputOrigin && (inputOrigin == 'compositeReduction' || inputOrigin == 'lowPrice')){
-                width = '113px';
-            }   
+            if(inputOrigin){
+                if(inputOrigin == 'compositeReduction' || inputOrigin == 'nDiscount'){
+                    width = '113px';
+                }else if(inputOrigin == 'lowPrice'){
+                    width = '103px';
+                }
+            }
         }
         let style = {
             width
         }
         return (
-            <span style={{ display: discountMode ? 'flex': 'inline', alignItems: 'center', position: 'relative' }}>
+            <span 
+                style={{ display: discountMode ? 'flex': 'inline', alignItems: 'center', position: 'relative' }}
+                className={styles.nDiscountSpan}
+            >
                 <Input
                     {...props} 
                     type="text"

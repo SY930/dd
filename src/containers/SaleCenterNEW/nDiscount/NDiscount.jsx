@@ -171,6 +171,7 @@ export class NDiscount extends React.Component {
                             this.props.onChange && this.props.onChange(data);
                         }}
                         value={{ number: this.state.data[k].value }}
+                        inputOrigin='nDiscount'
                     />}
                     {k > 0 &&<PriceInput
                         addonBefore={`${k6hdp67b}${k + 2}${k6hdp6fn}`}
