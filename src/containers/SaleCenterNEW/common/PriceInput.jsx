@@ -25,7 +25,7 @@ export const handlerDiscountToParam = (number, divisor = 10) => {
         discount = '0';
     }
     if(number >= maxDiscount){
-        discount = '10';
+        discount = divisor == 1 ? '100' : '10';
     }
     if(number > minDiscount && number < maxDiscount){
         if(number.length > 5){
