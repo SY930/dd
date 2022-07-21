@@ -739,15 +739,15 @@ class MySpecialActivities extends React.Component {
         7.膨胀大礼包：pages/promotion/expand/main?e=6883743693912673173
         */
          const pageMap = {
-             '30':{page: 'pages/subOr/voucherCenter/redeemDetail/main', scene : `eventID=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
-             '20':{page: 'pages/web/common/main', scene : `u=l?eventID=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
-             '21':{page: 'pages/subOr/voucherCenter/voucherDetail/main', scene : `eventID=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
-             '79':{page: 'pages/promotion/blindBox/index', scene : `eventID=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
-             '68':{page: 'pages/promotion/recommend/main', scene : `e=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
-             '65':{page: 'pages/promotion/share/main', scene : `e=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
-             '66':{page: 'pages/promotion/expand/main', scene : `e=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
-             '82':{page: 'pages/promotion/grab/main', scene : `e=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
-             '83':{page: 'pages/promotion/passwordCoupons/main', scene : `e=${qrItemID}&launchChannelID=${launchChannelIDWX}`},//口令领券
+             '30':{page: 'pages/subOr/voucherCenter/redeemDetail/main', scene : !launchChannelIDWX ? `eventID=${qrItemID}` : `eventID=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
+             '20':{page: 'pages/web/common/main', scene : !launchChannelIDWX ? `u=l?eventID=${qrItemID}` :  `u=l?eventID=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
+             '21':{page: 'pages/subOr/voucherCenter/voucherDetail/main', scene : !launchChannelIDWX ? `eventID=${qrItemID}` :  `eventID=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
+             '79':{page: 'pages/promotion/blindBox/index', scene : !launchChannelIDWX ? `eventID=${qrItemID}` :  `eventID=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
+             '68':{page: 'pages/promotion/recommend/main', scene : !launchChannelIDWX ? `e=${qrItemID}` :  `e=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
+             '65':{page: 'pages/promotion/share/main', scene : !launchChannelIDWX ? `e=${qrItemID}` :  `e=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
+             '66':{page: 'pages/promotion/expand/main', scene : !launchChannelIDWX ? `e=${qrItemID}` :  `e=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
+             '82':{page: 'pages/promotion/grab/main', scene : !launchChannelIDWX ? `e=${qrItemID}` :  `e=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
+             '83':{page: 'pages/promotion/passwordCoupons/main', scene : !launchChannelIDWX ? `e=${qrItemID}` :  `e=${qrItemID}&launchChannelID=${launchChannelIDWX}`},//口令领券
          }
          const params = {
              appID: currAppID,
@@ -2168,12 +2168,12 @@ class MySpecialActivities extends React.Component {
             url = preUrl
         }
         const urlMap = {
-            20: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
-            22: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
-            30: url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
-            21: url + `/newm/eventFree?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
-            65: url + `/newm/shareFission?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
-            68: url + `/newm/recommendInvite?groupID=${groupIdData}&eventItemID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
+            20: !launchChannelID ? url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}` : url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
+            22: !launchChannelID ? url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}` :  url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
+            30: !launchChannelID ? url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}` : url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
+            21: !launchChannelID ? url + `/newm/eventFree?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}` : url + `/newm/eventFree?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
+            65: !launchChannelID ? url + `/newm/shareFission?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}` : url + `/newm/shareFission?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
+            68: !launchChannelID ? url + `/newm/recommendInvite??groupID=${groupIdData}&eventItemID=${itemIdData}&mpID=${mpID}` : url + `/newm/recommendInvite?groupID=${groupIdData}&eventItemID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
             // 83: url + `/newm/usePassword?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
         }
         /*if(actList.includes(String(eventWay))) {
