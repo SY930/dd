@@ -22,7 +22,7 @@ const SelectEl = function SelectEl() {
     return (
         <Select
             value={freeGetLimit}
-            style={{ width: '80px', marginLeft: '-10px', marginRight: '100px' }}
+            style={{ width: '80px', marginLeft: '-10px' }}
             onChange={(e) => {
                 resetFields(['giftTotalCopies'])
                 this.setState({
