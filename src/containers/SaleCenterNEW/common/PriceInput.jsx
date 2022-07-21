@@ -187,7 +187,7 @@ class PriceInput extends React.Component {
         return (
             <span 
                 style={{ display: discountMode ? 'flex': 'inline', alignItems: 'center', position: 'relative' }}
-                className={styles.nDiscountSpan}
+                className={discountMode ? styles.nDiscountSpan : ''}
             >
                 <Input
                     {...props} 
