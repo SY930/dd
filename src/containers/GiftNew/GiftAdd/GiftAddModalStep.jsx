@@ -1360,6 +1360,8 @@ class GiftAddModalStep extends React.PureComponent {
                 discountMode={true}
                 discountFloat={1}
                 maxNum={2}
+                style={{width: '100%'}}
+                inputOrigin='GiftAddModalStep'
             />
         )
     }
