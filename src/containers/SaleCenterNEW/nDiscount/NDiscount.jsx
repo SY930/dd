@@ -149,7 +149,7 @@ export class NDiscount extends React.Component {
                     help={this.state.data[k].validateFlag ? null : k6hdp5ib}
                 >
                     {k === 0 && <PriceInput
-                        addonBefore={<Select value={this.state.stageType} onChange={this.handleStageTypeChange}>
+                        addonBefore={<Select value={this.state.stageType} onChange={this.handleStageTypeChange} style={{width: '153px'}}>
                             <Option value="2">{SALE_LABEL.k6hdp5qn}</Option>
                             <Option value="1">{SALE_LABEL.k6hdp5yz}</Option>
                         </Select>}
@@ -159,7 +159,6 @@ export class NDiscount extends React.Component {
                         placeholder={k5ezdckg}
                         onChange={(value) => {
                             const { data } = this.state;
-                            // _TODO
                             if (notValidDiscountNum(value.number)) {
                                 data[k].validateFlag = false;
                             } else {
@@ -171,7 +170,7 @@ export class NDiscount extends React.Component {
                             this.props.onChange && this.props.onChange(data);
                         }}
                         value={{ number: this.state.data[k].value }}
-                        inputOrigin='nDiscount'
+                        style={{width: '113px'}}
                     />}
                     {k > 0 &&<PriceInput
                         addonBefore={`${k6hdp67b}${k + 2}${k6hdp6fn}`}
@@ -180,7 +179,6 @@ export class NDiscount extends React.Component {
                         modal="float"
                         placeholder={k5ezdckg}
                         onChange={(value) => {
-                            // _TODO
                             const { data } = this.state;
                             if (notValidDiscountNum(value.number)) {
                                 data[k].validateFlag = false;

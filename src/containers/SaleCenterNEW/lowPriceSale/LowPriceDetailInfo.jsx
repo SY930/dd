@@ -403,7 +403,7 @@ class LowPriceDetailInfo extends React.Component {
                                 onChange={this.handleDiscountRateChange}
                                 maxNum={3}
                                 modal="float"
-                                inputOrigin='lowPrice'
+                                style={{width: '103px'}}
                             />
                         }
                     </div>

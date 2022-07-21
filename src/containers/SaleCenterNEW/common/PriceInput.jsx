@@ -9,7 +9,6 @@
  */
 import React, { Fragment } from 'react';
 import { Form, Input, Select, Button } from 'antd';
-import styles from './PriceInput.less';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -126,11 +125,9 @@ class PriceInput extends React.Component {
             }
         }
         if(this.props.discountMode){
-            // _TODO
             if(valueNum > maxDiscount){
                 valueNum = maxDiscount;
             }
-
             this.setState({ number: valueNum }, () => {
                 this.props.onChange && this.props.onChange(Object.assign({}, this.state));
             });
@@ -166,28 +163,14 @@ class PriceInput extends React.Component {
     }
 
     render() {
-        const { size, disabled, discountMode, inputOrigin } = this.props;
+        const { size, disabled, discountMode } = this.props;
         const props = Object.assign({}, this.props);
         delete props.modal; // 将modal 属性传递下去会产生warning
         delete props.maxNum; // 将maxNum 属性传递下去会产生warning
         const state = this.state;
-        let width;
-        if(discountMode){
-            if(inputOrigin){
-                if(inputOrigin == 'compositeReduction' || inputOrigin == 'nDiscount'){
-                    width = '113px';
-                }else if(inputOrigin == 'lowPrice'){
-                    width = '103px';
-                }
-            }
-        }
-        let style = {
-            width
-        }
         return (
             <span 
                 style={{ display: discountMode ? 'flex': 'inline', alignItems: 'center', position: 'relative' }}
-                className={discountMode ? styles.nDiscountSpan : ''}
             >
                 <Input
                     {...props} 
@@ -198,7 +181,6 @@ class PriceInput extends React.Component {
                     onChange={this.handleNumberChange}
                     addonBefore={this.props.addonBefore}
                     addonAfter={this.props.addonAfter}
-                    style={style}
                 />
                 {
                     this.props.discountMode ?
