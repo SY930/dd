@@ -639,7 +639,7 @@ class PromotionScopeInfo extends React.Component {
         const k5m67br3 = intl.formatMessage(SALE_STRING.k5m67br3);
         return (
             <div>
-                <Form.Item
+                {/* <Form.Item
                     label={SALE_LABEL.k5nh2459}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
@@ -675,7 +675,7 @@ class PromotionScopeInfo extends React.Component {
                                 </Col></div>
                             : null
                     }
-                </Form.Item>
+                </Form.Item> */}
                 <Form.Item
                     label={SALE_LABEL.k5m67bzf}
                     className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}

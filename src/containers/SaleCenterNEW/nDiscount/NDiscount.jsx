@@ -25,6 +25,7 @@ import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from '../IntlDecor';
 const InputGroup = Input.Group;
 const Option = Select.Option;
+import { notValidDiscountNum } from "../../../containers/SaleCenterNEW/discount/discountDetailInfo";
 
 const FormItem = Form.Item;
 @injectIntl()
@@ -137,6 +138,7 @@ export class NDiscount extends React.Component {
         /*const keys = getFieldValue('keys');*/
         const formItemInside = Object.keys(this.state.data).map((k, index) => {
             k = parseInt(k);
+    
             return (
                 <FormItem
                     className={styles.FormItemStyle}
@@ -157,7 +159,8 @@ export class NDiscount extends React.Component {
                         placeholder={k5ezdckg}
                         onChange={(value) => {
                             const { data } = this.state;
-                            if (value.number == null || value.number == '' || value.number > 10) {
+                            // _TODO
+                            if (notValidDiscountNum(value.number)) {
                                 data[k].validateFlag = false;
                             } else {
                                 data[k].validateFlag = true;
@@ -168,6 +171,7 @@ export class NDiscount extends React.Component {
                             this.props.onChange && this.props.onChange(data);
                         }}
                         value={{ number: this.state.data[k].value }}
+                        inputOrigin='nDiscount'
                     />}
                     {k > 0 &&<PriceInput
                         addonBefore={`${k6hdp67b}${k + 2}${k6hdp6fn}`}
@@ -176,8 +180,9 @@ export class NDiscount extends React.Component {
                         modal="float"
                         placeholder={k5ezdckg}
                         onChange={(value) => {
+                            // _TODO
                             const { data } = this.state;
-                            if (value.number == null || value.number == '' || value.number > 10) {
+                            if (notValidDiscountNum(value.number)) {
                                 data[k].validateFlag = false;
                             } else {
                                 data[k].validateFlag = true;

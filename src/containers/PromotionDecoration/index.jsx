@@ -79,6 +79,7 @@ const mapDispatchToProps = (dispatch) => {
         },
     }
 };
+
 @registerPage([PROMOTION_DECORATION])
 @connect(mapStateToProps, mapDispatchToProps)
 @injectIntl()
@@ -87,6 +88,7 @@ export default class PromotionDecoration extends Component {
     state = {
         ifVaild: true,
         gatherPointFlag: false,
+        activeTabRecommend: '1', // 推荐有礼激活tab
     }
 
     componentDidMount() {
@@ -273,6 +275,37 @@ export default class PromotionDecoration extends Component {
             }
         })
     }
+
+    handleRecommendReset = () => {
+        const { activeTabRecommend } = this.state;
+        const { updateDecorationItem, decorationInfo } = this.props;
+        switch (activeTabRecommend) {
+            case '1': // 推荐页
+                const _decorateInfo = {
+                    ...decorationInfo.toJS(), 
+                    bgColor: '#FBB335',
+                    bgImg: null,
+                    btnBgColor: 'linear-gradient(#F27267,#D24C41)',
+                    btnColor: '#FFFFFF',
+                    faceToFaceBtnBgColor: 'linear-gradient(#F27267,#D24C41)',
+                    faceToFaceBtnColor: '#FFFFFF',
+                }
+                updateDecorationItem({key: null, value: _decorateInfo})
+                return;
+        
+            default:
+                const _decorateInfoed = {
+                    ...decorationInfo.toJS(), 
+                    bgColorInvited: '#FBB335',
+                    bgImgInvited: null,
+                    btnBgColorInvited:'linear-gradient(#F27267,#D24C41)',
+                    btnColorInvited: '#FFFFFF',
+                }
+                updateDecorationItem({key: null, value: _decorateInfoed})
+
+                return;
+        }
+    }
     handleFaceReset = () => {
         const { updateDecorationFaceItem, faceArr } = this.props;
         const faceArrs = faceArr.map((item, index) => {
@@ -288,12 +321,24 @@ export default class PromotionDecoration extends Component {
     }
     handleReset = () => {
         const { type } = this.props
+        
         if (type == '85') {
            return this.handleFaceReset();
         }
+
+        if (type == '68') {
+            return this.handleRecommendReset();
+         }
+
         this.props.resetDecorationInfo();
         this.setState({
             gatherPointFlag: true,
+        })
+    }
+
+    handelTabRecommendChange = (v) => {
+        this.setState({
+            activeTabRecommend: v,
         })
     }
 
@@ -381,7 +426,7 @@ export default class PromotionDecoration extends Component {
             case '76':
                 return <SignInDecorationBoard onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
             case '68':
-                return <RecommendHaveGift onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
+                return <RecommendHaveGift onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} activeTab={this.state.activeTabRecommend} handelTabRecommendChange={this.handelTabRecommendChange}/>
             case '79':
                 return <BlindBoxDecorationBoard onChange={updateDecorationItem} decorationInfo={decorationInfo.toJS()} type={type} />
             case 'ticketbag':

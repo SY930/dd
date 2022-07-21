@@ -7,11 +7,58 @@
  * @Last modified time: 2017-04-07T10:12:09+08:00
  * @Copyright: Copyright(c) 2017-present Hualala Co.,Ltd.
  */
-import React from 'react';
+import React, { Fragment } from 'react';
 import { Form, Input, Select, Button } from 'antd';
+import styles from './PriceInput.less';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+const maxDiscount = 100;
+const minDiscount = 0;
+
+export const handlerDiscountToParam = (number, divisor = 10) => {
+    let discount = '0';
+    if(number === '' || number == null){
+        discount = '0';
+    }
+    if(number <= 0){
+        discount = '0';
+    }
+    if(number >= maxDiscount){
+        discount = divisor == 1 ? '100' : '10';
+    }
+    if(number > minDiscount && number < maxDiscount){
+        if(number.length > 5){
+            number = number.slice(0,5);
+        }
+        if(number % 10 == 0 || parseInt(number) == parseFloat(number)){
+            discount = number / divisor;
+        }else{
+            discount = (number / divisor).toFixed(2);
+        }
+    }
+    return discount;
+}
+
+export const renderDiscountModeDesc = (number) => {
+    let desc = '';
+    if(number === '' || number == null){
+        return ''
+    }
+    if(number <= 0){
+        desc = '免费'
+    }
+    if(number >= maxDiscount){
+        desc = '不打折'
+    }
+    if(number > minDiscount && number < maxDiscount){
+        if(number.length > 5){
+            number = number.slice(0,5);
+        }
+        desc = `${(number / 10).toString().slice(0, 5)}折`;
+    }
+    return `【${desc}】`;
+}
 
 class PriceInput extends React.Component {
     constructor(props) {
@@ -78,9 +125,20 @@ class PriceInput extends React.Component {
                 valueNum = parseInt(value);
             }
         }
-        this.setState({ number: valueNum }, () => {
-            this.props.onChange && this.props.onChange(Object.assign({}, this.state));
-        });
+        if(this.props.discountMode){
+            // _TODO
+            if(valueNum > maxDiscount){
+                valueNum = maxDiscount;
+            }
+
+            this.setState({ number: valueNum }, () => {
+                this.props.onChange && this.props.onChange(Object.assign({}, this.state));
+            });
+        }else{
+            this.setState({ number: valueNum }, () => {
+                this.props.onChange && this.props.onChange(Object.assign({}, this.state));
+            });
+        }
     }
 
     handleBlur(e) {
@@ -108,22 +166,49 @@ class PriceInput extends React.Component {
     }
 
     render() {
-        const { size, disabled } = this.props;
+        const { size, disabled, discountMode, inputOrigin } = this.props;
         const props = Object.assign({}, this.props);
         delete props.modal; // 将modal 属性传递下去会产生warning
         delete props.maxNum; // 将maxNum 属性传递下去会产生warning
         const state = this.state;
+        let width;
+        if(discountMode){
+            if(inputOrigin){
+                if(inputOrigin == 'compositeReduction' || inputOrigin == 'nDiscount'){
+                    width = '113px';
+                }else if(inputOrigin == 'lowPrice'){
+                    width = '103px';
+                }
+            }
+        }
+        let style = {
+            width
+        }
         return (
-            <Input
-                {...props}
-                type="text"
-                size={size}
-                value={state.number}
-                onBlur={this.handleBlur}
-                onChange={this.handleNumberChange}
-                addonBefore={this.props.addonBefore}
-                addonAfter={this.props.addonAfter}
-            />
+            <span 
+                style={{ display: discountMode ? 'flex': 'inline', alignItems: 'center', position: 'relative' }}
+                className={styles.nDiscountSpan}
+            >
+                <Input
+                    {...props} 
+                    type="text"
+                    size={size}
+                    value={state.number}
+                    onBlur={this.handleBlur}
+                    onChange={this.handleNumberChange}
+                    addonBefore={this.props.addonBefore}
+                    addonAfter={this.props.addonAfter}
+                    style={style}
+                />
+                {
+                    this.props.discountMode ?
+                    <span style={{width: '100%'}}>
+                        {renderDiscountModeDesc(state.number)}
+                    </span>
+                    :null
+                }
+            </span>
+           
         );
     }
 }

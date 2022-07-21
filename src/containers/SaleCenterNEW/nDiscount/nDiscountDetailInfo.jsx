@@ -18,6 +18,9 @@ import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from '../IntlDecor';
+import { handlerDiscountToParam } from '../../../containers/SaleCenterNEW/common/PriceInput';
+
+
 const RadioGroup = Radio.Group;
 const Immutable = require('immutable');
 @injectIntl()
@@ -65,7 +68,7 @@ class NDiscountDetailInfo extends React.Component {
         if (_rule.stage) {
             _rule.stage.map((rule, index) => {
                 dis[index] = {
-                    value: Number((rule.discountRate * 1).toFixed(3)).toString(), // Number.prototype.toFixed()
+                    value: Number((rule.discountRate * 10).toFixed(3)).toString(), // Number.prototype.toFixed()
                     validateFlag: true,
                 }
             });
@@ -84,15 +87,16 @@ class NDiscountDetailInfo extends React.Component {
         let nextFlag = true;
         const { nDiscount, priceLst, stageType, shortRule = '0' } = this.state;
         const disArr = [];
+        const nDiscountValidateFlags = [];
 
         Object.keys(nDiscount).map((key) => {
-            if (nDiscount[key].value == '') {
-                nextFlag = false;
-                nDiscount[key].validateFlag = false;
-            } else {
+            nDiscountValidateFlags.push(nDiscount[key].validateFlag);
+            if(nDiscount[key].validateFlag){
                 disArr.push(nDiscount[key]);
             }
-        })
+        });
+
+        nextFlag = nDiscountValidateFlags.every(validateFlag => validateFlag);
         this.setState({ nDiscount });
 
         if (nextFlag && stageType == '2') {
@@ -101,7 +105,7 @@ class NDiscountDetailInfo extends React.Component {
                 stage: disArr.map((nDis, index) => {
                     return {
                         stageAmount: index + 2,
-                        discountRate: Number(nDis.value),
+                        discountRate: Number(handlerDiscountToParam(nDis.value)),
                     }
                 }),
             };
@@ -119,7 +123,7 @@ class NDiscountDetailInfo extends React.Component {
                 stage: disArr.map((nDis, index) => {
                     return {
                         stageAmount: index + 2,
-                        discountRate: Number(nDis.value),
+                        discountRate: Number(handlerDiscountToParam(nDis.value)),
                     }
                 }),
                 shortRule,

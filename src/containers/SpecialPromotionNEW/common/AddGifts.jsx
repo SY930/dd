@@ -253,7 +253,10 @@ class AddGifts extends React.Component {
                         </Button>
                     )
                 }
-                <div className={userCount > 0 || disabledGifts ? styles.opacitySet : null}></div>
+                {
+                    type != 64 ? <div className={userCount > 0 || disabledGifts ? styles.opacitySet : null}></div> : null //WTCRM-8629 评价有礼有参与记录礼品还可以编辑
+                }
+                
             </div>
         );
     }
