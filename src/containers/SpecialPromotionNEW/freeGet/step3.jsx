@@ -17,8 +17,6 @@ const Option = Select.Option
 const SelectEl = function SelectEl() {
     const { form: { resetFields } } = this.props;
     const { freeGetLimit } = this.state;
-
-
     return (
         <Select
             value={freeGetLimit}
