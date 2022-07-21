@@ -1101,7 +1101,7 @@ class MySpecialActivities extends React.Component {
                                 <div className={indexStyles.label} style={{ width: '25%', textAlign: 'right' }}>请选择投放渠道</div>
                                 {this.renderWXChannels()}
                             </div>
-                            <div style={{ fontSize: '12px', padding: 10, backgroundColor: 'rgb(247,194,127)', borderRadius: '5px' }}>
+                            <div style={{ fontSize: '12px', padding: 7, backgroundColor: 'rgb(247,194,127)', borderRadius: '5px' }}>
                                 如需设置投放渠道，请确保所选2.0小程序版本不低于OR6.2.6.0；3.0小程序版本不低于SR3.6.0，否则会造成生成的小程序活动码/链接失效！
                             </div>
                             <div style={{ textAlign: 'center', marginTop: 10 }}>
