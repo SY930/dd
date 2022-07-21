@@ -679,7 +679,7 @@ class CompositeDetailInfo extends React.Component {
                                                 onChange={(val) => {
                                                     this.handleDiscountChange(idx, val);
                                                 }}
-                                                inputOrigin='compositeReduction'
+                                                style={{width: '113px'}}
                                             />
                                     }
                                 </FormItem>
