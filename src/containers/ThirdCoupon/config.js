@@ -32,7 +32,7 @@ export const getColumns = _this => ([
                     查看
                 </a>
                 {
-                    record.platformType === 5 && (
+                    [5, 7].includes(record.platformType) && (
                         <a
                             href="#"
                             onClick={() => {
@@ -146,11 +146,19 @@ export const getColumns = _this => ([
         render: text => text,
     },
     {
-        title: '券ID',
+        title: '哗啦啦券批次ID',
         dataIndex: 'itemID',
         key: 'itemID',
         width: 200,
         render: text => text,
+    },
+    {
+        title: '礼品名称',
+        dataIndex: 'giftName',
+    },
+    {
+        title: '礼品ID',
+        dataIndex: 'giftID',
     },
     {
         title: '业态',
@@ -171,6 +179,7 @@ export const getColumns = _this => ([
                 5: '抖音',
                 3: '微信',
                 6: 'E折',
+                7: '快手',
             }
             return channelMap[text] || '--'
         },
@@ -331,6 +340,38 @@ export const columnsView = [
         },
     },
 ]
+
+export const ThirdCouponConfig = [{
+    title: '第三方支付宝券',
+    params: { type: 1, channelID: 60, platformTypeCreate: 1, giftTypes: [10, 111] },
+    subTitle: '支付宝券',
+    url: 'http://res.hualala.com/basicdoc/b12ac629-222c-488e-9bc9-46c87d7defca.png',
+}, {
+    title: '第三方微信券',
+    params: { type: 2, channelID: 50, platformTypeCreate: 3, giftTypes: [10, 111, 21] },
+    subTitle: '微信券',
+    url: 'http://res.hualala.com/basicdoc/de989c7b-7cb4-4033-8c91-8f589850ca82.png',
+}, {
+    title: '抖音（小黄车）',
+    params: { type: 3, channelID: 70, platformTypeCreate: 2, giftTypes: [10, 111, 21] },
+    subTitle: '抖音券',
+    url: 'http://res.hualala.com/basicdoc/911767a5-4f0a-44b3-ab4a-da6b2cc8924e.png',
+}, {
+    title: '抖音（小风车）',
+    params: { type: 4, channelID: 80, platformTypeCreate: 5, giftTypes: [10, 111, 21] },
+    subTitle: '抖音券',
+    url: 'http://res.hualala.com/basicdoc/911767a5-4f0a-44b3-ab4a-da6b2cc8924e.png',
+}, {
+    title: 'E折券',
+    params: { type: 5, channelID: 90, platformTypeCreate: 6, giftTypes: [10, 21] },
+    subTitle: 'E折券',
+    url: 'http://res.hualala.com/basicdoc/550f5482-f0df-44b5-ac5d-a930b3f5c839.png',
+}, {
+    title: '快手',
+    params: { type: 7, channelID: 100, platformTypeCreate: 7, giftTypes: [10, 111, 21] },
+    subTitle: '快手券',
+    url: 'http://res.hualala.com/basicdoc/550f5482-f0df-44b5-ac5d-a930b3f5c839.png',
+}];
 
 
 export const eZheAgreement = `
