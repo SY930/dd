@@ -162,7 +162,6 @@ class StepTwo extends React.Component {
                 message: specialPromotion.smsTemplate,
                 cardLevelIDList: specialPromotion.cardLevelIDList,
                 cardLevelRangeType: specialPromotion.cardLevelRangeType || '0',
-                localType:specialPromotion.cardLevelRangeType == '7' ? '7' : '5',
                 customerRangeConditionIDs:specialPromotion.customerRangeConditionIDs,
                 ...addUpOpts,
             }
@@ -434,6 +433,8 @@ class StepTwo extends React.Component {
             opts.consumeType = consumeType;
             if(localType == 7){
                 opts.customerRangeConditionIDs = selectedTags.map(item => item.tagRuleID)
+            }else{
+                delete opts.customerRangeConditionIDs
             }
             consumeType % 2 === 0 ? opts.consumeTotalAmount = numberValue.number || 0 : opts.consumeTotalTimes = numberValue.number;
             if ((consumeType % 2 === 0 && (numberValue.number < 0 || numberValue.number === '')) || (consumeType == '1' && numberValue.number < 1)) {
@@ -612,6 +613,7 @@ class StepTwo extends React.Component {
 
     render() {
         let {localType, cardLevelIDList } = this.state;
+        console.log(localType,'localType--------')
         const sendFlag = true;
         const totalCustomerCount = this.props.specialPromotion.get('customerCount');
         const tip = this.state.consumeType % 2 === 0 ? `${this.props.intl.formatMessage(STRING_SPE.d1e09r9slq0172)}` : `${this.props.intl.formatMessage(STRING_SPE.d16hh4899ii1154)}`;
