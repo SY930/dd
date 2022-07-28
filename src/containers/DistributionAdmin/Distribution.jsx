@@ -16,7 +16,7 @@ export default class Distribution extends React.Component {
         currentTabKey: '1'
     }
     onSave = () => {
-        let formValue = this.adminContainer.queryFrom.getFieldsValue()
+        let formValue = this.adminContainer.getForm().getFieldsValue();
         console.log(9999, formValue);
     }
 
@@ -32,9 +32,8 @@ export default class Distribution extends React.Component {
                 <Col span={24} className={`${styles.header} ${styles.flexBetween}`}>
                     <span className={styles.title}>拓展分销</span>
                     <div>
-                        <Button>取消</Button>  
-                        <Button style={{margin: '0 12px'}}>导出明细</Button>  
-                        <Button type='primary' onClick={this.onSave}>保存</Button>  
+                        { currentTabKey == '1' ? <Button type='primary' onClick={this.onSave}>保存</Button> : null }  
+                        { currentTabKey == '2' || currentTabKey == '3' ? <Button style={{margin: '0 12px'}}>导出明细</Button> : null}
                     </div>
                 </Col>
                 <Col span={24} className={styles.tabCol}>
