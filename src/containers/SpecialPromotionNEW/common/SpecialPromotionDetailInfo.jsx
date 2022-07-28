@@ -177,6 +177,7 @@ class SpecialDetailInfo extends Component {
             wakeupSendGiftsDataArray, // 唤醒送礼专用
             pointObj,
             isThirdCoupon,
+            itemID
         } = this.initState();
         const eventRecommendSettings = this.initEventRecommendSettings();
         const selectedMpId = props.specialPromotion.getIn([
@@ -352,6 +353,7 @@ class SpecialDetailInfo extends Component {
             couponValue: isThirdCoupon ? '1' : '0',
             giftCouponCount: thirdCouponData.length > 0 && isThirdCoupon ? thirdCouponData[0].giftCount : '1', // 用户单次领取优惠券张数
             sleectedWxCouponList: thirdCouponData.length > 0 && isThirdCoupon ? thirdCouponData : [], // 选择的微信第三方优惠券
+            itemID
         };
     }
     componentDidMount() {
@@ -588,11 +590,13 @@ class SpecialDetailInfo extends Component {
             .toJS();
         const data = this.initiateDefaultGifts();
         let thirdCouponData = [];
+        let editItemID = '';
         const type = this.props.type
         let isThirdCoupon = false; // 是否保存的是微信三方券
         if (giftInfo && giftInfo.length) {
-            const { presentType } = giftInfo[0];
+            let { presentType } = giftInfo[0];
             presentType == 7 ? isThirdCoupon = true : isThirdCoupon = false;
+            editItemID = giftInfo[0].itemID ? giftInfo[0].itemID : '';
         }
         let pointObj = {
             presentValue: "",
@@ -641,6 +645,7 @@ class SpecialDetailInfo extends Component {
                         presentValue: gift.presentValue,
                         giftGetRuleValue: gift.giftGetRuleValue,
                         givePoints: true,
+                        itemID:gift.itemID,
                     };
                     return;
                 }
@@ -768,6 +773,7 @@ class SpecialDetailInfo extends Component {
             pointObj,
             isThirdCoupon,
             thirdCouponData,
+            itemID:editItemID
         };
     };
 
@@ -1062,7 +1068,7 @@ class SpecialDetailInfo extends Component {
             return true;
         }
         if (type === "52" || this.props.type == "64") {
-            const { presentValue, givePoints, giveCoupon, giftGetRuleValue } = this.state;
+            const { presentValue, givePoints, giveCoupon, giftGetRuleValue,itemID } = this.state;
             if (!givePoints && !giveCoupon) {
                 message.warning("赠送积分和优惠券必选一项");
                 return;
@@ -1090,6 +1096,7 @@ class SpecialDetailInfo extends Component {
                     giftCount: 1,
                     giftGetRuleValue: giftGetRule == '7' ? giftGetRuleValue : '',
                     giftGetRule,
+                    itemID
                 };
                 this.props.setSpecialGiftInfo([params]);
                 if ( type == '64') { this.props.setSpecialBasicInfo({ giftGetRule }) }
@@ -1267,6 +1274,7 @@ class SpecialDetailInfo extends Component {
                         giftCount: 1,
                         giftGetRuleValue: giftGetRule == '7' ? giftGetRuleValue : '',
                         giftGetRule,
+                        itemID:this.state.itemID
                     };
                     giftInfo = [...giftInfo, params];
                 }
