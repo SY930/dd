@@ -61,3 +61,4 @@ export const THIRD_VOUCHER_MANAGEMENT = '100008992' // 第三方券管理
 export const ACTIVITY_LAUNCH = '100008993' // 投放活动
 
 export const SALE_LANCH_CHANNEL = '10000730099' //活动投放渠道管理
+export const SALE_DISTRIBUTION_ADMIN = 'sale.distribution.admin' // 分销管理
