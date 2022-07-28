@@ -305,7 +305,6 @@ class GroupTicketDetailInfo extends React.Component {
                     <PriceInput
                         addonBefore={''}
                         addonAfter={k5ezdbiy}
-                        discountMode
                         discountFloat={5}
                         onChange={this.onTransFeeChange}
                         value={{ number: this.state.transFee }}
@@ -340,7 +339,6 @@ class GroupTicketDetailInfo extends React.Component {
                         <PriceInput
                             addonBefore={''}
                             addonAfter={k5ezdbiy}
-                            discountMode
                             discountFloat={2}
                             onChange={this.onSubsidyChange}
                             value={{ number: this.state.subsidyAmount }}
