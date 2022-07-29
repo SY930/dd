@@ -2196,6 +2196,7 @@ class MySpecialActivities extends React.Component {
             data: {
                 itemID: _record && _record.itemID ? _record.itemID : this.state.currentItemID,
                 groupID: user.accountInfo.groupID,
+                actionFrom:'1'
             },
             eventWay,
             fail: this.failFn,
