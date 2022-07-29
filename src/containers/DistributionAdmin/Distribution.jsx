@@ -20,6 +20,10 @@ export default class Distribution extends React.Component {
         console.log(9999, formValue);
     }
 
+    onExport = () => {
+
+    }
+
     render() {
         let { currentTabKey } = this.state;
         const changeTab = (key) => {
@@ -33,7 +37,7 @@ export default class Distribution extends React.Component {
                     <span className={styles.title}>拓展分销</span>
                     <div>
                         { currentTabKey == '1' ? <Button type='primary' onClick={this.onSave}>保存</Button> : null }  
-                        { currentTabKey == '2' || currentTabKey == '3' ? <Button style={{margin: '0 12px'}}>导出明细</Button> : null}
+                        { currentTabKey == '2' || currentTabKey == '3' ? <Button style={{margin: '0 12px'}} onClick={this.onExport}>导出明细</Button> : null}
                     </div>
                 </Col>
                 <Col span={24} className={styles.tabCol}>
@@ -51,10 +55,10 @@ export default class Distribution extends React.Component {
                     currentTabKey == '1' ? <Admin ref={node => this.adminContainer = node} /> : null
                 }
                 {
-                    currentTabKey == '2' ? <DistributionDetail /> : null
+                    currentTabKey == '2' ? <DistributionDetail ref={node => this.distributionDetailContainer = node} /> : null
                 }
                 {
-                    currentTabKey == '3' ? <DistributionWithdrawDetail /> : null
+                    currentTabKey == '3' ? <DistributionWithdrawDetail ref={node => this.withdrawDetailContainer = node} /> : null
                 }
             </Col>
         )
