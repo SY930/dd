@@ -238,7 +238,7 @@ export default class NewPromotion extends React.Component {
             if (code === '000' && popFlag) {
                 this.setState({
                     upperLimitVisible: true, // 弹窗提醒
-                    data: { gifts: [...opts.gifts], sendGiftCount, customerCount },
+                    data: { gifts: [...gifts.filter(item => (item.presentType == '1'))], sendGiftCount, customerCount },
                 })
             } else if (code === '000' && !popFlag) { // 无需弹窗提醒
                 if (name === 'add') { // 调用原逻辑
