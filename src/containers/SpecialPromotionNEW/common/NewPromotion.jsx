@@ -222,28 +222,36 @@ export default class NewPromotion extends React.Component {
             cardLevelRangeType,
             cardGroupID,
             customerRangeConditionIDs,
-            giftCountBeanList: gifts.map((item) => {
-                if (item.presentType == '1') {
-                    return {
-                        giftID: item.giftID,
-                        giftCount: item.giftCount,
-                    }
-                }
-            }),
+            giftCountBeanList: gifts.filter(item => (item.presentType == '1')).map(item => ({
+                giftID: item.giftID,
+                giftCount: item.giftCount,
+            })),
         }
-        const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW', type: 'post', data, method: '/specialPromotion/calculateSendGiftCount.ajax' }
+        const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+            type: 'post',
+            data,
+            method: '/specialPromotion/calculateSendGiftCount.ajax',
+        }
         if (coupon) {
             const res = await axios.post('/api/v1/universal', params)
-            const { code, popFlag = false, sendGiftCount, customerCount } = res
+            const { code, popFlag = false, sendGiftCount, customerCount, message: msg } = res
             if (code === '000' && popFlag) {
                 this.setState({
                     upperLimitVisible: true, // 弹窗提醒
                     data: { gifts: [...opts.gifts], sendGiftCount, customerCount },
                 })
-            } else if (name === 'add') { // 接口失败直接调用
-                this.addSpecialPromition(opts, cb, jumpToCrmFlag)
-            } else {
-                this.updateSpecialPromotion(opts, cb, jumpToCrmFlag)
+            } else if (code === '000' && !popFlag) { // 无需弹窗提醒
+                if (name === 'add') { // 调用原逻辑
+                    this.addSpecialPromition(opts, cb, jumpToCrmFlag)
+                } else {
+                    this.updateSpecialPromotion(opts, cb, jumpToCrmFlag)
+                }
+            } else { // 接口出错
+                message.error(msg);
+                this.setState({
+                    loading: false,
+                    upperLimitVisible: false,
+                })
             }
         } else if (name === 'add') { // 没有券直接调用原逻辑
             this.addSpecialPromition(opts, cb, jumpToCrmFlag)
