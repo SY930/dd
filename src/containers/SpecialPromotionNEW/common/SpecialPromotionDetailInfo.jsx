@@ -177,7 +177,7 @@ class SpecialDetailInfo extends Component {
             wakeupSendGiftsDataArray, // 唤醒送礼专用
             pointObj,
             isThirdCoupon,
-            itemID
+            pointItemID
         } = this.initState();
         const eventRecommendSettings = this.initEventRecommendSettings();
         const selectedMpId = props.specialPromotion.getIn([
@@ -353,7 +353,7 @@ class SpecialDetailInfo extends Component {
             couponValue: isThirdCoupon ? '1' : '0',
             giftCouponCount: thirdCouponData.length > 0 && isThirdCoupon ? thirdCouponData[0].giftCount : '1', // 用户单次领取优惠券张数
             sleectedWxCouponList: thirdCouponData.length > 0 && isThirdCoupon ? thirdCouponData : [], // 选择的微信第三方优惠券
-            itemID
+            pointItemID
         };
     }
     componentDidMount() {
@@ -596,7 +596,6 @@ class SpecialDetailInfo extends Component {
         if (giftInfo && giftInfo.length) {
             let { presentType } = giftInfo[0];
             presentType == 7 ? isThirdCoupon = true : isThirdCoupon = false;
-            editItemID = giftInfo[0].itemID ? giftInfo[0].itemID : '';
         }
         let pointObj = {
             presentValue: "",
@@ -639,7 +638,7 @@ class SpecialDetailInfo extends Component {
         }
         if (!isThirdCoupon) {
             giftInfo.forEach((gift, index) => {
-                if ((this.props.type == "52" || this.props.type == "64") && gift.presentType === 2) {
+                if ((this.props.type == "52" || this.props.type == "64") && gift.presentType === 2) {//积分
                     pointObj = {
                         ...pointObj,
                         presentValue: gift.presentValue,
@@ -647,6 +646,7 @@ class SpecialDetailInfo extends Component {
                         givePoints: true,
                         itemID:gift.itemID,
                     };
+                    editItemID = gift.itemID
                     return;
                 }
                 if ((this.props.type == "52" || this.props.type == "64") && (gift.presentType === 1 ||gift.presentType === 8)) {
@@ -773,7 +773,7 @@ class SpecialDetailInfo extends Component {
             pointObj,
             isThirdCoupon,
             thirdCouponData,
-            itemID:editItemID
+            pointItemID:editItemID
         };
     };
 
@@ -1068,7 +1068,8 @@ class SpecialDetailInfo extends Component {
             return true;
         }
         if (type === "52" || this.props.type == "64") {
-            const { presentValue, givePoints, giveCoupon, giftGetRuleValue,itemID } = this.state;
+            const { presentValue, givePoints, giveCoupon, giftGetRuleValue,pointItemID } = this.state;
+            console.log(pointItemID,'pointITmeID')
             if (!givePoints && !giveCoupon) {
                 message.warning("赠送积分和优惠券必选一项");
                 return;
@@ -1096,7 +1097,7 @@ class SpecialDetailInfo extends Component {
                     giftCount: 1,
                     giftGetRuleValue: giftGetRule == '7' ? giftGetRuleValue : '',
                     giftGetRule,
-                    itemID
+                    itemID:pointItemID
                 };
                 this.props.setSpecialGiftInfo([params]);
                 if ( type == '64') { this.props.setSpecialBasicInfo({ giftGetRule }) }
@@ -1264,7 +1265,7 @@ class SpecialDetailInfo extends Component {
                 giftInfo = upGradeAddPointData.call(this, giftInfo)
             }
             if (type === "52" || this.props.type == "64") {
-                const { presentValue, givePoints, giftGetRuleValue } = this.state;
+                const { presentValue, givePoints, giftGetRuleValue,pointItemID } = this.state;
                 if (givePoints) {
                     const giftName = giftGetRule == '7' ? '订单金额积分' : presentValue + "积分";
                     const params = {
@@ -1274,7 +1275,7 @@ class SpecialDetailInfo extends Component {
                         giftCount: 1,
                         giftGetRuleValue: giftGetRule == '7' ? giftGetRuleValue : '',
                         giftGetRule,
-                        itemID:this.state.itemID
+                        itemID:pointItemID
                     };
                     giftInfo = [...giftInfo, params];
                 }
