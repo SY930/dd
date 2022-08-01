@@ -222,7 +222,7 @@ export default class NewPromotion extends React.Component {
             cardLevelRangeType,
             cardGroupID,
             customerRangeConditionIDs,
-            giftCountBeanLis: gifts.map((item) => {
+            giftCountBeanList: gifts.map((item) => {
                 if (item.presentType == '1') {
                     return {
                         giftID: item.giftID,
