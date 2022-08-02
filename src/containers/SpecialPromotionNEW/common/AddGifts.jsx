@@ -134,6 +134,7 @@ class AddGifts extends React.Component {
     }
 
     componentDidMount() {
+        console.log(this.props.value,'value------in addGifts')
         // 请求零售券
         this.getCouponsData()         
     }

@@ -585,10 +585,12 @@ class SpecialDetailInfo extends Component {
     }
     initState = () => {
         let giftInfo = this.props.specialPromotion.get("$giftInfo").toJS();
+        console.log(giftInfo,'giftInfo========')
         let eventRecommendSettings = this.props.specialPromotion
             .get("$eventRuleInfos")
             .toJS();
         const data = this.initiateDefaultGifts();
+        console.log(data,'data>>>>>>>>>>>>>>>>>>>>>>>')
         let thirdCouponData = [];
         let editItemID = '';
         const type = this.props.type
@@ -603,6 +605,7 @@ class SpecialDetailInfo extends Component {
             giveCoupon: false,
             giftGetRuleValue: '',
         };
+
         if (type == 68) {
             // 将券和其他礼品分开
             const otherGifts = []
@@ -615,8 +618,7 @@ class SpecialDetailInfo extends Component {
                 }
                 return v.presentType === 1 || v.presentType !== 8
             })
-            this.recommendOtherGifts = otherGifts
-
+            this.recommendOtherGifts = otherGifts;
             // 提取礼品券的数据
             eventRecommendSettings.forEach((setting) => {
 
@@ -629,16 +631,9 @@ class SpecialDetailInfo extends Component {
             });
 
         }
-
-        if (type == 60 || type == 61 || type == 53) {
-            giftInfo = giftInfo.filter(v => v.presentType === 1 || v.presentType === 8)
-        }
-        if (type == 23 && isThirdCoupon) {  //线上餐厅送礼保存的是微信三方券信息
-            thirdCouponData = giftInfo;
-        }
-        if (!isThirdCoupon) {
-            giftInfo.forEach((gift, index) => {
-                if ((this.props.type == "52" || this.props.type == "64") && gift.presentType === 2) {//积分
+        if(this.props.type == "52" || this.props.type == "64"){
+            giftInfo = giftInfo.filter(gift => {
+                if (gift.presentType === 2) {
                     pointObj = {
                         ...pointObj,
                         presentValue: gift.presentValue,
@@ -647,8 +642,20 @@ class SpecialDetailInfo extends Component {
                         itemID:gift.itemID,
                     };
                     editItemID = gift.itemID
-                    return;
                 }
+                return gift.presentType !== 2
+            })
+            
+        }
+        if (type == 60 || type == 61 || type == 53) {
+            giftInfo = giftInfo.filter(v => v.presentType === 1 || v.presentType === 8)
+        }
+        if (type == 23 && isThirdCoupon) {  //线上餐厅送礼保存的是微信三方券信息
+            thirdCouponData = giftInfo;
+        }
+        console.log(giftInfo,'giftINfo we use')
+        if (!isThirdCoupon) {
+            giftInfo.forEach((gift, index) => {
                 if ((this.props.type == "52" || this.props.type == "64") && (gift.presentType === 1 ||gift.presentType === 8)) {
                     pointObj = { ...pointObj, giveCoupon: true };
                 }
@@ -3909,6 +3916,7 @@ class SpecialDetailInfo extends Component {
             "$eventInfo",
             "userCount",
         ]);
+        console.log(this.state.data,'thisstate.data=========')
         return (
             <div style={{ position: 'relative' }}>
                 {
