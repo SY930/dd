@@ -232,7 +232,7 @@ export default class NewPromotion extends React.Component {
             data,
             method: '/specialPromotion/calculateSendGiftCount.ajax',
         }
-        if (coupon) {
+        if (coupon && !jumpToCrmFlag) { // 权益卡活动创建不请求该接口
             const res = await axios.post('/api/v1/universal', params)
             const { code, popFlag = false, sendGiftCount, customerCount, message: msg } = res
             if (code === '000' && popFlag) {
