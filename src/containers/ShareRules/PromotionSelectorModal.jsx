@@ -41,6 +41,7 @@ export const FILTERS = [{
         {value: '111',label: '折扣券'},
         {value: '110',label: '买赠券'},
         {value: '22',label: '配送券'},
+        {value: '116',label: '优先券'},
     ] 
 }, {
     name: 'membershipRight',

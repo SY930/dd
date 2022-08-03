@@ -128,6 +128,14 @@ const GiftCfg = {
         //     category: 'secondary',
         //     tags: ['pos', '新微信', '小程序','礼品卡小程序']
         // },
+        {
+            name: '优先券',
+            describe: '',
+            value: '116',
+            color: '#e27a82',
+            category: 'primary',
+            tags: ['小程序'],
+        },
     ],
     giftTypeName: [
         { label: '全部', value: '' },
@@ -145,6 +153,7 @@ const GiftCfg = {
         { label: '现金红包', value: '113' },
         { label: '配送券', value: '22' },
         // { label: '不定额代金券', value: '115' },
+        { label: '优先券', value: '116' },
 
     ],
     transferType: [
@@ -191,6 +200,11 @@ const GiftCfg = {
         { label: '外送', value: '20' },
         { label: '堂食', value: '31' },
         { label: '自提', value: '21' },
+    ],
+    supportOrderTypeLstForFirst: [
+        { label: '自提', value: '21' },
+        { label: '堂食', value: '31' },
+        { label: '外卖', value: '20' },
     ],
     isOfflineCanUsing: [
         { label: '不限制', value: '1' },

@@ -55,6 +55,13 @@ export const FORMITEMS = {
         options: GiftCfg.supportOrderTypeLst,
         rules: [{ type: 'array', required: true, message: '至少要选择一种适用业务' }],
     },
+    supportOrderTypeLstForFirst: {
+        label: '适用业务',
+        type: 'checkbox',
+        defaultValue: ['21', '31', '20'],
+        options: GiftCfg.supportOrderTypeLstForFirst,
+        rules: [{ type: 'array', required: true, message: '至少要选择一种适用业务' }],
+    },
     aggregationChannels: {
         label: '投放场景',
         type: 'checkbox',
@@ -753,6 +760,42 @@ export const FIRST_KEYS = {
             ],
         },
     ],
+    '优先券': [
+        {
+            col: {
+                span: 24,
+                pull: 2,
+            },
+            keys: [
+                'giftType',
+                'giftName',
+                'pushMessage',
+            ],
+        },
+        {
+            col: {
+                span: 24,
+                push: 2,
+            },
+            keys: []
+        },
+        {
+            col: {
+                span: 24,
+                pull: 2,
+            },
+            keys: [
+                'giftRemark',
+            ]
+        },
+        {
+            col: {
+                span: 24,
+                push: 3,
+            },
+            keys: []
+        },
+    ],
 };
 export const SECOND_KEYS = (() => ({
     '代金券': [
@@ -997,6 +1040,25 @@ export const SECOND_KEYS = (() => ({
                 'customerUseCountLimit',
                 'selectedShops',
                 'excludeShops',
+                'showGiftRule',
+                'giftImagePath',
+                'isSynch',
+            ],
+        },
+    ],
+    '优先券': [
+        {
+            col: {
+                span: 24,
+                pull: 2,
+            },
+            keys: [
+                'transferType',
+                'usingWeekType',
+                'usingDateType',
+                'couponPeriodSettings',
+                'supportOrderTypeLstForFirst',
+                'isOfflineCanUsing',
                 'showGiftRule',
                 'giftImagePath',
                 'isSynch',

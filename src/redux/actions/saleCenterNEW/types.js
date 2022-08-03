@@ -187,6 +187,10 @@ export const SALE_CENTER_GIFT_TYPE = Object.freeze([
         label: "不定额代金券",
         value: "115",
     },
+    {
+        label: "优先券",
+        value: "116",
+    },
 ]);
 
 export const SALE_CENTER_GIFT_EFFICT_TIME = Object.freeze([

@@ -584,6 +584,7 @@ class GiftDetailTable extends Component {
                 case '111':
                 case '115':
                 case '22':
+                case '116':
                     return visibleEdit ? <GiftAddModalStep {...editProps} /> : null;
                 case '30':
                 case '40':
@@ -610,6 +611,7 @@ class GiftDetailTable extends Component {
                 case '111':
                 case '115':
                 case '22':
+                case '116':
                     return (<GiftDetailModal {...detailProps} />);
                 case '113':
                     return (<RedPacketDetailModal {...detailProps} />);

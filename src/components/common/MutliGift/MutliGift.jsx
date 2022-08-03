@@ -20,6 +20,7 @@ const giftTypeName = [
     { label: '折扣券', value: '111' },
     { label: '现金红包', value: '113' },
     { label: '配送券', value: '22' },
+    { label: '优先券', value: '116' },
 ];
 const [service, type, api, url] = ['HTTP_SERVICE_URL_CRM', 'post', 'alipay/', '/api/v1/universal?'];
 
@@ -107,7 +108,7 @@ class MutliGift extends Component {
 
     proGiftTreeData = (giftTypes) => {
         const _giftTypes = _.filter(giftTypes, (giftItem) => {
-            if (giftItem.giftType == 10 || giftItem.giftType == 20 || giftItem.giftType == 21 || giftItem.giftType == 30 || giftItem.giftType == 40 || giftItem.giftType == 42 || giftItem.giftType == 80 || giftItem.giftType == 110 || giftItem.giftType == 111 || giftItem.giftType == 22) return true;
+            if (giftItem.giftType == 10 || giftItem.giftType == 20 || giftItem.giftType == 21 || giftItem.giftType == 30 || giftItem.giftType == 40 || giftItem.giftType == 42 || giftItem.giftType == 80 || giftItem.giftType == 110 || giftItem.giftType == 111 || giftItem.giftType == 22 || giftItem.giftType == 116) return true;
             return false;
         });
         let treeData = [];

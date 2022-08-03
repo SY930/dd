@@ -1235,6 +1235,9 @@ class GiftAddModalStep extends React.PureComponent {
                 finishLoading: true,
             });
 
+            // _TODO
+            return console.log(99999, params);
+
             const { accountInfo, startSaving, endSaving } = this.props;
             const groupName = accountInfo.get('groupName');
             startSaving();
