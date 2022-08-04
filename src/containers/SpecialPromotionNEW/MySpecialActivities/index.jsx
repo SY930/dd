@@ -1939,9 +1939,18 @@ class MySpecialActivities extends React.Component {
                 dataIndex: 'eventName',
                 key: 'eventName',
                 fixed:'left',
-                width: 220,
+                width: 150,
                 // ellipsis: true,
                 render: text => <span title={text}>{text}</span>,
+            },
+            {
+                title: '活动编码',
+                dataIndex: 'itemID',
+                key: 'itemID',
+                fixed:'left',
+                width: 180,
+                // ellipsis: true,
+                render: text => <Tooltip title={text}>{text}</Tooltip>,
             },
             // {
             //     title: `${this.props.intl.formatMessage(STRING_SPE.d5672b44908541235)}`,
@@ -1979,7 +1988,8 @@ class MySpecialActivities extends React.Component {
                         validDate.start === '20000101' || validDate.end === '29991231') {
                         return `${this.props.intl.formatMessage(STRING_SPE.d31ei98dbgi21253)}`;
                     }
-                    return `${moment(validDate.start, 'YYYY-MM-DD').format('YYYY-MM-DD')} / ${moment(validDate.end, 'YYYY-MM-DD').format('YYYY-MM-DD')}`;
+                    const t = `${moment(validDate.start, 'YYYY-MM-DD').format('YYYY-MM-DD')} / ${moment(validDate.end, 'YYYY-MM-DD').format('YYYY-MM-DD')}`;
+                    return  <Tooltip title={t}>{t}</Tooltip>
                 },
             },
             {
