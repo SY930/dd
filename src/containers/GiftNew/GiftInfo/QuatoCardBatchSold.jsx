@@ -12,7 +12,6 @@ import {
     FetchQuotaCardBatchNo,
     getQuotaCardCanSellList,
 } from '../_action';
-import { call } from 'redux-saga/effects';
 
 const FormItem = Form.Item;
 class QuotaCardBatchSold extends React.Component {
