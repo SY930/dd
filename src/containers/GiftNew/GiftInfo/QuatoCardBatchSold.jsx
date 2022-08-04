@@ -12,6 +12,7 @@ import {
     FetchQuotaCardBatchNo,
     getQuotaCardCanSellList,
 } from '../_action';
+import { call } from 'redux-saga/effects';
 
 const FormItem = Form.Item;
 class QuotaCardBatchSold extends React.Component {
@@ -391,6 +392,33 @@ class QuotaCardBatchSold extends React.Component {
                         required: true, message: '售价不能为空',
                     }
                 ],
+            },
+            transRemark: {
+                label: '备注',
+                type: 'custom',
+                render: decorator => (
+                    <div>
+                        {decorator({
+                            key: 'transRemark',
+                            rules: [{
+                                validator: (rule, value, callback) => {
+                                    let len = 0
+                                    for(const i in value) {
+                                        if(value.charCodeAt(i) > 127 || value.charCodeAt(i) == 94) {
+                                            len += 2
+                                        } else {
+                                            len ++
+                                        }
+                                    }
+                                    if(len > 100) return callback('可输入50字以内备注')
+                                    callback()
+                                }
+                            }],
+                        })(
+                            <Input type="textarea" placeholder="可输入50字以内备注" maxLength={100} />
+                        )}
+                    </div>
+                ),
             },
         };
         return (
