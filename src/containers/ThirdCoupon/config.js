@@ -142,7 +142,7 @@ export const getColumns = _this => ([
         title: '第三方券名称',
         dataIndex: 'batchName',
         key: 'batchName',
-        width: 300,
+        width: 200,
         render: text => text,
     },
     {
@@ -155,10 +155,14 @@ export const getColumns = _this => ([
     {
         title: '礼品名称',
         dataIndex: 'giftName',
+        width: 130,
+        render: text => text || '--',
     },
     {
         title: '礼品ID',
-        dataIndex: 'giftID',
+        dataIndex: 'giftItemID',
+        width: 200,
+        render: text => text || '--',
     },
     {
         title: '业态',
@@ -370,7 +374,7 @@ export const ThirdCouponConfig = [{
     title: '快手',
     params: { type: 7, channelID: 100, platformTypeCreate: 7, giftTypes: [10, 111, 21] },
     subTitle: '快手券',
-    url: 'http://res.hualala.com/basicdoc/550f5482-f0df-44b5-ac5d-a930b3f5c839.png',
+    url: 'http://res.hualala.com/basicdoc/406b0d9a-e6ba-414a-b9ab-c06f0fbe5540.png',
 }];
 
 

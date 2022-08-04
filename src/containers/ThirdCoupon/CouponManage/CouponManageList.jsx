@@ -709,6 +709,7 @@ class ViewCouponContent extends Component {
                 5: '抖音',
                 3: '微信',
                 6: 'E折',
+                7: '快手'
             }
 
         }
@@ -760,7 +761,8 @@ class ViewCouponContent extends Component {
             2: 'signInfoDouyin',
             3: 'signInfoWx',
             5: 'signInfoDouyin',
-            6: 'signInfoEzhe'
+            6: 'signInfoEzhe',
+            7: 'signInfoKuaiShou',
         }
         let styleName = styleMap[platformType];
         return (
