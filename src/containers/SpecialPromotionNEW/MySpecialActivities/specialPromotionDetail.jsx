@@ -1444,6 +1444,7 @@ class SpecialPromotionDetail extends React.Component {
                 data: {
                     groupID: user.accountInfo.groupID,
                     itemID: this.state.eventInfo.data.itemID,
+                    actionFrom: '1'
                 },
                 eventWay,
             }
