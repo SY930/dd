@@ -206,6 +206,7 @@ export default class NewPromotion extends React.Component {
 
     isShowUpperLimitModal = async (opts, cb, jumpToCrmFlag, name) => {
         const { gifts, event } = opts;
+        const { user } = this.props
         const coupon = gifts.some(item => item.presentType == '1'); // 选择优惠券发送请求
         const { localType, cardGroupID, customerRangeConditionIDs } = event;
         let cardLevelRangeType;
@@ -217,7 +218,7 @@ export default class NewPromotion extends React.Component {
             cardLevelRangeType = '7'
         }
         const data = {
-            groupID: '11157',
+            groupID: user.accountInfo.groupID,
             subGroupID: '',
             cardLevelRangeType,
             cardGroupID,
