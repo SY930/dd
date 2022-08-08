@@ -4,7 +4,7 @@ import MainTable from "./MainTable";
 import QueryForm from "./QueryForm";
 import styles from "./style.less";
 import ProcessModal from "./ProcessModal";
-import { httpGetList } from "./AxiosFactory";
+import { httpApaasActivityQueryByPage } from "./AxiosFactory";
 
 const initialPaging = {
     pageNo: 1,
@@ -37,7 +37,7 @@ export default class Main extends React.PureComponent {
         this.setState({
             loading: true
         }, () => {
-            httpGetList(concatParams).then(res => {
+            httpApaasActivityQueryByPage(concatParams).then(res => {
                 console.log('res', res)
                 let { total, list } = res;
                 this.setState({
@@ -45,6 +45,10 @@ export default class Main extends React.PureComponent {
                     list,
                     total,
                     pageObj: pagingParams
+                })
+            }).catch(error => {
+                this.setState({
+                    loading: false,
                 })
             })
         })

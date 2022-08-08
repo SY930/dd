@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Select, Modal, DatePicker, message } from "antd";
 import BaseForm from 'components/common/BaseForm';
-import { httpCreate } from "./AxiosFactory";
+import { httpApaasActivitySave } from "./AxiosFactory";
 import moment from "moment";
 
 const format = "YYYYMMDD";
@@ -110,7 +110,7 @@ export default class Main extends React.PureComponent {
         this.setState({
             loading: true
         }, () => {
-            httpCreate(param)
+            httpApaasActivitySave(param)
             .then(() => {
                 this.setState({
                     loading: false,
@@ -118,6 +118,10 @@ export default class Main extends React.PureComponent {
                 this.props.onClose();
                 this.props.onQuery();
                 message.success(this.props.modalType == 'add' ? '创建成功' : '编辑成功');
+            }).catch(error => {
+                this.setState({
+                    loading: false,
+                });
             })
         })
         });
