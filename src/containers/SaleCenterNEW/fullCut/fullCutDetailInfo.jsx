@@ -320,7 +320,7 @@ class FullCutDetailInfo extends React.Component {
                                         }
                                     >
                                         {type.map((type, index) => {
-                                            return <Option key={`options-${index}`} value={type.value}>{type.name}</Option>
+                                            return <Option style={{width:'120px'}} key={`options-${index}`} value={type.value}>{type.name}</Option>
                                         })}
                                     </Select>
                                 }
