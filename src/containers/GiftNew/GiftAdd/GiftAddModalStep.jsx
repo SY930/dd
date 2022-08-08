@@ -1072,6 +1072,7 @@ class GiftAddModalStep extends React.PureComponent {
                 params.supportOrderTypeLst = '31,20,21,11,10';
                 params.isOfflineCanUsing = '0';
             }
+            console.log('_TODO', value);
 
             Array.isArray(params.usingDateType) && (params.usingDateType = params.usingDateType.join(','));
             Array.isArray(params.usingWeekType) && (params.usingWeekType = params.usingWeekType.join(','));
@@ -1230,13 +1231,14 @@ class GiftAddModalStep extends React.PureComponent {
                     return
                 }
             }
+            console.log('_TODO', params.supportOrderTypeLst);
             Array.isArray(params.supportOrderTypeLst) && (params.supportOrderTypeLst = params.supportOrderTypeLst.join(','))
             this.setState({
                 finishLoading: true,
             });
 
             // _TODO
-            return console.log(99999, params);
+            return console.log('_TODO 99999', params);
 
             const { accountInfo, startSaving, endSaving } = this.props;
             const groupName = accountInfo.get('groupName');
@@ -2895,7 +2897,8 @@ class GiftAddModalStep extends React.PureComponent {
         const isUnit = ['10', '91'].includes(value);
         const giftNameValid = (type === 'add') ? { max: 25, message: '不能超过25个字符' } : {};
 
-        let isMsg = false
+        let isMsg = false;
+        console.log('_TODO', formData);
         if(formData.pushMessage&&formData.pushMessage.sendType){
             isMsg = formData.pushMessage.sendType.indexOf('msg')>-1
         }
@@ -2989,17 +2992,16 @@ class GiftAddModalStep extends React.PureComponent {
                 }],
                 type: 'custom',
                 render: (decorator,form) => {
-                    console.log('describe===1111', describe);
                     return (
                         <Col>
                             {
                                 decorator({})(
-                                   (describe != '代金券' || describe != '特殊权益券')
+                                   (describe != '代金券' && describe != '特殊权益券')
                                     ?<PushMessageMpID formData = {formData} groupID={groupID}/>:
                                     <CashCouponPushMessageMpID formData = {formData} groupID={groupID}/>
                                 )
                             }
-                            {describe!='代金券'?<span>* 此处为该券模板支持的推送方式，最终是否推送消息以营销活动配置为准</span>:null}
+                            {(describe != '代金券' && describe != '特殊权益券')?<span>* 此处为该券模板支持的推送方式，最终是否推送消息以营销活动配置为准</span>:null}
                         </Col>
                     )
                 }
@@ -3007,7 +3009,56 @@ class GiftAddModalStep extends React.PureComponent {
             notice: {
                 label: ' ',
                 type: 'custom',
-                render: decorator => isMsg?this.renderNoticeItem(decorator):null,
+                render: decorator => isMsg ? this.renderNoticeItem(decorator):null
+            },
+            specialInterestType: {
+                label: '特殊权益',
+                type: 'custom',
+                defaultValue: 1,
+                render: (decorator,form) => {
+                    return (
+                        <Col>
+                            {
+                                decorator({})(
+                                    <RadioGroup>
+                                        {
+                                            GiftCfg.specialInterestType.map(item => (
+                                                <Radio key={item.value} value={item.value}>{item.label}</Radio>
+                                            ))
+                                        }
+                                    </RadioGroup>
+                                )
+                            }
+                            <Tooltip placement="top" title='使用特殊权益券后，订单将插队优先制作'>
+                                <Icon type="question-circle-o" />
+                            </Tooltip>
+                        </Col>
+                    )
+                }
+            },
+            supportOrderTypeLst: {
+                label: FORMITEMS.supportOrderTypeLst.label,
+                type: 'custom',
+                render: (decorator,form) => {
+                    let defaultValue = FORMITEMS.supportOrderTypeLst.defaultValue;
+                    let options = GiftCfg.supportOrderTypeLst;
+                    if(describe == '特殊权益券'){
+                        options = options.filter(item => item.value != '10' && item.value != '11');
+                        defaultValue = defaultValue.filter(item => item != '10' && item != '11');
+                    }
+                    return (
+                        <Col>
+                            {
+                                decorator({
+                                    rule: [ { required: true} ],
+                                    defaultValue
+                                })(
+                                    <Checkbox.Group options={options} />
+                                )
+                            }
+                        </Col>
+                    )
+                }
             },
             giftImagePath: {
                 label: '礼品图样',

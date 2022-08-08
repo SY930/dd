@@ -201,17 +201,11 @@ const GiftCfg = {
         { label: '堂食', value: '31' },
         { label: '自提', value: '21' },
     ],
-    supportOrderTypeLstForFirst: [
-        { label: '自提', value: '21' },
-        { label: '堂食', value: '31' },
-        { label: '外卖', value: '20' },
-    ],
     isOfflineCanUsing: [
         { label: '不限制', value: '1' },
         { label: '仅线上使用', value: '0' },
         { label: '仅线下使用', value: '2' },
     ],
-
     discountRules: [
         { label: '特价', value: '1'},
         { label: '折扣', value: '2'},
@@ -398,6 +392,9 @@ const GiftCfg = {
         { value: false, label: '不需要' },
         { value: true, label: '需要' },
     ],
+    specialInterestType: [
+        { value: 1, label: '优先制作' },
+    ]
 }
 
 export default GiftCfg

@@ -7,8 +7,12 @@ import {
 import GiftCfg from '../../../constants/Gift';
 
 export const FORMITEMS = {
-
-
+    specialInterestType: {
+        label: '特殊权益',
+        type: 'radio',
+        defaultValue: 1,
+        options: GiftCfg.specialInterestType,
+    },
     giftRemark: {
         label: '礼品详情',
         type: 'textarea',
@@ -53,13 +57,6 @@ export const FORMITEMS = {
         type: 'checkbox',
         defaultValue: ['31', '20', '21', '11', '10'],
         options: GiftCfg.supportOrderTypeLst,
-        rules: [{ type: 'array', required: true, message: '至少要选择一种适用业务' }],
-    },
-    supportOrderTypeLstForFirst: {
-        label: '适用业务',
-        type: 'checkbox',
-        defaultValue: ['21', '31', '20'],
-        options: GiftCfg.supportOrderTypeLstForFirst,
         rules: [{ type: 'array', required: true, message: '至少要选择一种适用业务' }],
     },
     aggregationChannels: {
@@ -770,6 +767,8 @@ export const FIRST_KEYS = {
                 'giftType',
                 'giftName',
                 'pushMessage',
+                'notice',
+                'specialInterestType'
             ],
         },
         {
@@ -1057,7 +1056,7 @@ export const SECOND_KEYS = (() => ({
                 'usingWeekType',
                 'usingDateType',
                 'couponPeriodSettings',
-                'supportOrderTypeLstForFirst',
+                'supportOrderTypeLst',
                 'isOfflineCanUsing',
                 'showGiftRule',
                 'giftImagePath',

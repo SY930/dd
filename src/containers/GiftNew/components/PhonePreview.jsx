@@ -36,7 +36,7 @@ const PRIMARY_GIFTS = [
 const CRM_GIFTS = [
     '40', '42'
 ];
-const COUPON_COMBINE_TYPES =  ['10','20','21'];
+const COUPON_COMBINE_TYPES =  ['10','20','21', '116'];
 const PREVIEW_ENABLED_GIFTS = [
     ...PRIMARY_GIFTS,
     ...CRM_GIFTS,
@@ -634,6 +634,7 @@ class PhonePreview extends PureComponent {
     //     })
     // }
     renderCouponContent(){
+        console.log('_TODO giftType', this.props.giftType, 'applyScene', this.props.applyScene)
         const {
             giftType,
             applyScene,
@@ -653,13 +654,18 @@ class PhonePreview extends PureComponent {
                 '0':caipinduihuanquan1,
                 '1':caipinduihuanquan2,
                 '2':caipinduihuanquan3,
-            }
+            },
+            '116': daijinquan1
         }
         let imgSrc = '';
-        if(applyScene == '2'){
-            imgSrc = imgUrl[giftType]['2']
+        if(giftType == '116'){
+            imgSrc = imgUrl[giftType]
         }else{
-            imgSrc = imgUrl[giftType][applyScene]
+            if(applyScene == '2'){
+                imgSrc = imgUrl[giftType]['2']
+            }else{
+                imgSrc = imgUrl[giftType][applyScene]
+            }
         }
         return (
             <div className={styles.couponImgBgWrapper}>
