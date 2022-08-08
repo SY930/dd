@@ -129,8 +129,8 @@ const GiftCfg = {
         //     tags: ['pos', '新微信', '小程序','礼品卡小程序']
         // },
         {
-            name: '优先券',
-            describe: '',
+            name: '特殊权益券',
+            describe: '堂食、外卖、自提场景下可享受特殊权益券',
             value: '116',
             color: '#e27a82',
             category: 'primary',
@@ -153,7 +153,7 @@ const GiftCfg = {
         { label: '现金红包', value: '113' },
         { label: '配送券', value: '22' },
         // { label: '不定额代金券', value: '115' },
-        { label: '优先券', value: '116' },
+        { label: '特殊权益券', value: '116' },
 
     ],
     transferType: [

@@ -2989,11 +2989,13 @@ class GiftAddModalStep extends React.PureComponent {
                 }],
                 type: 'custom',
                 render: (decorator,form) => {
+                    console.log('describe===1111', describe);
                     return (
                         <Col>
                             {
                                 decorator({})(
-                                    describe!='代金券'?<PushMessageMpID formData = {formData} groupID={groupID}/>:
+                                   (describe != '代金券' || describe != '特殊权益券')
+                                    ?<PushMessageMpID formData = {formData} groupID={groupID}/>:
                                     <CashCouponPushMessageMpID formData = {formData} groupID={groupID}/>
                                 )
                             }

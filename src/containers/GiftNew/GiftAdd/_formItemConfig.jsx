@@ -760,7 +760,7 @@ export const FIRST_KEYS = {
             ],
         },
     ],
-    '优先券': [
+    '特殊权益券': [
         {
             col: {
                 span: 24,
@@ -1046,7 +1046,7 @@ export const SECOND_KEYS = (() => ({
             ],
         },
     ],
-    '优先券': [
+    '特殊权益券': [
         {
             col: {
                 span: 24,
