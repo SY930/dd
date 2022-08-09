@@ -94,6 +94,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
             data.shopIDs = '';
             this.setState({ crmCardTypeIDs });
         }
+        data.cardScheme = '1'
         this.props.fetchShopCardLevel({ data })
         this.props.fetchTagList({
             groupID: this.props.user.accountInfo.groupID,
@@ -246,6 +247,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                 } else {
                     data.shopIDs = shopsIDs1.join()
                 }
+                data.cardScheme = '1'
                 this.props.fetchShopCardLevel({ data })
             }
         }
