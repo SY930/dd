@@ -1236,10 +1236,6 @@ class GiftAddModalStep extends React.PureComponent {
             this.setState({
                 finishLoading: true,
             });
-
-            // _TODO
-            return console.log('_TODO 99999', params);
-
             const { accountInfo, startSaving, endSaving } = this.props;
             const groupName = accountInfo.get('groupName');
             startSaving();
@@ -1247,7 +1243,6 @@ class GiftAddModalStep extends React.PureComponent {
             delete params.aggregationChannels;
             delete params.couponFoodScopeList; // 后台返回的已选菜品数据
             this.checkShopWechatData(params,callServer,groupName,this.submitData);
-           
         });
     }
     // 最后提交数据
