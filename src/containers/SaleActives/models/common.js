@@ -660,7 +660,7 @@ function proGiftTreeData(giftTypes) {
             giftItem.giftType == 111 ||
             giftItem.giftType == 115 ||
             giftItem.giftType == 22 ||
-            giftItem.giftType == 116
+            giftItem.giftType == 81
         ) {
             return true;
         }

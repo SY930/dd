@@ -1111,7 +1111,7 @@ class GiftAddModalStep extends React.PureComponent {
                 }
             }
 
-            if (value == '10') {
+            if (value == '10' || value == '81') {
 
                 let isMsg = false
                 if(this.state.values.pushMessage&&this.state.values.pushMessage.sendType){
@@ -1134,7 +1134,6 @@ class GiftAddModalStep extends React.PureComponent {
     
                     let pushMessageRuleInfoList = []
                     let ruleDetailList = []
-    
                     this.state.notice&&this.state.notice.length>0&&this.state.notice.map((i)=>{
                         ruleDetailList.push({dateRule:i})
                     })
@@ -1303,7 +1302,7 @@ class GiftAddModalStep extends React.PureComponent {
                         }
                     })
             }else{
-                cb(callServer,params,groupName,_that)
+                cb(callServer,params,groupName,_that)   
             }
             
         }else{
@@ -3046,9 +3045,32 @@ class GiftAddModalStep extends React.PureComponent {
                             {
                                 decorator({
                                     rule: [ { required: true} ],
-                                    defaultValue
+                                    defaultValue,
                                 })(
-                                    <Checkbox.Group options={options} />
+                                    <Checkbox.Group options={options} disabled={describe == '特殊权益券'} />
+                                )
+                            }
+                        </Col>
+                    )
+                }
+            },
+            isOfflineCanUsing: {
+                label: FORMITEMS.isOfflineCanUsing.label,
+                type: 'custom',
+                render: (decorator,form) => {
+                    return (
+                        <Col>
+                            {
+                                decorator({
+                                    defaultValue: FORMITEMS.isOfflineCanUsing.defaultValue
+                                })(
+                                    <RadioGroup disabled={describe == '特殊权益券'}>
+                                        {
+                                            GiftCfg.isOfflineCanUsing.map(item => (
+                                                <Radio value={item.value}>{item.label}</Radio>
+                                            ))
+                                        }
+                                    </RadioGroup>
                                 )
                             }
                         </Col>

@@ -18,7 +18,7 @@ const giftTypeName= [
     { label: '现金红包', value: '113' },
     { label: '配送券', value: '22' },
     { label: '不定额代金券', value: '115' },
-    { label: '特殊权益券', value: '116' },
+    { label: '特殊权益券', value: '81' },
 ];
 const formItemLayout = {
     labelCol: { span: 7 },

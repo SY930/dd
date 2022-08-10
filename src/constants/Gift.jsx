@@ -131,7 +131,7 @@ const GiftCfg = {
         {
             name: '特殊权益券',
             describe: '堂食、外卖、自提场景下可享受特殊权益券',
-            value: '116',
+            value: '81',
             color: '#e27a82',
             category: 'primary',
             tags: ['小程序'],
@@ -153,7 +153,7 @@ const GiftCfg = {
         { label: '现金红包', value: '113' },
         { label: '配送券', value: '22' },
         // { label: '不定额代金券', value: '115' },
-        { label: '特殊权益券', value: '116' },
+        { label: '特殊权益券', value: '81' },
 
     ],
     transferType: [
