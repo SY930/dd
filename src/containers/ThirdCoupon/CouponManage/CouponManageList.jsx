@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom';
-import { jumpPage, getStore } from '@hualala/platform-base';
+import { jumpPage } from '@hualala/platform-base';
 import { connect } from 'react-redux';
 import {
     Table, Icon, Select, DatePicker,
@@ -12,15 +12,12 @@ import ScenePutContent from '../Modal/ScenePutContent'
 import DYCouponInfoMoldeContent from '../Modal/DYCouponInfoMoldeContent';
 import { debounce } from 'lodash'
 import styles from '../AlipayCoupon.less'
-import { columnsView, getColumns } from '../config';
+import { columnsView, getColumns, ThirdCouponConfig } from '../config';
 import { axiosData } from '../../../helpers/util'
 import registerPage from '../../../../index';
 import { THIRD_VOUCHER_MANAGEMENT } from '../../../constants/entryCodes';
 import { getCardList, getShopPid, getIndirectList, getMpAppList, getPayChannel, getRetailList } from '../AxiosFactory';
-import WEIXIN from '../../../assets/weixin.png';
-import ZHIFUBAO from '../../../assets/zhifubao.png'
-import DOUYIN from '../../../assets/douyin.png'
-const moment = require('moment');
+
 
 
 const mapStateToProps = (state) => {
@@ -513,6 +510,7 @@ class CouponManageList extends Component {
                                 <Option value={'2'}>抖音（小黄车）</Option>
                                 <Option value={'5'}>抖音（小风车）</Option>
                                 <Option value={'6'}>E折券</Option>
+                                <Option value={'7'}>快手</Option>
                             </Select>
                         </li>
                         {
@@ -639,57 +637,25 @@ class CouponManageList extends Component {
                     this.state.createThirdCouponVisble && <Modal
                         title="创建第三方券"
                         visible={true}
-                        width={880}
+                        width={710}
                         onCancel={this.handleCloseThirdCouponModal}
                         footer={null}
                         maskClosable={true}
                     >
                         <ul className={styles.createCouponModal__flex__ul}>
-                            <li
-                                onClick={() => {
-                                    this.handleCreateCouponContentModal({ type: 1, channelID: 60, platformTypeCreate: 1, giftTypes: [10, 111] }, '新建第三方支付宝券')
-                                }}
-                                className={styles.createCouponModal__item__li}
-                            >
-                                <p><img src={ZHIFUBAO}></img></p>
-                                <span>第三方支付宝券</span>
-                            </li>
-                            <li
-                                className={styles.createCouponModal__item__li}
-                                onClick={() => {
-                                    this.handleCreateCouponContentModal({ type: 2, channelID: 50, platformTypeCreate: 3, giftTypes: [10, 111, 21] }, '新建第三方微信券')
-                                }}
-                            >
-                                <p><img src={WEIXIN}></img></p>
-                                <span>第三方微信券</span>
-                            </li>
-                            <li
-                                className={styles.createCouponModal__item__li}
-                                onClick={() => {
-                                    this.handleCreateCouponContentModal({ type: 3, channelID: 70, platformTypeCreate: 2, giftTypes: [10, 111, 21] }, '新建第三方抖音券')
-                                }}
-                            >
-                                <p><img src={DOUYIN}></img></p>
-                                <span>抖音（小黄车）</span>
-                            </li>
-                            <li
-                                className={styles.createCouponModal__item__li}
-                                onClick={() => {
-                                    this.handleCreateCouponContentModal({ type: 4, channelID: 80, platformTypeCreate: 5, giftTypes: [10, 111, 21] }, '新建第三方抖音券')
-                                }}
-                            >
-                                <p><img src={DOUYIN}></img></p>
-                                <span>抖音（小风车）</span>
-                            </li>
-                            <li
-                                className={styles.createCouponModal__item__li}
-                                onClick={() => {
-                                    this.handleCreateCouponContentModal({ type: 5, channelID: 90, platformTypeCreate: 6, giftTypes: [10, 21], }, '新建第三方E折券')
-                                }}
-                            >
-                                <p><img src='http://res.hualala.com/basicdoc/550f5482-f0df-44b5-ac5d-a930b3f5c839.png'></img></p>
-                                <span>E折券 </span>
-                            </li>
+                            {
+                                ThirdCouponConfig.map((item, index) => (
+                                    <li
+                                        onClick={() => {
+                                            this.handleCreateCouponContentModal(item.params, `新建第三方${item.subTitle}`)
+                                        }}
+                                        className={styles.createCouponModal__item__li}
+                                    >
+                                        <p><img src={item.url}></img></p>
+                                        <span>{item.title}</span>
+                                    </li>
+                                ))
+                            }
                         </ul>
                     </Modal>
                 }
@@ -721,6 +687,7 @@ class CouponManageList extends Component {
                     this.state.WXLaunchVisible && <ScenePutContent onCancel={this.handleCloseWXLaunchModal} wxData={this.state.wxData} isEdit={this.state.isEdit} title={this.state.title} handleQuery={this.handleQuery} />
                 }
                 {/* 抖音详情 */}
+                {/* TODO: 快手详情，URL传参 */}
                 { this.state.dyCouponInfoVisible && <DYCouponInfoMoldeContent onCancel={this.handleCloseDYCouponInfoModal} batchItemID={this.state.batchItemID}/>}
             </div>
         )
@@ -742,6 +709,7 @@ class ViewCouponContent extends Component {
                 5: '抖音',
                 3: '微信',
                 6: 'E折',
+                7: '快手'
             }
 
         }
@@ -793,7 +761,8 @@ class ViewCouponContent extends Component {
             2: 'signInfoDouyin',
             3: 'signInfoWx',
             5: 'signInfoDouyin',
-            6: 'signInfoEzhe'
+            6: 'signInfoEzhe',
+            7: 'signInfoKuaiShou',
         }
         let styleName = styleMap[platformType];
         return (

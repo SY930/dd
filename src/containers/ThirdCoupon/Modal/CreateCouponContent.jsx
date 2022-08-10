@@ -348,7 +348,7 @@ class CreateCouponContent extends Component {
         })
     }
 
-    handleEdiscountSubmit = (values, groupId, groupShortName) => {
+    handleEdAndKuaiSubmit = (values, groupId, groupShortName) => {
         const { giftValidRange = [] } = values;
         const { effectGiftTimeHours, giftType, giftItemID, effectType } = this.state;
         const EGiftEffectTime = giftValidRange[0] ? giftValidRange[0].format(DATE_FORMAT) : ''
@@ -371,36 +371,7 @@ class CreateCouponContent extends Component {
         };
         const startTime = moment().format(DATE_FORMAT);
         const endTime = moment().add(3, 'years').format(END_DATE_FORMAT) // 定时任务需要时间传值
-        const url = '/api/v1/universal?';
-        const method = '/couponCodeBatchService/addBatch.ajax';
-        const params = {
-            service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
-            type: 'post',
-            // couponCodeBatchInfo: res,
-            data: {
-                // couponCodeBatchInfo,
-                couponCodeBatchInfo: { ...data, startTime, endTime },
-                groupID: groupId,
-                groupShortName,
-            },
-            method,
-        };
-        axios.post(url + method, params).then((res) => {
-            const { code, message: msg } = res;
-            if (code === '000') {
-                message.success('创建成功');
-                this.props.handleCloseModal();
-                this.props.handleQuery();
-                this.props.onParentCancel();
-                this.setState({ confirmLoading: false })
-                return
-            }
-            this.setState({ confirmLoading: false })
-            message.error(msg);
-        }).catch((error) => {
-            this.setState({ confirmLoading: false })
-            console.log(error)
-        })
+        return { ...data, startTime, endTime }
     }
 
     handleDouyinSubmit = (values, groupId) => {
@@ -435,123 +406,101 @@ class CreateCouponContent extends Component {
             giftType,
             giftName: promotionName,
         };
-        const url = '/api/v1/universal?';
-        const method = '/couponCodeBatchService/addBatch.ajax';
-        const params = {
-            service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
-            type: 'post',
-            // couponCodeBatchInfo: res,
-            data: {
-                couponCodeBatchInfo,
-                groupID: groupId,
-            },
-            method,
-        };
-        axios.post(url + method, params).then((res) => {
-            const { code, message: msg } = res;
-            if (code === '000') {
-                // message.success('创建成功');
-                this.props.handleCloseModal();
-                this.props.handleQuery();
-                this.props.onParentCancel();
-                this.setState({ confirmLoading: false })
-                return
-            }
+        return couponCodeBatchInfo;
+    }
+
+    handleAliAndWxSubmit = (values) => {
+        const { channelID, platformType, type } = this.props
+        const { effectType, effectGiftTimeHours, merchantID, giftType, giftItemID, entranceWords } = this.state;
+        const rangePicker = values.rangePicker || [];
+        const giftValidRange = values.giftValidRange || [];
+        if (!effectGiftTimeHours && values.effectType === '3') {
             this.setState({ confirmLoading: false })
-            message.error(msg);
-        }).catch((error) => {
+            return message.error('请输入生效时间')
+        }
+        if (!merchantID) {
             this.setState({ confirmLoading: false })
-            console.log(error)
-        })
+            return message.error('请输入支付宝链接方式')
+        }
+        if (values.merchantType === '2' && !this.state.bindUserId && type == 1) { // 支付宝间连需要关联M4
+            this.setState({ confirmLoading: false })
+            return message.error('间连的支付宝账号未关联M4')
+        }
+        const startTime = rangePicker[0].format(DATE_FORMAT);
+        const endTime = rangePicker[1].format(END_DATE_FORMAT);
+        const datas = {
+            batchName: values.batchName,
+            jumpAppID: values.jumpAppID,
+            merchantType: values.merchantType,
+            // ...values,
+            couponCodeDockingType: 2, // 支付宝默认传2批量预存，微信需要用户手动选择1，3
+            channelID,
+            effectType,
+            stock: values.stock.number,
+            validUntilDays: values.validUntilDays ? values.validUntilDays.number : '',
+            effectGiftTimeHours,
+            endTime,
+            startTime,
+            giftItemID,
+            giftType,
+            merchantID,
+            platformType,
+        }
+        if (giftValidRange[0]) {
+            datas.EGiftEffectTime = giftValidRange[0].format(DATE_FORMAT);
+            datas.validUntilDate = giftValidRange[1].format(END_DATE_FORMAT);
+        }
+        if (values.merchantType == '2' && type === 1) { // 间连传smid && 支付宝
+            const { smidList } = this.state;
+            const { bankMerchantCode } = smidList[0];
+            datas.merchantID = bankMerchantCode;
+        }
+        if (type === 1) { // 支付宝
+            if (entranceWords.length) { datas.entranceWords = entranceWords; }
+        }
+        if (type === 2) { // 微信
+            datas.merchantID = this.state.WXMerchantID;
+            datas.masterMerchantID = this.state.masterMerchantID;
+            datas.jumpAppID = this.state.WXJumpAppID;
+            datas.maxCouponsPerUser = values.maxCouponsPerUser;
+            datas.couponCodeDockingType = values.couponCodeDockingType;
+            datas.miniProgramsAppId = values.miniProgramsAppId;
+            datas.miniProgramsPath = values.miniProgramsPath;
+            datas.validateWay = values.validateWay;
+            datas.joinWay = values.joinWay;
+            datas.entranceMiniProgramsAppId = values.entranceMiniProgramsAppId;
+            datas.entranceMiniProgramsPath = values.entranceMiniProgramsPath;
+            datas.entranceWords = values.entranceWords
+        }
+        return datas;
     }
 
     handleSubmit = () => {
-        const { form, channelID, platformType, type } = this.props
+        const { form, type } = this.props
         form.validateFields((err, values) => {
             if (!err) {
                 this.setState({ confirmLoading: true })
-                const { effectType, effectGiftTimeHours, merchantID, editData, giftType, giftItemID, entranceWords } = this.state;
+                let datas = {}
                 const { user } = getStore().getState();
                 const { groupID, groupName } = user.get('accountInfo').toJS()
-                const rangePicker = values.rangePicker || [];
-                const giftValidRange = values.giftValidRange || [];
+               
                 if (type == 3 || type == 4) { // 抖音
-                    this.handleDouyinSubmit(values, groupID)
-                    return null
+                    datas = this.handleDouyinSubmit(values, groupID)
                 }
-                if (type == 5) { // e折
-                    this.handleEdiscountSubmit(values, groupID, groupName)
-                    return null
+                if (type == 5 || type == 7) { // e折 快手
+                    datas = this.handleEdAndKuaiSubmit(values, groupID, groupName)
                 }
-                if (!effectGiftTimeHours && values.effectType === '3') {
-                    this.setState({ confirmLoading: false })
-                    return message.error('请输入生效时间')
-                }
-                if (!merchantID) {
-                    this.setState({ confirmLoading: false })
-                    return message.error('请输入支付宝链接方式')
-                }
-                if (values.merchantType === '2' && !this.state.bindUserId && type == 1) { // 支付宝间连需要关联M4
-                    this.setState({ confirmLoading: false })
-                    return message.error('间连的支付宝账号未关联M4')
-                }
-                const startTime = rangePicker[0].format(DATE_FORMAT);
-                const endTime = rangePicker[1].format(END_DATE_FORMAT);
-                const datas = {
-                    batchName: values.batchName,
-                    jumpAppID: values.jumpAppID,
-                    merchantType: values.merchantType,
-                    // ...values,
-                    couponCodeDockingType: 2, // 支付宝默认传2批量预存，微信需要用户手动选择1，3
-                    channelID,
-                    effectType,
-                    stock: values.stock.number,
-                    validUntilDays: values.validUntilDays ? values.validUntilDays.number : '',
-                    effectGiftTimeHours,
-                    endTime,
-                    startTime,
-                    giftItemID,
-                    giftType,
-                    merchantID,
-                    platformType,
-                }
-                if (giftValidRange[0]) {
-                    datas.EGiftEffectTime = giftValidRange[0].format(DATE_FORMAT);
-                    datas.validUntilDate = giftValidRange[1].format(END_DATE_FORMAT);
-                }
-                if (values.merchantType == '2' && type === 1) { // 间连传smid && 支付宝
-                    const { smidList } = this.state;
-                    const { bankMerchantCode } = smidList[0];
-                    datas.merchantID = bankMerchantCode;
-                }
-                if (type === 1) { // 支付宝
-                    if (entranceWords.length) { datas.entranceWords = entranceWords; }
-                }
-                if (type === 2) { // 微信
-                    datas.merchantID = this.state.WXMerchantID;
-                    datas.masterMerchantID = this.state.masterMerchantID;
-                    datas.jumpAppID = this.state.WXJumpAppID;
-                    datas.maxCouponsPerUser = values.maxCouponsPerUser;
-                    datas.couponCodeDockingType = values.couponCodeDockingType;
-                    datas.miniProgramsAppId = values.miniProgramsAppId;
-                    datas.miniProgramsPath = values.miniProgramsPath;
-                    datas.validateWay = values.validateWay;
-                    datas.joinWay = values.joinWay;
-                    datas.entranceMiniProgramsAppId = values.entranceMiniProgramsAppId;
-                    datas.entranceMiniProgramsPath = values.entranceMiniProgramsPath;
-                    datas.entranceWords = values.entranceWords
+                if (type == 1 || type == 2) { // 支付宝
+                    datas = this.handleAliAndWxSubmit(values)
                 }
                 const url = '/api/v1/universal?';
-                let method = 'couponCodeBatchService/addBatch.ajax';
+                const method = 'couponCodeBatchService/addBatch.ajax';
 
-                if (editData.batchName) {
-                    // if (editData.batchStatus != '2') {
-                    //     return message.warn('已shi效的状态才可以更新')
-                    // }
-                    method = 'couponCodeBatchService/updateBatch.ajax';
-                    datas.itemID = editData.itemID;
-                    datas.groupID = groupID
-                }
+                // if (editData.batchName) {
+                //     method = 'couponCodeBatchService/updateBatch.ajax';
+                //     datas.itemID = editData.itemID;
+                //     datas.groupID = groupID
+                // }
                 const params = {
                     service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
                     type: 'post',
@@ -559,19 +508,20 @@ class CreateCouponContent extends Component {
                     data: {
                         couponCodeBatchInfo: datas,
                         groupID,
+                        groupShortName: groupName,
                     },
                     method,
                 };
                 axios.post(url + method, params).then((res) => {
                     const { code, message: msg } = res;
                     if (code === '000') {
-                        if (editData.batchName) {
-                            message.success('更新成功');
-                            this.props.handleCloseModal();
-                            this.props.handleQuery();
-                            this.props.onParentCancel();
-                            return
-                        }
+                        // if (editData.batchName) {
+                        //     message.success('更新成功');
+                        //     this.props.handleCloseModal();
+                        //     this.props.handleQuery();
+                        //     this.props.onParentCancel();
+                        //     return
+                        // }
                         message.success('创建成功');
                         this.props.handleCloseModal();
                         this.props.handleQuery();

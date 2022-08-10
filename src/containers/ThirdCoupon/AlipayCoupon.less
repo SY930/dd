@@ -452,11 +452,16 @@
             background: url('http://res.hualala.com/basicdoc/5c8c1443-44e9-41e0-a05f-5a7c7ea9718e.png') no-repeat;
         }
     }
-    // .signInfoEzhe {
-    //     &::after{
-    //         background: url('') no-repeat;
-    //     }
-    // }
+    .signInfoEzhe {
+        // &::after{
+        //     background: url('http://res.hualala.com/basicdoc/550f5482-f0df-44b5-ac5d-a930b3f5c839.png') no-repeat;
+        // }
+    }
+    .signInfoKuaiShou {
+        // &::after{
+        //     background: url('http://res.hualala.com/basicdoc/406b0d9a-e6ba-414a-b9ab-c06f0fbe5540.png') no-repeat;
+        // }
+    }
     .signInfo {
         position: relative;
         margin: 0px 0 20px;
@@ -472,7 +477,7 @@
             width: 121px;
             height: 92px;
             // background: url('http://res.hualala.com/basicdoc/3bdff800-1ac4-48b2-8886-0abc81f135e4.png') no-repeat;
-            background-size: 100% 100%;
+            background-size: contain;
         }
         > h4 {
             margin-bottom: 20px;
@@ -492,8 +497,8 @@
 }
 
 .createCouponModal__flex__ul {
-    display: flex;
-    justify-content: space-around;
+    // display: flex;
+    // justify-content: space-around;
     .createCouponModal__item__li {
         img  {
             display: inline-block;
@@ -505,8 +510,10 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        float: left;
         width: 148px;
         height: 148px;
+        margin-left: 10px;
         background: #FFFFFF;
         box-shadow: 0px 2px 12px 0px rgba(218, 218, 218, 0.5);
         border-radius: 12px;
