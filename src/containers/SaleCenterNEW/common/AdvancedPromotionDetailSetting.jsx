@@ -695,7 +695,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                     <FormItem
                         label={<span>
                             卡值不足不参与
-                            <Tooltip title={'仅限于普通会员类别，权益卡不适用仅线上点餐支持，POS不支持'}>
+                            <Tooltip title={'仅限于普通会员类别，权益卡不适用，仅线上点餐支持，POS不支持'}>
                                 <Icon style={{ marginLeft: 5, marginRight: -5 }} type="question-circle" />
                             </Tooltip>
                         </span>}
