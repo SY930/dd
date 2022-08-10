@@ -561,11 +561,11 @@ class AdvancedPromotionDetailSetting extends React.Component {
         const { intl } = this.props;
         const k5m3oq98 = intl.formatMessage(SALE_STRING.k5m3oq98);
         const k5m4pxa1 = intl.formatMessage(SALE_STRING.k5m4pxa1);
-
         const { cardInfo = [], cardScopeIDs = [], cardScopeType, cardBalanceLimitType } = this.state;
-        const boxData = []
+        const boxData = [];
+        const cardLevelData = cardInfo.filter(item => item.cardScheme === 0);
         cardScopeIDs.forEach((id) => {
-            cardInfo.forEach((cat) => {
+            cardLevelData.forEach((cat) => {
                 cat.cardTypeLevelList.forEach((level) => {
                     if (level.cardLevelID === id) {
                         boxData.push(level)
@@ -673,7 +673,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                                             innerBottomTitle={SALE_LABEL.k5m4py7e} //   内部底部box的title
                                             innerBottomItemName="cardLevelName" //   内部底部已选条目选项的label
                                             itemNameJoinCatName={'cardTypeName'} // item条目展示名称拼接类别名称
-                                            treeData={cardInfo} // 树形全部数据源【{}，{}，{}】
+                                            treeData={cardLevelData} // 树形全部数据源【{}，{}，{}】
                                             data={boxData} // 已选条目数组【{}，{}，{}】】,编辑时向组件内传递值
                                             onChange={(value) => {
                                                 // 组件内部已选条目数组【{}，{}，{}】,向外传递值
@@ -695,7 +695,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                     <FormItem
                         label={<span>
                             卡值不足不参与
-                            <Tooltip title={'仅线上点餐支持，POS不支持'}>
+                            <Tooltip title={'仅限于普通会员类别，权益卡不适用仅线上点餐支持，POS不支持'}>
                                 <Icon style={{ marginLeft: 5, marginRight: -5 }} type="question-circle" />
                             </Tooltip>
                         </span>}
