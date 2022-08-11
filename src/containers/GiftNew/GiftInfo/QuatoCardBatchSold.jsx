@@ -399,22 +399,8 @@ class QuotaCardBatchSold extends React.Component {
                     <div>
                         {decorator({
                             key: 'transRemark',
-                            rules: [{
-                                validator: (rule, value, callback) => {
-                                    let len = 0
-                                    for(const i in value) {
-                                        if(value.charCodeAt(i) > 127 || value.charCodeAt(i) == 94) {
-                                            len += 2
-                                        } else {
-                                            len ++
-                                        }
-                                    }
-                                    if(len > 100) return callback('可输入50字以内备注')
-                                    callback()
-                                }
-                            }],
                         })(
-                            <Input type="textarea" placeholder="可输入50字以内备注" maxLength={100} />
+                            <Input type="textarea" placeholder="可输入50字符以内备注" maxLength={50} />
                         )}
                     </div>
                 ),
