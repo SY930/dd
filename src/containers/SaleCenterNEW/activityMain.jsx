@@ -101,7 +101,7 @@ class ActivityMain extends React.Component {
     
     jumpToPage = () => {
         this.props.callbackthree(3);
-        jumpPage({ pageID: 'ris.PayingWays' })
+        jumpPage({ pageID: 'shop.jituan.jiezhangfangshi' })
     }
 
     renderSideBar() {
