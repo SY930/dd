@@ -23,7 +23,7 @@ async function httpApaasActivityQueryByPage(params = {}) {
         },
         method
     };
-    const response = await axios.post(url + method, allParams);
+    const response = await axios.post(url, allParams);
     const { code, message: msg, data: obj } = response;
     if (code === '000') {
         return obj;

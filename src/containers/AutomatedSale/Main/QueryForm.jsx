@@ -26,14 +26,16 @@ export const statusList = [
 ]
 
 const formItems = {
-    code: {
-        type: 'text',
-        label: '编码',
+    timeRanges: {
+        label: '活动时间',
+        type: 'datepickerRange',
+        showTime: true,
+        labelCol: { span: 7 },
+        wrapperCol: { span: 8 },
     },
-
     status: {
         type: 'custom',
-        label: '状态',
+        label: '使用状态',
         labelCol: { span: 7 },
         wrapperCol: { span: 8 },
         render: (decorator) => decorator({})(
@@ -48,7 +50,11 @@ const formItems = {
                 }
             </Select>
         )
-    }
+    },
+    name: {
+        type: 'text',
+        label: '活动名称',
+    },
 };
 
 export default class QueryForm extends React.PureComponent {

@@ -46,26 +46,10 @@ class MainTable extends Component {
         let { tc } = styles;
         return [
             { 
-                title: '编码',
-                dataIndex: 'code',
+                title: '序号',
+                dataIndex: 'no',
                 className: tc,
                 width: 50
-            },
-            { 
-                title: '名称',
-                dataIndex: 'name',
-                className: tc,
-                width: 150,
-            },
-            { 
-                title: '流程状态',
-                dataIndex: 'status',
-                className: tc,
-                width: 150,
-                render: (text, record) => {
-                    let obj = statusList.find(item => item.value == record.status);
-                    return obj && obj.label;
-                }
             },
             { 
                 title: '操作',
@@ -89,6 +73,42 @@ class MainTable extends Component {
                     )
                 }
             },
+            { 
+                title: '启用/禁用',
+                dataIndex: 'status',
+                className: tc,
+                width: 150,
+            },
+            { 
+                title: '活动编码',
+                dataIndex: 'code',
+                className: tc,
+                width: 150,
+            },
+            { 
+                title: '名称',
+                dataIndex: 'code',
+                className: tc,
+                width: 150,
+            },
+            { 
+                title: '有效时间',
+                dataIndex: 'code',
+                className: tc,
+                width: 150,
+            },
+            { 
+                title: '创建人/修改人',
+                dataIndex: 'code',
+                className: tc,
+                width: 150,
+            },            
+            { 
+                title: '创建时间/修改时间',
+                dataIndex: 'code',
+                className: tc,
+                width: 150,
+            },            
         ];
     }
     /* 生成表格数据 */

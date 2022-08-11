@@ -82,11 +82,14 @@ export default class Main extends React.PureComponent {
         let { list, loading, pageObj, modalType, modalVisible, modalContent } = this.state;
         return (
             <Col span={24} className={styles.automatedSale}>
+                <Col span={24} style={{display: 'flex', justifyContent: 'space-between'}}>
+                    <h2>智能营销</h2>
+                    <Button type='primary' onClick={() => this.setState({modalType: 'add', modalVisible: true})}>创建活动</Button>
+                </Col>
                 <Col span={24} className={styles.queryFrom}>
                     <QueryForm 
                         onQuery={this.onChangeQuery}
                     />
-                    <Button type='primary' onClick={() => this.setState({modalType: 'add', modalVisible: true})}>新增</Button>
                 </Col>
                 <Col span={24} className={styles.tableBox}>
                     <MainTable
