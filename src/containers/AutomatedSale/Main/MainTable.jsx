@@ -1,8 +1,7 @@
 import React, { PureComponent as Component } from 'react';
-import { Table,  Modal } from 'antd';
+import { Table,  Modal, Switch } from 'antd';
 import PagingFactory from 'components/PagingFactory';
 import styles from "./style.less";
-import { statusList } from "./QueryForm";
 
 const popconfirmInfo = {
     'release': {
@@ -41,33 +40,30 @@ class MainTable extends Component {
         onQuery(params);
     }
 
+    changeStatus = (record) => {
+        this.props.changeStatus(record);
+    }
+
     /* 生成表格头数据 */
     generateColumns() {
         let { tc } = styles;
         return [
             { 
                 title: '序号',
-                dataIndex: 'no',
                 className: tc,
-                width: 50
+                width: 50,
+                render:(text,record,index)=>`${index+1}`
             },
             { 
                 title: '操作',
-                dataIndex: '',
                 className: tc,
+                width: 250,
                 render: (text, record) => {
                     return (
                         <div className={styles.optBtn}>
                             <a href="#" onClick={() => this.props.onEdit(record)}>编辑</a>
-                            <a 
-                                href="#" 
-                                onClick={() => this.setState({
-                                    popconfirmVisible: 'release', 
-                                    currentId: record.code})
-                                }
-                            >发布</a>
-                            <a href="#" onClick={() => this.setState({popconfirmVisible: 'start', currentId: record.code})}>启动</a>
-                            <a href="#" onClick={() => this.setState({popconfirmVisible: 'cancel', currentId: record.code})}>取消</a>
+                            <a href="#" onClick={() => this.setState({popconfirmVisible: 'cancel', currentId: record.code})}>查看</a>
+                            <a href="#" onClick={() => this.setState({popconfirmVisible: 'delete', currentId: record.code})}>活动跟踪</a>
                             <a href="#" onClick={() => this.setState({popconfirmVisible: 'delete', currentId: record.code})}>删除</a>
                         </div>
                     )
@@ -77,37 +73,47 @@ class MainTable extends Component {
                 title: '启用/禁用',
                 dataIndex: 'status',
                 className: tc,
-                width: 150,
+                width: 100,
+                render: (text, record) => (
+                    <Switch 
+                        checked={record.status == 1} 
+                        checkedChildren="启用" 
+                        unCheckedChildren="禁用" 
+                        size="small"
+                        className={styles.switchBox}
+                        onChange={() => this.changeStatus(record)}
+                    />
+                )
             },
             { 
                 title: '活动编码',
-                dataIndex: 'code',
+                dataIndex: 'flowCode',
                 className: tc,
                 width: 150,
             },
             { 
                 title: '名称',
-                dataIndex: 'code',
+                dataIndex: 'flowName',
                 className: tc,
                 width: 150,
             },
             { 
                 title: '有效时间',
-                dataIndex: 'code',
                 className: tc,
-                width: 150,
+                width: 200,
+                render:(text,record,index) => `${record.eventStartDate} / ${record.eventEndDate}`
             },
             { 
                 title: '创建人/修改人',
                 dataIndex: 'code',
                 className: tc,
-                width: 150,
+                width: 200,
             },            
             { 
                 title: '创建时间/修改时间',
-                dataIndex: 'code',
                 className: tc,
-                width: 150,
+                width: 200,
+                render:(text,record,index) => `${record.createStamp} / ${record.actionStamp}`
             },            
         ];
     }
@@ -165,8 +171,7 @@ class MainTable extends Component {
                         columns={columns}
                         rowKey="code"
                         dataSource={dataSource}
-                        style={{ maxWidth: 700 }}
-                        scroll={{ y: 'calc(100vh - 440px)' }}
+                        scroll={{ x: 1600,  y: 'calc(100vh - 440px)' }}
                         pagination={pagination}
                     />
                     {

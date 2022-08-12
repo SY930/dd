@@ -4,24 +4,12 @@ import BaseForm from 'components/common/BaseForm';
 
 export const statusList = [
     {
-        label: '草稿',
-        value: "0"
+        label: '已启用',
+        value: 1
     },
     {
-        label: '已发布',
-        value: "1"
-    },
-    {
-        label: '已启动',
-        value: "2"
-    },
-    {
-        label: '运行中',
-        value: "3"
-    },
-    {
-        label: '已取消',
-        value: "4"
+        label: '已禁用',
+        value: 2
     },
 ]
 
@@ -32,6 +20,7 @@ const formItems = {
         showTime: true,
         labelCol: { span: 7 },
         wrapperCol: { span: 8 },
+        format: 'YYYY-MM-DD'
     },
     status: {
         type: 'custom',

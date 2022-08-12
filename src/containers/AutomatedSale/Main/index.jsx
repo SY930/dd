@@ -4,7 +4,7 @@ import MainTable from "./MainTable";
 import QueryForm from "./QueryForm";
 import styles from "./style.less";
 import ProcessModal from "./ProcessModal";
-import { httpApaasActivityQueryByPage } from "./AxiosFactory";
+import { httpApaasActivityQueryByPage, httpApaasActivityOperate } from "./AxiosFactory";
 
 const initialPaging = {
     pageNo: 1,
@@ -54,6 +54,22 @@ export default class Main extends React.PureComponent {
         })
     }
 
+    changeStatus = (record) => {
+        this.setState({
+            loading: true
+        }, () => {
+            httpApaasActivityOperate()
+            .then(() => this.onQueryList())
+            .catch(error => {
+                console.error(error);
+                this.setState({
+                    loading: false
+                })
+            })
+        })
+        console.log(111, record);
+    }
+
     onChangeQuery = (queryParams) => {
         this.setState({
             queryParams
@@ -98,6 +114,7 @@ export default class Main extends React.PureComponent {
                         pageObj={pageObj}
                         onQuery={this.onQueryList}
                         onEdit={this.onEdit}
+                        changeStatus={this.changeStatus}
                     />
                </Col>
                {

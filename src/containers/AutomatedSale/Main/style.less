@@ -17,14 +17,26 @@
         display: flex;
         margin: 20px 0;
     }
-
-    .tableBox {
-        padding: 0 20px;
-    }
     
     .optBtn {
         button {
             margin-right: 10px;
         }
     }
+
+    .switchBox {
+        height: 24px;
+        border-radius: 20px;
+        width: 79px;
+    }
+
+    :global {
+        .ant-switch:after {
+            border-radius: 20px !important;
+        }
+
+        .ant-switch .ant-switch-inner {
+            line-height: 24px;
+        }
+   }
 }
