@@ -32,7 +32,7 @@ export const getColumns = _this => ([
                     查看
                 </a>
                 {
-                    [5, 7].includes(record.platformType) && (
+                    [5].includes(record.platformType) && (
                         <a
                             href="#"
                             onClick={() => {
