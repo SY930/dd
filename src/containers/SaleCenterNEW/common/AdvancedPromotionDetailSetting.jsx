@@ -76,7 +76,9 @@ class AdvancedPromotionDetailSetting extends React.Component {
         let initShopsIDs = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS();
         const { crmCardTypeIDs } = this.props.user.accountInfo;
         let shopsIDs = this.props.user.accountInfo.dataPermissions.shopList;
-        shopsIDs = shopsIDs[0] instanceof Object ? shopsIDs.map(shop => shop.shopID) : shopsIDs
+        shopsIDs = shopsIDs[0] instanceof Object ? shopsIDs.map(shop => shop.shopID) : shopsIDs;
+        const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
+
         // 格式转换  统一字符串  拼接
         if (initShopsIDs.length) {
             let [shops] = initShopsIDs
@@ -94,7 +96,9 @@ class AdvancedPromotionDetailSetting extends React.Component {
             data.shopIDs = '';
             this.setState({ crmCardTypeIDs });
         }
-        data.cardScheme = '1'
+        if(promotionType != '2030'){
+            data.cardScheme = '1'
+        }
         this.props.fetchShopCardLevel({ data })
         this.props.fetchTagList({
             groupID: this.props.user.accountInfo.groupID,
@@ -119,7 +123,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
         const customerUseCountLimit = $promotionDetail.get('customerUseCountLimit') ? $promotionDetail.get('customerUseCountLimit') : 0;
         const isTotalLimited = customerUseCountLimit == 0 ? '0' : '1';
         const blackList = $promotionDetail.get('blackList');
-        const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
+        console.log(promotionType,'promotionType-----')
         let userSettingOPtios = []
         if (promotionType === '2070' || promotionType === '1080') {
             userSettingOPtios = CLIENT_CATEGORY_ADD_UP;
@@ -247,7 +251,9 @@ class AdvancedPromotionDetailSetting extends React.Component {
                 } else {
                     data.shopIDs = shopsIDs1.join()
                 }
-                data.cardScheme = '1'
+                if(promotionType != '2030'){
+                    data.cardScheme = '1'
+                }
                 this.props.fetchShopCardLevel({ data })
             }
         }
