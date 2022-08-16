@@ -30,7 +30,6 @@ class MyFaceRule extends Component {
         super(props);
         this.state = {
             eventSelectOption: [
-                { label: '无', value: '', children: [] },
                 { label: '小程序', value: 'miniAppPage', children: programList },
                 { label: '分享裂变', value: 'event_65', children: [] },
                 { label: '膨胀大礼包', value: 'event_66', children: [] },
