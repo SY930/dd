@@ -40,9 +40,10 @@ const formItems = {
             </Select>
         )
     },
-    name: {
+    flowName: {
         type: 'text',
         label: '活动名称',
+        placeholder: '请输入活动名称'
     },
 };
 

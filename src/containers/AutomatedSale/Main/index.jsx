@@ -1,11 +1,13 @@
 import React from 'react';
-import { Col, Button } from "antd";
+import { Col, Button, message } from "antd";
 import MainTable from "./MainTable";
 import QueryForm from "./QueryForm";
 import styles from "./style.less";
 import ProcessModal from "./ProcessModal";
 import { httpApaasActivityQueryByPage, httpApaasActivityOperate } from "./AxiosFactory";
+import moment from 'moment'
 
+const DATE_FORMAT = 'YYYYMMDD';
 const initialPaging = {
     pageNo: 1,
     pageSize: 10
@@ -33,20 +35,32 @@ export default class Main extends React.PureComponent {
 
     onQueryList = (pagingParams = initialPaging) => {
         let { queryParams } = this.state;
-        let concatParams = {...pagingParams, ...queryParams}
+        let { timeRanges } = queryParams;
+        if(timeRanges && timeRanges.length > 0){
+            queryParams.eventStartDate = moment(timeRanges[0]).format(DATE_FORMAT);
+            queryParams.eventEndDate =  moment(timeRanges[1]).format(DATE_FORMAT);
+            delete queryParams.timeRanges;
+        }
+        let concatParams = {
+            ...pagingParams, 
+            ...queryParams
+        };
+
         this.setState({
             loading: true
         }, () => {
             httpApaasActivityQueryByPage(concatParams).then(res => {
                 console.log('res', res)
-                let { total, list } = res;
+                let { itemList: list } = res;
+                let { pageHeader: { totalSize } } = res;
                 this.setState({
                     loading: false,
                     list,
-                    total,
+                    total: totalSize,
                     pageObj: pagingParams
                 })
             }).catch(error => {
+                console.error(error);
                 this.setState({
                     loading: false,
                 })
@@ -59,7 +73,10 @@ export default class Main extends React.PureComponent {
             loading: true
         }, () => {
             httpApaasActivityOperate()
-            .then(() => this.onQueryList())
+            .then(() => {
+                message.success('已禁用');
+                this.onQueryList();
+            })
             .catch(error => {
                 console.error(error);
                 this.setState({

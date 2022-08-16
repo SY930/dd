@@ -2,7 +2,9 @@ import React, { PureComponent as Component } from 'react';
 import { Table,  Modal, Switch } from 'antd';
 import PagingFactory from 'components/PagingFactory';
 import styles from "./style.less";
+import moment from 'moment'
 
+const DATE_FORMAT = 'YYYYMMDD';
 const popconfirmInfo = {
     'release': {
         title: '发布'
@@ -16,6 +18,11 @@ const popconfirmInfo = {
     'delete': {
         title: '删除'
     }
+}
+
+
+function transformTime(time, format = 'YYYY-MM-DD HH:mm:ss'){
+    return moment(new Date(parseInt(time))).format(format)
 }
 
 /** 列表页表格数据 */
@@ -113,10 +120,14 @@ class MainTable extends Component {
                 title: '创建时间/修改时间',
                 className: tc,
                 width: 200,
-                render:(text,record,index) => `${record.createStamp} / ${record.actionStamp}`
+                render:(text,record,index) => {
+                    return `${transformTime(record.createStamp)} / ${transformTime(record.actionStamp)}`;
+                }
             },            
+
         ];
     }
+
     /* 生成表格数据 */
     generateDataSource() {
         const { list = [] } = this.props;
