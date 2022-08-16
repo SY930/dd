@@ -22,9 +22,6 @@ import { FetchCrmCardTypeLst } from '../../../redux/actions/saleCenterNEW/crmCar
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
 
-
-
-
 const FormItem = Form.Item;
 const Option = Select.Option;
 @injectIntl
@@ -145,7 +142,7 @@ class StepTwo extends React.Component {
                         })(
                             <PriceInput
                                 addonAfter={this.props.intl.formatMessage(STRING_SPE.d170093144c13204)}
-                                disabled={userCount > 0}
+                                // disabled={userCount > 0 && isEditPromotionCode.indexOf() > -1}
                                 placeholder={this.props.intl.formatMessage(STRING_SPE.d34ikssd62352)}
                                 modal="int"
                                 maxNum={6}
