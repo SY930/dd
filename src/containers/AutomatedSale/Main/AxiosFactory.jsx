@@ -81,32 +81,67 @@ async function httpApaasActivitySave(params = {}) {
 }
 
 /**
- * 操作活动状态（删除，取消，发布，启动）
+ * 启动活动 / 暂停活动
  */
- async function httpApaasActivityOperate(params = {}) {
-    const { groupID } = getAccountInfo();
-    const method = '/api/apaas/admin/activity/operate';
-    const allParams = { 
-        service: 'HTTP_SERVICE_URL_CRM',
-        type,
-        data: { 
-            groupID,
-            ...params
-        },
-        method
-    };
-    const response = await axios.post(url + method, allParams);
-    const { code, message: msg, data: obj } = response;
-    if (code === '000') {
-        return obj;
-    }
-    message.error(msg);
-    return [];
+function httpEnableOrDisableMaPromotionEvent(params = {}) {
+    return new Promise(async (resolve, reject) => {
+        const { groupID: _groupID } = getAccountInfo();
+        let method = '/automation/marketingAutomationService_enableMaPromotionEvent.ajax';
+        if(params.status == 1){
+            method = '/automation/marketingAutomationService_disableMaPromotionEvent.ajax';
+        }
+        delete params.status;
+        const allParams = { 
+            service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+            type,
+            data: { 
+                _groupID,
+                ...params
+            },
+            method
+        };
+        const response = await axios.post(url + method, allParams);
+        const { code, message: msg, data: obj } = response;
+        if (code === '000') {
+            resolve(obj);
+            return;
+        }
+        message.error(msg);
+        reject(msg);
+    })
+}
+
+/**
+ * 删除活动
+ */
+ function httpDeleteMaPromotionEvent(params = {}) {
+    return new Promise(async (resolve, reject) => {
+        const { groupID: _groupID } = getAccountInfo();
+        let method = '/automation/marketingAutomationService_deleteMaPromotionEvent.ajax';
+        const allParams = { 
+            service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+            type,
+            data: { 
+                _groupID,
+                ...params
+            },
+            method
+        };
+        const response = await axios.post(url + method, allParams);
+        const { code, message: msg, data: obj } = response;
+        if (code === '000') {
+            resolve(obj);
+            return;
+        }
+        message.error(msg);
+        reject(msg);
+    })
 }
 
 export { 
     httpApaasActivityQueryByPage,
     httpApaasActivitySave,
     httpApaasActivityQueryDetail,
-    httpApaasActivityOperate
+    httpEnableOrDisableMaPromotionEvent,
+    httpDeleteMaPromotionEvent
 }

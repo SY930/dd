@@ -4,24 +4,9 @@ import PagingFactory from 'components/PagingFactory';
 import styles from "./style.less";
 import moment from 'moment'
 
-const DATE_FORMAT = 'YYYYMMDD';
-const popconfirmInfo = {
-    'release': {
-        title: '发布'
-    },
-    'start': {
-        title: '启动'
-    },
-    'cancel': {
-        title: '取消'
-    },
-    'delete': {
-        title: '删除'
-    }
-}
+const DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
-
-function transformTime(time, format = 'YYYY-MM-DD HH:mm:ss'){
+function transformTime(time, format = DATE_FORMAT){
     return moment(new Date(parseInt(time))).format(format)
 }
 
@@ -29,8 +14,7 @@ function transformTime(time, format = 'YYYY-MM-DD HH:mm:ss'){
 class MainTable extends Component {
     /* 页面需要的各类状态属性 */
     state = {
-        popconfirmVisible: '',
-        currentId: ''
+        itemID: ''
     };
     /* 根据父组件传来的数据判断是否需要更新分页组件 */
     componentWillReceiveProps(np) {
@@ -51,6 +35,18 @@ class MainTable extends Component {
         this.props.changeStatus(record);
     }
 
+    onDelete = (itemID) => {
+        let that = this;
+        Modal.confirm({
+            title: `确定要删除吗?`,
+            okText: '确定',
+            cancelText: '取消',
+            onOk(){
+                that.props.onDelete(itemID);
+            }
+          });
+    }
+
     /* 生成表格头数据 */
     generateColumns() {
         let { tc } = styles;
@@ -64,14 +60,13 @@ class MainTable extends Component {
             { 
                 title: '操作',
                 className: tc,
-                width: 250,
+                width: 100,
                 render: (text, record) => {
                     return (
                         <div className={styles.optBtn}>
-                            <a href="#" onClick={() => this.props.onEdit(record)}>编辑</a>
-                            <a href="#" onClick={() => this.setState({popconfirmVisible: 'cancel', currentId: record.code})}>查看</a>
-                            <a href="#" onClick={() => this.setState({popconfirmVisible: 'delete', currentId: record.code})}>活动跟踪</a>
-                            <a href="#" onClick={() => this.setState({popconfirmVisible: 'delete', currentId: record.code})}>删除</a>
+                            <a href="#" onClick={() => this.props.onOperate(record, 'edit')}>编辑</a>
+                            <a href="#" onClick={() => this.props.onOperate(record, 'see')}>查看</a>
+                            <a href="#" onClick={() => this.onDelete(record.itemID)}>删除</a>
                         </div>
                     )
                 }
@@ -107,14 +102,15 @@ class MainTable extends Component {
             { 
                 title: '有效时间',
                 className: tc,
-                width: 200,
+                width: 100,
                 render:(text,record,index) => `${record.eventStartDate} / ${record.eventEndDate}`
             },
             { 
                 title: '创建人/修改人',
                 dataIndex: 'code',
                 className: tc,
-                width: 200,
+                width: 140,
+                render:(text,record,index) => `${record.creator} / ${record.regenerator}`
             },            
             { 
                 title: '创建时间/修改时间',
@@ -142,10 +138,6 @@ class MainTable extends Component {
         console.log(999, record);
     }
 
-    onClickOptBtn = () => {
-        console.log(2222, this.state.popconfirmVisible, this.state.currentId);
-    }
-
     render() {
         const { loading, page } = this.props;
         const columns = this.generateColumns();
@@ -155,39 +147,17 @@ class MainTable extends Component {
             onChange: this.onPageChange,
             onShowSizeChange: this.onPageChange,  
         };
-        let { popconfirmVisible } = this.state;
-        const title = popconfirmInfo[popconfirmVisible] && popconfirmInfo[popconfirmVisible].title;
-        const that = this;
-        const confirm = () =>  {
-            Modal.confirm({
-              title: `确定要${title}吗?`,
-              okText: '确定',
-              cancelText: '取消',
-              onCancel() {
-                that.setState({
-                    popconfirmVisible: ''
-                })
-              },
-              onOk(){
-                that.onClickOptBtn()
-              }
-            });
-        }
-
         return (
                 <div>
                     <Table
                         bordered={true}
                         loading={loading}
                         columns={columns}
-                        rowKey="code"
+                        rowKey="itemID"
                         dataSource={dataSource}
                         scroll={{ x: 1600,  y: 'calc(100vh - 440px)' }}
                         pagination={pagination}
                     />
-                    {
-                        popconfirmVisible != '' && confirm()
-                    }
                 </div>
         )
     }

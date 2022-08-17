@@ -3,9 +3,8 @@ import { Col, Button, message } from "antd";
 import MainTable from "./MainTable";
 import QueryForm from "./QueryForm";
 import styles from "./style.less";
-import ProcessModal from "./ProcessModal";
-import { httpApaasActivityQueryByPage, httpApaasActivityOperate } from "./AxiosFactory";
-import moment from 'moment'
+import { httpApaasActivityQueryByPage, httpEnableOrDisableMaPromotionEvent, httpDeleteMaPromotionEvent } from "./AxiosFactory";
+import moment from 'moment';
 
 const DATE_FORMAT = 'YYYYMMDD';
 const initialPaging = {
@@ -22,9 +21,6 @@ export default class Main extends React.PureComponent {
             list: [],
             total: 0,
             pageObj: {},
-            modalVisible: false,
-            modalType: '',
-            modalContent: '',
             queryParams: {}
         }
     }
@@ -69,22 +65,49 @@ export default class Main extends React.PureComponent {
     }
 
     changeStatus = (record) => {
+        let { status, itemID } = record;
         this.setState({
             loading: true
         }, () => {
-            httpApaasActivityOperate()
-            .then(() => {
-                message.success('已禁用');
+            httpEnableOrDisableMaPromotionEvent({
+                status,
+                itemID,
+            })
+            .then(res => {
+                this.setState({
+                    loading: false
+                });
+                status == 1 ? message.warning('已禁用') : message.success('已启用');
                 this.onQueryList();
             })
             .catch(error => {
-                console.error(error);
                 this.setState({
                     loading: false
                 })
             })
         })
-        console.log(111, record);
+    }
+
+    onDelete = (itemID) => {
+        this.setState({
+            loading: true
+        }, () => {
+            httpDeleteMaPromotionEvent({
+                itemID,
+            })
+            .then(() => {
+                this.setState({
+                    loading: false
+                });
+                message.success('已删除');
+                this.onQueryList();
+            })
+            .catch(error => {
+                this.setState({
+                    loading: false
+                })
+            })
+        })
     }
 
     onChangeQuery = (queryParams) => {
@@ -95,29 +118,17 @@ export default class Main extends React.PureComponent {
         })
     }
 
-    onEdit = (record) => {
-        console.log(5666, record)
-        this.setState({
-            modalType: 'edit',
-            modalVisible: true,
-            modalContent: record
-        })
-    }
-
-    onClose = () => {
-        this.setState({
-            modalVisible: false,
-            modalContent: '',
-        })
+    onOperate = (record, type) => {
+        console.log(record, type)
     }
 
     render() {
-        let { list, loading, pageObj, modalType, modalVisible, modalContent } = this.state;
+        let { list, loading, pageObj } = this.state;
         return (
             <Col span={24} className={styles.automatedSale}>
                 <Col span={24} style={{display: 'flex', justifyContent: 'space-between'}}>
                     <h2>智能营销</h2>
-                    <Button type='primary' onClick={() => this.setState({modalType: 'add', modalVisible: true})}>创建活动</Button>
+                    <Button type='primary' onClick={() => this.onOperate('', 'add')}>创建活动</Button>
                 </Col>
                 <Col span={24} className={styles.queryFrom}>
                     <QueryForm 
@@ -130,20 +141,11 @@ export default class Main extends React.PureComponent {
                         loading={loading}
                         pageObj={pageObj}
                         onQuery={this.onQueryList}
-                        onEdit={this.onEdit}
+                        onOperate={this.onOperate}
                         changeStatus={this.changeStatus}
+                        onDelete={this.onDelete}
                     />
                </Col>
-               {
-                    modalVisible && 
-                    <ProcessModal 
-                        modalType={modalType}
-                        modalContent={modalContent}
-                        onClose={this.onClose}
-                        onSubmit={this.onSubmit}
-                        onQuery={this.onQueryList}
-                    />
-               }
             </Col>
         )
     }

@@ -31,6 +31,7 @@ const formItems = {
             <Select
                 style={{width: '100px'}}
                 placeholder="请选择"
+                allowClear
             >
                 {
                     statusList.map(item => (
