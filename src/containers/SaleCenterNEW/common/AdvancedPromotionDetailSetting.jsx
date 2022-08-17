@@ -76,7 +76,9 @@ class AdvancedPromotionDetailSetting extends React.Component {
         let initShopsIDs = this.props.promotionScopeInfo.getIn(['$scopeInfo', 'shopsInfo']).toJS();
         const { crmCardTypeIDs } = this.props.user.accountInfo;
         let shopsIDs = this.props.user.accountInfo.dataPermissions.shopList;
-        shopsIDs = shopsIDs[0] instanceof Object ? shopsIDs.map(shop => shop.shopID) : shopsIDs
+        shopsIDs = shopsIDs[0] instanceof Object ? shopsIDs.map(shop => shop.shopID) : shopsIDs;
+        const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
+
         // 格式转换  统一字符串  拼接
         if (initShopsIDs.length) {
             let [shops] = initShopsIDs
@@ -93,6 +95,9 @@ class AdvancedPromotionDetailSetting extends React.Component {
         if (crmCardTypeIDs) {
             data.shopIDs = '';
             this.setState({ crmCardTypeIDs });
+        }
+        if(promotionType != '2030'){
+            data.cardScheme = '1'
         }
         this.props.fetchShopCardLevel({ data })
         this.props.fetchTagList({
@@ -118,7 +123,6 @@ class AdvancedPromotionDetailSetting extends React.Component {
         const customerUseCountLimit = $promotionDetail.get('customerUseCountLimit') ? $promotionDetail.get('customerUseCountLimit') : 0;
         const isTotalLimited = customerUseCountLimit == 0 ? '0' : '1';
         const blackList = $promotionDetail.get('blackList');
-        const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         let userSettingOPtios = []
         if (promotionType === '2070' || promotionType === '1080') {
             userSettingOPtios = CLIENT_CATEGORY_ADD_UP;
@@ -245,6 +249,9 @@ class AdvancedPromotionDetailSetting extends React.Component {
                     data.shopIDs = _shopsIDs.join(',')
                 } else {
                     data.shopIDs = shopsIDs1.join()
+                }
+                if(promotionType != '2030'){
+                    data.cardScheme = '1'
                 }
                 this.props.fetchShopCardLevel({ data })
             }
@@ -559,11 +566,11 @@ class AdvancedPromotionDetailSetting extends React.Component {
         const { intl } = this.props;
         const k5m3oq98 = intl.formatMessage(SALE_STRING.k5m3oq98);
         const k5m4pxa1 = intl.formatMessage(SALE_STRING.k5m4pxa1);
-
         const { cardInfo = [], cardScopeIDs = [], cardScopeType, cardBalanceLimitType } = this.state;
-        const boxData = []
+        const boxData = [];
+        const cardLevelData = cardInfo.filter(item => item.cardScheme === 0);
         cardScopeIDs.forEach((id) => {
-            cardInfo.forEach((cat) => {
+            cardLevelData.forEach((cat) => {
                 cat.cardTypeLevelList.forEach((level) => {
                     if (level.cardLevelID === id) {
                         boxData.push(level)
@@ -671,7 +678,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                                             innerBottomTitle={SALE_LABEL.k5m4py7e} //   内部底部box的title
                                             innerBottomItemName="cardLevelName" //   内部底部已选条目选项的label
                                             itemNameJoinCatName={'cardTypeName'} // item条目展示名称拼接类别名称
-                                            treeData={cardInfo} // 树形全部数据源【{}，{}，{}】
+                                            treeData={cardLevelData} // 树形全部数据源【{}，{}，{}】
                                             data={boxData} // 已选条目数组【{}，{}，{}】】,编辑时向组件内传递值
                                             onChange={(value) => {
                                                 // 组件内部已选条目数组【{}，{}，{}】,向外传递值
@@ -693,7 +700,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
                     <FormItem
                         label={<span>
                             卡值不足不参与
-                            <Tooltip title={'仅线上点餐支持，POS不支持'}>
+                            <Tooltip title={'仅限于普通会员类别，权益卡不适用，仅线上点餐支持，POS不支持'}>
                                 <Icon style={{ marginLeft: 5, marginRight: -5 }} type="question-circle" />
                             </Tooltip>
                         </span>}
