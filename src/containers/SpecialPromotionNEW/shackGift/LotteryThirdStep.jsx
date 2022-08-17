@@ -1081,6 +1081,14 @@ class LotteryThirdStep extends React.Component {
         this.setState({ disArr });
     }
 
+    // 切换优惠券时需要删除item，否则会影响presentType的值
+    onTypeChange = (index) => {
+        const _infos = this.state.infos;
+        if (_infos[index].giftCount.value.item) {
+            delete _infos[index].giftCount.value.item; 
+        }
+    }
+
 
 
     renderShareInfo = () => {
@@ -1205,6 +1213,7 @@ class LotteryThirdStep extends React.Component {
                                     disabled={this.props.disabled}
                                     onBagChange={this.onBagChange}
                                     isCopy={this.props.isCopy}
+                                    onTypeChange={this.onTypeChange}
                                 />
                             </TabPane>
                         )
