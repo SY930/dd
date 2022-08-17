@@ -503,7 +503,7 @@ class SpecialDishesTableWithBrand extends Component {
                                 type="text"
                                 modal="float"
                                 placeholder={'10表示不打折'}
-                                value={{ number: record.salePercent == '10' ? '不打折' : record.salePercent }}
+                                value={{ number: record.salePercent == '10' ? '不打折' : record.salePercent + '折' }}
                                 index={index}
                                 onChange={(val) => { this.onPercentCellChange(val, record) }}
                             />
