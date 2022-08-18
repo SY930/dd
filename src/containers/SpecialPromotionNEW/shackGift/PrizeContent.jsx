@@ -60,10 +60,10 @@ export default class PrizeContent extends React.Component {
         if (_BAGFLAG && !isNew && preProps.info.giveCoupon.value.item && index == '0') {
             console.log('执行了~~~~')
             const { item = {}, typeValue = '0' } = preProps.info.giveCoupon.value;
-            this.state = {
+            this.setState({
                 typeValue: typeValue,
                 bag: _.isEmpty(item) ? [] : [item],
-            }
+            })
             _BAGFLAG = false;
         }
 

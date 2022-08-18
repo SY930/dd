@@ -666,6 +666,7 @@ class LotteryThirdStep extends React.Component {
     onBagChange = (val, index) => {
         const _infos = this.state.infos;
         _infos[index].giveCoupon.value.item = val;
+        _infos[index].giveCoupon.value.typeValue = '1';
         this.setState({
             infos: _infos,
         }, () => {
