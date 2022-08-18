@@ -932,7 +932,7 @@ class LotteryThirdStep extends React.Component {
                                 if(!tempobj.item){
                                     if(!tempobj.giftInfo.giftItemID || !tempobj.giftCount.value ){
                                         tempResult = false;
-                                        this.handleGiftCountChange({number: tempobj.giftCount.value}, activeKey);
+                                        // this.handleGiftCountChange({number: tempobj.giftCount.value}, activeKey);
                                     }
                                     if(tempobj.effectType == '1' || tempobj.effectType == '3'){
                                         //按小时或者按天
@@ -1117,7 +1117,7 @@ class LotteryThirdStep extends React.Component {
                     handleGiftOddsChange={this.handleGiftOddsChange}
                     handleGiftImgChange={this.handleGiftImgChange}
                     // handleShareImageChangne={this.handleShareImageChangne}
-                    // handleShareTitleChange={this.handleShareTitleChange}
+                   // handleShareTitleChange={this.handleShareTitleChange}
                     handleGivePointsChange={this.handleGivePointsChange}
                     handleGiveCardChange={this.handleGiveCardChange}
                     handleGivePointsValueChange={this.handleGivePointsValueChange}
