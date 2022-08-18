@@ -363,6 +363,7 @@ class BuyCutDetailInfo extends React.Component {
                 defaultValue={{ number: this.state.discountRate }}
                 onChange={this.onDiscountRateChange}
                 modal="float"
+                fixedInputWidth={true}
             />
         </FormItem>
         )
