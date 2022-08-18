@@ -141,7 +141,7 @@ export class NDiscount extends React.Component {
     
             return (
                 <FormItem
-                    className={styles.FormItemStyle}
+                    className={[styles.FormItemStyle, style.FormItemBox].join(' ')}
                     {...(index === 0 ? formItemLayout : formItemLayoutWithOutLabel)}
                     required={true}
                     key={k}
@@ -170,10 +170,12 @@ export class NDiscount extends React.Component {
                             this.props.onChange && this.props.onChange(data);
                         }}
                         value={{ number: this.state.data[k].value }}
-                        style={{width: '113px'}}
+                        style={{width: '245px'}}
                     />}
                     {k > 0 &&<PriceInput
-                        addonBefore={`${k6hdp67b}${k + 2}${k6hdp6fn}`}
+                        addonBefore={
+                            <span style={{width: '138px', display: 'inline-block'}}>{`${k6hdp67b}${k + 2}${k6hdp6fn}`}</span>
+                        }
                         addonAfter={k5ezdc19}
                         discountMode={true}
                         modal="float"
@@ -191,6 +193,8 @@ export class NDiscount extends React.Component {
                             this.props.onChange && this.props.onChange(data);
                         }}
                         value={{ number: this.state.data[k].value }}
+                        style={{width: '247px'}}
+                        fixedInputWidth={true}
                     />}
                     <div className={style.iconsStyle}>
                         {this.state.stageType == '2' && this.renderHandleIcon(k)}

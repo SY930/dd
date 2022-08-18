@@ -163,7 +163,7 @@ class PriceInput extends React.Component {
     }
 
     render() {
-        const { size, disabled, discountMode } = this.props;
+        const { size, disabled, discountMode, fixedInputWidth } = this.props;
         const props = Object.assign({}, this.props);
         delete props.modal; // 将modal 属性传递下去会产生warning
         delete props.maxNum; // 将maxNum 属性传递下去会产生warning
@@ -184,7 +184,7 @@ class PriceInput extends React.Component {
                 />
                 {
                     this.props.discountMode && this.props.inputOrigin != 'GiftAddModalStep'?
-                    <span style={{width: '100%'}}>
+                    <span style={{width: fixedInputWidth ? '70px' : '100%'}}>
                         {renderDiscountModeDesc(state.number)}
                     </span>
                     :null
