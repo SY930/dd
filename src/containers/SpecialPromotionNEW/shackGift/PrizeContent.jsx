@@ -60,10 +60,10 @@ export default class PrizeContent extends React.Component {
         if (_BAGFLAG && !isNew && preProps.info.giveCoupon.value.item && index == '0') {
             console.log('执行了~~~~')
             const { item = {}, typeValue = '0' } = preProps.info.giveCoupon.value;
-            this.state = {
+            this.setState({
                 typeValue: typeValue,
                 bag: _.isEmpty(item) ? [] : [item],
-            }
+            })
             _BAGFLAG = false;
         }
 
@@ -247,12 +247,15 @@ export default class PrizeContent extends React.Component {
     onTypeChange = ({ target }) => {
         this.setState({ typeValue: target.value });
         const { onBagChange, index, onTypeChange } = this.props;
-        onBagChange(null, index);
+        const { bag } = this.state
         if (target.value === '0') {
-            onTypeChange(target.value, index)
-        }
+            onBagChange(null, index);
+        } else  {
+            onBagChange(bag[0], index);
 
+        }
     }
+
     onBagChange = (item) => {
         const { onBagChange, index } = this.props;
         onBagChange(item, index);
