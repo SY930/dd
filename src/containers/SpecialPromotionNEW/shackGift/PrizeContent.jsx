@@ -580,7 +580,7 @@ export default class PrizeContent extends React.Component {
                                                             maxNum={9}
                                                             disabled={true}
                                                             value={{ number: info.giveCoupon.value.giftCount.value || '1' }}
-                                                            onChange={val => handleGiftCountChange(val, index)}
+                                                            // onChange={val => handleGiftCountChange(val, index)}
                                                             addonAfter={this.props.intl.formatMessage(SALE_STRING.k5f3y5ml)}
                                                             modal="int"
                                                         />
