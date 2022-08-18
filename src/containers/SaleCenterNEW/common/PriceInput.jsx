@@ -184,7 +184,7 @@ class PriceInput extends React.Component {
                 />
                 {
                     this.props.discountMode && this.props.inputOrigin != 'GiftAddModalStep'?
-                    <span style={{width: fixedInputWidth ? '70px' : '100%'}}>
+                    <span style={{width: fixedInputWidth ? '87px' : '100%'}}>
                         {renderDiscountModeDesc(state.number)}
                     </span>
                     :null

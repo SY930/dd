@@ -170,7 +170,7 @@ export class NDiscount extends React.Component {
                             this.props.onChange && this.props.onChange(data);
                         }}
                         value={{ number: this.state.data[k].value }}
-                        style={{width: '230px'}}
+                        style={{width: '218px'}}
                     />}
                     {k > 0 &&<PriceInput
                         addonBefore={
@@ -193,7 +193,7 @@ export class NDiscount extends React.Component {
                             this.props.onChange && this.props.onChange(data);
                         }}
                         value={{ number: this.state.data[k].value }}
-                        style={{width: '233px'}}
+                        style={{width: '220px'}}
                         fixedInputWidth={true}
                     />}
                     <div className={style.iconsStyle}>
