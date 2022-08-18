@@ -1082,12 +1082,12 @@ class LotteryThirdStep extends React.Component {
     }
 
     // 切换优惠券时需要删除item，否则会影响presentType的值
-    onTypeChange = (typeValue, index) => {
-        const _infos = this.state.infos;
-        if (_infos[index].giveCoupon.value.item) {
-            delete _infos[index].giveCoupon.value.item; 
-        }
-    }
+    // onTypeChange = (typeValue, index) => {
+    //     const _infos = this.state.infos;
+    //     if (_infos[index].giveCoupon.value.item) {
+    //         delete _infos[index].giveCoupon.value.item; 
+    //     }
+    // }
 
     renderTabContent = (pane,index, panelArr) => {
         const { user } = this.props;

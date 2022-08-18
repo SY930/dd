@@ -247,12 +247,15 @@ export default class PrizeContent extends React.Component {
     onTypeChange = ({ target }) => {
         this.setState({ typeValue: target.value });
         const { onBagChange, index, onTypeChange } = this.props;
-        onBagChange(null, index);
+        const { bag } = this.state
         if (target.value === '0') {
-            onTypeChange(target.value, index)
-        }
+            onBagChange(null, index);
+        } else  {
+            onBagChange(bag[0], index);
 
+        }
     }
+
     onBagChange = (item) => {
         const { onBagChange, index } = this.props;
         onBagChange(item, index);
