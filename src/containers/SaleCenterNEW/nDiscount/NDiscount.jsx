@@ -170,11 +170,11 @@ export class NDiscount extends React.Component {
                             this.props.onChange && this.props.onChange(data);
                         }}
                         value={{ number: this.state.data[k].value }}
-                        style={{width: '245px'}}
+                        style={{width: '230px'}}
                     />}
                     {k > 0 &&<PriceInput
                         addonBefore={
-                            <span style={{width: '138px', display: 'inline-block'}}>{`${k6hdp67b}${k + 2}${k6hdp6fn}`}</span>
+                            <span style={{width: '152px', display: 'inline-block'}}>{`${k6hdp67b}${k + 2}${k6hdp6fn}`}</span>
                         }
                         addonAfter={k5ezdc19}
                         discountMode={true}
@@ -193,7 +193,7 @@ export class NDiscount extends React.Component {
                             this.props.onChange && this.props.onChange(data);
                         }}
                         value={{ number: this.state.data[k].value }}
-                        style={{width: '247px'}}
+                        style={{width: '233px'}}
                         fixedInputWidth={true}
                     />}
                     <div className={style.iconsStyle}>
