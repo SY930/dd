@@ -1082,13 +1082,66 @@ class LotteryThirdStep extends React.Component {
     }
 
     // 切换优惠券时需要删除item，否则会影响presentType的值
-    onTypeChange = (index) => {
+    onTypeChange = (typeValue, index) => {
         const _infos = this.state.infos;
-        if (_infos[index].giftCount.value.item) {
-            delete _infos[index].giftCount.value.item; 
+        if (_infos[index].giveCoupon.value.item) {
+            delete _infos[index].giveCoupon.value.item; 
         }
     }
 
+    renderTabContent = (pane,index, panelArr) => {
+        const { user } = this.props;
+        const { infos, disArr, cardTypeArr, giftInfo } = this.state;
+        let filteredGiftInfo = giftInfo.filter(cat => cat.giftType && cat.giftType != 90)
+        .map(cat => ({...cat, index: SALE_CENTER_GIFT_TYPE.findIndex(type => String(type.value) === String(cat.giftType))}));
+        return (
+            <TabPane
+                tab={pane.title}
+                key={pane.key}
+                closable={!this.props.disabled && panelArr.length > 1 && index === panelArr.length - 1}
+                ref='paneRef'
+            >
+                <pane.content
+                    groupID={user.accountInfo.groupID}
+                    info={infos[index]}
+                    infosLength={infos.length}
+                    filteredGiftInfo={filteredGiftInfo}
+                    cardTypeArr={cardTypeArr}
+                    index={index}
+                    toggleFun={this.toggleFun}
+                    disArr={disArr}
+                    redPacketArr={this.state.redPackets}
+                    changeDisArr={this.changeDisArr}
+                    handleGiftTotalCountChange={this.handleGiftTotalCountChange}
+                    handleValidateTypeChange={this.handleValidateTypeChange}
+                    handleGiftOddsChange={this.handleGiftOddsChange}
+                    handleGiftImgChange={this.handleGiftImgChange}
+                    // handleShareImageChangne={this.handleShareImageChangne}
+                    // handleShareTitleChange={this.handleShareTitleChange}
+                    handleGivePointsChange={this.handleGivePointsChange}
+                    handleGiveCardChange={this.handleGiveCardChange}
+                    handleGivePointsValueChange={this.handleGivePointsValueChange}
+                    handleGiveCardInpChange={this.handleGiveCardInpChange}
+                    handleCardChange={this.handleCardChange}
+                    handleGiveCardTypeChange={this.handleGiveCardTypeChange}
+                    handleGiveRedPacketValueChange={this.handleGiveRedPacketValueChange}
+                    handleGiveRedPacketIDChange={this.handleGiveRedPacketIDChange}
+                    handleGiveCouponChange={this.handleGiveCouponChange}
+                    handleGiveRedPacketChange={this.handleGiveRedPacketChange}
+                    handleGiftChange={this.handleGiftChange}
+                    handleGiftValidDaysChange={this.handleGiftValidDaysChange}
+                    handleDependTypeChange={this.handleDependTypeChange}
+                    handleGiftEffectiveTimeChange={this.handleGiftEffectiveTimeChange}
+                    handleRangePickerChange={this.handleRangePickerChange}
+                    disabled={this.props.disabled}
+                    onBagChange={this.onBagChange}
+                    isCopy={this.props.isCopy}
+                    onTypeChange={this.onTypeChange}
+                    isNew={this.props.isNew}
+                />
+            </TabPane>
+        )
+    }
 
 
     renderShareInfo = () => {
@@ -1139,11 +1192,7 @@ class LotteryThirdStep extends React.Component {
     }
 
     render() {
-        const { activeKey, infos, giftInfo, disArr, cardTypeArr } = this.state;
-        const { user } = this.props;
-        let filteredGiftInfo = giftInfo.filter(cat => cat.giftType && cat.giftType != 90)
-            .map(cat => ({...cat, index: SALE_CENTER_GIFT_TYPE.findIndex(type => String(type.value) === String(cat.giftType))}));
-
+        const { activeKey, infos } = this.state;
         let panelArr = this.getPaneArr(infos);
         return (
             <div className={style.stepWrapper}>
@@ -1170,53 +1219,7 @@ class LotteryThirdStep extends React.Component {
                     className={style.tabPrize}
                 >
                     { panelArr.map((pane,index) => {
-                        return (
-                            <TabPane
-                                tab={pane.title}
-                                key={pane.key}
-                                closable={ !this.props.disabled && panelArr.length > 1 && index === panelArr.length - 1}
-                                ref='paneRef'
-                            >
-                                <pane.content
-                                    groupID={user.accountInfo.groupID}
-                                    info={infos[index]}
-                                    infosLength={infos.length}
-                                    filteredGiftInfo={filteredGiftInfo}
-                                    cardTypeArr={cardTypeArr}
-                                    index={index}
-                                    toggleFun={this.toggleFun}
-                                    disArr={disArr}
-                                    redPacketArr={this.state.redPackets}
-                                    changeDisArr={this.changeDisArr}
-                                    handleGiftTotalCountChange={this.handleGiftTotalCountChange}
-                                    handleValidateTypeChange={this.handleValidateTypeChange}
-                                    handleGiftOddsChange={this.handleGiftOddsChange}
-                                    handleGiftImgChange={this.handleGiftImgChange}
-                                    // handleShareImageChangne={this.handleShareImageChangne}
-                                    // handleShareTitleChange={this.handleShareTitleChange}
-                                    handleGivePointsChange={this.handleGivePointsChange}
-                                    handleGiveCardChange={this.handleGiveCardChange}
-                                    handleGivePointsValueChange={this.handleGivePointsValueChange}
-                                    handleGiveCardInpChange={this.handleGiveCardInpChange}
-                                    handleCardChange={this.handleCardChange}
-                                    handleGiveCardTypeChange={this.handleGiveCardTypeChange}
-                                    handleGiveRedPacketValueChange={this.handleGiveRedPacketValueChange}
-                                    handleGiveRedPacketValueChange={this.handleGiveRedPacketValueChange}
-                                    handleGiveRedPacketIDChange={this.handleGiveRedPacketIDChange}
-                                    handleGiveCouponChange={this.handleGiveCouponChange}
-                                    handleGiveRedPacketChange={this.handleGiveRedPacketChange}
-                                    handleGiftChange={this.handleGiftChange}
-                                    handleGiftValidDaysChange={this.handleGiftValidDaysChange}
-                                    handleDependTypeChange={this.handleDependTypeChange}
-                                    handleGiftEffectiveTimeChange={this.handleGiftEffectiveTimeChange}
-                                    handleRangePickerChange={this.handleRangePickerChange}
-                                    disabled={this.props.disabled}
-                                    onBagChange={this.onBagChange}
-                                    isCopy={this.props.isCopy}
-                                    onTypeChange={this.onTypeChange}
-                                />
-                            </TabPane>
-                        )
+                        return this.renderTabContent(pane,index, panelArr)
                     }) }
                 </Tabs>
                 {this.renderShareInfo()}
