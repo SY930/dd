@@ -90,7 +90,18 @@ class GiftDetailModal extends Component {
         const { visible, data } = this.props;
         const { giftType,shopScopeType } = data;
         let infoItem = [];
-        if (giftType === '80') {
+        if(giftType === '81'){
+            infoItem = [
+                { col: { span: 8 }, maxL: 18, keys: { giftName: '礼品名称', giftTypeName: '礼品类型' } },
+                {
+                    col: { span: 16 },
+                    labelCol: { span: 4 },
+                    itemCol: { span: 20 },
+                    maxL: 40,
+                    keys: { createStamp: '创建时间', giftRemark: '使用说明' },
+                },
+            ];
+        }else if (giftType === '80') {
             infoItem = [
                 { col: { span: 8 }, maxL: 18, keys: { giftName: '礼品名称', giftTypeName: '礼品类型', shopNames: '适用店铺' } },
                 {
