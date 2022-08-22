@@ -1,0 +1,64 @@
+@import '~@hualala/platform-base/lib/styles/variables.less';
+@import '~@hualala/platform-base/lib/styles/mixins.less';
+
+.commonFilterSelector(@primary-color: @btn1-default-background, @sub-color: @btn1-hover-background) {
+    .filterKeyList {
+        .filterKey {
+            display: inline-block;
+            margin-right: 10px;
+            width: 90px;
+            height: 28px;
+            line-height: 28px;
+            text-align: center;
+            border: 1px solid @btn2-default-border-color;
+            border-radius: @border-radius;
+            cursor: pointer;
+            transition: all .15s cubic-bezier(.645,.045,.355,1);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            outline: none;
+            &:hover {
+                color: @sub-color;
+                border-color: @sub-color;
+            }
+            &.active {
+                color: #ffffff;
+                background-color: @primary-color;
+            }
+        }
+    }
+    .selectedFilters {
+        position: relative;
+        padding: 10px 16px 10px 0;
+        &>span {
+            .x-text-box-ellipsis();
+        }
+        .clearBtn {
+            position: absolute;
+            right: 0;
+            top: 12px;
+            color: rgba(0, 0, 0, 0.43);
+            transition: all .3s ease;
+            font-size: 14px;
+            &:hover {
+                cursor: pointer;
+                color: #444;
+            }
+        }
+    }
+    .resultList {
+        flex: 1;
+        margin-left: 10px;
+    }
+    .selectedList {
+        margin-top: 5px;
+    }
+}
+
+.hllFilterSelector {
+    .commonFilterSelector();
+}
+.hllFilterSelectorPro {
+    .commonFilterSelector(#379ff1, #3496e0);
+}

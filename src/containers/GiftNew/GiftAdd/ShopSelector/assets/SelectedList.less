@@ -1,0 +1,48 @@
+@import '~@hualala/platform-base/lib/styles/variables.less';
+
+.wrapper {
+    .header {
+        & > a {
+            float: right;
+            line-height: 28px;
+        }
+        & > :global(.anticon) {
+            margin-right: 6px;
+            cursor: pointer;
+            color: @lightGrey;
+            line-height: 28px;
+            transition: color .15s cubic-bezier(.645,.045,.355,1);
+            &:hover {
+                color: @btn1-hover-background;
+            }
+        }
+    }
+    .content {
+        height: 155px;
+        overflow: auto;
+        border: 1px solid @border-color;
+        transition: all .15s cubic-bezier(.645,.045,.355,1);
+        .item {
+            padding: 4px 8px;
+            border-bottom: 1px solid @border-color;
+            cursor: pointer;
+            &:nth-child(even) {
+                background-color: @table-tr-even;
+            }
+            &:hover {
+                background-color: @table-mover-bg;
+            }
+        }
+        &.table {
+            overflow: hidden;
+            &>div {
+                margin: -1px;
+            }
+        }
+    }
+    &.collapsed .content {
+        text-align: center;
+        height: 40px;
+        line-height: 38px;
+    }
+}

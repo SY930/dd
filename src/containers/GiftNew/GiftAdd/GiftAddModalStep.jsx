@@ -76,6 +76,7 @@ import SelectMall from '../components/SelectMall';      // 选择适用店铺组
 import SelectMallCategory from '../components/SelectMallCategory';  // 选择商城分类，入参为商城 shopID
 
 import { MultipleGoodSelector } from '../../../components/common/GoodSelector'
+import ShopSelectorJSB from './ShopSelector/ShopSelector';
 
 import {
     fetchFoodCategoryInfoAC,
@@ -87,13 +88,14 @@ import {
 import { CategoryAndFoodSelectors } from '../../SaleCenterNEW/common/GiftCategoryAndFoodSelectors';
 import { GiftCategoryAndFoodSelector } from '../../SaleCenterNEW/common/CategoryAndFoodSelector';
 import { GiftCategoryAndFoodSelectorNew } from '../../SaleCenterNEW/common/CategoryAndFoodSelectorNew';
-import AddMoneyTradeDishesTableWithBrand from 'containers/SaleCenterNEW/addMoneyTrade/AddMoneyTradeDishesTableWithBrand';
 
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const hasMallArr = ['10','20','21'];
+const GroupSepcial = ['1155', 1155];
+const describeAry = ['代金券', '菜品优惠券', '菜品兑换券'];
 const processFinalCategoryAndDishData = (params, property,value) => {
     if (params.hasOwnProperty(property)) {
         if (!params[property]) { // 用户没选择，默认全部信息
@@ -1844,6 +1846,31 @@ class GiftAddModalStep extends React.PureComponent {
         });
     }
 
+    changeShopNamesJSB = (val) => {
+        const {values} = this.state;
+        values.shopNames = val;
+        values.shopScopeType = 1;
+        this.setState({ 
+            values:Object.assign({},values)
+        });
+    }
+
+    // 针对嘉士伯集团选择适用店铺
+    renderJsbShopNames = (d) => {
+        const { shopNames = [] } = this.state.values;
+        return (
+            <Row style={{ marginBottom: shopNames.length === 0 ? -15 : 0, width: '302px' }}>
+                <Col style={{position:'relative'}}>
+                    {d({
+                        onChange:this.changeShopNamesJSB
+                    })(
+                        <ShopSelectorJSB />
+                    )}
+                </Col>
+            </Row>
+        )
+    }
+
     renderShopNames(decorator) {
         const { shopNames = [],excludeShops = [],selectBrands = [],applyScene } = this.state.values;
         const { type, gift: { value, data } } = this.props;
@@ -3012,7 +3039,7 @@ class GiftAddModalStep extends React.PureComponent {
             selectBrands: {
                 label: '所属品牌',
                 type: 'custom',
-                render: (decorator, form) => this.renderSelectBrands(decorator, form)
+                render: (decorator, form) => GroupSepcial.includes(groupID) && describeAry.includes(describe) ? null : this.renderSelectBrands(decorator, form)
             },
             cardTypeList: {
                 label: '适用卡类',
@@ -3142,7 +3169,7 @@ class GiftAddModalStep extends React.PureComponent {
                 type: 'custom',
                 label: '适用店铺',
                 defaultValue: [],
-                render: decorator => this.renderShopNames(decorator),
+                render: decorator =>  GroupSepcial.includes(groupID) && describeAry.includes(describe) ? this.renderJsbShopNames(decorator) : this.renderShopNames(decorator),
             },
             selectedMemberRightShops: {
                 type: 'custom',
@@ -3164,7 +3191,7 @@ class GiftAddModalStep extends React.PureComponent {
                     </span>
                 ),
                 defaultValue: [],
-                render: decorator => this.renderExcludeShops(decorator),
+                render: decorator => GroupSepcial.includes(groupID) && describeAry.includes(describe) ? null : this.renderExcludeShops(decorator),
             },
             shareIDs: {
                 type: 'custom',
@@ -3922,6 +3949,8 @@ function mapStateToProps(state) {
         // 商城商品及分类信息
         goodCategories: state.sale_promotionDetailInfo_NEW.get('goodCategories').toJS(),
         goods: state.sale_promotionDetailInfo_NEW.get('goods').toJS(),
+        groupID: state.user.getIn(['accountInfo', 'groupID']),
+
     }
 }
 
