@@ -79,6 +79,12 @@ registerLocalPage([
         label: '支付宝商家券投放',
         parent: [entryCodes.ACTIVITY_LAUNCH],
     },
+    {
+        key: entryCodes.GIFT_DETAILS,
+        value: entryCodes.GIFT_DETAILS,
+        label: '礼品详情',
+        parent: [entryCodes.GIFT_PAGE],
+    },
 ]);
 // 注册语言包
 const registeLangPack = async () => {

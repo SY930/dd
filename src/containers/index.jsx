@@ -32,3 +32,4 @@ export { default as PromotionDecoration } from './PromotionDecoration';
 export { default as CreateActive } from './SaleActives/CreateActive';
 export { default as PromotionList } from './WeChat2Mall/PromotionList'
 export { default as LanchChannelList } from './LanchChannel/index'
+export { default as GiftDetails } from './GiftNew/GiftDetails/index'//礼品使用详情
