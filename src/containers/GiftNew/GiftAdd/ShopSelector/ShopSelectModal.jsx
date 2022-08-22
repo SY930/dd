@@ -24,8 +24,8 @@ class ShopSelectModal extends Component {
     }
 
     render() {
-        const { defaultValue, extendShopList, filters } = this.props;
-        const { loading } = this.state;
+        const { defaultValue, filters } = this.props;
+        // const { loading } = this.state;
         const options = this.props.options || this.state.options || [];
         return (
             <Modal
@@ -33,16 +33,16 @@ class ShopSelectModal extends Component {
                 onOk={this.handleOk}
                 maskClosable={false}
             >
-                <Spin spinning={loading} delay={500}>
-                    <FilterSelector
-                        title="店铺"
-                        doGroup={true}
-                        options={Array.isArray(extendShopList) ? [...extendShopList, ...options] : options}
-                        filters={filters}
-                        defaultValue={defaultValue}
-                        onChange={this.handleChange}
-                    />
-                </Spin>
+                {/* <Spin spinning={loading} delay={500}> */}
+                <FilterSelector
+                    title="店铺"
+                    doGroup={true}
+                    options={options}
+                    filters={filters}
+                    defaultValue={defaultValue}
+                    onChange={this.handleChange}
+                />
+                {/* </Spin> */}
             </Modal>
         );
     }

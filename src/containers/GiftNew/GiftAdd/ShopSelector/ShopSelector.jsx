@@ -53,10 +53,9 @@ class ShopSelector extends Component {
 
     render() {
         const { value = [], onChange, size, placeholder, ...otherProps } = this.props;
-        console.log("🚀 ~ file: ShopSelector.jsx ~ line 58 ~ ShopSelector ~ render ~ value", value)
         const { showModal, allSubRightGroup, originLeftGroup } = this.state;
         const items = value.reduce((ret, shopID) => {
-            const shopInfo = allSubRightGroup.find(shop => shop.value === shopID);
+            const shopInfo = allSubRightGroup.find(shop => shop.value == shopID);
             if (!shopInfo) return ret;
             return ret.concat({ value: shopInfo.value, label: shopInfo.shopName });
         }, []);

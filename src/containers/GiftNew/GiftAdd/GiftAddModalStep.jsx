@@ -77,7 +77,7 @@ import SelectMallCategory from '../components/SelectMallCategory';  // 选择商
 
 import { MultipleGoodSelector } from '../../../components/common/GoodSelector'
 import ShopSelectorJSB from './ShopSelector/ShopSelector';
-
+import { loadShopSchema } from './ShopSelector/utils'
 import {
     fetchFoodCategoryInfoAC,
     fetchFoodMenuInfoLightAC,
@@ -294,6 +294,8 @@ class GiftAddModalStep extends React.PureComponent {
         } catch (e) {
             // oops
         }
+
+        this.loadShops();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -408,6 +410,14 @@ class GiftAddModalStep extends React.PureComponent {
             return proSharedGifts;
         }
         return [];
+    }
+
+    loadShops = () => {
+        loadShopSchema().then(({ allSubRightGroup = [] }) => {
+            this.setState({
+                allSubRightGroup,
+            })
+        })
     }
 
 
@@ -936,7 +946,7 @@ class GiftAddModalStep extends React.PureComponent {
     }
 
     handleFinish = () => {
-        const { values, groupTypes, delivery,crossDay} = this.state;
+        const { values, groupTypes, delivery,crossDay, allSubRightGroup} = this.state;
         const { type, gift: { value, data } } = this.props;
         this.secondForm.validateFieldsAndScroll((err, formValues) => {
             if (err) return;
@@ -987,13 +997,20 @@ class GiftAddModalStep extends React.PureComponent {
                 }
             }
             try {
-                if (params.shopNames) {
+                if (params.shopNames && !GroupSepcial.includes(this.props.groupID)) {
                     const shops = this.state.shopSchema.shops;
                     const selectedShopEntities = shops.filter(item => params.shopNames.includes(item.shopID)).map(shop => ({content: shop.shopName, id: shop.shopID}));
                     selectedShopEntities.forEach((shop) => {
                         shopNames += `${shop.content + ',' || ''}`;
                         shopIDs += `${shop.id + ',' || ''}`;
                     });
+                } else {
+                    const shops = (allSubRightGroup || []).filter(item => (values.selectedShops || []).includes(item.value));
+                    // console.log("🚀 ~ file: GiftAddModalStep.jsx ~ line 1012 ~ GiftAddModalStep ~ shops ~ shops", shops)
+                    shops.forEach(s => {
+                        shopNames += `${s.label + ',' || ''}`;
+                        shopIDs += `${s.value + ',' || ''}`;
+                    })
                 }
             } catch (e) {
                 console.log(e);

@@ -18,16 +18,22 @@ class FilterSelector extends React.Component {
         filtersKey: [],
         options: this.props.options || [],
         selected: this.props.defaultValue || [],
+        selectedFilters: [],
+        selectedItems: [],
     }
 
     componentDidMount() {
+        this.handleSelected();
     }
 
+
     handleFilterChange = (value) => {
-        const { options: propsOptions } = this.props;
+        const { options: propsOptions, leftOptions = [] } = this.props;
+        const selectedFilters = leftOptions.filter(item => value.includes(item.value))
         this.setState({
             filtersKey: value,
-            options: filterByGroupID(propsOptions, value),
+            options: filterByGroupID(propsOptions || [], value),
+            selectedFilters,
         })
     }
 
@@ -37,6 +43,8 @@ class FilterSelector extends React.Component {
         onChange(values);
         this.setState({
             selected: values,
+        }, () => {
+            this.handleSelected();
         });
     }
 
@@ -46,22 +54,30 @@ class FilterSelector extends React.Component {
         this.setState({
             filtersKey: [],
             options: propsOptions,
+            selectedFilters: [],
+            selectedItems: [],
+        })
+    }
+
+    handleSelected = () => {
+        const { options: propsOptions = [] } = this.props
+        const { selected } = this.state
+        const selectedItems = propsOptions.filter(
+            option => selected.indexOf(option.value) !== -1
+        )
+        this.setState({
+            selectedItems,
         })
     }
 
     render() {
         const {
-            title, className, tableColumns, options: propsOptions,
+            title, className, tableColumns,
         } = this.props;
-        const { selected = [], leftOptions = [], filtersKey, options = [] } = this.state;
+
+        const { selected = [], leftOptions = [], filtersKey, options = [], selectedFilters, selectedItems } = this.state;
 
         const resultDisplay = tableColumns.length ? 'table' : 'stripped';
-        // const curFilter = oriFilters || {};
-        const selectedItems = propsOptions.filter(
-            option => selected.indexOf(option.value) !== -1
-        );
-
-        const selectedFilters = leftOptions.filter(item => filtersKey.includes(item.value))
 
         return (
             <div className={classnames(isProfessionalTheme() ? style.hllFilterSelectorPro : style.hllFilterSelector, className)}>

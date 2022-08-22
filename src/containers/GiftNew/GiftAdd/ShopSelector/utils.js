@@ -84,7 +84,7 @@ const loadShopSchema = async () => {
             next.shopInfos = next.shopInfos.map(i => ({ ...i, groupID: cooperativeGroupID }))
             return (cur || []).concat(next.shopInfos)
         }), []).filter(item => item)
-            .map(item => ({ ...item, value: item.shopID, label: item.shopName })),
+            .map(item => ({ ...item, value: `${item.shopID}`, label: item.shopName })),
     };
 }
 
