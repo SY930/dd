@@ -4,7 +4,7 @@ import { forceCheck } from '@hualala/react-lazyload';
 import PropTypes from 'prop-types';
 import { CellMeasurer, CellMeasurerCache, List } from 'react-virtualized';
 import './styles.less';
-import styles from './styles.less';
+// import styles from './styles.less';
 
 class PlainList extends Component {
     componentDidUpdate() {
@@ -51,7 +51,7 @@ class PlainList extends Component {
                         rowCount={options.length}
                         rowHeight={cache.rowHeight}
                         rowRenderer={rowRenderer}
-                        className={styles.virtualizedListBox}
+                        // className={styles.virtualizedListBox}
                     />
                 }
             </ul>
