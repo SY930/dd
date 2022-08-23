@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Checkbox } from 'antd';
-import LazyLoad, { forceCheck } from '@hualala/react-lazyload';
+import { forceCheck } from '@hualala/react-lazyload';
 import PropTypes from 'prop-types';
-
+import { CellMeasurer, CellMeasurerCache, List } from 'react-virtualized';
 import './styles.less';
+import styles from './styles.less';
 
 class PlainList extends Component {
     componentDidUpdate() {
@@ -11,27 +12,48 @@ class PlainList extends Component {
     }
 
     render() {
-        const { value, options, onCheck } = this.props;
-        return (
-            <ul>
-                {options.map(({ value: optVal, label, disabled }) => (
-                    <LazyLoad
-                        key={optVal}
-                        height={28}
-                        overflow={true}
-                        offset={560}
-                    >
-                        <li className="item">
+        const { value, options, onCheck } = this.props;        
+        const cache = new CellMeasurerCache({
+            defaultHeight: 28,
+        });
+
+        function rowRenderer ({ index, isScrolling, key, parent, style }) {
+            let currentItem = options[index];
+            let { value: optVal, label, disabled } = currentItem;
+            return (
+                <CellMeasurer
+                    cache={cache}
+                    columnIndex={0}
+                    key={key}
+                    parent={parent}
+                    rowIndex={index}
+                >
+                    {({ measure, registerChild }) => (
+                        <li className="item" key={key} style={style} ref={registerChild}>
                             <Checkbox
                                 checked={value.indexOf(optVal) > -1}
                                 disabled={disabled}
                                 onChange={evt => onCheck(evt.target.checked, optVal)}
                             >
-                                {label}
+                                { label }
                             </Checkbox>
                         </li>
-                    </LazyLoad>
-                ))}
+                    )}
+                </CellMeasurer>
+            );
+        }
+        return (
+            <ul>
+                {
+                    <List
+                        width={300}
+                        height={193}
+                        rowCount={options.length}
+                        rowHeight={cache.rowHeight}
+                        rowRenderer={rowRenderer}
+                        className={styles.virtualizedListBox}
+                    />
+                }
             </ul>
         );
     }
