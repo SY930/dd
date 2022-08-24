@@ -104,14 +104,7 @@ class SendGiftPanel extends Component {
             const params = this.mapStateToRequestParams();
             axiosData('/coupon/couponEntityService_sendCoupons.ajax', params, {}, {path: 'data'}, )
                 .then(res => {
-                    this.setState({
-                        loading: false,
-                        validatingStatus: null,
-                        cellNo: ''
-                    }, () => {
-                        this.props.form.resetFields(['cellNo']);
-                        this.props.form.setFieldsValue({cellNo: {number: ''}});
-                    });
+                    this.cancelSendModal()
                     messageService.success(`向手机号为 ${cellNo} 的用户发券成功!`, 4);
                 })
                 .catch(err => {
@@ -120,6 +113,18 @@ class SendGiftPanel extends Component {
                     })
                 })
         }
+    }
+
+    cancelSendModal = () => {
+        this.setState({
+            loading: false,
+            validatingStatus: null,
+            cellNo: ''
+        }, () => {
+            this.props.form.resetFields();
+            this.props.form.setFieldsValue({cellNo: {number: ''}});
+            this.props.hideModal()
+        });
     }
 
     mapStateToRequestParams() {
@@ -249,10 +254,10 @@ class SendGiftPanel extends Component {
                     style={{
                         margin: '1em 0'
                     }}
-                    labelCol={{ span: 4 }}
+                    labelCol={{ span: 5 }}
                     hasFeedback
                     required
-                    wrapperCol={{ span: 17 }}
+                    wrapperCol={{ span: 16 }}
                 >
                     {getFieldDecorator('cellNo', {
                         onChange: this.handleCellNoChange,
@@ -293,9 +298,9 @@ class SendGiftPanel extends Component {
             style={{
                 margin: '1em 0'
             }}
-            labelCol={{ span: 4 }}
+            labelCol={{ span: 5 }}
             // hasFeedback
-            wrapperCol={{ span: 17 }}
+            wrapperCol={{ span: 16 }}
         >
             {getFieldDecorator('operateRemark', {
                 onChange: this.handleRemarkChange,
@@ -467,8 +472,8 @@ class SendGiftPanel extends Component {
             <FormItem
                 label="是否发送消息"
                 className={styles.FormItemStyle}
-                labelCol={{ span: 4 }}
-                wrapperCol={{ span: 17 }}
+                labelCol={{ span: 5 }}
+                wrapperCol={{ span: 16 }}
             >
                 <Select size="default"
                         value={`${this.state.smsGate}`}
@@ -487,8 +492,8 @@ class SendGiftPanel extends Component {
             <FormItem
                 label="短信权益账户"
                 className={styles.FormItemStyle}
-                labelCol={{ span: 4 }}
-                wrapperCol={{ span: 17 }}
+                labelCol={{ span: 5 }}
+                wrapperCol={{ span: 16 }}
             >
                 {getFieldDecorator('accountNo', {
                     initialValue: this.state.accountNo,
@@ -507,8 +512,8 @@ class SendGiftPanel extends Component {
             <FormItem
                 label="选择短信模板"
                 className={styles.FormItemStyle}
-                labelCol={{ span: 4 }}
-                wrapperCol={{ span: 17 }}
+                labelCol={{ span: 5 }}
+                wrapperCol={{ span: 16 }}
             >
                 {getFieldDecorator('message', {
                     initialValue: this.state.message,
@@ -524,44 +529,45 @@ class SendGiftPanel extends Component {
     render() {
         return (
             <Row>
-                <Col offset={3} span={17}>
+                <Col span={24}>
                     {this.renderCellNo()}
                 </Col>
-                <Col span={12} offset={6}>
+                <Col span={19} offset={5}>
                     {this.renderGift()}
                 </Col>
-                <Col offset={3} span={17}>
+                <Col span={24}>
                     {this.renderSmsGate()}
                 </Col>
-                <Col offset={3} span={17}>
+                <Col span={24}>
                     {(this.state.smsGate == '1' || this.state.smsGate == '3' || this.state.smsGate == '4') && (
                     <div>
                         {this.renderAccountNo()}
                     </div>
                 )}
                 </Col>
-                <Col offset={3} span={17}>
+                <Col span={24}>
                     {(this.state.smsGate == '1' || this.state.smsGate == '3' || this.state.smsGate == '4') && (
                     <div>
                         {this.renderMsgSelector()}
                     </div>
                 )}
                 </Col>
-                <Col offset={3} span={17}>
+                <Col span={24}>
                     {this.renderRemarks()}
                 </Col>
-                <Col  offset={3} span={15} style={{
-                    textAlign: 'right'
+                <Col span={24} style={{
+                    textAlign: 'center',
+                    marginTop: 30,
                 }}>
+                    <Button style={{ marginRight: 10, width: 116, height: 42, fontSize: 15, borderRadius: 5 }} onClick={this.cancelSendModal} size='large'>取消</Button>
                     <Button
                         type="primary"
                         loading={this.state.loading}
                         onClick={this.handleSubmitDebounced}
-                        style={{
-                            marginRight: 3
-                        }}
+                        size='large'
+                        style={{ width: 116, height: 42, fontSize: 15, borderRadius: 5 }}
                     >
-                        发送
+                        确定
                     </Button>
                 </Col>
             </Row>

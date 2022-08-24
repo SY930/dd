@@ -488,7 +488,7 @@ class GiftSendOrUsedCount extends React.Component {
         return (
             <div className={styles.giftSendCount}>
                 <Row type="flex" align="bottom">
-                    <Col span={`${key === 'send' ? 24 : this.props._key == 'used' ? this.state.speGift.indexOf(this.props.data.giftType) >= 0 ? 24 : 21 : 21}`}>
+                    <Col span={`${key === 'send' ? 24 : 21}`}>
                         <BaseForm
                             getForm={form => this.queryForm = form}
                             formItems={this.state.formItems}
@@ -498,10 +498,7 @@ class GiftSendOrUsedCount extends React.Component {
                         />
                     </Col>
                     <Col
-                        span={`${key === 'send' ? 1 : 3}`}
-                        pull={`${key === 'send' ? 3 : this.props._key == 'used' ? 3 : 0}`}
-                        style={key === 'send' ? this.state.speGift.indexOf(this.props.data.giftType) >= 0 ? { position: 'relative', top: 0, left: 742 } :{ position: 'absolute', top: 143, left: 749 } :
-                               key === 'used' ? this.state.speGift.indexOf(this.props.data.giftType) >= 0 ? { position: 'absolute', top: 101, left: 744 } :{}:{}}
+                        span={3}
                     >
                         {
                             key === 'send' &&
