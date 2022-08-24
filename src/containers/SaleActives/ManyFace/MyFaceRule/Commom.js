@@ -29,8 +29,7 @@ export const eventSelectOptionCopy = [
     { label: '自定义链接', value: 'customLink' },
     { label: '菜品加入购物车', value: 'shoppingCartAddFood' },
     // { label: '小程序开卡', value: 'toOpenCard' }, // 仅针对九毛九集团可见
-];
-
+]
 export const faceDefVal = {
     id: '0',
     triggerScene: '1', // 点餐页弹窗海报图
@@ -44,12 +43,25 @@ export const faceDefVal = {
     triggerEventValue1: '',
     triggerEventCustomInfo1: '',
     triggerEventCustomInfoApp1: [{ platformType: 'wechat', appID: '', appName: '微信小程序名称' }, { platformType: 'alipay', appID: '', appName: '支付宝小程序名称' }], // 跳转至小程序
+
+    bannerApp1: '', // 弹窗海报
+    bannerApp1Ary: [
+        {
+            id: '011',
+            bannerApp1: '',
+            triggerEventName1: '购物车夹菜',
+            triggerEventValue1: '',
+            triggerEventCustomInfo1: '',
+            triggerEventCustomInfoApp1: [{ platformType: 'wechat', appID: '', appName: '微信小程序名称' }, { platformType: 'alipay', appID: '', appName: '支付宝小程序名称' }], // 跳转至小程序
+        },
+    ], // banner
+
     // 点击触发的事件 h5
     triggerEventName2: '购物车夹菜',
     triggerEventValue2: '',
     triggerEventCustomInfo2: '',
     // children: [], // 点击小程序触发事件后的三级联动菜单
     everyTagsRule: [],
-    // isTagRemove: false,
-    isShowDishSelector: false,
+    bannerApp2: '',
+    // isShowDishSelector: false,
 };

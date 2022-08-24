@@ -1,4 +1,5 @@
-﻿export { default as MyActivities } from './SaleCenterNEW/MyActivities/MyActivities';
+﻿
+export { default as MyActivities } from './SaleCenterNEW/MyActivities/MyActivities';
 export { default as MySpecialActivities } from './SpecialPromotionNEW/MySpecialActivities/index';
 export { default as GiftInfo } from './GiftNew/GiftInfo/index';
 export { default as MyActivitiesShop } from './SaleCenterNEW/MyActivities/MyActivitiesShop';
@@ -32,3 +33,4 @@ export { default as PromotionDecoration } from './PromotionDecoration';
 export { default as CreateActive } from './SaleActives/CreateActive';
 export { default as PromotionList } from './WeChat2Mall/PromotionList'
 export { default as LanchChannelList } from './LanchChannel/index'
+export { default as CreateActiveTwo } from './SaleActives/CreateActiveTwo';

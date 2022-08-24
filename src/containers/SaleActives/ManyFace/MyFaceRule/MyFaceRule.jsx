@@ -4,8 +4,9 @@ import { Icon, Form, Select, message, Input, Button, Tooltip } from 'antd';
 import _ from 'lodash';
 import { axios, getStore } from '@hualala/platform-base';
 import FoodSelectModal from '../../../../components/common/FoodSelector/FoodSelectModal'
+import ImageUploader from '../../components/ImageUploader/ImageUploader';
 import styles from './styles.less';
-import { programList, faceDefVal } from './Commom'
+import { programList, faceDefVal, eventSelectOptionCopy } from './Commom'
 import {
     memoizedExpandCategoriesAndDishes,
 } from '../../../../utils';
@@ -29,7 +30,8 @@ class MyFaceRule extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            eventSelectOption: [],
+            eventSelectOption: _.cloneDeep(eventSelectOptionCopy),
+            eventSelectOptionCopy,
             mallActivityList: [],
             allActivityList: [],
             activityOption: [[]],
@@ -54,7 +56,14 @@ class MyFaceRule extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (!_.isEqual(nextProps.allActivityList, this.props.allActivityList) || nextProps.clientType !== this.props.clientType) {
-            this.initEventSelectOption();
+            this.setState({
+                allActivityList: nextProps.allActivityList,
+                allMallActivity: nextProps.allMallActivity,
+            }, () => {
+                this.initEventSelectOption(nextProps.clientType);
+            })
+        } else {
+            return false
         }
     }
 
@@ -161,11 +170,12 @@ class MyFaceRule extends Component {
 
     onChangeAppID = (idx, key, { target }, parent, index) => {
         parent.triggerEventCustomInfoApp1[index].appID = target.value;
-        // parent.triggerEventCustomInfo = [];
-        // parent.triggerEventCustomInfo = 
-        // const triggerEventCustomInfo = parent.triggerEventCustomInfo[0];
         this.onChange(idx, { [key]: parent.triggerEventCustomInfoApp1 })
     }
+
+    // onEvantsImage = (idx, key, value) => {
+
+    // }
 
     getGroupListAll = () => {
         const { accountInfo } = this.props;
@@ -194,7 +204,7 @@ class MyFaceRule extends Component {
 
     // 获取活动
     getAvtivity = (params) => {
-        const { allActivityList = [], allMallActivity = [] } = this.props;
+        const { allActivityList = [], allMallActivity = [] } = this.state;
         let newActivityList = [];
         if (params === 'event_65') { // 分享裂变
             newActivityList = allActivityList && allActivityList.filter((item = []) => item.eventWay === 65);
@@ -245,18 +255,15 @@ class MyFaceRule extends Component {
     }
 
 
-    initEventSelectOption = () => {
+    initEventSelectOption = (clientType = '2') => {
         let eventList = [];
-        const { eventSelectOption } = this.state;
-        console.log("🚀 ~ file: MyFaceRule.jsx ~ line 270 ~ MyFaceRule ~ eventSelectOption", eventSelectOption)
-        if (this.props.clientType === '1') { // H5餐厅
+        const { eventSelectOptionCopy: eventSelectOption } = this.state;
+        if (clientType === '1') { // H5餐厅
             eventList = _.filter(eventSelectOption, item => ['', 'customLink', 'shoppingCartAddFood'].includes(item.value))
-            console.log("🚀 ~ file: MyFaceRule.jsx ~ line 273 ~ MyFaceRule ~ eventList h5餐厅", eventList)
         } else { // 小程序3.0
             eventList = _.map(_.filter(eventSelectOption, item => !['', 'miniAppPage'].includes(item.value)), it => ({ ...it, children: this.getAvtivity(it.value) }))
             const restList = _.filter(eventSelectOption, item => ['', 'miniAppPage'].includes(item.value));
             eventList = restList.concat(eventList)
-            console.log("🚀 ~ file: MyFaceRule.jsx ~ line 277 ~ MyFaceRule ~ eventList 3.0：--", eventList)
         }
         this.setState({
             eventSelectOption: eventList,
@@ -358,18 +365,15 @@ class MyFaceRule extends Component {
     }
 
     del = ({ target }, data) => {
-        // const { activityOption } = this.state;
         const { everyTagsRule } = data;
         const { idx } = target.closest('a').dataset;
         const { value, onChange } = this.props;
         const list = [...value];
         list.splice(+idx, 1);
         everyTagsRule.splice(+idx, 1)
-        // activityOption.splice(+idx, 1)
         onChange(list);
         this.setState({
             everyTagsRule,
-            // activityOption,
         })
     }
 
@@ -474,7 +478,6 @@ class MyFaceRule extends Component {
 
     renderSelect = (i, v, parentValue, parentName) => {
         const options = this.state.eventSelectOption.filter(item => item.value === v.triggerEventValue1) || [];
-        // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 474 ~ MyFaceRule ~ options", options)
         const [option] = options;
         return (<FormItem>
             <Select
@@ -529,6 +532,7 @@ class MyFaceRule extends Component {
     }
 
     renderAPPEvents = (v, i) => {
+        console.log("🚀 ~ file: MyFaceRule.jsx ~ line 535 ~ MyFaceRule ~ v, i", v, i, this.state.eventSelectOption)
         return (
             <div style={{ display: 'flex' }}>
                 <div style={{ display: 'flex', height: '35px' }}>
@@ -564,9 +568,48 @@ class MyFaceRule extends Component {
     }
 
 
+    renderAcitveImage = (v, i) => {
+        return (
+            <div className={styles.activeImageBox}>
+                <ImageUploader
+                    limit={0}
+                    value={v.bannerApp1}
+                    onChange={(value) => {
+                        this.onChange(i, { bannerApp1: value })
+                    }}
+                />
+                <div className={styles.uploaderTip}>
+                    <p>* 图片建议尺寸 526 * 788像素 </p>
+                    <p>* 大小不超过1M </p>
+                    <p>* 支持png、jpg、jpeg、gif</p>
+                </div>
+            </div>
+        )
+    }
+
+    renderMoreBannerAndEvents = (v, i) => {
+        console.log("🚀 ~ file: MyFaceRule.jsx ~ line 590 ~ MyFaceRule ~ v", v)
+        return (
+            <div className={styles.appBannerConntet}>
+                {v.bannerApp1Ary.map((item, index) => (
+                    <div key={item.id}>
+                        <div className={styles.MyFaceRuleSubConntet} style={{ display: 'flex' }}>
+                            <p>点击触发事件</p>{this.renderAPPEvents(item, index)}
+                        </div>
+                        <div className={styles.MyFaceRuleSubConntet} style={{ display: 'flex' }}>
+                            <p>活动主图</p>{this.renderAcitveImage(item, index)}
+                        </div>
+                    </div>
+                ))}
+                <Button type="ghost" icon="plus">添加banner</Button>
+            </div>
+
+        )
+    }
+
+
     render() {
-        const { value = [], form, clientType } = this.props;
-        // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 577 ~ MyFaceRule ~ render ~ clientType", clientType, value)
+        const { value = [], form, clientType, sceneList} = this.props;
         // const { length } = value;
         // 防止回显没数据不显示礼品组件
         if (!value[0]) {
@@ -576,7 +619,6 @@ class MyFaceRule extends Component {
             <div>
                 {
                     value.map((v, i) => {
-                        // const activitySelectOption = this.getAvtivityItem(v.triggerEventValue)
                         return (
                             <div key={v.id} className={styles.MyFaceRuleBox}>
                                 <div className={styles.MyFaceRuleConntet}>
@@ -661,13 +703,25 @@ class MyFaceRule extends Component {
                                             </FormItem>
                                         }
                                     </div>
-                                    {/* 点击触发事件 */}
-                                    <div className={styles.MyFaceRuleSubConntet} style={{ display: 'flex' }}>
-                                        <p>点击触发事件</p>
-                                        {clientType == '1' && this.renderH5Events(v, i)}
-                                        {clientType == '2' && this.renderAPPEvents(v, i)}
-                                    </div>
+                                    {/* 小程序3.0 banner情况单独处理 */}
+                                    {clientType === '2' && sceneList === '2' ? this.renderMoreBannerAndEvents(v, i)
+                                        : <div>
+                                            {/* 点击触发事件 */}
+                                            <div className={styles.MyFaceRuleSubConntet} style={{ display: 'flex' }}>
+                                                <p>点击触发事件</p>
+                                                {clientType == '1' && this.renderH5Events(v, i)}
+                                                {clientType == '2' && this.renderAPPEvents(v, i)}
+                                            </div>
+                                            {/* 活动主图、分为弹窗和banner */}
+                                            <div className={styles.MyFaceRuleSubConntet} style={{ display: 'flex' }}>
+                                                <p style={{ paddingTop: '20px' }}> <span className={styles.tip}>*</span>活动主图</p>
+                                                {this.renderAcitveImage(v, i)}
+                                            </div>
+                                        </div>
+                                    }
                                 </div>
+
+
                                 {/* 添加删除操作 */}
                                 <div>
                                     {
