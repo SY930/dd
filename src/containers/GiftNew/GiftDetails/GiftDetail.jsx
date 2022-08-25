@@ -145,6 +145,7 @@ function mapStateToProps(state) {
     sendorUsedKey: state.sale_giftInfoNew.get('sendorUsedKey'),
     sendTotalSize: state.sale_giftInfoNew.get('totalSendCount'),
     usedTotalSize: state.sale_giftInfoNew.get('totalUsedCount'),
+    noUsedTotalSize: state.sale_giftInfoNew.get('totalNoUsedCount'),
     redPacketInfoList: state.sale_giftInfoNew.get('redPacketInfoList'),
   }
 }

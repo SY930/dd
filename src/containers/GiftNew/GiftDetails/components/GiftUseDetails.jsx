@@ -166,7 +166,7 @@ class UseDetails extends Component {
               sendableGiftTypes.includes(String(giftDetailInfo.giftType)) && giftDetailInfo.action != 2 ?
                 [
                   (
-                    <TabPane tab={'赠送'} key={'send_gift'}>
+                    <TabPane tab={'赠送记录'} key={'send_gift'}>
                       <SendRecords giftItemID={giftDetailInfo.giftItemID} activeKey={activeKey} />
                     </TabPane>
                   )
