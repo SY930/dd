@@ -66,13 +66,11 @@ class SendCard extends React.Component {
 
     componentDidMount() {
         const { _key, batchNO, quotaList, detailVisible } = this.props;
-        if (detailVisible === true) {
-            this.getData().then(() => {
-                this.setState({
-                    loading: false,
-                });
+        this.getData().then(() => {
+            this.setState({
+                loading: false,
             });
-        }
+        });
         this.getTableConfigByKey();
         if (_key === 'made') {
             this.setState({

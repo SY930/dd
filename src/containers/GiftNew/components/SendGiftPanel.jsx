@@ -102,6 +102,7 @@ class SendGiftPanel extends Component {
                 loading: true,
             });
             const params = this.mapStateToRequestParams();
+            params.sourceType = 60
             axiosData('/coupon/couponEntityService_sendCoupons.ajax', params, {}, {path: 'data'}, )
                 .then(res => {
                     this.cancelSendModal()

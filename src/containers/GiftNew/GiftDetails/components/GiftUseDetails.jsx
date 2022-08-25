@@ -8,6 +8,7 @@ import {
   FetchSendorUsedList,
   UpdateSendorUsedParams,
 } from '../../_action';
+import SendRecords from './SendRecords'
 import GiftSendOrUsedCount from '../../GiftInfo/GiftDetailSendorUsedTable';
 import GenerateBatchGifts from "../../components/GenerateBatchGifts";
 import ExportModal from "../../GiftInfo/ExportModal";
@@ -166,7 +167,7 @@ class UseDetails extends Component {
                 [
                   (
                     <TabPane tab={'赠送'} key={'send_gift'}>
-                      {/* <SendGiftPanel giftItemID={data.giftItemID} /> */}
+                      <SendRecords giftItemID={giftDetailInfo.giftItemID} activeKey={activeKey} />
                     </TabPane>
                   )
                 ] : []

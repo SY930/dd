@@ -59,8 +59,9 @@ class GiftBaseInfo extends Component {
   renderShopNames = () => {
     const { giftDetailInfo } = this.props
     const { shopNames, shopScopeType, selectBrands } = giftDetailInfo
-    let selectedBrands = selectBrands && selectBrands.map(target => `${target.targetName}`).join(',') || [];
-    if (!shopNames && !shopNames.length) {
+    let selectedBrands = selectBrands && selectBrands.map(target => `${target.targetName}`).join(',') || '';
+    selectedBrands = selectedBrands.length > 30 ? <Tooltip title={selectedBrands}>{selectedBrands.substr(0,30) + '...'}</Tooltip> : selectedBrands
+    if (!shopNames) {
       return ''
     }
     if(shopNames == '不限') {
