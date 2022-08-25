@@ -781,24 +781,11 @@ class GenerateBatchGifts extends Component {
     proShopData = (shops = []) => {
         const treeData = [];
         shops.map((item, idx) => {
-            const index = _.findIndex(treeData, { label: item.cityName })
-            if (index !== -1) {
-                treeData[index].children.push({
-                    label: item.shopName,
-                    value: item.shopID,
-                    key: item.shopID,
-                });
-            } else {
-                treeData.push({
-                    label: item.cityName,
-                    key: item.cityID,
-                    children: [{
-                        label: item.shopName,
-                        value: item.shopID,
-                        key: item.shopID,
-                    }],
-                });
-            }
+            treeData.push({
+                label: item.shopName,
+                value: item.shopID,
+                key: item.shopID,
+            });
         });
         this.setState({ treeData });
     }
@@ -993,7 +980,8 @@ class GenerateBatchGifts extends Component {
                     onCancel={this.hideModal}
                     footer={[
                         <Button type="ghost" onClick={this.hideModal}>关闭</Button>,
-                        <Button disabled={this.isDisabledTime()} type="primary" onClick={this.handleModalOk} loading={this.state.confirmLoading}>确定</Button>,
+                        // <Button disabled={this.isDisabledTime()} type="primary" onClick={this.handleModalOk} loading={this.state.confirmLoading}>确定</Button>,
+                        <Button type="primary" onClick={this.handleModalOk} loading={this.state.confirmLoading}>确定</Button>,
                     ]}
                 >
                     {this.state.modalVisible && this.renderModalContent()}
