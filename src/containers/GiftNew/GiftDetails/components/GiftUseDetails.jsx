@@ -175,7 +175,7 @@ class UseDetails extends Component {
               batchableGiftTypes.includes(String(giftDetailInfo.giftType)) && giftDetailInfo.action != 2 ?
                 [
                   (
-                    <TabPane tab={'批量生成券码'} key={'generate_gifts'}>
+                    <TabPane tab={'批量生成券码记录'} key={'generate_gifts'}>
                       <GenerateBatchGifts giftItemID={giftDetailInfo.giftItemID} />
                     </TabPane>
                   )

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Table, Modal, Button, Tooltip } from 'antd'
+import { Row, Col, Table, Modal, Button, Tooltip, Input } from 'antd'
 import styles from '../styles.less'
 import { SALE_CENTER_GIFT_EFFICT_TIME, SALE_CENTER_GIFT_EFFICT_DAY } from '../../../../redux/actions/saleCenterNEW/types';
 import GiftCfg from '../../../../constants/Gift';
@@ -9,6 +9,21 @@ class GiftBaseInfo extends Component {
 
   state = {
     shopVisible: false,
+    searchValue: '',
+    shopNamesData: [],
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const shopNames = this.props.giftDetailInfo.shopNames
+    console.log(shopNames)
+    const shopNamesData = shopNames ? shopNames.split(',').map(item => {
+      return {
+        shopName: item
+      }
+    }): []
+    this.setState({
+      shopNamesData
+    })
   }
 
   generateColumns = () => {
@@ -74,11 +89,33 @@ class GiftBaseInfo extends Component {
       return shopNames.length > 30 ? <span>仅 {selectedBrands} 品牌可用，其中 {shopNames.substr(0, 30) + '...'} <a onClick={() => {this.setState({shopVisible: true})}}>{`${shopsNum}家门店`}</a> 店铺不可用</span> : `仅 ${selectedBrands} 品牌可用，其中${shopNames}店铺不可用`
     }
   }
+
+  queryShops = () => {
+    const { searchValue, shopNamesData } = this.state
+    const shopNames = this.props.giftDetailInfo.shopNames
+    const shopData = shopNames ? shopNames.split(',').map(item => {
+      return {
+        shopName: item
+      }
+    }): []
+    let filterShops = shopNamesData.filter(item => {
+      return item.shopName.indexOf(searchValue) != -1
+    })
+    if(!searchValue) {
+      this.setState({
+        shopNamesData: shopData
+      })
+    } else {
+      this.setState({
+        shopNamesData: filterShops
+      })
+    }
+  }
   render() {
     const { giftDetailInfo } = this.props
     const columns = this.generateColumns();
     const dataSource = this.generateDataSource();
-    const shopNamesData = giftDetailInfo.shopNames ? giftDetailInfo.shopNames.split(',').map(item => {
+    const shopData = giftDetailInfo.shopNames ? giftDetailInfo.shopNames.split(',').map(item => {
       return {
         shopName: item
       }
@@ -188,13 +225,21 @@ class GiftBaseInfo extends Component {
           onCancel={() => { this.setState({ shopVisible: false }) }}
           footer={[<Button onClick={() => { this.setState({ shopVisible: false }) }}>关闭</Button>]}
         >
+          <div style={{ display: 'flex', alignItems: 'center', marginBottom: 15, justifyContent: 'space-between' }}>
+            <div>
+              <span>门店名</span>
+              <Input style={{ width: 180, margin: '0 20px' }} placeholder='输入门店名' value={this.state.searchValue} onChange={(e) => { this.setState({ searchValue: e.target.value }) }} />
+              <Button type='primary' icon='search' onClick={this.queryShops}>搜索</Button>
+            </div>
+            <div>适用门店数：{shopData.length || 0}</div>
+          </div>
           <Table
             columns={shopColumns}
-            dataSource={shopNamesData}
+            dataSource={this.state.shopNamesData}
             bordered
             pagination={{
               pageSize: 10,
-              total: shopNamesData.length || 0
+              total: this.state.shopNamesData.length || 0
             }}
           ></Table>
         </Modal>

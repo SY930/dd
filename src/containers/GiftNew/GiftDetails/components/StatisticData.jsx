@@ -86,7 +86,7 @@ class StatisticData extends Component {
         icon: <img src={require('../assets/use.png')} alt="" />
       },
       {
-        title: '作废数',
+        title: '已作废',
         key: 'cancelledNum',
         background: 'rgb(254,248,230)',
         icon: <img src={require('../assets/out.png')} alt="" />
