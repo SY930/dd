@@ -48,6 +48,7 @@ export const faceDefVal = {
     bannerApp1Ary: [
         {
             id: '011',
+            parentId: '0',
             bannerApp1: '',
             triggerEventName1: '购物车夹菜',
             triggerEventValue1: '',
@@ -65,3 +66,13 @@ export const faceDefVal = {
     bannerApp2: '',
     // isShowDishSelector: false,
 };
+
+
+export const bannerVal = {
+    id: '011',
+    bannerApp1: '',
+    triggerEventName1: '购物车夹菜',
+    triggerEventValue1: '',
+    triggerEventCustomInfo1: '',
+    triggerEventCustomInfoApp1: [{ platformType: 'wechat', appID: '', appName: '微信小程序名称' }, { platformType: 'alipay', appID: '', appName: '支付宝小程序名称' }], // 跳转至小程序
+}

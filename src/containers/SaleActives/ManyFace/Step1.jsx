@@ -36,6 +36,9 @@ class Step1 extends Component {
         if (key === 'sceneList') {
             this.props.onChangeForm(key, value)
         }
+        if (key === 'placement') {
+            this.props.onChangeForm(key, value)
+        }
     }
 
     /** formItems 重新设置 */

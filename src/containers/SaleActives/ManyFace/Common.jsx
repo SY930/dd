@@ -12,8 +12,8 @@ const TF = 'HHmm';
 
 //
 const formItemLayout = {
-    labelCol: { span: 6 },
-    wrapperCol: { span: 17 },
+    labelCol: { span: 5 },
+    wrapperCol: { span: 15 },
 };
 
 const cycleOpts = [
@@ -52,8 +52,9 @@ const formItems1 = {
         type: 'custom',
         label: '投放位置',
         options: [],
-        defaultValue: '1',
+        defaultValue: ['1'],
         render: () => (<p />),
+        rules: ['required'],
     },
     shopIDList: {
         type: 'custom',
@@ -100,6 +101,7 @@ const faceDefVal = {
     bannerApp1Ary: [
         {
             id: '011',
+            parentId: '0',
             bannerApp1: '',
             triggerEventName1: '购物车夹菜',
             triggerEventValue1: '',
@@ -124,14 +126,15 @@ const formItems3 = {
         type: 'custom',
         render: () => (<p />),
         defaultValue: [faceDefVal],
-        wrapperCol: { span: 20 },
-        labelCol: { span: 4 }
+        wrapperCol: { span: 19 },
+        labelCol: { span: 5 }
     },
     eventRange: {
         type: 'custom',
         label: '活动起止日期',
         rules: ['required'],
-        wrapperCol: { span: 10 },
+        wrapperCol: { span: 12 },
+        labelCol: { span: 5 },
         defaultValue: [],
         render: d => d()(<DateRange />),
     },

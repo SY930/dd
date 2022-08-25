@@ -54,6 +54,7 @@ class Step2 extends Component {
             decorator={d}
             clientType={((form1 && form1.getFieldValue('clientType')) || '2')}
             sceneList={((form1 && form1.getFieldValue('sceneList')) || '1')}
+            placement={((form1 && form1.getFieldValue('placement')) || [])}
             allActivityList={this.props.allActivity}
             allMallActivity={this.props.allMallActivity}
             // originClientType={this.props.originClientType}

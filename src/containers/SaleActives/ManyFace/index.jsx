@@ -33,7 +33,7 @@ class ManyFace extends Component {
             allActivity: [],
             allMallActivity: [],
             formDataLen: 0, // 数据的长度
-            flag: false
+            flag: false,
         }
     // this.formRef = null;
     // this.handleSubmit = this.handleSubmit.bind(this);
@@ -63,11 +63,64 @@ class ManyFace extends Component {
         })
     }
 
-//   onChangeFromData2 = (data) => {
-//       this.setState({
-//           formData2: data,
-//       })
-//   }
+    onCheckBannerApp = (faceRule) => {
+        let flag = false;
+        const range = faceRule.some(item => !item.conditionType); // 会员范围不能为空
+        if (range) {
+            flag = true
+            return message.warning('请选择会员范围')
+        }
+        // faceRule.some(item => !item.)
+        for (let i = 0; i < faceRule.length; i++) {
+            const item = faceRule[i];
+            if (item.conditionType == 2 || item.conditionType == 1) {  // 会员身份1， 会员标签2 会员群体3
+                if (!item.conditionValue) {
+                    flag = true;
+                    message.warn('请选择会员标签')
+                    break
+                }
+                if (!item.targetValue) {
+                    flag = true;
+                    message.warn('请选择会员标签属性')
+                    break
+                }
+            }
+            if (item.conditionType == 3) {
+                if (!item.conditionValue) {
+                    flag = true;
+                    message.warn('请选择会员群体属性')
+                    break
+                }
+            }
+            const eventFlage = item.bannerApp1Ary.some(itm => _.isEmpty(itm.triggerEventCustomInfo) || itm.triggerEventCustomInfo === '{}' || item.triggerEventValue)
+            if (eventFlage) {
+                flag = true;
+                message.warning('请选择触发事件~~')
+                break;
+            }
+            const bannerImageFlage = item.bannerApp1Ary.some(itm => !itm.bannerImage)
+            if (bannerImageFlage) {
+                flag = true;
+                message.warning('请上传活动图片')
+                break;
+            }
+            // item.bannerApp1Ary.
+            for (let j = 0; j < item.bannerApp1Ary.length; j++) {
+                const curBanner = item.bannerApp1Ary[j]
+                if (curBanner.triggerEventValue === 'jumpToMiniApp') {
+                    const triggerEventCustomInfo = JSON.parse(curBanner.triggerEventCustomInfo);
+                    const noAppID = triggerEventCustomInfo.every(cur => !cur.appID);
+                    if (noAppID) {
+                        flag = true
+                        message.warn('请填写appID')
+                        return null
+                    }
+                }
+            }
+        }
+        // console.log(flag, 'flag')
+        return flag;
+    }
 
 
     onCheck = (faceRule) => {
@@ -103,9 +156,9 @@ class ManyFace extends Component {
                 message.warn('请选择触发事件')
                 return null
             }
-            if (_.isEmpty(itm.triggerEventCustomInfo)) {
+            if (itm.triggerEventCustomInfo === '{}') {
                 flag = true;
-                message.warn('请选择触发事件')
+                message.warn('请选择触发事件~~')
                 return null
             }
             if (itm.triggerEventValue === 'jumpToMiniApp') {
@@ -127,8 +180,44 @@ class ManyFace extends Component {
         return flag;
     }
 
+    // 小程序3.0 banner
+    onPreSubmitAppBanner = (faceData) => {
+        console.log("🚀 ~ file: index.jsx ~ line 194 ~ ManyFace ~ faceData", faceData)
+        const formData2 = faceData.map((item) => {
+            item.bannerApp1Ary = item.bannerApp1Ary.map((itm) => {
+                if (['miniAppPage', 'speedDial', 'customLink'].includes(itm.triggerEventValue1)) {
+                    itm.triggerEventCustomInfo = itm.triggerEventCustomInfo1.value || '';
+                } else if (['jumpToMiniApp'].includes(itm.triggerEventValue1)) {
+                    itm.triggerEventCustomInfo = JSON.stringify(itm.triggerEventCustomInfoApp1)
+                } else {
+                    itm.triggerEventCustomInfo = JSON.stringify(itm.triggerEventCustomInfo1)
+                }
+                itm.triggerEventValue = itm.triggerEventValue1;
+                itm.triggerEventName = itm.triggerEventName1;
+                itm.bannerImage = itm.bannerApp1;
+                return {
+                    ...itm,
+                }
+            })
+            item.bannerApp1Ary = _.map(item.bannerApp1Ary, bItem =>
+                (_.omit(bItem, ['triggerEventCustomInfo2', 'triggerEventValue2', 'triggerEventName2',
+                    'triggerEventCustomInfoApp1', 'everyTagsRule', 'isShowDishSelector', 'id',
+                    'triggerEventCustomInfo1', 'triggerEventValue1', 'triggerEventName1', 'bannerApp1',
+                ]))
+            )
+            item.clientType = '2'
+
+            return {
+                ...item,
+            }
+        })
+        console.log(formData2, '<<<<formData2')
+        return formData2
+    }
+
     // 小程序3.0
     onPreSubmitApp = (faceData) => {
+        console.log("🚀 ~ file: index.jsx ~ line 225 ~ ManyFace ~ faceData", faceData)
         const formData2 = faceData.map((item) => {
             if (['miniAppPage', 'speedDial', 'customLink'].includes(item.triggerEventValue1)) {
                 item.triggerEventCustomInfo = item.triggerEventCustomInfo1.value || '';
@@ -256,45 +345,44 @@ class ManyFace extends Component {
   }
 
   handleSubmit = (cb) => {
-      console.log("🚀 ~ file: index.jsx ~ line 146 ~ ManyFace ~ handleSubmit")
       const { form1, form2 } = this.state
       const forms = [form1, form2];
       asyncParseForm(forms)
           .then((result) => {
               // 验证通过后保存前需要把所选店铺下的所以存在的活动弹窗提醒下
-              console.log("🚀 ~ file: index.jsx ~ line 152 ~ ManyFace ~ .then ~ result", result)
-
               let flag = false;
               let formData2;
-              const { values } = result;
+              const { values, error } = result;
+              if (error) return null
               const { faceRule, clientType, sceneList } = values;
               const faceData = _.cloneDeep(faceRule);
               if (clientType == '2' && sceneList == '2') { // 小程序3.0 banner
-                  //   this.onPreSubmitH5(faceData)
-                  return 
+                  formData2 = this.onPreSubmitAppBanner(faceData)
+                  flag = this.onCheckBannerApp(formData2)
+                  if (flag) { return null }
+                  this.onSubmit(values, formData2)
+                  return null
               } else if (clientType == '1') {
                   formData2 = this.onPreSubmitH5(faceData)
               } else {
                   formData2 = this.onPreSubmitApp(faceData)
               }
-
               flag = this.onCheck(formData2)
-              console.log("🚀 ~ file: index.jsx ~ line 281 ~ ManyFace ~ .then ~ flag", flag)
               if (flag) { return null }
+              // TODO: 弹窗提醒
               this.onSubmit(values, formData2)
           })
   }
 
 
   render() {
-      const { form1, form2, allActivity, allMallActivity} = this.state
-      console.log("🚀 ~ file: index.jsx ~ line 290 ~ ManyFace ~ render ~ allActivity, allMallActivity}", allActivity, allMallActivity)
+      const { form1, form2, allActivity, allMallActivity } = this.state
       return (
           <div className={styles.formContainer}>
               <div>
                   <div
                       style={{
-                          margin: '20px 0 10px 94px',
+                          margin: '20px 0 10px 124px',
                       }}
                       className={styles.logoGroupHeader}
                   >基本信息</div>
@@ -308,19 +396,18 @@ class ManyFace extends Component {
 
                   <div
                       style={{
-                          margin: '20px 0 10px 94px',
+                          margin: '70px 0 10px 124px',
                       }}
+                      className={styles.logoGroupHeader}
                   >使用规则</div>
                   <Step2
                       form2={form2}
                       form1={form1}
                       getForm={(form) => { this.setState({ form2: form }) }}
                       allActivity={allActivity}
-                      allMallActivity={this.state.allMallActivity}
+                      allMallActivity={allMallActivity}
                       isEdit={true}
-                    //   clientType={clientType || '2'}
-                  // onChangeFromData2={this.onChangeFromData2}
-                  />                    
+                  />
               </div>
           </div>
       )

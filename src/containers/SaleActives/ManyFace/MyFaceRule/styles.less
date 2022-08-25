@@ -32,6 +32,7 @@
       text-align: right;
       margin-right: 8px;
       margin-top: 5px;
+      flex: none;
     }
     .tip {
       color: #FF221F;
@@ -49,13 +50,38 @@
       }
     }
   }
+  .appBannerImg {
+    font-weight: 500;
+  color: #333333;
+  font-size: 14px;
+  line-height: 11px;
+
+  > img {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+  }
   .appBannerConntet {
+    position: relative;
     width: 480px;
-    height: 220px;
+    // height: 208px;
     background: #FFFFFF;
     border-radius: 6px;
     margin: 16px auto;
     padding: 20px 0 0 16px;
+    .removeBanner {
+      display: none;
+      position: absolute;
+      top: -9px;
+      right: -7px;
+      cursor: pointer;
+    }
+    &:hover {
+      .removeBanner {
+        display: block;
+      }
+    }
   }
   .activeImageBox {
     display: flex;

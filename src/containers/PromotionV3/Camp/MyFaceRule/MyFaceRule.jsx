@@ -623,7 +623,6 @@ class MyFaceRule extends Component {
                                             v.conditionType == '2' &&
                                             <div style={{ display: 'flex' }}>
                                                 <FormItem required={true}
-                                                // validateStatus={v.conditionValue ? 'success' : 'error'} help={v.conditionValue ? '' : '请输入会员标签属性'}
                                                 >
                                                     <Select style={{ width: '120px', marginLeft: 8 }} value={v.conditionValue} onChange={(_v) => { this.onTagAttribute(i, 'conditionValue', _v) }}>
                                                         {
