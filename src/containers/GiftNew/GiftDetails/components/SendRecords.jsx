@@ -135,7 +135,7 @@ class SendRecords extends Component {
             </Form.Item>
           </Form>
         </Col>
-        <Col span={3}><Button type='primary' icon="search" onClick={this.queryData}>搜索</Button></Col>
+        <Col span={3}><Button type='primary' icon="search" onClick={this.queryData}>查询</Button></Col>
         <Col span={24}>
           <Table
             bordered={true}

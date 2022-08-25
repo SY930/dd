@@ -520,7 +520,7 @@ class BatchCreateCode extends Component {
             label="有效期"
             className={styles.FormItemStyle}
             labelCol={{ span: 6 }}
-            wrapperCol={{ span: 14 }}
+            wrapperCol={{ span: 13 }}
           >
             <Row style={{ display: 'flex', alignItems: 'center' }}>
               <Col span={18}>
@@ -594,7 +594,7 @@ class BatchCreateCode extends Component {
             label="备注"
             className={styles.FormItemStyle}
             labelCol={{ span: 6 }}
-            wrapperCol={{ span: 12 }}
+            wrapperCol={{ span: 13 }}
             required
           >{
               getFieldDecorator('description', {

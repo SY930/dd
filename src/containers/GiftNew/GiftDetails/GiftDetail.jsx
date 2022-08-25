@@ -123,7 +123,7 @@ class GiftDetail extends React.Component {
           <div className={styles.baseTitle} style={{ borderLeft: isPro ? '2px solid #0091FF' : '2px solid #1bb496' }}>使用明细</div>
           {giftDetailInfo.giftType == '113' ? <RedPacketUseDetail {...totalData}></RedPacketUseDetail> : giftDetailInfo.giftType == '90' ? <QuatoUseDetail {...totalData}></QuatoUseDetail> : <GiftUseDetails {...totalData}></GiftUseDetails>}
         </div>
-        <BatchCreateCode modalVisible={this.state.modalVisible} hideCreateModal={this.hideCreateModal}></BatchCreateCode>
+        <BatchCreateCode giftItemID={giftDetailInfo.giftItemID} modalVisible={this.state.modalVisible} hideCreateModal={this.hideCreateModal}></BatchCreateCode>
         <Modal
           title='赠送'
           visible={this.state.sendVisible}
