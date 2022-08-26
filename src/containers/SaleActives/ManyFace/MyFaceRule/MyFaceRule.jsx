@@ -68,6 +68,8 @@ class MyFaceRule extends Component {
     }
 
     componentWillUnmount() {
+        const { onChange } = this.props
+        onChange([]);
     }
 
     onChangeBanner = (idx, params) => {
@@ -634,7 +636,7 @@ class MyFaceRule extends Component {
             <div className={styles.activeImageBox}>
                 <ImageUploader
                     limit={0}
-                    value={v.decorateInfo.imagePath}
+                    value={v.decorateInfo ? v.decorateInfo.imagePath : ''}
                     onChange={(value) => {
                         this.onChange(i, { parentId: v.parentId, decorateInfo: { imagePath: value } })
                     }}
@@ -651,7 +653,7 @@ class MyFaceRule extends Component {
     renderMoreBannerAndEvents = (v, i) => {
         return (
             <div>
-                {v.triggerEventInfoList.map((item, index) => (
+                {(v.triggerEventInfoList || []).map((item, index) => (
                     <div key={item.id} className={styles.appBannerConntet}>
                         <div className={styles.appBannerImg}><img src="http://res.hualala.com/basicdoc/9aa790ea-f2ec-49e6-a8a2-1c5c8af299ec.png" alt="logo" />banner{index + 1}</div>
                         <div className={styles.MyFaceRuleSubConntet} style={{ display: 'flex' }}>

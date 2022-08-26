@@ -60,11 +60,11 @@ class ManyFace extends Component {
             form1 && form1.setFieldsValue({ sceneList: '1' })
         }
         if (value === '2' && key === 'sceneList') {
-            form1 && form1.setFieldsValue({ triggerSceneList: ['11'] })
+            form1 && form1.setFieldsValue({ triggerSceneList: [11] })
             this.props.onChangDecorateType('2')
         }
         if (value === '1' && key === 'sceneList') {
-            form1 && form1.setFieldsValue({ triggerSceneList: ['1'] })
+            form1 && form1.setFieldsValue({ triggerSceneList: [1] })
             this.props.onChangDecorateType('1')
         }
 
@@ -129,7 +129,7 @@ class ManyFace extends Component {
                 }
             }
         }
-        // console.log(flag, 'flag')
+        console.log(flag, 'flag')
         return flag;
     }
 
@@ -269,6 +269,7 @@ class ManyFace extends Component {
     onSubmit = (values, formData2) => {
         const { itemID } = this.props
         const { eventRange, timeList, validCycle = [], cycleType, ...others1 } = values;
+        console.log("🚀 ~ file: index.jsx ~ line 272 ~ ManyFace ~ values", values)
         const newEventRange = this.formatEventRange(eventRange);
         const newTimeList = this.formatTimeList(timeList);
 
@@ -287,11 +288,11 @@ class ManyFace extends Component {
             ]))
         )
         if (itemID) {
-            const allData = { timeList: newTimeList, event: { ...event, itemID, isActive: this.props.activeStatus }, eventConditionInfos };
+            const allData = { timeList: newTimeList, event: { ...event, itemID, isActive: this.props.activeStatus }, eventConditionInfos, triggerSceneList: values.triggerSceneList };
             postEvent(allData)
             return
         }
-        const allData = { event, eventConditionInfos };
+        const allData = { timeList: newTimeList, event, eventConditionInfos, triggerSceneList: values.triggerSceneList };
         putEvent({ ...allData }).then((res) => {
             if (res.code === '000') {
                 closePage()
@@ -326,119 +327,121 @@ class ManyFace extends Component {
     getEventDetail() {
         const { itemID } = this.props;
         if (itemID) {
-            // getEvent({ itemID }).then((obj) => {
-                const obj = {
-                    "groupID": "11157",
-                    "data": {
-                      "eventName": "千人千面",
-                      "clientType": "2",
-                      "sceneList": "2",
-                      "triggerSceneList": [
-                        "11"
-                      ],
-                      "shopIDList": [
-                        "76058319"
-                      ],
-                      excludedDate: ["20220818"],
-                      cycleType: "w",
-                      validCycle: ["w1", "w3"],
-                      "eventStartDate": "20220826",
-                      "eventEndDate": "20220920",
-                      "eventWay": "85",
-                      "shopRange": "1",
-                      "groupID": "11157",
-                      "userName": "xinweixin",
-                      "userID": "206787"
-                    },
-                    "eventConditionInfos": [
-                      {
-                        "conditionType": "1",
-                        "conditionName": "是否持卡会员",
-                        "conditionValue": "whetherHasCard",
-                        "targetName": "持卡会员",
-                        "targetValue": "1",
-                        "triggerEventInfoList": [
-                          {
-                            "parentId": "0",
-                            "decorateInfo": {
-                              "imagePath": "http://res.hualala.com/basicdoc/65ee73f7-7dbc-455e-962f-e12056d319dd.jpeg"
-                            },
-                            "triggerEventCustomInfo": "234",
-                            "triggerEventValue": "customLink",
-                            "triggerEventName": "自定义链接"
-                          },
-                          {
-                            "decorateInfo": {
-                              "imagePath": "http://res.hualala.com/basicdoc/1f4a4ee1-7201-45c7-a767-f9c11bb3e035.png"
-                            },
-                            "parentId": "0",
-                            "triggerEventCustomInfo": "{\"foodName\":\"苹果茶\",\"unit\":\"份\",\"brandID\":\"0\"}",
-                            "triggerEventValue": "shoppingCartAddFood",
-                            "triggerEventName": "菜品加入购物车"
-                          }
-                        ],
-                        "decorateInfo": {
-                          "imagePath": ""
-                        },
-                        "clientType": "2"
-                      },
-                      {
-                        "conditionType": "3",
-                        "conditionName": "测试卡群体",
-                        "conditionValue": "7133035308139940757",
-                        "targetName": "",
-                        "targetValue": "",
-                        "triggerEventInfoList": [
-                          {
-                            "decorateInfo": {
-                              "imagePath": "http://res.hualala.com/basicdoc/2a5765e7-d307-4464-ab4a-3a80926d6aca.jpeg"
-                            },
-                            "parentId": "l7a2uohf",
-                            "triggerEventCustomInfo": "/customer/cardList",
-                            "triggerEventValue": "miniAppPage",
-                            "triggerEventName": "小程序"
-                          },
-                          {
-                            "decorateInfo": {
-                              "imagePath": "http://res.hualala.com/basicdoc/df79de6c-7d64-4c85-8225-2be8fef19374.png"
-                            },
-                            "parentId": "l7a2uohf",
-                            "triggerEventCustomInfo": "2222",
-                            "triggerEventValue": "speedDial",
-                            "triggerEventName": "一键拨号"
-                          },
-                          {
-                            "decorateInfo": {
-                              "imagePath": "http://res.hualala.com/basicdoc/b2d2e642-fd37-468e-a48d-a40d36e06075.png"
-                            },
-                            "parentId": "l7a2uohf",
-                            "triggerEventCustomInfo": "{\"eventID\":\"7099385789861330949\",\"eventWay\":\"65\",\"eventName\":\"分享裂变\",\"shopID\":\"7099385789861330949\"}",
-                            "triggerEventValue": "event_65",
-                            "triggerEventName": "分享裂变"
-                          }
-                        ],
-                        "decorateInfo": {
-                          "imagePath": ""
-                        },
-                        "clientType": "2"
-                      },
-                    ],
-                    timeList: [{startTime: "1730", endTime: "1859"}, {startTime: "2020", endTime: "2320"}]
-                  }
-                const { data, eventConditionInfos = [], timeList } = obj;
-                const { step1Data, setp2Data } = this.setData4Step1(data, eventConditionInfos, timeList);
+            console.log("🚀 ~ file: index.jsx ~ line 330 ~ ManyFace ~ getEventDetail ~ itemID", itemID)
+            getEvent({ itemID }).then((obj) => {
+                // const obj = {
+                //     "groupID": "11157",
+                //     "data": {
+                //       "eventName": "千人千面",
+                //       "clientType": "2",
+                //       "sceneList": "2",
+                //       "triggerSceneList": [
+                //         "11"
+                //       ],
+                //       "shopIDList": [
+                //         "76058319"
+                //       ],
+                //       excludedDate: ["20220818"],
+                //       cycleType: "w",
+                //       validCycle: ["w1", "w3"],
+                //       "eventStartDate": "20220826",
+                //       "eventEndDate": "20220920",
+                //       "eventWay": "85",
+                //       "shopRange": "1",
+                //       "groupID": "11157",
+                //       "userName": "xinweixin",
+                //       "userID": "206787"
+                //     },
+                //     "eventConditionInfos": [
+                //       {
+                //         "conditionType": "1",
+                //         "conditionName": "是否持卡会员",
+                //         "conditionValue": "whetherHasCard",
+                //         "targetName": "持卡会员",
+                //         "targetValue": "1",
+                //         "triggerEventInfoList": [
+                //           {
+                //             "parentId": "0",
+                //             "decorateInfo": {
+                //               "imagePath": "http://res.hualala.com/basicdoc/65ee73f7-7dbc-455e-962f-e12056d319dd.jpeg"
+                //             },
+                //             "triggerEventCustomInfo": "234",
+                //             "triggerEventValue": "customLink",
+                //             "triggerEventName": "自定义链接"
+                //           },
+                //           {
+                //             "decorateInfo": {
+                //               "imagePath": "http://res.hualala.com/basicdoc/1f4a4ee1-7201-45c7-a767-f9c11bb3e035.png"
+                //             },
+                //             "parentId": "0",
+                //             "triggerEventCustomInfo": "{\"foodName\":\"苹果茶\",\"unit\":\"份\",\"brandID\":\"0\"}",
+                //             "triggerEventValue": "shoppingCartAddFood",
+                //             "triggerEventName": "菜品加入购物车"
+                //           }
+                //         ],
+                //         "decorateInfo": {
+                //           "imagePath": ""
+                //         },
+                //         "clientType": "2"
+                //       },
+                //       {
+                //         "conditionType": "3",
+                //         "conditionName": "测试卡群体",
+                //         "conditionValue": "7133035308139940757",
+                //         "targetName": "",
+                //         "targetValue": "",
+                //         "triggerEventInfoList": [
+                //           {
+                //             "decorateInfo": {
+                //               "imagePath": "http://res.hualala.com/basicdoc/2a5765e7-d307-4464-ab4a-3a80926d6aca.jpeg"
+                //             },
+                //             "parentId": "l7a2uohf",
+                //             "triggerEventCustomInfo": "/customer/cardList",
+                //             "triggerEventValue": "miniAppPage",
+                //             "triggerEventName": "小程序"
+                //           },
+                //           {
+                //             "decorateInfo": {
+                //               "imagePath": "http://res.hualala.com/basicdoc/df79de6c-7d64-4c85-8225-2be8fef19374.png"
+                //             },
+                //             "parentId": "l7a2uohf",
+                //             "triggerEventCustomInfo": "2222",
+                //             "triggerEventValue": "speedDial",
+                //             "triggerEventName": "一键拨号"
+                //           },
+                //           {
+                //             "decorateInfo": {
+                //               "imagePath": "http://res.hualala.com/basicdoc/b2d2e642-fd37-468e-a48d-a40d36e06075.png"
+                //             },
+                //             "parentId": "l7a2uohf",
+                //             "triggerEventCustomInfo": "{\"eventID\":\"7099385789861330949\",\"eventWay\":\"65\",\"eventName\":\"分享裂变\",\"shopID\":\"7099385789861330949\"}",
+                //             "triggerEventValue": "event_65",
+                //             "triggerEventName": "分享裂变"
+                //           }
+                //         ],
+                //         "decorateInfo": {
+                //           "imagePath": ""
+                //         },
+                //         "clientType": "2"
+                //       },
+                //     ],
+                //     timeList: [{startTime: "1730", endTime: "1859"}, {startTime: "2020", endTime: "2320"}]
+                //   }
+                const { data, eventConditionInfos = [], timeList, triggerSceneList } = obj;
+                const { step1Data, setp2Data } = this.setData4Step1(data, eventConditionInfos, timeList, triggerSceneList);
+                debugger
                 const formData2 = this.setData4Step2(eventConditionInfos, step1Data.sceneList);
-                this.setState({ formData1: { ...step1Data }, formData2: { faceRule: formData2, ...setp2Data } });
-            // });
+                this.setState({ formData1: { ...step1Data, triggerSceneList }, formData2: { faceRule: formData2, ...setp2Data } });
+            });
         }
     }
 
-    setData4Step1 = (data, eventConditionInfos, times) => {
-        const { eventStartDate: sd, eventEndDate: ed, shopIDList: slist, triggerSceneList, validCycle } = data;
+    setData4Step1 = (data, eventConditionInfos, times, triggerSceneList) => {
+        const { eventStartDate: sd, eventEndDate: ed, shopIDList: slist, validCycle } = data;
         const eventRange = [moment(sd), moment(ed)];
         const clientType = eventConditionInfos[0] ? String(eventConditionInfos[0].clientType) : '1';
         const shopIDList = slist ? slist.map(x => `${x}`) : [];
-        const sceneList = triggerSceneList.includes('11') ? '2' : '1';
+        const sceneList = triggerSceneList.includes(11) ? '2' : '1';
 
         let timsObj = {};
         const TF = 'HH:mm';
@@ -470,11 +473,12 @@ class ManyFace extends Component {
     }
 
     setData4Step2 = (eventConditionInfos = [], sceneList) => {
+        console.log("🚀 ~ file: index.jsx ~ line 475 ~ ManyFace ~ sceneList", sceneList)
         let faceData = []
         if (eventConditionInfos.length) {
             const { clientType } = eventConditionInfos[0];
             // 小程序 banner
-            if (clientType === '2' && sceneList === '2') {
+            if (clientType == '2' && sceneList == '2') {
                 faceData = this.setData4AppBanner(eventConditionInfos)
             } else if (clientType == '1') { // h5弹窗
                 faceData = this.setData4Step3H5(eventConditionInfos)
@@ -486,7 +490,7 @@ class ManyFace extends Component {
     }
 
     setData4AppBanner = (faceData) => {
-        console.log("🚀 ~ file: index.jsx ~ line 477 ~ ManyFace ~ faceData", faceData)
+        // console.log("🚀 ~ file: index.jsx ~ line 477 ~ ManyFace ~ faceData", faceData)
         const data = faceData.map((item) => {
             if (item.conditionType == '2') { // 会员标签
                 const everyTags = this.state.tagRuleDetails.filter(itm => itm.tagCategoryID == item.conditionValue);
@@ -532,6 +536,7 @@ class ManyFace extends Component {
            
             return { ...item, id: item.itemID, isShowDishSelector: false }
         })
+        console.log("🚀 ~ file: index.jsx ~ line 537 ~ ManyFace ~ data ~ data", data)
         return data;
     }
 
@@ -706,16 +711,17 @@ class ManyFace extends Component {
                 if (clientType == '2' && sceneList == '2') { // 小程序3.0 banner
                     formData2 = this.onPreSubmitAppBanner(faceData, values)
                     flag = this.onCheckBannerApp(formData2)
+                    console.log("🚀 ~ file: index.jsx ~ line 709 ~ ManyFace ~ .then ~ flag", flag)
                     if (flag) { return null }
-                    queryActiveList().then((res) => {
-                        if (res.length > 0) {
-                            this.handleShowModalTip(res)(() => {
+                    // queryActiveList().then((res) => {
+                    //     if (res.length > 0) {
+                    //         this.handleShowModalTip(res)(() => {
                                 this.onSubmit(values, formData2)
-                            })
-                        } else {
-                            this.onSubmit(values, formData2)
-                        }
-                    })
+                        //     })
+                        // } else {
+                        //     this.onSubmit(values, formData2)
+                        // }
+                    // })
                     return null
                 } else if (clientType == '1') {
                     formData2 = this.onPreSubmitH5(faceData, values)
@@ -724,15 +730,15 @@ class ManyFace extends Component {
                 }
                 flag = this.onCheck(formData2)
                 if (flag) { return null }
-                queryActiveList().then((res) => {
-                    if (res.length > 0) {
-                        this.handleShowModalTip(res)(() => {
+                // queryActiveList().then((res) => {
+                //     if (res.length > 0) {
+                //         this.handleShowModalTip(res)(() => {
                             this.onSubmit(values, formData2)
-                        })
-                    } else {
-                        this.onSubmit(values, formData2)
-                    }
-                })
+                    //     })
+                    // } else {
+                    //     this.onSubmit(values, formData2)
+                    // }
+                // })
             })
     }
 

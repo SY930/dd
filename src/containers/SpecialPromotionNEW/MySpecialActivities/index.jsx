@@ -693,7 +693,6 @@ class MySpecialActivities extends React.Component {
     }
     //** 第三版 重构 抽抽乐活动 点击事件 */
     onV3Click = (itemID, view, key, isActive) => {
-        console.log("🚀 ~ file: index.jsx ~ line 694 ~ MySpecialActivities ~ key", key)
         if (key == '85') {
             setTimeout(() => {
                 jumpPage({ menuID: SALE_ACTIVE_NEW_PAGE, typeKey: key, itemID, isView: view })

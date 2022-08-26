@@ -11,10 +11,10 @@ import css from './style.less';
 
 const CheckboxGroup = Checkbox.Group;
 const RadioGroup = Radio.Group;
-const optionsPalace = [{ label: '堂食点餐页', value: '1' },
-    { label: '外卖点餐页', value: '2' }, { label: '自提点餐页', value: '3' }, { label: '支付完成页', value: '4' }];
-const optionsPalaceBanner = [{ label: '堂食点餐页', value: '11' },
-    { label: '外卖点餐页', value: '12' }, { label: '自提点餐页', value: '13' }, { label: '支付完成页', value: '14' }];
+const optionsPalace = [{ label: '堂食点餐页', value: 1 },
+    { label: '外卖点餐页', value: 2 }, { label: '自提点餐页', value: 3 }, { label: '支付完成页', value: 4 }];
+const optionsPalaceBanner = [{ label: '堂食点餐页', value: 11 },
+    { label: '外卖点餐页', value: 12 }, { label: '自提点餐页', value: 13 }, { label: '支付完成页', value: 14 }];
 const DF = 'YYYYMMDD';
 
 class Step1 extends Component {
@@ -35,12 +35,16 @@ class Step1 extends Component {
         if (key === 'clientType') {
             this.props.onChangeForm(key, value)
         }
-        if (key === 'sceneList') {
-            this.props.onChangeForm(key, value)
-        }
+        // if (key === 'sceneList') {
+        //     this.props.onChangeForm(key, value)
+        // }
         if (key === 'triggerSceneList') {
             this.props.onChangeForm(key, value)
         }
+    }
+
+    handleChangeScene = ({ target }) => {
+        this.props.onChangeForm('sceneList', target.value)
     }
 
     /** formItems 重新设置 */
@@ -56,7 +60,9 @@ class Step1 extends Component {
         const renderScene = (d, form) => {
             return form.getFieldValue('clientType') === '1' ? d({})(
                 <RadioGroup > <Radio value={'1'}>弹窗海报</Radio> </RadioGroup>
-            ) : d({})(
+            ) : d({
+                onChange: this.handleChangeScene,
+            })(
                 <RadioGroup > <Radio value={'1'}>弹窗海报</Radio> <Radio value={'2'}>banner广告</Radio> </RadioGroup>
             )
         }
