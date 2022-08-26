@@ -346,7 +346,7 @@ class CardSaleActive extends Component {
                                                 </Authority>
                                             }
                                             {
-                                                item.eventWay != '80' && <Authority rightCode={SPECIAL_PROMOTION_DELETE} entryId={ SPECIAL_PROMOTION_MANAGE_PAGE}>
+                                                item.eventWay != '80' && <Authority rightCode={SPECIAL_PROMOTION_DELETE} entryId={SPECIAL_PROMOTION_MANAGE_PAGE}>
                                                     <span
                                                         className={styles.operateDelete}
                                                         disabled={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)}
@@ -365,13 +365,15 @@ class CardSaleActive extends Component {
                                                     </span>
                                                 </Authority>
                                             }
-                                            <Tooltip placement="bottomLeft" title={this.renderTipTitle(_, item, index)} overlayClassName={stylesPage.Sale__Activite__Tip}>
-                                                <span style={{
-                                                    position: 'relative',
-                                                    paddingRight: 9,
-                                                }}
-                                                > 更多 <em className={styles.arrow}></em></span>
-                                            </Tooltip>
+                                            {
+                                                item.eventWay != '85' && <Tooltip placement="bottomLeft" title={this.renderTipTitle(_, item, index)} overlayClassName={stylesPage.Sale__Activite__Tip}>
+                                                    <span style={{
+                                                        position: 'relative',
+                                                        paddingRight: 9,
+                                                    }}
+                                                    > 更多 <em className={styles.arrow}></em></span>
+                                                </Tooltip>
+                                            }
                                         </div>
                                     </Col>
 

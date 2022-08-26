@@ -58,14 +58,14 @@ class CreateActiveTwo extends Component {
     handleCallback = () => {}
 
     render() {
-        const  { itemID, isView, isEdit, typeKey } = decodeUrl()
+        const  { itemID, isView, typeKey } = decodeUrl()
         const currentInfo = actInfoList.find(v => v.key === typeKey) || {}
         const { loading } = this.state;
         const Comp = FaceFormWrapper
         return (
             <div className={styles.createActiveTwo}>
                 <div className={styles.headers}>
-                    <h1>{itemID ? isEdit === 'true' ? '编辑' : '查看': '创建'}{`${currentInfo.title}`}</h1>
+                    <h1>{itemID ? isView === 'false' ? '编辑' : '查看': '创建'}{`${currentInfo.title}`}</h1>
                     <p>
                       <Button
                           type="ghost"
@@ -94,6 +94,8 @@ class CreateActiveTwo extends Component {
                   </div>
                   <Comp 
                      getSubmitFn={(fn) => { this.handleSubmitFn = fn }}
+                     itemID={itemID}
+                     isView={isView}
                   />
                 </div>
             </div>

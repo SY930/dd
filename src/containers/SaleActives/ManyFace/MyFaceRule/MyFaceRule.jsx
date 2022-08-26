@@ -6,7 +6,7 @@ import { axios, getStore } from '@hualala/platform-base';
 import FoodSelectModal from '../../../../components/common/FoodSelector/FoodSelectModal'
 import ImageUploader from '../../components/ImageUploader/ImageUploader';
 import styles from './styles.less';
-import { programList, faceDefVal, eventSelectOptionCopy, bannerVal } from './Commom'
+import { programList, faceDefVal, eventSelectOptionCopy, triggerEventInfoVal } from './Commom'
 import {
     memoizedExpandCategoriesAndDishes,
 } from '../../../../utils';
@@ -74,10 +74,10 @@ class MyFaceRule extends Component {
         const { value, onChange } = this.props;
         if (params && params.parentId) {
             const parentIndex = value.findIndex(item => item.id == params.parentId)
-            const bannerApp1Ary = value[parentIndex].bannerApp1Ary;
-            const list = [...bannerApp1Ary];
+            const triggerEventInfoList = value[parentIndex].triggerEventInfoList;
+            const list = [...triggerEventInfoList];
             list[idx] = { ...list[idx], ...params }
-            value[parentIndex].bannerApp1Ary = list;
+            value[parentIndex].triggerEventInfoList = list;
             onChange(value)
         } else {
             const list = [...value];
@@ -392,7 +392,7 @@ class MyFaceRule extends Component {
         // const len = list.length;
         const id = Date.now().toString(36); // 随机不重复ID号
         if (clientType === '2' && sceneList === '2') { // banner场景更新parentId
-            list.push({ ...faceDefVal, id, bannerApp1Ary: [{ ...bannerVal, parentId: id }] });
+            list.push({ ...faceDefVal, id, triggerEventInfoList: [{ ...triggerEventInfoVal, parentId: id }] });
         } else {
             list.push({ ...faceDefVal, id });
         }
@@ -415,22 +415,22 @@ class MyFaceRule extends Component {
 
     addBanner = (index, data) => {
         const { value, onChange } = this.props;
-        const bannerApp1Ary = value[index].bannerApp1Ary;
-        if (bannerApp1Ary[4]) return null;
-        const list = [...bannerApp1Ary];
+        const triggerEventInfoList = value[index].triggerEventInfoList;
+        if (triggerEventInfoList[4]) return null;
+        const list = [...triggerEventInfoList];
         const id = Date.now().toString(36);
-        list.push({ ...bannerVal, id, parentId: data.id })
-        value[index].bannerApp1Ary = list;
+        list.push({ ...triggerEventInfoVal, id, parentId: data.id })
+        value[index].triggerEventInfoList = list;
         onChange(value)
         return null
     }
 
     removeBanner = (parentIdx, idx) => {
         const { value, onChange } = this.props;
-        const bannerApp1Ary = value[parentIdx].bannerApp1Ary;
-        const list = [...bannerApp1Ary];
+        const triggerEventInfoList = value[parentIdx].triggerEventInfoList;
+        const list = [...triggerEventInfoList];
         list.splice(+idx, 1);
-        value[parentIdx].bannerApp1Ary = list;
+        value[parentIdx].triggerEventInfoList = list;
         onChange(value)
     }
 
@@ -589,10 +589,9 @@ class MyFaceRule extends Component {
     }
 
     renderAPPEvents = (v, i) => {
-        console.log("🚀 ~ file: MyFaceRule.jsx ~ line 535 ~ MyFaceRule ~ v, i", v, i)
-        const { placement } = this.props;
+        const { triggerSceneList } = this.props;
         let _eventSelectOptions = this.state.eventSelectOption
-        if (placement.includes('4')) {
+        if (triggerSceneList.includes('4')) {
             _eventSelectOptions = _eventSelectOptions.filter(item => item.value !== 'shoppingCartAddFood')
         }
         return (
@@ -635,9 +634,9 @@ class MyFaceRule extends Component {
             <div className={styles.activeImageBox}>
                 <ImageUploader
                     limit={0}
-                    value={v.bannerApp1}
+                    value={v.decorateInfo.imagePath}
                     onChange={(value) => {
-                        this.onChange(i, { parentId: v.parentId, bannerApp1: value })
+                        this.onChange(i, { parentId: v.parentId, decorateInfo: { imagePath: value } })
                     }}
                 />
                 <div className={styles.uploaderTip}>
@@ -652,7 +651,7 @@ class MyFaceRule extends Component {
     renderMoreBannerAndEvents = (v, i) => {
         return (
             <div>
-                {v.bannerApp1Ary.map((item, index) => (
+                {v.triggerEventInfoList.map((item, index) => (
                     <div key={item.id} className={styles.appBannerConntet}>
                         <div className={styles.appBannerImg}><img src="http://res.hualala.com/basicdoc/9aa790ea-f2ec-49e6-a8a2-1c5c8af299ec.png" alt="logo" />banner{index + 1}</div>
                         <div className={styles.MyFaceRuleSubConntet} style={{ display: 'flex' }}>
@@ -672,8 +671,9 @@ class MyFaceRule extends Component {
 
 
     render() {
-        const { value = [], form, clientType, sceneList, placement } = this.props;
-        // placement 支付成功的海报和banner点击触发事件 菜品加入购物车不能有
+        const { value = [], form, clientType, sceneList } = this.props;
+        // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 675 ~ MyFaceRule ~ render ~ value", value)
+        // triggerSceneList 支付成功的海报和banner点击触发事件 菜品加入购物车不能有
         // const { length } = value;
         // 防止回显没数据不显示礼品组件
         if (!value[0]) {

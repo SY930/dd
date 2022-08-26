@@ -46,7 +46,7 @@ import ActivityMain from '../activityMain';
 import MyActivities from '../../SaleCenterNEW/MyActivities/MyActivities'
 
 import registerPage from '../../../index';
-import { SPECIAL_PAGE, PROMOTION_DECORATION, SALE_CENTER_PAYHAVEGIFT } from '../../../constants/entryCodes';
+import { SPECIAL_PAGE, PROMOTION_DECORATION, SALE_CENTER_PAYHAVEGIFT, SALE_ACTIVE_NEW_PAGE } from '../../../constants/entryCodes';
 import { promotionBasicInfo_NEW as sale_promotionBasicInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionBasicInfo.reducer';
 import { promotionDetailInfo_NEW as sale_promotionDetailInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionDetailInfo.reducer';
 import {
@@ -69,7 +69,7 @@ import {
     SPECIAL_LOOK_PROMOTION_QUERY,
     SPECIAL_PROMOTION_DELETE, 
     SPECIAL_PROMOTION_QUERY,
-    SPECIAL_PROMOTION_UPDATE
+    SPECIAL_PROMOTION_UPDATE,
 } from "../../../constants/authorityCodes";
 import { isBrandOfHuaTianGroupList, isGroupOfHuaTianGroupList, isMine } from "../../../constants/projectHuatianConf";
 import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
@@ -691,6 +691,13 @@ class MySpecialActivities extends React.Component {
     }
     //** 第三版 重构 抽抽乐活动 点击事件 */
     onV3Click = (itemID, view, key, isActive) => {
+        console.log("🚀 ~ file: index.jsx ~ line 694 ~ MySpecialActivities ~ key", key)
+        if (key == '85') {
+            setTimeout(() => {
+                jumpPage({ menuID: SALE_ACTIVE_NEW_PAGE, typeKey: key, itemID, isView: view })
+            }, 100);
+            return closePage(SALE_ACTIVE_NEW_PAGE)
+        }
         this.setState(ps => ({ v3visible: !ps.v3visible, activeStatus: isActive }));
         if (itemID) {
             this.setState({ itemID, view, curKey: key });
@@ -1205,7 +1212,7 @@ class MySpecialActivities extends React.Component {
                 {(v3visible && curKey == '78') && <Chou2Le onToggle={this.onV3Click} id={itemID} view={view} />}
                 {(v3visible && curKey == '79') && <BlindBox onToggle={this.onV3Click} id={itemID} view={view} />}
                 {(v3visible && curKey == '83') && <PassWordCoupon onToggle={this.onV3Click} id={itemID} view={view} />}
-                {(v3visible && curKey == '85') && <ManyFace onToggle={this.onV3Click} id={itemID} view={view} handleDecorationStart={this.handleDecorationStart} activeStatus={this.state.activeStatus}/>}
+                {/* {(v3visible && curKey == '85') && <ManyFace onToggle={this.onV3Click} id={itemID} view={view} handleDecorationStart={this.handleDecorationStart} activeStatus={this.state.activeStatus}/>} */}
                 <Modal
                     title="提取活动链接"
                     visible={isShowCopyUrl}
@@ -1837,27 +1844,12 @@ class MySpecialActivities extends React.Component {
                                 {COMMON_LABEL.delete}
                             </a>
                         </Authority>
-                        {/* <a
-                            href="#"
-                            className={record.isActive == '-1' || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80 ? styles.textDisabled : null}
-                            onClick={() => {
-                                if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80) {
-                                    return;
-                                }
-                                if (Number(record.eventWay) === 70) {
-                                    message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
-                                    return;
-                                }
-                                record.isActive == '-1' || statusState ? null :
-                                    this.handelStopEvent(text, record, index, '-1', `${this.props.intl.formatMessage(STRING_SPE.d17012f5c16c32211)}`);
-                            }}
-                        >
-                            {this.props.intl.formatMessage(STRING_SPE.du3bnfobe3346)}
-                        </a> */}
-                        <Tooltip placement="bottomLeft" title={this.renderTipTitle(text, record, index)} overlayClassName={styles.Sale__Activite__Tip}>
-                            <a href="#">更多</a>
-                        </Tooltip>
-                        {/* <a className={styles.more}> 更多</a> */}
+                        {
+                            record.eventWay != '85' &&  // 千人千面无需更多操作
+                            <Tooltip placement="bottomLeft" title={this.renderTipTitle(text, record, index)} overlayClassName={styles.Sale__Activite__Tip}>
+                                <a href="#">更多</a>
+                            </Tooltip>
+                        }
                     </span>
                     );
                 },
@@ -1902,26 +1894,6 @@ class MySpecialActivities extends React.Component {
                     )
                 }
             },
-            // {
-            //     title: COMMON_LABEL.sort,
-            //     className:'TableTxtCenter',
-            //     dataIndex: 'sortOrder',
-            //     key: 'sortOrder',
-            //     width: 120,
-            //     // fixed:'center',
-            //     render: (text, record, index) => {
-            //         const canNotSortUp = this.state.pageNo == 1 && index == 0;
-            //         const canNotSortDown = (this.state.pageNo - 1) * this.state.pageSizes + index + 1 == this.state.total;
-            //         return (
-            //             <span>
-            //                 <span><Iconlist title={`${this.props.intl.formatMessage(STRING_SPE.d5g3d7ahfq3651)}`} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'TOP')} /></span>
-            //                 <span><Iconlist title={`${this.props.intl.formatMessage(STRING_SPE.da905h2m1237216)}`} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'UP')} /></span>
-            //                 <span className={styles.upsideDown}><Iconlist title={`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe3831)}`} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'DOWN')} /></span>
-            //                 <span className={styles.upsideDown}><Iconlist title={`${this.props.intl.formatMessage(STRING_SPE.d16hh1kkf9a3922)}`} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'BOTTOM')} /></span>
-            //             </span>
-            //         )
-            //     },
-            // },
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.d4h177f79da1218)}`,
                 dataIndex: 'eventWay',
@@ -1943,31 +1915,6 @@ class MySpecialActivities extends React.Component {
                 // ellipsis: true,
                 render: text => <span title={text}>{text}</span>,
             },
-            // {
-            //     title: `${this.props.intl.formatMessage(STRING_SPE.d5672b44908541235)}`,
-            //     className: 'TableTxtCenter',
-            //     dataIndex: 'status',
-            //     key: 'msgStatus',
-            //     width: 150,
-            //     render: (text, record) => {
-            //         if (record.eventWay === 50 || record.eventWay === 51 || record.eventWay === 52 || record.eventWay === 53
-            //             || record.eventWay === 61 || record.eventWay === 62 || record.eventWay === 63|| record.eventWay === 70) {
-            //             let _SmsSendStatus = '';
-            //             SmsSendStatus.map((status) => {
-            //                 if (status.value == record.status) {
-            //                     _SmsSendStatus = status.label;
-            //                 }
-            //             });
-            //             let _SmsSettleStatus = '';
-            //             SmsSettleStatus.map((status) => {
-            //                 if (status.value == record.settleStatus) {
-            //                     _SmsSettleStatus = status.label;
-            //                 }
-            //             });
-            //             return `${_SmsSendStatus}/${_SmsSettleStatus}`;
-            //         }
-            //     },
-            // },
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.dd5aa016c5f42125)}`,
                 className: 'TableTxtCenter',
@@ -2015,19 +1962,6 @@ class MySpecialActivities extends React.Component {
                     return <Tooltip title={t}>{t}</Tooltip>;
                 },
             },
-            // {
-            //     title: `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3711176)}`,
-            //     className: 'TableTxtCenter',
-            //     dataIndex: 'isActive',
-            //     key: 'isActive',
-            //     width: 100,
-            //     render: (isActive) => {
-            //         // db60c8ac0a3715210  已终止
-            //         // db60c8ac0a371314 已启用
-            //         // d16hh1kkf9914292 已禁用
-            //         return isActive == '-1' ? `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3715210)}` : isActive == '1' ? `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a371314)}` : `${this.props.intl.formatMessage(STRING_SPE.d16hh1kkf9914292)}`;
-            //     },
-            // },
         ];
         return (
             <div className={`layoutsContent ${styles.tableClass}`}>

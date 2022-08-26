@@ -32,7 +32,6 @@ export const eventSelectOptionCopy = [
 ]
 export const faceDefVal = {
     id: '0',
-    triggerScene: '1', // 点餐页弹窗海报图
     conditionType: '', // 会员身份1， 会员标签2
     conditionName: '', // 是否持卡会员| 会员身份
     conditionValue: '', // 是否持卡key | 7023267909942119317
@@ -44,12 +43,11 @@ export const faceDefVal = {
     triggerEventCustomInfo1: '',
     triggerEventCustomInfoApp1: [{ platformType: 'wechat', appID: '', appName: '微信小程序名称' }, { platformType: 'alipay', appID: '', appName: '支付宝小程序名称' }], // 跳转至小程序
 
-    bannerApp1: '', // 弹窗海报
-    bannerApp1Ary: [
+    triggerEventInfoList: [
         {
             id: '011',
             parentId: '0',
-            bannerApp1: '',
+            decorateInfo: { imagePath: '' },
             triggerEventName1: '购物车夹菜',
             triggerEventValue1: '',
             triggerEventCustomInfo1: '',
@@ -63,14 +61,15 @@ export const faceDefVal = {
     triggerEventCustomInfo2: '',
     // children: [], // 点击小程序触发事件后的三级联动菜单
     everyTagsRule: [],
-    bannerApp2: '',
+
+    decorateInfo: { imagePath: '' }, // 弹窗海报
     // isShowDishSelector: false,
 };
 
 
-export const bannerVal = {
+export const triggerEventInfoVal = {
     id: '011',
-    bannerApp1: '',
+    decorateInfo: { imagePath: '' },
     triggerEventName1: '购物车夹菜',
     triggerEventValue1: '',
     triggerEventCustomInfo1: '',

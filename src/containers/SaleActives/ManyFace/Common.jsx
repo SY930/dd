@@ -48,7 +48,7 @@ const formItems1 = {
         defaultValue: '1',
         render: () => (<p />),
     },
-    placement: {
+    triggerSceneList: {
         type: 'custom',
         label: '投放位置',
         options: [],
@@ -75,34 +75,31 @@ const KEY1 = ['eventType', 'eventName', 'eventRange', 'advMore'];
 const KEY2 = ['eventRemark'];
 
 
-const formKeys1 = [...KEY1, 'clientType', 'sceneList', 'placement', 'shopIDList', ...KEY2];
+const formKeys1 = [...KEY1, 'clientType', 'sceneList', 'triggerSceneList', 'shopIDList', ...KEY2];
 
 
-// const formKeys2 = ['clientType', 'sceneList', 'placement', 'shopIDList'];
+// const formKeys2 = ['clientType', 'sceneList', 'triggerSceneList', 'shopIDList'];
 /**
  * formItem3
  */
-const faceDefVal = {
+export const faceDefVal = {
     id: '0',
-    triggerScene: '1', // 点餐页弹窗海报图
     conditionType: '1', // 会员身份1， 会员标签2
     conditionName: '是否持卡会员', // 是否持卡会员| 会员身份
     conditionValue: 'whetherHasCard', // 是否持卡key | 7023267909942119317
     targetName: '持卡会员',
     targetValue: '1', // 1 是持卡会员 0否
-
-    // 点击触发的事件
+    // 点击触发的事件  小程序3.0
     triggerEventName1: '购物车夹菜',
     triggerEventValue1: '',
     triggerEventCustomInfo1: '',
     triggerEventCustomInfoApp1: [{ platformType: 'wechat', appID: '', appName: '微信小程序名称' }, { platformType: 'alipay', appID: '', appName: '支付宝小程序名称' }], // 跳转至小程序
-    
-    bannerApp1: '', // 弹窗海报
-    bannerApp1Ary: [
+
+    triggerEventInfoList: [
         {
             id: '011',
             parentId: '0',
-            bannerApp1: '',
+            decorateInfo: { imagePath: '' },
             triggerEventName1: '购物车夹菜',
             triggerEventValue1: '',
             triggerEventCustomInfo1: '',
@@ -116,9 +113,10 @@ const faceDefVal = {
     triggerEventCustomInfo2: '',
     // children: [], // 点击小程序触发事件后的三级联动菜单
     everyTagsRule: [],
-    bannerApp2: '',
+
+    decorateInfo: { imagePath: '' }, // 弹窗海报
     // isShowDishSelector: false,
-}
+};
 
 const formItems3 = {
     faceRule: {

@@ -636,7 +636,7 @@ class NewCustomerPage extends Component {
             setTimeout(() => {
                 jumpPage({ menuID: SALE_ACTIVE_NEW_PAGE, typeKey: key })
             }, 100);
-            return closePage(SALE_CENTER_PAYHAVEGIFT)
+            return closePage(SALE_ACTIVE_NEW_PAGE)
         }
         this.setState(ps => ({ v3visible: !ps.v3visible }));
     }

@@ -13,6 +13,8 @@ const CheckboxGroup = Checkbox.Group;
 const RadioGroup = Radio.Group;
 const optionsPalace = [{ label: '堂食点餐页', value: '1' },
     { label: '外卖点餐页', value: '2' }, { label: '自提点餐页', value: '3' }, { label: '支付完成页', value: '4' }];
+const optionsPalaceBanner = [{ label: '堂食点餐页', value: '11' },
+    { label: '外卖点餐页', value: '12' }, { label: '自提点餐页', value: '13' }, { label: '支付完成页', value: '14' }];
 const DF = 'YYYYMMDD';
 
 class Step1 extends Component {
@@ -36,7 +38,7 @@ class Step1 extends Component {
         if (key === 'sceneList') {
             this.props.onChangeForm(key, value)
         }
-        if (key === 'placement') {
+        if (key === 'triggerSceneList') {
             this.props.onChangeForm(key, value)
         }
     }
@@ -46,7 +48,7 @@ class Step1 extends Component {
         const { formData = {}, type } = this.props;
 
         // const render3 = d => d()(<EveryDay type={cycleType} />);
-        const { clientType, sceneList, shopIDList, placement, ...other } = formItems1;
+        const { clientType, sceneList, shopIDList, triggerSceneList, ...other } = formItems1;
         const render = d => d()(<ShopSelector
             filterParm={isFilterShopType() ? { productCode: 'HLL_CRM_License' } : {}}
             // brandList={brands}
@@ -59,9 +61,10 @@ class Step1 extends Component {
             )
         }
 
-        const renderPlacement = (d, form) => {
+        const renderTriggerSceneList = (d, form) => {
+            const opt = form.getFieldValue('sceneList') === '1' ? optionsPalace : optionsPalaceBanner;
             return form.getFieldValue('clientType') === '2' ? d({})(
-                <CheckboxGroup options={optionsPalace} />
+                <CheckboxGroup options={opt} />
             ) : null
         }
         return {
@@ -69,7 +72,7 @@ class Step1 extends Component {
             clientType,
             sceneList: { ...sceneList, render: renderScene },
             shopIDList: { ...shopIDList, render },
-            placement: { ...placement, render: renderPlacement },
+            triggerSceneList: { ...triggerSceneList, render: renderTriggerSceneList },
         };
     }
     render() {
