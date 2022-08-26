@@ -26,7 +26,7 @@ class DateRange extends Component {
     }
 
     render() {
-        const { value } = this.props;
+        const { value, type } = this.props;
         const days = this.countDays(value);
         return (
             <div className={css.mainBox}>
@@ -39,6 +39,10 @@ class DateRange extends Component {
                         authStartDate = moment(authStartDate, 'YYYYMMDD').format('YYYY-MM-DD')
                         let authEndDates = moment(authEndDate, 'YYYYMMDD').format('YYYY-MM-DD')
                         let disabledDates = !current.isBetween(authStartDate, authEndDates, null, '()')
+                        if (type === '85') {
+                            return current < moment(value[0]).subtract(1, 'year') ||
+                            current > moment(value[0]).add(1, 'year').add(1, 'day')
+                        }
                         // 永久授权
                         if(authEndDate == '99999999'){
                             return current && current.format('YYYYMMDD') < moment().format('YYYYMMDD');

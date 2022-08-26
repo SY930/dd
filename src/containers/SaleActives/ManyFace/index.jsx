@@ -14,7 +14,7 @@ import { fetchPromotionScopeInfo } from '../../../redux/actions/saleCenterNEW/pr
 import {
     saleCenterSetSpecialBasicInfoAC,
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action';
-import { getEvent, searchAllActivity, searchAllMallActivity, postEvent, putEvent, queryActiveList } from './AxiosFactory';
+import { getEvent, searchAllActivity, searchAllMallActivity, postEvent, putEvent, queryActiveList, putRule } from './AxiosFactory';
 import { asyncParseForm } from '../../../helpers/util'
 import styles from './ManyFace.less'
 
@@ -61,7 +61,13 @@ class ManyFace extends Component {
         }
         if (value === '2' && key === 'sceneList') {
             form1 && form1.setFieldsValue({ triggerSceneList: ['11'] })
+            this.props.onChangDecorateType('2')
         }
+        if (value === '1' && key === 'sceneList') {
+            form1 && form1.setFieldsValue({ triggerSceneList: ['1'] })
+            this.props.onChangDecorateType('1')
+        }
+
         this.setState({
             flag: !this.state.flag,
             // 投放类型
@@ -680,7 +686,9 @@ class ManyFace extends Component {
     }
 
     handleRuleOk = () => {
-
+        putRule({}).then(() => {
+            this.onCloseViewRuleModal();
+        })
     }
 
     handleSubmit = (cb) => {
@@ -772,10 +780,11 @@ class ManyFace extends Component {
                     title="活动规则"
                     onCancel={this.onCloseViewRuleModal}
                     onOk={this.handleRuleOk}
+                    wrapClassName={styles.viewRuleVisibleModal}
                 >
-                    <div> <span>千人千面</span>当同一时间、同一门店、同一投放类型、同一投放位置下存在多个活动时，将按照以下规则执行 </div>
+                    <div className={styles.ruleModalTitle}> <span className={styles.name}>千人千面</span>当同一时间、同一门店、同一投放类型、同一投放位置下存在多个活动时，将按照以下规则执行 </div>
                     <div>
-                        <span>计算规则</span>
+                        <span className={styles.computeRule}>计算规则</span>
                         <RadioGroup name="radiogroup" defaultValue={1}>
                             <Radio value={1}>按创建时间最近的执行</Radio>
                             <Radio value={2}>按创建时间最早的执行</Radio>

@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 import DateRange from '../../PromotionV3/Camp/DateRange';
 import DateTag from '../../PromotionV3/Camp/DateTag';
 import TimeRange from '../../PromotionV3/Camp/TimeRange';
@@ -133,8 +134,8 @@ const formItems3 = {
         rules: ['required'],
         wrapperCol: { span: 12 },
         labelCol: { span: 5 },
-        defaultValue: [],
-        render: d => d()(<DateRange />),
+        defaultValue: [moment(), moment().add(6, 'days')],
+        render: d => d()(<DateRange type={'85'} />),
     },
     advMore: {
         type: 'custom',
@@ -162,8 +163,8 @@ const formItems3 = {
     excludedDate: {
         type: 'custom',
         label: '活动排除日期',
-        render: d => d()(<DateTag />),
-        defaultValue: [],
+        render: d => d()(<DateTag limit={true} />),
+        defaultValue: [[moment]],
     },
 };
 const KEY3 = ['timeList', 'cycleType'];

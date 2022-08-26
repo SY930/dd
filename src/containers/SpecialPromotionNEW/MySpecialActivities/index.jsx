@@ -8,7 +8,7 @@ import {
     Table, Input, Select, DatePicker,
     Button, Modal, message,
     Spin, Icon, Alert, Switch, Tabs,
-    Tooltip, Popover, Menu, TreeSelect
+    Tooltip, Popover, Menu, TreeSelect, Radio
 } from 'antd';
 import { throttle, isEmpty, cloneDeep } from 'lodash';
 import { jumpPage, closePage } from '@hualala/platform-base'
@@ -92,6 +92,7 @@ const confirm = Modal.confirm;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const TabPane = Tabs.TabPane;
+const RadioGroup = Radio.Group;
 const MenuItemGroup = Menu.ItemGroup;
 
 const mapStateToProps = (state) => {
@@ -272,6 +273,7 @@ class MySpecialActivities extends React.Component {
             filterSchemeList: [],
             activeStatus: '',
             sortedChannelList: [],
+            viewRuleVisibles: false,
         };
         this.cfg = {
             eventWay: [
@@ -798,6 +800,26 @@ class MySpecialActivities extends React.Component {
         this.handleCopyUrl(null, mpId);
     }
 
+    // 修改活动规则
+    handleRuleOk = () => {
+        const callServer = axiosData(
+            '',
+            {},
+            {},
+            { path: '' },
+            'HTTP_SERVICE_URL_WECHAT'
+        );
+        callServer.then(data => {
+            let { result: { code, message: msg } } = data
+            if (code === '000') {
+                this.setState({ viewRuleVisibles: false });
+            }
+        }).catch(({ message: msg }) => {
+            this.setState({ viewRuleVisibles: false })
+            message.error(msg)
+        })
+    }
+
     handleCheckText = (value, label) => {
         // let v = Number(value);
         const groupIds = this.state.sortedChannelList.map(item => item.value)
@@ -1137,7 +1159,8 @@ class MySpecialActivities extends React.Component {
 
 
     render() {
-        const { v3visible, itemID, view, isShowCopyUrl, urlContent, curKey, tabKeys, stylesShow, dataSource } = this.state;
+        const { v3visible, itemID, view, isShowCopyUrl, urlContent, curKey, tabKeys, stylesShow, dataSource, viewRuleVisibles } = this.state;
+        console.log("🚀 ~ file: index.jsx ~ line 1162 ~ MySpecialActivities ~ render ~ viewRuleVisibles", viewRuleVisibles)
         return (
             <div style={{ backgroundColor: this.state.authStatus ? '#F3F3F3' : '#fff' }} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 {
@@ -1230,6 +1253,27 @@ class MySpecialActivities extends React.Component {
                         filterSchemeList={this.state.filterSchemeList}
                     />
                 }
+               {viewRuleVisibles &&  <Modal
+                    maskClosable={false}
+                    visible={true}
+                    width={700}
+                    title="活动规则"
+                    onCancel={() => { this.setState({ viewRuleVisibles: false }) }}
+                    onOk={this.handleRuleOk}
+                    wrapClassName={styles.viewRuleVisibleModal}
+                >
+                    <div>
+                        <div className={styles.ruleModalTitle}> <span className={styles.name}>千人千面</span>当同一时间、同一门店、同一投放类型、同一投放位置下存在多个活动时，将按照以下规则执行 </div>
+                        <div>
+                            <span className={styles.computeRule}>计算规则</span>
+                            <RadioGroup name="radiogroup" defaultValue={1}>
+                                <Radio value={1}>按创建时间最近的执行</Radio>
+                                <Radio value={2}>按创建时间最早的执行</Radio>
+                            </RadioGroup>
+                        </div>
+                    </div>
+
+                </Modal>}
             </div>
         );
     }
@@ -1333,7 +1377,11 @@ class MySpecialActivities extends React.Component {
                                             <Icon type="upload" />导出历史
                                         </Button>
                                 </span>
+                                <span>
+                                   <Button type="ghost" style={{ marginRight: 10 }} onClick={() => { this.setState({viewRuleVisibles: true }) }}>活动规则</Button>
+                                </span>
                                 {this.renderPlanBtn()}
+                              
                             </div>
                         )
                     }

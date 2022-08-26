@@ -88,7 +88,7 @@ class CreateActiveTwo extends Component {
                 </div>
                 <div className={styles.line}></div>
                 <div className={styles.centerContent} style={{ height: 'calc(100% - 70px)', overflow: 'hidden', display: 'flex'}}>
-                  <PhonePreviewLeft onChange={this.onchageType} type={this.state.type}/>
+                  <PhonePreviewLeft type={this.state.type}/>
                   <div className={styles.centerLine}>
                     <div className={styles.arrow}></div>
                   </div>
@@ -96,6 +96,7 @@ class CreateActiveTwo extends Component {
                      getSubmitFn={(fn) => { this.handleSubmitFn = fn }}
                      itemID={itemID}
                      isView={isView}
+                     onChangDecorateType={this.onchageType}
                   />
                 </div>
             </div>

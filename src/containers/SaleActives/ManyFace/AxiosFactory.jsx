@@ -230,9 +230,24 @@ async function queryActiveList() {
 
 }
 
+// 活动规则
+async function putRule() {
+    const { groupID } = getAccountInfo();
+    // const data = { groupID, operationMode: '3' };
+    // const method = '/shop/getShopBaseInfo.svc';
+    // const params = { service: 'HTTP_SERVICE_URL_SHOPAPI', type, data, method };
+    // const response = await axios.post(url + method, params);
+    // const { code, message: msg, data: { shopBaseInfoDetails = [] } } = response;
+    // if (code === '000') {
+    // return [{a: 1}];
+    // }
+    // message.error(msg);
+    // return [];
+}
+
 
 export {
     getBrandList, getSceneList, putEvent, getEvent, postEvent,
     getGroupCardTypeList, getWechatMpList, getSettleList, getAuthLicenseData, searchAllActivity,
-    searchAllMallActivity, queryActiveList,
+    searchAllMallActivity, queryActiveList, putRule,
 }

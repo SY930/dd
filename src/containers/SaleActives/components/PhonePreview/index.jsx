@@ -26,7 +26,7 @@ export class PhonePreview extends Component {
                       <div className={style.platformBox}>
                           {
                               [{ name: '弹窗海报', value: '1' }, { name: 'banner广告', value: '2' }].map((item, index) => (
-                                  <div onClick={() => { this.props.onChange(item.value) }} className={`${style.platformItem} ${item.value === type ? style.selectedItem : ''}`}><span>{item.name}</span></div>
+                                  <div className={`${style.platformItem} ${item.value === type ? style.selectedItem : ''}`}><span>{item.name}</span></div>
                               ))
                           }
                       </div>
