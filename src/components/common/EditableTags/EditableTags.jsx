@@ -18,7 +18,7 @@ class EditableTags extends Component {
                     {items.map(item => (
                         <Tag
                             key={item.value}
-                            className={style.item}
+                            className={`${style.item} ${item.sign ? style.active : ''}`}
                             closable={true}
                             onClose={evt => this.handleClose(evt, item.value)}
                         >

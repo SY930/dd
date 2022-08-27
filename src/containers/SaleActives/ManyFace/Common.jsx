@@ -53,7 +53,7 @@ const formItems1 = {
         type: 'custom',
         label: '投放位置',
         options: [],
-        defaultValue: ['1'],
+        defaultValue: [1],
         render: () => (<p />),
         rules: ['required'],
     },

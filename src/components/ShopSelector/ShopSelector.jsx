@@ -136,18 +136,24 @@ class ShopSelector extends Component {
     }
 
     render() {
-        const { value = [], onChange, size, placeholder, extendShopList, eventWay, disabled, ...otherProps, } = this.props;
+        const { value = [], onChange, size, placeholder, extendShopList, eventWay, disabled, occupyShopList = [], ...otherProps, } = this.props;
         const { showModal } = this.state;
         let options = this.props.options || this.state.options || [];
         if (Array.isArray(extendShopList)) {
             options = [...extendShopList, ...options]
         }
         const filters = this.props.filters || this.state.filters;
-        const items = value.reduce((ret, shopID) => {
+        let items = value.reduce((ret, shopID) => {
             const shopInfo = options.find(shop => shop.value === shopID);
             if (!shopInfo) return ret;
             return ret.concat({ value: shopInfo.value, label: shopInfo.shopName });
         }, []);
+        items = items.map((it) => {
+            if (occupyShopList.includes(+it.value)) {
+                return ({ ...it, sign: true })
+            }
+            return ({ ...it })
+        })
         return (
             <div className="hll-shop-selector">
                 {size === 'default' &&

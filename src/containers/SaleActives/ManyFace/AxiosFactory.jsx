@@ -215,19 +215,36 @@ async function searchAllMallActivity() {
     return [];
 }
 
-async function queryActiveList() {
+async function queryActiveList(p) {
     const { groupID } = getAccountInfo();
-    // const data = { groupID, operationMode: '3' };
-    // const method = '/shop/getShopBaseInfo.svc';
-    // const params = { service: 'HTTP_SERVICE_URL_SHOPAPI', type, data, method };
-    // const response = await axios.post(url + method, params);
-    // const { code, message: msg, data: { shopBaseInfoDetails = [] } } = response;
-    // if (code === '000') {
-    return [{a: 1}];
-    // }
-    // message.error(msg);
-    // return [];
-
+    const data = { groupID, ...p };
+    const method = 'specialPromotion/queryScopeOverlapEvents';
+    const params = { service, type, data, method };
+    const response = await axios.post(url + method, params);
+    // const response = {
+    //     "code": "000",
+    //     "eventConfigInfoList": [
+    //         {
+    //             "eventEndDate": 20220130,
+    //             "eventName": "千人千面-ldd",
+    //             "eventStartDate": 20220126,
+    //             "eventWay": 85,
+    //             "groupID": 11157,
+    //             "itemID": 7057398833826761621,
+    //             "shopIDList": [
+    //                 76069386
+    //             ]
+    //         }
+    //     ],
+    //     "message": "执行成功",
+    //     "traceID": "CC040fbb0a34e84d5db640ae3bf977320f"
+    // };
+    const { code, message: msg, eventConfigInfoList = [] } = response
+    if (code === '000') {
+        return eventConfigInfoList
+    }
+    message.error(msg);
+    return [];
 }
 
 // 活动规则

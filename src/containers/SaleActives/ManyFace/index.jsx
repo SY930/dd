@@ -289,16 +289,23 @@ class ManyFace extends Component {
         )
         if (itemID) {
             const allData = { timeList: newTimeList, event: { ...event, itemID, isActive: this.props.activeStatus }, eventConditionInfos, triggerSceneList: values.triggerSceneList };
-            postEvent(allData)
+            postEvent(allData).then((res) => {
+                if (res) {
+                    closePage()
+                    jumpPage({ pageID: '1000076003' })
+                }
+            }) 
             return
         }
         const allData = { timeList: newTimeList, event, eventConditionInfos, triggerSceneList: values.triggerSceneList };
         putEvent({ ...allData }).then((res) => {
             if (res.code === '000') {
                 closePage()
-                jumpPage({ pageID: '1000076003' })
+                setTimeout(() => {
+                    jumpPage({ pageID: '1000076003' })
+                })
             }
-        }) 
+        })
     }
 
     getInitData = () => {
@@ -327,7 +334,6 @@ class ManyFace extends Component {
     getEventDetail() {
         const { itemID } = this.props;
         if (itemID) {
-            console.log("🚀 ~ file: index.jsx ~ line 330 ~ ManyFace ~ getEventDetail ~ itemID", itemID)
             getEvent({ itemID }).then((obj) => {
                 // const obj = {
                 //     "groupID": "11157",
@@ -429,7 +435,6 @@ class ManyFace extends Component {
                 //   }
                 const { data, eventConditionInfos = [], timeList, triggerSceneList } = obj;
                 const { step1Data, setp2Data } = this.setData4Step1(data, eventConditionInfos, timeList, triggerSceneList);
-                debugger
                 const formData2 = this.setData4Step2(eventConditionInfos, step1Data.sceneList);
                 this.setState({ formData1: { ...step1Data, triggerSceneList }, formData2: { faceRule: formData2, ...setp2Data } });
             });
@@ -666,14 +671,46 @@ class ManyFace extends Component {
         })
     }
 
-    tipContent =() => {
+    tipContent = (data) => {
         return (
             <div className={styles.activeTipBox}>
-                <span>会员专属大礼包</span>、<span>会员集点卡</span>
+                { data.map(item => (<span>{item.eventName}、</span>))}
                 活动中存在当前已选适用店铺，如继续创建，这些店铺将按照当前活动规则进行执行
                 <span onClick={this.viewRule}>查看设置活动规则</span>
             </div>
         )
+    }
+
+    preSubmit = (values, formData2) => {
+        const { clientType, eventRange, shopIDList, triggerSceneList } = values;
+        const { eventStartDate, eventEndDate } = this.formatEventRange(eventRange);
+        const params = {
+            eventInfo: {
+                eventWay: 85,
+                clientType,
+                eventEndDate,
+                eventStartDate,
+                shopIDList,
+                triggerSceneList: triggerSceneList.length > 0 ? triggerSceneList : [],
+            },
+        }
+        console.log("🚀 ~ file: index.jsx ~ line 698 ~ ManyFace ~ params", params)
+        queryActiveList(params).then((dataSource = []) => {
+            if (dataSource.length > 0) {
+                this.setState({
+                    occupyShopList: dataSource.reduce((cur, next) => {
+                        return cur.concat(next.shopIDList)
+                    }, []),
+                }, () => {
+                    this.handleShowModalTip(dataSource)(() => {
+                        this.onSubmit(values, formData2)
+                    })
+                })
+            }
+            // else {
+            //     this.onSubmit(values, formData2)
+            // }
+        })
     }
 
     handleShowModalTip = data => (handleNext) => {
@@ -711,17 +748,8 @@ class ManyFace extends Component {
                 if (clientType == '2' && sceneList == '2') { // 小程序3.0 banner
                     formData2 = this.onPreSubmitAppBanner(faceData, values)
                     flag = this.onCheckBannerApp(formData2)
-                    console.log("🚀 ~ file: index.jsx ~ line 709 ~ ManyFace ~ .then ~ flag", flag)
                     if (flag) { return null }
-                    // queryActiveList().then((res) => {
-                    //     if (res.length > 0) {
-                    //         this.handleShowModalTip(res)(() => {
-                                this.onSubmit(values, formData2)
-                        //     })
-                        // } else {
-                        //     this.onSubmit(values, formData2)
-                        // }
-                    // })
+                    this.preSubmit(values, formData2)
                     return null
                 } else if (clientType == '1') {
                     formData2 = this.onPreSubmitH5(faceData, values)
@@ -730,15 +758,7 @@ class ManyFace extends Component {
                 }
                 flag = this.onCheck(formData2)
                 if (flag) { return null }
-                // queryActiveList().then((res) => {
-                //     if (res.length > 0) {
-                //         this.handleShowModalTip(res)(() => {
-                            this.onSubmit(values, formData2)
-                    //     })
-                    // } else {
-                    //     this.onSubmit(values, formData2)
-                    // }
-                // })
+                this.preSubmit(values, formData2)
             })
     }
 
@@ -760,6 +780,7 @@ class ManyFace extends Component {
                         formData={formData1}
                         authLicenseData={this.state.authLicenseData}
                         onChangeForm={this.onChangeForm}
+                        occupyShopList={this.state.occupyShopList || []}
                     />
 
                     <div

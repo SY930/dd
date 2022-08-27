@@ -49,12 +49,13 @@ class Step1 extends Component {
 
     /** formItems 重新设置 */
     resetFormItems() {
-        const { formData = {}, type } = this.props;
+        const { formData = {}, occupyShopList } = this.props;
 
         // const render3 = d => d()(<EveryDay type={cycleType} />);
         const { clientType, sceneList, shopIDList, triggerSceneList, ...other } = formItems1;
         const render = d => d()(<ShopSelector
             filterParm={isFilterShopType() ? { productCode: 'HLL_CRM_License' } : {}}
+            occupyShopList={occupyShopList} // 被占用的店铺需要高亮显示
             // brandList={brands}
         />);
         const renderScene = (d, form) => {
@@ -69,7 +70,9 @@ class Step1 extends Component {
 
         const renderTriggerSceneList = (d, form) => {
             const opt = form.getFieldValue('sceneList') === '1' ? optionsPalace : optionsPalaceBanner;
-            return form.getFieldValue('clientType') === '2' ? d({})(
+            return form.getFieldValue('clientType') === '2' ? d({
+                inititalValue: [1],
+            })(
                 <CheckboxGroup options={opt} />
             ) : null
         }

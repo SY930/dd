@@ -69,7 +69,7 @@ class MyFaceRule extends Component {
 
     componentWillUnmount() {
         const { onChange } = this.props
-        onChange([]);
+        onChange && onChange([]);
     }
 
     onChangeBanner = (idx, params) => {
