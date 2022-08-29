@@ -251,7 +251,7 @@ async function queryActiveList(p) {
 async function putRule(p) {
     const { groupID } = getAccountInfo();
     const data = { groupID, ...p };
-    const method = '/specialPromotion/updateEventParam';
+    const method = '/specialPromotion/updateEventParam.ajax';
     const params = { service, type, data, method };
     const response = await axios.post(url + method, params);
     const { code, message: msg } = response;

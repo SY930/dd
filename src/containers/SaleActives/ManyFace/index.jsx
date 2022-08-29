@@ -670,7 +670,7 @@ class ManyFace extends Component {
         const { accountInfo } = this.props;
         axios.post('/api/v1/universal', {
             service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
-            method: '/specialPromotion/queryEventParam',
+            method: '/specialPromotion/queryEventParam.ajax',
             type: 'post',
             data: { groupID: accountInfo.get('groupID'), eventWay: 85, paramName: 'executePriorityByCreateTime' },
         }).then((res) => {

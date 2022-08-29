@@ -370,7 +370,7 @@ class MySpecialActivities extends React.Component {
 
       // 活动规则
       queryActiveRule = () => {
-        axiosData('/specialPromotion/queryEventParam',
+        axiosData('/specialPromotion/queryEventParam.ajax',
         { eventWay: 85, groupID: getStore().getState().user.getIn(['accountInfo', 'groupID']), paramName: 'executePriorityByCreateTime' }, {}, { path: '' },
         'HTTP_SERVICE_URL_PROMOTION_NEW')
         .then((res) => {
@@ -821,7 +821,7 @@ class MySpecialActivities extends React.Component {
     // 修改活动规则
     handleRuleOk = () => {
         const callServer = axiosData(
-            '/specialPromotion/updateEventParam',
+            '/specialPromotion/updateEventParam.ajax',
             {eventWay: 85, groupID: getStore().getState().user.getIn(['accountInfo', 'groupID']), paramName: 'executePriorityByCreateTime', paramValue: this.state.paramValue},
             {},
             { path: '' },
