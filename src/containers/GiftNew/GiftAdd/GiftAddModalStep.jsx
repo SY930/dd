@@ -729,6 +729,7 @@ class GiftAddModalStep extends React.PureComponent {
      *  'discountDecreaseVolSetting'
     */
     justifyParamsForCouponOfBuyGiven(params) {
+        console.log(params,'params====================')
         // 后端字段名称为reduceType, 对应前端字段 discountType
         switch(params.discountRule) {
             case '1':  // 特价
@@ -764,16 +765,20 @@ class GiftAddModalStep extends React.PureComponent {
         //         brandID: food.brandID || '0',
         //     }
         // });
-        params.couponFoodOffers = (params.buyGiveSecondaryFoods.dishes || []).map((food) => {
-            return {
-                foodUnitID: food.foodUnitID,
-                foodUnitCode: food.foodUnitCode,
-                foodPrice: food.price,
-                foodName: food.foodName,
-                foodUnitName: food.unit || '',
-                brandID: food.brandID || '0',
-            }
-        });
+        if(params.stageType == 1){
+            delete params.couponFoodOffers
+        }else{
+            params.couponFoodOffers = (params.buyGiveSecondaryFoods.dishes || []).map((food) => {
+                return {
+                    foodUnitID: food.foodUnitID,
+                    foodUnitCode: food.foodUnitCode,
+                    foodPrice: food.price,
+                    foodName: food.foodName,
+                    foodUnitName: food.unit || '',
+                    brandID: food.brandID || '0',
+                }
+            });
+        }
         // delete params.buyGiveFoods;
         delete params.buyGiveSecondaryFoods;
         return params;
@@ -1111,7 +1116,6 @@ class GiftAddModalStep extends React.PureComponent {
             }
 
             if (value == '10') {
-
                 let isMsg = false
                 if(this.state.values.pushMessage&&this.state.values.pushMessage.sendType){
                     isMsg = this.state.values.pushMessage.sendType.indexOf('msg')>-1
@@ -2620,7 +2624,7 @@ class GiftAddModalStep extends React.PureComponent {
                 }
             }
         }
-
+        console.log(values,'values000000000000000')
         if(describe == '代金券' || describe == '菜品优惠券' || describe == '菜品兑换券' || describe == '折扣券' || describe == '配送券' || describe == '买赠券' || describe == '不定额代金券') {
             if(values.transferType == '0' || values.transferType == undefined) {
                 secondKeysToDisplay[0].keys = secondKeysToDisplay[0].keys.filter((key)=>{
@@ -2637,10 +2641,14 @@ class GiftAddModalStep extends React.PureComponent {
             const keys = firstKeysToDisplay[0].keys
             const firstKeysToDisplayKeys = keys.filter(v => v !== 'selectBrands')
             firstKeysToDisplay[0].keys = firstKeysToDisplayKeys
-
-
         }
-
+        if (describe === '买赠券') {
+            let firstKeysToDisplayKeys = firstKeysToDisplay[0].keys
+            if(values.stageType == '1'){
+                firstKeysToDisplayKeys = firstKeysToDisplayKeys.filter(v => v !== 'buyGiveSecondaryFoods')
+            }
+            firstKeysToDisplay[0].keys = firstKeysToDisplayKeys
+        }
         // 'discountRateSetting',                   // 折扣设置 （注释掉，通过代码动态注释）
         // 'specialPriceVolSetting',                // 特价设置
         // 'discountDecreaseVolSetting',            // 立减
@@ -3544,10 +3552,29 @@ class GiftAddModalStep extends React.PureComponent {
                 required: true,
                 render: decorator => this.renderBuyGiveFoodsboxs(decorator),
             },
-
+            stageType: {
+                label: '优惠菜品',
+                type: 'custom',
+                defaultValue: 0,
+                render: (decorator, form) => {
+                    return decorator({})(
+                        <RadioGroup>
+                            <Radio value={0}>不限制赠送菜品</Radio>
+                            <Radio value={1}>赠送相同菜品</Radio>
+                            <Tooltip title={
+                                <p>
+                                    消费者购买A菜品只能赠送A菜品
+                                </p>
+                            }>
+                                <Icon type="question-circle" />
+                            </Tooltip>
+                        </RadioGroup>
+                    )
+                },
+            },
             buyGiveSecondaryFoods: {
                 type: 'custom',
-                label: '优惠菜品',
+                label: ' ',
                 required: true,
                 render: decorator => this.renderBuyGiveSecondaryFoodsboxs(decorator),
             },
