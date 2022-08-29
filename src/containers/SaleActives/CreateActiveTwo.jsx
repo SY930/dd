@@ -58,7 +58,7 @@ class CreateActiveTwo extends Component {
     handleCallback = () => {}
 
     render() {
-        const  { itemID, isView, typeKey } = decodeUrl()
+        const  { itemID, isView, typeKey, isActive } = decodeUrl()
         const currentInfo = actInfoList.find(v => v.key === typeKey) || {}
         const { loading } = this.state;
         const Comp = FaceFormWrapper
@@ -97,6 +97,7 @@ class CreateActiveTwo extends Component {
                      itemID={itemID}
                      isView={isView}
                      onChangDecorateType={this.onchageType}
+                     isActive={!!isActive}
                   />
                 </div>
             </div>

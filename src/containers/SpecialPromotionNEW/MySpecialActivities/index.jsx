@@ -716,7 +716,7 @@ class MySpecialActivities extends React.Component {
     onV3Click = (itemID, view, key, isActive) => {
         if (key == '85') {
             setTimeout(() => {
-                jumpPage({ menuID: SALE_ACTIVE_NEW_PAGE, typeKey: key, itemID, isView: view })
+                jumpPage({ menuID: SALE_ACTIVE_NEW_PAGE, typeKey: key, itemID, isView: view, isActive})
             }, 100);
             return closePage(SALE_ACTIVE_NEW_PAGE)
         }

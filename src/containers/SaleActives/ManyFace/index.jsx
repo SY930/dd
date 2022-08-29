@@ -290,7 +290,7 @@ class ManyFace extends Component {
             ]))
         )
         if (itemID) {
-            const allData = { timeList: newTimeList, event: { ...event, itemID, isActive: this.props.activeStatus }, eventConditionInfos, triggerSceneList: values.triggerSceneList };
+            const allData = { timeList: newTimeList, event: { ...event, itemID, isActive: this.props.isActive }, eventConditionInfos, triggerSceneList: values.triggerSceneList };
             postEvent(allData).then((res) => {
                 if (res) {
                     closePage()
