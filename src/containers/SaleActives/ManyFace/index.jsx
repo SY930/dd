@@ -350,7 +350,7 @@ class ManyFace extends Component {
         const eventRange = [moment(sd), moment(ed)];
         const clientType = eventConditionInfos[0] ? String(eventConditionInfos[0].clientType) : '1';
         const shopIDList = slist ? slist.map(x => `${x}`) : [];
-        const sceneList = triggerSceneList.includes(11) ? '2' : '1';
+        const sceneList = triggerSceneList.some(item => [1, 2, 3, 4, '1', '2', '3', '4'].includes(item)) ? '1' : '2'
 
         let timsObj = {};
         const TF = 'HH:mm';
