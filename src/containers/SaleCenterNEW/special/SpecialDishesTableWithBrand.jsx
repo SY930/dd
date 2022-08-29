@@ -485,7 +485,7 @@ class SpecialDishesTableWithBrand extends Component {
                 className: 'TableTxtRight',
                 render: (text, record) => {
                     if (this.state.setFoodType === '2') {
-                        const food  = (this.state.foodCategory || []).find((item) => item.unitCode == record.unitCode) || {}
+                        const food  = (this.state.foodCategory || []).find((item) => item.unit == record.unit && record.foodName == item.foodName) || {}
                         return food.price ? food.price : '--'
                     }
                     return text
