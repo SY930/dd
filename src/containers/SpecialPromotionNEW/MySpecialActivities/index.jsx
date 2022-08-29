@@ -828,14 +828,12 @@ class MySpecialActivities extends React.Component {
             'HTTP_SERVICE_URL_PROMOTION_NEW'
         );
         callServer.then(data => {
-            console.log("🚀 ~ file: index.jsx ~ line 831 ~ MySpecialActivities ~ data", data)
-            let { code, message } = data
+            let { code } = data
             if (code === '000') {
                 message.success('更新成功')
                 this.setState({ viewRuleVisibles: false });
             }
         }).catch(({ message: msg }) => {
-            console.log("🚀 ~ file: index.jsx ~ line 838 ~ MySpecialActivities ~ msg", msg)
             this.setState({ viewRuleVisibles: false })
             // message.error(msg)
         })
