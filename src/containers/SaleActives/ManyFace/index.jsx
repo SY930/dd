@@ -106,7 +106,7 @@ class ManyFace extends Component {
                     break
                 }
             }
-            const eventFlage = item.triggerEventInfoList.some(itm => _.isEmpty(itm.triggerEventCustomInfo) || itm.triggerEventCustomInfo === '{}' || !item.triggerEventValue)
+            const eventFlage = item.triggerEventInfoList.some(itm => _.isEmpty(itm.triggerEventCustomInfo) || itm.triggerEventCustomInfo === '{}' || !itm.triggerEventValue)
             if (eventFlage) {
                 flag = true;
                 message.warning('请选择触发事件~~')
@@ -667,6 +667,11 @@ class ManyFace extends Component {
                 let flag = false;
                 let formData2;
                 const { values, error } = result;
+                const { validCycle = [], cycleType } = values;
+                if (cycleType) {
+                    const cycle = validCycle.filter(x => (x[0] === cycleType));
+                    if (cycle.length <= 0) return message.warning('周期【每逢】必须选则一项~')
+                }
                 if (error) return null
                 const { faceRule, clientType, sceneList } = values;
                 const faceData = _.cloneDeep(faceRule);
