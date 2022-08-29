@@ -290,13 +290,13 @@ class ManyFace extends Component {
             ]))
         )
         if (itemID) {
-            const allData = { timeList: newTimeList, event: { ...event, itemID, isActive: this.props.isActive }, eventConditionInfos, triggerSceneList: values.triggerSceneList };
+            const allData = { timeList: newTimeList, event: { ...event, itemID, isActive: this.props.isActive == '0' ? 0 : 1 }, eventConditionInfos, triggerSceneList: values.triggerSceneList };
             postEvent(allData).then((res) => {
                 if (res) {
                     closePage()
                     jumpPage({ pageID: '1000076003' })
                 }
-            }) 
+            })
             return
         }
         const allData = { timeList: newTimeList, event, eventConditionInfos, triggerSceneList: values.triggerSceneList };
@@ -383,7 +383,6 @@ class ManyFace extends Component {
     }
 
     setData4Step2 = (eventConditionInfos = [], sceneList) => {
-        console.log("🚀 ~ file: index.jsx ~ line 475 ~ ManyFace ~ sceneList", sceneList)
         let faceData = []
         if (eventConditionInfos.length) {
             const { clientType } = eventConditionInfos[0];

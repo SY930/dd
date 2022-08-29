@@ -97,7 +97,7 @@ class CreateActiveTwo extends Component {
                      itemID={itemID}
                      isView={isView}
                      onChangDecorateType={this.onchageType}
-                     isActive={!!isActive}
+                     isActive={isActive}
                   />
                 </div>
             </div>
