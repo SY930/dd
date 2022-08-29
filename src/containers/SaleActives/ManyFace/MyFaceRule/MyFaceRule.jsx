@@ -68,8 +68,8 @@ class MyFaceRule extends Component {
     }
 
     componentWillUnmount() {
-        const { onChange } = this.props
-        onChange && onChange([]);
+        const { from2 } = this.props
+        from2 && from2.setFieldsValue({ faceRule: [] });
     }
 
     onChangeBanner = (idx, params) => {

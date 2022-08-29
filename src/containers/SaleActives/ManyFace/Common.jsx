@@ -72,7 +72,7 @@ const formItems1 = {
     },
 };
 
-const KEY1 = ['eventType', 'eventName', 'eventRange', 'advMore'];
+const KEY1 = ['eventType', 'eventName'];
 const KEY2 = ['eventRemark'];
 
 
@@ -164,7 +164,7 @@ const formItems3 = {
         type: 'custom',
         label: '活动排除日期',
         render: d => d()(<DateTag limit={true} />),
-        defaultValue: [[]],
+        defaultValue: [],
     },
 };
 const KEY3 = ['timeList', 'cycleType'];
