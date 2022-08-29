@@ -374,8 +374,10 @@ class MySpecialActivities extends React.Component {
         { eventWay: 85, groupID: getStore().getState().user.getIn(['accountInfo', 'groupID']), paramName: 'executePriorityByCreateTime' }, {}, { path: '' },
         'HTTP_SERVICE_URL_PROMOTION_NEW')
         .then((res) => {
+          console.log("🚀 ~ file: index.jsx ~ line 377 ~ MySpecialActivities ~ .then ~ res", res)
           if (res.code == '000') {
-            const { eventParamInfo = {} } = res;
+            const { data: { eventParamInfo = {} }} = res;
+            console.log("🚀 ~ file: index.jsx ~ line 379 ~ MySpecialActivities ~ .then ~ eventParamInfo", eventParamInfo)
             this.setState({
               paramsValue: eventParamInfo.paramsValue,
               viewRuleVisibles: true,

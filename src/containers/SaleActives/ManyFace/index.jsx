@@ -675,7 +675,7 @@ class ManyFace extends Component {
             data: { groupID: accountInfo.get('groupID'), eventWay: 85, paramName: 'executePriorityByCreateTime' },
         }).then((res) => {
             if (res.code === '000') {
-                const { eventParamInfo = {} } = res;
+                const { data: { eventParamInfo = {} } } = res;
                 this.setState({
                     paramsValue: eventParamInfo.paramsValue,
                     viewRuleVisible: true,

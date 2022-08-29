@@ -218,7 +218,7 @@ async function searchAllMallActivity() {
 async function queryActiveList(p) {
     const { groupID } = getAccountInfo();
     const data = { groupID, ...p };
-    const method = '/specialPromotion/queryScopeOverlapEvents';
+    const method = '/specialPromotion/queryScopeOverlapEvents.ajax';
     const params = { service, type, data, method };
     const response = await axios.post(url + method, params);
     // const response = {
