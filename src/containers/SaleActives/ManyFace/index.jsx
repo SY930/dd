@@ -56,16 +56,20 @@ class ManyFace extends Component {
     }
 
     onChangeForm = (key, value) => {
-        const { form1 } = this.state
+        const { form1, form2 } = this.state
         if (value === '1' && key === 'clientType') {
             form1 && form1.setFieldsValue({ sceneList: '1' })
         }
-        if (value === '2' && key === 'sceneList') {
+        if (value === '2' && key === 'sceneList') { // banner
             form1 && form1.setFieldsValue({ triggerSceneList: [11] })
+            form2 && form2.setFieldsValue({ faceRule: [] })
+            // console.log("🚀 ~ file: index.jsx ~ line 66 ~ ManyFace ~ from2", form2)
             this.props.onChangDecorateType('2')
         }
         if (value === '1' && key === 'sceneList') {
-            form1 && form1.setFieldsValue({ triggerSceneList: [1] })
+            form1 && form1.setFieldsValue({ triggerSceneList: [1] }) // 弹窗海报
+            form2 && form2.setFieldsValue({ faceRule: [] })
+            // console.log("🚀 ~ file: index.jsx ~ line 72 ~ ManyFace ~ from2", form2)
             this.props.onChangDecorateType('1')
         }
 

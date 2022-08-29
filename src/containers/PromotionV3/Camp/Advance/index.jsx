@@ -1,3 +1,4 @@
+
 import React, { PureComponent as Component } from 'react';
 import { Checkbox, Icon } from 'antd';
 import css from './style.less';
@@ -12,7 +13,7 @@ class Advance extends Component {
                 checked={value}
                 onChange={this.props.onChange}
             >
-                高级日期设置
+                <span className={`${!text ? '' : css.textPosColor}`}>高级日期设置</span>
                 {!text && <Icon type={icontype} />}
             </Checkbox>
         </p>

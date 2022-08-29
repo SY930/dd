@@ -660,7 +660,7 @@ class MyFaceRule extends Component {
                             <p>点击触发事件</p>{this.renderAPPEvents(item, index)}
                         </div>
                         <div className={styles.MyFaceRuleSubConntet} style={{ display: 'flex' }}>
-                            <p>活动主图</p>{this.renderAcitveImage(item, index)}
+                            <p style={{ paddingTop: '20px' }}> <span className={styles.tip}>*</span>活动主图</p>{this.renderAcitveImage(item, index)}
                         </div>
                         { index > 0 && <div className={styles.removeBanner}><Icon type="close-circle" style={{ color: '#999', fontSize: '21px' }} onClick={() => this.removeBanner(i, index)} /></div>}
                     </div>
