@@ -41,7 +41,7 @@ class DateRange extends Component {
                         let disabledDates = !current.isBetween(authStartDate, authEndDates, null, '()')
                         if (type === '85') {
                             return current < moment(value[0]).subtract(1, 'year') ||
-                            current > moment(value[0]).add(1, 'year').add(1, 'day')
+                            current > moment(value[0]).add(1, 'year').subtract(1, 'days')
                         }
                         // 永久授权
                         if(authEndDate == '99999999'){

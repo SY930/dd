@@ -709,18 +709,22 @@ class ManyFace extends Component {
                 triggerSceneList: triggerSceneList.length > 0 ? triggerSceneList : [],
             },
         }
-        console.log("🚀 ~ file: index.jsx ~ line 698 ~ ManyFace ~ params", params)
-        queryActiveList(params).then((dataSource = []) => {
-            if (dataSource.length > 0) {
-                this.setState({
-                    occupyShopList: dataSource.reduce((cur, next) => {
-                        return cur.concat(next.shopIDList)
-                    }, []),
-                }, () => {
-                    this.handleShowModalTip(dataSource)(() => {
-                        this.onSubmit(values, formData2)
+        queryActiveList(params).then((dataSource) => {
+            console.log("🚀 ~ file: index.jsx ~ line 713 ~ ManyFace ~ queryActiveList ~ dataSource", dataSource)
+            if (dataSource) {
+                if (dataSource.length > 0) {
+                    this.setState({
+                        occupyShopList: dataSource.reduce((cur, next) => {
+                            return cur.concat(next.shopIDList)
+                        }, []),
+                    }, () => {
+                        this.handleShowModalTip(dataSource)(() => {
+                            this.onSubmit(values, formData2)
+                        })
                     })
-                })
+                } else {
+                    this.onSubmit(values, formData2)
+                }
             }
         })
     }

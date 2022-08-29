@@ -221,30 +221,12 @@ async function queryActiveList(p) {
     const method = '/specialPromotion/queryScopeOverlapEvents.ajax';
     const params = { service, type, data, method };
     const response = await axios.post(url + method, params);
-    // const response = {
-    //     "code": "000",
-    //     "eventConfigInfoList": [
-    //         {
-    //             "eventEndDate": 20220130,
-    //             "eventName": "千人千面-ldd",
-    //             "eventStartDate": 20220126,
-    //             "eventWay": 85,
-    //             "groupID": 11157,
-    //             "itemID": 7057398833826761621,
-    //             "shopIDList": [
-    //                 76069386
-    //             ]
-    //         }
-    //     ],
-    //     "message": "执行成功",
-    //     "traceID": "CC040fbb0a34e84d5db640ae3bf977320f"
-    // };
     const { code, message: msg, eventConfigInfoList = [] } = response
     if (code === '000') {
         return eventConfigInfoList
     }
     message.error(msg);
-    return [];
+    return false;
 }
 
 // 活动规则

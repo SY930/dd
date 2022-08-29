@@ -279,12 +279,12 @@ class MyFaceRule extends Component {
                 }
             }) : []
         }
-        linkUrlOption = empty.concat(linkUrlOption);
+        // linkUrlOption = linkUrlOption;
         let activitySelectOption = [];
         activitySelectOption = [...linkUrlOption];
 
         if (params === 'event_60') {
-            activitySelectOption = [{ ...empty[0] }, { label: '完善资料送礼', value: '60' }]
+            activitySelectOption = [{ label: '完善资料送礼', value: '60' }]
         }
         return activitySelectOption
     }
