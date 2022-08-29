@@ -122,7 +122,7 @@ class SendGiftPanel extends Component {
             validatingStatus: null,
             cellNo: ''
         }, () => {
-            this.props.form.resetFields();
+            this.props.form.resetFields(['cellNo']);
             this.props.form.setFieldsValue({cellNo: {number: ''}});
             this.props.hideModal()
         });

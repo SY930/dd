@@ -13,15 +13,20 @@ class SendRecords extends Component {
     filters: {},
   }
 
+  componentDidMount() {
+    this.getSendRecordList({
+      pageNo: 1,
+      pageSize: 10,
+    })
+  }
+
   componentWillReceiveProps(nextProps) {
     const { activeKey } = nextProps
-    if(nextProps.activeKey != this.props.activeKey) {
-      if(activeKey == 'send_gift') {
-        this.getSendRecordList({
-          pageNo: 1,
-          pageSize: 10,
-        })
-      }
+    if(activeKey == 'send_gift') {
+      this.getSendRecordList({
+        pageNo: 1,
+        pageSize: 10,
+      })
     }
   }
   getSendRecordList = (params) => {
@@ -121,7 +126,7 @@ class SendRecords extends Component {
         dataIndex: 'operateRemark',
         width: 180,
         render: (text) => {
-          return text ? <Tooltip title={text}></Tooltip> : '--'
+          return text ? <Tooltip title={text}>{text}</Tooltip> : '--'
         }
       },
     ]
@@ -131,7 +136,7 @@ class SendRecords extends Component {
           <Form layout='inline'>
             <Form.Item label='赠送时间' wrapperCol={{ span: 18 }} labelCol={{ span: 6 }}>
               {getFieldDecorator("time", {
-              })(<RangePicker />)}
+              })(<RangePicker showTime format='YYYY-MM-DD HH:mm:ss' />)}
             </Form.Item>
           </Form>
         </Col>

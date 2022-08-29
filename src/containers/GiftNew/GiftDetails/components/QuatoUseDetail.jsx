@@ -9,6 +9,7 @@ import {
   UpdateSendorUsedParams,
   UpdateTabKey,
   FetchQuotaCardBatchNo,
+  FetchQuotaList,
 } from '../../_action';
 import SendCard from '../../GiftInfo/SendCard';
 import QuotaCardBatchSold from '../../GiftInfo/QuatoCardBatchSold';
@@ -43,8 +44,37 @@ class QuatoUseDetail extends Component {
     UpdateTabKey({
       key: activeKey,
     });
-    this.setState({ activeKey, formData });
+    this.setState({ activeKey, formData }, () => {
+      this.getData()
+    });
   }
+
+  getData = (_params = {}) => {
+    const { giftDetailInfo: { giftItemID }, FetchQuotaListAC } = this.props;
+    const _key = this.state.activeKey
+    let params = { ...{ pageNo: 1, pageSize: 10, giftItemID }, ..._params }
+    let callserver = '';
+    if (_key === 'send') {
+        callserver = '/coupon/couponQuotaService_getQuotaBatch.ajax';
+    } else {
+        callserver = '/coupon/couponQuotaService_getQuotaBatchDetails.ajax';
+    }
+    if (_key === 'made') {
+        const { batchNO } = this.props;
+        params = { ...{ batchNO: batchNO || '' }, ...params }
+    }
+    let dataConfig = '';
+    if (_key === 'send') {
+        dataConfig = 'data.quotaCardList';
+    } else {
+        dataConfig = 'data.quotaBatchDetails';
+    }
+    return FetchQuotaListAC({
+        params,
+        callserver,
+        dataConfig,
+    });
+}
 
   render() {
     const { giftDetailInfo } = this.props
@@ -107,6 +137,7 @@ function mapDispatchToProps(dispatch) {
     UpdateSendorUsedParams: opts => dispatch(UpdateSendorUsedParams(opts)),
     UpdateTabKey: opts => dispatch(UpdateTabKey(opts)),
     fetchQuotaCardBatchNo: opts => dispatch(FetchQuotaCardBatchNo(opts)),
+    FetchQuotaListAC: opts => dispatch(FetchQuotaList(opts)),
   }
 }
 

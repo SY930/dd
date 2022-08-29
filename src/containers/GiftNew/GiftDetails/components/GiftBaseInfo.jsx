@@ -11,16 +11,20 @@ class GiftBaseInfo extends Component {
     shopVisible: false,
     searchValue: '',
     shopNamesData: [],
+    page: 1,
+    ruleVisible: false,
+    moreRule: [],
   }
 
   componentWillReceiveProps(nextProps) {
     const shopNames = this.props.giftDetailInfo.shopNames
-    console.log(shopNames)
-    const shopNamesData = shopNames ? shopNames.split(',').map(item => {
+    const shopIds = this.props.giftDetailInfo.shopIDs ? this.props.giftDetailInfo.shopIDs.split(',') : []
+    const shopNamesData = shopNames ? shopNames.split(',').map((item, index) => {
       return {
-        shopName: item
+        shopName: item,
+        shopId: shopIds[index],
       }
-    }): []
+    }) : []
     this.setState({
       shopNamesData
     })
@@ -75,33 +79,35 @@ class GiftBaseInfo extends Component {
     const { giftDetailInfo } = this.props
     const { shopNames, shopScopeType, selectBrands } = giftDetailInfo
     let selectedBrands = selectBrands && selectBrands.map(target => `${target.targetName}`).join(',') || '';
-    selectedBrands = selectedBrands.length > 30 ? <Tooltip title={selectedBrands}>{selectedBrands.substr(0,30) + '...'}</Tooltip> : selectedBrands
+    selectedBrands = selectedBrands.length > 30 ? <Tooltip title={selectedBrands}>{selectedBrands.substr(0, 30) + '...'}</Tooltip> : selectedBrands
     if (!shopNames) {
       return ''
     }
-    if(shopNames == '不限') {
-        return '全部门店'
+    if (shopNames == '不限') {
+      return '全部门店'
     }
     const shopsNum = shopNames.split(',').length
     if (shopScopeType == 1) {
-      return shopNames.length > 30 ? <span>{shopNames.substr(0, 30) + '...'} <a onClick={() => {this.setState({shopVisible: true})}}>{`${shopsNum}家门店`}</a></span> : shopNames
+      return shopNames.length > 30 ? <span>{shopNames.substr(0, 30) + '...'} <a onClick={() => { this.setState({ shopVisible: true }) }}>{`${shopsNum}家门店`}</a></span> : shopNames
     } else {
-      return shopNames.length > 30 ? <span>仅 {selectedBrands} 品牌可用，其中 {shopNames.substr(0, 30) + '...'} <a onClick={() => {this.setState({shopVisible: true})}}>{`${shopsNum}家门店`}</a> 店铺不可用</span> : `仅 ${selectedBrands} 品牌可用，其中${shopNames}店铺不可用`
+      return shopNames.length > 30 ? <span>仅 {selectedBrands} 品牌可用，其中 {shopNames.substr(0, 30) + '...'} <a onClick={() => { this.setState({ shopVisible: true }) }}>{`${shopsNum}家门店`}</a> 店铺不可用</span> : `仅 ${selectedBrands} 品牌可用，其中${shopNames}店铺不可用`
     }
   }
 
   queryShops = () => {
     const { searchValue, shopNamesData } = this.state
     const shopNames = this.props.giftDetailInfo.shopNames
-    const shopData = shopNames ? shopNames.split(',').map(item => {
+    const shopIds = this.props.giftDetailInfo.shopIDs ? this.props.giftDetailInfo.shopIDs.split(',') : []
+    const shopData = shopNames ? shopNames.split(',').map((item, index) => {
       return {
-        shopName: item
+        shopName: item,
+        shopId: shopIds[index],
       }
-    }): []
+    }) : []
     let filterShops = shopNamesData.filter(item => {
       return item.shopName.indexOf(searchValue) != -1
     })
-    if(!searchValue) {
+    if (!searchValue) {
       this.setState({
         shopNamesData: shopData
       })
@@ -111,13 +117,38 @@ class GiftBaseInfo extends Component {
       })
     }
   }
+
+  showMoreRules = (rules) => {
+    this.setState({
+      ruleVisible: true,
+      moreRule: rules,
+    })
+  }
+
+  renderGiftRule = (rules) => {
+    if (!rules.length) {
+      return ''
+    }
+    let ruleStr = rules.join('/')
+    ruleStr = ruleStr.length > 30 ? ruleStr.substr(0, 30) + '...' : ruleStr
+    const ruleArr = ruleStr.split('/')
+    return <div>
+      {ruleArr.map((item, idx) => (<span
+        key={idx}
+      >{`${++idx}、${item}`}<br /></span>))}
+      {ruleStr.length > 30 ? <a onClick={() => this.showMoreRules(rules)}>查看详情</a> : null}
+    </div>
+  }
+
   render() {
     const { giftDetailInfo } = this.props
     const columns = this.generateColumns();
     const dataSource = this.generateDataSource();
-    const shopData = giftDetailInfo.shopNames ? giftDetailInfo.shopNames.split(',').map(item => {
+    const shopIds = giftDetailInfo.shopIDs ? giftDetailInfo.shopIDs.split(',') : []
+    const shopData = giftDetailInfo.shopNames ? giftDetailInfo.shopNames.split(',').map((item, index) => {
       return {
-        shopName: item
+        shopName: item,
+        shopId: shopIds[index],
       }
     }) : []
 
@@ -128,14 +159,24 @@ class GiftBaseInfo extends Component {
         width: 60,
         className: 'TableTxtCenter',
         render: (text, record, index) => {
-          return index + 1
+          return index + 1 + (this.state.page - 1) * 10
         }
+      },
+      {
+        title: '门店ID',
+        key: 'shopId',
+        dataIndex: 'shopId',
+        width: 120,
+        className: 'TableTxtCenter',
+        render: (text) => (
+          <Tooltip title={text}>{text}</Tooltip>
+        )
       },
       {
         title: '门店名称',
         key: 'shopName',
         dataIndex: 'shopName',
-        width: 360,
+        width: 240,
         className: 'TableTxtCenter',
         render: (text) => (
           <Tooltip title={text}>{text}</Tooltip>
@@ -166,15 +207,13 @@ class GiftBaseInfo extends Component {
               <label className={styles.baseKey}>记录实收金额：</label>
               <span className={styles.baseValue}>{giftDetailInfo.price}</span>
             </Col>
-            <Col span={14} style={{ marginBottom: 12 }}>
-              <label className={styles.baseKey}>礼品详情：</label>
-              <span className={styles.baseValue}>{giftDetailInfo.giftRemark}</span>
+            <Col span={14} style={{ marginBottom: 12, display: 'flex' }}>
+              <label className={styles.baseKey} style={{ width: 100, display: 'inline-block' }}>礼品详情：</label>
+              <span className={styles.baseValue} style={{ flex: 1 }}>{giftDetailInfo.giftRemark}</span>
             </Col>
             <Col span={14} style={{ marginBottom: 18, display: 'flex' }}>
               <label className={styles.baseKey}>使用规则：</label>
-              <span className={styles.baseValue}>{giftDetailInfo.giftRule && giftDetailInfo.giftRule.map((item, idx) => (<span
-                key={idx}
-              >{`${++idx}、${item}`}<br /></span>))}</span>
+              <span className={styles.baseValue}>{this.renderGiftRule(giftDetailInfo.giftRule)}</span>
             </Col>
             <Col span={16} style={{ paddingLeft: 20 }}>
               <p style={{ marginBottom: 10 }}>{giftDetailInfo.presentType === 4 ? `礼品详情：${giftDetailInfo.couponPackageBaseInfo && giftDetailInfo.couponPackageBaseInfo.couponPackageName}券包` : '礼品详情'}</p>
@@ -203,9 +242,9 @@ class GiftBaseInfo extends Component {
               <label className={styles.baseKey}>礼品价值：</label>
               <span className={styles.baseValue}>{giftDetailInfo.giftValue}</span>
             </Col>}
-            <Col span={6} style={{ marginBottom: 12 }}>
-              <label className={styles.baseKey}>礼品详情：</label>
-              <span className={styles.baseValue}>{giftDetailInfo.giftRemark}</span>
+            <Col span={6} style={{ marginBottom: 12, display: 'flex' }}>
+              <label className={styles.baseKey} style={{ width: 100, display: 'inline-block' }}>礼品详情：</label>
+              <span className={styles.baseValue} style={{ flex: 1 }}>{giftDetailInfo.giftRemark}</span>
             </Col>
             {giftDetailInfo.giftType != '113' ? <Col span={18} style={{ marginBottom: 12 }}>
               <label className={styles.baseKey}>适用门店：</label>
@@ -213,17 +252,29 @@ class GiftBaseInfo extends Component {
             </Col> : null}
             <Col span={14} style={{ marginBottom: 18, display: 'flex' }}>
               <label className={styles.baseKey}>使用规则：</label>
-              <span className={styles.baseValue}>{giftDetailInfo.giftRule && giftDetailInfo.giftRule.map((item, idx) => (<span
-                key={idx}
-              >{`${++idx}、${item}`}<br /></span>))}</span>
+              <span className={styles.baseValue}>{this.renderGiftRule(giftDetailInfo.giftRule)}</span>
             </Col>
           </Row>
         }
         <Modal
+          title='适用规则详情'
+          visible={this.state.ruleVisible}
+          onCancel={() => { this.setState({ ruleVisible: false }) }}
+          footer={[<Button onClick={() => { this.setState({ ruleVisible: false }) }}>关闭</Button>]}
+        >
+          {
+            <div>
+              {this.state.moreRule.map((item, idx) => (<span
+                key={idx}
+              >{`${++idx}、${item}`}<br /></span>))}
+            </div>
+          }
+        </Modal>
+        <Modal
           title='查看门店'
           visible={this.state.shopVisible}
           onCancel={() => { this.setState({ shopVisible: false }) }}
-          footer={[<Button onClick={() => { this.setState({ shopVisible: false }) }}>关闭</Button>]}
+          footer={[<Button onClick={() => { this.setState({ shopVisible: false, page: 1 }) }}>关闭</Button>]}
         >
           <div style={{ display: 'flex', alignItems: 'center', marginBottom: 15, justifyContent: 'space-between' }}>
             <div>
@@ -237,9 +288,16 @@ class GiftBaseInfo extends Component {
             columns={shopColumns}
             dataSource={this.state.shopNamesData}
             bordered
+            rowKey={'shopId'}
             pagination={{
               pageSize: 10,
-              total: this.state.shopNamesData.length || 0
+              total: this.state.shopNamesData.length || 0,
+              current: this.state.page,
+              onChange: (page) => {
+                this.setState({
+                  page,
+                })
+              }
             }}
           ></Table>
         </Modal>
