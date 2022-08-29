@@ -63,13 +63,11 @@ class ManyFace extends Component {
         if (value === '2' && key === 'sceneList') { // banner
             form1 && form1.setFieldsValue({ triggerSceneList: [11] })
             form2 && form2.setFieldsValue({ faceRule: [] })
-            // console.log("🚀 ~ file: index.jsx ~ line 66 ~ ManyFace ~ from2", form2)
             this.props.onChangDecorateType('2')
         }
         if (value === '1' && key === 'sceneList') {
             form1 && form1.setFieldsValue({ triggerSceneList: [1] }) // 弹窗海报
             form2 && form2.setFieldsValue({ faceRule: [] })
-            // console.log("🚀 ~ file: index.jsx ~ line 72 ~ ManyFace ~ from2", form2)
             this.props.onChangDecorateType('1')
         }
 
@@ -108,7 +106,7 @@ class ManyFace extends Component {
                     break
                 }
             }
-            const eventFlage = item.triggerEventInfoList.some(itm => _.isEmpty(itm.triggerEventCustomInfo) || itm.triggerEventCustomInfo === '{}' || item.triggerEventValue)
+            const eventFlage = item.triggerEventInfoList.some(itm => _.isEmpty(itm.triggerEventCustomInfo) || itm.triggerEventCustomInfo === '{}' || !item.triggerEventValue)
             if (eventFlage) {
                 flag = true;
                 message.warning('请选择触发事件~~')
@@ -274,7 +272,6 @@ class ManyFace extends Component {
     onSubmit = (values, formData2) => {
         const { itemID } = this.props
         const { eventRange, timeList, validCycle = [], cycleType, ...others1 } = values;
-        console.log("🚀 ~ file: index.jsx ~ line 272 ~ ManyFace ~ values", values)
         const newEventRange = this.formatEventRange(eventRange);
         const newTimeList = this.formatTimeList(timeList);
 
@@ -340,104 +337,6 @@ class ManyFace extends Component {
         const { itemID } = this.props;
         if (itemID) {
             getEvent({ itemID }).then((obj) => {
-                // const obj = {
-                //     "groupID": "11157",
-                //     "data": {
-                //       "eventName": "千人千面",
-                //       "clientType": "2",
-                //       "sceneList": "2",
-                //       "triggerSceneList": [
-                //         "11"
-                //       ],
-                //       "shopIDList": [
-                //         "76058319"
-                //       ],
-                //       excludedDate: ["20220818"],
-                //       cycleType: "w",
-                //       validCycle: ["w1", "w3"],
-                //       "eventStartDate": "20220826",
-                //       "eventEndDate": "20220920",
-                //       "eventWay": "85",
-                //       "shopRange": "1",
-                //       "groupID": "11157",
-                //       "userName": "xinweixin",
-                //       "userID": "206787"
-                //     },
-                //     "eventConditionInfos": [
-                //       {
-                //         "conditionType": "1",
-                //         "conditionName": "是否持卡会员",
-                //         "conditionValue": "whetherHasCard",
-                //         "targetName": "持卡会员",
-                //         "targetValue": "1",
-                //         "triggerEventInfoList": [
-                //           {
-                //             "parentId": "0",
-                //             "decorateInfo": {
-                //               "imagePath": "http://res.hualala.com/basicdoc/65ee73f7-7dbc-455e-962f-e12056d319dd.jpeg"
-                //             },
-                //             "triggerEventCustomInfo": "234",
-                //             "triggerEventValue": "customLink",
-                //             "triggerEventName": "自定义链接"
-                //           },
-                //           {
-                //             "decorateInfo": {
-                //               "imagePath": "http://res.hualala.com/basicdoc/1f4a4ee1-7201-45c7-a767-f9c11bb3e035.png"
-                //             },
-                //             "parentId": "0",
-                //             "triggerEventCustomInfo": "{\"foodName\":\"苹果茶\",\"unit\":\"份\",\"brandID\":\"0\"}",
-                //             "triggerEventValue": "shoppingCartAddFood",
-                //             "triggerEventName": "菜品加入购物车"
-                //           }
-                //         ],
-                //         "decorateInfo": {
-                //           "imagePath": ""
-                //         },
-                //         "clientType": "2"
-                //       },
-                //       {
-                //         "conditionType": "3",
-                //         "conditionName": "测试卡群体",
-                //         "conditionValue": "7133035308139940757",
-                //         "targetName": "",
-                //         "targetValue": "",
-                //         "triggerEventInfoList": [
-                //           {
-                //             "decorateInfo": {
-                //               "imagePath": "http://res.hualala.com/basicdoc/2a5765e7-d307-4464-ab4a-3a80926d6aca.jpeg"
-                //             },
-                //             "parentId": "l7a2uohf",
-                //             "triggerEventCustomInfo": "/customer/cardList",
-                //             "triggerEventValue": "miniAppPage",
-                //             "triggerEventName": "小程序"
-                //           },
-                //           {
-                //             "decorateInfo": {
-                //               "imagePath": "http://res.hualala.com/basicdoc/df79de6c-7d64-4c85-8225-2be8fef19374.png"
-                //             },
-                //             "parentId": "l7a2uohf",
-                //             "triggerEventCustomInfo": "2222",
-                //             "triggerEventValue": "speedDial",
-                //             "triggerEventName": "一键拨号"
-                //           },
-                //           {
-                //             "decorateInfo": {
-                //               "imagePath": "http://res.hualala.com/basicdoc/b2d2e642-fd37-468e-a48d-a40d36e06075.png"
-                //             },
-                //             "parentId": "l7a2uohf",
-                //             "triggerEventCustomInfo": "{\"eventID\":\"7099385789861330949\",\"eventWay\":\"65\",\"eventName\":\"分享裂变\",\"shopID\":\"7099385789861330949\"}",
-                //             "triggerEventValue": "event_65",
-                //             "triggerEventName": "分享裂变"
-                //           }
-                //         ],
-                //         "decorateInfo": {
-                //           "imagePath": ""
-                //         },
-                //         "clientType": "2"
-                //       },
-                //     ],
-                //     timeList: [{startTime: "1730", endTime: "1859"}, {startTime: "2020", endTime: "2320"}]
-                //   }
                 const { data, eventConditionInfos = [], timeList, triggerSceneList } = obj;
                 const { step1Data, setp2Data } = this.setData4Step1(data, eventConditionInfos, timeList, triggerSceneList);
                 const formData2 = this.setData4Step2(eventConditionInfos, step1Data.sceneList);
@@ -478,6 +377,7 @@ class ManyFace extends Component {
                 ...data, eventRange, ...timsObj, advMore: true, cycleType,
             },
         }
+        this.props.onChangDecorateType(sceneList)
 
         return formData;
     }
@@ -546,7 +446,6 @@ class ManyFace extends Component {
            
             return { ...item, id: item.itemID, isShowDishSelector: false }
         })
-        console.log("🚀 ~ file: index.jsx ~ line 537 ~ ManyFace ~ data ~ data", data)
         return data;
     }
 
