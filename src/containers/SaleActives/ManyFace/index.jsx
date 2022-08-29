@@ -35,6 +35,7 @@ class ManyFace extends Component {
             allMallActivity: [],
             formDataLen: 0, // 数据的长度
             flag: false,
+            paramsValue: 1,
         }
     // this.formRef = null;
     // this.handleSubmit = this.handleSubmit.bind(this);
@@ -666,8 +667,22 @@ class ManyFace extends Component {
     }
 
     viewRule = () => {
-        this.setState({
-            viewRuleVisible: true,
+        const { accountInfo } = this.props;
+        axios.post('/api/v1/universal', {
+            service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+            method: '/specialPromotion/queryEventParam',
+            type: 'post',
+            data: { groupID: accountInfo.get('groupID'), eventWay: 85, paramName: 'executePriorityByCreateTime' },
+        }).then((res) => {
+            if (res.code === '000') {
+                const { eventParamInfo = {} } = res;
+                this.setState({
+                    paramsValue: eventParamInfo.paramsValue,
+                    viewRuleVisible: true,
+                })
+            } else {
+                message.error(res.message);
+            }
         })
     }
 
@@ -707,9 +722,6 @@ class ManyFace extends Component {
                     })
                 })
             }
-            // else {
-            //     this.onSubmit(values, formData2)
-            // }
         })
     }
 
@@ -728,8 +740,14 @@ class ManyFace extends Component {
     }
 
     handleRuleOk = () => {
-        putRule({}).then(() => {
-            this.onCloseViewRuleModal();
+        const { accountInfo } = this.props
+        putRule({
+            eventWay: 85,
+            groupID: accountInfo.get('groupID'),
+            paramName: 'executePriorityByCreateTime',
+            paramValue: this.state.paramValue,
+        }).then((res) => {
+            if (res) { this.onCloseViewRuleModal(); }
         })
     }
 
@@ -812,7 +830,7 @@ class ManyFace extends Component {
                     <div className={styles.ruleModalTitle}> <span className={styles.name}>千人千面</span>当同一时间、同一门店、同一投放类型、同一投放位置下存在多个活动时，将按照以下规则执行 </div>
                     <div>
                         <span className={styles.computeRule}>计算规则</span>
-                        <RadioGroup name="radiogroup" defaultValue={1}>
+                        <RadioGroup name="radiogroup" defaultValue={this.state.paramsValue} onChange={(value) => { this.setState({ paramsValue: value })}}>
                             <Radio value={1}>按创建时间最近的执行</Radio>
                             <Radio value={2}>按创建时间最早的执行</Radio>
                         </RadioGroup></div>

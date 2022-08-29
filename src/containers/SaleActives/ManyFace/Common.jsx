@@ -164,7 +164,7 @@ const formItems3 = {
         type: 'custom',
         label: '活动排除日期',
         render: d => d()(<DateTag limit={true} />),
-        defaultValue: [[moment]],
+        defaultValue: [[]],
     },
 };
 const KEY3 = ['timeList', 'cycleType'];

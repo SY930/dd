@@ -260,7 +260,6 @@ class MySpecialActivities extends React.Component {
             groupID: '',
             isCopy: false,
             pushMessageMpID: '',
-            groupID: '',
             channelContent: '',
             launchChannelID: '',
             launchChannelIDWX: '',
@@ -274,6 +273,7 @@ class MySpecialActivities extends React.Component {
             activeStatus: '',
             sortedChannelList: [],
             viewRuleVisibles: false,
+            paramsValue: 1,
         };
         this.cfg = {
             eventWay: [
@@ -355,7 +355,7 @@ class MySpecialActivities extends React.Component {
     
     querySortedChannelList = () => {
         axiosData('/launchchannel/launchChannelService_querySortedChannelList.ajax',
-          {}, {}, { path: '' },
+          { }, {}, { path: '' },
           'HTTP_SERVICE_URL_PROMOTION_NEW')
           .then((res) => {
             if (res.code == '000') {
@@ -366,6 +366,25 @@ class MySpecialActivities extends React.Component {
           }).catch(err => {
             // empty catch
           });
+      }
+
+      // 活动规则
+      queryActiveRule = () => {
+        axiosData('/specialPromotion/queryEventParam',
+        { eventWay: 85, groupID: getStore().getState().user.getIn(['accountInfo', 'groupID']), paramName: 'executePriorityByCreateTime' }, {}, { path: '' },
+        'HTTP_SERVICE_URL_PROMOTION_NEW')
+        .then((res) => {
+          if (res.code == '000') {
+            const { eventParamInfo = {} } = res;
+            this.setState({
+              paramsValue: eventParamInfo.paramsValue,
+              viewRuleVisibles: true,
+            })
+          }
+        }).catch(err => {
+          // empty catch
+        });
+        // this.setState({viewRuleVisibles: true })
       }
 
     clearUrl() {
@@ -802,14 +821,14 @@ class MySpecialActivities extends React.Component {
     // 修改活动规则
     handleRuleOk = () => {
         const callServer = axiosData(
-            '',
-            {},
+            '/specialPromotion/updateEventParam',
+            {eventWay: 85, groupID: getStore().getState().user.getIn(['accountInfo', 'groupID']), paramName: 'executePriorityByCreateTime', paramValue: this.state.paramValue},
             {},
             { path: '' },
-            'HTTP_SERVICE_URL_WECHAT'
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
         );
         callServer.then(data => {
-            let { result: { code, message: msg } } = data
+            let { result: { code } } = data
             if (code === '000') {
                 this.setState({ viewRuleVisibles: false });
             }
@@ -1159,7 +1178,6 @@ class MySpecialActivities extends React.Component {
 
     render() {
         const { v3visible, itemID, view, isShowCopyUrl, urlContent, curKey, tabKeys, stylesShow, dataSource, viewRuleVisibles } = this.state;
-        console.log("🚀 ~ file: index.jsx ~ line 1162 ~ MySpecialActivities ~ render ~ viewRuleVisibles", viewRuleVisibles)
         return (
             <div style={{ backgroundColor: this.state.authStatus ? '#F3F3F3' : '#fff' }} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 {
@@ -1265,7 +1283,7 @@ class MySpecialActivities extends React.Component {
                         <div className={styles.ruleModalTitle}> <span className={styles.name}>千人千面</span>当同一时间、同一门店、同一投放类型、同一投放位置下存在多个活动时，将按照以下规则执行 </div>
                         <div>
                             <span className={styles.computeRule}>计算规则</span>
-                            <RadioGroup name="radiogroup" defaultValue={1}>
+                            <RadioGroup name="radiogroup" defaultValue={this.state.paramsValue} onChange={(value) => { this.setState({ paramsValue: value })}}>
                                 <Radio value={1}>按创建时间最近的执行</Radio>
                                 <Radio value={2}>按创建时间最早的执行</Radio>
                             </RadioGroup>
@@ -1377,7 +1395,7 @@ class MySpecialActivities extends React.Component {
                                         </Button>
                                 </span>
                                 <span>
-                                   <Button type="ghost" style={{ marginRight: 10 }} onClick={() => { this.setState({viewRuleVisibles: true }) }}>活动规则</Button>
+                                   <Button type="ghost" style={{ marginRight: 10 }} onClick={this.queryActiveRule}>活动规则</Button>
                                 </span>
                                 {this.renderPlanBtn()}
                               

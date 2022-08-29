@@ -218,7 +218,7 @@ async function searchAllMallActivity() {
 async function queryActiveList(p) {
     const { groupID } = getAccountInfo();
     const data = { groupID, ...p };
-    const method = 'specialPromotion/queryScopeOverlapEvents';
+    const method = '/specialPromotion/queryScopeOverlapEvents';
     const params = { service, type, data, method };
     const response = await axios.post(url + method, params);
     // const response = {
@@ -248,18 +248,18 @@ async function queryActiveList(p) {
 }
 
 // 活动规则
-async function putRule() {
+async function putRule(p) {
     const { groupID } = getAccountInfo();
-    // const data = { groupID, operationMode: '3' };
-    // const method = '/shop/getShopBaseInfo.svc';
-    // const params = { service: 'HTTP_SERVICE_URL_SHOPAPI', type, data, method };
-    // const response = await axios.post(url + method, params);
-    // const { code, message: msg, data: { shopBaseInfoDetails = [] } } = response;
-    // if (code === '000') {
-    // return [{a: 1}];
-    // }
-    // message.error(msg);
-    // return [];
+    const data = { groupID, ...p };
+    const method = '/specialPromotion/updateEventParam';
+    const params = { service, type, data, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg } = response;
+    if (code === '000') {
+        return true
+    }
+    message.error(msg);
+    return false;
 }
 
 
