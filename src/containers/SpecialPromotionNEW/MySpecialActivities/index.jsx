@@ -374,12 +374,10 @@ class MySpecialActivities extends React.Component {
         { eventWay: 85, groupID: getStore().getState().user.getIn(['accountInfo', 'groupID']), paramName: 'executePriorityByCreateTime' }, {}, { path: '' },
         'HTTP_SERVICE_URL_PROMOTION_NEW')
         .then((res) => {
-          console.log("🚀 ~ file: index.jsx ~ line 377 ~ MySpecialActivities ~ .then ~ res", res)
           if (res.code == '000') {
             const { data: { eventParamInfo = {} }} = res;
-            console.log("🚀 ~ file: index.jsx ~ line 379 ~ MySpecialActivities ~ .then ~ eventParamInfo", eventParamInfo)
             this.setState({
-              paramsValue: eventParamInfo.paramsValue,
+              paramsValue: eventParamInfo.paramValue,
               viewRuleVisibles: true,
             })
           }
@@ -824,19 +822,22 @@ class MySpecialActivities extends React.Component {
     handleRuleOk = () => {
         const callServer = axiosData(
             '/specialPromotion/updateEventParam.ajax',
-            {eventWay: 85, groupID: getStore().getState().user.getIn(['accountInfo', 'groupID']), paramName: 'executePriorityByCreateTime', paramValue: this.state.paramValue},
+            {eventWay: 85, groupID: getStore().getState().user.getIn(['accountInfo', 'groupID']), paramName: 'executePriorityByCreateTime', paramValue: this.state.paramsValue},
             {},
             { path: '' },
             'HTTP_SERVICE_URL_PROMOTION_NEW'
         );
         callServer.then(data => {
-            let { result: { code } } = data
+            console.log("🚀 ~ file: index.jsx ~ line 831 ~ MySpecialActivities ~ data", data)
+            let { code, message } = data
             if (code === '000') {
+                message.success('更新成功')
                 this.setState({ viewRuleVisibles: false });
             }
         }).catch(({ message: msg }) => {
+            console.log("🚀 ~ file: index.jsx ~ line 838 ~ MySpecialActivities ~ msg", msg)
             this.setState({ viewRuleVisibles: false })
-            message.error(msg)
+            // message.error(msg)
         })
     }
 
@@ -1179,7 +1180,7 @@ class MySpecialActivities extends React.Component {
 
 
     render() {
-        const { v3visible, itemID, view, isShowCopyUrl, urlContent, curKey, tabKeys, stylesShow, dataSource, viewRuleVisibles } = this.state;
+        const { v3visible, itemID, view, isShowCopyUrl, curKey, tabKeys, stylesShow, dataSource, viewRuleVisibles } = this.state;
         return (
             <div style={{ backgroundColor: this.state.authStatus ? '#F3F3F3' : '#fff' }} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 {
@@ -1285,7 +1286,7 @@ class MySpecialActivities extends React.Component {
                         <div className={styles.ruleModalTitle}> <span className={styles.name}>千人千面</span>当同一时间、同一门店、同一投放类型、同一投放位置下存在多个活动时，将按照以下规则执行 </div>
                         <div>
                             <span className={styles.computeRule}>计算规则</span>
-                            <RadioGroup name="radiogroup" defaultValue={this.state.paramsValue} onChange={(value) => { this.setState({ paramsValue: value })}}>
+                            <RadioGroup name="radiogroup" defaultValue={this.state.paramsValue} onChange={({ target }) => { this.setState({ paramsValue: target.value })}}>
                                 <Radio value={1}>按创建时间最近的执行</Radio>
                                 <Radio value={2}>按创建时间最早的执行</Radio>
                             </RadioGroup>
