@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
-import { Modal, Steps, Button, message, Radio } from 'antd';
+import { Modal, Steps, Spin, message, Radio } from 'antd';
 import moment from 'moment';
 import _ from 'lodash'
 import { jumpPage, closePage, axios } from '@hualala/platform-base';
@@ -36,15 +36,22 @@ class ManyFace extends Component {
             formDataLen: 0, // 数据的长度
             flag: false,
             paramsValue: 1,
+            loading: true,
         }
     // this.formRef = null;
     // this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     componentDidMount() {
+        const { itemID } = this.props
         this.getInitData();
         this.searchCrmTag();
         this.props.getSubmitFn(this.handleSubmit);
+        if (!itemID) {
+            this.setState({
+                loading: false,
+            })
+        }
     }
 
     onSetForm1 = (form) => {
@@ -196,7 +203,6 @@ class ManyFace extends Component {
 
     // 小程序3.0 banner
     onPreSubmitAppBanner = (faceData, values) => {
-        console.log("🚀 ~ file: index.jsx ~ line 194 ~ ManyFace ~ faceData", faceData)
         const formData2 = faceData.map((item) => {
             item.triggerEventInfoList = item.triggerEventInfoList.map((itm) => {
                 if (['miniAppPage', 'speedDial', 'customLink'].includes(itm.triggerEventValue1)) {
@@ -231,7 +237,6 @@ class ManyFace extends Component {
 
     // 小程序3.0
     onPreSubmitApp = (faceData, values) => {
-        console.log("🚀 ~ file: index.jsx ~ line 225 ~ ManyFace ~ faceData", faceData)
         const formData2 = faceData.map((item) => {
             if (['miniAppPage', 'speedDial', 'customLink'].includes(item.triggerEventValue1)) {
                 item.triggerEventCustomInfo = item.triggerEventCustomInfo1.value || '';
@@ -340,7 +345,7 @@ class ManyFace extends Component {
                 const { data, eventConditionInfos = [], timeList, triggerSceneList } = obj;
                 const { step1Data, setp2Data } = this.setData4Step1(data, eventConditionInfos, timeList, triggerSceneList);
                 const formData2 = this.setData4Step2(eventConditionInfos, step1Data.sceneList);
-                this.setState({ formData1: { ...step1Data, triggerSceneList }, formData2: { faceRule: formData2, ...setp2Data } });
+                this.setState({ formData1: { ...step1Data, triggerSceneList }, formData2: { faceRule: formData2, ...setp2Data }, loading: false });
             });
         }
     }
@@ -399,7 +404,6 @@ class ManyFace extends Component {
     }
 
     setData4AppBanner = (faceData) => {
-        // console.log("🚀 ~ file: index.jsx ~ line 477 ~ ManyFace ~ faceData", faceData)
         const data = faceData.map((item) => {
             if (item.conditionType == '2') { // 会员标签
                 const everyTags = this.state.tagRuleDetails.filter(itm => itm.tagCategoryID == item.conditionValue);
@@ -614,13 +618,12 @@ class ManyFace extends Component {
             },
         }
         queryActiveList(params).then((dataSource) => {
-            console.log("🚀 ~ file: index.jsx ~ line 713 ~ ManyFace ~ queryActiveList ~ dataSource", dataSource)
             if (dataSource) {
                 if (dataSource.length > 0) {
                     this.setState({
-                        occupyShopList: dataSource.reduce((cur, next) => {
+                        occupyShopList: _.union(dataSource.reduce((cur, next) => {
                             return cur.concat(next.shopIDList)
-                        }, []),
+                        }, [])),
                     }, () => {
                         this.handleShowModalTip(dataSource)(() => {
                             this.onSubmit(values, formData2)
@@ -695,41 +698,43 @@ class ManyFace extends Component {
 
 
     render() {
-        const { form1, form2, allActivity, allMallActivity, formData1, formData2, viewRuleVisible } = this.state
+        const { form1, form2, allActivity, allMallActivity, formData1, formData2, viewRuleVisible, loading } = this.state
         return (
             <div className={styles.formContainer}>
                 <div>
-                    <div
-                        style={{
-                            margin: '20px 0 10px 124px',
-                        }}
-                        className={styles.logoGroupHeader}
-                    >基本信息</div>
-                    <Step1
-                        form={form1}
-                        getForm={this.onSetForm1}
-                        formData={formData1}
-                        authLicenseData={this.state.authLicenseData}
-                        onChangeForm={this.onChangeForm}
-                        occupyShopList={this.state.occupyShopList || []}
-                    />
+                    <Spin spinning={loading} delay={500}>
+                        <div
+                            style={{
+                                margin: '20px 0 10px 124px',
+                            }}
+                            className={styles.logoGroupHeader}
+                        >基本信息</div>
+                        <Step1
+                            form={form1}
+                            getForm={this.onSetForm1}
+                            formData={formData1}
+                            authLicenseData={this.state.authLicenseData}
+                            onChangeForm={this.onChangeForm}
+                            occupyShopList={this.state.occupyShopList || []}
+                        />
 
-                    <div
-                        style={{
-                            margin: '70px 0 10px 124px',
-                        }}
-                        className={styles.logoGroupHeader}
-                    >使用规则</div>
-                    <Step2
-                        form2={form2}
-                        form1={form1}
-                        getForm={(form) => { this.setState({ form2: form }) }}
-                        allActivity={allActivity}
-                        allMallActivity={allMallActivity}
-                        isEdit={true}
-                        formData={formData2}
-                        onChangeForm={this.onChangeForm}
-                    />
+                        <div
+                            style={{
+                                margin: '70px 0 10px 124px',
+                            }}
+                            className={styles.logoGroupHeader}
+                        >使用规则</div>
+                        <Step2
+                            form2={form2}
+                            form1={form1}
+                            getForm={(form) => { this.setState({ form2: form }) }}
+                            allActivity={allActivity}
+                            allMallActivity={allMallActivity}
+                            isEdit={true}
+                            formData={formData2}
+                            onChangeForm={this.onChangeForm}
+                        />
+                    </Spin>
                 </div>
                 {viewRuleVisible && <Modal
                     maskClosable={false}

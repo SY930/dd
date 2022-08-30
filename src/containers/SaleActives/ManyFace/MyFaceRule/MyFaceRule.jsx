@@ -674,7 +674,6 @@ class MyFaceRule extends Component {
 
     render() {
         const { value = [], form, clientType, sceneList } = this.props;
-        // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 675 ~ MyFaceRule ~ render ~ value", value)
         // triggerSceneList 支付成功的海报和banner点击触发事件 菜品加入购物车不能有
         // const { length } = value;
         // 防止回显没数据不显示礼品组件

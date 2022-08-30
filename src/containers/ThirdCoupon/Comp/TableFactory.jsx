@@ -37,7 +37,6 @@ export default function connectTable(options) {
             }
             componentDidMount() {
                 this.getData();
-                // console.log("🚀 ~ file: TableFactory.jsx ~ line 39 ~ AsyncTableComponent ~ componentDidMount ~ this", this)
             }
             getData = (opts = {}) => {
                 const { params, $$groupID } = this.props;

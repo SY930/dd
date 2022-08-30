@@ -82,7 +82,6 @@ class NewSendGifts extends NewPromotion {
             },
         ];
         // const { upperLimitVisible } = this.state;
-        // console.log("🚀 ~ file: NewSendGifts.jsx ~ line 85 ~ NewSendGifts ~ render ~ upperLimitVisible", upperLimitVisible)
         return (
             <div>
                 <CustomProgressBar

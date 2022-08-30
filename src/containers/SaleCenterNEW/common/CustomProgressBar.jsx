@@ -108,7 +108,6 @@ class CustomProgressBar extends React.Component {
 
     render() {
         const { steps,eventWay,isUpdate, upperLimitVisible, data, type } = this.props;
-        console.log("🚀 ~ file: CustomProgressBar.jsx ~ line 109 ~ CustomProgressBar ~ render ~ data", data)
         const current = this.state.current;
         const flag = type === '53'; // 用来区分是否要请求礼品限制接口
         if (!(steps instanceof Array && steps.length > 0)) {

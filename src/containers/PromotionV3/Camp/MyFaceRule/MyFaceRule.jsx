@@ -139,7 +139,6 @@ class MyFaceRule extends Component {
     onEventsApp = (idx, key, value) => {
         const item = this.state.eventSelectOption.filter(itm => itm.value == value)
         // const triggerEventCustomInfo1 = item[0].value === "jumpToMiniApp" ? jumpApp : {}
-        // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 163 ~ MyFaceRule ~ triggerEventCustomInfo1", triggerEventCustomInfo1)
         this.onChange(idx, { [key]: value, triggerEventName1: item[0] ? item[0].label : '', triggerEventCustomInfo1: {}, triggerEventCustomInfoApp1: _.cloneDeep(jumpApp) })
     }
 
@@ -248,15 +247,12 @@ class MyFaceRule extends Component {
     initEventSelectOption = () => {
         let eventList = [];
         const { eventSelectOption } = this.state;
-        console.log("🚀 ~ file: MyFaceRule.jsx ~ line 270 ~ MyFaceRule ~ eventSelectOption", eventSelectOption)
         if (this.props.clientType === '1') { // H5餐厅
             eventList = _.filter(eventSelectOption, item => ['', 'customLink', 'shoppingCartAddFood'].includes(item.value))
-            console.log("🚀 ~ file: MyFaceRule.jsx ~ line 273 ~ MyFaceRule ~ eventList h5餐厅", eventList)
         } else { // 小程序3.0
             eventList = _.map(_.filter(eventSelectOption, item => !['', 'miniAppPage'].includes(item.value)), it => ({ ...it, children: this.getAvtivity(it.value) }))
             const restList = _.filter(eventSelectOption, item => ['', 'miniAppPage'].includes(item.value));
             eventList = restList.concat(eventList)
-            console.log("🚀 ~ file: MyFaceRule.jsx ~ line 277 ~ MyFaceRule ~ eventList 3.0：--", eventList)
         }
         this.setState({
             eventSelectOption: eventList,
@@ -474,7 +470,6 @@ class MyFaceRule extends Component {
 
     renderSelect = (i, v, parentValue, parentName) => {
         const options = this.state.eventSelectOption.filter(item => item.value === v.triggerEventValue1) || [];
-        // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 474 ~ MyFaceRule ~ options", options)
         const [option] = options;
         return (<FormItem>
             <Select
@@ -566,7 +561,6 @@ class MyFaceRule extends Component {
 
     render() {
         const { value = [], form, clientType } = this.props;
-        // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 577 ~ MyFaceRule ~ render ~ clientType", clientType, value)
         // const { length } = value;
         // 防止回显没数据不显示礼品组件
         if (!value[0]) {

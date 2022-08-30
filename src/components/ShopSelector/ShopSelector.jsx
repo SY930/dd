@@ -149,7 +149,7 @@ class ShopSelector extends Component {
             return ret.concat({ value: shopInfo.value, label: shopInfo.shopName });
         }, []);
         items = items.map((it) => {
-            if (occupyShopList.includes(+it.value)) {
+            if (occupyShopList.includes(it.value)) {
                 return ({ ...it, sign: true })
             }
             return ({ ...it })

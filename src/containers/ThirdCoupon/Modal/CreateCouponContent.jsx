@@ -917,7 +917,6 @@ class CreateCouponContent extends Component {
         const { form, title, type } = this.props;
         const { getFieldDecorator } = form;
         const { giftItemID, merchantType, editData, aliShops } = this.state;
-        // console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 885 ~ CreateCouponContent ~ render ~ editData", editData, merchantType)
         // let title = '新建第三方支付宝券';
         // if (editData.batchName) {
         //     title = '编辑第三方支付宝券';

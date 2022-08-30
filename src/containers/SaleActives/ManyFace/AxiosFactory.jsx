@@ -221,7 +221,7 @@ async function queryActiveList(p) {
     const method = '/specialPromotion/queryScopeOverlapEvents.ajax';
     const params = { service, type, data, method };
     const response = await axios.post(url + method, params);
-    const { code, message: msg, eventConfigInfoList = [] } = response
+    const { code, message: msg, data: { eventConfigInfoList = [] } } = response
     if (code === '000') {
         return eventConfigInfoList
     }

@@ -78,7 +78,7 @@ class CreateActiveTwo extends Component {
                       </Button>
                       <Button
                           type="primary"
-                          // disabled={operationType === 'detail'}
+                          disabled={isView === 'true'}
                           loading={loading}
                           onClick={this.lockedSaving}
                       >
@@ -92,6 +92,7 @@ class CreateActiveTwo extends Component {
                   <div className={styles.centerLine}>
                     <div className={styles.arrow}></div>
                   </div>
+
                   <Comp 
                      getSubmitFn={(fn) => { this.handleSubmitFn = fn }}
                      itemID={itemID}

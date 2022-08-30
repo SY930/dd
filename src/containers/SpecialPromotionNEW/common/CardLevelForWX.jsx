@@ -372,7 +372,6 @@ class CardLevelForWX extends React.Component {
 
     render() {
         const eventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
-        // console.log("🚀 ~ file: CardLevelForWX.jsx ~ line 369 ~ CardLevelForWX ~ render ~ eventInfo", eventInfo)
         const excludeEvent = eventInfo.excludeEventCardLevelIdModelList || [];
         let { getExcludeCardLevelIds = [], cardLevelRangeType } = this.state;
         let cardInfo = this.props.cardInfo ? this.props.cardInfo.toJS()
