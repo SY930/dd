@@ -44,9 +44,6 @@ class QuatoUseDetail extends Component {
     UpdateTabKey({
       key: activeKey,
     });
-    this.setState({ activeKey, formData }, () => {
-      this.getData()
-    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -55,33 +52,6 @@ class QuatoUseDetail extends Component {
         activeKey: tabKey,
     })
   }
-
-  getData = (_params = {}) => {
-    const { giftDetailInfo: { giftItemID }, FetchQuotaListAC } = this.props;
-    const _key = this.state.activeKey
-    let params = { ...{ pageNo: 1, pageSize: 10, giftItemID }, ..._params }
-    let callserver = '';
-    if (_key === 'send') {
-        callserver = '/coupon/couponQuotaService_getQuotaBatch.ajax';
-    } else {
-        callserver = '/coupon/couponQuotaService_getQuotaBatchDetails.ajax';
-    }
-    if (_key === 'made') {
-        const { batchNO } = this.props;
-        params = { ...{ batchNO: batchNO || '' }, ...params }
-    }
-    let dataConfig = '';
-    if (_key === 'send') {
-        dataConfig = 'data.quotaCardList';
-    } else {
-        dataConfig = 'data.quotaBatchDetails';
-    }
-    return FetchQuotaListAC({
-        params,
-        callserver,
-        dataConfig,
-    });
-}
 
   render() {
     const { giftDetailInfo } = this.props
@@ -98,7 +68,7 @@ class QuatoUseDetail extends Component {
       { label: '卡汇总', key: 'sum' },
     ];
     return (
-      <div className={styles.useContent}>
+      <div className={styles.useContent} key={+new Date() + Math.random()}>
         <Tabs onChange={tabKey => this.onChange(tabKey)} activeKey={activeKey} className={styles.useTabs}>
           {
             tabs.map((tab, index) => {
@@ -117,7 +87,7 @@ class QuatoUseDetail extends Component {
                   </TabPane>
                 )
               }
-              return (<TabPane tab={tab.label} key={tab.key}>
+              return (<TabPane tab={tab.label} key={tab.key} forceRender={false}>
                 <SendCard
                   formData={formData}
                   _key={tab.key}
