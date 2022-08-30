@@ -68,6 +68,9 @@ class ManyFace extends Component {
             form1 && form1.setFieldsValue({ sceneList: '1' })
             this.props.onChangDecorateType('1')
         }
+        if (value === '2' && key === 'clientType') {
+            form1 && form1.setFieldsValue({ triggerSceneList: [1] })
+        }
         if (value === '2' && key === 'sceneList') { // banner
             form1 && form1.setFieldsValue({ triggerSceneList: [11] })
             form2 && form2.setFieldsValue({ faceRule: [] })
@@ -356,8 +359,8 @@ class ManyFace extends Component {
         const eventRange = [moment(sd), moment(ed)];
         const clientType = eventConditionInfos[0] ? String(eventConditionInfos[0].clientType) : '1';
         const shopIDList = slist ? slist.map(x => `${x}`) : [];
-        const sceneList = triggerSceneList.some(item => [1, 2, 3, 4, '1', '2', '3', '4'].includes(item)) ? '1' : '2'
-
+        let sceneList = triggerSceneList.some(item => [1, 2, 3, 4, '1', '2', '3', '4'].includes(item)) ? '1' : '2'
+        sceneList = clientType === '1' ? '1' : sceneList;
         let timsObj = {};
         const TF = 'HH:mm';
         if (times) {
@@ -706,7 +709,6 @@ class ManyFace extends Component {
 
     render() {
         const { form1, form2, allActivity, allMallActivity, formData1, formData2, viewRuleVisible, loading } = this.state
-        console.log("🚀 ~ file: index.jsx ~ line 704 ~ ManyFace ~ render ~ loading", loading)
         return (
             <div className={styles.formContainer}>
                 <div >

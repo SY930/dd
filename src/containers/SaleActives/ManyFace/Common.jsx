@@ -77,11 +77,11 @@ const formItems1 = {
     },
 };
 
-const KEY1 = ['eventType', 'eventName'];
-const KEY2 = ['eventRemark'];
+const KEY1 = ['eventType', 'eventName', 'clientType'];
+const KEY2 = ['sceneList', 'triggerSceneList', 'shopIDList', 'eventRemark'];
+const KEY = ['clientTip'];
 
-
-const formKeys1 = [...KEY1, 'clientType', 'sceneList', 'triggerSceneList', 'shopIDList', ...KEY2];
+const formKeys1 = [...KEY1, KEY, ...KEY2];
 
 
 // const formKeys2 = ['clientType', 'sceneList', 'triggerSceneList', 'shopIDList'];
@@ -181,5 +181,5 @@ const formKeys32 = [...KEY6, ...KEY3, ...KEY4, ...KEY5]
 
 export {
     formItems1, imgURI, formKeys1, href, formItemLayout,
-    TF, DF, KEY1, KEY2, KEY3, KEY4, KEY5, KEY6, formKeys32, formItems3,
+    TF, DF, KEY, KEY1, KEY2, KEY3, KEY4, KEY5, KEY6, formKeys32, formItems3,
 }

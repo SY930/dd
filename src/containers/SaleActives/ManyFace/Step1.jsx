@@ -5,7 +5,7 @@ import BaseForm from 'components/common/BaseForm';
 import { Checkbox, Radio } from 'antd';
 import ShopSelector from 'components/ShopSelector';
 import { getPromotionShopSchema } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
-import { formKeys1, formItems1, formItemLayout } from './Common';
+import { formKeys1, formItems1, formItemLayout, KEY, KEY1, KEY2 } from './Common';
 import { isFilterShopType, axiosData } from '../../../helpers/util'
 import css from './style.less';
 
@@ -34,6 +34,7 @@ class Step1 extends Component {
         if (key === 'triggerSceneList') {
             this.props.onChangeForm(key, value)
         }
+        // if ()
     }
 
     handleChangeScene = ({ target }) => {
@@ -42,6 +43,16 @@ class Step1 extends Component {
 
     handleChangeClientType = ({ target }) => {
         this.props.onChangeForm('clientType', target.value)
+    }
+
+    resetFormKeys = () => {
+        const { form1 } = this.props;
+        console.log("🚀 ~ file: Step1.jsx ~ line 50 ~ Step1 ~ form1", form1)
+        const { newFormKeys } = this.state;
+        if (form1 && form1.getFieldValue('clientType') === '1') {
+            return [...KEY1, ...KEY2]
+        }
+        return newFormKeys
     }
 
     /** formItems 重新设置 */
@@ -82,22 +93,22 @@ class Step1 extends Component {
         }
         return {
             ...other,
-            clientType: { ...clientType, render: renderClientType},
+            clientType: { ...clientType, render: renderClientType },
             sceneList: { ...sceneList, render: renderScene },
             shopIDList: { ...shopIDList, render },
             triggerSceneList: { ...triggerSceneList, render: renderTriggerSceneList },
         };
     }
     render() {
-        const { newFormKeys } = this.state;
         const { formData, getForm } = this.props;
         const newFormItems = this.resetFormItems();
+        const formKeys = this.resetFormKeys()
         return (
             <div className={css.step1}>
                 <BaseForm
                     getForm={getForm}
                     formItems={newFormItems}
-                    formKeys={newFormKeys}
+                    formKeys={formKeys}
                     onChange={this.onChange}
                     formData={formData || {}}
                     formItemLayout={formItemLayout}
