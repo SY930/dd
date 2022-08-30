@@ -34,7 +34,6 @@ class Step1 extends Component {
         if (key === 'triggerSceneList') {
             this.props.onChangeForm(key, value)
         }
-        // if ()
     }
 
     handleChangeScene = ({ target }) => {

@@ -134,16 +134,16 @@ class ManyFace extends Component {
                 const curBanner = item.triggerEventInfoList[j]
                 if (curBanner.triggerEventValue === 'jumpToMiniApp') {
                     const triggerEventCustomInfo = JSON.parse(curBanner.triggerEventCustomInfo);
-                    const noAppID = triggerEventCustomInfo.every(cur => !cur.appID);
+                    const noAppID = triggerEventCustomInfo.some(cur => !cur.appID);
                     if (noAppID) {
                         flag = true
                         message.warn('请填写appID')
-                        return null
+                        break
                     }
                 }
             }
         }
-        console.log(flag, 'flag')
+        // console.log(flag, 'flag')
         return flag;
     }
 
@@ -188,7 +188,7 @@ class ManyFace extends Component {
             }
             if (itm.triggerEventValue === 'jumpToMiniApp') {
                 const triggerEventCustomInfo = JSON.parse(itm.triggerEventCustomInfo);
-                const noAppID = triggerEventCustomInfo.every(cur => !cur.appID);
+                const noAppID = triggerEventCustomInfo.some(cur => !cur.appID);
                 if (noAppID) {
                     flag = true
                     message.warn('请填写appID')
@@ -235,7 +235,7 @@ class ManyFace extends Component {
                 ...item,
             }
         })
-        console.log(formData2, '<<<<formData2')
+        // console.log(formData2, '<<<<formData2')
         return formData2
     }
 

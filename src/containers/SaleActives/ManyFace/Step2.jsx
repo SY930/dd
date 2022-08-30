@@ -1,5 +1,4 @@
 import React, { PureComponent as Component } from 'react';
-import { Form } from 'antd';
 import BaseForm from 'components/common/BaseForm';
 import { formKeys32, formItems3, formItemLayout, KEY6, KEY3, KEY4, KEY5 } from './Common';
 import MyFaceRule from './MyFaceRule/MyFaceRule';
@@ -20,7 +19,6 @@ class Step2 extends Component {
         let newFormKeys = [...KEY6];
         // 日期高级
         if (key === 'advMore') {
-            console.log("🚀 ~ file: Step2.jsx ~ line 24 ~ Step2 ~ value", value)
             if (value) {
                 newFormKeys = [...KEY6, ...KEY3, ...KEY5];
             }
@@ -32,7 +30,6 @@ class Step2 extends Component {
             let advMore = '';
             if (form) {
                 advMore = form.getFieldValue('advMore'); // 高级时间
-                console.log("🚀 ~ file: Step2.jsx ~ line 35 ~ Step2 ~ advMore", advMore)
             }
             if (advMore) {
                 newFormKeys = [...KEY6, ...KEY3, ...KEY5];
