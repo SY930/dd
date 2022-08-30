@@ -477,7 +477,6 @@ class CreateCouponContent extends Component {
 
     handleSubmit = () => {
         const { form, type, editData } = this.props
-        console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 480 ~ CreateCouponContent ~ editData", editData)
         form.validateFields((err, values) => {
             if (!err) {
                 this.setState({ confirmLoading: true })
@@ -808,6 +807,11 @@ class CreateCouponContent extends Component {
         const { getFieldDecorator } = form;
         const { editData } = this.state;
         const offset = type == 2 ? 5 : 4;
+        const formItemLayout = {
+            labelCol: { span: 5 },
+            wrapperCol: { span: 16 },
+        }
+
         return (
             <Row>
                 <Col span={16} offset={offset} className={styles.CouponGiftBox}>
@@ -815,8 +819,7 @@ class CreateCouponContent extends Component {
                     { type == 4 ? this.renderFengChe() : this.renderOther() }
                     <FormItem
                         label="生效方式"
-                        labelCol={{ span: 4 }}
-                        wrapperCol={{ span: 17 }}
+                        {...formItemLayout}
                     >
                         <RadioGroup
                             value={this.state.effectType}
@@ -834,8 +837,7 @@ class CreateCouponContent extends Component {
                             <div>
                                 <FormItem
                                     label="生效时间"
-                                    labelCol={{ span: 4 }}
-                                    wrapperCol={{ span: 17 }}
+                                    {...formItemLayout}
                                     required={true}
                                 >
                                     <Select
@@ -853,8 +855,7 @@ class CreateCouponContent extends Component {
                                     </Select>
                                 </FormItem>
                                 <FormItem
-                                    labelCol={{ span: 4 }}
-                                    wrapperCol={{ span: 17 }}
+                                    {...formItemLayout}
                                     label={'有效天数'}
                                     required={true}
                                 >
@@ -889,8 +890,7 @@ class CreateCouponContent extends Component {
                             <FormItem
                                 label="固定有效期"
                                 className={[styles.FormItemStyle, styles.labeleBeforeSlect].join(' ')}
-                                labelCol={{ span: 5 }}
-                                wrapperCol={{ span: 16 }}
+                                {...formItemLayout}
                                 required={true}
                             >
                                 {getFieldDecorator('giftValidRange', {
