@@ -41,6 +41,13 @@ class TimeRange extends Component {
         list.splice(+idx, 1);
         onChange(list);
     }
+
+    getDisableHours = (start) => {
+        if (start) {
+            return range(0, start.hour());
+        }
+        return [];
+    }
     render() {
         const { value } = this.props;
         const len = value.length;
@@ -63,6 +70,7 @@ class TimeRange extends Component {
                                 value={x.endTime}
                                 onChange={(v)=>this.onEndChange(v, i)}
                                 disabledMinutes={h => range(0, 29).concat(range(30, 59))}
+                                disabledHours={() => { return this.getDisableHours(x.startTime); }}
                                 hideDisabledOptions={true}
                                 format={TF}
                             />
