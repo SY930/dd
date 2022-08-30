@@ -701,10 +701,11 @@ class ManyFace extends Component {
 
     render() {
         const { form1, form2, allActivity, allMallActivity, formData1, formData2, viewRuleVisible, loading } = this.state
+        console.log("🚀 ~ file: index.jsx ~ line 704 ~ ManyFace ~ render ~ loading", loading)
         return (
             <div className={styles.formContainer}>
                 <div >
-                    <Spin spinning={loading} delay={500}>
+                    <Spin spinning={loading}>
                         <div
                             style={{
                                 margin: '20px 0 10px 124px',
