@@ -41,13 +41,26 @@ class GiftList extends Component {
     }
     componentDidMount() {
         this.onQueryList();
+        document.addEventListener('keydown',this.handleEnterKey);
     }
+    
     componentWillReceiveProps(nextProps){
         const { dataSource, total } = nextProps;
         if(total != this.props.total){
             if(this.props.pageType == 1){
                 this.setState({dataSource, total})
             }
+        }
+    }
+
+    componentWillUnmount(){
+        document.removeEventListener('keydown',this.handleEnterKey);
+    }
+
+    handleEnterKey = (e) => {
+        let { pageType } = this.props;
+        if(e.keyCode === 13 && (pageType == 1 || pageType == 3)){ 
+            this.onQueryList();
         }
     }
 

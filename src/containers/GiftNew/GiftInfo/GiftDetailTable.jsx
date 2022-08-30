@@ -780,7 +780,9 @@ class GiftDetailTable extends Component {
                                 />
                             </div>
                         </div> */}
-                        <GiftList 
+                        {
+                            tabkey == '1' ? 
+                            <GiftList 
                             pageType={1} 
                             groupID={groupID} 
                             onGoEdit={this.props.togglePage} 
@@ -794,26 +796,40 @@ class GiftDetailTable extends Component {
                             dataSource={this.state.dataSource}
                             total={this.state.total}
                         /> 
+                            : null
+                        }
                     </TabPane>
                     <TabPane tab="券包查询" key="2">
-                        <TicketBag pageType={2} groupID={groupID} onGoEdit={this.props.togglePage} treeData={this.state.treeData} />
+                        {
+                            tabkey == '2' ? 
+                            <TicketBag pageType={2} groupID={groupID} onGoEdit={this.props.togglePage} treeData={this.state.treeData} />
+                            : null
+                        }
                     </TabPane>
                     <TabPane tab="已停用礼品" key="3">
-                        <GiftList 
-                            pageType={3} 
-                            groupID={groupID} 
-                            onGoEdit={this.props.togglePage} 
-                            treeData={this.state.treeData} 
-                            formItems={formItems}
-                            formKeys={formKeys}
-                            columns={this.getTableColumns().map(c => (c.render ? ({
-                                ...c,
-                                render: c.render.bind(this),
-                            }) : c))}
-                        /> 
+                        {
+                            tabkey == '3' ? 
+                            <GiftList 
+                                pageType={3} 
+                                groupID={groupID} 
+                                onGoEdit={this.props.togglePage} 
+                                treeData={this.state.treeData} 
+                                formItems={formItems}
+                                formKeys={formKeys}
+                                columns={this.getTableColumns().map(c => (c.render ? ({
+                                    ...c,
+                                    render: c.render.bind(this),
+                                }) : c))}
+                            /> 
+                            :null
+                        }
                     </TabPane>
                     <TabPane tab="已停用券包" key="4">
-                        <TicketBag pageType={4} groupID={groupID} onGoEdit={this.props.togglePage} treeData={this.state.treeData} />
+                        {
+                            tabkey == '4' ? 
+                            <TicketBag pageType={4} groupID={groupID} onGoEdit={this.props.togglePage} treeData={this.state.treeData} />
+                            : null
+                        }
                     </TabPane>
                 </Tabs>
                 <div>
