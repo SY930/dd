@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect,Provider} from 'react-redux';
-import {  decodeUrl, closePage } from '@hualala/platform-base'
+import {  decodeUrl, closePage, jumpPage } from '@hualala/platform-base'
 import { throttle } from 'lodash';
 import {
     Button,
@@ -72,7 +72,14 @@ class CreateActiveTwo extends Component {
                           style={{
                               marginRight: '10px'
                           }}
-                          onClick={()=>{closePage()}}
+                          onClick={()=>{
+                            closePage()
+                            if (itemID) {
+                              jumpPage({ pageID: '1000076003' })
+                            } else {
+                              jumpPage({ pageID: '10000730008' })
+                            }
+                          }}
                       >
                         取消
                       </Button>
