@@ -20,6 +20,7 @@ class Step2 extends Component {
         let newFormKeys = [...KEY6];
         // 日期高级
         if (key === 'advMore') {
+            console.log("🚀 ~ file: Step2.jsx ~ line 24 ~ Step2 ~ value", value)
             if (value) {
                 newFormKeys = [...KEY6, ...KEY3, ...KEY5];
             }
@@ -31,6 +32,7 @@ class Step2 extends Component {
             let advMore = '';
             if (form) {
                 advMore = form.getFieldValue('advMore'); // 高级时间
+                console.log("🚀 ~ file: Step2.jsx ~ line 35 ~ Step2 ~ advMore", advMore)
             }
             if (advMore) {
                 newFormKeys = [...KEY6, ...KEY3, ...KEY5];
@@ -38,7 +40,7 @@ class Step2 extends Component {
             if (value) {
                 newFormKeys = [...KEY6, ...KEY3, ...KEY4, ...KEY5];
             } else {
-                if (advMore) {
+                if (formData.advMore) {
                     newFormKeys = [...KEY6, ...KEY3, ...KEY5];
                 }
             }

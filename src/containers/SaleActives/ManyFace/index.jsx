@@ -355,7 +355,7 @@ class ManyFace extends Component {
     }
 
     setData4Step1 = (data, eventConditionInfos, times, triggerSceneList) => {
-        const { eventStartDate: sd, eventEndDate: ed, shopIDList: slist, validCycle } = data;
+        const { eventStartDate: sd, eventEndDate: ed, shopIDList: slist, validCycle, excludedDate = [] } = data;
         const eventRange = [moment(sd), moment(ed)];
         const clientType = eventConditionInfos[0] ? String(eventConditionInfos[0].clientType) : '1';
         const shopIDList = slist ? slist.map(x => `${x}`) : [];
@@ -378,12 +378,17 @@ class ManyFace extends Component {
             [cycleType] = validCycle[0];
         }
 
+        let advMore = false;
+        if (!_.isEmpty(timsObj) || cycleType || excludedDate.length) {
+            advMore = true
+        }
+
         const formData = {
             step1Data: {
                 ...data, clientType, shopIDList, sceneList,
             },
             setp2Data: {
-                ...data, eventRange, ...timsObj, advMore: true, cycleType,
+                ...data, eventRange, ...timsObj, advMore, cycleType,
             },
         }
         this.props.onChangDecorateType(sceneList)
@@ -608,11 +613,17 @@ class ManyFace extends Component {
     }
 
     preSubmit = (values, formData2) => {
-        const { clientType, eventRange, shopIDList, triggerSceneList = [], timeList, validCycle, excludedDate } = values;
+        const { clientType, eventRange, shopIDList, triggerSceneList = [], timeList, validCycle, cycleType, excludedDate } = values;
         const { itemID } = this.props
         const { eventStartDate, eventEndDate } = this.formatEventRange(eventRange);
         let triggerScene = triggerSceneList;
         triggerScene = clientType === '1' ? [1, 2, 3, 4] : triggerScene;
+
+        let cycleObj = {};
+        if (cycleType) {
+            const cycle = validCycle.filter(x => (x[0] === cycleType));
+            cycleObj = { validCycleList: cycle };
+        }
         const params = {
             eventInfo: {
                 eventWay: 85,
@@ -623,7 +634,7 @@ class ManyFace extends Component {
                 triggerSceneList: triggerScene,
                 itemID: itemID && itemID,
                 timeIntervalList: this.formatTimeList(timeList),
-                validCycleList: validCycle,
+                validCycleList: cycleObj.validCycleList,
                 excludedDateList: excludedDate,
             },
         }
