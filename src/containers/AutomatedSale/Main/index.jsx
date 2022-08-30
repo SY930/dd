@@ -7,6 +7,7 @@ import { httpApaasActivityQueryByPage, httpEnableOrDisableMaPromotionEvent, http
 import moment from 'moment';
 import { jumpPage } from '@hualala/platform-base';
 import { SALE_AUTOMATED_SALE_DETAIL } from '../../../constants/entryCodes';
+import { getStore } from '@hualala/platform-base';
 
 const DATE_FORMAT = 'YYYYMMDD';
 const initialPaging = {
@@ -121,10 +122,12 @@ export default class Main extends React.PureComponent {
     }
 
     onOperate = (record, type) => {
+        const { groupID } = getStore().getState().user.get('accountInfo').toJS();
         if(type == 'add'){
-            jumpPage({pageID: SALE_AUTOMATED_SALE_DETAIL, type });
+            // _TODO
+            jumpPage({ menuID: SALE_AUTOMATED_SALE_DETAIL, type, groupID });
         }else{
-            jumpPage({pageID: SALE_AUTOMATED_SALE_DETAIL, id: record.itemID, type });
+            jumpPage({ menuID: SALE_AUTOMATED_SALE_DETAIL, id: record.itemID, type, groupID });
         }
     }
 

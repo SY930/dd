@@ -61,5 +61,5 @@ export const THIRD_VOUCHER_MANAGEMENT = '100008992' // 第三方券管理
 export const ACTIVITY_LAUNCH = '100008993' // 投放活动
 
 export const SALE_LANCH_CHANNEL = '10000730099' //活动投放渠道管理
-export const SALE_AUTOMATED_SALE = 'sale_automated_sale' // 自动化营销
-export const SALE_AUTOMATED_SALE_DETAIL = 'sale_automated_sale_detail' // 自动化营销详情
+export const SALE_AUTOMATED_SALE = 'sale_automated_sale' // 智能营销
+export const SALE_AUTOMATED_SALE_DETAIL = 'sale_automated_sale_detail' // 智能营销详情
