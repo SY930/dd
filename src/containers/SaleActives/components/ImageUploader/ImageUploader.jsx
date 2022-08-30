@@ -42,7 +42,7 @@ export default class DecorationUploader extends Component {
             <div className={style.uploaderTrigger} >
                 <Icon style={{ color: '#999', fontSize: 24, fontWeight: 'bold', marginBottom: 10 }} type="plus" />
                 <br />
-                <span> 上传 </span>
+                <span className={style.uploadText}> 上传 </span>
             </div>
         )
         return (

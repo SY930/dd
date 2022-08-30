@@ -37,10 +37,15 @@ const formItems1 = {
         rules: ['required', 'stringLength', { max: '50', message: '不能超过50个字符' }],
     },
     clientType: {
-        type: 'radio',
+        type: 'custom',
         label: '适用客户端',
         options: [{ label: '小程序3.0', value: '2' }, { label: 'H5餐厅', value: '1' }],
         defaultValue: '2',
+        render: () => (<p />),
+    },
+    clientTip: {
+        type: 'custom',
+        render: () => (<div>此功能仅支持小程序SR3.10.0及其以上版本使用</div>),
     },
     sceneList: {
         type: 'custom',

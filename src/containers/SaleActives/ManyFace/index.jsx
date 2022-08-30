@@ -66,6 +66,7 @@ class ManyFace extends Component {
         const { form1, form2 } = this.state
         if (value === '1' && key === 'clientType') {
             form1 && form1.setFieldsValue({ sceneList: '1' })
+            this.props.onChangDecorateType('1')
         }
         if (value === '2' && key === 'sceneList') { // banner
             form1 && form1.setFieldsValue({ triggerSceneList: [11] })
@@ -582,6 +583,7 @@ class ManyFace extends Component {
         }).then((res) => {
             if (res.code === '000') {
                 const { data: { eventParamInfo = {} } } = res;
+                this.modalConfirm.destroy();
                 this.setState({
                     paramsValue: eventParamInfo.paramValue,
                     viewRuleVisible: true,
@@ -595,9 +597,9 @@ class ManyFace extends Component {
     tipContent = (data) => {
         return (
             <div className={styles.activeTipBox}>
-                { data.map(item => (<span>{item.eventName}、</span>))}
+                【{ data.map((item, index) => (<span className={styles.eventNameTip}>{item.eventName}{index + 1 === data.length ? null : '、'}</span>))}】
                 活动中存在当前已选适用店铺，如继续创建，这些店铺将按照当前活动规则进行执行
-                <span onClick={this.viewRule}>查看设置活动规则</span>
+                <span onClick={this.viewRule} className={styles.viewRuleTip}>查看设置活动规则</span>
             </div>
         )
     }
@@ -637,11 +639,11 @@ class ManyFace extends Component {
     }
 
     handleShowModalTip = data => (handleNext) => {
-        Modal.confirm({
+        this.modalConfirm = Modal.confirm({
             title: '温馨提示',
             content: this.tipContent(data),
             iconType: 'exclamation-circle',
-            cancelText: '我在想想',
+            cancelText: '我再想想',
             okText: '继续创建',
             onOk() {
                 handleNext();
@@ -701,7 +703,7 @@ class ManyFace extends Component {
         const { form1, form2, allActivity, allMallActivity, formData1, formData2, viewRuleVisible, loading } = this.state
         return (
             <div className={styles.formContainer}>
-                <div>
+                <div >
                     <Spin spinning={loading} delay={500}>
                         <div
                             style={{

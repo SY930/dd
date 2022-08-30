@@ -31,13 +31,6 @@ class Step1 extends Component {
     }
 
     onChange = (key, value) => {
-        // const { form1 } = this.props
-        if (key === 'clientType') {
-            this.props.onChangeForm(key, value)
-        }
-        // if (key === 'sceneList') {
-        //     this.props.onChangeForm(key, value)
-        // }
         if (key === 'triggerSceneList') {
             this.props.onChangeForm(key, value)
         }
@@ -45,6 +38,10 @@ class Step1 extends Component {
 
     handleChangeScene = ({ target }) => {
         this.props.onChangeForm('sceneList', target.value)
+    }
+
+    handleChangeClientType = ({ target }) => {
+        this.props.onChangeForm('clientType', target.value)
     }
 
     /** formItems 重新设置 */
@@ -76,9 +73,16 @@ class Step1 extends Component {
                 <CheckboxGroup options={opt} />
             ) : null
         }
+        const renderClientType = (d) => {
+            return d({
+                onChange: this.handleChangeClientType,
+            })(
+                <RadioGroup > <Radio value={'2'}>小程序3.0</Radio> <Radio value={'1'}>H5餐厅</Radio> </RadioGroup>
+            )
+        }
         return {
             ...other,
-            clientType,
+            clientType: { ...clientType, render: renderClientType},
             sceneList: { ...sceneList, render: renderScene },
             shopIDList: { ...shopIDList, render },
             triggerSceneList: { ...triggerSceneList, render: renderTriggerSceneList },
