@@ -49,14 +49,15 @@ export default class Main extends React.PureComponent {
             loading: true
         }, () => {
             httpApaasActivityQueryByPage(concatParams).then(res => {
-                console.log('res', res)
                 let { itemList: list } = res;
-                let { pageHeader: { totalSize } } = res;
+                let { pageHeader: { totalSize, pageCount } } = res;
                 this.setState({
                     loading: false,
                     list,
-                    total: totalSize,
-                    pageObj: pagingParams
+                    pageObj: {
+                        ...pagingParams,
+                        total: totalSize,
+                    }
                 })
             }).catch(error => {
                 console.error(error);
@@ -124,7 +125,6 @@ export default class Main extends React.PureComponent {
     onOperate = (record, type) => {
         const { groupID } = getStore().getState().user.get('accountInfo').toJS();
         if(type == 'add'){
-            // _TODO
             jumpPage({ menuID: SALE_AUTOMATED_SALE_DETAIL, type, groupID });
         }else{
             jumpPage({ menuID: SALE_AUTOMATED_SALE_DETAIL, id: record.itemID, type, groupID });

@@ -134,16 +134,12 @@ class MainTable extends Component {
         }));
     }
 
-    onEdit = (record) => {
-        console.log(999, record);
-    }
-
     render() {
         const { loading, page } = this.props;
         const columns = this.generateColumns();
         const dataSource = this.generateDataSource();
         const pagination = { 
-            ...page, 
+            ...page,
             onChange: this.onPageChange,
             onShowSizeChange: this.onPageChange,  
         };
