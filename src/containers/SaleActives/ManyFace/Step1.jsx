@@ -47,7 +47,6 @@ class Step1 extends Component {
 
     resetFormKeys = () => {
         const { form1 } = this.props;
-        console.log("🚀 ~ file: Step1.jsx ~ line 50 ~ Step1 ~ form1", form1)
         const { newFormKeys } = this.state;
         if (form1 && form1.getFieldValue('clientType') === '1') {
             return [...KEY1, ...KEY2]

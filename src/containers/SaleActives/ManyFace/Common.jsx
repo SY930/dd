@@ -23,6 +23,13 @@ const cycleOpts = [
     { label: '每月', value: 'm' },
 ];
 
+const style = {
+    background: '#FFFBE6',
+    borderRadius: '4px',
+    border: '1px solid #FFE58F',
+    paddingLeft: '11px',
+}
+
 
 const formItems1 = {
     eventType: {
@@ -45,7 +52,8 @@ const formItems1 = {
     },
     clientTip: {
         type: 'custom',
-        render: () => (<div>此功能仅支持小程序SR3.10.0及其以上版本使用</div>),
+        wrapperCol: { span: 15, offset: 5 },
+        render: () => (<div style={style}>此功能仅支持小程序SR3.10.0及其以上版本使用</div>),
     },
     sceneList: {
         type: 'custom',

@@ -720,7 +720,7 @@ class ManyFace extends Component {
                             className={styles.logoGroupHeader}
                         >基本信息</div>
                         <Step1
-                            form={form1}
+                            form1={form1}
                             getForm={this.onSetForm1}
                             formData={formData1}
                             authLicenseData={this.state.authLicenseData}
