@@ -476,7 +476,8 @@ class CreateCouponContent extends Component {
     }
 
     handleSubmit = () => {
-        const { form, type } = this.props
+        const { form, type, editData } = this.props
+        console.log("🚀 ~ file: CreateCouponContent.jsx ~ line 480 ~ CreateCouponContent ~ editData", editData)
         form.validateFields((err, values) => {
             if (!err) {
                 this.setState({ confirmLoading: true })
@@ -494,13 +495,13 @@ class CreateCouponContent extends Component {
                     datas = this.handleAliAndWxSubmit(values)
                 }
                 const url = '/api/v1/universal?';
-                const method = 'couponCodeBatchService/addBatch.ajax';
+                let method = 'couponCodeBatchService/addBatch.ajax';
 
-                // if (editData.batchName) {
-                //     method = 'couponCodeBatchService/updateBatch.ajax';
-                //     datas.itemID = editData.itemID;
-                //     datas.groupID = groupID
-                // }
+                if (editData.batchName) {
+                    method = 'couponCodeBatchService/updateBatch.ajax';
+                    datas.itemID = editData.itemID;
+                    datas.groupID = groupID
+                }
                 const params = {
                     service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
                     type: 'post',
@@ -515,13 +516,13 @@ class CreateCouponContent extends Component {
                 axios.post(url + method, params).then((res) => {
                     const { code, message: msg } = res;
                     if (code === '000') {
-                        // if (editData.batchName) {
-                        //     message.success('更新成功');
-                        //     this.props.handleCloseModal();
-                        //     this.props.handleQuery();
-                        //     this.props.onParentCancel();
-                        //     return
-                        // }
+                        if (editData.batchName) {
+                            message.success('更新成功');
+                            this.props.handleCloseModal();
+                            this.props.handleQuery();
+                            this.props.onParentCancel();
+                            return
+                        }
                         message.success('创建成功');
                         this.props.handleCloseModal();
                         this.props.handleQuery();
