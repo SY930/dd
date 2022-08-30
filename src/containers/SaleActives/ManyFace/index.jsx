@@ -605,7 +605,7 @@ class ManyFace extends Component {
     }
 
     preSubmit = (values, formData2) => {
-        const { clientType, eventRange, shopIDList, triggerSceneList = [], timeList, validCycle, excludedDate, cycleType } = values;
+        const { clientType, eventRange, shopIDList, triggerSceneList = [], timeList, validCycle, excludedDate } = values;
         const { itemID } = this.props
         const { eventStartDate, eventEndDate } = this.formatEventRange(eventRange);
         let triggerScene = triggerSceneList;
@@ -622,7 +622,6 @@ class ManyFace extends Component {
                 timeIntervalList: this.formatTimeList(timeList),
                 validCycleList: validCycle,
                 excludedDateList: excludedDate,
-                cycleType,
             },
         }
         queryActiveList(params).then((dataSource) => {
