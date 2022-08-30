@@ -619,9 +619,9 @@ class ManyFace extends Component {
                 shopIDList,
                 triggerSceneList: triggerScene,
                 itemID: itemID && itemID,
-                timeList: this.formatTimeList(timeList),
-                validCycle,
-                excludedDate,
+                timeIntervalList: this.formatTimeList(timeList),
+                validCycleList: validCycle,
+                excludedDateList: excludedDate,
                 cycleType,
             },
         }
