@@ -48,7 +48,7 @@ import { isBrandOfHuaTianGroupList, isMine, } from "../../../constants/projectHu
 import TicketBag from './TicketBag';
 import GiftList from './TicketBag/GiftList';
 import { GIFT_DETAILS } from '../../../constants/entryCodes';
-import { jumpPage } from '@hualala/platform-base';
+import { jumpPage, closePage } from '@hualala/platform-base';
 
 const TabPane = Tabs.TabPane;
 const validUrl = require('valid-url');
@@ -502,7 +502,10 @@ class GiftDetailTable extends Component {
         const { UpdateGiftDetail } = this.props;
         // UpdateDetailModalVisible({ visible: true });
         UpdateGiftDetail({ giftDetail: { ...rec } })
-        jumpPage({ menuID: GIFT_DETAILS })
+        closePage(GIFT_DETAILS)
+        setTimeout(() => {
+            jumpPage({ menuID: GIFT_DETAILS })
+        }, 10)
     }
     handleGenerateLink(record) {
         this.setState({

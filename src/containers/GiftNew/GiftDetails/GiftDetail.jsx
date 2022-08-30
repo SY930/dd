@@ -11,7 +11,7 @@ import BatchCreateCode from './components/BatchCreateCode'
 import { getVersionUI } from 'utils'
 import { jumpPage, closePage } from '@hualala/platform-base';
 import { GIFT_DETAILS, GIFT_PAGE } from '../../../constants/entryCodes';
-import { FetchSendorUsedList, UpdateSendorUsedTabKey, UpdateSendorUsedPage, UpdateSendorUsedParams, resetSendOrTotalCount, FetchQuotaCardSum } from '../_action';
+import { FetchSendorUsedList, UpdateSendorUsedTabKey, UpdateSendorUsedPage, UpdateSendorUsedParams, resetSendOrTotalCount, FetchQuotaCardSum, UpdateBatchNO } from '../_action';
 import SendGiftPanel from '../components/SendGiftPanel'
 
 const sendableGiftTypes = [
@@ -60,8 +60,10 @@ class GiftDetail extends React.Component {
       UpdateSendorUsedPage,
       UpdateSendorUsedParams,
       resetSendOrTotalCount,
+      UpdateBatchNO,
     } = this.props;
     UpdateSendorUsedTabKey({ key: 'send' });
+    UpdateBatchNO({ batchNO_madeCard: '' })
     UpdateSendorUsedPage({
       page: {
         pageNo: 1,
@@ -158,6 +160,7 @@ function mapDispatchToProps(dispatch) {
     UpdateSendorUsedParams: opts => dispatch(UpdateSendorUsedParams(opts)),
     resetSendOrTotalCount: opts => dispatch(resetSendOrTotalCount(opts)),
     FetchQuotaCardSum: opts => dispatch(FetchQuotaCardSum(opts)),
+    UpdateBatchNO: opts => dispatch(UpdateBatchNO(opts)),
   };
 }
 

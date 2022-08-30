@@ -49,6 +49,13 @@ class QuatoUseDetail extends Component {
     });
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { tabKey } = nextProps;
+    this.setState({
+        activeKey: tabKey,
+    })
+  }
+
   getData = (_params = {}) => {
     const { giftDetailInfo: { giftItemID }, FetchQuotaListAC } = this.props;
     const _key = this.state.activeKey
@@ -126,7 +133,9 @@ class QuatoUseDetail extends Component {
 }
 
 function mapStateToProps(state) {
-  return {}
+  return {
+    tabKey: state.sale_giftInfoNew.get('tabKey'),
+  }
 }
 
 function mapDispatchToProps(dispatch) {

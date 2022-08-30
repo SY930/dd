@@ -126,7 +126,7 @@ class GiftBaseInfo extends Component {
   }
 
   renderGiftRule = (rules) => {
-    if (!rules.length) {
+    if (!rules && !rules.length) {
       return ''
     }
     let ruleStr = rules.join('/')
@@ -138,6 +138,16 @@ class GiftBaseInfo extends Component {
       >{`${++idx}、${item}`}<br /></span>))}
       {ruleStr.length > 30 ? <a onClick={() => this.showMoreRules(rules)}>查看详情</a> : null}
     </div>
+  }
+
+  renderRemark = (remark) => {
+    if(!remark) {
+      return ''
+    }
+    if(remark.length > 30) {
+      return <Tooltip title={remark}>{remark.substr(0,30) + '...'}</Tooltip>
+    }
+    return remark
   }
 
   render() {
@@ -209,7 +219,7 @@ class GiftBaseInfo extends Component {
             </Col>
             <Col span={14} style={{ marginBottom: 12, display: 'flex' }}>
               <label className={styles.baseKey} style={{ width: 100, display: 'inline-block' }}>礼品详情：</label>
-              <span className={styles.baseValue} style={{ flex: 1 }}>{giftDetailInfo.giftRemark}</span>
+              <span className={styles.baseValue} style={{ flex: 1 }}>{this.renderRemark(giftDetailInfo.giftRemark)}</span>
             </Col>
             <Col span={14} style={{ marginBottom: 18, display: 'flex' }}>
               <label className={styles.baseKey}>使用规则：</label>
@@ -244,7 +254,7 @@ class GiftBaseInfo extends Component {
             </Col>}
             <Col span={6} style={{ marginBottom: 12, display: 'flex' }}>
               <label className={styles.baseKey} style={{ width: 100, display: 'inline-block' }}>礼品详情：</label>
-              <span className={styles.baseValue} style={{ flex: 1 }}>{giftDetailInfo.giftRemark}</span>
+              <span className={styles.baseValue} style={{ flex: 1 }}>{this.renderRemark(giftDetailInfo.giftRemark)}</span>
             </Col>
             {giftDetailInfo.giftType != '113' ? <Col span={18} style={{ marginBottom: 12 }}>
               <label className={styles.baseKey}>适用门店：</label>
@@ -257,7 +267,7 @@ class GiftBaseInfo extends Component {
           </Row>
         }
         <Modal
-          title='适用规则详情'
+          title='使用规则详情'
           visible={this.state.ruleVisible}
           onCancel={() => { this.setState({ ruleVisible: false }) }}
           footer={[<Button onClick={() => { this.setState({ ruleVisible: false }) }}>关闭</Button>]}
