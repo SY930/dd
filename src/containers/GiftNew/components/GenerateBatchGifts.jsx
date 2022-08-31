@@ -384,13 +384,13 @@ class GenerateBatchGifts extends Component {
                         {COMMON_LABEL.query}
                     </Button>
 
-                    <Button
+                    {/* <Button
                         style={{ marginLeft: 15 }}
                         type="primary"
                         onClick={this.showModal}
                     >
                         生成券码
-                    </Button>
+                    </Button> */}
                 </div>
             </div>
         )

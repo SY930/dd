@@ -23,6 +23,7 @@ import {
     FetchGiftList,
     UpdateBatchNO,
     UpdateDetailModalVisible,
+    UpdateGiftDetail,
     FetchSharedGifts,
     emptyGetSharedGifts,
     queryCouponShopList,
@@ -46,6 +47,8 @@ import GiftLinkGenerateModal from './GiftLinkGenerateModal';
 import { isBrandOfHuaTianGroupList, isMine, } from "../../../constants/projectHuatianConf";
 import TicketBag from './TicketBag';
 import GiftList from './TicketBag/GiftList';
+import { GIFT_DETAILS } from '../../../constants/entryCodes';
+import { jumpPage, closePage } from '@hualala/platform-base';
 
 const TabPane = Tabs.TabPane;
 const validUrl = require('valid-url');
@@ -495,15 +498,14 @@ class GiftDetailTable extends Component {
     }
 
     handleMore(rec) {
-        this.setState({ visibleDetail: true, data: { ...rec } });
-        const { UpdateDetailModalVisible } = this.props;
-        UpdateDetailModalVisible({ visible: true });
-        // const { FetchSendorUsedList } = this.props;
-        // const { giftType, giftItemID } = rec;
-        // if (giftType !== '90') {
-        //     FetchSendorUsedList({isSend: true, params: { pageNo: 1, pageSize: 10, giftItemID } });
-        //     giftType !== '91' && FetchSendorUsedList({isSend: false, params: {giftStatus: '2', pageNo: 1, pageSize: 10, giftItemID } })
-        // }
+        // this.setState({ visibleDetail: true, data: { ...rec } });
+        const { UpdateGiftDetail } = this.props;
+        // UpdateDetailModalVisible({ visible: true });
+        UpdateGiftDetail({ giftDetail: { ...rec } })
+        closePage(GIFT_DETAILS)
+        setTimeout(() => {
+            jumpPage({ menuID: GIFT_DETAILS })
+        }, 10)
     }
     handleGenerateLink(record) {
         this.setState({
@@ -872,6 +874,7 @@ function mapDispatchToProps(dispatch) {
         startEditGift: opts => dispatch(startEditGift(opts)),
         UpdateBatchNO: opts => dispatch(UpdateBatchNO(opts)),
         UpdateDetailModalVisible: opts => dispatch(UpdateDetailModalVisible(opts)),
+        UpdateGiftDetail: opts => dispatch(UpdateGiftDetail(opts)),
         FetchSharedGifts: opts => dispatch(FetchSharedGifts(opts)),
         emptyGetSharedGifts: opts => dispatch(emptyGetSharedGifts(opts)),
         toggleIsUpdate: (opts) => {

@@ -1,0 +1,108 @@
+.giftDetailsWrapper {
+    height: 100%;
+    overflow: auto;
+    .giftTitleWrapper {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 10px 0 20px;
+        border-bottom: 14px solid rgb(242, 242, 242);
+        .giftTitle {
+            font-size: 20px;
+            font-weight: bold;
+            color: #595959;
+            line-height: 50px;
+        }
+    }
+    .baseWrapper {
+        padding: 0 20px;
+        .baseTitle {
+            height: 14px;
+            line-height: 14px;
+            color: #333;
+            font-size: 14px;
+            padding-left: 6px;
+            margin-bottom: 22px;
+        }
+        .baseContent {
+            .baseKey {
+                display: inline-block;
+                height: 17px;
+                line-height: 17px;
+                font-size: 12px;
+                color: #666;
+                width: 100px;
+                text-align: right;
+            }
+            .baseValue {
+                display: inline-block;
+                font-size: 12px;
+                color: #333;
+                margin-left: 12px;
+            }
+        }
+        .statisticContent {
+            display: flex;
+            padding-left: 26px;
+            margin-bottom: 26px;
+            flex-wrap: wrap;
+            .statisticItem {
+                width: 187px;
+                height: 62px;
+                border-radius: 4px;
+                padding: 9px 12px;
+                display: flex;
+                margin-right: 12px;
+                align-items: center;
+                margin-bottom: 12px;
+                img {
+                    width: 28px;
+                    height: 28px;
+                    margin-right: 12px;
+                }
+                .itemTitle {
+                    height: 17px;
+                    font-size: 12px;
+                    font-weight: 400;
+                    color: #666666;
+                    line-height: 17px;
+                }
+                .itemValue {
+                    height: 22px;
+                    font-size: 22px;
+                    font-weight: bold;
+                    color: #333333;
+                    line-height: 22px;
+                    margin-top: 5px;
+                }
+            }
+        }
+        .useContent {
+            .useTabs {
+                :global {
+                    .ant-tabs-nav-container {
+                        background-color: #fff;
+                        border: none;
+                        border-bottom: 1px solid #d7d7d7;
+                    }
+                    .ant-tabs-nav .ant-tabs-tab:hover {
+                        color: #1bb496;
+                    }
+                    .ant-tabs-nav .ant-tabs-tab-active {
+                        color: #1bb496;
+                    }
+                    .ant-tabs-nav .ant-tabs-ink-bar {
+                        background-color: #1bb496;
+                    }
+                }
+            }
+        }
+    }
+}
+.popDiv {
+    width: 126px;
+}
+
+.greenLink {
+    color: #1ab495 !important;
+}

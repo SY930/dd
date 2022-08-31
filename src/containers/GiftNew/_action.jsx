@@ -44,6 +44,7 @@ export const GIFT_NEW_CANCEL_START_SAVING_GIFT = 'gift new :: 开始保存礼品
 export const GIFT_NEW_CANCEL_END_SAVING_GIFT = 'gift new :: 保存礼品模板结束(loading状态结束)';
 export const GIFT_NEW_CHANGE_FORM_KEY_VALUE = 'gift new :: 礼品字段变更';
 export const GIFT_NEW_SAVE_BRANDS_TO_STORE = 'gift new :: GIFT_NEW_SAVE_BRANDS_TO_STORE';
+export const GIFT_NEW_UPDATE_GIFT_DETAIL = 'gift new :: gift new update gift detail'
 
 const getGiftListBegin = (opt) => {
     return {
@@ -399,6 +400,13 @@ export const UpdateSendorUsedParams = (opts) => {
 export const UpdateDetailModalVisible = (opts) => {
     return {
         type: GIFT_NEW_UPDATE_DETAIL_MODAL_VISIBLE,
+        ...opts,
+    }
+}
+
+export const UpdateGiftDetail = (opts) => {
+    return {
+        type: GIFT_NEW_UPDATE_GIFT_DETAIL,
         ...opts,
     }
 }
