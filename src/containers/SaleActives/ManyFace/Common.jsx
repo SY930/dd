@@ -217,7 +217,7 @@ const getItervalsErrorStatus = (intervals) => {
                     if (isOverlapped(filteredIntervals[j], filteredIntervals[i])) {
                         return {
                             hasError: true,
-                            errorMessage: '时间段设置不能重复',
+                            errorMessage: '时间段设置有误，请重新修改~',
                         }
                     }
                 }
@@ -227,7 +227,7 @@ const getItervalsErrorStatus = (intervals) => {
                 ) { // i, j都跨天
                     return {
                         hasError: true,
-                        errorMessage: '时间段设置不能重复',
+                        errorMessage: '时间段设置有误，请重新修改~',
                     }
                 }
                 if (filteredIntervals[i].startTime <= filteredIntervals[i].endTime
@@ -239,7 +239,7 @@ const getItervalsErrorStatus = (intervals) => {
                     if (isOverlapped(beforeMidNightInterval, filteredIntervals[i]) || isOverlapped(afterMidNightInterval, filteredIntervals[i])) {
                         return {
                             hasError: true,
-                            errorMessage: '时间段设置不能重复',
+                            errorMessage: '时间段设置有误，请重新修改~',
                         }
                     }
                 }
@@ -252,7 +252,7 @@ const getItervalsErrorStatus = (intervals) => {
                     if (isOverlapped(beforeMidNightInterval, filteredIntervals[j]) || isOverlapped(afterMidNightInterval, filteredIntervals[j])) {
                         return {
                             hasError: true,
-                            errorMessage: '时间段设置不能重复',
+                            errorMessage: '时间段设置有误，请重新修改~',
                         }
                     }
                 }
