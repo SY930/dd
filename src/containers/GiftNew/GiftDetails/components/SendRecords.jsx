@@ -72,59 +72,67 @@ class SendRecords extends Component {
         title: '序号',
         key: 'index',
         width: 60,
+        className:'TableTxtCenter',
         render: (text, record, index) => {
           return (pageNo - 1) * pageSize + index + 1
         }
       },
-      {
-        title: '券编码',
-        key: 'giftItemID',
-        width: 150,
-        render: (text) => {
-          return this.props.giftItemID
-        }
-      },
-      {
-        title: '赠送时间',
-        key: 'createStamp',
-        dataIndex: 'createStamp',
-        width: 180,
-      },
+      // {
+      //   title: '券编码',
+      //   key: 'giftItemID',
+      //   width: 150,
+      //   render: (text) => {
+      //     return this.props.giftItemID
+      //   }
+      // },
       {
         title: '赠送手机号',
         key: 'customerMobile',
         dataIndex: 'customerMobile',
         width: 120,
+        className:'TableTxtCenter',
       },
       {
         title: '赠送数量',
         key: 'giftNum',
         dataIndex: 'giftNum',
         width: 100,
+        className:'TableTxtCenter',
+      },
+      {
+        title: '赠送时间',
+        key: 'createStamp',
+        dataIndex: 'createStamp',
+        width: 180,
+        className:'TableTxtCenter',
       },
       {
         title: '生效时间',
         key: 'effectTime',
         dataIndex: 'effectTime',
         width: 180,
+        className:'TableTxtCenter',
       },
       {
         title: '失效时间',
         key: 'validUntilDate',
         dataIndex: 'validUntilDate',
         width: 180,
+        className:'TableTxtCenter',
       },
       {
         title: '操作人',
         key: 'operator',
         dataIndex: 'operator',
         width: 120,
+        className:'TableTxtCenter',
       },
       {
         title: '备注',
         key: 'operateRemark',
         dataIndex: 'operateRemark',
         width: 180,
+        className:'TableTxtCenter',
         render: (text) => {
           return text ? <Tooltip title={text}>{text}</Tooltip> : '--'
         }
