@@ -16,6 +16,22 @@ export default class QueryForm extends Component {
         // 如果是点查询按钮要恢复分页初始值
         this.props.onQuery(params);
     }
+
+    componentDidMount(){
+        document.addEventListener('keydown',this.handleEnterKey);
+    }
+
+    componentWillUnmount(){
+        document.removeEventListener('keydown',this.handleEnterKey);
+    }
+
+    handleEnterKey = (e) => {
+        let { pageType } = this.props;
+        if(e.keyCode === 13 && (pageType == 2 || pageType == 4)){ 
+            this.onQuery()
+        }
+    }
+
     /* 获取form对象 */
     onGetForm = (form) => {
         this.form = form;
