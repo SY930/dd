@@ -184,10 +184,92 @@ const KEY3 = ['timeList', 'cycleType'];
 const KEY4 = ['validCycle'];
 const KEY5 = ['excludedDate']
 const KEY6 = ['faceRule', 'eventRange', 'advMore']
-const formKeys32 = [...KEY6, ...KEY3, ...KEY4, ...KEY5]
+const formKeys32 = [...KEY6, ...KEY3, ...KEY4, ...KEY5];
+
+const isOverlapped = (a, b) => {
+    return (a.startTime >= b.startTime
+        && a.startTime <= b.endTime) || (
+        a.endTime >= b.startTime
+            && a.endTime <= b.endTime
+    ) || (b.startTime >= a.startTime
+            && b.startTime <= a.endTime) || (
+        b.endTime >= a.startTime
+            && b.endTime <= a.endTime
+    );
+}
+
+const getItervalsErrorStatus = (intervals) => {
+    const filteredIntervals = (intervals || []).filter(({ startTime, endTime }) => !!startTime && !!endTime);
+    if (!filteredIntervals.length) {
+        return {
+            hasError: true,
+            errorMessage: '至少要设置一个完整时间段',
+        }
+    }
+
+    if (filteredIntervals.length > 1) {
+        for (let i = 0; i < (filteredIntervals.length - 1); i += 1) {
+            for (let j = i + 1; j < filteredIntervals.length; j += 1) {
+                if (filteredIntervals[i].startTime <= filteredIntervals[i].endTime
+                    &&
+                    filteredIntervals[j].startTime <= filteredIntervals[j].endTime
+                ) { // i, j非跨天
+                    if (isOverlapped(filteredIntervals[j], filteredIntervals[i])) {
+                        return {
+                            hasError: true,
+                            errorMessage: '时间段设置不能重复',
+                        }
+                    }
+                }
+                if (filteredIntervals[i].startTime > filteredIntervals[i].endTime
+                    &&
+                    filteredIntervals[j].startTime > filteredIntervals[j].endTime
+                ) { // i, j都跨天
+                    return {
+                        hasError: true,
+                        errorMessage: '时间段设置不能重复',
+                    }
+                }
+                if (filteredIntervals[i].startTime <= filteredIntervals[i].endTime
+                    &&
+                    filteredIntervals[j].startTime > filteredIntervals[j].endTime
+                ) { // i非跨天 j跨天
+                    const beforeMidNightInterval = { ...filteredIntervals[j], endTime: '2359' }
+                    const afterMidNightInterval = { ...filteredIntervals[j], startTime: '0000' }
+                    if (isOverlapped(beforeMidNightInterval, filteredIntervals[i]) || isOverlapped(afterMidNightInterval, filteredIntervals[i])) {
+                        return {
+                            hasError: true,
+                            errorMessage: '时间段设置不能重复',
+                        }
+                    }
+                }
+                if (filteredIntervals[j].startTime <= filteredIntervals[j].endTime
+                    &&
+                    filteredIntervals[i].startTime > filteredIntervals[i].endTime
+                ) { // i跨天 j非跨天
+                    const beforeMidNightInterval = { ...filteredIntervals[i], endTime: '2359' }
+                    const afterMidNightInterval = { ...filteredIntervals[i], startTime: '0000' }
+                    if (isOverlapped(beforeMidNightInterval, filteredIntervals[j]) || isOverlapped(afterMidNightInterval, filteredIntervals[j])) {
+                        return {
+                            hasError: true,
+                            errorMessage: '时间段设置不能重复',
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return {
+        hasError: false,
+        errorMessage: ''
+    }
+}
 
 
 export {
     formItems1, imgURI, formKeys1, href, formItemLayout,
     TF, DF, KEY, KEY1, KEY2, KEY3, KEY4, KEY5, KEY6, formKeys32, formItems3,
+    getItervalsErrorStatus,
 }
+
+

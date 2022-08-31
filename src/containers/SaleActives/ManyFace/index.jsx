@@ -16,6 +16,7 @@ import {
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action';
 import { getEvent, searchAllActivity, searchAllMallActivity, postEvent, putEvent, queryActiveList, putRule } from './AxiosFactory';
 import { asyncParseForm } from '../../../helpers/util'
+import { getItervalsErrorStatus } from './Common'
 import styles from './ManyFace.less'
 
 const DF = 'YYYYMMDD';
@@ -280,9 +281,11 @@ class ManyFace extends Component {
 
     onSubmit = (values, formData2) => {
         const { itemID } = this.props
-        const { eventRange, timeList, validCycle = [], cycleType, ...others1 } = values;
+        const { eventRange, timeList, validCycle = [], cycleType, clientType, ...others1 } = values;
         const newEventRange = this.formatEventRange(eventRange);
         const newTimeList = this.formatTimeList(timeList);
+
+        const triggerSceneList = clientType === '1' ? [1, 2, 3] : values.triggerSceneList
 
         let cycleObj = {};
         if (cycleType) {
@@ -295,11 +298,11 @@ class ManyFace extends Component {
         const eventConditionInfos = _.map(formData2, item =>
             (_.omit(item, ['triggerEventCustomInfo2', 'triggerEventValue2', 'triggerEventName2',
                 'triggerEventCustomInfoApp1', 'everyTagsRule', 'isShowDishSelector', 'id',
-                'triggerEventCustomInfo1', 'triggerEventValue1', 'triggerEventName1',
+                'triggerEventCustomInfo1', 'triggerEventValue1', 'triggerEventName1', 'triggerScene',
             ]))
         )
         if (itemID) {
-            const allData = { timeList: newTimeList, event: { ...event, itemID, isActive: this.props.isActive == '0' ? 0 : 1 }, eventConditionInfos, triggerSceneList: values.triggerSceneList };
+            const allData = { timeList: newTimeList, event: { ...event, itemID, isActive: this.props.isActive == '0' ? 0 : 1 }, eventConditionInfos, triggerSceneList };
             postEvent(allData).then((res) => {
                 if (res) {
                     closePage()
@@ -308,7 +311,7 @@ class ManyFace extends Component {
             })
             return
         }
-        const allData = { timeList: newTimeList, event, eventConditionInfos, triggerSceneList: values.triggerSceneList };
+        const allData = { timeList: newTimeList, event, eventConditionInfos, triggerSceneList };
         putEvent({ ...allData }).then((res) => {
             if (res.code === '000') {
                 closePage()
@@ -692,13 +695,24 @@ class ManyFace extends Component {
                 let flag = false;
                 let formData2;
                 const { values, error } = result;
-                const { validCycle = [], cycleType } = values;
+                const { validCycle = [], cycleType, timeList } = values;
                 if (cycleType) {
                     const cycle = validCycle.filter(x => (x[0] === cycleType));
                     if (cycle.length <= 0) return message.warning('周期【每逢】必须选则一项~')
                 }
+
+                const newTimeList = this.formatTimeList(timeList);
+                if (newTimeList.length > 0) {
+                    const { hasError, errorMessage } = getItervalsErrorStatus(newTimeList)
+                    if (hasError) {
+                        message.warning(errorMessage)
+                        return null
+                    }
+                }
+
                 if (error) return null
                 const { faceRule, clientType, sceneList } = values;
+
                 const faceData = _.cloneDeep(faceRule);
                 if (clientType == '2' && sceneList == '2') { // 小程序3.0 banner
                     formData2 = this.onPreSubmitAppBanner(faceData, values)
