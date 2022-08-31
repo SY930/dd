@@ -4,8 +4,9 @@ import { Icon, Form, Select, message, Input, Button, Tooltip } from 'antd';
 import _ from 'lodash';
 import { axios, getStore } from '@hualala/platform-base';
 import FoodSelectModal from '../../../../components/common/FoodSelector/FoodSelectModal'
+import ImageUploader from '../../components/ImageUploader/ImageUploader';
 import styles from './styles.less';
-import { programList, faceDefVal } from './Commom'
+import { programList, faceDefVal, eventSelectOptionCopy, triggerEventInfoVal } from './Commom'
 import {
     memoizedExpandCategoriesAndDishes,
 } from '../../../../utils';
@@ -29,7 +30,8 @@ class MyFaceRule extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            eventSelectOption: [],
+            eventSelectOption: _.cloneDeep(eventSelectOptionCopy),
+            eventSelectOptionCopy,
             mallActivityList: [],
             allActivityList: [],
             activityOption: [[]],
@@ -54,20 +56,50 @@ class MyFaceRule extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (!_.isEqual(nextProps.allActivityList, this.props.allActivityList) || nextProps.clientType !== this.props.clientType) {
-            this.initEventSelectOption();
+            this.setState({
+                allActivityList: nextProps.allActivityList,
+                allMallActivity: nextProps.allMallActivity,
+            }, () => {
+                this.initEventSelectOption(nextProps.clientType);
+            })
+        } else {
+            return false
         }
     }
 
     componentWillUnmount() {
+        const { from2 } = this.props
+        from2 && from2.setFieldsValue({ faceRule: [] });
     }
 
+    onChangeBanner = (idx, params) => {
+        const { value, onChange } = this.props;
+        if (params && params.parentId) {
+            const parentIndex = value.findIndex(item => item.id == params.parentId)
+            const triggerEventInfoList = value[parentIndex].triggerEventInfoList;
+            const list = [...triggerEventInfoList];
+            list[idx] = { ...list[idx], ...params }
+            value[parentIndex].triggerEventInfoList = list;
+            onChange(value)
+        } else {
+            const list = [...value];
+            const faceObj = value[idx];
+            list[idx] = { ...faceObj, ...params };
+            onChange(list);
+        }
+    }
 
     onChange = (idx, params) => {
-        const { value, onChange } = this.props;
-        const list = [...value];
-        const faceObj = value[idx];
-        list[idx] = { ...faceObj, ...params };
-        onChange(list);
+        const { clientType, sceneList } = this.props;
+        if (clientType === '2' && sceneList === '2') {
+            this.onChangeBanner(idx, params)
+        } else {
+            const { value, onChange } = this.props;
+            const list = [...value];
+            const faceObj = value[idx];
+            list[idx] = { ...faceObj, ...params };
+            onChange(list);
+        }
     }
 
     onRange = (idx, key, value) => {
@@ -136,23 +168,36 @@ class MyFaceRule extends Component {
         this.onChange(idx, { [key]: value, triggerEventName2: item[0] ? item[0].label : '', triggerEventCustomInfo2: {} })
     }
 
-    onEventsApp = (idx, key, value) => {
+    onEventsApp = (idx, key, value, parentData) => {
         const item = this.state.eventSelectOption.filter(itm => itm.value == value)
-        // const triggerEventCustomInfo1 = item[0].value === "jumpToMiniApp" ? jumpApp : {}
-        this.onChange(idx, { [key]: value, triggerEventName1: item[0] ? item[0].label : '', triggerEventCustomInfo1: {}, triggerEventCustomInfoApp1: _.cloneDeep(jumpApp) })
+        this.onChange(idx, {
+            [key]: value,
+            triggerEventName1: item[0] ? item[0].label : '',
+            triggerEventCustomInfo1: {},
+            triggerEventCustomInfoApp1: _.cloneDeep(jumpApp),
+            parentId: parentData.parentId,
+        })
     }
 
     // 活动数据格式 {"eventID", 1111111111, "eventWay": 20,"eventName": "摇一摇吧"}
-    onEventsLinkValue = (idx, key, value, parentName, parentValue) => {
-        this.onChange(idx, { [key]: { eventID: value, eventWay: parentValue.split('_')[1], eventName: parentName, shopID: value } })
+    onEventsLinkValue = (idx, key, value, parentData) => {
+        this.onChange(idx, {
+            parentId: parentData.parentId,
+            [key]: {
+                eventID: value,
+                eventWay: parentData.triggerEventValue1.split('_')[1],
+                eventName: parentData.triggerEventName1,
+                shopID: value,
+            },
+        })
     }
 
-    onEventsLinkValueApp = (idx, key, value) => {
-        this.onChange(idx, { [key]: { value } })
+    onEventsLinkValueApp = (idx, key, value, parentData) => {
+        this.onChange(idx, { parentId: parentData.parentId, [key]: { value } })
     }
 
-    onChangeCustomUrl = (idx, key, { target }) => {
-        this.onChange(idx, { [key]: { value: target.value } })
+    onChangeCustomUrl = (idx, key, { target }, parentData) => {
+        this.onChange(idx, { parentId: parentData.parentId, [key]: { value: target.value } })
         this.setState({
             flag: !this.state.flag,
         })
@@ -160,11 +205,12 @@ class MyFaceRule extends Component {
 
     onChangeAppID = (idx, key, { target }, parent, index) => {
         parent.triggerEventCustomInfoApp1[index].appID = target.value;
-        // parent.triggerEventCustomInfo = [];
-        // parent.triggerEventCustomInfo = 
-        // const triggerEventCustomInfo = parent.triggerEventCustomInfo[0];
-        this.onChange(idx, { [key]: parent.triggerEventCustomInfoApp1 })
+        this.onChange(idx, { parentId: parent.parentId, [key]: parent.triggerEventCustomInfoApp1 })
     }
+
+    // onEvantsImage = (idx, key, value) => {
+
+    // }
 
     getGroupListAll = () => {
         const { accountInfo } = this.props;
@@ -193,7 +239,7 @@ class MyFaceRule extends Component {
 
     // 获取活动
     getAvtivity = (params) => {
-        const { allActivityList = [], allMallActivity = [] } = this.props;
+        const { allActivityList = [], allMallActivity = [] } = this.state;
         let newActivityList = [];
         if (params === 'event_65') { // 分享裂变
             newActivityList = allActivityList && allActivityList.filter((item = []) => item.eventWay === 65);
@@ -233,21 +279,20 @@ class MyFaceRule extends Component {
                 }
             }) : []
         }
-        linkUrlOption = empty.concat(linkUrlOption);
+        // linkUrlOption = linkUrlOption;
         let activitySelectOption = [];
         activitySelectOption = [...linkUrlOption];
 
         if (params === 'event_60') {
-            activitySelectOption = [{ ...empty[0] }, { label: '完善资料送礼', value: '60' }]
+            activitySelectOption = [{ label: '完善资料送礼', value: '60' }]
         }
         return activitySelectOption
     }
 
-
-    initEventSelectOption = () => {
+    initEventSelectOption = (clientType = '2') => {
         let eventList = [];
-        const { eventSelectOption } = this.state;
-        if (this.props.clientType === '1') { // H5餐厅
+        const { eventSelectOptionCopy: eventSelectOption } = this.state;
+        if (clientType === '1') { // H5餐厅
             eventList = _.filter(eventSelectOption, item => ['', 'customLink', 'shoppingCartAddFood'].includes(item.value))
         } else { // 小程序3.0
             eventList = _.map(_.filter(eventSelectOption, item => !['', 'miniAppPage'].includes(item.value)), it => ({ ...it, children: this.getAvtivity(it.value) }))
@@ -296,8 +341,8 @@ class MyFaceRule extends Component {
         })
     }
 
-    showDishSelector = (idx, key) => {
-        this.onChange(idx, { [key]: true })
+    showDishSelector = (idx, key, item) => {
+        this.onChange(idx, { parentId: item.parentId, [key]: true })
         this.setState({
             isShowDishSelector: true,
         })
@@ -331,49 +376,71 @@ class MyFaceRule extends Component {
             }
             return acc;
         }, [])
-        this.handleModalCancel(i, 'isShowDishSelector');
-        this.onChange(i, { [key]: dishObjects[0] || {} })
+        this.handleModalCancel(i, item, 'isShowDishSelector');
+        this.onChange(i, { parentId: item.parentId, [key]: dishObjects[0] || {} })
     }
 
-    handleModalCancel = (idx, key) => {
-        this.onChange(idx, { [key]: false })
+    handleModalCancel = (idx, item, key) => {
+        this.onChange(idx, { parentId: item.parentId, [key]: false })
         this.setState({
             isShowDishSelector: false,
         })
     }
 
     add = () => {
-        const { value, onChange } = this.props;
+        const { value, onChange, clientType, sceneList } = this.props;
         if (value[9]) return null
         const list = [...value];
         // const len = list.length;
         const id = Date.now().toString(36); // 随机不重复ID号
-        list.push({ ...faceDefVal, id });
+        if (clientType === '2' && sceneList === '2') { // banner场景更新parentId
+            list.push({ ...faceDefVal, id, triggerEventInfoList: [{ ...triggerEventInfoVal, parentId: id }] });
+        } else {
+            list.push({ ...faceDefVal, id });
+        }
         onChange(list);
         return null
     }
 
     del = ({ target }, data) => {
-        // const { activityOption } = this.state;
         const { everyTagsRule } = data;
         const { idx } = target.closest('a').dataset;
         const { value, onChange } = this.props;
         const list = [...value];
         list.splice(+idx, 1);
         everyTagsRule.splice(+idx, 1)
-        // activityOption.splice(+idx, 1)
         onChange(list);
         this.setState({
             everyTagsRule,
-            // activityOption,
         })
+    }
+
+    addBanner = (index, data) => {
+        const { value, onChange } = this.props;
+        const triggerEventInfoList = value[index].triggerEventInfoList;
+        if (triggerEventInfoList[4]) return null;
+        const list = [...triggerEventInfoList];
+        const id = Date.now().toString(36);
+        list.push({ ...triggerEventInfoVal, id, parentId: data.id })
+        value[index].triggerEventInfoList = list;
+        onChange(value)
+        return null
+    }
+
+    removeBanner = (parentIdx, idx) => {
+        const { value, onChange } = this.props;
+        const triggerEventInfoList = value[parentIdx].triggerEventInfoList;
+        const list = [...triggerEventInfoList];
+        list.splice(+idx, 1);
+        value[parentIdx].triggerEventInfoList = list;
+        onChange(value)
     }
 
     renderInputApp = (i, v) => {
         return (<FormItem>
             <Input
                 style={{ marginLeft: 8, width: '249px', height: '32px' }}
-                onChange={(_v) => { this.onChangeCustomUrl(i, 'triggerEventCustomInfo1', _v) }}
+                onChange={(_v) => { this.onChangeCustomUrl(i, 'triggerEventCustomInfo1', _v, v) }}
                 value={v.triggerEventCustomInfo1.value || ''}
                 placeholder="请输入要拨打的号码"
             />
@@ -385,7 +452,7 @@ class MyFaceRule extends Component {
         >
             <Input
                 style={{ marginLeft: 8, width: '249px', height: '32px' }}
-                onChange={(_v) => { this.onChangeCustomUrl(i, key, _v) }}
+                onChange={(_v) => { this.onChangeCustomUrl(i, key, _v, v) }}
                 value={v[key].value || ''}
             />
             <p>不支持储值套餐链接</p>
@@ -433,7 +500,7 @@ class MyFaceRule extends Component {
                     type="default"
                     // disabled={true}
                     style={{ display: 'inlineBlock', marginLeft: '10px', height: 32 }}
-                    onClick={() => { this.showDishSelector(i, 'isShowDishSelector') }}
+                    onClick={() => { this.showDishSelector(i, 'isShowDishSelector', item) }}
                 >
                     选择菜品
                 </Button>
@@ -463,19 +530,19 @@ class MyFaceRule extends Component {
                 mode="dish"
                 initialValue={initialValue}
                 onOk={(value) => { this.handleModalOk(i, item, value, key) }}
-                onCancel={() => { this.handleModalCancel(i, 'isShowDishSelector') }}
+                onCancel={() => { this.handleModalCancel(i, item, 'isShowDishSelector') }}
             />
         )
     }
 
-    renderSelect = (i, v, parentValue, parentName) => {
+    renderSelect = (i, v) => {
         const options = this.state.eventSelectOption.filter(item => item.value === v.triggerEventValue1) || [];
         const [option] = options;
         return (<FormItem>
             <Select
                 style={{ width: '249px', marginLeft: 8 }}
                 value={v.triggerEventCustomInfo1.eventID ? v.triggerEventCustomInfo1.eventID : ''}
-                onChange={(_v) => { this.onEventsLinkValue(i, 'triggerEventCustomInfo1', _v, parentName, parentValue) }}
+                onChange={(_v) => { this.onEventsLinkValue(i, 'triggerEventCustomInfo1', _v, v) }}
             >
                 {
                     (option.children || []).map(({ value, label }) => {
@@ -494,7 +561,7 @@ class MyFaceRule extends Component {
             <Select
                 style={{ width: '249px', marginLeft: 8 }}
                 value={v.triggerEventCustomInfo1.value ? v.triggerEventCustomInfo1.value : ''}
-                onChange={(_v) => { this.onEventsLinkValueApp(i, 'triggerEventCustomInfo1', _v) }}
+                onChange={(_v) => { this.onEventsLinkValueApp(i, 'triggerEventCustomInfo1', _v, v) }}
             >
                 {
                     (option.children || []).map(({ value, label }) => {
@@ -524,15 +591,20 @@ class MyFaceRule extends Component {
     }
 
     renderAPPEvents = (v, i) => {
+        const { triggerSceneList } = this.props;
+        let _eventSelectOptions = this.state.eventSelectOption
+        if (triggerSceneList.includes('4')) {
+            _eventSelectOptions = _eventSelectOptions.filter(item => item.value !== 'shoppingCartAddFood')
+        }
         return (
             <div style={{ display: 'flex' }}>
                 <div style={{ display: 'flex', height: '35px' }}>
                     <FormItem
                     // key={unionId}
                     >
-                        <Select style={{ width: '120px' }} value={v.triggerEventValue1 || ''} onChange={(_v) => { this.onEventsApp(i, 'triggerEventValue1', _v) }}>
+                        <Select style={{ width: '120px' }} value={v.triggerEventValue1 || ''} onChange={(_v) => { this.onEventsApp(i, 'triggerEventValue1', _v, v) }}>
                             {
-                                (this.state.eventSelectOption || []).map(({ value: key, label }) => {
+                                (_eventSelectOptions || []).map(({ value: key, label }) => {
                                     return <Select.Option key={key} value={`${key}`}>{label}</Select.Option>
                                 })
                             }
@@ -548,7 +620,7 @@ class MyFaceRule extends Component {
                     && v.triggerEventValue1 !== 'customLink'
                     && v.triggerEventValue1 !== 'shoppingCartAddFood'
                     && v.triggerEventValue1 !== 'toOpenCard'
-                    && this.renderSelect(i, v, v.triggerEventValue1, v.triggerEventName1)}
+                    && this.renderSelect(i, v)}
                     {v.triggerEventValue1 == 'speedDial' && this.renderInputApp(i, v)}
                 </div>
                 {v.triggerEventValue1 == 'jumpToMiniApp' && this.renderJumpApp(i, v)}
@@ -559,8 +631,50 @@ class MyFaceRule extends Component {
     }
 
 
+    renderAcitveImage = (v, i) => {
+        return (
+            <div className={styles.activeImageBox}>
+                <ImageUploader
+                    limit={0}
+                    value={v.decorateInfo ? v.decorateInfo.imagePath : ''}
+                    onChange={(value) => {
+                        this.onChange(i, { parentId: v.parentId, decorateInfo: { imagePath: value } })
+                    }}
+                />
+                <div className={styles.uploaderTip}>
+                    <p>* 图片建议尺寸 526 * 788像素 </p>
+                    <p>* 大小不超过1M </p>
+                    <p>* 支持png、jpg、jpeg、gif</p>
+                </div>
+            </div>
+        )
+    }
+
+    renderMoreBannerAndEvents = (v, i) => {
+        return (
+            <div>
+                {(v.triggerEventInfoList || []).map((item, index) => (
+                    <div key={item.id} className={styles.appBannerConntet}>
+                        <div className={styles.appBannerImg}><img src="http://res.hualala.com/basicdoc/9aa790ea-f2ec-49e6-a8a2-1c5c8af299ec.png" alt="logo" />banner{index + 1}</div>
+                        <div className={styles.MyFaceRuleSubConntet} style={{ display: 'flex' }}>
+                            <p>点击触发事件</p>{this.renderAPPEvents(item, index)}
+                        </div>
+                        <div className={styles.MyFaceRuleSubConntet} style={{ display: 'flex' }}>
+                            <p style={{ paddingTop: '20px' }}> <span className={styles.tip}>*</span>活动主图</p>{this.renderAcitveImage(item, index)}
+                        </div>
+                        { index > 0 && <div className={styles.removeBanner}><Icon type="close-circle" style={{ color: '#999', fontSize: '21px' }} onClick={() => this.removeBanner(i, index)} /></div>}
+                    </div>
+                ))}
+                <Button type="ghost" icon="plus" onClick={() => this.addBanner(i, v)}>添加banner</Button>
+            </div>
+
+        )
+    }
+
+
     render() {
-        const { value = [], form, clientType } = this.props;
+        const { value = [], form, clientType, sceneList } = this.props;
+        // triggerSceneList 支付成功的海报和banner点击触发事件 菜品加入购物车不能有
         // const { length } = value;
         // 防止回显没数据不显示礼品组件
         if (!value[0]) {
@@ -570,7 +684,6 @@ class MyFaceRule extends Component {
             <div>
                 {
                     value.map((v, i) => {
-                        // const activitySelectOption = this.getAvtivityItem(v.triggerEventValue)
                         return (
                             <div key={v.id} className={styles.MyFaceRuleBox}>
                                 <div className={styles.MyFaceRuleConntet}>
@@ -617,6 +730,7 @@ class MyFaceRule extends Component {
                                             v.conditionType == '2' &&
                                             <div style={{ display: 'flex' }}>
                                                 <FormItem required={true}
+                                                // validateStatus={v.conditionValue ? 'success' : 'error'} help={v.conditionValue ? '' : '请输入会员标签属性'}
                                                 >
                                                     <Select style={{ width: '120px', marginLeft: 8 }} value={v.conditionValue} onChange={(_v) => { this.onTagAttribute(i, 'conditionValue', _v) }}>
                                                         {
@@ -654,13 +768,25 @@ class MyFaceRule extends Component {
                                             </FormItem>
                                         }
                                     </div>
-                                    {/* 点击触发事件 */}
-                                    <div className={styles.MyFaceRuleSubConntet} style={{ display: 'flex' }}>
-                                        <p>点击触发事件</p>
-                                        {clientType == '1' && this.renderH5Events(v, i)}
-                                        {clientType == '2' && this.renderAPPEvents(v, i)}
-                                    </div>
+                                    {/* 小程序3.0 banner情况单独处理 */}
+                                    {clientType === '2' && sceneList === '2' ? this.renderMoreBannerAndEvents(v, i)
+                                        : <div>
+                                            {/* 点击触发事件 */}
+                                            <div className={styles.MyFaceRuleSubConntet} style={{ display: 'flex' }}>
+                                                <p>点击触发事件</p>
+                                                {clientType == '1' && this.renderH5Events(v, i)}
+                                                {clientType == '2' && this.renderAPPEvents(v, i)}
+                                            </div>
+                                            {/* 活动主图、分为弹窗和banner */}
+                                            <div className={styles.MyFaceRuleSubConntet} style={{ display: 'flex' }}>
+                                                <p style={{ paddingTop: '20px' }}> <span className={styles.tip}>*</span>活动主图</p>
+                                                {this.renderAcitveImage(v, i)}
+                                            </div>
+                                        </div>
+                                    }
                                 </div>
+
+
                                 {/* 添加删除操作 */}
                                 <div>
                                     {

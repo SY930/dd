@@ -1,5 +1,8 @@
 import React from 'react';
 import DateRange from '../Camp/DateRange';
+import DateTag from '../Camp/DateTag';
+import TimeRange from '../Camp/TimeRange';
+import Advance from '../Camp/Advance';
 
 const imgURI = 'http://res.hualala.com/';
 const href = 'javascript:;';
@@ -12,6 +15,12 @@ const formItemLayout = {
     labelCol: { span: 5 },
     wrapperCol: { span: 17 },
 };
+
+const cycleOpts = [
+    { label: '每日', value: '' },
+    { label: '每周', value: 'w' },
+    { label: '每月', value: 'm' },
+];
 
 
 const formItems1 = {
@@ -34,14 +43,50 @@ const formItems1 = {
         defaultValue: [],
         render: d => d()(<DateRange />),
     },
+    advMore: {
+        type: 'custom',
+        render: d => d()(<Advance />),
+        wrapperCol: { span: 22 },
+    },
     eventRemark: {
         type: 'textarea',
         label: '活动规则',
+        placeholder: '请输入活动说明，最多1000个字符',
         rules: ['description2'],
+    },
+    cycleType: {
+        type: 'combo',
+        label: '选择周期',
+        options: cycleOpts,
+        defaultValue: '',
+    },
+    timeList: {
+        type: 'custom',
+        label: '活动时段',
+        render: d => d()(<TimeRange />),
+        defaultValue: [{id: '0'}],
+    },
+    validCycle: {
+        type: 'custom',
+        label: '每逢',
+        render: () => (<p></p>),
+        defaultValue: ['w1', 'm1'],
+    },
+    excludedDate: {
+        type: 'custom',
+        label: '活动排除日期',
+        render: d => d()(<DateTag />),
+        defaultValue: [],
     },
 };
 
-const formKeys1 = ['eventType', 'eventName', 'eventRange', 'eventRemark'];
+const KEY1 = ['eventType', 'eventName', 'eventRange', 'advMore'];
+const KEY2 = ['eventRemark'];
+const KEY3 = ['timeList', 'cycleType'];
+const KEY4 = ['validCycle'];
+const KEY5 = ['excludedDate']
+
+const formKeys1 = [...KEY1, ...KEY3, ...KEY4, ...KEY5, ...KEY2];
 
 
 const formItems2 = {
@@ -53,8 +98,15 @@ const formItems2 = {
     },
     sceneList: {
         type: 'custom',
-        label: '应用场景',
-        options: [{ label: '点餐页弹窗海报图', value: '1' }],
+        label: '投放类型',
+        options: [{ label: '弹窗海报图', value: '1' }, { label: 'banner广告', value: '2' }],
+        defaultValue: '1',
+        render: () => (<p />),
+    },
+    placement: {
+        type: 'custom',
+        label: '投放位置',
+        options: [],
         defaultValue: '1',
         render: () => (<p />),
     },
@@ -77,7 +129,7 @@ const formItems2 = {
 
 const keys1 = ['presentValue1'];
 const keys2 = ['presentValue2', 'settleUnitID'];
-const formKeys2 = ['clientType', 'sceneList', 'shopIDList'];
+const formKeys2 = ['clientType', 'sceneList', 'placement', 'shopIDList'];
 /**
  * formItem3
  */
@@ -89,6 +141,7 @@ const faceDefVal = {
     conditionValue: 'whetherHasCard', // 是否持卡key | 7023267909942119317
     targetName: '持卡会员',
     targetValue: '1', // 1 是持卡会员 0否
+
     // 点击触发的事件
     triggerEventName1: '购物车夹菜',
     triggerEventValue1: '',
@@ -118,6 +171,6 @@ const formKeys32 = ['faceRule']
 
 export {
     formItems1, imgURI, formKeys1, href, formItemLayout,
-    TF, DF,
+    TF, DF, KEY1, KEY2, KEY3, KEY4, KEY5,
     formItems2, formKeys32, formItems3, keys1, keys2, formKeys2,
 }

@@ -74,7 +74,6 @@ class ManyFace extends Component {
     /* 第3步表单提交数据 */
     onGoDone = () => {
         const { form, formData2 } = this.state;
-        // console.log("🚀 ~ file: index.jsx ~ line 83 ~ ManyFace ~ formData2", formData2)
         // const { defaultCardType } = formData2;
 
         form.validateFields((e, v) => {

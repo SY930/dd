@@ -68,6 +68,12 @@ registerLocalPage([
         parent: [entryCodes.NEW_SALE_BOX],
     },
     {
+        key: entryCodes.SALE_ACTIVE_NEW_PAGE,
+        value: entryCodes.SALE_ACTIVE_NEW_PAGE,
+        label: '创建营销活动',
+        parent: [entryCodes.NEW_SALE_BOX],
+    },
+    {
         key: entryCodes.THIRD_VOUCHER_MANAGEMENT,
         value: entryCodes.THIRD_VOUCHER_MANAGEMENT,
         label: '第三方券管理',

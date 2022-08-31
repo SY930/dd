@@ -49,7 +49,6 @@ class WXContent extends Component {
 
 
     onChangeWXMerchantID = (value) => {
-    // console.log("🚀 ~ file: WXContent.jsx ~ line 51 ~ WXContent ~ value", value)
         const findItem = this.state.payChannelList.find(item => value === `${item.settleID}`) || {}
         this.props.onChangeWXMerchantID(findItem)
     }

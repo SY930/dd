@@ -93,7 +93,6 @@ class PureTable extends Component {
 
     render() {
         const { tableHeight, columns, loading, dataSource, page, style } = this.props
-        // console.log("🚀 ~ file: PureTable.jsx ~ line 34 ~ PureTable ~ render ~ page", page)
         return (
             <Row>
                 <Form layout="inline" style={style}>

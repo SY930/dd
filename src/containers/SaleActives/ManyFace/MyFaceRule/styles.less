@@ -1,0 +1,105 @@
+.MyFaceRuleBox {
+  display: flex;
+  margin-bottom: 16px;
+  // margin-left: 40px;
+  .MyFaceRuleConntet {
+      position: relative;
+      width: 515px;
+      min-height: 130px;
+      padding: 0 20px 14px;
+      background: #f9f9f9;
+      border-radius: 3px;
+      border: 1px solid #E7E7E7;
+      margin-right: 8px;
+      > span {
+          display: inline-block;
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 48px;
+          height: 24px;
+          background: #1DB395;
+          border-radius: 4px 0px 10px 0px;
+          text-align: center;
+          line-height: 24px;
+          font-size: 12px;
+          color: #fff;
+      }
+  }
+  .MyFaceRuleSubConntet {
+    > p {
+      width: 74px;
+      text-align: right;
+      margin-right: 8px;
+      margin-top: 5px;
+      flex: none;
+    }
+    .tip {
+      display: inline-block;
+      margin-right: 4px;
+      content: "*";
+      font-family: SimSun;
+      line-height: 1;
+      font-size: 12px;
+      color: #f04134;
+    }
+    .jumpAppBox {
+      margin-left: 10px;
+      > p {
+        display: flex;
+        align-items: center;
+        > span {
+          padding-right: 12px;
+          flex: 0 0 auto;
+        }
+      }
+    }
+  }
+  .appBannerImg {
+    font-weight: 500;
+  color: #333333;
+  font-size: 14px;
+  line-height: 11px;
+
+  > img {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+  }
+  .appBannerConntet {
+    position: relative;
+    width: 480px;
+    // height: 208px;
+    background: #FFFFFF;
+    border-radius: 6px;
+    margin: 16px auto;
+    padding: 20px 0 0 16px;
+    .removeBanner {
+      display: none;
+      position: absolute;
+      top: -9px;
+      right: -7px;
+      cursor: pointer;
+    }
+    &:hover {
+      .removeBanner {
+        display: block;
+      }
+    }
+  }
+  .activeImageBox {
+    display: flex;
+    margin-top: 16px;
+    padding-bottom: 15px;
+  }
+  .uploaderTip {
+    margin-left: 14px;
+    padding-top: 20px;
+    > p {
+      line-height: 18px;
+      color: #999999;
+      font-size: 12px;
+    }
+  }
+}

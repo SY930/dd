@@ -8,7 +8,7 @@ import {
     Table, Input, Select, DatePicker,
     Button, Modal, message,
     Spin, Icon, Alert, Switch, Tabs,
-    Tooltip, Popover, Menu, TreeSelect
+    Tooltip, Popover, Menu, TreeSelect, Radio
 } from 'antd';
 import { throttle, isEmpty, cloneDeep } from 'lodash';
 import { jumpPage, closePage } from '@hualala/platform-base'
@@ -46,7 +46,7 @@ import ActivityMain from '../activityMain';
 import MyActivities from '../../SaleCenterNEW/MyActivities/MyActivities'
 
 import registerPage from '../../../index';
-import { SPECIAL_PAGE, PROMOTION_DECORATION, SALE_CENTER_PAYHAVEGIFT } from '../../../constants/entryCodes';
+import { SPECIAL_PAGE, PROMOTION_DECORATION, SALE_CENTER_PAYHAVEGIFT, SALE_ACTIVE_NEW_PAGE } from '../../../constants/entryCodes';
 import { promotionBasicInfo_NEW as sale_promotionBasicInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionBasicInfo.reducer';
 import { promotionDetailInfo_NEW as sale_promotionDetailInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionDetailInfo.reducer';
 import {
@@ -69,7 +69,7 @@ import {
     SPECIAL_LOOK_PROMOTION_QUERY,
     SPECIAL_PROMOTION_DELETE, 
     SPECIAL_PROMOTION_QUERY,
-    SPECIAL_PROMOTION_UPDATE
+    SPECIAL_PROMOTION_UPDATE,
 } from "../../../constants/authorityCodes";
 import { isBrandOfHuaTianGroupList, isGroupOfHuaTianGroupList, isMine } from "../../../constants/projectHuatianConf";
 import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
@@ -92,6 +92,7 @@ const confirm = Modal.confirm;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const TabPane = Tabs.TabPane;
+const RadioGroup = Radio.Group;
 const MenuItemGroup = Menu.ItemGroup;
 
 const mapStateToProps = (state) => {
@@ -259,7 +260,6 @@ class MySpecialActivities extends React.Component {
             groupID: '',
             isCopy: false,
             pushMessageMpID: '',
-            groupID: '',
             channelContent: '',
             launchChannelID: '',
             launchChannelIDWX: '',
@@ -272,6 +272,8 @@ class MySpecialActivities extends React.Component {
             filterSchemeList: [],
             activeStatus: '',
             sortedChannelList: [],
+            viewRuleVisibles: false,
+            paramsValue: 1,
         };
         this.cfg = {
             eventWay: [
@@ -353,7 +355,7 @@ class MySpecialActivities extends React.Component {
     
     querySortedChannelList = () => {
         axiosData('/launchchannel/launchChannelService_querySortedChannelList.ajax',
-          {}, {}, { path: '' },
+          { }, {}, { path: '' },
           'HTTP_SERVICE_URL_PROMOTION_NEW')
           .then((res) => {
             if (res.code == '000') {
@@ -364,6 +366,25 @@ class MySpecialActivities extends React.Component {
           }).catch(err => {
             // empty catch
           });
+      }
+
+      // 活动规则
+      queryActiveRule = () => {
+        axiosData('/specialPromotion/queryEventParam.ajax',
+        { eventWay: 85, groupID: getStore().getState().user.getIn(['accountInfo', 'groupID']), paramName: 'executePriorityByCreateTime' }, {}, { path: '' },
+        'HTTP_SERVICE_URL_PROMOTION_NEW')
+        .then((res) => {
+          if (res.code == '000') {
+            const { data: { eventParamInfo = {} }} = res;
+            this.setState({
+              paramsValue: eventParamInfo.paramValue,
+              viewRuleVisibles: true,
+            })
+          }
+        }).catch(err => {
+          // empty catch
+        });
+        // this.setState({viewRuleVisibles: true })
       }
 
     clearUrl() {
@@ -691,6 +712,12 @@ class MySpecialActivities extends React.Component {
     }
     //** 第三版 重构 抽抽乐活动 点击事件 */
     onV3Click = (itemID, view, key, isActive) => {
+        if (key == '85') {
+            setTimeout(() => {
+                jumpPage({ menuID: SALE_ACTIVE_NEW_PAGE, typeKey: key, itemID, isView: view, isActive})
+            }, 100);
+            return closePage(SALE_ACTIVE_NEW_PAGE)
+        }
         this.setState(ps => ({ v3visible: !ps.v3visible, activeStatus: isActive }));
         if (itemID) {
             this.setState({ itemID, view, curKey: key });
@@ -789,6 +816,27 @@ class MySpecialActivities extends React.Component {
             pushMessageMpID: mpId
         })
         this.handleCopyUrl(null, mpId);
+    }
+
+    // 修改活动规则
+    handleRuleOk = () => {
+        const callServer = axiosData(
+            '/specialPromotion/updateEventParam.ajax',
+            {eventWay: 85, groupID: getStore().getState().user.getIn(['accountInfo', 'groupID']), paramName: 'executePriorityByCreateTime', paramValue: this.state.paramsValue},
+            {},
+            { path: '' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW'
+        );
+        callServer.then(data => {
+            let { code } = data
+            if (code === '000') {
+                message.success('更新成功')
+                this.setState({ viewRuleVisibles: false });
+            }
+        }).catch(({ message: msg }) => {
+            this.setState({ viewRuleVisibles: false })
+            // message.error(msg)
+        })
     }
 
     handleCheckText = (value, label) => {
@@ -1130,7 +1178,7 @@ class MySpecialActivities extends React.Component {
 
 
     render() {
-        const { v3visible, itemID, view, isShowCopyUrl, urlContent, curKey, tabKeys, stylesShow, dataSource } = this.state;
+        const { v3visible, itemID, view, isShowCopyUrl, curKey, tabKeys, stylesShow, dataSource, viewRuleVisibles } = this.state;
         return (
             <div style={{ backgroundColor: this.state.authStatus ? '#F3F3F3' : '#fff' }} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
                 {
@@ -1205,7 +1253,7 @@ class MySpecialActivities extends React.Component {
                 {(v3visible && curKey == '78') && <Chou2Le onToggle={this.onV3Click} id={itemID} view={view} />}
                 {(v3visible && curKey == '79') && <BlindBox onToggle={this.onV3Click} id={itemID} view={view} />}
                 {(v3visible && curKey == '83') && <PassWordCoupon onToggle={this.onV3Click} id={itemID} view={view} />}
-                {(v3visible && curKey == '85') && <ManyFace onToggle={this.onV3Click} id={itemID} view={view} handleDecorationStart={this.handleDecorationStart} activeStatus={this.state.activeStatus}/>}
+                {/* {(v3visible && curKey == '85') && <ManyFace onToggle={this.onV3Click} id={itemID} view={view} handleDecorationStart={this.handleDecorationStart} activeStatus={this.state.activeStatus}/>} */}
                 <Modal
                     title="提取活动链接"
                     visible={isShowCopyUrl}
@@ -1223,6 +1271,27 @@ class MySpecialActivities extends React.Component {
                         filterSchemeList={this.state.filterSchemeList}
                     />
                 }
+               {viewRuleVisibles &&  <Modal
+                    maskClosable={false}
+                    visible={true}
+                    width={700}
+                    title="活动规则"
+                    onCancel={() => { this.setState({ viewRuleVisibles: false }) }}
+                    onOk={this.handleRuleOk}
+                    wrapClassName={styles.viewRuleVisibleModal}
+                >
+                    <div>
+                        <div className={styles.ruleModalTitle}> <span className={styles.name}>千人千面</span>当同一时间、同一门店、同一投放类型、同一投放位置下存在多个活动时，将按照以下规则执行 </div>
+                        <div>
+                            <span className={styles.computeRule}>计算规则</span>
+                            <RadioGroup name="radiogroup" defaultValue={this.state.paramsValue} onChange={({ target }) => { this.setState({ paramsValue: target.value })}}>
+                                <Radio value={1}>按创建时间最近的执行</Radio>
+                                <Radio value={2}>按创建时间最早的执行</Radio>
+                            </RadioGroup>
+                        </div>
+                    </div>
+
+                </Modal>}
             </div>
         );
     }
@@ -1329,7 +1398,11 @@ class MySpecialActivities extends React.Component {
                                             <Icon type="upload" />导出历史
                                         </Button>
                                 </span>
+                                <span>
+                                   <Button type="ghost" style={{ marginRight: 10 }} onClick={this.queryActiveRule}>活动规则</Button>
+                                </span>
                                 {this.renderPlanBtn()}
+                              
                             </div>
                         )
                     }
@@ -1914,27 +1987,12 @@ class MySpecialActivities extends React.Component {
                                 {COMMON_LABEL.delete}
                             </a>
                         </Authority>
-                        {/* <a
-                            href="#"
-                            className={record.isActive == '-1' || statusState || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80 ? styles.textDisabled : null}
-                            onClick={() => {
-                                if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80) {
-                                    return;
-                                }
-                                if (Number(record.eventWay) === 70) {
-                                    message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
-                                    return;
-                                }
-                                record.isActive == '-1' || statusState ? null :
-                                    this.handelStopEvent(text, record, index, '-1', `${this.props.intl.formatMessage(STRING_SPE.d17012f5c16c32211)}`);
-                            }}
-                        >
-                            {this.props.intl.formatMessage(STRING_SPE.du3bnfobe3346)}
-                        </a> */}
-                        <Tooltip placement="bottomLeft" title={this.renderTipTitle(text, record, index)} overlayClassName={styles.Sale__Activite__Tip}>
-                            <a href="#">更多</a>
-                        </Tooltip>
-                        {/* <a className={styles.more}> 更多</a> */}
+                        {
+                            record.eventWay != '85' &&  // 千人千面无需更多操作
+                            <Tooltip placement="bottomLeft" title={this.renderTipTitle(text, record, index)} overlayClassName={styles.Sale__Activite__Tip}>
+                                <a href="#">更多</a>
+                            </Tooltip>
+                        }
                     </span>
                     );
                 },
