@@ -16,7 +16,8 @@ import {
     message,
     Alert,
     Tooltip,
-    Select
+    Select,
+    TreeSelect
 } from 'antd';
 import { getAccountInfo } from 'helpers/util'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
@@ -26,6 +27,9 @@ import { axiosData } from "../../../helpers/util";
 import {
     getWechatMpInfo, getImgTextList
 } from './AxiosFactory';
+import { connect } from 'react-redux';
+import _ from 'lodash';
+
 const { RangePicker } = DatePicker;
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
@@ -33,6 +37,12 @@ const Option = Select.Option;
 const BATCH_LIMIT = 100000;
 const defaultImgTxt = { resTitle: '叮咚！天上掉下一堆券，点我点我点我', digest: '为小主准备的超级大礼包，点我查看' };
 const imgURI = 'http://res.hualala.com/';
+
+@connect(
+    (state) => ({
+        shopData: state.sale_giftInfoNew.get('shopData'),
+    })
+)
 class GenerateBatchGifts extends Component {
     constructor(props) {
         super(props);
@@ -64,6 +74,9 @@ class GenerateBatchGifts extends Component {
             imageUrl: '',//图文imageUr
             mpDescription: '',//图文description
             item: defaultImgTxt,
+            showHighConfig: false,
+            treeData: [],
+            shopName: '',
         };
         this.handleQuery = this.handleQuery.bind(this);
         this.showModal = this.showModal.bind(this);
@@ -78,11 +91,14 @@ class GenerateBatchGifts extends Component {
         this.handleStartNoChange = this.handleStartNoChange.bind(this);
         this.handleEndNoChange = this.handleEndNoChange.bind(this);
         this.handleIncludeRandomCode = this.handleIncludeRandomCode.bind(this);
+        this.onChangeShop = this.onChangeShop.bind(this);
     }
 
     componentDidMount() {
         this.handleQuery()
         this.onQueryStep2Data();
+        const _shopData = this.props.shopData.toJS();
+        this.proShopData(_shopData);
     }
 
     isDisabledTime = () => {
@@ -292,6 +308,13 @@ class GenerateBatchGifts extends Component {
         params.EGiftEffectTime = EGiftEffectTime;
         params.validUntilDate = validUntilDate;
         params.generatePwdType = generatePwdType;
+        if(this.state.showHighConfig){
+            const { getFieldValue } = this.props.form;
+            if(getFieldValue('shopID')){
+                params.shopID = getFieldValue('shopID');
+                params.shopName = this.state.shopName;
+            }
+        }
         return params;
     }
 
@@ -339,6 +362,7 @@ class GenerateBatchGifts extends Component {
     showModal() {
         this.setState({
             modalVisible: true,
+            showHighConfig: false
         });
     }
 
@@ -753,8 +777,58 @@ class GenerateBatchGifts extends Component {
         )
 
     }
+
+    proShopData = (shops = []) => {
+        const treeData = [];
+        shops.map((item, idx) => {
+            treeData.push({
+                label: item.shopName,
+                value: item.shopID,
+                key: item.shopID,
+            });
+        });
+        this.setState({ treeData });
+    }
+
+    onChangeShop(value, label){
+        this.setState({
+            shopName: label[0]
+        })
+    }
+
+    renderSendShop(){
+        const { getFieldDecorator } = this.props.form;
+        return (
+            <FormItem
+                label="发放店铺"
+                className={styles.FormItemStyle}
+                labelCol={{ span: 6 }}
+                wrapperCol={{ span: 8 }}
+            >   
+                {
+                    getFieldDecorator('shopID', {
+                        onChange: this.onChangeShop
+                    })(
+                        <TreeSelect
+                            dropdownStyle={{ maxHeight: 200, overflow: 'auto' }}
+                            treeData={this.state.treeData || []}
+                            placeholder="请选择店铺"
+                            showSearch={true}
+                            treeNodeFilterProp="label"
+                            allowClear={true}
+                        />
+                    )
+                }
+                <div style={{marginTop: '5px', color: '#ccc'}}>
+                    记录券批次的发放店铺
+                </div>
+            </FormItem>
+        )
+    }
+
     renderModalContent() {
         const { getFieldDecorator } = this.props.form;
+        const { showHighConfig } = this.state;
         return (
             <div>
                 <Alert style={{ width: 500, marginLeft: 220 }} message="营业高峰期（11:00-14:00，17:00-20:30）暂停使用批量生成券码功能" type="warning"></Alert>
@@ -869,12 +943,27 @@ class GenerateBatchGifts extends Component {
                             )
                         }
                     </FormItem>
+                    <FormItem>
+                        <Col span={12} offset={12} className={styles.showHighConfig}>
+                            <Checkbox
+                                checked={showHighConfig}
+                                onChange={() => {
+                                    this.setState({
+                                        showHighConfig: !showHighConfig
+                                    })
+                                }}
+                            >
+                                高级配置<Icon type={ showHighConfig ? 'caret-up' : 'caret-down'} style={{marginLeft: '5px'}}/>
+                            </Checkbox>
+                        </Col>
+                    </FormItem>
+                    {
+                        showHighConfig && this.renderSendShop()
+                    }
                 </Form>
             </div>
         )
     }
-
-
 
     render() {
         return (
@@ -891,7 +980,7 @@ class GenerateBatchGifts extends Component {
                     onCancel={this.hideModal}
                     footer={[
                         <Button type="ghost" onClick={this.hideModal}>关闭</Button>,
-                        <Button disabled={this.isDisabledTime()} type="primary" onClick={this.handleModalOk}>确定</Button>,
+                        <Button disabled={this.isDisabledTime()} type="primary" onClick={this.handleModalOk} loading={this.state.confirmLoading}>确定</Button>,
                     ]}
                 >
                     {this.state.modalVisible && this.renderModalContent()}
