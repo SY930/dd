@@ -164,7 +164,7 @@ const formItems3 = {
     timeList: {
         type: 'custom',
         label: '活动时段',
-        render: d => d()(<TimeRange />),
+        render: d => d()(<TimeRange type="85" />),
         defaultValue: [{id: '0'}],
     },
     validCycle: {
