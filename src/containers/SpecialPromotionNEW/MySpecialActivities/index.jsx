@@ -1244,8 +1244,8 @@ class MySpecialActivities extends React.Component {
             promotionDateRange,
             isActive,
             eventName,
+            createScenes,
         } = this.state;
-
         const opt = {};
         if (queryEventWay !== '' && queryEventWay !== undefined) {
             opt.eventWay = queryEventWay;
@@ -1258,6 +1258,9 @@ class MySpecialActivities extends React.Component {
 
         if (eventName !== '' && eventName !== undefined) {
             opt.eventName = eventName;
+        }
+        if (createScenes !== '' && createScenes !== undefined) {
+            opt.createScenes = createScenes;
         }
 
         if (isActive !== '') {
@@ -1416,7 +1419,25 @@ class MySpecialActivities extends React.Component {
                                 }}
                             />
                         </li>
-
+                        <li>
+                            <h5>来源渠道</h5>
+                        </li>
+                        <li>
+                            <Select
+                                style={{ width: 80 }}
+                                defaultValue=""
+                                value={this.state.createScenes || ''}
+                                onChange={(value) => {
+                                    this.setState({
+                                        createScenes: value,
+                                    });
+                                }}
+                            >
+                                <Option value={''}>全部</Option>
+                                <Option value={'0'}>自建</Option>
+                                <Option value={'1'}>权益卡</Option>
+                            </Select>
+                        </li>
                         <li>
                             <Authority rightCode={SPECIAL_PROMOTION_QUERY} entryId={ SPECIAL_PROMOTION_MANAGE_PAGE}>
                                 <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}><Icon type="search" />
@@ -1444,6 +1465,7 @@ class MySpecialActivities extends React.Component {
             promotionDateRange,
             isActive,
             eventName,
+            createScenes,
         } = this.state;
         if (queryEventWay !== '' && queryEventWay !== undefined) {
             opt.eventWay = queryEventWay;
@@ -1456,6 +1478,10 @@ class MySpecialActivities extends React.Component {
 
         if (eventName !== '' && eventName !== undefined) {
             opt.eventName = eventName;
+        }
+
+        if (createScenes !== '' && createScenes !== undefined) {
+            opt.createScenes = createScenes;
         }
 
         if (isActive !== '') {
@@ -1732,6 +1758,57 @@ class MySpecialActivities extends React.Component {
                     if (record.eventWay === 80) {
                         return this.renderPayHaveGift(text, index, record)
                     }
+                    if (record.createScenesName === '权益卡') {
+                        return (
+                            <span>
+                                <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY} entryId={SPECIAL_PROMOTION_MANAGE_PAGE}>
+                                    <a
+                                        href="#"
+                                        onClick={() => {
+                                            if (Number(record.eventWay) === 70) {
+                                                message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
+                                                return;
+                                            }
+                                            if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83 || record.eventWay === 85) {
+                                                this.onV3Click(record.itemID, true, record.eventWay);
+                                                return;
+                                            }
+                                            if (record.eventWay === 80 || record.eventWay === 66 || record.eventWay === 81 || record.eventWay === 82) {
+
+                                                this.handleShowDetail({
+                                                    record,
+                                                    isView: true,
+                                                    isEdit: false
+                                                })
+                                                return;
+                                            }
+                                            this.props.toggleIsUpdate(false)
+                                            this.handleUpdateOpe(text, record, index);
+                                        }}
+                                    >
+                                        {COMMON_LABEL.view}
+                                    </a>
+                                </Authority>
+                                <a
+                                    href="#"
+                                    className={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record) ? styles.textDisabled : null}
+                                    onClick={() => {
+                                        if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) {
+                                            return;
+                                        }
+                                        if (Number(record.eventWay) === 70) {
+                                            message.warning(`该活动已下线`);
+                                            return;
+                                        }
+                                        this.checkDetailInfo(text, record, index);
+                                    }}
+                                    disabled={record.eventWay == 85}
+                                >
+                                    活动跟踪
+                                </a>
+                            </span>
+                        )
+                    }
                     return (<span>
                         <Authority rightCode={SPECIAL_PROMOTION_UPDATE} entryId={ SPECIAL_PROMOTION_MANAGE_PAGE}>
                             <a
@@ -1872,11 +1949,13 @@ class MySpecialActivities extends React.Component {
                 // ellipsis: true,
                 render: (text, record, index) => {
                     const defaultChecked = (record.isActive == '1' ? true : false);
-                    const statusState = (
-                        (record.eventWay == '50' || record.eventWay == '53')
-                        &&
-                        (record.status == 2) // 执行中的状态不可更改
-                    );
+                    // const statusState = (
+                    //     (record.eventWay == '50' || record.eventWay == '53')
+                    //     &&
+                    //     (record.status == 2) // 执行中的状态不可更改
+                    // );
+                    // if ()
+                    const BenefitDisabled = record.createScenesName === '权益卡'
                     return (
                         <Switch
                             // size="small"
@@ -1886,7 +1965,7 @@ class MySpecialActivities extends React.Component {
                             checked={defaultChecked}
                             onChange={(e) => {
                                 // isBrandOfHuaTianGroupList 华天集团品牌下的集团
-                                if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80) {
+                                if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80 || BenefitDisabled) {
                                     // e.preventDefault();
                                     return;
                                 }
@@ -1897,36 +1976,16 @@ class MySpecialActivities extends React.Component {
                                 // record.isActive == '-1' || statusState ? null :
                                 this.handleSattusActive(record)(() => this.handleDisableClickEvent(record.operation, record, index, null, `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3831197)}`))
                             }}
-                            disabled={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)}
+                            disabled={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || BenefitDisabled}
                         />
                     )
                 }
             },
-            // {
-            //     title: COMMON_LABEL.sort,
-            //     className:'TableTxtCenter',
-            //     dataIndex: 'sortOrder',
-            //     key: 'sortOrder',
-            //     width: 120,
-            //     // fixed:'center',
-            //     render: (text, record, index) => {
-            //         const canNotSortUp = this.state.pageNo == 1 && index == 0;
-            //         const canNotSortDown = (this.state.pageNo - 1) * this.state.pageSizes + index + 1 == this.state.total;
-            //         return (
-            //             <span>
-            //                 <span><Iconlist title={`${this.props.intl.formatMessage(STRING_SPE.d5g3d7ahfq3651)}`} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'TOP')} /></span>
-            //                 <span><Iconlist title={`${this.props.intl.formatMessage(STRING_SPE.da905h2m1237216)}`} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'UP')} /></span>
-            //                 <span className={styles.upsideDown}><Iconlist title={`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe3831)}`} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'DOWN')} /></span>
-            //                 <span className={styles.upsideDown}><Iconlist title={`${this.props.intl.formatMessage(STRING_SPE.d16hh1kkf9a3922)}`} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'BOTTOM')} /></span>
-            //             </span>
-            //         )
-            //     },
-            // },
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.d4h177f79da1218)}`,
                 dataIndex: 'eventWay',
                 key: 'eventWay',
-                width: 130,
+                width: 110,
                 fixed:'left',
                 // ellipsis: true,
                 render: (text, record) => {
@@ -1952,37 +2011,12 @@ class MySpecialActivities extends React.Component {
                 // ellipsis: true,
                 render: text => <Tooltip title={text}>{text}</Tooltip>,
             },
-            // {
-            //     title: `${this.props.intl.formatMessage(STRING_SPE.d5672b44908541235)}`,
-            //     className: 'TableTxtCenter',
-            //     dataIndex: 'status',
-            //     key: 'msgStatus',
-            //     width: 150,
-            //     render: (text, record) => {
-            //         if (record.eventWay === 50 || record.eventWay === 51 || record.eventWay === 52 || record.eventWay === 53
-            //             || record.eventWay === 61 || record.eventWay === 62 || record.eventWay === 63|| record.eventWay === 70) {
-            //             let _SmsSendStatus = '';
-            //             SmsSendStatus.map((status) => {
-            //                 if (status.value == record.status) {
-            //                     _SmsSendStatus = status.label;
-            //                 }
-            //             });
-            //             let _SmsSettleStatus = '';
-            //             SmsSettleStatus.map((status) => {
-            //                 if (status.value == record.settleStatus) {
-            //                     _SmsSettleStatus = status.label;
-            //                 }
-            //             });
-            //             return `${_SmsSendStatus}/${_SmsSettleStatus}`;
-            //         }
-            //     },
-            // },
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.dd5aa016c5f42125)}`,
                 className: 'TableTxtCenter',
                 dataIndex: 'validDate',
                 key: '',
-                // width: 220,
+                width: 180,
                 render: (validDate) => {
                     if (validDate.start === '0' || validDate.end === '0' ||
                         validDate.start === '20000101' || validDate.end === '29991231') {
@@ -1995,7 +2029,7 @@ class MySpecialActivities extends React.Component {
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.d2b1c68ddaa344161)}`,
                 dataIndex: 'operator',
-                // width: 120,
+                width: 150,
                 key: 'operator',
                 render: (text, record) => {
                     if (!record.operator) {
@@ -2025,19 +2059,17 @@ class MySpecialActivities extends React.Component {
                     return <Tooltip title={t}>{t}</Tooltip>;
                 },
             },
-            // {
-            //     title: `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3711176)}`,
-            //     className: 'TableTxtCenter',
-            //     dataIndex: 'isActive',
-            //     key: 'isActive',
-            //     width: 100,
-            //     render: (isActive) => {
-            //         // db60c8ac0a3715210  已终止
-            //         // db60c8ac0a371314 已启用
-            //         // d16hh1kkf9914292 已禁用
-            //         return isActive == '-1' ? `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3715210)}` : isActive == '1' ? `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a371314)}` : `${this.props.intl.formatMessage(STRING_SPE.d16hh1kkf9914292)}`;
-            //     },
-            // },
+            {
+                title: '来源渠道',
+                className: 'TableTxtCenter',
+                dataIndex: 'createScenesName',
+                key: 'createScenesName',
+                width: 80,
+                render: (text, record, index) => {
+                    return text || '--'
+                   
+                },
+            },
         ];
         return (
             <div className={`layoutsContent ${styles.tableClass}`}>
@@ -2048,7 +2080,7 @@ class MySpecialActivities extends React.Component {
                     columns={columns}
                     dataSource={this.state.dataSource}
                     loading={this.state.loading}
-                    scroll={{ x: 1000, y: 'calc(100vh - 440px)' }}
+                    scroll={{ x: 1499, y: 'calc(100vh - 440px)' }}
                     size="default"
                     pagination={{
                         pageSize: this.state.pageSizes,

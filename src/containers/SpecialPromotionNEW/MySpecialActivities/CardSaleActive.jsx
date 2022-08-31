@@ -9,7 +9,7 @@ import {
     SPECIAL_PROMOTION_UPDATE,
     SPECIAL_PROMOTION_DELETE,
 } from '../../../constants/authorityCodes';
-import {  SPECIAL_PROMOTION_MANAGE_PAGE } from '../../../constants/entryIds';
+import { SPECIAL_PROMOTION_MANAGE_PAGE } from '../../../constants/entryIds';
 import styles from './mySpecialActivities.less'
 import stylesPage from '../../SaleCenterNEW/ActivityPage.less';
 import emptyPage from '../../../assets/empty_page.png'
@@ -280,6 +280,7 @@ class CardSaleActive extends Component {
                         {data && data.length > 0 ?
                             data.map((item, index) => {
                                 const defaultChecked = (item.isActive == '1' ? true : false);
+                                const BenefitDisabled = item.createScenesName === '权益卡'
                                 return (
                                     <Col key={index} className={styles.columnsWrapper}>
                                         <p className={styles.activityTitle}>
@@ -291,18 +292,20 @@ class CardSaleActive extends Component {
                                                     checked={defaultChecked}
                                                     // disabled={item.eventWay == '80'}
                                                     onChange={() => {
-                                                        if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || item.eventWay === 80) {
+                                                        if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || item.eventWay === 80 || BenefitDisabled) {
                                                             // e.preventDefault();
                                                             return;
                                                         }
                                                         this.props.handleSattusActive(item, index)
                                                     }}
+                                                    disabled={BenefitDisabled}
                                                 />
                                             </span>
                                         </p>
                                         <div className={styles.centerBox}>
                                             <p><span>活动类型：</span> <em>{this.getEventWay(item.eventWay)}</em></p>
                                             <p><span>活动时间：</span> <em>{this.getTime(item.validDate)}</em> </p>
+                                            <p><span>来源渠道：</span> <em>{item.createScenesName}</em></p>
                                         </div>
                                         <div className={styles.activityBothCont}>
                                             <div className={styles.contBothBox}>
@@ -313,66 +316,90 @@ class CardSaleActive extends Component {
                                             </div>
 
                                         </div>
-                                        {/* {
-                                    item.shopID > 0 ?
-                                        <div className={styles.activityOrigin}>
-                                            <img className={styles.tagImg} src={shopImg} />
-                                            <span>{this.getCreateBy(item.shopID)}</span>
-                                        </div> : null
-                                } */}
-                                        <div className={styles.activityOperate}>
-                                            <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY} entryId={ SPECIAL_PROMOTION_MANAGE_PAGE}>
-                                                <span
-                                                    className={styles.operateDetail}
-                                                    onClick={e => this.handleShowDetailModal(e, item, index)}
-                                                >
-                                                    查看
-                                                </span>
-                                            </Authority>
-                                            {
-                                                item.eventWay != '80' && <Authority rightCode={SPECIAL_PROMOTION_UPDATE} entryId={ SPECIAL_PROMOTION_MANAGE_PAGE}>
+                                        {
+                                            item.createScenesName === '权益卡' ? (<div className={styles.activityOperate}>
+                                                <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY} entryId={SPECIAL_PROMOTION_MANAGE_PAGE}>
                                                     <span
-                                                        className={styles.operateEdit}
-                                                        disabled={
-                                                            item.eventWay == '64' ? null : 
-                                                             (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && (item.isActive != '0' || !isMine(item)))
+                                                        className={styles.operateDetail}
+                                                        onClick={e => this.handleShowDetailModal(e, item, index)}
+                                                    >
+                                                        查看
+                                                    </span>
+                                                </Authority>
+                                                <a
+                                                    href="#"
+                                                    className={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record) ? stylesPage.textDisabled : null}
+                                                    onClick={() => {
+                                                        if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) {
+                                                            return;
                                                         }
-                                                        onClick={(e) => {
-                                                            this.handleEditActive(e, item, index)
+                                                        if (Number(item.eventWay) === 70) {
+                                                            message.warning('该活动已下线');
+                                                            return;
+                                                        }
+                                                        this.props.checkDetailInfo('', item, index);
+                                                    }}
+                                                    disabled={item.eventWay == 85}
+                                                >
+                                                    活动跟踪
+                                                </a>
+                                            </div>) : (
+                                                <div className={styles.activityOperate}>
+                                                    <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY} entryId={SPECIAL_PROMOTION_MANAGE_PAGE}>
+                                                        <span
+                                                            className={styles.operateDetail}
+                                                            onClick={e => this.handleShowDetailModal(e, item, index)}
+                                                        >
+                                                            查看
+                                                        </span>
+                                                    </Authority>
+                                                    {
+                                                        item.eventWay != '80' && <Authority rightCode={SPECIAL_PROMOTION_UPDATE} entryId={SPECIAL_PROMOTION_MANAGE_PAGE}>
+                                                            <span
+                                                                className={styles.operateEdit}
+                                                                disabled={
+                                                                    item.eventWay == '64' ? null :
+                                                                        (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && (item.isActive != '0' || !isMine(item)))
+                                                                }
+                                                                onClick={(e) => {
+                                                                    this.handleEditActive(e, item, index)
+                                                                }}
+                                                            >
+                                                                编辑
+                                                            </span>
+                                                        </Authority>
+                                                    }
+                                                    {
+                                                        item.eventWay != '80' && <Authority rightCode={SPECIAL_PROMOTION_DELETE} entryId={SPECIAL_PROMOTION_MANAGE_PAGE}>
+                                                            <span
+                                                                className={styles.operateDelete}
+                                                                disabled={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)}
+                                                                onClick={() => {
+                                                                    if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || item.eventWay === 80) {
+                                                                        return;
+                                                                    }
+                                                                    if (Number(item.eventWay) === 70) {
+                                                                        message.warning(`该活动已下线`);
+                                                                        return;
+                                                                    }
+                                                                    this.props.handleDelActive(item)(() => this.props.checkDeleteInfo(_, item, index));
+                                                                }}
+                                                            >
+                                                                删除
+                                                            </span>
+                                                        </Authority>
+                                                    }
+                                                    <Tooltip placement="bottomLeft" title={this.renderTipTitle(_, item, index)} overlayClassName={stylesPage.Sale__Activite__Tip}>
+                                                        <span style={{
+                                                            position: 'relative',
+                                                            paddingRight: 9,
                                                         }}
-                                                    >
-                                                        编辑
-                                                    </span>
-                                                </Authority>
-                                            }
-                                            {
-                                                item.eventWay != '80' && <Authority rightCode={SPECIAL_PROMOTION_DELETE} entryId={ SPECIAL_PROMOTION_MANAGE_PAGE}>
-                                                    <span
-                                                        className={styles.operateDelete}
-                                                        disabled={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)}
-                                                        onClick={() => {
-                                                            if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || item.eventWay === 80) {
-                                                                return;
-                                                            }
-                                                            if (Number(item.eventWay) === 70) {
-                                                                message.warning(`该活动已下线`);
-                                                                return;
-                                                            }
-                                                            this.props.handleDelActive(item)(() => this.props.checkDeleteInfo(_, item, index));
-                                                        }}
-                                                    >
-                                                        删除
-                                                    </span>
-                                                </Authority>
-                                            }
-                                            <Tooltip placement="bottomLeft" title={this.renderTipTitle(_, item, index)} overlayClassName={stylesPage.Sale__Activite__Tip}>
-                                                <span style={{
-                                                    position: 'relative',
-                                                    paddingRight: 9,
-                                                }}
-                                                > 更多 <em className={styles.arrow}></em></span>
-                                            </Tooltip>
-                                        </div>
+                                                        > 更多 <em className={styles.arrow}></em></span>
+                                                    </Tooltip>
+                                                </div>
+                                            )
+                                        }
+
                                     </Col>
 
                                 )
