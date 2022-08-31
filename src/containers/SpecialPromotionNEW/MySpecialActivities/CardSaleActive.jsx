@@ -371,7 +371,7 @@ class CardSaleActive extends Component {
                                                         position: 'relative',
                                                         paddingRight: 9,
                                                     }}
-                                                    > 更多 <em className={styles.arrow}></em></span>
+                                                    > 更多  <em className={styles.arrow}></em></span>
                                                 </Tooltip>
                                             }
                                         </div>
