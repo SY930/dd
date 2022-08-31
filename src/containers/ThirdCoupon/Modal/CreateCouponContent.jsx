@@ -476,7 +476,7 @@ class CreateCouponContent extends Component {
     }
 
     handleSubmit = () => {
-        const { form, type } = this.props
+        const { form, type, editData } = this.props
         form.validateFields((err, values) => {
             if (!err) {
                 this.setState({ confirmLoading: true })
@@ -494,13 +494,13 @@ class CreateCouponContent extends Component {
                     datas = this.handleAliAndWxSubmit(values)
                 }
                 const url = '/api/v1/universal?';
-                const method = 'couponCodeBatchService/addBatch.ajax';
+                let method = 'couponCodeBatchService/addBatch.ajax';
 
-                // if (editData.batchName) {
-                //     method = 'couponCodeBatchService/updateBatch.ajax';
-                //     datas.itemID = editData.itemID;
-                //     datas.groupID = groupID
-                // }
+                if (editData.batchName) {
+                    method = 'couponCodeBatchService/updateBatch.ajax';
+                    datas.itemID = editData.itemID;
+                    datas.groupID = groupID
+                }
                 const params = {
                     service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
                     type: 'post',
@@ -515,13 +515,13 @@ class CreateCouponContent extends Component {
                 axios.post(url + method, params).then((res) => {
                     const { code, message: msg } = res;
                     if (code === '000') {
-                        // if (editData.batchName) {
-                        //     message.success('更新成功');
-                        //     this.props.handleCloseModal();
-                        //     this.props.handleQuery();
-                        //     this.props.onParentCancel();
-                        //     return
-                        // }
+                        if (editData.batchName) {
+                            message.success('更新成功');
+                            this.props.handleCloseModal();
+                            this.props.handleQuery();
+                            this.props.onParentCancel();
+                            return
+                        }
                         message.success('创建成功');
                         this.props.handleCloseModal();
                         this.props.handleQuery();
@@ -807,6 +807,11 @@ class CreateCouponContent extends Component {
         const { getFieldDecorator } = form;
         const { editData } = this.state;
         const offset = type == 2 ? 5 : 4;
+        const formItemLayout = {
+            labelCol: { span: 5 },
+            wrapperCol: { span: 16 },
+        }
+
         return (
             <Row>
                 <Col span={16} offset={offset} className={styles.CouponGiftBox}>
@@ -814,8 +819,7 @@ class CreateCouponContent extends Component {
                     { type == 4 ? this.renderFengChe() : this.renderOther() }
                     <FormItem
                         label="生效方式"
-                        labelCol={{ span: 4 }}
-                        wrapperCol={{ span: 17 }}
+                        {...formItemLayout}
                     >
                         <RadioGroup
                             value={this.state.effectType}
@@ -833,8 +837,7 @@ class CreateCouponContent extends Component {
                             <div>
                                 <FormItem
                                     label="生效时间"
-                                    labelCol={{ span: 4 }}
-                                    wrapperCol={{ span: 17 }}
+                                    {...formItemLayout}
                                     required={true}
                                 >
                                     <Select
@@ -852,8 +855,7 @@ class CreateCouponContent extends Component {
                                     </Select>
                                 </FormItem>
                                 <FormItem
-                                    labelCol={{ span: 4 }}
-                                    wrapperCol={{ span: 17 }}
+                                    {...formItemLayout}
                                     label={'有效天数'}
                                     required={true}
                                 >
@@ -888,8 +890,7 @@ class CreateCouponContent extends Component {
                             <FormItem
                                 label="固定有效期"
                                 className={[styles.FormItemStyle, styles.labeleBeforeSlect].join(' ')}
-                                labelCol={{ span: 5 }}
-                                wrapperCol={{ span: 16 }}
+                                {...formItemLayout}
                                 required={true}
                             >
                                 {getFieldDecorator('giftValidRange', {
