@@ -103,14 +103,19 @@ class MainTable extends Component {
                 title: '有效时间',
                 className: tc,
                 width: 100,
-                render:(text,record,index) => `${record.eventStartDate} / ${record.eventEndDate}`
+                render:(text,record,index) => {
+                    let { eventStartDate, eventEndDate } = record;
+                    eventStartDate = eventStartDate > 0 ? eventStartDate : '长期有效';
+                    eventEndDate = eventEndDate > 0 ? eventEndDate : '长期有效';
+                    return `${eventStartDate} / ${eventEndDate}`
+                }
             },
             { 
                 title: '创建人/修改人',
                 dataIndex: 'code',
                 className: tc,
                 width: 140,
-                render:(text,record,index) => `${record.creator} / ${record.regenerator}`
+                render:(text,record,index) => `${record.creator} / ${record.modifier}`
             },            
             { 
                 title: '创建时间/修改时间',
