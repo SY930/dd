@@ -91,17 +91,10 @@ class CouponsGiveCoupons extends React.Component {
          }
     }
     handlePrev = (cb) => {
-        if(this.testGiftForm()) {
-            this.setState({
-                ifGoback: true,
-            }, () => {
-                this.setState({
-                    stepTwo: false
-                })
-            })
-            cb()
-        }
-        
+        this.setState({
+            stepTwo: false
+        })
+        cb()
     }
     testGiftForm = () => {
         let flag = true
