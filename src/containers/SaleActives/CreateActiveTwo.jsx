@@ -32,6 +32,7 @@ class CreateActiveTwo extends Component {
       this.state = {
         loading: false,
         type: '1', 
+        clientType: '2',
       }
       this.saving = this.saving.bind(this);
       this.formRef = null;
@@ -51,6 +52,12 @@ class CreateActiveTwo extends Component {
       })
     }
 
+    onchageClientType = (clientType) => {
+      this.setState({
+        clientType,
+      })
+    }
+
     saving = () => {
       this.handleSubmitFn(this.handleCallback) 
     }
@@ -60,7 +67,7 @@ class CreateActiveTwo extends Component {
     render() {
         const  { itemID, isView, typeKey, isActive } = decodeUrl()
         const currentInfo = actInfoList.find(v => v.key === typeKey) || {}
-        const { loading } = this.state;
+        const { loading, clientType } = this.state;
         const Comp = FaceFormWrapper
         return (
             <div className={styles.createActiveTwo}>
@@ -85,7 +92,7 @@ class CreateActiveTwo extends Component {
                       </Button>
                       <Button
                           type="primary"
-                          disabled={isView === 'true'}
+                          disabled={isView === 'true' || clientType === '1'}
                           loading={loading}
                           onClick={this.lockedSaving}
                       >
@@ -105,6 +112,7 @@ class CreateActiveTwo extends Component {
                      itemID={itemID}
                      isView={isView}
                      onChangDecorateType={this.onchageType}
+                     onChangClientype={this.onchageClientType}
                      isActive={isActive}
                   />
                 </div>

@@ -395,6 +395,7 @@ class ManyFace extends Component {
             },
         }
         this.props.onChangDecorateType(sceneList)
+        this.props.onChangClientype(clientType)
 
         return formData;
     }
