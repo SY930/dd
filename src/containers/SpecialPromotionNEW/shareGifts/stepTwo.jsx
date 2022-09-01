@@ -22,9 +22,6 @@ import { FetchCrmCardTypeLst } from '../../../redux/actions/saleCenterNEW/crmCar
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
 
-
-
-
 const FormItem = Form.Item;
 const Option = Select.Option;
 @injectIntl

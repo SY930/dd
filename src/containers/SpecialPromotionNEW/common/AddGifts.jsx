@@ -20,6 +20,7 @@ import { injectIntl } from 'i18n/common/injectDecorator';
 import { STRING_GIFT } from 'i18n/common/gift';
 import { STRING_SPE, COMMON_SPE } from 'i18n/common/special';
 import { axios } from '@hualala/platform-base';
+import { isEditPromotionCode } from '../../../constants/promotionEditCode';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -254,9 +255,8 @@ class AddGifts extends React.Component {
                     )
                 }
                 {
-                    type != 64 ? <div className={userCount > 0 || disabledGifts ? styles.opacitySet : null}></div> : null //WTCRM-8629 评价有礼有参与记录礼品还可以编辑
+                   isEditPromotionCode.indexOf(type) < 0 ? <div className={userCount > 0 || disabledGifts ? styles.opacitySet : null}></div> : null //WTCRM-8629 评价有礼有参与记录礼品还可以编辑
                 }
-                
             </div>
         );
     }
