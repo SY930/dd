@@ -207,6 +207,16 @@ const getItervalsErrorStatus = (intervals) => {
         }
     }
 
+    if (filteredIntervals.length === 1) {
+        const { startTime, endTime } = filteredIntervals[0];
+        if (startTime > endTime) {
+            return {
+                hasError: true,
+                errorMessage: '时间段设置有误，请重新修改~',
+            }
+        }
+    }
+
     if (filteredIntervals.length > 1) {
         for (let i = 0; i < (filteredIntervals.length - 1); i += 1) {
             for (let j = i + 1; j < filteredIntervals.length; j += 1) {
