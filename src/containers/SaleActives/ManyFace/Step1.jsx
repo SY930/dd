@@ -70,7 +70,7 @@ class Step1 extends Component {
             ) : d({
                 onChange: this.handleChangeScene,
             })(
-                <RadioGroup > <Radio value={'1'}>弹窗海报</Radio> <Radio value={'2'}>banner广告</Radio> </RadioGroup>
+                <RadioGroup> <Radio value={'1'}>弹窗海报</Radio> <Radio value={'2'}>banner广告</Radio> </RadioGroup>
             )
         }
 
@@ -86,7 +86,7 @@ class Step1 extends Component {
             return d({
                 onChange: this.handleChangeClientType,
             })(
-                <RadioGroup > <Radio value={'2'}>小程序3.0</Radio> <Radio value={'1'}>H5餐厅</Radio> </RadioGroup>
+                <RadioGroup > <Radio value={'2'} disabled={formData.clientType == '1'}>小程序3.0</Radio><Radio value={'1'} disabled={true}>H5餐厅 (暂时不支持新增和修改)</Radio> </RadioGroup>
             )
         }
         return {
