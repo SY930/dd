@@ -223,39 +223,12 @@ class StepTwo extends React.Component {
                         />
                     </Tooltip>
                 </FormItem>
-                {/* <FormItem
-                    label={this.props.intl.formatMessage(STRING_SPE.d454apk46o45133)}
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 4 }}
-                    required
-                    wrapperCol={{ span: 17 }}
-                >
-                    {
-                        this.props.form.getFieldDecorator('recommendRule', {
-                            rules: [
-                                { required: true, message: `${this.props.intl.formatMessage(STRING_SPE.du3brskjh5191)}` }
-                            ],
-                            initialValue: recommendRule !== undefined ? `${recommendRule}` : undefined,
-                            onChange: this.handleRecommendRuleChange,
-                        })(
-                            <Select
-                                placeholder={this.props.intl.formatMessage(STRING_SPE.db60ca08c525691)}
-                                disabled={userCount > 0}
-                                getPopupContainer={(node) => node.parentNode}
-                            >
-                                <Select.Option value="1">{this.props.intl.formatMessage(STRING_SPE.d31f129919j725)}</Select.Option>
-                                <Select.Option value="2">{this.props.intl.formatMessage(STRING_SPE.d1qe7tmfob8230)}</Select.Option>
-                                <Select.Option value="3">{this.props.intl.formatMessage(STRING_SPE.d1kgf7b4bke9179)}</Select.Option>
-                            </Select>
-                        )
-                    }
-                </FormItem> */}
                 <FormItem
                     label={this.props.intl.formatMessage(STRING_SPE.d454apk46o45133)}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     required
-                    wrapperCol={{ span: 17 }}
+                    wrapperCol={{ span: 20 }}
                 >
                     {
                         this.props.form.getFieldDecorator('recommendRule', {
