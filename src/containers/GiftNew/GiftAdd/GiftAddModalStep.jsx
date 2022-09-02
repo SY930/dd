@@ -3055,7 +3055,7 @@ class GiftAddModalStep extends React.PureComponent {
                 render: decorator => decorator({})(<GiftImagePath contentHeight='auto'/>),
             },
             selectBrands: {
-                label: '所属品牌',
+                label: `${GroupSepcial.includes(groupID) && describeAry.includes(describe) ? '' : '所属品牌'}`,
                 type: 'custom',
                 render: (decorator, form) => this.renderSelectBrands(decorator, form)
             },
