@@ -64,9 +64,13 @@ class MainTable extends Component {
                 render: (text, record) => {
                     return (
                         <div className={styles.optBtn}>
-                            <a href="#" onClick={() => this.props.onOperate(record, 'edit')}>编辑</a>
+                            {
+                                record.status == 1 ? null : <a href="#" onClick={() => this.props.onOperate(record, 'edit')}>编辑</a>
+                            }
                             <a href="#" onClick={() => this.props.onOperate(record, 'see')}>查看</a>
-                            <a href="#" onClick={() => this.onDelete(record.itemID)}>删除</a>
+                            {
+                                record.status == 1 ? null : <a href="#" onClick={() => this.onDelete(record.itemID)}>删除</a>
+                            }
                         </div>
                     )
                 }

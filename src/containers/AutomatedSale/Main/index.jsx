@@ -5,9 +5,9 @@ import QueryForm from "./QueryForm";
 import styles from "./style.less";
 import { httpApaasActivityQueryByPage, httpEnableOrDisableMaPromotionEvent, httpDeleteMaPromotionEvent } from "./AxiosFactory";
 import moment from 'moment';
-import { jumpPage } from '@hualala/platform-base';
+import { jumpPage, closePage, getStore } from '@hualala/platform-base';
 import { SALE_AUTOMATED_SALE_DETAIL } from '../../../constants/entryCodes';
-import { getStore } from '@hualala/platform-base';
+import _ from 'lodash';
 
 const DATE_FORMAT = 'YYYYMMDD';
 const initialPaging = {
@@ -124,6 +124,11 @@ export default class Main extends React.PureComponent {
 
     onOperate = (record, type) => {
         const { groupID } = getStore().getState().user.get('accountInfo').toJS();
+        const tabList = getStore().getState().user.get('tabList').toJS();
+        const tab = tabList.find(item => item.key === 'sale_automated_sale_detail');
+        if (tab && tab.key === 'sale_automated_sale_detail') {
+            closePage(SALE_AUTOMATED_SALE_DETAIL);
+        }
         if(type == 'add'){
             jumpPage({ menuID: SALE_AUTOMATED_SALE_DETAIL, type, groupID });
         }else{
