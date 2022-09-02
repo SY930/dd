@@ -81,7 +81,7 @@ const loadShopSchema = async () => {
         }),
         allSubRightGroup: data.reduce(((cur, next) => {
             const { cooperativeGroupID } = next;
-            next.shopInfos = next.shopInfos.map(i => ({ ...i, groupID: cooperativeGroupID }))
+            next.shopInfos = (next.shopInfos || []).map(i => ({ ...i, groupID: cooperativeGroupID }))
             return (cur || []).concat(next.shopInfos)
         }), []).filter(item => item)
             .map(item => ({ ...item, value: `${item.shopID}`, label: item.shopName })),
