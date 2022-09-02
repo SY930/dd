@@ -4,13 +4,10 @@ export { default as MySpecialActivities } from './SpecialPromotionNEW/MySpecialA
 export { default as GiftInfo } from './GiftNew/GiftInfo/index';
 export { default as MyActivitiesShop } from './SaleCenterNEW/MyActivities/MyActivitiesShop';
 export { default as SaleCenterNEWShop } from './SaleCenterNEW/indexShop';
-
 export { default as WeChatMallPromotionCreate } from './WeChatMall/AddNew';
 export { default as WeChatMallPromotionList } from './WeChatMall/PromotionList';
-
 export { default as MessageTemplatesPage } from './BasicSettings/SmsSettingPage';
 export { default as WeChatMessageSettingPage } from './BasicSettings/WeChatMessageSettingPage';
-
 export { default as NewCustomerPage } from './NewCreatePromotions/NewCustomerPage';
 export { default as NewSaleActivityPage } from './NewCreatePromotions/NewSaleActivityPage';
 export { default as NewOnSaleActivityPage } from './NewCreatePromotions/NewOnSaleActivityPage';
