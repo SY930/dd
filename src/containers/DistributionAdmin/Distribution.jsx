@@ -1,15 +1,10 @@
 import React from 'react';
-import { Col, 
-    Button, 
-    Tabs 
-
-
-
-} from "antd";
+import { Col, Button, Tabs } from "antd";
 import Admin from "./Admin/index";
 import DistributionDetail from "./DistributionDetail/index";
 import DistributionWithdrawDetail from "./DistributionWithdrawDetail/index";
 import styles from "./style.less";
+import _ from "lodash";
 
 const TabPane = Tabs.TabPane;
 
@@ -23,8 +18,14 @@ export default class Distribution extends React.Component {
     }
 
     onSave = () => {
-        let formValue = this.adminContainer.form.getFieldsValue();
-        console.log(9999, formValue);
+        this.adminContainer.adminForm.validateFieldsAndScroll((err, values) => {
+            if (err) return;
+           let copiedValues = _.cloneDeep(values);
+           copiedValues.withdrawTimeStep = copiedValues.rebateRule == 1 ? copiedValues.withdrawTimeStep1 : copiedValues.withdrawTimeStep2;
+            delete copiedValues.withdrawTimeStep1;
+            delete copiedValues.withdrawTimeStep2;
+            console.log('copiedValues', copiedValues);
+        });
     }
 
     onExport = () => {
