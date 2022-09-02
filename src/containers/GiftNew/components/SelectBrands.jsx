@@ -14,6 +14,8 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
+const GroupSepcial = ['1155', 1155];
+const describeAry = ['代金券', '菜品优惠券', '菜品兑换券'];
 class SelectBrands extends Component {
 
     constructor(props) {
@@ -64,8 +66,10 @@ class SelectBrands extends Component {
     }
 
     render() {
-        const {type} = this.props;
+        const { type, groupID, describe } = this.props;
         const realValue = (this.props.value || []).map(target => String(target.targetID))
+        const isHideBrans = GroupSepcial.includes(groupID) && describeAry.includes(describe) 
+        if (isHideBrans) return null
         return (
             <Select
                 placeholder="默认为全部品牌"

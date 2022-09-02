@@ -2788,13 +2788,14 @@ class GiftAddModalStep extends React.PureComponent {
     }
     renderSelectBrands = (decorator,form) => {
         const { values} = this.state;
-        const { gift: { value } } = this.props;
+        const { gift: { value,  name: describe }, accountInfo } = this.props;
+        const groupID = accountInfo.get('groupID');
         return  decorator({
             key:'selectBrands',
             initialValue:values.selectBrands,
             onChange:(value) => this.changeSelectedBrands(value,form)
         })(
-            <SelectBrands type={value}/>
+            <SelectBrands type={value} groupID={groupID} describe={describe}/>
         )
     }
 
@@ -3056,7 +3057,7 @@ class GiftAddModalStep extends React.PureComponent {
             selectBrands: {
                 label: '所属品牌',
                 type: 'custom',
-                render: (decorator, form) => GroupSepcial.includes(groupID) && describeAry.includes(describe) ? null : this.renderSelectBrands(decorator, form)
+                render: (decorator, form) => this.renderSelectBrands(decorator, form)
             },
             cardTypeList: {
                 label: '适用卡类',
