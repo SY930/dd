@@ -198,8 +198,8 @@ class PushMessageMpID extends Component {
                             })
                         }
                     </Select>
-                    <span>
-                        可设置至多5个即将到期时间点推送提醒，时间不可重复
+                    <span style={{ display: 'inline-block', width: '450px' }}>
+                        券到账提醒；券剩余数量提醒；券到期提醒可设置最多5个即将到期时间点推送提醒
                     </span>
                 </div>
             </div>
