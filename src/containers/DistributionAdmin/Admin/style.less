@@ -1,4 +1,6 @@
-.admin {
+.adminContainer {  
+    overflow-y: auto;
+
     .rectBox {
         width: 434px;
         height: 80px;
@@ -41,6 +43,37 @@
                     align-items: center;
                 }
             }
+        }
+    }
+
+    .addIcon{
+        display: inline-block;
+        color: #1ab394;
+        font-size: 20px;
+        margin-left: 103px;
+    }
+    .closeIcon{
+        display: inline-block;
+        color:#ff6a6a;;
+        font-size: 20px;
+        margin-left: 15px;
+    }
+
+    .bannerUriBox {
+        display: flex;
+
+        .leftBanner {
+            width: 396px;
+            height: 730px;
+            border: 1px solid #ccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .rightDesc {
+            margin-left: 20px;
+            margin-top: 50px;
         }
     }
 }

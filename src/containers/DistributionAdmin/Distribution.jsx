@@ -1,5 +1,11 @@
 import React from 'react';
-import { Col, Button, Tabs } from "antd";
+import { Col, 
+    Button, 
+    Tabs 
+
+
+
+} from "antd";
 import Admin from "./Admin/index";
 import DistributionDetail from "./DistributionDetail/index";
 import DistributionWithdrawDetail from "./DistributionWithdrawDetail/index";
@@ -11,12 +17,13 @@ export default class Distribution extends React.Component {
     constructor(props){
         super(props);
         this.adminContainer = null;
+        this.state = {
+            currentTabKey: '1'
+        }
     }
-    state = {
-        currentTabKey: '1'
-    }
+
     onSave = () => {
-        let formValue = this.adminContainer.getForm().getFieldsValue();
+        let formValue = this.adminContainer.form.getFieldsValue();
         console.log(9999, formValue);
     }
 
