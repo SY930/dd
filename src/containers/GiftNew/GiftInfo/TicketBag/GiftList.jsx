@@ -38,6 +38,7 @@ class GiftList extends Component {
             total: 0,
         };
         this.setTableRef = el => this.tableRef = el;
+        this.queryFroms = null;
     }
     componentDidMount() {
         this.onQueryList();
@@ -156,9 +157,12 @@ class GiftList extends Component {
             return g;
         });
         this.setState({ dataSource: [...newDataSource], total: _total });
-        
     }
     
+    onExport = () => {
+        console.log('_TODO_导出', this.state.queryParams);
+        
+    }
 
     render() {
         const { loading, queryParams, dataSource = [], total} = this.state;
@@ -188,6 +192,9 @@ class GiftList extends Component {
                                 </Authority>
                             </li>
                         </ul>
+                    </div>
+                    <div className={styles2.rightBtnBox}>
+                        <Button onClick={this.onExport}>导出</Button>
                     </div>
                     <div style={{ margin: '0'}} className="layoutsLine"></div>
                 </div>
@@ -246,5 +253,10 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
+    null,
+    {
+        withRef: true
+    }
 )(GiftList)
+

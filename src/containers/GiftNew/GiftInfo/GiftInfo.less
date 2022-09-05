@@ -367,13 +367,27 @@
 .popDiv {
     width: 126px;
 }
+
 .tabBox{
+    position: relative;
+
     :global{
         .ant-tabs-bar{
             margin-bottom: 0;
         }
         .ant-tabs-nav-container{
             background: @white;
+        }
+    }
+
+    .rightBtnBox {
+        position: absolute;
+        top: 8px;
+        right: 24px;
+        z-index: 9;
+    
+        button {
+            margin-right: 10px;
         }
     }
 }

@@ -3,7 +3,7 @@ import { Row, Col, Button } from 'antd';
 import styles from './index.less';
 import MainTable from './MainTable';
 import QueryForm from './QueryForm';
-import { getTicketList } from './AxiosFactory';
+import { getTicketList, httpExport } from './AxiosFactory';
 import ReleaseModal from './Release';
 
 export default class TicketBag extends Component {
@@ -37,6 +37,15 @@ export default class TicketBag extends Component {
     onToggleModal = () => {
         this.setState(ps => ({ visible: !ps.visible }));
     }
+    onExport = () => {
+        httpExport()
+        .then(flag => {
+            if(flag){
+                console.log('_TODO_导出', this.state.queryParams);
+                message.success('导出成功');
+            }
+        });   
+    }
     render() {
         const { list, loading, pageObj, visible, queryParams } = this.state;
         const { groupID, onGoEdit } = this.props;
@@ -46,6 +55,7 @@ export default class TicketBag extends Component {
                 <QueryForm
                     onQuery={this.onQueryList}
                     onThrow={this.onToggleModal}
+                    onExport={this.onExport}
                     pageType={this.props.pageType}
                 />
                 <div className="layoutsLine"></div>

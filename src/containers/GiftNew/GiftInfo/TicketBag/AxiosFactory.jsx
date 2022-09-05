@@ -289,8 +289,23 @@ async function postStock(data) {
     message.error(msg);
     return false;
 }
+
+// 导出
+async function httpExport(data = {}) {
+    const method = `${api}getCouponPackages.ajax`;
+    const params = { service, type, data, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg } = response;
+    if (code === '000') {
+        return true;
+    }
+    message.error(msg);
+    return false;
+}
+
+
 export {
     putTicketBag, getTicketList,getGroupCardTypeList, getCardTypeList,deleteTicketBag, getTicketBagInfo, getTotalList,
     postTicketBag, getPhoneValid, putSendTicket, postRefund, getSettleList, getWechatMpInfo,
-    getImgTextList, getBagBatch, getQrCodeImg, postStock,
+    getImgTextList, getBagBatch, getQrCodeImg, postStock, httpExport
 }
