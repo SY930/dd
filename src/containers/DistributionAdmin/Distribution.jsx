@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Button, Tabs } from "antd";
+import { Col, Button, Tabs, message } from "antd";
 import Admin from "./Admin/index";
 import DistributionDetail from "./DistributionDetail/index";
 import DistributionWithdrawDetail from "./DistributionWithdrawDetail/index";
@@ -25,6 +25,7 @@ export default class Distribution extends React.Component {
             delete copiedValues.withdrawTimeStep1;
             delete copiedValues.withdrawTimeStep2;
             console.log('copiedValues', copiedValues);
+            message.success('保存成功!');
         });
     }
 

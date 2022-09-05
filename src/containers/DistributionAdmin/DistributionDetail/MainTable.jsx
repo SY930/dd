@@ -31,49 +31,50 @@ class MainTable extends Component {
                 title: '序号',
                 dataIndex: 'no',
                 className: tc,
-                width: 50
+                width: 50,
+                render:(text,record,index) => `${index+1}`,
             },
             { 
                 title: '订单号',
-                dataIndex: 'orderId',
+                dataIndex: 'trdOrderNO',
                 className: tc,
                 width: 200,
             },
             { 
                 title: '分销人',
-                dataIndex: 'distributor',
+                dataIndex: 'customerID',
                 className: tc,
                 width: 180,
             },
             { 
                 title: '被邀请人',
-                dataIndex: 'invitee',
+                dataIndex: 'subCustomerID',
                 className: tc,
                 width: 100,
             },
             { 
                 title: '返佣金额(元)',
-                dataIndex: 'rakeBackMoney',
+                dataIndex: 'rebateAmount',
                 className: tc,
                 width: 100,
             },
             { 
                 title: '返佣状态',
-                dataIndex: 'rakeBackStatus',
+                dataIndex: 'transStatus',
                 className: tc,
                 width: 100,
             },
             { 
                 title: '订单状态',
-                dataIndex: 'orderStatus',
+                dataIndex: 'trdOrderStatus',
                 className: tc,
                  width: 100,
             },
             { 
                 title: '下单时间',
-                dataIndex: 'orderTime',
+                dataIndex: 'transStamp',
                 className: tc,
-                width: 100,
+                width: 200,
             },
         ];
     }
@@ -81,7 +82,7 @@ class MainTable extends Component {
     generateDataSource() {
         const { list } = this.props;
         return list.map((x, i) => ({
-            key: x.couponPackageID,
+            key: x.title,
             type: '',
             ...x,
         }));

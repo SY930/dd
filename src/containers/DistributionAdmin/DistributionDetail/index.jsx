@@ -4,21 +4,21 @@ import BaseForm from 'components/common/BaseForm';
 import moment from "moment";
 import MainTable from "./MainTable";
 import styles from "./style.less";
+import _ from "lodash";
 
 const initialPaging = {
     pageNo: 1,
     pageSize: 10
 }
-
 const { RangePicker } = DatePicker;
-
+const defaultFormat = 'YYYY-MM-DD HH:mm:ss';
 const formItems = {
-    user: {
+    customerID: {
         type: 'text',
         label: '分销人',
         placeholder: '请输入手机号',
     },
-    invitee: {
+    subCustomerID: {
         type: 'text',
         label: '被邀请人',
         placeholder: '请输入手机号',
@@ -52,23 +52,14 @@ export default class DistributionDetail extends React.PureComponent {
     }
     
     componentDidMount(){
-        this.onQueryList(initialPaging);
+        this.onQueryList();
     }
 
-    clickQuery = () => {
-        let { orderTime = [], user, invitee } = this.queryFrom.getFieldsValue();
-        let startDate = orderTime[0] && moment(orderTime[0]).format('YYYY/MM/DD');
-        let endDate = orderTime[1] && moment(orderTime[1]).format('YYYY/MM/DD');
-        this.onQueryList({
-            user, 
-            invitee,
-            startDate,
-            endDate,
-            ...initialPaging
-        });
+    handleSearch = () => {
+        this.onQueryList();
     }
     resetFormItems = () => {
-        const render = () => (<div><Button type='primary' icon='search' onClick={this.clickQuery}>查询</Button></div>);
+        const render = () => (<div><Button type='primary' icon='search' onClick={this.handleSearch}>查询</Button></div>);
         return {
             ...formItems,
             q: {
@@ -78,32 +69,33 @@ export default class DistributionDetail extends React.PureComponent {
             }
         }
     }
-    onQueryList = (pagingParams = {}) => {
-        let { orderTime = [], user, invitee } = this.queryFrom.getFieldsValue();
-        let startDate = orderTime[0] && moment(orderTime[0]).format('YYYY/MM/DD');
-        let endDate = orderTime[1] && moment(orderTime[1]).format('YYYY/MM/DD');
-        let requestParams = {
-            ...pagingParams,
-            user, 
-            invitee,
-            startDate,
-            endDate,
+    onQueryList = (pagingParams = initialPaging) => {
+        const queryFormParams = _.cloneDeep(this.queryFrom.getFieldsValue());
+        const { orderTime } = queryFormParams;
+        if(Array.isArray(orderTime) && orderTime.length > 0){
+            queryFormParams.createStampStart = moment(orderTime[0]).format(defaultFormat);
+            queryFormParams.createStampEnd = moment(orderTime[1]).format(defaultFormat);
         }
-        console.log(99999, requestParams);
+        delete queryFormParams.orderTime;
+        let requestParams = {
+            ...queryFormParams,
+            ...this.state.pageObj,
+            ...pagingParams,
+        }
+        console.log('_TODO-1', requestParams);
         let list = [{
-            no: 1,
-            orderId: 11,
-            distributor: 2,
-            invitee: 3,
-            rakeBackMoney: 4,
-            rakeBackStatus: 5,
-            orderStatus: 6,
-            orderTime: 7
+            trdOrderNO: 11,
+            customerID: 182,
+            subCustomerID: 222333,
+            rebateAmount: 4,
+            transStatus: 5,
+            trdOrderStatus: 6,
+            transStamp: '2022-09-02/2022-02-02'
         }]
         this.setState({
             list,
             total: 5,
-            pageObj: initialPaging
+            pageObj: pagingParams
         })
     }
     render() {

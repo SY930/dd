@@ -4,16 +4,16 @@ import BaseForm from 'components/common/BaseForm';
 import moment from "moment";
 import MainTable from "./MainTable";
 import styles from "./style.less";
+import _ from "lodash";
 
+const defaultFormat = 'YYYY-MM-DD HH:mm:ss';
 const initialPaging = {
     pageNo: 1,
     pageSize: 10
 }
-
 const { RangePicker } = DatePicker;
-
 const formItems = {
-    user: {
+    customerID: {
         type: 'text',
         label: '分销人',
         placeholder: '请输入手机号',
@@ -47,22 +47,14 @@ export default class DistributionWithdrawDetail extends React.PureComponent {
     }
     
     componentDidMount(){
-        this.onQueryList(initialPaging);
+        this.onQueryList();
     }
 
-    clickQuery = () => {
-        let { orderTime = [], user } = this.queryFrom.getFieldsValue();
-        let startDate = orderTime[0] && moment(orderTime[0]).format('YYYY/MM/DD');
-        let endDate = orderTime[1] && moment(orderTime[1]).format('YYYY/MM/DD');
-        this.onQueryList({
-            user, 
-            startDate,
-            endDate,
-            ...initialPaging
-        });
+    handleSearch = () => {
+        this.onQueryList();
     }
     resetFormItems = () => {
-        const render = () => (<div><Button type='primary' icon='search' onClick={this.clickQuery}>查询</Button></div>);
+        const render = () => (<div><Button type='primary' icon='search' onClick={this.handleSearch}>查询</Button></div>);
         return {
             ...formItems,
             q: {
@@ -72,25 +64,27 @@ export default class DistributionWithdrawDetail extends React.PureComponent {
             }
         }
     }
-    onQueryList = (pagingParams = {}) => {
-        let { orderTime = [], user } = this.queryFrom.getFieldsValue();
-        let startDate = orderTime[0] && moment(orderTime[0]).format('YYYY/MM/DD');
-        let endDate = orderTime[1] && moment(orderTime[1]).format('YYYY/MM/DD');
+    onQueryList = (pagingParams = initialPaging) => {
+        const queryFormParams = _.cloneDeep(this.queryFrom.getFieldsValue());
+        const { orderTime } = queryFormParams;
+        if(Array.isArray(orderTime) && orderTime.length > 0){
+            queryFormParams.createStampStart = moment(orderTime[0]).format(defaultFormat);
+            queryFormParams.createStampEnd = moment(orderTime[1]).format(defaultFormat);
+        }
+        delete queryFormParams.orderTime;
         let requestParams = {
+            ...queryFormParams,
+            ...this.state.pageObj,
             ...pagingParams,
-            user, 
-            startDate,
-            endDate,
         }
         console.log(99999, requestParams);
         let list = [{
-            no: 1,
-            orderId: 11,
-            distributor: 2,
-            rakeBackMoney: 4,
-            rakeBackStatus: 5,
-            orderStatus: 6,
-            orderTime: 7
+            customerInfo: 1,
+            distributionAmount: 2,
+            rebateAmount: 2,
+            withdrawAmount: 3,
+            canWithdrawAmount: 5,
+            recordedAmount: 6,
         }]
         this.setState({
             list,

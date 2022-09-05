@@ -48,7 +48,8 @@ class MainTable extends Component {
                 title: '序号',
                 dataIndex: 'no',
                 className: tc,
-                width: 50
+                width: 50,
+                render:(text,record,index) => `${index+1}`,
             },
             { 
                 title: '操作',
@@ -63,37 +64,37 @@ class MainTable extends Component {
             },
             { 
                 title: '分销人',
-                dataIndex: 'distributor',
+                dataIndex: 'customerInfo',
                 className: tc,
                 width: 180,
             },
             { 
                 title: '分销总金额 (元)',
-                dataIndex: 'distributionTotalMoney',
+                dataIndex: 'distributionAmount',
+                className: tc,
+                width: 100,
+            },
+            { 
+                title: '返佣总金额 (元)',
+                dataIndex: 'rebateAmount',
+                className: tc,
+                width: 100,
+            },
+            { 
+                title: '已提现金额 (元)',
+                dataIndex: 'canWithdrawAmount',
+                className: tc,
+                width: 100,
+            },
+            { 
+                title: '可提现金额 (元)',
+                dataIndex: 'withdrawAmount',
                 className: tc,
                 width: 100,
             },
             { 
                 title: '待入账金额 (元)',
-                dataIndex: 'rakeBackTotalMoney',
-                className: tc,
-                width: 100,
-            },
-            { 
-                title: '待入账金额 (元)',
-                dataIndex: 'withdrawnMoney',
-                className: tc,
-                width: 100,
-            },
-            { 
-                title: '待入账金额 (元)',
-                dataIndex: 'withdrawableMoney',
-                className: tc,
-                 width: 100,
-            },
-            { 
-                title: '待入账金额 (元)',
-                dataIndex: 'waitToBeRecordedMoney',
+                dataIndex: 'recordedAmount',
                 className: tc,
                 width: 100,
             },

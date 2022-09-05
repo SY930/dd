@@ -23,23 +23,24 @@ class WithdrawRecordModal extends Component {
                 title: '序号',
                 dataIndex: 'no',
                 className: tc,
-                width: 50
+                width: 50,
+                render: (text,record,index) => `${index+1}`,
             },
             { 
                 title: '流水号',
-                dataIndex: 'serialNumber',
+                dataIndex: 'serialNo',
                 className: tc,
                 width: 180,
             },
             { 
                 title: '已提现金额 (元)',
-                dataIndex: 'distributionTotalMoney',
+                dataIndex: 'withdrawAmount',
                 className: tc,
                 width: 180,
             },
             { 
                 title: '提现时间',
-                dataIndex: 'withdrawTime',
+                dataIndex: 'withdrawStamp',
                 className: tc,
             },
         ];
@@ -67,7 +68,13 @@ class WithdrawRecordModal extends Component {
     getList = () => {
         let { pageNo, pageSize } = this.state;
         this.setState({
-            list: [{}],
+            list: [
+                {
+                    serialNo: 1,
+                    withdrawAmount: 2,
+                    withdrawStamp: 3
+                }
+            ],
             total: 10
         })
     }
