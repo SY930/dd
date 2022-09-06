@@ -633,7 +633,6 @@ class PhonePreview extends PureComponent {
     //     })
     // }
     renderCouponContent(){
-        console.log('_TODO giftType', this.props.giftType, 'applyScene', this.props.applyScene)
         const {
             giftType,
             applyScene,

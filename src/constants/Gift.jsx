@@ -134,7 +134,7 @@ const GiftCfg = {
             value: '81',
             color: '#e27a82',
             category: 'primary',
-            tags: ['小程序'],
+            tags: ['小程序', 'pos'],
         },
     ],
     giftTypeName: [

@@ -1017,7 +1017,11 @@ class GiftAddModalStep extends React.PureComponent {
             }
             if (params.giftShareType != '0' && params.giftShareType != '1' && params.giftShareType != '2') {
                 // 不传值0,1,2创建会报错
-                params.giftShareType = '0'
+                if(value == '81'){ // 特殊权益券key
+                    params.giftShareType = '1'
+                }else{
+                    params.giftShareType = '0'
+                }
             }
             if (!params.isDiscountRate && value != '111') {
                 params.discountRate = 1
@@ -1072,7 +1076,6 @@ class GiftAddModalStep extends React.PureComponent {
                 params.supportOrderTypeLst = '31,20,21,11,10';
                 params.isOfflineCanUsing = '0';
             }
-            console.log('_TODO', value);
 
             Array.isArray(params.usingDateType) && (params.usingDateType = params.usingDateType.join(','));
             Array.isArray(params.usingWeekType) && (params.usingWeekType = params.usingWeekType.join(','));
@@ -1230,7 +1233,8 @@ class GiftAddModalStep extends React.PureComponent {
                     return
                 }
             }
-            console.log('_TODO', params.supportOrderTypeLst);
+            console.log('_TODO==特殊权益券保存', params);
+
             Array.isArray(params.supportOrderTypeLst) && (params.supportOrderTypeLst = params.supportOrderTypeLst.join(','))
             this.setState({
                 finishLoading: true,
@@ -2892,7 +2896,6 @@ class GiftAddModalStep extends React.PureComponent {
         const giftNameValid = (type === 'add') ? { max: 25, message: '不能超过25个字符' } : {};
 
         let isMsg = false;
-        console.log('_TODO', formData);
         if(formData.pushMessage&&formData.pushMessage.sendType){
             isMsg = formData.pushMessage.sendType.indexOf('msg')>-1
         }
