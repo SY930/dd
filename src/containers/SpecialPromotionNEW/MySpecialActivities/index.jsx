@@ -602,7 +602,7 @@ class MySpecialActivities extends React.Component {
                         {
                             eventName: activityName,
                             tabKeys: "saleSpecialPage",
-                            isActive: null,
+                            isActive: "",
                         },
                         () => {
                             this.handleQuery();
@@ -1942,7 +1942,8 @@ class MySpecialActivities extends React.Component {
         }
 
         if (isActive !== "") {
-            opt.isActive = isActive == "-1" ? "-1" : isActive == "1" ? "1" : "0";
+            opt.isActive =
+                isActive == "-1" ? "-1" : isActive == "1" ? "1" : "0";
         }
 
         console.log(opt, "opt");
