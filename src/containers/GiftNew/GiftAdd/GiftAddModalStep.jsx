@@ -1110,7 +1110,7 @@ class GiftAddModalStep extends React.PureComponent {
                 }
             }
 
-            if (value == '10') {
+            if (['10','20','21','111'].includes(value)) {
 
                 let isMsg = false
                 if(this.state.values.pushMessage&&this.state.values.pushMessage.sendType){
@@ -2990,7 +2990,7 @@ class GiftAddModalStep extends React.PureComponent {
                         <Col>
                             {
                                 decorator({})(
-                                    describe!='代金券'?<PushMessageMpID formData = {formData} groupID={groupID}/>:
+                                     (!['10', '20', '21', '111',].includes(value))?<PushMessageMpID formData = {formData} groupID={groupID}/>:
                                     <CashCouponPushMessageMpID formData = {formData} groupID={groupID}/>
                                 )
                             }
