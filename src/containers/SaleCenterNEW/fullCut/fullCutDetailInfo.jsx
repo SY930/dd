@@ -287,7 +287,7 @@ class FullCutDetailInfo extends React.Component {
                             className={styles.FormItemStyle}
                             validateStatus={ruleInfo.validationStatus}
                             help={ruleInfo.helpMsg}
-                            style={{ marginLeft: '109px', width: '70.5%' }}
+                            style={{ width: '85%', marginLeft: '40px' }}
                         >
                             <CustomRangeInput
                                 addonBefore={
@@ -320,17 +320,19 @@ class FullCutDetailInfo extends React.Component {
                                         }
                                     >
                                         {type.map((type, index) => {
-                                            return <Option key={`options-${index}`} value={type.value}>{type.name}</Option>
+                                            return <Option style={{width:'120px'}} key={`options-${index}`} value={type.value}>{type.name}</Option>
                                         })}
                                     </Select>
                                 }
                                 value={
                                     _value
                                 }
-                                onChange={(value) => {
-                                    this.onCustomRangeInputChange(value, index);
+                                onChange={(value) => 
+                                    {
+                                        this.onCustomRangeInputChange(value, index);
+                                    }
                                 }
-                                }
+                                addonAfterUnit='元'
                             />
                         </FormItem>
                     </Col>

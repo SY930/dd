@@ -41,6 +41,28 @@ class TimeRange extends Component {
         list.splice(+idx, 1);
         onChange(list);
     }
+
+    getDisableHours = (start) => {
+        if (start) {
+            return range(0, start.hour());
+        }
+        return [];
+    }
+
+    getDisableMinutes = () => {
+        if (this.props.type === '85') {
+            return []
+        }
+        return range(1, 30).concat(range(31, 60))
+    }
+
+    getDisableMinutesEnd = () => {
+        if (this.props.type === '85') {
+            return []
+        }
+        return range(0, 29).concat(range(30, 59))
+    }
+
     render() {
         const { value } = this.props;
         const len = value.length;
@@ -54,7 +76,7 @@ class TimeRange extends Component {
                             <TimePicker
                                 value={x.startTime}
                                 onChange={(v)=>this.onStartChange(v, i)}
-                                disabledMinutes={h => range(1, 30).concat(range(31, 60))}
+                                disabledMinutes={h => { return this.getDisableMinutes()}}
                                 hideDisabledOptions={true}
                                 format={TF}
                             />
@@ -62,7 +84,8 @@ class TimeRange extends Component {
                             <TimePicker
                                 value={x.endTime}
                                 onChange={(v)=>this.onEndChange(v, i)}
-                                disabledMinutes={h => range(0, 29).concat(range(30, 59))}
+                                disabledMinutes={h => { return this.getDisableMinutesEnd()}}
+                                disabledHours={() => { return this.getDisableHours(x.startTime); }}
                                 hideDisabledOptions={true}
                                 format={TF}
                             />

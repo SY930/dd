@@ -32,18 +32,26 @@ class ExpandTree extends React.Component {
         document.body.addEventListener('click', this.listenClick)
     }
     listenClick(e) {
+        const { filterLable = SALE_CENTER_GIFT_TYPE } = this.props;
+        const labels = [];
+        filterLable.map(item => {
+            if(typeof item.label == 'string'){
+                labels.push(item.label);
+            } else if(item.label.props && item.label.props.defaultMessage){
+                labels.push(item.label.props.defaultMessage)
+            }
+        })
         if (e.target.matches('.ExpandTreeVisibel') || e.target.matches('.ant-input-suffix') || e.target.matches('.ant-input-search-icon') ||
             e.target.matches('.ant-tree-noline_close') || e.target.matches('.ant-tree-node-content-wrapper') ||
             e.target.matches('.ant-tree-node-content-wrapper-close') ||
             e.target.matches('.ant-tree-title') || e.target.matches('.ant-tree-child-tree') || e.target.matches('.ant-tree-child-tree-open') ||
             e.target.matches('.ant-tree-node-content-wrapper-normal') || e.target.matches('.ant-tree-switcher') ||
             e.target.matches('.ant-tree-noline_open')) {
-            //
         } else if (e.target.matches('.input_click')) {
-            //
-        } else {
+        } else if(labels.includes(e.target.innerHTML)){
+        }else{
             // 全部消失
-            this.props.onClick && this.props.onClick()
+            this.props.onClick && this.props.onClick();
         }
     }
     componentWillUnmount() {

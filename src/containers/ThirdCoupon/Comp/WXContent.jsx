@@ -49,7 +49,6 @@ class WXContent extends Component {
 
 
     onChangeWXMerchantID = (value) => {
-    // console.log("🚀 ~ file: WXContent.jsx ~ line 51 ~ WXContent ~ value", value)
         const findItem = this.state.payChannelList.find(item => value === `${item.settleID}`) || {}
         this.props.onChangeWXMerchantID(findItem)
     }
@@ -112,7 +111,7 @@ class WXContent extends Component {
                 <Row>
                     <Col span={16} offset={5} className={styles.DirectBox}>
                         <Form.Item
-                            labelCol={{ span: 7 }}
+                            labelCol={{ span: 8 }}
                             wrapperCol={{ span: 16 }}
                             required={true}
                             className={styles.directSelect}
@@ -133,7 +132,7 @@ class WXContent extends Component {
                             </Select>)}
                         </Form.Item>
                         <Form.Item
-                            labelCol={{ span: 7 }}
+                            labelCol={{ span: 8 }}
                             wrapperCol={{ span: 16 }}
                             required={true}
                             className={styles.directSelect}

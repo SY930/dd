@@ -85,14 +85,15 @@ class CustomRangeInput extends React.Component {
 
     render() {
         const {
-            firstInputAppend
+            firstInputAppend,
+            discountMode
         } = this.props
         return (
             <Row
                 className={styles.rightInput}
                 gutter={6}
             >
-                <Col span={firstInputAppend ? 5 : 10}>
+                <Col span={firstInputAppend ? 5 : discountMode ? 10 : 13}>
                     <PriceInput
                         disabled={this.props.disabled}
                         addonBefore={firstInputAppend ? "" : this.state.addonBefore}
@@ -104,11 +105,11 @@ class CustomRangeInput extends React.Component {
                     />
                 </Col>
 
-                <Col span={firstInputAppend ? 6 : 3}>
+                <Col span={firstInputAppend ? 6 : discountMode ? 3 : 4}>
                     <div style={firstInputAppend ? { marginTop: 7, marginLeft: 5, } : {}}>{this.props.relation || SALE_LABEL.k5nh21d9}</div>
                 </Col>
 
-                <Col span={firstInputAppend ? 5 : 11}>
+                <Col span={firstInputAppend ? 5 : discountMode ? 11 : 7}>
                     <PriceInput
                         discountMode={this.props.discountMode}
                         placeholder={this.props.endPlaceHolder}

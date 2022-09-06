@@ -121,7 +121,7 @@ const CARD_SUM_COLUMNS = [
         key: 'operateRemark',
         className: 'TableTxtCenter',
         width: 200,
-        render: (value) => { return value ? <Tooltip placement="topLeft" title={value}><span>{value}</span></Tooltip> : '--' },
+        render: (value) => { return value ? <Tooltip trigger="hover" overlayStyle={{ wordBreak: 'break-word', maxWidth: '300px' }} placement="topLeft" title={value}><span>{value}</span></Tooltip> : '--' },
     }
 ];
 const CARD_SUM_FORMITEMS = {

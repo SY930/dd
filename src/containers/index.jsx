@@ -1,15 +1,13 @@
-﻿export { default as MyActivities } from './SaleCenterNEW/MyActivities/MyActivities';
+﻿
+export { default as MyActivities } from './SaleCenterNEW/MyActivities/MyActivities';
 export { default as MySpecialActivities } from './SpecialPromotionNEW/MySpecialActivities/index';
 export { default as GiftInfo } from './GiftNew/GiftInfo/index';
 export { default as MyActivitiesShop } from './SaleCenterNEW/MyActivities/MyActivitiesShop';
 export { default as SaleCenterNEWShop } from './SaleCenterNEW/indexShop';
-
 export { default as WeChatMallPromotionCreate } from './WeChatMall/AddNew';
 export { default as WeChatMallPromotionList } from './WeChatMall/PromotionList';
-
 export { default as MessageTemplatesPage } from './BasicSettings/SmsSettingPage';
 export { default as WeChatMessageSettingPage } from './BasicSettings/WeChatMessageSettingPage';
-
 export { default as NewCustomerPage } from './NewCreatePromotions/NewCustomerPage';
 export { default as NewSaleActivityPage } from './NewCreatePromotions/NewSaleActivityPage';
 export { default as NewOnSaleActivityPage } from './NewCreatePromotions/NewOnSaleActivityPage';
@@ -32,3 +30,5 @@ export { default as PromotionDecoration } from './PromotionDecoration';
 export { default as CreateActive } from './SaleActives/CreateActive';
 export { default as PromotionList } from './WeChat2Mall/PromotionList'
 export { default as LanchChannelList } from './LanchChannel/index'
+export { default as CreateActiveTwo } from './SaleActives/CreateActiveTwo';
+export { default as GiftDetails } from './GiftNew/GiftDetails/index'//礼品使用详情

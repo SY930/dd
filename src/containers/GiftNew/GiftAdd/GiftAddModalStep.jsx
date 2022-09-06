@@ -2798,14 +2798,14 @@ class GiftAddModalStep extends React.PureComponent {
                                 rules: [{ required: true, message: '不能为空' }, {
                                     validator: (rule, v, cb) => {
                                         if (v > 100) {
-                                            cb('请输入100以内的正整数')
+                                            cb('请输入100以内的数字')
                                         }
-                                        if (!/^[0-9]\d{0,3}$/.test(Number(v))) {
+                                        if (!/^([0-9]\d{0,3}|(^\+?\d{0,3}\.\d{0,1}$))$/.test(Number(v))) {
                                             cb(rule.message);
                                         }
                                         cb();
                                     },
-                                    message: '请输入100以内的正整数',
+                                    message: '请输入100以内的数字，支持1位小数',
                                 }],
                             })(<Input
                                 addonAfter="%"

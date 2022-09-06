@@ -392,6 +392,19 @@ class QuotaCardBatchSold extends React.Component {
                     }
                 ],
             },
+            transRemark: {
+                label: '备注',
+                type: 'custom',
+                render: decorator => (
+                    <div>
+                        {decorator({
+                            key: 'transRemark',
+                        })(
+                            <Input type="textarea" placeholder="可输入50字符以内备注" maxLength={50} />
+                        )}
+                    </div>
+                ),
+            },
         };
         return (
             <div className={styles.crmCardInfoDetailTransfer} ref="manualAdjustBalance">

@@ -1,4 +1,9 @@
-﻿
+﻿/*
+ * @Author: Songnana
+ * @Date: 2022-08-31 11:47:43
+ * @Modified By: modifier Songnana
+ * @Descripttion: 
+ */
 export const SALE_CENTER_PAGE = '1000076001'; // 基础营销信息新
 // export const NEW_SALE_CENTER = '1000076002'; // 创建基础营销
 export const SPECIAL_PAGE = '1000076003'; // 特色营销首页
@@ -61,3 +66,8 @@ export const THIRD_VOUCHER_MANAGEMENT = '100008992' // 第三方券管理
 export const ACTIVITY_LAUNCH = '100008993' // 投放活动
 
 export const SALE_LANCH_CHANNEL = '10000730099' //活动投放渠道管理
+
+export const SALE_ACTIVE_NEW_PAGE = 'sale_active_new_page' // 营销活动跳转页面
+
+
+export const GIFT_DETAILS = 'giftDetails' //礼品信息详情页面

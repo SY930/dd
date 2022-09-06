@@ -1044,7 +1044,7 @@ class CheckInSecondStep extends React.Component {
                         <Col span={2}>
                             {
                                 (!isMultiple) && (
-                                    <div className={selfStyle.buttonArea}>
+                                    <div className={selfStyle.buttonArea} style={{display:'block'}}>
                                         {
                                             (arr.length < 7 && index === arr.length - 1) && (
                                                 <Icon

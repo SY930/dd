@@ -81,18 +81,25 @@ class NewSendGifts extends NewPromotion {
                 // )
             },
         ];
+        // const { upperLimitVisible } = this.state;
         return (
-            <CustomProgressBar
-                loading={this.state.loading}
-                steps={steps}
-                callback={(arg) => {
-                    this.props.callbacktwo(arg);
-                }}
-                onNext={this.handleNext}
-                onFinish={this.handleFinish}
-                onPrev={this.handlePrev}
-                onCancel={this.handleCancel}
-            />
+            <div>
+                <CustomProgressBar
+                    loading={this.state.loading}
+                    steps={steps}
+                    callback={(arg) => {
+                        this.props.callbacktwo(arg);
+                    }}
+                    onNext={this.handleNext}
+                    onFinish={this.handleFinish}
+                    onPrev={this.handlePrev}
+                    onCancel={this.handleCancel}
+                    upperLimitVisible={this.state.upperLimitVisible}
+                    onUpperLimitCancel={this.onUpperLimitCancel}
+                    data={this.state.data}
+                    type={this.props.promotionType}
+                />
+            </div>
         );
     }
 }

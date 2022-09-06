@@ -1,6 +1,6 @@
 {
     "name": "@hualala/platform-sale",
-    "version": "2.123.12",
+    "version": "2.126.8",
     "description": "商户平台营销中心(sale)业务包，基于@hualala/platform-base定义的规范实现",
     "main": "index.js",
     "scripts": {
@@ -28,6 +28,7 @@
         "rc-color-picker": "1.2.6",
         "react-cropper": "1.0.1",
         "react-intl": "2.7.2",
+        "react-virtualized": "^9.22.3",
         "redux-saga": "^0.16.0",
         "solarlunar": "2.0.7",
         "sortablejs": "^1.13.0",

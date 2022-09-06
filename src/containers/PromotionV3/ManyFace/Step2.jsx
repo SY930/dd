@@ -1,6 +1,6 @@
 import React, { PureComponent as Component } from 'react';
 import { connect } from 'react-redux';
-import { Checkbox } from 'antd';
+import { Checkbox, Radio } from 'antd';
 import moment from 'moment';
 // import { Form } from 'antd';
 import BaseForm from 'components/common/BaseForm';
@@ -10,9 +10,11 @@ import { getPromotionShopSchema } from '../../../redux/actions/saleCenterNEW/pro
 import { isFilterShopType, axiosData } from '../../../helpers/util'
 
 const CheckboxGroup = Checkbox.Group;
-
-const optiosH5 = [{ label: '点餐页弹窗海报图', value: '1' }];
-const optiosApp2 = [{ label: '点餐页弹窗海报图', value: '1', disabled: false }, { label: '点餐页广告图（即将上线）', value: '2', disabled: true }]
+const RadioGroup = Radio.Group;
+// const optiosH5 = [{ label: '点餐页弹窗海报图', value: '1' }];
+// const optiosApp2 = [{ label: '点餐页弹窗海报图', value: '1', disabled: false }, { label: '点餐页广告图（即将上线）', value: '2', disabled: true }];
+const optionsPalace = [{ label: '堂食点餐页', value: '1' },
+    { label: '外卖点餐页', value: '2' }, { label: '自提点餐页', value: '3' }, { label: '支付完成页', value: '4' }];
 
 const DF = 'YYYYMMDD';
 class Step2 extends Component {
@@ -89,7 +91,7 @@ class Step2 extends Component {
         const filterShopData = shopData.filter(item => this.state.filterShop.indexOf(item.shopID) < 0);
         // originTreeData.shops = filterShopData;
         const { brands } = this.state;
-        const { shopIDList, sceneList, clientType } = formItems2;
+        const { shopIDList, sceneList, clientType, placement } = formItems2;
         const render = d => d()(<ShopSelector
             filterParm={isFilterShopType() ? { productCode: 'HLL_CRM_License' } : {}}
             brandList={brands}
@@ -98,15 +100,22 @@ class Step2 extends Component {
         />);
         const renderScene = (d, form) => {
             return form.getFieldValue('clientType') === '1' ? d({})(
-                <CheckboxGroup options={optiosH5} />
+                <RadioGroup > <Radio value={'1'}>弹窗海报</Radio> </RadioGroup>
             ) : d({})(
-                <CheckboxGroup options={optiosApp2} />
+                <RadioGroup > <Radio value={'1'}>弹窗海报</Radio> <Radio value={'2'}>banner广告</Radio> </RadioGroup>
             )
+        }
+
+        const renderPlacement = (d, form) => {
+            return form.getFieldValue('clientType') === '2' ? d({})(
+                <CheckboxGroup options={optionsPalace} />
+            ) : null
         }
         return {
             clientType,
             sceneList: { ...sceneList, render: renderScene },
             shopIDList: { ...shopIDList, render },
+            placement: { ...placement, render: renderPlacement },
         };
     }
     render() {

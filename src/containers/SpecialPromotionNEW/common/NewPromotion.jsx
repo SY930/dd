@@ -10,7 +10,7 @@
 
 import React from 'react';
 import { message } from 'antd';
-import { jumpPage, closePage } from '@hualala/platform-base'
+import { jumpPage, closePage, axios } from '@hualala/platform-base'
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { COMMON_SPE } from 'i18n/common/special';
 import { createMemberGroupNew } from '../sendGifts/stepThreeHelp'
@@ -24,17 +24,20 @@ export default class NewPromotion extends React.Component {
         this.handles = []; // store the callback
         this.state = {
             loading: false,
+            upperLimitVisible: false,
+            data: [],
         };
-
         this.onFinish = this.onFinish.bind(this);
         this.handleNext = this.handleNext.bind(this);
         this.handlePrev = this.handlePrev.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
         this.handleFinish = this.handleFinish.bind(this);
+        this.onUpperLimitCancel = this.onUpperLimitCancel.bind(this)
     }
 
+
     // CustomProgressBar onFinish 事件回调，当表单校验无误会调用该事件
-    async onFinish(cb) {
+    async onFinish(cb, flag) {
         const { specialPromotion, user } = this.props;
         const smsGate = specialPromotion.$eventInfo.smsGate;
         if (specialPromotion.$eventInfo.eventWay == '50'
@@ -121,60 +124,140 @@ export default class NewPromotion extends React.Component {
                 //    cardGroupRemark: groupMembersRemark,
             }
         }
-        let jumpToCrmFlag = specialPromotion.isBenefitJumpOpenCard || specialPromotion.isBenefitJumpSendGift;
+        const jumpToCrmFlag = specialPromotion.isBenefitJumpOpenCard || specialPromotion.isBenefitJumpSendGift;
         if (this.props.isNew === false && !this.props.isCopy) {
-            this.props.updateSpecialPromotion && this.props.updateSpecialPromotion({
-                data: opts,
-                success: (res) => {
-                    message.success(COMMON_SPE.d4h17ei7f3g518);
-                    this.setState({
-                        loading: false,
-                    });
-                    cb();
-                    if (jumpToCrmFlag) {
-                        // closePage();
-                        // jumpPage({ pageID: '1000072012', type: specialPromotion.isBenefitJumpOpenCard ? 52 : 53, from: 'saleCenterBenefit' });
-                        jumpPage({ menuID: 'editBenefitCard', from: 'saleCenterBenefit', jumpSepid: res.itemID });
-                    }
-                },
-                fail: (info) => {
-                    message.error(<span>{COMMON_SPE.d2c8akfh2o6216} {info}</span>);
-                    this.setState({
-                        loading: false,
-                    });
-                },
-            });
+            if (this.props.promotionType === '53' && flag) { // 群发礼品完成前需要先判断发券是否超过限制
+                this.isShowUpperLimitModal(opts, cb, jumpToCrmFlag, 'update');
+            } else {
+                this.updateSpecialPromotion(opts, cb, jumpToCrmFlag)
+            }
         } else {
             // 创建特色营销活动
             if ((this.props.promotionType === '20' || this.props.promotionType === '53') && opts.event) {
                 // 复制的礼品不传userCount
                 opts.event.userCount && delete opts.event.userCount;
             }
-            this.props.addSpecialPromotion && this.props.addSpecialPromotion({
-                data: opts,
-                success: (res) => {
-                    message.success(COMMON_SPE.d34idrcqen7223);
-                    this.setState({
-                        loading: false,
-                    });
-                    cb();
-                    if (jumpToCrmFlag) {
-                        // closePage();
-                        // jumpPage({ pageID: '1000072012', type: specialPromotion.isBenefitJumpOpenCard ? 52 : 53, from: 'saleCenterBenefit' });
-                        jumpPage({ menuID: 'editBenefitCard', from: 'saleCenterBenefit', jumpSepid: res.itemID });
-                    } else {
-                        const menuID = this.props.user.menuList.find(tab => tab.entryCode === '1000076003').menuID
-                        menuID && closePage(menuID)
-                        jumpPage({ menuID, from: 'create' })
-                    }
-                },
-                fail: (info) => {
-                    message.error(<span>{COMMON_SPE.de8fem99k0868} {info}</span>);
-                    this.setState({
-                        loading: false,
-                    });
-                },
-            });
+            if (this.props.promotionType === '53' && flag) { // 群发礼品
+                this.isShowUpperLimitModal(opts, cb, jumpToCrmFlag, 'add');
+            } else {
+                this.addSpecialPromition(opts, cb, jumpToCrmFlag)
+            }
+            // console.log(opts, 'optsoptsoptsoptsoptsoptsoptsoptsopts')
+        }
+    }
+
+    onUpperLimitCancel() {
+        this.setState({
+            upperLimitVisible: false,
+            loading: false,
+        })
+    }
+
+
+    addSpecialPromition = (opts, cb, jumpToCrmFlag) => {
+        this.props.addSpecialPromotion && this.props.addSpecialPromotion({
+            data: opts,
+            success: (res) => {
+                message.success(COMMON_SPE.d34idrcqen7223);
+                this.setState({
+                    loading: false,
+                });
+                cb();
+                if (jumpToCrmFlag) {
+                    // closePage();
+                    jumpPage({ menuID: 'editBenefitCard', from: 'saleCenterBenefit', jumpSepid: res.itemID });
+                } else {
+                    const menuID = this.props.user.menuList.find(tab => tab.entryCode === '1000076003').menuID
+                    menuID && closePage(menuID)
+                    jumpPage({ menuID, from: 'create' })
+                }
+            },
+            fail: (info) => {
+                message.error(<span>{COMMON_SPE.de8fem99k0868} {info}</span>);
+                this.setState({
+                    loading: false,
+                });
+            },
+        });
+    }
+
+    updateSpecialPromotion = (opts, cb, jumpToCrmFlag) => {
+        this.props.updateSpecialPromotion && this.props.updateSpecialPromotion({
+            data: opts,
+            success: (res) => {
+                message.success(COMMON_SPE.d4h17ei7f3g518);
+                this.setState({
+                    loading: false,
+                });
+                cb();
+                if (jumpToCrmFlag) {
+                    // closePage();
+                    jumpPage({ menuID: 'editBenefitCard', from: 'saleCenterBenefit', jumpSepid: res.itemID });
+                }
+            },
+            fail: (info) => {
+                message.error(<span>{COMMON_SPE.d2c8akfh2o6216} {info}</span>);
+                this.setState({
+                    loading: false,
+                });
+            },
+        });
+    }
+
+    isShowUpperLimitModal = async (opts, cb, jumpToCrmFlag, name) => {
+        const { gifts, event } = opts;
+        const { user } = this.props
+        const coupon = gifts.some(item => item.presentType == '1'); // 选择优惠券发送请求
+        const { localType, cardGroupID, customerRangeConditionIDs } = event;
+        let cardLevelRangeType;
+        if (localType === '5' && cardGroupID == '0') {
+            cardLevelRangeType = '0'; // 全部会员传0
+        } else if (localType === '5') {
+            cardLevelRangeType = '2' // 群体
+        } else {
+            cardLevelRangeType = '7'
+        }
+        const data = {
+            groupID: user.accountInfo.groupID,
+            subGroupID: '',
+            cardLevelRangeType,
+            cardGroupID,
+            customerRangeConditionIDs,
+            giftCountBeanList: gifts.filter(item => (item.presentType == '1')).map(item => ({
+                giftID: item.giftID,
+                giftCount: item.giftCount,
+            })),
+        }
+        const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+            type: 'post',
+            data,
+            method: '/specialPromotion/calculateSendGiftCount.ajax',
+        }
+        if (coupon && !jumpToCrmFlag) { // 权益卡活动创建不请求该接口
+            const res = await axios.post('/api/v1/universal', params)
+            const { code, popFlag = false, sendGiftCount, customerCount, message: msg } = res
+            if (code === '000' && popFlag) {
+                this.setState({
+                    upperLimitVisible: true, // 弹窗提醒
+                    data: { gifts: [...gifts.filter(item => (item.presentType == '1'))], sendGiftCount, customerCount },
+                })
+            } else if (code === '000' && !popFlag) { // 无需弹窗提醒
+                if (name === 'add') { // 调用原逻辑
+                    this.addSpecialPromition(opts, cb, jumpToCrmFlag)
+                } else {
+                    this.updateSpecialPromotion(opts, cb, jumpToCrmFlag)
+                }
+            } else { // 接口出错
+                message.error(msg);
+                this.setState({
+                    loading: false,
+                    upperLimitVisible: false,
+                })
+            }
+        } else if (name === 'add') { // 没有券直接调用原逻辑
+            this.addSpecialPromition(opts, cb, jumpToCrmFlag)
+        } else {
+            this.updateSpecialPromotion(opts, cb, jumpToCrmFlag)
         }
     }
 
@@ -207,7 +290,7 @@ export default class NewPromotion extends React.Component {
         // this.props.clear();
     }
 
-    handleFinish(cb, index) {
+    handleFinish(cb, index, _flag) {
         let flag = true;
         if (undefined !== this.handles[index].finish && typeof this.handles[index].finish === 'function') {
             flag = this.handles[index].finish();
@@ -220,7 +303,7 @@ export default class NewPromotion extends React.Component {
                 this.onFinish(() => {
                     cb();
                     this.props.callbacktwo(3);
-                });
+                }, _flag);
             }, 0);
         }
     }

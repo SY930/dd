@@ -22,6 +22,7 @@ import { SALE_STRING } from 'i18n/common/salecenter';
 import TicketBag from '../../BasicModules/TicketBag';
 
 let _FLAGSHACK = true;
+let _BAGFLAG = true;
 @injectIntl
 export default class PrizeContent extends React.Component {
     constructor(props) {
@@ -46,17 +47,31 @@ export default class PrizeContent extends React.Component {
             })
         }
     }
+        
 
     componentDidUpdate(preProps) {
-        const { filteredGiftInfo } = this.props;
+        const { filteredGiftInfo, isNew, index } = this.props;
         if (_FLAGSHACK && this.props.isCopy && filteredGiftInfo.length) { // 复制功能，执行一次
             this.proGiftTreeData(filteredGiftInfo);
             _FLAGSHACK = false;
         }
+
+        // 回显第一个是券包只执行一次
+        if (_BAGFLAG && !isNew && preProps.info.giveCoupon.value.item && index == '0') {
+            console.log('执行了~~~~')
+            const { item = {}, typeValue = '0' } = preProps.info.giveCoupon.value;
+            this.setState({
+                typeValue: typeValue,
+                bag: _.isEmpty(item) ? [] : [item],
+            })
+            _BAGFLAG = false;
+        }
+
     }
 
     componentWillUnmount() {
         _FLAGSHACK = true;
+        _BAGFLAG = true;
     }
 
     proGiftTreeData = (giftTypes) => {
@@ -231,9 +246,16 @@ export default class PrizeContent extends React.Component {
     }
     onTypeChange = ({ target }) => {
         this.setState({ typeValue: target.value });
-        const { onBagChange, index } = this.props;
-        onBagChange(null, index);
+        const { onBagChange, index, onTypeChange } = this.props;
+        const { bag } = this.state
+        if (target.value === '0') {
+            onBagChange(null, index);
+        } else  {
+            onBagChange(bag[0], index);
+
+        }
     }
+
     onBagChange = (item) => {
         const { onBagChange, index } = this.props;
         onBagChange(item, index);
@@ -561,7 +583,7 @@ export default class PrizeContent extends React.Component {
                                                             maxNum={9}
                                                             disabled={true}
                                                             value={{ number: info.giveCoupon.value.giftCount.value || '1' }}
-                                                            onChange={val => handleGiftCountChange(val, index)}
+                                                            // onChange={val => handleGiftCountChange(val, index)}
                                                             addonAfter={this.props.intl.formatMessage(SALE_STRING.k5f3y5ml)}
                                                             modal="int"
                                                         />

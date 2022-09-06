@@ -70,14 +70,12 @@ const FORMITEMS = {
         wrapperCol: { span: 20 },
     }
 };
-const SEND_GIFTPWD_FORMKEYS = [{ col: { span: 12 }, keys: ['giftPWD','getWay', 'timeRangeSend', ] },
-{ col: { span: 12, offset: 0 }, keys: ['mobileNum', 'giftStatus', 'sendShopID'] }];
-const SEND_GIFTPWD_FORMKEYS1 = [{ col: { span: 12 }, keys: ['giftPWD', 'timeRangeSend', ] },
-{ col: { span: 12, offset: 0 }, keys: ['mobileNum', 'giftStatus', 'sendShopID'] }];
-const SEND_FORMKEYS = [{ col: { span: 12 }, keys: ['getWay', 'timeRangeSend', 'mobileNum'] },
-{ col: { span: 12, offset: 0 }, keys: ['giftStatus', 'sendShopID'] }];
-const WX_SEND_FORMKEYS = [{ col: { span: 12 }, keys: ['getWay', 'timeRangeSend', 'mobileNum'] },
-{ col: { span: 12, offset: 0 }, keys: ['WXgiftCardStatus'] }];
+const SEND_GIFTPWD_FORMKEYS = [{ col: { span: 8 }, keys: ['giftPWD','giftStatus'] }, { col: { span: 8 }, keys: ['mobileNum', 'timeRangeSend'] }, { col: { span: 8, offset: 0 }, keys: ['getWay', 'sendShopID'] }];
+const SEND_GIFTPWD_FORMKEYS1 = [{ col: { span: 8 }, keys: ['giftPWD', 'timeRangeSend', ] },
+{ col: { span: 8, offset: 0 }, keys: ['mobileNum', 'giftStatus'] }, { col: { span: 8 }, keys: ['sendShopID'] }];
+const SEND_FORMKEYS = [{ col: { span: 8 }, keys: ['getWay', 'timeRangeSend'] }, { col: { span: 8 }, keys: ['mobileNum', 'giftStatus'] },
+{ col: { span: 8, offset: 0 }, keys: ['sendShopID'] }];
+const WX_SEND_FORMKEYS = [{ col: { span: 8 }, keys: ['getWay', 'timeRangeSend'] }, { col: { span: 8 }, keys: ['mobileNum', 'WXgiftCardStatus'] }];
 const BASE_COLUMNS = [
     {
         title: COMMON_LABEL.serialNumber,
@@ -212,9 +210,9 @@ const WX_SEND_COLUMNS = [...BASE_COLUMNS.slice(0, 5), {
         return <span>{mapValueToLabel(GiftCfg.WXgiftCardStatus, String(value))}</span>
     },
 }, ...BASE_COLUMNS.slice(5)]
-const USED_SPE_FORMKEYS = [{ col: { span: 12 }, keys: ['timeRangeUsed', 'giftPWD'] }, { col: { span: 11, offset: 1 }, keys: ['usingShopID'] }];
-const USED_FORMKEYS = [{ col: { span: 12 }, keys: ['timeRangeUsed'] }, { col: { span: 11, offset: 1 }, keys: ['usingShopID'] }];
-const NO_USED_FORMKEYS = [{ col: { span: 12 }, keys: ['timeRangeNoUsed', 'giftPWD'] }];
+const USED_SPE_FORMKEYS = [{ col: { span: 8 }, keys: ['timeRangeUsed'] }, { col: { span: 8 }, keys: ['giftPWD'] }, { col: { span: 8 }, keys: ['usingShopID'] }];
+const USED_FORMKEYS = [{ col: { span: 8 }, keys: ['timeRangeUsed'] }, { col: { span: 8 }, keys: ['usingShopID'] }];
+const NO_USED_FORMKEYS = [{ col: { span: 8 }, keys: ['timeRangeNoUsed'] }, { col: { span: 8 }, keys: ['giftPWD']}];
 
 const USED_SPE_COLUMNS = [
     {

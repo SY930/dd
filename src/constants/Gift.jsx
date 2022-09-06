@@ -152,6 +152,7 @@ const GiftCfg = {
         { label: '折扣券', value: '111' },
         { label: '现金红包', value: '113' },
         { label: '配送券', value: '22' },
+        { label: '特殊权益券', value: '81' },
         // { label: '不定额代金券', value: '115' },
         { label: '特殊权益券', value: '81' },
 
@@ -300,6 +301,7 @@ const GiftCfg = {
         { value: '137', label: '抖音团购发放'},
         { value: '139', label: '续费发放'},
         { value: '155', label: '联通饭票'},
+        { value: '165', label: '快手'},
     ],
     giftSendStatus: [
         { value: '', label: '全部' },

@@ -616,7 +616,7 @@ export const ACTIVITY_CATEGORIES = (function () {
             title: SALE_LABEL.k67b2sio,
             color: "#e5be6c",
             text: SALE_LABEL.k67cp1ky,
-            example: "",
+            example: '',
             key: "4010",
         },
         {

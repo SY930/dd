@@ -485,7 +485,7 @@ class SpecialDishesTableWithBrand extends Component {
                 className: 'TableTxtRight',
                 render: (text, record) => {
                     if (this.state.setFoodType === '2') {
-                        const food  = (this.state.foodCategory || []).find((item) => item.foodCode == record.foodCode) || {}
+                        const food  = (this.state.foodCategory || []).find((item) => item.unit == record.unit && record.foodName == item.foodName) || {}
                         return food.price ? food.price : '--'
                     }
                     return text
@@ -503,7 +503,7 @@ class SpecialDishesTableWithBrand extends Component {
                                 type="text"
                                 modal="float"
                                 placeholder={'10表示不打折'}
-                                value={{ number: record.salePercent == '10' ? '不打折' : record.salePercent }}
+                                value={{ number: record.salePercent == '10' ? '不打折' : record.salePercent + '折' }}
                                 index={index}
                                 onChange={(val) => { this.onPercentCellChange(val, record) }}
                             />

@@ -43,6 +43,7 @@ import {
     GIFT_NEW_SAVE_BRANDS_TO_STORE,
     GIFT_NEW_FETCH_SEND_TOTAL_FAIL,
     GIFT_NEW_FETCH_NO_USED_LIST_OK,
+    GIFT_NEW_UPDATE_GIFT_DETAIL,
 } from './_action';
 
 const $initialEditState = Immutable.fromJS({
@@ -96,6 +97,7 @@ const $initialState = Immutable.fromJS({
     mpList: [],
     mpAndAppList: [],
     mpListLoading: false,
+    giftDetailInfo: {},
 });
 
 
@@ -238,6 +240,8 @@ export function giftInfoNew($$state = $initialState, action) {
             return $$state.set('mpListLoading', false);
         case GIFT_NEW_FETCH_SEND_TOTAL_FAIL:
             return $$state.set('totalNoUsedCount', 0);
+        case GIFT_NEW_UPDATE_GIFT_DETAIL:
+            return $$state.set('giftDetailInfo', action.giftDetail)
 
         default:
             return $$state

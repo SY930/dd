@@ -444,14 +444,10 @@ class CardOperate extends React.Component {
                     {
                         validator: (rule, v, cb) => {
                             if (v === '') cb();
-                            v > 0 && v <= 999999 ? cb() : cb(rule.message);
+                            v > 0 && v <= 999999 && String(v || '').trim().length === 6 ? cb() : cb(rule.message);
                         },
-                        message: '批次号必须是1-999999之间的整数',
+                        message: '批次号必须是000001-999999之间的6位整数',
                     },
-                    { validator: (rule, v, cb) => {
-                        String(v || '').trim().length <= 6 ? cb() : cb(rule.message);
-                    },
-                        message: '不能超过6位'},
                 ],
             },
             startEnd: {

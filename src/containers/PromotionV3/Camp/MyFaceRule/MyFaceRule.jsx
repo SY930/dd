@@ -29,27 +29,7 @@ class MyFaceRule extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            eventSelectOption: [
-                { label: '无', value: '', children: [] },
-                { label: '小程序', value: 'miniAppPage', children: programList },
-                { label: '分享裂变', value: 'event_65', children: [] },
-                { label: '膨胀大礼包', value: 'event_66', children: [] },
-                { label: '免费领取', value: 'event_21', children: [] },
-                { label: '摇奖活动', value: 'event_20', children: [] },
-                { label: '完善资料送礼活动', value: 'event_60', children: [] },
-                { label: '推荐有礼', value: 'event_68', children: [] },
-                { label: '集点活动', value: 'event_75', children: [] },
-                { label: '签到活动', value: 'event_76', children: [] },
-                { label: '盲盒活动', value: 'event_79', children: [] },
-                { label: '一键拨号', value: 'speedDial', children: [] },
-                // { label: '自定义页面', value: '1', children: [] },
-                // { label: '软文，文本消息', value: '7', children: [] },
-                { label: '商城', value: 'jumpToMall', children: [] },
-                { label: '跳转至小程序', value: 'jumpToMiniApp', children: [] },
-                { label: '自定义链接', value: 'customLink' },
-                { label: '菜品加入购物车', value: 'shoppingCartAddFood' },
-                // { label: '小程序开卡', value: 'toOpenCard' }, // 仅针对九毛九集团可见
-            ],
+            eventSelectOption: [],
             mallActivityList: [],
             allActivityList: [],
             activityOption: [[]],
@@ -159,7 +139,6 @@ class MyFaceRule extends Component {
     onEventsApp = (idx, key, value) => {
         const item = this.state.eventSelectOption.filter(itm => itm.value == value)
         // const triggerEventCustomInfo1 = item[0].value === "jumpToMiniApp" ? jumpApp : {}
-        // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 163 ~ MyFaceRule ~ triggerEventCustomInfo1", triggerEventCustomInfo1)
         this.onChange(idx, { [key]: value, triggerEventName1: item[0] ? item[0].label : '', triggerEventCustomInfo1: {}, triggerEventCustomInfoApp1: _.cloneDeep(jumpApp) })
     }
 
@@ -491,7 +470,6 @@ class MyFaceRule extends Component {
 
     renderSelect = (i, v, parentValue, parentName) => {
         const options = this.state.eventSelectOption.filter(item => item.value === v.triggerEventValue1) || [];
-        // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 474 ~ MyFaceRule ~ options", options)
         const [option] = options;
         return (<FormItem>
             <Select
@@ -583,7 +561,6 @@ class MyFaceRule extends Component {
 
     render() {
         const { value = [], form, clientType } = this.props;
-        // console.log("🚀 ~ file: MyFaceRule.jsx ~ line 577 ~ MyFaceRule ~ render ~ clientType", clientType, value)
         // const { length } = value;
         // 防止回显没数据不显示礼品组件
         if (!value[0]) {
@@ -640,7 +617,6 @@ class MyFaceRule extends Component {
                                             v.conditionType == '2' &&
                                             <div style={{ display: 'flex' }}>
                                                 <FormItem required={true}
-                                                // validateStatus={v.conditionValue ? 'success' : 'error'} help={v.conditionValue ? '' : '请输入会员标签属性'}
                                                 >
                                                     <Select style={{ width: '120px', marginLeft: 8 }} value={v.conditionValue} onChange={(_v) => { this.onTagAttribute(i, 'conditionValue', _v) }}>
                                                         {

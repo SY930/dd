@@ -86,6 +86,7 @@ import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from './IntlDecor';
 import returnGift from './returnGift/returnGift';
+import { jumpPage } from '@hualala/platform-base';
 
 // 这里是内部内容的框架组件，分为 左边 和右边。
 @injectIntl()
@@ -97,12 +98,16 @@ class ActivityMain extends React.Component {
             pages: [],
         };
     }
+    
+    jumpToPage = () => {
+        this.props.callbackthree(3);
+        jumpPage({ pageID: 'shop.jituan.jiezhangfangshi' })
+    }
 
     renderSideBar() {
         const { intl } = this.props;
         const k5g5bcqo = intl.formatMessage(SALE_STRING.k5g5bcqo);
         const k5gfsuwz = intl.formatMessage(SALE_STRING.k5gfsuwz);
-
         const activityCategories = this.props.saleCenter.get('activityCategories').toJS();
         if (this.isOnline()) {
             return (
@@ -134,7 +139,17 @@ class ActivityMain extends React.Component {
             default:
                 return (
                     <div className={styles.promotionTip}>
-                        <div style={{ marginBottom: 20 }}>{this.props.promotionType ? activityCategories.find(type => type.key == this.props.promotionType).text || '': ''}</div>
+                        {
+                            this.props.promotionType == '4010' ? 
+                            <div>
+                                <div style={{ marginBottom: 20 }}>{this.props.promotionType ? activityCategories.find(type => type.key == this.props.promotionType).text || '': ''}</div>
+                                <div>                               
+                                    当前优惠买单（原团购活动）已<span style={{fontWeight: 'bolder', color: '#000'}}>不支持核销美团团购券</span>，如需继续使用核销美团团购券，可在基本档-<a href="#" onClick={this.jumpToPage}>结账方式</a>中开启核销美团团购券开关后即可正常核销
+                                </div>
+                            </div>
+                            : 
+                            <div style={{ marginBottom: 20 }}>{this.props.promotionType ? activityCategories.find(type => type.key == this.props.promotionType).text || '': ''}</div>
+                        }
                         <div>{this.props.promotionType ? activityCategories.find(type => type.key == this.props.promotionType).example || '' : ''}</div>
                     </div>
                 );

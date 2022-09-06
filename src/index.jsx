@@ -68,6 +68,12 @@ registerLocalPage([
         parent: [entryCodes.NEW_SALE_BOX],
     },
     {
+        key: entryCodes.SALE_ACTIVE_NEW_PAGE,
+        value: entryCodes.SALE_ACTIVE_NEW_PAGE,
+        label: '创建营销活动',
+        parent: [entryCodes.NEW_SALE_BOX],
+    },
+    {
         key: entryCodes.THIRD_VOUCHER_MANAGEMENT,
         value: entryCodes.THIRD_VOUCHER_MANAGEMENT,
         label: '第三方券管理',
@@ -78,6 +84,12 @@ registerLocalPage([
         value: entryCodes.ACTIVITY_LAUNCH,
         label: '支付宝商家券投放',
         parent: [entryCodes.ACTIVITY_LAUNCH],
+    },
+    {
+        key: entryCodes.GIFT_DETAILS,
+        value: entryCodes.GIFT_DETAILS,
+        label: '礼品详情',
+        parent: [entryCodes.GIFT_PAGE],
     },
 ]);
 // 注册语言包
