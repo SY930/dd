@@ -3056,7 +3056,7 @@ class SpecialDetailInfo extends Component {
         );
     };
     renderRightPackageList = () => {
-        const rightPackageList = this.props.rightPackageList.toJS();
+        const rightPackageList = this.props.rightPackageList;
         const {
             form: { getFieldDecorator },
         } = this.props;
@@ -3090,7 +3090,7 @@ class SpecialDetailInfo extends Component {
         );
     };
     renderRightCardList = () => {
-        const rightCardList = this.props.rightCardList.toJS();
+        const rightCardList = this.props.rightCardList;
         const {
             form: { getFieldDecorator },
         } = this.props;
@@ -4218,8 +4218,8 @@ function mapStateToProps(state) {
         groupCardTypeList: state.sale_mySpecialActivities_NEW
             .getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
         saveMoneySetList: state.sale_mySpecialActivities_NEW.get('$saveMoneySetList'),
-        rightPackageList: state.sale_mySpecialActivities_NEW.get('$rightPackageList'),
-        rightCardList: state.sale_mySpecialActivities_NEW.get('$rightCardList'),
+        rightPackageList: state.sale_mySpecialActivities_NEW.get('$rightPackageList').toJS(),
+        rightCardList: state.sale_mySpecialActivities_NEW.get('$rightCardList').toJS(),
         disabled: state.sale_specialPromotion_NEW.getIn(['$eventInfo', 'userCount']) > 0,
         isUpdate: state.sale_myActivities_NEW.get('isUpdate'),
     }
