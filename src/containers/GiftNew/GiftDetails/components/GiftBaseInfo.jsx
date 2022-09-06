@@ -126,7 +126,6 @@ class GiftBaseInfo extends Component {
   }
 
   renderGiftRule = (rules) => {
-    console.log(11111, rules);
     if (!rules && !rules.length) {
       return ''
     }
