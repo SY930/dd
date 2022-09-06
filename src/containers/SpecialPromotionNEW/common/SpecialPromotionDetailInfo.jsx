@@ -303,6 +303,8 @@ class SpecialDetailInfo extends Component {
             /** 桌边砍相关结束 */
             helpMessageArray: ["", ""],
             saveMoneySetIds,
+            interestIds: [],
+            benefitCardIds: [],
             saveMoneySetType: saveMoneySetIds.length > 0 ? "1" : "0", // 前端内部状态，saveMoneySetIds数组为空表示全部套餐
             givePoints,
             presentValue,
@@ -506,6 +508,8 @@ class SpecialDetailInfo extends Component {
                     helpMessageArray: ["", ""],
                     // eventRecommendSettings: initEventRecommendSettings,
                     saveMoneySetIds: [],
+                    interestIds: [],
+                    benefitCardIds: [],
                     saveMoneySetType: "0",
                     directActiveRuleTabValue: '',
                     indirectActiveRuleTabValue: '',
@@ -880,6 +884,16 @@ class SpecialDetailInfo extends Component {
                 v.eventRecommendSettings.forEach(setting => {
                     const { pointLimitValue, redPackageLimitValue, giftItemID } = setting
 
+                    if (setting.recommendType == 0) {
+                        data[0] = {
+                            pointLimitValue: data[0].pointLimitValue ? data[0].pointLimitValue : pointLimitValue,
+                            redPackageLimitValue: data[0].redPackageLimitValue ? data[0].redPackageLimitValue : redPackageLimitValue,
+                            recommendType: 0,
+                            recommendRule: 1,
+                            giftItemID
+                        }
+                    }
+
                     if (setting.recommendType == 1) {
                         data[1] = {
                             pointLimitValue: data[1].pointLimitValue ? data[1].pointLimitValue : pointLimitValue,
@@ -1054,6 +1068,8 @@ class SpecialDetailInfo extends Component {
             discountMaxLimitRate,
             disabledGifts,
             saveMoneySetIds,
+            interestIds,
+            benefitCardIds,
             giftGetRule,
             perfectReturnGiftCheckBoxStatus,
             upGradeReturnGiftCheckBoxStatus,
@@ -1335,6 +1351,8 @@ class SpecialDetailInfo extends Component {
                     : {
                         giftGetRule,
                         saveMoneySetIds,
+                        interestIds,
+                        benefitCardIds,
                         shareImagePath,
                         shareTitle,
                         cleanCount,
@@ -3050,8 +3068,11 @@ class SpecialDetailInfo extends Component {
                     labelCol={{ span: 3 }}
                     wrapperCol={{ span: 16 }}
                 >
-                    {getFieldDecorator("saveMoneySetIds", {
-                        initialValue: [],
+                    {getFieldDecorator("interestIds", {
+                        initialValue: this.state.interestIds,
+                        onChange: (e) => {
+                            this.setState({ interestIds: e })
+                        },
                     })(
                         <Select showSearch={true} notFoundContent={'未搜索到结果'} multiple placeholder="不选默认代表全部会员权益包">
                             {rightPackageList.map((set) => (
@@ -3081,8 +3102,11 @@ class SpecialDetailInfo extends Component {
                     labelCol={{ span: 3 }}
                     wrapperCol={{ span: 16 }}
                 >
-                    {getFieldDecorator("saveMoneySetIds", {
-                        initialValue: [],
+                    {getFieldDecorator("benefitCardIds", {
+                        initialValue: this.state.benefitCardIds,
+                        onChange: (e) => {
+                            this.setState({ benefitCardIds: e })
+                        },
                     })(
                         <Select showSearch={true} notFoundContent={'未搜索到结果'} multiple placeholder="不选默认代表全部权益卡类别">
                             {rightCardList.map((set) => (

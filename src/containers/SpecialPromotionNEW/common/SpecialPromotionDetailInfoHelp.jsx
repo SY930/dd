@@ -811,6 +811,8 @@ const handleSubmitRecommendGifts = function (isPrev) {
         data,
         cleanCount,
         saveMoneySetIds,
+        interestIds,
+        benefitCardIds,
         giftGetRule,
         checkBoxStatus,
         cashGiftVal,
@@ -929,6 +931,8 @@ const handleSubmitRecommendGifts = function (isPrev) {
             {
                 giftGetRule,
                 saveMoneySetIds,
+                interestIds,
+                benefitCardIds,
                 shareImagePath,
                 shareTitle,
                 cleanCount,
@@ -952,36 +956,36 @@ const handleSubmitRecommendGifts = function (isPrev) {
             v.gifts = []
 
 
-            if (v.rule == 1) {
-                v.eventRecommendSettings.forEach((presentValue, i) => {
-                    const { redPackageLimitValue } = presentValue
+            // if (v.rule == 1) {
+            //     v.eventRecommendSettings.forEach((presentValue, i) => {
+            //         const { redPackageLimitValue } = presentValue
 
-                    if (redPackageLimitValue) {
-                        presentValue.giftItemID = cashGiftVal
-                    } else {
-                        delete presentValue.giftItemID
-                    }
-                })
-            } else {
-                v.eventRecommendSettings.forEach((val) => {
-                    if (val.redPackageRate) {
-                        val.giftItemID = cashGiftVal
-                    }
-                    if (val.pointRate) {
-                        val.pointRate /= 100
-                    }
-                    if (val.rechargeRate) {
-                        val.rechargeRate /= 100
-                    }
-                    if (val.consumeRate) {
-                        val.consumeRate /= 100
-                    }
-                    if (val.redPackageRate) {
-                        val.redPackageRate /= 100
-                    }
-                    val.recommendRule = v.rule
-                })
-            }
+            //         if (redPackageLimitValue) {
+            //             presentValue.giftItemID = cashGiftVal
+            //         } else {
+            //             delete presentValue.giftItemID
+            //         }
+            //     })
+            // } else {
+            // }
+            v.eventRecommendSettings.forEach((val) => {
+                if (val.redPackageRate) {
+                    val.giftItemID = cashGiftVal
+                }
+                if (val.pointRate) {
+                    val.pointRate /= 100
+                }
+                if (val.rechargeRate) {
+                    val.rechargeRate /= 100
+                }
+                if (val.consumeRate) {
+                    val.consumeRate /= 100
+                }
+                if (val.redPackageRate) {
+                    val.redPackageRate /= 100
+                }
+                val.recommendRule = v.rule
+            })
 
             const rule1Gifts = _.cloneDeep(giftInfo).filter(gift => gift.recommendType).map((giftItem) => {
                 const [recommendType, recommendRule] = giftItem.recommendType.split('#')
@@ -1034,6 +1038,8 @@ const handleSubmitOnLineReturnGifts = function (isPrev) {
         couponValue, // 0 哗啦啦优惠券 1：第三方券
         giftGetRule,
         saveMoneySetIds,
+        interestIds,
+        benefitCardIds,
         shareImagePath,
         shareTitle,
         cleanCount,
@@ -1098,6 +1104,8 @@ const handleSubmitOnLineReturnGifts = function (isPrev) {
             this.props.setSpecialBasicInfo({
                 giftGetRule,
                 saveMoneySetIds,
+                interestIds,
+                benefitCardIds,
                 shareImagePath,
                 shareTitle,
                 cleanCount,
@@ -1129,6 +1137,8 @@ const handleSubmitOnLineReturnGifts = function (isPrev) {
     this.props.setSpecialBasicInfo({
         giftGetRule,
         saveMoneySetIds,
+        interestIds,
+        benefitCardIds,
         shareImagePath,
         shareTitle,
         cleanCount,
