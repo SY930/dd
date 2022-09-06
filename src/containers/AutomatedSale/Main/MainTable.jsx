@@ -109,16 +109,15 @@ class MainTable extends Component {
                 width: 100,
                 render:(text,record,index) => {
                     let { eventStartDate, eventEndDate } = record;
-                    eventStartDate = eventStartDate > 0 ? eventStartDate : '长期有效';
-                    eventEndDate = eventEndDate > 0 ? eventEndDate : '长期有效';
+                    if(!eventStartDate || +eventStartDate == 0){
+                        return '长期有效';
+                    }
                     return `${eventStartDate} / ${eventEndDate}`
                 }
             },
             { 
                 title: '创建人/修改人',
-                dataIndex: 'code',
-                className: tc,
-                width: 140,
+                width: 200,
                 render:(text,record,index) => `${record.creator} / ${record.modifier}`
             },            
             { 
