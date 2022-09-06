@@ -384,6 +384,7 @@ class MyActivities extends React.Component {
                         {
                             promotionName: activityName,
                             promotionCode: promotionCode,
+                            promotionState: "0",
                             tabKeys: "onSalePage",
                         },
                         () => {
@@ -396,7 +397,7 @@ class MyActivities extends React.Component {
                 this.handleQuery();
             }
         }
-    }
+    };
 
     clearUrl() {
         var { href } = window.location;
@@ -405,6 +406,7 @@ class MyActivities extends React.Component {
         this.setState({
             promotionName: "",
             promotionCode: "",
+            // promotionState: "1",
         });
     }
 
@@ -418,7 +420,7 @@ class MyActivities extends React.Component {
         this.setState({ promotionState: isActive == "0" ? "2" : "1" }, () => {
             this.handleQuery();
         });
-    }
+    };
 
     // 删除方案
     removePlan = (record, itemID) => {
