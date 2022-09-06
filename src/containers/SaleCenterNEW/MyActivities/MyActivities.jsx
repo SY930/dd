@@ -377,9 +377,9 @@ class MyActivities extends React.Component {
             );
         }
         if (!from) {
+            //如果是顶部搜索而来，有活动名称
             if (activityName) {
                 if (promotionCode) {
-                    //如果是从搜索而来
                     this.setState(
                         {
                             promotionName: activityName,
@@ -396,7 +396,8 @@ class MyActivities extends React.Component {
                 this.handleQuery();
             }
         }
-    };
+    }
+
     clearUrl() {
         var { href } = window.location;
         var [valiable] = href.split("?");
@@ -406,6 +407,7 @@ class MyActivities extends React.Component {
             promotionCode: "",
         });
     }
+
     goSearch = ({ key }) => {
         const record = this.state.filterSchemeList.find(
             (item) => item.itemID === key
@@ -416,7 +418,7 @@ class MyActivities extends React.Component {
         this.setState({ promotionState: isActive == "0" ? "2" : "1" }, () => {
             this.handleQuery();
         });
-    };
+    }
 
     // 删除方案
     removePlan = (record, itemID) => {
