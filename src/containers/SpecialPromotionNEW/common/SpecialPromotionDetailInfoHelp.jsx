@@ -100,6 +100,14 @@ const renderRecommendGiftsDetail = function () {
                                 renderRecommentReward = this
                                     .renderConsumptionReward;
                                 break;
+                            case 4:
+                                renderRecommentReward = this
+                                    .renderRechargeReward;
+                                break;
+                            case 5:
+                                renderRecommentReward = this
+                                    .renderRechargeReward;
+                                break;
                             default:
                                 renderRecommentReward = this
                                     .renderRecommendGifts;
@@ -112,6 +120,10 @@ const renderRecommendGiftsDetail = function () {
                             >
                                 {directActiveRuleTabValue == 2 &&
                                     this.renderSaveMoneySetSelector()}
+                                {directActiveRuleTabValue == 4 &&
+                                    this.renderRightCardList()}
+                                {directActiveRuleTabValue == 5 &&
+                                    this.renderRightPackageList()}
                                 {directActiveRuleTabValue == 1 ? (
                                     <div>
                                         {this.renderCheckbox({
@@ -124,11 +136,11 @@ const renderRecommendGiftsDetail = function () {
                                     </div>
                                 ) : null}
 
-                                { indirectActiveRuleTabValue == 1 ? this.renderCheckbox({
+                                { directActiveRuleTabValue == 1 ? this.renderCheckbox({
                                     key: 'giveCash',
                                     label: '现金红包',
-                                    children: this.renderCash(indirectActiveRuleTabValue, '1'),
-                                    ruleType: indirectActiveRuleTabValue,
+                                    children: this.renderCash(directActiveRuleTabValue, '1'),
+                                    ruleType: directActiveRuleTabValue,
                                     roleType: '1',
                                 }) : null }
                                 {directActiveRuleTabValue == 1 ? (
@@ -185,6 +197,14 @@ const renderRecommendGiftsDetail = function () {
                                     case 3:
                                         renderRecommentReward = this
                                             .renderConsumptionReward;
+                                        break;
+                                    case 4:
+                                        renderRecommentReward = this
+                                            .renderRechargeReward;
+                                        break;
+                                    case 5:
+                                        renderRecommentReward = this
+                                            .renderRechargeReward;
                                         break;
                                     default:
                                         renderRecommentReward = this

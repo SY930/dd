@@ -333,6 +333,14 @@ class SpecialDetailInfo extends Component {
                     giveIntegral1: true,
                     giveIntegral2: true,
                 },
+                ruleType4: {
+                    giveIntegral1: true,
+                    giveIntegral2: true,
+                },
+                ruleType5: {
+                    giveIntegral1: true,
+                    giveIntegral2: true,
+                },
                 ruleType999: {
                     giveCoupon0: true,
                 }
@@ -3029,6 +3037,68 @@ class SpecialDetailInfo extends Component {
             </div>
         );
     };
+    renderRightPackageList = () => {
+        const rightPackageList = this.props.rightPackageList.toJS();
+        const {
+            form: { getFieldDecorator },
+        } = this.props;
+        return (
+            <div>
+                <FormItem
+                    label='会员权益包'
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 3 }}
+                    wrapperCol={{ span: 16 }}
+                >
+                    {getFieldDecorator("saveMoneySetIds", {
+                        initialValue: [],
+                    })(
+                        <Select showSearch={true} notFoundContent={'未搜索到结果'} multiple placeholder="不选默认代表全部会员权益包">
+                            {rightPackageList.map((set) => (
+                                <Select.Option
+                                    key={set.saveMoneySetID}
+                                    value={set.saveMoneySetID}
+                                >
+                                    {set.setName}
+                                </Select.Option>
+                            ))}
+                        </Select>
+                    )}
+                </FormItem>
+            </div>
+        );
+    };
+    renderRightCardList = () => {
+        const rightCardList = this.props.rightCardList.toJS();
+        const {
+            form: { getFieldDecorator },
+        } = this.props;
+        return (
+            <div>
+                <FormItem
+                    label='权益卡类别'
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 3 }}
+                    wrapperCol={{ span: 16 }}
+                >
+                    {getFieldDecorator("saveMoneySetIds", {
+                        initialValue: [],
+                    })(
+                        <Select showSearch={true} notFoundContent={'未搜索到结果'} multiple placeholder="不选默认代表全部权益卡类别">
+                            {rightCardList.map((set) => (
+                                <Select.Option
+                                    key={set.cardTypeID}
+                                    value={set.cardTypeID}
+                                >
+                                    {set.benefitCardName}
+                                </Select.Option>
+                            ))}
+                        </Select>
+                    )}
+                </FormItem>
+            </div>
+        );
+    };
     renderSaveMoneySetSelector = () => {
         const { saveMoneySetType } = this.state;
         const saveMoneySetList = this.props.saveMoneySetList.toJS();
@@ -4124,6 +4194,8 @@ function mapStateToProps(state) {
         groupCardTypeList: state.sale_mySpecialActivities_NEW
             .getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
         saveMoneySetList: state.sale_mySpecialActivities_NEW.get('$saveMoneySetList'),
+        rightPackageList: state.sale_mySpecialActivities_NEW.get('$rightPackageList'),
+        rightCardList: state.sale_mySpecialActivities_NEW.get('$rightCardList'),
         disabled: state.sale_specialPromotion_NEW.getIn(['$eventInfo', 'userCount']) > 0,
         isUpdate: state.sale_myActivities_NEW.get('isUpdate'),
     }

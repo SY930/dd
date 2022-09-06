@@ -66,6 +66,7 @@ export const SALE_CENTER_QUERY_GROUP_MEMBERS_FILLED = 'sale center: query group 
 export const GHT_TAGLIST_SUCCESS = 'sale center: get tagList'
 export const GHT_TAGGROUPLIST_SUCCESS = 'sale center: get tagRroupList'
 export const SALE_CENTER_GET_CRM_SAVE_MONEY_SET_SUCCESS = 'sale center: SALE_CENTER_GET_CRM_SAVE_MONEY_SET_SUCCESS';
+export const SALE_CENTER_GET_CRM_RIGHT_PACKAGE_SET_SUCCESS = 'sale center: SALE_CENTER_GET_CRM_RIGHT_PACKAGE_SET_SUCCESS';
 export const SALE_CENTER_UPDATE_GIFTS_LEVEL = 'sale center: lottery gifts level'
 // 以下是活动列表
 // export const fetchSpecialPromotionList = opts => ({ type: SPECIAL_PROMOTION_FETCH_PROMOTION_LIST, payload: opts });
@@ -631,6 +632,10 @@ export const queryAllSaveMoneySet = () => {
                 dispatch({
                     type: SALE_CENTER_GET_CRM_SAVE_MONEY_SET_SUCCESS,
                     payload: Array.isArray(data) ? data.filter(item => item.saveMoneySetType != 2) : [],
+                })
+                dispatch({
+                    type: SALE_CENTER_GET_CRM_RIGHT_PACKAGE_SET_SUCCESS,
+                    payload: Array.isArray(data) ? data.filter(item => item.saveMoneySetType == 2) : [],
                 })
             })
             .catch(err => {

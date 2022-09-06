@@ -59,6 +59,7 @@ import {
     GHT_TAGGROUPLIST_SUCCESS,
     SALE_CENTER_GET_CRM_SAVE_MONEY_SET_SUCCESS,
     SALE_CENTER_UPDATE_GIFTS_LEVEL,
+    SALE_CENTER_GET_CRM_RIGHT_PACKAGE_SET_SUCCESS,
 } from '../../actions/saleCenterNEW/mySpecialActivities.action'
 
 const $initialState = Immutable.fromJS({
@@ -94,6 +95,8 @@ const $initialState = Immutable.fromJS({
     tagList: [],
     tagGroupList: [],
     $saveMoneySetList: [],
+    $rightPackageList: [],//权益包列表
+    $rightCardList: [],//权益卡列表
 });
 export const mySpecialActivities_NEW = ($$state = $initialState, action) => {
     switch (action.type) {
@@ -256,6 +259,8 @@ export const mySpecialActivities_NEW = ($$state = $initialState, action) => {
             return $$state.setIn(['$groupMembers'], Immutable.fromJS(action.payload));
         case SALE_CENTER_GET_CRM_SAVE_MONEY_SET_SUCCESS:
             return $$state.setIn(['$saveMoneySetList'], Immutable.fromJS(action.payload));
+        case SALE_CENTER_GET_CRM_RIGHT_PACKAGE_SET_SUCCESS:
+            return $$state.setIn(['$rightPackageList'], Immutable.fromJS(action.payload));
         default:
             return $$state;
     }
