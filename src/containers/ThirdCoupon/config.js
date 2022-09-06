@@ -165,6 +165,12 @@ export const getColumns = _this => ([
         render: text => text || '--',
     },
     {
+        title: '投放ID', // 快手投放ID
+        dataIndex: 'ID',
+        width: 200,
+        render: text => text || '--',
+    },
+    {
         title: '业态',
         dataIndex: 'promotionType',
         key: 'promotionType',

@@ -60,7 +60,7 @@ class CouponManageList extends Component {
             editData: {}, // 编辑券详情内容
             batchStatus: '0,1,3,4,5', // 使用状态
             // couponCodeDockingType: '', // 券码对接类型: 1-订单获取, 2-批量预存导入
-            type: '', // 前端标识 1 支付宝 | 2 微信 | 3 抖音
+            type: '', // 前端标识 1 支付宝 | 2 微信 | 3 抖音 | 
             channelID: 60, // 60支付宝 50微信
             title: '',
             platformTypeCreate: 1, // 平台：1 支付宝   3微信  2 抖音(小风车)
@@ -345,9 +345,6 @@ class CouponManageList extends Component {
         return null;
     }
 
-    handleSuccesModalSubmit = () => {
-
-    }
     handleStopClickEvent = (record, batchStatus, platformType) => {
         const { itemID } = record;
         // const { user } = getStore().getState();
@@ -661,7 +658,6 @@ class CouponManageList extends Component {
                 }
                 {
                     this.state.createCouponModalVisible && <CreateCouponContent
-                        // handleSubmit={this.handleSuccesModalSubmit}
                         treeData={this.state.treeData}
                         treeDataX={this.state.treeDataX}
                         shopPid={this.state.shopPid}
