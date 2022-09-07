@@ -654,6 +654,12 @@ const initShowCheckBox = function () {
         ruleType3: {
 
         },
+        ruleType4: {
+
+        },
+        ruleType5: {
+
+        },
         ruleType999: {
 
         },
