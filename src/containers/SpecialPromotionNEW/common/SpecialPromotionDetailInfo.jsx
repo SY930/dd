@@ -883,7 +883,7 @@ class SpecialDetailInfo extends Component {
                 }
 
                 if (v.recommendRule === 0) {
-                    initEventRecommendSettings[3].eventRecommendSettings[0] = v
+                    initEventRecommendSettings[5].eventRecommendSettings[0] = v
                 }
 
 
