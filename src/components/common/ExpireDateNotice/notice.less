@@ -1,4 +1,4 @@
-.expireDateNotice{
+.expireDateNotice {
     position: absolute;
     top: 8px;
     width: 600px;
@@ -10,7 +10,7 @@
     background: #e6f7ff;
     border: 1px solid #9bd9ff;
     border-radius: 5px;
-    .noticeInfoCircle{
+    .noticeInfoCircle {
         position: relative;
         top: 1px;
         font-size: 16px;
@@ -18,10 +18,49 @@
         margin-left: 20px;
         margin-right: 10px;
     }
-    .noticeInfoClose{
+    .noticeInfoClose {
         position: absolute;
         right: 10px;
         font-size: 17px;
         top: 5px;
+    }
+}
+@media screen and (max-width: 1440px) {
+    .expireDateNotice {
+        position: absolute;
+        top: 8px;
+        width: 400px;
+        left: 60%;
+        margin-left: -260px;
+        height: 32px;
+        line-height: 32px;
+        font-size: 13px;
+        background: #e6f7ff;
+        border: 1px solid #9bd9ff;
+        border-radius: 5px;
+        .noticeInfoCircle {
+            position: relative;
+            top: 1px;
+            font-size: 16px;
+            color: #1890ff;
+            margin-left: 20px;
+            margin-right: 10px;
+        }
+        .noticeInfoClose {
+            position: absolute;
+            right: 10px;
+            font-size: 17px;
+            top: 5px;
+        }
+        span {
+            display: block;
+            position: absolute;
+            width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            top: 0;
+            left: 42px;
+        }
     }
 }
