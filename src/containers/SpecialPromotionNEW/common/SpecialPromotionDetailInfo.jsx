@@ -218,6 +218,22 @@ class SpecialDetailInfo extends Component {
             Immutable.List.isList($saveMoneySetIds) && $saveMoneySetIds.size > 0
                 ? $saveMoneySetIds.toJS()
                 : [];
+        const $interestIds = props.specialPromotion.getIn([
+            "$eventInfo",
+            "interestIds",
+        ]);
+        const interestIds =
+            Immutable.List.isList($interestIds) && $interestIds.size > 0
+                ? $interestIds.toJS()
+                : [];
+        const $benefitCardIds = props.specialPromotion.getIn([
+            "$eventInfo",
+            "benefitCardIds",
+        ]);
+        const benefitCardIds =
+            Immutable.List.isList($benefitCardIds) && $benefitCardIds.size > 0
+                ? $benefitCardIds.toJS()
+                : [];
         const { givePoints, presentValue, giveCoupon, giftGetRuleValue } = pointObj;
         // const specialPromotion = props.specialPromotion.get('$eventInfo').toJS();
         this.state = {
@@ -303,8 +319,8 @@ class SpecialDetailInfo extends Component {
             /** 桌边砍相关结束 */
             helpMessageArray: ["", ""],
             saveMoneySetIds,
-            interestIds: [],
-            benefitCardIds: [],
+            interestIds,
+            benefitCardIds,
             saveMoneySetType: saveMoneySetIds.length > 0 ? "1" : "0", // 前端内部状态，saveMoneySetIds数组为空表示全部套餐
             givePoints,
             presentValue,
