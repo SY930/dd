@@ -33,6 +33,12 @@ class CreateActiveTwo extends Component {
         loading: false,
         type: '1', 
         clientType: '2',
+        urlObj: {
+          typeKey: '85',
+          itemID: '',
+          isView: false,
+          isActive: false,
+        }
       }
       this.saving = this.saving.bind(this);
       this.formRef = null;
@@ -41,8 +47,17 @@ class CreateActiveTwo extends Component {
 
     componentDidMount(){
         // // TODO: 点击tab切换后，参数会丢失，暂时默认为微信支付有礼，后期解决
-        // const  { typeKey = '85' } = decodeUrl()
+        const  { typeKey = '85', itemID, isView, isActive } = decodeUrl()
         // this.typeKey = typeKey
+        this.setState({
+          urlObj: {
+            typeKey,
+            itemID,
+            isView,
+            isActive,
+          }
+        })
+
 
     }
 
@@ -65,7 +80,7 @@ class CreateActiveTwo extends Component {
     handleCallback = () => {}
 
     render() {
-        const  { itemID, isView, typeKey, isActive } = decodeUrl()
+        const { typeKey = '', itemID, isView, isActive } = this.state.urlObj;
         const currentInfo = actInfoList.find(v => v.key === typeKey) || {}
         const { loading, clientType } = this.state;
         const Comp = FaceFormWrapper
