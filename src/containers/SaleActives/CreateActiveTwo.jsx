@@ -46,9 +46,10 @@ class CreateActiveTwo extends Component {
     }
 
     componentDidMount(){
-        // // TODO: 点击tab切换后，参数会丢失，暂时默认为微信支付有礼，后期解决
         const  { typeKey = '85', itemID, isView, isActive } = decodeUrl()
-        // this.typeKey = typeKey
+        if(!decodeUrl().typeKey) { // 刷新页面后无参数，关闭页面
+          closePage();
+        }
         this.setState({
           urlObj: {
             typeKey,
