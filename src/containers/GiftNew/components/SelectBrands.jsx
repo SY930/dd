@@ -14,7 +14,7 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-const GroupSepcial = ['1155', 1155];
+const GroupSepcial = ['1155', 1155, '8', 8];
 const describeAry = ['代金券', '菜品优惠券', '菜品兑换券'];
 class SelectBrands extends Component {
 

@@ -94,7 +94,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const hasMallArr = ['10','20','21'];
-const GroupSepcial = ['1155', 1155];
+const GroupSepcial = ['1155', 1155, 8, '8'];
 const describeAry = ['代金券', '菜品优惠券', '菜品兑换券'];
 const processFinalCategoryAndDishData = (params, property,value) => {
     if (params.hasOwnProperty(property)) {
@@ -295,7 +295,9 @@ class GiftAddModalStep extends React.PureComponent {
             // oops
         }
 
-        this.loadShops();
+        if (GroupSepcial.includes(groupID)) {
+            this.loadShops();
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -946,7 +948,7 @@ class GiftAddModalStep extends React.PureComponent {
     }
 
     handleFinish = () => {
-        const { values, groupTypes, delivery,crossDay, allSubRightGroup} = this.state;
+        const { values, groupTypes, delivery,crossDay, allSubRightGroup } = this.state;
         const { type, gift: { value, data } } = this.props;
         this.secondForm.validateFieldsAndScroll((err, formValues) => {
             if (err) return;
