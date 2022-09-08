@@ -15,7 +15,6 @@ export const renderOverViewData = function () {
 
     return (
         <Table
-            style={{ width: "80%" }}
             dataSource={dataOverviewDataSource}
             columns={dataOverviewColumns}
             bordered={true}

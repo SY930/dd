@@ -17,6 +17,18 @@ export const dataOverviewColumns = [
         key: "consumeMoneyAmount",
         className: "TableTxtCenter",
     },
+    {
+        title: "拉动购买权益包金额",
+        dataIndex: "interestMoneyAmount",
+        key: "interestMoneyAmount",
+        className: "TableTxtCenter",
+    },
+    {
+        title: "拉动购买权益卡金额",
+        dataIndex: "benefitCardMoneyAmount",
+        key: "benefitCardMoneyAmount",
+        className: "TableTxtCenter",
+    },
 ];
 
 // 被邀请人积分统计
