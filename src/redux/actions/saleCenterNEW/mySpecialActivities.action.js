@@ -68,6 +68,7 @@ export const GHT_TAGGROUPLIST_SUCCESS = 'sale center: get tagRroupList'
 export const SALE_CENTER_GET_CRM_SAVE_MONEY_SET_SUCCESS = 'sale center: SALE_CENTER_GET_CRM_SAVE_MONEY_SET_SUCCESS';
 export const SALE_CENTER_GET_CRM_RIGHT_PACKAGE_SET_SUCCESS = 'sale center: SALE_CENTER_GET_CRM_RIGHT_PACKAGE_SET_SUCCESS';
 export const SALE_CENTER_UPDATE_GIFTS_LEVEL = 'sale center: lottery gifts level'
+export const SALE_CENTER_GET_CRM_BENEFIT_CARD_SUCCESS = 'sale center: SALE_CENTER_GET_CRM_BENEFIT_CARD_SUCCESS'
 // 以下是活动列表
 // export const fetchSpecialPromotionList = opts => ({ type: SPECIAL_PROMOTION_FETCH_PROMOTION_LIST, payload: opts });
 const fetchPromotionListFullfilled = payload => ({ type: SPECIAL_PROMOTION_FETCH_PROMOTION_OK, payload });
@@ -643,3 +644,28 @@ export const queryAllSaveMoneySet = () => {
             })
     }
 }
+
+/**
+ * 查询所有权益卡列表
+ */
+export const queryAllBenefitCard = () => {
+    return (dispatch) => {
+        axiosData(
+            "/benefit/CrmBenefitCardService_queryBenefitCardScheme.ajax",
+            { pageNo: 1, pageSize: 10000, onSale: 1, isActive: 1 },
+            null,
+            { path: "data.benefitCardBaseInfoList" }
+        )
+            .then((data) => {
+                dispatch({
+                    type: SALE_CENTER_GET_CRM_BENEFIT_CARD_SUCCESS,
+                    payload: Array.isArray(data)
+                        ? data
+                        : [],
+                });
+            })
+            .catch((err) => {
+                // oops
+            });
+    };
+};

@@ -30,6 +30,7 @@ import CloseableTip from "../../../components/common/CloseableTip/index";
 import {
     fetchSpecialCardLevel,
     queryAllSaveMoneySet,
+    queryAllBenefitCard,
 } from "../../../redux/actions/saleCenterNEW/mySpecialActivities.action";
 import AddGifts from "../common/AddGifts";
 import ENV from "../../../helpers/env";
@@ -403,6 +404,7 @@ class SpecialDetailInfo extends Component {
         }
         if (type == 68) {
             this.props.queryAllSaveMoneySet();
+            this.props.queryAllBenefitCard();
         }
         if (type == 21) {
             const shareTitle = "送您一份心意，共享美食优惠！";
@@ -2870,6 +2872,10 @@ class SpecialDetailInfo extends Component {
             label = '消费比例'
             key = 'consumeRate'
         }
+        if (type === 'buyRate') {
+            label = '购买比例'
+            key = 'consumeRate'
+        }
         const rechargeRate = this._getVal({ ruleType, roleType, key })
         const moneyLimitValue = this._getVal({ ruleType, roleType, key: 'moneyLimitValue' })
 
@@ -3071,7 +3077,7 @@ class SpecialDetailInfo extends Component {
             </div>
         );
     };
-    renderRightPackageList = () => {
+    renderRightPackageList = (ruleType, roleType) => {
         const rightPackageList = this.props.rightPackageList;
         const {
             form: { getFieldDecorator },
@@ -3102,10 +3108,11 @@ class SpecialDetailInfo extends Component {
                         </Select>
                     )}
                 </FormItem>
+                {this.renderRechargeReward(ruleType, roleType, 'buyRate')}
             </div>
         );
     };
-    renderRightCardList = () => {
+    renderRightCardList = (ruleType, roleType) => {
         const rightCardList = this.props.rightCardList;
         const {
             form: { getFieldDecorator },
@@ -3136,6 +3143,7 @@ class SpecialDetailInfo extends Component {
                         </Select>
                     )}
                 </FormItem>
+                {this.renderRechargeReward(ruleType, roleType, 'buyRate')}
             </div>
         );
     };
@@ -3313,6 +3321,8 @@ class SpecialDetailInfo extends Component {
         let cashRadioTitle = '储值比例'
         if (ruleType == 3) {
             cashRadioTitle = '消费比例'
+        } else if (ruleType == 5 || ruleType == 4) {
+            cashRadioTitle = '购买比例'
         }
         const cashGiftKey = `cashGift${ruleType}${roleType}`
         const redPackageRate = this._getVal({ ruleType, roleType, key: 'redPackageRate' })
@@ -4260,6 +4270,9 @@ function mapDispatchToProps(dispatch) {
         },
         queryAllSaveMoneySet: () => {
             dispatch(queryAllSaveMoneySet());
+        },
+        queryAllBenefitCard: () => {
+            dispatch(queryAllBenefitCard());
         },
     };
 }

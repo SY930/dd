@@ -102,11 +102,11 @@ const renderRecommendGiftsDetail = function () {
                                 break;
                             case 4:
                                 renderRecommentReward = this
-                                    .renderRechargeReward;
+                                    .renderRightCardList;
                                 break;
                             case 5:
                                 renderRecommentReward = this
-                                    .renderRechargeReward;
+                                    .renderRightPackageList;
                                 break;
                             default:
                                 renderRecommentReward = this
@@ -120,10 +120,6 @@ const renderRecommendGiftsDetail = function () {
                             >
                                 {directActiveRuleTabValue == 2 &&
                                     this.renderSaveMoneySetSelector()}
-                                {directActiveRuleTabValue == 4 &&
-                                    this.renderRightCardList()}
-                                {directActiveRuleTabValue == 5 &&
-                                    this.renderRightPackageList()}
                                 {directActiveRuleTabValue == 1 ? (
                                     <div>
                                         {this.renderCheckbox({
@@ -200,11 +196,11 @@ const renderRecommendGiftsDetail = function () {
                                         break;
                                     case 4:
                                         renderRecommentReward = this
-                                            .renderRechargeReward;
+                                            .renderRightCardList;
                                         break;
                                     case 5:
                                         renderRecommentReward = this
-                                            .renderRechargeReward;
+                                            .renderRightPackageList;
                                         break;
                                     default:
                                         renderRecommentReward = this
