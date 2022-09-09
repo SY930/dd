@@ -1,5 +1,6 @@
 import { Col, Form, Icon, Input, Radio, Row, Tooltip } from 'antd';
 import ImageUpload from 'components/common/ImageUpload';
+import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 import BaseForm from '../../../components/common/BaseForm';
@@ -32,6 +33,7 @@ class Admin extends React.Component {
   }
 
   componentDidMount() {
+    this.props.onRef(this);
     this.getDistribution()
   }
 
@@ -50,8 +52,17 @@ class Admin extends React.Component {
         console.log(55555, res);
         const { setIsCreatedDistribution } = this.props;
         setIsCreatedDistribution(true);
+        const { bannerUri, distributionStatus } = res;
+        const copiedRes = _.cloneDeep(res);
+        copiedRes.distributionStatus = !!distributionStatus;
+        if (bannerUri) {
+          copiedRes.bannerUri = {
+            fileName: bannerUri,
+            url: bannerUri,
+          }
+        }
         // this.setState({
-        //   formData: res,
+        //   formData: copiedRes,
         // })
       }
     })

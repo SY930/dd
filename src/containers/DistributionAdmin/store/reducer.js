@@ -8,8 +8,7 @@ const initialState = Immutable.fromJS({
 export function distribution_reducer(state = initialState, action) {
   switch (action.type) {
     case SET_IS_CREATED_DISTRIBUTION:
-      console.log(33333, action);
-      return state.set('isCreated', Immutable.fromJS(action.payload))
+      return state.set('isCreated', action.payload)
     default:
       return state;
   }

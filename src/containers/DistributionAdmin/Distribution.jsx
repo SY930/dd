@@ -3,18 +3,13 @@ import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 import Admin from './Admin/index';
-import { httpCreateDistributionParams } from './AxiosFactory';
+import { httpUpdateDistributionParams } from './AxiosFactory';
 import DistributionDetail from './DistributionDetail/index';
 import DistributionWithdrawDetail from './DistributionWithdrawDetail/index';
 import styles from './style.less';
 
 const TabPane = Tabs.TabPane;
 
-@connect(
-  ({ distribution_reducer }) => ({
-    isCreated: distribution_reducer.getIn('isCreated')
-  })
-)
 class Distribution extends React.Component {
   constructor(props) {
     super(props);
@@ -25,10 +20,10 @@ class Distribution extends React.Component {
   }
 
   onSave = () => {
-    console.log('isCreated', this.props.isCreated);
     this.adminContainer.adminForm.validateFieldsAndScroll((err, values) => {
       if (err) return;
       const copiedValues = _.cloneDeep(values);
+      console.log('values==2222', values);
       const { rebateRule, withdrawTimeStep1, withdrawTimeStep2, distributionStatus, bannerUri, distributionTypes } = copiedValues;
       copiedValues.withdrawTimeStep = rebateRule === 1 ? withdrawTimeStep1 : withdrawTimeStep2;
       copiedValues.distributionStatus = distributionStatus ? 1 : 0;
@@ -38,12 +33,17 @@ class Distribution extends React.Component {
       if (bannerUri && bannerUri.url) {
         copiedValues.bannerUri = copiedValues.bannerUri.url
       }
-      // httpCreateDistributionParams
-      // httpUpdateDistributionParams
-      httpCreateDistributionParams(copiedValues).then((res) => {
-        console.log('copiedValues', copiedValues);
+      // if (this.props.isCreated) {
+
+      // } else {
+
+      // }
+      httpUpdateDistributionParams(copiedValues).then((res) => {
+        console.log('res==2222', res);
+        if (res) {
+          message.success('保存成功!');
+        }
       })
-      message.success('保存成功!');
     });
   }
 
@@ -79,7 +79,7 @@ class Distribution extends React.Component {
         </Col>
         <Col span={24} className="layoutsLineBlock"></Col>
         {
-          currentTabKey === '1' ? <Admin ref={(node) => { this.adminContainer = node }} /> : null
+          currentTabKey === '1' ? <Admin onRef={(node) => { this.adminContainer = node }} /> : null
         }
         {
           currentTabKey === '2' ? <DistributionDetail ref={(node) => { this.distributionDetailContainer = node }} /> : null
@@ -92,4 +92,10 @@ class Distribution extends React.Component {
   }
 }
 
-export default Distribution;
+const mapStateToProps = ({ distribution_reducer }) => {
+  return {
+    isCreated: distribution_reducer.toJS().isCreated,
+  }
+}
+
+export default connect(mapStateToProps, null)(Distribution);

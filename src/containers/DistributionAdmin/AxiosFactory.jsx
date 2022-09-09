@@ -19,13 +19,9 @@ async function httpCreateDistributionParams(data = {}) {
     method,
   };
   const response = await axios.post(url + method, params);
-  console.log(33333, response);
-  const { code, message: msg = '', list = [], totalSize: total = 0 } = response;
+  const { code, message: msg = '' } = response;
   if (code === '000') {
-    return {
-      list,
-      total,
-    };
+    return true
   }
   message.error(msg);
   return false;
