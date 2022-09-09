@@ -47,13 +47,14 @@ class Admin extends React.Component {
   }
 
   getDistribution = () => {
+    this.adminForm.resetFields();
     httpQueryDistributionParams().then((res) => {
       if (res) {
         const { setDistributionItemID } = this.props;
         const { bannerUri, distributionStatus, itemID, withdrawRuleType, distributionTypes, withdrawTimeStep } = res;
         setDistributionItemID(itemID);
         const copiedRes = _.cloneDeep(res);
-        copiedRes.distributionStatus = !!distributionStatus;
+        copiedRes.distributionStatus = +distributionStatus === 1;
         copiedRes.distributionTypes = distributionTypes.split(',')
         if (bannerUri) {
           copiedRes.bannerUri = {
@@ -63,20 +64,12 @@ class Admin extends React.Component {
         }
         if (+withdrawRuleType === 1) {
           copiedRes.withdrawTimeStep1 = withdrawTimeStep;
-          copiedRes.withdrawTimeStep2 = null;
         } else if (+withdrawRuleType === 2) {
           copiedRes.withdrawTimeStep2 = withdrawTimeStep;
-          copiedRes.withdrawTimeStep1 = null;
         }
-
         this.setState({
+          withdrawRuleType,
           formData: copiedRes,
-        }, () => {
-          this.adminForm.setFieldsValue({
-            withdrawTimeStep1: copiedRes.withdrawTimeStep1,
-            withdrawTimeStep2: copiedRes.withdrawTimeStep2,
-          });
-          console.log(111, this.state.formData);
         })
       }
     })
@@ -173,7 +166,7 @@ class Admin extends React.Component {
           <Row>
             <Col span={24} style={{ display: 'flex', alignItems: 'center' }}>
               {decorator({
-                initialValue: 1,
+                initialValue: this.state.withdrawRuleType,
               })(
                 <RadioGroup>
                   <Radio value={1} style={{ display: 'block' }}>
@@ -181,8 +174,8 @@ class Admin extends React.Component {
                     <FormItem style={{ display: 'inline-block', marginTop: '-4px' }}>
                       {decorator({
                         key: 'withdrawTimeStep1',
-                        initialValue: 1,
                         rules: [
+                          { required: +this.state.withdrawRuleType === 1, message: '请输入0-10的正整数' },
                           {
                             pattern: /^([0-9]|10)$/,
                             message: '请输入0-10的正整数',
@@ -205,6 +198,7 @@ class Admin extends React.Component {
                       {decorator({
                         key: 'withdrawTimeStep2',
                         rules: [
+                          { required: +this.state.withdrawRuleType === 2, message: '请输入0-10的正整数' },
                           {
                             pattern: /^([0-9]|10)$/,
                             message: '请输入0-10的正整数',
@@ -288,19 +282,11 @@ class Admin extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  console.log(222222, state)
-  return {
-    // promotionScopeInfo: state.promotionScopeInfo,
-    // user: state.user
-  }
-};
-
 const mapDispatchToProps = (dispatch) => {
   return {
     setDistributionItemID: opts => dispatch(setDistributionItemIDAC(opts)),
   }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Admin);
+export default connect(null, mapDispatchToProps)(Admin);
 

@@ -3,7 +3,7 @@ import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 import Admin from './Admin/index';
-import { httpCreateDistributionParams, httpUpdateDistributionParams } from './AxiosFactory';
+import { httpCreateOrUpdateDistributionParams } from './AxiosFactory';
 import DistributionDetail from './DistributionDetail/index';
 import DistributionWithdrawDetail from './DistributionWithdrawDetail/index';
 import styles from './style.less';
@@ -24,10 +24,9 @@ class Distribution extends React.Component {
     this.adminContainer.adminForm.validateFieldsAndScroll((err, values) => {
       if (err) return;
       const copiedValues = _.cloneDeep(values);
-      console.log('values==2222', values);
       const { withdrawRuleType, withdrawTimeStep1, withdrawTimeStep2, distributionStatus, bannerUri, distributionTypes } = copiedValues;
       copiedValues.withdrawTimeStep = withdrawRuleType === 1 ? withdrawTimeStep1 : withdrawTimeStep2;
-      copiedValues.distributionStatus = distributionStatus ? 1 : 0;
+      copiedValues.distributionStatus = distributionStatus ? 1 : 2;
       copiedValues.distributionTypes = distributionTypes.join(',');
       delete copiedValues.withdrawTimeStep1;
       delete copiedValues.withdrawTimeStep2;
@@ -37,41 +36,21 @@ class Distribution extends React.Component {
       this.setState({
         loading: true,
       })
-      if (this.props.itemID) {
-        copiedValues.itemID = this.props.itemID;
-        httpUpdateDistributionParams(copiedValues).then((res) => {
-          console.log('res==2222', res);
-          this.setState({
-            loading: false,
-          })
-          if (res) {
-            message.success('保存成功!');
-          }
-        }).catch((error) => {
-          this.setState({
-            loading: false,
-          })
-        });
-      } else {
-        httpCreateDistributionParams(copiedValues).then((res) => {
-          console.log('res==2222', res);
-          this.setState({
-            loading: false,
-          })
-          if (res) {
-            message.success('保存成功!');
-          }
-        }).catch((error) => {
-          this.setState({
-            loading: false,
-          })
-        });
-      }
+      copiedValues.itemID = this.props.itemID;
+      httpCreateOrUpdateDistributionParams(copiedValues).then((res) => {
+        this.setState({
+          loading: false,
+        })
+        if (res) {
+          message.success('保存成功!');
+          this.adminContainer.getDistribution();
+        }
+      }).catch((error) => {
+        this.setState({
+          loading: false,
+        })
+      });
     });
-  }
-
-  onExport = () => {
-
   }
 
   render() {
@@ -90,7 +69,6 @@ class Distribution extends React.Component {
               {currentTabKey === '1' ?
                 <Button type="primary" onClick={this.onSave} disabled={loading}>保存</Button>
                 : null}
-              {/* {currentTabKey === '2' || currentTabKey === '3' ? <Button style={{ margin: '0 12px' }} onClick={this.onExport}>导出明细</Button> : null} */}
             </div>
           </Col>
           <Col span={24} className={styles.tabCol}>

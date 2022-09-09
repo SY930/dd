@@ -8,42 +8,25 @@ function getAccountInfo() {
   return user.get('accountInfo').toJS();
 }
 
-async function httpCreateDistributionParams(data = {}) {
+async function httpCreateOrUpdateDistributionParams(data = {}) {
   const { groupID } = getAccountInfo();
   Object.assign(data, { groupID });
-  const method = '/crm/distribution/createDistributionParams.ajax';
+  let method = '/crm/distribution/createDistributionParams.ajax';
+  if (data.itemID) {
+    method = '/crm/distribution/updateDistributionParams.ajax';
+  }
   const params = {
     service,
     type,
-    data,
+    data: {
+      record: data,
+    },
     method,
   };
   const response = await axios.post(url + method, params);
   const { code, message: msg = '' } = response;
   if (code === '000') {
     return true
-  }
-  message.error(msg);
-  return false;
-}
-
-async function httpUpdateDistributionParams(data = {}) {
-  const { groupID } = getAccountInfo();
-  Object.assign(data, { groupID });
-  const method = '/crm/distribution/updateDistributionParams.ajax';
-  const params = {
-    service,
-    type,
-    data,
-    method,
-  };
-  const response = await axios.post(url + method, params);
-  const { code, message: msg = '', list = [], totalSize: total = 0 } = response;
-  if (code === '000') {
-    return {
-      list,
-      total,
-    };
   }
   message.error(msg);
   return false;
@@ -137,8 +120,7 @@ export {
   httpDistributionDetail,
   httpDistributionWithdraw,
   httpWithdrawDetails,
-  httpCreateDistributionParams,
-  httpUpdateDistributionParams,
   httpQueryDistributionParams,
+  httpCreateOrUpdateDistributionParams,
 };
 
