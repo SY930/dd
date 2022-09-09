@@ -2,7 +2,6 @@ import { message, Modal, Spin } from 'antd';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import FilterSelector from '../../components/common/FilterSelector';
-import { specialInterestGiftType, specialInterestGroupIdWhiteList } from '../GiftNew/components/whiteList';
 import { ACCOUNTLIST } from './Config';
 
 export const FILTERS = [{
@@ -43,7 +42,6 @@ export const FILTERS = [{
     { value: '111', label: '折扣券' },
     { value: '110', label: '买赠券' },
     { value: '22', label: '配送券' },
-    { value: '81', label: '特殊权益券' },
   ],
 }, {
   name: 'membershipRight',
@@ -64,23 +62,6 @@ class PromotionSelectorModal extends Component {
 
   selected = this.props.defaultValue
   groupName = null;
-
-  componentDidMount() {
-    let filters = this.state.filters;
-    const { groupID } = this.props;
-    filters = filters.map((filterItem) => {
-      const { label, options } = filterItem;
-      if (label == '哗啦啦优惠券') {
-        if (!specialInterestGroupIdWhiteList.includes(groupID)) {
-          filterItem.options = options.filter(item => item.value != specialInterestGiftType);
-        }
-      }
-      return filterItem;
-    })
-    this.setState({
-      filters,
-    })
-  }
 
   handleGroupNameChange = (value = {}) => {
     if (value) {

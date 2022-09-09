@@ -6,7 +6,7 @@ import {
   HualalaEditorBox, HualalaGroupSelect, HualalaSearchInput, HualalaSelected, HualalaTreeSelect
 } from '../../../components/common';
 import GiftCfg from '../../../constants/Gift';
-import { specialInterestGiftType, specialInterestGroupIdWhiteList } from '../../GiftNew/components/whiteList';
+import { specialInterestGiftType } from '../../GiftNew/components/whiteList';
 import {
   FetchGiftSort
 } from '../_action';
@@ -142,9 +142,7 @@ class InputTreeForGift extends React.Component {
         treeData.push(item);
       }
     });
-    if (!specialInterestGroupIdWhiteList.includes(this.props.groupID)) {
-      treeData = treeData.filter(item => +item.giftType != +specialInterestGiftType)
-    }
+    treeData = treeData.filter(item => +item.giftType != +specialInterestGiftType)
     const loop = (data) => {
       if (data.length > 0) {
         return data.map((item, index) => {
