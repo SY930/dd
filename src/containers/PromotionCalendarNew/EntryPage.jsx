@@ -620,7 +620,7 @@ export default class EntryPage extends Component {
                             <Button
                                 type="ghost"
                                 onClick={() => {
-                                    jumpPage({ pageID: SALE_CENTER_PAGE })
+                                    jumpPage({ pageID: SPECIAL_PAGE });
                                 }}
                             >
                                 {SALE_LABEL.k63469br}
