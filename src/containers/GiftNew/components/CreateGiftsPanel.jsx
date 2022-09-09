@@ -1,159 +1,163 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import styles from '../GiftAdd/Crm.less';
-import GiftCfg from '../../../constants/Gift';
-import xcx from '../assets/xcx.png';
-import wx from '../assets/wx.png';
-import pos from '../assets/pos.png';
-import lpk from '../assets/lpk.png';
-import jfsc from '../assets/jfsc.png';
-import xcx_tips from '../assets/xcx-tips.png';
-import wx_tips from '../assets/wx-tips.png';
-import pos_tips from '../assets/pos-tips.png';
-import lpk_tips from '../assets/lpk-tips.png';
-import jfsc_tips from '../assets/jfsc-tips.png';
 import {
     message,
 } from 'antd';
-import {startCreateGift} from "../_action";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import GiftCfg from '../../../constants/Gift';
 import {
     getHuaTianDisabledGifts,
     GIFT_CREATE_DISABLED_TIP,
     isBrandOfHuaTianGroupList,
-    isHuaTian
-} from "../../../constants/projectHuatianConf";
+    isHuaTian,
+} from '../../../constants/projectHuatianConf';
+import jfsc_tips from '../assets/jfsc-tips.png';
+import jfsc from '../assets/jfsc.png';
+import lpk_tips from '../assets/lpk-tips.png';
+import lpk from '../assets/lpk.png';
+import pos_tips from '../assets/pos-tips.png';
+import pos from '../assets/pos.png';
+import wx_tips from '../assets/wx-tips.png';
+import wx from '../assets/wx.png';
+import xcx_tips from '../assets/xcx-tips.png';
+import xcx from '../assets/xcx.png';
+import styles from '../GiftAdd/Crm.less';
+import { startCreateGift } from '../_action';
+import { specialInterestGiftType, specialInterestGroupIdWhiteList } from './whiteList';
 
 const temporaryDisabledGifts = [
 ]; // 不上线, 只在dohko显示的礼品类型
 
 class CreateGiftsPanel extends Component {
+  handleLogoClick = (gift = {}) => {
+      if (isBrandOfHuaTianGroupList() && gift.value === '90') {
+          message.warning(GIFT_CREATE_DISABLED_TIP);
+          return;
+      }
+      if (isHuaTian() && getHuaTianDisabledGifts().includes(String(gift.value))) {
+          message.warning(GIFT_CREATE_DISABLED_TIP);
+          return;
+      }
+      /* if (HUALALA.ENVIRONMENT === 'production-release' && temporaryDisabledGifts.includes(gift.value)) {
+  message.success('敬请期待~');
+  return;
+} */
+      this.props.onClose && this.props.onClose();
+      this.props.startCreate({
+          value: gift.value,
+          data: {
+              groupID: this.props.user.accountInfo.groupID,
+          },
+      });
+  }
+  getIconTags() {
+      const iconTags = [
+          {
+              label: 'POS',
+              icon: pos_tips,
+          },
+          {
+              label: '微信餐厅',
+              icon: wx_tips,
+          },
+          {
+              label: '小程序',
+              icon: xcx_tips,
+          },
+          {
+              label: '礼品卡小程序',
+              icon: lpk_tips,
+          },
+          {
+              label: '积分商城',
+              icon: jfsc_tips,
+          },
+      ]
+      return (
+          <div className={styles.iconTagsCol}>
+              {
+                  iconTags.map((item, index) => (
+                      <div className={styles.iconTags} key={index}>
+                          <img src={item.icon} alt={item.label} />
+                          <div className={styles.iconTitle}>{item.label}</div>
+                      </div>
+                  ))
+              }
+          </div>
+      )
+  }
+  render() {
+      let primaryGifts = GiftCfg.giftType.filter(gift => gift.category === 'primary');
+      const { groupID } = this.props.user.accountInfo;
+      if (!specialInterestGroupIdWhiteList.includes(groupID)) {
+          primaryGifts = primaryGifts.filter(item => item.value != specialInterestGiftType)
+      }
+      const secondaryGifts = GiftCfg.giftType.filter(gift => gift.category === 'secondary');
+      return (
+          <div>
+              {this.getIconTags()}
+              <div>
+                  <div className={styles.logoGroupHeader}>
+                      常用券类
+                  </div>
+                  <div className={styles.groupContainer}>
+                      {
+                          primaryGifts.map((gift, index) => (
+                              <ClickableGiftLogo
+                                  key={gift.value}
+                                  isPrimary={true}
+                                  onClick={() => {
+                                      this.handleLogoClick(gift)
+                                  }}
+                                  index={index}
+                                  data={gift}
+                              />
+                          ))
+                      }
+                  </div>
+                  <div className={styles.logoGroupHeader}>
+                      其它
+                  </div>
+                  <div className={styles.groupContainer}>
+                      {
+                          secondaryGifts.map((gift, index) => {
+                              switch (gift.view) {
+                                  case 'card': return (
+                                      <ClickableGiftCard
+                                          key={gift.value}
+                                          onClick={() => {
+                                              this.handleLogoClick(gift)
+                                          }}
+                                          data={gift}
+                                      />
+                                  );
+                                  case 'redpacket': return (
+                                      <ClickableRedPacket
+                                          key={gift.value}
+                                          onClick={() => {
+                                              this.handleLogoClick(gift)
+                                          }}
+                                          data={gift}
+                                      />
+                                  );
 
-    handleLogoClick = (gift = {}) => {
-        if (isBrandOfHuaTianGroupList() && gift.value === '90') {
-            message.warning(GIFT_CREATE_DISABLED_TIP);
-            return;
-        }
-        if (isHuaTian() && getHuaTianDisabledGifts().includes(String(gift.value))) {
-            message.warning(GIFT_CREATE_DISABLED_TIP);
-            return;
-        }
-        /*if (HUALALA.ENVIRONMENT === 'production-release' && temporaryDisabledGifts.includes(gift.value)) {
-            message.success('敬请期待~');
-            return;
-        }*/
-        this.props.onClose && this.props.onClose();
-        this.props.startCreate({
-            value: gift.value,
-            data: {
-                groupID: this.props.user.accountInfo.groupID
-            }
-        });
-    }
-    getIconTags(){
-        const iconTags = [
-            {
-                label:'POS',
-                icon:pos_tips
-            },
-            {
-                label:'微信餐厅',
-                icon:wx_tips
-            },
-            {
-                label:'小程序',
-                icon:xcx_tips
-            },
-            {
-                label:'礼品卡小程序',
-                icon:lpk_tips
-            },
-            {
-                label:'积分商城',
-                icon:jfsc_tips
-            }
-        ]
-        return (
-            <div className={styles.iconTagsCol}>
-                {
-                    iconTags.map((item,index) => (
-                        <div className={styles.iconTags} key={index}>
-                            <img src={item.icon} alt={item.label}/>
-                            <div className={styles.iconTitle}>{item.label}</div>
-                        </div>
-                    ))
-                }
-            </div>
-        )
-    }
-    render() {
-        const primaryGifts = GiftCfg.giftType.filter(gift => gift.category === 'primary');
-        const secondaryGifts = GiftCfg.giftType.filter(gift => gift.category === 'secondary');
-        return (
-            <div>
-                {this.getIconTags()}
-                <div>
-                    <div className={styles.logoGroupHeader}>
-                        常用券类
-                    </div>
-                    <div className={styles.groupContainer}>
-                        {
-                            primaryGifts.map((gift, index) => (
-                                <ClickableGiftLogo
-                                    key={gift.value}
-                                    isPrimary={true}
-                                    onClick={() => {
-                                        this.handleLogoClick(gift)
-                                    }}
-                                    index={index}
-                                    data={gift}
-                                />
-                            ))
-                        }
-                    </div>
-                    <div className={styles.logoGroupHeader}>
-                        其它
-                    </div>
-                    <div className={styles.groupContainer}>
-                        {
-                            secondaryGifts.map((gift,index) => {
-                                switch (gift.view) {
-                                    case 'card': return (
-                                        <ClickableGiftCard
-                                            key={gift.value}
-                                            onClick={() => {
-                                                this.handleLogoClick(gift)
-                                            }}
-                                            data={gift}
-                                        />
-                                    );
-                                    case 'redpacket': return (
-                                        <ClickableRedPacket
-                                            key={gift.value}
-                                            onClick={() => {
-                                                this.handleLogoClick(gift)
-                                            }}
-                                            data={gift}
-                                        />
-                                    );
-                                    
-                                    default: return (
-                                        <ClickableGiftLogo
-                                            key={gift.value}
-                                            onClick={() => {
-                                                this.handleLogoClick(gift)
-                                            }}
-                                            isPrimary={false}
-                                            data={gift}
-                                        />
-                                    )
-                                }
-                            })
-                        }
-                    </div>
-                </div>
-            </div>
-        )
-    }
+                                  default: return (
+                                      <ClickableGiftLogo
+                                          key={gift.value}
+                                          onClick={() => {
+                                              this.handleLogoClick(gift)
+                                          }}
+                                          isPrimary={false}
+                                          data={gift}
+                                      />
+                                  )
+                              }
+                          })
+                      }
+                  </div>
+              </div>
+          </div>
+      )
+  }
 }
 
 function ClickableGiftLogo(props) {
@@ -166,37 +170,38 @@ function ClickableGiftLogo(props) {
             <div className={styles.tagContainer}>
                 {
                     (props.data.tags || []).map((tag, i) => {
-                        if(!wechatFlag && tag.props && tag.props.defaultMessage.includes('微信') || !wechatFlag && !tag.props && tag.includes('微信')) {
+                        if (!wechatFlag && tag.props && tag.props.defaultMessage.includes('微信') || !wechatFlag && !tag.props && tag.includes('微信')) {
                             return null;
                         }
-                        if(tag.props && tag.props.defaultMessage.includes('微信') || !tag.props && tag.includes('微信')) {
-                            wechatFlag --;
+                        if (tag.props && tag.props.defaultMessage.includes('微信') || !tag.props && tag.includes('微信')) {
+                            wechatFlag--;
                         }
                         return (<div className={styles.speTagSpan} key={i}>{
-                            tag.props ? 
+                            tag.props ?
                                 tag.props.defaultMessage.includes('小程序') ?
-                                <img className={styles.speTagImg} src={xcx} /> : 
-                                tag.props.defaultMessage.includes('微信') ?
-                                <img className={styles.speTagImg} src={wx} /> : 
-                                tag.props.defaultMessage.includes('礼品卡小程序') ?
-                                <img className={styles.speTagImg} src={lpk} /> : 
-                                tag.props.defaultMessage.includes('pos') ? 
-                                <img className={styles.speTagImg} src={pos} /> : 
-                                tag.props.defaultMessage.includes('积分商城') ? 
-                                <img className={styles.speTagImg} src={jfsc} /> : 
-                                <span><img className={styles.speTagImg} src={xcx} /><img className={styles.speTagImg} src={pos} /><img className={styles.speTagImg} src={wx} /></span>
-                            : tag.includes('pos') ?
-                                <img className={styles.speTagImg} src={pos} /> : 
-                                tag.includes('微信') ? 
-                                    <img className={styles.speTagImg} src={wx} /> :
-                                    tag.includes('礼品卡小程序') ?
-                                        <img className={styles.speTagImg} src={lpk} /> :
-                                            tag.includes('小程序') ? 
-                                              <img className={styles.speTagImg} src={xcx} /> :
-                                                tag.includes('积分商城') ? 
-                                                    <img className={styles.speTagImg} src={jfsc} /> 
-                                                : null
-                    }</div>)})
+                                    <img className={styles.speTagImg} src={xcx} /> :
+                                    tag.props.defaultMessage.includes('微信') ?
+                                        <img className={styles.speTagImg} src={wx} /> :
+                                        tag.props.defaultMessage.includes('礼品卡小程序') ?
+                                            <img className={styles.speTagImg} src={lpk} /> :
+                                            tag.props.defaultMessage.includes('pos') ?
+                                                <img className={styles.speTagImg} src={pos} /> :
+                                                tag.props.defaultMessage.includes('积分商城') ?
+                                                    <img className={styles.speTagImg} src={jfsc} /> :
+                                                    <span><img className={styles.speTagImg} src={xcx} /><img className={styles.speTagImg} src={pos} /><img className={styles.speTagImg} src={wx} /></span>
+                                : tag.includes('pos') ?
+                                    <img className={styles.speTagImg} src={pos} /> :
+                                    tag.includes('微信') ?
+                                        <img className={styles.speTagImg} src={wx} /> :
+                                        tag.includes('礼品卡小程序') ?
+                                            <img className={styles.speTagImg} src={lpk} /> :
+                                            tag.includes('小程序') ?
+                                                <img className={styles.speTagImg} src={xcx} /> :
+                                                tag.includes('积分商城') ?
+                                                    <img className={styles.speTagImg} src={jfsc} />
+                                                    : null
+                        }</div>)
+                    })
                     // (props.data.tags || []).map(tag => (
                     //     <div key={tag}>{tag}</div>
                     // ))
@@ -218,30 +223,31 @@ function ClickableGiftCard(props) {
             <div className={styles.tagContainer}>
                 {
                     (props.data.tags || []).map((tag, i) => {
-                        if(!wechatFlag && tag.props && tag.props.defaultMessage.includes('微信') || !wechatFlag && !tag.props && tag.includes('微信')) {
+                        if (!wechatFlag && tag.props && tag.props.defaultMessage.includes('微信') || !wechatFlag && !tag.props && tag.includes('微信')) {
                             return null;
                         }
-                        if(tag.props && tag.props.defaultMessage.includes('微信') || !tag.props && tag.includes('微信')) {
-                            wechatFlag --;
+                        if (tag.props && tag.props.defaultMessage.includes('微信') || !tag.props && tag.includes('微信')) {
+                            wechatFlag--;
                         }
                         return (<div className={styles.speTagSpan} key={i}>{
-                            tag.props ? 
+                            tag.props ?
                                 tag.props.defaultMessage.includes('小程序') ?
-                                <img className={styles.speTagImg} src={xcx} /> : 
-                                tag.props.defaultMessage.includes('微信') ?
-                                <img className={styles.speTagImg} src={wx} /> : 
-                                tag.props.defaultMessage.includes('礼品卡小程序') ?
-                                <img className={styles.speTagImg} src={lpk} /> : 
-                                tag.props.defaultMessage.includes('pos') ? <img className={styles.speTagImg} src={pos} /> : 
-                                <span><img className={styles.speTagImg} src={xcx} /><img className={styles.speTagImg} src={pos} /><img className={styles.speTagImg} src={wx} /></span>
-                            : tag.includes('pos') ?
-                                <img className={styles.speTagImg} src={pos} /> : 
-                                tag.includes('微信') ? 
-                                    <img className={styles.speTagImg} src={wx} /> :
-                                        tag.includes('礼品卡小程序') ? 
+                                    <img className={styles.speTagImg} src={xcx} /> :
+                                    tag.props.defaultMessage.includes('微信') ?
+                                        <img className={styles.speTagImg} src={wx} /> :
+                                        tag.props.defaultMessage.includes('礼品卡小程序') ?
                                             <img className={styles.speTagImg} src={lpk} /> :
-                                    tag.includes('小程序') ? <img className={styles.speTagImg} src={xcx} /> : null
-                    }</div>)})
+                                            tag.props.defaultMessage.includes('pos') ? <img className={styles.speTagImg} src={pos} /> :
+                                                <span><img className={styles.speTagImg} src={xcx} /><img className={styles.speTagImg} src={pos} /><img className={styles.speTagImg} src={wx} /></span>
+                                : tag.includes('pos') ?
+                                    <img className={styles.speTagImg} src={pos} /> :
+                                    tag.includes('微信') ?
+                                        <img className={styles.speTagImg} src={wx} /> :
+                                        tag.includes('礼品卡小程序') ?
+                                            <img className={styles.speTagImg} src={lpk} /> :
+                                            tag.includes('小程序') ? <img className={styles.speTagImg} src={xcx} /> : null
+                        }</div>)
+                    })
                 }
             </div>
         </div>
@@ -257,30 +263,31 @@ function ClickableRedPacket(props) {
             <div className={styles.tagContainer}>
                 {
                     (props.data.tags || []).map((tag, i) => {
-                        if(!wechatFlag && tag.props && tag.props.defaultMessage.includes('微信') || !wechatFlag && !tag.props && tag.includes('微信')) {
+                        if (!wechatFlag && tag.props && tag.props.defaultMessage.includes('微信') || !wechatFlag && !tag.props && tag.includes('微信')) {
                             return null;
                         }
-                        if(tag.props && tag.props.defaultMessage.includes('微信') || !tag.props && tag.includes('微信')) {
-                            wechatFlag --;
+                        if (tag.props && tag.props.defaultMessage.includes('微信') || !tag.props && tag.includes('微信')) {
+                            wechatFlag--;
                         }
                         return (<div className={styles.speTagSpan} key={i}>{
-                            tag.props ? 
+                            tag.props ?
                                 tag.props.defaultMessage.includes('小程序') ?
-                                <img className={styles.speTagImg} src={xcx} /> : 
-                                tag.props.defaultMessage.includes('微信') ?
-                                <img className={styles.speTagImg} src={wx} /> : 
-                                tag.props.defaultMessage.includes('礼品卡小程序') ?
-                                <img className={styles.speTagImg} src={lpk} /> : 
-                                tag.props.defaultMessage.includes('pos') ? <img className={styles.speTagImg} src={pos} /> : 
-                                <span><img className={styles.speTagImg} src={xcx} /><img className={styles.speTagImg} src={pos} /><img className={styles.speTagImg} src={wx} /></span>
-                            : tag.includes('pos') ?
-                                <img className={styles.speTagImg} src={pos} /> : 
-                                tag.includes('微信') ? 
-                                    <img className={styles.speTagImg} src={wx} /> :
-                                    tag.includes('礼品卡小程序') ? 
-                                    <img className={styles.speTagImg} src={lpk} /> :
-                                    tag.includes('小程序') ? <img className={styles.speTagImg} src={xcx} /> : null
-                    }</div>)})
+                                    <img className={styles.speTagImg} src={xcx} /> :
+                                    tag.props.defaultMessage.includes('微信') ?
+                                        <img className={styles.speTagImg} src={wx} /> :
+                                        tag.props.defaultMessage.includes('礼品卡小程序') ?
+                                            <img className={styles.speTagImg} src={lpk} /> :
+                                            tag.props.defaultMessage.includes('pos') ? <img className={styles.speTagImg} src={pos} /> :
+                                                <span><img className={styles.speTagImg} src={xcx} /><img className={styles.speTagImg} src={pos} /><img className={styles.speTagImg} src={wx} /></span>
+                                : tag.includes('pos') ?
+                                    <img className={styles.speTagImg} src={pos} /> :
+                                    tag.includes('微信') ?
+                                        <img className={styles.speTagImg} src={wx} /> :
+                                        tag.includes('礼品卡小程序') ?
+                                            <img className={styles.speTagImg} src={lpk} /> :
+                                            tag.includes('小程序') ? <img className={styles.speTagImg} src={xcx} /> : null
+                        }</div>)
+                    })
                 }
             </div>
             {
@@ -298,9 +305,9 @@ const mapStateToProps = (state) => {
 
 function mapDispatchToProps(dispatch) {
     return {
-        startCreate: opts => {
+        startCreate: (opts) => {
             dispatch(startCreateGift(opts))
-        }
+        },
     };
 }
 
