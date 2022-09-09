@@ -5,7 +5,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import BaseForm from '../../../components/common/BaseForm';
 import { httpQueryDistributionParams } from '../AxiosFactory';
-import { setIsCreatedDistributionAC } from '../store/action';
+import { setDistributionItemIDAC } from '../store/action';
 import { distributionTypesOptions, relationRuleOptions } from './constant';
 import styles from './style.less';
 
@@ -27,7 +27,7 @@ class Admin extends React.Component {
     super(props);
     this.adminForm = null;
     this.state = {
-      rebateRule: 1,
+      withdrawRuleType: 1,
       formData: {},
     }
   }
@@ -38,9 +38,9 @@ class Admin extends React.Component {
   }
 
   onChangeForm = (key, value) => {
-    if (key === 'rebateRule') {
+    if (key === 'withdrawRuleType') {
       this.setState({
-        rebateRule: value,
+        withdrawRuleType: value,
       });
       this.adminForm.resetFields(['withdrawTimeStep1', 'withdrawTimeStep2']);
     }
@@ -49,21 +49,35 @@ class Admin extends React.Component {
   getDistribution = () => {
     httpQueryDistributionParams().then((res) => {
       if (res) {
-        console.log(55555, res);
-        const { setIsCreatedDistribution } = this.props;
-        setIsCreatedDistribution(true);
-        const { bannerUri, distributionStatus } = res;
+        const { setDistributionItemID } = this.props;
+        const { bannerUri, distributionStatus, itemID, withdrawRuleType, distributionTypes, withdrawTimeStep } = res;
+        setDistributionItemID(itemID);
         const copiedRes = _.cloneDeep(res);
         copiedRes.distributionStatus = !!distributionStatus;
+        copiedRes.distributionTypes = distributionTypes.split(',')
         if (bannerUri) {
           copiedRes.bannerUri = {
             fileName: bannerUri,
             url: bannerUri,
           }
         }
-        // this.setState({
-        //   formData: copiedRes,
-        // })
+        if (+withdrawRuleType === 1) {
+          copiedRes.withdrawTimeStep1 = withdrawTimeStep;
+          copiedRes.withdrawTimeStep2 = null;
+        } else if (+withdrawRuleType === 2) {
+          copiedRes.withdrawTimeStep2 = withdrawTimeStep;
+          copiedRes.withdrawTimeStep1 = null;
+        }
+
+        this.setState({
+          formData: copiedRes,
+        }, () => {
+          this.adminForm.setFieldsValue({
+            withdrawTimeStep1: copiedRes.withdrawTimeStep1,
+            withdrawTimeStep2: copiedRes.withdrawTimeStep2,
+          });
+          console.log(111, this.state.formData);
+        })
       }
     })
   }
@@ -75,7 +89,7 @@ class Admin extends React.Component {
       'relationRule',
       'distributionTimeStep',
       'rebateRatio',
-      'rebateRule',
+      'withdrawRuleType',
       'rakeBackID',
       'bannerUri',
     ];
@@ -152,7 +166,7 @@ class Admin extends React.Component {
           </Row>
         ),
       },
-      rebateRule: {
+      withdrawRuleType: {
         label: '返佣提现规则:',
         type: 'custom',
         render: decorator => (
@@ -174,7 +188,7 @@ class Admin extends React.Component {
                             message: '请输入0-10的正整数',
                           }],
                       })(
-                        <Input style={{ width: '100px', margin: '0 5px' }} disabled={this.state.rebateRule !== 1} />
+                        <Input style={{ width: '100px', margin: '0 5px' }} disabled={this.state.withdrawRuleType !== 1} />
                       )}
                     </FormItem>
                     <span>天后可提现</span>
@@ -196,7 +210,7 @@ class Admin extends React.Component {
                             message: '请输入0-10的正整数',
                           }],
                       })(
-                        <Input style={{ width: '100px', margin: '0 5px' }} disabled={this.state.rebateRule !== 2} />
+                        <Input style={{ width: '100px', margin: '0 5px' }} disabled={this.state.withdrawRuleType !== 2} />
                       )}
                     </FormItem>
                     <span>天后可提现</span>
@@ -284,7 +298,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setIsCreatedDistribution: opts => dispatch(setIsCreatedDistributionAC(opts)),
+    setDistributionItemID: opts => dispatch(setDistributionItemIDAC(opts)),
   }
 };
 

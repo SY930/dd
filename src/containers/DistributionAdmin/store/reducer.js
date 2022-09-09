@@ -1,14 +1,14 @@
 import Immutable from 'immutable';
-import { SET_IS_CREATED_DISTRIBUTION } from './action';
+import { SET_DISTRIBUTION_ITEMID } from './action';
 
 const initialState = Immutable.fromJS({
-  isCreated: false,
+  itemID: '',
 });
 
 export function distribution_reducer(state = initialState, action) {
   switch (action.type) {
-    case SET_IS_CREATED_DISTRIBUTION:
-      return state.set('isCreated', action.payload)
+    case SET_DISTRIBUTION_ITEMID:
+      return state.set('itemID', action.payload)
     default:
       return state;
   }

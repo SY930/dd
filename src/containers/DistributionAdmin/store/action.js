@@ -1,10 +1,10 @@
 
-export const SET_IS_CREATED_DISTRIBUTION = 'set is created distribution or not';
+export const SET_DISTRIBUTION_ITEMID = 'set distribution itemID';
 
-export const setIsCreatedDistributionAC = (isCreated) => {
+export const setDistributionItemIDAC = (itemID) => {
   return {
-    type: SET_IS_CREATED_DISTRIBUTION,
-    payload: isCreated,
+    type: SET_DISTRIBUTION_ITEMID,
+    payload: itemID,
   }
 };
 
