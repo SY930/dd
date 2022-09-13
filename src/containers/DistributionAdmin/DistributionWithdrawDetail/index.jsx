@@ -1,7 +1,6 @@
-import { Button, Col, DatePicker, Row } from 'antd';
+import { Button, Col, DatePicker } from 'antd';
 import BaseForm from 'components/common/BaseForm';
 import _ from 'lodash';
-import moment from 'moment';
 import React from 'react';
 import { httpDistributionWithdraw } from '../AxiosFactory';
 import MainTable from './MainTable';
@@ -18,20 +17,6 @@ const formItems = {
     type: 'text',
     label: '分销人',
     placeholder: '请输入手机号',
-  },
-  orderTime: {
-    type: 'custom',
-    label: '下单时间',
-    render: decorator => (
-      <Row>
-        <Col>
-          {decorator({})(<RangePicker
-            format="YYYY-MM-DD"
-            placeholder={['开始日期', '结束日期']}
-          />)}
-        </Col>
-      </Row>
-    ),
   },
 };
 
@@ -53,12 +38,6 @@ export default class DistributionWithdrawDetail extends React.PureComponent {
 
   onQueryList = (pagingParams = initialPaging) => {
     const queryFormParams = _.cloneDeep(this.queryFrom.getFieldsValue());
-    const { orderTime } = queryFormParams;
-    if (Array.isArray(orderTime) && orderTime.length > 0) {
-      queryFormParams.createStampStart = moment(orderTime[0]).format(defaultFormat);
-      queryFormParams.createStampEnd = moment(orderTime[1]).format(defaultFormat);
-    }
-    delete queryFormParams.orderTime;
     const requestParams = {
       ...queryFormParams,
       ...this.state.pageObj,
