@@ -149,12 +149,6 @@ class Admin extends React.Component {
                     message: '请输入1-100的正整数',
                   }],
               })(<Input addonAfter="%" />)}
-              <Tooltip
-                placement="top"
-                title="为避免被人重复下单退单所产生的刷单行为，建议在支付/交易完成1～10天后允许提现。"
-              >
-                <Icon type="question-circle-o" style={{ marginLeft: '8px' }} className={styles.questionIcon} />
-              </Tooltip>
             </Col>
           </Row>
         ),
@@ -229,7 +223,8 @@ class Admin extends React.Component {
             <Col span={24}>
               {decorator({
                 rules: [
-                  { required: true, message: '最大输入限制50字符' },
+                  { required: true, message: '最大输入限制19字符' },
+                  { pattern: /^([1-9]\d{0,18})$/, message: '最大输入限制19字符' },
                 ],
               })(<Input style={{ width: '400px' }} />)}
             </Col>
