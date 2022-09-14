@@ -1,7 +1,7 @@
 const ORDER_STATUS = {
   20: '已下单',
-  40: '交易完成',
-  50: '订单完成',
+  40: '支付完成',
+  50: '交易完成',
 };
 
 const TRANS_STATUS = {
