@@ -10,7 +10,7 @@ const pulgins = ['65', '68', '71', '72', '66', '76', '75', '77', '78', '79'];
 // 可作为营销盒子大礼包插件授权活动有以下：分享裂变、推荐有礼、膨胀大礼包、签到、集点卡、支付后广告、下单抽抽乐、盲盒  8个活动。
 const authPulgins = ['65', '68', '66', '76', '75', '77', '78', '79'];
 const imgURI = 'http://res.hualala.com/';
-const V3KEYS = ['78', '79', '83', '10072', '85']; // 最新版抽抽乐78  秒杀10072  千人千面85
+const V3KEYS = ['78', '79', '83', '10072', '85', '23']; // 最新版抽抽乐78  秒杀10072  千人千面85 线上餐厅弹窗送礼23
 // 最新版 logo图片
 const V3LOGO = {
     78: `${imgURI}basicdoc/e464e187-f0eb-4b03-b438-9329cd26c3ff.png`,
@@ -18,6 +18,7 @@ const V3LOGO = {
     83: require(`./assets/logo_${83}_new.png`),
     10072: require(`./assets/logo_${10072}_new.png`),
     85: require(`./assets/logo_${85}_new.png`),
+    23: require(`./assets/logo_${23}_new.png`),
 };
 class NewPromotionCard extends Component {
     onClick = () => {

@@ -13,15 +13,18 @@ import registerPage from '../../index';
 import { SALE_ACTIVE_NEW_PAGE } from '../../constants/entryCodes';
 import styles from './CreateActive.less'
 import FaceFormWrapper from './ManyFace';
-// import { actInfoList } from './constant'
+import OnlineRestaurantGiftGiving from "./OnlineRestaurantGiftGiving";
 
-// const store = dvaApp._store;
-
-const actInfoList = [{
-  title: '千人千面',
-  key: '85',
-
-}];
+const actInfoList = [
+    {
+        title: "千人千面",
+        key: "85",
+    },
+    {
+        title: "线上餐厅弹窗送礼",
+        key: "23",
+    },
+];
 
 
 @connect(({  loading, createActiveTwoCom }) => ({  loading, createActiveTwoCom }))
@@ -84,7 +87,8 @@ class CreateActiveTwo extends Component {
         const { typeKey = '', itemID, isView, isActive } = this.state.urlObj;
         const currentInfo = actInfoList.find(v => v.key === typeKey) || {}
         const { loading, clientType } = this.state;
-        const Comp = FaceFormWrapper
+        const Comp =
+            typeKey == "23" ? OnlineRestaurantGiftGiving : FaceFormWrapper;
         return (
             <div className={styles.createActiveTwo}>
                 <div className={styles.headers}>
@@ -118,7 +122,7 @@ class CreateActiveTwo extends Component {
                 </div>
                 <div className={styles.line}></div>
                 <div className={styles.centerContent} style={{ height: 'calc(100% - 70px)', overflow: 'hidden', display: 'flex'}}>
-                  <PhonePreviewLeft type={this.state.type}/>
+                  <PhonePreviewLeft type={this.state.type} typeKey={typeKey} />
                   <div className={styles.centerLine}>
                     <div className={styles.arrow}></div>
                   </div>
