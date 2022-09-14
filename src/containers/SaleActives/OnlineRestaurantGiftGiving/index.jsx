@@ -17,6 +17,10 @@ class OnlineRestaurantGiftGiving extends Component {
     }
     render() {
         const { basicForm, basicFormData } = this.state;
+        const { accountInfo } = this.props;
+        const itemProps = {
+            accountInfo,
+        };
         return (
             <div className={styles.formContainer}>
                 <div className={styles.logoGroupHeader}>基本信息</div>
@@ -24,7 +28,7 @@ class OnlineRestaurantGiftGiving extends Component {
                     basicForm={basicForm}
                     getForm={(form) => this.setState({ basicForm: form })}
                     formData={basicFormData}
-                    
+                    {...itemProps}
                 />
             </div>
         );
@@ -33,7 +37,7 @@ class OnlineRestaurantGiftGiving extends Component {
 
 function mapStateToProps(state) {
     return {
-        accountInfo: state.user.get("accountInfo"),
+        accountInfo: state.user.get("accountInfo").toJS(),
         user: state.user.toJS(),
     };
 }
