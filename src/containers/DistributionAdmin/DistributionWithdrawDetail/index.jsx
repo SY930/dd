@@ -39,9 +39,8 @@ export default class DistributionWithdrawDetail extends React.PureComponent {
   onQueryList = (pagingParams = initialPaging) => {
     const queryFormParams = _.cloneDeep(this.queryFrom.getFieldsValue());
     const requestParams = {
-      ...queryFormParams,
-      ...this.state.pageObj,
       ...pagingParams,
+      ...queryFormParams,
     }
 
     this.setState({
@@ -53,8 +52,10 @@ export default class DistributionWithdrawDetail extends React.PureComponent {
         const { list, total } = res;
         this.setState({
           list,
-          total,
-          pageObj: pagingParams,
+          pageObj: {
+            ...pagingParams,
+            total,
+          },
         })
       }
       this.setState({

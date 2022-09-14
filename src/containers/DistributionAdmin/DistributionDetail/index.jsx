@@ -66,7 +66,6 @@ export default class DistributionDetail extends React.PureComponent {
     delete queryFormParams.orderTime;
     const requestParams = {
       ...queryFormParams,
-      ...this.state.pageObj,
       ...pagingParams,
     }
 
@@ -79,8 +78,10 @@ export default class DistributionDetail extends React.PureComponent {
         const { list, total } = res;
         this.setState({
           list,
-          total,
-          pageObj: pagingParams,
+          pageObj: {
+            ...pagingParams,
+            total,
+          },
         })
       }
       this.setState({
