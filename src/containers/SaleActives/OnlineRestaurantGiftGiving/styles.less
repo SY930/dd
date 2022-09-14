@@ -1,0 +1,27 @@
+.formContainer {
+    overflow: auto;
+    min-width: 700px;
+    width: 100%;
+    .logoGroupHeader {
+        padding-left: 11px;
+        width: 700px;
+        height: 28px;
+        line-height: 28px;
+        background: #f5fbfa;
+        margin: 20px 0 10px 50px;
+        font-size: 14px;
+        color: #666;
+        position: relative;
+        &::before {
+            content: "";
+            margin-left: -7px;
+            position: absolute;
+            display: block;
+            width: 3px;
+            height: 12px;
+            left: 8px;
+            top: 8px;
+            background-color: #18b495;
+        }
+    }
+}
