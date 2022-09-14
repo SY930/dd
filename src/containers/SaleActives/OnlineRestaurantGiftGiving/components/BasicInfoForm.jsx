@@ -1,7 +1,7 @@
 import React, { PureComponent as Component } from "react";
 import { connect } from "react-redux";
 import BaseForm from "components/common/BaseForm";
-import { Checkbox, Radio } from "antd";
+import { Select } from "antd";
 import ShopSelector from "components/ShopSelector";
 import { isFilterShopType } from "../../../../helpers/util";
 import { baseFormItems, formItemLayout, baseFormKeys } from "../common";
@@ -45,15 +45,15 @@ class BasicInfoForm extends Component {
             //会员范围
         } else if (key == "cardLevelRangeType") {
             if (value == 2) {
-                formKeys.splice(6, 0, "cardTypeIDList");
                 formKeys = formKeys.filter((item) => item != "cardLevelIDList");
+                formKeys.splice(6, 0, "cardTypeIDList");
             } else if (value == 3) {
-                formKeys.splice(6, 0, "cardLevelIDList");
                 formKeys = formKeys.filter((item) => item != "cardTypeIDList");
+                formKeys.splice(6, 0, "cardLevelIDList");
             } else {
                 formKeys = formKeys.filter(
                     (item) =>
-                        item != "cardTypeIDList" || item != "cardLevelIDList"
+                        item != "cardTypeIDList" && item != "cardLevelIDList"
                 );
             }
         }
@@ -61,7 +61,7 @@ class BasicInfoForm extends Component {
     };
 
     resetFormItems = () => {
-        const { shopIDList } = baseFormItems;
+        const { shopIDList, cardTypeIDList } = baseFormItems;
         return {
             ...baseFormItems,
             shopIDList: {

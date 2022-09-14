@@ -28,7 +28,7 @@ const actInfoList = [
 
 
 @connect(({  loading, createActiveTwoCom }) => ({  loading, createActiveTwoCom }))
-class CreateActiveTwo extends Component {
+class NewCreateActiveEntry extends Component {
 
     constructor() {
       super();
@@ -149,6 +149,8 @@ const mapStateToProps = ({ user }) => {
         groupID: user.getIn(['accountInfo', 'groupID']),
     }
 }
-export default registerPage([SALE_ACTIVE_NEW_PAGE])(connect(mapStateToProps)(CreateActiveTwo))
+export default registerPage([SALE_ACTIVE_NEW_PAGE])(
+    connect(mapStateToProps)(NewCreateActiveEntry)
+);
 
 
