@@ -12,7 +12,8 @@ const initialPaging = {
   pageSize: 10,
 }
 const { RangePicker } = DatePicker;
-const defaultFormat = 'YYYY-MM-DD HH:mm:ss';
+const DATE_FORMAT = 'YYYYMMDD000000';
+const END_DATE_FORMAT = 'YYYYMMDD235959';
 const formItems = {
   customerID: {
     type: 'text',
@@ -60,8 +61,8 @@ export default class DistributionDetail extends React.PureComponent {
     const queryFormParams = _.cloneDeep(this.queryFrom.getFieldsValue());
     const { orderTime } = queryFormParams;
     if (Array.isArray(orderTime) && orderTime.length > 0) {
-      queryFormParams.createStampStart = moment(orderTime[0]).format(defaultFormat);
-      queryFormParams.createStampEnd = moment(orderTime[1]).format(defaultFormat);
+      queryFormParams.createStampStart = moment(orderTime[0]).format(DATE_FORMAT);
+      queryFormParams.createStampEnd = moment(orderTime[1]).format(END_DATE_FORMAT);
     }
     delete queryFormParams.orderTime;
     const requestParams = {

@@ -107,7 +107,7 @@ class Admin extends React.Component {
       relationRule: {
         label: '分销关系建立规则:',
         type: 'radio',
-        defaultValue: 1,
+        defaultValue: 2,
         options: relationRuleOptions,
       },
       distributionTimeStep: {
