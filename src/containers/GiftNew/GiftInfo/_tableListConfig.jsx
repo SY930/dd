@@ -1,14 +1,10 @@
-import React, { Component } from 'react';
-import _ from 'lodash';
 import { COMMON_LABEL } from 'i18n/common';
-import GiftCfg from '../../../constants/Gift';
+import _ from 'lodash';
+import React from 'react';
 import Authority from '../../../components/common/Authority';
-import { Tooltip } from 'antd';
 import { GIFT_DETAIL_QUERY, GIFT_LIST_DELETE, GIFT_LIST_UPDATE } from '../../../constants/authorityCodes';
-import {
-    getHuaTianDisabledGifts, isBrandOfHuaTianGroupList, isHuaTian,
-    isMine,
-} from '../../../constants/projectHuatianConf';
+import GiftCfg from '../../../constants/Gift';
+import { isBrandOfHuaTianGroupList, isMine } from '../../../constants/projectHuatianConf';
 
 // { label: '代金券', value: '10' },
 // { label: '菜品优惠券', value: '20' },
@@ -25,159 +21,163 @@ import {
 // { label: '现金红包', value: '113' },
 
 const ONLINE_STORE_VISIBLE_GIFT_TYPE = [
-    '10', '20', '21', '30', '40', '42', '80', '110', '111', '81'
+  '10', '20', '21', '30', '40', '42', '80', '110', '111', '81'
 ]
 
 export const COLUMNS = [
-    {
-        title: COMMON_LABEL.serialNumber,
-        dataIndex: 'num',
-        key: 'num',
-        className: 'x-tc',
-        // fixed: 'left',
-        width: 50,
-    }, {
-        title: COMMON_LABEL.actions,
-        dataIndex: 'operate',
-        className: 'TableTxtCenter',
-        key: 'operate',
-        // fixed: 'left',
-        width: 200,
-        render(value, record) {
-            const { giftType } = record
-            // 90 礼品定额卡 91 线上礼品卡 113 现金红包
-            const hideCopyBtn = ['90', '91', '113']
-            return (
-                <span>
-                    <Authority rightCode={GIFT_LIST_UPDATE}>
-                        {
-                            (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
-                                <a
-                                    href="javaScript:;"
-                                    disabled={true}
-                                >{ COMMON_LABEL.edit }</a>
-                            ) : (
-                                <a
-                                    href="javaScript:;"
-                                    onClick={() => {
-                                        this.handleEdit(record, 'edit')
-                                    }
-                                    }
-                                >{ COMMON_LABEL.edit }</a>
-                            )
-                        }
-                    </Authority>
-                    <a
-                        href="javaScript:;"
-                        onClick={() => {
-                            this.handleEdit(record, 'detail')
-                        }}
-                    >
-                        { COMMON_LABEL.view }
-                    </a>
-                    <Authority rightCode={GIFT_LIST_DELETE}>
-                        {
-                            (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
-                                <a disabled={true}><span>{ COMMON_LABEL.delete }</span></a>
-                            ) : (
-                                <a onClick={() => this.handleDelete(record)}><span>停用</span></a>
-                            )
-                        }
-                    </Authority>
-                    {
-                        ONLINE_STORE_VISIBLE_GIFT_TYPE.includes(`${record.giftType}`) && (
-                            <a href="javaScript:;" onClick={() => this.handleGenerateLink(record)}>投放</a>
-                        )
-                    }
-                    <Authority rightCode={GIFT_DETAIL_QUERY}>
-                        {
-                            (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
-                                <a disabled={true}>详情</a>
-                            ) : (
-                                <a href="javaScript:;" onClick={() => this.handleMore(record)}>{ COMMON_LABEL.detail }</a>
-                            )
-                        }
-                    </Authority>
-                    {
-                        // 部分 gift 不显示 copy
-                        hideCopyBtn.includes(giftType) ? '' :
-                            <Authority rightCode={GIFT_DETAIL_QUERY}>
-                                {
-                                    (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
-                                        <a disabled={true}>复制</a>
-                                    ) : (
-                                        <a href="javaScript:;" onClick={() => this.handleEdit(record, 'copy')}>{ COMMON_LABEL.copy }</a>
-                                    )
-                                }
-                            </Authority>
-                    }
-                </span>
-            )
-        },
-    }, {
-        title: '礼品类型',
-        dataIndex: 'giftTypeName',
-        key: 'giftTypeName',
-        // fixed: 'left',
-        width: 100,
-        render: (value, record, index) => {
-            return <span>{mapValueToLabel(GiftCfg.giftTypeName, String(record.giftType))}</span>
-        },
-    }, {
-        title: '礼品ID',
-        dataIndex: 'giftItemID',
-        key: 'giftItemID',
-        render: (value) => {
-            return <span title={value}>{value}</span>
-        },
-        // fixed: 'left',
-        width: 150,
-    }, {
-        title: '礼品名称',
-        dataIndex: 'giftName',
-        key: 'giftName',
-        // fixed: 'left',
-        render: (value) => {
-            return <span title={value}>{value}</span>
-        },
-        width: 150,
-    }, {
-        title: '礼品金额 (元)',
-        dataIndex: 'giftValue',
-        key: 'giftValue',
-        width: 100,
-        className: 'x-tc',
-        render: (value,record) => {
-            if(record.giftType == '115'){
-                return ''
-            }else{
-                return value ? value : '-'
+  {
+    title: COMMON_LABEL.serialNumber,
+    dataIndex: 'num',
+    key: 'num',
+    className: 'x-tc',
+    // fixed: 'left',
+    width: 50,
+  }, {
+    title: COMMON_LABEL.actions,
+    dataIndex: 'operate',
+    className: 'TableTxtCenter',
+    key: 'operate',
+    // fixed: 'left',
+    width: 200,
+    render(value, record) {
+      const { giftType } = record
+      // 90 礼品定额卡 91 线上礼品卡 113 现金红包
+      const hideCopyBtn = ['90', '91', '113']
+      return (
+        <span>
+          <Authority rightCode={GIFT_LIST_UPDATE}>
+            {
+              (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
+                <a
+                  href="javaScript:;"
+                  disabled={true}
+                >{COMMON_LABEL.edit}</a>
+              ) : (
+                <a
+                  href="javaScript:;"
+                  onClick={() => {
+                    this.handleEdit(record, 'edit')
+                  }
+                  }
+                >{COMMON_LABEL.edit}</a>
+              )
             }
-        },
-    }, {
-        title: '礼品描述',
-        dataIndex: 'giftRemark',
-        key: 'giftRemark',
-        width: 150,
-        render: (value) => {
-            return <span title={value}>{value}</span>
-        },
-    }, {
-        title: '创建人/修改人',
-        dataIndex: 'operator',
-        key: 'operator',
-        width: 150,
-        render: (value) => {
-            return <span title={value}>{value}</span>
-        },
-    }, {
-        title: '创建时间/修改时间',
-        dataIndex: 'operateTime',
-        key: 'operateTime',
-        width: 150,
-        className: 'x-tc',
+          </Authority>
+          <a
+            href="javaScript:;"
+            onClick={() => {
+              this.handleEdit(record, 'detail')
+            }}
+          >
+            {COMMON_LABEL.view}
+          </a>
+          <Authority rightCode={GIFT_LIST_DELETE}>
+            {
+              (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
+                <a disabled={true}><span>{COMMON_LABEL.delete}</span></a>
+              ) : (
+                <a onClick={() => this.handleDelete(record)}><span>停用</span></a>
+              )
+            }
+          </Authority>
+          {
+            ONLINE_STORE_VISIBLE_GIFT_TYPE.includes(`${record.giftType}`) && (
+              <a href="javaScript:;" onClick={() => this.handleGenerateLink(record)}>投放</a>
+            )
+          }
+          <Authority rightCode={GIFT_DETAIL_QUERY}>
+            {
+              (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
+                <a disabled={true}>详情</a>
+              ) : (
+                <a href="javaScript:;" onClick={() => this.handleMore(record)}>{COMMON_LABEL.detail}</a>
+              )
+            }
+          </Authority>
+          {
+            // 部分 gift 不显示 copy
+            hideCopyBtn.includes(giftType) ? '' :
+              <Authority rightCode={GIFT_DETAIL_QUERY}>
+                {
+                  (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
+                    <a disabled={true}>复制</a>
+                  ) : (
+                    <a href="javaScript:;" onClick={() => this.handleEdit(record, 'copy')}>{COMMON_LABEL.copy}</a>
+                  )
+                }
+              </Authority>
+          }
+        </span>
+      )
     },
+  }, {
+    title: '礼品类型',
+    dataIndex: 'giftTypeName',
+    key: 'giftTypeName',
+    // fixed: 'left',
+    width: 100,
+    render: (value, record, index) => {
+      return <span>{mapValueToLabel(GiftCfg.giftTypeName, String(record.giftType))}</span>
+    },
+  }, {
+    title: '礼品ID',
+    dataIndex: 'giftItemID',
+    key: 'giftItemID',
+    render: (value) => {
+      return <span title={value}>{value}</span>
+    },
+    // fixed: 'left',
+    width: 150,
+  }, {
+    title: '礼品名称',
+    dataIndex: 'giftName',
+    key: 'giftName',
+    // fixed: 'left',
+    render: (value) => {
+      return <span title={value}>{value}</span>
+    },
+    width: 150,
+  }, {
+    title: '礼品金额 (元)',
+    dataIndex: 'giftValue',
+    key: 'giftValue',
+    width: 100,
+    className: 'x-tc',
+    render: (value, record) => {
+      if (record.giftType == '115') {
+        return ''
+      } else {
+        if (record.giftType == '81') {
+          return value ? value : '-'
+        } else {
+          return value
+        }
+      }
+    },
+  }, {
+    title: '礼品描述',
+    dataIndex: 'giftRemark',
+    key: 'giftRemark',
+    width: 150,
+    render: (value) => {
+      return <span title={value}>{value}</span>
+    },
+  }, {
+    title: '创建人/修改人',
+    dataIndex: 'operator',
+    key: 'operator',
+    width: 150,
+    render: (value) => {
+      return <span title={value}>{value}</span>
+    },
+  }, {
+    title: '创建时间/修改时间',
+    dataIndex: 'operateTime',
+    key: 'operateTime',
+    width: 150,
+    className: 'x-tc',
+  },
 ];
 function mapValueToLabel(cfg, val) {
-    return _.result(_.find(cfg, { value: val }), 'label');
+  return _.result(_.find(cfg, { value: val }), 'label');
 }
