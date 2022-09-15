@@ -145,6 +145,10 @@ class Admin extends React.Component {
               {decorator({
                 rules: [
                   {
+                    required: true,
+                    message: '请输入1-100的正整数',
+                  },
+                  {
                     pattern: /^([1-9]\d{0,1})$|^100$/,
                     message: '请输入1-100的正整数',
                   }],
@@ -156,6 +160,7 @@ class Admin extends React.Component {
       withdrawRuleType: {
         label: '返佣提现规则:',
         type: 'custom',
+        defaultValue: 1,
         render: decorator => (
           <Row>
             <Col span={24} style={{ display: 'flex', alignItems: 'center' }}>
