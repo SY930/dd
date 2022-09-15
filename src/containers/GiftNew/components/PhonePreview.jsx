@@ -18,6 +18,7 @@ import { iphone } from 'containers/PromotionDecoration/assets';
 import daijinquan1 from '../../../assets/daijinquan-1.png';
 import daijinquan2 from '../../../assets/daijinquan-2.png';
 import daijinquan3 from '../../../assets/daijinquan-3.png';
+import daijinquan4 from '../../../assets/daijinquan-4.png';
 import caipinyouhuiquan1 from '../../../assets/caipinyouhuiquan-1.png';
 import caipinyouhuiquan2 from '../../../assets/caipinyouhuiquan-2.png';
 import caipinyouhuiquan3 from '../../../assets/caipinyouhuiquan-3.png';
@@ -30,21 +31,19 @@ const RED_PACKET_MAIN = 'http://res.hualala.com/basicdoc/58873207-f2d1-4489-82de
 
 // 所有的礼品类型中预览分3类 常用券类(代金券 菜品券), 充值积分券, 权益券
 const PRIMARY_GIFTS = [
-    '30', '111', '110', '22','115'
+    '30', '111', '110', '22','115',
 ];
 
 const CRM_GIFTS = [
-    '40', '42'
+    '40', '42',
 ];
-const COUPON_COMBINE_TYPES =  ['10','20','21'];
+const COUPON_COMBINE_TYPES =  ['10','20','21', '81'];
 const PREVIEW_ENABLED_GIFTS = [
     ...PRIMARY_GIFTS,
     ...CRM_GIFTS,
     ...COUPON_COMBINE_TYPES,
-    '80',
+    '80'
 ]
-
-
 
 // 价值只显示前4位数字
 function getValueString(value) {
@@ -653,13 +652,18 @@ class PhonePreview extends PureComponent {
                 '0':caipinduihuanquan1,
                 '1':caipinduihuanquan2,
                 '2':caipinduihuanquan3,
-            }
+            },
+            '81': daijinquan4
         }
         let imgSrc = '';
-        if(applyScene == '2'){
-            imgSrc = imgUrl[giftType]['2']
+        if(giftType == '81'){
+            imgSrc = imgUrl[giftType]
         }else{
-            imgSrc = imgUrl[giftType][applyScene]
+            if(applyScene == '2'){
+                imgSrc = imgUrl[giftType]['2']
+            }else{
+                imgSrc = imgUrl[giftType][applyScene]
+            }
         }
         return (
             <div className={styles.couponImgBgWrapper}>

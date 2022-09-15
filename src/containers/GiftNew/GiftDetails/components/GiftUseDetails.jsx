@@ -17,11 +17,11 @@ import { axiosData } from '../../../../helpers/util';
 const TabPane = Tabs.TabPane;
 
 const sendableGiftTypes = [
-  '10', '20', '21', '30', '110', '111', '40', '42', '80', '22'
+  '10', '20', '21', '30', '110', '111', '40', '42', '80', '22', '81'
 ];
 
 const batchableGiftTypes = [
-  '10', '20', '21', '30', '110', '111', '22'
+  '10', '20', '21', '30', '110', '111', '22', '81'
 ];
 
 class UseDetails extends Component {

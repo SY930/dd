@@ -183,7 +183,6 @@ class DiscountDetailInfo extends React.Component {
         let _validationStatus,
             _helpMsg;
 
-        // _TODO
         if(notValidDiscountNum(_end)){
             _validationStatus = 'error';
             _helpMsg = SALE_LABEL.k5gez9pw

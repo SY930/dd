@@ -1,4 +1,4 @@
-import { fetchData, axiosData } from '../../helpers/util';
+import { axiosData, fetchData } from '../../helpers/util';
 
 export const GIFT_NEW_FETCH_LIST_BEGIN = 'gift new:: fetch list';
 export const GIFT_NEW_FETCH_LIST_OK = 'gift new :: fetch list ok';
@@ -47,636 +47,633 @@ export const GIFT_NEW_SAVE_BRANDS_TO_STORE = 'gift new :: GIFT_NEW_SAVE_BRANDS_T
 export const GIFT_NEW_UPDATE_GIFT_DETAIL = 'gift new :: gift new update gift detail'
 
 const getGiftListBegin = (opt) => {
-    return {
-        type: GIFT_NEW_FETCH_LIST_BEGIN,
-        payload: opt,
-    }
+  return {
+    type: GIFT_NEW_FETCH_LIST_BEGIN,
+    payload: opt,
+  }
 };
 const getGiftListSuccessAC = (opt) => {
-    return {
-        type: GIFT_NEW_FETCH_LIST_OK,
-        ...opt,
-    }
+  return {
+    type: GIFT_NEW_FETCH_LIST_OK,
+    ...opt,
+  }
 };
 const getAllGiftListSuccessAC = (opt) => {
-    return {
-        type: GIFT_NEW_FETCH_ALL_LIST_OK,
-        ...opt,
-    }
+  return {
+    type: GIFT_NEW_FETCH_ALL_LIST_OK,
+    ...opt,
+  }
 };
 const updateGiftListParams = (opt) => {
-    return {
-        type: GIFT_NEW_LIST_PARAMS,
-        payload: opt,
-    }
+  return {
+    type: GIFT_NEW_LIST_PARAMS,
+    payload: opt,
+  }
 }
 export const FetchGiftList = (opts, isAllGifts) => {
-    return (dispatch) => {
-        dispatch(getGiftListBegin(true));
-        return axiosData('/coupon/couponService_getBoards.ajax', { ...opts }, null, {
-            path: 'data',
-        }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
-            .then((records) => {
-                dispatch(
-                    isAllGifts ?
-                    getAllGiftListSuccessAC({
-                        payload: {
-                            dataSource: records || [],
-                            loading: false,
-                        },
-                    })
-                        :
-                    getGiftListSuccessAC({
-                        payload: {
-                            dataSource: records || [],
-                            loading: false,
-                        },
-                    })
-                );
-                dispatch(updateGiftListParams(opts));
-                return Promise.resolve(records);
-            }).catch((err) => {
-                dispatch(getGiftListBegin(false));
-            });
-    }
+  return (dispatch) => {
+    dispatch(getGiftListBegin(true));
+    return axiosData('/coupon/couponService_getBoards.ajax', { ...opts }, null, {
+      path: 'data',
+    }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+      .then((records) => {
+        dispatch(
+          isAllGifts ?
+            getAllGiftListSuccessAC({
+              payload: {
+                dataSource: records || [],
+                loading: false,
+              },
+            })
+            :
+            getGiftListSuccessAC({
+              payload: {
+                dataSource: records || [],
+                loading: false,
+              },
+            })
+        );
+        dispatch(updateGiftListParams(opts));
+        return Promise.resolve(records);
+      }).catch((err) => {
+        dispatch(getGiftListBegin(false));
+      });
+  }
 };
 const getQuotaCardSumBegin = (opt) => {
-    return {
-        type: GIFT_NEW_FETCH_QUOTA_CARD_SUM_BEGIN,
-        payload: opt,
-    }
+  return {
+    type: GIFT_NEW_FETCH_QUOTA_CARD_SUM_BEGIN,
+    payload: opt,
+  }
 };
 const getQuotaCardSumSuccessAC = (opt) => {
-    return {
-        type: GIFT_NEW_FETCH_QUOTA_CARD_SUM_OK,
-        ...opt,
-    }
+  return {
+    type: GIFT_NEW_FETCH_QUOTA_CARD_SUM_OK,
+    ...opt,
+  }
 };
 export const FetchQuotaCardSum = (opts) => {
-    return (dispatch) => {
-        dispatch(getQuotaCardSumBegin(true));
-        return axiosData('/coupon/couponQuotaService_getQuotaCardSummary.ajax', { ...opts }, null, {
-            path: 'data.summary',
-        })
-            .then((records) => {
-                dispatch(getQuotaCardSumSuccessAC({
-                    payload: {
-                        dataSource: records || [],
-                        loading: false,
-                    },
-                }));
-                return Promise.resolve(records);
-            }).catch(err => {
-                // empty catch
-            });
-    }
+  return (dispatch) => {
+    dispatch(getQuotaCardSumBegin(true));
+    return axiosData('/coupon/couponQuotaService_getQuotaCardSummary.ajax', { ...opts }, null, {
+      path: 'data.summary',
+    })
+      .then((records) => {
+        dispatch(getQuotaCardSumSuccessAC({
+          payload: {
+            dataSource: records || [],
+            loading: false,
+          },
+        }));
+        return Promise.resolve(records);
+      }).catch((err) => {
+        // empty catch
+      });
+  }
 };
 export const FetchCardTypeList = (opts) => {
-    return (dispatch) => {
-        return fetchData('getSetUsedLevels_dkl', { ...opts }, null, {
-            path: 'data.groupCardTypeList',
-        })
-            .then((records) => {
-                dispatch(getQuotaCardSumSuccessAC({
-                    payload: {
-                        dataSource: records || [],
-                        loading: false,
-                    },
-                }));
-                return Promise.resolve(records);
-            }).catch(err => {
-                // empty catch
-            });
-    }
+  return (dispatch) => {
+    return fetchData('getSetUsedLevels_dkl', { ...opts }, null, {
+      path: 'data.groupCardTypeList',
+    })
+      .then((records) => {
+        dispatch(getQuotaCardSumSuccessAC({
+          payload: {
+            dataSource: records || [],
+            loading: false,
+          },
+        }));
+        return Promise.resolve(records);
+      }).catch((err) => {
+        // empty catch
+      });
+  }
 };
 export const UpdateTabKey = (opts) => {
-    return {
-        type: GIFT_NEW_UPDATE_TAB_KEY,
-        ...opts,
-    }
+  return {
+    type: GIFT_NEW_UPDATE_TAB_KEY,
+    ...opts,
+  }
 }
 export const UpdateBatchNO = (opts) => {
-    return {
-        type: GIFT_NEW_UPDATE_BATCH_NO,
-        ...opts,
-    }
+  return {
+    type: GIFT_NEW_UPDATE_BATCH_NO,
+    ...opts,
+  }
 }
 export const getGiftLevelSuccessAC = (opt) => {
-    return {
-        type: GIFT_NEW_FETCH_LEVEL_OK,
-        ...opt,
-    }
+  return {
+    type: GIFT_NEW_FETCH_LEVEL_OK,
+    ...opt,
+  }
 };
 export const FetchGiftLevel = (opts) => {
-    return (dispatch) => {
-        return fetchData('getSetUsedLevels_dkl', { ...opts }, null, {
-            path: 'data',
-        })
-            .then((data) => {
-                let {groupCardTypeList = []} = data
-                dispatch(getGiftLevelSuccessAC({
-                    payload: {
-                        dataSource: groupCardTypeList || [],
-                    },
-                }));
-                return Promise.resolve(groupCardTypeList);
-            }).catch(err => {
-                // empty catch
-            });
-    }
+  return (dispatch) => {
+    return fetchData('getSetUsedLevels_dkl', { ...opts }, null, {
+      path: 'data',
+    })
+      .then((data) => {
+        const { groupCardTypeList = [] } = data
+        dispatch(getGiftLevelSuccessAC({
+          payload: {
+            dataSource: groupCardTypeList || [],
+          },
+        }));
+        return Promise.resolve(groupCardTypeList);
+      }).catch((err) => {
+        // empty catch
+      });
+  }
 };
 
 export const getGiftSchemaSuccessAC = (opt) => {
-    return {
-        type: GIFT_NEW_FETCH_SCHEMA_OK,
-        ...opt,
-    }
+  return {
+    type: GIFT_NEW_FETCH_SCHEMA_OK,
+    ...opt,
+  }
 };
 export const FetchGiftSchema = (opts) => {
-    return (dispatch) => {
-        return axiosData('/crm/groupShopService_findSchemaNew.ajax', {...opts}, {}, {path: 'data.shops'})
-            .then((records) => {
-                dispatch(getGiftSchemaSuccessAC({
-                    payload: {
-                        dataSource: records || [],
-                    },
-                }));
-                return Promise.resolve(records);
-            }).catch(err => {
-                // empty catch
-            });
-    }
+  return (dispatch) => {
+    return axiosData('/crm/groupShopService_findSchemaNew.ajax', { ...opts }, {}, { path: 'data.shops' })
+      .then((records) => {
+        dispatch(getGiftSchemaSuccessAC({
+          payload: {
+            dataSource: records || [],
+          },
+        }));
+        return Promise.resolve(records);
+      }).catch((err) => {
+        // empty catch
+      });
+  }
 };
 
 export const getQuotaListSuccessAC = (opt) => {
-    return {
-        type: GIFT_NEW_FETCH_QUOTA_LIST_OK,
-        ...opt,
-    }
+  return {
+    type: GIFT_NEW_FETCH_QUOTA_LIST_OK,
+    ...opt,
+  }
 };
 
 export const FetchQuotaList = (opts) => {
-    return (dispatch) => {
-        return axiosData(opts.callserver, { ...opts.params }, null, {
-            path: 'data',
-        })
-            .then((records) => {
-                dispatch(getQuotaListSuccessAC({
-                    payload: {
-                        quotaList: records || [],
-                    },
-                }));
-                return Promise.resolve(records);
-            }).catch(err => {
-                // empty catch
-            });
-    }
+  return (dispatch) => {
+    return axiosData(opts.callserver, { ...opts.params }, null, {
+      path: 'data',
+    })
+      .then((records) => {
+        dispatch(getQuotaListSuccessAC({
+          payload: {
+            quotaList: records || [],
+          },
+        }));
+        return Promise.resolve(records);
+      }).catch((err) => {
+        // empty catch
+      });
+  }
 };
 
 export const getSendorUsedListSuccessAC = (opt) => {
-    return {
-        type: GIFT_NEW_FETCH_SEND_OR_USED_LIST_OK,
-        ...opt,
-    }
+  return {
+    type: GIFT_NEW_FETCH_SEND_OR_USED_LIST_OK,
+    ...opt,
+  }
 };
 
 export const getSendListSuccessAC = (opt) => {
-    return {
-        type: GIFT_NEW_FETCH_SEND_LIST_OK,
-        ...opt,
-    }
+  return {
+    type: GIFT_NEW_FETCH_SEND_LIST_OK,
+    ...opt,
+  }
 };
 
 export const getUsedListSuccessAC = (opt) => {
-    return {
-        type: GIFT_NEW_FETCH_USED_LIST_OK,
-        ...opt,
-    }
+  return {
+    type: GIFT_NEW_FETCH_USED_LIST_OK,
+    ...opt,
+  }
 };
 
 export const getNoUsedListSuccessAC = (opt) => {
-    return {
-        type: GIFT_NEW_FETCH_NO_USED_LIST_OK,
-        ...opt,
-    }
+  return {
+    type: GIFT_NEW_FETCH_NO_USED_LIST_OK,
+    ...opt,
+  }
 }
 
 export const getUsedTotalCountSuccessAC = (total) => {
-    return {
-        type: GIFT_NEW_FETCH_USED_TOTAL_OK,
-        payload: {total},
-    }
+  return {
+    type: GIFT_NEW_FETCH_USED_TOTAL_OK,
+    payload: { total },
+  }
 };
 
 export const getSendTotalCountSuccessAC = (total) => {
-    return {
-        type: GIFT_NEW_FETCH_SEND_TOTAL_OK,
-        payload: {total},
-    }
+  return {
+    type: GIFT_NEW_FETCH_SEND_TOTAL_OK,
+    payload: { total },
+  }
 };
 
 export const getNoUseTotalCountSuccessAC = (total) => {
-    return {
-        type: GIFT_NEW_FETCH_NO_USE_TOTAL_OK,
-        payload: { total },
-    }
+  return {
+    type: GIFT_NEW_FETCH_NO_USE_TOTAL_OK,
+    payload: { total },
+  }
 }
 
-
 export const getUsedTotalCountFailAC = (opt) => {
-    return {
-        type: GIFT_NEW_FETCH_USED_TOTAL_FAIL,
-        ...opt,
-    }
+  return {
+    type: GIFT_NEW_FETCH_USED_TOTAL_FAIL,
+    ...opt,
+  }
 };
 
 export const getSendTotalCountFailAC = (opt) => {
-    return {
-        type: GIFT_NEW_FETCH_SEND_TOTAL_FAIL,
-        ...opt,
-    }
+  return {
+    type: GIFT_NEW_FETCH_SEND_TOTAL_FAIL,
+    ...opt,
+  }
 };
 
 export const getNoUseTotalCountFailAC = (opt) => {
-    return {
-        type: GIFT_NEW_FETCH_NO_USE_TOTAL_FAIL,
-        ...opt,
-    }
+  return {
+    type: GIFT_NEW_FETCH_NO_USE_TOTAL_FAIL,
+    ...opt,
+  }
 }
 
-
 export const resetSendOrTotalCount = (opt) => {
-    return {
-        type: GIFT_NEW_RESET_SEND_USED_TOTAL,
-        ...opt,
-    }
+  return {
+    type: GIFT_NEW_RESET_SEND_USED_TOTAL,
+    ...opt,
+  }
 };
 
 export const FetchSendorUsedList = (opts) => {
-    return (dispatch) => {
-
-        const sendOrUsageCountParam = {
-            pageSize: 1,
-            pageNo: 0,
-            giftItemID: opts.params.giftItemID,
-        };
-        if (opts.isSend) {
-            sendOrUsageCountParam.excludeTransferred = true;
-        } else if (opts.params.giftStatus === '2') {    
-            sendOrUsageCountParam.giftStatus = 2;
-        } else {
-            sendOrUsageCountParam.giftStatus = 13;
-        }
-        axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', sendOrUsageCountParam, {needThrow: true}, {path: 'data.totalSize'}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
-            .then(total => {
-                if (opts.isSend) {
-                    dispatch(getSendTotalCountSuccessAC(total))
-                }  else if (opts.params.giftStatus === '2'){
-                    dispatch(getUsedTotalCountSuccessAC(total))
-                } else {
-                    dispatch(getNoUseTotalCountSuccessAC(total))
-                }
-            })
-            .catch(error => {
-                if (opts.isSend) {
-                    dispatch(getSendTotalCountFailAC())
-                } else if (opts.params.giftStatus === '2') {
-                    dispatch(getUsedTotalCountFailAC())
-                } else {
-                    dispatch(getNoUseTotalCountFailAC())
-                }
-            })
-        return axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', { ...opts.params }, null, {
-            path: 'data',
-        }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
-            .then((records) => {
-                if (opts.isSend) {
-                    dispatch(getSendListSuccessAC({
-                        payload: {
-                            sendorUsedList: records || [],
-                        },
-                    }));
-                } else if (opts.params.giftStatus === '2') {
-                    dispatch(getUsedListSuccessAC({
-                        payload: {
-                            sendorUsedList: records || [],
-                        },
-                    }));
-                } else {
-                    dispatch(getNoUsedListSuccessAC({
-                        payload: {
-                            noUsedList: records || [],
-                        },
-                    }));
-                }
-                return Promise.resolve(records);
-            }).catch(err => {
-                // empty catch
-            });
+  return (dispatch) => {
+    const sendOrUsageCountParam = {
+      pageSize: 1,
+      pageNo: 0,
+      giftItemID: opts.params.giftItemID,
+    };
+    if (opts.isSend) {
+      sendOrUsageCountParam.excludeTransferred = true;
+    } else if (opts.params.giftStatus === '2') {
+      sendOrUsageCountParam.giftStatus = 2;
+    } else {
+      sendOrUsageCountParam.giftStatus = 13;
     }
+    axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', sendOrUsageCountParam, { needThrow: true }, { path: 'data.totalSize' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+      .then((total) => {
+        if (opts.isSend) {
+          dispatch(getSendTotalCountSuccessAC(total))
+        } else if (opts.params.giftStatus === '2') {
+          dispatch(getUsedTotalCountSuccessAC(total))
+        } else {
+          dispatch(getNoUseTotalCountSuccessAC(total))
+        }
+      })
+      .catch((error) => {
+        if (opts.isSend) {
+          dispatch(getSendTotalCountFailAC())
+        } else if (opts.params.giftStatus === '2') {
+          dispatch(getUsedTotalCountFailAC())
+        } else {
+          dispatch(getNoUseTotalCountFailAC())
+        }
+      })
+    return axiosData('/coupon/couponService_queryCouponUsageInfo.ajax', { ...opts.params }, null, {
+      path: 'data',
+    }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+      .then((records) => {
+        if (opts.isSend) {
+          dispatch(getSendListSuccessAC({
+            payload: {
+              sendorUsedList: records || [],
+            },
+          }));
+        } else if (opts.params.giftStatus === '2') {
+          dispatch(getUsedListSuccessAC({
+            payload: {
+              sendorUsedList: records || [],
+            },
+          }));
+        } else {
+          dispatch(getNoUsedListSuccessAC({
+            payload: {
+              noUsedList: records || [],
+            },
+          }));
+        }
+        return Promise.resolve(records);
+      }).catch((err) => {
+        // empty catch
+      });
+  }
 };
 
 export const UpdateSendorUsedTabKey = (opts) => {
-    return {
-        type: GIFT_NEW_UPDATE_SEND_OR_USED_TAB_KEY,
-        ...opts,
-    }
+  return {
+    type: GIFT_NEW_UPDATE_SEND_OR_USED_TAB_KEY,
+    ...opts,
+  }
 }
 
 export const UpdateSendorUsedPage = (opts) => {
-    return {
-        type: GIFT_NEW_UPDATE_SEND_OR_USED_PAGE,
-        ...opts,
-    }
+  return {
+    type: GIFT_NEW_UPDATE_SEND_OR_USED_PAGE,
+    ...opts,
+  }
 }
 
 export const UpdateSendorUsedParams = (opts) => {
-    return {
-        type: GIFT_NEW_UPDATE_SEND_OR_USED_PARAMS,
-        ...opts,
-    }
+  return {
+    type: GIFT_NEW_UPDATE_SEND_OR_USED_PARAMS,
+    ...opts,
+  }
 }
 
 export const UpdateDetailModalVisible = (opts) => {
-    return {
-        type: GIFT_NEW_UPDATE_DETAIL_MODAL_VISIBLE,
-        ...opts,
-    }
+  return {
+    type: GIFT_NEW_UPDATE_DETAIL_MODAL_VISIBLE,
+    ...opts,
+  }
 }
 
 export const UpdateGiftDetail = (opts) => {
-    return {
-        type: GIFT_NEW_UPDATE_GIFT_DETAIL,
-        ...opts,
-    }
+  return {
+    type: GIFT_NEW_UPDATE_GIFT_DETAIL,
+    ...opts,
+  }
 }
 
 const getGiftSortSuccessAC = (opt) => {
-    return {
-        type: GIFT_NEW_GIFT_SORT_OK,
-        ...opt,
-    }
+  return {
+    type: GIFT_NEW_GIFT_SORT_OK,
+    ...opt,
+  }
 };
 export const FetchGiftSort = (opts) => {
-    return (dispatch) => {
-        return axiosData('/coupon/couponService_getSortedCouponBoardList.ajax', { ...opts }, null, {
-            path: 'data.crmGiftTypes',
-        }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
-        .then((records) => {
-            dispatch(getGiftSortSuccessAC({
-                payload: {
-                    dataSource: records || [],
-                },
-            }));
-            return Promise.resolve(records);
-        })
-        .catch(err => {
-            // empty catch
-        });
-    }
+  return (dispatch) => {
+    return axiosData('/coupon/couponService_getSortedCouponBoardList.ajax', { ...opts }, null, {
+      path: 'data.crmGiftTypes',
+    }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+      .then((records) => {
+        dispatch(getGiftSortSuccessAC({
+          payload: {
+            dataSource: records || [],
+          },
+        }));
+        return Promise.resolve(records);
+      })
+      .catch((err) => {
+        // empty catch
+      });
+  }
 };
 
 const getSharedGiftsSuccessAC = (opt) => {
-    return {
-        type: GIFT_NEW_GET_SHARED_GIFTS,
-        ...opt,
-    }
+  return {
+    type: GIFT_NEW_GET_SHARED_GIFTS,
+    ...opt,
+  }
 };
 export const FetchSharedGifts = (opts) => {
-    return (dispatch) => {
-        return axiosData('/coupon/couponService_getShareCoupons.ajax', { ...opts }, null, {
-            path: 'data',
-        }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
-            .then((records) => {
-                dispatch(getSharedGiftsSuccessAC({
-                    payload: {
-                        dataSource: records || [],
-                    },
-                }));
-                return Promise.resolve(records);
-            }).catch(err => {
-                // empty catch
-            });
-    }
+  return (dispatch) => {
+    return axiosData('/coupon/couponService_getShareCoupons.ajax', { ...opts }, null, {
+      path: 'data',
+    }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+      .then((records) => {
+        dispatch(getSharedGiftsSuccessAC({
+          payload: {
+            dataSource: records || [],
+          },
+        }));
+        return Promise.resolve(records);
+      }).catch((err) => {
+        // empty catch
+      });
+  }
 };
 
 export const emptyGetSharedGifts = () => {
-    return {
-        type: GIFT_NEW_EMPTY_GET_SHARED_GIFTS,
-        payload: {},
-    }
+  return {
+    type: GIFT_NEW_EMPTY_GET_SHARED_GIFTS,
+    payload: {},
+  }
 };
 export const CrmBatchSellGiftCards = (opts) => {
-    return (dispatch) => {
-        // return fetchData('crmBatchSellGiftCards', { ...opts }, null, {
-        return axiosData('/coupon/couponQuotaService_batchSellQuotaCards.ajax', { ...opts }, {needThrow: true}, {
-            path: '',
-        }).then(data => Promise.resolve(data)).catch(err => Promise.reject(err));
-    }
+  return (dispatch) => {
+    // return fetchData('crmBatchSellGiftCards', { ...opts }, null, {
+    return axiosData('/coupon/couponQuotaService_batchSellQuotaCards.ajax', { ...opts }, { needThrow: true }, {
+      path: '',
+    }).then(data => Promise.resolve(data)).catch(err => Promise.reject(err));
+  }
 };
 
 export const getQuotaCardShopByBatchNoAC = (opt) => {
-    return {
-        type: GIFT_NEW_QUOTA_CARD_SHOP_BY_BATCHNO,
-        ...opt,
-    }
+  return {
+    type: GIFT_NEW_QUOTA_CARD_SHOP_BY_BATCHNO,
+    ...opt,
+  }
 };
 export const FetchQuotaCardShopByBatchNo = (opts) => {
-    return (dispatch) => {
-        return fetchData('getCardTypeShopListByBatchNo', { ...opts }, null, {
-            path: 'data.cardTypeShopResDetailList',
-        })
-            .then((records = []) => {
-                dispatch(getQuotaCardShopByBatchNoAC({
-                    payload: {
-                        dataSource: records || [],
-                    },
-                }));
-                return Promise.resolve(records);
-            })
-            .catch(err => {
-                dispatch(getQuotaCardShopByBatchNoAC({
-                    payload: {
-                        dataSource: [],
-                    },
-                }));
-                return Promise.resolve([]);
-            })
-    }
+  return (dispatch) => {
+    return fetchData('getCardTypeShopListByBatchNo', { ...opts }, null, {
+      path: 'data.cardTypeShopResDetailList',
+    })
+      .then((records = []) => {
+        dispatch(getQuotaCardShopByBatchNoAC({
+          payload: {
+            dataSource: records || [],
+          },
+        }));
+        return Promise.resolve(records);
+      })
+      .catch((err) => {
+        dispatch(getQuotaCardShopByBatchNoAC({
+          payload: {
+            dataSource: [],
+          },
+        }));
+        return Promise.resolve([]);
+      })
+  }
 };
 
 export const getQuotaCardCanSellList = (opts) => {
-    return (dispatch) => {
-        return axiosData('/coupon/getQuotaCardCanSellList.ajax', { ...opts }, null, {path: ''}, 'HTTP_SERVICE_URL_PROMOTION_NEW')
-            .then((records = {}) => {
-                let {data = {}} = records
-                dispatch(getQuotaCardCanSellListAC({
-                    payload: {
-                        dataSource: data || {},
-                    },
-                }));
-                return Promise.resolve(data);
-            })
-            .catch(err => {
-                dispatch(getQuotaCardCanSellListAC({
-                    payload: {
-                        dataSource: {},
-                    },
-                }));
-                return Promise.resolve({});
-            })
-    }
+  return (dispatch) => {
+    return axiosData('/coupon/getQuotaCardCanSellList.ajax', { ...opts }, null, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+      .then((records = {}) => {
+        const { data = {} } = records
+        dispatch(getQuotaCardCanSellListAC({
+          payload: {
+            dataSource: data || {},
+          },
+        }));
+        return Promise.resolve(data);
+      })
+      .catch((err) => {
+        dispatch(getQuotaCardCanSellListAC({
+          payload: {
+            dataSource: {},
+          },
+        }));
+        return Promise.resolve({});
+      })
+  }
 };
 export const getQuotaCardCanSellListAC = (opt) => {
-    return {
-        type: GIFT_NEW_QUOTA_CARD_CANSELL_LIST,
-        ...opt,
-    }
+  return {
+    type: GIFT_NEW_QUOTA_CARD_CANSELL_LIST,
+    ...opt,
+  }
 };
 export const getQuotaCardBatchNoAC = (opt) => {
-    return {
-        type: GIFT_NEW_QUOTA_CARD_BATCHNO,
-        ...opt,
-    }
+  return {
+    type: GIFT_NEW_QUOTA_CARD_BATCHNO,
+    ...opt,
+  }
 };
 export const FetchQuotaCardBatchNo = (opts) => {
-    return (dispatch) => {
-        // return fetchData('getQuotaBatchInfo_dkl', { ...opts }, null, {
-        return axiosData('/coupon/couponQuotaService_getQuotaBatch.ajax', { ...opts }, null, {
-            path: 'data.quotaCardList',
-        })
-            .then((records = []) => {
-                dispatch(getQuotaCardBatchNoAC({
-                    payload: {
-                        dataSource: records || [],
-                    },
-                }));
-                return Promise.resolve(records);
-            }).catch(err => {
-                // empty catch
-            });
-    }
+  return (dispatch) => {
+    // return fetchData('getQuotaBatchInfo_dkl', { ...opts }, null, {
+    return axiosData('/coupon/couponQuotaService_getQuotaBatch.ajax', { ...opts }, null, {
+      path: 'data.quotaCardList',
+    })
+      .then((records = []) => {
+        dispatch(getQuotaCardBatchNoAC({
+          payload: {
+            dataSource: records || [],
+          },
+        }));
+        return Promise.resolve(records);
+      }).catch((err) => {
+        // empty catch
+      });
+  }
 };
 // 券适用店铺查询 ,暂时无用{groupID:10890,giftItemID: '6526002596388280970' }-->data:{couponShopList:[]}
 
 export const queryCouponShopList = (opts) => {
-    return (dispatch) => {
-        return axiosData('/coupon/couponService_queryCouponShopList.ajax', { ...opts }, null, {
-            path: 'data',
-        }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
-            .then((response) => {
-                console.log(response)
-            })
-            .catch((error) => {
-                console.log(error)
-            })
-    }
+  return (dispatch) => {
+    return axiosData('/coupon/couponService_queryCouponShopList.ajax', { ...opts }, null, {
+      path: 'data',
+    }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+      .then((response) => {
+        console.log(response)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
 };
 
 // 公众号
 export const queryWechatMpInfo = (opts) => {
-    return (dispatch) => {
-        dispatch({
-            type: GIFT_NEW_QUERY_WECHAT_MPINFO_START,
-        });
+  return (dispatch) => {
+    dispatch({
+      type: GIFT_NEW_QUERY_WECHAT_MPINFO_START,
+    });
 
-        return fetchData('queryWechatMpInfo', {...opts}, null, { path: 'mpList', throttle: false })
-            .then((mpList) => {
-                dispatch({
-                    type: GIFT_NEW_QUERY_WECHAT_MPINFO_SUCCESS,
-                    payload: {
-                        mpList: mpList || []
-                    },
-                });
-                return Promise.resolve(mpList)
-            }, err => {
-                dispatch({
-                    type: GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL,
-                });
-                console.log(err)
-            })
-            .catch((error) => {
-                console.log(error)
-            })
-    }
+    return fetchData('queryWechatMpInfo', { ...opts }, null, { path: 'mpList', throttle: false })
+      .then((mpList) => {
+        dispatch({
+          type: GIFT_NEW_QUERY_WECHAT_MPINFO_SUCCESS,
+          payload: {
+            mpList: mpList || [],
+          },
+        });
+        return Promise.resolve(mpList)
+      }, (err) => {
+        dispatch({
+          type: GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL,
+        });
+        console.log(err)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
 };
 
 // 公众号/小程序
 export const queryWechatMpAndAppInfo = (opts) => {
-    return (dispatch) => {
-        dispatch({
-            type: GIFT_NEW_QUERY_WECHAT_MPINFO_START,
-        });
+  return (dispatch) => {
+    dispatch({
+      type: GIFT_NEW_QUERY_WECHAT_MPINFO_START,
+    });
 
-        return axiosData('/mpInfo/getAppsAndMps', { ...opts }, null, {
-            path: 'mpInfoResDataList',
-        }, 'HTTP_SERVICE_URL_WECHAT')
-            .then((data) => {
-                dispatch({
-                    type: GIFT_NEW_QUERY_WECHAT_MPAPPINFO_SUCCESS,
-                    payload: {
-                        mpAndAppList: data || [],
-                    } 
-                });
-                return Promise.resolve(data)
-            }, err => {
-                dispatch({
-                    type: GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL,
-                });
-                console.log(err)
-            })
-            .catch((error) => {
-                console.log(error)
-            })
-    }
+    return axiosData('/mpInfo/getAppsAndMps', { ...opts }, null, {
+      path: 'mpInfoResDataList',
+    }, 'HTTP_SERVICE_URL_WECHAT')
+      .then((data) => {
+        dispatch({
+          type: GIFT_NEW_QUERY_WECHAT_MPAPPINFO_SUCCESS,
+          payload: {
+            mpAndAppList: data || [],
+          },
+        });
+        return Promise.resolve(data)
+      }, (err) => {
+        dispatch({
+          type: GIFT_NEW_QUERY_WECHAT_MPINFO_FAIL,
+        });
+        console.log(err)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
 };
 
 export const startCreateGift = (opt) => {
-    return {
-        type: GIFT_NEW_START_CREATE_GIFT,
-        payload: opt,
-    }
+  return {
+    type: GIFT_NEW_START_CREATE_GIFT,
+    payload: opt,
+  }
 };
 
 // opts: {value: String,type: 'edit' | 'detail', data: Object}  查看和编辑都走此action, 故多传一个operationType
 export const startEditGift = (opt) => {
-    return {
-        type: GIFT_NEW_START_EDIT_GIFT,
-        payload: opt,
-    }
+  return {
+    type: GIFT_NEW_START_EDIT_GIFT,
+    payload: opt,
+  }
 };
 
 export const cancelCreateOrEditGift = (opt) => {
-    return {
-        type: GIFT_NEW_CANCEL_CREATE_EDIT_GIFT,
-        payload: opt,
-    }
+  return {
+    type: GIFT_NEW_CANCEL_CREATE_EDIT_GIFT,
+    payload: opt,
+  }
 };
 
 export const startSaving = (opt) => {
-    return {
-        type: GIFT_NEW_CANCEL_START_SAVING_GIFT,
-        payload: opt,
-    }
+  return {
+    type: GIFT_NEW_CANCEL_START_SAVING_GIFT,
+    payload: opt,
+  }
 };
 
 export const endSaving = (opt) => {
-    return {
-        type: GIFT_NEW_CANCEL_END_SAVING_GIFT,
-        payload: opt,
-    }
+  return {
+    type: GIFT_NEW_CANCEL_END_SAVING_GIFT,
+    payload: opt,
+  }
 };
 
-export const changeGiftFormKeyValue = (opt) => {// opt: {key: String, value: primitive?}
-    return {
-        type: GIFT_NEW_CHANGE_FORM_KEY_VALUE,
-        payload: opt,
-    }
+export const changeGiftFormKeyValue = (opt) => { // opt: {key: String, value: primitive?}
+  return {
+    type: GIFT_NEW_CHANGE_FORM_KEY_VALUE,
+    payload: opt,
+  }
 };
 
 export const saveBrandsToStore = (opt) => {
-    return {
-        type: GIFT_NEW_SAVE_BRANDS_TO_STORE,
-        payload: opt,
-    }
+  return {
+    type: GIFT_NEW_SAVE_BRANDS_TO_STORE,
+    payload: opt,
+  }
 };

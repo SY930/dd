@@ -29,7 +29,6 @@ export const BASIC_PROMOTION_MAP = {
 }
 
 export const GIFT_MAP = {
-    '22': '配送券',
     '10': '代金券',
     '20': '菜品优惠券',
     '21': '菜品兑换券',
@@ -45,6 +44,7 @@ export const GIFT_MAP = {
     '22': '配送券',
     '-10':'会员价',
     '-20':'会员折扣',
+    '81':'特殊权益券',
 }
 
 /**

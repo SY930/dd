@@ -296,6 +296,7 @@ class PromotionSelectModal extends Component {
                                     <TreeNode key={'110'} title={k636qvpm} />
                                     <TreeNode key={'22'} title={'配送券'} />
                                     <TreeNode key={'115'} title={'不定额代金券'} />
+                                    <TreeNode key={'81'} title={'特殊权益券'} />
                                 </TreeNode>
 
                             </Tree> :
@@ -319,6 +320,7 @@ class PromotionSelectModal extends Component {
                                         <TreeNode key={'110'} title={k636qvpm} />
                                         <TreeNode key={'22'} title={'配送券'} />
                                         <TreeNode key={'115'} title={'不定额代金券'} />
+                                        <TreeNode key={'81'} title={'特殊权益券'} />
                                     </TreeNode>
                                     <TreeNode key={'userRight'} title={k5m5aw4n}>
                                         <TreeNode key={'-10'} title={k5m4q0r2} />
