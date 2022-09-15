@@ -82,13 +82,13 @@ class MainTable extends Component {
       },
       {
         title: '已提现金额 (元)',
-        dataIndex: 'canWithdrawAmount',
+        dataIndex: 'withdrawAmount',
         className: tc,
         width: 100,
       },
       {
         title: '可提现金额 (元)',
-        dataIndex: 'withdrawAmount',
+        dataIndex: 'canWithdrawAmount',
         className: tc,
         width: 100,
       },
