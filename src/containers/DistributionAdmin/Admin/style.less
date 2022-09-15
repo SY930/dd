@@ -1,0 +1,89 @@
+.adminContainer {
+  overflow-y: auto;
+
+  .rectBox {
+    width: 434px;
+    height: 80px;
+  }
+
+  .questionIcon {
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  :global {
+    .ant-form-item-control {
+      display: flex;
+      align-items: center;
+    }
+
+    .ant-input-group {
+      width: 150px;
+      display: flex;
+      align-items: center;
+    }
+
+    .ant-input-group-addon {
+      width: 31px;
+      background: #F5F5F5;
+      height: 28px;
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .rebateWithdrawRuleRadioGroup {
+    :global {
+      .ant-radio-wrapper {
+        display: flex;
+        align-items: center;
+
+        span:nth-child(2) {
+          display: flex;
+          align-items: center;
+        }
+      }
+    }
+  }
+
+  .addIcon {
+    display: inline-block;
+    color: #1ab394;
+    font-size: 20px;
+    margin-left: 103px;
+  }
+
+  .closeIcon {
+    display: inline-block;
+    color: #ff6a6a;
+    ;
+    font-size: 20px;
+    margin-left: 15px;
+  }
+
+  .bannerUriBox {
+    display: flex;
+
+    .leftBanner {
+      width: 396px;
+      height: 730px;
+      border: 1px solid #ccc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      :global {
+        .ant-upload-list-item {
+          width: 100%;
+          height: 730px;
+          border: 0;
+        }
+      }
+    }
+
+    .rightDesc {
+      margin-left: 20px;
+      margin-top: 50px;
+    }
+  }
+}
