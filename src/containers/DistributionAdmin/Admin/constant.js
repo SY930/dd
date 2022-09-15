@@ -3,10 +3,10 @@ export const distributionTypesOptions = [
     label: '菜品',
     value: '1',
   },
-  {
-    label: '权益卡',
-    value: '2',
-  },
+  // {
+  //   label: '权益卡',
+  //   value: '2',
+  // },
 ]
 
 export const relationRuleOptions = [
