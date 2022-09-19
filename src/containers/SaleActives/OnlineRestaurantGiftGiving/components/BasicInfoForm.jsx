@@ -162,7 +162,7 @@ class BasicInfoForm extends Component {
             canUseShops: [],
         });
         this.props.onChange &&
-            this.props.onChange({ cardLevelIDList: value, shopIDList: [] });
+            this.props.onChange({ cardLevelIDList: value, canUseShopIDs: [] });
     };
 
     onChangeBasicForm = (key, value) => {
@@ -219,7 +219,8 @@ class BasicInfoForm extends Component {
     };
 
     resetFormItems = () => {
-        const { shopIDList, cardTypeIDList, cardLevelIDList } = baseFormItems;
+        const { canUseShopIDs, cardTypeIDList, cardLevelIDList } =
+            baseFormItems;
         if (!this.props.basicForm) return;
         const { getFieldDecorator, getFieldsValue } = this.props.basicForm;
         let {
@@ -246,8 +247,8 @@ class BasicInfoForm extends Component {
         const boxData = [];
         return {
             ...baseFormItems,
-            shopIDList: {
-                ...shopIDList,
+            canUseShopIDs: {
+                ...canUseShopIDs,
                 render: (d) =>
                     d()(
                         <ShopSelector

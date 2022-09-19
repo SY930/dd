@@ -104,7 +104,7 @@ export const baseFormItems = {
         options: regOpts,
         defaultValue: "1",
     },
-    shopIDList: {
+    canUseShopIDs: {
         type: "custom",
         label: "适用门店",
         render: () => <p />,
@@ -135,6 +135,8 @@ export const ruleFormItem = {
     gifts: {
         type: "custom",
         label: "券包内容",
+        wrapperCol: { span: 19 },
+        labelCol: { span: 5 },
         render: () => <p />,
     },
     joinCount: {
@@ -182,7 +184,7 @@ export const ruleFormItem = {
                         >
                             <Form.Item>
                                 {d({
-                                    key: "countCycleDaysStatus",
+                                    key: "countCycleDays",
                                     rules: [
                                         "required",
                                         {
@@ -287,7 +289,7 @@ export const baseFormKeys = [
     "triggerType",
     "triggerScene",
     "people",
-    "shopIDList",
+    "canUseShopIDs",
     "eventRemark",
 ];
 

@@ -4,6 +4,7 @@ import BaseForm from "components/common/BaseForm";
 import { ruleFormItem, formItemLayout, ruleFormKeys } from "../common";
 import WxCouponModal from "./WxCouponModal";
 import SleectedWxCouponTable from "./SleectedWxCouponTable";
+import AddGifts from "../AddGifts/AddGifts";
 
 class UsageRuleForm extends Component {
     constructor(props) {
@@ -62,6 +63,9 @@ class UsageRuleForm extends Component {
 
     resetFormItems = () => {
         const { gifts } = ruleFormItem;
+        const { accountInfo, ruleForm, getGiftForm } = this.props;
+        if (!ruleForm) return;
+        const { getFieldDecorator, getFieldsValue } = ruleForm;
         return {
             ...ruleFormItem,
             gifts: {
@@ -69,7 +73,7 @@ class UsageRuleForm extends Component {
                 render: (d, form) => (
                     <div>
                         {form.getFieldValue("couponValue") == 1 ? (
-                            <div>
+                            <div style={{ width: "100%" }}>
                                 <p>
                                     <Button
                                         icon="plus"
@@ -103,8 +107,8 @@ class UsageRuleForm extends Component {
                                 </p>
                                 <Form.Item
                                     label={"用户单次领取优惠券张数"}
-                                    labelCol={{ span: 8 }}
-                                    wrapperCol={{ span: 16 }}
+                                    labelCol={{ span: 7 }}
+                                    wrapperCol={{ span: 17 }}
                                 >
                                     {d({
                                         key: "giftCount",
@@ -140,7 +144,17 @@ class UsageRuleForm extends Component {
                                 )}
                             </div>
                         ) : (
-                            11
+                            <Form.Item>
+                                {getFieldDecorator(
+                                    "gifts",
+                                    {}
+                                )(
+                                    <AddGifts
+                                        accountInfo={accountInfo}
+                                        getGiftForm={getGiftForm}
+                                    />
+                                )}
+                            </Form.Item>
                         )}
                     </div>
                 ),

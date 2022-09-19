@@ -15,6 +15,7 @@ class OnlineRestaurantGiftGiving extends Component {
             basicFormData: {}, //基本信息表单数据
             ruleForm: null, //使用规则表单
             ruleFormData: {}, //使用规则表单数据
+            giftsForm: null,//礼品信息表单
         };
     }
     componentDidMount() {
@@ -50,6 +51,7 @@ class OnlineRestaurantGiftGiving extends Component {
                 <div className={styles.logoGroupHeader}>使用规则</div>
                 <UsageRuleForm
                     ruleForm={ruleForm}
+                    getGiftForm={(form) => this.setState({ giftsForm: form })}
                     getForm={(form) => this.setState({ ruleForm: form })}
                     formData={ruleFormData}
                     {...itemProps}
