@@ -63,102 +63,115 @@ class UsageRuleForm extends Component {
 
     resetFormItems = () => {
         const { gifts } = ruleFormItem;
-        const { accountInfo, ruleForm, getGiftForm } = this.props;
-        if (!ruleForm) return;
-        const { getFieldDecorator, getFieldsValue } = ruleForm;
+        const { accountInfo, ruleForm = {}, getGiftForm } = this.props;
         return {
             ...ruleFormItem,
-            gifts: {
-                ...gifts,
-                render: (d, form) => (
-                    <div>
-                        {form.getFieldValue("couponValue") == 1 ? (
-                            <div style={{ width: "100%" }}>
-                                <p>
-                                    <Button
-                                        icon="plus"
-                                        onClick={this.addWXCoupon}
-                                    >
-                                        添加第三方微信优惠券
-                                    </Button>
-                                </p>
-                                <p
-                                    style={{
-                                        height: 36,
-                                        paddingLeft: 13,
-                                        marginBottom: 4,
-                                        background: "#FFFBE6",
-                                        borderRadius: 4,
-                                        lineHeight: "36px",
-                                        color: "#666",
-                                        marginTop: "10px",
-                                    }}
-                                >
-                                    <Icon
-                                        type="exclamation-circle"
-                                        style={{
-                                            color: "#FAAD14",
-                                            marginRight: 10,
-                                        }}
-                                    />
-                                    <span>
-                                        第三方微信优惠券领取后，可同步微信卡包展示。
-                                    </span>
-                                </p>
-                                <Form.Item
-                                    label={"用户单次领取优惠券张数"}
-                                    labelCol={{ span: 7 }}
-                                    wrapperCol={{ span: 17 }}
-                                >
-                                    {d({
-                                        key: "giftCount",
-                                        rules: [
-                                            "required",
-                                            {
-                                                pattern: /^([1-9]|10)$/,
-                                                message: "请输入为1-10的整数",
-                                            },
-                                        ],
-                                    })(
-                                        <Input
-                                            placeholder={"请输入1-9的整数"}
-                                            type="number"
-                                        />
-                                    )}
-                                </Form.Item>
-                                <SleectedWxCouponTable
-                                    sleectedWxCouponList={
-                                        this.state.sleectedWxCouponList
-                                    }
-                                    onWxCouponChange={this.onWxCouponChange}
-                                />
-                                {this.state.wxCouponVisible && (
-                                    <WxCouponModal
-                                        onCancel={this.onWXCouponCancel}
-                                        sleectedWxCouponList={
-                                            this.state.sleectedWxCouponList
-                                        }
-                                        user={this.props.user}
-                                        onWxCouponChange={this.onWxCouponChange}
-                                    />
-                                )}
-                            </div>
-                        ) : (
-                            <Form.Item>
-                                {getFieldDecorator(
-                                    "gifts",
-                                    {}
-                                )(
-                                    <AddGifts
-                                        accountInfo={accountInfo}
-                                        getGiftForm={getGiftForm}
-                                    />
-                                )}
-                            </Form.Item>
-                        )}
-                    </div>
-                ),
-            },
+            gifts:
+                ruleForm && ruleForm.getFieldDecorator
+                    ? {
+                          ...gifts,
+                          render: (d, form) => (
+                              <div>
+                                  {form.getFieldValue("couponValue") == 1 ? (
+                                      <div style={{ width: "100%" }}>
+                                          <p>
+                                              <Button
+                                                  icon="plus"
+                                                  onClick={this.addWXCoupon}
+                                              >
+                                                  添加第三方微信优惠券
+                                              </Button>
+                                          </p>
+                                          <p
+                                              style={{
+                                                  height: 36,
+                                                  paddingLeft: 13,
+                                                  marginBottom: 4,
+                                                  background: "#FFFBE6",
+                                                  borderRadius: 4,
+                                                  lineHeight: "36px",
+                                                  color: "#666",
+                                                  marginTop: "10px",
+                                              }}
+                                          >
+                                              <Icon
+                                                  type="exclamation-circle"
+                                                  style={{
+                                                      color: "#FAAD14",
+                                                      marginRight: 10,
+                                                  }}
+                                              />
+                                              <span>
+                                                  第三方微信优惠券领取后，可同步微信卡包展示。
+                                              </span>
+                                          </p>
+                                          <Form.Item
+                                              label={"用户单次领取优惠券张数"}
+                                              labelCol={{ span: 7 }}
+                                              wrapperCol={{ span: 17 }}
+                                          >
+                                              {d({
+                                                  key: "giftCount",
+                                                  rules: [
+                                                      "required",
+                                                      {
+                                                          pattern:
+                                                              /^([1-9]|10)$/,
+                                                          message:
+                                                              "请输入为1-10的整数",
+                                                      },
+                                                  ],
+                                              })(
+                                                  <Input
+                                                      placeholder={
+                                                          "请输入1-9的整数"
+                                                      }
+                                                      type="number"
+                                                  />
+                                              )}
+                                          </Form.Item>
+                                          <SleectedWxCouponTable
+                                              sleectedWxCouponList={
+                                                  this.state
+                                                      .sleectedWxCouponList
+                                              }
+                                              onWxCouponChange={
+                                                  this.onWxCouponChange
+                                              }
+                                          />
+                                          {this.state.wxCouponVisible && (
+                                              <WxCouponModal
+                                                  onCancel={
+                                                      this.onWXCouponCancel
+                                                  }
+                                                  sleectedWxCouponList={
+                                                      this.state
+                                                          .sleectedWxCouponList
+                                                  }
+                                                  user={this.props.user}
+                                                  onWxCouponChange={
+                                                      this.onWxCouponChange
+                                                  }
+                                              />
+                                          )}
+                                      </div>
+                                  ) : (
+                                      <Form.Item>
+                                          {ruleForm.getFieldDecorator(
+                                              "gifts",
+                                              {}
+                                          )(
+                                              <AddGifts
+                                                  accountInfo={accountInfo}
+                                                  getGiftForm={getGiftForm}
+                                              />
+                                          )}
+                                      </Form.Item>
+                                  )}
+                              </div>
+                          ),
+                      }
+                    : {},
         };
     };
 
