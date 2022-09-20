@@ -6,7 +6,7 @@
  * 此axios为封装后的，所以无法使用try，或catch捕获。
  */
 import { message } from 'antd';
-import { axios ,getStore} from '@hualala/platform-base';
+import { axios, getStore } from '@hualala/platform-base';
 import { fetchData } from '../../../../helpers/util';
 /** restful 风格函数命名， get获取，post增加，put更新，delete删除 */
 /**
@@ -24,16 +24,16 @@ function getAccountInfo() {
  */
 async function getGroupCardTypeList() {
     const { groupID, roleType, loginName, groupLoginName } = getAccountInfo();
-    const response = await fetchData('getSetUsedLevels_dkl', { 
+    const response = await fetchData('getSetUsedLevels_dkl', {
         groupID,
         _groupID: groupID,
         _role: roleType,
         _loginName: loginName,
         _groupLoginName: groupLoginName
-    }, null, {path: '',});
+    }, null, { path: '', });
     const { code, message: msg, data } = response;
     if (code === '000') {
-        let {groupCardTypeList} = data
+        let { groupCardTypeList } = data
         return groupCardTypeList;
     }
     message.error(msg);
@@ -44,9 +44,9 @@ async function getGroupCardTypeList() {
  */
 async function getCardTypeList() {
     const { groupID } = getAccountInfo();
-    const data = { groupID ,regFromLimit:true};
+    const data = { groupID, regFromLimit: true };
     const method = 'crm/cardTypeLevelService_queryCardTypeBaseInfoList.ajax';
-    const params = { service:'HTTP_SERVICE_URL_CRM', type, groupID,data, method };
+    const params = { service: 'HTTP_SERVICE_URL_CRM', type, groupID, data, method };
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: { cardTypeBaseInfoList = [] } } = response;
     if (code === '000') {
@@ -211,7 +211,7 @@ async function getTicketBagInfo(data) {
     const { code, message: msg, couponPackageInfo,
         shopInfos = [], couponPackageGiftConfigs } = response;
     if (code === '000') {
-        return {couponPackageInfo, shopInfos, couponPackageGiftConfigs};
+        return { couponPackageInfo, shopInfos, couponPackageGiftConfigs };
     }
     message.error(msg);
     return '';
@@ -290,22 +290,8 @@ async function postStock(data) {
     return false;
 }
 
-// 导出
-async function httpExport(data = {}) {
-    const method = `${api}getCouponPackages.ajax`;
-    const params = { service, type, data, method };
-    const response = await axios.post(url + method, params);
-    const { code, message: msg } = response;
-    if (code === '000') {
-        return true;
-    }
-    message.error(msg);
-    return false;
-}
-
-
 export {
-    putTicketBag, getTicketList,getGroupCardTypeList, getCardTypeList,deleteTicketBag, getTicketBagInfo, getTotalList,
+    putTicketBag, getTicketList, getGroupCardTypeList, getCardTypeList, deleteTicketBag, getTicketBagInfo, getTotalList,
     postTicketBag, getPhoneValid, putSendTicket, postRefund, getSettleList, getWechatMpInfo,
-    getImgTextList, getBagBatch, getQrCodeImg, postStock, httpExport
+    getImgTextList, getBagBatch, getQrCodeImg, postStock
 }

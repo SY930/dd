@@ -9,25 +9,28 @@ export default class QueryForm extends Component {
     state = {};
     /* 点击查询把参数传给父组件 */
     onQuery = () => {
-        let {pageType} = this.props
+        let { pageType } = this.props
         let couponPackageStatus = pageType == 2 ? 1 : 2
         const { name, couponPackageType } = this.form.getFieldsValue();
-        const params = { name, couponPackageType, couponPackageStatus, pageSize: 30, pageNo: 1 };
+        const params = { name, couponPackageType, couponPackageStatus, pageSize: 25, pageNo: 1 };
         // 如果是点查询按钮要恢复分页初始值
         this.props.onQuery(params);
     }
 
-    componentDidMount(){
-        document.addEventListener('keydown',this.handleEnterKey);
+    componentDidMount() {
+        if (this.props.onRef) {
+            this.props.onRef(this);
+        }
+        document.addEventListener('keydown', this.handleEnterKey);
     }
 
-    componentWillUnmount(){
-        document.removeEventListener('keydown',this.handleEnterKey);
+    componentWillUnmount() {
+        document.removeEventListener('keydown', this.handleEnterKey);
     }
 
     handleEnterKey = (e) => {
         let { pageType } = this.props;
-        if(e.keyCode === 13 && (pageType == 2 || pageType == 4)){ 
+        if (e.keyCode === 13 && (pageType == 2 || pageType == 4)) {
             this.onQuery()
         }
     }
@@ -47,7 +50,7 @@ export default class QueryForm extends Component {
         };
     }
     render() {
-        const { onThrow, onExport } = this.props;
+        const { onThrow, onExport, exportLoading } = this.props;
         const formItems = this.resetFormItems();
         return (
             <div className={styles.queryform}>
@@ -59,7 +62,7 @@ export default class QueryForm extends Component {
                 />
                 <div className={styles.throw}>
                     <Button onClick={onThrow}>投放</Button>
-                    <Button onClick={onExport}>导出</Button>
+                    <Button onClick={onExport} loading={exportLoading} disabled={exportLoading}>导出</Button>
                 </div>
             </div>
         );

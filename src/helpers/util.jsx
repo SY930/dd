@@ -595,19 +595,19 @@ const getRightListFromRedux = (() => {
  * @param {String} rightCode 权限编码，多个编码用逗号隔开，有任一权限即可通过检查, 权限控制是由页面ID和rightCode 共同控制的
  * @return {Boolean}
  */
-export function checkPermission(rightCode,entryID=null) {
+export function checkPermission(rightCode, entryID = null) {
     let isExist = false;
     const rightList = getRightListFromRedux();
     if (!rightCode || !rightList || !rightList.length) return false;
     const rightCodes = rightCode.split(',');
-    if(entryID){
-        rightCodes.map((code,index)=>{
-            let isExsitArr = _.filter(rightList,{rightCode:code,entryID:entryID});
-            if(isExsitArr.length > 0){
+    if (entryID) {
+        rightCodes.map((code, index) => {
+            let isExsitArr = _.filter(rightList, { rightCode: code, entryID: entryID });
+            if (isExsitArr.length > 0) {
                 isExist = true;
             }
         })
-    }else{
+    } else {
         isExist = !!rightCodes.find(
             code => !!sortedFindBy(rightList, { rightCode: code }, right => right.rightCode)
         );
