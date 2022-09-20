@@ -26,7 +26,6 @@ class NewCardGive extends NewPromotion {
         super(props);
     }
     render() {
-        console.log('33333333')
         if (this.props.component === undefined) {
             throw new Error('component is required');
         }
@@ -37,7 +36,6 @@ class NewCardGive extends NewPromotion {
                 content: (<PromotionBasicInfo
                     type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
                     getSubmitFn={(handles) => {
-                        console.log(handles, "handles----------------");
                         this.handles[0] = handles;
                     }}
                     ifJumpOpenCard={this.props.specialPromotion.isBenefitJumpOpenCard}

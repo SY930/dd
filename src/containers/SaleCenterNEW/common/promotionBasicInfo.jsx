@@ -189,7 +189,6 @@ export const AddCategorys = Form.create()(class AddCategory extends React.Compon
                                                         key={cat.itemID}
                                                         closable={true}
                                                         onClose={(e) => {
-                                                            {/* console.log(cat.name); */ }
                                                             const catOrtag = this.props.catOrtag == 'cat' ? '0' : '1'
                                                             this.props.onTagClose(catOrtag, cat.name, cat.itemID)
                                                         }}
@@ -282,7 +281,6 @@ class PromotionBasicInfo extends React.Component {
     handleSubmit() {
         let nextFlag = true;
         nextFlag = this.state.shopsAllSet ? false : nextFlag;
-        console.log(nextFlag,'nextFlag0000000')
         const basicInfo = this.props.promotionBasicInfo.get('$basicInfo').toJS();
         const promotionType = basicInfo.promotionType;
         if (promotionType == '1080' || promotionType == '2070' || promotionType == '5010' || promotionType == '5020' || promotionType == '1021') {
