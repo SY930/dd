@@ -7,8 +7,12 @@ import {
 import GiftCfg from '../../../constants/Gift';
 
 export const FORMITEMS = {
-
-
+    specialInterestType: {
+        label: '特殊权益',
+        type: 'radio',
+        defaultValue: 1,
+        options: GiftCfg.specialInterestType,
+    },
     giftRemark: {
         label: '礼品详情',
         type: 'textarea',
@@ -753,6 +757,44 @@ export const FIRST_KEYS = {
             ],
         },
     ],
+    '特殊权益券': [
+        {
+            col: {
+                span: 24,
+                pull: 2,
+            },
+            keys: [
+                'giftType',
+                'giftName',
+                'pushMessage',
+                'notice',
+                'specialInterestType'
+            ],
+        },
+        {
+            col: {
+                span: 24,
+                push: 2,
+            },
+            keys: []
+        },
+        {
+            col: {
+                span: 24,
+                pull: 2,
+            },
+            keys: [
+                'giftRemark',
+            ]
+        },
+        {
+            col: {
+                span: 24,
+                push: 3,
+            },
+            keys: []
+        },
+    ],
 };
 export const SECOND_KEYS = (() => ({
     '代金券': [
@@ -997,6 +1039,25 @@ export const SECOND_KEYS = (() => ({
                 'customerUseCountLimit',
                 'selectedShops',
                 'excludeShops',
+                'showGiftRule',
+                'giftImagePath',
+                'isSynch',
+            ],
+        },
+    ],
+    '特殊权益券': [
+        {
+            col: {
+                span: 24,
+                pull: 2,
+            },
+            keys: [
+                'transferType',
+                'usingWeekType',
+                'usingDateType',
+                'couponPeriodSettings',
+                'supportOrderTypeLst',
+                'isOfflineCanUsing',
                 'showGiftRule',
                 'giftImagePath',
                 'isSynch',

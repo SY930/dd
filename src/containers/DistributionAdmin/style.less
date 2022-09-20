@@ -1,0 +1,60 @@
+@import '~@hualala/platform-base/lib/styles/variables.less';
+
+.flexBetween {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.distribution {
+    .header {
+        height: 46px;
+        padding: 0 20px;
+
+        .title {
+            font-size: 20px;
+            font-weight: 400;
+            color: #595959;
+            line-height: 28px;
+        }
+    }
+
+    .tabCol {
+        :global {
+            .ant-tabs-bar {
+                margin-bottom: 0;
+
+                .ant-tabs-nav-container {
+                    height: 46px;
+                    background: #fff;
+
+                    .ant-tabs-nav-wrap {
+                        height: 46px;
+                    }
+    
+                    .ant-tabs-ink-bar {
+                        width: 54px;
+                        background: #1AB495;
+                        bottom: 4px;
+                    }
+    
+                    .ant-tabs-tab:hover {
+                        color: #1AB495;
+                        font-weight: 500;
+                    }
+    
+                    .ant-tabs-tab-active {
+                        color: #1AB495;
+                        font-weight: 500;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.distributionDetail {
+    .queryFrom {
+        padding: 14px 20px;
+    }
+}
