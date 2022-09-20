@@ -77,6 +77,8 @@ import {
 import { freeGetStep3Render } from "../freeGet/step3";
 import WxCouponModal from "../onLineReturnGift/WxCouponModal";
 import SleectedWxCouponTable from "../onLineReturnGift/SleectedWxCouponTable";
+import { setSensorsData } from "../../../helpers/util";
+import SensorsCodes from "../../../constants/SensorsCodes";
 
 const moment = require("moment");
 const FormItem = Form.Item;
@@ -1434,8 +1436,17 @@ class SpecialDetailInfo extends Component {
                     v.giftTotalCopies = giftTotalCopies;
                 });
             }
+            let giftIdsArr = [];
+            giftInfo.forEach((item) => {
+                if(item.giftID){giftIdsArr.push(item.giftID)};
+            })
+            //埋点事件第三步
+            setSensorsData({
+                event_id: SensorsCodes.sensorsThirdStepId[this.props.type] ? SensorsCodes.sensorsThirdStepId[this.props.type] : "",
+                gift_point: this.state.givePoints ? this.state.presentValue : "",
+                gift_coupon: giftIdsArr.join(',')
+            });
             this.props.setSpecialGiftInfo(giftInfo); //发起action
-
             return true;
         }
         return false;

@@ -4,7 +4,8 @@ import ReactDOM from 'react-dom';
 import { Modal } from 'antd';
 import _ from 'lodash';
 import $ from 'jquery';
-import uuid from 'uuid/v4'
+import uuid from 'uuid/v4';
+import sensors from 'sa-sdk-javascript';
 import { getStore } from '@hualala/platform-base'
 
 import getApiConfig from './callserver';
@@ -803,4 +804,10 @@ export function checkAuthLicense(licenseData = {}, productCode = 'HLL_CRM_NEW', 
             return { authPluginStatus: false };
         }
     }
+}
+/**
+ *埋点事件
+ */
+export function setSensorsData(params = {}){
+    sensors.track("$WebClick", params);
 }

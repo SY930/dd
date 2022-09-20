@@ -282,6 +282,7 @@ class PromotionBasicInfo extends React.Component {
     handleSubmit() {
         let nextFlag = true;
         nextFlag = this.state.shopsAllSet ? false : nextFlag;
+        console.log(nextFlag,'nextFlag0000000')
         const basicInfo = this.props.promotionBasicInfo.get('$basicInfo').toJS();
         const promotionType = basicInfo.promotionType;
         if (promotionType == '1080' || promotionType == '2070' || promotionType == '5010' || promotionType == '5020' || promotionType == '1021') {

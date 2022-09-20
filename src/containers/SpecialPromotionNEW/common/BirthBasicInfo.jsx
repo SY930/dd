@@ -28,7 +28,8 @@ import { queryWechatMpInfo } from "../../GiftNew/_action";
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
 import moment from 'moment'
-
+import { setSensorsData } from '../../../helpers/util';
+import SensorsCodes from "../../../constants/SensorsCodes";
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -162,7 +163,14 @@ class PromotionBasicInfo extends React.Component {
                         eventStartDate,
                         eventEndDate
                     };
-
+                    //第一步埋点事件
+                    setSensorsData({
+                        event_id: SensorsCodes.sensorsFirstStepId[this.props.type] ? SensorsCodes.sensorsFirstStepId[this.props.type] : "",
+                        activity_name: this.state.name,
+                        activity_explain: this.state.description,
+                        activity_begin_data: actDate[0] && moment(actDate[0]).format(format),
+                        activity_end_data: actDate[1] && moment(actDate[1]).format(format)
+                    });
                     if (this.props.type == '52') {
                         this.props.getEventExcludeCardTypes({
                             ...opts,
