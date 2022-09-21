@@ -181,7 +181,7 @@ class CouponManageList extends Component {
             couponDateRange,
             batchStatus,
             promotionType,
-            entranceWords,
+            trdDeliveryID,
         } = this.state;
         const opt = {
         };
@@ -206,8 +206,8 @@ class CouponManageList extends Component {
         if (batchStatus) {
             opt.batchStatus = batchStatus
         }
-        if (entranceWords) {
-            opt.entranceWords = entranceWords
+        if (trdDeliveryID) {
+            opt.trdDeliveryID = trdDeliveryID
         }
         return opt
     }
@@ -560,7 +560,7 @@ class CouponManageList extends Component {
                                 placeholder="请输入批次ID"
                                 onChange={(e) => {
                                     this.setState({
-                                        entranceWords: e.target.value,
+                                        trdDeliveryID: e.target.value,
                                     });
                                 }}
                             />
