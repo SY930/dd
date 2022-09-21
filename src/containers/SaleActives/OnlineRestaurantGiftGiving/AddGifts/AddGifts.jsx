@@ -53,8 +53,9 @@ class AddGifts extends Component {
             list.forEach((item) => {
                 const ids = flatTree.findIndex((x) => x.value == item.giftID);
                 if (ids >= 0) {
-                    const { label = "" } = flatTree[ids];
+                    const { label = "", giftType } = flatTree[ids];
                     item.giftName = label;
+                    item.giftType = giftType;
                 }
             });
         }

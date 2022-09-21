@@ -61,6 +61,11 @@ class UsageRuleForm extends Component {
         this.setState({ sleectedWxCouponList: rowSelected });
     };
 
+    getForm = (formList) => {
+        const { getGiftForm } = this.props;
+        getGiftForm(formList);
+    }
+
     resetFormItems = () => {
         const { gifts } = ruleFormItem;
         const { accountInfo, ruleForm = {}, getGiftForm } = this.props;
@@ -157,13 +162,13 @@ class UsageRuleForm extends Component {
                                       </div>
                                   ) : (
                                       <Form.Item>
-                                          {ruleForm.getFieldDecorator(
+                                          {form.getFieldDecorator(
                                               "gifts",
                                               {}
                                           )(
                                               <AddGifts
                                                   accountInfo={accountInfo}
-                                                  getGiftForm={getGiftForm}
+                                                  getGiftForm={this.getForm}
                                               />
                                           )}
                                       </Form.Item>

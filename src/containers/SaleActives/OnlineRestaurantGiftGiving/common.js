@@ -7,8 +7,8 @@ import TimeRange from "../../PromotionV3/Camp/TimeRange";
 import EveryDay from "../../PromotionV3/Camp/EveryDay";
 
 const regOpts = [
-    { label: "无需用户填写注册信息", value: "1" },
-    { label: "用户需填写注册信息", value: "0" },
+    { label: "无需用户填写注册信息", value: 1 },
+    { label: "用户需填写注册信息", value: 0 },
 ];
 
 export const formItemLayout = {
@@ -31,7 +31,7 @@ export const baseFormItems = {
             { max: "50", message: "不能超过50个字符" },
         ],
     },
-    triggerType: {
+    giftSendType: {
         type: "radio",
         label: (
             <span>
@@ -42,12 +42,12 @@ export const baseFormItems = {
             </span>
         ),
         options: [
-            { label: "弹窗时自动发放", value: "1" },
-            { label: "弹框时用户手动领取", value: "2" },
+            { label: "弹窗时自动发放", value: 1 },
+            { label: "弹框时用户手动领取", value: 2 },
         ],
-        defaultValue: "1",
+        defaultValue: 1,
     },
-    triggerScene: {
+    enterPosition: {
         type: "radio",
         label: (
             <span>
@@ -58,31 +58,31 @@ export const baseFormItems = {
             </span>
         ),
         options: [
-            { label: "堂食点餐页", value: "1" },
-            { label: "外卖点餐页", value: "2" },
-            { label: "自提点餐页", value: "3" },
+            { label: "堂食点餐页", value: 1 },
+            { label: "外卖点餐页", value: 2 },
+            { label: "自提点餐页", value: 3 },
         ],
-        defaultValue: "1",
+        defaultValue: 1,
     },
-    people: {
+    partInUser: {
         type: "radio",
         label: "参与用户",
         options: [
-            { label: "全部", value: "1" },
-            { label: "非会员", value: "2" },
-            { label: "会员", value: "3" },
+            { label: "全部", value: 1 },
+            { label: "非会员", value: 2 },
+            { label: "会员", value: 3 },
         ],
-        defaultValue: "1",
+        defaultValue: 1,
     },
     cardLevelRangeType: {
         type: "radio",
         label: "会员范围",
         options: [
-            { label: "全部", value: "1" },
-            { label: "按卡类别", value: "2" },
-            { label: "按卡等级", value: "3" },
+            { label: "全部", value: 0 },
+            { label: "按卡类别", value: 2 },
+            { label: "按卡等级", value: 5 },
         ],
-        defaultValue: "1",
+        defaultValue: 0,
     },
     cardTypeIDList: {
         type: "custom",
@@ -102,9 +102,9 @@ export const baseFormItems = {
         type: "radio",
         label: "参与成为会员",
         options: regOpts,
-        defaultValue: "1",
+        defaultValue: 1,
     },
-    canUseShopIDs: {
+    shopIDList: {
         type: "custom",
         label: "适用门店",
         render: () => <p />,
@@ -161,7 +161,7 @@ export const ruleFormItem = {
                         <div style={{ width: 300, height: 40 }}>
                             <Form.Item>
                                 {d({
-                                    key: "partInTimesNoValid",
+                                    key: "partInTimes",
                                     rules: [
                                         "required",
                                         {
@@ -227,14 +227,14 @@ export const ruleFormItem = {
         type: "combo",
         label: "是否发送消息",
         options: [
-            { label: "不发送", value: "0" },
-            { label: "仅发送短信", value: "1" },
-            { label: "仅推送微信", value: "2" },
-            { label: "同时发送短信和微信", value: "4" },
-            { label: "微信推送不成功则发送短信", value: "3" },
+            { label: "不发送", value: 0 },
+            { label: "仅发送短信", value: 1 },
+            { label: "仅推送微信", value: 2 },
+            { label: "同时发送短信和微信", value: 4 },
+            { label: "微信推送不成功则发送短信", value: 3 },
         ],
         style: { width: 300 },
-        defaultValue: "0",
+        defaultValue: 0,
     },
     eventRange: {
         type: "custom",
@@ -286,10 +286,10 @@ export const ruleFormItem = {
 export const baseFormKeys = [
     "eventType",
     "eventName",
-    "triggerType",
-    "triggerScene",
-    "people",
-    "canUseShopIDs",
+    "giftSendType",
+    "enterPosition",
+    "partInUser",
+    "shopIDList",
     "eventRemark",
 ];
 

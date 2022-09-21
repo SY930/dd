@@ -162,7 +162,7 @@ class BasicInfoForm extends Component {
             canUseShops: [],
         });
         this.props.onChange &&
-            this.props.onChange({ cardLevelIDList: value, canUseShopIDs: [] });
+            this.props.onChange({ cardLevelIDList: value, shopIDList: [] });
     };
 
     onChangeBasicForm = (key, value) => {
@@ -173,10 +173,10 @@ class BasicInfoForm extends Component {
         const values = basicForm.getFieldsValue();
         let formKeys = [...this.state.formKeys];
         //发券方式
-        if (key == "triggerType") {
+        if (key == "giftSendType") {
             //用户手动领取&&全部或非会员
             if (value == 2) {
-                if (values.people == 1 || values.people == 2) {
+                if (values.partInUser == 1 || values.partInUser == 2) {
                     formKeys.splice(5, 0, "autoRegister");
                 } else {
                     formKeys = formKeys.filter(
@@ -187,13 +187,13 @@ class BasicInfoForm extends Component {
                 formKeys = formKeys.filter((item) => item != "autoRegister");
             }
             //参与用户
-        } else if (key == "people") {
+        } else if (key == "partInUser") {
             if (value == 1 || value == 2) {
                 formKeys = formKeys.filter(
                     (item) =>
                         item != "autoRegister" && item != "cardLevelRangeType"
                 );
-                if (values.triggerType == 2) {
+                if (values.giftSendType == 2) {
                     formKeys.splice(5, 0, "autoRegister");
                 }
             } else {
@@ -205,7 +205,7 @@ class BasicInfoForm extends Component {
             if (value == 2) {
                 formKeys = formKeys.filter((item) => item != "cardLevelIDList");
                 formKeys.splice(6, 0, "cardTypeIDList");
-            } else if (value == 3) {
+            } else if (value == 5) {
                 formKeys = formKeys.filter((item) => item != "cardTypeIDList");
                 formKeys.splice(6, 0, "cardLevelIDList");
             } else {
@@ -219,8 +219,7 @@ class BasicInfoForm extends Component {
     };
 
     resetFormItems = () => {
-        const { canUseShopIDs, cardTypeIDList, cardLevelIDList } =
-            baseFormItems;
+        const { shopIDList, cardTypeIDList, cardLevelIDList } = baseFormItems;
         const { basicForm = {} } = this.props;
         let {
             cardInfo,
@@ -246,8 +245,8 @@ class BasicInfoForm extends Component {
         const boxData = [];
         return {
             ...baseFormItems,
-            canUseShopIDs: {
-                ...canUseShopIDs,
+            shopIDList: {
+                ...shopIDList,
                 render: (d) =>
                     d()(
                         <ShopSelector

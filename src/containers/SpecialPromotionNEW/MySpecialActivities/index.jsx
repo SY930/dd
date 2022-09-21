@@ -966,7 +966,7 @@ class MySpecialActivities extends React.Component {
     }
     //** 第三版 重构 抽抽乐活动 点击事件 */
     onV3Click = (itemID, view, key, isActive) => {
-        if (key == "85") {
+        if (key == "85" || key == "23") {
             setTimeout(() => {
                 jumpPage({
                     menuID: SALE_ACTIVE_NEW_PAGE,
@@ -2886,7 +2886,8 @@ class MySpecialActivities extends React.Component {
                                             record.eventWay === 78 ||
                                             record.eventWay === 79 ||
                                             record.eventWay === 83 ||
-                                            record.eventWay === 85
+                                            record.eventWay === 85 ||
+                                            record.eventWay === 23
                                         ) {
                                             this.handleEditActive(record)(() =>
                                                 this.onV3Click(
@@ -2949,7 +2950,8 @@ class MySpecialActivities extends React.Component {
                                             record.eventWay === 78 ||
                                             record.eventWay === 79 ||
                                             record.eventWay === 83 ||
-                                            record.eventWay === 85
+                                            record.eventWay === 85 ||
+                                            record.eventWay === 23
                                         ) {
                                             this.onV3Click(
                                                 record.itemID,

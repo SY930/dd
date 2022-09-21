@@ -196,6 +196,7 @@ export {
 export const initVal = {
     id: "0",
     effectType: "1",
+    giftCount: "1",
     countType: "0",
     giftEffectTimeHours: '0',
 };

@@ -1640,6 +1640,13 @@ class SpecialPromotionDetail extends React.Component {
                 className: 'TableTxtCenter',
                 width: 120,
             }),
+            eventWay == 23 && ({
+                title: '参与位置',
+                dataIndex: 'enterPosition',
+                key: 'enterPosition',
+                className: 'TableTxtCenter',
+                width: 120,
+            }),
             // 群发礼品
             eventWay == 53 && ({
                 title: '礼品详情',
