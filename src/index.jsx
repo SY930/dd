@@ -7,7 +7,7 @@ import "config/AssociateConfig.js";
 import { getStore } from "@hualala/platform-base";
 // 初始化Dva
 import "./utils/dva/index";
-import { getCookie } from "./helpers/util";
+import { getCookie, getAccountInfo } from "./helpers/util";
 const { registeEntryCode, registeLocale } = registerPackage("sale", process.env.JS_VERSION);
 const DEFAULT_LANGUAGE = "zh-cn";
 const LOCEL_LANGUAGE_MAP = new Map([
@@ -102,27 +102,41 @@ const registeLangPack = async () => {
     });
     console.log("营销中心语言包加载完成:", lang);
     //神策埋点内容
-    sensors.init({
-        server_url: "http://data-sc.hualala.com/sa?project=default",
-        show_log: true,
-        is_track_single_page: false, // 单页面配置，默认开启，若页面中有锚点设计，需要将该配置删除，否则触发锚点会多触发 $pageview 事件
-        use_client_time: true,
-        send_type: "beacon",
-        heatmap: {
-            //是否开启点击图，default 表示开启，自动采集 $WebClick 事件，可以设置 'not_collect' 表示关闭。
-            clickmap: "not_collect",
-            //是否开启触达图，not_collect 表示关闭，不会自动采集 $WebStay 事件，可以设置 'default' 表示开启。
-            scroll_notice_map: "default"
-        }
-    });
-    sensors.login(getCookie("access_token"));
-    sensors.quick("autoTrack", {
-        platform_type: "JavaScript",
-        business_id: "online_pos",
-        app_id: "online_pos",
-        account: "default"
-    }); //用于采集 $pageview 事件。
+    setTimeout(() => {
+        console.log(getAccountInfo(), "getAccountInfo12");
+        sensors.init({
+            server_url: "http://data-sc.hualala.com/sa?project=default",
+            show_log: true,
+            is_track_single_page: false, // 单页面配置，默认开启，若页面中有锚点设计，需要将该配置删除，否则触发锚点会多触发 $pageview 事件
+            use_client_time: true,
+            send_type: "beacon",
+            heatmap: {
+                //是否开启点击图，default 表示开启，自动采集 $WebClick 事件，可以设置 'not_collect' 表示关闭。
+                clickmap: "default",
+                //是否开启触达图，not_collect 表示关闭，不会自动采集 $WebStay 事件，可以设置 'default' 表示开启。
+                scroll_notice_map: "default"
+            }
+        });
+        //设置用户属性
+        sensors.setProfile({
+            account: getAccountInfo().loginName ? getAccountInfo().loginName : "default",
+            phone_num: getAccountInfo().userMobile ? getAccountInfo().userMobile : "default"
+        });
+        //设置公共属性
+        sensors.registerPage({
+            platform_type: "JavaScript",
+            business_id: "online_pos",
+            app_id: "online_pos",
+            org_id: "default",
+            group_id: getAccountInfo().groupID ? getAccountInfo().groupID : "default",
+            brand_id: "default",
+            shop_id: "default"
+        });
+        sensors.login(getCookie("access_token"));
+        sensors.quick("autoTrack"); //用于采集 $pageview 事件。
+    }, 2000);
 };
+
 registeLangPack();
 
 export default registeEntryCode(entryCodes, completed => import("./containers").then(completed));
