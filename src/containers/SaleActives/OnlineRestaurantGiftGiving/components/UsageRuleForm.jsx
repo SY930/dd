@@ -68,7 +68,7 @@ class UsageRuleForm extends Component {
 
     resetFormItems = () => {
         const { gifts } = ruleFormItem;
-        const { accountInfo, ruleForm = {}, getGiftForm } = this.props;
+        const { accountInfo, ruleForm = {}, formData } = this.props;
         return {
             ...ruleFormItem,
             gifts:
@@ -162,10 +162,9 @@ class UsageRuleForm extends Component {
                                       </div>
                                   ) : (
                                       <Form.Item>
-                                          {form.getFieldDecorator(
-                                              "gifts",
-                                              {}
-                                          )(
+                                          {d({
+                                              key: "gifts",
+                                          })(
                                               <AddGifts
                                                   accountInfo={accountInfo}
                                                   getGiftForm={this.getForm}

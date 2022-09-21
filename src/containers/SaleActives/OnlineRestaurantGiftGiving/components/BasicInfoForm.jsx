@@ -165,62 +165,10 @@ class BasicInfoForm extends Component {
             this.props.onChange({ cardLevelIDList: value, shopIDList: [] });
     };
 
-    onChangeBasicForm = (key, value) => {
-        const { basicForm } = this.props;
-        if (!basicForm) {
-            return;
-        }
-        const values = basicForm.getFieldsValue();
-        let formKeys = [...this.state.formKeys];
-        //发券方式
-        if (key == "giftSendType") {
-            //用户手动领取&&全部或非会员
-            if (value == 2) {
-                if (values.partInUser == 1 || values.partInUser == 2) {
-                    formKeys.splice(5, 0, "autoRegister");
-                } else {
-                    formKeys = formKeys.filter(
-                        (item) => item != "autoRegister"
-                    );
-                }
-            } else {
-                formKeys = formKeys.filter((item) => item != "autoRegister");
-            }
-            //参与用户
-        } else if (key == "partInUser") {
-            if (value == 1 || value == 2) {
-                formKeys = formKeys.filter(
-                    (item) =>
-                        item != "autoRegister" && item != "cardLevelRangeType"
-                );
-                if (values.giftSendType == 2) {
-                    formKeys.splice(5, 0, "autoRegister");
-                }
-            } else {
-                formKeys = formKeys.filter((item) => item != "autoRegister");
-                formKeys.splice(5, 0, "cardLevelRangeType");
-            }
-            //会员范围
-        } else if (key == "cardLevelRangeType") {
-            if (value == 2) {
-                formKeys = formKeys.filter((item) => item != "cardLevelIDList");
-                formKeys.splice(6, 0, "cardTypeIDList");
-            } else if (value == 5) {
-                formKeys = formKeys.filter((item) => item != "cardTypeIDList");
-                formKeys.splice(6, 0, "cardLevelIDList");
-            } else {
-                formKeys = formKeys.filter(
-                    (item) =>
-                        item != "cardTypeIDList" && item != "cardLevelIDList"
-                );
-            }
-        }
-        this.setState({ formKeys });
-    };
+    onChangeBasicForm = (key, value) => {};
 
     resetFormItems = () => {
-        const { shopIDList, cardTypeIDList, cardLevelIDList } = baseFormItems;
-        const { basicForm = {} } = this.props;
+        const { shopIDList, cardTypeIDList } = baseFormItems;
         let {
             cardInfo,
             canUseShops = [],
@@ -261,98 +209,94 @@ class BasicInfoForm extends Component {
                         />
                     ),
             },
-            cardTypeIDList:
-                basicForm && basicForm.getFieldDecorator
-                    ? {
-                          ...cardTypeIDList,
-                          render: (d) => (
-                              <Form.Item
-                                  style={{ padding: 0, paddingBottom: 25 }}
-                              >
-                                  {basicForm.getFieldDecorator(
-                                      "cardTypeIDList",
-                                      {
-                                          rules: [
-                                              {
-                                                  required: true,
-                                                  message: "卡类别不能为空",
-                                              },
-                                          ],
-                                      }
-                                  )(
-                                      <Select
-                                          multiple={true}
-                                          showSearch={true}
-                                          notFoundContent="未搜索到结果"
-                                          onChange={this.handleSelectChange}
-                                          filterOption={(input, option) =>
-                                              option.props.children
-                                                  .toLowerCase()
-                                                  .indexOf(
-                                                      input.toLowerCase()
-                                                  ) >= 0
-                                          }
-                                      >
-                                          {cardInfo.map((type) => (
-                                              <Select.Option
-                                                  key={type.cardTypeID}
-                                                  value={type.cardTypeID}
-                                              >
-                                                  {type.cardTypeName}
-                                              </Select.Option>
-                                          ))}
-                                      </Select>
-                                  )}
-                              </Form.Item>
-                          ),
-                      }
-                    : {},
-            cardLevelIDList:
-                basicForm && basicForm.getFieldDecorator
-                    ? {
-                          ...cardLevelIDList,
-                          render: (d) => (
-                              <Form.Item
-                                  style={{ padding: 0, paddingBottom: 25 }}
-                              >
-                                  {basicForm.getFieldDecorator(
-                                      "cardLevelIDList",
-                                      {
-                                          rules: [
-                                              {
-                                                  required: true,
-                                                  message: "卡等级不能为空",
-                                              },
-                                          ],
-                                      }
-                                  )(
-                                      <BaseHualalaModal
-                                          outLabel="卡等级" //外侧选项+号下方文案
-                                          outItemName="cardLevelName" //外侧已选条目选项的label
-                                          outItemID="cardLevelID" //外侧已选条目选项的value
-                                          innerleftTitle="全部卡类" //   内部左侧分类title
-                                          innerleftLabelKey={"cardTypeName"} //   内部左侧分类对象的哪个属性为分类label
-                                          leftToRightKey={"cardTypeLevelList"} // 点击左侧分类，的何种属性展开到右侧
-                                          innerRightLabel="cardLevelName" //   内部右侧checkbox选项的label
-                                          innerRightValue="cardLevelID" //   内部右侧checkbox选项的value
-                                          innerBottomTitle="已选卡等级" //   内部底部box的title
-                                          innerBottomItemName="cardLevelName" //   内部底部已选条目选项的label
-                                          itemNameJoinCatName="cardTypeName" // item条目展示名称拼接类别名称
-                                          treeData={cardInfo} // 树形全部数据源【{}，{}，{}】
-                                          data={boxData} // 已选条目数组【{}，{}，{}】】,编辑时向组件内传递值
-                                          onChange={(value) => {
-                                              // 组件内部已选条目数组【{}，{}，{}】,向外传递值
-                                              const _value = value.map(
-                                                  (level) => level.cardLevelID
-                                              );
-                                              this.handleSelectChange(_value);
-                                          }}
-                                      />
-                                  )}
-                              </Form.Item>
-                          ),
-                      }
-                    : {},
+            cardTypeIDList: {
+                ...cardTypeIDList,
+                render: (d, form) => {
+                    if (form.getFieldValue("cardLevelRangeType") == 2) {
+                        return (
+                            <Form.Item
+                                style={{ padding: 0, paddingBottom: 25 }}
+                                label="卡类别"
+                                labelCol={{ span: 5 }}
+                                wrapperCol={{ span: 15 }}
+                            >
+                                {d({
+                                    rules: [
+                                        {
+                                            required: true,
+                                            message: "卡类别不能为空",
+                                        },
+                                    ],
+                                    onChange: this.handleSelectChange,
+                                })(
+                                    <Select
+                                        multiple={true}
+                                        showSearch={true}
+                                        notFoundContent="未搜索到结果"
+                                        filterOption={(input, option) =>
+                                            option.props.children
+                                                .toLowerCase()
+                                                .indexOf(input.toLowerCase()) >=
+                                            0
+                                        }
+                                    >
+                                        {cardInfo.map((type) => (
+                                            <Select.Option
+                                                key={type.cardTypeID}
+                                                value={type.cardTypeID}
+                                            >
+                                                {type.cardTypeName}
+                                            </Select.Option>
+                                        ))}
+                                    </Select>
+                                )}
+                            </Form.Item>
+                        );
+                    } else if (form.getFieldValue("cardLevelRangeType") == 5) {
+                        return (
+                            <Form.Item
+                                style={{ padding: 0, paddingBottom: 25 }}
+                                label="卡等级"
+                                labelCol={{ span: 5 }}
+                                wrapperCol={{ span: 15 }}
+                            >
+                                {d({
+                                    rules: [
+                                        {
+                                            required: true,
+                                            message: "卡等级不能为空",
+                                        },
+                                    ],
+                                    onChange: (value) => {
+                                        // 组件内部已选条目数组【{}，{}，{}】,向外传递值
+                                        const _value = value.map(
+                                            (level) => level.cardLevelID
+                                        );
+                                        this.handleSelectChange(_value);
+                                    },
+                                })(
+                                    <BaseHualalaModal
+                                        outLabel="卡等级" //外侧选项+号下方文案
+                                        outItemName="cardLevelName" //外侧已选条目选项的label
+                                        outItemID="cardLevelID" //外侧已选条目选项的value
+                                        innerleftTitle="全部卡类" //   内部左侧分类title
+                                        innerleftLabelKey={"cardTypeName"} //   内部左侧分类对象的哪个属性为分类label
+                                        leftToRightKey={"cardTypeLevelList"} // 点击左侧分类，的何种属性展开到右侧
+                                        innerRightLabel="cardLevelName" //   内部右侧checkbox选项的label
+                                        innerRightValue="cardLevelID" //   内部右侧checkbox选项的value
+                                        innerBottomTitle="已选卡等级" //   内部底部box的title
+                                        innerBottomItemName="cardLevelName" //   内部底部已选条目选项的label
+                                        itemNameJoinCatName="cardTypeName" // item条目展示名称拼接类别名称
+                                        treeData={cardInfo} // 树形全部数据源【{}，{}，{}】
+                                        data={boxData} // 已选条目数组【{}，{}，{}】】,编辑时向组件内传递值
+                                    />
+                                )}
+                            </Form.Item>
+                        );
+                    }
+                    return null;
+                },
+            },
         };
     };
     render() {

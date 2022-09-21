@@ -6,11 +6,6 @@ import DateTag from "../../PromotionV3/Camp/DateTag";
 import TimeRange from "../../PromotionV3/Camp/TimeRange";
 import EveryDay from "../../PromotionV3/Camp/EveryDay";
 
-const regOpts = [
-    { label: "无需用户填写注册信息", value: 1 },
-    { label: "用户需填写注册信息", value: 0 },
-];
-
 export const formItemLayout = {
     labelCol: { span: 5 },
     wrapperCol: { span: 15 },
@@ -75,34 +70,68 @@ export const baseFormItems = {
         defaultValue: 1,
     },
     cardLevelRangeType: {
-        type: "radio",
-        label: "会员范围",
-        options: [
-            { label: "全部", value: 0 },
-            { label: "按卡类别", value: 2 },
-            { label: "按卡等级", value: 5 },
-        ],
+        type: "custom",
+        label: "",
+        wrapperCol: { span: 24 },
         defaultValue: 0,
+        render: (d, form) => {
+            if (form.getFieldValue("partInUser") == 3) {
+                return (
+                    <Form.Item
+                        label="会员范围"
+                        labelCol={{ span: 5 }}
+                        wrapperCol={{ span: 15 }}
+                        style={{ padding: 0 }}
+                    >
+                        {d({})(
+                            <Radio.Group>
+                                <Radio value={0}>全部</Radio>
+                                <Radio value={2}>按卡类别</Radio>
+                                <Radio value={5}>按卡等级</Radio>
+                            </Radio.Group>
+                        )}
+                    </Form.Item>
+                );
+            }
+            return null;
+        },
     },
     cardTypeIDList: {
         type: "custom",
-        label: "卡类别",
-        render: () => <p />,
-        defaultValue: [],
-        rules: ["required"],
-    },
-    cardLevelIDList: {
-        type: "custom",
-        label: "卡等级",
+        wrapperCol: { span: 24 },
         render: () => <p />,
         defaultValue: [],
         rules: ["required"],
     },
     autoRegister: {
-        type: "radio",
-        label: "参与成为会员",
-        options: regOpts,
-        defaultValue: 1,
+        type: "custom",
+        wrapperCol: { span: 24 },
+        label: "",
+        defaultValue: 0,
+        render: (d, form) => {
+            if (
+                (form.getFieldValue("partInUser") == 1 ||
+                    form.getFieldValue("partInUser") == 2) &&
+                form.getFieldValue("giftSendType") == 2
+            ) {
+                return (
+                    <Form.Item
+                        label="参与成为会员"
+                        labelCol={{ span: 5 }}
+                        wrapperCol={{ span: 15 }}
+                        style={{ padding: 0 }}
+                    >
+                        {d({})(
+                            <Radio.Group>
+                                <Radio value={1}>无需用户填写注册信息</Radio>
+                                <Radio value={0}>用户需填写注册信息</Radio>
+                            </Radio.Group>
+                        )}
+                    </Form.Item>
+                );
+            }
+            return null;
+        },
     },
     shopIDList: {
         type: "custom",
@@ -289,6 +318,9 @@ export const baseFormKeys = [
     "giftSendType",
     "enterPosition",
     "partInUser",
+    "autoRegister",
+    "cardLevelRangeType",
+    "cardTypeIDList",
     "shopIDList",
     "eventRemark",
 ];
