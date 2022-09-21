@@ -181,6 +181,7 @@ class CouponManageList extends Component {
             couponDateRange,
             batchStatus,
             promotionType,
+            entranceWords,
         } = this.state;
         const opt = {
         };
@@ -204,6 +205,9 @@ class CouponManageList extends Component {
         }
         if (batchStatus) {
             opt.batchStatus = batchStatus
+        }
+        if (entranceWords) {
+            opt.entranceWords = entranceWords
         }
         return opt
     }
@@ -550,6 +554,17 @@ class CouponManageList extends Component {
                                 </li>
                             </ul>
                         }
+                         <li>批次ID</li>
+                        <li>
+                            <Input
+                                placeholder="请输入批次ID"
+                                onChange={(e) => {
+                                    this.setState({
+                                        entranceWords: e.target.value,
+                                    });
+                                }}
+                            />
+                        </li>
                         
                         <li>
                             <Button type="primary" onClick={() => this.handleQuery(1)} disabled={this.state.loading}><Icon type="search" />搜索</Button>
