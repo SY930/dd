@@ -40,27 +40,27 @@ import {
     saleCenterCheckExist,
     saleCenterResetDetailInfoAC as saleCenterResetSpecialDetailInfoAC,
     saleCenterSetSpecialBasicInfoAC,
-    saleCenterSetSpecialBasicInfoCardGroupID, 
+    saleCenterSetSpecialBasicInfoCardGroupID,
     saleCenterSaveCreateMemberGroupParams,
     getAuthLicenseData,
-    saleCenterSetSpecialActivityInfoByForce, 
-    saleCenterSetJumpOpenCardParams, 
-    saleCenterSetJumpSendGiftParams, 
+    saleCenterSetSpecialActivityInfoByForce,
+    saleCenterSetJumpOpenCardParams,
+    saleCenterSetJumpSendGiftParams,
 } from "../../redux/actions/saleCenterNEW/specialPromotion.action";
 import {
-    fetchSpecialDetailAC, 
+    fetchSpecialDetailAC,
 } from '../../redux/actions/saleCenterNEW/mySpecialActivities.action';
 import {
     fetchFoodCategoryInfoAC,
     fetchFoodMenuInfoAC,
-    saleCenterResetDetailInfoAC as saleCenterResetBasicDetailInfoAC, 
+    saleCenterResetDetailInfoAC as saleCenterResetBasicDetailInfoAC,
     // getMallGoodsAndCategories, // 无用
 } from "../../redux/actions/saleCenterNEW/promotionDetailInfo.action";
 import {
     saleCenterResetBasicInfoAC,
-    saleCenterSetBasicInfoAC 
+    saleCenterSetBasicInfoAC
 } from "../../redux/actions/saleCenterNEW/promotionBasicInfo.action";
-import { saleCenterResetScopeInfoAC } from "../../redux/actions/saleCenterNEW/promotionScopeInfo.action"; 
+import { saleCenterResetScopeInfoAC } from "../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
 import { resetOccupiedWeChatInfo } from "../../redux/actions/saleCenterNEW/queryWeixinAccounts.action";
 import { toggleIsUpdateAC } from "../../redux/actions/saleCenterNEW/myActivities.action";
 import { checkPermission } from "../../helpers/util";
@@ -68,8 +68,8 @@ import { BASIC_PROMOTION_CREATE, SPECIAL_PROMOTION_CREATE } from "../../constant
 import SpecialActivityMain from '../SpecialPromotionNEW/activityMain'; // 特色营销
 import BasicActivityMain from '../SaleCenterNEW/activityMain'; // 基础营销弹窗
 import {
-    BASIC_PROMOTION_CREATE_DISABLED_TIP, 
-    isBrandOfHuaTianGroupList, 
+    BASIC_PROMOTION_CREATE_DISABLED_TIP,
+    isBrandOfHuaTianGroupList,
     isHuaTian,
     SPECIAL_PROMOTION_CREATE_DISABLED_TIP,
 } from "../../constants/projectHuatianConf";
@@ -84,6 +84,8 @@ import { jumpPage, closePage } from '@hualala/platform-base';
 import {
     specialPromotionBasicDataAdapter,
 } from '../../redux/actions/saleCenterNEW/types';
+import newPromotionCardPageConfig from '../SaleActives/NewPromotionCardPages/common/newPromotionCardPageConfig';
+import { updateCurrentPromotionPageAC } from '../SaleActives/NewPromotionCardPages/store/action';
 
 // 特色营销 跳转页面
 const activityList = [
@@ -103,7 +105,7 @@ class NewCustomerPage extends Component {
         specialIndex: 0,
         currentCategoryIndex: 0,
         currentPlatformIndex: 0,
-        sceneMap: {0: '', 1: 'app', 2: 'pos', 3: 'wx'},
+        sceneMap: { 0: '', 1: 'app', 2: 'pos', 3: 'wx' },
         v3visible: false,       // 第三版活动组件是否显示
         curKey: '',             //当前活动入口值
         authLicenseData: {},
@@ -632,11 +634,23 @@ class NewCustomerPage extends Component {
     //** 第三版 重构 抽抽乐活动 点击事件 */
     onV3Click = (key) => {
         if (key) this.setState({ curKey: key })
+        const currentPromotion = newPromotionCardPageConfig.find(item => item.key == key);
         if (key === '85') { // 打开新页面
             setTimeout(() => {
                 jumpPage({ menuID: SALE_ACTIVE_NEW_PAGE, typeKey: key })
             }, 100);
             return closePage(SALE_ACTIVE_NEW_PAGE)
+        } else if (currentPromotion && currentPromotion.menuID) {
+            const { updateCurrentPromotionPage } = this.props;
+            console.log('营销活动入口文件_TODO_onV3Click', key, newPromotionCardPageConfig);
+            jumpPage({ menuID: currentPromotion.menuID, promotionKey: key, mode: 'create' });
+            updateCurrentPromotionPage({
+                [key]: {
+                    promotionKey: key,
+                    mode: 'create',
+                },
+            })
+            return closePage(currentPromotion.menuID)
         }
         this.setState(ps => ({ v3visible: !ps.v3visible }));
     }
@@ -743,8 +757,10 @@ class NewCustomerPage extends Component {
             ...(ALL_PROMOTION_CATEGORIES.slice(1)).map(item => item.title),
         ];
 
-        ALL_PROMOTION_CATEGORIES = ALL_PROMOTION_CATEGORIES.map((item) => ({...item,
-            list: _.sortBy(item.list, (o) => (o.isNew))}));
+        ALL_PROMOTION_CATEGORIES = ALL_PROMOTION_CATEGORIES.map((item) => ({
+            ...item,
+            list: _.sortBy(item.list, (o) => (o.isNew))
+        }));
 
         const { currentCategoryIndex, currentPlatformIndex } = this.state;
 
@@ -763,21 +779,21 @@ class NewCustomerPage extends Component {
         // 开通桌边砍活动
         return (
             <div className={selfStyle.newDiv}>
-                <div className={selfStyle.titleArea} style={{position:'relative'}}>
+                <div className={selfStyle.titleArea} style={{ position: 'relative' }}>
                     <div style={{ display: 'flex' }}>
-                    营销活动
-                    <div className={selfStyle.platformArea}>
-                        <span className={selfStyle.platformTitle}>应用平台</span>
-                        <div className={selfStyle.platformBox}>
-                        {
-                            [{name: '全部', value: 0}, {name: '小程序', value: 'app'}, {name: 'POS', value: 'pos'}, {name: 'H5餐厅', value: 'wx'}].map((item, index) => (
-                                <div onClick={() => { this.setState({currentPlatformIndex: index })}} className={`${selfStyle.platformItem} ${index === currentPlatformIndex ? selfStyle.selectedItem : ''} ${index === currentPlatformIndex + 1 ? selfStyle.removeLine : ''}`}><span>{item.name}</span></div>
-                            ))
-                        }
+                        营销活动
+                        <div className={selfStyle.platformArea}>
+                            <span className={selfStyle.platformTitle}>应用平台</span>
+                            <div className={selfStyle.platformBox}>
+                                {
+                                    [{ name: '全部', value: 0 }, { name: '小程序', value: 'app' }, { name: 'POS', value: 'pos' }, { name: 'H5餐厅', value: 'wx' }].map((item, index) => (
+                                        <div onClick={() => { this.setState({ currentPlatformIndex: index }) }} className={`${selfStyle.platformItem} ${index === currentPlatformIndex ? selfStyle.selectedItem : ''} ${index === currentPlatformIndex + 1 ? selfStyle.removeLine : ''}`}><span>{item.name}</span></div>
+                                    ))
+                                }
+                            </div>
                         </div>
                     </div>
-                    </div>
-                    <ExpireDateNotice productCode="HLL_CRM_Marketingbox" marginLeft="-230" marginTop="8"/>
+                    <ExpireDateNotice productCode="HLL_CRM_Marketingbox" marginLeft="-230" marginTop="8" />
                     <div>
                         <Button type="ghost" onClick={() => { jumpPage({ pageID: '10000888' }); }}>营销短信模板</Button>
                     </div>
@@ -902,7 +918,8 @@ function mapDispatchToProps(dispatch) {
         // },
         fetchSpecialDetail: (opts) => {
             return dispatch(fetchSpecialDetailAC(opts))
-        }
+        },
+        updateCurrentPromotionPage: opts => dispatch(updateCurrentPromotionPageAC(opts)),
     }
 }
 
