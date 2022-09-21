@@ -902,7 +902,7 @@ class GiftAddModal extends React.Component {
                     ]
                 }
             ],
-            '现金红包': [
+            '微信红包': [
                 {
                     col: { span: 24, pull: 2 },
                     keys: [

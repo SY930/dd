@@ -55,7 +55,7 @@ export const COLUMNS = [
                                 <a
                                     href="javaScript:;"
                                     disabled={true}
-                                >{ COMMON_LABEL.edit }</a>
+                                >{COMMON_LABEL.edit}</a>
                             ) : (
                                 <a
                                     href="javaScript:;"
@@ -63,7 +63,7 @@ export const COLUMNS = [
                                         this.handleEdit(record, 'edit')
                                     }
                                     }
-                                >{ COMMON_LABEL.edit }</a>
+                                >{COMMON_LABEL.edit}</a>
                             )
                         }
                     </Authority>
@@ -73,12 +73,12 @@ export const COLUMNS = [
                             this.handleEdit(record, 'detail')
                         }}
                     >
-                        { COMMON_LABEL.view }
+                        {COMMON_LABEL.view}
                     </a>
                     <Authority rightCode={GIFT_LIST_DELETE}>
                         {
                             (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
-                                <a disabled={true}><span>{ COMMON_LABEL.delete }</span></a>
+                                <a disabled={true}><span>{COMMON_LABEL.delete}</span></a>
                             ) : (
                                 <a onClick={() => this.handleDelete(record)}><span>停用</span></a>
                             )
@@ -94,7 +94,7 @@ export const COLUMNS = [
                             (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
                                 <a disabled={true}>详情</a>
                             ) : (
-                                <a href="javaScript:;" onClick={() => this.handleMore(record)}>{ COMMON_LABEL.detail }</a>
+                                <a href="javaScript:;" onClick={() => this.handleMore(record)}>{COMMON_LABEL.detail}</a>
                             )
                         }
                     </Authority>
@@ -106,7 +106,7 @@ export const COLUMNS = [
                                     (isBrandOfHuaTianGroupList() && !isMine(record)) ? (
                                         <a disabled={true}>复制</a>
                                     ) : (
-                                        <a href="javaScript:;" onClick={() => this.handleEdit(record, 'copy')}>{ COMMON_LABEL.copy }</a>
+                                        <a href="javaScript:;" onClick={() => this.handleEdit(record, 'copy')}>{COMMON_LABEL.copy}</a>
                                     )
                                 }
                             </Authority>
@@ -147,10 +147,10 @@ export const COLUMNS = [
         key: 'giftValue',
         width: 100,
         className: 'x-tr',
-        render: (value,record) => {
-            if(record.giftType == '115'){
+        render: (value, record) => {
+            if (record.giftType == '115') {
                 return ''
-            }else{
+            } else {
                 return value
             }
         },

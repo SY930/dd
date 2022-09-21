@@ -12,7 +12,7 @@ const GiftCfg = {
             value: '10',
             color: '#84aac6',
             category: 'primary',
-            tags: ['pos', '新微信', '小程序','礼品卡小程序','积分商城']
+            tags: ['pos', '新微信', '小程序', '礼品卡小程序', '积分商城']
         },
         {
             name: '菜品优惠券',
@@ -20,7 +20,7 @@ const GiftCfg = {
             value: '20',
             color: '#c49b79',
             category: 'primary',
-            tags: ['pos', '新微信', '小程序','积分商城']
+            tags: ['pos', '新微信', '小程序', '积分商城']
         },
         {
             name: '菜品兑换券',
@@ -29,7 +29,7 @@ const GiftCfg = {
             value: '21',
             color: '#c49b79',
             category: 'primary',
-            tags: ['pos', '新微信', '小程序','礼品卡小程序','积分商城']
+            tags: ['pos', '新微信', '小程序', '礼品卡小程序', '积分商城']
         },
         {
             name: '会员充值券',
@@ -83,7 +83,7 @@ const GiftCfg = {
             color: '#84aac6',
             category: 'secondary',
             view: 'card', // 卡片视图
-            tags: ['小程序','礼品卡小程序']
+            tags: ['小程序', '礼品卡小程序']
         },
         {
             name: '折扣券',
@@ -102,7 +102,7 @@ const GiftCfg = {
             color: '#c49b79'
         },
         {
-            name: '现金红包',
+            name: '微信红包',
             describe: '微信现金红包，可通过活动发送现金红包给指定用户',
             value: '113',
             color: '#e5be6c',
@@ -142,7 +142,7 @@ const GiftCfg = {
         { label: '线上礼品卡', value: '91' },
         { label: '买赠券', value: '110' },
         { label: '折扣券', value: '111' },
-        { label: '现金红包', value: '113' },
+        { label: '微信红包', value: '113' },
         { label: '配送券', value: '22' },
         { label: '特殊权益券', value: '81' },
         // { label: '不定额代金券', value: '115' },
@@ -200,19 +200,19 @@ const GiftCfg = {
     ],
 
     discountRules: [
-        { label: '特价', value: '1'},
-        { label: '折扣', value: '2'},
-        { label: '立减', value: '3'},
+        { label: '特价', value: '1' },
+        { label: '折扣', value: '2' },
+        { label: '立减', value: '3' },
     ],
 
     discountSortRules: [
-        { label: '高价格菜品优先', value: '0'},
-        { label: '低价格菜品优先', value: '1'}
+        { label: '高价格菜品优先', value: '0' },
+        { label: '低价格菜品优先', value: '1' }
     ],
     shareType: [
         { label: '与所有券共用', value: '1' },
-        { label: '与部分券共用', value: '2'},
-        { label: '不共用', value: '0'},
+        { label: '与部分券共用', value: '2' },
+        { label: '不共用', value: '0' },
     ],
     showGiftRule: [
         { label: '显示', value: 0 },
@@ -277,23 +277,23 @@ const GiftCfg = {
         { value: '122', label: '签到' },
         { value: '123', label: '礼品定额卡发放', include: true },
         { value: '124', label: '券包', include: true },
-        { value: '125', label: 'E折发放'},
-        { value: '126', label: '下单抽抽乐'},
-        { value: '127', label: '微信支付有礼'},
-        { value: '128', label: '盲盒'},
-        { value: '129', label: '消费券返券'},
-        { value: '130', label: '智能发券'},
-        { value: '3032', label: '自定义投放'},
-        { value: '131', label: '拼手气抢红包'},
-        { value: '132', label: '怪售商城'},
-        { value: '133', label: '口令领券'},
-        { value: '134', label: '彩蛋猫送礼'},
-        { value: '135', label: '支付宝商家券发放'},
-        { value: '136', label: '抖音商城发放'},
-        { value: '137', label: '抖音团购发放'},
-        { value: '139', label: '续费发放'},
-        { value: '155', label: '联通饭票'},
-        { value: '165', label: '快手'},
+        { value: '125', label: 'E折发放' },
+        { value: '126', label: '下单抽抽乐' },
+        { value: '127', label: '微信支付有礼' },
+        { value: '128', label: '盲盒' },
+        { value: '129', label: '消费券返券' },
+        { value: '130', label: '智能发券' },
+        { value: '3032', label: '自定义投放' },
+        { value: '131', label: '拼手气抢红包' },
+        { value: '132', label: '怪售商城' },
+        { value: '133', label: '口令领券' },
+        { value: '134', label: '彩蛋猫送礼' },
+        { value: '135', label: '支付宝商家券发放' },
+        { value: '136', label: '抖音商城发放' },
+        { value: '137', label: '抖音团购发放' },
+        { value: '139', label: '续费发放' },
+        { value: '155', label: '联通饭票' },
+        { value: '165', label: '快手' },
     ],
     giftSendStatus: [
         { value: '', label: '全部' },
