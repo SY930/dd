@@ -1,27 +1,44 @@
 // 特色营销列表页
-import React from 'react';
-import ReactDOM from 'react-dom';
-import QRCode from 'qrcode.react';
-import { connect } from 'react-redux';
-import { COMMON_LABEL } from 'i18n/common';
+import React from "react";
+import ReactDOM from "react-dom";
+import QRCode from "qrcode.react";
+import { connect } from "react-redux";
+import { COMMON_LABEL } from "i18n/common";
 import {
-    Table, Input, Select, DatePicker,
-    Button, Modal, message,
-    Spin, Icon, Alert, Switch, Tabs,
-    Tooltip, Popover, Menu, TreeSelect, Radio
-} from 'antd';
-import { throttle, isEmpty, cloneDeep } from 'lodash';
-import { jumpPage, closePage } from '@hualala/platform-base'
-import moment from 'moment';
-import copy from 'copy-to-clipboard'
-import styles from '../../SaleCenterNEW/ActivityPage.less';
+    Table,
+    Input,
+    Select,
+    DatePicker,
+    Button,
+    Modal,
+    message,
+    Spin,
+    Icon,
+    Alert,
+    Switch,
+    Tabs,
+    Tooltip,
+    Popover,
+    Menu,
+    TreeSelect,
+    Radio,
+} from "antd";
+import { throttle, isEmpty, cloneDeep } from "lodash";
+import { jumpPage, closePage } from "@hualala/platform-base";
+import moment from "moment";
+import copy from "copy-to-clipboard";
+import styles from "../../SaleCenterNEW/ActivityPage.less";
 import ExportModal from "../../GiftNew/GiftInfo/ExportModal";
-import PlanModal from '../common/PlanModal'
-import Cfg from '../../../constants/SpecialPromotionCfg';
-import Authority from '../../../components/common/Authority';
-import {  SPECIAL_PROMOTION_MANAGE_PAGE } from '../../../constants/entryIds';
-import { saleCenterSetSpecialBasicInfoAC, saleCenterResetDetailInfoAC, getAuthLicenseData } from '../../../redux/actions/saleCenterNEW/specialPromotion.action'
-import ExpireDateNotice from '../../../components/common/ExpireDateNotice';
+import PlanModal from "../common/PlanModal";
+import Cfg from "../../../constants/SpecialPromotionCfg";
+import Authority from "../../../components/common/Authority";
+import { SPECIAL_PROMOTION_MANAGE_PAGE } from "../../../constants/entryIds";
+import {
+    saleCenterSetSpecialBasicInfoAC,
+    saleCenterResetDetailInfoAC,
+    getAuthLicenseData,
+} from "../../../redux/actions/saleCenterNEW/specialPromotion.action";
+import ExpireDateNotice from "../../../components/common/ExpireDateNotice";
 import {
     toggleSelectedActivityStateAC,
     fetchSpecialPromotionList,
@@ -31,62 +48,69 @@ import {
     fetchSpecialPromotionDetailCancel,
     fetchSpecialDetailAC,
     updateExpiredActiveState,
-} from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action';
-import {
-    toggleIsUpdateAC,
-} from '../../../redux/actions/saleCenterNEW/myActivities.action';
-import SpecialPromotionDetail from './specialPromotionDetail';
+} from "../../../redux/actions/saleCenterNEW/mySpecialActivities.action";
+import { toggleIsUpdateAC } from "../../../redux/actions/saleCenterNEW/myActivities.action";
+import SpecialPromotionDetail from "./specialPromotionDetail";
 
 import {
     getSpecialPromotionIdx,
     specialPromotionBasicDataAdapter,
-} from '../../../redux/actions/saleCenterNEW/types';
+} from "../../../redux/actions/saleCenterNEW/types";
 
-import ActivityMain from '../activityMain';
-import MyActivities from '../../SaleCenterNEW/MyActivities/MyActivities'
+import ActivityMain from "../activityMain";
+import MyActivities from "../../SaleCenterNEW/MyActivities/MyActivities";
 
-import registerPage from '../../../index';
-import { SPECIAL_PAGE, PROMOTION_DECORATION, SALE_CENTER_PAYHAVEGIFT, SALE_ACTIVE_NEW_PAGE } from '../../../constants/entryCodes';
-import { promotionBasicInfo_NEW as sale_promotionBasicInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionBasicInfo.reducer';
-import { promotionDetailInfo_NEW as sale_promotionDetailInfo_NEW } from '../../../redux/reducer/saleCenterNEW/promotionDetailInfo.reducer';
+import registerPage from "../../../index";
+import {
+    SPECIAL_PAGE,
+    PROMOTION_DECORATION,
+    SALE_CENTER_PAYHAVEGIFT,
+    SALE_ACTIVE_NEW_PAGE,
+} from "../../../constants/entryCodes";
+import { promotionBasicInfo_NEW as sale_promotionBasicInfo_NEW } from "../../../redux/reducer/saleCenterNEW/promotionBasicInfo.reducer";
+import { promotionDetailInfo_NEW as sale_promotionDetailInfo_NEW } from "../../../redux/reducer/saleCenterNEW/promotionDetailInfo.reducer";
 import {
     promotionScopeInfo_NEW as sale_promotionScopeInfo_NEW,
     shopSchema_New as sale_shopSchema_New,
-} from '../../../redux/reducer/saleCenterNEW/promotionScopeInfo.reducer';
-import { fullCut_NEW as sale_fullCut_NEW } from '../../../redux/reducer/saleCenterNEW/fullCut.reducer';
-import { myActivities_NEW as sale_myActivities_NEW } from '../../../redux/reducer/saleCenterNEW/myActivities.reducer';
-import { saleCenter_NEW as sale_saleCenter_NEW } from '../../../redux/reducer/saleCenterNEW/saleCenter.reducer';
-import { giftInfoNew as sale_giftInfoNew } from '../../GiftNew/_reducers';
-import { mySpecialActivities_NEW as sale_mySpecialActivities_NEW } from '../../../redux/reducer/saleCenterNEW/mySpecialActivities.reducer';
-import { specialPromotion_NEW as sale_specialPromotion_NEW } from '../../../redux/reducer/saleCenterNEW/specialPromotion.reducer';
-import { crmCardTypeNew as sale_crmCardTypeNew } from '../../../redux/reducer/saleCenterNEW/crmCardType.reducer';
-import { promotion_decoration as sale_promotion_decoration } from '../../../redux/reducer/decoration';
-import { selectPromotionForDecoration } from '../../../redux/actions/decoration';
+} from "../../../redux/reducer/saleCenterNEW/promotionScopeInfo.reducer";
+import { fullCut_NEW as sale_fullCut_NEW } from "../../../redux/reducer/saleCenterNEW/fullCut.reducer";
+import { myActivities_NEW as sale_myActivities_NEW } from "../../../redux/reducer/saleCenterNEW/myActivities.reducer";
+import { saleCenter_NEW as sale_saleCenter_NEW } from "../../../redux/reducer/saleCenterNEW/saleCenter.reducer";
+import { giftInfoNew as sale_giftInfoNew } from "../../GiftNew/_reducers";
+import { mySpecialActivities_NEW as sale_mySpecialActivities_NEW } from "../../../redux/reducer/saleCenterNEW/mySpecialActivities.reducer";
+import { specialPromotion_NEW as sale_specialPromotion_NEW } from "../../../redux/reducer/saleCenterNEW/specialPromotion.reducer";
+import { crmCardTypeNew as sale_crmCardTypeNew } from "../../../redux/reducer/saleCenterNEW/crmCardType.reducer";
+import { promotion_decoration as sale_promotion_decoration } from "../../../redux/reducer/decoration";
+import { selectPromotionForDecoration } from "../../../redux/actions/decoration";
 import { Iconlist } from "../../../components/basic/IconsFont/IconsFont";
 import { axiosData, checkAuthLicense } from "../../../helpers/util";
 import { queryWeixinAccounts } from "../../../redux/reducer/saleCenterNEW/queryWeixinAccounts.reducer";
 import {
     SPECIAL_LOOK_PROMOTION_QUERY,
-    SPECIAL_PROMOTION_DELETE, 
+    SPECIAL_PROMOTION_DELETE,
     SPECIAL_PROMOTION_QUERY,
     SPECIAL_PROMOTION_UPDATE,
 } from "../../../constants/authorityCodes";
-import { isBrandOfHuaTianGroupList, isGroupOfHuaTianGroupList, isMine } from "../../../constants/projectHuatianConf";
+import {
+    isBrandOfHuaTianGroupList,
+    isGroupOfHuaTianGroupList,
+    isMine,
+} from "../../../constants/projectHuatianConf";
 import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
-import { injectIntl } from 'i18n/common/injectDecorator'
-import { STRING_GIFT } from 'i18n/common/gift';
-import { STRING_SPE } from 'i18n/common/special';
-import { getStore } from '@hualala/platform-base'
+import { injectIntl } from "i18n/common/injectDecorator";
+import { STRING_GIFT } from "i18n/common/gift";
+import { STRING_SPE } from "i18n/common/special";
+import { getStore } from "@hualala/platform-base";
 // import { SALE_STRING } from 'i18n/common/salecenter'
 import EmptyPage from "../../../components/common/EmptyPage";
-import Chou2Le from "../../PromotionV3/Chou2Le";   // 抽抽乐
-import BlindBox from "../../PromotionV3/BlindBox";   // 盲盒
-import PassWordCoupon from "../../PromotionV3/PassWordCoupon";   // 口令领券
-import { isFormalRelease } from "../../../utils/index"
-import indexStyles from './mySpecialActivities.less'
-import ManyFace from '../../PromotionV3/ManyFace';
-import CardSaleActive from './CardSaleActive';
-import Card from '../../../assets/card.png';
+import Chou2Le from "../../PromotionV3/Chou2Le"; // 抽抽乐
+import BlindBox from "../../PromotionV3/BlindBox"; // 盲盒
+import PassWordCoupon from "../../PromotionV3/PassWordCoupon"; // 口令领券
+import { isFormalRelease } from "../../../utils/index";
+import indexStyles from "./mySpecialActivities.less";
+import ManyFace from "../../PromotionV3/ManyFace";
+import CardSaleActive from "./CardSaleActive";
+import Card from "../../../assets/card.png";
 
 const confirm = Modal.confirm;
 const Option = Select.Option;
@@ -102,46 +126,49 @@ const mapStateToProps = (state) => {
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         specialPromotion: state.sale_specialPromotion_NEW.toJS(),
         user: state.user.toJS(),
-        shopList: state.user.getIn(['accountInfo', 'dataPermissions', 'shopList'])
+        shopList: state.user.getIn([
+            "accountInfo",
+            "dataPermissions",
+            "shopList",
+        ]),
     };
 };
 const DECORATABLE_PROMOTIONS = [
-    '20',
-    '21',
-    '23',
-    '64',
-    '65',
-    '66',
-    '75',
-    '76',
-    '68',
-    '79',
-    '85',
-    '83'
-]
-
+    "20",
+    "21",
+    "23",
+    "64",
+    "65",
+    "66",
+    "75",
+    "76",
+    "68",
+    "79",
+    "85",
+    "83",
+];
 
 const isDecorationAvailable = ({ eventWay }) => {
-    return DECORATABLE_PROMOTIONS.includes(`${eventWay}`)
-}
+    return DECORATABLE_PROMOTIONS.includes(`${eventWay}`);
+};
 const copyUrlList = [
-    '21', // 免费领取
-    '20', // 摇奖活动
-    '30', // 积分兑换
-    '22', // 报名活动
-    '65', // 分享裂变
-    '68', // 推荐有礼
-    '79', // 盲盒
-    '66', // 膨胀大礼包
-    '83',//口令领券
-]
+    "21", // 免费领取
+    "20", // 摇奖活动
+    "30", // 积分兑换
+    "22", // 报名活动
+    "65", // 分享裂变
+    "68", // 推荐有礼
+    "79", // 盲盒
+    "66", // 膨胀大礼包
+    "83", //口令领券
+];
 const isCanCopyUrl = ({ eventWay }) => {
-    return copyUrlList.includes(`${eventWay}`)
-}
+    return copyUrlList.includes(`${eventWay}`);
+};
 const mapDispatchToProps = (dispatch) => {
     return {
         selectPromotionForDecoration: (opts) => {
-            dispatch(selectPromotionForDecoration(opts))
+            dispatch(selectPromotionForDecoration(opts));
         },
         query: (opts) => {
             dispatch(fetchSpecialPromotionList(opts));
@@ -151,37 +178,37 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(toggleSelectedActivityStateAC(opts));
         },
         updateExpiredActiveState: (opts) => {
-            dispatch(updateExpiredActiveState(opts))
+            dispatch(updateExpiredActiveState(opts));
         },
         deleteSelectedRecord: (opts) => {
             dispatch(deleteSelectedRecordAC(opts));
         },
 
         fetchSpecialPromotionList: (opts) => {
-            dispatch(fetchSpecialPromotionList(opts))
+            dispatch(fetchSpecialPromotionList(opts));
         },
 
         fetchSpecialPromotionDetail: (opts) => {
-            dispatch(fetchSpecialPromotionDetailAC(opts))
+            dispatch(fetchSpecialPromotionDetailAC(opts));
         },
 
         cancelFetchSpecialPromotionDetail: (opts) => {
-            dispatch(fetchSpecialPromotionDetailCancel(opts))
+            dispatch(fetchSpecialPromotionDetailCancel(opts));
         },
         saleCenterSetSpecialBasicInfo: (opts) => {
-            dispatch(saleCenterSetSpecialBasicInfoAC(opts))
+            dispatch(saleCenterSetSpecialBasicInfoAC(opts));
         },
         fetchSpecialDetail: (opts) => {
-            dispatch(fetchSpecialDetailAC(opts))
+            dispatch(fetchSpecialDetailAC(opts));
         },
         saleCenterResetDetailInfo: (opts) => {
-            dispatch(saleCenterResetDetailInfoAC(opts))
+            dispatch(saleCenterResetDetailInfoAC(opts));
         },
         toggleIsUpdate: (opts) => {
-            dispatch(toggleIsUpdateAC(opts))
+            dispatch(toggleIsUpdateAC(opts));
         },
         getAuthLicenseData: (opts) => {
-            return dispatch(getAuthLicenseData(opts))
+            return dispatch(getAuthLicenseData(opts));
         },
     };
 };
@@ -207,10 +234,12 @@ class MySpecialActivities extends React.Component {
     constructor(props) {
         super(props);
         this.tableRef = null;
-        this.setTableRef = el => this.tableRef = el;
-        this.lockedChangeSortOrder = throttle(this.changeSortOrder, 500, { trailing: false });
+        this.setTableRef = (el) => (this.tableRef = el);
+        this.lockedChangeSortOrder = throttle(this.changeSortOrder, 500, {
+            trailing: false,
+        });
         this.state = {
-            curKey: '',
+            curKey: "",
             dataSource: [],
             advancedQuery: true,
             visible: false,
@@ -220,19 +249,21 @@ class MySpecialActivities extends React.Component {
             index: 0,
             recordToDisplay: null,
             // qualifications:
-            valid: '0',
-            modalTitle: `${this.props.intl.formatMessage(STRING_SPE.d2c8g6ep510150)}`,
+            valid: "0",
+            modalTitle: `${this.props.intl.formatMessage(
+                STRING_SPE.d2c8g6ep510150
+            )}`,
             isNew: false,
 
             selectedShop: null,
 
             loading: true,
-            eventWay: '',   //下载链接eventWay
-            queryEventWay: '',   //搜索eventWay
-            promotionDateRange: '',
-            isActive: '1',
-            eventName: '',
-            editEventWay: '',
+            eventWay: "", //下载链接eventWay
+            queryEventWay: "", //搜索eventWay
+            promotionDateRange: "",
+            isActive: "1",
+            eventName: "",
+            editEventWay: "",
             pageSizes: 25,
             pageNo: 1,
             record: {
@@ -241,87 +272,192 @@ class MySpecialActivities extends React.Component {
                 userInfo: [],
             },
             queryDisabled: false,
-            currentItemID: '',
-            v3visible: false,       // 第三版活动组件是否显示
-            itemID: '',
+            currentItemID: "",
+            v3visible: false, // 第三版活动组件是否显示
+            itemID: "",
             view: false,
             isShowCopyUrl: false,
-            urlContent: '',
+            urlContent: "",
             authStatus: false, //
             authLicenseData: {},
             apps: [], // 小程序列表
-            currAppID: '', // 选中的小程序
-            qrCodeImage: '', // 小程序二维码图片链接
+            currAppID: "", // 选中的小程序
+            qrCodeImage: "", // 小程序二维码图片链接
             xcxLoad: false, // 请求小程序时的load
-            qrItemID: '', // 点击提取链接/二维码 当前活动的itemID
+            qrItemID: "", // 点击提取链接/二维码 当前活动的itemID
             giftArr: [],
             allWeChatAccountList: [],
-            pushMessageMpID: '',
-            groupID: '',
+            pushMessageMpID: "",
+            groupID: "",
             isCopy: false,
-            pushMessageMpID: '',
-            channelContent: '',
-            launchChannelID: '',
-            launchChannelIDWX: '',
-            channelOptions: _.range(0, 10).map(item => ({ label: `渠道${item + 1}`, value: `渠道${item + 1}` })),
-            page: '',
-            scene: '',
-            tabKeys: 'saleSpecialPage',
-            stylesShow: 'list',
+            pushMessageMpID: "",
+            channelContent: "",
+            launchChannelID: "",
+            launchChannelIDWX: "",
+            channelOptions: _.range(0, 10).map((item) => ({
+                label: `渠道${item + 1}`,
+                value: `渠道${item + 1}`,
+            })),
+            page: "",
+            scene: "",
+            tabKeys: "saleSpecialPage",
+            stylesShow: "list",
             planModalVisible: false,
             filterSchemeList: [],
-            activeStatus: '',
+            activeStatus: "",
             sortedChannelList: [],
             viewRuleVisibles: false,
             paramsValue: 1,
         };
         this.cfg = {
             eventWay: [
-                { value: '', label: `${this.props.intl.formatMessage(STRING_GIFT.all)}` },
-                { value: '51', label: `${this.props.intl.formatMessage(STRING_SPE.da910d8l680255)}` },
-                { value: '52', label: `${this.props.intl.formatMessage(STRING_SPE.d1kghbbhh2g1156)}` },
-                { value: '21', label: `${this.props.intl.formatMessage(STRING_SPE.d4h1eea89g12152)}` },
-                { value: '20', label: `${this.props.intl.formatMessage(STRING_SPE.de8h83kic431)}` },
-                { value: '30', label: `${this.props.intl.formatMessage(STRING_SPE.d567490a78b24187)}` },
-                { value: '22', label: `${this.props.intl.formatMessage(STRING_SPE.d1e0f874d45158)}` },
-                { value: '53', label: `${this.props.intl.formatMessage(STRING_SPE.dok2uwq1n6234)}` },
-                { value: '50', label: `${this.props.intl.formatMessage(STRING_SPE.d21650591a2047103)}` },
-                { value: '60', label: `${this.props.intl.formatMessage(STRING_SPE.d1701e8391a4865)}` },
-                { value: '61', label: `${this.props.intl.formatMessage(STRING_SPE.db612a0008a4925)}` },
-                { value: '62', label: `${this.props.intl.formatMessage(STRING_SPE.d4h1eea89g110128)}` },
-                { value: '23', label: `${this.props.intl.formatMessage(STRING_SPE.d4h1eea89g21118)}` },
+                {
+                    value: "",
+                    label: `${this.props.intl.formatMessage(STRING_GIFT.all)}`,
+                },
+                {
+                    value: "51",
+                    label: `${this.props.intl.formatMessage(
+                        STRING_SPE.da910d8l680255
+                    )}`,
+                },
+                {
+                    value: "52",
+                    label: `${this.props.intl.formatMessage(
+                        STRING_SPE.d1kghbbhh2g1156
+                    )}`,
+                },
+                {
+                    value: "21",
+                    label: `${this.props.intl.formatMessage(
+                        STRING_SPE.d4h1eea89g12152
+                    )}`,
+                },
+                {
+                    value: "20",
+                    label: `${this.props.intl.formatMessage(
+                        STRING_SPE.de8h83kic431
+                    )}`,
+                },
+                {
+                    value: "30",
+                    label: `${this.props.intl.formatMessage(
+                        STRING_SPE.d567490a78b24187
+                    )}`,
+                },
+                {
+                    value: "22",
+                    label: `${this.props.intl.formatMessage(
+                        STRING_SPE.d1e0f874d45158
+                    )}`,
+                },
+                {
+                    value: "53",
+                    label: `${this.props.intl.formatMessage(
+                        STRING_SPE.dok2uwq1n6234
+                    )}`,
+                },
+                {
+                    value: "50",
+                    label: `${this.props.intl.formatMessage(
+                        STRING_SPE.d21650591a2047103
+                    )}`,
+                },
+                {
+                    value: "60",
+                    label: `${this.props.intl.formatMessage(
+                        STRING_SPE.d1701e8391a4865
+                    )}`,
+                },
+                {
+                    value: "61",
+                    label: `${this.props.intl.formatMessage(
+                        STRING_SPE.db612a0008a4925
+                    )}`,
+                },
+                {
+                    value: "62",
+                    label: `${this.props.intl.formatMessage(
+                        STRING_SPE.d4h1eea89g110128
+                    )}`,
+                },
+                {
+                    value: "23",
+                    label: `${this.props.intl.formatMessage(
+                        STRING_SPE.d4h1eea89g21118
+                    )}`,
+                },
                 // 下线 { value: '70', label: '彩蛋猫送礼' },
-                { value: '63', label: `${this.props.intl.formatMessage(STRING_SPE.d5g3ql3oen12242)}` },
-                { value: '64', label: `${this.props.intl.formatMessage(STRING_SPE.d1701e8391a513206)}` },
-                { value: '65', label: `${this.props.intl.formatMessage(STRING_SPE.d567490a78b314234)}` },
-                { value: '66', label: `${this.props.intl.formatMessage(STRING_SPE.d1701e8391a515146)}` },
-                { value: '67', label: `${this.props.intl.formatMessage(STRING_SPE.d4h1eea89g21627)}` },
-                { value: '68', label: `${this.props.intl.formatMessage(STRING_SPE.de8h83kic51727)}` },
-                { value: '31', label: `${this.props.intl.formatMessage(STRING_SPE.d2c8o5o6gt1820)}` },
-                { value: '75', label: '集点卡' },
-                { value: '77', label: '支付后广告' },
-                { value: '76', label: '签到' },
-                { value: '78', label: '下单抽抽乐' },
-                { value: '79', label: '盲盒' },
-                { value: '80', label: '微信支付有礼' },
-                { value: '81', label: '消费券返券' },
-                { value: '82', label: '拼手气抢红包' },
-                { value: '83', label: '口令领券' },
-                { value: '85', label: '千人千面' },
-
+                {
+                    value: "63",
+                    label: `${this.props.intl.formatMessage(
+                        STRING_SPE.d5g3ql3oen12242
+                    )}`,
+                },
+                {
+                    value: "64",
+                    label: `${this.props.intl.formatMessage(
+                        STRING_SPE.d1701e8391a513206
+                    )}`,
+                },
+                {
+                    value: "65",
+                    label: `${this.props.intl.formatMessage(
+                        STRING_SPE.d567490a78b314234
+                    )}`,
+                },
+                {
+                    value: "66",
+                    label: `${this.props.intl.formatMessage(
+                        STRING_SPE.d1701e8391a515146
+                    )}`,
+                },
+                {
+                    value: "67",
+                    label: `${this.props.intl.formatMessage(
+                        STRING_SPE.d4h1eea89g21627
+                    )}`,
+                },
+                {
+                    value: "68",
+                    label: `${this.props.intl.formatMessage(
+                        STRING_SPE.de8h83kic51727
+                    )}`,
+                },
+                {
+                    value: "31",
+                    label: `${this.props.intl.formatMessage(
+                        STRING_SPE.d2c8o5o6gt1820
+                    )}`,
+                },
+                { value: "75", label: "集点卡" },
+                { value: "77", label: "支付后广告" },
+                { value: "76", label: "签到" },
+                { value: "78", label: "下单抽抽乐" },
+                { value: "79", label: "盲盒" },
+                { value: "80", label: "微信支付有礼" },
+                { value: "81", label: "消费券返券" },
+                { value: "82", label: "拼手气抢红包" },
+                { value: "83", label: "口令领券" },
+                { value: "85", label: "千人千面" },
             ],
-        }
+        };
         this.renderFilterBar = this.renderFilterBar.bind(this);
         this.showNothing = this.showNothing.bind(this);
-        this.handleDismissUpdateModal = this.handleDismissUpdateModal.bind(this);
+        this.handleDismissUpdateModal = this.handleDismissUpdateModal.bind(
+            this
+        );
         // disable selected activity
-
 
         this.handleDisableClickEvent = this.handleDisableClickEvent.bind(this);
         this.handelStopEvent = this.handelStopEvent.bind(this);
-        this.onDateQualificationChange = this.onDateQualificationChange.bind(this);
+        this.onDateQualificationChange = this.onDateQualificationChange.bind(
+            this
+        );
         this.handleQuery = this.handleQuery.bind(this);
-        this.renderContentOfThisModal = this.renderContentOfThisModal.bind(this);
+        this.renderContentOfThisModal = this.renderContentOfThisModal.bind(
+            this
+        );
         this.checkDeleteInfo = this.checkDeleteInfo.bind(this);
         this.checkDetailInfo = this.checkDetailInfo.bind(this);
         this.renderModals = this.renderModals.bind(this);
@@ -331,200 +467,282 @@ class MySpecialActivities extends React.Component {
     }
 
     formatChannelData = (list) => {
-        let data = []
+        let data = [];
         if (!list || !Array.isArray(list)) {
-          return []
+            return [];
         }
-        data = list.map(item => {
-          return {
-            label: item.channelGroupName,
-            value: item.channelGroupItemID,
-            key: item.channelGroupItemID,
-            // disabled: true,
-            children: item.channelInfos.map(child => {
-              return {
-                label: child.channelName,
-                value: child.itemID,
-                key: child.itemID,
-              }
-            })
-          }
-        })
-        return data
-      }
-    
-    querySortedChannelList = () => {
-        axiosData('/launchchannel/launchChannelService_querySortedChannelList.ajax',
-          { }, {}, { path: '' },
-          'HTTP_SERVICE_URL_PROMOTION_NEW')
-          .then((res) => {
-            if (res.code == '000') {
-              this.setState({
-                sortedChannelList: this.formatChannelData(res.channelSortedInfos)
-              })
-            }
-          }).catch(err => {
-            // empty catch
-          });
-      }
-
-      // 活动规则
-      queryActiveRule = () => {
-        axiosData('/specialPromotion/queryEventParam.ajax',
-        { eventWay: 85, groupID: getStore().getState().user.getIn(['accountInfo', 'groupID']), paramName: 'executePriorityByCreateTime' }, {}, { path: '' },
-        'HTTP_SERVICE_URL_PROMOTION_NEW')
-        .then((res) => {
-          if (res.code == '000') {
-            const { data: { eventParamInfo = {} }} = res;
-            this.setState({
-              paramsValue: eventParamInfo.paramValue,
-              viewRuleVisibles: true,
-            })
-          }
-        }).catch(err => {
-          // empty catch
+        data = list.map((item) => {
+            return {
+                label: item.channelGroupName,
+                value: item.channelGroupItemID,
+                key: item.channelGroupItemID,
+                // disabled: true,
+                children: item.channelInfos.map((child) => {
+                    return {
+                        label: child.channelName,
+                        value: child.itemID,
+                        key: child.itemID,
+                    };
+                }),
+            };
         });
+        return data;
+    };
+
+    querySortedChannelList = () => {
+        axiosData(
+            "/launchchannel/launchChannelService_querySortedChannelList.ajax",
+            {},
+            {},
+            { path: "" },
+            "HTTP_SERVICE_URL_PROMOTION_NEW"
+        )
+            .then((res) => {
+                if (res.code == "000") {
+                    this.setState({
+                        sortedChannelList: this.formatChannelData(
+                            res.channelSortedInfos
+                        ),
+                    });
+                }
+            })
+            .catch((err) => {
+                // empty catch
+            });
+    };
+
+    // 活动规则
+    queryActiveRule = () => {
+        axiosData(
+            "/specialPromotion/queryEventParam.ajax",
+            {
+                eventWay: 85,
+                groupID: getStore()
+                    .getState()
+                    .user.getIn(["accountInfo", "groupID"]),
+                paramName: "executePriorityByCreateTime",
+            },
+            {},
+            { path: "" },
+            "HTTP_SERVICE_URL_PROMOTION_NEW"
+        )
+            .then((res) => {
+                if (res.code == "000") {
+                    const {
+                        data: { eventParamInfo = {} },
+                    } = res;
+                    this.setState({
+                        paramsValue: eventParamInfo.paramValue,
+                        viewRuleVisibles: true,
+                    });
+                }
+            })
+            .catch((err) => {
+                // empty catch
+            });
         // this.setState({viewRuleVisibles: true })
-      }
+    };
 
     clearUrl() {
         var { href } = window.location;
-        var [valiable] = href.split('?');
+        var [valiable] = href.split("?");
         window.history.pushState(null, null, valiable);
+        this.setState({
+            eventName: "",
+        });
     }
 
-    fromCrmJump = () => {
-        const { from, itemID } = this.getQueryVariable();
-        if (from === 'manyFace') {
-            this.setState({
-                isActive: '',
-                tabKeys: 'saleSpecialPage'
-            },() => {
-                this.handleQuery()
-                this.clearUrl()
-                this.handleDecorationStart({ itemID });
-            })
-        } else if (from === 'create') {
-            // 创建活动后更新使用状态为不限
-            this.setState({
-                isActive: '',
-                tabKeys: 'saleSpecialPage'
-            },() => {
-                this.handleQuery()
-                this.clearUrl()
-            })
-        } else if(from === 'onSale') {// 创建促销活动tab默认打开促销活动
-            this.setState({
-                tabKeys: 'onSalePage',
-            }, () => {
-                this.clearUrl()
-            })
+    handleFromOtherPage = () => {
+        const { from, itemID, activityName } = this.getQueryVariable();
+        switch (from) {
+            case "manyFace":
+                this.setState(
+                    {
+                        isActive: "",
+                        tabKeys: "saleSpecialPage",
+                    },
+                    () => {
+                        this.handleQuery();
+                        this.clearUrl();
+                        this.handleDecorationStart({ itemID });
+                    }
+                );
+                break;
+            case "create":
+                // 创建活动后更新使用状态为不限
+                this.setState(
+                    {
+                        isActive: "",
+                        tabKeys: "saleSpecialPage",
+                    },
+                    () => {
+                        this.handleQuery();
+                        this.clearUrl();
+                    }
+                );
+                break;
+            case "onSale":
+                this.setState(
+                    {
+                        tabKeys: "onSalePage",
+                    },
+                    () => {
+                        this.clearUrl();
+                    }
+                );
+                break;
         }
         if (!from) {
-            this.handleQuery(); // 直接进入页面请求数据
+            //如果是从顶部搜索而来
+            if (activityName) {
+                if (itemID) {
+                    //营销活动
+                    this.setState(
+                        {
+                            eventName: activityName,
+                            tabKeys: "saleSpecialPage",
+                            isActive: "",
+                        },
+                        () => {
+                            this.handleQuery();
+                            this.clearUrl();
+                        }
+                    );
+                } else {
+                    //促销活动
+                    this.setState({
+                        tabKeys: "onSalePage",
+                    });
+                }
+            } else {
+                this.handleQuery();
+            }
         }
-    }
+    };
 
     // 删除方案
     removePlan = (record, itemID) => {
         const _this = this;
         Modal.confirm({
             title: `确认删除方案【${record.schemeName}】`,
-            content: '删除是不可恢复操作,请慎重考虑',
-            iconType: 'question-circle',
+            content: "删除是不可恢复操作,请慎重考虑",
+            iconType: "question-circle",
             onOk() {
                 // handleNext();
                 axiosData(
-                    '/filterSchemeService/delete.ajax',
+                    "/filterSchemeService/delete.ajax",
                     {
                         itemID,
-                        groupID: getStore().getState().user.getIn(['accountInfo', 'groupID'])
+                        groupID: getStore()
+                            .getState()
+                            .user.getIn(["accountInfo", "groupID"]),
                     },
                     null,
                     { path: null },
-                    'HTTP_SERVICE_URL_PROMOTION_NEW'
+                    "HTTP_SERVICE_URL_PROMOTION_NEW"
                 ).then((res) => {
-                    if (res.code === '000') {
-                        message.success('删除成功')
-                        _this.getSearchListContent()
+                    if (res.code === "000") {
+                        message.success("删除成功");
+                        _this.getSearchListContent();
                     }
                 });
             },
-            onCancel() { },
+            onCancel() {},
         });
-    }
+    };
     getQueryVariable() {
-        const search = window.decodeURIComponent(window.location.search)
-        var query = search.substr(1)
-        query = query.split('&')
-        var params = {}
+        const search = window.decodeURIComponent(window.location.search);
+        var query = search.substr(1);
+        query = query.split("&");
+        var params = {};
         for (let i = 0; i < query.length; i++) {
-            let q = query[i].split('=')
+            let q = query[i].split("=");
             if (q.length === 2) {
-                params[q[0]] = q[1]
+                params[q[0]] = q[1];
             }
         }
-        return params
+        return params;
     }
 
     goSearch = ({ key }) => {
-        const record = this.state.filterSchemeList.find(item => item.itemID === key)
-        const filterRule = record.filterRule || '{}';
-        const itm = JSON.parse(filterRule)
-        const { isActive } = itm
+        const record = this.state.filterSchemeList.find(
+            (item) => item.itemID === key
+        );
+        const filterRule = record.filterRule || "{}";
+        const itm = JSON.parse(filterRule);
+        const { isActive } = itm;
         this.setState({ isActive }, () => {
-            this.handleQuery()
-        })
-    }
+            this.handleQuery();
+        });
+    };
 
     getSearchTitle = (name) => {
         return (
-            <div><span className={styles.customPro}></span>{name}</div>
-        )
-    }
-
+            <div>
+                <span className={styles.customPro}></span>
+                {name}
+            </div>
+        );
+    };
 
     getSearchContent = () => {
-        const { filterSchemeList } = this.state
+        const { filterSchemeList } = this.state;
         return (
             <div>
                 <Menu
                     // onClick={this.handleClick}
                     style={{ width: 240 }}
-                    defaultSelectedKeys={['1']}
-                    defaultOpenKeys={['sub1']}
+                    defaultSelectedKeys={["1"]}
+                    defaultOpenKeys={["sub1"]}
                     mode="inline"
                     className={styles.saleSearchProgram}
                     onClick={this.goSearch}
                 >
-                    <MenuItemGroup key="g1" title={this.getSearchTitle('自定义方案')}>
-                        {
-                            (filterSchemeList || []).map((item) => {
-                                const filterRule = item.filterRule || '{}';
-                                const itm = JSON.parse(filterRule);
-                                return (
-                                    <Menu.Item key={item.itemID}>
-                                        <span className={styles.menuTitle}>
-                                            {itm.schemeName}
-                                        </span>
-                                        <Icon type="close-circle-o" onClick={() => { this.removePlan(itm, item.itemID) }} />
-                                    </Menu.Item>
-                                )
-                            })
-                        }
+                    <MenuItemGroup
+                        key="g1"
+                        title={this.getSearchTitle("自定义方案")}
+                    >
+                        {(filterSchemeList || []).map((item) => {
+                            const filterRule = item.filterRule || "{}";
+                            const itm = JSON.parse(filterRule);
+                            return (
+                                <Menu.Item key={item.itemID}>
+                                    <span className={styles.menuTitle}>
+                                        {itm.schemeName}
+                                    </span>
+                                    <Icon
+                                        type="close-circle-o"
+                                        onClick={() => {
+                                            this.removePlan(itm, item.itemID);
+                                        }}
+                                    />
+                                </Menu.Item>
+                            );
+                        })}
                     </MenuItemGroup>
-                    <MenuItemGroup key="g2" title={this.getSearchTitle('系统预置')}>
+                    <MenuItemGroup
+                        key="g2"
+                        title={this.getSearchTitle("系统预置")}
+                    >
                         <Menu.Item key="g21">
-                            <span className={styles.menuTitle}>
-                                暂无
-                            </span>
+                            <span className={styles.menuTitle}>暂无</span>
                         </Menu.Item>
                     </MenuItemGroup>
                 </Menu>
-                <Button type="ghost" style={{ width: '100%' }} icon="plus" onClick={() => { this.setState({ planModalVisible: true }) }}> 将当前查询条件保存为方案</Button>
+                <Button
+                    type="ghost"
+                    style={{ width: "100%" }}
+                    icon="plus"
+                    onClick={() => {
+                        this.setState({ planModalVisible: true });
+                    }}
+                >
+                    {" "}
+                    将当前查询条件保存为方案
+                </Button>
             </div>
-        )
-    }
+        );
+    };
     /**
      * @description toggle the advanced qualification selection.
      * */
@@ -557,124 +775,153 @@ class MySpecialActivities extends React.Component {
             title: `${this.props.intl.formatMessage(STRING_SPE.de8g7jed1j112)}`,
             content: (
                 <div>
-                    {this.props.intl.formatMessage(STRING_SPE.dojy6qlmv253)}
-                    【<span>{record.eventName}</span>】
+                    {this.props.intl.formatMessage(STRING_SPE.dojy6qlmv253)}【
+                    <span>{record.eventName}</span>】
                     <br />
-                    <span>{this.props.intl.formatMessage(STRING_SPE.d34ikef74237)}</span>
+                    <span>
+                        {this.props.intl.formatMessage(STRING_SPE.d34ikef74237)}
+                    </span>
                 </div>
             ),
             footer: `${this.props.intl.formatMessage(STRING_SPE.d34ikef74237)}`,
             onOk: () => {
-                this.handleDisableClickEvent(text, record, index, nextActive, modalTip)
+                this.handleDisableClickEvent(
+                    text,
+                    record,
+                    index,
+                    nextActive,
+                    modalTip
+                );
             },
-            onCancel: () => { },
+            onCancel: () => {},
         });
     }
     // 关闭更新
     handleDismissUpdateModal() {
         if (this.state.isCopy) {
-            this.handleQuery(this.state.pageNo)
+            this.handleQuery(this.state.pageNo);
         }
-        this.setState({
-            updateModalVisible: false,
-            isCopy: false,
-        }, () => {
-            this.props.saleCenterResetDetailInfo();
-        });
+        this.setState(
+            {
+                updateModalVisible: false,
+                isCopy: false,
+            },
+            () => {
+                this.props.saleCenterResetDetailInfo();
+            }
+        );
     }
 
     componentDidMount() {
-        const {
-            fetchSpecialPromotionList,
-        } = this.props;
         this.queryWechatMpInfo();
         // 把groupID传给后台，后台执行自动终止
         this.props.updateExpiredActiveState({
             groupID: this.props.user.accountInfo.groupID,
-        })
+        });
         // 产品授权
         this.props.getAuthLicenseData().then((res) => {
-            this.setState({ authLicenseData: res })
-            let { authStatus } = checkAuthLicense(res)
-            this.setState({ authStatus })
+            this.setState({ authLicenseData: res });
+            let { authStatus } = checkAuthLicense(res);
+            this.setState({ authStatus });
         });
-        // console.log('componentDidMountcomponentDidMountcomponentDidMount')
         // 千人千面活动创建和更新完，点去装修跳转页面
-        this.fromCrmJump();
-        this.getSearchListContent() // 查询方案列表
-        // this.querySortedChannelList()//查询渠道列表
+        this.handleFromOtherPage();
+        this.getSearchListContent(); // 查询方案列表
     }
 
     // 产品授权
     getAuthLicenseData = (opts) => {
         axiosData(
-            '/crm/crmAuthLicenseService.queryCrmPluginLicenses.ajax?auth',
+            "/crm/crmAuthLicenseService.queryCrmPluginLicenses.ajax?auth",
             {
                 ...opts,
-                groupID: getStore().getState().user.getIn(['accountInfo', 'groupID'])
+                groupID: getStore()
+                    .getState()
+                    .user.getIn(["accountInfo", "groupID"]),
             },
             null,
-            { path: 'data' },
-            'HTTP_SERVICE_URL_CRM'
+            { path: "data" },
+            "HTTP_SERVICE_URL_CRM"
         ).then((res) => {
-            let { data = {} } = res
-            this.setState({ authLicenseData: data })
-            let { authStatus } = checkAuthLicense(this.state.authLicenseData)
-            this.setState({ authStatus })
+            let { data = {} } = res;
+            this.setState({ authLicenseData: data });
+            let { authStatus } = checkAuthLicense(this.state.authLicenseData);
+            this.setState({ authStatus });
         });
-    }
+    };
 
     // 查询方案列表
     getSearchListContent = () => {
         axiosData(
-            '/filterSchemeService/queryList.ajax',
+            "/filterSchemeService/queryList.ajax",
             {
                 filterType: 11,
                 pageNo: 1,
                 pageSize: 100,
-                groupID: getStore().getState().user.getIn(['accountInfo', 'groupID'])
+                groupID: getStore()
+                    .getState()
+                    .user.getIn(["accountInfo", "groupID"]),
             },
             null,
             { path: null },
-            'HTTP_SERVICE_URL_PROMOTION_NEW'
+            "HTTP_SERVICE_URL_PROMOTION_NEW"
         ).then((res) => {
-            if (res.code === '000') {
-                const { data: { filterSchemeList = [] } } = res;
+            if (res.code === "000") {
+                const {
+                    data: { filterSchemeList = [] },
+                } = res;
                 this.setState({
-                    filterSchemeList
-                })
+                    filterSchemeList,
+                });
             }
         });
-    }
+    };
 
     // TODO: the following code may be not the best implementation of filter
     // The filter condition should not be save to redux, just save it to state temporarily.
     // Modify it in the future
     componentWillReceiveProps(nextProps) {
-        if (this.props.user.activeTabKey !== nextProps.user.activeTabKey && nextProps.user.activeTabKey === "1000076003") {
+        if (
+            this.props.user.activeTabKey !== nextProps.user.activeTabKey &&
+            nextProps.user.activeTabKey === "1000076003"
+        ) {
             const tabArr = nextProps.user.tabList.map((tab) => tab.value);
             if (tabArr.includes("1000076003")) {
                 this.handleQuery(this.state.pageNo); // tab里已有该tab，从别的tab切换回来，就自动查询，如果是新打开就不执行此刷新函数，而执行加载周期里的
             }
         }
-        if (this.props.mySpecialActivities.get('$specialPromotionList') !== nextProps.mySpecialActivities.get('$specialPromotionList')) {
-            const _promoitonList = nextProps.mySpecialActivities.get('$specialPromotionList').toJS();
+        if (
+            this.props.mySpecialActivities.get("$specialPromotionList") !==
+            nextProps.mySpecialActivities.get("$specialPromotionList")
+        ) {
+            const _promoitonList = nextProps.mySpecialActivities
+                .get("$specialPromotionList")
+                .toJS();
             switch (_promoitonList.status) {
-                case 'timeout':
-                    message.error(`${this.props.intl.formatMessage(STRING_SPE.d17012f5c16b488)}`);
+                case "timeout":
+                    message.error(
+                        `${this.props.intl.formatMessage(
+                            STRING_SPE.d17012f5c16b488
+                        )}`
+                    );
                     this.setState({
                         loading: false,
                     });
                     break;
-                case 'fail':
-                    message.error(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobd599)}`);
+                case "fail":
+                    message.error(
+                        `${this.props.intl.formatMessage(
+                            STRING_SPE.du3bnfobd599
+                        )}`
+                    );
                     this.setState({
                         loading: false,
                     });
                     break;
-                case 'success':
+                case "success":
                     if (_promoitonList.data) {
-                        const _envIsVip = HUALALA.ENVIRONMENT === 'production-release';
+                        const _envIsVip =
+                            HUALALA.ENVIRONMENT === "production-release";
                         // const data = _envIsVip ? _promoitonList.data.filter((activity) => {
                         //     // 隐藏1个卡片
                         //     return activity.eventWay != '63'
@@ -694,7 +941,11 @@ class MySpecialActivities extends React.Component {
                             total: _promoitonList.total,
                         });
                     } else {
-                        message.warning(`${this.props.intl.formatMessage(STRING_SPE.d4h1ac506h7670)}`);
+                        message.warning(
+                            `${this.props.intl.formatMessage(
+                                STRING_SPE.d4h1ac506h7670
+                            )}`
+                        );
                         this.setState({
                             loading: false,
                             dataSource: [],
@@ -704,57 +955,85 @@ class MySpecialActivities extends React.Component {
                     break;
             }
         }
-        if (this.props.mySpecialActivities.get('$specialDetailInfo') !== nextProps.mySpecialActivities.get('$specialDetailInfo')) {
+        if (
+            this.props.mySpecialActivities.get("$specialDetailInfo") !==
+            nextProps.mySpecialActivities.get("$specialDetailInfo")
+        ) {
             this.setState({
-                record: nextProps.mySpecialActivities.get('$specialDetailInfo').toJS(),
-            })
+                record: nextProps.mySpecialActivities
+                    .get("$specialDetailInfo")
+                    .toJS(),
+            });
         }
     }
     //** 第三版 重构 抽抽乐活动 点击事件 */
     onV3Click = (itemID, view, key, isActive) => {
-        if (key == '85') {
+        if (key == "85") {
             setTimeout(() => {
-                jumpPage({ menuID: SALE_ACTIVE_NEW_PAGE, typeKey: key, itemID, isView: view, isActive})
+                jumpPage({
+                    menuID: SALE_ACTIVE_NEW_PAGE,
+                    typeKey: key,
+                    itemID,
+                    isView: view,
+                    isActive,
+                });
             }, 100);
-            return closePage(SALE_ACTIVE_NEW_PAGE)
+            return closePage(SALE_ACTIVE_NEW_PAGE);
         }
-        this.setState(ps => ({ v3visible: !ps.v3visible, activeStatus: isActive }));
+        this.setState((ps) => ({
+            v3visible: !ps.v3visible,
+            activeStatus: isActive,
+        }));
         if (itemID) {
             this.setState({ itemID, view, curKey: key });
         }
-    }
+    };
     hideCopyUrlModal = () => {
         this.setState({
-            isShowCopyUrl: false
-        })
-    }
+            isShowCopyUrl: false,
+        });
+    };
     handleShowDetail = ({ record, isView = false, isEdit = false }) => {
-        closePage(SALE_CENTER_PAYHAVEGIFT)
+        closePage(SALE_CENTER_PAYHAVEGIFT);
         // 跳转到新版的营销活动
         setTimeout(() => {
-            jumpPage({ menuID: SALE_CENTER_PAYHAVEGIFT, itemID: record.itemID, typeKey: record.eventWay, isView, isEdit })
+            jumpPage({
+                menuID: SALE_CENTER_PAYHAVEGIFT,
+                itemID: record.itemID,
+                typeKey: record.eventWay,
+                isView,
+                isEdit,
+            });
         }, 100);
-    }
+    };
     // 请求小程序列表
     async getAppList() {
-        const newData = { groupID: getStore().getState().user.getIn(['accountInfo', 'groupID']), page: { current: 1, pageSize: 1000 } };
-        const { result: { code, message: msg }, apps } = await axiosData(
-            '/miniProgramCodeManage/getApps',
+        const newData = {
+            groupID: getStore()
+                .getState()
+                .user.getIn(["accountInfo", "groupID"]),
+            page: { current: 1, pageSize: 1000 },
+        };
+        const {
+            result: { code, message: msg },
+            apps,
+        } = await axiosData(
+            "/miniProgramCodeManage/getApps",
             newData,
             {},
-            { path: '' },
-            'HTTP_SERVICE_URL_WECHAT'
+            { path: "" },
+            "HTTP_SERVICE_URL_WECHAT"
         );
-        if (code === '000' && !isEmpty(apps)) {
+        if (code === "000" && !isEmpty(apps)) {
             this.setState({ apps });
         }
     }
     // 请求小程序二微码
     creatReleaseQrCode = () => {
-        const { eventWay, currAppID, qrItemID, launchChannelIDWX } = this.state
-        if(!currAppID) {
-            message.error('请选择小程序');
-            return
+        const { eventWay, currAppID, qrItemID, launchChannelIDWX } = this.state;
+        if (!currAppID) {
+            message.error("请选择小程序");
+            return;
         }
         /*
         1.积分兑换： pages/subOr/voucherCenter/redeemDetail/main?eventID=6886285210829196181
@@ -765,286 +1044,387 @@ class MySpecialActivities extends React.Component {
         6.分享裂变： pages/promotion/share/main?e=6888122567681379221
         7.膨胀大礼包：pages/promotion/expand/main?e=6883743693912673173
         */
-         const pageMap = {
-             '30':{page: 'pages/subOr/voucherCenter/redeemDetail/main', scene : !launchChannelIDWX ? `eventID=${qrItemID}` : `eventID=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
-             '20':{page: 'pages/web/common/main', scene : !launchChannelIDWX ? `u=l?eventID=${qrItemID}` :  `u=l?eventID=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
-             '21':{page: 'pages/subOr/voucherCenter/voucherDetail/main', scene : !launchChannelIDWX ? `eventID=${qrItemID}` :  `eventID=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
-             '79':{page: 'pages/promotion/blindBox/index', scene : !launchChannelIDWX ? `eventID=${qrItemID}` :  `eventID=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
-             '68':{page: 'pages/promotion/recommend/main', scene : !launchChannelIDWX ? `e=${qrItemID}` :  `e=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
-             '65':{page: 'pages/promotion/share/main', scene : !launchChannelIDWX ? `e=${qrItemID}` :  `e=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
-             '66':{page: 'pages/promotion/expand/main', scene : !launchChannelIDWX ? `e=${qrItemID}` :  `e=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
-             '82':{page: 'pages/promotion/grab/main', scene : !launchChannelIDWX ? `e=${qrItemID}` :  `e=${qrItemID}&launchChannelID=${launchChannelIDWX}`},
-             '83':{page: 'pages/promotion/passwordCoupons/main', scene : !launchChannelIDWX ? `e=${qrItemID}` :  `e=${qrItemID}&launchChannelID=${launchChannelIDWX}`},//口令领券
-         }
-         const params = {
-             appID: currAppID,
-             scene: pageMap[eventWay].scene,
-             page: pageMap[eventWay].page,
-             width:280
-         }
-         const paramsRouter = cloneDeep(params)
-         if (eventWay == '20') {
-            paramsRouter.scene = `scene=${paramsRouter.scene}`
-         }
-        this.setState({xcxLoad: true})
+        const pageMap = {
+            30: {
+                page: "pages/subOr/voucherCenter/redeemDetail/main",
+                scene: !launchChannelIDWX
+                    ? `eventID=${qrItemID}`
+                    : `eventID=${qrItemID}&launchChannelID=${launchChannelIDWX}`,
+            },
+            20: {
+                page: "pages/web/common/main",
+                scene: !launchChannelIDWX
+                    ? `u=l?eventID=${qrItemID}`
+                    : `u=l?eventID=${qrItemID}&launchChannelID=${launchChannelIDWX}`,
+            },
+            21: {
+                page: "pages/subOr/voucherCenter/voucherDetail/main",
+                scene: !launchChannelIDWX
+                    ? `eventID=${qrItemID}`
+                    : `eventID=${qrItemID}&launchChannelID=${launchChannelIDWX}`,
+            },
+            79: {
+                page: "pages/promotion/blindBox/index",
+                scene: !launchChannelIDWX
+                    ? `eventID=${qrItemID}`
+                    : `eventID=${qrItemID}&launchChannelID=${launchChannelIDWX}`,
+            },
+            68: {
+                page: "pages/promotion/recommend/main",
+                scene: !launchChannelIDWX
+                    ? `e=${qrItemID}`
+                    : `e=${qrItemID}&launchChannelID=${launchChannelIDWX}`,
+            },
+            65: {
+                page: "pages/promotion/share/main",
+                scene: !launchChannelIDWX
+                    ? `e=${qrItemID}`
+                    : `e=${qrItemID}&launchChannelID=${launchChannelIDWX}`,
+            },
+            66: {
+                page: "pages/promotion/expand/main",
+                scene: !launchChannelIDWX
+                    ? `e=${qrItemID}`
+                    : `e=${qrItemID}&launchChannelID=${launchChannelIDWX}`,
+            },
+            82: {
+                page: "pages/promotion/grab/main",
+                scene: !launchChannelIDWX
+                    ? `e=${qrItemID}`
+                    : `e=${qrItemID}&launchChannelID=${launchChannelIDWX}`,
+            },
+            83: {
+                page: "pages/promotion/passwordCoupons/main",
+                scene: !launchChannelIDWX
+                    ? `e=${qrItemID}`
+                    : `e=${qrItemID}&launchChannelID=${launchChannelIDWX}`,
+            }, //口令领券
+        };
+        const params = {
+            appID: currAppID,
+            scene: pageMap[eventWay].scene,
+            page: pageMap[eventWay].page,
+            width: 280,
+        };
+        const paramsRouter = cloneDeep(params);
+        if (eventWay == "20") {
+            paramsRouter.scene = `scene=${paramsRouter.scene}`;
+        }
+        this.setState({ xcxLoad: true });
         const callServer = axiosData(
-            '/maQrCode/getReleaseQrCode',
+            "/maQrCode/getReleaseQrCode",
             params,
             {},
-            { path: '' },
-            'HTTP_SERVICE_URL_WECHAT'
+            { path: "" },
+            "HTTP_SERVICE_URL_WECHAT"
         );
-        callServer.then(data => {
-            let { result: { code, message: msg }, qrCodeImage = '' } = data
-            this.setState({ xcxLoad: false })
-            if (code === '000') {
-                this.setState({ qrCodeImage, scene: paramsRouter.scene, page: `${paramsRouter.page}.html` });
-            }
-        }).catch(({ message: msg }) => {
-            this.setState({ xcxLoad: false })
-            message.error(msg)
-        })
-    }
+        callServer
+            .then((data) => {
+                let {
+                    result: { code, message: msg },
+                    qrCodeImage = "",
+                } = data;
+                this.setState({ xcxLoad: false });
+                if (code === "000") {
+                    this.setState({
+                        qrCodeImage,
+                        scene: paramsRouter.scene,
+                        page: `${paramsRouter.page}.html`,
+                    });
+                }
+            })
+            .catch(({ message: msg }) => {
+                this.setState({ xcxLoad: false });
+                message.error(msg);
+            });
+    };
     // 选择小程序
     handleAppChange = (currAppID) => {
-        this.setState({ currAppID })
-    }
+        this.setState({ currAppID });
+    };
     // 选择公众号
     handleWechatAccountChange = (v) => {
         const mpId = JSON.parse(v).mpID;
         this.setState({
-            pushMessageMpID: mpId
-        })
+            pushMessageMpID: mpId,
+        });
         this.handleCopyUrl(null, mpId);
-    }
+    };
 
     // 修改活动规则
     handleRuleOk = () => {
         const callServer = axiosData(
-            '/specialPromotion/updateEventParam.ajax',
-            {eventWay: 85, groupID: getStore().getState().user.getIn(['accountInfo', 'groupID']), paramName: 'executePriorityByCreateTime', paramValue: this.state.paramsValue},
+            "/specialPromotion/updateEventParam.ajax",
+            {
+                eventWay: 85,
+                groupID: getStore()
+                    .getState()
+                    .user.getIn(["accountInfo", "groupID"]),
+                paramName: "executePriorityByCreateTime",
+                paramValue: this.state.paramsValue,
+            },
             {},
-            { path: '' },
-            'HTTP_SERVICE_URL_PROMOTION_NEW'
+            { path: "" },
+            "HTTP_SERVICE_URL_PROMOTION_NEW"
         );
-        callServer.then(data => {
-            let { code } = data
-            if (code === '000') {
-                message.success('更新成功')
+        callServer
+            .then((data) => {
+                let { code } = data;
+                if (code === "000") {
+                    message.success("更新成功");
+                    this.setState({ viewRuleVisibles: false });
+                }
+            })
+            .catch(({ message: msg }) => {
                 this.setState({ viewRuleVisibles: false });
-            }
-        }).catch(({ message: msg }) => {
-            this.setState({ viewRuleVisibles: false })
-            // message.error(msg)
-        })
-    }
+                // message.error(msg)
+            });
+    };
 
     handleCheckText = (value, label) => {
         // let v = Number(value);
-        const groupIds = this.state.sortedChannelList.map(item => item.value)
-        if(groupIds.includes(value)) {
-            message.warning('请选择渠道')
-            this.setState({
-                channelContent: '',
-                launchChannelID: '',
-            }, () => {
-                this.handleCopyUrl()
-            })
+        const groupIds = this.state.sortedChannelList.map((item) => item.value);
+        if (groupIds.includes(value)) {
+            message.warning("请选择渠道");
+            this.setState(
+                {
+                    channelContent: "",
+                    launchChannelID: "",
+                },
+                () => {
+                    this.handleCopyUrl();
+                }
+            );
         } else {
-            this.setState({
-                channelContent: label[0] || '',
-                launchChannelID: value || '',
-            }, () => {
-                this.handleCopyUrl()
-            })
+            this.setState(
+                {
+                    channelContent: label[0] || "",
+                    launchChannelID: value || "",
+                },
+                () => {
+                    this.handleCopyUrl();
+                }
+            );
         }
-    }
+    };
 
     handleChangeTabs = (key) => {
-        this.setState({
-            tabKeys: key,
-        }, () => {
-            this.handleQuery()
-        })
-    }
+        this.setState(
+            {
+                tabKeys: key,
+            },
+            () => {
+                this.handleQuery();
+            }
+        );
+    };
 
     // 点击按钮前先弹窗
     handleEditActive = (record) => (handleNext) => {
-        if (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && (record.isActive != '0' || !isMine(record)) && record.eventWay != 64) {
+        if (
+            isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) &&
+            (record.isActive != "0" || !isMine(record)) &&
+            record.eventWay != 64
+        ) {
             Modal.confirm({
                 title: `活动编辑`,
-                content: '活动无法编辑。',
-                iconType: 'exclamation-circle',
+                content: "活动无法编辑。",
+                iconType: "exclamation-circle",
             });
             return;
         }
-        if (record.isActive == '1') { // 正在进行中的活动弹窗提示
+        if (record.isActive == "1") {
+            // 正在进行中的活动弹窗提示
             Modal.confirm({
                 title: `活动编辑`,
-                content: '活动正在进行中，确定要进行编辑吗？',
-                iconType: 'exclamation-circle',
+                content: "活动正在进行中，确定要进行编辑吗？",
+                iconType: "exclamation-circle",
                 onOk() {
                     handleNext();
                 },
-                onCancel() { },
+                onCancel() {},
             });
         } else {
-            handleNext()
+            handleNext();
         }
-    }
+    };
 
     // 点击删除按钮先弹窗
     handleDelActive = (record) => (handleNext) => {
         if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
             Modal.confirm({
                 title: `活动删除`,
-                content: '活动无法删除。',
-                iconType: 'question-circle'
+                content: "活动无法删除。",
+                iconType: "question-circle",
             });
             return;
         }
-        if (record.isActive == '1') {
+        if (record.isActive == "1") {
             Modal.confirm({
                 title: `确认删除这个活动`,
-                content: '活动正在启用中，删除后无法恢复，线上投放的活动链接及二维码将会失效。',
-                iconType: 'question-circle',
+                content:
+                    "活动正在启用中，删除后无法恢复，线上投放的活动链接及二维码将会失效。",
+                iconType: "question-circle",
                 onOk() {
                     handleNext();
                 },
-                onCancel() { },
+                onCancel() {},
             });
-            return
+            return;
         }
         Modal.confirm({
             title: `确认删除这个活动`,
-            content: '删除后无法恢复，线上投放的活动链接及二维码将会失效。',
-            iconType: 'question-circle',
+            content: "删除后无法恢复，线上投放的活动链接及二维码将会失效。",
+            iconType: "question-circle",
             onOk() {
                 handleNext();
             },
-            onCancel() { },
+            onCancel() {},
         });
-    }
+    };
 
     handleSattusActive = (record) => (handleNext) => {
-        if (record.isActive == '-1' || record.isActive == '2') {
+        if (record.isActive == "-1" || record.isActive == "2") {
             Modal.info({
                 title: `活动无法启用`,
-                content: `活动已${record.isActive == '-1' ? '结束' : '失效'}，请修改可用的活动时间。`,
-                okText: '确定',
+                content: `活动已${
+                    record.isActive == "-1" ? "结束" : "失效"
+                }，请修改可用的活动时间。`,
+                okText: "确定",
                 // cancelText: null,
-                iconType: 'exclamation-circle',
-                onOk() {
-                },
-                onCancel() { },
+                iconType: "exclamation-circle",
+                onOk() {},
+                onCancel() {},
                 // okType: 'primary'
             });
-            return
+            return;
         }
         handleNext();
-    }
+    };
 
     // 列表样式切换
     stylesChange = (val) => {
         this.setState({
-            stylesShow: val
-        })
-    }
+            stylesShow: val,
+        });
+    };
     // 渲染小程序列表
     renderApp() {
         const { apps = [] } = this.state;
         return (
-            <Select style={{ width: '51%', margin: '0 10px' }} onChange={this.handleAppChange} placeholder='请选择小程序'>
+            <Select
+                style={{ width: "51%", margin: "0 10px" }}
+                onChange={this.handleAppChange}
+                placeholder="请选择小程序"
+            >
                 {apps.map((x, index) => {
-                    return <Option key={index} value={x.appID} >{x.nickName || '缺失nickName子段'}</Option>
+                    return (
+                        <Option key={index} value={x.appID}>
+                            {x.nickName || "缺失nickName子段"}
+                        </Option>
+                    );
                 })}
             </Select>
-        )
+        );
     }
 
     // 下载餐厅二维码
     handleQrCodeDownload = (action) => {
         const tagetEle = document.getElementById(action);
-        const domA = document.createElement('a');
-        domA.href = tagetEle.toDataURL('image/png');
-        domA.download = '线上餐厅二维码.png';
+        const domA = document.createElement("a");
+        domA.href = tagetEle.toDataURL("image/png");
+        domA.download = "线上餐厅二维码.png";
         domA.click();
-    }
+    };
     // 下载小程序二维码
     downloadImage = (action, name) => {
-        let image = new Image()
+        let image = new Image();
         // 解决跨域 Canvas 污染问题
-        image.setAttribute('crossOrigin', 'anonymous')
+        image.setAttribute("crossOrigin", "anonymous");
         image.onload = function () {
-            let canvas = document.createElement('canvas')
-            canvas.width = image.width
-            canvas.height = image.height
-            let context = canvas.getContext('2d')
-            context.drawImage(image, 0, 0, image.width, image.height)
-            let url = canvas.toDataURL('image/png')
+            let canvas = document.createElement("canvas");
+            canvas.width = image.width;
+            canvas.height = image.height;
+            let context = canvas.getContext("2d");
+            context.drawImage(image, 0, 0, image.width, image.height);
+            let url = canvas.toDataURL("image/png");
             // 生成一个a元素
-            let a = document.createElement('a')
+            let a = document.createElement("a");
             // 将a的download属性设置为我们想要下载的图片名称，若name不存在则使用‘下载图片名称’作为默认名称
-            a.download = name || '小程序二维码'
+            a.download = name || "小程序二维码";
             // 将生成的URL设置为a.href属性
-            a.href = url
+            a.href = url;
             // 触发a的单击事件
-            a.click()
-        }
-        image.src = document.getElementById(action).src
-    }
+            a.click();
+        };
+        image.src = document.getElementById(action).src;
+    };
 
     queryWechatMpInfo = () => {
         const { shopList } = this.props;
-        const shopIDs = shopList.toJS().map(x => x.shopID);
-        const params = { shopIDs, pageNo: 1, pageSize: 100, mpType: 'SERVICE_AUTH' };
-        axiosData('/wechat/mpInfoRpcService_queryMpInfoByBindShop.ajax', { ...params },
-            null, { path: 'data' }, 'HTTP_SERVICE_URL_CRM')
-            .then((data) => {
-                const { mpInfoResDataList = [] } = data;
-                this.setState({ allWeChatAccountList: mpInfoResDataList, pushMessageMpID: mpInfoResDataList[0].mpID, mpName: mpInfoResDataList[0].mpName });
-            })
-    }
+        const shopIDs = shopList.toJS().map((x) => x.shopID);
+        const params = {
+            shopIDs,
+            pageNo: 1,
+            pageSize: 100,
+            mpType: "SERVICE_AUTH",
+        };
+        axiosData(
+            "/wechat/mpInfoRpcService_queryMpInfoByBindShop.ajax",
+            { ...params },
+            null,
+            { path: "data" },
+            "HTTP_SERVICE_URL_CRM"
+        ).then((data) => {
+            const { mpInfoResDataList = [] } = data;
+            this.setState({
+                allWeChatAccountList: mpInfoResDataList,
+                pushMessageMpID: mpInfoResDataList[0].mpID,
+                mpName: mpInfoResDataList[0].mpName,
+            });
+        });
+    };
     getAllAvailableMpInfo = () => {
         const { allWeChatAccountList } = this.state;
         return [
-            ...allWeChatAccountList.map(item => (
-                {
-                    value: JSON.stringify({ mpID: item.mpID, appID: item.appID }),
-                    label: item.mpName,
-                }
-            ))
+            ...allWeChatAccountList.map((item) => ({
+                value: JSON.stringify({ mpID: item.mpID, appID: item.appID }),
+                label: item.mpName,
+            })),
         ];
-    }
+    };
     // 渲染公众号列表
     renderMp() {
         const { pushMessageMpID, mpName } = this.state;
         this.handleWechatChange = this.handleWechatAccountChange.bind(this);
         return (
             <Select
-                notFoundContent={'未搜索到结果'}
+                notFoundContent={"未搜索到结果"}
                 placeholder="请选择微信推送的公众号"
                 showSearch={true}
                 defaultValue={mpName || undefined}
                 onChange={this.handleWechatChange}
                 style={{
-                    width: '54%', margin: '0 10px'
+                    width: "54%",
+                    margin: "0 10px",
                 }}
             >
-                {
-                    this.getAllAvailableMpInfo().map(({ value, label }) => <Option key={value} value={value} label={label}>{label}</Option>)
-                }
+                {this.getAllAvailableMpInfo().map(({ value, label }) => (
+                    <Option key={value} value={value} label={label}>
+                        {label}
+                    </Option>
+                ))}
             </Select>
-        )
+        );
     }
 
     renderH5Channels() {
         const { sortedChannelList, launchChannelID } = this.state;
         return (
             <TreeSelect
-                style={{ width: '51%', margin: '0 10px' }}
+                style={{ width: "51%", margin: "0 10px" }}
                 treeData={sortedChannelList}
-                dropdownStyle={{ maxHeight: 260, overflow: 'auto' }}
+                dropdownStyle={{ maxHeight: 260, overflow: "auto" }}
                 placeholder="请选择渠道"
                 showSearch={true}
                 treeNodeFilterProp="label"
@@ -1053,17 +1433,16 @@ class MySpecialActivities extends React.Component {
                 value={launchChannelID || undefined}
                 onChange={this.handleCheckText}
             />
-        )
-
+        );
     }
 
     renderWXChannels() {
         const { sortedChannelList, launchChannelIDWX } = this.state;
         return (
             <TreeSelect
-                style={{ width: '51%', margin: '0 10px' }}
+                style={{ width: "51%", margin: "0 10px" }}
                 treeData={sortedChannelList}
-                dropdownStyle={{ maxHeight: 260, overflow: 'auto' }}
+                dropdownStyle={{ maxHeight: 260, overflow: "auto" }}
                 placeholder="请选择渠道"
                 showSearch={true}
                 treeNodeFilterProp="label"
@@ -1071,42 +1450,64 @@ class MySpecialActivities extends React.Component {
                 treeDefaultExpandAll
                 value={launchChannelIDWX || undefined}
                 onChange={(value, label) => {
-                    const groupIds = sortedChannelList.map(item => item.value)
-                    if(groupIds.includes(value)) {
-                        message.warning('请选择渠道')
+                    const groupIds = sortedChannelList.map(
+                        (item) => item.value
+                    );
+                    if (groupIds.includes(value)) {
+                        message.warning("请选择渠道");
                         this.setState({
-                            launchChannelIDWX: '',
-                        })
+                            launchChannelIDWX: "",
+                        });
                     } else {
                         this.setState({
-                            launchChannelIDWX: value || '',
-                        })
+                            launchChannelIDWX: value || "",
+                        });
                     }
                 }}
             />
-        )
-
+        );
     }
 
     // 渲染复制链接modal内容
-    renderCopyUrlModal () {
-        const  {urlContent, eventWay, qrCodeImage, xcxLoad, channelContent, page, scene} = this.state
-        const hideCTBox = [66,79,82,83]; // 不显示餐厅
+    renderCopyUrlModal() {
+        const {
+            urlContent,
+            eventWay,
+            qrCodeImage,
+            xcxLoad,
+            channelContent,
+            page,
+            scene,
+        } = this.state;
+        const hideCTBox = [66, 79, 82, 83]; // 不显示餐厅
         const hideWXBox = [22]; // 不显示微信
-        return (<div className={indexStyles.copyCont}>
-            {
-                hideCTBox.includes(eventWay)
-                    ? '' : <div className={indexStyles.copyBox} style={{ marginRight: 20 }}>
-                        <h4 className={indexStyles.copyTitle}>线上餐厅链接提取</h4>
-                        <Alert message="提取链接或二维码后，可以线上或线下投放" type="warning" />
+        return (
+            <div className={indexStyles.copyCont}>
+                {hideCTBox.includes(eventWay) ? (
+                    ""
+                ) : (
+                    <div
+                        className={indexStyles.copyBox}
+                        style={{ marginRight: 20 }}
+                    >
+                        <h4 className={indexStyles.copyTitle}>
+                            线上餐厅链接提取
+                        </h4>
+                        <Alert
+                            message="提取链接或二维码后，可以线上或线下投放"
+                            type="warning"
+                        />
                         <div className={indexStyles.copyUrlWrap}>
-
-                            <div className={indexStyles.leftMpConent} >
-                                <div className={indexStyles.label}>请选择公众号</div>
+                            <div className={indexStyles.leftMpConent}>
+                                <div className={indexStyles.label}>
+                                    请选择公众号
+                                </div>
                                 {this.renderMp()}
                             </div>
-                            <div className={indexStyles.leftMpConent} >
-                                <div className={indexStyles.label}>请填写投放渠道</div>
+                            <div className={indexStyles.leftMpConent}>
+                                <div className={indexStyles.label}>
+                                    请填写投放渠道
+                                </div>
                                 {this.renderH5Channels()}
                                 {/* <Input
                                     style={{
@@ -1118,141 +1519,319 @@ class MySpecialActivities extends React.Component {
                             </div>
 
                             <div className={indexStyles.copyWrapHeader}>
-                                <div className={indexStyles.urlText}>{urlContent}</div>
-                                <Button className={indexStyles.copyBtn} onClick={this.handleToCopyUrl}>复制链接</Button>
+                                <div className={indexStyles.urlText}>
+                                    {urlContent}
+                                </div>
+                                <Button
+                                    className={indexStyles.copyBtn}
+                                    onClick={this.handleToCopyUrl}
+                                >
+                                    复制链接
+                                </Button>
                             </div>
                             <div className={indexStyles.qrCodeBox}>
-                                <div >
+                                <div>
                                     <QRCode
                                         size={160}
                                         value={urlContent}
                                         id="__promotion_xsct_qr_canvas"
                                     />
                                 </div>
-                                <Button className={indexStyles.xzqrCodeBtn} type="primary" onClick={() => { this.handleQrCodeDownload('__promotion_xsct_qr_canvas') }}>下载二维码</Button>
+                                <Button
+                                    className={indexStyles.xzqrCodeBtn}
+                                    type="primary"
+                                    onClick={() => {
+                                        this.handleQrCodeDownload(
+                                            "__promotion_xsct_qr_canvas"
+                                        );
+                                    }}
+                                >
+                                    下载二维码
+                                </Button>
                             </div>
-
                         </div>
                     </div>
-            }
-            {
-                hideWXBox.includes(eventWay)
-                    ? '' : <div className={indexStyles.copyBox}>
-                        <h4 className={indexStyles.copyTitle}>小程序活动码提取</h4>
-                        <Alert message="请先在小程序装修配置好该活动，再提取小程序活动码" type="warning" />
-                        <div className={indexStyles.copyUrlWrap} style={{ overflow: 'scroll' }}>
+                )}
+                {hideWXBox.includes(eventWay) ? (
+                    ""
+                ) : (
+                    <div className={indexStyles.copyBox}>
+                        <h4 className={indexStyles.copyTitle}>
+                            小程序活动码提取
+                        </h4>
+                        <Alert
+                            message="请先在小程序装修配置好该活动，再提取小程序活动码"
+                            type="warning"
+                        />
+                        <div
+                            className={indexStyles.copyUrlWrap}
+                            style={{ overflow: "scroll" }}
+                        >
                             <div className={indexStyles.copyWrapHeader}>
-                                <div className={indexStyles.label} style={{ width: '25%', textAlign: 'right' }}>请选择小程序</div>
+                                <div
+                                    className={indexStyles.label}
+                                    style={{ width: "25%", textAlign: "right" }}
+                                >
+                                    请选择小程序
+                                </div>
                                 {this.renderApp()}
                             </div>
                             <div className={indexStyles.copyWrapHeader}>
-                                <div className={indexStyles.label} style={{ width: '25%', textAlign: 'right' }}>请选择投放渠道</div>
+                                <div
+                                    className={indexStyles.label}
+                                    style={{ width: "25%", textAlign: "right" }}
+                                >
+                                    请选择投放渠道
+                                </div>
                                 {this.renderWXChannels()}
                             </div>
-                            <div style={{ fontSize: '12px', padding: 7, backgroundColor: 'rgb(247,194,127)', borderRadius: '5px' }}>
+                            <div
+                                style={{
+                                    fontSize: "12px",
+                                    padding: 7,
+                                    backgroundColor: "rgb(247,194,127)",
+                                    borderRadius: "5px",
+                                }}
+                            >
                                 如需设置投放渠道，请确保所选2.0小程序版本不低于OR6.2.6.0；3.0小程序版本不低于SR3.6.0，否则会造成生成的小程序活动码/链接失效！
                             </div>
-                            <div style={{ textAlign: 'center', marginTop: 10 }}>
-                                <Button className={indexStyles.wxBtn} type="primary" onClick={this.creatReleaseQrCode} loading={xcxLoad}>生成小程序码</Button>
+                            <div style={{ textAlign: "center", marginTop: 10 }}>
+                                <Button
+                                    className={indexStyles.wxBtn}
+                                    type="primary"
+                                    onClick={this.creatReleaseQrCode}
+                                    loading={xcxLoad}
+                                >
+                                    生成小程序码
+                                </Button>
                             </div>
-                            <div className={indexStyles.qrCodeBox} style={{ margin: 0 }}>
-                                {
-                                    qrCodeImage && <div className={indexStyles.copyWrapHeader}>
-                                       <div className={indexStyles.label} style={{ width: '25%', textAlign: 'right' }}>小程序路径</div>
-                                       <Input value={`${page}?${scene}`} style={{ width: '51%', margin: '0 10px' }}/>
-                                        <Button className={indexStyles.wxBtn} type="primary" onClick={this.handleToCopyRouter}>复制</Button>
+                            <div
+                                className={indexStyles.qrCodeBox}
+                                style={{ margin: 0 }}
+                            >
+                                {qrCodeImage && (
+                                    <div className={indexStyles.copyWrapHeader}>
+                                        <div
+                                            className={indexStyles.label}
+                                            style={{
+                                                width: "25%",
+                                                textAlign: "right",
+                                            }}
+                                        >
+                                            小程序路径
+                                        </div>
+                                        <Input
+                                            value={`${page}?${scene}`}
+                                            style={{
+                                                width: "51%",
+                                                margin: "0 10px",
+                                            }}
+                                        />
+                                        <Button
+                                            className={indexStyles.wxBtn}
+                                            type="primary"
+                                            onClick={this.handleToCopyRouter}
+                                        >
+                                            复制
+                                        </Button>
                                     </div>
-                                }
-                                {
-                                    qrCodeImage ? <img className={indexStyles.miniProgramBox} style={{ marginTop: 40 }} src={qrCodeImage} id='__promotion_xcx_qr_img' alt="小程序二维码" /> : ''
-                                }
-                                <Button className={indexStyles.xzqrCodeBtn} type="primary" disabled={!qrCodeImage} onClick={() => { this.downloadImage('__promotion_xcx_qr_img') }}>下载小程序码</Button>
+                                )}
+                                {qrCodeImage ? (
+                                    <img
+                                        className={indexStyles.miniProgramBox}
+                                        style={{ marginTop: 40 }}
+                                        src={qrCodeImage}
+                                        id="__promotion_xcx_qr_img"
+                                        alt="小程序二维码"
+                                    />
+                                ) : (
+                                    ""
+                                )}
+                                <Button
+                                    className={indexStyles.xzqrCodeBtn}
+                                    type="primary"
+                                    disabled={!qrCodeImage}
+                                    onClick={() => {
+                                        this.downloadImage(
+                                            "__promotion_xcx_qr_img"
+                                        );
+                                    }}
+                                >
+                                    下载小程序码
+                                </Button>
                             </div>
                         </div>
                     </div>
-            }
-        </div>)
+                )}
+            </div>
+        );
     }
 
-
-
-
     render() {
-        const { v3visible, itemID, view, isShowCopyUrl, curKey, tabKeys, stylesShow, dataSource, viewRuleVisibles } = this.state;
+        const {
+            v3visible,
+            itemID,
+            view,
+            isShowCopyUrl,
+            curKey,
+            tabKeys,
+            stylesShow,
+            dataSource,
+            viewRuleVisibles,
+        } = this.state;
         return (
-            <div style={{ backgroundColor: this.state.authStatus ? '#F3F3F3' : '#fff' }} className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
-                {
-                    this.renderHeader()
-
+            <div
+                style={{
+                    backgroundColor: this.state.authStatus ? "#F3F3F3" : "#fff",
+                }}
+                className="layoutsContainer"
+                ref={(layoutsContainer) =>
+                    (this.layoutsContainer = layoutsContainer)
                 }
+            >
+                {this.renderHeader()}
                 <div>
                     <PromotionCalendarBanner />
-                    <Tabs defaultActiveKey={tabKeys} onChange={this.handleChangeTabs} className="tabsStyles" style={{ backgroundColor: '#fff' }} activeKey={tabKeys}>
+                    <Tabs
+                        defaultActiveKey={tabKeys}
+                        onChange={this.handleChangeTabs}
+                        className="tabsStyles"
+                        style={{ backgroundColor: "#fff" }}
+                        activeKey={tabKeys}
+                    >
                         <TabPane tab="营销活动" key="saleSpecialPage">
-                            {
-                                !this.state.authStatus ?
-                                    <div style={{  minHeight: 'calc(100vh - 160px)' }}><EmptyPage /> </div>:
-                                    <div className={styles.pageContentWrapper} style={{ minHeight: 'calc(100vh - 160px)' }}>
-                                        <div style={{ padding: '0' }} className="layoutsHeader">
-                                            {this.renderFilterBar()}
-                                            <div style={{ margin: '0' }} className="layoutsLine"></div>
-                                        </div>
-
-                                        {stylesShow === 'list' ?
-                                            this.renderTables() :
-                                            <CardSaleActive
-                                                dataSource={dataSource}
-                                                type='special'
-                                                cfg={this.cfg}
-                                                onV3Click={this.onV3Click}
-                                                handleShowDetail={this.handleShowDetail}
-                                                toggleIsUpdate={this.props.toggleIsUpdate}
-                                                handleUpdateOpe={this.handleUpdateOpe}
-                                                handleSattusActive={(item, index) => {
-                                                    this.handleSattusActive(item)(() => this.handleDisableClickEvent(item.operation, item, index, null, '使用状态修改成功'))
-                                                }}
-                                                user={this.props.user}
-                                                onChangePage={this.onChangePage}
-                                                onShowSizeChange={this.onShowSizeChange}
-                                                pageNo={this.state.pageNo}
-                                                pageSizes={this.state.pageSizes}
-                                                total={this.state.total}
-                                                handleEditActive={this.handleEditActive}
-                                                handleDelActive={this.handleDelActive}
-                                                checkDeleteInfo={this.checkDeleteInfo}
-                                                isCopy={
-                                                    () => {
-                                                        this.setState({
-                                                            isCopy: true
-                                                        })
-                                                    }
-                                                }
-                                                checkDetailInfo={this.checkDetailInfo}
-                                                handleDecorationStart={this.handleDecorationStart}
-                                                handleCopyUrl={this.handleCopyUrl}
-                                                handelStopEvent={this.handelStopEvent}
-                                            />}
+                            {!this.state.authStatus ? (
+                                <div
+                                    style={{ minHeight: "calc(100vh - 160px)" }}
+                                >
+                                    <EmptyPage />{" "}
+                                </div>
+                            ) : (
+                                <div
+                                    className={styles.pageContentWrapper}
+                                    style={{ minHeight: "calc(100vh - 160px)" }}
+                                >
+                                    <div
+                                        style={{ padding: "0" }}
+                                        className="layoutsHeader"
+                                    >
+                                        {this.renderFilterBar()}
+                                        <div
+                                            style={{ margin: "0" }}
+                                            className="layoutsLine"
+                                        ></div>
                                     </div>
-                            }
 
+                                    {stylesShow === "list" ? (
+                                        this.renderTables()
+                                    ) : (
+                                        <CardSaleActive
+                                            dataSource={dataSource}
+                                            type="special"
+                                            cfg={this.cfg}
+                                            onV3Click={this.onV3Click}
+                                            handleShowDetail={
+                                                this.handleShowDetail
+                                            }
+                                            toggleIsUpdate={
+                                                this.props.toggleIsUpdate
+                                            }
+                                            handleUpdateOpe={
+                                                this.handleUpdateOpe
+                                            }
+                                            handleSattusActive={(
+                                                item,
+                                                index
+                                            ) => {
+                                                this.handleSattusActive(
+                                                    item
+                                                )(() =>
+                                                    this.handleDisableClickEvent(
+                                                        item.operation,
+                                                        item,
+                                                        index,
+                                                        null,
+                                                        "使用状态修改成功"
+                                                    )
+                                                );
+                                            }}
+                                            user={this.props.user}
+                                            onChangePage={this.onChangePage}
+                                            onShowSizeChange={
+                                                this.onShowSizeChange
+                                            }
+                                            pageNo={this.state.pageNo}
+                                            pageSizes={this.state.pageSizes}
+                                            total={this.state.total}
+                                            handleEditActive={
+                                                this.handleEditActive
+                                            }
+                                            handleDelActive={
+                                                this.handleDelActive
+                                            }
+                                            checkDeleteInfo={
+                                                this.checkDeleteInfo
+                                            }
+                                            isCopy={() => {
+                                                this.setState({
+                                                    isCopy: true,
+                                                });
+                                            }}
+                                            checkDetailInfo={
+                                                this.checkDetailInfo
+                                            }
+                                            handleDecorationStart={
+                                                this.handleDecorationStart
+                                            }
+                                            handleCopyUrl={this.handleCopyUrl}
+                                            handelStopEvent={
+                                                this.handelStopEvent
+                                            }
+                                        />
+                                    )}
+                                </div>
+                            )}
                         </TabPane>
                         <TabPane tab="促销活动" key="onSalePage">
-                            <MyActivities stylesChange={this.stylesChange} stylesShow={stylesShow} tabKeys={tabKeys} />
+                            <MyActivities
+                                stylesChange={this.stylesChange}
+                                stylesShow={stylesShow}
+                                tabKeys={tabKeys}
+                            />
                         </TabPane>
                     </Tabs>
                 </div>
                 {this.renderModals()}
                 {this.renderUpdateModals()}
-                {
-                    !this.state.exportVisible ? null :
-                        <ExportModal
-                            specialPromotion
-                            handleClose={() => this.setState({ exportVisible: false })}
-                        />
-                }
-                {(v3visible && curKey == '78') && <Chou2Le onToggle={this.onV3Click} id={itemID} view={view} />}
-                {(v3visible && curKey == '79') && <BlindBox onToggle={this.onV3Click} id={itemID} view={view} />}
-                {(v3visible && curKey == '83') && <PassWordCoupon onToggle={this.onV3Click} id={itemID} view={view} />}
+                {!this.state.exportVisible ? null : (
+                    <ExportModal
+                        specialPromotion
+                        handleClose={() =>
+                            this.setState({ exportVisible: false })
+                        }
+                    />
+                )}
+                {v3visible && curKey == "78" && (
+                    <Chou2Le
+                        onToggle={this.onV3Click}
+                        id={itemID}
+                        view={view}
+                    />
+                )}
+                {v3visible && curKey == "79" && (
+                    <BlindBox
+                        onToggle={this.onV3Click}
+                        id={itemID}
+                        view={view}
+                    />
+                )}
+                {v3visible && curKey == "83" && (
+                    <PassWordCoupon
+                        onToggle={this.onV3Click}
+                        id={itemID}
+                        view={view}
+                    />
+                )}
                 {/* {(v3visible && curKey == '85') && <ManyFace onToggle={this.onV3Click} id={itemID} view={view} handleDecorationStart={this.handleDecorationStart} activeStatus={this.state.activeStatus}/>} */}
                 <Modal
                     title="提取活动链接"
@@ -1263,50 +1842,76 @@ class MySpecialActivities extends React.Component {
                 >
                     {this.renderCopyUrlModal()}
                 </Modal>
-                {
-                    this.state.planModalVisible && <PlanModal
-                        onCancel={() => { this.setState({ planModalVisible: false }) }}
+                {this.state.planModalVisible && (
+                    <PlanModal
+                        onCancel={() => {
+                            this.setState({ planModalVisible: false });
+                        }}
                         isActive={this.state.isActive}
                         onSearch={this.getSearchListContent}
                         filterSchemeList={this.state.filterSchemeList}
                     />
-                }
-               {viewRuleVisibles &&  <Modal
-                    maskClosable={false}
-                    visible={true}
-                    width={700}
-                    title="活动规则"
-                    onCancel={() => { this.setState({ viewRuleVisibles: false }) }}
-                    onOk={this.handleRuleOk}
-                    wrapClassName={styles.viewRuleVisibleModal}
-                >
-                    <div>
-                        <div className={styles.ruleModalTitle}> <span className={styles.name}>千人千面</span>当同一时间、同一门店、同一投放类型、同一投放位置下存在多个活动时，将按照以下规则执行 </div>
+                )}
+                {viewRuleVisibles && (
+                    <Modal
+                        maskClosable={false}
+                        visible={true}
+                        width={700}
+                        title="活动规则"
+                        onCancel={() => {
+                            this.setState({ viewRuleVisibles: false });
+                        }}
+                        onOk={this.handleRuleOk}
+                        wrapClassName={styles.viewRuleVisibleModal}
+                    >
                         <div>
-                            <span className={styles.computeRule}>计算规则</span>
-                            <RadioGroup name="radiogroup" defaultValue={this.state.paramsValue} onChange={({ target }) => { this.setState({ paramsValue: target.value })}}>
-                                <Radio value={1}>按创建时间最近的执行</Radio>
-                                <Radio value={2}>按创建时间最早的执行</Radio>
-                            </RadioGroup>
+                            <div className={styles.ruleModalTitle}>
+                                {" "}
+                                <span className={styles.name}>千人千面</span>
+                                当同一时间、同一门店、同一投放类型、同一投放位置下存在多个活动时，将按照以下规则执行{" "}
+                            </div>
+                            <div>
+                                <span className={styles.computeRule}>
+                                    计算规则
+                                </span>
+                                <RadioGroup
+                                    name="radiogroup"
+                                    defaultValue={this.state.paramsValue}
+                                    onChange={({ target }) => {
+                                        this.setState({
+                                            paramsValue: target.value,
+                                        });
+                                    }}
+                                >
+                                    <Radio value={1}>
+                                        按创建时间最近的执行
+                                    </Radio>
+                                    <Radio value={2}>
+                                        按创建时间最早的执行
+                                    </Radio>
+                                </RadioGroup>
+                            </div>
                         </div>
-                    </div>
-
-                </Modal>}
+                    </Modal>
+                )}
             </div>
         );
     }
     // 查询
     handleQuery(thisPageNo) {
         const pageNo = isNaN(thisPageNo) ? 1 : thisPageNo;
-        this.setState({
-            loading: true,
-            queryDisabled: true,
-            pageNo,
-        }, () => {
-            setTimeout(() => {
-                this.setState({ queryDisabled: false })
-            }, 500)
-        });
+        this.setState(
+            {
+                loading: true,
+                queryDisabled: true,
+                pageNo,
+            },
+            () => {
+                setTimeout(() => {
+                    this.setState({ queryDisabled: false });
+                }, 500);
+            }
+        );
 
         const {
             queryEventWay,
@@ -1316,27 +1921,27 @@ class MySpecialActivities extends React.Component {
             createScenes,
         } = this.state;
         const opt = {};
-        if (queryEventWay !== '' && queryEventWay !== undefined) {
+        if (queryEventWay !== "" && queryEventWay !== undefined) {
             opt.eventWay = queryEventWay;
         }
 
-        if (promotionDateRange !== '' && promotionDateRange.length !== 0) {
-            opt.eventStartDate = promotionDateRange[0].format('YYYYMMDD');
-            opt.eventEndDate = promotionDateRange[1].format('YYYYMMDD');
+        if (promotionDateRange !== "" && promotionDateRange.length !== 0) {
+            opt.eventStartDate = promotionDateRange[0].format("YYYYMMDD");
+            opt.eventEndDate = promotionDateRange[1].format("YYYYMMDD");
         }
 
-        if (eventName !== '' && eventName !== undefined) {
+        if (eventName !== "" && eventName !== undefined) {
             opt.eventName = eventName;
         }
-        if (createScenes !== '' && createScenes !== undefined) {
+        if (createScenes !== "" && createScenes !== undefined) {
             opt.createScenes = createScenes;
         }
 
-        if (isActive !== '') {
-            opt.isActive = isActive == '-1' ? '-1' : (isActive == '1' ? '1' : '0');
+        if (isActive !== "") {
+            opt.isActive =
+                isActive == "-1" ? "-1" : isActive == "1" ? "1" : "0";
         }
-
-        console.log(opt, 'opt')
+        
         this.props.query({
             data: {
                 groupID: this.props.user.accountInfo.groupID,
@@ -1344,7 +1949,9 @@ class MySpecialActivities extends React.Component {
                 pageNo,
                 ...opt,
             },
-            fail: (msg) => { message.error(msg) },
+            fail: (msg) => {
+                message.error(msg);
+            },
         });
     }
 
@@ -1354,58 +1961,94 @@ class MySpecialActivities extends React.Component {
                 this.setState({
                     loading: false,
                 });
-                message.error(`${this.props.intl.formatMessage(STRING_SPE.dk46ld30bj797)}`);
+                message.error(
+                    `${this.props.intl.formatMessage(STRING_SPE.dk46ld30bj797)}`
+                );
             });
         }
     }
 
     renderPlanBtn = () => {
         return (
-            <Popover content={this.getSearchContent()} trigger="click" placement="bottom" title={null}>
-                <Button type="ghost" icon='search' style={{ marginRight: 10 }}>查询方案</Button>
+            <Popover
+                content={this.getSearchContent()}
+                trigger="click"
+                placement="bottom"
+                title={null}
+            >
+                <Button type="ghost" icon="search" style={{ marginRight: 10 }}>
+                    查询方案
+                </Button>
             </Popover>
-        )
-    }
+        );
+    };
 
     renderHeader() {
-        const { tabKeys, stylesShow } = this.state
+        const { tabKeys, stylesShow } = this.state;
         const headerClasses = `layoutsToolLeft ${styles.headerWithBgColor} ${styles.topHeaderBox}`;
         return (
-            <div className="layoutsTool" style={{ height: '64px',position:'relative' }}>
+            <div
+                className="layoutsTool"
+                style={{ height: "64px", position: "relative" }}
+            >
                 <div className={headerClasses}>
                     <span className={styles.customHeader}>活动管理</span>
-                    <ExpireDateNotice productCode="HLL_CRM_Marketingbox" marginLeft="-430" marginTop="8"/>
-                    {
-                        tabKeys === 'saleSpecialPage' && (
-                            <div>
-                                <span className={styles.exportBtn}>
-                                    {
-                                        stylesShow === 'list' ? <Button
-                                            type="ghost"
-                                            onClick={() => this.stylesChange('card')}
-                                        ><span className={styles.cardImg}><img src={Card} />卡片展示</span></Button> :
-                                            <Button type="ghost"
-                                                onClick={() => this.stylesChange('list')}
-                                            ><Icon type="bars" />列表展示</Button>
+                    <ExpireDateNotice
+                        productCode="HLL_CRM_Marketingbox"
+                        marginLeft="-430"
+                        marginTop="8"
+                    />
+                    {tabKeys === "saleSpecialPage" && (
+                        <div>
+                            <span className={styles.exportBtn}>
+                                {stylesShow === "list" ? (
+                                    <Button
+                                        type="ghost"
+                                        onClick={() =>
+                                            this.stylesChange("card")
+                                        }
+                                    >
+                                        <span className={styles.cardImg}>
+                                            <img src={Card} />
+                                            卡片展示
+                                        </span>
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        type="ghost"
+                                        onClick={() =>
+                                            this.stylesChange("list")
+                                        }
+                                    >
+                                        <Icon type="bars" />
+                                        列表展示
+                                    </Button>
+                                )}
+                            </span>
+                            <span className={styles.exportBtn}>
+                                <Button
+                                    type="ghost"
+                                    onClick={() =>
+                                        this.setState({ exportVisible: true })
                                     }
-                                </span>
-                                <span className={styles.exportBtn}>
-                                        <Button
-                                            type="ghost"
-                                            onClick={() => this.setState({ exportVisible: true })}
-                                            style={{ marginRight: 10 }}
-                                        >
-                                            <Icon type="upload" />导出历史
-                                        </Button>
-                                </span>
-                                <span>
-                                   <Button type="ghost" style={{ marginRight: 10 }} onClick={this.queryActiveRule}>活动规则</Button>
-                                </span>
-                                {this.renderPlanBtn()}
-                              
-                            </div>
-                        )
-                    }
+                                    style={{ marginRight: 10 }}
+                                >
+                                    <Icon type="upload" />
+                                    导出历史
+                                </Button>
+                            </span>
+                            <span>
+                                <Button
+                                    type="ghost"
+                                    style={{ marginRight: 10 }}
+                                    onClick={this.queryActiveRule}
+                                >
+                                    活动规则
+                                </Button>
+                            </span>
+                            {this.renderPlanBtn()}
+                        </div>
+                    )}
                 </div>
             </div>
         );
@@ -1421,7 +2064,9 @@ class MySpecialActivities extends React.Component {
         const opts = [];
         this.cfg.eventWay.forEach((item, index) => {
             opts.push(
-                <Option value={`${item.value}`} key={`${index}`}>{item.label}</Option>
+                <Option value={`${item.value}`} key={`${index}`}>
+                    {item.label}
+                </Option>
             );
         });
         const { intl } = this.props;
@@ -1430,26 +2075,48 @@ class MySpecialActivities extends React.Component {
                 <div className="layoutsSearch">
                     <ul>
                         <li>
-                            <h5>{this.props.intl.formatMessage(STRING_SPE.db60c8ac0a379138)}</h5>
+                            <h5>
+                                {this.props.intl.formatMessage(
+                                    STRING_SPE.db60c8ac0a379138
+                                )}
+                            </h5>
                         </li>
                         <li>
-                            <RangePicker style={{ width: 200 }} onChange={this.onDateQualificationChange} />
+                            <RangePicker
+                                style={{ width: 200 }}
+                                onChange={this.onDateQualificationChange}
+                            />
                         </li>
 
                         <li>
-                            <h5>{this.props.intl.formatMessage(STRING_SPE.d4h177f79da1218)}</h5>
+                            <h5>
+                                {this.props.intl.formatMessage(
+                                    STRING_SPE.d4h177f79da1218
+                                )}
+                            </h5>
                         </li>
                         <li>
                             <Select
                                 style={{ width: 120 }}
                                 showSearch
-                                notFoundContent={`${this.props.intl.formatMessage(STRING_SPE.d2c8a4hdjl248)}`}
-                                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                                placeholder={this.props.intl.formatMessage(STRING_SPE.d1kgf622e5a10108)}
-                                defaultValue={intl.formatMessage(STRING_GIFT.all)}
+                                notFoundContent={`${this.props.intl.formatMessage(
+                                    STRING_SPE.d2c8a4hdjl248
+                                )}`}
+                                filterOption={(input, option) =>
+                                    option.props.children
+                                        .toLowerCase()
+                                        .indexOf(input.toLowerCase()) >= 0
+                                }
+                                placeholder={this.props.intl.formatMessage(
+                                    STRING_SPE.d1kgf622e5a10108
+                                )}
+                                defaultValue={intl.formatMessage(
+                                    STRING_GIFT.all
+                                )}
                                 onChange={(value) => {
                                     this.setState({
-                                        queryEventWay: value === 'ALL' ? null : value,
+                                        queryEventWay:
+                                            value === "ALL" ? null : value,
                                     });
                                 }}
                             >
@@ -1458,33 +2125,61 @@ class MySpecialActivities extends React.Component {
                         </li>
 
                         <li>
-                            <h5>{this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3711176)}</h5>
+                            <h5>
+                                {this.props.intl.formatMessage(
+                                    STRING_SPE.db60c8ac0a3711176
+                                )}
+                            </h5>
                         </li>
                         <li>
                             <Select
                                 style={{ width: 80 }}
                                 defaultValue="1"
                                 value={this.state.isActive}
-                                placeholder={this.props.intl.formatMessage(STRING_SPE.dd5aa016c5d12116)}
+                                placeholder={this.props.intl.formatMessage(
+                                    STRING_SPE.dd5aa016c5d12116
+                                )}
                                 onChange={(value) => {
                                     this.setState({
                                         isActive: value,
                                     });
                                 }}
                             >
-                                <Option value={''}>{this.props.intl.formatMessage(STRING_SPE.dk45j2cah113227)}</Option>
-                                <Option value={'1'}>{this.props.intl.formatMessage(STRING_SPE.db60c8ac0a371314)}</Option>
-                                <Option value={'0'}>{this.props.intl.formatMessage(STRING_SPE.d16hh1kkf9914292)}</Option>
-                                <Option value={'-1'}>{this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3715210)}</Option>
+                                <Option value={""}>
+                                    {this.props.intl.formatMessage(
+                                        STRING_SPE.dk45j2cah113227
+                                    )}
+                                </Option>
+                                <Option value={"1"}>
+                                    {this.props.intl.formatMessage(
+                                        STRING_SPE.db60c8ac0a371314
+                                    )}
+                                </Option>
+                                <Option value={"0"}>
+                                    {this.props.intl.formatMessage(
+                                        STRING_SPE.d16hh1kkf9914292
+                                    )}
+                                </Option>
+                                <Option value={"-1"}>
+                                    {this.props.intl.formatMessage(
+                                        STRING_SPE.db60c8ac0a3715210
+                                    )}
+                                </Option>
                             </Select>
                         </li>
 
                         <li>
-                            <h5>{this.props.intl.formatMessage(STRING_SPE.d4546grade4128)}</h5>
+                            <h5>
+                                {this.props.intl.formatMessage(
+                                    STRING_SPE.d4546grade4128
+                                )}
+                            </h5>
                         </li>
                         <li>
                             <Input
-                                placeholder={this.props.intl.formatMessage(STRING_SPE.d7ekp859lc7222)}
+                                placeholder={this.props.intl.formatMessage(
+                                    STRING_SPE.d7ekp859lc7222
+                                )}
                                 onChange={(e) => {
                                     this.setState({
                                         eventName: e.target.value,
@@ -1499,21 +2194,29 @@ class MySpecialActivities extends React.Component {
                             <Select
                                 style={{ width: 80 }}
                                 defaultValue=""
-                                value={this.state.createScenes || ''}
+                                value={this.state.createScenes || ""}
                                 onChange={(value) => {
                                     this.setState({
                                         createScenes: value,
                                     });
                                 }}
                             >
-                                <Option value={''}>全部</Option>
-                                <Option value={'0'}>自建</Option>
-                                <Option value={'1'}>权益卡</Option>
+                                <Option value={""}>全部</Option>
+                                <Option value={"0"}>自建</Option>
+                                <Option value={"1"}>权益卡</Option>
                             </Select>
                         </li>
                         <li>
-                            <Authority rightCode={SPECIAL_PROMOTION_QUERY} entryId={ SPECIAL_PROMOTION_MANAGE_PAGE}>
-                                <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}><Icon type="search" />
+                            <Authority
+                                rightCode={SPECIAL_PROMOTION_QUERY}
+                                entryId={SPECIAL_PROMOTION_MANAGE_PAGE}
+                            >
+                                <Button
+                                    type="primary"
+                                    onClick={this.handleQuery}
+                                    disabled={this.state.queryDisabled}
+                                >
+                                    <Icon type="search" />
                                     {COMMON_LABEL.query}
                                 </Button>
                             </Authority>
@@ -1521,10 +2224,9 @@ class MySpecialActivities extends React.Component {
                     </ul>
                 </div>
             </div>
-
         );
     }
-    // 
+    //
     onChangePage = (page, pageSize) => {
         this.setState({
             pageNo: page,
@@ -1540,25 +2242,26 @@ class MySpecialActivities extends React.Component {
             eventName,
             createScenes,
         } = this.state;
-        if (queryEventWay !== '' && queryEventWay !== undefined) {
+        if (queryEventWay !== "" && queryEventWay !== undefined) {
             opt.eventWay = queryEventWay;
         }
 
-        if (promotionDateRange !== '' && promotionDateRange.length !== 0) {
-            opt.eventStartDate = promotionDateRange[0].format('YYYYMMDD');
-            opt.eventEndDate = promotionDateRange[1].format('YYYYMMDD');
+        if (promotionDateRange !== "" && promotionDateRange.length !== 0) {
+            opt.eventStartDate = promotionDateRange[0].format("YYYYMMDD");
+            opt.eventEndDate = promotionDateRange[1].format("YYYYMMDD");
         }
 
-        if (eventName !== '' && eventName !== undefined) {
+        if (eventName !== "" && eventName !== undefined) {
             opt.eventName = eventName;
         }
 
-        if (createScenes !== '' && createScenes !== undefined) {
+        if (createScenes !== "" && createScenes !== undefined) {
             opt.createScenes = createScenes;
         }
 
-        if (isActive !== '') {
-            opt.isActive = isActive == '-1' ? '-1' : isActive == '1' ? '1' : '0';
+        if (isActive !== "") {
+            opt.isActive =
+                isActive == "-1" ? "-1" : isActive == "1" ? "1" : "0";
         }
         this.props.query({
             data: {
@@ -1569,14 +2272,17 @@ class MySpecialActivities extends React.Component {
             // end: () => this.setState({loading: false}),
             fail: (msg) => message.error(msg),
         });
-    }
+    };
     // 切换每页显示条数
     onShowSizeChange = (current, pageSize) => {
-        this.setState({
-            pageSizes: pageSize,
-        }, () => {
-            this.handleQuery();
-        })
+        this.setState(
+            {
+                pageSizes: pageSize,
+            },
+            () => {
+                this.handleQuery();
+            }
+        );
     };
 
     /**
@@ -1586,25 +2292,52 @@ class MySpecialActivities extends React.Component {
      */
     changeSortOrder(record, direction) {
         const params = { itemID: record.itemID, rankingType: direction };
-        axiosData('/specialPromotion/updateEventRanking.ajax', params, { needThrow: true }, { path: undefined }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then(() => {
-            if (this.tableRef && this.tableRef.props && this.tableRef.props.pagination && this.tableRef.props.pagination.onChange) {
-                this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
-            }
-        }).catch(err => {
-            message.warning(err || `${this.props.intl.formatMessage(STRING_SPE.dk46ld30bj16282)}`);
-        })
+        axiosData(
+            "/specialPromotion/updateEventRanking.ajax",
+            params,
+            { needThrow: true },
+            { path: undefined },
+            "HTTP_SERVICE_URL_PROMOTION_NEW"
+        )
+            .then(() => {
+                if (
+                    this.tableRef &&
+                    this.tableRef.props &&
+                    this.tableRef.props.pagination &&
+                    this.tableRef.props.pagination.onChange
+                ) {
+                    this.tableRef.props.pagination.onChange(
+                        this.tableRef.props.pagination.current,
+                        this.tableRef.props.pagination.pageSize
+                    );
+                }
+            })
+            .catch((err) => {
+                message.warning(
+                    err ||
+                        `${this.props.intl.formatMessage(
+                            STRING_SPE.dk46ld30bj16282
+                        )}`
+                );
+            });
     }
 
     renderPayHaveGift(text, index, record) {
-
         return (
             <div>
-                <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY} entryId={ SPECIAL_PROMOTION_MANAGE_PAGE}>
+                <Authority
+                    rightCode={SPECIAL_LOOK_PROMOTION_QUERY}
+                    entryId={SPECIAL_PROMOTION_MANAGE_PAGE}
+                >
                     <a
                         href="#"
                         onClick={() => {
                             if (Number(record.eventWay) === 70) {
-                                message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
+                                message.warning(
+                                    `${this.props.intl.formatMessage(
+                                        STRING_SPE.du3bnfobe30180
+                                    )}`
+                                );
                                 return;
                             }
                             if (record.eventWay === 78) {
@@ -1614,37 +2347,60 @@ class MySpecialActivities extends React.Component {
                             if (record.eventWay === 80) {
                                 this.handleShowDetail({
                                     record,
-                                    isView: true
-                                })
+                                    isView: true,
+                                });
                                 return;
                             }
-                            this.props.toggleIsUpdate(false)
+                            this.props.toggleIsUpdate(false);
                             this.handleUpdateOpe(text, record, index);
                         }}
                     >
                         {COMMON_LABEL.view}
                     </a>
                 </Authority>
-                <Tooltip placement="bottomLeft" title={this.renderWXTipTitle(text, record, index)} overlayClassName={styles.Sale__Activite__Tip}>
+                <Tooltip
+                    placement="bottomLeft"
+                    title={this.renderWXTipTitle(text, record, index)}
+                    overlayClassName={styles.Sale__Activite__Tip}
+                >
                     <a href="#">更多</a>
                 </Tooltip>
             </div>
-          
-        )
+        );
     }
 
     renderWXTipTitle = (text, record, index) => {
         return (
-            <div  className={[styles.Sale__Activite__moveMore, styles.moveMoreShow].join(' ')}>
+            <div
+                className={[
+                    styles.Sale__Activite__moveMore,
+                    styles.moveMoreShow,
+                ].join(" ")}
+            >
                 <a
                     href="#"
-                    className={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record) ? styles.textDisabled : null}
+                    className={
+                        isBrandOfHuaTianGroupList(
+                            this.props.user.accountInfo.groupID
+                        ) && !isMine(record)
+                            ? styles.textDisabled
+                            : null
+                    }
                     onClick={() => {
-                        if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) {
+                        if (
+                            isBrandOfHuaTianGroupList(
+                                this.props.user.accountInfo.groupID
+                            ) &&
+                            !isMine(record)
+                        ) {
                             return;
                         }
                         if (Number(record.eventWay) === 70) {
-                            message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
+                            message.warning(
+                                `${this.props.intl.formatMessage(
+                                    STRING_SPE.du3bnfobe30180
+                                )}`
+                            );
                             return;
                         }
                         this.checkDetailInfo(text, record, index);
@@ -1653,107 +2409,160 @@ class MySpecialActivities extends React.Component {
                     {/* 活动跟踪 */}
                     {this.props.intl.formatMessage(STRING_SPE.d5g3d7ahfq35134)}
                 </a>
-                {
-                    record.eventWay === 80 ?
-                        <a
-                            href="#"
-                            className={record.isActive == '-1' || isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) ? styles.textDisabled : null}
-                            onClick={() => {
-                                if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
-                                    return;
-                                }
-                                record.isActive == '-1' ? null :
-                                    this.handelStopEvent(text, record, index, '-1', `${this.props.intl.formatMessage(STRING_SPE.d17012f5c16c32211)}`);
-                            }}
-                        >
-                            {this.props.intl.formatMessage(STRING_SPE.du3bnfobe3346)}
-                        </a> : null
-                }
-
+                {record.eventWay === 80 ? (
+                    <a
+                        href="#"
+                        className={
+                            record.isActive == "-1" ||
+                            isBrandOfHuaTianGroupList(
+                                this.props.user.accountInfo.groupID
+                            )
+                                ? styles.textDisabled
+                                : null
+                        }
+                        onClick={() => {
+                            if (
+                                isBrandOfHuaTianGroupList(
+                                    this.props.user.accountInfo.groupID
+                                )
+                            ) {
+                                return;
+                            }
+                            record.isActive == "-1"
+                                ? null
+                                : this.handelStopEvent(
+                                      text,
+                                      record,
+                                      index,
+                                      "-1",
+                                      `${this.props.intl.formatMessage(
+                                          STRING_SPE.d17012f5c16c32211
+                                      )}`
+                                  );
+                        }}
+                    >
+                        {this.props.intl.formatMessage(
+                            STRING_SPE.du3bnfobe3346
+                        )}
+                    </a>
+                ) : null}
             </div>
-        )
-    }
+        );
+    };
 
     renderTipTitle = (text, record, index) => {
         return (
-            <div className={[styles.Sale__Activite__moveMore, styles.moveMoreShow].join(' ')}>
+            <div
+                className={[
+                    styles.Sale__Activite__moveMore,
+                    styles.moveMoreShow,
+                ].join(" ")}
+            >
                 {/* 第一版只做群发礼品的复制功能*/}
                 {/* 摇奖活动增加复制,并且活动不是禁用状态  */}
                 {
-                    (record.eventWay === 53 || record.eventWay === 20)
-                    &&
-                    // <Authority rightCode={SPECIAL_PROMOTION_UPDATE}>
-                    <a
-                        href="#"
-                        // disabled={
-                        //     record.eventWay == '64' ? null :
-                        //         record.isActive != '0' || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record))
-                        //             || record.eventWay === 80 || (moment(record.eventEndDate, 'YYYYMMDD').format('YYYYMMDD') < moment().format('YYYYMMDD'))
-                        //             ? true
-                        //             : false
-                        // }
-                        onClick={(e) => {
-                            if (record.eventWay == '64') {
-                                //对评价送礼活动做专门处理，该活动在活动启用时候也能操作选择店铺
-                                if (record.isActive != '0') {
-                                    this.props.toggleIsUpdate(false)
-                                    this.handleUpdateOpe(text, record, index);
-                                } else {
-                                    this.props.toggleIsUpdate(true)
-                                    this.handleUpdateOpe(text, record, index);
-                                }
-                            } else {
-                                // if ((isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record))) {
-                                //     e.preventDefault()
-                                // } else {
-                                if (Number(record.eventWay) === 70) {
-                                    message.warning(`该活动已下线`);
-                                    return;
-                                }
-                                if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83) {
-                                    this.onV3Click(record.itemID, false, record.eventWay);
-                                    return;
-                                }
-                                if (record.eventWay === 66 || record.eventWay === 81 || record.eventWay === 82) {
-                                    this.handleShowDetail({
-                                        record,
-                                        isView: false,
-                                        isEdit: true
-                                    })
-                                    return;
-                                }
-                                this.props.toggleIsUpdate(true)
-                                this.setState({
-                                    isCopy: true,
-                                })
-                                this.handleUpdateOpe(text, record, index);
-                                // }
-                            }
-
-                        }}
-                    >
-                        复制
-                    </a>
-                    // </Authority>
-                }
-                {
-                    isDecorationAvailable(record) && (
+                    (record.eventWay === 53 || record.eventWay === 20) && (
+                        // <Authority rightCode={SPECIAL_PROMOTION_UPDATE}>
                         <a
                             href="#"
-                            onClick={() => {
-                                this.handleDecorationStart(record)
+                            // disabled={
+                            //     record.eventWay == '64' ? null :
+                            //         record.isActive != '0' || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record))
+                            //             || record.eventWay === 80 || (moment(record.eventEndDate, 'YYYYMMDD').format('YYYYMMDD') < moment().format('YYYYMMDD'))
+                            //             ? true
+                            //             : false
+                            // }
+                            onClick={(e) => {
+                                if (record.eventWay == "64") {
+                                    //对评价送礼活动做专门处理，该活动在活动启用时候也能操作选择店铺
+                                    if (record.isActive != "0") {
+                                        this.props.toggleIsUpdate(false);
+                                        this.handleUpdateOpe(
+                                            text,
+                                            record,
+                                            index
+                                        );
+                                    } else {
+                                        this.props.toggleIsUpdate(true);
+                                        this.handleUpdateOpe(
+                                            text,
+                                            record,
+                                            index
+                                        );
+                                    }
+                                } else {
+                                    // if ((isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record))) {
+                                    //     e.preventDefault()
+                                    // } else {
+                                    if (Number(record.eventWay) === 70) {
+                                        message.warning(`该活动已下线`);
+                                        return;
+                                    }
+                                    if (
+                                        record.eventWay === 78 ||
+                                        record.eventWay === 79 ||
+                                        record.eventWay === 83
+                                    ) {
+                                        this.onV3Click(
+                                            record.itemID,
+                                            false,
+                                            record.eventWay
+                                        );
+                                        return;
+                                    }
+                                    if (
+                                        record.eventWay === 66 ||
+                                        record.eventWay === 81 ||
+                                        record.eventWay === 82
+                                    ) {
+                                        this.handleShowDetail({
+                                            record,
+                                            isView: false,
+                                            isEdit: true,
+                                        });
+                                        return;
+                                    }
+                                    this.props.toggleIsUpdate(true);
+                                    this.setState({
+                                        isCopy: true,
+                                    });
+                                    this.handleUpdateOpe(text, record, index);
+                                    // }
+                                }
                             }}
                         >
-                            装修
-                            {/* {this.props.intl.formatMessage(STRING_SPE.dk46ld30bk34245)} */}
+                            复制
                         </a>
                     )
+                    // </Authority>
                 }
+                {isDecorationAvailable(record) && (
+                    <a
+                        href="#"
+                        onClick={() => {
+                            this.handleDecorationStart(record);
+                        }}
+                    >
+                        装修
+                        {/* {this.props.intl.formatMessage(STRING_SPE.dk46ld30bk34245)} */}
+                    </a>
+                )}
                 <a
                     href="#"
-                    className={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record) ? styles.textDisabled : null}
+                    className={
+                        isBrandOfHuaTianGroupList(
+                            this.props.user.accountInfo.groupID
+                        ) && !isMine(record)
+                            ? styles.textDisabled
+                            : null
+                    }
                     onClick={() => {
-                        if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) {
+                        if (
+                            isBrandOfHuaTianGroupList(
+                                this.props.user.accountInfo.groupID
+                            ) &&
+                            !isMine(record)
+                        ) {
                             return;
                         }
                         if (Number(record.eventWay) === 70) {
@@ -1766,97 +2575,202 @@ class MySpecialActivities extends React.Component {
                 >
                     活动跟踪
                 </a>
-                {
-                    isCanCopyUrl(record) && (
-                        <a
-                            href="#"
-                            onClick={() => {
-                                this.handleOpenModal(record)
-                            }}
-                        >
-                            下载链接/二维码
-                        </a>
-                    )
-                }
-
+                {isCanCopyUrl(record) && (
+                    <a
+                        href="#"
+                        onClick={() => {
+                            this.handleOpenModal(record);
+                        }}
+                    >
+                        下载链接/二维码
+                    </a>
+                )}
             </div>
-        )
-    }
+        );
+    };
 
     renderTables() {
         const SmsSendStatus = [
-            { value: '0', label: `${this.props.intl.formatMessage(STRING_SPE.de8g7jed1j17152)}` },
-            { value: '1', label: `${this.props.intl.formatMessage(STRING_SPE.d16hh1kkf9a1879)}` },
-            { value: '2', label: `${this.props.intl.formatMessage(STRING_SPE.dojy6qlmw1990)}` },
-            { value: '3', label: `${this.props.intl.formatMessage(STRING_SPE.d2c8g6ep522337)}` },
-            { value: '4', label: `${this.props.intl.formatMessage(STRING_SPE.d16hh1kkf9a24193)}` },
-            { value: '5', label: `${this.props.intl.formatMessage(STRING_SPE.du3bnfobe2576)}` },
-            { value: '8', label: `${this.props.intl.formatMessage(STRING_SPE.dd5aa016c5e21260)}` },
-            { value: '9', label: `${this.props.intl.formatMessage(STRING_SPE.dojy6qlmw1990)}` },
-            { value: '20', label: `${this.props.intl.formatMessage(STRING_SPE.dojy6qlmw1990)}` },
-            { value: '21', label: `${this.props.intl.formatMessage(STRING_SPE.d454fcf3i422261)}` },
-            { value: '30', label: `${this.props.intl.formatMessage(STRING_SPE.dd5aa016c5e21260)}` },
-            { value: '6', label: `${this.props.intl.formatMessage(STRING_SPE.d454fcf3i422261)}` },
+            {
+                value: "0",
+                label: `${this.props.intl.formatMessage(
+                    STRING_SPE.de8g7jed1j17152
+                )}`,
+            },
+            {
+                value: "1",
+                label: `${this.props.intl.formatMessage(
+                    STRING_SPE.d16hh1kkf9a1879
+                )}`,
+            },
+            {
+                value: "2",
+                label: `${this.props.intl.formatMessage(
+                    STRING_SPE.dojy6qlmw1990
+                )}`,
+            },
+            {
+                value: "3",
+                label: `${this.props.intl.formatMessage(
+                    STRING_SPE.d2c8g6ep522337
+                )}`,
+            },
+            {
+                value: "4",
+                label: `${this.props.intl.formatMessage(
+                    STRING_SPE.d16hh1kkf9a24193
+                )}`,
+            },
+            {
+                value: "5",
+                label: `${this.props.intl.formatMessage(
+                    STRING_SPE.du3bnfobe2576
+                )}`,
+            },
+            {
+                value: "8",
+                label: `${this.props.intl.formatMessage(
+                    STRING_SPE.dd5aa016c5e21260
+                )}`,
+            },
+            {
+                value: "9",
+                label: `${this.props.intl.formatMessage(
+                    STRING_SPE.dojy6qlmw1990
+                )}`,
+            },
+            {
+                value: "20",
+                label: `${this.props.intl.formatMessage(
+                    STRING_SPE.dojy6qlmw1990
+                )}`,
+            },
+            {
+                value: "21",
+                label: `${this.props.intl.formatMessage(
+                    STRING_SPE.d454fcf3i422261
+                )}`,
+            },
+            {
+                value: "30",
+                label: `${this.props.intl.formatMessage(
+                    STRING_SPE.dd5aa016c5e21260
+                )}`,
+            },
+            {
+                value: "6",
+                label: `${this.props.intl.formatMessage(
+                    STRING_SPE.d454fcf3i422261
+                )}`,
+            },
         ];
         const SmsSettleStatus = [
-            { value: '0', label: `${this.props.intl.formatMessage(STRING_SPE.d2c8g6ep5226252)}` },
-            { value: '1', label: `${this.props.intl.formatMessage(STRING_SPE.d5g3d7ahfq27163)}` },
-            { value: '2', label: `${this.props.intl.formatMessage(STRING_SPE.d4h1ac506h828194)}` },
-            { value: '3', label: `${this.props.intl.formatMessage(STRING_SPE.da905h2m122949)}` },
+            {
+                value: "0",
+                label: `${this.props.intl.formatMessage(
+                    STRING_SPE.d2c8g6ep5226252
+                )}`,
+            },
+            {
+                value: "1",
+                label: `${this.props.intl.formatMessage(
+                    STRING_SPE.d5g3d7ahfq27163
+                )}`,
+            },
+            {
+                value: "2",
+                label: `${this.props.intl.formatMessage(
+                    STRING_SPE.d4h1ac506h828194
+                )}`,
+            },
+            {
+                value: "3",
+                label: `${this.props.intl.formatMessage(
+                    STRING_SPE.da905h2m122949
+                )}`,
+            },
         ];
 
         const columns = [
             {
                 title: COMMON_LABEL.serialNumber,
-                dataIndex: 'index',
-                className: 'TableTxtCenter',
+                dataIndex: "index",
+                className: "TableTxtCenter",
                 width: 60,
-                fixed:'left',
-                key: 'key',
+                fixed: "left",
+                key: "key",
                 // ellipsis: true,
                 render: (text, record, index) => {
-                    return (this.state.pageNo - 1) * this.state.pageSizes + text;
+                    return (
+                        (this.state.pageNo - 1) * this.state.pageSizes + text
+                    );
                 },
             },
 
             {
                 title: COMMON_LABEL.actions,
-                key: 'operation',
+                key: "operation",
                 width: 180,
-                className: 'TableTxtCenter',
-                fixed:'left',
+                className: "TableTxtCenter",
+                fixed: "left",
                 // ellipsis: true,
                 render: (text, record, index) => {
-                    // status 0-初始化   1-等待执行  2-执行中  3-执行完毕  4-执行失败  5-审核中  6-中断  
+                    // status 0-初始化   1-等待执行  2-执行中  3-执行完毕  4-执行失败  5-审核中  6-中断
                     if (record.eventWay === 80) {
-                        return this.renderPayHaveGift(text, index, record)
+                        return this.renderPayHaveGift(text, index, record);
                     }
-                    if (record.createScenesName === '权益卡') {
+                    if (record.createScenesName === "权益卡") {
                         return (
                             <span>
-                                <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY} entryId={SPECIAL_PROMOTION_MANAGE_PAGE}>
+                                <Authority
+                                    rightCode={SPECIAL_LOOK_PROMOTION_QUERY}
+                                    entryId={SPECIAL_PROMOTION_MANAGE_PAGE}
+                                >
                                     <a
                                         href="#"
                                         onClick={() => {
-                                            if (Number(record.eventWay) === 70) {
-                                                message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
+                                            if (
+                                                Number(record.eventWay) === 70
+                                            ) {
+                                                message.warning(
+                                                    `${this.props.intl.formatMessage(
+                                                        STRING_SPE.du3bnfobe30180
+                                                    )}`
+                                                );
                                                 return;
                                             }
-                                            if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83 || record.eventWay === 85) {
-                                                this.onV3Click(record.itemID, true, record.eventWay);
+                                            if (
+                                                record.eventWay === 78 ||
+                                                record.eventWay === 79 ||
+                                                record.eventWay === 83 ||
+                                                record.eventWay === 85
+                                            ) {
+                                                this.onV3Click(
+                                                    record.itemID,
+                                                    true,
+                                                    record.eventWay
+                                                );
                                                 return;
                                             }
-                                            if (record.eventWay === 80 || record.eventWay === 66 || record.eventWay === 81 || record.eventWay === 82) {
-
+                                            if (
+                                                record.eventWay === 80 ||
+                                                record.eventWay === 66 ||
+                                                record.eventWay === 81 ||
+                                                record.eventWay === 82
+                                            ) {
                                                 this.handleShowDetail({
                                                     record,
                                                     isView: true,
-                                                    isEdit: false
-                                                })
+                                                    isEdit: false,
+                                                });
                                                 return;
                                             }
-                                            this.props.toggleIsUpdate(false)
-                                            this.handleUpdateOpe(text, record, index);
+                                            this.props.toggleIsUpdate(false);
+                                            this.handleUpdateOpe(
+                                                text,
+                                                record,
+                                                index
+                                            );
                                         }}
                                     >
                                         {COMMON_LABEL.view}
@@ -1864,268 +2778,441 @@ class MySpecialActivities extends React.Component {
                                 </Authority>
                                 <a
                                     href="#"
-                                    className={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record) ? styles.textDisabled : null}
+                                    className={
+                                        isBrandOfHuaTianGroupList(
+                                            this.props.user.accountInfo.groupID
+                                        ) && !isMine(record)
+                                            ? styles.textDisabled
+                                            : null
+                                    }
                                     onClick={() => {
-                                        if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) && !isMine(record)) {
+                                        if (
+                                            isBrandOfHuaTianGroupList(
+                                                this.props.user.accountInfo
+                                                    .groupID
+                                            ) &&
+                                            !isMine(record)
+                                        ) {
                                             return;
                                         }
                                         if (Number(record.eventWay) === 70) {
                                             message.warning(`该活动已下线`);
                                             return;
                                         }
-                                        this.checkDetailInfo(text, record, index);
+                                        this.checkDetailInfo(
+                                            text,
+                                            record,
+                                            index
+                                        );
                                     }}
                                     disabled={record.eventWay == 85}
                                 >
                                     活动跟踪
                                 </a>
                             </span>
-                        )
+                        );
                     }
-                    return (<span>
-                        <Authority rightCode={SPECIAL_PROMOTION_UPDATE} entryId={ SPECIAL_PROMOTION_MANAGE_PAGE}>
-                            <a
-                                href="#"
-                                disabled={
-                                    record.eventWay == '64' ? null : 
-                                    (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && (record.isActive != '0' || !isMine(record)))
-                                }
-                                onClick={(e) => {
-                                    // if (record.eventWay == '64') {
-                                    //     //对评价送礼活动做专门处理，该活动在活动启用时候也能操作选择店铺
-                                    //     if (record.isActive != '0') {
-                                    //         this.handleEditActive(record)(() => {
-                                    //             this.props.toggleIsUpdate(false)
-                                    //             this.handleUpdateOpe(text, record, index);
-                                    //         })
-                                    //     } else {
-                                    //         this.handleEditActive(record)(() => {
-                                    //             this.props.toggleIsUpdate(true)
-                                    //             this.handleUpdateOpe(text, record, index);
-                                    //         })
-                                    //     }
-                                    // } else {
-                                    // if ((record.isActive != '0' && record.isActive != '-1') || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && (record.isActive != '0' || !isMine(record) )) || record.eventWay === 80) {
-                                    //     e.preventDefault()
-                                    // } else {
-                                    if (Number(record.eventWay) === 70) {
-                                        message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
-                                        return;
+                    return (
+                        <span>
+                            <Authority
+                                rightCode={SPECIAL_PROMOTION_UPDATE}
+                                entryId={SPECIAL_PROMOTION_MANAGE_PAGE}
+                            >
+                                <a
+                                    href="#"
+                                    disabled={
+                                        record.eventWay == "64"
+                                            ? null
+                                            : isGroupOfHuaTianGroupList(
+                                                  this.props.user.accountInfo
+                                                      .groupID
+                                              ) &&
+                                              (record.isActive != "0" ||
+                                                  !isMine(record))
                                     }
-                                    if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83 || record.eventWay === 85) {
-                                        this.handleEditActive(record)(() => this.onV3Click(record.itemID, false, record.eventWay, record.isActive))
-                                        return;
-                                    }
-                                    if (record.eventWay === 66 || record.eventWay === 81 || record.eventWay === 82) {
+                                    onClick={(e) => {
+                                        // if (record.eventWay == '64') {
+                                        //     //对评价送礼活动做专门处理，该活动在活动启用时候也能操作选择店铺
+                                        //     if (record.isActive != '0') {
+                                        //         this.handleEditActive(record)(() => {
+                                        //             this.props.toggleIsUpdate(false)
+                                        //             this.handleUpdateOpe(text, record, index);
+                                        //         })
+                                        //     } else {
+                                        //         this.handleEditActive(record)(() => {
+                                        //             this.props.toggleIsUpdate(true)
+                                        //             this.handleUpdateOpe(text, record, index);
+                                        //         })
+                                        //     }
+                                        // } else {
+                                        // if ((record.isActive != '0' && record.isActive != '-1') || statusState || (isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) && (record.isActive != '0' || !isMine(record) )) || record.eventWay === 80) {
+                                        //     e.preventDefault()
+                                        // } else {
+                                        if (Number(record.eventWay) === 70) {
+                                            message.warning(
+                                                `${this.props.intl.formatMessage(
+                                                    STRING_SPE.du3bnfobe30180
+                                                )}`
+                                            );
+                                            return;
+                                        }
+                                        if (
+                                            record.eventWay === 78 ||
+                                            record.eventWay === 79 ||
+                                            record.eventWay === 83 ||
+                                            record.eventWay === 85
+                                        ) {
+                                            this.handleEditActive(record)(() =>
+                                                this.onV3Click(
+                                                    record.itemID,
+                                                    false,
+                                                    record.eventWay,
+                                                    record.isActive
+                                                )
+                                            );
+                                            return;
+                                        }
+                                        if (
+                                            record.eventWay === 66 ||
+                                            record.eventWay === 81 ||
+                                            record.eventWay === 82
+                                        ) {
+                                            this.handleEditActive(record)(
+                                                () => {
+                                                    this.handleShowDetail({
+                                                        record,
+                                                        isView: false,
+                                                        isEdit: true,
+                                                    });
+                                                }
+                                            );
+                                            return;
+                                        }
                                         this.handleEditActive(record)(() => {
-                                            this.handleShowDetail({
+                                            this.props.toggleIsUpdate(true);
+                                            this.handleUpdateOpe(
+                                                text,
                                                 record,
-                                                isView: false,
-                                                isEdit: true
-                                            })
-                                        })
-                                        return;
-                                    }
-                                    this.handleEditActive(record)(() => {
-                                        this.props.toggleIsUpdate(true)
-                                        this.handleUpdateOpe(text, record, index);
-                                    })
+                                                index
+                                            );
+                                        });
 
                                         // }
-                                    // }
-
-                                }}
+                                        // }
+                                    }}
+                                >
+                                    {COMMON_LABEL.edit}
+                                </a>
+                            </Authority>
+                            <Authority
+                                rightCode={SPECIAL_LOOK_PROMOTION_QUERY}
+                                entryId={SPECIAL_PROMOTION_MANAGE_PAGE}
                             >
-                                {COMMON_LABEL.edit}
-                            </a>
-                        </Authority>
-                        <Authority rightCode={SPECIAL_LOOK_PROMOTION_QUERY} entryId={ SPECIAL_PROMOTION_MANAGE_PAGE}>
-                            <a
-                                href="#"
-                                onClick={() => {
-                                    if (Number(record.eventWay) === 70) {
-                                        message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
-                                        return;
-                                    }
-                                    if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83 || record.eventWay === 85) {
-                                        this.onV3Click(record.itemID, true, record.eventWay);
-                                        return;
-                                    }
-                                    if (record.eventWay === 80 || record.eventWay === 66 || record.eventWay === 81 || record.eventWay === 82) {
-
-                                        this.handleShowDetail({
+                                <a
+                                    href="#"
+                                    onClick={() => {
+                                        if (Number(record.eventWay) === 70) {
+                                            message.warning(
+                                                `${this.props.intl.formatMessage(
+                                                    STRING_SPE.du3bnfobe30180
+                                                )}`
+                                            );
+                                            return;
+                                        }
+                                        if (
+                                            record.eventWay === 78 ||
+                                            record.eventWay === 79 ||
+                                            record.eventWay === 83 ||
+                                            record.eventWay === 85
+                                        ) {
+                                            this.onV3Click(
+                                                record.itemID,
+                                                true,
+                                                record.eventWay
+                                            );
+                                            return;
+                                        }
+                                        if (
+                                            record.eventWay === 80 ||
+                                            record.eventWay === 66 ||
+                                            record.eventWay === 81 ||
+                                            record.eventWay === 82
+                                        ) {
+                                            this.handleShowDetail({
+                                                record,
+                                                isView: true,
+                                                isEdit: false,
+                                            });
+                                            return;
+                                        }
+                                        this.props.toggleIsUpdate(false);
+                                        this.handleUpdateOpe(
+                                            text,
                                             record,
-                                            isView: true,
-                                            isEdit: false
-                                        })
-                                        return;
-                                    }
-                                    this.props.toggleIsUpdate(false)
-                                    this.handleUpdateOpe(text, record, index);
-                                }}
+                                            index
+                                        );
+                                    }}
+                                >
+                                    {COMMON_LABEL.view}
+                                </a>
+                            </Authority>
+
+                            <Authority
+                                rightCode={SPECIAL_PROMOTION_DELETE}
+                                entryId={SPECIAL_PROMOTION_MANAGE_PAGE}
                             >
-                                {COMMON_LABEL.view}
-                            </a>
-                        </Authority>
-                        
-                        <Authority rightCode={SPECIAL_PROMOTION_DELETE} entryId={ SPECIAL_PROMOTION_MANAGE_PAGE}>
-                            <a
-                                href="#"
-                                disabled={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)}
-                                onClick={() => {
-                                    if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID)) {
-                                        return;
+                                <a
+                                    href="#"
+                                    disabled={isBrandOfHuaTianGroupList(
+                                        this.props.user.accountInfo.groupID
+                                    )}
+                                    onClick={() => {
+                                        if (
+                                            isBrandOfHuaTianGroupList(
+                                                this.props.user.accountInfo
+                                                    .groupID
+                                            )
+                                        ) {
+                                            return;
+                                        }
+                                        if (Number(record.eventWay) === 70) {
+                                            message.warning(
+                                                `${this.props.intl.formatMessage(
+                                                    STRING_SPE.du3bnfobe30180
+                                                )}`
+                                            );
+                                            return;
+                                        }
+                                        // record.isActive != '0' || record.userCount != 0 || statusState ? null :
+                                        this.handleDelActive(record)(() =>
+                                            this.checkDeleteInfo(
+                                                text,
+                                                record,
+                                                index
+                                            )
+                                        );
+                                    }}
+                                >
+                                    {COMMON_LABEL.delete}
+                                </a>
+                            </Authority>
+                            {record.eventWay != "85" && ( // 千人千面无需更多操作
+                                <Tooltip
+                                    placement="bottomLeft"
+                                    title={this.renderTipTitle(
+                                        text,
+                                        record,
+                                        index
+                                    )}
+                                    overlayClassName={
+                                        styles.Sale__Activite__Tip
                                     }
-                                    if (Number(record.eventWay) === 70) {
-                                        message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
-                                        return;
-                                    }
-                                    // record.isActive != '0' || record.userCount != 0 || statusState ? null :
-                                    this.handleDelActive(record)(() => this.checkDeleteInfo(text, record, index));
-                                }}
-                            >
-                                {COMMON_LABEL.delete}
-                            </a>
-                        </Authority>
-                        {
-                            record.eventWay != '85' &&  // 千人千面无需更多操作
-                            <Tooltip placement="bottomLeft" title={this.renderTipTitle(text, record, index)} overlayClassName={styles.Sale__Activite__Tip}>
-                                <a href="#">更多</a>
-                            </Tooltip>
-                        }
-                    </span>
+                                >
+                                    <a href="#">更多</a>
+                                </Tooltip>
+                            )}
+                        </span>
                     );
                 },
             },
             {
-                title: '启用/禁用',
-                key: 'status',
-                dataIndex: 'status',
+                title: "启用/禁用",
+                key: "status",
+                dataIndex: "status",
                 width: 100,
-                className: 'TableTxtCenter',
-                fixed:'left',
+                className: "TableTxtCenter",
+                fixed: "left",
                 // ellipsis: true,
                 render: (text, record, index) => {
-                    const defaultChecked = (record.isActive == '1' ? true : false);
+                    const defaultChecked =
+                        record.isActive == "1" ? true : false;
                     // const statusState = (
                     //     (record.eventWay == '50' || record.eventWay == '53')
                     //     &&
                     //     (record.status == 2) // 执行中的状态不可更改
                     // );
                     // if ()
-                    const BenefitDisabled = record.createScenesName === '权益卡'
+                    const BenefitDisabled =
+                        record.createScenesName === "权益卡";
                     return (
                         <Switch
                             // size="small"
-                            className={`${styles.switcherSale} ${record.eventWay == '80' ? styles.switcherdisabled : ''}`}
-                            checkedChildren={'启用'}
-                            unCheckedChildren={'禁用'}
+                            className={`${styles.switcherSale} ${
+                                record.eventWay == "80"
+                                    ? styles.switcherdisabled
+                                    : ""
+                            }`}
+                            checkedChildren={"启用"}
+                            unCheckedChildren={"禁用"}
                             checked={defaultChecked}
                             onChange={(e) => {
                                 // isBrandOfHuaTianGroupList 华天集团品牌下的集团
-                                if (isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || record.eventWay === 80 || BenefitDisabled) {
+                                if (
+                                    isBrandOfHuaTianGroupList(
+                                        this.props.user.accountInfo.groupID
+                                    ) ||
+                                    record.eventWay === 80 ||
+                                    BenefitDisabled
+                                ) {
                                     // e.preventDefault();
                                     return;
                                 }
                                 if (Number(record.eventWay) === 70) {
-                                    message.warning(`${this.props.intl.formatMessage(STRING_SPE.du3bnfobe30180)}`);
+                                    message.warning(
+                                        `${this.props.intl.formatMessage(
+                                            STRING_SPE.du3bnfobe30180
+                                        )}`
+                                    );
                                     return;
                                 }
                                 // record.isActive == '-1' || statusState ? null :
-                                this.handleSattusActive(record)(() => this.handleDisableClickEvent(record.operation, record, index, null, `${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3831197)}`))
+                                this.handleSattusActive(record)(() =>
+                                    this.handleDisableClickEvent(
+                                        record.operation,
+                                        record,
+                                        index,
+                                        null,
+                                        `${this.props.intl.formatMessage(
+                                            STRING_SPE.db60c8ac0a3831197
+                                        )}`
+                                    )
+                                );
                             }}
-                            disabled={isBrandOfHuaTianGroupList(this.props.user.accountInfo.groupID) || BenefitDisabled}
+                            disabled={
+                                isBrandOfHuaTianGroupList(
+                                    this.props.user.accountInfo.groupID
+                                ) || BenefitDisabled
+                            }
                         />
-                    )
-                }
+                    );
+                },
             },
             {
-                title: `${this.props.intl.formatMessage(STRING_SPE.d4h177f79da1218)}`,
-                dataIndex: 'eventWay',
-                key: 'eventWay',
+                title: `${this.props.intl.formatMessage(
+                    STRING_SPE.d4h177f79da1218
+                )}`,
+                dataIndex: "eventWay",
+                key: "eventWay",
                 width: 110,
-                fixed:'left',
+                fixed: "left",
                 // ellipsis: true,
                 render: (text, record) => {
-                    return <span>{record.eventWay == 70 ? `${this.props.intl.formatMessage(STRING_SPE.d5672b44908540146)}` : mapValueToLabel(this.cfg.eventWay, String(record.eventWay))}</span>
+                    return (
+                        <span>
+                            {record.eventWay == 70
+                                ? `${this.props.intl.formatMessage(
+                                      STRING_SPE.d5672b44908540146
+                                  )}`
+                                : mapValueToLabel(
+                                      this.cfg.eventWay,
+                                      String(record.eventWay)
+                                  )}
+                        </span>
+                    );
                 },
             },
 
             {
-                title: `${this.props.intl.formatMessage(STRING_SPE.d4546grade4128)}`,
-                dataIndex: 'eventName',
-                key: 'eventName',
-                fixed:'left',
+                title: `${this.props.intl.formatMessage(
+                    STRING_SPE.d4546grade4128
+                )}`,
+                dataIndex: "eventName",
+                key: "eventName",
+                fixed: "left",
                 width: 150,
                 // ellipsis: true,
-                render: text => <span title={text}>{text}</span>,
+                render: (text) => <span title={text}>{text}</span>,
             },
             {
-                title: '活动编码',
-                dataIndex: 'itemID',
-                key: 'itemID',
-                fixed:'left',
+                title: "活动编码",
+                dataIndex: "itemID",
+                key: "itemID",
+                fixed: "left",
                 width: 180,
                 // ellipsis: true,
-                render: text => <Tooltip title={text}>{text}</Tooltip>,
+                render: (text) => <Tooltip title={text}>{text}</Tooltip>,
             },
             {
-                title: `${this.props.intl.formatMessage(STRING_SPE.dd5aa016c5f42125)}`,
-                className: 'TableTxtCenter',
-                dataIndex: 'validDate',
-                key: '',
+                title: `${this.props.intl.formatMessage(
+                    STRING_SPE.dd5aa016c5f42125
+                )}`,
+                className: "TableTxtCenter",
+                dataIndex: "validDate",
+                key: "",
                 width: 180,
                 render: (validDate) => {
-                    if (validDate.start === '0' || validDate.end === '0' ||
-                        validDate.start === '20000101' || validDate.end === '29991231') {
-                        return `${this.props.intl.formatMessage(STRING_SPE.d31ei98dbgi21253)}`;
+                    if (
+                        validDate.start === "0" ||
+                        validDate.end === "0" ||
+                        validDate.start === "20000101" ||
+                        validDate.end === "29991231"
+                    ) {
+                        return `${this.props.intl.formatMessage(
+                            STRING_SPE.d31ei98dbgi21253
+                        )}`;
                     }
-                    const t = `${moment(validDate.start, 'YYYY-MM-DD').format('YYYY-MM-DD')} / ${moment(validDate.end, 'YYYY-MM-DD').format('YYYY-MM-DD')}`;
-                    return  <Tooltip title={t}>{t}</Tooltip>
-                },
-            },
-            {
-                title: `${this.props.intl.formatMessage(STRING_SPE.d2b1c68ddaa344161)}`,
-                dataIndex: 'operator',
-                width: 150,
-                key: 'operator',
-                render: (text, record) => {
-                    if (!record.operator) {
-                        return '--';
-                    }
-                    let result;
-                    try {
-                        const operator = JSON.parse(record.operator);
-                        result = `${operator.userName} / ${operator.u_userName || operator.userName}`;
-                    } catch (e) {
-                        return '--';
-                    }
-                    return result || '--';
-                },
-            },
-            {
-                title: `${this.props.intl.formatMessage(STRING_SPE.de8g7jed1l4364)}`,
-                className: 'TableTxtCenter',
-                dataIndex: 'operateTime',
-                key: 'operateTime',
-                // width: 300,
-                render: (text, record, index) => {
-                    if (record.actionStamp === '' && record.createStamp === '') {
-                        return '--';
-                    }
-                    const t = `${moment(new Date(parseInt(record.createStamp))).format('YYYY-MM-DD HH:mm:ss')} / ${moment(new Date(parseInt(record.actionStamp))).format('YYYY-MM-DD HH:mm:ss')}`
+                    const t = `${moment(validDate.start, "YYYY-MM-DD").format(
+                        "YYYY-MM-DD"
+                    )} / ${moment(validDate.end, "YYYY-MM-DD").format(
+                        "YYYY-MM-DD"
+                    )}`;
                     return <Tooltip title={t}>{t}</Tooltip>;
                 },
             },
             {
-                title: '来源渠道',
-                className: 'TableTxtCenter',
-                dataIndex: 'createScenesName',
-                key: 'createScenesName',
+                title: `${this.props.intl.formatMessage(
+                    STRING_SPE.d2b1c68ddaa344161
+                )}`,
+                dataIndex: "operator",
+                width: 150,
+                key: "operator",
+                render: (text, record) => {
+                    if (!record.operator) {
+                        return "--";
+                    }
+                    let result;
+                    try {
+                        const operator = JSON.parse(record.operator);
+                        result = `${operator.userName} / ${
+                            operator.u_userName || operator.userName
+                        }`;
+                    } catch (e) {
+                        return "--";
+                    }
+                    return result || "--";
+                },
+            },
+            {
+                title: `${this.props.intl.formatMessage(
+                    STRING_SPE.de8g7jed1l4364
+                )}`,
+                className: "TableTxtCenter",
+                dataIndex: "operateTime",
+                key: "operateTime",
+                // width: 300,
+                render: (text, record, index) => {
+                    if (
+                        record.actionStamp === "" &&
+                        record.createStamp === ""
+                    ) {
+                        return "--";
+                    }
+                    const t = `${moment(
+                        new Date(parseInt(record.createStamp))
+                    ).format("YYYY-MM-DD HH:mm:ss")} / ${moment(
+                        new Date(parseInt(record.actionStamp))
+                    ).format("YYYY-MM-DD HH:mm:ss")}`;
+                    return <Tooltip title={t}>{t}</Tooltip>;
+                },
+            },
+            {
+                title: "来源渠道",
+                className: "TableTxtCenter",
+                dataIndex: "createScenesName",
+                key: "createScenesName",
                 width: 80,
                 render: (text, record, index) => {
-                    return text || '--'
-                   
+                    return text || "--";
                 },
             },
         ];
@@ -2138,19 +3225,28 @@ class MySpecialActivities extends React.Component {
                     columns={columns}
                     dataSource={this.state.dataSource}
                     loading={this.state.loading}
-                    scroll={{ x: 1499, y: 'calc(100vh - 440px)' }}
+                    scroll={{ x: 1499, y: "calc(100vh - 440px)" }}
                     size="default"
                     pagination={{
                         pageSize: this.state.pageSizes,
-                        pageSizeOptions: ['25', '50', '100', '200'],
+                        pageSizeOptions: ["25", "50", "100", "200"],
                         current: this.state.pageNo,
                         showQuickJumper: true,
                         showSizeChanger: true,
                         onShowSizeChange: this.onShowSizeChange,
                         total: this.state.total || 0,
-                        showTotal: (total, range) => `${this.props.intl.formatMessage(STRING_SPE.d2b1c6b31a93638)}${range[0]}-${range[1]} / ${this.props.intl.formatMessage(STRING_SPE.dk46lj779a7119)} ${total} ${this.props.intl.formatMessage(STRING_SPE.d34ikgs6o6845)}`,
+                        showTotal: (total, range) =>
+                            `${this.props.intl.formatMessage(
+                                STRING_SPE.d2b1c6b31a93638
+                            )}${range[0]}-${
+                                range[1]
+                            } / ${this.props.intl.formatMessage(
+                                STRING_SPE.dk46lj779a7119
+                            )} ${total} ${this.props.intl.formatMessage(
+                                STRING_SPE.d34ikgs6o6845
+                            )}`,
                         onChange: (page, pageSize) => {
-                            this.onChangePage(page, pageSize)
+                            this.onChangePage(page, pageSize);
                         },
                     }}
                 />
@@ -2163,7 +3259,11 @@ class MySpecialActivities extends React.Component {
         this.props.deleteSelectedRecord({
             ...record,
             success: () => {
-                message.success(`${this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3950145)}`);
+                message.success(
+                    `${this.props.intl.formatMessage(
+                        STRING_SPE.db60c8ac0a3950145
+                    )}`
+                );
             },
             fail: (msg) => {
                 message.error(msg);
@@ -2184,12 +3284,13 @@ class MySpecialActivities extends React.Component {
         // });
     }
     handleGiftsData = (response) => {
-        const { eventWay, itemID, eventName, needCount = '' } = response.data;
+        const { eventWay, itemID, eventName, needCount = "" } = response.data;
         const user = this.props.user;
-        let result = []
-        response.gifts && response.gifts.forEach((item) => {
-            result.push(item.needCount)
-        })
+        let result = [];
+        response.gifts &&
+            response.gifts.forEach((item) => {
+                result.push(item.needCount);
+            });
         if (response.eventConditionInfos) {
             result = response.eventConditionInfos;
         }
@@ -2201,35 +3302,47 @@ class MySpecialActivities extends React.Component {
             giftArr: result,
             faceArr: result,
         });
-        jumpPage({ menuID: PROMOTION_DECORATION })
-    }
+        jumpPage({ menuID: PROMOTION_DECORATION });
+    };
     successFn = (response) => {
         const _serverToRedux = false;
-        const _promotionIdx = getSpecialPromotionIdx(`${this.state.editEventWay}`);
-        const { isCopy } = this.state
+        const _promotionIdx = getSpecialPromotionIdx(
+            `${this.state.editEventWay}`
+        );
+        const { isCopy } = this.state;
         if (_promotionIdx === undefined) {
-            message.warning(`${this.props.intl.formatMessage(STRING_SPE.de8g7jed1l51134)}`);
+            message.warning(
+                `${this.props.intl.formatMessage(STRING_SPE.de8g7jed1l51134)}`
+            );
             return;
         }
         if (response === undefined || response.data === undefined) {
-            message.error(`${this.props.intl.formatMessage(STRING_SPE.d4h1ac506h952140)}`);
+            message.error(
+                `${this.props.intl.formatMessage(STRING_SPE.d4h1ac506h952140)}`
+            );
             return null;
         }
-        this.props.saleCenterSetSpecialBasicInfo(specialPromotionBasicDataAdapter(response, _serverToRedux));
+        this.props.saleCenterSetSpecialBasicInfo(
+            specialPromotionBasicDataAdapter(response, _serverToRedux)
+        );
         this.setState({
-            modalTitle: `${this.props.intl.formatMessage(STRING_SPE.d2c8g6ep510150)}`,
+            modalTitle: `${this.props.intl.formatMessage(
+                STRING_SPE.d2c8g6ep510150
+            )}`,
             isNew: false,
             index: _promotionIdx,
         });
         if (isCopy) {
             this.setState({
-                modalTitle: '复制活动信息',
-            })
+                modalTitle: "复制活动信息",
+            });
         }
     };
 
     failFn = () => {
-        message.error(`${this.props.intl.formatMessage(STRING_SPE.dk46ld30bl535)}`);
+        message.error(
+            `${this.props.intl.formatMessage(STRING_SPE.dk46ld30bl535)}`
+        );
     };
 
     handleDecorationStart = (record) => {
@@ -2241,44 +3354,68 @@ class MySpecialActivities extends React.Component {
             },
             success: this.handleGiftsData,
             fail: this.failFn,
-        })
-    }
+        });
+    };
 
     handleOpenModal = (record) => {
-        this.querySortedChannelList()
-        this.handleCopyUrl(record)
-    }
+        this.querySortedChannelList();
+        this.handleCopyUrl(record);
+    };
 
     handleCopyUrl = (record, mpId) => {
         const { pushMessageMpID, channelContent, launchChannelID } = this.state;
         let mpID = mpId ? mpId : pushMessageMpID;
         let eventWayData, groupIdData, itemIdData;
-        const testUrl = 'https://dohko.m.hualala.com';
-        const preUrl = 'https://m.hualala.com'
-        const actList = ['20', '30', '22'] // 摇奖活动，积分兑换，报名活动
+        const testUrl = "https://dohko.m.hualala.com";
+        const preUrl = "https://m.hualala.com";
+        const actList = ["20", "30", "22"]; // 摇奖活动，积分兑换，报名活动
         if (record) {
             eventWayData = record.eventWay;
             groupIdData = record.groupID;
-            itemIdData = record.itemID
+            itemIdData = record.itemID;
         } else {
             eventWayData = this.state.eventWay;
             groupIdData = this.state.groupID;
-            itemIdData = this.state.qrItemID
+            itemIdData = this.state.qrItemID;
         }
 
-        let url = testUrl
+        let url = testUrl;
         if (isFormalRelease()) {
-            url = preUrl
+            url = preUrl;
         }
         const urlMap = {
-            20: !launchChannelID ? url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}` : url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
-            22: !launchChannelID ? url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}` :  url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
-            30: !launchChannelID ? url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}` : url + `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
-            21: !launchChannelID ? url + `/newm/eventFree?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}` : url + `/newm/eventFree?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
-            65: !launchChannelID ? url + `/newm/shareFission?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}` : url + `/newm/shareFission?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
-            68: !launchChannelID ? url + `/newm/recommendInvite??groupID=${groupIdData}&eventItemID=${itemIdData}&mpID=${mpID}` : url + `/newm/recommendInvite?groupID=${groupIdData}&eventItemID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
+            20: !launchChannelID
+                ? url +
+                  `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}`
+                : url +
+                  `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
+            22: !launchChannelID
+                ? url +
+                  `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}`
+                : url +
+                  `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
+            30: !launchChannelID
+                ? url +
+                  `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}`
+                : url +
+                  `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
+            21: !launchChannelID
+                ? url +
+                  `/newm/eventFree?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}`
+                : url +
+                  `/newm/eventFree?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
+            65: !launchChannelID
+                ? url +
+                  `/newm/shareFission?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}`
+                : url +
+                  `/newm/shareFission?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
+            68: !launchChannelID
+                ? url +
+                  `/newm/recommendInvite??groupID=${groupIdData}&eventItemID=${itemIdData}&mpID=${mpID}`
+                : url +
+                  `/newm/recommendInvite?groupID=${groupIdData}&eventItemID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
             // 83: url + `/newm/usePassword?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
-        }
+        };
         /*if(actList.includes(String(eventWay))) {
             url = url +    `/newm/eventCont?groupID=${groupID}&eventID=${itemID}`
         }
@@ -2294,33 +3431,33 @@ class MySpecialActivities extends React.Component {
         this.setState({
             urlContent: urlMap[eventWayData],
             eventWay: eventWayData,
-            qrCodeImage: '', // 打开一次清空上一次的img
+            qrCodeImage: "", // 打开一次清空上一次的img
             qrItemID: itemIdData, // 当前活动itemID
             isShowCopyUrl: true,
-            groupID: groupIdData
-        })
+            groupID: groupIdData,
+        });
         // 获取小程序列表
-        this.getAppList().then(r => { })
-    }
+        this.getAppList().then((r) => {});
+    };
 
     handleToCopyUrl = () => {
-        const { urlContent } = this.state
+        const { urlContent } = this.state;
         if (copy(urlContent)) {
-            message.warn('复制成功')
+            message.warn("复制成功");
         } else {
-            message.warn('复制失败')
+            message.warn("复制失败");
         }
-    }
+    };
 
     handleToCopyRouter = () => {
-        const { page, scene } = this.state
+        const { page, scene } = this.state;
         if (copy(`${page}?${scene}`)) {
-            message.warn('复制成功')
+            message.warn("复制成功");
         } else {
-            message.warn('复制失败')
+            message.warn("复制失败");
         }
-    }
-   
+    };
+
     // 编辑
     handleUpdateOpe() {
         let _record = arguments[1];
@@ -2337,7 +3474,9 @@ class MySpecialActivities extends React.Component {
             this.setState({
                 updateModalVisible: true,
                 editEventWay: _record.eventWay,
-                currentItemID: _record.itemID ? _record.itemID : this.state.currentItemID,
+                currentItemID: _record.itemID
+                    ? _record.itemID
+                    : this.state.currentItemID,
             });
         }
     }
@@ -2350,7 +3489,7 @@ class MySpecialActivities extends React.Component {
     renderUpdateModals() {
         return (
             <Modal
-                wrapClassName={'progressBarModal'}
+                wrapClassName={"progressBarModal"}
                 title={this.state.modalTitle}
                 visible={this.state.updateModalVisible}
                 footer={false}
@@ -2359,39 +3498,52 @@ class MySpecialActivities extends React.Component {
                 maskClosable={false}
                 onCancel={this.handleDismissUpdateModal}
             >
-                {this.state.updateModalVisible ? this.renderContentOfThisModal() : null}
+                {this.state.updateModalVisible
+                    ? this.renderContentOfThisModal()
+                    : null}
             </Modal>
         );
     }
 
     renderContentOfThisModal() {
-        const mySpecialActivities = this.props.mySpecialActivities.get('$specialDetailInfo').toJS();
+        const mySpecialActivities = this.props.mySpecialActivities
+            .get("$specialDetailInfo")
+            .toJS();
         const _state = this.state;
-        if (mySpecialActivities.status === 'start' || mySpecialActivities.status === 'pending') {
+        if (
+            mySpecialActivities.status === "start" ||
+            mySpecialActivities.status === "pending"
+        ) {
             return (
                 <div className={styles.spinFather}>
                     <Spin size="large" />
                 </div>
-            )
+            );
         }
-        if (mySpecialActivities.status === 'timeout' || mySpecialActivities.status === 'fail') {
+        if (
+            mySpecialActivities.status === "timeout" ||
+            mySpecialActivities.status === "fail"
+        ) {
             return (
                 <div className={styles.spinFather}>
-                    {this.props.intl.formatMessage(STRING_SPE.da905h2m1354252)} <a onClick={this.handleUpdateOpe}>{COMMON_LABEL.retry}</a>
+                    {this.props.intl.formatMessage(STRING_SPE.da905h2m1354252)}{" "}
+                    <a onClick={this.handleUpdateOpe}>{COMMON_LABEL.retry}</a>
                 </div>
             );
         }
-        if (mySpecialActivities.status === 'success') {
-            return (<ActivityMain
-                isCopy={_state.isCopy}
-                isNew={_state.isNew}
-                index={_state.index}
-                callbackthree={(arg) => {
-                    if (arg == 3) {
-                        this.handleDismissUpdateModal();
-                    }
-                }}
-            />);
+        if (mySpecialActivities.status === "success") {
+            return (
+                <ActivityMain
+                    isCopy={_state.isCopy}
+                    isNew={_state.isNew}
+                    index={_state.index}
+                    callbackthree={(arg) => {
+                        if (arg == 3) {
+                            this.handleDismissUpdateModal();
+                        }
+                    }}
+                />
+            );
         }
     }
 
@@ -2402,57 +3554,84 @@ class MySpecialActivities extends React.Component {
         const { eventWay } = _record;
         this.props.fetchSpecialPromotionDetail({
             data: {
-                itemID: _record && _record.itemID ? _record.itemID : this.state.currentItemID,
+                itemID:
+                    _record && _record.itemID
+                        ? _record.itemID
+                        : this.state.currentItemID,
                 groupID: user.accountInfo.groupID,
-                actionFrom:'1'
+                actionFrom: "1",
             },
             eventWay,
             fail: this.failFn,
         });
         this.setState({
             visible: true,
-            currentItemID: _record && _record.itemID ? _record.itemID : this.state.currentItemID,
+            currentItemID:
+                _record && _record.itemID
+                    ? _record.itemID
+                    : this.state.currentItemID,
         });
     }
     // 关闭详情页
     handleClose() {
         this.setState({
             visible: false,
-        })
+        });
     }
     setMVisible = (ifVisible) => {
         this.setState({
             visible: ifVisible,
-        })
-    }
+        });
+    };
     // 活动详情页
     renderModals() {
-        const mySpecialActivities = this.props.mySpecialActivities.get('$specialDetailInfo').toJS();
+        const mySpecialActivities = this.props.mySpecialActivities
+            .get("$specialDetailInfo")
+            .toJS();
         const checkDetailInfo = this.checkDetailInfo;
         let renderContentOfTheModal;
-        if (mySpecialActivities.status === 'start' || mySpecialActivities.status === 'pending') {
+        if (
+            mySpecialActivities.status === "start" ||
+            mySpecialActivities.status === "pending"
+        ) {
             renderContentOfTheModal = (
                 <div className={styles.spinFather}>
                     <Spin size="large" />
-                </div>)
-        }
-        if (mySpecialActivities.status === 'timeout' || mySpecialActivities.status === 'fail') {
-            renderContentOfTheModal = (
-                <div className={styles.spinFather}>
-                    {this.props.intl.formatMessage(STRING_SPE.da905h2m1354252)}<a onClick={checkDetailInfo}>{COMMON_LABEL.retry}</a>
                 </div>
             );
         }
-        if (mySpecialActivities.status === 'success') {
-            renderContentOfTheModal = (<SpecialPromotionDetail setVisible={this.setMVisible} record={mySpecialActivities.data} />);
+        if (
+            mySpecialActivities.status === "timeout" ||
+            mySpecialActivities.status === "fail"
+        ) {
+            renderContentOfTheModal = (
+                <div className={styles.spinFather}>
+                    {this.props.intl.formatMessage(STRING_SPE.da905h2m1354252)}
+                    <a onClick={checkDetailInfo}>{COMMON_LABEL.retry}</a>
+                </div>
+            );
+        }
+        if (mySpecialActivities.status === "success") {
+            renderContentOfTheModal = (
+                <SpecialPromotionDetail
+                    setVisible={this.setMVisible}
+                    record={mySpecialActivities.data}
+                />
+            );
         }
 
         return (
             <Modal
-                title={this.props.intl.formatMessage(STRING_SPE.db60c8ac0a3955121)}
+                title={this.props.intl.formatMessage(
+                    STRING_SPE.db60c8ac0a3955121
+                )}
                 maskClosable={false}
                 visible={this.state.visible}
-                footer={<Button onClick={this.handleClose}>{COMMON_LABEL.close}</Button>}
+                footer={
+                    <Button onClick={this.handleClose}>
+                        {COMMON_LABEL.close}
+                    </Button>
+                }
                 // closable={false}
                 width="800px"
                 onCancel={this.handleClose}
@@ -2463,8 +3642,7 @@ class MySpecialActivities extends React.Component {
     }
 }
 
-
 function mapValueToLabel(cfg, val) {
-    return _.result(_.find(cfg, { value: val }), 'label');
+    return _.result(_.find(cfg, { value: val }), "label");
 }
 export default MySpecialActivities;

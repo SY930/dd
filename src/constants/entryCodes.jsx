@@ -59,7 +59,6 @@ export const NEW_SALE_BOX = '10000730001';                  // 营销盒子（�
 export const NEW_SALE_ACTIVITY_BOX = '10000730008';         // 营销活动（新）
 export const NEW_ON_SALE_ACTIVITY_BOX = '10000730088';         // 促销活动（新）
 
-
 export const SALE_CENTER_PAYHAVEGIFT = 'promotion_active_payHaveGift' // 营销活动，微信支付有礼
 
 export const THIRD_VOUCHER_MANAGEMENT = '100008992' // 第三方券管理
@@ -69,5 +68,5 @@ export const SALE_LANCH_CHANNEL = '10000730099' //活动投放渠道管理
 
 export const SALE_ACTIVE_NEW_PAGE = 'sale_active_new_page' // 营销活动跳转页面
 
-
 export const GIFT_DETAILS = 'giftDetails' //礼品信息详情页面
+export const SALE_DISTRIBUTION_ADMIN = 'sale.distribution.admin' // 分销管理

@@ -76,7 +76,8 @@ import SelectMall from '../components/SelectMall';      // 选择适用店铺组
 import SelectMallCategory from '../components/SelectMallCategory';  // 选择商城分类，入参为商城 shopID
 
 import { MultipleGoodSelector } from '../../../components/common/GoodSelector'
-
+import ShopSelectorJSB from './ShopSelector/ShopSelector';
+import { loadShopSchema } from './ShopSelector/utils'
 import {
     fetchFoodCategoryInfoAC,
     fetchFoodMenuInfoLightAC,
@@ -87,13 +88,14 @@ import {
 import { CategoryAndFoodSelectors } from '../../SaleCenterNEW/common/GiftCategoryAndFoodSelectors';
 import { GiftCategoryAndFoodSelector } from '../../SaleCenterNEW/common/CategoryAndFoodSelector';
 import { GiftCategoryAndFoodSelectorNew } from '../../SaleCenterNEW/common/CategoryAndFoodSelectorNew';
-import AddMoneyTradeDishesTableWithBrand from 'containers/SaleCenterNEW/addMoneyTrade/AddMoneyTradeDishesTableWithBrand';
 
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const hasMallArr = ['10','20','21'];
+const GroupSepcial = ['1155', 1155, 8, '8', 5726, '5726'];
+const describeAry = ['代金券', '菜品优惠券', '菜品兑换券'];
 const processFinalCategoryAndDishData = (params, property,value) => {
     if (params.hasOwnProperty(property)) {
         if (!params[property]) { // 用户没选择，默认全部信息
@@ -292,6 +294,10 @@ class GiftAddModalStep extends React.PureComponent {
         } catch (e) {
             // oops
         }
+
+        if (GroupSepcial.includes(groupID)) {
+            this.loadShops();
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -406,6 +412,14 @@ class GiftAddModalStep extends React.PureComponent {
             return proSharedGifts;
         }
         return [];
+    }
+
+    loadShops = () => {
+        loadShopSchema().then(({ allSubRightGroup = [] }) => {
+            this.setState({
+                allSubRightGroup,
+            })
+        })
     }
 
 
@@ -934,7 +948,7 @@ class GiftAddModalStep extends React.PureComponent {
     }
 
     handleFinish = () => {
-        const { values, groupTypes, delivery,crossDay} = this.state;
+        const { values, groupTypes, delivery,crossDay, allSubRightGroup } = this.state;
         const { type, gift: { value, data } } = this.props;
         this.secondForm.validateFieldsAndScroll((err, formValues) => {
             if (err) return;
@@ -985,13 +999,20 @@ class GiftAddModalStep extends React.PureComponent {
                 }
             }
             try {
-                if (params.shopNames) {
+                if (params.shopNames && !GroupSepcial.includes(this.props.groupID)) {
                     const shops = this.state.shopSchema.shops;
                     const selectedShopEntities = shops.filter(item => params.shopNames.includes(item.shopID)).map(shop => ({content: shop.shopName, id: shop.shopID}));
                     selectedShopEntities.forEach((shop) => {
                         shopNames += `${shop.content + ',' || ''}`;
                         shopIDs += `${shop.id + ',' || ''}`;
                     });
+                } else {
+                    const shops = (allSubRightGroup || []).filter(item => (values.selectedShops || []).includes(item.value));
+                    // console.log("🚀 ~ file: GiftAddModalStep.jsx ~ line 1012 ~ GiftAddModalStep ~ shops ~ shops", shops)
+                    shops.forEach(s => {
+                        shopNames += `${s.label + ',' || ''}`;
+                        shopIDs += `${s.value + ',' || ''}`;
+                    })
                 }
             } catch (e) {
                 console.log(e);
@@ -1017,7 +1038,11 @@ class GiftAddModalStep extends React.PureComponent {
             }
             if (params.giftShareType != '0' && params.giftShareType != '1' && params.giftShareType != '2') {
                 // 不传值0,1,2创建会报错
-                params.giftShareType = '0'
+                if(value == '81'){ // 特殊权益券key
+                    params.giftShareType = '1'
+                }else{
+                    params.giftShareType = '0'
+                }
             }
             if (!params.isDiscountRate && value != '111') {
                 params.discountRate = 1
@@ -1110,7 +1135,7 @@ class GiftAddModalStep extends React.PureComponent {
                 }
             }
 
-            if (value == '10') {
+            if (value == '10' || value == '81') {
 
                 let isMsg = false
                 if(this.state.values.pushMessage&&this.state.values.pushMessage.sendType){
@@ -1133,7 +1158,6 @@ class GiftAddModalStep extends React.PureComponent {
     
                     let pushMessageRuleInfoList = []
                     let ruleDetailList = []
-    
                     this.state.notice&&this.state.notice.length>0&&this.state.notice.map((i)=>{
                         ruleDetailList.push({dateRule:i})
                     })
@@ -1230,11 +1254,12 @@ class GiftAddModalStep extends React.PureComponent {
                     return
                 }
             }
+            console.log('_TODO==特殊权益券保存', params);
+
             Array.isArray(params.supportOrderTypeLst) && (params.supportOrderTypeLst = params.supportOrderTypeLst.join(','))
             this.setState({
                 finishLoading: true,
             });
-
             const { accountInfo, startSaving, endSaving } = this.props;
             const groupName = accountInfo.get('groupName');
             startSaving();
@@ -1242,7 +1267,6 @@ class GiftAddModalStep extends React.PureComponent {
             delete params.aggregationChannels;
             delete params.couponFoodScopeList; // 后台返回的已选菜品数据
             this.checkShopWechatData(params,callServer,groupName,this.submitData);
-           
         });
     }
     // 最后提交数据
@@ -1303,7 +1327,7 @@ class GiftAddModalStep extends React.PureComponent {
                         }
                     })
             }else{
-                cb(callServer,params,groupName,_that)
+                cb(callServer,params,groupName,_that)   
             }
             
         }else{
@@ -1842,6 +1866,31 @@ class GiftAddModalStep extends React.PureComponent {
         this.setState({ 
             values:Object.assign({},values)
         });
+    }
+
+    changeShopNamesJSB = (val) => {
+        const {values} = this.state;
+        values.shopNames = val;
+        values.shopScopeType = 1;
+        this.setState({ 
+            values:Object.assign({},values)
+        });
+    }
+
+    // 针对嘉士伯集团选择适用店铺
+    renderJsbShopNames = (d) => {
+        const { shopNames = [] } = this.state.values;
+        return (
+            <Row style={{ marginBottom: shopNames.length === 0 ? -15 : 0, width: '302px' }}>
+                <Col style={{position:'relative'}}>
+                    {d({
+                        onChange:this.changeShopNamesJSB
+                    })(
+                        <ShopSelectorJSB />
+                    )}
+                </Col>
+            </Row>
+        )
     }
 
     renderShopNames(decorator) {
@@ -2744,13 +2793,14 @@ class GiftAddModalStep extends React.PureComponent {
     }
     renderSelectBrands = (decorator,form) => {
         const { values} = this.state;
-        const { gift: { value } } = this.props;
+        const { gift: { value,  name: describe }, accountInfo } = this.props;
+        const groupID = accountInfo.get('groupID');
         return  decorator({
             key:'selectBrands',
             initialValue:values.selectBrands,
             onChange:(value) => this.changeSelectedBrands(value,form)
         })(
-            <SelectBrands type={value}/>
+            <SelectBrands type={value} groupID={groupID} describe={describe}/>
         )
     }
 
@@ -2892,7 +2942,7 @@ class GiftAddModalStep extends React.PureComponent {
         const isUnit = ['10', '91'].includes(value);
         const giftNameValid = (type === 'add') ? { max: 25, message: '不能超过25个字符' } : {};
 
-        let isMsg = false
+        let isMsg = false;
         if(formData.pushMessage&&formData.pushMessage.sendType){
             isMsg = formData.pushMessage.sendType.indexOf('msg')>-1
         }
@@ -2990,11 +3040,12 @@ class GiftAddModalStep extends React.PureComponent {
                         <Col>
                             {
                                 decorator({})(
-                                    describe!='代金券'?<PushMessageMpID formData = {formData} groupID={groupID}/>:
+                                   (describe != '代金券' && describe != '特殊权益券')
+                                    ?<PushMessageMpID formData = {formData} groupID={groupID}/>:
                                     <CashCouponPushMessageMpID formData = {formData} groupID={groupID}/>
                                 )
                             }
-                            {describe!='代金券'?<span>* 此处为该券模板支持的推送方式，最终是否推送消息以营销活动配置为准</span>:null}
+                            {(describe != '代金券' && describe != '特殊权益券')?<span>* 此处为该券模板支持的推送方式，最终是否推送消息以营销活动配置为准</span>:null}
                         </Col>
                     )
                 }
@@ -3002,7 +3053,79 @@ class GiftAddModalStep extends React.PureComponent {
             notice: {
                 label: ' ',
                 type: 'custom',
-                render: decorator => isMsg?this.renderNoticeItem(decorator):null,
+                render: decorator => isMsg ? this.renderNoticeItem(decorator):null
+            },
+            specialInterestType: {
+                label: '特殊权益',
+                type: 'custom',
+                defaultValue: 1,
+                render: (decorator,form) => {
+                    return (
+                        <Col>
+                            {
+                                decorator({})(
+                                    <RadioGroup>
+                                        {
+                                            GiftCfg.specialInterestType.map(item => (
+                                                <Radio key={item.value} value={item.value}>{item.label}</Radio>
+                                            ))
+                                        }
+                                    </RadioGroup>
+                                )
+                            }
+                            <Tooltip placement="top" title='使用特殊权益券后，订单将插队优先制作'>
+                                <Icon type="question-circle-o" />
+                            </Tooltip>
+                        </Col>
+                    )
+                }
+            },
+            supportOrderTypeLst: {
+                label: FORMITEMS.supportOrderTypeLst.label,
+                type: 'custom',
+                render: (decorator,form) => {
+                    let defaultValue = FORMITEMS.supportOrderTypeLst.defaultValue;
+                    let options = GiftCfg.supportOrderTypeLst;
+                    if(describe == '特殊权益券'){
+                        options = options.filter(item => item.value != '10' && item.value != '11');
+                        defaultValue = defaultValue.filter(item => item != '10' && item != '11');
+                    }
+                    return (
+                        <Col>
+                            {
+                                decorator({
+                                    rule: [ { required: true} ],
+                                    defaultValue,
+                                })(
+                                    <Checkbox.Group options={options} disabled={describe == '特殊权益券'} />
+                                )
+                            }
+                        </Col>
+                    )
+                }
+            },
+            isOfflineCanUsing: {
+                label: FORMITEMS.isOfflineCanUsing.label,
+                type: 'custom',
+                render: (decorator,form) => {
+                    return (
+                        <Col>
+                            {
+                                decorator({
+                                    defaultValue: FORMITEMS.isOfflineCanUsing.defaultValue
+                                })(
+                                    <RadioGroup disabled={describe == '特殊权益券'}>
+                                        {
+                                            GiftCfg.isOfflineCanUsing.map(item => (
+                                                <Radio value={item.value}>{item.label}</Radio>
+                                            ))
+                                        }
+                                    </RadioGroup>
+                                )
+                            }
+                        </Col>
+                    )
+                }
             },
             giftImagePath: {
                 label: '礼品图样',
@@ -3010,7 +3133,7 @@ class GiftAddModalStep extends React.PureComponent {
                 render: decorator => decorator({})(<GiftImagePath contentHeight='auto'/>),
             },
             selectBrands: {
-                label: '所属品牌',
+                label: `${GroupSepcial.includes(groupID) && describeAry.includes(describe) ? '' : '所属品牌'}`,
                 type: 'custom',
                 render: (decorator, form) => this.renderSelectBrands(decorator, form)
             },
@@ -3142,7 +3265,7 @@ class GiftAddModalStep extends React.PureComponent {
                 type: 'custom',
                 label: '适用店铺',
                 defaultValue: [],
-                render: decorator => this.renderShopNames(decorator),
+                render: decorator =>  GroupSepcial.includes(groupID) && describeAry.includes(describe) ? this.renderJsbShopNames(decorator) : this.renderShopNames(decorator),
             },
             selectedMemberRightShops: {
                 type: 'custom',
@@ -3164,7 +3287,7 @@ class GiftAddModalStep extends React.PureComponent {
                     </span>
                 ),
                 defaultValue: [],
-                render: decorator => this.renderExcludeShops(decorator),
+                render: decorator => GroupSepcial.includes(groupID) && describeAry.includes(describe) ? null : this.renderExcludeShops(decorator),
             },
             shareIDs: {
                 type: 'custom',
@@ -3922,6 +4045,8 @@ function mapStateToProps(state) {
         // 商城商品及分类信息
         goodCategories: state.sale_promotionDetailInfo_NEW.get('goodCategories').toJS(),
         goods: state.sale_promotionDetailInfo_NEW.get('goods').toJS(),
+        groupID: state.user.getIn(['accountInfo', 'groupID']),
+
     }
 }
 

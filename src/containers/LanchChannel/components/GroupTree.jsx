@@ -12,9 +12,10 @@ class GroupTree extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if(prevProps.groupData != this.props.groupData) {
+    const { groupData = [] } = this.props
+    if(prevProps.groupData != groupData) {
       let total = 0
-      this.props.groupData.map(item => {
+      groupData.map(item => {
         total += Number(item.count)
       })
       this.setState({
@@ -31,7 +32,7 @@ class GroupTree extends Component {
   }
 
   render() {
-    const { groupData, addGroup, editGroup, delGroup, currentGroup, changeGroup, clickTotal } = this.props
+    const { groupData = [], addGroup, editGroup, delGroup, currentGroup, changeGroup, clickTotal } = this.props
     const { isExpand, total } = this.state
 
     return (

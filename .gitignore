@@ -7,6 +7,7 @@
 .vscode
 .gitattributes
 .history
+.prettierrc
 i18n-messages
 node_modules
 lib

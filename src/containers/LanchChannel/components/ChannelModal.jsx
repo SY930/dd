@@ -53,7 +53,7 @@ class ChannelModal extends React.Component {
 
   render() {
     const { formData } = this.state
-    const { modalType, modalVisible, isEdit, groupData } = this.props;
+    const { modalType, modalVisible, isEdit, groupData = [] } = this.props;
     const formItems = {
       channelGroupName: {
         type: 'text',
