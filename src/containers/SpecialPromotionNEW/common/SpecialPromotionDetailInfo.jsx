@@ -1441,8 +1441,7 @@ class SpecialDetailInfo extends Component {
                 if(item.giftID){giftIdsArr.push(item.giftID)};
             })
             //埋点事件第三步
-            setSensorsData({
-                event_id: SensorsCodes.sensorsThirdStepId[this.props.type] ? SensorsCodes.sensorsThirdStepId[this.props.type] : "",
+            setSensorsData(SensorsCodes.sensorsThirdStepId[this.props.type] ? SensorsCodes.sensorsThirdStepId[this.props.type] : "", {
                 gift_point: this.state.givePoints ? this.state.presentValue : "",
                 gift_coupon: giftIdsArr.join(',')
             });

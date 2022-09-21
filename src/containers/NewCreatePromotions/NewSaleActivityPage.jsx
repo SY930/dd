@@ -105,9 +105,7 @@ class NewCustomerPage extends Component {
         this.props.getAuthLicenseData({ productCode: "HLL_CRM_Marketingbox" }).then(res => {
             this.setState({ authLicenseData: res });
         });
-        setSensorsData({
-            event_id: "wtcrm_promotion_clk"
-        });
+        setSensorsData("wtcrm_promotion_clk");
     }
     componentWillReceiveProps(nextProps) {
         // todo:上线放开
@@ -462,11 +460,10 @@ class NewCustomerPage extends Component {
             this.handleBasicPromotionCreate(basicIndex, promotionEntity);
         }
         let params = {
-            event_id: SensorsCodes.sensorsEventId[key] ? SensorsCodes.sensorsEventId[key] : "",
             platform: currentPlatformName,
             menu: currentCategoryName
         };
-        setSensorsData(params);
+        setSensorsData(SensorsCodes.sensorsEventId[key] ? SensorsCodes.sensorsEventId[key] : "", params);
     }
 
     // 创建基础营销

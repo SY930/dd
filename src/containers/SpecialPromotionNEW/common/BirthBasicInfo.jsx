@@ -164,8 +164,7 @@ class PromotionBasicInfo extends React.Component {
                         eventEndDate
                     };
                     //第一步埋点事件
-                    setSensorsData({
-                        event_id: SensorsCodes.sensorsFirstStepId[this.props.type] ? SensorsCodes.sensorsFirstStepId[this.props.type] : "",
+                    setSensorsData(SensorsCodes.sensorsFirstStepId[this.props.type] ? SensorsCodes.sensorsFirstStepId[this.props.type] : "", {
                         activity_name: this.state.name,
                         activity_explain: this.state.description,
                         activity_begin_data: actDate[0] && moment(actDate[0]).format(format),

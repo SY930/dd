@@ -806,8 +806,20 @@ export function checkAuthLicense(licenseData = {}, productCode = 'HLL_CRM_NEW', 
     }
 }
 /**
- *埋点事件
+ *埋点自定义事件
  */
-export function setSensorsData(params = {}){
-    sensors.track("$WebClick", params);
+export function setSensorsData(event_id = "wtcrm_promotion_clk", params = {}) {
+    sensors.track(event_id, params);
+}
+/**
+ * 获取cookie值
+ */
+export function getCookie(name) {
+    var arr,
+        reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+    if ((arr = document.cookie.match(reg))) {
+        return decodeURI(arr[2]);
+    } else {
+        return null;
+    }
 }

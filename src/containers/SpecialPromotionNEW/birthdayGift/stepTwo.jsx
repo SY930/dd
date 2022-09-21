@@ -394,8 +394,7 @@ class StepTwo extends React.Component {
             opts.shopIDList = shopIDList.filter(item => shops.some(i => i.shopID == item)).concat(extra);
         }
         //埋点事件第二步
-        setSensorsData({
-            event_id: SensorsCodes.sensorsSecondStepId[this.props.type] ? SensorsCodes.sensorsSecondStepId[this.props.type] : "",
+        setSensorsData(SensorsCodes.sensorsSecondStepId[this.props.type] ? SensorsCodes.sensorsSecondStepId[this.props.type] : "", {
             channel_limit: this.state.sourceWayLimit,
             apply_cardtype: opts.cardLevelIDList && opts.cardLevelIDList.length > 0 ? opts.cardLevelIDList.join(",") : "",
             apply_shop: opts.shopIDList && opts.shopIDList.length > 0 ? opts.shopIDList.join(",") : ""
