@@ -155,7 +155,7 @@ export const getColumns = _this => ([
     {
         title: '投放ID',
         dataIndex: 'entranceWords',
-        width: 130,
+        width: 180,
         render: (text, record) => {
             if (record.platformType == '7') {
                 return text
