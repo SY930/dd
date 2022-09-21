@@ -153,7 +153,7 @@ export const getColumns = _this => ([
         render: text => text,
     },
     {
-        title: '批次ID',
+        title: '投放ID',
         dataIndex: 'entranceWords',
         width: 130,
         render: (text, record) => {
@@ -166,12 +166,6 @@ export const getColumns = _this => ([
     {
         title: '礼品ID',
         dataIndex: 'giftItemID',
-        width: 200,
-        render: text => text || '--',
-    },
-    {
-        title: '投放ID', // 快手投放ID
-        dataIndex: 'ID',
         width: 200,
         render: text => text || '--',
     },
