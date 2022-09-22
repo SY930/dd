@@ -43,7 +43,7 @@ class WxCouponModal extends Component {
             wxCouponList: [],
             pageNo: 1,
             pageSize: 10,
-            sleectedWxCouponList: [],
+            slectedWxCouponList: [],
             selectedRowKeys: [],
             keyword: "",
         };
@@ -54,7 +54,7 @@ class WxCouponModal extends Component {
     }
 
     initSelectedRowKey = () => {
-        const selectedRowKeys = (this.props.sleectedWxCouponList || []).map(
+        const selectedRowKeys = (this.props.slectedWxCouponList || []).map(
             (item) => item.itemID
         );
         this.setState({
@@ -69,11 +69,11 @@ class WxCouponModal extends Component {
     };
 
     handleSubmit = () => {
-        const { sleectedWxCouponList } = this.state;
-        if (sleectedWxCouponList.length) {
-            this.props.onWxCouponChange(this.state.sleectedWxCouponList);
+        const { slectedWxCouponList } = this.state;
+        if (slectedWxCouponList.length) {
+            this.props.onWxCouponChange(this.state.slectedWxCouponList);
         } else {
-            this.props.onWxCouponChange(this.props.sleectedWxCouponList);
+            this.props.onWxCouponChange(this.props.slectedWxCouponList);
         }
         this.props.onCancel();
     };
@@ -131,7 +131,7 @@ class WxCouponModal extends Component {
                     return message.warn("最多选择1个券");
                 }
                 this.setState({
-                    sleectedWxCouponList: selectedRows,
+                    slectedWxCouponList: selectedRows,
                     selectedRowKeys,
                 });
             },

@@ -12,11 +12,11 @@ class SleectedWxCouponTable extends Component {
     }
 
     handleRemove = (itemID) => {
-        const sleectedWxCouponList = this.props.sleectedWxCouponList.filter(
+        const slectedWxCouponList = this.props.slectedWxCouponList.filter(
             (item) => item.itemID !== itemID
         );
-        this.setState({ sleectedWxCouponList });
-        this.props.onWxCouponChange(sleectedWxCouponList);
+        this.setState({ slectedWxCouponList });
+        this.props.onWxCouponChange(slectedWxCouponList);
     };
 
     render() {
@@ -65,7 +65,7 @@ class SleectedWxCouponTable extends Component {
                     className={styles.WxCouponTable}
                     bordered={true}
                     columns={columns}
-                    dataSource={this.props.sleectedWxCouponList}
+                    dataSource={this.props.slectedWxCouponList}
                     rowKey={"itemID"}
                     pagination={false}
                 />

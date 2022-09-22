@@ -136,10 +136,10 @@ const formItems = {
     effectType: {
         type: "radio",
         label: "生效方式",
-        defaultValue: "1",
+        defaultValue: 1,
         options: [
-            { label: "相对有效期", value: "1" },
-            { label: "固定有效期", value: "2" },
+            { label: "相对有效期", value: 1 },
+            { label: "固定有效期", value: 2 },
         ],
     },
     countType: {
@@ -195,7 +195,7 @@ export {
 
 export const initVal = {
     id: "0",
-    effectType: "1",
+    effectType: 1,
     giftCount: "1",
     countType: "0",
     giftEffectTimeHours: '0',

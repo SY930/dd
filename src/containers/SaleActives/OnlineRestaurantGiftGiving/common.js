@@ -4,7 +4,6 @@ import DateRange from "../../PromotionV3/Camp/DateRange";
 import Advance from "../../PromotionV3/Camp/Advance";
 import DateTag from "../../PromotionV3/Camp/DateTag";
 import TimeRange from "../../PromotionV3/Camp/TimeRange";
-import EveryDay from "../../PromotionV3/Camp/EveryDay";
 
 export const formItemLayout = {
     labelCol: { span: 5 },
@@ -105,8 +104,7 @@ export const baseFormItems = {
     },
     autoRegister: {
         type: "custom",
-        wrapperCol: { span: 24 },
-        label: "",
+        label: "参与成为会员",
         defaultValue: 0,
         render: (d, form) => {
             if (
@@ -114,20 +112,11 @@ export const baseFormItems = {
                     form.getFieldValue("partInUser") == 2) &&
                 form.getFieldValue("giftSendType") == 2
             ) {
-                return (
-                    <Form.Item
-                        label="参与成为会员"
-                        labelCol={{ span: 5 }}
-                        wrapperCol={{ span: 15 }}
-                        style={{ padding: 0 }}
-                    >
-                        {d({})(
-                            <Radio.Group>
-                                <Radio value={1}>无需用户填写注册信息</Radio>
-                                <Radio value={0}>用户需填写注册信息</Radio>
-                            </Radio.Group>
-                        )}
-                    </Form.Item>
+                return d({})(
+                    <Radio.Group>
+                        <Radio value={1}>无需用户填写注册信息</Radio>
+                        <Radio value={0}>用户需填写注册信息</Radio>
+                    </Radio.Group>
                 );
             }
             return null;
@@ -149,7 +138,7 @@ export const baseFormItems = {
 };
 
 export const ruleFormItem = {
-    couponValue: {
+    couponType: {
         type: "custom",
         label: "优惠券",
         render: (d) =>
@@ -168,89 +157,81 @@ export const ruleFormItem = {
         labelCol: { span: 5 },
         render: () => <p />,
     },
-    joinCount: {
-        type: "custom",
+    joinType: {
+        type: "radio",
         label: "参与次数",
-        render: (d, form) => (
-            <div>
-                <div>
-                    {d({
-                        key: "joinCount",
-                        initialValue: "0",
-                    })(
-                        <Radio.Group>
-                            <Radio value="0">不限次数</Radio>
-                            <Radio value="1">限制次数</Radio>
-                            <Radio value="2">限制参与次数的周期</Radio>
-                        </Radio.Group>
-                    )}
+        options: [
+            { label: "不限次数", value: "0" },
+            { label: "限制次数", value: "1" },
+            { label: "限制参与次数的周期", value: "2" },
+        ],
+        defaultValue: "0",
+    },
+    partInTimes: {
+        type: "custom",
+        label: " ",
+        wrapperCol: { span: 8 },
+        labelCol: { span: 5 },
+        rules: [
+            "required",
+            {
+                pattern: /^([1-9]\d{0,})$/,
+                message: "请输入正整数",
+            },
+        ],
+        render: (d, form) => {
+            return form.getFieldValue("joinType") == 1
+                ? d()(
+                      <Input
+                          placeholder="请输入次数"
+                          addonBefore="可参与"
+                          addonAfter="次"
+                      />
+                  )
+                : null;
+        },
+    },
+    countCycleDays: {
+        type: "custom",
+        label: " ",
+        wrapperCol: { span: 15 },
+        labelCol: { span: 5 },
+        render: (d, form) => {
+            return form.getFieldValue("joinType") == 2 ? (
+                <div style={{ display: "flex", width: 400 }}>
+                    <Form.Item style={{ padding: 0 }}>
+                        {d({
+                            key: "countCycleDays",
+                            rules: [
+                                "required",
+                                {
+                                    pattern: /^([1-9]\d{0,})$/,
+                                    message: "请输入正整数",
+                                },
+                            ],
+                        })(
+                            <Input
+                                placeholder="请输入天数"
+                                addonBefore="同一用户"
+                                addonAfter="天，可参与"
+                            />
+                        )}
+                    </Form.Item>
+                    <Form.Item style={{ padding: 0 }}>
+                        {d({
+                            key: "partInTimes1",
+                            rules: [
+                                "required",
+                                {
+                                    pattern: /^([1-9]\d{0,})$/,
+                                    message: "请输入正整数",
+                                },
+                            ],
+                        })(<Input placeholder="请输入次数" addonAfter="次" />)}
+                    </Form.Item>
                 </div>
-                <div>
-                    {form.getFieldValue("joinCount") == 1 ? (
-                        <div style={{ width: 300, height: 40 }}>
-                            <Form.Item>
-                                {d({
-                                    key: "partInTimes",
-                                    rules: [
-                                        "required",
-                                        {
-                                            pattern: /^([1-9]\d{0,})$/,
-                                            message: "请输入正整数",
-                                        },
-                                    ],
-                                })(
-                                    <Input
-                                        placeholder="请输入次数"
-                                        addonBefore="可参与"
-                                        addonAfter="次"
-                                    />
-                                )}
-                            </Form.Item>
-                        </div>
-                    ) : form.getFieldValue("joinCount") == 2 ? (
-                        <div
-                            style={{ display: "flex", width: 400, height: 40 }}
-                        >
-                            <Form.Item>
-                                {d({
-                                    key: "countCycleDays",
-                                    rules: [
-                                        "required",
-                                        {
-                                            pattern: /^([1-9]\d{0,})$/,
-                                            message: "请输入正整数",
-                                        },
-                                    ],
-                                })(
-                                    <Input
-                                        placeholder="请输入天数"
-                                        addonBefore="同一用户"
-                                        addonAfter="天，可参与"
-                                    />
-                                )}
-                            </Form.Item>
-                            <Form.Item>
-                                {d({
-                                    key: "partInTimes",
-                                    rules: [
-                                        "required",
-                                        {
-                                            pattern: /^([1-9]\d{0,})$/,
-                                            message: "请输入正整数",
-                                        },
-                                    ],
-                                })(
-                                    <Input
-                                        placeholder="请输入次数"
-                                        addonAfter="次"
-                                    />
-                                )}
-                            </Form.Item>
-                        </div>
-                    ) : null}
-                </div>
-            </div>
-        ),
+            ) : null;
+        },
     },
     smsGate: {
         type: "combo",
@@ -298,10 +279,7 @@ export const ruleFormItem = {
     validCycle: {
         type: "custom",
         label: "每逢",
-        render: (d, form) => {
-            let { cycleType } = form.getFieldsValue();
-            return d()(<EveryDay type={cycleType} />);
-        },
+        render: () => <p></p>,
         defaultValue: ["w1", "m1"],
     },
     excludedDate: {
@@ -311,6 +289,23 @@ export const ruleFormItem = {
         defaultValue: [],
     },
 };
+
+const KEY3 = ["timeList", "cycleType"];
+const KEY4 = ["validCycle"];
+const KEY5 = ["excludedDate"];
+const KEY6 = [
+    "couponType",
+    "gifts",
+    "joinType",
+    "partInTimes",
+    "countCycleDays",
+    "smsGate",
+    "eventRange",
+    "advMore",
+];
+const formKeys32 = [...KEY6, ...KEY3, ...KEY4, ...KEY5];
+
+export { formKeys32, KEY3, KEY4, KEY5, KEY6 };
 
 export const baseFormKeys = [
     "eventType",
@@ -323,13 +318,4 @@ export const baseFormKeys = [
     "cardTypeIDList",
     "shopIDList",
     "eventRemark",
-];
-
-export const ruleFormKeys = [
-    "couponValue",
-    "gifts",
-    "joinCount",
-    "smsGate",
-    "eventRange",
-    "advMore",
 ];

@@ -1,7 +1,16 @@
 import React, { PureComponent as Component } from "react";
 import { Icon, Button, Form, Input } from "antd";
 import BaseForm from "components/common/BaseForm";
-import { ruleFormItem, formItemLayout, ruleFormKeys } from "../common";
+import EveryDay from "../../../PromotionV3/Camp/EveryDay";
+import {
+    formKeys32,
+    ruleFormItem,
+    KEY6,
+    KEY3,
+    KEY4,
+    KEY5,
+    formItemLayout,
+} from "../common";
 import WxCouponModal from "./WxCouponModal";
 import SleectedWxCouponTable from "./SleectedWxCouponTable";
 import AddGifts from "../AddGifts/AddGifts";
@@ -10,38 +19,48 @@ class UsageRuleForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            formKeys: ruleFormKeys,
+            formKeys: formKeys32,
             wxCouponVisible: false,
-            sleectedWxCouponList: [], //选中的微信券
+            slectedWxCouponList: [], //选中的微信券
         };
     }
 
-    onChangeRuleForm = (key, value) => {
-        const { ruleForm } = this.props;
-        if (!ruleForm) {
-            return;
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.slectedWxCouponList != this.props.slectedWxCouponList) {
+            this.setState({
+                slectedWxCouponList: nextProps.slectedWxCouponList,
+            });
         }
-        let formKeys = [...this.state.formKeys];
+    }
+
+    onChangeRuleForm = (key, value) => {
+        const { ruleForm: form, formData = {} } = this.props;
+        let newFormKeys = [...KEY6];
         //高级日期设置
         if (key === "advMore") {
             if (value) {
-                formKeys.splice(6, 0, "timeList", "cycleType", "excludedDate");
-            } else {
-                formKeys.splice(6, 4);
+                newFormKeys = [...KEY6, ...KEY3, ...KEY5];
             }
-            //选择周期
-        } else if (key === "cycleType") {
-            //周月
-            if (value) {
-                formKeys = formKeys.filter((item) => item != "validCycle");
-                formKeys.splice(8, 0, "validCycle");
-                //日
-            } else {
-                formKeys.splice(6, 4);
-                formKeys.splice(6, 0, "timeList", "cycleType", "excludedDate");
-            }
+            this.setState({ formKeys: newFormKeys });
         }
-        this.setState({ formKeys });
+        //选择周期
+        if (key === "cycleType") {
+            let advMore = "";
+            if (form) {
+                advMore = form.getFieldValue("advMore"); // 高级时间
+            }
+            if (advMore) {
+                newFormKeys = [...KEY6, ...KEY3, ...KEY5];
+            }
+            if (value) {
+                newFormKeys = [...KEY6, ...KEY3, ...KEY4, ...KEY5];
+            } else {
+                if (formData.advMore) {
+                    newFormKeys = [...KEY6, ...KEY3, ...KEY5];
+                }
+            }
+            this.setState({ formKeys: newFormKeys });
+        }
     };
 
     // 添加商家券
@@ -58,124 +77,109 @@ class UsageRuleForm extends Component {
     };
 
     onWxCouponChange = (rowSelected) => {
-        this.setState({ sleectedWxCouponList: rowSelected });
+        const { setSlectedWxCouponList } = this.props;
+        this.setState({ slectedWxCouponList: rowSelected });
+        setSlectedWxCouponList(rowSelected);
     };
 
     getForm = (formList) => {
         const { getGiftForm } = this.props;
         getGiftForm(formList);
-    }
+    };
 
     resetFormItems = () => {
-        const { gifts } = ruleFormItem;
+        const { gifts, validCycle } = ruleFormItem;
         const { accountInfo, ruleForm = {}, formData } = this.props;
+        let cycleType = "";
+        if (ruleForm) {
+            const { getFieldValue } = ruleForm;
+            const { cycleType: t } = formData || {};
+            cycleType = getFieldValue("cycleType") || t;
+        }
+        const renderValidCycle = (d) => d()(<EveryDay type={cycleType} />);
         return {
             ...ruleFormItem,
-            gifts:
-                ruleForm && ruleForm.getFieldDecorator
-                    ? {
-                          ...gifts,
-                          render: (d, form) => (
-                              <div>
-                                  {form.getFieldValue("couponValue") == 1 ? (
-                                      <div style={{ width: "100%" }}>
-                                          <p>
-                                              <Button
-                                                  icon="plus"
-                                                  onClick={this.addWXCoupon}
-                                              >
-                                                  添加第三方微信优惠券
-                                              </Button>
-                                          </p>
-                                          <p
-                                              style={{
-                                                  height: 36,
-                                                  paddingLeft: 13,
-                                                  marginBottom: 4,
-                                                  background: "#FFFBE6",
-                                                  borderRadius: 4,
-                                                  lineHeight: "36px",
-                                                  color: "#666",
-                                                  marginTop: "10px",
-                                              }}
-                                          >
-                                              <Icon
-                                                  type="exclamation-circle"
-                                                  style={{
-                                                      color: "#FAAD14",
-                                                      marginRight: 10,
-                                                  }}
-                                              />
-                                              <span>
-                                                  第三方微信优惠券领取后，可同步微信卡包展示。
-                                              </span>
-                                          </p>
-                                          <Form.Item
-                                              label={"用户单次领取优惠券张数"}
-                                              labelCol={{ span: 7 }}
-                                              wrapperCol={{ span: 17 }}
-                                          >
-                                              {d({
-                                                  key: "giftCount",
-                                                  rules: [
-                                                      "required",
-                                                      {
-                                                          pattern:
-                                                              /^([1-9]|10)$/,
-                                                          message:
-                                                              "请输入为1-10的整数",
-                                                      },
-                                                  ],
-                                              })(
-                                                  <Input
-                                                      placeholder={
-                                                          "请输入1-9的整数"
-                                                      }
-                                                      type="number"
-                                                  />
-                                              )}
-                                          </Form.Item>
-                                          <SleectedWxCouponTable
-                                              sleectedWxCouponList={
-                                                  this.state
-                                                      .sleectedWxCouponList
-                                              }
-                                              onWxCouponChange={
-                                                  this.onWxCouponChange
-                                              }
-                                          />
-                                          {this.state.wxCouponVisible && (
-                                              <WxCouponModal
-                                                  onCancel={
-                                                      this.onWXCouponCancel
-                                                  }
-                                                  sleectedWxCouponList={
-                                                      this.state
-                                                          .sleectedWxCouponList
-                                                  }
-                                                  user={this.props.user}
-                                                  onWxCouponChange={
-                                                      this.onWxCouponChange
-                                                  }
-                                              />
-                                          )}
-                                      </div>
-                                  ) : (
-                                      <Form.Item>
-                                          {d({
-                                              key: "gifts",
-                                          })(
-                                              <AddGifts
-                                                  accountInfo={accountInfo}
-                                                  getGiftForm={this.getForm}
-                                              />
-                                          )}
-                                      </Form.Item>
-                                  )}
-                              </div>
-                          ),
-                      }
-                    : {},
+            validCycle: { ...validCycle, render: renderValidCycle },
+            gifts: {
+                ...gifts,
+                render: (d, form) =>
+                    form.getFieldValue("couponType") == 1 ? (
+                        <div style={{ width: "100%" }}>
+                            <p>
+                                <Button icon="plus" onClick={this.addWXCoupon}>
+                                    添加第三方微信优惠券
+                                </Button>
+                            </p>
+                            <p
+                                style={{
+                                    height: 36,
+                                    paddingLeft: 13,
+                                    marginBottom: 4,
+                                    background: "#FFFBE6",
+                                    borderRadius: 4,
+                                    lineHeight: "36px",
+                                    color: "#666",
+                                    marginTop: "10px",
+                                }}
+                            >
+                                <Icon
+                                    type="exclamation-circle"
+                                    style={{
+                                        color: "#FAAD14",
+                                        marginRight: 10,
+                                    }}
+                                />
+                                <span>
+                                    第三方微信优惠券领取后，可同步微信卡包展示。
+                                </span>
+                            </p>
+                            <Form.Item
+                                label={"用户单次领取优惠券张数"}
+                                labelCol={{ span: 7 }}
+                                wrapperCol={{ span: 17 }}
+                            >
+                                {d({
+                                    key: "giftCount",
+                                    rules: [
+                                        "required",
+                                        {
+                                            pattern: /^([1-9]|10)$/,
+                                            message: "请输入为1-10的整数",
+                                        },
+                                    ],
+                                })(
+                                    <Input
+                                        placeholder={"请输入1-9的整数"}
+                                        type="number"
+                                    />
+                                )}
+                            </Form.Item>
+                            <SleectedWxCouponTable
+                                slectedWxCouponList={
+                                    this.state.slectedWxCouponList
+                                }
+                                onWxCouponChange={this.onWxCouponChange}
+                            />
+                            {this.state.wxCouponVisible && (
+                                <WxCouponModal
+                                    onCancel={this.onWXCouponCancel}
+                                    slectedWxCouponList={
+                                        this.state.slectedWxCouponList
+                                    }
+                                    user={this.props.user}
+                                    onWxCouponChange={this.onWxCouponChange}
+                                />
+                            )}
+                        </div>
+                    ) : (
+                        d()(
+                            <AddGifts
+                                accountInfo={accountInfo}
+                                getGiftForm={this.getForm}
+                            />
+                        )
+                    ),
+            },
         };
     };
 

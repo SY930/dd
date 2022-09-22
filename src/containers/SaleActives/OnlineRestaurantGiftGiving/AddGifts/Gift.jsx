@@ -22,7 +22,7 @@ export default class Gift extends Component {
         const { idx, onChange } = this.props;
         if (key === "countType") {
             // 相对有效期
-            const options = value === "0" ? timeOpts : dayOpts;
+            const options = value == "0" ? timeOpts : dayOpts;
             this.setState({
                 options,
             });
@@ -41,7 +41,7 @@ export default class Gift extends Component {
         }
         if (key === "effectType") {
             // 生效方式
-            if (value === "1") {
+            if (value == "1") {
                 this.setState({ formKeys: formKeys1 }, () => {
                     const countType = this.form.getFieldValue("countType");
                     // this.form.setFieldsValue({ 'giftEffectTimeHours': countType });
