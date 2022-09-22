@@ -176,6 +176,7 @@ class GiftList extends Component {
                 pageNo: 1,
                 pageSize: queryParams.pageSize || 1,
                 ...params,
+                exportType: 22
             }
             this.setState({
                 exportLoading: true

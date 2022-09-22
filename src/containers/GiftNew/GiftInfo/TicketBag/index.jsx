@@ -51,7 +51,8 @@ export default class TicketBag extends Component {
                 pageNo,
                 pageSize,
                 groupID,
-                couponPackageStatus
+                couponPackageStatus,
+                exportType: 23
             }
             if (!obj.name) {
                 delete obj.name
