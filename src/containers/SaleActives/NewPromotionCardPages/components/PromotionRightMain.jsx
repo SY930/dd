@@ -247,13 +247,13 @@ class PromotionRightMain extends Component {
         )
     }
 
-    renderDefaultCardTypeID = (formItems, key) => {
+    renderDefaultCardType = (formItems, key) => {
         formItems[key].render = (decorator) => {
             return (
                 <Row>
                     <Col>
                         {decorator({
-                            key: 'defaultCardTypeID'
+                            key: 'defaultCardType'
                         })(
                             <Select
                                 style={{
@@ -363,7 +363,7 @@ class PromotionRightMain extends Component {
         if (key == 'joinCount') {
             resetFields(['partInTimes2', 'partInTimes3', 'countCycleDays']);
         } else if (key == 'cardScopeType') {
-            resetFields(['defaultCardTypeID']);
+            resetFields(['defaultCardType']);
             const { cardLevelRangeType, cardLevelIDList } = value;
             if (cardLevelRangeType == '0') {
                 this.setState({
@@ -400,8 +400,8 @@ class PromotionRightMain extends Component {
             if (activityFormKeys[0].keys.includes('shopIDList')) {
                 this.renderShopSelector(formItems, 'shopIDList');
             }
-            if (activityFormKeys[0].keys.includes('defaultCardTypeID')) {
-                this.renderDefaultCardTypeID(formItems, 'defaultCardTypeID');
+            if (activityFormKeys[0].keys.includes('defaultCardType')) {
+                this.renderDefaultCardType(formItems, 'defaultCardType');
             }
             if (activityFormKeys[0].keys.includes('cardScopeType')) {
                 this.renderCardScopeType(formItems, 'cardScopeType');
@@ -439,7 +439,7 @@ class PromotionRightMain extends Component {
         }) || [];
         console.log('newFormSteps', newFormSteps);
         return (
-            <Col className={styles.PromotionRightMain} style={{ height: 'calc(100vh - 65px)' }}>
+            <Col className={styles.PromotionRightMain} style={{ height: 'calc(100vh - 65px)' }} span={24}>
                 {
                     newFormSteps.map((item, index) => (
                         <Col key={item.title} className={styles.formBlock}>

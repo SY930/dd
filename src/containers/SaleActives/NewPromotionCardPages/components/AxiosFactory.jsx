@@ -89,7 +89,7 @@ async function httpCreatePromotion(data) {
     Object.assign(data, {
         groupID
     })
-    const method = 'specialPromotion/addEvent.ajax';
+    const method = data.event.itemID ? 'specialPromotion/updateEvent.ajax' : 'specialPromotion/addEvent.ajax';
     const params = {
         service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
         type: 'post',
@@ -99,7 +99,7 @@ async function httpCreatePromotion(data) {
     const response = await axios.post(url + method, params);
     const { code, message: msg } = response;
     if (code === '000') {
-        message.success('创建成功');
+        message.success(data.event.itemID ? '更新成功' : '创建成功');
         return true;
     }
     message.error(msg);

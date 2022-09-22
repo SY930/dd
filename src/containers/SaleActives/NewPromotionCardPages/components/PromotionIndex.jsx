@@ -219,7 +219,10 @@ class PromotionIndex extends Component {
                 requestPramas.eventGiftConditionList = eventGiftConditionList;
                 requestPramas.event = clonedEvent;
                 requestPramas.eventMutexDependRuleInfos = eventMutexDependRuleInfos;
-                console.log('请求参数', requestPramas)
+                if (currentPromotion.itemID) {
+                    requestPramas.event.itemID = currentPromotion.itemID;
+                }
+                console.log('请求参数', requestPramas);
                 this.createPromotion(requestPramas);
             } catch (error) {
                 console.error(error);
@@ -267,9 +270,11 @@ class PromotionIndex extends Component {
                     <PromotionLeftLogo
                         promotionKey={key}
                     />
-                    <div className={styles.centerLine}>
-                        <div className={styles.arrow}></div>
-                    </div>
+                    <Col span={1}>
+                        <div className={styles.centerLine}>
+                            <div className={styles.arrow}></div>
+                        </div>
+                    </Col>
                     <PromotionRightMain
                         promotionKey={key}
                         formSteps={formSteps[key] || ['基本信息', '活动规则']}

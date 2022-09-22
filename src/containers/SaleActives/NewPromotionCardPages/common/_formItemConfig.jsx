@@ -191,8 +191,13 @@ export const ALL_FORM_ITEMS = {
                     >
                         <Icon
                             type={'question-circle'}
-                            style={{ color: '#787878' }}
-                            className={styles.cardLevelTreeIcon}
+                            style={{
+                                color: '#787878',
+                                position: 'absolute',
+                                left: '505px',
+                                top: '50%',
+                                transform: 'translateY(-50%)'
+                            }}
                         />
                     </Tooltip>
                 </Col>
@@ -421,7 +426,7 @@ export const ALL_FORM_ITEMS = {
         label: '',
         render: () => { }
     },
-    defaultCardTypeID: {
+    defaultCardType: {
         label: '新用户注册卡类',
         type: 'custom',
         defaultValue: '',
@@ -455,7 +460,7 @@ export const ACTIVITY_RULE_FORM_KEYS = {
             col: {
                 span: 24,
             },
-            keys: ['joinCount', 'cardScopeType', 'defaultCardTypeID', 'brandList', 'sourceWayLimit', 'orderTypeList'],
+            keys: ['joinCount', 'cardScopeType', 'defaultCardType', 'brandList', 'sourceWayLimit', 'orderTypeList'],
         },
     ],
 };
