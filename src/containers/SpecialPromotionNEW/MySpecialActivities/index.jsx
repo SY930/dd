@@ -2123,7 +2123,7 @@ class MySpecialActivities extends React.Component {
                         </li>
                         <li>
                             <Select
-                                style={{ width: 120 }}
+                                style={{ width: 130 }}
                                 showSearch
                                 notFoundContent={`${this.props.intl.formatMessage(
                                     STRING_SPE.d2c8a4hdjl248
@@ -3121,7 +3121,7 @@ class MySpecialActivities extends React.Component {
                 )}`,
                 dataIndex: "eventWay",
                 key: "eventWay",
-                width: 110,
+                width: 130,
                 fixed: "left",
                 // ellipsis: true,
                 render: (text, record) => {
