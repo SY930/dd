@@ -163,7 +163,7 @@ class GiftList extends Component {
 
     onExport = () => {
         let { pageType } = this.props
-        let action = pageType == 1 ? 0 : 2
+        let action = pageType == 1 ? 1 : 2
         const { queryParams } = this.state;
         this.queryFroms.validateFieldsAndScroll((err, values) => {
             if (err) return;
