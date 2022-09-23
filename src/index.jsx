@@ -106,7 +106,7 @@ const registeLangPack = async () => {
         console.log(getAccountInfo(), "getAccountInfo12");
         sensors.init({
             server_url: "http://data-sc.hualala.com/sa?project=default",
-            show_log: true,
+            show_log: false,
             is_track_single_page: false, // 单页面配置，默认开启，若页面中有锚点设计，需要将该配置删除，否则触发锚点会多触发 $pageview 事件
             use_client_time: true,
             send_type: "beacon",
@@ -132,7 +132,7 @@ const registeLangPack = async () => {
             brand_id: "default",
             shop_id: "default"
         });
-        sensors.login(getCookie("access_token"));
+        sensors.login(getAccountInfo().accountID);
         sensors.quick("autoTrack"); //用于采集 $pageview 事件。
     }, 2000);
 };
