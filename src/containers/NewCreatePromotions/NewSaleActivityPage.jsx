@@ -642,7 +642,6 @@ class NewCustomerPage extends Component {
             return closePage(SALE_ACTIVE_NEW_PAGE)
         } else if (currentPromotion && currentPromotion.menuID) {
             const { updateCurrentPromotionPage } = this.props;
-            console.log('营销活动入口文件_TODO_onV3Click', key, newPromotionCardPageConfig);
             jumpPage({ menuID: currentPromotion.menuID, promotionKey: key, mode: 'create' });
             updateCurrentPromotionPage({
                 [key]: {

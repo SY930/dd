@@ -115,7 +115,6 @@ class CustomRangeInput extends React.Component {
                         placeholder={this.props.endPlaceHolder}
                         addonAfter={firstInputAppend ? '份' : this.state.addonAfterUnit}
                         onChange={this.onEndChange}
-                        // 折扣优化 _TODO：删除掉
                         // addonAfter={firstInputAppend ? "份" : '1'}
                         value={{ number: this.state.end }}
                         modal={firstInputAppend ? "int" : "float"}

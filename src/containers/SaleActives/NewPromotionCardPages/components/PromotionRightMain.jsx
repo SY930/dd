@@ -71,7 +71,7 @@ class PromotionRightMain extends Component {
             activityThirdFormKeys,
         });
         this.getGroupCardTypeList();
-        if (mode === 'edit') {
+        if (mode != 'create') {
             this.getPromotionDetail(currentPromotion)
         }
     }
@@ -99,7 +99,7 @@ class PromotionRightMain extends Component {
     sendFormData = (res) => {
         console.log('详情数据=====', res);
         const { data = {}, eventGiftConditionList = [], eventMutexDependRuleInfos = [] } = res;
-        const { orderTypeList, eventStartDate, eventEndDate, partInTimes, countCycleDays, brandList, foodScopeList } = data;
+        const { orderTypeList, eventStartDate, eventEndDate, partInTimes, countCycleDays, brandList, foodScopeList = [] } = data;
         if (orderTypeList) {
             data.orderTypeList = orderTypeList.split(',')
         }
@@ -167,11 +167,11 @@ class PromotionRightMain extends Component {
         let newfoodScopeList = foodScopeList.map(item => {
             const { scopeType, targetID, brandID, targetCode, targetName, targetUnitName } = item;
             return {
-                scopeType: '2',
-                targetID: +targetID,
+                scopeType,
+                targetID,
                 brandID,
                 targetCode,
-                targetName,
+                targetName: "001-A",
                 targetUnitName
             }
         })
@@ -182,21 +182,7 @@ class PromotionRightMain extends Component {
             eventMutexDependRuleInfos,
             activityThirdFormData: data,
             foodScopeList: newfoodScopeList
-            // foodScopeList:
-            //     [
-            //         {
-            //             "scopeType": "2",
-            //             "targetID": 20317960,
-            //             "brandID": "0",
-            //             "targetCode": "bf0b838c-5d3d-4ca2-b2c2-db090bbb61b5",
-            //             "targetName": "001-A",
-            //             "targetUnitName": "个"
-            //         }
-            //     ]
         })
-
-
-
     }
 
     renderShopSelector = (formItems, key) => {

@@ -1253,14 +1253,14 @@ class MySpecialActivities extends React.Component {
         }
     };
 
-    handleNewEditActive = (record) => {
+    handleNewEditActive = (record, mode) => {
         const currentPromotion = newPromotionCardPageConfig.find(item => item.key == record.eventWay);
-        jumpPage({ menuID: currentPromotion.menuID, promotionKey: record.eventWay, mode: 'edit', itemID: record.itemID });
+        jumpPage({ menuID: currentPromotion.menuID, promotionKey: record.eventWay, mode, itemID: record.itemID });
         const { updateCurrentPromotionPage } = this.props;
         updateCurrentPromotionPage({
             [record.eventWay]: {
                 promotionKey: record.eventWay,
-                mode: 'edit',
+                mode,
                 itemID: record.itemID
             },
         })
@@ -2905,7 +2905,7 @@ class MySpecialActivities extends React.Component {
                                             return;
                                         }
                                         if (record.eventWay === 87) {
-                                            return this.handleNewEditActive(record);
+                                            return this.handleNewEditActive(record, 'edit');
                                         }
                                         this.handleEditActive(record)(() => {
                                             this.props.toggleIsUpdate(true);
@@ -2963,6 +2963,9 @@ class MySpecialActivities extends React.Component {
                                                 isEdit: false,
                                             });
                                             return;
+                                        }
+                                        if (record.eventWay === 87) {
+                                            return this.handleNewEditActive(record, 'view');
                                         }
                                         this.props.toggleIsUpdate(false);
                                         this.handleUpdateOpe(
