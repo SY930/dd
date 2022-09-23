@@ -2,6 +2,7 @@ import React, { PureComponent as Component } from "react";
 import { Icon, Button, Form, Input } from "antd";
 import BaseForm from "components/common/BaseForm";
 import EveryDay from "../../../PromotionV3/Camp/EveryDay";
+import DateRange from "../../../PromotionV3/Camp/DateRange";
 import {
     formKeys32,
     ruleFormItem,
@@ -88,8 +89,14 @@ class UsageRuleForm extends Component {
     };
 
     resetFormItems = () => {
-        const { gifts, validCycle } = ruleFormItem;
-        const { accountInfo, ruleForm = {}, formData } = this.props;
+        const { gifts, validCycle, eventRange } = ruleFormItem;
+        const {
+            accountInfo,
+            ruleForm = {},
+            formData,
+            basicForm,
+            changeEventRange,
+        } = this.props;
         let cycleType = "";
         if (ruleForm) {
             const { getFieldValue } = ruleForm;
@@ -100,6 +107,25 @@ class UsageRuleForm extends Component {
         return {
             ...ruleFormItem,
             validCycle: { ...validCycle, render: renderValidCycle },
+            eventRange: {
+                ...eventRange,
+                render: (d) => d({
+                    onChange: (e) => {
+                        if (basicForm) {
+                            basicForm.setFieldsValue({
+                                cardTypeIDList: [],
+                                cardLevelIDList: [],
+                            });
+                        }
+                        if(e.length) {
+                            changeEventRange({
+                                eventStartDate: e[0].format("YYYYMMDD"),
+                                eventEndDate: e[1].format("YYYYMMDD"),
+                            });
+                        }
+                    }
+                })(<DateRange type={"85"} />),
+            },
             gifts: {
                 ...gifts,
                 render: (d, form) =>

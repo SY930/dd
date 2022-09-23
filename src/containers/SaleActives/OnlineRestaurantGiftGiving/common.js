@@ -41,8 +41,8 @@ export const baseFormItems = {
         ],
         defaultValue: 1,
     },
-    enterPosition: {
-        type: "radio",
+    enterPositionList: {
+        type: "checkbox",
         label: (
             <span>
                 发券位置
@@ -56,7 +56,7 @@ export const baseFormItems = {
             { label: "外卖点餐页", value: 2 },
             { label: "自提点餐页", value: 3 },
         ],
-        defaultValue: 1,
+        defaultValue: [1, 2, 3],
     },
     partInUser: {
         type: "radio",
@@ -311,7 +311,7 @@ export const baseFormKeys = [
     "eventType",
     "eventName",
     "giftSendType",
-    "enterPosition",
+    "enterPositionList",
     "partInUser",
     "autoRegister",
     "cardLevelRangeType",

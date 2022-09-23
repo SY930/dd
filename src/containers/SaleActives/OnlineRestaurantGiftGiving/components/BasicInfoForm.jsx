@@ -68,6 +68,16 @@ class BasicInfoForm extends Component {
                 }),
             });
         }
+        if (this.props.eventRange !== nextProps.eventRange) {
+            const { eventStartDate, eventEndDate } = nextProps.eventRange;
+            const params = {
+                groupID: nextProps.accountInfo.groupID,
+                eventWay: "23",
+                eventStartDate,
+                eventEndDate,
+            };
+            this.getExcludeData(params);
+        }
     }
 
     handleSelectChange = (value) => {
@@ -123,6 +133,7 @@ class BasicInfoForm extends Component {
                                 wrapperCol={{ span: 15 }}
                             >
                                 {d({
+                                    key: "cardTypeIDList",
                                     rules: [
                                         {
                                             required: true,
@@ -163,6 +174,7 @@ class BasicInfoForm extends Component {
                                 wrapperCol={{ span: 15 }}
                             >
                                 {d({
+                                    key: "cardLevelIDList",
                                     rules: [
                                         {
                                             required: true,

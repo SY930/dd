@@ -21,9 +21,10 @@ class OnlineRestaurantGiftGiving extends Component {
             ruleForm: null, //使用规则表单
             giftsForm: [], //礼品信息表单
             occupyShopList: [],
-            paramsValue: '',
+            paramsValue: "",
             viewRuleVisible: false,
             slectedWxCouponList: [], //三方微信券,
+            eventRange: {},
         };
     }
     componentDidMount() {
@@ -55,6 +56,7 @@ class OnlineRestaurantGiftGiving extends Component {
         const { data = {}, timeList = [], gifts = [] } = res;
         let formData = {
             ...data,
+            enterPositionList: String(values.enterPositionList).split(","),
             eventRange:
                 data.eventEndDate && data.eventStartDate
                     ? [
@@ -168,7 +170,7 @@ class OnlineRestaurantGiftGiving extends Component {
             eventName: values.eventName,
             cycleType,
             excludedDate: values.excludedDate,
-            enterPosition: values.enterPosition,
+            enterPositionList: values.enterPositionList.join(","),
             eventRemark: values.eventRemark,
             smsGate: values.smsGate,
             partInUser: values.partInUser,
@@ -288,7 +290,7 @@ class OnlineRestaurantGiftGiving extends Component {
         const params = {
             eventInfo: {
                 eventWay: 23,
-                enterPosition: event.enterPosition,
+                enterPositionList: event.enterPositionList.join(','),
                 eventEndDate: event.eventEndDate,
                 eventStartDate: event.eventStartDate,
                 shopIDList: event.shopIDList,
@@ -426,7 +428,13 @@ class OnlineRestaurantGiftGiving extends Component {
     };
 
     render() {
-        const { basicForm, ruleForm, formData, slectedWxCouponList } = this.state;
+        const {
+            basicForm,
+            ruleForm,
+            formData,
+            slectedWxCouponList,
+            eventRange,
+        } = this.state;
         const { accountInfo, user, cardTypeLst, loading } = this.props;
         const itemProps = {
             accountInfo,
@@ -439,6 +447,7 @@ class OnlineRestaurantGiftGiving extends Component {
                     <div className={styles.logoGroupHeader}>基本信息</div>
                     <BasicInfoForm
                         basicForm={basicForm}
+                        eventRange={eventRange}
                         getForm={(form) => this.setState({ basicForm: form })}
                         formData={formData}
                         {...itemProps}
@@ -446,6 +455,10 @@ class OnlineRestaurantGiftGiving extends Component {
                     <div className={styles.logoGroupHeader}>使用规则</div>
                     <UsageRuleForm
                         ruleForm={ruleForm}
+                        basicForm={basicForm}
+                        changeEventRange={(e) =>
+                            this.setState({ eventRange: e })
+                        }
                         getGiftForm={(form) =>
                             this.setState({ giftsForm: form })
                         }
