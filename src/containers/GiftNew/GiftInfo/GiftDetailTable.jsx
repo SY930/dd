@@ -4,7 +4,7 @@ import { Tabs, Col, Table, Button, Icon, Modal, message, Tooltip } from 'antd';
 import ReactDOM from 'react-dom';
 import { COMMON_LABEL } from 'i18n/common';
 import _ from 'lodash';
-import {throttle} from 'lodash';
+import { throttle } from 'lodash';
 import { axiosData, fetchData, isFilterShopType } from '../../../helpers/util';
 import GiftCfg from '../../../constants/Gift';
 import SelectBrands from '../components/SelectBrands'
@@ -34,7 +34,7 @@ import {
     toggleIsUpdateAC,
 } from '../../../redux/actions/saleCenterNEW/myActivities.action';
 import { fetchAllPromotionListAC } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
-import {Iconlist} from "../../../components/basic/IconsFont/IconsFont";
+import { Iconlist } from "../../../components/basic/IconsFont/IconsFont";
 import CreateGiftsPanel from "../components/CreateGiftsPanel";
 import {
     GIFT_LIST_CREATE,
@@ -78,7 +78,7 @@ class GiftDetailTable extends Component {
         };
         this.tableRef = null;
         this.setTableRef = el => this.tableRef = el;
-        this.lockedChangeSortOrder = throttle(this.changeSortOrder, 500, {trailing: false});
+        this.lockedChangeSortOrder = throttle(this.changeSortOrder, 500, { trailing: false });
         this.queryFrom = null;
         this.columns = COLUMNS.slice();
         this.columns.splice(2, 0, {
@@ -93,10 +93,10 @@ class GiftDetailTable extends Component {
                 const canNotSortDown = (this.state.queryParams.pageNo - 1) * this.state.queryParams.pageSize + index + 1 == this.state.total;
                 return (
                     <span>
-                        <span ><Iconlist title={'置顶'} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'top')}/></span>
-                        <span ><Iconlist title={'上移'} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'up')}/></span>
-                        <span className={styles2.upsideDown}><Iconlist title={'下移'} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'down')}/></span>
-                        <span className={styles2.upsideDown}><Iconlist title={'置底'} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'bottom')}/></span>
+                        <span ><Iconlist title={'置顶'} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'top')} /></span>
+                        <span ><Iconlist title={'上移'} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'up')} /></span>
+                        <span className={styles2.upsideDown}><Iconlist title={'下移'} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'down')} /></span>
+                        <span className={styles2.upsideDown}><Iconlist title={'置底'} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'bottom')} /></span>
                     </span>
                 )
             },
@@ -143,31 +143,31 @@ class GiftDetailTable extends Component {
         this.proShopData(_shopData);
     }
 
-    getTitle = () =>{  
+    getTitle = () => {
         let title = []
         let that = this
-        title.push(<div>排序 
-            <img style={{marginLeft:10,height:14,width:14}} src="https://res.hualala.com/basicdoc/36ac3db9-16d2-489c-9af3-4c1659b7b2a8.png"  onClick={()=>{
+        title.push(<div>排序
+            <img style={{ marginLeft: 10, height: 14, width: 14 }} src="https://res.hualala.com/basicdoc/36ac3db9-16d2-489c-9af3-4c1659b7b2a8.png" onClick={() => {
                 let { tabkey } = this.props
                 Modal.confirm({
                     title: '重置排序',
                     content: '重置后列表排序将恢复默认按照创建时间排序规则，请谨慎操作',
                     onOk() {
-                        const params = {direction:'reset', isActive: tabkey == '1'? 1:0};
-                        axiosData('/coupon/couponService_updateRanking.ajax', params, {needThrow: true}, {path: undefined}, 'HTTP_SERVICE_URL_PROMOTION_NEW').then(() => {
-                            if (that.tableRef &&  that.tableRef.props && that.tableRef.props.pagination && that.tableRef.props.pagination.onChange) {
+                        const params = { direction: 'reset', isActive: tabkey == '1' ? 1 : 0 };
+                        axiosData('/coupon/couponService_updateRanking.ajax', params, { needThrow: true }, { path: undefined }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then(() => {
+                            if (that.tableRef && that.tableRef.props && that.tableRef.props.pagination && that.tableRef.props.pagination.onChange) {
                                 that.tableRef.props.pagination.onChange(that.tableRef.props.pagination.current, that.tableRef.props.pagination.pageSize);
                             }
-                            }).catch(err => {
-                                message.warning(err || 'sorry, 排序功能故障, 请稍后再试!');
-                            })
+                        }).catch(err => {
+                            message.warning(err || 'sorry, 排序功能故障, 请稍后再试!');
+                        })
                     },
                     onCancel() {
-                      
+
                     },
-                  });
-           
-            }}/>
+                });
+
+            }} />
         </div>)
         return title
     }
@@ -178,7 +178,7 @@ class GiftDetailTable extends Component {
                 action,
             },
         } = this.state;
-        let {tabkey} = this.props
+        let { tabkey } = this.props
         if (tabkey == 3) {
             const columns = this.columns.slice();
             columns.splice(1, 1, {
@@ -274,7 +274,7 @@ class GiftDetailTable extends Component {
             return g;
         });
         this.setState({ dataSource: [...newDataSource], total: _total });
-        
+
     }
 
     handleFormChange(key, value) {
@@ -282,9 +282,9 @@ class GiftDetailTable extends Component {
     }
 
     changeSortOrder(record, direction) {
-        const params = {giftItemID: record.giftItemID, direction};
-        axiosData('/coupon/couponService_updateRanking.ajax', params, {needThrow: true}, {path: undefined}, 'HTTP_SERVICE_URL_PROMOTION_NEW').then(() => {
-            if (this.tableRef &&  this.tableRef.props && this.tableRef.props.pagination && this.tableRef.props.pagination.onChange) {
+        const params = { giftItemID: record.giftItemID, direction };
+        axiosData('/coupon/couponService_updateRanking.ajax', params, { needThrow: true }, { path: undefined }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then(() => {
+            if (this.tableRef && this.tableRef.props && this.tableRef.props.pagination && this.tableRef.props.pagination.onChange) {
                 this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
             }
         }).catch(err => {
@@ -340,7 +340,7 @@ class GiftDetailTable extends Component {
     handleEdit(record, operationType) {
         let gift = _.find(GiftCfg.giftType, { name: record.giftTypeName });
         const selectShops = [];
-        if(!gift){
+        if (!gift) {
             return;
         }
         gift = _.cloneDeep(gift);
@@ -366,7 +366,6 @@ class GiftDetailTable extends Component {
         gift.data.action = `${gift.data.action || 0}`;
         gift.data.valueType = `${gift.data.valueType}`;
         gift.data.monetaryUnit = `${gift.data.monetaryUnit}`;
-        
         const { FetchSharedGifts } = this.props;
         FetchSharedGifts({ giftItemID: record.giftItemID });
         if (gift.value == 100) { //
@@ -407,7 +406,7 @@ class GiftDetailTable extends Component {
                             this.proGiftData(data);
                         });
                     }
-                }, ({code, msg, eventReference = [], wechatCardReference = [], quotaCardsReference = [], couponPackageReference = []}) => {
+                }, ({ code, msg, eventReference = [], wechatCardReference = [], quotaCardsReference = [], couponPackageReference = [] }) => {
                     if (code === '1211105076') {// 券被占用
                         Modal.warning({
                             title: '礼品被占用，不可停用',
@@ -465,7 +464,7 @@ class GiftDetailTable extends Component {
                                             </div>
                                         )
                                     }
-                                     {
+                                    {
                                         !!couponPackageReference.length && (
                                             <div>
                                                 <div style={{ marginTop: 8 }}>
@@ -631,7 +630,7 @@ class GiftDetailTable extends Component {
                 rules: [
                     {
                         validator: (rule, v, cb) => {
-                            if(String(v || '').includes('，')||String(v || '').includes(',')) {
+                            if (String(v || '').includes('，') || String(v || '').includes(',')) {
                                 cb(rule.message);
                             }
                             cb();
@@ -681,19 +680,19 @@ class GiftDetailTable extends Component {
                 ],
             },
         };
-        
+
         const formKeys = ['giftName', 'giftItemID', 'giftPWD', 'giftType', 'brandID'];
         const headerClasses = `layoutsToolLeft ${styles2.headerWithBgColor} ${styles2.basicPromotionHeader}`;
         const { tabkey } = this.props;
         const { groupID } = this.props.user.accountInfo;
         return (
             <div className="layoutsContainer" ref={layoutsContainer => this.layoutsContainer = layoutsContainer}>
-                <div className="layoutsTool" style={{height: '64px'}}>
+                <div className="layoutsTool" style={{ height: '64px' }}>
                     <div className={headerClasses}>
                         <span className={styles2.customHeader}>
                             礼品信息
                         </span>
-                        <p style={{ marginLeft: 'auto'}}>
+                        <p style={{ marginLeft: 'auto' }}>
                             <Authority rightCode={GIFT_LIST_CREATE}>
                                 <Button
                                     type="ghost"
@@ -785,59 +784,59 @@ class GiftDetailTable extends Component {
                             </div>
                         </div> */}
                         {
-                            tabkey == '1' ? 
-                            <GiftList 
-                            pageType={1} 
-                            groupID={groupID} 
-                            onGoEdit={this.props.togglePage} 
-                            treeData={this.state.treeData} 
-                            formItems={formItems}
-                            formKeys={formKeys}
-                            columns={this.getTableColumns().map(c => (c.render ? ({
-                                ...c,
-                                render: c.render.bind(this),
-                            }) : c))}
-                            dataSource={this.state.dataSource}
-                            total={this.state.total}
-                        /> 
-                            : null
+                            tabkey == '1' ?
+                                <GiftList
+                                    pageType={1}
+                                    groupID={groupID}
+                                    onGoEdit={this.props.togglePage}
+                                    treeData={this.state.treeData}
+                                    formItems={formItems}
+                                    formKeys={formKeys}
+                                    columns={this.getTableColumns().map(c => (c.render ? ({
+                                        ...c,
+                                        render: c.render.bind(this),
+                                    }) : c))}
+                                    dataSource={this.state.dataSource}
+                                    total={this.state.total}
+                                />
+                                : null
                         }
                     </TabPane>
                     <TabPane tab="券包查询" key="2">
                         {
-                            tabkey == '2' ? 
-                            <TicketBag pageType={2} groupID={groupID} onGoEdit={this.props.togglePage} treeData={this.state.treeData} />
-                            : null
+                            tabkey == '2' ?
+                                <TicketBag pageType={2} groupID={groupID} onGoEdit={this.props.togglePage} treeData={this.state.treeData} />
+                                : null
                         }
                     </TabPane>
                     <TabPane tab="已停用礼品" key="3">
                         {
-                            tabkey == '3' ? 
-                            <GiftList 
-                                pageType={3} 
-                                groupID={groupID} 
-                                onGoEdit={this.props.togglePage} 
-                                treeData={this.state.treeData} 
-                                formItems={formItems}
-                                formKeys={formKeys}
-                                columns={this.getTableColumns().map(c => (c.render ? ({
-                                    ...c,
-                                    render: c.render.bind(this),
-                                }) : c))}
-                            /> 
-                            :null
+                            tabkey == '3' ?
+                                <GiftList
+                                    pageType={3}
+                                    groupID={groupID}
+                                    onGoEdit={this.props.togglePage}
+                                    treeData={this.state.treeData}
+                                    formItems={formItems}
+                                    formKeys={formKeys}
+                                    columns={this.getTableColumns().map(c => (c.render ? ({
+                                        ...c,
+                                        render: c.render.bind(this),
+                                    }) : c))}
+                                />
+                                : null
                         }
                     </TabPane>
                     <TabPane tab="已停用券包" key="4">
                         {
-                            tabkey == '4' ? 
-                            <TicketBag pageType={4} groupID={groupID} onGoEdit={this.props.togglePage} treeData={this.state.treeData} />
-                            : null
+                            tabkey == '4' ?
+                                <TicketBag pageType={4} groupID={groupID} onGoEdit={this.props.togglePage} treeData={this.state.treeData} />
+                                : null
                         }
                     </TabPane>
                 </Tabs>
                 <div>
-                    { visibleDetail && GiftDetail(data.giftType) }
+                    {visibleDetail && GiftDetail(data.giftType)}
                 </div>
                 <div>
                     {GiftEdit(editGift.value)}
@@ -860,8 +859,8 @@ class GiftDetailTable extends Component {
                     maskClosable={true}
                     width={960}
                 >
-                    
-                    <CreateGiftsPanel onClose={this.handleCreateModalCancel}/>
+
+                    <CreateGiftsPanel onClose={this.handleCreateModalCancel} />
                 </Modal>
                 {
                     this.state.linkModalVisible && (
