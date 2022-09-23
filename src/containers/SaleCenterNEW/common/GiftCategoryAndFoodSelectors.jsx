@@ -43,6 +43,7 @@ const getFoodInfoFromScopeList = (scopeList) => {
             scope.scopeType == 4 && excludeDishes.push(`${scope.brandID || 0}__${scope.targetName}${scope.targetUnitName}`)
         }
     })
+    console.log('======dishes====dishes', dishes);
     return {
         dishes,
         categories,
@@ -106,15 +107,15 @@ class CategoryAndFoodSelector extends Component {
                 onChangeFlag(!!value.length)
             }
         }
-        if(this.props.mallScope != nextProps.mallScope){
+        if (this.props.mallScope != nextProps.mallScope) {
             this.setState({
-                mallScope:nextProps.mallScope
+                mallScope: nextProps.mallScope
             })
             this.props.onChange({
                 dishes: [],
                 excludeDishes: [],
                 categories: []
-        })
+            })
         }
     }
     componentDidMount() {
@@ -301,8 +302,8 @@ class CategoryAndFoodSelector extends Component {
         if (dishFilter) {
             dishes = dishFilter(dishes)
         }
-        
-        if(this.props.giftType == 21 && this.props.foodUnitType == 1){
+
+        if (this.props.giftType == 21 && this.props.foodUnitType == 1) {
             dishes = dishes.filter((item) => item.isNeedConfirmFoodNumber == 1)
         }
 
@@ -366,8 +367,8 @@ class CategoryAndFoodSelector extends Component {
                                 borderRadius: '4px',
                                 border: '1px solid #FFE58F',
                                 paddingLeft: '10px',
-                                marginLeft:'68px',
-                                marginTop:'-10px'
+                                marginLeft: '68px',
+                                marginTop: '-10px'
                             }}
                         >
                             不选择默认所有菜品都适用
@@ -442,8 +443,8 @@ class CategoryAndFoodSelector extends Component {
                                 borderRadius: '4px',
                                 border: '1px solid #FFE58F',
                                 paddingLeft: '10px',
-                                marginLeft:'68px',
-                                marginTop:'-10px'
+                                marginLeft: '68px',
+                                marginTop: '-10px'
                             }}
                         >
                             不选择默认所有分类都适用

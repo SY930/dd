@@ -146,30 +146,57 @@ class PromotionRightMain extends Component {
             excludeDishes: [],
             dishes: [],
         };
-        if (foodScopeList && foodScopeList.length > 0) {
-            let scopeType = foodScopeList.map(item => item.scopeType)[0];
-            if (scopeType == 2) {
-                data.activityRange.categoryOrDish = 1;
-                data.activityRange.dishes = foodScopeList;
-                // foodScopeList.forEach(item => {
-                //     data.activityRange.dishes.push({
-                //         brandID: item.brandID,
-                //         itemID: item.targetID,
-                //         foodKey: item.targetCode,
-                //         label: item.targetName,
-                //         unit: item.targetUnitName
-                //     })
-                // })
+        // if (foodScopeList && foodScopeList.length > 0) {
+        //     let scopeType = foodScopeList.map(item => item.scopeType)[0];
+        //     if (scopeType == 2) {
+        //         data.activityRange.categoryOrDish = 1;
+        //         data.activityRange.dishes = foodScopeList;
+        //         foodScopeList.forEach(item => {
+        //             data.activityRange.dishes.push({
+        //                 scopeType: 2,
+        //                 brandID: item.brandID,
+        //                 itemID: item.targetID,
+        //                 foodKey: item.targetCode,
+        //                 label: item.targetName,
+        //                 unit: item.targetUnitName
+        //             })
+        //         })
+        //     }
+        // }
+        // console.log('foodScopeList-111111111', foodScopeList);
+        let newfoodScopeList = foodScopeList.map(item => {
+            const { scopeType, targetID, brandID, targetCode, targetName, targetUnitName } = item;
+            return {
+                scopeType: '2',
+                targetID: +targetID,
+                brandID,
+                targetCode,
+                targetName,
+                targetUnitName
             }
-        }
-        console.log('data-111111111', data);
+        })
+        console.log('newfoodScopeList', newfoodScopeList)
         this.setState({
             formData: data,
             eventGiftConditionList,
             eventMutexDependRuleInfos,
             activityThirdFormData: data,
-            foodScopeList: data.foodScopeList
+            foodScopeList: newfoodScopeList
+            // foodScopeList:
+            //     [
+            //         {
+            //             "scopeType": "2",
+            //             "targetID": 20317960,
+            //             "brandID": "0",
+            //             "targetCode": "bf0b838c-5d3d-4ca2-b2c2-db090bbb61b5",
+            //             "targetName": "001-A",
+            //             "targetUnitName": "个"
+            //         }
+            //     ]
         })
+
+
+
     }
 
     renderShopSelector = (formItems, key) => {
@@ -464,8 +491,6 @@ class PromotionRightMain extends Component {
         const activityThirdFormKeys = this.state.activityThirdFormKeys;
         const formItems = ALL_FORM_ITEMS;
 
-        console.log('更新后的activityFormKeys', activityFormKeys);
-
         if (activityFormKeys[0]) {
             if (activityFormKeys[0].keys.includes('shopIDList')) {
                 this.renderShopSelector(formItems, 'shopIDList');
@@ -507,7 +532,7 @@ class PromotionRightMain extends Component {
             }
             return newItem;
         }) || [];
-        console.log('newFormSteps', newFormSteps);
+
         return (
             <Col className={styles.PromotionRightMain} style={{ height: 'calc(100vh - 65px)' }} span={24}>
                 {
