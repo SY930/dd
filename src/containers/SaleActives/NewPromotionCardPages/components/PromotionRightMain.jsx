@@ -10,13 +10,12 @@ import { ACTIVITY_RULE_FORM_KEYS, ALL_FORM_ITEMS, BASE_FORM_KEYS, ACTIVITY_THIRD
 import { updateCurrentPromotionPageAC } from '../store/action';
 import ActivityConditions from "./ActivityConditions";
 import styles from './style.less';
-import InputTreeForGift from '../../../GiftNew/GiftAdd/InputTreeForGift';
 import NoShareBenifit from 'containers/SaleCenterNEW/common/NoShareBenifit.jsx';
 import { saleCenterSetPromotionDetailAC } from '../../../../../src/redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import { httpGetPromotionDetail, httpGetGroupCardTypeList } from "./AxiosFactory";
 import moment from 'moment';
-import GoodsRef from '@hualala/sc-goodsRef';
 import CardLevel from "../../../SpecialPromotionNEW/common/CardLevel";
+import { GiftCategoryAndFoodSelector } from 'containers/SaleCenterNEW/common/CategoryAndFoodSelector';
 
 const RadioGroup = Radio.Group;
 const Option = Select.Option;
@@ -40,7 +39,8 @@ class PromotionRightMain extends Component {
             eventGiftConditionList: [],
             eventMutexDependRuleInfos: [],
             groupCardTypeList: [], // 新用户注册卡类
-            clonedGroupCardTypeList: []
+            clonedGroupCardTypeList: [],
+            foodScopeList: [], // 菜品
         }
         this.allForms = {};
         this.activityConditionsRef = '';
@@ -99,7 +99,7 @@ class PromotionRightMain extends Component {
     sendFormData = (res) => {
         console.log('详情数据=====', res);
         const { data = {}, eventGiftConditionList = [], eventMutexDependRuleInfos = [] } = res;
-        const { orderTypeList, eventStartDate, eventEndDate, partInTimes, countCycleDays, brandList } = data;
+        const { orderTypeList, eventStartDate, eventEndDate, partInTimes, countCycleDays, brandList, foodScopeList } = data;
         if (orderTypeList) {
             data.orderTypeList = orderTypeList.split(',')
         }
@@ -139,11 +139,36 @@ class PromotionRightMain extends Component {
                 }
             });
         }
+        // 99999
+        data.activityRange = {
+            categoryOrDish: null,
+            foodCategory: [],
+            excludeDishes: [],
+            dishes: [],
+        };
+        if (foodScopeList && foodScopeList.length > 0) {
+            let scopeType = foodScopeList.map(item => item.scopeType)[0];
+            if (scopeType == 2) {
+                data.activityRange.categoryOrDish = 1;
+                data.activityRange.dishes = foodScopeList;
+                // foodScopeList.forEach(item => {
+                //     data.activityRange.dishes.push({
+                //         brandID: item.brandID,
+                //         itemID: item.targetID,
+                //         foodKey: item.targetCode,
+                //         label: item.targetName,
+                //         unit: item.targetUnitName
+                //     })
+                // })
+            }
+        }
+        console.log('data-111111111', data);
         this.setState({
             formData: data,
             eventGiftConditionList,
             eventMutexDependRuleInfos,
-            activityThirdFormData: data
+            activityThirdFormData: data,
+            foodScopeList: data.foodScopeList
         })
     }
 
@@ -211,25 +236,18 @@ class PromotionRightMain extends Component {
         }
     }
 
-    renderGoodRef = (formItems) => {
-        formItems.appointGood = {
+    renderActivityRange = (formItems) => {
+        formItems.activityRange = {
             type: 'custom',
-            label: '活动范围',
+            label: '',
             render: decorator => {
                 return (
                     <Row>
-                        <Col>
+                        <Col span={24} push={1}>
                             {decorator({
-                                key: 'appointGood',
+                                key: 'activityRange',
                             })(
-                                // <GoodsRef
-                                // // defaultValue={this.goodsScopeList}
-                                // // onChange={(goods) => {
-                                // //   this.props.setPromotionDetail({
-                                // //     goodsScopeList: [goods],
-                                // //   });
-                                // // }}
-                                // />
+                                <GiftCategoryAndFoodSelector showRequiredMark scopeLst={this.state.foodScopeList} />
                             )}
                         </Col>
                     </Row>
@@ -238,11 +256,29 @@ class PromotionRightMain extends Component {
         }
     }
 
+    showActivityRange = (flag) => {
+        let allKeys = this.state.activityThirdFormKeys;
+        if (allKeys[0] && allKeys[0].keys.length > 0) {
+            let keys = allKeys[0] && allKeys[0].keys || [];
+            let index = keys.indexOf('hasMutexDepend');
+            if (flag) {
+                keys.splice(index, 0, 'activityRange', 'shopIDList');
+            } else {
+                keys = keys.filter(key => key != 'activityRange').filter(key => key != 'shopIDList');
+            }
+            this.state.activityThirdFormKeys[0].keys = keys;
+            this.setState({
+                activityThirdFormKeys: this.state.activityThirdFormKeys
+            });
+        }
+    }
+
     renderActivityConditions = () => {
         return (
             <ActivityConditions
                 onRef={(node) => { this.activityConditionsRef = node }}
                 eventGiftConditionList={this.state.eventGiftConditionList}
+                showActivityRange={this.showActivityRange}
             />
         )
     }
@@ -319,9 +355,43 @@ class PromotionRightMain extends Component {
             this.setState({
                 activityThirdFormKeys: this.state.activityThirdFormKeys
             })
-        }
-        if (key == 'NoShareBenifit') {
+        } else if (key == 'NoShareBenifit') {
             this.selectNoShareBenifit(value)
+        } else if (key == 'activityRange') {
+            console.log('99999----activityRange', value);
+            // const scopeList = [];
+            // value.foodCategory.forEach((item) => {
+            //     scopeList.push({
+            //         scopeType: '1',
+            //         targetID: item.foodCategoryID,
+            //         brandID: item.brandID,
+            //         targetCode: item.foodCategoryKey,
+            //         targetName: item.foodCategoryName,
+            //     });
+            // });
+            // value.excludeDishes.forEach((item) => {
+            //     scopeList.push({
+            //         scopeType: '4',
+            //         targetID: item.itemID,
+            //         brandID: item.brandID,
+            //         targetCode: item.foodKey,
+            //         targetName: item.foodName,
+            //         targetUnitName: item.unit,
+            //     });
+            // });
+            // value.dishes.forEach((item) => {
+            //     scopeList.push({
+            //         scopeType: '2',
+            //         targetID: item.itemID,
+            //         brandID: item.brandID,
+            //         targetCode: item.foodKey,
+            //         targetName: item.foodName,
+            //         targetUnitName: item.unit,
+            //     });
+            // });
+            // this.setState({
+            //     foodScopeList: scopeList,
+            // })
         }
     }
 
@@ -415,8 +485,8 @@ class PromotionRightMain extends Component {
             if (activityThirdFormKeys[0].keys.includes("NoShareBenifit")) {
                 this.renderNoShareBenifit(formItems);
             }
-            if (activityThirdFormKeys[0].keys.includes("appointGood")) {
-                // this.renderGoodRef(formItems);
+            if (activityThirdFormKeys[0].keys.includes("activityRange")) {
+                this.renderActivityRange(formItems);
             }
         }
 
@@ -488,7 +558,7 @@ const mapStateToProps = ({ newPromotionCardPagesReducer }) => {
 function mapDispatchToProps(dispatch) {
     return {
         updateCurrentPromotionPage: opts => dispatch(updateCurrentPromotionPageAC(opts)),
-        setPromotionDetail: (opts) => dispatch(saleCenterSetPromotionDetailAC(opts))
+        setPromotionDetail: (opts) => dispatch(saleCenterSetPromotionDetailAC(opts)),
     }
 }
 

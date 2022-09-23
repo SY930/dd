@@ -1254,7 +1254,6 @@ class MySpecialActivities extends React.Component {
     };
 
     handleNewEditActive = (record) => {
-        // _TODO
         const currentPromotion = newPromotionCardPageConfig.find(item => item.key == record.eventWay);
         jumpPage({ menuID: currentPromotion.menuID, promotionKey: record.eventWay, mode: 'edit', itemID: record.itemID });
         const { updateCurrentPromotionPage } = this.props;

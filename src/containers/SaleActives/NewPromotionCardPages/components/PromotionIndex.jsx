@@ -7,6 +7,10 @@ import PromotionLeftLogo from '../components/PromotionLeftLogo';
 import PromotionRightMain from '../components/PromotionRightMain';
 import styles from './style.less';
 import { httpCreatePromotion } from "./AxiosFactory";
+import {
+    fetchFoodCategoryInfoAC,
+    fetchFoodMenuInfoAC,
+} from "../../../../redux/actions/saleCenterNEW/promotionDetailInfo.action";
 
 const DATE_FORMAT = 'YYYYMMDD';
 const END_DATE_FORMAT = 'YYYYMMDD';
@@ -26,7 +30,12 @@ class PromotionIndex extends Component {
     }
 
     componentDidMount() {
-
+        const opts = {
+            _groupID: this.props.user.accountInfo.groupID,
+            shopID: this.props.user.shopID,
+        };
+        this.props.fetchFoodCategoryInfo({ ...opts });
+        this.props.fetchFoodMenuInfo({ ...opts });
     }
 
     onClose = () => {
@@ -63,7 +72,6 @@ class PromotionIndex extends Component {
             const giftConfig = [];
             let key = conditionFormsKeys[i];
             const formItem = conditionForms[key];
-            console.log('key=555555', key)
             if (key.indexOf('gift') != -1) {
                 // 礼品
                 const { giftForms } = formItem;
@@ -171,7 +179,7 @@ class PromotionIndex extends Component {
                 console.log('clonedEvent===111', clonedEvent);
                 clonedEvent.hasMutexDepend = event.hasMutexDepend ? 1 : 0
                 delete clonedEvent.NoShareBenifit;
-                const { eventRange, hasMutexDepend, mutexDependType, joinCount, countCycleDays, partInTimes2, partInTimes3, orderTypeList, brandList } = clonedEvent;
+                const { eventRange, hasMutexDepend, mutexDependType, joinCount, countCycleDays, partInTimes2, partInTimes3, orderTypeList, brandList, activityRange } = clonedEvent;
                 if (joinCount == 2) {
                     clonedEvent.partInTimes = partInTimes2
                 } else if (joinCount == 3) {
@@ -215,6 +223,44 @@ class PromotionIndex extends Component {
                 } else {
                     eventMutexDependRuleInfos = []
                 }
+                let foodScopeList = [];
+                if (activityRange) {
+                    const { categoryOrDish, dishes, excludeDishes, foodCategory } = activityRange;
+                    if (categoryOrDish == 0) {
+                        foodCategory.forEach(item => {
+                            foodScopeList.push({
+                                scopeType: 1,
+                                brandID: item.brandID,
+                                targetID: item.itemID,
+                                targetCode: item.foodKey,
+                                targetName: item.label,
+                            });
+                        })
+                        excludeDishes.forEach(item => {
+                            foodScopeList.push({
+                                brandID: item.brandID,
+                                scopeType: 4,
+                                targetID: item.itemID,
+                                targetCode: item.foodKey,
+                                targetName: item.label,
+                                targetUnitName: item.unit
+                            });
+                        })
+                    } else if (categoryOrDish == 1) {
+                        dishes.forEach(item => {
+                            foodScopeList.push({
+                                scopeType: 2,
+                                brandID: item.brandID,
+                                targetID: item.itemID,
+                                targetCode: item.foodKey,
+                                targetName: item.label,
+                                targetUnitName: item.unit
+                            })
+                        })
+                    }
+                }
+                delete clonedEvent.activityRange;
+                clonedEvent.foodScopeList = foodScopeList;
                 delete clonedEvent.mutexDependType;
                 requestPramas.eventGiftConditionList = eventGiftConditionList;
                 requestPramas.event = clonedEvent;
@@ -286,11 +332,24 @@ class PromotionIndex extends Component {
     }
 }
 
-const mapStateToProps = ({ newPromotionCardPagesReducer }) => {
+const mapStateToProps = ({ user, newPromotionCardPagesReducer }) => {
     return {
+        user: user.toJS(),
         promotion: newPromotionCardPagesReducer.get('promotion').toJS(),
     }
 };
 
-export default connect(mapStateToProps, null)(PromotionIndex)
+const mapDispatchToProps = (dispatch) => {
+    return {
+        fetchFoodCategoryInfo: (opts, flag, id) => {
+            dispatch(fetchFoodCategoryInfoAC(opts, flag, id))
+        },
+
+        fetchFoodMenuInfo: (opts, flag, id) => {
+            dispatch(fetchFoodMenuInfoAC(opts, flag, id))
+        },
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PromotionIndex)
 

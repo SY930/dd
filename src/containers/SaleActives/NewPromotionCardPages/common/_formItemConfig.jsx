@@ -3,6 +3,8 @@ import SelectBrands from '../../../GiftNew/components/SelectBrands';
 import DateRange from '../../../PromotionV3/Camp/DateRange';
 import styles from './style.less';
 import { GiftCfg } from "./giftConfig";
+import ShopSelector from '../../../../components/ShopSelector/ShopSelector';
+import CategoryAndFoodSelector from 'containers/SaleCenterNEW/common/CategoryAndFoodSelector';
 
 const Option = Select.Option
 
@@ -29,7 +31,7 @@ const bizOpts = [
     { label: '自提', value: '21' },
 ];
 
-const stageTypeOptions = [
+export const stageTypeOptions = [
     {
         label: '任意商品消费满', value: 1,
     },
@@ -44,7 +46,7 @@ const stageTypeOptions = [
     },
 ]
 
-const stageAmountTypeOptions = [
+export const stageAmountTypeOptions = [
     {
         label: '元', value: 1,
     },
@@ -213,7 +215,7 @@ export const ALL_FORM_ITEMS = {
     shopIDList: {
         type: 'custom',
         label: '适用店铺',
-        render: () => (<p></p>),
+        render: decorator => decorator({})(<ShopSelector />),
         defaultValue: [],
     },
     giftID: {
@@ -246,7 +248,6 @@ export const ALL_FORM_ITEMS = {
         }],
         render: (decorator, form) => {
             const { getFieldsValue } = form;
-            console.log('55555', getFieldsValue())
             return (
                 <Row>
                     <Col style={{ display: 'flex' }}>
@@ -416,11 +417,6 @@ export const ALL_FORM_ITEMS = {
         onLabel: '开',
         offLabel: '关',
     },
-    appointGood: {
-        type: 'custom',
-        label: '',
-        render: () => { }
-    },
     mutexDependType: {
         type: 'radio',
         label: '',
@@ -433,6 +429,12 @@ export const ALL_FORM_ITEMS = {
         rules: ['required'],
         render: () => { }
     },
+    activityRange: {
+        label: '',
+        type: 'custom',
+        defaultValue: '',
+        render: decorator => decorator({})(<CategoryAndFoodSelector showRequiredMark />),
+    }
 };
 
 export const BASE_FORM_KEYS = {
@@ -471,7 +473,7 @@ export const ACTIVITY_THIRD_RULE_FORM_KEYS = {
             col: {
                 span: 24,
             },
-            keys: ['hasMutexDepend', 'appointGood'],
+            keys: ['hasMutexDepend'],
         },
     ],
 };

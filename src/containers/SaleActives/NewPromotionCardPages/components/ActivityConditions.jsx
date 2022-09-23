@@ -3,7 +3,7 @@ import _ from "lodash";
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import BaseForm from '../../../../components/common/BaseForm';
-import { ALL_FORM_ITEMS } from '../common/_formItemConfig';
+import { ALL_FORM_ITEMS, stageTypeOptions, stageAmountTypeOptions } from '../common/_formItemConfig';
 import styles from './addGifts.less';
 import AddGifts from './AddGifts';
 import { getCardList } from "./AxiosFactory";
@@ -146,7 +146,62 @@ class ActivityConditions extends Component {
     }
 
     resetFormItems = (data) => {
+        let topStageTypeValue = '';
+        (Object.keys(this.conditionForms) || []).forEach(id => {
+            if (id.indexOf('gift') == -1) {
+                let { getFieldsValue } = this.conditionForms[id];
+                topStageTypeValue = getFieldsValue().stageType;
+            }
+        });
         let formItems = ALL_FORM_ITEMS;
+        formItems.stageType = {
+            type: 'custom',
+            label: '',
+            render: (decorator, form) => {
+                const { getFieldsValue } = form;
+                const { stageType: stageTypeValue } = getFieldsValue();
+                return (
+                    <Col>
+                        {
+                            decorator({
+                                key: 'stageAmount'
+                            })(
+                                <Input
+                                    addonBefore={
+                                        decorator({
+                                            key: 'stageType',
+                                            defaultValue: stageTypeValue || topStageTypeValue
+                                        })(
+                                            <Select style={{ width: '140px' }}>
+                                                {
+                                                    stageTypeOptions.map(item => (
+                                                        <Option key={item.value} value={item.value}>{item.label}</Option>
+                                                    ))
+                                                }
+                                            </Select>
+                                        )
+                                    }
+                                    addonAfter={
+                                        decorator({
+                                            key: 'stageAmountType',
+                                            defaultValue: 1
+                                        })(
+                                            <Select style={{ width: '60px' }}>
+                                                {
+                                                    stageAmountTypeOptions.map(item => (
+                                                        <Option key={item.value} value={item.value}>{item.label}</Option>
+                                                    ))
+                                                }
+                                            </Select>
+                                        )
+                                    }
+                                />
+                            )
+                        }
+                    </Col>
+                )
+            },
+        }
         return formItems;
     }
 
@@ -276,7 +331,6 @@ class ActivityConditions extends Component {
     }
 
     onChangeConditionForms = (key, value, id, formKeys) => {
-        console.log(999, key, value);
         if (key == 'presentType') {
             let conditionList = this.state.conditionList;
             conditionList = conditionList.map(item => {
@@ -289,13 +343,19 @@ class ActivityConditions extends Component {
                 conditionList
             })
         } else if (key == 'stageType') {
+            let singleConditionItem = this.state.conditionList[0];
+            this.setState({
+                conditionList: [singleConditionItem]
+            });
+            Object.keys(this.conditionForms).forEach(conditionFormId => {
+                if (conditionFormId != singleConditionItem.id) {
+                    delete this.conditionForms[conditionFormId];
+                }
+            });
             if (value == 2 || value == 4) {
-                let singleConditionItem = this.state.conditionList[0];
                 const form = this.conditionForms[singleConditionItem.id];
-                console.log('singleConditionItem===singleConditionItem', singleConditionItem);
                 this.setState({
                     isShowConditionBtn: false,
-                    conditionList: [singleConditionItem]
                 });
                 form.setFieldsValue({
                     stageType: value
@@ -304,6 +364,11 @@ class ActivityConditions extends Component {
                 this.setState({
                     isShowConditionBtn: true
                 })
+            }
+            if (value == 3 || value == 4) {
+                this.props.showActivityRange(true);
+            } else {
+                this.props.showActivityRange(false);
             }
         }
     }
