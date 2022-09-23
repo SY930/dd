@@ -1,6 +1,5 @@
 import React, { PureComponent as Component } from "react";
 import moment from "moment";
-import { uniq } from "lodash";
 import BaseForm from "components/common/BaseForm";
 import { Select, message, Form } from "antd";
 import ShopSelector from "components/ShopSelector";
@@ -11,7 +10,6 @@ import {
     fetchSpecialCardLevel,
     getExcludeCardLevelIds,
     getEventExcludeCardTypes,
-    getListCardTypeShop,
 } from "../AxiosFactory";
 
 class BasicInfoForm extends Component {
@@ -21,12 +19,8 @@ class BasicInfoForm extends Component {
             formKeys: baseFormKeys,
             cardInfo: [],
             cardTypeLst: [], //全部的卡类
-            canUseShops: [], //所选卡类适用店铺id
-            occupiedShops: [], //已经被占用的卡类适用店铺id
             excludeEvent: [], //显示交叉的活动,
             excludeCardTypeIDs: [],
-            excludeCardTypeShops: [],
-            cardLevelIDList: [], //选择的卡类别
             shopStatus: true,
         };
     }
@@ -51,134 +45,41 @@ class BasicInfoForm extends Component {
     }
 
     getExcludeData = (params) => {
-        getExcludeCardLevelIds(params).then((res) => {
-            if (res.code == "000") {
-                this.setState({
-                    excludeEvent: res.excludeEventCardLevelIdModelList,
-                });
-            }
+        // getExcludeCardLevelIds(params).then((res) => {
+        //     if (res.code == "000") {
+        //         this.setState({
+        //             excludeEvent: res.excludeEventCardLevelIdModelList,
+        //         });
+        //     }
+        // });
+        getEventExcludeCardTypes(params).then(({ excludeCardTypeIDs = [] }) => {
+            this.setState({
+                excludeCardTypeIDs,
+            });
         });
-        getEventExcludeCardTypes(params).then(
-            ({ excludeCardTypeIDs = [], excludeCardTypeShops = [] }) => {
-                let occupiedShops = [];
-                if (excludeCardTypeShops.length) {
-                    occupiedShops = excludeCardTypeShops.reduce((acc, curr) => {
-                        acc.push(
-                            ...(curr.shopIDList || []).map((id) => `${id}`)
-                        ); // 把shopID转成string, 因为基本档返回的是string
-                        return acc;
-                    }, []);
-                }
-                this.setState({
-                    excludeCardTypeIDs,
-                    excludeCardTypeShops,
-                    occupiedShops,
-                });
-            }
-        );
     };
 
     componentWillReceiveProps(nextProps) {
         if (this.props.cardTypeLst !== nextProps.cardTypeLst) {
             const cardTypeLst = nextProps.cardTypeLst;
-            this.setState(
-                {
-                    cardTypeLst: cardTypeLst.filter((cardType) => {
-                        return cardType.regFromLimit;
-                    }),
-                },
-                () => {
-                    this.queryCanuseShops(this.state.cardLevelIDList);
-                }
-            );
+            this.setState({
+                cardTypeLst: cardTypeLst.filter((cardType) => {
+                    return cardType.regFromLimit;
+                }),
+            });
         }
     }
 
-    queryCanuseShops = (cardTypeIDs) => {
-        let { cardInfo, excludeCardTypeIDs, cardTypeLst } = this.state;
-        cardInfo = cardInfo.filter(
-            (item) =>
-                cardTypeLst.findIndex(
-                    (cardType) => cardType.cardTypeID === item.cardTypeID
-                ) > -1
-        );
-        const { basicForm, accountInfo } = this.props;
-        let questArr = [];
-        if (cardTypeIDs && cardTypeIDs.length) {
-            const { cardLevelRangeType } =
-                basicForm && basicForm.getFieldsValue();
-            if (cardLevelRangeType == "3") {
-                // 卡等级
-                cardTypeIDs.forEach((id) => {
-                    const index = cardInfo.findIndex((cardType) => {
-                        return (cardType.cardTypeLevelList || [])
-                            .map((cardLevel) => cardLevel.cardLevelID)
-                            .includes(id);
-                    });
-                    if (index > -1) {
-                        questArr.push(cardInfo[index].cardTypeID);
-                    }
-                });
-            } else {
-                // 卡类
-                questArr = cardTypeIDs;
-            }
-        } else {
-            // 没选的情况下, 查所有能选的卡类下的适用店铺
-            if (excludeCardTypeIDs.length) {
-                cardInfo = cardInfo.filter(
-                    (cardType) =>
-                        !excludeCardTypeIDs.includes(cardType.cardTypeID)
-                );
-            }
-            questArr = cardInfo.map((cardType) => cardType.cardTypeID);
-        }
-        if (!questArr.length) {
-            return;
-        }
-        getListCardTypeShop({
-            groupID: accountInfo.groupID,
-            cardTypeIds: uniq(questArr).join(","),
-            queryCardType: 1,
-        }).then((res) => {
-            let canUseShops = [];
-            (res || []).forEach((cardType) => {
-                cardType.cardTypeShopResDetailList.forEach((shop) => {
-                    canUseShops.push(String(shop.shopID));
-                });
-            });
-            canUseShops = Array.from(new Set(canUseShops));
-            if (canUseShops.length <= 0) {
-                message.warning("该卡类无适用的店铺，请选择其他卡类");
-            }
-            this.setState({ canUseShops });
-        });
-    };
-
     handleSelectChange = (value) => {
-        this.queryCanuseShops(value);
-        this.setState({
-            cardLevelIDList: value,
-            canUseShops: [],
-        });
-        this.props.onChange &&
-            this.props.onChange({ cardLevelIDList: value, shopIDList: [] });
+        const { basicForm } = this.props;
+        basicForm && basicForm.setFieldsValue({ shopIDList: [] });
     };
 
     onChangeBasicForm = (key, value) => {};
 
     resetFormItems = () => {
         const { shopIDList, cardTypeIDList } = baseFormItems;
-        let {
-            cardInfo,
-            canUseShops = [],
-            occupiedShops = [],
-            excludeCardTypeIDs,
-            cardTypeLst,
-        } = this.state;
-        const finalCanUseShops = canUseShops.filter(
-            (shopID) => !occupiedShops.includes(shopID)
-        );
+        let { cardInfo, excludeCardTypeIDs, cardTypeLst } = this.state;
         cardInfo = cardInfo.filter(
             (item) =>
                 cardTypeLst.findIndex(
@@ -199,19 +100,20 @@ class BasicInfoForm extends Component {
                     d()(
                         <ShopSelector
                             filterParm={
-                                isFilterShopType()
+                                isFilterShopType("23")
                                     ? { productCode: "HLL_CRM_License" }
                                     : {}
                             }
                             onChange={this.editBoxForShopsChange}
-                            canUseShops={finalCanUseShops}
-                            disabled={finalCanUseShops.length <= 0}
                         />
                     ),
             },
             cardTypeIDList: {
                 ...cardTypeIDList,
                 render: (d, form) => {
+                    if (form.getFieldValue("partInUser") != 3) {
+                        return null;
+                    }
                     if (form.getFieldValue("cardLevelRangeType") == 2) {
                         return (
                             <Form.Item

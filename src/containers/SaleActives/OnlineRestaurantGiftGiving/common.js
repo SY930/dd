@@ -66,7 +66,7 @@ export const baseFormItems = {
             { label: "非会员", value: 2 },
             { label: "会员", value: 3 },
         ],
-        defaultValue: 1,
+        defaultValue: 3,
     },
     cardLevelRangeType: {
         type: "custom",
@@ -105,7 +105,7 @@ export const baseFormItems = {
     autoRegister: {
         type: "custom",
         label: "参与成为会员",
-        defaultValue: 0,
+        defaultValue: 1,
         render: (d, form) => {
             if (
                 (form.getFieldValue("partInUser") == 1 ||
@@ -133,7 +133,7 @@ export const baseFormItems = {
         type: "textarea",
         label: "活动说明",
         placeholder: "请输入活动说明，最多1000个字符",
-        rules: ["stringLength", { max: "1000", message: "不能超过1000个字符" }],
+        rules: [{ max: "1000", message: "不能超过1000个字符" }],
     },
 };
 

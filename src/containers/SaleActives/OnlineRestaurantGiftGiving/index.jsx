@@ -185,7 +185,7 @@ class OnlineRestaurantGiftGiving extends Component {
                     ? values.partInTimes1
                     : values.partInTimes,
             countCycleDays: values.countCycleDays,
-            autoRegister: values.autoRegister,
+            autoRegister: values.autoRegister || 1,
         };
         let params = {
             event,
