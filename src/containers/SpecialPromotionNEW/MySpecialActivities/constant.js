@@ -24,7 +24,7 @@ export const dataOverviewColumns = [
         className: "TableTxtCenter",
     },
     {
-        title: "拉动购买权益卡金额",
+        title: "拉动首次购买权益卡金额",
         dataIndex: "benefitCardMoneyAmount",
         key: "benefitCardMoneyAmount",
         className: "TableTxtCenter",

@@ -19,6 +19,7 @@ export const renderOverViewData = function () {
             columns={dataOverviewColumns}
             bordered={true}
             pagination={false}
+            scroll={{ x: 800 }}
         />
     );
 };
