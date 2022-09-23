@@ -1891,7 +1891,7 @@ class MySpecialActivities extends React.Component {
                                 </span>
                                 <RadioGroup
                                     name="radiogroup"
-                                    value={item.paramsValue}
+                                    defaultValue={item.paramValue}
                                     onChange={({ target }) => {
                                         let { paramsValueList } = this.state;
                                         paramsValueList = paramsValueList.map(v => {

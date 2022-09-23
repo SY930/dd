@@ -21,7 +21,7 @@ class OnlineRestaurantGiftGiving extends Component {
             ruleForm: null, //使用规则表单
             giftsForm: [], //礼品信息表单
             occupyShopList: [],
-            paramsValue: [],
+            paramsValue: '',
             viewRuleVisible: false,
             slectedWxCouponList: [], //三方微信券,
         };
@@ -128,9 +128,11 @@ class OnlineRestaurantGiftGiving extends Component {
         }
         formData.couponType = couponType;
         formData.giftCount = couponType == "1" && gifts.length ? gifts[0].giftCount : '';
-        this.setState({
-            slectedWxCouponList: gifts,
-        });
+        if (couponType == 1) {
+            this.setState({
+                slectedWxCouponList: gifts,
+            });
+        }
         if (this.state.ruleForm) {
             this.state.ruleForm.setFieldsValue({ gifts: formData.gifts });
         }
@@ -257,7 +259,7 @@ class OnlineRestaurantGiftGiving extends Component {
         asyncParseForm(forms).then(({ values, error }) => {
             if (error) return;
             const { validCycle = [], cycleType, timeList } = values;
-            if (!slectedWxCouponList.length) {
+            if (values.couponType == 1 && !slectedWxCouponList.length) {
                 message.warn("请添加一个第三方微信优惠券");
                 return false;
             }
