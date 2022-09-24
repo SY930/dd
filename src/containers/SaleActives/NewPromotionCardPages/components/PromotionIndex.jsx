@@ -114,7 +114,7 @@ class PromotionIndex extends Component {
         Object.keys(tempObj).sort((a, b) => a - b).forEach((key, index) => {
             conditionConfig[index] = tempObj[key]
         })
-        console.log('conditionConfig===111', conditionConfig);
+        console.log('conditionConfig===111', conditionConfig, isValid);
 
         if (isValid) {
             try {

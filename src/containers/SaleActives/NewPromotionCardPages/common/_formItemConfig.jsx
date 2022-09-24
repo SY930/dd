@@ -234,41 +234,7 @@ export const ALL_FORM_ITEMS = {
         type: 'custom',
         label: '礼品数量',
         surfix: '个',
-        rules: [{
-            required: true,
-            validator: (rule, value, callback) => {
-                if (!/^\d+$/.test(value)) {
-                    return callback('请输入数字');
-                }
-                if (+value < 1 || +value > 50) {
-                    return callback('大于0，限制50个');
-                }
-                return callback();
-            },
-        }],
-        render: (decorator, form) => {
-            const { getFieldsValue } = form;
-            return (
-                <Row>
-                    <Col style={{ display: 'flex' }}>
-                        {
-                            decorator({
-                                key: 'giftCount',
-                            })(
-                                <Input addonAfter='个' />
-                            )
-                        }
-                        {
-                            decorator({
-                                key: 'giftCount1',
-                            })(
-                                <Input addonBefore='最多' addonAfter='张' />
-                            )
-                        }
-                    </Col>
-                </Row>
-            )
-        }
+        render: decorator => decorator({})(),
     },
     effectType: {
         type: 'radio',
@@ -308,12 +274,12 @@ export const ALL_FORM_ITEMS = {
                         </FormItem>
                     </Col>
                     <Col span={24}>
-                        <FormItem style={{ marginBottom: '0', marginLeft: '7px', display: 'flex', marginRight: '-68px' }} label='生效时间'>
+                        <FormItem style={{ marginBottom: '0', marginLeft: '7px', display: 'flex', marginRight: '-118px' }} label='生效时间'>
                             {decorator({
                                 key: 'giftEffectTimeHours',
                                 defaultValue: defaultValue
                             })(
-                                <Select style={{ width: '423px' }}>
+                                <Select style={{ width: '330px' }}>
                                     {
                                         options.map(item => (
                                             <Option key={item.value} value={item.value}>{item.label}</Option>
@@ -367,7 +333,8 @@ export const ALL_FORM_ITEMS = {
                             <Input
                                 addonBefore={
                                     decorator({
-                                        key: 'stageType'
+                                        key: 'stageType',
+                                        defaultValue: 1
                                     })(
                                         <Select style={{ width: '140px' }}>
                                             {
@@ -417,6 +384,17 @@ export const ALL_FORM_ITEMS = {
         onLabel: '开',
         offLabel: '关',
     },
+    amountType: {
+        type: 'radio',
+        label: '金额核算',
+        labelCol: { span: 3 },
+        defaultValue: 1,
+        options: [
+            { label: '账单金额', value: 1 },
+            { label: '实收金额', value: 2 },
+        ],
+        rules: ['required'],
+    },
     mutexDependType: {
         type: 'radio',
         label: '',
@@ -462,7 +440,7 @@ export const ACTIVITY_RULE_FORM_KEYS = {
             col: {
                 span: 24,
             },
-            keys: ['joinCount', 'cardScopeType', 'defaultCardType', 'brandList', 'sourceWayLimit', 'orderTypeList'],
+            keys: ['joinCount', 'cardScopeType', 'defaultCardType', 'brandList', 'shopIDList', 'sourceWayLimit', 'orderTypeList'],
         },
     ],
 };
@@ -473,7 +451,7 @@ export const ACTIVITY_THIRD_RULE_FORM_KEYS = {
             col: {
                 span: 24,
             },
-            keys: ['hasMutexDepend'],
+            keys: ['amountType', 'hasMutexDepend'],
         },
     ],
 };

@@ -27,6 +27,7 @@ class ActivityConditions extends Component {
                 {
                     id: uuid++,
                     presentType: [],
+                    stageType: 1,
                     giftList: [
                         {
                             id: giftUuid--,
@@ -120,6 +121,7 @@ class ActivityConditions extends Component {
                 ...this.state.conditionList,
                 {
                     id: uuid++,
+                    stageType: '',
                     giftList: [
                         {
                             id: giftUuid--,
@@ -159,7 +161,7 @@ class ActivityConditions extends Component {
             label: '',
             render: (decorator, form) => {
                 const { getFieldsValue } = form;
-                const { stageType: stageTypeValue } = getFieldsValue();
+                // const { stageType: stageTypeValue } = getFieldsValue();
                 return (
                     <Col>
                         {
@@ -170,7 +172,7 @@ class ActivityConditions extends Component {
                                     addonBefore={
                                         decorator({
                                             key: 'stageType',
-                                            defaultValue: stageTypeValue || topStageTypeValue
+                                            defaultValue: topStageTypeValue || 1
                                         })(
                                             <Select style={{ width: '140px' }}>
                                                 {
@@ -221,6 +223,7 @@ class ActivityConditions extends Component {
     }
 
     renderAddGifts = (data) => {
+        console.log('renderAddGifts====11111', data);
         if (data.presentType && data.presentType.includes(1)) {
             if (data && data.giftList) {
                 const { loading, treeData } = this.state
@@ -232,6 +235,7 @@ class ActivityConditions extends Component {
                     treeData={treeData}
                     loading={loading}
                     onRef={node => this.conditionForms[data.id + 'gift'] = node}
+                    stageType={data.stageType}
                 />
             }
         }
@@ -333,31 +337,17 @@ class ActivityConditions extends Component {
     }
 
     onChangeConditionForms = (key, value, id, formKeys) => {
+        console.log(9999999, key, value, id, formKeys);
         if (key == 'presentType') {
             let conditionList = this.state.conditionList;
             conditionList = conditionList.map(item => {
                 if (item.id == id) {
                     item.presentType = value || [];
-                    console.log(99999, item.giftList);
                     item.giftList = [
                         {
                             id: giftUuid--,
                         }
                     ]
-                    // if (Array.isArray(item.giftList) && item.giftList.length > 0) {
-                    //     item.giftList = [
-                    //         ...item.giftList,
-                    //         {
-                    //             id: giftUuid--,
-                    //         }
-                    //     ]
-                    // } else {
-                    //     item.giftList = [
-                    //         {
-                    //             id: giftUuid--,
-                    //         }
-                    //     ]
-                    // }
                 }
                 return item
             });
@@ -366,6 +356,7 @@ class ActivityConditions extends Component {
             })
         } else if (key == 'stageType') {
             let singleConditionItem = this.state.conditionList[0];
+            singleConditionItem.stageType = value;
             this.setState({
                 conditionList: [singleConditionItem]
             });
@@ -374,6 +365,7 @@ class ActivityConditions extends Component {
                     delete this.conditionForms[conditionFormId];
                 }
             });
+            // 每满
             if (value == 2 || value == 4) {
                 const form = this.conditionForms[singleConditionItem.id];
                 this.setState({

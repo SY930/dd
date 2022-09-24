@@ -1,4 +1,4 @@
-import { Checkbox, Col, Form, Icon, Button, TreeSelect, Spin } from 'antd';
+import { Checkbox, Col, Form, Row, Button, TreeSelect, Spin, Input } from 'antd';
 import _ from "lodash";
 import { Component } from 'react';
 import { connect } from 'react-redux';
@@ -22,7 +22,8 @@ class AddGifts extends Component {
         this.state = {
             giftList: [],
             giftFormData: {},
-            formItems: {}
+            formItems: {},
+            treeData: {}
         }
         this.giftForms = {}
     }
@@ -31,9 +32,9 @@ class AddGifts extends Component {
         if (this.props.onRef) {
             this.props.onRef(this);
         }
-        let { giftList = [] } = this.props;
+        let { giftList = [], stageType } = this.props;
         let giftFormData = {};
-        console.log('giftList====giftList======', giftList)
+        console.log('stageType====stageType======', stageType);
         giftList.forEach(item => {
             let effectType = 1;
             let countType = 0;
@@ -53,20 +54,96 @@ class AddGifts extends Component {
                 giftIDNumber: item.giftID
             };
         });
-        console.log('giftFormData===giftFormData', giftFormData);
         this.setState({
             giftList,
             giftFormData
         })
 
         let formItems = ALL_FORM_ITEMS;
-        const { giftID: giftIDFormItem } = formItems;
+        const { giftID: giftIDFormItem, giftCount } = formItems;
         this.setState({
+            treeData: this.props.treeData,
             formItems: {
                 ...formItems,
                 ...this.renderGiftID(giftIDFormItem),
+                ...this.renderGiftCount(giftCount),
             }
         })
+    }
+
+    renderGiftCount = (giftCount, stageType) => {
+        const render = (decorator, form) => {
+            return (
+                <Row>
+                    <Col style={{ display: 'flex' }}>
+                        <FormItem>
+                            {
+                                decorator({
+                                    key: 'giftCount',
+                                    rules: [{
+                                        required: true,
+                                        validator: (rule, value, callback) => {
+                                            if (!/^\d+$/.test(value)) {
+                                                return callback('请输入数字');
+                                            }
+                                            if (+value < 1 || +value > 50) {
+                                                return callback('大于0，限制50个');
+                                            }
+                                            return callback();
+                                        },
+                                    }],
+                                })(
+                                    <Input addonAfter='个' />
+                                )
+                            }
+                        </FormItem>
+                        <FormItem>
+                            {
+                                (stageType == 2 || stageType == 4) && (
+                                    decorator({
+                                        key: 'giftMaxCount',
+                                        rules: [
+                                            {
+                                                required: true,
+                                                validator: (rule, value, callback) => {
+                                                    if (!/^\d+$/.test(value)) {
+                                                        return callback('请输入数字');
+                                                    }
+                                                    if (+value < 1 || +value > 50) {
+                                                        return callback('大于0，限制50个');
+                                                    }
+                                                    return callback();
+                                                },
+                                            }],
+                                    })(
+                                        <Input addonBefore='最多' addonAfter='张' />
+                                    )
+                                )
+                            }
+                        </FormItem>
+                    </Col>
+                </Row>
+            )
+        }
+        return {
+            giftCount: { ...giftCount, render },
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        let formItems = this.state.formItems;
+        const { giftCount } = formItems;
+        this.setState({
+            formItems: {
+                ...formItems,
+                ...this.renderGiftCount(giftCount, nextProps.stageType)
+            }
+        })
+        if (!_.isEqual(this.props.treeData, nextProps.treeData)) {
+            this.setState({
+                treeData: nextProps.treeData,
+            })
+        }
     }
 
     onPlusGift = () => {
@@ -74,7 +151,8 @@ class AddGifts extends Component {
             giftList: [
                 ...this.state.giftList,
                 {
-                    id: uuidKkey + uuid++
+                    id: uuidKkey + uuid++,
+                    stageType: this.props.stageType,
                 }
             ]
         })
@@ -85,31 +163,18 @@ class AddGifts extends Component {
         this.setState({
             giftList: this.state.giftList
         })
-        // this.props.onMinusGift(pid);
     }
 
     renderGiftID = (giftIDFormItem) => {
-        const { loading, treeData } = this.props;
         const render = d => {
-            return (
-                <Col>
-                    {loading ?
-                        <div className={styles.spinBox}>
-                            <Spin size="small" />
-                        </div> :
-                        d()(
-                            <TreeSelect
-                                dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                                treeData={treeData}
-                                placeholder="请选择礼品名称"
-                                showSearch={true}
-                                treeNodeFilterProp="label"
-                                allowClear={true}
-                            />
-                        )
-                    }
-                </Col>
-            )
+            return d()(<TreeSelect
+                dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                treeData={this.state.treeData}
+                placeholder="请选择礼品名称"
+                showSearch={true}
+                treeNodeFilterProp="label"
+                allowClear={true}
+            />)
         }
         return {
             giftID: { ...giftIDFormItem, render },
@@ -129,7 +194,6 @@ class AddGifts extends Component {
     }
 
     render() {
-        // _TODO
         const { pid } = this.props;
         const { giftList } = this.state;
         const formKeys = ['giftID', 'giftIDNumber', 'giftCount', 'effectType', 'countType', 'giftValidUntilDayCount'];
@@ -149,7 +213,6 @@ class AddGifts extends Component {
                                 key={item.id}
                                 getForm={(form) => { this.giftForms[item.id] = form }}
                                 formKeys={formKeys}
-                                // formItems={this.resetFormItems()}
                                 formItems={this.state.formItems}
                                 formItemLayout={formItemLayout}
                                 onChange={(key, value) => this.onChangeAddGiftForm(key, value, item.id)}
