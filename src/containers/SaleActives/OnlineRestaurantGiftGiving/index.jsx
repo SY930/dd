@@ -176,6 +176,7 @@ class OnlineRestaurantGiftGiving extends Component {
             partInUser: values.partInUser,
             giftSendType: values.giftSendType,
             cardLevelRangeType: values.cardLevelRangeType,
+            defaultCardType: values.defaultCardType,
             cardLevelIDList: values.cardLevelRangeType
                 ? values.cardLevelRangeType == 2
                     ? values.cardTypeIDList

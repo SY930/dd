@@ -68,6 +68,12 @@ export const baseFormItems = {
         ],
         defaultValue: 3,
     },
+    defaultCardType: {
+        type: "custom",
+        label: "卡类别",
+        rules: ["required"],
+        render: () => <p />,
+    },
     cardLevelRangeType: {
         type: "custom",
         label: "",
@@ -313,6 +319,7 @@ export const baseFormKeys = [
     "giftSendType",
     "enterPositionList",
     "partInUser",
+    "defaultCardType",
     "autoRegister",
     "cardLevelRangeType",
     "cardTypeIDList",

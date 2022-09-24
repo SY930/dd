@@ -88,7 +88,7 @@ class BasicInfoForm extends Component {
     onChangeBasicForm = (key, value) => {};
 
     resetFormItems = () => {
-        const { shopIDList, cardTypeIDList } = baseFormItems;
+        const { shopIDList, cardTypeIDList, defaultCardType } = baseFormItems;
         let { cardInfo, excludeCardTypeIDs, cardTypeLst } = this.state;
         cardInfo = cardInfo.filter(
             (item) =>
@@ -104,6 +104,34 @@ class BasicInfoForm extends Component {
         const boxData = [];
         return {
             ...baseFormItems,
+            defaultCardType: {
+                ...defaultCardType,
+                render: (d, form) => {
+                    return form.getFieldValue("partInUser") == 1 ||
+                        form.getFieldValue("partInUser") == 2
+                        ? d()(
+                              <Select
+                                  showSearch={true}
+                                  notFoundContent="未搜索到结果"
+                                  filterOption={(input, option) =>
+                                      option.props.children
+                                          .toLowerCase()
+                                          .indexOf(input.toLowerCase()) >= 0
+                                  }
+                              >
+                                  {cardInfo.map((type) => (
+                                      <Select.Option
+                                          key={type.cardTypeID}
+                                          value={type.cardTypeID}
+                                      >
+                                          {type.cardTypeName}
+                                      </Select.Option>
+                                  ))}
+                              </Select>
+                          )
+                        : null;
+                }
+            },
             shopIDList: {
                 ...shopIDList,
                 render: (d) =>
