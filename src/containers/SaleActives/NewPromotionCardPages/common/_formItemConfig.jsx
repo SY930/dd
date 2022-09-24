@@ -2,9 +2,9 @@ import { Row, Col, Form, Icon, Input, Radio, Select, Tooltip } from 'antd';
 import SelectBrands from '../../../GiftNew/components/SelectBrands';
 import DateRange from '../../../PromotionV3/Camp/DateRange';
 import styles from './style.less';
-import { GiftCfg } from "./giftConfig";
 import ShopSelector from '../../../../components/ShopSelector/ShopSelector';
 import CategoryAndFoodSelector from 'containers/SaleCenterNEW/common/CategoryAndFoodSelector';
+import moment from 'moment';
 
 const Option = Select.Option
 
@@ -91,13 +91,13 @@ export const ALL_FORM_ITEMS = {
         label: '活动时间',
         rules: ['required'],
         wrapperCol: { span: 12 },
-        defaultValue: [],
+        defaultValue: [moment(), moment().add(6, 'days')],
         render: d => d()(<DateRange />),
     },
     eventRemark: {
         type: 'textarea',
         label: '活动说明',
-        rules: ['description'],
+        rules: ['description1'],
     },
     joinCount: {
         type: 'custom',
@@ -121,7 +121,7 @@ export const ALL_FORM_ITEMS = {
                                 decorator({
                                     key: 'partInTimes2',
                                 })(
-                                    <Input addonBefore="可参与" addonAfter="次" style={{ width: '100px' }} disabled={joinCount != 2} />
+                                    <Input addonBefore="同一用户可参与" addonAfter="次" style={{ width: '100px' }} disabled={joinCount != 2} />
                                 )
                             }
                         </FormItem>

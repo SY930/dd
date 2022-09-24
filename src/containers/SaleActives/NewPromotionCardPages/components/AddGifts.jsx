@@ -9,7 +9,7 @@ import styles from './addGifts.less';
 const CheckboxGroup = Checkbox.Group;
 const FormItem = Form.Item;
 const formItemLayout = {
-    labelCol: { span: 3 },
+    labelCol: { span: 4 },
     wrapperCol: { span: 20 },
 }
 

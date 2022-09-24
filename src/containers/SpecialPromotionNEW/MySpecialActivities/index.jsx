@@ -3018,7 +3018,7 @@ class MySpecialActivities extends React.Component {
                                     {COMMON_LABEL.delete}
                                 </a>
                             </Authority>
-                            {record.eventWay != "85" && ( // 千人千面无需更多操作
+                            {!(record.eventWay == "85" || record.eventWay == "87") && ( // 千人千面无需更多操作
                                 <Tooltip
                                     placement="bottomLeft"
                                     title={this.renderTipTitle(

@@ -275,9 +275,9 @@ class PromotionRightMain extends Component {
             let keys = allKeys[0] && allKeys[0].keys || [];
             let index = keys.indexOf('hasMutexDepend');
             if (flag) {
-                keys.splice(index, 0, 'activityRange', 'shopIDList');
+                keys.splice(index, 0, 'activityRange');
             } else {
-                keys = keys.filter(key => key != 'activityRange').filter(key => key != 'shopIDList');
+                keys = keys.filter(key => key != 'activityRange');
             }
             this.state.activityThirdFormKeys[0].keys = keys;
             this.setState({
@@ -347,10 +347,13 @@ class PromotionRightMain extends Component {
         let keys = this.state.activityThirdFormKeys[0].keys;
         if (key == 'hasMutexDepend') {
             if (value) {
+                // 与优惠券不共享: 开启
                 let index = keys.indexOf('hasMutexDepend');
                 keys.splice(index + 1, 0, 'mutexDependType');
             } else {
-                keys = keys.filter(key => key != 'mutexDependType');
+                // 与优惠券不共享: 关闭
+                let deleteKeys = ['mutexDependType', 'NoShareBenifit'];
+                keys = keys.filter(key => !deleteKeys.includes(key));
             }
             this.state.activityThirdFormKeys[0].keys = keys;
             this.setState({
@@ -371,7 +374,7 @@ class PromotionRightMain extends Component {
         } else if (key == 'NoShareBenifit') {
             this.selectNoShareBenifit(value)
         } else if (key == 'activityRange') {
-            console.log('99999----activityRange', value);
+            console.log('活动范围的变化----', value);
             // const scopeList = [];
             // value.foodCategory.forEach((item) => {
             //     scopeList.push({

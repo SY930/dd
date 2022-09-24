@@ -243,6 +243,7 @@ class ActivityConditions extends Component {
                 score: {
                     type: 'custom',
                     label: '赠送积分',
+                    labelCol: { span: 4 },
                     render: (decorator, form) => {
                         return decorator({
                             key: 'presentValue',
@@ -290,6 +291,7 @@ class ActivityConditions extends Component {
                 cardNum: {
                     type: 'custom',
                     label: '赠送卡值',
+                    labelCol: { span: 4 },
                     render: (decorator, form) => {
                         return decorator({
                             key: 'presentValue',
@@ -335,7 +337,27 @@ class ActivityConditions extends Component {
             let conditionList = this.state.conditionList;
             conditionList = conditionList.map(item => {
                 if (item.id == id) {
-                    item.presentType = value || []
+                    item.presentType = value || [];
+                    console.log(99999, item.giftList);
+                    item.giftList = [
+                        {
+                            id: giftUuid--,
+                        }
+                    ]
+                    // if (Array.isArray(item.giftList) && item.giftList.length > 0) {
+                    //     item.giftList = [
+                    //         ...item.giftList,
+                    //         {
+                    //             id: giftUuid--,
+                    //         }
+                    //     ]
+                    // } else {
+                    //     item.giftList = [
+                    //         {
+                    //             id: giftUuid--,
+                    //         }
+                    //     ]
+                    // }
                 }
                 return item
             });

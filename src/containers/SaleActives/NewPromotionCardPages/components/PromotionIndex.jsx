@@ -1,4 +1,4 @@
-import { closePage, decodeUrl } from '@hualala/platform-base';
+import { closePage, decodeUrl, jumpPage } from '@hualala/platform-base';
 import { Col } from 'antd';
 import { Component } from 'react';
 import { connect } from 'react-redux';
@@ -40,6 +40,7 @@ class PromotionIndex extends Component {
 
     onClose = () => {
         closePage();
+        jumpPage({ pageID: '1000076003' });
     }
 
     onSave = () => {
