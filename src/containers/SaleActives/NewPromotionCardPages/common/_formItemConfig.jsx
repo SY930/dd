@@ -159,7 +159,8 @@ export const ALL_FORM_ITEMS = {
     brandList: {
         label: '品牌',
         type: 'custom',
-        render: decorator => decorator({})(<SelectBrands />),
+        render: decorator => decorator({
+        })(<SelectBrands />),
     },
     sourceWayLimit: {
         label: '适用场景',
@@ -215,7 +216,11 @@ export const ALL_FORM_ITEMS = {
     shopIDList: {
         type: 'custom',
         label: '适用店铺',
-        render: decorator => decorator({})(<ShopSelector />),
+        render: decorator => decorator({
+            rules: [
+                { required: true, message: '请选择适用店铺' }
+            ]
+        })(<ShopSelector />),
         defaultValue: [],
     },
     giftID: {

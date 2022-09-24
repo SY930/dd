@@ -150,46 +150,24 @@ class PromotionRightMain extends Component {
             });
         }
         if (cardLevelRangeType == 2) { // 全部会员
-            console.log('会员等级')
             data.cardScopeType = {
                 cardLevelIDList,
                 defaultCardType: '',
                 cardLevelRangeType: '2'
             }
         } else {// 会员等级
-            console.log('全部会员')
             data.cardScopeType = {
                 cardLevelRangeType: '0',
                 cardLevelIDList: [],
                 defaultCardType: ''
             }
         }
-        console.log('编辑回显的数据', data);
-        // 99999 _TODO
         data.activityRange = {
             categoryOrDish: null,
             foodCategory: [],
             excludeDishes: [],
             dishes: [],
         };
-        // if (foodScopeList && foodScopeList.length > 0) {
-        //     let scopeType = foodScopeList.map(item => item.scopeType)[0];
-        //     if (scopeType == 2) {
-        //         data.activityRange.categoryOrDish = 1;
-        //         data.activityRange.dishes = foodScopeList;
-        //         foodScopeList.forEach(item => {
-        //             data.activityRange.dishes.push({
-        //                 scopeType: 2,
-        //                 brandID: item.brandID,
-        //                 itemID: item.targetID,
-        //                 foodKey: item.targetCode,
-        //                 label: item.targetName,
-        //                 unit: item.targetUnitName
-        //             })
-        //         })
-        //     }
-        // }
-        // console.log('foodScopeList-111111111', foodScopeList);
         let newfoodScopeList = foodScopeList.map(item => {
             const { scopeType, targetID, brandID, targetCode, targetName, targetUnitName } = item;
             return {
@@ -201,7 +179,6 @@ class PromotionRightMain extends Component {
                 targetUnitName
             }
         })
-        console.log('newfoodScopeList', newfoodScopeList)
         this.setState({
             formData: data,
             eventGiftConditionList,
@@ -212,15 +189,26 @@ class PromotionRightMain extends Component {
     }
 
     renderShopSelector = (formItems, key) => {
-        formItems[key].render = (decorator) => {
+        formItems[key].render = (decorator, form) => {
+            const { getFieldsValue } = form;
+            const { brandList = [] } = getFieldsValue();
+            const targetIds = brandList.map(item => item.targetID);
             return (
                 <Row>
                     <Col>
                         {decorator({
+                            key: 'shopIDList',
+                            rules: [
+                                {
+                                    required: true,
+                                    message: '请选择使用店铺'
+                                }
+                            ]
                         })(
                             <ShopSelector
                                 isCreateCoupon={true}
                                 filterParm={isFilterShopType() ? { productCode: 'HLL_CRM_License' } : {}}
+                                brandList={targetIds}
                             />
                         )}
                     </Col>
@@ -401,8 +389,8 @@ class PromotionRightMain extends Component {
         } else if (key == 'NoShareBenifit') {
             this.selectNoShareBenifit(value)
         } else if (key == 'activityRange') {
-            console.log('活动范围的变化----', value);
-            // const scopeList = [];
+            console.log('指定菜品和商品的变化----', value);
+            const scopeList = [];
             // value.foodCategory.forEach((item) => {
             //     scopeList.push({
             //         scopeType: '1',
@@ -439,7 +427,6 @@ class PromotionRightMain extends Component {
     }
 
     selectNoShareBenifit(val) {
-        console.log('不分享优惠券=====', val)
         if (val && val.length > 0) {
             this.props.setPromotionDetail({
                 blackList: this.state.blackListRadio != '0',
@@ -477,7 +464,6 @@ class PromotionRightMain extends Component {
             resetFields(['partInTimes2', 'partInTimes3', 'countCycleDays']);
         } else if (key == 'cardScopeType') {
             resetFields(['defaultCardType']);
-            console.log('哈哈哈哈哈===cardScopeType', value);
             const { cardLevelRangeType, cardLevelIDList } = value;
             if (cardLevelRangeType == '0') {
                 this.setState({

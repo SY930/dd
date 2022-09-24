@@ -95,7 +95,6 @@ class PromotionIndex extends Component {
                         isValid = false
                         return
                     }
-                    console.log('====222222', key, values);
                     if (key.indexOf('score') != -1) {
                         tempObj[key.split('score')[0]] = tempObj[key.split('score')[0]] || {}
                         tempObj[key.split('score')[0]]['score'] = values
@@ -125,6 +124,7 @@ class PromotionIndex extends Component {
                 let eventGiftConditionList = [];
                 let eventMutexDependRuleInfos = []; //与优惠券不共享
                 conditionConfig.forEach((item, index) => {
+                    eventGiftConditionList[index] = {};
                     let gifts = [];
                     if (item.score) {
                         gifts.push({

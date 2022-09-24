@@ -223,7 +223,6 @@ class ActivityConditions extends Component {
     }
 
     renderAddGifts = (data) => {
-        console.log('renderAddGifts====11111', data);
         if (data.presentType && data.presentType.includes(1)) {
             if (data && data.giftList) {
                 const { loading, treeData } = this.state
@@ -249,6 +248,8 @@ class ActivityConditions extends Component {
                     label: '赠送积分',
                     labelCol: { span: 4 },
                     render: (decorator, form) => {
+                        const { getFieldsValue } = form;
+                        const giveAmountTypeValue = getFieldsValue() && getFieldsValue().giveAmountType;
                         return decorator({
                             key: 'presentValue',
                             rules: [
@@ -268,7 +269,7 @@ class ActivityConditions extends Component {
                                         </Select>
                                     )
                                 }
-                                addonAfter='%' />
+                                addonAfter={giveAmountTypeValue == 1 && '%'} />
                         )
                     }
                 }
@@ -297,6 +298,8 @@ class ActivityConditions extends Component {
                     label: '赠送卡值',
                     labelCol: { span: 4 },
                     render: (decorator, form) => {
+                        const { getFieldsValue } = form;
+                        const giveAmountTypeValue = getFieldsValue() && getFieldsValue().giveAmountType;
                         return decorator({
                             key: 'presentValue',
                             rules: [
@@ -316,7 +319,7 @@ class ActivityConditions extends Component {
                                         </Select>
                                     )
                                 }
-                                addonAfter='%' />
+                                addonAfter={giveAmountTypeValue == 1 && '%'} />
                         )
                     }
                 }
@@ -337,7 +340,6 @@ class ActivityConditions extends Component {
     }
 
     onChangeConditionForms = (key, value, id, formKeys) => {
-        console.log(9999999, key, value, id, formKeys);
         if (key == 'presentType') {
             let conditionList = this.state.conditionList;
             conditionList = conditionList.map(item => {
@@ -389,9 +391,7 @@ class ActivityConditions extends Component {
 
     render() {
         const { conditionList, isShowConditionBtn } = this.state;
-        const { decorator } = this.props;
         const formKeys = ['stageType', 'presentType'];
-        console.log(99999, this.props.promotion);
         const currentPromotion = this.props.promotion[87];
         const { itemID } = currentPromotion;
         return (
@@ -406,11 +406,11 @@ class ActivityConditions extends Component {
                                 {
                                     (isShowConditionBtn && !itemID) && <span className={styles.btnBox}>
                                         {
-                                            conditionList.length == index + 1 &&
+                                            (conditionList.length == index + 1 && conditionList.length < 5) &&
                                             <span className={styles.plusBtn} onClick={this.onPlus}></span>
                                         }
                                         {
-                                            conditionList.length > 1 &&
+                                            (conditionList.length > 1) &&
                                             <span className={styles.minusBtn} onClick={() => this.onMinus(conditionItem)}></span>
                                         }
                                     </span>
