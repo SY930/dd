@@ -56,7 +56,7 @@ class OnlineRestaurantGiftGiving extends Component {
         const { data = {}, timeList = [], gifts = [] } = res;
         let formData = {
             ...data,
-            enterPositionList: String(values.enterPositionList).split(","),
+            enterPositionList: String(data.enterPositionList).split(","),
             eventRange:
                 data.eventEndDate && data.eventStartDate
                     ? [
