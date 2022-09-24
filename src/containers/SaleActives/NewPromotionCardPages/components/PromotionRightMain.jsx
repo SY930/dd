@@ -99,7 +99,17 @@ class PromotionRightMain extends Component {
     sendFormData = (res) => {
         console.log('详情数据=====', res);
         const { data = {}, eventGiftConditionList = [], eventMutexDependRuleInfos = [] } = res;
-        const { orderTypeList, eventStartDate, eventEndDate, partInTimes, countCycleDays, brandList, foodScopeList = [] } = data;
+        const {
+            orderTypeList,
+            eventStartDate,
+            eventEndDate,
+            partInTimes,
+            countCycleDays,
+            brandList,
+            foodScopeList = [],
+            cardLevelIDList,
+            cardLevelRangeType
+        } = data;
         if (orderTypeList) {
             data.orderTypeList = orderTypeList.split(',')
         }
@@ -139,6 +149,22 @@ class PromotionRightMain extends Component {
                 }
             });
         }
+        if (cardLevelRangeType == 2) { // 全部会员
+            console.log('会员等级')
+            data.cardScopeType = {
+                cardLevelIDList,
+                defaultCardType: '',
+                cardLevelRangeType: '2'
+            }
+        } else {// 会员等级
+            console.log('全部会员')
+            data.cardScopeType = {
+                cardLevelRangeType: '0',
+                cardLevelIDList: [],
+                defaultCardType: ''
+            }
+        }
+        console.log('编辑回显的数据', data);
         // 99999 _TODO
         data.activityRange = {
             categoryOrDish: null,
@@ -331,6 +357,7 @@ class PromotionRightMain extends Component {
                 <Row>
                     <Col span={24} push={1}>
                         {decorator({
+                            key: 'cardScopeType'
                         })(
                             <CardLevel
                                 catOrCard={'card'}
@@ -450,6 +477,7 @@ class PromotionRightMain extends Component {
             resetFields(['partInTimes2', 'partInTimes3', 'countCycleDays']);
         } else if (key == 'cardScopeType') {
             resetFields(['defaultCardType']);
+            console.log('哈哈哈哈哈===cardScopeType', value);
             const { cardLevelRangeType, cardLevelIDList } = value;
             if (cardLevelRangeType == '0') {
                 this.setState({

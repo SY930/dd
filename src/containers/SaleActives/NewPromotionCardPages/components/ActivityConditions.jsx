@@ -343,11 +343,11 @@ class ActivityConditions extends Component {
             conditionList = conditionList.map(item => {
                 if (item.id == id) {
                     item.presentType = value || [];
-                    item.giftList = [
-                        {
-                            id: giftUuid--,
-                        }
-                    ]
+                    // item.giftList = [
+                    //     {
+                    //         id: giftUuid--,
+                    //     }
+                    // ]
                 }
                 return item
             });
@@ -391,6 +391,9 @@ class ActivityConditions extends Component {
         const { conditionList, isShowConditionBtn } = this.state;
         const { decorator } = this.props;
         const formKeys = ['stageType', 'presentType'];
+        console.log(99999, this.props.promotion);
+        const currentPromotion = this.props.promotion[87];
+        const { itemID } = currentPromotion;
         return (
             <Row className={styles.conditionListBox}>
                 <Col span={3} style={{ textAlign: 'right', marginLeft: '20px', marginRight: '5px', marginTop: '30px' }}>
@@ -401,7 +404,7 @@ class ActivityConditions extends Component {
                         conditionList.map((conditionItem, index) => (
                             <Col className={styles.conditionItemBox} key={conditionItem.id} span={24}>
                                 {
-                                    isShowConditionBtn && <span className={styles.btnBox}>
+                                    (isShowConditionBtn && !itemID) && <span className={styles.btnBox}>
                                         {
                                             conditionList.length == index + 1 &&
                                             <span className={styles.plusBtn} onClick={this.onPlus}></span>
@@ -434,6 +437,9 @@ class ActivityConditions extends Component {
                         ))
                     }
                 </Col>
+                {
+                    itemID && <Col className={styles.conditionListBoxPop}></Col>
+                }
             </Row>
         )
     }

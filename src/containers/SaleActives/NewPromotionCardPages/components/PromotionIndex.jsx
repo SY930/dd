@@ -180,7 +180,7 @@ class PromotionIndex extends Component {
                 console.log('clonedEvent===111', clonedEvent);
                 clonedEvent.hasMutexDepend = event.hasMutexDepend ? 1 : 0
                 delete clonedEvent.NoShareBenifit;
-                const { eventRange, hasMutexDepend, mutexDependType, joinCount, countCycleDays, partInTimes2, partInTimes3, orderTypeList, brandList, activityRange } = clonedEvent;
+                const { eventRange, hasMutexDepend, mutexDependType, joinCount, countCycleDays, partInTimes2, partInTimes3, orderTypeList, brandList, activityRange, cardScopeType } = clonedEvent;
                 if (joinCount == 2) {
                     clonedEvent.partInTimes = partInTimes2
                 } else if (joinCount == 3) {
@@ -265,6 +265,16 @@ class PromotionIndex extends Component {
                 clonedEvent.foodScopeList = foodScopeList;
                 delete clonedEvent.mutexDependType;
                 requestPramas.eventGiftConditionList = eventGiftConditionList;
+                if (cardScopeType) { // 会员范围
+                    const { cardLevelIDList } = cardScopeType;
+                    if (Array.isArray(cardLevelIDList) && cardLevelIDList.length > 0) {
+                        clonedEvent.cardLevelRangeType = '2';
+                        clonedEvent.cardLevelIDList = cardLevelIDList;
+                    } else {
+                        clonedEvent.cardLevelRangeType = '0';
+                    }
+                }
+                delete clonedEvent.cardScopeType;
                 requestPramas.event = clonedEvent;
                 requestPramas.eventMutexDependRuleInfos = eventMutexDependRuleInfos;
                 if (currentPromotion.itemID) {

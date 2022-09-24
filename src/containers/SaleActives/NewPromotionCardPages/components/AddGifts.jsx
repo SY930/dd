@@ -16,14 +16,17 @@ const formItemLayout = {
 let uuid = 0;
 let uuidKkey = 'addGiftId';
 
+const createKeys = ['giftID', 'giftIDNumber', 'giftCount', 'effectType', 'countType', 'giftValidUntilDayCount'];
+const notCreateKeys = ['giftName', 'giftIDNumber', 'giftCount', 'effectType', 'countType', 'giftValidUntilDayCount'];
+
 class AddGifts extends Component {
     constructor(props) {
         super(props);
         this.state = {
             giftList: [],
             giftFormData: {},
-            formItems: {},
-            treeData: {}
+            formItems: ALL_FORM_ITEMS,
+            treeData: {},
         }
         this.giftForms = {}
     }
@@ -32,43 +35,49 @@ class AddGifts extends Component {
         if (this.props.onRef) {
             this.props.onRef(this);
         }
-        let { giftList = [], stageType } = this.props;
-        let giftFormData = {};
-        console.log('stageType====stageType======', stageType);
-        giftList.forEach(item => {
-            let effectType = 1;
-            let countType = 0;
-            if (item.effectType == 1) {
-                effectType = 1;
-                countType = 0;
-            } else if (item.effectType == 2) {
-                effectType = 2;
-            } else if (item.effectType == 3) {
-                effectType = 1;
-                countType = 1;
-            }
-            giftFormData[item.id] = {
-                ...item,
-                effectType,
-                countType,
-                giftIDNumber: item.giftID
-            };
-        });
-        this.setState({
-            giftList,
-            giftFormData
-        })
-
         let formItems = ALL_FORM_ITEMS;
-        const { giftID: giftIDFormItem, giftCount } = formItems;
+        const { giftID, giftCount } = formItems;
         this.setState({
             treeData: this.props.treeData,
             formItems: {
                 ...formItems,
-                ...this.renderGiftID(giftIDFormItem),
+                ...this.renderGiftID(giftID),
                 ...this.renderGiftCount(giftCount),
+                giftName: {
+                    type: 'custom',
+                    label: '礼品名称',
+                    render: () => (<p></p>),
+                },
             }
-        })
+        }, () => {
+            let { giftList = [], stageType } = this.props;
+            let giftFormData = {};
+            giftList.forEach(item => {
+                let effectType = 1;
+                let countType = 0;
+                if (item.effectType == 1) {
+                    effectType = 1;
+                    countType = 0;
+                } else if (item.effectType == 2) {
+                    effectType = 2;
+                } else if (item.effectType == 3) {
+                    effectType = 1;
+                    countType = 1;
+                }
+                giftFormData[item.id] = {
+                    ...item,
+                    effectType,
+                    countType,
+                    giftIDNumber: item.giftID,
+                    giftName: '111'
+                };
+            });
+            console.log('stageType===giftFormData', stageType, giftFormData);
+            this.setState({
+                giftList,
+                giftFormData
+            })
+        });
     }
 
     renderGiftCount = (giftCount, stageType) => {
@@ -132,16 +141,54 @@ class AddGifts extends Component {
 
     componentWillReceiveProps(nextProps) {
         let formItems = this.state.formItems;
-        const { giftCount } = formItems;
+        const { giftCount, giftID } = formItems;
         this.setState({
             formItems: {
                 ...formItems,
                 ...this.renderGiftCount(giftCount, nextProps.stageType)
             }
-        })
+        });
         if (!_.isEqual(this.props.treeData, nextProps.treeData)) {
             this.setState({
                 treeData: nextProps.treeData,
+            }, () => {
+                this.setState({
+                    formItems: {
+                        ...formItems,
+                        ...this.renderGiftID(giftID),
+                        giftName: {
+                            type: 'custom',
+                            label: '礼品名称',
+                            render: () => (<p></p>),
+                        },
+                    }
+                }, () => {
+                    let { giftList = [] } = this.props;
+                    let giftFormData = {};
+                    giftList.forEach(item => {
+                        let effectType = 1;
+                        let countType = 0;
+                        if (item.effectType == 1) {
+                            effectType = 1;
+                            countType = 0;
+                        } else if (item.effectType == 2) {
+                            effectType = 2;
+                        } else if (item.effectType == 3) {
+                            effectType = 1;
+                            countType = 1;
+                        }
+                        giftFormData[item.id] = {
+                            ...item,
+                            effectType,
+                            countType,
+                            giftIDNumber: item.giftID,
+                            giftName: '111'
+                        };
+                    });
+                    this.setState({
+                        giftFormData
+                    })
+                });
             })
         }
     }
@@ -165,19 +212,37 @@ class AddGifts extends Component {
         })
     }
 
-    renderGiftID = (giftIDFormItem) => {
-        const render = d => {
-            return d()(<TreeSelect
-                dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                treeData={this.state.treeData}
-                placeholder="请选择礼品名称"
-                showSearch={true}
-                treeNodeFilterProp="label"
-                allowClear={true}
-            />)
+    findGiftNameByKey = () => {
+
+    }
+
+    renderGiftName = () => {
+
+    }
+
+    renderGiftID = (giftID) => {
+        let render = '';
+        console.log('treeData===11111', this.state.treeData);
+        const currentPromotion = this.props.promotion[87];
+        const { itemID } = currentPromotion;
+        if (itemID) {
+            render = d => {
+                return (<Col>11111</Col>)
+            }
+        } else {
+            render = d => {
+                return d()(<TreeSelect
+                    dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                    treeData={this.state.treeData}
+                    placeholder="请选择礼品名称"
+                    showSearch={true}
+                    treeNodeFilterProp="label"
+                    allowClear={true}
+                />)
+            }
         }
         return {
-            giftID: { ...giftIDFormItem, render },
+            giftID: { ...giftID, render },
         }
     }
 
@@ -196,7 +261,21 @@ class AddGifts extends Component {
     render() {
         const { pid } = this.props;
         const { giftList } = this.state;
-        const formKeys = ['giftID', 'giftIDNumber', 'giftCount', 'effectType', 'countType', 'giftValidUntilDayCount'];
+        const currentPromotion = this.props.promotion[87];
+        const { itemID } = currentPromotion;
+        let formKeys = createKeys;
+        let formItems = this.state.formItems;
+        if (itemID) {
+            formKeys = notCreateKeys;
+            formItems = {
+                ...this.state.formItems,
+                giftName: {
+                    type: 'custom',
+                    label: '礼品名称',
+                    render: () => (<p></p>),
+                },
+            }
+        }
         return (
             <Col span={24} className={styles.conditionListBox}>
                 {
@@ -213,7 +292,7 @@ class AddGifts extends Component {
                                 key={item.id}
                                 getForm={(form) => { this.giftForms[item.id] = form }}
                                 formKeys={formKeys}
-                                formItems={this.state.formItems}
+                                formItems={formItems}
                                 formItemLayout={formItemLayout}
                                 onChange={(key, value) => this.onChangeAddGiftForm(key, value, item.id)}
                                 formData={this.state.giftFormData[item.id] || {}}
