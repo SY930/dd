@@ -52,11 +52,11 @@ export const baseFormItems = {
             </span>
         ),
         options: [
-            { label: "堂食点餐页", value: 1 },
-            { label: "外卖点餐页", value: 2 },
-            { label: "自提点餐页", value: 3 },
+            { label: "堂食点餐页", value: '1' },
+            { label: "外卖点餐页", value: '2' },
+            { label: "自提点餐页", value: '3' },
         ],
-        defaultValue: [1, 2, 3],
+        defaultValue: ['1', '2', '3'],
     },
     partInUser: {
         type: "radio",

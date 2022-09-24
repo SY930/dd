@@ -291,7 +291,7 @@ class OnlineRestaurantGiftGiving extends Component {
         const params = {
             eventInfo: {
                 eventWay: 23,
-                enterPositionList: event.enterPositionList.join(','),
+                enterPositionList: event.enterPositionList,
                 eventEndDate: event.eventEndDate,
                 eventStartDate: event.eventStartDate,
                 shopIDList: event.shopIDList,
