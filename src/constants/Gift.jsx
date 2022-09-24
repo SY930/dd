@@ -328,6 +328,7 @@ const GiftCfg = {
     { value: '99', label: '已充值' },
     { value: '103', label: '已删除' },
     { value: '3', label: '已过期' },
+    { value: '8', label: '已绑定' }, 
   ],
   WXgiftCardStatus: [ // 线上礼品卡
     { value: '', label: '全部' },
