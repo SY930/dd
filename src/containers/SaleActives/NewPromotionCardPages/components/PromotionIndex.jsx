@@ -293,7 +293,6 @@ class PromotionIndex extends Component {
             loading: true
         })
         httpCreatePromotion(requestPramas).then(flag => {
-            console.log('flag===flag', flag)
             this.setState({
                 loading: false
             })

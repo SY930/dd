@@ -269,7 +269,7 @@ class ActivityConditions extends Component {
                                         </Select>
                                     )
                                 }
-                                addonAfter={giveAmountTypeValue == 1 && '%'} />
+                                addonAfter={giveAmountTypeValue == 2 ? '' : '%'} />
                         )
                     }
                 }
@@ -319,7 +319,7 @@ class ActivityConditions extends Component {
                                         </Select>
                                     )
                                 }
-                                addonAfter={giveAmountTypeValue == 1 && '%'} />
+                                addonAfter={giveAmountTypeValue == 2 ? '' : '%'} />
                         )
                     }
                 }

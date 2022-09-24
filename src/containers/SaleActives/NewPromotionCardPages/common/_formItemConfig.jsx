@@ -92,7 +92,7 @@ export const ALL_FORM_ITEMS = {
         rules: ['required'],
         wrapperCol: { span: 12 },
         defaultValue: [moment(), moment().add(6, 'days')],
-        render: d => d()(<DateRange />),
+        render: d => d()(<DateRange type='87' />),
     },
     eventRemark: {
         type: 'textarea',

@@ -577,9 +577,11 @@ class PromotionRightMain extends Component {
     }
 }
 
-const mapStateToProps = ({ newPromotionCardPagesReducer }) => {
+const mapStateToProps = ({ newPromotionCardPagesReducer, sale_promotionDetailInfo_NEW }) => {
     return {
         promotion: newPromotionCardPagesReducer.get('promotion').toJS(),
+        isShopFoodSelectorMode: sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
+
     }
 };
 
