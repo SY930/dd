@@ -21,7 +21,6 @@ class HeaderTitle extends Component {
         const currentPromotion = all_promotion_categories.find(item => item.key == promotionKey);
         const { promotion } = this.props;
         const { mode } = promotion[this.props.promotionKey];
-        console.log(3333, mode);
         return (
             <Col className={styles.headerTitle}>
                 <h1>{currentPromotion.title}</h1>

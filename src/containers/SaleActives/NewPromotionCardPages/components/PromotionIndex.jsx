@@ -226,35 +226,36 @@ class PromotionIndex extends Component {
                 let foodScopeList = [];
                 if (activityRange) {
                     const { categoryOrDish, dishes, excludeDishes, foodCategory } = activityRange;
+                    console.log('activityRange====111', activityRange);
                     if (categoryOrDish == 0) {
                         foodCategory.forEach(item => {
                             foodScopeList.push({
-                                scopeType: 1,
+                                scopeType: '1',
+                                targetID: item.foodCategoryID,
                                 brandID: item.brandID,
-                                targetID: item.itemID,
-                                targetCode: item.foodKey,
-                                targetName: item.label,
+                                targetCode: item.foodCategoryKey,
+                                targetName: item.foodCategoryName,
                             });
                         })
                         excludeDishes.forEach(item => {
                             foodScopeList.push({
-                                brandID: item.brandID,
-                                scopeType: 4,
+                                scopeType: '4',
                                 targetID: item.itemID,
+                                brandID: item.brandID,
                                 targetCode: item.foodKey,
-                                targetName: item.label,
-                                targetUnitName: item.unit
+                                targetName: item.foodName,
+                                targetUnitName: item.unit,
                             });
                         })
                     } else if (categoryOrDish == 1) {
                         dishes.forEach(item => {
                             foodScopeList.push({
-                                scopeType: 2,
-                                brandID: item.brandID,
+                                scopeType: '2',
                                 targetID: item.itemID,
+                                brandID: item.brandID,
                                 targetCode: item.foodKey,
-                                targetName: item.label,
-                                targetUnitName: item.unit
+                                targetName: item.foodName,
+                                targetUnitName: item.unit,
                             })
                         })
                     }

@@ -139,7 +139,7 @@ class PromotionRightMain extends Component {
                 }
             });
         }
-        // 99999
+        // 99999 _TODO
         data.activityRange = {
             categoryOrDish: null,
             foodCategory: [],
@@ -171,7 +171,7 @@ class PromotionRightMain extends Component {
                 targetID,
                 brandID,
                 targetCode,
-                targetName: "001-A",
+                targetName,
                 targetUnitName
             }
         })
