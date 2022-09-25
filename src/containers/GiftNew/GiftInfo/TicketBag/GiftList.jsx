@@ -46,11 +46,11 @@ class GiftList extends Component {
     
     componentWillReceiveProps(nextProps){
         const { dataSource, total } = nextProps;
-        if(total != this.props.total){
-            if(this.props.pageType == 1){
-                this.setState({dataSource, total})
-            }
+        if(this.props.pageType == 1){
+            this.setState({dataSource, total})
         }
+        // if(total != this.props.total){
+        // }
     }
 
     componentWillUnmount(){

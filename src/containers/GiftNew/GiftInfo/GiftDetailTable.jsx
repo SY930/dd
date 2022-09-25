@@ -68,8 +68,9 @@ class GiftDetailTable extends Component {
             loading: true,
             queryParams: {
                 pageNo: 1,
-                pageSize: 20,
+                pageSize: 25,
                 action: '0',
+                giftType: '',
             },
             total: 0,
             tableHeight: '100%',
@@ -78,7 +79,7 @@ class GiftDetailTable extends Component {
         };
         this.tableRef = null;
         this.setTableRef = el => this.tableRef = el;
-        this.lockedChangeSortOrder = throttle(this.changeSortOrder, 500, {trailing: false});
+        // this.lockedChangeSortOrder = throttle(this.changeSortOrder, 500, {trailing: false});
         this.queryFrom = null;
         this.columns = COLUMNS.slice();
         this.columns.splice(2, 0, {
@@ -93,9 +94,9 @@ class GiftDetailTable extends Component {
                 const canNotSortDown = (this.state.queryParams.pageNo - 1) * this.state.queryParams.pageSize + index + 1 == this.state.total;
                 return (
                     <span>
-                        <span ><Iconlist title={'置顶'} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'top')}/></span>
-                        <span ><Iconlist title={'上移'} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'up')}/></span>
-                        <span className={styles2.upsideDown}><Iconlist title={'下移'} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'down')}/></span>
+                        <span ><Iconlist title={'置顶'} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.changeSortOrder(record, 'top')}/></span>
+                        <span ><Iconlist title={'上移'} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.changeSortOrder(record, 'up')}/></span>
+                        <span className={styles2.upsideDown}><Iconlist title={'下移'} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.changeSortOrder(record, 'down')}/></span>
                         {/* <span className={styles2.upsideDown}><Iconlist title={'置底'} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'bottom')}/></span> */}
                     </span>
                 )
@@ -281,12 +282,14 @@ class GiftDetailTable extends Component {
 
     }
 
-    changeSortOrder(record, direction) {
+    changeSortOrder = (record, direction) => {
         const params = {giftItemID: record.giftItemID, direction};
         axiosData('/coupon/couponService_updateRanking.ajax', params, {needThrow: true}, {path: undefined}, 'HTTP_SERVICE_URL_PROMOTION_NEW').then(() => {
-            if (this.tableRef &&  this.tableRef.props && this.tableRef.props.pagination && this.tableRef.props.pagination.onChange) {
-                this.tableRef.props.pagination.onChange(this.tableRef.props.pagination.current, this.tableRef.props.pagination.pageSize);
-            }
+            const { queryParams } = this.state;
+            const { FetchGiftList } = this.props;
+            FetchGiftList(queryParams).then((data = []) => {
+                this.proGiftData(data);
+            });
         }).catch(err => {
             message.warning(err || 'sorry, 排序功能故障, 请稍后再试!');
         })
