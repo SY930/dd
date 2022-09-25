@@ -118,24 +118,26 @@ class PromotionIndex extends Component {
         if (isValid) {
             try {
                 let requestPramas = {}
-                console.log('保存数据====1111', resultValues);
-                console.log('conditionConfig===2222', conditionConfig);
-                // console.log('currentPromotion', currentPromotion)
                 let eventGiftConditionList = [];
                 let eventMutexDependRuleInfos = []; //与优惠券不共享
                 conditionConfig.forEach((item, index) => {
+                    console.log('score====score', item);
                     eventGiftConditionList[index] = {};
                     let gifts = [];
                     if (item.score) {
+                        let { giveAmountType, presentValue } = item.score;
                         gifts.push({
                             presentType: 2,
-                            ...item.score
+                            ...item.score,
+                            presentValue: giveAmountType == 2 ? presentValue : (presentValue / 100).toFixed(2)
                         })
                     }
                     if (item.cardNum) {
+                        let { giveAmountType, presentValue } = item.cardNum;
                         gifts.push({
                             presentType: 5,
-                            ...item.cardNum
+                            ...item.cardNum,
+                            presentValue: giveAmountType == 2 ? presentValue : (presentValue / 100).toFixed(2)
                         })
                     }
                     if (item.gift && item.gift.length > 0) {

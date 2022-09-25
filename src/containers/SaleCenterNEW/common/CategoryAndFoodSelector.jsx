@@ -14,7 +14,8 @@ import {
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { injectIntl } from '../IntlDecor';
-import BtnFoodSelector from './BtnFoodSelector'
+import BtnFoodSelector from './BtnFoodSelector';
+import _ from "lodash";
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
@@ -67,6 +68,12 @@ class CategoryAndFoodSelector extends Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            categoryOrDish: 0,
+            dishes: [],
+            categories: [],
+            excludeDishes: [],
+        }
         if (props.dishOnly) {
             let dishesObj
             if (props.singleDish) {
@@ -106,6 +113,20 @@ class CategoryAndFoodSelector extends Component {
                     dishes: value
                 })
                 onChangeFlag(!!value.length)
+            }
+        }
+        if (_.isEqual(this.props.scopeLst, nextProps.scopeLst)) {
+            const {
+                categories,
+                categoryOrDish,
+                dishes,
+                excludeDishes,
+            } = getFoodInfoFromScopeList(nextProps.scopeLst) // 只取初始值
+            this.state = {
+                categoryOrDish,
+                dishes,
+                categories,
+                excludeDishes,
             }
         }
     }

@@ -162,14 +162,44 @@ class PromotionRightMain extends Component {
                 defaultCardType: ''
             }
         }
-        data.activityRange = {
-            categoryOrDish: null,
-            foodCategory: [],
-            excludeDishes: [],
-            dishes: [],
-        };
+        let categoryOrDish = 0;
+        let foodCategory = [];
+        let excludeDishes = [];
+        let dishes = [];
+        console.log('foodScopeList===foodScopeList', foodScopeList);
         let newfoodScopeList = foodScopeList.map(item => {
             const { scopeType, targetID, brandID, targetCode, targetName, targetUnitName } = item;
+            if (scopeType == 2) {
+                categoryOrDish = 1;
+                dishes.push({
+                    scopeType: '2',
+                    itemID: item.targetID,
+                    brandID: item.brandID,
+                    foodKey: item.targetCode,
+                    foodName: item.targetName,
+                    unit: item.targetUnitName,
+                })
+            } else {
+                categoryOrDish = 0;
+                if (scopeType == 1) {
+                    foodCategory.push({
+                        scopeType: '1',
+                        foodCategoryID: item.targetID,
+                        brandID: item.brandID,
+                        foodCategoryKey: item.targetCode,
+                        foodCategoryName: item.targetName,
+                    })
+                } else if (scopeType == 4) {
+                    excludeDishes.push({
+                        scopeType: '4',
+                        itemID: item.targetID,
+                        brandID: item.brandID,
+                        foodKey: item.targetCode,
+                        foodName: item.targetName,
+                        unit: item.targetUnitName,
+                    })
+                }
+            }
             return {
                 scopeType,
                 targetID,
@@ -179,13 +209,19 @@ class PromotionRightMain extends Component {
                 targetUnitName
             }
         })
+        data.activityRange = {
+            categoryOrDish,
+            foodCategory,
+            excludeDishes,
+            dishes,
+        };
         this.setState({
             formData: data,
             eventGiftConditionList,
             eventMutexDependRuleInfos,
             activityThirdFormData: data,
-            foodScopeList: newfoodScopeList
-        })
+            foodScopeList: newfoodScopeList,
+        });
     }
 
     renderShopSelector = (formItems, key) => {
@@ -391,38 +427,38 @@ class PromotionRightMain extends Component {
         } else if (key == 'activityRange') {
             console.log('指定菜品和商品的变化----', value);
             const scopeList = [];
-            // value.foodCategory.forEach((item) => {
-            //     scopeList.push({
-            //         scopeType: '1',
-            //         targetID: item.foodCategoryID,
-            //         brandID: item.brandID,
-            //         targetCode: item.foodCategoryKey,
-            //         targetName: item.foodCategoryName,
-            //     });
-            // });
-            // value.excludeDishes.forEach((item) => {
-            //     scopeList.push({
-            //         scopeType: '4',
-            //         targetID: item.itemID,
-            //         brandID: item.brandID,
-            //         targetCode: item.foodKey,
-            //         targetName: item.foodName,
-            //         targetUnitName: item.unit,
-            //     });
-            // });
-            // value.dishes.forEach((item) => {
-            //     scopeList.push({
-            //         scopeType: '2',
-            //         targetID: item.itemID,
-            //         brandID: item.brandID,
-            //         targetCode: item.foodKey,
-            //         targetName: item.foodName,
-            //         targetUnitName: item.unit,
-            //     });
-            // });
-            // this.setState({
-            //     foodScopeList: scopeList,
-            // })
+            value.foodCategory.forEach((item) => {
+                scopeList.push({
+                    scopeType: '1',
+                    targetID: item.foodCategoryID,
+                    brandID: item.brandID,
+                    targetCode: item.foodCategoryKey,
+                    targetName: item.foodCategoryName,
+                });
+            });
+            value.excludeDishes.forEach((item) => {
+                scopeList.push({
+                    scopeType: '4',
+                    targetID: item.itemID,
+                    brandID: item.brandID,
+                    targetCode: item.foodKey,
+                    targetName: item.foodName,
+                    targetUnitName: item.unit,
+                });
+            });
+            value.dishes.forEach((item) => {
+                scopeList.push({
+                    scopeType: '2',
+                    targetID: item.itemID,
+                    brandID: item.brandID,
+                    targetCode: item.foodKey,
+                    targetName: item.foodName,
+                    targetUnitName: item.unit,
+                });
+            });
+            this.setState({
+                foodScopeList: scopeList,
+            })
         }
     }
 
@@ -462,7 +498,7 @@ class PromotionRightMain extends Component {
         const { resetFields } = form;
         if (key == 'joinCount') {
             resetFields(['partInTimes2', 'partInTimes3', 'countCycleDays']);
-        } else if (key == 'cardScopeType') {
+        } else if (key == 'cardScopeType') {// 会员范围
             resetFields(['defaultCardType']);
             const { cardLevelRangeType, cardLevelIDList } = value;
             if (cardLevelRangeType == '0') {

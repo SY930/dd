@@ -84,8 +84,20 @@ class ActivityConditions extends Component {
                 };
                 // 积分/卡值
                 let scoreList = gifts.filter(gift => gift.presentType == 2);
+                scoreList = scoreList.map(item => {
+                    if (item.giveAmountType == 1) {
+                        item.presentValue = item.presentValue * 100
+                    }
+                    return item;
+                })
                 scoreformDatas[id + 'score'] = scoreList && scoreList[0];
                 let cardNumList = gifts.filter(gift => gift.presentType == 5);
+                cardNumList = cardNumList.map(item => {
+                    if (item.giveAmountType == 1) {
+                        item.presentValue = item.presentValue * 100
+                    }
+                    return item;
+                })
                 cardNumformDatas[id + 'cardNum'] = cardNumList && cardNumList[0];
             });
             console.log('最终的-----conditionList', conditionList);
