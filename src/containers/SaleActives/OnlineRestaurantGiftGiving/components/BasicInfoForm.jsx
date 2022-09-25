@@ -291,7 +291,7 @@ class BasicInfoForm extends Component {
         const { formData, getForm } = this.props;
         const { formKeys } = this.state;
         return (
-            <div style={{ maxWidth: 800, marginBottom: 16 }}>
+            <div style={{ width: 800, marginBottom: 16 }}>
                 <BaseForm
                     getForm={getForm}
                     formItems={this.resetFormItems()}
