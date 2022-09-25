@@ -87,7 +87,8 @@ async function httpCreatePromotion(data) {
     const { groupID } = getAccountInfo();
     data.event.groupID = groupID;
     Object.assign(data, {
-        groupID
+        groupID,
+        isActive: data.event.itemID ? 1 : 0
     })
     const method = data.event.itemID ? 'specialPromotion/updateEvent.ajax' : 'specialPromotion/addEvent.ajax';
     const params = {

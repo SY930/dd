@@ -216,6 +216,9 @@ class PromotionRightMain extends Component {
             excludeDishes,
             dishes,
         };
+        if (Array.isArray(newfoodScopeList) && newfoodScopeList.length > 0) {
+            this.showActivityRange(true);
+        }
         this.setState({
             formData: data,
             eventGiftConditionList,
@@ -322,6 +325,7 @@ class PromotionRightMain extends Component {
 
     showActivityRange = (flag) => {
         let allKeys = this.state.activityThirdFormKeys;
+        console.log('allKeys--1111', flag, allKeys);
         if (allKeys[0] && allKeys[0].keys.length > 0) {
             let keys = allKeys[0] && allKeys[0].keys || [];
             let index = keys.indexOf('hasMutexDepend');
@@ -330,9 +334,12 @@ class PromotionRightMain extends Component {
             } else {
                 keys = keys.filter(key => key != 'activityRange');
             }
+            console.log('keys--22222', keys);
             this.state.activityThirdFormKeys[0].keys = keys;
             this.setState({
                 activityThirdFormKeys: this.state.activityThirdFormKeys
+            }, () => {
+                console.log(9999999, this.state.activityThirdFormKeys);
             });
         }
     }

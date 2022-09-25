@@ -131,7 +131,6 @@ class AddGifts extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('nextProps.treeDat====1=1=1=1', nextProps);
         let formItems = this.state.formItems;
         const { giftCount, giftID } = formItems;
         this.setState({

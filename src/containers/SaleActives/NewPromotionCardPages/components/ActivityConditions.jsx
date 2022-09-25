@@ -372,6 +372,32 @@ class ActivityConditions extends Component {
             singleConditionItem.stageType = value;
             this.setState({
                 conditionList: [singleConditionItem]
+            }, () => {
+                let ids = this.state.conditionList.map(item => item.id);
+                let newAllForms = {};
+                Object.keys(this.conditionForms).forEach(key => {
+                    if (ids.includes(+key)) {
+                        newAllForms[key] = this.conditionForms[key];
+                    }
+                })
+                let stageTypes = [];
+                Object.keys(newAllForms).forEach(key => {
+                    let form = newAllForms[key];
+                    let { getFieldsValue } = form;
+                    let { stageType } = getFieldsValue();
+                    stageTypes.push(+stageType)
+                })
+                if (stageTypes.includes(3) || stageTypes.includes(4)) {
+                    this.props.showActivityRange(true);
+                } else {
+                    this.props.showActivityRange(false);
+                }
+                // console.log('stageTypes===22222', stageTypes);
+                // if (value == 3 || value == 4) {
+                //     this.props.showActivityRange(true);
+                // } else {
+                //     this.props.showActivityRange(false);
+                // }
             });
             Object.keys(this.conditionForms).forEach(conditionFormId => {
                 if (conditionFormId != singleConditionItem.id) {
@@ -391,11 +417,6 @@ class ActivityConditions extends Component {
                 this.setState({
                     isShowConditionBtn: true
                 })
-            }
-            if (value == 3 || value == 4) {
-                this.props.showActivityRange(true);
-            } else {
-                this.props.showActivityRange(false);
             }
         }
     }
