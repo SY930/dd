@@ -57,6 +57,7 @@ class OnlineRestaurantGiftGiving extends Component {
         let formData = {
             ...data,
             enterPositionList: String(data.enterPositionList).split(","),
+            defaultCardType: data.defaultCardType != 0 ? data.defaultCardType : undefined,
             eventRange:
                 data.eventEndDate && data.eventStartDate
                     ? [
