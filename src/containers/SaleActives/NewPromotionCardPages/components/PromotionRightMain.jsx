@@ -100,7 +100,7 @@ class PromotionRightMain extends Component {
 
     sendFormData = (res) => {
         console.log('详情数据=====', res);
-        const { data = {}, eventGiftConditionList = [], eventMutexDependRuleInfos = [] } = res;
+        let { data = {}, eventGiftConditionList = [], eventMutexDependRuleInfos = [] } = res;
         const {
             orderTypeList,
             eventStartDate,
@@ -110,7 +110,8 @@ class PromotionRightMain extends Component {
             brandList,
             foodScopeList = [],
             cardLevelIDList,
-            cardLevelRangeType
+            cardLevelRangeType,
+
         } = data;
         if (orderTypeList) {
             data.orderTypeList = orderTypeList.split(',')
@@ -219,9 +220,22 @@ class PromotionRightMain extends Component {
         if (Array.isArray(newfoodScopeList) && newfoodScopeList.length > 0) {
             this.showActivityRange(true);
         }
+
+        let copyEventGiftConditionList = eventGiftConditionList.map(item => {
+            if (item.gift && Array.isArray(item.gift) && item.gift.length > 0) {
+                item.gift = item.gift.map(it => {
+                    // _TODO giftStartTime giftEndTime
+                    if (it.effectType == 2) {
+                        it.giftRangeTime = ['20220202235959', '20220808000000'];
+                    }
+                    return it;
+                })
+            }
+            return item;
+        })
         this.setState({
             formData: data,
-            eventGiftConditionList,
+            eventGiftConditionList: copyEventGiftConditionList,
             eventMutexDependRuleInfos,
             activityThirdFormData: data,
             foodScopeList: newfoodScopeList,
@@ -325,7 +339,6 @@ class PromotionRightMain extends Component {
 
     showActivityRange = (flag) => {
         let allKeys = this.state.activityThirdFormKeys;
-        console.log('allKeys--1111', flag, allKeys);
         if (allKeys[0] && allKeys[0].keys.length > 0) {
             let keys = allKeys[0] && allKeys[0].keys || [];
             let index = keys.indexOf('hasMutexDepend');
@@ -334,12 +347,9 @@ class PromotionRightMain extends Component {
             } else {
                 keys = keys.filter(key => key != 'activityRange');
             }
-            console.log('keys--22222', keys);
             this.state.activityThirdFormKeys[0].keys = keys;
             this.setState({
                 activityThirdFormKeys: this.state.activityThirdFormKeys
-            }, () => {
-                console.log(9999999, this.state.activityThirdFormKeys);
             });
         }
     }

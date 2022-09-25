@@ -14,6 +14,7 @@ import {
 
 const DATE_FORMAT = 'YYYYMMDD';
 const END_DATE_FORMAT = 'YYYYMMDD';
+
 const formSteps = {
     87: ['基本信息', '活动规则'],
     88: ['基本信息'],
@@ -41,6 +42,20 @@ class PromotionIndex extends Component {
     onClose = () => {
         closePage();
         jumpPage({ pageID: '1000076003' });
+    }
+
+    findGiftNameById = (treeData = [], id) => {
+        let giftName = '';
+        treeData.forEach(item => {
+            if (Array.isArray(item.children) && item.children.length > 0) {
+                item.children.forEach(child => {
+                    if (child.value == id) {
+                        giftName = child.label
+                    }
+                })
+            }
+        });
+        return giftName;
     }
 
     onSave = () => {
@@ -173,12 +188,17 @@ class PromotionIndex extends Component {
                                 } else {
                                     effectType = 3
                                 }
-                            } else if (item.effectType == 2) {
-                                effectType = 2
+                            } else if (item.effectType == 2) {// 固定有效期
+                                effectType = 2;
+                                if (item.giftRangeTime.length > 0) {
+                                    item.giftEndTime = item.giftRangeTime[0].format('YYYYMMDD000000');
+                                    item.giftEndTime = item.giftRangeTime[1].format('YYYYMMDD235959');
+                                }
                             }
                             gifts.push({
                                 ...item,
-                                effectType
+                                effectType,
+                                giftName: this.findGiftNameById(state.treeData, item.giftID)
                             });
                             return item;
                         })

@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import BaseForm from '../../../../components/common/BaseForm';
 import { ALL_FORM_ITEMS } from '../common/_formItemConfig';
 import styles from './addGifts.less';
+import moment from "moment";
 
 const CheckboxGroup = Checkbox.Group;
 const FormItem = Form.Item;
@@ -44,15 +45,18 @@ class AddGifts extends Component {
             }
         }, () => {
             let { giftList = [], stageType } = this.props;
+            console.log('giftList===2222', giftList);
             let giftFormData = {};
             giftList.forEach(item => {
-                let effectType = 1;
+                let effectType = 1;;
                 let countType = 0;
+                let giftRangeTime = [];
                 if (item.effectType == 1) {
                     effectType = 1;
                     countType = 0;
-                } else if (item.effectType == 2) {
+                } else if (item.effectType == 2) { // 固定有效期
                     effectType = 2;
+                    item.giftRangeTime = [moment('20200202235959').format('YYYY-MM-DD'), moment('20220202000000').format('YYYY-MM-DD')];
                 } else if (item.effectType == 3) {
                     effectType = 1;
                     countType = 1;
@@ -170,6 +174,7 @@ class AddGifts extends Component {
     }
 
     onChangeAddGiftForm = (key, value, id) => {
+        console.log(555555, key, value);
         const { setFieldsValue, resetFields } = this.giftForms[id];
         if (key == 'giftID') {
             setFieldsValue({

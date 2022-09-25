@@ -1,4 +1,4 @@
-import { Row, Col, Form, Icon, Input, Radio, Select, Tooltip } from 'antd';
+import { Row, Col, Form, Icon, Input, Radio, Select, Tooltip, DatePicker } from 'antd';
 import SelectBrands from '../../../GiftNew/components/SelectBrands';
 import DateRange from '../../../PromotionV3/Camp/DateRange';
 import styles from './style.less';
@@ -6,6 +6,9 @@ import ShopSelector from '../../../../components/ShopSelector/ShopSelector';
 import CategoryAndFoodSelector from 'containers/SaleCenterNEW/common/CategoryAndFoodSelector';
 import moment from 'moment';
 
+const DATE_FORMAT = 'YYYYMMDD000000';
+const END_DATE_FORMAT = 'YYYYMMDD235959';
+const RangePicker = DatePicker.RangePicker;
 const Option = Select.Option
 
 export const SALE_CENTER_ACTIVITY_SUITSENCE_LIST = [
@@ -242,78 +245,125 @@ export const ALL_FORM_ITEMS = {
         render: decorator => decorator({})(),
     },
     effectType: {
-        type: 'radio',
-        label: '生效方式',
-        defaultValue: 1,
-        options: [
-            { label: '相对有效期', value: 1 },
-            { label: '固定有效期', value: 2 },
-        ],
-    },
-    countType: { // 接口定义有坑，选择相对有效期按小时的时候，对应的是effectType值为3
         type: 'custom',
         label: '',
-        defaultValue: 0,
-        options: [
-            { label: '按小时', value: 0 },
-            { label: '按天', value: 1 },
-        ],
         render: (decorator, form) => {
-            const { getFieldsValue, setFieldsValue } = form;
-            const { countType } = getFieldsValue();
-            const options = countType == 0 ? timeOpts : dayOpts;
-            let defaultValue = countType == 0 ? 0 : 1;
+            const { getFieldsValue } = form;
+            const { effectType: effectTypeValue } = getFieldsValue();
+            console.log(99999, getFieldsValue())
             return (
                 <Row>
                     <Col span={24}>
-                        <FormItem style={{ marginBottom: '0', marginTop: '-16px', marginLeft: '-5px', display: 'flex' }} label='相对有效期'>
+                        <FormItem
+                            label='生效方式'
+                            style={{ marginBottom: '-6px', marginTop: '-5px', marginLeft: '9px', display: 'flex' }}>
                             {decorator({
-                                key: 'countType',
-                                defaultValue: 0
+                                key: 'effectType',
+                                defaultValue: 1,
                             })(
                                 <Radio.Group>
-                                    <Radio value={0}>按小时</Radio>
-                                    <Radio value={1}>按天</Radio>
+                                    <Radio value={1}>相对有效期</Radio>
+                                    <Radio value={2}>固定有效期</Radio>
                                 </Radio.Group>
                             )}
                         </FormItem>
                     </Col>
-                    <Col span={24}>
-                        <FormItem style={{ marginBottom: '0', marginLeft: '7px', display: 'flex', marginRight: '-118px' }} label='生效时间'>
-                            {decorator({
-                                key: 'giftEffectTimeHours',
-                                defaultValue: defaultValue
-                            })(
-                                <Select style={{ width: '330px' }}>
-                                    {
-                                        options.map(item => (
-                                            <Option key={item.value} value={item.value}>{item.label}</Option>
-                                        ))
-                                    }
-                                </Select>
-                            )}
+                    <Col>
+                        <FormItem style={{ marginLeft: '80px' }}>
+                            {
+                                effectTypeValue == 2 && decorator({
+                                    key: 'giftRangeTime',
+                                })(
+                                    <RangePicker format="YYYY-MM-DD" placeholder={['开始日期', '结束日期']} />
+                                )
+                            }
                         </FormItem>
                     </Col>
                 </Row>
             )
         }
     },
+    countType: { // 接口定义有坑，选择相对有效期按小时的时候，对应的是effectType值为3
+        type: 'custom',
+        label: '',
+        defaultValue: 0,
+        render: (decorator, form) => {
+            const { getFieldsValue } = form;
+            const { countType, effectType } = getFieldsValue();
+            const options = countType == 0 ? timeOpts : dayOpts;
+            let defaultValue = countType == 0 ? 0 : 1;
+            return (
+                <Row>
+                    <Col span={24}>
+                        {
+                            effectType == 1 && <FormItem style={{ marginBottom: '0', marginTop: '-16px', marginLeft: '-2px', display: 'flex' }} label='相对有效期'>
+                                {decorator({
+                                    key: 'countType',
+                                    defaultValue: 0
+                                })(
+                                    <Radio.Group>
+                                        <Radio value={0}>按小时</Radio>
+                                        <Radio value={1}>按天</Radio>
+                                    </Radio.Group>
+                                )}
+                            </FormItem>
+                        }
+                    </Col>
+                    <Col span={24}>
+                        {
+                            effectType == 1 && <FormItem style={{ marginBottom: '0', marginLeft: '7px', display: 'flex', marginRight: '-118px', marginTop: '-7px' }} label='生效时间'>
+                                {decorator({
+                                    key: 'giftEffectTimeHours',
+                                    defaultValue: defaultValue
+                                })(
+                                    <Select style={{ width: '330px' }}>
+                                        {
+                                            options.map(item => (
+                                                <Option key={item.value} value={item.value}>{item.label}</Option>
+                                            ))
+                                        }
+                                    </Select>
+                                )}
+                            </FormItem>
+                        }
+                    </Col>
+                </Row>
+            )
+        }
+    },
     giftValidUntilDayCount: {
-        type: 'text',
-        label: '有效天数',
-        surfix: '天',
-        rules: [{
-            required: true,
-            validator: (rule, value, callback) => {
-                if (!/^\d+$/.test(value)) {
-                    return callback('请输入数字');
-                }
-                if (+value < 1) {
-                    return callback('请输入大于0的数字');
-                }
-                return callback();
-            },
-        }],
+        type: 'custom',
+        label: '',
+        render: (decorator, form) => {
+            const { getFieldsValue } = form;
+            const { effectType } = getFieldsValue();
+            return (
+                <Col>
+                    {
+                        effectType == 1 && <FormItem label='有效天数' style={{ display: 'flex', marginBottom: '-5px', marginTop: '-5px' }}>
+                            {
+                                decorator({
+                                    key: 'giftValidUntilDayCount',
+                                    rules: [
+                                        { pattern: /^\d+$/, message: '请输入数字' },
+                                        {
+                                            validator: (rule, value, cb) => {
+                                                if (+value < 1) cb(rule.message);
+                                                cb();
+                                            },
+                                            message: '请输入大于0的数字',
+                                        },
+                                    ]
+                                })(
+                                    <Input addonAfter='天' />
+                                )
+
+                            }
+                        </FormItem>
+                    }
+                </Col>
+            )
+        }
     },
     rangeDate: {
         type: 'datepickerRange',
