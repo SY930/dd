@@ -806,7 +806,7 @@ class ManyFace extends Component {
                                 </div>
                                 <div>
                                 <span className={styles.computeRule}>
-                                    计算规则
+                                    执行规则
                                 </span>
                                 <RadioGroup
                                     name="radiogroup"

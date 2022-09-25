@@ -56,7 +56,8 @@ class OnlineRestaurantGiftGiving extends Component {
         let formData = {
             ...data,
             enterPositionList: String(data.enterPositionList).split(","),
-            defaultCardType: data.defaultCardType != 0 ? data.defaultCardType : undefined,
+            defaultCardType:
+                data.defaultCardType != 0 ? data.defaultCardType : undefined,
             eventRange:
                 data.eventEndDate && data.eventStartDate
                     ? [
@@ -112,8 +113,6 @@ class OnlineRestaurantGiftGiving extends Component {
             // 根据["w1", "w3", "w5"]获取第一个字符
             [cycleType] = data.validCycle[0];
         }
-        formData.validCycle = data.validCycle;
-        formData.cycleType = cycleType;
         let advMore = false;
         if (
             timeList.length ||
@@ -123,13 +122,16 @@ class OnlineRestaurantGiftGiving extends Component {
             advMore = true;
         }
         formData.advMore = advMore;
-        let couponType = '0'
+        formData.validCycle = data.validCycle;
+        formData.cycleType = cycleType;
+        let couponType = "0";
         if (gifts && gifts.length) {
             let { presentType } = gifts[0];
-            presentType == 7 ? (couponType = "1") : (couponType = '0');
+            presentType == 7 ? (couponType = "1") : (couponType = "0");
         }
         formData.couponType = couponType;
-        formData.giftCount = couponType == "1" && gifts.length ? gifts[0].giftCount : '';
+        formData.giftCount =
+            couponType == "1" && gifts.length ? gifts[0].giftCount : "";
         if (couponType == 1) {
             this.setState({
                 slectedWxCouponList: gifts,
@@ -180,7 +182,9 @@ class OnlineRestaurantGiftGiving extends Component {
             cardLevelIDList: values.cardLevelRangeType
                 ? values.cardLevelRangeType == 2
                     ? values.cardTypeIDList
-                    : values.cardLevelIDList.map((item) => item.cardLevelID)
+                    : values.cardLevelIDList.map(
+                          (item) => item.cardLevelID || item
+                      )
                 : [],
             shopIDList: values.shopIDList,
             partInTimes:
@@ -230,7 +234,11 @@ class OnlineRestaurantGiftGiving extends Component {
                 let v = {
                     ...item,
                     effectType:
-                        item.effectType == 2 ? 2 : item.countType == "0" ? 1 : 3,
+                        item.effectType == 2
+                            ? 2
+                            : item.countType == "0"
+                            ? 1
+                            : 3,
                     effectTime:
                         item.effectType == 2 &&
                         item.rangeDate &&
@@ -429,12 +437,8 @@ class OnlineRestaurantGiftGiving extends Component {
     };
 
     render() {
-        const {
-            basicForm,
-            ruleForm,
-            formData,
-            slectedWxCouponList,
-        } = this.state;
+        const { basicForm, ruleForm, formData, slectedWxCouponList } =
+            this.state;
         const { accountInfo, user, cardTypeLst, loading } = this.props;
         const itemProps = {
             accountInfo,
@@ -484,11 +488,11 @@ class OnlineRestaurantGiftGiving extends Component {
                             </div>
                             <div>
                                 <span className={styles.computeRule}>
-                                    计算规则
+                                    执行规则
                                 </span>
                                 <Radio.Group
                                     name="radiogroup"
-                                    defaultValue={this.state.paramsValue}
+                                    value={this.state.paramsValue}
                                     onChange={({ target }) => {
                                         this.setState({
                                             paramsValue: target.value,
