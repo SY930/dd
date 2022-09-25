@@ -308,7 +308,7 @@ class PromotionIndex extends Component {
                     requestPramas.event.itemID = currentPromotion.itemID;
                 }
                 console.log('请求参数', requestPramas);
-                this.createPromotion(requestPramas);
+                // this.createPromotion(requestPramas);
             } catch (error) {
                 console.error(error);
             }

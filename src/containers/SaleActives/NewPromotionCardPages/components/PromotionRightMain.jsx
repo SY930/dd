@@ -41,6 +41,8 @@ class PromotionRightMain extends Component {
             groupCardTypeList: [], // 新用户注册卡类
             clonedGroupCardTypeList: [],
             foodScopeList: [], // 菜品
+            cardLevelRangeType: '', // 会员范围
+            cardLevelIDList: []// 适用卡等级
         }
         this.allForms = {};
         this.activityConditionsRef = '';
@@ -166,7 +168,6 @@ class PromotionRightMain extends Component {
         let foodCategory = [];
         let excludeDishes = [];
         let dishes = [];
-        console.log('foodScopeList===foodScopeList', foodScopeList);
         let newfoodScopeList = foodScopeList.map(item => {
             const { scopeType, targetID, brandID, targetCode, targetName, targetUnitName } = item;
             if (scopeType == 2) {
@@ -386,6 +387,8 @@ class PromotionRightMain extends Component {
                             <CardLevel
                                 catOrCard={'card'}
                                 form={form}
+                                cardLevelRangeType={this.state.cardLevelRangeType}
+                                cardLevelIDList={this.state.cardLevelIDList}
                             />
                         )}
                     </Col>
@@ -495,17 +498,33 @@ class PromotionRightMain extends Component {
     }
 
     onChangeBaseForm = (key, value, form) => {
-        const { resetFields } = form;
+        const { resetFields, setFieldsValue, getFieldsValue } = form;
         if (key == 'joinCount') {
             resetFields(['partInTimes2', 'partInTimes3', 'countCycleDays']);
         } else if (key == 'cardScopeType') {// 会员范围
-            resetFields(['defaultCardType']);
+            const { defaultCardType } = getFieldsValue();
+            setFieldsValue({
+                defaultCardType: defaultCardType || '',
+                cardScopeType: {
+                    defaultCardType: '',
+                    cardLevelRangeType: value.cardLevelRangeType,
+                    cardLevelIDList: value.cardLevelIDList
+                }
+            })
             const { cardLevelRangeType, cardLevelIDList } = value;
             if (cardLevelRangeType == '0') {
                 this.setState({
+                    cardLevelRangeType: '0',
                     groupCardTypeList: this.state.clonedGroupCardTypeList
                 })
             } else {
+                setFieldsValue({
+                    defaultCardType: defaultCardType || '',
+                })
+                this.setState({
+                    cardLevelRangeType: '2',
+                    cardLevelIDList: value.cardLevelIDList
+                })
                 if (cardLevelIDList.length == 0) {
                     this.setState({
                         groupCardTypeList: []
@@ -517,6 +536,18 @@ class PromotionRightMain extends Component {
                     })
                 }
             }
+        } else if (key == 'brandList') {
+            setFieldsValue({
+                shopIDList: []
+            })
+        } else if (key == 'shopIDList') {
+            setFieldsValue({
+                shopIDList: value
+            })
+        } else if (key == 'defaultCardType') {
+            setFieldsValue({
+                defaultCardType: value
+            })
         }
     }
 
@@ -617,7 +648,6 @@ const mapStateToProps = ({ newPromotionCardPagesReducer, sale_promotionDetailInf
     return {
         promotion: newPromotionCardPagesReducer.get('promotion').toJS(),
         isShopFoodSelectorMode: sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
-
     }
 };
 

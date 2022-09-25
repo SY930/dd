@@ -25,7 +25,7 @@ import { fetchSpecialCardLevel } from '../../../redux/actions/saleCenterNEW/mySp
 import ExcludeCardTable from './ExcludeCardTable';
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
-// import _ from 'lodash';
+import _ from 'lodash';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -105,6 +105,15 @@ class CardLevel extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        if (!_.isEqual(this.props.cardLevelRangeType, nextProps.cardLevelRangeType)
+            || !_.isEqual(this.props.cardLevelIDList, nextProps.cardLevelIDList)) {
+            console.log('nextProps==nextProps', nextProps)
+            this.setState({
+                cardLevelRangeType: nextProps.cardLevelRangeType,
+                cardLevelIDList: nextProps.cardLevelIDList,
+            })
+            return;
+        }
         const thisEventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
         const nextEventInfo = nextProps.specialPromotion.get('$eventInfo').toJS();
         // 获取会员等级信息
@@ -147,7 +156,7 @@ class CardLevel extends React.Component {
             } else {
                 // false 无/局部 占用
                 // 生日赠送  时间区间内  占用卡情况
-                if(this.props.type == '51'){
+                if (this.props.type == '51') {
                     excludeEvent = excludeEvent.filter(item => {
                         // 判断时间区间是否重合
                         return !(item.eventStartDate > nextEventInfo.eventEndDate || item.eventEndDate < nextEventInfo.eventStartDate) || item.eventStartDate == '20000101' || item.eventEndDate == '29991231'
@@ -182,7 +191,7 @@ class CardLevel extends React.Component {
                 this.setState({ allCheckDisabel: false })
             }
             // 有启用的开卡赠送活动的时候，会员范围只能选择会员卡类
-            if(this.props.type == '52' && nextProps.excludeCardTypeShops && nextProps.excludeCardTypeShops.length) {
+            if (this.props.type == '52' && nextProps.excludeCardTypeShops && nextProps.excludeCardTypeShops.length) {
                 fun()
             }
         }
@@ -258,13 +267,13 @@ class CardLevel extends React.Component {
         const { getFieldDecorator } = this.props.form;
         const { cardInfo = [], defaultCardType } = this.state;
         let getExcludeCardLevelIds = []
-        if(this.props.type == '52') {
-          getExcludeCardLevelIds = this.props.getExcludeCardLevelIds
-        }else {
-          getExcludeCardLevelIds = this.state.getExcludeCardLevelIds
+        if (this.props.type == '52') {
+            getExcludeCardLevelIds = this.props.getExcludeCardLevelIds
+        } else {
+            getExcludeCardLevelIds = this.state.getExcludeCardLevelIds
         }
         const {
-            ifJumpOpenCard = false,  
+            ifJumpOpenCard = false,
         } = this.props
         const treeData = [];
         const eventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
@@ -301,8 +310,8 @@ class CardLevel extends React.Component {
             cardInfo.map((cardType, index) => {
                 // 在生日赠送活动中（51）getExcludeCardLevelIds 既有卡类ID又有卡等级ID
                 if (!getExcludeCardLevelIds.includes(cardType.cardTypeID) &&
-                    cardType.cardTypeLevelList.map(({cardLevelID}) => cardLevelID)
-                    .every(id => !getExcludeCardLevelIds.includes(id))
+                    cardType.cardTypeLevelList.map(({ cardLevelID }) => cardLevelID)
+                        .every(id => !getExcludeCardLevelIds.includes(id))
                 ) {
                     treeData.push({
                         label: cardType.cardTypeName,
@@ -318,7 +327,7 @@ class CardLevel extends React.Component {
                     this.props.type != '61' ?
                         <FormItem label={this.props.label || `${this.props.intl.formatMessage(STRING_SPE.d31eiebii4b4112)}`} className={styles.FormItemStyle} labelCol={{ span: 4 }} wrapperCol={{ span: 17 }}>
                             <RadioGroup onChange={this.handleRadioChange} value={`${this.state.cardLevelRangeType}`} disabled={ifJumpOpenCard}>
-                                <Radio key={'0'} value={'0'} disabled={this.state.allCheckDisabel}>{this.props.cusAllLabel ||  `${this.props.intl.formatMessage(STRING_SPE.d1kgd7kahd0869)}`}</Radio>
+                                <Radio key={'0'} value={'0'} disabled={this.state.allCheckDisabel}>{this.props.cusAllLabel || `${this.props.intl.formatMessage(STRING_SPE.d1kgd7kahd0869)}`}</Radio>
                                 <Radio key={'2'} value={'2'}>{this.props.catOrCard == 'card' ? `${this.props.intl.formatMessage(STRING_SPE.d34id95hnj8241)}` : (this.props.cusPartialLabel || `${this.props.intl.formatMessage(STRING_SPE.d170093144c11061)}`)}</Radio>
                             </RadioGroup>
                         </FormItem> : null

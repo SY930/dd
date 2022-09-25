@@ -183,7 +183,6 @@ class AddGifts extends Component {
     }
 
     renderGiftID = (decorator, form) => {
-        console.log('请选择礼品名称', this.props.treeData);
         return decorator()(<TreeSelect
             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
             treeData={this.props.treeData}
@@ -221,7 +220,6 @@ class AddGifts extends Component {
                                 getForm={(form) => { this.giftForms[item.id] = form }}
                                 formKeys={formKeys}
                                 formItems={formItems}
-                                formItems={this.state.formItems}
                                 formItemLayout={formItemLayout}
                                 onChange={(key, value) => this.onChangeAddGiftForm(key, value, item.id)}
                                 formData={this.state.giftFormData[item.id] || {}}
