@@ -24,7 +24,6 @@ class OnlineRestaurantGiftGiving extends Component {
             paramsValue: "",
             viewRuleVisible: false,
             slectedWxCouponList: [], //三方微信券,
-            eventRange: {},
         };
     }
     componentDidMount() {
@@ -181,7 +180,7 @@ class OnlineRestaurantGiftGiving extends Component {
             cardLevelIDList: values.cardLevelRangeType
                 ? values.cardLevelRangeType == 2
                     ? values.cardTypeIDList
-                    : values.cardLevelIDList
+                    : values.cardLevelIDList.map((item) => item.cardLevelID)
                 : [],
             shopIDList: values.shopIDList,
             partInTimes:
@@ -296,7 +295,7 @@ class OnlineRestaurantGiftGiving extends Component {
                 eventEndDate: event.eventEndDate,
                 eventStartDate: event.eventStartDate,
                 shopIDList: event.shopIDList,
-                timeIntervalList: this.formatTimeList(timeList),
+                timeIntervalList: timeList,
                 validCycleList: event.validCycle,
                 excludedDateList: event.excludedDate,
                 groupID: accountInfo.groupID,
@@ -435,7 +434,6 @@ class OnlineRestaurantGiftGiving extends Component {
             ruleForm,
             formData,
             slectedWxCouponList,
-            eventRange,
         } = this.state;
         const { accountInfo, user, cardTypeLst, loading } = this.props;
         const itemProps = {
@@ -449,7 +447,6 @@ class OnlineRestaurantGiftGiving extends Component {
                     <div className={styles.logoGroupHeader}>基本信息</div>
                     <BasicInfoForm
                         basicForm={basicForm}
-                        eventRange={eventRange}
                         getForm={(form) => this.setState({ basicForm: form })}
                         formData={formData}
                         {...itemProps}
@@ -458,9 +455,6 @@ class OnlineRestaurantGiftGiving extends Component {
                     <UsageRuleForm
                         ruleForm={ruleForm}
                         basicForm={basicForm}
-                        changeEventRange={(e) =>
-                            this.setState({ eventRange: e })
-                        }
                         getGiftForm={(form) =>
                             this.setState({ giftsForm: form })
                         }

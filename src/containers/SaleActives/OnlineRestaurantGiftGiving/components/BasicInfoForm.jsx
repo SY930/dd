@@ -1,16 +1,13 @@
 import React, { PureComponent as Component } from "react";
 import moment from "moment";
+import { uniq } from "lodash";
 import BaseForm from "components/common/BaseForm";
 import { Select, message, Form } from "antd";
 import ShopSelector from "components/ShopSelector";
 import BaseHualalaModal from "../../../SaleCenterNEW/common/BaseHualalaModal";
 import { isFilterShopType } from "../../../../helpers/util";
 import { baseFormItems, formItemLayout, baseFormKeys } from "../common";
-import {
-    fetchSpecialCardLevel,
-    getExcludeCardLevelIds,
-    getEventExcludeCardTypes,
-} from "../AxiosFactory";
+import { fetchSpecialCardLevel, getListCardTypeShop } from "../AxiosFactory";
 
 class BasicInfoForm extends Component {
     constructor(props) {
@@ -19,8 +16,9 @@ class BasicInfoForm extends Component {
             formKeys: baseFormKeys,
             cardInfo: [],
             cardTypeLst: [], //全部的卡类
+            canUseShops: [], //所选卡类适用店铺id
+            cardLevelIDList: [], //选择的卡类别
             excludeEvent: [], //显示交叉的活动,
-            excludeCardTypeIDs: [],
             shopStatus: true,
         };
     }
@@ -35,73 +33,117 @@ class BasicInfoForm extends Component {
         }).then((res) => {
             this.setState({ cardInfo: res });
         });
-        const params = {
-            groupID: accountInfo.groupID,
-            eventWay: "23",
-            eventStartDate: moment().format("YYYYMMDD"),
-            eventEndDate: moment().add(6, "days").format("YYYYMMDD"),
-        };
-        this.getExcludeData(params);
     }
-
-    getExcludeData = (params) => {
-        // getExcludeCardLevelIds(params).then((res) => {
-        //     if (res.code == "000") {
-        //         this.setState({
-        //             excludeEvent: res.excludeEventCardLevelIdModelList,
-        //         });
-        //     }
-        // });
-        getEventExcludeCardTypes(params).then(({ excludeCardTypeIDs = [] }) => {
-            this.setState({
-                excludeCardTypeIDs,
-            });
-        });
-    };
 
     componentWillReceiveProps(nextProps) {
         if (this.props.cardTypeLst !== nextProps.cardTypeLst) {
             const cardTypeLst = nextProps.cardTypeLst;
-            this.setState({
-                cardTypeLst: cardTypeLst.filter((cardType) => {
-                    return cardType.regFromLimit;
-                }),
-            });
+            this.setState(
+                {
+                    cardTypeLst: cardTypeLst.filter((cardType) => {
+                        return cardType.regFromLimit;
+                    }),
+                },
+                () => {
+                    this.queryCanuseShops(this.state.cardLevelIDList);
+                }
+            );
         }
-        if (this.props.eventRange !== nextProps.eventRange) {
-            const { eventStartDate, eventEndDate } = nextProps.eventRange;
-            const params = {
-                groupID: nextProps.accountInfo.groupID,
-                eventWay: "23",
-                eventStartDate,
-                eventEndDate,
-            };
-            this.getExcludeData(params);
+        if (this.props.formData != nextProps.formData) {
+            if (nextProps.formData.cardLevelIDList) {
+                this.setState({
+                    cardLevelIDList: nextProps.formData.cardLevelIDList || [],
+                });
+            }
         }
     }
 
     handleSelectChange = (value) => {
         const { basicForm } = this.props;
+        this.queryCanuseShops(value);
+        this.setState({
+            cardLevelIDList: value,
+            canUseShops: [],
+        });
         basicForm && basicForm.setFieldsValue({ shopIDList: [] });
     };
 
-    onChangeBasicForm = (key, value) => {};
-
-    resetFormItems = () => {
-        const { shopIDList, cardTypeIDList, defaultCardType } = baseFormItems;
-        let { cardInfo, excludeCardTypeIDs, cardTypeLst } = this.state;
+    queryCanuseShops = (cardTypeIDs) => {
+        let { cardInfo, cardTypeLst } = this.state;
         cardInfo = cardInfo.filter(
             (item) =>
                 cardTypeLst.findIndex(
                     (cardType) => cardType.cardTypeID === item.cardTypeID
                 ) > -1
         );
-        if (excludeCardTypeIDs.length) {
-            cardInfo = cardInfo.filter(
-                (cardType) => !excludeCardTypeIDs.includes(cardType.cardTypeID)
-            );
+        const { basicForm, accountInfo } = this.props;
+        let questArr = [];
+        if (cardTypeIDs && cardTypeIDs.length) {
+            const { cardLevelRangeType } =
+                basicForm && basicForm.getFieldsValue();
+            if (cardLevelRangeType == "5") {
+                // 卡等级
+                cardTypeIDs.forEach((id) => {
+                    const index = cardInfo.findIndex((cardType) => {
+                        return (cardType.cardTypeLevelList || [])
+                            .map((cardLevel) => cardLevel.cardLevelID)
+                            .includes(id);
+                    });
+                    if (index > -1) {
+                        questArr.push(cardInfo[index].cardTypeID);
+                    }
+                });
+            } else {
+                // 卡类
+                questArr = cardTypeIDs;
+            }
+        } else {
+            // 没选的情况下, 查所有能选的卡类下的适用店铺
+            questArr = cardInfo.map((cardType) => cardType.cardTypeID);
         }
+        if (!questArr.length) {
+            return;
+        }
+        getListCardTypeShop({
+            groupID: accountInfo.groupID,
+            cardTypeIds: uniq(questArr).join(","),
+            queryCardType: 1,
+        }).then((res) => {
+            let canUseShops = [];
+            (res || []).forEach((cardType) => {
+                cardType.cardTypeShopResDetailList.forEach((shop) => {
+                    canUseShops.push(String(shop.shopID));
+                });
+            });
+            canUseShops = Array.from(new Set(canUseShops));
+            if (canUseShops.length <= 0) {
+                message.warning("该卡类无适用的店铺，请选择其他卡类");
+            }
+            this.setState({ canUseShops });
+        });
+    };
+
+    onChangeBasicForm = (key, value) => {};
+
+    resetFormItems = () => {
+        const { shopIDList, cardTypeIDList, defaultCardType } = baseFormItems;
+        let { cardInfo, canUseShops = [], cardTypeLst } = this.state;
+        cardInfo = cardInfo.filter(
+            (item) =>
+                cardTypeLst.findIndex(
+                    (cardType) => cardType.cardTypeID === item.cardTypeID
+                ) > -1
+        );
         const boxData = [];
+        this.state.cardLevelIDList.forEach((id) => {
+            cardInfo.forEach((cat) => {
+                cat.cardTypeLevelList.forEach((level) => {
+                    if (level.cardLevelID === id) {
+                        boxData.push(level);
+                    }
+                });
+            });
+        });
         return {
             ...baseFormItems,
             defaultCardType: {
@@ -109,7 +151,9 @@ class BasicInfoForm extends Component {
                 render: (d, form) => {
                     return form.getFieldValue("partInUser") == 1 ||
                         form.getFieldValue("partInUser") == 2
-                        ? d()(
+                        ? d({
+                              onChange: (e) => this.handleSelectChange([e]),
+                          })(
                               <Select
                                   showSearch={true}
                                   notFoundContent="未搜索到结果"
@@ -130,7 +174,7 @@ class BasicInfoForm extends Component {
                               </Select>
                           )
                         : null;
-                }
+                },
             },
             shopIDList: {
                 ...shopIDList,
@@ -142,6 +186,8 @@ class BasicInfoForm extends Component {
                                     ? { productCode: "HLL_CRM_License" }
                                     : {}
                             }
+                            canUseShops={canUseShops}
+                            disabled={canUseShops.length <= 0}
                             onChange={this.editBoxForShopsChange}
                         />
                     ),

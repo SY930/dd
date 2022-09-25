@@ -90,13 +90,7 @@ class UsageRuleForm extends Component {
 
     resetFormItems = () => {
         const { gifts, validCycle, eventRange } = ruleFormItem;
-        const {
-            accountInfo,
-            ruleForm = {},
-            formData,
-            basicForm,
-            changeEventRange,
-        } = this.props;
+        const { accountInfo, ruleForm = {}, formData, basicForm } = this.props;
         let cycleType = "";
         if (ruleForm) {
             const { getFieldValue } = ruleForm;
@@ -109,22 +103,7 @@ class UsageRuleForm extends Component {
             validCycle: { ...validCycle, render: renderValidCycle },
             eventRange: {
                 ...eventRange,
-                render: (d) => d({
-                    onChange: (e) => {
-                        if (basicForm) {
-                            basicForm.setFieldsValue({
-                                cardTypeIDList: [],
-                                cardLevelIDList: [],
-                            });
-                        }
-                        if(e.length) {
-                            changeEventRange({
-                                eventStartDate: e[0].format("YYYYMMDD"),
-                                eventEndDate: e[1].format("YYYYMMDD"),
-                            });
-                        }
-                    }
-                })(<DateRange type={"85"} />),
+                render: (d) => d({})(<DateRange type={"85"} />),
             },
             gifts: {
                 ...gifts,

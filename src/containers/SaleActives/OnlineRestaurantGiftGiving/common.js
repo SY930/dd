@@ -52,11 +52,11 @@ export const baseFormItems = {
             </span>
         ),
         options: [
-            { label: "堂食点餐页", value: '1' },
-            { label: "外卖点餐页", value: '2' },
-            { label: "自提点餐页", value: '3' },
+            { label: "堂食点餐页", value: "1" },
+            { label: "外卖点餐页", value: "2" },
+            { label: "自提点餐页", value: "3" },
         ],
-        defaultValue: ['1', '2', '3'],
+        defaultValue: ["1", "2", "3"],
     },
     partInUser: {
         type: "radio",
@@ -139,7 +139,7 @@ export const baseFormItems = {
         type: "textarea",
         label: "活动说明",
         placeholder: "请输入活动说明，最多1000个字符",
-        rules: [{ max: "1000", message: "不能超过1000个字符" }],
+        rules: ["description2", { max: "1000", message: "不能超过1000个字符" }],
     },
 };
 
