@@ -131,6 +131,7 @@ class AddGifts extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        console.log('nextProps.treeDat====1=1=1=1', nextProps);
         let formItems = this.state.formItems;
         const { giftCount, giftID } = formItems;
         this.setState({
@@ -182,9 +183,10 @@ class AddGifts extends Component {
     }
 
     renderGiftID = (decorator, form) => {
+        console.log('请选择礼品名称', this.props.treeData);
         return decorator()(<TreeSelect
             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-            treeData={this.state.treeData}
+            treeData={this.props.treeData}
             placeholder="请选择礼品名称"
             showSearch={true}
             treeNodeFilterProp="label"
@@ -219,6 +221,7 @@ class AddGifts extends Component {
                                 getForm={(form) => { this.giftForms[item.id] = form }}
                                 formKeys={formKeys}
                                 formItems={formItems}
+                                formItems={this.state.formItems}
                                 formItemLayout={formItemLayout}
                                 onChange={(key, value) => this.onChangeAddGiftForm(key, value, item.id)}
                                 formData={this.state.giftFormData[item.id] || {}}

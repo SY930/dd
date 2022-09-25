@@ -40,7 +40,8 @@ class ActivityConditions extends Component {
             formDatas: {},
             scoreformDatas: {},
             cardNumformDatas: {},
-            isShowConditionBtn: true
+            isShowConditionBtn: true,
+            conditionForms: {}
         }
         this.conditionForms = {};
         this.giftFormRef = ''
@@ -145,7 +146,7 @@ class ActivityConditions extends Component {
     }
 
     onMinus = (data) => {
-        delete this.conditionForms[data.id];
+        // delete this.conditionForms[data.id];
         let conditionList = this.state.conditionList.filter(item => item.id != data.id);
         this.setState({
             conditionList
@@ -237,14 +238,12 @@ class ActivityConditions extends Component {
     renderAddGifts = (data) => {
         if (data.presentType && data.presentType.includes(1)) {
             if (data && data.giftList) {
-                const { loading, treeData } = this.state
                 return <AddGifts
                     pid={data.id}
                     giftList={data.giftList}
                     onPlusGift={this.onPlusGift}
                     onMinusGift={this.onMinusGift}
-                    treeData={treeData}
-                    loading={loading}
+                    treeData={this.state.treeData}
                     onRef={node => this.conditionForms[data.id + 'gift'] = node}
                     stageType={data.stageType}
                 />
@@ -376,7 +375,7 @@ class ActivityConditions extends Component {
             });
             Object.keys(this.conditionForms).forEach(conditionFormId => {
                 if (conditionFormId != singleConditionItem.id) {
-                    delete this.conditionForms[conditionFormId];
+                    // delete this.conditionForms[conditionFormId];
                 }
             });
             // 每满

@@ -48,9 +48,32 @@ class PromotionIndex extends Component {
         const key = promotionKey || this.props.promotionKey;
         // 当前key和mode
         const currentPromotion = this.props.promotion[key];
-        console.log('promotionRightMainRef', this.promotionRightMainRef)
+        console.log('promotionRightMainRef', this.promotionRightMainRef);
         const { allForms, activityConditionsRef } = this.promotionRightMainRef;
-        const { conditionForms } = activityConditionsRef;
+        const { conditionForms, state } = activityConditionsRef;
+        const validFormIds = state.conditionList.map(item => item.id);
+        console.log('conditionForms', conditionForms);
+        let newConditionForms = {};
+        Object.keys(conditionForms).forEach(key => {
+            if (key.indexOf('score') != -1) { // 积分
+                if (validFormIds.includes(+key.split('score')[0])) {
+                    newConditionForms[key] = conditionForms[key]
+                }
+            } else if (key.indexOf('cardNum') != -1) { // 卡值
+                if (validFormIds.includes(+key.split('cardNum')[0])) {
+                    newConditionForms[key] = conditionForms[key]
+                }
+            } else if (key.indexOf('gift') != -1) { // 礼品
+                if (validFormIds.includes(+key.split('gift')[0])) {
+                    newConditionForms[key] = conditionForms[key]
+                }
+            } else {
+                if (validFormIds.includes(+key)) {
+                    newConditionForms[key] = conditionForms[key]
+                }
+            }
+        })
+
         // 校验标准form
         // 校验礼品form
         const allFormKeys = Object.keys(allForms);
@@ -67,12 +90,12 @@ class PromotionIndex extends Component {
             });
         }
 
-        const conditionFormsKeys = Object.keys(conditionForms);
+        const conditionFormsKeys = Object.keys(newConditionForms);
         let tempObj = {};
         for (let i = 0; i < conditionFormsKeys.length; i++) {
             const giftConfig = [];
             let key = conditionFormsKeys[i];
-            const formItem = conditionForms[key];
+            const formItem = newConditionForms[key];
             if (key.indexOf('gift') != -1) {
                 // 礼品
                 const { giftForms } = formItem;
@@ -164,10 +187,12 @@ class PromotionIndex extends Component {
                         if (item.normal.presentType) {
                             delete item.normal.presentType
                         }
-                        eventGiftConditionList[index] = item.normal;
+                        eventGiftConditionList[index].stageAmount = item.normal.stageAmount;
+                        eventGiftConditionList[index].stageAmountType = item.normal.stageAmountType;
+                        eventGiftConditionList[index].stageType = item.normal.stageType;
                     }
                     eventGiftConditionList[index].gifts = gifts;
-                    eventGiftConditionList[index].sortIndex = index + 1
+                    eventGiftConditionList[index].sortIndex = index + 1;
                 })
                 let event = {}
                 resultValues.forEach(item => {
