@@ -90,7 +90,6 @@ class ManyFace extends Component {
     }
 
     onCheck = faceRule => (next) => {
-        // console.log(faceRule, 'faceRule-------'); // TODO  历史数据小程序开卡去掉
         let flag = false;
         const range = faceRule.some((item) => !item.conditionType); // 会员范围不能为空
         if (range) {

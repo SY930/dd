@@ -1008,7 +1008,6 @@ class GiftAddModalStep extends React.PureComponent {
                     });
                 } else {
                     const shops = (allSubRightGroup || []).filter(item => (values.selectedShops || []).includes(item.value));
-                    // console.log("🚀 ~ file: GiftAddModalStep.jsx ~ line 1012 ~ GiftAddModalStep ~ shops ~ shops", shops)
                     shops.forEach(s => {
                         shopNames += `${s.label + ',' || ''}`;
                         shopIDs += `${s.value + ',' || ''}`;
@@ -1254,7 +1253,6 @@ class GiftAddModalStep extends React.PureComponent {
                     return
                 }
             }
-            console.log('_TODO==特殊权益券保存', params);
 
             Array.isArray(params.supportOrderTypeLst) && (params.supportOrderTypeLst = params.supportOrderTypeLst.join(','))
             this.setState({
