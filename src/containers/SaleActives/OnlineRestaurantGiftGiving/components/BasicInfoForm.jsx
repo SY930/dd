@@ -2,7 +2,7 @@
  * @Author: 张博奥 zhangboao@hualala.com
  * @Date: 2022-09-26 09:52:54
  * @LastEditors: 张博奥 zhangboao@hualala.com
- * @LastEditTime: 2022-09-26 13:58:58
+ * @LastEditTime: 2022-09-26 16:39:19
  * @FilePath: /platform-sale/src/containers/SaleActives/OnlineRestaurantGiftGiving/components/BasicInfoForm.jsx
  * @Description: 线上弹窗送礼基本信息表单
  */
@@ -10,7 +10,7 @@ import React, { PureComponent as Component } from "react";
 import moment from "moment";
 import { uniq } from "lodash";
 import BaseForm from "components/common/BaseForm";
-import { Select, message, Form } from "antd";
+import { Select, message, Form, Tooltip, Icon } from "antd";
 import ShopSelector from "components/ShopSelector";
 import BaseHualalaModal from "../../../SaleCenterNEW/common/BaseHualalaModal";
 import { isFilterShopType } from "../../../../helpers/util";
@@ -179,7 +179,17 @@ class BasicInfoForm extends Component {
                         return (
                             <Form.Item
                                 style={{ padding: 0, paddingBottom: 25 }}
-                                label="卡类别"
+                                label={
+                                    <span>
+                                        卡类别
+                                        <Tooltip title="不选默认全部会员卡类别或卡等级都能参与活动">
+                                            <Icon
+                                                style={{ marginLeft: 5 }}
+                                                type="question-circle-o"
+                                            />
+                                        </Tooltip>
+                                    </span>
+                                }
                                 labelCol={{ span: 5 }}
                                 wrapperCol={{ span: 15 }}
                             >
@@ -214,7 +224,17 @@ class BasicInfoForm extends Component {
                         return (
                             <Form.Item
                                 style={{ padding: 0, paddingBottom: 25 }}
-                                label="卡等级"
+                                label={
+                                    <span>
+                                        卡等级
+                                        <Tooltip title="不选默认全部会员卡类别或卡等级都能参与活动">
+                                            <Icon
+                                                style={{ marginLeft: 5 }}
+                                                type="question-circle-o"
+                                            />
+                                        </Tooltip>
+                                    </span>
+                                }
                                 labelCol={{ span: 5 }}
                                 wrapperCol={{ span: 15 }}
                             >
