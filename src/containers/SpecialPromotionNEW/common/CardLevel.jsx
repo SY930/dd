@@ -22,7 +22,7 @@ import ExcludeCardTable from "./ExcludeCardTable";
 import { injectIntl } from "i18n/common/injectDecorator";
 import { STRING_SPE } from "i18n/common/special";
 import { isEditPromotionCode } from "../../../constants/promotionEditCode";
-// import _ from 'lodash';
+import _ from 'lodash';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -112,12 +112,18 @@ class CardLevel extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const thisEventInfo = this.props.specialPromotion
-            .get("$eventInfo")
-            .toJS();
-        const nextEventInfo = nextProps.specialPromotion
-            .get("$eventInfo")
-            .toJS();
+        if (!_.isEqual(this.props.cardLevelRangeType, nextProps.cardLevelRangeType)
+            || !_.isEqual(this.props.cardLevelIDList, nextProps.cardLevelIDList)) {
+            if (this.props.type == '87') { // 消费送礼
+                this.setState({
+                    cardLevelRangeType: nextProps.cardLevelRangeType,
+                    cardLevelIDList: nextProps.cardLevelIDList,
+                })
+                return;
+            }
+        }
+        const thisEventInfo = this.props.specialPromotion.get('$eventInfo').toJS();
+        const nextEventInfo = nextProps.specialPromotion.get('$eventInfo').toJS();
         // 获取会员等级信息
         if (nextProps.groupCardTypeList) {
             this.setState({

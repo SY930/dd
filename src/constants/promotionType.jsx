@@ -42,9 +42,9 @@ export const GIFT_MAP = {
     '110': '买赠券',
     '111': '折扣券',
     '22': '配送券',
-    '-10':'会员价',
-    '-20':'会员折扣',
-    '81':'特殊权益券',
+    '-10': '会员价',
+    '-20': '会员折扣',
+    '81': '特殊权益券',
 }
 
 /**
@@ -469,6 +469,18 @@ export const REPEAT_PROMOTION_TYPES = [
         signs: ['app'],
         example: '',
         key: '85',
+        right: 16,
+        bottom: 6,
+        isNew: new Date('2022/04/12').getTime(),
+    },
+    {
+        title: '消费送礼',
+        isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        text: '消费后获得奖励将使顾客下次光临的时间大大提前',
+        tags: ['pos', SALE_LABEL.k639vgbm],
+        signs: ['pos', 'app'],
+        example: '',
+        key: '87', 
         right: 16,
         bottom: 6,
         isNew: new Date('2022/04/12').getTime(),

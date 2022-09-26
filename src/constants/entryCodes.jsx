@@ -70,3 +70,5 @@ export const SALE_ACTIVE_NEW_PAGE = 'sale_active_new_page' // 营销活动跳转
 
 export const GIFT_DETAILS = 'giftDetails' //礼品信息详情页面
 export const SALE_DISTRIBUTION_ADMIN = 'sale.distribution.admin' // 分销管理
+
+export const CONSUME_GIFT_GIVING = 'CONSUME_GIFT_GIVING' // 营销活动-消费送礼

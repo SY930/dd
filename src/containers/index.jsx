@@ -34,3 +34,4 @@ export { default as WeChatMallPromotionList } from './WeChatMall/PromotionList';
 export { default as ZhiFuBaoCouponList } from './ZhiFuBaoCouponManagement';
 
 export { default as CreateActiveTwo } from './SaleActives/NewCreateActiveEntry';
+export { default as ConsumeGiftGiving } from './SaleActives/NewPromotionCardPages/ConsumeGiftGiving'; // 消费送礼

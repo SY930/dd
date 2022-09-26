@@ -156,62 +156,62 @@ const GiftCfg = {
     // { label: '不定额代金券', value: '115' },
     { label: '特殊权益券', value: '81' },
 
-  ],
-  transferType: [
-    { label: '不可转赠', value: 0 },
-    { label: '可转赠', value: 1 },
-  ],
-  transferringAvailable: [
-    { label: '可核销', value: 1 },
-    { label: '不可核销', value: 0 },
-  ],
-  isHolidaysUsing: [
-    { label: '不限制', value: '0' },
-    { label: '不含节假日', value: '1' },
-    { label: '仅节假日', value: '2' },
-  ],
-  usingTimeType: [
-    { label: '早餐', value: '1' },
-    { label: '午餐', value: '2' },
-    { label: '下午茶', value: '3' },
-    { label: '晚餐', value: '4' },
-    { label: '夜宵', value: '5' },
-  ],
-  usingDateType: [
-    // { label: '工作日可用', value: '2' },
-    { label: '法定节假日', value: '3' },
-  ],
-  usingWeekType: [
-    { label: '周一', value: '1' },
-    { label: '周二', value: '2' },
-    { label: '周三', value: '3' },
-    { label: '周四', value: '4' },
-    { label: '周五', value: '5' },
-    { label: '周六', value: '6' },
-    { label: '周日', value: '7' },
-  ],
-  supportOrderType: [
-    { label: '全部支持', value: '2' },
-    { label: '堂食', value: '0' },
-    { label: '外送', value: '1' },
-  ],
-  supportOrderTypeLst: [
-    { label: '预定', value: '10' },
-    { label: '闪吃', value: '11' },
-    { label: '外送', value: '20' },
-    { label: '堂食', value: '31' },
-    { label: '自提', value: '21' },
-  ],
-  isOfflineCanUsing: [
-    { label: '不限制', value: '1' },
-    { label: '仅线上使用', value: '0' },
-    { label: '仅线下使用', value: '2' },
-  ],
-  discountRules: [
-    { label: '特价', value: '1' },
-    { label: '折扣', value: '2' },
-    { label: '立减', value: '3' },
-  ],
+    ],
+    transferType: [
+        { label: '不可转赠', value: 0 },
+        { label: '可转赠', value: 1 },
+    ],
+    transferringAvailable: [
+        { label: '可核销', value: 1 },
+        { label: '不可核销', value: 0 },
+    ],
+    isHolidaysUsing: [
+        { label: '不限制', value: '0' },
+        { label: '不含节假日', value: '1' },
+        { label: '仅节假日', value: '2' },
+    ],
+    usingTimeType: [
+        { label: '早餐', value: '1' },
+        { label: '午餐', value: '2' },
+        { label: '下午茶', value: '3' },
+        { label: '晚餐', value: '4' },
+        { label: '夜宵', value: '5' },
+    ],
+    usingDateType: [
+        // { label: '工作日可用', value: '2' },
+        { label: '法定节假日', value: '3' },
+    ],
+    usingWeekType: [
+        { label: '周一', value: '1' },
+        { label: '周二', value: '2' },
+        { label: '周三', value: '3' },
+        { label: '周四', value: '4' },
+        { label: '周五', value: '5' },
+        { label: '周六', value: '6' },
+        { label: '周日', value: '7' },
+    ],
+    supportOrderType: [
+        { label: '全部支持', value: '2' },
+        { label: '堂食', value: '0' },
+        { label: '外送', value: '1' },
+    ],
+    supportOrderTypeLst: [
+        { label: '预定', value: '10' },
+        { label: '闪吃', value: '11' },
+        { label: '外送', value: '20' },
+        { label: '堂食', value: '31' },
+        { label: '自提', value: '21' },
+    ],
+    isOfflineCanUsing: [
+        { label: '不限制', value: '1' },
+        { label: '仅线上使用', value: '0' },
+        { label: '仅线下使用', value: '2' },
+    ],
+    discountRules: [
+        { label: '特价', value: '1' },
+        { label: '折扣', value: '2' },
+        { label: '立减', value: '3' },
+    ],
 
   discountSortRules: [
     { label: '高价格菜品优先', value: '0' },
@@ -337,6 +337,17 @@ const GiftCfg = {
     { value: '2', label: '转赠中' },
     { value: '3', label: '过期' },
     { value: '4', label: '注销 ' },
+  ],
+  giftQuotaCardStatus: [ // 礼品定额
+    { value: '', label: '全部' },
+    { value: '11', label: '已制卡' },
+    { value: '12', label: '已售出' },
+    { value: '16', label: '已绑定' },
+    { value: '13', label: '已作废' },
+    { value: '14', label: '出售中' },
+    { value: '99', label: '已充值' },
+    { value: '103', label: '已删除' },
+    { value: '3', label: '已过期' },
   ],
   redPacketStatus: [ // 现金红包
     { value: '', label: '全部' },

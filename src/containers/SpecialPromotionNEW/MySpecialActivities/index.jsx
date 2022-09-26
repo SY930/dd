@@ -111,6 +111,9 @@ import indexStyles from "./mySpecialActivities.less";
 import ManyFace from "../../PromotionV3/ManyFace";
 import CardSaleActive from "./CardSaleActive";
 import Card from "../../../assets/card.png";
+import newPromotionCardPageConfig from '../../SaleActives/NewPromotionCardPages/common/newPromotionCardPageConfig';
+import { updateCurrentPromotionPageAC } from '../../SaleActives/NewPromotionCardPages/store/action';
+import { consumeGivingWhiteList } from "containers/GiftNew/components/whiteList.js";
 
 const confirm = Modal.confirm;
 const Option = Select.Option;
@@ -210,6 +213,7 @@ const mapDispatchToProps = (dispatch) => {
         getAuthLicenseData: (opts) => {
             return dispatch(getAuthLicenseData(opts));
         },
+        updateCurrentPromotionPage: opts => dispatch(updateCurrentPromotionPageAC(opts)),
     };
 };
 
@@ -440,6 +444,7 @@ class MySpecialActivities extends React.Component {
                 { value: "82", label: "拼手气抢红包" },
                 { value: "83", label: "口令领券" },
                 { value: "85", label: "千人千面" },
+                { value: '87', label: '消费送礼' },
             ],
         };
         this.renderFilterBar = this.renderFilterBar.bind(this);
@@ -645,7 +650,7 @@ class MySpecialActivities extends React.Component {
                     }
                 });
             },
-            onCancel() {},
+            onCancel() { },
         });
     };
     getQueryVariable() {
@@ -791,7 +796,7 @@ class MySpecialActivities extends React.Component {
                     modalTip
                 );
             },
-            onCancel: () => {},
+            onCancel: () => { },
         });
     }
     // 关闭更新
@@ -1238,12 +1243,25 @@ class MySpecialActivities extends React.Component {
                 onOk() {
                     handleNext();
                 },
-                onCancel() {},
+                onCancel() { },
             });
         } else {
             handleNext();
         }
     };
+
+    handleNewEditActive = (record, mode) => {
+        const currentPromotion = newPromotionCardPageConfig.find(item => item.key == record.eventWay);
+        jumpPage({ menuID: currentPromotion.menuID, promotionKey: record.eventWay, mode, itemID: record.itemID });
+        const { updateCurrentPromotionPage } = this.props;
+        updateCurrentPromotionPage({
+            [record.eventWay]: {
+                promotionKey: record.eventWay,
+                mode,
+                itemID: record.itemID
+            },
+        })
+    }
 
     // 点击删除按钮先弹窗
     handleDelActive = (record) => (handleNext) => {
@@ -1264,7 +1282,7 @@ class MySpecialActivities extends React.Component {
                 onOk() {
                     handleNext();
                 },
-                onCancel() {},
+                onCancel() { },
             });
             return;
         }
@@ -1275,7 +1293,7 @@ class MySpecialActivities extends React.Component {
             onOk() {
                 handleNext();
             },
-            onCancel() {},
+            onCancel() { },
         });
     };
 
@@ -1283,14 +1301,13 @@ class MySpecialActivities extends React.Component {
         if (record.isActive == "-1" || record.isActive == "2") {
             Modal.info({
                 title: `活动无法启用`,
-                content: `活动已${
-                    record.isActive == "-1" ? "结束" : "失效"
-                }，请修改可用的活动时间。`,
+                content: `活动已${record.isActive == "-1" ? "结束" : "失效"
+                    }，请修改可用的活动时间。`,
                 okText: "确定",
                 // cancelText: null,
                 iconType: "exclamation-circle",
-                onOk() {},
-                onCancel() {},
+                onOk() { },
+                onCancel() { },
                 // okType: 'primary'
             });
             return;
@@ -1967,7 +1984,7 @@ class MySpecialActivities extends React.Component {
             opt.isActive =
                 isActive == "-1" ? "-1" : isActive == "1" ? "1" : "0";
         }
-        
+
         this.props.query({
             data: {
                 groupID: this.props.user.accountInfo.groupID,
@@ -2088,6 +2105,11 @@ class MySpecialActivities extends React.Component {
 
     renderFilterBar() {
         const opts = [];
+        let groupID = this.props.user.accountInfo.groupID;
+        // 消费送礼白名单
+        if (!consumeGivingWhiteList.includes(groupID)) {
+            this.cfg.eventWay = this.cfg.eventWay.filter(item => item.value != '87');
+        }
         this.cfg.eventWay.forEach((item, index) => {
             opts.push(
                 <Option value={`${item.value}`} key={`${index}`}>
@@ -2096,6 +2118,7 @@ class MySpecialActivities extends React.Component {
             );
         });
         const { intl } = this.props;
+
         return (
             <div>
                 <div className="layoutsSearch">
@@ -2341,9 +2364,9 @@ class MySpecialActivities extends React.Component {
             .catch((err) => {
                 message.warning(
                     err ||
-                        `${this.props.intl.formatMessage(
-                            STRING_SPE.dk46ld30bj16282
-                        )}`
+                    `${this.props.intl.formatMessage(
+                        STRING_SPE.dk46ld30bj16282
+                    )}`
                 );
             });
     }
@@ -2440,9 +2463,9 @@ class MySpecialActivities extends React.Component {
                         href="#"
                         className={
                             record.isActive == "-1" ||
-                            isBrandOfHuaTianGroupList(
-                                this.props.user.accountInfo.groupID
-                            )
+                                isBrandOfHuaTianGroupList(
+                                    this.props.user.accountInfo.groupID
+                                )
                                 ? styles.textDisabled
                                 : null
                         }
@@ -2457,14 +2480,14 @@ class MySpecialActivities extends React.Component {
                             record.isActive == "-1"
                                 ? null
                                 : this.handelStopEvent(
-                                      text,
-                                      record,
-                                      index,
-                                      "-1",
-                                      `${this.props.intl.formatMessage(
-                                          STRING_SPE.d17012f5c16c32211
-                                      )}`
-                                  );
+                                    text,
+                                    record,
+                                    index,
+                                    "-1",
+                                    `${this.props.intl.formatMessage(
+                                        STRING_SPE.d17012f5c16c32211
+                                    )}`
+                                );
                         }}
                     >
                         {this.props.intl.formatMessage(
@@ -2850,11 +2873,11 @@ class MySpecialActivities extends React.Component {
                                         record.eventWay == "64"
                                             ? null
                                             : isGroupOfHuaTianGroupList(
-                                                  this.props.user.accountInfo
-                                                      .groupID
-                                              ) &&
-                                              (record.isActive != "0" ||
-                                                  !isMine(record))
+                                                this.props.user.accountInfo
+                                                    .groupID
+                                            ) &&
+                                            (record.isActive != "0" ||
+                                                !isMine(record))
                                     }
                                     onClick={(e) => {
                                         // if (record.eventWay == '64') {
@@ -2915,6 +2938,9 @@ class MySpecialActivities extends React.Component {
                                             );
                                             return;
                                         }
+                                        if (record.eventWay === 87) {
+                                            return this.handleNewEditActive(record, 'edit');
+                                        }
                                         this.handleEditActive(record)(() => {
                                             this.props.toggleIsUpdate(true);
                                             this.handleUpdateOpe(
@@ -2973,6 +2999,9 @@ class MySpecialActivities extends React.Component {
                                             });
                                             return;
                                         }
+                                        if (record.eventWay === 87) {
+                                            return this.handleNewEditActive(record, 'view');
+                                        }
                                         this.props.toggleIsUpdate(false);
                                         this.handleUpdateOpe(
                                             text,
@@ -3024,7 +3053,7 @@ class MySpecialActivities extends React.Component {
                                     {COMMON_LABEL.delete}
                                 </a>
                             </Authority>
-                            {record.eventWay != "85" && ( // 千人千面无需更多操作
+                            {!(record.eventWay == "85" || record.eventWay == "87") && ( // 千人千面无需更多操作
                                 <Tooltip
                                     placement="bottomLeft"
                                     title={this.renderTipTitle(
@@ -3065,11 +3094,10 @@ class MySpecialActivities extends React.Component {
                     return (
                         <Switch
                             // size="small"
-                            className={`${styles.switcherSale} ${
-                                record.eventWay == "80"
-                                    ? styles.switcherdisabled
-                                    : ""
-                            }`}
+                            className={`${styles.switcherSale} ${record.eventWay == "80"
+                                ? styles.switcherdisabled
+                                : ""
+                                }`}
                             checkedChildren={"启用"}
                             unCheckedChildren={"禁用"}
                             checked={defaultChecked}
@@ -3129,12 +3157,12 @@ class MySpecialActivities extends React.Component {
                         <span>
                             {record.eventWay == 70
                                 ? `${this.props.intl.formatMessage(
-                                      STRING_SPE.d5672b44908540146
-                                  )}`
+                                    STRING_SPE.d5672b44908540146
+                                )}`
                                 : mapValueToLabel(
-                                      this.cfg.eventWay,
-                                      String(record.eventWay)
-                                  )}
+                                    this.cfg.eventWay,
+                                    String(record.eventWay)
+                                )}
                         </span>
                     );
                 },
@@ -3201,9 +3229,8 @@ class MySpecialActivities extends React.Component {
                     let result;
                     try {
                         const operator = JSON.parse(record.operator);
-                        result = `${operator.userName} / ${
-                            operator.u_userName || operator.userName
-                        }`;
+                        result = `${operator.userName} / ${operator.u_userName || operator.userName
+                            }`;
                     } catch (e) {
                         return "--";
                     }
@@ -3266,8 +3293,7 @@ class MySpecialActivities extends React.Component {
                         showTotal: (total, range) =>
                             `${this.props.intl.formatMessage(
                                 STRING_SPE.d2b1c6b31a93638
-                            )}${range[0]}-${
-                                range[1]
+                            )}${range[0]}-${range[1]
                             } / ${this.props.intl.formatMessage(
                                 STRING_SPE.dk46lj779a7119
                             )} ${total} ${this.props.intl.formatMessage(
@@ -3414,34 +3440,34 @@ class MySpecialActivities extends React.Component {
         const urlMap = {
             20: !launchChannelID
                 ? url +
-                  `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}`
+                `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}`
                 : url +
-                  `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
+                `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
             22: !launchChannelID
                 ? url +
-                  `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}`
+                `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}`
                 : url +
-                  `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
+                `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
             30: !launchChannelID
                 ? url +
-                  `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}`
+                `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}`
                 : url +
-                  `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
+                `/newm/eventCont?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
             21: !launchChannelID
                 ? url +
-                  `/newm/eventFree?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}`
+                `/newm/eventFree?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}`
                 : url +
-                  `/newm/eventFree?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
+                `/newm/eventFree?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
             65: !launchChannelID
                 ? url +
-                  `/newm/shareFission?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}`
+                `/newm/shareFission?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}`
                 : url +
-                  `/newm/shareFission?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
+                `/newm/shareFission?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
             68: !launchChannelID
                 ? url +
-                  `/newm/recommendInvite??groupID=${groupIdData}&eventItemID=${itemIdData}&mpID=${mpID}`
+                `/newm/recommendInvite??groupID=${groupIdData}&eventItemID=${itemIdData}&mpID=${mpID}`
                 : url +
-                  `/newm/recommendInvite?groupID=${groupIdData}&eventItemID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
+                `/newm/recommendInvite?groupID=${groupIdData}&eventItemID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}&launchChannelID=${launchChannelID}`,
             // 83: url + `/newm/usePassword?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`,
         };
         /*if(actList.includes(String(eventWay))) {
@@ -3465,7 +3491,7 @@ class MySpecialActivities extends React.Component {
             groupID: groupIdData,
         });
         // 获取小程序列表
-        this.getAppList().then((r) => {});
+        this.getAppList().then((r) => { });
     };
 
     handleToCopyUrl = () => {
