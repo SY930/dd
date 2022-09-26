@@ -46,8 +46,10 @@ class GiftList extends Component {
     
     componentWillReceiveProps(nextProps){
         const { dataSource, total } = nextProps;
-        if(this.props.pageType == 1){
-            this.setState({dataSource, total})
+        if (dataSource != this.props.dataSource) {
+            if(this.props.pageType == 1){
+                this.setState({dataSource, total})
+            }
         }
         // if(total != this.props.total){
         // }
