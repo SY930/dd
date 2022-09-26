@@ -246,7 +246,7 @@ class SpecialDetailInfo extends Component {
             Immutable.List.isList($benefitCardIds) && $benefitCardIds.size > 0
                 ? $benefitCardIds.toJS()
                 : [];
-        const { givePoints, presentValue, giveCoupon, giftGetRuleValue } = pointObj;
+        // const { givePoints, presentValue, giveCoupon, giftGetRuleValue } = pointObj;
         // const specialPromotion = props.specialPromotion.get('$eventInfo').toJS();
         this.state = {
             data,
