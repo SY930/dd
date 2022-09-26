@@ -1,3 +1,11 @@
+/*
+ * @Author: 张博奥 zhangboao@hualala.com
+ * @Date: 2022-09-25 16:33:02
+ * @LastEditors: 张博奥 zhangboao@hualala.com
+ * @LastEditTime: 2022-09-26 10:29:16
+ * @FilePath: /platform-sale/src/containers/SaleActives/OnlineRestaurantGiftGiving/components/WxCouponModal.jsx
+ * @Description: 添加第三方微信券弹框
+ */
 import React, { Component } from "react";
 import { Modal, Table, Input, Button, message } from "antd";
 import { axiosData } from "../../../../helpers/util";

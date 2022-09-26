@@ -1,3 +1,11 @@
+/*
+ * @Author: 张博奥 zhangboao@hualala.com
+ * @Date: 2022-09-26 09:52:54
+ * @LastEditors: 张博奥 zhangboao@hualala.com
+ * @LastEditTime: 2022-09-26 10:30:39
+ * @FilePath: /platform-sale/src/containers/SaleActives/OnlineRestaurantGiftGiving/index.jsx
+ * @Description: 线上餐厅弹窗送礼右侧表单入口
+ */
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { message, Radio, Modal, Spin } from "antd";
@@ -27,9 +35,9 @@ class OnlineRestaurantGiftGiving extends Component {
         };
     }
     componentDidMount() {
-        this.queryGroupEventParamList({});
-        this.props.FetchCrmCardTypeLst({});
-        this.getEventDetail();
+        this.queryGroupEventParamList({}); //获取活动的执行规则
+        this.props.FetchCrmCardTypeLst({}); //获取集团的全部卡类别
+        this.getEventDetail(); //获取活动详情
         this.props.getSubmitFn(this.handleSubmit);
     }
 
@@ -51,6 +59,7 @@ class OnlineRestaurantGiftGiving extends Component {
         });
     };
 
+    //把接口返回的数据转成表单需要的数据
     transformFormData = (res) => {
         const { data = {}, timeList = [], gifts = [] } = res;
         let formData = {
@@ -89,7 +98,7 @@ class OnlineRestaurantGiftGiving extends Component {
                       }
                       return { id: "0" };
                   })
-                : [{ id: "0" }],
+                : [{ id: "0" }], //时间段增加默认值
             partInTimes1:
                 data.countCycleDays != "0" ? data.partInTimes : undefined,
             joinType:
@@ -100,17 +109,21 @@ class OnlineRestaurantGiftGiving extends Component {
                     : "0",
         };
         if (data.cardLevelRangeType && data.cardLevelRangeType == 2) {
+            //会员范围为卡类别
             formData.cardTypeIDList = data.cardLevelIDList || [];
         } else if (data.cardLevelRangeType && data.cardLevelRangeType == 5) {
+            //会员范围为卡等级
             formData.cardLevelIDList = data.cardLevelIDList || [];
         } else {
             formData.cardLevelIDList = [];
         }
+        //选择周期
         let cycleType = "";
         if (data.validCycle) {
             // 根据["w1", "w3", "w5"]获取第一个字符
             [cycleType] = data.validCycle[0];
         }
+        //高级日期设置 true/false
         let advMore = false;
         if (
             timeList.length ||
@@ -119,13 +132,14 @@ class OnlineRestaurantGiftGiving extends Component {
         ) {
             advMore = true;
         }
+        //这有BaseForm的坑，必须先设置advMore， 后设置cycleType
         formData.advMore = advMore;
         formData.validCycle = data.validCycle;
         formData.cycleType = cycleType;
         let couponType = "0";
         if (gifts && gifts.length) {
             let { presentType } = gifts[0];
-            presentType == 7 ? (couponType = "1") : (couponType = "0");
+            presentType == 7 ? (couponType = "1") : (couponType = "0"); //presentType == 7代表三方微信券
         }
         formData.couponType = couponType;
         formData.giftCount =
@@ -135,12 +149,14 @@ class OnlineRestaurantGiftGiving extends Component {
                 slectedWxCouponList: gifts,
             });
         }
+        //强制给礼品表单塞数据，否则回显不了
         if (this.state.ruleForm) {
             this.state.ruleForm.setFieldsValue({ gifts: formData.gifts });
         }
         return formData;
     };
 
+    //时间段格式化
     formatTimeList = (list) => {
         if (!list) {
             return [];
@@ -157,6 +173,7 @@ class OnlineRestaurantGiftGiving extends Component {
         return times;
     };
 
+    //表单数据处理成接口需要的数据
     checkAndFormatParams = (values) => {
         const {
             validCycle = [],
@@ -165,6 +182,7 @@ class OnlineRestaurantGiftGiving extends Component {
             gifts = [],
             timeList = [],
         } = values;
+        //直接拿到的values有好多不需要的字段，所以单个处理
         const event = {
             eventWay: "23",
             eventName: values.eventName,
@@ -179,7 +197,7 @@ class OnlineRestaurantGiftGiving extends Component {
                 ? values.cardLevelRangeType == 2
                     ? values.cardTypeIDList
                     : values.cardLevelIDList.map(
-                          (item) => item.cardLevelID || item
+                          (item) => item.cardLevelID || item //编辑拿到的是卡等级id数组，新加的拿到的是卡等级对象数据
                       )
                 : [],
             shopIDList: values.shopIDList,
@@ -196,6 +214,7 @@ class OnlineRestaurantGiftGiving extends Component {
             timeList: this.formatTimeList(timeList),
         };
         if (cycleType) {
+            //周期日期过滤出当前所选的日期 w/m
             const cycle = validCycle.filter((x) => x[0] === cycleType);
             params.event.validCycle = cycle;
         } else {
@@ -209,6 +228,7 @@ class OnlineRestaurantGiftGiving extends Component {
             : "";
         delete params.event.eventRange;
         if (values.couponType == 1) {
+            //三方微信券
             params.gifts = this.state.slectedWxCouponList.map((item) => {
                 return {
                     ...item,
@@ -225,6 +245,7 @@ class OnlineRestaurantGiftGiving extends Component {
                 };
             });
         } else {
+            //哗啦啦优惠券
             params.gifts = gifts.map((item) => {
                 delete item.giftIDNumber;
                 let v = {
@@ -273,7 +294,7 @@ class OnlineRestaurantGiftGiving extends Component {
             const newTimeList = this.formatTimeList(timeList);
             if (newTimeList.length > 0) {
                 const { hasError, errorMessage } =
-                    getItervalsErrorStatus(newTimeList);
+                    getItervalsErrorStatus(newTimeList); //时间段交叉校验
                 if (hasError) {
                     message.warning(errorMessage);
                     return null;
@@ -308,6 +329,7 @@ class OnlineRestaurantGiftGiving extends Component {
             itemID,
             groupID: accountInfo.groupID,
         };
+        //判断活动交叉
         queryActiveList(params).then((dataSource) => {
             if (dataSource) {
                 if (dataSource.length > 0) {
@@ -443,7 +465,7 @@ class OnlineRestaurantGiftGiving extends Component {
         };
         return (
             <div className={styles.formContainer}>
-                <Spin spinning={false}>
+                <Spin spinning={loading}>
                     <div className={styles.logoGroupHeader}>基本信息</div>
                     <BasicInfoForm
                         basicForm={basicForm}

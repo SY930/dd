@@ -1,6 +1,14 @@
+/*
+ * @Author: 张博奥 zhangboao@hualala.com
+ * @Date: 2022-09-25 16:33:02
+ * @LastEditors: 张博奥 zhangboao@hualala.com
+ * @LastEditTime: 2022-09-26 10:28:26
+ * @FilePath: /platform-sale/src/containers/SaleActives/OnlineRestaurantGiftGiving/components/SleectedWxCouponTable.jsx
+ * @Description: 选中的第三方微信券列表
+ */
 import React, { Component } from "react";
 import { Modal, Table, Tooltip, Popconfirm } from "antd";
-import styles from '../styles.less'
+import styles from "../styles.less";
 
 class SleectedWxCouponTable extends Component {
     constructor(props) {

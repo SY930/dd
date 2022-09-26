@@ -1,3 +1,11 @@
+/*
+ * @Author: 张博奥 zhangboao@hualala.com
+ * @Date: 2022-09-25 16:33:02
+ * @LastEditors: 张博奥 zhangboao@hualala.com
+ * @LastEditTime: 2022-09-26 10:26:46
+ * @FilePath: /platform-sale/src/containers/SaleActives/OnlineRestaurantGiftGiving/components/UsageRuleForm.jsx
+ * @Description: 线上弹窗送礼使用规则表单
+ */
 import React, { PureComponent as Component } from "react";
 import { Icon, Button, Form, Input } from "antd";
 import BaseForm from "components/common/BaseForm";

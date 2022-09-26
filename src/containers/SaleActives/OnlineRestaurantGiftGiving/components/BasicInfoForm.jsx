@@ -1,3 +1,11 @@
+/*
+ * @Author: 张博奥 zhangboao@hualala.com
+ * @Date: 2022-09-26 09:52:54
+ * @LastEditors: 张博奥 zhangboao@hualala.com
+ * @LastEditTime: 2022-09-26 10:22:48
+ * @FilePath: /platform-sale/src/containers/SaleActives/OnlineRestaurantGiftGiving/components/BasicInfoForm.jsx
+ * @Description: 线上弹窗送礼基本信息表单
+ */
 import React, { PureComponent as Component } from "react";
 import moment from "moment";
 import { uniq } from "lodash";
@@ -49,6 +57,7 @@ class BasicInfoForm extends Component {
                 }
             );
         }
+        //回显接口返回的卡等级
         if (this.props.formData != nextProps.formData) {
             if (nextProps.formData.cardLevelIDList) {
                 this.setState({
@@ -68,6 +77,7 @@ class BasicInfoForm extends Component {
         basicForm && basicForm.setFieldsValue({ shopIDList: [] });
     };
 
+    //查询卡等级下可用的店铺
     queryCanuseShops = (cardTypeIDs) => {
         let { cardInfo, cardTypeLst } = this.state;
         cardInfo = cardInfo.filter(
