@@ -63,11 +63,10 @@ class PromotionIndex extends Component {
         const key = promotionKey || this.props.promotionKey;
         // 当前key和mode
         const currentPromotion = this.props.promotion[key];
-        console.log('promotionRightMainRef', this.promotionRightMainRef);
+        console.log('_TODO_promotionRightMainRef', this.promotionRightMainRef);
         const { allForms, activityConditionsRef } = this.promotionRightMainRef;
         const { conditionForms, state } = activityConditionsRef;
         const validFormIds = state.conditionList.map(item => item.id);
-        console.log('conditionForms', conditionForms);
         let newConditionForms = {};
         Object.keys(conditionForms).forEach(key => {
             if (key.indexOf('score') != -1) { // 积分
