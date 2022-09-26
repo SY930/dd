@@ -633,6 +633,7 @@ export const FIRST_KEYS = {
                 // 'mallScope',
                 'foodsboxs',
                 // 'buyGiveFoods',
+                'stageType',
                 'buyGiveSecondaryFoods',
                 'subRule',
                 'discountRule',                     // 优惠规则
