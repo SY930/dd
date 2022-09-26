@@ -535,7 +535,9 @@ class MySpecialActivities extends React.Component {
                         data: { eventParamInfoList = [] },
                     } = res;
                     this.setState({
-                        paramsValueList: eventParamInfoList,
+                        paramsValueList: eventParamInfoList.filter(
+                            (item) => item.eventWay == 85
+                        ),
                         viewRuleVisibles: true,
                     });
                 }
