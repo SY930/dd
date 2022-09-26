@@ -2,7 +2,7 @@
  * @Author: 张博奥 zhangboao@hualala.com
  * @Date: 2022-09-26 09:52:54
  * @LastEditors: 张博奥 zhangboao@hualala.com
- * @LastEditTime: 2022-09-26 14:28:21
+ * @LastEditTime: 2022-09-26 18:38:34
  * @FilePath: /platform-sale/src/containers/SaleActives/OnlineRestaurantGiftGiving/index.jsx
  * @Description: 线上餐厅弹窗送礼右侧表单入口
  */
@@ -411,17 +411,13 @@ class OnlineRestaurantGiftGiving extends Component {
                     </span>
                 ))}
                 】
-                {`活动中存在当前已选适用店铺，如继续创建，这些店铺将按照${
-                    this.state.paramsValue == 1
-                        ? "当前活动规则"
-                        : "之前创建最早的活动规则"
-                }进行执行`}
-                <span
+                {`活动中存在当前已选适用店铺，如继续创建，这些店铺将按照${"创建时间最近的活动规则"}进行执行`}
+                {/* <span
                     onClick={() => this.setState({ viewRuleVisible: true })}
                     className={styles.viewRuleTip}
                 >
                     查看设置活动规则
-                </span>
+                </span> */}
             </div>
         );
     };
