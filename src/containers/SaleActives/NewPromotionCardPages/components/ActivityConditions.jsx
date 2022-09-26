@@ -87,7 +87,7 @@ class ActivityConditions extends Component {
                 let scoreList = gifts.filter(gift => gift.presentType == 2);
                 scoreList = scoreList.map(item => {
                     if (item.giveAmountType == 1) {
-                        item.presentValue = item.presentValue * 100
+                        item.presentValue = parseInt(item.presentValue * 100)
                     }
                     return item;
                 })
@@ -95,13 +95,12 @@ class ActivityConditions extends Component {
                 let cardNumList = gifts.filter(gift => gift.presentType == 5);
                 cardNumList = cardNumList.map(item => {
                     if (item.giveAmountType == 1) {
-                        item.presentValue = item.presentValue * 100
+                        item.presentValue = parseInt(item.presentValue * 100)
                     }
                     return item;
                 })
                 cardNumformDatas[id + 'cardNum'] = cardNumList && cardNumList[0];
             });
-            console.log('最终的-----conditionList', conditionList);
 
             this.setState({
                 conditionList,

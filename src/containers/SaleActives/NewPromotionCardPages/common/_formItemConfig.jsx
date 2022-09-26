@@ -495,13 +495,6 @@ export const ALL_FORM_ITEMS = {
         label: '',
         render: () => { }
     },
-    // defaultCardType: {
-    //     label: '新用户注册卡类',
-    //     type: 'custom',
-    //     defaultValue: '',
-    //     rules: ['required'],
-    //     render: () => { }
-    // },
     activityRange: {
         label: '',
         type: 'custom',

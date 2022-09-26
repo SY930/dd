@@ -1,5 +1,5 @@
 import { closePage, decodeUrl } from '@hualala/platform-base';
-import { Col, Row, Radio, Select, Input } from 'antd';
+import { Col, Row, Radio, Select, Input, Form } from 'antd';
 import ShopSelector from 'components/ShopSelector';
 import { Component } from 'react';
 import { connect } from 'react-redux';
@@ -19,6 +19,7 @@ import { GiftCategoryAndFoodSelector } from 'containers/SaleCenterNEW/common/Cat
 
 const RadioGroup = Radio.Group;
 const Option = Select.Option;
+const FormItem = Form.Item;
 
 // let activityFormKeys = [];
 // let formItems = {}
@@ -76,6 +77,11 @@ class PromotionRightMain extends Component {
         this.getGroupCardTypeList();
         if (mode != 'create') {
             this.getPromotionDetail(currentPromotion)
+        }
+        if (mode == 'create') {
+            this.props.setPromotionDetail({
+                mutexPromotions: []
+            })
         }
     }
 
@@ -265,19 +271,23 @@ class PromotionRightMain extends Component {
             type: 'custom',
             label: '',
             defaultValue: [],
-            render: decorator => {
+            render: (decorator, form) => {
+                const { getFieldsValue } = form;
+                const { hasMutexDepend } = getFieldsValue();
                 return (
                     <Row>
                         <Col offset={5}>
-                            {decorator({
-                                key: 'mutexDependType',
-                                defaultValue: 1
-                            })(
-                                <RadioGroup>
-                                    <Radio key={1} value={1}>与所有优惠券不共享</Radio>
-                                    <Radio key={2} value={2}>与部分优惠券不共享</Radio>
-                                </RadioGroup>
-                            )}
+                            {
+                                hasMutexDepend && decorator({
+                                    key: 'mutexDependType',
+                                    defaultValue: 1
+                                })(
+                                    <RadioGroup>
+                                        <Radio key={1} value={1}>与所有优惠券不共享</Radio>
+                                        <Radio key={2} value={2}>与部分优惠券不共享</Radio>
+                                    </RadioGroup>
+                                )
+                            }
                         </Col>
                     </Row>
                 )
@@ -288,19 +298,28 @@ class PromotionRightMain extends Component {
     renderNoShareBenifit = (formItems) => {
         formItems.NoShareBenifit = {
             type: 'custom',
-            label: '不共享优惠',
-            render: decorator => {
+            label: '',
+            render: (decorator, form) => {
+                const { getFieldsValue } = form;
+                const { hasMutexDepend, mutexDependType } = getFieldsValue();
                 return (
                     <Row>
-                        <Col>
-                            {decorator({
-                                key: 'NoShareBenifit',
-                                rules: [
-                                    { required: true, message: '至少选择一项优惠' }
-                                ]
-                            })(
-                                <NoShareBenifit />
-                            )}
+                        <Col span={24}>
+                            {
+                                hasMutexDepend && mutexDependType == 2 && <FormItem label='不共享优惠' style={{ display: 'flex' }} className={styles.NoShareBenifit}>
+                                    {
+                                        hasMutexDepend &&
+                                        decorator({
+                                            key: 'NoShareBenifit',
+                                            rules: [
+                                                { required: true, message: '至少选择一项优惠' }
+                                            ]
+                                        })(
+                                            <NoShareBenifit />
+                                        )
+                                    }
+                                </FormItem>
+                            }
                         </Col>
                     </Row>
                 )
@@ -382,7 +401,7 @@ class PromotionRightMain extends Component {
         }
     }
 
-    onChangeActivityThirdForm = (key, value) => {
+    onChangeActivityThirdForm = (key, value, form) => {
         let keys = this.state.activityThirdFormKeys[0].keys;
         if (key == 'hasMutexDepend') { // 与优惠券不共享是否开启
             if (value) {
@@ -399,6 +418,12 @@ class PromotionRightMain extends Component {
             this.state.activityThirdFormKeys[0].keys = keys;
             this.setState({
                 activityThirdFormKeys: this.state.activityThirdFormKeys
+            }, () => {
+                const { getFieldsValue, setFieldsValue } = form;
+                const { NoShareBenifit } = getFieldsValue()
+                setFieldsValue({
+                    mutexDependType: NoShareBenifit && NoShareBenifit.length > 0 ? 2 : 1
+                })
             })
         }
         else if (key == 'mutexDependType') {
@@ -590,7 +615,7 @@ class PromotionRightMain extends Component {
                         formKeys={activityThirdFormKeys}
                         formItems={formItems}
                         formItemLayout={formItemLayout}
-                        onChange={this.onChangeActivityThirdForm}
+                        onChange={(key, value) => this.onChangeActivityThirdForm(key, value, this.allForms[newFormSteps.length])}
                         formData={this.state.activityThirdFormData}
                     />
                 </Col>
