@@ -50,8 +50,8 @@ const CARD_SUM_COLUMNS = [
         dataIndex: 'giftStatus',
         key: 'giftStatus',
         width: 70,
-        render: (value) => {
-            return <span>{mapValueToLabel(GiftCfg.giftCardStatus, String(value))}</span>
+        render: (value, record) => {
+            return <span>{mapValueToLabel(record.giftType == 90 ? GiftCfg.giftQuotaCardStatus : GiftCfg.giftCardStatus, String(value))}</span>
         },
     }, {
         title: '实收',

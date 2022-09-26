@@ -211,7 +211,7 @@ class SendCard extends React.Component {
                             key: 'giftStatus',
                             width: 60,
                             render: (text, record, index) => {
-                                return <span>{mapValueToLabel(GiftCfg.giftCardStatus, String(text))}</span>
+                                return <span>{mapValueToLabel(giftType == '90' ? GiftCfg.giftQuotaCardStatus : GiftCfg.giftCardStatus, String(text))}</span>
                             },
                         },
                         {
