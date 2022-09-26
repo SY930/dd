@@ -3007,31 +3007,31 @@ class GiftAddModalStep extends React.PureComponent {
                 }>
                     <Icon style={{ marginLeft: 5, marginRight: 5}} type="question-circle" />
                 </Tooltip></span>,
-                rules: [{
-                    validator: (rule, v, cb) => {
-                        if (!v.pushMessageMpID) {
-                            cb(rule.message);
-                        }
-                        cb();
-                    },
-                    message: '请选择微信推送的公众号',
-                },{
-                    validator: (rule, v, cb) => {
-                        if (v.sendType.indexOf('wechat') === -1) {
-                            cb(rule.message);
-                        }
-                        cb();
-                    },
-                    message: '微信推送为必选项',
-                },{
-                    validator: (rule, v, cb) => {
-                        if (v.sendType.indexOf('mini') > -1 && !v.pushMimiAppMsg) {
-                            cb(rule.message);
-                        }
-                        cb();
-                    },
-                    message: '请选择推送的小程序',
-                }],
+                // rules: [{
+                //     validator: (rule, v, cb) => {
+                //         if (!v.pushMessageMpID) {
+                //             cb(rule.message);
+                //         }
+                //         cb();
+                //     },
+                //     message: '请选择微信推送的公众号',
+                // },{
+                //     validator: (rule, v, cb) => {
+                //         if (v.sendType.indexOf('wechat') === -1) {
+                //             cb(rule.message);
+                //         }
+                //         cb();
+                //     },
+                //     message: '微信推送为必选项',
+                // },{
+                //     validator: (rule, v, cb) => {
+                //         if (v.sendType.indexOf('mini') > -1 && !v.pushMimiAppMsg) {
+                //             cb(rule.message);
+                //         }
+                //         cb();
+                //     },
+                //     message: '请选择推送的小程序',
+                // }],
                 type: 'custom',
                 render: (decorator,form) => {
                     return (
