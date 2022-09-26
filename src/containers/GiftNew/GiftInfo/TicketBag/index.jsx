@@ -1,17 +1,20 @@
 import React, { PureComponent as Component } from 'react';
-import { Row, Col, Button } from 'antd';
+import { Row, Col, Button, message } from 'antd';
 import styles from './index.less';
 import MainTable from './MainTable';
 import QueryForm from './QueryForm';
 import { getTicketList } from './AxiosFactory';
 import ReleaseModal from './Release';
+import { axiosData } from '../../../../helpers/util';
 
 export default class TicketBag extends Component {
+    queryFormRef = null;
     state = {
         list: [],
         loading: false,
-        queryParams: { pageNo:1, pageSize:25 },        // 临时查询缓存，具体对象查看QueryForm对象
+        queryParams: { pageNo: 1, pageSize: 25 },        // 临时查询缓存，具体对象查看QueryForm对象
         visible: false,
+        exportLoading: false,
     };
     componentDidMount() {
         this.onQueryList();
@@ -37,6 +40,45 @@ export default class TicketBag extends Component {
     onToggleModal = () => {
         this.setState(ps => ({ visible: !ps.visible }));
     }
+    onExport = () => {
+        this.queryFormRef.form.validateFieldsAndScroll((err, values) => {
+            if (err) return;
+            const { groupID, pageType } = this.props;
+            let couponPackageStatus = pageType == 2 ? 1 : 2
+            const { pageNo, pageSize } = this.state.pageObj;
+            const obj = {
+                ...values,
+                pageNo,
+                pageSize,
+                groupID,
+                couponPackageStatus,
+                exportType: 23
+            }
+            if (!obj.name) {
+                delete obj.name
+            }
+            this.setState({
+                exportLoading: true
+            })
+            axiosData(
+                '/crm/export/exportCouponPackage.ajax',
+                { ...obj },
+                null,
+                { path: '' },
+            ).then(res => {
+                this.setState({
+                    exportLoading: false
+                })
+                if (res && res.code == '000') {
+                    message.success('导出成功')
+                }
+            }).catch(error => {
+                this.setState({
+                    exportLoading: false
+                })
+            })
+        })
+    }
     render() {
         const { list, loading, pageObj, visible, queryParams } = this.state;
         const { groupID, onGoEdit } = this.props;
@@ -46,7 +88,10 @@ export default class TicketBag extends Component {
                 <QueryForm
                     onQuery={this.onQueryList}
                     onThrow={this.onToggleModal}
+                    onExport={this.onExport}
                     pageType={this.props.pageType}
+                    onRef={node => this.queryFormRef = node}
+                    exportLoading={this.state.exportLoading}
                 />
                 <div className="layoutsLine"></div>
                 <MainTable

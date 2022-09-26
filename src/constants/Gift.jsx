@@ -102,7 +102,7 @@ const GiftCfg = {
       color: '#c49b79',
     },
     {
-      name: '现金红包',
+      name: '微信红包',
       describe: '微信现金红包，可通过活动发送现金红包给指定用户',
       value: '113',
       color: '#e5be6c',
@@ -150,7 +150,7 @@ const GiftCfg = {
     { label: '线上礼品卡', value: '91' },
     { label: '买赠券', value: '110' },
     { label: '折扣券', value: '111' },
-    { label: '现金红包', value: '113' },
+    { label: '微信红包', value: '113' },
     { label: '配送券', value: '22' },
     { label: '特殊权益券', value: '81' },
     // { label: '不定额代金券', value: '115' },

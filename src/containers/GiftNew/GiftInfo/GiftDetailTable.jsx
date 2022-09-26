@@ -1,14 +1,10 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
-import { Tabs, Col, Table, Button, Icon, Modal, message, Tooltip } from 'antd';
-import ReactDOM from 'react-dom';
-import { COMMON_LABEL } from 'i18n/common';
+import { Tabs, Button, Icon, Modal, message } from 'antd';
 import _ from 'lodash';
 import {throttle} from 'lodash';
 import { axiosData, fetchData, isFilterShopType } from '../../../helpers/util';
 import GiftCfg from '../../../constants/Gift';
-import SelectBrands from '../components/SelectBrands'
-import BaseForm from '../../../components/common/BaseForm';
 import Authority from '../../../components/common/Authority';
 import styles from './GiftInfo.less';
 import styles2 from '../../SaleCenterNEW/ActivityPage.less';
@@ -39,7 +35,6 @@ import CreateGiftsPanel from "../components/CreateGiftsPanel";
 import {
     GIFT_LIST_CREATE,
     GIFT_LIST_QUERY,
-    GIFT_LIST_UPDATE,
     GIFT_DETAIL_QUERY,
 } from "../../../constants/authorityCodes";
 import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
@@ -789,20 +784,20 @@ class GiftDetailTable extends Component {
                         </div> */}
                         {
                             tabkey == '1' ? 
-                            <GiftList 
-                            pageType={1} 
-                            groupID={groupID} 
-                            onGoEdit={this.props.togglePage} 
-                            treeData={this.state.treeData} 
-                            formItems={formItems}
-                            formKeys={formKeys}
-                            columns={this.getTableColumns().map(c => (c.render ? ({
-                                ...c,
-                                render: c.render.bind(this),
-                            }) : c))}
-                            dataSource={this.state.dataSource}
-                            total={this.state.total}
-                        /> 
+                            <GiftList
+                                pageType={1} 
+                                groupID={groupID} 
+                                onGoEdit={this.props.togglePage} 
+                                treeData={this.state.treeData} 
+                                formItems={formItems}
+                                formKeys={formKeys}
+                                columns={this.getTableColumns().map(c => (c.render ? ({
+                                    ...c,
+                                    render: c.render.bind(this),
+                                }) : c))}
+                                dataSource={this.state.dataSource}
+                                total={this.state.total}
+                            /> 
                             : null
                         }
                     </TabPane>

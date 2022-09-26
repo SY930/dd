@@ -1,13 +1,13 @@
 import React, { PureComponent as Component } from 'react';
 import { connect } from 'react-redux';
-import { Row, Col, Button, Table, Icon } from 'antd';
+import { Row, Col, Button, Table, Icon, message } from 'antd';
 import styles from '../GiftInfo.less';
 import styles2 from '../../../SaleCenterNEW/ActivityPage.less';
 import BaseForm from '../../../../components/common/BaseForm';
 import Authority from '../../../../components/common/Authority';
 import GiftCfg from '../../../../constants/Gift';
 import {
-    GIFT_LIST_UPDATE,GIFT_LIST_QUERY
+    GIFT_LIST_UPDATE, GIFT_LIST_QUERY
 } from "../../../../constants/authorityCodes";
 import {
     FetchGiftList,
@@ -20,14 +20,16 @@ import {
     FetchGiftSchema,
 } from '../../_action';
 import _ from 'lodash';
+import { axiosData } from '../../../../helpers/util';
 
 const validUrl = require('valid-url');
 
 class GiftList extends Component {
-    constructor(props){
+    constructor(props) {
         super(props)
         this.state = {
             loading: false,
+            exportLoading: false,
             visible: false,
             queryParams: {
                 pageNo: 1,
@@ -38,13 +40,14 @@ class GiftList extends Component {
             total: 0,
         };
         this.setTableRef = el => this.tableRef = el;
+        this.queryFroms = null;
     }
     componentDidMount() {
         this.onQueryList();
-        document.addEventListener('keydown',this.handleEnterKey);
+        document.addEventListener('keydown', this.handleEnterKey);
     }
-    
-    componentWillReceiveProps(nextProps){
+
+    componentWillReceiveProps(nextProps) {
         const { dataSource, total } = nextProps;
         if (dataSource != this.props.dataSource) {
             if(this.props.pageType == 1){
@@ -55,13 +58,13 @@ class GiftList extends Component {
         // }
     }
 
-    componentWillUnmount(){
-        document.removeEventListener('keydown',this.handleEnterKey);
+    componentWillUnmount() {
+        document.removeEventListener('keydown', this.handleEnterKey);
     }
 
     handleEnterKey = (e) => {
         let { pageType } = this.props;
-        if(e.keyCode === 13 && (pageType == 1 || pageType == 3)){ 
+        if (e.keyCode === 13 && (pageType == 1 || pageType == 3)) {
             this.onQueryList();
         }
     }
@@ -70,7 +73,7 @@ class GiftList extends Component {
      * 加载列表
      */
     onQueryList = () => {
-        let {pageType} = this.props
+        let { pageType } = this.props
         let action = pageType == 1 ? 0 : 2
         const { queryParams } = this.state;
         const { FetchGiftList } = this.props;
@@ -158,17 +161,55 @@ class GiftList extends Component {
             return g;
         });
         this.setState({ dataSource: [...newDataSource], total: _total });
-        
     }
-    
+
+    onExport = () => {
+        let { pageType } = this.props
+        let action = pageType == 1 ? 1 : 2
+        const { queryParams } = this.state;
+        this.queryFroms.validateFieldsAndScroll((err, values) => {
+            if (err) return;
+            const params = { ...values };
+            this.setState({
+                queryParams: { pageNo: 1, pageSize: queryParams.pageSize || 1, action, ...params },
+            })
+            let obj = {
+                action,
+                pageNo: 1,
+                pageSize: queryParams.pageSize || 1,
+                ...params,
+                exportType: 22
+            }
+            this.setState({
+                exportLoading: true
+            })
+            axiosData(
+                '/crm/export/exportGift.ajax',
+                { ...obj },
+                null,
+                { path: '' },
+            ).then(res => {
+                this.setState({
+                    exportLoading: false
+                })
+                if (res && res.code == '000') {
+                    message.success('导出成功')
+                }
+            }).catch(error => {
+                this.setState({
+                    exportLoading: false
+                })
+            })
+        });
+    }
 
     render() {
-        const { loading, queryParams, dataSource = [], total} = this.state;
-        const { groupID, formItems, formKeys, getTableColumns,  } = this.props;
+        const { loading, queryParams, dataSource = [], total } = this.state;
+        const { groupID, formItems, formKeys, getTableColumns, } = this.props;
         const { pageNo, pageSize } = queryParams;
         return (
             <div className={styles2.pageContentWrapper}>
-                <div style={{ padding: '0'}} className="layoutsHeader">
+                <div style={{ padding: '0' }} className="layoutsHeader">
                     <div className="layoutsSearch">
                         <ul>
                             <li className={styles.formWidth}>
@@ -178,7 +219,7 @@ class GiftList extends Component {
                                     formKeys={formKeys}
                                     formData={queryParams}
                                     layout="inline"
-                                    // onChange={(key, value) => this.handleFormChange(key, value)}
+                                // onChange={(key, value) => this.handleFormChange(key, value)}
                                 />
                             </li>
                             <li>
@@ -191,7 +232,10 @@ class GiftList extends Component {
                             </li>
                         </ul>
                     </div>
-                    <div style={{ margin: '0'}} className="layoutsLine"></div>
+                    <div className={styles2.rightBtnBox}>
+                        <Button onClick={this.onExport} loading={this.state.exportLoading} disabled={this.state.exportLoading}>导出</Button>
+                    </div>
+                    <div style={{ margin: '0' }} className="layoutsLine"></div>
                 </div>
                 <div className={[styles.giftTable, styles2.tableClass, 'layoutsContent'].join(' ')}>
                     <Table
@@ -202,7 +246,7 @@ class GiftList extends Component {
                         pagination={{
                             showSizeChanger: true,
                             pageSize,
-                            pageSizeOptions: ['25','50','100','200'],
+                            pageSizeOptions: ['25', '50', '100', '200'],
                             current: pageNo,
                             total: this.state.total,
                             showQuickJumper: true,
@@ -211,7 +255,7 @@ class GiftList extends Component {
                             showTotal: (total, range) => `本页${range[0]}-${range[1]}/ 共 ${total}条`,
                         }}
                         loading={this.props.loading}
-                        scroll={{ x: 1600,  y: 'calc(100vh - 440px)' }}
+                        scroll={{ x: 1600, y: 'calc(100vh - 440px)' }}
                     />
                 </div>
             </div>
@@ -248,5 +292,10 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
+    null,
+    {
+        withRef: true
+    }
 )(GiftList)
+
