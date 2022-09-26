@@ -126,7 +126,7 @@ class BasicInfoForm extends Component {
     onChangeBasicForm = (key, value) => {};
 
     resetFormItems = () => {
-        const { shopIDList, cardTypeIDList, defaultCardType } = baseFormItems;
+        const { shopIDList, cardTypeIDList } = baseFormItems;
         let { cardInfo, canUseShops = [], cardTypeLst } = this.state;
         cardInfo = cardInfo.filter(
             (item) =>
@@ -146,36 +146,6 @@ class BasicInfoForm extends Component {
         });
         return {
             ...baseFormItems,
-            defaultCardType: {
-                ...defaultCardType,
-                render: (d, form) => {
-                    return form.getFieldValue("partInUser") == 1 ||
-                        form.getFieldValue("partInUser") == 2
-                        ? d({
-                              onChange: (e) => this.handleSelectChange([e]),
-                          })(
-                              <Select
-                                  showSearch={true}
-                                  notFoundContent="未搜索到结果"
-                                  filterOption={(input, option) =>
-                                      option.props.children
-                                          .toLowerCase()
-                                          .indexOf(input.toLowerCase()) >= 0
-                                  }
-                              >
-                                  {cardInfo.map((type) => (
-                                      <Select.Option
-                                          key={type.cardTypeID}
-                                          value={type.cardTypeID}
-                                      >
-                                          {type.cardTypeName}
-                                      </Select.Option>
-                                  ))}
-                              </Select>
-                          )
-                        : null;
-                },
-            },
             shopIDList: {
                 ...shopIDList,
                 render: (d) =>
@@ -195,9 +165,6 @@ class BasicInfoForm extends Component {
             cardTypeIDList: {
                 ...cardTypeIDList,
                 render: (d, form) => {
-                    if (form.getFieldValue("partInUser") != 3) {
-                        return null;
-                    }
                     if (form.getFieldValue("cardLevelRangeType") == 2) {
                         return (
                             <Form.Item

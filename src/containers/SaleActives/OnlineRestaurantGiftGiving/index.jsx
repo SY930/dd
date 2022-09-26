@@ -56,8 +56,6 @@ class OnlineRestaurantGiftGiving extends Component {
         let formData = {
             ...data,
             enterPositionList: String(data.enterPositionList).split(","),
-            defaultCardType:
-                data.defaultCardType != 0 ? data.defaultCardType : undefined,
             eventRange:
                 data.eventEndDate && data.eventStartDate
                     ? [
@@ -175,10 +173,8 @@ class OnlineRestaurantGiftGiving extends Component {
             enterPositionList: values.enterPositionList.join(","),
             eventRemark: values.eventRemark,
             smsGate: values.smsGate,
-            partInUser: values.partInUser,
             giftSendType: values.giftSendType,
             cardLevelRangeType: values.cardLevelRangeType,
-            defaultCardType: values.defaultCardType,
             cardLevelIDList: values.cardLevelRangeType
                 ? values.cardLevelRangeType == 2
                     ? values.cardTypeIDList
