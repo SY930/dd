@@ -294,6 +294,9 @@ class PromotionRightMain extends Component {
                         <Col>
                             {decorator({
                                 key: 'NoShareBenifit',
+                                rules: [
+                                    { required: true, message: '至少选择一项优惠' }
+                                ]
                             })(
                                 <NoShareBenifit />
                             )}
@@ -408,15 +411,17 @@ class PromotionRightMain extends Component {
 
     onChangeActivityThirdForm = (key, value) => {
         let keys = this.state.activityThirdFormKeys[0].keys;
-        if (key == 'hasMutexDepend') {
+        if (key == 'hasMutexDepend') { // 与优惠券不共享是否开启
             if (value) {
-                // 与优惠券不共享: 开启
                 let index = keys.indexOf('hasMutexDepend');
                 keys.splice(index + 1, 0, 'mutexDependType');
             } else {
                 // 与优惠券不共享: 关闭
                 let deleteKeys = ['mutexDependType', 'NoShareBenifit'];
                 keys = keys.filter(key => !deleteKeys.includes(key));
+                this.props.setPromotionDetail({
+                    mutexPromotions: []
+                });
             }
             this.state.activityThirdFormKeys[0].keys = keys;
             this.setState({
@@ -424,10 +429,13 @@ class PromotionRightMain extends Component {
             })
         }
         else if (key == 'mutexDependType') {
-            if (value == 2) {
+            if (value == 2) { // 与部分优惠券不共享
                 let index = keys.indexOf('mutexDependType');
                 keys.splice(index + 1, 0, 'NoShareBenifit');
-            } else {
+                this.props.setPromotionDetail({
+                    mutexPromotions: []
+                });
+            } else { // 与所有优惠券不共享
                 keys = keys.filter(key => key != 'NoShareBenifit');
             }
             this.state.activityThirdFormKeys[0].keys = keys;
@@ -437,7 +445,6 @@ class PromotionRightMain extends Component {
         } else if (key == 'NoShareBenifit') {
             this.selectNoShareBenifit(value)
         } else if (key == 'activityRange') {
-            console.log('指定菜品和商品的变化----', value);
             const scopeList = [];
             value.foodCategory.forEach((item) => {
                 scopeList.push({
@@ -486,6 +493,10 @@ class PromotionRightMain extends Component {
                     }
                 }),
             });
+        } else {
+            this.props.setPromotionDetail({
+                mutexPromotions: []
+            })
         }
     }
 

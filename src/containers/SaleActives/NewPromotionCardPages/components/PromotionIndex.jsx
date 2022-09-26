@@ -179,28 +179,30 @@ class PromotionIndex extends Component {
                     }
                     if (item.gift && item.gift.length > 0) {
                         item.gift.map(item => {
-                            item.presentType = 1;
-                            let effectType = '';
-                            if (item.effectType == 1) { // 相对有效期
-                                if (item.countType == 0) { // 按小时
-                                    effectType = 1
-                                } else {
-                                    effectType = 3
+                            if (item.giftID) {
+                                item.presentType = 1;
+                                let effectType = '';
+                                if (item.effectType == 1) { // 相对有效期
+                                    if (item.countType == 0) { // 按小时
+                                        effectType = 1
+                                    } else {
+                                        effectType = 3
+                                    }
+                                } else if (item.effectType == 2) {// 固定有效期
+                                    effectType = 2;
+                                    if (item.giftRangeTime.length > 0) {
+                                        item.effectTime = item.giftRangeTime[0].format('YYYYMMDD000000');
+                                        item.validUntilDate = item.giftRangeTime[1].format('YYYYMMDD235959');
+                                        delete item.giftRangeTime;
+                                    }
                                 }
-                            } else if (item.effectType == 2) {// 固定有效期
-                                effectType = 2;
-                                if (item.giftRangeTime.length > 0) {
-                                    item.effectTime = item.giftRangeTime[0].format('YYYYMMDD000000');
-                                    item.validUntilDate = item.giftRangeTime[1].format('YYYYMMDD235959');
-                                    delete item.giftRangeTime;
-                                }
+                                gifts.push({
+                                    ...item,
+                                    effectType,
+                                    giftName: this.findGiftNameById(state.treeData, item.giftID)
+                                });
+                                return item;
                             }
-                            gifts.push({
-                                ...item,
-                                effectType,
-                                giftName: this.findGiftNameById(state.treeData, item.giftID)
-                            });
-                            return item;
                         })
                     }
                     if (item.normal) {
@@ -326,7 +328,7 @@ class PromotionIndex extends Component {
                 if (currentPromotion.itemID) {
                     requestPramas.event.itemID = currentPromotion.itemID;
                 }
-                console.log('请求参数', requestPramas);
+                console.log('请求参数', requestPramas); // _TODO
                 this.createPromotion(requestPramas);
             } catch (error) {
                 console.error(error);

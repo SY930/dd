@@ -167,10 +167,6 @@ class AddGifts extends Component {
         })
     }
 
-    findGiftNameByKey = () => {
-
-    }
-
     onChangeAddGiftForm = (key, value, id) => {
         const { setFieldsValue, resetFields } = this.giftForms[id];
         if (key == 'giftID') {
@@ -184,7 +180,12 @@ class AddGifts extends Component {
     }
 
     renderGiftID = (decorator, form) => {
-        return decorator()(<TreeSelect
+        return decorator({
+            key: 'giftID',
+            rules: [
+                { required: true, message: '请选择礼品名称' }
+            ]
+        })(<TreeSelect
             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
             treeData={this.props.treeData}
             placeholder="请选择礼品名称"

@@ -179,7 +179,21 @@ class ActivityConditions extends Component {
                     <Col>
                         {
                             decorator({
-                                key: 'stageAmount'
+                                key: 'stageAmount',
+                                rules: [
+                                    {
+                                        required: true,
+                                        validator: (rule, value, callback) => {
+                                            if (!/^\d+$/.test(value)) {
+                                                return callback('请输入数字');
+                                            }
+                                            if (+value < 1) {
+                                                return callback('必须大于0');
+                                            }
+                                            return callback();
+                                        },
+                                    },
+                                ]
                             })(
                                 <Input
                                     addonBefore={
@@ -367,6 +381,11 @@ class ActivityConditions extends Component {
             this.setState({
                 conditionList
             })
+            if (Array.isArray(value) && value.length > 0 && !value.includes(1)) {
+                // 
+                // let onMinusGift = this.conditionForms[id + 'gift'];
+                // onMinusGift()
+            }
         } else if (key == 'stageType') {
             let singleConditionItem = this.state.conditionList[0];
             singleConditionItem.stageType = value;
@@ -392,12 +411,6 @@ class ActivityConditions extends Component {
                 } else {
                     this.props.showActivityRange(false);
                 }
-                // console.log('stageTypes===22222', stageTypes);
-                // if (value == 3 || value == 4) {
-                //     this.props.showActivityRange(true);
-                // } else {
-                //     this.props.showActivityRange(false);
-                // }
             });
             Object.keys(this.conditionForms).forEach(conditionFormId => {
                 if (conditionFormId != singleConditionItem.id) {

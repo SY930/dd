@@ -18,7 +18,7 @@ const CARD_SUM_COLUMNS = [
         className: 'TableTxtCenter',
         width: 50,
         fixed: 'left',
-        render(value) { return ((this.state.pageNo || 1) - 1) * this.state.pageSize + value}  ,
+        render(value) { return ((this.state.pageNo || 1) - 1) * this.state.pageSize + value },
     }, {
         title: '卡名称',
         dataIndex: 'giftName',
@@ -171,7 +171,7 @@ const CARD_SUM_FORMITEMS = {
     },
 };
 const CARD_SUM_FROMKEYS = [{ col: { span: 8 }, keys: ['batchNO_sum', 'payWayName'] },
-    { col: { span: 8 }, keys: ['cardNO_sum', 'timeRangeSend_sum'] },
-    { col: { span: 8 }, keys: ['giftStatus', 'usingShopID'] }];
+{ col: { span: 8 }, keys: ['cardNO_sum', 'timeRangeSend_sum'] },
+{ col: { span: 8 }, keys: ['giftStatus', 'usingShopID'] }];
 
 export { CARD_SUM_COLUMNS, CARD_SUM_FORMITEMS, CARD_SUM_FROMKEYS }

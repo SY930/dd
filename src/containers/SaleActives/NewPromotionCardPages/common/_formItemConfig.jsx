@@ -123,6 +123,17 @@ export const ALL_FORM_ITEMS = {
                             {
                                 decorator({
                                     key: 'partInTimes2',
+                                    rules: [
+                                        { required: joinCount == 2, message: '请输入数字' },
+                                        { pattern: /^\d+$/, message: '请输入数字' },
+                                        {
+                                            validator: (rule, value, cb) => {
+                                                if (+value < 1) cb(rule.message);
+                                                cb();
+                                            },
+                                            message: '请输入大于0的数字',
+                                        },
+                                    ]
                                 })(
                                     <Input addonBefore="同一用户可参与" addonAfter="次" style={{ width: '100px' }} disabled={joinCount != 2} />
                                 )
@@ -135,6 +146,17 @@ export const ALL_FORM_ITEMS = {
                             {
                                 decorator({
                                     key: 'countCycleDays',
+                                    rules: [
+                                        { required: joinCount == 3, message: '请输入数字' },
+                                        { pattern: /^\d+$/, message: '请输入数字' },
+                                        {
+                                            validator: (rule, value, cb) => {
+                                                if (+value < 1) cb(rule.message);
+                                                cb();
+                                            },
+                                            message: '请输入大于0的数字',
+                                        },
+                                    ]
                                 })(
                                     <Input addonBefore="同一用户" addonAfter="天，" style={{ width: '100px' }} disabled={joinCount != 3} />
                                 )
@@ -144,6 +166,17 @@ export const ALL_FORM_ITEMS = {
                             {
                                 decorator({
                                     key: 'partInTimes3',
+                                    rules: [
+                                        { required: joinCount == 3, message: '请输入数字' },
+                                        { pattern: /^\d+$/, message: '请输入数字' },
+                                        {
+                                            validator: (rule, value, cb) => {
+                                                if (+value < 1) cb(rule.message);
+                                                cb();
+                                            },
+                                            message: '请输入大于0的数字',
+                                        },
+                                    ]
                                 })(
                                     <Input addonBefore="可参与" addonAfter="次" style={{ width: '100px' }} disabled={joinCount != 3} />
                                 )
@@ -386,7 +419,11 @@ export const ALL_FORM_ITEMS = {
                 <Col>
                     {
                         decorator({
-                            key: 'stageAmount'
+                            key: 'stageAmount',
+                            rules: [
+                                { required: true, message: '请输入数字' },
+                                { pattern: /^\d+$/, message: '请输入数字' },
+                            ]
                         })(
                             <Input
                                 addonBefore={
