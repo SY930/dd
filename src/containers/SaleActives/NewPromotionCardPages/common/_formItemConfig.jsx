@@ -53,9 +53,9 @@ export const stageAmountTypeOptions = [
     {
         label: '元', value: 1,
     },
-    {
-        label: '份', value: 2,
-    },
+    // {
+    //     label: '份', value: 2,
+    // },
 ]
 
 
@@ -249,8 +249,7 @@ export const ALL_FORM_ITEMS = {
         label: '',
         render: (decorator, form) => {
             const { getFieldsValue } = form;
-            const { effectType: effectTypeValue } = getFieldsValue();
-            console.log(99999, getFieldsValue())
+            const { effectType: effectTypeValue, giftRangeTime: giftRangeTimeValue } = getFieldsValue();
             return (
                 <Row>
                     <Col span={24}>
@@ -273,6 +272,10 @@ export const ALL_FORM_ITEMS = {
                             {
                                 effectTypeValue == 2 && decorator({
                                     key: 'giftRangeTime',
+                                    defaultValue: giftRangeTimeValue || [],
+                                    rules: [
+                                        { required: true, message: '请输入有效时间' }
+                                    ]
                                 })(
                                     <RangePicker format="YYYY-MM-DD" placeholder={['开始日期', '结束日期']} />
                                 )
@@ -428,7 +431,7 @@ export const ALL_FORM_ITEMS = {
         options: [
             { label: '优惠券', value: 1 },
             { label: '积分', value: 2 },
-            { label: '卡值', value: 5 },
+            // { label: '卡值', value: 5 },
         ],
         rules: ['required'],
     },

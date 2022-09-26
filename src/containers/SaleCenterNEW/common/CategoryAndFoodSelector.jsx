@@ -116,17 +116,19 @@ class CategoryAndFoodSelector extends Component {
             }
         }
         if (_.isEqual(this.props.scopeLst, nextProps.scopeLst)) {
-            const {
-                categories,
-                categoryOrDish,
-                dishes,
-                excludeDishes,
-            } = getFoodInfoFromScopeList(nextProps.scopeLst) // 只取初始值
-            this.state = {
-                categoryOrDish,
-                dishes,
-                categories,
-                excludeDishes,
+            if (this.props.type == '87') { // 消费送礼
+                const {
+                    categories,
+                    categoryOrDish,
+                    dishes,
+                    excludeDishes,
+                } = getFoodInfoFromScopeList(nextProps.scopeLst) // 只取初始值
+                this.state = {
+                    categoryOrDish,
+                    dishes,
+                    categories,
+                    excludeDishes,
+                }
             }
         }
     }

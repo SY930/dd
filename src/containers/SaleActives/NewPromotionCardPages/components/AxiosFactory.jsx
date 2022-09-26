@@ -86,9 +86,9 @@ function proGiftTreeData(giftTypes) {
 async function httpCreatePromotion(data) {
     const { groupID } = getAccountInfo();
     data.event.groupID = groupID;
+    data.event.isActive = data.event.itemID ? 1 : 0;
     Object.assign(data, {
-        groupID,
-        isActive: data.event.itemID ? 1 : 0
+        groupID
     })
     const method = data.event.itemID ? 'specialPromotion/updateEvent.ajax' : 'specialPromotion/addEvent.ajax';
     const params = {

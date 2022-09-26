@@ -220,22 +220,9 @@ class PromotionRightMain extends Component {
         if (Array.isArray(newfoodScopeList) && newfoodScopeList.length > 0) {
             this.showActivityRange(true);
         }
-
-        let copyEventGiftConditionList = eventGiftConditionList.map(item => {
-            if (item.gift && Array.isArray(item.gift) && item.gift.length > 0) {
-                item.gift = item.gift.map(it => {
-                    // _TODO giftStartTime giftEndTime
-                    if (it.effectType == 2) {
-                        it.giftRangeTime = ['20220202235959', '20220808000000'];
-                    }
-                    return it;
-                })
-            }
-            return item;
-        })
         this.setState({
             formData: data,
-            eventGiftConditionList: copyEventGiftConditionList,
+            eventGiftConditionList,
             eventMutexDependRuleInfos,
             activityThirdFormData: data,
             foodScopeList: newfoodScopeList,
@@ -328,7 +315,11 @@ class PromotionRightMain extends Component {
                             {decorator({
                                 key: 'activityRange',
                             })(
-                                <GiftCategoryAndFoodSelector showRequiredMark scopeLst={this.state.foodScopeList} />
+                                <GiftCategoryAndFoodSelector
+                                    showRequiredMark
+                                    type='87'
+                                    scopeLst={this.state.foodScopeList}
+                                />
                             )}
                         </Col>
                     </Row>
@@ -406,6 +397,7 @@ class PromotionRightMain extends Component {
                                 form={form}
                                 cardLevelRangeType={this.state.cardLevelRangeType}
                                 cardLevelIDList={this.state.cardLevelIDList}
+                                type='87'
                             />
                         )}
                     </Col>

@@ -86,6 +86,7 @@ import {
 } from '../../redux/actions/saleCenterNEW/types';
 import newPromotionCardPageConfig from '../SaleActives/NewPromotionCardPages/common/newPromotionCardPageConfig';
 import { updateCurrentPromotionPageAC } from '../SaleActives/NewPromotionCardPages/store/action';
+import { consumeGivingWhiteList } from "containers/GiftNew/components/whiteList";
 
 // 特色营销 跳转页面
 const activityList = [
@@ -724,10 +725,14 @@ class NewCustomerPage extends Component {
         const { intl } = this.props;
         const k6316hto = intl.formatMessage(SALE_STRING.k6316hto);
         const k6316iac = intl.formatMessage(SALE_STRING.k6316iac);
+        let REPEAT_PROMOTION_TYPES_FILTER = REPEAT_PROMOTION_TYPES;
+        if (!consumeGivingWhiteList.includes(groupID)) {
+            REPEAT_PROMOTION_TYPES_FILTER = REPEAT_PROMOTION_TYPES_FILTER.filter(item => item.key != '87');
+        }
         let ALL_PROMOTION_CATEGORIES = [
             {
                 title: '人气活动',
-                list: NEW_CUSTOMER_PROMOTION_TYPES.concat(FANS_INTERACTIVITY_PROMOTION_TYPES, REPEAT_PROMOTION_TYPES, LOYALTY_PROMOTION_TYPES, SALE_PROMOTION_TYPES, ONLINE_PROMOTION_TYPES).filter(item => item.isNew && item.key != 67 && item.key != 68),
+                list: NEW_CUSTOMER_PROMOTION_TYPES.concat(FANS_INTERACTIVITY_PROMOTION_TYPES, REPEAT_PROMOTION_TYPES_FILTER, LOYALTY_PROMOTION_TYPES, SALE_PROMOTION_TYPES, ONLINE_PROMOTION_TYPES).filter(item => item.isNew && item.key != 67 && item.key != 68),
             },
             {
                 title: k6316hto, //  会员拉新
@@ -735,7 +740,7 @@ class NewCustomerPage extends Component {
             },
             {
                 title: k6316iac, // 促进复购
-                list: REPEAT_PROMOTION_TYPES,
+                list: REPEAT_PROMOTION_TYPES_FILTER,
             },
             {
                 title: '互动营销',

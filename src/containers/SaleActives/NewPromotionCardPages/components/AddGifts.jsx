@@ -44,19 +44,17 @@ class AddGifts extends Component {
                 ...this.renderGiftCount(giftCount),
             }
         }, () => {
-            let { giftList = [], stageType } = this.props;
-            console.log('giftList===2222', giftList);
+            let { giftList = [] } = this.props;
             let giftFormData = {};
             giftList.forEach(item => {
                 let effectType = 1;;
                 let countType = 0;
-                let giftRangeTime = [];
                 if (item.effectType == 1) {
                     effectType = 1;
                     countType = 0;
                 } else if (item.effectType == 2) { // 固定有效期
                     effectType = 2;
-                    item.giftRangeTime = [moment('20200202235959').format('YYYY-MM-DD'), moment('20220202000000').format('YYYY-MM-DD')];
+                    item.giftRangeTime = [moment(item.effectTime, 'YYYY-MM-DD'), moment(item.validUntilDate, 'YYYY-MM-DD')];
                 } else if (item.effectType == 3) {
                     effectType = 1;
                     countType = 1;
@@ -174,7 +172,6 @@ class AddGifts extends Component {
     }
 
     onChangeAddGiftForm = (key, value, id) => {
-        console.log(555555, key, value);
         const { setFieldsValue, resetFields } = this.giftForms[id];
         if (key == 'giftID') {
             setFieldsValue({

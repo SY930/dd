@@ -159,7 +159,6 @@ class PromotionIndex extends Component {
                 let eventGiftConditionList = [];
                 let eventMutexDependRuleInfos = []; //与优惠券不共享
                 conditionConfig.forEach((item, index) => {
-                    console.log('score====score', item);
                     eventGiftConditionList[index] = {};
                     let gifts = [];
                     if (item.score) {
@@ -191,8 +190,9 @@ class PromotionIndex extends Component {
                             } else if (item.effectType == 2) {// 固定有效期
                                 effectType = 2;
                                 if (item.giftRangeTime.length > 0) {
-                                    item.giftEndTime = item.giftRangeTime[0].format('YYYYMMDD000000');
-                                    item.giftEndTime = item.giftRangeTime[1].format('YYYYMMDD235959');
+                                    item.effectTime = item.giftRangeTime[0].format('YYYYMMDD000000');
+                                    item.validUntilDate = item.giftRangeTime[1].format('YYYYMMDD235959');
+                                    delete item.giftRangeTime;
                                 }
                             }
                             gifts.push({
@@ -274,7 +274,6 @@ class PromotionIndex extends Component {
                 let foodScopeList = [];
                 if (activityRange) {
                     const { categoryOrDish, dishes, excludeDishes, foodCategory } = activityRange;
-                    console.log('activityRange====111', activityRange);
                     if (categoryOrDish == 0) {
                         foodCategory.forEach(item => {
                             foodScopeList.push({

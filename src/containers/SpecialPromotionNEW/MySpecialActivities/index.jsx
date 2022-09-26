@@ -113,6 +113,7 @@ import CardSaleActive from "./CardSaleActive";
 import Card from "../../../assets/card.png";
 import newPromotionCardPageConfig from '../../SaleActives/NewPromotionCardPages/common/newPromotionCardPageConfig';
 import { updateCurrentPromotionPageAC } from '../../SaleActives/NewPromotionCardPages/store/action';
+import { consumeGivingWhiteList } from "containers/GiftNew/components/whiteList.js";
 
 const confirm = Modal.confirm;
 const Option = Select.Option;
@@ -2078,6 +2079,11 @@ class MySpecialActivities extends React.Component {
 
     renderFilterBar() {
         const opts = [];
+        let groupID = this.props.user.accountInfo.groupID;
+        // 消费送礼白名单
+        if (!consumeGivingWhiteList.includes(groupID)) {
+            this.cfg.eventWay = this.cfg.eventWay.filter(item => item.value != '87');
+        }
         this.cfg.eventWay.forEach((item, index) => {
             opts.push(
                 <Option value={`${item.value}`} key={`${index}`}>
@@ -2086,6 +2092,7 @@ class MySpecialActivities extends React.Component {
             );
         });
         const { intl } = this.props;
+
         return (
             <div>
                 <div className="layoutsSearch">
