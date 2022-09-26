@@ -236,7 +236,12 @@ class GiftAddModal extends React.Component {
             params.openPushMessageMpID = 1;
             params.openPushSms = params.pushMessage && params.pushMessage.sendType.indexOf('msg') !== -1 ? 1 : 0
             params.reminderTime = params.pushMessage && params.pushMessage.reminderTime
-            params.pushMessageMpID = params.pushMessage && params.pushMessage.pushMessageMpID
+            if (params.pushMessage && params.pushMessage.sendType && params.pushMessage.sendType.includes("wechat")) {
+                params.pushMessageMpID = params.pushMessage && params.pushMessage.pushMessageMpID;
+            } else {
+                params.pushMessage.pushMessageMpID = "";
+                params.pushMessageMpID = "";
+            }
             params.pushMimiAppMsg = params.pushMessage && params.pushMessage.sendType.includes('mini') ? params.pushMessage.pushMimiAppMsg : null
             params.toStatusAfterUseEnd = params.toStatusAfterUseEnd ? 17 : 0;
             const { accountInfo, startSaving, endSaving } = this.props;
@@ -339,19 +344,23 @@ class GiftAddModal extends React.Component {
             formData.shopNames = data.shopNames.map(shop => shop.id);
         }
         if (!formData.pushMessage) {
-            const sendType = ['wechat']
+            // const sendType = ['wechat']
+            const sendType = [];
+            if (formData.pushMessageMpID) {
+                sendType.push("wechat");
+            }
             if (formData.openPushSms) {
-                sendType.push('msg')
+                sendType.push("msg");
             }
             if (formData.pushMimiAppMsg) {
-                sendType.push('mini')
+                sendType.push("mini");
             }
             formData.pushMessage = {
                 pushMessageMpID: formData.pushMessageMpID,
                 pushMimiAppMsg: formData.pushMimiAppMsg,
                 sendType,
-                reminderTime: formData.reminderTime || 3,
-            }
+                reminderTime: formData.reminderTime || 3
+            };
         }
         let formItems = {
             giftType: {
