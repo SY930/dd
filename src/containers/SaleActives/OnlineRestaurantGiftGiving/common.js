@@ -91,7 +91,24 @@ export const baseFormItems = {
     },
     shopIDList: {
         type: "custom",
-        label: "适用门店",
+        label: (
+            <span>
+                适用门店
+                <Tooltip
+                    overlayStyle={{ maxWidth: '300px' }}
+                    title={
+                        <div>
+                            <div>1、不选则默认全部店铺都能参与活动</div>
+                            <div>
+                                2、如选择指定会员卡类别或卡等级参与活动，则只能选择会员卡类别或卡等级范围内的适用店铺
+                            </div>
+                        </div>
+                    }
+                >
+                    <Icon style={{ marginLeft: 5 }} type="question-circle-o" />
+                </Tooltip>
+            </span>
+        ),
         render: () => <p />,
         defaultValue: [],
         // rules: ["required"],
