@@ -1255,16 +1255,44 @@ class MySpecialActivities extends React.Component {
     };
 
     handleNewEditActive = (record, mode) => {
-        const currentPromotion = newPromotionCardPageConfig.find(item => item.key == record.eventWay);
-        jumpPage({ menuID: currentPromotion.menuID, promotionKey: record.eventWay, mode, itemID: record.itemID });
-        const { updateCurrentPromotionPage } = this.props;
-        updateCurrentPromotionPage({
-            [record.eventWay]: {
-                promotionKey: record.eventWay,
-                mode,
-                itemID: record.itemID
-            },
-        })
+        let handleNext = () => {
+            const currentPromotion = newPromotionCardPageConfig.find(item => item.key == record.eventWay);
+            jumpPage({ menuID: currentPromotion.menuID, promotionKey: record.eventWay, mode, itemID: record.itemID });
+            const { updateCurrentPromotionPage } = this.props;
+            updateCurrentPromotionPage({
+                [record.eventWay]: {
+                    promotionKey: record.eventWay,
+                    mode,
+                    itemID: record.itemID
+                },
+            })
+        }
+        if (
+            isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) &&
+            (record.isActive != "0" || !isMine(record)) &&
+            record.eventWay != 64
+        ) {
+            Modal.confirm({
+                title: `活动编辑`,
+                content: "活动无法编辑。",
+                iconType: "exclamation-circle",
+            });
+            return;
+        }
+        if (record.isActive == "1") {
+            // 正在进行中的活动弹窗提示
+            Modal.confirm({
+                title: `活动编辑`,
+                content: "活动正在进行中，确定要进行编辑吗？",
+                iconType: "exclamation-circle",
+                onOk() {
+                    handleNext();
+                },
+                onCancel() { },
+            });
+        } else {
+            handleNext();
+        }
     }
 
     // 点击删除按钮先弹窗

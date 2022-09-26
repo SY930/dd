@@ -229,8 +229,11 @@ class PromotionIndex extends Component {
                 clonedEvent.hasMutexDepend = event.hasMutexDepend ? 1 : 0
                 delete clonedEvent.NoShareBenifit;
                 const { eventRange, hasMutexDepend, mutexDependType, joinCount, countCycleDays, partInTimes2, partInTimes3, orderTypeList, brandList, activityRange, cardScopeType } = clonedEvent;
-                if (joinCount == 2) {
+                if (joinCount == 1) {
+                    delete clonedEvent.countCycleDays;
+                } else if (joinCount == 2) {
                     clonedEvent.partInTimes = partInTimes2
+                    delete clonedEvent.countCycleDays;
                 } else if (joinCount == 3) {
                     clonedEvent.countCycleDays = countCycleDays
                     clonedEvent.partInTimes = partInTimes3
