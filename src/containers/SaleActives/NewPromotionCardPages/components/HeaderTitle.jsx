@@ -6,6 +6,7 @@ import {
     LOYALTY_PROMOTION_TYPES, NEW_CUSTOMER_PROMOTION_TYPES, ONLINE_PROMOTION_TYPES, REPEAT_PROMOTION_TYPES, SALE_PROMOTION_TYPES
 } from '../../../../constants/promotionType';
 import styles from './style.less';
+import { decodeUrl } from '@hualala/platform-base';
 
 class HeaderTitle extends Component {
     render() {
@@ -20,7 +21,14 @@ class HeaderTitle extends Component {
         ]
         const currentPromotion = all_promotion_categories.find(item => item.key == promotionKey);
         const { promotion } = this.props;
-        const { mode } = promotion[this.props.promotionKey];
+        const urlParams = decodeUrl();
+        let mode = '';
+        if (promotion[this.props.promotionKey]) {
+            mode = promotion[this.props.promotionKey].mode;
+        } else if (urlParams && urlParams.mode) {
+            mode = urlParams.mode
+        }
+
         return (
             <Col className={styles.headerTitle}>
                 <h1>{currentPromotion.title}</h1>

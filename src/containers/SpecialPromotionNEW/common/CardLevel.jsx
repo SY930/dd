@@ -27,7 +27,13 @@ import _ from 'lodash';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
-const DEFAULT_CARD_TYPE_SELECTOR_PROMOTIONS = ["20", "21", "22", "30"];
+const DEFAULT_CARD_TYPE_SELECTOR_PROMOTIONS = [
+    '20',
+    '21',
+    '22',
+    '30',
+    '87'
+];
 
 @injectIntl
 class CardLevel extends React.Component {
@@ -113,11 +119,13 @@ class CardLevel extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (!_.isEqual(this.props.cardLevelRangeType, nextProps.cardLevelRangeType)
-            || !_.isEqual(this.props.cardLevelIDList, nextProps.cardLevelIDList)) {
+            || !_.isEqual(this.props.cardLevelIDList, nextProps.cardLevelIDList)
+            || !_.isEqual(this.props.defaultCardType, nextProps.defaultCardType)) {
             if (this.props.type == '87') { // 消费送礼
                 this.setState({
                     cardLevelRangeType: nextProps.cardLevelRangeType,
                     cardLevelIDList: nextProps.cardLevelIDList,
+                    defaultCardType: nextProps.defaultCardType,
                 })
                 return;
             }
@@ -189,7 +197,7 @@ class CardLevel extends React.Component {
                         return (
                             !(
                                 item.eventStartDate >
-                                    nextEventInfo.eventEndDate ||
+                                nextEventInfo.eventEndDate ||
                                 item.eventEndDate < nextEventInfo.eventStartDate
                             ) ||
                             item.eventStartDate == "20000101" ||
@@ -218,7 +226,7 @@ class CardLevel extends React.Component {
                 Object.keys(nextEventInfo).length < 30 &&
                 ((nextEventInfo.excludeEventCardLevelIdModelList &&
                     nextEventInfo.excludeEventCardLevelIdModelList.length >
-                        0) ||
+                    0) ||
                     nextEventInfo.allCardLevelCheck)
             ) {
                 // 新建&&局部被使用||全部被使用
@@ -309,14 +317,14 @@ class CardLevel extends React.Component {
             cardLevelRangeType == 0
                 ? cardInfo
                 : cardInfo.filter((cat) => {
-                      // 若当前卡类的cardTypeLevelList的ids和用户已选的cardLevelIDList有交集，就返回该新用户注册卡类
-                      const thisCatIds = cat.cardTypeLevelList.map(
-                          (card) => card.cardLevelID
-                      );
-                      return (
-                          _.intersection(thisCatIds, cardLevelIDList).length > 0
-                      );
-                  });
+                    // 若当前卡类的cardTypeLevelList的ids和用户已选的cardLevelIDList有交集，就返回该新用户注册卡类
+                    const thisCatIds = cat.cardTypeLevelList.map(
+                        (card) => card.cardLevelID
+                    );
+                    return (
+                        _.intersection(thisCatIds, cardLevelIDList).length > 0
+                    );
+                });
         return (
             <FormItem
                 validateStatus={defaultCardType ? "success" : "error"}
@@ -324,8 +332,8 @@ class CardLevel extends React.Component {
                     defaultCardType
                         ? null
                         : `${this.props.intl.formatMessage(
-                              STRING_SPE.d5g3303e750262
-                          )}`
+                            STRING_SPE.d5g3303e750262
+                        )}`
                 }
                 label={this.props.intl.formatMessage(
                     STRING_SPE.dd5a3f52gg51143
@@ -463,32 +471,32 @@ class CardLevel extends React.Component {
                             <Radio key={"2"} value={"2"}>
                                 {this.props.catOrCard == "card"
                                     ? `${this.props.intl.formatMessage(
-                                          STRING_SPE.d34id95hnj8241
-                                      )}`
+                                        STRING_SPE.d34id95hnj8241
+                                    )}`
                                     : this.props.cusPartialLabel ||
-                                      `${this.props.intl.formatMessage(
-                                          STRING_SPE.d170093144c11061
-                                      )}`}
+                                    `${this.props.intl.formatMessage(
+                                        STRING_SPE.d170093144c11061
+                                    )}`}
                             </Radio>
                         </RadioGroup>
                     </FormItem>
                 ) : null}
                 {this.props.type == "61" ||
-                this.state.cardLevelRangeType == "2" ? (
+                    this.state.cardLevelRangeType == "2" ? (
                     <FormItem
                         label={
                             this.props.type == "61"
                                 ? `${this.props.intl.formatMessage(
-                                      STRING_SPE.d2b1b89d4996543
-                                  )}`
+                                    STRING_SPE.d2b1b89d4996543
+                                )}`
                                 : this.props.catOrCard == "card"
-                                ? `${this.props.intl.formatMessage(
-                                      STRING_SPE.d5g31n12fm1627
-                                  )}`
-                                : this.props.cusSelectorLabel ||
-                                  `${this.props.intl.formatMessage(
-                                      STRING_SPE.d170093144c212281
-                                  )}`
+                                    ? `${this.props.intl.formatMessage(
+                                        STRING_SPE.d5g31n12fm1627
+                                    )}`
+                                    : this.props.cusSelectorLabel ||
+                                    `${this.props.intl.formatMessage(
+                                        STRING_SPE.d170093144c212281
+                                    )}`
                         }
                         className={[
                             styles.FormItemStyle,
@@ -521,16 +529,15 @@ class CardLevel extends React.Component {
                                     ifJumpOpenCard
                                         ? "当前正在编辑的权益卡 "
                                         : `${this.props.intl.formatMessage(
-                                              STRING_SPE.d34id95hnj7281
-                                          )}${
-                                              this.props.catOrCard == "card"
-                                                  ? `${this.props.intl.formatMessage(
-                                                        STRING_SPE.d34id95hnj8241
-                                                    )}`
-                                                  : `${this.props.intl.formatMessage(
-                                                        STRING_SPE.d170093144c11061
-                                                    )}`
-                                          }`
+                                            STRING_SPE.d34id95hnj7281
+                                        )}${this.props.catOrCard == "card"
+                                            ? `${this.props.intl.formatMessage(
+                                                STRING_SPE.d34id95hnj8241
+                                            )}`
+                                            : `${this.props.intl.formatMessage(
+                                                STRING_SPE.d170093144c11061
+                                            )}`
+                                        }`
                                 }
                                 allowClear={true}
                                 multiple={true}
@@ -543,7 +550,7 @@ class CardLevel extends React.Component {
                             />
                         )}
                         {!eventInfo.allCardLevelCheck &&
-                        excludeEvent.length == 0 ? null : (
+                            excludeEvent.length == 0 ? null : (
                             <Icon
                                 type="exclamation-circle"
                                 className={styles.cardLevelTreeIcon}
@@ -557,7 +564,7 @@ class CardLevel extends React.Component {
                     </FormItem>
                 ) : null}
                 {!eventInfo.allCardLevelCheck &&
-                excludeEvent.length == 0 ? null : (
+                    excludeEvent.length == 0 ? null : (
                     <div
                         style={{
                             display: this.state.tableDisplay ? "block" : "none",

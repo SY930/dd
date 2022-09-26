@@ -42,7 +42,8 @@ class PromotionRightMain extends Component {
             clonedGroupCardTypeList: [],
             foodScopeList: [], // 菜品
             cardLevelRangeType: '', // 会员范围
-            cardLevelIDList: []// 适用卡等级
+            defaultCardType: '', // 新用户注册卡类
+            cardLevelIDList: [], //适用卡等级
         }
         this.allForms = {};
         this.activityConditionsRef = '';
@@ -111,6 +112,7 @@ class PromotionRightMain extends Component {
             foodScopeList = [],
             cardLevelIDList,
             cardLevelRangeType,
+            defaultCardType
         } = data;
         if (orderTypeList) {
             data.orderTypeList = orderTypeList.split(',')
@@ -152,17 +154,16 @@ class PromotionRightMain extends Component {
                 }
             });
         }
-        if (cardLevelRangeType == 2) { // 全部会员
+        if (cardLevelRangeType == 2) { // 会员等级
             data.cardScopeType = {
                 cardLevelIDList,
-                defaultCardType: '',
+                defaultCardType,
                 cardLevelRangeType: '2'
             }
         } else {// 会员等级
             data.cardScopeType = {
-                cardLevelRangeType: '0',
-                cardLevelIDList: [],
-                defaultCardType: ''
+                defaultCardType,
+                cardLevelRangeType: '0'
             }
         }
         let categoryOrDish = 0;
@@ -358,35 +359,6 @@ class PromotionRightMain extends Component {
         )
     }
 
-    renderDefaultCardType = (formItems, key) => {
-        formItems[key].render = (decorator) => {
-            return (
-                <Row>
-                    <Col>
-                        {decorator({
-                            key: 'defaultCardType'
-                        })(
-                            <Select
-                                style={{
-                                    width: '100%'
-                                }}
-                                showSearch={true}
-                                allowClear={true}
-                                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                            >
-                                {
-                                    this.state.groupCardTypeList.map((item, index) =>
-                                        <Option key={index} value={String(item.cardTypeID)}>{item.cardTypeName}</Option>
-                                    )
-                                }
-                            </Select>
-                        )}
-                    </Col>
-                </Row>
-            )
-        }
-    }
-
     renderCardScopeType = (formItems, key) => {
         formItems[key].render = (decorator, form) => {
             return (
@@ -400,6 +372,7 @@ class PromotionRightMain extends Component {
                                 form={form}
                                 cardLevelRangeType={this.state.cardLevelRangeType}
                                 cardLevelIDList={this.state.cardLevelIDList}
+                                defaultCardType={this.state.defaultCardType}
                                 type='87'
                             />
                         )}
@@ -522,40 +495,9 @@ class PromotionRightMain extends Component {
         if (key == 'joinCount') {
             resetFields(['partInTimes2', 'partInTimes3', 'countCycleDays']);
         } else if (key == 'cardScopeType') {// 会员范围
-            const { defaultCardType } = getFieldsValue();
-            setFieldsValue({
-                defaultCardType: defaultCardType || '',
-                cardScopeType: {
-                    defaultCardType: '',
-                    cardLevelRangeType: value.cardLevelRangeType,
-                    cardLevelIDList: value.cardLevelIDList
-                }
+            this.setState({
+                ...value
             })
-            const { cardLevelRangeType, cardLevelIDList } = value;
-            if (cardLevelRangeType == '0') {
-                this.setState({
-                    cardLevelRangeType: '0',
-                    groupCardTypeList: this.state.clonedGroupCardTypeList
-                })
-            } else {
-                setFieldsValue({
-                    defaultCardType: defaultCardType || '',
-                })
-                this.setState({
-                    cardLevelRangeType: '2',
-                    cardLevelIDList: value.cardLevelIDList
-                })
-                if (cardLevelIDList.length == 0) {
-                    this.setState({
-                        groupCardTypeList: []
-                    })
-                } else {
-                    let groupCardTypeList = this.findCardTypeIDBycardLevelIDList(cardLevelIDList)
-                    this.setState({
-                        groupCardTypeList
-                    })
-                }
-            }
         } else if (key == 'brandList') {
             setFieldsValue({
                 shopIDList: []
@@ -563,10 +505,6 @@ class PromotionRightMain extends Component {
         } else if (key == 'shopIDList') {
             setFieldsValue({
                 shopIDList: value
-            })
-        } else if (key == 'defaultCardType') {
-            setFieldsValue({
-                defaultCardType: value
             })
         }
     }
@@ -584,9 +522,6 @@ class PromotionRightMain extends Component {
         if (activityFormKeys[0]) {
             if (activityFormKeys[0].keys.includes('shopIDList')) {
                 this.renderShopSelector(formItems, 'shopIDList');
-            }
-            if (activityFormKeys[0].keys.includes('defaultCardType')) {
-                this.renderDefaultCardType(formItems, 'defaultCardType');
             }
             if (activityFormKeys[0].keys.includes('cardScopeType')) {
                 this.renderCardScopeType(formItems, 'cardScopeType');
