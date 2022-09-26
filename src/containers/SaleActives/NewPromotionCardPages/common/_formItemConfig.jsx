@@ -128,7 +128,7 @@ export const ALL_FORM_ITEMS = {
                                         { pattern: /^\d+$/, message: '请输入数字' },
                                         {
                                             validator: (rule, value, cb) => {
-                                                if (+value < 1) cb(rule.message);
+                                                if (+value < 1 && joinCount == 2) cb(rule.message);
                                                 cb();
                                             },
                                             message: '请输入大于0的数字',
@@ -151,7 +151,7 @@ export const ALL_FORM_ITEMS = {
                                         { pattern: /^\d+$/, message: '请输入数字' },
                                         {
                                             validator: (rule, value, cb) => {
-                                                if (+value < 1) cb(rule.message);
+                                                if (+value < 1 && joinCount == 3) cb(rule.message);
                                                 cb();
                                             },
                                             message: '请输入大于0的数字',
@@ -171,7 +171,7 @@ export const ALL_FORM_ITEMS = {
                                         { pattern: /^\d+$/, message: '请输入数字' },
                                         {
                                             validator: (rule, value, cb) => {
-                                                if (+value < 1) cb(rule.message);
+                                                if (+value < 1 && joinCount == 3) cb(rule.message);
                                                 cb();
                                             },
                                             message: '请输入大于0的数字',
