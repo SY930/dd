@@ -111,7 +111,6 @@ class PromotionRightMain extends Component {
             foodScopeList = [],
             cardLevelIDList,
             cardLevelRangeType,
-
         } = data;
         if (orderTypeList) {
             data.orderTypeList = orderTypeList.split(',')
@@ -126,9 +125,10 @@ class PromotionRightMain extends Component {
         } else if (partInTimes) {
             data.partInTimes2 = partInTimes;
             data.joinCount = 2;
-            data.countCycleDays = null;
+            delete data.countCycleDays;
         } else {
             data.joinCount = 1;
+            delete data.countCycleDays;
         }
         if (brandList) {
             data.brandList = brandList.split(',').map(targetID => {
