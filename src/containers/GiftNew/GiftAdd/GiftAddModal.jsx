@@ -372,23 +372,25 @@ class GiftAddModal extends React.Component {
                         <Icon style={{ marginLeft: 5, marginRight: 5}} type="question-circle" />
                     </Tooltip>
                 </span>,
-                rules: [{
-                    validator: (rule, v, cb) => {
-                        if (v.sendType.indexOf('wechat') === -1) {
-                            cb(rule.message);
-                        }
-                        cb();
-                    },
-                    message: '微信推送为必选项',
-                }, {
-                    validator: (rule, v, cb) => {
-                        if (!v.pushMessageMpID) {
-                            cb(rule.message);
-                        }
-                        cb();
-                    },
-                    message: '请选择微信推送的公众号',
-                }],
+                rules: [
+                    // {
+                    //     validator: (rule, v, cb) => {
+                    //         if (v.sendType.indexOf('wechat') === -1) {
+                    //             cb(rule.message);
+                    //         }
+                    //         cb();
+                    //     },
+                    //     message: '微信推送为必选项',
+                    // }, {
+                    //     validator: (rule, v, cb) => {
+                    //         if (!v.pushMessageMpID) {
+                    //             cb(rule.message);
+                    //         }
+                    //         cb();
+                    //     },
+                    //     message: '请选择微信推送的公众号',
+                    // }
+                ],
                 type: 'custom',
                 render: decorator => decorator({})(<PushMessageMpID formData={formData} />),
             },
