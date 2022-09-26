@@ -153,10 +153,15 @@ export const getColumns = _this => ([
         render: text => text,
     },
     {
-        title: '礼品名称',
-        dataIndex: 'giftName',
-        width: 130,
-        render: text => text || '--',
+        title: '投放ID',
+        dataIndex: 'trdDeliveryID',
+        width: 180,
+        render: (text, record) => {
+            if (record.platformType == '7') {
+                return text
+            }
+            return '--'
+        },
     },
     {
         title: '礼品ID',
