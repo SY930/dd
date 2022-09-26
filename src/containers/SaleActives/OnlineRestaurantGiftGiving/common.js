@@ -94,7 +94,7 @@ export const baseFormItems = {
         label: "适用门店",
         render: () => <p />,
         defaultValue: [],
-        rules: ["required"],
+        // rules: ["required"],
     },
     eventRemark: {
         type: "textarea",
