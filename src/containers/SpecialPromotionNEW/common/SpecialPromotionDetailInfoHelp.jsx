@@ -100,6 +100,14 @@ const renderRecommendGiftsDetail = function () {
                                 renderRecommentReward = this
                                     .renderConsumptionReward;
                                 break;
+                            case 4:
+                                renderRecommentReward = this
+                                    .renderRightCardList;
+                                break;
+                            case 5:
+                                renderRecommentReward = this
+                                    .renderRightPackageList;
+                                break;
                             default:
                                 renderRecommentReward = this
                                     .renderRecommendGifts;
@@ -124,11 +132,11 @@ const renderRecommendGiftsDetail = function () {
                                     </div>
                                 ) : null}
 
-                                { indirectActiveRuleTabValue == 1 ? this.renderCheckbox({
+                                { directActiveRuleTabValue == 1 ? this.renderCheckbox({
                                     key: 'giveCash',
                                     label: '现金红包',
-                                    children: this.renderCash(indirectActiveRuleTabValue, '1'),
-                                    ruleType: indirectActiveRuleTabValue,
+                                    children: this.renderCash(directActiveRuleTabValue, '1'),
+                                    ruleType: directActiveRuleTabValue,
                                     roleType: '1',
                                 }) : null }
                                 {directActiveRuleTabValue == 1 ? (
@@ -185,6 +193,14 @@ const renderRecommendGiftsDetail = function () {
                                     case 3:
                                         renderRecommentReward = this
                                             .renderConsumptionReward;
+                                        break;
+                                    case 4:
+                                        renderRecommentReward = this
+                                            .renderRightCardList;
+                                        break;
+                                    case 5:
+                                        renderRecommentReward = this
+                                            .renderRightPackageList;
                                         break;
                                     default:
                                         renderRecommentReward = this
@@ -634,6 +650,12 @@ const initShowCheckBox = function () {
         ruleType3: {
 
         },
+        ruleType4: {
+
+        },
+        ruleType5: {
+
+        },
         ruleType999: {
 
         },
@@ -791,6 +813,8 @@ const handleSubmitRecommendGifts = function (isPrev) {
         data,
         cleanCount,
         saveMoneySetIds,
+        interestIds,
+        benefitCardIds,
         giftGetRule,
         checkBoxStatus,
         cashGiftVal,
@@ -909,6 +933,8 @@ const handleSubmitRecommendGifts = function (isPrev) {
             {
                 giftGetRule,
                 saveMoneySetIds,
+                interestIds,
+                benefitCardIds,
                 shareImagePath,
                 shareTitle,
                 cleanCount,
@@ -932,36 +958,36 @@ const handleSubmitRecommendGifts = function (isPrev) {
             v.gifts = []
 
 
-            if (v.rule == 1) {
-                v.eventRecommendSettings.forEach((presentValue, i) => {
-                    const { redPackageLimitValue } = presentValue
+            // if (v.rule == 1) {
+            //     v.eventRecommendSettings.forEach((presentValue, i) => {
+            //         const { redPackageLimitValue } = presentValue
 
-                    if (redPackageLimitValue) {
-                        presentValue.giftItemID = cashGiftVal
-                    } else {
-                        delete presentValue.giftItemID
-                    }
-                })
-            } else {
-                v.eventRecommendSettings.forEach((val) => {
-                    if (val.redPackageRate) {
-                        val.giftItemID = cashGiftVal
-                    }
-                    if (val.pointRate) {
-                        val.pointRate /= 100
-                    }
-                    if (val.rechargeRate) {
-                        val.rechargeRate /= 100
-                    }
-                    if (val.consumeRate) {
-                        val.consumeRate /= 100
-                    }
-                    if (val.redPackageRate) {
-                        val.redPackageRate /= 100
-                    }
-                    val.recommendRule = v.rule
-                })
-            }
+            //         if (redPackageLimitValue) {
+            //             presentValue.giftItemID = cashGiftVal
+            //         } else {
+            //             delete presentValue.giftItemID
+            //         }
+            //     })
+            // } else {
+            // }
+            v.eventRecommendSettings.forEach((val) => {
+                if (val.redPackageRate) {
+                    val.giftItemID = cashGiftVal
+                }
+                if (val.pointRate) {
+                    val.pointRate /= 100
+                }
+                if (val.rechargeRate) {
+                    val.rechargeRate /= 100
+                }
+                if (val.consumeRate) {
+                    val.consumeRate /= 100
+                }
+                if (val.redPackageRate) {
+                    val.redPackageRate /= 100
+                }
+                val.recommendRule = v.rule
+            })
 
             const rule1Gifts = _.cloneDeep(giftInfo).filter(gift => gift.recommendType).map((giftItem) => {
                 const [recommendType, recommendRule] = giftItem.recommendType.split('#')
@@ -1014,6 +1040,8 @@ const handleSubmitOnLineReturnGifts = function (isPrev) {
         couponValue, // 0 哗啦啦优惠券 1：第三方券
         giftGetRule,
         saveMoneySetIds,
+        interestIds,
+        benefitCardIds,
         shareImagePath,
         shareTitle,
         cleanCount,
@@ -1078,6 +1106,8 @@ const handleSubmitOnLineReturnGifts = function (isPrev) {
             this.props.setSpecialBasicInfo({
                 giftGetRule,
                 saveMoneySetIds,
+                interestIds,
+                benefitCardIds,
                 shareImagePath,
                 shareTitle,
                 cleanCount,
@@ -1109,6 +1139,8 @@ const handleSubmitOnLineReturnGifts = function (isPrev) {
     this.props.setSpecialBasicInfo({
         giftGetRule,
         saveMoneySetIds,
+        interestIds,
+        benefitCardIds,
         shareImagePath,
         shareTitle,
         cleanCount,

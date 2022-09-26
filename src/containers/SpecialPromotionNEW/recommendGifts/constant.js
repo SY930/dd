@@ -15,4 +15,14 @@ export const activeRulesList = [
         label: "消费后获得",
         closable: true,
     },
+    {
+        value: "4",
+        label: "购买权益卡后获得",
+        closable: true,
+    },
+    {
+        value: "5",
+        label: "购买权益包后获得",
+        closable: true,
+    },
 ];
