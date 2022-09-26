@@ -174,11 +174,11 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         bottom: 0,
     },
     {
-        title: '扫码点餐送礼（原线上餐厅送礼）',
+        title: '线上餐厅弹窗送礼',
         isSpecial: true,
         tags: [SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9, SALE_LABEL.k639vgbm],
         signs: ['xwx', 'wx', 'app'],
-        text: SALE_LABEL.k67b4rrq,
+        text: '线上餐厅多个功能页面自动弹出领取，给用户强力的优惠视觉冲击，促进消费',
         example: '',
         key: '23',
         right: 16,

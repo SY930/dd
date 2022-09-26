@@ -307,7 +307,7 @@ class MySpecialActivities extends React.Component {
             activeStatus: "",
             sortedChannelList: [],
             viewRuleVisibles: false,
-            paramsValue: 1,
+            paramsValueList: [],
         };
         this.cfg = {
             eventWay: [
@@ -514,13 +514,11 @@ class MySpecialActivities extends React.Component {
     // 活动规则
     queryActiveRule = () => {
         axiosData(
-            "/specialPromotion/queryEventParam.ajax",
+            "/specialPromotion/queryGroupEventParamList.ajax",
             {
-                eventWay: 85,
                 groupID: getStore()
                     .getState()
                     .user.getIn(["accountInfo", "groupID"]),
-                paramName: "executePriorityByCreateTime",
             },
             {},
             { path: "" },
@@ -529,10 +527,10 @@ class MySpecialActivities extends React.Component {
             .then((res) => {
                 if (res.code == "000") {
                     const {
-                        data: { eventParamInfo = {} },
+                        data: { eventParamInfoList = [] },
                     } = res;
                     this.setState({
-                        paramsValue: eventParamInfo.paramValue,
+                        paramsValueList: eventParamInfoList,
                         viewRuleVisibles: true,
                     });
                 }
@@ -968,7 +966,7 @@ class MySpecialActivities extends React.Component {
     }
     //** 第三版 重构 抽抽乐活动 点击事件 */
     onV3Click = (itemID, view, key, isActive) => {
-        if (key == "85") {
+        if (key == "85" || key == "23") {
             setTimeout(() => {
                 jumpPage({
                     menuID: SALE_ACTIVE_NEW_PAGE,
@@ -1154,14 +1152,12 @@ class MySpecialActivities extends React.Component {
     // 修改活动规则
     handleRuleOk = () => {
         const callServer = axiosData(
-            "/specialPromotion/updateEventParam.ajax",
+            "/specialPromotion/updateGroupEventParamList.ajax",
             {
-                eventWay: 85,
                 groupID: getStore()
                     .getState()
                     .user.getIn(["accountInfo", "groupID"]),
-                paramName: "executePriorityByCreateTime",
-                paramValue: this.state.paramsValue,
+                eventParamInfoList: this.state.paramsValueList,
             },
             {},
             { path: "" },
@@ -1667,6 +1663,23 @@ class MySpecialActivities extends React.Component {
         );
     }
 
+    matchEventName = (eventWay) => {
+        let name = ''
+        let desc = ''
+        switch (eventWay) {
+            case 85:
+                name = '千人千面'
+                desc = '当同一时间、同一门店、同一投放类型、同一投放位置下存在多个活动时，将按照以下规则执行'
+                break;
+            case 23:
+                name = '线上餐厅弹窗送礼'
+                desc = '当同一时间、同一门店、同一发放位置下存在多个活动时，将按照以下规则执行'
+            default:
+                break;
+        }
+        return { name, desc }
+    }
+
     render() {
         const {
             v3visible,
@@ -1864,22 +1877,34 @@ class MySpecialActivities extends React.Component {
                         onOk={this.handleRuleOk}
                         wrapClassName={styles.viewRuleVisibleModal}
                     >
-                        <div>
-                            <div className={styles.ruleModalTitle}>
-                                {" "}
-                                <span className={styles.name}>千人千面</span>
-                                当同一时间、同一门店、同一投放类型、同一投放位置下存在多个活动时，将按照以下规则执行{" "}
-                            </div>
-                            <div>
+                        {this.state.paramsValueList.map((item) => (
+                            <div key={item.eventWay} style={{ marginBottom: 10 }}>
+                                <div className={styles.ruleModalTitle}>
+                                    <span className={styles.name}>
+                                        {this.matchEventName(item.eventWay).name}
+                                    </span>
+                                    {this.matchEventName(item.eventWay).desc}
+                                </div>
+                                <div>
                                 <span className={styles.computeRule}>
-                                    计算规则
+                                    执行规则
                                 </span>
                                 <RadioGroup
                                     name="radiogroup"
-                                    defaultValue={this.state.paramsValue}
+                                    defaultValue={item.paramValue}
                                     onChange={({ target }) => {
+                                        let { paramsValueList } = this.state;
+                                        paramsValueList = paramsValueList.map(v => {
+                                            if(item.eventWay == v.eventWay) {
+                                                return {
+                                                    ...v,
+                                                    paramValue: target.value,
+                                                };
+                                            }
+                                            return v
+                                        })
                                         this.setState({
-                                            paramsValue: target.value,
+                                            paramsValueList,
                                         });
                                     }}
                                 >
@@ -1891,7 +1916,8 @@ class MySpecialActivities extends React.Component {
                                     </Radio>
                                 </RadioGroup>
                             </div>
-                        </div>
+                            </div>
+                        ))}
                     </Modal>
                 )}
             </div>
@@ -2097,7 +2123,7 @@ class MySpecialActivities extends React.Component {
                         </li>
                         <li>
                             <Select
-                                style={{ width: 120 }}
+                                style={{ width: 130 }}
                                 showSearch
                                 notFoundContent={`${this.props.intl.formatMessage(
                                     STRING_SPE.d2c8a4hdjl248
@@ -2860,7 +2886,8 @@ class MySpecialActivities extends React.Component {
                                             record.eventWay === 78 ||
                                             record.eventWay === 79 ||
                                             record.eventWay === 83 ||
-                                            record.eventWay === 85
+                                            record.eventWay === 85 ||
+                                            record.eventWay === 23
                                         ) {
                                             this.handleEditActive(record)(() =>
                                                 this.onV3Click(
@@ -2923,7 +2950,8 @@ class MySpecialActivities extends React.Component {
                                             record.eventWay === 78 ||
                                             record.eventWay === 79 ||
                                             record.eventWay === 83 ||
-                                            record.eventWay === 85
+                                            record.eventWay === 85 ||
+                                            record.eventWay === 23
                                         ) {
                                             this.onV3Click(
                                                 record.itemID,
@@ -3093,7 +3121,7 @@ class MySpecialActivities extends React.Component {
                 )}`,
                 dataIndex: "eventWay",
                 key: "eventWay",
-                width: 110,
+                width: 130,
                 fixed: "left",
                 // ellipsis: true,
                 render: (text, record) => {

@@ -36,9 +36,9 @@ class ManyFace extends Component {
             allMallActivity: [],
             formDataLen: 0, // 数据的长度
             flag: false,
-            paramsValue: 1,
+            paramsValueList: [],
             loading: true,
-        }
+        };
     // this.formRef = null;
     // this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -87,6 +87,23 @@ class ManyFace extends Component {
             flag: !this.state.flag,
             // 投放类型
         })
+    }
+
+    matchEventName = (eventWay) => {
+        let name = ''
+        let desc = ''
+        switch (eventWay) {
+            case 85:
+                name = '千人千面'
+                desc = '当同一时间、同一门店、同一投放类型、同一投放位置下存在多个活动时，将按照以下规则执行'
+                break;
+            case 23:
+                name = '线上餐厅弹窗送礼'
+                desc = '当同一时间、同一门店、同一发放位置下存在多个活动时，将按照以下规则执行'
+            default:
+                break;
+        }
+        return { name, desc }
     }
 
     onCheckBannerApp = (faceRule) => {
@@ -587,17 +604,17 @@ class ManyFace extends Component {
         const { accountInfo } = this.props;
         axios.post('/api/v1/universal', {
             service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
-            method: '/specialPromotion/queryEventParam.ajax',
+            method: '/specialPromotion/queryGroupEventParamList.ajax',
             type: 'post',
-            data: { groupID: accountInfo.get('groupID'), eventWay: 85, paramName: 'executePriorityByCreateTime' },
+            data: { groupID: accountInfo.get('groupID') },
         }).then((res) => {
             if (res.code === '000') {
-                const { data: { eventParamInfo = {} } } = res;
+                const { data: { eventParamInfoList = {} } } = res;
                 this.modalConfirm.destroy();
                 this.setState({
-                    paramsValue: eventParamInfo.paramValue,
+                    paramsValueList: eventParamInfoList.filter(item => item.eventWay == 85),
                     viewRuleVisible: true,
-                })
+                });
             } else {
                 message.error(res.message);
             }
@@ -676,10 +693,8 @@ class ManyFace extends Component {
     handleRuleOk = () => {
         const { accountInfo } = this.props
         putRule({
-            eventWay: 85,
             groupID: accountInfo.get('groupID'),
-            paramName: 'executePriorityByCreateTime',
-            paramValue: this.state.paramsValue,
+            eventParamInfoList: this.state.paramsValueList,
         }).then((res) => {
             if (res) { this.onCloseViewRuleModal(); }
         })
@@ -779,13 +794,47 @@ class ManyFace extends Component {
                     onOk={this.handleRuleOk}
                     wrapClassName={styles.viewRuleVisibleModal}
                 >
-                    <div className={styles.ruleModalTitle}> <span className={styles.name}>千人千面</span>当同一时间、同一门店、同一投放类型、同一投放位置下存在多个活动时，将按照以下规则执行 </div>
-                    <div>
-                        <span className={styles.computeRule}>计算规则</span>
-                        <RadioGroup name="radiogroup" defaultValue={this.state.paramsValue} onChange={({ target }) => { this.setState({ paramsValue: target.value }) }}>
-                            <Radio value={1}>按创建时间最近的执行</Radio>
-                            <Radio value={2}>按创建时间最早的执行</Radio>
-                        </RadioGroup></div>
+                    {this.state.paramsValueList.map((item) => (
+                            <div key={item.eventWay} style={{ marginBottom: 10 }}>
+                                <div className={styles.ruleModalTitle}>
+                                    <span className={styles.name}>
+                                        {this.matchEventName(item.eventWay).name}
+                                    </span>
+                                    {this.matchEventName(item.eventWay).desc}
+                                </div>
+                                <div>
+                                <span className={styles.computeRule}>
+                                    执行规则
+                                </span>
+                                <RadioGroup
+                                    name="radiogroup"
+                                    defaultValue={item.paramValue}
+                                    onChange={({ target }) => {
+                                        let { paramsValueList } = this.state;
+                                        paramsValueList = paramsValueList.map(v => {
+                                            if(item.eventWay == v.eventWay) {
+                                                return {
+                                                    ...v,
+                                                    paramValue: target.value,
+                                                };
+                                            }
+                                            return v
+                                        })
+                                        this.setState({
+                                            paramsValueList,
+                                        });
+                                    }}
+                                >
+                                    <Radio value={1}>
+                                        按创建时间最近的执行
+                                    </Radio>
+                                    <Radio value={2}>
+                                        按创建时间最早的执行
+                                    </Radio>
+                                </RadioGroup>
+                            </div>
+                            </div>
+                        ))}
 
                 </Modal>}
             </div>

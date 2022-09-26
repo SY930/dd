@@ -17,7 +17,6 @@ export { default as PromotionCalendar } from './PromotionCalendar';
 export { default as PromotionCalendarNew } from './PromotionCalendarNew';
 export { default as PromotionDecoration } from './PromotionDecoration';
 export { default as CreateActive } from './SaleActives/CreateActive';
-export { default as CreateActiveTwo } from './SaleActives/CreateActiveTwo';
 export { default as SaleCenterNEWShop } from './SaleCenterNEW/indexShop';
 export { default as MyActivities } from './SaleCenterNEW/MyActivities/MyActivities';
 export { default as MyActivitiesShop } from './SaleCenterNEW/MyActivities/MyActivitiesShop';
@@ -34,3 +33,4 @@ export { default as WeChatMallPromotionCreate } from './WeChatMall/AddNew';
 export { default as WeChatMallPromotionList } from './WeChatMall/PromotionList';
 export { default as ZhiFuBaoCouponList } from './ZhiFuBaoCouponManagement';
 
+export { default as CreateActiveTwo } from './SaleActives/NewCreateActiveEntry';
