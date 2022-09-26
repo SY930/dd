@@ -1245,7 +1245,13 @@ class GiftAddModalStep extends React.PureComponent {
             params.openPushMessageMpID = 1;
             params.openPushSms = params.pushMessage && params.pushMessage.sendType.indexOf('msg') !== -1 ? 1 : 0
             params.reminderTime = params.pushMessage && params.pushMessage.reminderTime
-            params.pushMessageMpID = params.pushMessage && params.pushMessage.pushMessageMpID
+            if (params.pushMessage && params.pushMessage.sendType && params.pushMessage.sendType.includes('wechat')) {
+                params.pushMessageMpID = params.pushMessage && params.pushMessage.pushMessageMpID;
+            } else {
+                params.pushMessage.pushMessageMpID = '';
+                params.pushMessageMpID = '';
+            }
+            
             params.pushMimiAppMsg = params.pushMessage && params.pushMessage.sendType.includes('mini') ? params.pushMessage.pushMimiAppMsg : null
             // 商城券参数调整
             if(hasMallArr.includes(value)){
@@ -3926,7 +3932,11 @@ class GiftAddModalStep extends React.PureComponent {
         formData.giftShareType = String(formData.giftShareType);
         formData.couponPeriodSettings = formData.couponPeriodSettingList;
         if(!formData.pushMessage) {
-            const sendType = ['wechat']
+            // const sendType = ['wechat']
+            const sendType = [];
+            if (formData.pushMessageMpID) {
+                sendType.push('wechat');
+            }
             if (formData.openPushSms) {
                 sendType.push('msg')
             }
