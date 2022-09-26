@@ -358,6 +358,7 @@ class PromotionRightMain extends Component {
         )
     }
 
+    // 注册卡类
     renderDefaultCardType = (formItems, key) => {
         formItems[key].render = (decorator) => {
             return (
