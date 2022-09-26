@@ -2,7 +2,7 @@
  * @Author: 张博奥 zhangboao@hualala.com
  * @Date: 2022-09-26 09:52:54
  * @LastEditors: 张博奥 zhangboao@hualala.com
- * @LastEditTime: 2022-09-26 11:40:52
+ * @LastEditTime: 2022-09-26 14:28:21
  * @FilePath: /platform-sale/src/containers/SaleActives/OnlineRestaurantGiftGiving/index.jsx
  * @Description: 线上餐厅弹窗送礼右侧表单入口
  */
@@ -196,7 +196,8 @@ class OnlineRestaurantGiftGiving extends Component {
             cardLevelIDList: values.cardLevelRangeType
                 ? values.cardLevelRangeType == 2
                     ? values.cardTypeIDList
-                    : values.cardLevelIDList.map(
+                    : values.cardLevelIDList &&
+                      values.cardLevelIDList.map(
                           (item) => item.cardLevelID || item //编辑拿到的是卡等级id数组，新加的拿到的是卡等级对象数据
                       )
                 : [],
@@ -442,7 +443,7 @@ class OnlineRestaurantGiftGiving extends Component {
                     this.setState({
                         paramsValue: eventParamInfoList.find(
                             (item) => item.eventWay == 23
-                        ).paramsValue,
+                        ).paramValue,
                     });
                 } else {
                     message.error(res.message);
@@ -465,7 +466,9 @@ class OnlineRestaurantGiftGiving extends Component {
         };
         return (
             <div className={styles.formContainer}>
-                {isView == 'true' ? <div className={styles.stepOneDisabled}></div> : null}
+                {isView == "true" ? (
+                    <div className={styles.stepOneDisabled}></div>
+                ) : null}
                 <Spin spinning={loading}>
                     <div className={styles.logoGroupHeader}>基本信息</div>
                     <BasicInfoForm

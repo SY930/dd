@@ -2,7 +2,7 @@
  * @Author: 张博奥 zhangboao@hualala.com
  * @Date: 2022-09-26 09:52:54
  * @LastEditors: 张博奥 zhangboao@hualala.com
- * @LastEditTime: 2022-09-26 10:22:48
+ * @LastEditTime: 2022-09-26 13:58:58
  * @FilePath: /platform-sale/src/containers/SaleActives/OnlineRestaurantGiftGiving/components/BasicInfoForm.jsx
  * @Description: 线上弹窗送礼基本信息表单
  */
@@ -185,12 +185,6 @@ class BasicInfoForm extends Component {
                             >
                                 {d({
                                     key: "cardTypeIDList",
-                                    rules: [
-                                        {
-                                            required: true,
-                                            message: "卡类别不能为空",
-                                        },
-                                    ],
                                     onChange: this.handleSelectChange,
                                 })(
                                     <Select
@@ -226,12 +220,6 @@ class BasicInfoForm extends Component {
                             >
                                 {d({
                                     key: "cardLevelIDList",
-                                    rules: [
-                                        {
-                                            required: true,
-                                            message: "卡等级不能为空",
-                                        },
-                                    ],
                                     onChange: (value) => {
                                         // 组件内部已选条目数组【{}，{}，{}】,向外传递值
                                         const _value = value.map(

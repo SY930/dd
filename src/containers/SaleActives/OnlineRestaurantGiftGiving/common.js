@@ -61,20 +61,17 @@ export const baseFormItems = {
     cardLevelRangeType: {
         type: "radio",
         label: "会员范围",
-        // wrapperCol: { span: 24 },
         options: [
-            { label: "全部", value: 0 },
             { label: "按卡类别", value: 2 },
             { label: "按卡等级", value: 5 },
         ],
-        defaultValue: 0,
+        defaultValue: 2,
     },
     cardTypeIDList: {
         type: "custom",
         wrapperCol: { span: 24 },
         render: () => <p />,
         defaultValue: [],
-        rules: ["required"],
     },
     autoRegister: {
         type: "custom",
