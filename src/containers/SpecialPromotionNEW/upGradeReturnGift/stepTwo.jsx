@@ -613,7 +613,6 @@ class StepTwo extends React.Component {
 
     render() {
         let {localType, cardLevelIDList } = this.state;
-        console.log(localType,'localType--------')
         const sendFlag = true;
         const totalCustomerCount = this.props.specialPromotion.get('customerCount');
         const tip = this.state.consumeType % 2 === 0 ? `${this.props.intl.formatMessage(STRING_SPE.d1e09r9slq0172)}` : `${this.props.intl.formatMessage(STRING_SPE.d16hh4899ii1154)}`;
