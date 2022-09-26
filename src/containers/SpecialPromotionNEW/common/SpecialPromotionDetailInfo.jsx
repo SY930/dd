@@ -1442,7 +1442,7 @@ class SpecialDetailInfo extends Component {
             })
             //埋点事件第三步
             setSensorsData(SensorsCodes.sensorsThirdStepId[this.props.type] ? SensorsCodes.sensorsThirdStepId[this.props.type] : "", {
-                gift_point: this.state.givePoints ? this.state.presentValue : "",
+                gift_point: this.state.givePoints ? Number(this.state.presentValue) : "",
                 gift_coupon: giftIdsArr.join(',')
             });
             this.props.setSpecialGiftInfo(giftInfo); //发起action
