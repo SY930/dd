@@ -64,7 +64,7 @@ class PromotionIndex extends Component {
         // 当前key和mode
         const currentPromotion = this.props.promotion[key];
         console.log('_TODO_promotionRightMainRef', this.promotionRightMainRef);
-        const { allForms, activityConditionsRef } = this.promotionRightMainRef;
+        const { allForms, activityConditionsRef, state: promotionRightMainState } = this.promotionRightMainRef;
         const { conditionForms, state } = activityConditionsRef;
         const validFormIds = state.conditionList.map(item => item.id);
         let newConditionForms = {};
@@ -223,12 +223,13 @@ class PromotionIndex extends Component {
                     event = { ...event, ...item }
                 })
                 event.eventWay = currentPromotion.promotionKey;
-
+                console.log('event===2222', event);
                 let clonedEvent = _.cloneDeep(event);
                 console.log('clonedEvent===111', clonedEvent);
                 clonedEvent.hasMutexDepend = event.hasMutexDepend ? 1 : 0
                 delete clonedEvent.NoShareBenifit;
-                const { eventRange, hasMutexDepend, mutexDependType, joinCount, countCycleDays, partInTimes2, partInTimes3, orderTypeList, brandList, activityRange, cardScopeType } = clonedEvent;
+                delete clonedEvent.treeSelect;
+                const { eventRange, hasMutexDepend, mutexDependType, joinCount, countCycleDays, partInTimes2, partInTimes3, orderTypeList, brandList, activityRange } = clonedEvent;
                 if (joinCount == 1) {
                     delete clonedEvent.countCycleDays;
                 } else if (joinCount == 2) {
@@ -314,17 +315,17 @@ class PromotionIndex extends Component {
                 delete clonedEvent.activityRange;
                 clonedEvent.foodScopeList = foodScopeList;
                 delete clonedEvent.mutexDependType;
-                requestPramas.eventGiftConditionList = eventGiftConditionList;
-                if (cardScopeType) { // 会员范围
-                    const { cardLevelIDList } = cardScopeType;
-                    if (Array.isArray(cardLevelIDList) && cardLevelIDList.length > 0) {
-                        clonedEvent.cardLevelRangeType = '2';
-                        clonedEvent.cardLevelIDList = cardLevelIDList;
-                    } else {
-                        clonedEvent.cardLevelRangeType = '0';
-                    }
-                }
                 delete clonedEvent.cardScopeType;
+                requestPramas.eventGiftConditionList = eventGiftConditionList;
+                // 会员范围
+                const { defaultCardType, cardLevelIDList } = promotionRightMainState;
+                if (Array.isArray(cardLevelIDList) && cardLevelIDList.length > 0) {
+                    clonedEvent.cardLevelRangeType = '2';
+                    clonedEvent.cardLevelIDList = cardLevelIDList;
+                } else {
+                    clonedEvent.cardLevelRangeType = '0';
+                }
+                clonedEvent.defaultCardType = defaultCardType;
                 requestPramas.event = clonedEvent;
                 requestPramas.eventMutexDependRuleInfos = eventMutexDependRuleInfos;
                 if (currentPromotion.itemID) {

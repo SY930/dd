@@ -495,13 +495,13 @@ export const ALL_FORM_ITEMS = {
         label: '',
         render: () => { }
     },
-    defaultCardType: {
-        label: '新用户注册卡类',
-        type: 'custom',
-        defaultValue: '',
-        rules: ['required'],
-        render: () => { }
-    },
+    // defaultCardType: {
+    //     label: '新用户注册卡类',
+    //     type: 'custom',
+    //     defaultValue: '',
+    //     rules: ['required'],
+    //     render: () => { }
+    // },
     activityRange: {
         label: '',
         type: 'custom',
@@ -535,7 +535,8 @@ export const ACTIVITY_RULE_FORM_KEYS = {
             col: {
                 span: 24,
             },
-            keys: ['joinCount', 'cardScopeType', 'defaultCardType', 'brandList', 'shopIDList', 'sourceWayLimit', 'orderTypeList'],
+            // keys: ['joinCount', 'cardScopeType', 'defaultCardType', 'brandList', 'shopIDList', 'sourceWayLimit', 'orderTypeList'],
+            keys: ['joinCount', 'cardScopeType', 'brandList', 'shopIDList', 'sourceWayLimit', 'orderTypeList'],
         },
     ],
 };

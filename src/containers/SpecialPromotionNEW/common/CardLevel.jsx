@@ -35,9 +35,8 @@ const DEFAULT_CARD_TYPE_SELECTOR_PROMOTIONS = [
     '21',
     '22',
     '30',
+    '87'
 ];
-
-
 
 @injectIntl
 class CardLevel extends React.Component {
@@ -106,11 +105,13 @@ class CardLevel extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (!_.isEqual(this.props.cardLevelRangeType, nextProps.cardLevelRangeType)
-            || !_.isEqual(this.props.cardLevelIDList, nextProps.cardLevelIDList)) {
+            || !_.isEqual(this.props.cardLevelIDList, nextProps.cardLevelIDList)
+            || !_.isEqual(this.props.defaultCardType, nextProps.defaultCardType)) {
             if (this.props.type == '87') { // 消费送礼
                 this.setState({
                     cardLevelRangeType: nextProps.cardLevelRangeType,
                     cardLevelIDList: nextProps.cardLevelIDList,
+                    defaultCardType: nextProps.defaultCardType,
                 })
                 return;
             }
