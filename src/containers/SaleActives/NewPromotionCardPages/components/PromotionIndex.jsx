@@ -53,8 +53,8 @@ class PromotionIndex extends Component {
         treeData.forEach(item => {
             if (Array.isArray(item.children) && item.children.length > 0) {
                 item.children.forEach(child => {
-                    const { label, giftType, giftValue, value, giftImagePath } = child
-                    if (value == id) {
+                    const { label, giftType, giftValue, value, giftImagePath } = child;
+                    if (+value == +id) {
                         obj.giftName = label;
                         obj.giftType = giftType;
                         obj.giftValue = giftValue;
