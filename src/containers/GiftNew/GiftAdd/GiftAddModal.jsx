@@ -231,10 +231,10 @@ class GiftAddModal extends React.Component {
                 params.settleName = settleName;
             }
             params.openPushMessageMpID = 1;
-            params.openPushSms = params.pushMessage && params.pushMessage.sendType.indexOf('msg') !== -1 ? 1 : 0
+            params.openPushSms = params.pushMessage && Array.isArray(params.pushMessage.sendType) && params.pushMessage.sendType.indexOf('msg') !== -1 ? 1 : 0
             params.reminderTime = params.pushMessage && params.pushMessage.reminderTime
             params.pushMessageMpID = params.pushMessage && params.pushMessage.pushMessageMpID
-            params.pushMimiAppMsg = params.pushMessage && params.pushMessage.sendType.includes('mini') ? params.pushMessage.pushMimiAppMsg : null
+            params.pushMimiAppMsg = params.pushMessage && Array.isArray(params.pushMessage.sendType) && params.pushMessage.sendType.includes('mini') ? params.pushMessage.pushMimiAppMsg : null
             const { accountInfo, startSaving, endSaving } = this.props;
             const { groupName } = accountInfo.toJS();
             startSaving();
