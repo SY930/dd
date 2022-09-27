@@ -328,19 +328,24 @@ class PromotionRightMain extends Component {
         formItems.activityRange = {
             type: 'custom',
             label: '',
-            render: decorator => {
+            render: (decorator, form) => {
+                let { state, conditionForms } = this.activityConditionsRef;
+                let firstForm = conditionForms[state.conditionList[0].id]
+                const { stageType } = firstForm && firstForm.getFieldsValue();
                 return (
                     <Row>
                         <Col span={24} push={1}>
-                            {decorator({
-                                key: 'activityRange',
-                            })(
-                                <GiftCategoryAndFoodSelector
-                                    showRequiredMark
-                                    type='87'
-                                    scopeLst={this.state.foodScopeList}
-                                />
-                            )}
+                            {
+                                stageType == 3 && decorator({
+                                    key: 'activityRange',
+                                })(
+                                    <GiftCategoryAndFoodSelector
+                                        showRequiredMark
+                                        type='87'
+                                        scopeLst={this.state.foodScopeList}
+                                    />
+                                )
+                            }
                         </Col>
                     </Row>
                 )
