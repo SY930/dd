@@ -103,7 +103,7 @@ class CardSaleActive extends Component {
             message.warning('该活动已下线');
             return;
         }
-        if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83 || record.eventWay === 85) {
+        if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83 || record.eventWay === 85 || record.eventWay === 23) {
             this.props.onV3Click(record.itemID, true, record.eventWay);
             return;
         }
@@ -127,7 +127,7 @@ class CardSaleActive extends Component {
             message.warning('该活动已下线');
             return;
         }
-        if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83 || record.eventWay === 85) {
+        if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83 || record.eventWay === 85 || record.eventWay === 23) {
             this.props.handleEditActive(record)(() => this.props.onV3Click(record.itemID, false, record.eventWay, record.isActive))
             return;
         }
