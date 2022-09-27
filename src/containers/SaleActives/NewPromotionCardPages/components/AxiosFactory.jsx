@@ -73,6 +73,7 @@ function proGiftTreeData(giftTypes) {
                 key: gift.giftItemID,
                 giftValue: gift.giftValue,
                 giftType: gt.giftType,
+                giftConfImagePath: gt.giftConfImagePath,
             });
             gifts.push({
                 label: gift.giftName,
