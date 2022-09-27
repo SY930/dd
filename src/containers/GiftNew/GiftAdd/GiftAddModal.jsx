@@ -239,7 +239,7 @@ class GiftAddModal extends React.Component {
             if (params.pushMessage && params.pushMessage.sendType && Array.isArray(params.pushMessage.sendType) && params.pushMessage.sendType.includes("wechat")) {
                 params.pushMessageMpID = params.pushMessage && params.pushMessage.pushMessageMpID;
             } else {
-                params.pushMessage = {};
+                // params.pushMessage = {};
                 params.pushMessage.pushMessageMpID = "";
                 params.pushMessageMpID = "";
             }
