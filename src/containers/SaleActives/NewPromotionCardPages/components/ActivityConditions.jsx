@@ -167,8 +167,11 @@ class ActivityConditions extends Component {
             render: (decorator, form) => {
                 let key = this.state.conditionList.map(item => item.id)[0];
                 let firstConditionForm = this.conditionForms[key];
-                const { getFieldsValue } = firstConditionForm;
-                const { stageType: stageTypeValue } = getFieldsValue();
+                let stageTypeValue = '';
+                if (firstConditionForm) {
+                    const { getFieldsValue } = firstConditionForm;
+                    stageTypeValue = getFieldsValue().stageType
+                }
                 return (
                     <Col>
                         {
