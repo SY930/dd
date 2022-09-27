@@ -45,17 +45,27 @@ class PromotionIndex extends Component {
     }
 
     findGiftNameById = (treeData = [], id) => {
-        let giftName = '';
+        let obj = {
+            giftName: '',
+            giftType: '',
+            giftValue: '',
+        }
         treeData.forEach(item => {
             if (Array.isArray(item.children) && item.children.length > 0) {
                 item.children.forEach(child => {
-                    if (child.value == id) {
-                        giftName = child.label
+                    const { label, giftType, giftValue, value, giftImagePath } = child
+                    if (value == id) {
+                        obj.giftName = label;
+                        obj.giftType = giftType;
+                        obj.giftValue = giftValue;
+                        if (giftImagePath) {
+                            obj.giftConfImagePath = giftImagePath
+                        }
                     }
                 })
             }
         });
-        return giftName;
+        return obj
     }
 
     onSave = () => {
@@ -198,7 +208,7 @@ class PromotionIndex extends Component {
                                 gifts.push({
                                     ...item,
                                     effectType,
-                                    giftName: this.findGiftNameById(state.treeData, item.giftID)
+                                    ...this.findGiftNameById(state.treeData, item.giftID)
                                 });
                                 return item;
                             }
@@ -223,7 +233,6 @@ class PromotionIndex extends Component {
                     event = { ...event, ...item }
                 })
                 event.eventWay = currentPromotion.promotionKey;
-                console.log('event===2222', event);
                 let clonedEvent = _.cloneDeep(event);
                 console.log('clonedEvent===111', clonedEvent);
                 clonedEvent.hasMutexDepend = event.hasMutexDepend ? 1 : 0

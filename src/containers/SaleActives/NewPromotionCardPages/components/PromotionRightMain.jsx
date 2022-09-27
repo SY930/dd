@@ -379,7 +379,7 @@ class PromotionRightMain extends Component {
         formItems[key].render = (decorator, form) => {
             return (
                 <Row>
-                    <Col span={24} push={2} className='11111'>
+                    <Col span={24} className={styles.cardScopeTypeBox}>
                         {decorator({
                             key: 'cardScopeType'
                         })(
