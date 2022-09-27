@@ -1,5 +1,5 @@
 import { closePage, decodeUrl } from '@hualala/platform-base';
-import { Col, Row, Radio, Select, Input, Form } from 'antd';
+import { Col, Row, Radio, Form } from 'antd';
 import ShopSelector from 'components/ShopSelector';
 import { Component } from 'react';
 import { connect } from 'react-redux';
@@ -18,11 +18,8 @@ import CardLevel from "../../../SpecialPromotionNEW/common/CardLevel";
 import { GiftCategoryAndFoodSelector } from 'containers/SaleCenterNEW/common/CategoryAndFoodSelector';
 
 const RadioGroup = Radio.Group;
-const Option = Select.Option;
 const FormItem = Form.Item;
 
-// let activityFormKeys = [];
-// let formItems = {}
 export const formItemLayout = {
     labelCol: { span: 4 },
     wrapperCol: { span: 20 },
@@ -382,7 +379,7 @@ class PromotionRightMain extends Component {
         formItems[key].render = (decorator, form) => {
             return (
                 <Row>
-                    <Col span={24} push={1}>
+                    <Col span={24} push={2} className='11111'>
                         {decorator({
                             key: 'cardScopeType'
                         })(

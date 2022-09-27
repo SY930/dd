@@ -159,7 +159,7 @@ class SpecialPromotionDetail extends React.Component {
                 width: 100,
             },
             {
-                title:<span>
+                title: <span>
                     <span>参与时间</span>
                     <Tooltip title={
                         <div>
@@ -197,12 +197,12 @@ class SpecialPromotionDetail extends React.Component {
                             <Icon style={{ marginLeft: 0, marginRight: 5 }} type="question-circle-o" />
                         </Tooltip>
                     </span>,
-                    dataIndex: 'changeCount',
+                dataIndex: 'changeCount',
                 key: 'changeCount',
                 className: 'TableTxtCenter',
                 width: 50,
                 render: (text, record) => {
-                    if(record.pointChangeType == '3') {
+                    if (record.pointChangeType == '3') {
                         return '0'
                     } else {
                         return text
@@ -217,12 +217,12 @@ class SpecialPromotionDetail extends React.Component {
                             <Icon style={{ marginLeft: 0, marginRight: 5 }} type="question-circle-o" />
                         </Tooltip>
                     </span>,
-                    dataIndex: 'finalUsedCount',
+                dataIndex: 'finalUsedCount',
                 key: 'finalUsedCount',
                 className: 'TableTxtCenter',
                 width: 50,
                 render: (text, record) => {
-                    if(record.pointChangeType == '3') {
+                    if (record.pointChangeType == '3') {
                         return parseInt(record.changeCount) * -1
                     } else {
                         return '0'
@@ -237,7 +237,7 @@ class SpecialPromotionDetail extends React.Component {
                             <Icon style={{ marginLeft: 0, marginRight: 5 }} type="question-circle-o" />
                         </Tooltip>
                     </span>,
-                    dataIndex: 'finalAvailableCount',
+                dataIndex: 'finalAvailableCount',
                 key: 'finalAvailableCount',
                 className: 'TableTxtCenter',
                 width: 50,
@@ -1542,7 +1542,7 @@ class SpecialPromotionDetail extends React.Component {
             { path: '' },
             'HTTP_SERVICE_URL_PROMOTION_NEW',
         ).then((res) => {
-            if(res.code == '000') {
+            if (res.code == '000') {
                 Modal.success({
                     title: '投放渠道',
                     content: res.data.launchChannelName || '',
@@ -1638,7 +1638,7 @@ class SpecialPromotionDetail extends React.Component {
                 dataIndex: 'joinTime',
                 key: 'joinTime',
                 className: 'TableTxtCenter',
-                width: 120,
+                width: 180,
             }),
             // 群发礼品
             eventWay == 53 && ({

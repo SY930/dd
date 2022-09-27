@@ -1267,6 +1267,9 @@ class MySpecialActivities extends React.Component {
                 },
             })
         }
+        if (mode == 'view') {
+            return handleNext();
+        }
         if (
             isGroupOfHuaTianGroupList(this.props.user.accountInfo.groupID) &&
             (record.isActive != "0" || !isMine(record)) &&
@@ -1766,7 +1769,6 @@ class MySpecialActivities extends React.Component {
                                             className="layoutsLine"
                                         ></div>
                                     </div>
-
                                     {stylesShow === "list" ? (
                                         this.renderTables()
                                     ) : (
@@ -1814,6 +1816,7 @@ class MySpecialActivities extends React.Component {
                                             handleDelActive={
                                                 this.handleDelActive
                                             }
+                                            handleNewEditActive={this.handleNewEditActive}
                                             checkDeleteInfo={
                                                 this.checkDeleteInfo
                                             }

@@ -738,7 +738,6 @@ class StepTwo extends React.Component {
     }
     render() {
         const { cardLevelRangeType, getExcludeCardLevelIds = [], excludeCardTypeShops, isNew } = this.state;
-        console.log(999999, this.state);
         const info = this.props.specialPromotion.get('$eventInfo').toJS();
         const sendFlag = info.smsGate == '1' || info.smsGate == '3' || info.smsGate == '4';
         const { ifJumpOpenCard = false } = this.props
