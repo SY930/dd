@@ -54,6 +54,9 @@ import BlindBox from "../PromotionV3/BlindBox";   // 抽抽乐
 import PassWordCoupon from "../PromotionV3/PassWordCoupon";   // 口令领券
 import ManyFace from '../PromotionV3/ManyFace'; // 千人千面
 import { jumpPage, closePage } from '@hualala/platform-base';
+import newPromotionCardPageConfig from '../SaleActives/NewPromotionCardPages/common/newPromotionCardPageConfig';
+import { updateCurrentPromotionPageAC } from '../SaleActives/NewPromotionCardPages/store/action';
+import { consumeGivingWhiteList } from "containers/GiftNew/components/whiteList.js";
 
 // 跳转到带装修的活动设置页面
 const activityList = [
@@ -310,8 +313,27 @@ class PromotionCreateModal extends Component {
     //** 第三版 重构 抽抽乐活动 点击事件 */
     onV3Click = (key) => {
         if(key) this.setState({curKey: key})
+        if(key == '87'){
+            return this.openNewPage(key);
+        }
         this.setState(ps => ({ v3visible: !ps.v3visible }));
     }
+
+    openNewPage = (key) => {
+        this.props.onCancel();
+        this.setState(ps => ({ v3visible: false }));
+        const currentPromotion = newPromotionCardPageConfig.find(item => item.key == key);
+        jumpPage({ menuID: currentPromotion.menuID, promotionKey: key, mode: 'create' });
+        const { updateCurrentPromotionPage } = this.props;
+        updateCurrentPromotionPage({
+            [key]: {
+                promotionKey: key,
+                mode: 'create',
+            },
+        })
+        return closePage(currentPromotion.menuID)
+    }
+
     renderModalContent() {
         const state = getStore().getState();
         const { groupID } = state.user.get('accountInfo').toJS();
@@ -325,6 +347,11 @@ class PromotionCreateModal extends Component {
 
         const k6316i20 = intl.formatMessage(SALE_STRING.k6316i20);
         const k5eng042 = intl.formatMessage(SALE_STRING.k5eng042);
+        let REPEAT_PROMOTION_TYPES_FILTER = REPEAT_PROMOTION_TYPES;
+        if (!consumeGivingWhiteList.includes(groupID)) {
+            REPEAT_PROMOTION_TYPES_FILTER = REPEAT_PROMOTION_TYPES_FILTER.filter(item => item.key != '87');
+        }
+
         const ALL_PROMOTION_CATEGORIES = [
             {
                 title: k6316hto,
@@ -336,7 +363,7 @@ class PromotionCreateModal extends Component {
             },
             {
                 title: k6316iac,
-                list: REPEAT_PROMOTION_TYPES,
+                list: REPEAT_PROMOTION_TYPES_FILTER,
             },
             {
                 title: k6316hlc,
@@ -473,6 +500,7 @@ function mapDispatchToProps(dispatch) {
         fetchFoodMenuInfo: (opts) => {
             dispatch(fetchFoodMenuInfoAC(opts))
         },
+        updateCurrentPromotionPage: opts => dispatch(updateCurrentPromotionPageAC(opts)),
     }
 }
 
