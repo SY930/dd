@@ -53,8 +53,8 @@ class PromotionIndex extends Component {
         treeData.forEach(item => {
             if (Array.isArray(item.children) && item.children.length > 0) {
                 item.children.forEach(child => {
-                    const { label, giftType, giftValue, value, giftImagePath } = child
-                    if (value == id) {
+                    const { label, giftType, giftValue, value, giftImagePath } = child;
+                    if (+value == +id) {
                         obj.giftName = label;
                         obj.giftType = giftType;
                         obj.giftValue = giftValue;
@@ -160,7 +160,6 @@ class PromotionIndex extends Component {
         Object.keys(tempObj).sort((a, b) => a - b).forEach((key, index) => {
             conditionConfig[index] = tempObj[key]
         })
-        console.log('conditionConfig===111', conditionConfig, isValid);
 
         if (isValid) {
             try {
@@ -340,7 +339,6 @@ class PromotionIndex extends Component {
                 if (currentPromotion.itemID) {
                     requestPramas.event.itemID = currentPromotion.itemID;
                 }
-                console.log('请求参数', requestPramas); // _TODO
                 this.createPromotion(requestPramas);
             } catch (error) {
                 console.error(error);

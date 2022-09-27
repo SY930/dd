@@ -72,8 +72,8 @@ function proGiftTreeData(giftTypes) {
                 value: String(gift.giftItemID),
                 key: gift.giftItemID,
                 giftValue: gift.giftValue,
-                giftType: gt.giftType,
-                giftConfImagePath: gt.giftConfImagePath,
+                giftType: gift.giftType,
+                giftImagePath: gift.giftImagePath,
             });
             gifts.push({
                 label: gift.giftName,
