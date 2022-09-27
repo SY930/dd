@@ -50,8 +50,8 @@ class GiftList extends Component {
     componentWillReceiveProps(nextProps) {
         const { dataSource, total } = nextProps;
         if (dataSource != this.props.dataSource) {
-            if(this.props.pageType == 1){
-                this.setState({dataSource, total})
+            if (this.props.pageType == 1) {
+                this.setState({ dataSource, total })
             }
         }
         // if(total != this.props.total){
@@ -193,6 +193,9 @@ class GiftList extends Component {
                     exportLoading: false
                 })
                 if (res && res.code == '000') {
+                    if (res.data.highMoment == 1) {
+                        return message.warning('11:00-14:00，17:00-20:30 营业高峰期无法导出')
+                    }
                     message.success('导出成功')
                 }
             }).catch(error => {
