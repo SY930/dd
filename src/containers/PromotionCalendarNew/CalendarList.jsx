@@ -205,6 +205,9 @@ class CalendarList extends Component {
                     <div style={{ transform: `translateY(${-y}px)`}} className={style.menu}>
                         {
                             list.map(item => {
+                                if (item.title === '千人千面') {
+                                    return null
+                                }
                                     return (
                                         <div
                                             className={item.isCategoryPlaceHolder ?
@@ -229,6 +232,9 @@ class CalendarList extends Component {
                         .map(item => {
                             if (item.isCategoryPlaceHolder) {
                                 return (<div className={style.categoryWrapper} />)
+                            }
+                            if (item.title === '千人千面') {
+                                return null
                             }
                             const {isOverflow: isNameOverflow, expectWidth} = isNameLengthLargerThanWidth(item);
                             return (
