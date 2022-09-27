@@ -58,7 +58,6 @@ export default class PrizeContent extends React.Component {
 
         // 回显第一个是券包只执行一次
         if (_BAGFLAG && !isNew && preProps.info.giveCoupon.value.item && index == '0') {
-            console.log('执行了~~~~')
             const { item = {}, typeValue = '0' } = preProps.info.giveCoupon.value;
             this.setState({
                 typeValue: typeValue,

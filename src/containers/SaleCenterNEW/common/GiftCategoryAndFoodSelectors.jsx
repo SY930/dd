@@ -43,7 +43,6 @@ const getFoodInfoFromScopeList = (scopeList) => {
             scope.scopeType == 4 && excludeDishes.push(`${scope.brandID || 0}__${scope.targetName}${scope.targetUnitName}`)
         }
     })
-    console.log('======dishes====dishes', dishes);
     return {
         dishes,
         categories,

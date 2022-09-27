@@ -103,7 +103,6 @@ class PromotionRightMain extends Component {
     }
 
     sendFormData = (res) => {
-        console.log('详情数据=====', res);
         let { data = {}, eventGiftConditionList = [], eventMutexDependRuleInfos = [] } = res;
         const {
             orderTypeList,

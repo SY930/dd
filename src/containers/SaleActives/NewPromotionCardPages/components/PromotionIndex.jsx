@@ -73,7 +73,6 @@ class PromotionIndex extends Component {
         const key = promotionKey || this.props.promotionKey;
         // 当前key和mode
         const currentPromotion = this.props.promotion[key];
-        console.log('_TODO_promotionRightMainRef', this.promotionRightMainRef);
         const { allForms, activityConditionsRef, state: promotionRightMainState } = this.promotionRightMainRef;
         const { conditionForms, state } = activityConditionsRef;
         const validFormIds = state.conditionList.map(item => item.id);
@@ -160,7 +159,6 @@ class PromotionIndex extends Component {
         Object.keys(tempObj).sort((a, b) => a - b).forEach((key, index) => {
             conditionConfig[index] = tempObj[key]
         })
-        console.log('conditionConfig===111', conditionConfig, isValid);
 
         if (isValid) {
             try {
@@ -234,7 +232,6 @@ class PromotionIndex extends Component {
                 })
                 event.eventWay = currentPromotion.promotionKey;
                 let clonedEvent = _.cloneDeep(event);
-                console.log('clonedEvent===111', clonedEvent);
                 clonedEvent.hasMutexDepend = event.hasMutexDepend ? 1 : 0
                 delete clonedEvent.NoShareBenifit;
                 delete clonedEvent.treeSelect;
@@ -340,7 +337,6 @@ class PromotionIndex extends Component {
                 if (currentPromotion.itemID) {
                     requestPramas.event.itemID = currentPromotion.itemID;
                 }
-                console.log('请求参数', requestPramas); // _TODO
                 this.createPromotion(requestPramas);
             } catch (error) {
                 console.error(error);

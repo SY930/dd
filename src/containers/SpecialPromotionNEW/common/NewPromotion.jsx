@@ -142,7 +142,6 @@ export default class NewPromotion extends React.Component {
             } else {
                 this.addSpecialPromition(opts, cb, jumpToCrmFlag)
             }
-            // console.log(opts, 'optsoptsoptsoptsoptsoptsoptsoptsopts')
         }
     }
 
