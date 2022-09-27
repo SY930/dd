@@ -313,7 +313,7 @@ class PromotionCreateModal extends Component {
     //** 第三版 重构 抽抽乐活动 点击事件 */
     onV3Click = (key) => {
         if(key) this.setState({curKey: key})
-        if (['85'].includes(key)) {
+        if (['85', '23'].includes(key)) {
             setTimeout(() => {
                 jumpPage({ menuID: SALE_ACTIVE_NEW_PAGE, typeKey: key })
             }, 100);
