@@ -236,12 +236,13 @@ class GiftAddModal extends React.Component {
             params.openPushMessageMpID = 1;
             params.openPushSms = params.pushMessage && Array.isArray(params.pushMessage.sendType) && params.pushMessage.sendType.indexOf('msg') !== -1 ? 1 : 0
             params.reminderTime = params.pushMessage && params.pushMessage.reminderTime
-            if (params.pushMessage && params.pushMessage.sendType && Array.isArray(params.pushMessage.sendType) && params.pushMessage.sendType.includes("wechat")) {
-                params.pushMessageMpID = params.pushMessage && params.pushMessage.pushMessageMpID;
-            } else {
-                // params.pushMessage = {};
-                params.pushMessage.pushMessageMpID = "";
-                params.pushMessageMpID = "";
+            if(!['90','113'].includes(value)){
+                if (params.pushMessage && params.pushMessage.sendType && Array.isArray(params.pushMessage.sendType) && params.pushMessage.sendType.includes("wechat")) {
+                    params.pushMessageMpID = params.pushMessage && params.pushMessage.pushMessageMpID;
+                } else {
+                    params.pushMessage.pushMessageMpID = "";
+                    params.pushMessageMpID = "";
+                }
             }
             params.pushMimiAppMsg = params.pushMessage && Array.isArray(params.pushMessage.sendType) && params.pushMessage.sendType.includes('mini') ? params.pushMessage.pushMimiAppMsg : null
             params.toStatusAfterUseEnd = params.toStatusAfterUseEnd ? 17 : 0;
