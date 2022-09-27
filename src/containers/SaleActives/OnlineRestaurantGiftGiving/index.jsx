@@ -2,7 +2,7 @@
  * @Author: 张博奥 zhangboao@hualala.com
  * @Date: 2022-09-26 09:52:54
  * @LastEditors: 张博奥 zhangboao@hualala.com
- * @LastEditTime: 2022-09-26 18:51:23
+ * @LastEditTime: 2022-09-27 14:53:36
  * @FilePath: /platform-sale/src/containers/SaleActives/OnlineRestaurantGiftGiving/index.jsx
  * @Description: 线上餐厅弹窗送礼右侧表单入口
  */
@@ -207,7 +207,8 @@ class OnlineRestaurantGiftGiving extends Component {
                     ? values.partInTimes1
                     : values.partInTimes,
             countCycleDays: values.countCycleDays,
-            autoRegister: values.autoRegister || 1,
+            autoRegister:
+                values.autoRegister != undefined ? values.autoRegister : 1,
         };
         let params = {
             event,
