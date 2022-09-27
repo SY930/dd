@@ -145,7 +145,7 @@ class ActivityConditions extends Component {
     }
 
     onMinus = (data) => {
-        // delete this.conditionForms[data.id];
+        delete this.conditionForms[data.id];
         let conditionList = this.state.conditionList.filter(item => item.id != data.id);
         this.setState({
             conditionList
@@ -160,20 +160,18 @@ class ActivityConditions extends Component {
     }
 
     resetFormItems = (data) => {
-        let topStageTypeValue = '';
-        (Object.keys(this.conditionForms) || []).forEach(id => {
-            if (id.indexOf('gift') == -1) {
-                let { getFieldsValue } = this.conditionForms[id];
-                topStageTypeValue = getFieldsValue().stageType;
-            }
-        });
         let formItems = ALL_FORM_ITEMS;
         formItems.stageType = {
             type: 'custom',
             label: '',
             render: (decorator, form) => {
-                const { getFieldsValue } = form;
-                // const { stageType: stageTypeValue } = getFieldsValue();
+                let key = this.state.conditionList.map(item => item.id)[0];
+                let firstConditionForm = this.conditionForms[key];
+                let stageTypeValue = '';
+                if (firstConditionForm) {
+                    const { getFieldsValue } = firstConditionForm;
+                    stageTypeValue = getFieldsValue().stageType
+                }
                 return (
                     <Col>
                         {
@@ -198,7 +196,7 @@ class ActivityConditions extends Component {
                                     addonBefore={
                                         decorator({
                                             key: 'stageType',
-                                            defaultValue: topStageTypeValue || 1
+                                            defaultValue: stageTypeValue || 1
                                         })(
                                             <Select style={{ width: '140px' }}>
                                                 {
@@ -369,54 +367,27 @@ class ActivityConditions extends Component {
             conditionList = conditionList.map(item => {
                 if (item.id == id) {
                     item.presentType = value || [];
-                    // item.giftList = [
-                    //     {
-                    //         id: giftUuid--,
-                    //     }
-                    // ]
                 }
                 return item
             });
             this.setState({
                 conditionList
             })
-            if (Array.isArray(value) && value.length > 0 && !value.includes(1)) {
-                // 
-                // let onMinusGift = this.conditionForms[id + 'gift'];
-                // onMinusGift()
-            }
-        } else if (key == 'stageType') {
+        } else if (key == 'stageType') { // 活动方式
             let singleConditionItem = this.state.conditionList[0];
             singleConditionItem.stageType = value;
+            this.conditionForms[singleConditionItem.id].setFieldsValue({
+                stageType: value
+            })
             this.setState({
                 conditionList: [singleConditionItem]
-            }, () => {
-                let ids = this.state.conditionList.map(item => item.id);
-                let newAllForms = {};
-                Object.keys(this.conditionForms).forEach(key => {
-                    if (ids.includes(+key)) {
-                        newAllForms[key] = this.conditionForms[key];
-                    }
-                })
-                let stageTypes = [];
-                Object.keys(newAllForms).forEach(key => {
-                    let form = newAllForms[key];
-                    let { getFieldsValue } = form;
-                    let { stageType } = getFieldsValue();
-                    stageTypes.push(+stageType)
-                })
-                if (stageTypes.includes(3) || stageTypes.includes(4)) {
-                    this.props.showActivityRange(true);
-                } else {
-                    this.props.showActivityRange(false);
-                }
-            });
-            Object.keys(this.conditionForms).forEach(conditionFormId => {
-                if (conditionFormId != singleConditionItem.id) {
-                    // delete this.conditionForms[conditionFormId];
-                }
             });
             // 每满
+            if (value == 3 || value == 4) {
+                this.props.showActivityRange(true);
+            } else {
+                this.props.showActivityRange(false);
+            }
             if (value == 2 || value == 4) {
                 const form = this.conditionForms[singleConditionItem.id];
                 this.setState({

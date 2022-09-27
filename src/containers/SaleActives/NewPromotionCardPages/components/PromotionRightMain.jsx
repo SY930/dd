@@ -103,7 +103,6 @@ class PromotionRightMain extends Component {
     }
 
     sendFormData = (res) => {
-        console.log('详情数据=====', res);
         let { data = {}, eventGiftConditionList = [], eventMutexDependRuleInfos = [] } = res;
         const {
             orderTypeList,
@@ -328,19 +327,24 @@ class PromotionRightMain extends Component {
         formItems.activityRange = {
             type: 'custom',
             label: '',
-            render: decorator => {
+            render: (decorator, form) => {
+                let { state, conditionForms } = this.activityConditionsRef;
+                let firstForm = conditionForms[state.conditionList[0].id]
+                const { stageType } = firstForm && firstForm.getFieldsValue();
                 return (
                     <Row>
                         <Col span={24} push={1}>
-                            {decorator({
-                                key: 'activityRange',
-                            })(
-                                <GiftCategoryAndFoodSelector
-                                    showRequiredMark
-                                    type='87'
-                                    scopeLst={this.state.foodScopeList}
-                                />
-                            )}
+                            {
+                                stageType == 3 && decorator({
+                                    key: 'activityRange',
+                                })(
+                                    <GiftCategoryAndFoodSelector
+                                        showRequiredMark
+                                        type='87'
+                                        scopeLst={this.state.foodScopeList}
+                                    />
+                                )
+                            }
                         </Col>
                     </Row>
                 )
@@ -379,7 +383,7 @@ class PromotionRightMain extends Component {
         formItems[key].render = (decorator, form) => {
             return (
                 <Row>
-                    <Col span={24} push={2} className='11111'>
+                    <Col span={24} className={styles.cardScopeTypeBox}>
                         {decorator({
                             key: 'cardScopeType'
                         })(
