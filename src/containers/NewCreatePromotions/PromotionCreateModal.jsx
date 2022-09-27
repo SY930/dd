@@ -5,7 +5,7 @@ import {
     saleCenterResetDetailInfoAC as saleCenterResetSpecialDetailInfoAC,
     saleCenterSetSpecialBasicInfoAC
 } from "../../redux/actions/saleCenterNEW/specialPromotion.action";
-import {NEW_SALE_BOX,SALE_CENTER_PAYHAVEGIFT} from "../../constants/entryCodes";
+import {NEW_SALE_BOX,SALE_CENTER_PAYHAVEGIFT, SALE_ACTIVE_NEW_PAGE } from "../../constants/entryCodes";
 import {
     Modal,
     message
@@ -313,6 +313,13 @@ class PromotionCreateModal extends Component {
     //** 第三版 重构 抽抽乐活动 点击事件 */
     onV3Click = (key) => {
         if(key) this.setState({curKey: key})
+        if (['85', '23'].includes(key)) {
+            setTimeout(() => {
+                jumpPage({ menuID: SALE_ACTIVE_NEW_PAGE, typeKey: key })
+            }, 100);
+            this.props.onCancel()
+            return closePage(SALE_ACTIVE_NEW_PAGE)
+        }
         if(key == '87'){
             return this.openNewPage(key);
         }
@@ -433,7 +440,7 @@ class PromotionCreateModal extends Component {
                 {(v3visible && curKey == '79') && (<BlindBox onToggle={this.onV3Click} />)}
                 {(v3visible && curKey == '83') && (<PassWordCoupon onToggle={this.onV3Click} />)}
                 {(v3visible && curKey == '10072') && this.renderWeChat2MallModal()}
-                {(v3visible && curKey == '85') && <ManyFace onToggle={this.onV3Click} />}
+                {/* {(v3visible && curKey == '85') && <ManyFace onToggle={this.onV3Click} />} */}
             </div>
         )
     }
