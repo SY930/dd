@@ -63,7 +63,6 @@ class SuccessModalContent extends Component {
         })
         form.validateFields((err, values) => {
             if (!err) {
-                // console.log('handleSubmit', values);
                 const data = {
                     eventName: values.eventName,
                     eventWay: '20001', // 大促20002 成功 20001

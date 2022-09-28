@@ -30,6 +30,7 @@ import CloseableTip from "../../../components/common/CloseableTip/index";
 import {
     fetchSpecialCardLevel,
     queryAllSaveMoneySet,
+    queryAllBenefitCard,
 } from "../../../redux/actions/saleCenterNEW/mySpecialActivities.action";
 import AddGifts from "../common/AddGifts";
 import ENV from "../../../helpers/env";
@@ -229,6 +230,23 @@ class SpecialDetailInfo extends Component {
             giveCoupon,
             giftGetRuleValue,
         } = pointObj;
+        const $interestIds = props.specialPromotion.getIn([
+            "$eventInfo",
+            "interestIds",
+        ]);
+        const interestIds =
+            Immutable.List.isList($interestIds) && $interestIds.size > 0
+                ? $interestIds.toJS()
+                : [];
+        const $benefitCardIds = props.specialPromotion.getIn([
+            "$eventInfo",
+            "benefitCardIds",
+        ]);
+        const benefitCardIds =
+            Immutable.List.isList($benefitCardIds) && $benefitCardIds.size > 0
+                ? $benefitCardIds.toJS()
+                : [];
+        // const { givePoints, presentValue, giveCoupon, giftGetRuleValue } = pointObj;
         // const specialPromotion = props.specialPromotion.get('$eventInfo').toJS();
         this.state = {
             data,
@@ -314,6 +332,8 @@ class SpecialDetailInfo extends Component {
             /** 桌边砍相关结束 */
             helpMessageArray: ["", ""],
             saveMoneySetIds,
+            interestIds,
+            benefitCardIds,
             saveMoneySetType: saveMoneySetIds.length > 0 ? "1" : "0", // 前端内部状态，saveMoneySetIds数组为空表示全部套餐
             givePoints,
             presentValue,
@@ -341,6 +361,14 @@ class SpecialDetailInfo extends Component {
                     giveIntegral2: true,
                 },
                 ruleType3: {
+                    giveIntegral1: true,
+                    giveIntegral2: true,
+                },
+                ruleType4: {
+                    giveIntegral1: true,
+                    giveIntegral2: true,
+                },
+                ruleType5: {
                     giveIntegral1: true,
                     giveIntegral2: true,
                 },
@@ -399,6 +427,7 @@ class SpecialDetailInfo extends Component {
         }
         if (type == 68) {
             this.props.queryAllSaveMoneySet();
+            this.props.queryAllBenefitCard();
         }
         if (type == 21) {
             const shareTitle = "送您一份心意，共享美食优惠！";
@@ -520,6 +549,8 @@ class SpecialDetailInfo extends Component {
                     helpMessageArray: ["", ""],
                     // eventRecommendSettings: initEventRecommendSettings,
                     saveMoneySetIds: [],
+                    interestIds: [],
+                    benefitCardIds: [],
                     saveMoneySetType: "0",
                     directActiveRuleTabValue: "",
                     indirectActiveRuleTabValue: "",
@@ -906,7 +937,7 @@ class SpecialDetailInfo extends Component {
                 }
 
                 if (v.recommendRule === 0) {
-                    initEventRecommendSettings[3].eventRecommendSettings[0] = v;
+                    initEventRecommendSettings[5].eventRecommendSettings[0] = v
                 }
             });
         }
@@ -922,6 +953,16 @@ class SpecialDetailInfo extends Component {
                         redPackageLimitValue,
                         giftItemID,
                     } = setting;
+
+                    if (setting.recommendType == 0) {
+                        data[0] = {
+                            pointLimitValue: data[0].pointLimitValue ? data[0].pointLimitValue : pointLimitValue,
+                            redPackageLimitValue: data[0].redPackageLimitValue ? data[0].redPackageLimitValue : redPackageLimitValue,
+                            recommendType: 0,
+                            recommendRule: 1,
+                            giftItemID
+                        }
+                    }
 
                     if (setting.recommendType == 1) {
                         data[1] = {
@@ -1112,6 +1153,8 @@ class SpecialDetailInfo extends Component {
             discountMaxLimitRate,
             disabledGifts,
             saveMoneySetIds,
+            interestIds,
+            benefitCardIds,
             giftGetRule,
             perfectReturnGiftCheckBoxStatus,
             upGradeReturnGiftCheckBoxStatus,
@@ -1420,12 +1463,14 @@ class SpecialDetailInfo extends Component {
                           ...instantDiscountState,
                       }
                     : {
-                          giftGetRule,
-                          saveMoneySetIds,
-                          shareImagePath,
-                          shareTitle,
-                          cleanCount,
-                      }
+                        giftGetRule,
+                        saveMoneySetIds,
+                        interestIds,
+                        benefitCardIds,
+                        shareImagePath,
+                        shareTitle,
+                        cleanCount,
+                    }
             );
 
             if (type == "21" && giftTotalCount) {
@@ -2975,12 +3020,12 @@ class SpecialDetailInfo extends Component {
             label = "消费比例";
             key = "consumeRate";
         }
-        const rechargeRate = this._getVal({ ruleType, roleType, key });
-        const moneyLimitValue = this._getVal({
-            ruleType,
-            roleType,
-            key: "moneyLimitValue",
-        });
+        if (type === 'buyRate') {
+            label = '购买比例'
+            key = 'consumeRate'
+        }
+        const rechargeRate = this._getVal({ ruleType, roleType, key })
+        const moneyLimitValue = this._getVal({ ruleType, roleType, key: 'moneyLimitValue' })
 
         return (
             <div>
@@ -3183,6 +3228,76 @@ class SpecialDetailInfo extends Component {
             </div>
         );
     };
+    renderRightPackageList = (ruleType, roleType) => {
+        const rightPackageList = this.props.rightPackageList;
+        const {
+            form: { getFieldDecorator },
+        } = this.props;
+        return (
+            <div>
+                <FormItem
+                    label='会员权益包'
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 3 }}
+                    wrapperCol={{ span: 16 }}
+                >
+                    {getFieldDecorator("interestIds", {
+                        initialValue: this.state.interestIds,
+                        onChange: (e) => {
+                            this.setState({ interestIds: e })
+                        },
+                    })(
+                        <Select showSearch={true} notFoundContent={'未搜索到结果'} multiple placeholder="不选默认代表全部会员权益包">
+                            {rightPackageList.map((set) => (
+                                <Select.Option
+                                    key={set.saveMoneySetID}
+                                    value={set.saveMoneySetID}
+                                >
+                                    {set.setName}
+                                </Select.Option>
+                            ))}
+                        </Select>
+                    )}
+                </FormItem>
+                {this.renderRechargeReward(ruleType, roleType, 'buyRate')}
+            </div>
+        );
+    };
+    renderRightCardList = (ruleType, roleType) => {
+        const rightCardList = this.props.rightCardList;
+        const {
+            form: { getFieldDecorator },
+        } = this.props;
+        return (
+            <div>
+                <FormItem
+                    label='权益卡类别'
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 3 }}
+                    wrapperCol={{ span: 16 }}
+                >
+                    {getFieldDecorator("benefitCardIds", {
+                        initialValue: this.state.benefitCardIds,
+                        onChange: (e) => {
+                            this.setState({ benefitCardIds: e })
+                        },
+                    })(
+                        <Select showSearch={true} notFoundContent={'未搜索到结果'} multiple placeholder="不选默认代表全部权益卡类别">
+                            {rightCardList.map((set) => (
+                                <Select.Option
+                                    key={set.cardTypeID}
+                                    value={set.cardTypeID}
+                                >
+                                    {set.benefitCardName}
+                                </Select.Option>
+                            ))}
+                        </Select>
+                    )}
+                </FormItem>
+                {this.renderRechargeReward(ruleType, roleType, 'buyRate')}
+            </div>
+        );
+    };
     renderSaveMoneySetSelector = () => {
         const { saveMoneySetType } = this.state;
         const saveMoneySetList = this.props.saveMoneySetList.toJS();
@@ -3357,7 +3472,9 @@ class SpecialDetailInfo extends Component {
         // 现金红包的储值比例和消费比例
         let cashRadioTitle = "储值比例";
         if (ruleType == 3) {
-            cashRadioTitle = "消费比例";
+            cashRadioTitle = '消费比例'
+        } else if (ruleType == 5 || ruleType == 4) {
+            cashRadioTitle = '购买比例'
         }
         const cashGiftKey = `cashGift${ruleType}${roleType}`;
         const redPackageRate = this._getVal({
@@ -4399,22 +4516,15 @@ function mapStateToProps(state) {
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         specialPromotion: state.sale_specialPromotion_NEW,
         user: state.user.toJS(),
-        allWeChatAccountList: state.sale_giftInfoNew.get("mpList"),
-        groupCardTypeList: state.sale_mySpecialActivities_NEW.getIn([
-            "$specialDetailInfo",
-            "data",
-            "cardInfo",
-            "data",
-            "groupCardTypeList",
-        ]),
-        saveMoneySetList: state.sale_mySpecialActivities_NEW.get(
-            "$saveMoneySetList"
-        ),
-        disabled:
-            state.sale_specialPromotion_NEW.getIn(["$eventInfo", "userCount"]) >
-            0,
-        isUpdate: state.sale_myActivities_NEW.get("isUpdate"),
-    };
+        allWeChatAccountList: state.sale_giftInfoNew.get('mpList'),
+        groupCardTypeList: state.sale_mySpecialActivities_NEW
+            .getIn(['$specialDetailInfo', 'data', 'cardInfo', 'data', 'groupCardTypeList']),
+        saveMoneySetList: state.sale_mySpecialActivities_NEW.get('$saveMoneySetList'),
+        rightPackageList: state.sale_mySpecialActivities_NEW.get('$rightPackageList').toJS(),
+        rightCardList: state.sale_mySpecialActivities_NEW.get('$rightCardList').toJS(),
+        disabled: state.sale_specialPromotion_NEW.getIn(['$eventInfo', 'userCount']) > 0,
+        isUpdate: state.sale_myActivities_NEW.get('isUpdate'),
+    }
 }
 
 function mapDispatchToProps(dispatch) {
@@ -4436,6 +4546,9 @@ function mapDispatchToProps(dispatch) {
         },
         queryAllSaveMoneySet: () => {
             dispatch(queryAllSaveMoneySet());
+        },
+        queryAllBenefitCard: () => {
+            dispatch(queryAllBenefitCard());
         },
     };
 }

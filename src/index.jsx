@@ -1,5 +1,5 @@
-﻿import registerPackage, {registerLocalPage} from '@hualala/platform-base';
-import {mountEpics} from '@hualala/platform-base';
+﻿import registerPackage, { registerLocalPage } from '@hualala/platform-base';
+import { mountEpics } from '@hualala/platform-base';
 import rootEpic from './redux/modules';
 
 import * as entryCodes from './constants/entryCodes'
@@ -90,6 +90,12 @@ registerLocalPage([
         value: entryCodes.GIFT_DETAILS,
         label: '礼品详情',
         parent: [entryCodes.GIFT_PAGE],
+    },
+    {
+        key: entryCodes.CONSUME_GIFT_GIVING,
+        value: entryCodes.CONSUME_GIFT_GIVING,
+        label: '创建营销活动',
+        parent: [entryCodes.NEW_SALE_BOX],
     },
 ]);
 // 注册语言包

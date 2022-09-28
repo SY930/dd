@@ -10,7 +10,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { Form, Icon, Select, Radio, message,TreeSelect } from 'antd';
+import { Form, Icon, Select, Radio, message, TreeSelect } from 'antd';
 import { isEqual, uniq } from 'lodash';
 import Immutable from 'immutable'
 import { axios } from '@hualala/platform-base';
@@ -67,9 +67,9 @@ class StepTwo extends React.Component {
             occupiedShops: [], // 已经被占用的卡类适用店铺id
             shopIDList: this.props.specialPromotion.getIn(['$eventInfo', 'shopIDList'], Immutable.fromJS([])).toJS() || [],
             excludeCardTypeShops: [],
-            filters:[],
-            selectedTags:[],
-            tagIncludes:[],
+            filters: [],
+            selectedTags: [],
+            tagIncludes: [],
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -84,7 +84,7 @@ class StepTwo extends React.Component {
             finish: undefined,
             cancel: undefined,
         });
-        if(this.props.type == '51'){
+        if (this.props.type == '51') {
             this.queryTagData();
         }
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
@@ -196,25 +196,25 @@ class StepTwo extends React.Component {
                 this.setState({
                     filters,
                     tagRuleDetails: res.data.tagRuleDetails
-                },()=>{
+                }, () => {
                     let { customerRangeConditionIDs } = this.props.specialPromotion.get('$eventInfo').toJS();
                     let useData = [];
                     let selectedTags = [];
-                    if(res.data.tagRuleDetails && res.data.tagRuleDetails.length > 0){
-                        if(customerRangeConditionIDs && customerRangeConditionIDs.length > 0){
+                    if (res.data.tagRuleDetails && res.data.tagRuleDetails.length > 0) {
+                        if (customerRangeConditionIDs && customerRangeConditionIDs.length > 0) {
                             res.data.tagRuleDetails.map(item => {
                                 customerRangeConditionIDs.map(d => {
-                                    if(item.tagRuleID == d){
+                                    if (item.tagRuleID == d) {
                                         useData.push(item.tagRuleID + '@@' + item.tagTypeID + '@@' + item.tagName);
-                                        selectedTags.push({tagRuleID:item.tagRuleID,tagTypeID:item.tagTypeID,tagName:item.tagName});
+                                        selectedTags.push({ tagRuleID: item.tagRuleID, tagTypeID: item.tagTypeID, tagName: item.tagName });
                                     }
                                 })
                             })
                         }
                     }
                     this.setState({
-                        tagIncludes:useData,
-                        selectedTags:selectedTags
+                        tagIncludes: useData,
+                        selectedTags: selectedTags
                     })
                 })
             } else {
@@ -224,7 +224,7 @@ class StepTwo extends React.Component {
     }
 
     orgCateData = (arr = [], details = []) => {
-        arr = arr.filter((item)=>{
+        arr = arr.filter((item) => {
             return item.categoryEntries && item.categoryEntries.length > 0
         })
         return arr.map((item, index) => {
@@ -333,7 +333,7 @@ class StepTwo extends React.Component {
         }
 
         opts.selectedTags = null;
-        if(this.props.type == '51' && this.state.cardLevelRangeType == 7) {
+        if (this.props.type == '51' && this.state.cardLevelRangeType == 7) {
             opts.customerRangeConditionIDs = this.state.selectedTags.map(item => item.tagRuleID);
         }
 
@@ -444,7 +444,7 @@ class StepTwo extends React.Component {
             cardLevelRangeType: type,
             cardLevelIDList: [],
             groupMembersID: undefined,
-            selectedTags:null
+            selectedTags: null
         })
         this.props.setSpecialBasicInfo({ cardLevelIDList: [] });
     }
@@ -491,11 +491,11 @@ class StepTwo extends React.Component {
             showCheckedStrategy: TreeSelect.SHOW_CHILD,
             searchPlaceholder: '请选择会员标签',
             style: {
-                width: 472, 
-                maxHeight:96,
-                overflow:'auto',
+                width: 472,
+                maxHeight: 96,
+                overflow: 'auto',
                 // border:'1px solid #d9d9d9',
-                borderRadius:'3px'
+                borderRadius: '3px'
             },
             dropdownStyle: { maxHeight: 275, overflow: 'auto' },
         };
@@ -566,7 +566,7 @@ class StepTwo extends React.Component {
                     )
                 }
                 {
-                    localType === '7' ? 
+                    localType === '7' ?
                         <FormItem
                             label={`会员标签`}
                             className={styles.FormItemStyle}
@@ -579,7 +579,7 @@ class StepTwo extends React.Component {
                                     message: `请选择会员标签`,
                                 }],
                                 initialValue: this.state.tagIncludes,
-                            })(<TreeSelect {...labelProps1} className={styles.treeSelect}/>)
+                            })(<TreeSelect {...labelProps1} className={styles.treeSelect} />)
                             }
                         </FormItem> : null
                 }

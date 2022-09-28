@@ -103,7 +103,7 @@ class CardSaleActive extends Component {
             message.warning('该活动已下线');
             return;
         }
-        if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83 || record.eventWay === 85) {
+        if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83 || record.eventWay === 85 || record.eventWay === 23) {
             this.props.onV3Click(record.itemID, true, record.eventWay);
             return;
         }
@@ -115,6 +115,9 @@ class CardSaleActive extends Component {
             })
             return;
         }
+        if (record.eventWay == 87) {
+            return this.props.handleNewEditActive(record, 'view');
+        }
         this.props.toggleIsUpdate(false)
         this.props.handleUpdateOpe(null, record, index);
     }
@@ -124,7 +127,7 @@ class CardSaleActive extends Component {
             message.warning('该活动已下线');
             return;
         }
-        if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83 || record.eventWay === 85) {
+        if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83 || record.eventWay === 85 || record.eventWay === 23) {
             this.props.handleEditActive(record)(() => this.props.onV3Click(record.itemID, false, record.eventWay, record.isActive))
             return;
         }
@@ -137,6 +140,9 @@ class CardSaleActive extends Component {
                 })
             })
             return null
+        }
+        if (record.eventWay == 87) {
+            return this.props.handleNewEditActive(record, 'edit');
         }
         this.props.handleEditActive(record)(() => {
             this.props.toggleIsUpdate(true)
@@ -390,7 +396,7 @@ class CardSaleActive extends Component {
                                                         </Authority>
                                                     }
                                                     {
-                                                        item.eventWay != '85' && <Tooltip placement="bottomLeft" title={this.renderTipTitle(_, item, index)} overlayClassName={stylesPage.Sale__Activite__Tip}>
+                                                        (![85, 87].includes(+item.eventWay)) && <Tooltip placement="bottomLeft" title={this.renderTipTitle(_, item, index)} overlayClassName={stylesPage.Sale__Activite__Tip}>
                                                             <span style={{
                                                                 position: 'relative',
                                                                 paddingRight: 9,

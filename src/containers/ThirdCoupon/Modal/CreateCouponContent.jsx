@@ -85,8 +85,6 @@ class CreateCouponContent extends Component {
         })
     }
 
-
-
     // 根据getGiftItemID拼接回显的值
     getGiftItemIDs = ({ giftItemID, giftType, giftValue }) => {
         const { treeData } = this.props;

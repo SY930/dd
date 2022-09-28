@@ -205,6 +205,9 @@ class CalendarList extends Component {
                     <div style={{ transform: `translateY(${-y}px)`}} className={style.menu}>
                         {
                             list.map(item => {
+                                if (['85', '23'].includes(`${item.eventType}`)) {
+                                    return null
+                                }
                                     return (
                                         <div
                                             className={item.isCategoryPlaceHolder ?
@@ -229,6 +232,9 @@ class CalendarList extends Component {
                         .map(item => {
                             if (item.isCategoryPlaceHolder) {
                                 return (<div className={style.categoryWrapper} />)
+                            }
+                            if (['85', '23'].includes(`${item.eventType}`)) {
+                                return null
                             }
                             const {isOverflow: isNameOverflow, expectWidth} = isNameLengthLargerThanWidth(item);
                             return (

@@ -1,0 +1,109 @@
+.ConsumeGiftGiving {
+    .mainContainer {
+        display: flex;
+    }
+
+    .centerLine {
+        height: ~'calc(100vh - 70px)';
+        width: 1px;
+        background: #979797;
+        position: relative;
+
+        .arrow {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+            border-left: none;
+            border-right-color: #979797;
+            right: 0;
+            top: 200px;
+
+            &::after {
+                width: 0;
+                height: 0;
+                display: block;
+                position: absolute;
+                content: '';
+                top: -9px;
+                right: -11px;
+                border: 9px solid transparent;
+                border-left: none;
+                border-right-color: #FFFFFF;
+            }
+        }
+    }
+}
+
+.headerTitle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 50px;
+    padding: 0 20px;
+}
+
+.PromotionLeftLogo {
+    width: 321px;
+    height: 639px;
+    margin: 34px 56px 0;
+    background: url(../assets/bg_logo.png) no-repeat center;
+    background-size: 100% 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+        width: 290px;
+        height: 610px;
+    }
+}
+
+.PromotionRightMain {
+    //   min-width: 700px;
+    min-width: 600px;
+    width: 100%;
+    padding-top: 20px;
+    overflow-y: auto;
+    padding-bottom: 200px;
+
+    .formBlock {
+        // max-width: 700px;
+        max-width: 600px;
+    }
+
+    .itemTitle {
+        height: 28px;
+        background: #F5FBFA;
+        font-size: 14px;
+        color: #666666;
+        line-height: 19px;
+        display: flex;
+        align-items: center;
+
+        .line {
+            width: 3px;
+            height: 12px;
+            background: #1BB496;
+            margin-right: 8px;
+        }
+    }
+}
+
+.NoShareBenifit {
+    :global {
+        .ant-spin-nested-loading {
+            width: 401px;
+            margin-left: 15px;
+        }
+    }
+}
+
+.cardScopeTypeBox {
+    :global {
+        .ant-form-item-label {
+            margin-right: 17px;
+            overflow: visible !important;
+        }
+    }
+}

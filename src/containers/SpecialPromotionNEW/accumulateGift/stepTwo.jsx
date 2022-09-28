@@ -109,7 +109,7 @@ class StepTwo extends React.Component {
                     }),
                 });
             }
-        }else{
+        } else {
             this.setState({
                 isBenifitActive: false,
             })
@@ -254,7 +254,7 @@ class StepTwo extends React.Component {
                     sharedType: '10'
                 }]
             })
-        }else{
+        } else {
             this.setState({
                 eventMutexDependRuleInfos: []
             })
@@ -520,7 +520,7 @@ class StepTwo extends React.Component {
                                     : null
                             }
                             {
-                                this.state.isBenifitActive ? 
+                                this.state.isBenifitActive ?
                                     <FormItem
                                         label="不共享优惠"
                                         className={styles.FormItemStyle}
@@ -537,7 +537,7 @@ class StepTwo extends React.Component {
                                         />
                                     </FormItem> : null
                             }
-                            
+
                         </div>
                         : null
                 }

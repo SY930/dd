@@ -778,16 +778,20 @@ class GiftAddModalStep extends React.PureComponent {
         //         brandID: food.brandID || '0',
         //     }
         // });
-        params.couponFoodOffers = (params.buyGiveSecondaryFoods.dishes || []).map((food) => {
-            return {
-                foodUnitID: food.foodUnitID,
-                foodUnitCode: food.foodUnitCode,
-                foodPrice: food.price,
-                foodName: food.foodName,
-                foodUnitName: food.unit || '',
-                brandID: food.brandID || '0',
-            }
-        });
+        if(params.stageType == 1){
+            delete params.couponFoodOffers
+        }else{
+            params.couponFoodOffers = (params.buyGiveSecondaryFoods.dishes || []).map((food) => {
+                return {
+                    foodUnitID: food.foodUnitID,
+                    foodUnitCode: food.foodUnitCode,
+                    foodPrice: food.price,
+                    foodName: food.foodName,
+                    foodUnitName: food.unit || '',
+                    brandID: food.brandID || '0',
+                }
+            });
+        }
         // delete params.buyGiveFoods;
         delete params.buyGiveSecondaryFoods;
         return params;
@@ -1008,7 +1012,6 @@ class GiftAddModalStep extends React.PureComponent {
                     });
                 } else {
                     const shops = (allSubRightGroup || []).filter(item => (values.selectedShops || []).includes(item.value));
-                    // console.log("🚀 ~ file: GiftAddModalStep.jsx ~ line 1012 ~ GiftAddModalStep ~ shops ~ shops", shops)
                     shops.forEach(s => {
                         shopNames += `${s.label + ',' || ''}`;
                         shopIDs += `${s.value + ',' || ''}`;
@@ -1135,7 +1138,7 @@ class GiftAddModalStep extends React.PureComponent {
                 }
             }
 
-            if (value == '10' || value == '81') {
+            if (['10','20','21','111'].includes(value)) {
 
                 let isMsg = false
                 if(this.state.values.pushMessage&&this.state.values.pushMessage.sendType){
@@ -1240,10 +1243,16 @@ class GiftAddModalStep extends React.PureComponent {
                 }
             }
             params.openPushMessageMpID = 1;
-            params.openPushSms = params.pushMessage && params.pushMessage.sendType.indexOf('msg') !== -1 ? 1 : 0
+            params.openPushSms = params.pushMessage && Array.isArray(params.pushMessage.sendType) && params.pushMessage.sendType.indexOf("msg") !== -1 ? 1 : 0;
             params.reminderTime = params.pushMessage && params.pushMessage.reminderTime
-            params.pushMessageMpID = params.pushMessage && params.pushMessage.pushMessageMpID
-            params.pushMimiAppMsg = params.pushMessage && params.pushMessage.sendType.includes('mini') ? params.pushMessage.pushMimiAppMsg : null
+            if (params.pushMessage && params.pushMessage.sendType && Array.isArray(params.pushMessage.sendType) && params.pushMessage.sendType.includes('wechat')) {
+                params.pushMessageMpID = params.pushMessage && params.pushMessage.pushMessageMpID;
+            } else {
+                params.pushMessage.pushMessageMpID = '';
+                params.pushMessageMpID = '';
+            }
+            
+            params.pushMimiAppMsg = params.pushMessage && Array.isArray(params.pushMessage.sendType) && params.pushMessage.sendType.includes('mini') ? params.pushMessage.pushMimiAppMsg : null
             // 商城券参数调整
             if(hasMallArr.includes(value)){
                 this.adjustParamsOfMallGift(params);
@@ -1254,7 +1263,6 @@ class GiftAddModalStep extends React.PureComponent {
                     return
                 }
             }
-            console.log('_TODO==特殊权益券保存', params);
 
             Array.isArray(params.supportOrderTypeLst) && (params.supportOrderTypeLst = params.supportOrderTypeLst.join(','))
             this.setState({
@@ -2669,7 +2677,6 @@ class GiftAddModalStep extends React.PureComponent {
                 }
             }
         }
-
         if(describe == '代金券' || describe == '菜品优惠券' || describe == '菜品兑换券' || describe == '折扣券' || describe == '配送券' || describe == '买赠券' || describe == '不定额代金券') {
             if(values.transferType == '0' || values.transferType == undefined) {
                 secondKeysToDisplay[0].keys = secondKeysToDisplay[0].keys.filter((key)=>{
@@ -2686,10 +2693,14 @@ class GiftAddModalStep extends React.PureComponent {
             const keys = firstKeysToDisplay[0].keys
             const firstKeysToDisplayKeys = keys.filter(v => v !== 'selectBrands')
             firstKeysToDisplay[0].keys = firstKeysToDisplayKeys
-
-
         }
-
+        if (describe === '买赠券') {
+            let firstKeysToDisplayKeys = firstKeysToDisplay[0].keys
+            if(values.stageType == '1'){
+                firstKeysToDisplayKeys = firstKeysToDisplayKeys.filter(v => v !== 'buyGiveSecondaryFoods')
+            }
+            firstKeysToDisplay[0].keys = firstKeysToDisplayKeys
+        }
         // 'discountRateSetting',                   // 折扣设置 （注释掉，通过代码动态注释）
         // 'specialPriceVolSetting',                // 特价设置
         // 'discountDecreaseVolSetting',            // 立减
@@ -3009,39 +3020,38 @@ class GiftAddModalStep extends React.PureComponent {
                 }>
                     <Icon style={{ marginLeft: 5, marginRight: 5}} type="question-circle" />
                 </Tooltip></span>,
-                rules: [{
-                    validator: (rule, v, cb) => {
-                        if (!v.pushMessageMpID) {
-                            cb(rule.message);
-                        }
-                        cb();
-                    },
-                    message: '请选择微信推送的公众号',
-                },{
-                    validator: (rule, v, cb) => {
-                        if (v.sendType.indexOf('wechat') === -1) {
-                            cb(rule.message);
-                        }
-                        cb();
-                    },
-                    message: '微信推送为必选项',
-                },{
-                    validator: (rule, v, cb) => {
-                        if (v.sendType.indexOf('mini') > -1 && !v.pushMimiAppMsg) {
-                            cb(rule.message);
-                        }
-                        cb();
-                    },
-                    message: '请选择推送的小程序',
-                }],
+                // rules: [{
+                //     validator: (rule, v, cb) => {
+                //         if (!v.pushMessageMpID) {
+                //             cb(rule.message);
+                //         }
+                //         cb();
+                //     },
+                //     message: '请选择微信推送的公众号',
+                // },{
+                //     validator: (rule, v, cb) => {
+                //         if (v.sendType.indexOf('wechat') === -1) {
+                //             cb(rule.message);
+                //         }
+                //         cb();
+                //     },
+                //     message: '微信推送为必选项',
+                // },{
+                //     validator: (rule, v, cb) => {
+                //         if (v.sendType.indexOf('mini') > -1 && !v.pushMimiAppMsg) {
+                //             cb(rule.message);
+                //         }
+                //         cb();
+                //     },
+                //     message: '请选择推送的小程序',
+                // }],
                 type: 'custom',
                 render: (decorator,form) => {
                     return (
                         <Col>
                             {
                                 decorator({})(
-                                   (describe != '代金券' && describe != '特殊权益券')
-                                    ?<PushMessageMpID formData = {formData} groupID={groupID}/>:
+                                     (!['10', '20', '21', '111',].includes(value))?<PushMessageMpID formData = {formData} groupID={groupID}/>:
                                     <CashCouponPushMessageMpID formData = {formData} groupID={groupID}/>
                                 )
                             }
@@ -3667,10 +3677,29 @@ class GiftAddModalStep extends React.PureComponent {
                 required: true,
                 render: decorator => this.renderBuyGiveFoodsboxs(decorator),
             },
-
+            stageType: {
+                label: '优惠菜品',
+                type: 'custom',
+                defaultValue: 0,
+                render: (decorator, form) => {
+                    return decorator({})(
+                        <RadioGroup>
+                            <Radio value={0}>不限制赠送菜品</Radio>
+                            <Radio value={1}>赠送相同菜品</Radio>
+                            <Tooltip title={
+                                <p>
+                                    消费者购买A菜品只能赠送A菜品
+                                </p>
+                            }>
+                                <Icon type="question-circle" />
+                            </Tooltip>
+                        </RadioGroup>
+                    )
+                },
+            },
             buyGiveSecondaryFoods: {
                 type: 'custom',
-                label: '优惠菜品',
+                label: ' ',
                 required: true,
                 render: decorator => this.renderBuyGiveSecondaryFoodsboxs(decorator),
             },
@@ -3902,7 +3931,11 @@ class GiftAddModalStep extends React.PureComponent {
         formData.giftShareType = String(formData.giftShareType);
         formData.couponPeriodSettings = formData.couponPeriodSettingList;
         if(!formData.pushMessage) {
-            const sendType = ['wechat']
+            // const sendType = ['wechat']
+            const sendType = [];
+            if (formData.pushMessageMpID) {
+                sendType.push('wechat');
+            }
             if (formData.openPushSms) {
                 sendType.push('msg')
             }

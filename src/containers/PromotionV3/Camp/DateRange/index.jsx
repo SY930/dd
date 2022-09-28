@@ -43,6 +43,10 @@ class DateRange extends Component {
                             return current < moment(value[0]).subtract(1, 'year') ||
                             current > moment(value[0]).add(1, 'year').subtract(1, 'days')
                         }
+                        if (type == '87') {
+                            return current < moment(value[0]).subtract(1, 'year') ||
+                            current > moment(value[0]).add(1, 'year').subtract(1, 'days')
+                        }
                         // 永久授权
                         if(authEndDate == '99999999'){
                             return current && current.format('YYYYMMDD') < moment().format('YYYYMMDD');

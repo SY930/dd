@@ -458,7 +458,7 @@ const STRING_SPE = {
     d1701e8391a4865: { id: 'Sale.d1701e8391a4865', defaultMessage: '完善资料送礼' },
     db612a0008a4925: { id: 'Sale.db612a0008a4925', defaultMessage: '升级送礼' },
     d4h1eea89g110128: { id: 'Sale.d4h1eea89g110128', defaultMessage: '累计消费送礼' },
-    d4h1eea89g21118: { id: 'Sale.d4h1eea89g21118', defaultMessage: '线上餐厅送礼' },
+    d4h1eea89g21118: { id: 'Sale.d4h1eea89g21118', defaultMessage: '线上餐厅弹窗送礼' },
     d5g3ql3oen12242: { id: 'Sale.d5g3ql3oen12242', defaultMessage: '唤醒送礼' },
     d1701e8391a513206: { id: 'Sale.d1701e8391a513206', defaultMessage: '评价送礼' },
     d567490a78b314234: { id: 'Sale.d567490a78b314234', defaultMessage: '分享裂变' },

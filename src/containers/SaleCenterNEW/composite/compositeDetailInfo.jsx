@@ -428,7 +428,6 @@ class CompositeDetailInfo extends React.Component {
     }
 
     handlePromotionSetting(idx, val) {
-        console.log('idx=====', idx, val);
         const { data } = this.state;
         data[idx].flag = val.categoryOrDish;
         data[idx].scopeLst = [];

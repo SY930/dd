@@ -25,7 +25,6 @@ const loadShopSchema = async () => {
     const parm = { service, type, data: { groupID }, method };
     const res = await axios.post(url + method, parm);
     if (res.code !== '000') throw new Error(res.message);
-    console.log("🚀 ~ file: utils.js ~ line 28 ~ loadShopSchema ~ res", res)
     // data = res.data;
 //     const res  = {
 //       "code":"000",

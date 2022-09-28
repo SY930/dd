@@ -1,10 +1,10 @@
 import { HualalaEditorBox, HualalaTreeSelect, HualalaGroupSelect, HualalaSelected, HualalaSearchInput, CC2PY } from '../../../components/common';
 import React from 'react';
-import { connect } from 'react-redux'; 
+import { connect } from 'react-redux';
 import { Tree, message, Spin } from 'antd';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
-import {injectIntl} from '../IntlDecor';
+import { injectIntl } from '../IntlDecor';
 
 const TreeNode = Tree.TreeNode;
 
@@ -33,9 +33,11 @@ class NoShareBenifit extends React.Component {
             couponsData: [], // 菜品优惠券数据
             buyGiveData: [], // 买赠优惠券数据
             exchangeCouponsData: [], // 菜品兑换券数据
+            discountData: [], // 折扣券数据
             vouchersDataSelections: [], // 已选电子代金券数据
             couponsDataSelections: [], // 已选菜品优惠券数据
             exchangeCouponsDataSelections: [], // 已选菜品兑换券数据
+            discountDataSelections: [], // 已选折扣券数据
             labelKeyType: 'finalShowName',
             valueKeyType: 'promotionIDStr',
             limitNum: 30,        //营销活动共享限制数量
@@ -56,12 +58,12 @@ class NoShareBenifit extends React.Component {
         if (mutexPromotions === undefined || promotionCollection === undefined) {
             return
         }
-        const {vouchersData, couponsData, exchangeCouponsData, buyGiveData} = this.state;
+        const { vouchersData, couponsData, exchangeCouponsData, buyGiveData, discountData } = this.state;
         // 遍历活动匹配展示名称
         mutexPromotions.map((promotion) => {
             if (promotion.sharedType == '30') {
                 // 优惠券类
-                const crmGift = vouchersData.concat(couponsData).concat(exchangeCouponsData).concat(buyGiveData);
+                const crmGift = vouchersData.concat(couponsData).concat(exchangeCouponsData).concat(buyGiveData).concat(discountData)
                 crmGift.map((item) => {
                     // 找到匹配活动，加展示名称
                     // promotion.finalShowName = "券活动";
@@ -92,9 +94,9 @@ class NoShareBenifit extends React.Component {
                 })
             }
         })
-        if(promotionCollection && promotionCollection.length > 0){
+        if (promotionCollection && promotionCollection.length > 0) {
             this.setState({
-                loading:false
+                loading: false
             })
         }
         this.setState({
@@ -124,6 +126,7 @@ class NoShareBenifit extends React.Component {
         let vouchersData = [],
             couponsData = [],
             exchangeCouponsData = [],
+            discountData = [],
             buyGiveData = [];
         crmGiftList.map((crmGift, index) => {
             if (crmGift.giftType == '10') {
@@ -147,6 +150,13 @@ class NoShareBenifit extends React.Component {
                 crmGift.finalShowName = crmGift.giftName;
                 exchangeCouponsData.push(crmGift)
             }
+            if (crmGift.giftType == '111') {
+                // 折扣券
+                crmGift.sharedType = '30';
+                crmGift.promotionIDStr = crmGift.giftItemID;
+                crmGift.finalShowName = crmGift.giftName;
+                discountData.push(crmGift)
+            }
             if (crmGift.giftType == '110') {
                 crmGift.sharedType = '30';
                 crmGift.promotionIDStr = crmGift.giftItemID;
@@ -162,6 +172,7 @@ class NoShareBenifit extends React.Component {
             couponsData,
             exchangeCouponsData,
             buyGiveData,
+            discountData
         }, () => {
             this.initialState(this.state.mutexPromotions, this.state.promotionCollection);
         });
@@ -181,6 +192,7 @@ class NoShareBenifit extends React.Component {
             let vouchersData = [],
                 couponsData = [], // 优惠券
                 exchangeCouponsData = [], // 兑换券
+                discountData = [], // 折扣券
                 buyGiveData = []; // 买赠券
             crmGiftList.map((crmGift, index) => {
                 if (crmGift.giftType == '10') {
@@ -204,6 +216,13 @@ class NoShareBenifit extends React.Component {
                     crmGift.finalShowName = crmGift.giftName;
                     exchangeCouponsData.push(crmGift)
                 }
+                if (crmGift.giftType == '111') {
+                    // 折扣券
+                    crmGift.sharedType = '30';
+                    crmGift.promotionIDStr = crmGift.giftItemID;
+                    crmGift.finalShowName = crmGift.giftName;
+                    discountData.push(crmGift)
+                }
                 if (crmGift.giftType == '110') {
                     crmGift.sharedType = '30';
                     crmGift.promotionIDStr = crmGift.giftItemID;
@@ -217,6 +236,7 @@ class NoShareBenifit extends React.Component {
                 couponsData,
                 exchangeCouponsData,
                 buyGiveData,
+                discountData
             }, () => {
                 this.initialState(this.state.mutexPromotions, this.state.promotionCollection);
             })
@@ -312,48 +332,49 @@ class NoShareBenifit extends React.Component {
         return (
             <Spin spinning={this.state.loading}>
                 <div className={styles.treeSelectMain}>
-                        <HualalaEditorBox
-                            label={'不共享的优惠活动'}
-                            itemName={'finalShowName'}
-                            itemID={'promotionIDStr'}
-                            data={promotionSelections}
-                            onChange={this.handleEditorBoxChange}
-                            onTagClose={this.handleSelectedChange}
-                        >
-                            <HualalaTreeSelect level1Title={SALE_LABEL.k5m5auyz}>
-                                {/* //搜索框 */}
-                                <HualalaSearchInput onChange={this.handleSearchInputChange} />
-                                {/* //左侧树 */}
-                                <Tree onSelect={this.handleTreeNodeChange} title={'content'}>
-                                    <TreeNode key={'hualala'} title={SALE_LABEL.k5m5av7b}>
-                                        <TreeNode key={'vouchers'} title={SALE_LABEL.k5m5avfn} />
-                                        <TreeNode key={'coupons'} title={SALE_LABEL.k5m5avnz} />
-                                        <TreeNode key={'exchangeCoupons'} title={SALE_LABEL.k5m5avwb} />
-                                        <TreeNode key={'buyGive'} title={k636qvpm} />
-                                    </TreeNode>
-                                </Tree>
-                                {/* //右侧复选框  isLimit 数量限制 */}
-                                <HualalaGroupSelect
-                                    options={this.state.promotionOptions}
-                                    labelKey={'finalShowName'}
-                                    valueKey={'promotionIDStr'}
-                                    value={this.state.promotionCurrentSelections}
-                                    onChange={this.handleGroupSelect}
-                                    isLimit={Array.from(promotionSelections).length >= this.state.limitNum || false}
-                                />
-                                {/* //下方已选的tag */}
-                                <HualalaSelected
-                                    itemName={'finalShowName'}
-                                    itemID={'promotionIDStr'}
-                                    selectdTitle={SALE_LABEL.k5m5awd0}
-                                    value={promotionSelections}
-                                    onChange={this.handleSelectedChange}
-                                    onClear={() => this.clear()}
-                                />
-                            </HualalaTreeSelect>
-                        </HualalaEditorBox>
+                    <HualalaEditorBox
+                        label={'不共享的优惠活动'}
+                        itemName={'finalShowName'}
+                        itemID={'promotionIDStr'}
+                        data={promotionSelections}
+                        onChange={this.handleEditorBoxChange}
+                        onTagClose={this.handleSelectedChange}
+                    >
+                        <HualalaTreeSelect level1Title={SALE_LABEL.k5m5auyz}>
+                            {/* //搜索框 */}
+                            <HualalaSearchInput onChange={this.handleSearchInputChange} />
+                            {/* //左侧树 */}
+                            <Tree onSelect={this.handleTreeNodeChange} title={'content'}>
+                                <TreeNode key={'hualala'} title={SALE_LABEL.k5m5av7b}>
+                                    <TreeNode key={'vouchers'} title={SALE_LABEL.k5m5avfn} />
+                                    <TreeNode key={'coupons'} title={SALE_LABEL.k5m5avnz} />
+                                    <TreeNode key={'exchangeCoupons'} title={SALE_LABEL.k5m5avwb} />
+                                    <TreeNode key={'buyGive'} title={k636qvpm} />
+                                    <TreeNode key={'discount'} title={SALE_LABEL.k636qvha} />
+                                </TreeNode>
+                            </Tree>
+                            {/* //右侧复选框  isLimit 数量限制 */}
+                            <HualalaGroupSelect
+                                options={this.state.promotionOptions}
+                                labelKey={'finalShowName'}
+                                valueKey={'promotionIDStr'}
+                                value={this.state.promotionCurrentSelections}
+                                onChange={this.handleGroupSelect}
+                                isLimit={Array.from(promotionSelections).length >= this.state.limitNum || false}
+                            />
+                            {/* //下方已选的tag */}
+                            <HualalaSelected
+                                itemName={'finalShowName'}
+                                itemID={'promotionIDStr'}
+                                selectdTitle={SALE_LABEL.k5m5awd0}
+                                value={promotionSelections}
+                                onChange={this.handleSelectedChange}
+                                onClear={() => this.clear()}
+                            />
+                        </HualalaTreeSelect>
+                    </HualalaEditorBox>
                 </div>
-             </Spin>
+            </Spin>
         );
     }
 
@@ -374,7 +395,7 @@ class NoShareBenifit extends React.Component {
         const k5m4q0ze = intl.formatMessage(SALE_STRING.k5m4q0ze);
 
         const promotionList = this.state.promotionCollection;
-        const { vouchersData, couponsData, exchangeCouponsData, buyGiveData } = this.state;
+        const { vouchersData, couponsData, exchangeCouponsData, buyGiveData, discountData } = this.state;
         if (undefined === promotionList) {
             return null;
         }
@@ -391,7 +412,7 @@ class NoShareBenifit extends React.Component {
                 }
             });
         });
-        const otherPromotion = vouchersData.concat(couponsData).concat(exchangeCouponsData).concat(buyGiveData).concat([{ 'finalShowName': k5m4q0r2, 'promotionIDStr': '-10' }, { 'finalShowName': k5m4q0ze, 'promotionIDStr': '-20' }])
+        const otherPromotion = vouchersData.concat(couponsData).concat(exchangeCouponsData).concat(buyGiveData).concat(discountData).concat([{ 'finalShowName': k5m4q0r2, 'promotionIDStr': '-10' }, { 'finalShowName': k5m4q0ze, 'promotionIDStr': '-20' }])
         otherPromotion.forEach((promotion) => {
             if (CC2PY(promotion.finalShowName).indexOf(CC2PY(value)) !== -1 || promotion.finalShowName.indexOf(CC2PY(value)) !== -1) {
                 allMatchItem.push(promotion);
@@ -458,9 +479,9 @@ class NoShareBenifit extends React.Component {
             // get the selections
             const selectionsSet = new Set(this.state.promotionSelections);
             const promotionCurrentSelections = this.state.promotionCurrentSelections;
-            
+
             // 最大选择数量限制  30
-            if(value.length >= this.state.limitNum + 1) {
+            if (value.length >= this.state.limitNum + 1) {
                 message.warning(`共享组选项不能超过${this.state.limitNum}个`)
                 this.handleSelectedChange('')
                 return
@@ -504,7 +525,7 @@ class NoShareBenifit extends React.Component {
                 })
             }
             this.setState({ promotionCurrentSelections: value, promotionSelections: selectionsSet }, () => {
-              
+
             });
         }
     }
@@ -515,7 +536,7 @@ class NoShareBenifit extends React.Component {
         const k5m4q0r2 = intl.formatMessage(SALE_STRING.k5m4q0r2);
         const k5m4q0ze = intl.formatMessage(SALE_STRING.k5m4q0ze);
 
-        let { promotionOptions, promotionSelections, promotionCurrentSelections, vouchersData, couponsData, exchangeCouponsData, buyGiveData, valueKeyType } = this.state;
+        let { promotionOptions, promotionSelections, promotionCurrentSelections, vouchersData, couponsData, exchangeCouponsData, buyGiveData, discountData, valueKeyType } = this.state;
 
         if (value === undefined || value[0] === undefined) {
             return null;
@@ -525,10 +546,12 @@ class NoShareBenifit extends React.Component {
             promotionOptions = vouchersData;
         } else if (value[0] == 'coupons') {
             promotionOptions = couponsData;
-        }else if (value[0] == 'exchangeCoupons') {
+        } else if (value[0] == 'exchangeCoupons') {
             promotionOptions = exchangeCouponsData;
-        } else if (value[0] == 'buyGive'){
+        } else if (value[0] == 'buyGive') {
             promotionOptions = buyGiveData;
+        } else if (value[0] == 'discount') {
+            promotionOptions = discountData;
         } else if (value[0] == 'userCard') {
             promotionOptions = [{ 'finalShowName': k5m4q0r2, 'promotionIDStr': '-10', 'sharedType': '20' }];
         } else if (value[0] == 'userDiscount') {

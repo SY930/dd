@@ -12,6 +12,7 @@ import {
     Input,
     Radio,
     Form,
+    Switch
 } from 'antd';
 import styles from './GiftAdd.less';
 import BaseForm from '../../../components/common/BaseForm';
@@ -22,15 +23,16 @@ import {
 } from '../_action';
 import IsSync from './common/IsSync';
 import GiftImagePath from './common/GiftImagePath';
-import {debounce} from 'lodash';
+import { debounce } from 'lodash';
 import ShopSelector from "../../../components/common/ShopSelector/ShopSelector";
-import {getPromotionShopSchema} from "../../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
+import { getPromotionShopSchema } from "../../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
 import SelectBrands from "../components/SelectBrands";
 import SelectCardTypes from "../components/SelectCardTypes";
 import PushMessageMpID from "../components/PushMessageMpID";
 import SellerCode from "../components/SellerCode";
 import FakeBorderedLabel from "../components/FakeBorderedLabel";
 import GiftInfoHaveCoupon from './GiftInfoHaveCoupon';
+import decorator from '@hualala/react-lazyload/lib/decorator';
 
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -59,11 +61,11 @@ class GiftAddModal extends React.Component {
         this.handleValueChangeDebounced = debounce(this.props.changeGiftFormKeyValue.bind(this), 400);
     }
     componentDidMount() {
-        const { getPromotionShopSchema, gift: {data}} = this.props;
-        const { valueType = '0', monetaryUnit= '0' } = data;
+        const { getPromotionShopSchema, gift: { data } } = this.props;
+        const { valueType = '0', monetaryUnit = '0' } = data;
         let parm = {}
-        if(isFilterShopType()) parm = {productCode: 'HLL_CRM_License'}
-        getPromotionShopSchema({groupID: this.props.accountInfo.toJS().groupID, ...parm});
+        if (isFilterShopType()) parm = { productCode: 'HLL_CRM_License' }
+        getPromotionShopSchema({ groupID: this.props.accountInfo.toJS().groupID, ...parm });
         this.setState({
             isUpdate: this.props.myActivities.get('isUpdate'),
             valueType,
@@ -79,7 +81,8 @@ class GiftAddModal extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         if (nextProps.shopSchema.getIn(['shopSchema']) !== this.props.shopSchema.getIn(['shopSchema'])) {
-            this.setState({shopSchema: nextProps.shopSchema.getIn(['shopSchema']).toJS(), // 后台请求来的值
+            this.setState({
+                shopSchema: nextProps.shopSchema.getIn(['shopSchema']).toJS(), // 后台请求来的值
             });
         }
         if (this.props.myActivities.get('isUpdate') !== nextProps.myActivities.get('isUpdate')) {
@@ -90,16 +93,16 @@ class GiftAddModal extends React.Component {
         switch (key) { // 这三个字段是靠手动输入的, 不加debounce的话在一般机器上有卡顿
             case 'giftName':
             case 'pushMessage':
-                this.handleNameChangeDebounced({key, value});
+                this.handleNameChangeDebounced({ key, value });
                 break;
-            case 'giftRemark':    this.handleRemarkChangeDebounced({key, value});
+            case 'giftRemark': this.handleRemarkChangeDebounced({ key, value });
                 break;
-            case 'giftValue':    this.handleValueChangeDebounced({key, value});
+            case 'giftValue': this.handleValueChangeDebounced({ key, value });
                 break;
-            default: this.props.changeGiftFormKeyValue({key, value});
+            default: this.props.changeGiftFormKeyValue({ key, value });
         }
         // 赠送卡值freePrice =  礼品卡面值 （giftDenomination） - 工本费 （giftCost） - 现金卡值 cardPrice
-        if(key === 'giftDenomination'){
+        if (key === 'giftDenomination') {
             const disCashKeys = (+value === 0);
             this.setState({ disCashKeys });     // 卡面值=0，赠送值和现金值 不显示
             const giftDenomination = +value || 0;
@@ -107,36 +110,36 @@ class GiftAddModal extends React.Component {
             const cardPrice = +this.baseForm.getFieldValue('cardPrice') || 0;
             const sum = (giftDenomination * 100) - (giftCost * 100) - (cardPrice * 100);
             let freePrice = sum / 100;  // 防止失精
-            if(sum < 0) { freePrice = 0; }
+            if (sum < 0) { freePrice = 0; }
             this.baseForm.setFieldsValue({ freePrice });
         }
-        if(key === 'giftCost'){
+        if (key === 'giftCost') {
             const giftCost = +value || 0;
             const giftDenomination = +this.baseForm.getFieldValue('giftDenomination') || 0;
             const cardPrice = +this.baseForm.getFieldValue('cardPrice') || 0;
             const sum = (giftDenomination * 100) - (giftCost * 100) - (cardPrice * 100);
             let freePrice = sum / 100;  // 防止失精
-            if(sum < 0) { freePrice = 0; }
+            if (sum < 0) { freePrice = 0; }
             this.baseForm.setFieldsValue({ freePrice });
         }
-        if(key === 'cardPrice'){
+        if (key === 'cardPrice') {
             const cardPrice = +value || 0;
             const giftDenomination = +this.baseForm.getFieldValue('giftDenomination') || 0;
             const giftCost = +this.baseForm.getFieldValue('giftCost') || 0;
             const sum = (giftDenomination * 100) - (giftCost * 100) - (cardPrice * 100);
             let freePrice = sum / 100;  // 防止失精
-            if(sum < 0) { freePrice = 0; }
+            if (sum < 0) { freePrice = 0; }
             this.baseForm.setFieldsValue({ freePrice });
         }
-        if(key==='giftValueCurrencyType') {
+        if (key === 'giftValueCurrencyType') {
             this.setState({ unit: value });
         }
-        if(key==='valueType') {
+        if (key === 'valueType') {
             this.setState({ valueType: value });
         }
-        if(key === 'quotaCardGiftConfList') {
+        if (key === 'quotaCardGiftConfList') {
             const quotaCardGiftConfList = +this.baseForm.getFieldValue('quotaCardGiftConfList') || {};
-            if(!Object.keys(quotaCardGiftConfList).includes('presentType') ) {
+            if (!Object.keys(quotaCardGiftConfList).includes('presentType')) {
                 // 初始化礼品详情的值
                 this.initGiftDetail(value)
             }
@@ -155,20 +158,20 @@ class GiftAddModal extends React.Component {
             let shopNames = '', shopIDs = '';
 
             // 兼容处理
-            if(params.hasOwnProperty('quotaCardGiftConfList') && params.quotaCardGiftConfList !== undefined) {
+            if (params.hasOwnProperty('quotaCardGiftConfList') && params.quotaCardGiftConfList !== undefined) {
                 const presentType = params.quotaCardGiftConfList.presentType
-                if(presentType == 1) {
+                if (presentType == 1) {
                     params = {
                         ...params,
                         ...params.quotaCardGiftConfList
                     }
-                } else if(presentType == 4) {
+                } else if (presentType == 4) {
                     params = {
                         ...params,
                         presentType,
                         quotaCardGiftConfList: params.quotaCardGiftConfList.chooseCoupon
                     }
-                }  else if(presentType == 0) {
+                } else if (presentType == 0) {
                     params = {
                         ...params,
                         presentType,
@@ -180,7 +183,7 @@ class GiftAddModal extends React.Component {
             try {
                 if (params.shopNames) {
                     const shops = this.state.shopSchema.shops;
-                    const selectedShopEntities = shops.filter(item => params.shopNames.includes(item.shopID)).map(shop => ({content: shop.shopName, id: shop.shopID}));
+                    const selectedShopEntities = shops.filter(item => params.shopNames.includes(item.shopID)).map(shop => ({ content: shop.shopName, id: shop.shopID }));
                     selectedShopEntities.forEach((shop) => {
                         shopNames += `${shop.content + ',' || ''}`;
                         shopIDs += `${shop.id + ',' || ''}`;
@@ -190,10 +193,10 @@ class GiftAddModal extends React.Component {
                 console.log(e);
             }
             // 授权门店过滤
-            if(isFilterShopType()){
+            if (isFilterShopType()) {
                 let dynamicShopSchema = Object.assign({}, this.props.shopSchema.toJS());
-                let {shopSchema = {}} = dynamicShopSchema
-                let {shops = []} = shopSchema
+                let { shopSchema = {} } = dynamicShopSchema
+                let { shops = [] } = shopSchema
                 let shopsInfo = shopIDs.split(',')
                 params.shopIDs = shopsInfo.filter((item) => shops.some(i => i.shopID == item)).join(',')
             }
@@ -206,7 +209,7 @@ class GiftAddModal extends React.Component {
                 const { cardPrice } = params;
                 params.giftCost = `${Number(params.giftCost || 0)}`;
                 params.giftValue = cardPrice || '0';
-            }else{
+            } else {
                 params.giftValue = params.giftValue || '0';
             }
             if (type === 'add') {
@@ -225,16 +228,24 @@ class GiftAddModal extends React.Component {
             }
             params.brandSelectType = (params.selectBrands || []).length ? 0 : 1;
             if (params.sellerCode) {
-                const [ settleId, merchantNo, settleName ] = params.sellerCode.split(':');
+                const [settleId, merchantNo, settleName] = params.sellerCode.split(':');
                 params.settleId = settleId;
                 params.merchantNo = merchantNo;
                 params.settleName = settleName;
             }
             params.openPushMessageMpID = 1;
-            params.openPushSms = params.pushMessage && params.pushMessage.sendType.indexOf('msg') !== -1 ? 1 : 0
+            params.openPushSms = params.pushMessage && Array.isArray(params.pushMessage.sendType) && params.pushMessage.sendType.indexOf('msg') !== -1 ? 1 : 0
             params.reminderTime = params.pushMessage && params.pushMessage.reminderTime
-            params.pushMessageMpID = params.pushMessage && params.pushMessage.pushMessageMpID
-            params.pushMimiAppMsg = params.pushMessage && params.pushMessage.sendType.includes('mini') ? params.pushMessage.pushMimiAppMsg : null
+            if(!['90','113'].includes(value)){
+                if (params.pushMessage && params.pushMessage.sendType && Array.isArray(params.pushMessage.sendType) && params.pushMessage.sendType.includes("wechat")) {
+                    params.pushMessageMpID = params.pushMessage && params.pushMessage.pushMessageMpID;
+                } else {
+                    params.pushMessage.pushMessageMpID = "";
+                    params.pushMessageMpID = "";
+                }
+            }
+            params.pushMimiAppMsg = params.pushMessage && Array.isArray(params.pushMessage.sendType) && params.pushMessage.sendType.includes('mini') ? params.pushMessage.pushMimiAppMsg : null
+            params.toStatusAfterUseEnd = params.toStatusAfterUseEnd ? 17 : 0;
             const { accountInfo, startSaving, endSaving } = this.props;
             const { groupName } = accountInfo.toJS();
             startSaving();
@@ -251,7 +262,7 @@ class GiftAddModal extends React.Component {
 
     handleShopSelectorChange(values) {
         this.setState({
-            values: {...this.state.values, shopNames: values}
+            values: { ...this.state.values, shopNames: values }
         });
     }
 
@@ -289,21 +300,21 @@ class GiftAddModal extends React.Component {
         // 后端定义神奇的接口，为券包的时候，入参数，放quotaCardGiftConfList，从couponPackageBaseInfo取，入参和出参不一致
         // 原数据-this.props.gift.data/改动后数据-data
         let datas = data.presentType == undefined ? this.props.gift.data : data
-        const  { quotaCardGiftConfList, presentType = 0, couponPackageBaseInfo = {}, chooseCoupon = [] } = datas
+        const { quotaCardGiftConfList, presentType = 0, couponPackageBaseInfo = {}, chooseCoupon = [] } = datas
         let params = {
             presentType,
             quotaCardGiftConfList: [],
             chooseCoupon: []
         }
 
-        if(presentType === 4 && couponPackageBaseInfo) {
+        if (presentType === 4 && couponPackageBaseInfo) {
             params = {
                 presentType,
                 chooseCoupon: data.presentType == undefined ? [couponPackageBaseInfo] : chooseCoupon,
                 quotaCardGiftConfList: []
             }
         }
-        if(presentType === 1) {
+        if (presentType === 1) {
             params = {
                 presentType,
                 quotaCardGiftConfList,
@@ -318,7 +329,7 @@ class GiftAddModal extends React.Component {
     render() {
         const { gift: { name: describe, value, data }, visible, type, treeData } = this.props;
         let valueLabel = value == '42' ? '积分数额' : value == '30' ? '礼品价值' : '礼品卡面值';
-        if(value==40){
+        if (value == 40) {
             valueLabel = '礼品价值';
         }
         const { unit } = this.state;
@@ -326,7 +337,7 @@ class GiftAddModal extends React.Component {
         let formData = {};
         formData = data === undefined ? {} : data;
         if (type == 'edit' || type === 'copy') {
-            if(value==='90'){
+            if (value === '90') {
                 const { giftValue } = data || {};
                 formData.cardPrice = giftValue;
             }
@@ -335,19 +346,23 @@ class GiftAddModal extends React.Component {
             formData.shopNames = data.shopNames.map(shop => shop.id);
         }
         if (!formData.pushMessage) {
-            const sendType = ['wechat']
+            // const sendType = ['wechat']
+            const sendType = [];
+            if (formData.pushMessageMpID) {
+                sendType.push("wechat");
+            }
             if (formData.openPushSms) {
-                sendType.push('msg')
+                sendType.push("msg");
             }
             if (formData.pushMimiAppMsg) {
-                sendType.push('mini')
+                sendType.push("mini");
             }
             formData.pushMessage = {
                 pushMessageMpID: formData.pushMessageMpID,
                 pushMimiAppMsg: formData.pushMimiAppMsg,
                 sendType,
-                reminderTime: formData.reminderTime || 3,
-            }
+                reminderTime: formData.reminderTime || 3
+            };
         }
         let formItems = {
             giftType: {
@@ -369,26 +384,28 @@ class GiftAddModal extends React.Component {
                         </div>
                     }
                     >
-                        <Icon style={{ marginLeft: 5, marginRight: 5}} type="question-circle" />
+                        <Icon style={{ marginLeft: 5, marginRight: 5 }} type="question-circle" />
                     </Tooltip>
                 </span>,
-                rules: [{
-                    validator: (rule, v, cb) => {
-                        if (v.sendType.indexOf('wechat') === -1) {
-                            cb(rule.message);
-                        }
-                        cb();
-                    },
-                    message: '微信推送为必选项',
-                }, {
-                    validator: (rule, v, cb) => {
-                        if (!v.pushMessageMpID) {
-                            cb(rule.message);
-                        }
-                        cb();
-                    },
-                    message: '请选择微信推送的公众号',
-                }],
+                rules: [
+                    // {
+                    //     validator: (rule, v, cb) => {
+                    //         if (v.sendType.indexOf('wechat') === -1) {
+                    //             cb(rule.message);
+                    //         }
+                    //         cb();
+                    //     },
+                    //     message: '微信推送为必选项',
+                    // }, {
+                    //     validator: (rule, v, cb) => {
+                    //         if (!v.pushMessageMpID) {
+                    //             cb(rule.message);
+                    //         }
+                    //         cb();
+                    //     },
+                    //     message: '请选择微信推送的公众号',
+                    // }
+                ],
                 type: 'custom',
                 render: decorator => decorator({})(<PushMessageMpID formData={formData} />),
             },
@@ -397,19 +414,19 @@ class GiftAddModal extends React.Component {
                     <span>
                         红包发放账户&nbsp;
                         <Tooltip title={<div>
-                                注意：根据监管要求，商户号使用现金红包需要满足三个条件:
-                                <br></br>
-                                ◆入驻时间超过90天;<br></br>
-                                ◆截止今日回推30天连续不间断保持有交易;<br></br>
-                                ◆保持正常健康交易;<br></br>
-                            </div>}>
+                            注意：根据监管要求，商户号使用现金红包需要满足三个条件:
+                            <br></br>
+                            ◆入驻时间超过90天;<br></br>
+                            ◆截止今日回推30天连续不间断保持有交易;<br></br>
+                            ◆保持正常健康交易;<br></br>
+                        </div>}>
                             <Icon type="question-circle" />
                         </Tooltip>
                     </span>
                 ),
                 rules: [{ required: true, message: '不得为空' }],
                 type: 'custom',
-                render: decorator => decorator({})(<SellerCode/>),
+                render: decorator => decorator({})(<SellerCode />),
             },
             transferType: {
                 label: '券是否可转赠',
@@ -470,14 +487,14 @@ class GiftAddModal extends React.Component {
                     { required: true, message: '礼品名称不能为空' },
                     {
                         validator: (rule, v, cb) => {
-                            if(String(v || '').includes('，')||String(v || '').includes(',')) {
+                            if (String(v || '').includes('，') || String(v || '').includes(',')) {
                                 cb(rule.message);
                             }
                             cb();
                         },
                         message: '请不要输入逗号',
                     },
-                    { max: this.props.type == 'add' ? 35 : 50, message: `不能超过${this.props.type == 'add' ? `35`: `50`}个字符` },
+                    { max: this.props.type == 'add' ? 35 : 50, message: `不能超过${this.props.type == 'add' ? `35` : `50`}个字符` },
                 ],
                 disabled: type !== 'add' && type !== 'copy',
             },
@@ -497,7 +514,7 @@ class GiftAddModal extends React.Component {
                             const { getFieldValue } = this.baseForm;
                             const cardPrice = getFieldValue('cardPrice') || 0;
                             const giftDenomination = getFieldValue('giftDenomination') || 0;
-                            if(cardPrice === undefined){
+                            if (cardPrice === undefined) {
                                 return cb();
                             }
                             if (+v > (giftDenomination - cardPrice)) {
@@ -510,16 +527,16 @@ class GiftAddModal extends React.Component {
             price: {
                 type: 'text',
                 label:
-                <div style={{ display: 'inline-block'}}>
-                    <span>记录实收金额</span>
-                    <Tooltip title={
-                        <p>
-                            记录实收金额：仅用于报表作为实收金额核算
-                        </p>
-                    }>
-                        <Icon style={{ marginLeft: 5, marginRight: -5}} type="question-circle" />
-                    </Tooltip>
-                </div>,
+                    <div style={{ display: 'inline-block' }}>
+                        <span>记录实收金额</span>
+                        <Tooltip title={
+                            <p>
+                                记录实收金额：仅用于报表作为实收金额核算
+                            </p>
+                        }>
+                            <Icon style={{ marginLeft: 5, marginRight: -5 }} type="question-circle" />
+                        </Tooltip>
+                    </div>,
                 disabled: type !== 'add' && type !== 'copy',
                 placeholder: '请输入记录实收金额金额',
                 prefix: unit,
@@ -555,29 +572,53 @@ class GiftAddModal extends React.Component {
             selectBrands: {
                 label: '所属品牌',
                 type: 'custom',
-                render: decorator => decorator({})(<SelectBrands/>),
+                render: decorator => decorator({})(<SelectBrands />),
             },
             cardTypeList: {
                 label: '适用卡类',
                 type: 'custom',
-                render: decorator => decorator({})(<SelectCardTypes/>),
+                render: decorator => decorator({})(<SelectCardTypes />),
             },
             isSynch: {
                 label: ` `,
                 type: 'custom',
                 defaultValue: false,
-                render: type === 'copy' ? decorator => decorator({})(<div></div>) : decorator => decorator({})(<IsSync/>),
+                render: type === 'copy' ? decorator => decorator({})(<div></div>) : decorator => decorator({})(<IsSync />),
             },
             giftImagePath: {
                 label: '礼品图样',
                 type: 'custom',
-                render: decorator => decorator({})(<GiftImagePath/>),
+                render: decorator => decorator({})(<GiftImagePath />),
             },
             showGiftRule: {
                 label: '显示系统生成规则',
                 type: 'radio',
                 defaultValue: 0,
                 options: GiftCfg.showGiftRule,
+            },
+            toStatusAfterUseEnd: {
+                label: '自动注销',
+                type: 'custom',
+                render: (decorator, form) => {
+                    const { getFieldsValue } = form;
+                    const { toStatusAfterUseEnd } = getFieldsValue();
+                    return (
+                        <Col>
+                            {
+                                decorator({
+                                    key: 'toStatusAfterUseEnd',
+                                })(
+                                    <Switch
+                                        checkedChildren="是"
+                                        unCheckedChildren="否"
+                                        checked={toStatusAfterUseEnd || toStatusAfterUseEnd == 17}
+                                    />
+                                )
+                            }
+                            <span>卡余额为0元，自动注销</span>
+                        </Col>
+                    )
+                }
             },
             basicInfoLabel: {
                 label: ' ',
@@ -601,7 +642,16 @@ class GiftAddModal extends React.Component {
                         case '42':
                             return '顾客在获取会员积分券后，可以充入其会员卡中进行使用';
                         case '90':
-                            return '顾客在获取定额卡之后，具体使用规则请联系商家！';
+                            return (
+                                <Col>
+                                    <Col>
+                                        顾客在获取定额卡之后，具体使用规则请联系商家！
+                                    </Col>
+                                    <Col>
+                                        卡余额为0元，自动注销
+                                    </Col>
+                                </Col>
+                            )
                     }
                 },
             },
@@ -673,10 +723,10 @@ class GiftAddModal extends React.Component {
                             return callback('礼品卡面值不能为空');
                         }
                         const { validateFields } = this.baseForm;
-                        try{
+                        try {
                             validateFields(['cardPrice', 'giftCost'], { force: true });
                         }
-                        catch(e){}
+                        catch (e) { }
                         return callback();
                     },
                 }],
@@ -692,7 +742,7 @@ class GiftAddModal extends React.Component {
                         if (!value && value != 0) {
                             return callback('现金卡值不能为空');
                         }
-                        const { getFieldValue,validateFields } = this.baseForm;
+                        const { getFieldValue, validateFields } = this.baseForm;
                         const giftDenomination = getFieldValue('giftDenomination') || 0;
                         if (+giftDenomination < +value) {
                             return callback('现金卡值需≤礼品卡面值');
@@ -706,7 +756,7 @@ class GiftAddModal extends React.Component {
                 type: 'text',
                 label: '赠送卡值',
                 disabled: type !== 'copy',
-                props: {placeholder: ''},
+                props: { placeholder: '' },
                 surfix: '元',
             },
             quotaCardGiftConfList: {
@@ -722,107 +772,107 @@ class GiftAddModal extends React.Component {
             type: 'custom',
             rules: ['required'],
             render: d => (<div>
-                <div style={{ display: 'flex'}}>
-                <p style={{ width: 100 }}>
-                    {d({
-                        key: 'valueType',
-                        // initialValue: valueType,
-                        defaultValue: valueType,
-                    })(<Select>
+                <div style={{ display: 'flex' }}>
+                    <p style={{ width: 100 }}>
+                        {d({
+                            key: 'valueType',
+                            // initialValue: valueType,
+                            defaultValue: valueType,
+                        })(<Select>
                             <Option value="0">固定金额</Option>
                             <Option value="1">随机金额</Option>
                         </Select>
-                    )}
-                </p>
-                {valueType=='0' ?
-                    <FormItem
-                        wrapperCol={{span: 24}}
-                        labelCol={{span: 0}}
-                        style={{ width: 100, margin:'-4px 0 0 10px' }}
-                    >
-                        {d({
-                            key: 'giftValue',
-                            rules: [{
-                                validator:(r,v,cb)=>{
-                                    const reg = /^(([1-9]\d{0,4})|0)(\.\d{0,2})?$/;
-                                    if(!reg.test(v)) {
-                                        return cb('最大支持5位整数，2位小数');
-                                    }
-                                    return cb();
-                                }
-                            }],
-                            })(<Input addonBefore={unit} />
                         )}
-                        </FormItem>
-                    :
-                    <p style={{ display: 'flex', margin:'0 0 0 10px' }}>
-                        <FormItem
-                            wrapperCol={{span: 24}}
-                            labelCol={{span: 0}}
-                            style={{ width: 100, margin:'-4px 0 0 0' }}
-                        >
-                        {d({
-                            key: 'valueStart',
-                            rules: [{
-                                validator:(r,v,cb)=>{
-                                    const reg = /^(([1-9]\d{0,4})|0)(\.\d{0,2})?$/;
-                                    if(v == 0) {
-                                        return cb('不能为0');
-                                    }
-                                    if(!reg.test(v)) {
-                                        return cb('最大支持5位整数，2位小数');
-                                    }
-                                    return cb();
-                                }
-                            }],
-                            })(<Input addonBefore={unit} />
-                        )}
-                        </FormItem>
-                        <span style={{ padding: '0 5px'}}> ~ </span>
-                        <FormItem
-                            wrapperCol={{span: 24}}
-                            labelCol={{span: 0}}
-                            style={{ width: 100, margin:'-4px 0 0 0' }}
-                        >
-                        {d({
-                            key: 'valueEnd',
-                            rules: [{
-                                validator:(r,v,cb)=>{
-                                    const reg = /^(([1-9]\d{0,4})|0)(\.\d{0,2})?$/;
-                                    if(!reg.test(v)) {
-                                        return cb('最大支持5位整数，2位小数');
-                                    }
-                                    const valueStart = this.baseForm.getFieldValue('valueStart');
-                                    if(+v <= +valueStart){
-                                        return cb('后一个金额需大于前一个金额');
-                                    }
-                                    return cb();
-                                }
-                            }],
-                            })(<Input addonBefore={unit} />
-                        )}
-                        </FormItem>
                     </p>
-                }
+                    {valueType == '0' ?
+                        <FormItem
+                            wrapperCol={{ span: 24 }}
+                            labelCol={{ span: 0 }}
+                            style={{ width: 100, margin: '-4px 0 0 10px' }}
+                        >
+                            {d({
+                                key: 'giftValue',
+                                rules: [{
+                                    validator: (r, v, cb) => {
+                                        const reg = /^(([1-9]\d{0,4})|0)(\.\d{0,2})?$/;
+                                        if (!reg.test(v)) {
+                                            return cb('最大支持5位整数，2位小数');
+                                        }
+                                        return cb();
+                                    }
+                                }],
+                            })(<Input addonBefore={unit} />
+                            )}
+                        </FormItem>
+                        :
+                        <p style={{ display: 'flex', margin: '0 0 0 10px' }}>
+                            <FormItem
+                                wrapperCol={{ span: 24 }}
+                                labelCol={{ span: 0 }}
+                                style={{ width: 100, margin: '-4px 0 0 0' }}
+                            >
+                                {d({
+                                    key: 'valueStart',
+                                    rules: [{
+                                        validator: (r, v, cb) => {
+                                            const reg = /^(([1-9]\d{0,4})|0)(\.\d{0,2})?$/;
+                                            if (v == 0) {
+                                                return cb('不能为0');
+                                            }
+                                            if (!reg.test(v)) {
+                                                return cb('最大支持5位整数，2位小数');
+                                            }
+                                            return cb();
+                                        }
+                                    }],
+                                })(<Input addonBefore={unit} />
+                                )}
+                            </FormItem>
+                            <span style={{ padding: '0 5px' }}> ~ </span>
+                            <FormItem
+                                wrapperCol={{ span: 24 }}
+                                labelCol={{ span: 0 }}
+                                style={{ width: 100, margin: '-4px 0 0 0' }}
+                            >
+                                {d({
+                                    key: 'valueEnd',
+                                    rules: [{
+                                        validator: (r, v, cb) => {
+                                            const reg = /^(([1-9]\d{0,4})|0)(\.\d{0,2})?$/;
+                                            if (!reg.test(v)) {
+                                                return cb('最大支持5位整数，2位小数');
+                                            }
+                                            const valueStart = this.baseForm.getFieldValue('valueStart');
+                                            if (+v <= +valueStart) {
+                                                return cb('后一个金额需大于前一个金额');
+                                            }
+                                            return cb();
+                                        }
+                                    }],
+                                })(<Input addonBefore={unit} />
+                                )}
+                            </FormItem>
+                        </p>
+                    }
                 </div>
-                {valueType=='1' &&
+                {valueType == '1' &&
                     <div>
-                        <span style={{ padding: '0 8px 0 0'}}>最小单位</span>
+                        <span style={{ padding: '0 8px 0 0' }}>最小单位</span>
                         {d({
                             key: 'monetaryUnit',
                             initialValue: monetaryUnit,
-                            })(<RadioGroup>
-                                <Radio value="0">元</Radio>
-                                <Radio value="1">角</Radio>
-                                <Radio value="2">分</Radio>
-                            </RadioGroup>
+                        })(<RadioGroup>
+                            <Radio value="0">元</Radio>
+                            <Radio value="1">角</Radio>
+                            <Radio value="2">分</Radio>
+                        </RadioGroup>
                         )}
                     </div>
                 }
             </div>),
         };
         // 随机金额
-        if(value==='40') {
+        if (value === '40') {
             formItems = { ...formItems, giftValue };
         }
         const formKeys = {
@@ -899,10 +949,11 @@ class GiftAddModal extends React.Component {
                         'giftRemark',
                         'giftRule',
                         'showGiftRule',
+                        'toStatusAfterUseEnd'
                     ]
                 }
             ],
-            '现金红包': [
+            '微信红包': [
                 {
                     col: { span: 24, pull: 2 },
                     keys: [

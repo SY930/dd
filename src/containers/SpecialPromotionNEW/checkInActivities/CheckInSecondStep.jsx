@@ -995,8 +995,8 @@ class CheckInSecondStep extends React.Component {
                                                     rules: [
                                                         {
                                                             validator: (rule, v, cb) => {
-                                                                if (!(v.number > 0 && v.number < 8 ) || (v.number % 1 !== 0)) {
-                                                                    return cb('天数为1到7的整数')
+                                                                if (!/^(?:[1-9]\d{0,1}|100)$/.test(v.number)) {
+                                                                    return cb('天数为1到100的整数')
                                                                 }
                                                                 for (let i = 0; i < index; i ++) {
                                                                     if (arr[i].stageAmount >= +v.number) {

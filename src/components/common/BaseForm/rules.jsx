@@ -25,6 +25,11 @@ const RULES_CONFIG = {
         max: 200,
         message: '[label]必须在200个字符以内',
     },
+    // 备注：备注、说明200个字
+    description1: {
+        max: 100,
+        message: '[label]必须在100个字符以内',
+    },
     description2: {
         max: 1000,
         message: '[label]必须在1000个字符以内',

@@ -19,7 +19,7 @@ const PagingFactory = WrappedComponent => class extends Component {
     state = {
         total: 0,
         pageNo: 1,
-        pageSize: 30,
+        pageSize: 25,
     };
 
     /* 点击分页页码触发 */

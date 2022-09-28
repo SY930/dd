@@ -151,6 +151,7 @@ class SendCard extends React.Component {
     }
     getTableConfigByKey = () => {
         const { _key } = this.props;
+        let giftType = this.props.data.giftType;
 
         switch (_key) {
             case 'send':
@@ -192,6 +193,9 @@ class SendCard extends React.Component {
                 })
                 break;
             case 'made':
+                if (giftType == '90') { // 礼品定额卡
+                    MADECARD_QUERY_FORMITEMS.queryGiftStatus.options = GiftCfg.giftQuotaCardStatus;
+                }
                 this.setState({
                     columns: [
                         ...MADECARD_COLUMNS,
@@ -207,7 +211,7 @@ class SendCard extends React.Component {
                             key: 'giftStatus',
                             width: 60,
                             render: (text, record, index) => {
-                                return <span>{mapValueToLabel(GiftCfg.giftCardStatus, String(text))}</span>
+                                return <span>{mapValueToLabel(giftType == '90' ? GiftCfg.giftQuotaCardStatus : GiftCfg.giftCardStatus, String(text))}</span>
                             },
                         },
                         {
@@ -217,13 +221,16 @@ class SendCard extends React.Component {
                             className: 'TableTxtCenter',
                             width: 200
                         }
-                    ],
+                        ],
                     ],
                     formItems: MADECARD_QUERY_FORMITEMS,
                     formKeys: MADECARD_FORMKEYS,
                 })
                 break;
             case 'sum':
+                if (giftType == '90') { // 礼品定额卡
+                    CARD_SUM_FORMITEMS.giftStatus.options = GiftCfg.giftQuotaCardStatus;
+                }
                 this.setState({
                     columns: CARD_SUM_COLUMNS,
                     formItems: {
@@ -524,9 +531,9 @@ class SendCard extends React.Component {
                                     />{COMMON_LABEL.query}</Button></Col>
                                     <Col span={6}>
                                         <Button type="ghost"
-                                                disabled={total==0}
-                                                onClick={() => this.handleExport()}
-                                                style={{borderRadius: '0'}}
+                                            disabled={total == 0}
+                                            onClick={() => this.handleExport()}
+                                            style={{ borderRadius: '0' }}
                                         >
                                             <Icon type="export" />{COMMON_LABEL.export}
                                         </Button>
@@ -534,7 +541,7 @@ class SendCard extends React.Component {
                                     {
                                         !isDeleted && (
                                             <Col span={6}>
-                                                <Button style={{borderRadius: '0'}} type="ghost" onClick={() => this.handleDelete()}><Iconlist
+                                                <Button style={{ borderRadius: '0' }} type="ghost" onClick={() => this.handleDelete()}><Iconlist
                                                     className="send-gray"
                                                     iconName={'作废'}
                                                 />
@@ -562,12 +569,12 @@ class SendCard extends React.Component {
                                         <Row>
                                             <Col span={8}><Button type="primary" onClick={() => this.handleQuery()}><Icon
                                                 type="search"
-                                            />{ COMMON_LABEL.query }</Button></Col>
+                                            />{COMMON_LABEL.query}</Button></Col>
                                             <Col span={8} >
-                                                <Button type="ghost" disabled={total==0} onClick={() => this.handleExport()}>
+                                                <Button type="ghost" disabled={total == 0} onClick={() => this.handleExport()}>
                                                     <Icon
                                                         type="export"
-                                                    /> {COMMON_LABEL.export } </Button>
+                                                    /> {COMMON_LABEL.export} </Button>
                                             </Col>
                                             {
                                                 !isDeleted && (
@@ -585,16 +592,16 @@ class SendCard extends React.Component {
                                                     <Button
                                                         type="primary"
                                                         onClick={() => this.handleQuery()}
-                                                    ><Icon type="search" />{ COMMON_LABEL.query }</Button>
+                                                    ><Icon type="search" />{COMMON_LABEL.query}</Button>
                                                 </Col>
                                             </Row>
                                             <Row>
                                                 <Col span={24} style={{ textAlign: 'right' }}>
                                                     <Button
                                                         type="ghost"
-                                                        disabled={total==0}
+                                                        disabled={total == 0}
                                                         onClick={() => this.handleExport()}
-                                                    ><Icon type="export" />{ COMMON_LABEL.export }</Button>
+                                                    ><Icon type="export" />{COMMON_LABEL.export}</Button>
                                                 </Col>
                                             </Row>
                                         </div>
@@ -611,7 +618,7 @@ class SendCard extends React.Component {
                             render: c.render.bind(this),
                         }) : c))}
                         dataSource={dataSource}
-                        scroll={_key === 'made' ? {} : (_key === 'sum' ? { x: 1700 } : _key === 'send'  ? { x: 1330 } : { x: 930 })}
+                        scroll={_key === 'made' ? {} : (_key === 'sum' ? { x: 1700 } : _key === 'send' ? { x: 1330 } : { x: 930 })}
                         rowSelection={this.props._key === 'made' ? {
                             onChange: (selectedRowKeys, selectedRows) => this.handleSelected(selectedRowKeys, selectedRows),
                             selectedRowKeys: this.state.selectedRowKeys,
