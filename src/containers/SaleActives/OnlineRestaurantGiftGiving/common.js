@@ -57,6 +57,7 @@ export const baseFormItems = {
             { label: "自提点餐页", value: "3" },
         ],
         defaultValue: ["1", "2", "3"],
+        rules: [{ required: true, message: "发券位置不能为空" }],
     },
     cardLevelRangeType: {
         type: "radio",
@@ -95,7 +96,7 @@ export const baseFormItems = {
             <span>
                 适用门店
                 <Tooltip
-                    overlayStyle={{ maxWidth: '300px' }}
+                    overlayStyle={{ maxWidth: "300px" }}
                     title={
                         <div>
                             <div>1、不选则默认全部店铺都能参与活动</div>
