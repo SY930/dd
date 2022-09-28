@@ -335,7 +335,7 @@ class PromotionRightMain extends Component {
                     <Row>
                         <Col span={24} push={1}>
                             {
-                                stageType == 3 && decorator({
+                                (stageType == 3 || stageType == 4) && decorator({
                                     key: 'activityRange',
                                 })(
                                     <GiftCategoryAndFoodSelector
