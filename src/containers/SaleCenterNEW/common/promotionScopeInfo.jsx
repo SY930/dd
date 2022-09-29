@@ -164,7 +164,6 @@ class PromotionScopeInfo extends React.Component {
     }
 
     componentDidMount() {
-        // this.props.getSubmitFn(this.handleSubmit);
         this.props.getSubmitFn({
             prev: () => this.handleSubmit(true),
             next: () => this.handleSubmit(),
@@ -314,7 +313,6 @@ class PromotionScopeInfo extends React.Component {
                 accumulateArr.push(...(currentCategoryIDString || '').split(','));
                 return accumulateArr;
             }, []));
-        // dynamicShopSchema.businessModels = dynamicShopSchema.businessModels && dynamicShopSchema.businessModels instanceof Array ? dynamicShopSchema.businessModels.filter(collection => availableBM.includes(collection.businessModel)) : [];
         dynamicShopSchema.businessModels = dynamicShopSchema.businessModels && dynamicShopSchema.businessModels instanceof Array ? dynamicShopSchema.businessModels : [];
         dynamicShopSchema.citys = dynamicShopSchema.citys && dynamicShopSchema.citys instanceof Array ? dynamicShopSchema.citys.filter(collection => availableCities.includes(collection.cityID)) : [];
         dynamicShopSchema.shopCategories = dynamicShopSchema.shopCategories && dynamicShopSchema.shopCategories instanceof Array ? dynamicShopSchema.shopCategories.filter(collection => availableCategories.includes(collection.shopCategoryID)) : [];
@@ -518,6 +516,9 @@ class PromotionScopeInfo extends React.Component {
                 },
             ];
         }
+        if (promotionType === '2040') {
+            plainOptions = [...plainOptions, { label: '团购订单', value: '41', disabled: isSelDefined }]
+        }
         return (
             <Form.Item
                 label={SALE_LABEL.k5dlpt47}
@@ -639,43 +640,6 @@ class PromotionScopeInfo extends React.Component {
         const k5m67br3 = intl.formatMessage(SALE_STRING.k5m67br3);
         return (
             <div>
-                {/* <Form.Item
-                    label={SALE_LABEL.k5nh2459}
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 17 }}
-                >
-                    <Col span={this.state.voucherVerify == '1' ? 12 : 24}>
-                        <Select
-                            size="default"
-                            onChange={this.handleVoucherVerifyChange}
-                            value={this.state.voucherVerify}
-                            getPopupContainer={(node) => node.parentNode}
-                            defaultValue={this.state.voucherVerify}
-                        >
-                            <Option value="0">{k5f3y6yg}</Option>
-                            <Option value="1">{k5f3y6b4}</Option>
-                        </Select>
-                    </Col>
-                    {
-                        this.state.voucherVerify == '1' ?
-                            <div>
-                                <Col span={5} offset={1} className={styles.autoStyle}><span>{SALE_LABEL.k5m67baf}</span></Col>
-                                <Col span={6}>
-                                    <Select
-                                        size="default"
-                                        onChange={this.handleVoucherVerifyChannelChange}
-                                        value={this.state.voucherVerifyChannel}
-                                        getPopupContainer={(node) => node.parentNode}
-                                        defaultValue={this.state.voucherVerifyChannel}
-                                    >
-                                        <Option value="1">{k5m67bir}</Option>
-                                        <Option value="2">{k5m67br3}</Option>
-                                    </Select>
-                                </Col></div>
-                            : null
-                    }
-                </Form.Item> */}
                 <Form.Item
                     label={SALE_LABEL.k5m67bzf}
                     className={[styles.FormItemStyle, styles.priceInputSingle].join(' ')}
@@ -818,29 +782,6 @@ class PromotionScopeInfo extends React.Component {
                                 则10号当天活动执行顺序为：12:00~1:00执行活动C；当天其他时段执行活动B；
                                 当月其他日期执行活动A
                             </p>
-                            {/* <p
-                        style={{
-                            color: "rgba(102,102,102,1)",
-                            lineHeight: "18px",
-                            fontSize: 12,
-                            fontWeight: 500,
-                            padding: "10px 0",
-                            borderTop: "1px solid #E9E9E9",
-                            marginTop: "7px",
-                        }}
-                    >
-                        2.活动互斥原则
-                    </p>
-                    <p
-                        style={{
-                            color: "rgba(153,153,153,1)",
-                            lineHeight: "18px",
-                            fontSize: 12,
-                            fontWeight: 500,
-                        }}
-                    >
-                        满赠/每满赠活动与买赠、第二份打折、加价换购活动之间不受互斥规则限制，在线上餐厅都按同享执行。
-                    </p> */}
                         </div> : null
                 }
                 <Form className={styles.FormStyle}>
