@@ -14,6 +14,7 @@ import {
     message
 } from 'antd';
 import { connect } from 'react-redux'
+import AddCategorys from "./AddCategorys";
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import {
     saleCenterSetSpecialBasicInfoAC,
@@ -137,6 +138,11 @@ class StepOneWithDateRange extends React.Component {
             selectMonthValue = ['1'];
         }
         this.state = {
+            categoryList: [],//类别数据
+            tagList: [],//标签数据
+            categoryName: '',//统计类别
+            promotionCode: '',//活动编码
+            tagLst: [],//标签
             description: null,
             dateRange: Array(2),
             name: '',
@@ -311,6 +317,36 @@ class StepOneWithDateRange extends React.Component {
                     this.setErrors('rangePicker', `${this.props.intl.formatMessage(STRING_SPE.d31f01f38ji1267)}`)
                 });
             }
+        }
+        if (
+            nextProps.promotionBasicInfo.getIn(["$categoryList", "initialized"])
+        ) {
+            const categoryList = nextProps.promotionBasicInfo.getIn([
+                "$categoryList",
+                "data",
+            ])
+                ? nextProps.promotionBasicInfo
+                      .getIn(["$categoryList", "data"])
+                      .toJS()
+                      .map((item) => item.name)
+                : [];
+            this.setState({
+                categoryList,
+            });
+        }
+        if (nextProps.promotionBasicInfo.getIn(["$tagList", "initialized"])) {
+            const tagList = nextProps.promotionBasicInfo.getIn([
+                "$tagList",
+                "data",
+            ])
+                ? nextProps.promotionBasicInfo
+                      .getIn(["$tagList", "data"])
+                      .toJS()
+                      .map((item) => item.name)
+                : [];
+            this.setState({
+                tagList,
+            });
         }
         if (this.props.type == '31') {
             let isLoadingWeChatOccupiedInfo = this.state.isLoadingWeChatOccupiedInfo;
@@ -1153,7 +1189,7 @@ class StepOneWithDateRange extends React.Component {
             </div>
         );
         return (
-            <Form style={{position:'relative'}}>
+            <Form style={{position:'relative'}} className={styles.FormStyle}>
                 {
                     !this.props.isUpdate && this.props.type == '64' ?  
                         <div className={styles.stepOneDisabled}></div> : null
@@ -1179,6 +1215,31 @@ class StepOneWithDateRange extends React.Component {
                     {tip}
                 </FormItem>
                 <div>
+                    <FormItem
+                        label="统计标签"
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 17 }}
+                        style={{ position: 'relative' }}
+                    >
+                        <Select
+                            showSearch={true}
+                            optionFilterProp="children"
+                            notFoundContent="暂无数据"
+                            getPopupContainer={(node) => node.parentNode}
+                            size="default"
+                            value={this.state.categoryName}
+                            onChange={(value) => this.setState({ categoryName: value })}
+                        >
+                            {(this.state.categoryList || [])
+                                .map((category, index) => {
+                                    return (
+                                        <Option value={category} key={category}>{category}</Option>
+                                    )
+                                })}
+                        </Select>
+                        <AddCategorys catOrtag={'cat'} resetCategorgOrTag={() => this.setState({ categoryName: '' })} />
+                    </FormItem>
                     <FormItem label={this.props.intl.formatMessage(STRING_SPE.d4546grade4128)} className={styles.FormItemStyle} {...formItemLayout}>
                         {getFieldDecorator('promotionName', {
                             rules: [
@@ -1199,6 +1260,55 @@ class StepOneWithDateRange extends React.Component {
                                 ref={node => this.promotionNameInputRef = node}
                             />
                         )}
+                    </FormItem>
+                    <FormItem
+                        label="活动编码"
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 17 }}
+                    >
+                        {getFieldDecorator('promotionCode', {
+                            rules: [{
+                                whitespace: true,
+                                required: true,
+                                message: "字母、数字组成，不多于20个字符",
+                                pattern: /^[A-Za-z0-9]{1,20}$/,
+                            }],
+                            initialValue: this.state.promotionCode,
+                        })(
+                            <Input disabled={!this.props.isNew} onChange={(e) => this.setState({ promotionCode: e.target.value })} />
+                        )}
+                    </FormItem>
+
+                    <FormItem
+                        label='标签'
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 17 }}
+                    >
+                        <Select
+                            allowClear={true}
+                            showSearch
+                            optionFilterProp="children"
+                            multiple
+                            className={styles.linkSelectorRight}
+                            onChange={(tagLst) => this.setState({ tagLst })}
+                            getPopupContainer={(node) => node.parentNode}
+                            value={this.state.tagLst}
+                            size="default"
+                            dropdownClassName={`${styles.dropdown}`}
+                        >
+                            {
+                                (this.state.tagList || [])
+                                    .map((tag, index) => {
+                                        return ( <Option value={tag} key={tag}>{tag}</Option>)
+                                    })
+                            }
+                        </Select>
+                        <AddCategorys
+                            catOrtag={'tag'}
+                            resetCategorgOrTag={() => this.setState({ tagLst: [] })}
+                        />
                     </FormItem>
 
 
