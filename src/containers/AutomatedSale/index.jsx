@@ -7,8 +7,7 @@ import Main from "./Main/index";
 export default class Index extends React.Component {
     render() {
         return (
-            //   <Main />
-            <div>11111</div>
+            <Main />
         );
     }
 }
