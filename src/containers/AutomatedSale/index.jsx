@@ -5,9 +5,10 @@ import Main from "./Main/index";
 
 @registerPage(SALE_AUTOMATED_SALE, {})
 export default class Index extends React.Component {
-  render() {
-    return (
-      <Main />
-    );
-  }
+    render() {
+        return (
+            //   <Main />
+            <div>11111</div>
+        );
+    }
 }
