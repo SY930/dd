@@ -31,6 +31,7 @@ export { default as PromotionCalendarNew } from './PromotionCalendarNew';
 export { default as PromotionDecoration } from './PromotionDecoration';
 export { default as CreateActive } from './SaleActives/CreateActive';
 export { default as PromotionList } from './WeChat2Mall/PromotionList'
-export { default as LanchChannelList } from './LanchChannel/index'
+export { default as LanchChannelList } from './LanchChannel/index';
+// 自动化营销
 export { default as AutomatedSale } from './AutomatedSale/index';
-export { default as AutomatedSaleDetail } from './AutomatedSale/detail'
+export { default as AutomatedSaleDetail } from './AutomatedSale/detail';
