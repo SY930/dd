@@ -44,6 +44,8 @@ const Immutable = require('immutable');
 
 
 const shopTreeData = [];
+// 买减、买折活动增加团购订单，白名单开放
+const WhiteGroup = ['11157', '189702', '345780']
 
 @injectIntl()
 class PromotionScopeInfo extends React.Component {
@@ -468,7 +470,8 @@ class PromotionScopeInfo extends React.Component {
     }
 
     renderBusinessOptions = () => {
-        const { intl } = this.props;
+        const { intl, user } = this.props;
+        const { accountInfo } = user.toJS();
         const k5m67a4r = intl.formatMessage(SALE_STRING.k5m67a4r);
         const k5m67ad3 = intl.formatMessage(SALE_STRING.k5m67ad3);
         const k5m67alf = intl.formatMessage(SALE_STRING.k5m67alf);
@@ -516,8 +519,8 @@ class PromotionScopeInfo extends React.Component {
                 },
             ];
         }
-        if (promotionType === '2040') {
-            plainOptions = [...plainOptions, { label: '团购订单', value: '41', disabled: isSelDefined }]
+        if (promotionType === '2040' && WhiteGroup.includes(`${accountInfo.groupID}`)) {
+            plainOptions = [...plainOptions, { label: '团购订单', value: '60', disabled: isSelDefined }]
         }
         return (
             <Form.Item
