@@ -103,6 +103,10 @@ class PromotionModalContent extends Component {
         jumpPage({ menuID: '100008992' })
     }
 
+    getVoucherID = (value) => {
+        const { trdBatchID = '' } = this.state.couponList.find(item => item.itemID === value)
+        return trdBatchID
+    }
 
     handlePromotionChange = (value) => {
         // 选择城市
@@ -163,7 +167,6 @@ class PromotionModalContent extends Component {
     handleSubmit = () => {
         const { form } = this.props;
         const { resourceIds, couponDetail, sceneType } = this.state;
-        // console.log("🚀 ~ file: PromotionModalContent.jsx ~ line 166 ~ PromotionModalContent ~ sceneType", sceneType)
         this.setState({
             confirmLoading: true,
         })
@@ -178,7 +181,7 @@ class PromotionModalContent extends Component {
                     description: values.description,
                     name: values.name,
                     cities: values.cities,
-                    subjectId: sceneType === 'VOUCHER' ? values.itemID : values.appID,
+                    subjectId: sceneType === 'VOUCHER' ? this.getVoucherID(values.itemID) : values.appID,
                 };
                 const materials = deliveryInfoData.data;
                 resourceIds.map((item, index) => {
