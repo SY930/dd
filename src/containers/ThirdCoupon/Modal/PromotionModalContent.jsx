@@ -1,14 +1,16 @@
 import React, { Component } from 'react'
-import { Form, Input, Select, Row, Col, Modal, Icon, message } from 'antd'
+import { Form, Input, Select, Row, Col, Modal, Icon, message, Radio, TreeSelect } from 'antd'
 import { jumpPage } from '@hualala/platform-base';
 import ImageUpload from 'components/common/ImageUpload';
-import { getAlipayRecruitPlan, getBatchDetail, uploadImageUrl, getAlipayCouponList, isAuth } from '../AxiosFactory'
+import { getAlipayRecruitPlan, getBatchDetail, uploadImageUrl,
+    getAlipayCouponList, isAuth, queryCityCodeQueryAC, queryAlipayListAC } from '../AxiosFactory'
 import { axiosData } from '../../../helpers/util'
 import styles from '../AlipayCoupon.less';
 
 const DOMAIN = 'http://res.hualala.com/';
 
 const FormItem = Form.Item;
+const RadioGroup = Radio.Group;
 
 class PromotionModalContent extends Component {
     constructor(props) {
@@ -25,6 +27,7 @@ class PromotionModalContent extends Component {
             confirmLoading: false,
             couponList: [],
             bindUserId: '',
+            treeData: [],
         }
     }
 
@@ -34,13 +37,18 @@ class PromotionModalContent extends Component {
                 couponList: res,
             })
         })
+        queryAlipayListAC().then((res) => {
+            this.setState({
+                aliAppList: res,
+            })
+        })
     }
 
     getAlipayRecruitPlans = (v) => {
         getAlipayRecruitPlan(v).then((res) => {
             if (res) {
                 // if ()
-                const { enrollRules } = res;
+                const { enrollRules, enrollSceneType } = res;
                 let materialData = [];
                 // 取出schema进行处理
                 enrollRules.map((item) => {
@@ -69,6 +77,7 @@ class PromotionModalContent extends Component {
                     enrollRules: res.enrollRules.length ? res.enrollRules : [],
                     description: res.description || '',
                     materialData,
+                    sceneType: enrollSceneType, // 根据素材返回的场景type传入相应的subjectId
                 })
             }
         })
@@ -96,6 +105,12 @@ class PromotionModalContent extends Component {
 
 
     handlePromotionChange = (value) => {
+        // 选择城市
+        queryCityCodeQueryAC().then((data) => {
+            this.setState({
+                treeData: data,
+            })
+        })
         // 根据
         this.setState({
             marketingType: value.key,
@@ -106,10 +121,6 @@ class PromotionModalContent extends Component {
     }
 
     handleCouponChange = (value) => {
-        // const couponDetail = this.props.couponList.find(item => item.itemD === value)
-        // this.setState({
-        //     couponDetail,
-        // })
         getBatchDetail(value).then((res) => {
             if (res.merchantType == 2) { // 券选的是间连的话，需要根据merchantID获取bindUserId
                 this.getBindUserId(res.merchantID)
@@ -118,6 +129,17 @@ class PromotionModalContent extends Component {
                 couponDetail: res,
             })
         })
+    }
+
+    handleChangeScene = ({ target }) => {
+        // 清空选择支付宝大促选项
+        const { form } = this.props;
+        form.setFieldsValue({ marketingType: {} })
+        this.setState({
+            marketingType: '',
+            marketingName: '',
+        })
+        this.props.getPromotionData(target.value)
     }
 
     handleImageChange = (value, item, index) => {
@@ -140,11 +162,13 @@ class PromotionModalContent extends Component {
 
     handleSubmit = () => {
         const { form } = this.props;
-        const { resourceIds, couponDetail } = this.state;
+        const { resourceIds, couponDetail, sceneType } = this.state;
+        // console.log("🚀 ~ file: PromotionModalContent.jsx ~ line 166 ~ PromotionModalContent ~ sceneType", sceneType)
         this.setState({
             confirmLoading: true,
         })
         form.validateFields((err, values) => {
+            // console.log("🚀 ~ file: PromotionModalContent.jsx ~ line 170 ~ PromotionModalContent ~ form.validateFields ~ values", values)
             if (!err) {
                 const deliveryInfoData = { // 报名素材对象，传给后端的数据格式
                     data: {
@@ -153,6 +177,8 @@ class PromotionModalContent extends Component {
                     activityUrl: [],
                     description: values.description,
                     name: values.name,
+                    cities: values.cities,
+                    subjectId: sceneType === 'VOUCHER' ? values.itemID : values.appID,
                 };
                 const materials = deliveryInfoData.data;
                 resourceIds.map((item, index) => {
@@ -171,6 +197,7 @@ class PromotionModalContent extends Component {
                     return message.error('三方券间连账号没有关联M4');
                 }
                 const data = {
+                    enrollSceneType: values.enrollSceneType,
                     eventName: values.eventName,
                     eventWay: '20002', // 大促20002 成功 20001
                     platformType: '1',
@@ -216,6 +243,10 @@ class PromotionModalContent extends Component {
                         this.props.onCancel();
                         console.log(error)
                     })
+            } else {
+                this.setState({
+                    confirmLoading: false,
+                })
             }
         })
     }
@@ -223,13 +254,24 @@ class PromotionModalContent extends Component {
     // 活动素材
     renderPromotion = () => {
         const { form } = this.props;
+        const { sceneType } = this.state
         const { getFieldDecorator } = form;
+        const tProps = {
+            treeData: this.state.treeData || [],
+            value: this.state.value,
+            onChange: this.onChange,
+            treeCheckable: true,
+            showCheckedStrategy: TreeSelect.SHOW_CHILD,
+            searchPlaceholder: 'Please select',
+            dropdownStyle: { maxHeight: 400, overflow: 'auto' },
+            placeholder: '请选择城市',
+        };
         return (
             <Row>
                 <Col span={16} offset={5} className={styles.CouponGiftBox}>
                     <FormItem
                         label="素材名称"
-                        labelCol={{ span: 4 }}
+                        labelCol={{ span: 5 }}
                         wrapperCol={{ span: 18 }}
                     >
                         {getFieldDecorator('name', {
@@ -244,7 +286,7 @@ class PromotionModalContent extends Component {
                     </FormItem>
                     <FormItem
                         label="素材描述"
-                        labelCol={{ span: 4 }}
+                        labelCol={{ span: 5 }}
                         wrapperCol={{ span: 18 }}
                     >
                         {getFieldDecorator('description', {
@@ -264,7 +306,7 @@ class PromotionModalContent extends Component {
                             return (
                                 <FormItem
                                     label={item.label}
-                                    labelCol={{ span: 4 }}
+                                    labelCol={{ span: 5 }}
                                     wrapperCol={{ span: 18 }}
                                     required={item.required}
                                     className={styles.imageUploadItem}
@@ -278,7 +320,6 @@ class PromotionModalContent extends Component {
                                     })(
                                         <ImageUpload
                                             className={styles.uploadCom}
-                                            // style={{ float: 'left' }}
                                             limitType={'.jpeg,.jpg,.png,.JPEG,.JPG,.PNG'}
                                             limitSize={2 * 1024 * 1024}
                                             getFileName={true}
@@ -287,16 +328,46 @@ class PromotionModalContent extends Component {
                                         />
                                     )}
                                     <p className={styles.textWrap}>
-                                        {
-                                            item.tips
-                                        }
-                                        {/* <p> 图片格式为jpg、jpeg、png </p>
-                                        <p>文件大小建议不超过2M</p>
-                                        <p>图片尺寸：800*800</p> */}
+                                        {item.tips}
                                     </p>
                                 </FormItem>
                             )
                         })
+                    }
+                    <FormItem
+                        label="选择城市"
+                        labelCol={{ span: 5 }}
+                        wrapperCol={{ span: 18 }}
+                    >
+                        {getFieldDecorator('cities', {
+                        })(
+                            <TreeSelect {...tProps} />
+                        )}
+                    </FormItem>
+                    {
+                        sceneType === 'MINI_APP' &&
+                        <FormItem
+                            label="选择小程序"
+                            labelCol={{ span: 5 }}
+                            wrapperCol={{ span: 18 }}
+                            required={true}
+                        >
+                            {
+                                getFieldDecorator('appID', {
+                                    rules: [
+                                        { required: true, message: '请选择小程序' },
+                                    ],
+                                })(
+                                    <Select placeholder={'请选择小程序'}>
+                                        {
+                                            this.state.aliAppList.map(({ value, key, label }) => (
+                                                <Select.Option key={key} value={value}>{label}</Select.Option>
+                                            ))
+                                        }
+                                    </Select>
+                                )
+                            }
+                        </FormItem>
                     }
                     {
                         this.state.description &&
@@ -330,6 +401,22 @@ class PromotionModalContent extends Component {
                 <Row>
                     <Col span={24} offset={1} className={styles.IndirectBox}>
                         <Form className={styles.crmSuccessModalContentBox}>
+                            <FormItem
+                                label="投放场景"
+                                labelCol={{ span: 5 }}
+                                wrapperCol={{ span: 16 }}
+                                required={true}
+                            >
+                                {getFieldDecorator('enrollSceneType', {
+                                    initialValue: 'VOUCHER',
+                                    onChange: this.handleChangeScene,
+                                })(
+                                    <RadioGroup>
+                                        <Radio value={'VOUCHER'}>券场景</Radio>
+                                        <Radio value={'MINI_APP'}>小程序场景</Radio>
+                                    </RadioGroup>
+                                )}
+                            </FormItem>
                             <FormItem
                                 label="活动名称"
                                 labelCol={{ span: 5 }}
@@ -412,21 +499,6 @@ class PromotionModalContent extends Component {
                                 }
                             </FormItem>
                             {this.state.marketingType && this.renderPromotion()}
-                            {/* <FormItem
-                                label="活动详情"
-                                labelCol={{ span: 5 }}
-                                wrapperCol={{ span: 16 }}
-                            // required={true}
-                            >
-                                {getFieldDecorator('jumpAppID', {
-                                    // initialValue: editData.jumpAppID,
-                                })(
-                                    <Input
-                                        type="textarea"
-                                        placeholder="请输入活动详情"
-                                    />
-                                )}
-                            </FormItem> */}
                         </Form>
                     </Col>
                 </Row>
