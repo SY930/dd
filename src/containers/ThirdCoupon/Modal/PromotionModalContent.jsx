@@ -258,13 +258,11 @@ class PromotionModalContent extends Component {
         const { getFieldDecorator } = form;
         const tProps = {
             treeData: this.state.treeData || [],
-            value: this.state.value,
-            onChange: this.onChange,
             treeCheckable: true,
             showCheckedStrategy: TreeSelect.SHOW_CHILD,
-            searchPlaceholder: 'Please select',
+            searchPlaceholder: '请选择城市',
             dropdownStyle: { maxHeight: 400, overflow: 'auto' },
-            placeholder: '请选择城市',
+            multiple: true,
         };
         return (
             <Row>
