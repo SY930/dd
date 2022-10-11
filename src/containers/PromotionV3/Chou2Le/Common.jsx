@@ -68,7 +68,7 @@ const formItems1 = {
     eventRemark: {
         type: 'textarea',
         label: '活动规则',
-        rules: ['required', 'description'],
+        rules: ['required', 'description2'],
     },
     cycleType: {
         type: 'combo',
