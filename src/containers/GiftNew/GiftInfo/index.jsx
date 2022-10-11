@@ -89,9 +89,10 @@ export default class GiftInfo extends React.Component {
                 <GiftDetailTable tabkey={tabkey} togglePage={this.togglePage} toggleTabs={this.toggleTabs} />
             )
         } else {
-            return (
-                <GiftEditPage toggleTabs={this.toggleTabs}/>
-            )
+            // _TODO
+            // return (
+            //     <GiftEditPage toggleTabs={this.toggleTabs}/>
+            // )
         }
 
     }

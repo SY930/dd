@@ -72,3 +72,4 @@ export const GIFT_DETAILS = 'giftDetails' //礼品信息详情页面
 export const SALE_DISTRIBUTION_ADMIN = 'sale.distribution.admin' // 分销管理
 
 export const CONSUME_GIFT_GIVING = 'CONSUME_GIFT_GIVING' // 营销活动-消费送礼
+export const GIFT_EDIT_PAGE = 'GIFT_EDIT_PAGE'; // 礼品信息-编辑/查看

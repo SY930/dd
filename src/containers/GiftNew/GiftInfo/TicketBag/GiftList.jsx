@@ -48,14 +48,17 @@ class GiftList extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        console.log('saveDone===1111', this.props.saveDone, nextProps.saveDone);
         const { dataSource, total } = nextProps;
         if (dataSource != this.props.dataSource) {
             if (this.props.pageType == 1) {
                 this.setState({ dataSource, total })
             }
         }
-        // if(total != this.props.total){
-        // }
+        if (this.props.saveDone != nextProps.saveDone && nextProps.saveDone && (nextProps.pageType == 1 || nextProps.pageType == 3)) {
+            console.log('更新了====')
+            this.onQueryList();
+        }
     }
 
     componentWillUnmount() {
@@ -80,6 +83,7 @@ class GiftList extends Component {
         this.queryFroms.validateFieldsAndScroll((err, values) => {
             if (err) return;
             const params = { ...values };
+            console.log('加载列表加载列表')
             this.setState({
                 queryParams: { pageNo: 1, pageSize: queryParams.pageSize || 1, action, ...params },
             })
@@ -270,6 +274,7 @@ function mapStateToProps(state) {
     return {
         // dataSource: state.sale_giftInfoNew.get('dataSource'),
         loading: state.sale_giftInfoNew.get('loading'),
+        saveDone: state.sale_editGiftInfoNew.get('saveDone'),
         user: state.user.toJS(),
         shopData: state.sale_giftInfoNew.get('shopData'),
     }

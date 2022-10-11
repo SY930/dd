@@ -14,8 +14,8 @@ import {cancelCreateOrEditGift} from "../_action";
 import PhonePreview from "./PhonePreview";
 import FormWrapper from "./FormWrapper";
 import GiftCfg from "../../../constants/Gift";
-import { Iconlist } from 'components/basic/IconsFont/IconsFont';
-
+import { closePage, jumpPage } from '@hualala/platform-base';
+import { GIFT_EDIT_PAGE, GIFT_PAGE, THIRD_VOUCHER_MANAGEMENT } from '../../../constants/entryCodes';
 class GiftEditPage extends Component {
 
     constructor(props) {
@@ -35,7 +35,7 @@ class GiftEditPage extends Component {
     componentDidMount() {
         this.onWindowResize();
         window.addEventListener('resize', this.onWindowResize);
-        this.setState({tabKey: this.props.tabkey})
+        this.setState({tabKey: this.props.tabkey});
     }
     onWindowResize() {
         let contentHeight;
@@ -57,7 +57,12 @@ class GiftEditPage extends Component {
     saving() {
         this.formRef && this.formRef.wrappedInstance && this.formRef.wrappedInstance.handleSubmit
         && this.formRef.wrappedInstance.handleSubmit();
-        this.props.toggleTabs('1');
+        closePage();
+        jumpPage({pageID: GIFT_PAGE});
+        this.props.cancelCreateOrEdit({
+            saveDone: true
+        });
+        // this.props.toggleTabs('1');
     }
 
     render() {
@@ -93,8 +98,10 @@ class GiftEditPage extends Component {
                             marginRight: '10px'
                         }}
                         onClick={()=>{
+                            closePage();
+                            jumpPage({pageID: GIFT_PAGE});
                             this.props.cancelCreateOrEdit();
-                            this.props.toggleTabs();
+                            // this.props.toggleTabs();
                         }}
                     >
                         {COMMON_LABEL.cancel}
