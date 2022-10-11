@@ -94,7 +94,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const hasMallArr = ['10','20','21'];
-const GroupSepcial = ['1155', 1155, 8, '8', 5726, '5726'];
+const GroupSepcial = ['1155', 1155, 8, '8', 5726, '5726', '341930', 341930];
 const describeAry = ['代金券', '菜品优惠券', '菜品兑换券'];
 const processFinalCategoryAndDishData = (params, property,value) => {
     if (params.hasOwnProperty(property)) {
