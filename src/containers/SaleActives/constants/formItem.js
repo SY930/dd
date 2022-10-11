@@ -29,6 +29,14 @@ export const formItem = {
             { max: 50, message: '最多输入50位' },
         ],
     },
+    eventCode: {
+        type: 'text',
+        label: '活动编码',
+        rules: [
+            { required: true, message: '活动编码不能为空' },
+            { message: "字母、数字组成，不多于20个字符",  pattern: /^[A-Za-z0-9]{1,20}$/ },
+        ],
+    },
     eventLimitDate: {
         type: 'custom',
         label: '起止日期',

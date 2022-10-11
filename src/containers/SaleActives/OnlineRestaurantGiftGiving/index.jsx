@@ -2,7 +2,7 @@
  * @Author: 张博奥 zhangboao@hualala.com
  * @Date: 2022-09-26 09:52:54
  * @LastEditors: 张博奥 zhangboao@hualala.com
- * @LastEditTime: 2022-09-27 14:53:36
+ * @LastEditTime: 2022-10-11 17:31:44
  * @FilePath: /platform-sale/src/containers/SaleActives/OnlineRestaurantGiftGiving/index.jsx
  * @Description: 线上餐厅弹窗送礼右侧表单入口
  */
@@ -186,6 +186,7 @@ class OnlineRestaurantGiftGiving extends Component {
         const event = {
             eventWay: "23",
             eventName: values.eventName,
+            eventCode: values.eventCode,
             cycleType,
             excludedDate: values.excludedDate,
             enterPositionList: values.enterPositionList.join(","),

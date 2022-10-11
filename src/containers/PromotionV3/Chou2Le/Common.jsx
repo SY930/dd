@@ -46,6 +46,14 @@ const formItems1 = {
         label: '活动名称',
         rules: ['required', 'stringLength'],
     },
+    eventCode: {
+        type: 'text',
+        label: '活动编码',
+        rules: [
+            { required: true, message: '活动编码不能为空' },
+            { message: "字母、数字组成，不多于20个字符",  pattern: /^[A-Za-z0-9]{1,20}$/ },
+        ],
+    },
     eventRange: {
         type: 'custom',
         label: '活动起止日期',
@@ -99,7 +107,7 @@ const formItems1 = {
 // "eventEndDate": "20220610",
 // "eventStartDate": "20200522",
 // excludedDate "20200522"
-const KEY1 = ['eventType', 'eventName', 'smsGate', 'eventRange', 'advMore'];
+const KEY1 = ['eventType', 'eventName', 'eventCode', 'smsGate', 'eventRange', 'advMore'];
 const KEY2 = ['eventRemark'];
 const KEY3 = ['timeList', 'cycleType'];
 const KEY4 = ['validCycle'];

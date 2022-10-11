@@ -4,10 +4,18 @@ import { formItem } from '../constants/formItem'
 import { TreeSelect } from 'antd';
 
 const {
-    actType, eventName, eventRemark, eventLimitDate,
-    consumeGiftID,afterPayJumpType, miniProgramInfo, 
-    eventDate,shopIDList,smsGate
-} = formItem
+    actType,
+    eventName,
+    eventRemark,
+    eventLimitDate,
+    consumeGiftID,
+    afterPayJumpType,
+    miniProgramInfo,
+    eventDate,
+    shopIDList,
+    smsGate,
+    eventCode,
+} = formItem;
 export const formItems1 = {
     actType: {
         ...actType,
@@ -22,6 +30,7 @@ export const formItems1 = {
             { max: 50, message: '最多输入50位' },
         ],
     },
+    eventCode,
     eventLimitDate,
     shopIDList,
     eventRemark,
@@ -31,6 +40,7 @@ export const formItems1 = {
 export const formKeys1 = [
     'actType',
     'eventName',
+    'eventCode',
     'eventLimitDate',
     'shopIDList',
     'eventRemark',

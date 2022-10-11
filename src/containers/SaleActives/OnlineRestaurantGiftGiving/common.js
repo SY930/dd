@@ -25,6 +25,17 @@ export const baseFormItems = {
             { max: "50", message: "不能超过50个字符" },
         ],
     },
+    eventCode: {
+        type: "text",
+        label: "活动编码",
+        rules: [
+            { required: true, message: "活动编码不能为空" },
+            {
+                message: "字母、数字组成，不多于20个字符",
+                pattern: /^[A-Za-z0-9]{1,20}$/,
+            },
+        ],
+    },
     giftSendType: {
         type: "radio",
         label: (
@@ -295,6 +306,7 @@ export { formKeys32, KEY3, KEY4, KEY5, KEY6 };
 export const baseFormKeys = [
     "eventType",
     "eventName",
+    "promotionCode",
     "giftSendType",
     "enterPositionList",
     "autoRegister",

@@ -141,7 +141,7 @@ class StepOneWithDateRange extends React.Component {
             categoryList: [],//类别数据
             tagList: [],//标签数据
             categoryName: '',//统计类别
-            promotionCode: '',//活动编码
+            eventCode: '',//活动编码
             tagLst: [],//标签
             description: null,
             dateRange: Array(2),
@@ -434,6 +434,7 @@ class StepOneWithDateRange extends React.Component {
                 this.props.setSpecialBasicInfo({
                     startTime: this.state.startTime + this.state.timeString || '',
                     eventName: this.state.name,
+                    eventCode: this.state.eventCode,
                     eventRemark: this.state.description,
                     smsGate: this.state.smsGate,
                     signID: this.state.signID,
@@ -442,6 +443,7 @@ class StepOneWithDateRange extends React.Component {
                 this.props.setSpecialBasicInfo({
                     smsGate: this.state.smsGate,
                     eventName: this.state.name,
+                    eventCode: this.state.eventCode,
                     eventRemark: this.state.description,
                     eventStartDate: this.state.dateRange[0] ? this.state.dateRange[0].format('YYYYMMDD') : '0',
                     eventEndDate: this.state.dateRange[1] ? this.state.dateRange[1].format('YYYYMMDD') : '0',
@@ -453,6 +455,7 @@ class StepOneWithDateRange extends React.Component {
 
                 this.props.setSpecialBasicInfo({
                     eventName: this.state.name,
+                    eventCode: this.state.eventCode,
                     eventRemark: this.state.description,
                     eventStartDate ,
                     eventEndDate ,
@@ -463,6 +466,7 @@ class StepOneWithDateRange extends React.Component {
             } else  {
                 this.props.setSpecialBasicInfo({
                     eventName: this.state.name,
+                    eventCode: this.state.eventCode,
                     eventRemark: this.state.description,
                     eventStartDate: this.state.dateRange[0] ? this.state.dateRange[0].format('YYYYMMDD') : '0',
                     eventEndDate: this.state.dateRange[1] ? this.state.dateRange[1].format('YYYYMMDD') : '0',
@@ -1215,7 +1219,7 @@ class StepOneWithDateRange extends React.Component {
                     {tip}
                 </FormItem>
                 <div>
-                    <FormItem
+                    {/* <FormItem
                         label="统计标签"
                         className={styles.FormItemStyle}
                         labelCol={{ span: 4 }}
@@ -1239,7 +1243,7 @@ class StepOneWithDateRange extends React.Component {
                                 })}
                         </Select>
                         <AddCategorys catOrtag={'cat'} resetCategorgOrTag={() => this.setState({ categoryName: '' })} />
-                    </FormItem>
+                    </FormItem> */}
                     <FormItem label={this.props.intl.formatMessage(STRING_SPE.d4546grade4128)} className={styles.FormItemStyle} {...formItemLayout}>
                         {getFieldDecorator('promotionName', {
                             rules: [
@@ -1267,20 +1271,20 @@ class StepOneWithDateRange extends React.Component {
                         labelCol={{ span: 4 }}
                         wrapperCol={{ span: 17 }}
                     >
-                        {getFieldDecorator('promotionCode', {
+                        {getFieldDecorator('eventCode', {
                             rules: [{
                                 whitespace: true,
                                 required: true,
                                 message: "字母、数字组成，不多于20个字符",
                                 pattern: /^[A-Za-z0-9]{1,20}$/,
                             }],
-                            initialValue: this.state.promotionCode,
+                            initialValue: this.state.eventCode,
                         })(
-                            <Input disabled={!this.props.isNew} onChange={(e) => this.setState({ promotionCode: e.target.value })} />
+                            <Input placeholder='请输入活动编码' onChange={(e) => this.setState({ eventCode: e.target.value })} />
                         )}
                     </FormItem>
 
-                    <FormItem
+                    {/* <FormItem
                         label='标签'
                         className={styles.FormItemStyle}
                         labelCol={{ span: 4 }}
@@ -1309,7 +1313,7 @@ class StepOneWithDateRange extends React.Component {
                             catOrtag={'tag'}
                             resetCategorgOrTag={() => this.setState({ tagLst: [] })}
                         />
-                    </FormItem>
+                    </FormItem> */}
 
 
                     {

@@ -2,9 +2,13 @@ import React from 'react';
 import { formItem } from '../constants/formItem'
 
 const {
-    actType, eventName50, eventRemark, eventLimitDate,
+    actType,
+    eventName50,
+    eventRemark,
+    eventLimitDate,
     partInTimes,
-} = formItem
+    eventCode,
+} = formItem;
 export const formItems1 = {
     actType: {
         ...actType,
@@ -13,6 +17,7 @@ export const formItems1 = {
         },
     },
     eventName: eventName50,
+    eventCode,
     eventLimitDate,
     eventRemark,
 };
@@ -20,6 +25,7 @@ export const formItems1 = {
 export const formKeys1 = [
     'actType',
     'eventName',
+    'eventCode',
     'eventLimitDate',
     'eventRemark',
 ];

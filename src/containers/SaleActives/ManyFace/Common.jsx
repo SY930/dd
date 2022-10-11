@@ -43,6 +43,14 @@ const formItems1 = {
         label: '活动名称',
         rules: ['required', 'stringLength', { max: '50', message: '不能超过50个字符' }],
     },
+    eventCode: {
+        type: 'text',
+        label: '活动编码',
+        rules: [
+            { required: true, message: '活动编码不能为空' },
+            { message: "字母、数字组成，不多于20个字符",  pattern: /^[A-Za-z0-9]{1,20}$/ },
+        ],
+    },
     clientType: {
         type: 'custom',
         label: '适用客户端',
@@ -85,7 +93,7 @@ const formItems1 = {
     },
 };
 
-const KEY1 = ['eventType', 'eventName', 'clientType'];
+const KEY1 = ['eventType', 'eventName', 'eventCode', 'clientType'];
 const KEY2 = ['sceneList', 'triggerSceneList', 'shopIDList', 'eventRemark'];
 const KEY = ['clientTip'];
 

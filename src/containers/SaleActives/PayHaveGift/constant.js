@@ -3,10 +3,18 @@ import AddGift from './components/AddGift'
 import { formItem } from '../constants/formItem'
 
 const {
-    actType, eventName, merchantLogoUrl, eventRemark,
-    consumeTotalAmount, originalImageUrl, backgroundColor,
-    afterPayJumpType, miniProgramInfo, eventDate,
-} = formItem
+    actType,
+    eventName,
+    merchantLogoUrl,
+    eventRemark,
+    consumeTotalAmount,
+    originalImageUrl,
+    backgroundColor,
+    afterPayJumpType,
+    miniProgramInfo,
+    eventDate,
+    eventCode,
+} = formItem;
 export const formItems1 = {
     actType: {
         ...actType,
@@ -15,6 +23,7 @@ export const formItems1 = {
         },
     },
     eventName,
+    eventCode,
     merchantLogoUrl,
     eventRemark,
 };
@@ -22,6 +31,7 @@ export const formItems1 = {
 export const formKeys1 = [
     'actType',
     'eventName',
+    'eventCode',
     'merchantLogoUrl',
     'eventRemark',
 ];

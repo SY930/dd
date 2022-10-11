@@ -48,7 +48,7 @@ class PromotionBasicInfo extends React.Component {
             categoryList: [],//类别数据
             tagList: [],//标签数据
             categoryName: '',//统计类别
-            promotionCode: '',//活动编码
+            eventCode: '',//活动编码
             tagLst: [],//标签
             advanceDaysFlag: true,
             advanceDays: null,
@@ -81,15 +81,15 @@ class PromotionBasicInfo extends React.Component {
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
         this.props.queryWechatMpInfo({ subGroupID: specialPromotion.subGroupID });
 
-        const { giftAdvanceDays, eventRemark, eventName, involvementGiftAdvanceDays, eventStartDate, eventEndDate, promotionCode, tagLst, categoryName } = specialPromotion
+        const { giftAdvanceDays, eventRemark, eventName, involvementGiftAdvanceDays, eventStartDate, eventEndDate, eventCode, tagLst, categoryName } = specialPromotion
         this.setState({
             advanceDays: giftAdvanceDays,
             description: eventRemark,
             sendMsg: `${specialPromotion.smsGate || this.state.smsGate || '0'}`,
             name: eventName,
-            tagLst: tagLst ? tagLst.split(',') : [],
-            promotionCode,
-            categoryName,
+            // tagLst: tagLst ? tagLst.split(',') : [],
+            eventCode,
+            // categoryName,
             involvementGiftAdvanceDays: involvementGiftAdvanceDays || 0,
             actDate: (eventStartDate && eventEndDate) ? [moment(eventStartDate), moment(eventEndDate)] : [],
             actDateTemp: (eventStartDate && eventEndDate) ? [moment(eventStartDate), moment(eventEndDate)] : []
@@ -162,9 +162,9 @@ class PromotionBasicInfo extends React.Component {
                         eventRemark: this.state.description,
                         smsGate: this.state.sendMsg,
                         eventName: this.state.name,
-                        promotionCode: this.state.promotionCode,
-                        tagLst: this.state.tagLst.join(','),
-                        categoryName: this.state.categoryName,
+                        eventCode: this.state.eventCode,
+                        // tagLst: this.state.tagLst.join(','),
+                        // categoryName: this.state.categoryName,
                         signID: this.state.signID,
                         eventStartDate: actDate[0] && moment(actDate[0]).format(format),
                         eventEndDate: actDate[1] && moment(actDate[1]).format(format),
@@ -196,9 +196,9 @@ class PromotionBasicInfo extends React.Component {
                         eventRemark: this.state.description,
                         smsGate: this.state.sendMsg,
                         eventName: this.state.name,
-                        promotionCode: this.state.promotionCode,
-                        tagLst: this.state.tagLst.join(','),
-                        categoryName: this.state.categoryName,
+                        eventCode: this.state.eventCode,
+                        // tagLst: this.state.tagLst.join(','),
+                        // categoryName: this.state.categoryName,
                         signID: this.state.signID,
                         eventStartDate: actDate[0] && moment(actDate[0]).format(format),
                         eventEndDate: actDate[1] && moment(actDate[1]).format(format)
@@ -430,7 +430,7 @@ class PromotionBasicInfo extends React.Component {
             <Form className={styles.FormStyle}>
 
                 {this.renderPromotionType()}
-                <FormItem
+                {/* <FormItem
                     label="统计标签"
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
@@ -454,7 +454,7 @@ class PromotionBasicInfo extends React.Component {
                             })}
                     </Select>
                     <AddCategorys catOrtag={'cat'} resetCategorgOrTag={() => this.setState({ categoryName: '' })} />
-                </FormItem>
+                </FormItem> */}
                 <FormItem
                     label={this.props.intl.formatMessage(STRING_SPE.d4546grade4128)}
                     className={styles.FormItemStyle}
@@ -488,20 +488,20 @@ class PromotionBasicInfo extends React.Component {
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
                 >
-                    {getFieldDecorator('promotionCode', {
+                    {getFieldDecorator('eventCode', {
                         rules: [{
                             whitespace: true,
                             required: true,
                             message: "字母、数字组成，不多于20个字符",
                             pattern: /^[A-Za-z0-9]{1,20}$/,
                         }],
-                        initialValue: this.state.promotionCode,
+                        initialValue: this.state.eventCode,
                     })(
-                        <Input disabled={!this.props.isNew && !isCopy} onChange={(e) => this.setState({ promotionCode: e.target.value })} />
+                        <Input placeholder='请输入活动编码' disabled={!this.props.isNew} onChange={(e) => this.setState({ eventCode: e.target.value })} />
                     )}
                 </FormItem>
 
-                <FormItem
+                {/* <FormItem
                     label='标签'
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
@@ -530,7 +530,7 @@ class PromotionBasicInfo extends React.Component {
                         catOrtag={'tag'}
                         resetCategorgOrTag={() => this.setState({ tagLst: [] })}
                     />
-                </FormItem>
+                </FormItem> */}
 
                 {showActDataType.includes(this.props.type) ? this.renderPeriodSelector() : null}
 

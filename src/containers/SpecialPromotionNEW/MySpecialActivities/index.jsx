@@ -330,7 +330,7 @@ class MySpecialActivities extends React.Component {
             sortedChannelList: [],
             viewRuleVisibles: false,
             paramsValueList: [],
-            promotionCode: "", //活动编码
+            eventCode: "", //活动编码
             expand: false,//高级查询展开收起
         };
         this.cfg = {
@@ -2028,7 +2028,7 @@ class MySpecialActivities extends React.Component {
             isActive,
             eventName,
             createScenes,
-            promotionCode,
+            eventCode,
             promotionCategory,
             promotionTags,
             promotionBrands,
@@ -2050,8 +2050,8 @@ class MySpecialActivities extends React.Component {
         if (createScenes !== "" && createScenes !== undefined) {
             opt.createScenes = createScenes;
         }
-        if (promotionCode !== "" && promotionCode !== undefined) {
-            opt.promotionCode = promotionCode;
+        if (eventCode !== "" && eventCode !== undefined) {
+            opt.eventCode = eventCode;
         }
         if (promotionCategory !== "" && promotionCategory !== undefined) {
             opt.categoryName = promotionCategory;
@@ -2511,10 +2511,10 @@ class MySpecialActivities extends React.Component {
                             <Input
                                 placeholder="活动编码"
                                 maxLength={20}
-                                value={this.state.promotionCode}
+                                value={this.state.eventCode}
                                 onChange={(e) => {
                                     this.setState({
-                                        promotionCode: e.target.value,
+                                        eventCode: e.target.value,
                                     });
                                 }}
                             />
@@ -2534,11 +2534,11 @@ class MySpecialActivities extends React.Component {
                                 </Button>
                             </Authority>
                         </li>
-                        <li>
+                        {/* <li>
                             <a onClick={this.toggleExpandState}>
                                 高级查询{this.state.expand ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
                             </a>
-                        </li>
+                        </li> */}
                     </ul>
                 </div>
                 {this.renderAdvancedFilter()}
