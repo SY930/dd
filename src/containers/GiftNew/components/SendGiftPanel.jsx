@@ -76,6 +76,21 @@ class SendGiftPanel extends Component {
         this.handleSmgInfoChange = this.handleSmgInfoChange.bind(this);
         this.handleMessageChange = this.handleMessageChange.bind(this);
         this.handleGiftValidRangeChange = this.handleGiftValidRangeChange.bind(this);
+        this.checkPhoneDebounce = debounce(this.checkPhone.bind(this), 600);
+    }
+
+    checkPhone = (cellNoString, cb) => {
+        axiosData('/crm/customerService_checkCustomerByMobile.ajax', {customerMobile: cellNoString}, {}, {path: 'data'})
+        .then((res = {}) => {
+            if (res.customerID && res.customerID != '0') {
+                cb()
+            } else {
+                cb('没有找到对应的用户')
+            }
+        })
+        .catch(e => {
+            cb('没有找到对应的用户')
+        })
     }
 
     handleSubmit() {
@@ -269,21 +284,7 @@ class SendGiftPanel extends Component {
                                         return cb('手机号为必填项');
                                     }
                                     const cellNoString = String(v.number);
-                                    if (cellNoString.length < 11 || cellNoString.length > 11) {
-                                        cb('请输入11位手机号码')
-                                    } else {
-                                        axiosData('/crm/customerService_checkCustomerByMobile.ajax', {customerMobile: cellNoString}, {}, {path: 'data'})
-                                            .then((res = {}) => {
-                                                if (res.customerID && res.customerID != '0') {
-                                                    cb()
-                                                } else {
-                                                    cb('没有找到对应的用户')
-                                                }
-                                            })
-                                            .catch(e => {
-                                                cb('没有找到对应的用户')
-                                            })
-                                    }
+                                    this.checkPhoneDebounce(cellNoString, cb);
                                 },
                             },
                         ]
