@@ -112,6 +112,7 @@ class PromotionIndex extends Component {
                 resultValues.push(values);
             });
         }
+        debugger
 
         const conditionFormsKeys = Object.keys(newConditionForms);
         let tempObj = {};
@@ -165,6 +166,7 @@ class PromotionIndex extends Component {
                 let requestPramas = {}
                 let eventGiftConditionList = [];
                 let eventMutexDependRuleInfos = []; //与优惠券不共享
+								console.log(conditionConfig, 'conditionConfigconditionConfig')
                 conditionConfig.forEach((item, index) => {
                     eventGiftConditionList[index] = {};
                     let gifts = [];
@@ -210,6 +212,7 @@ class PromotionIndex extends Component {
                                 });
                                 return item;
                             }
+						    // TODO: 添加券包
                         })
                     }
                     if (item.normal) {
@@ -337,7 +340,7 @@ class PromotionIndex extends Component {
                 if (currentPromotion.itemID) {
                     requestPramas.event.itemID = currentPromotion.itemID;
                 }
-                this.createPromotion(requestPramas);
+                // this.createPromotion(requestPramas);
             } catch (error) {
                 console.error(error);
             }

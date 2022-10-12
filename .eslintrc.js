@@ -23,9 +23,9 @@ module.exports = {
       }],
       'camelcase': [0],
       'arrow-body-style': [0],
-      "indent": ["error", 2, { "SwitchCase": 1 }],
-      "react/jsx-indent": ["error", 2],
-      "react/jsx-indent-props": ["error", 2],
+      "indent": ["error", 4, { "SwitchCase": 1 }],
+      "react/jsx-indent": ["error", 4],
+      "react/jsx-indent-props": ["error", 4],
       'quote-props': [2, 'consistent'],
       'no-plusplus': [2, {
           'allowForLoopAfterthoughts': true

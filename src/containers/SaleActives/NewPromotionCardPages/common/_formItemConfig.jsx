@@ -464,7 +464,7 @@ export const ALL_FORM_ITEMS = {
     presentType: {
         type: 'checkbox',
         label: '赠送',
-        labelCol: { span: 2 },
+        labelCol: { span: 4 },
         options: [
             { label: '优惠券', value: 1 },
             { label: '积分', value: 2 },
@@ -500,7 +500,52 @@ export const ALL_FORM_ITEMS = {
         type: 'custom',
         defaultValue: '',
         render: decorator => decorator({})(<CategoryAndFoodSelector showRequiredMark />),
-    }
+    },
+    giftPresentType: {
+        label: '礼品属性',
+        type: 'custom',
+        defaultValue: 1,
+        labelCol: { span: 4 },
+        options: [
+            { label: '优惠券', value: 1 },
+            { label: '券包', value: 4 },
+        ],
+        render: () => {}
+    },
+    couponName: {
+        label: '券包名称',
+        type: 'custom',
+        labelCol: { span: 4 },
+        rules: ['required'],
+        render: () => {},
+    },
+    totalValue: {
+        label: '券包个数',
+        type: 'custom',
+        labelCol: { span: 4 },
+        wrapperCol: { span: 16 },
+        render: (d, form) => {
+            const { giftPresentType = 1 } = form.getFieldsValue();
+            if (giftPresentType == 1) { return null }
+            return (<FormItem style={{ marginTop: '-6px' }}>
+                {d({
+                    rules: [{
+                        required: true,
+                        message: '券包个数不能为空',
+                        validator: (rule, value, callback) => {
+                            if (!/^\d+$/.test(value)) {
+                                return callback('请输入数字');
+                            }
+                            if (+value < 1 || +value > 999999) {
+                                return callback('大于0，限制999999个');
+                            }
+                            return callback();
+                        },
+                    }],
+                })(<Input placeholder="请输入券包个数" />)}
+            </FormItem>)
+        },
+    },
 };
 
 export const BASE_FORM_KEYS = {
