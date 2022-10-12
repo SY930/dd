@@ -284,7 +284,11 @@ class SendGiftPanel extends Component {
                                         return cb('手机号为必填项');
                                     }
                                     const cellNoString = String(v.number);
-                                    this.checkPhoneDebounce(cellNoString, cb);
+                                    if (cellNoString.length < 6 || cellNoString.length > 12) {
+                                        cb('请输入正确的手机号码')
+                                    } else {
+                                        this.checkPhoneDebounce(cellNoString, cb);
+                                    }
                                 },
                             },
                         ]
