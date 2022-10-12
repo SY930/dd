@@ -4,7 +4,7 @@ import moment from 'moment';
 import styles from './index.less';
 import { href, DF, TF } from './Common';
 import PagingFactory from 'components/PagingFactory';
-import { deleteTicketBag, getTicketBagInfo } from './AxiosFactory';
+import { deleteTicketBag, getTicketBagInfo, httpCheckBeforeDeleteCouponPackage } from './AxiosFactory';
 import DetailModal from './Detail';
 import StockModal from './StockModal';
 import {
@@ -47,79 +47,72 @@ class MainTable extends Component {
         }
     }
     /** 编辑 */
-    onDelete = (couponPackageID, name, record) => {
-        console.log('_TODO', record);
+    onDelete = async (couponPackageID, name, record) => {
         const { groupID, onQuery } = this.props;
         const params = { couponPackageID, groupID };
         const { couponSendWay } = record;
-        // _TODO
-        // 已发出 一次性发放全部礼品 周期发放礼品
-        // 未发出
-        // 未被占用
-        if (couponSendWay == 1) {
-            let list = [
-                {
-                    label: '活动',
-                    list: ['权益卡周期', '权益卡周期1', '权益卡周期2', '权益卡周期权益卡周期权益卡周期权益卡周期权益卡周期权益卡周期权益卡周期权益卡周期权益卡周期权益卡周期权益卡周期权益卡周期权益卡周期权益卡周期权益卡周期权益卡周期权益卡周期权益卡周期权益卡周期权益卡周期权益卡周期']
-                },
-                {
-                    label: '券包',
-                    list: ['xlm积分']
-                }
-            ];
-            return Modal.warning({
-                title: '券包被占用，不可停用',
-                okText: "知道了",
-                content: (
-                    <div className={styles.couponWarningBox}>
-                        {
-                            list.map(item => (
-                                <div key={item.label} className={styles.label}>
-                                    <div className={styles.title}>该券包被以下{item.label}使用，如需停用，请取消引用</div>
-                                    <div className={styles.content}>
-                                        {
-                                            item.list.map(content => (
-                                                <span key={content} className={styles.contentItem}>【{content}】</span>
-                                            ))
-                                        }
-                                    </div>
+        httpCheckBeforeDeleteCouponPackage(params).then((res) => {
+            if (Array.isArray(res)) {
+                if (res.length == 0) {
+                    Modal.confirm({
+                        title: '您确定要停用吗？',
+                        content: (
+                            <div>
+                                {`您将停用券包
+                                    【${name}】`}
+                                <br />
+                                <span>停用是不可恢复操作，被停用的券包可以在已停用的券包中查看~</span>
+                            </div>
+                        ),
+                        onOk: () => {
+                            deleteTicketBag(params).then((flag) => {
+                                if (flag) {
+                                    message.success('停用成功');
+                                    onQuery();
+                                }
+                            });
+                        },
+                    })
+                } else {
+                    if (couponSendWay == 1) {
+                        Modal.warning({
+                            title: '券包被占用，不可停用',
+                            okText: "知道了",
+                            content: (
+                                <div className={styles.couponWarningBox}>
+                                    {
+                                        res.map(item => (
+                                            <div key={item.label} className={styles.label}>
+                                                {
+                                                    Array.isArray(item.list) && item.list.length > 0 && <div className={styles.title}>该券包被以下{item.label}使用，如需停用，请取消引用</div>
+                                                }
+                                                <div className={styles.content}>
+                                                    {
+                                                        item.list.map(content => (
+                                                            <span key={content} className={styles.contentItem}>【{content}】</span>
+                                                        ))
+                                                    }
+                                                </div>
+                                            </div>
+                                        ))
+                                    }
                                 </div>
-                            ))
-                        }
-                    </div>
-                ),
-                onOk: () => { },
-            })
-        }
-        if (couponSendWay == 2) {
-            return Modal.warning({
-                okText: "知道了",
-                content: (
-                    <div className={styles.couponWarningBox}>
-                        券包已发出，发放类型为周期发放礼品的券包不可停用
-                    </div>
-                ),
-                onOk: () => { },
-            })
-        }
-        Modal.confirm({
-            title: '您确定要停用吗？',
-            content: (
-                <div>
-                    {`您将停用券包
-                        【${name}】`}
-                    <br />
-                    <span>停用是不可恢复操作，被停用的券包可以在已停用的券包中查看~</span>
-                </div>
-            ),
-            onOk: () => {
-                deleteTicketBag(params).then((flag) => {
-                    if (flag) {
-                        message.success('停用成功');
-                        onQuery();
+                            ),
+                            onOk: () => { },
+                        })
+                    } else if(couponSendWay == 2){
+                        Modal.warning({
+                            okText: "知道了",
+                            content: (
+                                <div className={styles.couponWarningBox}>
+                                    券包已发出，发放类型为周期发放礼品的券包不可停用
+                                </div>
+                            ),
+                            onOk: () => { },
+                        })
                     }
-                });
-            },
+                }
+            }
         })
     }
     /** 查看详情 */
