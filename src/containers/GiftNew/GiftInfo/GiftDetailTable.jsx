@@ -42,7 +42,7 @@ import GiftLinkGenerateModal from './GiftLinkGenerateModal';
 import { isBrandOfHuaTianGroupList, isMine, } from "../../../constants/projectHuatianConf";
 import TicketBag from './TicketBag';
 import GiftList from './TicketBag/GiftList';
-import { GIFT_DETAILS, GIFT_EDIT_PAGE } from '../../../constants/entryCodes';
+import { GIFT_DETAILS } from '../../../constants/entryCodes';
 import { jumpPage, closePage } from '@hualala/platform-base';
 
 const TabPane = Tabs.TabPane;
@@ -374,10 +374,6 @@ class GiftDetailTable extends Component {
             value: gift.data.giftType,
             data: gift.data
         });
-        closePage(GIFT_EDIT_PAGE)
-        setTimeout(() => {
-            jumpPage({ menuID: GIFT_EDIT_PAGE })
-        }, 10)
     }
 
     handleDelete(rec) {

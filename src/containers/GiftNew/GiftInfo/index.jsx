@@ -11,6 +11,7 @@ import { promotionDetailInfo_NEW as sale_promotionDetailInfo_NEW } from '../../.
 import GiftEditPage from "../components/GiftEditPage";
 import Editor from './TicketBag/Editor';
 import { getSettleList,getCardTypeList } from './TicketBag/AxiosFactory';
+import { Col } from "antd";
 
 function mapStateToProps(state) {
     return {
@@ -84,16 +85,15 @@ export default class GiftInfo extends React.Component {
             // 券包
             return <Editor groupID={groupID} check={check} settlesOpts={settlesOpts} detail={detail} toggleTabs={this.toggleTabs} togglePage={this.togglePage} groupCardTypeList={groupCardTypeList}/>
         }
-        if (!isCreatingOrEditing) {
-            return (
-                <GiftDetailTable tabkey={tabkey} togglePage={this.togglePage} toggleTabs={this.toggleTabs} />
-            )
-        } else {
-            // _TODO
-            // return (
-            //     <GiftEditPage toggleTabs={this.toggleTabs}/>
-            // )
-        }
-
+        return (
+            <Col>
+                <Col style={{display: !isCreatingOrEditing ? 'block' : 'none'}}>
+                    <GiftDetailTable tabkey={tabkey} togglePage={this.togglePage} toggleTabs={this.toggleTabs} />
+                </Col>
+                {
+                    isCreatingOrEditing && <GiftEditPage toggleTabs={this.toggleTabs}/>
+                }
+            </Col>
+        )
     }
 }

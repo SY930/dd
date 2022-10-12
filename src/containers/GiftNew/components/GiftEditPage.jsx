@@ -14,14 +14,13 @@ import {cancelCreateOrEditGift} from "../_action";
 import PhonePreview from "./PhonePreview";
 import FormWrapper from "./FormWrapper";
 import GiftCfg from "../../../constants/Gift";
-import { closePage, jumpPage } from '@hualala/platform-base';
-import { GIFT_EDIT_PAGE, GIFT_PAGE, THIRD_VOUCHER_MANAGEMENT } from '../../../constants/entryCodes';
 class GiftEditPage extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            contentHeight: 782,
+            // contentHeight: 782,
+            contentHeight: null,
             scrollPercent: 0,
             tabKey: 1,
         };
@@ -57,12 +56,6 @@ class GiftEditPage extends Component {
     saving() {
         this.formRef && this.formRef.wrappedInstance && this.formRef.wrappedInstance.handleSubmit
         && this.formRef.wrappedInstance.handleSubmit();
-        closePage();
-        jumpPage({pageID: GIFT_PAGE});
-        this.props.cancelCreateOrEdit({
-            saveDone: true
-        });
-        // this.props.toggleTabs('1');
     }
 
     render() {
@@ -98,13 +91,13 @@ class GiftEditPage extends Component {
                             marginRight: '10px'
                         }}
                         onClick={()=>{
-                            closePage();
-                            jumpPage({pageID: GIFT_PAGE});
-                            this.props.cancelCreateOrEdit();
-                            // this.props.toggleTabs();
+                            this.props.cancelCreateOrEdit({
+                                saveDone: false
+                            });
+                            this.props.toggleTabs();
                         }}
                     >
-                        {COMMON_LABEL.cancel}
+                        {COMMON_LABEL.cancel} 
                     </Button>
                     <Button
                         type="primary"

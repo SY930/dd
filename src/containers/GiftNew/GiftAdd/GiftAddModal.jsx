@@ -252,7 +252,9 @@ class GiftAddModal extends React.Component {
             axiosData(callServer, { ...params, groupName }, null, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then((data) => {
                 endSaving();
                 message.success('成功', 3);
-                this.props.cancelCreateOrEditGift()
+                this.props.cancelCreateOrEditGift({
+                    saveDone: true
+                })
             }).catch(err => {
                 console.log(err);
                 endSaving()

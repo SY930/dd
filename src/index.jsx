@@ -92,12 +92,6 @@ registerLocalPage([
         parent: [entryCodes.GIFT_PAGE],
     },
     {
-        key: entryCodes.GIFT_EDIT_PAGE,
-        value: entryCodes.GIFT_EDIT_PAGE,
-        label: '礼品信息',
-        parent: [entryCodes.GIFT_PAGE],
-    },
-    {
         key: entryCodes.CONSUME_GIFT_GIVING,
         value: entryCodes.CONSUME_GIFT_GIVING,
         label: '创建营销活动',

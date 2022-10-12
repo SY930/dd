@@ -29,7 +29,6 @@ export default class QueryForm extends Component {
     }
 
     handleEnterKey = (e) => {
-        // _TODO
         let { pageType } = this.props;
         if (e.keyCode === 13 && (pageType == 2 || pageType == 4)) {
             this.onQuery()

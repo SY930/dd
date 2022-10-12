@@ -1283,7 +1283,9 @@ class GiftAddModalStep extends React.PureComponent {
         axiosData(callServer, { ...params, groupName }, null, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then((data) => {
             endSaving();
             message.success('成功', 3);
-            cancelCreateOrEditGift()
+            cancelCreateOrEditGift({
+                saveDone: true
+            })
         }).catch(err => {
             endSaving();
         });
