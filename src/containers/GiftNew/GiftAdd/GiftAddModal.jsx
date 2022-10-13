@@ -150,9 +150,7 @@ class GiftAddModal extends React.Component {
     handleSubmit() {
         const { groupTypes } = this.state;
         const { type, gift: { value, data } } = this.props;
-
         this.baseForm.validateFieldsAndScroll((err, values) => {
-            console.log(values,'values>>>>>>>>>>>>>>>>>>>>>>>>')
             if (err) return;
             let params = _.assign(values, { giftType: value });
             let callServer = '';
@@ -621,7 +619,7 @@ class GiftAddModal extends React.Component {
                                 {
                                     decorator({
                                         key: 'toStatusAfterUseEndDelayTime',
-                                        defaultValue: '1',
+                                        // defaultValue: '1',
                                     })(
                                         <Select style={{width:45}}>
                                             <Option value="1">1</Option>
