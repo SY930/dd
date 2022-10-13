@@ -13,6 +13,7 @@ import { SALE_ACTIVE_NEW_PAGE } from "../../constants/entryCodes";
 import styles from "./CreateActive.less";
 import FaceFormWrapper from "./ManyFace"; //千人千面
 import OnlineRestaurantGiftGiving from "./OnlineRestaurantGiftGiving"; //线上餐厅弹窗送礼
+import SeckillInLimitedTime from "./SeckillInLimitedTime"; //限时秒杀活动
 const createActiveList = [
     {
         title: "千人千面",
@@ -24,6 +25,11 @@ const createActiveList = [
         key: "23",
         comp: OnlineRestaurantGiftGiving
     },
+    {
+        title: "限时秒杀",
+        key: "86",
+        comp: SeckillInLimitedTime
+    }
 ];
 
 @connect(({ loading, createActiveTwoCom }) => ({ loading, createActiveTwoCom }))
@@ -130,6 +136,10 @@ class NewCreateActiveEntry extends Component {
                         onChangDecorateType={this.onchageType}
                         onChangClientype={this.onchageClientType}
                         isActive={isActive}
+                    /**
+                     * @description: 
+                     * @return {*}
+                     */
                     />}
                 </div>
             </div>

@@ -343,43 +343,43 @@ export const FANS_INTERACTIVITY_PROMOTION_TYPES = [
  */
 export const REPEAT_PROMOTION_TYPES = [
     {
-        title: '用券送礼（原消费券返券）',
+        title: "用券送礼（原消费券返券）",
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
-        text: '会员消费了A券返B券，消费B券返C券，循环返券拉动复购',
-        tags: ['pos', SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9, SALE_LABEL.k639vgbm],
-        signs: ['pos', 'wx', 'app'],
-        example: '',
-        key: '81',
+        text: "会员消费了A券返B券，消费B券返C券，循环返券拉动复购",
+        tags: ["pos", SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9, SALE_LABEL.k639vgbm],
+        signs: ["pos", "wx", "app"],
+        example: "",
+        key: "81",
         right: 16,
         bottom: 6,
         isHot: true,
-        isNew: new Date('2022/04/12').getTime(),
+        isNew: new Date("2022/04/12").getTime()
     },
     {
-        title: '微信支付有礼',
+        title: "微信支付有礼",
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
-        text: '微信支付成功页投放微信支付商家券，引导用户领券',
-        tags: ['新微信'],
-        signs: ['wx'],
-        example: '',
-        key: '80',
+        text: "微信支付成功页投放微信支付商家券，引导用户领券",
+        tags: ["新微信"],
+        signs: ["wx"],
+        example: "",
+        key: "80",
         right: 16,
         bottom: 6,
         isHot: true,
-        isNew: new Date('2022/04/12').getTime(),
+        isNew: new Date("2022/04/12").getTime()
     },
     {
-        title: '集点卡',
+        title: "集点卡",
         isSpecial: true,
-        text: '消费后获得集点，促进会员多次消费',
-        tags: ['新微信', '小程序'],
-        signs: ['wx', 'app'],
-        example: '',
-        key: '75',
+        text: "消费后获得集点，促进会员多次消费",
+        tags: ["新微信", "小程序"],
+        signs: ["wx", "app"],
+        example: "",
+        key: "75",
         right: 16,
         bottom: 6,
         isHot: true,
-        isNew: new Date('2022/04/12').getTime(),
+        isNew: new Date("2022/04/12").getTime()
     },
     // 群发礼品
     {
@@ -387,10 +387,10 @@ export const REPEAT_PROMOTION_TYPES = [
         isSpecial: true,
         text: SALE_LABEL.k67b4t5q,
         signs: [],
-        example: '',
-        key: '53',
+        example: "",
+        key: "53",
         right: 3,
-        bottom: 0,
+        bottom: 0
     },
     // 群发短信
     {
@@ -398,93 +398,105 @@ export const REPEAT_PROMOTION_TYPES = [
         isSpecial: true,
         text: SALE_LABEL.k67b4te2,
         signs: [],
-        example: '',
-        key: '50',
+        example: "",
+        key: "50",
         right: 13,
-        bottom: 6,
+        bottom: 6
     },
     // 消费返礼品
     {
         title: SALE_LABEL.k5m4q0ae,
-        tags: ['pos', SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9, SALE_LABEL.k639vgbm],
-        signs: ['pos', 'wx', 'app'],
+        tags: ["pos", SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9, SALE_LABEL.k639vgbm],
+        signs: ["pos", "wx", "app"],
         isSpecial: false,
         text: SALE_LABEL.k67b4tme,
         example: SALE_LABEL.k67cporj,
-        key: '3010',
+        key: "3010",
         right: 17,
-        bottom: 7,
+        bottom: 7
     },
     // 消费返积分
     {
         title: SALE_LABEL.k5m4q0iq,
-        tags: ['pos', SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9, SALE_LABEL.k639vgbm],
-        signs: ['pos', 'wx', 'app'],
+        tags: ["pos", SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9, SALE_LABEL.k639vgbm],
+        signs: ["pos", "wx", "app"],
         isSpecial: false,
         text: SALE_LABEL.k67b4tuq,
         example: SALE_LABEL.k67cpozv,
-        key: '3020',
+        key: "3020",
         right: 13,
-        bottom: 3,
+        bottom: 3
     },
     // 积分兑换
     {
         title: SALE_LABEL.k67b2qfo,
-        tags: [SALE_LABEL.k5krn6z9, '小程序'],
-        signs: ['wx', 'app'],
+        tags: [SALE_LABEL.k5krn6z9, "小程序"],
+        signs: ["wx", "app"],
         isSpecial: true,
         text: SALE_LABEL.k67b4u32,
-        example: '',
-        key: '30',
+        example: "",
+        key: "30",
         right: 18,
-        bottom: 8,
+        bottom: 8
     },
     {
         title: SALE_LABEL.k67b2qo0,
-        tags: ['pos'],
+        tags: ["pos"],
         isSpecial: false,
         text: SALE_LABEL.k67b4ube,
         example: SALE_LABEL.k67cpp87,
-        key: '1080',
+        key: "1080",
         right: 6,
         bottom: 13,
         isOffline: true
     },
     {
         title: SALE_LABEL.k67b2qwc,
-        tags: ['pos'],
+        tags: ["pos"],
         isSpecial: false,
         text: SALE_LABEL.k67b4ujq,
         example: SALE_LABEL.k67cppgj,
-        key: '2070',
+        key: "2070",
         right: 22,
         bottom: 13,
         isOffline: true
     },
     {
-        title: '千人千面',
+        title: "千人千面",
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
-        text: '可根据设置条件筛选用户，推送不同的营销活动',
+        text: "可根据设置条件筛选用户，推送不同的营销活动",
         tags: [SALE_LABEL.k639vgbm],
-        signs: ['app'],
-        example: '',
-        key: '85',
+        signs: ["app"],
+        example: "",
+        key: "85",
         right: 16,
         bottom: 6,
-        isNew: new Date('2022/04/12').getTime(),
+        isNew: new Date("2022/04/12").getTime()
     },
     {
-        title: '消费送礼',
+        title: "消费送礼",
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
-        text: '消费后获得奖励将使顾客下次光临的时间大大提前',
-        tags: ['pos', SALE_LABEL.k639vgbm],
-        signs: ['pos', 'app'],
-        example: '',
-        key: '87', 
+        text: "消费后获得奖励将使顾客下次光临的时间大大提前",
+        tags: ["pos", SALE_LABEL.k639vgbm],
+        signs: ["pos", "app"],
+        example: "",
+        key: "87",
         right: 16,
         bottom: 6,
-        isNew: new Date('2022/04/12').getTime(),
+        isNew: new Date("2022/04/12").getTime()
     },
+    {
+        title: "限时秒杀",
+        isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+        text: "限时超低价格购买商品，吸引客户参与活动，提升顾客消费粘性",
+        tags: [SALE_LABEL.k639vgbm],
+        signs: ["app"],
+        example: "",
+        key: "86",
+        right: 16,
+        bottom: 6
+        // isNew: new Date("2022/04/12").getTime()
+    }
 ];
 
 /**

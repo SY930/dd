@@ -1718,12 +1718,17 @@ class MySpecialActivities extends React.Component {
         let desc = ''
         switch (eventWay) {
             case 85:
-                name = '千人千面'
-                desc = '当同一时间、同一门店、同一投放类型、同一投放位置下存在多个活动时，将按照以下规则执行'
+                name = "千人千面";
+                desc = "当同一时间、同一门店、同一投放类型、同一投放位置下存在多个活动时，将按照以下规则执行";
                 break;
             case 23:
-                name = '线上餐厅弹窗送礼'
-                desc = '当同一时间、同一门店、同一发放位置下存在多个活动时，将按照以下规则执行'
+                name = "线上餐厅弹窗送礼";
+                desc = "当同一时间、同一门店、同一发放位置下存在多个活动时，将按照以下规则执行";
+                break;
+            case 86:
+                name = "限时秒杀";
+                desc = "当同一时间、同一门店、同一发放位置下存在多个活动时，限时秒杀";
+                break;
             default:
                 break;
         }
