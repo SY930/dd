@@ -267,8 +267,9 @@ async function getAlipayCouponList() {
             groupID,
             pageNo: 1,
             pageSize: 999999,
-            channelID: 60,
+            // channelID: 60,
             batchStatus: '0,1',
+            platformType: 1,
         },
         method
     };
