@@ -19,8 +19,7 @@ class GiftEditPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            // contentHeight: 782,
-            contentHeight: null,
+            contentHeight: 782,
             scrollPercent: 0,
             tabKey: 1,
         };
@@ -39,7 +38,7 @@ class GiftEditPage extends Component {
     onWindowResize() {
         let contentHeight;
         try {
-            contentHeight = this.container.getBoundingClientRect().height - 79;
+            contentHeight = document.body.clientHeight - 125;
         } catch (e) {
             contentHeight = 782;
         }
