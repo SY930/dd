@@ -152,6 +152,7 @@ class GiftAddModal extends React.Component {
         const { type, gift: { value, data } } = this.props;
 
         this.baseForm.validateFieldsAndScroll((err, values) => {
+            console.log(values,'values>>>>>>>>>>>>>>>>>>>>>>>>')
             if (err) return;
             let params = _.assign(values, { giftType: value });
             let callServer = '';
@@ -615,7 +616,26 @@ class GiftAddModal extends React.Component {
                                     />
                                 )
                             }
-                            <span>卡余额为0元，自动注销</span>
+                            <span>  
+                                卡余额为0元，D + &nbsp;&nbsp;
+                                {
+                                    decorator({
+                                        key: 'toStatusAfterUseEndDelayTime',
+                                        defaultValue: '1',
+                                    })(
+                                        <Select style={{width:45}}>
+                                            <Option value="1">1</Option>
+                                            <Option value="2">2</Option>
+                                            <Option value="3">3</Option>
+                                            <Option value="4">4</Option>
+                                            <Option value="5">5</Option>
+                                            <Option value="6">6</Option>
+                                            <Option value="7">7</Option>
+                                        </Select>
+                                    )
+                                }
+                                &nbsp;&nbsp;天后，自动注销
+                            </span>
                         </Col>
                     )
                 }
