@@ -167,7 +167,8 @@ class PromotionModalContent extends Component {
 
     handleSubmit = () => {
         const { form } = this.props;
-        const { resourceIds = [], couponDetail, enrollRules } = this.state;
+        const { resourceIds = [], couponDetail, enrollRules, couponList } = this.state;
+        // console.log("🚀 ~ file: PromotionModalContent.jsx ~ line 171 ~ PromotionModalContent ~ resourceIds", resourceIds)
         this.setState({
             confirmLoading: true,
         })
@@ -190,8 +191,7 @@ class PromotionModalContent extends Component {
                         mediaType: 'IMAGE',
                     };
                 })
-                console.log(_.sortBy(enrollRules, ['type']), '_.sortBy(enrollRule')
-
+                // console.log(_.sortBy(enrollRules, ['type']), '_.sortBy(enrollRule')
                 _.sortBy(enrollRules, ['type']).map((item) => {
                     const { type, required } = item;
                     if (required) {
@@ -204,8 +204,9 @@ class PromotionModalContent extends Component {
                         } else if (type === 'CITY') {
                             deliveryInfoData.cities = values.cities;
                         } else if (type === 'VOUCHER') {
-                            deliveryInfoData.activityId = values.itemID; // 选择第三方支付宝券id
-                            deliveryInfoData.subjectId = values.itemID;
+                            const findCoupon = couponList.find(cur => cur.itemID === values.itemID) || {}
+                            deliveryInfoData.activityId = findCoupon.trdBatchID; // 选择第三方支付宝券id
+                            deliveryInfoData.subjectId = findCoupon.trdBatchID;
                         } 
                     }
                 })
