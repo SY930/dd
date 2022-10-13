@@ -72,6 +72,7 @@ class PromotionModalContent extends Component {
                         }
                     }
                 })
+                // console.log(res.enrollRules, 'res.enrollRules-----', materialData)
                 this.setState({
                     recruitPlans: res,
                     enrollRules: res.enrollRules.length ? res.enrollRules : [],
@@ -166,7 +167,7 @@ class PromotionModalContent extends Component {
 
     handleSubmit = () => {
         const { form } = this.props;
-        const { resourceIds, couponDetail, sceneType } = this.state;
+        const { resourceIds = [], couponDetail, sceneType } = this.state;
         this.setState({
             confirmLoading: true,
         })
@@ -257,7 +258,8 @@ class PromotionModalContent extends Component {
     // 活动素材
     renderPromotion = () => {
         const { form } = this.props;
-        const { sceneType } = this.state
+        const { sceneType, enrollRules } = this.state
+        console.log("🚀 ~ file: PromotionModalContent.jsx ~ line 261 ~ PromotionModalContent ~ this.state", this.state.materialData)
         const { getFieldDecorator } = form;
         const tProps = {
             treeData: this.state.treeData || [],
@@ -335,16 +337,30 @@ class PromotionModalContent extends Component {
                             )
                         })
                     }
-                    <FormItem
-                        label="选择城市"
-                        labelCol={{ span: 5 }}
-                        wrapperCol={{ span: 18 }}
-                    >
-                        {getFieldDecorator('cities', {
-                        })(
-                            <TreeSelect {...tProps} />
-                        )}
-                    </FormItem>
+                    {
+                        enrollRules.length && enrollRules[0].type === 'MINI_APP' && enrollRules[0].required ? <FormItem
+                            label="选择城市"
+                            labelCol={{ span: 5 }}
+                            wrapperCol={{ span: 18 }}
+                        >
+                            {getFieldDecorator('cities', {
+                                rules: [
+                                    { required: true, message: '请选择城市' },
+                                ],
+                            })(
+                                <TreeSelect {...tProps} />
+                            )}
+                        </FormItem> : <FormItem
+                            label="选择城市"
+                            labelCol={{ span: 5 }}
+                            wrapperCol={{ span: 18 }}
+                        >
+                            {getFieldDecorator('cities', {
+                            })(
+                                <TreeSelect {...tProps} />
+                            )}
+                        </FormItem>
+                    }
                     {
                         sceneType === 'MINI_APP' &&
                         <FormItem
