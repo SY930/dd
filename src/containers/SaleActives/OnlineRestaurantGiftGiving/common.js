@@ -9,7 +9,7 @@ export const formItemLayout = {
     labelCol: { span: 5 },
     wrapperCol: { span: 15 },
 };
-export const baseFormItems = {
+export const getBaseFormItems = (isEdit) => ({
     eventType: {
         type: "custom",
         label: "活动类型",
@@ -35,6 +35,7 @@ export const baseFormItems = {
                 pattern: /^[A-Za-z0-9]{1,20}$/,
             },
         ],
+        disabled: isEdit
     },
     giftSendType: {
         type: "radio",
@@ -131,7 +132,7 @@ export const baseFormItems = {
         placeholder: "请输入活动说明，最多1000个字符",
         rules: ["description2", { max: "1000", message: "不能超过1000个字符" }],
     },
-};
+});
 
 export const ruleFormItem = {
     couponType: {
@@ -306,7 +307,7 @@ export { formKeys32, KEY3, KEY4, KEY5, KEY6 };
 export const baseFormKeys = [
     "eventType",
     "eventName",
-    "promotionCode",
+    "eventCode",
     "giftSendType",
     "enterPositionList",
     "autoRegister",

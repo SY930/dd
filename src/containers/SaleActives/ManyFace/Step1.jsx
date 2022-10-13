@@ -5,7 +5,7 @@ import BaseForm from 'components/common/BaseForm';
 import { Checkbox, Radio } from 'antd';
 import ShopSelector from 'components/ShopSelector';
 import { getPromotionShopSchema } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
-import { formKeys1, formItems1, formItemLayout, KEY, KEY1, KEY2 } from './Common';
+import { formKeys1, getFormItems1, formItemLayout, KEY, KEY1, KEY2 } from './Common';
 import { isFilterShopType, axiosData } from '../../../helpers/util'
 import css from './style.less';
 
@@ -55,8 +55,8 @@ class Step1 extends Component {
 
     /** formItems 重新设置 */
     resetFormItems() {
-        const { formData = {}, occupyShopList } = this.props;
-
+        const { formData = {}, occupyShopList, itemID } = this.props;
+        const formItems1 = getFormItems1(itemID ? true : false)
         // const render3 = d => d()(<EveryDay type={cycleType} />);
         const { clientType, sceneList, shopIDList, triggerSceneList, ...other } = formItems1;
         const render = d => d()(<ShopSelector

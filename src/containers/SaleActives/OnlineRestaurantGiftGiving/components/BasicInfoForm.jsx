@@ -2,7 +2,7 @@
  * @Author: 张博奥 zhangboao@hualala.com
  * @Date: 2022-09-26 09:52:54
  * @LastEditors: 张博奥 zhangboao@hualala.com
- * @LastEditTime: 2022-09-26 16:39:19
+ * @LastEditTime: 2022-10-13 15:57:30
  * @FilePath: /platform-sale/src/containers/SaleActives/OnlineRestaurantGiftGiving/components/BasicInfoForm.jsx
  * @Description: 线上弹窗送礼基本信息表单
  */
@@ -14,7 +14,7 @@ import { Select, message, Form, Tooltip, Icon } from "antd";
 import ShopSelector from "components/ShopSelector";
 import BaseHualalaModal from "../../../SaleCenterNEW/common/BaseHualalaModal";
 import { isFilterShopType } from "../../../../helpers/util";
-import { baseFormItems, formItemLayout, baseFormKeys } from "../common";
+import { getBaseFormItems, formItemLayout, baseFormKeys } from "../common";
 import { fetchSpecialCardLevel, getListCardTypeShop } from "../AxiosFactory";
 
 class BasicInfoForm extends Component {
@@ -136,6 +136,8 @@ class BasicInfoForm extends Component {
     onChangeBasicForm = (key, value) => {};
 
     resetFormItems = () => {
+        const { itemID } = this.props
+        const baseFormItems = getBaseFormItems(itemID ? true : false)
         const { shopIDList, cardTypeIDList } = baseFormItems;
         let { cardInfo, canUseShops = [], cardTypeLst } = this.state;
         cardInfo = cardInfo.filter(
