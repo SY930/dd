@@ -167,22 +167,17 @@ class PromotionModalContent extends Component {
 
     handleSubmit = () => {
         const { form } = this.props;
-        const { resourceIds = [], couponDetail, sceneType } = this.state;
+        const { resourceIds = [], couponDetail, enrollRules } = this.state;
         this.setState({
             confirmLoading: true,
         })
         form.validateFields((err, values) => {
-            // console.log("🚀 ~ file: PromotionModalContent.jsx ~ line 170 ~ PromotionModalContent ~ form.validateFields ~ values", values)
             if (!err) {
                 const deliveryInfoData = { // 报名素材对象，传给后端的数据格式
                     data: {
                         activityImage: [],
                     },
                     activityUrl: [],
-                    description: values.description,
-                    name: values.name,
-                    cities: values.cities,
-                    subjectId: sceneType === 'VOUCHER' ? this.getVoucherID(values.itemID) : values.appID,
                 };
                 const materials = deliveryInfoData.data;
                 resourceIds.map((item, index) => {
@@ -194,6 +189,25 @@ class PromotionModalContent extends Component {
                         aftsFileId: item[index],
                         mediaType: 'IMAGE',
                     };
+                })
+                console.log(_.sortBy(enrollRules, ['type']), '_.sortBy(enrollRule')
+
+                _.sortBy(enrollRules, ['type']).map((item) => {
+                    const { type, required } = item;
+                    if (required) {
+                        if (type === 'MATERIAL') {
+                            deliveryInfoData.name = values.name; // 选择第三方支付宝券id
+                            deliveryInfoData.description = values.description;
+                        } else if (type === 'MINI_APP') {
+                            deliveryInfoData.miniAppId = values.appID;
+                            deliveryInfoData.subjectId = values.appID;
+                        } else if (type === 'CITY') {
+                            deliveryInfoData.cities = values.cities;
+                        } else if (type === 'VOUCHER') {
+                            deliveryInfoData.activityId = values.itemID; // 选择第三方支付宝券id
+                            deliveryInfoData.subjectId = values.itemID;
+                        } 
+                    }
                 })
                 deliveryInfoData.data = JSON.stringify(deliveryInfoData.data)
                 // JSON.stringify(materials.activityImage);
@@ -258,8 +272,7 @@ class PromotionModalContent extends Component {
     // 活动素材
     renderPromotion = () => {
         const { form } = this.props;
-        const { sceneType, enrollRules } = this.state
-        console.log("🚀 ~ file: PromotionModalContent.jsx ~ line 261 ~ PromotionModalContent ~ this.state", this.state.materialData)
+        const { enrollRules } = this.state
         const { getFieldDecorator } = form;
         const tProps = {
             treeData: this.state.treeData || [],
@@ -272,38 +285,91 @@ class PromotionModalContent extends Component {
         return (
             <Row>
                 <Col span={16} offset={5} className={styles.CouponGiftBox}>
-                    <FormItem
-                        label="素材名称"
-                        labelCol={{ span: 5 }}
-                        wrapperCol={{ span: 18 }}
-                    >
-                        {getFieldDecorator('name', {
-                            // initialValue: { number: editData.stock },
-                            // onChange: this.handleGiftNumChange,
-                            rules: [
-                                { required: true, message: '请输入素材名称' },
-                            ],
-                        })(<Input
-                            placeholder="请输入素材名称"
-                        />)}
-                    </FormItem>
-                    <FormItem
-                        label="素材描述"
-                        labelCol={{ span: 5 }}
-                        wrapperCol={{ span: 18 }}
-                    >
-                        {getFieldDecorator('description', {
-                            // initialValue: { number: editData.stock },
-                            // onChange: this.handleGiftNumChange,
-                            rules: [
-                                { required: true, message: '请输入素材描述' },
-                                { max: 1000, message: '主题不能超过1000个字' },
-                            ],
-                        })(<Input
-                            placeholder="请输入素材描述"
-                            type="textarea"
-                        />)}
-                    </FormItem>
+                    {
+                        enrollRules.map((item) => {
+                            const { type, required } = item;
+                            if (required) {
+                                if (type === 'MATERIAL') {
+                                    return (
+                                        <div>
+                                            <FormItem
+                                                label="素材名称"
+                                                labelCol={{ span: 5 }}
+                                                wrapperCol={{ span: 18 }}
+                                            >
+                                                {getFieldDecorator('name', {
+                                                    rules: [
+                                                        { required: true, message: '请输入素材名称' },
+                                                    ],
+                                                })(<Input
+                                                    placeholder="请输入素材名称"
+                                                />)}
+                                            </FormItem>
+                                            <FormItem
+                                                label="素材描述"
+                                                labelCol={{ span: 5 }}
+                                                wrapperCol={{ span: 18 }}
+                                            >
+                                                {getFieldDecorator('description', {
+                                                    // initialValue: { number: editData.stock },
+                                                    // onChange: this.handleGiftNumChange,
+                                                    rules: [
+                                                        { required: true, message: '请输入素材描述' },
+                                                        { max: 1000, message: '主题不能超过1000个字' },
+                                                    ],
+                                                })(<Input
+                                                    placeholder="请输入素材描述"
+                                                    type="textarea"
+                                                />)}
+                                            </FormItem>
+                                        </div>
+                                    )
+                                } else if (type === 'MINI_APP') {
+                                    return (
+                                        <FormItem
+                                            label="选择小程序"
+                                            labelCol={{ span: 5 }}
+                                            wrapperCol={{ span: 18 }}
+                                            required={true}
+                                        >
+                                            {
+                                                getFieldDecorator('appID', {
+                                                    rules: [
+                                                        { required: true, message: '请选择小程序' },
+                                                    ],
+                                                })(
+                                                    <Select placeholder={'请选择小程序'}>
+                                                        {
+                                                            this.state.aliAppList.map(({ value, key, label }) => (
+                                                                <Select.Option key={key} value={value}>{label}</Select.Option>
+                                                            ))
+                                                        }
+                                                    </Select>
+                                                )
+                                            }
+                                        </FormItem>
+                                    )
+                                } else if (type === 'CITY') {
+                                    return (
+                                        <FormItem
+                                            label="选择城市"
+                                            labelCol={{ span: 5 }}
+                                            wrapperCol={{ span: 18 }}
+                                        >
+                                            {getFieldDecorator('cities', {
+                                                rules: [
+                                                    { required: true, message: '请选择城市' },
+                                                ],
+                                            })(
+                                                <TreeSelect {...tProps} />
+                                            )}
+                                        </FormItem>
+                                    )
+                                }
+                            }
+                        })
+                    }
+                    {/*  */}
                     {
                         (this.state.materialData || []).map((item, index) => {
                             return (
@@ -336,55 +402,6 @@ class PromotionModalContent extends Component {
                                 </FormItem>
                             )
                         })
-                    }
-                    {
-                        enrollRules.length && enrollRules[0].type === 'MINI_APP' && enrollRules[0].required ? <FormItem
-                            label="选择城市"
-                            labelCol={{ span: 5 }}
-                            wrapperCol={{ span: 18 }}
-                        >
-                            {getFieldDecorator('cities', {
-                                rules: [
-                                    { required: true, message: '请选择城市' },
-                                ],
-                            })(
-                                <TreeSelect {...tProps} />
-                            )}
-                        </FormItem> : <FormItem
-                            label="选择城市"
-                            labelCol={{ span: 5 }}
-                            wrapperCol={{ span: 18 }}
-                        >
-                            {getFieldDecorator('cities', {
-                            })(
-                                <TreeSelect {...tProps} />
-                            )}
-                        </FormItem>
-                    }
-                    {
-                        sceneType === 'MINI_APP' &&
-                        <FormItem
-                            label="选择小程序"
-                            labelCol={{ span: 5 }}
-                            wrapperCol={{ span: 18 }}
-                            required={true}
-                        >
-                            {
-                                getFieldDecorator('appID', {
-                                    rules: [
-                                        { required: true, message: '请选择小程序' },
-                                    ],
-                                })(
-                                    <Select placeholder={'请选择小程序'}>
-                                        {
-                                            this.state.aliAppList.map(({ value, key, label }) => (
-                                                <Select.Option key={key} value={value}>{label}</Select.Option>
-                                            ))
-                                        }
-                                    </Select>
-                                )
-                            }
-                        </FormItem>
                     }
                     {
                         this.state.description &&

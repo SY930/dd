@@ -318,7 +318,7 @@ async function getAlipayRecruitPlan(value) {
         type,
         data: {
             groupID,
-            planId: '2022101201000100000000554846',
+            planId: value,
         },
         method
     };
