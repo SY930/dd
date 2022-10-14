@@ -201,6 +201,9 @@ class MainTable extends Component {
         const render3 = (v, o) => {
             const { couponPackageID: id, remainStock = 0 } = o;
             const stock = (remainStock === -1) ? '不限制' : remainStock;
+            if (o.limitStockForEvent == 2) {
+                return '不限制'
+            }
             return (
                 <p id={`${id},${remainStock}`} className={tr}>
                     <span>{stock}</span>
