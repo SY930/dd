@@ -520,7 +520,7 @@ export const ALL_FORM_ITEMS = {
         render: () => {},
     },
     totalValue: {
-        label: '券包个数',
+        label: '券包库存',
         type: 'custom',
         labelCol: { span: 4 },
         wrapperCol: { span: 16 },
@@ -531,7 +531,7 @@ export const ALL_FORM_ITEMS = {
                 {d({
                     rules: [{
                         required: true,
-                        message: '券包个数不能为空',
+                        message: '券包库存不能为空',
                         validator: (rule, value, callback) => {
                             if (!/^\d+$/.test(value)) {
                                 return callback('请输入数字');
@@ -542,7 +542,7 @@ export const ALL_FORM_ITEMS = {
                             return callback();
                         },
                     }],
-                })(<Input placeholder="请输入券包个数" />)}
+                })(<Input placeholder="请输入库存个数" />)}
             </FormItem>)
         },
     },
