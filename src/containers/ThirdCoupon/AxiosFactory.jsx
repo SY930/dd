@@ -285,7 +285,7 @@ async function getAlipayCouponList() {
 }
 
 // 支付宝大促
-async function getAlipayPromotionList(enrollSsceneType) {
+async function getAlipayPromotionList(enrollSceneType) {
     const method = 'AlipayRecruitPlanInfoService/recruitPlanListQuery.ajax';
     const { groupID } = getAccountInfo();
     const params = {
@@ -295,7 +295,7 @@ async function getAlipayPromotionList(enrollSsceneType) {
             groupID,
             pageNum: 1,
             pageSize: 100,
-            enrollSsceneType,
+            enrollSceneType,
         },
         method,
     };
