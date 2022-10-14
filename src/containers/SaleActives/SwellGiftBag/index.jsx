@@ -158,6 +158,7 @@ class SwellGiftBag extends React.Component {
                 const { formData, type, isEdit } = this.props.createActiveCom
                 const {
                     eventName,
+                    eventCode,
                     eventRemark,
                     eventEndDate,
                     eventStartDate,
@@ -193,6 +194,7 @@ class SwellGiftBag extends React.Component {
                         event: {
                             eventWay: type,
                             eventName,
+                            eventCode,
                             eventRemark,
                             eventEndDate,
                             eventStartDate,

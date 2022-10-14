@@ -1,7 +1,7 @@
 import React from 'react'
 import  BaseForm  from '../../../../components/common/BaseForm';
 import { Input } from 'antd'
-import {formItems1,formKeys1} from '../constant'
+import {getFormItems1,formKeys1} from '../constant'
 import styles from '../payHaveGift.less'
 import {connect} from 'react-redux';
 import { renderEventRemark } from '../../helper/common'
@@ -46,8 +46,9 @@ class Step1 extends React.Component {
         return flag
     }
     render () {
-        formItems1.eventRemark.render = renderEventRemark.bind(this)
         const { formData,isView,isEdit } = this.props.createActiveCom
+        const formItems1 = getFormItems1(isEdit)
+        formItems1.eventRemark.render = renderEventRemark.bind(this)
         return (
             <div className={styles.step1Wrap}>
                 {isView&&!isEdit&&<div className={styles.disabledDiv}></div>}

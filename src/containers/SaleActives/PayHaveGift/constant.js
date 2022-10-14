@@ -15,7 +15,7 @@ const {
     eventDate,
     eventCode,
 } = formItem;
-export const formItems1 = {
+export const getFormItems1 = (isEdit) => ({
     actType: {
         ...actType,
         render() {
@@ -23,10 +23,13 @@ export const formItems1 = {
         },
     },
     eventName,
-    eventCode,
+    eventCode: {
+        ...eventCode,
+        disabled: isEdit,
+    },
     merchantLogoUrl,
     eventRemark,
-};
+});
 
 export const formKeys1 = [
     'actType',

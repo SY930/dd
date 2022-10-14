@@ -16,7 +16,7 @@ const {
     smsGate,
     eventCode,
 } = formItem;
-export const formItems1 = {
+export const getFormItems1 = (isEdit) => ({
     actType: {
         ...actType,
         render() {
@@ -30,12 +30,15 @@ export const formItems1 = {
             { max: 50, message: '最多输入50位' },
         ],
     },
-    eventCode,
+    eventCode: {
+        ...eventCode,
+        disabled: isEdit
+    },
     eventLimitDate,
     shopIDList,
     eventRemark,
     smsGate
-};
+});
 
 export const formKeys1 = [
     'actType',

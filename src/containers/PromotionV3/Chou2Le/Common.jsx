@@ -34,7 +34,7 @@ const sceneOpts = [
     { label: '支付成功后投放', value: '2' },
     { label: '评价成功后投放', value: '3' },
 ];
-const formItems1 = {
+const getFormItems1 = (isEdit) => ({
     eventType: {
         type: 'custom',
         label: '活动类型',
@@ -53,6 +53,7 @@ const formItems1 = {
             { required: true, message: '活动编码不能为空' },
             { message: "字母、数字组成，不多于20个字符",  pattern: /^[A-Za-z0-9]{1,20}$/ },
         ],
+        disabled: isEdit
     },
     eventRange: {
         type: 'custom',
@@ -102,7 +103,7 @@ const formItems1 = {
         render: d => d()(<DateTag />),
         defaultValue: [],
     },
-};
+});
 // eventRange
 // "eventEndDate": "20220610",
 // "eventStartDate": "20200522",
@@ -180,7 +181,7 @@ const formItems3 = {
 };
 const formKeys3 = ['consumeTotalAmount', 'consumeType', 'sceneType', 'lottery'];
 export {
-    formItems1, imgURI, formKeys1, href, formItemLayout,
+    getFormItems1, imgURI, formKeys1, href, formItemLayout,
     KEY1, KEY2, KEY3, KEY4, KEY5, TF, DF,
     formKeys2, formItems2, formKeys3, formItems3,
 }

@@ -1,7 +1,7 @@
 import React, { PureComponent as Component } from 'react';
 import { Icon, Checkbox, message } from 'antd';
 import BaseForm from 'components/common/BaseForm';
-import { formKeys1, formItems1, formItemLayout,
+import { formKeys1, getFormItems1, formItemLayout,
     KEY1, KEY2, KEY3, KEY4, KEY5 } from './Common';
 import EveryDay from '../Camp/EveryDay';
 import css from './style.less';
@@ -53,6 +53,7 @@ class Step1 extends Component {
             cycleType = getFieldValue('cycleType') || t;
         }
         const render3 = d => d()(<EveryDay type={cycleType} />);
+        const formItems1 = getFormItems1(this.props.isEdit)
         const { validCycle, ...other } = formItems1;
         return {
             ...other,

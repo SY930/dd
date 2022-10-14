@@ -1,7 +1,7 @@
 import React, { PureComponent as Component } from 'react';
 import { Icon, Checkbox, message } from 'antd';
 import BaseForm from 'components/common/BaseForm';
-import { formKeys1, formItems1, formItemLayout } from './Common';
+import { formKeys1, getFormItems1, formItemLayout } from './Common';
 import EveryDay from '../Camp/EveryDay';
 import css from './style.less';
 
@@ -20,6 +20,7 @@ class Step1 extends Component {
     /** formItems 重新设置 */
     resetFormItems() {
         const { form, formData } = this.props;
+        const formItems1 = getFormItems1(this.props.isEdit)
         const { ...other } = formItems1;
         return {
             ...other,
