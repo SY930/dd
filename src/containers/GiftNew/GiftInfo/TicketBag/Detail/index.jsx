@@ -203,7 +203,7 @@ class Detail extends Component {
         const { queryParams, queryParams2, isExist, popVisible, sameItemID } = this.state;
         const { detail: { couponPackageInfo = [], couponPackageGiftConfigs = [] } } = this.props;
         const { couponPackageImage, couponPackageName, createTime, couponPackageID,
-            couponPackageDesciption, remainStock = 0, sendCount = 0 } = couponPackageInfo;
+            couponPackageDesciption, remainStock = 0, sendCount = 0, limitStockForEvent } = couponPackageInfo;
         const { onClose, ids } = this.props;
         const imgSrc = couponPackageImage || 'basicdoc/706f75da-ba21-43ff-a727-dab81e270668.png';
         const resetStock = remainStock === -1 ? '不限制' : remainStock;
@@ -239,7 +239,7 @@ class Detail extends Component {
                     <li>
                         <h3>券包数据</h3>
                         <div>
-                            <TotalTable list={[{remainStock: resetStock, sendCount}]} />
+                            <TotalTable list={[{remainStock: resetStock, sendCount}]} isOld={limitStockForEvent == 1 } />
                             <InfoTable list={couponPackageGiftConfigs} />
                         </div>
                     </li>

@@ -9,11 +9,17 @@ class TotalTable extends Component {
     };
 
     /* 生成表格头数据 */
-    generateColumns() {
+    generateColumns = () => {
+        const { isOld } = this.props
         const { tr } = styles;
         // 表格头部的固定数据
+        if (isOld) {
+            return [
+                { width: 100, title: '券包库存', dataIndex: 'remainStock', className: tr },
+                { width: 100, title: '券包发出总数', dataIndex: 'sendCount', className: tr },
+            ];
+        }
         return [
-            { width: 100, title: '券包库存', dataIndex: 'remainStock', className: tr },
             { width: 100, title: '券包发出总数', dataIndex: 'sendCount', className: tr },
         ];
     }
