@@ -3451,8 +3451,8 @@ class MySpecialActivities extends React.Component {
             },
             {
                 title: "活动编码",
-                dataIndex: "itemID",
-                key: "itemID",
+                dataIndex: "eventCode",
+                key: "eventCode",
                 fixed: "left",
                 width: 180,
                 // ellipsis: true,
