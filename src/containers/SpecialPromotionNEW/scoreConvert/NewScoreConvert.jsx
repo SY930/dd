@@ -37,6 +37,7 @@ class NewScoreConvert extends NewPromotion {
                 content: (
                     <StepOneWithDateRange
                         type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
+                        isNew={this.props.isNew}
                         getSubmitFn={(handles) => {
                             this.handles[0] = handles;
                         }}

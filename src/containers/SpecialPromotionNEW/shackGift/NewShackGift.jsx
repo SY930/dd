@@ -47,6 +47,7 @@ class NewShackGift extends NewPromotion {
                 content: (
                     <StepOneWithDateRange
                         isCopy={this.props.isCopy}
+                        isNew={this.props.isNew}
                         type={`${specialPromotion.$eventInfo.eventWay}`}
                         getSubmitFn={(handles) => {
                             this.handles[0] = handles;
