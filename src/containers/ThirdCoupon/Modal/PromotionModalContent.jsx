@@ -419,7 +419,8 @@ class PromotionModalContent extends Component {
 
     render() {
         // const { marketingType } = this.state;
-        const { form, promotionList } = this.props;
+        const { form, promotionList = [] } = this.props;
+        console.log("🚀 ~ file: PromotionModalContent.jsx ~ line 423 ~ PromotionModalContent ~ render ~ promotionList", promotionList)
         const { getFieldDecorator } = form;
         const { confirmLoading } = this.state;
         return (
