@@ -57,6 +57,7 @@ class Step1 extends Component {
     /** formItems 重新设置 */
     resetFormItems() {
         const { formData = {}, occupyShopList } = this.props;
+
         // const render3 = d => d()(<EveryDay type={cycleType} />);
         const { clientType, sceneList, shopIDList, triggerSceneList, ...other } = formItems1;
         const render = d => d()(<ShopSelector
