@@ -88,7 +88,7 @@ class PromotionBasicInfo extends React.Component {
             sendMsg: `${specialPromotion.smsGate || this.state.smsGate || '0'}`,
             name: eventName,
             // tagLst: tagLst ? tagLst.split(',') : [],
-            eventCode: eventCode || `YX${moment(new Date()).format('YYYYMMDDHHmmss')}`,
+            eventCode: this.props.isView ? eventCode : eventCode ? eventCode : `YX${moment(new Date()).format('YYYYMMDDHHmmss')}`,
             // categoryName,
             involvementGiftAdvanceDays: involvementGiftAdvanceDays || 0,
             actDate: (eventStartDate && eventEndDate) ? [moment(eventStartDate), moment(eventEndDate)] : [],

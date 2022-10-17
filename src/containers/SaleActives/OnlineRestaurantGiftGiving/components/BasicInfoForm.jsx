@@ -2,7 +2,7 @@
  * @Author: 张博奥 zhangboao@hualala.com
  * @Date: 2022-09-26 09:52:54
  * @LastEditors: 张博奥 zhangboao@hualala.com
- * @LastEditTime: 2022-10-17 11:06:22
+ * @LastEditTime: 2022-10-17 19:25:40
  * @FilePath: /platform-sale/src/containers/SaleActives/OnlineRestaurantGiftGiving/components/BasicInfoForm.jsx
  * @Description: 线上弹窗送礼基本信息表单
  */
@@ -273,10 +273,10 @@ class BasicInfoForm extends Component {
         };
     };
     render() {
-        let { formData, getForm } = this.props;
+        let { formData, getForm, isView } = this.props;
         formData = {
             ...formData,
-            eventCode: formData.eventCode || `YX${moment(new Date()).format('YYYYMMDDHHmmss')}`
+            eventCode: isView ? formData.eventCode : formData.eventCode ? formData.eventCode : `YX${moment(new Date()).format('YYYYMMDDHHmmss')}`
         }
         const { formKeys } = this.state;
         return (

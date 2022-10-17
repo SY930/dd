@@ -218,7 +218,7 @@ class StepOneWithDateRange extends React.Component {
             specialPromotion.eventStartDate !== '' && specialPromotion.eventEndDate !== '') {
             this.setState({
                 name: specialPromotion.eventName || this.state.name, // ||是因为选择日期自动更新，redux的‘’会覆盖掉state的值
-                eventCode: specialPromotion.eventCode || this.state.eventCode, // ||是因为选择日期自动更新，redux的‘’会覆盖掉state的值
+                eventCode: !this.props.isUpdate ? specialPromotion.eventCode : specialPromotion.eventCode ? specialPromotion.eventCode : this.state.eventCode, // ||是因为选择日期自动更新，redux的‘’会覆盖掉state的值
                 description: specialPromotion.eventRemark || this.state.description,
                 smsGate: specialPromotion.smsGate || this.state.smsGate || '0',
                 dateRange: this.props.isCopy ? Array(2) : [moment(specialPromotion.eventStartDate, 'YYYYMMDD'), moment(specialPromotion.eventEndDate, 'YYYYMMDD')],
@@ -229,7 +229,7 @@ class StepOneWithDateRange extends React.Component {
                 timeString: specialPromotion.startTime.substring(8),
                 smsGate: specialPromotion.smsGate || this.state.smsGate || '0',
                 name: specialPromotion.eventName || this.state.name,
-                eventCode: specialPromotion.eventCode || this.state.eventCode, // ||是因为选择日期自动更新，redux的‘’会覆盖掉state的值
+                eventCode: !this.props.isUpdate ? specialPromotion.eventCode : specialPromotion.eventCode ? specialPromotion.eventCode : this.state.eventCode, // ||是因为选择日期自动更新，redux的‘’会覆盖掉state的值
                 description: specialPromotion.eventRemark || this.state.description,
             })
         }

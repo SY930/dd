@@ -136,7 +136,7 @@ class StepOne extends React.Component {
             this.setState({
                 name: specialPromotion.eventName || this.state.name, // ||是因为选择日期自动更新，redux的‘’会覆盖掉state的值
                 description: specialPromotion.eventRemark || this.state.description,
-                eventCode: specialPromotion.eventCode || this.state.eventCode,
+                eventCode: this.props.isView ? specialPromotion.eventCode ? specialPromotion.eventCode : this.state.eventCode : '',
                 smsGate: specialPromotion.smsGate || this.state.smsGate || '0',
                 dateRange: isCopy ? Array(2) : [moment(specialPromotion.eventStartDate, 'YYYYMMDD'), moment(specialPromotion.eventEndDate, 'YYYYMMDD')],
             })
@@ -147,7 +147,7 @@ class StepOne extends React.Component {
                 smsGate: specialPromotion.smsGate || this.state.smsGate || '0',
                 name: specialPromotion.eventName || this.state.name,
                 description: specialPromotion.eventRemark || this.state.description,
-                eventCode: specialPromotion.eventCode || this.state.eventCode,
+                eventCode: this.props.isView ? specialPromotion.eventCode ? specialPromotion.eventCode : this.state.eventCode : '',
             })
         }
 

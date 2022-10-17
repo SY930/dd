@@ -28,10 +28,10 @@ class Step1 extends Component {
     }
     render() {
         const { newFormKeys } = this.state;
-        let { formData, getForm } = this.props;
+        let { formData, getForm, isView } = this.props;
         formData = {
             ...formData,
-            eventCode: formData.eventCode || `YX${moment(new Date()).format('YYYYMMDDHHmmss')}`
+            eventCode: isView ? formData.eventCode : formData.eventCode ? formData.eventCode : `YX${moment(new Date()).format('YYYYMMDDHHmmss')}`
         }
         const newFormItems = this.resetFormItems();
         return (

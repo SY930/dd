@@ -2,7 +2,7 @@
  * @Author: 张博奥 zhangboao@hualala.com
  * @Date: 2022-09-26 09:52:54
  * @LastEditors: 张博奥 zhangboao@hualala.com
- * @LastEditTime: 2022-10-17 11:08:32
+ * @LastEditTime: 2022-10-17 18:48:56
  * @FilePath: /platform-sale/src/containers/SaleActives/OnlineRestaurantGiftGiving/index.jsx
  * @Description: 线上餐厅弹窗送礼右侧表单入口
  */
@@ -475,6 +475,7 @@ class OnlineRestaurantGiftGiving extends Component {
                     <div className={styles.logoGroupHeader}>基本信息</div>
                     <BasicInfoForm
                         basicForm={basicForm}
+                        isView={isView}
                         getForm={(form) => this.setState({ basicForm: form })}
                         formData={formData}
                         {...itemProps}

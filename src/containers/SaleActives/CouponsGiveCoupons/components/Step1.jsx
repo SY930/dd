@@ -70,7 +70,7 @@ class Step1 extends React.Component {
         let { formData,isView,isEdit  } = this.props.createActiveCom;
         formData = {
             ...formData,
-            eventCode: formData.eventCode || `YX${moment(new Date()).format('YYYYMMDDHHmmss')}`
+            eventCode: isView ? formData.eventCode : formData.eventCode ? formData.eventCode : `YX${moment(new Date()).format('YYYYMMDDHHmmss')}`
         }
         let shopIdList = [];
         if(formData.shopIDList && formData.shopIDList.length > 0){
