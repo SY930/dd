@@ -69,6 +69,7 @@ const formItems1 = {
         type: 'textarea',
         label: '活动规则',
         rules: ['required', 'description2'],
+        placeholder: '请输入活动规则，最多1000个字符'
     },
     cycleType: {
         type: 'combo',
