@@ -36,7 +36,6 @@ class NewSendMsgs extends NewPromotion {
                 title: `${this.props.intl.formatMessage(STRING_SPE.d2c8987eai0135)}`,
                 content: (<StepOneWithDateRange
                     type={`${this.props.specialPromotion.$eventInfo.eventWay}`}
-                    isNew={this.props.isNew}
                     getSubmitFn={(handles) => {
                         this.handles[0] = handles;
                     }}

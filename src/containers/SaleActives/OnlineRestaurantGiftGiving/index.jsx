@@ -2,7 +2,7 @@
  * @Author: 张博奥 zhangboao@hualala.com
  * @Date: 2022-09-26 09:52:54
  * @LastEditors: 张博奥 zhangboao@hualala.com
- * @LastEditTime: 2022-10-13 15:57:10
+ * @LastEditTime: 2022-10-17 11:08:32
  * @FilePath: /platform-sale/src/containers/SaleActives/OnlineRestaurantGiftGiving/index.jsx
  * @Description: 线上餐厅弹窗送礼右侧表单入口
  */
@@ -460,7 +460,7 @@ class OnlineRestaurantGiftGiving extends Component {
     render() {
         const { basicForm, ruleForm, formData, slectedWxCouponList } =
             this.state;
-        const { accountInfo, user, cardTypeLst, loading, isView, itemID } = this.props;
+        const { accountInfo, user, cardTypeLst, loading, isView } = this.props;
         const itemProps = {
             accountInfo,
             user,
@@ -475,7 +475,6 @@ class OnlineRestaurantGiftGiving extends Component {
                     <div className={styles.logoGroupHeader}>基本信息</div>
                     <BasicInfoForm
                         basicForm={basicForm}
-                        itemID={itemID}
                         getForm={(form) => this.setState({ basicForm: form })}
                         formData={formData}
                         {...itemProps}

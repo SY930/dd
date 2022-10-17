@@ -2,14 +2,10 @@ import React from 'react';
 import { formItem } from '../constants/formItem'
 
 const {
-    actType,
-    eventName50,
-    eventRemark,
-    eventLimitDate,
-    partInTimes,
-    eventCode,
-} = formItem;
-export const getFormItems1 = (isEdit) => ({
+    actType, eventName50, eventRemark, eventLimitDate,
+    partInTimes, eventCode
+} = formItem
+export const formItems1 = {
     actType: {
         ...actType,
         render() {
@@ -17,13 +13,10 @@ export const getFormItems1 = (isEdit) => ({
         },
     },
     eventName: eventName50,
-    eventCode: {
-        ...eventCode,
-        disabled: isEdit
-    },
+    eventCode,
     eventLimitDate,
     eventRemark,
-});
+};
 
 export const formKeys1 = [
     'actType',

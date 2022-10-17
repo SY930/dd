@@ -33,8 +33,7 @@ export const formItem = {
         type: 'text',
         label: '活动编码',
         rules: [
-            { required: true, message: '活动编码不能为空' },
-            { message: "字母、数字组成，不多于20个字符",  pattern: /^[A-Za-z0-9]{1,20}$/ },
+            { message: "字母、数字组成，不多于50个字符",  pattern: /^[A-Za-z0-9]{1,50}$/ },
         ],
     },
     eventLimitDate: {

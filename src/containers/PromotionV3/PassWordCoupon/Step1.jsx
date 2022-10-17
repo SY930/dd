@@ -1,7 +1,8 @@
 import React, { PureComponent as Component } from 'react';
+import moment from 'moment';
 import { Icon, Checkbox, message } from 'antd';
 import BaseForm from 'components/common/BaseForm';
-import { formKeys1, getFormItems1, formItemLayout } from './Common';
+import { formKeys1, formItems1, formItemLayout } from './Common';
 import EveryDay from '../Camp/EveryDay';
 import css from './style.less';
 
@@ -20,7 +21,6 @@ class Step1 extends Component {
     /** formItems 重新设置 */
     resetFormItems() {
         const { form, formData } = this.props;
-        const formItems1 = getFormItems1(this.props.isEdit)
         const { ...other } = formItems1;
         return {
             ...other,
@@ -28,7 +28,11 @@ class Step1 extends Component {
     }
     render() {
         const { newFormKeys } = this.state;
-        const { formData, getForm } = this.props;
+        let { formData, getForm } = this.props;
+        formData = {
+            ...formData,
+            eventCode: formData.eventCode || `YX${moment(new Date()).format('YYYYMMDDHHmmss')}`
+        }
         const newFormItems = this.resetFormItems();
         return (
             <div className={css.step1}>

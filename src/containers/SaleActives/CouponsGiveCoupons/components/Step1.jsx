@@ -1,7 +1,7 @@
 import React from 'react'
 import  BaseForm  from '../../../../components/common/BaseForm';
 import { Input } from 'antd'
-import {getFormItems1,formKeys1} from '../constant'
+import {formItems1,formKeys1} from '../constant'
 import styles from '../CouponsGiveCoupons.less'
 import {connect} from 'react-redux';
 import { renderEventRemark, eventLimitDateRender,sendSmsGateRender } from '../../helper/common'
@@ -62,13 +62,16 @@ class Step1 extends React.Component {
     }
 
     render () {
-        const { formData,isView,isEdit  } = this.props.createActiveCom;
-        const formItems1 = getFormItems1(isEdit ? true : false)
         formItems1.eventRemark.render = renderEventRemark.bind(this)
         formItems1.eventLimitDate.render = eventLimitDateRender.bind(this)
         formItems1.smsGate.render = sendSmsGateRender.bind(this);
         const render = d => d()(<ShopSelector eventWay='81' filterParm={isFilterShopType() ? { productCode: 'HLL_CRM_License' } : {}} brandList={[]} />);
         formItems1.shopIDList = { ...formItems1.shopIDList, render };
+        let { formData,isView,isEdit  } = this.props.createActiveCom;
+        formData = {
+            ...formData,
+            eventCode: formData.eventCode || `YX${moment(new Date()).format('YYYYMMDDHHmmss')}`
+        }
         let shopIdList = [];
         if(formData.shopIDList && formData.shopIDList.length > 0){
             shopIdList = formData.shopIDList.map((item,index)=>{

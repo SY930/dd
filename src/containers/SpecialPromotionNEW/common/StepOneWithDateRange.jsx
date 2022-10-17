@@ -141,7 +141,7 @@ class StepOneWithDateRange extends React.Component {
             categoryList: [],//类别数据
             tagList: [],//标签数据
             categoryName: '',//统计类别
-            eventCode: '',//活动编码
+            eventCode: `YX${moment(new Date()).format('YYYYMMDDHHmmss')}`,//活动编码
             tagLst: [],//标签
             description: null,
             dateRange: Array(2),
@@ -320,36 +320,36 @@ class StepOneWithDateRange extends React.Component {
                 });
             }
         }
-        if (
-            nextProps.promotionBasicInfo.getIn(["$categoryList", "initialized"])
-        ) {
-            const categoryList = nextProps.promotionBasicInfo.getIn([
-                "$categoryList",
-                "data",
-            ])
-                ? nextProps.promotionBasicInfo
-                      .getIn(["$categoryList", "data"])
-                      .toJS()
-                      .map((item) => item.name)
-                : [];
-            this.setState({
-                categoryList,
-            });
-        }
-        if (nextProps.promotionBasicInfo.getIn(["$tagList", "initialized"])) {
-            const tagList = nextProps.promotionBasicInfo.getIn([
-                "$tagList",
-                "data",
-            ])
-                ? nextProps.promotionBasicInfo
-                      .getIn(["$tagList", "data"])
-                      .toJS()
-                      .map((item) => item.name)
-                : [];
-            this.setState({
-                tagList,
-            });
-        }
+        // if (
+        //     nextProps.promotionBasicInfo.getIn(["$categoryList", "initialized"])
+        // ) {
+        //     const categoryList = nextProps.promotionBasicInfo.getIn([
+        //         "$categoryList",
+        //         "data",
+        //     ])
+        //         ? nextProps.promotionBasicInfo
+        //               .getIn(["$categoryList", "data"])
+        //               .toJS()
+        //               .map((item) => item.name)
+        //         : [];
+        //     this.setState({
+        //         categoryList,
+        //     });
+        // }
+        // if (nextProps.promotionBasicInfo.getIn(["$tagList", "initialized"])) {
+        //     const tagList = nextProps.promotionBasicInfo.getIn([
+        //         "$tagList",
+        //         "data",
+        //     ])
+        //         ? nextProps.promotionBasicInfo
+        //               .getIn(["$tagList", "data"])
+        //               .toJS()
+        //               .map((item) => item.name)
+        //         : [];
+        //     this.setState({
+        //         tagList,
+        //     });
+        // }
         if (this.props.type == '31') {
             let isLoadingWeChatOccupiedInfo = this.state.isLoadingWeChatOccupiedInfo;
             let isAllWeChatIDOccupied = this.state.isAllWeChatIDOccupied;
@@ -1276,13 +1276,12 @@ class StepOneWithDateRange extends React.Component {
                         {getFieldDecorator('eventCode', {
                             rules: [{
                                 whitespace: true,
-                                required: true,
-                                message: "字母、数字组成，不多于20个字符",
-                                pattern: /^[A-Za-z0-9]{1,20}$/,
+                                message: "字母、数字组成，不多于50个字符",
+                                pattern: /^[A-Za-z0-9]{1,50}$/,
                             }],
                             initialValue: this.state.eventCode,
                         })(
-                            <Input disabled={!this.props.isNew} placeholder='请输入活动编码' onChange={(e) => this.setState({ eventCode: e.target.value })} />
+                            <Input placeholder='请输入活动编码' onChange={(e) => this.setState({ eventCode: e.target.value })} />
                         )}
                     </FormItem>
 

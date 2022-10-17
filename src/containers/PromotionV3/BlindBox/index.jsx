@@ -500,7 +500,6 @@ class BlindBox extends Component {
                         {current === 1 &&
                             <Step1
                                 form={form}
-                                isEdit={this.props.id ? true : false}
                                 getForm={this.onSetForm}
                                 formData={formData1}
                                 authLicenseData={this.state.authLicenseData}

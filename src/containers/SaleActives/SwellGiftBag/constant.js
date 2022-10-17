@@ -10,7 +10,7 @@ const {
     defaultCardType,
     eventCode,
 } = formItem;
-export const getFormItems1 = (isEdit) => ({
+export const formItems1 = {
     actType: {
         ...actType,
         render() {
@@ -18,13 +18,10 @@ export const getFormItems1 = (isEdit) => ({
         },
     },
     eventName: eventName50,
-    eventCode: {
-        ...eventCode,
-        disabled: isEdit
-    },
+    eventCode,
     eventLimitDate,
     eventRemark,
-});
+};
 
 export const formKeys1 = [
     'actType',

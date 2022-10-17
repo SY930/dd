@@ -71,7 +71,7 @@ class StepOne extends React.Component {
             description: null,
             dateRange: Array(2),
             name: '',
-            eventCode: '',
+            eventCode: `YX${moment(new Date()).format('YYYYMMDDHHmmss')}`,
             startTime: '', // 礼品发放时间
             smsGate: '0',
             timeString: '',
@@ -706,13 +706,12 @@ class StepOne extends React.Component {
                         {getFieldDecorator('eventCode', {
                             rules: [{
                                 whitespace: true,
-                                required: true,
-                                message: "字母、数字组成，不多于20个字符",
-                                pattern: /^[A-Za-z0-9]{1,20}$/,
+                                message: "字母、数字组成，不多于50个字符",
+                                pattern: /^[A-Za-z0-9]{1,50}$/,
                             }],
                             initialValue: this.state.eventCode,
                         })(
-                            <Input placeholder='请输入活动编码' disabled={!this.props.isNew} onChange={(e) => this.setState({ eventCode: e.target.value })} />
+                            <Input placeholder='请输入活动编码' onChange={(e) => this.setState({ eventCode: e.target.value })} />
                         )}
                     </FormItem>
                     <FormItem

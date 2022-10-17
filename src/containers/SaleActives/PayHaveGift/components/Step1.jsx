@@ -1,7 +1,8 @@
 import React from 'react'
+import moment from 'moment';
 import  BaseForm  from '../../../../components/common/BaseForm';
 import { Input } from 'antd'
-import {getFormItems1,formKeys1} from '../constant'
+import {formItems1,formKeys1} from '../constant'
 import styles from '../payHaveGift.less'
 import {connect} from 'react-redux';
 import { renderEventRemark } from '../../helper/common'
@@ -46,9 +47,12 @@ class Step1 extends React.Component {
         return flag
     }
     render () {
-        const { formData,isView,isEdit } = this.props.createActiveCom
-        const formItems1 = getFormItems1(isEdit)
         formItems1.eventRemark.render = renderEventRemark.bind(this)
+        let { formData,isView,isEdit } = this.props.createActiveCom
+        formData = {
+            ...formData,
+            eventCode: formData.eventCode || `YX${moment(new Date()).format('YYYYMMDDHHmmss')}`
+        }
         return (
             <div className={styles.step1Wrap}>
                 {isView&&!isEdit&&<div className={styles.disabledDiv}></div>}

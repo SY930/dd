@@ -21,7 +21,7 @@ const sendOpts = [
     { label: '推送微信消息', value: '2' },
 ];
 
-const getFormItems1 = (isEdit) => ({
+const formItems1 = {
     eventType: {
         type: 'custom',
         label: '活动类型',
@@ -37,10 +37,8 @@ const getFormItems1 = (isEdit) => ({
         type: 'text',
         label: '活动编码',
         rules: [
-            { required: true, message: '活动编码不能为空' },
-            { message: "字母、数字组成，不多于20个字符",  pattern: /^[A-Za-z0-9]{1,20}$/ },
+            { message: "字母、数字组成，不多于50个字符",  pattern: /^[A-Za-z0-9]{1,50}$/ },
         ],
-        disabled: isEdit
     },
     eventRange: {
         type: 'custom',
@@ -61,7 +59,7 @@ const getFormItems1 = (isEdit) => ({
         label: '活动规则',
         rules: ['required', 'description'],
     },
-});
+};
 
 const formKeys1 = ['eventType', 'eventName', 'eventCode', 'smsGate', 'eventRange', 'eventRemark'];
 
@@ -192,7 +190,7 @@ const formKeys32 = ['needShow', 'eventImagePath', 'lottery', 'shareInfo'];
 
 
 export {
-    getFormItems1, imgURI, formKeys1, href, formItemLayout,
+    formItems1, imgURI, formKeys1, href, formItemLayout,
     TF, DF,
     formKeys21, formKeys22, formItems2, formKeys31, formKeys32, formItems3, keys1, keys2,
 }
