@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Input, Select, Row, Col, Modal, Icon, message, Radio, TreeSelect } from 'antd'
+import _ from 'lodash';
 import { jumpPage } from '@hualala/platform-base';
 import ImageUpload from 'components/common/ImageUpload';
 import { getAlipayRecruitPlan, getBatchDetail, uploadImageUrl,
@@ -200,16 +201,25 @@ class PromotionModalContent extends Component {
                             deliveryInfoData.description = values.description;
                         } else if (type === 'MINI_APP') {
                             deliveryInfoData.miniAppId = values.appID;
-                            deliveryInfoData.subjectId = values.appID;
+                            // deliveryInfoData.subjectId = values.appID;
                         } else if (type === 'CITY') {
                             deliveryInfoData.cities = values.cities;
                         } else if (type === 'VOUCHER') {
                             const findCoupon = couponList.find(cur => cur.itemID === values.itemID) || {}
                             deliveryInfoData.activityId = findCoupon.trdBatchID; // 选择第三方支付宝券id
                             deliveryInfoData.subjectId = findCoupon.trdBatchID;
-                        } 
+                        }
                     }
                 })
+                if (_.isEmpty(deliveryInfoData.data.activityImage)) {
+                    delete deliveryInfoData.data.activityImage
+                }
+                if (_.isEmpty(deliveryInfoData.activityUrl)) {
+                    delete deliveryInfoData.activityUrl
+                }
+                if (_.isEmpty(deliveryInfoData.data)) {
+                    delete deliveryInfoData.data
+                }
                 deliveryInfoData.data = JSON.stringify(deliveryInfoData.data)
                 // JSON.stringify(materials.activityImage);
                 if (couponDetail.merchantType == 2 && !this.state.bindUserId) {
@@ -420,7 +430,6 @@ class PromotionModalContent extends Component {
     render() {
         // const { marketingType } = this.state;
         const { form, promotionList = [] } = this.props;
-        console.log("🚀 ~ file: PromotionModalContent.jsx ~ line 423 ~ PromotionModalContent ~ render ~ promotionList", promotionList)
         const { getFieldDecorator } = form;
         const { confirmLoading } = this.state;
         return (

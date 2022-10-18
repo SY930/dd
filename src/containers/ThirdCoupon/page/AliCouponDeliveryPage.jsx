@@ -148,6 +148,7 @@ export default class ThirdCoupon extends Component {
         this.setState({
             promotionModalVisible: true,
         })
+        this.getPromotionData()
         return null;
     }
 
