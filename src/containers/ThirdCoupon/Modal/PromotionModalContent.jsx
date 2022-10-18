@@ -29,6 +29,7 @@ class PromotionModalContent extends Component {
             couponList: [],
             bindUserId: '',
             treeData: [],
+            activeNames: { }, // 活动名称组
         }
     }
 
@@ -178,10 +179,22 @@ class PromotionModalContent extends Component {
         })
     }
 
+    handleActiveNameChange = ({ target }, item) => {
+        const { activeNames } = this.state
+        // activeNames
+        activeNames[item.field] = [];
+        activeNames[item.field].push({
+            mediaType: 'TEXT',
+            text: target.value,
+        })
+        this.setState({
+            activeNames,
+        })
+    }
+
     handleSubmit = () => {
         const { form } = this.props;
-        const { resourceIds = [], couponDetail, enrollRules, couponList } = this.state;
-        // console.log("🚀 ~ file: PromotionModalContent.jsx ~ line 171 ~ PromotionModalContent ~ resourceIds", resourceIds)
+        const { resourceIds = [], couponDetail, enrollRules, couponList, activeNames } = this.state;
         this.setState({
             confirmLoading: true,
         })
@@ -190,11 +203,11 @@ class PromotionModalContent extends Component {
                 // https://opendocs.alipay.com/pre-open/02bhl8
                 const deliveryInfoData = { // 报名素材对象，传给后端的数据格式
                     data: {
-                        // activityImage: [],  
+                        // activityImage: [],
                     },
                     activityUrl: [],
                 };
-                const materials = deliveryInfoData.data;
+                let materials = deliveryInfoData.data;
                 resourceIds.map((cur) => {
                     materials[cur.field] = [];
                 })
@@ -207,6 +220,9 @@ class PromotionModalContent extends Component {
                         mediaType: 'IMAGE',
                     });
                 })
+                if (!_.isEmpty(activeNames)) {
+                    materials = { ...materials, ...activeNames }
+                }
                 // console.log(_.sortBy(enrollRules, ['type']), '_.sortBy(enrollRule')
                 _.sortBy(enrollRules, ['type']).map((item) => {
                     const { type, required } = item;
@@ -425,6 +441,25 @@ class PromotionModalContent extends Component {
                                             {item.tips}
                                         </p>
                                     </FormItem>
+                                )
+                            }
+                            if (item.type === 'TEXT') {
+                                return (
+                                    <FormItem
+                                    label="活动名称"
+                                    labelCol={{ span: 5 }}
+                                    wrapperCol={{ span: 18 }}
+                                >
+                                    {getFieldDecorator(`activeName_${index}`, {
+                                        rules: [
+                                            { required: true, message: '请输入活动名称' },
+                                            { max: 10, message: '活动名称不能超过10个字' },
+                                        ],
+                                        onChange: (value) => { this.handleActiveNameChange(value, item) },
+                                    })(<Input
+                                        placeholder="请输入活动名称"
+                                    />)}
+                                </FormItem>
                                 )
                             }
                         })
