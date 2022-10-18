@@ -58,8 +58,6 @@ class PromotionModalContent extends Component {
                         const { schema } = ruleData;
                         if (schema) {
                             try {
-                                // materialData[0] = JSON.parse(schema)[0];
-                                // materialData[1] = JSON.parse(schema)[0];
                                 materialData = JSON.parse(schema);
                                 materialData = materialData.map((itm, index) => {
                                     return {
@@ -158,6 +156,7 @@ class PromotionModalContent extends Component {
                 resourceIds[index] = {
                     [index]: res,
                     path,
+                    field: item.field,
                 };
                 this.setState({
                     resourceIds,
@@ -177,20 +176,22 @@ class PromotionModalContent extends Component {
             if (!err) {
                 const deliveryInfoData = { // 报名素材对象，传给后端的数据格式
                     data: {
-                        activityImage: [],
+                        // activityImage: [],  
                     },
                     activityUrl: [],
                 };
                 const materials = deliveryInfoData.data;
+                resourceIds.map((cur) => {
+                    materials[cur.field] = [];
+                })
                 resourceIds.map((item, index) => {
-                    // deliveryInfoData[`url${index}`] = item.path;
                     deliveryInfoData.activityUrl[index] = {
                         url: item.path,
                     };
-                    materials.activityImage[index] = {
+                    materials[item.field].push({
                         aftsFileId: item[index],
                         mediaType: 'IMAGE',
-                    };
+                    });
                 })
                 // console.log(_.sortBy(enrollRules, ['type']), '_.sortBy(enrollRule')
                 _.sortBy(enrollRules, ['type']).map((item) => {
@@ -211,9 +212,6 @@ class PromotionModalContent extends Component {
                         }
                     }
                 })
-                if (_.isEmpty(deliveryInfoData.data.activityImage)) {
-                    delete deliveryInfoData.data.activityImage
-                }
                 if (_.isEmpty(deliveryInfoData.activityUrl)) {
                     delete deliveryInfoData.activityUrl
                 }
@@ -383,35 +381,37 @@ class PromotionModalContent extends Component {
                     {/*  */}
                     {
                         (this.state.materialData || []).map((item, index) => {
-                            return (
-                                <FormItem
-                                    label={item.label}
-                                    labelCol={{ span: 5 }}
-                                    wrapperCol={{ span: 18 }}
-                                    required={item.required}
-                                    className={styles.imageUploadItem}
-                                    key={item.id}
-                                >
-                                    {getFieldDecorator(`eventImagePath_${item.id}`, {
-                                        onChange: (value) => { this.handleImageChange(value, item, index) },
-                                        rules: [
-                                            { required: item.required, message: '必须有图片' },
-                                        ],
-                                    })(
-                                        <ImageUpload
-                                            className={styles.uploadCom}
-                                            limitType={'.jpeg,.jpg,.png,.JPEG,.JPG,.PNG'}
-                                            limitSize={2 * 1024 * 1024}
-                                            getFileName={true}
-                                            tips={'上传图片'}
-                                            key={`eventImagePath_${item.id}`}
-                                        />
-                                    )}
-                                    <p className={styles.textWrap}>
-                                        {item.tips}
-                                    </p>
-                                </FormItem>
-                            )
+                            if (item.type === 'IMAGE') {
+                                return (
+                                    <FormItem
+                                        label={item.label}
+                                        labelCol={{ span: 5 }}
+                                        wrapperCol={{ span: 18 }}
+                                        required={item.required}
+                                        className={styles.imageUploadItem}
+                                        key={item.id}
+                                    >
+                                        {getFieldDecorator(`eventImagePath_${item.id}`, {
+                                            onChange: (value) => { this.handleImageChange(value, item, index) },
+                                            rules: [
+                                                { required: item.required, message: '必须有图片' },
+                                            ],
+                                        })(
+                                            <ImageUpload
+                                                className={styles.uploadCom}
+                                                limitType={'.jpeg,.jpg,.png,.JPEG,.JPG,.PNG'}
+                                                limitSize={2 * 1024 * 1024}
+                                                getFileName={true}
+                                                tips={'上传图片'}
+                                                key={`eventImagePath_${item.id}`}
+                                            />
+                                        )}
+                                        <p className={styles.textWrap}>
+                                            {item.tips}
+                                        </p>
+                                    </FormItem>
+                                )
+                            }
                         })
                     }
                     {
