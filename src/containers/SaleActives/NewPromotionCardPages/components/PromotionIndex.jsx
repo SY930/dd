@@ -1,5 +1,5 @@
 import { closePage, decodeUrl, jumpPage } from '@hualala/platform-base';
-import { Col } from 'antd';
+import { Col, message } from 'antd';
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import HeaderTitle from '../components/HeaderTitle';
@@ -159,7 +159,6 @@ class PromotionIndex extends Component {
         Object.keys(tempObj).sort((a, b) => a - b).forEach((key, index) => {
             conditionConfig[index] = tempObj[key]
         })
-
         if (isValid) {
             try {
                 let requestPramas = {}
@@ -283,9 +282,18 @@ class PromotionIndex extends Component {
                     eventMutexDependRuleInfos = []
                 }
                 let foodScopeList = [];
+                const stageTypes = eventGiftConditionList.map(item => +item.stageType);
+                if (stageTypes.includes(3) || stageTypes.includes(4)) {
+                    if (!activityRange) {
+                        return message.warning('适用菜品分类不能为空')
+                    }
+                }
                 if (activityRange) {
                     const { categoryOrDish, dishes, excludeDishes, foodCategory } = activityRange;
                     if (categoryOrDish == 0) {
+                        if (Array.isArray(foodCategory) && foodCategory.length == 0) {
+                            return message.warning('适用菜品分类不能为空')
+                        }
                         foodCategory.forEach(item => {
                             foodScopeList.push({
                                 scopeType: '1',
@@ -306,6 +314,9 @@ class PromotionIndex extends Component {
                             });
                         })
                     } else if (categoryOrDish == 1) {
+                        if (Array.isArray(dishes) && dishes.length == 0) {
+                            return message.warning('适用菜品不能为空')
+                        }
                         dishes.forEach(item => {
                             foodScopeList.push({
                                 scopeType: '2',
