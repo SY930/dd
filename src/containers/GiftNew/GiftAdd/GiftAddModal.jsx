@@ -363,6 +363,9 @@ class GiftAddModal extends React.Component {
                 reminderTime: formData.reminderTime || 3
             };
         }
+        if (formData.toStatusAfterUseEndDelayTime){
+            formData.toStatusAfterUseEndDelayTime = String(formData.toStatusAfterUseEndDelayTime)
+        }
         let formItems = {
             giftType: {
                 label: '礼品类型',
@@ -619,7 +622,7 @@ class GiftAddModal extends React.Component {
                                 {
                                     decorator({
                                         key: 'toStatusAfterUseEndDelayTime',
-                                        // defaultValue: '1',
+                                        initialValue: formData.toStatusAfterUseEndDelayTime ? formData.toStatusAfterUseEndDelayTime : '1',
                                     })(
                                         <Select style={{width:45}}>
                                             <Option value="1">1</Option>
