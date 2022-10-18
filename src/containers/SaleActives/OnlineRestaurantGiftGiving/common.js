@@ -27,7 +27,7 @@ export const baseFormItems = {
     },
     eventCode: {
         type: "text",
-        label: "活动编码",
+        label: <span>活动编码 <Tooltip title='活动编码填写后不可修改'><Icon type="question-circle" style={{ marginLeft: 5 }} /></Tooltip></span>,
         rules: [
             {
                 message: "字母、数字组成，不多于50个字符",

@@ -9,7 +9,7 @@
  */
 
 import React from 'react'
-import { Input, Form, Select, Icon, Button, Radio, DatePicker, Row, Col } from 'antd';
+import { Input, Form, Select, Icon, Button, Radio, DatePicker, Row, Col, Tooltip } from 'antd';
 import { connect } from 'react-redux'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
@@ -483,7 +483,7 @@ class PromotionBasicInfo extends React.Component {
                 </FormItem>
 
                  <FormItem
-                    label="活动编码"
+                    label={<span>活动编码 <Tooltip title='活动编码填写后不可修改'><Icon type="question-circle" style={{ marginLeft: 5 }} /></Tooltip></span>}
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
