@@ -108,6 +108,19 @@ class PromotionModalContent extends Component {
         return trdBatchID
     }
 
+    getRules = (rule) => {
+        if (rule.image_size && !_.isEmpty(rule.image_size) && _.isArray(rule.image_size)) {
+            return <p>仅支持尺寸为{rule.image_size[0]}*{rule.image_size[1]}的图片, 且大小不超过{rule.file_size}kb,且格式为{this.getLimitType(rule)}</p>
+        }
+    }
+
+    getLimitType = (rule) => {
+        if (rule.file_type && !_.isEmpty(rule.file_type) && _.isArray(rule.file_type)) {
+            return rule.file_type.join(',')
+        }
+        return '.jpeg,.jpg,.png,.JPEG,.JPG,.PNG'
+    }
+
     handlePromotionChange = (value) => {
         // 选择城市
         queryCityCodeQueryAC().then((data) => {
@@ -174,6 +187,7 @@ class PromotionModalContent extends Component {
         })
         form.validateFields((err, values) => {
             if (!err) {
+                // https://opendocs.alipay.com/pre-open/02bhl8
                 const deliveryInfoData = { // 报名素材对象，传给后端的数据格式
                     data: {
                         // activityImage: [],  
@@ -399,7 +413,7 @@ class PromotionModalContent extends Component {
                                         })(
                                             <ImageUpload
                                                 className={styles.uploadCom}
-                                                limitType={'.jpeg,.jpg,.png,.JPEG,.JPG,.PNG'}
+                                                limitType={item.rules ? this.getLimitType(item.rules) : '.jpeg,.jpg,.png,.JPEG,.JPG,.PNG'}
                                                 limitSize={2 * 1024 * 1024}
                                                 getFileName={true}
                                                 tips={'上传图片'}
@@ -407,6 +421,7 @@ class PromotionModalContent extends Component {
                                             />
                                         )}
                                         <p className={styles.textWrap}>
+                                        {this.getRules(item.rules)}
                                             {item.tips}
                                         </p>
                                     </FormItem>
