@@ -531,12 +531,13 @@ export const ALL_FORM_ITEMS = {
                 {d({
                     rules: [{
                         required: true,
-                        message: '券包库存不能为空',
+                        message: '大于0，限制999999个',
                         validator: (rule, value, callback) => {
                             if (!/^\d+$/.test(value)) {
                                 return callback('请输入数字');
                             }
                             if (+value < 1 || +value > 999999) {
+                                console.log(+value < 1 || +value > 999999)
                                 return callback('大于0，限制999999个');
                             }
                             return callback();
