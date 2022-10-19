@@ -151,7 +151,7 @@ class FilterSelector extends React.Component {
             title, className, options, filters: oriFilters, tableColumns,
         } = this.props;
         let { filterKey, filters, selected, filteredOptions } = this.state;
-        filteredOptions = filteredOptions.filter(item => item.status == 1)
+        // filteredOptions = filteredOptions.filter(item => item.status == 1)
 
         const resultDisplay = tableColumns.length ? 'table' : 'stripped';
         const curFilter = oriFilters.find(filter => filter.key === filterKey) || {};
