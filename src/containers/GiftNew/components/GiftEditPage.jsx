@@ -14,8 +14,6 @@ import {cancelCreateOrEditGift} from "../_action";
 import PhonePreview from "./PhonePreview";
 import FormWrapper from "./FormWrapper";
 import GiftCfg from "../../../constants/Gift";
-import { Iconlist } from 'components/basic/IconsFont/IconsFont';
-
 class GiftEditPage extends Component {
 
     constructor(props) {
@@ -35,12 +33,12 @@ class GiftEditPage extends Component {
     componentDidMount() {
         this.onWindowResize();
         window.addEventListener('resize', this.onWindowResize);
-        this.setState({tabKey: this.props.tabkey})
+        this.setState({tabKey: this.props.tabkey});
     }
     onWindowResize() {
         let contentHeight;
         try {
-            contentHeight = this.container.getBoundingClientRect().height - 79;
+            contentHeight = document.body.clientHeight - 125;
         } catch (e) {
             contentHeight = 782;
         }
@@ -57,7 +55,6 @@ class GiftEditPage extends Component {
     saving() {
         this.formRef && this.formRef.wrappedInstance && this.formRef.wrappedInstance.handleSubmit
         && this.formRef.wrappedInstance.handleSubmit();
-        this.props.toggleTabs('1');
     }
 
     render() {
@@ -93,11 +90,13 @@ class GiftEditPage extends Component {
                             marginRight: '10px'
                         }}
                         onClick={()=>{
-                            this.props.cancelCreateOrEdit();
+                            this.props.cancelCreateOrEdit({
+                                saveDone: false
+                            });
                             this.props.toggleTabs();
                         }}
                     >
-                        {COMMON_LABEL.cancel}
+                        {COMMON_LABEL.cancel} 
                     </Button>
                     <Button
                         type="primary"

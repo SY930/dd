@@ -89,9 +89,9 @@ class GiftDetailTable extends Component {
                 const canNotSortDown = (this.state.queryParams.pageNo - 1) * this.state.queryParams.pageSize + index + 1 == this.state.total;
                 return (
                     <span>
-                        <span ><Iconlist title={'置顶'} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.changeSortOrder(record, 'top')}/></span>
-                        <span ><Iconlist title={'上移'} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.changeSortOrder(record, 'up')}/></span>
-                        <span className={styles2.upsideDown}><Iconlist title={'下移'} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.changeSortOrder(record, 'down')}/></span>
+                        <span ><Iconlist title={'置顶'} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.changeSortOrder(record, 'top')} /></span>
+                        <span ><Iconlist title={'上移'} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.changeSortOrder(record, 'up')} /></span>
+                        <span className={styles2.upsideDown}><Iconlist title={'下移'} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.changeSortOrder(record, 'down')} /></span>
                         {/* <span className={styles2.upsideDown}><Iconlist title={'置底'} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'bottom')}/></span> */}
                     </span>
                 )
@@ -278,8 +278,8 @@ class GiftDetailTable extends Component {
     }
 
     changeSortOrder = (record, direction) => {
-        const params = {giftItemID: record.giftItemID, direction};
-        axiosData('/coupon/couponService_updateRanking.ajax', params, {needThrow: true}, {path: undefined}, 'HTTP_SERVICE_URL_PROMOTION_NEW').then(() => {
+        const params = { giftItemID: record.giftItemID, direction };
+        axiosData('/coupon/couponService_updateRanking.ajax', params, { needThrow: true }, { path: undefined }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then(() => {
             const { queryParams } = this.state;
             const { FetchGiftList } = this.props;
             FetchGiftList(queryParams).then((data = []) => {
@@ -373,7 +373,7 @@ class GiftDetailTable extends Component {
             operationType,
             value: gift.data.giftType,
             data: gift.data
-        })
+        });
     }
 
     handleDelete(rec) {
@@ -782,22 +782,22 @@ class GiftDetailTable extends Component {
                             </div>
                         </div> */}
                         {
-                            tabkey == '1' ? 
-                            <GiftList
-                                pageType={1} 
-                                groupID={groupID} 
-                                onGoEdit={this.props.togglePage} 
-                                treeData={this.state.treeData} 
-                                formItems={formItems}
-                                formKeys={formKeys}
-                                columns={this.getTableColumns().map(c => (c.render ? ({
-                                    ...c,
-                                    render: c.render.bind(this),
-                                }) : c))}
-                                dataSource={this.state.dataSource}
-                                total={this.state.total}
-                            /> 
-                            : null
+                            tabkey == '1' ?
+                                <GiftList
+                                    pageType={1}
+                                    groupID={groupID}
+                                    onGoEdit={this.props.togglePage}
+                                    treeData={this.state.treeData}
+                                    formItems={formItems}
+                                    formKeys={formKeys}
+                                    columns={this.getTableColumns().map(c => (c.render ? ({
+                                        ...c,
+                                        render: c.render.bind(this),
+                                    }) : c))}
+                                    dataSource={this.state.dataSource}
+                                    total={this.state.total}
+                                />
+                                : null
                         }
                     </TabPane>
                     <TabPane tab="券包查询" key="2">
