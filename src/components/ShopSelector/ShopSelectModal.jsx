@@ -225,7 +225,17 @@ class ShopSelectModal extends Component {
 
     render() {
         const { defaultValue, extendShopList } = this.props;
-        const { loading, filters } = this.state;
+        let { loading, filters } = this.state;
+        filters = filters.map((item) => {
+            return {
+                ...item,
+                options:
+                    item.options &&
+                    item.options.sort((a, b) => {
+                        return a.label.localeCompare(b.label);
+                    }),
+            };
+        });
         const options = this.props.options || this.state.options || [];
      
         return (
