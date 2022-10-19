@@ -1,5 +1,6 @@
 
 import React, { PureComponent as Component } from 'react';
+import moment from 'moment';
 import { connect } from 'react-redux'
 import BaseForm from 'components/common/BaseForm';
 import { Checkbox, Radio } from 'antd';
@@ -98,7 +99,11 @@ class Step1 extends Component {
         };
     }
     render() {
-        const { formData, getForm } = this.props;
+        let { formData, getForm, isView } = this.props;
+        formData = {
+            ...formData,
+            eventCode: isView ? formData.eventCode : formData.eventCode ? formData.eventCode : `YX${moment(new Date()).format('YYYYMMDDHHmmss')}`
+        }
         const newFormItems = this.resetFormItems();
         const formKeys = this.resetFormKeys()
         return (

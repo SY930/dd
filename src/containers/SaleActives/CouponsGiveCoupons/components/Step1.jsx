@@ -67,7 +67,11 @@ class Step1 extends React.Component {
         formItems1.smsGate.render = sendSmsGateRender.bind(this);
         const render = d => d()(<ShopSelector eventWay='81' filterParm={isFilterShopType() ? { productCode: 'HLL_CRM_License' } : {}} brandList={[]} />);
         formItems1.shopIDList = { ...formItems1.shopIDList, render };
-        const { formData,isView,isEdit  } = this.props.createActiveCom;
+        let { formData,isView,isEdit  } = this.props.createActiveCom;
+        formData = {
+            ...formData,
+            eventCode: isView ? formData.eventCode : formData.eventCode ? formData.eventCode : `YX${moment(new Date()).format('YYYYMMDDHHmmss')}`
+        }
         let shopIdList = [];
         if(formData.shopIDList && formData.shopIDList.length > 0){
             shopIdList = formData.shopIDList.map((item,index)=>{

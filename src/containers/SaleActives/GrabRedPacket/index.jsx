@@ -181,6 +181,7 @@ class GrabRedPacket extends React.Component {
                 const { formData, type, isEdit } = this.props.createActiveCom
                 const {
                     eventName,
+                    eventCode,
                     eventRemark,
                     eventEndDate,
                     eventStartDate,
@@ -266,6 +267,7 @@ class GrabRedPacket extends React.Component {
                         event: {
                             eventWay: type,
                             eventName,
+                            eventCode,
                             eventRemark,
                             eventEndDate,
                             eventStartDate,

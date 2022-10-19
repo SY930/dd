@@ -38,6 +38,7 @@ class RecommendGiftsWrapper extends NewPromotion {
                 content: (
                     <StepOneWithDateRange
                         type={`${this.props.specialPromotion.$eventInfo.eventWay || 70}`}
+                        isNew={this.props.isNew}
                         getSubmitFn={(handles) => {
                             this.handles[0] = handles;
                         }}

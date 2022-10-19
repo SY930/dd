@@ -501,6 +501,7 @@ class BlindBox extends Component {
                             <Step1
                                 form={form}
                                 getForm={this.onSetForm}
+                                isView={this.props.view}
                                 formData={formData1}
                                 authLicenseData={this.state.authLicenseData}
                             />

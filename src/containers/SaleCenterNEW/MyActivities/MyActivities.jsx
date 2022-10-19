@@ -223,21 +223,7 @@ class MyActivities extends React.Component {
         this.handleUpdateOpe = this.handleUpdateOpe.bind(this);
     }
     componentDidMount() {
-        const { promotionBasicInfo, fetchPromotionCategories, fetchPromotionTags, promotionScopeInfo, fetchPromotionScopeInfo, fetchPromotionList, queryPromotionList, queryPromotionAutoRunList } = this.props;
-        // this.handleQuery();
-        fetchPromotionCategories({
-            groupID: this.props.user.accountInfo.groupID,
-            phraseType: "0"
-        });
-
-        fetchPromotionTags({
-            groupID: this.props.user.accountInfo.groupID,
-            phraseType: "1"
-        });
-
-        fetchPromotionScopeInfo({
-            _groupID: this.props.user.accountInfo.groupID
-        });
+        const { queryPromotionAutoRunList } = this.props;
         // 授权
         this.props.getAuthLicenseData({ productCode: "HLL_CRM_Marketingbox" }).then(res => {
             this.setState({ authLicenseData: res });

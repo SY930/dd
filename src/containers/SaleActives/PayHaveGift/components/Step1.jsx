@@ -1,4 +1,5 @@
 import React from 'react'
+import moment from 'moment';
 import  BaseForm  from '../../../../components/common/BaseForm';
 import { Input } from 'antd'
 import {formItems1,formKeys1} from '../constant'
@@ -47,7 +48,11 @@ class Step1 extends React.Component {
     }
     render () {
         formItems1.eventRemark.render = renderEventRemark.bind(this)
-        const { formData,isView,isEdit } = this.props.createActiveCom
+        let { formData,isView,isEdit } = this.props.createActiveCom
+        formData = {
+            ...formData,
+            eventCode: isView ? formData.eventCode : formData.eventCode ? formData.eventCode : `YX${moment(new Date()).format('YYYYMMDDHHmmss')}`
+        }
         return (
             <div className={styles.step1Wrap}>
                 {isView&&!isEdit&&<div className={styles.disabledDiv}></div>}
