@@ -240,8 +240,12 @@ class SendGiftPanel extends Component {
     }
 
     handleCellNoChange(val) {
+        let strVal = String(val.number);
+        if(strVal.length > 12){
+            strVal = strVal.slice(0, 12)
+        }
         this.setState({
-            cellNo: val.number,
+            cellNo: +strVal
         })
     }
     handleRemarkChange = (e) => {
@@ -277,6 +281,18 @@ class SendGiftPanel extends Component {
                 >
                     {getFieldDecorator('cellNo', {
                         onChange: this.handleCellNoChange,
+                        normalize: val => {
+                            if(val && val.number){
+                                let strVal = String(val.number);
+                                if(strVal.length > 12){
+                                    strVal = strVal.slice(0, 12)
+                                }
+                                return {
+                                    number: +strVal
+                                }
+                            }
+                            return val
+                        },
                         rules: [
                             {
                                 validator: (rule, v, cb) => {
