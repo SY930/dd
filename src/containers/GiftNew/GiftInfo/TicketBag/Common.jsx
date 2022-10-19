@@ -64,6 +64,7 @@ const wayOpts = [
     { value: '13', label: '储值套餐赠送' },
     { value: '14', label: '定额卡充值赠送' },
     { value: '18', label: '下单抽抽乐' },
+    { value: '166', label: '消费送礼活动' },
 ];
 const stockOpts = [
     { value: '1', label: '不限制' },

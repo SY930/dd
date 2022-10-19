@@ -112,7 +112,6 @@ class PromotionIndex extends Component {
                 resultValues.push(values);
             });
         }
-
         const conditionFormsKeys = Object.keys(newConditionForms);
         let tempObj = {};
         for (let i = 0; i < conditionFormsKeys.length; i++) {
@@ -184,7 +183,7 @@ class PromotionIndex extends Component {
                         })
                     }
                     if (item.gift && item.gift.length > 0) {
-                        item.gift.map(item => {
+                        item.gift.map((item) => {
                             if (item.giftID) {
                                 item.presentType = 1;
                                 let effectType = '';
@@ -212,6 +211,16 @@ class PromotionIndex extends Component {
                         })
                     }
                     if (item.normal) {
+                        // 券包
+                        if (item.normal.couponName) {
+                            const { couponPackageName, couponPackageID } = item.normal.couponName
+                            gifts.push({
+                                giftID: couponPackageID,
+                                giftName: couponPackageName,
+                                presentType: 4,
+                                totalValue: item.normal.totalValue, // 券包库存
+                            })
+                        }
                         if (item.normal.presentType) {
                             delete item.normal.presentType
                         }
@@ -223,7 +232,7 @@ class PromotionIndex extends Component {
                     eventGiftConditionList[index].sortIndex = index + 1;
                 })
                 let event = {}
-                resultValues.forEach(item => {
+                resultValues.forEach((item) => {
                     if (item.NoShareBenifit) {
                         eventMutexDependRuleInfos = item.NoShareBenifit;
                     }
@@ -268,7 +277,7 @@ class PromotionIndex extends Component {
                             }
                         ]
                     } else if (mutexDependType == 2) {
-                        eventMutexDependRuleInfos = eventMutexDependRuleInfos.map(item => {
+                        eventMutexDependRuleInfos = eventMutexDependRuleInfos.map((item) => {
                             return {
                                 mutexDependType: 1,
                                 ruleType: 10,

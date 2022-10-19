@@ -1,12 +1,14 @@
-import { Checkbox, Row, Col, Form, Icon, Input, Select } from 'antd';
+import { Checkbox, Row, Col, Form, Icon, Input, Select, Radio, Button } from 'antd';
 import _ from "lodash";
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import BaseForm from '../../../../components/common/BaseForm';
+import AddModal from '../../../../containers/BasicModules/TicketBag/AddModal';
 import { ALL_FORM_ITEMS, stageTypeOptions, stageAmountTypeOptions } from '../common/_formItemConfig';
 import styles from './addGifts.less';
 import AddGifts from './AddGifts';
 import { getCardList } from "./AxiosFactory";
+import { getAccountInfo } from '../../../../helpers/util'
 
 const CheckboxGroup = Checkbox.Group;
 const FormItem = Form.Item;
@@ -28,6 +30,7 @@ class ActivityConditions extends Component {
                     id: uuid++,
                     presentType: [],
                     stageType: 1,
+                    giftPresentType: [],
                     giftList: [
                         {
                             id: giftUuid--,
@@ -41,7 +44,9 @@ class ActivityConditions extends Component {
             scoreformDatas: {},
             cardNumformDatas: {},
             isShowConditionBtn: true,
-            conditionForms: {}
+            conditionForms: {},
+            formKeys: ['stageType', 'presentType', 'giftPresentType', 'couponName', 'totalValue'],
+            flag: false,
         }
         this.conditionForms = {};
         this.giftFormRef = ''
@@ -61,14 +66,28 @@ class ActivityConditions extends Component {
             let formDatas = {};
             let scoreformDatas = {};
             let cardNumformDatas = {};
-
-            nextProps.eventGiftConditionList.forEach(item => {
+            // console.log(nextProps.eventGiftConditionList, 'nextProps.eventGiftConditionList')
+            nextProps.eventGiftConditionList.forEach((item) => {
                 let { gifts = [] } = item;
                 let id = uuid++;
-                let presentType = [...new Set(gifts.map(item => item.presentType))];
+                const presentType = [...new Set(_.cloneDeep(gifts).map((item) => {
+                    if (item.presentType == 4) { // 4为券包是优惠券的一种，所以映射为1
+                        item.presentType = 1;
+                    }
+                    return item.presentType
+                }))];
+                let giftPresentType = ''
+                let couponInfo = {};
+                const couponType = [...new Set(gifts.filter(itm => itm.presentType == 1 || itm.presentType == 4))]
+                if (couponType.length) {
+                    giftPresentType = couponType[0].presentType;
+                    couponInfo = (couponType || []).find(cur => cur.presentType == 4);
+                }
+
                 conditionList.push({
                     id,
                     presentType,
+                    giftPresentType,
                     giftList: gifts.map(gift => {
                         return {
                             ...gift,
@@ -77,15 +96,22 @@ class ActivityConditions extends Component {
                     }).filter(item => item.presentType == 1)
                 })
                 const { stageAmount, stageAmountType, stageType } = item;
+
                 formDatas[id] = {
                     stageAmount,
                     stageAmountType,
                     stageType,
-                    presentType
+                    presentType,
+                    giftPresentType,
+                    couponName: {
+                        couponPackageID: couponInfo ? couponInfo.giftID : '',
+                        couponPackageName: couponInfo ? couponInfo.giftName : '',
+                    },
+                    totalValue: couponInfo ? couponInfo.totalValue : '',
                 };
                 // 积分/卡值
                 let scoreList = gifts.filter(gift => gift.presentType == 2);
-                scoreList = scoreList.map(item => {
+                scoreList = scoreList.map((item) => {
                     if (item.giveAmountType == 1) {
                         item.presentValue = parseInt(item.presentValue * 100)
                     }
@@ -93,7 +119,7 @@ class ActivityConditions extends Component {
                 })
                 scoreformDatas[id + 'score'] = scoreList && scoreList[0];
                 let cardNumList = gifts.filter(gift => gift.presentType == 5);
-                cardNumList = cardNumList.map(item => {
+                cardNumList = cardNumList.map((item) => {
                     if (item.giveAmountType == 1) {
                         item.presentValue = parseInt(item.presentValue * 100)
                     }
@@ -101,7 +127,7 @@ class ActivityConditions extends Component {
                 })
                 cardNumformDatas[id + 'cardNum'] = cardNumList && cardNumList[0];
             });
-
+            // console.log(formDatas, 'formDatas')
             this.setState({
                 conditionList,
                 formDatas,
@@ -159,7 +185,32 @@ class ActivityConditions extends Component {
         })
     }
 
-    resetFormItems = (data) => {
+    onSelectBag = (item, id) => {
+        const { couponForm } = this.state;
+        const form = this.conditionForms[id];
+        couponForm.setFieldsValue({ couponName: item })
+        this.onToggleModal();
+    }
+
+    onToggleModal = () => {
+        this.setState(ps => ({ couponVisible: !ps.couponVisible }));
+    }
+
+    showAddModal = (e, form) => {
+        this.setState({ couponVisible: true, couponForm: form })
+    }
+
+    onChangeGiftPresentType = ({ target }, id) => {
+        const { value } = target;
+        const form = this.conditionForms[id]
+        form.setFieldsValue({ giftPresentType: value })
+        this.setState({
+            flag: !this.state.flag,
+        })
+    }
+
+
+    resetFormItems = (data, id) => {
         let formItems = ALL_FORM_ITEMS;
         formItems.stageType = {
             type: 'custom',
@@ -228,6 +279,51 @@ class ActivityConditions extends Component {
                 )
             },
         }
+        formItems.giftPresentType = {
+            ...formItems.giftPresentType,
+            render: (d, form) => {
+                const { presentType = [] } = form.getFieldsValue()
+                return presentType.includes(1) ? <FormItem style={{ marginTop: '-6px' }}>
+                    {d({
+                        onChange: (e) => { this.onChangeGiftPresentType(e, id) },
+                    })(
+                        <Radio.Group>
+                            <Radio value={1}>优惠券</Radio>
+                            <Radio value={4}>券包</Radio>
+                        </Radio.Group>
+                    )}
+                </FormItem> : null
+            },
+        }
+        formItems.couponName = {
+            ...formItems.couponName,
+            render: (d, form) => {
+                const { giftPresentType = 1, couponName: formCouponName } = form ? form.getFieldsValue() : {};
+                if (giftPresentType == 1) { return null }
+                return (
+                    <FormItem>
+                        {d({
+                            rules: [{
+                                required: true,
+                                validator: (rule, value, callback) => {
+                                    if (!value) {
+                                        return callback('请选择券包')
+                                    }
+                                    return callback();
+                                },
+                            }],
+                        })(
+                            <div className={styles.couponBox}>
+                                <span>{formCouponName && formCouponName.couponPackageName}</span>
+                                {formCouponName && formCouponName.couponPackageName && <a data-id={form} href="javascript:;" onClick={(e) => { this.showAddModal(e, form) }}>修改</a>}
+                                {!formCouponName && <Button data-id={form} onClick={(e) => { this.showAddModal(e, form) }}>添加券包</Button>}
+                            </div>
+
+                        )}
+                    </FormItem>
+                )
+            },
+        }
         return formItems;
     }
 
@@ -246,8 +342,11 @@ class ActivityConditions extends Component {
         })
     }
 
-    renderAddGifts = (data) => {
-        if (data.presentType && data.presentType.includes(1)) {
+    renderAddGifts = (data, id) => {
+        const form = this.conditionForms[id]
+        const { giftPresentType = 1 } = form ? form.getFieldsValue() : {}
+
+        if (data.presentType && data.presentType.includes(1) && giftPresentType == 1) {
             if (data && data.giftList) {
                 return <AddGifts
                     pid={data.id}
@@ -257,6 +356,7 @@ class ActivityConditions extends Component {
                     treeData={this.state.treeData}
                     onRef={node => this.conditionForms[data.id + 'gift'] = node}
                     stageType={data.stageType}
+                    giftPresentType={giftPresentType}
                 />
             }
         }
@@ -312,6 +412,7 @@ class ActivityConditions extends Component {
         }
     }
 
+
     renderCardNum = (data) => {
         if (data.presentType && data.presentType.includes(5)) {
             let formItems = {
@@ -364,7 +465,7 @@ class ActivityConditions extends Component {
     onChangeConditionForms = (key, value, id, formKeys) => {
         if (key == 'presentType') {
             let conditionList = this.state.conditionList;
-            conditionList = conditionList.map(item => {
+            conditionList = conditionList.map((item) => {
                 if (item.id == id) {
                     item.presentType = value || [];
                 }
@@ -405,8 +506,7 @@ class ActivityConditions extends Component {
     }
 
     render() {
-        const { conditionList, isShowConditionBtn } = this.state;
-        const formKeys = ['stageType', 'presentType'];
+        const { conditionList, isShowConditionBtn, formKeys, couponForm } = this.state;
         const currentPromotion = this.props.promotion[87];
         const { itemID } = currentPromotion;
         return (
@@ -416,42 +516,51 @@ class ActivityConditions extends Component {
                 </Col>
                 <Col span={19}>
                     {
-                        conditionList.map((conditionItem, index) => (
-                            <Col className={styles.conditionItemBox} key={conditionItem.id} span={24}>
-                                {
-                                    (isShowConditionBtn && !itemID) && <span className={styles.btnBox}>
-                                        {
-                                            (conditionList.length == index + 1 && conditionList.length < 5) &&
-                                            <span className={styles.plusBtn} onClick={this.onPlus}></span>
-                                        }
-                                        {
-                                            (conditionList.length > 1) &&
-                                            <span className={styles.minusBtn} onClick={() => this.onMinus(conditionItem)}></span>
-                                        }
-                                    </span>
-                                }
-                                <BaseForm
-                                    key={conditionItem.id}
-                                    getForm={(form) => { this.conditionForms[conditionItem.id] = form }}
-                                    formKeys={formKeys}
-                                    formItems={this.resetFormItems(conditionItem)}
-                                    formItemLayout={formItemLayout}
-                                    onChange={(key, value) => this.onChangeConditionForms(key, value, conditionItem.id)}
-                                    formData={this.state.formDatas[conditionItem.id]}
-                                />
-                                {
-                                    this.renderAddGifts(conditionItem)
-                                }
-                                {
-                                    this.renderScore(conditionItem)
-                                }
-                                {
-                                    this.renderCardNum(conditionItem)
-                                }
-                            </Col>
-                        ))
+                        conditionList.map((conditionItem, index) => {
+                            const conditionItemId = conditionItem.id;
+                            return (
+                                <Col className={styles.conditionItemBox} key={conditionItem.id} span={24}>
+                                    {
+                                        (isShowConditionBtn && !itemID) && <span className={styles.btnBox}>
+                                            {
+                                                (conditionList.length == index + 1 && conditionList.length < 5) &&
+                                                <span className={styles.plusBtn} onClick={this.onPlus}></span>
+                                            }
+                                            {
+                                                (conditionList.length > 1) &&
+                                                <span className={styles.minusBtn} onClick={() => this.onMinus(conditionItem)}></span>
+                                            }
+                                        </span>
+                                    }
+                                    <BaseForm
+                                        key={conditionItem.id}
+                                        getForm={(form) => { this.conditionForms[conditionItemId] = form }}
+                                        formKeys={formKeys}
+                                        formItems={this.resetFormItems(conditionItem, conditionItemId)}
+                                        formItemLayout={formItemLayout}
+                                        onChange={(key, value) => this.onChangeConditionForms(key, value, conditionItem.id)}
+                                        formData={this.state.formDatas[conditionItem.id]}
+                                    />
+                                    {
+                                        this.renderAddGifts(conditionItem, conditionItem.id)
+                                    }
+                                    {
+                                        this.renderScore(conditionItem)
+                                    }
+                                    {
+                                        this.renderCardNum(conditionItem)
+                                    }
+                                </Col>
+                            )
+                        })
                     }
                 </Col>
+                {this.state.couponVisible &&
+                    <AddModal
+                        groupID={getAccountInfo().groupID}
+                        onAdd={(value) => { this.onSelectBag(value, couponForm) }}
+                        onClose={this.onToggleModal}
+                    />}
                 {
                     itemID && <Col className={styles.conditionListBoxPop}></Col>
                 }

@@ -302,6 +302,7 @@ const GiftCfg = {
     { value: '139', label: '续费发放' },
     { value: '155', label: '联通饭票' },
     { value: '165', label: '快手' },
+    { value: '166', label: '消费送礼活动' },
   ],
   giftSendStatus: [
     { value: '', label: '全部' },
