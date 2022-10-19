@@ -150,7 +150,6 @@ class GiftAddModal extends React.Component {
     handleSubmit() {
         const { groupTypes } = this.state;
         const { type, gift: { value, data } } = this.props;
-
         this.baseForm.validateFieldsAndScroll((err, values) => {
             if (err) return;
             let params = _.assign(values, { giftType: value });
@@ -365,6 +364,9 @@ class GiftAddModal extends React.Component {
                 sendType,
                 reminderTime: formData.reminderTime || 3
             };
+        }
+        if (formData.toStatusAfterUseEndDelayTime){
+            formData.toStatusAfterUseEndDelayTime = String(formData.toStatusAfterUseEndDelayTime)
         }
         let formItems = {
             giftType: {
@@ -617,7 +619,26 @@ class GiftAddModal extends React.Component {
                                     />
                                 )
                             }
-                            <span>卡余额为0元，自动注销</span>
+                            <span>  
+                                卡余额为0元，D + &nbsp;&nbsp;
+                                {
+                                    decorator({
+                                        key: 'toStatusAfterUseEndDelayTime',
+                                        initialValue: formData.toStatusAfterUseEndDelayTime ? formData.toStatusAfterUseEndDelayTime : '1',
+                                    })(
+                                        <Select style={{width:45}}>
+                                            <Option value="1">1</Option>
+                                            <Option value="2">2</Option>
+                                            <Option value="3">3</Option>
+                                            <Option value="4">4</Option>
+                                            <Option value="5">5</Option>
+                                            <Option value="6">6</Option>
+                                            <Option value="7">7</Option>
+                                        </Select>
+                                    )
+                                }
+                                &nbsp;&nbsp;天后，自动注销
+                            </span>
                         </Col>
                     )
                 }
