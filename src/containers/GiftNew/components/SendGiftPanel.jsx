@@ -282,7 +282,7 @@ class SendGiftPanel extends Component {
                     {getFieldDecorator('cellNo', {
                         onChange: this.handleCellNoChange,
                         normalize: val => {
-                            if(val.number){
+                            if(val && val.number){
                                 let strVal = String(val.number);
                                 if(strVal.length > 12){
                                     strVal = strVal.slice(0, 12)
