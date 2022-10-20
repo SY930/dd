@@ -14,17 +14,14 @@ export const statusList = [
 ]
 
 const formItems = {
-    timeRanges: {
-        label: '活动时间',
-        type: 'datepickerRange',
-        showTime: true,
-        labelCol: { span: 7 },
-        wrapperCol: { span: 8 },
-        format: 'YYYY-MM-DD'
+    flowName: {
+        type: 'text',
+        label: '活动名称',
+        placeholder: '请输入活动名称'
     },
     status: {
         type: 'custom',
-        label: '使用状态',
+        label: '活动状态',
         labelCol: { span: 7 },
         wrapperCol: { span: 8 },
         render: (decorator) => decorator({})(
@@ -40,11 +37,6 @@ const formItems = {
                 }
             </Select>
         )
-    },
-    flowName: {
-        type: 'text',
-        label: '活动名称',
-        placeholder: '请输入活动名称'
     },
 };
 

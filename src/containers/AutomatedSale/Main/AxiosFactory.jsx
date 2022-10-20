@@ -13,7 +13,7 @@ function getAccountInfo() {
  */
 async function httpApaasActivityQueryByPage(params = {}) {
     const { groupID: _groupID } = getAccountInfo();
-    const method = '/automation/marketingAutomationService_queryMaPromotionEventList.ajax';
+    const method = '/maEvent/queryList.ajax';
     const allParams = { 
         service: 'HTTP_SERVICE_URL_PROMOTION_NEW', 
         type,

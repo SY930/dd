@@ -1,12 +1,12 @@
 import React, { PureComponent as Component } from 'react';
-import { Table,  Modal, Switch } from 'antd';
+import { Table, Modal, Switch } from 'antd';
 import PagingFactory from 'components/PagingFactory';
 import styles from "./style.less";
 import moment from 'moment'
 
 const DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
-function transformTime(time, format = DATE_FORMAT){
+function transformTime(time, format = DATE_FORMAT) {
     return moment(new Date(parseInt(time))).format(format)
 }
 
@@ -41,23 +41,23 @@ class MainTable extends Component {
             title: `确定要删除吗?`,
             okText: '确定',
             cancelText: '取消',
-            onOk(){
+            onOk() {
                 that.props.onDelete(itemID);
             }
-          });
+        });
     }
 
     /* 生成表格头数据 */
     generateColumns() {
         let { tc } = styles;
         return [
-            { 
+            {
                 title: '序号',
                 className: tc,
                 width: 50,
-                render:(text,record,index)=>`${index+1}`
+                render: (text, record, index) => `${index + 1}`
             },
-            { 
+            {
                 title: '操作',
                 className: tc,
                 width: 100,
@@ -75,59 +75,53 @@ class MainTable extends Component {
                     )
                 }
             },
-            { 
+            {
                 title: '启用/禁用',
                 dataIndex: 'status',
                 className: tc,
                 width: 100,
                 render: (text, record) => (
-                    <Switch 
-                        checked={record.status == 1} 
-                        checkedChildren="启用" 
-                        unCheckedChildren="禁用" 
+                    <Switch
+                        checked={record.status == 1}
+                        checkedChildren="启用"
+                        unCheckedChildren="禁用"
                         size="small"
                         className={styles.switchBox}
                         onChange={() => this.changeStatus(record)}
                     />
                 )
             },
-            { 
+            {
                 title: '活动编码',
                 dataIndex: 'flowCode',
                 className: tc,
                 width: 150,
             },
-            { 
-                title: '名称',
+            {
+                title: '活动名称',
                 dataIndex: 'flowName',
                 className: tc,
                 width: 150,
             },
-            { 
-                title: '有效时间',
-                className: tc,
-                width: 100,
-                render:(text,record,index) => {
-                    let { eventStartDate, eventEndDate } = record;
-                    if(!eventStartDate || +eventStartDate == 0){
-                        return '长期有效';
-                    }
-                    return `${eventStartDate} / ${eventEndDate}`
-                }
-            },
-            { 
+            // {
+            //     title: '活动类型',
+            //     dataIndex: 'flowName',
+            //     className: tc,
+            //     width: 150,
+            // },
+            {
                 title: '创建人/修改人',
                 width: 200,
-                render:(text,record,index) => `${record.creator} / ${record.modifier}`
-            },            
-            { 
+                render: (text, record, index) => `${record.creator} / ${record.modifier}`
+            },
+            {
                 title: '创建时间/修改时间',
                 className: tc,
                 width: 200,
-                render:(text,record,index) => {
+                render: (text, record, index) => {
                     return `${transformTime(record.createStamp)} / ${transformTime(record.actionStamp)}`;
                 }
-            },            
+            },
 
         ];
     }
@@ -146,23 +140,23 @@ class MainTable extends Component {
         const { loading, page } = this.props;
         const columns = this.generateColumns();
         const dataSource = this.generateDataSource();
-        const pagination = { 
+        const pagination = {
             ...page,
             onChange: this.onPageChange,
-            onShowSizeChange: this.onPageChange,  
+            onShowSizeChange: this.onPageChange,
         };
         return (
-                <div>
-                    <Table
-                        bordered={true}
-                        loading={loading}
-                        columns={columns}
-                        rowKey="itemID"
-                        dataSource={dataSource}
-                        scroll={{ x: 1600,  y: 'calc(100vh - 440px)' }}
-                        pagination={pagination}
-                    />
-                </div>
+            <div>
+                <Table
+                    bordered={true}
+                    loading={loading}
+                    columns={columns}
+                    rowKey="itemID"
+                    dataSource={dataSource}
+                    scroll={{ x: 1600, y: 'calc(100vh - 440px)' }}
+                    pagination={pagination}
+                />
+            </div>
         )
     }
 }

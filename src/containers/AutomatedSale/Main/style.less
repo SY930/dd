@@ -17,7 +17,32 @@
         display: flex;
         margin: 20px 0;
     }
-    
+
+    .statusPanels {
+        ul {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+
+            li {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+
+                .label {
+                    font-size: 14px;
+                }
+
+                .value {
+                    font-size: 18px;
+                    font-weight: bolder;
+                    margin-top: 10px;
+                    margin-bottom: 10px;
+                }
+            }
+        }
+    }
+
     .optBtn {
         button {
             margin-right: 10px;
@@ -38,5 +63,5 @@
         .ant-switch .ant-switch-inner {
             line-height: 24px;
         }
-   }
+    }
 }

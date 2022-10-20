@@ -4,19 +4,17 @@ import MainTable from "./MainTable";
 import QueryForm from "./QueryForm";
 import styles from "./style.less";
 import { httpApaasActivityQueryByPage, httpEnableOrDisableMaPromotionEvent, httpDeleteMaPromotionEvent } from "./AxiosFactory";
-import moment from 'moment';
 import { jumpPage, closePage, getStore } from '@hualala/platform-base';
 import { SALE_AUTOMATED_SALE_DETAIL } from '../../../constants/entryCodes';
 import _ from 'lodash';
 
-const DATE_FORMAT = 'YYYYMMDD';
 const initialPaging = {
     pageNo: 1,
     pageSize: 10
 }
 
 export default class Main extends React.PureComponent {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.queryFrom = null;
         this.state = {
@@ -24,24 +22,36 @@ export default class Main extends React.PureComponent {
             list: [],
             total: 0,
             pageObj: {},
-            queryParams: {}
+            queryParams: {},
+            statusPanels: [
+                {
+                    label: '全部',
+                    value: 0
+                },
+                {
+                    label: '运行中',
+                    value: 0
+                },
+                {
+                    label: '已暂停',
+                    value: 0
+                },
+                {
+                    label: '已结束',
+                    value: 0
+                }
+            ]
         }
     }
-    
-    componentDidMount(){
+
+    componentDidMount() {
         this.onQueryList(initialPaging);
     }
 
     onQueryList = (pagingParams = initialPaging) => {
         let { queryParams } = this.state;
-        let { timeRanges } = queryParams;
-        if(timeRanges && timeRanges.length > 0){
-            queryParams.eventStartDate = moment(timeRanges[0]).format(DATE_FORMAT);
-            queryParams.eventEndDate =  moment(timeRanges[1]).format(DATE_FORMAT);
-            delete queryParams.timeRanges;
-        }
         let concatParams = {
-            ...pagingParams, 
+            ...pagingParams,
             ...queryParams
         };
 
@@ -77,18 +87,18 @@ export default class Main extends React.PureComponent {
                 status,
                 itemID,
             })
-            .then(res => {
-                this.setState({
-                    loading: false
-                });
-                status == 1 ? message.warning('已禁用') : message.success('已启用');
-                this.onQueryList();
-            })
-            .catch(error => {
-                this.setState({
-                    loading: false
+                .then(res => {
+                    this.setState({
+                        loading: false
+                    });
+                    status == 1 ? message.warning('已禁用') : message.success('已启用');
+                    this.onQueryList();
                 })
-            })
+                .catch(error => {
+                    this.setState({
+                        loading: false
+                    })
+                })
         })
     }
 
@@ -99,18 +109,18 @@ export default class Main extends React.PureComponent {
             httpDeleteMaPromotionEvent({
                 itemID,
             })
-            .then(() => {
-                this.setState({
-                    loading: false
-                });
-                message.success('已删除');
-                this.onQueryList();
-            })
-            .catch(error => {
-                this.setState({
-                    loading: false
+                .then(() => {
+                    this.setState({
+                        loading: false
+                    });
+                    message.success('已删除');
+                    this.onQueryList();
                 })
-            })
+                .catch(error => {
+                    this.setState({
+                        loading: false
+                    })
+                })
         })
     }
 
@@ -129,25 +139,39 @@ export default class Main extends React.PureComponent {
         if (tab && tab.key === 'sale_automated_sale_detail') {
             closePage(SALE_AUTOMATED_SALE_DETAIL);
         }
-        if(type == 'add'){
+        if (type == 'add') {
             jumpPage({ menuID: SALE_AUTOMATED_SALE_DETAIL, type, groupID });
-        }else{
+        } else {
             jumpPage({ menuID: SALE_AUTOMATED_SALE_DETAIL, id: record.itemID, type, groupID });
         }
     }
 
     render() {
-        let { list, loading, pageObj } = this.state;
+        let { list, loading, pageObj, statusPanels } = this.state;
         return (
             <Col span={24} className={styles.automatedSale}>
-                <Col span={24} style={{display: 'flex', justifyContent: 'space-between'}}>
+                <Col span={24} style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <h2>智能营销</h2>
                     <Button type='primary' onClick={() => this.onOperate('', 'add')}>创建活动</Button>
                 </Col>
                 <Col span={24} className={styles.queryFrom}>
-                    <QueryForm 
+                    <QueryForm
                         onQuery={this.onChangeQuery}
                     />
+                </Col>
+                <Col span={24} className={styles.statusPanels}>
+                    <ul>
+                        {
+                            statusPanels.map(item => {
+                                return (
+                                    <li key={item.label}>
+                                        <span className={styles.label}>{item.label}</span>
+                                        <span className={styles.value}>{item.value}</span>
+                                    </li>
+                                )
+                            })
+                        }
+                    </ul>
                 </Col>
                 <Col span={24} className={styles.tableBox}>
                     <MainTable
@@ -159,7 +183,7 @@ export default class Main extends React.PureComponent {
                         changeStatus={this.changeStatus}
                         onDelete={this.onDelete}
                     />
-               </Col>
+                </Col>
             </Col>
         )
     }
