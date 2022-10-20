@@ -199,9 +199,9 @@ class MainTable extends Component {
             return (<span>{idx}</span>);
         };
         const render3 = (v, o) => {
-            const { couponPackageID: id, remainStock = 0 } = o;
+            const { couponPackageID: id, remainStock = 0, type, limitStockForEvent } = o;
             const stock = (remainStock === -1) ? '不限制' : remainStock;
-            if (o.limitStockForEvent == 2) {
+            if (limitStockForEvent == 2 && type === '活动投放') {
                 return '不限制'
             }
             return (
