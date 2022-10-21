@@ -2906,18 +2906,18 @@ class GiftAddModalStep extends React.PureComponent {
         return flag
     }
 
-    // 礼品详情后面添加标签
-    addCategoryKeyAfterGiftRemark = (displayFirstKeys) => {
-        let keys = displayFirstKeys && displayFirstKeys[0].keys || [];
-        let index = keys.indexOf('giftRemark');
-        if(index != -1){
-            keys.splice(index + 1, 0, 'category');
+    hasCategoryKey = (keysObj) => {
+        let allKeys = [];
+        if(keysObj && Array.isArray(keysObj) && keysObj.length > 0){
+            keysObj.map(item => {
+                item.keys.map(key => {
+                    allKeys.push(key)
+                })
+            })
         }
-        displayFirstKeys[0].keys = keys;
-        return displayFirstKeys;
+        return allKeys.includes('category');
     }
 
-    // _TODO
     addCategoryFormItem = (formItems) => {
         formItems.category = {
             label: '标签',
@@ -3987,15 +3987,19 @@ class GiftAddModalStep extends React.PureComponent {
             formData.excludeShops = formData.shopNames;
             formData.selectedShops = [];
         }
-        // displayFirstKeys = this.addCategoryKeyAfterGiftRemark(displayFirstKeys);
-        if(displayFirstKeys && displayFirstKeys[0] && (displayFirstKeys[0].keys || []).includes('category')){
+        // _TODO
+        if(this.hasCategoryKey(displayFirstKeys)){
             this.addCategoryFormItem(formItems);
         }
-        // _TODO
-        // console.log('keys=======11111', displayFirstKeys)
-        console.log('keys=======33333', displayThirdKeys)
-        // console.log('keys=======44444', displayFourthKeys)
-        // console.log('keys=======222222', displaySecondKeys)
+        if(this.hasCategoryKey(displaySecondKeys)){
+            this.addCategoryFormItem(formItems);
+        }
+        if(this.hasCategoryKey(displayThirdKeys)){
+            this.addCategoryFormItem(formItems);
+        }
+        if(this.hasCategoryKey(displayFourthKeys)){
+            this.addCategoryFormItem(formItems);
+        }
         return (
             <div className={styles2.formContainer}>
                 <div

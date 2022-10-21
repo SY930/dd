@@ -33,6 +33,7 @@ import SellerCode from "../components/SellerCode";
 import FakeBorderedLabel from "../components/FakeBorderedLabel";
 import GiftInfoHaveCoupon from './GiftInfoHaveCoupon';
 import decorator from '@hualala/react-lazyload/lib/decorator';
+import TagComp from './TagComp/index';
 
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -326,6 +327,17 @@ class GiftAddModal extends React.Component {
         this.baseForm.setFieldsValue({
             quotaCardGiftConfList: params
         });
+    }
+    hasCategoryKey = (keysObj) => {
+        let allKeys = [];
+        if(keysObj && Array.isArray(keysObj) && keysObj.length > 0){
+            keysObj.map(item => {
+                item.keys.map(key => {
+                    allKeys.push(key)
+                })
+            })
+        }
+        return allKeys.includes('category');
     }
     render() {
         const { gift: { name: describe, value, data }, visible, type, treeData } = this.props;
@@ -911,6 +923,7 @@ class GiftAddModal extends React.Component {
                         'giftValueCurrencyType',
                         'giftValue',
                         'giftRemark',
+                        'category',
                         'shopNames',
                         'giftImagePath',
                         'giftRule',
@@ -931,6 +944,7 @@ class GiftAddModal extends React.Component {
                         'giftValue',
                         'cardTypeList',
                         'giftRemark',
+                        'category',
                         'giftRule',
                         'showGiftRule',
                         'giftImagePath',
@@ -949,6 +963,7 @@ class GiftAddModal extends React.Component {
                         'giftValue',
                         'cardTypeList',
                         'giftRemark',
+                        'category',
                         'giftRule',
                         'showGiftRule',
                         'giftImagePath',
@@ -970,6 +985,7 @@ class GiftAddModal extends React.Component {
                         'price',
                         'quotaCardGiftConfList',
                         'giftRemark',
+                        'category',
                         'giftRule',
                         'showGiftRule',
                         'toStatusAfterUseEnd'
@@ -988,6 +1004,7 @@ class GiftAddModal extends React.Component {
                         'sendName',
                         'wishing',
                         'giftRemark',
+                        'category',
                         'safetyInfoLabel',
                         'moneyLimit',
                         'userDayLimitCount',
@@ -1011,12 +1028,28 @@ class GiftAddModal extends React.Component {
                         'price',
                         'quotaCardGiftConfList',
                         'giftRemark',
+                        'category',
                         'giftRule',
                         'showGiftRule',
                     ]
                 }
             ];
             newFormKeys = keys;
+        }
+        if(this.hasCategoryKey(newFormKeys)){
+            formItems.category = {
+                label: '标签',
+                type: 'custom',
+                render: (decorator, form) => {
+                    return (
+                        <TagComp
+                            decorator={decorator}
+                            form={form}
+                            key='category'
+                        />
+                    )
+                }
+            }
         }
         return (
             <div className={styles.giftAddModal}>
