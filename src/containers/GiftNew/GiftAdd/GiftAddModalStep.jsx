@@ -2947,6 +2947,7 @@ class GiftAddModalStep extends React.PureComponent {
         // 判断是否是空对象
         // 影响 PhonePreview 回显。
         let formData =JSON.stringify(values) == '{}' ? data : values ;
+        console.log('formData===_TODO', formData)
         let { firstKeysToDisplay: displayFirstKeys, secondKeysToDisplay: displaySecondKeys,thirdKeysToDisplay:displayThirdKeys,fourthKeysToDisplay:displayFourthKeys} = this.justifyFormKeysToDisplay();
 
         if (formData.shopNames && formData.shopNames.length > 0 && formData.shopNames[0].id) {
