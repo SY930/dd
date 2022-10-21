@@ -291,6 +291,7 @@ export const MALL_COUPON_BASIC_SETTING_FORM_ITEMS = {
                 'giftValue',
                 'price',
                 'giftRemark',
+                'category',
                 'mallScope',
                 'applyScene',
             ],
@@ -339,6 +340,7 @@ export const MALL_COUPON_BASIC_SETTING_FORM_ITEMS = {
                 'giftValue',
                 'price',
                 'giftRemark',
+                'category',
                 'mallScope',
                 'applyScene',
             ],
@@ -387,6 +389,7 @@ export const MALL_COUPON_BASIC_SETTING_FORM_ITEMS = {
                 'price',
                 'priceSortRule',
                 'giftRemark',
+                'category',
                 'mallScope',
                 'applyScene',
             ],
@@ -518,6 +521,7 @@ export const FIRST_KEYS = {
                 'price',
                 'separateAccountType',
                 'giftRemark',
+                'category',
                 'mallScope',
                 'applyScene',
             ],
@@ -539,6 +543,7 @@ export const FIRST_KEYS = {
                 'price',
                 'separateAccountType',
                 'giftRemark',
+                'category',
                 'mallScope',
                 'applyScene',
             ],
@@ -561,6 +566,7 @@ export const FIRST_KEYS = {
                 'separateAccountType',
                 'priceSortRule',
                 'giftRemark',
+                'category',
                 'foodUnitType',
                 'weight',
                 'weightOffset',
@@ -583,6 +589,7 @@ export const FIRST_KEYS = {
                 'cardTypeList',
                 'selectedMemberRightShops',
                 'giftRemark',
+                'category',
             ],
         },
     ],
@@ -597,6 +604,7 @@ export const FIRST_KEYS = {
                 'giftName',
                 'selectBrands',
                 'giftRemark',
+                'category',
             ],
         },
     ],
@@ -616,6 +624,7 @@ export const FIRST_KEYS = {
                 'validityDays',
                 'cardTypeList',
                 'giftRemark',
+                'category',
             ],
         },
     ],
@@ -648,6 +657,7 @@ export const FIRST_KEYS = {
                 'price',
                 'separateAccountType',
                 'giftRemark',
+                'category',
             ],
         },
         {
@@ -692,6 +702,7 @@ export const FIRST_KEYS = {
                 'price',
                 'separateAccountType',
                 'giftRemark',
+                'category',
             ],
         },
         {
@@ -734,6 +745,7 @@ export const FIRST_KEYS = {
             },
             keys: [
                 'giftRemark',
+                'category',
             ]
         },
         {
@@ -757,6 +769,7 @@ export const FIRST_KEYS = {
                 'selectBrands',
                 'pushMessage',
                 'giftRemark',
+                'category',
                 'isNeedCustomerInfo'
             ],
         },
@@ -789,6 +802,7 @@ export const FIRST_KEYS = {
             },
             keys: [
                 'giftRemark',
+                'category',
             ]
         },
         {

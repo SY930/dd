@@ -88,7 +88,7 @@ import {
 import { CategoryAndFoodSelectors } from '../../SaleCenterNEW/common/GiftCategoryAndFoodSelectors';
 import { GiftCategoryAndFoodSelector } from '../../SaleCenterNEW/common/CategoryAndFoodSelector';
 import { GiftCategoryAndFoodSelectorNew } from '../../SaleCenterNEW/common/CategoryAndFoodSelectorNew';
-
+import TagComp from './TagComp/index';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -2905,6 +2905,34 @@ class GiftAddModalStep extends React.PureComponent {
         })
         return flag
     }
+
+    // 礼品详情后面添加标签
+    addCategoryKeyAfterGiftRemark = (displayFirstKeys) => {
+        let keys = displayFirstKeys && displayFirstKeys[0].keys || [];
+        let index = keys.indexOf('giftRemark');
+        if(index != -1){
+            keys.splice(index + 1, 0, 'category');
+        }
+        displayFirstKeys[0].keys = keys;
+        return displayFirstKeys;
+    }
+
+    // _TODO
+    addCategoryFormItem = (formItems) => {
+        formItems.category = {
+            label: '标签',
+            type: 'custom',
+            render: (decorator, form) => {
+                return (
+                    <TagComp
+                        decorator={decorator}
+                        form={form}
+                        key='category'
+                    />
+                )
+            }
+        }
+    }
     
     /**
      * @description
@@ -2919,7 +2947,7 @@ class GiftAddModalStep extends React.PureComponent {
         // 判断是否是空对象
         // 影响 PhonePreview 回显。
         let formData =JSON.stringify(values) == '{}' ? data : values ;
-        const { firstKeysToDisplay: displayFirstKeys, secondKeysToDisplay: displaySecondKeys,thirdKeysToDisplay:displayThirdKeys,fourthKeysToDisplay:displayFourthKeys} = this.justifyFormKeysToDisplay();
+        let { firstKeysToDisplay: displayFirstKeys, secondKeysToDisplay: displaySecondKeys,thirdKeysToDisplay:displayThirdKeys,fourthKeysToDisplay:displayFourthKeys} = this.justifyFormKeysToDisplay();
 
         if (formData.shopNames && formData.shopNames.length > 0 && formData.shopNames[0].id) {
             formData.shopNames = formData.shopNames.map(shop => shop.id);
@@ -3959,6 +3987,15 @@ class GiftAddModalStep extends React.PureComponent {
             formData.excludeShops = formData.shopNames;
             formData.selectedShops = [];
         }
+        // displayFirstKeys = this.addCategoryKeyAfterGiftRemark(displayFirstKeys);
+        if(displayFirstKeys && displayFirstKeys[0] && (displayFirstKeys[0].keys || []).includes('category')){
+            this.addCategoryFormItem(formItems);
+        }
+        // _TODO
+        // console.log('keys=======11111', displayFirstKeys)
+        console.log('keys=======33333', displayThirdKeys)
+        // console.log('keys=======44444', displayFourthKeys)
+        // console.log('keys=======222222', displaySecondKeys)
         return (
             <div className={styles2.formContainer}>
                 <div
