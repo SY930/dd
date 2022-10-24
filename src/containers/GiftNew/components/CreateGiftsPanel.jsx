@@ -24,6 +24,8 @@ import styles from '../GiftAdd/Crm.less';
 import { startCreateGift } from '../_action';
 import { specialInterestGiftType, specialInterestGroupIdWhiteList } from './whiteList';
 
+import { isZhouheiya } from '../../../constants/WhiteList.jsx'
+
 const temporaryDisabledGifts = [
 ]; // 不上线, 只在dohko显示的礼品类型
 
@@ -92,6 +94,19 @@ class CreateGiftsPanel extends Component {
           primaryGifts = primaryGifts.filter(item => item.value != specialInterestGiftType)
       }
       const secondaryGifts = GiftCfg.giftType.filter(gift => gift.category === 'secondary');
+      if (isZhouheiya(groupID)) {
+            primaryGifts = primaryGifts.map((item) => {
+                if (['20', '21'].includes(item.value)) {
+                    return {
+                        ...item,
+                        name: item.name.split('菜品')[1],
+                    }
+                }
+                return item
+            })
+            primaryGifts.splice(4, 2)
+        }
+	
       return (
           <div>
               {this.getIconTags()}
@@ -117,6 +132,7 @@ class CreateGiftsPanel extends Component {
                   <div className={styles.logoGroupHeader}>
                       其它
                   </div>
+		  {isZhouheiya(groupID) ? '' :
                   <div className={styles.groupContainer}>
                       {
                           secondaryGifts.map((gift, index) => {
@@ -154,6 +170,7 @@ class CreateGiftsPanel extends Component {
                           })
                       }
                   </div>
+ 	        }
               </div>
           </div>
       )

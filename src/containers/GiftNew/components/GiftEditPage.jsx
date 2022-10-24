@@ -10,10 +10,12 @@ import {
 } from 'antd';
 import { COMMON_LABEL } from 'i18n/common';
 import styles from '../GiftAdd/Crm.less';
-import {cancelCreateOrEditGift} from "../_action";
-import PhonePreview from "./PhonePreview";
-import FormWrapper from "./FormWrapper";
-import GiftCfg from "../../../constants/Gift";
+import { cancelCreateOrEditGift } from '../_action';
+import PhonePreview from './PhonePreview';
+import FormWrapper from './FormWrapper';
+import GiftCfg from '../../../constants/Gift';
+import { Iconlist } from 'components/basic/IconsFont/IconsFont';
+import { isZhouheiya } from '../../../constants/WhiteList.jsx'
 class GiftEditPage extends Component {
 
     constructor(props) {
@@ -58,7 +60,7 @@ class GiftEditPage extends Component {
     }
 
     render() {
-        const { giftType, operationType, loading } = this.props;
+        const { giftType, operationType, loading, groupID } = this.props;
         let {tabkey} = this.state
         const { name: giftName, describe: giftDescribe, example } = GiftCfg.giftType.find(item => item.value === giftType) || {};
         return (
@@ -70,14 +72,15 @@ class GiftEditPage extends Component {
             >
                 <div className={styles.pageHeader} >
                     <div className={styles.pageHeaderTitle}>
-                        {giftName}
+                        {isZhouheiya(groupID) ? giftName.replace(/菜品/g, '商品') : giftName}
+
                     </div>
                     <div className={styles.pageHeaderDescription} style={{ fontSize: example ? 12 : 14 }}>
-                        {giftDescribe}
+                        {isZhouheiya(groupID) ? giftDescribe.replace(/菜品/g, '商品') : giftDescribe}
                         {
                             !!example && (
                                 <div>
-                                    {example}
+                                    {isZhouheiya(groupID) ? example.replace(/菜品/g, '商品') : example}
                                 </div>
                             )
                         }

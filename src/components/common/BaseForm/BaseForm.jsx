@@ -220,6 +220,7 @@ class BaseForm extends React.Component {
                             placeholder={`请选择${item.label}`}
                             notFoundContent={'未搜索到结果'}
                             dropdownMatchSelectWidth={false}
+                            allowClear={item.allowClear}
                             filterOption={(value, option) => option.props.children.indexOf(value) > -1}
                         >
                             {this.getOptions(key).map(({ value, label, disabled }) => (

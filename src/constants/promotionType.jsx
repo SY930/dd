@@ -207,6 +207,17 @@ export const NEW_CUSTOMER_PROMOTION_TYPES = [
         right: 10,
         bottom: 0,
     },
+    {
+        title: 'H5领券',
+        isSpecial: true,
+        tags: [SALE_LABEL.k5krn6z9],
+        signs: ['wx'],
+        text: SALE_LABEL.k67b4rb2,
+        example: '',
+        key: '69',
+        right: 17,
+        bottom: 0,
+    },
 ];
 
 /**
@@ -485,6 +496,41 @@ export const REPEAT_PROMOTION_TYPES = [
         bottom: 6,
         isNew: new Date('2022/04/12').getTime(),
     },
+    // 积分换礼（周黑鸭）
+    {
+        title: '积分换礼',
+        tags: ['pos'],
+        signs: ['pos'],
+        isSpecial: true,
+        text: SALE_LABEL.k67b4u32,
+        example: '',
+        key: '89',
+        right: 18,
+        bottom: 8,
+    },
+    // 消费送礼（周黑鸭）
+    {
+        title: '消费送礼',
+        tags: ['pos'],
+        signs: ['pos'],
+        isSpecial: true,
+        text: SALE_LABEL.k67b4tme,
+        example: SALE_LABEL.k67cporj,
+        key: '88',
+        right: 17,
+        bottom: 7,
+    },
+    // 群发礼品（周黑鸭）
+    {
+        title: SALE_LABEL.k67b2pz0,
+        isSpecial: true,
+        text: SALE_LABEL.k67b4t5q,
+        signs: [],
+        example: '',
+        key: '90',
+        right: 3,
+        bottom: 0,
+    },
 ];
 
 /**
@@ -569,6 +615,7 @@ export const SALE_PROMOTION_TYPES = [
         right: 2,
         bottom: -14,
         isHot: true,
+        isZhy: true,
     },
     {
         title: SALE_LABEL.k67b2sac,
@@ -580,6 +627,7 @@ export const SALE_PROMOTION_TYPES = [
         key: '1010',
         right: 10,
         bottom: 0,
+        isZhy: true,
     },
     {
         title: SALE_LABEL.k67b2sio,
@@ -602,6 +650,7 @@ export const SALE_PROMOTION_TYPES = [
         key: '1050',
         right: 15,
         bottom: 5,
+        isZhy: true,
     },
     {
         title: SALE_LABEL.k67b3uk0,
@@ -613,6 +662,7 @@ export const SALE_PROMOTION_TYPES = [
         key: '1070',
         right: 14,
         bottom: 12,
+        isZhy: true,
     },
     {
         title: SALE_LABEL.k5m5auib,
@@ -646,6 +696,7 @@ export const SALE_PROMOTION_TYPES = [
         key: '2010',
         right: 14,
         bottom: 5,
+        isZhy: true,
     },
     {
         isSpecial: false,
@@ -657,6 +708,7 @@ export const SALE_PROMOTION_TYPES = [
         key: '1030',
         right: 16,
         bottom: 11,
+        isZhy: true,
     },
     {
         isSpecial: false,
@@ -679,6 +731,7 @@ export const SALE_PROMOTION_TYPES = [
         key: '1060',
         right: 0,
         bottom: 1,
+        isZhy: true,
     },
     {
         isSpecial: false,
@@ -701,6 +754,7 @@ export const SALE_PROMOTION_TYPES = [
         key: '2050',
         right: 0,
         bottom: -3,
+        isZhy: true,
     },
     {
         isSpecial: false,
