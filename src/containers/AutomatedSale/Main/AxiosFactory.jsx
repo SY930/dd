@@ -12,21 +12,21 @@ function getAccountInfo() {
  *  获取列表
  */
 async function httpApaasActivityQueryByPage(params = {}) {
-    const { groupID: _groupID } = getAccountInfo();
+    const { groupID } = getAccountInfo();
     const method = '/maEvent/queryList.ajax';
-    const allParams = { 
-        service: 'HTTP_SERVICE_URL_PROMOTION_NEW', 
+    const allParams = {
+        service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
         type,
-        data: { 
-            _groupID,
+        data: {
+            groupID,
             ...params
         },
         method
     };
     const response = await axios.post(url, allParams);
-    const { code, message: msg, data: obj } = response;
+    const { code, message: msg } = response;
     if (code === '000') {
-        return obj;
+        return response;
     }
     message.error(msg);
     return [];
@@ -38,10 +38,10 @@ async function httpApaasActivityQueryByPage(params = {}) {
 async function httpApaasActivitySave(params = {}) {
     const { groupID } = getAccountInfo();
     const method = '/api/apaas/admin/activity/save';
-    const allParams = { 
+    const allParams = {
         service: 'HTTP_SERVICE_URL_CRM',
-        type, 
-        data: { 
+        type,
+        data: {
             groupID,
             ...params
         },
@@ -59,13 +59,13 @@ async function httpApaasActivitySave(params = {}) {
 /**
  * 查询活动详情
  */
- async function httpApaasActivityQueryDetail(params = {}) {
+async function httpApaasActivityQueryDetail(params = {}) {
     const { groupID } = getAccountInfo();
     const method = '/api/apaas/admin/activity/queryDetail';
-    const allParams = { 
-        service: 'HTTP_SERVICE_URL_CRM', 
-        type, 
-        data: { 
+    const allParams = {
+        service: 'HTTP_SERVICE_URL_CRM',
+        type,
+        data: {
             groupID,
             ...params
         },
@@ -87,14 +87,14 @@ function httpEnableOrDisableMaPromotionEvent(params = {}) {
     return new Promise(async (resolve, reject) => {
         const { groupID: _groupID } = getAccountInfo();
         let method = '/automation/marketingAutomationService_enableMaPromotionEvent.ajax';
-        if(params.status == 1){
+        if (params.status == 1) {
             method = '/automation/marketingAutomationService_disableMaPromotionEvent.ajax';
         }
         delete params.status;
-        const allParams = { 
+        const allParams = {
             service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
             type,
-            data: { 
+            data: {
                 _groupID,
                 ...params
             },
@@ -114,14 +114,14 @@ function httpEnableOrDisableMaPromotionEvent(params = {}) {
 /**
  * 删除活动
  */
- function httpDeleteMaPromotionEvent(params = {}) {
+function httpDeleteMaPromotionEvent(params = {}) {
     return new Promise(async (resolve, reject) => {
         const { groupID: _groupID } = getAccountInfo();
         let method = '/automation/marketingAutomationService_deleteMaPromotionEvent.ajax';
-        const allParams = { 
+        const allParams = {
             service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
             type,
-            data: { 
+            data: {
                 _groupID,
                 ...params
             },
@@ -138,7 +138,7 @@ function httpEnableOrDisableMaPromotionEvent(params = {}) {
     })
 }
 
-export { 
+export {
     httpApaasActivityQueryByPage,
     httpApaasActivitySave,
     httpApaasActivityQueryDetail,
