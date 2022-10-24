@@ -624,7 +624,6 @@ export const FIRST_KEYS = {
                 'validityDays',
                 'cardTypeList',
                 'giftRemark',
-                'category',
             ],
         },
     ],

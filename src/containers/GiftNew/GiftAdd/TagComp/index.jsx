@@ -25,7 +25,7 @@ class TagComp extends React.Component {
         axiosData(
             '/promotion/phrasePromotionService_query.ajax',
             {
-                phraseType: 1 // _TODO
+                phraseType: this.props.phraseType
             },
             {},
             { path: 'data' },
@@ -87,6 +87,7 @@ class TagComp extends React.Component {
                     modalVisible &&
                     <AdminTagModal
                         onClose={this.onClose}
+                        phraseType={this.props.phraseType}
                     />
                 }
             </Col>

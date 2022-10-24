@@ -29,7 +29,7 @@ class AdminTagModal extends React.Component {
         axiosData(
             '/promotion/phrasePromotionService_query.ajax',
             {
-                phraseType: 1 // _TODO
+                phraseType: this.props.phraseType
             },
             {},
             { path: 'data' },
@@ -58,7 +58,7 @@ class AdminTagModal extends React.Component {
             axiosData(
                 "/promotion/phrasePromotionService_add.ajax",
                 {
-                    phraseType: 1,
+                    phraseType: this.props.phraseType,
                     nameList: [values.phrase]
                 },
                 {},

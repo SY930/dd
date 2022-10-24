@@ -2928,6 +2928,7 @@ class GiftAddModalStep extends React.PureComponent {
                         decorator={decorator}
                         form={form}
                         key='category'
+                        phraseType='1'
                     />
                 )
             }

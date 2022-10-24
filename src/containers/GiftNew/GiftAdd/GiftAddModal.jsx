@@ -985,7 +985,6 @@ class GiftAddModal extends React.Component {
                         'price',
                         'quotaCardGiftConfList',
                         'giftRemark',
-                        'category',
                         'giftRule',
                         'showGiftRule',
                         'toStatusAfterUseEnd'
@@ -1004,7 +1003,6 @@ class GiftAddModal extends React.Component {
                         'sendName',
                         'wishing',
                         'giftRemark',
-                        'category',
                         'safetyInfoLabel',
                         'moneyLimit',
                         'userDayLimitCount',
@@ -1046,6 +1044,7 @@ class GiftAddModal extends React.Component {
                             decorator={decorator}
                             form={form}
                             key='category'
+                            phraseType='1'
                         />
                     )
                 }
