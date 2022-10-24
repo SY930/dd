@@ -7,7 +7,7 @@ import BaseForm from '../../../../components/common/BaseForm';
 import Authority from '../../../../components/common/Authority';
 import GiftCfg from '../../../../constants/Gift';
 import {
-    GIFT_LIST_UPDATE, GIFT_LIST_QUERY
+    GIFT_LIST_QUERY
 } from "../../../../constants/authorityCodes";
 import {
     FetchGiftList,
@@ -22,6 +22,11 @@ import {
 import _ from 'lodash';
 import { axiosData } from '../../../../helpers/util';
 
+const searchDefaultPageParams = {
+    pageNo: 1,
+    pageSize: 25, 
+}
+
 const validUrl = require('valid-url');
 
 class GiftList extends Component {
@@ -32,8 +37,7 @@ class GiftList extends Component {
             exportLoading: false,
             visible: false,
             queryParams: {
-                pageNo: 1,
-                pageSize: 25,
+                ...searchDefaultPageParams,
                 action: '1',
             },        // 临时查询缓存，具体对象查看QueryForm对象
             dataSource: [],
@@ -43,7 +47,7 @@ class GiftList extends Component {
         this.queryFroms = null;
     }
     componentDidMount() {
-        this.onQueryList();
+        this.onQueryList(searchDefaultPageParams);
         document.addEventListener('keydown', this.handleEnterKey);
     }
 
@@ -54,8 +58,13 @@ class GiftList extends Component {
                 this.setState({ dataSource, total })
             }
         }
-        // if(total != this.props.total){
-        // }
+        if (this.props.saveDone != nextProps.saveDone && nextProps.saveDone && (nextProps.pageType == 1 || nextProps.pageType == 3)) {
+            const { pageNo,pageSize } = this.state.queryParams;
+            this.onQueryList({
+                pageNo,
+                pageSize
+            });
+        }
     }
 
     componentWillUnmount() {
@@ -65,14 +74,14 @@ class GiftList extends Component {
     handleEnterKey = (e) => {
         let { pageType } = this.props;
         if (e.keyCode === 13 && (pageType == 1 || pageType == 3)) {
-            this.onQueryList();
+            this.onQueryList({});
         }
     }
 
     /**
      * 加载列表
      */
-    onQueryList = () => {
+    onQueryList = (pagingParams) => {
         let { pageType } = this.props
         let action = pageType == 1 ? 0 : 2
         const { queryParams } = this.state;
@@ -81,12 +90,19 @@ class GiftList extends Component {
             if (err) return;
             const params = { ...values };
             this.setState({
-                queryParams: { pageNo: 1, pageSize: queryParams.pageSize || 1, action, ...params },
+                queryParams: { 
+                    pageNo: 1, 
+                    pageSize: queryParams.pageSize || 1, 
+                    action, 
+                    ...params,
+                    ...pagingParams
+                },
             })
             FetchGiftList({
                 action,
                 pageNo: 1,
                 pageSize: queryParams.pageSize || 1,
+                ...pagingParams,
                 ...params,
             }).then((data = []) => {
                 this.proGiftData(data);
@@ -227,7 +243,7 @@ class GiftList extends Component {
                             </li>
                             <li>
                                 <Authority rightCode={GIFT_LIST_QUERY}>
-                                    <Button type="primary" onClick={() => this.onQueryList()}>
+                                    <Button type="primary" onClick={() => this.onQueryList(searchDefaultPageParams)}>
                                         <Icon type="search" />
                                         查询
                                     </Button>
@@ -270,6 +286,7 @@ function mapStateToProps(state) {
     return {
         // dataSource: state.sale_giftInfoNew.get('dataSource'),
         loading: state.sale_giftInfoNew.get('loading'),
+        saveDone: state.sale_editGiftInfoNew.get('saveDone'),
         user: state.user.toJS(),
         shopData: state.sale_giftInfoNew.get('shopData'),
     }

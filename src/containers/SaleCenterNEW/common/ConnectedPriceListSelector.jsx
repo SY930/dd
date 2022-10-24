@@ -29,6 +29,9 @@ class ConnectedPriceListSelector extends Component {
         if (this.props.promotionType === '1070') {
             return dishArray.filter(food => food.isTempFood != '1' && food.isTempSetFood != '1')
         }
+        if(this.props.promotionType === '5010'){
+            return dishArray.filter(food => food.isTempFood != '1' && food.isTempSetFood != '1')
+        }
         return dishArray.filter(food => food.isSetFood != '1' && food.isTempFood != '1' && food.isTempSetFood != '1')
     }
     render() {

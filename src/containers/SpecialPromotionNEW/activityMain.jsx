@@ -25,7 +25,6 @@ import NewPerfectReturnGift from './perfectReturnGift/NewPerfectReturnGift'; // 
 import NewUpGradeReturnGift from './upGradeReturnGift/NewUpGradeReturnGift'; // 升级送礼
 import NewAddUpReturnGift from './addUpReturnGift/NewAddUpReturnGift'; // 累计消费送礼
 import NewWakeUpReturnGift from './wakeUpReturnGift/NewWakeUpReturnGift'; // 唤醒送礼
-import NewOnLineReturnGift from './onLineReturnGift/NewOnLineReturnGift'; // 线上送礼
 import NewColorsEggCat from './colorsEggCat/NewColorsEggCat'; // 彩蛋猫,评价送礼详情页
 import ActivitySidebar from '../SaleCenterNEW/ActivitySidebar/ActivitySidebar'; // 左侧展示信息
 import GiveGiftsToNewFollowers from './giveGiftsToNewFollowers/wrapper';
@@ -55,18 +54,18 @@ const _pages = [
     NewPerfectReturnGift, // 完善资料送礼
     NewUpGradeReturnGift, // 升级送礼
     NewAddUpReturnGift, // 累计消费送礼
-    NewOnLineReturnGift, // 线上送礼
+    null,
     // NewColorsEggCat, 彩蛋猫活动下线 key 70
     NewWakeUpReturnGift, // 唤醒送礼
     NewColorsEggCat, // 评价送礼，复用彩蛋猫
     GiveGiftsToNewFollowers, // 关注送礼 key 31
-    ShareGifts,
-    ExpansionGifts,
-    InstantDiscount,
-    RecommendGifts,
-    AccumulateGift,
-    PayAfter,
-    NewCheckGift,
+    ShareGifts,//分享裂变
+    ExpansionGifts,//膨胀大礼包 废弃
+    InstantDiscount,//桌边砍 废弃
+    RecommendGifts,//推荐有礼
+    AccumulateGift,//集点卡
+    PayAfter,//支付后广告
+    NewCheckGift,//签到
 ];
 
 // 模态框内容组件， 左边为SideBar, 内容区域为 CustomProgressBar
@@ -126,6 +125,7 @@ class ActivityMain extends React.Component {
             isCopy: this.props.isCopy,
             promotionType: activityCategories[index].key,
             component: _pages[index],
+            isView: !this.props.isUpdate
         });
     }
     render() {

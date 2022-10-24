@@ -1,5 +1,5 @@
 import { closePage, decodeUrl, jumpPage } from '@hualala/platform-base';
-import { Col } from 'antd';
+import { Col, message } from 'antd';
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import HeaderTitle from '../components/HeaderTitle';
@@ -112,7 +112,6 @@ class PromotionIndex extends Component {
                 resultValues.push(values);
             });
         }
-
         const conditionFormsKeys = Object.keys(newConditionForms);
         let tempObj = {};
         for (let i = 0; i < conditionFormsKeys.length; i++) {
@@ -159,7 +158,6 @@ class PromotionIndex extends Component {
         Object.keys(tempObj).sort((a, b) => a - b).forEach((key, index) => {
             conditionConfig[index] = tempObj[key]
         })
-
         if (isValid) {
             try {
                 let requestPramas = {}
@@ -185,7 +183,7 @@ class PromotionIndex extends Component {
                         })
                     }
                     if (item.gift && item.gift.length > 0) {
-                        item.gift.map(item => {
+                        item.gift.map((item) => {
                             if (item.giftID) {
                                 item.presentType = 1;
                                 let effectType = '';
@@ -213,6 +211,16 @@ class PromotionIndex extends Component {
                         })
                     }
                     if (item.normal) {
+                        // 券包
+                        if (item.normal.couponName) {
+                            const { couponPackageName, couponPackageID } = item.normal.couponName
+                            gifts.push({
+                                giftID: couponPackageID,
+                                giftName: couponPackageName,
+                                presentType: 4,
+                                totalValue: item.normal.totalValue, // 券包库存
+                            })
+                        }
                         if (item.normal.presentType) {
                             delete item.normal.presentType
                         }
@@ -224,7 +232,7 @@ class PromotionIndex extends Component {
                     eventGiftConditionList[index].sortIndex = index + 1;
                 })
                 let event = {}
-                resultValues.forEach(item => {
+                resultValues.forEach((item) => {
                     if (item.NoShareBenifit) {
                         eventMutexDependRuleInfos = item.NoShareBenifit;
                     }
@@ -269,7 +277,7 @@ class PromotionIndex extends Component {
                             }
                         ]
                     } else if (mutexDependType == 2) {
-                        eventMutexDependRuleInfos = eventMutexDependRuleInfos.map(item => {
+                        eventMutexDependRuleInfos = eventMutexDependRuleInfos.map((item) => {
                             return {
                                 mutexDependType: 1,
                                 ruleType: 10,
@@ -283,9 +291,18 @@ class PromotionIndex extends Component {
                     eventMutexDependRuleInfos = []
                 }
                 let foodScopeList = [];
+                const stageTypes = eventGiftConditionList.map(item => +item.stageType);
+                if (stageTypes.includes(3) || stageTypes.includes(4)) {
+                    if (!activityRange) {
+                        return message.warning('适用菜品分类不能为空')
+                    }
+                }
                 if (activityRange) {
                     const { categoryOrDish, dishes, excludeDishes, foodCategory } = activityRange;
                     if (categoryOrDish == 0) {
+                        if (Array.isArray(foodCategory) && foodCategory.length == 0) {
+                            return message.warning('适用菜品分类不能为空')
+                        }
                         foodCategory.forEach(item => {
                             foodScopeList.push({
                                 scopeType: '1',
@@ -306,6 +323,9 @@ class PromotionIndex extends Component {
                             });
                         })
                     } else if (categoryOrDish == 1) {
+                        if (Array.isArray(dishes) && dishes.length == 0) {
+                            return message.warning('适用菜品不能为空')
+                        }
                         dishes.forEach(item => {
                             foodScopeList.push({
                                 scopeType: '2',

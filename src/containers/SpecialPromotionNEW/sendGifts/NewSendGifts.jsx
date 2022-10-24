@@ -43,6 +43,7 @@ class NewSendGifts extends NewPromotion {
                 title: `${this.props.intl.formatMessage(STRING_SPE.d2c8987eai0135)}`,
                 content: (<StepOne
                     type={this.props.promotionType}
+                    isView={this.props.isView}
                     isCopy={this.props.isCopy}
                     getSubmitFn={(handles) => {
                         this.handles[0] = handles;

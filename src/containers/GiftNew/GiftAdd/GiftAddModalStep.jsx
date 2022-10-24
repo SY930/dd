@@ -94,7 +94,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 const hasMallArr = ['10','20','21'];
-const GroupSepcial = ['1155', 1155, 8, '8', 5726, '5726'];
+const GroupSepcial = ['1155', 1155, 8, '8', 5726, '5726', '341930', 341930];
 const describeAry = ['代金券', '菜品优惠券', '菜品兑换券'];
 const processFinalCategoryAndDishData = (params, property,value) => {
     if (params.hasOwnProperty(property)) {
@@ -766,9 +766,9 @@ class GiftAddModalStep extends React.PureComponent {
         params.priceSortRule = params.discountSortRule;
         delete params.discountSortRule;
 
-        params.stageAmount = params.stageAmount.number;
+        params.stageAmount = params.stageAmount && params.stageAmount.hasOwnProperty('number') ? params.stageAmount.number : params.stageAmount;
         // params.foodSelectType = 0;
-        params.giveFoodCount = params.giveFoodCount.number;
+        params.giveFoodCount = params.giveFoodCount && params.giveFoodCount.hasOwnProperty('number') ? params.giveFoodCount.number : params.giveFoodCount;
         // params.couponFoodScopes = (params.buyGiveFoods.dishes || []).map((food) => {
         //     return {
         //         targetID: food.itemID,
@@ -1283,7 +1283,9 @@ class GiftAddModalStep extends React.PureComponent {
         axiosData(callServer, { ...params, groupName }, null, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then((data) => {
             endSaving();
             message.success('成功', 3);
-            cancelCreateOrEditGift()
+            cancelCreateOrEditGift({
+                saveDone: true
+            })
         }).catch(err => {
             endSaving();
         });

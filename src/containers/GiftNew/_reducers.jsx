@@ -110,6 +110,7 @@ export function editGiftInfoNew($$state = $initialEditState, action) {
                 .set('operationType', 'add')
                 .set('currentGiftType', action.payload.value)
                 .set('createOrEditFormData', Immutable.fromJS(action.payload.data))
+                .set('saveDone', false)
                 ;
         // 编辑礼品
         case GIFT_NEW_START_EDIT_GIFT:
@@ -118,6 +119,7 @@ export function editGiftInfoNew($$state = $initialEditState, action) {
                 .set('operationType', action.payload.operationType)
                 .set('currentGiftType', action.payload.value)
                 .set('createOrEditFormData', Immutable.fromJS(action.payload.data))
+                .set('saveDone', false)
                 ;
         case GIFT_NEW_CANCEL_CREATE_EDIT_GIFT:
             return $$state
@@ -125,6 +127,7 @@ export function editGiftInfoNew($$state = $initialEditState, action) {
                 .set('currentGiftType', null)
                 .set('operationType', 'add')
                 .set('createOrEditFormData', Immutable.fromJS({}))
+                .set('saveDone', action.payload.saveDone)
                 ;
         case GIFT_NEW_CANCEL_START_SAVING_GIFT:
             return $$state

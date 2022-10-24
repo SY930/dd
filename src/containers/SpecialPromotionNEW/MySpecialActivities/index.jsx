@@ -86,6 +86,11 @@ import { Iconlist } from "../../../components/basic/IconsFont/IconsFont";
 import { axiosData, checkAuthLicense } from "../../../helpers/util";
 import { queryWeixinAccounts } from "../../../redux/reducer/saleCenterNEW/queryWeixinAccounts.reducer";
 import {
+    fetchPromotionCategoriesAC,
+    fetchPromotionTagsAC,
+} from "../../../redux/actions/saleCenterNEW/promotionBasicInfo.action";
+import { fetchPromotionScopeInfo } from "../../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
+import {
     SPECIAL_LOOK_PROMOTION_QUERY,
     SPECIAL_PROMOTION_DELETE,
     SPECIAL_PROMOTION_QUERY,
@@ -115,6 +120,7 @@ import newPromotionCardPageConfig from '../../SaleActives/NewPromotionCardPages/
 import { updateCurrentPromotionPageAC } from '../../SaleActives/NewPromotionCardPages/store/action';
 import { consumeGivingWhiteList } from "containers/GiftNew/components/whiteList.js";
 
+const Immutable = require("immutable");
 const confirm = Modal.confirm;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
@@ -214,6 +220,18 @@ const mapDispatchToProps = (dispatch) => {
             return dispatch(getAuthLicenseData(opts));
         },
         updateCurrentPromotionPage: opts => dispatch(updateCurrentPromotionPageAC(opts)),
+        // 查询类别
+        fetchPromotionCategories: opts => {
+            dispatch(fetchPromotionCategoriesAC(opts));
+        },
+        // 查询标签
+        fetchPromotionTags: opts => {
+            dispatch(fetchPromotionTagsAC(opts));
+        },
+        // 查询品牌、店铺等信息
+        fetchPromotionScopeInfo: opts => {
+            dispatch(fetchPromotionScopeInfo(opts));
+        },
     };
 };
 
@@ -312,6 +330,8 @@ class MySpecialActivities extends React.Component {
             sortedChannelList: [],
             viewRuleVisibles: false,
             paramsValueList: [],
+            eventCode: "", //活动编码
+            expand: false,//高级查询展开收起
         };
         this.cfg = {
             eventWay: [
@@ -818,6 +838,19 @@ class MySpecialActivities extends React.Component {
     }
 
     componentDidMount() {
+        this.props.fetchPromotionCategories({
+            groupID: this.props.user.accountInfo.groupID,
+            phraseType: "0",
+        });
+
+        this.props.fetchPromotionTags({
+            groupID: this.props.user.accountInfo.groupID,
+            phraseType: "1",
+        });
+
+        this.props.fetchPromotionScopeInfo({
+            _groupID: this.props.user.accountInfo.groupID,
+        });
         this.queryWechatMpInfo();
         // 把groupID传给后台，后台执行自动终止
         this.props.updateExpiredActiveState({
@@ -2000,6 +2033,11 @@ class MySpecialActivities extends React.Component {
             isActive,
             eventName,
             createScenes,
+            eventCode,
+            promotionCategory,
+            promotionTags,
+            promotionBrands,
+            promotionShop,
         } = this.state;
         const opt = {};
         if (queryEventWay !== "" && queryEventWay !== undefined) {
@@ -2016,6 +2054,21 @@ class MySpecialActivities extends React.Component {
         }
         if (createScenes !== "" && createScenes !== undefined) {
             opt.createScenes = createScenes;
+        }
+        if (eventCode !== "" && eventCode !== undefined) {
+            opt.eventCode = eventCode;
+        }
+        if (promotionCategory !== "" && promotionCategory !== undefined) {
+            opt.categoryName = promotionCategory;
+        }
+        if (promotionTags !== "" && promotionTags != "0") {
+            opt.tag = promotionTags;
+        }
+        if (promotionBrands !== "" && promotionBrands !== undefined) {
+            opt.brandID = promotionBrands;
+        }
+        if (promotionShop !== "" && promotionShop !== undefined) {
+            opt.shopID = promotionShop;
         }
 
         if (isActive !== "") {
@@ -2139,6 +2192,169 @@ class MySpecialActivities extends React.Component {
         this.setState({
             promotionDateRange: value,
         });
+    }
+
+    onTreeSelect = (value, treeData) => {
+        const shopsInfo = [];
+        treeData.forEach(td => {
+            if (td.children) {
+                td.children.map(tdc => {
+                    shopsInfo.push(tdc);
+                });
+            }
+        });
+        if (value != undefined) {
+            if (value.match(/[-]/g).length != 2) {
+                return null;
+            }
+            const selectedShopID = shopsInfo.find(si => {
+                return si.value === value;
+            }).shopID;
+
+            this.setState({
+                selectedShop: value,
+                promotionShop: selectedShopID
+            });
+        } else {
+            this.setState({
+                selectedShop: null,
+                promotionShop: value
+            });
+        }
+    }
+
+    renderShopsInTreeSelectMode() {
+        const treeData = Immutable.List.isList(this.props.promotionScopeInfo.getIn(["refs", "data", "constructedData"])) ? this.props.promotionScopeInfo.getIn(["refs", "data", "constructedData"]).toJS() : this.props.promotionScopeInfo.getIn(["refs", "data", "constructedData"]);
+        const tProps =
+            this.state.selectedShop != null
+                ? {
+                      treeData,
+                      value: this.state.selectedShop,
+                      onChange: value => this.onTreeSelect(value, treeData),
+                      placeholder: '请选择店铺',
+                      allowClear: true
+                  }
+                : {
+                      treeData,
+                      value: undefined,
+                      onChange: value => this.onTreeSelect(value, treeData),
+                      placeholder: '请选择店铺',
+                      allowClear: true
+                  };
+        return <TreeSelect showSearch {...tProps} style={{ width: 150 }} dropdownStyle={{ minWidth: 150 }} dropdownMatchSelectWidth={false} treeNodeFilterProp="label" />;
+    }
+
+    renderAdvancedFilter = () => {
+        let categories = [],
+            tags = [],
+            brands = [];
+        const $categories = this.props.promotionBasicInfo.getIn(["$categoryList", "data"]);
+        if (Immutable.List.isList($categories)) {
+            categories = $categories.toJS();
+        }
+        const $tags = this.props.promotionBasicInfo.getIn(["$tagList", "data"]);
+        if (Immutable.List.isList($tags)) {
+            tags = $tags.toJS();
+        }
+        const $brands = this.props.promotionScopeInfo.getIn(["refs", "data", "brands"]);
+        if (Immutable.List.isList($brands)) {
+            brands = $brands.toJS();
+        }
+        if (this.state.expand) {
+            return (
+                <div className="layoutsSeniorQuery">
+                    <ul>
+                        <li><h5>适用店铺</h5></li>
+                        <li>{this.renderShopsInTreeSelectMode()}</li>
+                        <li><h5>统计类别</h5></li>
+                        <li>
+                            <Select
+                                placeholder=""
+                                onChange={value => {
+                                    this.setState({
+                                        promotionCategory: value
+                                    });
+                                }}
+                                allowClear={true}
+                                style={{ width: 120 }}
+                            >
+                                {categories.map((category, index) => {
+                                    return (
+                                        <Option key={`${index}`} value={`${category.name}`}>
+                                            {category.name}
+                                        </Option>
+                                    );
+                                })}
+                            </Select>
+                        </li>
+                        <li><h5>标签</h5></li>
+                        <li>
+                            <Select
+                                style={{ width: 120 }}
+                                allowClear={true}
+                                placeholder=""
+                                onChange={tags => {
+                                    this.setState({
+                                        promotionTags: tags || ""
+                                    });
+                                }}
+                            >
+                                {tags.map((tag, index) => {
+                                    return (
+                                        <Option key={`${index}`} value={`${tag.name}`}>
+                                            {tag.name}
+                                        </Option>
+                                    );
+                                })}
+                            </Select>
+                        </li>
+                        <li> <h5>品牌</h5></li>
+                        <li>
+                            <Select
+                                style={{ width: 100 }}
+                                allowClear={true}
+                                placeholder=""
+                                onChange={brands => {
+                                    this.setState({
+                                        promotionBrands: brands
+                                    });
+                                }}
+                            >
+                                {brands.map((brand, index) => {
+                                    return (
+                                        <Option key={`${index}`} value={`${brand.brandID}`}>
+                                            {brand.brandName}
+                                        </Option>
+                                    );
+                                })}
+                            </Select>
+                        </li>
+                    </ul>
+                </div>
+            );
+        }
+        return null;
+    }
+
+    /**
+     * @description toggle the advanced qualification selection.
+     * */
+    toggleExpandState = () => {
+        const expand = this.state.expand;
+        let opt = {
+            expand: !expand
+        };
+        if (!opt.expand) {
+            opt = {
+                ...opt,
+                selectedShop: undefined,
+                promotionCategory: undefined,
+                promotionTags: undefined,
+                promotionBrands: undefined,
+                promotionShop: undefined,
+            };
+        }
+        this.setState(opt);
     }
 
     renderFilterBar() {
@@ -2294,6 +2510,21 @@ class MySpecialActivities extends React.Component {
                             </Select>
                         </li>
                         <li>
+                            <h5>活动编码</h5>
+                        </li>
+                        <li>
+                            <Input
+                                placeholder="活动编码"
+                                maxLength={20}
+                                value={this.state.eventCode}
+                                onChange={(e) => {
+                                    this.setState({
+                                        eventCode: e.target.value,
+                                    });
+                                }}
+                            />
+                        </li>
+                        <li>
                             <Authority
                                 rightCode={SPECIAL_PROMOTION_QUERY}
                                 entryId={SPECIAL_PROMOTION_MANAGE_PAGE}
@@ -2308,8 +2539,14 @@ class MySpecialActivities extends React.Component {
                                 </Button>
                             </Authority>
                         </li>
+                        {/* <li>
+                            <a onClick={this.toggleExpandState}>
+                                高级查询{this.state.expand ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
+                            </a>
+                        </li> */}
                     </ul>
                 </div>
+                {this.renderAdvancedFilter()}
             </div>
         );
     }
@@ -3219,8 +3456,8 @@ class MySpecialActivities extends React.Component {
             },
             {
                 title: "活动编码",
-                dataIndex: "itemID",
-                key: "itemID",
+                dataIndex: "eventCode",
+                key: "eventCode",
                 fixed: "left",
                 width: 180,
                 // ellipsis: true,

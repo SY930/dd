@@ -476,11 +476,11 @@ export const REPEAT_PROMOTION_TYPES = [
     {
         title: "消费送礼",
         isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
-        text: "消费后获得奖励将使顾客下次光临的时间大大提前",
-        tags: ["pos", SALE_LABEL.k639vgbm],
-        signs: ["pos", "app"],
-        example: "",
-        key: "87",
+        text: '消费后获得奖励将使顾客下次光临的时间大大提前',
+        tags: ['pos', SALE_LABEL.k639vgbm],
+        signs: ['pos', 'app'],
+        example: '',
+        key: '87',
         right: 16,
         bottom: 6,
         isNew: new Date("2022/04/12").getTime()
@@ -631,8 +631,8 @@ export const SALE_PROMOTION_TYPES = [
         isSpecial: false,
         text: SALE_LABEL.k67cp29y,
         example: SALE_LABEL.k67cpqm7,
-        tags: [SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9],
-        signs: ['wx'],
+        tags: [SALE_LABEL.k639vgjy, SALE_LABEL.k5krn6z9, '小程序'],
+        signs: ['wx', 'app'],
         key: '5010',
         right: 12,
         bottom: 15,
