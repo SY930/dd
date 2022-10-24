@@ -2,12 +2,12 @@
 import React from 'react';
 import { Col, Form, Select } from 'antd';
 import styles from "./style.less";
-import AdminTagModal from "./AdminTagModal";
+import NewAddCategorys from "./NewAddCategorys";
 import { axiosData } from 'helpers/util';
 
 const Option = Select.Option;
 
-class TagComp extends React.Component {
+class CategoryFormItem extends React.Component {
     state = {
         phraseList: [], // 标签列表
         modalVisible: false,
@@ -62,7 +62,7 @@ class TagComp extends React.Component {
         const { decorator, key } = this.props;
         const { modalVisible, phraseList } = this.state;
         return (
-            <Col span={24} className={styles.tagComp}>
+            <Col span={24} className={styles.CategoryFormItem}>
                 {
                     decorator({
                         key
@@ -85,7 +85,7 @@ class TagComp extends React.Component {
                 <span className={styles.adminTag} onClick={() => this.setState({ modalVisible: true })}>管理标签</span>
                 {
                     modalVisible &&
-                    <AdminTagModal
+                    <NewAddCategorys
                         onClose={this.onClose}
                         phraseType={this.props.phraseType}
                     />
@@ -95,5 +95,5 @@ class TagComp extends React.Component {
     }
 }
 
-export default TagComp;
+export default CategoryFormItem;
 

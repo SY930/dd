@@ -88,7 +88,7 @@ import {
 import { CategoryAndFoodSelectors } from '../../SaleCenterNEW/common/GiftCategoryAndFoodSelectors';
 import { GiftCategoryAndFoodSelector } from '../../SaleCenterNEW/common/CategoryAndFoodSelector';
 import { GiftCategoryAndFoodSelectorNew } from '../../SaleCenterNEW/common/CategoryAndFoodSelectorNew';
-import TagComp from './TagComp/index';
+import CategoryFormItem from './CategoryFormItem/index';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -2924,7 +2924,7 @@ class GiftAddModalStep extends React.PureComponent {
             type: 'custom',
             render: (decorator, form) => {
                 return (
-                    <TagComp
+                    <CategoryFormItem
                         decorator={decorator}
                         form={form}
                         key='category'

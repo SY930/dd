@@ -9,7 +9,7 @@ const formItemLayout = {
     wrapperCol: { span: 18 },
 }
 
-class AdminTagModal extends React.Component {
+class NewAddCategorys extends React.Component {
     state = {
         phraseList: [],
         phrase: '',
@@ -170,7 +170,8 @@ class AdminTagModal extends React.Component {
                                     }}>
                                     <Spin />
                                 </div>
-                                : phraseList && phraseList.map((cat) => {
+                                :
+                                phraseList && phraseList.map((cat) => {
                                     return (
                                         <Tag
                                             key={cat.itemID}
@@ -194,6 +195,6 @@ class AdminTagModal extends React.Component {
     }
 }
 
-export default Form.create()(AdminTagModal)
+export default Form.create()(NewAddCategorys)
 
 

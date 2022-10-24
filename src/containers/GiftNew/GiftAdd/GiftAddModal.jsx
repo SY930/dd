@@ -33,7 +33,7 @@ import SellerCode from "../components/SellerCode";
 import FakeBorderedLabel from "../components/FakeBorderedLabel";
 import GiftInfoHaveCoupon from './GiftInfoHaveCoupon';
 import decorator from '@hualala/react-lazyload/lib/decorator';
-import TagComp from './TagComp/index';
+import CategoryFormItem from './CategoryFormItem/index';
 
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -1040,7 +1040,7 @@ class GiftAddModal extends React.Component {
                 type: 'custom',
                 render: (decorator, form) => {
                     return (
-                        <TagComp
+                        <CategoryFormItem
                             decorator={decorator}
                             form={form}
                             key='category'
