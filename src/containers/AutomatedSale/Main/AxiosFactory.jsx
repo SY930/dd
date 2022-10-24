@@ -85,17 +85,17 @@ async function httpApaasActivityQueryDetail(params = {}) {
  */
 function httpEnableOrDisableMaPromotionEvent(params = {}) {
     return new Promise(async (resolve, reject) => {
-        const { groupID: _groupID } = getAccountInfo();
-        let method = '/automation/marketingAutomationService_enableMaPromotionEvent.ajax';
+        const { groupID } = getAccountInfo();
+        let method = '/maEvent/enable.ajax';
         if (params.status == 1) {
-            method = '/automation/marketingAutomationService_disableMaPromotionEvent.ajax';
+            method = '/maEvent/disable.ajax';
         }
         delete params.status;
         const allParams = {
             service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
             type,
             data: {
-                _groupID,
+                groupID,
                 ...params
             },
             method
@@ -116,13 +116,13 @@ function httpEnableOrDisableMaPromotionEvent(params = {}) {
  */
 function httpDeleteMaPromotionEvent(params = {}) {
     return new Promise(async (resolve, reject) => {
-        const { groupID: _groupID } = getAccountInfo();
-        let method = '/automation/marketingAutomationService_deleteMaPromotionEvent.ajax';
+        const { groupID } = getAccountInfo();
+        let method = '/maEvent/delete.ajax';
         const allParams = {
             service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
             type,
             data: {
-                _groupID,
+                groupID,
                 ...params
             },
             method

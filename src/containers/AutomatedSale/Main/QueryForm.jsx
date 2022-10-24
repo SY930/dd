@@ -4,12 +4,20 @@ import BaseForm from 'components/common/BaseForm';
 
 export const statusList = [
     {
-        label: '已启用',
+        label: '全部',
         value: 1
     },
     {
-        label: '已禁用',
+        label: '进行中',
         value: 2
+    },
+    {
+        label: '已暂停',
+        value: 3
+    },
+    {
+        label: '已结束',
+        value: 4
     },
 ]
 
@@ -26,7 +34,7 @@ const formItems = {
         wrapperCol: { span: 8 },
         render: (decorator) => decorator({})(
             <Select
-                style={{width: '100px'}}
+                style={{ width: '100px' }}
                 placeholder="请选择"
                 allowClear
             >
@@ -41,7 +49,7 @@ const formItems = {
 };
 
 export default class QueryForm extends React.PureComponent {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.queryFrom = null;
     }
@@ -52,14 +60,14 @@ export default class QueryForm extends React.PureComponent {
     render() {
         const formKeys = Object.keys(formItems);
         return (
-            <div style={{display: 'flex'}}>
+            <div style={{ display: 'flex' }}>
                 <BaseForm
                     getForm={form => this.queryFrom = form}
                     formItems={formItems}
                     formKeys={formKeys}
                     layout="inline"
                 />
-                <Button style={{margin: '0 10px'}} type='primary' onClick={this.onQuery}>查询</Button>
+                <Button style={{ margin: '0 10px' }} type='primary' onClick={this.onQuery}>查询</Button>
             </div>
         )
     }

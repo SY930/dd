@@ -59,11 +59,21 @@ export default class Main extends React.PureComponent {
             loading: true
         }, () => {
             httpApaasActivityQueryByPage(concatParams).then(res => {
-                let { itemList: list } = res;
-                let { pageHeader: { totalSize, pageCount } } = res;
+                let { itemList: list, processingCount = 0, stopedCount = 0, endedCount = 0 } = res;
+                console.log('res====', res);
+                let { pageHeader: {
+                    totalSize = 0,
+                    pageCount,
+                } } = res;
+                let statusPanels = this.state.statusPanels;
+                statusPanels[0].value = totalSize;
+                statusPanels[1].value = processingCount;
+                statusPanels[2].value = stopedCount;
+                statusPanels[3].value = endedCount;
                 this.setState({
                     loading: false,
                     list,
+                    statusPanels,
                     pageObj: {
                         ...pagingParams,
                         total: totalSize,
@@ -152,7 +162,7 @@ export default class Main extends React.PureComponent {
             <Col span={24} className={styles.automatedSale}>
                 <Col span={24} style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <h2>智能营销</h2>
-                    <Button type='primary' onClick={() => this.onOperate('', 'add')}>创建活动</Button>
+                    <Button type='primary' icon="plus" onClick={() => this.onOperate('', 'add')}>创建活动</Button>
                 </Col>
                 <Col span={24} className={styles.queryFrom}>
                     <QueryForm

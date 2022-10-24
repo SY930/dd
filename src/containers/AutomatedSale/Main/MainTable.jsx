@@ -58,9 +58,61 @@ class MainTable extends Component {
                 render: (text, record, index) => `${index + 1}`
             },
             {
+                title: '活动名称',
+                dataIndex: 'flowName',
+                className: tc,
+                width: 90,
+            },
+            {
+                title: '活动编码',
+                dataIndex: 'flowCode',
+                className: tc,
+                width: 80,
+            },
+            {
+                title: '活动类型',
+                dataIndex: 'groupID',
+                className: tc,
+                width: 80,
+            },
+            {
+                title: '创建时间',
+                className: tc,
+                width: 100,
+                render: (text, record, index) => {
+                    return `${transformTime(record.createStamp)}`;
+                }
+            },
+            {
+                title: '创建人/修改人',
+                width: 100,
+                render: (text, record, index) => {
+                    return (
+                        <span>
+                            {record.creator} {record.modifier ? `/ ${record.modifier}` : null}
+                        </span>
+                    )
+                }
+            },
+            {
+                title: '启用/暂停',
+                dataIndex: 'status',
+                className: tc,
+                width: 60,
+                render: (text, record) => (
+                    <Switch
+                        checked={record.status == 1}
+                        size="small"
+                        className={styles.switchBox}
+                        onChange={() => this.changeStatus(record)}
+                    />
+                )
+            },
+            {
                 title: '操作',
                 className: tc,
                 width: 100,
+                // fixed: 'right',
                 render: (text, record) => {
                     return (
                         <div className={styles.optBtn}>
@@ -75,54 +127,6 @@ class MainTable extends Component {
                     )
                 }
             },
-            {
-                title: '启用/禁用',
-                dataIndex: 'status',
-                className: tc,
-                width: 100,
-                render: (text, record) => (
-                    <Switch
-                        checked={record.status == 1}
-                        checkedChildren="启用"
-                        unCheckedChildren="禁用"
-                        size="small"
-                        className={styles.switchBox}
-                        onChange={() => this.changeStatus(record)}
-                    />
-                )
-            },
-            {
-                title: '活动编码',
-                dataIndex: 'flowCode',
-                className: tc,
-                width: 150,
-            },
-            {
-                title: '活动名称',
-                dataIndex: 'flowName',
-                className: tc,
-                width: 150,
-            },
-            // {
-            //     title: '活动类型',
-            //     dataIndex: 'flowName',
-            //     className: tc,
-            //     width: 150,
-            // },
-            {
-                title: '创建人/修改人',
-                width: 200,
-                render: (text, record, index) => `${record.creator} / ${record.modifier}`
-            },
-            {
-                title: '创建时间/修改时间',
-                className: tc,
-                width: 200,
-                render: (text, record, index) => {
-                    return `${transformTime(record.createStamp)} / ${transformTime(record.actionStamp)}`;
-                }
-            },
-
         ];
     }
 
@@ -153,7 +157,7 @@ class MainTable extends Component {
                     columns={columns}
                     rowKey="itemID"
                     dataSource={dataSource}
-                    scroll={{ x: 1600, y: 'calc(100vh - 440px)' }}
+                    // scroll={{ x: 1200, y: 'calc(100vh - 440px)' }}
                     pagination={pagination}
                 />
             </div>
