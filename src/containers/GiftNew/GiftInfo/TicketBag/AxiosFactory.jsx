@@ -293,18 +293,21 @@ async function postStock(data) {
 /**
  * 查看券包是否被引用
  */
-async function httpCheckBeforeDeleteCouponPackage(data){
+async function httpCheckBeforeDeleteCouponPackage(data) {
     const method = `${api}checkBeforeDeleteCouponPackage.ajax`;
     const params = { service, type, data, method };
     const response = await axios.post(url + method, params);
     const { code, message: msg, saveMoneyNameList = [], promotionEventNameList = [], quotaCardNameList = [], shopGoodNameList = [] } = response;
     if (code === '000') {
-        if(
+        if (msg == '券包已发出，发放类型为周期发放礼品的券包不可停用') {
+            return msg;
+        }
+        if (
             saveMoneyNameList.length == 0 &&
-            promotionEventNameList.length == 0 && 
-            quotaCardNameList.length == 0 && 
+            promotionEventNameList.length == 0 &&
+            quotaCardNameList.length == 0 &&
             shopGoodNameList.length == 0
-        ){
+        ) {
             return []
         } else {
             return [

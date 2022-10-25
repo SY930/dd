@@ -52,6 +52,17 @@ class MainTable extends Component {
         const params = { couponPackageID, groupID };
         const { couponSendWay } = record;
         httpCheckBeforeDeleteCouponPackage(params).then((res) => {
+            if (typeof res == 'string') {
+                return Modal.warning({
+                    okText: "知道了",
+                    content: (
+                        <div className={styles.couponWarningBox}>
+                            {res}
+                        </div>
+                    ),
+                    onOk: () => { },
+                })
+            }
             if (Array.isArray(res)) {
                 if (res.length == 0) {
                     Modal.confirm({
@@ -74,43 +85,31 @@ class MainTable extends Component {
                         },
                     })
                 } else {
-                    if (couponSendWay == 1) {
-                        Modal.warning({
-                            title: '券包被占用，不可停用',
-                            okText: "知道了",
-                            content: (
-                                <div className={styles.couponWarningBox}>
-                                    {
-                                        res.map(item => (
-                                            <div key={item.label} className={styles.label}>
+                    Modal.warning({
+                        title: '券包被占用，不可停用',
+                        okText: "知道了",
+                        content: (
+                            <div className={styles.couponWarningBox}>
+                                {
+                                    res.map(item => (
+                                        <div key={item.label} className={styles.label}>
+                                            {
+                                                Array.isArray(item.list) && item.list.length > 0 && <div className={styles.title}>该券包被以下{item.label}使用，如需停用，请取消引用</div>
+                                            }
+                                            <div className={styles.content}>
                                                 {
-                                                    Array.isArray(item.list) && item.list.length > 0 && <div className={styles.title}>该券包被以下{item.label}使用，如需停用，请取消引用</div>
+                                                    item.list.map(content => (
+                                                        <span key={content} className={styles.contentItem}>【{content}】</span>
+                                                    ))
                                                 }
-                                                <div className={styles.content}>
-                                                    {
-                                                        item.list.map(content => (
-                                                            <span key={content} className={styles.contentItem}>【{content}】</span>
-                                                        ))
-                                                    }
-                                                </div>
                                             </div>
-                                        ))
-                                    }
-                                </div>
-                            ),
-                            onOk: () => { },
-                        })
-                    } else if(couponSendWay == 2){
-                        Modal.warning({
-                            okText: "知道了",
-                            content: (
-                                <div className={styles.couponWarningBox}>
-                                    券包已发出，发放类型为周期发放礼品的券包不可停用
-                                </div>
-                            ),
-                            onOk: () => { },
-                        })
-                    }
+                                        </div>
+                                    ))
+                                }
+                            </div>
+                        ),
+                        onOk: () => { },
+                    })
                 }
             }
         })
