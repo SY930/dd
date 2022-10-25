@@ -12,8 +12,11 @@ import {
     Input,
     Radio,
     Form,
-    Switch
+    Switch,
+    Checkbox,
+    Button
 } from 'antd';
+import Protocol from './Protocol'
 import styles from './GiftAdd.less';
 import BaseForm from '../../../components/common/BaseForm';
 import GiftCfg from '../../../constants/Gift';
@@ -326,6 +329,9 @@ class GiftAddModal extends React.Component {
         this.baseForm.setFieldsValue({
             quotaCardGiftConfList: params
         });
+    }
+    seeProtocal = () => {
+        this.refs.protocol.seeProtocal && this.refs.protocol.seeProtocal()
     }
     render() {
         const { gift: { name: describe, value, data }, visible, type, treeData } = this.props;
@@ -1020,6 +1026,18 @@ class GiftAddModal extends React.Component {
         }
         return (
             <div className={styles.giftAddModal}>
+                <Protocol ref='protocol' />
+                {value == '90' ? <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 15 }}>
+                    <div>
+                        <Checkbox
+                            value={this.props.isCheckedAgreement}
+                            onChange={this.props.changeProtocol}
+                        >
+                            您通过网络点击、勾选、确认或以其它方式选择接受本声明的，即表示您已理解并同意本声明，如您不同意接受本协议的任意内容，或者无法准确理解相关条款含义的，请不要进行后续操作。
+                        </Checkbox>
+                    </div>
+                    <Button type='primary' onClick={this.seeProtocal} style={{ marginLeft: 10 }}>查看声明</Button>
+                </div> : null}
                 <BaseForm
                     getForm={form => this.baseForm = form}
                     getRefs={refs => this.refMap = refs}
