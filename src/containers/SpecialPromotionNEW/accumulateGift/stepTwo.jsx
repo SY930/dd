@@ -75,6 +75,7 @@ class StepTwo extends React.Component {
         const consumeType = `${props.specialPromotionInfo.getIn(['$eventInfo', 'consumeType'], '8')}`;
         this.state = {
             radioType: consumeType >= 8 ? 0 : 1,
+            amountType: props.specialPromotionInfo.getIn(['$eventInfo', 'amountType']) || 1,//集点卡金额核算字段
             foodScopeList: props.specialPromotionInfo.getIn(['$eventInfo', 'foodScopeList'], Immutable.fromJS([])).toJS(),
             needCount: props.specialPromotionInfo.getIn(['$eventInfo', 'needCount']) || undefined,
             groupID: props.groupID || undefined,
@@ -181,6 +182,11 @@ class StepTwo extends React.Component {
         this.setState({
             radioType: value,
             consumeType: value === 0 ? '8' : '4',
+        })
+    }
+    handleAmountTypeChange = ({ target: { value } }) => {
+        this.setState({
+            amountType: value,
         })
     }
     handleFoodPriceTypeChange = ({ target: { value } }) => {
@@ -444,6 +450,18 @@ class StepTwo extends React.Component {
                         <Radio value={1}>按数量</Radio>
                     </RadioGroup>
                 </FormItem>
+                <FormItem
+                    label={'金额核算'}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <RadioGroup onChange={this.handleAmountTypeChange} value={this.state.amountType}>
+                        <Radio value={1}>实收金额</Radio>
+                        <Radio value={2}>账单金额</Radio>
+                    </RadioGroup>
+                </FormItem>
+
                 <FormItem
                     label=" "
                     className={styles.FormItemStyle}
