@@ -215,14 +215,13 @@ export const ruleFormItem = {
 // const KEY4 = ["validCycle"];
 // const KEY5 = ["excludedDate"];
 const ruleFormKeys = [
-    "couponType",
+    "eventRange",
     "gifts",
     // "joinType",
-    "partInTimes",
-    "countCycleDays",
+    // "partInTimes",
+    // "countCycleDays",
     // "smsGate",
-    "eventRange",
-    "advMore",
+    // "advMore",
 ];
 
 export { ruleFormKeys };

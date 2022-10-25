@@ -176,3 +176,22 @@ export async function postEvent(data) {
     message.error(msg);
     return false;
 }
+
+/**
+ *  授权信息
+ */
+export async function getAuthLicenseData(data) {
+    const { groupID } = getAccountInfo();
+    const method = '/crm/crmAuthLicenseService.queryCrmPluginLicenses.ajax';
+    const params = { service: 'HTTP_SERVICE_URL_CRM', type: 'post', data: { 
+        groupID,
+        ...data
+    }, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: obj } = response;
+    if (code === '000') {
+        return obj;
+    }
+    message.error(msg);
+    return [];
+}
