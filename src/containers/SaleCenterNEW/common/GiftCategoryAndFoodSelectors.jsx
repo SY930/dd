@@ -16,6 +16,8 @@ import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { injectIntl } from '../IntlDecor';
 import BtnFoodSelector from './BtnFoodSelector'
 
+import GoodsRef from "@hualala/sc-goodsRef"
+
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
 
@@ -78,7 +80,8 @@ class CategoryAndFoodSelector extends Component {
                 dishes: dishesObj.dishes,
                 categories: [],
                 excludeDishes: [],
-                singlePrice: []
+                singlePrice: [],
+                newGoodsObj: {},
             }
         } else {
             const {
@@ -121,6 +124,11 @@ class CategoryAndFoodSelector extends Component {
         if (this.props.allBrands.size && this.props.allCategories.size && this.props.allDishes.size) {
             this.mapSelectedValueToObjectsThenEmit()
         }
+        this.setState({
+            newGoodsObj: this.props.goodScopeRequest
+        })
+
+        
     }
     mapSelectedValueToObjectsThenEmit = () => {
         const {
@@ -470,6 +478,116 @@ class CategoryAndFoodSelector extends Component {
 
         )
     }
+
+
+    newGoodsChange = (value) =>{
+        const { newGoodsObj } = this.state;
+        this.props.getGoodsState({ newGoodsObj: {...newGoodsObj, ...value}})
+        this.setState({
+            newGoodsObj: {...value}
+        })
+    }
+
+
+
+ 
+    
+    newGoodsRender() {
+        const { intl } = this.props;
+        const k5gfsvlz = intl.formatMessage(SALE_STRING.k5gfsvlz);
+        const {
+            allBrands,
+            allCategories,
+            allDishes,
+            dishFilter,
+            dishLabel,
+            showRequiredMark,
+            showEmptyTips,
+            singleDish,
+        } = this.props;
+
+        const { newGoodsObj } = this.state;
+        const { containData = {}, containType = 1 } = newGoodsObj || {};
+
+ 
+
+//todo 选择品牌之后数据筛选
+// goodsref回显
+        // let { dishes, categories, brands } = memoizedExpandCategoriesAndDishes(allBrands, allCategories, allDishes)
+        const selectedBrands = this.props.selectedBrands.toJS();
+
+        let { goodScopeRequest } = this.props;
+
+        // if (selectedBrands.length) {
+        //     brands = brands.filter(({ value }) => value == 0 || selectedBrands.includes(value))
+        //     categories = categories.filter(({ brandID: value }) => value == 0 || selectedBrands.includes(value))
+        //     dishes = dishes.filter(({ brandID: value }) => value == 0 || selectedBrands.includes(value))
+        // }
+        // if (dishFilter) {
+        //     dishes = dishFilter(dishes)
+        // }
+        
+        // if(this.props.giftType == 21 && this.props.foodUnitType == 1){
+        //     dishes = dishes.filter((item) => item.isNeedConfirmFoodNumber == 1)
+        // }
+        
+        // const { containData } = goodScopeRequest
+
+        const businessTypesList = [
+            {
+                biz: 'ris',
+                bizName: '零售',
+                isDefault: true
+            }
+        ]
+        
+        return (
+            <div>
+                <FormItem
+                    label={'商品'}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                    required={showRequiredMark}
+                >
+                    <GoodsRef
+                        onChange={this.newGoodsChange}
+                        defaultValue={goodScopeRequest}
+                        businessTypesList={businessTypesList}
+                    />
+                </FormItem>
+                {
+                    (containData && Object.keys(containData).length === 0 || Object.values(containData)[0].length === 0)&& (
+                        <div
+                            style={{
+                                color: 'orange',
+                                overflow: 'hidden',
+                                marginBottom: '8px',
+                                width: '300px',
+                                height: '32px',
+                                background: '#FFFBE6',
+                                borderRadius: '4px',
+                                border: '1px solid #FFE58F',
+                                paddingLeft: '10px',
+                                marginLeft:this.props.giftType == 111 ? '100px': '68px',
+                                marginTop:'-10px'
+                            }}
+                        >
+                            不选择默认所有{(containType == 1)? '分类': '商品'}都适用
+                        </div>
+                    )
+                }
+            </div>
+        )
+    }
+
+
+
+
+
+
+
+
     render() {
         if (this.props.dishOnly) {
             return this.renderDishsSelectionBox()

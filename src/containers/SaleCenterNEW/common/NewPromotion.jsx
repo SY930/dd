@@ -82,12 +82,27 @@ class NewPromotion extends React.Component {
         if (!opts.shopIDLst && promotionBasicInfo.getIn(['$basicInfo', 'shopIDLst']) > 0) {
             opts.shopIDLst = promotionBasicInfo.getIn(['$basicInfo', 'shopIDLst'])
         }
+        //处理新商品组件数据
+        if(detailInfo._newGoodsCompData) {
+            opts.goodScopeRequest = detailInfo._newGoodsCompData;
+            delete opts._newGoodsCompData;
+        }
         // 和志超更改接口后的数据结构
         const { groupID, promotionName, promotionShowName, categoryName, promotionCode,
             tagLst, description, promotionType, startDate, endDate, excludedDate,
             validCycle, cityLst, brandIDLst, orgIDLst, shopIDLst, excludedShopIDLst,
             orderTypeLst, channelLst, crmLevelLst, foodScopeType, ruleJson, defaultRun,
-            maintenanceLevel, usageMode, shopID, foodRuleList, birthdayLimit, cardBalanceLimitType = 0 } = opts;
+            maintenanceLevel, usageMode, shopID, foodRuleList, birthdayLimit, cardBalanceLimitType = 0,
+            mutexActivityId, mutexActivityType, sharedAndNotOverlieActivityId, sharedAndNotOverlieType,
+            sharedAndOverlieActivityId, sharedAndOverlieType,
+            approval,
+            goodsScopeList,
+            ruleUseType,
+            shopScopeList,
+            requiredLst,
+            stageGoodsList
+        } = opts;
+        
         const promotionInfo = {
             master: {
                 groupID,
@@ -126,6 +141,13 @@ class NewPromotion extends React.Component {
                 giftList,
                 birthdayLimit,
                 cardBalanceLimitType,
+		//周黑鸭新需求
+                activityCost:approval?approval.activityCost:'',
+                estimatedSales:approval?approval.estimatedSales:'',
+                activityRate:approval?approval.activityRate:'',
+                auditRemark:approval?approval.auditRemark:'',
+                headquartersCost:approval.headquartersCost,
+                storeAttribute:approval.storeAttribute,
             },
             timeLst: opts.timeLst,
             priceLst: opts.priceLst,
@@ -133,6 +155,18 @@ class NewPromotion extends React.Component {
             foodRuleList,
             shareLst: opts.shareLst,
             cardScopeList: detailInfo.cardScopeList,
+            //周黑鸭新需求
+            mutexActivityId,
+            mutexActivityType,
+            sharedAndNotOverlieActivityId,
+            sharedAndNotOverlieType,
+            sharedAndOverlieActivityId,
+            sharedAndOverlieType,
+            goodsScopeList,
+            ruleUseType,
+            shopScopeList,
+            requiredLst,
+            stageGoodsList
         }
         if (this.props.isNew === false && !isCopy) {
             promotionInfo.master.promotionID = basicInfo.promotionID;
@@ -253,6 +287,7 @@ class NewPromotion extends React.Component {
             isNew,
             isOnline,
             isCopy,
+            onlyModifyShop,
         } = this.props;
         const steps = [
             {
@@ -261,6 +296,7 @@ class NewPromotion extends React.Component {
                     <PromotionBasicInfo
                         isNew={isNew}
                         isCopy={isCopy}
+                        onlyModifyShop={onlyModifyShop}
                         getSubmitFn={(handles) => {
                             this.handles[0] = handles;
                         }}
@@ -277,6 +313,7 @@ class NewPromotion extends React.Component {
                         isOnline={isOnline}
                         isNew={isNew}
                         isCopy={isCopy}
+                        onlyModifyShop={onlyModifyShop}
                     />
                 ),
             },

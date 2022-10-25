@@ -21,7 +21,9 @@ import {
     Radio,
     Tooltip,
     Icon,
-    message
+    message,
+    Modal,
+    Button
 } from 'antd';
 
 const FormItem = Form.Item;
@@ -39,10 +41,14 @@ import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { injectIntl } from '../IntlDecor';
 import { isFilterShopType } from '../../../helpers/util'
 
+//周黑鸭需求
+import { isZhouheiya, zhouheiyaPromotiontype } from '../../../constants/WhiteList';
+import ShopAreaSelector from '../../../components/ShopAreaSelector/index.jsx';
+import { isGeneral } from "../../../constants/WhiteList";
+import ExportJsonExcel from "js-export-excel";
+
+
 const Immutable = require('immutable');
-
-
-
 const shopTreeData = [];
 // 买减、买折活动增加团购订单，白名单开放
 const WhiteGroup = ['11157', '189702', '345780']
@@ -85,6 +91,13 @@ class PromotionScopeInfo extends React.Component {
             allShopsSet: false,
             brandList: [],
             isRequire: true,
+
+            //周黑鸭需求
+            shopAreaData: {
+                list: [],
+                type: 'shop', //shop | area
+            },
+            shopScopeList: [],
         };
 
         // bind this.
@@ -132,6 +145,16 @@ class PromotionScopeInfo extends React.Component {
             });
         }
 
+	//周黑鸭需求
+	if(isZhouheiya(this.props.user.toJS().accountInfo.groupID)){
+	        if (this.state.shopAreaData.list.length == 0) {
+	            if (this.state.shopScopeList && this.state.shopScopeList.length == 0 && !isGeneral() && this.props.isUpdate) {
+	                flag = false;
+	            }
+	        }
+	}
+
+
         if (flag) {
             const states = {
                 channel: this.props.promotionBasicInfo.getIn(['$basicInfo', 'promotionType']) == '5010' ? 'WECHAT' : this.state.channel,
@@ -145,6 +168,7 @@ class PromotionScopeInfo extends React.Component {
                 invoice: this.state.invoice,
                 evidence: this.state.evidence,
                 usageMode: this.state.usageMode,
+                shopScopeList: this.state.shopScopeList,
             }
             if (this.props.user.toJS().shopID > 0 && this.props.isNew) {
                 states.shopsInfo = [{ shopID: this.props.user.toJS().shopID }];
@@ -549,6 +573,45 @@ class PromotionScopeInfo extends React.Component {
             </Form.Item>
         );
     }
+
+    renderBusinessOptionsZhy = () => {
+
+        let plainOptions = null;
+        
+        plainOptions = [
+            {
+                label: '零售',
+                value: '51',
+            }
+        ];
+        
+        return (
+            <Form.Item
+                label={SALE_LABEL.k5dlpt47}
+                className={styles.FormItemStyle}
+                labelCol={{
+                    span: 4,
+                }}
+                validateStatus={this.state.orderType.length
+                    ? 'success'
+                    : 'error'}
+                help={!this.state.orderType.length
+                    ? ''
+                    : null}
+                wrapperCol={{
+                    span: 17,
+                }}
+            >
+                <CheckboxGroup
+                    onChange={this.handleBusinessChange}
+                    options={plainOptions}
+                    value={this.state.orderType}
+                    defaultValue={this.state.orderType}
+                />
+            </Form.Item>
+        );
+    }
+
     countIsRequire(shopList) {
         const { promotionScopeInfo, isNew } = this.props;
         const { size } = promotionScopeInfo.getIn(['refs', 'data', 'shops']);
@@ -573,6 +636,84 @@ class PromotionScopeInfo extends React.Component {
             this.setState({ isRequire: false });
         }
     }
+
+    renderZHYShopsOptions() {
+        const { brands = [], shopAreaData } = this.state;
+        let shopObj = this.state.shopSchema.shops.filter(item=>shopAreaData.list.some(obj=>obj == item.shopID))
+        // let shopNames = shopObj.map((item)=>{return item.shopName})
+        return (
+            <div style={{ position: 'relative', zIndex: this.props.onlyModifyShop ? '100' : 'auto' }}>
+                <ShopAreaSelector
+                    brandList={brands}
+                    groupID={this.props.user.toJS().accountInfo.groupID}
+                    firstRequired={!isGeneral() ? true : false}
+                    secondRequired={!isGeneral() ? true : false}
+                    firstValidateStatus={'error'}
+                    secondValidateStatus={shopAreaData.type == 'area' && shopAreaData.list.length == 0 && !isGeneral() ? 'error' : 'success'}
+                    firstHelp={shopAreaData.type == 'shop' && shopAreaData.list.length == 0 && !isGeneral() ? '请选择店铺' : ''}
+                    secondHelp={shopAreaData.type == 'area' && shopAreaData.list.length == 0 && !isGeneral() ? '请选择区域' : ''}
+                    value={{
+                        radioValue: shopAreaData.type,
+                        list: shopAreaData.list
+                    }}
+                    onChange={this.handleShopAreaChange}
+                    formatRes={(params) => {
+                        // console.log(params);
+                        return params;
+                    }}
+                />
+
+                <div style={{marginLeft: 540, display:shopAreaData.type == 'shop'?'block':'none'}}>
+                    <a onClick={()=>{
+                        let sheetFilter = ['orgCode','shopName'];
+                        let option = {};
+                        option.fileName = '已选全部门店';
+                        option.datas = [
+                          {
+                            sheetData: shopObj,
+                            sheetName: '已选全部门店',
+                            sheetFilter: sheetFilter,
+                            sheetHeader: ['门店编码','门店名称'],
+                            columnWidths: [10,10]
+                          }
+                        ];
+                        var toExcel = new ExportJsonExcel(option); //new
+                        toExcel.saveExcel(); //保存
+                    }}>导出全部门店</a>
+                </div>
+
+            </div>
+        );
+    }
+    handleShopAreaChange = (value) => {
+        console.log(value);
+        const { areaList } = value.otherRes || {};
+        let shopScopeList = [];
+        if (value.radioValue == 'shop') {
+            shopScopeList = value.list.map(shopID => ({
+                shopID,
+                shopType: '1',
+                shopPath: ''
+                // shopPath: (areaList.find(item => item.orgID == shopID) || {}).path
+            }))
+        } else {
+            shopScopeList = value.list.map(shopID => ({
+                shopID,
+                shopType: '2',
+                shopPath: (areaList.find(item => item.orgID == shopID) || {}).path + shopID + '/'
+            }))
+        }
+        this.setState({
+            shopAreaData: {
+                type: value.radioValue,
+                list: value.list,
+            },
+            shopScopeList
+        })
+        console.log(shopScopeList, 'shopScopeList');
+    }
+
+
     renderShopsOptions() {
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         const { brands, shopStatus, allShopSet, selections, isRequire, filterShops } = this.state;
@@ -788,10 +929,11 @@ class PromotionScopeInfo extends React.Component {
                         </div> : null
                 }
                 <Form className={styles.FormStyle}>
-                    {promotionType != '10071' ? (this.props.user.toJS().shopID > 0 || promotionType == '5020' ? null : this.renderBrandFormItem()) : null}
-                    {promotionType != '10071' ? (promotionType != '5010' ? this.renderChannelList() : null) : null}
-                    {promotionType != '10071' ? this.renderBusinessOptions() : null}
-                    {this.props.user.toJS().shopID > 0 ? null : this.renderShopsOptions()}
+                    {!isZhouheiya(this.props.user.toJS().accountInfo.groupID) && (promotionType != '10071' ? (this.props.user.toJS().shopID > 0 || promotionType == '5020' ? null : this.renderBrandFormItem()) : null)}
+                    {!isZhouheiya(this.props.user.toJS().accountInfo.groupID) && (promotionType != '10071' ? (promotionType != '5010' ? this.renderChannelList() : null) : null)}
+                    {!isZhouheiya(this.props.user.toJS().accountInfo.groupID) && promotionType != '10071' ? this.renderBusinessOptions() : null}
+                    {isZhouheiya(this.props.user.toJS().accountInfo.groupID) && this.renderBusinessOptionsZhy()}
+                    {isZhouheiya(this.props.user.toJS().accountInfo.groupID) ? this.renderZHYShopsOptions() : this.props.user.toJS().shopID > 0 ? null : this.renderShopsOptions()}
                     {promotionType != '10071' ? (promotionType == '4010' ? this.renderGroup() : null) : null}
                 </Form>
             </div>

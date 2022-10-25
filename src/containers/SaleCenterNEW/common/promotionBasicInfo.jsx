@@ -483,7 +483,7 @@ class PromotionBasicInfo extends React.Component {
             name: promotionBasicInfo.getIn(['$basicInfo', 'name']),
             category: promotionBasicInfo.getIn(['$basicInfo', 'category']),
             showName: promotionBasicInfo.getIn(['$basicInfo', 'showName']),
-            code: isCopy ? undefined : promotionBasicInfo.getIn(['$basicInfo', 'code']),
+            code: isCopy ? `CX${moment(new Date()).format('YYYYMMDDHHmmss') + new Date().getMilliseconds()}` : promotionBasicInfo.getIn(['$basicInfo', 'code']) ? promotionBasicInfo.getIn(['$basicInfo', 'code']) : `CX${moment(new Date()).format('YYYYMMDDHHmmss') + new Date().getMilliseconds()}`,
             tags: Immutable.List.isList(promotionBasicInfo.getIn(['$basicInfo', 'tags'])) ? promotionBasicInfo.getIn(['$basicInfo', 'tags']).toJS() : [],
             description: promotionBasicInfo.getIn(['$basicInfo', 'description']),
             dateRange: isCopy ? Array(2) : [promotionBasicInfo.getIn(['$basicInfo', 'startDate']), promotionBasicInfo.getIn(['$basicInfo', 'endDate'])],
@@ -501,7 +501,9 @@ class PromotionBasicInfo extends React.Component {
         })
         // 活动名称 auto focus
         try {
-            this.promotionNameInputRef.focus()
+            if(!this.props.onlyModifyShop) {
+                this.promotionNameInputRef.focus()
+            }
         } catch (e) {
             // oops
         }
@@ -524,7 +526,7 @@ class PromotionBasicInfo extends React.Component {
                 name: _promotionBasicInfo.getIn(['$basicInfo', 'name']),
                 category: _promotionBasicInfo.getIn(['$basicInfo', 'category']),
                 showName: _promotionBasicInfo.getIn(['$basicInfo', 'showName']),
-                code: isCopy ? undefined : _promotionBasicInfo.getIn(['$basicInfo', 'code']),
+                code: isCopy ? `CX${moment(new Date()).format('YYYYMMDDHHmmss') + new Date().getMilliseconds()}` : _promotionBasicInfo.getIn(['$basicInfo', 'code']) ? _promotionBasicInfo.getIn(['$basicInfo', 'code']) : `CX${moment(new Date()).format('YYYYMMDDHHmmss') + new Date().getMilliseconds()}`,
                 tags: Immutable.List.isList(_promotionBasicInfo.getIn(['$basicInfo', 'tags'])) ? _promotionBasicInfo.getIn(['$basicInfo', 'tags']).toJS() : [],
                 description: _promotionBasicInfo.getIn(['$basicInfo', 'description']),
                 dateRange: isCopy ? Array(2) : [_promotionBasicInfo.getIn(['$basicInfo', 'startDate']), _promotionBasicInfo.getIn(['$basicInfo', 'endDate'])],

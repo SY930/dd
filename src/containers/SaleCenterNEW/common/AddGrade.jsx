@@ -14,6 +14,7 @@ import {
     Col,
     Radio,
     Form,
+    Select
 } from 'antd';
 import styles from '../ActivityPage.less';
 import {
@@ -23,9 +24,14 @@ import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
 import ConnectedPriceListSelector from '../common/ConnectedPriceListSelector';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
-import {injectIntl} from '../IntlDecor';
+import { injectIntl } from '../IntlDecor';
 
 const FormItem = Form.Item;
+
+
+//周黑鸭需求
+import GoodsRef from '@hualala/sc-goodsRef';
+import { isCheckApproval, isZhouheiya, businessTypesList } from '../../../constants/WhiteList';
 
 @injectIntl()
 class AddGrade extends React.Component {
@@ -54,10 +60,26 @@ class AddGrade extends React.Component {
             // TODO:赠送份数没校验
             foodCountFlag: this.props.foodCountFlag || true,
 
+            countType: '1',
+            maxFreeLimitType: '0',
         }
         this.allData = {};
         this.onStageAmountChange = this.onStageAmountChange.bind(this);
         this.onFoodCountChange = this.onFoodCountChange.bind(this);
+        this.defaultListValues = {
+            containData: { goods: [] },
+            containType: 1,
+            exclusiveData: {},
+            participateType: 1
+        }
+    }
+
+    componentDidMount() {
+        this.setState({
+            countType: this.props.countType,
+            maxFreeLimitType: this.props.maxFreeLimitType,
+            maxFreeAmount: this.props.maxFreeAmount
+        })
     }
 
     componentWillReceiveProps(nextProps) {
@@ -86,6 +108,7 @@ class AddGrade extends React.Component {
                 data: nextProps.value,
             })
         }
+
     }
 
     onDishesChange(value, k) {
@@ -99,7 +122,7 @@ class AddGrade extends React.Component {
         data[k].dishes = value;
         data[k].giftName = value.foodName;
         this.setState({ data });
-        this.props.onChange && this.props.onChange(data);
+        this.props.onChange && this.props.onChange(data, this.state.countType, this.state.maxFreeLimitType, this.state.maxFreeAmount);
     }
 
     renderDishsSelectionBox(k) {
@@ -119,12 +142,81 @@ class AddGrade extends React.Component {
         )
     }
 
+    //周黑鸭需求
+    renderDishsSelectionBoxNew(k) {
+        this.defaultListValues.containData.goods = this.state.data[k].dishes
+        return (
+            <div>
+                <FormItem
+                    label={''}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 0 }}
+                    wrapperCol={{ span: 24 }}
+                    validateStatus={this.state.data[k].dishesFlag ? 'success' : 'error'}
+                    help={this.state.data[k].dishesFlag ? null : SALE_LABEL.k5hly0bq}
+                >
+                    <GoodsRef
+                        defaultValue={this.defaultListValues}
+                        businessTypesList={businessTypesList}
+                        containLabel=""
+                        containShowClearAll={false}
+                        exclusiveShow={false}
+                        onChange={(goods) => {
+                            this.onDishesChange(goods.containData.goods, k);
+                        }}
+                        showContainSeletorOption={{ categoryShow: false }}
+                        showParticipateLabel={{ participate: false, unParticipate: false }}></GoodsRef>
+                </FormItem>
+
+            </div>
+        )
+    }
+
+    renderMaxCount = () => {
+        return (
+
+            <FormItem
+                label={'最大赠送份数'}
+                className={styles.FormItemStyle}
+                labelCol={{ span: 4 }}
+                wrapperCol={{ span: 17 }}
+                validateStatus={this.state.maxFreeLimitType == 1 && !this.state.maxFreeAmount ? 'error' : 'success'}
+                help={this.state.maxFreeLimitType == 1 && !this.state.maxFreeAmount ? '最大赠送份数需大于0' : null}
+            >
+                <PriceInput
+                    disabled={this.state.maxFreeLimitType == '0'}
+                    addonBefore={
+                        <Select size="default"
+                            onChange={(val) => {
+                                this.setState({ maxFreeLimitType: val, maxFreeAmount: '' })
+                                this.props.onMaxFreeLimitTypeChange({ maxFreeLimitType: val, maxFreeAmount: '' })
+                            }}
+                            value={this.state.maxFreeLimitType}
+                        >
+                            <Option key={'0'} value={'0'}>不限制</Option>
+                            <Option key={'1'} value={'1'}>限制</Option>
+                        </Select>
+                    }
+                    addonAfter={'份'}
+                    maxNum={6}
+                    value={{ number: this.state.maxFreeAmount }}
+                    defaultValue={{ number: this.state.maxFreeAmount }}
+                    onChange={(val) => {
+                        this.setState({ maxFreeAmount: val.number })
+                        this.props.onMaxFreeAmountChange(val.number)
+                    }}
+                    modal="int"
+                />
+            </FormItem>
+        )
+    }
+
     // 删除一个档次
     remove = (k) => {
         const { data } = this.state;
         delete data[this.uuid];
         this.setState({ data });
-        this.props.onChange && this.props.onChange(data);
+        this.props.onChange && this.props.onChange(data, this.state.countType, this.state.maxFreeLimitType, this.state.maxFreeAmount);
         this.uuid--;
         const { form } = this.props;
         const keys = form.getFieldValue('keys');
@@ -157,7 +249,7 @@ class AddGrade extends React.Component {
             StageAmountFlag: true,
         };
         this.setState({ data });
-        this.props.onChange && this.props.onChange(data);
+        this.props.onChange && this.props.onChange(data, this.state.countType, this.state.maxFreeLimitType, this.state.maxFreeAmount);
     }
 
     onStageAmountChange(value, index) {
@@ -169,7 +261,7 @@ class AddGrade extends React.Component {
             data[index].StageAmountFlag = true;
         }
         this.setState({ data });
-        this.props.onChange && this.props.onChange(data);
+        this.props.onChange && this.props.onChange(data, this.state.countType, this.state.maxFreeLimitType, this.state.maxFreeAmount);
     }
 
     onFoodCountChange(value, index) {
@@ -181,7 +273,7 @@ class AddGrade extends React.Component {
         }
         data[index].foodCount = value.number;
         this.setState({ data });
-        this.props.onChange && this.props.onChange(data);
+        this.props.onChange && this.props.onChange(data, this.state.countType, this.state.maxFreeLimitType, this.state.maxFreeAmount);
     }
 
     render() {
@@ -204,23 +296,23 @@ class AddGrade extends React.Component {
             return (
                 <div className={styles.addGrade} key={index}>
                     <div className={styles.CategoryTop}>
-            <span className={styles.CategoryTitle}>{SALE_LABEL.k5m3oms8}{/* {this.props.ruleType == 2||this.props.ruleType == 3 ?parseInt(k)+1:null} */}</span>
+                        <span className={styles.CategoryTitle}>{SALE_LABEL.k5m3oms8}{/* {this.props.ruleType == 2||this.props.ruleType == 3 ?parseInt(k)+1:null} */}</span>
                         {// 显示的可操作文字
                             this.props.ruleType == 2 || this.props.ruleType == 3 ? // 满
-                (k == this.uuid ? (
-                    k == 0 ? (// 满 第一个档次,//满赠取消分档
-                        <span className={styles.CategoryAdd} onClick={this.add}>{isFullGive ? null : SALE_LABEL.k5m3omjw}</span>
-                    ) : (
-                        k == 2 ? (
-                            <span className={styles.CategoryAdd} onClick={() => this.remove(k)}>{ COMMON_LABEL.delete }</span>
-                        ) : (// 满 非第一个档次
-                            <span>
-        <span className={styles.CategoryAdd} onClick={this.add}>{SALE_LABEL.k5m3omjw}</span>
-                                <span className={styles.CategoryAdd} onClick={() => this.remove(k)}>{ COMMON_LABEL.delete }</span>
-                            </span>
-                        )
-                    )
-                ) : null) : null
+                                (k == this.uuid ? (
+                                    k == 0 ? (// 满 第一个档次,//满赠取消分档
+                                        <span className={styles.CategoryAdd} onClick={this.add}>{isFullGive ? null : SALE_LABEL.k5m3omjw}</span>
+                                    ) : (
+                                            k == 2 ? (
+                                                <span className={styles.CategoryAdd} onClick={() => this.remove(k)}>{COMMON_LABEL.delete}</span>
+                                            ) : (// 满 非第一个档次
+                                                    <span>
+                                                        <span className={styles.CategoryAdd} onClick={this.add}>{SALE_LABEL.k5m3omjw}</span>
+                                                        <span className={styles.CategoryAdd} onClick={() => this.remove(k)}>{COMMON_LABEL.delete}</span>
+                                                    </span>
+                                                )
+                                        )
+                                ) : null) : null
 
                         }
                     </div>
@@ -240,7 +332,20 @@ class AddGrade extends React.Component {
                                                         this.props.ruleType == '1' ? k5m3on0k :
                                                             this.props.ruleType == '3' ? k5ez4pvb : k5ez4qew
                                                 }
-                                                addonAfter={k5ezdbiy}
+                                                addonAfter={isZhouheiya(this.props.user.groupID) ? <Select
+                                                    disabled={index != 0}
+                                                    style={{ width: 40 }}
+                                                    size="default"
+                                                    placeholder=""
+                                                    value={this.state.countType}
+                                                    onChange={(val) => {
+                                                        this.setState({ countType: val })
+                                                        this.props.onCountTypeChange(val)
+                                                    }}
+                                                >
+                                                    <Option key="1" value="1">元</Option>
+                                                    <Option key="2" value="2">份</Option>
+                                                </Select> : k5ezdbiy}
                                                 onChange={(val) => { this.onStageAmountChange(val, index) }}
                                                 value={{ number: this.state.data[k].stageAmount }}
                                                 modal="float"
@@ -269,9 +374,11 @@ class AddGrade extends React.Component {
                             <span className={styles.spanText}>{SALE_LABEL.k5hly0bq}</span>
                             </FormItem>
                         </div> */}
+                        {isZhouheiya(this.props.user.groupID) && this.props.ruleType != 0 && this.renderMaxCount()}
                         <div >
                             <div className={styles.CategoryList} style={{ marginBottom: 0 }}>
-                                {this.renderDishsSelectionBox(k)}
+                                {!isZhouheiya(this.props.user.groupID) && this.renderDishsSelectionBox(k)}
+                                {isZhouheiya(this.props.user.groupID) && this.renderDishsSelectionBoxNew(k)}
                             </div>
                         </div>
                     </div>
@@ -290,9 +397,11 @@ class AddGrade extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
+        myActivities: state.sale_myActivities_NEW,
         promotionDetailInfo: state.sale_promotionDetailInfo_NEW,
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
+        user: state.user.get('accountInfo').toJS()
     }
 };
 
