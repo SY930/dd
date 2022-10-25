@@ -7,6 +7,10 @@ import { httpApaasActivityQueryByPage, httpEnableOrDisableMaPromotionEvent, http
 import { jumpPage, closePage, getStore } from '@hualala/platform-base';
 import { SALE_AUTOMATED_SALE_DETAIL } from '../../../constants/entryCodes';
 import _ from 'lodash';
+import all_icon from "../assets/all_icon.png";
+import running_icon from "../assets/running_icon.png";
+import stoped_icon from "../assets/stoped_icon.png";
+import ended_icon from "../assets/ended_icon.png";
 
 const initialPaging = {
     pageNo: 1,
@@ -23,22 +27,31 @@ export default class Main extends React.PureComponent {
             total: 0,
             pageObj: {},
             queryParams: {},
+            currentPanelType: 1,
             statusPanels: [
                 {
                     label: '全部',
-                    value: 0
+                    value: 0,
+                    icon: all_icon,
+                    type: 1
                 },
                 {
                     label: '运行中',
-                    value: 0
+                    value: 0,
+                    icon: running_icon,
+                    type: 2
                 },
                 {
                     label: '已暂停',
-                    value: 0
+                    value: 0,
+                    icon: stoped_icon,
+                    type: 3
                 },
                 {
                     label: '已结束',
-                    value: 0
+                    value: 0,
+                    icon: ended_icon,
+                    type: 4
                 }
             ]
         }
@@ -136,7 +149,8 @@ export default class Main extends React.PureComponent {
 
     onChangeQuery = (queryParams) => {
         this.setState({
-            queryParams
+            queryParams,
+            currentPanelType: 1,
         }, () => {
             this.onQueryList(initialPaging)
         })
@@ -156,8 +170,18 @@ export default class Main extends React.PureComponent {
         }
     }
 
+    changePanel = (currentPanelType) => {
+        this.setState({
+            currentPanelType
+        });
+        this.onQueryList({
+            ...initialPaging,
+            status: currentPanelType
+        })
+    }
+
     render() {
-        let { list, loading, pageObj, statusPanels } = this.state;
+        let { list, loading, pageObj, statusPanels, currentPanelType } = this.state;
         return (
             <Col span={24} className={styles.automatedSale}>
                 <Col span={24} style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -169,31 +193,43 @@ export default class Main extends React.PureComponent {
                         onQuery={this.onChangeQuery}
                     />
                 </Col>
-                <Col span={24} className={styles.statusPanels}>
-                    <ul>
-                        {
-                            statusPanels.map(item => {
-                                return (
-                                    <li key={item.label}>
-                                        <span className={styles.label}>{item.label}</span>
-                                        <span className={styles.value}>{item.value}</span>
-                                    </li>
-                                )
-                            })
-                        }
-                    </ul>
+                <Col className={styles.statusPanelsTable} span={24} style={{ height: 'calc(100vh - 186px)' }}>
+                    <Col span={24} className={styles.statusPanelsTableMain}>
+                        <Col span={24} className={styles.statusPanels}>
+                            <ul>
+                                {
+                                    statusPanels.map(item => {
+                                        return (
+                                            <li
+                                                key={item.label} onClick={() => this.changePanel(item.type)}
+                                                className={currentPanelType == item.type ? styles.active : ''}
+                                            >
+                                                <span className={styles.label}>
+                                                    <img src={item.icon} alt="" />
+                                                    <span>{item.label}</span>
+                                                </span>
+                                                <span className={styles.value}>{item.value}</span>
+                                            </li>
+                                        )
+                                    })
+                                }
+                            </ul>
+                        </Col>
+                        <Col span={24} className={styles.tableBox}>
+                            <MainTable
+                                list={list}
+                                loading={loading}
+                                pageObj={pageObj}
+                                onQuery={this.onQueryList}
+                                onOperate={this.onOperate}
+                                changeStatus={this.changeStatus}
+                                onDelete={this.onDelete}
+                            />
+                        </Col>
+                    </Col>
+
                 </Col>
-                <Col span={24} className={styles.tableBox}>
-                    <MainTable
-                        list={list}
-                        loading={loading}
-                        pageObj={pageObj}
-                        onQuery={this.onQueryList}
-                        onOperate={this.onOperate}
-                        changeStatus={this.changeStatus}
-                        onDelete={this.onDelete}
-                    />
-                </Col>
+
             </Col>
         )
     }
