@@ -97,6 +97,12 @@ registerLocalPage([
         label: '创建营销活动',
         parent: [entryCodes.NEW_SALE_BOX],
     },
+    {
+        key: entryCodes.CREATE_SHARE_RULES_NEW,
+        value: entryCodes.CREATE_SHARE_RULES_NEW,
+        label: '创建共享规则',
+        parent: [entryCodes.SHARE_RULES_GROUP_NEW],
+    }
 ]);
 // 注册语言包
 const registeLangPack = async () => {

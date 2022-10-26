@@ -48,6 +48,8 @@ import {
     SALE_CENTER_FETCH_SUBJECT_LIST_SUCCESS,
     SALE_CENTER_FETCH_SUBJECT_LIST_FAILED,
     SALE_CENTER_FETCH_GOODS_AND_CATEGORIES_SUCCESS,
+    //周黑鸭需求
+    SALE_CENTER_SET_ONLY_MODIFY_SHOP
 
 } from '../../actions/saleCenterNEW/promotionDetailInfo.action';
 
@@ -123,10 +125,17 @@ const $initialState = Immutable.fromJS({
         birthdayLimit: 0,
         customerUseCountLimit: 0,
         cardBalanceLimitType: 0,
+
+        goodsScopeList: [],
+        requiredLst: [],
+        stageGoodsList: [],
     },
     foodCategoryCollection: [],
     goodCategories: [],
     goods: [],
+    //周黑鸭需求
+    ruleUseType: 0,
+    onlyModifyShop: false,
 });
 
 function constructTreeDataContainsFoodCategoryAndFood($foodCategoryListInfo, $foodMenuListInfo) {
@@ -424,7 +433,11 @@ export const promotionDetailInfo_NEW = ($$state = $initialState, action) => {
             return $$state;
         case SALE_CENTER_FETCH_GOODS_AND_CATEGORIES_SUCCESS:
             return $$state.set('goodCategories', Immutable.fromJS(action.payload.categories))
-                    .set('goods', Immutable.fromJS(action.payload.goods))
+                .set('goods', Immutable.fromJS(action.payload.goods))
+
+        //周黑鸭需求
+        case SALE_CENTER_SET_ONLY_MODIFY_SHOP:
+            return $$state.set('onlyModifyShop', action.payload)
         default:
             return $$state;
     }

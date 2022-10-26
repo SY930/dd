@@ -122,7 +122,12 @@ class AddGrade extends React.Component {
         data[k].dishes = value;
         data[k].giftName = value.foodName;
         this.setState({ data });
-        this.props.onChange && this.props.onChange(data, this.state.countType, this.state.maxFreeLimitType, this.state.maxFreeAmount);
+        if (isZhouheiya(this.props.user.groupID)) {
+            this.props.onChange && this.props.onChange(data, this.state.countType, this.state.maxFreeLimitType, this.state.maxFreeAmount);
+        }else{
+            this.props.onChange && this.props.onChange(data);
+        }
+
     }
 
     renderDishsSelectionBox(k) {
@@ -216,7 +221,11 @@ class AddGrade extends React.Component {
         const { data } = this.state;
         delete data[this.uuid];
         this.setState({ data });
-        this.props.onChange && this.props.onChange(data, this.state.countType, this.state.maxFreeLimitType, this.state.maxFreeAmount);
+        if (isZhouheiya(this.props.user.groupID)) {
+            this.props.onChange && this.props.onChange(data, this.state.countType, this.state.maxFreeLimitType, this.state.maxFreeAmount);
+        }else{
+            this.props.onChange && this.props.onChange(data);
+        }
         this.uuid--;
         const { form } = this.props;
         const keys = form.getFieldValue('keys');
@@ -249,7 +258,11 @@ class AddGrade extends React.Component {
             StageAmountFlag: true,
         };
         this.setState({ data });
-        this.props.onChange && this.props.onChange(data, this.state.countType, this.state.maxFreeLimitType, this.state.maxFreeAmount);
+        if (isZhouheiya(this.props.user.groupID)) {
+            this.props.onChange && this.props.onChange(data, this.state.countType, this.state.maxFreeLimitType, this.state.maxFreeAmount);
+        }else{
+            this.props.onChange && this.props.onChange(data);
+        } 
     }
 
     onStageAmountChange(value, index) {
@@ -261,7 +274,11 @@ class AddGrade extends React.Component {
             data[index].StageAmountFlag = true;
         }
         this.setState({ data });
-        this.props.onChange && this.props.onChange(data, this.state.countType, this.state.maxFreeLimitType, this.state.maxFreeAmount);
+        if (isZhouheiya(this.props.user.groupID)) {
+            this.props.onChange && this.props.onChange(data, this.state.countType, this.state.maxFreeLimitType, this.state.maxFreeAmount);
+        }else{
+            this.props.onChange && this.props.onChange(data);
+        }
     }
 
     onFoodCountChange(value, index) {
@@ -273,7 +290,11 @@ class AddGrade extends React.Component {
         }
         data[index].foodCount = value.number;
         this.setState({ data });
-        this.props.onChange && this.props.onChange(data, this.state.countType, this.state.maxFreeLimitType, this.state.maxFreeAmount);
+        if (isZhouheiya(this.props.user.groupID)) {
+            this.props.onChange && this.props.onChange(data, this.state.countType, this.state.maxFreeLimitType, this.state.maxFreeAmount);
+        }else{
+            this.props.onChange && this.props.onChange(data);
+        }
     }
 
     render() {
@@ -332,7 +353,7 @@ class AddGrade extends React.Component {
                                                         this.props.ruleType == '1' ? k5m3on0k :
                                                             this.props.ruleType == '3' ? k5ez4pvb : k5ez4qew
                                                 }
-                                                addonAfter={isZhouheiya(this.props.user.groupID) ? <Select
+                                                addonAfter={<Select
                                                     disabled={index != 0}
                                                     style={{ width: 40 }}
                                                     size="default"
@@ -345,7 +366,7 @@ class AddGrade extends React.Component {
                                                 >
                                                     <Option key="1" value="1">元</Option>
                                                     <Option key="2" value="2">份</Option>
-                                                </Select> : k5ezdbiy}
+                                                </Select>}
                                                 onChange={(val) => { this.onStageAmountChange(val, index) }}
                                                 value={{ number: this.state.data[k].stageAmount }}
                                                 modal="float"

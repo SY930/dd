@@ -463,6 +463,7 @@ export const ACTIVITY_CATEGORIES = (function () {
             text: SALE_LABEL.k67cp2qm,
             example: SALE_LABEL.k67cpr2v,
             key: "2010",
+            isZhy: true,
         },
         {
             idx: 1,
@@ -551,6 +552,7 @@ export const ACTIVITY_CATEGORIES = (function () {
             ),
             example: "",
             key: "1030",
+            isZhy: true,
         },
         {
             idx: 2,
@@ -559,6 +561,7 @@ export const ACTIVITY_CATEGORIES = (function () {
             text: SALE_LABEL.k67cp14a,
             example: SALE_LABEL.k67cppov,
             key: "2020",
+            isZhy: true,
         },
         {
             idx: 3,
@@ -567,6 +570,7 @@ export const ACTIVITY_CATEGORIES = (function () {
             text: SALE_LABEL.k67cp1cm,
             example: SALE_LABEL.k67cppx7,
             key: "1010",
+            isZhy: true,
         },
         
         {
@@ -594,6 +598,7 @@ export const ACTIVITY_CATEGORIES = (function () {
             text: SALE_LABEL.k67cp1ta,
             example: SALE_LABEL.k67cpq5j,
             key: "1050",
+            isZhy: true,
         },
         {
             idx: 6,
@@ -650,6 +655,7 @@ export const ACTIVITY_CATEGORIES = (function () {
             text: SALE_LABEL.k67cp21m,
             example: SALE_LABEL.k67cpqdv,
             key: "1070",
+            isZhy: true,
         },
         {
             idx: 13,
@@ -658,6 +664,7 @@ export const ACTIVITY_CATEGORIES = (function () {
             text: SALE_LABEL.k67cp3wa,
             example: SALE_LABEL.k67g7s64,
             key: "2050",
+            isZhy: true,
         },
         {
             idx: 14,
@@ -666,6 +673,7 @@ export const ACTIVITY_CATEGORIES = (function () {
             text: SALE_LABEL.k67cp3fm,
             example: SALE_LABEL.k67g7rpg,
             key: "1060",
+            isZhy: true,
         },
         {
             idx: 15,
@@ -978,6 +986,35 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             example: "",
             key: "83",
         },
+        {
+            idx: 30,
+            title: 'H5领券',
+            text: '限时免费领取礼品，达到短期拉新的效果',
+            example: "",
+            key: "69",
+        },
+        {
+            idx: 31,
+            title: '积分换礼',
+            text: SALE_LABEL.k67b4u32,
+            example: "",
+            key: "89",
+        },
+        {
+            idx: 32,
+            title: '消费送礼',
+            color: "#9dc568",
+            text: SALE_LABEL.k67b4tme,
+            example: SALE_LABEL.k67cporj,
+            key: "88",
+        },
+        {
+            idx: 33,
+            title: SALE_LABEL.k67b2pz0,
+            text: SALE_LABEL.k67b4t5q,
+            example: "",
+            key: "90",
+        },
     ];
     return basic;
 })();
@@ -1185,6 +1222,7 @@ export const promotionScopeInfoAdapter = function (source, dir) {
             points: ruleJson.points,
             evidence: ruleJson.evidence,
             usageMode: source.usageMode || 1,
+            shopScopeList: source.shopScopeList,
         };
     }
     return {
@@ -1207,6 +1245,7 @@ export const promotionScopeInfoAdapter = function (source, dir) {
             })
             .join(","),
         usageMode: _source.usageMode || 1,
+        shopScopeList: source.shopScopeList,
     };
 };
 
@@ -1235,6 +1274,22 @@ export const promotionDetailInfoAdapter = function (source, dir) {
         } catch (err) {
             ruleJson = {};
         }
+
+        let goodsScopeList = [];
+        if (source.goodsScopeList) {
+            goodsScopeList = source.goodsScopeList;
+        }
+
+        let requiredLst = [];
+        if (source.requiredLst) {
+            requiredLst = source.requiredLst;
+        }
+
+        let stageGoodsList = [];
+        if (source.stageGoodsList) {
+            stageGoodsList = source.stageGoodsList;
+        }
+
         return {
             rule: ruleJson,
             blackList: ruleJson.blackList || false,
@@ -1257,6 +1312,18 @@ export const promotionDetailInfoAdapter = function (source, dir) {
             cardScopeList: source.cardScopeList || [],
             needSyncToAliPay: source.master.needSyncToAliPay || 0,
             cardBalanceLimitType: source.master.cardBalanceLimitType || 0,
+
+            goodsScopeList,
+            requiredLst,
+            stageGoodsList,
+            activityCost:source.activityCost,
+            estimatedSales:source.estimatedSales,
+            activityRate:source.activityRate,
+            headquartersCost:source.headquartersCost,
+            storeAttribute:source.storeAttribute,
+            auditRemark:source.auditRemark,
+            
+
         };
     }
     // compose scopeList

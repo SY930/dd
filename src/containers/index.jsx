@@ -36,3 +36,13 @@ export { default as ZhiFuBaoCouponList } from './ZhiFuBaoCouponManagement';
 export { default as CreateActiveTwo } from './SaleActives/NewCreateActiveEntry';
 export { default as ConsumeGiftGiving } from './SaleActives/NewPromotionCardPages/ConsumeGiftGiving'; // 消费送礼
 
+export { default as CardPage } from './GiftNew/GiftInfo/CardPage'
+export { default as CreateShareRules } from './ShareRulesNew/CreateShareRules';
+export { default as ShareRulesNew } from './ShareRulesNew/index';
+export { default as CouponBatchInfo } from './CouponBatchManagement/index';
+export { default as ContractInfo } from './ContractManagement/index';
+
+
+
+
+

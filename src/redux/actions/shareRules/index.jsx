@@ -23,6 +23,7 @@ export const SALE_CENTER_REMOVE_ITEM_FROM_SHARE_GROUP_START = 'sale center:: sal
 export const SALE_CENTER_REMOVE_ITEM_FROM_SHARE_GROUP_SUCCESS = 'sale center:: sale_center_remove_item_from_share_group_success';
 export const SALE_CENTER_REMOVE_ITEM_FROM_SHARE_GROUP_FAIL = 'sale center:: sale_center_remove_item_from_share_group_fail';
 
+export const SALE_CENTER_REMOVE_ITEM_FROM_SHARE_GROUP_REFRESH = 'sale center:: sale_center_query_share_group_refresh_list';
 // 打开新建窗口
 export const startCreateShareGroup = opts => ({
     type: SALE_CENTER_START_CREATE_SHARE_GROUP,
@@ -60,6 +61,13 @@ export const queryShareGroups = (opts) => {
             .catch(err => dispatch({type: SALE_CENTER_QUERY_SHARE_GROUP_FAIL}));
     }
 };
+
+export const refreshList = (params) => {
+    return {
+        type: SALE_CENTER_REMOVE_ITEM_FROM_SHARE_GROUP_REFRESH,
+        payload: params,
+    }
+  };
 
 // TODO: 替换真实请求接口
 /**

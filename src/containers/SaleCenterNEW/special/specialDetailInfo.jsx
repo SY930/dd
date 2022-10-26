@@ -19,9 +19,10 @@ import styles from '../ActivityPage.less';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
 import SpecialDishesTableWithoutBrand from './SpecialDishesTableWithoutBrand'; // 表格
 import SpecialDishesTableWithBrand from './SpecialDishesTableWithBrand';
+import SpecialDishesTableWithBrandNew from './SpecialDishesTableWithBrandNew';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
-import {injectIntl} from '../IntlDecor';
+import { injectIntl } from '../IntlDecor';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -32,6 +33,12 @@ import {
     saleCenterSetPromotionDetailAC,
 } from '../../../redux/actions/saleCenterNEW/promotionDetailInfo.action';
 import PriceInput from "../common/PriceInput";
+
+//周黑鸭需求
+import { isCheckApproval, isZhouheiya } from '../../../constants/WhiteList';
+import Approval from '../../../containers/SaleCenterNEW/common/Approval';
+import AdvancedPromotionDetailSettingNew from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSettingNew';
+
 @injectIntl()
 class SpecialDetailInfo extends React.Component {
     constructor(props) {
@@ -69,6 +76,8 @@ class SpecialDetailInfo extends React.Component {
         this.handleIsTotalLimitedChange = this.handleIsTotalLimitedChange.bind(this);
         this.handleTotalAmountLimitChange = this.handleTotalAmountLimitChange.bind(this);
         this.dishesChange = this.dishesChange.bind(this);
+
+        this.dishesChangeZhy = this.dishesChangeZhy.bind(this);
     }
 
     getInitState() {
@@ -93,6 +102,15 @@ class SpecialDetailInfo extends React.Component {
         this.props.getSubmitFn({
             finish: this.handleSubmit,
         });
+
+        if (isZhouheiya(this.props.user.groupID)) {
+            let stageGoodsList = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'stageGoodsList']).toJS();
+            if (stageGoodsList.length > 0) {
+                this.setState({ data: stageGoodsList[0].goodsList })
+            }
+        }
+
+
     }
     handleSubmit = (cbFn) => {
         const {
@@ -106,16 +124,24 @@ class SpecialDetailInfo extends React.Component {
             shortRule,
             bookID
         } = this.state;
-        const priceLst = data.map((item) => {
-            return {
-                foodUnitID: item.itemID,
-                foodUnitCode: item.foodKey,
-                foodName: item.foodName,
-                foodUnitName: item.unit,
-                brandID: item.brandID || 0,
-                price: parseFloat(item.newPrice) < 0 ?  item.price : parseFloat(item.newPrice),
-            }
-        });
+
+        let priceLst = []
+
+        if (isZhouheiya(this.props.user.groupID)) {
+            priceLst = data
+        } else {
+            priceLst = data.map((item) => {
+                return {
+                    foodUnitID: item.itemID,
+                    foodUnitCode: item.foodKey,
+                    foodName: item.foodName,
+                    foodUnitName: item.unit,
+                    brandID: item.brandID || 0,
+                    price: parseFloat(item.newPrice) < 0 ? item.price : parseFloat(item.newPrice),
+                }
+            });
+        }
+
         if (isLimited == 1 && !amountLimit) {
             return false;
         }
@@ -163,6 +189,26 @@ class SpecialDetailInfo extends React.Component {
             priceLst,
             rule, // 为黑白名单而设
         });
+
+        //周黑鸭需求
+        if (isZhouheiya(this.props.user.groupID)) {
+            let stageGoodsList = []
+            stageGoodsList.push({
+                stage: 0,
+                goodsList: priceLst
+            })
+            this.props.setPromotionDetail({
+                stageGoodsList
+            });
+            this.props.setPromotionDetail({
+                approval: this.state.approvalInfo,
+            });
+            if (isCheckApproval && (!this.state.approvalInfo.activityCost || !this.state.approvalInfo.estimatedSales || !this.state.approvalInfo.auditRemark)) {
+                return
+            }
+        }
+
+
         return true;
     };
 
@@ -179,6 +225,12 @@ class SpecialDetailInfo extends React.Component {
                 item.newPrice = item.price
             }
         });
+        this.setState({
+            data: val,
+        })
+    }
+
+    dishesChangeZhy(val) {
         this.setState({
             data: val,
         })
@@ -352,8 +404,8 @@ class SpecialDetailInfo extends React.Component {
                         <Radio key={'1'} value={1}>{SALE_LABEL.k6hdpvvx}</Radio>
                     </RadioGroup> : null
                 }
-                <div style={{height: '40px', paddingLeft: 35, marginTop: '8px'}} className={styles.flexContainer}>
-                    <div style={{lineHeight: '28px', marginRight: '14px'}}>
+                {!isZhouheiya(this.props.user.groupID) && <div style={{ height: '40px', paddingLeft: 35, marginTop: '8px' }} className={styles.flexContainer}>
+                    <div style={{ lineHeight: '28px', marginRight: '14px' }}>
                         {SALE_LABEL.k6hdpw49}
                     </div>
                     <div style={{width: '400px'}}>
@@ -386,6 +438,7 @@ class SpecialDetailInfo extends React.Component {
                         }
                     </div>
                 </div>
+                }
             </div>
         )
     }
@@ -395,22 +448,41 @@ class SpecialDetailInfo extends React.Component {
         return (
             <div>
                 <Form className={styles.FormStyle}>
-                    {
+                    {!isZhouheiya(this.props.user.groupID) && (
                         this.props.isShopFoodSelectorMode ? (
                             <SpecialDishesTableWithoutBrand
                                 onChange={this.dishesChange}
                             />
                         ) : (
-                            <SpecialDishesTableWithBrand
-                                onChange={this.dishesChange}
-                                onChangeBookID={this.onChangeBookID}
-                                bookID={this.state.bookID}
-                            />
-                        )
+                                <SpecialDishesTableWithBrand
+                                    onChange={this.dishesChange}
+                                    onChangeBookID={this.onChangeBookID}
+                                    bookID={this.state.bookID}
+                                />
+                            )
+                    )
+                    }
+                    {isZhouheiya(this.props.user.groupID) && (
+
+                        <SpecialDishesTableWithBrandNew
+                            onChange={this.dishesChangeZhy}
+                            value={this.state.data}
+                        />
+
+                    )
                     }
                     {this.renderLimitRules()}
                     {!isOnline && this.renderAdvancedSettingButton()}
-                    {!isOnline && this.state.display ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
+
+                    {this.state.display && !isZhouheiya(this.props.user.groupID) ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
+                    {this.state.display && isZhouheiya(this.props.user.groupID) ? <AdvancedPromotionDetailSettingNew bizType={1} /> : null}
+                    {isZhouheiya(this.props.user.groupID) ? <Approval onApprovalInfoChange={(val) => {
+                        this.setState({
+                            approvalInfo: {
+                                ...val
+                            }
+                        })
+                    }} /> : null}
                 </Form>
             </div>
         )
@@ -423,6 +495,8 @@ function mapStateToProps(state) {
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         isShopFoodSelectorMode: state.sale_promotionDetailInfo_NEW.get('isShopFoodSelectorMode'),
+
+        user: state.user.get('accountInfo').toJS()
     }
 }
 
