@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { fetchData, axiosData } from 'helpers/util';
 import styles from '../GiftAdd/Crm.less';
 import PriceInput from '../../SaleCenterNEW/common/PriceInput';
-import { isZhouheiya } from '../../../constants/WhiteList.jsx'；
+import { isZhouheiya } from '../../../constants/WhiteList.jsx';
 
 const CheckboxGroup = Checkbox.Group;
 const Option = Select.Option;
