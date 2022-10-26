@@ -8,6 +8,7 @@ import { jumpPage, closePage, getStore } from '@hualala/platform-base';
 import { SALE_AUTOMATED_SALE_DETAIL } from '../../../constants/entryCodes';
 import _ from 'lodash';
 import all_icon from "../assets/all_icon.png";
+import no_start_icon from "../assets/no_start_icon.png";
 import running_icon from "../assets/running_icon.png";
 import stoped_icon from "../assets/stoped_icon.png";
 import ended_icon from "../assets/ended_icon.png";
@@ -34,6 +35,12 @@ export default class Main extends React.PureComponent {
                     value: 0,
                     icon: all_icon,
                     type: 1
+                },
+                {
+                    label: '未启用',
+                    value: 0,
+                    icon: no_start_icon,
+                    type: 5
                 },
                 {
                     label: '运行中',
