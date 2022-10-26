@@ -1,12 +1,18 @@
 import React, { Component } from "react";
 import { Icon, Form, Select, message, Input, Button, Tooltip } from "antd";
+import BaseForm from "components/common/BaseForm";
+import {ruleFormItem, giftRemainSettings} from "../common";
 import _ from "lodash";
 import { axios } from "@hualala/platform-base";
 import Gift from "./Gift";
 import { proCouponData, initVal } from "./common";
 import styles from "./styles.less";
 
-class AddGifts extends Component {
+const formItemLayout = {
+    labelCol: { span: 6 },
+    wrapperCol: { span: 16 },
+};
+class AddSeckillGoods extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -14,12 +20,13 @@ class AddGifts extends Component {
             couponData: [],
         };
     }
-
     componentDidMount() {
         // 请求零售券
         this.getCouponsData({});
     }
-
+    onChangeRemainForm = (key, value) => {
+        console.log(key,value,'value----------pppppppppp')
+    }
     getCouponsData = async (data) => {
         const method = "/coupon/couponService_getSortedCouponBoardList.ajax";
         const params = {
@@ -94,7 +101,7 @@ class AddGifts extends Component {
     };
 
     render() {
-        const { value = [] } = this.props;
+        const { value = [], formData, getForm } = this.props;
         if (!value[0]) {
             value.push({ ...initVal });
         }
@@ -105,14 +112,27 @@ class AddGifts extends Component {
                         <div className={styles.addGiftsConntet}>
                             <span>礼品{i + 1}</span>
                             <p style={{ height: 24 }}></p>
-                            <Gift
-                                idx={i}
-                                key={i}
-                                treeData={this.state.couponData}
-                                formData={v}
-                                onChange={this.onChange}
-                                getForm={this.getForm}
-                            />
+                            <div className={styles.giftWrapperBox}>
+                                <Gift
+                                    idx={i}
+                                    key={i}
+                                    treeData={this.state.couponData}
+                                    formData={v}
+                                    onChange={this.onChange}
+                                    getForm={this.getForm}
+                                />
+                            </div>
+                            <div className={styles.divideLine}></div>
+                            <div style={{ marginBottom: 16 }}>
+                                <BaseForm
+                                    getForm={getForm}
+                                    formItems={ruleFormItem}
+                                    formKeys={giftRemainSettings}
+                                    onChange={this.onChangeRemainForm}
+                                    formData={formData || {}}
+                                    formItemLayout={formItemLayout}
+                                />
+                            </div>
                         </div>
                         {/* 添加删除操作 */}
                         <div>
@@ -121,7 +141,7 @@ class AddGifts extends Component {
                                     <Icon
                                         type="plus-circle-o"
                                         style={{
-                                            fontSize: 26,
+                                            fontSize: 24,
                                             color: "#12B493",
                                         }}
                                     />
@@ -132,13 +152,15 @@ class AddGifts extends Component {
                                     <Icon
                                         type="minus-circle-o"
                                         style={{
-                                            fontSize: 26,
+                                            fontSize: 24,
                                             color: "#Ed7773",
+                                            marginLeft: 4
                                         }}
                                     />
                                 </a>
                             )}
                         </div>
+                        
                     </div>
                 ))}
             </div>
@@ -146,4 +168,4 @@ class AddGifts extends Component {
     }
 }
 
-export default AddGifts;
+export default AddSeckillGoods;

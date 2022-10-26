@@ -2,7 +2,7 @@
  * @Author: xinli xinli@hualala.com
  * @Date: 2022-10-10 14:36:10
  * @LastEditors: xinli xinli@hualala.com
- * @LastEditTime: 2022-10-24 16:37:16
+ * @LastEditTime: 2022-10-26 11:06:55
  * @FilePath: /platform-sale/src/containers/SaleActives/SeckillInLimitedTime/components/UsageRuleForm.jsx
  */
 
@@ -14,7 +14,7 @@ import {
     ruleFormKeys,
     formItemLayout,
 } from "../common";
-import AddGifts from "../AddGifts/AddGifts";
+import AddSeckillGoods from "../AddSeckillGoods/AddSeckillGoods";
 
 class UsageRuleForm extends Component {
     constructor(props) {
@@ -82,7 +82,7 @@ class UsageRuleForm extends Component {
                 ...gifts,
                 render: (d, form) =>
                     d()(
-                        <AddGifts
+                        <AddSeckillGoods
                             accountInfo={accountInfo}
                             getGiftForm={this.getForm}
                         />

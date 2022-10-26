@@ -5,10 +5,7 @@ import Advance from "../../PromotionV3/Camp/Advance";
 import DateTag from "../../PromotionV3/Camp/DateTag";
 import TimeRange from "../../PromotionV3/Camp/TimeRange";
 
-export const formItemLayout = {
-    labelCol: { span: 5 },
-    wrapperCol: { span: 15 },
-};
+
 export const baseFormItems = {
     eventType: {
         type: "custom",
@@ -72,7 +69,7 @@ export const ruleFormItem = {
     },
     gifts: {
         type: "custom",
-        label: "券包内容",
+        label: "秒杀商品",
         wrapperCol: { span: 19 },
         labelCol: { span: 5 },
         render: () => <p />,
@@ -86,40 +83,78 @@ export const ruleFormItem = {
         defaultValue: [moment(), moment().add(6, "days")],
         render: (d) => d()(<DateRange type={"85"} />),
     },
-    // joinType: {
-    //     type: "radio",
-    //     label: "参与次数",
-    //     options: [
-    //         { label: "不限次数", value: "0" },
-    //         { label: "限制次数", value: "1" },
-    //         { label: "限制参与次数的周期", value: "2" },
-    //     ],
-    //     defaultValue: "0",
-    // },
-    // partInTimes: {
-    //     type: "custom",
-    //     label: " ",
-    //     wrapperCol: { span: 8 },
-    //     labelCol: { span: 5 },
-    //     rules: [
-    //         "required",
-    //         {
-    //             pattern: /^([1-9]\d{0,})$/,
-    //             message: "请输入正整数",
-    //         },
-    //     ],
-    //     render: (d, form) => {
-    //         return form.getFieldValue("joinType") == 1
-    //             ? d()(
-    //                   <Input
-    //                       placeholder="请输入次数"
-    //                       addonBefore="可参与"
-    //                       addonAfter="次"
-    //                   />
-    //               )
-    //             : null;
-    //     },
-    // },
+    partInTimes: {
+        type: "custom",
+        label: "可购买次数",
+        // wrapperCol: { span: 8 },
+        // labelCol: { span: 5 },
+        rules: [
+            {
+                pattern: /^([1-9]\d{0,})$/,
+                message: "请输入正整数",
+            },
+        ],
+        render: (d, form) => {
+            return d()(
+                <Input
+                    placeholder="请输入每人可购买次数，不填写表示不限制"
+                    addonAfter="次"
+                />
+            )
+        },
+    },
+    systermPassedTimeReturnMoney: {
+        type: "radio",
+        label: "系统过期自动退款",
+        options: [
+            { label: "支持", value: "0" },
+            { label: "不支持", value: "1" },
+        ],
+        defaultValue: "0",
+    },
+    userSelfReturnMoney: {
+        type: "radio",
+        label: "用户自助退款",
+        options: [
+            { label: "支持", value: "0" },
+            { label: "不支持", value: "1" },
+        ],
+        defaultValue: "0",
+    },
+    discountPrice: {
+        type: "custom",
+        label: "划价金额",
+        // wrapperCol: { span: 8 },
+        // labelCol: { span: 5 },
+        // rules: [
+        //     {
+        //         pattern: /^([1-9]\d{0,})$/,
+        //         message: "请输入正整数",
+        //     },
+        // ],
+        render: (d, form) => {
+            return d()(
+                <Input
+                    placeholder="请输入划价金额"
+                    // addonAfter="次"
+                />
+            )
+        },
+    },
+    seckillPrice: {
+        type: "custom",
+        label: "秒杀金额",
+        // wrapperCol: { span: 8 },
+        // labelCol: { span: 5 },
+        rules: ["required"],
+        render: (d, form) => {
+            return d()(
+                <Input
+                    placeholder="请输入秒杀金额"
+                />
+            )
+        },
+    },
     // countCycleDays: {
     //     type: "custom",
     //     label: " ",
@@ -214,20 +249,8 @@ export const ruleFormItem = {
 // const KEY3 = ["timeList", "cycleType"];
 // const KEY4 = ["validCycle"];
 // const KEY5 = ["excludedDate"];
-const ruleFormKeys = [
-    "eventRange",
-    "gifts",
-    // "joinType",
-    // "partInTimes",
-    // "countCycleDays",
-    // "smsGate",
-    // "advMore",
-];
 
-export { ruleFormKeys };
-export const baseFormKeys = [
-    "eventType",
-    "eventName",
-    "shopIDList",
-    "eventRemark",
-];
+export const ruleFormKeys = ["eventRange","gifts"];
+export const baseFormKeys = ["eventType","eventName","shopIDList","eventRemark"];
+export const giftRemainSettings = ["partInTimes","systermPassedTimeReturnMoney","userSelfReturnMoney","discountPrice","seckillPrice"];
+
