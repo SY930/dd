@@ -182,6 +182,7 @@ class StepTwo extends React.Component {
         this.setState({
             radioType: value,
             consumeType: value === 0 ? '8' : '4',
+            amountType: value === 1 ? null : 1,
         })
     }
     handleAmountTypeChange = ({ target: { value } }) => {
@@ -450,18 +451,21 @@ class StepTwo extends React.Component {
                         <Radio value={1}>按数量</Radio>
                     </RadioGroup>
                 </FormItem>
-                <FormItem
-                    label={'金额核算'}
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 17 }}
-                >
-                    <RadioGroup onChange={this.handleAmountTypeChange} value={this.state.amountType}>
-                        <Radio value={1}>实收金额</Radio>
-                        <Radio value={2}>账单金额</Radio>
-                    </RadioGroup>
-                </FormItem>
-
+                {
+                   this.state.radioType == 0 ?  
+                        <FormItem
+                            label={'金额核算'}
+                            className={styles.FormItemStyle}
+                            labelCol={{ span: 4 }}
+                            wrapperCol={{ span: 17 }}
+                        >
+                            <RadioGroup onChange={this.handleAmountTypeChange} value={this.state.amountType}>
+                                <Radio value={1}>实收金额</Radio>
+                                <Radio value={2}>账单金额</Radio>
+                            </RadioGroup>
+                        </FormItem>
+                        :null
+                }
                 <FormItem
                     label=" "
                     className={styles.FormItemStyle}
