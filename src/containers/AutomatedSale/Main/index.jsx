@@ -40,25 +40,25 @@ export default class Main extends React.PureComponent {
                     label: '未启用',
                     value: 0,
                     icon: no_start_icon,
-                    type: 5
+                    type: 2
                 },
                 {
                     label: '运行中',
                     value: 0,
                     icon: running_icon,
-                    type: 2
+                    type: 3
                 },
                 {
                     label: '已暂停',
                     value: 0,
                     icon: stoped_icon,
-                    type: 3
+                    type: 4
                 },
                 {
                     label: '已结束',
                     value: 0,
                     icon: ended_icon,
-                    type: 4
+                    type: 5
                 }
             ]
         }
@@ -79,17 +79,16 @@ export default class Main extends React.PureComponent {
             loading: true
         }, () => {
             httpApaasActivityQueryByPage(concatParams).then(res => {
-                let { itemList: list, processingCount = 0, stopedCount = 0, endedCount = 0 } = res;
-                console.log('res====', res);
+                let { itemList: list, allCount = 0, waitEnableCount = 0, processingCount = 0, disableCount = 0, endedCount = 0 } = res;
                 let { pageHeader: {
                     totalSize = 0,
-                    pageCount,
                 } } = res;
                 let statusPanels = this.state.statusPanels;
-                statusPanels[0].value = totalSize;
-                statusPanels[1].value = processingCount;
-                statusPanels[2].value = stopedCount;
-                statusPanels[3].value = endedCount;
+                statusPanels[0].value = allCount;
+                statusPanels[1].value = waitEnableCount;
+                statusPanels[2].value = processingCount;
+                statusPanels[3].value = disableCount;
+                statusPanels[4].value = endedCount;
                 this.setState({
                     loading: false,
                     list,
@@ -183,7 +182,7 @@ export default class Main extends React.PureComponent {
         });
         this.onQueryList({
             ...initialPaging,
-            status: currentPanelType
+            executeStatus: currentPanelType
         })
     }
 

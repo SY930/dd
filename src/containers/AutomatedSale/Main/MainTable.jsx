@@ -157,7 +157,7 @@ class MainTable extends Component {
                     columns={columns}
                     rowKey="itemID"
                     dataSource={dataSource}
-                    // scroll={{ x: 1200, y: 'calc(100vh - 440px)' }}
+                    scroll={{ y: 'calc(100vh - 440px)' }}
                     pagination={pagination}
                 />
             </div>
