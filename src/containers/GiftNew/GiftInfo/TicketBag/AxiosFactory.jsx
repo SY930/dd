@@ -297,7 +297,7 @@ async function httpCheckBeforeDeleteCouponPackage(data) {
     const method = `${api}checkBeforeDeleteCouponPackage.ajax`;
     const params = { service, type, data, method };
     const response = await axios.post(url + method, params);
-    const { code, message: newMessage, msg, saveMoneyNameList = [], promotionEventNameList = [], quotaCardNameList = [], shopGoodNameList = [] } = response;
+    const { code, message: msg, saveMoneyNameList = [], promotionEventNameList = [], quotaCardNameList = [], shopGoodNameList = [] } = response;
     if (code === '000') {
         if (msg == '券包已发出，发放类型为周期发放礼品的券包不可停用') {
             return msg;
@@ -330,7 +330,7 @@ async function httpCheckBeforeDeleteCouponPackage(data) {
             ]
         }
     }
-    message.error(newMessage);
+    message.error(msg);
     return false;
 }
 
