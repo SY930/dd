@@ -63,7 +63,11 @@ const wayOpts = [
     { value: '12', label: '摇奖活动赠送' },
     { value: '13', label: '储值套餐赠送' },
     { value: '14', label: '定额卡充值赠送' },
+    { value: '15', label: '商城售卖' },
+    { value: '16', label: '积分兑换发放' },
+    { value: '17', label: 'openAPI发放' },
     { value: '18', label: '下单抽抽乐' },
+    { value: '124', label: '券包' },
     { value: '166', label: '消费送礼活动' },
 ];
 const stockOpts = [
