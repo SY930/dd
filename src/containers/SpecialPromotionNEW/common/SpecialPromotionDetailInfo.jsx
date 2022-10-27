@@ -4220,6 +4220,13 @@ class SpecialDetailInfo extends Component {
                                     onChange={({target}) => { this.setState({giftTotalCountBag: target.value })}}
                                     type="number"
                                 />
+                                <Tooltip title="当前兑换活动可发出的券包总数,不填为不限制">
+                                <Icon
+                                    type={"question-circle"}
+                                    style={{ color: "#787878" }}
+                                    className={styles.cardLevelTreeIcon}
+                                />
+                            </Tooltip>
                             </FormItem>
                         </Col>
                     </Row>
