@@ -437,6 +437,7 @@ class CollocationTableWithoutBrandID extends Component {
                 key: 'operation',
                 width: 100,
                 className: 'TableTxtCenter',
+                fixed: 'right',
                 render: (text, record, index) => {
                     // indexInfo [组合, 购买菜品数, 赠送菜品数, index]
                     const indexInfo = record.key.split('_');

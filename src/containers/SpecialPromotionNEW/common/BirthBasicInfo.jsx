@@ -9,10 +9,11 @@
  */
 
 import React from 'react'
-import { Input, Form, Select, Icon, Button, Radio, DatePicker, Row, Col } from 'antd';
+import { Input, Form, Select, Icon, Button, Radio, DatePicker, Row, Col, Tooltip } from 'antd';
 import { connect } from 'react-redux'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
+import AddCategorys from './AddCategorys'
 import {
     saleCenterSetSpecialBasicInfoAC,
     saleCenterGetExcludeCardLevelIds,
@@ -44,6 +45,11 @@ class PromotionBasicInfo extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            categoryList: [],//类别数据
+            tagList: [],//标签数据
+            categoryName: '',//统计类别
+            eventCode: `YX${moment(new Date()).format('YYYYMMDDHHmmss')}`,//活动编码
+            tagLst: [],//标签
             advanceDaysFlag: true,
             advanceDays: null,
             description: null,
@@ -75,12 +81,15 @@ class PromotionBasicInfo extends React.Component {
         const specialPromotion = this.props.specialPromotion.get('$eventInfo').toJS();
         this.props.queryWechatMpInfo({ subGroupID: specialPromotion.subGroupID });
 
-        const { giftAdvanceDays, eventRemark, eventName, involvementGiftAdvanceDays, eventStartDate, eventEndDate } = specialPromotion
+        const { giftAdvanceDays, eventRemark, eventName, involvementGiftAdvanceDays, eventStartDate, eventEndDate, eventCode, tagLst, categoryName } = specialPromotion
         this.setState({
             advanceDays: giftAdvanceDays,
             description: eventRemark,
             sendMsg: `${specialPromotion.smsGate || this.state.smsGate || '0'}`,
             name: eventName,
+            // tagLst: tagLst ? tagLst.split(',') : [],
+            eventCode: this.props.isView ? eventCode : eventCode ? eventCode : `YX${moment(new Date()).format('YYYYMMDDHHmmss')}`,
+            // categoryName,
             involvementGiftAdvanceDays: involvementGiftAdvanceDays || 0,
             actDate: (eventStartDate && eventEndDate) ? [moment(eventStartDate), moment(eventEndDate)] : [],
             actDateTemp: (eventStartDate && eventEndDate) ? [moment(eventStartDate), moment(eventEndDate)] : []
@@ -98,6 +107,39 @@ class PromotionBasicInfo extends React.Component {
             // oops
         }
     }
+
+    // componentWillReceiveProps(nextProps) {
+    //     if (
+    //         nextProps.promotionBasicInfo.getIn(["$categoryList", "initialized"])
+    //     ) {
+    //         const categoryList = nextProps.promotionBasicInfo.getIn([
+    //             "$categoryList",
+    //             "data",
+    //         ])
+    //             ? nextProps.promotionBasicInfo
+    //                   .getIn(["$categoryList", "data"])
+    //                   .toJS()
+    //                   .map(item => item.name)
+    //             : [];
+    //         this.setState({
+    //             categoryList,
+    //         });
+    //     }
+    //     if (nextProps.promotionBasicInfo.getIn(["$tagList", "initialized"])) {
+    //         const tagList = nextProps.promotionBasicInfo.getIn([
+    //             "$tagList",
+    //             "data",
+    //         ])
+    //             ? nextProps.promotionBasicInfo
+    //                   .getIn(["$tagList", "data"])
+    //                   .toJS()
+    //                   .map((item) => item.name)
+    //             : [];
+    //         this.setState({
+    //             tagList,
+    //         });
+    //     }
+    // }
 
     handleSubmit() {
         let nextFlag = true;
@@ -120,6 +162,9 @@ class PromotionBasicInfo extends React.Component {
                         eventRemark: this.state.description,
                         smsGate: this.state.sendMsg,
                         eventName: this.state.name,
+                        eventCode: this.state.eventCode,
+                        // tagLst: this.state.tagLst.join(','),
+                        // categoryName: this.state.categoryName,
                         signID: this.state.signID,
                         eventStartDate: actDate[0] && moment(actDate[0]).format(format),
                         eventEndDate: actDate[1] && moment(actDate[1]).format(format),
@@ -151,6 +196,9 @@ class PromotionBasicInfo extends React.Component {
                         eventRemark: this.state.description,
                         smsGate: this.state.sendMsg,
                         eventName: this.state.name,
+                        eventCode: this.state.eventCode,
+                        // tagLst: this.state.tagLst.join(','),
+                        // categoryName: this.state.categoryName,
                         signID: this.state.signID,
                         eventStartDate: actDate[0] && moment(actDate[0]).format(format),
                         eventEndDate: actDate[1] && moment(actDate[1]).format(format)
@@ -379,9 +427,34 @@ class PromotionBasicInfo extends React.Component {
 
 
         return (
-            <Form>
+            <Form className={styles.FormStyle}>
 
                 {this.renderPromotionType()}
+                {/* <FormItem
+                    label="统计标签"
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                    style={{ position: 'relative' }}
+                >
+                    <Select
+                        showSearch={true}
+                        optionFilterProp="children"
+                        notFoundContent="暂无数据"
+                        getPopupContainer={(node) => node.parentNode}
+                        size="default"
+                        value={this.state.categoryName}
+                        onChange={(value) => this.setState({ categoryName: value })}
+                    >
+                        {(this.state.categoryList || [])
+                            .map((category, index) => {
+                                return (
+                                    <Option value={category} key={category}>{category}</Option>
+                                )
+                            })}
+                    </Select>
+                    <AddCategorys catOrtag={'cat'} resetCategorgOrTag={() => this.setState({ categoryName: '' })} />
+                </FormItem> */}
                 <FormItem
                     label={this.props.intl.formatMessage(STRING_SPE.d4546grade4128)}
                     className={styles.FormItemStyle}
@@ -408,6 +481,55 @@ class PromotionBasicInfo extends React.Component {
                         />
                     )}
                 </FormItem>
+
+                 <FormItem
+                    label={<span>活动编码 <Tooltip title='活动编码填写后不可修改'><Icon type="question-circle" style={{ marginLeft: 5 }} /></Tooltip></span>}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    {getFieldDecorator('eventCode', {
+                        rules: [{
+                            whitespace: true,
+                            message: "字母、数字组成，不多于50个字符",
+                            pattern: /^[A-Za-z0-9]{1,50}$/,
+                        }],
+                        initialValue: this.state.eventCode,
+                    })(
+                        <Input placeholder='请输入活动编码' onChange={(e) => this.setState({ eventCode: e.target.value })} />
+                    )}
+                </FormItem>
+
+                {/* <FormItem
+                    label='标签'
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <Select
+                        allowClear={true}
+                        showSearch
+                        optionFilterProp="children"
+                        multiple
+                        className={styles.linkSelectorRight}
+                        onChange={(tagLst) => this.setState({ tagLst })}
+                        getPopupContainer={(node) => node.parentNode}
+                        value={this.state.tagLst}
+                        size="default"
+                        dropdownClassName={`${styles.dropdown}`}
+                    >
+                        {
+                            (this.state.tagList || [])
+                                .map((tag, index) => {
+                                    return ( <Option value={tag} key={tag}>{tag}</Option>)
+                                })
+                        }
+                    </Select>
+                    <AddCategorys
+                        catOrtag={'tag'}
+                        resetCategorgOrTag={() => this.setState({ tagLst: [] })}
+                    />
+                </FormItem> */}
 
                 {showActDataType.includes(this.props.type) ? this.renderPeriodSelector() : null}
 
@@ -489,6 +611,15 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        addPhrase: (opts) => {
+            dispatch(saleCenterAddPhrase(opts));
+        },
+        fetchPromotionCategories: (opts) => {
+            dispatch(fetchPromotionCategoriesAC(opts));
+        },
+        deletePhrase: (opts) => {
+            dispatch(saleCenterDeletePhrase(opts));
+        },
         setSpecialBasicInfo: (opts) => {
             dispatch(saleCenterSetSpecialBasicInfoAC(opts));
         },

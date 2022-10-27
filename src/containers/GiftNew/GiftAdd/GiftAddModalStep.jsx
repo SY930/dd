@@ -766,9 +766,9 @@ class GiftAddModalStep extends React.PureComponent {
         params.priceSortRule = params.discountSortRule;
         delete params.discountSortRule;
 
-        params.stageAmount = params.stageAmount.number;
+        params.stageAmount = params.stageAmount && params.stageAmount.hasOwnProperty('number') ? params.stageAmount.number : params.stageAmount;
         // params.foodSelectType = 0;
-        params.giveFoodCount = params.giveFoodCount.number;
+        params.giveFoodCount = params.giveFoodCount && params.giveFoodCount.hasOwnProperty('number') ? params.giveFoodCount.number : params.giveFoodCount;
         // params.couponFoodScopes = (params.buyGiveFoods.dishes || []).map((food) => {
         //     return {
         //         targetID: food.itemID,
@@ -1283,7 +1283,9 @@ class GiftAddModalStep extends React.PureComponent {
         axiosData(callServer, { ...params, groupName }, null, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW').then((data) => {
             endSaving();
             message.success('成功', 3);
-            cancelCreateOrEditGift()
+            cancelCreateOrEditGift({
+                saveDone: true
+            })
         }).catch(err => {
             endSaving();
         });

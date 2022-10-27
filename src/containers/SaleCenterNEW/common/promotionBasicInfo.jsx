@@ -1194,22 +1194,19 @@ class PromotionBasicInfo extends React.Component {
                             )}
                         </FormItem>
                 }
-                {
-                    propmotionType == '5020' ? null :
-                        <FormItem label={SALE_LABEL.k5dmmiar} className={styles.FormItemStyle} {...formItemLayout}>
-                            {getFieldDecorator('promotionCode', {
-                                rules: [{
-                                    whitespace: true,
-                                    required: true,
-                                    message: k5m678if,
-                                    pattern: /^[A-Za-z0-9]{1,20}$/,
-                                }],
-                                initialValue: this.state.code,
-                            })(
-                                <Input placeholder="" disabled={!this.props.isNew && !isCopy} onChange={this.handleCodeChange} />
-                            )}
-                        </FormItem>
-                }
+                <FormItem label={SALE_LABEL.k5dmmiar} className={styles.FormItemStyle} {...formItemLayout}>
+                    {getFieldDecorator('promotionCode', {
+                        rules: [{
+                            whitespace: true,
+                            required: true,
+                            message: k5m678if,
+                            pattern: /^[A-Za-z0-9]{1,20}$/,
+                        }],
+                        initialValue: this.state.code,
+                    })(
+                        <Input placeholder="" disabled={!this.props.isNew && !isCopy} onChange={this.handleCodeChange} />
+                    )}
+                </FormItem>
                 {
                     propmotionType == '5020' ? null :
                         <FormItem label={SALE_LABEL.k5dlpi06} className={styles.FormItemStyle} {...formItemLayout}>
@@ -1240,44 +1237,6 @@ class PromotionBasicInfo extends React.Component {
                             />
                         </FormItem>
                 }
-
-                {/* <FormItem
-                    label="活动起止日期2"
-                    className={[styles.FormItemStyle, styles.cardLevelTree].join(' ')}
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 17 }}
-                >
-                    <Row>
-                        <Col span={21}>
-                            {getFieldDecorator('rangePicker', {
-                            rules: [{
-                                required: true,
-                                message: '请选择活动起止时间',
-                            }],
-                            onChange: this.handleDateRangeChange,
-                            initialValue: this.state.startTime && this.state.endTime ? [moment(this.state.startTime, DATE_FORMAT), moment(this.state.endTime, DATE_FORMAT)] : [],
-                        })(
-                            <RangePicker
-                                className={styles.ActivityDateDayleft}
-                                disabledDate={disabledDate}
-                                style={{ width: '100%' }}
-                                // {...dateRangeProps}
-                                format="YYYY-MM-DD"
-                                placeholder={['开始日期', '结束日期']}
-                            />
-                        )}
-                        </Col>
-                        <Col offset={1} span={2}>
-                            <div className={styles.ActivityDateDay}>
-                                <span>
-                                    {this.getDateCount()}
-                                </span>
-                                <span>天</span>
-                            </div>
-                        </Col>
-                    </Row>
-                </FormItem> */}
-
 
                 <div style={{ position: 'relative' }}>
                     {

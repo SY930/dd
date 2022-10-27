@@ -1,5 +1,6 @@
 
 import React from 'react'
+import { Tooltip, Icon } from 'antd'
 import { PriceInput, ImageUpload } from '../../../components/common/index';
 import { ColorSetting } from '../components/index';
 import styles from '../CreateActive.less'
@@ -27,6 +28,13 @@ export const formItem = {
         rules: [
             { required: true, message: '活动名称不能为空' },
             { max: 50, message: '最多输入50位' },
+        ],
+    },
+    eventCode: {
+        type: 'text',
+        label: <span>活动编码 <Tooltip title='活动编码填写后不可修改'><Icon type="question-circle" style={{ marginLeft: 5 }} /></Tooltip></span>,
+        rules: [
+            { message: "字母、数字组成，不多于50个字符",  pattern: /^[A-Za-z0-9]{1,50}$/ },
         ],
     },
     eventLimitDate: {

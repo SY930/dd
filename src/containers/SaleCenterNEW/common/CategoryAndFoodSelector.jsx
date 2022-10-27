@@ -115,7 +115,7 @@ class CategoryAndFoodSelector extends Component {
                 onChangeFlag(!!value.length)
             }
         }
-        if (_.isEqual(this.props.scopeLst, nextProps.scopeLst)) {
+        if (!_.isEqual(this.props.scopeLst, nextProps.scopeLst) && nextProps.scopeLst.length > 0) {
             if (this.props.type == '87') { // 消费送礼
                 const {
                     categories,

@@ -64,7 +64,11 @@ class Step1 extends React.Component {
     render () {
         formItems1.eventRemark.render = renderEventRemark.bind(this)
         formItems1.eventLimitDate.render = eventLimitDateRender.bind(this)
-        const { formData,isView,isEdit } = this.props.createActiveCom
+        let { formData,isView,isEdit } = this.props.createActiveCom
+        formData = {
+            ...formData,
+            eventCode: isView ? formData.eventCode : formData.eventCode ? formData.eventCode : `YX${moment(new Date()).format('YYYYMMDDHHmmss')}`
+        }
         return (
             <div className={styles.step1Wrap}>
                 {isView&&!isEdit&&<div className={styles.disabledDiv}></div>}

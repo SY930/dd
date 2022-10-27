@@ -76,8 +76,6 @@ import {
     upGradeInitPerfectCheckBox,
 } from "../upGradeReturnGift/StepThreeHelp";
 import { freeGetStep3Render } from "../freeGet/step3";
-import WxCouponModal from "../onLineReturnGift/WxCouponModal";
-import SleectedWxCouponTable from "../onLineReturnGift/SleectedWxCouponTable";
 
 const moment = require("moment");
 const FormItem = Form.Item;
@@ -4248,29 +4246,6 @@ class SpecialDetailInfo extends Component {
         );
     }
 
-    // 添加商家券
-    addWXCoupon = () => {
-        this.setState({
-            wxCouponVisible: true,
-        });
-    };
-
-    onWXCouponCancel = () => {
-        this.setState({
-            wxCouponVisible: false,
-        });
-    };
-
-    onWxCouponChange = (rowSelected) => {
-        this.setState({ sleectedWxCouponList: rowSelected });
-    };
-
-    handleCouponChange = ({ target: { value } }) => {
-        this.setState({
-            couponValue: value,
-        });
-    };
-
     render() {
         const { giveCoupon, couponValue } = this.state;
         const { type, isBenefitJumpSendGift = false } = this.props;
@@ -4406,146 +4381,6 @@ class SpecialDetailInfo extends Component {
                 )}
                 {["66", "65"].includes(type) && this.renderShareInfo2()}
                 {["30"].includes(type) && this.renderShareInfo3()}
-                {type == "23" && (
-                    <div>
-                        <FormItem
-                            label="优惠券"
-                            labelCol={{ span: 4 }}
-                            wrapperCol={{ span: 17 }}
-                        >
-                            <p>
-                                <RadioGroup
-                                    onChange={this.handleCouponChange}
-                                    value={`${couponValue}`}
-                                    defaultValue={"0"}
-                                >
-                                    <RadioButton value="0">
-                                        哗啦啦优惠券
-                                    </RadioButton>
-                                    <RadioButton value="1">
-                                        第三方微信优惠券
-                                    </RadioButton>
-                                </RadioGroup>
-                            </p>
-                        </FormItem>
-                        <Row>
-                            <Col span={17} offset={4}>
-                                {couponValue == "0" && (
-                                    <AddGifts
-                                        maxCount={10}
-                                        // disabledGifts={type == '67' && this.state.disabledGifts}
-                                        type={this.props.type}
-                                        isNew={this.props.isNew}
-                                        value={this.state.data
-                                            .filter(
-                                                (gift) => gift.sendType === 0
-                                            )
-                                            .sort(
-                                                (a, b) =>
-                                                    a.needCount - b.needCount
-                                            )}
-                                        onChange={(gifts) =>
-                                            this.gradeChange(gifts, 0)
-                                        }
-                                    />
-                                )}
-                                {couponValue == "1" && (
-                                    <div>
-                                        <p style={{ margin: "10px 0 8px" }}>
-                                            <span>
-                                                <Button
-                                                    icon="plus"
-                                                    onClick={this.addWXCoupon}
-                                                >
-                                                    添加第三方微信优惠券
-                                                </Button>
-                                            </span>
-                                        </p>
-                                        <p className={styles.wxCouponTips}>
-                                            {" "}
-                                            <Icon
-                                                type="exclamation-circle"
-                                                style={{ color: "#FAAD14" }}
-                                            />
-                                            <span>
-                                                第三方微信优惠券领取后，可同步微信卡包展示。
-                                            </span>
-                                        </p>
-                                        <FormItem
-                                            label={"用户单次领取优惠券张数"}
-                                            // className={styles.FormItemStyle}
-                                            labelCol={{ span: 8 }}
-                                            wrapperCol={{ span: 16 }}
-                                        >
-                                            {this.props.form.getFieldDecorator(
-                                                "giftCount",
-                                                {
-                                                    rules: [
-                                                        {
-                                                            validator: (
-                                                                rule,
-                                                                v,
-                                                                cb
-                                                            ) => {
-                                                                if (
-                                                                    v > 10 ||
-                                                                    v < 1
-                                                                ) {
-                                                                    return cb(
-                                                                        "请输入为1-10的整数"
-                                                                    );
-                                                                }
-                                                                cb();
-                                                            },
-                                                        },
-                                                        {
-                                                            required: true,
-                                                            message:
-                                                                "请输入领取张数",
-                                                        },
-                                                    ],
-                                                    initialValue:
-                                                        this.state
-                                                            .giftCouponCount ||
-                                                        "1",
-                                                }
-                                            )(
-                                                <Input
-                                                    placeholder={
-                                                        "请输入1-99的整数"
-                                                    }
-                                                    type="number"
-                                                />
-                                            )}
-                                        </FormItem>
-                                        <SleectedWxCouponTable
-                                            sleectedWxCouponList={
-                                                this.state.sleectedWxCouponList
-                                            }
-                                            onWxCouponChange={
-                                                this.onWxCouponChange
-                                            }
-                                        />
-                                        {this.state.wxCouponVisible && (
-                                            <WxCouponModal
-                                                onCancel={this.onWXCouponCancel}
-                                                sleectedWxCouponList={
-                                                    this.state
-                                                        .sleectedWxCouponList
-                                                }
-                                                user={this.props.user}
-                                                onWxCouponChange={
-                                                    this.onWxCouponChange
-                                                }
-                                            />
-                                        )}
-                                        {/* <div className={userCount > 0 ? styles.opacitySet : null}></div> */}
-                                    </div>
-                                )}
-                            </Col>
-                        </Row>
-                    </div>
-                )}
             </div>
         );
     }

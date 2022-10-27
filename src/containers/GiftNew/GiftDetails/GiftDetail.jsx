@@ -134,7 +134,9 @@ class GiftDetail extends React.Component {
           width={710}
           footer={null}
         >
-          <SendGiftPanel giftItemID={giftDetailInfo.giftItemID} hideModal={this.hideModal}></SendGiftPanel>
+            {
+                this.state.sendVisible && <SendGiftPanel giftItemID={giftDetailInfo.giftItemID} hideModal={this.hideModal}></SendGiftPanel>
+            }
         </Modal>
       </div>
     );

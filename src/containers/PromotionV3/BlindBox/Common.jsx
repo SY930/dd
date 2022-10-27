@@ -1,4 +1,5 @@
 import React from 'react';
+import { Tooltip, Icon } from 'antd'
 import DateRange from '../Camp/DateRange';
 
 const imgURI = 'http://res.hualala.com/';
@@ -33,6 +34,13 @@ const formItems1 = {
         label: '活动名称',
         rules: ['required', 'stringLength'],
     },
+    eventCode: {
+        type: 'text',
+        label: <span>活动编码 <Tooltip title='活动编码填写后不可修改'><Icon type="question-circle" style={{ marginLeft: 5 }} /></Tooltip></span>,
+        rules: [
+            { message: "字母、数字组成，不多于50个字符",  pattern: /^[A-Za-z0-9]{1,50}$/ },
+        ],
+    },
     eventRange: {
         type: 'custom',
         label: '活动起止日期',
@@ -54,7 +62,7 @@ const formItems1 = {
     },
 };
 
-const formKeys1 = ['eventType', 'eventName', 'smsGate', 'eventRange', 'eventRemark'];
+const formKeys1 = ['eventType', 'eventName', 'eventCode', 'smsGate', 'eventRange', 'eventRemark'];
 
 /**
  * formItem2

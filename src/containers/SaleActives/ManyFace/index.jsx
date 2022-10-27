@@ -760,6 +760,7 @@ class ManyFace extends Component {
                         >基本信息</div>
                         <Step1
                             form1={form1}
+                            isView={this.props.isView}
                             getForm={this.onSetForm1}
                             formData={formData1}
                             authLicenseData={this.state.authLicenseData}

@@ -284,6 +284,7 @@ export default {
             );
             const {
                 eventName,
+                eventCode,
                 merchantLogoUrl,
                 eventRemark,
                 consumeTotalAmount,
@@ -304,6 +305,7 @@ export default {
             } = mySendGift;
             const event = {
                 eventName,
+                eventCode,
                 merchantLogoName: merchantLogoUrl.url
                     ? merchantLogoUrl.fileName
                     : 'hualala.png',

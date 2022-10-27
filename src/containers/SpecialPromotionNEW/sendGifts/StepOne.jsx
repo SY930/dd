@@ -71,6 +71,7 @@ class StepOne extends React.Component {
             description: null,
             dateRange: Array(2),
             name: '',
+            eventCode: `YX${moment(new Date()).format('YYYYMMDDHHmmss')}`,
             startTime: '', // 礼品发放时间
             smsGate: '0',
             timeString: '',
@@ -135,6 +136,7 @@ class StepOne extends React.Component {
             this.setState({
                 name: specialPromotion.eventName || this.state.name, // ||是因为选择日期自动更新，redux的‘’会覆盖掉state的值
                 description: specialPromotion.eventRemark || this.state.description,
+                eventCode: this.props.isView ? specialPromotion.eventCode : specialPromotion.eventCode ? specialPromotion.eventCode : this.state.eventCode,
                 smsGate: specialPromotion.smsGate || this.state.smsGate || '0',
                 dateRange: isCopy ? Array(2) : [moment(specialPromotion.eventStartDate, 'YYYYMMDD'), moment(specialPromotion.eventEndDate, 'YYYYMMDD')],
             })
@@ -145,6 +147,7 @@ class StepOne extends React.Component {
                 smsGate: specialPromotion.smsGate || this.state.smsGate || '0',
                 name: specialPromotion.eventName || this.state.name,
                 description: specialPromotion.eventRemark || this.state.description,
+                eventCode: this.props.isView ? specialPromotion.eventCode : specialPromotion.eventCode ? specialPromotion.eventCode : this.state.eventCode,
             })
         }
 
@@ -221,7 +224,8 @@ class StepOne extends React.Component {
                 startTime: this.state.startTime + this.state.timeString || '',              // 发送时间
                 eventName: this.state.name,                                                 // 活动名称
                 eventRemark: this.state.description,                                        // 活动描述
-                smsGate: this.state.smsGate,                                                // 短信消息
+                smsGate: this.state.smsGate,   
+                eventCode: this.state.eventCode,                                             // 短信消息
                 validCycle,                                                                 // 周期参数
                 eventStartDate: this.state.dateRange[0] ? this.state.dateRange[0].format('YYYYMMDD') : '0',
                 eventEndDate: this.state.dateRange[1] ? this.state.dateRange[1].format('YYYYMMDD') : '0',
@@ -691,6 +695,23 @@ class StepOne extends React.Component {
                                 onChange={this.handleNameChange}
                                 ref={node => this.promotionNameInputRef = node}
                             />
+                        )}
+                    </FormItem>
+                    <FormItem
+                        label={<span>活动编码 <Tooltip title='活动编码填写后不可修改'><Icon type="question-circle" style={{ marginLeft: 5 }} /></Tooltip></span>}
+                        className={styles.FormItemStyle}
+                        labelCol={{ span: 4 }}
+                        wrapperCol={{ span: 17 }}
+                    >
+                        {getFieldDecorator('eventCode', {
+                            rules: [{
+                                whitespace: true,
+                                message: "字母、数字组成，不多于50个字符",
+                                pattern: /^[A-Za-z0-9]{1,50}$/,
+                            }],
+                            initialValue: this.state.eventCode,
+                        })(
+                            <Input placeholder='请输入活动编码' onChange={(e) => this.setState({ eventCode: e.target.value })} />
                         )}
                     </FormItem>
                     <FormItem

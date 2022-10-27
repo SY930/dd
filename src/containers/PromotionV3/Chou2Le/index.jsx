@@ -409,6 +409,7 @@ class Chou2Le extends Component {
                         {current === 1 &&
                             <Step1
                                 form={form}
+                                isView={this.props.view}
                                 getForm={this.onSetForm}
                                 formData={formData1}
                             />
