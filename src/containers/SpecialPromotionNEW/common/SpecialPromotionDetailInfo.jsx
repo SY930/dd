@@ -4209,24 +4209,26 @@ class SpecialDetailInfo extends Component {
                             <FormItem
                                 label={"礼品总数"}
                                 labelCol={{ span: 6 }}
-                                wrapperCol={{ span: 6 }}
+                                wrapperCol={{ span: 10 }}
                                 className={""}
                                 validateStatus={preErr}
                                 required={true}
                                 help={preErrText}
                             >
-                                <Input
-                                    value={giftTotalCountBag}
-                                    onChange={({target}) => { this.setState({giftTotalCountBag: target.value })}}
-                                    type="number"
-                                />
-                                <Tooltip title="当前兑换活动可发出的券包总数,不填为不限制">
-                                <Icon
-                                    type={"question-circle"}
-                                    style={{ color: "#787878" }}
-                                    className={styles.cardLevelTreeIcon}
-                                />
-                            </Tooltip>
+                                <div className={styles.giftCountTips}>
+                                    <Input
+                                        value={giftTotalCountBag}
+                                        onChange={({ target }) => { this.setState({ giftTotalCountBag: target.value }) }}
+                                        type="number"
+                                    />
+                                    <Tooltip title="当前兑换活动可发出的券包总数,不填为不限制">
+                                        <Icon
+                                            type={"question-circle"}
+                                            style={{ color: "#787878" }}
+                                            className={styles.cardLevelTreeIcon}
+                                        />
+                                    </Tooltip>
+                                </div>
                             </FormItem>
                         </Col>
                     </Row>
