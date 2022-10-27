@@ -1,5 +1,5 @@
 import React, { PureComponent as Component } from 'react';
-import { Button, Table, Tooltip } from 'antd';
+import { Button, Table, Tooltip, Modal } from 'antd';
 import styles from './bag.less';
 import { href, typeMap } from './Common';
 import AddModal from './AddModal';
@@ -26,6 +26,20 @@ export default class TicketBag extends Component {
         this.setState(ps => ({ visible: !ps.visible }));
     }
     onSelectBag = (item) => {
+        if (item.limitStockForEvent == '1') {
+            Modal.info({
+                title: '注意',
+                content: "当前选择券包为历史券包，历史券包库存与活动库存冲突。活动可使用券包库存数为当前活动设置奖品数。",
+                iconType: "exclamation-circle",
+                okText: "我知道了",
+                onOk: () => {
+                    this.setState({ list: [item] });
+                    this.triggerChange(item);
+                    this.onToggleModal();
+                } 
+            });
+            return
+        }
         this.setState({ list: [item] });
         this.triggerChange(item);
         this.onToggleModal();
@@ -61,7 +75,7 @@ export default class TicketBag extends Component {
             { width: 80, title: '操作', dataIndex: 'op', className: tc, render },
             { title: '券包名称', dataIndex: 'couponPackageName', render: render1 },
             { width: 100, title: '券包类型', dataIndex: 'type' },
-            { width: 100, title: '库存', dataIndex: 'remainStock', className: tc, render: render3 },
+            // { width: 100, title: '库存', dataIndex: 'remainStock', className: tc, render: render3 },
             { width: 200, title: '有效期', dataIndex: 'postTime', className: tc, render: render2 },
         ];
     }

@@ -1,3 +1,4 @@
+
 import React, { PureComponent as Component } from 'react';
 import { Table, Tooltip } from 'antd';
 import styles from './bag.less';
