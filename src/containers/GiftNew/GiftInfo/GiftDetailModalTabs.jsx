@@ -14,6 +14,7 @@ import ExportModal from "./ExportModal";
 import GenerateBatchGifts from "../components/GenerateBatchGifts";
 import styles from './GiftInfo.less'
 import { axiosData } from '../../../helpers/util';
+import { isZhouheiya } from '../../../constants/WhiteList.jsx'
 
 const TabPane = Tabs.TabPane;
 
@@ -186,20 +187,20 @@ class GiftDetailModalTabs extends React.Component {
                                 [
                                     (
                                         <TabPane tab={'赠送'} key={'send_gift'}>
-                                            <SendGiftPanel giftItemID={data.giftItemID} />
+                                            <SendGiftPanel giftItemID={data.giftItemID} groupID={data.groupID} />
                                         </TabPane>
-                                    )
+                                    ),
                                 ]
                                 :
                                 []
                         ).concat(
-                            batchableGiftTypes.includes(String(data.giftType)) && data.action != 2 ?
+                            batchableGiftTypes.includes(String(data.giftType)) && data.action != 2 && !isZhouheiya(data.groupID) ?
                                 [
                                     (
                                         <TabPane tab={'批量生成券码'} key={'generate_gifts'}>
                                             <GenerateBatchGifts giftItemID={data.giftItemID} />
                                         </TabPane>
-                                    )
+                                    ),
                                 ]
                                 :
                                 []

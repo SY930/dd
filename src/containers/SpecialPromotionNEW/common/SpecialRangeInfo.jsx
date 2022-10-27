@@ -1,5 +1,6 @@
 import React from 'react'
-import { Form, Checkbox, Radio, Select, message, Row, Col } from 'antd';
+import { Form, Checkbox, Radio, Select, message, Row, Col, Input, Tooltip, Icon } from 'antd';
+import Immutable from 'immutable';
 import { connect } from 'react-redux'
 import styles from '../../SaleCenterNEW/ActivityPage.less';
 import PriceInput from '../../../containers/SaleCenterNEW/common/PriceInput';
@@ -11,8 +12,15 @@ import {
 import { fetchSpecialCardLevel } from '../../../redux/actions/saleCenterNEW/mySpecialActivities.action'
 import { injectIntl } from 'i18n/common/injectDecorator'
 import { STRING_SPE } from 'i18n/common/special';
-import { isFilterShopType } from '../../../helpers/util'
-
+import { axiosData, isFilterShopType } from '../../../helpers/util'
+import { getStore, axios } from '@hualala/platform-base'
+import ShopSelector from '../../../components/ShopSelector';
+import Permission from './Permission';
+import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
+import { getPromotionShopSchema, fetchPromotionScopeInfo, saleCenterSetScopeInfoAC, saleCenterGetShopByParamAC, SCENARIOS, fetchFilterShops } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
+import ShopAreaSelector from '../../../components/ShopAreaSelector/index.jsx';
+import Approval from '../../../containers/SaleCenterNEW/common/Approval';
+import { isZhouheiya, isGeneral } from "../../../constants/WhiteList";
 const CheckboxGroup = Checkbox.Group;
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
@@ -60,6 +68,19 @@ class SpecialRangeInfo extends React.Component {
             curCardConsumeStatus: 'success',
             sumCardConsume: '0', // 活动至今卡值消费满  前端回显使用
             sumCardConsumeStatus: 'success',
+            eventCityInfos: [], //投放城市
+            cityOptions: [], //投放城市集合
+            shopStatus: null, //是否选择店铺
+            approvalInfo: {},//审批字段
+            brandOptions: [],
+            brandList: [],
+            sourceWayLimit: '0',
+            orderTypeList: ['31', '51'],
+            shopAreaData: {
+                list: [],
+                type: 'shop', //shop | area
+            },
+            orgs: [],
         };
 
         this.handlePrev = this.handlePrev.bind(this);
@@ -78,6 +99,9 @@ class SpecialRangeInfo extends React.Component {
         this.renderJoinCount = this.renderJoinCount.bind(this);
         this.renderFreeGetJoinRange = this.renderFreeGetJoinRange.bind(this);
         this.onCardLevelChange = this.onCardLevelChange.bind(this);
+        this.handleCityIDChange = this.handleCityIDChange.bind(this);
+        
+        this.rightControl = Permission(props.user.accountInfo.groupID).find(item => props.type === item.key);
     }
 
     componentDidMount() {
@@ -166,8 +190,56 @@ class SpecialRangeInfo extends React.Component {
                 consumeType: String(consumeType),
                 curCardConsume,
                 sumCardConsume,
+                eventCityInfos: (specialPromotion.eventCityInfos || []).map(item => item.cityID) || [],
+                shopIDList: specialPromotion.shopIDList || [],
+                shopStatus: specialPromotion.shopIDList && specialPromotion.shopIDList.length > 0 ? true : false,
+                brandList: specialPromotion.brandList ? specialPromotion.brandList.split(',') : [],
+                sourceWayLimit: specialPromotion.sourceWayLimit + '',
+                orderTypeList: specialPromotion.orderTypeList ? specialPromotion.orderTypeList.split(',') : [],
+            })
+            //反显店铺区域组件
+            const list = specialPromotion.orgs || [];
+            this.setState({
+                shopAreaData: {
+                    list: list.map(item => item.shopID),
+                    type: list[0] && list[0].shopType == '2' ? 'area' : 'shop'
+                },
+                orgs: specialPromotion.orgs || []
             })
         }
+        if(this.props.type === '69') {
+            this.getCityList()
+        }
+        if(this.props.type === '88') {
+            this.loadShopSchema()
+        }
+    }
+
+    // 获取投放城市列表
+    async getCityList() {
+        const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', 'specialPromotion/', '/api/v1/universal?'];
+        const datas = {
+            groupID: this.props.user.accountInfo.groupID,
+            shopIDs: this.props.user.accountInfo.dataPermissions.shopList.map(item => item.shopID)
+        };
+        const method = `${api}queryCityByShopIDs.ajax`;
+        const params = { service, type, data: datas, method };
+        const { data, code } = await axios.post(url + method, params);
+        try {
+            if(code == '000') {
+                this.setState({ cityOptions: data.cityList || [] })
+            }
+        } catch (error) {
+            message.warning('请求失败');
+        }
+    }
+
+    async loadShopSchema() {
+        const { data } = await axios.post('/api/shopapi/schema', {});
+        const { brands, shops } = data;
+        this.setState({
+            brandOptions: brands,
+        });
     }
 
     handlePrev() {
@@ -201,6 +273,12 @@ class SpecialRangeInfo extends React.Component {
             sumCardConsume,
             isConsumeType,
             consumeType,
+            eventCityInfos,
+            approvalInfo,
+            brandList,
+            sourceWayLimit,
+            orderTypeList,
+            orgs,
         } = this.state;
         const opts = {
             rewardOnly,
@@ -212,6 +290,13 @@ class SpecialRangeInfo extends React.Component {
             cardLevelRangeType: this.state.cardLevelRangeType || '0',
             consumeType: '0',
             // consumeTotalAmount: '', // 消费金额
+            eventCityInfos: this.state.cityOptions.filter(item => eventCityInfos.includes(item.cityID)),
+            shopIDList,
+            ...approvalInfo,
+            brandList: brandList.join(','),
+            sourceWayLimit,
+            orderTypeList: orderTypeList.join(','),
+            orgs,
         };
         if (this.props.type === '22' && (maxPartInPerson === '' || maxPartInPerson === null)) {
             nextFlag = false;
@@ -279,6 +364,14 @@ class SpecialRangeInfo extends React.Component {
             } else {
                 opts.consumeType = '0';
                 opts.consumeTotalAmount = '0'
+            }
+        }
+        if(this.props.type === '89' || this.props.type === '88') {
+            if(orgs && orgs.length == 0 && !isGeneral() && this.props.isUpdate) {
+                nextFlag = false;
+            }
+            if(!approvalInfo.activityCost || !approvalInfo.activityRate || !approvalInfo.estimatedSales || !approvalInfo.auditRemark) {
+                return;
             }
         }
 
@@ -375,6 +468,19 @@ class SpecialRangeInfo extends React.Component {
                     let { shopIDList = [] } = opts
                     opts.shopIDList = shopIDList.filter((item) => shops.some(i => i.shopID == item))
                 }
+
+                if(isZhouheiya(this.props.user.accountInfo.groupID)){
+                    //设置默认值
+                    if(this.rightControl) {
+                        const fields = Object.keys(this.rightControl).filter(key => this.rightControl[key].defaultValue != undefined);
+                        fields.forEach(field => {
+                            if(this.rightControl[field] && this.rightControl[field].defaultValue) {
+                                opts[field] = this.rightControl[field].defaultValue;
+                            }
+                        })
+                    }
+                }
+                
                 this.props.setSpecialBasicInfo(opts);
             }
         }

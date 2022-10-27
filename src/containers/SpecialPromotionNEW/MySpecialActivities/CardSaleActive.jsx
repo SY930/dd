@@ -4,6 +4,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import Authority from '../../../components/common/Authority';
 import { isBrandOfHuaTianGroupList, isGroupOfHuaTianGroupList, isMine } from '../../../constants/projectHuatianConf';
+import { isZhouheiya, isGeneral } from "../../../constants/WhiteList";
 import {
     SPECIAL_LOOK_PROMOTION_QUERY,
     SPECIAL_PROMOTION_UPDATE,
@@ -13,6 +14,7 @@ import { SPECIAL_PROMOTION_MANAGE_PAGE } from '../../../constants/entryIds';
 import styles from './mySpecialActivities.less'
 import stylesPage from '../../SaleCenterNEW/ActivityPage.less';
 import emptyPage from '../../../assets/empty_page.png'
+import { axios } from '@hualala/platform-base'
 
 function mapValueToLabel(cfg, val) {
     return _.result(_.find(cfg, { value: val }), 'label');
@@ -30,6 +32,7 @@ const DECORATABLE_PROMOTIONS = [
     '79',
     '85',
     '83',
+    '69'
 ]
 const copyUrlList = [
     '21', // 免费领取
@@ -40,6 +43,8 @@ const copyUrlList = [
     '68', // 推荐有礼
     '79', // 盲盒
     '66', // 膨胀大礼包
+    '83',// 口令领券
+    '69',// H5领券
 ]
 const isDecorationAvailable = ({ eventWay }) => {
     return DECORATABLE_PROMOTIONS.includes(`${eventWay}`)

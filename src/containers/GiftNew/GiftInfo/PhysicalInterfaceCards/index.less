@@ -1,0 +1,353 @@
+@gray: #999;
+@red: #ED5664;
+@yel: #FF9805;
+@brd: #E7E7E7;
+@green: #1AB495;
+@green2: #18a786;
+@black: #434343;
+@white: #fff;
+@blue: #1ca1dc;
+@graybg: #F9F9F9;
+@separ: #F3F3F3;
+
+.tooltip_fix {
+    overflow: hidden;
+    display: table-cell;
+    max-width: 290px;
+    text-overflow: ellipsis;
+}
+
+.tc {
+    text-align: center;
+}
+
+.r {
+    float: right;
+}
+
+.dn {
+    display: none;
+}
+
+.tr {
+    text-align: right;
+}
+
+.ell {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    white-space: nowrap;
+}
+
+.h3 {
+    padding-left: 5px;
+    margin-bottom: 10px;
+    line-height: 17px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.header {
+    display: flex;
+    line-height: 50px;
+    border-bottom: 15px solid @brd;
+    font-size: 20px;
+    padding: 0 20px 0;
+
+    .opBox {
+        margin-left: auto;
+
+        &>button {
+            margin-left: 10px;
+        }
+
+        ;
+    }
+}
+
+.formBox {
+    overflow: auto;
+    height: 100%;
+    padding-bottom: 200px;
+    scroll-behavior: smooth;
+
+    :global {
+        .ant-row {
+            width: 500px;
+        }
+
+        .ant-form-item {
+            .separate {
+                margin: 20px 0;
+
+                h3 {
+                    font-size: 14px;
+                    font-weight: bold;
+                    margin: 15px 20px;
+                    border-left: 3px solid @green;
+                    text-indent: 10px;
+                }
+            }
+
+            label[for=validCycle] {
+                visibility: hidden;
+            }
+
+            .formTips {
+                padding: 6px 8px;
+                border: 1px solid #fff3cf;
+                background-color: #fffaeb;
+                border-radius: 4px;
+                color: @yel;
+                line-height: 1.2;
+            }
+        }
+
+        .ant-radio-button-wrapper:hover,
+        .ant-radio-button-wrapper-focused {
+            color: @green;
+        }
+
+        .ant-radio-button-wrapper-checked {
+            border-color: @green;
+            color: @green;
+            box-shadow: -1px 0 0 0 @green;
+        }
+
+        .ant-radio-button-wrapper-checked:first-child {
+            border-color: @green;
+        }
+
+        .ant-radio-button-wrapper-checked:hover {
+            border-color: @green2;
+            box-shadow: -1px 0 0 0 @green2;
+            color: @green2;
+        }
+
+        .ant-radio-button-wrapper-checked:active {
+            border-color: @green2;
+            box-shadow: -1px 0 0 0 @green2;
+            color: @green2;
+        }
+
+        .baseform-b {
+            .ant-form-item-label {
+                overflow: unset;
+            }
+
+            label[for=couponSendWay] {
+                position: relative;
+
+                .anticon-question-circle {
+                    position: absolute;
+                    left: 305px;
+                    top: 9px;
+                    z-index: 4;
+                    width: 20px;
+                }
+            }
+
+            label[for=couponPackageGift] {
+                &::before {
+                    display: none;
+                }
+            }
+
+            label[for=couponPackageFirstGift],
+            label[for=couponPackageFollowGift] {
+                top: -12px;
+                left: 68px;
+            }
+        }
+
+        .ant-alert-error {
+            color: @red;
+            width: 600px;
+            margin-left: 125px;
+        }
+    }
+}
+
+.formWrap {
+    :global {
+        .baseform-a {
+
+            .ant-row:nth-child(2),
+            .ant-row:nth-child(4),
+            .ant-row:nth-child(11),
+            .ant-row:nth-child(14) {
+                padding-bottom: 0;
+            }
+
+            .ant-row:nth-child(3),
+            .ant-row:nth-child(5),
+            .ant-row:nth-child(12),
+            .ant-row:nth-child(15) {
+                padding-top: 0;
+            }
+
+            .ant-row:nth-child(13) {
+                padding-top: 3px;
+            }
+        }
+    }
+}
+
+.formWrap2 {
+    :global {
+        .baseform-a {
+
+            .ant-row:nth-child(2),
+            .ant-row:nth-child(7) {
+                padding-bottom: 0;
+            }
+
+            .ant-row:nth-child(3),
+            .ant-row:nth-child(8) {
+                padding-top: 0;
+            }
+        }
+    }
+}
+
+.dayBox {
+    width: 420px;
+
+    :global {
+        .ant-tag {
+            line-height: 30px;
+            height: 30px;
+            width: 50px;
+            border: 1px solid @brd;
+            text-align: center;
+            padding: 0;
+            margin-bottom: 7px;
+        }
+
+        .ant-tag-checkable-checked {
+            background-color: @green2;
+        }
+
+        .ant-tag-checkable:hover {
+            background-color: @green;
+        }
+    }
+}
+
+.listBox {
+    background: @white;
+    padding: 23px 30px;
+    height: ~'calc(100vh - 256px)';
+
+    :global {
+        .layoutsLine {
+            margin: 0;
+        }
+    }
+}
+
+.queryform {
+
+    // position: relative;
+    // max-width: 1300px;
+    :global {
+        .ant-select {
+            width: 150px;
+        }
+
+        .ant-calendar-picker {
+            width: 200px;
+        }
+    }
+
+}
+
+.tableBox {
+    padding: 20px 0;
+
+    :global {
+        .ant-table-thead>tr>th.ant-table-selection-column {
+            padding: 0 10px;
+        }
+    }
+}
+
+.stockBtn {
+    margin: 0 5px;
+    padding: 3px;
+}
+
+.stockBox {
+    height: 100px;
+    padding: 10px 70px;
+
+    :global {
+        .ant-radio-wrapper {
+            display: block;
+        }
+
+        .ant-form-item:nth-child(2) {
+            margin-top: 30px;
+
+            .ant-form-item-label {
+                display: none;
+            }
+        }
+    }
+}
+
+.gTitle {
+    line-height: 30px;
+    display: block;
+}
+
+.fakeRequired {
+    &::before {
+        display: inline-block;
+        margin-right: 4px;
+        content: "*";
+        font-family: SimSun;
+        line-height: 1;
+        font-size: 12px;
+        color: #f04134;
+    }
+}
+
+.card_table_wrap {
+    :global {
+
+        .card_table_query_form {
+            .ant-select {
+                width: 150px;
+            }
+        }
+
+        .ant-calendar-picker {
+            width: 200px;
+        }
+
+        .table_wrap {
+            margin-top: 15px;
+
+            // .ant-table-thead>tr>th.ant-table-selection-column {
+            //     padding: 10px;
+            //     width: auto;
+            // }
+
+            // .ant-table-thead>tr>th.ant-table-selection-column,
+            // .ant-table-tbody>tr>td.ant-table-selection-column {
+            //     width: auto;
+            // }
+        }
+    }
+}
+
+.open_card_modal_wrap {
+    :global {
+        .inner_card_img {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    }
+}

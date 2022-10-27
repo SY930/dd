@@ -76,6 +76,10 @@ import {
 //     '80', '66', '81', 'housekeeper', 'intelligentGiftRule', '82'
 // ]
 const CONTAIN_GROUPID_SHOW = ['317964', '189702']; // 拼团秒杀只针对茶百道显示
+
+//周黑鸭需求
+import { isZhouheiya } from '../../constants/WhiteList';
+
 @registerPage([NEW_ON_SALE_ACTIVITY_BOX], {
 })
 @connect(mapStateToProps, mapDispatchToProps)
@@ -663,6 +667,15 @@ class NewOnSaleActivityPage extends Component {
                 list: CONTAIN_GROUPID_SHOW.includes(String(groupID)) ? SALE_PROMOTION_TYPES : SALE_PROMOTION_TYPES.filter(item => !item.filter),
             },
         ]
+        
+        //周黑鸭需求
+        if(isZhouheiya(groupID)){
+            ALL_PROMOTION_CATEGORIES = [
+                {
+                    title: k6316iio,
+                    list: SALE_PROMOTION_TYPES.filter(item => item.isZhy),
+                }]
+        }
 
         // 插件授权状态--营销盒子大礼包
         let { authPluginStatus } = checkAuthLicense(this.state.authLicenseData, 'HLL_CRM_Marketingbox')

@@ -69,6 +69,7 @@ const exportablePromotionTypes = [
     '76',
     '80',
     '81',
+    '69',
     '79',
     '83'
 ];
@@ -81,6 +82,7 @@ import {
 import {
     renderOverViewData
 } from './specialPromotionDetailHelp'
+import { isZhouheiya } from "../../../constants/WhiteList";
 import _ from 'lodash'
 const showNoLimitType = ['60', '52']
 
@@ -544,11 +546,13 @@ class SpecialPromotionDetail extends React.Component {
                                 )
                                 : null
                         }
-                        <Row>
-                            <Col span={4} style={{ textAlign: 'right' }}>{this.props.intl.formatMessage(STRING_SPE.d7ekp859lc11113)}</Col>
-                            <Col span={1} style={{ textAlign: 'center' }}>:</Col>
-                            <Col span={18} style={{ textAlign: 'left' }}>{record.eventRemark}</Col>
-                        </Row>
+                        {
+	                    record.eventWay != '69' && 
+	                    <Row>
+	                        <Col span={4} style={{ textAlign: 'right' }}>{this.props.intl.formatMessage(STRING_SPE.d7ekp859lc11113)}</Col>
+	                        <Col span={1} style={{ textAlign: 'center' }}>:</Col>
+	                        <Col span={18} style={{ textAlign: 'left' }}>{record.eventRemark}</Col>
+	                    </Row>
                     </div>
                     {
                         record.createScenesName ?
@@ -974,7 +978,7 @@ class SpecialPromotionDetail extends React.Component {
                 }
             },
             {
-                title: way != '20' && way != '21' && way != '30' && way != '70' ?
+                title: way != '20' && way != '21' && way != '30' && way != '70' && way != '69' ?
                     `${this.props.intl.formatMessage(STRING_SPE.dojv8nhwu12190)}` : `${this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kc13243)}`,
                 dataIndex: 'EGiftSingleCount',
                 key: 'EGiftSingleCount',
@@ -1036,7 +1040,7 @@ class SpecialPromotionDetail extends React.Component {
                 key: `${index}`,
                 idx: `${index}`,
                 EGiftName: gift.giftName,
-                EGiftSingleCount: way != '20' && way != '21' && way != '30' && way != '70' ?
+                EGiftSingleCount: way != '20' && way != '21' && way != '30' && way != '70' && way != '69' ?
                     gift.giftCount : giftTotalCount,
                 EGiftSendCount: gift.giftSendCount,
                 EGfitValidUntilDayCount: gift.giftValidUntilDayCount > 0 ? gift.giftValidUntilDayCount : days,
@@ -1582,9 +1586,9 @@ class SpecialPromotionDetail extends React.Component {
                 }
             }),
             {
-                title: `${this.props.intl.formatMessage(STRING_SPE.d1kgf6ij82123282)}`,
-                dataIndex: 'customerID',
-                key: 'customerID',
+                title: `${isZhouheiya() ? '会员号' : this.props.intl.formatMessage(STRING_SPE.d1kgf6ij82123282)}`,
+                dataIndex: `${isZhouheiya() ? 'cardNO' : 'customerID'}`,
+                key: `${isZhouheiya() ? 'cardNO' : 'customerID'}`,
                 width: 150,
                 className: 'TableTxtCenter',
                 render: (text) => {

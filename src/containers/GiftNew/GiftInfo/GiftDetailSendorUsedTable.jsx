@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Row, Col, Table, Button, Icon, TreeSelect, Input, Tooltip, message } from 'antd';
+import { Row, Col, Table, Button, Icon, TreeSelect, Input, Tooltip, message, Popconfirm } from 'antd';
 import _ from 'lodash';
 import { COMMON_LABEL } from 'i18n/common';
 import Moment from 'moment';
@@ -17,6 +17,7 @@ import { FORMITEMS, SEND_FORMKEYS, WX_SEND_COLUMNS, USED_FORMKEYS, USED_COLUMNS,
 import { mapValueToLabel, axiosData, isFilterShopType } from 'helpers/util';
 import { messageTemplateState } from 'containers/BasicSettings/reducers';
 import TransGiftModal from './TransGiftModal';
+import { isZhouheiya } from '../../../constants/WhiteList'
 
 const format = 'YYYY/MM/DD HH:mm:ss';
 class GiftSendOrUsedCount extends React.Component {
@@ -77,7 +78,7 @@ class GiftSendOrUsedCount extends React.Component {
                 title: '会员卡号',
                 width: 120,
                 className:'TableTxtCenter',
-                dataIndex: 'transCardNo',
+                dataIndex: isZhouheiya(this.props.data.groupID) ? 'cardNO' : 'transCardNo',
                 render: value => <Tooltip title={value}><span>{value}</span></Tooltip>,
                 key: 'transCardNo',
             },
@@ -130,7 +131,7 @@ class GiftSendOrUsedCount extends React.Component {
     componentWillMount() {
         let sendGiftkeys = null;
         // 后端不支持此字段getWay查询　故disable掉线上礼品卡的发送方式
-        const { _key, data: { giftItemID, giftType }, FetchGiftSchemaAC, shopData, sendList, usedList, noUsedList } = this.props;
+        const { _key, data: { giftItemID, giftType, groupID }, FetchGiftSchemaAC, shopData, sendList, usedList, noUsedList } = this.props;
         const formItems = Object.assign({}, FORMITEMS);
         if (giftType === '91') {
             formItems.getWay.disabled = true;
@@ -163,15 +164,67 @@ class GiftSendOrUsedCount extends React.Component {
         }else{
             sendGiftkeys = SEND_GIFTPWD_FORMKEYS;
         }
+
+        if (isZhouheiya(groupID)) {
+
+            this.SEND_COLUMNS.splice(1, 0,
+                {
+                    title: '操作',
+                    className: 'TableTxtCenter',
+                    dataIndex: 'giftValue',
+                    key: 'giftValue',
+                    width: 100,
+                    render: (text, record, index) => {
+
+                        if (record.giftStatus != 1) {
+                            return ''
+                        }
+
+                        // 只有 giftStatus 1 可使用 展示作废
+                        return (
+                            <div>
+                                <Popconfirm
+                                    title={'是否作废礼品'}
+                                    onConfirm={() => this.handleToVoid(record)}
+                                >
+                                    <a>作废</a>
+                                </Popconfirm>
+                            </div>
+                        );
+                    },
+                },
+            )
+
+
+        }
         this.setState({ giftItemID, key: _key, pageNo, pageSize });
         this.proRecords(sendorUsedList);
         if (_key === 'send') {
             const { speGift } = this.state;
+
+            let newFormItems = { ...formItems }
+            let newsendGiftkeys = sendGiftkeys
+            if (isZhouheiya(this.props.data.groupID)) {
+                delete newFormItems.mobileNum
+
+                newFormItems = {
+                    ...newFormItems,
+                    cardNO: {
+                        label: '会员卡号',
+                        type: 'text',
+                        labelCol: { span: 4 },
+                        wrapperCol: { span: 20 },
+                    },
+                }
+
+                newsendGiftkeys[1].keys.splice(0, 1, 'cardNO')
+            }
+
             this.setState({
                 columns: giftType === '91' ? WX_SEND_COLUMNS : this.SEND_COLUMNS,
-                formKeys: giftType === '91' ? WX_SEND_FORMKEYS : speGift.indexOf(giftType) >= 0 ? sendGiftkeys : SEND_FORMKEYS,
+                formKeys: giftType === '91' ? WX_SEND_FORMKEYS : speGift.indexOf(giftType) >= 0 ? newsendGiftkeys : SEND_FORMKEYS,
                 formItems: {
-                    ...formItems,
+                    ...newFormItems,
                     sendShopID: {
                         label: '发出店铺',
                         labelCol: { span: 4 },
@@ -305,6 +358,33 @@ class GiftSendOrUsedCount extends React.Component {
             visible: false,
         })
     }
+
+    handleToVoid = (records) => {
+        let params = {
+            giftStatus: 13,
+            itemID: records.itemID,
+        }
+
+        const { queryParams } = this.state;
+        axiosData(
+            '/coupon/couponEntityService_customerCouponValidate.ajax',
+            { ...params },
+            null,
+            { path: '', },
+            'HTTP_SERVICE_URL_CRM',
+        )
+            .then((res) => {
+                if (res.code === '000') {
+                    this.getDatatoPage({ ...queryParams });
+                    return message.success('作废成功');
+                }
+            }, (err) => {
+                message.error(err)
+            }).catch((err) => {
+                console.log(err);
+            });
+    }
+
     handleTransCoupons = (records) => {
         let params = {
             voucherID: records.itemID,
@@ -385,6 +465,20 @@ class GiftSendOrUsedCount extends React.Component {
             params: {
                 pageNo: 1,
                 pageSize: 10,
+                ...params,
+                giftItemID,
+            },
+            isSend: _key === 'send'
+        });
+    }
+
+    getDatatoPage(params = {}) {
+        const { FetchSendorUsedListAC, _key } = this.props;
+        const { giftItemID, pageNo, pageSize } = this.state;
+        FetchSendorUsedListAC({
+            params: {
+                pageNo,
+                pageSize,
                 ...params,
                 giftItemID,
             },

@@ -1149,6 +1149,191 @@ const handleSubmitOnLineReturnGifts = function (isPrev) {
     this.props.setSpecialGiftInfo(giftInfo); // 发起action
     return true;
 }
+
+//保存积分换礼
+const handleSubmitScoreConvertGifts = function (isPrev) {
+    if (isPrev) return true;
+    const {
+        exchangeType,
+        goodsData,
+        couponData,
+    } = this.state;
+    let validatePass = true;
+
+    if(exchangeType == 1) {
+        //优惠券校验必填
+        if(couponData.length == 0) {
+            message.warning("最少选择一条优惠券");
+            return;
+        }
+        couponData.forEach(item => {
+            if(!(item.giftCount > 0) || !(item.conditionValue > 0) || (item.giftMaxCount === null || item.giftMaxCount === undefined)) {
+                validatePass = false;
+            }
+        })
+    } else {
+        //商品校验必填
+        if(goodsData.length == 0) {
+            message.warning("最少选择一条商品");
+            return;
+        }
+        goodsData.forEach(item => {
+            if(!(item.giftCount > 0) || !(item.conditionValue > 0) || (item.giftMaxCount === null || item.giftMaxCount === undefined)) {
+                validatePass = false;
+            }
+        })
+    }
+    if(!validatePass) {
+        message.warning("表格必填项输入不完整");
+        return;
+    }
+    let giftList = exchangeType == 1 ? couponData : goodsData.map(item => ({
+        ...item,
+        giftName: item.goodsName,
+        giftID: item.goodsID,
+        giftBrandID: item.brandID,
+        giftUnitName: item.unit
+
+    }));
+    if(this.props.isCopy) {
+        giftList.forEach(item => {
+            item.giftSendCount = 0;
+            item.sendValue = 0;
+        })
+    }
+    console.log('校验通过 =>', giftList);
+    this.props.setSpecialGiftInfo(giftList);
+    return true;
+}
+
+//保存消费送礼
+const handleSubmitConsumeGiveGifts = function (isPrev) {
+    if (isPrev) return true;
+    
+    const {
+        consumeCondition,
+        consumeUnit,
+        activityList,
+        amountType
+    } = this.state;
+    let opts = {
+        amountType
+    };
+
+    if(consumeUnit == '1') {
+        switch (consumeCondition) {
+            case '1':
+                opts.consumeType = '8';
+                break;
+            case '2':
+                opts.consumeType = '10';
+                break;
+            case '3':
+                opts.consumeType = '9';
+                break;
+            case '4':
+                opts.consumeType = '11';
+                break;
+        }
+    } else {
+        switch (consumeCondition) {
+            case '1':
+                opts.consumeType = '4';
+                break;
+            case '2':
+                opts.consumeType = '6';
+                break;
+            case '3':
+                opts.consumeType = '5';
+                break;
+            case '4':
+                opts.consumeType = '7';
+                break;
+        }
+        opts.amountType = '1';
+    }
+
+    let validateFlag = true;
+    activityList.forEach((item, index) => {
+        if(!item.conditionValue || activityList.findIndex(row => row.conditionValue === item.conditionValue) != index || !item.giveType.length) {
+            validateFlag = false;
+        }
+        if(item.giveType.includes('1')) {
+            item.couponList.forEach(row => {
+                row.giftInfo = this.checkGiftInfo(row.giftInfo);
+                row.giftCount = this.checkgiftCount(row.giftCount);
+                const giftValidDaysOrEffect = row.effectType != "2"
+                    ? "giftValidDays"
+                    : "giftEffectiveTime";
+                row[giftValidDaysOrEffect] = this.checkGiftValidDays(row[giftValidDaysOrEffect]);
+
+                ['giftInfo', 'giftCount', giftValidDaysOrEffect].forEach(key => {
+                    if(row[key].validateStatus == 'error') {
+                        validateFlag = false;
+                    }
+                })
+            })
+        }
+        if(item.giveType.includes('2')) {
+            if(!item.integrate.returnVal) {
+                validateFlag = false;
+            }
+        }
+        if(item.giveType.includes('3')) {
+            if(!item.card.returnVal) {
+                validateFlag = false;
+            }
+        }
+    })
+
+    if(!validateFlag) {
+        this.setState({ activityList })
+        return false;
+    }
+    //整合数据
+    const giftList = handleConsumeGiveGiftsData(activityList, this);
+    console.log('校验通过 =>', opts, giftList);
+    this.props.setSpecialGiftInfo(giftList);
+    this.props.setSpecialBasicInfo(opts);
+    return true;
+}
+
+const handleConsumeGiveGiftsData = (data, _this) => {
+    let giftList = [];
+    data.forEach((item, index) => {
+        if(item.giveType.includes('1')) {
+            const gifts = _this.getGiftInfo(item.couponList);
+            gifts.forEach(row => {
+                giftList.push({
+                    ...row,
+                    sortIndex: index + 1,
+                    conditionValue: item.conditionValue,
+                    presentType: 1
+                })
+            })
+        }
+        if(item.giveType.includes('2')) {
+            giftList.push({
+                sortIndex: index + 1,
+                conditionValue: item.conditionValue,
+                presentType: 2,
+                giftGetRule: item.integrate.returnWay,
+                giftGetRuleValue: item.integrate.returnVal
+            })
+        }
+        if(item.giveType.includes('3')) {
+            giftList.push({
+                sortIndex: index + 1,
+                conditionValue: item.conditionValue,
+                presentType: 5,
+                giftGetRule: item.card.returnWay,
+                giftGetRuleValue: item.card.returnVal
+            })
+        }
+    })
+    return giftList;
+}
+
 export {
     checkChoose,
     queryRedPackets,
@@ -1163,6 +1348,8 @@ export {
     initShowCheckBox,
     clearCheckBoxData,
     renderRecommendGiftsDetail,
+    handleSubmitScoreConvertGifts,
+    handleSubmitConsumeGiveGifts,
 }
 
 export default {
@@ -1179,4 +1366,6 @@ export default {
     initShowCheckBox,
     clearCheckBoxData,
     renderRecommendGiftsDetail,
+    handleSubmitScoreConvertGifts,
+    handleSubmitConsumeGiveGifts,
 }

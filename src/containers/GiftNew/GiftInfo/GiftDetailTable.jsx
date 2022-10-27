@@ -45,6 +45,9 @@ import GiftList from './TicketBag/GiftList';
 import { GIFT_DETAILS } from '../../../constants/entryCodes';
 import { jumpPage, closePage } from '@hualala/platform-base';
 
+//周黑鸭新增
+import { isZhouheiya } from '../../../constants/WhiteList.jsx'
+
 const TabPane = Tabs.TabPane;
 const validUrl = require('valid-url');
 class GiftDetailTable extends Component {
@@ -76,7 +79,42 @@ class GiftDetailTable extends Component {
         this.setTableRef = el => this.tableRef = el;
         // this.lockedChangeSortOrder = throttle(this.changeSortOrder, 500, {trailing: false});
         this.queryFrom = null;
-        this.columns = COLUMNS.slice();
+        const { groupID } = props.user.accountInfo || {}
+
+        this.columns = COLUMNS(groupID).slice();
+
+
+        const statusMap = {
+            0: '未同步',
+            1: '已同步',
+            2: '同步失败',
+        }
+        isZhouheiya(groupID) && this.columns.push(...[
+            {
+                title: '推送状态',
+                dataIndex: 'syncStatus',
+                key: 'syncStatus',
+                width: 150,
+                className: 'x-tc',
+                render: (value, record) => {
+                    if (record.syncStatus === 3) {
+                        return null
+                    }
+                    return <span title={statusMap[value]}>{statusMap[value]}</span>
+                },
+            },
+            {
+                title: '推送时间',
+                dataIndex: 'syncTime',
+                key: 'syncTime',
+                width: 150,
+                className: 'x-tc',
+                render: (value) => {
+                    return <span title={timeFormat(value)}>{timeFormat(value)}</span>
+                },
+            },
+
+        ])
         this.columns.splice(2, 0, {
             title: this.getTitle(),
             dataIndex: 'sortOrder',
@@ -334,8 +372,57 @@ class GiftDetailTable extends Component {
         });
     }
 
+
+    mutexAxios = async (record) => {
+        const { groupID, giftItemID } = record || {}
+
+
+        // 调用查询权限接口
+        const { user } = this.props
+        const accountID = user.accountInfo.accountID
+
+        const res = await axiosData(
+            '/coupon/couponService_getCouponMutexRule.ajax',
+            { couponItemId: giftItemID, groupID },
+            { needThrow: true, needCode: true },
+            { path: '' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW',
+        ).then((data) => {
+            return data;
+        }).catch((err) => {
+            message.warning(err);
+        })
+
+        return res.code === '000' ? res.data : false
+    }
+
+
     // 用户点击编辑，处理编辑
-    handleEdit(record, operationType) {
+    handleEdit = async (record, operationType) => {
+        const { groupID, hasOperateAuth, giftItemID } = record || {}
+        if (isZhouheiya(groupID) && hasOperateAuth != 0 && hasOperateAuth != 1 && !hasOperateAuth) {
+            // 调用查询权限接口
+            const { user } = this.props
+            const accountID = user.accountInfo.accountID
+
+            const res = await axiosData(
+                '/coupon/couponService_checkCouponDataAuth.ajax',
+                { giftItemID, groupID, accountID },
+                { needThrow: true, needCode: true },
+                { path: '' },
+                'HTTP_SERVICE_URL_PROMOTION_NEW',
+            ).then((data) => {
+                return data;
+            }).catch((err) => {
+                message.warning(err);
+            })
+            if (res.data && res.data.hasOperateAuth == 0) {
+                message.warning('没有编辑权限');
+                return;
+            }
+        }
+
+
         let gift = _.find(GiftCfg.giftType, { name: record.giftTypeName });
         const selectShops = [];
         if (!gift) {
@@ -651,7 +738,13 @@ class GiftDetailTable extends Component {
                 label: '礼品类型',
                 type: 'combo',
                 defaultValue: '',
-                options: GiftCfg.giftTypeName,
+                options: isZhouheiya(this.props.user.accountInfo.groupID) ? [
+                { label: '全部', value: '' },
+                { label: '代金券', value: '10' },
+                { label: '优惠券', value: '20' },
+                { label: '兑换券', value: '21' },
+                { label: '折扣券', value: '111' },
+            ] : GiftCfg.giftTypeName,
                 props: {
                     showSearch: true,
                     optionFilterProp: 'children',
