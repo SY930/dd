@@ -460,8 +460,8 @@ class StepTwo extends React.Component {
                             wrapperCol={{ span: 17 }}
                         >
                             <RadioGroup onChange={this.handleAmountTypeChange} value={this.state.amountType}>
-                                <Radio value={1}>实收金额</Radio>
-                                <Radio value={2}>账单金额</Radio>
+                                <Radio value={2}>实收金额</Radio>
+                                <Radio value={1}>账单金额</Radio>
                             </RadioGroup>
                         </FormItem>
                         :null
