@@ -1863,7 +1863,7 @@ class MyActivities extends React.Component {
                             </Authority>
                             {/* 华天集团促销活动不可编辑 */}
                             {
-                                record.promotionType === '1050' ?
+                                record.promotionType === '1050' ? (
                                     <a
                                         href="#"
                                         disabled={isHuaTian()}
@@ -1882,7 +1882,7 @@ class MyActivities extends React.Component {
                                             this.handleUpdateOpe(text, record, index);
                                         }}
                                     >复制</a>
-                                    :
+                                ) : (
                                     <a
                                         href="#"
                                         disabled={!isGroupPro || isHuaTian()}
@@ -1901,7 +1901,6 @@ class MyActivities extends React.Component {
                                             this.handleUpdateOpe(text, record, index);
                                         }}
                                     >复制</a>
-                            }
                             )}
                         </span>
                     );
