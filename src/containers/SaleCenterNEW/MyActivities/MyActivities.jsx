@@ -1817,7 +1817,7 @@ class MyActivities extends React.Component {
                                         href="#"
 					                    disabled={isZhouheiya(this.props.user.accountInfo.groupID)?this.editIsDisabled(record):false}
                                         // disabled={!isGroupPro}
-                                        onClick={() => {
+                                        onClick={async () => {
                                             if(isZhouheiya(this.props.user.accountInfo.groupID)){
 					                         const isPass = await this.permissionVerify(record);
                                                 if(!isPass) {
