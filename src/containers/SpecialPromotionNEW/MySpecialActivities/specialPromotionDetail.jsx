@@ -553,19 +553,20 @@ class SpecialPromotionDetail extends React.Component {
 	                        <Col span={1} style={{ textAlign: 'center' }}>:</Col>
 	                        <Col span={18} style={{ textAlign: 'left' }}>{record.eventRemark}</Col>
 	                    </Row>
+                        }
+                        {
+                            record.createScenesName ?
+                                (
+                                    <div>
+                                        <Row>
+                                            <Col span={4} style={{ textAlign: 'right' }}>活动关联</Col>
+                                            <Col span={1} style={{ textAlign: 'center' }}>:</Col>
+                                            <Col span={18} style={{ textAlign: 'left' }}>{record.createScenesName}</Col>
+                                        </Row>
+                                    </div>
+                                ) : null
+                        }
                     </div>
-                    {
-                        record.createScenesName ?
-                            (
-                                <div>
-                                    <Row>
-                                        <Col span={4} style={{ textAlign: 'right' }}>活动关联</Col>
-                                        <Col span={1} style={{ textAlign: 'center' }}>:</Col>
-                                        <Col span={18} style={{ textAlign: 'left' }}>{record.createScenesName}</Col>
-                                    </Row>
-                                </div>
-                            ) : null
-                    }
                 </div>
             </div>
         );
