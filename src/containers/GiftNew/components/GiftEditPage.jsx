@@ -56,7 +56,7 @@ class GiftEditPage extends Component {
     // TODO: 这块为什么执行了两次保存？
     saving() {
         if(!this.state.isCheckedAgreement) {
-            message.error('未确认同意声明')
+            message.error('当前您未勾选《法律声明》')
             return
         }
         this.formRef && this.formRef.wrappedInstance && this.formRef.wrappedInstance.handleSubmit
