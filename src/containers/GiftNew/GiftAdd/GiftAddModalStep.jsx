@@ -93,7 +93,8 @@ import { GiftCategoryAndFoodSelectorNew } from '../../SaleCenterNEW/common/Categ
 import AdvancedPromotionDetailSettingNew from './common/AdvancedPromotionDetailSettingNew'
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
-import { isZhouheiya } from '../../../constants/WhiteList.jsx'
+import { isZhouheiya } from '../../../constants/WhiteList.jsx';
+import ShopAreaSelector from 'components/ShopAreaSelector';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -307,6 +308,10 @@ class GiftAddModalStep extends React.PureComponent {
 
         if (GroupSepcial.includes(groupID)) {
             this.loadShops();
+        }
+	
+	if ([10, 20, 21, 111].includes(+data.giftType) && isZhouheiya(groupID)) {
+            this.goodScopeRequestClone = data.goodScopeRequestClone
         }
     }
 
@@ -970,7 +975,7 @@ class GiftAddModalStep extends React.PureComponent {
     }
 
     handleFinish = () => {
-        const { values, groupTypes, delivery,crossDay, allSubRightGroup } = this.state;
+        const { values, groupTypes, delivery,crossDay, allSubRightGroup, groupID } = this.state;
         const { type, gift: { value, data } } = this.props;
         this.secondForm.validateFieldsAndScroll((err, formValues) => {
             if (err) return;
@@ -1008,6 +1013,10 @@ class GiftAddModalStep extends React.PureComponent {
             // if(values && values.shopIDs && values.shopIDs.length > 0){
             //     params.shopNames = values.shopIDs;
             // }
+            // 新店铺组件参数处理
+            if ([10, 20, 21, 111].includes(+values.giftType) && isZhouheiya(groupID)) {
+                values.selectedShops = values.selectedShops.list
+            }
             if(values.selectedShops && values.selectedShops.length > 0){
                 params.shopNames = values.selectedShops;
             }
@@ -2980,32 +2989,59 @@ shopAreaSelectorChange = (value) => {
             />
         )
     }
-    //重新选择所属品牌，清空适用店铺和排除店铺
-    changeSelectedBrands(value,form){
-        const {values} = this.state;
-        const { gift: { value:giftType }, type } = this.props;
+    // 重新选择所属品牌，清空适用店铺和排除店铺
+    changeSelectedBrands(value, form) {
+        const { values, groupID } = this.state;
+        const { gift: { value: giftType }, type,} = this.props;
         values.selectedShops = [];
         values.excludeShops = [];
         values.shopNames = [];
         values.shopIDs = [];
         values.selectBrands = value;
-        form.setFieldsValue({
-            selectedShops: [],
-            excludeShops: [],
-            shopIDs:[]
-        });
-        if(giftType == '22' || giftType == '110' || giftType == '111' ){
-            if(this.secondForm){
-                this.secondForm.setFieldsValue({
-                    selectedShops: [],
-                    excludeShops: [],
-                    shopIDs:[]
-                });
+
+        if(isZhouheiya(groupID)){
+            const isNewShopCheck = [10, 20, 21, 111].includes(+giftType);
+            if (isNewShopCheck) {
+                values.selectedShops = { radioValue: 'shop', list: [] };
             }
+            form.setFieldsValue({
+                selectedShops: isNewShopCheck ? { radioValue: 'shop', list: [] } : [],
+                excludeShops: [],
+                shopIDs: [],
+            });
+            if (giftType == '22' || giftType == '110' || giftType == '111') {
+                if (this.secondForm) {
+                    this.secondForm.setFieldsValue({
+                        selectedShops: giftType == '111' ? { radioValue: 'shop', list: [] } : [],
+                        excludeShops: [],
+                        shopIDs: [],
+                    });
+                }
+            }
+            this.setState({
+                values: Object.assign({}, values),
+            });
+        } else {
+            form.setFieldsValue({
+                selectedShops: [],
+                excludeShops: [],
+                shopIDs:[]
+            });
+            if(giftType == '22' || giftType == '110' || giftType == '111' ){
+                if(this.secondForm){
+                    this.secondForm.setFieldsValue({
+                        selectedShops: [],
+                        excludeShops: [],
+                        shopIDs:[]
+                    });
+                }
+            }
+            this.setState({ 
+                values: Object.assign({},values)
+            });
+    
         }
-        this.setState({ 
-            values:Object.assign({},values)
-        });
+    
     }
     renderSelectBrands = (decorator,form) => {
         const { values} = this.state;

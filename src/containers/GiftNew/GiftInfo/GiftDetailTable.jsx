@@ -451,6 +451,23 @@ class GiftDetailTable extends Component {
         gift.data.action = `${gift.data.action || 0}`;
         gift.data.valueType = `${gift.data.valueType}`;
         gift.data.monetaryUnit = `${gift.data.monetaryUnit}`;
+
+        if (isZhouheiya(groupID) && [10, 20, 21, 111].includes(+gift.data.giftType)) {
+            gift.data.goodScopeRequestClone = {
+                containData: { goods: [], category: [] },
+                exclusiveData: { goods: [], category: [] },
+                ...gift.data.goodScopeRequest,
+            }
+        }
+
+
+        if (isZhouheiya(groupID) && (operationType === 'detail' || operationType === 'edit')) {
+            const mutedata = await this.mutexAxios(record)
+            if (mutedata) {
+                gift.data = { ...gift.data, mutedata }
+            }
+        }
+
         const { FetchSharedGifts } = this.props;
         FetchSharedGifts({ giftItemID: record.giftItemID });
         if (gift.value == 100) { //

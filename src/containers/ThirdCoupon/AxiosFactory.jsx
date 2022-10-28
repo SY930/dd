@@ -8,6 +8,7 @@
 import _ from 'lodash';
 import { message } from 'antd';
 import { axios, getStore } from '@hualala/platform-base';
+import { isZhouheiya } from '../../constants/WhiteList.jsx'
 /**
  * axios 默认请求参数
  * url 加 ？ 的目的就是为了在浏览器 network 里面方便看到请求的接口路径
@@ -15,10 +16,13 @@ import { axios, getStore } from '@hualala/platform-base';
 /** restful 风格函数命名， get获取，post增加，put更新，delete删除 */
 const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', 'alipay/', '/api/v1/universal?'];
 
-const giftTypeName = [
+const giftTypeName = () => {
+    const { groupID } = getAccountInfo()
+return [
     { label: '全部', value: '' },
     { label: '代金券', value: '10' },
     { label: '菜品兑换券', value: '21' },
+    { label: isZhouheiya(groupID) ? '兑换券' : '菜品兑换券', value: '21' },
     { label: '折扣券', value: '111' },
     { label: '打折劵', value: '602' },
     { label: '满减券', value: '601' },
@@ -38,7 +42,8 @@ function proGiftTreeData(giftTypes) {
     let treeData = [];
     const gifts = [];
     giftTypes.map((gt, idx) => {
-        const giftTypeItem = _.find(giftTypeName, { value: String(gt.giftType) }) || {};
+        const giftTypeItem = _.find(giftTypeName(), { value: String(gt.giftType) }) || {};
+
         treeData.push({
             label: giftTypeItem.label || '--',
             key: gt.giftType,
@@ -63,9 +68,9 @@ function proGiftTreeData(giftTypes) {
 
 function proDouyinGiftTreeData(giftTypes) {
     const treeData = [];
-    const filterGiftTypes = giftTypes.filter(v => giftTypeName.some(g => g.value == v.giftType));
+    const filterGiftTypes = giftTypes.filter(v => giftTypeName().some(g => g.value == v.giftType));
     filterGiftTypes.map((gt, idx) => {
-        const giftTypeItem = _.find(giftTypeName, { value: String(gt.giftType) }) || {};
+        const giftTypeItem = _.find(giftTypeName(), { value: String(gt.giftType) }) || {};
         treeData.push({
             label: giftTypeItem.label || '--',
             key: gt.promotionType,
