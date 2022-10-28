@@ -15,7 +15,7 @@ import { initializationOfMyActivities, toggleSelectedActivityStateAC, fetchPromo
 import { getAuthLicenseData } from "../../../redux/actions/saleCenterNEW/specialPromotion.action";
 import { fetchPromotionCategoriesAC, fetchPromotionTagsAC, saleCenterResetBasicInfoAC } from "../../../redux/actions/saleCenterNEW/promotionBasicInfo.action";
 import { fetchPromotionScopeInfo, saleCenterResetScopeInfoAC } from "../../../redux/actions/saleCenterNEW/promotionScopeInfo.action";
-import { saleCenterResetDetailInfoAC, fetchFoodCategoryInfoAC, fetchFoodMenuInfoAC } from "../../../redux/actions/saleCenterNEW/promotionDetailInfo.action";
+import { saleCenterResetDetailInfoAC, fetchFoodCategoryInfoAC, fetchFoodMenuInfoAC, saleCenterSetPromotionDetailOnlyModifyShopAC } from "../../../redux/actions/saleCenterNEW/promotionDetailInfo.action";
 import { fetchPromotionDetail, resetPromotionDetail, fetchPromotionDetailCancel } from "../../../redux/actions/saleCenterNEW/promotion.action";
 import { ACTIVITY_CATEGORIES, SALE_CENTER_ACTIVITY_ORDER_TYPE_LIST, SALE_CENTER_ACTIVITY_SUITSENCE_LIST, getPromotionIdx, promotionBasicDataAdapter, promotionScopeInfoAdapter, promotionDetailInfoAdapter, TRIPLE_STATE } from "../../../redux/actions/saleCenterNEW/types";
 import axios from "axios";
@@ -47,6 +47,7 @@ import { SALE_LABEL, SALE_STRING } from "i18n/common/salecenter";
 import { injectIntl } from "../IntlDecor";
 import Card from "../../../assets/card.png";
 import CardSaleActive from "./CardSaleActive";
+import { isZhouheiya, isGeneral } from "../../../constants/WhiteList";
 
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
@@ -140,7 +141,11 @@ const mapDispatchToProps = dispatch => {
         },
         getAuthLicenseData: opts => {
             return dispatch(getAuthLicenseData(opts));
-        }
+        },
+	    // 周黑鸭需求
+        saleCenterSetPromotionDetailOnlyModifyShop: (opts) => {
+            dispatch(saleCenterSetPromotionDetailOnlyModifyShopAC(opts));
+        },
     };
 };
 @registerPage([SALE_CENTER_PAGE, ONLINE_PROMOTION_MANAGEMENT_GROUP], {
@@ -205,8 +210,19 @@ class MyActivities extends React.Component {
             planModalVisible: false,
             operateModalVisible: false,
             executeTimeType: 0,
-            executeFoodUnitType: 1
+            executeFoodUnitType: 1,
+	        auditStatus: '-1', // 审批状态
         };
+        this.cfg = {
+            auditStatus: [
+                { value: '-1', label: '全部' },
+                { value: '0', label: '待审批' },
+                { value: '1', label: '审批中' },
+                { value: '2', label: '审批通过' },
+                { value: '3', label: '审批驳回' },
+                { value: '4', label: '无需审批' },
+            ]
+        }
         this.handleDismissUpdateModal = this.handleDismissUpdateModal.bind(this);
         this.checkDetailInfo = this.checkDetailInfo.bind(this);
         this.handleClose = this.handleClose.bind(this);
@@ -451,12 +467,25 @@ class MyActivities extends React.Component {
     }
 
     handleDisableClickEvent(text, record, index, nextActive, modalTip) {
-        this.props.toggleSelectedActivityState({
-            record,
-            nextActive,
-            modalTip,
-            cb: () => {}
-        });
+        if(isZhouheiya(this.props.user.accountInfo.groupID)){
+            this.props.toggleSelectedActivityState({
+                record,
+                nextActive,
+                modalTip,
+                cb: (val) => {
+                    message.success(val);
+                    this.handleQuery(this.state.pageNo);
+                }
+            });
+        }else{
+            this.props.toggleSelectedActivityState({
+                record,
+                nextActive,
+                modalTip,
+                cb: () => {}
+            });
+        }
+
     }
 
     handleDecorationStart = record => {
@@ -633,7 +662,11 @@ class MyActivities extends React.Component {
         if (promotionCode !== "" && promotionCode !== undefined) {
             opt.promotionCode = promotionCode;
         }
+        if (auditStatus !== '' && auditStatus !== undefined) {
+            opt.auditStatus = auditStatus;
+        }
         opt.groupID = this.props.user.accountInfo.groupID;
+        opt.accountID = this.props.user.accountInfo.accountID;
         opt.sourceType = +this.isOnlinePromotionPage();
         return opt;
     };
@@ -767,8 +800,20 @@ class MyActivities extends React.Component {
             // 基础营销集团视角
             return [all, ...ONLINE_PROMOTION_TYPES];
         }
-        return [all, ...ACTIVITY_CATEGORIES.slice(0, ACTIVITY_CATEGORIES.length - 1)];
-    };
+
+        if(isZhouheiya(this.props.user.accountInfo.groupID)){
+            let ZHY_ACTIVITY_CATEGORIES = ACTIVITY_CATEGORIES.filter(item=>item.isZhy)
+            return [
+                all,
+                ...ZHY_ACTIVITY_CATEGORIES.slice(0, ZHY_ACTIVITY_CATEGORIES.length),
+            ]
+        }
+
+        return [
+            all,
+            ...ACTIVITY_CATEGORIES.slice(0, ACTIVITY_CATEGORIES.length - 1),
+        ]
+    }
 
     successFn = responseJSON => {
         const _promotionIdx = getPromotionIdx(`${this.state.editPromotionType}`);
@@ -869,8 +914,14 @@ class MyActivities extends React.Component {
     };
 
     // 状态启用禁用前判断是否是门店
-    handleSattusActive = record => handleNext => {
-        if (record.maintenanceLevel == "1") {
+    handleSattusActive = (record) => async (handleNext) => {
+        if(isZhouheiya(this.props.user.accountInfo.groupID)){
+            const isPass = await this.permissionVerify(record);
+            if(!isPass) {
+                return;
+            }
+        }
+        if (record.maintenanceLevel == '1') {
             Modal.info({
                 title: `活动无法操作`,
                 content: "活动为门店账号创建，你不能进行编辑。",
@@ -892,7 +943,40 @@ class MyActivities extends React.Component {
             });
             return;
         }
-        handleNext();
+        if(isZhouheiya(this.props.user.accountInfo.groupID)){
+            if(record.isActive == 0) {
+                //启用
+                if(record.auditStatus == 1) {
+                    //审批中
+                    Modal.info({
+                        title: `启用活动`,
+                        content: '活动审批中，通过后自动启用，无需再次发起',
+                        iconType: 'exclamation-circle',
+                        okText: '确定',
+                        onOk() {},
+                    });
+                } else {
+                    if(isGeneral()) {
+                        handleNext();
+                    } else {
+                        Modal.confirm({
+                            title: `启用活动`,
+                            content: '启用活动需要审批，是否继续？',
+                            iconType: 'exclamation-circle',
+                            okText: '发起审批',
+                            onOk() {
+                                handleNext('audit');
+                            },
+                            onCancel() { },
+                        });
+                    }
+                }
+            } else {
+                handleNext();
+            }
+        }else{
+            handleNext();
+        }
     };
 
     // 点击删除按钮先弹窗
@@ -972,6 +1056,7 @@ class MyActivities extends React.Component {
         if (promotionDetailInfo.status === "success") {
             return (
                 <ActivityMain
+		            onlyModifyShop={_state.onlyModifyShop}
                     isNew={_state.isNew}
                     isCopy={_state.isCopy}
                     index={_state.index}
@@ -1294,9 +1379,16 @@ class MyActivities extends React.Component {
     }
 
     renderShopsInTreeSelectMode() {
-        const treeData = Immutable.List.isList(this.props.promotionScopeInfo.getIn(["refs", "data", "constructedData"])) ? this.props.promotionScopeInfo.getIn(["refs", "data", "constructedData"]).toJS() : this.props.promotionScopeInfo.getIn(["refs", "data", "constructedData"]);
+        let treeData = Immutable.List.isList(this.props.promotionScopeInfo.getIn(["refs", "data", "constructedData"])) ? this.props.promotionScopeInfo.getIn(["refs", "data", "constructedData"]).toJS() : this.props.promotionScopeInfo.getIn(["refs", "data", "constructedData"]);
         const { intl } = this.props;
         const k5ddu8nr = intl.formatMessage(SALE_STRING.k5ddu8nr);
+        if(isZhouheiya(this.props.user.accountInfo.groupID)){
+                treeData.map((i)=>{
+                    i.children&&i.children.length>0&&i.children.map(j=>{
+                        j.label = j.shopName + '(' + j.orgCode + ')'
+                    })
+                })
+        }
         const tProps =
             this.state.selectedShop != null
                 ? {
@@ -1323,6 +1415,8 @@ class MyActivities extends React.Component {
         const k5dlp2gl = intl.formatMessage(SALE_STRING.k5dlp2gl);
         const k5dlp7zc = intl.formatMessage(SALE_STRING.k5dlp7zc);
         const k5dlpczr = intl.formatMessage(SALE_STRING.k5dlpczr);
+        const l88f03b4 = intl.formatMessage(SALE_STRING.l88f03b4);
+        
         return (
             <div>
                 <div className="layoutsSearch">
@@ -1438,6 +1532,28 @@ class MyActivities extends React.Component {
                                 }}
                             />
                         </li>
+			            {isZhouheiya(this.props.user.accountInfo.groupID)&&<li>
+                            <h5>审批状态</h5>
+                        </li>
+                        }
+                        {isZhouheiya(this.props.user.accountInfo.groupID)&&<li>
+                            <Select
+                                style={{ width: 80 }}
+                                defaultValue=""
+                                value={this.state.auditStatus}
+                                placeholder='请选择审批状态'
+                                onChange={(value) => {
+                                    this.setState({
+                                        auditStatus: value,
+                                    });
+                                }}
+                            >
+                                {this.cfg.auditStatus.map((item, index) => (
+                                    <Option value={`${item.value}`} key={`${index}`}>{item.label}</Option>
+                                ))}
+                            </Select>
+                        </li>
+                        }
                         <li>
                             <Authority rightCode={BASIC_PROMOTION_QUERY} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
                                 <Button type="primary" onClick={this.handleQuery} disabled={this.state.queryDisabled}>
@@ -1614,6 +1730,40 @@ class MyActivities extends React.Component {
         return null;
     }
 
+    // 权限校验
+    permissionVerify = async (record) => {
+        const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', 'promotion/v2/', '/api/v1/universal?'];
+        const datas = {
+            groupID: this.props.user.accountInfo.groupID,
+            accountID: this.props.user.accountInfo.accountID,
+            promotionID: record.promotionIDStr
+        };
+        const method = `${api}checkDataAuth.ajax`;
+        const params = { service, type, data: datas, method };
+        try {
+            const { data = {}, code, message: msg } = await axios.post(url + method, params);
+            if(code == '000') {
+                if(data.hasOperateAuth == 1) {
+                    return true
+                } else {
+                    message.warning('没有操作权限');
+                    return false
+                }
+            } else {
+                message.warning(msg);
+                return false
+            }
+        } catch (error) {
+            message.warning(error);
+            return false
+        }
+    }
+
+    //【活动过期后】或【审批中】编辑按钮禁用
+    editIsDisabled = (record) => {
+        return (new Date(moment(record.endDate, 'YYYY-MM-DD').format('YYYY-MM-DD')).getTime() < new Date(new Date(Date.now()).toLocaleDateString()).getTime()) || record.auditStatus == '1';
+    }
+
     renderTables() {
         const { intl } = this.props;
         const k5eng7pt = intl.formatMessage(SALE_STRING.k5eng7pt);
@@ -1626,6 +1776,8 @@ class MyActivities extends React.Component {
         const k5ey8jvj = intl.formatMessage(SALE_STRING.k5ey8jvj);
         const k5ey8l0e = intl.formatMessage(SALE_STRING.k5ey8l0e);
         const k5ey8lip = intl.formatMessage(SALE_STRING.k5ey8lip);
+        const l88f03b4 = intl.formatMessage(SALE_STRING.l88f03b4);
+        
         const columns = [
             {
                 title: COMMON_LABEL.serialNumber,
@@ -1663,10 +1815,21 @@ class MyActivities extends React.Component {
                                 <Authority rightCode={BASIC_PROMOTION_UPDATE} entryId={BASIC_PROMOTION_MANAGE_PAGE}>
                                     <a
                                         href="#"
+					                    disabled={isZhouheiya(this.props.user.accountInfo.groupID)?this.editIsDisabled(record):false}
                                         // disabled={!isGroupPro}
                                         onClick={() => {
+                                            if(isZhouheiya(this.props.user.accountInfo.groupID)){
+					                         const isPass = await this.permissionVerify(record);
+                                                if(!isPass) {
+                                                    return;
+                                                }
+                                            }
                                             this.handleEditActive(record)(() => {
                                                 this.props.toggleIsUpdate(true);
+						                            if(!isGeneral(this.props.user.accountInfo.roleType) && isZhouheiya(this.props.user.accountInfo.groupID)) {
+                                                        this.setState({ onlyModifyShop: true });
+                                                        this.props.saleCenterSetPromotionDetailOnlyModifyShop(true);
+                                                    }
                                                 this.handleUpdateOpe(text, record, index);
                                             });
                                         }}
@@ -1681,10 +1844,17 @@ class MyActivities extends React.Component {
                                     href="#"
                                     // disabled={!isGroupPro || record.isActive != 0 || !isMine(record)}
                                     disabled={!isMine(record)}
-                                    onClick={() => {
+                                    onClick={async () => {
                                         if (!isMine(record)) {
-                                            return;
+                                            return
                                         }
+                                        if(isZhouheiya(this.props.user.accountInfo.groupID)){
+                                            const isPass = await this.permissionVerify(record);
+                                            if(!isPass) {
+                                                return;
+                                            }
+                                        }
+                                        
                                         this.handleDelActive(record)(() => this.confirmDelete(record));
                                     }}
                                 >
@@ -1692,36 +1862,46 @@ class MyActivities extends React.Component {
                                 </a>
                             </Authority>
                             {/* 华天集团促销活动不可编辑 */}
-                            {record.promotionType === "1050" ? (
-                                <a
-                                    href="#"
-                                    disabled={isHuaTian()}
-                                    onClick={() => {
-                                        this.props.toggleIsUpdate(true);
-                                        this.setState({
-                                            isCopy: true,
-                                            modalTitle: "复制活动信息"
-                                        });
-                                        this.handleUpdateOpe(text, record, index);
-                                    }}
-                                >
-                                    复制
-                                </a>
-                            ) : (
-                                <a
-                                    href="#"
-                                    disabled={!isGroupPro || isHuaTian()}
-                                    onClick={() => {
-                                        this.props.toggleIsUpdate(true);
-                                        this.setState({
-                                            isCopy: true,
-                                            modalTitle: "复制活动信息"
-                                        });
-                                        this.handleUpdateOpe(text, record, index);
-                                    }}
-                                >
-                                    复制
-                                </a>
+                            {
+                                record.promotionType === '1050' ?
+                                    <a
+                                        href="#"
+                                        disabled={isHuaTian()}
+                                        onClick={async () => {
+                                            if(isZhouheiya(this.props.user.accountInfo.groupID)){
+                                                const isPass = await this.permissionVerify(record);
+                                                if(!isPass) {
+                                                    return;
+                                                }
+                                            }
+                                            this.props.toggleIsUpdate(true)
+                                            this.setState({
+                                                isCopy: true,
+                                                modalTitle: '复制活动信息'
+                                            })
+                                            this.handleUpdateOpe(text, record, index);
+                                        }}
+                                    >复制</a>
+                                    :
+                                    <a
+                                        href="#"
+                                        disabled={!isGroupPro || isHuaTian()}
+                                        onClick={async () => {
+                                            if(isZhouheiya(this.props.user.accountInfo.groupID)){
+                                                const isPass = await this.permissionVerify(record);
+                                                if(!isPass) {
+                                                    return;
+                                                }
+                                            }
+                                            this.props.toggleIsUpdate(true)
+                                            this.setState({
+                                                isCopy: true,
+                                                modalTitle: '复制活动信息'
+                                            })
+                                            this.handleUpdateOpe(text, record, index);
+                                        }}
+                                    >复制</a>
+                            }
                             )}
                         </span>
                     );
@@ -1757,7 +1937,8 @@ class MyActivities extends React.Component {
                             unCheckedChildren={"禁用"}
                             checked={defaultChecked}
                             onChange={() => {
-                                this.handleSattusActive(record)(() => this.handleDisableClickEvent(record.operation, record, index, null, "使用状态修改成功"));
+                                this.handleSattusActive(record)((isAudit) => this.handleDisableClickEvent(record.operation, record, index, null, isAudit === 'audit' ? '已成功发起审批，审批通过后自动启用' : '使用状态修改成功'))
+
                             }}
                             disabled={isToggleActiveDisabled}
                         />
@@ -1849,9 +2030,29 @@ class MyActivities extends React.Component {
                 dataIndex: "status",
                 key: "valid",
                 width: 72,
-                render: status => {
-                    return status == "1" ? <span className={styles.unBegin}>{k5dlp2gl}</span> : status == "2" ? <span className={styles.begin}>{k5dlp7zc}</span> : <span className={styles.end}>{k5dlpczr}</span>;
-                }
+                render: (status) => {
+                    return status == '1' ? <span className={styles.unBegin}>{k5dlp2gl}</span> : status == '2' ? <span className={styles.begin}>{k5dlp7zc}</span> :status == '3' ? <span className={styles.end}>{k5dlpczr}</span> :<span className={styles.end}>{l88f03b4}</span>;
+                },
+            },
+            {
+                title: 'BPM单号',
+                className: 'TableTxtCenter',
+                dataIndex: 'auditNo',
+                key: 'auditNo',
+                width: 120,
+                render: text => <Tooltip title={text}>{text}</Tooltip>,
+            },
+            {
+                title: '审批状态',
+                className: 'TableTxtCenter',
+                dataIndex: 'auditStatus',
+                key: 'auditStatus',
+                width: 72,
+                // ellipsis: true,
+                render: (text, record) => {
+                    const items = this.cfg.auditStatus.find(item => item.value == record.auditStatus);
+                    return <span>{items ? items.label : '--'}</span>
+                },
             },
             {
                 title: SALE_LABEL.k5dmps71,
@@ -1983,6 +2184,7 @@ class MyActivities extends React.Component {
                                         modalTitle: "复制活动信息"
                                     });
                                 }}
+				                accountInfo={this.props.user.accountInfo}
                             />
                         )}
                     </div>
