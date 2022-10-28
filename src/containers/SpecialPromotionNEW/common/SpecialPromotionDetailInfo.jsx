@@ -612,7 +612,7 @@ class SpecialDetailInfo extends Component {
                 this.setState({
                     sendTypeValue: "1",
                     bag,
-                    giftTotalCountBag: giftTotalCount
+                    giftTotalCountBag: giftTotalCount == '0' ? '不限制' : giftTotalCount
                 });
             }
 
@@ -637,7 +637,7 @@ class SpecialDetailInfo extends Component {
     async getBag() {
         const { user } = this.props;
         const { groupID } = user.accountInfo;
-        const data = { groupID, couponPackageType: "2" };
+        const data = { groupID, couponPackageType: "2", pageSize: 10000 };
         const [service, type, api, url] = [
             "HTTP_SERVICE_URL_PROMOTION_NEW",
             "post",
@@ -4205,32 +4205,35 @@ class SpecialDetailInfo extends Component {
                                 onChange={this.onBagChange}
                             />
                         </Col>
-                        <Col span={20} >
-                            <FormItem
-                                label={"礼品总数"}
-                                labelCol={{ span: 6 }}
-                                wrapperCol={{ span: 10 }}
-                                className={""}
-                                validateStatus={preErr}
-                                required={true}
-                                help={preErrText}
-                            >
-                                <div className={styles.giftCountTips}>
-                                    <Input
-                                        value={giftTotalCountBag}
-                                        onChange={({ target }) => { this.setState({ giftTotalCountBag: target.value }) }}
-                                        type="number"
-                                    />
-                                    <Tooltip title="当前兑换活动可发出的券包总数,不填为不限制">
-                                        <Icon
-                                            type={"question-circle"}
-                                            style={{ color: "#787878" }}
-                                            className={styles.cardLevelTreeIcon}
-                                        />
-                                    </Tooltip>
-                                </div>
-                            </FormItem>
-                        </Col>
+                        {
+                            giftTotalCountBag === '不限制' ? <Col span={20} offset={3}>礼品总数： 不限制</Col> :
+                                <Col span={20} >
+                                    <FormItem
+                                        label={"礼品总数"}
+                                        labelCol={{ span: 6 }}
+                                        wrapperCol={{ span: 10 }}
+                                        className={""}
+                                        validateStatus={preErr}
+                                        required={true}
+                                        help={preErrText}
+                                    >
+                                        <div className={styles.giftCountTips}>
+                                            <Input
+                                                value={giftTotalCountBag}
+                                                onChange={({ target }) => { this.setState({ giftTotalCountBag: target.value }) }}
+                                                type="number"
+                                            />
+                                            <Tooltip title="当前兑换活动可发出的券包总数,不填为不限制">
+                                                <Icon
+                                                    type={"question-circle"}
+                                                    style={{ color: "#787878" }}
+                                                    className={styles.cardLevelTreeIcon}
+                                                />
+                                            </Tooltip>
+                                        </div>
+                                    </FormItem>
+                                </Col> 
+                        }
                     </Row>
                 ) : (
                     <Row>

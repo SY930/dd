@@ -257,10 +257,10 @@ const formItems = {
 
     maxBuyCount: {
         type: 'text',
-        label: '可购买次数',
+        label: '可购买数量',
         defaultValue:'',
         props: {
-            placeholder: '请输入每人可购买次数，不填表示不限制',
+            placeholder: '请输入每人可购买数量，不填表示不限制',
         },
         rules: [{
             validator: (rule, value, callback) => {
