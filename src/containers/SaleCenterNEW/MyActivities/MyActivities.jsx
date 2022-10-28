@@ -1826,7 +1826,7 @@ class MyActivities extends React.Component {
                                             }
                                             this.handleEditActive(record)(() => {
                                                 this.props.toggleIsUpdate(true);
-						                            if(!isGeneral(this.props.user.accountInfo.roleType) && isZhouheiya(this.props.user.accountInfo.groupID)) {
+						                                                                                if(!isGeneral(this.props.user.accountInfo.roleType) && (record.auditStatus == 2 || record.auditStatus == 4) && isZhouheiya(this.props.user.accountInfo.groupID)) {
                                                         this.setState({ onlyModifyShop: true });
                                                         this.props.saleCenterSetPromotionDetailOnlyModifyShop(true);
                                                     }

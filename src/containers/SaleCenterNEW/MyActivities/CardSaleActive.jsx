@@ -264,6 +264,9 @@ class CardSaleActive extends Component {
                                                                 
                                                                 this.props.handleEditActive(item)(() => {
                                                                     this.props.toggleIsUpdate(true)
+                                                                    if(!isGeneral(this.props.accountInfo.roleType) && (item.auditStatus == 2 || item.auditStatus ==4) && isZhouheiya(this.props.accountInfo.groupID)) {
+                                                                        this.props.onlyModifyShop()
+                                                                    }
                                                                     this.props.handleUpdateOpe(_, item, index);
                                                                 })
                                                             }}
