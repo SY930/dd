@@ -18,16 +18,17 @@ const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', 'al
 
 const giftTypeName = () => {
     const { groupID } = getAccountInfo()
-return [
-    { label: '全部', value: '' },
-    { label: '代金券', value: '10' },
-    { label: '菜品兑换券', value: '21' },
-    { label: isZhouheiya(groupID) ? '兑换券' : '菜品兑换券', value: '21' },
-    { label: '折扣券', value: '111' },
-    { label: '打折劵', value: '602' },
-    { label: '满减券', value: '601' },
-    { label: '商品劵', value: '603' },
-];
+    return [
+        { label: '全部', value: '' },
+        { label: '代金券', value: '10' },
+        { label: '菜品兑换券', value: '21' },
+        { label: isZhouheiya(groupID) ? '兑换券' : '菜品兑换券', value: '21' },
+        { label: '折扣券', value: '111' },
+        { label: '打折劵', value: '602' },
+        { label: '满减券', value: '601' },
+        { label: '商品劵', value: '603' },
+    ];
+}
 
 function getAccountInfo() {
     const { user } = getStore().getState();
