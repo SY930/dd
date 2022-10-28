@@ -3210,7 +3210,7 @@ shopAreaSelectorChange = (value) => {
         }
 
         // 定义所有类型的表单项，根据不同礼品类型进行配置
-        const formItems = {
+        let formItems = {
             ...FORMITEMS,
             giftType: {
                 label: '礼品类型',
