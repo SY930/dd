@@ -7,7 +7,7 @@ const getAccountInfo = () => {
     }
 }
 
-export const zhouheiyaGroupID = ['11157', '341014', '296030', '316488','267440', '344602', '98072']; // 周黑鸭集团ID:344602
+export const zhouheiyaGroupID = [ '341014', '296030', '316488','267440', '344602', '98072']; // 周黑鸭集团ID:344602
 export const isCheckApproval = true
 export const zhouheiyaPromotiontype = ['1060', '1070', '2020', '2010', '1030', '1050', '2050', '3010'];
 export const businessTypesList = [

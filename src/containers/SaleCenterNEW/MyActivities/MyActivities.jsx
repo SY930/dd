@@ -1778,7 +1778,7 @@ class MyActivities extends React.Component {
         const k5ey8lip = intl.formatMessage(SALE_STRING.k5ey8lip);
         const l88f03b4 = intl.formatMessage(SALE_STRING.l88f03b4);
         
-        const columns = [
+        let columns = [
             {
                 title: COMMON_LABEL.serialNumber,
                 dataIndex: "index",
@@ -2034,26 +2034,6 @@ class MyActivities extends React.Component {
                 },
             },
             {
-                title: 'BPM单号',
-                className: 'TableTxtCenter',
-                dataIndex: 'auditNo',
-                key: 'auditNo',
-                width: 120,
-                render: text => <Tooltip title={text}>{text}</Tooltip>,
-            },
-            {
-                title: '审批状态',
-                className: 'TableTxtCenter',
-                dataIndex: 'auditStatus',
-                key: 'auditStatus',
-                width: 72,
-                // ellipsis: true,
-                render: (text, record) => {
-                    const items = this.cfg.auditStatus.find(item => item.value == record.auditStatus);
-                    return <span>{items ? items.label : '--'}</span>
-                },
-            },
-            {
                 title: SALE_LABEL.k5dmps71,
                 dataIndex: "",
                 key: "createBy",
@@ -2091,6 +2071,29 @@ class MyActivities extends React.Component {
             //     },
             // },
         ];
+
+        if(isZhouheiya(this.props.user.accountInfo.groupID)){
+            columns.splice(9, 0,{
+                title: 'BPM单号',
+                className: 'TableTxtCenter',
+                dataIndex: 'auditNo',
+                key: 'auditNo',
+                width: 120,
+                render: text => <Tooltip title={text}>{text}</Tooltip>,
+            },
+            {
+                title: '审批状态',
+                className: 'TableTxtCenter',
+                dataIndex: 'auditStatus',
+                key: 'auditStatus',
+                width: 72,
+                // ellipsis: true,
+                render: (text, record) => {
+                    const items = this.cfg.auditStatus.find(item => item.value == record.auditStatus);
+                    return <span>{items ? items.label : '--'}</span>
+                },
+            })
+        }
         return (
             <div className={`layoutsContent ${styles.tableClass}`}>
                 <Table
