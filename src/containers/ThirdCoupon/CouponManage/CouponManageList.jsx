@@ -106,13 +106,18 @@ class CouponManageList extends Component {
     }
 
     initData = () => {
+        const { user: {accountInfo}} = this.props;
+        const { groupID } = accountInfo || {}
         getCardList({ giftTypes: [10, 111, 21] }).then(x => {
             this.setState({ cacheTreeData: x });
         });
-        // 抖音
-        getRetailList().then(v => {
-            this.setState({ treeDataX: v });
-        })
+        // 抖音 周黑鸭不调零售接口
+        if(!isZhouheiya(groupID)){
+            getRetailList().then(v => {
+                this.setState({ treeDataX: v });
+            })
+        }
+        
         getShopPid().then((res) => {
             this.setState({
                 shopPid: res,

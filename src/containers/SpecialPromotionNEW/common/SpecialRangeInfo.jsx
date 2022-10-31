@@ -536,6 +536,9 @@ class SpecialRangeInfo extends React.Component {
             { label: `${this.props.intl.formatMessage(STRING_SPE.de8fn8fabm853)}`, value: '1' },
             { label: `${this.props.intl.formatMessage(STRING_SPE.db60b7b7495b98)}`, value: '2' },
         ];
+        if(this.rightControl && this.rightControl.joinRange && this.rightControl.joinRange.options && this.rightControl.joinRange.options.length > 0) {
+            options = options.filter(item => this.rightControl.joinRange.options.includes(item.value));
+        }
         const help = `${this.props.intl.formatMessage(STRING_SPE.d16hgajaeke10122)}`;
         return (
             <div>
@@ -589,6 +592,7 @@ class SpecialRangeInfo extends React.Component {
         };
         return (
             <div>
+                {this.props.type == '88' && <h4 style={{ margin: '10px 25px 20px', fontSize: '14px' }}>参与设置</h4>}
                 <FormItem
                     label={`${this.props.intl.formatMessage(STRING_SPE.d7el6blifo14268)}`}
                     className={styles.noPadding}
@@ -773,14 +777,269 @@ class SpecialRangeInfo extends React.Component {
             autoRegister: e.target.value,
         });
     }
+    handleCityIDChange = (val) => {
+        this.setState({
+            eventCityInfos: val,
+        })
+    }
+
+    renderBrandFormItem = () => {
+        const { intl } = this.props;
+        const k5dod8s9 = intl.formatMessage(SALE_STRING.k5dod8s9);
+
+        const _brands = this.state.brandOptions;
+        let options;
+        if (typeof _brands === 'object' && _brands.length > 0) {
+            options = _brands.map((brand, idx) => {
+                return (
+                    <Option value={brand.brandID} key={idx}>{brand.brandName}</Option>
+                );
+            })
+        } else {
+            options = (<Option value={'0'} disabled={true}>{k5dod8s9}</Option>);
+        }
+
+        const _brandList = {
+            multiple: true,
+            allowClear: true,
+            showSearch: false,
+            filterOption: false,
+            placeholder: SALE_LABEL.k5nh23wx,
+            onChange: this.handleBrandChange,
+            defaultValue: this.state.brandList,
+            value: this.state.brandList,
+        };
+        return (
+            <Form.Item
+                label={SALE_LABEL.k5dlpn4t}
+                wrapperCol={{
+                    span: 17,
+                }}
+                labelCol={{
+                    span: 4,
+                }}
+                hasFeedback={true}
+                className={styles.FormItemStyle}
+            >
+                <Select {..._brandList}
+                    size="default"
+                    placeholder='请选择品牌，不选默认全部品牌可用'
+                    getPopupContainer={(node) => node.parentNode}
+                >
+                    {options}
+                </Select>
+
+            </Form.Item>
+        );
+    }
+    handleBrandChange = (value) => {//todo
+        this.setState({ brandList: value, shopIDList: [] });
+    }
+
+    renderChannelList = () => {
+        return (
+            <FormItem
+                label={SALE_LABEL.k5krn6il}
+                labelCol={{
+                    span: 4,
+                }}
+                wrapperCol={{
+                    span: 17,
+                }}
+                className={[styles.FormItemStyle, styles.yzTxt].join(' ')}
+            >
+                <Col span={24}>
+                    <Select
+                        size="default"
+                        onChange={this.handleScenarioChange}
+                        value={this.state.sourceWayLimit}
+                        getPopupContainer={(node) => node.parentNode}
+                        defaultValue={'0'}
+                    >
+                        {SCENARIOS.filter(item => item.value != '3').map((scenario, index) => {
+                            return (
+                                <Option key={index} value={scenario.value}>{scenario.name}</Option>
+                            );
+                        })}
+                    </Select>
+                    <Tooltip title={
+                        <p>
+                            <p>仅线下使用：指云店pos、点菜宝、云店pad、大屏等由门店下单场景</p>
+                            <p>仅线上使用：指线上餐厅、小程序等由用户自助下单场景</p>
+                        </p>
+                    }>
+                        <Icon
+                            type={'question-circle'}
+                            style={{ color: '#787878', left: '480px' }}
+                            className={styles.cardLevelTreeIcon}
+                        />
+                    </Tooltip>
+                </Col>
+            </FormItem>
+        );
+    }
+    handleScenarioChange = (value) => {
+        this.setState({
+            sourceWayLimit: value
+        });
+    }
+
+    renderBusinessOptions = () => {
+        const { intl } = this.props;
+        const k5m67a4r = intl.formatMessage(SALE_STRING.k5m67a4r);
+        const k5m67ad3 = intl.formatMessage(SALE_STRING.k5m67ad3);
+        const k5m67alf = intl.formatMessage(SALE_STRING.k5m67alf);
+        const k5krn7fx = intl.formatMessage(SALE_STRING.k5krn7fx);
+        const k5m67atr = intl.formatMessage(SALE_STRING.k5m67atr);
+        const basicInfo = this.props.promotionBasicInfo.get('$basicInfo').toJS()
+        const isSelDefined = basicInfo.recommendType == 1
+        if (this.props.isOnline) return null;
+        let plainOptions = [
+            {
+                label: k5m67a4r,
+                value: '10',
+                disabled: isSelDefined
+            }, {
+                label: k5m67ad3,
+                value: '11',
+                disabled: isSelDefined
+            }, {
+                label: k5m67alf,
+                value: '20',
+                disabled: isSelDefined
+            }, {
+                label: k5krn7fx,
+                value: '31',
+            }, {
+                label: k5m67atr,
+                value: '21',
+                disabled: isSelDefined
+            },
+            {
+                label: '零售',
+                value: '51',
+                disabled: isSelDefined
+            }
+        ];
+
+        return (
+            <Form.Item
+                label={SALE_LABEL.k5dlpt47}
+                className={styles.FormItemStyle}
+                labelCol={{
+                    span: 4,
+                }}
+                validateStatus={this.state.orderTypeList.length
+                    ? 'success'
+                    : 'error'}
+                help={!this.state.orderTypeList.length
+                    ? ''
+                    : null}
+                wrapperCol={{
+                    span: 17,
+                }}
+            >
+                <CheckboxGroup
+                    onChange={this.handleBusinessChange}
+                    options={plainOptions}
+                    value={this.state.orderTypeList}
+                    defaultValue={this.state.orderTypeList}
+                />
+            </Form.Item>
+        );
+    }
+    handleBusinessChange = (value) => {
+        this.setState({ orderTypeList: value });
+    }
+
+    renderShopsOptions() {
+        const { brandList = [], shopAreaData  } = this.state;
+        console.log(this.props.isUpdate);
+        return (
+            <div style={{ position: 'relative', zIndex: this.props.onlyModifyShop ? '100' : 'auto' }}>
+                <ShopAreaSelector
+                    brandList={brandList}
+                    groupID={this.props.user.accountInfo.groupID}
+                    firstRequired={!isGeneral() && this.props.isUpdate ? true : false}
+                    secondRequired={!isGeneral() && this.props.isUpdate ? true : false}
+                    firstValidateStatus={'error'}
+                    secondValidateStatus={shopAreaData.type == 'area' && shopAreaData.list.length == 0 && !isGeneral() && this.props.isUpdate ? 'error' : 'success'}
+                    firstHelp={shopAreaData.type == 'shop' && shopAreaData.list.length == 0 && !isGeneral() && this.props.isUpdate ? '请选择店铺' : ''}
+                    secondHelp={shopAreaData.type == 'area' && shopAreaData.list.length == 0 && !isGeneral() && this.props.isUpdate ? '请选择区域' : ''}
+                    value={{
+                        radioValue: shopAreaData.type,
+                        list: shopAreaData.list
+                    }}
+                    onChange={this.handleShopAreaChange}
+                    formatRes={(params) => {
+                        // console.log(params);
+                        return params;
+                    }}
+                />
+            </div>
+        );
+    }
+    handleShopAreaChange = (value) => {
+        console.log(value);
+        const { areaList } = value.otherRes || {};
+        let orgs = [];
+        if(value.radioValue == 'shop') {
+            orgs = value.list.map(shopID => ({
+                shopID,
+                shopType: '1'
+            }))
+        } else {
+            orgs = value.list.map(shopID => ({
+                shopID,
+                shopType: '2',
+                shopPath: (areaList.find(item => item.orgID == shopID) || {}).path + shopID + '/'
+            }))
+        }
+        this.setState({
+            shopAreaData: {
+                type: value.radioValue,
+                list: value.list,
+            },
+            orgs
+        })
+        console.log(orgs, 'orgs');
+    }
+
+    //参与范围
+    renderParticipationScopes = () => {
+        return (
+            <div>
+                <h4 style={{ margin: '20px 25px', fontSize: '14px' }}>参与范围</h4>
+                {this.renderBrandFormItem()}
+                {this.renderChannelList()}
+                {this.renderBusinessOptions()}
+                {this.renderShopsOptions()}
+            </div>
+        )
+    }
+
+    renderApproverSet = () => {
+        return (
+            <Approval type="special" onApprovalInfoChange={(val) => {
+                this.setState({
+                    approvalInfo: {
+                        ...val
+                    }
+                })
+            }} />
+        )
+    }
+
     render() {
+        const { shopStatus, shopIDList = [] } = this.state;
+
         const inputStyle = {
             width: '100%', display: 'inline-block',  verticalAlign: 'middle',
         };
         return (
             <Form>
                 {this.props.type === '21' ? this.renderFreeGetJoinRange() : null}
-                {this.props.type !== '23' ? this.renderJoinRange() : null}
+                {this.props.type !== '23' && this.props.type !== '69' && this.props.type !== '89' && this.props.type !== '88' ? this.renderJoinRange() : null}
                 {this.props.type !== '22' ? this.renderJoinCount() : null}
                 {
                     this.props.type === '23' ?
@@ -868,7 +1127,7 @@ class SpecialRangeInfo extends React.Component {
                         </div> : null
                 }
                 {
-                    (this.props.type !== '23')  ?
+                    this.props.type !== '23' && this.props.type !== '69' && this.props.type !== '89' && this.props.type !== '88' ?
                         <FormItem
                             label={`${this.props.intl.formatMessage(STRING_SPE.d143141l5s0247)}`}
                             className={styles.noPadding}
@@ -919,7 +1178,60 @@ class SpecialRangeInfo extends React.Component {
                         </FormItem>
                         : null
                 }
-
+                {
+                    this.props.type === '69' && (
+                        <FormItem
+                            label='投放城市'
+                            className={styles.noPadding}
+                            wrapperCol={{ span: 17 }}
+                            labelCol={{ span: 4 }}
+                            style={{ marginTop: '10px', zIndex: this.props.onlyModifyShop ? '100' : 'auto' }}
+                        >
+                            <Select 
+                                size="default"
+                                defaultValue={this.state.eventCityInfos}
+                                value={this.state.eventCityInfos}
+                                onChange={this.handleCityIDChange}
+                                // getPopupContainer={(node) => node.parentNode}
+                                placeholder="请选择投放城市"
+                                multiple={true}
+                                allowClear
+                            >
+                                {/* <Option value={''} key={''}>{this.props.intl.formatMessage(STRING_SPE.d2c89sj1s61092)}</Option> */}
+                                {
+                                    this.state.cityOptions.map((item) => {
+                                        return (<Option value={`${item.cityID}`} key={`${item.cityID}`}>{item.cityName}</Option>)
+                                    })
+                                }
+                            </Select>
+                        </FormItem>
+                    )
+                }
+                {
+                    this.props.type === '89' && (
+                        // <FormItem
+                        //     style={{ zIndex: this.props.onlyModifyShop ? '100' : 'auto' }}
+                        //     label="适用店铺"
+                        //     className={styles.FormItemStyle}
+                        //     labelCol={{ span: 4 }}
+                        //     wrapperCol={{ span: 17 }}
+                        //     required={false}
+                        //     validateStatus={shopStatus ? 'success' : 'error'}
+                        //     help={shopStatus ? null : '不选默认所有店铺可用'}
+                        // >
+                        //     <ShopSelector
+                        //         value={shopIDList}
+                        //         onChange={v => {
+                        //             this.setState({ shopIDList: v, shopStatus: v.length > 0 })
+                        //         }}
+                        //     // schemaData={this.props.shopSchema.toJS()}
+                        //     />
+                        // </FormItem>
+                        this.renderShopsOptions()
+                    )
+                }
+                {['88'].includes(this.props.type) && this.renderParticipationScopes()}
+                {['89', '88'].includes(this.props.type) && this.renderApproverSet()}
             </Form>
         )
     }
@@ -935,6 +1247,8 @@ const mapStateToProps = (state) => {
         canUseShopIDs: state.sale_specialPromotion_NEW.getIn(['$eventInfo', 'canUseShopIDs']),
         excludeCardTypeAndShopIDs: state.sale_specialPromotion_NEW.getIn(['$eventInfo', 'excludeCardTypeShops']),
         queryCanUseShopStatus: state.sale_specialPromotion_NEW.getIn(['addStatus', 'availableShopQueryStatus']),
+        specialPromotionInfo: state.sale_specialPromotion_NEW,
+        isUpdate:state.sale_myActivities_NEW.get('isUpdate'),
     }
 };
 

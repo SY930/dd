@@ -149,10 +149,20 @@ class CardSaleActive extends Component {
         if (record.eventWay == 87) {
             return this.props.handleNewEditActive(record, 'edit');
         }
-        this.props.handleEditActive(record)(() => {
-            this.props.toggleIsUpdate(true)
-            this.props.handleUpdateOpe(_, record, index);
+        this.permissionVerify(record.itemID, () => {
+            this.props.handleEditActive(record)(() => {
+                this.props.toggleIsUpdate(true)
+                // 不是集团经理角色并且是周黑鸭账号（并且审批状态是审批通过跟无需审批的）只能修改店铺
+                if(!isGeneral(this.props.user.accountInfo.roleType) && isZhouheiya(this.props.user.accountInfo.groupID) && (record.auditStatus == 2 || record.auditStatus == 4)) {
+                    //目前只针对周黑鸭的三个营销活动做此逻辑（H5领券、积分换礼、消费送礼）
+                    if([69, 89, 88].includes(record.eventWay)) {
+                        this.props.onlyModifyShop()
+                    }
+                }
+                this.props.handleUpdateOpe(_, record, index);
+            })
         })
+	}
     }
 
     renderWXTip = (text, record, index) => {
@@ -219,7 +229,7 @@ class CardSaleActive extends Component {
                 {/* 第一版只做群发礼品的复制功能 */}
                 {/* 摇奖活动增加复制,并且活动不是禁用状态  */}
                 {
-                    (record.eventWay === 53 || record.eventWay === 20)
+                    (record.eventWay === 53 || record.eventWay === 20  || record.eventWay === 69  || record.eventWay === 89 || record.eventWay === 88 || record.eventWay === 90)
                     &&
                     // <Authority rightCode={SPECIAL_PROMOTION_UPDATE}>
                     <a
@@ -244,9 +254,13 @@ class CardSaleActive extends Component {
                                 })
                                 return;
                             }
-                            this.props.toggleIsUpdate(true)
-                            this.props.isCopy()
-                            this.props.handleUpdateOpe(text, record, index);
+                            this.permissionVerify(record.itemID, () => {
+                                this.props.toggleIsUpdate(true)
+                                this.props.isCopy()
+                                this.props.handleUpdateOpe(text, record, index);
+                            })
+                            // }
+                            // }
                         }}
                     >
                         复制
@@ -282,6 +296,39 @@ class CardSaleActive extends Component {
         )
     }
 
+    // 权限校验
+    permissionVerify = async (itemID, cb) => {
+        if(isZhouheiya()) {
+            const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', 'specialPromotion/', '/api/v1/universal?'];
+            const datas = {
+                groupID: this.props.user.accountInfo.groupID,
+                accountID: this.props.user.accountInfo.accountID,
+                itemID
+            };
+            const method = `${api}checkEventDataAuth.ajax`;
+            const params = { service, type, data: datas, method };
+            const { data = {}, code } = await axios.post(url + method, params);
+            try {
+                if(code == '000') {
+                    if(data.hasOperateAuth == 1) {
+                        cb()
+                    } else {
+                        message.warning('没有操作权限');
+                    }
+                }
+            } catch (error) {
+                message.warning('请求失败');
+            }
+        } else {
+            cb()
+        }
+    }
+
+    //【活动过期后】或【审批中】编辑按钮禁用
+    editIsDisabled = (record) => {
+        return isZhouheiya() && ((new Date(moment(record.eventEndDate, 'YYYY-MM-DD').format('YYYY-MM-DD')).getTime() < new Date(new Date(Date.now()).toLocaleDateString()).getTime()) || record.auditStatus == '1');
+    }
+
     render() {
         const { dataSource: data } = this.props
         return (
@@ -307,7 +354,9 @@ class CardSaleActive extends Component {
                                                             // e.preventDefault();
                                                             return;
                                                         }
-                                                        this.props.handleSattusActive(item, index)
+                                                        this.permissionVerify(item.itemID,() => {
+                                                            this.props.handleSattusActive(item, index)
+                                                        })
                                                     }}
                                                     disabled={BenefitDisabled}
                                                 />
