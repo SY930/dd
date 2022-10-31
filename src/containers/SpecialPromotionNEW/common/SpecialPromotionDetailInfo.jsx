@@ -1239,7 +1239,7 @@ class SpecialDetailInfo extends Component {
         }
         const { sendTypeValue, giftTotalCountBag } = this.state;
         if (type === "30" && sendTypeValue === "1") {
-            if (!giftTotalCountBag) { message.warning('请填写礼品总数'); return false }
+            if (giftTotalCountBag && (+giftTotalCountBag < 1 || +giftTotalCountBag > 999999)) { message.warning('请输入大于1小于等于999999的正整数'); return false }
             const { bag } = this.state;
             if (bag[0]) {
                 const { couponPackageID } = bag[0];
@@ -1248,7 +1248,7 @@ class SpecialDetailInfo extends Component {
                     giftID: couponPackageID,
                     presentType: 4,
                     giftOdds: "3",
-                    giftTotalCount: giftTotalCountBag,
+                    giftTotalCount: giftTotalCountBag || 0,
                 };
                 this.props.setSpecialGiftInfo([params]);
                 const { shareTitle, shareImagePath } = this.state;
@@ -4214,7 +4214,6 @@ class SpecialDetailInfo extends Component {
                                         wrapperCol={{ span: 10 }}
                                         className={""}
                                         validateStatus={preErr}
-                                        required={true}
                                         help={preErrText}
                                     >
                                         <div className={styles.giftCountTips}>
