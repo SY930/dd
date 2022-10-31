@@ -85,7 +85,6 @@ export default class PresentForm extends Component {
         const render = () => (<div className={styles.sendBtn}><Button {...btnProp}>发送</Button></div>);
         const render1 = d => d()(<AccountNoSelector autoFetch={true} />);
         const render2 = d => d()(<MsgSelector selectedMessage={msg} />);
-        const render3 = () => (<p>{noLimit}</p>);
         const rules = [{
             required: true,
             validator: (rule, value, callback) => {
@@ -110,7 +109,6 @@ export default class PresentForm extends Component {
             smsTemplate: { ...smsTemplate, render: render2, onChange: this.onMessageChange},
             sendCount: { ...sendCount, rules },
             q: { ...q, render },
-            c: { ...c, render: render3 },
         };
     }
     render() {
