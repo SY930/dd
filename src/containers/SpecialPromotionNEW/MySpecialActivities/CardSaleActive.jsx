@@ -162,7 +162,7 @@ class CardSaleActive extends Component {
                 this.props.handleUpdateOpe(_, record, index);
             })
         })
-	}
+	
     }
 
     renderWXTip = (text, record, index) => {

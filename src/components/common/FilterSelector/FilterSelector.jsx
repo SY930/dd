@@ -467,7 +467,7 @@ class FilterSelector extends React.Component {
                                 </Row>
                                 <Row>
                                     <div style={{ display: 'flex' }}>
-                                        <Input style={{ width: 200, backgroundColor: '#ffffff', marginLeft: 50 }} disabled placeholder='请上传.zip标准格式文件' value={fileName}></Input>
+                                        <Input style={{ width: 200, backgroundColor: '#ffffff', marginLeft: 50 }} disabled placeholder='请上传标准excel格式文件' value={fileName}></Input>
                                         <div style={{ float: 'left' }}>
                                             <Upload
                                                 {...props}

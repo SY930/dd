@@ -474,14 +474,14 @@ class MySpecialActivities extends React.Component {
                 { value: "85", label: "千人千面" },
                 { value: '87', label: '消费送礼' },
             ],
-	    auditStatus: [
-                { value: '', label: '全部' },
-                { value: '0', label: '待审批' },
-                { value: '1', label: '审批中' },
-                { value: '2', label: '审批通过' },
-                { value: '3', label: '审批驳回' },
-                { value: '4', label: '无需审批' },
-            ]
+            auditStatus: [
+                    { value: '', label: '全部' },
+                    { value: '0', label: '待审批' },
+                    { value: '1', label: '审批中' },
+                    { value: '2', label: '审批通过' },
+                    { value: '3', label: '审批驳回' },
+                    { value: '4', label: '无需审批' },
+            ],
         }
         if(isZhouheiya()) {
             this.cfg.eventWay = [
@@ -492,7 +492,7 @@ class MySpecialActivities extends React.Component {
                 { value: '90', label: '群发礼品' }
             ];
         }
-
+        
         this.renderFilterBar = this.renderFilterBar.bind(this);
         this.showNothing = this.showNothing.bind(this);
         this.handleDismissUpdateModal = this.handleDismissUpdateModal.bind(
@@ -3439,18 +3439,18 @@ class MySpecialActivities extends React.Component {
                                             return this.handleNewEditActive(record, 'edit');
                                         }
                                         this.permissionVerify(record.itemID, () => {
-                                        this.handleEditActive(record)(() => {
-                                            this.props.toggleIsUpdate(true)
-                                            // 不是集团经理角色并且是周黑鸭账号（并且审批状态是审批通过跟无需审批的）只能修改店铺
-                                            if(!isGeneral(this.props.user.accountInfo.roleType) && isZhouheiya(this.props.user.accountInfo.groupID) && (record.auditStatus == 2 || record.auditStatus == 4)) {
-                                                //目前只针对周黑鸭的三个营销活动做此逻辑（H5领券、积分换礼、消费送礼）
-                                                if([69, 89, 88].includes(record.eventWay)) {
-                                                    this.setState({ onlyModifyShop: true });
+                                            this.handleEditActive(record)(() => {
+                                                this.props.toggleIsUpdate(true)
+                                                // 不是集团经理角色并且是周黑鸭账号（并且审批状态是审批通过跟无需审批的）只能修改店铺
+                                                if(!isGeneral(this.props.user.accountInfo.roleType) && isZhouheiya(this.props.user.accountInfo.groupID) && (record.auditStatus == 2 || record.auditStatus == 4)) {
+                                                    //目前只针对周黑鸭的三个营销活动做此逻辑（H5领券、积分换礼、消费送礼）
+                                                    if([69, 89, 88].includes(record.eventWay)) {
+                                                        this.setState({ onlyModifyShop: true });
+                                                    }
                                                 }
-                                            }
-                                            this.handleUpdateOpe(text, record, index);
+                                                this.handleUpdateOpe(text, record, index);
+                                            })
                                         })
-                                    })
 
                                         // }
                                         // }
@@ -3544,9 +3544,9 @@ class MySpecialActivities extends React.Component {
                                         }
                                         // record.isActive != '0' || record.userCount != 0 || statusState ? null :
                                         this.permissionVerify(record.itemID,() => {
-                                        // record.isActive != '0' || record.userCount != 0 || statusState ? null :
-                                        this.handleDelActive(record)(() => this.checkDeleteInfo(text, record, index));
-                                    })
+                                            // record.isActive != '0' || record.userCount != 0 || statusState ? null :
+                                            this.handleDelActive(record)(() => this.checkDeleteInfo(text, record, index));
+                                        })
 
                                     }}
                                 >

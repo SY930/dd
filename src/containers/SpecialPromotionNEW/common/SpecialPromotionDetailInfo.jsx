@@ -887,6 +887,9 @@ class SpecialDetailInfo extends Component {
                     this.setState({
                         freeGetLimit: "1",
                     });
+                }
+            }
+        }
         if(this.props.type == 69 && this.props.isNew) {
             const startDate = this.props.specialPromotion.getIn(['$eventInfo', 'eventStartDate']);
             const endDate = this.props.specialPromotion.getIn(['$eventInfo', 'eventEndDate']);
@@ -1061,7 +1064,7 @@ class SpecialDetailInfo extends Component {
             });
         }
 
-	if(type == 69 && !this.props.isCopy) {
+	    if(type == 69 && !this.props.isCopy) {
             giftInfo.forEach((gift, index) => {
                 if (data[index] !== undefined) {
                     data[index].sendType = gift.sendType || 0;

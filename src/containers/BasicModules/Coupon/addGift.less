@@ -1,0 +1,84 @@
+@import '~@hualala/platform-base/lib/styles/variables.less';
+
+@gray: #999;
+@red: #ED5664;
+@yel: #FF9805;
+@brd: #E7E7E7;
+@green: #1AB495;
+@green2: #18a786;
+@black: #434343;
+@white: #fff;
+@blue: #1ca1dc;
+@graybg: #F9F9F9;
+@separ: #F3F3F3;
+
+.tc {
+    text-align: center;
+}
+
+.r {
+    float: right;
+}
+
+.dn {
+    display: none;
+}
+
+.tr {
+    text-align: right;
+}
+.ell {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    white-space: nowrap;
+}
+
+.h3 {
+    padding-left: 5px;
+    margin-bottom: 10px;
+    line-height: 17px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.mainBox{
+    margin: 0 0 10px 0;
+}
+
+.addGiftWrapper {
+    float: left;
+    margin-top: -10px;
+    width: 738px;
+    padding: 16px;
+    background: #F9F9F9;
+    border-radius: 10px;
+    :global{
+        .ant-table-wrapper{
+            margin-top: 10px;
+        }
+        .ant-table-content{
+            background-color: #fff;
+            border-radius: 6px;
+        }
+        .ant-table-placeholder{
+            border:none
+        }
+        .ant-table-thead > tr > th,.ant-table-tbody > tr > td{
+            height: 47px;
+            line-height: 47px;
+            background-color: #fff;
+            border-bottom: 1px solid #e7e7e7;
+        }
+        .ant-table-row{
+            &:last-child{
+                .addGift_tc__sSM6Z{
+                    border-bottom: none!important;
+                }
+            }
+        }
+    }
+}
+
+
+
