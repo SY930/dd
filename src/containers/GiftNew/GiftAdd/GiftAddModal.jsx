@@ -1038,7 +1038,7 @@ class GiftAddModal extends React.Component {
                     onChange={(key, value) => this.handleFormChange(key, value)}
                     key={`${describe}-${type}`}
                 />
-                {value == '90' ? <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 15, marginLeft: 150 }}>
+                {value == '90' ? <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 15, marginLeft: 150, paddingBottom: 100 }}>
                     <div>
                         <Checkbox
                             value={this.props.isCheckedAgreement}
