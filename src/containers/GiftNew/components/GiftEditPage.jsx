@@ -55,9 +55,11 @@ class GiftEditPage extends Component {
 
     // TODO: 这块为什么执行了两次保存？
     saving() {
-        if(!this.state.isCheckedAgreement) {
-            message.error('当前您未勾选《法律声明》')
-            return
+        if(this.props.giftType == '90') {
+            if(!this.state.isCheckedAgreement) {
+                message.error('当前您未勾选《法律声明》')
+                return
+            }
         }
         this.formRef && this.formRef.wrappedInstance && this.formRef.wrappedInstance.handleSubmit
         && this.formRef.wrappedInstance.handleSubmit();
