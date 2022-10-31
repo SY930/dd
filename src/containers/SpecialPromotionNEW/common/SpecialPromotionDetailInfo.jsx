@@ -888,7 +888,6 @@ class SpecialDetailInfo extends Component {
                         freeGetLimit: "1",
                     });
                 }
-
             }
         }
         if(this.props.type == 69 && this.props.isNew) {
@@ -1065,7 +1064,7 @@ class SpecialDetailInfo extends Component {
             });
         }
 
-	if(type == 69 && !this.props.isCopy) {
+	    if(type == 69 && !this.props.isCopy) {
             giftInfo.forEach((gift, index) => {
                 if (data[index] !== undefined) {
                     data[index].sendType = gift.sendType || 0;
