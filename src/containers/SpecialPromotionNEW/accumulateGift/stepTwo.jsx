@@ -75,7 +75,7 @@ class StepTwo extends React.Component {
         const consumeType = `${props.specialPromotionInfo.getIn(['$eventInfo', 'consumeType'], '8')}`;
         this.state = {
             radioType: consumeType >= 8 ? 0 : 1,
-            amountType: props.specialPromotionInfo.getIn(['$eventInfo', 'amountType']) || 1,//集点卡金额核算字段
+            amountType: props.specialPromotionInfo.getIn(['$eventInfo', 'amountType']) || 2,//集点卡金额核算字段
             foodScopeList: props.specialPromotionInfo.getIn(['$eventInfo', 'foodScopeList'], Immutable.fromJS([])).toJS(),
             needCount: props.specialPromotionInfo.getIn(['$eventInfo', 'needCount']) || undefined,
             groupID: props.groupID || undefined,
