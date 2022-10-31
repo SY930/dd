@@ -186,20 +186,6 @@ class ActivityConditions extends Component {
     }
 
     onSelectBag = (item, id) => {
-        if (item.limitStockForEvent == '1') {
-            Modal.info({
-                title: '注意',
-                content: "当前选择券包为历史券包，历史券包库存与活动库存冲突。活动可使用券包库存数为当前活动设置奖品数。",
-                iconType: "exclamation-circle",
-                okText: "我知道了",
-                onOk: () => {
-                    const { couponForm } = this.state;
-                    couponForm.setFieldsValue({ couponName: item })
-                    this.onToggleModal();
-                },
-            });
-            return
-        }
         const { couponForm } = this.state;
         couponForm.setFieldsValue({ couponName: item })
         this.onToggleModal();
