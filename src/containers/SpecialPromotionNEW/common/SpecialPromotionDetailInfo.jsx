@@ -1239,7 +1239,7 @@ class SpecialDetailInfo extends Component {
         }
         const { sendTypeValue, giftTotalCountBag } = this.state;
         if (type === "30" && sendTypeValue === "1") {
-            if (giftTotalCountBag && (+giftTotalCountBag < 1 || +giftTotalCountBag > 999999)) { message.warning('请输入大于1小于等于999999的正整数'); return false }
+            if (!giftTotalCountBag) { message.warning('请填写礼品总数'); return false }
             const { bag } = this.state;
             if (bag[0]) {
                 const { couponPackageID } = bag[0];
@@ -1248,7 +1248,7 @@ class SpecialDetailInfo extends Component {
                     giftID: couponPackageID,
                     presentType: 4,
                     giftOdds: "3",
-                    giftTotalCount: giftTotalCountBag || 0,
+                    giftTotalCount: giftTotalCountBag,
                 };
                 this.props.setSpecialGiftInfo([params]);
                 const { shareTitle, shareImagePath } = this.state;
@@ -4215,6 +4215,7 @@ class SpecialDetailInfo extends Component {
                                         className={""}
                                         validateStatus={preErr}
                                         help={preErrText}
+                                        required={true}
                                     >
                                         <div className={styles.giftCountTips}>
                                             <Input
@@ -4222,7 +4223,7 @@ class SpecialDetailInfo extends Component {
                                                 onChange={({ target }) => { this.setState({ giftTotalCountBag: target.value }) }}
                                                 type="number"
                                             />
-                                            <Tooltip title="当前兑换活动可发出的券包总数,不填为不限制">
+                                            <Tooltip title="当前兑换活动可发出的券包总数">
                                                 <Icon
                                                     type={"question-circle"}
                                                     style={{ color: "#787878" }}
