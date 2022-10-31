@@ -482,7 +482,7 @@ class MySpecialActivities extends React.Component {
                 { value: '3', label: '审批驳回' },
                 { value: '4', label: '无需审批' },
             ]
-        
+        }
         if(isZhouheiya()) {
             this.cfg.eventWay = [
                 { value: '', label: `${this.props.intl.formatMessage(STRING_GIFT.all)}` },
