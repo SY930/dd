@@ -83,6 +83,9 @@ class GiftBaseInfo extends Component {
     if (!shopNames) {
       return ''
     }
+    if(shopNames.split(',').every(i => i == '')) {
+        return selectedBrands ? `${selectedBrands} 品牌下全部门店` : ''
+    }
     if (shopNames == '不限') {
       return '全部门店'
     }
