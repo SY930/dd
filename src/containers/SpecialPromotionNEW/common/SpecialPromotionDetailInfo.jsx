@@ -1239,7 +1239,7 @@ class SpecialDetailInfo extends Component {
         }
         const { sendTypeValue, giftTotalCountBag } = this.state;
         if (type === "30" && sendTypeValue === "1") {
-            if (!giftTotalCountBag) { message.warning('请填写礼品总数'); return false }
+            if (!Number(giftTotalCountBag)) { message.warning('请填写礼品总数'); return false }
             const { bag } = this.state;
             if (bag[0]) {
                 const { couponPackageID } = bag[0];
