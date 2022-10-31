@@ -887,6 +887,7 @@ class SpecialDetailInfo extends Component {
                     this.setState({
                         freeGetLimit: "1",
                     });
+                }
         if(this.props.type == 69 && this.props.isNew) {
             const startDate = this.props.specialPromotion.getIn(['$eventInfo', 'eventStartDate']);
             const endDate = this.props.specialPromotion.getIn(['$eventInfo', 'eventEndDate']);
