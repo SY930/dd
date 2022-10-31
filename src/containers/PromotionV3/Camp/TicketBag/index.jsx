@@ -32,9 +32,9 @@ export default class TicketBag extends Component {
         if (item.limitStockForEvent == '1') {
             Modal.info({
                 title: '注意',
-                content: "当前选择券包为历史券包，历史券包库存与活动库存冲突。活动可使用券包库存数为当前活动设置奖品数。",
-                iconType: "exclamation-circle",
-                okText: "我知道了",
+                content: '当前选择券包为历史券包，历史券包库存与活动库存冲突。活动可使用券包库存数为当前活动设置奖品数。',
+                iconType: 'exclamation-circle',
+                okText: '我知道了',
                 onOk: () => {
                     this.setState({ list: [item] });
                     this.props.onChange([item]);

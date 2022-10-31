@@ -12,7 +12,6 @@ class TotalTable extends Component {
     /* 生成表格头数据 */
     generateColumns = () => {
         const { isOld, couponPackageType } = this.props
-        console.log("🚀 ~ file: TotalTable.jsx ~ line 14 ~ TotalTable ~ isOld", isOld, couponPackageType)
         const { tr } = styles;
         // 表格头部的固定数据
         if (isOld || couponPackageType == 1) {
