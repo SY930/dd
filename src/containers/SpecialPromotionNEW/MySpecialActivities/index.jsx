@@ -474,15 +474,16 @@ class MySpecialActivities extends React.Component {
                 { value: "85", label: "千人千面" },
                 { value: '87', label: '消费送礼' },
             ],
-	    auditStatus: [
-                { value: '', label: '全部' },
-                { value: '0', label: '待审批' },
-                { value: '1', label: '审批中' },
-                { value: '2', label: '审批通过' },
-                { value: '3', label: '审批驳回' },
-                { value: '4', label: '无需审批' },
-            ]
-        
+       
+            auditStatus: [
+                    { value: '', label: '全部' },
+                    { value: '0', label: '待审批' },
+                    { value: '1', label: '审批中' },
+                    { value: '2', label: '审批通过' },
+                    { value: '3', label: '审批驳回' },
+                    { value: '4', label: '无需审批' },
+            ],
+        }
         if(isZhouheiya()) {
             this.cfg.eventWay = [
                 { value: '', label: `${this.props.intl.formatMessage(STRING_GIFT.all)}` },
@@ -492,7 +493,7 @@ class MySpecialActivities extends React.Component {
                 { value: '90', label: '群发礼品' }
             ];
         }
-
+        
         this.renderFilterBar = this.renderFilterBar.bind(this);
         this.showNothing = this.showNothing.bind(this);
         this.handleDismissUpdateModal = this.handleDismissUpdateModal.bind(

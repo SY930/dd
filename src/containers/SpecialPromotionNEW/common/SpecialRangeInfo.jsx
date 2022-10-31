@@ -527,7 +527,7 @@ class SpecialRangeInfo extends React.Component {
     }
     // 参与积分
     renderJoinRange() {
-        const options = [
+        let options = [
             { label: `${this.props.intl.formatMessage(STRING_SPE.db60b7b7495b733)}`, value: '0' },
             { label: `${this.props.intl.formatMessage(STRING_SPE.de8fn8fabm853)}`, value: '1' },
             { label: `${this.props.intl.formatMessage(STRING_SPE.db60b7b7495b98)}`, value: '2' },
