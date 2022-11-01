@@ -158,6 +158,7 @@ const DECORATABLE_PROMOTIONS = [
     "79",
     "85",
     "83",
+    "69"
 ];
 
 const isDecorationAvailable = ({ eventWay }) => {
@@ -314,6 +315,7 @@ class MySpecialActivities extends React.Component {
             qrItemID: "", // 点击提取链接/二维码 当前活动的itemID
             giftArr: [],
             allWeChatAccountList: [],
+            allWeChatAccountListForH5: [],
             pushMessageMpID: "",
             groupID: "",
             isCopy: false,
@@ -1547,9 +1549,10 @@ class MySpecialActivities extends React.Component {
         });
     };
     getAllAvailableMpInfo = () => {
-        const { allWeChatAccountList } = this.state;
+        const { allWeChatAccountList, allWeChatAccountListForH5, eventWay } = this.state;
+        const options = eventWay == 69 ? allWeChatAccountListForH5 : allWeChatAccountList;
         return [
-            ...allWeChatAccountList.map((item) => ({
+            ...options.map((item) => ({
                 value: JSON.stringify({ mpID: item.mpID, appID: item.appID }),
                 label: item.mpName,
             })),
@@ -2959,7 +2962,7 @@ class MySpecialActivities extends React.Component {
                 {/* 第一版只做群发礼品的复制功能*/}
                 {/* 摇奖活动增加复制,并且活动不是禁用状态  */}
                 {
-                    (record.eventWay === 53 || record.eventWay === 20) && (
+                    (record.eventWay === 53 || record.eventWay === 20 || record.eventWay === 69  || record.eventWay === 89 || record.eventWay === 88 || record.eventWay === 90) && (
                         // <Authority rightCode={SPECIAL_PROMOTION_UPDATE}>
                         <a
                             href="#"
@@ -3857,7 +3860,7 @@ class MySpecialActivities extends React.Component {
         //     onCancel: () => { },
         // });
     }
-    handleGiftsData = (response) => {
+    handleGiftsData = (response, type) => {
         const { eventWay, itemID, eventName, needCount = "" } = response.data;
         const user = this.props.user;
         let result = [];
@@ -4010,7 +4013,7 @@ class MySpecialActivities extends React.Component {
         if(eventWay == '68') {
             url = url +    `/newm/recommendInvite?groupID=${groupID}&eventItemID=${itemID}`
         }*/
-if(eventWayData == 69) {
+        if(eventWayData == 69) {
             if(type == 'area') {
                 this.setState({
                     urlContent: url + `/newm/getFreeGifts?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`
@@ -4033,15 +4036,15 @@ if(eventWayData == 69) {
                 groupID: groupIdData
             })
         } else {
-        this.setState({
-            urlContent: urlMap[eventWayData],
-            eventWay: eventWayData,
-            qrCodeImage: "", // 打开一次清空上一次的img
-            qrItemID: itemIdData, // 当前活动itemID
-            isShowCopyUrl: true,
-            groupID: groupIdData,
-        });
-}
+            this.setState({
+                urlContent: urlMap[eventWayData],
+                eventWay: eventWayData,
+                qrCodeImage: "", // 打开一次清空上一次的img
+                qrItemID: itemIdData, // 当前活动itemID
+                isShowCopyUrl: true,
+                groupID: groupIdData,
+            });
+        }
         // 获取小程序列表
         this.getAppList().then((r) => { });
     };
