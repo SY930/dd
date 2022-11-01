@@ -13,6 +13,7 @@ import GiftSendOrUsedCount from '../../GiftInfo/GiftDetailSendorUsedTable';
 import GenerateBatchGifts from "../../components/GenerateBatchGifts";
 import ExportModal from "../../GiftInfo/ExportModal";
 import { axiosData } from '../../../../helpers/util';
+import { isZhouheiya } from '../../../../constants/WhiteList.jsx'
 
 const TabPane = Tabs.TabPane;
 
@@ -172,7 +173,7 @@ class UseDetails extends Component {
                   )
                 ] : []
             ).concat(
-              batchableGiftTypes.includes(String(giftDetailInfo.giftType)) && giftDetailInfo.action != 2 ?
+              batchableGiftTypes.includes(String(giftDetailInfo.giftType)) && giftDetailInfo.action != 2 && !isZhouheiya(giftDetailInfo.groupID) ?
                 [
                   (
                     <TabPane tab={'批量生成券码记录'} key={'generate_gifts'}>
