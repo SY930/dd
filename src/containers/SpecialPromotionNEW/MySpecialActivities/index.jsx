@@ -319,7 +319,6 @@ class MySpecialActivities extends React.Component {
             pushMessageMpID: "",
             groupID: "",
             isCopy: false,
-            pushMessageMpID: "",
             channelContent: "",
             launchChannelID: "",
             launchChannelIDWX: "",
@@ -880,6 +879,9 @@ class MySpecialActivities extends React.Component {
             _groupID: this.props.user.accountInfo.groupID,
         });
         this.queryWechatMpInfo();
+        if(isZhouheiya()) {
+            this.queryWechatMpInfoForH5();
+        }
         // 把groupID传给后台，后台执行自动终止
         this.props.updateExpiredActiveState({
             groupID: this.props.user.accountInfo.groupID,
@@ -1543,8 +1545,8 @@ class MySpecialActivities extends React.Component {
             const { mpInfoResDataList = [] } = data;
             this.setState({
                 allWeChatAccountList: mpInfoResDataList,
-                pushMessageMpID: mpInfoResDataList[0].mpID,
-                mpName: mpInfoResDataList[0].mpName,
+                pushMessageMpID: mpInfoResDataList[0] ? mpInfoResDataList[0].mpID : '',
+                mpName: mpInfoResDataList[0] ? mpInfoResDataList[0].mpName : '',
             });
         });
     };
@@ -2078,7 +2080,7 @@ class MySpecialActivities extends React.Component {
                     footer={null}
                     width={900}
                 >
-                    {this.renderCopyUrlModal()}
+                    {isShowCopyUrl && this.renderCopyUrlModal()}
                 </Modal>
                 {this.state.planModalVisible && (
                     <PlanModal
@@ -3948,7 +3950,7 @@ class MySpecialActivities extends React.Component {
         const { channelContent, launchChannelID, allWeChatAccountListForH5, allWeChatAccountList } = this.state;
         const options = record && record.eventWay == 69 ? allWeChatAccountListForH5 : allWeChatAccountList;
         const pushMessageMpID = options[0] ? options[0].mpID : undefined;
-
+        
         let mpID = mpId ? mpId : pushMessageMpID;
         let eventWayData, groupIdData, itemIdData;
         const testUrl = "https://dohko.m.hualala.com";
