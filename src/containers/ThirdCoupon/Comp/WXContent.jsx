@@ -102,7 +102,7 @@ class WXContent extends Component {
     }
 
     render() {
-        const { form, editData } = this.props;
+        const { form, editData, groupID } = this.props;
         const { getFieldDecorator } = form;
         const icon = (<span>小程序名称<Tooltip title="用户领取微信商家券后，同步在小程序个人中心展示。"><Icon type="question-circle-o" style={{ marginLeft: 5 }} /></Tooltip></span>)
         const iconAppAndMp = (<span>小程序/公众号<Tooltip title="用户领取微信商家券后，同步在小程序/公众号个人中心展示。"><Icon type="question-circle-o" style={{ marginLeft: 5 }} /></Tooltip></span>)

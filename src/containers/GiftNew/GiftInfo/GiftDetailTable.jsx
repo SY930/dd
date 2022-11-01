@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Tabs, Button, Icon, Modal, message } from 'antd';
 import _ from 'lodash';
 import { throttle } from 'lodash';
-import { axiosData, fetchData, isFilterShopType } from '../../../helpers/util';
+import { axiosData, fetchData, isFilterShopType, timeFormat } from '../../../helpers/util';
 import GiftCfg from '../../../constants/Gift';
 import Authority from '../../../components/common/Authority';
 import styles from './GiftInfo.less';

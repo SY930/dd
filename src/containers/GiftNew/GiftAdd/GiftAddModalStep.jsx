@@ -1375,6 +1375,13 @@ class GiftAddModalStep extends React.PureComponent {
             endSaving();
         });
     }
+
+    getGoodsState(v) {
+        this.setState({
+            ...v,
+        })
+    }
+
     // 判断选择的小程序或者公众号与微信支付商家券下账务主体是否绑定关系
     checkShopWechatData(params,callServer,groupName,cb) {
         const _that = this;
@@ -3412,7 +3419,9 @@ shopAreaSelectorChange = (value) => {
             giftImagePath: {
                 label: '礼品图样',
                 type: 'custom',
-                render: decorator => decorator({})(<GiftImagePath contentHeight='auto'/>),
+                render: decorator => decorator({
+                    initialValue: isZhouheiya(groupID) ? 'http://res.hualala.com/basicdoc/210d6edc-d01f-473b-b7ae-1f319f808350.png' : '',
+                })(<GiftImagePath contentHeight='auto' limitSize={1024000} />),
             },
             selectBrands: {
                 label: `${GroupSepcial.includes(groupID) && describeAry.includes(describe) ? '' : '所属品牌'}`,
