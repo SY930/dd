@@ -61,6 +61,8 @@ import {
     initShowCheckBox,
     clearCheckBoxData,
     renderRecommendGiftsDetail,
+    handleSubmitScoreConvertGifts,
+    handleSubmitConsumeGiveGifts
 } from "./SpecialPromotionDetailInfoHelp";
 import TicketBag from "../../BasicModules/TicketBag";
 import { axios } from "@hualala/platform-base";
@@ -4627,6 +4629,18 @@ class SpecialDetailInfo extends Component {
                 <div className={css}></div>
             </div>
         );
+    }
+
+    renderApproverSet = () => {
+        return (
+            <Approval type="special" onApprovalInfoChange={(val) => {
+                this.setState({
+                    approvalInfo: {
+                        ...val
+                    }
+                })
+            }} />
+        )
     }
 
     render() {

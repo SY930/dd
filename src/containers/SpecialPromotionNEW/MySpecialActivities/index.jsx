@@ -119,6 +119,7 @@ import Card from "../../../assets/card.png";
 import newPromotionCardPageConfig from '../../SaleActives/NewPromotionCardPages/common/newPromotionCardPageConfig';
 import { updateCurrentPromotionPageAC } from '../../SaleActives/NewPromotionCardPages/store/action';
 import { consumeGivingWhiteList } from "containers/GiftNew/components/whiteList.js";
+import { axios } from '@hualala/platform-base'
 
 //周黑鸭新增
 import { isZhouheiya, isGeneral } from "../../../constants/WhiteList";

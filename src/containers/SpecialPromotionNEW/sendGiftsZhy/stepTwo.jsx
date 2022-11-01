@@ -180,6 +180,7 @@ class Two extends React.Component {
                             </Button>
                         </Upload>
                     </FormItem>
+                    <div style={{ height: '20px' }}></div>
                     {this.renderApproverSet()}
                 </Form>
                 {

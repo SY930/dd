@@ -17,6 +17,8 @@ import { createMemberGroupNew } from '../sendGifts/stepThreeHelp'
 
 import { createMemberGroup } from '../sendGifts/stepThreeHelp'
 import { connect } from 'react-redux';
+//周黑鸭新增
+import { isZhouheiya, isGeneral } from "../../../constants/WhiteList";
 export default class NewPromotion extends React.Component {
     constructor(props) {
         super(props);
