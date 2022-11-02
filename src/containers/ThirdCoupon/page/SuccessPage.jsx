@@ -124,8 +124,8 @@ class SuccessPage extends Component {
                 <Form onSubmit={this.handleSubmit} layout="inline">
                     <FormItem
                         label="投放名称"
-                        labelCol={{ span: 6 }}
-                        wrapperCol={{ span: 18 }}
+                        labelCol={{ span: 7 }}
+                        wrapperCol={{ span: 17 }}
                     >
                         {getFieldDecorator('eventName', {
                         })(

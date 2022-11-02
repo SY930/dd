@@ -37,7 +37,7 @@ export default class ThirdCoupon extends Component {
         const { from } = this.getQueryVariable();
         this.handleTabChange(from)
         this.handleQuery(null, null, { eventWays: ['20001'] }); // 默认传成功页
-        this.initData()
+        this.getPromotionData()
     }
 
     componentWillUnmount() {
@@ -111,8 +111,8 @@ export default class ThirdCoupon extends Component {
     }
 
 
-    initData = () => {
-        getAlipayPromotionList().then((res) => {
+    getPromotionData = (enrollSsceneType = 'VOUCHER') => {
+        getAlipayPromotionList(enrollSsceneType).then((res) => {
             this.setState({
                 promotionList: res,
             })
@@ -148,6 +148,7 @@ export default class ThirdCoupon extends Component {
         this.setState({
             promotionModalVisible: true,
         })
+        this.getPromotionData()
         return null;
     }
 
@@ -244,6 +245,7 @@ export default class ThirdCoupon extends Component {
                         onCancel={this.handleClose}
                         promotionList={this.state.promotionList}
                         handleQuery={this.handleQuery}
+                        getPromotionData={this.getPromotionData}
                     />
                 }
             </div>

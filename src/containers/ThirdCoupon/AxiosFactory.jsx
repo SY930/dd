@@ -267,8 +267,9 @@ async function getAlipayCouponList() {
             groupID,
             pageNo: 1,
             pageSize: 999999,
-            channelID: 60,
+            // channelID: 60,
             batchStatus: '0,1',
+            platformType: 1,
         },
         method
     };
@@ -284,7 +285,7 @@ async function getAlipayCouponList() {
 }
 
 // 支付宝大促
-async function getAlipayPromotionList() {
+async function getAlipayPromotionList(enrollSceneType) {
     const method = 'AlipayRecruitPlanInfoService/recruitPlanListQuery.ajax';
     const { groupID } = getAccountInfo();
     const params = {
@@ -294,8 +295,9 @@ async function getAlipayPromotionList() {
             groupID,
             pageNum: 1,
             pageSize: 100,
+            enrollSceneType,
         },
-        method
+        method,
     };
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;
@@ -513,7 +515,40 @@ async function queryAliShopsAC(ipRoleId) {
     }
     message.error(msg);
     return [];
-    // return [{ 'shopId':"2021012600077000000015961164", 'shopName':"凯德MALL(西直门店)(暂停营业)", 'shopStatus':"01" }, { 'shopId':"20210000000015961164", 'shopName':"凯德MALL(西直门店)", 'shopStatus':"01" }]
+}
+
+// 获取城市列表
+async function queryCityCodeQueryAC() {
+    const method = 'AlipayRecruitPlanInfoService/citiesCodeQuery.ajax';
+    const { groupID } = getAccountInfo();
+    const params = { service, type, data: { groupID }, method };
+    const response = await axios.post(url + method, params);
+    const { code, data: { provinceInfos: obj } } = response;
+    if (code === '000') {
+        // 父及不可选，增加全国选项
+        const provinceInfos = (obj || []).map((item) => {
+            const child = item.cityInfos.map((element) => {
+                return { label: element.cityName, value: element.cityCode, key: element.cityCode }
+            })
+            return { label: item.provinceName, value: item.provinceCode, key: item.provinceCode, children: child }
+        })
+        provinceInfos.unshift({ label: '全国', key: 'ALL', value: 'ALL', children: [{ label: '全国', key: 'ALL', value: 'ALL' }] })
+        return provinceInfos;
+    }
+    return [];
+}
+// alipay/baseInfo/list 获取所有已授权的支付宝小程序，在商户中心展示
+async function queryAlipayListAC() {
+    const method = 'alipay/baseInfo/list.ajax';
+    const { groupID } = getAccountInfo();
+    const params = { service: 'HTTP_SERVICE_URL_ALIPAY_API', type, data: { groupID, pageNum: 1, pageSize: 10000000 }, method };
+    const response = await axios.post(url + method, params);
+    const { result: { code }, baseInfoList = [] } = response;
+    // console.log("🚀 ~ file: AxiosFactory.jsx ~ line 546 ~ queryAlipayList ~ response", response)
+    if (code === '000') {
+        return baseInfoList.map(item => ({ key: item.authAppID, label: item.appName, value: item.authAppID }));
+    }
+    return [];
 }
 
 export {
@@ -537,4 +572,6 @@ export {
     getDouyinShop,
     queryAliShopsAC,
     goUpdateM4AC,
+    queryCityCodeQueryAC,
+    queryAlipayListAC,
 }

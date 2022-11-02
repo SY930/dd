@@ -9,7 +9,7 @@ import BaseForm from 'components/common/BaseForm';
 import ShopSelector from 'components/ShopSelector';
 import styles from './index.less';
 import { formItems, formKeys, formItemLayout } from './Common';
-import { keys1, keys2, keys3, keys4, keys5, keys7,keys8,keys9,keys10,keys11,keys12,DF, TF } from './Common';
+import { keys1, keys2, keys3, keys4, keys5, keys7,keys8,keys9,keys10,keys11,keys12,DF, TF, acitveKeys } from './Common';
 import GiftInfo from '../../GiftAdd/GiftInfo';
 import ImageUpload from './ImageUpload';
 import EveryDay from './EveryDay';
@@ -42,14 +42,19 @@ export default class Editor extends Component {
      * 无奈只能 state 和 keys 混合判断
      */
     onChange = (key, value) => {
+        const { detail } = this.props;
+        const isEdit = !!detail; // 编辑
+        const isOld = isEdit && detail.limitStockForEvent == 1 ? true : false; // 是不是老的券包
         const { keys } = this;
         const [a, b, c] = [...keys];
         let [newA, newB, newC] = [a, b, c];
         if (key==='couponPackageType'){
             if(value === '1'){
                 newA = {...a, keys: keys1 };
-            } else {
+            } else if (value === '2' && isEdit && isOld) { // 编辑老的券包需要展示券包库存
                 newA = {...a, keys: keys2};
+            } else if (value === '2') {
+                newA = {...a, keys: acitveKeys};
             }
             this.keys = [newA, newB, newC];
             this.setState({ newFormKeys: [newA, newB, newC] });

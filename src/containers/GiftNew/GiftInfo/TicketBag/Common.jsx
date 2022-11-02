@@ -156,6 +156,9 @@ const keys1 = ['a', 'couponPackageType', 'c', 'sellTime', 'd', 'couponPackageNam
 const keys2 = ['a', 'couponPackageType', 'c', 'couponPackageName', 'couponPackageValue',
 'couponPackagePrice2', 'remainStock', 'e', 'couponPackageDesciption', 'couponPackageImage'];
 
+const acitveKeys =  ['a', 'couponPackageType', 'c', 'couponPackageName', 'couponPackageValue',
+'couponPackagePrice2', 'couponPackageDesciption', 'couponPackageImage']; // 创建新的活动、商城投放没有券包库存
+
 const formItems = {
     couponPackageType: {
         type: 'radioButton',
@@ -258,10 +261,10 @@ const formItems = {
 
     maxBuyCount: {
         type: 'text',
-        label: '可购买次数',
+        label: '可购买数量',
         defaultValue:'',
         props: {
-            placeholder: '请输入每人可购买次数，不填表示不限制',
+            placeholder: '请输入每人可购买数量，不填表示不限制',
         },
         rules: [{
             validator: (rule, value, callback) => {
@@ -670,5 +673,5 @@ export {
     formItems, imgURI, formKeys, href, formItemLayout,
     keys1, keys2, keys3, keys4, keys5,keys7,keys8,keys9,keys10,keys11,keys12, DF, TF, monthList, weekList, weekMap,
     qFormKeys, qFormItems, dFormKeys, dFormItems, pFormKeys, pFormItems, pFormKeys2,
-    dFormKeys2, dFormKeys3, refundItems, couponImage, stockItems,
+    dFormKeys2, dFormKeys3, refundItems, couponImage, stockItems, acitveKeys
 }
