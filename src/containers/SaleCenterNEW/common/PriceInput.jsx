@@ -40,7 +40,6 @@ export const handlerDiscountToParam = (number, divisor = 10) => {
 }
 
 export const renderDiscountModeDesc = (number) => {
-    console.log('number', number);
     let desc = '';
     if(number === '' || number == null){
         return ''
