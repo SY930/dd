@@ -244,8 +244,11 @@ class MainTable extends Component {
             return (<span>{idx}</span>);
         };
         const render3 = (v, o) => {
-            const { couponPackageID: id, remainStock = 0 } = o;
+            const { couponPackageID: id, remainStock = 0, type, limitStockForEvent } = o;
             const stock = (remainStock === -1) ? '不限制' : remainStock;
+            if (limitStockForEvent == 2 && type === '活动投放') {
+                return '不限制'
+            }
             return (
                 <p id={`${id},${remainStock}`} className={tr}>
                     <span>{stock}</span>
@@ -259,7 +262,7 @@ class MainTable extends Component {
             { title: '券包名称', dataIndex: 'couponPackageName', render: render1 },
             { width: 180, title: '券包ID', dataIndex: 'couponPackageID' },
             { width: 100, title: '券包类型', dataIndex: 'type' },
-            { width: 100, title: '库存', dataIndex: 'remainStock', render: render3 },
+            { width: 100, title: '库存', dataIndex: 'remainStock', render: render3, className: tc },
             { width: 160, title: '创建人/修改人', dataIndex: 'postBy', className: tc },
             { width: 260, title: '创建时间/修改时间', dataIndex: 'postTime', className: tc },
         ];
