@@ -291,7 +291,7 @@ class Detail extends Component {
                                 />
                             </TabPane>
                             <TabPane tab="赠送" key="3">
-                                <PresentForm ids={ids} num={remainStock} />
+                                <PresentForm ids={ids} num={remainStock} isOld={limitStockForEvent == 1} couponPackageType={couponPackageType}/>
                             </TabPane>
                             <TabPane tab="退款" key="4">
                                 <QueryForm type={3} onRefund={this.onOpenModal} onQuery={this.onQueryList3} />
