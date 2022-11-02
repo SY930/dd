@@ -1285,6 +1285,7 @@ class GiftAddModalStep extends React.PureComponent {
                 this.adjustParamsOfMallGift(params);
             }
 
+
             if(hasMallArr.includes(value) && params.applyScene != '0'){
                 if(!params.shopIDs){
                     message.warning('请选择适用商城')
@@ -2325,10 +2326,6 @@ shopAreaSelectorChange = (value) => {
         }
 
         const isZhy = isZhouheiya(groupID)
-        let newHasMallArr = hasMallArr
-        if(isZhy){
-            newHasMallArr.push('111')
-        }
 
         return (
             <FormItem
@@ -2341,7 +2338,7 @@ shopAreaSelectorChange = (value) => {
                 }}>
                 {
                     decorator({})(
-                        newHasMallArr.includes(value) ? 
+                        (isZhy ? [...hasMallArr, '111'] : hasMallArr).includes(value) ? 
                             <CategoryAndFoodSelectors
                                 scopeLst={scopeList}
                                 showEmptyTips={true}
@@ -4359,7 +4356,6 @@ shopAreaSelectorChange = (value) => {
             ]
             formItems = _.omit(formItems, omitList)
         }
-
 
         return (
             <div className={styles2.formContainer}>
