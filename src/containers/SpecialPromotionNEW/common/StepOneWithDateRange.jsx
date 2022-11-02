@@ -1322,7 +1322,6 @@ class StepOneWithDateRange extends React.Component {
                         })(
                                 <Input
                                     // disabled={this.props.isUpdate && this.props.isCopy === false}
-                                    disabled={true}
                                     placeholder='请输入编码名称'
                                     onChange={this.handleEventCodeChange}
                                 />
