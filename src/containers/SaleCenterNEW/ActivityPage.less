@@ -2220,14 +2220,19 @@
 
 .cardLevelTree {
     position: relative;
-
     .cardLevelTreeIcon {
         position: absolute;
         top: 8px;
         left: 480px;
         color: rgba(239, 72, 72, 0.81)
     }
-
+    .recommendGiftTwoStep{
+        :global{
+            .ant-select-dropdown{
+                top:34px!important
+            }
+        }
+    }
     .couponSwitch {
         :global {
             .ant-switch {
