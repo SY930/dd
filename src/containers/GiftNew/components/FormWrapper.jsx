@@ -40,6 +40,8 @@ class FormWrapper extends Component {
                     <Comp
                         type={type === 'detail' ? 'edit' : type}
                         ref={form => this.formRef = form}
+                        isCheckedAgreement={this.props.isCheckedAgreement}
+                        changeProtocol={this.props.changeProtocol}
                         gift={{
                             value,
                             name,
