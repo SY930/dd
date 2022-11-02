@@ -184,7 +184,7 @@ export default class TicketBagDecoration extends Component {
                             onChange={value => onChange({ key: ['couponImg'], value })}
                         />
                         <div className={style.uploaderTip}>
-                            <p>* 图片建议尺寸 750X544像素</p>
+                            <p>* 图片建议尺寸 {decorateType == 2 ? '580*240' : '750*544'}像素</p>
                             <p>* 不大于1000KB</p>
                             <p>* 支持png、jpg、jpeg、gif</p>
                         </div>
