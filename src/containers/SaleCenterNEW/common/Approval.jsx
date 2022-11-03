@@ -35,6 +35,7 @@ class Approval extends React.Component {
         let auditRemark;
 
         if (this.props.type == 'special') {
+            console.log(this.props.specialPromotion.toJS().$eventInfo, '$eventInfo');
             //营销
             activityCost = this.props.specialPromotion.getIn(["$eventInfo", "activityCost"]);
             estimatedSales = this.props.specialPromotion.getIn(["$eventInfo", "estimatedSales"]);
@@ -84,6 +85,7 @@ class Approval extends React.Component {
     }
 
     renderUserSetting() {
+        const { showTitle = true, disabled = false } = this.props;
         let activityCost = this.state.activityCost
         let estimatedSales = this.state.estimatedSales
         let activityRate
@@ -93,7 +95,7 @@ class Approval extends React.Component {
 
         return (
             <Row>
-                <h4 style={{ marginBottom: 10 }}>审批设置</h4>
+                {showTitle && <h4 style={{ marginBottom: 10 }}>审批设置</h4>}
                 <FormItem
                     label={'活动费用'}
                     className={styles.FormItemStyle}
@@ -119,6 +121,7 @@ class Approval extends React.Component {
                             this.props.onApprovalInfoChange(this.state.approvalInfo)
                         }}
                         modal="float"
+                        disabled={disabled}
                     />
                 </FormItem>
                 <FormItem
@@ -145,6 +148,7 @@ class Approval extends React.Component {
                             this.props.onApprovalInfoChange(this.state.approvalInfo)
                         }}
                         modal="float"
+                        disabled={disabled}
                     />
                 </FormItem>
                 <FormItem
@@ -169,7 +173,7 @@ class Approval extends React.Component {
                     required
                 >
 
-                    <RadioGroup value={this.state.headquartersCost} onChange={(e) => {
+                    <RadioGroup disabled={disabled} value={this.state.headquartersCost} onChange={(e) => {
                         this.setState({ headquartersCost: e.target.value });
                         this.state.approvalInfo.headquartersCost = e.target.value
                         this.props.onApprovalInfoChange(this.state.approvalInfo)
@@ -187,7 +191,7 @@ class Approval extends React.Component {
                     required
                 >
 
-                    <RadioGroup value={this.state.storeAttribute} onChange={(e) => {
+                    <RadioGroup disabled={disabled} value={this.state.storeAttribute} onChange={(e) => {
                         this.setState({ storeAttribute: e.target.value });
                         this.state.approvalInfo.storeAttribute = e.target.value
                         this.props.onApprovalInfoChange(this.state.approvalInfo)
@@ -206,7 +210,7 @@ class Approval extends React.Component {
                     help={this.state.auditRemark ? null : '请输入备注'}
                     required
                 >
-                    <Input type="textarea" value={this.state.auditRemark} placeholder="请输入备注信息" maxLength={200} onChange={(e) => {
+                    <Input type="textarea" disabled={disabled} value={this.state.auditRemark} placeholder="请输入备注信息" maxLength={200} onChange={(e) => {
                         this.setState({ auditRemark: e.target.value })
                         this.state.approvalInfo.auditRemark = e.target.value
                         this.props.onApprovalInfoChange(this.state.approvalInfo)

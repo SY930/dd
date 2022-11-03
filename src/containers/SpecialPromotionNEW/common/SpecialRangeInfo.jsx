@@ -1196,6 +1196,7 @@ class SpecialRangeInfo extends React.Component {
                                 placeholder="请选择投放城市"
                                 multiple={true}
                                 allowClear
+                                filterOption={(input, option) => option.props.children.toLowerCase().includes(input.toLowerCase())}
                             >
                                 {/* <Option value={''} key={''}>{this.props.intl.formatMessage(STRING_SPE.d2c89sj1s61092)}</Option> */}
                                 {

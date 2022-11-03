@@ -482,7 +482,9 @@ class SpecialDetailInfo extends Component {
             finish: isLast ? this.handleSubmit : undefined,
             next: !isLast ? this.handleSubmit : undefined,
         });
-        this.props.fetchGiftListInfo();
+        this.props.fetchGiftListInfo({
+            accountID: user.accountInfo.accountID
+        });
         if (type == 67) {
             const opts = {
                 _groupID: user.accountInfo.groupID,
