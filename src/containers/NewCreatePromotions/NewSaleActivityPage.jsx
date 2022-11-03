@@ -770,14 +770,17 @@ class NewCustomerPage extends Component {
 
         // 插件授权状态--营销盒子大礼包
         let { authPluginStatus } = checkAuthLicense(this.state.authLicenseData, 'HLL_CRM_Marketingbox')
-
+        console.log(authPluginStatus,'authPluginStatus============1')
         /**
          * 页面活动列表显示过滤
          */
         // auth-插件授权-列表显示过滤
         var { displayList, allMenu } = this.checkAuth(allMenus, ALL_PROMOTION_CATEGORIES)
+        console.log(displayList, allMenu,'displayList============2')
         // 管家活动-列表显示过滤
         var { displayList, allMenu } = this.filterMenuByGroup(displayList, allMenu)
+        console.log(displayList, allMenu,'displayList============3')
+        console.log(whiteList,'whiteList-------------4')
         const speController = groupID == '295896'
         //集团id：295896 
         // 开通桌边砍活动
