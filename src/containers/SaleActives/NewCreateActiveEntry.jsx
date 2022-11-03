@@ -97,7 +97,8 @@ class NewCreateActiveEntry extends Component {
             <div className={styles.createActiveTwo}>
                 <div className={styles.headers}>
                     <h1>
-                        {itemID ? (mode === "edit" ? "编辑" : mode === "view" ? "查看" : "复制") : "创建"}
+                        {mode && (itemID ? (mode === "edit" ? "编辑" : mode === "view" ? "查看" : "复制") : "创建")}
+                        {!mode && (itemID ? (isView === "false" ? "编辑" : "查看") : "创建")}
                         {`${currentInfo.title}`}
                     </h1>
                     <p>
