@@ -4,6 +4,7 @@ import { uniq } from "lodash";
 import BaseForm from "components/common/BaseForm";
 import { approvalFormItems, formItemLayout, approvalFormKeys } from "../common";
 import Approval from '../../../../containers/SaleCenterNEW/common/Approval';
+import { isGeneral } from "../../../../constants/WhiteList";
 
 class BasicInfoForm extends Component {
     constructor(props) {
@@ -22,14 +23,16 @@ class BasicInfoForm extends Component {
 
     resetFormItems = () => {
         const { approval } = approvalFormItems;
-        const { setRuleForm } = this.props;
+        const { setRuleForm, formData, mode } = this.props;
+        const { auditStatus } = formData;
+        const isDisabled = mode === 'view' || (mode === 'edit' && !isGeneral() && (auditStatus == 2 || auditStatus == 4));
         
         return {
             ...approvalFormItems,
             approval: {
                 ...approval,
                 render: (d) => (
-                    <Approval type="special" showTitle={false} onApprovalInfoChange={(val) => {
+                    <Approval type="special" disabled={isDisabled} showTitle={false} onApprovalInfoChange={(val) => {
                         setRuleForm({
                             approvalInfo: {
                                 ...val

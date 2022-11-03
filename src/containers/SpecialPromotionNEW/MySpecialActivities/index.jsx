@@ -1035,7 +1035,35 @@ class MySpecialActivities extends React.Component {
         }
     }
     //** 第三版 重构 抽抽乐活动 点击事件 */
-    onV3Click = (itemID, view, key, isActive) => {
+    onV3Click = (itemID, view, key, isActive, mode) => {
+        if(key == '89') {
+            const user = this.props.user;
+            this.props.fetchSpecialDetail({
+                data: {
+                    itemID,
+                    groupID: user.accountInfo.groupID,
+                },
+                success: (res) => {
+                    this.props.saleCenterSetSpecialBasicInfo(
+                        specialPromotionBasicDataAdapter(res, false)
+                    );
+                    setTimeout(() => {
+                        jumpPage({
+                            menuID: SALE_ACTIVE_NEW_PAGE,
+                            typeKey: key,
+                            itemID,
+                            isView: view,
+                            isActive,
+                            mode
+                        });
+                    }, 100);
+                    return closePage(SALE_ACTIVE_NEW_PAGE);
+                },
+                fail: this.failFn,
+            });
+            return;
+        }
+
         if (key == "85" || key == "23") {
             setTimeout(() => {
                 jumpPage({
@@ -1044,6 +1072,7 @@ class MySpecialActivities extends React.Component {
                     itemID,
                     isView: view,
                     isActive,
+                    mode
                 });
             }, 100);
             return closePage(SALE_ACTIVE_NEW_PAGE);
@@ -3445,13 +3474,27 @@ class MySpecialActivities extends React.Component {
                                             return this.handleNewEditActive(record, 'edit');
                                         }
                                         this.permissionVerify(record.itemID, () => {
+                                            if (record.eventWay === 89) {
+                                                //积分换礼
+                                                this.handleEditActive(record)(() =>
+                                                    this.onV3Click(
+                                                        record.itemID,
+                                                        false,
+                                                        record.eventWay,
+                                                        record.isActive,
+                                                        'edit'
+                                                    )
+                                                );
+                                                return;
+                                            }
+
                                             this.handleEditActive(record)(() => {
                                                 this.props.toggleIsUpdate(true)
                                                 // 不是集团经理角色并且是周黑鸭账号（并且审批状态是审批通过跟无需审批的）只能修改店铺
                                                 if(!isGeneral(this.props.user.accountInfo.roleType) && isZhouheiya(this.props.user.accountInfo.groupID) && (record.auditStatus == 2 || record.auditStatus == 4)) {
-                                                    //目前只针对周黑鸭的三个营销活动做此逻辑（H5领券、积分换礼、消费送礼）
-                                                    if([69, 89, 88].includes(record.eventWay)) {
-                                                        this.setState({ onlyModifyShop: true });
+                                                    //目前只针对周黑鸭的三个营销活动做此逻辑（H5领券、消费送礼）
+                                                    if([69, 88].includes(record.eventWay)) {
+                                                        this.setState({ onlyModifyShop: true });好的
                                                     }
                                                 }
                                                 this.handleUpdateOpe(text, record, index);

@@ -7,11 +7,12 @@ import _ from "lodash";
 import BasicInfoForm from "./components/BasicInfoForm";
 import UsageRuleForm from "./components/UsageRuleForm";
 import ApprovalForm from "./components/ApprovalForm";
-import { queryActiveList, putEvent, getEvent, postEvent } from "./AxiosFactory";
+import { putEvent, getEvent, postEvent } from "./AxiosFactory";
 import styles from "./styles.less";
 import { asyncParseForm } from "../../../helpers/util";
-import { getItervalsErrorStatus } from "../ManyFace/Common";
 import { isZhouheiya, isGeneral } from "../../../constants/WhiteList";
+import { saleCenterSetSpecialBasicInfoAC } from "../../../redux/actions/saleCenterNEW/specialPromotion.action";
+import { specialPromotionBasicDataAdapter } from "../../../redux/actions/saleCenterNEW/types";
 
 class NewScoreConvertGift extends Component {
     constructor() {
@@ -28,10 +29,14 @@ class NewScoreConvertGift extends Component {
             orgs: [],
             goodsData: [],
             couponData: [],
-            approvalInfo: {}
+            approvalInfo: {},
+            cardLevelInfo: {}
         };
     }
     componentDidMount() {
+        // this.props.saleCenterSetSpecialBasicInfo(
+        //     specialPromotionBasicDataAdapter({ data: {}, gifts: [] }, false)
+        // );
         this.getEventDetail(); //获取活动详情
         this.props.getSubmitFn(this.handleSubmit);
     }
@@ -41,6 +46,7 @@ class NewScoreConvertGift extends Component {
         if (itemID) {
             getEvent({ itemID }).then((res) => {
                 const formData = this.transformFormData(res);
+                console.log(formData, 'formData');
                 this.setState({
                     formData,
                 });
@@ -50,7 +56,8 @@ class NewScoreConvertGift extends Component {
 
     //把接口返回的数据转成表单需要的数据
     transformFormData = (res) => {
-        const { data = {}, timeList = [], gifts = [] } = res;
+        console.log(res, 'res');
+        const { data = {}, gifts = [] } = res;
         let formData = {
             ...data,
             eventRange:
@@ -60,33 +67,6 @@ class NewScoreConvertGift extends Component {
                           moment(data.eventEndDate, "YYYYMMDD"),
                       ]
                     : [moment(), moment().add(6, "days")],
-            gifts: gifts.map((item) => {
-                return {
-                    ...item,
-                    giftIDNumber: item.giftID,
-                    countType: item.effectType == 3 ? "1" : "0",
-                    rangeDate:
-                        item.effectType == 2 &&
-                        item.effectTime &&
-                        item.validUntilDate
-                            ? [
-                                  moment(item.effectTime, "YYYYMMDDHHmmss"),
-                                  moment(item.validUntilDate, "YYYYMMDDHHmmss"),
-                              ]
-                            : [],
-                };
-            }),
-            timeList: timeList.length
-                ? timeList.map((x) => {
-                      const { startTime, endTime } = x;
-                      if (startTime && endTime) {
-                          const st = moment(startTime, "HH:mm");
-                          const et = moment(endTime, "HH:mm");
-                          return { startTime: st, endTime: et };
-                      }
-                      return { id: "0" };
-                  })
-                : [{ id: "0" }], //时间段增加默认值
             partInTimes1:
                 data.countCycleDays != "0" ? data.partInTimes : undefined,
             joinType:
@@ -96,69 +76,49 @@ class NewScoreConvertGift extends Component {
                     ? "1"
                     : "0",
         };
-        if (data.cardLevelRangeType && data.cardLevelRangeType == 2) {
-            //会员范围为卡类别
-            formData.cardTypeIDList = data.cardLevelIDList || [];
-        } else if (data.cardLevelRangeType && data.cardLevelRangeType == 5) {
-            //会员范围为卡等级
-            formData.cardLevelIDList = data.cardLevelIDList || [];
-        } else {
-            formData.cardLevelIDList = [];
-        }
-        //选择周期
-        let cycleType = "";
-        if (data.validCycle) {
-            // 根据["w1", "w3", "w5"]获取第一个字符
-            [cycleType] = data.validCycle[0];
-        }
-        //高级日期设置 true/false
-        let advMore = false;
-        if (
-            timeList.length ||
-            cycleType ||
-            (data.excludedDate && data.excludedDate.length)
-        ) {
-            advMore = true;
-        }
-        //这有BaseForm的坑，必须先设置advMore， 后设置cycleType
-        formData.advMore = advMore;
-        formData.validCycle = data.validCycle;
-        formData.cycleType = cycleType;
-        let couponType = "0";
-        if (gifts && gifts.length) {
-            let { presentType } = gifts[0];
-            presentType == 7 ? (couponType = "1") : (couponType = "0"); //presentType == 7代表三方微信券
-        }
-        formData.couponType = couponType;
-        formData.giftCount =
-            couponType == "1" && gifts.length ? gifts[0].giftCount : "";
-        if (couponType == 1) {
+
+        //回显
+        const orgsList = data.orgs || [];
+
+        this.setState({
+            //会员范围
+            cardLevelInfo: {
+                cardLevelRangeType: data.cardLevelRangeType,
+                cardLevelIDList: data.cardLevelIDList,
+            },
+            //门店
+            shopAreaData: {
+                list: orgsList.map(item => item.shopID),
+                type: orgsList[0] && orgsList[0].shopType == '2' ? 'area' : 'shop'
+            },
+            orgs: orgsList,
+
+        })
+        //兑换类型
+        if(gifts[0].presentType == 1) {
+            formData.exchangeType = '1';
             this.setState({
-                slectedWxCouponList: gifts,
-            });
-        }
-        //强制给礼品表单塞数据，否则回显不了
-        if (this.state.ruleForm) {
-            this.state.ruleForm.setFieldsValue({ gifts: formData.gifts });
+                couponData: gifts.map(item => ({
+                    ...item,
+                    effectTime: item.effectTime.slice(0,8),
+                    validUntilDate: item.validUntilDate.slice(0,8)
+                }))
+            })
+        } else {
+            formData.exchangeType = '0';
+            this.setState({
+                goodsData: gifts.map(item => ({
+                    ...item,
+                    goodsName: item.giftName,
+                    goodsID: item.giftID,
+                    brandID: item.giftBrandID,
+                    fullName: item.categoryFullName,
+                    unit: item.giftUnitName,
+                    brandName: item.giftBrandName
+                }))
+            })
         }
         return formData;
-    };
-
-    //时间段格式化
-    formatTimeList = (list) => {
-        if (!list) {
-            return [];
-        }
-        const times = [];
-        list.forEach((x) => {
-            const { startTime, endTime } = x;
-            if (startTime && endTime) {
-                const st = moment(startTime).format("HHmm");
-                const et = moment(endTime).format("HHmm");
-                times.push({ startTime: st, endTime: et });
-            }
-        });
-        return times;
     };
 
     //表单数据处理成接口需要的数据
@@ -175,6 +135,7 @@ class NewScoreConvertGift extends Component {
                 values.countCycleDays && values.countCycleDays != 0
                     ? values.partInTimes1
                     : values.partInTimes,
+            cardLevelRangeType: values.cardLevelRangeType || '2'
         };
         event.eventStartDate = eventRange.length
             ? eventRange[0].format("YYYYMMDD")
@@ -198,13 +159,12 @@ class NewScoreConvertGift extends Component {
             basicForm,
             ruleForm,
             approvalForm,
-            slectedWxCouponList = [],
             shopAreaData,
             orgs,
             goodsData,
             couponData,
             approvalInfo = {},
-            formData
+            cardLevelInfo = {}
         } = this.state;
         const { mode } = this.props;
         const forms = [basicForm, ruleForm, approvalForm];
@@ -214,7 +174,8 @@ class NewScoreConvertGift extends Component {
             let params = {
                 ...values,
                 orgs,
-                ...approvalInfo
+                ...approvalInfo,
+                ...cardLevelInfo
             }
             const { exchangeType } = values;
             //适用店铺校验
@@ -271,13 +232,11 @@ class NewScoreConvertGift extends Component {
             
             console.log('校验通过 =>', {
                 ...params,
-                ...params.memberRange,
                 gifts: giftList
             });
-
+            // return
             const payload = this.checkAndFormatParams({
                 ...params,
-                ...params.memberRange,
                 gifts: giftList
             });
             this.onSubmit(payload);
@@ -285,6 +244,7 @@ class NewScoreConvertGift extends Component {
     };
 
     onSubmit = (payload) => {
+        const menuID = this.props.user.menuList.find(tab => tab.entryCode === '1000076003').menuID;
         const { itemID, accountInfo } = this.props;
         const { event, gifts } = payload;
         let allData = {
@@ -299,27 +259,25 @@ class NewScoreConvertGift extends Component {
             postEvent(allData).then((res) => {
                 if (res) {
                     closePage();
-                    jumpPage({ pageID: "1000076003" });
+                    // jumpPage({ pageID: "1000076003" });
+                    jumpPage({ menuID, from: 'create' })
                 }
             });
             return;
         }
         putEvent(allData).then((res) => {
             if (res.code === "000") {
-                // closePage();
+                closePage();
                 // setTimeout(() => {
                 //     jumpPage({ pageID: "1000076003" });
                 // });
-                const menuID = this.props.user.menuList.find(tab => tab.entryCode === '1000076003').menuID;
-                closePage()
-                console.log(menuID, 'menuID');
                 jumpPage({ menuID, from: 'create' })
             }
         });
     };
 
     render() {
-        const { basicForm, ruleForm, approvalForm, formData, slectedWxCouponList, shopAreaData, goodsData, couponData } =
+        const { basicForm, ruleForm, approvalForm, formData, shopAreaData, goodsData, couponData, cardLevelInfo } =
             this.state;
         const { accountInfo, user, loading, mode } = this.props;
         const itemProps = {
@@ -328,9 +286,9 @@ class NewScoreConvertGift extends Component {
         };
         return (
             <div className={styles.formContainer}>
-                {mode == "view" ? (
+                {/* {mode == "view" ? (
                     <div className={styles.stepOneDisabled}></div>
-                ) : null}
+                ) : null} */}
                 <Spin spinning={loading}>
                     <div className={styles.logoGroupHeader}>基本信息</div>
                     <BasicInfoForm
@@ -348,6 +306,7 @@ class NewScoreConvertGift extends Component {
                         shopAreaData={shopAreaData}
                         goodsData={goodsData}
                         couponData={couponData}
+                        cardLevelInfo={cardLevelInfo}
                         setRuleForm={(data) => {
                             console.log(data, '设置ruleForm');
                             this.setState(data)
@@ -388,7 +347,11 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return {};
+    return {
+        saleCenterSetSpecialBasicInfo: (opts) => {
+            dispatch(saleCenterSetSpecialBasicInfoAC(opts));
+        },
+    };
 }
 
 export default connect(

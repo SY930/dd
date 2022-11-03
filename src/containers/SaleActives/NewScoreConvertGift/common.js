@@ -32,6 +32,7 @@ export const baseFormItems = {
                 pattern: /^[A-Za-z0-9]{1,50}$/,
             },
         ],
+        disabled: true
     },
     smsGate: {
         type: "combo",
@@ -63,123 +64,133 @@ export const baseFormItems = {
     },
 };
 
-export const ruleFormItem = {
-    joinType: {
-        type: "radio",
-        label: "参与次数",
-        options: [
-            { label: "不限次数", value: "0" },
-            { label: "限制次数", value: "1" },
-            { label: "限制参与次数的周期", value: "2" },
-        ],
-        defaultValue: "0",
-    },
-    partInTimes: {
-        type: "custom",
-        label: " ",
-        wrapperCol: { span: 8 },
-        labelCol: { span: 5 },
-        rules: [
-            "required",
-            {
-                pattern: /^([1-9]\d{0,})$/,
-                message: "请输入正整数",
+export const ruleFormItem = (disabled) => {
+    return {
+        joinType: {
+            type: "radio",
+            label: "参与次数",
+            options: [
+                { label: "不限次数", value: "0" },
+                { label: "限制次数", value: "1" },
+                { label: "限制参与次数的周期", value: "2" },
+            ],
+            defaultValue: "0",
+            disabled
+        },
+        partInTimes: {
+            type: "custom",
+            label: " ",
+            wrapperCol: { span: 8 },
+            labelCol: { span: 5 },
+            rules: [
+                "required",
+                {
+                    pattern: /^([1-9]\d{0,})$/,
+                    message: "请输入正整数",
+                },
+            ],
+            render: (d, form) => {
+                return form.getFieldValue("joinType") == 1
+                    ? d()(
+                          <Input
+                              disabled={disabled}
+                              placeholder="请输入次数"
+                              addonBefore="可参与"
+                              addonAfter="次"
+                          />
+                      )
+                    : null;
             },
-        ],
-        render: (d, form) => {
-            return form.getFieldValue("joinType") == 1
-                ? d()(
-                      <Input
-                          placeholder="请输入次数"
-                          addonBefore="可参与"
-                          addonAfter="次"
-                      />
-                  )
-                : null;
         },
-    },
-    countCycleDays: {
-        type: "custom",
-        label: " ",
-        wrapperCol: { span: 15 },
-        labelCol: { span: 5 },
-        render: (d, form) => {
-            return form.getFieldValue("joinType") == 2 ? (
-                <div style={{ display: "flex", width: 400 }}>
-                    <Form.Item style={{ padding: 0 }}>
-                        {d({
-                            key: "countCycleDays",
-                            rules: [
-                                "required",
-                                {
-                                    pattern: /^([1-9]\d{0,})$/,
-                                    message: "请输入正整数",
-                                },
-                            ],
-                        })(
-                            <Input
-                                placeholder="请输入天数"
-                                addonBefore="同一用户"
-                                addonAfter="天，可参与"
-                            />
-                        )}
-                    </Form.Item>
-                    <Form.Item style={{ padding: 0 }}>
-                        {d({
-                            key: "partInTimes1",
-                            rules: [
-                                "required",
-                                {
-                                    pattern: /^([1-9]\d{0,})$/,
-                                    message: "请输入正整数",
-                                },
-                            ],
-                        })(<Input placeholder="请输入次数" addonAfter="次" />)}
-                    </Form.Item>
-                </div>
-            ) : null;
+        countCycleDays: {
+            type: "custom",
+            label: " ",
+            wrapperCol: { span: 15 },
+            labelCol: { span: 5 },
+            render: (d, form) => {
+                return form.getFieldValue("joinType") == 2 ? (
+                    <div style={{ display: "flex", width: 400 }}>
+                        <Form.Item style={{ padding: 0 }}>
+                            {d({
+                                key: "countCycleDays",
+                                rules: [
+                                    "required",
+                                    {
+                                        pattern: /^([1-9]\d{0,})$/,
+                                        message: "请输入正整数",
+                                    },
+                                ],
+                            })(
+                                <Input
+                                    disabled={disabled}
+                                    placeholder="请输入天数"
+                                    addonBefore="同一用户"
+                                    addonAfter="天，可参与"
+                                />
+                            )}
+                        </Form.Item>
+                        <Form.Item style={{ padding: 0 }}>
+                            {d({
+                                key: "partInTimes1",
+                                rules: [
+                                    "required",
+                                    {
+                                        pattern: /^([1-9]\d{0,})$/,
+                                        message: "请输入正整数",
+                                    },
+                                ],
+                            })(<Input disabled={disabled} placeholder="请输入次数" addonAfter="次" />)}
+                        </Form.Item>
+                    </div>
+                ) : null;
+            },
         },
-    },
-    memberRange: {
-        type: "custom",
-        wrapperCol: { span: 18 },
-        labelCol: { span: 2 },
-        label: " ",
-        render: (d) => {},
-        defaultValue: "",
-    },
-    orgs: {
-        type: "custom",
-        wrapperCol: { span: 18 },
-        labelCol: { span: 2 },
-        label: " ",
-        render: (d) => {},
-        defaultValue: [],
-    },
-    exchangeType: {
-        type: "radio",
-        label: "兑换类型",
-        options: [
-            { label: "商品", value: "0" },
-            { label: "优惠券", value: "1" },
-        ],
-        defaultValue: "0",
-    },
-    goods: {
-        type: "custom",
-        label: " ",
-        wrapperCol: { span: 21 },
-        labelCol: { span: 3 },
-        render: () => {},
-    },
-    coupon: {
-        type: "custom",
-        label: " ",
-        wrapperCol: { span: 21 },
-        labelCol: { span: 3 },
-        render: () => {},
-    },
-};
+        memberRange: {
+            type: "custom",
+            wrapperCol: { span: 18 },
+            labelCol: { span: 2 },
+            label: " ",
+            render: (d) => {},
+            defaultValue: "",
+            disabled
+        },
+        orgs: {
+            type: "custom",
+            wrapperCol: { span: 18 },
+            labelCol: { span: 2 },
+            label: " ",
+            render: (d) => {},
+            defaultValue: [],
+            disabled
+        },
+        exchangeType: {
+            type: "radio",
+            label: "兑换类型",
+            options: [
+                { label: "商品", value: "0" },
+                { label: "优惠券", value: "1" },
+            ],
+            defaultValue: "0",
+            disabled
+        },
+        goods: {
+            type: "custom",
+            label: " ",
+            wrapperCol: { span: 21 },
+            labelCol: { span: 3 },
+            render: () => {},
+            disabled
+        },
+        coupon: {
+            type: "custom",
+            label: " ",
+            wrapperCol: { span: 21 },
+            labelCol: { span: 3 },
+            render: () => {},
+            disabled
+        },
+    };
+}
 
 export const approvalFormItems = {
     approval: {

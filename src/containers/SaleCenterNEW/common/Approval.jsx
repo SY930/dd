@@ -35,6 +35,7 @@ class Approval extends React.Component {
         let auditRemark;
 
         if (this.props.type == 'special') {
+            console.log(this.props.specialPromotion.toJS().$eventInfo, '$eventInfo');
             //营销
             activityCost = this.props.specialPromotion.getIn(["$eventInfo", "activityCost"]);
             estimatedSales = this.props.specialPromotion.getIn(["$eventInfo", "estimatedSales"]);

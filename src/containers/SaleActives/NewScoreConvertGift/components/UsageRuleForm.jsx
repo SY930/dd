@@ -65,34 +65,46 @@ class UsageRuleForm extends Component {
     }
 
     resetFormItems = () => {
-        const { gifts, validCycle, eventRange, memberRange, orgs, goods, coupon } = ruleFormItem;
-        const { accountInfo, ruleForm = {}, formData, basicForm, setRuleForm, shopAreaData, mode, groupID, goodsData = [], couponData = [] } = this.props;
+        const { ruleForm = {}, formData, setRuleForm, shopAreaData, mode, groupID, goodsData = [], couponData = [], cardLevelInfo = {} } = this.props;
+        const { auditStatus } = formData;
+        const isDisabled = mode === 'view' || (mode === 'edit' && !isGeneral() && (auditStatus == 2 || auditStatus == 4));
+
+        let _ruleFormItem = ruleFormItem(false);
+        //查看、编辑禁用
+        if(isDisabled) {
+            _ruleFormItem = ruleFormItem(true);
+        }
+
+        const { memberRange, orgs, goods, coupon } = _ruleFormItem;
+
         let cycleType = "";
         if (ruleForm) {
             const { getFieldValue } = ruleForm;
             const { cycleType: t } = formData || {};
             cycleType = getFieldValue("cycleType") || t;
         }
-        const renderValidCycle = (d) => d()(<EveryDay type={cycleType} />);
-        const userCount = formData.userCount || 0; 
-
-        const { auditStatus } = formData;
-        const editIsDisabled = (mode === 'edit' && !isGeneral() && (auditStatus == 2 || auditStatus == 4)) || mode === 'view';
 
         return {
-            ...ruleFormItem,
+            ..._ruleFormItem,
             memberRange: {
                 ...memberRange,
                 render: (d, form) =>
-                    d()(
+                    // d()
+                    (
                         <CardLevel
                             onChange={(obj) => {
                                 //d()此方法不执行
-                                this.setState(obj);
+                                // this.setState(obj);
+                                setRuleForm({
+                                    cardLevelInfo: obj
+                                })
                             }}
+                            cardLevelRangeType={cardLevelInfo.cardLevelRangeType}
+                            cardLevelIDList={cardLevelInfo.cardLevelIDList}
                             catOrCard={'card'}
                             type={89}
                             form={form}
+                            disabled={isDisabled}
                         />
                     ),
             },
@@ -116,7 +128,7 @@ class UsageRuleForm extends Component {
                         formatRes={(params) => {
                             return params;
                         }}
-                        disabled={editIsDisabled}
+                        disabled={mode == 'view'}
                     />
                 )
             },
@@ -125,7 +137,7 @@ class UsageRuleForm extends Component {
                 render: (d, form) => {
                     if (form.getFieldValue("exchangeType") == 0) {
                             return (
-                                <Goods disabled={editIsDisabled} groupID={groupID} value={goodsData} onChange={(data) => {
+                                <Goods disabled={isDisabled} groupID={groupID} value={goodsData} onChange={(data) => {
                                     console.log(data, 'goods');
                                     setRuleForm({
                                         goodsData: data
@@ -140,7 +152,7 @@ class UsageRuleForm extends Component {
                 render: (d, form) => {
                     if (form.getFieldValue("exchangeType") == 1) {
                             return (
-                                <Coupon disabled={editIsDisabled} groupID={groupID} value={couponData} onChange={(data) => {
+                                <Coupon disabled={isDisabled} groupID={groupID} value={couponData} onChange={(data) => {
                                     console.log(data, 'coupon');
                                     setRuleForm({
                                         couponData: data

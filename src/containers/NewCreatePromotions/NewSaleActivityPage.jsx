@@ -638,8 +638,17 @@ class NewCustomerPage extends Component {
     //** 第三版 重构 抽抽乐活动 点击事件 */
     onV3Click = (key) => {
         if (key) this.setState({ curKey: key })
+        if (['89'].includes(key)) { // 打开新页面
+            this.props.saleCenterSetSpecialBasicInfo(
+                specialPromotionBasicDataAdapter({ data: {}, gifts: [] }, false)
+            );
+            setTimeout(() => {
+                jumpPage({ menuID: SALE_ACTIVE_NEW_PAGE, typeKey: key, mode: 'add' })
+            }, 100);
+            return closePage(SALE_ACTIVE_NEW_PAGE)
+        }
         const currentPromotion = newPromotionCardPageConfig.find(item => item.key == key);
-        if (['85', '23', '89'].includes(key)) { // 打开新页面
+        if (['85', '23'].includes(key)) { // 打开新页面
             setTimeout(() => {
                 jumpPage({ menuID: SALE_ACTIVE_NEW_PAGE, typeKey: key, mode: 'add' })
             }, 100);
@@ -948,6 +957,9 @@ function mapDispatchToProps(dispatch) {
             return dispatch(fetchSpecialDetailAC(opts))
         },
         updateCurrentPromotionPage: opts => dispatch(updateCurrentPromotionPageAC(opts)),
+        saleCenterSetSpecialBasicInfo: (opts) => {
+            dispatch(saleCenterSetSpecialBasicInfoAC(opts));
+        },
     }
 }
 

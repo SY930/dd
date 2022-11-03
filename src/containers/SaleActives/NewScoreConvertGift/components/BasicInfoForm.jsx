@@ -4,6 +4,7 @@ import { uniq } from "lodash";
 import BaseForm from "components/common/BaseForm";
 import { baseFormItems, formItemLayout, baseFormKeys } from "../common";
 import DateRange from "../../../PromotionV3/Camp/DateRange";
+import { isGeneral } from "../../../../constants/WhiteList";
 
 class BasicInfoForm extends Component {
     constructor(props) {
@@ -21,11 +22,25 @@ class BasicInfoForm extends Component {
     onChangeBasicForm = (key, value) => {};
 
     resetFormItems = () => {
-        const { eventRange } = baseFormItems;
+        const { formData, mode } = this.props;
+        const { auditStatus } = formData;
+        const isDisabled = mode === 'view' || (mode === 'edit' && !isGeneral() && (auditStatus == 2 || auditStatus == 4));
+
+        let _baseFormItems = { ...baseFormItems };
+        //查看、编辑禁用
+        Object.keys(_baseFormItems).forEach(key => {
+            if(key != 'eventCode') {
+                _baseFormItems[key].disabled = false;
+                if(isDisabled) {
+                    _baseFormItems[key].disabled = true;
+                }
+            }
+        })
+        const { eventRange } = _baseFormItems;
         let { } = this.state;
         
         return {
-            ...baseFormItems,
+            ..._baseFormItems,
             eventRange: {
                 ...eventRange,
                 render: (d) => d({})(<DateRange type={"85"} />),

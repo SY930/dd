@@ -30,7 +30,7 @@ export function isZhouheiya(groupID = getAccountInfo().groupID) {
 // 是否是集团经理角色
 export function isGeneral(roleType = getAccountInfo().roleType) {
     if (!roleType) return false;
-    return !roleType.split(',').includes('general');
+    return roleType.split(',').includes('general');
 }
 
 //检查商品组件是否为空
