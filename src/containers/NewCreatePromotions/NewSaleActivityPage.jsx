@@ -474,6 +474,9 @@ class NewCustomerPage extends Component {
             return message.success(SALE_LABEL.k6316gwc);//活动尚未开放
         }
         if (isSpecial) {
+            // 调用重置特色营销数据和重置占用微信ID数据
+            this.props.saleCenterResetSpecailDetailInfo();
+
             const specialIndex = this.props.saleCenter.get('characteristicCategories').toJS().findIndex(promotion => promotion.key === key);
             this.handleSpecialPromotionCreate(specialIndex, promotionEntity, ifskip)
         } else {
@@ -639,9 +642,8 @@ class NewCustomerPage extends Component {
     onV3Click = (key) => {
         if (key) this.setState({ curKey: key })
         if (['89'].includes(key)) { // 打开新页面
-            this.props.saleCenterSetSpecialBasicInfo(
-                specialPromotionBasicDataAdapter({ data: {}, gifts: [] }, false)
-            );
+            // 调用重置特色营销数据和重置占用微信ID数据
+            this.props.saleCenterResetSpecailDetailInfo();
             setTimeout(() => {
                 jumpPage({ menuID: SALE_ACTIVE_NEW_PAGE, typeKey: key, mode: 'add' })
             }, 100);

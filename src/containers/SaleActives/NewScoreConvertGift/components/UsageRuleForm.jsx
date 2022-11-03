@@ -39,7 +39,6 @@ class UsageRuleForm extends Component {
 
     handleShopAreaChange = (value) => {
         const { setRuleForm } = this.props;
-        console.log(value);
         const { areaList } = value.otherRes || {};
         let orgs = [];
         if(value.radioValue == 'shop') {
@@ -61,7 +60,7 @@ class UsageRuleForm extends Component {
             },
             orgs
         })
-        console.log(orgs, 'orgs');
+        // console.log(orgs, 'orgs');
     }
 
     resetFormItems = () => {
@@ -138,7 +137,7 @@ class UsageRuleForm extends Component {
                     if (form.getFieldValue("exchangeType") == 0) {
                             return (
                                 <Goods disabled={isDisabled} groupID={groupID} value={goodsData} onChange={(data) => {
-                                    console.log(data, 'goods');
+                                    // console.log(data, 'goods');
                                     setRuleForm({
                                         goodsData: data
                                     })
@@ -153,7 +152,7 @@ class UsageRuleForm extends Component {
                     if (form.getFieldValue("exchangeType") == 1) {
                             return (
                                 <Coupon disabled={isDisabled} groupID={groupID} value={couponData} onChange={(data) => {
-                                    console.log(data, 'coupon');
+                                    // console.log(data, 'coupon');
                                     setRuleForm({
                                         couponData: data
                                     })

@@ -11,8 +11,6 @@ import { putEvent, getEvent, postEvent } from "./AxiosFactory";
 import styles from "./styles.less";
 import { asyncParseForm } from "../../../helpers/util";
 import { isZhouheiya, isGeneral } from "../../../constants/WhiteList";
-import { saleCenterSetSpecialBasicInfoAC } from "../../../redux/actions/saleCenterNEW/specialPromotion.action";
-import { specialPromotionBasicDataAdapter } from "../../../redux/actions/saleCenterNEW/types";
 
 class NewScoreConvertGift extends Component {
     constructor() {
@@ -34,9 +32,6 @@ class NewScoreConvertGift extends Component {
         };
     }
     componentDidMount() {
-        // this.props.saleCenterSetSpecialBasicInfo(
-        //     specialPromotionBasicDataAdapter({ data: {}, gifts: [] }, false)
-        // );
         this.getEventDetail(); //获取活动详情
         this.props.getSubmitFn(this.handleSubmit);
     }
@@ -44,24 +39,31 @@ class NewScoreConvertGift extends Component {
     getEventDetail = () => {
         const { itemID } = this.props;
         if (itemID) {
-            getEvent({ itemID }).then((res) => {
-                const formData = this.transformFormData(res);
-                console.log(formData, 'formData');
-                this.setState({
-                    formData,
-                });
+            // getEvent({ itemID }).then((res) => {
+            //     const formData = this.transformFormData(res);
+            //     this.setState({
+            //         formData,
+            //     });
+            // });
+            const { $eventInfo, $giftInfo } = this.props.specialPromotion;
+            const formData = this.transformFormData({
+                data: $eventInfo,
+                gifts: $giftInfo
+            });
+            this.setState({
+                formData,
             });
         }
     };
 
     //把接口返回的数据转成表单需要的数据
     transformFormData = (res) => {
-        console.log(res, 'res');
+        const { mode } = this.props;
         const { data = {}, gifts = [] } = res;
         let formData = {
             ...data,
             eventRange:
-                data.eventEndDate && data.eventStartDate
+                data.eventEndDate && data.eventStartDate && mode != 'copy'
                     ? [
                           moment(data.eventStartDate, "YYYYMMDD"),
                           moment(data.eventEndDate, "YYYYMMDD"),
@@ -170,7 +172,6 @@ class NewScoreConvertGift extends Component {
         const forms = [basicForm, ruleForm, approvalForm];
         asyncParseForm(forms).then(({ values, error }) => {
             if (error) return;
-            console.log(values, shopAreaData, orgs, goodsData, couponData, approvalInfo, mode);
             let params = {
                 ...values,
                 orgs,
@@ -245,7 +246,7 @@ class NewScoreConvertGift extends Component {
 
     onSubmit = (payload) => {
         const menuID = this.props.user.menuList.find(tab => tab.entryCode === '1000076003').menuID;
-        const { itemID, accountInfo } = this.props;
+        const { itemID, accountInfo, mode } = this.props;
         const { event, gifts } = payload;
         let allData = {
             event: {
@@ -254,7 +255,7 @@ class NewScoreConvertGift extends Component {
             },
             gifts,
         };
-        if (itemID) {
+        if (itemID && mode == 'edit') {
             allData.event.itemID = itemID;
             postEvent(allData).then((res) => {
                 if (res) {
@@ -343,15 +344,12 @@ function mapStateToProps(state) {
         accountInfo: state.user.get("accountInfo").toJS(),
         user: state.user.toJS(),
         loading: state.sale_crmCardTypeNew.get("loading"),
+        specialPromotion: state.sale_specialPromotion_NEW.toJS(),
     };
 }
 
 function mapDispatchToProps(dispatch) {
-    return {
-        saleCenterSetSpecialBasicInfo: (opts) => {
-            dispatch(saleCenterSetSpecialBasicInfoAC(opts));
-        },
-    };
+    return {};
 }
 
 export default connect(

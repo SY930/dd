@@ -1034,33 +1034,47 @@ class MySpecialActivities extends React.Component {
             });
         }
     }
+
+    //编辑、复制、查看积分换礼前把活动详细信息存到store
+    handleSpecialDetail = (itemID, cb) => {
+        const user = this.props.user;
+        this.props.fetchSpecialDetail({
+            data: {
+                itemID,
+                groupID: user.accountInfo.groupID,
+            },
+            success: (res) => {
+                if (res === undefined || res.data === undefined) {
+                    message.error(
+                        `${this.props.intl.formatMessage(STRING_SPE.d4h1ac506h952140)}`
+                    );
+                    return;
+                }
+                this.props.saleCenterSetSpecialBasicInfo(
+                    specialPromotionBasicDataAdapter(res, false)
+                );
+                cb()
+            },
+            fail: this.failFn,
+        });
+    }
+
     //** 第三版 重构 抽抽乐活动 点击事件 */
     onV3Click = (itemID, view, key, isActive, mode) => {
         if(key == '89') {
-            const user = this.props.user;
-            this.props.fetchSpecialDetail({
-                data: {
-                    itemID,
-                    groupID: user.accountInfo.groupID,
-                },
-                success: (res) => {
-                    this.props.saleCenterSetSpecialBasicInfo(
-                        specialPromotionBasicDataAdapter(res, false)
-                    );
-                    setTimeout(() => {
-                        jumpPage({
-                            menuID: SALE_ACTIVE_NEW_PAGE,
-                            typeKey: key,
-                            itemID,
-                            isView: view,
-                            isActive,
-                            mode
-                        });
-                    }, 100);
-                    return closePage(SALE_ACTIVE_NEW_PAGE);
-                },
-                fail: this.failFn,
-            });
+            this.handleSpecialDetail(itemID, () => {
+                setTimeout(() => {
+                    jumpPage({
+                        menuID: SALE_ACTIVE_NEW_PAGE,
+                        typeKey: key,
+                        itemID,
+                        isView: view,
+                        isActive,
+                        mode
+                    });
+                }, 100);
+                return closePage(SALE_ACTIVE_NEW_PAGE);
+            })
             return;
         }
 
@@ -3033,12 +3047,15 @@ class MySpecialActivities extends React.Component {
                                     if (
                                         record.eventWay === 78 ||
                                         record.eventWay === 79 ||
-                                        record.eventWay === 83
+                                        record.eventWay === 83 ||
+                                        record.eventWay === 89
                                     ) {
                                         this.onV3Click(
                                             record.itemID,
                                             false,
-                                            record.eventWay
+                                            record.eventWay,
+                                            record.isActive,
+                                            'copy'
                                         );
                                         return;
                                     }
@@ -3528,12 +3545,15 @@ class MySpecialActivities extends React.Component {
                                             record.eventWay === 79 ||
                                             record.eventWay === 83 ||
                                             record.eventWay === 85 ||
-                                            record.eventWay === 23
+                                            record.eventWay === 23 ||
+                                            record.eventWay === 89
                                         ) {
                                             this.onV3Click(
                                                 record.itemID,
                                                 true,
-                                                record.eventWay
+                                                record.eventWay,
+                                                record.isActive,
+                                                'view'
                                             );
                                             return;
                                         }
