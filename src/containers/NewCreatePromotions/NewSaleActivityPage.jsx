@@ -662,7 +662,7 @@ class NewCustomerPage extends Component {
         let displayList = [];
         // authStatus = true;
         if (!authStatus) {
-            category = category.filter(item => (item.title == '互动营销' || item.title == '人气活动'))
+            category = category.filter(item => (item.title == '互动营销'))
         }
         if (!authStatus){
             displayList = currentCategoryIndex === 0 ? category.slice(0) : [category[currentCategoryIndex - (!authStatus ? 0 : 1)]];
