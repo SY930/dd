@@ -17,6 +17,7 @@ import { injectIntl } from '../IntlDecor';
 import BtnFoodSelector from './BtnFoodSelector'
 
 import GoodsRef from "@hualala/sc-goodsRef"
+import { isZhouheiya } from '../../../constants/WhiteList.jsx'
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
@@ -592,6 +593,13 @@ class CategoryAndFoodSelector extends Component {
         if (this.props.dishOnly) {
             return this.renderDishsSelectionBox()
         }
+
+              // 周黑鸭展示四个券适用新商品组件
+              if ([10, 20, 21, 111].includes(+this.props.giftType) && isZhouheiya(this.props.groupID)) {
+                return this.newGoodsRender()
+            }
+
+            
         return (
             <div>
                 {
