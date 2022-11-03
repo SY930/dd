@@ -141,13 +141,13 @@ class NewPromotion extends React.Component {
                 giftList,
                 birthdayLimit,
                 cardBalanceLimitType,
-		//周黑鸭新需求
+		        //周黑鸭新需求
                 activityCost:approval?approval.activityCost:'',
                 estimatedSales:approval?approval.estimatedSales:'',
                 activityRate:approval?approval.activityRate:'',
                 auditRemark:approval?approval.auditRemark:'',
-                headquartersCost:approval.headquartersCost,
-                storeAttribute:approval.storeAttribute,
+                headquartersCost:approval?approval.headquartersCost:'',
+                storeAttribute:approval?approval.storeAttribute:'',
             },
             timeLst: opts.timeLst,
             priceLst: opts.priceLst,
