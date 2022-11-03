@@ -57,6 +57,7 @@ import { jumpPage, closePage } from '@hualala/platform-base';
 import newPromotionCardPageConfig from '../SaleActives/NewPromotionCardPages/common/newPromotionCardPageConfig';
 import { updateCurrentPromotionPageAC } from '../SaleActives/NewPromotionCardPages/store/action';
 import { consumeGivingWhiteList } from "containers/GiftNew/components/whiteList.js";
+import { zhouheiyaMarketingtype } from '../../constants/WhiteList'
 
 // 跳转到带装修的活动设置页面
 const activityList = [
@@ -313,6 +314,14 @@ class PromotionCreateModal extends Component {
     //** 第三版 重构 抽抽乐活动 点击事件 */
     onV3Click = (key) => {
         if(key) this.setState({curKey: key})
+        if (['89'].includes(key)) {
+            // 调用重置特色营销数据和重置占用微信ID数据
+            this.props.saleCenterResetSpecailDetailInfo();
+            setTimeout(() => {
+                jumpPage({ menuID: SALE_ACTIVE_NEW_PAGE, typeKey: key, mode: 'add' })
+            }, 100);
+            return closePage(SALE_ACTIVE_NEW_PAGE)
+        }
         if (['85', '23'].includes(key)) {
             setTimeout(() => {
                 jumpPage({ menuID: SALE_ACTIVE_NEW_PAGE, typeKey: key })
@@ -339,6 +348,15 @@ class PromotionCreateModal extends Component {
             },
         })
         return closePage(currentPromotion.menuID)
+    }
+
+    filterMenuByGroup = (displayList = []) => {
+        let list = [...displayList];
+        list = list.map(item => {
+            item.list = item.list.filter(row => !zhouheiyaMarketingtype.includes(row.key))
+            return item;
+        })
+        return list;
     }
 
     renderModalContent() {
@@ -390,8 +408,9 @@ class PromotionCreateModal extends Component {
             ...ALL_PROMOTION_CATEGORIES.map(item => item.title),
         ];
         const { currentCategoryIndex } = this.state;
-        const displayList = currentCategoryIndex === 0 ? ALL_PROMOTION_CATEGORIES : [ALL_PROMOTION_CATEGORIES[currentCategoryIndex - 1]];
+        let displayList = currentCategoryIndex === 0 ? ALL_PROMOTION_CATEGORIES : [ALL_PROMOTION_CATEGORIES[currentCategoryIndex - 1]];
         const speController = groupID == '295896'
+        displayList = this.filterMenuByGroup(displayList);
         //集团id：295896 
         // 开通桌边砍活动
         return (
