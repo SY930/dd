@@ -308,7 +308,7 @@ class MyActivitiesShop extends React.Component {
     handleDisableClickEvent(text, record) {
         // this.state.selectedRecord
         this.props.toggleSelectedActivityState({
-            record: { ...record, shopID: this.props.user.shopID },
+            record: { ...record, shopID: this.props.user.shopID, groupID: getStore().getState().user.getIn(["accountInfo", "groupID"]), },
             cb: this.toggleStateCallBack,
         });
     }
@@ -452,7 +452,7 @@ class MyActivitiesShop extends React.Component {
             ),
             onOk: () => {
                 const params = {
-                    groupID: record.groupID,
+                    groupID: this.props.user.accountInfo.groupID,
                     shopID: record.shopID,
                     promotionID: record.promotionIDStr,
                     isActive: 2,
