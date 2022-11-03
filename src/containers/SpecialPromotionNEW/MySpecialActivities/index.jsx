@@ -775,6 +775,7 @@ class MySpecialActivities extends React.Component {
         // this.state.selectedRecord
         this.props.toggleSelectedActivityState({
             record,
+            groupID: this.props.user.accountInfo.groupID,
             nextActive,
             modalTip,
             success: this.toggleStateCallBack,
