@@ -960,6 +960,7 @@ class SpecialRangeInfo extends React.Component {
                 <ShopAreaSelector
                     brandList={brandList}
                     groupID={this.props.user.accountInfo.groupID}
+                    accountID={this.props.user.accountInfo.accountID}
                     firstRequired={!isGeneral() && this.props.isUpdate ? true : false}
                     secondRequired={!isGeneral() && this.props.isUpdate ? true : false}
                     firstValidateStatus={'error'}

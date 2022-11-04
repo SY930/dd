@@ -12,6 +12,8 @@ import { loadShopSchema } from './utils';
 
 import './assets/ShopSelector.less';
 
+import { isZhouheiya, isGeneral } from "../../constants/WhiteList";
+
 class ShopSelector extends Component {
     state = {
         showModal: false,
@@ -139,6 +141,10 @@ class ShopSelector extends Component {
         const { value = [], onChange, size, placeholder, extendShopList, eventWay, disabled, occupyShopList = [], ...otherProps, } = this.props;
         const { showModal } = this.state;
         let options = this.props.options || this.state.options || [];
+        //当权限为区域经理，增加数据权限
+        if(isZhouheiya(this.props.groupID)&&!isGeneral()&&this.props.permissionShopsData){
+            options = options.filter(item=>this.props.permissionShopsData.some((shopData)=>shopData == item.shopID))
+        }
         if (Array.isArray(extendShopList)) {
             options = [...extendShopList, ...options]
         }
