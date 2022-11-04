@@ -119,6 +119,7 @@ import Card from "../../../assets/card.png";
 import newPromotionCardPageConfig from '../../SaleActives/NewPromotionCardPages/common/newPromotionCardPageConfig';
 import { updateCurrentPromotionPageAC } from '../../SaleActives/NewPromotionCardPages/store/action';
 import { consumeGivingWhiteList } from "containers/GiftNew/components/whiteList.js";
+import { axios } from '@hualala/platform-base'
 
 //周黑鸭新增
 import { isZhouheiya, isGeneral } from "../../../constants/WhiteList";
@@ -157,6 +158,7 @@ const DECORATABLE_PROMOTIONS = [
     "79",
     "85",
     "83",
+    "69"
 ];
 
 const isDecorationAvailable = ({ eventWay }) => {
@@ -313,10 +315,10 @@ class MySpecialActivities extends React.Component {
             qrItemID: "", // 点击提取链接/二维码 当前活动的itemID
             giftArr: [],
             allWeChatAccountList: [],
+            allWeChatAccountListForH5: [],
             pushMessageMpID: "",
             groupID: "",
             isCopy: false,
-            pushMessageMpID: "",
             channelContent: "",
             launchChannelID: "",
             launchChannelIDWX: "",
@@ -474,7 +476,6 @@ class MySpecialActivities extends React.Component {
                 { value: "85", label: "千人千面" },
                 { value: '87', label: '消费送礼' },
             ],
-       
             auditStatus: [
                     { value: '', label: '全部' },
                     { value: '0', label: '待审批' },
@@ -878,6 +879,9 @@ class MySpecialActivities extends React.Component {
             _groupID: this.props.user.accountInfo.groupID,
         });
         this.queryWechatMpInfo();
+        if(isZhouheiya()) {
+            this.queryWechatMpInfoForH5();
+        }
         // 把groupID传给后台，后台执行自动终止
         this.props.updateExpiredActiveState({
             groupID: this.props.user.accountInfo.groupID,
@@ -1030,8 +1034,50 @@ class MySpecialActivities extends React.Component {
             });
         }
     }
+
+    //编辑、复制、查看积分换礼前把活动详细信息存到store
+    handleSpecialDetail = (itemID, cb) => {
+        const user = this.props.user;
+        this.props.fetchSpecialDetail({
+            data: {
+                itemID,
+                groupID: user.accountInfo.groupID,
+            },
+            success: (res) => {
+                if (res === undefined || res.data === undefined) {
+                    message.error(
+                        `${this.props.intl.formatMessage(STRING_SPE.d4h1ac506h952140)}`
+                    );
+                    return;
+                }
+                this.props.saleCenterSetSpecialBasicInfo(
+                    specialPromotionBasicDataAdapter(res, false)
+                );
+                cb()
+            },
+            fail: this.failFn,
+        });
+    }
+
     //** 第三版 重构 抽抽乐活动 点击事件 */
-    onV3Click = (itemID, view, key, isActive) => {
+    onV3Click = (itemID, view, key, isActive, mode) => {
+        if(key == '89') {
+            this.handleSpecialDetail(itemID, () => {
+                setTimeout(() => {
+                    jumpPage({
+                        menuID: SALE_ACTIVE_NEW_PAGE,
+                        typeKey: key,
+                        itemID,
+                        isView: view,
+                        isActive,
+                        mode
+                    });
+                }, 100);
+                return closePage(SALE_ACTIVE_NEW_PAGE);
+            })
+            return;
+        }
+
         if (key == "85" || key == "23") {
             setTimeout(() => {
                 jumpPage({
@@ -1040,6 +1086,7 @@ class MySpecialActivities extends React.Component {
                     itemID,
                     isView: view,
                     isActive,
+                    mode
                 });
             }, 100);
             return closePage(SALE_ACTIVE_NEW_PAGE);
@@ -1541,15 +1588,16 @@ class MySpecialActivities extends React.Component {
             const { mpInfoResDataList = [] } = data;
             this.setState({
                 allWeChatAccountList: mpInfoResDataList,
-                pushMessageMpID: mpInfoResDataList[0].mpID,
-                mpName: mpInfoResDataList[0].mpName,
+                pushMessageMpID: mpInfoResDataList[0] ? mpInfoResDataList[0].mpID : '',
+                mpName: mpInfoResDataList[0] ? mpInfoResDataList[0].mpName : '',
             });
         });
     };
     getAllAvailableMpInfo = () => {
-        const { allWeChatAccountList } = this.state;
+        const { allWeChatAccountList, allWeChatAccountListForH5, eventWay } = this.state;
+        const options = eventWay == 69 ? allWeChatAccountListForH5 : allWeChatAccountList;
         return [
-            ...allWeChatAccountList.map((item) => ({
+            ...options.map((item) => ({
                 value: JSON.stringify({ mpID: item.mpID, appID: item.appID }),
                 label: item.mpName,
             })),
@@ -2075,7 +2123,7 @@ class MySpecialActivities extends React.Component {
                     footer={null}
                     width={900}
                 >
-                    {this.renderCopyUrlModal()}
+                    {isShowCopyUrl && this.renderCopyUrlModal()}
                 </Modal>
                 {this.state.planModalVisible && (
                     <PlanModal
@@ -2959,7 +3007,7 @@ class MySpecialActivities extends React.Component {
                 {/* 第一版只做群发礼品的复制功能*/}
                 {/* 摇奖活动增加复制,并且活动不是禁用状态  */}
                 {
-                    (record.eventWay === 53 || record.eventWay === 20) && (
+                    (record.eventWay === 53 || record.eventWay === 20 || record.eventWay === 69  || record.eventWay === 89 || record.eventWay === 88 || record.eventWay === 90) && (
                         // <Authority rightCode={SPECIAL_PROMOTION_UPDATE}>
                         <a
                             href="#"
@@ -2999,12 +3047,15 @@ class MySpecialActivities extends React.Component {
                                     if (
                                         record.eventWay === 78 ||
                                         record.eventWay === 79 ||
-                                        record.eventWay === 83
+                                        record.eventWay === 83 ||
+                                        record.eventWay === 89
                                     ) {
                                         this.onV3Click(
                                             record.itemID,
                                             false,
-                                            record.eventWay
+                                            record.eventWay,
+                                            record.isActive,
+                                            'copy'
                                         );
                                         return;
                                     }
@@ -3440,18 +3491,32 @@ class MySpecialActivities extends React.Component {
                                             return this.handleNewEditActive(record, 'edit');
                                         }
                                         this.permissionVerify(record.itemID, () => {
-                                        this.handleEditActive(record)(() => {
-                                            this.props.toggleIsUpdate(true)
-                                            // 不是集团经理角色并且是周黑鸭账号（并且审批状态是审批通过跟无需审批的）只能修改店铺
-                                            if(!isGeneral(this.props.user.accountInfo.roleType) && isZhouheiya(this.props.user.accountInfo.groupID) && (record.auditStatus == 2 || record.auditStatus == 4)) {
-                                                //目前只针对周黑鸭的三个营销活动做此逻辑（H5领券、积分换礼、消费送礼）
-                                                if([69, 89, 88].includes(record.eventWay)) {
-                                                    this.setState({ onlyModifyShop: true });
-                                                }
+                                            if (record.eventWay === 89) {
+                                                //积分换礼
+                                                this.handleEditActive(record)(() =>
+                                                    this.onV3Click(
+                                                        record.itemID,
+                                                        false,
+                                                        record.eventWay,
+                                                        record.isActive,
+                                                        'edit'
+                                                    )
+                                                );
+                                                return;
                                             }
-                                            this.handleUpdateOpe(text, record, index);
+
+                                            this.handleEditActive(record)(() => {
+                                                this.props.toggleIsUpdate(true)
+                                                // 不是集团经理角色并且是周黑鸭账号（并且审批状态是审批通过跟无需审批的）只能修改店铺
+                                                if(!isGeneral(this.props.user.accountInfo.roleType) && isZhouheiya(this.props.user.accountInfo.groupID) && (record.auditStatus == 2 || record.auditStatus == 4)) {
+                                                    //目前只针对周黑鸭的三个营销活动做此逻辑（H5领券、消费送礼）
+                                                    if([69, 88].includes(record.eventWay)) {
+                                                        this.setState({ onlyModifyShop: true });好的
+                                                    }
+                                                }
+                                                this.handleUpdateOpe(text, record, index);
+                                            })
                                         })
-                                    })
 
                                         // }
                                         // }
@@ -3480,12 +3545,15 @@ class MySpecialActivities extends React.Component {
                                             record.eventWay === 79 ||
                                             record.eventWay === 83 ||
                                             record.eventWay === 85 ||
-                                            record.eventWay === 23
+                                            record.eventWay === 23 ||
+                                            record.eventWay === 89
                                         ) {
                                             this.onV3Click(
                                                 record.itemID,
                                                 true,
-                                                record.eventWay
+                                                record.eventWay,
+                                                record.isActive,
+                                                'view'
                                             );
                                             return;
                                         }
@@ -3545,9 +3613,9 @@ class MySpecialActivities extends React.Component {
                                         }
                                         // record.isActive != '0' || record.userCount != 0 || statusState ? null :
                                         this.permissionVerify(record.itemID,() => {
-                                        // record.isActive != '0' || record.userCount != 0 || statusState ? null :
-                                        this.handleDelActive(record)(() => this.checkDeleteInfo(text, record, index));
-                                    })
+                                            // record.isActive != '0' || record.userCount != 0 || statusState ? null :
+                                            this.handleDelActive(record)(() => this.checkDeleteInfo(text, record, index));
+                                        })
 
                                     }}
                                 >
@@ -3857,7 +3925,7 @@ class MySpecialActivities extends React.Component {
         //     onCancel: () => { },
         // });
     }
-    handleGiftsData = (response) => {
+    handleGiftsData = (response, type) => {
         const { eventWay, itemID, eventName, needCount = "" } = response.data;
         const user = this.props.user;
         let result = [];
@@ -3945,7 +4013,7 @@ class MySpecialActivities extends React.Component {
         const { channelContent, launchChannelID, allWeChatAccountListForH5, allWeChatAccountList } = this.state;
         const options = record && record.eventWay == 69 ? allWeChatAccountListForH5 : allWeChatAccountList;
         const pushMessageMpID = options[0] ? options[0].mpID : undefined;
-
+        
         let mpID = mpId ? mpId : pushMessageMpID;
         let eventWayData, groupIdData, itemIdData;
         const testUrl = "https://dohko.m.hualala.com";
@@ -4010,7 +4078,7 @@ class MySpecialActivities extends React.Component {
         if(eventWay == '68') {
             url = url +    `/newm/recommendInvite?groupID=${groupID}&eventItemID=${itemID}`
         }*/
-if(eventWayData == 69) {
+        if(eventWayData == 69) {
             if(type == 'area') {
                 this.setState({
                     urlContent: url + `/newm/getFreeGifts?groupID=${groupIdData}&eventID=${itemIdData}&mpID=${mpID}&launchChannel=${channelContent}`
@@ -4033,15 +4101,15 @@ if(eventWayData == 69) {
                 groupID: groupIdData
             })
         } else {
-        this.setState({
-            urlContent: urlMap[eventWayData],
-            eventWay: eventWayData,
-            qrCodeImage: "", // 打开一次清空上一次的img
-            qrItemID: itemIdData, // 当前活动itemID
-            isShowCopyUrl: true,
-            groupID: groupIdData,
-        });
-}
+            this.setState({
+                urlContent: urlMap[eventWayData],
+                eventWay: eventWayData,
+                qrCodeImage: "", // 打开一次清空上一次的img
+                qrItemID: itemIdData, // 当前活动itemID
+                isShowCopyUrl: true,
+                groupID: groupIdData,
+            });
+        }
         // 获取小程序列表
         this.getAppList().then((r) => { });
     };

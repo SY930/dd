@@ -85,7 +85,7 @@ export default class ShopAreaSelector extends Component {
         const { typeList, radioLabel, labelCol, wrapperCol, radioRequire, value = {},
             firstLabel, firstRequired, firstValidateStatus, firstHelp, firstTips,
             secondLabel, secondRequired, secondValidateStatus, secondHelp, secondTips,
-            brandList = [], filterParm, filterShopIds,
+            brandList = [], filterParm, filterShopIds, disabled
         } = this.props;
 
         const { areaList } = this.state;
@@ -102,7 +102,7 @@ export default class ShopAreaSelector extends Component {
                         wrapperCol={wrapperCol}
                         required={radioRequire}
                     >
-                        <RadioGroup onChange={this.onChangeRadio} value={radioValue}>
+                        <RadioGroup disabled={disabled} onChange={this.onChangeRadio} value={radioValue}>
                             {
                                 RADIO_OPTIONS.map(item => (
                                     <Radio key={item.value} value={item.value}>{item.label}</Radio>
@@ -130,6 +130,7 @@ export default class ShopAreaSelector extends Component {
                             filterShopIds={filterShopIds}
                             groupID={this.props.groupID}
                             permissionShopsData={this.state.permissionShopsData}
+                            disabled={disabled}
                         />
                         {firstTips}
                     </FormItem>
@@ -151,6 +152,7 @@ export default class ShopAreaSelector extends Component {
                             value={list}
                             onChange={this.onChangeIDList}
                             showSearch={true}
+                            disabled={disabled}
                             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                         >
                             {

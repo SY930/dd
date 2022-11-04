@@ -474,6 +474,9 @@ class NewCustomerPage extends Component {
             return message.success(SALE_LABEL.k6316gwc);//活动尚未开放
         }
         if (isSpecial) {
+            // 调用重置特色营销数据和重置占用微信ID数据
+            this.props.saleCenterResetSpecailDetailInfo();
+
             const specialIndex = this.props.saleCenter.get('characteristicCategories').toJS().findIndex(promotion => promotion.key === key);
             this.handleSpecialPromotionCreate(specialIndex, promotionEntity, ifskip)
         } else {
@@ -638,10 +641,18 @@ class NewCustomerPage extends Component {
     //** 第三版 重构 抽抽乐活动 点击事件 */
     onV3Click = (key) => {
         if (key) this.setState({ curKey: key })
+        if (['89'].includes(key)) { // 打开新页面
+            // 调用重置特色营销数据和重置占用微信ID数据
+            this.props.saleCenterResetSpecailDetailInfo();
+            setTimeout(() => {
+                jumpPage({ menuID: SALE_ACTIVE_NEW_PAGE, typeKey: key, mode: 'add' })
+            }, 100);
+            return closePage(SALE_ACTIVE_NEW_PAGE)
+        }
         const currentPromotion = newPromotionCardPageConfig.find(item => item.key == key);
         if (['85', '23'].includes(key)) { // 打开新页面
             setTimeout(() => {
-                jumpPage({ menuID: SALE_ACTIVE_NEW_PAGE, typeKey: key })
+                jumpPage({ menuID: SALE_ACTIVE_NEW_PAGE, typeKey: key, mode: 'add' })
             }, 100);
             return closePage(SALE_ACTIVE_NEW_PAGE)
         } else if (currentPromotion && currentPromotion.menuID) {
@@ -948,6 +959,9 @@ function mapDispatchToProps(dispatch) {
             return dispatch(fetchSpecialDetailAC(opts))
         },
         updateCurrentPromotionPage: opts => dispatch(updateCurrentPromotionPageAC(opts)),
+        saleCenterSetSpecialBasicInfo: (opts) => {
+            dispatch(saleCenterSetSpecialBasicInfoAC(opts));
+        },
     }
 }
 

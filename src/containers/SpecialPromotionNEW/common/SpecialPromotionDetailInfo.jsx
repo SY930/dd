@@ -61,6 +61,8 @@ import {
     initShowCheckBox,
     clearCheckBoxData,
     renderRecommendGiftsDetail,
+    handleSubmitScoreConvertGifts,
+    handleSubmitConsumeGiveGifts
 } from "./SpecialPromotionDetailInfoHelp";
 import TicketBag from "../../BasicModules/TicketBag";
 import { axios } from "@hualala/platform-base";
@@ -480,7 +482,9 @@ class SpecialDetailInfo extends Component {
             finish: isLast ? this.handleSubmit : undefined,
             next: !isLast ? this.handleSubmit : undefined,
         });
-        this.props.fetchGiftListInfo();
+        this.props.fetchGiftListInfo({
+            accountID: user.accountInfo.accountID
+        });
         if (type == 67) {
             const opts = {
                 _groupID: user.accountInfo.groupID,
@@ -4627,6 +4631,18 @@ class SpecialDetailInfo extends Component {
                 <div className={css}></div>
             </div>
         );
+    }
+
+    renderApproverSet = () => {
+        return (
+            <Approval type="special" onApprovalInfoChange={(val) => {
+                this.setState({
+                    approvalInfo: {
+                        ...val
+                    }
+                })
+            }} />
+        )
     }
 
     render() {

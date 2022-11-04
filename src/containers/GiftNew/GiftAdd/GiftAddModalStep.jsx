@@ -1284,6 +1284,8 @@ class GiftAddModalStep extends React.PureComponent {
             if(hasMallArr.includes(value)){
                 this.adjustParamsOfMallGift(params);
             }
+
+
             if(hasMallArr.includes(value) && params.applyScene != '0'){
                 if(!params.shopIDs){
                     message.warning('请选择适用商城')
@@ -1375,6 +1377,13 @@ class GiftAddModalStep extends React.PureComponent {
             endSaving();
         });
     }
+
+    getGoodsState(v) {
+        this.setState({
+            ...v,
+        })
+    }
+
     // 判断选择的小程序或者公众号与微信支付商家券下账务主体是否绑定关系
     checkShopWechatData(params,callServer,groupName,cb) {
         const _that = this;
@@ -2316,6 +2325,9 @@ shopAreaSelectorChange = (value) => {
             scopeList = couponFoodScopeList.map(food => ({scopeType: 2, ...food}));
             foodSelectType = 0;
         }
+
+        const isZhy = isZhouheiya(groupID)
+
         return (
             <FormItem
                 style={{
@@ -2327,7 +2339,7 @@ shopAreaSelectorChange = (value) => {
                 }}>
                 {
                     decorator({})(
-                        hasMallArr.includes(value) ? 
+                        (isZhy ? [...hasMallArr, '111'] : hasMallArr).includes(value) ? 
                             <CategoryAndFoodSelectors
                                 scopeLst={scopeList}
                                 showEmptyTips={true}
@@ -3413,7 +3425,9 @@ shopAreaSelectorChange = (value) => {
             giftImagePath: {
                 label: '礼品图样',
                 type: 'custom',
-                render: decorator => decorator({})(<GiftImagePath contentHeight='auto'/>),
+                render: decorator => decorator({
+                    initialValue: isZhouheiya(groupID) ? 'http://res.hualala.com/basicdoc/210d6edc-d01f-473b-b7ae-1f319f808350.png' : '',
+                })(<GiftImagePath contentHeight='auto' limitSize={1024000} />),
             },
             selectBrands: {
                 label: `${GroupSepcial.includes(groupID) && describeAry.includes(describe) ? '' : '所属品牌'}`,
@@ -4343,7 +4357,6 @@ shopAreaSelectorChange = (value) => {
             ]
             formItems = _.omit(formItems, omitList)
         }
-
 
         return (
             <div className={styles2.formContainer}>

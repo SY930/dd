@@ -47,11 +47,16 @@ class Two extends React.Component {
     }
 
     handleSubmit() {
-        const { importCardPath, api_importCardPath } = this.state;
+        const { importCardPath, api_importCardPath, approvalInfo } = this.state;
         if(!importCardPath) {
             message.warning('请上传文件！');
             return
         }
+        
+        if(!approvalInfo.activityCost || !approvalInfo.activityRate || !approvalInfo.estimatedSales || !approvalInfo.auditRemark) {
+            return;
+        }
+
         this.props.setSpecialBasicInfo({
             importCardPath: api_importCardPath ? api_importCardPath : ENV.FILE_RESOURCE_DOMAIN + '/' + importCardPath,
             pathName: this.state.fileList[0].name,
@@ -180,6 +185,7 @@ class Two extends React.Component {
                             </Button>
                         </Upload>
                     </FormItem>
+                    <div style={{ height: '20px' }}></div>
                     {this.renderApproverSet()}
                 </Form>
                 {

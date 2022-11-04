@@ -17,6 +17,7 @@ import { axios } from '@hualala/platform-base';
 import GiftCfg from './gift';
 import _ from 'lodash';
 import { SALE_CENTER_COUPON_TYPE } from './giftType';
+import { getStore } from '@hualala/platform-base'
 /**
  * axios 默认请求参数
  * url 加 ？ 的目的就是为了在浏览器 network 里面方便看到请求的接口路径
@@ -26,7 +27,10 @@ const [service, type, api, url] = ['HTTP_SERVICE_URL_CRM', 'post', 'alipay/', '/
 
 async function getCardList(data) {
     const method = '/coupon/couponService_getSortedCouponBoardList.ajax';
-    const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW', type, data, method };
+    const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW', type, data: {
+        ...data,
+        accountID: getStore().getState().user.getIn(['accountInfo', 'accountID'])
+    }, method };
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;
     if (code === '000') {

@@ -104,7 +104,7 @@ class CreateGiftsPanel extends Component {
                 }
                 return item
             })
-            primaryGifts.splice(4, 2)
+            primaryGifts.splice(4)
         }
 	
       return (

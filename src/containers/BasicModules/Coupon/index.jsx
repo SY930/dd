@@ -270,7 +270,7 @@ export default class GiftInfo extends Component {
                         columns={columns}
                         dataSource={dataSource}
                         pagination={false}
-                        style={{ width: 635 }}
+                        style={{ width: 800 }}
                     />
                     {visible &&
                         <GiftModal

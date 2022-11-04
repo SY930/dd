@@ -647,10 +647,11 @@ renderCardNo() {
     }
 
     render() {
+        const { groupID } = this.props
         return (
             <Row>
                 <Col span={24}>
-                    {this.renderCellNo()}
+                {isZhouheiya(groupID) ? this.renderCardNo() : this.renderCellNo()}
                 </Col>
                 <Col span={19} offset={5}>
                     {this.renderGift()}

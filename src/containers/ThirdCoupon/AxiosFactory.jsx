@@ -16,12 +16,17 @@ import { isZhouheiya } from '../../constants/WhiteList.jsx'
 /** restful 风格函数命名， get获取，post增加，put更新，delete删除 */
 const [service, type, api, url] = ['HTTP_SERVICE_URL_PROMOTION_NEW', 'post', 'alipay/', '/api/v1/universal?'];
 
+function getAccountInfo() {
+    const { user } = getStore().getState();
+    return user.get('accountInfo').toJS();
+}
+
+
 const giftTypeName = () => {
     const { groupID } = getAccountInfo()
     return [
         { label: '全部', value: '' },
         { label: '代金券', value: '10' },
-        { label: '菜品兑换券', value: '21' },
         { label: isZhouheiya(groupID) ? '兑换券' : '菜品兑换券', value: '21' },
         { label: '折扣券', value: '111' },
         { label: '打折劵', value: '602' },
@@ -30,10 +35,6 @@ const giftTypeName = () => {
     ];
 }
 
-function getAccountInfo() {
-    const { user } = getStore().getState();
-    return user.get('accountInfo').toJS();
-}
 
 function proGiftTreeData(giftTypes) {
     // const _giftTypes = _.filter(giftTypes, (giftItem) => {

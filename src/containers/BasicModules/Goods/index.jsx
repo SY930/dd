@@ -141,7 +141,7 @@ export default class Goods extends Component {
                     scroll={{ x: 500 }}
                     columns={columns}
                     dataSource={value}
-                    style={{ maxWidth: 1000 }}
+                    style={{ maxWidth: 850 }}
                     pagination={false}
                 />
                 <GoodsSelector 
