@@ -15,7 +15,7 @@ import { isBrandOfHuaTianGroupList, isMine } from '../../../constants/projectHua
 // { label: '会员权益券', value: '80' },
 // { label: '礼品定额卡', value: '90' },
 // { label: '活动券', value: '100' },
-// { label: '线上礼品卡', value: '91' },
+// { label: '微信礼品卡', value: '91' },
 // { label: '买赠券', value: '110' },
 // { label: '折扣券', value: '111' },
 // { label: '现金红包', value: '113' },
@@ -41,7 +41,7 @@ export const COLUMNS = [
     width: 200,
     render(value, record) {
       const { giftType } = record
-      // 90 礼品定额卡 91 线上礼品卡 113 现金红包
+      // 90 礼品定额卡 91 微信礼品卡 113 现金红包
       const hideCopyBtn = ['90', '91', '113']
       return (
         <span>
