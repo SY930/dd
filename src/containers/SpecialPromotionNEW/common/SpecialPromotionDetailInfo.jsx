@@ -399,6 +399,8 @@ class SpecialDetailInfo extends Component {
                     : [], // 选择的微信第三方优惠券
             pointItemID,
         };
+
+        this.__bagFlag__ = true;
     }
     componentDidMount() {
         const {
@@ -601,15 +603,16 @@ class SpecialDetailInfo extends Component {
         if (!this.props.isNew) {
             const b = np.specialPromotion.get("$giftInfo").toJS();
             const { presentType = "", giftID, giftTotalCount } = b[0] || [{}];
-            const { freeGetLimit } = this.state;
-            if (this.props.type == "30" && presentType === 4) {
-                const { couponPackageInfos } = this.state;
+            const { freeGetLimit, couponPackageInfos = [] } = this.state;
+            if (this.props.type == "30" && presentType === 4 && this.__bagFlag__ && couponPackageInfos.length) {
                 const bag = (couponPackageInfos || []).filter(
                     (x) => x.couponPackageID === giftID
                 );
+                this.__bagFlag__ = false
                 this.setState({
                     sendTypeValue: "1",
                     bag,
+                    giftTotalCountBag: giftTotalCount == '0' ? '不限制' : giftTotalCount
                 });
             }
 
@@ -626,10 +629,15 @@ class SpecialDetailInfo extends Component {
             }
         }
     }
+
+    componentWillUnmount() {
+        this.__bagFlag__ = true;
+    }
+
     async getBag() {
         const { user } = this.props;
         const { groupID } = user.accountInfo;
-        const data = { groupID, couponPackageType: "2" };
+        const data = { groupID, couponPackageType: "2", pageSize: 10000 };
         const [service, type, api, url] = [
             "HTTP_SERVICE_URL_PROMOTION_NEW",
             "post",
@@ -1229,8 +1237,9 @@ class SpecialDetailInfo extends Component {
                 return true;
             }
         }
-        const { sendTypeValue } = this.state;
+        const { sendTypeValue, giftTotalCountBag } = this.state;
         if (type === "30" && sendTypeValue === "1") {
+            if (!Number(giftTotalCountBag)) { message.warning('请填写礼品总数'); return false }
             const { bag } = this.state;
             if (bag[0]) {
                 const { couponPackageID } = bag[0];
@@ -1239,6 +1248,7 @@ class SpecialDetailInfo extends Component {
                     giftID: couponPackageID,
                     presentType: 4,
                     giftOdds: "3",
+                    giftTotalCount: giftTotalCountBag,
                 };
                 this.props.setSpecialGiftInfo([params]);
                 const { shareTitle, shareImagePath } = this.state;
@@ -1436,6 +1446,13 @@ class SpecialDetailInfo extends Component {
                 this.props.setSpecialBasicInfo(shareInfo);
             }
             if (["30"].includes(type)) {
+                if (!giftInfo[0].giftName && sendTypeValue == '0') {
+                    message.warning('请填写礼品名称')
+                    return false
+                }
+                if (sendTypeValue == '0') {
+                     giftInfo[0].presentType = 1;
+                }
                 const { shareTitle, shareImagePath } = this.state;
                 const shareInfo = { shareTitle, shareImagePath };
                 this.props.setSpecialBasicInfo(shareInfo);
@@ -4154,10 +4171,17 @@ class SpecialDetailInfo extends Component {
     };
     // type 30
     renderPointDuihuan() {
-        const { bag, sendTypeValue } = this.state;
+        const { bag, sendTypeValue, giftTotalCountBag } = this.state;
         const { user, type, disabled } = this.props;
         const { groupID } = user.accountInfo;
         const css = disabled ? styles.disabledModal : "";
+        const preErr =
+        +giftTotalCountBag < 1 || +giftTotalCountBag > 999999
+            ? "error"
+            : "success";
+    const preErrText =
+        (+giftTotalCountBag < 1 || +giftTotalCountBag > 999999) &&
+        "请输入大于1小于等于999999的正整数";
         return (
             <div style={{ position: "relative" }}>
                 <Row>
@@ -4181,6 +4205,35 @@ class SpecialDetailInfo extends Component {
                                 onChange={this.onBagChange}
                             />
                         </Col>
+                        {
+                            giftTotalCountBag === '不限制' ? <Col span={20} offset={3}>礼品总数： 不限制</Col> :
+                                <Col span={20} >
+                                    <FormItem
+                                        label={"礼品总数"}
+                                        labelCol={{ span: 6 }}
+                                        wrapperCol={{ span: 10 }}
+                                        className={""}
+                                        validateStatus={preErr}
+                                        help={preErrText}
+                                        required={true}
+                                    >
+                                        <div className={styles.giftCountTips}>
+                                            <Input
+                                                value={giftTotalCountBag}
+                                                onChange={({ target }) => { this.setState({ giftTotalCountBag: target.value }) }}
+                                                type="number"
+                                            />
+                                            <Tooltip title="当前兑换活动可发出的券包总数">
+                                                <Icon
+                                                    type={"question-circle"}
+                                                    style={{ color: "#787878" }}
+                                                    className={styles.cardLevelTreeIcon}
+                                                />
+                                            </Tooltip>
+                                        </div>
+                                    </FormItem>
+                                </Col> 
+                        }
                     </Row>
                 ) : (
                     <Row>

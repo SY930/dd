@@ -895,6 +895,7 @@ class CheckInSecondStep extends React.Component {
                                 <Col span={18}>
                                     <ReturnGift
                                         key={`${index}`}
+                                        eventWay={"78"}
                                         weChatCouponList={this.state.weChatCouponList}
                                         isMultiple={isMultiple}
                                         value={gifts}

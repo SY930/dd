@@ -137,7 +137,7 @@ export const toggleSelectedActivityStateSuccess = (opts) => {
 };
 export const toggleSelectedActivityStateAC = (opts) => {
     const params = {
-        groupID: opts.record.groupID,
+        groupID: opts.groupID,
         shopID: opts.record.shopID,
         promotionID: opts.record.promotionIDStr,
         promotionType: opts.record.promotionType,

@@ -1,4 +1,4 @@
-import { Checkbox, Row, Col, Form, Icon, Input, Select, Radio, Button } from 'antd';
+import { Checkbox, Row, Col, Form, Icon, Input, Select, Radio, Button, Modal } from 'antd';
 import _ from "lodash";
 import { Component } from 'react';
 import { connect } from 'react-redux';
@@ -187,7 +187,6 @@ class ActivityConditions extends Component {
 
     onSelectBag = (item, id) => {
         const { couponForm } = this.state;
-        const form = this.conditionForms[id];
         couponForm.setFieldsValue({ couponName: item })
         this.onToggleModal();
     }

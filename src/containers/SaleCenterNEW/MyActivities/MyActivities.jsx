@@ -452,6 +452,7 @@ class MyActivities extends React.Component {
 
     handleDisableClickEvent(text, record, index, nextActive, modalTip) {
         this.props.toggleSelectedActivityState({
+            groupID: getStore().getState().user.getIn(["accountInfo", "groupID"]),
             record,
             nextActive,
             modalTip,
@@ -482,7 +483,7 @@ class MyActivities extends React.Component {
         //     ),
         //     onOk: () => {
         const params = {
-            groupID: record.groupID,
+            groupID: this.props.user.accountInfo.groupID,
             shopID: record.shopID,
             promotionID: record.promotionIDStr,
             isActive: 2,
