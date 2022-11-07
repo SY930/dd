@@ -40,7 +40,6 @@ import ExportModal from "../../GiftNew/GiftInfo/ExportModal";
 import { openPromotionAutoRunListModal, queryPromotionAutoRunList, queryPromotionList } from "../../../redux/actions/saleCenterNEW/promotionAutoRun.action";
 import { AUTO_RUN_QUERY, BASIC_LOOK_PROMOTION_QUERY, BASIC_PROMOTION_DELETE, BASIC_PROMOTION_QUERY, BASIC_PROMOTION_UPDATE } from "../../../constants/authorityCodes";
 import { isBrandOfHuaTianGroupList, isGroupOfHuaTianGroupList, isHuaTian, isMine } from "../../../constants/projectHuatianConf";
-import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
 import { ONLINE_PROMOTION_TYPES } from "../../../constants/promotionType";
 import { selectPromotionForDecoration } from "../../../redux/actions/decoration";
 import { SALE_LABEL, SALE_STRING } from "i18n/common/salecenter";

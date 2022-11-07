@@ -37,7 +37,6 @@ import {
     GIFT_LIST_QUERY,
     GIFT_DETAIL_QUERY,
 } from "../../../constants/authorityCodes";
-import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
 import GiftLinkGenerateModal from './GiftLinkGenerateModal';
 import { isBrandOfHuaTianGroupList, isMine, } from "../../../constants/projectHuatianConf";
 import TicketBag from './TicketBag';

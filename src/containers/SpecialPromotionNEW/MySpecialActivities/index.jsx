@@ -101,7 +101,6 @@ import {
     isGroupOfHuaTianGroupList,
     isMine,
 } from "../../../constants/projectHuatianConf";
-import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
 import { injectIntl } from "i18n/common/injectDecorator";
 import { STRING_GIFT } from "i18n/common/gift";
 import { STRING_SPE } from "i18n/common/special";
