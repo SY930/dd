@@ -5,6 +5,7 @@ import ShopSelector from '../../components/ShopSelector';
 import { SALE_LABEL } from 'i18n/common/salecenter';
 import { ENUM, RADIO_OPTIONS } from './config';
 import styles from './index.less';
+import { getStore } from '@hualala/platform-base'
 
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
@@ -14,6 +15,8 @@ import { isZhouheiya,isGeneral } from "../../constants/WhiteList";
 /**
  * 选择店铺或区域
  */
+
+const accountID = getStore().getState().user.getIn(['accountInfo', 'accountID']);
 export default class ShopAreaSelector extends Component {
     state = {
         areaList: [],
@@ -22,7 +25,7 @@ export default class ShopAreaSelector extends Component {
     componentDidMount() {
 
         let that = this
-        fetchData('getAccountPermissions', { groupID:this.props.groupID, accountID: this.props.accountID }, null, { path: '' })
+        fetchData('getAccountPermissions', { groupID:this.props.groupID, accountID: this.props.accountID || accountID }, null, { path: '' })
         .then((res) => {
             that.setState({
                 permissionShopsData:res.data.shopIDs?res.data.shopIDs.split(','):[],

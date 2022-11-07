@@ -3290,7 +3290,7 @@ class MySpecialActivities extends React.Component {
             },
         ];
 
-        const columns = [
+        let columns = [
             {
                 title: COMMON_LABEL.serialNumber,
                 dataIndex: "index",
@@ -3305,7 +3305,6 @@ class MySpecialActivities extends React.Component {
                     );
                 },
             },
-
             {
                 title: COMMON_LABEL.actions,
                 key: "operation",
@@ -3730,7 +3729,6 @@ class MySpecialActivities extends React.Component {
                     );
                 },
             },
-
             {
                 title: `${this.props.intl.formatMessage(
                     STRING_SPE.d4546grade4128
@@ -3800,7 +3798,7 @@ class MySpecialActivities extends React.Component {
                     return result || "--";
                 },
             },
-	    {
+	        {
                 title: 'BPM单号',
                 className: 'TableTxtCenter',
                 dataIndex: 'spNo',
@@ -3860,6 +3858,7 @@ class MySpecialActivities extends React.Component {
                 },
             },
         ];
+        columns = columns.filter(item => !item.isShow || item.isShow());
         return (
             <div className={`layoutsContent ${styles.tableClass}`}>
                 <Table
