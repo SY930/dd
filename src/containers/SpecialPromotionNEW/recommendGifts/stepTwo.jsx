@@ -271,7 +271,7 @@ class StepTwo extends React.Component {
 
                 <FormItem
                     label={this.props.intl.formatMessage(STRING_SPE.dd5a3f52gg51143)} // 新用户注册卡类
-                    className={styles.FormItemStyle}
+                    className={`${styles.recommendGiftTwoStep} ${styles.FormItemStyle}`}
                     required
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
@@ -290,7 +290,8 @@ class StepTwo extends React.Component {
                                 optionFilterProp="children"
                                 placeholder={this.props.intl.formatMessage(STRING_SPE.d1700a2d61fb3202)}
                                 getPopupContainer={(node) => node.parentNode}
-
+                                allowClear={true}
+                                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}                    
                             >
                                 {
                                     cardTypeList.map(cate => <Select.Option key={cate.cardTypeID} value={cate.cardTypeID}>{cate.cardTypeName}</Select.Option>)

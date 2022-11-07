@@ -54,7 +54,7 @@ export const renderDiscountModeDesc = (number) => {
         if(number.length > 5){
             number = number.slice(0,5);
         }
-        desc = `${(number / 10).toString().slice(0, 5)}折`;
+        desc = `${(number * 1000 / 10000).toString().slice(0, 5)}折`;
     }
     return `【${desc}】`;
 }

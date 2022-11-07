@@ -803,6 +803,7 @@ class MySpecialActivities extends React.Component {
         // this.state.selectedRecord
         this.props.toggleSelectedActivityState({
             record,
+            groupID: this.props.user.accountInfo.groupID,
             nextActive,
             modalTip,
             success: this.toggleStateCallBack,
@@ -3900,6 +3901,7 @@ class MySpecialActivities extends React.Component {
     checkDeleteInfo(text, record) {
         this.props.deleteSelectedRecord({
             ...record,
+            groupID: this.props.user.accountInfo.groupID,
             success: () => {
                 message.success(
                     `${this.props.intl.formatMessage(
@@ -4021,7 +4023,7 @@ class MySpecialActivities extends React.Component {
         const actList = ["20", "30", "22"]; // 摇奖活动，积分兑换，报名活动
         if (record) {
             eventWayData = record.eventWay;
-            groupIdData = record.groupID;
+            groupIdData = this.props.user.accountInfo.groupID;
             itemIdData = record.itemID;
         } else {
             eventWayData = this.state.eventWay;

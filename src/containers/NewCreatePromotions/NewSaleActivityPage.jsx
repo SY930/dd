@@ -673,12 +673,17 @@ class NewCustomerPage extends Component {
     checkAuth = (allMenu, category) => {
         const { currentCategoryIndex } = this.state;
         let { authStatus } = checkAuthLicense(this.state.authLicenseData)
+        let displayList = [];
         // authStatus = true;
         if (!authStatus) {
-            category = category.filter(item => (item.list == FANS_INTERACTIVITY_PROMOTION_TYPES || item.title == '人气活动'))
+            category = category.filter(item => (item.title == '互动营销'))
         }
-        let displayList = currentCategoryIndex === 0 ? category.slice(1) : [category[currentCategoryIndex - (!authStatus ? 0 : 1)]];
-        // 未授权   只留  互动营销-随机立减 和 促进销量
+        if (!authStatus){
+            displayList = currentCategoryIndex === 0 ? category.slice(0) : [category[currentCategoryIndex - (!authStatus ? 0 : 1)]];
+        }else{
+            displayList = currentCategoryIndex === 0 ? category.slice(1) : [category[currentCategoryIndex - (!authStatus ? 0 : 1)]];
+        }
+        // 未授权   只留  互动营销-随机立减
         if (!authStatus) {
             displayList = displayList.filter(item => (item.title == '互动营销'))
             displayList.map(item => {
@@ -687,7 +692,6 @@ class NewCustomerPage extends Component {
                     item.list = info
                 }
             })
-            // 
             allMenu = allMenu.filter(item => (item == '互动营销' || item == '全部活动'))
         }
         return { displayList, allMenu }
@@ -805,7 +809,6 @@ class NewCustomerPage extends Component {
 
         // 插件授权状态--营销盒子大礼包
         let { authPluginStatus } = checkAuthLicense(this.state.authLicenseData, 'HLL_CRM_Marketingbox')
-
         /**
          * 页面活动列表显示过滤
          */

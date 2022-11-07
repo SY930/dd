@@ -1,3 +1,4 @@
+
 import React, { PureComponent as Component } from 'react';
 import { Table, message, Modal, Tooltip } from 'antd';
 import styles from './bag.less';
@@ -60,7 +61,7 @@ class MainTable extends Component {
             { width: 80, title: '操作', dataIndex: 'op', className: tc, render },
             { title: '券包名称', dataIndex: 'couponPackageName', render: render1 },
             { width: 120, title: '券包类型', dataIndex: 'type' },
-            { width: 100, title: '库存', dataIndex: 'remainStock', className: tc, render: render3 },
+            // { width: 100, title: '库存', dataIndex: 'remainStock', className: tc, render: render3 },
             { width: 260, title: '有效期', dataIndex: 'postTime', className: tc, render: render2 },
         ];
     }

@@ -87,6 +87,7 @@ import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import {injectIntl} from './IntlDecor';
 import returnGift from './returnGift/returnGift';
 import { jumpPage } from '@hualala/platform-base';
+import { getAuthLicenseData } from "../../redux/actions/saleCenterNEW/specialPromotion.action";
 
 // 这里是内部内容的框架组件，分为 左边 和右边。
 @injectIntl()
@@ -157,6 +158,7 @@ class ActivityMain extends React.Component {
     }
 
     componentDidMount() {
+        this.props.getAuthLicenseData({ productCode: 'HLL_CRM_Marketingbox' })
         const pagesArr = [
             {
                 wrapper: NewFullCutActivity,
@@ -316,7 +318,11 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return {};
+    return {
+        getAuthLicenseData: (opts) => {
+            return dispatch(getAuthLicenseData(opts))
+        },
+    };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ActivityMain);

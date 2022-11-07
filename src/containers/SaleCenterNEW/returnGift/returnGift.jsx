@@ -251,7 +251,7 @@ class ReturnGift extends React.Component {
                             </Popconfirm>
                         )
                     }
-                    <FormItem
+                    {this.props.eventWay == "3010" ? <FormItem
                         label={"礼品属性"}
                         labelCol={{ span: 5 }}
                         wrapperCol={{ span: 18 }}
@@ -265,7 +265,7 @@ class ReturnGift extends React.Component {
                             <Radio key={'1'} value={1}>餐饮券</Radio >
                             <Radio key={'8'} value={8}>零售券</Radio >
                         </RadioGroup >
-                    </FormItem>
+                    </FormItem> : ""}
                     <FormItem
                         label={SALE_LABEL.k6d8n39k}
                         required={true}
