@@ -371,7 +371,7 @@ class SpecialRangeInfo extends React.Component {
                 nextFlag = false;
             }
             if(!approvalInfo.activityCost || !approvalInfo.activityRate || !approvalInfo.estimatedSales || !approvalInfo.auditRemark) {
-                return;
+                nextFlag = false;
             }
         }
 
