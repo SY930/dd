@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { throttle } from 'lodash';
 import {
     Button,
+    message,
 } from 'antd';
 import { COMMON_LABEL } from 'i18n/common';
 import styles from '../GiftAdd/Crm.less';
@@ -24,6 +25,7 @@ class GiftEditPage extends Component {
             contentHeight: 782,
             scrollPercent: 0,
             tabKey: 1,
+            isCheckedAgreement: false,//是否确认协议
         };
         this.formRef = null;
         this.container = null;
@@ -55,6 +57,12 @@ class GiftEditPage extends Component {
 
     // TODO: 这块为什么执行了两次保存？
     saving() {
+        if(this.props.giftType == '90') {
+            if(!this.state.isCheckedAgreement) {
+                message.error('当前您未勾选《法律声明》')
+                return
+            }
+        }
         this.formRef && this.formRef.wrappedInstance && this.formRef.wrappedInstance.handleSubmit
         && this.formRef.wrappedInstance.handleSubmit();
     }
@@ -126,6 +134,8 @@ class GiftEditPage extends Component {
                                 scrollPercent: value
                             })
                         }}
+                        isCheckedAgreement={this.state.isCheckedAgreement}
+                        changeProtocol={(e) => this.setState({ isCheckedAgreement: e.target.checked })}
                         contentHeight={this.state.contentHeight}
                         ref={form => this.formRef = form}
                         describe={giftDescribe}

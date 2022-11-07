@@ -587,6 +587,7 @@ class ReturnGiftDetailInfo extends React.Component {
 
                                     <ReturnGift
                                         key={`${index}`}
+                                        eventWay={"3010"}
                                         weChatCouponList={this.state.weChatCouponList}
                                         isMultiple={isMultiple}
                                         value={gifts}

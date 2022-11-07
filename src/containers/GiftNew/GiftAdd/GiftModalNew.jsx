@@ -134,6 +134,10 @@ export default class GiftModal extends Component {
             } else {
                 this.setState({ formKeys: formKeys3, couponType: value });
             }
+            this.form.setFieldsValue({
+                giftItemID: undefined,
+                giftCount: undefined,
+            });
         }
     }
     /** 得到form */

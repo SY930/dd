@@ -607,6 +607,16 @@
     background: #FFFFFF;
     border-radius: 0px 0px 10px 0px;
 
+
+    .giftCountTips {
+        display: flex;
+        align-items: center;
+        // margin-left: 8px;
+        .cardLevelTreeIcon {
+            margin-left: 8px;
+        }
+    }
+
     .wxCouponTips {
         height: 36px;
         padding-left: 13px;
@@ -2236,14 +2246,19 @@
 
 .cardLevelTree {
     position: relative;
-
     .cardLevelTreeIcon {
         position: absolute;
         top: 8px;
         left: 480px;
         color: rgba(239, 72, 72, 0.81)
     }
-
+    .recommendGiftTwoStep{
+        :global{
+            .ant-select-dropdown{
+                top:34px!important
+            }
+        }
+    }
     .couponSwitch {
         :global {
             .ant-switch {
