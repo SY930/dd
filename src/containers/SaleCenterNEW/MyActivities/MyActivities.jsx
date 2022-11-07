@@ -1896,7 +1896,7 @@ class MyActivities extends React.Component {
             <div className={`layoutsContent ${styles.tableClass}`}>
                 <Table
                     ref={this.setTableRef}
-                    scroll={{ x: 1000, y: "calc(100vh - 440px)" }}
+                    scroll={{ x: 1000, y: "calc(100vh - 360px)" }}
                     className={styles.sepcialActivesTable}
                     bordered={true}
                     columns={columns}
@@ -1938,9 +1938,8 @@ class MyActivities extends React.Component {
         return (
             <div style={{ backgroundColor: "#F3F3F3" }} className="layoutsContainer" ref={layoutsContainer => (this.layoutsContainer = layoutsContainer)}>
                 <div>{this.props.tabKeys !== "saleSpecialPage" && this.renderHeader()}</div>
-                {/* <PromotionCalendarBanner /> */}
                 <div>
-                    <div className={styles.pageContentWrapper} style={{ minHeight: "calc(100vh - 160px)" }}>
+                    <div className={styles.pageContentWrapper} style={{ minHeight: "calc(100vh - 80px)" }}>
                         <div style={{ padding: "0" }} className="layoutsHeader">
                             {this.renderFilterBar()}
                             <div style={{ margin: "0" }} className="layoutsLine"></div>

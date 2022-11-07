@@ -1788,7 +1788,6 @@ class MySpecialActivities extends React.Component {
             >
                 {this.renderHeader()}
                 <div>
-                    <PromotionCalendarBanner />
                     <Tabs
                         defaultActiveKey={tabKeys}
                         onChange={this.handleChangeTabs}
@@ -1799,14 +1798,14 @@ class MySpecialActivities extends React.Component {
                         <TabPane tab="营销活动" key="saleSpecialPage">
                             {!this.state.authStatus ? (
                                 <div
-                                    style={{ minHeight: "calc(100vh - 160px)" }}
+                                    style={{ minHeight: "calc(100vh - 80px)" }}
                                 >
                                     <EmptyPage />{" "}
                                 </div>
                             ) : (
                                 <div
                                     className={styles.pageContentWrapper}
-                                    style={{ minHeight: "calc(100vh - 160px)" }}
+                                    style={{ minHeight: "calc(100vh - 80px)" }}
                                 >
                                     <div
                                         style={{ padding: "0" }}
@@ -3551,7 +3550,7 @@ class MySpecialActivities extends React.Component {
                     columns={columns}
                     dataSource={this.state.dataSource}
                     loading={this.state.loading}
-                    scroll={{ x: 1499, y: "calc(100vh - 440px)" }}
+                    scroll={{ x: 1499, y: "calc(100vh - 360px)" }}
                     size="default"
                     pagination={{
                         pageSize: this.state.pageSizes,
