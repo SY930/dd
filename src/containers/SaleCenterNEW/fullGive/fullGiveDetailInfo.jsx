@@ -358,14 +358,14 @@ class FullGiveDetailInfo extends React.Component {
                         this.props.setPromotionDetail({
                             goodsScopeList: [],
                         });
-                    } else {
-                        //周黑鸭需求
-                        let stageGoodsList = []
-                        stageGoodsList.push({ stage: 0, goodsList: data[0].dishes })
-                        this.props.setPromotionDetail({
-                            stageGoodsList,
-                        });
-                    }
+                    } 
+
+                    //周黑鸭需求
+                    let stageGoodsList = []
+                    stageGoodsList.push({ stage: 0, goodsList: data[0].dishes })
+                    this.props.setPromotionDetail({
+                        stageGoodsList,
+                    });
 
                 } else {
                     // 满
