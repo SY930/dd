@@ -282,7 +282,7 @@ class FilterSelector extends React.Component {
 
     downLoadExcel = () => {
         if(isZhouheiya(this.props.groupID)){
-            window.open('https://res.hualala.com/crmexport/%E5%BA%97%E9%93%BA%E7%BC%96%E7%A0%81%E5%AF%BC%E5%85%A5%E6%A8%A1%E6%9D%BF.xlsx');
+            window.open('http://res.hualala.com/crmexport/%E5%BA%97%E9%93%BA%E7%BC%96%E7%A0%81%E5%AF%BC%E5%85%A5%E6%A8%A1%E6%9D%BF20221031.xlsx');
         }else{
             window.open('http://res.hualala.com/crmexport/%E5%BA%97%E9%93%BA%E5%AF%BC%E5%85%A5%E6%A8%A1%E6%9D%BF.xlsx');
         }

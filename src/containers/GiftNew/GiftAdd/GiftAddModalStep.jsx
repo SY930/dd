@@ -2070,6 +2070,7 @@ shopAreaSelectorChange = (value) => {
                     })( */}
                     <ShopAreaSelector
                         groupID={groupID}
+                        accountID={this.props.accountInfo.get('accountID')}
                         brandList={brandList}
                         isCreateCoupon={true}
                         formatRes={(params) => {
@@ -2082,7 +2083,7 @@ shopAreaSelectorChange = (value) => {
                         }}
                         typeList={['shop', 'area']}
                         labelCol={{ span: value === '111' ? 4 : 5 }}
-                        filterParm={isFilterShopType() ? { productCode: 'HLL_CRM_License' } : {}}
+                        // filterParm={isFilterShopType() ? { productCode: 'HLL_CRM_License' } : {}}
                     />
                     {/* )} */}
                 </Col>

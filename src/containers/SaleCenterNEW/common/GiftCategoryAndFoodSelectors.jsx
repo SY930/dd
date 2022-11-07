@@ -129,6 +129,8 @@ class CategoryAndFoodSelector extends Component {
             newGoodsObj: this.props.goodScopeRequest
         })
 
+        this.props.getGoodsState({ newGoodsObj: {...this.props.goodScopeRequest }})
+
         
     }
     mapSelectedValueToObjectsThenEmit = () => {

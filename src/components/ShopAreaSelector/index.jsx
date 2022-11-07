@@ -9,7 +9,8 @@ import styles from './index.less';
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
 const Option = Select.Option;
-
+import {fetchData} from "../../helpers/util";
+import { isZhouheiya,isGeneral } from "../../constants/WhiteList";
 /**
  * 选择店铺或区域
  */
@@ -19,9 +20,20 @@ export default class ShopAreaSelector extends Component {
     }
 
     componentDidMount() {
-        if (this.props.typeList.includes(ENUM.AREA)) {
-            this.fetchAreaList();
-        }
+
+        let that = this
+        fetchData('getAccountPermissions', { groupID:this.props.groupID, accountID: this.props.accountID }, null, { path: '' })
+        .then((res) => {
+            that.setState({
+                permissionShopsData:res.data.shopIDs?res.data.shopIDs.split(','):[],
+                permissionAreasData:res.data.orgTypeID13?res.data.orgTypeID13.split(','):[]
+            },()=>{
+                if (this.props.typeList.includes(ENUM.AREA)) {
+                    this.fetchAreaList();
+                }
+            })
+        });
+
     }
 
     fetchAreaList = async () => {
@@ -37,7 +49,11 @@ export default class ShopAreaSelector extends Component {
         });
         const { code, message: msg, data = {} } = response;
         if (code === '000') {
-            const { records = [] } = data;
+            let { records = [] } = data;
+            if(isZhouheiya(this.props.groupID)&&!isGeneral()&&this.state.permissionAreasData){
+                records = records.filter(item=>this.state.permissionAreasData.some((areaData)=>areaData == item.orgID)) //当权限为区域经理，增加数据权限
+            }
+            
             this.setState({ areaList: records });
             return;
         }
@@ -113,6 +129,7 @@ export default class ShopAreaSelector extends Component {
                             filterParm={filterParm}
                             filterShopIds={filterShopIds}
                             groupID={this.props.groupID}
+                            permissionShopsData={this.state.permissionShopsData}
                             disabled={disabled}
                         />
                         {firstTips}

@@ -646,6 +646,7 @@ class PromotionScopeInfo extends React.Component {
                 <ShopAreaSelector
                     brandList={brands}
                     groupID={this.props.user.toJS().accountInfo.groupID}
+                    accountID={this.props.user.toJS().accountInfo.accountID}
                     firstRequired={!isGeneral() ? true : false}
                     secondRequired={!isGeneral() ? true : false}
                     firstValidateStatus={'error'}
