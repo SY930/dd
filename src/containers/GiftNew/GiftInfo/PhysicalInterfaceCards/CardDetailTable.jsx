@@ -576,7 +576,7 @@ export default class CardDetailTable extends React.Component {
                         bordered={true}
                         columns={columns}
                         dataSource={dataSource}
-                        scroll={{ x: scroll.x, y: 300 }}
+                        scroll={{ x: true, y: 300 }}
                         rowSelection={
                             tabKey !== "cardTotal"
                                 ? {
