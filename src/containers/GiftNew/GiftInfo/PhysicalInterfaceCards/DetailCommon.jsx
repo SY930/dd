@@ -281,16 +281,16 @@ const renderColor = (text) => {
 const renderItem = (key, { handleOperate }) => {
     const colums_obj = {
         idx: {
-            width: 50, title: '序号', dataIndex: 'idx', className: tc, fixed: 'left',render: (text, record, index) => index + 1
+            width: 50, title: '序号', dataIndex: 'idx', className: tc, render: (text, record, index) => index + 1
         },
         operation: {
-            width: 50, title: '操作', dataIndex: 'opearation', fixed: 'left',render: (text, reocrd) => renderOpeartion(reocrd, handleOperate)
+            width: 50, title: '操作', dataIndex: 'opearation', render: (text, reocrd) => renderOpeartion(reocrd, handleOperate)
         },
         taskNo: {
-            width: 120, title: '开卡任务编号', dataIndex: 'taskNo', fixed: 'left',render: renderLongText
+            width: 120, title: '开卡任务编号', dataIndex: 'taskNo', render: renderLongText
         },
         ftaskNo: {
-            width: 120, title: '发卡任务编号', dataIndex: 'taskNo', fixed: 'left',render: renderLongText
+            width: 120, title: '发卡任务编号', dataIndex: 'taskNo', render: renderLongText
         },
         cardStartNo: {
             width: 100, title: '开始卡号', dataIndex: 'cardStartNo', render: renderLongText
@@ -334,10 +334,10 @@ const renderItem = (key, { handleOperate }) => {
             }
         },
         cardInnerNo: {
-            width: 160, title: '卡内码', dataIndex: 'cardInnerNo', fixed: 'left',render: renderLongText
+            width: 160, title: '卡内码', dataIndex: 'cardInnerNo', render: renderLongText
         },
         cardOutSideNo: {
-            width: 100, title: '卡外码', dataIndex: 'cardOutSideNo', fixed: 'left',render: renderLongText
+            width: 100, title: '卡外码', dataIndex: 'cardOutSideNo', render: renderLongText
         },
         sendCheck: {
             width: 100, title: '发卡审核', dataIndex: 'sendCheck', render: (text) => SEND_CHECK[text] || '--'
