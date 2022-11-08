@@ -26,7 +26,7 @@ class DetailsModal extends Component {
                 visible={visible}
                 maskClosable={false}
                 onCancel={onCancel}
-                width={1700}
+                width={1105}
                 footer={[<Button key="0" type="primary" onClick={onCancel}>关闭</Button>]}
             >
                 <div className={styles.giftDetailModal}>

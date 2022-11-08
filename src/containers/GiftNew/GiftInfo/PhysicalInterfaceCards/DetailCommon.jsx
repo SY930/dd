@@ -281,16 +281,16 @@ const renderColor = (text) => {
 const renderItem = (key, { handleOperate }) => {
     const colums_obj = {
         idx: {
-            width: 50, title: '序号', dataIndex: 'idx', className: tc, render: (text, record, index) => index + 1
+            width: 50, title: '序号', dataIndex: 'idx', className: tc, fixed: 'left',render: (text, record, index) => index + 1
         },
         operation: {
-            width: 50, title: '操作', dataIndex: 'opearation', render: (text, reocrd) => renderOpeartion(reocrd, handleOperate)
+            width: 50, title: '操作', dataIndex: 'opearation', fixed: 'left',render: (text, reocrd) => renderOpeartion(reocrd, handleOperate)
         },
         taskNo: {
-            width: 120, title: '开卡任务编号', dataIndex: 'taskNo', render: renderLongText
+            width: 120, title: '开卡任务编号', dataIndex: 'taskNo', fixed: 'left',render: renderLongText
         },
         ftaskNo: {
-            width: 120, title: '发卡任务编号', dataIndex: 'taskNo', render: renderLongText
+            width: 120, title: '发卡任务编号', dataIndex: 'taskNo', fixed: 'left',render: renderLongText
         },
         cardStartNo: {
             width: 100, title: '开始卡号', dataIndex: 'cardStartNo', render: renderLongText
@@ -334,10 +334,10 @@ const renderItem = (key, { handleOperate }) => {
             }
         },
         cardInnerNo: {
-            width: 160, title: '卡内码', dataIndex: 'cardInnerNo', render: renderLongText
+            width: 160, title: '卡内码', dataIndex: 'cardInnerNo', fixed: 'left',render: renderLongText
         },
         cardOutSideNo: {
-            width: 100, title: '卡外码', dataIndex: 'cardOutSideNo', render: renderLongText
+            width: 100, title: '卡外码', dataIndex: 'cardOutSideNo', fixed: 'left',render: renderLongText
         },
         sendCheck: {
             width: 100, title: '发卡审核', dataIndex: 'sendCheck', render: (text) => SEND_CHECK[text] || '--'
@@ -402,12 +402,13 @@ const renderItem = (key, { handleOperate }) => {
 
 export const DETAIL_CONFIG = {
     'openCard': {
-        formKeys: ['taskNo', 'description', 'auditStatus', 'createTime', 'q', 'activeCard', 'checkCard', 'cancel', 'cancelCancel', 'exportEXCEL',],
+        formKeys: ['taskNo', 'description', 'auditStatus', 'createTime', 'q', ],
         columnsKey: ['idx', 'operation', 'taskNo', 'cardStartNo', 'cardEndNo', 'openNum', 'auditStatusName', 'createStamp', 'createBy', 'auditTime', 'auditBy', 'description', 'expirationType',],
         columns: (params) => {
             return DETAIL_CONFIG['openCard'].columnsKey.map(key => renderItem(key, params));
         },
-        scroll: { x: 1600 },
+        btnList: ['activeCard', 'checkCard', 'cancel', 'cancelCancel', 'exportEXCEL',],
+        scroll: { x: 1320 },
         listMethod: 'cardOpenTask/queryCardOpenTaskList.ajax',
         operationMethod: ['cardOpenTask', 'CardOpenTask.ajax'],
         createTime: {
@@ -416,12 +417,13 @@ export const DETAIL_CONFIG = {
         }
     },
     'cardSend': {
-        formKeys: ['taskNo', 'description', 'auditStatus', 'companyCode', 'isPush', 'createTime', 'q', 'sendCard', 'cancel', 'cancelCancel', 'push', 'checkCard'],
+        formKeys: ['taskNo', 'description', 'auditStatus', 'companyCode', 'isPush', 'createTime', 'q', ],
         columnsKey: ['idx', 'operation', 'ftaskNo', 'description', 'sumPrice', 'payAblePrice', 'paidPrice', 'auditStatusName', 'createStamp', 'createBy', 'companyName', 'auditTime', 'auditBy', 'isPushName'],
         columns: (params) => {
             return DETAIL_CONFIG['cardSend'].columnsKey.map(key => renderItem(key, params));
         },
-        scroll: { x: 1740 },
+        btnList: ['sendCard', 'cancel', 'cancelCancel', 'push', 'checkCard'],
+        scroll: { x: 1590 },
         listMethod: 'cardSendTask/queryCardSendTaskList.ajax',
         operationMethod: ['cardSendTask', 'CardSendTask.ajax'],
         createTime: {
@@ -430,11 +432,12 @@ export const DETAIL_CONFIG = {
         }
     },
     'cardSync': {
-        formKeys: ['taskNo', 'sendStatus', 'createTime', 'cardOutSideNo', 'q', 'push',],
+        formKeys: ['taskNo', 'sendStatus', 'createTime', 'cardOutSideNo', 'q', ],
         columnsKey: ['idx', 'cardInnerNo', 'cardOutSideNo', 'paidPrice', 'pushStatus', 'openCardTime', 'sendCardTime', 'pushTime', 'description', 'expirationType',],
         columns: (params) => {
             return DETAIL_CONFIG['cardSync'].columnsKey.map(key => renderItem(key, params));
         },
+        btnList: ['push',],
         scroll: { x: 1450 }
     },
     'cardTotal': {
@@ -443,7 +446,8 @@ export const DETAIL_CONFIG = {
         columns: (params) => {
             return DETAIL_CONFIG['cardTotal'].columnsKey.map(key => renderItem(key, params));
         },
-        scroll: { x: 1340 },
+        btnList: [],
+        scroll: { x: 1230 },
         listMethod: 'cardInfo/queryCardInfoList.ajax',
         operationMethod: ['cardTotal', 'CardTotal.ajax'],
     }
