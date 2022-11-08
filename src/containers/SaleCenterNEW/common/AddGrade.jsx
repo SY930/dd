@@ -353,7 +353,7 @@ class AddGrade extends React.Component {
                                                         this.props.ruleType == '1' ? k5m3on0k :
                                                             this.props.ruleType == '3' ? k5ez4pvb : k5ez4qew
                                                 }
-                                                addonAfter={<Select
+                                                addonAfter={isZhouheiya(this.props.user.groupID) ? <Select
                                                     disabled={index != 0}
                                                     style={{ width: 40 }}
                                                     size="default"
@@ -366,7 +366,7 @@ class AddGrade extends React.Component {
                                                 >
                                                     <Option key="1" value="1">元</Option>
                                                     <Option key="2" value="2">份</Option>
-                                                </Select>}
+                                                </Select> : k5ezdbiy}
                                                 onChange={(val) => { this.onStageAmountChange(val, index) }}
                                                 value={{ number: this.state.data[k].stageAmount }}
                                                 modal="float"
