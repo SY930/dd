@@ -193,7 +193,7 @@ export default class GiftInfo extends Component {
                 const { children } = x;
                 const card = children.find(y=>y.value === giftItemID);
                 if(card){
-                    const { value: giftItemID, giftType, giftTypeName, label: giftName, giftValue } = card;
+                    const { value: giftItemID, giftType, giftTypeName, _label: giftName, giftValue } = card;
                     obj = { giftType, giftTypeName, giftItemID, giftName, giftValue };
                 }
             });
@@ -259,6 +259,14 @@ export default class GiftInfo extends Component {
         }else{
             treeData = couponData;
         }
+        treeData.forEach(item => {
+            item.children.forEach(row => {
+                if(!row._label) {
+                    row._label = row.label;
+                    row.label = row.label + ' -【' + row.value + '】';
+                }
+            })
+        })
         //礼品定额卡添加优惠券限制最多10种
         return (
             <div className={styles.addGiftWrapper}>

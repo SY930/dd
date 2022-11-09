@@ -92,8 +92,8 @@ const formItems = {
     },
 };
 const formItemLayout = {
-    labelCol: { span: 6 },
-    wrapperCol: { span: 13 },
+    labelCol: { span: 4 },
+    wrapperCol: { span: 18 },
 }
 export default class GiftModal extends Component {
     /* 页面需要的各类状态属性 */
@@ -240,6 +240,7 @@ export default class GiftModal extends Component {
                 maskClosable={false}
                 onOk={this.onOk}
                 onCancel={onClose}
+                width={700}
             >
                 <BaseForm
                     getForm={this.getForm}
