@@ -168,11 +168,11 @@ class CompositeDetailInfo extends React.Component {
         })
         this.setState({ conditions })
         if (isZhouheiya(user.groupID)) {
-            const { stageType, shareRatioList, shareType } = rule;
+            const { stageType, shareRatioList = [], shareType } = rule;
             this.setState({
                 stageType,
-                condition1: shareRatioList[0],
-                condition2: shareRatioList[1],
+                condition1: shareRatioList[0] || '',
+                condition2: shareRatioList[1] || '',
                 shareType: shareType || 1,
             })
         }
