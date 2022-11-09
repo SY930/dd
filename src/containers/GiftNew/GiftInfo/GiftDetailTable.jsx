@@ -456,6 +456,9 @@ class GiftDetailTable extends Component {
             gift.data.goodScopeRequestClone = {
                 containData: { goods: [], category: [] },
                 exclusiveData: { goods: [], category: [] },
+                containType: 1,
+                exclusiveType: 1,
+                participateType: 1,
                 ...gift.data.goodScopeRequest,
             }
         }
