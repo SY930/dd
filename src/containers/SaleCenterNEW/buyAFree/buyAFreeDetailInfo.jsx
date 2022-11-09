@@ -581,9 +581,10 @@ class BuyAFreeDetailInfo extends React.Component {
                         )
                     }
                     {isZhouheiya(this.props.user.groupID) &&
-                        this.state.ruleType == '0' || this.state.ruleType == '1' ?
-                        null :
-                        this.renderGoodRef()
+                        (this.state.ruleType == '0' || this.state.ruleType == '1' ?
+                            null :
+                            this.renderGoodRef()
+                        )
                     }
                     {isZhouheiya(this.props.user.groupID) && this.renderMaxCount()}
                     {this.renderFoodNeedCalc()}
