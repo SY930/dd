@@ -1208,9 +1208,10 @@ class MyActivities extends React.Component {
         const url = excelUrl.split('/')[1];
         axiosData('/promotionUpload/upload.ajax', {
             groupID: this.props.user.accountInfo.groupID,
+            fileName: `${url}`,
         }, null, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
         .then((res) => {
-            this.showModleTip()
+            this.showModleTip(res)
          })
     }
 
@@ -1377,7 +1378,7 @@ class MyActivities extends React.Component {
                             <div className="uploadArea">
                                 <Upload
                                     fileList={this.state.fileList}
-                                    action="/api/shopcenter/upload"
+                                    action="/api/v1/upload?service=HTTP_SERVICE_URL_CRM&method=/crm/uploadFile.ajax"
                                     name="file"
                                     onChange={this.handleUploadChange}
                                     beforeUpload={this.handleBeforeUpload}
