@@ -316,5 +316,36 @@ async function queryConfiguredShopId(data) {
     return [];
 }
 
+async function getCouponList() {
+    const { groupID } = getAccountInfo();
+    const method = '/promotion/v2/activityTypeExecOrder/query.ajax';
+    const params = { service, type, data: { groupID, pageNo: 1, pageSize: 10000 }, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg, data: { activityTypeExecOrderQueryList = [] } } = response;
+    if (code === '000') {
+        return activityTypeExecOrderQueryList.sort((item, next) => item.executeOrder - next.executeOrder);
+    }
+    message.error(msg)
+    return [];
+}
+
+async function saveActiveOrder(values = []) {
+    const data = values.map((item, index) => {
+        return { ...item, executeOrder: index + 1 }
+    })
+    const { groupID } = getAccountInfo();
+    const method = '/promotion/v2/activityTypeExecOrder/save.ajax';
+    const params = { service, type, data: { groupID, activityTypeExecOrderSaveList: data }, method };
+    const response = await axios.post(url + method, params);
+    const { code, message: msg } = response;
+    if (code === '000') {
+        message.success('更新成功')
+        return true
+    }
+    message.error(msg)
+    return false;
+}
+
+
 export { initShareRuleGroup, getRuleGroupList, queryShareRuleDetail, queryShareRuleDetailList, addShareRuleGroup, updateShareRuleGroup, deleteShareRuleGroup, setStorageValue, getStorageValue, FetchGiftList, fetchAllPromotionList, 
-    getInitRuleList,getRuleDetail, updateRule,getRuleList, deleteRule, queryConfiguredShopId}
+    getInitRuleList,getRuleDetail, updateRule,getRuleList, deleteRule, queryConfiguredShopId, getCouponList, saveActiveOrder }

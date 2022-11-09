@@ -26,6 +26,9 @@
             }
         }
     }
+    .addRuleBtn {
+        margin-left: 10px;
+    }
 }
 .initModalBox{
     :global{
@@ -581,4 +584,20 @@
     position: fixed;
     bottom: 20px;
     width: 400px
+}
+
+.CustomExecutModal {
+    .vip1 {
+        &::before {
+            content: '';
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: url(http://res.hualala.com/basicdoc/4f5ec669-063e-4cac-9336-3345b2adc3be.png) no-repeat;
+            background-size: contain;
+            vertical-align: -8px;
+            margin-right: 10px;
+            margin-left: 5px;
+        }
+    }
 }

@@ -3,7 +3,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { connect } from "react-redux";
-import { Table, Icon, Select, DatePicker, Button, Modal, Row, Col, message, TreeSelect, Switch, Input, Radio, Spin, Popover, Menu, Tooltip } from "antd";
+import { Table, Icon, Select, DatePicker, Button, Modal, Row, Col, message, TreeSelect, Switch, Input, Radio, Spin, Popover, Menu, Tooltip, Upload } from "antd";
 import { COMMON_LABEL, COMMON_STRING } from "i18n/common";
 import { throttle } from "lodash";
 import { jumpPage, getStore } from "@hualala/platform-base";
@@ -47,8 +47,10 @@ import { SALE_LABEL, SALE_STRING } from "i18n/common/salecenter";
 import { injectIntl } from "../IntlDecor";
 import Card from "../../../assets/card.png";
 import CardSaleActive from "./CardSaleActive";
-import { isZhouheiya, isGeneral } from "../../../constants/WhiteList";
+import { isZhouheiya, isGeneral, businessTypesList } from "../../../constants/WhiteList";
+import GoodsRef from '@hualala/sc-goodsRef';
 
+const { GoodsSelector } = GoodsRef;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const { Group: RadioGroup } = Radio;
@@ -625,7 +627,7 @@ class MyActivities extends React.Component {
         }
     }
     getParams = () => {
-        const { promotionType, promotionDateRange, promotionValid, promotionState, promotionCategory, promotionTags, promotionBrands, promotionOrder, channelLst, promotionShop, promotionName, promotionCode, auditStatus, } = this.state;
+        const { promotionType, promotionDateRange, promotionValid, promotionState, promotionCategory, promotionTags, promotionBrands, promotionOrder, channelLst, promotionShop, promotionName, promotionCode, auditStatus, selectedGoods = []} = this.state;
         const opt = {};
         if (promotionType !== "" && promotionType !== undefined && promotionType !== "undefined") {
             opt.promotionType = promotionType;
@@ -670,6 +672,10 @@ class MyActivities extends React.Component {
         opt.groupID = this.props.user.accountInfo.groupID;
         opt.accountID = this.props.user.accountInfo.accountID;
         opt.sourceType = +this.isOnlinePromotionPage();
+        if (isZhouheiya(opt.groupID) && selectedGoods.length > 0){
+            opt.applyGoodsList = selectedGoods.map(item => item.goodsID)
+        }
+
         return opt;
     };
     handleQuery(thisPageNo) {
@@ -837,6 +843,7 @@ class MyActivities extends React.Component {
         this.props.saleCenterResetBasicInfo(promotionBasicDataAdapter(responseJSON.promotionInfo, _serverToRedux));
         this.props.saleCenterResetScopeInfo(promotionScopeInfoAdapter(responseJSON.promotionInfo.master, _serverToRedux));
         this.props.saleCenterResetDetailInfo(promotionDetailInfoAdapter(responseJSON.promotionInfo, _serverToRedux));
+        console.log("🚀 ~ file: MyActivities.jsx ~ line 853 ~ MyActivities ~ responseJSON.promotionInfo,", responseJSON.promotionInfo,)
         this.setState({
             promotionInfo: responseJSON.promotionInfo,
             selectedRecord: responseJSON.promotionInfo, // arguments[1],
@@ -1184,6 +1191,92 @@ class MyActivities extends React.Component {
         queryPromotionList({ type });
         this.props.openPromotionAutoRunListModal();
     }
+    downLoadTemp = () => {
+        window.open(`${ENV.FILE_RESOURCE_DOMAIN}/group2/M01/12/1B/wKgVSlqvMarK1qomAAAlVt8zyUI65.xlsx`);
+    }
+
+    showModleTip = (res) => {
+        const { code, data } = res
+        let content  = '导入成功';
+        if (code === '000') {
+            content = `已导入${data.successTimes}条, 失败${data.failedTimes}条`
+        } 
+        Modal.info({
+            title: `导入${code === '000' ? '结果' : '失败'}`,
+            content,
+            iconType: 'exclamation-circle',
+            okText: '确定'
+        });
+    }
+
+
+    onOkActiveImport = () => {
+        const { excelUrl } = this.state;
+        const url = excelUrl.split('/')[1];
+        axiosData('/promotionUpload/upload.ajax', {
+            groupID: this.props.user.accountInfo.groupID,
+            fileName: `${url}`,
+        }, null, { path: '' }, 'HTTP_SERVICE_URL_PROMOTION_NEW')
+        .then((res) => {
+            this.showModleTip(res)
+         })
+    }
+
+
+    handleBeforeUpload = (file) => {
+        if (!file) return true; // in case of browser compatibility
+        const types = ['.xlsx', '.xls'];
+        const matchedType = types.find((type) => {
+            const regexp = new RegExp(`^.*${type.replace('.', '\\.')}$`);
+            return file.name.match(regexp);
+        });
+        if (types.length && !matchedType) {
+            message.error('上传文件格式错误');
+            return false;
+        }
+        this.setState({
+            fileList: [file],
+        });
+        return true;
+    }
+
+    handleUploadChange = ({ file }) => {
+        if (file.status === 'done') {
+            this.setState({ excelUrl: file.response.data.url });
+            message.success('文件上传成功！');
+        } else if (file.status === 'error') {
+            message.error('文件上传失败！');
+        }
+    }
+
+    handleSelectGoods = () => {
+        this.setState({
+            selectGoodsVisible: true
+        })
+    }
+
+    handleModalOk = (v) => {
+        const dishObjects = v.reduce((acc, curr) => {
+                acc.push(curr)
+            return acc;
+        }, [])
+        if (dishObjects.length > 100) {
+            message.warning('最多选择100个商品')
+            return null
+        }
+        this.setState({
+            selectGoodsVisible: false,
+            selectedGoods: dishObjects.map((i) => {
+                if (!i.maxNum) {
+                    i.maxNum = 1
+                }
+                return { ...i }
+            }),
+        })
+    }
+
+
+
     renderOperateModal = () => {
         return (
             <Modal
@@ -1294,6 +1387,47 @@ class MyActivities extends React.Component {
             </Modal>
         );
     };
+    renderImportActiveModal = () => {
+        return (
+            <Modal
+            wrapClassName={styles.importActiveModal}
+            title={'批量导入活动'}
+            visible={this.state.activeImportVisible}
+            width={600}
+            maskClosable={false}
+            onCancel={() => {
+                this.setState({
+                    activeImportVisible: false,
+                    fileList: [],
+                })
+            }}
+            onOk={this.onOkActiveImport}
+        >
+                <div className={styles.importActiveContent}>
+                    <a href="#" onClick={this.downLoadTemp}>
+                        <Icon type="cloud-download-o" style={{ fontSize: '20px', verticalAlign: 'middle' }} />下载模板
+                    </a>
+                    <div className={styles.importWrapStyle}>
+                        <div className="uplpoadBox">
+                            <div className="uploadArea">
+                                <Upload
+                                    fileList={this.state.fileList}
+                                    action="/api/v1/upload?service=HTTP_SERVICE_URL_CRM&method=/crm/uploadFile.ajax"
+                                    name="file"
+                                    onChange={this.handleUploadChange}
+                                    beforeUpload={this.handleBeforeUpload}
+                                >
+                                    <Button>
+                                    选择文件
+                                    </Button>
+                                </Upload>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Modal>
+        )
+    }
     openOptModal = () => {
         this.setState({
             operateModalVisible: true
@@ -1380,6 +1514,41 @@ class MyActivities extends React.Component {
         );
     }
 
+    renderGoodsInTreeSelectMode = () => {
+        const { selectedGoods = [] } = this.state
+        if (selectedGoods.length > 0) {
+            return <div onClick={this.handleSelectGoods} className={styles.goodsSelectedBox}>
+                已选择{selectedGoods.length}个商品
+                <span><Icon type="plus-circle-o" /></span>
+            </div>
+        }
+        return (
+            <Input addonAfter={<Icon type="plus-circle-o" />} placeholder="请选择适用商品" readonly={true} onClick={this.handleSelectGoods} />
+        );
+    }
+
+
+    renderGoodsSelectorModal = () => {
+        const { selectedGoods = [] } = this.state
+        return (
+            <GoodsSelector
+                defaultValue={selectedGoods}
+                businessTypesList={businessTypesList}
+                visible={this.state.selectGoodsVisible}
+                onCancel={() => {
+                    this.setState({
+                        selectGoodsVisible: false
+                    })
+                }}
+                onOk={(data) => {
+                    this.handleModalOk(data)
+                }}
+            ></GoodsSelector>
+        )
+    }
+
+
+
     renderShopsInTreeSelectMode() {
         let treeData = Immutable.List.isList(this.props.promotionScopeInfo.getIn(["refs", "data", "constructedData"])) ? this.props.promotionScopeInfo.getIn(["refs", "data", "constructedData"]).toJS() : this.props.promotionScopeInfo.getIn(["refs", "data", "constructedData"]);
         const { intl } = this.props;
@@ -1412,7 +1581,7 @@ class MyActivities extends React.Component {
 
     renderFilterBar = () => {
         const opt = this.getParams();
-        const { intl } = this.props;
+        const { intl, user: { accountInfo }} = this.props;
         const k5eng042 = intl.formatMessage(SALE_STRING.k5eng042);
         const k5dlp2gl = intl.formatMessage(SALE_STRING.k5dlp2gl);
         const k5dlp7zc = intl.formatMessage(SALE_STRING.k5dlp7zc);
@@ -1421,7 +1590,7 @@ class MyActivities extends React.Component {
         
         return (
             <div>
-                <div className="layoutsSearch">
+                 <div className={`${styles.searchBox} layoutsSearch`} >
                     <ul>
                         <li>
                             <h5>{SALE_LABEL.k5dk4m5r}</h5>
@@ -1570,6 +1739,10 @@ class MyActivities extends React.Component {
                             </a>
                         </li>
                     </ul>
+                    {isZhouheiya(accountInfo.groupID) && <p>
+                        <Button type="primary" onClick={() => { this.setState({ activeImportVisible: true }) }} >导入活动</Button>
+                    </p>}
+
                 </div>
                 {this.renderAdvancedFilter()}
             </div>
@@ -1594,7 +1767,7 @@ class MyActivities extends React.Component {
         if (Immutable.List.isList($brands)) {
             brands = $brands.toJS();
         }
-        const { intl } = this.props;
+        const { intl, user: { accountInfo } } = this.props;
         const k5eng042 = intl.formatMessage(SALE_STRING.k5eng042);
         const k5dlp2gl = intl.formatMessage(SALE_STRING.k5dlp2gl);
         const k5dlp7zc = intl.formatMessage(SALE_STRING.k5dlp7zc);
@@ -1603,6 +1776,12 @@ class MyActivities extends React.Component {
             return (
                 <div className="layoutsSeniorQuery">
                     <ul>
+                        {isZhouheiya(accountInfo.groupID) && <li>
+                            <h5>适用商品</h5>
+                        </li>}
+                        {isZhouheiya(accountInfo.groupID) && <li>
+                            {this.renderGoodsInTreeSelectMode()}
+                        </li>}
                         <li>
                             <h5>{SALE_LABEL.k5dlggak}</h5>
                         </li>
@@ -2137,7 +2316,7 @@ class MyActivities extends React.Component {
     }
 
     render() {
-        const { runType, dataSource } = this.state;
+        const { runType, dataSource, selectGoodsVisible } = this.state;
         const { stylesShow, tabKeys } = this.props;
         return (
             <div style={{ backgroundColor: "#F3F3F3" }} className="layoutsContainer" ref={layoutsContainer => (this.layoutsContainer = layoutsContainer)}>
@@ -2195,6 +2374,7 @@ class MyActivities extends React.Component {
                 </div>
                 {this.renderModifyRecordInfoModal()}
                 {this.renderOperateModal()}
+                {this.renderImportActiveModal()}
                 <PromotionAutoRunModal runType={runType} />
                 {!this.state.exportVisible ? null : <ExportModal basicPromotion handleClose={() => this.setState({ exportVisible: false })} />}
                 {this.state.planModalVisible && (
@@ -2207,6 +2387,7 @@ class MyActivities extends React.Component {
                         filterSchemeList={this.state.filterSchemeList}
                     />
                 )}
+                {selectGoodsVisible && this.renderGoodsSelectorModal()}
             </div>
         );
     }

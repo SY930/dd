@@ -1322,7 +1322,7 @@ export const promotionDetailInfoAdapter = function (source, dir) {
             headquartersCost:source.headquartersCost,
             storeAttribute:source.storeAttribute,
             auditRemark:source.auditRemark,
-            
+            executionRoleType: source.executionRoleType,
 
         };
     }

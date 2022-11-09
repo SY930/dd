@@ -100,7 +100,9 @@ class NewPromotion extends React.Component {
             ruleUseType,
             shopScopeList,
             requiredLst,
-            stageGoodsList
+            stageGoodsList,
+            executionRoleType,
+            shareType,
         } = opts;
         
         const promotionInfo = {
@@ -143,11 +145,15 @@ class NewPromotion extends React.Component {
                 cardBalanceLimitType,
 		        //周黑鸭新需求
                 activityCost:approval?approval.activityCost:'',
-                estimatedSales:approval?approval.estimatedSales:'',
-                activityRate:approval?approval.activityRate:'',
-                auditRemark:approval?approval.auditRemark:'',
-                headquartersCost:approval?approval.headquartersCost:'',
-                storeAttribute:approval?approval.storeAttribute:'',
+                estimatedSales: approval ? approval.estimatedSales : '',
+                activityRate: approval ? approval.activityRate : '',
+                auditRemark: approval ? approval.auditRemark : '',
+                headquartersCost: approval ? approval.headquartersCost : '',
+                storeAttribute: approval ? approval.storeAttribute : '',
+                // 魏家凉皮字段
+                executionRoleType: executionRoleType || 1,
+                shareType,
+
             },
             timeLst: opts.timeLst,
             priceLst: opts.priceLst,

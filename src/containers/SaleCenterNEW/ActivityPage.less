@@ -990,6 +990,12 @@
         vertical-align: bottom;
     }
 
+    .disCountFormItemStyle {
+        display: flex;
+        align-items: center;
+        margin-right: 10px;
+    }
+
     .explainBack {
         :global {
             .ant-form-explain {
@@ -2541,6 +2547,36 @@
     .moveMoreShow {
         // display: block;
     }
+    .improtBtn {
+        // margin-left: 80px;
+    }
+    .searchBox {
+        display: flex;
+        align-items: center;
+        > ul {
+            flex: 1;
+        }
+    }
+    .goodsSelectedBox {
+        position: relative;
+            width: 134px;
+            height: 28px;
+            /* line-height: 26px; */
+            border: 1px solid #d9d9d9;
+            text-align: center;
+            border-radius: 4px;
+            cursor: pointer;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            padding: 0 10px;
+
+        > span {
+            position: absolute;
+            right: 5px;
+        }
+    }
+
     :global {
         .ant-table-tbody > tr > td, .ant-table-thead > tr > th {
             line-height: 35px;
@@ -3462,6 +3498,71 @@
         background: #4ca2ee;
     }
 }
+.importActiveModal {
+    .importActiveContent {
+        text-align: center;
+    }
+    .importWrapStyle {
+        margin-bottom: 6px;
+        :global {
+            .uplpoadBox {
+                line-height: 30px;
+                .uploadArea {
+                    width: 232px;
+                    display: inline-block;
+                    border: 1px solid #d9d9d9;
+                    height: 32px;
+                    box-sizing: border-box;
+                    position: relative;
+                    vertical-align: middle;
+                    overflow: hidden;
+                    .ant-upload-list-item {
+                        margin: 0;
+                        &:hover{
+                            background: #fff;
+                        }
+                        &-info {
+                            line-height: 30px;
+                        }
+                        .ant-upload-list-item-info:hover {
+                            background: #fff;
+                            .anticon-cross {
+                                display: none;
+                            }
+                        }
+                    }
+                }
+            }
+            .uploadHandler {
+                margin-left: 10px;
+                vertical-align: middle;
+                display: inline-block;
+                width: 80px;
+                .upload-demo-start {
+                    box-sizing: border-box;
+                }
+            }
+      
+            // 文本列表
+            .ant-upload-list {
+                padding-right: 90px;
+            }
+            // 上传按钮
+            .ant-upload {
+                position: absolute;
+                width: 80px;
+                height: 32px;
+                right: 0px;
+                bottom: 0px;
+                button {
+                    height: 32px;
+                    border: none;
+                    border-left: 1px solid #d9d9d9;
+                }
+            }
+        }
+      }
+    }
 
 .viewRuleVisibleModal {
     font-size: 12px;

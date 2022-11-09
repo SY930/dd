@@ -30,6 +30,10 @@ import { jumpPage } from '@hualala/platform-base';
 import { SHARE_RULES_GROUP_NEW, CREATE_SHARE_RULES_NEW } from '../../constants/entryCodes'
 import ShopSelector from "../../components/common/ShopSelector/ShopSelector";
 
+import { isZhouheiya } from '../../constants/WhiteList';
+import CustomExecutModal from './CustomExecutModal';
+
+
 @registerPage([SHARE_RULES_GROUP_NEW], {
 
 })
@@ -154,6 +158,7 @@ export default class ShareRules extends Component {
     }
 
     renderHeader(isEmpty) {
+        let { groupID } = this.props.user.accountInfo;
         return (
             <div className={styles.header}>
                 <div className={styles.titleArea} style={{ position: 'relative' }}>
@@ -162,20 +167,24 @@ export default class ShareRules extends Component {
                     </span>
                     <ExpireDateNotice productCode="HLL_CRM_Marketingbox" marginLeft="366px" marginTop="-10" />
                 </div>
-                <Button
-                    onClick={() => {
-                        const { refreshList } = this.props;
-                        refreshList({ flag: false });
-                        jumpPage({ menuID: CREATE_SHARE_RULES_NEW, from: 'create' })
-                    }}
-                    type="ghost"
-                    className={styles.addRuleBtn}
-                >
-                    <Icon
-                        type="plus"
-                    />
-                    添加互斥叠加方案
-                </Button>
+                <div>
+                    {/* 仅魏家凉皮可见 */}
+                    {isZhouheiya(groupID) && <Button type="ghost" onClick={() => { this.setState({ customExecutVisible: true }) }}>自定义执行顺序</Button>}
+                    <Button
+                        onClick={() => {
+                            const { refreshList } = this.props;
+                            refreshList({ flag: false });
+                            jumpPage({ menuID: CREATE_SHARE_RULES_NEW, from: 'create' })
+                        }}
+                        type="ghost"
+                        className={styles.addRuleBtn}
+                    >
+                        <Icon
+                            type="plus"
+                        />
+                        添加互斥叠加方案
+                    </Button>
+                </div>
             </div>
         )
     }
@@ -324,12 +333,21 @@ export default class ShareRules extends Component {
         )
     }
     render() {
+        const { customExecutVisible } = this.state
         return (
             <div style={{ height: '100%' }}>
                 {this.renderHeader()}
                 {this.renderHeaderActions()}
                 <div className={styles.divideLine} />
                 {this.renderContent()}
+                {
+                    customExecutVisible && <CustomExecutModal
+                        visible={customExecutVisible}
+                        onCancel={() => { this.setState({ customExecutVisible: false }) }}
+                    />
+                }
+
+
                 {/* <Pagination showSizeChanger onShowSizeChange={()=>{
                     
                 }} defaultCurrent={3} total={500} /> */}
