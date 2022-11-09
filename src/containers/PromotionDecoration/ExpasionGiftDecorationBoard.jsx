@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Tabs, Button, Icon } from 'antd';
+import { Tabs, Button, Icon, Input } from 'antd';
 import style from './style.less';
 import ColorSettingBlock from './ColorSettingBlock'
 import DecorationUploader from './DecorationUploader';
@@ -51,10 +51,23 @@ export default class ExpasionGiftDecorationBoard extends Component {
                 tagColor1 = '#D639DE',
                 tagColor2 = '#FB4273',
                 tagColor3 = '#F9CD4D',
+                shareBtnText='喊好友帮忙',
+                shareBtnColor="#ff0000",
+                shareTextColor="#ffffff"
             },
         } = this.props;
         return (
             <div className={style.previewArea}>
+                {this.state.tabKey == '3' ? <div className={style.ExpasionGiftWrapper}>
+                    <div className={style.imgWrapper}>
+                        <img src={require('./assets/shareModalImg.png')} alt=""/>
+                        <div className={style.contentWrapper}>
+                            <div className={style.text}>参与成功</div>
+                            <span className={style.shareBtn} style={{ background: shareBtnColor, color: shareTextColor }}>{shareBtnText}</span>
+                        </div>
+                    </div>
+                    <Icon className={style.closeBtn}  type="close-circle-o" />
+                </div> : null}
                 <div className={style.scrollTip}>
                     {SALE_LABEL.k635s5a1}
                 </div>
@@ -449,6 +462,70 @@ export default class ExpasionGiftDecorationBoard extends Component {
             </div>
         )
     }
+    renderShareModal() {
+        const {
+            decorationInfo: {
+                modalImg,
+                shareBtnText='喊好友帮忙',
+                shareBtnColor="ff0000",
+                shareTextColor="ffffff"
+            },
+            onChange,
+        } = this.props;
+        return (
+            <div>
+                {/* <h4 style={{ marginBottom: 30 }}>弹窗背景图</h4>
+                <div style={{ display: 'flex', marginLeft: 60 }}>
+                    <DecorationUploader
+                        limit={1000}
+                        value={modalImg}
+                        onChange={value => onChange({key: ['modalImg'], value})}
+                    />
+                    <div className={style.uploaderTip}>
+                        <p>* 图片大小不要超过1000KB</p>
+                        <p>* 建议尺寸<span style={{ color: '#379FF1' }}>750*666</span></p>
+                        <p>* 支持JPG、PNG、GIF图片文件</p>
+                    </div>
+                </div> */}
+                <h4 style={{ marginBottom: 30 }}>分享按钮</h4>
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: 30, position: 'relative' }}>
+                    <div style={{ width: 130, textAlign: 'right', marginRight: 20 }}>按钮文案</div>
+                    <Input value={shareBtnText} onChange={e => {
+                        if(e.target.value) {
+                            if(e.target.value.length) {
+                                return
+                            }
+                        }
+                        onChange({key: ['shareBtnText'], value: e.target.value})
+                    }} style={{ width: 300 }} />
+                    <span style={{ position: 'absolute', left: 415, top: 6 }}>{shareBtnText.length}/10</span>
+                </div>
+                <div className={style.colorPickersWrapper} style={{ alignItems: 'center', width: 700 }}>
+                    <div style={{ width: 130, textAlign: 'right', marginRight: 20 }}>文字及按钮颜色</div>
+                    <div className={style.inlineRow} style={{ border: '1px solid #e9e9e9', padding: '11px 20px', borderRadius: 5 }}>
+                        <span>按钮底色</span>
+                        <div className={style.borderedColorWrapper}>
+                            <WrappedColorPicker
+                                alpha={100}
+                                color={shareBtnColor}
+                                onChange={({ color }) => onChange({ key: ['shareBtnColor'], value: color })}
+                                placement="topLeft"
+                            />
+                        </div>
+                        <span>文字颜色</span>
+                        <div className={style.borderedColorWrapper}>
+                            <WrappedColorPicker
+                                alpha={100}
+                                color={shareTextColor}
+                                onChange={({ color }) => onChange({ key: ['shareTextColor'], value: color })}
+                                placement="topLeft"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
     render() {
         const { intl } = this.props;
         const k636f5ys = intl.formatMessage(SALE_STRING.k636f5ys);
@@ -482,6 +559,9 @@ export default class ExpasionGiftDecorationBoard extends Component {
                 >
                         <TabPane tab={k636f5ys} key="1">
                             {this.renderIMGSettingPanel()}
+                        </TabPane>
+                        <TabPane tab={'分享弹窗'} key="3">
+                            {this.renderShareModal()}
                         </TabPane>
                         <TabPane tab={k636p01c} key="2">
                             {this.renderColorSettingPanel()}
