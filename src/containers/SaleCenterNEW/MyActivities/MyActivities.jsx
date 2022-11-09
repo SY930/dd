@@ -47,8 +47,10 @@ import { SALE_LABEL, SALE_STRING } from "i18n/common/salecenter";
 import { injectIntl } from "../IntlDecor";
 import Card from "../../../assets/card.png";
 import CardSaleActive from "./CardSaleActive";
-import { isZhouheiya, isGeneral } from "../../../constants/WhiteList";
+import { isZhouheiya, isGeneral, businessTypesList } from "../../../constants/WhiteList";
+import GoodsRef from '@hualala/sc-goodsRef';
 
+const { GoodsSelector } = GoodsRef;
 const Option = Select.Option;
 const { RangePicker } = DatePicker;
 const { Group: RadioGroup } = Radio;
@@ -625,7 +627,7 @@ class MyActivities extends React.Component {
         }
     }
     getParams = () => {
-        const { promotionType, promotionDateRange, promotionValid, promotionState, promotionCategory, promotionTags, promotionBrands, promotionOrder, channelLst, promotionShop, promotionName, promotionCode, auditStatus, } = this.state;
+        const { promotionType, promotionDateRange, promotionValid, promotionState, promotionCategory, promotionTags, promotionBrands, promotionOrder, channelLst, promotionShop, promotionName, promotionCode, auditStatus, selectedGoods = []} = this.state;
         const opt = {};
         if (promotionType !== "" && promotionType !== undefined && promotionType !== "undefined") {
             opt.promotionType = promotionType;
@@ -670,6 +672,10 @@ class MyActivities extends React.Component {
         opt.groupID = this.props.user.accountInfo.groupID;
         opt.accountID = this.props.user.accountInfo.accountID;
         opt.sourceType = +this.isOnlinePromotionPage();
+        if (isZhouheiya(opt.groupID) && selectedGoods.length > 0){
+            opt.applyGoodsList = selectedGoods.map(item => item.goodsID)
+        }
+
         return opt;
     };
     handleQuery(thisPageNo) {
@@ -837,6 +843,7 @@ class MyActivities extends React.Component {
         this.props.saleCenterResetBasicInfo(promotionBasicDataAdapter(responseJSON.promotionInfo, _serverToRedux));
         this.props.saleCenterResetScopeInfo(promotionScopeInfoAdapter(responseJSON.promotionInfo.master, _serverToRedux));
         this.props.saleCenterResetDetailInfo(promotionDetailInfoAdapter(responseJSON.promotionInfo, _serverToRedux));
+        console.log("🚀 ~ file: MyActivities.jsx ~ line 853 ~ MyActivities ~ responseJSON.promotionInfo,", responseJSON.promotionInfo,)
         this.setState({
             promotionInfo: responseJSON.promotionInfo,
             selectedRecord: responseJSON.promotionInfo, // arguments[1],
@@ -1242,6 +1249,33 @@ class MyActivities extends React.Component {
         }
     }
 
+    handleSelectGoods = () => {
+        this.setState({
+            selectGoodsVisible: true
+        })
+    }
+
+    handleModalOk = (v) => {
+        const dishObjects = v.reduce((acc, curr) => {
+                acc.push(curr)
+            return acc;
+        }, [])
+        if (dishObjects.length > 100) {
+            message.warning('最多选择100个商品')
+            return null
+        }
+        this.setState({
+            selectGoodsVisible: false,
+            selectedGoods: dishObjects.map((i) => {
+                if (!i.maxNum) {
+                    i.maxNum = 1
+                }
+                return { ...i }
+            }),
+        })
+    }
+
+
 
     renderOperateModal = () => {
         return (
@@ -1480,6 +1514,41 @@ class MyActivities extends React.Component {
         );
     }
 
+    renderGoodsInTreeSelectMode = () => {
+        const { selectedGoods = [] } = this.state
+        if (selectedGoods.length > 0) {
+            return <div onClick={this.handleSelectGoods} className={styles.goodsSelectedBox}>
+                已选择{selectedGoods.length}个商品
+                <span><Icon type="plus-circle-o" /></span>
+            </div>
+        }
+        return (
+            <Input addonAfter={<Icon type="plus-circle-o" />} placeholder="请选择适用商品" readonly={true} onClick={this.handleSelectGoods} />
+        );
+    }
+
+
+    renderGoodsSelectorModal = () => {
+        const { selectedGoods = [] } = this.state
+        return (
+            <GoodsSelector
+                defaultValue={selectedGoods}
+                businessTypesList={businessTypesList}
+                visible={this.state.selectGoodsVisible}
+                onCancel={() => {
+                    this.setState({
+                        selectGoodsVisible: false
+                    })
+                }}
+                onOk={(data) => {
+                    this.handleModalOk(data)
+                }}
+            ></GoodsSelector>
+        )
+    }
+
+
+
     renderShopsInTreeSelectMode() {
         let treeData = Immutable.List.isList(this.props.promotionScopeInfo.getIn(["refs", "data", "constructedData"])) ? this.props.promotionScopeInfo.getIn(["refs", "data", "constructedData"]).toJS() : this.props.promotionScopeInfo.getIn(["refs", "data", "constructedData"]);
         const { intl } = this.props;
@@ -1698,7 +1767,7 @@ class MyActivities extends React.Component {
         if (Immutable.List.isList($brands)) {
             brands = $brands.toJS();
         }
-        const { intl } = this.props;
+        const { intl, user: { accountInfo } } = this.props;
         const k5eng042 = intl.formatMessage(SALE_STRING.k5eng042);
         const k5dlp2gl = intl.formatMessage(SALE_STRING.k5dlp2gl);
         const k5dlp7zc = intl.formatMessage(SALE_STRING.k5dlp7zc);
@@ -1707,6 +1776,12 @@ class MyActivities extends React.Component {
             return (
                 <div className="layoutsSeniorQuery">
                     <ul>
+                        {isZhouheiya(accountInfo.groupID) && <li>
+                            <h5>适用商品</h5>
+                        </li>}
+                        {isZhouheiya(accountInfo.groupID) && <li>
+                            {this.renderGoodsInTreeSelectMode()}
+                        </li>}
                         <li>
                             <h5>{SALE_LABEL.k5dlggak}</h5>
                         </li>
@@ -2241,7 +2316,7 @@ class MyActivities extends React.Component {
     }
 
     render() {
-        const { runType, dataSource } = this.state;
+        const { runType, dataSource, selectGoodsVisible } = this.state;
         const { stylesShow, tabKeys } = this.props;
         return (
             <div style={{ backgroundColor: "#F3F3F3" }} className="layoutsContainer" ref={layoutsContainer => (this.layoutsContainer = layoutsContainer)}>
@@ -2312,6 +2387,7 @@ class MyActivities extends React.Component {
                         filterSchemeList={this.state.filterSchemeList}
                     />
                 )}
+                {selectGoodsVisible && this.renderGoodsSelectorModal()}
             </div>
         );
     }

@@ -29,6 +29,8 @@ import { fetchShopCardLevel, queryTagDetailList, queryAllTagGroupList } from '..
 import BaseHualalaModal from './BaseHualalaModal';
 import PriceInput from "../common/PriceInput";
 import ShareRuleBox from './ShareRuleBox';
+import EditBoxForRole from './EditBoxForRole';
+import EditBoxForRoleRetail from './EditBoxForRoleRetail'
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
 import { checkAuthLicense } from '../../../helpers/util';
 import { injectIntl } from '../IntlDecor';
@@ -68,7 +70,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
             mutexActivityType: [],
             sharedAndOverlieType: [],
             sharedAndNotOverlieType: [],
-
+            executionRoleType: '1',
         };
 
         this.renderPaymentSetting = this.renderPaymentSetting.bind(this);
@@ -165,6 +167,7 @@ class AdvancedPromotionDetailSetting extends React.Component {
             const sharedAndOverlieActivityId = $promotionDetailInfo.data.promotionInfo.sharedAndOverlieActivityId
             const sharedAndOverlieType = $promotionDetailInfo.data.promotionInfo.sharedAndOverlieType
             const ruleUseType = $promotionDetailInfo.data.promotionInfo.ruleUseType
+            const executionRoleType = $promotionDetailInfo.data.promotionInfo.executionRoleType || '1'
             this.setState({
                 mutexActivityId,
                 mutexActivityType,
@@ -172,7 +175,8 @@ class AdvancedPromotionDetailSetting extends React.Component {
                 sharedAndNotOverlieType,
                 sharedAndOverlieActivityId,
                 sharedAndOverlieType,
-                ruleUseType
+                ruleUseType,
+                executionRoleType,
             })
             this.props.setPromotionDetail({
                 mutexActivityId,
@@ -181,7 +185,8 @@ class AdvancedPromotionDetailSetting extends React.Component {
                 sharedAndNotOverlieType,
                 sharedAndOverlieActivityId,
                 sharedAndOverlieType,
-                ruleUseType
+                ruleUseType,
+                executionRoleType,
             })
         }
     }
@@ -390,6 +395,27 @@ class AdvancedPromotionDetailSetting extends React.Component {
             });
         }
     }
+
+    onRoleChange = (val) => {
+        this.setState({
+            selectedRole: val,
+        });
+        this.props.setPromotionDetail({
+            role: val.map((role) => {
+                return role.roleID;
+            }),
+        });
+    };
+
+    handleChangeBizType = ({ target }) => {
+        this.setState({
+            executionRoleType: target.value,
+        })
+        this.props.setPromotionDetail({
+            executionRoleType: target.value,
+        })
+    }
+
 
     renderExcludedPromotionSelection() {
         return (
@@ -639,8 +665,45 @@ class AdvancedPromotionDetailSetting extends React.Component {
         )
     }
 
-    render() {
+    renderRoleOptions = () => {
+        console.log(this.state.executionRoleType, 'this.state.executionRoleType')
+        return (
+            <Row>
+                <FormItem
+                    label={SALE_LABEL.k5m3opsk}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+                    <RadioGroup name="radiogroup" defaultValue={"1"} onChange={this.handleChangeBizType} value={`${this.state.executionRoleType}`}>
+                        <Radio value={'1'}>餐饮</Radio>
+                        <Radio value={'2'}>零售</Radio>
+                    </RadioGroup>
+                </FormItem>
+                <Col span={17} offset={4}>
+                    {
+                        this.state.executionRoleType == '1' ?
+                            <EditBoxForRole
+                                onChange={(val) => {
+                                    this.onRoleChange(val)
+                                }}
+                            /> :
+                            <EditBoxForRoleRetail
+                                onChange={(val) => {
+                                    this.onRoleChange(val)
+                                }}
+                            />
+                    }
+                </Col>
+            </Row>
 
+        )
+    }
+
+    render() {
+        const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
+        const _stash = promotionType == '3010' || promotionType == '3020';
+        const $promotionScope = this.props.promotionScopeInfo.get('$scopeInfo')
         return (
             <div>
                 {this.renderUserSetting()}
@@ -653,6 +716,11 @@ class AdvancedPromotionDetailSetting extends React.Component {
                 }
                 {this.renderUserRules()}
                 {this.renderExcludedPromotionSelection()}
+                {
+                    _stash || $promotionScope.toJS().auto == 1 || $promotionScope.toJS().channel == 2 ? null :
+                        this.renderRoleOptions()
+                }
+
             </div>
         )
     }
