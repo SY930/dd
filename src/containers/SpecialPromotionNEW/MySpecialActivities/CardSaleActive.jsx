@@ -108,8 +108,14 @@ class CardSaleActive extends Component {
             message.warning('该活动已下线');
             return;
         }
-        if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83 || record.eventWay === 85 || record.eventWay === 23) {
-            this.props.onV3Click(record.itemID, true, record.eventWay);
+        if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83 || record.eventWay === 85 || record.eventWay === 23 || record.eventWay === 89) {
+            this.props.onV3Click(
+                record.itemID, 
+                true, 
+                record.eventWay,
+                record.isActive,
+                'view'
+            );
             return;
         }
         if (record.eventWay === 80 || record.eventWay === 66 || record.eventWay === 81 || record.eventWay === 82) {
@@ -150,6 +156,19 @@ class CardSaleActive extends Component {
             return this.props.handleNewEditActive(record, 'edit');
         }
         this.permissionVerify(record.itemID, () => {
+            if (record.eventWay === 89) {
+                //积分换礼
+                this.props.handleEditActive(record)(() =>
+                    this.props.onV3Click(
+                        record.itemID,
+                        false,
+                        record.eventWay,
+                        record.isActive,
+                        'edit'
+                    )
+                );
+                return;
+            }
             this.props.handleEditActive(record)(() => {
                 this.props.toggleIsUpdate(true)
                 // 不是集团经理角色并且是周黑鸭账号（并且审批状态是审批通过跟无需审批的）只能修改店铺
@@ -242,8 +261,14 @@ class CardSaleActive extends Component {
                                 message.warning('该活动已下线');
                                 return;
                             }
-                            if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83) {
-                                this.props.onV3Click(record.itemID, false, record.eventWay);
+                            if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83 || record.eventWay === 89) {
+                                this.props.onV3Click(
+                                    record.itemID, 
+                                    false, 
+                                    record.eventWay,
+                                    record.isActive,
+                                    'copy'
+                                );
                                 return;
                             }
                             if (record.eventWay === 66 || record.eventWay === 81 || record.eventWay === 82) {
