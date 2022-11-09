@@ -1,4 +1,4 @@
-import { Button, Checkbox, Col, Form, Icon, message, Row } from 'antd';
+import { Button, Checkbox, Col, Form, Icon, message, Row, Radio, ToolTip } from 'antd';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Iconlist } from '../../../components/basic/IconsFont/IconsFont'; // 引入icon图标组件库
@@ -18,6 +18,7 @@ import { handlerDiscountToParam } from '../../../containers/SaleCenterNEW/common
 
 const FormItem = Form.Item;
 const CheckboxGroup = Checkbox.Group;
+const RadioGroup = Radio.Group;
 const ButtonGroup = Button.Group;
 const Immutable = require('immutable');
 
@@ -51,6 +52,7 @@ class CompositeDetailInfo extends React.Component {
                     discountStatus: 'success', // 验证信息
                 },
             ],
+            disCountShare: 1,
         };
 
         this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
@@ -145,6 +147,7 @@ class CompositeDetailInfo extends React.Component {
             return
         }
         const conditions = [];
+        const { user } = this.props;
         rule.stage.map((ruleStage, index) => {
             if (!conditions[index]) {
                 conditions[index] = {
@@ -164,11 +167,21 @@ class CompositeDetailInfo extends React.Component {
             conditions[index].discount = ruleStage.discountRate * 1;
         })
         this.setState({ conditions })
+        if (isZhouheiya(user.groupID)) {
+            const { stageType, shareRatioList, shareType } = rule;
+            this.setState({
+                stageType,
+                condition1: shareRatioList[0],
+                condition2: shareRatioList[1],
+                shareType: shareType || 1,
+            })
+        }
+
     }
 
     handleSubmit() {
         let nextFlag = true;
-        const { data, conditions } = this.state;
+        const { data, conditions, stageType, condition1, condition2, shareType } = this.state;
         const { intl } = this.props;
 
         if (isZhouheiya(this.props.user.groupID)) {
@@ -225,6 +238,9 @@ class CompositeDetailInfo extends React.Component {
             if (!groupCountFlag) {
                 message.warning(this.props.intl.formatMessage(SALE_STRING.k5hkj1mr));
             }
+            if ((this.validateDiscountShare() === 'error' || this.validateDiscountShareTwo() === 'error') && shareType === 2) {
+                nextFlag = false;
+            }
             if (nextFlag) {
                 // 拼出ruleJson
                 conditions.forEach((condition) => {
@@ -248,6 +264,10 @@ class CompositeDetailInfo extends React.Component {
                         })
                     }
                 });
+
+                rule.stageType = stageType;
+                rule.shareRatioList = [condition1, condition2]
+                rule.shareType = shareType
 
                 this.props.setPromotionDetail({
                     rule,
@@ -582,6 +602,28 @@ class CompositeDetailInfo extends React.Component {
         }
         this.setState({ data });
     }
+
+    validateDiscountShareTwo = () => {
+        const { condition1, condition2 } = this.state
+        const reg = /^([0-9][0-9]{0,1}|100)$/
+        const sum = (condition1 ? +condition1 : 0) + (+condition2);
+        let status = 'success';
+        if (sum > 100) { status = 'error' }
+        if (!reg.test(condition2)) { status = 'error' }
+        return status
+    }
+
+    // validateDiscountShare 校验条件
+    validateDiscountShare = () => {
+        const { condition1, condition2 } = this.state
+        const reg = /^([0-9][0-9]{0,1}|100)$/
+        const sum = (+condition1) + (condition2 ? +condition2 : 0);
+        let status = 'success';
+        if (sum > 100) { status = 'error' }
+        if (!reg.test(condition1)) { status = 'error' }
+        return status;
+    }
+
 
     renderGoodRef() {
 
@@ -1144,6 +1186,64 @@ class CompositeDetailInfo extends React.Component {
         return null;
     }
 
+     // 优惠分摊
+    renderDiscountShare = () => {
+        const { shareType, condition1, condition2 } = this.state
+        return (
+            <Row>
+                <p>优惠分摊比例</p>
+                <FormItem
+                    label={''}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                >
+
+                    <RadioGroup value={shareType} onChange={(e) => { this.setState({ shareType: e.target.value }) }}>
+                        <Radio value={1}>按菜品价格均摊</Radio>
+                        <Radio value={2}>按比例价格均摊</Radio>
+                    </RadioGroup>
+                </FormItem>
+                <Col span={9}>
+                    {shareType == 2 &&
+                        <FormItem
+                            label="条件1"
+                            className={styles.disCountFormItemStyle}
+                            validateStatus={this.validateDiscountShare('condition1')}
+                        >
+                            <PriceInput
+                                modal="int"
+                                addonAfter="%"
+                                maxLength={3}
+                                value={{ number: condition1 || '' }}
+                                onChange={(val) => {
+                                    this.setState({ condition1: val.number })
+                                }} />
+                        </FormItem>}
+                </Col>
+                <Col span={9}>
+                    {shareType == 2 &&
+                        <FormItem
+                            label="条件2"
+                            className={styles.disCountFormItemStyle}
+                            validateStatus={this.validateDiscountShareTwo('condition2')}
+                        // validateStatus={item.flag == '0' ? item.cutStatus : item.flag == '1' ? item.discountStatus : item.cutToStatus}
+                        >
+                            <PriceInput
+                                modal="int"
+                                addonAfter="%"
+                                maxLength={3}
+                                value={{ number: condition2 || '' }}
+                                onChange={(val) => {
+                                    this.setState({ condition2: val.number })
+                                }} />
+                        </FormItem>}
+                </Col>
+            </Row>
+        )
+    }
+
+
     render() {
         const { intl } = this.props;
         const k5hkj1v3 = intl.formatMessage(SALE_STRING.k5hkj1v3);
@@ -1163,10 +1263,10 @@ class CompositeDetailInfo extends React.Component {
                                 }}
                                 content={
                                     <div>
-                                <p style={{ textIndent: '2em' }}>1、{SALE_LABEL.k5hl5wkk}</p>
-                                        <br/>
+                                        <p style={{ textIndent: '2em' }}>1、{SALE_LABEL.k5hl5wkk}</p>
+                                        <br />
                                         <p style={{ textIndent: '2em' }}>2、{SALE_LABEL.k5hl5wsw}</p>
-                                        <br/>
+                                        <br />
                                         <p>{SALE_LABEL.k5hl5x18}</p>
                                     </div>
                                 }
@@ -1181,6 +1281,7 @@ class CompositeDetailInfo extends React.Component {
 
                     {this.state.display && !isZhouheiya(this.props.user.groupID) ? <AdvancedPromotionDetailSetting payLimit={false} /> : null}
                     {this.state.display && isZhouheiya(this.props.user.groupID) ? <AdvancedPromotionDetailSettingNew bizType={1} /> : null}
+                    {isZhouheiya(this.props.user.groupID) && this.renderDiscountShare()}
                     {isZhouheiya(this.props.user.groupID) ? <Approval onApprovalInfoChange={(val) => {
                         this.setState({
                             approvalInfo: {
