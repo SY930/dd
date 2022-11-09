@@ -1262,7 +1262,11 @@ class GiftAddModalStep extends React.PureComponent {
                     params.moneyLimitType = moneyLimitTypeData.moneyLimitType;
                     
                     if(params.moneyLimitTypeAndValue.moenyLimitValue){
-                        params.moenyLimitValue = params.moneyLimitType == '0' ? '100' : params.moneyLimitTypeAndValue.moenyLimitValue;
+                        if(isZhouheiya(params.groupID)){
+                            params.moenyLimitValue = params.moneyLimitType == '0' ? '0' : params.moneyLimitTypeAndValue.moenyLimitValue;
+                        } else {
+                          params.moenyLimitValue = params.moneyLimitType == '0' ? '100' : params.moneyLimitTypeAndValue.moenyLimitValue;
+                        }
                     }
                 }
                 if(moneyLimitTypeData && moneyLimitTypeData.amountType){
@@ -3426,7 +3430,7 @@ shopAreaSelectorChange = (value) => {
                 label: '礼品图样',
                 type: 'custom',
                 render: decorator => decorator({
-                    initialValue: isZhouheiya(groupID) ? 'http://res.hualala.com/basicdoc/210d6edc-d01f-473b-b7ae-1f319f808350.png' : '',
+                    initialValue: isZhouheiya(groupID) ? (this.props.gift.data.giftImagePath || 'http://res.hualala.com/basicdoc/210d6edc-d01f-473b-b7ae-1f319f808350.png') : this.props.gift.data.giftImagePath,
                 })(<GiftImagePath contentHeight='auto' limitSize={1024000} />),
             },
             selectBrands: {
