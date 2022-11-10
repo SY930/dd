@@ -6,6 +6,7 @@ import PriceInput from '../common/PriceInput';
 import styles from '../ActivityPage.less';
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
+import { isCheckApproval } from '../../../constants/WhiteList';
 
 class Approval extends React.Component {
     constructor(props) {
@@ -100,9 +101,9 @@ class Approval extends React.Component {
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
-                    validateStatus={this.state.activityCost ? "success" : "error"}
-                    help={this.state.activityCost ? null : '请输入活动费用'}
-                    required
+                    validateStatus={isCheckApproval&&!this.state.activityCost ? "error" : "success"}
+                    help={isCheckApproval&&!this.state.activityCost ? '请输入活动费用' : null}
+                    required={isCheckApproval}
                 >
 
                     <PriceInput
@@ -128,15 +129,15 @@ class Approval extends React.Component {
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
-                    validateStatus={this.state.estimatedSales ? "success" : "error"}
-                    help={this.state.estimatedSales ? null : '请输入预计销售额'}
-                    required
+                    validateStatus={isCheckApproval&&!this.state.estimatedSales ? "error" : "success"}
+                    help={isCheckApproval&&!this.state.estimatedSales ? '请输入预计销售额' : null}
+                    required={isCheckApproval}
                 >
                     <PriceInput
                         value={{ number: this.state.estimatedSales }}
                         defaultValue={{ number: this.state.estimatedSales }}
                         maxNum={8}
-                        placeholder='请输入预计活动费用'
+                        placeholder='请输入预计销售额'
                         onChange={(val) => {
                             this.setState({ estimatedSales: val.number });
                             this.state.approvalInfo.estimatedSales = val.number
@@ -155,7 +156,7 @@ class Approval extends React.Component {
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
-                    required
+                    required={isCheckApproval}
                 >
                     <PriceInput
                         placeholder='活动费用/预计销售额'
@@ -169,7 +170,7 @@ class Approval extends React.Component {
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
-                    required
+                    required={isCheckApproval}
                 >
 
                     <RadioGroup disabled={disabled} value={this.state.headquartersCost} onChange={(e) => {
@@ -187,7 +188,7 @@ class Approval extends React.Component {
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
-                    required
+                    required={isCheckApproval}
                 >
 
                     <RadioGroup disabled={disabled} value={this.state.storeAttribute} onChange={(e) => {
@@ -205,9 +206,9 @@ class Approval extends React.Component {
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
-                    validateStatus={this.state.auditRemark ? "success" : "error"}
-                    help={this.state.auditRemark ? null : '请输入备注'}
-                    required
+                    validateStatus={isCheckApproval&&!this.state.auditRemark ? "error" : "success"}
+                    help={isCheckApproval&&!this.state.auditRemark ? '请输入备注' : null}
+                    required={isCheckApproval}
                 >
                     <Input type="textarea" disabled={disabled} value={this.state.auditRemark} placeholder="请输入备注信息" maxLength={200} onChange={(e) => {
                         this.setState({ auditRemark: e.target.value })
