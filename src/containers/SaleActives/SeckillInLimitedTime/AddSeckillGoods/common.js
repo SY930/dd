@@ -199,5 +199,6 @@ export const initVal = {
     giftCount: "1",
     countType: "0",
     giftEffectTimeHours: '0',
+    giftType: "1"
 };
 

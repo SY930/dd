@@ -12,10 +12,14 @@ export const baseFormItems = {
         label: "活动类型",
         render: () => <p>限时秒杀</p>,
         defaultValue: "23",
+        wrapperCol: { span: 14 },
+        labelCol: { span: 5 },
     },
     eventName: {
         type: "text",
         label: "活动名称",
+        wrapperCol: { span: 14 },
+        labelCol: { span: 5 },
         rules: [
             "required",
             "stringLength",
@@ -44,6 +48,8 @@ export const baseFormItems = {
         ),
         render: () => <p />,
         defaultValue: [],
+        wrapperCol: { span: 14 },
+        labelCol: { span: 5 },
         // rules: ["required"],
     },
     eventRemark: {
@@ -51,6 +57,8 @@ export const baseFormItems = {
         label: "活动说明",
         placeholder: "请输入活动说明，最多1000个字符",
         rules: ["description2", { max: "1000", message: "不能超过1000个字符" }],
+        wrapperCol: { span: 14 },
+        labelCol: { span: 5 },
     },
 };
 

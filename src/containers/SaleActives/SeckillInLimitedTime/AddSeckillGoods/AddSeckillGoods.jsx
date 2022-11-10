@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Icon, Form, Select, message, Input, Button, Tooltip } from "antd";
+import { Icon, Form, Select, message, Input, Button, Tooltip,Radio } from "antd";
 import BaseForm from "components/common/BaseForm";
 import {ruleFormItem, giftRemainSettings} from "../common";
 import _ from "lodash";
@@ -7,7 +7,8 @@ import { axios } from "@hualala/platform-base";
 import Gift from "./Gift";
 import { proCouponData, initVal } from "./common";
 import styles from "./styles.less";
-
+import drag from '../../asssets/drag.png';
+const RadioGroup = Radio.Group;
 const formItemLayout = {
     labelCol: { span: 6 },
     wrapperCol: { span: 16 },
@@ -24,8 +25,8 @@ class AddSeckillGoods extends Component {
         // 请求零售券
         this.getCouponsData({});
     }
-    onChangeRemainForm = (key, value) => {
-        console.log(key,value,'value----------pppppppppp')
+    onChangeRemainForm = (key, value, i) => {
+        console.log(i,key,value,'value----------pppppppppp')
     }
     getCouponsData = async (data) => {
         const method = "/coupon/couponService_getSortedCouponBoardList.ajax";
@@ -47,6 +48,7 @@ class AddSeckillGoods extends Component {
     };
 
     onChange = (idx, params) => {
+        console.log(idx,params,'params--------------->')
         const { value = [], onChange } = this.props;
         if (!value[0]) {
             value.push({ ...initVal });
@@ -66,6 +68,7 @@ class AddSeckillGoods extends Component {
                 }
             });
         }
+        console.log(list,'list----------->>>>')
         onChange(list);
     };
 
@@ -91,6 +94,7 @@ class AddSeckillGoods extends Component {
     };
 
     getForm = (idx, form) => {
+        console.log(form, 'form>>>>>>>>>>>>>>>>>>>>')
         const { formList } = this.state;
         const { getGiftForm } = this.props;
         formList.push(form);
@@ -99,7 +103,9 @@ class AddSeckillGoods extends Component {
             getGiftForm(formList);
         }
     };
-
+    onChangeGift = (key, value, i) => {
+        console.log(key,value,i,'onchangeGift00-------------')
+    }
     render() {
         const { value = [], formData, getForm } = this.props;
         if (!value[0]) {
@@ -111,7 +117,16 @@ class AddSeckillGoods extends Component {
                     <div key={v.id || i} className={styles.addGiftsBox}>
                         <div className={styles.addGiftsConntet}>
                             <span>礼品{i + 1}</span>
-                            <p style={{ height: 24 }}></p>
+                            <div  className={styles.changeGiftType}>
+                                <img src={drag} className={styles.moveIcon}></img>
+                                <div className={styles.giftTypeBox}>
+                                    <span style={{marginRight: 15}}>礼品类型</span>
+                                    <RadioGroup  value={v.giftType || "1"} onChage={() => {}}>
+                                        <Radio value={"1"}>餐饮券</Radio>
+                                        <Radio value={"2"}>券包</Radio>
+                                    </RadioGroup>
+                                </div>
+                            </div>
                             <div className={styles.giftWrapperBox}>
                                 <Gift
                                     idx={i}
@@ -128,7 +143,7 @@ class AddSeckillGoods extends Component {
                                     getForm={getForm}
                                     formItems={ruleFormItem}
                                     formKeys={giftRemainSettings}
-                                    onChange={this.onChangeRemainForm}
+                                    onChange={(key, value) => this.onChangeRemainForm(key, value, i)}
                                     formData={formData || {}}
                                     formItemLayout={formItemLayout}
                                 />
