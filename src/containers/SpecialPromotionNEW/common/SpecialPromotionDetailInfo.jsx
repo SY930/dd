@@ -83,6 +83,7 @@ import { h5GetStep3Render } from '../h5Get/step3'
 import { scoreConvertGiftStep3Render } from '../scoreConvertGift/step3'
 import { consumeGiveGiftStep3Render } from '../consumeGiveGift/step3'
 import Approval from '../../../containers/SaleCenterNEW/common/Approval';
+import { isZhouheiya } from "../../../constants/WhiteList";
 import Permission from './Permission';
 
 const moment = require("moment");
@@ -728,7 +729,7 @@ class SpecialDetailInfo extends Component {
                     giftItem.giveType.push('1');
                     let giftData = getDefaultGiftData();
                     giftData.effectType = item.effectType + '';
-                    giftData.giftInfo.giftName = item.giftName;
+                    giftData.giftInfo.giftName = item.giftName + ' -【' + item.giftID + '】';
                     giftData.giftInfo.giftItemID = item.giftID;
                     giftData.giftInfo.itemID = item.itemID;
                     giftData.giftCount.value = item.giftCount;
@@ -1006,7 +1007,7 @@ class SpecialDetailInfo extends Component {
             //线上餐厅送礼保存的是微信三方券信息
             thirdCouponData = giftInfo;
         }
-        if (!isThirdCoupon) {
+        if (!isThirdCoupon && type != 69) {
             giftInfo.forEach((gift, index) => {
                 if (
                     (this.props.type == "52" || this.props.type == "64") &&
@@ -1037,7 +1038,11 @@ class SpecialDetailInfo extends Component {
                               moment(gift.validUntilDate, "YYYYMMDD"),
                           ];
                 data[index].effectType = `${gift.effectType}`;
-                data[index].giftInfo.giftName = gift.giftName;
+                if(isZhouheiya()) {
+                    data[index].giftInfo.giftName = gift.giftName + ' -【' + gift.giftID + '】';
+                } else {
+                    data[index].giftInfo.giftName = gift.giftName;
+                }
                 if (this.props.type == "30" && gift.presentType === 4) {
                     data[index].giftInfo.giftName = "";
                 }
@@ -1091,7 +1096,11 @@ class SpecialDetailInfo extends Component {
                             moment(gift.validUntilDate, "YYYYMMDD"),
                         ];
                 data[index].effectType = `${gift.effectType}`;
-                data[index].giftInfo.giftName = gift.giftName;
+                if(isZhouheiya()) {
+                    data[index].giftInfo.giftName = gift.giftName + ' -【' + gift.giftID + '】';
+                } else {
+                    data[index].giftInfo.giftName = gift.giftName;
+                }
                 data[index].needCount.value = gift.needCount || 0;
                 data[index].giftInfo.giftItemID = gift.giftID;
                 data[index].giftInfo.itemID = gift.itemID;
@@ -1742,7 +1751,7 @@ class SpecialDetailInfo extends Component {
             return res + parseFloat(cur.giftOdds.value);
         }, 0);
         data = validatedRuleData;
-	if(type == 69) {
+	    if(type == 69) {
             //H5领券校验可领取日期
             let isPassValidate = true;
             data.forEach(item => {

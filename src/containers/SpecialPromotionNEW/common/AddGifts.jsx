@@ -206,8 +206,9 @@ class AddGifts extends React.Component {
                     giftType: '112',
                     crmGifts: couponCodeBatchInfos.map(item => ({
                         ...item,
-                        giftName: item.batchName,
+                        _giftName: item.batchName,
                         giftItemID: item.itemID,
+                        giftName: item.batchName + ' -【' + item.itemID + '】'
                     }))
                 }]
             })
@@ -369,6 +370,14 @@ class AddGifts extends React.Component {
         } = this.state
         let filteredGiftInfo = this.state.giftInfo.filter(cat => cat.giftType && cat.giftType != 90)
             .map(cat => ({ ...cat, index: SALE_CENTER_GIFT_TYPE.findIndex(type => String(type.value) === String(cat.giftType)) }));
+        filteredGiftInfo.forEach(item => {
+            item.crmGifts.forEach(row => {
+                if(!row._giftName && isZhouheiya()) {
+                    row._giftName = row.giftName;
+                    row.giftName = row.giftName + ' -【' + row.giftItemID + '】';
+                }
+            })
+        })
         const arr = [`${this.props.intl.formatMessage(STRING_SPE.da8oel25o02265)}`,
         `${this.props.intl.formatMessage(STRING_SPE.d1kgda4ea393183)}`,
         `${this.props.intl.formatMessage(STRING_SPE.db60a2a3891c4274)}`,
@@ -493,7 +502,8 @@ class AddGifts extends React.Component {
                             disArr={this.state.disArr || []}
                         >
                             <Input
-                                value={(this.getGiftValue(index) || '').split(',')[1]}
+                                // value={(this.getGiftValue(index) || '').split(',')[1]}
+                                value={!isZhouheiya() ? (this.getGiftValue(index) || '').split(',')[1] : ((this.getGiftValue(index) || '').split(',')[1] || '').split(' -【')[0]}
                                 className="input_click"
                                 onClick={() => { toggleFun(index); }}
                                 placeholder="请选择礼品名称"
