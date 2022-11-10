@@ -151,9 +151,9 @@ class FullCutDetailInfo extends React.Component {
         // 根据菜单列表是否为空，将每满分为任意和指定，满分为任意和指定
         if (!isZhouheiya(this.props.user.groupID)) {
             if (_rule.stageType == '1') {
-                ruleType = _scopeLst.size == 0 ? '1' : '4';
+                ruleType = _scopeLst.length == 0 ? '1' : '4';
             } else {
-                ruleType = _scopeLst.size == 0 ? '2' : '3';
+                ruleType = _scopeLst.length == 0 ? '2' : '3';
             }
         }
         // 根据菜单列表是否为空，将每满分为任意和指定，满分为任意和指定
