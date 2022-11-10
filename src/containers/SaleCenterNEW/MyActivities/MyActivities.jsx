@@ -2240,17 +2240,29 @@ class MyActivities extends React.Component {
                     const t = `${moment(new Date(parseInt(record.createTime))).format("YYYY-MM-DD HH:mm:ss")} / ${moment(new Date(parseInt(record.actionTime))).format("YYYY-MM-DD HH:mm:ss")}`;
                     return <Tooltip title={t}>{t}</Tooltip>;
                 }
-            }
-            // {
-            //     title: SALE_LABEL.k5dlbwqo,
-            //     dataIndex: 'isActive',
-            //     className: 'TableTxtCenter',
-            //     key: 'isActive',
-            //     width: 100,
-            //     render: (isActive) => {
-            //         return (isActive == '1' ? COMMON_LABEL.enable : COMMON_LABEL.disable);
-            //     },
-            // },
+            },
+           {
+                title: '适用商品',
+                className: 'TableTxtCenter',
+                dataIndex: 'applyGoodsName',
+                key: 'applyGoodsName',
+                width: 120,
+                render: text => <Tooltip title={text}>{text}</Tooltip>,
+                isShow: () => {
+                    return isZhouheiya(this.props.user.accountInfo.groupID)
+                }
+            },
+            {
+                title: '适用店铺',
+                className: 'TableTxtCenter',
+                dataIndex: 'shopIDLst',
+                key: 'shopIDLst',
+                width: 120,
+                render: text => <Tooltip title={text}>{text}</Tooltip>,
+                isShow: () => {
+                    return isZhouheiya(this.props.user.accountInfo.groupID)
+                }
+            },
         ];
 
         if(isZhouheiya(this.props.user.accountInfo.groupID)){
