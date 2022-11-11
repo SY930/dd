@@ -101,6 +101,7 @@ class MainTable extends Component {
                 width: 60,
                 render: (text, record) => (
                     <Switch
+                        style={{width: '28px', height: '14px'}}
                         checked={record.status == 1}
                         size="small"
                         className={styles.switchBox}
