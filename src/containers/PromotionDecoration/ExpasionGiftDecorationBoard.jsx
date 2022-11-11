@@ -492,7 +492,7 @@ export default class ExpasionGiftDecorationBoard extends Component {
                     <div style={{ width: 130, textAlign: 'right', marginRight: 20 }}>按钮文案</div>
                     <Input value={shareBtnText} onChange={e => {
                         if(e.target.value) {
-                            if(e.target.value.length) {
+                            if(e.target.value.length > 10) {
                                 return
                             }
                         }
