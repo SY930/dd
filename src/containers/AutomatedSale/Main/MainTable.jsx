@@ -4,6 +4,12 @@ import PagingFactory from 'components/PagingFactory';
 import styles from "./style.less";
 import moment from 'moment'
 
+const maEventTypeList = {
+    0: '定时-单次',
+    1: '定时-重复',
+    2: '事件触发'
+}
+
 const DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
 function transformTime(time, format = DATE_FORMAT) {
@@ -71,9 +77,10 @@ class MainTable extends Component {
             },
             {
                 title: '活动类型',
-                dataIndex: 'groupID',
+                dataIndex: 'maEventType',
                 className: tc,
                 width: 80,
+                render: (text, record, index) => (maEventTypeList[record.maEventType])
             },
             {
                 title: '创建时间',
