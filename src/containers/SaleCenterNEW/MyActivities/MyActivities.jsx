@@ -2247,7 +2247,10 @@ class MyActivities extends React.Component {
                 dataIndex: 'applyGoodsName',
                 key: 'applyGoodsName',
                 width: 120,
-                render: text => <Tooltip title={text}>{text}</Tooltip>,
+                render:  (text) => {
+                    const t = text
+                    return <Tooltip title={text}><p className={styles.multilineTexts}>{t}</p></Tooltip>
+                },
                 isShow: () => {
                     return isZhouheiya(this.props.user.accountInfo.groupID)
                 }
@@ -2258,7 +2261,10 @@ class MyActivities extends React.Component {
                 dataIndex: 'shopIDLst',
                 key: 'shopIDLst',
                 width: 120,
-                render: text => <Tooltip title={text}>{text}</Tooltip>,
+                render:  (text) => {
+                    const t = text
+                    return <Tooltip title={text}><p className={styles.multilineTexts}>{t}</p></Tooltip>
+                },
                 isShow: () => {
                     return isZhouheiya(this.props.user.accountInfo.groupID)
                 }
