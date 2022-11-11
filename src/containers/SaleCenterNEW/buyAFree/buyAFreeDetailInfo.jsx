@@ -411,7 +411,7 @@ class BuyAFreeDetailInfo extends React.Component {
     }
     ruleTypeChange(val) {
         let data = this.state.data;
-        if (val == '1' || val == '3') {
+        if (val == '1' || val == '3' || val == '5') {
             data = [
                 {
                     stageAmount: '',
