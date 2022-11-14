@@ -376,7 +376,7 @@ class GiftDetailTable extends Component {
         });
     }
 
-    handleDelete(rec) {
+    handleOkDelete = (rec) => {
         const { giftItemID, giftName } = rec;
         Modal.confirm({
             title: '您确定要停用吗？',
@@ -404,94 +404,114 @@ class GiftDetailTable extends Component {
                             this.proGiftData(data);
                         });
                     }
-                }, ({ code, msg, eventReference = [], wechatCardReference = [], quotaCardsReference = [], couponPackageReference = [] }) => {
-                    if (code === '1211105076') {// 券被占用
-                        Modal.warning({
-                            title: '礼品被占用，不可停用',
-                            content: (
-                                <div
-                                    style={{
-                                        lineHeight: 1.5
-                                    }}
-                                >
-                                    {
-                                        !!eventReference.length && (
-                                            <div>
-                                                <div>
-                                                    该礼品被以下活动使用，如需停用，请取消引用
-                                                </div>
-                                                <div
-                                                    style={{
-                                                        marginTop: 8,
-                                                        background: '#fef4ed',
-                                                        padding: 5
-                                                    }}
-                                                >   {eventReference.map(name => `【${name}】`).join('')} </div>
-                                            </div>
-                                        )
-                                    }
-                                    {
-                                        !!wechatCardReference.length && (
-                                            <div>
-                                                <div style={{ marginTop: 8 }}>
-                                                    该礼品被以下微信卡券使用，如需停用，请取消引用
-                                                </div>
-                                                <div
-                                                    style={{
-                                                        marginTop: 8,
-                                                        background: '#fef4ed',
-                                                        padding: 5
-                                                    }}
-                                                >   {wechatCardReference.map(name => `【${name}】`).join('')} </div>
-                                            </div>
-                                        )
-                                    }
-                                    {
-                                        !!quotaCardsReference.length && (
-                                            <div>
-                                                <div style={{ marginTop: 8 }}>
-                                                    该礼品被以下礼品定额卡券使用，如需停用，请取消引用
-                                                </div>
-                                                <div
-                                                    style={{
-                                                        marginTop: 8,
-                                                        background: '#fef4ed',
-                                                        padding: 5
-                                                    }}
-                                                >   {quotaCardsReference.map(name => `【${name}】`).join('')} </div>
-                                            </div>
-                                        )
-                                    }
-                                    {
-                                        !!couponPackageReference.length && (
-                                            <div>
-                                                <div style={{ marginTop: 8 }}>
-                                                    该礼品被以下券包使用，如需停用，请取消引用
-                                                </div>
-                                                <div
-                                                    style={{
-                                                        marginTop: 8,
-                                                        background: '#fef4ed',
-                                                        padding: 5
-                                                    }}
-                                                >   {couponPackageReference.map(name => `【${name}】`).join('')} </div>
-                                            </div>
-                                        )
-                                    }
-                                </div>
-                            ),
-                        });
-                    } else {
-                        Modal.error({
-                            title: '啊哦！好像有问题呦~~',
-                            content: `${msg}`,
-                        });
-                    }
+                }, ({ code, msg }) => {
+                    Modal.error({
+                        title: '啊哦！好像有问题呦~~',
+                        content: `${msg}`,
+                    });
                 });
             },
             onCancel: () => {
             },
         })
+    }
+
+    handleDelete(rec) {
+        const { giftItemID, giftName } = rec;
+        axiosData(
+            '/coupon/couponService_checkBeforeRemoveBoard.ajax',
+            { giftItemID },
+            { needThrow: true, needCode: true },
+            { path: '' },
+            'HTTP_SERVICE_URL_PROMOTION_NEW',
+        ).then((data) => {
+            if (data.code === '000') {
+                this.handleOkDelete(rec);
+            }
+        }, ({ code, msg, eventReference = [], wechatCardReference = [], quotaCardsReference = [], couponPackageReference = [] }) => {
+            if (code === '1211105076') {// 券被占用
+                Modal.warning({
+                    title: '礼品被占用，不可停用',
+                    content: (
+                        <div
+                            style={{
+                                lineHeight: 1.5
+                            }}
+                        >
+                            {
+                                !!eventReference.length && (
+                                    <div>
+                                        <div>
+                                            该礼品被以下活动使用，如需停用，请取消引用
+                                        </div>
+                                        <div
+                                            style={{
+                                                marginTop: 8,
+                                                background: '#fef4ed',
+                                                padding: 5
+                                            }}
+                                        >   {eventReference.map(name => `【${name}】`).join('')} </div>
+                                    </div>
+                                )
+                            }
+                            {
+                                !!wechatCardReference.length && (
+                                    <div>
+                                        <div style={{ marginTop: 8 }}>
+                                            该礼品被以下微信卡券使用，如需停用，请取消引用
+                                        </div>
+                                        <div
+                                            style={{
+                                                marginTop: 8,
+                                                background: '#fef4ed',
+                                                padding: 5
+                                            }}
+                                        >   {wechatCardReference.map(name => `【${name}】`).join('')} </div>
+                                    </div>
+                                )
+                            }
+                            {
+                                !!quotaCardsReference.length && (
+                                    <div>
+                                        <div style={{ marginTop: 8 }}>
+                                            该礼品被以下礼品定额卡券使用，如需停用，请取消引用
+                                        </div>
+                                        <div
+                                            style={{
+                                                marginTop: 8,
+                                                background: '#fef4ed',
+                                                padding: 5
+                                            }}
+                                        >   {quotaCardsReference.map(name => `【${name}】`).join('')} </div>
+                                    </div>
+                                )
+                            }
+                            {
+                                !!couponPackageReference.length && (
+                                    <div>
+                                        <div style={{ marginTop: 8 }}>
+                                            该礼品被以下券包使用，如需停用，请取消引用
+                                        </div>
+                                        <div
+                                            style={{
+                                                marginTop: 8,
+                                                background: '#fef4ed',
+                                                padding: 5
+                                            }}
+                                        >   {couponPackageReference.map(name => `【${name}】`).join('')} </div>
+                                    </div>
+                                )
+                            }
+                        </div>
+                    ),
+                });
+            } else {
+                Modal.error({
+                    title: '啊哦！好像有问题呦~~',
+                    content: `${msg}`,
+                });
+            }
+        });
     }
 
     handleMore(rec) {
