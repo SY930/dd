@@ -5,7 +5,7 @@ import { Iconlist } from '../../../../components/basic/IconsFont/IconsFont';
 // import { BASIC_PROMOTION_MAP } from "../../../../constants/promotionType";
 import FilterSelector from '../../../../components/common/FilterSelector';
 import { FILTERS } from '../common/giftConfig'
-import { fetchAllPromotionList } from "./AxiosFactory";
+import { fetchAllPromotionList } from './AxiosFactory';
 import styles from './style.less'
 
 // const AVAILABLE_PROMOTIONS = Object.keys(BASIC_PROMOTION_MAP);
@@ -26,6 +26,13 @@ class OnSaleNoShareBenifit extends Component {
     this.getAllOptions()
   }
 
+
+  onCancelModal = () => {
+    this.setState({
+      showPromotionModal: false,
+    })
+  }
+
   getAllOptions = () => {
     const {accountInfo: { groupID }, shopID } = getAccountInfo();
     const method = '/promotion/docPromotionService_query.ajax';
@@ -37,7 +44,8 @@ class OnSaleNoShareBenifit extends Component {
         status: 4,//正在执行的活动和未开始执行的活动
         pageNo: 1,
         pageSize: 10000,
-      }, method
+      },
+      method,
     };
     fetchAllPromotionList(params).then((res) => {
       if (res.length) {
@@ -51,12 +59,6 @@ class OnSaleNoShareBenifit extends Component {
           loading: false
         })
       }
-    })
-  }
-
-  onCancelModal = () => {
-    this.setState({
-      showPromotionModal: false
     })
   }
 
@@ -86,7 +88,7 @@ class OnSaleNoShareBenifit extends Component {
   renderTages = () => {
     const { value = [] } = this.props;
     const { promotionLst = [] } = this.state
-    let values = value.reduce((ret, shopID) => {
+    const values = value.reduce((ret, shopID) => {
       const shopInfo = promotionLst.find(shop => shop.value === shopID);
       if (!shopInfo) return ret;
       return ret.concat({ value: shopInfo.value, label: shopInfo.label });
@@ -150,6 +152,7 @@ class OnSaleNoShareBenifit extends Component {
               isPromotion={true}
               defaultValue={value}
               onChange={this.handleChange}
+              isShowBatchImport={false}
             />
           </Spin>
         </Modal>

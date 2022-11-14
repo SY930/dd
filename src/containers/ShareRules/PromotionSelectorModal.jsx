@@ -117,6 +117,7 @@ class PromotionSelectorModal extends Component {
             onChange={this.handleChange}
             onFilterKeyChange={this.handleFilterKeyChange}
             onGroupNameChange={this.handleGroupNameChange}
+            isShowBatchImport={false}
           />
         </Spin>
       </Modal>
