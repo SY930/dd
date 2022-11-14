@@ -712,7 +712,7 @@ export const ACTIVITY_THIRD_RULE_FORM_KEYS = {
             col: {
                 span: 24,
             },
-            keys: ['amountType', 'hasMutexDepend', 'hasOnSaleDepend', 'onSaleDependType', 'onSaleNoShareBenifit', 'hasBenefitsDepend', 'benefitsOptions'],
+            keys: ['amountType', 'hasMutexDepend', 'hasOnSaleDepend', 'onSaleDependType', 'onSaleNoShareBenifit', 'hasBenefitsDepend', 'benefitsOptions', 'hasAssetsDepend', 'assetsOptions'],
         },
     ],
 };
