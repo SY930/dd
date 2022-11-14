@@ -243,6 +243,23 @@ class PromotionScopeInfo extends React.Component {
                 initialized: true,
                 usageMode: _stateFromRedux.usageMode || 1,
             });
+
+            //周黑鸭
+            if(isZhouheiya(this.props.user.toJS().accountInfo.groupID)){
+                let shopScopeList = this.props.myActivities.getIn(['$promotionDetailInfo', 'data', 'promotionInfo', 'shopScopeList']);
+                shopScopeList = shopScopeList ? shopScopeList.toJS() : [];
+
+                //反显店铺区域组件
+                const list = shopScopeList;
+                this.setState({
+                    shopAreaData: {
+                        list: list.map(item => item.shopID),
+                        type: list[0] ? list[0].shopType == '1' ? 'shop' : 'area' : 'shop'
+                    },
+                    shopScopeList
+                })
+            }
+
         }
     }
 
