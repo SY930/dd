@@ -154,7 +154,7 @@ export const toggleSelectedActivityStateAC = (opts) => {
         ).then((responseJSON) => {
             dispatch(toggleSelectedActivityStateSuccess(opts.record));
 
-            opts.cb && opts.cb();
+            opts.modalTip ? opts.cb && opts.cb(opts.modalTip): null;
         }).catch((error) => {});
     };
 };
