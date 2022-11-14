@@ -77,7 +77,7 @@ const GiftCfg = {
       tags: ['pos', '新微信', '小程序'],
     },
     {
-      name: '线上礼品卡',
+      name: '微信礼品卡',
       describe: '用于线上渠道投放的定额礼品卡，支持多平台购买转赠、消费',
       value: '91',
       color: '#84aac6',
@@ -147,7 +147,7 @@ const GiftCfg = {
     { label: '会员积分券', value: '42' },
     { label: '会员权益券', value: '80' },
     { label: '礼品定额卡', value: '90' },
-    { label: '线上礼品卡', value: '91' },
+    { label: '微信礼品卡', value: '91' },
     { label: '买赠券', value: '110' },
     { label: '折扣券', value: '111' },
     { label: '微信红包', value: '113' },
@@ -331,7 +331,7 @@ const GiftCfg = {
     { value: '3', label: '已过期' },
     { value: '8', label: '已绑定' }, 
   ],
-  WXgiftCardStatus: [ // 线上礼品卡
+  WXgiftCardStatus: [ // 微信礼品卡
     { value: '', label: '全部' },
     { value: '0', label: '待激活' },
     { value: '1', label: '可使用' },

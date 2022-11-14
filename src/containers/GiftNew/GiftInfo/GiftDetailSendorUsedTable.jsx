@@ -129,7 +129,7 @@ class GiftSendOrUsedCount extends React.Component {
     }
     componentWillMount() {
         let sendGiftkeys = null;
-        // 后端不支持此字段getWay查询　故disable掉线上礼品卡的发送方式
+        // 后端不支持此字段getWay查询　故disable掉微信礼品卡的发送方式
         const { _key, data: { giftItemID, giftType }, FetchGiftSchemaAC, shopData, sendList, usedList, noUsedList } = this.props;
         const formItems = Object.assign({}, FORMITEMS);
         if (giftType === '91') {
@@ -222,7 +222,7 @@ class GiftSendOrUsedCount extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         let sendGiftkeys = null;
-        // 后端不支持此字段getWay查询　故disable掉线上礼品卡的发送方式
+        // 后端不支持此字段getWay查询　故disable掉微信礼品卡的发送方式
         const {data} = nextProps;
         const formItems = this.state.formItems;
         formItems.getWay.disabled = data.giftType === '91';

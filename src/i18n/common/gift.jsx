@@ -59,7 +59,7 @@ let STRING_GIFT = {
     },
     k5dn4fpc: {
         id: 'Gift.Context.k5dn4fpc',
-        defaultMessage: '线上礼品卡',
+        defaultMessage: '微信礼品卡',
     },
     k5dn6km0: {
         id: 'Gift.Context.k5dn6km0',
@@ -702,7 +702,7 @@ let COMMON_GIFT = defineMessages({
     },
     k5dn4fpc: {
         id: 'Gift.Context.k5dn4fpc',
-        defaultMessage: '线上礼品卡',
+        defaultMessage: '微信礼品卡',
     },
     k5dn6km0: {
         id: 'Gift.Context.k5dn6km0',

@@ -1054,7 +1054,7 @@ class GiftAddModalStep extends React.PureComponent {
                 params.pointRate = 0
             }
             if (formValues.couponTrdChannelStockNums) {
-                // 线上礼品卡
+                // 微信礼品卡
                 const issueChannel = []
                 const couponTrdChannelStockNums = [];
                 formValues.couponTrdChannelStockNums.forEach((channel) => {
@@ -2691,7 +2691,7 @@ class GiftAddModalStep extends React.PureComponent {
             }
         }
 
-        if(describe === '线上礼品卡') {
+        if(describe === '微信礼品卡') {
             const keys = firstKeysToDisplay[0].keys
             const firstKeysToDisplayKeys = keys.filter(v => v !== 'selectBrands')
             firstKeysToDisplay[0].keys = firstKeysToDisplayKeys
@@ -3425,7 +3425,7 @@ class GiftAddModalStep extends React.PureComponent {
                 wrapperCol: { span: 16 },
                 render: (decorator, form) => this.renderGiftPromotion(decorator, form), // <GiftPromotion></GiftPromotion>,
             },
-            // 线上礼品卡(91) 和其他的券类 price字段有微弱不同
+            // 微信礼品卡(91) 和其他的券类 price字段有微弱不同
             price: {
                 label: value == '91' ? '礼品售价' : <span>
                 <span>记录实收金额</span>

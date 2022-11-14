@@ -600,7 +600,7 @@ export const FIRST_KEYS = {
             ],
         },
     ],
-    '线上礼品卡': [
+    '微信礼品卡': [
         {
             col: {
                 span: 24,
@@ -950,7 +950,7 @@ export const SECOND_KEYS = (() => ({
             ],
         },
     ],
-    '线上礼品卡': [
+    '微信礼品卡': [
         {
             col: {
                 span: 24,
