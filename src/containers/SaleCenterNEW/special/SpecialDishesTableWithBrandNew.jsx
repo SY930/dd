@@ -336,7 +336,7 @@ class SpecialDishesTableWithBrand extends Component {
                 render: (text, record, index) => {
                     return (
                         <div className="editable-row-operations">
-                            <Popconfirm title="确定要删除吗?" onConfirm={() => this.handleDel(index)}>
+                            <Popconfirm title="确定要删除吗?" onConfirm={() => this.handleDel(record)}>
                                 <a title={COMMON_LABEL.delete}>{COMMON_LABEL.delete}</a>
                             </Popconfirm>
                         </div>
