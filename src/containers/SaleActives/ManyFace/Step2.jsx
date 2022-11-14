@@ -1,3 +1,9 @@
+/*
+ * @Author: Songnana
+ * @Date: 2022-11-14 16:21:40
+ * @Modified By: modifier Songnana
+ * @Descripttion: 
+ */
 import React, { PureComponent as Component } from 'react';
 import BaseForm from 'components/common/BaseForm';
 import { formKeys32, formItems3, formItemLayout, KEY6, KEY3, KEY4, KEY5 } from './Common';
@@ -56,9 +62,9 @@ class Step2 extends Component {
             triggerSceneList={((form1 && form1.getFieldValue('triggerSceneList')) || [])}
             allActivityList={this.props.allActivity}
             allMallActivity={this.props.allMallActivity}
-            // originClientType={this.props.originClientType}
             isEdit={this.props.isEdit}
             form1={this.props.form1}
+            customPageLst={this.props.customPageLst}
         />);
         const { faceRule, validCycle, ...others } = formItems3;
 
