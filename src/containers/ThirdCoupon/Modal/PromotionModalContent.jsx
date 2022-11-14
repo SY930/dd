@@ -480,7 +480,8 @@ class PromotionModalContent extends Component {
     render() {
         // const { marketingType } = this.state;
         const { form, promotionList = [] } = this.props;
-        const { getFieldDecorator } = form;
+        const { getFieldDecorator, getFieldsValue } = form;
+        const { enrollSceneType } = getFieldsValue()
         const { confirmLoading } = this.state;
         return (
 
@@ -530,32 +531,49 @@ class PromotionModalContent extends Component {
                                     />
                                 )}
                             </FormItem>
-                            <FormItem
-                                label="选择第三方支付宝券"
-                                labelCol={{ span: 5 }}
-                                wrapperCol={{ span: 16 }}
-                                required={true}
-                            >
-                                {/* TODO:根据itemID选出giftItemID */}
-                                {
-                                    getFieldDecorator('itemID', {
-                                        // initialValue: editData.giftItemID || '',
-                                        onChange: this.handleCouponChange,
-                                        rules: [
-                                            { required: true, message: '请选择第三方支付宝券' },
-                                        ],
-                                    })(
-                                        <Select placeholder={'请选择一个支付宝大促'}>
-                                            {
-                                                this.state.couponList.map(({ batchName, itemID }) => (
-                                                    <Select.Option key={itemID} value={itemID}>{batchName}</Select.Option>
-                                                ))
-                                            }
-                                        </Select>
-                                    )
-                                }
-                            </FormItem>
-                            {/* TODO: 跳转 */}
+                            {
+                                enrollSceneType === 'MINI_APP' && <FormItem
+                                    label="选择第三方支付宝券"
+                                    labelCol={{ span: 5 }}
+                                    wrapperCol={{ span: 16 }}>
+                                    {
+                                        getFieldDecorator('itemID', {
+                                            onChange: this.handleCouponChange,
+                                        })(
+                                            <Select placeholder={'请选择一个支付宝大促'}>
+                                                {
+                                                    this.state.couponList.map(({ batchName, itemID }) => (
+                                                        <Select.Option key={itemID} value={itemID}>{batchName}</Select.Option>
+                                                    ))
+                                                }
+                                            </Select>
+                                        )
+                                    }
+                                </FormItem>
+                            }
+                            {
+                                enrollSceneType === 'VOUCHER' && <FormItem
+                                    label="选择第三方支付宝券"
+                                    labelCol={{ span: 5 }}
+                                    wrapperCol={{ span: 16 }}>
+                                    {
+                                        getFieldDecorator('itemID_VOUCHER', {
+                                            onChange: this.handleCouponChange,
+                                            rules: [
+                                                { required: true, message: '请选择第三方支付宝券' }
+                                            ],
+                                        })(
+                                            <Select placeholder={'请选择一个支付宝大促'}>
+                                                {
+                                                    this.state.couponList.map(({ batchName, itemID }) => (
+                                                        <Select.Option key={itemID} value={itemID}>{batchName}</Select.Option>
+                                                    ))
+                                                }
+                                            </Select>
+                                        )
+                                    }
+                                </FormItem>
+                            }
                             {
                                 !(this.state.couponList.length) && <FormItem
                                     style={{ padding: 0 }}
@@ -581,6 +599,15 @@ class PromotionModalContent extends Component {
                                         onChange: this.handlePromotionChange,
                                         rules: [
                                             { required: true, message: '请选择支付宝大促' },
+                                            {
+                                                validator: (rule, v, cb) => {
+                                                    if (!v || !v.label) {
+                                                        return cb('请选择支付宝大促');
+                                                    }
+                                                    cb();
+                                                },
+                                            }
+
                                         ],
                                     })(
                                         <Select placeholder={'请选择一个支付宝大促'} labelInValue >
