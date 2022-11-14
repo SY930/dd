@@ -91,10 +91,10 @@ class CardSaleActive extends Component {
     }
 
     getOperateTime = (record) => {
-        if (record.actionStamp === '' && record.createStamp === '') {
+        if (record.updateStamp === '' && record.createStamp === '') {
             return '--';
         }
-        const t = `${moment(new Date(parseInt(record.createStamp))).format('YYYY-MM-DD HH:mm:ss')} / ${moment(new Date(parseInt(record.actionStamp))).format('YYYY-MM-DD HH:mm:ss')}`
+        const t = `${moment(new Date(parseInt(record.createStamp))).format('YYYY-MM-DD HH:mm:ss')} / ${moment(new Date(parseInt(record.updateStamp))).format('YYYY-MM-DD HH:mm:ss')}`
         return <Tooltip title={t}><em>{t}</em></Tooltip>;
     }
 

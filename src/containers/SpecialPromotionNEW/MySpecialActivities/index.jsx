@@ -3518,7 +3518,7 @@ class MySpecialActivities extends React.Component {
                 // width: 300,
                 render: (text, record, index) => {
                     if (
-                        record.actionStamp === "" &&
+                        record.updateStamp === "" &&
                         record.createStamp === ""
                     ) {
                         return "--";
@@ -3526,7 +3526,7 @@ class MySpecialActivities extends React.Component {
                     const t = `${moment(
                         new Date(parseInt(record.createStamp))
                     ).format("YYYY-MM-DD HH:mm:ss")} / ${moment(
-                        new Date(parseInt(record.actionStamp))
+                        new Date(parseInt(record.updateStamp))
                     ).format("YYYY-MM-DD HH:mm:ss")}`;
                     return <Tooltip title={t}>{t}</Tooltip>;
                 },
