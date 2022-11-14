@@ -1,4 +1,3 @@
-
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import { Modal, Steps, Spin, message, Radio } from 'antd';
@@ -14,7 +13,7 @@ import { fetchPromotionScopeInfo } from '../../../redux/actions/saleCenterNEW/pr
 import {
     saleCenterSetSpecialBasicInfoAC,
 } from '../../../redux/actions/saleCenterNEW/specialPromotion.action';
-import { getEvent, searchAllActivity, searchAllMallActivity, postEvent, putEvent, queryActiveList, putRule } from './AxiosFactory';
+import { getEvent, searchAllActivity, searchAllMallActivity, postEvent, putEvent, queryActiveList, putRule, getAppCoustomPage } from './AxiosFactory';
 import { asyncParseForm } from '../../../helpers/util'
 import { getItervalsErrorStatus } from './Common'
 import styles from './ManyFace.less'
@@ -34,6 +33,7 @@ class ManyFace extends Component {
             tagRuleDetails: [],
             allActivity: [],
             allMallActivity: [],
+            customPageLst: [],
             formDataLen: 0, // 数据的长度
             flag: false,
             paramsValueList: [],
@@ -345,16 +345,18 @@ class ManyFace extends Component {
         fetchFoodMenuLightInfo({ groupID, shopID: this.props.user.shopID }); // 轻量级接口
         fetchPromotionScopeInfoAC({ groupID }) // 品牌
   
-        // 获取商城和营销活动
-        Promise.all([searchAllActivity(), searchAllMallActivity()]).then((data = []) => {
+        // 获取商城和营销活动\获取小程序自定义页面
+        Promise.all([searchAllActivity(), searchAllMallActivity(), getAppCoustomPage()]).then((data = []) => {
             this.setState({
                 allActivity: data[0] || [],
                 allMallActivity: data[1] || [],
+                customPageLst: data[2] || [],
             })
         }).catch(() => {
             this.setState({
                 allActivity: [],
                 allMallActivity: [],
+                customPageLst: [],
             })
         })
     }
@@ -747,7 +749,7 @@ class ManyFace extends Component {
 
 
     render() {
-        const { form1, form2, allActivity, allMallActivity, formData1, formData2, viewRuleVisible, loading } = this.state
+        const { form1, form2, allActivity, allMallActivity, formData1, formData2, viewRuleVisible, loading, customPageLst } = this.state
         return (
             <div className={styles.formContainer}>
                 <div >
@@ -780,6 +782,7 @@ class ManyFace extends Component {
                             getForm={(form) => { this.setState({ form2: form }) }}
                             allActivity={allActivity}
                             allMallActivity={allMallActivity}
+                            customPageLst={customPageLst}
                             isEdit={true}
                             formData={formData2}
                             onChangeForm={this.onChangeForm}
