@@ -148,7 +148,7 @@ class FilterSelector extends React.Component {
 
     render() {
         const {
-            title, className, options, filters: oriFilters, tableColumns,
+            title, className, options, filters: oriFilters, tableColumns, isShowBatchImport,
         } = this.props;
         let { filterKey, filters, selected, filteredOptions } = this.state;
         // filteredOptions = filteredOptions.filter(item => item.status == 1)
@@ -222,11 +222,13 @@ class FilterSelector extends React.Component {
                     </div>
                 </Row>
                 <Row>
-                    <div style={{ float: 'right', marginTop: 10 }}>
+                    {
+                        isShowBatchImport && <div style={{ float: 'right', marginTop: 10 }}>
                         <a onClick={() => {
                             this.setState({ fastAddVisible: !this.state.fastAddVisible })
                         }}>批量录入</a>
                     </div>
+                    }
                 </Row>
                 {this.state.fastAddVisible && <Row>
                     <Input
@@ -263,6 +265,7 @@ FilterSelector.defaultProps = {
     tableColumns: [],
     onChange() {},
     onFilterKeyChange() {},
+    isShowBatchImport: true,
 };
 
 FilterSelector.propTypes = {
@@ -298,6 +301,7 @@ FilterSelector.propTypes = {
     onChange: PropTypes.func,
     /** 改变当前过滤器时触发的回调函数 */
     onFilterKeyChange: PropTypes.func,
+    isShowBatchImport: PropTypes.bool,
 };
 
 export default FilterSelector;
