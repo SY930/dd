@@ -37,7 +37,6 @@ import {
     GIFT_LIST_QUERY,
     GIFT_DETAIL_QUERY,
 } from "../../../constants/authorityCodes";
-import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
 import GiftLinkGenerateModal from './GiftLinkGenerateModal';
 import { isBrandOfHuaTianGroupList, isMine, } from "../../../constants/projectHuatianConf";
 import TicketBag from './TicketBag';
@@ -748,59 +747,8 @@ class GiftDetailTable extends Component {
                         </p>
                     </div>
                 </div>
-                <PromotionCalendarBanner />
                 <Tabs activeKey={tabkey} onChange={this.props.toggleTabs} className={styles.tabBox}>
                     <TabPane tab="礼品查询" key="1">
-                        {/* <div className={styles2.pageContentWrapper}>
-                            <div style={{ padding: '0'}} className="layoutsHeader">
-                                <div className="layoutsSearch">
-                                    <ul>
-                                        <li className={styles.formWidth}>
-                                            <BaseForm
-                                                getForm={form => this.queryFrom = form}
-                                                formItems={formItems}
-                                                formKeys={formKeys}
-                                                formData={queryParams}
-                                                layout="inline"
-                                                onChange={(key, value) => this.handleFormChange(key, value)}
-                                            />
-                                        </li>
-                                        <li>
-                                            <Authority rightCode={GIFT_LIST_UPDATE}>
-                                                <Button type="primary" onClick={() => this.handleQuery(1)}>
-                                                    <Icon type="search" />
-                                                    { COMMON_LABEL.query }
-                                                </Button>
-                                            </Authority>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div style={{ margin: '0'}} className="layoutsLine"></div>
-                            </div>
-                            <div className={[styles.giftTable, styles2.tableClass, 'layoutsContent'].join(' ')}>
-                                <Table
-                                    ref={this.setTableRef}
-                                    bordered={true}
-                                    columns={this.getTableColumns().map(c => (c.render ? ({
-                                        ...c,
-                                        render: c.render.bind(this),
-                                    }) : c))}
-                                    dataSource={this.state.dataSource}
-                                    pagination={{
-                                        showSizeChanger: true,
-                                        pageSize,
-                                        current: pageNo,
-                                        total: this.state.total,
-                                        showQuickJumper: true,
-                                        onChange: this.handlePageChange,
-                                        onShowSizeChange: this.handlePageChange,
-                                        showTotal: (total, range) => `本页${range[0]}-${range[1]}/ 共 ${total}条`,
-                                    }}
-                                    loading={this.props.loading}
-                                    scroll={{ x: 1600,  y: 'calc(100vh - 440px)' }}
-                                />
-                            </div>
-                        </div> */}
                         {
                             tabkey == '1' ?
                                 <GiftList
