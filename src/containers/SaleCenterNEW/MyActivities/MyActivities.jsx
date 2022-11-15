@@ -2241,34 +2241,6 @@ class MyActivities extends React.Component {
                     return <Tooltip title={t}>{t}</Tooltip>;
                 }
             },
-           {
-                title: '适用商品',
-                className: 'TableTxtCenter',
-                dataIndex: 'applyGoodsName',
-                key: 'applyGoodsName',
-                width: 120,
-                render:  (text) => {
-                    const t = text
-                    return <Tooltip title={text}><p className={styles.multilineTexts}>{t}</p></Tooltip>
-                },
-                isShow: () => {
-                    return isZhouheiya(this.props.user.accountInfo.groupID)
-                }
-            },
-            {
-                title: '适用店铺',
-                className: 'TableTxtCenter',
-                dataIndex: 'shopIDLst',
-                key: 'shopIDLst',
-                width: 120,
-                render:  (text) => {
-                    const t = text
-                    return <Tooltip title={text}><p className={styles.multilineTexts}>{t}</p></Tooltip>
-                },
-                isShow: () => {
-                    return isZhouheiya(this.props.user.accountInfo.groupID)
-                }
-            },
         ];
 
         if(isZhouheiya(this.props.user.accountInfo.groupID)){
@@ -2293,6 +2265,31 @@ class MyActivities extends React.Component {
                 },
             })
         }
+        if(isZhouheiya(this.props.user.accountInfo.groupID)){
+            columns.splice(13, 0,{
+                title: '适用商品',
+                className: 'TableTxtCenter',
+                dataIndex: 'applyGoodsName',
+                key: 'applyGoodsName',
+                width: 120,
+                render:  (text) => {
+                    const t = text
+                    return <Tooltip title={text}><p className={styles.multilineTexts}>{t}</p></Tooltip>
+                }
+            },
+            {
+                title: '适用店铺',
+                className: 'TableTxtCenter',
+                dataIndex: 'shopIDLst',
+                key: 'shopIDLst',
+                width: 120,
+                render:  (text) => {
+                    const t = text
+                    return <Tooltip title={text}><p className={styles.multilineTexts}>{t}</p></Tooltip>
+                }
+            })
+         }
+
         return (
             <div className={`layoutsContent ${styles.tableClass}`}>
                 <Table
