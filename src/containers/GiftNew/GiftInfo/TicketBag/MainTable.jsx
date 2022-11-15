@@ -293,7 +293,7 @@ class MainTable extends Component {
                     columns={columns}
                     dataSource={dataSource}
                     style={{ maxWidth: 1300 }}
-                    scroll={{ y: 'calc(100vh - 440px)' }}
+                    scroll={{ y: 'calc(100vh - 340px)' }}
                     pagination={pagination}
                 />
                 {visible &&
