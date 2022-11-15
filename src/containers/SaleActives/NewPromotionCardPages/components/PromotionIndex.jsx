@@ -46,9 +46,8 @@ class PromotionIndex extends Component {
             groupID: this.props.user.accountInfo.groupID,
             shopID: this.props.user.shopID > 0 ? this.props.user.shopID : undefined,
             isActive: -1,
-            status: 4,//正在执行的活动和未开始执行的活动
             pageNo: 1,
-            pageSize: 10000,
+            pageSize: 20000,
         }).then((res) => {
             this.setState({
                 promotionLst: res,
@@ -373,7 +372,6 @@ class PromotionIndex extends Component {
                 clonedEvent.defaultCardType = defaultCardType;
                 requestPramas.event = clonedEvent;
                 requestPramas.eventMutexDependRuleInfos = eventMutexDependRuleInfos;
-                console.log("🚀 ~ file: PromotionIndex.jsx ~ line 377 ~ PromotionIndex ~ requestPramas", requestPramas)
                 if (currentPromotion.itemID) {
                     requestPramas.event.itemID = currentPromotion.itemID;
                 }
