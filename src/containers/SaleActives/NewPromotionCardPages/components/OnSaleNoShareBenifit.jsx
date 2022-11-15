@@ -37,17 +37,18 @@ class OnSaleNoShareBenifit extends Component {
     const {accountInfo: { groupID }, shopID } = getAccountInfo();
     const method = '/promotion/docPromotionService_query.ajax';
     const params = {
-      service: 'HTTP_SERVICE_URL_PROMOTION_NEW', type: 'post', data: {
+      service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+      type: 'post',
+      data: {
         groupID,
         shopID: shopID > 0 ? shopID : undefined,
         isActive: -1,
-        status: 4,//正在执行的活动和未开始执行的活动
         pageNo: 1,
-        pageSize: 10000,
+        pageSize: 20000,
       },
       method,
     };
-    fetchAllPromotionList(params).then((res) => {
+    fetchAllPromotionList(params.data).then((res) => {
       if (res.length) {
         this.setState({
           promotionLst: res,

@@ -140,10 +140,12 @@ async function httpGetPromotionDetail(data) {
 async function fetchAllPromotionList(data) {
     const { groupID } = getAccountInfo();
     const method = '/promotion/docPromotionService_query.ajax';
-    const params = { service: 'HTTP_SERVICE_URL_PROMOTION_NEW', type, data: { 
-        groupID,
-        ...data
-    }, method };
+    const params = {
+        service: 'HTTP_SERVICE_URL_PROMOTION_NEW',
+        type: 'post',
+        data,
+        method,
+    };
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;
     if (code === '000') {
