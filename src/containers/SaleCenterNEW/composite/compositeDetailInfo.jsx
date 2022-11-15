@@ -1188,7 +1188,7 @@ class CompositeDetailInfo extends React.Component {
 
      // 优惠分摊
     renderDiscountShare = () => {
-        const { shareType, condition1, condition2 } = this.state
+        const { shareType = 1, condition1, condition2 } = this.state
         return (
             <Row>
                 <p>优惠分摊比例</p>
