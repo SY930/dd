@@ -29,7 +29,8 @@ class FilterSelector extends React.Component {
         excelUrl: '',
         shopIds: [],
         inputTextArr: [],
-        shopOrgCode: []
+        shopOrgCode: [],
+        uploadSuccess: true,
     }
 
     componentDidMount() {
@@ -268,15 +269,19 @@ class FilterSelector extends React.Component {
                         shopIds: data.shopIdLists
                     })
                 }
+                this.setState({
+                    uploadSuccess:true
+                })
             })
     }
 
     handleUploadChange = ({ file }) => {
+        this.setState({uploadSuccess:false})
         if (file.status === 'done') {
             this.setState({ shopIDPath: file.response.data.url });
             this.query(file.response.data.url)
         } else if (file.status === 'error') {
-            message.error('自定义群体上传失败！');
+            message.error('上传失败！');
         }
     }
 
@@ -428,13 +433,18 @@ class FilterSelector extends React.Component {
                     title="批量添加店铺"
                     visible={this.state.batchAddVisible}
                     width="500px"
-                    onOk={() => {
-                        if (this.state.batchType == 1) {
-                            this.batchAdd(this.state.inputText)
-                        } else {
-                            this.batchAdd(this.state.shopIds.join(','))
-                        }
-                    }}
+                    footer={[
+                        <Button onClick={() => {
+                            this.setState({ batchAddVisible: false })
+                        }}>取消</Button>,
+                        <Button type="primary" disabled={this.state.batchType == 2&&!this.state.uploadSuccess?true:false} onClick={() => {
+                            if (this.state.batchType == 1) {
+                                this.batchAdd(this.state.inputText)
+                            } else {
+                                this.batchAdd(this.state.shopIds.join(','))
+                            }
+                        }}>确定</Button>,
+                    ]}
                     onCancel={() => {
                         this.setState({ batchAddVisible: false })
                     }}
