@@ -1010,11 +1010,13 @@ class MySpecialActivities extends React.Component {
                             total: _promoitonList.total,
                         });
                     } else {
-                        message.warning(
-                            `${this.props.intl.formatMessage(
-                                STRING_SPE.d4h1ac506h7670
-                            )}`
-                        );
+                        if(this.state.tabKeys == 'saleSpecialPage'){
+                            message.warning(
+                                `${this.props.intl.formatMessage(
+                                    STRING_SPE.d4h1ac506h7670
+                                )}`
+                            );
+                        }
                         this.setState({
                             loading: false,
                             dataSource: [],
