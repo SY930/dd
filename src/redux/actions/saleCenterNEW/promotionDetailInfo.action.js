@@ -48,6 +48,16 @@ export const SALE_CENTER_FETCH_SUBJECT_LIST = 'sale center : get subjec info new
 export const SALE_CENTER_FETCH_SUBJECT_LIST_SUCCESS = 'sale center:: fetch subject info success new';
 export const SALE_CENTER_FETCH_SUBJECT_LIST_FAILED = 'sale center:: fetch subject info failed new';
 export const SALE_CENTER_FETCH_GOODS_AND_CATEGORIES_SUCCESS = 'sale center:: SALE_CENTER_FETCH_GOODS_AND_CATEGORIES_SUCCESS';
+
+//周黑鸭需求
+export const SALE_CENTER_SET_ONLY_MODIFY_SHOP = 'sale center:: SALE_CENTER_SET_ONLY_MODIFY_SHOP';
+export const saleCenterSetPromotionDetailOnlyModifyShopAC = (opts) => {
+    return {
+        type: SALE_CENTER_SET_ONLY_MODIFY_SHOP,
+        payload: opts,
+    };
+};
+
 export const saleCenterSetPromotionDetailAC = (opts) => {
     return {
         type: SALE_CENTER_SET_PROMOTION_DETAIL,
