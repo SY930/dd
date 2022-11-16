@@ -135,7 +135,7 @@ class PromotionScopeInfo extends React.Component {
         }
         if (!this.props.user.toJS().shopID) {
             const { isRequire } = this.state;
-            if (isRequire && !selections[0]) {
+            if (!isZhouheiya(this.props.user.toJS().accountInfo.groupID)&&isRequire && !selections[0]) {
                 flag = false;
             }
         }
@@ -145,14 +145,14 @@ class PromotionScopeInfo extends React.Component {
             });
         }
 
-	//周黑鸭需求
-	if(isZhouheiya(this.props.user.toJS().accountInfo.groupID)){
+        //周黑鸭需求
+        if(isZhouheiya(this.props.user.toJS().accountInfo.groupID)){
 	        if (this.state.shopAreaData.list.length == 0) {
 	            if (this.state.shopScopeList && this.state.shopScopeList.length == 0 && !isGeneral() && this.props.isUpdate) {
 	                flag = false;
 	            }
 	        }
-	}
+	    }
 
 
         if (flag) {
