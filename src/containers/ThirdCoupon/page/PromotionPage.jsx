@@ -121,19 +121,6 @@ class PromotionPage extends Component {
                             />
                         )}
                     </FormItem>
-                    {/* <FormItem
-                        label="支付宝会场大促计划名称"
-                        labelCol={{ span: 9 }}
-                        wrapperCol={{ span: 15 }}
-                        style={{ width: '400px' }}
-                    >
-                        {getFieldDecorator('marketingName', {
-                        })(
-                            <Input
-                                placeholder="请输入活动名"
-                            />
-                        )}
-                    </FormItem> */}
                     <FormItem>
                         <Button type="primary" className={styles.speBtn} htmlType="submit">
                             <Icon type="search" />

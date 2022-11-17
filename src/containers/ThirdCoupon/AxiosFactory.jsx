@@ -285,7 +285,7 @@ async function getAlipayCouponList() {
 }
 
 // 支付宝大促
-async function getAlipayPromotionList(enrollSceneType) {
+async function getAlipayPromotionList(datas) {
     const method = 'AlipayRecruitPlanInfoService/recruitPlanListQuery.ajax';
     const { groupID } = getAccountInfo();
     const params = {
@@ -295,7 +295,7 @@ async function getAlipayPromotionList(enrollSceneType) {
             groupID,
             pageNum: 1,
             pageSize: 100,
-            enrollSceneType,
+            ...datas,
         },
         method,
     };
@@ -311,7 +311,7 @@ async function getAlipayPromotionList(enrollSceneType) {
 }
 
 // 选择大促加载报名素材
-async function getAlipayRecruitPlan(value) {
+async function getAlipayRecruitPlan(datas) {
     const method = 'AlipayRecruitPlanInfoService/recruitPlanQuery.ajax';
     const { groupID } = getAccountInfo();
     const params = {
@@ -319,9 +319,9 @@ async function getAlipayRecruitPlan(value) {
         type,
         data: {
             groupID,
-            planId: value,
+            ...datas,
         },
-        method
+        method,
     };
     const response = await axios.post(url + method, params);
     const { code, message: msg, data: obj } = response;

@@ -10,9 +10,8 @@ import PromotionPage from './PromotionPage'
 import SuccessModalContent from '../Modal/SuccessModalContent';
 import PromotionModalContent from '../Modal/PromotionModalContent';
 import style from '../AlipayCoupon.less'
-import { getAlipayPromotionList, queryEventList } from '../AxiosFactory';
+import { getIndirectList, queryEventList, getShopPid } from '../AxiosFactory';
 import { axiosData } from '../../../helpers/util';
-
 
 const TabPane = Tabs.TabPane;
 
@@ -37,7 +36,17 @@ export default class ThirdCoupon extends Component {
         const { from } = this.getQueryVariable();
         this.handleTabChange(from)
         this.handleQuery(null, null, { eventWays: ['20001'] }); // 默认传成功页
-        this.getPromotionData()
+        // this.getPromotionData()
+        getIndirectList().then((res) => {
+            this.setState({
+                indirectList: res,
+            })
+        })
+        getShopPid().then((res) => {
+            this.setState({
+                shopPid: res,
+            })
+        })
     }
 
     componentWillUnmount() {
@@ -110,15 +119,6 @@ export default class ThirdCoupon extends Component {
         })
     }
 
-
-    getPromotionData = (enrollSsceneType = 'VOUCHER') => {
-        getAlipayPromotionList(enrollSsceneType).then((res) => {
-            this.setState({
-                promotionList: res,
-            })
-        })
-    }
-
     handleChangeTabs = (key) => {
         this.setState({
             ...this.state, // 清空数据
@@ -148,7 +148,6 @@ export default class ThirdCoupon extends Component {
         this.setState({
             promotionModalVisible: true,
         })
-        this.getPromotionData()
         return null;
     }
 
@@ -215,7 +214,6 @@ export default class ThirdCoupon extends Component {
                                 handleQuery={this.handleQuery}
                                 onShowSizeChange={this.onShowSizeChange}
                                 handleSuccessEdit={this.handleSuccessEdit}
-                                // deliveryChannelInfoList={this.state.deliveryChannelInfoList}
                             />
                         </TabPane>
                         <TabPane tab="会场大促活动投放" key="promotionPage">
@@ -236,16 +234,14 @@ export default class ThirdCoupon extends Component {
                         onCancel={this.handleClose}
                         handleQuery={this.handleQuery}
                         editData={successEditData}
-                        // deliveryChannelInfoList={this.state.deliveryChannelInfoList}
-                        // handleModle={}
                     />
                 }
                 {
                     promotionModalVisible && <PromotionModalContent
                         onCancel={this.handleClose}
-                        promotionList={this.state.promotionList}
                         handleQuery={this.handleQuery}
-                        getPromotionData={this.getPromotionData}
+                        indirectList={this.state.indirectList || []}
+                        shopPid={this.state.shopPid || []}
                     />
                 }
             </div>

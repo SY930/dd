@@ -205,8 +205,6 @@ class CreateCouponContent extends Component {
             shopIsAuth: '0',
             smidList: [],
             aliShops: [],
-            // editData,
-
         })
     }
 
