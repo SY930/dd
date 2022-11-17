@@ -475,7 +475,9 @@ class NewCustomerPage extends Component {
         }
         if (isSpecial) {
             // 调用重置特色营销数据和重置占用微信ID数据
-            this.props.saleCenterResetSpecailDetailInfo();
+            if(isZhouheiya()){
+                this.props.saleCenterResetSpecailDetailInfo();
+            }
 
             const specialIndex = this.props.saleCenter.get('characteristicCategories').toJS().findIndex(promotion => promotion.key === key);
             this.handleSpecialPromotionCreate(specialIndex, promotionEntity, ifskip)
