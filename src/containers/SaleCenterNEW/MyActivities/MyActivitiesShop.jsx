@@ -86,7 +86,6 @@ import {
     isBrandOfHuaTianGroupList, isGroupOfHuaTianGroupList, isHuaTian,
     isMine
 } from "../../../constants/projectHuatianConf";
-import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
 import { ONLINE_PROMOTION_TYPES } from '../../../constants/promotionType';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
@@ -1245,10 +1244,10 @@ class MyActivitiesShop extends React.Component {
         ];
 
         return (
-            <div className={['layoutsContent', styles.tableClass].join(' ')} style={{ height: this.state.contentHeight }}>
+            <div className={['layoutsContent', styles.tableClass].join(' ')} style={{ height: this.state.contentHeight + 80 }}>
                 <Table
                     ref={this.setTableRef}
-                    scroll={{ x: 1700, y: this.state.contentHeight - 93 }}
+                    scroll={{ x: 1700, y: this.state.contentHeight - 13 }}
                     className={styles.sepcialActivesTable}
                     bordered={true}
                     columns={columns}
@@ -1287,7 +1286,6 @@ class MyActivitiesShop extends React.Component {
                 <div>
                     {this.renderHeader()}
                 </div>
-                <PromotionCalendarBanner jumpTarget={PROMOTION_CALENDAR_SHOP} />
                 <div>
                     <div className={styles.pageContentWrapper} >
                         <div style={{padding: 0}} className="layoutsHeader">

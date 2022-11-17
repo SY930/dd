@@ -1,3 +1,4 @@
+
 export const programList = [
     // { label: '无', value: '' },
     { label: '首页', value: '/home' },
@@ -29,6 +30,7 @@ export const eventSelectOptionCopy = [
     { label: '自定义链接', value: 'customLink' },
     { label: '菜品加入购物车', value: 'shoppingCartAddFood' },
     // { label: '小程序开卡', value: 'toOpenCard' }, // 仅针对九毛九集团可见
+    { label: '小程序自定义页面', value: 'miniAppCustomPage', children: [] },
 ]
 export const faceDefVal = {
     id: '0',
@@ -41,7 +43,8 @@ export const faceDefVal = {
     triggerEventName1: '购物车夹菜',
     triggerEventValue1: '',
     triggerEventCustomInfo1: '',
-    triggerEventCustomInfoApp1: [{ platformType: 'wechat', appID: '', appName: '微信小程序名称' }, { platformType: 'alipay', appID: '', appName: '支付宝小程序名称' }], // 跳转至小程序
+    triggerEventCustomInfoApp1: [{ platformType: 'wechat', appID: '', appName: '微信小程序名称' },
+        { platformType: 'alipay', appID: '', appName: '支付宝小程序名称' }], // 跳转至小程序
 
     triggerEventInfoList: [
         {
@@ -51,7 +54,8 @@ export const faceDefVal = {
             triggerEventName1: '购物车夹菜',
             triggerEventValue1: '',
             triggerEventCustomInfo1: '',
-            triggerEventCustomInfoApp1: [{ platformType: 'wechat', appID: '', appName: '微信小程序名称' }, { platformType: 'alipay', appID: '', appName: '支付宝小程序名称' }], // 跳转至小程序
+            triggerEventCustomInfoApp1: [{ platformType: 'wechat', appID: '', appName: '微信小程序名称' },
+                { platformType: 'alipay', appID: '', appName: '支付宝小程序名称' }], // 跳转至小程序
         },
     ], // banner
 

@@ -40,7 +40,6 @@ import ExportModal from "../../GiftNew/GiftInfo/ExportModal";
 import { openPromotionAutoRunListModal, queryPromotionAutoRunList, queryPromotionList } from "../../../redux/actions/saleCenterNEW/promotionAutoRun.action";
 import { AUTO_RUN_QUERY, BASIC_LOOK_PROMOTION_QUERY, BASIC_PROMOTION_DELETE, BASIC_PROMOTION_QUERY, BASIC_PROMOTION_UPDATE } from "../../../constants/authorityCodes";
 import { isBrandOfHuaTianGroupList, isGroupOfHuaTianGroupList, isHuaTian, isMine } from "../../../constants/projectHuatianConf";
-import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
 import { ONLINE_PROMOTION_TYPES } from "../../../constants/promotionType";
 import { selectPromotionForDecoration } from "../../../redux/actions/decoration";
 import { SALE_LABEL, SALE_STRING } from "i18n/common/salecenter";
@@ -2294,7 +2293,7 @@ class MyActivities extends React.Component {
             <div className={`layoutsContent ${styles.tableClass}`}>
                 <Table
                     ref={this.setTableRef}
-                    scroll={{ x: 1000, y: "calc(100vh - 440px)" }}
+                    scroll={{ x: 1000, y: "calc(100vh - 360px)" }}
                     className={styles.sepcialActivesTable}
                     bordered={true}
                     columns={columns}
@@ -2336,9 +2335,8 @@ class MyActivities extends React.Component {
         return (
             <div style={{ backgroundColor: "#F3F3F3" }} className="layoutsContainer" ref={layoutsContainer => (this.layoutsContainer = layoutsContainer)}>
                 <div>{this.props.tabKeys !== "saleSpecialPage" && this.renderHeader()}</div>
-                {/* <PromotionCalendarBanner /> */}
                 <div>
-                    <div className={styles.pageContentWrapper} style={{ minHeight: "calc(100vh - 160px)" }}>
+                    <div className={styles.pageContentWrapper} style={{ minHeight: "calc(100vh - 80px)" }}>
                         <div style={{ padding: "0" }} className="layoutsHeader">
                             {this.renderFilterBar()}
                             <div style={{ margin: "0" }} className="layoutsLine"></div>

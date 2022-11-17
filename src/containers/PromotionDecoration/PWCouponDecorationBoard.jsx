@@ -114,7 +114,7 @@ export default class PWCouponDecorationBoard extends Component {
                             onChange={value => onChange({ key: ['activeImg'], value })}
                         />
                         <div className={style.uploaderTip}>
-                            <p>* 图片建议尺寸750x960像素</p>
+                            <p>* 图片建议尺寸750X1532像素</p>
                             <p>* 不大于1000KB</p>
                             <p>* 支持png、jpg、jpeg、gif</p>
                         </div>

@@ -96,10 +96,10 @@ class CardSaleActive extends Component {
     }
 
     getOperateTime = (record) => {
-        if (record.actionStamp === '' && record.createStamp === '') {
+        if (record.updateStamp === '' && record.createStamp === '') {
             return '--';
         }
-        const t = `${moment(new Date(parseInt(record.createStamp))).format('YYYY-MM-DD HH:mm:ss')} / ${moment(new Date(parseInt(record.actionStamp))).format('YYYY-MM-DD HH:mm:ss')}`
+        const t = `${moment(new Date(parseInt(record.createStamp))).format('YYYY-MM-DD HH:mm:ss')} / ${moment(new Date(parseInt(record.updateStamp))).format('YYYY-MM-DD HH:mm:ss')}`
         return <Tooltip title={t}><em>{t}</em></Tooltip>;
     }
 
@@ -358,7 +358,7 @@ class CardSaleActive extends Component {
         const { dataSource: data } = this.props
         return (
             <div>
-                <div style={{ height: 'calc(100vh - 380px)', overflowY: 'auto' }}>
+                <div style={{ height: 'calc(100vh - 300px)', overflowY: 'auto' }}>
                     <div className={styles.cardContainer}>
                         {data && data.length > 0 ?
                             data.map((item, index) => {

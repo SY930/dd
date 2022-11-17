@@ -177,7 +177,7 @@ class CardSaleActive extends Component {
         const { dataSource: data } = this.props;
         return (
             <div>
-                <div style={{ height: 'calc(100vh - 380px)', overflowY: 'auto' }}>
+                <div style={{ height: 'calc(100vh - 300px)', overflowY: 'auto' }}>
                     <div className={styles.cardContainer}>
                         {data && data.length > 0 ?
                             data.map((item, index) => {

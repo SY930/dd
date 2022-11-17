@@ -296,7 +296,7 @@ class FilterSelector extends React.Component {
 
     render() {
         const {
-            title, className, options, filters: oriFilters, tableColumns,
+            title, className, options, filters: oriFilters, tableColumns, isShowBatchImport,
         } = this.props;
         let { filterKey, filters, selected, filteredOptions } = this.state;
 
@@ -394,9 +394,9 @@ class FilterSelector extends React.Component {
                         ) : '已选条件：尚未选择过滤条件'}
                     </p>
                     {/* <div style={{ float: 'right' }}> */}
-                    <a style={{ marginLeft: 25 }} onClick={() => {
+                    {isShowBatchImport&&<a style={{ marginLeft: 25 }} onClick={() => {
                         this.setState({ batchAddVisible: !this.state.batchAddVisible, inputText: '', batchType: isZhouheiya(this.props.groupID)?'2':'1', excelUrl: '', fileList: [] })
-                    }}>批量添加店铺</a>
+                    }}>批量添加店铺</a>}
                     {/* </div> */}
                 </Row>
                 <Row type="flex">
@@ -554,8 +554,9 @@ FilterSelector.defaultProps = {
     extraFilters: {},
     defaultValue: [],
     tableColumns: [],
-    onChange() { },
-    onFilterKeyChange() { },
+    onChange() {},
+    onFilterKeyChange() {},
+    isShowBatchImport: true,
 };
 
 FilterSelector.propTypes = {
@@ -591,6 +592,7 @@ FilterSelector.propTypes = {
     onChange: PropTypes.func,
     /** 改变当前过滤器时触发的回调函数 */
     onFilterKeyChange: PropTypes.func,
+    isShowBatchImport: PropTypes.bool,
 };
 
 export default FilterSelector;

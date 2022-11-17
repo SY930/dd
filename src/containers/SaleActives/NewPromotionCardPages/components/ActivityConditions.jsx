@@ -297,10 +297,11 @@ class ActivityConditions extends Component {
         formItems.couponName = {
             ...formItems.couponName,
             render: (d, form) => {
-                const { giftPresentType = 1, couponName: formCouponName } = form ? form.getFieldsValue() : {};
+                const { giftPresentType = 1, couponName: formCouponName, presentType } = form ? form.getFieldsValue() : {};
                 if (giftPresentType == 1) { return null }
-                return (
-                    <FormItem>
+                if (presentType && presentType.includes(1) && giftPresentType == 4) {
+                    return (
+                        <FormItem>
                         {d({
                             rules: [{
                                 required: true,
@@ -320,7 +321,9 @@ class ActivityConditions extends Component {
 
                         )}
                     </FormItem>
-                )
+                    )
+                 }
+                return null
             },
         }
         return formItems;

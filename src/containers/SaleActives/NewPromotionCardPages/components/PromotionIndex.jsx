@@ -6,7 +6,7 @@ import HeaderTitle from '../components/HeaderTitle';
 import PromotionLeftLogo from '../components/PromotionLeftLogo';
 import PromotionRightMain from '../components/PromotionRightMain';
 import styles from './style.less';
-import { httpCreatePromotion } from "./AxiosFactory";
+import { httpCreatePromotion, fetchAllPromotionList } from "./AxiosFactory";
 import {
     fetchFoodCategoryInfoAC,
     fetchFoodMenuInfoAC,
@@ -26,7 +26,8 @@ class PromotionIndex extends Component {
         super(props);
         this.promotionRightMainRef = null;
         this.state = {
-            loading: false
+            loading: false,
+            promotionLst: []
         }
     }
 
@@ -37,6 +38,21 @@ class PromotionIndex extends Component {
         };
         this.props.fetchFoodCategoryInfo({ ...opts });
         this.props.fetchFoodMenuInfo({ ...opts });
+        this.fetchAllPromotionListAC()
+    }
+
+    fetchAllPromotionListAC = () => {
+        fetchAllPromotionList({
+            groupID: this.props.user.accountInfo.groupID,
+            shopID: this.props.user.shopID > 0 ? this.props.user.shopID : undefined,
+            isActive: -1,
+            pageNo: 1,
+            pageSize: 20000,
+        }).then((res) => {
+            this.setState({
+                promotionLst: res,
+              })
+        })
     }
 
     onClose = () => {
@@ -290,6 +306,8 @@ class PromotionIndex extends Component {
                 } else {
                     eventMutexDependRuleInfos = []
                 }
+
+                eventMutexDependRuleInfos = this.dealWithOtherRuleInfos(eventMutexDependRuleInfos, clonedEvent)
                 let foodScopeList = [];
                 const stageTypes = eventGiftConditionList.map(item => +item.stageType);
                 if (stageTypes.includes(3) || stageTypes.includes(4)) {
@@ -362,6 +380,40 @@ class PromotionIndex extends Component {
                 console.error(error);
             }
         }
+    }
+
+    dealWithOtherRuleInfos = (ruleInfo, data) => {
+        let eventMutexDependRuleInfos = [].concat(ruleInfo);
+        const { promotionLst = []} = this.state
+        const { hasOnSaleDepend, onSaleDependType, onSaleNoShareBenifit, hasBenefitsDepend, benefitsOptions, hasAssetsDepend, assetsOptions } = data;
+        if (hasOnSaleDepend && onSaleDependType == 1) { // 与所有促销活动不共享
+            // onSaleDependType: 1,
+            eventMutexDependRuleInfos.push({ mutexDependType:1,ruleType: 20, targetID: 0 })
+        }
+        if (hasOnSaleDepend && onSaleDependType == 2) { // 与部分促销活动不共享
+            eventMutexDependRuleInfos =  onSaleNoShareBenifit.reduce((ret, shopID) => {
+                const shopInfo = promotionLst.find(shop => shop.value === shopID);
+                if (!shopInfo) return ret;
+                // onSaleDependType: 2,
+                return ret.concat({mutexDependType:1,  targetID: shopInfo.value, targetName: shopInfo.label, ruleType: 20,  });
+            }, eventMutexDependRuleInfos);
+        }
+        if (hasBenefitsDepend) { // 与会员权益不共享
+            eventMutexDependRuleInfos =  benefitsOptions.reduce((ret, ruleType) => {
+                // hasBenefitsDepend: 1
+                return ret.concat({ mutexDependType:1, targetID: 0, ruleType });
+            }, eventMutexDependRuleInfos);
+        }
+
+        if (hasAssetsDepend) { // 与会员权益不共享
+            eventMutexDependRuleInfos =  assetsOptions.reduce((ret, ruleType) => {
+                // hasAssetsDepend: 1,
+                return ret.concat({  mutexDependType:1, targetID: 0, ruleType });
+            }, eventMutexDependRuleInfos);
+        }
+
+        return eventMutexDependRuleInfos
+
     }
 
     createPromotion = (requestPramas) => {
