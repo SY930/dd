@@ -2335,7 +2335,7 @@ class MyActivities extends React.Component {
                 className: 'TableTxtCenter',
                 dataIndex: 'applyGoodsName',
                 key: 'applyGoodsName',
-                width: 120,
+                width: 160,
                 render:  (text) => {
                     const t = text
                     return <Tooltip title={text}><p className={styles.multilineTexts}>{t}</p></Tooltip>
@@ -2346,7 +2346,7 @@ class MyActivities extends React.Component {
                 className: 'TableTxtCenter',
                 dataIndex: 'shopIDLst',
                 key: 'shopIDLst',
-                width: 120,
+                width: 160,
                 render:  (text) => {
                     const t = text
                     return <Tooltip title={text}><p className={styles.multilineTexts}>{t}</p></Tooltip>
