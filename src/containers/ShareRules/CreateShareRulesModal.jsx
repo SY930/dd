@@ -700,7 +700,7 @@ class CreateShareRulesModal extends Component {
                 shareRuleType == '1' && referenceType == '1' ?
                   null
                   :
-                  <Button icon="plus" style={{ left: `${tagsArrA.length == 0 ? '125px' : '-15px'}` }} className={tagsArrA.length == 0 ? styles.emptyAddActivityBtn : styles.addActivityBtn} onClick={() => this.setPromotionModalShow('1')}>添加(至多添加{ACCOUNTLIST.indexOf(groupID) > -1 ? 500 : 100}个)</Button>
+                  <Button icon="plus" style={{ left: `${tagsArrA.length == 0 ? '125px' : '-15px'}` }} className={tagsArrA.length == 0 ? styles.emptyAddActivityBtn : styles.addActivityBtn} onClick={() => this.setPromotionModalShow('1')}>添加(至多添加100个)</Button>
               }
             </FormItem>
           </Col>
@@ -747,7 +747,7 @@ class CreateShareRulesModal extends Component {
                   }
                 </Col>
               </Col>
-              <Button icon="plus" style={{ left: `${tagsArrB.length == 0 ? '125px' : '-15px'}` }} className={tagsArrB.length == 0 ? styles.emptyAddActivityBtn : styles.addActivityBtn} onClick={() => this.setPromotionModalShow('2')}>添加(至多添加{ACCOUNTLIST.indexOf(groupID) > -1 ? 500 : 100}个)</Button>
+              <Button icon="plus" style={{ left: `${tagsArrB.length == 0 ? '125px' : '-15px'}` }} className={tagsArrB.length == 0 ? styles.emptyAddActivityBtn : styles.addActivityBtn} onClick={() => this.setPromotionModalShow('2')}>添加(至多添加100个)</Button>
             </FormItem>
           </Col>
         </FormItem>
