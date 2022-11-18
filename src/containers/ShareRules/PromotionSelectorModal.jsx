@@ -85,8 +85,16 @@ class PromotionSelectorModal extends Component {
         return
       }
     } else if (this.selected && this.selected.length > 100) {
-      message.warning('最多选择100个活动')
-      return
+        //农耕记组间共享放开到200
+        if(groupID == '163832'){//
+            if(this.selected.length > 200){
+                message.warning('最多选择200个活动')
+                return
+            }
+        }else{
+            message.warning('最多选择100个活动')
+            return
+        }
     }
 
     this.props.onOk(this.selected);
