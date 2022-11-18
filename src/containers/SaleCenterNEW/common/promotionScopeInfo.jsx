@@ -770,6 +770,7 @@ class PromotionScopeInfo extends React.Component {
                 required={promotionType == '5020' || promotionType == '10071' ? true : isRequire}
                 validateStatus={valid ? 'error' : 'success'}
                 help={valid ? SALE_LABEL.k5hkj1ef : null}
+                style={{ marginTop: '10px', zIndex: this.props.onlyModifyShop ? '100' : 'auto' }}
             >
                 {promotionType == '5020' && <p>一个店铺仅能参与一个会员专属菜活动</p>}
                 {promotionType == '5020' ?
