@@ -2576,6 +2576,13 @@
             right: 5px;
         }
     }
+    .moreTreeSelect  {
+        :global {
+            .ant-select-selection--multiple {
+                overflow: auto !important;
+            }
+        }
+    }
 
     :global {
         .ant-table-tbody > tr > td, .ant-table-thead > tr > th {
@@ -3072,11 +3079,10 @@
         top: -6px;
     }
     .multilineTexts {
-        width: 100px;
         line-height: 20px;
         white-space: normal;
         text-align: left;
-        height: 60px;
+        max-height: 60px;
         overflow-y: auto;
     }
     :global {
