@@ -58,7 +58,7 @@ class PromotionModalContent extends Component {
     getPromotionData = () => {
         const { bindUserId, couponDetail } = this.state // pid smid
         const merchantUid = couponDetail.merchantType == 2 ? bindUserId : couponDetail.merchantID
-        getAlipayPromotionList({ enrollSsceneType: 'VOUCHER', enrollMerchant: { merchantUid } }).then((res) => {
+        getAlipayPromotionList({ enrollSceneType: 'VOUCHER', enrollMerchant: { merchantUid } }).then((res) => {
             this.setState({
                 promotionList: res,
             })
@@ -258,7 +258,7 @@ class PromotionModalContent extends Component {
         isAuth(bankMerchantCode).then((res) => {
             if (res) {
                 const { bindUserId } = res;
-                getAlipayPromotionList({ enrollSsceneType: 'MINI_APP', enrollMerchant: { merchantUid: bindUserId } }).then((result) => {
+                getAlipayPromotionList({ enrollSceneType: 'MINI_APP', enrollMerchant: { merchantUid: bindUserId } }).then((result) => {
                     this.setState({
                         promotionList: result,
                     })
@@ -320,7 +320,7 @@ class PromotionModalContent extends Component {
                 this.setState({
                     shopIsAuth: '2',
                 })
-                getAlipayPromotionList({ enrollSsceneType: 'MINI_APP', enrollMerchant: { merchantUid: value } }).then((result) => {
+                getAlipayPromotionList({ enrollSceneType: 'MINI_APP', enrollMerchant: { merchantUid: value } }).then((result) => {
                     this.setState({
                         promotionList: result,
                     })
