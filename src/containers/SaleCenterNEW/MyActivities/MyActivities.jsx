@@ -3,7 +3,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { connect } from "react-redux";
-import { Table, Icon, Select, DatePicker, Button, Modal, Row, Col, message, TreeSelect, Switch, Input, Radio, Spin, Popover, Menu, Tooltip, Upload } from "antd";
+import { Table, Icon, Select, DatePicker, Button, Modal, Row, Col, message, TreeSelect, Switch, Input, Radio, Spin, Popover, Menu, Tooltip, Upload, Tag } from "antd";
 import { COMMON_LABEL, COMMON_STRING } from "i18n/common";
 import { throttle } from "lodash";
 import { jumpPage, getStore } from "@hualala/platform-base";
@@ -35,6 +35,7 @@ import { promotionAutoRunState as sale_promotionAutoRunState } from "../../../re
 import { giftInfoNew as sale_giftInfoNew } from "../../GiftNew/_reducers";
 import { mySpecialActivities_NEW as sale_mySpecialActivities_NEW } from "../../../redux/reducer/saleCenterNEW/mySpecialActivities.reducer";
 import { axiosData, getAccountInfo } from "../../../helpers/util";
+import ENV from '../../../helpers/env';
 import PromotionAutoRunModal from "./PromotionAutoRunModal";
 import ExportModal from "../../GiftNew/GiftInfo/ExportModal";
 import { openPromotionAutoRunListModal, queryPromotionAutoRunList, queryPromotionList } from "../../../redux/actions/saleCenterNEW/promotionAutoRun.action";
@@ -626,7 +627,7 @@ class MyActivities extends React.Component {
         }
     }
     getParams = () => {
-        const { promotionType, promotionDateRange, promotionValid, promotionState, promotionCategory, promotionTags, promotionBrands, promotionOrder, channelLst, promotionShop, promotionName, promotionCode, auditStatus, selectedGoods = []} = this.state;
+        const { promotionType, promotionDateRange, promotionValid, promotionState, promotionCategory, promotionTags, promotionBrands, promotionOrder, channelLst, promotionShop, promotionName, promotionCode, auditStatus, selectedGoods = [], applyShopIds = []} = this.state;
         const opt = {};
         if (promotionType !== "" && promotionType !== undefined && promotionType !== "undefined") {
             opt.promotionType = promotionType;
@@ -674,7 +675,9 @@ class MyActivities extends React.Component {
         if (isZhouheiya(opt.groupID) && selectedGoods.length > 0){
             opt.applyGoodsList = selectedGoods.map(item => item.goodsID)
         }
-
+        if (isZhouheiya(opt.groupID) && applyShopIds.length > 0){
+            opt.applyShopIds = applyShopIds
+        }
         return opt;
     };
     handleQuery(thisPageNo) {
@@ -748,6 +751,39 @@ class MyActivities extends React.Component {
             this.setState({
                 selectedShop: null,
                 promotionShop: value
+            });
+        }
+    }
+
+
+    onTreeSelectWJ = (value, treeData) => {
+        const shopsInfo = [];
+        treeData.forEach(td => {
+            if (td.children) {
+                td.children.map(tdc => {
+                    shopsInfo.push(tdc);
+                });
+            }
+        });
+        if (value.length) {
+            const  selectedShopID = []
+            value.map((item) => {
+                if (item.match(/[-]/g).length != 2) {
+                    return null;
+                }
+                selectedShopID.push(shopsInfo.find(si => {
+                    return si.value === item;
+                }).shopID);
+            })
+            // console.log("🚀 ~ file: MyActivities.jsx ~ line 768 ~ MyActivities ~ selectedShopID", selectedShopID)
+            this.setState({
+                selectedShopWJID: value,
+                applyShopIds: selectedShopID,
+            });
+        } else {
+            this.setState({
+                selectedShopWJID: [],
+                applyShopIds: [],
             });
         }
     }
@@ -1515,7 +1551,11 @@ class MyActivities extends React.Component {
 
     renderGoodsInTreeSelectMode = () => {
         const { selectedGoods = [] } = this.state
-        if (selectedGoods.length > 0) {
+        if (selectedGoods.length == 1) {
+            const { label, key } = selectedGoods[0];
+            return <div onClick={this.handleSelectGoods} className={styles.goodsSelectedBox}><span style={{ right: 14 }}><Tag key={key} closable={false} > {label} </Tag></span></div>
+        }
+        if (selectedGoods.length > 1) {
             return <div onClick={this.handleSelectGoods} className={styles.goodsSelectedBox}>
                 已选择{selectedGoods.length}个商品
                 <span><Icon type="plus-circle-o" /></span>
@@ -1546,6 +1586,29 @@ class MyActivities extends React.Component {
         )
     }
 
+    // 魏家凉皮适用店铺多选
+    renderWJShopsTreeSelectMode = () => {
+        let treeData = Immutable.List.isList(this.props.promotionScopeInfo.getIn(["refs", "data", "constructedData"])) ? this.props.promotionScopeInfo.getIn(["refs", "data", "constructedData"]).toJS() : this.props.promotionScopeInfo.getIn(["refs", "data", "constructedData"]);
+        const { intl } = this.props;
+        const k5ddu8nr = intl.formatMessage(SALE_STRING.k5ddu8nr);
+        const { selectedShopWJID = [] } = this.state; // 周黑鸭-魏家 适用店铺多选
+        treeData.map((i) => {
+            i.children && i.children.length > 0 && i.children.map(j => {
+                j.label = j.shopName + '(' + j.orgCode + ')'
+            })
+        })
+        const tProps ={
+                      treeData,
+                      onChange: value => this.onTreeSelectWJ(value, treeData),
+                      placeholder: k5ddu8nr,
+                      allowClear: true,
+                      multiple: true,
+                      treeCheckable: true,
+                  };
+        return <p className={styles.moreTreeSelect}>
+            <TreeSelect showSearch {...tProps} style={{ width: 150 }} dropdownStyle={{ minWidth: 150 }} dropdownMatchSelectWidth={false} treeNodeFilterProp="label"  value={selectedShopWJID}/>
+        </p>
+    }
 
 
     renderShopsInTreeSelectMode() {
@@ -1784,7 +1847,9 @@ class MyActivities extends React.Component {
                         <li>
                             <h5>{SALE_LABEL.k5dlggak}</h5>
                         </li>
-                        <li>{this.renderShopsInTreeSelectMode()}</li>
+                        <li>{
+                            isZhouheiya(accountInfo.groupID) ? this.renderWJShopsTreeSelectMode() :   this.renderShopsInTreeSelectMode()
+                        }</li>
                         <li>
                             <h5>{SALE_LABEL.k5dljb1v}</h5>
                         </li>
