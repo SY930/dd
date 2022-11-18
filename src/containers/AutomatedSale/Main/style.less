@@ -1,0 +1,100 @@
+@import '~@hualala/platform-base/lib/styles/variables.less';
+
+.flexBetween {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tc {
+    text-align: center;
+}
+
+.automatedSale {
+    padding: 14px 20px;
+    // background: #F5F5F5;
+
+    .queryFrom {
+        display: flex;
+        margin: 20px 0;
+    }
+
+    .statusPanelsTable {
+        padding: 20px 20px 0;
+        background: #F5F5F5;
+
+        .statusPanelsTableMain {
+            background: #FFFFFF;
+            border-radius: 10px;
+            padding-left: 20px;
+
+            .statusPanels {
+                ul {
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-start;
+
+                    li {
+                        padding-top: 17px;
+                        width: 165px;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        cursor: pointer;
+                        border-top: 4px solid #FFFFFF;
+                        box-sizing: border-box;
+
+                        &.active {
+                            border-top: 4px solid #1AB495;
+                        }
+
+                        &:hover {
+                            border-top: 4px solid #1AB495;
+                        }
+
+                        .label {
+                            font-size: 14px;
+                            display: flex;
+                            align-items: center;
+
+                            img {
+                                width: 16px;
+                                height: 16px;
+                                margin-right: 10px;
+                            }
+                        }
+
+                        .value {
+                            font-size: 18px;
+                            font-weight: bolder;
+                            margin-top: 10px;
+                            margin-bottom: 10px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .optBtn {
+        button {
+            margin-right: 10px;
+        }
+    }
+
+    .switchBox {
+        height: 24px;
+        border-radius: 20px;
+        width: 79px;
+    }
+
+    :global {
+        .ant-switch:after {
+            border-radius: 20px !important;
+        }
+
+        .ant-switch .ant-switch-inner {
+            line-height: 24px;
+        }
+    }
+}

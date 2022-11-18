@@ -42,6 +42,7 @@ class PlainList extends Component {
                 </CellMeasurer>
             );
         }
+        
         return (
             <ul>
                 {

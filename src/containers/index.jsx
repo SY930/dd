@@ -41,8 +41,6 @@ export { default as CreateShareRules } from './ShareRulesNew/CreateShareRules';
 export { default as ShareRulesNew } from './ShareRulesNew/index';
 export { default as CouponBatchInfo } from './CouponBatchManagement/index';
 export { default as ContractInfo } from './ContractManagement/index';
-
-
-
-
-
+// 自动化营销
+export { default as AutomatedSale } from './AutomatedSale/index';
+export { default as AutomatedSaleDetail } from './AutomatedSale/detail';
