@@ -606,7 +606,7 @@ const COMMON_LABEL = defineMessages({
     k67g7u0s: { id: 'Sale.k67g7u0s', defaultMessage: '会员积分券' },
     k67g7u94: { id: 'Sale.k67g7u94', defaultMessage: '会员权益券' },
     k67g7uhg: { id: 'Sale.k67g7uhg', defaultMessage: '礼品定额卡' },
-    k67g7ups: { id: 'Sale.k67g7ups', defaultMessage: '线上礼品卡' },
+    k67g7ups: { id: 'Sale.k67g7ups', defaultMessage: '微信礼品卡' },
     k67g7uy4: { id: 'Sale.k67g7uy4', defaultMessage: '例如: 在一笔消费里，对其中价格最低的菜品进行减免优惠' },
     k67g7v6g: { id: 'Sale.k67g7v6g', defaultMessage: '同一个时间上一个升级后的等级只能有一个存在，即不允许同一时间升级后的等级参加两个升级送礼的活动' },
     k67g7ves: { id: 'Sale.k67g7ves', defaultMessage: '同一时间上一个卡类的累计消费送礼只能有一个，即不允许同一时间一个卡类存在两个累计消费送礼的活动' },

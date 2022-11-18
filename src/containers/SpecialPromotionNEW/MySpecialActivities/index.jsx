@@ -101,7 +101,6 @@ import {
     isGroupOfHuaTianGroupList,
     isMine,
 } from "../../../constants/projectHuatianConf";
-import PromotionCalendarBanner from "../../../components/common/PromotionCalendarBanner/index";
 import { injectIntl } from "i18n/common/injectDecorator";
 import { STRING_GIFT } from "i18n/common/gift";
 import { STRING_SPE } from "i18n/common/special";
@@ -1793,7 +1792,6 @@ class MySpecialActivities extends React.Component {
             >
                 {this.renderHeader()}
                 <div>
-                    <PromotionCalendarBanner />
                     <Tabs
                         defaultActiveKey={tabKeys}
                         onChange={this.handleChangeTabs}
@@ -1804,14 +1802,14 @@ class MySpecialActivities extends React.Component {
                         <TabPane tab="营销活动" key="saleSpecialPage">
                             {!this.state.authStatus ? (
                                 <div
-                                    style={{ minHeight: "calc(100vh - 160px)" }}
+                                    style={{ minHeight: "calc(100vh - 80px)" }}
                                 >
                                     <EmptyPage />{" "}
                                 </div>
                             ) : (
                                 <div
                                     className={styles.pageContentWrapper}
-                                    style={{ minHeight: "calc(100vh - 160px)" }}
+                                    style={{ minHeight: "calc(100vh - 80px)" }}
                                 >
                                     <div
                                         style={{ padding: "0" }}
@@ -3523,7 +3521,7 @@ class MySpecialActivities extends React.Component {
                 // width: 300,
                 render: (text, record, index) => {
                     if (
-                        record.actionStamp === "" &&
+                        record.updateStamp === "" &&
                         record.createStamp === ""
                     ) {
                         return "--";
@@ -3531,7 +3529,7 @@ class MySpecialActivities extends React.Component {
                     const t = `${moment(
                         new Date(parseInt(record.createStamp))
                     ).format("YYYY-MM-DD HH:mm:ss")} / ${moment(
-                        new Date(parseInt(record.actionStamp))
+                        new Date(parseInt(record.updateStamp))
                     ).format("YYYY-MM-DD HH:mm:ss")}`;
                     return <Tooltip title={t}>{t}</Tooltip>;
                 },
@@ -3556,7 +3554,7 @@ class MySpecialActivities extends React.Component {
                     columns={columns}
                     dataSource={this.state.dataSource}
                     loading={this.state.loading}
-                    scroll={{ x: 1499, y: "calc(100vh - 440px)" }}
+                    scroll={{ x: 1499, y: "calc(100vh - 360px)" }}
                     size="default"
                     pagination={{
                         pageSize: this.state.pageSizes,
