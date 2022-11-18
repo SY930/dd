@@ -676,7 +676,7 @@ class MyActivities extends React.Component {
             opt.applyGoodsList = selectedGoods.map(item => item.goodsID)
         }
         if (isZhouheiya(opt.groupID) && applyShopIds.length > 0){
-            opt.applyShopIds = applyShopIds
+            opt.applyShopIdList = applyShopIds
         }
         return opt;
     };
@@ -1227,7 +1227,7 @@ class MyActivities extends React.Component {
         this.props.openPromotionAutoRunListModal();
     }
     downLoadTemp = () => {
-        window.open(`${ENV.FILE_RESOURCE_DOMAIN}/group2/M01/12/1B/wKgVSlqvMarK1qomAAAlVt8zyUI65.xlsx`);
+        window.open(`${ENV.FILE_RESOURCE_DOMAIN}/crmexport/d2febb77-158c-4af1-98e2-a89e5802dd58.xlsx`);
     }
 
     showModleTip = (res) => {
