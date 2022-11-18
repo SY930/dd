@@ -258,7 +258,7 @@ class PromotionModalContent extends Component {
         isAuth(bankMerchantCode).then((res) => {
             if (res) {
                 const { bindUserId } = res;
-                getAlipayPromotionList({ enrollSsceneType: 'VOUCHER', enrollMerchant: { merchantUid: bindUserId } }).then((result) => {
+                getAlipayPromotionList({ enrollSsceneType: 'MINI_APP', enrollMerchant: { merchantUid: bindUserId } }).then((result) => {
                     this.setState({
                         promotionList: result,
                     })
@@ -279,10 +279,14 @@ class PromotionModalContent extends Component {
 
     // 选择间连主体
     handleIndirectSelect = (value) => {
+        const { form } = this.props;
+        form.setFieldsValue({ marketingType: {} })
         this.setState({
             merchantID: value,
             smidList: [],
             promotionList: [],
+            marketingType: '',
+            marketingName: '',
         }, () => {
             // 根据选择的主体获取smid
             getSmid(value).then((res) => {
@@ -302,16 +306,21 @@ class PromotionModalContent extends Component {
 
     // 选择直连主体
     handleDirectSelect = (value) => {
+        // 清空选择支付宝大促选项
+        const { form } = this.props;
+        form.setFieldsValue({ marketingType: {} })
         this.setState({
             merchantID: value,
             promotionList: [],
+            marketingType: '',
+            marketingName: '',
         })
         isAuth(value).then((res) => {
             if (res) {
                 this.setState({
                     shopIsAuth: '2',
                 })
-                getAlipayPromotionList({ enrollSsceneType: 'VOUCHER', enrollMerchant: { merchantUid: value } }).then((result) => {
+                getAlipayPromotionList({ enrollSsceneType: 'MINI_APP', enrollMerchant: { merchantUid: value } }).then((result) => {
                     this.setState({
                         promotionList: result,
                     })
