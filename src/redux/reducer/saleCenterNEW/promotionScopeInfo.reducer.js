@@ -8,7 +8,7 @@
 * @Copyright: Copyright(c) 2017-present Hualala Co.,Ltd.
 */
 
-
+import { isZhouheiya } from '../../../constants/WhiteList';
 const Immutable = require('immutable');
 
 const $initialState = Immutable.fromJS({
@@ -18,7 +18,7 @@ const $initialState = Immutable.fromJS({
         brands: [], // 适用品牌  ['品牌1ID','品牌2ID']
         channel: '0', // 适用场景--> value给后台，showValue用于展示
         auto: '0', // 自动执行 --> value给后台，showValue用于展示
-        orderType: ['31'], // 自动执行 -->第一项给后台，第二项用于展示
+        orderType: isZhouheiya()?['51']:['31'], // 自动执行 -->第一项给后台，第二项用于展示
         shopsInfo: [], // 已选店铺，不用传给后台
         voucherVerify: '0',
         voucherVerifyChannel: '1',
