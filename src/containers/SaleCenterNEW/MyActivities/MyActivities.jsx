@@ -775,7 +775,6 @@ class MyActivities extends React.Component {
                     return si.value === item;
                 }).shopID);
             })
-            // console.log("🚀 ~ file: MyActivities.jsx ~ line 768 ~ MyActivities ~ selectedShopID", selectedShopID)
             this.setState({
                 selectedShopWJID: value,
                 applyShopIds: selectedShopID,
@@ -787,6 +786,12 @@ class MyActivities extends React.Component {
             });
         }
     }
+
+
+    onTreeSelectBlur = (e) => {
+        $('.treeSelectShopsBoxs___SALE_WJ .ant-select-selection--multiple').scrollTop(0)
+    }
+
 
     changeSortOrder(record, direction) {
         const params = {
@@ -878,7 +883,6 @@ class MyActivities extends React.Component {
         this.props.saleCenterResetBasicInfo(promotionBasicDataAdapter(responseJSON.promotionInfo, _serverToRedux));
         this.props.saleCenterResetScopeInfo(promotionScopeInfoAdapter(responseJSON.promotionInfo.master, _serverToRedux));
         this.props.saleCenterResetDetailInfo(promotionDetailInfoAdapter(responseJSON.promotionInfo, _serverToRedux));
-        console.log("🚀 ~ file: MyActivities.jsx ~ line 853 ~ MyActivities ~ responseJSON.promotionInfo,", responseJSON.promotionInfo,)
         this.setState({
             promotionInfo: responseJSON.promotionInfo,
             selectedRecord: responseJSON.promotionInfo, // arguments[1],
@@ -1585,7 +1589,6 @@ class MyActivities extends React.Component {
             ></GoodsSelector>
         )
     }
-
     // 魏家凉皮适用店铺多选
     renderWJShopsTreeSelectMode = () => {
         let treeData = Immutable.List.isList(this.props.promotionScopeInfo.getIn(["refs", "data", "constructedData"])) ? this.props.promotionScopeInfo.getIn(["refs", "data", "constructedData"]).toJS() : this.props.promotionScopeInfo.getIn(["refs", "data", "constructedData"]);
@@ -1604,9 +1607,12 @@ class MyActivities extends React.Component {
                       allowClear: true,
                       multiple: true,
                       treeCheckable: true,
+                      onSelect: this.onSearchScroll,
+                      className: 'treeSelectShopsBoxs___SALE_WJ',
+                      getPopupContainer: () => document.querySelector(`.${styles.moreTreeSelect}`),
                   };
-        return <p className={styles.moreTreeSelect}>
-            <TreeSelect showSearch {...tProps} style={{ width: 150 }} dropdownStyle={{ minWidth: 150 }} dropdownMatchSelectWidth={false} treeNodeFilterProp="label"  value={selectedShopWJID}/>
+        return <p className={styles.moreTreeSelect} onBlur={this.onTreeSelectBlur} >
+            <TreeSelect showSearch {...tProps} style={{ width: 150 }}  dropdownStyle={{ minWidth: 150 }} dropdownMatchSelectWidth={false} treeNodeFilterProp="label"  value={selectedShopWJID}/>
         </p>
     }
 
