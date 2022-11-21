@@ -64,6 +64,7 @@ class ManyFace extends Component {
     }
 
     onChangeForm = (key, value) => {
+        console.log("🚀 ~ file: index.jsx ~ line 67 ~ ManyFace ~ key, value", key, value)
         const { form1, form2 } = this.state
         if (value === '1' && key === 'clientType') {
             form1 && form1.setFieldsValue({ sceneList: '1' })
@@ -72,7 +73,7 @@ class ManyFace extends Component {
         if (value === '2' && key === 'clientType') {
             form1 && form1.setFieldsValue({ triggerSceneList: [1] })
         }
-        if (value === '2' && key === 'sceneList') { // banner
+        if (['2', '4'].includes(`${value}`) && key === 'sceneList') { // banner
             form1 && form1.setFieldsValue({ triggerSceneList: [11] })
             form2 && form2.setFieldsValue({ faceRule: [] })
             this.props.onChangDecorateType('2')
@@ -361,7 +362,6 @@ class ManyFace extends Component {
         })
     }
   
-    // TODO: //需要重新写
     getEventDetail() {
         const { itemID } = this.props;
         if (itemID) {
@@ -379,6 +379,7 @@ class ManyFace extends Component {
         const eventRange = [moment(sd), moment(ed)];
         const clientType = eventConditionInfos[0] ? String(eventConditionInfos[0].clientType) : '1';
         const shopIDList = slist ? slist.map(x => `${x}`) : [];
+        // 有投放位置的话投放类型是1弹窗海报、2banner。否则是开屏页
         let sceneList = triggerSceneList.some(item => [1, 2, 3, 4, '1', '2', '3', '4'].includes(item)) ? '1' : '2'
         sceneList = clientType === '1' ? '1' : sceneList;
         let timsObj = {};

@@ -66,7 +66,7 @@ const formItems1 = {
     sceneList: {
         type: 'custom',
         label: '投放类型',
-        options: [{ label: '弹窗海报图', value: '1' }, { label: 'banner广告', value: '2' }],
+        options: [{ label: '弹窗海报图', value: '1' }, { label: 'banner广告', value: '2' }, { label: '开屏页', value: '4' }],
         defaultValue: '1',
         render: () => (<p />),
     },

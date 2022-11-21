@@ -13,11 +13,12 @@ import { SALE_ACTIVE_NEW_PAGE } from "../../constants/entryCodes";
 import styles from "./CreateActive.less";
 import FaceFormWrapper from "./ManyFace"; //千人千面
 import OnlineRestaurantGiftGiving from "./OnlineRestaurantGiftGiving"; //线上餐厅弹窗送礼
+
 const createActiveList = [
     {
         title: "千人千面",
         key: "85",
-        comp: FaceFormWrapper
+        comp: FaceFormWrapper,
     },
     {
         title: "线上餐厅弹窗送礼",

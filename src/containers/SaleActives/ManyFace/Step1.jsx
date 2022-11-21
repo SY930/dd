@@ -71,17 +71,19 @@ class Step1 extends Component {
             ) : d({
                 onChange: this.handleChangeScene,
             })(
-                <RadioGroup> <Radio value={'1'}>弹窗海报</Radio> <Radio value={'2'}>banner广告</Radio> </RadioGroup>
+                <RadioGroup> <Radio value={'1'}>弹窗海报</Radio> <Radio value={'2'}>banner广告</Radio><Radio value={'4'}>开屏页</Radio></RadioGroup>
             )
         }
 
         const renderTriggerSceneList = (d, form) => {
             const opt = form.getFieldValue('sceneList') === '1' ? optionsPalace : optionsPalaceBanner;
-            return form.getFieldValue('clientType') === '2' ? d({
-                inititalValue: [1],
-            })(
-                <CheckboxGroup options={opt} />
-            ) : null
+            return form.getFieldValue('clientType') === '2' &&
+                ['1', '2'].includes(form.getFieldValue('sceneList'))
+                ? d({
+                    inititalValue: [1],
+                })(
+                    <CheckboxGroup options={opt} />
+                ) : null
         }
         const renderClientType = (d) => {
             return d({
