@@ -170,9 +170,13 @@ export default class Main extends React.PureComponent {
             closePage(SALE_AUTOMATED_SALE_DETAIL);
         }
         if (type == 'add') {
-            jumpPage({ menuID: SALE_AUTOMATED_SALE_DETAIL, type, groupID });
+            _.delay(() => {
+                jumpPage({ menuID: SALE_AUTOMATED_SALE_DETAIL, type, groupID });
+            }, 100)
         } else {
-            jumpPage({ menuID: SALE_AUTOMATED_SALE_DETAIL, id: record.itemID, type, groupID });
+            _.delay(() => {
+                jumpPage({ menuID: SALE_AUTOMATED_SALE_DETAIL, id: record.itemID, type, groupID });
+            }, 100)
         }
     }
 
