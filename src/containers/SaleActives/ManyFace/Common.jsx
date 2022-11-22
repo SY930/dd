@@ -66,7 +66,7 @@ const formItems1 = {
     sceneList: {
         type: 'custom',
         label: '投放类型',
-        options: [{ label: '弹窗海报图', value: '1' }, { label: 'banner广告', value: '2' }, { label: '开屏页', value: '4' }],
+        options: [{ label: '弹窗海报图', value: '1' }, { label: 'banner广告', value: '2' }, { label: '开屏页', value: '21' }],
         defaultValue: '1',
         render: () => (<p />),
     },
@@ -77,6 +77,12 @@ const formItems1 = {
         defaultValue: [1],
         render: () => (<p />),
         rules: ['required'],
+    },
+    launchSceneList: {
+        type: 'custom',
+        label: '投放小程序',
+        rules: ['required'],
+        render: () => (<p />),
     },
     shopIDList: {
         type: 'custom',
@@ -94,7 +100,7 @@ const formItems1 = {
 };
 
 const KEY1 = ['eventType', 'eventName', 'eventCode', 'clientType'];
-const KEY2 = ['sceneList', 'triggerSceneList', 'shopIDList', 'eventRemark'];
+const KEY2 = ['sceneList', 'triggerSceneList', 'launchSceneList', 'shopIDList', 'eventRemark'];
 const KEY = ['clientTip'];
 
 const formKeys1 = [...KEY1, KEY, ...KEY2];

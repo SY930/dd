@@ -449,7 +449,7 @@ async function getWeChatMpAndAppInfo() {
 async function getMpAppList() {
     const method = '/miniProgramCodeManage/getApps';
     const { groupID } = getAccountInfo();
-    const params = { service: 'HTTP_SERVICE_URL_WECHAT', data: { groupID, page: { current: 1, pageSize: 10000000 } }, method, type };
+    const params = { service: 'HTTP_SERVICE_URL_WECHAT', data: { groupID, page: { current: 1, pageSize: 1000 } }, method, type };
     const response = await axios.post(url + method, params);
     const { result: { code, message: msg }, apps = [] } = response;
     if (code === '000') {

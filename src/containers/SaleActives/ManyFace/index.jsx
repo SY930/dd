@@ -64,7 +64,6 @@ class ManyFace extends Component {
     }
 
     onChangeForm = (key, value) => {
-        console.log("🚀 ~ file: index.jsx ~ line 67 ~ ManyFace ~ key, value", key, value)
         const { form1, form2 } = this.state
         if (value === '1' && key === 'clientType') {
             form1 && form1.setFieldsValue({ sceneList: '1' })
@@ -73,15 +72,23 @@ class ManyFace extends Component {
         if (value === '2' && key === 'clientType') {
             form1 && form1.setFieldsValue({ triggerSceneList: [1] })
         }
-        if (['2', '4'].includes(`${value}`) && key === 'sceneList') { // banner
-            form1 && form1.setFieldsValue({ triggerSceneList: [11] })
+        // 21 开屏页
+        if (['2', '21'].includes(`${value}`) && key === 'sceneList') { // banner
             form2 && form2.setFieldsValue({ faceRule: [] })
-            this.props.onChangDecorateType('2')
+            form1 && form1.setFieldsValue({ triggerSceneList: [] })
+            setTimeout(() => {
+                form1 && form1.setFieldsValue({ triggerSceneList: [11] })
+                this.props.onChangDecorateType('2')
+            })
         }
         if (value === '1' && key === 'sceneList') {
-            form1 && form1.setFieldsValue({ triggerSceneList: [1] }) // 弹窗海报
+            form1 && form1.setFieldsValue({ triggerSceneList: [] })
             form2 && form2.setFieldsValue({ faceRule: [] })
-            this.props.onChangDecorateType('1')
+
+            setTimeout(() => {
+                form1 && form1.setFieldsValue({ triggerSceneList: [1] }) // 弹窗海报
+                this.props.onChangDecorateType('1')
+            })
         }
 
         this.setState({
@@ -165,7 +172,6 @@ class ManyFace extends Component {
         // console.log(flag, 'flag')
         return flag;
     }
-
 
     onCheck = (faceRule) => {
         let flag = false;
@@ -297,19 +303,21 @@ class ManyFace extends Component {
 
     onSubmit = (values, formData2) => {
         const { itemID } = this.props
-        const { eventRange, timeList, validCycle = [], cycleType, clientType, ...others1 } = values;
+        const { eventRange, timeList, validCycle = [], cycleType, clientType, sceneList, ...others1 } = values;
         const newEventRange = this.formatEventRange(eventRange);
         const newTimeList = this.formatTimeList(timeList);
 
-        const triggerSceneList = clientType === '1' ? [1, 2, 3] : values.triggerSceneList
-
+        let triggerSceneList = clientType === '1' ? [1, 2, 3] : values.triggerSceneList
+        if (sceneList === '21') { // 开屏页
+            triggerSceneList = [sceneList]
+        }
         let cycleObj = {};
         if (cycleType) {
             const cycle = validCycle.filter(x => (x[0] === cycleType));
             cycleObj = { validCycle: cycle };
         }
         // shopRange全部店铺和部分店铺的
-        const event = { ...others1, ...newEventRange, cycleType, ...cycleObj, ...others1, eventWay: '85', shopRange: '1' };
+        const event = { ...others1, ...newEventRange, cycleType, ...cycleObj, ...others1, eventWay: '85', shopRange: '1', launchSceneList: [{ appID: values.launchSceneList, sceneType: 4 }] };
         delete event.faceRule
         const eventConditionInfos = _.map(formData2, item =>
             (_.omit(item, ['triggerEventCustomInfo2', 'triggerEventValue2', 'triggerEventName2',
@@ -375,13 +383,16 @@ class ManyFace extends Component {
     }
 
     setData4Step1 = (data, eventConditionInfos, times, triggerSceneList) => {
-        const { eventStartDate: sd, eventEndDate: ed, shopIDList: slist, validCycle, excludedDate = [] } = data;
+        const { eventStartDate: sd, eventEndDate: ed, shopIDList: slist, validCycle, excludedDate = [], launchSceneList = [] } = data;
         const eventRange = [moment(sd), moment(ed)];
         const clientType = eventConditionInfos[0] ? String(eventConditionInfos[0].clientType) : '1';
         const shopIDList = slist ? slist.map(x => `${x}`) : [];
-        // 有投放位置的话投放类型是1弹窗海报、2banner。否则是开屏页
+        // 有投放位置的话 投放类型是1弹窗海报、2banner。否则是开屏页
         let sceneList = triggerSceneList.some(item => [1, 2, 3, 4, '1', '2', '3', '4'].includes(item)) ? '1' : '2'
         sceneList = clientType === '1' ? '1' : sceneList;
+        if ([21, '21'].includes(triggerSceneList.join())) {
+            sceneList = '21' // 开屏页
+        }
         let timsObj = {};
         const TF = 'HH:mm';
         if (times) {
@@ -406,7 +417,11 @@ class ManyFace extends Component {
 
         const formData = {
             step1Data: {
-                ...data, clientType, shopIDList, sceneList,
+                ...data,
+                clientType,
+                shopIDList,
+                sceneList,
+                launchSceneList: launchSceneList[0] ? launchSceneList[0].appID : '',
             },
             setp2Data: {
                 ...data, eventRange, ...timsObj, advMore, cycleType,
@@ -427,7 +442,7 @@ class ManyFace extends Component {
                 faceData = this.setData4AppBanner(eventConditionInfos)
             } else if (clientType == '1') { // h5弹窗
                 faceData = this.setData4Step3H5(eventConditionInfos)
-            } else { // 小程序弹窗
+            } else { // 小程序弹窗 和 开屏页
                 faceData = this.setData4Step3App(eventConditionInfos)
             }
         }
@@ -451,7 +466,7 @@ class ManyFace extends Component {
             } else {
                 item.everyTagsRule = [];
             }
-            item.triggerEventInfoList = item.triggerEventInfoList.map((itm, idx) => {
+            item.triggerEventInfoList = (item.triggerEventInfoList || []).map((itm, idx) => {
                 if (['miniAppPage', 'speedDial', 'customLink'].includes(itm.triggerEventValue)) {
                     itm.triggerEventCustomInfo1 = { value: itm.triggerEventCustomInfo }
                 } else if (itm.triggerEventName === '小程序开卡') { // 兼容老数据的小程序开卡时间，其回显的值 置为空
@@ -635,12 +650,14 @@ class ManyFace extends Component {
     }
 
     preSubmit = (values, formData2) => {
-        const { clientType, eventRange, shopIDList, triggerSceneList = [], timeList, validCycle, cycleType, excludedDate } = values;
+        const { clientType, eventRange, shopIDList, triggerSceneList = [], timeList, validCycle, cycleType, excludedDate, sceneList } = values;
         const { itemID } = this.props
         const { eventStartDate, eventEndDate } = this.formatEventRange(eventRange);
         let triggerScene = triggerSceneList;
         triggerScene = clientType === '1' ? [1, 2, 3, 4] : triggerScene;
-
+        if (sceneList === '21') { // 开屏页
+            triggerScene = [sceneList]
+        }
         let cycleObj = {};
         if (cycleType) {
             const cycle = validCycle.filter(x => (x[0] === cycleType));
