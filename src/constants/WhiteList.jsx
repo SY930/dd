@@ -7,9 +7,9 @@ const getAccountInfo = () => {
     }
 }
 
-export const zhouheiyaGroupID = ['11009', '341014', '296030', '316488','267440', '344602', '98072','259613',267579
+export const zhouheiyaGroupID = ['11009', '341014', '296030', '316488','267440', '344602', '98072','259613','267579'
 //  '11280', //lianxujian(本地调试)
-]; // 周黑鸭集团ID:344602  魏家：98072   周黑鸭测试集团：259613  魏家测试集团：11009
+]; // 周黑鸭集团ID:344602  魏家：98072   周黑鸭测试集团：259613  魏家测试集团：11009  零售项目测试集团：267579
 export const needApprovalGroupID = ['341014', '296030', '316488','267440', '344602'];
 export const isCheckApproval = needApprovalGroupID.includes(String(getAccountInfo().groupID));
 
