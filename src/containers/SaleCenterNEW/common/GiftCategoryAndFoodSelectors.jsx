@@ -125,13 +125,13 @@ class CategoryAndFoodSelector extends Component {
         if (this.props.allBrands.size && this.props.allCategories.size && this.props.allDishes.size) {
             this.mapSelectedValueToObjectsThenEmit()
         }
-        this.setState({
-            newGoodsObj: this.props.goodScopeRequest
-        })
-
-        this.props.getGoodsState({ newGoodsObj: {...this.props.goodScopeRequest }})
-
-        
+        if(isZhouheiya(this.props.groupID)){
+            this.setState({
+                newGoodsObj: this.props.goodScopeRequest
+            })
+    
+            this.props.getGoodsState({ newGoodsObj: {...this.props.goodScopeRequest }})
+        }
     }
     mapSelectedValueToObjectsThenEmit = () => {
         const {
