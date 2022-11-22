@@ -608,7 +608,7 @@ class CompositeDetailInfo extends React.Component {
         const reg = /^([0-9][0-9]{0,1}|100)$/
         const sum = (condition1 ? +condition1 : 0) + (+condition2);
         let status = 'success';
-        if (sum > 100) { status = 'error' }
+        if (sum !== 100) { status = 'error' }
         if (!reg.test(condition2)) { status = 'error' }
         return status
     }
@@ -619,7 +619,7 @@ class CompositeDetailInfo extends React.Component {
         const reg = /^([0-9][0-9]{0,1}|100)$/
         const sum = (+condition1) + (condition2 ? +condition2 : 0);
         let status = 'success';
-        if (sum > 100) { status = 'error' }
+        if (sum !== 100) { status = 'error' }
         if (!reg.test(condition1)) { status = 'error' }
         return status;
     }
@@ -1215,7 +1215,7 @@ class CompositeDetailInfo extends React.Component {
                                 modal="int"
                                 addonAfter="%"
                                 maxLength={3}
-                                value={{ number: condition1 || '' }}
+                                value={{ number: condition1 }}
                                 onChange={(val) => {
                                     this.setState({ condition1: val.number })
                                 }} />
@@ -1233,7 +1233,7 @@ class CompositeDetailInfo extends React.Component {
                                 modal="int"
                                 addonAfter="%"
                                 maxLength={3}
-                                value={{ number: condition2 || '' }}
+                                value={{ number: condition2 }}
                                 onChange={(val) => {
                                     this.setState({ condition2: val.number })
                                 }} />
