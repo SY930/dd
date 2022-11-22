@@ -759,6 +759,17 @@ export const SALE_PROMOTION_TYPES = [
         bottom: 0,
         filter: true, // 可过滤
     },
+    {
+        title: '配送费减免',
+        text: '外卖下单可享受配送费减免',
+        example: '',
+        tags: ['小程序'],
+        signs: ['app'],
+        key: '2090',
+        // right: 2,
+        // bottom: -14,
+        isHot: true,
+    },
 ];
 
 /**

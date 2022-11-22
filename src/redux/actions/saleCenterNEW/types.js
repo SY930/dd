@@ -734,6 +734,14 @@ export const ACTIVITY_CATEGORIES = (function () {
             key: "10071",
             filter: true,
         },
+        {
+            idx: 23,
+            title: '配送费减免',
+            color: "#d9b563",
+            text: '外卖下单可享受配送费减免',
+           example : '',
+            key: "2090",
+        },
         // {
         //     idx: 23,
         //     color: "#84aac6",
