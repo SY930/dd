@@ -18,7 +18,7 @@ const createActiveList = [
     {
         title: "千人千面",
         key: "85",
-        comp: FaceFormWrapper
+        comp: FaceFormWrapper,
     },
     {
         title: "线上餐厅弹窗送礼",

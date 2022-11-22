@@ -3,13 +3,15 @@ import React, { PureComponent as Component } from 'react';
 import moment from 'moment';
 import { connect } from 'react-redux'
 import BaseForm from 'components/common/BaseForm';
-import { Checkbox, Radio } from 'antd';
+import { Checkbox, Radio, Select } from 'antd';
 import ShopSelector from 'components/ShopSelector';
 import { getPromotionShopSchema } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
-import { formKeys1, formItems1, formItemLayout, KEY, KEY1, KEY2 } from './Common';
-import { isFilterShopType, axiosData } from '../../../helpers/util'
+import { formKeys1, formItems1, formItemLayout, KEY1, KEY2 } from './Common';
+import { getMpAppList } from './AxiosFactory';
+import { isFilterShopType } from '../../../helpers/util'
 import css from './style.less';
 
+const Option = Select.Option;
 const CheckboxGroup = Checkbox.Group;
 const RadioGroup = Radio.Group;
 const optionsPalace = [{ label: '堂食点餐页', value: 1 },
@@ -29,12 +31,21 @@ class Step1 extends Component {
 
     componentDidMount() {
         this.props.getShopSchemaInfo({ groupID: this.props.user.accountInfo.groupID });
+        this.getLaunchSceneApp()
     }
 
     onChange = (key, value) => {
         if (key === 'triggerSceneList') {
             this.props.onChangeForm(key, value)
         }
+    }
+
+    getLaunchSceneApp = () => {
+        getMpAppList().then((res) => {
+            this.setState({
+                mpAppList: res,
+            })
+        })
     }
 
     handleChangeScene = ({ target }) => {
@@ -59,7 +70,7 @@ class Step1 extends Component {
         const { formData = {}, occupyShopList } = this.props;
 
         // const render3 = d => d()(<EveryDay type={cycleType} />);
-        const { clientType, sceneList, shopIDList, triggerSceneList, ...other } = formItems1;
+        const { clientType, sceneList, shopIDList, triggerSceneList, launchSceneList, ...other } = formItems1;
         const render = d => d()(<ShopSelector
             filterParm={isFilterShopType() ? { productCode: 'HLL_CRM_License' } : {}}
             occupyShopList={occupyShopList} // 被占用的店铺需要高亮显示
@@ -71,17 +82,19 @@ class Step1 extends Component {
             ) : d({
                 onChange: this.handleChangeScene,
             })(
-                <RadioGroup> <Radio value={'1'}>弹窗海报</Radio> <Radio value={'2'}>banner广告</Radio> </RadioGroup>
+                <RadioGroup> <Radio value={'1'}>弹窗海报</Radio> <Radio value={'2'}>banner广告</Radio><Radio value={'21'}>开屏页</Radio></RadioGroup>
             )
         }
 
         const renderTriggerSceneList = (d, form) => {
             const opt = form.getFieldValue('sceneList') === '1' ? optionsPalace : optionsPalaceBanner;
-            return form.getFieldValue('clientType') === '2' ? d({
-                inititalValue: [1],
-            })(
-                <CheckboxGroup options={opt} />
-            ) : null
+            return form.getFieldValue('clientType') === '2' &&
+                ['1', '2'].includes(form.getFieldValue('sceneList'))
+                ? d({
+                    inititalValue: [1],
+                })(
+                    <CheckboxGroup options={opt} />
+                ) : null
         }
         const renderClientType = (d) => {
             return d({
@@ -96,8 +109,25 @@ class Step1 extends Component {
             sceneList: { ...sceneList, render: renderScene },
             shopIDList: { ...shopIDList, render },
             triggerSceneList: { ...triggerSceneList, render: renderTriggerSceneList },
+            launchSceneList: { ...launchSceneList, render: this.renderLaunchSceneList },
         };
     }
+
+
+    renderLaunchSceneList = (d, form) => {
+        const { mpAppList } = this.state;
+        const { sceneList } = form.getFieldsValue()
+        if (sceneList === '21') {
+            return (
+                d({})(
+                    <Select>
+                        {(mpAppList || []).map(({ appID, nickName }) => (<Option key={appID} value={appID}>{nickName}</Option>))}
+                    </Select>)
+            )
+        }
+        return null
+    }
+
     render() {
         let { formData, getForm, isView } = this.props;
         formData = {

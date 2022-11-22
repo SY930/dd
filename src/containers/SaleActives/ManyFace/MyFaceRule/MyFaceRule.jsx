@@ -645,6 +645,7 @@ class MyFaceRule extends Component {
 
 
     renderAcitveImage = (v, i) => {
+        const { sceneList } = this.props;
         return (
             <div className={styles.activeImageBox}>
                 <ImageUploader
@@ -655,9 +656,10 @@ class MyFaceRule extends Component {
                     }}
                 />
                 <div className={styles.uploaderTip}>
-                    <p>* 图片建议尺寸 526 * 788像素 </p>
+                    { sceneList === '21' ? <p>* 图片建议尺寸 750 * 1624像素</p> : <p>* 图片建议尺寸 526 * 788像素 </p>}
                     <p>* 大小不超过1M </p>
                     <p>* 支持png、jpg、jpeg、gif</p>
+                    { sceneList === '21' && <p>* 因手机分辨率不同，部分手机可能会有部分图片元素显示不全的情况，元素请尽量集中于图片中部位置。</p>}
                 </div>
             </div>
         )
