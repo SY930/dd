@@ -30,6 +30,7 @@
     "react-cropper": "1.0.1",
     "react-intl": "2.7.2",
     "react-virtualized": "^9.22.3",
+    "sa-sdk-javascript": "1.8.5",
     "redux-saga": "^0.16.0",
     "solarlunar": "2.0.7",
     "sortablejs": "^1.13.0",
