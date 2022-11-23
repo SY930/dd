@@ -84,7 +84,19 @@ registerLocalPage([
         value: entryCodes.GIFT_DETAILS,
         label: "礼品详情",
         parent: [entryCodes.GIFT_PAGE]
-    }
+    },
+    {
+        key: entryCodes.SALE_AUTOMATED_SALE_DETAIL,
+        value: entryCodes.SALE_AUTOMATED_SALE_DETAIL,
+        label: '智能营销详情',
+        parent: [entryCodes.SALE_AUTOMATED_SALE_DETAIL],
+    },
+    {
+        key: entryCodes.SALE_AUTOMATED_STAT_DETAIL,
+        value: entryCodes.SALE_AUTOMATED_STAT_DETAIL,
+        label: '智能营销详情',
+        parent: [entryCodes.SALE_AUTOMATED_STAT_DETAIL],
+    },
 ]);
 // 注册语言包
 const registeLangPack = async () => {

@@ -44,3 +44,4 @@ export { default as ContractInfo } from './ContractManagement/index';
 // 自动化营销
 export { default as AutomatedSale } from './AutomatedSale/index';
 export { default as AutomatedSaleDetail } from './AutomatedSale/detail';
+export { default as AutomatedStatDetail } from './AutomatedSale/stat';

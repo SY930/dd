@@ -81,3 +81,4 @@ export const CONSUME_GIFT_GIVING = 'CONSUME_GIFT_GIVING' // 营销活动-消费�
 export const COUPON_BATCH_MANAGEMENT = '100008994' //券批次管理
 export const SALE_AUTOMATED_SALE = 'sale_automated_sale' // 智能营销
 export const SALE_AUTOMATED_SALE_DETAIL = 'sale_automated_sale_detail' // 智能营销详情
+export const SALE_AUTOMATED_STAT_DETAIL = 'sale_automated_stat_detail' // 智能营销统计页面

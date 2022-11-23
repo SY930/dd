@@ -106,15 +106,18 @@ class MainTable extends Component {
                 dataIndex: 'status',
                 className: tc,
                 width: 60,
-                render: (text, record) => (
-                    <Switch
-                        style={{width: '28px', height: '14px'}}
-                        checked={record.status == 1}
-                        size="small"
-                        className={styles.switchBox}
-                        onChange={() => this.changeStatus(record)}
-                    />
-                )
+                render: (text, record) => {
+                    return (
+                        <Switch
+                            style={{width: '28px', height: '14px'}}
+                            checked={record.status == 1}
+                            size="small"
+                            className={styles.switchBox}
+                            onChange={() => this.changeStatus(record)}
+                            disabled={Date.now() > record.eventEndDate}
+                        />
+                    )
+                }
             },
             {
                 title: '操作',
@@ -131,6 +134,7 @@ class MainTable extends Component {
                             {
                                 record.status == 1 ? null : <a href="#" onClick={() => this.onDelete(record.itemID)}>删除</a>
                             }
+                            <a href="#" onClick={() => this.props.onOperate(record, 'stat')}>详情</a>
                         </div>
                     )
                 }

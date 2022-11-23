@@ -5,7 +5,7 @@ import QueryForm from "./QueryForm";
 import styles from "./style.less";
 import { httpApaasActivityQueryByPage, httpEnableOrDisableMaPromotionEvent, httpDeleteMaPromotionEvent } from "./AxiosFactory";
 import { jumpPage, closePage, getStore } from '@hualala/platform-base';
-import { SALE_AUTOMATED_SALE_DETAIL } from '../../../constants/entryCodes';
+import { SALE_AUTOMATED_SALE_DETAIL, SALE_AUTOMATED_STAT_DETAIL } from '../../../constants/entryCodes';
 import _ from 'lodash';
 import all_icon from "../assets/all_icon.png";
 import no_start_icon from "../assets/no_start_icon.png";
@@ -166,18 +166,28 @@ export default class Main extends React.PureComponent {
         const { groupID } = getStore().getState().user.get('accountInfo').toJS();
         const tabList = getStore().getState().user.get('tabList').toJS();
         const tab = tabList.find(item => item.key === 'sale_automated_sale_detail');
+        const tab1 = tabList.find(item => item.key === 'sale_automated_stat_detail');
         if (tab && tab.key === 'sale_automated_sale_detail') {
             closePage(SALE_AUTOMATED_SALE_DETAIL);
         }
-        if (type == 'add') {
-            _.delay(() => {
-                jumpPage({ menuID: SALE_AUTOMATED_SALE_DETAIL, type, groupID });
-            }, 100)
-        } else {
-            _.delay(() => {
-                jumpPage({ menuID: SALE_AUTOMATED_SALE_DETAIL, id: record.itemID, type, groupID });
-            }, 100)
+        if(tab1 && tab1.key === 'sale_automated_stat_detail'){
+            closePage(SALE_AUTOMATED_STAT_DETAIL);
         }
+        // 统计
+        let pageParams = {
+            menuID: SALE_AUTOMATED_SALE_DETAIL,
+            type,
+            groupID,
+        }
+        if(type == 'stat'){
+            pageParams.menuID = SALE_AUTOMATED_STAT_DETAIL;
+            pageParams.flowId = record.flowId;
+        }else if(type != 'add'){
+            pageParams.id = record.itemID;
+        }
+        _.delay(() => {
+            jumpPage(pageParams);
+        }, 100)
     }
 
     changePanel = (currentPanelType) => {
