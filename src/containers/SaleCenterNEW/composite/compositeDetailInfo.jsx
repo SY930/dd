@@ -171,8 +171,8 @@ class CompositeDetailInfo extends React.Component {
             const { stageType, shareRatioList = [], shareType } = rule;
             this.setState({
                 stageType,
-                condition1: shareRatioList[0] || '',
-                condition2: shareRatioList[1] || '',
+                condition1: shareRatioList[0],
+                condition2: shareRatioList[1],
                 shareType: shareType || 1,
             })
         }
