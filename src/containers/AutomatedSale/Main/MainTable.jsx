@@ -107,6 +107,7 @@ class MainTable extends Component {
                 className: tc,
                 width: 60,
                 render: (text, record) => {
+                    let millseconds = moment(record.eventEndDate, 'YYYYMMDDHHmmss').valueOf();
                     return (
                         <Switch
                             style={{width: '28px', height: '14px'}}
@@ -114,7 +115,7 @@ class MainTable extends Component {
                             size="small"
                             className={styles.switchBox}
                             onChange={() => this.changeStatus(record)}
-                            disabled={Date.now() > record.eventEndDate}
+                            disabled={Date.now() > millseconds}
                         />
                     )
                 }
