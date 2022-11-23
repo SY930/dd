@@ -301,7 +301,7 @@ export const promotionDetailInfo_NEW = ($$state = $initialState, action) => {
     let foodCategoryCollection = [];
     switch (action.type) {
         case SALE_CENTER_SET_PROMOTION_DETAIL:
-            if (action.payload.rule) { // 把黑名单合进去rulejson
+            if (action.payload.rule && !action.payload.shippingFees) { // 把黑名单合进去rulejson
                 action.payload.rule.blackList = $$state.get('$promotionDetail').toJS().blackList || false;
                 action.payload.rule.customerUseCountLimit = $$state.get('$promotionDetail').toJS().customerUseCountLimit || 0;
             }

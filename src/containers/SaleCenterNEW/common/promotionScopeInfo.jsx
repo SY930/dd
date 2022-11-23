@@ -120,7 +120,8 @@ class PromotionScopeInfo extends React.Component {
         } else {
             this.setState({ shopStatus: true })
         }
-        if (!this.props.user.toJS().shopID) {
+        console.log(!this.props.user.toJS().shopID, '!this.props.user.toJS().shopID')
+        if ((!this.props.user.toJS().shopID && promotionType !== '2090')) {
             const { isRequire } = this.state;
             if (isRequire && !selections[0]) {
                 flag = false;
@@ -131,6 +132,7 @@ class PromotionScopeInfo extends React.Component {
                 shopIDs: selections,
             });
         }
+
 
         if (flag) {
             const states = {
@@ -401,7 +403,7 @@ class PromotionScopeInfo extends React.Component {
         const k5f3y6b4 = intl.formatMessage(SALE_STRING.k5f3y6b4);
         const k5f3y6yg = intl.formatMessage(SALE_STRING.k5f3y6yg);
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
-        if (this.props.isOnline || promotionType == '5020') return null
+        if (this.props.isOnline || promotionType == '5020' || promotionType == '2090') return null
         return (
             <FormItem
                 label={SALE_LABEL.k5krn6il}
@@ -480,7 +482,7 @@ class PromotionScopeInfo extends React.Component {
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         const basicInfo = this.props.promotionBasicInfo.get('$basicInfo').toJS()
         const isSelDefined = basicInfo.recommendType == 1
-        if (this.props.isOnline) return null;
+        if (this.props.isOnline || promotionType == '2090') return null;
         let plainOptions = null;
         if (promotionType == '5020') {
             plainOptions = [
@@ -576,7 +578,7 @@ class PromotionScopeInfo extends React.Component {
     renderShopsOptions() {
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         const { brands, shopStatus, allShopSet, selections, isRequire, filterShops } = this.state;
-        if (promotionType == '5010') {
+        if (promotionType == '5010' || promotionType == '2090') {
             return (
                 <Form.Item
                     label={SALE_LABEL.k5dlggak}
@@ -594,6 +596,7 @@ class PromotionScopeInfo extends React.Component {
                         onChange={
                             this.editBoxForShopsChange
                         }
+                        eventWay={promotionType}
                     />
                     {allShopSet ?
                         <p style={{ color: '#e24949' }}>{SALE_LABEL.k5m67b23}</p>

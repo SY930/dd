@@ -81,6 +81,7 @@ import NewAddMoneyUpgradeActivity from './addMoneyUpgrade/NewAddMoneyUpgradeActi
 import AddMoneyUpgradeDetailInfo from './addMoneyUpgrade/AddMoneyUpgradeDetailInfo';
 import LowPriceSaleActivity from "./lowPriceSale/LowPriceSaleActivity";
 import LowPriceDetailInfo from "./lowPriceSale/LowPriceDetailInfo";
+
 import ReducedShippingFees from './reducedShippingFees'; // 减免配送费
 import ShippingFeesInfo from './reducedShippingFees/ShippingFeesInfo';
 
@@ -242,16 +243,16 @@ class ActivityMain extends React.Component {
                 child: SettingInfo,
             },
             {
+                wrapper: ReducedShippingFees,
+                child: ShippingFeesInfo,
+            },
+            {
                 wrapper: NewFullCutActivity,
                 child: FullCutDetailInfo,
             },
             {
                 wrapper: NewSpecialActivity,
                 child: SpecialDetailInfo,
-            },
-            {
-                wrapper: ReducedShippingFees,
-                child: ShippingFeesInfo,
             },
         ]
         const {

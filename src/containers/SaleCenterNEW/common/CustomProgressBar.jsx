@@ -89,6 +89,7 @@ class CustomProgressBar extends React.Component {
 
     finish(current, flag) {
         const onFinish = this.props.onFinish;
+        console.log("🚀 ~ file: CustomProgressBar.jsx ~ line 92 ~ CustomProgressBar ~ finish ~ onFinish", onFinish)
         if (typeof onFinish === 'function') {
             onFinish(() => {
                 if (this.props.callback && typeof this.props.callback === 'function') {
