@@ -85,6 +85,12 @@ registerLocalPage([
         label: '智能营销详情',
         parent: [entryCodes.SALE_AUTOMATED_SALE_DETAIL],
     },
+    {
+        key: entryCodes.SALE_AUTOMATED_STAT_DETAIL,
+        value: entryCodes.SALE_AUTOMATED_STAT_DETAIL,
+        label: '智能营销统计详情',
+        parent: [entryCodes.SALE_AUTOMATED_STAT_DETAIL],
+    },
 ]);
 // 注册语言包
 const registeLangPack = async () => {
