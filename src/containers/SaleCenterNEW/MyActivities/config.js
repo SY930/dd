@@ -239,22 +239,15 @@ export const getWJLPCoulums = (_this) => {
         },
       },
       {
-        title: '减免方式',
+        title: '备注',
         className: 'TableTxtCenter',
-        width: 100,
-        render: () => {},
-      },
-      {
-        title: '消费金额',
-        className: 'TableTxtCenter',
-        width: 100,
-        render: () => {},
-      },
-      {
-        title: '减免金额', // maxFreeLimitType
-        className: 'TableTxtCenter',
-        width: 100,
-        render: () => {},
+        dataIndex: 'description',
+        key: 'description',
+        width: 160,
+        render: (text) => {
+          const t = text
+          return <Tooltip title={text}><p className={styles.multilineTexts}>{t}</p></Tooltip>
+        },
       },
       {
         title: '适用商品',
