@@ -194,11 +194,11 @@ export {
 };
 
 export const initVal = {
-    id: "0",
-    effectType: 1,
-    giftCount: "1",
-    countType: "0",
-    giftEffectTimeHours: '0',
-    giftType: "1"
+    id: Date.now().toString(36),
+    giftID: undefined,
+    giftCount: undefined,
+    buyLimit: undefined,
+    presentValue: undefined,
+    giftGetRuleValue: undefined
 };
 

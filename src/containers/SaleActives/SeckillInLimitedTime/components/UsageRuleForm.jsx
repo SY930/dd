@@ -2,13 +2,14 @@
  * @Author: xinli xinli@hualala.com
  * @Date: 2022-10-10 14:36:10
  * @LastEditors: xinli xinli@hualala.com
- * @LastEditTime: 2022-10-26 11:06:55
+ * @LastEditTime: 2022-11-21 11:00:43
  * @FilePath: /platform-sale/src/containers/SaleActives/SeckillInLimitedTime/components/UsageRuleForm.jsx
  */
 
 import React, { PureComponent as Component } from "react";
 import BaseForm from "components/common/BaseForm";
 import DateRange from "../DateRange/index";
+
 import {
     ruleFormItem,
     ruleFormKeys,

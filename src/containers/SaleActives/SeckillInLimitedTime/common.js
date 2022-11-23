@@ -1,10 +1,6 @@
 import { Icon, Tooltip, Radio, Input, Form, Select } from "antd";
 import moment from "moment";
 import DateRange from "../../PromotionV3/Camp/DateRange";
-import Advance from "../../PromotionV3/Camp/Advance";
-import DateTag from "../../PromotionV3/Camp/DateTag";
-import TimeRange from "../../PromotionV3/Camp/TimeRange";
-
 
 export const baseFormItems = {
     eventType: {
@@ -82,6 +78,43 @@ export const ruleFormItem = {
         labelCol: { span: 5 },
         render: () => <p />,
     },
+    coupon: {
+        type: "custom",
+        label: "券包名称",
+        rules: ["required"],
+        render: () => <p />,
+    },
+    giftID: {
+        type: "custom",
+        label: "券包ID",
+        render: (d, form) => {
+            console.log(form,'form-----------in conponID')
+            return d()(
+                <Input
+                    disabled
+                />
+            )
+        },
+    },
+    giftCount: {
+        type: "custom",
+        label: "活动库存",
+        rules: [
+            "required",
+            {
+                pattern: /^([1-9]\d{0,5})$/,
+                message: "请输入1～999999数字",
+            },
+        ],
+        render: (d, form) => {
+            console.log(form,'form-----------in conponID')
+            return d()(
+                <Input
+                    placeholder="请输入秒杀库存"
+                />
+            )
+        },
+    },
     eventRange: {
         type: "custom",
         label: "活动起止日期",
@@ -91,11 +124,9 @@ export const ruleFormItem = {
         defaultValue: [moment(), moment().add(6, "days")],
         render: (d) => d()(<DateRange type={"85"} />),
     },
-    partInTimes: {
+    buyLimit: {
         type: "custom",
         label: "可购买次数",
-        // wrapperCol: { span: 8 },
-        // labelCol: { span: 5 },
         rules: [
             {
                 pattern: /^([1-9]\d{0,})$/,
@@ -129,32 +160,33 @@ export const ruleFormItem = {
         ],
         defaultValue: "0",
     },
-    discountPrice: {
+    presentValue: {
         type: "custom",
         label: "划价金额",
-        // wrapperCol: { span: 8 },
-        // labelCol: { span: 5 },
-        // rules: [
-        //     {
-        //         pattern: /^([1-9]\d{0,})$/,
-        //         message: "请输入正整数",
-        //     },
-        // ],
+        rules: [
+            {
+                pattern: /^([1-9]\d{0,})$/,
+                message: "请输入正整数",
+            },
+        ],
         render: (d, form) => {
             return d()(
                 <Input
                     placeholder="请输入划价金额"
-                    // addonAfter="次"
                 />
             )
         },
     },
-    seckillPrice: {
+    giftGetRuleValue: {
         type: "custom",
         label: "秒杀金额",
-        // wrapperCol: { span: 8 },
-        // labelCol: { span: 5 },
-        rules: ["required"],
+        rules: [
+            "required",
+            {
+                pattern: /^([1-9]\d{0,})$/,
+                message: "请输入正整数",
+            },
+        ],
         render: (d, form) => {
             return d()(
                 <Input
@@ -260,5 +292,5 @@ export const ruleFormItem = {
 
 export const ruleFormKeys = ["eventRange","gifts"];
 export const baseFormKeys = ["eventType","eventName","shopIDList","eventRemark"];
-export const giftRemainSettings = ["partInTimes","systermPassedTimeReturnMoney","userSelfReturnMoney","discountPrice","seckillPrice"];
+export const giftRemainSettings = ["coupon","giftID","giftCount","buyLimit","presentValue","giftGetRuleValue"];
 
