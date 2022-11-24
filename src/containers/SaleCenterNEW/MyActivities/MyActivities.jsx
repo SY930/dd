@@ -674,7 +674,9 @@ class MyActivities extends React.Component {
         opt.accountID = this.props.user.accountInfo.accountID;
         opt.sourceType = +this.isOnlinePromotionPage();
         if (isZhouheiya(opt.groupID) && selectedGoods.length > 0){
-            opt.applyGoodsList = selectedGoods.map(item => item.goodsID)
+            opt.applyGoodsList = selectedGoods.map(item => {
+                return { goodsID: item.goodsID, categoryOneID: item.categoryOneID, categoryTwoID: item.categoryTwoID, categoryID: item.categoryID}
+            })
         }
         if (isZhouheiya(opt.groupID) && applyShopIds.length > 0){
             opt.applyShopIdList = applyShopIds
