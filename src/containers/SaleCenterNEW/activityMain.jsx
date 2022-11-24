@@ -81,6 +81,10 @@ import NewAddMoneyUpgradeActivity from './addMoneyUpgrade/NewAddMoneyUpgradeActi
 import AddMoneyUpgradeDetailInfo from './addMoneyUpgrade/AddMoneyUpgradeDetailInfo';
 import LowPriceSaleActivity from "./lowPriceSale/LowPriceSaleActivity";
 import LowPriceDetailInfo from "./lowPriceSale/LowPriceDetailInfo";
+
+import ReducedShippingFees from './reducedShippingFees'; // 减免配送费
+import ShippingFeesInfo from './reducedShippingFees/ShippingFeesInfo';
+
 import { ONLINE_PROMOTION_TYPES } from '../../constants/promotionType';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
 import { SALE_LABEL, SALE_STRING } from 'i18n/common/salecenter';
@@ -233,6 +237,10 @@ class ActivityMain extends React.Component {
             {
                 wrapper: NewMemberExclusiveFood,
                 child: MemberExclusiveDetailInfo,
+            },
+            {
+                wrapper: ReducedShippingFees,
+                child: ShippingFeesInfo,
             },
             {
                 wrapper: GroupSaleActivity,
