@@ -36,7 +36,7 @@ class ShippingFeesInfo extends Component {
         this.props.getSubmitFn({
             finish: this.handleSubmit,
         });
-        let formData = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
+        let formData = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']) || {};
         formData = Immutable.Map.isMap(formData) ? formData.toJS() : formData;
         const { targetScope, stageAmount } = formData
         if (targetScope == '1') {
