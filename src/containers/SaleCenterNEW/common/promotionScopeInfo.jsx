@@ -161,6 +161,9 @@ class PromotionScopeInfo extends React.Component {
                 }
             }
 
+            if (promotionType === '2090'){
+                states.orderType = ['20']
+            }
             this.props.saleCenterSetScopeInfo(states);
         }
         return flag || isPrev;
