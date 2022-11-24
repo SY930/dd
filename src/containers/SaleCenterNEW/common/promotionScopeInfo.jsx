@@ -108,7 +108,7 @@ class PromotionScopeInfo extends React.Component {
             if (err1) {
                 flag = false;
             }
-            if (this.state.orderType.length == 0) {
+            if (this.state.orderType.length == 0 && promotionType !== '2090') {
                 flag = false;
             }
         });
@@ -120,7 +120,6 @@ class PromotionScopeInfo extends React.Component {
         } else {
             this.setState({ shopStatus: true })
         }
-        console.log(!this.props.user.toJS().shopID, '!this.props.user.toJS().shopID')
         if ((!this.props.user.toJS().shopID && promotionType !== '2090')) {
             const { isRequire } = this.state;
             if (isRequire && !selections[0]) {

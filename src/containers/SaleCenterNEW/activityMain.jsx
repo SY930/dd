@@ -239,12 +239,12 @@ class ActivityMain extends React.Component {
                 child: MemberExclusiveDetailInfo,
             },
             {
-                wrapper: GroupSaleActivity,
-                child: SettingInfo,
-            },
-            {
                 wrapper: ReducedShippingFees,
                 child: ShippingFeesInfo,
+            },
+            {
+                wrapper: GroupSaleActivity,
+                child: SettingInfo,
             },
             {
                 wrapper: NewFullCutActivity,

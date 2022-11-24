@@ -227,12 +227,9 @@ class NewPromotion extends React.Component {
     }
 
     handleFinish(cb, index) {
-        console.log("🚀 ~ file: NewPromotion.jsx ~ line 230 ~ NewPromotion ~ handleFinish ~ cb, index)", cb, index)
         let flag = true;
-        debugger
         if (undefined !== this.handles[index].finish && typeof this.handles[index].finish === 'function') {
             flag = this.handles[index].finish();
-            console.log("🚀 ~ file: NewPromotion.jsx ~ line 234 ~ NewPromotion ~ handleFinish ~ flag", flag)
         }
         if (flag) {
             this.setState({

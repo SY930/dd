@@ -727,20 +727,20 @@ export const ACTIVITY_CATEGORIES = (function () {
         },
         {
             idx: 22,
+            title: '减免配送费',
+            color: "#d9b563",
+            text: '外卖下单可享受配送费减免',
+            example : '',
+            key: "2090",
+        },
+        {
+            idx: 23,
             color: "#84aac6",
             title: '拼团活动',
             text: '邀请好友来拼团，也可直接购买',
             example: '',
             key: "10071",
             filter: true,
-        },
-        {
-            idx: 23,
-            title: '减免配送费',
-            color: "#d9b563",
-            text: '外卖下单可享受配送费减免',
-           example : '',
-            key: "2090",
         },
         // {
         //     idx: 23,
