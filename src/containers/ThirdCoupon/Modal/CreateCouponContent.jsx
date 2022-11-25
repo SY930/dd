@@ -735,9 +735,9 @@ class CreateCouponContent extends Component {
                                 if (!v) {
                                     return cb();
                                 }
-                                v.number > 0 && v.number <= 999999 ? cb() : cb(rule.message);
+                                v.number > 0 && v.number <= 99999 ? cb() : cb(rule.message);
                             },
-                            message: '礼品个数为1到999999',
+                            message: '礼品个数为1到99999',
                         },
                     ],
                 })(<PriceInput
