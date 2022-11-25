@@ -109,7 +109,7 @@ class ShippingFeesInfo extends Component {
                                             initialValue: formData.orderAmount || '1',
                                             rules: [{
                                                 // /^([0-9]\d{0,3}|(^\+?\d{0,3}\.\d{0,1}$))$/
-                                                pattern: /^([0-9]\d{0,6}|(^\+?\d{0,6}\.\d{0,1}$))$/,
+                                                pattern: /^([0-9]\d{0,5}|(^\+?\d{0,5}\.\d{0,1}$))$/,
                                                 message: '金额输入框支持大于0的正数,支持1位小数，最大值999999',
                                             }],
                                         })(<Input suffix="元" />)
@@ -146,21 +146,22 @@ class ShippingFeesInfo extends Component {
                     const { targetScope } = form.getFieldsValue()
                     if (targetScope === '2') {
                         return (<Row>
-                            <Col offset={5}>
+                            <Col offset={14}>
                                 <FormItem
                                     label="件数满"
-                                    wrapperCol={{ span: 19 }}
-                                    labelCol={{ span: 5 }}
+                                    wrapperCol={{ span: 13 }}
+                                    labelCol={{ span: 7 }}
+                                    style={{ padding: 0, marginTop: '-8px' }}
                                 >
                                     {
                                         d({
                                             key: 'thresholdAmount',
                                             initialValue: formData.thresholdAmount || '1',
                                             rules: [{
-                                                pattern: /^[0-9]\d{0,3}$/,
+                                                pattern: /^[0-9]\d{0,2}$/,
                                                 message: '支持大于0的正整数，最大值999',
                                             }],
-                                        })(<Input suffix="元" />)
+                                        })(<Input suffix="件" />)
                                     }
                                 </FormItem>
                             </Col>
@@ -195,8 +196,8 @@ class ShippingFeesInfo extends Component {
                                     d({
                                         initialValue: formData.freeAmount || '1',
                                         rules: [{
-                                            pattern: /^[0-9]\d{0,3}$/,
-                                            message: '支持大于0的正整数，最大值999',
+                                            pattern: /^([0-9]\d{0,2}|(^\+?\d{0,3}\.\d{0,1}$))$/,
+                                            message: '支持大于0的正整数,最大值999.9',
                                         }],
                                     })(<Input suffix="元" />)
                                 }
@@ -233,7 +234,7 @@ class ShippingFeesInfo extends Component {
                                         d({
                                             initialValue: formData.customerUseCountMaxLimit || '1',
                                             rules: [{
-                                                pattern: /^[0-9]\d{0,3}$/,
+                                                pattern: /^[0-9]\d{0,2}$/,
                                                 message: '支持大于0的正整数，最大值999',
                                             }],
                                         })(<Input suffix="次/活动" />)
@@ -265,14 +266,14 @@ class ShippingFeesInfo extends Component {
                             <Col offset={5}>
                                 <FormItem
                                     label=""
-                                    wrapperCol={{ span: 20 }}
+                                    wrapperCol={{ span: 24 }}
                                     className={styles.useCountMaxLimitBox}
                                 >
                                     {
                                         d({
                                             initialValue: formData.customerUseCountLimit || '1',
                                             rules: [{
-                                                pattern: /^[0-9]\d{0,3}$/,
+                                                pattern: /^[0-9]\d{0,2}$/,
                                                 message: '支持大于0的正整数，最大值999',
                                             }],
                                         })(<Input suffix="次/活动" />)
