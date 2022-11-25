@@ -1200,13 +1200,34 @@ class MyActivities extends React.Component {
     }
 
     showModleTip = (res) => {
-        const { code, data } = res
+        const { code, data: { failedInfo, successTimes} } = res
         let content  = '导入成功';
+        let title = '导入成功'
         if (code === '000') {
-            content = `已导入${data.successTimes}条, 失败${data.failedTimes}条`
+            if (_.isEmpty(failedInfo)) {
+                content = `${content},已导入${successTimes}条`
+            } else  {
+                title = '导入失败'
+                content = Object.keys(failedInfo).map((key) => {
+                    const lines = failedInfo[key] || [];
+                    const lineText = lines.reduce((cur, v) => {
+                        if (cur) {
+                            return `${cur},第${v}行`
+                        }
+                        return `${cur}第${v}行`
+                    }, '')
+                    return (<p style={{
+                        background:'#f2f2f2',
+                        lineHeight: '28px',
+                        fontSize: '12px',
+                        marginBottom: '8px',
+                        paddingLeft: '10px'
+                    }}>导入文件中，{key}。{lineText}</p>)
+                })
+            }
         } 
         Modal.info({
-            title: `导入${code === '000' ? '结果' : '失败'}`,
+            title,
             content,
             iconType: 'exclamation-circle',
             okText: '确定'
