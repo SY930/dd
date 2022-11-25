@@ -124,8 +124,8 @@ class ShippingFeesInfo extends Component {
                                 >
                                     {
                                         d({
-                                            key: 'pakckageAmountInclude',
-                                            initialValue: formData.pakckageAmountInclude || '0',
+                                            key: 'packageAmountInclude',
+                                            initialValue: formData.packageAmountInclude || '0',
                                         })(<RadioGroup>
                                             <Radio key={'0'} value={'0'}>不包含</Radio>
                                             <Radio key={'1'} value={'1'}>包含</Radio>
