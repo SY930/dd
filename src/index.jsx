@@ -103,6 +103,12 @@ registerLocalPage([
         label: '智能营销详情',
         parent: [entryCodes.SALE_AUTOMATED_STAT_DETAIL],
     },
+    {
+        key: entryCodes.CONSUME_GIFT_GIVING,
+        value: entryCodes.CONSUME_GIFT_GIVING,
+        label: '创建营销活动',
+        parent: [entryCodes.NEW_SALE_BOX],
+    },
 ]);
 // 注册语言包
 const registeLangPack = async () => {
