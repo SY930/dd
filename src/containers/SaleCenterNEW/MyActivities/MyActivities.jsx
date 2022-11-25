@@ -1224,6 +1224,13 @@ class MyActivities extends React.Component {
                         paddingLeft: '10px'
                     }}>导入文件中，{key}。{lineText}</p>)
                 })
+                content = content.concat((<div style={{
+                    position: 'absolute',
+                    bottom: '54px',
+                    left: '50%',
+                    marginLeft: '-57px',
+                    fontSize: '12px',
+                }}>请修改Excel后重新导入</div>))
             }
         } 
         Modal.info({
