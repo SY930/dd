@@ -268,7 +268,6 @@ class NewPromotion extends React.Component {
 
     handleFinish(cb, index) {
         let flag = true;
-
         if (undefined !== this.handles[index].finish && typeof this.handles[index].finish === 'function') {
             flag = this.handles[index].finish();
         }

@@ -199,7 +199,7 @@ class ShopSelector extends Component {
                 }
 
                 <div style={{ color: 'orange', fontSize: '12' }}>
-                    {eventWay && eventWay == '82' ? `不选默认全部店铺可用` : null}
+                    {eventWay && ['82', '2090'].includes(eventWay) ? `不选默认全部店铺可用` : null}
                 </div>
             </div>
         );

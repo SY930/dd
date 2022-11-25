@@ -1706,7 +1706,7 @@
     .cardWrap(@shallowOrange);
 }
 
-.cardWrap_22 {
+.cardWrap_23 {
     .cardWrap(@deepOrange);
 }
 
@@ -1724,6 +1724,10 @@
 
 .cardWrap_33 {
     .cardWrap(@deepOrange);
+}
+
+.cardWrap_22 {
+    .cardWrap(@shallowOrange);
 }
 
 .priceInputSingle {
@@ -3591,5 +3595,39 @@
     }
     .computeRule {
       margin-right: 10px;
+    }
+  }
+
+  .shippingFeesInfo_orderAmount {
+    padding: 13px 16px;
+    background: #f2f2f2;
+    border: 1px solid #dcdcdc;
+    border-radius: 4px;
+    margin-left: 138px;
+  }
+
+  .shippingFeesInfoBox {
+    position: relative;
+    .freeAmountBox {
+        position: absolute;
+        right: 48px;
+        top: -44px;
+    }
+    .useCountMaxLimitBox {
+        position: absolute;
+        right: 48px;
+        top: -44px;
+    }
+    :global {
+        .ant-form {
+            .ant-form-item {
+                &:nth-child(3) {
+                    padding: 0;
+                }
+                &:nth-child(5) {
+                    padding: 0;
+                }
+            }
+        }
     }
   }

@@ -47,8 +47,9 @@ import { SALE_LABEL, SALE_STRING } from "i18n/common/salecenter";
 import { injectIntl } from "../IntlDecor";
 import Card from "../../../assets/card.png";
 import CardSaleActive from "./CardSaleActive";
-import { isZhouheiya, isGeneral, businessTypesList } from "../../../constants/WhiteList";
+import { isZhouheiya, isGeneral, businessTypesList, WJLPGroupID } from "../../../constants/WhiteList";
 import GoodsRef from '@hualala/sc-goodsRef';
+import { getWJLPCoulums } from './config'
 
 const { GoodsSelector } = GoodsRef;
 const Option = Select.Option;
@@ -673,7 +674,9 @@ class MyActivities extends React.Component {
         opt.accountID = this.props.user.accountInfo.accountID;
         opt.sourceType = +this.isOnlinePromotionPage();
         if (isZhouheiya(opt.groupID) && selectedGoods.length > 0){
-            opt.applyGoodsList = selectedGoods.map(item => item.goodsID)
+            opt.applyGoodsList = selectedGoods.map(item => {
+                return { goodsID: item.goodsID, categoryOneID: item.categoryOneID, categoryTwoID: item.categoryTwoID, categoryID: item.categoryID}
+            })
         }
         if (isZhouheiya(opt.groupID) && applyShopIds.length > 0){
             opt.applyShopIdList = applyShopIds
@@ -1179,44 +1182,6 @@ class MyActivities extends React.Component {
                 });
             }
         });
-        // axios.post('/api/v1/universal', {
-        //     service: 'HTTP_SERVICE_URL_PROMOTION_NEW', // ? domain :'HTTP_SERVICE_URL_CRM', //'HTTP_SERVICE_URL_PROMOTION_NEW'
-        //     method: '/promotion/promotionParamsService_updatePromotionParams.ajax',
-        //     type: 'post',
-        //     params: {
-        //         groupID: this.props.user.accountInfo.groupID,
-        //         executeTimeType,
-        //     },
-        // })
-        //     .then((json) => {
-        //         let { code, message, result } = json;
-        //         if (!code) {
-        //             code = (result || {}).code;
-        //         }
-        //         if (!message) {
-        //             message = (result || {}).message;
-        //         }
-        //         if (code !== '000') {
-        //             const { redirect, msg } = this.parseResponseJson(json, '000');
-        //             Modal.error({
-        //                 title: '啊哦！好像有问题呦~~',
-        //                 content: `${msg}`,
-        //             });
-        //             redirect && window.setTimeout(() => doRedirect(), 1500);
-        //             return Promise.reject({ code, message, response: json });
-        //         }
-        //         if (!path) {
-        //             return Promise.resolve(json);
-        //         }
-        //         const paths = path.split('.');
-        //         const data = paths.reduce((ret, path) => {
-        //             if (!ret) return ret;
-        //             return ret[path];
-        //         }, json);
-        //     })
-        //     .catch((error) => {
-        //         return Promise.reject(error);
-        //     });
     };
     setRunDataList() {
         const { promotionList, queryPromotionList } = this.props;
@@ -1231,7 +1196,7 @@ class MyActivities extends React.Component {
         this.props.openPromotionAutoRunListModal();
     }
     downLoadTemp = () => {
-        window.open(`${ENV.FILE_RESOURCE_DOMAIN}/crmexport/d2febb77-158c-4af1-98e2-a89e5802dd58.xlsx`);
+        window.open(`${ENV.FILE_RESOURCE_DOMAIN}/crmexport/8e1f0d89-67a5-49cc-b866-5e6eef35fd04.xlsx`);
     }
 
     showModleTip = (res) => {
@@ -2015,6 +1980,13 @@ class MyActivities extends React.Component {
         return (new Date(moment(record.endDate, 'YYYY-MM-DD').format('YYYY-MM-DD')).getTime() < new Date(new Date(Date.now()).toLocaleDateString()).getTime()) || record.auditStatus == '1';
     }
 
+    renderCoulums = (originCoulums) => {
+        const { user: { accountInfo }} = this.props
+        if (WJLPGroupID.includes(`${accountInfo.groupID}`)) {
+            return getWJLPCoulums(this)
+        }
+        return originCoulums
+    }
     renderTables() {
         const { intl } = this.props;
         const k5eng7pt = intl.formatMessage(SALE_STRING.k5eng7pt);
@@ -2195,25 +2167,6 @@ class MyActivities extends React.Component {
                     );
                 }
             },
-            // {
-            //     title: COMMON_LABEL.sort,
-            //     className: 'TableTxtCenter',
-            //     dataIndex: 'sortOrder',
-            //     key: 'sortOrder',
-            //     width: 120,
-            //     render: (text, record, index) => {
-            //         const canNotSortUp = this.state.pageNo == 1 && index == 0;
-            //         const canNotSortDown = (this.state.pageNo - 1) * this.state.pageSizes + index + 1 == this.state.total;
-            //         return (
-            //             <span>
-            //                 <span><Iconlist title={k5eng7pt} iconName={'sortTop'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'TOP')} /></span>
-            //                 <span><Iconlist title={k5engk5b} iconName={'sortUp'} className={canNotSortUp ? 'sortNoAllowed' : 'sort'} onClick={canNotSortUp ? null : () => this.lockedChangeSortOrder(record, 'UP')} /></span>
-            //                 <span className={styles.upsideDown}><Iconlist title={k5engpht} iconName={'sortUp'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'DOWN')} /></span>
-            //                 <span className={styles.upsideDown}><Iconlist title={k5engebq} iconName={'sortTop'} className={canNotSortDown ? 'sortNoAllowed' : 'sort'} onClick={canNotSortDown ? null : () => this.lockedChangeSortOrder(record, 'BOTTOM')} /></span>
-            //             </span>
-            //         )
-            //     },
-            // },
             {
                 title: SALE_LABEL.k5dk5uwl,
                 dataIndex: "promotionType",
@@ -2367,7 +2320,7 @@ class MyActivities extends React.Component {
                     scroll={{ x: 1000, y: "calc(100vh - 360px)" }}
                     className={styles.sepcialActivesTable}
                     bordered={true}
-                    columns={columns}
+                    columns={this.renderCoulums(columns)}
                     dataSource={this.state.dataSource}
                     loading={this.state.loading}
                     size="default"
