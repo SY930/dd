@@ -677,6 +677,9 @@ class ManyFace extends Component {
                 excludedDateList: excludedDate,
             },
         }
+        if (!shopIDList && sceneList === '21') {
+            return this.onSubmit(values, formData2)
+        }
         queryActiveList(params).then((dataSource) => {
             if (dataSource) {
                 if (dataSource.length > 0) {
