@@ -5,7 +5,7 @@
  * @Descripttion: 
  */
 import React, { Component } from 'react'
-import { Modal, Input, Row, Col } from 'antd'
+import { Modal, Input, Row, Col, message } from 'antd'
 import styles from './specialDetail.less'
 import BaseForm from 'components/common/BaseForm'
 import { axiosData, getAccountInfo } from "../../../helpers/util";
@@ -18,7 +18,7 @@ class CollectPointAdjustModal extends Component {
     this.form.validateFieldsAndScroll((err, values) => {
       const params = {
         ...values,
-        eventCustomerID: this.props.data.customerID
+        eventCustomerID: this.props.data.itemID,
       }
       if (!err) {
         axiosData('/specialPromotion/adjustCollectionPointByHand.ajax', 
@@ -27,8 +27,11 @@ class CollectPointAdjustModal extends Component {
         { path: '' },
          'HTTP_SERVICE_URL_PROMOTION_NEW')
          .then((res) => {
-         console.log("🚀 ~ file: CollectPointAdjustModal.jsx ~ line 30 ~ CollectPointAdjustModal ~ .then ~ res", res)
-          
+          const { code } = res;
+          if (code === '000') {
+            message.success('执行成功')
+            this.props.onCancel()
+          }          
          })
       }
     })

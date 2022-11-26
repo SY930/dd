@@ -432,6 +432,8 @@ class SpecialPromotionDetail extends React.Component {
                             this.setState({
                                 collectPointAdjustLst: {},
                                 collectPointAdjustVisible: false
+                            }, () => {
+                                this.resetQuery()
                             })
                         }}
                         />)
