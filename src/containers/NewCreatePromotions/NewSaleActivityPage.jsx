@@ -636,7 +636,7 @@ class NewCustomerPage extends Component {
     onV3Click = (key) => {
         if (key) this.setState({ curKey: key })
         const currentPromotion = newPromotionCardPageConfig.find(item => item.key == key);
-        if (['85', '23', '86'].includes(key)) { // 打开新页面
+        if (['85', '23', '95'].includes(key)) { // 打开新页面
             setTimeout(() => {
                 jumpPage({ menuID: SALE_ACTIVE_NEW_PAGE, typeKey: key })
             }, 100);

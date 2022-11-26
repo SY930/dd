@@ -492,7 +492,7 @@ export const REPEAT_PROMOTION_TYPES = [
         tags: [SALE_LABEL.k639vgbm],
         signs: ["app"],
         example: "",
-        key: "86",
+        key: "95",
         right: 16,
         bottom: 6
         // isNew: new Date("2022/04/12").getTime()

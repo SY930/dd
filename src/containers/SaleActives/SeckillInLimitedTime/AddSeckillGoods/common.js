@@ -84,22 +84,6 @@ const dayOpts = (() => {
     return [...list, ...extraList];
 })();
 
-const formKeys1 = [
-    "giftID",
-    "giftIDNumber",
-    "giftCount",
-    "effectType",
-    "countType",
-    "giftEffectTimeHours",
-    "giftValidUntilDayCount",
-];
-const formKeys2 = [
-    "giftID",
-    "giftIDNumber",
-    "giftCount",
-    "effectType",
-    "rangeDate",
-];
 const formItems = {
     giftID: {
         type: "custom",
@@ -186,17 +170,13 @@ const formItems = {
 
 export {
     formItemLayout,
-    formKeys1,
     formItems,
-    formKeys2,
-    timeOpts,
-    dayOpts,
 };
 
 export const initVal = {
     id: Date.now().toString(36),
     giftID: undefined,
-    giftCount: undefined,
+    giftTotalCount: undefined,
     buyLimit: undefined,
     presentValue: undefined,
     giftGetRuleValue: undefined

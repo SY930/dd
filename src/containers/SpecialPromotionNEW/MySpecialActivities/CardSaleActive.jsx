@@ -103,11 +103,11 @@ class CardSaleActive extends Component {
             message.warning('该活动已下线');
             return;
         }
-        if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83 || record.eventWay === 85 || record.eventWay === 23) {
+        if ([78, 79, 83, 85, 23, 95].includes(record.eventWay)) {
             this.props.onV3Click(record.itemID, true, record.eventWay);
             return;
         }
-        if (record.eventWay === 80 || record.eventWay === 66 || record.eventWay === 81 || record.eventWay === 82) {
+        if ([80, 66, 81, 82].includes(record.eventWay)) {
             this.props.handleShowDetail({
                 record,
                 isView: true,
@@ -127,7 +127,7 @@ class CardSaleActive extends Component {
             message.warning('该活动已下线');
             return;
         }
-        if (record.eventWay === 78 || record.eventWay === 79 || record.eventWay === 83 || record.eventWay === 85 || record.eventWay === 23) {
+        if ([78, 79, 83, 85, 23, 95].includes(record.eventWay)) {
             this.props.handleEditActive(record)(() => this.props.onV3Click(record.itemID, false, record.eventWay, record.isActive))
             return;
         }
@@ -396,7 +396,7 @@ class CardSaleActive extends Component {
                                                         </Authority>
                                                     }
                                                     {
-                                                        (![85, 87].includes(+item.eventWay)) && <Tooltip placement="bottomLeft" title={this.renderTipTitle(_, item, index)} overlayClassName={stylesPage.Sale__Activite__Tip}>
+                                                        (![85, 87, 95].includes(+item.eventWay)) && <Tooltip placement="bottomLeft" title={this.renderTipTitle(_, item, index)} overlayClassName={stylesPage.Sale__Activite__Tip}>
                                                             <span style={{
                                                                 position: 'relative',
                                                                 paddingRight: 9,

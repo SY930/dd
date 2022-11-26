@@ -464,6 +464,7 @@ class MySpecialActivities extends React.Component {
                 { value: "83", label: "口令领券" },
                 { value: "85", label: "千人千面" },
                 { value: '87', label: '消费送礼' },
+                { value: '95', label: '限时秒杀' },
             ],
         };
         this.renderFilterBar = this.renderFilterBar.bind(this);
@@ -1006,7 +1007,7 @@ class MySpecialActivities extends React.Component {
     }
     //** 第三版 重构 抽抽乐活动 点击事件 */
     onV3Click = (itemID, view, key, isActive) => {
-        if (key == "85" || key == "23") {
+        if (["85", "23", "95"]) {
             setTimeout(() => {
                 jumpPage({
                     menuID: SALE_ACTIVE_NEW_PAGE,
@@ -1758,7 +1759,7 @@ class MySpecialActivities extends React.Component {
                 name = "线上餐厅弹窗送礼";
                 desc = "当同一时间、同一门店、同一发放位置下存在多个活动时，将按照以下规则执行";
                 break;
-            case 86:
+            case 95:
                 name = "限时秒杀";
                 desc = "当同一时间、同一门店、同一发放位置下存在多个活动时，限时秒杀";
                 break;
@@ -3142,6 +3143,7 @@ class MySpecialActivities extends React.Component {
                                 entryId={SPECIAL_PROMOTION_MANAGE_PAGE}
                             >
                                 <a
+                                    style={{display: record.eventWay == "95" ? 'none' : 'inline'}}
                                     href="#"
                                     disabled={
                                         record.eventWay == "64"
@@ -3179,13 +3181,7 @@ class MySpecialActivities extends React.Component {
                                             );
                                             return;
                                         }
-                                        if (
-                                            record.eventWay === 78 ||
-                                            record.eventWay === 79 ||
-                                            record.eventWay === 83 ||
-                                            record.eventWay === 85 ||
-                                            record.eventWay === 23
-                                        ) {
+                                        if ([78, 79, 83, 85, 23, 95].includes(record.eventWay)) {
                                             this.handleEditActive(record)(() =>
                                                 this.onV3Click(
                                                     record.itemID,
@@ -3247,11 +3243,7 @@ class MySpecialActivities extends React.Component {
                                             return;
                                         }
                                         if (
-                                            record.eventWay === 78 ||
-                                            record.eventWay === 79 ||
-                                            record.eventWay === 83 ||
-                                            record.eventWay === 85 ||
-                                            record.eventWay === 23
+                                            [78, 79, 83, 85, 23, 95].includes(record.eventWay)
                                         ) {
                                             this.onV3Click(
                                                 record.itemID,
@@ -3261,10 +3253,7 @@ class MySpecialActivities extends React.Component {
                                             return;
                                         }
                                         if (
-                                            record.eventWay === 80 ||
-                                            record.eventWay === 66 ||
-                                            record.eventWay === 81 ||
-                                            record.eventWay === 82
+                                            [80, 66, 81, 82].includes(record.eventWay)
                                         ) {
                                             this.handleShowDetail({
                                                 record,

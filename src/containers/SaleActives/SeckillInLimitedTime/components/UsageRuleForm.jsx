@@ -2,7 +2,7 @@
  * @Author: xinli xinli@hualala.com
  * @Date: 2022-10-10 14:36:10
  * @LastEditors: xinli xinli@hualala.com
- * @LastEditTime: 2022-11-21 11:00:43
+ * @LastEditTime: 2022-11-25 16:36:48
  * @FilePath: /platform-sale/src/containers/SaleActives/SeckillInLimitedTime/components/UsageRuleForm.jsx
  */
 
@@ -22,42 +22,22 @@ class UsageRuleForm extends Component {
         super(props);
         this.state = {
             formKeys: ruleFormKeys,
-            wxCouponVisible: false,
-            slectedWxCouponList: [] //选中的微信券
         };
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.slectedWxCouponList != this.props.slectedWxCouponList) {
-            this.setState({
-                slectedWxCouponList: nextProps.slectedWxCouponList,
-            });
-        }
+        
     }
 
     onChangeRuleForm = (key, value) => {
-        const { ruleForm: form, formData = {} } = this.props;
-        let newFormKeys = [...ruleFormKeys];
+        if(key == 'giftList'){
+            this.props.onChange(key, value)
+        }
     };
-
-    // 添加商家券
-    addWXCoupon = () => {
-        this.setState({
-            wxCouponVisible: true,
-        });
-    };
-
-    onWXCouponCancel = () => {
-        this.setState({
-            wxCouponVisible: false,
-        });
-    };
-
-    onWxCouponChange = (rowSelected) => {
-        const { setSlectedWxCouponList } = this.props;
-        this.setState({ slectedWxCouponList: rowSelected });
-        setSlectedWxCouponList(rowSelected);
-    };
+    onGiftChange = (value) => {
+        console.log(value,'giftValue-----------------')
+        this.props.onGiftChange(value)
+    }
 
     getForm = (formList) => {
         const { getGiftForm } = this.props;
@@ -66,18 +46,13 @@ class UsageRuleForm extends Component {
 
     resetFormItems = () => {
         const { gifts, eventRange } = ruleFormItem;
-        const { accountInfo, ruleForm = {}, formData, basicForm } = this.props;
+        const { accountInfo, ruleForm = {}, formData, basicForm , getGiftForm} = this.props;
         let cycleType = "";
-        if (ruleForm) {
-            const { getFieldValue } = ruleForm;
-            const { cycleType: t } = formData || {};
-            cycleType = getFieldValue("cycleType") || t;
-        }
         return {
             ...ruleFormItem,
             eventRange: {
                 ...eventRange,
-                render: (d) => d({})(<DateRange type={"86"} />),
+                render: (d) => d({})(<DateRange type={"95"} />),
             },
             gifts: {
                 ...gifts,
@@ -85,7 +60,8 @@ class UsageRuleForm extends Component {
                     d()(
                         <AddSeckillGoods
                             accountInfo={accountInfo}
-                            getGiftForm={this.getForm}
+                            getGiftForm={getGiftForm}
+                            onGiftChange={this.onGiftChange}
                         />
                     )
             },

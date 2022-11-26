@@ -27,7 +27,7 @@ const createActiveList = [
     },
     {
         title: "限时秒杀",
-        key: "86",
+        key: "95",
         comp: SeckillInLimitedTime
     }
 ];
@@ -50,6 +50,7 @@ class NewCreateActiveEntry extends Component {
         this.saving = this.saving.bind(this);
         this.formRef = null;
         this.lockedSaving = throttle(this.saving, 500, { trailing: false });
+        this.handleSubmitFn = null;
     }
 
     componentDidMount() {

@@ -7,7 +7,7 @@ export const baseFormItems = {
         type: "custom",
         label: "活动类型",
         render: () => <p>限时秒杀</p>,
-        defaultValue: "23",
+        defaultValue: "95",
         wrapperCol: { span: 14 },
         labelCol: { span: 5 },
     },
@@ -81,14 +81,13 @@ export const ruleFormItem = {
     coupon: {
         type: "custom",
         label: "券包名称",
-        rules: ["required"],
         render: () => <p />,
     },
     giftID: {
         type: "custom",
         label: "券包ID",
+        rules: ["required",{ message:"请选择券包" }],
         render: (d, form) => {
-            console.log(form,'form-----------in conponID')
             return d()(
                 <Input
                     disabled
@@ -96,7 +95,7 @@ export const ruleFormItem = {
             )
         },
     },
-    giftCount: {
+    giftTotalCount: {
         type: "custom",
         label: "活动库存",
         rules: [
@@ -107,7 +106,6 @@ export const ruleFormItem = {
             },
         ],
         render: (d, form) => {
-            console.log(form,'form-----------in conponID')
             return d()(
                 <Input
                     placeholder="请输入秒杀库存"
@@ -126,7 +124,7 @@ export const ruleFormItem = {
     },
     buyLimit: {
         type: "custom",
-        label: "可购买次数",
+        label: "限购数量",
         rules: [
             {
                 pattern: /^([1-9]\d{0,})$/,
@@ -136,7 +134,7 @@ export const ruleFormItem = {
         render: (d, form) => {
             return d()(
                 <Input
-                    placeholder="请输入每人可购买次数，不填写表示不限制"
+                    placeholder="请输入每人可限购数量，不填写表示不限制"
                     addonAfter="次"
                 />
             )
@@ -162,7 +160,7 @@ export const ruleFormItem = {
     },
     presentValue: {
         type: "custom",
-        label: "划价金额",
+        label: "原价",
         rules: [
             {
                 pattern: /^([1-9]\d{0,})$/,
@@ -172,7 +170,7 @@ export const ruleFormItem = {
         render: (d, form) => {
             return d()(
                 <Input
-                    placeholder="请输入划价金额"
+                    placeholder="请输入原价"
                 />
             )
         },
@@ -183,7 +181,7 @@ export const ruleFormItem = {
         rules: [
             "required",
             {
-                pattern: /^([1-9]\d{0,})$/,
+                pattern: /^([1-9]\d{0,})$/,//支持两位小数
                 message: "请输入正整数",
             },
         ],
@@ -292,5 +290,5 @@ export const ruleFormItem = {
 
 export const ruleFormKeys = ["eventRange","gifts"];
 export const baseFormKeys = ["eventType","eventName","shopIDList","eventRemark"];
-export const giftRemainSettings = ["coupon","giftID","giftCount","buyLimit","presentValue","giftGetRuleValue"];
+export const giftRemainSettings = ["coupon","giftID","giftTotalCount","buyLimit","presentValue","giftGetRuleValue"];
 

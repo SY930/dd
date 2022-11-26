@@ -2,7 +2,7 @@
  * @Author: xinli xinli@hualala.com
  * @Date: 2022-10-24 15:11:43
  * @LastEditors: xinli xinli@hualala.com
- * @LastEditTime: 2022-10-24 16:33:58
+ * @LastEditTime: 2022-11-25 18:40:41
  * @FilePath: /platform-sale/src/containers/PromotionV3/Camp/DateRange/index.jsx
  */
 import React, { PureComponent as Component } from 'react';
@@ -35,7 +35,7 @@ class DateRange extends Component {
     render() {
         const { value, type } = this.props;
         const days = this.countDays(value);
-        const disabledTimeTypeArr = ['86'];
+        const disabledTimeTypeArr = ['95'];
         return (
             <div className={css.mainBox}>
                 <RangePicker
@@ -44,7 +44,9 @@ class DateRange extends Component {
                     showTime={{ format: 'HH:mm' }}
                     format={"YYYY-MM-DD HH:mm"}
                     disabledDate={(current) => {
+                        console.log(current,'cureet=================')
                         let {pluginInfo = {}, authPluginStatus} = checkAuthLicense(this.state.authLicenseData, 'HLL_CRM_Marketingbox')
+                        console.log(pluginInfo,'pluginfo0000000000000')
                         let {authStartDate = '', authEndDate = ''} = pluginInfo
                         authStartDate = moment(authStartDate, 'YYYYMMDD').format('YYYY-MM-DD')
                         let authEndDates = moment(authEndDate, 'YYYYMMDD').format('YYYY-MM-DD')
@@ -65,7 +67,6 @@ class DateRange extends Component {
                         }
                     }}
                 />
-                <p className={css.count}>{days} 天</p>
             </div>
         )
     }
