@@ -3,7 +3,7 @@
  * @Author: xinli xinli@hualala.com
  * @Date: 2022-10-10 14:36:10
  * @LastEditors: xinli xinli@hualala.com
- * @LastEditTime: 2022-11-26 18:14:19
+ * @LastEditTime: 2022-11-26 18:55:01
  * @FilePath: /platform-sale/src/containers/SaleActives/SeckillInLimitedTime/index.jsx
  */
 
@@ -49,7 +49,7 @@ class SeckillInLimitedTime extends Component {
             console.log(list,'list>>>>>>>>>>>>')
             this.setState({ groupCardTypeList: list });
         })
-        this.props.getSubmitFn(this.handleSubmit);
+        this.props.getSubmitFn(this.handleSubmit)
     }
 
     getEventDetail = () => {
@@ -128,7 +128,7 @@ class SeckillInLimitedTime extends Component {
             eventRemark: values.eventRemark,
             shopIDList: values.shopIDList,
             settleUnitID: values.settleUnitID,
-            defaultCardTypeID: values.defaultCardTypeID,
+            cardTypeID: values.cardTypeID,
         };
         let params = {
             event,
