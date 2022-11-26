@@ -71,11 +71,17 @@ class Step1 extends Component {
 
         // const render3 = d => d()(<EveryDay type={cycleType} />);
         const { clientType, sceneList, shopIDList, triggerSceneList, launchSceneList, ...other } = formItems1;
-        const render = d => d()(<ShopSelector
-            filterParm={isFilterShopType() ? { productCode: 'HLL_CRM_License' } : {}}
-            occupyShopList={occupyShopList} // 被占用的店铺需要高亮显示
-            // brandList={brands}
-        />);
+        const render = (d, form) => {
+            const { sceneList: sLst } = form.getFieldsValue()
+            if (sLst != '21') {
+                return d()(<ShopSelector
+                    filterParm={isFilterShopType() ? { productCode: 'HLL_CRM_License' } : {}}
+                    occupyShopList={occupyShopList} // 被占用的店铺需要高亮显示
+                    // brandList={brands}
+                />);
+            }
+            return null
+        }
         const renderScene = (d, form) => {
             return form.getFieldValue('clientType') === '1' ? d({})(
                 <RadioGroup > <Radio value={'1'}>弹窗海报</Radio> </RadioGroup>
@@ -100,7 +106,10 @@ class Step1 extends Component {
             return d({
                 onChange: this.handleChangeClientType,
             })(
-                <RadioGroup > <Radio value={'2'} disabled={formData.clientType == '1'}>小程序3.0</Radio><Radio value={'1'} disabled={true}>H5餐厅 (暂时不支持新增和修改)</Radio> </RadioGroup>
+                <RadioGroup >
+                    <Radio value={'2'} disabled={formData.clientType == '1'}>小程序3.0</Radio>
+                    <Radio value={'1'} disabled={true}>H5餐厅 (暂时不支持新增和修改)</Radio>
+                </RadioGroup>
             )
         }
         return {
