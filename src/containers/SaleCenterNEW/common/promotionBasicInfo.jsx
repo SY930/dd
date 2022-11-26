@@ -572,7 +572,7 @@ class PromotionBasicInfo extends React.Component {
             });
         }
         const promotionType = nextProps.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
-        if ((promotionType == '5010' || promotionType == '5020') && nextProps.promotionBasicInfo.getIn(['$basicInfo', 'promotionID']) && !this.state.hasQuery) {
+        if (['5010', '5020', '2090'].includes(promotionType) && nextProps.promotionBasicInfo.getIn(['$basicInfo', 'promotionID']) && !this.state.hasQuery) {
             const opts = {
                 data: {
                     groupID: this.props.user.accountInfo.groupID,
@@ -914,7 +914,7 @@ class PromotionBasicInfo extends React.Component {
                     this.setState({ rangePickerstatus: 'error' })
                 }
             }
-            if ((promotionType == '5010' || promotionType == '5020') && this.state.dateRange[0] && this.state.dateRange[1]) {
+            if (['5010', '5020', '2090'].includes(promotionType) && this.state.dateRange[0] && this.state.dateRange[1]) {
                 const opts = {
                     data: {
                         groupID: this.props.user.accountInfo.groupID,
