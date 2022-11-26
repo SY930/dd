@@ -129,7 +129,7 @@ class AddSeckillGoods extends Component {
     onSelectBag = (item) => {
         const { giftList = [], couponIndex } = this.state;
         giftList[couponIndex].giftID = item.couponPackageID;
-        giftList[couponIndex].giftNumber = item.couponPackageName;
+        giftList[couponIndex].giftName = item.couponPackageName;
         this.setState({
             ...giftList
         })
@@ -137,13 +137,18 @@ class AddSeckillGoods extends Component {
     }
     resetFormItems = (i) => {
         const { coupon } = ruleFormItem;
+        const { giftList } = this.state;
         return {
             ...ruleFormItem,
             coupon: {
                 ...coupon,
                 render: (d, form) =>
                     d()(
-                        <span onClick={() => this.onToggleModal(i)} style={{cursor:"pointer",color:"#1BB496"}}>添加券包</span>
+                        <div>
+                            {/* <span>{giftList && giftList[i].}</span> */}
+                            <span onClick={() => this.onToggleModal(i)} style={{cursor:"pointer",color:"#1BB496"}}>添加券包</span>
+
+                        </div>
                     )
             },
         }

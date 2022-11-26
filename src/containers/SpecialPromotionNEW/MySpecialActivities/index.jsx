@@ -1080,8 +1080,7 @@ class MySpecialActivities extends React.Component {
             })
             return;
         }
-
-        if (["85", "23", "95"].includes(String(key))) {
+        if ([85, 23, 95].includes(String(key))) {
             setTimeout(() => {
                 jumpPage({
                     menuID: SALE_ACTIVE_NEW_PAGE,
@@ -3423,7 +3422,7 @@ class MySpecialActivities extends React.Component {
                                 entryId={SPECIAL_PROMOTION_MANAGE_PAGE}
                             >
                                 <a
-                                    style={{display: record.eventWay == "95" ? 'none' : 'inline'}}
+                                    style={{display: record.eventWay === 95 ? 'none' : 'inline'}}
                                     href="#"
                                     disabled={
                                         record.eventWay == "64"
@@ -3534,6 +3533,7 @@ class MySpecialActivities extends React.Component {
                                 <a
                                     href="#"
                                     onClick={() => {
+                                        console.log(record,'record0000000000000000000')
                                         if (Number(record.eventWay) === 70) {
                                             message.warning(
                                                 `${this.props.intl.formatMessage(
@@ -4222,8 +4222,10 @@ class MySpecialActivities extends React.Component {
     // Row Actions: 查看
     checkDetailInfo() {
         const _record = arguments[1];
+        console.log(_record,'record*********************')
         const user = this.props.user;
         const { eventWay } = _record;
+        console.log(eventWay,'eventWay0000000000')
         this.props.fetchSpecialPromotionDetail({
             data: {
                 itemID:
@@ -4257,6 +4259,7 @@ class MySpecialActivities extends React.Component {
     };
     // 活动详情页
     renderModals() {
+        console.log('********************************')
         const mySpecialActivities = this.props.mySpecialActivities
             .get("$specialDetailInfo")
             .toJS();
