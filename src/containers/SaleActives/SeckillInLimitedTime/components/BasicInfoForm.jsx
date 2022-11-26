@@ -1,21 +1,10 @@
-/*
- * @Author: xinli xinli@hualala.com
- * @Date: 2022-10-10 14:36:10
- * @LastEditors: xinli xinli@hualala.com
- * @LastEditTime: 2022-11-24 23:04:38
- * @FilePath: /platform-sale/src/containers/SaleActives/SeckillInLimitedTime/components/BasicInfoForm.jsx
- */
 import React, { PureComponent as Component } from "react";
-import moment from "moment";
-import { uniq } from "lodash";
 import BaseForm from "components/common/BaseForm";
-import { Select, message, Form, Tooltip, Icon } from "antd";
 import ShopSelector from "components/ShopSelector";
-import BaseHualalaModal from "../../../SaleCenterNEW/common/BaseHualalaModal";
 import { isFilterShopType } from "../../../../helpers/util";
 import { baseFormItems, formItemLayout, baseFormKeys } from "../common";
-import { fetchSpecialCardLevel, getListCardTypeShop } from "../AxiosFactory";
-
+import { Select } from "antd";
+const Option = Select.Option;
 class BasicInfoForm extends Component {
     constructor(props) {
         super(props);
@@ -25,17 +14,55 @@ class BasicInfoForm extends Component {
         };
     }
 
-    componentDidMount() {
-        const { accountInfo } = this.props;
-    }
+    componentDidMount() {}
 
-    componentWillReceiveProps(nextProps) {
-    }
+    componentWillReceiveProps(nextProps) {}
 
     onChangeBasicForm = (key, value) => {};
-
+    isArray  = (object) => {
+        return object && typeof object==='object' &&
+                Array == object.constructor;
+    }
+    /** 获取会员卡类型 */
+    getGroupCardTypeOpts (){
+        const { groupCardTypeList } = this.props;
+        let cardTypeList = [];
+        if(groupCardTypeList && this.isArray(groupCardTypeList)){
+            cardTypeList = groupCardTypeList.filter((i)=>i.isActive);
+        }
+        
+        return cardTypeList.map(x => {
+            const { cardTypeID, cardTypeName, isActive } = x;
+            return { label: cardTypeName, value: cardTypeID };
+        });
+    }
     resetFormItems = () => {
-        const { shopIDList } = baseFormItems;
+        const { shopIDList, settleUnitID, defaultCardTypeID } = baseFormItems;
+        const { settlesOpts } = this.props;
+        const defaultCardOpts = this.getGroupCardTypeOpts();
+        const renderSettleOpts = d => d()(<Select
+            showSearch={true}
+            allowClear={true}
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
+            {
+                settlesOpts.map((type, index) =>
+                    <Option key={index} value={String(type.value)} >{type.label}</Option>
+                )
+            }
+        </Select>);
+        const renderDefaultCard = d => d()(<Select
+            showSearch={true}
+            allowClear={true}
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
+            {
+                defaultCardOpts.map((type, index) =>
+                    <Option key={index} value={String(type.value)} >{type.label}</Option>
+                )
+            }
+        </Select>);
+        
         return {
             ...baseFormItems,
             shopIDList: {
@@ -53,6 +80,14 @@ class BasicInfoForm extends Component {
                             onChange={this.editBoxForShopsChange}
                         />
                     ),
+            },
+            settleUnitID: { 
+                ...settleUnitID,
+                render: renderSettleOpts
+            },
+            defaultCardTypeID: {
+                ...defaultCardTypeID,
+                render: renderDefaultCard
             },
         };
     };

@@ -56,6 +56,22 @@ export const baseFormItems = {
         wrapperCol: { span: 14 },
         labelCol: { span: 5 },
     },
+    settleUnitID: {
+        label: '券包结算主体',
+        type: 'custom',
+        wrapperCol: { span: 14 },
+        labelCol: { span: 5 },
+        defaultValue: '',
+        rules: ['required'],
+    },
+    defaultCardTypeID: {
+        label: '新用户注册卡类',
+        type: 'custom',
+        wrapperCol: { span: 14 },
+        labelCol: { span: 5 },
+        defaultValue: '',
+        rules: ['required'],
+    },
 };
 
 export const ruleFormItem = {
@@ -181,7 +197,7 @@ export const ruleFormItem = {
         rules: [
             "required",
             {
-                pattern: /^([1-9]\d{0,})$/,//支持两位小数
+                pattern: /^(([1-9]\d{0,7})|0)(\.\d{0,2})?$/,//支持两位小数
                 message: "请输入正整数",
             },
         ],
@@ -193,102 +209,9 @@ export const ruleFormItem = {
             )
         },
     },
-    // countCycleDays: {
-    //     type: "custom",
-    //     label: " ",
-    //     wrapperCol: { span: 15 },
-    //     labelCol: { span: 5 },
-    //     render: (d, form) => {
-    //         return form.getFieldValue("joinType") == 2 ? (
-    //             <div style={{ display: "flex", width: 400 }}>
-    //                 <Form.Item style={{ padding: 0 }}>
-    //                     {d({
-    //                         key: "countCycleDays",
-    //                         rules: [
-    //                             "required",
-    //                             {
-    //                                 pattern: /^([1-9]\d{0,})$/,
-    //                                 message: "请输入正整数",
-    //                             },
-    //                         ],
-    //                     })(
-    //                         <Input
-    //                             placeholder="请输入天数"
-    //                             addonBefore="同一用户"
-    //                             addonAfter="天，可参与"
-    //                         />
-    //                     )}
-    //                 </Form.Item>
-    //                 <Form.Item style={{ padding: 0 }}>
-    //                     {d({
-    //                         key: "partInTimes1",
-    //                         rules: [
-    //                             "required",
-    //                             {
-    //                                 pattern: /^([1-9]\d{0,})$/,
-    //                                 message: "请输入正整数",
-    //                             },
-    //                         ],
-    //                     })(<Input placeholder="请输入次数" addonAfter="次" />)}
-    //                 </Form.Item>
-    //             </div>
-    //         ) : null;
-    //     },
-    // },
-    // smsGate: {
-    //     type: "combo",
-    //     label: "是否发送消息",
-    //     options: [
-    //         { label: "不发送", value: 0 },
-    //         { label: "仅发送短信", value: 1 },
-    //         { label: "仅推送微信", value: 2 },
-    //         { label: "同时发送短信和微信", value: 4 },
-    //         { label: "微信推送不成功则发送短信", value: 3 },
-    //     ],
-    //     style: { width: 300 },
-    //     defaultValue: 0,
-    // },
-    
-    // advMore: {
-    //     type: "custom",
-    //     render: (d) => d()(<Advance text={true} />),
-    //     wrapperCol: { span: 22 },
-    // },
-    // cycleType: {
-    //     type: "combo",
-    //     label: "选择周期",
-    //     options: [
-    //         { label: "每日", value: "" },
-    //         { label: "每周", value: "w" },
-    //         { label: "每月", value: "m" },
-    //     ],
-    //     defaultValue: "",
-    // },
-    // timeList: {
-    //     type: "custom",
-    //     label: "活动时段",
-    //     render: (d) => d()(<TimeRange type="85" />),
-    //     defaultValue: [{ id: "0" }],
-    // },
-    // validCycle: {
-    //     type: "custom",
-    //     label: "每逢",
-    //     render: () => <p></p>,
-    //     defaultValue: ["w1", "m1"],
-    // },
-    // excludedDate: {
-    //     type: "custom",
-    //     label: "活动排除日期",
-    //     render: (d) => d()(<DateTag limit={true} />),
-    //     defaultValue: [],
-    // },
 }
 
-// const KEY3 = ["timeList", "cycleType"];
-// const KEY4 = ["validCycle"];
-// const KEY5 = ["excludedDate"];
-
 export const ruleFormKeys = ["eventRange","gifts"];
-export const baseFormKeys = ["eventType","eventName","shopIDList","eventRemark"];
+export const baseFormKeys = ["eventType","eventName","shopIDList","settleUnitID","defaultCardTypeID","eventRemark"];
 export const giftRemainSettings = ["coupon","giftID","giftTotalCount","buyLimit","presentValue","giftGetRuleValue"];
 

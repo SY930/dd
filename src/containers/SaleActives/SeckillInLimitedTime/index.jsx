@@ -3,7 +3,7 @@
  * @Author: xinli xinli@hualala.com
  * @Date: 2022-10-10 14:36:10
  * @LastEditors: xinli xinli@hualala.com
- * @LastEditTime: 2022-11-25 18:15:29
+ * @LastEditTime: 2022-11-26 16:56:38
  * @FilePath: /platform-sale/src/containers/SaleActives/SeckillInLimitedTime/index.jsx
  */
 
@@ -15,7 +15,7 @@ import { jumpPage, closePage, axios } from "@hualala/platform-base";
 import _ from "lodash";
 import BasicInfoForm from "./components/BasicInfoForm";
 import UsageRuleForm from "./components/UsageRuleForm";
-import { queryActiveList, putEvent, getEvent, postEvent } from "./AxiosFactory";
+import { queryActiveList, putEvent, getEvent, postEvent, getSettleList, getCardTypeList } from "./AxiosFactory";
 import styles from "./styles.less";
 import { asyncParseForm } from "../../../helpers/util";
 import { getItervalsErrorStatus } from "../ManyFace/Common";
@@ -32,10 +32,23 @@ class SeckillInLimitedTime extends Component {
             giftList: [],
             paramsValue: "",
             viewRuleVisible: false,
+            settlesOpts: [],
+            groupCardTypeList: [],
         };
     }
     componentDidMount() {
         this.getEventDetail(); //获取活动详情
+        const { accountInfo: {groupID}, itemID } = this.props;
+        console.log(groupID,'groupID===========')
+        getSettleList({ groupID }).then(list => {
+            console.log(list,'list-----------------12112122')
+            const settlesOpts = list.map(x => ({ value: `${x.settleUnitID}`, label: x.settleUnitName }));
+            this.setState({ settlesOpts });
+        })
+        getCardTypeList().then(list => {
+            console.log(list,'list>>>>>>>>>>>>')
+            this.setState({ groupCardTypeList: list });
+        })
         this.props.getSubmitFn(this.handleSubmit);
     }
 
@@ -49,12 +62,6 @@ class SeckillInLimitedTime extends Component {
                 });
             });
         }
-    };
-
-    setSlectedWxCouponList = slectedWxCouponList => {
-        this.setState({
-            slectedWxCouponList
-        });
     };
 
     //把接口返回的数据转成表单需要的数据
@@ -151,7 +158,6 @@ class SeckillInLimitedTime extends Component {
             // }
             
             const payload = this.checkAndFormatParams(values);
-            return
             this.preSubmit(payload);
         });
     };
@@ -277,12 +283,14 @@ class SeckillInLimitedTime extends Component {
         this.setState({giftList})
     }
     render() {
-        const { basicForm, ruleForm, formData, slectedWxCouponList } = this.state;
+        const { basicForm, ruleForm, formData, settlesOpts, groupCardTypeList } = this.state;
         const { accountInfo, user, cardTypeLst, loading, isView } = this.props;
         const itemProps = {
             accountInfo,
             user,
-            cardTypeLst
+            cardTypeLst,
+            settlesOpts,
+            groupCardTypeList
         };
         return (
             <div className={styles.formContainer}>
@@ -300,8 +308,6 @@ class SeckillInLimitedTime extends Component {
                         ruleForm={ruleForm}
                         basicForm={basicForm}
                         getGiftForm={form => this.setState({ giftsForm: form })}
-                        setSlectedWxCouponList={this.setSlectedWxCouponList}
-                        slectedWxCouponList={slectedWxCouponList}
                         getForm={form => this.setState({ ruleForm: form })}
                         formData={formData}
                         onGiftChange={this.onGiftChange}

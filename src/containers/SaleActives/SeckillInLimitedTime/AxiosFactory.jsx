@@ -195,3 +195,34 @@ export async function getAuthLicenseData(data) {
     message.error(msg);
     return [];
 }
+/**
+ * 券包增加页面，获取结算主体列表
+ */
+export async function getSettleList(data) {
+    const method = '/crm/CrmSettleService_querySettleBaseInfoList.ajax';
+    const params = { service: 'HTTP_SERVICE_URL_CRM', type: 'post', data, method };
+    const response = await axios.post('/api/v1/universal?' + method, params);
+    const { code, message: msg, data: obj } = response;
+    if (code === '000') {
+        const { settleUnitInfoList = [] } = obj;
+        return settleUnitInfoList;
+    }
+    message.error(msg);
+    return [];
+}
+/**
+ *  获取会员卡 
+ */
+export async function getCardTypeList() {
+    const { groupID } = getAccountInfo();
+    const data = { groupID, regFromLimit: true };
+    const method = 'crm/cardTypeLevelService_queryCardTypeBaseInfoList.ajax';
+    const params = { service: 'HTTP_SERVICE_URL_CRM', type:'post', groupID, data, method };
+    const response = await axios.post('/api/v1/universal?' + method, params);
+    const { code, message: msg, data: { cardTypeBaseInfoList = [] } } = response;
+    if (code === '000') {
+        return cardTypeBaseInfoList;
+    }
+    message.error(msg);
+    return [];
+}
