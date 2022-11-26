@@ -652,7 +652,7 @@ class NewCustomerPage extends Component {
             return closePage(SALE_ACTIVE_NEW_PAGE)
         }
         const currentPromotion = newPromotionCardPageConfig.find(item => item.key == key);
-        if (['85', '23'].includes(key)) { // 打开新页面
+        if (['85', '23', '95'].includes(key)) { // 打开新页面
             setTimeout(() => {
                 jumpPage({ menuID: SALE_ACTIVE_NEW_PAGE, typeKey: key, mode: 'add' })
             }, 100);

@@ -14,6 +14,7 @@ import styles from "./CreateActive.less";
 import FaceFormWrapper from "./ManyFace"; //千人千面
 import OnlineRestaurantGiftGiving from "./OnlineRestaurantGiftGiving"; //线上餐厅弹窗送礼
 import NewScoreConvertGift from "./NewScoreConvertGift"; //积分换礼
+import SeckillInLimitedTime from "./SeckillInLimitedTime"; //限时秒杀活动
 const createActiveList = [
     {
         title: "千人千面",
@@ -30,6 +31,11 @@ const createActiveList = [
         key: "89",
         comp: NewScoreConvertGift
     },
+    {
+        title: "限时秒杀",
+        key: "95",
+        comp: SeckillInLimitedTime
+    }
 ];
 
 @connect(({ loading, createActiveTwoCom }) => ({ loading, createActiveTwoCom }))
@@ -51,6 +57,7 @@ class NewCreateActiveEntry extends Component {
         this.saving = this.saving.bind(this);
         this.formRef = null;
         this.lockedSaving = throttle(this.saving, 500, { trailing: false });
+        this.handleSubmitFn = null;
     }
 
     componentDidMount() {
@@ -140,6 +147,10 @@ class NewCreateActiveEntry extends Component {
                         onChangDecorateType={this.onchageType}
                         onChangClientype={this.onchageClientType}
                         isActive={isActive}
+                    /**
+                     * @description: 
+                     * @return {*}
+                     */
                     />}
                 </div>
             </div>

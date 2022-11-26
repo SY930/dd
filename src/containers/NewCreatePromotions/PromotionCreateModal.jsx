@@ -322,7 +322,7 @@ class PromotionCreateModal extends Component {
             }, 100);
             return closePage(SALE_ACTIVE_NEW_PAGE)
         }
-        if (['85', '23'].includes(key)) {
+        if (['85', '23', '95'].includes(key)) {
             setTimeout(() => {
                 jumpPage({ menuID: SALE_ACTIVE_NEW_PAGE, typeKey: key })
             }, 100);
