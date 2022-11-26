@@ -1081,7 +1081,7 @@ class MySpecialActivities extends React.Component {
             return;
         }
 
-        if (["85", "23", "95"].includes(key)) {
+        if (["85", "23", "95", 85, 23, 95].includes(key)) {
             setTimeout(() => {
                 jumpPage({
                     menuID: SALE_ACTIVE_NEW_PAGE,
@@ -3436,6 +3436,7 @@ class MySpecialActivities extends React.Component {
                                                 !isMine(record))
                                     }
                                     onClick={(e) => {
+                                        console.log(record.eventWay, 'record.eventWay')
                                         // if (record.eventWay == '64') {
                                         //     //对评价送礼活动做专门处理，该活动在活动启用时候也能操作选择店铺
                                         //     if (record.isActive != '0') {
