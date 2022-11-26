@@ -151,7 +151,6 @@ class SeckillInLimitedTime extends Component {
             // }
             
             const payload = this.checkAndFormatParams(values);
-            return
             this.preSubmit(payload);
         });
     };
