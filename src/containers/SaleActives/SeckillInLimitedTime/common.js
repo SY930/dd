@@ -64,7 +64,7 @@ export const baseFormItems = {
         defaultValue: '',
         rules: ['required'],
     },
-    defaultCardTypeID: {
+    cardTypeID: {
         label: '新用户注册卡类',
         type: 'custom',
         wrapperCol: { span: 14 },
@@ -212,6 +212,6 @@ export const ruleFormItem = {
 }
 
 export const ruleFormKeys = ["eventRange","gifts"];
-export const baseFormKeys = ["eventType","eventName","shopIDList","settleUnitID","defaultCardTypeID","eventRemark"];
+export const baseFormKeys = ["eventType","eventName","shopIDList","settleUnitID","cardTypeID","eventRemark"];
 export const giftRemainSettings = ["coupon","giftID","giftTotalCount","buyLimit","presentValue","giftGetRuleValue"];
 

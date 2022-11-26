@@ -37,7 +37,7 @@ class BasicInfoForm extends Component {
         });
     }
     resetFormItems = () => {
-        const { shopIDList, settleUnitID, defaultCardTypeID } = baseFormItems;
+        const { shopIDList, settleUnitID, cardTypeID } = baseFormItems;
         const { settlesOpts } = this.props;
         const defaultCardOpts = this.getGroupCardTypeOpts();
         const renderSettleOpts = d => d()(<Select
@@ -85,7 +85,7 @@ class BasicInfoForm extends Component {
                 ...settleUnitID,
                 render: renderSettleOpts
             },
-            defaultCardTypeID: {
+            cardTypeID: {
                 ...defaultCardTypeID,
                 render: renderDefaultCard
             },
