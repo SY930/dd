@@ -599,6 +599,7 @@ class PromotionScopeInfo extends React.Component {
                             this.editBoxForShopsChange
                         }
                         eventWay={promotionType}
+                        filterShopIds={promotionType === '2090' ? filterShops : []}// 配送费减免引入过滤店铺
                     />
                     {allShopSet ?
                         <p style={{ color: '#e24949' }}>{SALE_LABEL.k5m67b23}</p>
