@@ -196,7 +196,7 @@ class SpecialPromotionDetail extends React.Component {
                 key: 'pointChangeType',
                 className: 'TableTxtCenter',
                 render: (text) => {
-                    return text == '1' ? '消费' : text == '2' ? '退款' : '兑换'
+                    return pointChangeMap[text]
                 },
                 width: 50,
             },
@@ -231,7 +231,7 @@ class SpecialPromotionDetail extends React.Component {
                 dataIndex: 'finalUsedCount',
                 key: 'finalUsedCount',
                 className: 'TableTxtCenter',
-                width: 50,
+                width: 100,
                 render: (text, record) => {
                     if (record.pointChangeType == '3') {
                         return parseInt(record.changeCount) * -1
@@ -260,6 +260,16 @@ class SpecialPromotionDetail extends React.Component {
                 className: 'TableTxtCenter',
                 width: 160,
             },
+            {
+                title: `操作人`,
+                dataIndex: 'operator',
+                key: 'operator',
+                className: 'TableTxtCenter',
+                render: (text) => {
+                    return text || '--'
+                },
+                width: 50,
+            }
         ];
     }
 
@@ -496,7 +506,7 @@ class SpecialPromotionDetail extends React.Component {
                                 pageSizeOptions: ['5', '10', '20', '40'],
                                 onChange: this.handleDetailTablePageChange
                             }}
-                            scroll={{ x: 1400 }}
+                            scroll={{ x: 1500 }}
                         />
                     </div>
                 </Modal>
@@ -1690,16 +1700,6 @@ class SpecialPromotionDetail extends React.Component {
                 }
             }),
             eventWay == 75 && ({
-                title: `集点状态`,
-                dataIndex: 'pointChangeType',
-                key: 'pointChangeType',
-                className: 'TableTxtCenter',
-                render: (text) => {
-                    return pointChangeMap[text]
-                },
-                width: 50,
-            }),
-            eventWay == 75 && ({
                 title: '已集点数',
                 dataIndex: 'pointCount',
                 key: 'pointCount',
@@ -1733,17 +1733,7 @@ class SpecialPromotionDetail extends React.Component {
                     </a>
                     </div>
                 }
-            }),
-            eventWay == 75 && ({
-                title: `操作人`,
-                dataIndex: 'operator',
-                key: 'operator',
-                className: 'TableTxtCenter',
-                render: (text) => {
-                    return text || '--'
-                },
-                width: 50,
-            }),
+            })
         ];
         if (eventWay == 65) { // 分享裂变活动表格不太一样
             columns.push({
