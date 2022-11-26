@@ -3,7 +3,7 @@
  * @Author: xinli xinli@hualala.com
  * @Date: 2022-10-10 14:36:10
  * @LastEditors: xinli xinli@hualala.com
- * @LastEditTime: 2022-11-26 16:56:38
+ * @LastEditTime: 2022-11-26 18:14:19
  * @FilePath: /platform-sale/src/containers/SaleActives/SeckillInLimitedTime/index.jsx
  */
 
@@ -127,6 +127,8 @@ class SeckillInLimitedTime extends Component {
             eventName: values.eventName,
             eventRemark: values.eventRemark,
             shopIDList: values.shopIDList,
+            settleUnitID: values.settleUnitID,
+            defaultCardTypeID: values.defaultCardTypeID,
         };
         let params = {
             event,
