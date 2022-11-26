@@ -86,7 +86,7 @@ class BasicInfoForm extends Component {
                 render: renderSettleOpts
             },
             cardTypeID: {
-                ...defaultCardTypeID,
+                ...cardTypeID,
                 render: renderDefaultCard
             },
         };
