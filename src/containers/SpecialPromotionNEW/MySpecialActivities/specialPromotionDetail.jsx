@@ -39,6 +39,7 @@ import {
 import { CHARACTERISTIC_CATEGORIES } from '../../../redux/actions/saleCenterNEW/types';
 import InviteeModal from './InviteeModal';
 import GiftDetailModal from './GiftDetailModal';
+import CollectPointAdjustModal from './CollectPointAdjustModal'
 import { axiosData } from '../../../helpers/util';
 import { injectIntl } from 'i18n/common/injectDecorator';
 import { STRING_SPE } from 'i18n/common/special';
@@ -83,6 +84,14 @@ import {
 } from './specialPromotionDetailHelp'
 import _ from 'lodash'
 const showNoLimitType = ['60', '52']
+
+const pointChangeMap = {
+    1: '消费',
+    2: '退款',
+    3: '兑换',
+    4: '调整增加',
+    5: '调整减少',
+}
 
 @injectIntl
 class SpecialPromotionDetail extends React.Component {
@@ -363,7 +372,7 @@ class SpecialPromotionDetail extends React.Component {
 
     render() {
         const eventEntity = this.props.record.eventInfo.data;
-        const { sameItemID, keyword } = this.state;
+        const { sameItemID, keyword, collectPointAdjustVisible = false, collectPointAdjustLst = {} } = this.state;
         return (
             <div className={styles.showInfo}>
                 {
@@ -415,6 +424,17 @@ class SpecialPromotionDetail extends React.Component {
                             })}
                         />
                     )
+                }
+                { 
+                    collectPointAdjustVisible && (<CollectPointAdjustModal
+                        data={collectPointAdjustLst}
+                        onCancel={() => {
+                            this.setState({
+                                collectPointAdjustLst: {},
+                                collectPointAdjustVisible: false
+                            })
+                        }}
+                        />)
                 }
                 <Modal
                     title="客户参与详情"
@@ -1536,6 +1556,13 @@ class SpecialPromotionDetail extends React.Component {
         })
     }
 
+    handleAdjustModalOpen = (record) => {
+        this.setState({
+            collectPointAdjustLst: record,
+            collectPointAdjustVisible: true,
+        })
+    }
+
     checkChannel = (record) => {
         axiosData(
             '/specialPromotion/queryEventCustomerJoinChannel.ajax',
@@ -1661,6 +1688,16 @@ class SpecialPromotionDetail extends React.Component {
                 }
             }),
             eventWay == 75 && ({
+                title: `集点状态`,
+                dataIndex: 'pointChangeType',
+                key: 'pointChangeType',
+                className: 'TableTxtCenter',
+                render: (text) => {
+                    return pointChangeMap[text]
+                },
+                width: 50,
+            }),
+            eventWay == 75 && ({
                 title: '已集点数',
                 dataIndex: 'pointCount',
                 key: 'pointCount',
@@ -1685,10 +1722,25 @@ class SpecialPromotionDetail extends React.Component {
                 className: 'TableTxtCenter',
                 width: 100,
                 render: (text, record) => {
-                    return <a onClick={this.handleDetailModalOpen.bind(this, record.itemID)}>
+                    return <div>
+                        <a onClick={this.handleDetailModalOpen.bind(this, record.itemID)}>
                         详情
                     </a>
+                    <a onClick={() => {this.handleAdjustModalOpen(record)}}>
+                        调整
+                    </a>
+                    </div>
                 }
+            }),
+            eventWay == 75 && ({
+                title: `操作人`,
+                dataIndex: 'operator',
+                key: 'operator',
+                className: 'TableTxtCenter',
+                render: (text) => {
+                    return text || '--'
+                },
+                width: 50,
             }),
         ];
         if (eventWay == 65) { // 分享裂变活动表格不太一样
@@ -1821,12 +1873,15 @@ class SpecialPromotionDetail extends React.Component {
         if (eventWay == 66) {
             len = 700
         }
+        if (eventWay == 75) {
+            len = 900
+        }
         return (
             <Table
                 dataSource={dataSource}
                 columns={columns.filter(Boolean)}
                 bordered={true}
-                scroll={eventWay == 68 || eventWay == 66 ? { x: len } : {}}
+                scroll={[66, 68, 75].includes(eventWay) ? { x: len } : {}}
                 pagination={{
                     current: this.state.pageNo,
                     total: this.state.total,
