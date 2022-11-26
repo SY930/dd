@@ -1196,7 +1196,7 @@ class MyActivities extends React.Component {
         this.props.openPromotionAutoRunListModal();
     }
     downLoadTemp = () => {
-        window.open(`${ENV.FILE_RESOURCE_DOMAIN}/crmexport/8e1f0d89-67a5-49cc-b866-5e6eef35fd04.xlsx`);
+        window.open(`${ENV.FILE_RESOURCE_DOMAIN}/crmexport/9456d8be-23b4-488c-bf0d-9b54ceb4a3ba.xlsx`);
     }
 
     showModleTip = (res) => {
