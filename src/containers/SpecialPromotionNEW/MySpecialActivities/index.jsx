@@ -1080,7 +1080,7 @@ class MySpecialActivities extends React.Component {
             })
             return;
         }
-        if ([85, 23, 95].includes(String(key))) {
+        if ([85, 23, 95].includes(key)) {
             setTimeout(() => {
                 jumpPage({
                     menuID: SALE_ACTIVE_NEW_PAGE,
