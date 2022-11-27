@@ -978,6 +978,13 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             example: "",
             key: "83",
         },
+        {
+            idx: 30,
+            title: '限时秒杀',
+            text: '',
+            example: "",
+            key: "95",
+        },
     ];
     return basic;
 })();
