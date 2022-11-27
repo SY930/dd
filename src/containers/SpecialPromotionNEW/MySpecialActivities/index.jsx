@@ -3906,10 +3906,11 @@ class MySpecialActivities extends React.Component {
     };
     // 活动详情页
     renderModals() {
-        console.log('********************************')
+        
         const mySpecialActivities = this.props.mySpecialActivities
             .get("$specialDetailInfo")
             .toJS();
+            console.log(mySpecialActivities,'********************************')
         const checkDetailInfo = this.checkDetailInfo;
         let renderContentOfTheModal;
         if (
