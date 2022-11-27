@@ -33,7 +33,7 @@ const TreeNode = Tree.TreeNode;
 const RadioGroup = Radio.Group;
 import { axios, getStore } from '@hualala/platform-base';
 import styles from '../ActivityPage.less';
-import { isEqual, uniq } from 'lodash';
+import { isEqual, uniq,  some } from 'lodash';
 import ShopSelector from '../../../components/ShopSelector';
 import { getPromotionShopSchema, fetchPromotionScopeInfo, saleCenterSetScopeInfoAC, saleCenterGetShopByParamAC, SCENARIOS, fetchFilterShops } from '../../../redux/actions/saleCenterNEW/promotionScopeInfo.action';
 import { COMMON_LABEL, COMMON_STRING } from 'i18n/common';
@@ -46,13 +46,17 @@ import { isZhouheiya, zhouheiyaPromotiontype } from '../../../constants/WhiteLis
 import ShopAreaSelector from '../../../components/ShopAreaSelector/index.jsx';
 import { isGeneral } from "../../../constants/WhiteList";
 import ExportJsonExcel from "js-export-excel";
+import { SALE_PROMOTION_TYPES } from '../../../constants/promotionType';
+const Immutable = require('immutable');
+
 
 
 const Immutable = require('immutable');
 const shopTreeData = [];
 // 买减、买折活动增加团购订单，白名单开放
-const WhiteGroup = ['11157', '189702', '345780']
-
+const WhiteGroup = ['11157', '189702', '345780'];
+// 店铺不选默认选择了全部店铺
+const SELECT_ALL_SHOP = ['2020','1010','1050','1070','1090','2010','1030','1020','1060','2040','2050','1040','2080','1021'];
 @injectIntl()
 class PromotionScopeInfo extends React.Component {
     constructor(props) {
@@ -736,7 +740,9 @@ class PromotionScopeInfo extends React.Component {
 
 
     renderShopsOptions() {
+        console.log('teqianduizaidnegdeng')
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
+        console.log(promotionType,'promotionType--------')
         const { brands, shopStatus, allShopSet, selections, isRequire, filterShops } = this.state;
         if (promotionType == '5010' || promotionType == '2090') {
             return (
@@ -762,6 +768,9 @@ class PromotionScopeInfo extends React.Component {
                     {allShopSet ?
                         <p style={{ color: '#e24949' }}>{SALE_LABEL.k5m67b23}</p>
                         : null}
+                    {
+                        SELECT_ALL_SHOP.includes(promotionType) ? <div style={{color:'#f4ac13', marginTop: 5}}>未选择门店时默认所有门店通用</div> : null
+                    }
                 </Form.Item>
             );
         }
@@ -795,6 +804,9 @@ class PromotionScopeInfo extends React.Component {
                 {allShopSet ?
                     <p style={{ color: '#e24949' }}>{SALE_LABEL.k5m67b23}</p>
                     : null}
+                {
+                    SELECT_ALL_SHOP.includes(promotionType)  ? <div style={{color:'#f4ac13', marginTop: 5}}>未选择门店时默认所有门店通用</div> : null
+                }
             </Form.Item>
         );
     }
