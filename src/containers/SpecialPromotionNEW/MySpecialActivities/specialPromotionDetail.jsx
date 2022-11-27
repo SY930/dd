@@ -72,7 +72,8 @@ const exportablePromotionTypes = [
     '81',
     '69',
     '79',
-    '83'
+    '83',
+    '95'
 ];
 const levelArray = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
 import {
@@ -277,6 +278,7 @@ class SpecialPromotionDetail extends React.Component {
 
     componentDidMount() {
         const eventEntity = this.props.record.eventInfo.data;
+        console.log(eventEntity,'eventEntity=============')
         if (eventEntity.eventWay == 68) {
             axiosData(
                 '/specialPromotion/queryRecommendEventData.ajax',
