@@ -2,7 +2,7 @@
  * @Author: xinli xinli@hualala.com
  * @Date: 2022-10-10 14:36:10
  * @LastEditors: xinli xinli@hualala.com
- * @LastEditTime: 2022-11-25 16:36:48
+ * @LastEditTime: 2022-11-27 18:09:03
  * @FilePath: /platform-sale/src/containers/SaleActives/SeckillInLimitedTime/components/UsageRuleForm.jsx
  */
 
@@ -46,7 +46,7 @@ class UsageRuleForm extends Component {
 
     resetFormItems = () => {
         const { gifts, eventRange } = ruleFormItem;
-        const { accountInfo, ruleForm = {}, formData, basicForm , getGiftForm} = this.props;
+        const { accountInfo, getGiftForm} = this.props;
         let cycleType = "";
         return {
             ...ruleFormItem,

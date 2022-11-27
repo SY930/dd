@@ -966,6 +966,7 @@ class MySpecialActivities extends React.Component {
             const _promoitonList = nextProps.mySpecialActivities
                 .get("$specialPromotionList")
                 .toJS();
+                console.log(_promoitonList,'_promoitonList>>>>>>>>>>>>>>')
             switch (_promoitonList.status) {
                 case "timeout":
                     message.error(

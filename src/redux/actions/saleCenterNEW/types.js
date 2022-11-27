@@ -1023,6 +1023,13 @@ export const CHARACTERISTIC_CATEGORIES = (function () {
             example: "",
             key: "90",
         },
+        {
+            idx: 34,
+            title: '限时秒杀',
+            text: '',
+            example: "",
+            key: "95",
+        },
     ];
     return basic;
 })();
