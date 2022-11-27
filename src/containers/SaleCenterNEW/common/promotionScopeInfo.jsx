@@ -48,10 +48,6 @@ import { isGeneral } from "../../../constants/WhiteList";
 import ExportJsonExcel from "js-export-excel";
 import { SALE_PROMOTION_TYPES } from '../../../constants/promotionType';
 const Immutable = require('immutable');
-
-
-
-const Immutable = require('immutable');
 const shopTreeData = [];
 // 买减、买折活动增加团购订单，白名单开放
 const WhiteGroup = ['11157', '189702', '345780'];
