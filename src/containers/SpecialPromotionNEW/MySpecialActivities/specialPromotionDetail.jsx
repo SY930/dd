@@ -992,8 +992,17 @@ class SpecialPromotionDetail extends React.Component {
     // 礼品信息表格
     renderGiftInfoTable(records, type) {
         const way = this.state.eventInfo.data.eventWay;
-        const { intl } = this.props
-
+        const { intl } = this.props;
+        let giftCountText = '';
+        if(['20','21','30','70'].includes(String(way))){
+            giftCountText = `${this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kc13243)}`;
+        }else{
+            if(way == '95'){
+                giftCountText = '礼品库存';
+            }else{
+                giftCountText = `${this.props.intl.formatMessage(STRING_SPE.dojv8nhwu12190)}`;
+            }
+        }
         const columns = [
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.d31f11d5hd613295)}`,
@@ -1013,8 +1022,7 @@ class SpecialPromotionDetail extends React.Component {
                 }
             },
             {
-                title: way != '20' && way != '21' && way != '30' && way != '70' && way != '69' ?
-                    `${this.props.intl.formatMessage(STRING_SPE.dojv8nhwu12190)}` : `${this.props.intl.formatMessage(STRING_SPE.d7ekp2h8kc13243)}`,
+                title: giftCountText,
                 dataIndex: 'EGiftSingleCount',
                 key: 'EGiftSingleCount',
                 className: 'TableTxtRight',
