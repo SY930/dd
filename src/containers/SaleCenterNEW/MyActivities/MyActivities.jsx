@@ -674,7 +674,9 @@ class MyActivities extends React.Component {
         opt.accountID = this.props.user.accountInfo.accountID;
         opt.sourceType = +this.isOnlinePromotionPage();
         if (isZhouheiya(opt.groupID) && selectedGoods.length > 0){
-            opt.applyGoodsList = selectedGoods.map(item => item.goodsID)
+            opt.applyGoodsList = selectedGoods.map(item => {
+                return { goodsID: item.goodsID, categoryOneID: item.categoryOneID, categoryTwoID: item.categoryTwoID, categoryID: item.categoryID}
+            })
         }
         if (isZhouheiya(opt.groupID) && applyShopIds.length > 0){
             opt.applyShopIdList = applyShopIds
@@ -1194,17 +1196,45 @@ class MyActivities extends React.Component {
         this.props.openPromotionAutoRunListModal();
     }
     downLoadTemp = () => {
-        window.open(`${ENV.FILE_RESOURCE_DOMAIN}/crmexport/8e1f0d89-67a5-49cc-b866-5e6eef35fd04.xlsx`);
+        window.open(`${ENV.FILE_RESOURCE_DOMAIN}/crmexport/9456d8be-23b4-488c-bf0d-9b54ceb4a3ba.xlsx`);
     }
 
     showModleTip = (res) => {
-        const { code, data } = res
+        const { code, data: { failedInfo, successTimes} } = res
         let content  = '导入成功';
+        let title = '导入成功'
         if (code === '000') {
-            content = `已导入${data.successTimes}条, 失败${data.failedTimes}条`
+            if (_.isEmpty(failedInfo)) {
+                content = `${content},已导入${successTimes}条`
+            } else  {
+                title = '导入失败'
+                content = Object.keys(failedInfo).map((key) => {
+                    const lines = failedInfo[key] || [];
+                    const lineText = lines.reduce((cur, v) => {
+                        if (cur) {
+                            return `${cur},第${v}行`
+                        }
+                        return `${cur}第${v}行`
+                    }, '')
+                    return (<p style={{
+                        background:'#f2f2f2',
+                        lineHeight: '28px',
+                        fontSize: '12px',
+                        marginBottom: '8px',
+                        paddingLeft: '10px'
+                    }}>导入文件中，{key}。{lineText}</p>)
+                })
+                content = content.concat((<div style={{
+                    position: 'absolute',
+                    bottom: '54px',
+                    left: '50%',
+                    marginLeft: '-57px',
+                    fontSize: '12px',
+                }}>请修改Excel后重新导入</div>))
+            }
         } 
         Modal.info({
-            title: `导入${code === '000' ? '结果' : '失败'}`,
+            title,
             content,
             iconType: 'exclamation-circle',
             okText: '确定'
