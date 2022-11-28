@@ -22,6 +22,18 @@ export const baseFormItems = {
             { max: "50", message: "不能超过50个字符" },
         ],
     },
+    eventCode: {
+        type: "text",
+        label: <span>活动编码 <Tooltip title='活动编码填写后不可修改'><Icon type="question-circle" style={{ marginLeft: 5 }} /></Tooltip></span>,
+        wrapperCol: { span: 14 },
+        labelCol: { span: 5 },
+        rules: [
+            {
+                message: "字母、数字组成，不多于50个字符",
+                pattern: /^[A-Za-z0-9]{1,50}$/,
+            },
+        ],
+    },
     shopIDList: {
         type: "custom",
         label: (
@@ -212,6 +224,6 @@ export const ruleFormItem = {
 }
 
 export const ruleFormKeys = ["eventRange","gifts"];
-export const baseFormKeys = ["eventType","eventName","shopIDList","settleUnitID","cardTypeID","eventRemark"];
+export const baseFormKeys = ["eventType","eventName","eventCode","shopIDList","settleUnitID","cardTypeID","eventRemark"];
 export const giftRemainSettings = ["giftName","giftID","giftTotalCount","buyLimit","presentValue","giftGetRuleValue"];
 
