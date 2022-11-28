@@ -1050,16 +1050,25 @@ class SpecialPromotionDetail extends React.Component {
             //     }
             // }
             // 积分兑换 如果是 -1 改为不限制
+            let giftNumberText = null;
             let giftTotalCount = gift.giftTotalCount;
             if (way == 30 && gift.giftTotalCount === -1) {
                 giftTotalCount = '不限制'
+            }
+            if (['20', '21', '30', '70'].includes(String(way))) {
+                giftNumberText = giftTotalCount;
+            }else{
+                if(way == 95){
+                    giftNumberText = gift.remainStock;//限时秒杀取库存
+                }else{
+                    giftNumberText = gift.giftCount;
+                }
             }
             return {
                 key: `${index}`,
                 idx: `${index}`,
                 EGiftName: gift.giftName,
-                EGiftSingleCount: way != '20' && way != '21' && way != '30' && way != '70' ?
-                    gift.giftCount : giftTotalCount,
+                EGiftSingleCount: giftNumberText,
                 EGiftSendCount: gift.giftSendCount,
                 EGfitValidUntilDayCount: gift.giftValidUntilDayCount > 0 ? gift.giftValidUntilDayCount : days,
                 resumeGiftsCount: gift.resumeGiftsCount || 0,
