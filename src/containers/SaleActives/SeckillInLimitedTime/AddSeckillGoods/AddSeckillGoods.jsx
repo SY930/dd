@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import AddModal from '../TicketBag/AddModal';
 import { initVal } from "./common";
 import styles from "./styles.less";
-import drag from '../../asssets/drag.png';
+import drag from '../../asssets/drag-white.png';
 import Sortable from 'sortablejs';
 let sortable = null;
 const formItemLayout = {

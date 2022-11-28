@@ -27,7 +27,7 @@ async function getTicketList(data) {
     } = response;
     if (code === '000') {
         const pageObj = { pageNo: +pageNo, total: +totalSize };
-        return { pageObj, list: couponPackageInfos };
+        return { pageObj, list: couponPackageInfos.filter(item => item.couponPackageStock == -1) };
     }
     message.error(msg);
     return { list: [] };
