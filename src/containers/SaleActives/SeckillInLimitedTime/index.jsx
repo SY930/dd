@@ -3,7 +3,7 @@
  * @Author: xinli xinli@hualala.com
  * @Date: 2022-10-10 14:36:10
  * @LastEditors: xinli xinli@hualala.com
- * @LastEditTime: 2022-11-28 16:00:13
+ * @LastEditTime: 2022-11-28 17:02:56
  * @FilePath: /platform-sale/src/containers/SaleActives/SeckillInLimitedTime/index.jsx
  */
 
@@ -294,7 +294,8 @@ class SeckillInLimitedTime extends Component {
             user,
             cardTypeLst,
             settlesOpts,
-            groupCardTypeList
+            groupCardTypeList,
+            isView
         };
         return (
             <div className={styles.formContainer}>
@@ -305,6 +306,7 @@ class SeckillInLimitedTime extends Component {
                         basicForm={basicForm} 
                         getForm={form => this.setState({ basicForm: form })} 
                         formData={formData} 
+                        isView={isView}
                         {...itemProps}
                     />
                     <div className={styles.logoGroupHeader}>使用规则</div>

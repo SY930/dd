@@ -4,6 +4,7 @@ import ShopSelector from "components/ShopSelector";
 import { isFilterShopType } from "../../../../helpers/util";
 import { baseFormItems, formItemLayout, baseFormKeys } from "../common";
 import { Select } from "antd";
+import moment from 'moment';
 const Option = Select.Option;
 class BasicInfoForm extends Component {
     constructor(props) {
@@ -92,8 +93,12 @@ class BasicInfoForm extends Component {
         };
     };
     render() {
-        const { formData, getForm } = this.props;
+        let { formData, getForm, isView } = this.props;
         const { formKeys } = this.state;
+        formData = {
+            ...formData,
+            eventCode: isView ? formData.eventCode : formData.eventCode ? formData.eventCode : `YX${moment(new Date()).format('YYYYMMDDHHmmss')}`
+        }
         return (
             <div style={{ width: 800, marginBottom: 16 }}>
                 <BaseForm
