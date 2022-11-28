@@ -20,7 +20,6 @@ class AddSeckillGoods extends Component {
         this.state = {
             formList: [],
             giftList: [],
-            couponData: [],
             couponVisible: false,
             counponIndex: 0,
             sortableDom: true,
@@ -60,12 +59,15 @@ class AddSeckillGoods extends Component {
                     return giftList[Number(item)]
                 })
                 console.log(sortedData,'sortedData---------------->')
-                this.setState({
+                _this.setState({
                     sortableDom: false,
                 },() => {
-                    this.setState({
+                    _this.setState({
                         sortableDom: true,
                         giftList: sortedData
+                    },() => {
+                        _this.initSortable()
+
                     })
                     onGiftChange(sortedData)
                 })
@@ -137,14 +139,16 @@ class AddSeckillGoods extends Component {
         this.onToggleModal(couponIndex);
     }
     resetFormItems = (i) => {
-        const { coupon } = ruleFormItem;
+        const { giftName } = ruleFormItem;
+        const { giftList } = this.state;
         return {
             ...ruleFormItem,
-            coupon: {
-                ...coupon,
+            giftName: {
+                ...giftName,
                 render: (d, form) =>
                     d()(
                         <div>
+                            <span className={styles.couponName}>{ giftList[i] && giftList[i].giftName ? giftList[i].giftName : '' }</span>
                             <span onClick={() => this.onToggleModal(i)} style={{cursor:"pointer",color:"#1BB496"}}>添加券包</span>
                         </div>
                     )
@@ -152,14 +156,15 @@ class AddSeckillGoods extends Component {
         }
     }
     render() {
-        const { getForm, accountInfo } = this.props;
+        const { accountInfo } = this.props;
         const { giftList, couponVisible, sortableDom = true } = this.state;
         if (!giftList[0]) {
             giftList.push({ ...initVal });
         }
+        console.log(sortableDom,'sortableDom>>>>>>>>>>>>>>>')
         return (
                 sortableDom ? 
-                <div id="items" ref={(dom) => { this.crmCarddom = dom }}>
+                <div id="items">
                     {giftList.map((v, i) => (
                         <div key={v.id || i} data-id={i} key={i} className={classNames(styles.addGiftsBox, 'draggable')}>
                             <div className={styles.addGiftsConntet}>

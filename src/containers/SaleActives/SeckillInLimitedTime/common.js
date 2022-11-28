@@ -94,7 +94,7 @@ export const ruleFormItem = {
         labelCol: { span: 5 },
         render: () => <p />,
     },
-    coupon: {
+    giftName: {
         type: "custom",
         label: "券包名称",
         render: () => <p />,
@@ -213,5 +213,5 @@ export const ruleFormItem = {
 
 export const ruleFormKeys = ["eventRange","gifts"];
 export const baseFormKeys = ["eventType","eventName","shopIDList","settleUnitID","cardTypeID","eventRemark"];
-export const giftRemainSettings = ["coupon","giftID","giftTotalCount","buyLimit","presentValue","giftGetRuleValue"];
+export const giftRemainSettings = ["giftName","giftID","giftTotalCount","buyLimit","presentValue","giftGetRuleValue"];
 
