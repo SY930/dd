@@ -3,7 +3,7 @@
  * @Author: xinli xinli@hualala.com
  * @Date: 2022-10-10 14:36:10
  * @LastEditors: xinli xinli@hualala.com
- * @LastEditTime: 2022-11-28 17:02:56
+ * @LastEditTime: 2022-11-28 17:50:30
  * @FilePath: /platform-sale/src/containers/SaleActives/SeckillInLimitedTime/index.jsx
  */
 
@@ -120,7 +120,7 @@ class SeckillInLimitedTime extends Component {
 
     //表单数据处理成接口需要的数据
     checkAndFormatParams = values => {
-        const { eventRange = [], gifts = [] } = values;
+        const { eventRange = [] } = values;
         const { giftList } = this.state;
         //直接拿到的values有好多不需要的字段，所以单个处理
         const event = {
@@ -130,6 +130,7 @@ class SeckillInLimitedTime extends Component {
             shopIDList: values.shopIDList,
             settleUnitID: values.settleUnitID,
             cardTypeID: values.cardTypeID,
+            eventCode: values.eventCode,
             participateRule: 2
         };
         let params = {
@@ -178,6 +179,7 @@ class SeckillInLimitedTime extends Component {
                 shopIDList: event.shopIDList,
                 timeIntervalList: timeList,
                 groupID: accountInfo.groupID,
+                eventCode: event.eventCode,
                 itemID
             },
             itemID,
