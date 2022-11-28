@@ -10,7 +10,7 @@ import ApprovalForm from "./components/ApprovalForm";
 import { putEvent, getEvent, postEvent } from "./AxiosFactory";
 import styles from "./styles.less";
 import { asyncParseForm } from "../../../helpers/util";
-import { isZhouheiya, isGeneral } from "../../../constants/WhiteList";
+import { isZhouheiya, isGeneral, isCheckApproval } from "../../../constants/WhiteList";
 
 class NewScoreConvertGift extends Component {
     constructor() {
@@ -227,7 +227,7 @@ class NewScoreConvertGift extends Component {
                 })
             }
             //审批校验
-            if(!approvalInfo.activityCost || !approvalInfo.activityRate || !approvalInfo.estimatedSales || !approvalInfo.auditRemark) {
+            if(isCheckApproval && (!approvalInfo.activityCost || !approvalInfo.activityRate || !approvalInfo.estimatedSales || !approvalInfo.auditRemark)) {
                 return;
             }
             
