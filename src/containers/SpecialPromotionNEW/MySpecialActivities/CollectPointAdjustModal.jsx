@@ -52,7 +52,7 @@ class CollectPointAdjustModal extends Component {
         </Row>
         <Row>
           <Col span={10} offset={2}>
-            <span>未兑换数: </span><span>{data.joinCount}</span>
+            <span>未兑换数: </span><span>{data.remainIngNum}</span>
           </Col>
         </Row>
       </div>
@@ -60,7 +60,7 @@ class CollectPointAdjustModal extends Component {
   }
 
   resetFormItems = () => {
-    const { data: { joinCount = 0, remainIngNum = 0}} = this.props
+    const { data: { joinCount = 0, remainIngNum = 0 }} = this.props
     const sum = joinCount + remainIngNum
     return ({
         pointChangeType: {
@@ -96,7 +96,7 @@ class CollectPointAdjustModal extends Component {
                         if (!reg.test(v)) {
                           return cb('请输入正整数')
                         }
-                        if (v > sum) {
+                        if (v > remainIngNum) {
                           return cb('手动减少的点数需要≤未兑换点数，即不允许扣减为负值')
                         }
                         cb()
