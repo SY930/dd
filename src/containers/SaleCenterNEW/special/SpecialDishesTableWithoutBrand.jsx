@@ -261,7 +261,7 @@ class SpecialDishesTableWithoutBrand extends Component {
                 key: 'salePercent',
                 className: 'TableTxtCenter',
                 render: (text, record, index) => {
-                    return Number(record.newPrice) <= 0 ? '0'+k5ezdc19 : Number(record.newPrice) !== Number(record.price) ? `${Number((Number(record.newPrice) / record.price * 10).toFixed(1))}${k5ezdc19}` : k6hfzdpl
+                    return Number(record.newPrice) <= 0 ? '0折' : Number(record.newPrice) !== Number(record.price) ? `${Number((Number(record.newPrice) / record.price * 10).toFixed(1))}折` : k6hfzdpl
                 },
             },
         ];
