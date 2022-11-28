@@ -36,3 +36,5 @@ export { default as LanchChannelList } from './LanchChannel/index';
 export { default as AutomatedSale } from './AutomatedSale/index';
 export { default as AutomatedSaleDetail } from './AutomatedSale/detail';
 export { default as AutomatedStatDetail } from './AutomatedSale/stat';
+export { default as AutomatedActivityProcess } from './AutomatedSale/activityProcess';
+export { default as AutomatedActivityRecordList } from './AutomatedSale/activityRecordList';

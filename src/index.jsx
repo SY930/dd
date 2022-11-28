@@ -91,6 +91,18 @@ registerLocalPage([
         label: '智能营销统计详情',
         parent: [entryCodes.SALE_AUTOMATED_STAT_DETAIL],
     },
+    {
+        key: entryCodes.SALE_AUTOMATED_ACTIVITY_RECORD_LIST,
+        value: entryCodes.SALE_AUTOMATED_ACTIVITY_RECORD_LIST,
+        label: '智能营销活动记录',
+        parent: [entryCodes.SALE_AUTOMATED_ACTIVITY_RECORD_LIST],
+    },
+    {
+        key: entryCodes.SALE_AUTOMATED_ACTIVITY_PROCESS,
+        value: entryCodes.SALE_AUTOMATED_ACTIVITY_PROCESS,
+        label: '智能营销活动过程',
+        parent: [entryCodes.SALE_AUTOMATED_ACTIVITY_PROCESS],
+    },
 ]);
 // 注册语言包
 const registeLangPack = async () => {
