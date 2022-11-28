@@ -26,6 +26,7 @@ export const BASIC_PROMOTION_MAP = {
     '2070': '累计次数减免',
     '1021': '称重买赠',
     '10071': '拼团活动',
+    '2090': '配色费减免',
 }
 
 export const GIFT_MAP = {

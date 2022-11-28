@@ -30,6 +30,7 @@ export const FILTERS = [{
     { value: '2070', label: '累计次数减免' },
     { value: '1021', label: '称重买赠' },
     { value: '10071', label: '拼团活动' },
+    { value: '2090', label: '配送费减免' },
   ],
 }, {
   name: 'hllCoupon',
