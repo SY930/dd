@@ -3,7 +3,7 @@
  * @Author: xinli xinli@hualala.com
  * @Date: 2022-10-10 14:36:10
  * @LastEditors: xinli xinli@hualala.com
- * @LastEditTime: 2022-11-27 14:42:03
+ * @LastEditTime: 2022-11-28 16:00:13
  * @FilePath: /platform-sale/src/containers/SaleActives/SeckillInLimitedTime/index.jsx
  */
 
@@ -77,6 +77,7 @@ class SeckillInLimitedTime extends Component {
             gifts: gifts.map(item => {
                 return {//"giftID","giftTotalCount","buyLimit","presentValue","giftGetRuleValue"
                     ...item,
+                    giftName: item.giftName,
                     giftID: item.giftID,
                     giftTotalCount: item.giftTotalCount,
                     buyLimit: item.buyLimit,
