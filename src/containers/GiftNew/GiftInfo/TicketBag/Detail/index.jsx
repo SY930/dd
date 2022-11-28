@@ -79,7 +79,7 @@ class Detail extends Component {
         const newParams = { ...queryParams3, ...params,  ...ids };
         // 把查询需要的参数缓存
         this.setState({ queryParams3: newParams, loading3: true });
-        getTotalList({ ...ids, ...newParams, getWay: '10' }).then((obj) => {
+        getTotalList({ ...ids, ...newParams, getWays: ['10','19'] }).then((obj) => {
             const { pageObj, list } = obj;
             this.setState({ pageObj3: pageObj, list3: list, loading3: false });
         });
