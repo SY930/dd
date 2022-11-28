@@ -52,7 +52,7 @@ class CollectPointAdjustModal extends Component {
         </Row>
         <Row>
           <Col span={10} offset={2}>
-            <span>未兑换数: </span><span>{data.joinCount + data.remainIngNum}</span>
+            <span>未兑换数: </span><span>{data.joinCount}</span>
           </Col>
         </Row>
       </div>
@@ -90,8 +90,8 @@ class CollectPointAdjustModal extends Component {
                     {
                       validator: (rule, v, cb) => {
                         const reg = /\d+/
-                        if (!v) {
-                          return cb('请输入点数')
+                        if (!v || v <= 0) {
+                          return cb('请输入大于0的点数')
                         }
                         if (!reg.test(v)) {
                           return cb('请输入正整数')
