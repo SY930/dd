@@ -740,6 +740,8 @@ class PromotionScopeInfo extends React.Component {
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
         console.log(promotionType,'promotionType--------')
         const { brands, shopStatus, allShopSet, selections, isRequire, filterShops } = this.state;
+        const shopData = this.props.shopsData.toJS().shops;
+        const filterShopData = shopData.filter(item => filterShops.indexOf(item.shopID) < 0);
         if (promotionType == '5010' || promotionType == '2090') {
             return (
                 <Form.Item
@@ -751,16 +753,22 @@ class PromotionScopeInfo extends React.Component {
                     validateStatus={shopStatus ? 'success' : 'error'}
                     help={shopStatus ? null : SALE_LABEL.k5hkj1ef}
                 >
-                    <ShopSelector
+                    {promotionType == '5010' && <ShopSelector
                         value={selections}
                         brandList={brands}
-                        // schemaData={this.getFilteredShopSchema()}
+                        onChange={
+                            this.editBoxForShopsChange
+                        }
+                    />}
+                    {promotionType === '2090' && <ShopSelector
+                        value={selections}
+                        brandList={brands}
                         onChange={
                             this.editBoxForShopsChange
                         }
                         eventWay={promotionType}
-                        filterShopIds={promotionType === '2090' ? filterShops : []}// 配送费减免引入过滤店铺
-                    />
+                        canUseShops={filterShopData.map(shop => shop.shopID)}
+                    />}
                     {allShopSet ?
                         <p style={{ color: '#e24949' }}>{SALE_LABEL.k5m67b23}</p>
                         : null}
@@ -977,6 +985,7 @@ const mapStateToProps = (state) => {
         promotionScopeInfo: state.sale_promotionScopeInfo_NEW,
         user: state.user,
         shopSchema: state.sale_shopSchema_New,
+        shopsData: state.sale_shopSchema_New.get('shopSchema'),
         promotionBasicInfo: state.sale_promotionBasicInfo_NEW,
         myActivities: state.sale_myActivities_NEW,
         isUpdate: state.sale_myActivities_NEW.get('isUpdate'),
