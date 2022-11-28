@@ -1009,6 +1009,12 @@ class SpecialPromotionDetail extends React.Component {
                 key: 'resumeGiftsCountPercent',
                 className: 'TableTxtRight',
             },
+            way == 95 && ({
+                title: '秒杀收益',
+                dataIndex: 'giftIncome',
+                key: 'giftIncome',
+                className: 'TableTxtRight',
+            }),
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.dojy8ws411711)}`,
                 dataIndex: 'EGfitValidUntilDayCount',
@@ -1044,6 +1050,7 @@ class SpecialPromotionDetail extends React.Component {
                 EGfitValidUntilDayCount: gift.giftValidUntilDayCount > 0 ? gift.giftValidUntilDayCount : days,
                 resumeGiftsCount: gift.resumeGiftsCount || 0,
                 resumeGiftsCountPercent: gift.giftSendCount == 0 ? '0%' : `${Math.round((gift.resumeGiftsCount || 0) / (gift.giftSendCount) * 10000) / 100}%`,
+                giftIncome: gift.giftIncome ? gift.giftIncome : 0
             }
         });
         if (this.props.record.eventInfo.data.eventWay == 68) {
@@ -1721,6 +1728,20 @@ class SpecialPromotionDetail extends React.Component {
                 }
             })
         }
+        if (eventWay == 95) { // 限时秒杀
+            columns.push({
+                title: `秒杀礼品`,
+                dataIndex: 'giftName',
+                key: 'giftName',
+                className: 'TableTxtCenter',
+            },
+            {
+                title: `订单号`,
+                dataIndex: 'orderNo',
+                key: 'orderNo',
+                className: 'TableTxtCenter',
+            })
+        }
         if (eventWay == 68) { // 推荐有礼活动表格不一样
             columns.pop();
             columns.push(...[
@@ -1814,6 +1835,8 @@ class SpecialPromotionDetail extends React.Component {
                 telephoneNo: user.customerMobile,
                 joinTime: moment(new Date(parseInt(user.createTime))).format('YYYY-MM-DD HH:mm:ss'),
                 joinCount: user.joinCount || 0,
+                giftName: user.giftName || '',
+                orderNo: user.orderNo || ''
             }
         });
         let len = null;
