@@ -575,8 +575,8 @@ class PromotionBasicInfo extends React.Component {
                 data: {
                     groupID: this.props.user.accountInfo.groupID,
                     promotionType,
-                    startDate: this.state.dateRange[0].format('YYYYMMDD'),
-                    endDate: this.state.dateRange[1].format('YYYYMMDD'),
+                    startDate:  this.state.dateRange[0] ?  this.state.dateRange[0].format('YYYYMMDD') : '',
+                    endDate:  this.state.dateRange[1] ? this.state.dateRange[1].format('YYYYMMDD') : '',
                 },
                 fail: (val) => { message.error(val) },
             }
