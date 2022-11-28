@@ -1017,12 +1017,6 @@ class SpecialPromotionDetail extends React.Component {
                 key: 'resumeGiftsCountPercent',
                 className: 'TableTxtRight',
             },
-            way == 95 && ({
-                title: '秒杀收益',
-                dataIndex: 'giftIncome',
-                key: 'giftIncome',
-                className: 'TableTxtRight',
-            }),
             {
                 title: `${this.props.intl.formatMessage(STRING_SPE.dojy8ws411711)}`,
                 dataIndex: 'EGfitValidUntilDayCount',
@@ -1030,6 +1024,18 @@ class SpecialPromotionDetail extends React.Component {
                 className: 'TableTxtRight',
             },
         ];
+        if(way == 95){//如果是限时秒杀
+            columns.pop();
+            columns.push({
+                title: '秒杀收益',
+                dataIndex: 'giftIncome',
+                key: 'giftIncome',
+                className: 'TableTxtRight',
+                render: (text) => {
+                    return (<Tooltip title={text || ''}>{text}</Tooltip>)
+                }
+            });
+        }
         const dataSource = records.map((gift, index) => {
             let days;
             if (!gift.giftValidUntilDayCount > 0) {
