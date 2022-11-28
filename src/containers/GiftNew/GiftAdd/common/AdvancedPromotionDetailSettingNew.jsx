@@ -24,7 +24,7 @@ import { injectIntl } from './IntlDecor';
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
-
+import { WJLPGroupID } from '../../../../constants/WhiteList';
 @injectIntl()
 class AdvancedPromotionDetailSetting extends React.Component {
     constructor(props) {
@@ -122,10 +122,18 @@ class AdvancedPromotionDetailSetting extends React.Component {
                 </FormItem>
                 <div style={{ marginLeft: 120 }}>
                     {this.state.ruleUseType == '0' && <a onClick={() => {
-                        if (HUALALA.ENVIRONMENT === 'production-release') {
-                            window.open('http://zhytest.hualala.com/meta/2/2002606')
-                        } else {
-                            window.open('http://zhytest.hualala.com/meta/2/2002606')
+                        if(WJLPGroupID.includes(this.props.user.accountInfo.groupID)){
+                            if (HUALALA.ENVIRONMENT === 'production-release') {
+                                window.open('http://vip.shop.hualala.com/meta/2/2000839')
+                            } else {
+                                window.open('http://dohko.hw.shop.hualala.com/meta/2/2000839')
+                            }
+                        }else{
+                            if (HUALALA.ENVIRONMENT === 'production-release') {
+                                window.open('http://zhy.shop.hualala.com/meta/2/2002606')
+                            } else {
+                                window.open('http://zhytest.hualala.com/meta/2/2002606')
+                            }
                         }
                     }}>查看系统规则</a>}
 

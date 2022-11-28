@@ -25,10 +25,9 @@ const Immutable = require('immutable');
 
 //周黑鸭需求
 import AdvancedPromotionDetailSettingNew from '../../../containers/SaleCenterNEW/common/AdvancedPromotionDetailSettingNew';
-import { isCheckApproval, checkGoodsScopeListIsNotEmpty, isZhouheiya, businessTypesList } from '../../../constants/WhiteList';
+import { isCheckApproval, checkGoodsScopeListIsNotEmpty, isZhouheiya, businessTypesList, WJLPGroupID } from '../../../constants/WhiteList';
 import Approval from '../../../containers/SaleCenterNEW/common/Approval';
 import GoodsRef from '@hualala/sc-goodsRef';
-const weijiaGroupID = ['259613']
 
 @injectIntl()
 class CompositeDetailInfo extends React.Component {
@@ -673,7 +672,7 @@ class CompositeDetailInfo extends React.Component {
                                     }}
                                 />
                                 <span>{k5gfsuon}</span>
-                                {!weijiaGroupID.includes(this.props.user.groupID) && this.renderGroupIconZhy(idx)}
+                                {!WJLPGroupID.includes(this.props.user.groupID) && this.renderGroupIconZhy(idx)}
 
                             </div>
                         </FormItem>
