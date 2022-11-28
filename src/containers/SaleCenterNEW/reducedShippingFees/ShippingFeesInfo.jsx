@@ -197,7 +197,7 @@ class ShippingFeesInfo extends Component {
                                         initialValue: formData.freeAmount || '1',
                                         rules: [{
                                             pattern: /^([1-9]\d{0,2}|(^\+?\d{0,3}\.\d{0,1}$))$/,
-                                            message: '支持大于0的正整数,最大值999.9',
+                                            message: '大于0的正数，支持1位小数，最大值999',
                                         }],
                                     })(<Input suffix="元" />)
                                 }
