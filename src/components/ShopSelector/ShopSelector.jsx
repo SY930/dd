@@ -83,6 +83,7 @@ class ShopSelector extends Component {
     }
     loadShops2(brandList = []) {
         const { alloptions, allfilters } = this.state;
+        const { eventWay, canUseShops } = this.props
         if (!allfilters[0]) { return }
         const newFilter = JSON.parse(JSON.stringify(allfilters));
         if (brandList[0]) {
@@ -90,7 +91,18 @@ class ShopSelector extends Component {
             const leftBrands = brands.options.filter(x => brandList.includes(x.brandID));
             newFilter[0].options = leftBrands;
             const leftShops = alloptions.filter(x => brandList.includes(x.brandID));
-            this.setState({ options: leftShops, filters: newFilter });
+            if (eventWay === '2090') {
+                if (canUseShops[0]) {
+                    const _leftShops = alloptions.map((x) => {
+                        if (!canUseShops.includes(x.shopID)) {
+                            return { ...x, disabled: true }
+                        }
+                        return x;
+                    });
+                this.setState({ filters: newFilter, options: _leftShops });
+            } else {
+                this.setState({ options: leftShops, filters: newFilter });
+            }
             return;
         } 
         this.setState({ options: alloptions, filters: allfilters });
@@ -111,12 +123,10 @@ class ShopSelector extends Component {
                         const { allfilters } = this.state
                         const newFilter = JSON.parse(JSON.stringify(allfilters));
                         const brands = allfilters[0] || {};
-                        console.log("🚀 ~ file: ShopSelector.jsx ~ line 116 ~ ShopSelector ~ this.setState ~ brands", brands, newFilter)
                         if (brandList[0] && brands.options && newFilter[0]) {
-                            const leftBrands = (brands.options || []).filter(x => brandList.includes(x.brandID));
-                            console.log("🚀 ~ file: ShopSelector.jsx ~ line 115 ~ ShopSelector ~ this.setState ~ leftBrands", leftBrands)
-                            newFilter[0].options = leftBrands || [];
-                            this.setState({ filters: newFilter });
+                                const leftBrands = (brands.options || []).filter(x => brandList.includes(x.brandID));
+                                newFilter[0].options = leftBrands || [];
+                                this.setState({ filters: newFilter, options: leftShops });
                             return;
                         }
                     }
