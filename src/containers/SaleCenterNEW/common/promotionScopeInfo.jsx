@@ -766,6 +766,7 @@ class PromotionScopeInfo extends React.Component {
                         onChange={
                             this.editBoxForShopsChange
                         }
+                        eventWay={promotionType}
                         canUseShops={filterShopData.map(shop => shop.shopID)}
                     />}
                     {allShopSet ?
