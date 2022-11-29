@@ -126,7 +126,7 @@ class PromotionScopeInfo extends React.Component {
             }
         });
         const { selections } = this.state;
-        if ((promotionType == '5010' || promotionType == '5020' || promotionType == '10071') && selections.length == 0 && !this.props.user.toJS().shopID > 0) {
+        if (['5010', '5020', '10071', '2090'].includes(promotionType) && selections.length == 0 && !this.props.user.toJS().shopID > 0) {
             flag = false;
             message.warning('请选择适用店铺')
             this.setState({ shopStatus: false })
@@ -749,7 +749,7 @@ class PromotionScopeInfo extends React.Component {
                     className={styles.FormItemStyle}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 17 }}
-                    required={promotionType == '5010'}
+                    required={true}
                     validateStatus={shopStatus ? 'success' : 'error'}
                     help={shopStatus ? null : SALE_LABEL.k5hkj1ef}
                 >
@@ -766,7 +766,6 @@ class PromotionScopeInfo extends React.Component {
                         onChange={
                             this.editBoxForShopsChange
                         }
-                        eventWay={promotionType}
                         canUseShops={filterShopData.map(shop => shop.shopID)}
                     />}
                     {allShopSet ?
