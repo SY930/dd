@@ -427,7 +427,7 @@ class PromotionBasicInfo extends React.Component {
             finish: undefined,
             cancel: undefined,
         });
-        const { promotionBasicInfo, fetchPromotionCategories, fetchPromotionTags, isCopy, myActivities, propmotionType } = this.props;
+        const { promotionBasicInfo, fetchPromotionCategories, fetchPromotionTags, isCopy, myActivities, propmotionType, isNew } = this.props;
         if (propmotionType == '5010') {
             const myActivitiesJs = myActivities.toJS()
             const foodRuleList = myActivitiesJs.$promotionDetailInfo && myActivitiesJs.$promotionDetailInfo.data && myActivitiesJs.$promotionDetailInfo.data.promotionInfo && myActivitiesJs.$promotionDetailInfo.data.promotionInfo.foodRuleList || [{}]
@@ -438,6 +438,19 @@ class PromotionBasicInfo extends React.Component {
             })
         }
 
+        if (propmotionType == '2090' && isNew) {
+            console.log("🚀 ~ file: promotionBasicInfo.jsx ~ line 442 ~ PromotionBasicInfo ~ componentDidMount ~ isNew", isNew)
+            const opts = {
+                data: {
+                    groupID: this.props.user.accountInfo.groupID,
+                    promotionType: propmotionType,
+                },
+                fail: (val) => { message.error(val) },
+            }
+            this.setState({ hasQuery: true }, () => {
+                this.props.fetchFilterShops(opts);
+            })
+        }
         document.addEventListener('click', this.onFakeDatePickerBlur)
         fetchPromotionCategories({
             groupID: this.props.user.accountInfo.groupID,
@@ -575,8 +588,8 @@ class PromotionBasicInfo extends React.Component {
                 data: {
                     groupID: this.props.user.accountInfo.groupID,
                     promotionType,
-                    startDate:  this.state.dateRange[0] ?  this.state.dateRange[0].format('YYYYMMDD') : '',
-                    endDate:  this.state.dateRange[1] ? this.state.dateRange[1].format('YYYYMMDD') : '',
+                    startDate:  this.state.dateRange[0] ?  this.state.dateRange[0].format('YYYYMMDD') : null,
+                    endDate:  this.state.dateRange[1] ? this.state.dateRange[1].format('YYYYMMDD') : null,
                 },
                 fail: (val) => { message.error(val) },
             }
