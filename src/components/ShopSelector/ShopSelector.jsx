@@ -113,7 +113,6 @@ class ShopSelector extends Component {
                     if (brandList[0] && brands.options && newFilter[0]) {
                         const leftBrands = (brands.options || []).filter(x => brandList.includes(x.brandID));
                         newFilter[0].options = leftBrands || [];
-            console.log("🚀 ~ file: ShopSelector.jsx ~ line 122 ~ ShopSelector ~ this.setState ~ leftShops", leftShops)
                         const _leftShops = leftShops.filter(x => brandList.includes(x.brandID));
                         this.setState({ filters: newFilter, options: _leftShops });
                     }
