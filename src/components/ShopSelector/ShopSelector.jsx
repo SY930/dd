@@ -103,9 +103,20 @@ class ShopSelector extends Component {
                 }
                 return x;
             });
+            console.log("🚀 ~ file: ShopSelector.jsx ~ line 106 ~ ShopSelector ~ leftShops ~ leftShops", leftShops)
             this.setState({ options: leftShops }, () => {
                 if (eventWay === '2090') {
-                    this.loadShops2(this.props.brandList)
+                    const { brandList } = this.props;
+                    const { allfilters } = this.state
+                    const newFilter = JSON.parse(JSON.stringify(allfilters));
+                    console.log("🚀 ~ file: ShopSelector.jsx ~ line 112 ~ ShopSelector ~ this.setState ~ leftShops", leftShops)
+                    if (brandList[0]) {
+                        const brands = allfilters[0];
+                        const leftBrands = brands.options.filter(x => brandList.includes(x.brandID));
+                        newFilter[0].options = leftBrands;
+                        this.setState({ filters: newFilter });
+                        return;
+                    }
                 }
             });
             return;
