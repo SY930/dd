@@ -147,7 +147,6 @@ export const ruleFormItem = {
         rules: ["required"],
         wrapperCol: { span: 12 },
         labelCol: { span: 5 },
-        defaultValue: [moment(), moment().add(6, "days")],
         render: (d) => d()(<DateRange type={"85"} />),
     },
     buyLimit: {

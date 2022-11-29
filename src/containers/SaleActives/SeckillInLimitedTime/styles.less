@@ -6,7 +6,7 @@
     position: relative;
     .stepOneDisabled{
         position: absolute;
-        width: 100%;
+        width: 610px;
         min-height: 1100px;
         z-index: 100;
         cursor: not-allowed;
@@ -34,7 +34,16 @@
         }
     }
 }
-
+.isViewContainer{
+    :global{
+        .EditableTags_wrapper__1IHF_ > .anticon{
+            display: none;
+        }
+        .EditableTags_wrapper__1IHF_.EditableTags_empty__2gVSd > .anticon{
+            display: block!important;
+        }
+    }
+}
 .WxCouponTable {
     :global {
         .ant-table {

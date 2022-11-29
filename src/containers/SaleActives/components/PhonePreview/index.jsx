@@ -8,8 +8,8 @@
 import React, { Component } from "react";
 import { Icon } from "antd";
 import style from "./styles.less";
-import OnlineRestaurantGiftGivingPng from "../../asssets/OnlineRestaurantGiftGiving.png";
-
+import onlineRestaurantGiftGivingPng from "../../asssets/OnlineRestaurantGiftGiving.png";
+import miaoshaSnapPng from "../../asssets/miaoshaSnap.png";
 export class PhonePreview extends Component {
     static propTypes = {};
 
@@ -96,12 +96,23 @@ export class PhonePreview extends Component {
                                     style={{ top: 16, left: 16 }}
                                 >
                                     <img
-                                        src={OnlineRestaurantGiftGivingPng}
+                                        src={onlineRestaurantGiftGivingPng}
                                         alt=""
                                         style={{ width: 290 }}
                                     />
                                 </div>
-                            ) : null}
+                            ) : typeKey == "95" ? (
+                                <div
+                                    className={style.simpleDisplayBlock}
+                                    style={{ top: 16, left: 16 }}
+                                >
+                                    <img
+                                        src={miaoshaSnapPng}
+                                        alt=""
+                                        style={{ width: 290 }}
+                                    />
+                                </div>
+                            ): null}
                         </div>
                     </div>
                 </div>

@@ -2,7 +2,7 @@
  * @Author: xinli xinli@hualala.com
  * @Date: 2022-10-10 14:36:10
  * @LastEditors: xinli xinli@hualala.com
- * @LastEditTime: 2022-11-27 18:09:03
+ * @LastEditTime: 2022-11-29 11:39:58
  * @FilePath: /platform-sale/src/containers/SaleActives/SeckillInLimitedTime/components/UsageRuleForm.jsx
  */
 
@@ -35,7 +35,6 @@ class UsageRuleForm extends Component {
         }
     };
     onGiftChange = (value) => {
-        console.log(value,'giftValue-----------------')
         this.props.onGiftChange(value)
     }
 
@@ -46,7 +45,7 @@ class UsageRuleForm extends Component {
 
     resetFormItems = () => {
         const { gifts, eventRange } = ruleFormItem;
-        const { accountInfo, getGiftForm} = this.props;
+        const { accountInfo, getGiftForm, isView} = this.props;
         let cycleType = "";
         return {
             ...ruleFormItem,
@@ -62,6 +61,7 @@ class UsageRuleForm extends Component {
                             accountInfo={accountInfo}
                             getGiftForm={getGiftForm}
                             onGiftChange={this.onGiftChange}
+                            isView={isView}
                         />
                     )
             },

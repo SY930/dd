@@ -29,7 +29,6 @@ class AddModal extends Component {
         this.setState({ queryParams: obj, loading: !0 });
         getTicketList({ groupID, ...params, couponPackageType: '2' }).then((obj) => {
             const { pageObj, list } = obj;
-            console.log(list,'list>>>>>>>>>>>>>>>>coupon')
             this.setState({ pageObj, list, loading: !1 });
         });
     }
