@@ -104,16 +104,16 @@ class ShopSelector extends Component {
                 return x;
             });
             this.setState({ options: leftShops }, () => {
-                console.log("🚀 ~ file: ShopSelector.jsx ~ line 123 ~ ShopSelector ~ this.setState ~ leftShops", leftShops)
                     if (eventWay === '2090') {
                         const { brandList } = this.props;
                         const { allfilters } = this.state
                         const newFilter = JSON.parse(JSON.stringify(allfilters));
-                        if (brandList[0]) {
-                            const brands = allfilters[0] || {};
-                            console.log("🚀 ~ file: ShopSelector.jsx ~ line 116 ~ ShopSelector ~ this.setState ~ brands", brands)
+                        const brands = allfilters[0] || {};
+                        console.log("🚀 ~ file: ShopSelector.jsx ~ line 116 ~ ShopSelector ~ this.setState ~ brands", brands, newFilter)
+                        if (brandList[0] && brands.options && newFilter[0]) {
                             const leftBrands = (brands.options || []).filter(x => brandList.includes(x.brandID));
-                            newFilter[0].options = leftBrands;
+                            console.log("🚀 ~ file: ShopSelector.jsx ~ line 115 ~ ShopSelector ~ this.setState ~ leftBrands", leftBrands)
+                            newFilter[0].options = leftBrands || [];
                             this.setState({ filters: newFilter });
                             return;
                         }
