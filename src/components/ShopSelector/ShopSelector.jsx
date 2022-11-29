@@ -89,20 +89,8 @@ class ShopSelector extends Component {
             const leftBrands = brands.options.filter(x => brandList.includes(x.brandID));
             newFilter[0].options = leftBrands;
             const leftShops = alloptions.filter(x => brandList.includes(x.brandID));
-            if (eventWay === '2090') {
-                if (canUseShops[0]) {
-                    const _leftShops = alloptions.map((x) => {
-                        if (!canUseShops.includes(x.shopID)) {
-                            return { ...x, disabled: true }
-                        }
-                        return x;
-                    });
-                    this.setState({ filters: newFilter, options: _leftShops });
-                } else {
-                    this.setState({ options: leftShops, filters: newFilter });
-                }
-                return;
-            }
+            this.setState({ options: leftShops, filters: newFilter });
+            return;
         }
         this.setState({ options: alloptions, filters: allfilters });
     }
@@ -117,19 +105,21 @@ class ShopSelector extends Component {
                 return x;
             });
             this.setState({ options: leftShops }, () => {
-                    if (eventWay === '2090') {
-                        const { brandList } = this.props;
-                        const { allfilters } = this.state
-                        const newFilter = JSON.parse(JSON.stringify(allfilters));
-                        const brands = allfilters[0] || {};
-                        if (brandList[0] && brands.options && newFilter[0]) {
-                                const leftBrands = (brands.options || []).filter(x => brandList.includes(x.brandID));
-                                newFilter[0].options = leftBrands || [];
-                                this.setState({ filters: newFilter, options: leftShops });
-                            return;
-                        }
+                if (eventWay === '2090') {
+                    const { brandList } = this.props;
+                    const { allfilters } = this.state
+                    const newFilter = JSON.parse(JSON.stringify(allfilters));
+                    const brands = allfilters[0] || {};
+                    if (brandList[0] && brands.options && newFilter[0]) {
+                        const leftBrands = (brands.options || []).filter(x => brandList.includes(x.brandID));
+                        newFilter[0].options = leftBrands || [];
+            console.log("🚀 ~ file: ShopSelector.jsx ~ line 122 ~ ShopSelector ~ this.setState ~ leftShops", leftShops)
+                        const _leftShops = leftShops.filter(x => brandList.includes(x.brandID));
+                        this.setState({ filters: newFilter, options: _leftShops });
                     }
-                });
+                    return
+                }
+            });
             return;
         }
         this.setState({ options: alloptions });
