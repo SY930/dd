@@ -86,6 +86,27 @@ class ShopSelector extends Component {
         const { eventWay, canUseShops } = this.props
         if (!allfilters[0]) { return }
         const newFilter = JSON.parse(JSON.stringify(allfilters));
+
+        // 减免配送费禁用店铺单独处理
+        if (eventWay === '2090') {
+            const leftShops = alloptions.map((x) => {
+                if (!canUseShops.includes(x.shopID)) {
+                    return { ...x, disabled: true }
+                }
+                return x;
+            });
+            if (brandList[0]) {
+                const brands = allfilters[0];
+                const leftBrands = brands.options.filter(x => brandList.includes(x.brandID));
+                newFilter[0].options = leftBrands;
+                const _leftShops = leftShops.filter(x => brandList.includes(x.brandID));
+                this.setState({ options: _leftShops, filters: newFilter });
+            } else {
+                this.setState({ options: leftShops, filters: allfilters });
+            }
+            return
+        }
+
         if (brandList[0]) {
             const brands = allfilters[0];
             const leftBrands = brands.options.filter(x => brandList.includes(x.brandID));
