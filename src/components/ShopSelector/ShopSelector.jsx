@@ -99,12 +99,13 @@ class ShopSelector extends Component {
                         }
                         return x;
                     });
-                this.setState({ filters: newFilter, options: _leftShops });
-            } else {
-                this.setState({ options: leftShops, filters: newFilter });
+                    this.setState({ filters: newFilter, options: _leftShops });
+                } else {
+                    this.setState({ options: leftShops, filters: newFilter });
+                }
+                return;
             }
-            return;
-        } 
+        }
         this.setState({ options: alloptions, filters: allfilters });
     }
     loadShops3(canUseShops = []) {
