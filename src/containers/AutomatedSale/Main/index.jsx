@@ -205,7 +205,7 @@ export default class Main extends React.PureComponent {
         return (
             <Col span={24} className={styles.automatedSale}>
                 <Col span={24} style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <h2>智能营销</h2>
+                    <h2>自动化营销</h2>
                     <Button type='primary' icon="plus" onClick={() => this.onOperate('', 'add')}>创建活动</Button>
                 </Col>
                 <Col span={24} className={styles.queryFrom}>

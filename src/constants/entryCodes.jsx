@@ -79,8 +79,8 @@ export const SALE_DISTRIBUTION_ADMIN = 'sale.distribution.admin' // 分销管理
 export const CONSUME_GIFT_GIVING = 'CONSUME_GIFT_GIVING' // 营销活动-消费送礼
 
 export const COUPON_BATCH_MANAGEMENT = '100008994' //券批次管理
-export const SALE_AUTOMATED_SALE = 'sale_automated_sale' // 智能营销
-export const SALE_AUTOMATED_SALE_DETAIL = 'sale_automated_sale_detail' // 智能营销详情
-export const SALE_AUTOMATED_STAT_DETAIL = 'sale_automated_stat_detail' // 智能营销统计页面
-export const SALE_AUTOMATED_ACTIVITY_RECORD_LIST = '10000740000' // 智能营销活动记录
-export const SALE_AUTOMATED_ACTIVITY_PROCESS = '10000740001' // 智能营销活动过程
+export const SALE_AUTOMATED_SALE = 'sale_automated_sale' // 自动化营销
+export const SALE_AUTOMATED_SALE_DETAIL = 'sale_automated_sale_detail' // 自动化营销详情
+export const SALE_AUTOMATED_STAT_DETAIL = 'sale_automated_stat_detail' // 自动化营销统计页面
+export const SALE_AUTOMATED_ACTIVITY_RECORD_LIST = '10000740000' // 自动化营销活动记录
+export const SALE_AUTOMATED_ACTIVITY_PROCESS = '10000740001' // 自动化营销活动过程

@@ -94,13 +94,13 @@ registerLocalPage([
     {
         key: entryCodes.SALE_AUTOMATED_SALE_DETAIL,
         value: entryCodes.SALE_AUTOMATED_SALE_DETAIL,
-        label: '智能营销详情',
+        label: '活动管理',
         parent: [entryCodes.SALE_AUTOMATED_SALE_DETAIL],
     },
     {
         key: entryCodes.SALE_AUTOMATED_STAT_DETAIL,
         value: entryCodes.SALE_AUTOMATED_STAT_DETAIL,
-        label: '智能营销详情',
+        label: '自动化营销统计详情',
         parent: [entryCodes.SALE_AUTOMATED_STAT_DETAIL],
     },
     {
@@ -112,13 +112,13 @@ registerLocalPage([
     {
         key: entryCodes.SALE_AUTOMATED_ACTIVITY_RECORD_LIST,
         value: entryCodes.SALE_AUTOMATED_ACTIVITY_RECORD_LIST,
-        label: '智能营销活动记录',
+        label: '自动化营销活动记录',
         parent: [entryCodes.SALE_AUTOMATED_ACTIVITY_RECORD_LIST],
     },
     {
         key: entryCodes.SALE_AUTOMATED_ACTIVITY_PROCESS,
         value: entryCodes.SALE_AUTOMATED_ACTIVITY_PROCESS,
-        label: '智能营销活动过程',
+        label: '自动化营销活动过程',
         parent: [entryCodes.SALE_AUTOMATED_ACTIVITY_PROCESS],
     },
 ]);
