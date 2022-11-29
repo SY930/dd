@@ -81,7 +81,7 @@ class ShopSelector extends Component {
     }
     loadShops2(brandList = []) {
         const { alloptions, allfilters } = this.state;
-        const { eventWay } = this.props
+        const { eventWay, canUseShops } = this.props
         if (!allfilters[0]) { return }
         const newFilter = JSON.parse(JSON.stringify(allfilters));
         if (brandList[0]) {
@@ -90,7 +90,14 @@ class ShopSelector extends Component {
             newFilter[0].options = leftBrands;
             const leftShops = alloptions.filter(x => brandList.includes(x.brandID));
             if (eventWay === '2090') {
-                this.setState({ filters: newFilter });
+                if (canUseShops[0]) {
+                    const _leftShops = alloptions.map((x) => {
+                        if (!canUseShops.includes(x.shopID)) {
+                            return { ...x, disabled: true }
+                        }
+                        return x;
+                    });
+                this.setState({ filters: newFilter, options: _leftShops });
             } else {
                 this.setState({ options: leftShops, filters: newFilter });
             }
