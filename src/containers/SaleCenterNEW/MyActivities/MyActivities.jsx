@@ -1200,6 +1200,7 @@ class MyActivities extends React.Component {
     }
 
     showModleTip = (res) => {
+        const _this = this;
         const { code, data: { failedInfo, successTimes} } = res
         let content  = '导入成功';
         let title = '导入成功'
@@ -1237,7 +1238,15 @@ class MyActivities extends React.Component {
             title,
             content,
             iconType: 'exclamation-circle',
-            okText: '确定'
+            okText: '确定',
+            width: 500,
+            onOk() { 
+                _this.handleQuery();
+                _this.setState({
+                    activeImportVisible: false,
+                    fileList: [],
+                })
+            },
         });
     }
 
