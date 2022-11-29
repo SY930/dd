@@ -602,9 +602,9 @@ class MyFaceRule extends Component {
     }
 
     renderAPPEvents = (v, i) => {
-        const { triggerSceneList } = this.props;
+        const { triggerSceneList, sceneList } = this.props;
         let _eventSelectOptions = this.state.eventSelectOption
-        if (triggerSceneList.includes('4')) {
+        if (triggerSceneList.some(item => (item == 14 || item == 4)) || sceneList == '21') {
             _eventSelectOptions = _eventSelectOptions.filter(item => item.value !== 'shoppingCartAddFood')
         }
         return (
@@ -689,7 +689,7 @@ class MyFaceRule extends Component {
 
     render() {
         const { value = [], form, clientType, sceneList } = this.props;
-        // triggerSceneList 支付成功的海报和banner点击触发事件 菜品加入购物车不能有
+        // triggerSceneList 支付成功的海报和banner、开屏页点击触发事件 菜品加入购物车不能有
         // const { length } = value;
         // 防止回显没数据不显示礼品组件
         if (!value[0]) {
