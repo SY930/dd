@@ -94,7 +94,7 @@ class ShopSelector extends Component {
         this.setState({ options: alloptions, filters: allfilters });
     }
     loadShops3(canUseShops = []) {
-
+        const { eventWay } = this.props
         const { alloptions } = this.state;
         if (canUseShops[0]) {
             const leftShops = alloptions.map((x) => {
@@ -106,7 +106,11 @@ class ShopSelector extends Component {
             this.setState({ options: leftShops });
             return;
         }
-        this.setState({ options: alloptions });
+        this.setState({ options: alloptions }, () => {
+            if (eventWay === '2090') {
+                this.loadShops2(this.props.brandList)
+            }
+        });
     }
     handleAdd = () => {
         this.setState({ showModal: true });
