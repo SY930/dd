@@ -105,14 +105,14 @@ class ShopSelector extends Component {
                 }
                 return x;
             });
-            this.setState({ options: leftShops });
+            this.setState({ options: leftShops }, () => {
+                if (eventWay === '2090') {
+                    this.loadShops2(this.props.brandList)
+                }
+            });
             return;
         }
-        this.setState({ options: alloptions }, () => {
-            if (eventWay === '2090') {
-                this.loadShops2(this.props.brandList)
-            }
-        });
+        this.setState({ options: alloptions });
     }
     handleAdd = () => {
         this.setState({ showModal: true });
