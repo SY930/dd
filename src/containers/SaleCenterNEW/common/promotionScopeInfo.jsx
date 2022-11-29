@@ -221,9 +221,6 @@ class PromotionScopeInfo extends React.Component {
             }
             getPromotionShopSchema({ groupID: this.props.user.toJS().accountInfo.groupID, ...parm });
         }
-        if (promotionType === '2090') {
-            getPromotionShopSchema({ groupID: this.props.user.toJS().accountInfo.groupID });
-        }
         const basicInfo = this.props.promotionBasicInfo.get('$basicInfo').toJS()
         const isSelDefined = basicInfo.recommendType == 1
         if (this.props.promotionScopeInfo.getIn(['refs', 'data', 'shops']).size > 0 && this.props.promotionScopeInfo.getIn(['refs', 'data', 'brands']).size > 0) {
