@@ -61,8 +61,8 @@ export const THIRD_VOUCHER_MANAGEMENT = '100008992' // 第三方券管理
 export const ACTIVITY_LAUNCH = '100008993' // 投放活动
 
 export const SALE_LANCH_CHANNEL = '10000730099' //活动投放渠道管理
-export const SALE_AUTOMATED_SALE = 'sale_automated_sale' // 智能营销
-export const SALE_AUTOMATED_SALE_DETAIL = 'sale_automated_sale_detail' // 智能营销详情
-export const SALE_AUTOMATED_STAT_DETAIL = 'sale_automated_stat_detail' // 智能营销统计页面
-export const SALE_AUTOMATED_ACTIVITY_RECORD_LIST = '10000740000' // 智能营销活动记录
-export const SALE_AUTOMATED_ACTIVITY_PROCESS = '10000740001' // 智能营销活动过程
+export const SALE_AUTOMATED_SALE = 'sale_automated_sale' // 自动化营销
+export const SALE_AUTOMATED_SALE_DETAIL = 'sale_automated_sale_detail' // 自动化营销详情
+export const SALE_AUTOMATED_STAT_DETAIL = 'sale_automated_stat_detail' // 自动化营销统计页面
+export const SALE_AUTOMATED_ACTIVITY_RECORD_LIST = '10000740000' // 自动化营销活动记录
+export const SALE_AUTOMATED_ACTIVITY_PROCESS = '10000740001' // 自动化营销活动过程
