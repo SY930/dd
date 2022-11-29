@@ -29,14 +29,12 @@ class AddSeckillGoods extends Component {
         // 请求零售券
         // this.getCouponsData({});
         const {value} = this.props;
-        console.log(value,'value in componetDidMount>>>>>>>>>>>>>>>>>>')
         this.setState({
             giftList: value ? value : [{...initVal}]
         });
         this.initSortable();
     }
     componentWillReceiveProps(nextProps){
-        console.log(nextProps,'nextProps====================')
         if(!isEqual(this.props.value, nextProps.value)) {
             this.setState({
                 giftList: nextProps.value
@@ -58,7 +56,6 @@ class AddSeckillGoods extends Component {
                 sortedData = arr.map((item) => {
                     return giftList[Number(item)]
                 })
-                console.log(sortedData,'sortedData---------------->')
                 _this.setState({
                     sortableDom: false,
                 },() => {
@@ -75,7 +72,6 @@ class AddSeckillGoods extends Component {
         });
     }
     onChange = (key, value, index) => {
-        console.log(key, value, index,'params--------------->')
         const { giftList } = this.state;
         if (!giftList[0]) {
             giftList.push({ ...initVal });
@@ -113,11 +109,9 @@ class AddSeckillGoods extends Component {
         this.props.onGiftChange(list)
     }
     getForm = (form) => {
-        console.log(form, 'form>>>>>>>>>>>>>>>>>>>> in addseckkillGodds')
         const { formList } = this.state;
         const { getGiftForm } = this.props;
         if(form){
-            console.log(form.getFieldsValue(),'form.getFieldsValue()');
             formList.push(form);
         }
         if (typeof getGiftForm === "function") {
@@ -156,12 +150,11 @@ class AddSeckillGoods extends Component {
         }
     }
     render() {
-        const { accountInfo } = this.props;
+        const { accountInfo, isView } = this.props;
         const { giftList, couponVisible, sortableDom = true } = this.state;
         if (!giftList[0]) {
             giftList.push({ ...initVal });
         }
-        console.log(sortableDom,'sortableDom>>>>>>>>>>>>>>>')
         return (
                 sortableDom ? 
                 <div id="items">
@@ -192,6 +185,7 @@ class AddSeckillGoods extends Component {
                                             style={{
                                                 fontSize: 24,
                                                 color: "#12B493",
+                                                display: isView ? 'none' : 'block'
                                             }}
                                         />
                                     </a>
@@ -203,7 +197,8 @@ class AddSeckillGoods extends Component {
                                             style={{
                                                 fontSize: 24,
                                                 color: "#Ed7773",
-                                                marginLeft: 4
+                                                marginLeft: 4,
+                                                display: isView ? 'none' : 'block'
                                             }}
                                         />
                                     </a>

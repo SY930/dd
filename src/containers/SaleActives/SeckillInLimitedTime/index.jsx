@@ -3,7 +3,7 @@
  * @Author: xinli xinli@hualala.com
  * @Date: 2022-10-10 14:36:10
  * @LastEditors: xinli xinli@hualala.com
- * @LastEditTime: 2022-11-28 17:50:30
+ * @LastEditTime: 2022-11-29 16:58:47
  * @FilePath: /platform-sale/src/containers/SaleActives/SeckillInLimitedTime/index.jsx
  */
 
@@ -18,7 +18,6 @@ import UsageRuleForm from "./components/UsageRuleForm";
 import { queryActiveList, putEvent, getEvent, postEvent, getSettleList, getCardTypeList } from "./AxiosFactory";
 import styles from "./styles.less";
 import { asyncParseForm } from "../../../helpers/util";
-import { getItervalsErrorStatus } from "../ManyFace/Common";
 
 class SeckillInLimitedTime extends Component {
     constructor() {
@@ -39,14 +38,11 @@ class SeckillInLimitedTime extends Component {
     componentDidMount() {
         this.getEventDetail(); //获取活动详情
         const { accountInfo: {groupID}, itemID } = this.props;
-        console.log(groupID,'groupID===========')
         getSettleList({ groupID }).then(list => {
-            console.log(list,'list-----------------12112122')
             const settlesOpts = list.map(x => ({ value: `${x.settleUnitID}`, label: x.settleUnitName }));
             this.setState({ settlesOpts });
         })
         getCardTypeList().then(list => {
-            console.log(list,'list>>>>>>>>>>>>')
             this.setState({ groupCardTypeList: list });
         })
         this.props.getSubmitFn(this.handleSubmit)
@@ -67,15 +63,26 @@ class SeckillInLimitedTime extends Component {
     //把接口返回的数据转成表单需要的数据
     transformFormData = res => {
         const { data = {}, timeList = [], gifts = [] } = res;
-        console.log(res,'res---------------->')
+        console.log(data,'data00000000000000000');
+        let startTime = null;
+        let endTime = null;
+        if(data.eventEndDate && data.eventStartDate){
+            if(timeList && timeList.length > 0){
+                startTime = data.eventStartDate + timeList[0].startTime;
+                endTime = data.eventEndDate + timeList[0].endTime;
+            }else{
+                startTime = data.eventStartDate + '0000';
+                endTime = data.eventEndDate + '0000';
+            }
+        }
         let formData = {
             ...data,
             eventRange:
                 data.eventEndDate && data.eventStartDate
-                    ? [moment(data.eventStartDate, "YYYYMMDD"), moment(data.eventEndDate, "YYYYMMDD")]
-                    : [moment(), moment().add(6, "days")],
+                    ? [moment(startTime, "YYYY-MM-DD HH:mm"), moment(endTime, "YYYY-MM-DD HH:mm")]
+                    : '',
             gifts: gifts.map(item => {
-                return {//"giftID","giftTotalCount","buyLimit","presentValue","giftGetRuleValue"
+                return {
                     ...item,
                     giftName: item.giftName,
                     giftID: item.giftID,
@@ -84,18 +91,7 @@ class SeckillInLimitedTime extends Component {
                     presentValue: item.presentValue,
                     giftGetRuleValue: item.giftGetRuleValue,
                 };
-            }),
-            timeList: timeList.length
-                ? timeList.map(x => {
-                      const { startTime, endTime } = x;
-                      if (startTime && endTime) {
-                          const st = moment(startTime, "HH:mm");
-                          const et = moment(endTime, "HH:mm");
-                          return { startTime: st, endTime: et };
-                      }
-                      return { id: "0" };
-                  })
-                : [{ id: "0" }], //时间段增加默认值
+            })
         };
         //强制给礼品表单塞数据，否则回显不了
         if (this.state.ruleForm) {
@@ -106,7 +102,6 @@ class SeckillInLimitedTime extends Component {
 
     //时间段格式化
     formatTimeList = list => {
-        console.log(list,'list 时间段格式化》》》》》》》》')
         if (!list) {
             return [];
         }
@@ -114,7 +109,6 @@ class SeckillInLimitedTime extends Component {
         const st = moment(list[0]).format("HHmm");
         const et = moment(list[1]).format("HHmm");
         times.push({ startTime: st, endTime: et });
-        console.log(st,et,'et000000000000000')
         return times;
     };
 
@@ -127,7 +121,8 @@ class SeckillInLimitedTime extends Component {
             eventWay: "95",
             eventName: values.eventName,
             eventRemark: values.eventRemark,
-            shopIDList: values.shopIDList,
+            shopIDList: values.shopIDList || [],
+            shopRange: values.shopIDList && values.shopIDList.length > 0 ? 1 : 2,//部分店铺为1，全部为2
             settleUnitID: values.settleUnitID,
             cardTypeID: values.cardTypeID,
             eventCode: values.eventCode,
@@ -140,17 +135,16 @@ class SeckillInLimitedTime extends Component {
         };
         params.event.eventStartDate = eventRange.length ? eventRange[0].format("YYYYMMDD") : "";
         params.event.eventEndDate = eventRange.length ? eventRange[1].format("YYYYMMDD") : "";
+        params.startTimeStr = eventRange.length ? eventRange[0].format("YYYY/MM/DD HH:mm") : "";
+        params.endTimeStr = eventRange.length ? eventRange[1].format("YYYY/MM/DD HH:mm") : "";
         delete params.event.eventRange;
-       
         return params;
     };
 
     handleSubmit = () => {
         const { basicForm, ruleForm, giftsForm = [] } = this.state;
-        console.log(basicForm, ruleForm, giftsForm,'giftsForm===============')
         const forms = [basicForm, ruleForm].concat(giftsForm);
         asyncParseForm(forms).then(({ values, error }) => {
-            console.log(values,'values00000000000000000000000')
             if (error) return;
             // const { timeList } = values;
             // const newTimeList = this.formatTimeList(timeList);
@@ -212,7 +206,25 @@ class SeckillInLimitedTime extends Component {
 
     onSubmit = payload => {
         const { itemID, isActive } = this.props;
-        const { event, timeList, gifts } = payload;
+        const { event: {eventStartDate, eventEndDate}, timeList, gifts, startTimeStr, endTimeStr} = payload;
+        let startTime = null;
+        let endTime = null;
+        if( eventEndDate && eventStartDate ){
+            if(timeList && timeList.length > 0){
+                startTime = eventStartDate + timeList[0].startTime;
+                endTime = eventEndDate + timeList[0].endTime;
+            }else{
+                startTime = eventStartDate + '0000';
+                endTime = eventEndDate + '0000';
+            }
+        }
+        console.log(new Date(endTime).getTime(),new Date(startTime).getTime(),'new Date(startTime).getTime()')
+        if((new Date(endTimeStr).getTime() - new Date(startTimeStr).getTime()) > 604800000){ //大于七天
+            message.warning('活动时长最长支持7天，请重新设置');
+            return 
+        }
+        delete payload.startTimeStr;
+        delete payload.endTimeStr;
         if (itemID) {
             const allData = {
                 timeList: timeList,
@@ -231,6 +243,7 @@ class SeckillInLimitedTime extends Component {
             });
             return;
         }
+        console.log(payload,'payload=======================')
         putEvent({ ...payload }).then(res => {
             if (res.code === "000") {
                 closePage();
@@ -285,7 +298,6 @@ class SeckillInLimitedTime extends Component {
         this.setState({ viewRuleVisible: false });
     }
     onGiftChange = (giftList) => {
-        console.log(giftList,'giftList====================')
         this.setState({giftList})
     }
     render() {
@@ -300,8 +312,8 @@ class SeckillInLimitedTime extends Component {
             isView
         };
         return (
-            <div className={styles.formContainer}>
-                {isView == "true" ? <div className={styles.stepOneDisabled}></div> : null}
+            <div className={`${styles.formContainer} ${ isView ? styles.isViewContainer : ''}`} >
+                {/* {isView == "true" ? <div className={styles.stepOneDisabled}></div> : null} */}
                 <Spin spinning={loading}>
                     <div className={styles.logoGroupHeader}>基本信息</div>
                     <BasicInfoForm 
