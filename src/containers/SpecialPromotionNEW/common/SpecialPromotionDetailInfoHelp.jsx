@@ -438,6 +438,7 @@ const renderCashFn = function (ruleType, roleType) {
     } = this.props;
     const { checkBoxStatus } = this.state
     const cashGiftKey = `cashGift${ruleType}${roleType}`
+    const giftItemID = this._getVal({ ruleType, roleType, key: 'giftItemID' })
     const redPackageLimitValue = this._getVal({ ruleType, roleType, key: 'redPackageLimitValue' })
 
     return (
@@ -452,9 +453,13 @@ const renderCashFn = function (ruleType, roleType) {
                         notFoundContent={'没有搜索到结果'}
                         optionFilterProp="children"
                         placeholder="请选择一个已创建的红包礼品"
-                        value={cashGiftVal}
+                        value={giftItemID}
                         onChange={
-                            handleCashChange(cashGiftKey).bind(this)
+                            this.handleRecommendSettingsChange(
+                                roleType,
+                                'giftItemID',
+                                ruleType
+                            )
                         }
                     >
                         {redPackets.map((v) => {
@@ -881,10 +886,10 @@ const handleSubmitRecommendGifts = function (isPrev) {
                 }
             })
         })
-        if (isReturn) {
-            message.warn('请选择一个已创建的红包礼品')
-            return false
-        }
+        // if (isReturn) {
+        //     message.warn('请选择一个已创建的红包礼品')
+        //     return false
+        // }
     }
     if (validateFlag) {
         if (validOdds > 100) {
