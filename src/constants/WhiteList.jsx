@@ -17,7 +17,7 @@ export const isCheckApproval = needApprovalGroupID.includes(String(getAccountInf
 export const zhouheiyaPromotiontype = ['1060', '1070', '2020', '2010', '1030', '1050', '2050', '3010'];
 export const zhouheiyaMarketingtype = ['69', '88', '89', '90'];
 
-export const WJLPGroupID = ['259613'] // 针对魏家凉皮 促销活动管理列表 表头顺序 259613测试集团，线上待定
+export const WJLPGroupID = ['259613', '317528'] // 针对魏家凉皮 促销活动管理列表 表头顺序 259613测试集团，线上待定
 
 export const businessTypesList = [
     {
