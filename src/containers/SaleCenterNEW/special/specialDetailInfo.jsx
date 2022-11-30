@@ -44,6 +44,7 @@ class SpecialDetailInfo extends React.Component {
             isCustomerUseCountLimited,
             customerUseCountLimit,
             shortRule,
+            calType,
         } = this.getInitState()
         this.state = {
             display: !props.isNew,
@@ -60,6 +61,7 @@ class SpecialDetailInfo extends React.Component {
             isCustomerUseCountLimited, // 特价菜每人每天享受特价数量是否限制 0 为不限制使用数量, 1为限制
             shortRule,
             bookID: '',
+            calType,
         };
 
         this.renderAdvancedSettingButton = this.renderAdvancedSettingButton.bind(this);
@@ -74,10 +76,12 @@ class SpecialDetailInfo extends React.Component {
     getInitState() {
         let _rule = this.props.promotionDetailInfo.getIn(['$promotionDetail', 'rule']);
         _rule = Immutable.Map.isMap(_rule) ? _rule.toJS() : _rule;
+        console.log("🚀 ~ file: specialDetailInfo.jsx ~ line 79 ~ SpecialDetailInfo ~ getInitState ~ _rule", _rule)
         const amountLimit = _rule ? Number(_rule.specialFoodMax) : 0;
         const totalAmountLimit = _rule ? Number(_rule.totalFoodMax) : 0;
         const customerUseCountLimit = _rule ? Number(_rule.customerUseCountLimit) : 0;
         const shortRule = _rule ? Number(_rule.shortRule) : 0;
+        const calType = _rule ? _rule.calType : 0;
         return {
             isLimited: Number(!!amountLimit),
             amountLimit: amountLimit || 1,
@@ -86,6 +90,7 @@ class SpecialDetailInfo extends React.Component {
             isCustomerUseCountLimited: Number(!!customerUseCountLimit),
             customerUseCountLimit: customerUseCountLimit || 1,
             shortRule: shortRule || 0,
+            calType,
         };
     }
 
@@ -104,8 +109,10 @@ class SpecialDetailInfo extends React.Component {
             isCustomerUseCountLimited,
             customerUseCountLimit,
             shortRule,
-            bookID
+            bookID,
+            calType,
         } = this.state;
+        console.log("🚀 ~ file: specialDetailInfo.jsx ~ line 116 ~ SpecialDetailInfo ~ priceLst ~ data", data)
         const priceLst = data.map((item) => {
             return {
                 foodUnitID: item.itemID,
@@ -114,6 +121,7 @@ class SpecialDetailInfo extends React.Component {
                 foodUnitName: item.unit,
                 brandID: item.brandID || 0,
                 price: parseFloat(item.newPrice) < 0 ?  item.price : parseFloat(item.newPrice),
+                discount: item.salePercent
             }
         });
         if (isLimited == 1 && !amountLimit) {
@@ -159,6 +167,7 @@ class SpecialDetailInfo extends React.Component {
         if (bookID) {
             rule.bookID = bookID
         }
+        rule.calType = calType;
         this.props.setPromotionDetail({
             priceLst,
             rule, // 为黑白名单而设
@@ -354,7 +363,8 @@ class SpecialDetailInfo extends React.Component {
                 }
                 <div style={{height: '40px', paddingLeft: 35, marginTop: '8px'}} className={styles.flexContainer}>
                     <div style={{lineHeight: '28px', marginRight: '14px'}}>
-                        {SALE_LABEL.k6hdpw49}
+                        {/* 每人每天限制 */}
+                        {SALE_LABEL.k6hdpw49} 
                     </div>
                     <div style={{width: '400px'}}>
                         <Col  span={this.state.isCustomerUseCountLimited == 0 ? 24 : 12}>
@@ -384,6 +394,21 @@ class SpecialDetailInfo extends React.Component {
                                     </FormItem>
                                 </Col> : null
                         }
+                    </div>
+                </div>
+                <div style={{ height: '40px', paddingLeft: 35, marginTop: '8px' }} className={styles.flexContainer}>
+                    <div style={{ lineHeight: '28px', marginRight: '14px' }}>价格计算规则</div>
+                    <div style={{ width: '400px' }}>
+                        <Col span={24}>
+                            <Select
+                                onChange={(value) => { this.setState({ calType: value }) }}
+                                value={String(this.state.calType)}
+                                getPopupContainer={(node) => node.parentNode}
+                            >
+                                <Option key="0" value={'0'}>按特价计算</Option>
+                                <Option key="1" value={'1'}>按折扣计算</Option>
+                            </Select>
+                        </Col>
                     </div>
                 </div>
             </div>
