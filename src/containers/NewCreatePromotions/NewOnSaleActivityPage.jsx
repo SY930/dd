@@ -66,6 +66,8 @@ import {
 
 
 const CONTAIN_GROUPID_SHOW = ['317964', '189702']; // 拼团秒杀只针对茶百道显示
+const REDUCE_SHIPPING_GROUPID = ['11157', '189702'] // 配送费减免仅针对白名单集团开发
+
 
 //周黑鸭需求
 import { isZhouheiya } from '../../constants/WhiteList';
@@ -515,10 +517,11 @@ class NewOnSaleActivityPage extends Component {
         const { groupID } = state.user.get('accountInfo').toJS();
         const { intl } = this.props;
         const k6316iio = intl.formatMessage(SALE_STRING.k6316iio);
+        let salePromotionType = REDUCE_SHIPPING_GROUPID.includes(String(groupID)) ? SALE_PROMOTION_TYPES : SALE_PROMOTION_TYPES.filter(item => item.title !== '配送费减免')
         let ALL_PROMOTION_CATEGORIES = [
             {
                 title: k6316iio,
-                list: CONTAIN_GROUPID_SHOW.includes(String(groupID)) ? SALE_PROMOTION_TYPES : SALE_PROMOTION_TYPES.filter(item => !item.filter),
+                list: CONTAIN_GROUPID_SHOW.includes(String(groupID)) ? salePromotionType : salePromotionType.filter(item => !item.filter),
             },
         ]
         
@@ -527,7 +530,7 @@ class NewOnSaleActivityPage extends Component {
             ALL_PROMOTION_CATEGORIES = [
                 {
                     title: k6316iio,
-                    list: SALE_PROMOTION_TYPES.filter(item => item.isZhy),
+                    list: salePromotionType.filter(item => item.isZhy),
                 }]
         }
 
