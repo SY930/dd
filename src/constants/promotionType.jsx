@@ -532,18 +532,18 @@ export const REPEAT_PROMOTION_TYPES = [
         right: 3,
         bottom: 0,
     },
-    {
-        title: "限时秒杀",
-        isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
-        text: "限时超低价格购买商品，吸引客户参与活动，提升顾客消费粘性",
-        tags: [SALE_LABEL.k639vgbm],
-        signs: ["app"],
-        example: "",
-        key: "95",
-        right: 16,
-        bottom: 6
-        // isNew: new Date("2022/04/12").getTime()
-    }
+    // {
+    //     title: "限时秒杀",
+    //     isSpecial: true, // 表示活动是否是特色营销活动(false 则为基础营销活动)
+    //     text: "限时超低价格购买商品，吸引客户参与活动，提升顾客消费粘性",
+    //     tags: [SALE_LABEL.k639vgbm],
+    //     signs: ["app"],
+    //     example: "",
+    //     key: "95",
+    //     right: 16,
+    //     bottom: 6
+    //     // isNew: new Date("2022/04/12").getTime()
+    // }
 ];
 
 /**
