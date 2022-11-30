@@ -3752,7 +3752,8 @@ class MySpecialActivities extends React.Component {
                 dataIndex: "validDate",
                 key: "",
                 width: 180,
-                render: (validDate) => {
+                render: (validDate, record, index) => {
+                    console.log(validDate,'valiDate>>>>>>>>>>>>>>>>')
                     if (
                         validDate.start === "0" ||
                         validDate.end === "0" ||
@@ -3763,12 +3764,22 @@ class MySpecialActivities extends React.Component {
                             STRING_SPE.d31ei98dbgi21253
                         )}`;
                     }
-                    const t = `${moment(validDate.start, "YYYY-MM-DD").format(
-                        "YYYY-MM-DD"
-                    )} / ${moment(validDate.end, "YYYY-MM-DD").format(
-                        "YYYY-MM-DD"
-                    )}`;
-                    return <Tooltip title={t}>{t}</Tooltip>;
+                    let timeStr = null;
+                    if(record.eventWay == 95){
+                        timeStr = `${moment(validDate.start, "YYYY-MM-DD HH:mm").format(
+                            "YYYY-MM-DD HH:mm"
+                        )} / ${moment(validDate.end, "YYYY-MM-DD HH:mm").format(
+                            "YYYY-MM-DD HH:mm"
+                        )}`;
+                    }else{
+                        timeStr = `${moment(validDate.start, "YYYY-MM-DD").format(
+                            "YYYY-MM-DD"
+                        )} / ${moment(validDate.end, "YYYY-MM-DD").format(
+                            "YYYY-MM-DD"
+                        )}`;
+                    }
+                    
+                    return <Tooltip title={timeStr}>{timeStr}</Tooltip>;
                 },
             },
             {
