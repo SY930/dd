@@ -707,7 +707,6 @@ class PromotionScopeInfo extends React.Component {
         );
     }
     handleShopAreaChange = (value) => {
-        console.log(value);
         const { areaList } = value.otherRes || {};
         let shopScopeList = [];
         if (value.radioValue == 'shop') {
@@ -731,14 +730,11 @@ class PromotionScopeInfo extends React.Component {
             },
             shopScopeList
         })
-        console.log(shopScopeList, 'shopScopeList');
     }
 
 
     renderShopsOptions() {
-        console.log('teqianduizaidnegdeng')
         const promotionType = this.props.promotionBasicInfo.get('$basicInfo').toJS().promotionType;
-        console.log(promotionType,'promotionType--------')
         const { brands, shopStatus, allShopSet, selections, isRequire, filterShops } = this.state;
         const shopData = this.props.shopsData.toJS().shops;
         const filterShopData = shopData.filter(item => filterShops.indexOf(item.shopID) < 0);

@@ -200,7 +200,6 @@ class AddGifts extends React.Component {
         const { code, message: msg, data: obj } = response;
         if (code === '000') {
             const { couponCodeBatchInfos = [] } = obj;
-            console.log(couponCodeBatchInfos, 'couponCodeBatchInfos');
             this.setState({
                 wxCouponData: [{
                     giftType: '112',

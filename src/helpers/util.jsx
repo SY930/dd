@@ -824,7 +824,6 @@ export function checkAuthLicense(licenseData = {}, productCode = 'HLL_CRM_NEW', 
 }
 
 export const formatGoodsData = (goods, category) => {
-    console.log(goods, category, 'goods, category ');
     const _goods = goods.map(item => ({
         ...item,
         goodsID: item.foodID,

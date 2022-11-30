@@ -3,7 +3,7 @@
  * @Author: xinli xinli@hualala.com
  * @Date: 2022-10-10 14:36:10
  * @LastEditors: xinli xinli@hualala.com
- * @LastEditTime: 2022-11-29 16:58:47
+ * @LastEditTime: 2022-11-30 15:20:48
  * @FilePath: /platform-sale/src/containers/SaleActives/SeckillInLimitedTime/index.jsx
  */
 
@@ -63,7 +63,6 @@ class SeckillInLimitedTime extends Component {
     //把接口返回的数据转成表单需要的数据
     transformFormData = res => {
         const { data = {}, timeList = [], gifts = [] } = res;
-        console.log(data,'data00000000000000000');
         let startTime = null;
         let endTime = null;
         if(data.eventEndDate && data.eventStartDate){
@@ -218,7 +217,6 @@ class SeckillInLimitedTime extends Component {
                 endTime = eventEndDate + '0000';
             }
         }
-        console.log(new Date(endTime).getTime(),new Date(startTime).getTime(),'new Date(startTime).getTime()')
         if((new Date(endTimeStr).getTime() - new Date(startTimeStr).getTime()) > 604800000){ //大于七天
             message.warning('活动时长最长支持7天，请重新设置');
             return 
@@ -243,7 +241,6 @@ class SeckillInLimitedTime extends Component {
             });
             return;
         }
-        console.log(payload,'payload=======================')
         putEvent({ ...payload }).then(res => {
             if (res.code === "000") {
                 closePage();

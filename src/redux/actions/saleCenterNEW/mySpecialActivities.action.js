@@ -373,7 +373,6 @@ export const fetchSpecialPromotionDetailAC = opts => {
         }
         Promise.all([queryEventDetail(opts), queryEventCustomer(opts)])
             .then((res) => {
-                console.log(res,'res===================')
                 const result = res.reduce((curr, val) => {
                     return { ...curr, ...val };
                 }, {});
@@ -392,7 +391,7 @@ export const fetchSpecialPromotionDetailAC = opts => {
                 }
             })
             .catch((err) => {
-                console.log(err,'errrrrrrrrrrrrrrrrrrrrrrrrrrrrr')
+                console.log(err)
                 opts.fail();
                 return dispatch(fetchSpecialPromotionDetailFail(err));
             })

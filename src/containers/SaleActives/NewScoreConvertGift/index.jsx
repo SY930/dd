@@ -309,7 +309,6 @@ class NewScoreConvertGift extends Component {
                         couponData={couponData}
                         cardLevelInfo={cardLevelInfo}
                         setRuleForm={(data) => {
-                            console.log(data, '设置ruleForm');
                             this.setState(data)
                         }}
                         getForm={(form) => {
@@ -328,7 +327,6 @@ class NewScoreConvertGift extends Component {
                         getForm={(form) => this.setState({ approvalForm: form })}
                         formData={formData}
                         setRuleForm={(data) => {
-                            console.log(data, '设置ruleForm');
                             this.setState(data)
                         }}
                         {...itemProps}

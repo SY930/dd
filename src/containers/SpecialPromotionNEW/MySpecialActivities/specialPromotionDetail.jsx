@@ -278,7 +278,6 @@ class SpecialPromotionDetail extends React.Component {
 
     componentDidMount() {
         const eventEntity = this.props.record.eventInfo.data;
-        console.log(eventEntity,'eventEntity=============')
         if (eventEntity.eventWay == 68) {
             axiosData(
                 '/specialPromotion/queryRecommendEventData.ajax',

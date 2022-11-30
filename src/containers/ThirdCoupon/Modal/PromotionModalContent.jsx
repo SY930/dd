@@ -385,7 +385,6 @@ class PromotionModalContent extends Component {
                 if (!_.isEmpty(activeNames)) {
                     materials = { ...materials, ...activeNames }
                 }
-                // console.log(_.sortBy(enrollRules, ['type']), '_.sortBy(enrollRule')
                 _.sortBy(enrollRules, ['type']).map((item) => {
                     const { type, required } = item;
                     if (required) {

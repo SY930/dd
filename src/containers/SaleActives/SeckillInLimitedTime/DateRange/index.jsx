@@ -2,7 +2,7 @@
  * @Author: xinli xinli@hualala.com
  * @Date: 2022-10-24 15:11:43
  * @LastEditors: xinli xinli@hualala.com
- * @LastEditTime: 2022-11-29 15:55:54
+ * @LastEditTime: 2022-11-30 15:21:06
  * @FilePath: /platform-sale/src/containers/PromotionV3/Camp/DateRange/index.jsx
  */
 import React, { PureComponent as Component } from 'react';
@@ -36,7 +36,6 @@ class DateRange extends Component {
     }
     disabledDate = (current) => {
         const {value} = this.props;
-        console.log(value,'value----------------disabledata')
         return current && current.valueOf() < moment().subtract(1,'d') ||  current && current.valueOf() > moment().add(14,'d')
     }
     render() {

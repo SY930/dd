@@ -646,7 +646,6 @@ class SpecialDetailInfo extends Component {
                 goods: []
             }
         }
-        console.log(giftInfo, consumeType, amountType, goodScopeRequest, 'giftInfo =>');
         let consumeCondition = '1';
         let consumeUnit = '1';
         let activityList = [];

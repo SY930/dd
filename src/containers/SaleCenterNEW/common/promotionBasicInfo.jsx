@@ -439,7 +439,6 @@ class PromotionBasicInfo extends React.Component {
         }
 
         if (propmotionType == '2090' && isNew) {
-            console.log("🚀 ~ file: promotionBasicInfo.jsx ~ line 442 ~ PromotionBasicInfo ~ componentDidMount ~ isNew", isNew)
             const opts = {
                 data: {
                     groupID: this.props.user.accountInfo.groupID,

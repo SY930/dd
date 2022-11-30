@@ -966,7 +966,6 @@ class MySpecialActivities extends React.Component {
             const _promoitonList = nextProps.mySpecialActivities
                 .get("$specialPromotionList")
                 .toJS();
-                console.log(_promoitonList,'_promoitonList>>>>>>>>>>>>>>')
             switch (_promoitonList.status) {
                 case "timeout":
                     message.error(
@@ -3436,7 +3435,6 @@ class MySpecialActivities extends React.Component {
                                                 !isMine(record))
                                     }
                                     onClick={(e) => {
-                                        console.log(record.eventWay, 'record.eventWay')
                                         // if (record.eventWay == '64') {
                                         //     //对评价送礼活动做专门处理，该活动在活动启用时候也能操作选择店铺
                                         //     if (record.isActive != '0') {
@@ -3534,7 +3532,6 @@ class MySpecialActivities extends React.Component {
                                 <a
                                     href="#"
                                     onClick={() => {
-                                        console.log(record,'record0000000000000000000')
                                         if (Number(record.eventWay) === 70) {
                                             message.warning(
                                                 `${this.props.intl.formatMessage(
@@ -3753,7 +3750,6 @@ class MySpecialActivities extends React.Component {
                 key: "",
                 width: 180,
                 render: (validDate, record, index) => {
-                    console.log(validDate,'valiDate>>>>>>>>>>>>>>>>')
                     if (
                         validDate.start === "0" ||
                         validDate.end === "0" ||
@@ -4234,10 +4230,8 @@ class MySpecialActivities extends React.Component {
     // Row Actions: 查看
     checkDetailInfo() {
         const _record = arguments[1];
-        console.log(_record,'record*********************')
         const user = this.props.user;
         const { eventWay } = _record;
-        console.log(eventWay,'eventWay0000000000')
         this.props.fetchSpecialPromotionDetail({
             data: {
                 itemID:
@@ -4275,7 +4269,6 @@ class MySpecialActivities extends React.Component {
         const mySpecialActivities = this.props.mySpecialActivities
             .get("$specialDetailInfo")
             .toJS();
-            console.log(mySpecialActivities,'********************************')
         const checkDetailInfo = this.checkDetailInfo;
         let renderContentOfTheModal;
         if (

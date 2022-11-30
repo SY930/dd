@@ -39,7 +39,6 @@ export const scoreConvertGiftStep3Render = function scoreConvertGiftStep3Render(
             <Row>
                 <Col span={24} offset={0}>
                 <Goods disabled={!isUpdate || onlyModifyShop} groupID={groupID} value={goodsData} onChange={(data) => {
-                    console.log(data, 'goodsData');
                     this.setState({
                         goodsData: data
                     })
@@ -49,7 +48,6 @@ export const scoreConvertGiftStep3Render = function scoreConvertGiftStep3Render(
             <Row>
                 <Col span={24} offset={0}>
                 <Coupon disabled={!isUpdate || onlyModifyShop} groupID={groupID} value={couponData} onChange={(data) => {
-                    console.log(data, 'couponData');
                     this.setState({
                         couponData: data
                     })

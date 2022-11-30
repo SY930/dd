@@ -83,10 +83,7 @@ export const consumeGiveGiftStep3Render = function consumeGiveGiftStep3Render() 
         }
     }
 
-    console.log(goodScopeRequest, 'goodsData =>');
-
     const onChangeField = (val, index, field, subField) => {
-        console.log(val);
         const list = [...activityList];
         if(subField) {
             if(subField == 'returnWay') {
@@ -113,7 +110,6 @@ export const consumeGiveGiftStep3Render = function consumeGiveGiftStep3Render() 
     }
 
     const reduceItem = (index) => {
-        console.log(index);
         let list = [...activityList];
         list.splice(index, 1);
         this.setState({ activityList: list })
@@ -126,7 +122,6 @@ export const consumeGiveGiftStep3Render = function consumeGiveGiftStep3Render() 
     }
 
     const onGoodsChange = (data) => {
-        console.log(data, '商品组件data =>');
         this.props.setSpecialBasicInfo({
             _newGoodsCompData: data
         })

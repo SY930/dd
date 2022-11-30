@@ -954,7 +954,6 @@ class SpecialRangeInfo extends React.Component {
 
     renderShopsOptions() {
         const { brandList = [], shopAreaData  } = this.state;
-        console.log(this.props.isUpdate);
         return (
             <div style={{ position: 'relative', zIndex: this.props.onlyModifyShop ? '100' : 'auto' }}>
                 <ShopAreaSelector
@@ -981,7 +980,6 @@ class SpecialRangeInfo extends React.Component {
         );
     }
     handleShopAreaChange = (value) => {
-        console.log(value);
         const { areaList } = value.otherRes || {};
         let orgs = [];
         if(value.radioValue == 'shop') {
@@ -1003,7 +1001,6 @@ class SpecialRangeInfo extends React.Component {
             },
             orgs
         })
-        console.log(orgs, 'orgs');
     }
 
     //参与范围

@@ -1206,7 +1206,6 @@ const handleSubmitScoreConvertGifts = function (isPrev) {
             item.sendValue = 0;
         })
     }
-    console.log('校验通过 =>', giftList);
     this.props.setSpecialGiftInfo(giftList);
     return true;
 }
@@ -1297,7 +1296,6 @@ const handleSubmitConsumeGiveGifts = function (isPrev) {
     }
     //整合数据
     const giftList = handleConsumeGiveGiftsData(activityList, this);
-    console.log('校验通过 =>', opts, giftList);
     this.props.setSpecialGiftInfo(giftList);
     this.props.setSpecialBasicInfo(opts);
     return true;

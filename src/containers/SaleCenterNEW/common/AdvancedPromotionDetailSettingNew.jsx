@@ -673,7 +673,6 @@ class AdvancedPromotionDetailSetting extends React.Component {
     }
 
     renderRoleOptions = () => {
-        console.log(this.state.executionRoleType, 'this.state.executionRoleType')
         return (
             <Row>
                 <FormItem
