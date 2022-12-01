@@ -448,7 +448,7 @@ class SpecialDetailInfo extends React.Component {
                 </div>
                 }
                 {
-                    !isZhouheiya(this.props.groupID) && <div style={{ height: '40px', paddingLeft: 35, marginTop: '8px' }} className={styles.flexContainer}>
+                    !isZhouheiya(this.props.user.groupID) && <div style={{ height: '40px', paddingLeft: 35, marginTop: '8px' }} className={styles.flexContainer}>
                     <div style={{ lineHeight: '28px', marginRight: '14px' }}>价格计算规则</div>
                     <div style={{ width: '400px' }}>
                         <Col span={24}>
