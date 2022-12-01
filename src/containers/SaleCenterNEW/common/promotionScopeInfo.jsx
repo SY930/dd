@@ -42,7 +42,7 @@ import { injectIntl } from '../IntlDecor';
 import { isFilterShopType } from '../../../helpers/util'
 
 //周黑鸭需求
-import { isZhouheiya, zhouheiyaPromotiontype } from '../../../constants/WhiteList';
+import { isZhouheiya, zhouheiyaPromotiontype, WJLPGroupID } from '../../../constants/WhiteList';
 import ShopAreaSelector from '../../../components/ShopAreaSelector/index.jsx';
 import { isGeneral } from "../../../constants/WhiteList";
 import ExportJsonExcel from "js-export-excel";
@@ -594,6 +594,66 @@ class PromotionScopeInfo extends React.Component {
         );
     }
 
+    renderBusinessOptionsWeiJia = () => {
+        const { intl, user } = this.props;
+        const { accountInfo } = user.toJS();
+        const k5m67a4r = intl.formatMessage(SALE_STRING.k5m67a4r);
+        const k5m67ad3 = intl.formatMessage(SALE_STRING.k5m67ad3);
+        const k5m67alf = intl.formatMessage(SALE_STRING.k5m67alf);
+        const k5krn7fx = intl.formatMessage(SALE_STRING.k5krn7fx);
+        const k5m67atr = intl.formatMessage(SALE_STRING.k5m67atr);
+        let plainOptions = null;
+        
+        plainOptions = [
+            {
+                label: k5m67a4r,
+                value: '10',
+            }, {
+                label: k5m67ad3,
+                value: '11',
+            }, {
+                label: k5m67alf,
+                value: '20',
+            }, {
+                label: k5krn7fx,
+                value: '31',
+            }, {
+                label: k5m67atr,
+                value: '21',
+            },
+            {
+                label: '零售',
+                value: '51',
+            }
+        ];
+        
+        return (
+            <Form.Item
+                label={SALE_LABEL.k5dlpt47}
+                className={styles.FormItemStyle}
+                labelCol={{
+                    span: 4,
+                }}
+                validateStatus={this.state.orderType.length
+                    ? 'success'
+                    : 'error'}
+                help={!this.state.orderType.length
+                    ? ''
+                    : null}
+                wrapperCol={{
+                    span: 17,
+                }}
+            >
+                <CheckboxGroup
+                    onChange={this.handleBusinessChange}
+                    options={plainOptions}
+                    value={this.state.orderType}
+                    defaultValue={this.state.orderType}
+                />
+            </Form.Item>
+        );
+    }
+
     renderBusinessOptionsZhy = () => {
 
         let plainOptions = null;
@@ -968,7 +1028,7 @@ class PromotionScopeInfo extends React.Component {
                     {!isZhouheiya(this.props.user.toJS().accountInfo.groupID) && (promotionType != '10071' ? (this.props.user.toJS().shopID > 0 || promotionType == '5020' ? null : this.renderBrandFormItem()) : null)}
                     {!isZhouheiya(this.props.user.toJS().accountInfo.groupID) && (promotionType != '10071' ? (promotionType != '5010' ? this.renderChannelList() : null) : null)}
                     {!isZhouheiya(this.props.user.toJS().accountInfo.groupID) && promotionType != '10071' ? this.renderBusinessOptions() : null}
-                    {isZhouheiya(this.props.user.toJS().accountInfo.groupID) && this.renderBusinessOptionsZhy()}
+                    {WJLPGroupID.includes(this.props.user.toJS().accountInfo.groupID) ? this.renderBusinessOptionsWeiJia() : isZhouheiya(this.props.user.toJS().accountInfo.groupID) ? this.renderBusinessOptionsZhy() : null}
                     {isZhouheiya(this.props.user.toJS().accountInfo.groupID) ? this.renderZHYShopsOptions() : this.props.user.toJS().shopID > 0 ? null : this.renderShopsOptions()}
                     {promotionType != '10071' ? (promotionType == '4010' ? this.renderGroup() : null) : null}
                 </Form>
