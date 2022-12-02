@@ -85,22 +85,12 @@ import { consumeGiveGiftStep3Render } from '../consumeGiveGift/step3'
 import Approval from '../../../containers/SaleCenterNEW/common/Approval';
 import { isZhouheiya } from "../../../constants/WhiteList";
 import Permission from './Permission';
+import { getDefaultGiftData, getDefaultRecommendSetting, MULTIPLE_LEVEL_GIFTS_CONFIG, descImage } from './SpecialPromotionConfig'
 
 const moment = require("moment");
 const FormItem = Form.Item;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
-
-const getDefaultRecommendSetting = (recommendType = 1) => ({
-    recommendType,
-    rechargeRate: undefined,
-    consumeRate: undefined,
-    pointRate: undefined,
-    rewardRange: 0,
-    presentValue: undefined,
-    redPackageLimitValue: undefined,
-    redPackageRate: undefined,
-});
 
 const roundToDecimal = (number, bit = 2) => +number.toFixed(bit);
 
@@ -110,96 +100,6 @@ const getIntervalID = () => {
     return uuid;
 };
 
-const getDefaultGiftData = (typeValue = 0, typePropertyName = "sendType") => ({
-    // 膨胀所需人数
-    needCount: {
-        value: "",
-        validateStatus: "success",
-        msg: null,
-    },
-    // 礼品数量
-    giftCount: {
-        value: "",
-        validateStatus: "success",
-        msg: null,
-    },
-    // 礼品数量
-    giftTotalCount: {
-        value: "",
-        validateStatus: "success",
-        msg: null,
-    },
-    // 免费活动礼品分数
-    giftTotalCopies: {
-        value: "",
-        validateStatus: "success",
-        msg: null,
-    },
-    // 礼品ID和name
-    giftInfo: {
-        giftName: null,
-        giftItemID: null,
-        validateStatus: "success",
-        msg: null,
-    },
-    effectType: "1",
-    // 礼品生效时间
-    giftEffectiveTime: {
-        value: "0",
-        validateStatus: "success",
-        msg: null,
-    },
-    // 礼品有效期
-    giftValidDays: {
-        value: "",
-        validateStatus: "success",
-        msg: null,
-    },
-    giftOdds: {
-        value: "",
-        validateStatus: "success",
-        msg: null,
-    },
-    [typePropertyName]: typeValue,
-    // 适用区域
-    region: {
-        value: '',
-        validateStatus: 'success',
-        msg: null,
-    },
-    //领取日期及个数
-    segments: [
-        {
-            getDate: {
-                value: [],
-                validateStatus: "success",
-                msg: null,
-            }, //领取日期
-            giftTotalCount: {
-                value: "",
-                validateStatus: "success",
-                msg: null,
-            }, //领取总数
-            id: Date.now().toString(36),
-        }
-    ]
-});
-
-const MULTIPLE_LEVEL_GIFTS_CONFIG = [
-    {
-        type: "63",
-        propertyName: "lastConsumeIntervalDays",
-        levelLabel: COMMON_SPE.d1e0750k82809,
-        levelAffix: COMMON_SPE.k6hk1aa1,
-    },
-    {
-        type: "75",
-        propertyName: "needCount",
-        levelLabel: COMMON_SPE.k6hk1aid,
-        levelAffix: COMMON_SPE.k6hk1aqp,
-    },
-];
-const limitType = ".jpeg,.jpg,.png,.gif,.JPEG,.JPG,.PNG,.GIF";
 @injectIntl
 class SpecialDetailInfo extends Component {
     constructor(props) {
@@ -2495,6 +2395,42 @@ class SpecialDetailInfo extends Component {
         );
     };
 
+    renderScoreConvertImage = (title, { key, image }, index) => {
+        return (
+            <FormItem
+                    label={title}
+                    className={styles.FormItemStyle}
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 17 }}
+                    style={{ position: "relative" }}
+                >
+                    <Row>
+                        <Col span={6}>
+                            <CropperUploader
+                                className={styles.uploadCom}
+                                width={120}
+                                height={110}
+                                cropperRatio={200 / 200}
+                                limit={2048}
+                                allowedType={["image/png", "image/jpeg"]}
+                                value={image}
+                                uploadTest="上传图片"
+                                onChange={(value) =>
+                                    this.onRestImg({
+                                        key,
+                                        value,
+                                    })
+                                }
+                            />
+                        </Col>
+                        <Col span={18} className={styles.grayFontPic}>
+                            {descImage[index]}
+                        </Col>
+                    </Row>
+                </FormItem>
+        )
+    }
+
     renderShareInfo3 = () => {
         // const { type } = this.props;
         const { shareTitle, shareImagePath, shareTitlePL } = this.state;
@@ -2514,55 +2450,7 @@ class SpecialDetailInfo extends Component {
                         onChange: this.handleShareTitleChange,
                     })(<Input placeholder={shareTitlePL} />)}
                 </FormItem>
-                <FormItem
-                    label="分享图片"
-                    className={styles.FormItemStyle}
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 17 }}
-                    style={{ position: "relative" }}
-                >
-                    <Row>
-                        <Col span={6}>
-                            <CropperUploader
-                                className={styles.uploadCom}
-                                width={120}
-                                height={110}
-                                cropperRatio={200 / 200}
-                                limit={2048}
-                                allowedType={["image/png", "image/jpeg"]}
-                                value={shareImagePath}
-                                uploadTest="上传图片"
-                                onChange={(value) =>
-                                    this.onRestImg({
-                                        key: "shareImagePath",
-                                        value,
-                                    })
-                                }
-                            />
-                        </Col>
-                        <Col span={18} className={styles.grayFontPic}>
-                            <p
-                                style={{
-                                    position: "relative",
-                                    top: 20,
-                                    left: 70,
-                                }}
-                            >
-                                小程序分享图
-                                <br />
-                                图片建议尺寸：1044*842
-                                <br />
-                                支持PNG、JPG格式，大小不超过2M
-                            </p>
-                        </Col>
-                    </Row>
-                    {/* <PhotoFrame
-                        restaurantShareImagePath={restaurantShareImagePath}
-                        shareImagePath={shareImagePath}
-                        onChange={this.onRestImg}
-                        type={type}
-                    /> */}
-                </FormItem>
+                {this.renderScoreConvertImage('分享图片', { key: 'shareImagePath', value: shareImagePath }, '0')}
             </div>
         );
     };
@@ -4807,6 +4695,7 @@ class SpecialDetailInfo extends Component {
                     </Row>
                 )}
                 {type === "30" && this.renderPointDuihuan()}
+                {type === '30' && this.renderScoreConvertImage('礼品图片', { key: '', value: '' }, 1)} 
                 {type === "60" && renderThree.call(this, type)}
                 {type === "53" &&
                     renderThree.call(this, type, isBenefitJumpSendGift)}
